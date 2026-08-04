@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { SiteHeader } from "../../../layout/SiteHeader";
+import { FloatBadge } from "./FloatBadge";
+import { ChessPieceUnicode } from "@/enums/chessPieces";
 import "./hero.css";
 
 export function HeroSection() {
@@ -64,7 +66,7 @@ export function HeroSection() {
               </div>
             </div>
 
-            <div className="floatBadge one">Visualización</div>
+            <FloatBadge text="Cálculo" piece={ChessPieceUnicode.BlackKnight} />
             <div className="floatBadge two">Medio juego</div>
             <div className="floatBadge three">Finales</div>
           </div>
