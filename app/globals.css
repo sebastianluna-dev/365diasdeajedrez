@@ -5,6 +5,7 @@
   --foreground: #f2ede7;
   --color-primary: #ff9143;
   --color-secondary: #f0c04b;
+  --color-dark: #16110d;
 }
 
 @theme inline {
@@ -12,6 +13,7 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--color-primary);
   --color-secondary: var(--color-secondary);
+  --color-dark: var(--color-dark);
   --font-sans: var(--font-suisse);
   --font-serif: var(--font-gramatika);
   --font-mono: var(--font-suisse);
