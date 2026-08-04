@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@font-face{font-family:'Gramatika';src:url('assets/fonts/gramatikabold.woff') format('woff');font-weight:700;font-display:swap}
+@font-face{font-family:'Suisse Intl';src:url('assets/fonts/suisseintl-regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Suisse Intl';src:url('assets/fonts/suisseintl-medium.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Suisse Intl';src:url('assets/fonts/suisseintl-bold.woff2') format('woff2');font-weight:700;font-display:swap}
+body{margin:0;background:#16110d;color:#F2EDE7;font-family:'Suisse Intl',sans-serif}
+a{color:#FF9143;text-decoration:none}
+a:hover{color:#F0A05E}
+::selection{background:rgba(255,145,67,.35)}
+</style>
+</helmet>
+
+<div style="min-width:1000px;position:relative;overflow:hidden">
+  <div style="position:absolute;z-index:0;top:-280px;left:-100px;width:760px;height:760px;border-radius:50%;background:radial-gradient(circle, rgba(255,145,67,.18) 0%, rgba(255,145,67,0) 70%);pointer-events:none"></div>
+
+  <div data-screen-label="Volver" style="position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:36px 48px 0">
+    <a href="Landing.dc.html" style="display:inline-flex;align-items:center;gap:10px;background:rgba(242,237,231,.06);border:1px solid rgba(242,237,231,.12);color:#F2EDE7;font-weight:600;font-size:15px;padding:14px 24px;border-radius:999px" style-hover="background:rgba(242,237,231,.12);color:#F2EDE7"><span style="color:#FF9143">←</span>Volver al inicio</a>
+  </div>
+
+  <section data-screen-label="Términos y condiciones" style="position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:72px 48px 88px">
+    <span style="display:block;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#FF9143;font-weight:600;margin-bottom:12px">Legal</span>
+    <h1 style="font-family:'Gramatika',sans-serif;font-size:46px;font-weight:700;line-height:1.12;margin:0 0 18px;max-width:26ch">Términos y condiciones</h1>
+    <p style="font-size:17px;line-height:1.65;color:#B4A99D;margin:0 0 8px;max-width:70ch">Estas condiciones regulan la contratación de clases y el uso del sitio de 365DiasDeAjedrez. Al reservar una clase o suscribirte a un plan, aceptas lo aquí descrito.</p>
+    <p style="font-size:13.5px;color:#6b6259;margin:0 0 56px">Última actualización: agosto de 2026</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px">
+      <div style="background:rgba(242,237,231,.05);border:1px solid rgba(242,237,231,.12);border-radius:18px;padding:28px 30px" id="servicio">
+        <h2 style="font-family:'Gramatika',sans-serif;font-size:22px;font-weight:700;margin:0 0 12px">El servicio</h2>
+        <p style="font-size:15.5px;line-height:1.65;color:#B4A99D;margin:0 0 12px">Ofrecemos clases de ajedrez en línea, individuales y en vivo, impartidas por los instructores de la academia mediante videollamada con tablero compartido.</p>
+        <p style="font-size:15.5px;line-height:1.65;color:#B4A99D;margin:0">Cada plan indica el número de clases incluidas al mes y su duración. El material de apoyo que entregamos es para uso personal del alumno.</p>
+      </div>
+      <div style="background:rgba(242,237,231,.05);border:1px solid rgba(242,237,231,.12);border-radius:18px;padding:28px 30px">
+        <h2 style="font-family:'Gramatika',sans-serif;font-size:22px;font-weight:700;margin:0 0 12px">Reservas y puntualidad</h2>
+        <p style="font-size:15.5px;line-height:1.65;color:#B4A99D;margin:0 0 12px">Las clases se agendan de común acuerdo entre alumno e instructor. Recomendamos conectarse unos minutos antes para aprovechar la sesión completa.</p>
+        <p style="font-size:15.5px;line-height:1.65;color:#B4A99D;margin:0">Si el alumno se retrasa, la clase termina a la hora prevista. Si el instructor no puede impartirla, se reprograma sin costo.</p>
+      </div>
+      <div style="background:rgba(242,237,231,.05);border:1px solid rgba(242,237,231,.12);border-radius:18px;padding:28px 30px">
+        <h2 style="font-family:'Gramatika',sans-serif;font-size:22px;font-weight:700;margin:0 0 12px">Cancelaciones y reprogramación</h2>
+        <p style="font-size:15.5px;line-height:1.65;color:#B4A99D;margin:0 0 12px">Puedes reprogramar una clase avisando con al menos 24 horas de anticipación. Con menos aviso, la sesión se considera impartida.</p>
+        <p style="font-size:15.5px;line-height:1.65;color:#B4A99D;margin:0">Las clases no utilizadas dentro del mes contratado no se acumulan al mes siguiente, salvo acuerdo expreso con la academia.</p>
+      </div>
+      <div style="background:rgba(242,237,231,.05);border:1px solid rgba(242,237,231,.12);border-radius:18px;padding:28px 30px" id="pagos">
+        <h2 style="font-family:'Gramatika',sans-serif;font-size:22px;font-weight:700;margin:0 0 12px">Pagos</h2>
+        <p style="font-size:15.5px;line-height:1.65;color:#B4A99D;margin:0 0 12px">Los planes se pagan por adelantado al inicio de cada periodo mensual. Los precios están expresados en pesos mexicanos.</p>
+        <p style="font-size:15.5px;line-height:1.65;color:#B4A99D;margin:0">Un plan puede cancelarse en cualquier momento; la baja aplica al terminar el periodo ya pagado y no genera reembolsos parciales.</p>
+      </div>
+      <div style="background:rgba(242,237,231,.05);border:1px solid rgba(242,237,231,.12);border-radius:18px;padding:28px 30px">
+        <h2 style="font-family:'Gramatika',sans-serif;font-size:22px;font-weight:700;margin:0 0 12px">Conducta y uso del material</h2>
+        <p style="font-size:15.5px;line-height:1.65;color:#B4A99D;margin:0 0 12px">Esperamos respeto entre alumnos e instructores. La academia puede terminar la relación ante conductas ofensivas o que impidan el desarrollo normal de las clases.</p>
+        <p style="font-size:15.5px;line-height:1.65;color:#B4A99D;margin:0">El contenido del sitio, el material de estudio y las grabaciones son propiedad de 365DiasDeAjedrez y no pueden redistribuirse ni comercializarse sin autorización.</p>
+      </div>
+      <div style="background:rgba(255,145,67,.09);border:1px solid rgba(255,145,67,.35);border-radius:18px;padding:28px 30px">
+        <h2 style="font-family:'Gramatika',sans-serif;font-size:22px;font-weight:700;margin:0 0 12px">Dudas sobre estas condiciones</h2>
+        <p style="font-size:15.5px;line-height:1.65;color:#D9CFC3;margin:0 0 14px">Si algo no queda claro antes de contratar, escríbenos y lo resolvemos contigo.</p>
+        <a href="mailto:contacto@365diasdeajedrez.com" style="display:inline-flex;align-items:center;background:#FF9143;color:#16110d;font-weight:700;font-size:15.5px;padding:15px 26px;border-radius:13px;box-shadow:0 4px 0 #B8611F" style-hover="background:#F0A05E;color:#16110d">contacto@365diasdeajedrez.com</a>
+      </div>
+    </div>
+
+    <div style="margin-top:22px;background:rgba(242,237,231,.05);border:1px solid rgba(242,237,231,.12);border-radius:18px;padding:28px 30px">
+      <h2 style="font-family:'Gramatika',sans-serif;font-size:22px;font-weight:700;margin:0 0 12px">Cambios en los términos</h2>
+      <p style="font-size:15.5px;line-height:1.65;color:#B4A99D;margin:0;max-width:88ch">Podemos actualizar estas condiciones para reflejar cambios en el servicio o en los planes. La versión vigente será siempre la publicada en esta página, con su fecha de actualización.</p>
+    </div>
+  </section>
+
+  <footer data-screen-label="Footer" style="position:relative;z-index:1;background:#0f0b08;border-top:1px solid rgba(255,255,255,.06)">
+    <div style="max-width:1200px;margin:0 auto;padding:56px 48px 32px">
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;margin-bottom:40px">
+        <div>
+          <a href="Landing.dc.html" style="display:flex;align-items:baseline;gap:6px;font-weight:700;font-size:20px;color:#F2EDE7">
+            <span style="color:#FF9143">365</span><span>DiasDeAjedrez</span>
+            <span style="display:grid;grid-template-columns:6px 6px;grid-template-rows:6px 6px"><span style="background:#F2EDE7"></span><span></span><span></span><span style="background:#F2EDE7"></span></span>
+          </a>
+          <p style="font-size:14px;line-height:1.6;color:#B4A99D;margin:14px 0 0;max-width:36ch">Academia de ajedrez en línea. Entrenamiento estructurado y clases personalizadas para jugadores que quieren mejorar en serio.</p>
+        </div>
+        <div>
+          <h4 style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#FF9143;font-weight:600;margin:0 0 16px">Academia</h4>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:14px">
+            <a href="Landing.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Inicio</a>
+            <a href="Nosotros.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Nosotros</a>
+            <a href="Blog.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Blog</a>
+            <a href="Aviso de Privacidad.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Aviso de privacidad</a>
+            <a href="Terminos y Condiciones.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Términos y condiciones</a>
+          </div>
+        </div>
+        <div>
+          <h4 style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#FF9143;font-weight:600;margin:0 0 16px">Contacto</h4>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:#B4A99D">
+            <a href="mailto:contacto@365diasdeajedrez.com" style="color:#B4A99D" style-hover="color:#F2EDE7">contacto@365diasdeajedrez.com</a>
+            <a href="#" style="color:#B4A99D" style-hover="color:#F2EDE7">WhatsApp: +52 000 000 0000</a>
+            <span>Clases en línea · Español</span>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:20px;display:flex;justify-content:space-between;font-size:12.5px;color:#6b6259">
+        <span>© 2026 365DiasDeAjedrez. Todos los derechos reservados.</span>
+        <span>Entrena como un jugador serio.</span>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+</body>
+</html>

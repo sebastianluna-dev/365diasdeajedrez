@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@font-face{font-family:'Gramatika';src:url('assets/fonts/gramatikabold.woff') format('woff');font-weight:700;font-display:swap}
+@font-face{font-family:'Suisse Intl';src:url('assets/fonts/suisseintl-regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Suisse Intl';src:url('assets/fonts/suisseintl-medium.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Suisse Intl';src:url('assets/fonts/suisseintl-bold.woff2') format('woff2');font-weight:700;font-display:swap}
+body{margin:0}
+</style>
+</helmet>
+
+<div style="width:900px;height:506px;position:relative;overflow:hidden;background:#0d0a08;font-family:'Suisse Intl',sans-serif;color:#F2EDE7">
+
+  <img src="assets/blog-thumb-bg.png" alt="Ilustración de jugador de ajedrez analizando una posición" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:38% center">
+  <div style="position:absolute;inset:0;background:linear-gradient(90deg, rgba(13,10,8,.1) 0%, rgba(13,10,8,.5) 46%, rgba(13,10,8,.9) 100%)"></div>
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(13,10,8,.55) 0%, rgba(13,10,8,0) 26%, rgba(13,10,8,0) 76%, rgba(13,10,8,.65) 100%)"></div>
+
+  <!-- acento: mini tablero de ajedrez -->
+  <div style="position:absolute;top:24px;right:25px;display:grid;grid-template-columns:repeat(6,11px);grid-template-rows:repeat(6,11px);border-radius:4px;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.45);opacity:.85">
+    <sc-for list="{{ miniBoard }}" as="cell" hint-placeholder-count="36"><span style="{{ cell }}"></span></sc-for>
+  </div>
+
+  <!-- contenido -->
+  <div style="position:absolute;top:22px;left:25px;display:flex;align-items:baseline;gap:5px;font-weight:700;font-size:20px">
+    <span style="color:#FF9143">365</span><span>DiasDeAjedrez</span>
+    <span style="display:grid;grid-template-columns:5px 5px;grid-template-rows:5px 5px;transform:translateY(-1px);margin-left:1px"><span style="background:#F2EDE7"></span><span></span><span></span><span style="background:#F2EDE7"></span></span>
+  </div>
+
+  <div style="position:absolute;right:25px;left:280px;top:110px;bottom:32px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-end;text-align:right;overflow:hidden">
+    <span style="display:flex;align-items:center;justify-content:flex-end;gap:7px;font-size:15px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#FF9143;margin-bottom:13px;flex:none"><span style="font-size:16px;line-height:1">♟</span>Blog · Finales</span>
+    <h1 style="font-family:'Gramatika',sans-serif;font-size:{{ titleSize }}px;line-height:1.08;font-weight:700;margin:0;text-wrap:balance;text-shadow:0 4px 24px rgba(0,0,0,.5)">{{ titulo }}</h1>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:900,&quot;height&quot;:506},&quot;titulo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Los 5 finales que todo jugador de club debe dominar&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  buildMiniBoard() {
+    const cells = [];
+    for (let r = 0; r < 6; r++) {
+      for (let f = 0; f < 6; f++) {
+        const isDark = (r + f) % 2 === 1;
+        cells.push('background:' + (isDark ? '#8A5C3B' : '#D6B98C') + ';display:block');
+      }
+    }
+    return cells;
+  }
+  titleSizeFor(t) {
+    const n = t.length;
+    if (n <= 35) return 66;
+    if (n <= 50) return 54;
+    if (n <= 65) return 44;
+    return 36;
+  }
+  renderVals() {
+    const titulo = this.props.titulo ?? 'Los 5 finales que todo jugador de club debe dominar';
+    return {
+      titulo,
+      titleSize: this.titleSizeFor(titulo),
+      miniBoard: this.buildMiniBoard()
+    };
+  }
+}
+</script>
+</body>
+</html>

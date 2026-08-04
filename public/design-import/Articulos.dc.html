@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Gramatika';src:url('assets/fonts/gramatikabold.woff') format('woff');font-weight:700;font-display:swap}
+@font-face{font-family:'Suisse Intl';src:url('assets/fonts/suisseintl-regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Suisse Intl';src:url('assets/fonts/suisseintl-medium.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Suisse Intl';src:url('assets/fonts/suisseintl-bold.woff2') format('woff2');font-weight:700;font-display:swap}
+body{margin:0;background:#16110d;color:#16110d;font-family:'Merriweather',Georgia,serif}
+a{color:#A81E22;text-decoration:none}
+a:hover{color:#C22A2E}
+::selection{background:rgba(255,145,67,.35)}
+[data-drop]{position:relative;display:inline-flex;align-items:center}
+[data-drop] > [data-drop-menu]{display:none}
+[data-drop]:hover > [data-drop-menu]{display:block}
+[data-drop]:hover > span:first-child{color:#16110d}
+</style>
+</helmet>
+
+<div style="min-width:1100px;position:relative;overflow:hidden;background:#F2F0EC;color:#16110d">
+  <div style="position:absolute;z-index:0;top:-300px;left:50%;transform:translateX(-50%);width:900px;height:700px;border-radius:50%;background:radial-gradient(ellipse, rgba(168,30,34,.10) 0%, rgba(255,145,67,0) 70%);pointer-events:none"></div>
+
+  <div style="position:relative;z-index:1;max-width:1240px;margin:0 auto;padding:0 48px">
+
+    <header data-screen-label="Cabecera">
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:32px;padding:32px 0 22px">
+        <a href="Landing.dc.html" style="display:flex;align-items:baseline;gap:6px;font-weight:700;font-size:19px;color:#16110d;justify-self:start">
+          <span style="color:#A81E22">365</span><span>DiasDeAjedrez</span>
+          <span style="display:grid;grid-template-columns:6px 6px;grid-template-rows:6px 6px;transform:translateY(-1px)"><span style="background:#16110d"></span><span style="background:transparent"></span><span style="background:transparent"></span><span style="background:#16110d"></span></span>
+        </a>
+        <div style="text-align:center">
+          <a href="Blog.dc.html" style="display:block;font-family:'Gramatika',sans-serif;font-size:38px;font-weight:700;letter-spacing:.22em;line-height:1;text-transform:uppercase;color:#16110d" style-hover="color:#A81E22">El Tablero</a>
+          <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-top:12px">
+            <span style="width:52px;height:1px;background:rgba(22,17,13,.26);display:block"></span>
+            <span style="font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:#5c5348;white-space:nowrap">Archivo completo · Agosto 2026</span>
+            <span style="width:52px;height:1px;background:rgba(22,17,13,.26);display:block"></span>
+          </div>
+        </div>
+        <div style="justify-self:end;text-align:right">
+          <nav style="display:flex;gap:22px;font-size:15px;font-weight:500;justify-content:flex-end;margin-bottom:12px">
+            <a href="Landing.dc.html" style="color:#5c5348" style-hover="color:#16110d">Inicio</a>
+            <a href="Blog.dc.html" style="color:#5c5348" style-hover="color:#16110d">Blog</a>
+            <span data-drop="herramientas">
+              <span style="color:#5c5348;cursor:default">Herramientas</span>
+              <span data-drop-menu style="position:absolute;top:100%;right:0;padding-top:14px;min-width:190px;z-index:30;text-align:left">
+                <span style="display:block;background:#FFFFFF;border:1px solid rgba(22,17,13,.14);border-radius:14px;padding:8px;box-shadow:0 18px 44px rgba(0,0,0,.18)">
+                  <a href="Reloj de Ajedrez.dc.html" style="display:block;padding:11px 14px;border-radius:10px;color:#16110d;font-size:15px;font-weight:500" style-hover="background:rgba(22,17,13,.06);color:#A81E22">Reloj</a>
+                </span>
+              </span>
+            </span>
+            <a href="Nosotros.dc.html" style="color:#5c5348" style-hover="color:#16110d">Nosotros</a>
+          </nav>
+          <a href="Landing.dc.html#planes" style="display:inline-flex;align-items:center;background:#A81E22;color:#16110d;font-weight:700;font-size:14px;padding:13px 22px;border-radius:12px;box-shadow:0 4px 0 #711215" style-hover="background:#C22A2E;color:#16110d">Primera clase gratis</a>
+        </div>
+      </div>
+      <div style="border-top:1px solid rgba(22,17,13,.20);border-bottom:1px solid rgba(22,17,13,.20);height:5px"></div>
+    </header>
+
+    <section data-screen-label="Todos los artículos" style="padding:48px 0 0">
+      <span style="display:block;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:#A81E22;font-weight:600;margin-bottom:14px">Archivo</span>
+      <h1 style="font-family:'Gramatika',sans-serif;font-size:46px;font-weight:700;line-height:1.12;margin:0 0 16px;max-width:26ch">Todos los artículos</h1>
+      <p style="font-size:17px;line-height:1.65;color:#5c5348;margin:0 0 34px;max-width:64ch">Análisis de partidas, aperturas, táctica, finales y notas de método. Todo lo publicado en El Tablero, de lo más reciente a lo más antiguo.</p>
+
+      <div style="display:flex;align-items:center;gap:0;border-top:1px solid rgba(22,17,13,.20);border-bottom:1px solid rgba(22,17,13,.20);margin-bottom:44px">
+        <span style="flex:none;display:flex;align-items:center;background:#A81E22;color:#F2EDE7;font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;padding:11px 16px;align-self:stretch">Filtrar</span>
+        <sc-for list="{{ filtros }}" as="f" hint-placeholder-count="6">
+          <button type="button" onClick="{{ f.ir }}" style="{{ f.style }}">{{ f.nombre }}</button>
+        </sc-for>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 34px">
+        <sc-for list="{{ articulos }}" as="a" hint-placeholder-count="9">
+          <article>
+            <a href="Blog Articulo.dc.html" style="display:block;border-radius:12px;overflow:hidden;margin-bottom:16px"><span role="img" aria-label="{{ a.alt }}" style="{{ a.imgStyle }}"></span></a>
+            <span style="display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#A81E22;font-weight:600;margin-bottom:10px">{{ a.categoria }}</span>
+            <h3 style="font-family:'Gramatika',sans-serif;font-size:21px;font-weight:700;line-height:1.22;margin:0 0 10px"><a href="Blog Articulo.dc.html" style="color:#16110d" style-hover="color:#A81E22">{{ a.titulo }}</a></h3>
+            <p style="font-size:14.5px;line-height:1.6;color:#5c5348;margin:0 0 12px">{{ a.extracto }}</p>
+            <span style="font-size:13px;color:#6b6259">{{ a.meta }}</span>
+          </article>
+        </sc-for>
+      </div>
+
+      <nav data-screen-label="Paginación" style="display:flex;align-items:center;justify-content:space-between;gap:24px;margin:56px 0 88px;padding-top:34px;border-top:1px solid rgba(22,17,13,.20)">
+        <span style="font-size:13.5px;color:#6b6259">Página {{ paginaActual }} de {{ totalPaginas }} · {{ totalArticulos }} artículos</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button type="button" aria-label="Página anterior" onClick="{{ anterior }}" style="{{ estiloAnterior }}">←</button>
+          <sc-for list="{{ paginas }}" as="p" hint-placeholder-count="4">
+            <button type="button" onClick="{{ p.ir }}" style="{{ p.style }}">{{ p.n }}</button>
+          </sc-for>
+          <button type="button" aria-label="Página siguiente" onClick="{{ siguiente }}" style="{{ estiloSiguiente }}">→</button>
+        </div>
+      </nav>
+    </section>
+  </div>
+
+  <footer data-screen-label="Footer" style="position:relative;z-index:1;background:#0f0b08;border-top:1px solid rgba(255,255,255,.06)">
+    <div style="max-width:1240px;margin:0 auto;padding:56px 48px 32px">
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;margin-bottom:40px">
+        <div>
+          <a href="Landing.dc.html" style="display:flex;align-items:baseline;gap:6px;font-weight:700;font-size:20px;color:#F2EDE7">
+            <span style="color:#D9494D">365</span><span>DiasDeAjedrez</span>
+            <span style="display:grid;grid-template-columns:6px 6px;grid-template-rows:6px 6px"><span style="background:#F2EDE7"></span><span style="background:transparent"></span><span style="background:transparent"></span><span style="background:#F2EDE7"></span></span>
+          </a>
+          <p style="font-size:14px;line-height:1.6;color:#B4A99D;margin:14px 0 0;max-width:36ch">Academia de ajedrez en línea. Entrenamiento estructurado y clases personalizadas para jugadores que quieren mejorar en serio.</p>
+        </div>
+        <div>
+          <h4 style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#D9494D;font-weight:600;margin:0 0 16px">Academia</h4>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:14px">
+            <a href="Landing.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Inicio</a>
+            <a href="Nosotros.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Nosotros</a>
+            <a href="Blog.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Blog</a>
+            <a href="Aviso de Privacidad.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Aviso de privacidad</a>
+            <a href="Terminos y Condiciones.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Términos y condiciones</a>
+          </div>
+        </div>
+        <div>
+          <h4 style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#D9494D;font-weight:600;margin:0 0 16px">Contacto</h4>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:#B4A99D">
+            <a href="mailto:contacto@365diasdeajedrez.com" style="color:#B4A99D" style-hover="color:#F2EDE7">contacto@365diasdeajedrez.com</a>
+            <a href="#" style="color:#B4A99D" style-hover="color:#F2EDE7">WhatsApp: +52 000 000 0000</a>
+            <span>Clases en línea · Español</span>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid rgba(255,255,255,.08);padding-top:20px;display:flex;justify-content:space-between;font-size:12.5px;color:#6b6259">
+        <span>© 2026 365DiasDeAjedrez. Todos los derechos reservados.</span>
+        <span>Entrena como un jugador serio.</span>
+      </div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const TODOS = [
+  { categoria: 'Análisis de partidas', titulo: 'La torre en c3: anatomía de una casilla que decide la partida', extracto: 'Sebastián Luna comenta su mejor partida con negras en una Caro-Kann, Ataque Panov.', meta: '3 de agosto, 2026 · 12 min', img: 'assets/thumb-metodo.png' },
+  { categoria: 'Método', titulo: 'Cómo organizar tu entrenamiento de ajedrez', extracto: 'Primero conocimiento sólido, después cálculo y competencia. Una guía para entrenar con orden.', meta: '1 de agosto, 2026 · 9 min', img: 'assets/thumb-metodo.png' },
+  { categoria: 'Táctica', titulo: 'Siete patrones que debes reconocer de inmediato', extracto: 'Clavadas, horquillas y ataques descubiertos: los motivos que deciden la mayoría de las partidas.', meta: '29 de julio, 2026 · 7 min', img: 'assets/thumb-tactica.png' },
+  { categoria: 'Aperturas', titulo: 'Deja de memorizar variantes y empieza a entender ideas', extracto: 'Estructuras de peones, planes típicos y errores frecuentes al construir un repertorio.', meta: '28 de julio, 2026 · 8 min', img: 'assets/thumb-aperturas.png' },
+  { categoria: 'Finales', titulo: 'La posición de Lucena, paso a paso', extracto: 'El método de conversión más importante del ajedrez, movimiento por movimiento.', meta: '21 de julio, 2026 · 10 min', img: 'assets/thumb-finales.png' },
+  { categoria: 'Estrategia', titulo: 'Cómo aprovechar un puesto avanzado en el medio juego', extracto: 'Dónde colocar las piezas cuando la estructura concede una casilla débil.', meta: '14 de julio, 2026 · 9 min', img: 'assets/thumb-metodo.png' },
+  { categoria: 'Táctica', titulo: 'Cálculo: cómo elegir qué variantes mirar', extracto: 'Un criterio práctico para no perder tiempo calculando líneas que no importan.', meta: '7 de julio, 2026 · 7 min', img: 'assets/thumb-tactica.png' },
+  { categoria: 'Finales', titulo: 'Rey y peón contra rey: las reglas que nunca fallan', extracto: 'Casillas críticas, la regla del cuadrado y por qué conviene calcular al revés.', meta: '30 de junio, 2026 · 8 min', img: 'assets/thumb-finales.png' },
+  { categoria: 'Aperturas', titulo: 'Construye tu repertorio en veinte minutos al día', extracto: 'Cómo elegir aperturas según tu estilo y mantenerlas vivas sin memorizar de más.', meta: '23 de junio, 2026 · 6 min', img: 'assets/thumb-aperturas.png' },
+  { categoria: 'Análisis de partidas', titulo: 'Cómo estudiar una partida de gran maestro sin motor', extracto: 'Una rutina para analizar y sacar conclusiones aplicables a tu propio juego.', meta: '16 de junio, 2026 · 11 min', img: 'assets/thumb-metodo.png' },
+  { categoria: 'Estrategia', titulo: 'Peones aislados: cuándo son fuerza y cuándo debilidad', extracto: 'El plan correcto depende de las piezas que queden en el tablero, no de la estructura.', meta: '9 de junio, 2026 · 9 min', img: 'assets/thumb-metodo.png' },
+  { categoria: 'Táctica', titulo: 'Ejercicios de visualización para jugar a ciegas', extracto: 'Cinco rutinas cortas para ver la posición sin mover las piezas.', meta: '2 de junio, 2026 · 5 min', img: 'assets/thumb-tactica.png' },
+  { categoria: 'Finales', titulo: 'Finales de alfil contra caballo: el factor decisivo', extracto: 'Peones en ambos flancos, movilidad y la lectura correcta de la posición.', meta: '26 de mayo, 2026 · 10 min', img: 'assets/thumb-finales.png' },
+  { categoria: 'Aperturas', titulo: 'Caro-Kann: la respuesta sólida contra 1.e4', extracto: 'Las ideas centrales del sistema y los planes que aparecen en cada estructura.', meta: '19 de mayo, 2026 · 12 min', img: 'assets/thumb-aperturas.png' },
+  { categoria: 'Método', titulo: 'Qué hacer después de perder una partida importante', extracto: 'El análisis honesto es la parte del entrenamiento que más rápido sube el Elo.', meta: '12 de mayo, 2026 · 6 min', img: 'assets/thumb-metodo.png' }
+];
+const POR_PAGINA = 9;
+
+const CATEGORIAS = ['Todos', 'Aperturas', 'Táctica', 'Estrategia', 'Finales', 'Análisis de partidas'];
+
+class Component extends DCLogic {
+  state = { pagina: 1, filtro: 'Todos' };
+
+  ir = (n, total) => {
+    this.setState({ pagina: Math.min(Math.max(n, 1), total) });
+  };
+
+  filtrar = (cat) => this.setState({ filtro: cat, pagina: 1 });
+
+  renderVals() {
+    const filtro = this.state.filtro || 'Todos';
+    const lista = filtro === 'Todos' ? TODOS : TODOS.filter(a => a.categoria === filtro);
+    const total = Math.max(1, Math.ceil(lista.length / POR_PAGINA));
+    const pag = Math.min(this.state.pagina, total);
+    const desde = (pag - 1) * POR_PAGINA;
+    const base = {
+      minWidth: '42px', height: '42px', padding: '0 12px', borderRadius: '11px',
+      fontFamily: "'Suisse Intl',sans-serif", fontSize: '15px', fontWeight: 600, cursor: 'pointer',
+      display: 'inline-flex', alignItems: 'center', justifyContent: 'center'
+    };
+    const flecha = (activo) => Object.assign({}, base, {
+      border: '1px solid rgba(22,17,13,.20)',
+      background: 'transparent',
+      color: activo ? '#16110d' : '#a49a8e',
+      cursor: activo ? 'pointer' : 'default'
+    });
+    return {
+      articulos: lista.slice(desde, desde + POR_PAGINA).map((a) => ({
+        categoria: a.categoria, titulo: a.titulo, extracto: a.extracto, meta: a.meta,
+        alt: 'Portada: ' + a.categoria,
+        imgStyle: {
+          display: 'block', width: '100%', aspectRatio: '16 / 9',
+          backgroundImage: "url('" + a.img + "')",
+          backgroundSize: 'cover', backgroundPosition: 'center', backgroundColor: '#DDD8D1', filter: 'grayscale(1) contrast(1.05)'
+        }
+      })),
+      filtros: CATEGORIAS.map((c, i) => {
+        const activo = c === filtro;
+        return {
+          nombre: c,
+          ir: () => this.filtrar(c),
+          style: {
+            border: 0, background: 'transparent', cursor: 'pointer',
+            fontFamily: "'Suisse Intl',sans-serif", fontSize: '14px',
+            fontWeight: 500,
+            color: activo ? '#A81E22' : '#16110d',
+            padding: '11px 20px',
+            borderRight: i < CATEGORIAS.length - 1 ? '1px solid rgba(22,17,13,.14)' : '0',
+            alignSelf: 'stretch'
+          }
+        };
+      }),
+      paginaActual: pag,
+      totalPaginas: total,
+      totalArticulos: lista.length,
+      paginas: Array.from({ length: total }, (_, i) => {
+        const n = i + 1;
+        const activo = n === pag;
+        return {
+          n: String(n),
+          ir: () => this.ir(n, total),
+          style: Object.assign({}, base, {
+            border: '1px solid ' + (activo ? '#A81E22' : 'rgba(22,17,13,.20)'),
+            background: activo ? '#A81E22' : 'transparent',
+            color: activo ? '#F2EDE7' : '#5c5348',
+            boxShadow: activo ? '0 3px 0 #711215' : 'none'
+          })
+        };
+      }),
+      anterior: () => this.ir(pag - 1, total),
+      siguiente: () => this.ir(pag + 1, total),
+      estiloAnterior: flecha(pag > 1),
+      estiloSiguiente: flecha(pag < total)
+    };
+  }
+}
+</script>
+</body>
+</html>

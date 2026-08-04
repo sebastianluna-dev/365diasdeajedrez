@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+  @font-face{font-family:'Gramatika';src:url('assets/fonts/gramatikabold.woff') format('woff');font-weight:700;font-display:swap}
+  @font-face{font-family:'Suisse Intl';src:url('assets/fonts/suisseintl-regular.woff2') format('woff2');font-weight:400;font-display:swap}
+  @font-face{font-family:'Suisse Intl';src:url('assets/fonts/suisseintl-medium.woff2') format('woff2');font-weight:500;font-display:swap}
+  @font-face{font-family:'Suisse Intl';src:url('assets/fonts/suisseintl-bold.woff2') format('woff2');font-weight:700;font-display:swap}
+  body { margin:0; background:#16110d; }
+  a{color:#FF9143;text-decoration:none}
+  a:hover{color:#F0A05E}
+  [data-drop]{position:relative;display:inline-flex;align-items:center}
+  [data-drop] > [data-drop-menu]{display:none}
+  [data-drop]:hover > [data-drop-menu]{display:block}
+  [data-drop]:hover > span:first-child{color:#F2EDE7}
+  @keyframes rj-tick { from { opacity:.55 } to { opacity:1 } }
+</style>
+</helmet>
+
+<div style="background:radial-gradient(ellipse 900px 600px at 50% 20%, rgba(255,145,67,.14) 0%, rgba(22,17,13,0) 70%), #16110d">
+<div style="position:relative;z-index:5;max-width:1240px;margin:0 auto;padding:32px 48px 0;font-family:'Suisse Intl',system-ui,sans-serif;display:flex;align-items:center;gap:16px">
+  <div style="flex:1;display:flex;align-items:center;justify-content:space-between;gap:24px;background:rgba(242,237,231,.06);border:1px solid rgba(242,237,231,.12);border-radius:999px;padding:12px 14px 12px 26px">
+    <a href="Landing.dc.html" style="display:flex;align-items:baseline;gap:6px;font-weight:700;font-size:22px;letter-spacing:.02em;color:#F2EDE7;text-decoration:none;text-shadow:0 0 18px rgba(255,145,67,.55)">
+      <span style="color:#FF9143">365</span><span>DiasDeAjedrez</span>
+      <span style="display:grid;grid-template-columns:7px 7px;grid-template-rows:7px 7px;transform:translateY(-1px)"><span style="background:#F2EDE7"></span><span style="background:transparent"></span><span style="background:transparent"></span><span style="background:#F2EDE7"></span></span>
+    </a>
+    <nav style="display:flex;gap:30px;font-size:16px;font-weight:500">
+      <a href="Landing.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Inicio</a>
+      <a href="Blog.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Blog</a>
+      <span data-drop="herramientas">
+        <span style="color:#B4A99D;cursor:default">Herramientas</span>
+        <span data-drop-menu style="position:absolute;top:100%;left:-14px;padding-top:14px;min-width:190px;z-index:30;text-align:left">
+          <span style="display:block;background:#1c1611;border:1px solid rgba(242,237,231,.14);border-radius:14px;padding:8px;box-shadow:0 18px 44px rgba(0,0,0,.55)">
+            <a href="Reloj de Ajedrez.dc.html" style="display:block;padding:11px 14px;border-radius:10px;color:#F2EDE7;font-size:15px;font-weight:500" style-hover="background:rgba(242,237,231,.08);color:#FF9143">Reloj</a>
+          </span>
+        </span>
+      </span>
+      <a href="Nosotros.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Nosotros</a>
+    </nav>
+  </div>
+  <a href="Landing.dc.html#planes" style="flex:none;display:inline-flex;align-items:center;color:#16110d;font-weight:700;font-size:15px;padding:18px 28px;border-radius:14px;box-shadow:0 4px 0 #B8611F;background-color:#FF9143;text-decoration:none" style-hover="background:#F0A05E;color:#16110d">Agenda una llamada</a>
+</div>
+
+<div style="min-height:calc(100vh - 120px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;padding:56px 24px;font-family:'Suisse Intl',system-ui,sans-serif;color:#F2EDE7;background:radial-gradient(ellipse 900px 600px at 50% 20%, rgba(255,145,67,.14) 0%, rgba(22,17,13,0) 70%), #16110d">
+
+  <div style="text-align:center">
+    <h1 style="font-family:'Gramatika',sans-serif;font-size:30px;font-weight:700;margin:0 0 8px;letter-spacing:-.01em">Reloj de ajedrez</h1>
+    <p style="font-size:15px;color:#B4A99D;margin:0">Pulsa tu botón al terminar tu jugada — o presiona la barra espaciadora.</p>
+  </div>
+
+  <div style="position:relative;display:flex;align-items:flex-start;gap:0;width:100%;max-width:560px">
+    <div style="position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;padding:0 48px;z-index:2">
+      <button type="button" onClick="{{ pressWhite }}" aria-label="Botón blancas" style="{{ knobWhiteStyle }}"></button>
+      <button type="button" onClick="{{ pressBlack }}" aria-label="Botón negras" style="{{ knobBlackStyle }}"></button>
+    </div>
+
+    <div style="margin-top:26px;width:100%;justify-content:center;display:flex;gap:14px;background:linear-gradient(180deg,#E4C79B 0%,#D6B183 46%,#C79C68 100%);border:1px solid #A87F4E;border-radius:10px;padding:30px 18px 34px;box-shadow:0 26px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.55), inset 0 -2px 0 rgba(120,80,40,.25)">
+
+      <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
+        <button type="button" onClick="{{ pressWhite }}" style="{{ dialWhiteStyle }}">
+          <span style="{{ faceStyle }}">
+            <sc-for list="{{ numeros }}" as="n" hint-placeholder-count="12">
+              <span style="{{ n.style }}">{{ n.label }}</span>
+            </sc-for>
+            <span style="{{ flagWhiteStyle }}">◤</span>
+            <span style="{{ handWhiteHour }}"></span>
+            <span style="{{ handWhiteMin }}"></span>
+            <span style="{{ handWhiteSec }}"></span>
+            <span style="position:absolute;top:50%;left:50%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;background:#1a1a1a;border:1px solid #000"></span>
+          </span>
+        </button>
+        <div style="{{ readoutWhiteStyle }}">{{ tiempoBlancas }}</div>
+        <span style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#5a4632">Blancas</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
+        <button type="button" onClick="{{ pressBlack }}" style="{{ dialBlackStyle }}">
+          <span style="{{ faceStyle }}">
+            <sc-for list="{{ numeros }}" as="n" hint-placeholder-count="12">
+              <span style="{{ n.style }}">{{ n.label }}</span>
+            </sc-for>
+            <span style="{{ flagBlackStyle }}">◤</span>
+            <span style="{{ handBlackHour }}"></span>
+            <span style="{{ handBlackMin }}"></span>
+            <span style="{{ handBlackSec }}"></span>
+            <span style="position:absolute;top:50%;left:50%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;background:#1a1a1a;border:1px solid #000"></span>
+          </span>
+        </button>
+        <div style="{{ readoutBlackStyle }}">{{ tiempoNegras }}</div>
+        <span style="font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#5a4632">Negras</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px">
+    <sc-for list="{{ controles }}" as="c" hint-placeholder-count="5">
+      <button type="button" onClick="{{ c.select }}" style="{{ c.style }}">{{ c.label }}</button>
+    </sc-for>
+  </div>
+
+  <div style="display:flex;gap:14px">
+    <button type="button" onClick="{{ toggle }}" style="display:inline-flex;align-items:center;gap:10px;background:#FF9143;color:#16110d;font-weight:700;font-size:16px;padding:15px 30px;border:none;border-radius:14px;box-shadow:0 4px 0 #B8611F;cursor:pointer;font-family:inherit">{{ etiquetaPlay }}</button>
+    <button type="button" onClick="{{ reset }}" style="display:inline-flex;align-items:center;gap:10px;background:transparent;color:#F2EDE7;font-weight:700;font-size:16px;padding:15px 28px;border:1px solid rgba(242,237,231,.4);border-radius:14px;cursor:pointer;font-family:inherit">Reiniciar</button>
+  </div>
+
+  <p style="font-size:14px;color:#8c8378;margin:0">{{ estado }}</p>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:900,&quot;height&quot;:760}}">
+class Component extends DCLogic {
+  state = { base: 300, inc: 3, w: 300, b: 300, activo: null, corriendo: false, caido: null };
+
+  componentDidMount() {
+    this.last = Date.now();
+    this.timer = setInterval(() => this.tick(), 100);
+    this.onKey = (e) => {
+      if (e.code === 'Space') { e.preventDefault(); this.press(this.state.activo === 'w' ? 'w' : 'b'); }
+    };
+    window.addEventListener('keydown', this.onKey);
+  }
+  componentWillUnmount() {
+    clearInterval(this.timer);
+    window.removeEventListener('keydown', this.onKey);
+  }
+  tick() {
+    const now = Date.now();
+    const dt = (now - this.last) / 1000;
+    this.last = now;
+    const s = this.state;
+    if (!s.corriendo || !s.activo || s.caido) return;
+    const key = s.activo;
+    const restante = Math.max(0, s[key] - dt);
+    const patch = {};
+    patch[key] = restante;
+    if (restante <= 0) { patch.caido = key; patch.corriendo = false; }
+    this.setState(patch);
+  }
+  press(lado) {
+    const s = this.state;
+    if (s.caido) return;
+    const patch = { activo: lado === 'w' ? 'b' : 'w', corriendo: true };
+    if (s.corriendo && s.activo === lado) patch[lado] = s[lado] + s.inc;
+    this.setState(patch);
+  }
+  fmt(t) {
+    const total = Math.ceil(t);
+    const m = Math.floor(total / 60);
+    const seg = total % 60;
+    if (t < 20 && t > 0) return m + ':' + String(seg).padStart(2, '0') + '.' + String(Math.floor((t % 1) * 10));
+    return m + ':' + String(seg).padStart(2, '0');
+  }
+  hand(t, tipo, activo) {
+    const seg = t % 60;
+    const min = (t / 60) % 60;
+    const hor = (t / 3600) % 12;
+    const cfg = {
+      hour: { ang: hor * 30, len: '26%', w: '6px', color: '#111', cap: '3px' },
+      min: { ang: min * 6, len: '38%', w: '4.5px', color: '#111', cap: '2px' },
+      sec: { ang: seg * 6, len: '40%', w: '1.6px', color: '#c0392b', cap: '1px' }
+    }[tipo];
+    return {
+      position: 'absolute', left: '50%', bottom: '50%', width: cfg.w, height: cfg.len,
+      marginLeft: '-' + (parseFloat(cfg.w) / 2) + 'px',
+      background: cfg.color, borderRadius: cfg.cap,
+      transformOrigin: '50% 100%', transform: 'rotate(' + cfg.ang + 'deg)',
+      opacity: activo ? 1 : .82,
+      transition: tipo === 'sec' ? 'none' : 'transform .2s linear'
+    };
+  }
+  dial(activo, caido) {
+    return {
+      width: '210px', height: '210px', borderRadius: '50%', padding: '13px', border: 'none', cursor: 'pointer',
+      background: caido ? 'linear-gradient(150deg,#9c9c9c 0%,#5f5f5f 55%,#b3b3b3 100%)' : 'linear-gradient(150deg,#b9b9b9 0%,#7d7d7d 42%, #cfcfcf 62%, #6f6f6f 100%)',
+      boxShadow: activo ? '0 0 0 3px rgba(255,145,67,.55), inset 0 2px 6px rgba(0,0,0,.45)' : 'inset 0 2px 6px rgba(0,0,0,.45)',
+      display: 'block', transition: 'box-shadow .2s'
+    };
+  }
+  knob(activo) {
+    return {
+      width: '46px', height: '26px', borderRadius: '14px 14px 4px 4px', cursor: 'pointer',
+      border: '1px solid #8d8d8d',
+      background: activo ? 'linear-gradient(180deg,#8f8f8f 0%,#c2c2c2 100%)' : 'linear-gradient(180deg,#e8e8e8 0%,#a9a9a9 100%)',
+      transform: activo ? 'translateY(7px)' : 'none',
+      transition: 'transform .12s, background .12s',
+      boxShadow: '0 3px 6px rgba(0,0,0,.5)'
+    };
+  }
+  readout(caido, activo) {
+    return {
+      fontFamily: "'Suisse Intl',ui-monospace,monospace", fontVariantNumeric: 'tabular-nums',
+      fontSize: '26px', fontWeight: 700, letterSpacing: '.02em',
+      color: caido ? '#C0392B' : (activo ? '#7A4A16' : '#3A2C1B')
+    };
+  }
+  flag(t, caido) {
+    const alerta = caido || t <= 60;
+    return {
+      position: 'absolute', top: '24%', left: '50%', marginLeft: '-8px', fontSize: '15px',
+      color: '#c0392b', transformOrigin: '50% 100%',
+      transform: caido ? 'rotate(96deg) translateY(2px)' : (alerta ? 'rotate(-24deg)' : 'rotate(0deg)'),
+      opacity: alerta ? 1 : .5, transition: 'transform .4s ease'
+    };
+  }
+  renderVals() {
+    const s = this.state;
+    const numeros = [];
+    for (let i = 1; i <= 12; i++) {
+      const a = (i * 30 - 90) * Math.PI / 180;
+      numeros.push({
+        label: String(i),
+        style: {
+          position: 'absolute', left: '50%', top: '50%', fontSize: '15px', fontWeight: 700, color: '#111',
+          transform: 'translate(-50%,-50%) translate(' + (Math.cos(a) * 68) + 'px,' + (Math.sin(a) * 68) + 'px)'
+        }
+      });
+    }
+    const opciones = [
+      { label: '3 + 2', base: 180, inc: 2 },
+      { label: '5 + 0', base: 300, inc: 0 },
+      { label: '10 + 0', base: 600, inc: 0 },
+      { label: '15 + 10', base: 900, inc: 10 },
+      { label: '30 + 0', base: 1800, inc: 0 }
+    ];
+    const controles = opciones.map(o => {
+      const on = o.base === s.base && o.inc === s.inc;
+      return {
+        label: o.label,
+        select: () => this.setState({ base: o.base, inc: o.inc, w: o.base, b: o.base, activo: null, corriendo: false, caido: null }),
+        style: {
+          background: on ? '#F2EDE7' : 'transparent', color: on ? '#16110d' : '#B4A99D',
+          border: on ? '1px solid #F2EDE7' : '1px solid rgba(242,237,231,.24)',
+          borderRadius: '999px', padding: '9px 18px', fontSize: '14px', fontWeight: 700,
+          cursor: 'pointer', fontFamily: 'inherit'
+        }
+      };
+    });
+    const aw = s.activo === 'w' && s.corriendo;
+    const ab = s.activo === 'b' && s.corriendo;
+    const estado = s.caido
+      ? 'Se acabó el tiempo de ' + (s.caido === 'w' ? 'las blancas' : 'las negras') + '.'
+      : (!s.activo ? 'Pulsa un botón para iniciar la partida.' : (s.corriendo ? 'Corre el reloj de ' + (s.activo === 'w' ? 'las blancas' : 'las negras') + '.' : 'Pausado.'));
+    return {
+      numeros: numeros,
+      controles: controles,
+      tiempoBlancas: this.fmt(s.w),
+      tiempoNegras: this.fmt(s.b),
+      faceStyle: { position: 'relative', display: 'block', width: '100%', height: '100%', borderRadius: '50%', background: 'radial-gradient(circle at 40% 32%, #ffffff 0%, #f3f1ea 70%, #ddd8cc 100%)', boxShadow: 'inset 0 3px 10px rgba(0,0,0,.28)' },
+      dialWhiteStyle: this.dial(aw, s.caido === 'w'),
+      dialBlackStyle: this.dial(ab, s.caido === 'b'),
+      knobWhiteStyle: this.knob(!aw && s.corriendo && s.activo === 'b'),
+      knobBlackStyle: this.knob(!ab && s.corriendo && s.activo === 'w'),
+      handWhiteHour: this.hand(s.w, 'hour', aw),
+      handWhiteMin: this.hand(s.w, 'min', aw),
+      handWhiteSec: this.hand(s.w, 'sec', aw),
+      handBlackHour: this.hand(s.b, 'hour', ab),
+      handBlackMin: this.hand(s.b, 'min', ab),
+      handBlackSec: this.hand(s.b, 'sec', ab),
+      flagWhiteStyle: this.flag(s.w, s.caido === 'w'),
+      flagBlackStyle: this.flag(s.b, s.caido === 'b'),
+      readoutWhiteStyle: this.readout(s.caido === 'w', aw),
+      readoutBlackStyle: this.readout(s.caido === 'b', ab),
+      pressWhite: () => this.press('w'),
+      pressBlack: () => this.press('b'),
+      toggle: () => {
+        if (this.state.caido) return;
+        if (!this.state.activo) this.setState({ activo: 'w', corriendo: true });
+        else this.setState({ corriendo: !this.state.corriendo });
+      },
+      reset: () => this.setState({ w: s.base, b: s.base, activo: null, corriendo: false, caido: null }),
+      etiquetaPlay: s.corriendo ? 'Pausar' : (s.activo ? 'Continuar' : 'Iniciar'),
+      estado: estado
+    };
+  }
+}
+</script>
+</body>
+</html>
