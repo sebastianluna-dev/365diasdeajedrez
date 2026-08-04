@@ -1,4 +1,3 @@
-import "./landing.css";
 import { HeroSection } from "../components/sections/homepage/hero/HeroSection";
 import { ProgramSection } from "../components/sections/homepage/program/ProgramSection";
 import { MentorsSection } from "../components/sections/homepage/mentors/MentorsSection";
