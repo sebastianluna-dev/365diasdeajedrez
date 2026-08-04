@@ -137,7 +137,7 @@
   justify-content: center;
   gap: 10px;
   padding: 16px 24px;
-  border-radius: 999px;
+  border-radius: 16px;
   font-weight: 700;
   font-size: 15px;
 }
@@ -197,19 +197,29 @@
   width: 440px;
   height: 440px;
   border: 1.5px solid rgba(242, 237, 231, 0.32);
+  animation: orbit 32s linear infinite;
 }
 
 .orbit2 {
   width: 414px;
   height: 414px;
   border: 1px solid rgba(242, 237, 231, 0.16);
+  animation: orbit 32s linear infinite reverse;
 }
 
 .orbit3 {
-  width: 440px;
-  height: 440px;
+  width: 322px;
+  height: 322px;
   animation: orbit 26s linear infinite;
-  border: 1px dashed rgba(255, 145, 67, 0.35);
+}
+
+.orbit4 {
+  width: 322px;
+  height: 322px;
+  animation: orbit 26s linear infinite;
+  animation-delay: 5s;
+  position: relative;
+  top: 300px;
 }
 
 @keyframes orbit {
@@ -221,13 +231,14 @@
   }
 }
 
+
+
 .heroCard {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
 }
 
 .heroCardInner {

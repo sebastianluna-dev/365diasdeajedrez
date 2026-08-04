@@ -3,8 +3,6 @@ import Image from "next/image";
 import { SiteHeader } from "../../../layout/SiteHeader";
 import "./hero.css";
 
-const badges = ["Cálculo", "Estrategia", "Aperturas", "Finales"];
-
 export function HeroSection() {
   return (
     <div className="landingWrap">
@@ -16,7 +14,6 @@ export function HeroSection() {
 
         <div className="heroGrid">
           <div className="heroCopy">
-            <div className="sectionEyebrow">Método 365</div>
             <h1>El verdadero progreso en ajedrez se gana entrenando.</h1>
             <p>
               Prueba el Método 365: cinco módulos progresivos que te llevan de
@@ -31,30 +28,42 @@ export function HeroSection() {
                 Conoce el método
               </Link>
             </div>
-            <div className="badgesRow">
-              {badges.map((badge) => (
-                <span key={badge} className="badgePill">
-                  {badge}
-                </span>
-              ))}
-            </div>
           </div>
 
           <div className="heroVisual">
-            <div className="orbit1" />
-            <div className="orbit2" />
-            <div className="orbit3" />
-            <div className="heroCard">
-              <div className="heroCardInner">
-                <Image
-                  src="/design-import/assets/hero-jugador.png"
-                  alt="Jugador entrenando ajedrez"
-                  width={520}
-                  height={640}
-                  priority
-                />
+            <div>
+              <div className="grid">
+                <div
+                  className="heroCard p-14"
+                  style={{ gridArea: "1 / 1 / 2 / 2" }}
+                >
+                  <div className="heroCardInner">
+                    <Image
+                      src="/design-import/assets/hero-jugador.png"
+                      alt="Jugador entrenando ajedrez"
+                      width={520}
+                      height={640}
+                      priority
+                      className="rounded-full w-full h-auto"
+                    />
+                  </div>
+                </div>
+                <div
+                  className="orbit1 relative"
+                  style={{ gridArea: "1 / 1 / 2 / 2" }}
+                >
+                  <div className="w-2 h-2 bg-primary rotate-0 absolute rounded-full -top-[5px] right-1/2"></div>
+                  <div className="w-1.5 h-1.5 bg-secondary rotate-0 absolute rounded-full top-1/2 -right-[4px]"></div>
+                  <div className="w-1.5 h-1.5 bg-white rotate-0 absolute rounded-full right-1/2 -bottom-[5px]"></div>
+                </div>
+
+                <div className="orbit2" style={{ gridArea: "1 / 1 / 2 / 2" }}>
+                  <div className="w-2 h-2 bg-white rotate-0 absolute rounded-full -top-[5px] right-1/2"></div>
+                  <div className="w-1.5 h-1.5 bg-white rotate-0 absolute rounded-full -bottom-[5px] right-1/2"></div>
+                </div>
               </div>
             </div>
+
             <div className="floatBadge one">Visualización</div>
             <div className="floatBadge two">Medio juego</div>
             <div className="floatBadge three">Finales</div>
