@@ -1,0 +1,108 @@
+.plansWrap {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 56px;
+  flex-wrap: wrap;
+}
+
+.planCard {
+  position: relative;
+  width: 380px;
+  border-radius: 22px;
+  padding: 34px 30px 30px;
+  background: rgba(22, 17, 13, 0.035);
+  border: 1px solid rgba(22, 17, 13, 0.1);
+  color: #16110d;
+  display: flex;
+  flex-direction: column;
+}
+
+.planCard.featured {
+  width: 420px;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 145, 67, 0.2) 0%,
+    rgba(255, 145, 67, 0.04) 100%
+  );
+  border: 1px solid rgba(255, 145, 67, 0.55);
+}
+
+.planCard h3 {
+  font-family: var(--font-gramatika), sans-serif;
+  font-size: 25px;
+  font-weight: 700;
+  margin: 0 0 18px;
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.price {
+  font-family: var(--font-gramatika), sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+}
+
+.planCard p {
+  font-size: 16.5px;
+  line-height: 1.55;
+  color: #5c5348;
+  margin: 0 0 22px;
+}
+
+.planList {
+  margin: 0 0 26px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+
+.planList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #3f362f;
+}
+
+.planList li span {
+  color: #ff9143;
+  font-weight: 700;
+}
+
+.planButton {
+  display: block;
+  text-align: center;
+  background: #16110d;
+  color: #f2ede7;
+  font-weight: 700;
+  font-size: 17px;
+  padding: 16px 0;
+  border-radius: 14px;
+  border: 1px solid #4a4038;
+  box-shadow: 0 4px 0 #000;
+}
+
+.planButton.alt {
+  background: #ff9143;
+  color: #16110d;
+  border-color: #b8611f;
+  box-shadow: 0 4px 0 #b8611f;
+}
+
+@media (max-width: 720px) {
+  .plansWrap {
+    gap: 24px;
+  }
+  .planCard,
+  .planCard.featured {
+    width: 100%;
+  }
+}

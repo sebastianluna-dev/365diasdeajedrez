@@ -1,0 +1,68 @@
+.mentorGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.mentorCard {
+  background: #1c1611;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.mentorImage {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #0f0b08;
+}
+
+.mentorImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.mentorBody {
+  padding: 20px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+
+.mentorBody h3 {
+  font-family: var(--font-gramatika), sans-serif;
+  font-size: 22px;
+  margin: 0;
+}
+
+.mentorBody p {
+  margin: 0;
+  color: #b4a99d;
+  line-height: 1.6;
+}
+
+.mentorMeta {
+  margin-top: auto;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: #ff9143;
+}
+
+@media (max-width: 1024px) {
+  .mentorGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .mentorGrid {
+    grid-template-columns: 1fr;
+  }
+}

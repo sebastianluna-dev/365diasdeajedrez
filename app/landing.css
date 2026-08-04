@@ -263,8 +263,8 @@ img {
   height: 100%;
   border-radius: 28px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 120px rgba(0, 0, 0, 0.35);
+  border: none;
+  box-shadow: none;
 }
 
 .heroCardInner img {
