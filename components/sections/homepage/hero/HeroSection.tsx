@@ -19,9 +19,8 @@ export function HeroSection() {
           <div className="heroCopy">
             <h1>El verdadero progreso en ajedrez se gana entrenando.</h1>
             <p>
-              Prueba el Método 365: cinco módulos progresivos que te llevan de
-              los fundamentos a los finales, con un plan hecho a tu nivel y a tu
-              ritmo.
+              Prueba el Método 365: cinco módulos progresivos que te llevan de los fundamentos a los finales, con un
+              plan hecho a tu nivel y a tu ritmo.
             </p>
             <div className="heroActions">
               <Link href="/#planes" className="primaryBtn">
@@ -36,10 +35,7 @@ export function HeroSection() {
           <div className="heroVisual">
             <div>
               <div className="grid">
-                <div
-                  className="heroCard p-14"
-                  style={{ gridArea: "1 / 1 / 2 / 2" }}
-                >
+                <div className="heroCard p-14" style={{ gridArea: "1 / 1 / 2 / 2" }}>
                   <div className="heroCardInner">
                     <Image
                       src="/design-import/assets/hero-jugador.png"
@@ -55,9 +51,14 @@ export function HeroSection() {
               </div>
             </div>
 
-            <FloatBadge text="Cálculo" piece={ChessPieceUnicode.BlackKnight} />
-            <div className="floatBadge two">Medio juego</div>
-            <div className="floatBadge three">Finales</div>
+            <div className="flex flex-col items-start w-60 ml-auto h-full justify-evenly py-8 relative left-8">
+              <FloatBadge text="Cálculo" piece={ChessPieceUnicode.BlackKnight} className="relative left-12" />
+              <FloatBadge text="Visualizacion" piece={ChessPieceUnicode.BlackQueen} className="relative left-30" />
+              <FloatBadge text="Estrategia" piece={ChessPieceUnicode.BlackBishop} className="relative left-38" />
+              <FloatBadge text="Finales" piece={ChessPieceUnicode.BlackKing} className="relative left-38" />
+              <FloatBadge text="Aperturas" piece={ChessPieceUnicode.BlackPawn} className="relative left-30" />
+              <FloatBadge text="Partidas" piece={ChessPieceUnicode.BlackRook} className="relative left-12" />
+            </div>
           </div>
         </div>
       </section>
