@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { gramatika, suisseIntl } from "@/app/fonts";
+import { chessGlyph, gramatika, suisseIntl } from "@/app/fonts";
 
 export const metadata: Metadata = {
   title: "365 Días de Ajedrez | Academia de ajedrez",
@@ -20,7 +20,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="es"
-      className={`${gramatika.variable} ${suisseIntl.variable} h-full antialiased`}
+      className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-[#16110d] text-[#f2ede7]">{children}</body>
     </html>

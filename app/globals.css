@@ -13,6 +13,7 @@
   --font-sans: var(--font-suisse);
   --font-serif: var(--font-gramatika);
   --font-mono: var(--font-suisse);
+  --font-glyph: var(--font-chessglyph);
 }
 
 html {

@@ -33,3 +33,15 @@ export const suisseIntl = localFont({
   variable: "--font-suisse",
   display: "swap",
 });
+
+export const chessGlyph = localFont({
+  src: [
+    {
+      path: "../public/design-import/assets/fonts/chessglyph.woff2",
+      weight: "400",
+      style: "normal",
+    },
+  ],
+  variable: "--font-chessglyph",
+  display: "swap",
+});
