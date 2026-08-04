@@ -11,24 +11,25 @@ const links = [
 
 export function SiteHeader() {
   return (
-    <nav className="navShell">
-      <Link href="/" className="brand">
-        <span className="brandAccent">365</span>
-        <span>DiasDeAjedrez</span>
-      </Link>
+    <>
+      <nav className="navShell">
+        <Link href="/" className="brand">
+          <span className="brandAccent">365</span>
+          <span>DiasDeAjedrez</span>
+        </Link>
 
-      <div className="navLinks">
-        {links.map((link) => (
-          <Link key={link.href} href={link.href}>
-            {link.label}
-          </Link>
-        ))}
-      </div>
-
+        <div className="navLinks">
+          {links.map((link) => (
+            <Link key={link.href} href={link.href}>
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      </nav>
       <Link href="/#planes" className="headerButton">
         Agenda tu clase
         <ChevronRight size={16} />
       </Link>
-    </nav>
+    </>
   );
 }
