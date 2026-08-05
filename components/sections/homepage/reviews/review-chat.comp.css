@@ -1,0 +1,109 @@
+.reviews__chat {
+  grid-area: 1 / 1;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 40px 48px;
+  box-shadow: 0 30px 60px rgba(22, 17, 13, 0.14);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.5s ease,
+    opacity 0.5s ease;
+
+  &.reviews__chat_position_center {
+    transform: translateX(0%);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  &.reviews__chat_position_left {
+    transform: translateX(-100%);
+  }
+
+  &.reviews__chat_position_right {
+    transform: translateX(100%);
+  }
+
+  & .reviews__chat-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  & .reviews__chat-avatar {
+    flex: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-gramatika), sans-serif;
+    font-weight: 800;
+    color: #16110d;
+  }
+
+  & .reviews__chat-avatar_color_teal {
+    background: #6fe3d6;
+  }
+
+  & .reviews__chat-avatar_color_orange {
+    background: #ff9143;
+  }
+
+  & .reviews__chat-avatar_color_gold {
+    background: #ddab3d;
+  }
+
+  & .reviews__chat-name {
+    font-size: 19px;
+    font-weight: 700;
+    color: #16110d;
+  }
+
+  & .reviews__chat-time {
+    font-size: 15px;
+    color: #9c968d;
+  }
+
+  & .reviews__chat-message {
+    position: relative;
+    width: fit-content;
+    max-width: 100%;
+    box-sizing: border-box;
+    background: #f6f6f6;
+    border-radius: 16px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+  }
+
+  & .reviews__chat-message_reacted {
+    margin-bottom: 24px;
+  }
+
+  & .reviews__chat-body p {
+    font-size: 17px;
+    line-height: 1.5;
+    color: #16110d;
+    margin: 0;
+  }
+
+  & .reviews__chat-reaction {
+    position: absolute;
+    left: 12px;
+    bottom: -14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: #f26c00;
+    border-radius: 999px;
+    padding: 7px 12px;
+    box-shadow: 0 2px 6px rgba(22, 17, 13, 0.12);
+  }
+
+  @media (max-width: 560px) {
+    padding: 32px 24px;
+  }
+}

@@ -1,4 +1,6 @@
 .reviews {
+  overflow: hidden;
+
   & .reviews__head {
     display: flex;
     align-items: baseline;
@@ -22,104 +24,39 @@
   & .reviews__showcase {
     display: flex;
     align-items: center;
+    max-width: 64rem;
+    margin: 0 auto;
   }
 
-  & .reviews__stat {
+  & .reviews__stat-stack {
     position: relative;
     z-index: 1;
-    flex: 0 0 460px;
+    flex: 0 0 556px;
     box-sizing: border-box;
-    background: #f8d7b4;
-    border-radius: 28px;
-    padding: 40px;
+    display: grid;
+    padding: 48px;
+    margin: -48px;
+    pointer-events: none;
   }
 
-  & .reviews__stat-label {
-    display: block;
-    font-size: 16px;
-    color: #16110d;
-    margin-bottom: 4px;
-  }
-
-  & .reviews__stat-value {
-    display: block;
-    font-family: var(--font-gramatika), sans-serif;
-    font-size: 56px;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.01em;
-    margin-bottom: 18px;
-    color: #16110d;
-  }
-
-  & .reviews__stat-text {
-    font-size: 16px;
-    line-height: 1.5;
-    color: #16110d;
-    margin: 0;
-    max-width: 26ch;
-  }
-
-  & .reviews__chat {
+  & .reviews__chat-stack {
     position: relative;
     z-index: 2;
     flex: 1;
     min-width: 0;
-    margin-left: -75px;
-    background: #ffffff;
-    border-radius: 28px;
-    padding: 40px 48px;
-    box-shadow: 0 30px 60px rgba(22, 17, 13, 0.14);
-  }
-
-  & .reviews__chat-header {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 22px;
-  }
-
-  & .reviews__chat-avatar {
-    flex: none;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: #6fe3d6;
+    box-sizing: border-box;
     display: grid;
-    place-items: center;
-    font-family: var(--font-gramatika), sans-serif;
-    font-weight: 800;
-    color: #16110d;
+    padding: 72px;
+    margin: -48px -48px -48px -123px;
+    pointer-events: none;
   }
 
-  & .reviews__chat-name {
-    font-size: 19px;
-    font-weight: 700;
-    color: #16110d;
-  }
-
-  & .reviews__chat-time {
-    font-size: 15px;
-    color: #9c968d;
-  }
-
-  & .reviews__chat-body p {
-    font-size: 17px;
-    line-height: 1.5;
-    color: #16110d;
-    margin: 0 0 18px;
-  }
-
-  & .reviews__chat-reaction {
-    display: inline-flex;
+  & .reviews__dots {
+    display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 6px;
-    background: #eaecfb;
-    color: #16110d;
-    border-radius: 999px;
-    padding: 6px 14px;
-    font-size: 14px;
-    margin: 0 0 18px;
+    gap: 8px;
+    margin-top: 32px;
   }
 
   @media (max-width: 900px) {
@@ -128,29 +65,25 @@
       align-items: stretch;
     }
 
-    & .reviews__stat {
+    & .reviews__stat-stack {
       flex-basis: auto;
-      margin-bottom: -60px;
-      padding-bottom: 80px;
+      margin: -48px -48px -108px -48px;
     }
 
-    & .reviews__chat {
-      margin-left: 24px;
+    & .reviews__chat-stack {
+      margin: -48px -48px -48px -24px;
     }
   }
 
   @media (max-width: 560px) {
-    & .reviews__stat {
-      padding: 32px 24px 72px;
+    & .reviews__stat-stack {
+      padding: 24px;
+      margin: -24px -24px -84px -24px;
     }
 
-    & .reviews__chat {
-      margin-left: 16px;
-      padding: 32px 24px;
-    }
-
-    & .reviews__stat-value {
-      font-size: 44px;
+    & .reviews__chat-stack {
+      padding: 24px;
+      margin: -24px -24px -24px -8px;
     }
   }
 }

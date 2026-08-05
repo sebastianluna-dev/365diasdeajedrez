@@ -1,0 +1,64 @@
+.reviews__stat {
+  grid-area: 1 / 1;
+  box-sizing: border-box;
+  background: #f8d7b4;
+  border-radius: 28px;
+  padding: 40px;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.5s ease,
+    opacity 0.5s ease;
+
+  &.reviews__stat_position_center {
+    transform: translateX(0%);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  &.reviews__stat_position_left {
+    transform: translateX(-100%);
+  }
+
+  &.reviews__stat_position_right {
+    transform: translateX(100%);
+  }
+
+  & .reviews__stat-label {
+    display: block;
+    font-size: 16px;
+    color: #16110d;
+    margin-bottom: 4px;
+  }
+
+  & .reviews__stat-value {
+    display: block;
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 56px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    margin-bottom: 18px;
+    color: #16110d;
+  }
+
+  & .reviews__stat-text {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #16110d;
+    margin: 0;
+    max-width: 26ch;
+  }
+
+  @media (max-width: 900px) {
+    padding-bottom: 80px;
+  }
+
+  @media (max-width: 560px) {
+    padding: 32px 24px 72px;
+
+    & .reviews__stat-value {
+      font-size: 44px;
+    }
+  }
+}
