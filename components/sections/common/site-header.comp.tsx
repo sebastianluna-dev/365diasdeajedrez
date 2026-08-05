@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { Logo } from "./logo.comp";
 import "./site-header.comp.css";
 
 const links = [
@@ -16,10 +17,7 @@ export function SiteHeader() {
       <div className="site-header-nav__inner">
         <div className="site-header-bar">
           <nav className="site-header">
-            <Link href="/" className="brand">
-              <span className="brand__accent">365</span>
-              <span>DiasDeAjedrez</span>
-            </Link>
+            <Logo theme="dark" accent="orange" />
 
             <div className="site-header__links">
               {links.map((link) => (

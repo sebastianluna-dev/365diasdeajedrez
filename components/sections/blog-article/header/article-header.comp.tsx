@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BlogBrand } from "@/components/sections/blog/blog-brand/blog-brand.comp";
+import { Logo } from "@/components/sections/common/logo.comp";
 import "./article-header.comp.css";
 
 interface ArticleHeaderProps {
@@ -18,7 +18,7 @@ export function ArticleHeader({ category, date }: ArticleHeaderProps) {
   return (
     <header className="article-header">
       <div className="article-header__bar">
-        <BlogBrand />
+        <Logo theme="light" accent="red" />
 
         <div className="article-header__center">
           <Link href="/blog" className="article-header__title">

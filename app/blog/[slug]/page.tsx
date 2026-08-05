@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ArticleHeader } from "@/components/sections/blog-article/header/article-header.comp";
 import { ArticleContent } from "@/components/sections/blog-article/content/article-content.comp";
 import { RelatedArticles } from "@/components/sections/blog-article/related/related-articles.section";
-import { BlogFooter } from "@/components/sections/blog/footer/blog-footer.comp";
+import { Footer } from "@/components/sections/common/footer.comp";
 import { articles } from "@/data/articles.data";
 import "../blog.css";
 import "./article-page.css";
@@ -42,7 +42,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <ArticleHeader category={article.category} date={date} />
       <ArticleContent article={article} />
       <RelatedArticles articles={relatedArticles} />
-      <BlogFooter />
+      <Footer accent="red" />
     </div>
   );
 }

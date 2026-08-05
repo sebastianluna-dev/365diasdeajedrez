@@ -3,7 +3,7 @@ import { Masthead } from "@/components/sections/blog/masthead/masthead.comp";
 import { Ticker } from "@/components/sections/blog/ticker/ticker.comp";
 import { Portada } from "@/components/sections/blog/portada/portada.section";
 import { MoreSection } from "@/components/sections/blog/more-section/more-section.section";
-import { BlogFooter } from "@/components/sections/blog/footer/blog-footer.comp";
+import { Footer } from "@/components/sections/common/footer.comp";
 import "./blog.css";
 
 export const metadata: Metadata = {
@@ -25,7 +25,7 @@ export default function BlogPage() {
           <MoreSection />
         </div>
 
-        <BlogFooter />
+        <Footer accent="red" />
       </div>
     </div>
   );

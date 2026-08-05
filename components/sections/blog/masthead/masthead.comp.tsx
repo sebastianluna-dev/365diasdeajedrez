@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BlogBrand } from "../blog-brand/blog-brand.comp";
+import { Logo } from "@/components/sections/common/logo.comp";
 import "./masthead.comp.css";
 
 const navLinks = [
@@ -12,7 +12,7 @@ const navLinks = [
 export function Masthead() {
   return (
     <header className="masthead">
-      <BlogBrand />
+      <Logo theme="light" accent="red" />
 
       <div className="masthead__center">
         <div className="masthead__title">El Tablero</div>

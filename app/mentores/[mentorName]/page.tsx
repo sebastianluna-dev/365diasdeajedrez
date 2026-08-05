@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { SiteHeader } from "@/components/sections/common/site-header.comp";
-import { SiteFooter } from "@/components/layout/site-footer.comp";
+import { Footer } from "@/components/sections/common/footer.comp";
 import { MentorHeroSection } from "@/components/sections/mentor-profile/hero/hero.section";
 import { MentorVideoSection } from "@/components/sections/mentor-profile/video/video.section";
 import { MentorGameSection } from "@/components/sections/mentor-profile/game/game.section";
@@ -45,7 +45,7 @@ export default async function MentorProfilePage({ params }: MentorPageProps) {
       <MentorOthersSection mentors={mentors} currentSlug={mentor.slug} />
       <MentorCtaSection />
 
-      <SiteFooter />
+      <Footer />
     </div>
   );
 }
