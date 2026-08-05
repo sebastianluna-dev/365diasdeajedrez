@@ -1,10 +1,10 @@
-import { HeroSection } from "../components/sections/homepage/hero/HeroSection";
-import { ProgramSection } from "../components/sections/homepage/program/ProgramSection";
-import { MentorsSection } from "../components/sections/homepage/mentors/MentorsSection";
-import { PlansSection } from "../components/sections/homepage/plans/PlansSection";
-import { ResourcesSection } from "../components/sections/homepage/resources/ResourcesSection";
-import { ReviewsAndFaqSection } from "../components/sections/homepage/reviews/ReviewsAndFaqSection";
-import { StickyCtaAndFooter } from "../components/sections/homepage/cta/StickyCtaAndFooter";
+import { HeroSection } from "../components/sections/homepage/hero/hero.section";
+import { ProgramSection } from "../components/sections/homepage/program/program.section";
+import { MentorsSection } from "../components/sections/homepage/mentors/mentors.section";
+import { PlansSection } from "../components/sections/homepage/plans/plans.section";
+import { ResourcesSection } from "../components/sections/homepage/resources/resources.section";
+import { ReviewsAndFaqSection } from "../components/sections/homepage/reviews/reviews-and-faq.section";
+import { StickyCtaAndFooter } from "../components/sections/homepage/cta/sticky-cta-and-footer.comp";
 
 export default function LandingPage() {
   return (

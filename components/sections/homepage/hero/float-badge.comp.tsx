@@ -1,5 +1,5 @@
-import { ChessPieceUnicode } from "@/enums/chessPieces";
-import "./float-badge.css";
+import { ChessPieceUnicode } from "@/enums/chess-pieces.enum";
+import "./float-badge.comp.css";
 
 interface FloatBadgeProps {
   text: string;

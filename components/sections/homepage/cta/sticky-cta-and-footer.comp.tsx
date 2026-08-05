@@ -1,5 +1,5 @@
 import Link from "next/link";
-import "./cta.css";
+import "./sticky-cta-and-footer.comp.css";
 
 export function StickyCtaAndFooter() {
   return (

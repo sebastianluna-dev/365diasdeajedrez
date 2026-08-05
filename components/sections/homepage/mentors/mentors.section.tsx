@@ -1,4 +1,4 @@
-import "./mentors.css";
+import "./mentors.section.css";
 
 const mentors = [
   {

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import "./site-header.css";
+import "./site-header.comp.css";
 
 const links = [
   { href: "/", label: "Inicio" },

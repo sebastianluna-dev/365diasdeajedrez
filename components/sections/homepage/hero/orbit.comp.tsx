@@ -1,4 +1,4 @@
-import "./orbit.css";
+import "./orbit.comp.css";
 
 export function Orbit() {
   return (

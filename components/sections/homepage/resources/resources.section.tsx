@@ -1,5 +1,5 @@
 import Link from "next/link";
-import "./resources.css";
+import "./resources.section.css";
 
 const resources = [
   {

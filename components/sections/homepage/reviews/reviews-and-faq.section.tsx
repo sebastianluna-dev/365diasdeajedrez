@@ -1,5 +1,5 @@
 import Link from "next/link";
-import "./reviews.css";
+import "./reviews-and-faq.section.css";
 
 const reviews = [
   {

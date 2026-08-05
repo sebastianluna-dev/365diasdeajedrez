@@ -1,10 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
-import { SiteHeader } from "../../../layout/SiteHeader";
-import { FloatBadge } from "./FloatBadge";
-import { Orbit } from "./Orbit";
-import { ChessPieceUnicode } from "@/enums/chessPieces";
-import "./hero.css";
+import { SiteHeader } from "../../../layout/site-header.comp";
+import { FloatBadge } from "./float-badge.comp";
+import { Orbit } from "./orbit.comp";
+import { ChessPieceUnicode } from "@/enums/chess-pieces.enum";
+import "./hero.section.css";
 
 export function HeroSection() {
   return (

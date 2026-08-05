@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { programModules } from "@/data/programModules";
-import { ProgramModuleListItem } from "./ProgramModuleListItem";
-import "./program.css";
+import { programModules } from "@/data/program-modules.data";
+import { ProgramModuleListItem } from "./program-module-list-item.comp";
+import "./program.section.css";
 
 export function ProgramSection() {
   const [activeModule, setActiveModule] = useState(programModules[0]);

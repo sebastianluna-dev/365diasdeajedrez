@@ -1,4 +1,4 @@
-import type { ProgramModule } from "@/interfaces/programModule";
+import type { ProgramModule } from "@/interfaces/program-module.interface";
 
 export const programModules: ProgramModule[] = [
   {

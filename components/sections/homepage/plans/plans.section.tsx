@@ -1,5 +1,5 @@
 import Link from "next/link";
-import "./plans.css";
+import "./plans.section.css";
 
 export function PlansSection() {
   return (
