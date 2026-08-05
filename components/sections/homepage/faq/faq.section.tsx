@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { faqs } from "@/data/faqs.data";
+import { FaqAccordionItem } from "./faq-accordion-item.comp";
 import "./faq.section.css";
 
 export function FaqSection() {
@@ -17,10 +18,7 @@ export function FaqSection() {
           </div>
           <div className="faq__list">
             {faqs.map((faq) => (
-              <article key={faq.question} className="faq-item">
-                <strong className="faq-item__question">{faq.question}</strong>
-                <p className="faq-item__answer">{faq.answer}</p>
-              </article>
+              <FaqAccordionItem key={faq.question} faq={faq} />
             ))}
           </div>
         </div>

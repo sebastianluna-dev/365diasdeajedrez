@@ -36,25 +36,6 @@
     gap: 12px;
   }
 
-  & .faq-item {
-    border-radius: 18px;
-    padding: 18px 20px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  & .faq-item__question {
-    display: block;
-    font-size: 16px;
-    margin-bottom: 6px;
-  }
-
-  & .faq-item__answer {
-    margin: 0;
-    color: #b4a99d;
-    line-height: 1.6;
-  }
-
   @media (max-width: 1024px) {
     & .faq__grid {
       grid-template-columns: 1fr;
