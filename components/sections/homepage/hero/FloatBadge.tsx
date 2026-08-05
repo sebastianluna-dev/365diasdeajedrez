@@ -1,4 +1,5 @@
 import { ChessPieceUnicode } from "@/enums/chessPieces";
+import "./float-badge.css";
 
 interface FloatBadgeProps {
   text: string;
@@ -8,14 +9,9 @@ interface FloatBadgeProps {
 
 export function FloatBadge({ text, piece, className }: FloatBadgeProps) {
   return (
-    <div
-      className={`bg-white rounded-full inline-flex p-1 items-center ${className ?? ""}`}
-    >
-      <div
-        className="bg-linear-to-r from-primary to-secondary p-2 rounded-full h-8 w-8 font-glyph text-dark font-semibold text-3xl flex items-center justify-center"
-        dangerouslySetInnerHTML={{ __html: piece }}
-      />
-      <span className="ml-1 text-dark font-semibold pr-2">{text}</span>
+    <div className={`float-badge ${className ?? ""}`}>
+      <div className="float-badge__icon" dangerouslySetInnerHTML={{ __html: piece }} />
+      <span className="float-badge__text">{text}</span>
     </div>
   );
 }

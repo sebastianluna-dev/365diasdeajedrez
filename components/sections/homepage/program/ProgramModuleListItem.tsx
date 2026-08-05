@@ -10,15 +10,13 @@ export function ProgramModuleListItem({ module, isActive, onSelect }: ProgramMod
   return (
     <button
       type="button"
-      className={`program-list__item${isActive ? " program-list__item_active" : ""} duration-150 cursor-pointer bg-dark/5`}
+      className={`program-list__item${isActive ? " program-list__item_active" : ""}`}
       onClick={onSelect}
     >
-      <span className="program-list__number bg-dark/5 w-12 h-12 flex items-center justify-center rounded-xl text-lg font-semibold duration-150 font-serif">
-        0{module.moduleNumber}
-      </span>
-      <div className={`flex flex-col text-left duration-150 ${isActive ? "text-dark" : "text-dark/80"}`}>
-        <p className="font-bold">{module.title}</p>
-        <p className="">{module.durationLabel}</p>
+      <span className="program-list__number">0{module.moduleNumber}</span>
+      <div className={`program-list__label${isActive ? " program-list__label_active" : ""}`}>
+        <p className="program-list__title">{module.title}</p>
+        <p>{module.durationLabel}</p>
       </div>
     </button>
   );

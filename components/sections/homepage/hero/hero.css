@@ -74,12 +74,17 @@
   height: 520px;
 }
 
+.hero__stage {
+  display: grid;
+}
+
 .hero__card {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 56px;
 }
 
 .hero__card-inner {
@@ -96,6 +101,20 @@
   height: 100%;
   object-fit: cover;
   object-position: center bottom;
+  border-radius: 9999px;
+}
+
+.hero__badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 240px;
+  margin-left: auto;
+  height: 100%;
+  justify-content: space-evenly;
+  padding: 32px 0;
+  position: relative;
+  left: 32px;
 }
 
 @media (max-width: 1024px) {

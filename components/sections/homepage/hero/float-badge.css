@@ -1,0 +1,42 @@
+.float-badge {
+  position: relative;
+  background: #ffffff;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+}
+
+.float-badge_offset_1 {
+  left: 48px;
+}
+
+.float-badge_offset_2 {
+  left: 120px;
+}
+
+.float-badge_offset_3 {
+  left: 152px;
+}
+
+.float-badge__icon {
+  background: linear-gradient(to right, #ff9143, #f0c04b);
+  padding: 8px;
+  border-radius: 9999px;
+  height: 32px;
+  width: 32px;
+  font-family: var(--font-chessglyph);
+  color: #16110d;
+  font-weight: 600;
+  font-size: 1.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.float-badge__text {
+  margin-left: 4px;
+  color: #16110d;
+  font-weight: 600;
+  padding-right: 8px;
+}

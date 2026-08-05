@@ -1,3 +1,5 @@
+import "./section-heading.css";
+
 type SectionHeadingProps = {
   eyebrow: string;
   title: string;
@@ -11,19 +13,13 @@ export function SectionHeading({
   description,
   align = "left",
 }: SectionHeadingProps) {
-  const alignmentClass = align === "center" ? "mx-auto text-center" : "text-left";
+  const alignmentClass = align === "center" ? "section-heading_align_center" : "section-heading_align_left";
 
   return (
-    <div className={`max-w-3xl ${alignmentClass}`}>
-      <p className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-[#ff9143]">
-        {eyebrow}
-      </p>
-      <h2 className="font-serif text-3xl font-semibold leading-tight text-[#f2ede7] sm:text-4xl">
-        {title}
-      </h2>
-      <p className="mt-4 text-base leading-7 text-[#b4a99d] sm:text-lg">
-        {description}
-      </p>
+    <div className={`section-heading ${alignmentClass}`}>
+      <p className="section-heading__eyebrow">{eyebrow}</p>
+      <h2 className="section-heading__title">{title}</h2>
+      <p className="section-heading__description">{description}</p>
     </div>
   );
 }

@@ -1,3 +1,7 @@
+.program .section__title {
+  max-width: 36rem;
+}
+
 .program__wrap {
   border-radius: 28px;
   padding: 20px;
@@ -22,6 +26,9 @@
   align-items: flex-start;
   justify-content: flex-start;
   gap: 12px;
+  background: rgba(22, 17, 13, 0.05);
+  cursor: pointer;
+  transition-duration: 150ms;
 }
 
 .program-list__item_active {
@@ -33,6 +40,36 @@
   background: #ff9143;
 }
 
+.program-list__number {
+  background: rgba(22, 17, 13, 0.05);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  transition-duration: 150ms;
+  font-family: var(--font-gramatika), sans-serif;
+}
+
+.program-list__label {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  transition-duration: 150ms;
+  color: rgba(22, 17, 13, 0.8);
+}
+
+.program-list__label_active {
+  color: #16110d;
+}
+
+.program-list__title {
+  font-weight: 700;
+}
+
 .program-panel {
   border-radius: 22px;
   padding: 34px 34px 36px;
@@ -40,6 +77,38 @@
   border: 1px solid rgba(255, 145, 67, 0.22);
   display: flex;
   flex-direction: column;
+}
+
+.program-panel__badges {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.program-panel__badge {
+  padding: 4px 16px;
+  border-radius: 9999px;
+  font-weight: 600;
+}
+
+.program-panel__badge_variant_primary {
+  background: #ff9143;
+}
+
+.program-panel__badge_variant_outline {
+  background: rgba(22, 17, 13, 0.05);
+  border: 1px solid #aca7a3;
+}
+
+.program-panel__title {
+  font-family: var(--font-gramatika), sans-serif;
+  font-size: 2.25rem;
+}
+
+.program-panel__subtitle {
+  font-family: var(--font-gramatika), sans-serif;
+  font-size: 1.25rem !important;
+  color: #16110d !important;
 }
 
 .program-panel__subheading {
@@ -53,6 +122,19 @@
   line-height: 1.7;
   color: #4b423b;
   margin: 0 0 18px;
+}
+
+.program-panel__topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.program-panel__topic {
+  background: rgba(22, 17, 13, 0.05);
+  padding: 4px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(22, 17, 13, 0.15);
 }
 
 .program__note {

@@ -34,8 +34,8 @@ export function HeroSection() {
 
           <div className="hero__visual">
             <div>
-              <div className="grid">
-                <div className="hero__card p-14" style={{ gridArea: "1 / 1 / 2 / 2" }}>
+              <div className="hero__stage">
+                <div className="hero__card" style={{ gridArea: "1 / 1 / 2 / 2" }}>
                   <div className="hero__card-inner">
                     <Image
                       src="/design-import/assets/hero-jugador.png"
@@ -43,7 +43,6 @@ export function HeroSection() {
                       width={520}
                       height={640}
                       priority
-                      className="rounded-full w-full h-auto"
                     />
                   </div>
                 </div>
@@ -51,13 +50,13 @@ export function HeroSection() {
               </div>
             </div>
 
-            <div className="flex flex-col items-start w-60 ml-auto h-full justify-evenly py-8 relative left-8">
-              <FloatBadge text="Cálculo" piece={ChessPieceUnicode.BlackKnight} className="relative left-12" />
-              <FloatBadge text="Visualizacion" piece={ChessPieceUnicode.BlackQueen} className="relative left-30" />
-              <FloatBadge text="Estrategia" piece={ChessPieceUnicode.BlackBishop} className="relative left-38" />
-              <FloatBadge text="Finales" piece={ChessPieceUnicode.BlackKing} className="relative left-38" />
-              <FloatBadge text="Aperturas" piece={ChessPieceUnicode.BlackPawn} className="relative left-30" />
-              <FloatBadge text="Partidas" piece={ChessPieceUnicode.BlackRook} className="relative left-12" />
+            <div className="hero__badges">
+              <FloatBadge text="Cálculo" piece={ChessPieceUnicode.BlackKnight} className="float-badge_offset_1" />
+              <FloatBadge text="Visualizacion" piece={ChessPieceUnicode.BlackQueen} className="float-badge_offset_2" />
+              <FloatBadge text="Estrategia" piece={ChessPieceUnicode.BlackBishop} className="float-badge_offset_3" />
+              <FloatBadge text="Finales" piece={ChessPieceUnicode.BlackKing} className="float-badge_offset_3" />
+              <FloatBadge text="Aperturas" piece={ChessPieceUnicode.BlackPawn} className="float-badge_offset_2" />
+              <FloatBadge text="Partidas" piece={ChessPieceUnicode.BlackRook} className="float-badge_offset_1" />
             </div>
           </div>
         </div>
