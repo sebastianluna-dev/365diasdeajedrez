@@ -72,6 +72,7 @@
 .hero__visual {
   position: relative;
   height: 520px;
+  right: 70px;
 }
 
 .hero__stage {
