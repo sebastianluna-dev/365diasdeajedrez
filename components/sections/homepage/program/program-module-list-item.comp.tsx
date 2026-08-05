@@ -1,4 +1,5 @@
 import type { ProgramModule } from "@/interfaces/program-module.interface";
+import "./program-module-list-item.comp.css";
 
 interface ProgramModuleListItemProps {
   module: ProgramModule;
