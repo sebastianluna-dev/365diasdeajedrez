@@ -74,8 +74,7 @@ export function ReviewsAndFaqSection() {
               </p>
               <Link
                 href="https://wa.me/520000000000"
-                className="button button_variant_primary"
-                style={{ marginTop: 24 }}
+                className="button button_variant_primary faq__cta"
               >
                 Hablar con nosotros
               </Link>

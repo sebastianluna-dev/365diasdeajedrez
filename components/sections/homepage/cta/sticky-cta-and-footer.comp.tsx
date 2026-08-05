@@ -28,7 +28,7 @@ export function StickyCtaAndFooter() {
         <div className="footer__inner">
           <div className="footer__grid">
             <div>
-              <Link href="/#inicio" className="brand" style={{ fontSize: 20 }}>
+              <Link href="/#inicio" className="brand brand_size_sm">
                 <span className="brand__accent">365</span>
                 <span>DiasDeAjedrez</span>
               </Link>

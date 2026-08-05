@@ -60,6 +60,10 @@
   overflow: hidden;
 }
 
+.faq__cta {
+  margin-top: 24px;
+}
+
 .faq::before {
   content: "";
   position: absolute;

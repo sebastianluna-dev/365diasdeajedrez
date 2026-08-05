@@ -5,10 +5,7 @@ export function PlansSection() {
   return (
     <section id="planes" className="section section_theme_light plans">
       <div className="section__inner">
-        <div
-          className="section__head"
-          style={{ justifyContent: "center", textAlign: "center" }}
-        >
+        <div className="section__head plans__head">
           <div>
             <h2 className="section__title">Paquetes</h2>
             <p className="section__text">

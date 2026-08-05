@@ -31,7 +31,7 @@ export function MentorsSection() {
   return (
     <section id="mentores" className="section section_theme_dark mentors">
       <div className="section__inner">
-        <div className="section__head" style={{ marginBottom: 44 }}>
+        <div className="section__head mentors__head">
           <div>
             <span className="section__eyebrow">Nuestros mentores</span>
             <h2 className="section__title">

@@ -74,6 +74,10 @@ a {
   color: #b4a99d;
 }
 
+.blog-brand_context_footer {
+  color: #f2ede7;
+}
+
 .blog-brand__marks {
   display: grid;
   grid-template-columns: 6px 6px;
@@ -91,6 +95,10 @@ a {
 
 .blog-brand__mark_hidden {
   background: transparent;
+}
+
+.blog-brand__mark_context_footer {
+  background: #f2ede7;
 }
 
 .masthead__center {
@@ -300,6 +308,10 @@ a {
   color: #a81e22;
 }
 
+.link-arrow {
+  color: #a81e22;
+}
+
 .portada__center {
   padding: 32px 34px 0;
 }
@@ -309,6 +321,10 @@ a {
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid rgba(22, 17, 13, 0.12);
+}
+
+.media-frame_margin_bottom {
+  margin-bottom: 16px;
 }
 
 .media-frame__image {
@@ -653,6 +669,14 @@ a {
 .blog-footer__link,
 .blog-footer__text {
   color: #b4a99d;
+}
+
+.blog-footer__description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #b4a99d;
+  margin: 14px 0 0;
+  max-width: 36ch;
 }
 
 .blog-footer__link:hover {

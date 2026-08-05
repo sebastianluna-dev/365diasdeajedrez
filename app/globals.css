@@ -167,3 +167,7 @@ a {
 .brand__accent {
   color: #ff9143;
 }
+
+.brand_size_sm {
+  font-size: 20px;
+}

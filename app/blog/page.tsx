@@ -111,12 +111,12 @@ export default function BlogPage() {
                   Primero conocimiento sólido, después cálculo y competencia. Una guía para entrenar con orden y ver resultados en tres meses.
                 </p>
                 <Link href="#" className="article-card__link">
-                  Leer <span style={{ color: "#a81e22" }}>⟶</span>
+                  Leer <span className="link-arrow">⟶</span>
                 </Link>
               </article>
 
               <article id="tactica" className="article-card">
-                <div className="media-frame" style={{ marginBottom: 16 }}>
+                <div className="media-frame media-frame_margin_bottom">
                   <img className="media-frame__image" src="/design-import/assets/thumb-tactica.png" alt="Patrones tácticos" />
                 </div>
                 <span className="eyebrow">Táctica</span>
@@ -125,7 +125,7 @@ export default function BlogPage() {
                   Clavadas, horquillas y ataques descubiertos: los motivos que deciden la mayoría de las partidas por debajo de 2000.
                 </p>
                 <Link href="#" className="article-card__link">
-                  Leer <span style={{ color: "#a81e22" }}>⟶</span>
+                  Leer <span className="link-arrow">⟶</span>
                 </Link>
               </article>
             </div>
@@ -158,7 +158,7 @@ export default function BlogPage() {
                     </div>
                   </div>
                   <Link href="#" className="blog-button blog-button_variant_secondary blog-button_size_md">
-                    Leer la partida completa <span style={{ color: "#a81e22" }}>⟶</span>
+                    Leer la partida completa <span className="link-arrow">⟶</span>
                   </Link>
                 </div>
               </article>
@@ -208,7 +208,7 @@ export default function BlogPage() {
             </div>
 
             <div className="more-section__cta-row" id="analisis">
-              <Link href="/" className="blog-button blog-button_variant_secondary blog-button_size_lg">Ver todos los artículos <span style={{ color: "#a81e22" }}>⟶</span></Link>
+              <Link href="/" className="blog-button blog-button_variant_secondary blog-button_size_lg">Ver todos los artículos <span className="link-arrow">⟶</span></Link>
             </div>
           </section>
         </div>
@@ -217,17 +217,17 @@ export default function BlogPage() {
           <div className="blog-footer__wrap">
             <div className="blog-footer__grid">
               <div>
-                <Link href="/" className="blog-brand" style={{ color: "#f2ede7" }}>
+                <Link href="/" className="blog-brand blog-brand_context_footer">
                   <span className="blog-brand__accent blog-brand__accent_context_footer">365</span>
                   <span className="blog-brand__label blog-brand__label_context_footer">DiasDeAjedrez</span>
-                  <span className="blog-brand__marks" style={{ color: "#f2ede7" }}>
-                    <span className="blog-brand__mark" style={{ background: "#f2ede7" }} />
+                  <span className="blog-brand__marks">
+                    <span className="blog-brand__mark blog-brand__mark_context_footer" />
                     <span className="blog-brand__mark blog-brand__mark_hidden" />
                     <span className="blog-brand__mark blog-brand__mark_hidden" />
-                    <span className="blog-brand__mark" style={{ background: "#f2ede7" }} />
+                    <span className="blog-brand__mark blog-brand__mark_context_footer" />
                   </span>
                 </Link>
-                <p style={{ fontSize: 14, lineHeight: 1.6, color: "#b4a99d", margin: "14px 0 0", maxWidth: "36ch" }}>
+                <p className="blog-footer__description">
                   Academia de ajedrez en línea. Entrenamiento estructurado y clases personalizadas para jugadores que quieren mejorar en serio.
                 </p>
               </div>

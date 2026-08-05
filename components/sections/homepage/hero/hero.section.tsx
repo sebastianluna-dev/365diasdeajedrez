@@ -35,7 +35,7 @@ export function HeroSection() {
           <div className="hero__visual">
             <div>
               <div className="hero__stage">
-                <div className="hero__card" style={{ gridArea: "1 / 1 / 2 / 2" }}>
+                <div className="hero__card">
                   <div className="hero__card-inner">
                     <Image
                       src="/design-import/assets/hero-jugador.png"
