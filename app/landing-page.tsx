@@ -4,7 +4,8 @@ import { ProgramSection } from "../components/sections/homepage/program/program.
 import { MentorsSection } from "../components/sections/homepage/mentors/mentors.section";
 import { PlansSection } from "../components/sections/homepage/plans/plans.section";
 import { ResourcesSection } from "../components/sections/homepage/resources/resources.section";
-import { ReviewsAndFaqSection } from "../components/sections/homepage/reviews/reviews-and-faq.section";
+import { ReviewsSection } from "../components/sections/homepage/reviews/reviews.section";
+import { FaqSection } from "../components/sections/homepage/faq/faq.section";
 import { StickyCtaAndFooter } from "../components/sections/homepage/cta/sticky-cta-and-footer.comp";
 
 export default function LandingPage() {
@@ -16,7 +17,8 @@ export default function LandingPage() {
       <MentorsSection />
       <PlansSection />
       <ResourcesSection />
-      <ReviewsAndFaqSection />
+      <ReviewsSection />
+      <FaqSection />
       <StickyCtaAndFooter />
     </div>
   );
