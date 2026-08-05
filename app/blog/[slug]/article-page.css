@@ -1,0 +1,35 @@
+.article-page {
+  min-width: 1100px;
+  position: relative;
+  overflow: hidden;
+  background: #f2f0ec;
+  color: #16110d;
+}
+
+.article-page__glow {
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168, 30, 34, 0.1) 0%, rgba(255, 145, 67, 0) 70%);
+  pointer-events: none;
+}
+
+.article-page__glow_position_top-left {
+  top: -260px;
+  left: -80px;
+  width: 760px;
+  height: 760px;
+}
+
+.article-page__glow_position_mid-right {
+  top: 620px;
+  right: -160px;
+  width: 640px;
+  height: 640px;
+}
+
+@media (max-width: 1280px) {
+  .article-page {
+    min-width: 0;
+  }
+}

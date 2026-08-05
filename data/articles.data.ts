@@ -1,5 +1,7 @@
 import type { Article } from "@/interfaces/article.interface";
 
+const COACH_365 = { name: "Coach 365DiasDeAjedrez", role: "Equipo 365DiasDeAjedrez" };
+
 export const articles: Article[] = [
   {
     slug: "metodo",
@@ -7,7 +9,27 @@ export const articles: Article[] = [
     title: "Cómo organizar tu entrenamiento de ajedrez",
     excerpt:
       "Primero conocimiento sólido, después cálculo y competencia. Una guía para entrenar con orden y ver resultados en tres meses.",
-    href: "#",
+    href: "/blog/metodo",
+    meta: "30 de julio, 2026 · 7 min",
+    author: COACH_365,
+    body: [
+      { type: "paragraph", text: "La mayoría de los jugadores de club estudian ajedrez de forma caótica: un día tácticas, otro día un video de aperturas, otro día nada. El resultado es conocido — mucho esfuerzo, poco progreso. Mejorar de verdad no requiere estudiar más horas, sino estudiar con estructura." },
+      { type: "heading", text: "Primero el conocimiento, después el cálculo" },
+      { type: "paragraph", text: "El error más común es empezar por donde brilla: resolver cientos de problemas tácticos sin una base conceptual. La táctica es la consecuencia de una buena posición, no su causa. Por eso el Método Ajedrez 365 construye primero el conocimiento sólido — principios, estructuras, planes típicos — y después fortalece el cálculo sobre esa base." },
+      { type: "paragraph", text: "Un jugador que entiende por qué una posición es buena calcula menos y mejor: sabe qué candidatas considerar y cuáles descartar sin gastar reloj." },
+      { type: "heading", text: "Las tres fases de una semana de estudio" },
+      {
+        type: "list",
+        items: [
+          { lead: "Conocimiento (40%):", text: "un tema estratégico por semana — puestos avanzados, columnas abiertas, estructuras de peones — estudiado con posiciones modelo." },
+          { lead: "Cálculo (30%):", text: "ejercicios tácticos seleccionados sobre el tema de la semana, resueltos sin mover piezas, anotando la variante completa antes de comprobar." },
+          { lead: "Competencia (30%):", text: "partidas lentas aplicando lo estudiado, seguidas de análisis honesto: primero sin módulo, después con él." },
+        ],
+      },
+      { type: "heading", text: "El análisis de tus propias partidas es el examen" },
+      { type: "paragraph", text: "Ninguna cantidad de teoría sustituye al análisis de tus propias partidas. Ahí se revela lo que realmente sabes, no lo que crees saber. Cada semana, elige tu peor partida y encuentra el momento exacto donde el plan se rompió. Ese momento es tu tarea de la semana siguiente." },
+      { type: "quote", text: "La estructura no hace el estudio más aburrido: lo hace más corto. Treinta minutos con dirección valen más que tres horas sin ella." },
+    ],
   },
   {
     slug: "tactica",
@@ -17,7 +39,25 @@ export const articles: Article[] = [
       "Clavadas, horquillas y ataques descubiertos: los motivos que deciden la mayoría de las partidas por debajo de 2000.",
     image: "/design-import/assets/thumb-tactica.png",
     meta: "8 de julio, 2026 · 7 min",
-    href: "#",
+    href: "/blog/tactica",
+    author: COACH_365,
+    body: [
+      { type: "paragraph", text: "Por debajo de 2000 de Elo, casi ninguna partida se decide por una jugada brillante e imposible de ver. Se decide porque un jugador reconoció un patrón táctico un segundo antes que el otro. La velocidad de reconocimiento importa más que la profundidad de cálculo." },
+      { type: "heading", text: "Por qué el patrón importa más que la jugada" },
+      { type: "paragraph", text: "Cuando ves un motivo táctico como una forma conocida — no como un cálculo desde cero — tu cerebro salta directo a las candidatas correctas. Ese salto es entrenable, y es lo que separa a un jugador de club de otro con el mismo nivel de cálculo bruto." },
+      { type: "heading", text: "Los patrones que aparecen en cada partida de club" },
+      {
+        type: "list",
+        items: [
+          { lead: "Clavadas:", text: "una pieza que no se puede mover sin exponer algo más valioso detrás. Búscalas activamente antes de cada jugada candidata." },
+          { lead: "Horquillas:", text: "un solo ataque, dos objetivos. El caballo es el rey de este patrón, pero peones y damas también horquillean." },
+          { lead: "Ataques descubiertos:", text: "mover una pieza para que otra ataque por detrás. El motivo más subestimado y el más letal en finales de piezas." },
+        ],
+      },
+      { type: "heading", text: "Cómo entrenar el reconocimiento, no solo la solución" },
+      { type: "paragraph", text: "Resolver un ejercicio no basta si solo memorizas la solución. Después de resolverlo, vuelve a la posición inicial y nombra en voz alta el patrón antes de mover. Ese paso extra es el que convierte un ejercicio en un reflejo." },
+      { type: "quote", text: "No calcules lo que ya puedes reconocer. Guarda el cálculo profundo para lo que de verdad lo necesita." },
+    ],
   },
   {
     slug: "torre-c3",
@@ -27,12 +67,30 @@ export const articles: Article[] = [
       "Sebastián Luna comenta su mejor partida jugada con negras en una Caro-Kann, Ataque Panov. Cómo neutralizar la presión central, por qué el cambio al final de torres era la decisión correcta y de qué manera la marcha del rey a e3 culmina el plan.",
     image: "/design-import/assets/thumb-metodo.png",
     readTime: "12 min de lectura",
-    href: "#",
+    meta: "3 de agosto, 2026 · 12 min de lectura",
+    href: "/blog/torre-c3",
     author: {
       name: "Sebastián Luna",
       role: "Instructor · 3 de agosto, 2026",
       avatar: "/design-import/assets/profesores/diego.jpg",
     },
+    body: [
+      { type: "paragraph", text: "Contra la WIM Andrea Ortez, en el Intercontinental Jorge Vega, llegué a un Ataque Panov con negras sabiendo que la partida se iba a decidir en un detalle posicional, no en una combinación. Esa casilla fue c3." },
+      { type: "heading", text: "El plan detrás de Tc3" },
+      { type: "paragraph", text: "Desde c3 la torre presiona a3, c4 y d4 al mismo tiempo. No es una jugada que gane material de inmediato: es una jugada que quita opciones. Cada pieza blanca que quería ir a esas casillas tuvo que replantearse el plan." },
+      { type: "heading", text: "El final de torres que decide todo" },
+      {
+        type: "list",
+        items: [
+          { lead: "Cambio de damas:", text: "acepté simplificar en el momento exacto en que mi actividad de piezas pesaba más que cualquier ataque directo." },
+          { lead: "Activación del rey:", text: "con las damas fuera, el rey negro dejó de ser una debilidad y se convirtió en la pieza más fuerte del tablero." },
+          { lead: "La marcha a e3:", text: "el rey cruza el centro bajo la protección de la torre en c3, y esa coordinación es la que culmina el plan." },
+        ],
+      },
+      { type: "heading", text: "Qué aprender de esta partida" },
+      { type: "paragraph", text: "No hace falta una combinación espectacular para ganar una partida de nivel. Hace falta reconocer qué pieza está mal ubicada — la torre blanca, en este caso — y jugar para explotar exactamente eso, jugada tras jugada, sin prisa." },
+      { type: "quote", text: "El tablero se presenta desde el lado de las negras porque así es como yo la jugué: buscando la casilla que le quitaba opciones al rival, no la que me daba una jugada bonita." },
+    ],
   },
   {
     slug: "aperturas",
@@ -41,7 +99,25 @@ export const articles: Article[] = [
     excerpt: "Estructuras de peones, planes típicos y los errores más frecuentes al construir un repertorio.",
     image: "/design-import/assets/thumb-aperturas.png",
     meta: "28 de julio, 2026 · 8 min",
-    href: "/",
+    href: "/blog/aperturas",
+    author: COACH_365,
+    body: [
+      { type: "paragraph", text: "Memorizar quince jugadas de una variante te sirve exactamente hasta la jugada dieciséis. Ahí es donde se rompen la mayoría de los repertorios construidos sobre memoria y no sobre comprensión." },
+      { type: "heading", text: "El repertorio no es una lista de jugadas" },
+      { type: "paragraph", text: "Un repertorio real es un conjunto de estructuras de peones que conoces bien: sabes qué piezas van dónde, qué plan sigue cada bando y qué cambios te convienen. Las jugadas concretas son solo la forma de llegar ahí." },
+      { type: "heading", text: "Tres preguntas antes de cada jugada de apertura" },
+      {
+        type: "list",
+        items: [
+          { lead: "¿Qué estructura busco?", text: "identifica el tipo de posición de peones que quieres alcanzar antes de decidir la jugada concreta." },
+          { lead: "¿Qué pieza es la protagonista?", text: "cada estructura tiene una pieza que decide la partida; ubícala primero." },
+          { lead: "¿Qué cambio me conviene?", text: "decide de antemano qué piezas quieres cambiar y cuáles conservar según la estructura elegida." },
+        ],
+      },
+      { type: "heading", text: "Cuándo sales del libro" },
+      { type: "paragraph", text: "Todo repertorio se acaba en algún momento — el rival se desvía, olvidas una jugada, o simplemente la teoría termina. Ese momento no debería darte miedo si conoces la estructura: sigue jugando según el plan, no según la memoria." },
+      { type: "quote", text: "Un repertorio que entiendes te sostiene incluso cuando la memoria falla. Uno que memorizas te abandona justo cuando más lo necesitas." },
+    ],
   },
   {
     slug: "finales",
@@ -50,7 +126,25 @@ export const articles: Article[] = [
     excerpt: "El método de conversión más importante del ajedrez, explicado movimiento por movimiento.",
     image: "/design-import/assets/thumb-finales.png",
     meta: "21 de julio, 2026 · 10 min",
-    href: "/",
+    href: "/blog/finales",
+    author: COACH_365,
+    body: [
+      { type: "paragraph", text: "La posición de Lucena aparece más veces de las que crees: cualquier final de torre y peón de torre a favor, con el rey propio delante del peón, puede terminar aquí. Saberla de memoria convierte una posición técnica en un punto entero garantizado." },
+      { type: "heading", text: "Por qué la Lucena es el final que todos deben saber" },
+      { type: "paragraph", text: "No es una posición rara: es el destino natural de docenas de finales de torres. Sin el método, un jugador con ventaja puede pasar veinte jugadas sin encontrar la conversión y terminar en tablas por regla de los 50 movimientos." },
+      { type: "heading", text: "El método, paso a paso" },
+      {
+        type: "list",
+        items: [
+          { lead: "Construir el puente:", text: "la torre se coloca en la cuarta fila para cortar los jaques del rival por delante del rey." },
+          { lead: "Avanzar el rey:", text: "el rey se separa del peón lo justo para dejarle camino a la coronación sin perder protección." },
+          { lead: "Coronar con apoyo:", text: "la torre 'construye el puente' tapando los jaques laterales en el momento exacto de la coronación." },
+        ],
+      },
+      { type: "heading", text: "Errores frecuentes al convertir" },
+      { type: "paragraph", text: "El error más común es mover el rey demasiado pronto, antes de tener la torre bien colocada, permitiendo jaques perpetuos que sí llevan a tablas. El orden de las jugadas importa tanto como conocer la idea general." },
+      { type: "quote", text: "Un final técnico bien memorizado no depende de la inspiración. Depende de que hayas hecho la tarea una vez, con calma, antes de necesitarla en partida." },
+    ],
   },
   {
     slug: "estrategia",
@@ -59,6 +153,24 @@ export const articles: Article[] = [
     excerpt: "Dónde colocar las piezas cuando la estructura te concede una casilla débil y qué hacer después.",
     image: "/design-import/assets/thumb-metodo.png",
     meta: "14 de julio, 2026 · 9 min",
-    href: "/",
+    href: "/blog/estrategia",
+    author: COACH_365,
+    body: [
+      { type: "paragraph", text: "Un puesto avanzado es una casilla en territorio rival que ninguna pieza enemiga puede atacar, típicamente un caballo instalado en la quinta o sexta fila. No es solo una pieza bien ubicada: es una ventaja estructural permanente." },
+      { type: "heading", text: "Qué hace fuerte a un puesto avanzado" },
+      { type: "paragraph", text: "La fuerza del puesto avanzado depende de que el rival no pueda expulsarlo con un peón. Antes de instalar una pieza ahí, verifica qué peones enemigos podrían desalojarla — si ninguno puede, la casilla es tuya de forma permanente." },
+      { type: "heading", text: "Cómo instalar y defender la pieza" },
+      {
+        type: "list",
+        items: [
+          { lead: "Elige la casilla correcta:", text: "prioriza casillas que ningún peón rival pueda alcanzar, aunque el rival cambie piezas." },
+          { lead: "Protégela antes de ocuparla:", text: "asegúrate de tener suficiente apoyo antes de instalar la pieza, no después." },
+          { lead: "Evita cambiarla sin necesidad:", text: "una pieza en un puesto avanzado suele valer más que su equivalente en el bando contrario." },
+        ],
+      },
+      { type: "heading", text: "Cuándo el puesto avanzado no basta" },
+      { type: "paragraph", text: "Un puesto avanzado bien instalado no gana la partida por sí solo: necesita un plan detrás. Usa la pieza para controlar casillas clave, apoyar un avance de peones o preparar un ataque, no la dejes ahí como un trofeo." },
+      { type: "quote", text: "Una pieza fuerte sin plan es solo una pieza bonita. El puesto avanzado vale por lo que te permite hacer después." },
+    ],
   },
 ];

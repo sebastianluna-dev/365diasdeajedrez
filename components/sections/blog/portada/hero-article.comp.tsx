@@ -32,7 +32,7 @@ export function HeroArticle({ article }: HeroArticleProps) {
             <div className="hero-article__author-role">{article.author!.role}</div>
           </div>
         </div>
-        <Link href="#" className="blog-button blog-button_variant_secondary blog-button_size_md">
+        <Link href={article.href} className="blog-button blog-button_variant_secondary blog-button_size_md">
           Leer la partida completa <span className="link-arrow">⟶</span>
         </Link>
       </div>
