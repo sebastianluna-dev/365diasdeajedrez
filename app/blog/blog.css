@@ -1,14 +1,3 @@
-:root {
-  color-scheme: dark;
-}
-
-body {
-  margin: 0;
-  background: #16110d;
-  color: #16110d;
-  font-family: var(--font-suisse), Arial, sans-serif;
-}
-
 a {
   color: inherit;
   text-decoration: none;
