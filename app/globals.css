@@ -44,3 +44,126 @@ body {
 a {
   text-decoration: none;
 }
+
+/* Section */
+.section {
+  position: relative;
+  padding: 88px 0;
+}
+
+.section_theme_light {
+  background: #f5f1ec;
+  color: #16110d;
+}
+
+.section_theme_dark {
+  background: #1c1611;
+  color: #f2ede7;
+}
+
+.section__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px;
+}
+
+.section__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+.section__eyebrow {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #ff9143;
+  font-weight: 600;
+}
+
+.section__title {
+  font-family: var(--font-gramatika), sans-serif;
+  font-size: 38px;
+  font-weight: 700;
+  margin: 0 0 16px;
+  line-height: 1.15;
+}
+
+.section__text {
+  font-size: 16px;
+  line-height: 1.65;
+  color: #b4a99d;
+  margin: 0;
+  max-width: 62ch;
+}
+
+.section_theme_light .section__text {
+  color: #5c5348;
+}
+
+@media (max-width: 1024px) {
+  .section__inner {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+
+@media (max-width: 720px) {
+  .section__inner {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/* Muted text */
+.muted-text {
+  color: #5c5348;
+}
+
+/* Button */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 24px;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.button_variant_primary {
+  background: #ff9143;
+  color: #16110d;
+  box-shadow: 0 4px 0 #b8611f;
+}
+
+.button_variant_primary:hover {
+  background: #f0a05e;
+}
+
+.button_variant_secondary {
+  border: 1px solid rgba(242, 237, 231, 0.2);
+  color: #f2ede7;
+}
+
+/* Brand */
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  color: #f2ede7;
+  text-shadow: 0 0 18px rgba(255, 145, 67, 0.55);
+}
+
+.brand__accent {
+  color: #ff9143;
+}

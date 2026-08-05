@@ -1,0 +1,31 @@
+.orbit__ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.orbit__ring_index_1 {
+  width: 440px;
+  height: 440px;
+  border: 1.5px solid rgba(242, 237, 231, 0.32);
+  animation: orbit 32s linear infinite;
+}
+
+.orbit__ring_index_2 {
+  width: 414px;
+  height: 414px;
+  border: 1px solid rgba(242, 237, 231, 0.16);
+  animation: orbit 32s linear infinite reverse;
+}
+
+@keyframes orbit {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}

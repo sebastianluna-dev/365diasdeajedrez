@@ -1,4 +1,4 @@
-.stickyCta {
+.sticky-cta {
   position: fixed;
   left: 0;
   right: 0;
@@ -9,7 +9,7 @@
   border-top: 1px solid rgba(255, 145, 67, 0.28);
 }
 
-.stickyInner {
+.sticky-cta__inner {
   max-width: 1200px;
   margin: 0 auto;
   padding: 14px 48px;
@@ -18,7 +18,7 @@
   gap: 24px;
 }
 
-.ctaClock {
+.sticky-cta__clock {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -34,11 +34,21 @@
   font-weight: 700;
 }
 
-.ctaText p {
+.sticky-cta__title {
   margin: 0;
+  font-family: var(--font-gramatika), sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #f2ede7;
 }
 
-.ctaActions {
+.sticky-cta__subtitle {
+  margin: 2px 0 0;
+  font-size: 14px;
+  color: #b4a99d;
+}
+
+.sticky-cta__actions {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -46,7 +56,7 @@
   margin-left: auto;
 }
 
-.ctaActions a {
+.sticky-cta__link {
   display: inline-flex;
   align-items: center;
   gap: 9px;
@@ -58,7 +68,7 @@
   padding: 12px 18px;
 }
 
-.ctaPrimary {
+.sticky-cta__link_variant_primary {
   background: #ff9143;
   color: #16110d !important;
   border-color: transparent;
@@ -71,19 +81,19 @@
   padding: 56px 48px 32px;
 }
 
-.footerInner {
+.footer__inner {
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.footerGrid {
+.footer__grid {
   display: grid;
   grid-template-columns: 1.4fr 1fr 1fr;
   gap: 48px;
   margin-bottom: 40px;
 }
 
-.footerGrid h4 {
+.footer__heading {
   font-size: 13px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -92,7 +102,15 @@
   margin: 0 0 16px;
 }
 
-.footerLinks {
+.footer__description {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #b4a99d;
+  margin: 14px 0 0;
+  max-width: 36ch;
+}
+
+.footer__links {
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -100,7 +118,7 @@
   color: #b4a99d;
 }
 
-.footerNote {
+.footer__note {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   padding-top: 20px;
   display: flex;
@@ -110,30 +128,30 @@
 }
 
 @media (max-width: 1024px) {
-  .footerGrid {
+  .footer__grid {
     grid-template-columns: 1fr 1fr;
   }
-  .stickyInner {
+  .sticky-cta__inner {
     flex-wrap: wrap;
   }
-  .ctaActions {
+  .sticky-cta__actions {
     margin-left: 0;
   }
 }
 
 @media (max-width: 720px) {
-  .footerGrid {
+  .footer__grid {
     grid-template-columns: 1fr;
     gap: 32px;
   }
-  .footerNote {
+  .footer__note {
     flex-direction: column;
     gap: 10px;
   }
-  .stickyInner {
+  .sticky-cta__inner {
     padding: 14px 20px;
   }
-  .ctaActions {
+  .sticky-cta__actions {
     flex-wrap: wrap;
   }
 }

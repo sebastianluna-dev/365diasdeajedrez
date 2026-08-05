@@ -21,36 +21,36 @@ const resources = [
 
 export function ResourcesSection() {
   return (
-    <section id="blog" className="sectionBlock resourcesSection">
-      <div className="sectionInner">
-        <div className="sectionHead">
+    <section id="blog" className="section section_theme_dark resources">
+      <div className="section__inner">
+        <div className="section__head">
           <div>
-            <span className="sectionEyebrow">Recursos</span>
-            <h2 className="sectionTitle">
+            <span className="section__eyebrow">Recursos</span>
+            <h2 className="section__title">
               Material de estudio para todos los niveles.
             </h2>
-            <p className="sectionText">
+            <p className="section__text">
               Artículos, ideas y ejercicios para seguir aprendiendo entre
               clases.
             </p>
           </div>
-          <Link href="/blog" className="primaryBtn">
+          <Link href="/blog" className="button button_variant_primary">
             Ver más
           </Link>
         </div>
 
-        <div className="resourcesGrid">
-          <div className="resourceTabs">
-            <button className="resourceTab">Blogs</button>
-            <button className="resourceTab">Videos</button>
+        <div className="resources__grid">
+          <div className="resources__tabs">
+            <button className="resources__tab">Blogs</button>
+            <button className="resources__tab">Videos</button>
           </div>
-          <div className="resourceCards">
+          <div className="resources__cards">
             {resources.map((resource) => (
-              <article key={resource.title} className="resourceCard">
-                <img src={resource.image} alt={resource.title} />
-                <div className="resourceBody">
-                  <h3>{resource.title}</h3>
-                  <p>{resource.text}</p>
+              <article key={resource.title} className="resource-card">
+                <img className="resource-card__image" src={resource.image} alt={resource.title} />
+                <div className="resource-card__body">
+                  <h3 className="resource-card__title">{resource.title}</h3>
+                  <p className="resource-card__text">{resource.text}</p>
                 </div>
               </article>
             ))}

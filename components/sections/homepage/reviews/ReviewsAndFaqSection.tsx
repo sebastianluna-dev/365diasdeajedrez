@@ -40,19 +40,19 @@ const faqs = [
 export function ReviewsAndFaqSection() {
   return (
     <>
-      <section className="sectionBlock reviewSection">
-        <div className="sectionInner">
-          <div className="reviewHead">
-            <h2>Lo que dicen los alumnos</h2>
-            <div className="reviewDivider" />
+      <section className="section section_theme_light reviews">
+        <div className="section__inner">
+          <div className="reviews__head">
+            <h2 className="reviews__title">Lo que dicen los alumnos</h2>
+            <div className="reviews__divider" />
           </div>
 
-          <div className="reviewGrid">
+          <div className="reviews__grid">
             {reviews.map((review) => (
-              <article key={review.author} className="reviewCard">
-                <p>“{review.quote}”</p>
-                <div className="reviewAuthor">
-                  <div className="reviewAvatar">{review.author[0]}</div>
+              <article key={review.author} className="review-card">
+                <p className="review-card__quote">“{review.quote}”</p>
+                <div className="review-card__author">
+                  <div className="review-card__avatar">{review.author[0]}</div>
                   <strong>{review.author}</strong>
                 </div>
               </article>
@@ -61,30 +61,30 @@ export function ReviewsAndFaqSection() {
         </div>
       </section>
 
-      <section className="sectionBlock faqSection">
-        <div className="sectionInner">
-          <div className="faqGrid">
+      <section className="section section_theme_dark faq">
+        <div className="section__inner">
+          <div className="faq__grid">
             <div>
-              <span className="sectionEyebrow">Preguntas frecuentes</span>
-              <h2 className="sectionTitle">
+              <span className="section__eyebrow">Preguntas frecuentes</span>
+              <h2 className="section__title">
                 Todo lo que necesitas saber antes de empezar.
               </h2>
-              <p className="sectionText">
+              <p className="section__text">
                 Si te queda alguna duda, escríbenos y la resolvemos contigo.
               </p>
               <Link
                 href="https://wa.me/520000000000"
-                className="primaryBtn"
+                className="button button_variant_primary"
                 style={{ marginTop: 24 }}
               >
                 Hablar con nosotros
               </Link>
             </div>
-            <div className="faqList">
+            <div className="faq__list">
               {faqs.map((faq) => (
-                <article key={faq.question} className="faqItem">
-                  <strong>{faq.question}</strong>
-                  <p>{faq.answer}</p>
+                <article key={faq.question} className="faq-item">
+                  <strong className="faq-item__question">{faq.question}</strong>
+                  <p className="faq-item__answer">{faq.answer}</p>
                 </article>
               ))}
             </div>

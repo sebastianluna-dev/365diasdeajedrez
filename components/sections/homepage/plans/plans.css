@@ -1,4 +1,4 @@
-.plansWrap {
+.plans__wrap {
   display: flex;
   justify-content: center;
   align-items: stretch;
@@ -6,7 +6,7 @@
   flex-wrap: wrap;
 }
 
-.planCard {
+.plan-card {
   position: relative;
   width: 380px;
   border-radius: 22px;
@@ -18,7 +18,7 @@
   flex-direction: column;
 }
 
-.planCard.featured {
+.plan-card_featured {
   width: 420px;
   background: linear-gradient(
     160deg,
@@ -28,34 +28,34 @@
   border: 1px solid rgba(255, 145, 67, 0.55);
 }
 
-.planCard h3 {
+.plan-card__title {
   font-family: var(--font-gramatika), sans-serif;
   font-size: 25px;
   font-weight: 700;
   margin: 0 0 18px;
 }
 
-.priceRow {
+.plan-card__price-row {
   display: flex;
   align-items: baseline;
   gap: 12px;
   margin-bottom: 20px;
 }
 
-.price {
+.plan-card__price {
   font-family: var(--font-gramatika), sans-serif;
   font-size: 36px;
   font-weight: 700;
 }
 
-.planCard p {
+.plan-card__description {
   font-size: 16.5px;
   line-height: 1.55;
   color: #5c5348;
   margin: 0 0 22px;
 }
 
-.planList {
+.plan-card__list {
   margin: 0 0 26px;
   padding: 0;
   list-style: none;
@@ -65,19 +65,19 @@
   flex: 1;
 }
 
-.planList li {
+.plan-card__list-item {
   display: flex;
   align-items: flex-start;
   gap: 10px;
   color: #3f362f;
 }
 
-.planList li span {
+.plan-card__list-icon {
   color: #ff9143;
   font-weight: 700;
 }
 
-.planButton {
+.plan-card__button {
   display: block;
   text-align: center;
   background: #16110d;
@@ -90,7 +90,7 @@
   box-shadow: 0 4px 0 #000;
 }
 
-.planButton.alt {
+.plan-card__button_variant_alt {
   background: #ff9143;
   color: #16110d;
   border-color: #b8611f;
@@ -98,11 +98,11 @@
 }
 
 @media (max-width: 720px) {
-  .plansWrap {
+  .plans__wrap {
     gap: 24px;
   }
-  .planCard,
-  .planCard.featured {
+  .plan-card,
+  .plan-card_featured {
     width: 100%;
   }
 }

@@ -4,31 +4,20 @@ import "./cta.css";
 export function StickyCtaAndFooter() {
   return (
     <>
-      <div className="stickyCta">
-        <div className="stickyInner">
-          <div className="ctaClock">
+      <div className="sticky-cta">
+        <div className="sticky-cta__inner">
+          <div className="sticky-cta__clock">
             <span>⏰</span>
             <span>900s</span>
           </div>
-          <div className="ctaText">
-            <p
-              style={{
-                fontFamily: "var(--font-gramatika), sans-serif",
-                fontSize: 16,
-                fontWeight: 700,
-                color: "#f2ede7",
-              }}
-            >
-              Se acaba el tiempo.
-            </p>
-            <p style={{ fontSize: 14, color: "#b4a99d", marginTop: 2 }}>
-              No te quedes sin tu lugar en la academia.
-            </p>
+          <div>
+            <p className="sticky-cta__title">Se acaba el tiempo.</p>
+            <p className="sticky-cta__subtitle">No te quedes sin tu lugar en la academia.</p>
           </div>
-          <div className="ctaActions">
-            <Link href="https://wa.me/520000000000">WhatsApp</Link>
-            <Link href="mailto:contacto@365diasdeajedrez.com">Email</Link>
-            <Link href="/#planes" className="ctaPrimary">
+          <div className="sticky-cta__actions">
+            <Link className="sticky-cta__link" href="https://wa.me/520000000000">WhatsApp</Link>
+            <Link className="sticky-cta__link" href="mailto:contacto@365diasdeajedrez.com">Email</Link>
+            <Link href="/#planes" className="sticky-cta__link sticky-cta__link_variant_primary">
               Únete a la academia
             </Link>
           </div>
@@ -36,30 +25,22 @@ export function StickyCtaAndFooter() {
       </div>
 
       <footer className="footer">
-        <div className="footerInner">
-          <div className="footerGrid">
+        <div className="footer__inner">
+          <div className="footer__grid">
             <div>
               <Link href="/#inicio" className="brand" style={{ fontSize: 20 }}>
-                <span className="brandAccent">365</span>
+                <span className="brand__accent">365</span>
                 <span>DiasDeAjedrez</span>
               </Link>
-              <p
-                style={{
-                  fontSize: 14,
-                  lineHeight: 1.6,
-                  color: "#b4a99d",
-                  margin: "14px 0 0",
-                  maxWidth: "36ch",
-                }}
-              >
+              <p className="footer__description">
                 Academia de ajedrez en línea. Entrenamiento estructurado y
                 clases personalizadas para jugadores que quieren mejorar en
                 serio.
               </p>
             </div>
             <div>
-              <h4>Academia</h4>
-              <div className="footerLinks">
+              <h4 className="footer__heading">Academia</h4>
+              <div className="footer__links">
                 <Link href="/#inicio">Inicio</Link>
                 <Link href="/#">Nosotros</Link>
                 <Link href="/blog">Blog</Link>
@@ -68,8 +49,8 @@ export function StickyCtaAndFooter() {
               </div>
             </div>
             <div>
-              <h4>Contacto</h4>
-              <div className="footerLinks">
+              <h4 className="footer__heading">Contacto</h4>
+              <div className="footer__links">
                 <Link href="mailto:contacto@365diasdeajedrez.com">
                   contacto@365diasdeajedrez.com
                 </Link>
@@ -78,7 +59,7 @@ export function StickyCtaAndFooter() {
               </div>
             </div>
           </div>
-          <div className="footerNote">
+          <div className="footer__note">
             <span>© 2026 365DiasDeAjedrez. Todos los derechos reservados.</span>
             <span>Entrena como un jugador serio.</span>
           </div>

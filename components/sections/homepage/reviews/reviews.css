@@ -1,54 +1,49 @@
-.reviewSection {
-  background: #f5f1ec;
-  color: #16110d;
-}
-
-.reviewHead {
+.reviews__head {
   display: flex;
   align-items: baseline;
   gap: 20px;
   margin-bottom: 44px;
 }
 
-.reviewHead h2 {
+.reviews__title {
   font-family: var(--font-gramatika), sans-serif;
   font-size: 38px;
   font-weight: 700;
   margin: 0;
 }
 
-.reviewDivider {
+.reviews__divider {
   flex: 1;
   height: 1px;
   background: rgba(22, 17, 13, 0.12);
 }
 
-.reviewGrid {
+.reviews__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
 }
 
-.reviewCard {
+.review-card {
   border-radius: 20px;
   padding: 24px;
   background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(22, 17, 13, 0.08);
 }
 
-.reviewCard p {
+.review-card__quote {
   margin: 0 0 18px;
   line-height: 1.6;
   color: #3b332e;
 }
 
-.reviewAuthor {
+.review-card__author {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.reviewAvatar {
+.review-card__avatar {
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -60,13 +55,12 @@
   color: #16110d;
 }
 
-.faqSection {
+.faq {
   position: relative;
-  background: #16110d;
   overflow: hidden;
 }
 
-.faqSection::before {
+.faq::before {
   content: "";
   position: absolute;
   bottom: -200px;
@@ -82,7 +76,7 @@
   pointer-events: none;
 }
 
-.faqGrid {
+.faq__grid {
   display: grid;
   grid-template-columns: 0.72fr 1fr;
   gap: 72px;
@@ -90,40 +84,40 @@
   position: relative;
 }
 
-.faqList {
+.faq__list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.faqItem {
+.faq-item {
   border-radius: 18px;
   padding: 18px 20px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.faqItem strong {
+.faq-item__question {
   display: block;
   font-size: 16px;
   margin-bottom: 6px;
 }
 
-.faqItem p {
+.faq-item__answer {
   margin: 0;
   color: #b4a99d;
   line-height: 1.6;
 }
 
 @media (max-width: 1024px) {
-  .faqGrid {
+  .faq__grid {
     grid-template-columns: 1fr;
     gap: 40px;
   }
 }
 
 @media (max-width: 720px) {
-  .reviewGrid {
+  .reviews__grid {
     grid-template-columns: 1fr;
   }
 }

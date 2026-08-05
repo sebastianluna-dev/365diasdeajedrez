@@ -8,35 +8,35 @@ import "./hero.css";
 
 export function HeroSection() {
   return (
-    <div className="landingWrap">
-      <section id="inicio" className="heroSection">
-        <div className="heroGlow" />
-        <div className="siteHeader">
+    <div className="hero">
+      <section id="inicio" className="hero__inner">
+        <div className="hero__glow" />
+        <div className="hero__header">
           <SiteHeader />
         </div>
 
-        <div className="heroGrid">
-          <div className="heroCopy">
-            <h1>El verdadero progreso en ajedrez se gana entrenando.</h1>
-            <p>
+        <div className="hero__grid">
+          <div>
+            <h1 className="hero__title">El verdadero progreso en ajedrez se gana entrenando.</h1>
+            <p className="hero__text">
               Prueba el Método 365: cinco módulos progresivos que te llevan de los fundamentos a los finales, con un
               plan hecho a tu nivel y a tu ritmo.
             </p>
-            <div className="heroActions">
-              <Link href="/#planes" className="primaryBtn">
+            <div className="hero__actions">
+              <Link href="/#planes" className="button button_variant_primary">
                 Únete a la academia
               </Link>
-              <Link href="/#programa" className="secondaryBtn">
+              <Link href="/#programa" className="button button_variant_secondary">
                 Conoce el método
               </Link>
             </div>
           </div>
 
-          <div className="heroVisual">
+          <div className="hero__visual">
             <div>
               <div className="grid">
-                <div className="heroCard p-14" style={{ gridArea: "1 / 1 / 2 / 2" }}>
-                  <div className="heroCardInner">
+                <div className="hero__card p-14" style={{ gridArea: "1 / 1 / 2 / 2" }}>
+                  <div className="hero__card-inner">
                     <Image
                       src="/design-import/assets/hero-jugador.png"
                       alt="Jugador entrenando ajedrez"

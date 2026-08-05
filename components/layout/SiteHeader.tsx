@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import "./site-header.css";
 
 const links = [
   { href: "/", label: "Inicio" },
@@ -12,13 +13,13 @@ const links = [
 export function SiteHeader() {
   return (
     <>
-      <nav className="navShell">
+      <nav className="site-header">
         <Link href="/" className="brand">
-          <span className="brandAccent">365</span>
+          <span className="brand__accent">365</span>
           <span>DiasDeAjedrez</span>
         </Link>
 
-        <div className="navLinks">
+        <div className="site-header__links">
           {links.map((link) => (
             <Link key={link.href} href={link.href}>
               {link.label}
@@ -26,7 +27,7 @@ export function SiteHeader() {
           ))}
         </div>
       </nav>
-      <Link href="/#planes" className="headerButton">
+      <Link href="/#planes" className="site-header__button">
         Agenda tu clase
         <ChevronRight size={16} />
       </Link>

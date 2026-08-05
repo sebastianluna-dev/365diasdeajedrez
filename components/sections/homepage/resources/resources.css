@@ -1,9 +1,4 @@
-.resourcesSection {
-  position: relative;
-  background: #1c1611;
-}
-
-.resourcesSection::before {
+.resources::before {
   content: "";
   position: absolute;
   top: -180px;
@@ -18,7 +13,7 @@
   );
 }
 
-.resourcesGrid {
+.resources__grid {
   display: grid;
   grid-template-columns: 96px 1fr;
   gap: 26px;
@@ -26,14 +21,14 @@
   position: relative;
 }
 
-.resourceTabs {
+.resources__tabs {
   display: flex;
   flex-direction: column;
   gap: 26px;
   padding-top: 6px;
 }
 
-.resourceTab {
+.resources__tab {
   width: 100%;
   padding: 12px 0;
   border-radius: 999px;
@@ -46,7 +41,7 @@
   letter-spacing: 0.16em;
 }
 
-.resourceCards {
+.resources__cards {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(300px, 1fr);
@@ -55,45 +50,45 @@
   padding-bottom: 18px;
 }
 
-.resourceCard {
+.resource-card {
   border-radius: 18px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.resourceCard img {
+.resource-card__image {
   width: 100%;
   aspect-ratio: 900 / 506;
   object-fit: cover;
 }
 
-.resourceBody {
+.resource-card__body {
   padding: 20px;
 }
 
-.resourceBody h3 {
+.resource-card__title {
   font-family: var(--font-gramatika), sans-serif;
   font-size: 22px;
   margin: 0 0 10px;
 }
 
-.resourceBody p {
+.resource-card__text {
   color: #b4a99d;
   line-height: 1.6;
   margin: 0;
 }
 
 @media (max-width: 720px) {
-  .resourcesGrid {
+  .resources__grid {
     grid-template-columns: 1fr;
     gap: 18px;
   }
-  .resourceTabs {
+  .resources__tabs {
     flex-direction: row;
     flex-wrap: wrap;
   }
-  .resourceCards {
+  .resources__cards {
     grid-auto-columns: minmax(260px, 1fr);
   }
 }
