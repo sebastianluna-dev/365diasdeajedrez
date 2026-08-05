@@ -7,6 +7,7 @@
   & .clock-dial {
     width: 210px;
     height: 210px;
+    flex: none;
     border-radius: 50%;
     padding: 13px;
     border: none;
@@ -156,5 +157,18 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: #5a4632;
+  }
+
+  &.clock-dial-column_compact {
+    width: 44px;
+    height: 44px;
+    flex: none;
+    align-items: flex-start;
+    overflow: hidden;
+
+    & .clock-dial {
+      transform: scale(0.2095);
+      transform-origin: top left;
+    }
   }
 }

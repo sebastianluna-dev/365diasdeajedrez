@@ -26,7 +26,7 @@ interface ClockState {
   flagged: ClockSide | null;
 }
 
-function formatTime(t: number): string {
+export function formatTime(t: number): string {
   const total = Math.ceil(t);
   const m = Math.floor(total / 60);
   const sec = total % 60;
@@ -36,7 +36,7 @@ function formatTime(t: number): string {
   return `${m}:${String(sec).padStart(2, "0")}`;
 }
 
-function handAngles(t: number) {
+export function handAngles(t: number) {
   const sec = t % 60;
   const min = (t / 60) % 60;
   const hour = (t / 3600) % 12;

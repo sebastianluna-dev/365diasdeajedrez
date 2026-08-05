@@ -6,7 +6,7 @@ import { PlansSection } from "../components/sections/homepage/plans/plans.sectio
 import { ResourcesSection } from "../components/sections/homepage/resources/resources.section";
 import { ReviewsSection } from "../components/sections/homepage/reviews/reviews.section";
 import { FaqSection } from "../components/sections/homepage/faq/faq.section";
-import { StickyCtaAndFooter } from "../components/sections/homepage/cta/sticky-cta-and-footer.comp";
+import { CtaSection } from "../components/sections/homepage/cta/cta.section";
 
 export default function LandingPage() {
   return (
@@ -19,7 +19,7 @@ export default function LandingPage() {
       <ResourcesSection />
       <ReviewsSection />
       <FaqSection />
-      <StickyCtaAndFooter />
+      <CtaSection />
     </div>
   );
 }

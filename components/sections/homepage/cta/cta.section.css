@@ -31,6 +31,12 @@
     justify-content: center;
     color: #16110d;
     font-weight: 700;
+
+    & .sticky-cta__clock-time {
+      flex: none;
+      width: 44px;
+      font-variant-numeric: tabular-nums;
+    }
   }
 
   & .sticky-cta__title {

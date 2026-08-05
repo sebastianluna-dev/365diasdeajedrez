@@ -1,17 +1,25 @@
+"use client";
+
 import Link from "next/link";
 import { Footer } from "@/components/sections/common/footer.comp";
 import { WhatsappIcon } from "@/components/icons/whatsapp-icon.comp";
 import { EmailIcon } from "@/components/icons/email-icon.comp";
-import "./sticky-cta-and-footer.comp.css";
+import { ClockDial } from "@/components/sections/chess-clock/clock-dial.comp";
+import { useCountdownTimer } from "@/hooks/use-countdown-timer";
+import "./cta.section.css";
 
-export function StickyCtaAndFooter() {
+const STICKY_CTA_DURATION_SECONDS = 900;
+
+export function CtaSection() {
+  const { time, seconds, hands } = useCountdownTimer(STICKY_CTA_DURATION_SECONDS);
+
   return (
     <>
       <div className="sticky-cta">
         <div className="sticky-cta__inner">
           <div className="sticky-cta__clock">
-            <span>⏰</span>
-            <span>900s</span>
+            <ClockDial compact hands={hands} active flagged={false} lowTime={seconds <= 60} />
+            <span className="sticky-cta__clock-time">{time}</span>
           </div>
           <div>
             <p className="sticky-cta__title">Se acaba el tiempo.</p>
