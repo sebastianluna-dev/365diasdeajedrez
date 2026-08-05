@@ -12,7 +12,7 @@ export function ProgramSection() {
       <div className="section__inner">
         <div className="section__head">
           <div>
-            <h2 className="section__title">Un método diseñado para desarrollar un ajedrez sólido.</h2>
+            <h2 className="section__title program__title">Un método diseñado para desarrollar un ajedrez sólido.</h2>
             <p className="section__text">
               Cinco módulos con una progresión natural: desde los principios fundamentales hasta los finales más
               complejos. Cada etapa desarrolla habilidades específicas y prepara el camino para la siguiente.

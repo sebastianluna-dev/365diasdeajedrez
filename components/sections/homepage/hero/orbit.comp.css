@@ -1,70 +1,74 @@
-.orbit__ring {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  pointer-events: none;
-  grid-area: 1 / 1 / 2 / 2;
-}
+.orbit {
+  display: contents;
 
-.orbit__ring_index_1 {
-  width: 440px;
-  height: 440px;
-  border: 1.5px solid rgba(242, 237, 231, 0.32);
-  animation: orbit 32s linear infinite;
-}
+  & .orbit__ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    pointer-events: none;
+    grid-area: 1 / 1 / 2 / 2;
+  }
 
-.orbit__ring_index_2 {
-  width: 414px;
-  height: 414px;
-  border: 1px solid rgba(242, 237, 231, 0.16);
-  animation: orbit 32s linear infinite reverse;
-}
+  & .orbit__ring_index_1 {
+    width: 440px;
+    height: 440px;
+    border: 1.5px solid rgba(242, 237, 231, 0.32);
+    animation: orbit 32s linear infinite;
+  }
 
-.orbit__dot {
-  position: absolute;
-  border-radius: 9999px;
-}
+  & .orbit__ring_index_2 {
+    width: 414px;
+    height: 414px;
+    border: 1px solid rgba(242, 237, 231, 0.16);
+    animation: orbit 32s linear infinite reverse;
+  }
 
-.orbit__dot_ring_1_top {
-  width: 8px;
-  height: 8px;
-  background: #ff9143;
-  top: -5px;
-  right: 50%;
-}
+  & .orbit__dot {
+    position: absolute;
+    border-radius: 9999px;
+  }
 
-.orbit__dot_ring_1_right {
-  width: 6px;
-  height: 6px;
-  background: #f0c04b;
-  top: 50%;
-  right: -4px;
-}
+  & .orbit__dot_ring_1_top {
+    width: 8px;
+    height: 8px;
+    background: #ff9143;
+    top: -5px;
+    right: 50%;
+  }
 
-.orbit__dot_ring_1_bottom {
-  width: 6px;
-  height: 6px;
-  background: #ffffff;
-  right: 50%;
-  bottom: -5px;
-}
+  & .orbit__dot_ring_1_right {
+    width: 6px;
+    height: 6px;
+    background: #f0c04b;
+    top: 50%;
+    right: -4px;
+  }
 
-.orbit__dot_ring_2_top {
-  width: 8px;
-  height: 8px;
-  background: #ffffff;
-  top: -5px;
-  right: 50%;
-}
+  & .orbit__dot_ring_1_bottom {
+    width: 6px;
+    height: 6px;
+    background: #ffffff;
+    right: 50%;
+    bottom: -5px;
+  }
 
-.orbit__dot_ring_2_bottom {
-  width: 6px;
-  height: 6px;
-  background: #ffffff;
-  bottom: -5px;
-  right: 50%;
+  & .orbit__dot_ring_2_top {
+    width: 8px;
+    height: 8px;
+    background: #ffffff;
+    top: -5px;
+    right: 50%;
+  }
+
+  & .orbit__dot_ring_2_bottom {
+    width: 6px;
+    height: 6px;
+    background: #ffffff;
+    bottom: -5px;
+    right: 50%;
+  }
 }
 
 @keyframes orbit {

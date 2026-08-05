@@ -14,45 +14,16 @@ a {
   text-decoration: none;
 }
 
-.blog-page {
-  background: #f2f0ec;
-  color: #16110d;
-  min-height: 100vh;
-}
-
-.blog-page__shell {
-  position: relative;
-  overflow: hidden;
-  min-width: 1100px;
-}
-
-.blog-page__glow {
-  position: absolute;
-  z-index: 0;
-  top: -300px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 900px;
-  height: 700px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(168, 30, 34, 0.1) 0%, rgba(255, 145, 67, 0) 70%);
-  pointer-events: none;
-}
-
-.blog-page__wrap {
-  position: relative;
-  z-index: 1;
-  max-width: 1240px;
-  margin: 0 auto;
-  padding: 0 48px;
-}
-
+/*
+ * Shared across the whole blog family (/blog, /blog/[slug], /blog/articulos),
+ * which don't all share one DOM root — intentionally global, like app/globals.css.
+ */
 .blog-button {
   display: inline-flex;
   align-items: center;
 }
 
-.blog-button_variant_primary {
+.blog-button.blog-button_variant_primary {
   background: #a81e22;
   color: #f2ede7;
   font-weight: 700;
@@ -62,12 +33,12 @@ a {
   box-shadow: 0 4px 0 #711215;
 }
 
-.blog-button_variant_primary:hover {
+.blog-button.blog-button_variant_primary:hover {
   background: #c22a2e;
   color: #f2ede7;
 }
 
-.blog-button_variant_secondary {
+.blog-button.blog-button_variant_secondary {
   background: transparent;
   border: 1px solid rgba(22, 17, 13, 0.22);
   color: #16110d;
@@ -75,18 +46,18 @@ a {
   border-radius: 999px;
 }
 
-.blog-button_variant_secondary:hover {
+.blog-button.blog-button_variant_secondary:hover {
   background: rgba(22, 17, 13, 0.06);
   color: #16110d;
 }
 
-.blog-button_size_md {
+.blog-button.blog-button_size_md {
   gap: 10px;
   font-size: 14.5px;
   padding: 14px 24px;
 }
 
-.blog-button_size_lg {
+.blog-button.blog-button_size_lg {
   gap: 12px;
   font-size: 15.5px;
   padding: 17px 32px;
@@ -111,19 +82,53 @@ a {
   color: #a81e22;
 }
 
-@media (max-width: 1280px) {
-  .blog-page__shell {
-    min-width: 0;
-  }
-  .blog-page__wrap {
-    padding-left: 32px;
-    padding-right: 32px;
-  }
-}
+.blog-page {
+  background: #f2f0ec;
+  color: #16110d;
+  min-height: 100vh;
 
-@media (max-width: 720px) {
-  .blog-page__wrap {
-    padding-left: 20px;
-    padding-right: 20px;
+  & .blog-page__shell {
+    position: relative;
+    overflow: hidden;
+    min-width: 1100px;
+  }
+
+  & .blog-page__glow {
+    position: absolute;
+    z-index: 0;
+    top: -300px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(168, 30, 34, 0.1) 0%, rgba(255, 145, 67, 0) 70%);
+    pointer-events: none;
+  }
+
+  & .blog-page__wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 48px;
+  }
+
+  @media (max-width: 1280px) {
+    & .blog-page__shell {
+      min-width: 0;
+    }
+
+    & .blog-page__wrap {
+      padding-left: 32px;
+      padding-right: 32px;
+    }
+  }
+
+  @media (max-width: 720px) {
+    & .blog-page__wrap {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
   }
 }

@@ -3,19 +3,19 @@
   border: 1px solid rgba(168, 30, 34, 0.38);
   border-radius: 16px;
   padding: 22px;
-}
 
-.sidebar-card__title {
-  font-family: var(--font-gramatika), sans-serif;
-  font-size: 19px;
-  font-weight: 700;
-  margin: 0 0 8px;
-  line-height: 1.25;
-}
+  & .sidebar-card__title {
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0 0 8px;
+    line-height: 1.25;
+  }
 
-.sidebar-card__text {
-  font-size: 14px;
-  line-height: 1.55;
-  color: #4a423a;
-  margin: 0 0 16px;
+  & .sidebar-card__text {
+    font-size: 14px;
+    line-height: 1.55;
+    color: #4a423a;
+    margin: 0 0 16px;
+  }
 }

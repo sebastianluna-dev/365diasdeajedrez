@@ -4,114 +4,114 @@
   padding: 24px 48px 64px;
   position: relative;
   z-index: 1;
-}
 
-.article-content__breadcrumb {
-  font-size: 13.5px;
-  color: #5c5348;
-  margin-bottom: 22px;
-}
-
-.article-content__breadcrumb-link {
-  color: #5c5348;
-}
-
-.article-content__breadcrumb-link:hover {
-  color: #16110d;
-}
-
-.article-content__breadcrumb-sep {
-  margin: 0 8px;
-}
-
-.article-content__breadcrumb-current {
-  color: #a81e22;
-}
-
-.article-content__title {
-  font-family: var(--font-gramatika), sans-serif;
-  font-size: 48px;
-  line-height: 1.12;
-  font-weight: 700;
-  margin: 0 0 18px;
-  max-width: 22ch;
-  text-wrap: balance;
-}
-
-.article-content__byline {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 28px;
-}
-
-.article-content__avatar {
-  position: relative;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #a81e22;
-  color: #f2ede7;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  overflow: hidden;
-  flex: none;
-}
-
-.article-content__avatar-image {
-  object-fit: cover;
-}
-
-.article-content__author-name {
-  display: block;
-  font-weight: 600;
-  font-size: 14px;
-  color: #a81e22;
-}
-
-.article-content__author-meta {
-  display: block;
-  font-size: 13px;
-  color: #5c5348;
-}
-
-.article-content__divider {
-  height: 1px;
-  background: rgba(22, 17, 13, 0.16);
-  margin-bottom: 36px;
-}
-
-.article-content__layout {
-  display: grid;
-  grid-template-columns: 1fr 260px;
-  gap: 56px;
-  align-items: start;
-}
-
-.article-content__cover {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 900 / 506;
-  border-radius: 14px;
-  overflow: hidden;
-  margin-bottom: 36px;
-}
-
-.article-content__cover-image {
-  object-fit: cover;
-  filter: grayscale(1) contrast(1.05);
-}
-
-@media (max-width: 1024px) {
-  .article-content__layout {
-    grid-template-columns: 1fr;
+  & .article-content__breadcrumb {
+    font-size: 13.5px;
+    color: #5c5348;
+    margin-bottom: 22px;
   }
-}
 
-@media (max-width: 720px) {
-  .article-content__title {
-    font-size: 34px;
+  & .article-content__breadcrumb-link {
+    color: #5c5348;
+  }
+
+  & .article-content__breadcrumb-link:hover {
+    color: #16110d;
+  }
+
+  & .article-content__breadcrumb-sep {
+    margin: 0 8px;
+  }
+
+  & .article-content__breadcrumb-current {
+    color: #a81e22;
+  }
+
+  & .article-content__title {
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 48px;
+    line-height: 1.12;
+    font-weight: 700;
+    margin: 0 0 18px;
+    max-width: 22ch;
+    text-wrap: balance;
+  }
+
+  & .article-content__byline {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  & .article-content__avatar {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #a81e22;
+    color: #f2ede7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    overflow: hidden;
+    flex: none;
+  }
+
+  & .article-content__avatar-image {
+    object-fit: cover;
+  }
+
+  & .article-content__author-name {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    color: #a81e22;
+  }
+
+  & .article-content__author-meta {
+    display: block;
+    font-size: 13px;
+    color: #5c5348;
+  }
+
+  & .article-content__divider {
+    height: 1px;
+    background: rgba(22, 17, 13, 0.16);
+    margin-bottom: 36px;
+  }
+
+  & .article-content__layout {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 56px;
+    align-items: start;
+  }
+
+  & .article-content__cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 900 / 506;
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 36px;
+  }
+
+  & .article-content__cover-image {
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.05);
+  }
+
+  @media (max-width: 1024px) {
+    & .article-content__layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    & .article-content__title {
+      font-size: 34px;
+    }
   }
 }

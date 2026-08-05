@@ -10,7 +10,7 @@ interface RelatedArticleCardProps {
 
 export function RelatedArticleCard({ article }: RelatedArticleCardProps) {
   return (
-    <article>
+    <article className="related-article-card">
       <Link href={article.href} className="related-article-card__image-link">
         <Image
           className="related-article-card__image"

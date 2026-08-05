@@ -9,16 +9,14 @@ const highlights = [
 
 export function ReadingList() {
   return (
-    <>
+    <div className="reading-list">
       <h4 className="reading-list__title">Lo más leído</h4>
-      <div className="reading-list">
-        {highlights.map((item, index) => (
-          <Link key={item} href="#" className="reading-list__link">
-            <span className="reading-list__index">{String(index + 1).padStart(2, "0")}</span>
-            <span className="reading-list__label">{item}</span>
-          </Link>
-        ))}
-      </div>
-    </>
+      {highlights.map((item, index) => (
+        <Link key={item} href="#" className="reading-list__link">
+          <span className="reading-list__index">{String(index + 1).padStart(2, "0")}</span>
+          <span className="reading-list__label">{item}</span>
+        </Link>
+      ))}
+    </div>
   );
 }

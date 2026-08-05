@@ -6,40 +6,40 @@
   font-size: 19px;
   color: #16110d;
   justify-self: start;
-}
 
-.blog-brand_context_footer {
-  color: #f2ede7;
-}
+  &.blog-brand_context_footer {
+    color: #f2ede7;
+  }
 
-.blog-brand__accent {
-  color: #a81e22;
-}
+  & .blog-brand__accent {
+    color: #a81e22;
+  }
 
-.blog-brand__accent_context_footer,
-.blog-brand__label_context_footer {
-  color: #b4a99d;
-}
+  & .blog-brand__accent.blog-brand__accent_context_footer,
+  & .blog-brand__label.blog-brand__label_context_footer {
+    color: #b4a99d;
+  }
 
-.blog-brand__marks {
-  display: grid;
-  grid-template-columns: 6px 6px;
-  grid-template-rows: 6px 6px;
-  transform: translateY(-1px);
-  gap: 2px;
-}
+  & .blog-brand__marks {
+    display: grid;
+    grid-template-columns: 6px 6px;
+    grid-template-rows: 6px 6px;
+    transform: translateY(-1px);
+    gap: 2px;
+  }
 
-.blog-brand__mark {
-  display: block;
-  width: 6px;
-  height: 6px;
-  background: #16110d;
-}
+  & .blog-brand__mark {
+    display: block;
+    width: 6px;
+    height: 6px;
+    background: #16110d;
+  }
 
-.blog-brand__mark_hidden {
-  background: transparent;
-}
+  & .blog-brand__mark.blog-brand__mark_hidden {
+    background: transparent;
+  }
 
-.blog-brand__mark_context_footer {
-  background: #f2ede7;
+  & .blog-brand__mark.blog-brand__mark_context_footer {
+    background: #f2ede7;
+  }
 }

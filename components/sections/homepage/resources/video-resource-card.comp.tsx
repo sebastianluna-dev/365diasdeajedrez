@@ -9,7 +9,7 @@ interface VideoResourceCardProps {
 
 export function VideoResourceCard({ video }: VideoResourceCardProps) {
   return (
-    <article className="resource-card">
+    <article className="resource-card video-resource-card">
       <div className="resource-card__image-frame">
         <Image
           className="resource-card__image"

@@ -3,67 +3,65 @@
   grid-template-columns: 270px minmax(0, 1fr) 290px;
   gap: 0;
   padding: 0 0 56px;
-}
 
-.portada__left,
-.portada__center,
-.portada__right {
-  padding-top: 32px;
-}
+  & .portada__left,
+  & .portada__center,
+  & .portada__right {
+    padding-top: 32px;
+  }
 
-.portada__left {
-  padding-right: 30px;
-  border-right: 1px solid rgba(22, 17, 13, 0.14);
-}
+  & .portada__left {
+    padding-right: 30px;
+    border-right: 1px solid rgba(22, 17, 13, 0.14);
+  }
 
-.portada__center {
-  padding: 32px 34px 0;
-}
+  & .portada__center {
+    padding: 32px 34px 0;
+  }
 
-.portada__right {
-  padding: 32px 0 0 30px;
-  border-left: 1px solid rgba(22, 17, 13, 0.14);
-}
+  & .portada__right {
+    padding: 32px 0 0 30px;
+    border-left: 1px solid rgba(22, 17, 13, 0.14);
+  }
 
-@media (max-width: 1280px) {
-  .portada {
+  @media (max-width: 1280px) {
     grid-template-columns: 230px minmax(0, 1fr) 250px;
   }
-}
 
-@media (max-width: 1024px) {
-  .portada {
+  @media (max-width: 1024px) {
     grid-template-columns: minmax(0, 1fr) 260px;
-  }
-  .portada__left {
-    order: 3;
-    grid-column: 1 / -1;
-    border-right: 0;
-    padding-right: 0;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 30px;
-    border-top: 1px solid rgba(22, 17, 13, 0.14);
-    padding-top: 26px;
-  }
-}
 
-@media (max-width: 720px) {
-  .portada {
+    & .portada__left {
+      order: 3;
+      grid-column: 1 / -1;
+      border-right: 0;
+      padding-right: 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 30px;
+      border-top: 1px solid rgba(22, 17, 13, 0.14);
+      padding-top: 26px;
+    }
+  }
+
+  @media (max-width: 720px) {
     grid-template-columns: minmax(0, 1fr);
-  }
-  .portada__left,
-  .portada__center,
-  .portada__right {
-    padding: 26px 0 0;
-    border: 0;
-  }
-  .portada__left {
-    order: 2;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 26px;
-  }
-  .portada__right {
-    order: 3;
+
+    & .portada__left,
+    & .portada__center,
+    & .portada__right {
+      padding: 26px 0 0;
+      border: 0;
+    }
+
+    & .portada__left {
+      order: 2;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 26px;
+    }
+
+    & .portada__right {
+      order: 3;
+    }
   }
 }

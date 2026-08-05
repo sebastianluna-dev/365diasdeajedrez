@@ -2,60 +2,60 @@
   position: relative;
   z-index: 1;
   padding: 24px 32px 96px;
-}
 
-.mentor-cta__card {
-  position: relative;
-  max-width: 1160px;
-  margin: 0 auto;
-  border-radius: 32px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 145, 67, 0.28);
-  background: linear-gradient(150deg, rgba(255, 145, 67, 0.16) 0%, rgba(20, 16, 13, 0.2) 55%, rgba(20, 16, 13, 0.2) 100%);
-}
+  & .mentor-cta__card {
+    position: relative;
+    max-width: 1160px;
+    margin: 0 auto;
+    border-radius: 32px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 145, 67, 0.28);
+    background: linear-gradient(150deg, rgba(255, 145, 67, 0.16) 0%, rgba(20, 16, 13, 0.2) 55%, rgba(20, 16, 13, 0.2) 100%);
+  }
 
-.mentor-cta__glow {
-  position: absolute;
-  top: -160px;
-  right: -80px;
-  width: 520px;
-  height: 520px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 145, 67, 0.18) 0%, rgba(255, 145, 67, 0) 70%);
-}
+  & .mentor-cta__glow {
+    position: absolute;
+    top: -160px;
+    right: -80px;
+    width: 520px;
+    height: 520px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 145, 67, 0.18) 0%, rgba(255, 145, 67, 0) 70%);
+  }
 
-.mentor-cta__content {
-  position: relative;
-  padding: 72px 56px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 22px;
-}
+  & .mentor-cta__content {
+    position: relative;
+    padding: 72px 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 22px;
+  }
 
-.mentor-cta__title {
-  font-family: var(--font-gramatika), sans-serif;
-  font-size: 44px;
-  font-weight: 700;
-  line-height: 1.1;
-  margin: 0;
-  max-width: 20ch;
-  letter-spacing: -0.02em;
-}
+  & .mentor-cta__title {
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0;
+    max-width: 20ch;
+    letter-spacing: -0.02em;
+  }
 
-.mentor-cta__text {
-  font-size: 17.5px;
-  line-height: 1.6;
-  color: #b4a99d;
-  margin: 0;
-  max-width: 52ch;
-}
+  & .mentor-cta__text {
+    font-size: 17.5px;
+    line-height: 1.6;
+    color: #b4a99d;
+    margin: 0;
+    max-width: 52ch;
+  }
 
-.mentor-cta__actions {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 8px;
+  & .mentor-cta__actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 8px;
+  }
 }

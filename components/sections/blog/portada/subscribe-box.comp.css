@@ -2,48 +2,48 @@
   margin-top: 26px;
   padding-top: 22px;
   border-top: 1px solid rgba(22, 17, 13, 0.22);
-}
 
-.subscribe-box__title {
-  font-family: var(--font-gramatika), sans-serif;
-  font-size: 19px;
-  font-weight: 700;
-  margin: 0 0 6px;
-}
+  & .subscribe-box__title {
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
 
-.subscribe-box__text {
-  font-size: 13.5px;
-  line-height: 1.55;
-  color: #5c5348;
-  margin: 0 0 14px;
-}
+  & .subscribe-box__text {
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: #5c5348;
+    margin: 0 0 14px;
+  }
 
-.subscribe-box__input {
-  width: 100%;
-  box-sizing: border-box;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid rgba(22, 17, 13, 0.3);
-  color: #16110d;
-  font-family: var(--font-suisse), Arial, sans-serif;
-  font-size: 14.5px;
-  padding: 12px 2px;
-  outline: none;
-  margin-bottom: 16px;
-}
+  & .subscribe-box__input {
+    width: 100%;
+    box-sizing: border-box;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid rgba(22, 17, 13, 0.3);
+    color: #16110d;
+    font-family: var(--font-suisse), Arial, sans-serif;
+    font-size: 14.5px;
+    padding: 12px 2px;
+    outline: none;
+    margin-bottom: 16px;
+  }
 
-.subscribe-box__submit {
-  width: 100%;
-  background: #16110d;
-  color: #f2ede7;
-  border: 0;
-  font-family: var(--font-suisse), Arial, sans-serif;
-  font-weight: 700;
-  font-size: 13.5px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 16px;
-  border-radius: 11px;
-  cursor: pointer;
-  box-shadow: 0 4px 0 #6b6259;
+  & .subscribe-box__submit {
+    width: 100%;
+    background: #16110d;
+    color: #f2ede7;
+    border: 0;
+    font-family: var(--font-suisse), Arial, sans-serif;
+    font-weight: 700;
+    font-size: 13.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 16px;
+    border-radius: 11px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #6b6259;
+  }
 }
