@@ -11,7 +11,9 @@ interface ArticleCardProps {
 export function ArticleCard({ article, id }: ArticleCardProps) {
   return (
     <article id={id} className="article-card">
-      {article.image && <MediaFrame src={article.image} alt={article.title} marginBottom />}
+      {article.image && (
+        <MediaFrame src={article.image} alt={article.title} marginBottom sizes="(max-width: 1024px) 50vw, 290px" />
+      )}
       <span className="eyebrow">{article.category}</span>
       <h3 className="article-card__title">{article.title}</h3>
       <p className="article-card__text">{article.excerpt}</p>

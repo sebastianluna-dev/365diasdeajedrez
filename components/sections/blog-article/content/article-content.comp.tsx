@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Article } from "@/interfaces/article.interface";
 import { ArticleBody } from "./article-body.comp";
 import { ShareBox } from "./share-box.comp";
@@ -31,7 +32,7 @@ export function ArticleContent({ article }: ArticleContentProps) {
         <div className="article-content__byline">
           <span className="article-content__avatar">
             {author.avatar ? (
-              <img className="article-content__avatar-image" src={author.avatar} alt={author.name} />
+              <Image className="article-content__avatar-image" src={author.avatar} alt={author.name} fill sizes="36px" />
             ) : (
               author.name.charAt(0)
             )}
@@ -49,7 +50,13 @@ export function ArticleContent({ article }: ArticleContentProps) {
         <div>
           {article.image && (
             <div className="article-content__cover">
-              <img className="article-content__cover-image" src={article.image} alt={article.title} />
+              <Image
+                className="article-content__cover-image"
+                src={article.image}
+                alt={article.title}
+                fill
+                sizes="(max-width: 1024px) 100vw, 780px"
+              />
             </div>
           )}
           {article.body && <ArticleBody blocks={article.body} />}

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Mentor } from "@/interfaces/mentor.interface";
 import "./hero.section.css";
 
@@ -12,7 +13,7 @@ export function MentorHeroSection({ mentor }: MentorHeroSectionProps) {
       <div className="mentor-hero__card">
         <div className="mentor-hero__media">
           <div className="mentor-hero__photo">
-            <img src={mentor.photo} alt={mentor.name} />
+            <Image src={mentor.photo} alt={mentor.name} fill sizes="(max-width: 720px) 100vw, 270px" />
           </div>
           <div className="mentor-hero__ratings">
             <div className="mentor-hero__rating">

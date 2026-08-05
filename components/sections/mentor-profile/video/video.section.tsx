@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import type { Mentor } from "@/interfaces/mentor.interface";
 import "./video.section.css";
 
@@ -33,7 +34,13 @@ export function MentorVideoSection({ mentor }: MentorVideoSectionProps) {
       </div>
 
       <div className="mentor-video__frame">
-        <img className="mentor-video__poster" src={mentor.photo} alt={mentor.name} />
+        <Image
+          className="mentor-video__poster"
+          src={mentor.photo}
+          alt={mentor.name}
+          fill
+          sizes="(max-width: 1024px) 100vw, 520px"
+        />
         <div className="mentor-video__overlay" />
         <button type="button" className="mentor-video__play" onClick={() => setPreparing(true)}>
           <span className="mentor-video__play-icon">▶</span>

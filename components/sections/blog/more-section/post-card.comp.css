@@ -4,12 +4,8 @@
 }
 
 .post-card__image {
-  width: 100%;
-  aspect-ratio: 16 / 9;
   object-fit: cover;
-  display: block;
   filter: grayscale(1) contrast(1.05);
-  margin-bottom: 16px;
 }
 
 .post-card__title {
@@ -29,7 +25,10 @@
 }
 
 .post-card__image-link {
+  position: relative;
   display: block;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 16px;
 }
 
 .post-card__text {

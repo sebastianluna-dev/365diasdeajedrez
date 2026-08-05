@@ -1,5 +1,6 @@
 .media-frame {
   position: relative;
+  aspect-ratio: 16 / 9;
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid rgba(22, 17, 13, 0.12);
@@ -10,10 +11,7 @@
 }
 
 .media-frame__image {
-  width: 100%;
-  aspect-ratio: 16 / 9;
   object-fit: cover;
-  display: block;
   filter: grayscale(1) contrast(1.05);
 }
 

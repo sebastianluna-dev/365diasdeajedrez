@@ -1,15 +1,14 @@
 .related-article-card__image-link {
+  position: relative;
   display: block;
+  aspect-ratio: 16 / 9;
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 16px;
 }
 
 .related-article-card__image {
-  width: 100%;
-  aspect-ratio: 16 / 9;
   object-fit: cover;
-  display: block;
   filter: grayscale(1) contrast(1.05);
 }
 

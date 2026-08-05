@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import "./resources.section.css";
 
 const resources = [
@@ -47,7 +48,15 @@ export function ResourcesSection() {
           <div className="resources__cards">
             {resources.map((resource) => (
               <article key={resource.title} className="resource-card">
-                <img className="resource-card__image" src={resource.image} alt={resource.title} />
+                <div className="resource-card__image-frame">
+                  <Image
+                    className="resource-card__image"
+                    src={resource.image}
+                    alt={resource.title}
+                    fill
+                    sizes="(max-width: 720px) 260px, 300px"
+                  />
+                </div>
                 <div className="resource-card__body">
                   <h3 className="resource-card__title">{resource.title}</h3>
                   <p className="resource-card__text">{resource.text}</p>

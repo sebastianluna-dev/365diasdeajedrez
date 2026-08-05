@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Article } from "@/interfaces/article.interface";
 import "./related-article-card.comp.css";
 
@@ -11,7 +12,13 @@ export function RelatedArticleCard({ article }: RelatedArticleCardProps) {
     <article>
       {article.image && (
         <Link href={article.href} className="related-article-card__image-link">
-          <img className="related-article-card__image" src={article.image} alt={article.title} />
+          <Image
+            className="related-article-card__image"
+            src={article.image}
+            alt={article.title}
+            fill
+            sizes="(max-width: 1024px) 50vw, 33vw"
+          />
         </Link>
       )}
       <span className="eyebrow">{article.category}</span>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Article } from "@/interfaces/article.interface";
 import { MediaFrame } from "./media-frame.comp";
 import "./hero-article.comp.css";
@@ -10,7 +11,12 @@ interface HeroArticleProps {
 export function HeroArticle({ article }: HeroArticleProps) {
   return (
     <article className="hero-article">
-      <MediaFrame src={article.image!} alt={article.title} badge="Portada" />
+      <MediaFrame
+        src={article.image!}
+        alt={article.title}
+        badge="Portada"
+        sizes="(max-width: 1024px) 100vw, 700px"
+      />
       <div className="hero-article__meta">
         <span>{article.category}</span>
         <span className="hero-article__meta-dot" />
@@ -25,7 +31,13 @@ export function HeroArticle({ article }: HeroArticleProps) {
       <div className="hero-article__footer">
         <div className="hero-article__author">
           <div className="hero-article__avatar">
-            <img className="hero-article__avatar-image" src={article.author!.avatar} alt={article.author!.name} />
+            <Image
+              className="hero-article__avatar-image"
+              src={article.author!.avatar!}
+              alt={article.author!.name}
+              fill
+              sizes="46px"
+            />
           </div>
           <div>
             <div className="hero-article__author-name">{article.author!.name}</div>

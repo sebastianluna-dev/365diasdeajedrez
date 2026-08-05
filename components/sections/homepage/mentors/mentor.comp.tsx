@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Mentor as MentorData } from "@/interfaces/mentor.interface";
 import "./mentor.comp.css";
 
@@ -10,7 +11,7 @@ export function Mentor({ mentor }: MentorProps) {
   return (
     <Link href={`/mentores/${mentor.slug}`} className="mentor-card">
       <div className="mentor-card__photo">
-        <img src={mentor.photo} alt={mentor.name} />
+        <Image src={mentor.photo} alt={mentor.name} fill sizes="(max-width: 720px) 100vw, (max-width: 1024px) 50vw, 25vw" />
       </div>
       <div className="mentor-card__body">
         <div>
