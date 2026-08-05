@@ -3,6 +3,7 @@ import Image from "next/image";
 import type { Article } from "@/interfaces/article.interface";
 import { ArticleBody } from "./article-body.comp";
 import { ShareBox } from "./share-box.comp";
+import { DEFAULT_BLOG_THUMBNAIL } from "@/data/media-defaults.data";
 import "./article-content.comp.css";
 
 interface ArticleContentProps {
@@ -48,17 +49,15 @@ export function ArticleContent({ article }: ArticleContentProps) {
 
       <div className="article-content__layout">
         <div>
-          {article.image && (
-            <div className="article-content__cover">
-              <Image
-                className="article-content__cover-image"
-                src={article.image}
-                alt={article.title}
-                fill
-                sizes="(max-width: 1024px) 100vw, 780px"
-              />
-            </div>
-          )}
+          <div className="article-content__cover">
+            <Image
+              className="article-content__cover-image"
+              src={article.image ?? DEFAULT_BLOG_THUMBNAIL}
+              alt={article.title}
+              fill
+              sizes="(max-width: 1024px) 100vw, 780px"
+            />
+          </div>
           {article.body && <ArticleBody blocks={article.body} />}
         </div>
 

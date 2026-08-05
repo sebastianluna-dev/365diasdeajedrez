@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Article } from "@/interfaces/article.interface";
+import { DEFAULT_BLOG_THUMBNAIL } from "@/data/media-defaults.data";
 import "./post-card.comp.css";
 
 interface PostCardProps {
@@ -14,7 +15,7 @@ export function PostCard({ article, id }: PostCardProps) {
       <Link href={article.href} className="post-card__image-link">
         <Image
           className="post-card__image"
-          src={article.image!}
+          src={article.image ?? DEFAULT_BLOG_THUMBNAIL}
           alt={article.title}
           fill
           sizes="(max-width: 1024px) 50vw, 33vw"

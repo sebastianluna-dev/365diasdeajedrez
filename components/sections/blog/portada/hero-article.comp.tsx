@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Article } from "@/interfaces/article.interface";
 import { MediaFrame } from "./media-frame.comp";
+import { DEFAULT_BLOG_THUMBNAIL } from "@/data/media-defaults.data";
 import "./hero-article.comp.css";
 
 interface HeroArticleProps {
@@ -12,7 +13,7 @@ export function HeroArticle({ article }: HeroArticleProps) {
   return (
     <article className="hero-article">
       <MediaFrame
-        src={article.image!}
+        src={article.image ?? DEFAULT_BLOG_THUMBNAIL}
         alt={article.title}
         badge="Portada"
         sizes="(max-width: 1024px) 100vw, 700px"

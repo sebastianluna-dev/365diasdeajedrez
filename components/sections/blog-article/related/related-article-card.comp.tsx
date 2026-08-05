@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Article } from "@/interfaces/article.interface";
+import { DEFAULT_BLOG_THUMBNAIL } from "@/data/media-defaults.data";
 import "./related-article-card.comp.css";
 
 interface RelatedArticleCardProps {
@@ -10,17 +11,15 @@ interface RelatedArticleCardProps {
 export function RelatedArticleCard({ article }: RelatedArticleCardProps) {
   return (
     <article>
-      {article.image && (
-        <Link href={article.href} className="related-article-card__image-link">
-          <Image
-            className="related-article-card__image"
-            src={article.image}
-            alt={article.title}
-            fill
-            sizes="(max-width: 1024px) 50vw, 33vw"
-          />
-        </Link>
-      )}
+      <Link href={article.href} className="related-article-card__image-link">
+        <Image
+          className="related-article-card__image"
+          src={article.image ?? DEFAULT_BLOG_THUMBNAIL}
+          alt={article.title}
+          fill
+          sizes="(max-width: 1024px) 50vw, 33vw"
+        />
+      </Link>
       <span className="eyebrow">{article.category}</span>
       <h3 className="related-article-card__title">
         <Link href={article.href} className="related-article-card__title-link">

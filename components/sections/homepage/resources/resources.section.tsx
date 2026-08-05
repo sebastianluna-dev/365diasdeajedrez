@@ -1,8 +1,13 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { videos } from "@/data/videos.data";
+import { BlogResourceCard } from "./blog-resource-card.comp";
+import { VideoResourceCard } from "./video-resource-card.comp";
 import "./resources.section.css";
 
-const resources = [
+const blogResources = [
   {
     title: "Cómo pensar en el medio juego",
     text: "Ideas concretas para evaluar una posición y crear un plan sólido.",
@@ -20,49 +25,46 @@ const resources = [
   },
 ];
 
+type ResourceTab = "articles" | "videos";
+
 export function ResourcesSection() {
+  const [tab, setTab] = useState<ResourceTab>("articles");
+
   return (
     <section id="blog" className="section section_theme_dark resources">
       <div className="section__inner">
         <div className="section__head">
           <div>
             <span className="section__eyebrow">Recursos</span>
-            <h2 className="section__title">
-              Material de estudio para todos los niveles.
-            </h2>
-            <p className="section__text">
-              Artículos, ideas y ejercicios para seguir aprendiendo entre
-              clases.
-            </p>
+            <h2 className="section__title">Material de estudio para todos los niveles.</h2>
+            <p className="section__text">Artículos, ideas y ejercicios para seguir aprendiendo entre clases.</p>
           </div>
-          <Link href="/blog" className="button button_variant_primary">
+          <Link href={tab === "articles" ? "/blog" : "/videos"} className="button button_variant_primary">
             Ver más
           </Link>
         </div>
 
         <div className="resources__grid">
           <div className="resources__tabs">
-            <button className="resources__tab">Blogs</button>
-            <button className="resources__tab">Videos</button>
+            <button
+              type="button"
+              onClick={() => setTab("articles")}
+              className={`resources__tab${tab === "articles" ? " resources__tab_active" : ""}`}
+            >
+              Artículos
+            </button>
+            <button
+              type="button"
+              onClick={() => setTab("videos")}
+              className={`resources__tab${tab === "videos" ? " resources__tab_active" : ""}`}
+            >
+              Videos
+            </button>
           </div>
           <div className="resources__cards">
-            {resources.map((resource) => (
-              <article key={resource.title} className="resource-card">
-                <div className="resource-card__image-frame">
-                  <Image
-                    className="resource-card__image"
-                    src={resource.image}
-                    alt={resource.title}
-                    fill
-                    sizes="(max-width: 720px) 260px, 300px"
-                  />
-                </div>
-                <div className="resource-card__body">
-                  <h3 className="resource-card__title">{resource.title}</h3>
-                  <p className="resource-card__text">{resource.text}</p>
-                </div>
-              </article>
-            ))}
+            {tab === "articles"
+              ? blogResources.map((resource) => <BlogResourceCard key={resource.title} {...resource} />)
+              : videos.map((video) => <VideoResourceCard key={video.slug} video={video} />)}
           </div>
         </div>
       </div>

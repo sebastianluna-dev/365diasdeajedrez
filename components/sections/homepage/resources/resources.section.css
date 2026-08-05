@@ -1,3 +1,7 @@
+section.resources {
+  overflow: hidden;
+}
+
 .resources::before {
   content: "";
   position: absolute;
@@ -6,16 +10,13 @@
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(255, 145, 67, 0.1) 0%,
-    rgba(255, 145, 67, 0) 70%
-  );
+  background: radial-gradient(circle, rgba(255, 145, 67, 0.1) 0%, rgba(255, 145, 67, 0) 70%);
+  pointer-events: none;
 }
 
 .resources__grid {
   display: grid;
-  grid-template-columns: 96px 1fr;
+  grid-template-columns: 128px 1fr;
   gap: 26px;
   align-items: start;
   position: relative;
@@ -39,6 +40,14 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.16em;
+  cursor: pointer;
+  transition: all 150ms ease-in-out;
+}
+
+.resources__tab_active {
+  background: #ff9143;
+  border-color: #ff9143;
+  color: #16110d;
 }
 
 .resources__cards {
