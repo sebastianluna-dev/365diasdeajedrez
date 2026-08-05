@@ -1,6 +1,6 @@
 "use client";
 
-import { useChessClock } from "@/hooks/use-chess-clock";
+import { useChessClock } from "@/hooks/use-chess-clock.hook";
 import { ClockDial } from "./clock-dial.comp";
 import "./chess-clock.comp.css";
 

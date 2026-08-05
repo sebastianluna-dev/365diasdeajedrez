@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { formatTime, handAngles } from "./use-chess-clock";
+import { formatTime, handAngles } from "./use-chess-clock.hook";
 
 interface CountdownTimer {
   time: string;

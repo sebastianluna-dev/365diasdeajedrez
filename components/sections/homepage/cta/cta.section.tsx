@@ -5,7 +5,7 @@ import { Footer } from "@/components/sections/common/footer.comp";
 import { WhatsappIcon } from "@/components/icons/whatsapp-icon.comp";
 import { EmailIcon } from "@/components/icons/email-icon.comp";
 import { ClockDial } from "@/components/sections/chess-clock/clock-dial.comp";
-import { useCountdownTimer } from "@/hooks/use-countdown-timer";
+import { useCountdownTimer } from "@/hooks/use-countdown-timer.hook";
 import "./cta.section.css";
 
 const STICKY_CTA_DURATION_SECONDS = 900;

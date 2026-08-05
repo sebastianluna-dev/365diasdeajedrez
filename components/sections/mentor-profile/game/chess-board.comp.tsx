@@ -1,6 +1,6 @@
 "use client";
 
-import { useChessReplay } from "@/hooks/use-chess-replay";
+import { useChessReplay } from "@/hooks/use-chess-replay.hook";
 import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
 import { SkipIcon } from "@/components/icons/skip-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
