@@ -1,0 +1,11 @@
+interface ChevronIconProps {
+  className?: string;
+}
+
+export function ChevronIcon({ className }: ChevronIconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true">
+      <path d="m7.73 2.87.07-.07c1.13-1.13 1.6-1.13 2.73 0l6.4 6.37c1.73 1.77 1.73 3.9 0 5.67l-6.4 6.37c-1.13 1.13-1.6 1.13-2.73 0l-.07-.07c-1.13-1.13-1.13-1.6 0-2.73l6.37-6.4-6.37-6.4c-1.13-1.13-1.13-1.6 0-2.73zm0 0" />
+    </svg>
+  );
+}

@@ -1,6 +1,10 @@
 "use client";
 
 import { useChessReplay } from "@/hooks/use-chess-replay";
+import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
+import { SkipIcon } from "@/components/icons/skip-icon.comp";
+import { PlayIcon } from "@/components/icons/play-icon.comp";
+import { PauseIcon } from "@/components/icons/pause-icon.comp";
 import "./chess-board.comp.css";
 
 interface ChessBoardProps {
@@ -41,16 +45,12 @@ export function ChessBoard({ moves, flipBoard }: ChessBoardProps) {
         <div className="chess-board__controls">
           <button type="button" aria-label="Ir al inicio" onClick={goToStart} className="chess-board__control">
             <span className="chess-board__control-icon_flipped">
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true">
-                <path d="m17.93 2h.13c1.6 0 1.93.33 1.93 1.93v16.13c0 1.6-.33 1.93-1.93 1.93h-.13c-1.6 0-1.93-.33-1.93-1.93v-16.13c0-1.6.33-1.93 1.93-1.93zm-13.86.87.07-.07c1.13-1.13 1.6-1.13 2.73 0l6.4 6.37c1.73 1.77 1.73 3.9 0 5.67l-6.4 6.37c-1.13 1.13-1.6 1.13-2.73 0l-.07-.07c-1.13-1.13-1.13-1.6 0-2.73l6.37-6.4-6.37-6.4c-1.13-1.13-1.13-1.6 0-2.73zm0 0" />
-              </svg>
+              <SkipIcon />
             </span>
           </button>
           <button type="button" aria-label="Jugada anterior" onClick={goToPrevious} className="chess-board__control">
             <span className="chess-board__control-icon_flipped">
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true">
-                <path d="m7.73 2.87.07-.07c1.13-1.13 1.6-1.13 2.73 0l6.4 6.37c1.73 1.77 1.73 3.9 0 5.67l-6.4 6.37c-1.13 1.13-1.6 1.13-2.73 0l-.07-.07c-1.13-1.13-1.13-1.6 0-2.73l6.37-6.4-6.37-6.4c-1.13-1.13-1.13-1.6 0-2.73zm0 0" />
-              </svg>
+              <ChevronIcon />
             </span>
           </button>
           <button
@@ -59,26 +59,13 @@ export function ChessBoard({ moves, flipBoard }: ChessBoardProps) {
             onClick={toggleAutoPlay}
             className={`chess-board__control chess-board__control_variant_play${isAutoPlaying ? " chess-board__control_active" : ""}`}
           >
-            {isAutoPlaying ? (
-              <svg viewBox="0 0 24 24" width="19" height="22" fill="currentColor" aria-hidden="true">
-                <rect x="4" y="2" width="6" height="20" rx="1" />
-                <rect x="14" y="2" width="6" height="20" rx="1" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" width="19" height="22" fill="currentColor" aria-hidden="true">
-                <path d="M3 2l18 11L3 24V2z" />
-              </svg>
-            )}
+            {isAutoPlaying ? <PauseIcon /> : <PlayIcon />}
           </button>
           <button type="button" aria-label="Jugada siguiente" onClick={goToNext} className="chess-board__control">
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true">
-              <path d="m7.73 2.87.07-.07c1.13-1.13 1.6-1.13 2.73 0l6.4 6.37c1.73 1.77 1.73 3.9 0 5.67l-6.4 6.37c-1.13 1.13-1.6 1.13-2.73 0l-.07-.07c-1.13-1.13-1.13-1.6 0-2.73l6.37-6.4-6.37-6.4c-1.13-1.13-1.13-1.6 0-2.73zm0 0" />
-            </svg>
+            <ChevronIcon />
           </button>
           <button type="button" aria-label="Ir al final" onClick={goToEnd} className="chess-board__control">
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true">
-              <path d="m17.93 2h.13c1.6 0 1.93.33 1.93 1.93v16.13c0 1.6-.33 1.93-1.93 1.93h-.13c-1.6 0-1.93-.33-1.93-1.93v-16.13c0-1.6.33-1.93 1.93-1.93zm-13.86.87.07-.07c1.13-1.13 1.6-1.13 2.73 0l6.4 6.37c1.73 1.77 1.73 3.9 0 5.67l-6.4 6.37c-1.13 1.13-1.6 1.13-2.73 0l-.07-.07c-1.13-1.13-1.13-1.6 0-2.73l6.37-6.4-6.37-6.4c-1.13-1.13-1.13-1.6 0-2.73zm0 0" />
-            </svg>
+            <SkipIcon />
           </button>
         </div>
       </div>

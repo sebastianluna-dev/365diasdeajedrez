@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { subscriptionPlans } from "@/data/subscription-plans.data";
+import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import "./plans.section.css";
 
 export function PlansSection() {
@@ -15,57 +17,32 @@ export function PlansSection() {
         </div>
 
         <div className="plans__wrap">
-          <div className="plan-card">
-            <h3 className="plan-card__title">Plan Semanal</h3>
-            <div className="plan-card__price-row">
-              <span className="plan-card__price">$89</span>
-              <span className="muted-text">/ mes</span>
+          {subscriptionPlans.map((plan) => (
+            <div key={plan.slug} className={`plan-card${plan.featured ? " plan-card_featured" : ""}`}>
+              <h3 className="plan-card__title">{plan.name}</h3>
+              <div className="plan-card__price-row">
+                <span className="plan-card__price">${plan.price.toLocaleString("en-US")}</span>
+                <span className="muted-text">
+                  {plan.currency} / {plan.period}
+                </span>
+              </div>
+              <p className="plan-card__description">{plan.description}</p>
+              <ul className="plan-card__list">
+                {plan.features.map((feature) => (
+                  <li key={feature} className="plan-card__list-item">
+                    <CircleCheckIcon className="plan-card__list-icon" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/#planes"
+                className={`plan-card__button${plan.featured ? " plan-card__button_variant_alt" : ""}`}
+              >
+                {plan.ctaLabel}
+              </Link>
             </div>
-            <p className="plan-card__description">
-              Una clase por semana para entrenar con constancia, corregir
-              errores y avanzar con un plan claro.
-            </p>
-            <ul className="plan-card__list">
-              <li className="plan-card__list-item">
-                <span className="plan-card__list-icon">✓</span> 1 clase guiada por semana
-              </li>
-              <li className="plan-card__list-item">
-                <span className="plan-card__list-icon">✓</span> Seguimiento del avance
-              </li>
-              <li className="plan-card__list-item">
-                <span className="plan-card__list-icon">✓</span> Material y ejercicios
-              </li>
-            </ul>
-            <Link href="/#planes" className="plan-card__button">
-              Empieza el Plan Semanal
-            </Link>
-          </div>
-
-          <div className="plan-card plan-card_featured">
-            <h3 className="plan-card__title">Plan Mensual</h3>
-            <div className="plan-card__price-row">
-              <span className="plan-card__price">$159</span>
-              <span className="muted-text">/ mes</span>
-            </div>
-            <p className="plan-card__description">
-              Más sesiones, más seguimiento y una progresión más rápida para
-              quienes quieren avanzar con mayor intensidad.
-            </p>
-            <ul className="plan-card__list">
-              <li className="plan-card__list-item">
-                <span className="plan-card__list-icon">✓</span> 2 clases semanales
-              </li>
-              <li className="plan-card__list-item">
-                <span className="plan-card__list-icon">✓</span> Análisis de partidas
-              </li>
-              <li className="plan-card__list-item">
-                <span className="plan-card__list-icon">✓</span> Plan de estudio completo
-              </li>
-            </ul>
-            <Link href="/#planes" className="plan-card__button plan-card__button_variant_alt">
-              Prueba el Plan Mensual
-            </Link>
-          </div>
+          ))}
         </div>
       </div>
     </section>
