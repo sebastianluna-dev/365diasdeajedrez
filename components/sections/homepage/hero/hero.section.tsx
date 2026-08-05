@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { SiteHeader } from "../../../layout/site-header.comp";
 import { FloatBadge } from "./float-badge.comp";
 import { Orbit } from "./orbit.comp";
 import { ChessPieceUnicode } from "@/enums/chess-pieces.enum";
@@ -11,9 +10,6 @@ export function HeroSection() {
     <div className="hero">
       <section id="inicio" className="hero__inner">
         <div className="hero__glow" />
-        <div className="hero__header">
-          <SiteHeader />
-        </div>
 
         <div className="hero__grid">
           <div>

@@ -1,3 +1,4 @@
+import { SiteHeader } from "../components/sections/common/site-header.comp";
 import { HeroSection } from "../components/sections/homepage/hero/hero.section";
 import { ProgramSection } from "../components/sections/homepage/program/program.section";
 import { MentorsSection } from "../components/sections/homepage/mentors/mentors.section";
@@ -9,6 +10,7 @@ import { StickyCtaAndFooter } from "../components/sections/homepage/cta/sticky-c
 export default function LandingPage() {
   return (
     <div className="landingPage">
+      <SiteHeader />
       <HeroSection />
       <ProgramSection />
       <MentorsSection />

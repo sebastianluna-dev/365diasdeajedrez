@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { SiteHeader } from "@/components/layout/site-header.comp";
+import { SiteHeader } from "@/components/sections/common/site-header.comp";
 import { SiteFooter } from "@/components/layout/site-footer.comp";
 import { MentorHeroSection } from "@/components/sections/mentor-profile/hero/hero.section";
 import { MentorVideoSection } from "@/components/sections/mentor-profile/video/video.section";
@@ -37,14 +37,7 @@ export default async function MentorProfilePage({ params }: MentorPageProps) {
     <div className="mentor-profile-page">
       <div aria-hidden="true" className="mentor-profile-page__glow" />
 
-      <div className="mentor-profile-page__nav">
-        <div className="mentor-profile-page__nav-inner">
-          <div className="mentor-profile-page__nav-bar">
-            <SiteHeader ctaLabel="Agenda una llamada" />
-          </div>
-          <div className="mentor-profile-page__nav-spacer" />
-        </div>
-      </div>
+      <SiteHeader />
 
       <MentorHeroSection mentor={mentor} />
       <MentorVideoSection mentor={mentor} />

@@ -17,28 +17,4 @@
     pointer-events: none;
     z-index: 0;
   }
-
-  & .mentor-profile-page__nav {
-    position: relative;
-    z-index: 40;
-    background: #16110d;
-  }
-
-  & .mentor-profile-page__nav-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 14px 32px 0;
-    box-sizing: border-box;
-  }
-
-  & .mentor-profile-page__nav-bar {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    min-width: 0;
-  }
-
-  & .mentor-profile-page__nav-spacer {
-    height: 14px;
-  }
 }
