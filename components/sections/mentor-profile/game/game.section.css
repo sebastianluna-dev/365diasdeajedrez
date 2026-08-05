@@ -1,0 +1,31 @@
+.mentor-game {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid rgba(245, 240, 232, 0.07);
+}
+
+.mentor-game__inner {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 88px 32px;
+}
+
+.mentor-game__intro {
+  max-width: 56ch;
+  margin-bottom: 40px;
+}
+
+.mentor-game__title {
+  font-family: var(--font-gramatika), sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.14;
+  margin: 0 0 12px;
+}
+
+.mentor-game__text {
+  font-size: 16.5px;
+  line-height: 1.65;
+  color: #b4a99d;
+  margin: 0;
+}

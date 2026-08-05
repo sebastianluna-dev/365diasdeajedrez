@@ -1,0 +1,129 @@
+.mentor-video {
+  position: relative;
+  z-index: 1;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 32px 32px 88px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+
+.mentor-video__title {
+  font-family: var(--font-gramatika), sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1.12;
+  margin: 0 0 18px;
+  max-width: 18ch;
+}
+
+.mentor-video__text {
+  font-size: 19px;
+  line-height: 1.65;
+  color: #b4a99d;
+  margin: 0 0 26px;
+}
+
+.mentor-video__points {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mentor-video__point {
+  display: flex;
+  gap: 12px;
+  font-size: 19px;
+  line-height: 1.65;
+  color: #b4a99d;
+}
+
+.mentor-video__point-icon {
+  color: #ff9143;
+  font-size: 26px;
+  line-height: 1.2;
+}
+
+.mentor-video__frame {
+  position: relative;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 145, 67, 0.2);
+  aspect-ratio: 16 / 9;
+  background: #110d0a;
+}
+
+.mentor-video__poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.85);
+}
+
+.mentor-video__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(22, 17, 13, 0.35) 0%, rgba(22, 17, 13, 0.8) 100%);
+}
+
+.mentor-video__play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  color: #f2ede7;
+}
+
+.mentor-video__play:hover {
+  color: #ff9143;
+}
+
+.mentor-video__play-icon {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background: rgba(255, 145, 67, 0.92);
+  color: #16110d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 18px 40px -12px rgba(255, 145, 67, 0.6);
+}
+
+.mentor-video__play-label {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.mentor-video__duration {
+  position: absolute;
+  left: 20px;
+  top: 18px;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #f2ede7;
+  background: rgba(22, 17, 13, 0.6);
+  border: 1px solid rgba(242, 237, 231, 0.16);
+  border-radius: 999px;
+  padding: 6px 12px;
+}
+
+@media (max-width: 1024px) {
+  .mentor-video {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}

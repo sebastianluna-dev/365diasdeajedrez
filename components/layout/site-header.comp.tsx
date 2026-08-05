@@ -10,7 +10,11 @@ const links = [
   { href: "/blog", label: "Blog" },
 ];
 
-export function SiteHeader() {
+interface SiteHeaderProps {
+  ctaLabel?: string;
+}
+
+export function SiteHeader({ ctaLabel = "Agenda tu clase" }: SiteHeaderProps) {
   return (
     <>
       <nav className="site-header">
@@ -28,7 +32,7 @@ export function SiteHeader() {
         </div>
       </nav>
       <Link href="/#planes" className="site-header__button">
-        Agenda tu clase
+        {ctaLabel}
         <ChevronRight size={16} />
       </Link>
     </>
