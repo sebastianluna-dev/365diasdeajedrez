@@ -1,3 +1,4 @@
+import { articles } from "@/data/articles.data";
 import { ArticleCard } from "./article-card.comp";
 import { HeroArticle } from "./hero-article.comp";
 import { SidebarCard } from "./sidebar-card.comp";
@@ -6,27 +7,19 @@ import { SubscribeBox } from "./subscribe-box.comp";
 import "./portada.section.css";
 
 export function Portada() {
+  const methodArticle = articles.find((article) => article.slug === "metodo")!;
+  const tacticsArticle = articles.find((article) => article.slug === "tactica")!;
+  const heroArticle = articles.find((article) => article.slug === "torre-c3")!;
+
   return (
     <section className="portada">
       <div className="portada__left">
-        <ArticleCard
-          eyebrow="Método"
-          title="Cómo organizar tu entrenamiento de ajedrez"
-          text="Primero conocimiento sólido, después cálculo y competencia. Una guía para entrenar con orden y ver resultados en tres meses."
-          href="#"
-        />
-        <ArticleCard
-          id="tactica"
-          image={{ src: "/design-import/assets/thumb-tactica.png", alt: "Patrones tácticos" }}
-          eyebrow="Táctica"
-          title="Siete patrones que debes reconocer de inmediato"
-          text="Clavadas, horquillas y ataques descubiertos: los motivos que deciden la mayoría de las partidas por debajo de 2000."
-          href="#"
-        />
+        <ArticleCard article={methodArticle} />
+        <ArticleCard article={tacticsArticle} id="tactica" />
       </div>
 
       <div className="portada__center">
-        <HeroArticle />
+        <HeroArticle article={heroArticle} />
       </div>
 
       <div className="portada__right">
