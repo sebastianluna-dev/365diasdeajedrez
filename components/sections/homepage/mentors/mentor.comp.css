@@ -14,7 +14,7 @@
 
 .mentor-card__photo {
   position: relative;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1/1;
   overflow: hidden;
   background: #110d0a;
 }

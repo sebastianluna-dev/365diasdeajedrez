@@ -53,6 +53,7 @@ export interface Mentor {
   birthYear: number;
   gender: "male" | "female";
   summary: string;
+  shortDescription: string;
   fideInfo: FideInformation;
   achievements: MentorAchievement[];
   testimonials: MentorTestimonial[];

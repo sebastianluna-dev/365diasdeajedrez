@@ -18,6 +18,7 @@ export const mentors: Mentor[] = [
     gender: "male",
     summary:
       "Concibe el ajedrez como una herramienta para pensar y decidir mejor. Su enseñanza se centra en construir una comprensión sólida del juego: criterio propio, confianza sobre el tablero y aprecio por el proceso.",
+    shortDescription: "Enseña a pensar y decidir mejor sobre el tablero.",
     fideInfo: {
       fideId: "5154782",
       standardElo: 1834,
@@ -58,6 +59,7 @@ export const mentors: Mentor[] = [
     gender: "male",
     summary:
       "Más de dos décadas de competencia le enseñaron que los resultados los sostiene la preparación, no el talento. Trabaja planes largos, finales prácticos y rutinas de torneo para que el alumno llegue a la partida sabiendo exactamente qué va a jugar.",
+    shortDescription: "Preparación de torneo, finales prácticos y planes largos.",
     fideInfo: {
       fideId: "5108934",
       standardElo: 2531,
@@ -98,6 +100,7 @@ export const mentors: Mentor[] = [
     gender: "male",
     summary:
       "Sostiene que una apertura solo funciona si al jugador le gustan las posiciones que produce. Construye el repertorio a partir del estilo de cada alumno y del criterio necesario para decidir cuando la teoría se agota.",
+    shortDescription: "Repertorios de apertura a la medida de cada alumno.",
     fideInfo: {
       fideId: "5127461",
       standardElo: 2418,
@@ -137,6 +140,7 @@ export const mentors: Mentor[] = [
     gender: "male",
     summary:
       "Se dedica a la etapa inicial, donde un buen hábito vale cien lecciones. Ordena lo básico —piezas activas, seguridad del rey, cálculo simple— y construye desde ahí la confianza necesaria para competir.",
+    shortDescription: "Fundamentos sólidos para empezar a competir.",
     fideInfo: {
       fideId: "5143820",
       standardElo: 2168,

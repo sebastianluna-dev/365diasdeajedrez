@@ -16,9 +16,11 @@ export function Mentor({ mentor }: MentorProps) {
         <div>
           <div className="mentor-card__head">
             <h3 className="mentor-card__name">{mentor.name}</h3>
-            <span className="mentor-card__title">{mentor.fideInfo.shortFideTitle ?? "Instructor"}</span>
+            {mentor.fideInfo.shortFideTitle && (
+              <span className="mentor-card__title">{mentor.fideInfo.shortFideTitle}</span>
+            )}
           </div>
-          <p className="mentor-card__tagline">{mentor.summary}</p>
+          <p className="mentor-card__tagline">{mentor.shortDescription}</p>
         </div>
         <div className="mentor-card__ratings">
           <div className="mentor-card__rating">
