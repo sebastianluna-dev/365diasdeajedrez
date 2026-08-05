@@ -2,28 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { articles } from "@/data/articles.data";
 import { videos } from "@/data/videos.data";
 import { BlogResourceCard } from "./blog-resource-card.comp";
 import { VideoResourceCard } from "./video-resource-card.comp";
 import "./resources.section.css";
 
-const blogResources = [
-  {
-    title: "Cómo pensar en el medio juego",
-    text: "Ideas concretas para evaluar una posición y crear un plan sólido.",
-    image: "/design-import/assets/thumb-metodo.png",
-  },
-  {
-    title: "Táctica en los primeros minutos",
-    text: "Patrones frecuentes y cómo reconocerlos antes de que el ataque se cierre.",
-    image: "/design-import/assets/thumb-tactica.png",
-  },
-  {
-    title: "Aperturas con sentido",
-    text: "Más allá de la teoría: estructuras, planes y principios.",
-    image: "/design-import/assets/thumb-aperturas.png",
-  },
-];
+const resourceSlugs = ["estrategia", "tactica", "aperturas"];
+const blogResources = resourceSlugs.map((slug) => articles.find((article) => article.slug === slug)!);
 
 type ResourceTab = "articles" | "videos";
 
@@ -63,7 +49,15 @@ export function ResourcesSection() {
           </div>
           <div className="resources__cards">
             {tab === "articles"
-              ? blogResources.map((resource) => <BlogResourceCard key={resource.title} {...resource} />)
+              ? blogResources.map((article) => (
+                  <BlogResourceCard
+                    key={article.slug}
+                    title={article.title}
+                    text={article.excerpt}
+                    image={article.image!}
+                    href={article.href}
+                  />
+                ))
               : videos.map((video) => <VideoResourceCard key={video.slug} video={video} />)}
           </div>
         </div>

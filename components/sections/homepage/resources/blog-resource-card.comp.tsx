@@ -1,14 +1,16 @@
+import Link from "next/link";
 import Image from "next/image";
 
 interface BlogResourceCardProps {
   title: string;
   text: string;
   image: string;
+  href: string;
 }
 
-export function BlogResourceCard({ title, text, image }: BlogResourceCardProps) {
+export function BlogResourceCard({ title, text, image, href }: BlogResourceCardProps) {
   return (
-    <article className="resource-card">
+    <Link href={href} className="resource-card">
       <div className="resource-card__image-frame">
         <Image
           className="resource-card__image"
@@ -22,6 +24,6 @@ export function BlogResourceCard({ title, text, image }: BlogResourceCardProps) 
         <h3 className="resource-card__title">{title}</h3>
         <p className="resource-card__text">{text}</p>
       </div>
-    </article>
+    </Link>
   );
 }
