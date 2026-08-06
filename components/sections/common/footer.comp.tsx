@@ -33,10 +33,10 @@ export function Footer({ accent = "orange" }: FooterProps) {
               <Link href="/nosotros" className="site-footer__link">
                 Nosotros
               </Link>
-              <Link href="/" className="site-footer__link">
+              <Link href="/aviso-de-privacidad" className="site-footer__link">
                 Aviso de privacidad
               </Link>
-              <Link href="/" className="site-footer__link">
+              <Link href="/terminos-y-condiciones" className="site-footer__link">
                 Términos y condiciones
               </Link>
             </div>

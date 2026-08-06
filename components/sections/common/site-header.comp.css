@@ -1,7 +1,6 @@
 .site-header-nav {
   position: relative;
   z-index: 40;
-  background: #16110d;
 
   & .site-header-nav__inner {
     max-width: 1200px;
@@ -93,7 +92,9 @@
     opacity: 0;
     transform: translateY(-6px);
     pointer-events: none;
-    transition: opacity 0.15s, transform 0.15s;
+    transition:
+      opacity 0.15s,
+      transform 0.15s;
   }
 
   & .site-header__dropdown-menu a {
