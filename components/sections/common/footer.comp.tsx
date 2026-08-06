@@ -8,7 +8,7 @@ interface FooterProps {
 
 export function Footer({ accent = "orange" }: FooterProps) {
   return (
-    <footer className="site-footer">
+    <footer className={`site-footer site-footer_accent_${accent}`}>
       <div className="site-footer__wrap">
         <div className="site-footer__grid">
           <div>
