@@ -98,5 +98,21 @@
     & .sticky-cta__actions {
       flex-wrap: wrap;
     }
+
+    & .sticky-cta__clock {
+      display: none;
+    }
+
+    & .sticky-cta__copy {
+      display: none;
+    }
+
+    & .sticky-cta__link-icon {
+      display: none;
+    }
+
+    & .sticky-cta__link_variant_primary {
+      display: none;
+    }
   }
 }
