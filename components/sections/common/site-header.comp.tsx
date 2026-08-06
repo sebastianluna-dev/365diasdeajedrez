@@ -1,15 +1,9 @@
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ChevronDown } from "lucide-react";
 import { Logo } from "./logo.comp";
 import "./site-header.comp.css";
 
-const links = [
-  { href: "/", label: "Inicio" },
-  { href: "/#programa", label: "Programa" },
-  { href: "/#mentores", label: "Mentores" },
-  { href: "/#planes", label: "Planes" },
-  { href: "/blog", label: "Blog" },
-];
+const toolsLinks = [{ href: "/reloj-de-ajedrez", label: "Reloj de ajedrez" }];
 
 export function SiteHeader() {
   return (
@@ -20,11 +14,22 @@ export function SiteHeader() {
             <Logo theme="dark" accent="orange" />
 
             <div className="site-header__links">
-              {links.map((link) => (
-                <Link key={link.href} href={link.href}>
-                  {link.label}
-                </Link>
-              ))}
+              <Link href="/">Inicio</Link>
+              <Link href="/blog">Blog</Link>
+              <div className="site-header__dropdown">
+                <button type="button" className="site-header__dropdown-trigger">
+                  Herramientas
+                  <ChevronDown size={14} />
+                </button>
+                <div className="site-header__dropdown-menu">
+                  {toolsLinks.map((link) => (
+                    <Link key={link.href} href={link.href}>
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+              <Link href="/">Nosotros</Link>
             </div>
           </nav>
           <Link href="/#planes" className="site-header__button">

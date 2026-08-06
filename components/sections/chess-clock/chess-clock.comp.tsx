@@ -16,8 +16,18 @@ export function ChessClock() {
 
       <div className="chess-clock__case-wrap">
         <div className="chess-clock__knobs">
-          <button type="button" onClick={white.onPress} aria-label="Botón blancas" className={`clock-knob${white.knobPressed ? " clock-knob_pressed" : ""}`} />
-          <button type="button" onClick={black.onPress} aria-label="Botón negras" className={`clock-knob${black.knobPressed ? " clock-knob_pressed" : ""}`} />
+          <button
+            type="button"
+            onClick={white.onPress}
+            aria-label="Botón blancas"
+            className={`clock-knob${white.knobPressed ? " clock-knob_pressed" : ""}`}
+          />
+          <button
+            type="button"
+            onClick={black.onPress}
+            aria-label="Botón negras"
+            className={`clock-knob${black.knobPressed ? " clock-knob_pressed" : ""}`}
+          />
         </div>
 
         <div className="chess-clock__case">

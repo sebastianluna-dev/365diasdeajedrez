@@ -24,11 +24,14 @@ export function Footer({ accent = "orange" }: FooterProps) {
               <Link href="/" className="site-footer__link">
                 Inicio
               </Link>
-              <Link href="/" className="site-footer__link">
-                Nosotros
-              </Link>
               <Link href="/blog" className="site-footer__link">
                 Blog
+              </Link>
+              <Link href="/reloj-de-ajedrez" className="site-footer__link">
+                Reloj de ajedrez
+              </Link>
+              <Link href="/" className="site-footer__link">
+                Nosotros
               </Link>
               <Link href="/" className="site-footer__link">
                 Aviso de privacidad
