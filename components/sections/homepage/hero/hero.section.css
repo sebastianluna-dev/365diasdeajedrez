@@ -36,12 +36,18 @@
     align-items: center;
   }
 
+  & .hero__copy {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
   & .hero__title {
     font-family: var(--font-gramatika), serif;
     font-size: 58px;
     line-height: 0.95;
     font-weight: 700;
-    margin: 0 0 24px;
+    margin: 0;
     letter-spacing: -0.02em;
   }
 
@@ -49,7 +55,7 @@
     font-size: 19px;
     line-height: 1.55;
     color: #b4a99d;
-    margin: 0 0 36px;
+    margin: 0;
     max-width: 40ch;
   }
 
@@ -151,10 +157,13 @@
       gap: 20px;
     }
 
+    & .hero__copy {
+      gap: 16px;
+    }
+
     & .hero__text {
       font-size: 18px;
       line-height: 1.5;
-      margin-bottom: 10px;
     }
 
     & .hero__badges {
@@ -163,7 +172,6 @@
 
     & .hero__title {
       font-size: 36px;
-      margin-bottom: 12px;
     }
 
     & .hero__visual {
@@ -178,7 +186,11 @@
     }
 
     & .hero__actions {
-      gap: 12px;
+      gap: 16px;
+
+      & a {
+        flex-grow: 2;
+      }
     }
   }
 }
