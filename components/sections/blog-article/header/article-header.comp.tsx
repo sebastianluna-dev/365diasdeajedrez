@@ -11,7 +11,7 @@ const navLinks = [
   { href: "/", label: "Inicio" },
   { href: "/blog", label: "Blog" },
   { href: "/", label: "Herramientas" },
-  { href: "/", label: "Nosotros" },
+  { href: "/nosotros", label: "Nosotros" },
 ];
 
 export function ArticleHeader({ category, date }: ArticleHeaderProps) {

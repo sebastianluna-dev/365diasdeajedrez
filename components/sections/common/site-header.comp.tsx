@@ -29,7 +29,7 @@ export function SiteHeader() {
                   ))}
                 </div>
               </div>
-              <Link href="/">Nosotros</Link>
+              <Link href="/nosotros">Nosotros</Link>
             </div>
           </nav>
           <Link href="/#planes" className="site-header__button">

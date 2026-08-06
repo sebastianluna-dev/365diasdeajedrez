@@ -1,0 +1,44 @@
+.nosotros-cta {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 48px 96px;
+
+  & .nosotros-cta__card {
+    border-radius: 26px;
+    padding: 52px 48px;
+    background: linear-gradient(160deg, rgba(255, 145, 67, 0.18) 0%, rgba(255, 145, 67, 0.03) 100%);
+    border: 1px solid rgba(255, 145, 67, 0.28);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  & .nosotros-cta__copy {
+    max-width: 52ch;
+  }
+
+  & .nosotros-cta__title {
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 12px;
+  }
+
+  & .nosotros-cta__text {
+    font-size: 17px;
+    line-height: 1.6;
+    color: #b4a99d;
+    margin: 0;
+  }
+
+  @media (max-width: 720px) {
+    padding-left: 20px;
+    padding-right: 20px;
+
+    & .nosotros-cta__card {
+      padding: 40px 32px;
+    }
+  }
+}

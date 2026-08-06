@@ -30,7 +30,7 @@ export function Footer({ accent = "orange" }: FooterProps) {
               <Link href="/reloj-de-ajedrez" className="site-footer__link">
                 Reloj de ajedrez
               </Link>
-              <Link href="/" className="site-footer__link">
+              <Link href="/nosotros" className="site-footer__link">
                 Nosotros
               </Link>
               <Link href="/" className="site-footer__link">

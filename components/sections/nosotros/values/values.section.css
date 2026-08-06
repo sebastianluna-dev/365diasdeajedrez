@@ -1,0 +1,112 @@
+.nosotros-values {
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse 900px 500px at 50% 30%, rgba(255, 145, 67, 0.14) 0%, rgba(255, 145, 67, 0) 70%);
+
+  & .nosotros-values__head {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+
+  & .nosotros-values__eyebrow {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #ff9143;
+    margin-bottom: 14px;
+  }
+
+  & .nosotros-values__title {
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    margin: 0 0 16px;
+  }
+
+  & .nosotros-values__text {
+    font-size: 17px;
+    line-height: 1.6;
+    color: #b4a99d;
+    margin: 0 auto;
+    max-width: 56ch;
+  }
+
+  & .nosotros-values__grid {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+
+  & .nosotros-values__card {
+    position: relative;
+    width: 250px;
+    min-height: 300px;
+    border-radius: 20px;
+    padding: 28px 26px;
+    background: linear-gradient(160deg, rgba(242, 237, 231, 0.07) 0%, rgba(242, 237, 231, 0.02) 100%);
+    border: 1px solid rgba(242, 237, 231, 0.12);
+    backdrop-filter: blur(6px);
+    overflow: hidden;
+  }
+
+  & .nosotros-values__card:nth-child(1) {
+    transform: rotate(-3deg) translateY(6px);
+  }
+
+  & .nosotros-values__card:nth-child(2) {
+    transform: rotate(2deg) translateY(-10px);
+  }
+
+  & .nosotros-values__card:nth-child(3) {
+    transform: rotate(-2deg) translateY(-6px);
+  }
+
+  & .nosotros-values__card:nth-child(4) {
+    transform: rotate(3deg) translateY(10px);
+  }
+
+  & .nosotros-values__card-icon {
+    position: absolute;
+    bottom: -30px;
+    right: -20px;
+    font-size: 150px;
+    line-height: 1;
+    color: rgba(255, 145, 67, 0.08);
+    font-family: serif;
+  }
+
+  & .nosotros-values__card-title {
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 21px;
+    font-weight: 600;
+    margin: 0 0 12px;
+    position: relative;
+  }
+
+  & .nosotros-values__card-text {
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: #b4a99d;
+    margin: 0;
+    position: relative;
+  }
+
+  @media (max-width: 1024px) {
+    & .nosotros-values__card {
+      width: calc(50% - 11px);
+    }
+  }
+
+  @media (max-width: 720px) {
+    & .nosotros-values__title {
+      font-size: 32px;
+    }
+
+    & .nosotros-values__card {
+      width: 100%;
+      transform: none !important;
+    }
+  }
+}
