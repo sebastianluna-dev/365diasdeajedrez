@@ -64,4 +64,10 @@
       color: var(--color-accent-red-on-dark);
     }
   }
+
+  @media (max-width: 1023px) {
+    & .logo__label {
+      display: none;
+    }
+  }
 }
