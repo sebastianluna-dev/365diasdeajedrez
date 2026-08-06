@@ -171,6 +171,15 @@
 
     & .site-header {
       justify-content: flex-start;
+      padding: 0;
+      background: transparent;
+      border: none;
+    }
+
+    & .site-header-nav__inner {
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-top: 25px;
     }
 
     & .site-header-mobile {
@@ -230,16 +239,5 @@
   }
 
   @media (max-width: 720px) {
-    & .site-header {
-      padding: 0;
-      background: transparent;
-      border: none;
-    }
-
-    & .site-header-nav__inner {
-      padding-left: 20px;
-      padding-right: 20px;
-      padding-top: 25px;
-    }
   }
 }
