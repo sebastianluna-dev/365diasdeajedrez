@@ -69,6 +69,30 @@
     bottom: -5px;
     right: 50%;
   }
+
+  @media (max-width: 1024px) {
+    & .orbit__ring_index_1 {
+      width: 340px;
+      height: 340px;
+    }
+
+    & .orbit__ring_index_2 {
+      width: 320px;
+      height: 320px;
+    }
+  }
+
+  @media (max-width: 720px) {
+    & .orbit__ring_index_1 {
+      width: 290px;
+      height: 290px;
+    }
+
+    & .orbit__ring_index_2 {
+      width: 260px;
+      height: 260px;
+    }
+  }
 }
 
 @keyframes orbit {

@@ -12,7 +12,7 @@ export function HeroSection() {
         <div className="hero__glow" />
 
         <div className="hero__grid">
-          <div>
+          <div className="hero__copy">
             <h1 className="hero__title">El verdadero progreso en ajedrez se gana entrenando.</h1>
             <p className="hero__text">
               Prueba el Método 365: cinco módulos progresivos que te llevan de los fundamentos a los finales, con un
