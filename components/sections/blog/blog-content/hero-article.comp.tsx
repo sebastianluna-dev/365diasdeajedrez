@@ -7,15 +7,17 @@ import "./hero-article.comp.css";
 
 interface HeroArticleProps {
   article: Article;
+  id?: string;
+  badge?: string;
 }
 
-export function HeroArticle({ article }: HeroArticleProps) {
+export function HeroArticle({ article, id, badge = "Portada" }: HeroArticleProps) {
   return (
-    <article className="hero-article">
+    <article id={id} className="hero-article">
       <MediaFrame
         src={article.image ?? DEFAULT_BLOG_THUMBNAIL}
         alt={article.title}
-        badge="Portada"
+        badge={badge}
         sizes="(max-width: 1024px) 100vw, 700px"
       />
       <div className="hero-article__meta">
@@ -32,17 +34,19 @@ export function HeroArticle({ article }: HeroArticleProps) {
       <div className="hero-article__footer">
         <div className="hero-article__author">
           <div className="hero-article__avatar">
-            <Image
-              className="hero-article__avatar-image"
-              src={article.author!.avatar!}
-              alt={article.author!.name}
-              fill
-              sizes="46px"
-            />
+            {article.author?.avatar && (
+              <Image
+                className="hero-article__avatar-image"
+                src={article.author.avatar}
+                alt={article.author.name}
+                fill
+                sizes="46px"
+              />
+            )}
           </div>
           <div>
-            <div className="hero-article__author-name">{article.author!.name}</div>
-            <div className="hero-article__author-role">{article.author!.role}</div>
+            <div className="hero-article__author-name">{article.author?.name}</div>
+            <div className="hero-article__author-role">{article.author?.role}</div>
           </div>
         </div>
         <Link href={article.href} className="blog-button blog-button_variant_secondary blog-button_size_md">

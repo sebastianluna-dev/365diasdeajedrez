@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Masthead } from "@/components/sections/blog/masthead/masthead.comp";
 import { Ticker } from "@/components/sections/blog/ticker/ticker.comp";
-import { Portada } from "@/components/sections/blog/portada/portada.section";
-import { MoreSection } from "@/components/sections/blog/more-section/more-section.section";
+import { BlogContent } from "@/components/sections/blog/blog-content/blog-content.section";
 import { Footer } from "@/components/sections/common/footer.comp";
 import "./blog.css";
 
@@ -21,8 +20,7 @@ export default function BlogPage() {
         <div className="blog-page__wrap">
           <Masthead />
           <Ticker />
-          <Portada />
-          <MoreSection />
+          <BlogContent />
         </div>
 
         <Footer accent="red" />

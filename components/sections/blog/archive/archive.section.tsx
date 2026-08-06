@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Article } from "@/interfaces/article.interface";
-import { PostCard } from "@/components/sections/blog/more-section/post-card.comp";
+import { PostCard } from "@/components/sections/blog/blog-content/post-card.comp";
 import { CategoryFilter } from "./category-filter.comp";
 import { Pagination } from "./pagination.comp";
 import "./archive.section.css";
