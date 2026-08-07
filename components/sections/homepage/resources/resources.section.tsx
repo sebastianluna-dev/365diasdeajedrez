@@ -19,13 +19,16 @@ export function ResourcesSection() {
   return (
     <section id="blog" className="section section_theme_dark resources">
       <div className="section__inner">
-        <div className="section__head">
-          <div>
+        <div className="section__head resources__head">
+          <div className="resources__head-text">
             <span className="section__eyebrow">Recursos</span>
             <h2 className="section__title">Material de estudio para todos los niveles.</h2>
             <p className="section__text">Artículos, ideas y ejercicios para seguir aprendiendo entre clases.</p>
           </div>
-          <Link href={tab === "articles" ? "/blog" : "/videos"} className="button button_variant_primary">
+          <Link
+            href={tab === "articles" ? "/blog" : "/videos"}
+            className="button button_variant_primary resources__head-cta"
+          >
             Ver más
           </Link>
         </div>
@@ -60,6 +63,12 @@ export function ResourcesSection() {
                 ))
               : videos.map((video) => <VideoResourceCard key={video.slug} video={video} />)}
           </div>
+        </div>
+
+        <div className="resources__cta-row">
+          <Link href={tab === "articles" ? "/blog" : "/videos"} className="button button_variant_primary">
+            Ver más
+          </Link>
         </div>
       </div>
     </section>
