@@ -66,18 +66,18 @@
     color: #6b6259;
   }
 
-  @media (max-width: 1024px) {
-    & .site-footer__grid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  @media (max-width: 720px) {
+  @media (max-width: 1023px) {
     & .site-footer__grid {
       grid-template-columns: 1fr;
       gap: 32px;
     }
 
+    & .site-footer__wrap {
+      padding-bottom: 200px;
+    }
+  }
+
+  @media (max-width: 720px) {
     & .site-footer__bottom {
       flex-direction: column;
       gap: 10px;
