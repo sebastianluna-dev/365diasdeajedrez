@@ -1,0 +1,42 @@
+.plans-mobile {
+  display: none;
+
+  & .plans-mobile__tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: rgba(22, 17, 13, 0.05);
+    border-radius: 14px;
+    padding: 6px;
+  }
+
+  & .plans-mobile__tab {
+    flex: 1;
+    padding: 12px 10px;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    color: #5c5348;
+    font-weight: 600;
+    font-size: 14.5px;
+    cursor: pointer;
+    transition:
+      background-color 150ms,
+      color 150ms;
+  }
+
+  & .plans-mobile__tab.plans-mobile__tab_active {
+    background: #16110d;
+    color: #f2ede7;
+  }
+
+  & .plans-mobile__card {
+    width: 100% !important;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 1023px) {
+    display: block;
+  }
+}

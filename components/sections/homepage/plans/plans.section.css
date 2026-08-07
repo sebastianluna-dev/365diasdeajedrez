@@ -104,14 +104,9 @@
     box-shadow: 0 4px 0 #b8611f;
   }
 
-  @media (max-width: 720px) {
+  @media (max-width: 1023px) {
     & .plans__wrap {
-      gap: 24px;
-    }
-
-    & .plan-card,
-    & .plan-card.plan-card_featured {
-      width: 100%;
+      display: none;
     }
   }
 }
