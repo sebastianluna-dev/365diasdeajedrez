@@ -41,7 +41,6 @@ export function ProgramSection() {
             </div>
             <div>
               <h2 className="program-panel__title">{activeModule.title}</h2>
-              <p className="program-panel__subtitle">{activeModule.subtitle}</p>
               <p className="program-panel__description">{activeModule.description}</p>
             </div>
             <div>
