@@ -2,16 +2,22 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 24px;
-}
 
-@media (max-width: 1024px) {
-  .mentor-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
+  @media (max-width: 1023px) {
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
 
-@media (max-width: 720px) {
-  .mentor-list {
-    grid-template-columns: 1fr;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    & .mentor-card {
+      flex: 0 0 260px;
+      scroll-snap-align: start;
+    }
   }
 }
