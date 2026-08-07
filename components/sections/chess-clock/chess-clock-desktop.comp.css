@@ -142,4 +142,8 @@
     color: #8c8378;
     margin: 0;
   }
+
+  @media (max-width: 766px) {
+    display: none;
+  }
 }

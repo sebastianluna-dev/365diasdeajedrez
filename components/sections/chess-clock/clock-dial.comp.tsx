@@ -52,10 +52,12 @@ export function ClockDial({ label, time, hands, active, flagged, lowTime, onPres
       )}
       {!compact && (
         <>
-          <div className={`clock-readout${flagged ? " clock-readout_fallen" : active ? " clock-readout_active" : ""}`}>
-            {time}
-          </div>
-          <span className="clock-dial-column__label">{label}</span>
+          {time !== undefined && (
+            <div className={`clock-readout${flagged ? " clock-readout_fallen" : active ? " clock-readout_active" : ""}`}>
+              {time}
+            </div>
+          )}
+          {label && <span className="clock-dial-column__label">{label}</span>}
         </>
       )}
     </div>

@@ -49,10 +49,10 @@ export function handAngles(t: number) {
 
 export function useChessClock() {
   const [state, setState] = useState<ClockState>({
-    base: 300,
-    inc: 3,
-    w: 300,
-    b: 300,
+    base: CLOCK_TIME_CONTROLS[0].base,
+    inc: CLOCK_TIME_CONTROLS[0].inc,
+    w: CLOCK_TIME_CONTROLS[0].base,
+    b: CLOCK_TIME_CONTROLS[0].base,
     active: null,
     running: false,
     flagged: null,

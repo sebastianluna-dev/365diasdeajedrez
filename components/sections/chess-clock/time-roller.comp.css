@@ -1,0 +1,70 @@
+.time-roller {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-suisse), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 46px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #3a2c1b;
+
+  &.time-roller_active {
+    color: #ffffff;
+  }
+
+  &.time-roller_fallen {
+    color: #c0392b;
+  }
+
+  & .time-roller__slot {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    width: 0.62em;
+    height: 1.18em;
+  }
+
+  & .time-roller__slot.time-roller__slot_separator {
+    width: 0.32em;
+  }
+
+  & .time-roller__digit {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.18em;
+  }
+
+  & .time-roller__digit.time-roller__digit_enter {
+    animation: time-roller-enter 0.28s ease forwards;
+  }
+
+  & .time-roller__digit.time-roller__digit_leave {
+    animation: time-roller-leave 0.28s ease forwards;
+  }
+}
+
+@keyframes time-roller-enter {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes time-roller-leave {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}

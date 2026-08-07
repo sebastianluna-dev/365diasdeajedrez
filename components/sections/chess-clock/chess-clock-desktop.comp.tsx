@@ -2,9 +2,9 @@
 
 import { useChessClock } from "@/hooks/use-chess-clock.hook";
 import { ClockDial } from "./clock-dial.comp";
-import "./chess-clock.comp.css";
+import "./chess-clock-desktop.comp.css";
 
-export function ChessClock() {
+export function ChessClockDesktop() {
   const { white, black, controls, playLabel, statusText, toggle, reset } = useChessClock();
 
   return (
