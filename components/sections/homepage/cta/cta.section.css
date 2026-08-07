@@ -90,6 +90,16 @@
     }
   }
 
+  @media (max-width: 1023px) {
+    & .sticky-cta__clock {
+      display: none;
+    }
+
+    & .sticky-cta__copy {
+      display: none;
+    }
+  }
+
   @media (max-width: 720px) {
     & .sticky-cta__inner {
       padding: 14px 20px;
@@ -97,14 +107,6 @@
 
     & .sticky-cta__actions {
       flex-wrap: wrap;
-    }
-
-    & .sticky-cta__clock {
-      display: none;
-    }
-
-    & .sticky-cta__copy {
-      display: none;
     }
 
     & .sticky-cta__link-icon {
