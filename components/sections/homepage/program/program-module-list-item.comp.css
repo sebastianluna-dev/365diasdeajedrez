@@ -48,4 +48,19 @@
   & .program-list__title {
     font-weight: 700;
   }
+
+  @media (max-width: 1023px) {
+    padding: 6px;
+    gap: 0;
+
+    & .program-list__number {
+      width: 40px;
+      height: 40px;
+      font-size: 1rem;
+    }
+
+    & .program-list__label {
+      display: none;
+    }
+  }
 }

@@ -13,6 +13,8 @@ export function ProgramModuleListItem({ module, isActive, onSelect }: ProgramMod
       type="button"
       className={`program-list__item${isActive ? " program-list__item_active" : ""}`}
       onClick={onSelect}
+      aria-label={`Módulo ${module.moduleNumber}: ${module.title}`}
+      aria-pressed={isActive}
     >
       <span className="program-list__number">0{module.moduleNumber}</span>
       <div className={`program-list__label${isActive ? " program-list__label_active" : ""}`}>
