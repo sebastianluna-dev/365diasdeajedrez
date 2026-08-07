@@ -39,12 +39,4 @@
     font-weight: 600;
     padding-right: 8px;
   }
-
-  @media (max-width: 1024px) {
-    &.float-badge_offset_1,
-    &.float-badge_offset_2,
-    &.float-badge_offset_3 {
-      left: 0;
-    }
-  }
 }
