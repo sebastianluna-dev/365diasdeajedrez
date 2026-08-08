@@ -1,3 +1,4 @@
+import { siteConfig } from "@/config/site.config";
 import { SiteHeader } from "../components/sections/common/site-header.comp";
 import { HeroSection } from "../components/sections/homepage/hero/hero.section";
 import { ProgramSection } from "../components/sections/homepage/program/program.section";
@@ -9,16 +10,18 @@ import { FaqSection } from "../components/sections/homepage/faq/faq.section";
 import { CtaSection } from "../components/sections/homepage/cta/cta.section";
 
 export default function LandingPage() {
+  const { sections } = siteConfig.home;
+
   return (
     <div className="landingPage">
       <SiteHeader />
-      <HeroSection />
-      <ProgramSection />
-      <MentorsSection />
-      <PlansSection />
-      <ResourcesSection />
-      <ReviewsSection />
-      <FaqSection />
+      {sections.hero && <HeroSection />}
+      {sections.program && <ProgramSection />}
+      {sections.mentors && <MentorsSection />}
+      {sections.plans && <PlansSection />}
+      {sections.resources && <ResourcesSection />}
+      {sections.reviews && <ReviewsSection />}
+      {sections.faq && <FaqSection />}
       <CtaSection />
     </div>
   );
