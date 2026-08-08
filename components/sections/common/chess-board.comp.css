@@ -1,5 +1,6 @@
 .chess-board {
   width: 100%;
+  max-width: 800px;
   border-radius: 14px;
   overflow: hidden;
   background: #2b2723;
@@ -37,7 +38,7 @@
 
   & .chess-board__frame {
     position: relative;
-    width: 52%;
+    width: 58%;
     flex: none;
     align-self: flex-start;
 

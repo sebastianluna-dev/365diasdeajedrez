@@ -1,7 +1,6 @@
 .teacher-game {
   position: relative;
   z-index: 1;
-  border-top: 1px solid rgba(245, 240, 232, 0.07);
 
   & .teacher-game__inner {
     max-width: 1160px;

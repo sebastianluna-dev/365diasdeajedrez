@@ -64,7 +64,7 @@ export function TeacherSection() {
           </div>
 
           <div className="teacher__actions">
-            <Link href="/#planes" className="button button_variant_primary button_size_hero">
+            <Link href="/#planes" className="button button_variant_primary">
               <CalendarCheck size={16} />
               Agenda tu primera clase
             </Link>
