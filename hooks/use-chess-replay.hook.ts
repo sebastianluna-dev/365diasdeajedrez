@@ -251,6 +251,8 @@ export interface ChessSquare {
   index: number;
   light: boolean;
   highlighted: boolean;
+  rank: string | null;
+  file: string | null;
 }
 
 export interface ChessPiece {
@@ -275,10 +277,14 @@ export interface NotationRow {
   black: NotationHalfMove | null;
 }
 
+const FILES = "abcdefgh";
+
 export function useChessReplay(moves: string[], flipBoard: boolean) {
   const [ply, setPlyState] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
+  const [flipToggled, setFlipToggled] = useState(false);
   const autoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
+  const effectiveFlip = flipToggled ? !flipBoard : flipBoard;
 
   const line = useMemo(() => buildLine(moves), [moves]);
   const total = moves.length;
@@ -321,20 +327,26 @@ export function useChessReplay(moves: string[], flipBoard: boolean) {
 
   const squares: ChessSquare[] = useMemo(() => {
     const order: number[] = [];
-    for (let n = 0; n < 64; n++) order.push(flipBoard ? 63 - n : n);
-    return order.map((n) => ({
-      index: n,
-      light: ((n >> 3) + (n % 8)) % 2 === 0,
-      highlighted: highlightedSquares.indexOf(n) >= 0,
-    }));
-  }, [flipBoard, highlightedSquares]);
+    for (let n = 0; n < 64; n++) order.push(effectiveFlip ? 63 - n : n);
+    return order.map((n, idx) => {
+      const col = idx % 8;
+      const row = Math.floor(idx / 8);
+      return {
+        index: n,
+        light: ((n >> 3) + (n % 8)) % 2 === 0,
+        highlighted: highlightedSquares.indexOf(n) >= 0,
+        rank: col === 0 ? (effectiveFlip ? String(row + 1) : String(8 - row)) : null,
+        file: row === 7 ? (effectiveFlip ? FILES[7 - col] : FILES[col]) : null,
+      };
+    });
+  }, [effectiveFlip, highlightedSquares]);
 
   const pieces: ChessPiece[] = useMemo(() => {
     return line.slots.map((id) => {
       const frame = line.frames[ply][id];
       const visible = !!frame;
       const square = visible ? frame.square : 0;
-      const display = flipBoard ? 63 - square : square;
+      const display = effectiveFlip ? 63 - square : square;
       return {
         id,
         col: display % 8,
@@ -343,7 +355,7 @@ export function useChessReplay(moves: string[], flipBoard: boolean) {
         visible,
       };
     });
-  }, [flipBoard, line.frames, line.slots, ply]);
+  }, [effectiveFlip, line.frames, line.slots, ply]);
 
   const rows: NotationRow[] = useMemo(() => {
     const out: NotationRow[] = [];
@@ -389,5 +401,6 @@ export function useChessReplay(moves: string[], flipBoard: boolean) {
     goToPrevious: () => setPly(ply - 1),
     goToNext: () => setPly(ply + 1),
     toggleAutoPlay,
+    toggleFlip: () => setFlipToggled((current) => !current),
   };
 }

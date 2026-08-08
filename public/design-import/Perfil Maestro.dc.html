@@ -7,6 +7,7 @@
 </head>
 <body>
 <x-dc>
+
 <helmet>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
@@ -22,11 +23,10 @@ a:hover{color:#FFC79B}
 [data-drop]:hover > span:first-child{color:#F2EDE7}
 @keyframes riseIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 </style>
+<script src="./image-slot.js"></script>
 </helmet>
 
 <div ref="{{ refRoot }}" style="position:relative;min-width:1100px;overflow-x:clip;background:#16110D">
-  <div aria-hidden="true" style="position:absolute;top:3600px;left:-280px;width:820px;height:700px;border-radius:50%;background:radial-gradient(50% 50% at 50% 50%, rgba(255,145,67,.12) 0%, rgba(255,145,67,0) 70%);filter:blur(10px);pointer-events:none;z-index:0"></div>
-
   <!-- ===== BARRA / SWITCHER ===== -->
   <div style="position:relative;z-index:40;background:#16110D">
     <div style="max-width:1200px;margin:0 auto;padding:14px 32px 0;box-sizing:border-box">
@@ -41,7 +41,7 @@ a:hover{color:#FFC79B}
             <a href="Blog.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Blog</a>
             <span data-drop="herramientas">
           <span style="color:#B4A99D;cursor:default">Herramientas</span>
-          <span data-drop-menu style="position:absolute;top:100%;left:-14px;padding-top:14px;min-width:190px;z-index:30;text-align:left">
+          <span data-drop-menu="" style="position:absolute;top:100%;left:-14px;padding-top:14px;min-width:190px;z-index:30;text-align:left">
             <span style="display:block;background:#1c1611;border:1px solid rgba(242,237,231,.14);border-radius:14px;padding:8px;box-shadow:0 18px 44px rgba(0,0,0,.55)">
               <a href="Reloj de Ajedrez.dc.html" style="display:block;padding:11px 14px;border-radius:10px;color:#F2EDE7;font-size:15px;font-weight:500" style-hover="background:rgba(242,237,231,.08);color:#FF9143">Reloj</a>
             </span>
@@ -56,179 +56,173 @@ a:hover{color:#FFC79B}
     </div>
   </div>
 
-  <!-- ===== 1. HERO ===== -->
-  <section data-screen-label="Hero perfil" style="max-width: 1160px; margin: 0 auto; padding: 28px 32px 24px; position: relative">
-    <div style="display:grid;grid-template-columns:1fr;gap:56px;align-items:start">
+  <!-- ===== GRID 4 COLUMNAS ===== -->
+  <section data-screen-label="Perfil" style="max-width: 1160px; margin: 0 auto; padding: 28px 32px 0; box-sizing: border-box; position: relative">
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:20px 64px">
 
-      <div>
-        <div style="display:flex;gap:32px;align-items:center;position:relative;background:rgba(255,255,255,.035);border:1px solid rgba(242,237,231,.09);border-radius:20px;padding:24px;box-sizing:border-box">
-          <div style="flex:none;display:flex;flex-direction:column;gap:14px">
-          <div style="position:relative;width:270px;aspect-ratio:4/5;border-radius:14px;overflow:hidden;background:#110D0A">
-            <div role="img" aria-label="{{ c.nombre }}" style="{{ c.fotoStyle }}"></div>
-          </div>
-          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.22);border-radius:14px;overflow:hidden;box-sizing:border-box;width:270px;flex:none">
-            <div style="background:#16110d;padding:14px 6px;text-align:center;box-sizing:border-box">
-              <div style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#8a8175">Estándar</div>
-              <div style="font-family:'Gramatika',sans-serif;font-size:24px;font-weight:700;margin-top:6px;color:#F2EDE7">{{ c.std }}</div>
-            </div>
-            <div style="background:#16110d;padding:14px 6px;text-align:center;box-sizing:border-box">
-              <div style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#8a8175">Rápidas</div>
-              <div style="font-family:'Gramatika',sans-serif;font-size:24px;font-weight:700;margin-top:6px;color:#F2EDE7">{{ c.rapid }}</div>
-            </div>
-            <div style="background:#16110d;padding:14px 6px;text-align:center;box-sizing:border-box">
-              <div style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#8a8175">Blitz</div>
-              <div style="font-family:'Gramatika',sans-serif;font-size:24px;font-weight:700;margin-top:6px;color:#F2EDE7">{{ c.blitz }}</div>
-            </div>
-          </div>
-          </div>
-          <div style="min-width: 0; flex: 1; position: relative">
-            <span style="display:inline-flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#FF9143;border:1px solid rgba(255,145,67,.34);background:rgba(255,145,67,.08);border-radius:999px;padding:6px 12px">{{ c.tituloLargo }}</span>
-            <h1 style="font-family:'Gramatika',sans-serif;font-size:44px;line-height:1.08;font-weight:700;margin:16px 0 0;letter-spacing:-.02em">{{ c.nombreCompleto }}</h1>
-            <p style="font-size:19px;line-height:1.65;color:#B4A99D;margin:18px 0 0;max-width:54ch">{{ c.resumen }}</p>
-          <div style="display:flex;gap:14px;margin-top:22px;flex-wrap:wrap">
-            <a href="Landing.dc.html#planes" style="display:inline-flex;align-items:center;justify-content:center;background:#FF9143;color:#16110d;font-weight:700;font-size:15.5px;padding:15px 22px;border-radius:14px;min-height:52px;box-sizing:border-box;box-shadow:0 4px 0 #B8611F" style-hover="background:#F0A05E">Reservar una clase</a>
+      <!-- ===== 1. HERO: ocupa 5 de 7 partes ===== -->
+      <div data-screen-label="Hero perfil" style="grid-column:1/8;grid-row:1;position:relative">
+        <div style="position:relative;min-height:670px;padding-bottom:24px;padding-top:1px">
+
+          <!-- palabra gigante -->
+          <div aria-hidden="true" style="position:absolute;top:36px;left:0;right:0;z-index:1;pointer-events:none;overflow:hidden">
+            <span style="display:block;font-family:'Gramatika',sans-serif;font-weight:700;font-size:110px;line-height:.82;letter-spacing:-.02em;color:#F2EDE7;white-space:nowrap">MAESTRO</span>
           </div>
 
-
-          
-          
-        </div>
-      </div>
-
-    </div>
-  </div></section>
-
-  <!-- ===== VIDEO ===== -->
-  <section data-screen-label="Video" style="position:relative;z-index:1">
-    <div style="max-width: 1160px; margin: 0 auto; padding: 32px 32px 88px; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; position: relative">
-      <div>
-        <h2 style="font-family:'Gramatika',sans-serif;font-size:40px;font-weight:700;line-height:1.12;margin:0 0 18px;max-width:18ch">Conoce a {{ c.primerNombre }} antes de tu primera clase.</h2>
-        <p style="font-size:19px;line-height:1.65;color:#B4A99D;margin:0 0 26px">Dos minutos donde explica cómo trabaja, qué esperar de una sesión y con qué tipo de jugador consigue mejores resultados.</p>
-        <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px">
-          <li style="display:flex;gap:12px;font-size:19px;line-height:1.65;color:#B4A99D"><span style="color:#FF9143;font-size:26px;line-height:1.2">♟</span> Cómo estructura el plan de trabajo</li>
-          <li style="display:flex;gap:12px;font-size:19px;line-height:1.65;color:#B4A99D"><span style="color:#FF9143;font-size:26px;line-height:1.2">♟</span> Qué se revisa en la clase de diagnóstico</li>
-          <li style="display:flex;gap:12px;font-size:19px;line-height:1.65;color:#B4A99D"><span style="color:#FF9143;font-size:26px;line-height:1.2">♟</span> Ejemplos de alumnos y su progreso</li>
-        </ul>
-      </div>
-      <div style="position:relative;border-radius:24px;overflow:hidden;border:1px solid rgba(255,145,67,.2);aspect-ratio:16/9;background:#110D0A">
-        <div style="{{ c.videoPosterStyle }}"></div>
-        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(22,17,13,.35) 0%,rgba(22,17,13,.8) 100%)"></div>
-        <button type="button" onClick="{{ reproducir }}" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:transparent;border:0;cursor:pointer;color:#F2EDE7" style-hover="color:#FF9143">
-          <span style="width:74px;height:74px;border-radius:50%;background:rgba(255,145,67,.92);color:#16110d;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 18px 40px -12px rgba(255,145,67,.6)">▶</span>
-          <span style="font-size:15px;font-weight:500">{{ videoEstado }}</span>
-        </button>
-        <span style="position:absolute;left:20px;top:18px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#F2EDE7;background:rgba(22,17,13,.6);border:1px solid rgba(242,237,231,.16);border-radius:999px;padding:6px 12px">2:14 min</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== 7. PARTIDA FAVORITA ===== -->
-  <section id="partida" data-screen-label="Su mejor partida" style="position:relative;z-index:1;border-top:1px solid rgba(245,240,232,.07)">
-    <div style="max-width:1160px;margin:0 auto;padding:88px 32px">
-      <div style="max-width:56ch;margin-bottom:40px">
-        <h2 style="font-family:'Gramatika',sans-serif;font-size:36px;font-weight:700;line-height:1.14;margin:0 0 12px">{{ c.partidaTitulo }}</h2>
-        <p style="font-size:16.5px;line-height:1.65;color:#B4A99D;margin:0">{{ c.partidaTexto }}</p>
-      </div>
-
-      <div style="display:grid;grid-template-columns:minmax(0,520px) minmax(0,1fr);gap:40px;align-items:start">
-        <div>
-          <div style="position:relative;border-radius:10px;overflow:hidden">
-            <div style="display:grid;grid-template-columns:repeat(8,1fr);aspect-ratio:1;border-radius:10px;overflow:hidden">
-              <sc-for list="{{ casillas }}" as="sq" hint-placeholder-count="64">
-                <div style="{{ sq.style }}"></div>
-              </sc-for>
-            </div>
-            <div style="position:absolute;inset:0;pointer-events:none">
-              <sc-for list="{{ piezas }}" as="pz" hint-placeholder-count="32">
-                <div style="{{ pz.style }}"></div>
-              </sc-for>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:8px;margin-top:16px">
-            <button type="button" aria-label="Ir al inicio" onClick="{{ irInicio }}" style="flex:1;height:52px;border-radius:12px;border:0;background:#2b2723;color:#C9C4BC;box-shadow:0 4px 0 #3b3630;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:#3a352f;color:#F2EDE7"><span style="display:flex;transform:rotate(180deg)"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="m17.93 2h.13c1.6 0 1.93.33 1.93 1.93v16.13c0 1.6-.33 1.93-1.93 1.93h-.13c-1.6 0-1.93-.33-1.93-1.93v-16.13c0-1.6.33-1.93 1.93-1.93zm-13.86.87.07-.07c1.13-1.13 1.6-1.13 2.73 0l6.4 6.37c1.73 1.77 1.73 3.9 0 5.67l-6.4 6.37c-1.13 1.13-1.6 1.13-2.73 0l-.07-.07c-1.13-1.13-1.13-1.6 0-2.73l6.37-6.4-6.37-6.4c-1.13-1.13-1.13-1.6 0-2.73zm0 0"></path></svg></span></button>
-            <button type="button" aria-label="Jugada anterior" onClick="{{ anterior }}" style="flex:1;height:52px;border-radius:12px;border:0;background:#2b2723;color:#C9C4BC;box-shadow:0 4px 0 #3b3630;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:#3a352f;color:#F2EDE7"><span style="display:flex;transform:rotate(180deg)"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="m7.73 2.87.07-.07c1.13-1.13 1.6-1.13 2.73 0l6.4 6.37c1.73 1.77 1.73 3.9 0 5.67l-6.4 6.37c-1.13 1.13-1.6 1.13-2.73 0l-.07-.07c-1.13-1.13-1.13-1.6 0-2.73l6.37-6.4-6.37-6.4c-1.13-1.13-1.13-1.6 0-2.73zm0 0"></path></svg></span></button>
-            <button type="button" aria-label="{{ reproducirLabel }}" onClick="{{ alternarAuto }}" style="{{ estiloPlay }}" style-hover="background:#3a352f;color:#F2EDE7"><span style="{{ glifoPlay }}"></span></button>
-            <button type="button" aria-label="Jugada siguiente" onClick="{{ siguiente }}" style="flex:1;height:52px;border-radius:12px;border:0;background:#2b2723;color:#C9C4BC;box-shadow:0 4px 0 #3b3630;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:#3a352f;color:#F2EDE7"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="m7.73 2.87.07-.07c1.13-1.13 1.6-1.13 2.73 0l6.4 6.37c1.73 1.77 1.73 3.9 0 5.67l-6.4 6.37c-1.13 1.13-1.6 1.13-2.73 0l-.07-.07c-1.13-1.13-1.13-1.6 0-2.73l6.37-6.4-6.37-6.4c-1.13-1.13-1.13-1.6 0-2.73zm0 0"></path></svg></button>
-            <button type="button" aria-label="Ir al final" onClick="{{ irFinal }}" style="flex:1;height:52px;border-radius:12px;border:0;background:#2b2723;color:#C9C4BC;box-shadow:0 4px 0 #3b3630;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:#3a352f;color:#F2EDE7"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="m17.93 2h.13c1.6 0 1.93.33 1.93 1.93v16.13c0 1.6-.33 1.93-1.93 1.93h-.13c-1.6 0-1.93-.33-1.93-1.93v-16.13c0-1.6.33-1.93 1.93-1.93zm-13.86.87.07-.07c1.13-1.13 1.6-1.13 2.73 0l6.4 6.37c1.73 1.77 1.73 3.9 0 5.67l-6.4 6.37c-1.13 1.13-1.6 1.13-2.73 0l-.07-.07c-1.13-1.13-1.13-1.6 0-2.73l6.37-6.4-6.37-6.4c-1.13-1.13-1.13-1.6 0-2.73zm0 0"></path></svg></button>
-          </div>
-        </div>
-
-        <div>
-          <div style="display:flex;align-items:baseline;gap:16px;margin-bottom:16px">
-            <span style="font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#8a8175">Notación</span>
-          </div>
-          <div style="max-height:420px;overflow:auto;border-top:1px solid rgba(245,240,232,.07)">
-            <sc-for list="{{ filas }}" as="f" hint-placeholder-count="12">
-              <div style="{{ f.style }}">
-                <span style="font-size:14.5px;font-weight:500;color:#8a8175;padding:10px 14px">{{ f.num }}</span>
-                <button type="button" onClick="{{ f.blancaIr }}" style="{{ f.blancaStyle }}"><span style="{{ f.blancaPieza }}"></span>{{ f.blanca }}</button>
-                <button type="button" onClick="{{ f.negraIr }}" style="{{ f.negraStyle }}"><span style="{{ f.negraPieza }}"></span>{{ f.negra }}</button>
-              </div>
-            </sc-for>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section></div>
-
-  <!-- ===== OTROS MAESTROS ===== -->
-  <section id="maestros" data-screen-label="Otros maestros" style="position:relative;z-index:1;border-top:1px solid rgba(242,237,231,.07)">
-    <div style="max-width:1160px;margin:0 auto;padding:88px 32px">
-      <div style="max-width:52ch;margin-bottom:40px">
-        <h2 style="font-family:'Gramatika',sans-serif;font-size:36px;font-weight:700;line-height:1.14;margin:0">Mira más maestros de nuestra academia</h2>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px">
-        <sc-for list="{{ otros }}" as="o" hint-placeholder-count="3">
-          <a href="{{ o.href }}" style="background:rgba(255,255,255,.035);border:1px solid rgba(242,237,231,.09);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;color:#F2EDE7" style-hover="border-color:rgba(255,145,67,.45)">
-            <div style="position:relative;aspect-ratio:4/5;overflow:hidden;background:#110D0A">
-              <div style="{{ o.fotoStyle }}"></div>
-            </div>
-            <div style="padding:20px 20px 22px;display:flex;flex-direction:column;gap:16px;flex:1">
+          <!-- foto -->
+          <div style="position:absolute;top:0;right:0;height:640px;width:50%;z-index:2;pointer-events:none;overflow:hidden">
+            <div role="img" aria-label="{{ c.nombre }}" style="{{ c.heroFotoStyle }}"></div>
+            <div style="position:absolute;inset:0;background:rgba(0,0,0,.18)"><div style="position: absolute; inset: 0 auto 0 0; width: 182px; background: linear-gradient(95deg, #16110D, #16110D, #0F0C0800, #0F0C0800); height: 605px; left: -34px; top: -5px"></div><div style="box-sizing: border-box; display: none; flex-direction: column; width: 593px; height: 635px; background-color: #16110D40; border-radius: 8px; position: absolute; left: -22px; top: -17px"></div><div style="position: absolute; left: -41px; height: 165px; background: linear-gradient(0deg, #16110D, #16110D, rgba(0,0,0,0) 100%); top: 500px; width: 666px"></div></div>
+            
+            
+            <div id="stats-overlay" style="position:absolute;right:28px;bottom:44px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:20px;text-align:left">
               <div>
-                <div style="display:flex;align-items:center;gap:9px">
-                  <h3 style="font-family:'Gramatika',sans-serif;font-size:20px;font-weight:700;margin:0;line-height:1.2">{{ o.nombre }}</h3>
-                  <span style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);color:#B4A99D;font-size:11.5px;font-weight:500;letter-spacing:.09em;padding:3px 8px;border-radius:6px;line-height:1.3">{{ o.titulo }}</span>
-                </div>
-                <p style="font-size:13.5px;line-height:1.5;color:#B4A99D;margin:8px 0 0">{{ o.tagline }}</p>
+                <span style="display:block;font-family:'Gramatika',sans-serif;font-size:28px;font-weight:700;color:#F2EDE7">10+</span>
+                <p style="font-size:12px;line-height:1.3;color:#D8D0C6;margin:6px 0 0">Años jugando</p>
               </div>
-              <div style="margin-top:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.09);border-radius:12px;overflow:hidden;box-sizing:border-box">
-                <div style="background:#16110d;padding:11px 4px;text-align:center;box-sizing:border-box">
-                  <div style="font-size:9.5px;letter-spacing:.03em;text-transform:uppercase;color:#8a8175">Estándar</div>
-                  <div style="font-family:'Gramatika',sans-serif;font-size:19px;font-weight:700;margin-top:4px">{{ o.std }}</div>
-                </div>
-                <div style="background:#16110d;padding:11px 4px;text-align:center;box-sizing:border-box">
-                  <div style="font-size:9.5px;letter-spacing:.03em;text-transform:uppercase;color:#8a8175">Rápidas</div>
-                  <div style="font-family:'Gramatika',sans-serif;font-size:19px;font-weight:700;margin-top:4px">{{ o.rapid }}</div>
-                </div>
-                <div style="background:#16110d;padding:11px 4px;text-align:center;box-sizing:border-box">
-                  <div style="font-size:9.5px;letter-spacing:.03em;text-transform:uppercase;color:#8a8175">Blitz</div>
-                  <div style="font-family:'Gramatika',sans-serif;font-size:19px;font-weight:700;margin-top:4px">{{ o.blitz }}</div>
-                </div>
+              <div style="border-left:1px solid rgba(242,237,231,.3);padding-left:12px">
+                <span style="display:block;font-family:'Gramatika',sans-serif;font-size:28px;font-weight:700;color:#F2EDE7">3+</span>
+                <p style="font-size:12px;line-height:1.3;color:#D8D0C6;margin:6px 0 0">Como entrenador</p>
               </div>
-              <span style="display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:500;color:#FF9143">Ver perfil <span>→</span></span>
+              <div style="border-left:1px solid rgba(242,237,231,.3);padding-left:12px">
+                <span style="display:block;font-family:'Gramatika',sans-serif;font-size:28px;font-weight:700;color:#F2EDE7">20+</span>
+                <p style="font-size:12px;line-height:1.3;color:#D8D0C6;margin:6px 0 0">Alumnos formados</p>
+              </div>
+              <div style="border-left:1px solid rgba(242,237,231,.3);padding-left:12px">
+                <span style="display:block;font-family:'Gramatika',sans-serif;font-size:28px;font-weight:700;color:#F2EDE7">365</span>
+                <p style="font-size:12px;line-height:1.3;color:#D8D0C6;margin:6px 0 0">Método propio</p>
+              </div>
+              <div style="border-left:1px solid rgba(242,237,231,.3);padding-left:12px">
+                <span style="display:block;font-family:'Gramatika',sans-serif;font-size:28px;font-weight:700;color:#F2EDE7">8+</span>
+                <p style="font-size:12px;line-height:1.3;color:#D8D0C6;margin:6px 0 0">Torneos nacionales</p>
+              </div>
             </div>
-          </a>
-        </sc-for>
-      </div>
-    </div>
-  </section>
+          </div>
 
-  <!-- ===== 10. CTA ===== -->
-  <section data-screen-label="CTA final" style="position:relative;z-index:1;padding:24px 32px 96px">
-    <div style="position:relative;max-width:1160px;margin:0 auto;border-radius:32px;overflow:hidden;border:1px solid rgba(255,145,67,.28);background:linear-gradient(150deg,rgba(255,145,67,.16) 0%,rgba(20,16,13,.2) 55%,rgba(20,16,13,.2) 100%)">
-      <div style="position:absolute;top:-160px;right:-80px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle, rgba(255,145,67,.18) 0%, rgba(255,145,67,0) 70%)"></div>
-      <div style="position:relative;padding:72px 56px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:22px">
-        <h2 style="font-family:'Gramatika',sans-serif;font-size:44px;font-weight:700;line-height:1.1;margin:0;max-width:20ch;letter-spacing:-.02em">Empecemos por entender tu ajedrez.</h2>
-        <p style="font-size:17.5px;line-height:1.6;color:#B4A99D;margin:0;max-width:52ch">Una sesión de diagnóstico para ver tus partidas, detectar qué te está frenando y armar un plan de trabajo a tu medida.</p>
-        <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px">
-          <a href="Landing.dc.html#planes" style="display:inline-flex;align-items:center;justify-content:center;background:#FF9143;color:#16110d;font-weight:700;font-size:16px;padding:16px 30px;border-radius:14px;min-height:52px;box-sizing:border-box;box-shadow:0 4px 0 #B8611F" style-hover="background:#F0A05E">Reservar mi clase</a>
+          <!-- contenido -->
+          <div style="position:relative;z-index:3;max-width:400px;margin-top:170px;padding-left:6px">
+            <span style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#B4A99D">Hola, soy</span>
+            <h1 style="font-family:'Gramatika',sans-serif;font-size:42px;line-height:1.04;font-weight:700;margin:10px 0 0;letter-spacing:-.02em">{{ c.nombreCompleto }}</h1>
+            <span style="display:inline-flex;align-items:center;gap:9px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#FF9143;border:1px solid rgba(255,145,67,.34);background:rgba(255,145,67,.08);border-radius:999px;padding:6px 12px;margin-top:16px">{{ c.tituloLargo }}</span>
+            <p style="font-size:16px;line-height:1.6;color:#B4A99D;margin:16px 0 0;max-width:44ch">{{ c.resumen }}</p>
+            <p style="font-size:12px;letter-spacing:.04em;color:#8a8175;margin:16px 0 8px">Clasificación Elo actual por modalidad de juego</p>
+            <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);border-radius:14px;overflow:hidden;box-sizing:border-box;max-width:420px">
+              <div style="background:#16110d;padding:10px 4px;text-align:center;box-sizing:border-box">
+                <div style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#8a8175">Estándar</div>
+                <div style="font-family:'Gramatika',sans-serif;font-size:22px;font-weight:700;margin-top:6px;color:#F2EDE7">{{ c.std }}</div>
+              </div>
+              <div style="background:#16110d;padding:10px 4px;text-align:center;box-sizing:border-box">
+                <div style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#8a8175">Rápidas</div>
+                <div style="font-family:'Gramatika',sans-serif;font-size:22px;font-weight:700;margin-top:6px;color:#F2EDE7">{{ c.rapid }}</div>
+              </div>
+              <div style="background:#16110d;padding:10px 4px;text-align:center;box-sizing:border-box">
+                <div style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#8a8175">Blitz</div>
+                <div style="font-family:'Gramatika',sans-serif;font-size:22px;font-weight:700;margin-top:6px;color:#F2EDE7">{{ c.blitz }}</div>
+              </div>
+              <div style="background:#16110d;padding:10px 4px;text-align:center;box-sizing:border-box">
+                <div style="font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#8a8175">Chess.com</div>
+                <div style="font-family:'Gramatika',sans-serif;font-size:22px;font-weight:700;margin-top:6px;color:#F2EDE7">2200</div>
+              </div>
+            </div>
 
+            <div style="display:flex;gap:14px;margin-top:22px;flex-wrap:wrap">
+              <a id="cta-agenda" href="Landing.dc.html#planes" style="display:inline-flex;align-items:center;gap:10px;justify-content:center;background:#FF9143;color:#16110d;font-weight:700;font-size:15px;padding:14px 32px;border-radius:14px;min-height:48px;box-sizing:border-box;box-shadow:0 4px 0 #B8611F" style-hover="background:#F0A05E"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M320 0c17.7 0 32 14.3 32 32l0 32 32 0c35.3 0 64 28.7 64 64l0 288c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 128C0 92.7 28.7 64 64 64l32 0 0-32c0-17.7 14.3-32 32-32s32 14.3 32 32l0 32 128 0 0-32c0-17.7 14.3-32 32-32zm22 161.7c-10.7-7.8-25.7-5.4-33.5 5.3L189.1 331.2 137 279.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l72 72c5 5 11.9 7.5 18.8 7s13.4-4.1 17.5-9.8L347.3 195.2c7.8-10.7 5.4-25.7-5.3-33.5z"></path></svg>Agenda tu primera clase</a>
+            </div>
+          </div>
         </div>
       </div>
+
     </div>
   </section>
 
-  <footer data-screen-label="Footer" style="background:#0f0b08;border-top:1px solid rgba(255,255,255,.06)">
+  <sc-if value="{{ videoAbierto }}">
+    <div style="position:fixed;inset:0;z-index:100;background:rgba(10,8,6,.88);display:flex;align-items:center;justify-content:center;padding:32px" onClick="{{ cerrarVideo }}">
+      <div style="position:relative;width:100%;max-width:860px;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#110D0A" onClick="{{ detenerPropagacion }}">
+        <div style="{{ c.videoPosterStyle }}"></div>
+        <div style="position:absolute;inset:0;background:rgba(22,17,13,.55);display:flex;align-items:center;justify-content:center">
+          <span style="font-size:15px;font-weight:500;color:#F2EDE7">{{ videoEstado }}</span>
+        </div>
+        <button type="button" aria-label="Cerrar" onClick="{{ cerrarVideo }}" style="position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(22,17,13,.7);border:1px solid rgba(242,237,231,.2);color:#F2EDE7;font-size:16px;cursor:pointer">✕</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===== SOBRE EL MAESTRO: BLOG ===== -->
+  <section data-screen-label="Sobre el maestro" style="position:relative;z-index:1;border-top:1px solid rgba(245,240,232,.07)">
+    <div style="max-width:1160px;margin:0 auto;padding:48px 32px 88px">
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:44px;align-items:start">
+
+        <div id="partida" style="grid-column:1/6;border-right:1px solid rgba(245,240,232,.1);padding-right:44px">
+          <div style="max-width:56ch;margin-bottom:32px">
+            <h2 style="font-family:'Gramatika',sans-serif;font-size:32px;font-weight:700;line-height:1.14;margin:0 0 12px">{{ c.partidaTitulo }}</h2>
+            <p style="font-size:15.5px;line-height:1.6;color:#B4A99D;margin:0">Descubre el nivel de juego del Maestro a través de una de sus partidas más destacadas. Una partida llena de decisiones estratégicas, momentos de precisión y recursos que muestran lo que hay detrás del juego de un Maestro.</p>
+          </div>
+
+          <div style="border-radius:14px;overflow:hidden;background:#2b2723;box-shadow:0 6px 20px rgba(0,0,0,.35);width:100%">
+            <div style="padding:14px 18px 12px">
+              <div style="font-size:15px;font-weight:700;color:#F2EDE7">{{ partidaMeta.blancas }}<span style="font-weight:400;color:#8a8175"> contra </span>{{ partidaMeta.negras }}</div>
+              <div style="font-size:12.5px;color:#8a8175;margin-top:4px">{{ partidaMeta.resultado }} · {{ partidaMeta.evento }} · Ronda: {{ partidaMeta.ronda }} · ECO: {{ partidaMeta.eco }}</div>
+            </div>
+            <div style="display:flex;align-items:stretch">
+              <div style="position:relative;width:52%;flex:none;align-self:flex-start">
+                <div style="display:grid;grid-template-columns:repeat(8,1fr);aspect-ratio:1">
+                  <sc-for list="{{ casillas }}" as="sq" hint-placeholder-count="64">
+                    <div style="{{ sq.style }}">
+                      <sc-if value="{{ sq.rank }}"><span style="{{ sq.rankStyle }}">{{ sq.rank }}</span></sc-if>
+                      <sc-if value="{{ sq.file }}"><span style="{{ sq.fileStyle }}">{{ sq.file }}</span></sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="position:absolute;inset:0;pointer-events:none">
+                  <sc-for list="{{ piezas }}" as="pz" hint-placeholder-count="32">
+                    <div style="{{ pz.style }}"></div>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;border-left:1px solid rgba(245,240,232,.07)">
+                <div style="max-height:420px;overflow:auto">
+                  <sc-for list="{{ filas }}" as="f" hint-placeholder-count="12">
+                    <div style="{{ f.style }}">
+                      <span style="font-size:14.5px;font-weight:500;color:#8a8175;padding:10px 14px">{{ f.num }}</span>
+                      <button type="button" onClick="{{ f.blancaIr }}" style="{{ f.blancaStyle }}"><span style="{{ f.blancaPieza }}"></span>{{ f.blanca }}</button>
+                      <button type="button" onClick="{{ f.negraIr }}" style="{{ f.negraStyle }}"><span style="{{ f.negraPieza }}"></span>{{ f.negra }}</button>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:1px solid rgba(245,240,232,.07)">
+              <div style="display:flex;gap:4px">
+                <button type="button" aria-label="Compartir" style="width:36px;height:36px;border-radius:8px;border:0;background:transparent;color:#8a8175;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:rgba(255,255,255,.08);color:#F2EDE7"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M384 192c53 0 96-43 96-96s-43-96-96-96-96 43-96 96c0 5.4 .5 10.8 1.3 16L159.6 184.1c-16.9-15-39.2-24.1-63.6-24.1-53 0-96 43-96 96s43 96 96 96c24.4 0 46.6-9.1 63.6-24.1L289.3 400c-.9 5.2-1.3 10.5-1.3 16 0 53 43 96 96 96s96-43 96-96-43-96-96-96c-24.4 0-46.6 9.1-63.6 24.1L190.7 272c.9-5.2 1.3-10.5 1.3-16s-.5-10.8-1.3-16l129.7-72.1c16.9 15 39.2 24.1 63.6 24.1z"></path></svg></button>
+              </div>
+              <div style="display:flex;gap:4px">
+                <button type="button" aria-label="Voltear tablero" onClick="{{ voltear }}" style="width:36px;height:36px;border-radius:8px;border:0;background:transparent;color:#8a8175;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:rgba(255,255,255,.08);color:#F2EDE7"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M65.9 228.5c13.3-93 93.4-164.5 190.1-164.5 53 0 101 21.5 135.8 56.2 .2 .2 .4 .4 .6 .6l7.6 7.2-47.9 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 53.4-11.3-10.7C390.5 28.6 326.5 0 256 0 127 0 20.3 95.4 2.6 219.5 .1 237 12.2 253.2 29.7 255.7s33.7-9.7 36.2-27.1zm443.5 64c2.5-17.5-9.7-33.7-27.1-36.2s-33.7 9.7-36.2 27.1c-13.3 93-93.4 164.5-190.1 164.5-53 0-101-21.5-135.8-56.2-.2-.2-.4-.4-.6-.6l-7.6-7.2 47.9 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 320c-8.5 0-16.7 3.4-22.7 9.5S-.1 343.7 0 352.3l1 127c.1 17.7 14.6 31.9 32.3 31.7S65.2 496.4 65 478.7l-.4-51.5 10.7 10.1c46.3 46.1 110.2 74.7 180.7 74.7 129 0 235.7-95.4 253.4-219.5z"></path></svg></button>
+                <button type="button" aria-label="{{ reproducirLabel }}" onClick="{{ alternarAuto }}" style="width:36px;height:36px;border-radius:8px;border:0;background:transparent;color:#8a8175;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:rgba(255,255,255,.08);color:#F2EDE7"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M91.2 36.9c-12.4-6.8-27.4-6.5-39.6 .7S32 57.9 32 72l0 368c0 14.1 7.5 27.2 19.6 34.4s27.2 7.5 39.6 .7l336-184c12.8-7 20.8-20.5 20.8-35.1s-8-28.1-20.8-35.1l-336-184z"></path></svg></button>
+                <button type="button" aria-label="Ir al inicio" onClick="{{ irInicio }}" style="width:36px;height:36px;border-radius:8px;border:0;background:transparent;color:#8a8175;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:rgba(255,255,255,.08);color:#F2EDE7"><span style="display:flex;transform:rotate(180deg)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="m17.93 2h.13c1.6 0 1.93.33 1.93 1.93v16.13c0 1.6-.33 1.93-1.93 1.93h-.13c-1.6 0-1.93-.33-1.93-1.93v-16.13c0-1.6.33-1.93 1.93-1.93zm-13.86.87.07-.07c1.13-1.13 1.6-1.13 2.73 0l6.4 6.37c1.73 1.77 1.73 3.9 0 5.67l-6.4 6.37c-1.13 1.13-1.6 1.13-2.73 0l-.07-.07c-1.13-1.13-1.13-1.6 0-2.73l6.37-6.4-6.37-6.4c-1.13-1.13-1.13-1.6 0-2.73zm0 0"></path></svg></span></button>
+                <button type="button" aria-label="Jugada anterior" onClick="{{ anterior }}" style="width:36px;height:36px;border-radius:8px;border:0;background:transparent;color:#8a8175;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:rgba(255,255,255,.08);color:#F2EDE7"><span style="display:flex;transform:rotate(180deg)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="m7.73 2.87.07-.07c1.13-1.13 1.6-1.13 2.73 0l6.4 6.37c1.73 1.77 1.73 3.9 0 5.67l-6.4 6.37c-1.13 1.13-1.6 1.13-2.73 0l-.07-.07c-1.13-1.13-1.13-1.6 0-2.73l6.37-6.4-6.37-6.4c-1.13-1.13-1.13-1.6 0-2.73zm0 0"></path></svg></span></button>
+                <button type="button" aria-label="Jugada siguiente" onClick="{{ siguiente }}" style="width:36px;height:36px;border-radius:8px;border:0;background:transparent;color:#8a8175;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:rgba(255,255,255,.08);color:#F2EDE7"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="m7.73 2.87.07-.07c1.13-1.13 1.6-1.13 2.73 0l6.4 6.37c1.73 1.77 1.73 3.9 0 5.67l-6.4 6.37c-1.13 1.13-1.6 1.13-2.73 0l-.07-.07c-1.13-1.13-1.13-1.6 0-2.73l6.37-6.4-6.37-6.4c-1.13-1.13-1.13-1.6 0-2.73zm0 0"></path></svg></button>
+                <button type="button" aria-label="Ir al final" onClick="{{ irFinal }}" style="width:36px;height:36px;border-radius:8px;border:0;background:transparent;color:#C9C4BC;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="background:rgba(255,255,255,.08);color:#F2EDE7"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="m17.93 2h.13c1.6 0 1.93.33 1.93 1.93v16.13c0 1.6-.33 1.93-1.93 1.93h-.13c-1.6 0-1.93-.33-1.93-1.93v-16.13c0-1.6.33-1.93 1.93-1.93zm-13.86.87.07-.07c1.13-1.13 1.6-1.13 2.73 0l6.4 6.37c1.73 1.77 1.73 3.9 0 5.67l-6.4 6.37c-1.13 1.13-1.6 1.13-2.73 0l-.07-.07c-1.13-1.13-1.13-1.6 0-2.73l6.37-6.4-6.37-6.4c-1.13-1.13-1.13-1.6 0-2.73zm0 0"></path></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="grid-column:6/8;height:100%;display:flex;flex-direction:column;justify-content:center">
+          <h2 style="font-family:'Gramatika',sans-serif;font-size:26px;font-weight:700;line-height:1.18;margin:0">Conoce al creador del Método 365</h2>
+          <p style="font-size:14.5px;line-height:1.6;color:#B4A99D;margin:14px 0 0">El ajedrez ha sido parte de mi vida durante años, tanto en la competencia como en la enseñanza. En este camino he desarrollado una forma propia de entender y entrenar el juego, que dio origen al <span style="color:#FF9143;font-weight:600">Método 365</span>.</p>
+          <p style="font-size:14.5px;line-height:1.6;color:#B4A99D;margin:12px 0 0">Conoce mi historia, mi filosofía y la visión detrás de la Academia 365.</p>
+          <button type="button" onClick="{{ abrirVideo }}" style="display:inline-flex;align-items:center;justify-content:center;gap:10px;background:#FF9143;color:#16110d;font-weight:700;font-size:15px;padding:14px 20px;border-radius:14px;min-height:48px;box-sizing:border-box;box-shadow:0 4px 0 #B8611F;border:0;cursor:pointer;margin-top:18px;width:fit-content" style-hover="background:#F0A05E">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M91.2 36.9c-12.4-6.8-27.4-6.5-39.6 .7S32 57.9 32 72l0 368c0 14.1 7.5 27.2 19.6 34.4s27.2 7.5 39.6 .7l336-184c12.8-7 20.8-20.5 20.8-35.1s-8-28.1-20.8-35.1l-336-184z"></path></svg>
+            Mira el video
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+  
+
+<footer data-screen-label="Footer" style="background:#0f0b08;border-top:1px solid rgba(255,255,255,.06)">
   <div style="max-width:1200px;margin:0 auto;padding:56px 48px 32px">
     <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:48px;margin-bottom:40px">
       <div>
@@ -245,7 +239,7 @@ a:hover{color:#FFC79B}
       </div>
       <div>
         <h4 style="font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#FF9143;font-weight:600;margin:0 0 16px">Academia</h4>
-<div style="display:flex;flex-direction:column;gap:10px;font-size:14px">
+        <div style="display:flex;flex-direction:column;gap:10px;font-size:14px">
           <a href="Landing.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Inicio</a>
           <a href="Nosotros.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Nosotros</a>
           <a href="Blog.dc.html" style="color:#B4A99D" style-hover="color:#F2EDE7">Blog</a>
@@ -271,8 +265,8 @@ a:hover{color:#FFC79B}
 
 
 
-</x-dc>
-<script type="text/x-dc" data-dc-script data-props="{}">
+</div></x-dc>
+<script type="text/x-dc" data-dc-script>
 const START = [
   'b-rook','b-knight','b-bishop','b-queen','b-king','b-bishop','b-knight','b-rook',
   'b-pawn','b-pawn','b-pawn','b-pawn','b-pawn','b-pawn','b-pawn','b-pawn',
@@ -283,8 +277,6 @@ const START = [
   'w-pawn','w-pawn','w-pawn','w-pawn','w-pawn','w-pawn','w-pawn','w-pawn',
   'w-rook','w-knight','w-bishop','w-queen','w-king','w-bishop','w-knight','w-rook'
 ];
-const idx = (sq) => (8 - parseInt(sq[1], 10)) * 8 + (sq.charCodeAt(0) - 97);
-
 const FILE = (i) => i % 8;
 const RANK = (i) => Math.floor(i / 8);
 const inside = (i) => i >= 0 && i < 64;
@@ -393,7 +385,6 @@ function jugar(b, san, color, ep) {
 const ES = { N: 'C', B: 'A', R: 'T', Q: 'D', K: 'R' };
 const aEspanol = (san) => (san.indexOf('O-O') === 0 ? san : (ES[san[0]] || '') + (ES[san[0]] ? san.slice(1) : san));
 
-const OPERA = 'e4 e5 Nf3 d6 d4 Bg4 dxe5 Bxf3 Qxf3 dxe5 Bc4 Nf6 Qb3 Qe7 Nc3 c6 Bg5 b5 Nxb5 cxb5 Bxb5+ Nbd7 O-O-O Rd8 Rxd7 Rxd7 Rd1 Qe6 Bxd7+ Nxd7 Qb8+ Nxb8 Rd8#'.split(' ');
 const LEGAL = 'e4 e5 Nf3 Nc6 Bc4 d6 Nc3 Bg4 Nxe5 Bxd1 Bxf7+ Ke7 Nd5#'.split(' ');
 const RETI = 'e4 c6 d4 d5 Nc3 dxe4 Nxe4 Nf6 Qd3 e5 dxe5 Qa5+ Bd2 Qxe5 O-O-O Nxe4 Qd8+ Kxd8 Bg5+ Ke8 Rd8#'.split(' ');
 const FISCHER = 'e4 e5 Bc4 Nc6 Nf3 Bc5 b4 Bxb4 c3 Ba5 d4 exd4 O-O dxc3 Qb3 Qe7 Nxc3 Nf6 Nd5 Nxd5 exd5 Ne5 Nxe5 Qxe5 Bb2 Qg5 h4 Qxh4 Bxg7 Rg8 Rfe1+ Kd8 Qg3'.split(' ');
@@ -403,36 +394,24 @@ const COACHES = [
   {
     slug: 'sebastian', nombre: 'Sebastián Luna', nombreCompleto: 'Sebastián Luna Rodríguez', primerNombre: 'Sebastián', titulo: 'Instructor',
     tituloLargo: 'Instructor · Jugador federado FIDE', ciudad: 'Ciudad de México',
-    foto: 'assets/profesores/diego.jpg', foco: '80% 20%',
+    foto: 'assets/profesores/sebastian.jpg', foco: '78% 22%',
     std: 1834, rapid: 1804, blitz: 1798,
-    fideId: '5154782', federacion: 'México', nacimiento: 2002, genero: 'Masculino', tituloFide: 'Sin título',
-    resumen: 'Concibe el ajedrez como una herramienta para pensar y decidir mejor. Su enseñanza se centra en construir una comprensión sólida del juego: criterio propio, confianza sobre el tablero y aprecio por el proceso.',
+    resumen: 'Concibo el ajedrez como una herramienta para pensar y decidir mejor. Mi enseñanza se centra en construir una comprensión sólida del juego: criterio propio, confianza sobre el tablero y aprecio por el proceso.',
     tagline: 'Entrena la forma de pensar sobre el tablero: cálculo, criterio y confianza en la propia decisión.',
-    tituloBio: 'El ajedrez como herramienta para pensar mejor.',
-    bio1: 'Para Sebastián, el ajedrez es mucho más que un juego: es una herramienta para desarrollar la capacidad de pensar, resolver problemas y tomar mejores decisiones. Su dedicación al deporte lo ha llevado a invertir miles de horas en el estudio de la estrategia, el cálculo, los finales y la historia del ajedrez, con el propósito de comprender las ideas que han convertido a los grandes maestros en referentes.',
-    bio2: 'Como instructor, su objetivo es que el alumno construya una comprensión sólida del juego. Cada clase está diseñada para desarrollar criterio propio, fortalecer la confianza sobre el tablero y hacer del progreso un proceso disfrutable.',
-    frase: 'Aprender ajedrez consiste en desarrollar una forma de pensar que sirve dentro y fuera del tablero.',
-    stats: [['Elo FIDE', 1834, ''], ['Años enseñando', 9, ''], ['Alumnos formados', 140, '+'], ['Partidas de torneo', 820, '+'], ['Horas de clase', 3600, '+']],
-    logros: [
-      { anio: '2024', titulo: '2º lugar · Copa Ciudad de México', texto: 'Cierra el open con 7 de 9 puntos y firma su mejor desempeño en un torneo estándar.' },
-      { anio: '2023', titulo: 'Campeón · Circuito Metropolitano sub-23', texto: 'Gana el circuito de forma invicta, con seis victorias y tres tablas.' },
-      { anio: '2022', titulo: '3º lugar · Abierto Intercontinental Jorge Vega', texto: 'Podio en su primera participación internacional, con victoria ante una jugadora titulada.' }
+    aniosEnsenando: 9, alumnosFormados: 140,
+    partidaTitulo: 'Una partida para conocer al maestro',
+    partidaTexto: 'Una partida de esas en las que cada movimiento tiene un propósito. En el Intercontinental Jorge Vega 2026, el Maestro Sebastián tomó las piezas negras frente a la Maestra Internacional Andrea Ortez y planteó una Caro-Kann.',
+    partidaTexto2: 'La partida comenzó con una intensa lucha por el centro, pero poco a poco la posición fue cambiando. La presión inicial dio paso a un final de torres, donde la actividad del rey, la paciencia y una buena comprensión de la posición fueron fundamentales.',
+    partidaTexto3: 'Una partida para disfrutar, analizar y descubrir cómo las pequeñas decisiones pueden terminar cambiando el rumbo de todo el encuentro.',
+    partidaMeta: { blancas: 'WIM Ortez, Andrea (2024)', negras: 'Luna Rodriguez, Sebastian (1808)', resultado: '0-1', evento: 'Intercontinental Jorge Vega, 2026', ronda: '5', eco: 'B12' },
+    recursos: [
+      { tipo: 'Aperturas', titulo: 'La Caro-Kann: cómo se convirtió en mi arma secreta', extracto: 'La apertura que adopté por accidente y que hoy defino como mi estilo sobre el tablero.', contenido: 'La adopté sin buscarla: en un torneo juvenil me quedé sin preparación contra 1.e4 y jugué 1...c6 por descarte. Perdí esa partida, pero algo me gustó de la estructura sólida que dejaba: pocas debilidades y un plan claro de desarrollo. Diez años después, sigue siendo mi respuesta ante casi cualquier rival…', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Torneo', titulo: 'Mi experiencia en el Intercontinental', extracto: 'Jugar contra rivales titulados de otros países me obligó a preparar cada partida como nunca antes lo había hecho.', contenido: 'Llegué al Intercontinental Jorge Vega sin saber bien qué esperar: era mi primer torneo con jugadores de tantos países distintos, muchos de ellos con título FIDE y mucha más experiencia de competencia que yo. Ahí jugué la partida con negras contra la WIM Andrea Ortez que hoy uso para enseñar el final de torres: neutralicé la presión central, cambié hacia un final favorable y llevé el rey hasta e3 para decidir la partida. Volví con la certeza de que la preparación importa tanto como el talento sobre el tablero…', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Método', titulo: 'Cómo pensar antes de mover', extracto: 'Un método simple para frenar el piloto automático y elegir la jugada con criterio.', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Método', titulo: 'Los errores que se repiten en 1200-1600', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Análisis de partidas', titulo: 'La torre en c3: anatomía de una casilla que decide la partida', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Método', titulo: 'Por qué analizar tus propias partidas importa más que estudiar aperturas', img: 'assets/blog-thumb-bg.png' }
     ],
-    timeline: [
-      { anio: '2011', titulo: 'Primer torneo nacional', texto: 'Debut en el circuito juvenil; ahí descubre que cada partida es un problema nuevo por resolver.' },
-      { anio: '2015', titulo: 'Primera norma y salto a 2200', texto: 'Un año de estudio sistemático de finales y estructuras que consolida su juego posicional.' },
-      { anio: '2017', titulo: 'Título de Maestro FIDE', texto: 'Obtiene el título tras una temporada de opens internacionales en México y Centroamérica.' },
-      { anio: '2019', titulo: 'Inicio como entrenador', texto: 'Empieza a dar clases particulares y descubre que enseñar le obliga a entender aún mejor el juego.' },
-      { anio: '2024', titulo: 'Campeonato Continental', texto: 'Representa a México y suma la experiencia de torneo que hoy traslada a sus alumnos.' }
-    ],
-    testimonios: [
-      { nombre: 'Mariana G.', detalle: 'De 1250 a 1610 en 8 meses', texto: 'Dejé de jugar por intuición. Ahora tengo un método para elegir plan y mis partidas largas cambiaron por completo.' },
-      { nombre: 'Ricardo T.', detalle: 'Alumno desde 2022', texto: 'Explica el porqué de cada jugada. Nunca es "esto se juega así", siempre hay una idea detrás que puedo reutilizar.' },
-      { nombre: 'Ana P.', detalle: 'Madre de alumno de 11 años', texto: 'Mi hijo llega a la clase con ganas y sale queriendo analizar. Se nota la paciencia y el orden en cada sesión.' }
-    ],
-    partidaTitulo: 'WIM Andrea Ortez — Sebastián Luna · Intercontinental Jorge Vega, 2026',
-    partidaTexto: 'Su mejor partida, con negras en una Caro-Kann, Ataque Panov. Neutraliza la presión central, transforma la posición en un final de torres y el rey negro cruza el tablero para decidir el encuentro.',
-    partidaNota: 'La clave está en la torre de c3: desde esa casilla presiona a3, c4 y d4 de forma simultánea. En el final, la marcha del rey hasta e3 culmina el plan. El tablero se presenta desde el lado de las negras.',
     flip: true,
     moves: LUNA
   },
@@ -441,34 +420,20 @@ const COACHES = [
     tituloLargo: 'Gran Maestro · Instructor', ciudad: 'Guadalajara',
     foto: 'assets/profesores/emiliano.jpg', foco: '76% 18%',
     std: 2531, rapid: 2548, blitz: 2564,
-    fideId: '5108934', federacion: 'México', nacimiento: 1988, genero: 'Masculino', tituloFide: 'Gran Maestro (GM)',
-    resumen: 'Más de dos décadas de competencia le enseñaron que los resultados los sostiene la preparación, no el talento. Trabaja planes largos, finales prácticos y rutinas de torneo para que el alumno llegue a la partida sabiendo exactamente qué va a jugar.',
+    resumen: 'Más de dos décadas de competencia me enseñaron que los resultados los sostiene la preparación, no el talento. Trabajo planes largos, finales prácticos y rutinas de torneo para que el alumno llegue a la partida sabiendo exactamente qué va a jugar.',
     tagline: 'Planes largos, finales y preparación de torneo: entrena la paciencia que separa una buena posición de un punto entero.',
-    tituloBio: 'Ganar partidas empieza mucho antes de sentarse al tablero.',
-    bio1: 'Con más de dos décadas de trayectoria competitiva, Emiliano sostiene que el talento explica poco: lo que sostiene un resultado es la preparación, la gestión del tiempo y la capacidad de seguir pensando con claridad en la cuarta hora de juego.',
-    bio2: 'En clase trabaja posiciones críticas tomadas de las partidas del alumno, rutinas de preparación y finales prácticos. Su objetivo es que cada jugador llegue al torneo sabiendo con precisión qué va a jugar y cómo va a competir.',
-    frase: 'Un final bien entendido decide más partidas que cualquier preparación de apertura.',
-    stats: [['Elo FIDE', 2531, ''], ['Años enseñando', 14, ''], ['Alumnos formados', 210, '+'], ['Partidas de torneo', 1450, '+'], ['Horas de clase', 6200, '+']],
-    logros: [
-      { anio: '2019', titulo: 'Campeón · Open Internacional de Guadalajara', texto: 'Primer lugar con 8 de 9 puntos y actuación de 2680 de performance.' },
-      { anio: '2016', titulo: '2º lugar · Campeonato Nacional Absoluto', texto: 'Subcampeón tras desempate y plaza en el equipo olímpico mexicano.' },
-      { anio: '2013', titulo: 'Campeón · Round Robin GM de Barcelona', texto: 'Gana el torneo cerrado donde completa su título de Gran Maestro.' }
-    ],
-    timeline: [
-      { anio: '2004', titulo: 'Campeón nacional sub-16', texto: 'Su primer título importante y la decisión de dedicarse al ajedrez de competencia.' },
-      { anio: '2009', titulo: 'Maestro Internacional', texto: 'Tres normas en dos años jugando el circuito europeo de opens.' },
-      { anio: '2013', titulo: 'Gran Maestro', texto: 'Completa el título con una actuación de 2600 de performance en un round robin cerrado.' },
-      { anio: '2016', titulo: 'Olimpiada de Ajedrez', texto: 'Integra el equipo nacional y suma experiencia de competencia por equipos.' },
-      { anio: '2021', titulo: 'Entrenador de selecciones juveniles', texto: 'Coordina la preparación de jugadores sub-18 rumbo a campeonatos continentales.' }
-    ],
-    testimonios: [
-      { nombre: 'Diego L.', detalle: '1980 → 2140 Elo', texto: 'Su preparación para torneo es de otro nivel. Llego a las partidas sabiendo qué esperar y con energía para la fase decisiva.' },
-      { nombre: 'Sofía R.', detalle: 'Alumna de finales', texto: 'Los finales dejaron de darme miedo. Ahora hasta busco cambiar damas cuando tengo la estructura mejor.' },
-      { nombre: 'Julián M.', detalle: 'Jugador de club', texto: 'Es exigente, pero siempre explica el criterio. Nunca sales de la clase con una duda a medias.' }
-    ],
+    aniosEnsenando: 14, alumnosFormados: 210,
     partidaTitulo: 'Vargas — Open Internacional de Guadalajara, 2019',
     partidaTexto: 'Su partida más limpia: cada jugada gana un tiempo y la posición negra se derrumba con el rey aún en el centro.',
-    partidaNota: 'En ningún momento recupera material por avaricia: cada captura responde al ataque sobre el rey. Esa disciplina es la que trabaja con sus alumnos.',
+    partidaMeta: { blancas: 'Emiliano Vargas', negras: 'Adversario', resultado: '1-0', evento: 'Open Internacional de Guadalajara, 2019', ronda: '7', eco: 'C65' },
+    recursos: [
+      { tipo: 'Torneo', titulo: 'Preparar el torneo importa más que la última novedad', extracto: 'Rutinas, manejo del reloj y la disciplina que separa un buen resultado de uno irregular.', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Finales', titulo: 'El final de torres que todo jugador debería dominar', extracto: 'La técnica práctica detrás de los finales que realmente aparecen en tus partidas.', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Torneo', titulo: 'Gestión del reloj en partidas largas', extracto: 'Cómo repartir el tiempo cuando la partida se complica en la cuarta hora.', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Finales', titulo: 'Finales de alfil contra caballo: el factor decisivo', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Método', titulo: 'Qué hacer después de perder una partida importante', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Torneo', titulo: 'Rutinas de preparación antes de un torneo largo', img: 'assets/blog-thumb-bg.png' }
+    ],
     moves: FISCHER
   },
   {
@@ -476,34 +441,20 @@ const COACHES = [
     tituloLargo: 'Maestro Internacional · Instructor', ciudad: 'Puebla',
     foto: 'assets/profesores/andres.jpg', foco: '82% 20%',
     std: 2418, rapid: 2455, blitz: 2487,
-    fideId: '5127461', federacion: 'México', nacimiento: 1992, genero: 'Masculino', tituloFide: 'Maestro Internacional (IM)',
-    resumen: 'Sostiene que una apertura solo funciona si al jugador le gustan las posiciones que produce. Construye el repertorio a partir del estilo de cada alumno y del criterio necesario para decidir cuando la teoría se agota.',
+    resumen: 'Sostengo que una apertura solo funciona si al jugador le gustan las posiciones que produce. Construyo el repertorio a partir del estilo de cada alumno y del criterio necesario para decidir cuando la teoría se agota.',
     tagline: 'Construye con cada alumno un repertorio propio y el criterio para saber qué hacer cuando se acaba la teoría.',
-    tituloBio: 'Un repertorio que se parezca a ti, no al de la moda.',
-    bio1: 'Diego pasó años copiando repertorios de jugadores fuertes hasta comprender que una apertura solo funciona si al jugador le gustan las posiciones que produce. Desde entonces trabaja con cada alumno a partir de su estilo y de sus partidas reales.',
-    bio2: 'En clase revisa estructuras, planes típicos y errores recurrentes. Para él lo relevante no es la jugada doce, sino saber qué se busca en la posición cuando el libro se termina.',
-    frase: 'La apertura no termina cuando se acaba la teoría; ahí es donde empieza tu ajedrez.',
-    stats: [['Elo FIDE', 2418, ''], ['Años enseñando', 11, ''], ['Alumnos formados', 165, '+'], ['Partidas de torneo', 1120, '+'], ['Horas de clase', 4800, '+']],
-    logros: [
-      { anio: '2018', titulo: 'Campeón por equipos · Nacional de Puebla', texto: 'Primer tablero del equipo campeón, con 6 de 7 puntos individuales.' },
-      { anio: '2016', titulo: '2º lugar · Open de Ciudad Universitaria', texto: 'Subcampeón invicto y última norma de Maestro Internacional.' },
-      { anio: '2014', titulo: '3º lugar · Campeonato Nacional Absoluto', texto: 'Podio nacional tras vencer a dos jugadores titulados en la fase final.' }
-    ],
-    timeline: [
-      { anio: '2008', titulo: 'Primer open internacional', texto: 'Su primera experiencia fuera del país y el inicio de una obsesión por las estructuras de peones.' },
-      { anio: '2012', titulo: 'Maestro FIDE', texto: 'Consolida su nivel jugando torneos cerrados con jugadores titulados.' },
-      { anio: '2016', titulo: 'Maestro Internacional', texto: 'Completa las normas con una racha de resultados en el circuito nacional.' },
-      { anio: '2018', titulo: 'Analista y preparador', texto: 'Empieza a preparar a jugadores de club para torneos por equipos.' },
-      { anio: '2023', titulo: 'Programa de repertorio', texto: 'Diseña el método de aperturas que hoy se usa en el programa de la academia.' }
-    ],
-    testimonios: [
-      { nombre: 'Carlos V.', detalle: 'Alumno de repertorio', texto: 'Cambiamos mi apertura por una que encaja con cómo juego y de golpe empecé a entender mis propias partidas.' },
-      { nombre: 'Renata S.', detalle: '1450 → 1720 Elo', texto: 'Antes salía de la apertura sin plan. Ahora sé qué estructura busco y qué piezas quiero cambiar.' },
-      { nombre: 'Iván H.', detalle: 'Jugador de torneo amateur', texto: 'Las clases son muy concretas: posición, plan, ejercicio. Nada de teoría suelta que se olvida a la semana.' }
-    ],
+    aniosEnsenando: 11, alumnosFormados: 165,
     partidaTitulo: 'Márquez — Nacional por Equipos, Puebla 2018',
     partidaTexto: 'La partida que mejor resume su juego: una apertura tranquila que se convierte en ataque directo gracias a la ventaja de desarrollo.',
-    partidaNota: 'La clave está en el enroque largo: mientras su rival recupera material, todas sus piezas ya apuntan a la columna d.',
+    partidaMeta: { blancas: 'Diego Márquez', negras: 'Adversario', resultado: '1-0', evento: 'Nacional por Equipos, Puebla 2018', ronda: '4', eco: 'D37' },
+    recursos: [
+      { tipo: 'Aperturas', titulo: 'Un repertorio que se parezca a tu estilo', extracto: 'Por qué copiar el repertorio de un GM rara vez funciona, y qué hacer en su lugar.', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Aperturas', titulo: 'Qué hacer cuando se acaba la teoría', extracto: 'El criterio que necesitas para seguir jugando bien fuera del libro.', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Estrategia', titulo: 'Estructuras de peones que debes reconocer', extracto: 'Cinco estructuras típicas y el plan que corresponde a cada una.', img: 'assets/thumbnail-estrategia.jpg' },
+      { tipo: 'Aperturas', titulo: 'Caro-Kann: la respuesta sólida contra 1.e4', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Aperturas', titulo: 'Construye tu repertorio en veinte minutos al día', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Análisis de partidas', titulo: 'Cómo estudiar una partida de gran maestro sin motor', img: 'assets/blog-thumb-bg.png' }
+    ],
     moves: RETI
   },
   {
@@ -511,98 +462,33 @@ const COACHES = [
     tituloLargo: 'Maestro Candidato · Instructor', ciudad: 'Querétaro',
     foto: 'assets/profesores/andres.jpg', foco: '82% 20%',
     std: 2168, rapid: 2205, blitz: 2231,
-    fideId: '5143820', federacion: 'México', nacimiento: 1995, genero: 'Masculino', tituloFide: 'Maestro Candidato (CM)',
-    resumen: 'Se dedica a la etapa inicial, donde un buen hábito vale cien lecciones. Ordena lo básico —piezas activas, seguridad del rey, cálculo simple— y construye desde ahí la confianza necesaria para competir.',
+    resumen: 'Me dedico a la etapa inicial, donde un buen hábito vale cien lecciones. Ordeno lo básico —piezas activas, seguridad del rey, cálculo simple— y construyo desde ahí la confianza necesaria para competir.',
     tagline: 'Acompaña los primeros pasos: bases sólidas, buenos hábitos y la confianza para jugar el primer torneo.',
-    tituloBio: 'Los cimientos importan más de lo que parece.',
-    bio1: 'Andrés empezó tarde y aprendió en el camino todo lo que hoy evita a sus alumnos: estudiar sin orden, memorizar sin entender y competir sin rutina. Por eso se dedica a la etapa inicial, donde un buen hábito vale cien lecciones.',
-    bio2: 'Trabaja con jugadores que están empezando o que llevan tiempo estancados en el mismo nivel. Ordena los fundamentos —piezas activas, seguridad del rey, cálculo simple— y construye a partir de ellos.',
-    frase: 'El progreso llega cuando un jugador deja de repetir el mismo error.',
-    stats: [['Elo FIDE', 2168, ''], ['Años enseñando', 7, ''], ['Alumnos formados', 190, '+'], ['Partidas de torneo', 640, '+'], ['Horas de clase', 3100, '+']],
-    logros: [
-      { anio: '2022', titulo: 'Campeón · Abierto Estatal de Querétaro', texto: 'Primer lugar con 7 de 8 puntos en el torneo más concurrido del estado.' },
-      { anio: '2019', titulo: '2º lugar · Copa Bajío', texto: 'Subcampeón regional y mejor desempeño de su carrera en ritmo estándar.' },
-      { anio: '2017', titulo: '3º lugar · Nacional de Ajedrez Rápido', texto: 'Podio nacional en rápidas, donde obtiene el título de Maestro Candidato.' }
-    ],
-    timeline: [
-      { anio: '2014', titulo: 'Primer club de ajedrez', texto: 'Descubre el juego de adulto y en dos años pasa de aficionado a jugador federado.' },
-      { anio: '2017', titulo: 'Maestro Candidato', texto: 'Obtiene el título tras una campaña sólida en el circuito estatal.' },
-      { anio: '2019', titulo: 'Ajedrez en escuelas', texto: 'Coordina talleres escolares y desarrolla su método para jugadores principiantes.' },
-      { anio: '2022', titulo: 'Entrenador de iniciación', texto: 'Se especializa en llevar a alumnos desde cero hasta su primer torneo oficial.' },
-      { anio: '2025', titulo: 'Módulo de fundamentos', texto: 'Autor del módulo de fundamentos del programa de la academia.' }
-    ],
-    testimonios: [
-      { nombre: 'Paula N.', detalle: 'Primer torneo oficial', texto: 'Llegué sin saber anotar una partida y seis meses después jugué mi primer torneo sin nervios.' },
-      { nombre: 'Tomás F.', detalle: 'Alumno de 10 años', texto: 'Las clases son divertidas y siempre hay ejercicios. Ya le gané a mi papá tres veces seguidas.' },
-      { nombre: 'Lucía B.', detalle: 'Adulta principiante', texto: 'Pensé que era tarde para aprender. Andrés arma todo por pasos y nunca te hace sentir perdida.' }
-    ],
+    aniosEnsenando: 7, alumnosFormados: 190,
     partidaTitulo: 'Rivas — Torneo Estatal de Querétaro, 2017',
     partidaTexto: 'Su miniatura favorita y la que mejor ilustra un principio esencial: no toda pieza clavada está realmente clavada.',
-    partidaNota: 'Seis jugadas de desarrollo natural y un motivo táctico que aparece constantemente en partidas de club. Con ella abre el módulo de fundamentos.',
+    partidaMeta: { blancas: 'Andrés Rivas', negras: 'Adversario', resultado: '1-0', evento: 'Torneo Estatal de Querétaro, 2017', ronda: '3', eco: 'C50' },
+    recursos: [
+      { tipo: 'Método', titulo: 'Los fundamentos que un principiante debe dominar primero', extracto: 'Piezas activas, seguridad del rey y cálculo simple: por dónde empezar en serio.', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Táctica', titulo: 'Cómo prepararte para tu primer torneo oficial', extracto: 'Qué esperar, cómo manejar los nervios y qué llevar a la sala de juego.', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Método', titulo: 'Cómo anotar una partida sin distraerte del juego', extracto: 'La notación se automatiza rápido si practicas estos tres hábitos.', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Táctica', titulo: 'Siete patrones que debes reconocer de inmediato', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Finales', titulo: 'Rey y peón contra rey: las reglas que nunca fallan', img: 'assets/blog-thumb-bg.png' },
+      { tipo: 'Táctica', titulo: 'Ejercicios de visualización para jugar a ciegas', img: 'assets/blog-thumb-bg.png' }
+    ],
     moves: LEGAL
   }
 ];
 
-const FILOSOFIA = [
-  { icono: '♟', titulo: 'Entender antes que memorizar', texto: 'Cada jugada tiene una razón. Si entiendes la idea, la recuerdas para siempre; si la memorizas, la olvidas en un mes.' },
-  { icono: '♞', titulo: 'Pensamiento estratégico', texto: 'Aprender a leer la posición: estructura, piezas malas, planes candidatos y en qué parte del tablero se juega la partida.' },
-  { icono: '♜', titulo: 'Mejora continua', texto: 'Analizamos tus propias partidas. El progreso viene de corregir errores recurrentes, no de sumar material nuevo.' },
-  { icono: '♛', titulo: 'Entrenamiento personalizado', texto: 'Un plan hecho a partir de tu nivel, tu tiempo disponible y el tipo de posiciones en las que te sientes cómodo.' }
-];
-
-const AREAS = [
-  { num: '01', titulo: 'Estrategia', texto: 'Estructuras de peones, piezas buenas y malas, y cómo elegir un plan cuando no hay tácticas.' },
-  { num: '02', titulo: 'Aperturas', texto: 'Un repertorio propio, coherente con tu estilo, con las ideas y no solo las jugadas.' },
-  { num: '03', titulo: 'Medio juego', texto: 'Iniciativa, ataque al rey, maniobras de piezas y transformación de ventajas.' },
-  { num: '04', titulo: 'Finales', texto: 'Los finales que realmente aparecen: torres, peones y la técnica para convertir.' },
-  { num: '05', titulo: 'Cálculo', texto: 'Método para calcular variantes: jugadas candidatas, orden de análisis y control de errores.' },
-  { num: '06', titulo: 'Preparación de torneo', texto: 'Rutina previa, manejo del reloj, gestión de nervios y preparación contra rivales concretos.' }
-];
-
-const FAQ = [
-  { pregunta: '¿Necesito un nivel mínimo para empezar?', respuesta: 'No. Trabajo con jugadores desde nivel principiante hasta jugadores federados. La primera sesión sirve justamente para ubicar tu punto de partida.' },
-  { pregunta: '¿Cómo son las clases?', respuesta: 'Sesiones de una hora por videollamada con tablero compartido. Revisamos posiciones, tus partidas recientes y terminamos con ejercicios concretos para la semana.' },
-  { pregunta: '¿Qué necesito para la clase?', respuesta: 'Una computadora con conexión estable y una cuenta en una plataforma de ajedrez online. Nada más.' },
-  { pregunta: '¿Cada cuánto conviene tomar clase?', respuesta: 'Una sesión semanal es el ritmo ideal para la mayoría: da tiempo de aplicar lo trabajado y traer partidas nuevas para analizar.' },
-  { pregunta: '¿En cuánto tiempo se ven resultados?', respuesta: 'Con trabajo constante, los primeros cambios de criterio se notan en cuatro a seis semanas. El Elo suele moverse a partir del tercer mes.' }
-];
-
 class Component extends DCLogic {
-  state = { i: 0, ply: 0, faq: -1, anim: 0, video: false, auto: false, desfase: 0 };
-
-  refRoot = React.createRef();
-  refTimeline = React.createRef();
-
-  medir = () => {
-    const r = this.refRoot.current;
-    if (!r) return;
-    const tl = this.refTimeline.current;
-    if (tl && tl.children.length > 2) {
-      // paso vertical entre tarjetas de la misma columna → el desfase debe ser la mitad
-      const uno = tl.children[0].getBoundingClientRect();
-      const tres = tl.children[2].getBoundingClientRect();
-      const paso = Math.round((tres.top - uno.top) / 2);
-      if (paso > 20 && paso !== this.state.desfase) this.setState({ desfase: paso });
-    }
-  };
-
-  componentDidUpdate() { this.medir(); }
+  state = { i: 0, ply: 0, auto: false, video: false, flipToggle: false };
 
   componentDidMount() {
-    this.medir();
-    [120, 400, 900].forEach(t => setTimeout(this.medir, t));
-    window.addEventListener('resize', this.medir);
-    if (window.ResizeObserver && this.refRoot.current) {
-      this.ro = new ResizeObserver(this.medir);
-      this.ro.observe(this.refRoot.current);
-    }
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(this.medir);
     try {
       const p = new URLSearchParams(window.location.search).get('m');
       const k = COACHES.findIndex(c => c.slug === p);
       if (k >= 0) this.setState({ i: k });
     } catch (e) {}
-    this.animar();
     this.onKey = (e) => {
       if (e.key === 'ArrowRight') this.setPly(this.state.ply + 1);
       if (e.key === 'ArrowLeft') this.setPly(this.state.ply - 1);
@@ -610,39 +496,13 @@ class Component extends DCLogic {
     window.addEventListener('keydown', this.onKey);
   }
   componentWillUnmount() {
-    window.removeEventListener('resize', this.medir);
-    if (this.ro) this.ro.disconnect();
     clearInterval(this.auto);
     window.removeEventListener('keydown', this.onKey);
-    cancelAnimationFrame(this.raf);
-  }
-
-  animar() {
-    cancelAnimationFrame(this.raf);
-    const t0 = performance.now(), dur = 1100;
-    const step = (t) => {
-      const k = Math.min(1, (t - t0) / dur);
-      this.setState({ anim: 1 - Math.pow(1 - k, 3) });
-      if (k < 1) this.raf = requestAnimationFrame(step);
-    };
-    this.raf = requestAnimationFrame(step);
-  }
-
-  seleccionar(i) {
-    if (i === this.state.i) return;
-    this.setState({ i, ply: 0, faq: -1, anim: 0, video: false });
-    this.animar();
-    try {
-      const u = new URL(window.location.href);
-      u.searchParams.set('m', COACHES[i].slug);
-      window.history.replaceState({}, '', u);
-    } catch (e) {}
   }
 
   linea(moves) {
     const boards = [START.slice()], marks = [[]];
     let b = START.slice(), ep = -1;
-    // identidad de pieza por casilla, para animar desplazamientos
     let ids = START.map((p, i) => (p ? i : null));
     const slots = [];
     START.forEach((p, i) => { if (p) slots.push(i); });
@@ -688,6 +548,8 @@ class Component extends DCLogic {
     this.setState({ ply: Math.max(0, Math.min(total, n)) });
   }
 
+  voltear = () => this.setState(s => ({ flipToggle: !s.flipToggle }));
+
   alternarAuto = () => {
     if (this.auto) { this.detenerAuto(); return; }
     const total = COACHES[this.state.i].moves.length;
@@ -713,18 +575,28 @@ class Component extends DCLogic {
     const board = linea.boards[ply];
     const resaltadas = linea.marks[ply] || [];
     const orden = [];
-    for (let n = 0; n < 64; n++) orden.push(c.flip ? 63 - n : n);
+    const flipEfectivo = this.state.flipToggle ? !c.flip : c.flip;
+    for (let n = 0; n < 64; n++) orden.push(flipEfectivo ? 63 - n : n);
 
-    const casillas = orden.map((n) => {
+    const files = 'abcdefgh';
+    const casillas = orden.map((n, idx) => {
       const p = board[n];
       const claro = ((n >> 3) + (n % 8)) % 2 === 0;
       const hl = resaltadas.indexOf(n) >= 0;
-      let bg = claro ? '#F5F1EC' : '#769656';
-      if (hl) bg = claro ? '#F6EB72' : '#BBCB44';
-      return { style: { backgroundColor: bg } };
+      let bg = claro ? '#EEEED2' : '#769656';
+      if (hl) bg = claro ? '#F6F682' : '#BACA44';
+      const labelColor = claro ? '#769656' : '#EEEED2';
+      const col = idx % 8, row = (idx / 8) | 0;
+      const rank = col === 0 ? (flipEfectivo ? String(row + 1) : String(8 - row)) : null;
+      const file = row === 7 ? (flipEfectivo ? files[7 - col] : files[col]) : null;
+      return {
+        style: { position: 'relative', backgroundColor: bg },
+        rank, file,
+        rankStyle: { position: 'absolute', top: '2px', left: '4px', fontSize: '11px', fontWeight: 700, color: labelColor },
+        fileStyle: { position: 'absolute', bottom: '2px', right: '4px', fontSize: '11px', fontWeight: 700, color: labelColor }
+      };
     });
 
-    // capa de piezas: una posición por identidad, con transición al moverse
     if (!this.ultimasPos || this.ultimoCoach !== this.state.i) { this.ultimasPos = {}; this.ultimoCoach = this.state.i; }
     const piezas = linea.slots.map((id) => {
       const f = linea.frames[ply][id];
@@ -732,7 +604,7 @@ class Component extends DCLogic {
       const dato = f || this.ultimasPos[id];
       if (activa) this.ultimasPos[id] = f;
       const s = dato ? dato.sq : 0;
-      const d = c.flip ? 63 - s : s;
+      const d = flipEfectivo ? 63 - s : s;
       return {
         style: {
           position: 'absolute',
@@ -749,25 +621,9 @@ class Component extends DCLogic {
       };
     });
 
-    const jugadas = c.moves.map((m, n) => {
-      const activo = ply === n + 1;
-      const san = aEspanol(m);
-      const label = (n % 2 === 0 ? (n / 2 + 1) + '. ' : '') + san;
-      return {
-        label, ir: () => this.setPly(n + 1),
-        style: {
-          fontFamily: "'Suisse Intl',sans-serif", fontSize: '13.5px', fontWeight: 500,
-          padding: '7px 11px', borderRadius: '9px', cursor: 'pointer',
-          border: '1px solid ' + (activo ? 'rgba(255,145,67,.6)' : 'rgba(245,240,232,.10)'),
-          background: activo ? 'rgba(255,145,67,.20)' : 'rgba(255,255,255,.03)',
-          color: activo ? '#FFC79B' : '#D9CFC3'
-        }
-      };
-    });
-
     const TIPOS = { N: 'knight', B: 'bishop', R: 'rook', Q: 'queen', K: 'king' };
     const sinInicial = (san) => (TIPOS[san[0]] ? san.slice(1) : san);
-    const piezaDe = (san, lado) => {
+    const piezaDe = (san) => {
       const t = TIPOS[san[0]];
       if (!t) return { display: 'none' };
       return {
@@ -793,8 +649,8 @@ class Component extends DCLogic {
         num: (n / 2 + 1) + '.',
         blanca: sinInicial(c.moves[iB]),
         negra: hayNegra ? sinInicial(c.moves[iN]) : '·',
-        blancaPieza: piezaDe(c.moves[iB], 'w'),
-        negraPieza: hayNegra ? piezaDe(c.moves[iN], 'b') : { display: 'none' },
+        blancaPieza: piezaDe(c.moves[iB]),
+        negraPieza: hayNegra ? piezaDe(c.moves[iN]) : { display: 'none' },
         blancaIr: () => this.setPly(iB + 1),
         negraIr: hayNegra ? () => this.setPly(iN + 1) : () => {},
         blancaStyle: celda(ply === iB + 1, false),
@@ -807,109 +663,52 @@ class Component extends DCLogic {
       });
     }
 
-    const stats = c.stats.map(([etiqueta, valor, suf]) => {
-      const n = Math.round(valor * this.state.anim);
-      const crudo = etiqueta.indexOf('Elo') >= 0;
-      return { etiqueta, valor: (crudo ? String(n) : n.toLocaleString('es-MX')) + suf };
-    });
-
-    const switcher = COACHES.map((m, n) => {
-      const on = n === this.state.i;
-      return {
-        etiqueta: m.titulo + ' ' + m.nombre,
-        select: () => this.seleccionar(n),
-        style: {
-          fontFamily: "'Suisse Intl',sans-serif", fontSize: '13.5px', fontWeight: 500,
-          padding: '9px 15px', borderRadius: '999px', cursor: 'pointer', minHeight: '38px',
-          border: '1px solid ' + (on ? 'rgba(255,145,67,.55)' : 'rgba(245,240,232,.12)'),
-          background: on ? 'rgba(255,145,67,.16)' : 'transparent',
-          color: on ? '#FFC79B' : '#B4A99D'
-        }
-      };
-    });
-
-    const faq = FAQ.map((q, n) => {
-      const on = this.state.faq === n;
-      return {
-        pregunta: q.pregunta, respuesta: q.respuesta,
-        toggle: () => this.setState({ faq: on ? -1 : n }),
-        iconoStyle: { color: on ? '#FF9143' : '#8a8175', fontSize: '22px', lineHeight: 1, transition: 'transform .2s ease', transform: on ? 'rotate(45deg)' : 'none', flex: 'none' },
-        cuerpoStyle: { display: on ? 'block' : 'none', animation: 'riseIn .22s ease' }
-      };
-    });
-
-    const testimonios = c.testimonios.map(t => ({
-      ...t, inicial: t.nombre.charAt(0),
-      avatarStyle: { width: '38px', height: '38px', flex: 'none', borderRadius: '50%', background: 'rgba(255,145,67,.18)', border: '1px solid rgba(255,145,67,.4)', color: '#FFC79B', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Gramatika',sans-serif", fontSize: '15px' }
-    }));
-
-    // los tres hitos más recientes de su carrera
-    const logros = (c.logros || c.timeline.slice(-3)).map((t, i) => ({
-      anio: t.anio, titulo: t.titulo, texto: t.texto, num: '0' + (i + 1)
-    }));
-
-    const MEDIO = 36; // mitad del column-gap: acerca el punto al eje central
-    const hitos = c.timeline.map((t, i) => {
-      const izq = i % 2 === 0;
-      const primeraDerecha = i === 1;
-      return {
-        anio: t.anio, titulo: t.titulo, texto: t.texto,
-        filaStyle: {
-          position: 'relative',
-          gridColumn: izq ? 1 : 2,
-          textAlign: izq ? 'right' : 'left',
-          background: 'rgba(255,255,255,.035)',
-          border: '1px solid rgba(242,237,231,.09)',
-          borderRadius: '18px',
-          padding: '22px 24px 24px',
-          alignSelf: 'start',
-          marginRight: izq ? '34px' : 0,
-          marginLeft: izq ? 0 : '34px',
-          minHeight: 0,
-          marginBottom: '-46px',
-          marginTop: izq ? 0 : (this.state.desfase || 81) + 'px',
-          boxSizing: 'border-box'
-        },
-        puntoStyle: {
-          position: 'absolute', top: '26px',
-          right: izq ? -(MEDIO + 34 + 6) + 'px' : 'auto', left: izq ? 'auto' : -(MEDIO + 34 + 6) + 'px',
-          width: '11px', height: '11px', borderRadius: '50%',
-          background: '#FF9143', boxShadow: '0 0 0 5px rgba(255,145,67,.16)'
-        }
-      };
-    });
-
-
     return {
-      refRoot: this.refRoot,
-      refTimeline: this.refTimeline,
       c: {
-        ...c, testimonios,
-        videoPosterStyle: { position: 'absolute', inset: 0, backgroundImage: "url('" + c.foto + "')", backgroundSize: 'cover', backgroundPosition: c.foco, filter: 'saturate(.85)' },
-        fotoStyle: { width: '100%', height: '100%', backgroundImage: "url('" + c.foto + "')", backgroundSize: 'cover', backgroundPosition: c.foco, backgroundRepeat: 'no-repeat' }
+        ...c,
+        heroFotoStyle: { width: '100%', height: '100%', backgroundImage: "url('" + c.foto + "')", backgroundSize: 'cover', backgroundPosition: c.foco, backgroundRepeat: 'no-repeat' },
+        cursoImgId: 'curso-' + c.slug,
+        videoPosterStyle: { position: 'absolute', inset: 0, backgroundImage: "url('" + c.foto + "')", backgroundSize: 'cover', backgroundPosition: c.foco, filter: 'saturate(.85)' }
       },
-      videoEstado: this.state.video ? 'Video en preparación — súbelo para reproducirlo' : 'Reproducir presentación',
-      reproducir: () => this.setState({ video: !this.state.video }),
+      videoEstado: 'Video en preparación — súbelo para reproducirlo',
+      videoAbierto: this.state.video,
+      abrirVideo: () => this.setState({ video: true }),
+      cerrarVideo: () => this.setState({ video: false }),
+      detenerPropagacion: (e) => e.stopPropagation(),
       otros: COACHES.filter(m => m.slug !== c.slug).map(m => ({
         nombre: m.nombre, titulo: m.titulo, tagline: m.tagline, std: m.std, rapid: m.rapid, blitz: m.blitz,
         href: 'Perfil Maestro.dc.html?m=' + m.slug,
         fotoStyle: { width: '100%', height: '100%', backgroundImage: "url('" + m.foto + "')", backgroundSize: 'cover', backgroundPosition: m.foco }
       })),
-      filas, hitos, logros,
-      switcher, filosofia: FILOSOFIA, areas: AREAS, faq, stats, casillas, piezas, jugadas,
-      jugadaActual: ply === 0 ? 'Posición inicial' : 'Jugada ' + ply + ' de ' + c.moves.length,
+      filas, casillas, piezas,
+      cursoCasillas: (() => {
+        const out = [];
+        for (let n = 0; n < 64; n++) {
+          const claro = ((n >> 3) + (n % 8)) % 2 === 0;
+          out.push({ style: { backgroundColor: claro ? '#2b2723' : '#16110D' } });
+        }
+        return out;
+      })(),
+      blogMaestro: {
+        todos: c.recursos.map((r, n) => ({ ...r, num: (n + 1 < 10 ? '0' : '') + (n + 1), href: 'Blog Articulo.dc.html' }))
+      },
+      articuloDestacado: { ...c.recursos[0], autorFotoStyle: { width: '100%', height: '100%', backgroundImage: "url('" + c.foto + "')", backgroundSize: 'cover', backgroundPosition: c.foco } },
+      articuloSecundario: c.recursos[1] || c.recursos[0],
       irInicio: () => this.setPly(0),
       irFinal: () => this.setPly(c.moves.length),
       anterior: () => this.setPly(ply - 1),
       siguiente: () => this.setPly(ply + 1),
       alternarAuto: this.alternarAuto,
+      voltear: this.voltear,
+      partidaMeta: c.partidaMeta,
       reproducirLabel: this.state.auto ? 'Pausar' : 'Reproducir partida',
       estiloPlay: {
         flex: 1, height: '52px', borderRadius: '12px', border: 0,
         background: this.state.auto ? 'rgba(255,145,67,.18)' : '#2b2723',
         color: this.state.auto ? '#FFC79B' : '#C9C4BC',
-        boxShadow: this.state.auto ? '0 4px 0 rgba(184,97,31,.55)' : '0 4px 0 #3b3630',
-        display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'
+        boxShadow: this.state.auto ? '0 6px 14px rgba(184,97,31,.4)' : '0 6px 14px rgba(0,0,0,.35)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
+        transition: 'background-color .15s ease, color .15s ease'
       },
       glifoPlay: this.state.auto
         ? { display: 'flex', gap: '4px', alignItems: 'center', justifyContent: 'center', width: '19px', height: '22px', borderLeft: 0, borderRight: 0, boxShadow: 'inset 5.5px 0 0 currentColor, inset -5.5px 0 0 currentColor' }
