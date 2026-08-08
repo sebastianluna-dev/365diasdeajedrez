@@ -1,4 +1,4 @@
-.maestro-hero {
+.teacher {
   position: relative;
   max-width: 1160px;
   margin: 0 auto;
@@ -8,22 +8,22 @@
   box-sizing: border-box;
   overflow: hidden;
 
-  & .maestro-hero__media {
+  & .teacher__media {
     position: absolute;
     top: 0;
     right: 0;
     height: 640px;
     width: auto;
     z-index: 1;
-    aspect-ratio: 3/4;
+    aspect-ratio: 3 / 4;
   }
 
-  & .maestro-hero__media .maestro-hero__photo {
+  & .teacher__media .teacher__photo {
     object-fit: cover;
     height: 600px;
   }
 
-  & .maestro-hero__photo-overlay {
+  & .teacher__photo-overlay {
     z-index: 2;
     position: absolute;
     inset: 0;
@@ -37,7 +37,7 @@
     );
   }
 
-  & .maestro-hero__stats {
+  & .teacher__stats {
     position: absolute;
     right: 28px;
     bottom: 44px;
@@ -46,20 +46,20 @@
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 20px;
     text-align: left;
-    width: 100%f;
+    width: 100%;
   }
 
-  & .maestro-hero__stat {
+  & .teacher__stat {
     border-left: 1px solid rgba(242, 237, 231, 0.3);
     padding-left: 12px;
   }
 
-  & .maestro-hero__stat:first-child {
+  & .teacher__stat:first-child {
     border-left: none;
     padding-left: 0;
   }
 
-  & .maestro-hero__stat-value {
+  & .teacher__stat-value {
     display: block;
     font-family: var(--font-gramatika), sans-serif;
     font-size: 24px;
@@ -67,27 +67,27 @@
     color: #f2ede7;
   }
 
-  & .maestro-hero__stat-label {
+  & .teacher__stat-label {
     font-size: 16px;
     line-height: 1.3;
     color: #d8d0c6;
     margin: 6px 0 0;
   }
 
-  & .maestro-hero__content {
+  & .teacher__content {
     position: relative;
     z-index: 3;
     margin-top: 20px;
   }
 
-  & .maestro-hero__eyebrow {
+  & .teacher__eyebrow {
     font-size: 16px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: #b4a99d;
   }
 
-  & .maestro-hero__name {
+  & .teacher__name {
     font-family: var(--font-gramatika), sans-serif;
     text-transform: uppercase;
     word-spacing: 25%;
@@ -98,7 +98,7 @@
     letter-spacing: +0.03em;
   }
 
-  & .maestro-hero__badge {
+  & .teacher__badge {
     display: inline-flex;
     align-items: center;
     gap: 9px;
@@ -113,7 +113,7 @@
     margin-top: 16px;
   }
 
-  & .maestro-hero__summary {
+  & .teacher__summary {
     font-size: 18px;
     line-height: 1.6;
     color: #b4a99d;
@@ -121,7 +121,7 @@
     max-width: 44ch;
   }
 
-  & .maestro-hero__elo-label {
+  & .teacher__elo-label {
     font-size: 14px;
     letter-spacing: 0.04em;
     color: #8a8175;
@@ -129,7 +129,7 @@
     margin-top: 24px;
   }
 
-  & .maestro-hero__elo-grid {
+  & .teacher__elo-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1px;
@@ -141,19 +141,19 @@
     max-width: 340px;
   }
 
-  & .maestro-hero__elo-grid.maestro-hero__elo-grid_cols_4 {
+  & .teacher__elo-grid.teacher__elo-grid_cols_4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     max-width: 420px;
   }
 
-  & .maestro-hero__elo-item {
+  & .teacher__elo-item {
     background: #16110d;
     padding: 10px 4px;
     text-align: center;
     box-sizing: border-box;
   }
 
-  & .maestro-hero__elo-item-label {
+  & .teacher__elo-item-label {
     display: block;
     font-size: 12px;
     letter-spacing: 0.06em;
@@ -161,7 +161,7 @@
     color: #8a8175;
   }
 
-  & .maestro-hero__elo-item-value {
+  & .teacher__elo-item-value {
     display: block;
     font-family: var(--font-gramatika), sans-serif;
     font-size: 22px;
@@ -170,7 +170,7 @@
     color: #f2ede7;
   }
 
-  & .maestro-hero__actions {
+  & .teacher__actions {
     display: flex;
     gap: 14px;
     margin-top: 22px;
@@ -178,23 +178,19 @@
   }
 
   @media (max-width: 1023px) {
-    & .maestro-hero__word {
-      font-size: 84px;
-    }
-
-    & .maestro-hero__media {
+    & .teacher__media {
       width: 56%;
     }
 
-    & .maestro-hero__stats {
+    & .teacher__stats {
       grid-template-columns: repeat(3, minmax(0, 1fr));
       right: 20px;
       bottom: 24px;
       gap: 14px;
     }
 
-    & .maestro-hero__stat:nth-child(4),
-    & .maestro-hero__stat:nth-child(5) {
+    & .teacher__stat:nth-child(4),
+    & .teacher__stat:nth-child(5) {
       display: none;
     }
   }
@@ -203,11 +199,7 @@
     min-height: 0;
     padding: 24px 20px 32px;
 
-    & .maestro-hero__word {
-      display: none;
-    }
-
-    & .maestro-hero__media {
+    & .teacher__media {
       position: relative;
       top: auto;
       right: auto;
@@ -216,27 +208,27 @@
       border-radius: 18px;
     }
 
-    & .maestro-hero__stats {
+    & .teacher__stats {
       grid-template-columns: repeat(3, minmax(0, 1fr));
       right: 16px;
       bottom: 16px;
       gap: 12px;
     }
 
-    & .maestro-hero__content {
+    & .teacher__content {
       max-width: none;
       margin-top: 24px;
     }
 
-    & .maestro-hero__name {
+    & .teacher__name {
       font-size: 32px;
     }
 
-    & .maestro-hero__summary {
+    & .teacher__summary {
       max-width: none;
     }
 
-    & .maestro-hero__elo-grid {
+    & .teacher__elo-grid {
       max-width: none;
     }
   }

@@ -1,6 +1,7 @@
 export interface HomeSectionsConfig {
   hero: boolean;
   program: boolean;
+  teacher: boolean;
   mentors: boolean;
   plans: boolean;
   resources: boolean;

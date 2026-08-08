@@ -11,7 +11,6 @@ const toolsLinks = [{ href: "/reloj-de-ajedrez", label: "Reloj de ajedrez" }];
 const mobileLinks = [
   { href: "/", label: "Inicio" },
   { href: "/blog", label: "Blog" },
-  { href: "/maestros/sebastian", label: "Maestro" },
   { href: "/reloj-de-ajedrez", label: "Reloj de ajedrez" },
   { href: "/nosotros", label: "Nosotros" },
 ];
@@ -29,7 +28,6 @@ export function SiteHeader() {
             <div className="site-header__links">
               <Link href="/">Inicio</Link>
               <Link href="/blog">Blog</Link>
-              <Link href="/maestros/sebastian">Maestro</Link>
               <div className="site-header__dropdown">
                 <button type="button" className="site-header__dropdown-trigger">
                   Herramientas
