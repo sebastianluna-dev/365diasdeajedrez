@@ -19,10 +19,10 @@ export function HeroSection() {
               plan hecho a tu nivel y a tu ritmo.
             </p>
             <div className="hero__actions">
-              <Link href="/#planes" className="button button_variant_primary">
+              <Link href="/#planes" className="button button_variant_primary button_size_hero">
                 Únete a la academia
               </Link>
-              <Link href="/#programa" className="button button_variant_secondary">
+              <Link href="/#programa" className="button button_variant_secondary button_size_hero">
                 Conoce el método
               </Link>
             </div>

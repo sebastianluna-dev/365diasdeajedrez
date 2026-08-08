@@ -37,6 +37,7 @@ export interface FideInformation {
   standardElo: number;
   rapidElo: number;
   blitzElo: number;
+  chessComElo?: number;
   federation: string;
   shortFideTitle?: ShortFideTitle;
   longFideTitle?: LongFideTitle;

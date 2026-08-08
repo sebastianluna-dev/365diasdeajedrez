@@ -157,3 +157,14 @@ a {
   border: 1px solid rgba(242, 237, 231, 0.2);
   color: #f2ede7;
 }
+
+.button_size_hero {
+  padding: 20px 34px;
+  font-size: 18px;
+  gap: 12px;
+}
+
+.button_size_hero svg {
+  width: 20px;
+  height: 20px;
+}
