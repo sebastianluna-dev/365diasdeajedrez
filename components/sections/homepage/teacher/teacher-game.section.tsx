@@ -1,4 +1,4 @@
-import { ChessBoard } from "@/components/sections/mentor-profile/game/chess-board.comp";
+import { ChessBoard } from "@/components/sections/common/chess-board.comp";
 import "./teacher-game.section.css";
 
 const GAME_TITLE = "WIM Andrea Ortez — Sebastián Luna · Intercontinental Jorge Vega, 2026";

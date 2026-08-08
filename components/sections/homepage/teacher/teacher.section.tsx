@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { CalendarCheck } from "lucide-react";
-import { ACADEMY_STATS } from "@/components/sections/mentor-profile/academy-stats.const";
+import { ACADEMY_STATS } from "./academy-stats.const";
 import { TeacherGameSection } from "./teacher-game.section";
 import "./teacher.section.css";
 
