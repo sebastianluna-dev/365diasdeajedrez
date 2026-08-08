@@ -1,5 +1,5 @@
 import { siteConfig, getHomeMentorsSlot } from "@/config/site.config";
-import { SiteHeader } from "../components/sections/common/site-header.comp";
+import { SiteHeader } from "../components/sections/common/site-header.section";
 import { HeroSection } from "../components/sections/homepage/hero/hero.section";
 import { ProgramSection } from "../components/sections/homepage/program/program.section";
 import { MentorsSection } from "../components/sections/homepage/mentors/mentors.section";

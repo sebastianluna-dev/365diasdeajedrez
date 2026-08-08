@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { ChevronRight, ChevronDown, Menu, X } from "lucide-react";
 import { Logo } from "./logo.comp";
-import "./site-header.comp.css";
+import "./site-header.section.css";
 
 const toolsLinks = [{ href: "/reloj-de-ajedrez", label: "Reloj de ajedrez" }];
 

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { SiteHeader } from "@/components/sections/common/site-header.comp";
-import { Footer } from "@/components/sections/common/footer.comp";
+import { SiteHeader } from "@/components/sections/common/site-header.section";
+import { Footer } from "@/components/sections/common/footer.section";
 import { NosotrosHeroSection } from "@/components/sections/nosotros/hero/hero.section";
 import { ValoresSection } from "@/components/sections/nosotros/values/values.section";
 import { NosotrosCtaSection } from "@/components/sections/nosotros/cta/cta.section";

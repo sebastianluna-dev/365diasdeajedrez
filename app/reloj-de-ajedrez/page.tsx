@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SiteHeader } from "@/components/sections/common/site-header.comp";
+import { SiteHeader } from "@/components/sections/common/site-header.section";
 import { ChessClockDesktop } from "@/components/sections/chess-clock/chess-clock-desktop.comp";
 import { ChessClockMobile } from "@/components/sections/chess-clock/chess-clock-mobile.comp";
 import "./reloj-page.css";

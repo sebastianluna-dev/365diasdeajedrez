@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Logo } from "./logo.comp";
-import "./footer.comp.css";
+import "./footer.section.css";
 
 interface FooterProps {
   accent?: "orange" | "red";

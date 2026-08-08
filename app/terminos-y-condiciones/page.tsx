@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { SiteHeader } from "@/components/sections/common/site-header.comp";
+import { SiteHeader } from "@/components/sections/common/site-header.section";
 import { LegalPageSection } from "@/components/sections/legal/legal-page.section";
-import { Footer } from "@/components/sections/common/footer.comp";
+import { Footer } from "@/components/sections/common/footer.section";
 import type { LegalPageContent } from "@/interfaces/legal-page.interface";
 import "./terminos-y-condiciones-page.css";
 

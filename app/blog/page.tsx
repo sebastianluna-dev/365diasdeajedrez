@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Masthead } from "@/components/sections/blog/masthead/masthead.comp";
 import { Ticker } from "@/components/sections/blog/ticker/ticker.comp";
 import { BlogContent } from "@/components/sections/blog/blog-content/blog-content.section";
-import { Footer } from "@/components/sections/common/footer.comp";
+import { Footer } from "@/components/sections/common/footer.section";
 import "./blog.css";
 
 export const metadata: Metadata = {

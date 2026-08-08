@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Footer } from "@/components/sections/common/footer.comp";
+import { Footer } from "@/components/sections/common/footer.section";
 import { WhatsappIcon } from "@/components/icons/whatsapp-icon.comp";
 import { EmailIcon } from "@/components/icons/email-icon.comp";
 import { ClockDial } from "@/components/sections/chess-clock/clock-dial.comp";
