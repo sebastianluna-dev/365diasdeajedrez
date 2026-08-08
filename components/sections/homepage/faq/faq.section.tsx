@@ -5,7 +5,7 @@ import "./faq.section.css";
 
 export function FaqSection() {
   return (
-    <section className="section section_theme_dark faq">
+    <section id="preguntas" className="section section_theme_dark faq">
       <div className="section__inner">
         <div className="faq__grid">
           <div>

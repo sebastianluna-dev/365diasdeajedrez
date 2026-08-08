@@ -8,12 +8,13 @@ import "./site-header.comp.css";
 
 const toolsLinks = [{ href: "/reloj-de-ajedrez", label: "Reloj de ajedrez" }];
 
-const mobileLinks = [
-  { href: "/", label: "Inicio" },
-  { href: "/blog", label: "Blog" },
-  { href: "/reloj-de-ajedrez", label: "Reloj de ajedrez" },
-  { href: "/nosotros", label: "Nosotros" },
+const homeSectionLinks = [
+  { href: "/#maestro", label: "Maestro" },
+  { href: "/#planes", label: "Paquetes" },
+  { href: "/#preguntas", label: "Preguntas frecuentes" },
 ];
+
+const mobileLinks = [...homeSectionLinks, ...toolsLinks];
 
 export function SiteHeader() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -26,8 +27,11 @@ export function SiteHeader() {
             <Logo theme="dark" accent="orange" />
 
             <div className="site-header__links">
-              <Link href="/">Inicio</Link>
-              <Link href="/blog">Blog</Link>
+              {homeSectionLinks.map((link) => (
+                <Link key={link.href} href={link.href}>
+                  {link.label}
+                </Link>
+              ))}
               <div className="site-header__dropdown">
                 <button type="button" className="site-header__dropdown-trigger">
                   Herramientas
@@ -41,7 +45,6 @@ export function SiteHeader() {
                   ))}
                 </div>
               </div>
-              <Link href="/nosotros">Nosotros</Link>
             </div>
           </nav>
           <Link href="/#planes" className="site-header__button">

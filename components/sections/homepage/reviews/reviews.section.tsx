@@ -28,7 +28,7 @@ export function ReviewsSection() {
   }, [activeIndex]);
 
   return (
-    <section className="section section_theme_light reviews">
+    <section id="reviews" className="section section_theme_light reviews">
       <div className="section__inner">
         <div className="reviews__head">
           <h2 className="reviews__title">Lo que dicen los alumnos</h2>

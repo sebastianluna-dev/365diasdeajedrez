@@ -21,23 +21,20 @@ export function Footer({ accent = "orange" }: FooterProps) {
           <div>
             <h4 className="site-footer__heading">Academia</h4>
             <div className="site-footer__links">
-              <Link href="/" className="site-footer__link">
-                Inicio
+              <Link href="/#programa" className="site-footer__link">
+                Programa
               </Link>
-              <Link href="/blog" className="site-footer__link">
-                Blog
+              <Link href="/#maestro" className="site-footer__link">
+                Maestro
+              </Link>
+              <Link href="/#planes" className="site-footer__link">
+                Paquetes
+              </Link>
+              <Link href="/#preguntas" className="site-footer__link">
+                Preguntas frecuentes
               </Link>
               <Link href="/reloj-de-ajedrez" className="site-footer__link">
                 Reloj de ajedrez
-              </Link>
-              <Link href="/nosotros" className="site-footer__link">
-                Nosotros
-              </Link>
-              <Link href="/aviso-de-privacidad" className="site-footer__link">
-                Aviso de privacidad
-              </Link>
-              <Link href="/terminos-y-condiciones" className="site-footer__link">
-                Términos y condiciones
               </Link>
             </div>
           </div>

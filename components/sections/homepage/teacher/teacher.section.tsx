@@ -22,7 +22,7 @@ const TEACHER = {
 export function TeacherSection() {
   return (
     <>
-      <section className="teacher">
+      <section id="maestro" className="teacher">
         <div className="teacher__media">
           <Image className="teacher__photo" src={TEACHER.photo} alt={TEACHER.name} width={1536} height={2048} />
           <div className="teacher__photo-overlay" />
