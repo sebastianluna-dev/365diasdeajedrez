@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Logo } from "./logo.comp";
+import { Logo } from "@/components/common/logo.comp";
 import "./footer.section.css";
 
 interface FooterProps {

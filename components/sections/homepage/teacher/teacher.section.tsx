@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { CalendarCheck } from "lucide-react";
 import { EloTable } from "@/components/common/elo-table.comp";
-import { ChessBoard } from "@/components/sections/common/chess-board.comp";
+import { ChessBoard } from "@/components/common/chess-board.comp";
 import { TeacherStat } from "./teacher-stat.comp";
 import "./teacher.section.css";
 

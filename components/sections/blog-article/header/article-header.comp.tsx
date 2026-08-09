@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Logo } from "@/components/sections/common/logo.comp";
+import { Logo } from "@/components/common/logo.comp";
 import "./article-header.comp.css";
 
 interface ArticleHeaderProps {
