@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { CalendarCheck } from "lucide-react";
+import { EloTable } from "@/components/common/elo-table.comp";
 import { ACADEMY_STATS } from "./academy-stats.const";
 import { TeacherGameSection } from "./teacher-game.section";
 import "./teacher.section.css";
@@ -44,24 +45,12 @@ export function TeacherSection() {
           <p className="teacher__summary">{TEACHER.summary}</p>
 
           <p className="teacher__elo-label">Clasificación Elo actual por modalidad de juego</p>
-          <div className="teacher__elo-grid teacher__elo-grid_cols_4">
-            <div className="teacher__elo-item">
-              <span className="teacher__elo-item-label">Estándar</span>
-              <span className="teacher__elo-item-value">{TEACHER.fideInfo.standardElo}</span>
-            </div>
-            <div className="teacher__elo-item">
-              <span className="teacher__elo-item-label">Rápidas</span>
-              <span className="teacher__elo-item-value">{TEACHER.fideInfo.rapidElo}</span>
-            </div>
-            <div className="teacher__elo-item">
-              <span className="teacher__elo-item-label">Blitz</span>
-              <span className="teacher__elo-item-value">{TEACHER.fideInfo.blitzElo}</span>
-            </div>
-            <div className="teacher__elo-item">
-              <span className="teacher__elo-item-label">Chess.com</span>
-              <span className="teacher__elo-item-value">{TEACHER.fideInfo.chessComElo}</span>
-            </div>
-          </div>
+          <EloTable className="teacher__elo-table" columns={4}>
+            <EloTable.EloItem label="Estándar" value={TEACHER.fideInfo.standardElo} />
+            <EloTable.EloItem label="Rápidas" value={TEACHER.fideInfo.rapidElo} />
+            <EloTable.EloItem label="Blitz" value={TEACHER.fideInfo.blitzElo} />
+            <EloTable.EloItem label="Chess.com" value={TEACHER.fideInfo.chessComElo} />
+          </EloTable>
 
           <div className="teacher__actions">
             <Link href="/#planes" className="button button_variant_primary">

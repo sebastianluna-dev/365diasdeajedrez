@@ -129,45 +129,8 @@
     margin-top: 24px;
   }
 
-  & .teacher__elo-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1px;
-    background: rgba(255, 255, 255, 0.09);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 14px;
-    overflow: hidden;
-    box-sizing: border-box;
-    max-width: 340px;
-  }
-
-  & .teacher__elo-grid.teacher__elo-grid_cols_4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  & .teacher__elo-table {
     max-width: 420px;
-  }
-
-  & .teacher__elo-item {
-    background: #16110d;
-    padding: 10px 4px;
-    text-align: center;
-    box-sizing: border-box;
-  }
-
-  & .teacher__elo-item-label {
-    display: block;
-    font-size: 12px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: #8a8175;
-  }
-
-  & .teacher__elo-item-value {
-    display: block;
-    font-family: var(--font-gramatika), sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    margin-top: 6px;
-    color: #f2ede7;
   }
 
   & .teacher__actions {
@@ -228,7 +191,7 @@
       max-width: none;
     }
 
-    & .teacher__elo-grid {
+    & .teacher__elo-table {
       max-width: none;
     }
   }
