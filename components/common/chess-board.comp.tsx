@@ -29,6 +29,7 @@ interface ChessBoardProps {
 
 export function ChessBoard({ moves, flipBoard, meta, annotations }: ChessBoardProps) {
   const {
+    ply,
     squares,
     pieces,
     rows,
@@ -41,8 +42,12 @@ export function ChessBoard({ moves, flipBoard, meta, annotations }: ChessBoardPr
     toggleFlip,
   } = useChessReplay(moves, flipBoard, annotations);
 
+  const boardRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
+  const activeCellRef = useRef<HTMLButtonElement>(null);
   const [notationHeight, setNotationHeight] = useState<number | undefined>(undefined);
+  const isInViewportRef = useRef(false);
+  const hasBeenClickedRef = useRef(false);
 
   useEffect(() => {
     const frameEl = frameRef.current;
@@ -62,8 +67,42 @@ export function ChessBoard({ moves, flipBoard, meta, annotations }: ChessBoardPr
     };
   }, []);
 
+  useEffect(() => {
+    const boardEl = boardRef.current;
+    if (!boardEl) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isInViewportRef.current = entry.isIntersecting;
+      },
+      { threshold: 1 },
+    );
+    observer.observe(boardEl);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!isInViewportRef.current && !hasBeenClickedRef.current) return;
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        goToNext();
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        goToPrevious();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [goToNext, goToPrevious]);
+
+  useEffect(() => {
+    activeCellRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [ply]);
+
   return (
-    <div className="chess-board">
+    <div className="chess-board" ref={boardRef} onClick={() => (hasBeenClickedRef.current = true)}>
       {meta && (
         <div className="chess-board__meta">
           <div className="chess-board__meta-players">
@@ -129,6 +168,7 @@ export function ChessBoard({ moves, flipBoard, meta, annotations }: ChessBoardPr
                   <span className="chess-board__notation-number">{row.number}</span>
                   <button
                     type="button"
+                    ref={row.white.active ? activeCellRef : undefined}
                     onClick={row.white.onSelect}
                     className={`chess-board__notation-cell${row.white.active ? " chess-board__notation-cell_active" : ""}`}
                   >
@@ -147,6 +187,7 @@ export function ChessBoard({ moves, flipBoard, meta, annotations }: ChessBoardPr
                   {row.black ? (
                     <button
                       type="button"
+                      ref={row.black.active ? activeCellRef : undefined}
                       onClick={row.black.onSelect}
                       className={`chess-board__notation-cell${row.black.active ? " chess-board__notation-cell_active" : ""}`}
                     >

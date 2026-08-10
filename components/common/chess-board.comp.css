@@ -216,10 +216,10 @@
     cursor: pointer;
     border-radius: 8px;
     font-family: inherit;
+    outline: none;
   }
 
   & .chess-board__notation-cell.chess-board__notation-cell_active {
-    font-weight: 700;
     color: #ffc79b;
   }
 
@@ -247,18 +247,36 @@
     height: 19px;
     margin-right: -1px;
     vertical-align: -4px;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    filter: invert(1) brightness(2.2);
+    background-color: currentColor;
+    mask-size: contain;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
     opacity: 0.85;
   }
 
-  & .chess-board__notation-glyph.chess-board__notation-glyph_kind_knight { background-image: url("/design-import/assets/pieces/b-knight.svg"); }
-  & .chess-board__notation-glyph.chess-board__notation-glyph_kind_bishop { background-image: url("/design-import/assets/pieces/b-bishop.svg"); }
-  & .chess-board__notation-glyph.chess-board__notation-glyph_kind_rook { background-image: url("/design-import/assets/pieces/b-rook.svg"); }
-  & .chess-board__notation-glyph.chess-board__notation-glyph_kind_queen { background-image: url("/design-import/assets/pieces/b-queen.svg"); }
-  & .chess-board__notation-glyph.chess-board__notation-glyph_kind_king { background-image: url("/design-import/assets/pieces/b-king.svg"); }
+  & .chess-board__notation-glyph.chess-board__notation-glyph_kind_knight {
+    mask-image: url("/design-import/assets/pieces/b-knight.svg");
+    -webkit-mask-image: url("/design-import/assets/pieces/b-knight.svg");
+  }
+  & .chess-board__notation-glyph.chess-board__notation-glyph_kind_bishop {
+    mask-image: url("/design-import/assets/pieces/b-bishop.svg");
+    -webkit-mask-image: url("/design-import/assets/pieces/b-bishop.svg");
+  }
+  & .chess-board__notation-glyph.chess-board__notation-glyph_kind_rook {
+    mask-image: url("/design-import/assets/pieces/b-rook.svg");
+    -webkit-mask-image: url("/design-import/assets/pieces/b-rook.svg");
+  }
+  & .chess-board__notation-glyph.chess-board__notation-glyph_kind_queen {
+    mask-image: url("/design-import/assets/pieces/b-queen.svg");
+    -webkit-mask-image: url("/design-import/assets/pieces/b-queen.svg");
+  }
+  & .chess-board__notation-glyph.chess-board__notation-glyph_kind_king {
+    mask-image: url("/design-import/assets/pieces/b-king.svg");
+    -webkit-mask-image: url("/design-import/assets/pieces/b-king.svg");
+  }
 
   & .chess-board__toolbar {
     display: flex;
