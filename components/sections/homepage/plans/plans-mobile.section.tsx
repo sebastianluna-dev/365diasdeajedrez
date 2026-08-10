@@ -43,7 +43,10 @@ export function PlansMobileSection() {
           ))}
         </ul>
         <Link
-          href="/#planes"
+          href={`https://wa.me/522291348338?text=${encodeURIComponent(
+            `Hola, me gustaría recibir información sobre el ${activePlan.name} de la Academia 365 Días de Ajedrez. ¡Gracias!`,
+          )}`}
+          target="_blank"
           className={`plan-card__button${activePlan.featured ? " plan-card__button_variant_alt" : ""}`}
         >
           {activePlan.ctaLabel}

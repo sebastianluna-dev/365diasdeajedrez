@@ -12,7 +12,11 @@ export function FaqSection() {
             <span className="section__eyebrow">Preguntas frecuentes</span>
             <h2 className="section__title">Todo lo que necesitas saber antes de empezar.</h2>
             <p className="section__text">Si te queda alguna duda, escríbenos y la resolvemos contigo.</p>
-            <Link href="https://wa.me/520000000000" className="button button_variant_primary faq__cta">
+            <Link
+              href="https://wa.me/522291348338?text=Hola%2C+me+gustar%C3%ADa+recibir+informaci%C3%B3n+sobre+la+Academia+365+D%C3%ADas+de+Ajedrez.+Quisiera+conocer+m%C3%A1s+sobre+las+clases+y+los+planes.+%C2%A1Gracias%21"
+              className="button button_variant_primary faq__cta"
+              target="_blank"
+            >
               Hablar con nosotros
             </Link>
           </div>

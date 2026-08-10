@@ -4,11 +4,10 @@ export const subscriptionPlans: SubscriptionPlan[] = [
   {
     slug: "semanal",
     name: "Plan Semanal",
-    price: 999,
+    price: 799,
     currency: "MXN",
     period: "mes",
-    description:
-      "Una clase por semana para entrenar con constancia, corregir errores y avanzar con un plan claro.",
+    description: "Una clase por semana para entrenar con constancia, corregir errores y avanzar con un plan claro.",
     features: [
       "4 clases al mes (1 por semana)",
       "Sesiones personalizadas de 75 minutos",
@@ -22,7 +21,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
   {
     slug: "intensivo",
     name: "Plan Intensivo",
-    price: 1699,
+    price: 1399,
     currency: "MXN",
     period: "mes",
     description:

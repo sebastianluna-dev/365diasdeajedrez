@@ -13,17 +13,14 @@ export function HeroSection() {
 
         <div className="hero__grid">
           <div className="hero__copy">
-            <h1 className="hero__title">El verdadero progreso en ajedrez se gana entrenando.</h1>
+            <h1 className="hero__title">Lleva tu ajedrez al siguiente nivel con el Método 365</h1>
             <p className="hero__text">
-              Prueba el Método 365: cinco módulos progresivos que te llevan de los fundamentos a los finales, con un
-              plan hecho a tu nivel y a tu ritmo.
+              Desarrolla una comprensión más profunda del juego, aprende a evaluar posiciones y toma mejores decisiones
+              sobre el tablero.
             </p>
             <div className="hero__actions">
-              <Link href="/#planes" className="button button_variant_primary button_size_hero">
-                Únete a la academia
-              </Link>
-              <Link href="/#programa" className="button button_variant_secondary button_size_hero">
-                Conoce el método
+              <Link href="/#programa" className="button button_variant_primary button_size_hero">
+                Conocer el método
               </Link>
             </div>
           </div>
@@ -48,7 +45,7 @@ export function HeroSection() {
 
             <div className="hero__badges">
               <FloatBadge text="Cálculo" piece={ChessPieceUnicode.BlackKnight} className="float-badge_offset_1" />
-              <FloatBadge text="Visualizacion" piece={ChessPieceUnicode.BlackQueen} className="float-badge_offset_2" />
+              <FloatBadge text="Visualización" piece={ChessPieceUnicode.BlackQueen} className="float-badge_offset_2" />
               <FloatBadge text="Estrategia" piece={ChessPieceUnicode.BlackBishop} className="float-badge_offset_3" />
               <FloatBadge text="Finales" piece={ChessPieceUnicode.BlackKing} className="float-badge_offset_3" />
               <FloatBadge text="Aperturas" piece={ChessPieceUnicode.BlackPawn} className="float-badge_offset_2" />

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Footer } from "@/components/sections/common/footer.section";
 import { WhatsappIcon } from "@/components/icons/whatsapp-icon.comp";
-import { EmailIcon } from "@/components/icons/email-icon.comp";
 import { ClockDial } from "@/components/sections/chess-clock/clock-dial.comp";
 import { useCountdownTimer } from "@/hooks/use-countdown-timer.hook";
 import "./cta.section.css";
@@ -26,16 +25,13 @@ export function CtaSection() {
             <p className="sticky-cta__subtitle">No te quedes sin tu lugar en la academia.</p>
           </div>
           <div className="sticky-cta__actions">
-            <Link className="sticky-cta__link" href="https://w.app/365diasdeajedrez">
+            <Link
+              className="sticky-cta__link sticky-cta__link_variant_primary"
+              href="https://wa.me/522291348338?text=Hola%2C+me+gustar%C3%ADa+recibir+informaci%C3%B3n+sobre+la+Academia+365+D%C3%ADas+de+Ajedrez.+Quisiera+conocer+m%C3%A1s+sobre+las+clases+y+los+planes.+%C2%A1Gracias%21"
+              target="_blank"
+            >
               <WhatsappIcon className="sticky-cta__link-icon" />
-              WhatsApp
-            </Link>
-            <Link className="sticky-cta__link" href="mailto:contacto@365diasdeajedrez.com">
-              <EmailIcon className="sticky-cta__link-icon" />
-              Email
-            </Link>
-            <Link href="/#planes" className="sticky-cta__link sticky-cta__link_variant_primary">
-              Únete a la academia
+              Habla con el maestro
             </Link>
           </div>
         </div>
