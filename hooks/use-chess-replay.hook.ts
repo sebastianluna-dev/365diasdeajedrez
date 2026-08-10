@@ -382,7 +382,7 @@ export function useChessReplay(moves: string[], flipBoard: boolean, annotations?
       out.push({
         number: moveNumber + ".",
         white: {
-          label: withoutInitial(toSpanish(moves[whiteIndex])),
+          label: toSpanish(withoutInitial(moves[whiteIndex])),
           glyph: pieceGlyphOf(moves[whiteIndex]),
           quality: annotations?.[`${moveNumber}w`] ?? null,
           active: ply === whiteIndex + 1,
@@ -391,7 +391,7 @@ export function useChessReplay(moves: string[], flipBoard: boolean, annotations?
         },
         black: hasBlack
           ? {
-              label: withoutInitial(toSpanish(moves[blackIndex])),
+              label: toSpanish(withoutInitial(moves[blackIndex])),
               glyph: pieceGlyphOf(moves[blackIndex]),
               quality: annotations?.[`${moveNumber}b`] ?? null,
               active: ply === blackIndex + 1,
