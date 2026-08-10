@@ -62,5 +62,11 @@
     & .program-list__label {
       display: none;
     }
+
+    @media (max-width: 720px) {
+      & .program-list__number {
+        font-size: 1.125rem;
+      }
+    }
   }
 }

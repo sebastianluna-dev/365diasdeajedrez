@@ -1,6 +1,7 @@
 .program {
   & .program__title {
     max-width: 36rem;
+    line-height: 1.1;
   }
 
   & .program__wrap {
@@ -38,6 +39,7 @@
     padding: 4px 16px;
     border-radius: 9999px;
     font-weight: 600;
+    font-size: 14px;
   }
 
   & .program-panel__badge_variant_primary {
@@ -52,6 +54,8 @@
   & .program-panel__title {
     font-family: var(--font-gramatika), sans-serif;
     font-size: 2.25rem;
+    line-height: 1.1;
+    margin: 0 0 10px;
   }
 
   & .program-panel__subtitle {
@@ -138,7 +142,7 @@
     }
 
     & .program-panel__description {
-      font-size: 15px;
+      font-size: 16px;
     }
 
     & .program__note {
@@ -146,6 +150,18 @@
     }
 
     @media (max-width: 720px) {
+      & .program__title {
+        font-size: 32px;
+      }
+
+      & .section__text {
+        font-size: 18px;
+      }
+
+      & .program-panel__title {
+        font-size: 28px;
+      }
+
       & .program-panel__subtitle {
         display: none;
       }

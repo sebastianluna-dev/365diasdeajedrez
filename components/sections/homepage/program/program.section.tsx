@@ -34,7 +34,9 @@ export function ProgramSection() {
 
           <div className="program-panel">
             <div className="program-panel__badges">
-              <span className="program-panel__badge program-panel__badge_variant_primary">{activeModule.durationLabel}</span>
+              <span className="program-panel__badge program-panel__badge_variant_primary">
+                {activeModule.durationLabel}
+              </span>
               <span className="program-panel__badge program-panel__badge_variant_outline">
                 Módulo 0{activeModule.moduleNumber} de 0{programModules.length}
               </span>
@@ -57,9 +59,8 @@ export function ProgramSection() {
         </div>
 
         <p className="program__note">
-          La mitad del programa está dedicada a comprender el juego —fundamentos y medio juego—; la otra mitad, a las
-          habilidades técnicas. No buscamos que memorices más movimientos, sino que aprendas a encontrar las mejores
-          ideas por ti mismo.
+          Si bien tenemos un programa diseñado, es importante aclarar que los contenido y las explicaciones se
+          personalizan para cada alumno, con el objetivo de mejorar el proceso de aprendizaje
         </p>
       </div>
     </section>
