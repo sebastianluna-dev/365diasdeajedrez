@@ -47,7 +47,7 @@ export function TeacherSection() {
             <TeacherStat value="8+" label="Torneos nacionales" />
           </div>
 
-          <p className="teacher__elo-label">Clasificación Elo actual por modalidad de juego</p>
+          <p className="teacher__elo-label">Clasificación Elo actual por modalidad de juego:</p>
           <EloTable className="teacher__elo-table" columns={4}>
             <EloTable.EloItem label="Estándar" value={1834} />
             <EloTable.EloItem label="Rápidas" value={1804} />
@@ -97,9 +97,25 @@ export function TeacherSection() {
               "11b": "best",
               "13w": "mistake",
               "13b": "best",
-              "15b": "great",
+              "14b": "best",
+              "15b": "brilliant",
+              "16w": "best",
+              "16b": "best",
+              "18b": "best",
+              "22w": "mistake",
               "23b": "best",
-              "24b": "best",
+              "24b": "great",
+              "26b": "best",
+              "27w": "best",
+              "27b": "best",
+              "28w": "best",
+              "28b": "best",
+              "29w": "best",
+              "29b": "best",
+              "31w": "mistake",
+              "31b": "best",
+              "36b": "best",
+              "37b": "great",
             }}
           />
         </div>
