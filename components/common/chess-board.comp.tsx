@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useChessReplay } from "@/hooks/use-chess-replay.hook";
+import { useChessReplay, type MoveAnnotations } from "@/hooks/use-chess-replay.hook";
 import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
 import { SkipIcon } from "@/components/icons/skip-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { PauseIcon } from "@/components/icons/pause-icon.comp";
 import { ShareIcon } from "@/components/icons/share-icon.comp";
 import { FlipIcon } from "@/components/icons/flip-icon.comp";
+import { chessMoveQualityIconFor } from "@/components/common/chess-move-quality-icon.comp";
 import "./chess-board.comp.css";
 
 export interface ChessBoardMeta {
@@ -23,9 +24,10 @@ interface ChessBoardProps {
   moves: string[];
   flipBoard: boolean;
   meta?: ChessBoardMeta;
+  annotations?: MoveAnnotations;
 }
 
-export function ChessBoard({ moves, flipBoard, meta }: ChessBoardProps) {
+export function ChessBoard({ moves, flipBoard, meta, annotations }: ChessBoardProps) {
   const {
     squares,
     pieces,
@@ -37,7 +39,7 @@ export function ChessBoard({ moves, flipBoard, meta }: ChessBoardProps) {
     goToNext,
     toggleAutoPlay,
     toggleFlip,
-  } = useChessReplay(moves, flipBoard);
+  } = useChessReplay(moves, flipBoard, annotations);
 
   const frameRef = useRef<HTMLDivElement>(null);
   const [notationHeight, setNotationHeight] = useState<number | undefined>(undefined);
@@ -116,38 +118,56 @@ export function ChessBoard({ moves, flipBoard, meta }: ChessBoardProps) {
 
         <div className="chess-board__notation" style={notationHeight ? { height: notationHeight } : undefined}>
           <div className="chess-board__notation-rows">
-            {rows.map((row, index) => (
-              <div
-                key={row.number}
-                className={`chess-board__notation-row${index % 2 === 0 ? " chess-board__notation-row_striped" : ""}`}
-              >
-                <span className="chess-board__notation-number">{row.number}</span>
-                <button
-                  type="button"
-                  onClick={row.white.onSelect}
-                  className={`chess-board__notation-cell${row.white.active ? " chess-board__notation-cell_active" : ""}`}
+            {rows.map((row, index) => {
+              const WhiteQualityIcon = row.white.quality ? chessMoveQualityIconFor(row.white.quality) : null;
+              const BlackQualityIcon = row.black?.quality ? chessMoveQualityIconFor(row.black.quality) : null;
+              return (
+                <div
+                  key={row.number}
+                  className={`chess-board__notation-row${index % 2 === 0 ? " chess-board__notation-row_striped" : ""}`}
                 >
-                  {row.white.glyph && (
-                    <span className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.white.glyph}`} />
-                  )}
-                  {row.white.label}
-                </button>
-                {row.black ? (
+                  <span className="chess-board__notation-number">{row.number}</span>
                   <button
                     type="button"
-                    onClick={row.black.onSelect}
-                    className={`chess-board__notation-cell${row.black.active ? " chess-board__notation-cell_active" : ""}`}
+                    onClick={row.white.onSelect}
+                    className={`chess-board__notation-cell${row.white.active ? " chess-board__notation-cell_active" : ""}`}
                   >
-                    {row.black.glyph && (
-                      <span className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.black.glyph}`} />
+                    {WhiteQualityIcon && (
+                      <span className="chess-board__notation-quality">
+                        <WhiteQualityIcon />
+                      </span>
                     )}
-                    {row.black.label}
+                    {row.white.glyph && (
+                      <span
+                        className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.white.glyph}`}
+                      />
+                    )}
+                    {row.white.label}
                   </button>
-                ) : (
-                  <span className="chess-board__notation-cell chess-board__notation-cell_empty">·</span>
-                )}
-              </div>
-            ))}
+                  {row.black ? (
+                    <button
+                      type="button"
+                      onClick={row.black.onSelect}
+                      className={`chess-board__notation-cell${row.black.active ? " chess-board__notation-cell_active" : ""}`}
+                    >
+                      {BlackQualityIcon && (
+                        <span className="chess-board__notation-quality">
+                          <BlackQualityIcon />
+                        </span>
+                      )}
+                      {row.black.glyph && (
+                        <span
+                          className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.black.glyph}`}
+                        />
+                      )}
+                      {row.black.label}
+                    </button>
+                  ) : (
+                    <span className="chess-board__notation-cell chess-board__notation-cell_empty">·</span>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

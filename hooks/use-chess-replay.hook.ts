@@ -263,9 +263,22 @@ export interface ChessPiece {
   visible: boolean;
 }
 
+export type MoveQuality =
+  | "brilliant"
+  | "great"
+  | "best"
+  | "excellent"
+  | "good"
+  | "book"
+  | "inaccuracy"
+  | "mistake"
+  | "miss"
+  | "blunder";
+
 export interface NotationHalfMove {
   label: string;
   glyph: string | null;
+  quality: MoveQuality | null;
   active: boolean;
   empty: boolean;
   onSelect: () => void;
@@ -277,9 +290,11 @@ export interface NotationRow {
   black: NotationHalfMove | null;
 }
 
+export type MoveAnnotations = Partial<Record<string, MoveQuality>>;
+
 const FILES = "abcdefgh";
 
-export function useChessReplay(moves: string[], flipBoard: boolean) {
+export function useChessReplay(moves: string[], flipBoard: boolean, annotations?: MoveAnnotations) {
   const [ply, setPlyState] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [flipToggled, setFlipToggled] = useState(false);
@@ -363,11 +378,13 @@ export function useChessReplay(moves: string[], flipBoard: boolean) {
       const whiteIndex = n;
       const blackIndex = n + 1;
       const hasBlack = blackIndex < moves.length;
+      const moveNumber = n / 2 + 1;
       out.push({
-        number: n / 2 + 1 + ".",
+        number: moveNumber + ".",
         white: {
           label: withoutInitial(toSpanish(moves[whiteIndex])),
           glyph: pieceGlyphOf(moves[whiteIndex]),
+          quality: annotations?.[`${moveNumber}w`] ?? null,
           active: ply === whiteIndex + 1,
           empty: false,
           onSelect: () => setPly(whiteIndex + 1),
@@ -376,6 +393,7 @@ export function useChessReplay(moves: string[], flipBoard: boolean) {
           ? {
               label: withoutInitial(toSpanish(moves[blackIndex])),
               glyph: pieceGlyphOf(moves[blackIndex]),
+              quality: annotations?.[`${moveNumber}b`] ?? null,
               active: ply === blackIndex + 1,
               empty: false,
               onSelect: () => setPly(blackIndex + 1),
@@ -384,7 +402,7 @@ export function useChessReplay(moves: string[], flipBoard: boolean) {
       });
     }
     return out;
-  }, [moves, ply, setPly]);
+  }, [moves, ply, setPly, annotations]);
 
   const currentMoveLabel = ply === 0 ? "Posición inicial" : `Jugada ${ply} de ${total}`;
 
