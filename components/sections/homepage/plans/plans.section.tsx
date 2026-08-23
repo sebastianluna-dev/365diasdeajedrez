@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { subscriptionPlans } from "@/data/subscription-plans.data";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
-import { PlansMobileSection } from "./plans-mobile.section";
+import { PlansMobileSection } from "./plans-mobile.comp";
 import "./plans.section.css";
 
 const maxDiscountPercent = Math.max(...subscriptionPlans.map((plan) => plan.discountPercent ?? 0));

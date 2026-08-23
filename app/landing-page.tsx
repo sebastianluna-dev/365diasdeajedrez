@@ -1,5 +1,6 @@
 import { siteConfig, getHomeMentorsSlot } from "@/config/site.config";
 import { SiteHeader } from "../components/sections/common/site-header.section";
+import { Footer } from "../components/sections/common/footer.section";
 import { HeroSection } from "../components/sections/homepage/hero/hero.section";
 import { ProgramSection } from "../components/sections/homepage/program/program.section";
 import { MentorsSection } from "../components/sections/homepage/mentors/mentors.section";
@@ -26,6 +27,7 @@ export default function LandingPage() {
       {sections.reviews && <ReviewsSection />}
       {sections.faq && <FaqSection />}
       <CtaSection />
+      <Footer />
     </div>
   );
 }

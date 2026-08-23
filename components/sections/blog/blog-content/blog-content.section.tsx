@@ -9,8 +9,8 @@ import "./blog-content.section.css";
 
 export function BlogContent() {
   return (
-    <>
-      <section className="portada">
+    <section className="blog-content">
+      <div className="portada">
         <div className="portada__left">
           <ArticleCard article={articles[0]} />
           <ArticleCard article={articles[1]} id="tactica" />
@@ -25,9 +25,9 @@ export function BlogContent() {
           <ReadingList articles={articles.slice(3, 6)} />
           <SubscribeBox />
         </div>
-      </section>
+      </div>
 
-      <section className="more-section">
+      <div className="more-section">
         <div className="more-section__header">
           <h2 className="more-section__title">Más de esta edición</h2>
           <span className="more-section__page">Página 2</span>
@@ -52,7 +52,7 @@ export function BlogContent() {
             </div>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

@@ -7,8 +7,8 @@ import "./hero.section.css";
 
 export function HeroSection() {
   return (
-    <div className="hero">
-      <section id="inicio" className="hero__inner">
+    <section id="inicio" className="hero">
+      <div className="hero__inner">
         <div className="hero__glow" />
 
         <div className="hero__grid">
@@ -53,7 +53,7 @@ export function HeroSection() {
             </div>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }

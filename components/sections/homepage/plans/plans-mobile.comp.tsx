@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { subscriptionPlans } from "@/data/subscription-plans.data";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
-import "./plans-mobile.section.css";
+import "./plans-mobile.comp.css";
 
 export function PlansMobileSection() {
   const [activeSlug, setActiveSlug] = useState(subscriptionPlans[0].slug);

@@ -4,10 +4,10 @@ import "./legal-page.section.css";
 
 export function LegalPageSection({ title, intro, updatedLabel, cards, closing }: LegalPageContent) {
   return (
-    <div className="legal-page">
+    <section className="legal-page">
       <div className="legal-page__glow" />
 
-      <section className="legal-page__section">
+      <div className="legal-page__section">
         <span className="legal-page__eyebrow">Legal</span>
         <h1 className="legal-page__title">{title}</h1>
         <p className="legal-page__intro">{intro}</p>
@@ -54,7 +54,7 @@ export function LegalPageSection({ title, intro, updatedLabel, cards, closing }:
             </p>
           ))}
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }
