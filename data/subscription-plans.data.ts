@@ -11,8 +11,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     period: "mes",
     description: "Una clase por semana para entrenar con constancia, corregir errores y avanzar con un plan claro.",
     features: [
-      "4 clases al mes (1 por semana)",
-      "Sesiones personalizadas de 75 minutos",
+      "4 clases al mes de 60 minutos",
       "Plan de estudio semanal",
       "Análisis de tus partidas de torneo",
       "Seguimiento de progreso y metas",
@@ -31,8 +30,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
     description:
       "Dos clases por semana para avanzar al doble de ritmo, con seguimiento cercano y preparación de torneo.",
     features: [
-      "8 clases al mes (2 por semana)",
-      "Sesiones personalizadas de 75 minutos",
+      "4 clases al mes de 2 horas",
       "Plan de estudio semanal",
       "Análisis de tus partidas de torneo",
       "Seguimiento de progreso y metas",
