@@ -1,4 +1,4 @@
-import Link from "next/link";
+// import Link from "next/link";
 import { articles } from "@/data/articles.data";
 import { ArticleCard } from "./article-card.comp";
 import { HeroArticle } from "./hero-article.comp";
@@ -27,7 +27,7 @@ export function BlogContent() {
         </div>
       </div>
 
-      <div className="more-section">
+      {/* <div className="more-section">
         <div className="more-section__header">
           <h2 className="more-section__title">Más de esta edición</h2>
           <span className="more-section__page">Página 2</span>
@@ -52,7 +52,7 @@ export function BlogContent() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </section>
   );
 }
