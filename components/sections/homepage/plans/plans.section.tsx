@@ -4,12 +4,17 @@ import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import { PlansMobileSection } from "./plans-mobile.section";
 import "./plans.section.css";
 
+const maxDiscountPercent = Math.max(...subscriptionPlans.map((plan) => plan.discountPercent ?? 0));
+
 export function PlansSection() {
   return (
     <section id="planes" className="section section_theme_light plans">
       <div className="section__inner">
         <div className="section__head plans__head">
           <div>
+            {maxDiscountPercent > 0 && (
+              <span className="section__eyebrow">Ahorra hasta {maxDiscountPercent}% en tu mensualidad</span>
+            )}
             <h2 className="section__title">Paquetes</h2>
             <p className="section__text">
               Entrena una vez por semana o duplica el ritmo.
@@ -21,11 +26,23 @@ export function PlansSection() {
           {subscriptionPlans.map((plan) => (
             <div key={plan.slug} className={`plan-card${plan.featured ? " plan-card_featured" : ""}`}>
               <h3 className="plan-card__title">{plan.name}</h3>
-              <div className="plan-card__price-row">
-                <span className="plan-card__price">${plan.price.toLocaleString("en-US")}</span>
-                <span className="muted-text">
-                  {plan.currency} / {plan.period}
-                </span>
+              <div className="plan-card__price-block">
+                <div className="plan-card__price-row">
+                  <span className="plan-card__price">${plan.price.toLocaleString("en-US")}</span>
+                  <span className="muted-text">
+                    {plan.currency} / {plan.period}
+                  </span>
+                </div>
+                {!!plan.previousPrice && (
+                  <div className="plan-card__discount-row">
+                    <span className="plan-card__price-previous">
+                      ${plan.previousPrice.toLocaleString("en-US")} {plan.currency}
+                    </span>
+                    {!!plan.discountPercent && (
+                      <span className="plan-card__discount-badge">{plan.discountPercent}% OFF</span>
+                    )}
+                  </div>
+                )}
               </div>
               <p className="plan-card__description">{plan.description}</p>
               <ul className="plan-card__list">

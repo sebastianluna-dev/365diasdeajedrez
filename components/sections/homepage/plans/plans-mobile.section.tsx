@@ -27,11 +27,23 @@ export function PlansMobileSection() {
 
       <div className={`plan-card plans-mobile__card${activePlan.featured ? " plan-card_featured" : ""}`}>
         <h3 className="plan-card__title">{activePlan.name}</h3>
-        <div className="plan-card__price-row">
-          <span className="plan-card__price">${activePlan.price.toLocaleString("en-US")}</span>
-          <span className="muted-text">
-            {activePlan.currency} / {activePlan.period}
-          </span>
+        <div className="plan-card__price-block">
+          <div className="plan-card__price-row">
+            <span className="plan-card__price">${activePlan.price.toLocaleString("en-US")}</span>
+            <span className="muted-text">
+              {activePlan.currency} / {activePlan.period}
+            </span>
+          </div>
+          {!!activePlan.previousPrice && (
+            <div className="plan-card__discount-row">
+              <span className="plan-card__price-previous">
+                ${activePlan.previousPrice.toLocaleString("en-US")} {activePlan.currency}
+              </span>
+              {!!activePlan.discountPercent && (
+                <span className="plan-card__discount-badge">{activePlan.discountPercent}% OFF</span>
+              )}
+            </div>
+          )}
         </div>
         <p className="plan-card__description">{activePlan.description}</p>
         <ul className="plan-card__list">
