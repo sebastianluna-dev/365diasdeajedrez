@@ -12,17 +12,17 @@ export function BlogContent() {
     <section className="blog-content">
       <div className="portada">
         <div className="portada__left">
-          <ArticleCard article={articles[0]} />
+          <ArticleCard article={articles[1]} />
           <ArticleCard article={articles[1]} id="tactica" />
         </div>
 
         <div className="portada__center">
-          <HeroArticle article={articles[2]} />
+          <HeroArticle article={articles[0]} />
         </div>
 
         <div className="portada__right">
           <SidebarCard />
-          <ReadingList articles={articles.slice(3, 6)} />
+          <ReadingList articles={articles.slice(0,1)} />
           <SubscribeBox />
         </div>
       </div>
