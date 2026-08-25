@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { chessGlyph, gramatika, suisseIntl } from "@/app/fonts";
 import { GoogleAnalytics } from "@/components/common/google-analytics.comp";
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {children}
         <GoogleAnalytics />
         <MetaPixel />
+        <Analytics />
       </body>
     </html>
   );
