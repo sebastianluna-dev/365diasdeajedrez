@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { chessGlyph, gramatika, suisseIntl } from "@/app/fonts";
+import { GoogleAnalytics } from "@/components/common/google-analytics.comp";
 
 export const metadata: Metadata = {
   title: "365 Días de Ajedrez | Academia de ajedrez",
@@ -22,7 +23,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="es"
       className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} h-full antialiased`}
     >
-      <body className="min-h-full bg-[#16110d] text-[#f2ede7]">{children}</body>
+      <body className="min-h-full bg-[#16110d] text-[#f2ede7]">
+        {children}
+        <GoogleAnalytics />
+      </body>
     </html>
   );
 }
