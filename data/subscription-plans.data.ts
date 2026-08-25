@@ -3,7 +3,7 @@ import type { SubscriptionPlan } from "@/interfaces/subscription-plan.interface"
 export const subscriptionPlans: SubscriptionPlan[] = [
   {
     slug: "semanal",
-    name: "Plan Semanal",
+    name: "Plan 365",
     price: 599,
     previousPrice: 799,
     discountPercent: 25,
@@ -17,11 +17,11 @@ export const subscriptionPlans: SubscriptionPlan[] = [
       "Seguimiento de progreso y metas",
       "Dudas por mensaje entre sesiones",
     ],
-    ctaLabel: "Empieza el Plan Semanal",
+    ctaLabel: "Empieza el Plan 365",
   },
   {
     slug: "intensivo",
-    name: "Plan Intensivo",
+    name: "Plan 365+",
     price: 849,
     previousPrice: 1199,
     discountPercent: 29,
@@ -36,7 +36,7 @@ export const subscriptionPlans: SubscriptionPlan[] = [
       "Seguimiento de progreso y metas",
       "Dudas por mensaje entre sesiones",
     ],
-    ctaLabel: "Empieza el Plan Intensivo",
+    ctaLabel: "Empieza el Plan 365+",
     featured: true,
   },
 ];
