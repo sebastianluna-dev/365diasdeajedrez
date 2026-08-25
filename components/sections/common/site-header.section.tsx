@@ -11,7 +11,7 @@ const toolsLinks = [{ href: "/reloj-de-ajedrez", label: "Reloj de ajedrez" }];
 const homeSectionLinks = [
   { href: "/#maestro", label: "Maestro" },
   { href: "/#planes", label: "Paquetes" },
-  { href: "/blog", label: "Blog" },
+  { href: "/#preguntas", label: "Preguntas frecuentes" },
 ];
 
 const mobileLinks = [...homeSectionLinks, ...toolsLinks];
