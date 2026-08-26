@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
-import { chessGlyph, gramatika, suisseIntl } from "@/app/fonts";
+import { chessGlyph, gramatika, suisseIntl } from "./fonts";
 import { GoogleAnalytics } from "@/components/common/google-analytics.comp";
 import { MetaPixel } from "@/components/common/meta-pixel.comp";
 

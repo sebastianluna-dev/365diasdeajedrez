@@ -1,0 +1,42 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { postgresAdapter } from "@payloadcms/db-postgres";
+import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import { buildConfig } from "payload";
+import { Users } from "@/collections/Users";
+import { Categories } from "@/collections/Categories";
+import { Tags } from "@/collections/Tags";
+import { Media } from "@/collections/Media";
+import { Posts } from "@/collections/Posts";
+import { cloudinaryStorage } from "@/lib/payload/cloudinary-adapter";
+
+const filename = fileURLToPath(import.meta.url);
+const dirname = path.dirname(filename);
+
+export default buildConfig({
+  secret: process.env.PAYLOAD_SECRET ?? "",
+  admin: {
+    user: Users.slug,
+  },
+  collections: [Users, Categories, Tags, Media, Posts],
+  editor: lexicalEditor(),
+  db: postgresAdapter({
+    pool: {
+      connectionString: process.env.DATABASE_URI,
+    },
+  }),
+  plugins: [
+    cloudinaryStorage({
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME ?? "",
+      apiKey: process.env.CLOUDINARY_API_KEY ?? "",
+      apiSecret: process.env.CLOUDINARY_API_SECRET ?? "",
+      folder: "365-ajedrez",
+      collections: {
+        media: true,
+      },
+    }),
+  ],
+  typescript: {
+    outputFile: path.resolve(dirname, "payload-types.ts"),
+  },
+});
