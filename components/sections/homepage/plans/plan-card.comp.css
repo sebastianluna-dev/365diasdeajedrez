@@ -1,0 +1,122 @@
+.plan-card {
+  position: relative;
+  width: 380px;
+  border-radius: 22px;
+  padding: 34px 30px 30px;
+  background: rgba(22, 17, 13, 0.035);
+  border: 1px solid rgba(22, 17, 13, 0.1);
+  color: #16110d;
+  display: flex;
+  flex-direction: column;
+
+  &.plan-card_featured {
+    width: 420px;
+    background: linear-gradient(
+      160deg,
+      rgba(255, 145, 67, 0.2) 0%,
+      rgba(255, 145, 67, 0.04) 100%
+    );
+    border: 1px solid rgba(255, 145, 67, 0.55);
+  }
+
+  & .plan-card__title {
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 25px;
+    font-weight: 700;
+    margin: 0 0 18px;
+  }
+
+  & .plan-card__price-block {
+    margin-bottom: 20px;
+  }
+
+  & .plan-card__price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  & .plan-card__price {
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+  }
+
+  & .plan-card__discount-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  & .plan-card__price-previous {
+    font-size: 15px;
+    color: #8a8078;
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+
+  & .plan-card__discount-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 9999px;
+    background: rgba(255, 145, 67, 0.16);
+    border: 1px solid rgba(255, 145, 67, 0.4);
+    color: #b8611f;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  & .plan-card__description {
+    font-size: 16.5px;
+    line-height: 1.55;
+    color: #5c5348;
+    margin: 0 0 22px;
+  }
+
+  & .plan-card__list {
+    margin: 0 0 26px;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex: 1;
+  }
+
+  & .plan-card__list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: #3f362f;
+  }
+
+  & .plan-card__list-icon {
+    color: #ff9143;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  & .plan-card__button {
+    display: block;
+    text-align: center;
+    background: #16110d;
+    color: #f2ede7;
+    font-weight: 700;
+    font-size: 17px;
+    padding: 16px 0;
+    border-radius: 14px;
+    border: 1px solid #4a4038;
+    box-shadow: 0 4px 0 #000;
+
+    &.plan-card__button_variant_alt {
+      background: #ff9143;
+      color: #16110d;
+      border-color: #b8611f;
+      box-shadow: 0 4px 0 #b8611f;
+    }
+  }
+}
