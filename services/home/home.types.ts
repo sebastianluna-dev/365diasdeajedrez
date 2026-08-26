@@ -115,3 +115,9 @@ export interface FaqContent {
   ctaLabel: string;
   questions: FaqQuestionContent[];
 }
+
+export interface CtaContent {
+  title: string;
+  subtitle: string;
+  ctaLabel: string;
+}

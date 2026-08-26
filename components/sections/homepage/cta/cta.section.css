@@ -17,28 +17,6 @@
     gap: 24px;
   }
 
-  & .sticky-cta__clock {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: linear-gradient(180deg, #e4c79b 0%, #d6b183 46%, #c79c68 100%);
-    border: 1px solid #a87f4e;
-    border-radius: 8px;
-    padding: 8px 10px;
-    flex: none;
-    width: 124px;
-    box-sizing: border-box;
-    justify-content: center;
-    color: #16110d;
-    font-weight: 700;
-
-    & .sticky-cta__clock-time {
-      flex: none;
-      width: 44px;
-      font-variant-numeric: tabular-nums;
-    }
-  }
-
   & .sticky-cta__title {
     margin: 0;
     font-family: var(--font-gramatika), sans-serif;
@@ -91,10 +69,6 @@
   }
 
   @media (max-width: 1023px) {
-    & .sticky-cta__clock {
-      display: none;
-    }
-
     & .sticky-cta__copy {
       display: none;
     }

@@ -100,6 +100,7 @@ export interface Config {
     'home-teacher': HomeTeacher;
     'home-packages': HomePackage;
     'home-faq': HomeFaq;
+    'home-cta': HomeCta;
     'site-settings': SiteSettings;
   };
   globalsSelect: {
@@ -109,6 +110,7 @@ export interface Config {
     'home-teacher': HomeTeacherSelect<false> | HomeTeacherSelect<true>;
     'home-packages': HomePackagesSelect<false> | HomePackagesSelect<true>;
     'home-faq': HomeFaqSelect<false> | HomeFaqSelect<true>;
+    'home-cta': HomeCtaSelect<false> | HomeCtaSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
   locale: null;
@@ -661,6 +663,18 @@ export interface HomeFaq {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-cta".
+ */
+export interface HomeCta {
+  id: number;
+  title: string;
+  subtitle: string;
+  ctaLabel: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
  */
 export interface SiteSettings {
@@ -873,6 +887,18 @@ export interface HomeFaqSelect<T extends boolean = true> {
         answer?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-cta_select".
+ */
+export interface HomeCtaSelect<T extends boolean = true> {
+  title?: T;
+  subtitle?: T;
+  ctaLabel?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -5,12 +5,14 @@ import type {
   HomeTeacher,
   HomePackage,
   HomeFaq,
+  HomeCta,
   Media,
 } from "@/payload-types";
 import type { MoveAnnotations } from "@/hooks/use-chess-replay.hook";
 import { getMediaUrl } from "@/lib/payload/get-media-url";
 import type {
   ContentImage,
+  CtaContent,
   FaqContent,
   HeaderContent,
   HeroContent,
@@ -124,5 +126,13 @@ export function mapFaq(faq: HomeFaq): FaqContent {
     sectionDescription: faq.sectionDescription,
     ctaLabel: faq.ctaLabel,
     questions: faq.questions.map((question) => ({ question: question.question, answer: question.answer })),
+  };
+}
+
+export function mapCta(cta: HomeCta): CtaContent {
+  return {
+    title: cta.title,
+    subtitle: cta.subtitle,
+    ctaLabel: cta.ctaLabel,
   };
 }
