@@ -1,12 +1,17 @@
 import Link from "next/link";
 import { Logo } from "@/components/common/logo.comp";
+import { buildWhatsappUrl } from "@/lib/build-whatsapp-url";
+import { getSiteSettingsData } from "@/services/site-settings/site-settings.service";
 import "./footer.section.css";
 
 interface FooterProps {
   accent?: "orange" | "red";
 }
 
-export function Footer({ accent = "orange" }: FooterProps) {
+export async function Footer({ accent = "orange" }: FooterProps) {
+  const { whatsappNumber, whatsappDefaultMessage } = await getSiteSettingsData();
+  const whatsappUrl = buildWhatsappUrl(whatsappNumber, whatsappDefaultMessage);
+
   return (
     <footer className={`site-footer site-footer_accent_${accent}`}>
       <div className="site-footer__wrap">
@@ -44,12 +49,8 @@ export function Footer({ accent = "orange" }: FooterProps) {
               <Link href="mailto:contacto@365diasdeajedrez.com" className="site-footer__link">
                 contacto@365diasdeajedrez.com
               </Link>
-              <Link
-                href="https://wa.me/522291348338?text=Hola%2C+me+gustar%C3%ADa+recibir+informaci%C3%B3n+sobre+la+Academia+365+D%C3%ADas+de+Ajedrez.+Quisiera+conocer+m%C3%A1s+sobre+las+clases+y+los+planes.+%C2%A1Gracias%21"
-                className="site-footer__link"
-                target="_blank"
-              >
-                WhatsApp: +52 229 134 8338
+              <Link href={whatsappUrl} className="site-footer__link" target="_blank">
+                WhatsApp: +{whatsappNumber}
               </Link>
               <span className="site-footer__text">Clases en línea · Español</span>
             </div>

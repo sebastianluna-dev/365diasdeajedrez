@@ -103,6 +103,7 @@ function mapPackagePlan(plan: HomePackage["packageOne"]): PackagePlanContent {
     description: plan.description,
     features: plan.features.map((feature) => feature.text),
     ctaLabel: plan.ctaLabel,
+    ctaUrl: plan.ctaUrl,
     featured: plan.featured ?? false,
   };
 }

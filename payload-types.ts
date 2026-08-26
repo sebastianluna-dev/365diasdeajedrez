@@ -100,6 +100,7 @@ export interface Config {
     'home-teacher': HomeTeacher;
     'home-packages': HomePackage;
     'home-faq': HomeFaq;
+    'site-settings': SiteSettings;
   };
   globalsSelect: {
     'home-header': HomeHeaderSelect<false> | HomeHeaderSelect<true>;
@@ -108,6 +109,7 @@ export interface Config {
     'home-teacher': HomeTeacherSelect<false> | HomeTeacherSelect<true>;
     'home-packages': HomePackagesSelect<false> | HomePackagesSelect<true>;
     'home-faq': HomeFaqSelect<false> | HomeFaqSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -627,6 +629,7 @@ export interface HomePackage {
       id?: string | null;
     }[];
     ctaLabel: string;
+    ctaUrl: string;
     featured?: boolean | null;
   };
   packageTwo: {
@@ -642,6 +645,7 @@ export interface HomePackage {
       id?: string | null;
     }[];
     ctaLabel: string;
+    ctaUrl: string;
     featured?: boolean | null;
   };
   updatedAt?: string | null;
@@ -662,6 +666,36 @@ export interface HomeFaq {
     answer: string;
     id?: string | null;
   }[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSettings {
+  id: number;
+  whatsappCountryCode:
+    | '52'
+    | '1'
+    | '34'
+    | '502'
+    | '504'
+    | '503'
+    | '505'
+    | '506'
+    | '507'
+    | '57'
+    | '58'
+    | '593'
+    | '51'
+    | '591'
+    | '56'
+    | '54'
+    | '598'
+    | '595';
+  whatsappLocalNumber: string;
+  whatsappDefaultMessage: string;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -820,6 +854,7 @@ export interface HomePackagesSelect<T extends boolean = true> {
               id?: T;
             };
         ctaLabel?: T;
+        ctaUrl?: T;
         featured?: T;
       };
   packageTwo?:
@@ -839,6 +874,7 @@ export interface HomePackagesSelect<T extends boolean = true> {
               id?: T;
             };
         ctaLabel?: T;
+        ctaUrl?: T;
         featured?: T;
       };
   updatedAt?: T;
@@ -861,6 +897,18 @@ export interface HomeFaqSelect<T extends boolean = true> {
         answer?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  whatsappCountryCode?: T;
+  whatsappLocalNumber?: T;
+  whatsappDefaultMessage?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

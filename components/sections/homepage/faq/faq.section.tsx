@@ -1,10 +1,16 @@
 import Link from "next/link";
+import { buildWhatsappUrl } from "@/lib/build-whatsapp-url";
 import { getFaqData } from "@/services/home/home.service";
+import { getSiteSettingsData } from "@/services/site-settings/site-settings.service";
 import { FaqAccordionItem } from "./faq-accordion-item.comp";
 import "./faq.section.css";
 
 export async function FaqSection() {
-  const content = await getFaqData();
+  const [content, { whatsappNumber, whatsappDefaultMessage }] = await Promise.all([
+    getFaqData(),
+    getSiteSettingsData(),
+  ]);
+  const whatsappUrl = buildWhatsappUrl(whatsappNumber, whatsappDefaultMessage);
 
   return (
     <section id="preguntas" className="section section_theme_dark faq">
@@ -14,11 +20,7 @@ export async function FaqSection() {
             <span className="section__eyebrow">{content.eyebrow}</span>
             <h2 className="section__title">{content.sectionTitle}</h2>
             <p className="section__text">{content.sectionDescription}</p>
-            <Link
-              href="https://wa.me/522291348338?text=Hola%2C+me+gustar%C3%ADa+recibir+informaci%C3%B3n+sobre+la+Academia+365+D%C3%ADas+de+Ajedrez.+Quisiera+conocer+m%C3%A1s+sobre+las+clases+y+los+planes.+%C2%A1Gracias%21"
-              className="button button_variant_primary faq__cta"
-              target="_blank"
-            >
+            <Link href={whatsappUrl} className="button button_variant_primary faq__cta" target="_blank">
               {content.ctaLabel}
             </Link>
           </div>

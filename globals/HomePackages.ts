@@ -21,6 +21,15 @@ function packageFields(): Field[] {
       fields: [{ name: "text", type: "text", label: "Texto", required: true }],
     },
     { name: "ctaLabel", type: "text", label: "Texto del botón", required: true },
+    {
+      name: "ctaUrl",
+      type: "text",
+      label: "URL del botón",
+      required: true,
+      admin: {
+        description: "Enlace al que lleva el botón del plan (WhatsApp, PayPal, etc.).",
+      },
+    },
     { name: "featured", type: "checkbox", label: "Destacado", defaultValue: false },
   ];
 }

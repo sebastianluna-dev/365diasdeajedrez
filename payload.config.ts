@@ -14,6 +14,7 @@ import { HomeProgram } from "@/globals/HomeProgram";
 import { HomeTeacher } from "@/globals/HomeTeacher";
 import { HomePackages } from "@/globals/HomePackages";
 import { HomeFaq } from "@/globals/HomeFaq";
+import { SiteSettings } from "@/globals/SiteSettings";
 import { cloudinaryStorage } from "@/lib/payload/cloudinary-adapter";
 
 const filename = fileURLToPath(import.meta.url);
@@ -25,7 +26,7 @@ export default buildConfig({
     user: Users.slug,
   },
   collections: [Users, Categories, Tags, Media, Posts],
-  globals: [HomeHeader, HomeHero, HomeProgram, HomeTeacher, HomePackages, HomeFaq],
+  globals: [HomeHeader, HomeHero, HomeProgram, HomeTeacher, HomePackages, HomeFaq, SiteSettings],
   editor: lexicalEditor(),
   db: postgresAdapter({
     pool: {

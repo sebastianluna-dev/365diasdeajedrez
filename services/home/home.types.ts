@@ -92,6 +92,7 @@ export interface PackagePlanContent {
   description: string;
   features: string[];
   ctaLabel: string;
+  ctaUrl: string;
   featured: boolean;
 }
 

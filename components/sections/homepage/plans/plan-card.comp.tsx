@@ -38,9 +38,7 @@ export function PlanCard({ plan, className }: PlanCardProps) {
         ))}
       </ul>
       <Link
-        href={`https://wa.me/522291348338?text=${encodeURIComponent(
-          `Hola, me gustaría recibir información sobre el ${plan.name} de la Academia 365 Días de Ajedrez. ¡Gracias!`,
-        )}`}
+        href={plan.ctaUrl}
         target="_blank"
         className={`plan-card__button${plan.featured ? " plan-card__button_variant_alt" : ""}`}
       >
