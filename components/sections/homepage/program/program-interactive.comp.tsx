@@ -7,9 +7,10 @@ import { ProgramModuleListItem } from "./program-module-list-item.comp";
 
 interface ProgramInteractiveProps {
   modules: ProgramModuleContent[];
+  topicsHeading: string;
 }
 
-export function ProgramInteractive({ modules }: ProgramInteractiveProps) {
+export function ProgramInteractive({ modules, topicsHeading }: ProgramInteractiveProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const activeModule = modules[activeIndex];
 
@@ -41,7 +42,7 @@ export function ProgramInteractive({ modules }: ProgramInteractiveProps) {
           <p className="program-panel__description">{activeModule.description}</p>
         </div>
         <div>
-          <h3 className="program-panel__subheading">En qué trabajamos</h3>
+          <h3 className="program-panel__subheading">{topicsHeading}</h3>
           <ul className="program-panel__topics">
             {activeModule.topics.map((topic, index) => (
               <li className="program-panel__topic" key={index}>

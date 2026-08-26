@@ -48,6 +48,7 @@ export interface ProgramContent {
   sectionTitle: string;
   sectionDescription: string;
   note?: string;
+  topicsHeading: string;
   modules: ProgramModuleContent[];
 }
 

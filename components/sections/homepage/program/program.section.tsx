@@ -15,7 +15,7 @@ export async function ProgramSection() {
           </div>
         </div>
 
-        <ProgramInteractive modules={content.modules} />
+        <ProgramInteractive modules={content.modules} topicsHeading={content.topicsHeading} />
 
         {content.note && <p className="program__note">{content.note}</p>}
       </div>

@@ -34,6 +34,15 @@ export const HomeProgram: GlobalConfig = {
       label: "Nota final",
     },
     {
+      name: "topicsHeading",
+      type: "text",
+      label: "Encabezado de temas",
+      required: true,
+      admin: {
+        description: "Título que aparece sobre la lista de temas de cada módulo (ej. \"En qué trabajamos\").",
+      },
+    },
+    {
       name: "modules",
       type: "array",
       label: "Módulos",

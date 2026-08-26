@@ -542,6 +542,7 @@ export interface HomeProgram {
   sectionTitle: string;
   sectionDescription: string;
   note?: string | null;
+  topicsHeading: string;
   modules: {
     title: string;
     durationLabel: string;
@@ -767,6 +768,7 @@ export interface HomeProgramSelect<T extends boolean = true> {
   sectionTitle?: T;
   sectionDescription?: T;
   note?: T;
+  topicsHeading?: T;
   modules?:
     | T
     | {

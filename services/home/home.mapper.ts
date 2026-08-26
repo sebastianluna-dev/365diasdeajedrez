@@ -61,6 +61,7 @@ export function mapProgram(program: HomeProgram): ProgramContent {
     sectionTitle: program.sectionTitle,
     sectionDescription: program.sectionDescription,
     note: program.note ?? undefined,
+    topicsHeading: program.topicsHeading,
     modules: program.modules.map((module) => ({
       title: module.title,
       durationLabel: module.durationLabel,
