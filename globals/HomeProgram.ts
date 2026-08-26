@@ -54,21 +54,29 @@ export const HomeProgram: GlobalConfig = {
       },
       fields: [
         {
-          name: "title",
-          type: "text",
-          label: "Título",
-          required: true,
-        },
-        {
-          name: "durationLabel",
-          type: "text",
-          label: "Duración",
-          required: true,
-        },
-        {
-          name: "subtitle",
-          type: "text",
-          label: "Subtítulo",
+          type: "row",
+          fields: [
+            {
+              name: "title",
+              type: "text",
+              label: "Título",
+              required: true,
+              admin: { width: "50%" },
+            },
+            {
+              name: "durationLabel",
+              type: "text",
+              label: "Duración",
+              required: true,
+              admin: { width: "50%" },
+            },
+            {
+              name: "subtitle",
+              type: "text",
+              label: "Subtítulo",
+              admin: { width: "50%" },
+            },
+          ],
         },
         {
           name: "description",

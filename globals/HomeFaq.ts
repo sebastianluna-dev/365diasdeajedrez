@@ -17,16 +17,23 @@ export const HomeFaq: GlobalConfig = {
   },
   fields: [
     {
-      name: "eyebrow",
-      type: "text",
-      label: "Texto pequeño superior",
-      required: true,
-    },
-    {
-      name: "sectionTitle",
-      type: "text",
-      label: "Título de la sección",
-      required: true,
+      type: "row",
+      fields: [
+        {
+          name: "eyebrow",
+          type: "text",
+          label: "Texto pequeño superior",
+          required: true,
+          admin: { width: "50%" },
+        },
+        {
+          name: "sectionTitle",
+          type: "text",
+          label: "Título de la sección",
+          required: true,
+          admin: { width: "50%" },
+        },
+      ],
     },
     {
       name: "sectionDescription",

@@ -41,16 +41,23 @@ export const HomeHero: GlobalConfig = {
       label: "Botón principal",
       fields: [
         {
-          name: "label",
-          type: "text",
-          label: "Texto",
-          required: true,
-        },
-        {
-          name: "href",
-          type: "text",
-          label: "Destino",
-          required: true,
+          type: "row",
+          fields: [
+            {
+              name: "label",
+              type: "text",
+              label: "Texto",
+              required: true,
+              admin: { width: "50%" },
+            },
+            {
+              name: "href",
+              type: "text",
+              label: "Destino",
+              required: true,
+              admin: { width: "50%" },
+            },
+          ],
         },
       ],
     },

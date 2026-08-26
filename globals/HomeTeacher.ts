@@ -23,22 +23,30 @@ export const HomeTeacher: GlobalConfig = {
           label: "Información",
           fields: [
             {
-              name: "eyebrow",
-              type: "text",
-              label: "Texto pequeño superior",
-              required: true,
-            },
-            {
-              name: "name",
-              type: "text",
-              label: "Nombre",
-              required: true,
-            },
-            {
-              name: "badge",
-              type: "text",
-              label: "Insignia",
-              required: true,
+              type: "row",
+              fields: [
+                {
+                  name: "eyebrow",
+                  type: "text",
+                  label: "Texto pequeño superior",
+                  required: true,
+                  admin: { width: "50%" },
+                },
+                {
+                  name: "name",
+                  type: "text",
+                  label: "Nombre",
+                  required: true,
+                  admin: { width: "50%" },
+                },
+                {
+                  name: "badge",
+                  type: "text",
+                  label: "Insignia",
+                  required: true,
+                  admin: { width: "50%" },
+                },
+              ],
             },
             {
               name: "summary",
@@ -72,8 +80,13 @@ export const HomeTeacher: GlobalConfig = {
               minRows: 1,
               labels: { singular: "Estadística", plural: "Estadísticas" },
               fields: [
-                { name: "value", type: "text", label: "Valor", required: true },
-                { name: "label", type: "text", label: "Etiqueta", required: true },
+                {
+                  type: "row",
+                  fields: [
+                    { name: "value", type: "text", label: "Valor", required: true, admin: { width: "50%" } },
+                    { name: "label", type: "text", label: "Etiqueta", required: true, admin: { width: "50%" } },
+                  ],
+                },
               ],
             },
             {
@@ -90,8 +103,13 @@ export const HomeTeacher: GlobalConfig = {
               minRows: 1,
               labels: { singular: "Rating", plural: "Ratings" },
               fields: [
-                { name: "label", type: "text", label: "Modalidad", required: true },
-                { name: "value", type: "number", label: "Puntos", required: true },
+                {
+                  type: "row",
+                  fields: [
+                    { name: "label", type: "text", label: "Modalidad", required: true, admin: { width: "50%" } },
+                    { name: "value", type: "number", label: "Puntos", required: true, admin: { width: "50%" } },
+                  ],
+                },
               ],
             },
           ],

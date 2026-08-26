@@ -4,12 +4,17 @@ import { revalidateHome } from "@/lib/payload/revalidate-home";
 
 function packageFields(): Field[] {
   return [
-    { name: "name", type: "text", label: "Nombre", required: true },
-    { name: "price", type: "number", label: "Precio", required: true },
-    { name: "previousPrice", type: "number", label: "Precio anterior (opcional)" },
-    { name: "discountPercent", type: "number", label: "% de descuento (opcional)" },
-    { name: "currency", type: "text", label: "Moneda", required: true },
-    { name: "period", type: "text", label: "Periodo", required: true },
+    {
+      type: "row",
+      fields: [
+        { name: "name", type: "text", label: "Nombre", required: true, admin: { width: "50%" } },
+        { name: "price", type: "number", label: "Precio", required: true, admin: { width: "50%" } },
+        { name: "previousPrice", type: "number", label: "Precio anterior (opcional)", admin: { width: "50%" } },
+        { name: "discountPercent", type: "number", label: "% de descuento (opcional)", admin: { width: "50%" } },
+        { name: "currency", type: "text", label: "Moneda", required: true, admin: { width: "50%" } },
+        { name: "period", type: "text", label: "Periodo", required: true, admin: { width: "50%" } },
+      ],
+    },
     { name: "description", type: "textarea", label: "Descripción", required: true },
     {
       name: "features",
@@ -20,17 +25,23 @@ function packageFields(): Field[] {
       labels: { singular: "Característica", plural: "Características" },
       fields: [{ name: "text", type: "text", label: "Texto", required: true }],
     },
-    { name: "ctaLabel", type: "text", label: "Texto del botón", required: true },
     {
-      name: "ctaUrl",
-      type: "text",
-      label: "URL del botón",
-      required: true,
-      admin: {
-        description: "Enlace al que lleva el botón del plan (WhatsApp, PayPal, etc.).",
-      },
+      type: "row",
+      fields: [
+        { name: "ctaLabel", type: "text", label: "Texto del botón", required: true, admin: { width: "50%" } },
+        {
+          name: "ctaUrl",
+          type: "text",
+          label: "URL del botón",
+          required: true,
+          admin: {
+            width: "50%",
+            description: "Enlace al que lleva el botón del plan (WhatsApp, PayPal, etc.).",
+          },
+        },
+        { name: "featured", type: "checkbox", label: "Destacado", defaultValue: false, admin: { width: "50%" } },
+      ],
     },
-    { name: "featured", type: "checkbox", label: "Destacado", defaultValue: false },
   ];
 }
 
