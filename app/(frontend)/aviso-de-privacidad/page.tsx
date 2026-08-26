@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { SiteHeader } from "@/components/sections/common/site-header.section";
+import { Header } from "@/components/sections/common/header/header.section";
 import { LegalPageSection } from "@/components/sections/legal/legal-page.section";
-import { Footer } from "@/components/sections/common/footer.section";
+import { Footer } from "@/components/sections/common/footer/footer.section";
 import type { LegalPageContent } from "@/interfaces/legal-page.interface";
 import "./aviso-de-privacidad-page.css";
 
@@ -64,7 +64,7 @@ const content: LegalPageContent = {
 export default function AvisoDePrivacidadPage() {
   return (
     <div className="aviso-de-privacidad-page">
-      <SiteHeader />
+      <Header />
       <LegalPageSection {...content} />
       <Footer />
     </div>

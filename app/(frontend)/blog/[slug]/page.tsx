@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ArticleHeader } from "@/components/sections/blog-article/header/article-header.comp";
 import { ArticleContent } from "@/components/sections/blog-article/content/article-content.comp";
 import { RelatedArticles } from "@/components/sections/blog-article/related/related-articles.section";
-import { Footer } from "@/components/sections/common/footer.section";
+import { Footer } from "@/components/sections/common/footer/footer.section";
 import { articles } from "@/data/articles.data";
 import "../blog.css";
 import "./article-page.css";

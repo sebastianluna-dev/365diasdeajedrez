@@ -4,13 +4,13 @@ import { Logo } from "@/components/common/logo.comp";
 import { getPayload } from "@/lib/payload/get-payload";
 import { HeaderDropdown } from "./header-dropdown.comp";
 import { HeaderMobileMenu } from "./header-mobile-menu.comp";
-import "./site-header.section.css";
+import "./header.section.css";
 
 export type NavItem =
   | { blockType: "navLink"; label: string; href: string }
   | { blockType: "navDropdown"; label: string; links: { label: string; href: string }[] };
 
-export async function SiteHeader() {
+export async function Header() {
   const payload = await getPayload();
   const header = await payload.findGlobal({ slug: "home-header" });
   const navItems = (header.navItems ?? []) as NavItem[];

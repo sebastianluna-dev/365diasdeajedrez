@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronRight, Menu, X } from "lucide-react";
-import type { NavItem } from "./site-header.section";
+import type { NavItem } from "./header.section";
 
 interface HeaderMobileMenuProps {
   navItems: NavItem[];
