@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { formatTwoDigitNumber } from "@/lib/format-two-digit-number";
 import type { ProgramModuleContent } from "@/services/home/home.types";
 import { ProgramModuleListItem } from "./program-module-list-item.comp";
 
@@ -32,7 +33,7 @@ export function ProgramInteractive({ modules }: ProgramInteractiveProps) {
             {activeModule.durationLabel}
           </span>
           <span className="program-panel__badge program-panel__badge_variant_outline">
-            Módulo 0{activeIndex + 1} de 0{modules.length}
+            Módulo {formatTwoDigitNumber(activeIndex + 1)} de {formatTwoDigitNumber(modules.length)}
           </span>
         </div>
         <div>
