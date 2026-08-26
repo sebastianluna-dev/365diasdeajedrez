@@ -6,22 +6,18 @@ import { ChevronRight, ChevronDown, Menu, X } from "lucide-react";
 import { Logo } from "@/components/common/logo.comp";
 import "./site-header-client.comp.css";
 
-const toolsLinks = [{ href: "/reloj-de-ajedrez", label: "Reloj de ajedrez" }];
-
-const homeSectionLinks = [
-  { href: "/#maestro", label: "Maestro" },
-  { href: "/#planes", label: "Paquetes" },
-  { href: "/#preguntas", label: "Preguntas frecuentes" },
-];
-
-const mobileLinks = [...homeSectionLinks, ...toolsLinks];
+type NavItem =
+  | { blockType: "navLink"; label: string; href: string }
+  | { blockType: "navDropdown"; label: string; links: { label: string; href: string }[] };
 
 interface SiteHeaderClientProps {
+  navItems: NavItem[];
   ctaLabel: string;
 }
 
-export function SiteHeaderClient({ ctaLabel }: SiteHeaderClientProps) {
+export function SiteHeaderClient({ navItems, ctaLabel }: SiteHeaderClientProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const mobileLinks = navItems.flatMap((item) => (item.blockType === "navLink" ? [item] : item.links));
 
   return (
     <div className="site-header-nav">
@@ -31,24 +27,27 @@ export function SiteHeaderClient({ ctaLabel }: SiteHeaderClientProps) {
             <Logo theme="dark" accent="orange" />
 
             <div className="site-header__links">
-              {homeSectionLinks.map((link) => (
-                <Link key={link.href} href={link.href}>
-                  {link.label}
-                </Link>
-              ))}
-              <div className="site-header__dropdown">
-                <button type="button" className="site-header__dropdown-trigger">
-                  Herramientas
-                  <ChevronDown size={14} />
-                </button>
-                <div className="site-header__dropdown-menu">
-                  {toolsLinks.map((link) => (
-                    <Link key={link.href} href={link.href}>
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+              {navItems.map((item, index) =>
+                item.blockType === "navLink" ? (
+                  <Link key={`${item.href}-${index}`} href={item.href}>
+                    {item.label}
+                  </Link>
+                ) : (
+                  <div className="site-header__dropdown" key={`${item.label}-${index}`}>
+                    <button type="button" className="site-header__dropdown-trigger">
+                      {item.label}
+                      <ChevronDown size={14} />
+                    </button>
+                    <div className="site-header__dropdown-menu">
+                      {item.links.map((link, linkIndex) => (
+                        <Link key={`${link.href}-${linkIndex}`} href={link.href}>
+                          {link.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ),
+              )}
             </div>
           </nav>
           <Link href="/#planes" className="site-header__button">
@@ -69,8 +68,8 @@ export function SiteHeaderClient({ ctaLabel }: SiteHeaderClientProps) {
 
         <div className={`site-header-mobile${mobileOpen ? " site-header-mobile_open" : ""}`}>
           <div className="site-header-mobile__links">
-            {mobileLinks.map((link) => (
-              <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)}>
+            {mobileLinks.map((link, index) => (
+              <Link key={`${link.href}-${index}`} href={link.href} onClick={() => setMobileOpen(false)}>
                 {link.label}
               </Link>
             ))}

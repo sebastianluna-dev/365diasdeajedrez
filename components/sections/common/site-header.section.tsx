@@ -5,5 +5,5 @@ export async function SiteHeader() {
   const payload = await getPayload();
   const header = await payload.findGlobal({ slug: "home-header" });
 
-  return <SiteHeaderClient ctaLabel={header.ctaLabel} />;
+  return <SiteHeaderClient navItems={header.navItems ?? []} ctaLabel={header.ctaLabel} />;
 }

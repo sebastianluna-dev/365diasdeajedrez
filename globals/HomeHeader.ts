@@ -1,6 +1,8 @@
 import type { GlobalConfig } from "payload";
 import { anyone, isAdminOrEditor } from "@/lib/payload/access";
-import { revalidateHome } from "@/lib/payload/revalidate-home";
+import { revalidateHeader } from "@/lib/payload/revalidate-header";
+import { NavLinkBlock } from "@/blocks/nav-link-block";
+import { NavDropdownBlock } from "@/blocks/nav-dropdown-block";
 
 export const HomeHeader: GlobalConfig = {
   slug: "home-header",
@@ -13,9 +15,19 @@ export const HomeHeader: GlobalConfig = {
     update: isAdminOrEditor,
   },
   hooks: {
-    afterChange: [revalidateHome],
+    afterChange: [revalidateHeader],
   },
   fields: [
+    {
+      name: "navItems",
+      type: "blocks",
+      label: "Enlaces de navegación",
+      labels: {
+        singular: "Elemento",
+        plural: "Elementos",
+      },
+      blocks: [NavLinkBlock, NavDropdownBlock],
+    },
     {
       name: "ctaLabel",
       type: "text",

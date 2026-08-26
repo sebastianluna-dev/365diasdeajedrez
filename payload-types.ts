@@ -484,9 +484,36 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface HomeHeader {
   id: number;
+  navItems?: (NavLinkBlock | NavDropdownBlock)[] | null;
   ctaLabel: string;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NavLinkBlock".
+ */
+export interface NavLinkBlock {
+  label: string;
+  href: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'navLink';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NavDropdownBlock".
+ */
+export interface NavDropdownBlock {
+  label: string;
+  links: {
+    label: string;
+    href: string;
+    id?: string | null;
+  }[];
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'navDropdown';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -643,10 +670,42 @@ export interface HomeFaq {
  * via the `definition` "home-header_select".
  */
 export interface HomeHeaderSelect<T extends boolean = true> {
+  navItems?:
+    | T
+    | {
+        navLink?: T | NavLinkBlockSelect<T>;
+        navDropdown?: T | NavDropdownBlockSelect<T>;
+      };
   ctaLabel?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NavLinkBlock_select".
+ */
+export interface NavLinkBlockSelect<T extends boolean = true> {
+  label?: T;
+  href?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "NavDropdownBlock_select".
+ */
+export interface NavDropdownBlockSelect<T extends boolean = true> {
+  label?: T;
+  links?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
