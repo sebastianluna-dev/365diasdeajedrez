@@ -3,19 +3,12 @@ import Image from "next/image";
 import { FloatBadge } from "./float-badge.comp";
 import { Orbit } from "./orbit.comp";
 import { ChessPieceUnicode } from "@/enums/chess-pieces.enum";
+import { getHeroData } from "@/services/home/home.service";
 import "./hero.section.css";
 
-interface HeroSectionProps {
-  title: string;
-  description: string;
-  imageUrl: string;
-  cta: {
-    label: string;
-    href: string;
-  };
-}
+export async function HeroSection() {
+  const content = await getHeroData();
 
-export function HeroSection({ title, description, imageUrl, cta }: HeroSectionProps) {
   return (
     <section id="inicio" className="hero">
       <div className="hero__inner">
@@ -23,11 +16,11 @@ export function HeroSection({ title, description, imageUrl, cta }: HeroSectionPr
 
         <div className="hero__grid">
           <div className="hero__copy">
-            <h1 className="hero__title">{title}</h1>
-            <p className="hero__text">{description}</p>
+            <h1 className="hero__title">{content.title}</h1>
+            <p className="hero__text">{content.description}</p>
             <div className="hero__actions">
-              <Link href={cta.href} className="button button_variant_primary button_size_hero">
-                {cta.label}
+              <Link href={content.cta.href} className="button button_variant_primary button_size_hero">
+                {content.cta.label}
               </Link>
             </div>
           </div>
@@ -37,7 +30,7 @@ export function HeroSection({ title, description, imageUrl, cta }: HeroSectionPr
               <div className="hero__stage">
                 <div className="hero__card">
                   <div className="hero__card-inner">
-                    <Image src={imageUrl} alt="Jugador entrenando ajedrez" width={520} height={640} priority />
+                    <Image src={content.image.src} alt={content.image.alt} width={520} height={640} priority />
                   </div>
                 </div>
                 <Orbit />

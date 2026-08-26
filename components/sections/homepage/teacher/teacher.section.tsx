@@ -3,70 +3,48 @@ import Image from "next/image";
 import { CalendarCheck } from "lucide-react";
 import { EloTable } from "@/components/common/elo-table.comp";
 import { ChessBoard } from "@/components/common/chess-board.comp";
-import type { MoveAnnotations } from "@/hooks/use-chess-replay.hook";
+import { getTeacherData } from "@/services/home/home.service";
 import { TeacherStat } from "./teacher-stat.comp";
 import "./teacher.section.css";
 
-interface TeacherSectionProps {
-  eyebrow: string;
-  name: string;
-  badge: string;
-  summary: string;
-  photoUrl: string;
-  ctaLabel: string;
-  stats: { value: string; label: string }[];
-  eloLabel: string;
-  eloRatings: { label: string; value: number }[];
-  game: {
-    title: string;
-    paragraphs: { text: string }[];
-    moves: string;
-    flipBoard?: boolean | null;
-    annotations?: MoveAnnotations | null;
-  };
-}
+export async function TeacherSection() {
+  const content = await getTeacherData();
 
-export function TeacherSection({
-  eyebrow,
-  name,
-  badge,
-  summary,
-  photoUrl,
-  ctaLabel,
-  stats,
-  eloLabel,
-  eloRatings,
-  game,
-}: TeacherSectionProps) {
   return (
     <section id="maestro">
       <div className="teacher">
         <div className="teacher__media">
-          <Image className="teacher__photo" src={photoUrl} alt={name} width={1536} height={2048} />
+          <Image
+            className="teacher__photo"
+            src={content.photo.src}
+            alt={content.photo.alt}
+            width={content.photo.width ?? 1536}
+            height={content.photo.height ?? 2048}
+          />
           <div className="teacher__photo-overlay" />
 
           <div className="teacher__stats">
-            {stats.map((stat) => (
+            {content.stats.map((stat) => (
               <TeacherStat key={stat.label} value={stat.value} label={stat.label} />
             ))}
           </div>
         </div>
 
         <div className="teacher__content">
-          <span className="teacher__eyebrow">{eyebrow}</span>
-          <h1 className="teacher__name">{name}</h1>
-          <span className="teacher__badge">{badge}</span>
-          <p className="teacher__summary">{summary}</p>
+          <span className="teacher__eyebrow">{content.eyebrow}</span>
+          <h1 className="teacher__name">{content.name}</h1>
+          <span className="teacher__badge">{content.badge}</span>
+          <p className="teacher__summary">{content.summary}</p>
 
           <div className="teacher__stats teacher__stats_variant_mobile">
-            {stats.map((stat) => (
+            {content.stats.map((stat) => (
               <TeacherStat key={stat.label} value={stat.value} label={stat.label} />
             ))}
           </div>
 
-          <p className="teacher__elo-label">{eloLabel}</p>
+          <p className="teacher__elo-label">{content.eloLabel}</p>
           <EloTable className="teacher__elo-table" columns={4}>
-            {eloRatings.map((rating) => (
+            {content.eloRatings.map((rating) => (
               <EloTable.EloItem key={rating.label} label={rating.label} value={rating.value} />
             ))}
           </EloTable>
@@ -74,7 +52,7 @@ export function TeacherSection({
           <div className="teacher__actions">
             <Link href="/#planes" className="button button_variant_primary">
               <CalendarCheck size={16} />
-              {ctaLabel}
+              {content.ctaLabel}
             </Link>
           </div>
         </div>
@@ -83,18 +61,18 @@ export function TeacherSection({
       <div className="teacher-game">
         <div className="teacher-game__inner">
           <div className="teacher-game__intro">
-            <h2 className="teacher-game__title">{game.title}</h2>
-            {game.paragraphs.map((paragraph, index) => (
+            <h2 className="teacher-game__title">{content.game.title}</h2>
+            {content.game.paragraphs.map((paragraph, index) => (
               <p className="teacher-game__text" key={index}>
-                {paragraph.text}
+                {paragraph}
               </p>
             ))}
           </div>
 
           <ChessBoard
-            flipBoard={game.flipBoard ?? false}
-            moves={game.moves.split(" ")}
-            annotations={game.annotations ?? undefined}
+            flipBoard={content.game.flipBoard}
+            moves={content.game.moves}
+            annotations={content.game.annotations}
           />
         </div>
       </div>

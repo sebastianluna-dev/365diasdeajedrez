@@ -1,29 +1,12 @@
 import Link from "next/link";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
+import { getPackagesData } from "@/services/home/home.service";
 import { PlansMobileSection } from "./plans-mobile.comp";
 import "./plans.section.css";
 
-interface PlanData {
-  name: string;
-  price: number;
-  previousPrice?: number | null;
-  discountPercent?: number | null;
-  currency: string;
-  period: string;
-  description: string;
-  features: { text: string }[];
-  ctaLabel: string;
-  featured?: boolean | null;
-}
-
-interface PlansSectionProps {
-  sectionTitle: string;
-  sectionDescription: string;
-  plans: PlanData[];
-}
-
-export function PlansSection({ sectionTitle, sectionDescription, plans }: PlansSectionProps) {
-  const maxDiscountPercent = Math.max(...plans.map((plan) => plan.discountPercent ?? 0));
+export async function PlansSection() {
+  const content = await getPackagesData();
+  const maxDiscountPercent = Math.max(...content.plans.map((plan) => plan.discountPercent ?? 0));
 
   return (
     <section id="planes" className="section section_theme_light plans">
@@ -33,13 +16,13 @@ export function PlansSection({ sectionTitle, sectionDescription, plans }: PlansS
             {maxDiscountPercent > 0 && (
               <span className="section__eyebrow">Ahorra hasta {maxDiscountPercent}% en tu mensualidad</span>
             )}
-            <h2 className="section__title">{sectionTitle}</h2>
-            <p className="section__text">{sectionDescription}</p>
+            <h2 className="section__title">{content.sectionTitle}</h2>
+            <p className="section__text">{content.sectionDescription}</p>
           </div>
         </div>
 
         <div className="plans__wrap">
-          {plans.map((plan) => (
+          {content.plans.map((plan) => (
             <div key={plan.name} className={`plan-card${plan.featured ? " plan-card_featured" : ""}`}>
               <h3 className="plan-card__title">{plan.name}</h3>
               <div className="plan-card__price-block">
@@ -65,7 +48,7 @@ export function PlansSection({ sectionTitle, sectionDescription, plans }: PlansS
                 {plan.features.map((feature, index) => (
                   <li key={index} className="plan-card__list-item">
                     <CircleCheckIcon className="plan-card__list-icon" />
-                    {feature.text}
+                    {feature}
                   </li>
                 ))}
               </ul>
@@ -82,7 +65,7 @@ export function PlansSection({ sectionTitle, sectionDescription, plans }: PlansS
           ))}
         </div>
 
-        <PlansMobileSection plans={plans} />
+        <PlansMobileSection plans={content.plans} />
       </div>
     </section>
   );

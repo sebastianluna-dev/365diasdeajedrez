@@ -3,16 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronRight, Menu, X } from "lucide-react";
-import type { NavItem } from "./header.section";
+import type { HeaderNavItem } from "@/services/home/home.types";
 
 interface HeaderMobileMenuProps {
-  navItems: NavItem[];
+  navItems: HeaderNavItem[];
   ctaLabel: string;
 }
 
 export function HeaderMobileMenu({ navItems, ctaLabel }: HeaderMobileMenuProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const mobileLinks = navItems.flatMap((item) => (item.blockType === "navLink" ? [item] : item.links));
+  const mobileLinks = navItems.flatMap((item) => (item.type === "link" ? [item] : item.links));
 
   return (
     <>

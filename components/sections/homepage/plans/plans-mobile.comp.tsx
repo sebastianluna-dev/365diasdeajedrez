@@ -3,23 +3,11 @@
 import { useState } from "react";
 import Link from "next/link";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
+import type { PackagePlanContent } from "@/services/home/home.types";
 import "./plans-mobile.comp.css";
 
-interface PlanData {
-  name: string;
-  price: number;
-  previousPrice?: number | null;
-  discountPercent?: number | null;
-  currency: string;
-  period: string;
-  description: string;
-  features: { text: string }[];
-  ctaLabel: string;
-  featured?: boolean | null;
-}
-
 interface PlansMobileSectionProps {
-  plans: PlanData[];
+  plans: PackagePlanContent[];
 }
 
 export function PlansMobileSection({ plans }: PlansMobileSectionProps) {
@@ -66,7 +54,7 @@ export function PlansMobileSection({ plans }: PlansMobileSectionProps) {
           {activePlan.features.map((feature, index) => (
             <li key={index} className="plan-card__list-item">
               <CircleCheckIcon className="plan-card__list-icon" />
-              {feature.text}
+              {feature}
             </li>
           ))}
         </ul>
