@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronRight, ChevronDown, Menu, X } from "lucide-react";
+import { ChevronRight, Menu, X } from "lucide-react";
 import { Logo } from "@/components/common/logo.comp";
+import { HeaderDropdown } from "./header-dropdown.comp";
 import "./site-header-client.comp.css";
 
 type NavItem =
@@ -33,19 +34,7 @@ export function SiteHeaderClient({ navItems, ctaLabel }: SiteHeaderClientProps) 
                     {item.label}
                   </Link>
                 ) : (
-                  <div className="site-header__dropdown" key={`${item.label}-${index}`}>
-                    <button type="button" className="site-header__dropdown-trigger">
-                      {item.label}
-                      <ChevronDown size={14} />
-                    </button>
-                    <div className="site-header__dropdown-menu">
-                      {item.links.map((link, linkIndex) => (
-                        <Link key={`${link.href}-${linkIndex}`} href={link.href}>
-                          {link.label}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
+                  <HeaderDropdown key={`${item.label}-${index}`} label={item.label} links={item.links} />
                 ),
               )}
             </div>
