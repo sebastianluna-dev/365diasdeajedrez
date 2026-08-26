@@ -67,7 +67,7 @@ export function mapProgram(program: HomeProgram): ProgramContent {
       durationLabel: module.durationLabel,
       subtitle: module.subtitle ?? undefined,
       description: module.description,
-      topics: (module.topics ?? []).map((topic) => topic.text),
+      topics: module.topics ?? [],
     })),
   };
 }
@@ -102,7 +102,7 @@ function mapPackagePlan(plan: HomePackage["packageOne"]): PackagePlanContent {
     currency: plan.currency,
     period: plan.period,
     description: plan.description,
-    features: plan.features.map((feature) => feature.text),
+    features: plan.features,
     ctaLabel: plan.ctaLabel,
     ctaUrl: plan.ctaUrl,
     featured: plan.featured ?? false,

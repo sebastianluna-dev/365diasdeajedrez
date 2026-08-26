@@ -86,20 +86,12 @@ export const HomeProgram: GlobalConfig = {
         },
         {
           name: "topics",
-          type: "array",
+          type: "text",
           label: "Temas",
-          labels: {
-            singular: "Tema",
-            plural: "Temas",
+          hasMany: true,
+          admin: {
+            description: "Escribe un tema y presiona Enter para agregarlo a la lista.",
           },
-          fields: [
-            {
-              name: "text",
-              type: "text",
-              label: "Texto",
-              required: true,
-            },
-          ],
         },
       ],
     },

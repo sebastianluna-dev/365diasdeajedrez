@@ -18,12 +18,13 @@ function packageFields(): Field[] {
     { name: "description", type: "textarea", label: "Descripción", required: true },
     {
       name: "features",
-      type: "array",
+      type: "text",
       label: "Características",
+      hasMany: true,
       required: true,
-      minRows: 1,
-      labels: { singular: "Característica", plural: "Características" },
-      fields: [{ name: "text", type: "text", label: "Texto", required: true }],
+      admin: {
+        description: "Escribe una característica y presiona Enter para agregarla a la lista.",
+      },
     },
     {
       type: "row",

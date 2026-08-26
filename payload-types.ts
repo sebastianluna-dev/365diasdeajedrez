@@ -548,12 +548,7 @@ export interface HomeProgram {
     durationLabel: string;
     subtitle?: string | null;
     description: string;
-    topics?:
-      | {
-          text: string;
-          id?: string | null;
-        }[]
-      | null;
+    topics?: string[] | null;
     id?: string | null;
   }[];
   updatedAt?: string | null;
@@ -625,10 +620,7 @@ export interface HomePackage {
     currency: string;
     period: string;
     description: string;
-    features: {
-      text: string;
-      id?: string | null;
-    }[];
+    features: string[];
     ctaLabel: string;
     ctaUrl: string;
     featured?: boolean | null;
@@ -641,10 +633,7 @@ export interface HomePackage {
     currency: string;
     period: string;
     description: string;
-    features: {
-      text: string;
-      id?: string | null;
-    }[];
+    features: string[];
     ctaLabel: string;
     ctaUrl: string;
     featured?: boolean | null;
@@ -776,12 +765,7 @@ export interface HomeProgramSelect<T extends boolean = true> {
         durationLabel?: T;
         subtitle?: T;
         description?: T;
-        topics?:
-          | T
-          | {
-              text?: T;
-              id?: T;
-            };
+        topics?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -849,12 +833,7 @@ export interface HomePackagesSelect<T extends boolean = true> {
         currency?: T;
         period?: T;
         description?: T;
-        features?:
-          | T
-          | {
-              text?: T;
-              id?: T;
-            };
+        features?: T;
         ctaLabel?: T;
         ctaUrl?: T;
         featured?: T;
@@ -869,12 +848,7 @@ export interface HomePackagesSelect<T extends boolean = true> {
         currency?: T;
         period?: T;
         description?: T;
-        features?:
-          | T
-          | {
-              text?: T;
-              id?: T;
-            };
+        features?: T;
         ctaLabel?: T;
         ctaUrl?: T;
         featured?: T;
