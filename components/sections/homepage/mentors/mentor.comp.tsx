@@ -1,22 +1,29 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { Mentor as MentorData } from "@/interfaces/mentor.interface";
+import type { MentorContent } from "@/services/mentors/mentors.types";
 import "./mentor.comp.css";
 
 interface MentorProps {
-  mentor: MentorData;
+  mentor: MentorContent;
 }
 
 export function Mentor({ mentor }: MentorProps) {
+  const fullName = `${mentor.name} ${mentor.lastName}`;
+
   return (
-    <Link href={`/mentores/${mentor.slug}`} className="mentor-card">
+    <Link href={`/mentor/${mentor.slug}`} className="mentor-card">
       <div className="mentor-card__photo">
-        <Image src={mentor.photo} alt={mentor.name} fill sizes="(max-width: 720px) 100vw, (max-width: 1024px) 50vw, 25vw" />
+        <Image
+          src={mentor.photo.src}
+          alt={mentor.photo.alt}
+          fill
+          sizes="(max-width: 720px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        />
       </div>
       <div className="mentor-card__body">
         <div>
           <div className="mentor-card__head">
-            <h3 className="mentor-card__name">{mentor.name}</h3>
+            <h3 className="mentor-card__name">{fullName}</h3>
             {mentor.fideInfo.shortFideTitle && (
               <span className="mentor-card__title">{mentor.fideInfo.shortFideTitle}</span>
             )}

@@ -1,11 +1,5 @@
 import type { MoveAnnotations } from "@/hooks/use-chess-replay.hook";
-
-export interface ContentImage {
-  src: string;
-  alt: string;
-  width?: number;
-  height?: number;
-}
+import type { ContentImage } from "@/services/shared/content-image.types";
 
 export interface HeaderNavLink {
   type: "link";

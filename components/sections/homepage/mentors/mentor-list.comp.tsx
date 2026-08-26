@@ -1,9 +1,9 @@
-import type { Mentor as MentorData } from "@/interfaces/mentor.interface";
+import type { MentorContent } from "@/services/mentors/mentors.types";
 import { Mentor } from "./mentor.comp";
 import "./mentor-list.comp.css";
 
 interface MentorListProps {
-  mentors: MentorData[];
+  mentors: MentorContent[];
 }
 
 export function MentorList({ mentors }: MentorListProps) {

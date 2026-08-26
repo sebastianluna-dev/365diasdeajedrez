@@ -1,0 +1,180 @@
+.mentor-page {
+  position: relative;
+  min-width: 1100px;
+  overflow-x: clip;
+  background: #16110d;
+  color: #f2ede7;
+}
+
+.mentor-profile {
+  & .mentor-profile__inner {
+    display: flex;
+    align-items: center;
+    gap: 56px;
+  }
+
+  & .mentor-profile__photo {
+    position: relative;
+    flex: none;
+    width: 340px;
+    height: 420px;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  & .mentor-profile__photo img {
+    object-fit: cover;
+  }
+
+  & .mentor-profile__info {
+    flex: 1;
+  }
+
+  & .mentor-profile__name {
+    margin-top: 8px;
+  }
+
+  & .mentor-profile__badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #ff9143;
+    border: 1px solid rgba(255, 145, 67, 0.34);
+    background: rgba(255, 145, 67, 0.08);
+    border-radius: 999px;
+    padding: 6px 12px;
+    margin-top: 16px;
+  }
+
+  & .mentor-profile__summary {
+    margin-top: 16px;
+    max-width: 56ch;
+  }
+
+  & .mentor-profile__elo-table {
+    margin-top: 28px;
+    max-width: 480px;
+  }
+
+  @media (max-width: 1023px) {
+    & .mentor-profile__inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 28px;
+    }
+
+    & .mentor-profile__photo {
+      width: 100%;
+      height: 320px;
+    }
+  }
+}
+
+.mentor-achievements {
+  & .mentor-achievements__list {
+    list-style: none;
+    margin: 32px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  & .mentor-achievements__item {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(22, 17, 13, 0.1);
+  }
+
+  & .mentor-achievements__item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  & .mentor-achievements__year {
+    flex: none;
+    width: 64px;
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #ff9143;
+  }
+
+  & .mentor-achievements__title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 6px;
+  }
+
+  & .mentor-achievements__text {
+    font-size: 15px;
+    line-height: 1.55;
+    color: #5c5348;
+    margin: 0;
+  }
+}
+
+.mentor-testimonials {
+  & .mentor-testimonials__grid {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  & .mentor-testimonials__card {
+    background: rgba(242, 237, 231, 0.04);
+    border: 1px solid rgba(242, 237, 231, 0.1);
+    border-radius: 14px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  & .mentor-testimonials__text {
+    font-size: 15px;
+    line-height: 1.55;
+    color: #d8d0c6;
+    margin: 0;
+  }
+
+  & .mentor-testimonials__name {
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  & .mentor-testimonials__detail {
+    font-size: 13px;
+    color: #8a8175;
+  }
+
+  @media (max-width: 1023px) {
+    & .mentor-testimonials__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.mentor-game {
+  & .mentor-game__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: start;
+  }
+
+  & .mentor-game__intro {
+    max-width: 56ch;
+  }
+
+  @media (max-width: 1023px) {
+    & .mentor-game__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+}

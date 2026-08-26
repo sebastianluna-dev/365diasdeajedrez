@@ -1,17 +1,7 @@
-import type {
-  HomeHeader,
-  HomeHero,
-  HomeProgram,
-  HomeTeacher,
-  HomePackage,
-  HomeFaq,
-  HomeCta,
-  Media,
-} from "@/payload-types";
+import type { HomeHeader, HomeHero, HomeProgram, HomeTeacher, HomePackage, HomeFaq, HomeCta } from "@/payload-types";
 import type { MoveAnnotations } from "@/hooks/use-chess-replay.hook";
-import { getMediaUrl } from "@/lib/payload/get-media-url";
+import { mapContentImage } from "@/services/shared/map-content-image";
 import type {
-  ContentImage,
   CtaContent,
   FaqContent,
   HeaderContent,
@@ -21,18 +11,6 @@ import type {
   ProgramContent,
   TeacherContent,
 } from "./home.types";
-
-function mapContentImage(media: number | Media): ContentImage {
-  const src = getMediaUrl(media);
-  // Safe: getMediaUrl throws above if `media` were still an unpopulated id.
-  const populated = media as Media;
-  return {
-    src,
-    alt: populated.alt,
-    width: populated.width ?? undefined,
-    height: populated.height ?? undefined,
-  };
-}
 
 export function mapHeader(header: HomeHeader): HeaderContent {
   return {

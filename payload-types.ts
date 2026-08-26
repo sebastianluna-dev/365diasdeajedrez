@@ -100,6 +100,7 @@ export interface Config {
     'home-teacher': HomeTeacher;
     'home-packages': HomePackage;
     'home-faq': HomeFaq;
+    'home-mentors': HomeMentors;
     'home-cta': HomeCta;
     'site-settings': SiteSettings;
   };
@@ -110,6 +111,7 @@ export interface Config {
     'home-teacher': HomeTeacherSelect<false> | HomeTeacherSelect<true>;
     'home-packages': HomePackagesSelect<false> | HomePackagesSelect<true>;
     'home-faq': HomeFaqSelect<false> | HomeFaqSelect<true>;
+    'home-mentors': HomeMentorsSelect<false> | HomeMentorsSelect<true>;
     'home-cta': HomeCtaSelect<false> | HomeCtaSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
@@ -663,6 +665,76 @@ export interface HomeFaq {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-mentors".
+ */
+export interface HomeMentors {
+  id: number;
+  eyebrow: string;
+  sectionTitle: string;
+  sectionDescription: string;
+  mentors: {
+    slug: string;
+    name: string;
+    lastName: string;
+    city: string;
+    birthYear: number;
+    gender: 'male' | 'female';
+    photo: number | Media;
+    photoFocus?: string | null;
+    shortDescription: string;
+    summary: string;
+    fideId: string;
+    federation: string;
+    standardElo: number;
+    rapidElo: number;
+    blitzElo: number;
+    chessComElo?: number | null;
+    shortFideTitle?: ('GM' | 'IM' | 'FM' | 'CM' | 'NM' | 'WGM' | 'WIM' | 'WFM' | 'WCM' | 'WNM') | null;
+    longFideTitle?:
+      | (
+          | 'Grandmaster'
+          | 'International Master'
+          | 'FIDE Master'
+          | 'Candidate Master'
+          | 'National Master'
+          | 'Woman Grandmaster'
+          | 'Woman International Master'
+          | 'Woman FIDE Master'
+          | 'Woman Candidate Master'
+          | 'Woman National Master'
+          | 'Instructor · Jugador federado FIDE'
+        )
+      | null;
+    achievements?:
+      | {
+          year: string;
+          title: string;
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    testimonials?:
+      | {
+          name: string;
+          detail: string;
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    featuredGame: {
+      gameTitle: string;
+      gameText: string;
+      gameNote: string;
+      moves: string;
+      flipBoard?: boolean | null;
+    };
+    id?: string | null;
+  }[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home-cta".
  */
 export interface HomeCta {
@@ -885,6 +957,66 @@ export interface HomeFaqSelect<T extends boolean = true> {
     | {
         question?: T;
         answer?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-mentors_select".
+ */
+export interface HomeMentorsSelect<T extends boolean = true> {
+  eyebrow?: T;
+  sectionTitle?: T;
+  sectionDescription?: T;
+  mentors?:
+    | T
+    | {
+        slug?: T;
+        name?: T;
+        lastName?: T;
+        city?: T;
+        birthYear?: T;
+        gender?: T;
+        photo?: T;
+        photoFocus?: T;
+        shortDescription?: T;
+        summary?: T;
+        fideId?: T;
+        federation?: T;
+        standardElo?: T;
+        rapidElo?: T;
+        blitzElo?: T;
+        chessComElo?: T;
+        shortFideTitle?: T;
+        longFideTitle?: T;
+        achievements?:
+          | T
+          | {
+              year?: T;
+              title?: T;
+              text?: T;
+              id?: T;
+            };
+        testimonials?:
+          | T
+          | {
+              name?: T;
+              detail?: T;
+              text?: T;
+              id?: T;
+            };
+        featuredGame?:
+          | T
+          | {
+              gameTitle?: T;
+              gameText?: T;
+              gameNote?: T;
+              moves?: T;
+              flipBoard?: T;
+            };
         id?: T;
       };
   updatedAt?: T;
