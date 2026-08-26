@@ -5,7 +5,17 @@ import { Orbit } from "./orbit.comp";
 import { ChessPieceUnicode } from "@/enums/chess-pieces.enum";
 import "./hero.section.css";
 
-export function HeroSection() {
+interface HeroSectionProps {
+  title: string;
+  description: string;
+  imageUrl: string;
+  cta: {
+    label: string;
+    href: string;
+  };
+}
+
+export function HeroSection({ title, description, imageUrl, cta }: HeroSectionProps) {
   return (
     <section id="inicio" className="hero">
       <div className="hero__inner">
@@ -13,14 +23,11 @@ export function HeroSection() {
 
         <div className="hero__grid">
           <div className="hero__copy">
-            <h1 className="hero__title">Lleva tu ajedrez al siguiente nivel con el Método 365</h1>
-            <p className="hero__text">
-              Desarrolla una comprensión más profunda del juego, aprende a evaluar posiciones y toma mejores decisiones
-              sobre el tablero.
-            </p>
+            <h1 className="hero__title">{title}</h1>
+            <p className="hero__text">{description}</p>
             <div className="hero__actions">
-              <Link href="/#programa" className="button button_variant_primary button_size_hero">
-                Conocer el método
+              <Link href={cta.href} className="button button_variant_primary button_size_hero">
+                {cta.label}
               </Link>
             </div>
           </div>
@@ -30,13 +37,7 @@ export function HeroSection() {
               <div className="hero__stage">
                 <div className="hero__card">
                   <div className="hero__card-inner">
-                    <Image
-                      src="/design-import/assets/hero-jugador.png"
-                      alt="Jugador entrenando ajedrez"
-                      width={520}
-                      height={640}
-                      priority
-                    />
+                    <Image src={imageUrl} alt="Jugador entrenando ajedrez" width={520} height={640} priority />
                   </div>
                 </div>
                 <Orbit />

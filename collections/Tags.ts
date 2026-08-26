@@ -6,6 +6,7 @@ export const Tags: CollectionConfig = {
   slug: "tags",
   admin: {
     useAsTitle: "name",
+    group: "Blog",
   },
   access: {
     read: anyone,

@@ -8,6 +8,12 @@ import { Categories } from "@/collections/Categories";
 import { Tags } from "@/collections/Tags";
 import { Media } from "@/collections/Media";
 import { Posts } from "@/collections/Posts";
+import { HomeHeader } from "@/globals/HomeHeader";
+import { HomeHero } from "@/globals/HomeHero";
+import { HomeProgram } from "@/globals/HomeProgram";
+import { HomeTeacher } from "@/globals/HomeTeacher";
+import { HomePackages } from "@/globals/HomePackages";
+import { HomeFaq } from "@/globals/HomeFaq";
 import { cloudinaryStorage } from "@/lib/payload/cloudinary-adapter";
 
 const filename = fileURLToPath(import.meta.url);
@@ -19,6 +25,7 @@ export default buildConfig({
     user: Users.slug,
   },
   collections: [Users, Categories, Tags, Media, Posts],
+  globals: [HomeHeader, HomeHero, HomeProgram, HomeTeacher, HomePackages, HomeFaq],
   editor: lexicalEditor(),
   db: postgresAdapter({
     pool: {

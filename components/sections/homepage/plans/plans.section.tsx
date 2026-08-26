@@ -1,12 +1,30 @@
 import Link from "next/link";
-import { subscriptionPlans } from "@/data/subscription-plans.data";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import { PlansMobileSection } from "./plans-mobile.comp";
 import "./plans.section.css";
 
-const maxDiscountPercent = Math.max(...subscriptionPlans.map((plan) => plan.discountPercent ?? 0));
+interface PlanData {
+  name: string;
+  price: number;
+  previousPrice?: number | null;
+  discountPercent?: number | null;
+  currency: string;
+  period: string;
+  description: string;
+  features: { text: string }[];
+  ctaLabel: string;
+  featured?: boolean | null;
+}
 
-export function PlansSection() {
+interface PlansSectionProps {
+  sectionTitle: string;
+  sectionDescription: string;
+  plans: PlanData[];
+}
+
+export function PlansSection({ sectionTitle, sectionDescription, plans }: PlansSectionProps) {
+  const maxDiscountPercent = Math.max(...plans.map((plan) => plan.discountPercent ?? 0));
+
   return (
     <section id="planes" className="section section_theme_light plans">
       <div className="section__inner">
@@ -15,16 +33,14 @@ export function PlansSection() {
             {maxDiscountPercent > 0 && (
               <span className="section__eyebrow">Ahorra hasta {maxDiscountPercent}% en tu mensualidad</span>
             )}
-            <h2 className="section__title">Paquetes</h2>
-            <p className="section__text">
-              Entrena una vez por semana o duplica el ritmo.
-            </p>
+            <h2 className="section__title">{sectionTitle}</h2>
+            <p className="section__text">{sectionDescription}</p>
           </div>
         </div>
 
         <div className="plans__wrap">
-          {subscriptionPlans.map((plan) => (
-            <div key={plan.slug} className={`plan-card${plan.featured ? " plan-card_featured" : ""}`}>
+          {plans.map((plan) => (
+            <div key={plan.name} className={`plan-card${plan.featured ? " plan-card_featured" : ""}`}>
               <h3 className="plan-card__title">{plan.name}</h3>
               <div className="plan-card__price-block">
                 <div className="plan-card__price-row">
@@ -46,10 +62,10 @@ export function PlansSection() {
               </div>
               <p className="plan-card__description">{plan.description}</p>
               <ul className="plan-card__list">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="plan-card__list-item">
+                {plan.features.map((feature, index) => (
+                  <li key={index} className="plan-card__list-item">
                     <CircleCheckIcon className="plan-card__list-icon" />
-                    {feature}
+                    {feature.text}
                   </li>
                 ))}
               </ul>
@@ -66,7 +82,7 @@ export function PlansSection() {
           ))}
         </div>
 
-        <PlansMobileSection />
+        <PlansMobileSection plans={plans} />
       </div>
     </section>
   );

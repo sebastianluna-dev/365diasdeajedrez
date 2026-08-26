@@ -1,33 +1,47 @@
 "use client";
 
 import { useState } from "react";
-import { programModules } from "@/data/program-modules.data";
 import { ProgramModuleListItem } from "./program-module-list-item.comp";
 import "./program.section.css";
 
-export function ProgramSection() {
-  const [activeModule, setActiveModule] = useState(programModules[0]);
+interface ProgramModuleData {
+  title: string;
+  durationLabel: string;
+  subtitle?: string | null;
+  description: string;
+  topics?: { text: string }[] | null;
+}
+
+interface ProgramSectionProps {
+  sectionTitle: string;
+  sectionDescription: string;
+  note?: string;
+  modules: ProgramModuleData[];
+}
+
+export function ProgramSection({ sectionTitle, sectionDescription, note, modules }: ProgramSectionProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeModule = modules[activeIndex];
+
   return (
     <section id="programa" className="section section_theme_light program">
       <div className="section__inner">
         <div className="section__head">
           <div>
-            <h2 className="section__title program__title">Un método diseñado para desarrollar un ajedrez sólido.</h2>
-            <p className="section__text">
-              Cinco módulos con una progresión natural: desde los principios fundamentales hasta los finales más
-              complejos. Cada etapa desarrolla habilidades específicas y prepara el camino para la siguiente.
-            </p>
+            <h2 className="section__title program__title">{sectionTitle}</h2>
+            <p className="section__text">{sectionDescription}</p>
           </div>
         </div>
 
         <div className="program__wrap">
           <div className="program-list">
-            {programModules.map((module) => (
+            {modules.map((module, index) => (
               <ProgramModuleListItem
-                key={module.moduleNumber}
+                key={module.title}
                 module={module}
-                isActive={module.moduleNumber === activeModule.moduleNumber}
-                onSelect={() => setActiveModule(module)}
+                moduleNumber={index + 1}
+                isActive={index === activeIndex}
+                onSelect={() => setActiveIndex(index)}
               />
             ))}
           </div>
@@ -38,7 +52,7 @@ export function ProgramSection() {
                 {activeModule.durationLabel}
               </span>
               <span className="program-panel__badge program-panel__badge_variant_outline">
-                Módulo 0{activeModule.moduleNumber} de 0{programModules.length}
+                Módulo 0{activeIndex + 1} de 0{modules.length}
               </span>
             </div>
             <div>
@@ -48,9 +62,9 @@ export function ProgramSection() {
             <div>
               <h3 className="program-panel__subheading">En qué trabajamos</h3>
               <ul className="program-panel__topics">
-                {activeModule.topics.map((item, index) => (
+                {activeModule.topics?.map((item, index) => (
                   <li className="program-panel__topic" key={index}>
-                    {item}
+                    {item.text}
                   </li>
                 ))}
               </ul>
@@ -58,10 +72,7 @@ export function ProgramSection() {
           </div>
         </div>
 
-        <p className="program__note">
-          Si bien tenemos un programa diseñado, es importante aclarar que los contenido y las explicaciones se
-          personalizan para cada alumno, con el objetivo de mejorar el proceso de aprendizaje
-        </p>
+        {note && <p className="program__note">{note}</p>}
       </div>
     </section>
   );

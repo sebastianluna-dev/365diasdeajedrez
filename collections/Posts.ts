@@ -25,6 +25,7 @@ export const Posts: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "_status", "publishedAt"],
+    group: "Blog",
   },
   versions: {
     drafts: true,

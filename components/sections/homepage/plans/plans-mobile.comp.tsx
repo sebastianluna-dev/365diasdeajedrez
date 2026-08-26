@@ -2,23 +2,39 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { subscriptionPlans } from "@/data/subscription-plans.data";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import "./plans-mobile.comp.css";
 
-export function PlansMobileSection() {
-  const [activeSlug, setActiveSlug] = useState(subscriptionPlans[0].slug);
-  const activePlan = subscriptionPlans.find((plan) => plan.slug === activeSlug) ?? subscriptionPlans[0];
+interface PlanData {
+  name: string;
+  price: number;
+  previousPrice?: number | null;
+  discountPercent?: number | null;
+  currency: string;
+  period: string;
+  description: string;
+  features: { text: string }[];
+  ctaLabel: string;
+  featured?: boolean | null;
+}
+
+interface PlansMobileSectionProps {
+  plans: PlanData[];
+}
+
+export function PlansMobileSection({ plans }: PlansMobileSectionProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activePlan = plans[activeIndex];
 
   return (
     <div className="plans-mobile">
       <div className="plans-mobile__tabs">
-        {subscriptionPlans.map((plan) => (
+        {plans.map((plan, index) => (
           <button
-            key={plan.slug}
+            key={plan.name}
             type="button"
-            className={`plans-mobile__tab${plan.slug === activeSlug ? " plans-mobile__tab_active" : ""}`}
-            onClick={() => setActiveSlug(plan.slug)}
+            className={`plans-mobile__tab${index === activeIndex ? " plans-mobile__tab_active" : ""}`}
+            onClick={() => setActiveIndex(index)}
           >
             {plan.name}
           </button>
@@ -47,10 +63,10 @@ export function PlansMobileSection() {
         </div>
         <p className="plan-card__description">{activePlan.description}</p>
         <ul className="plan-card__list">
-          {activePlan.features.map((feature) => (
-            <li key={feature} className="plan-card__list-item">
+          {activePlan.features.map((feature, index) => (
+            <li key={index} className="plan-card__list-item">
               <CircleCheckIcon className="plan-card__list-icon" />
-              {feature}
+              {feature.text}
             </li>
           ))}
         </ul>

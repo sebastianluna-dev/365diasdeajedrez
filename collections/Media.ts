@@ -5,6 +5,7 @@ export const Media: CollectionConfig = {
   slug: "media",
   admin: {
     useAsTitle: "alt",
+    group: "Blog",
   },
   access: {
     read: anyone,
