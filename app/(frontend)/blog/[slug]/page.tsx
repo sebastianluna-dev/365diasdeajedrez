@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ArticleHeader } from "@/components/sections/blog-article/header/article-header.comp";
+import { Header } from "@/components/sections/common/header/header.section";
 import { ArticleContent } from "@/components/sections/blog-article/content/article-content.comp";
 import { RelatedArticles } from "@/components/sections/blog-article/related/related-articles.section";
 import { Footer } from "@/components/sections/common/footer/footer.section";
@@ -35,7 +35,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   const [post, posts] = await Promise.all([getPostBySlug(slug), getPosts()]);
   if (!post) notFound();
 
-  const date = post.meta.split(" · ")[0] ?? "";
   const relatedPosts = posts.filter((item) => item.slug !== post.slug).slice(0, 3);
 
   return (
@@ -43,7 +42,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <div className="article-page__glow article-page__glow_position_mid-right" />
       <div className="article-page__glow article-page__glow_position_top-left" />
 
-      <ArticleHeader category={post.category ?? ""} date={date} />
+      <Header theme="light" />
       <ArticleContent post={post} />
       <RelatedArticles posts={relatedPosts} />
       <Footer accent="red" />

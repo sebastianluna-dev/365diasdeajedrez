@@ -41,11 +41,10 @@ export function ArchiveSection({ posts }: ArchiveSectionProps) {
   return (
     <section className="archive">
       <div className="archive__inner">
-        <span className="eyebrow">Archivo</span>
-        <h1 className="archive__title">Todos los artículos</h1>
+        <h1 className="archive__title">Blog 365: Aprende, entrena y mejora tu ajedrez</h1>
         <p className="archive__intro">
-          Análisis de partidas, aperturas, táctica, finales y notas de método. Todo lo publicado en El Tablero, de lo
-          más reciente a lo más antiguo.
+          Artículos, consejos y recursos para comprender mejor el ajedrez, entrenar con intención y seguir mejorando
+          dentro y fuera del tablero.
         </p>
 
         <CategoryFilter categories={categories} active={category} onSelect={selectCategory} />

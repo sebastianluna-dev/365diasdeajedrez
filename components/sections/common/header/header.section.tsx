@@ -6,15 +6,23 @@ import { HeaderDropdown } from "./header-dropdown.comp";
 import { HeaderMobileMenu } from "./header-mobile-menu.comp";
 import "./header.section.css";
 
-export async function Header() {
+interface HeaderProps {
+  theme?: "dark" | "light";
+}
+
+export async function Header({ theme = "dark" }: HeaderProps) {
   const content = await getHeaderData();
 
   return (
-    <div className="site-header-nav">
+    <div className={`site-header-nav site-header-nav_theme_${theme}`}>
       <div className="site-header-nav__inner">
         <div className="site-header-bar">
           <nav className="site-header">
-            <Logo theme="dark" accent="orange" />
+            {theme === "light" ? (
+              <Logo theme="light" accent="red" />
+            ) : (
+              <Logo theme="dark" accent="orange" />
+            )}
 
             <div className="site-header__links">
               {content.navItems.map((item, index) =>

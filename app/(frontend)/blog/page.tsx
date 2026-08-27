@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArticleHeader } from "@/components/sections/blog-article/header/article-header.comp";
+import { Header } from "@/components/sections/common/header/header.section";
 import { ArchiveSection } from "@/components/sections/blog/archive/archive.section";
 import { Footer } from "@/components/sections/common/footer/footer.section";
 import { getPosts } from "@/services/posts/posts.service";
@@ -18,7 +18,7 @@ export default async function BlogPage() {
     <div className="blog-page">
       <div className="blog-page__shell">
         <div className="blog-page__glow" />
-        <ArticleHeader category="Archivo completo" date="Agosto 2026" />
+        <Header theme="light" />
         <ArchiveSection posts={posts} />
         <Footer accent="red" />
       </div>
