@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { MoveQuality } from "@/hooks/use-chess-replay.hook";
+import type { MoveQuality } from "@/lib/chess/types";
 
 interface ChessMoveQualityIconVariantProps {
   className?: string;

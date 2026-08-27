@@ -1,83 +1,169 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useChessReplay, type MoveAnnotations } from "@/hooks/use-chess-replay.hook";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Chessground } from "@lichess-org/chessground";
+import type { Api } from "@lichess-org/chessground/api";
+import type { Config } from "@lichess-org/chessground/config";
+import type { Key } from "@lichess-org/chessground/types";
+import "@lichess-org/chessground/assets/chessground.base.css";
+import "@lichess-org/chessground/assets/chessground.cburnett.css";
+import { legalDests } from "@/lib/chess/legal-moves";
+import { buildNotationRows } from "@/lib/chess/notation";
+import { replayGame, sanForMove, turnColor } from "@/lib/chess/replay";
+import type { MoveAnnotations } from "@/lib/chess/types";
 import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
 import { SkipIcon } from "@/components/icons/skip-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { PauseIcon } from "@/components/icons/pause-icon.comp";
-import { ShareIcon } from "@/components/icons/share-icon.comp";
 import { FlipIcon } from "@/components/icons/flip-icon.comp";
 import { chessMoveQualityIconFor } from "@/components/common/chess-move-quality-icon.comp";
 import "./chess-board.comp.css";
 
-export interface ChessBoardMeta {
-  white: string;
-  black: string;
-  result: string;
-  event: string;
-  round: string;
-  eco: string;
-}
+const AUTOPLAY_MS = 900;
 
 interface ChessBoardProps {
-  moves: string[];
-  flipBoard: boolean;
-  meta?: ChessBoardMeta;
+  /** Full PGN or bare SAN movetext. */
+  pgn: string;
+  flipBoard?: boolean;
   annotations?: MoveAnnotations;
+  /** Allow the viewer to drag/click legal moves (chessops-validated). */
+  interactive?: boolean;
+  /** Called after a legal interactive move, with its SAN and the FEN it was played from. */
+  onMove?: (san: string, fromFen: string) => void;
 }
 
-export function ChessBoard({ moves, flipBoard, meta, annotations }: ChessBoardProps) {
-  const {
-    ply,
-    squares,
-    pieces,
-    rows,
-    isAutoPlaying,
-    goToStart,
-    goToEnd,
-    goToPrevious,
-    goToNext,
-    toggleAutoPlay,
-    toggleFlip,
-  } = useChessReplay(moves, flipBoard, annotations);
+export function ChessBoard({ pgn, flipBoard = false, annotations, interactive = false, onMove }: ChessBoardProps) {
+  const positions = useMemo(() => replayGame(pgn), [pgn]);
+  const total = positions.length - 1;
+  const rows = useMemo(
+    () => buildNotationRows(positions.slice(1).map((position) => position.san), annotations),
+    [positions, annotations],
+  );
 
+  const [ply, setPlyState] = useState(0);
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
+  const [flipToggled, setFlipToggled] = useState(false);
+  const orientation: "white" | "black" = (flipBoard ? !flipToggled : flipToggled) ? "black" : "white";
+
+  const rootRef = useRef<HTMLDivElement>(null);
   const boardRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
+  const apiRef = useRef<Api | null>(null);
+  const autoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const activeCellRef = useRef<HTMLButtonElement>(null);
-  const [notationHeight, setNotationHeight] = useState<number | undefined>(undefined);
   const isInViewportRef = useRef(false);
   const hasBeenClickedRef = useRef(false);
+  const onMoveRef = useRef(onMove);
+  onMoveRef.current = onMove;
 
-  useEffect(() => {
-    const frameEl = frameRef.current;
-    if (!frameEl) return;
+  const [notationHeight, setNotationHeight] = useState<number | undefined>(undefined);
 
-    const update = () => {
-      setNotationHeight(window.innerWidth > 720 ? frameEl.getBoundingClientRect().height : undefined);
-    };
+  const setPly = useCallback((n: number) => setPlyState(Math.max(0, Math.min(total, n))), [total]);
 
-    update();
-    const observer = new ResizeObserver(update);
-    observer.observe(frameEl);
-    window.addEventListener("resize", update);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", update);
-    };
+  const stopAutoPlay = useCallback(() => {
+    if (autoTimer.current) clearInterval(autoTimer.current);
+    autoTimer.current = null;
+    setIsAutoPlaying(false);
   }, []);
 
-  useEffect(() => {
-    const boardEl = boardRef.current;
-    if (!boardEl) return;
+  const toggleAutoPlay = useCallback(() => {
+    if (autoTimer.current) {
+      stopAutoPlay();
+      return;
+    }
+    setPlyState((current) => (current >= total ? 0 : current));
+    setIsAutoPlaying(true);
+    autoTimer.current = setInterval(() => {
+      setPlyState((current) => {
+        if (current >= total) {
+          stopAutoPlay();
+          return current;
+        }
+        return current + 1;
+      });
+    }, AUTOPLAY_MS);
+  }, [stopAutoPlay, total]);
 
+  const goToStart = useCallback(() => setPly(0), [setPly]);
+  const goToEnd = useCallback(() => setPly(total), [setPly, total]);
+  const goToPrevious = useCallback(() => setPly(ply - 1), [ply, setPly]);
+  const goToNext = useCallback(() => setPly(ply + 1), [ply, setPly]);
+  const toggleFlip = useCallback(() => setFlipToggled((current) => !current), []);
+
+  useEffect(() => stopAutoPlay, [pgn, stopAutoPlay]);
+
+  // Instantiate chessground once per mode.
+  useEffect(() => {
+    if (!boardRef.current) return;
+    const api = Chessground(boardRef.current, {
+      coordinates: true,
+      animation: { enabled: true, duration: 200 },
+      viewOnly: !interactive,
+      draggable: { enabled: interactive },
+      selectable: { enabled: interactive },
+      drawable: { enabled: false },
+    });
+    apiRef.current = api;
+    return () => {
+      api.destroy();
+      apiRef.current = null;
+    };
+  }, [interactive]);
+
+  // Push the current position into chessground.
+  useEffect(() => {
+    const api = apiRef.current;
+    if (!api) return;
+    const { fen, lastMove, check } = positions[ply];
+    const color = turnColor(fen);
+    const config: Config = {
+      fen,
+      lastMove,
+      orientation,
+      turnColor: color,
+      check: check ? color : false,
+    };
+    if (interactive) {
+      config.movable = {
+        free: false,
+        color,
+        dests: legalDests(fen),
+        showDests: true,
+        events: {
+          after: (orig, dest) => {
+            const san = sanForMove(fen, orig as Key, dest as Key);
+            if (san) onMoveRef.current?.(san, fen);
+            apiRef.current?.set({ fen });
+          },
+        },
+      };
+    }
+    api.set(config);
+  }, [ply, positions, orientation, interactive]);
+
+  // Keep chessground sized to its container.
+  useEffect(() => {
+    const frame = frameRef.current;
+    if (!frame) return;
+    const observer = new ResizeObserver(() => {
+      apiRef.current?.redrawAll();
+      setNotationHeight(window.innerWidth > 720 ? frame.getBoundingClientRect().height : undefined);
+    });
+    observer.observe(frame);
+    return () => observer.disconnect();
+  }, []);
+
+  // Track viewport visibility so keyboard nav only steals arrows for a board in view.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         isInViewportRef.current = entry.isIntersecting;
       },
       { threshold: 1 },
     );
-    observer.observe(boardEl);
+    observer.observe(root);
     return () => observer.disconnect();
   }, []);
 
@@ -92,7 +178,6 @@ export function ChessBoard({ moves, flipBoard, meta, annotations }: ChessBoardPr
         goToPrevious();
       }
     };
-
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goToNext, goToPrevious]);
@@ -102,57 +187,10 @@ export function ChessBoard({ moves, flipBoard, meta, annotations }: ChessBoardPr
   }, [ply]);
 
   return (
-    <div className="chess-board" ref={boardRef} onClick={() => (hasBeenClickedRef.current = true)}>
-      {meta && (
-        <div className="chess-board__meta">
-          <div className="chess-board__meta-players">
-            {meta.white}
-            <span className="chess-board__meta-vs"> contra </span>
-            {meta.black}
-          </div>
-          <div className="chess-board__meta-line">
-            {meta.result} · {meta.event} · Ronda: {meta.round} · ECO: {meta.eco}
-          </div>
-        </div>
-      )}
-
+    <div className="chess-board" ref={rootRef} onClick={() => (hasBeenClickedRef.current = true)}>
       <div className="chess-board__columns">
         <div className="chess-board__frame" ref={frameRef}>
-          <div className="chess-board__grid">
-            {squares.map((square) => (
-              <div
-                key={square.index}
-                className={`chess-board__square chess-board__square_${square.light ? "light" : "dark"}${
-                  square.highlighted ? " chess-board__square_highlighted" : ""
-                }`}
-              >
-                {square.rank && (
-                  <span
-                    className={`chess-board__coord chess-board__coord_rank chess-board__coord_on-${square.light ? "light" : "dark"}`}
-                  >
-                    {square.rank}
-                  </span>
-                )}
-                {square.file && (
-                  <span
-                    className={`chess-board__coord chess-board__coord_file chess-board__coord_on-${square.light ? "light" : "dark"}`}
-                  >
-                    {square.file}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-          <div className="chess-board__pieces">
-            {pieces.map((piece) => (
-              <div
-                key={piece.id}
-                className={`chess-board__piece chess-board__piece_col_${piece.col} chess-board__piece_row_${piece.row}${
-                  piece.visible ? "" : " chess-board__piece_hidden"
-                }${piece.glyph ? ` chess-board__piece_glyph_${piece.glyph}` : ""}`}
-              />
-            ))}
-          </div>
+          <div className="chess-board__surface" ref={boardRef} />
         </div>
 
         <div className="chess-board__notation" style={notationHeight ? { height: notationHeight } : undefined}>
@@ -168,9 +206,9 @@ export function ChessBoard({ moves, flipBoard, meta, annotations }: ChessBoardPr
                   <span className="chess-board__notation-number">{row.number}</span>
                   <button
                     type="button"
-                    ref={row.white.active ? activeCellRef : undefined}
-                    onClick={row.white.onSelect}
-                    className={`chess-board__notation-cell${row.white.active ? " chess-board__notation-cell_active" : ""}`}
+                    ref={ply === row.white.ply ? activeCellRef : undefined}
+                    onClick={() => setPly(row.white.ply)}
+                    className={`chess-board__notation-cell${ply === row.white.ply ? " chess-board__notation-cell_active" : ""}`}
                   >
                     {WhiteQualityIcon && (
                       <span className="chess-board__notation-quality">
@@ -178,18 +216,16 @@ export function ChessBoard({ moves, flipBoard, meta, annotations }: ChessBoardPr
                       </span>
                     )}
                     {row.white.glyph && (
-                      <span
-                        className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.white.glyph}`}
-                      />
+                      <span className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.white.glyph}`} />
                     )}
                     {row.white.label}
                   </button>
                   {row.black ? (
                     <button
                       type="button"
-                      ref={row.black.active ? activeCellRef : undefined}
-                      onClick={row.black.onSelect}
-                      className={`chess-board__notation-cell${row.black.active ? " chess-board__notation-cell_active" : ""}`}
+                      ref={ply === row.black.ply ? activeCellRef : undefined}
+                      onClick={() => setPly(row.black!.ply)}
+                      className={`chess-board__notation-cell${ply === row.black.ply ? " chess-board__notation-cell_active" : ""}`}
                     >
                       {BlackQualityIcon && (
                         <span className="chess-board__notation-quality">
@@ -197,9 +233,7 @@ export function ChessBoard({ moves, flipBoard, meta, annotations }: ChessBoardPr
                         </span>
                       )}
                       {row.black.glyph && (
-                        <span
-                          className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.black.glyph}`}
-                        />
+                        <span className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.black.glyph}`} />
                       )}
                       {row.black.label}
                     </button>
@@ -214,12 +248,6 @@ export function ChessBoard({ moves, flipBoard, meta, annotations }: ChessBoardPr
       </div>
 
       <div className="chess-board__toolbar">
-        <div className="chess-board__toolbar-group">
-          <button type="button" aria-label="Compartir" className="chess-board__tool">
-            <ShareIcon />
-          </button>
-        </div>
-
         <div className="chess-board__toolbar-group">
           <button type="button" aria-label="Voltear tablero" onClick={toggleFlip} className="chess-board__tool">
             <FlipIcon />

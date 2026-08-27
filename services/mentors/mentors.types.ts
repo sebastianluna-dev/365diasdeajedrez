@@ -16,7 +16,7 @@ export interface MentorFeaturedGameContent {
   gameTitle: string;
   gameText: string;
   gameNote: string;
-  moves: string[];
+  moves: string;
   flipBoard: boolean;
 }
 

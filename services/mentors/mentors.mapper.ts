@@ -38,7 +38,7 @@ function mapMentor(mentor: HomeMentors["mentors"][number]): MentorContent {
       gameTitle: mentor.featuredGame.gameTitle,
       gameText: mentor.featuredGame.gameText,
       gameNote: mentor.featuredGame.gameNote,
-      moves: mentor.featuredGame.moves.split(" "),
+      moves: mentor.featuredGame.moves,
       flipBoard: mentor.featuredGame.flipBoard ?? false,
     },
   };

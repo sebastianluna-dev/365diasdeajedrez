@@ -71,7 +71,7 @@ export async function TeacherSection() {
 
           <ChessBoard
             flipBoard={content.game.flipBoard}
-            moves={content.game.moves}
+            pgn={content.game.moves}
             annotations={content.game.annotations}
           />
         </div>

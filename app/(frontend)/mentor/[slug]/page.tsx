@@ -104,7 +104,7 @@ export default async function MentorPage({ params }: MentorPageProps) {
               <h2 className="mentor-profile__block-title">{mentor.featuredGame.gameTitle}</h2>
               <p className="mentor-profile__text">{mentor.featuredGame.gameText}</p>
               <p className="mentor-profile__text">{mentor.featuredGame.gameNote}</p>
-              <ChessBoard moves={mentor.featuredGame.moves} flipBoard={mentor.featuredGame.flipBoard} />
+              <ChessBoard pgn={mentor.featuredGame.moves} flipBoard={mentor.featuredGame.flipBoard} />
             </div>
           </div>
         </div>

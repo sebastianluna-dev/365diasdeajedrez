@@ -9,11 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@lichess-org/chessground": "^10.1.1",
     "@payloadcms/db-postgres": "^3.88.0",
     "@payloadcms/next": "^3.88.0",
     "@payloadcms/plugin-cloud-storage": "^3.88.0",
     "@payloadcms/richtext-lexical": "^3.88.0",
     "@vercel/analytics": "^2.0.1",
+    "chessops": "^0.15.1",
     "cloudinary": "^2.10.1",
     "graphql": "^16.14.2",
     "lucide-react": "^1.28.0",

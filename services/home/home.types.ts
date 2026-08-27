@@ -1,4 +1,4 @@
-import type { MoveAnnotations } from "@/hooks/use-chess-replay.hook";
+import type { MoveAnnotations } from "@/lib/chess/types";
 import type { ContentImage } from "@/services/shared/content-image.types";
 
 export interface HeaderNavLink {
@@ -59,7 +59,7 @@ export interface TeacherEloRatingContent {
 export interface TeacherGameContent {
   title: string;
   paragraphs: string[];
-  moves: string[];
+  moves: string;
   flipBoard: boolean;
   annotations?: MoveAnnotations;
 }

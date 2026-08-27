@@ -8,7 +8,7 @@ import type {
   HomeCta,
   HomeReviews,
 } from "@/payload-types";
-import type { MoveAnnotations } from "@/hooks/use-chess-replay.hook";
+import type { MoveAnnotations } from "@/lib/chess/types";
 import { mapContentImage } from "@/services/shared/map-content-image";
 import type {
   CtaContent,
@@ -76,7 +76,7 @@ export function mapTeacher(teacher: HomeTeacher): TeacherContent {
     game: {
       title: teacher.game.title,
       paragraphs: teacher.game.paragraphs.map((paragraph) => paragraph.text),
-      moves: teacher.game.moves.split(" "),
+      moves: teacher.game.moves,
       flipBoard: teacher.game.flipBoard ?? false,
       annotations: teacher.game.annotations ? (teacher.game.annotations as MoveAnnotations) : undefined,
     },

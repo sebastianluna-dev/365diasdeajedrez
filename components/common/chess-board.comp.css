@@ -6,27 +6,6 @@
   background: #2b2723;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
 
-  & .chess-board__meta {
-    padding: 14px 18px 12px;
-  }
-
-  & .chess-board__meta-players {
-    font-size: 15px;
-    font-weight: 700;
-    color: #f2ede7;
-  }
-
-  & .chess-board__meta-vs {
-    font-weight: 400;
-    color: #8a8175;
-  }
-
-  & .chess-board__meta-line {
-    font-size: 12.5px;
-    color: #8a8175;
-    margin-top: 4px;
-  }
-
   & .chess-board__columns {
     display: flex;
     align-items: stretch;
@@ -37,7 +16,6 @@
   }
 
   & .chess-board__frame {
-    position: relative;
     width: 58%;
     flex: none;
     align-self: flex-start;
@@ -47,111 +25,57 @@
     }
   }
 
-  & .chess-board__grid {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
+  & .chess-board__surface {
+    width: 100%;
     aspect-ratio: 1;
   }
 
-  & .chess-board__square {
-    position: relative;
+  /* --- chessground board surface --- */
+  & cg-board {
+    background-color: #eeeed2;
+    background-image: conic-gradient(#769656 25%, #eeeed2 0 50%, #769656 0 75%, #eeeed2 0);
+    background-size: 25% 25%;
   }
 
-  & .chess-board__square_light {
-    background: #eeeed2;
+  & cg-board square.last-move {
+    background-color: rgba(246, 246, 130, 0.5);
   }
 
-  & .chess-board__square_dark {
-    background: #769656;
+  & cg-board square.selected {
+    background-color: rgba(246, 246, 130, 0.6);
   }
 
-  & .chess-board__square_light.chess-board__square_highlighted {
-    background: #f6f682;
+  & cg-board square.move-dest {
+    background: radial-gradient(rgba(22, 17, 13, 0.32) 19%, rgba(0, 0, 0, 0) 20%);
   }
 
-  & .chess-board__square_dark.chess-board__square_highlighted {
-    background: #baca44;
+  & cg-board square.move-dest.oc {
+    background: radial-gradient(transparent 0%, transparent 79%, rgba(22, 17, 13, 0.3) 80%);
   }
 
-  & .chess-board__coord {
-    position: absolute;
-    font-size: 11px;
+  & cg-board square.check {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(255, 0, 0, 0.9) 0%,
+      rgba(255, 0, 0, 0.68) 25%,
+      rgba(255, 0, 0, 0) 90%
+    );
+  }
+
+  & .cg-wrap coords {
+    font-size: 9px;
     font-weight: 700;
   }
 
-  & .chess-board__coord_rank {
-    top: 2px;
-    left: 4px;
+  & .cg-wrap coords.ranks coord {
+    color: rgba(22, 17, 13, 0.55);
   }
 
-  & .chess-board__coord_file {
-    bottom: 2px;
-    right: 4px;
+  & .cg-wrap coords.files coord {
+    color: rgba(22, 17, 13, 0.55);
   }
 
-  & .chess-board__coord_on-light {
-    color: #769656;
-  }
-
-  & .chess-board__coord_on-dark {
-    color: #eeeed2;
-  }
-
-  & .chess-board__pieces {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-
-  & .chess-board__piece {
-    position: absolute;
-    width: 12.5%;
-    height: 12.5%;
-    background-size: 92%;
-    background-position: center;
-    background-repeat: no-repeat;
-    opacity: 1;
-    transition:
-      left 0.26s cubic-bezier(0.4, 0, 0.2, 1),
-      top 0.26s cubic-bezier(0.4, 0, 0.2, 1),
-      opacity 0.18s ease;
-  }
-
-  & .chess-board__piece.chess-board__piece_hidden {
-    opacity: 0;
-  }
-
-  & .chess-board__piece.chess-board__piece_col_0 { left: 0%; }
-  & .chess-board__piece.chess-board__piece_col_1 { left: 12.5%; }
-  & .chess-board__piece.chess-board__piece_col_2 { left: 25%; }
-  & .chess-board__piece.chess-board__piece_col_3 { left: 37.5%; }
-  & .chess-board__piece.chess-board__piece_col_4 { left: 50%; }
-  & .chess-board__piece.chess-board__piece_col_5 { left: 62.5%; }
-  & .chess-board__piece.chess-board__piece_col_6 { left: 75%; }
-  & .chess-board__piece.chess-board__piece_col_7 { left: 87.5%; }
-
-  & .chess-board__piece.chess-board__piece_row_0 { top: 0%; }
-  & .chess-board__piece.chess-board__piece_row_1 { top: 12.5%; }
-  & .chess-board__piece.chess-board__piece_row_2 { top: 25%; }
-  & .chess-board__piece.chess-board__piece_row_3 { top: 37.5%; }
-  & .chess-board__piece.chess-board__piece_row_4 { top: 50%; }
-  & .chess-board__piece.chess-board__piece_row_5 { top: 62.5%; }
-  & .chess-board__piece.chess-board__piece_row_6 { top: 75%; }
-  & .chess-board__piece.chess-board__piece_row_7 { top: 87.5%; }
-
-  & .chess-board__piece.chess-board__piece_glyph_w-pawn { background-image: url("/design-import/assets/pieces/w-pawn.svg"); }
-  & .chess-board__piece.chess-board__piece_glyph_w-knight { background-image: url("/design-import/assets/pieces/w-knight.svg"); }
-  & .chess-board__piece.chess-board__piece_glyph_w-bishop { background-image: url("/design-import/assets/pieces/w-bishop.svg"); }
-  & .chess-board__piece.chess-board__piece_glyph_w-rook { background-image: url("/design-import/assets/pieces/w-rook.svg"); }
-  & .chess-board__piece.chess-board__piece_glyph_w-queen { background-image: url("/design-import/assets/pieces/w-queen.svg"); }
-  & .chess-board__piece.chess-board__piece_glyph_w-king { background-image: url("/design-import/assets/pieces/w-king.svg"); }
-  & .chess-board__piece.chess-board__piece_glyph_b-pawn { background-image: url("/design-import/assets/pieces/b-pawn.svg"); }
-  & .chess-board__piece.chess-board__piece_glyph_b-knight { background-image: url("/design-import/assets/pieces/b-knight.svg"); }
-  & .chess-board__piece.chess-board__piece_glyph_b-bishop { background-image: url("/design-import/assets/pieces/b-bishop.svg"); }
-  & .chess-board__piece.chess-board__piece_glyph_b-rook { background-image: url("/design-import/assets/pieces/b-rook.svg"); }
-  & .chess-board__piece.chess-board__piece_glyph_b-queen { background-image: url("/design-import/assets/pieces/b-queen.svg"); }
-  & .chess-board__piece.chess-board__piece_glyph_b-king { background-image: url("/design-import/assets/pieces/b-king.svg"); }
-
+  /* --- move-list panel --- */
   & .chess-board__notation {
     flex: 1;
     min-width: 0;
@@ -278,6 +202,7 @@
     -webkit-mask-image: url("/design-import/assets/pieces/b-king.svg");
   }
 
+  /* --- toolbar --- */
   & .chess-board__toolbar {
     display: flex;
     align-items: center;
