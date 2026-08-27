@@ -4,6 +4,7 @@ import { useState } from "react";
 import { formatTwoDigitNumber } from "@/lib/format-two-digit-number";
 import type { ProgramModuleContent } from "@/services/home/home.types";
 import { ProgramModuleListItem } from "./program-module-list-item.comp";
+import "./program-interactive.comp.css";
 
 interface ProgramInteractiveProps {
   modules: ProgramModuleContent[];

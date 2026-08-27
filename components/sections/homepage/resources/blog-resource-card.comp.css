@@ -1,0 +1,32 @@
+.resource-card {
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  & .resource-card__image-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 900 / 506;
+  }
+
+  & .resource-card__image {
+    object-fit: cover;
+  }
+
+  & .resource-card__body {
+    padding: 20px;
+  }
+
+  & .resource-card__title {
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 22px;
+    margin: 0 0 10px;
+  }
+
+  & .resource-card__text {
+    color: #b4a99d;
+    line-height: 1.6;
+    margin: 0;
+  }
+}

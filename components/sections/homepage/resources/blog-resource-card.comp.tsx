@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import "./blog-resource-card.comp.css";
 
 interface BlogResourceCardProps {
   title: string;

@@ -5,6 +5,7 @@ import type { ReviewContent } from "@/services/home/home.types";
 import { ReviewStatCard } from "./review-stat-card.comp";
 import { ReviewChat } from "./review-chat.comp";
 import { ReviewSlideDot } from "./review-slide-dot.comp";
+import "./reviews-interactive.comp.css";
 
 const AUTO_ADVANCE_MS = 6000;
 

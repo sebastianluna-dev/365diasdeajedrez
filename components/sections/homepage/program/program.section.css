@@ -8,90 +8,10 @@
     font-size: 18px;
   }
 
-  & .program__wrap {
-    border-radius: 28px;
-    padding: 20px;
-    background: rgba(22, 17, 13, 0.035);
-    border: 1px solid rgba(22, 17, 13, 0.1);
-    display: grid;
-    grid-template-columns: 0.85fr 1.15fr;
-    gap: 20px;
-  }
-
-  & .program-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  & .program-panel {
-    border-radius: 22px;
-    padding: 34px 34px 36px;
-    background: linear-gradient(160deg, rgba(255, 145, 67, 0.14) 0%, rgba(255, 145, 67, 0.02) 100%);
-    border: 1px solid rgba(255, 145, 67, 0.22);
-    display: flex;
-    flex-direction: column;
-  }
-
-  & .program-panel__badges {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
-  & .program-panel__badge {
-    padding: 4px 16px;
-    border-radius: 9999px;
-    font-weight: 600;
-    font-size: 14px;
-  }
-
-  & .program-panel__badge_variant_primary {
-    background: #ff9143;
-  }
-
-  & .program-panel__badge_variant_outline {
-    background: rgba(22, 17, 13, 0.05);
-    border: 1px solid #aca7a3;
-  }
-
-  & .program-panel__title {
-    font-family: var(--font-gramatika), sans-serif;
-    font-size: 2.25rem;
-    line-height: 1.1;
-    margin: 0 0 10px;
-  }
-
   & .program-panel__subtitle {
     font-family: var(--font-gramatika), sans-serif;
     font-size: 1.25rem !important;
     color: #16110d !important;
-  }
-
-  & .program-panel__subheading {
-    font-family: var(--font-gramatika), sans-serif;
-    font-size: 24px;
-    margin: 0 0 14px;
-  }
-
-  & .program-panel__description {
-    font-size: 16px;
-    line-height: 1.7;
-    color: #4b423b;
-    margin: 0 0 18px;
-  }
-
-  & .program-panel__topics {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  & .program-panel__topic {
-    background: rgba(22, 17, 13, 0.05);
-    padding: 4px 16px;
-    border-radius: 12px;
-    border: 1px solid rgba(22, 17, 13, 0.15);
   }
 
   & .program__note {
@@ -108,41 +28,8 @@
       font-size: 28px;
     }
 
-    & .program__wrap {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 20px;
-      background: transparent;
-      border: none;
-      padding: 0;
-    }
-
-    & .program-list {
-      flex-direction: row;
-      flex-wrap: wrap;
-      background: #f5f1ec;
-      padding: 8px 0;
-    }
-
-    & .program-panel {
-      padding: 24px 22px 26px;
-    }
-
-    & .program-panel__title {
-      font-size: 26px;
-    }
-
     & .program-panel__subtitle {
       font-size: 17px !important;
-    }
-
-    & .program-panel__subheading {
-      font-size: 20px;
-    }
-
-    & .program-panel__description {
-      font-size: 16px;
     }
 
     & .program__note {
@@ -154,19 +41,7 @@
         font-size: 32px;
       }
 
-      & .program-panel__title {
-        font-size: 28px;
-      }
-
       & .program-panel__subtitle {
-        display: none;
-      }
-
-      & .program-panel__subheading {
-        display: none;
-      }
-
-      & .program-panel__topics {
         display: none;
       }
     }
