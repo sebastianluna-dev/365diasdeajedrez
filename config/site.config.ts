@@ -10,7 +10,7 @@ export const siteConfig: SiteConfig = {
       mentors: false,
       plans: true,
       resources: false,
-      reviews: false,
+      reviews: true,
       faq: true,
     },
   },

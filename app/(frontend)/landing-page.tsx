@@ -24,8 +24,8 @@ export default function LandingPage() {
       {mentorsSlot === "mentors" && <MentorsSection />}
       {sections.plans && <PlansSection />}
       {sections.resources && <ResourcesSection />}
-      {sections.reviews && <ReviewsSection />}
       {sections.faq && <FaqSection />}
+      {sections.reviews && <ReviewsSection />}
       <CtaSection />
       <Footer />
     </div>
