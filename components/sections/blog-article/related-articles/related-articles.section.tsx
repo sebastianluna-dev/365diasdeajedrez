@@ -1,20 +1,20 @@
 import Link from "next/link";
-import type { PostContent } from "@/services/posts/posts.types";
+import type { Article } from "@/services/articles/articles.types";
 import { RelatedArticleCard } from "./related-article-card.comp";
 import "./related-articles.section.css";
 
 interface RelatedArticlesProps {
-  posts: PostContent[];
+  articles: Article[];
 }
 
-export function RelatedArticles({ posts }: RelatedArticlesProps) {
+export function RelatedArticles({ articles }: RelatedArticlesProps) {
   return (
     <section id="mas-articulos" className="related-articles">
       <div className="related-articles__inner">
         <h2 className="related-articles__title">Más artículos</h2>
         <div className="related-articles__grid">
-          {posts.map((post) => (
-            <RelatedArticleCard key={post.slug} post={post} />
+          {articles.map((article) => (
+            <RelatedArticleCard key={article.slug} article={article} />
           ))}
         </div>
         <div className="related-articles__cta-row">

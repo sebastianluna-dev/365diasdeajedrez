@@ -7,7 +7,7 @@ import { Users } from "@/collections/Users";
 import { Categories } from "@/collections/Categories";
 import { Tags } from "@/collections/Tags";
 import { Media } from "@/collections/Media";
-import { Posts } from "@/collections/Posts";
+import { Articles } from "@/collections/Articles";
 import { HomeHeader } from "@/globals/HomeHeader";
 import { HomeHero } from "@/globals/HomeHero";
 import { HomeProgram } from "@/globals/HomeProgram";
@@ -28,7 +28,7 @@ export default buildConfig({
   admin: {
     user: Users.slug,
   },
-  collections: [Users, Categories, Tags, Media, Posts],
+  collections: [Users, Categories, Tags, Media, Articles],
   globals: [
     HomeHeader,
     HomeHero,

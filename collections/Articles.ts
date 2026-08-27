@@ -20,8 +20,8 @@ import { ChessGameBlock } from "@/blocks/chess-game-block";
 import { isAdminOrEditor, isPublishedOrLoggedIn } from "@/lib/payload/access";
 import { slugField } from "@/lib/payload/slug-field";
 
-export const Posts: CollectionConfig = {
-  slug: "posts",
+export const Articles: CollectionConfig = {
+  slug: "articles",
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "_status", "publishedAt"],

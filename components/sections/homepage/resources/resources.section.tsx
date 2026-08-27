@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { getPosts } from "@/services/posts/posts.service";
+import { getArticles } from "@/services/articles/articles.service";
 import { BlogResourceCard } from "./blog-resource-card.comp";
 import "./resources.section.css";
 
 export async function ResourcesSection() {
-  const posts = await getPosts();
-  const featuredPosts = posts.slice(0, 3);
+  const articles = await getArticles();
+  const featuredArticles = articles.slice(0, 3);
 
   return (
     <section id="blog" className="section section_theme_dark resources">
@@ -22,8 +22,14 @@ export async function ResourcesSection() {
         </div>
 
         <div className="resources__cards">
-          {featuredPosts.map((post) => (
-            <BlogResourceCard key={post.slug} title={post.title} text={post.excerpt} image={post.image.src} href={post.href} />
+          {featuredArticles.map((article) => (
+            <BlogResourceCard
+              key={article.slug}
+              title={article.title}
+              text={article.excerpt}
+              image={article.image.src}
+              href={article.href}
+            />
           ))}
         </div>
 

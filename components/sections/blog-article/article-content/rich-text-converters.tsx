@@ -7,13 +7,13 @@ import { ChessDiagramBlockRenderer } from "./blocks/chess-diagram-block.comp";
 import { ChessGameBlockRenderer } from "./blocks/chess-game-block.comp";
 import "./rich-text-converters.css";
 
-type PostBlockNode =
+type ArticleBlockNode =
   | SerializedBlockNode<ImageBlock>
   | SerializedBlockNode<CalloutBlock>
   | SerializedBlockNode<ChessDiagramBlock>
   | SerializedBlockNode<ChessGameBlock>;
 
-export const articleRichTextConverters: JSXConvertersFunction<DefaultNodeTypes | PostBlockNode> = ({
+export const articleRichTextConverters: JSXConvertersFunction<DefaultNodeTypes | ArticleBlockNode> = ({
   defaultConverters,
 }) => ({
   ...defaultConverters,

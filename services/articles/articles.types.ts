@@ -1,22 +1,22 @@
-import type { Post } from "@/payload-types";
+import type { Article as ArticleDoc } from "@/payload-types";
 import type { ContentImage } from "@/services/shared/content-image.types";
 
-export interface PostAuthorContent {
+export interface ArticleAuthor {
   name: string;
   title?: string;
 }
 
-export interface PostContent {
+export interface Article {
   slug: string;
   href: string;
   title: string;
   excerpt: string;
   category?: string;
   image: ContentImage;
-  content: Post["content"];
+  content: ArticleDoc["content"];
   meta: string;
   readTime?: string;
-  author?: PostAuthorContent;
+  author?: ArticleAuthor;
   metaTitle?: string;
   metaDescription?: string;
   ogImage?: ContentImage;

@@ -1,13 +1,13 @@
-.post-card {
+.article-card {
   border-radius: 12px;
   overflow: hidden;
 
-  & .post-card__image {
+  & .article-card__image {
     object-fit: cover;
     filter: grayscale(1) contrast(1.05);
   }
 
-  & .post-card__title {
+  & .article-card__title {
     font-family: var(--font-gramatika), sans-serif;
     font-size: 21px;
     font-weight: 700;
@@ -15,22 +15,22 @@
     margin: 0 0 10px;
   }
 
-  & .post-card__title-link {
+  & .article-card__title-link {
     color: #16110d;
   }
 
-  & .post-card__title-link:hover {
+  & .article-card__title-link:hover {
     color: #a81e22;
   }
 
-  & .post-card__image-link {
+  & .article-card__image-link {
     position: relative;
     display: block;
     aspect-ratio: 16 / 9;
     margin-bottom: 16px;
   }
 
-  & .post-card__text {
+  & .article-card__text {
     font-size: 14.5px;
     line-height: 1.6;
     color: #5c5348;

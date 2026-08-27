@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Header } from "@/components/sections/common/header/header.section";
-import { ArchiveSection } from "@/components/sections/blog/archive/archive.section";
+import { BlogArticles } from "@/components/sections/blog/blog-articles/blog-articles.section";
 import { Footer } from "@/components/sections/common/footer/footer.section";
-import { getPosts } from "@/services/posts/posts.service";
+import { getArticles } from "@/services/articles/articles.service";
 import "./blog.css";
 
 export const metadata: Metadata = {
@@ -12,14 +12,14 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-  const posts = await getPosts();
+  const articles = await getArticles();
 
   return (
     <div className="blog-page">
       <div className="blog-page__shell">
         <div className="blog-page__glow" />
         <Header theme="light" />
-        <ArchiveSection posts={posts} />
+        <BlogArticles articles={articles} />
         <Footer accent="red" />
       </div>
     </div>
