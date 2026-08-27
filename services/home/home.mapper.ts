@@ -88,7 +88,6 @@ function mapPackagePlan(plan: HomePackage["packageOne"]): PackagePlanContent {
     name: plan.name,
     price: plan.price,
     previousPrice: plan.previousPrice ?? undefined,
-    discountPercent: plan.discountPercent ?? undefined,
     currency: plan.currency,
     period: plan.period,
     description: plan.description,

@@ -626,7 +626,6 @@ export interface HomePackage {
     name: string;
     price: number;
     previousPrice?: number | null;
-    discountPercent?: number | null;
     currency: string;
     period: string;
     description: string;
@@ -639,7 +638,6 @@ export interface HomePackage {
     name: string;
     price: number;
     previousPrice?: number | null;
-    discountPercent?: number | null;
     currency: string;
     period: string;
     description: string;
@@ -948,7 +946,6 @@ export interface HomePackagesSelect<T extends boolean = true> {
         name?: T;
         price?: T;
         previousPrice?: T;
-        discountPercent?: T;
         currency?: T;
         period?: T;
         description?: T;
@@ -963,7 +960,6 @@ export interface HomePackagesSelect<T extends boolean = true> {
         name?: T;
         price?: T;
         previousPrice?: T;
-        discountPercent?: T;
         currency?: T;
         period?: T;
         description?: T;

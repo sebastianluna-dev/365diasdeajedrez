@@ -10,7 +10,6 @@ function packageFields(): Field[] {
         { name: "name", type: "text", label: "Nombre", required: true, admin: { width: "50%" } },
         { name: "price", type: "number", label: "Precio", required: true, admin: { width: "50%" } },
         { name: "previousPrice", type: "number", label: "Precio anterior (opcional)", admin: { width: "50%" } },
-        { name: "discountPercent", type: "number", label: "% de descuento (opcional)", admin: { width: "50%" } },
         { name: "currency", type: "text", label: "Moneda", required: true, admin: { width: "50%" } },
         { name: "period", type: "text", label: "Periodo", required: true, admin: { width: "50%" } },
       ],

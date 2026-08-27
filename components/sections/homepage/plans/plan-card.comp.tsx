@@ -24,7 +24,6 @@ export function PlanCard({ plan, className }: PlanCardProps) {
             <span className="plan-card__price-previous">
               ${plan.previousPrice.toLocaleString("en-US")} {plan.currency}
             </span>
-            {!!plan.discountPercent && <span className="plan-card__discount-badge">{plan.discountPercent}% OFF</span>}
           </div>
         )}
       </div>
