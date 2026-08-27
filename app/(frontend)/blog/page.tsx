@@ -1,28 +1,25 @@
 import type { Metadata } from "next";
-import { Masthead } from "@/components/sections/blog/masthead/masthead.comp";
-import { Ticker } from "@/components/sections/blog/ticker/ticker.comp";
-import { BlogContent } from "@/components/sections/blog/blog-content/blog-content.section";
+import { ArticleHeader } from "@/components/sections/blog-article/header/article-header.comp";
+import { ArchiveSection } from "@/components/sections/blog/archive/archive.section";
 import { Footer } from "@/components/sections/common/footer/footer.section";
+import { getPosts } from "@/services/posts/posts.service";
 import "./blog.css";
 
 export const metadata: Metadata = {
   title: "Blog | 365 Días de Ajedrez",
   description:
-    "Artículos de estrategia, tácticas, aperturas y análisis de partidas para entrenar con intención.",
+    "Análisis de partidas, aperturas, táctica, finales y notas de método. Todo lo publicado en El Tablero, de lo más reciente a lo más antiguo.",
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const posts = await getPosts();
+
   return (
     <div className="blog-page">
       <div className="blog-page__shell">
         <div className="blog-page__glow" />
-
-        <div className="blog-page__wrap">
-          <Masthead />
-          <Ticker />
-          <BlogContent />
-        </div>
-
+        <ArticleHeader category="Archivo completo" date="Agosto 2026" />
+        <ArchiveSection posts={posts} />
         <Footer accent="red" />
       </div>
     </div>

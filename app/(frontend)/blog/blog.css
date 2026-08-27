@@ -4,7 +4,7 @@ a {
 }
 
 /*
- * Shared across the whole blog family (/blog, /blog/[slug], /blog/articulos),
+ * Shared across the whole blog family (/blog, /blog/[slug]),
  * which don't all share one DOM root — intentionally global, like app/globals.css.
  */
 .blog-button {
