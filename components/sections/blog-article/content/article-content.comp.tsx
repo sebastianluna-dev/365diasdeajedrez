@@ -52,7 +52,7 @@ export function ArticleContent({ post }: ArticleContentProps) {
               sizes="(max-width: 1024px) 100vw, 780px"
             />
           </div>
-          <RichText data={post.content} converters={articleRichTextConverters} />
+          <RichText className="article-body" data={post.content} converters={articleRichTextConverters} />
         </div>
 
         <ShareBox />
