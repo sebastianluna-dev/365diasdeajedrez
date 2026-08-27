@@ -1,4 +1,13 @@
-import type { HomeHeader, HomeHero, HomeProgram, HomeTeacher, HomePackage, HomeFaq, HomeCta } from "@/payload-types";
+import type {
+  HomeHeader,
+  HomeHero,
+  HomeProgram,
+  HomeTeacher,
+  HomePackage,
+  HomeFaq,
+  HomeCta,
+  HomeReviews,
+} from "@/payload-types";
 import type { MoveAnnotations } from "@/hooks/use-chess-replay.hook";
 import { mapContentImage } from "@/services/shared/map-content-image";
 import type {
@@ -9,6 +18,7 @@ import type {
   PackagePlanContent,
   PackagesContent,
   ProgramContent,
+  ReviewsContent,
   TeacherContent,
 } from "./home.types";
 
@@ -112,5 +122,26 @@ export function mapCta(cta: HomeCta): CtaContent {
     title: cta.title,
     subtitle: cta.subtitle,
     ctaLabel: cta.ctaLabel,
+  };
+}
+
+export function mapReviews(homeReviews: HomeReviews): ReviewsContent {
+  return {
+    sectionTitle: homeReviews.sectionTitle,
+    reviews: homeReviews.reviews.map((review) => ({
+      avatarInitial: review.avatarInitial,
+      avatarColor: review.avatarColor,
+      name: review.name,
+      time: review.time,
+      messages: review.messages.map((message) => ({
+        text: message.text,
+        reacted: message.reacted ?? false,
+      })),
+      stat: {
+        label: review.stat.label,
+        value: review.stat.value,
+        text: review.stat.text,
+      },
+    })),
   };
 }

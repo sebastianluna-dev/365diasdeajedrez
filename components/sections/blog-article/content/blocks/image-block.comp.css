@@ -1,0 +1,22 @@
+.rich-image-block {
+  margin: 0;
+
+  & .rich-image-block__frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  & .rich-image-block__frame img {
+    object-fit: cover;
+  }
+
+  & .rich-image-block__caption {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #8a8175;
+    text-align: center;
+  }
+}

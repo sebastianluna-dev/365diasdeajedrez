@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import { PlusIcon } from "@/components/icons/plus-icon.comp";
-import type { Faq } from "@/interfaces/faq.interface";
+import type { FaqQuestionContent } from "@/services/home/home.types";
 import "./faq-accordion-item.comp.css";
 
 interface FaqAccordionItemProps {
-  faq: Faq;
+  faq: FaqQuestionContent;
 }
 
 export function FaqAccordionItem({ faq }: FaqAccordionItemProps) {

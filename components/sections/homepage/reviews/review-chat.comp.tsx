@@ -1,9 +1,9 @@
 import { HeartIcon } from "@/components/icons/heart-icon.comp";
-import type { Review } from "@/interfaces/review.interface";
+import type { ReviewContent } from "@/services/home/home.types";
 import "./review-chat.comp.css";
 
 interface ReviewChatProps {
-  review: Review;
+  review: ReviewContent;
   position: "center" | "left" | "right";
   hidden: boolean;
 }

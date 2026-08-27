@@ -1,8 +1,8 @@
-import type { ReviewStat } from "@/interfaces/review.interface";
+import type { ReviewStatContent } from "@/services/home/home.types";
 import "./review-stat-card.comp.css";
 
 interface ReviewStatCardProps {
-  stat: ReviewStat;
+  stat: ReviewStatContent;
   position: "center" | "left" | "right";
   hidden: boolean;
 }

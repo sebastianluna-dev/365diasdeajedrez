@@ -4,7 +4,7 @@ import { ArticleHeader } from "@/components/sections/blog-article/header/article
 import { ArticleContent } from "@/components/sections/blog-article/content/article-content.comp";
 import { RelatedArticles } from "@/components/sections/blog-article/related/related-articles.section";
 import { Footer } from "@/components/sections/common/footer/footer.section";
-import { articles } from "@/data/articles.data";
+import { getPostBySlug, getPosts } from "@/services/posts/posts.service";
 import "../blog.css";
 import "./article-page.css";
 
@@ -12,36 +12,40 @@ interface ArticlePageProps {
   params: Promise<{ slug: string }>;
 }
 
-export function generateStaticParams() {
-  return articles.filter((article) => article.body).map((article) => ({ slug: article.slug }));
+export async function generateStaticParams() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ slug: post.slug }));
 }
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = articles.find((item) => item.slug === slug);
-  if (!article) return {};
+  const post = await getPostBySlug(slug);
+  if (!post) return {};
   return {
-    title: `${article.title} | 365 Días de Ajedrez`,
-    description: article.excerpt,
+    title: `${post.metaTitle ?? post.title} | 365 Días de Ajedrez`,
+    description: post.metaDescription ?? post.excerpt,
+    openGraph: {
+      images: post.ogImage ? [post.ogImage.src] : [post.image.src],
+    },
   };
 }
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const article = articles.find((item) => item.slug === slug);
-  if (!article || !article.body) notFound();
+  const [post, posts] = await Promise.all([getPostBySlug(slug), getPosts()]);
+  if (!post) notFound();
 
-  const date = article.meta?.split(" · ")[0] ?? "";
-  const relatedArticles = articles.filter((item) => item.slug !== article.slug).slice(0, 3);
+  const date = post.meta.split(" · ")[0] ?? "";
+  const relatedPosts = posts.filter((item) => item.slug !== post.slug).slice(0, 3);
 
   return (
     <div className="article-page">
       <div className="article-page__glow article-page__glow_position_mid-right" />
       <div className="article-page__glow article-page__glow_position_top-left" />
 
-      <ArticleHeader category={article.category} date={date} />
-      <ArticleContent article={article} />
-      <RelatedArticles articles={relatedArticles} />
+      <ArticleHeader category={post.category ?? ""} date={date} />
+      <ArticleContent post={post} />
+      <RelatedArticles posts={relatedPosts} />
       <Footer accent="red" />
     </div>
   );

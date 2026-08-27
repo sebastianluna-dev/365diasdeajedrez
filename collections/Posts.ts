@@ -71,6 +71,15 @@ export const Posts: CollectionConfig = {
               required: true,
             },
             {
+              name: "readTimeMinutes",
+              type: "number",
+              label: "Minutos de lectura",
+              admin: {
+                description: "Tiempo estimado de lectura, en minutos. Si se deja vacío, no se muestra.",
+                width: "50%",
+              },
+            },
+            {
               name: "content",
               type: "richText",
               required: true,

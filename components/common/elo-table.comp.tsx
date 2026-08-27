@@ -3,7 +3,7 @@ import "./elo-table.comp.css";
 
 interface EloTableProps {
   children: ReactNode;
-  columns?: 3 | 4;
+  columns?: 2 | 3 | 4;
   className?: string;
 }
 

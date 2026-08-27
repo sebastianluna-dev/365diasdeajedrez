@@ -1,5 +1,4 @@
-// import Link from "next/link";
-import { articles } from "@/data/articles.data";
+import { getPosts } from "@/services/posts/posts.service";
 import { ArticleCard } from "./article-card.comp";
 import { HeroArticle } from "./hero-article.comp";
 import { SidebarCard } from "./sidebar-card.comp";
@@ -7,52 +6,30 @@ import { ReadingList } from "./reading-list.comp";
 import { SubscribeBox } from "./subscribe-box.comp";
 import "./blog-content.section.css";
 
-export function BlogContent() {
+export async function BlogContent() {
+  const posts = await getPosts();
+  const [hero, ...rest] = posts;
+  if (!hero) return null;
+
   return (
     <section className="blog-content">
       <div className="portada">
         <div className="portada__left">
-          <ArticleCard article={articles[1]} />
-          <ArticleCard article={articles[1]} id="tactica" />
+          {rest.slice(0, 2).map((post) => (
+            <ArticleCard key={post.slug} post={post} />
+          ))}
         </div>
 
         <div className="portada__center">
-          <HeroArticle article={articles[0]} />
+          <HeroArticle post={hero} />
         </div>
 
         <div className="portada__right">
           <SidebarCard />
-          <ReadingList articles={articles.slice(0,1)} />
+          <ReadingList posts={rest.slice(0, 3)} />
           <SubscribeBox />
         </div>
       </div>
-
-      {/* <div className="more-section">
-        <div className="more-section__header">
-          <h2 className="more-section__title">Más de esta edición</h2>
-          <span className="more-section__page">Página 2</span>
-        </div>
-
-        <div className="more-section__grid">
-          <div className="more-section__left">
-            <HeroArticle article={articles[6]} id="estrategia" badge="Lo más leído" />
-          </div>
-
-          <div className="more-section__center">
-            <ArticleCard article={articles[13]} id="aperturas" />
-            <ArticleCard article={articles[14]} id="finales" />
-          </div>
-
-          <div className="more-section__right">
-            <ReadingList articles={articles.slice(7, 12)} />
-            <div className="more-section__cta-row" id="analisis">
-              <Link href="/blog/articulos" className="blog-button blog-button_variant_secondary blog-button_size_lg">
-                Ver todos los artículos <span className="link-arrow">⟶</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div> */}
     </section>
   );
 }

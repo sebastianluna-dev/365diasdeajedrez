@@ -1,17 +1,17 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { Article } from "@/interfaces/article.interface";
-import { ArticleBody } from "./article-body.comp";
+import { RichText } from "@payloadcms/richtext-lexical/react";
+import type { PostContent } from "@/services/posts/posts.types";
+import { articleRichTextConverters } from "./rich-text-converters";
 import { ShareBox } from "./share-box.comp";
-import { DEFAULT_BLOG_THUMBNAIL } from "@/data/media-defaults.data";
 import "./article-content.comp.css";
 
 interface ArticleContentProps {
-  article: Article;
+  post: PostContent;
 }
 
-export function ArticleContent({ article }: ArticleContentProps) {
-  const author = article.author;
+export function ArticleContent({ post }: ArticleContentProps) {
+  const author = post.author;
 
   return (
     <article className="article-content">
@@ -24,23 +24,17 @@ export function ArticleContent({ article }: ArticleContentProps) {
           Blog
         </Link>
         <span className="article-content__breadcrumb-sep">›</span>
-        <span className="article-content__breadcrumb-current">{article.category}</span>
+        <span className="article-content__breadcrumb-current">{post.category}</span>
       </nav>
 
-      <h1 className="article-content__title">{article.title}</h1>
+      <h1 className="article-content__title">{post.title}</h1>
 
       {author && (
         <div className="article-content__byline">
-          <span className="article-content__avatar">
-            {author.avatar ? (
-              <Image className="article-content__avatar-image" src={author.avatar} alt={author.name} fill sizes="36px" />
-            ) : (
-              author.name.charAt(0)
-            )}
-          </span>
+          <span className="article-content__avatar">{author.name.charAt(0)}</span>
           <span>
             <span className="article-content__author-name">{author.name}</span>
-            <span className="article-content__author-meta">{article.meta}</span>
+            <span className="article-content__author-meta">{post.meta}</span>
           </span>
         </div>
       )}
@@ -52,13 +46,13 @@ export function ArticleContent({ article }: ArticleContentProps) {
           <div className="article-content__cover">
             <Image
               className="article-content__cover-image"
-              src={article.image ?? DEFAULT_BLOG_THUMBNAIL}
-              alt={article.title}
+              src={post.image.src}
+              alt={post.image.alt}
               fill
               sizes="(max-width: 1024px) 100vw, 780px"
             />
           </div>
-          {article.body && <ArticleBody blocks={article.body} />}
+          <RichText data={post.content} converters={articleRichTextConverters} />
         </div>
 
         <ShareBox />

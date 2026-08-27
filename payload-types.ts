@@ -101,6 +101,7 @@ export interface Config {
     'home-packages': HomePackage;
     'home-faq': HomeFaq;
     'home-mentors': HomeMentors;
+    'home-reviews': HomeReviews;
     'home-cta': HomeCta;
     'site-settings': SiteSettings;
   };
@@ -112,6 +113,7 @@ export interface Config {
     'home-packages': HomePackagesSelect<false> | HomePackagesSelect<true>;
     'home-faq': HomeFaqSelect<false> | HomeFaqSelect<true>;
     'home-mentors': HomeMentorsSelect<false> | HomeMentorsSelect<true>;
+    'home-reviews': HomeReviewsSelect<false> | HomeReviewsSelect<true>;
     'home-cta': HomeCtaSelect<false> | HomeCtaSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
@@ -150,6 +152,7 @@ export interface UserAuthOperations {
 export interface User {
   id: number;
   name: string;
+  authorTitle?: string | null;
   role: 'admin' | 'editor';
   updatedAt: string;
   createdAt: string;
@@ -232,6 +235,7 @@ export interface Post {
   slug?: string | null;
   excerpt: string;
   featuredImage: number | Media;
+  readTimeMinutes?: number | null;
   content: {
     root: {
       type: string;
@@ -361,6 +365,7 @@ export interface PayloadMigration {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  authorTitle?: T;
   role?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -428,6 +433,7 @@ export interface PostsSelect<T extends boolean = true> {
   slug?: T;
   excerpt?: T;
   featuredImage?: T;
+  readTimeMinutes?: T;
   content?: T;
   author?: T;
   categories?: T;
@@ -735,6 +741,33 @@ export interface HomeMentors {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-reviews".
+ */
+export interface HomeReviews {
+  id: number;
+  sectionTitle: string;
+  reviews: {
+    name: string;
+    time: string;
+    avatarInitial: string;
+    avatarColor: 'teal' | 'orange' | 'gold';
+    messages: {
+      text: string;
+      reacted?: boolean | null;
+      id?: string | null;
+    }[];
+    stat: {
+      label: string;
+      value: string;
+      text: string;
+    };
+    id?: string | null;
+  }[];
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home-cta".
  */
 export interface HomeCta {
@@ -1016,6 +1049,39 @@ export interface HomeMentorsSelect<T extends boolean = true> {
               gameNote?: T;
               moves?: T;
               flipBoard?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-reviews_select".
+ */
+export interface HomeReviewsSelect<T extends boolean = true> {
+  sectionTitle?: T;
+  reviews?:
+    | T
+    | {
+        name?: T;
+        time?: T;
+        avatarInitial?: T;
+        avatarColor?: T;
+        messages?:
+          | T
+          | {
+              text?: T;
+              reacted?: T;
+              id?: T;
+            };
+        stat?:
+          | T
+          | {
+              label?: T;
+              value?: T;
+              text?: T;
             };
         id?: T;
       };

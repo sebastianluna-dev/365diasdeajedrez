@@ -1,55 +1,40 @@
 import Link from "next/link";
-import Image from "next/image";
-import type { Article } from "@/interfaces/article.interface";
+import type { PostContent } from "@/services/posts/posts.types";
 import { MediaFrame } from "./media-frame.comp";
-import { DEFAULT_BLOG_THUMBNAIL } from "@/data/media-defaults.data";
 import "./hero-article.comp.css";
 
 interface HeroArticleProps {
-  article: Article;
+  post: PostContent;
   id?: string;
   badge?: string;
 }
 
-export function HeroArticle({ article, id, badge = "Portada" }: HeroArticleProps) {
+export function HeroArticle({ post, id, badge = "Portada" }: HeroArticleProps) {
   return (
     <article id={id} className="hero-article">
-      <MediaFrame
-        src={article.image ?? DEFAULT_BLOG_THUMBNAIL}
-        alt={article.title}
-        badge={badge}
-        sizes="(max-width: 1024px) 100vw, 700px"
-      />
+      <MediaFrame src={post.image.src} alt={post.image.alt} badge={badge} sizes="(max-width: 1024px) 100vw, 700px" />
       <div className="hero-article__meta">
-        <span>{article.category}</span>
+        <span>{post.category}</span>
         <span className="hero-article__meta-dot" />
-        <span className="card-meta">{article.readTime}</span>
+        <span className="card-meta">{post.readTime}</span>
       </div>
       <h2 className="hero-article__title">
-        <Link href={article.href} className="hero-article__title-link">
-          {article.title}
+        <Link href={post.href} className="hero-article__title-link">
+          {post.title}
         </Link>
       </h2>
-      <p className="hero-article__text">{article.excerpt}</p>
+      <p className="hero-article__text">{post.excerpt}</p>
       <div className="hero-article__footer">
-        <div className="hero-article__author">
-          <div className="hero-article__avatar">
-            {article.author?.avatar && (
-              <Image
-                className="hero-article__avatar-image"
-                src={article.author.avatar}
-                alt={article.author.name}
-                fill
-                sizes="46px"
-              />
-            )}
+        {post.author && (
+          <div className="hero-article__author">
+            <div className="hero-article__avatar">{post.author.name.charAt(0)}</div>
+            <div>
+              <div className="hero-article__author-name">{post.author.name}</div>
+              <div className="hero-article__author-role">{post.author.title}</div>
+            </div>
           </div>
-          <div>
-            <div className="hero-article__author-name">{article.author?.name}</div>
-            <div className="hero-article__author-role">{article.author?.role}</div>
-          </div>
-        </div>
-        <Link href={article.href} className="blog-button blog-button_variant_secondary blog-button_size_md">
+        )}
+        <Link href={post.href} className="blog-button blog-button_variant_secondary blog-button_size_md">
           Leer la partida completa <span className="link-arrow">⟶</span>
         </Link>
       </div>

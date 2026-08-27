@@ -1,27 +1,21 @@
 import Link from "next/link";
-import type { Article } from "@/interfaces/article.interface";
+import type { PostContent } from "@/services/posts/posts.types";
 import { MediaFrame } from "./media-frame.comp";
-import { DEFAULT_BLOG_THUMBNAIL } from "@/data/media-defaults.data";
 import "./article-card.comp.css";
 
 interface ArticleCardProps {
-  article: Article;
+  post: PostContent;
   id?: string;
 }
 
-export function ArticleCard({ article, id }: ArticleCardProps) {
+export function ArticleCard({ post, id }: ArticleCardProps) {
   return (
     <article id={id} className="article-card">
-      <MediaFrame
-        src={article.image ?? DEFAULT_BLOG_THUMBNAIL}
-        alt={article.title}
-        marginBottom
-        sizes="(max-width: 1024px) 50vw, 290px"
-      />
-      <span className="eyebrow">{article.category}</span>
-      <h3 className="article-card__title">{article.title}</h3>
-      <p className="article-card__text">{article.excerpt}</p>
-      <Link href={article.href} className="article-card__link">
+      <MediaFrame src={post.image.src} alt={post.image.alt} marginBottom sizes="(max-width: 1024px) 50vw, 290px" />
+      <span className="eyebrow">{post.category}</span>
+      <h3 className="article-card__title">{post.title}</h3>
+      <p className="article-card__text">{post.excerpt}</p>
+      <Link href={post.href} className="article-card__link">
         Leer <span className="link-arrow">⟶</span>
       </Link>
     </article>

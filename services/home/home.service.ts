@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { getPayload } from "@/lib/payload/get-payload";
-import { mapCta, mapFaq, mapHeader, mapHero, mapPackages, mapProgram, mapTeacher } from "./home.mapper";
+import { mapCta, mapFaq, mapHeader, mapHero, mapPackages, mapProgram, mapReviews, mapTeacher } from "./home.mapper";
 import type {
   CtaContent,
   FaqContent,
@@ -8,6 +8,7 @@ import type {
   HeroContent,
   PackagesContent,
   ProgramContent,
+  ReviewsContent,
   TeacherContent,
 } from "./home.types";
 
@@ -18,16 +19,17 @@ import type {
 const getHomeGlobals = cache(async () => {
   const payload = await getPayload();
 
-  const [hero, program, teacher, packages, faq, cta] = await Promise.all([
+  const [hero, program, teacher, packages, faq, cta, reviews] = await Promise.all([
     payload.findGlobal({ slug: "home-hero" }),
     payload.findGlobal({ slug: "home-program" }),
     payload.findGlobal({ slug: "home-teacher" }),
     payload.findGlobal({ slug: "home-packages" }),
     payload.findGlobal({ slug: "home-faq" }),
     payload.findGlobal({ slug: "home-cta" }),
+    payload.findGlobal({ slug: "home-reviews" }),
   ]);
 
-  return { hero, program, teacher, packages, faq, cta };
+  return { hero, program, teacher, packages, faq, cta, reviews };
 });
 
 // Header renders on every page, not just the Home, so it's kept as its own
@@ -70,4 +72,9 @@ export async function getFaqData(): Promise<FaqContent> {
 export async function getCtaData(): Promise<CtaContent> {
   const { cta } = await getHomeGlobals();
   return mapCta(cta);
+}
+
+export async function getReviewsData(): Promise<ReviewsContent> {
+  const { reviews } = await getHomeGlobals();
+  return mapReviews(reviews);
 }

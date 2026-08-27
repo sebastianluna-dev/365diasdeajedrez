@@ -1,32 +1,37 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { Article } from "@/interfaces/article.interface";
+import type { PostContent } from "@/services/posts/posts.types";
 import { PostCard } from "@/components/sections/blog/blog-content/post-card.comp";
 import { CategoryFilter } from "./category-filter.comp";
 import { Pagination } from "./pagination.comp";
 import "./archive.section.css";
 
-const CATEGORIES = ["Todos", "Aperturas", "Táctica", "Estrategia", "Finales", "Análisis de partidas"];
+const ALL_CATEGORY = "Todos";
 const PER_PAGE = 9;
 
 interface ArchiveSectionProps {
-  articles: Article[];
+  posts: PostContent[];
 }
 
-export function ArchiveSection({ articles }: ArchiveSectionProps) {
-  const [category, setCategory] = useState("Todos");
+export function ArchiveSection({ posts }: ArchiveSectionProps) {
+  const [category, setCategory] = useState(ALL_CATEGORY);
   const [page, setPage] = useState(1);
 
+  const categories = useMemo(() => {
+    const unique = Array.from(new Set(posts.map((post) => post.category).filter((value): value is string => !!value)));
+    return [ALL_CATEGORY, ...unique];
+  }, [posts]);
+
   const filtered = useMemo(
-    () => (category === "Todos" ? articles : articles.filter((article) => article.category === category)),
-    [articles, category],
+    () => (category === ALL_CATEGORY ? posts : posts.filter((post) => post.category === category)),
+    [posts, category],
   );
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
   const currentPage = Math.min(page, totalPages);
   const start = (currentPage - 1) * PER_PAGE;
-  const pageArticles = filtered.slice(start, start + PER_PAGE);
+  const pagePosts = filtered.slice(start, start + PER_PAGE);
 
   function selectCategory(next: string) {
     setCategory(next);
@@ -43,11 +48,11 @@ export function ArchiveSection({ articles }: ArchiveSectionProps) {
           más reciente a lo más antiguo.
         </p>
 
-        <CategoryFilter categories={CATEGORIES} active={category} onSelect={selectCategory} />
+        <CategoryFilter categories={categories} active={category} onSelect={selectCategory} />
 
         <div className="archive__grid">
-          {pageArticles.map((article) => (
-            <PostCard key={article.slug} article={article} />
+          {pagePosts.map((post) => (
+            <PostCard key={post.slug} post={post} />
           ))}
         </div>
 

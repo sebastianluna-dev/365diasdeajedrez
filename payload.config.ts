@@ -15,6 +15,7 @@ import { HomeTeacher } from "@/globals/HomeTeacher";
 import { HomePackages } from "@/globals/HomePackages";
 import { HomeFaq } from "@/globals/HomeFaq";
 import { HomeMentors } from "@/globals/HomeMentors";
+import { HomeReviews } from "@/globals/HomeReviews";
 import { HomeCta } from "@/globals/HomeCta";
 import { SiteSettings } from "@/globals/SiteSettings";
 import { cloudinaryStorage } from "@/lib/payload/cloudinary-adapter";
@@ -28,7 +29,18 @@ export default buildConfig({
     user: Users.slug,
   },
   collections: [Users, Categories, Tags, Media, Posts],
-  globals: [HomeHeader, HomeHero, HomeProgram, HomeTeacher, HomePackages, HomeFaq, HomeMentors, HomeCta, SiteSettings],
+  globals: [
+    HomeHeader,
+    HomeHero,
+    HomeProgram,
+    HomeTeacher,
+    HomePackages,
+    HomeFaq,
+    HomeMentors,
+    HomeReviews,
+    HomeCta,
+    SiteSettings,
+  ],
   editor: lexicalEditor(),
   db: postgresAdapter({
     pool: {
