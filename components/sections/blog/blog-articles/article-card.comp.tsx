@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import type { Article } from "@/services/articles/articles.types";
@@ -6,11 +7,12 @@ import "./article-card.comp.css";
 interface ArticleCardProps {
   article: Article;
   id?: string;
+  style?: CSSProperties;
 }
 
-export function ArticleCard({ article, id }: ArticleCardProps) {
+export function ArticleCard({ article, id, style }: ArticleCardProps) {
   return (
-    <article id={id} className="article-card">
+    <article id={id} className="article-card" style={style}>
       <Link href={article.href} className="article-card__image-link">
         <Image
           className="article-card__image"

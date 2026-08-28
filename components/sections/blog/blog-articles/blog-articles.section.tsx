@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import type { Article } from "@/services/articles/articles.types";
 import { ArticleCard } from "./article-card.comp";
 import { CategoryFilter } from "./category-filter.comp";
@@ -9,6 +9,8 @@ import "./blog-articles.section.css";
 
 const ALL_CATEGORY = "Todos";
 const PER_PAGE = 9;
+/** How long the outgoing grid fades before the new articles are committed. */
+const SWAP_DELAY_MS = 190;
 
 interface BlogArticlesProps {
   articles: Article[];
@@ -17,6 +19,12 @@ interface BlogArticlesProps {
 export function BlogArticles({ articles }: BlogArticlesProps) {
   const [category, setCategory] = useState(ALL_CATEGORY);
   const [page, setPage] = useState(1);
+  /** A queued change that is fading the current grid out before it takes effect. */
+  const [pending, setPending] = useState<{ category: string; page: number } | null>(null);
+  const [interacted, setInteracted] = useState(false);
+  const swapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => () => void (swapTimer.current && clearTimeout(swapTimer.current)), []);
 
   const categories = useMemo(() => {
     const unique = Array.from(
@@ -35,10 +43,26 @@ export function BlogArticles({ articles }: BlogArticlesProps) {
   const start = (currentPage - 1) * PER_PAGE;
   const pageArticles = filtered.slice(start, start + PER_PAGE);
 
-  function selectCategory(next: string) {
-    setCategory(next);
-    setPage(1);
+  function transitionTo(nextCategory: string, nextPage: number) {
+    if (nextCategory === category && nextPage === currentPage) return;
+    if (swapTimer.current) clearTimeout(swapTimer.current);
+    setInteracted(true);
+    setPending({ category: nextCategory, page: nextPage });
+    swapTimer.current = setTimeout(() => {
+      setCategory(nextCategory);
+      setPage(nextPage);
+      setPending(null);
+      swapTimer.current = null;
+    }, SWAP_DELAY_MS);
   }
+
+  const gridClassName = [
+    "blog-articles__grid",
+    interacted ? "blog-articles__grid_animated" : "",
+    pending ? "blog-articles__grid_leaving" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <section className="blog-articles">
@@ -49,11 +73,19 @@ export function BlogArticles({ articles }: BlogArticlesProps) {
           dentro y fuera del tablero.
         </p>
 
-        <CategoryFilter categories={categories} active={category} onSelect={selectCategory} />
+        <CategoryFilter
+          categories={categories}
+          active={pending?.category ?? category}
+          onSelect={(next) => transitionTo(next, 1)}
+        />
 
-        <div className="blog-articles__grid">
-          {pageArticles.map((article) => (
-            <ArticleCard key={article.slug} article={article} />
+        <div key={`${category}-${currentPage}`} className={gridClassName}>
+          {pageArticles.map((article, index) => (
+            <ArticleCard
+              key={article.slug}
+              article={article}
+              style={{ "--blog-card-index": index } as CSSProperties}
+            />
           ))}
         </div>
 
@@ -61,9 +93,9 @@ export function BlogArticles({ articles }: BlogArticlesProps) {
           page={currentPage}
           totalPages={totalPages}
           totalItems={filtered.length}
-          onSelect={setPage}
-          onPrev={() => setPage((current) => Math.max(1, current - 1))}
-          onNext={() => setPage((current) => Math.min(totalPages, current + 1))}
+          onSelect={(next) => transitionTo(category, next)}
+          onPrev={() => transitionTo(category, Math.max(1, currentPage - 1))}
+          onNext={() => transitionTo(category, Math.min(totalPages, currentPage + 1))}
         />
       </div>
     </section>
