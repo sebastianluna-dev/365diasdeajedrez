@@ -5,30 +5,46 @@ import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { getUserCourses } from "@/services/courses/courses.service";
-import { activityInclude, mapActivityItems, mapDashboardStats } from "./dashboard.mapper";
+import { activityInclude, dailyStatSelect, mapActivityItems, mapDashboardStats } from "./dashboard.mapper";
 import type { ContinueStudyingCard, DashboardData } from "./dashboard.types";
 
 const RECENT_ACTIVITY_LIMIT = 8;
 
-const getUserActivities = cache(async () => {
+/** Sólo los hechos recientes: la lista de actividad, no las estadísticas. */
+const getRecentActivities = cache(async () => {
   const db = getPlatformDb();
   const user = await getCurrentUser();
   return db.userActivity.findMany({
     where: { userId: user.id },
     include: activityInclude,
     orderBy: { occurredAt: "desc" },
+    take: RECENT_ACTIVITY_LIMIT,
   });
+});
+
+/**
+ * Las estadísticas se leen del agregado diario, no del histórico completo:
+ * los cuatro rangos son el mismo SUM con distinto filtro de día.
+ */
+const getDailyStats = cache(async () => {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  return db.userStatDaily.findMany({ where: { userId: user.id }, select: dailyStatSelect });
 });
 
 export async function getUserDashboard(): Promise<DashboardData> {
   const db = getPlatformDb();
-  const [user, activities, courses] = await Promise.all([getCurrentUser(), getUserActivities(), getUserCourses()]);
+  const [user, recent, dailyStats, courses] = await Promise.all([
+    getCurrentUser(),
+    getRecentActivities(),
+    getDailyStats(),
+    getUserCourses(),
+  ]);
   const now = new Date();
 
-  const typeLabels = await db.activityType.findMany({ orderBy: { order: "asc" }, select: { label: true } });
+  const metricLabels = await db.statMetric.findMany({ orderBy: { order: "asc" }, select: { label: true } });
 
   // Nombres de los sujetos de la actividad reciente, por tipo de sujeto.
-  const recent = activities.slice(0, RECENT_ACTIVITY_LIMIT);
   const idsFor = (code: string) =>
     recent.filter((row) => row.subjectType.code === code).map((row) => row.subjectId);
 
@@ -74,7 +90,7 @@ export async function getUserDashboard(): Promise<DashboardData> {
       email: user.email,
       memberSinceLabel: formatSpanishDate(user.createdAt),
     },
-    stats: mapDashboardStats(activities, typeLabels.map((row) => row.label), now),
+    stats: mapDashboardStats(dailyStats, metricLabels.map((row) => row.label), now),
     continueStudying,
     recentActivity: mapActivityItems(recent, subjectNames),
   };

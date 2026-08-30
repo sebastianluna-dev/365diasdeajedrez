@@ -22,11 +22,11 @@
   }
 
   & .related-article-card__title-link {
-    color: #16110d;
+    color: var(--color-dark);
   }
 
   & .related-article-card__title-link:hover {
-    color: #a81e22;
+    color: var(--color-accent-red);
   }
 
   & .related-article-card__text {

@@ -9,7 +9,8 @@ interface CountdownTimer {
 
 export function useCountdownTimer(durationSeconds: number): CountdownTimer {
   const [remaining, setRemaining] = useState(durationSeconds);
-  const lastTick = useRef(Date.now());
+  // Se inicializa dentro del efecto: Date.now() durante el render es impuro.
+  const lastTick = useRef(0);
 
   useEffect(() => {
     lastTick.current = Date.now();

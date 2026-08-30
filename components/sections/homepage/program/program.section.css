@@ -11,7 +11,7 @@
   & .program-panel__subtitle {
     font-family: var(--font-gramatika), sans-serif;
     font-size: 1.25rem !important;
-    color: #16110d !important;
+    color: var(--color-dark) !important;
   }
 
   & .program__note {

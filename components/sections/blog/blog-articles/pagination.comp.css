@@ -38,7 +38,7 @@
   & .pagination__arrow {
     border: 1px solid rgba(22, 17, 13, 0.2);
     background: transparent;
-    color: #16110d;
+    color: var(--color-dark);
   }
 
   & .pagination__arrow.pagination__arrow_disabled {
@@ -53,9 +53,9 @@
   }
 
   & .pagination__page.pagination__page_active {
-    border-color: #a81e22;
-    background: #a81e22;
-    color: #f2ede7;
+    border-color: var(--color-accent-red);
+    background: var(--color-accent-red);
+    color: var(--foreground);
     box-shadow: 0 3px 0 #711215;
   }
 }

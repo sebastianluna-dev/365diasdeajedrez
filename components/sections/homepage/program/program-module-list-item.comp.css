@@ -15,7 +15,7 @@
     border-color: rgba(255, 145, 67, 0.32);
 
     & .program-list__number {
-      background: #ff9143;
+      background: var(--color-primary);
     }
   }
 
@@ -41,7 +41,7 @@
     color: rgba(22, 17, 13, 0.8);
 
     &.program-list__label_active {
-      color: #16110d;
+      color: var(--color-dark);
     }
   }
 

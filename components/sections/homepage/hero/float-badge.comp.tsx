@@ -1,4 +1,4 @@
-import { ChessPieceUnicode } from "@/enums/chess-pieces.enum";
+import type { ChessPieceUnicode } from "@/constants/chess-pieces.const";
 import "./float-badge.comp.css";
 
 interface FloatBadgeProps {

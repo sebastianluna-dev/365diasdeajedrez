@@ -28,4 +28,9 @@ export interface TrainerExercise {
   chapterName: string;
   /** Color que mueve en startFen: el que juega el alumno. */
   userColor: "white" | "black";
+  /**
+   * El PGN de la lección se editó después de congelar el ejercicio: la línea
+   * sigue siendo jugable pero puede no coincidir ya con la lección.
+   */
+  isStale: boolean;
 }

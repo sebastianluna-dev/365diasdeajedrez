@@ -1,5 +1,97 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+---
+
+# 365 días de ajedrez
+
+Monorepo de una sola app Next.js que reúne tres piezas: el **sitio público**, el **CMS** (Payload) y la **plataforma educativa** (Prisma + Postgres).
+
+## Requisitos
+
+- **Node 20.9+** (requisito de Next 16).
+- **Dos bases de datos Postgres distintas**, sin tablas compartidas:
+  - `DATABASE_URI` → Payload / CMS.
+  - `PLATFORM_DATABASE_URL` → plataforma educativa (Prisma). Usa `sslmode=verify-full`; con `sslmode=require` el driver `pg` avisa del cambio de semántica previsto para pg v9.
+- Variables de entorno en `.env.local` (copia `.env.example` y rellena): `PAYLOAD_SECRET`, credenciales de Cloudinary, `PREVIEW_SECRET`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_APP_ENV` (sólo `production` activa Google Analytics y Meta Pixel), `NEXT_PUBLIC_GA_MEASUREMENT_ID` y `NEXT_PUBLIC_META_PIXEL_ID`.
+
+El CLI de Prisma lee `PLATFORM_DATABASE_URL` a través de `prisma.config.ts`, que carga `.env.local` y `.env`.
+
+## Puesta en marcha
+
+```bash
+npm install
+cp .env.example .env.local   # y rellena los valores
+npm run db:generate          # genera el cliente Prisma en lib/platform-db/generated
+npm run db:migrate           # aplica las migraciones sobre PLATFORM_DATABASE_URL
+npm run db:seed              # catálogos (idempotentes) + datos demo
+npm run dev                  # http://localhost:3000
+```
+
+## Comandos disponibles
+
+| Comando | Descripción |
+| --- | --- |
+| `npm run dev` | Servidor de desarrollo (Webpack). |
+| `npm run build` | Build de producción. |
+| `npm run start` | Sirve el build de producción. |
+| `npm run lint` | ESLint. |
+| `npm run test` | Vitest, una pasada. |
+| `npm run test:watch` | Vitest en modo watch. |
+| `npm run db:generate` | `prisma generate`. |
+| `npm run db:migrate` | `prisma migrate dev` (desarrollo). |
+| `npm run db:deploy` | `prisma migrate deploy` (producción). |
+| `npm run db:seed` | `prisma db seed`. |
+| `npm run db:studio` | `prisma studio`. |
+
+## Usuario demo
+
+El seed crea al alumno demo **`alumno.demo@365diasdeajedrez.com`**. La autenticación real **está pendiente**: hoy la sesión se simula resolviendo siempre ese usuario.
+
+El único punto de cambio es `lib/platform-auth/current-user.ts` — el DAL de identidad. Cuando exista login real basta con leer la sesión y buscar por id ahí, sin tocar servicios ni UI. Todo servicio o server action debe resolver el usuario a través de esa función y nunca confiar en datos del cliente.
+
+## Mapa de rutas
+
+**Sitio público** — `app/(frontend)`
+
+- `/`
+- `/blog`, `/blog/[slug]`
+- `/nosotros`
+- `/mentor/[slug]`
+- `/reloj-de-ajedrez`
+
+**CMS** — `app/(payload)`
+
+- `/admin` (más `/api/*` y `/api/graphql`)
+
+**Plataforma** — `app/(platform)`
+
+- `/dashboard`
+- `/classes`, `/classes/[classId]`
+- `/studies`, `/studies/[studyId]`, `/studies/[studyId]/games/[gameId]`
+- `/courses`, `/courses/[courseId]`, `/courses/[courseId]/chapters/[chapterId]`, `/courses/[courseId]/chapters/[chapterId]/lessons/[lessonId]`
+- `/trainer`
+
+## Arquitectura en breve
+
+- **Route groups**: `(frontend)` (sitio público), `(payload)` (CMS) y `(platform)` (zona autenticada, con su propio `layout`, `loading`, `error` y `platform.css`).
+- **Cada sección llama a su propio servicio**: los componentes de página no consultan la base de datos directamente.
+- **Tríada por dominio**: `services/<dominio>/{<dominio>.service.ts, <dominio>.mapper.ts, <dominio>.types.ts}` (más `.actions.ts` donde hay server actions). El *service* obtiene datos, el *mapper* traduce al tipo de vista y los *types* son el contrato de la UI.
+- **CSS BEM por componente**, sin Tailwind: cada archivo `.css` anida bajo su propio selector raíz para que los estilos no se filtren entre secciones.
+- **Catálogos en lugar de enums**: el schema de Prisma no usa enums; cada dominio restringido es una tabla catálogo con `code` único y estable (la lógica compara `code`, nunca ids) y el seed los carga de forma idempotente.
+- **El PGN es la fuente del contenido ajedrecístico** (`Lesson.pgn`, `Game.pgn`): no hay tablas por movimiento ni árboles relacionales de jugadas.
+- Algunas invariantes se expresan como CHECK constraints escritos a mano en la migración inicial (`prisma/migrations`); el resto se valida en la capa de servicios. La cabecera de `prisma/schema.prisma` las documenta.
+
+## Convención de documentación de Next.js
+
+Esta versión de Next.js trae cambios de ruptura respecto a lo que suele estar en los modelos: **consulta `node_modules/next/dist/docs/` antes de escribir código**. Lo explican `AGENTS.md` y `CLAUDE.md`.
+
+## Backlog
+
+- `MEJORAS.md` — mejoras pendientes priorizadas (seguridad, arquitectura, CSS, UX).
+- `todos.md` — tareas concretas en cola.
+
+---
+
 ## Getting Started
 
 First, run the development server:

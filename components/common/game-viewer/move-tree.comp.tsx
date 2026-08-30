@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { sanToSpanish } from "@/lib/chess/notation";
 import { nagGlyph, type PgnTree, type PgnTreeNode } from "@/lib/chess/pgn-tree";
 import "./move-tree.comp.css";
 
@@ -13,7 +14,7 @@ function moveLabel(node: PgnTreeNode, needsNumber: boolean): string {
   const isWhiteMove = node.ply % 2 === 1;
   const moveNumber = Math.ceil(node.ply / 2);
   const prefix = isWhiteMove ? `${moveNumber}. ` : needsNumber ? `${moveNumber}... ` : "";
-  return `${prefix}${node.san}${node.nags.map(nagGlyph).join("")}`;
+  return `${prefix}${sanToSpanish(node.san)}${node.nags.map(nagGlyph).join("")}`;
 }
 
 function renderLine(

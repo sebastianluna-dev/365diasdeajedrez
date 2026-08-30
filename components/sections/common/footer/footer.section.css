@@ -3,7 +3,7 @@
   z-index: 1;
   background: #0f0b08;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
-  color: #f2ede7;
+  color: var(--foreground);
 
   & .site-footer__wrap {
     max-width: 1200px;
@@ -22,7 +22,7 @@
     font-size: 13px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: #ff9143;
+    color: var(--color-primary);
     font-weight: 600;
     margin: 0 0 16px;
   }
@@ -54,7 +54,7 @@
   }
 
   & .site-footer__link:hover {
-    color: #f2ede7;
+    color: var(--foreground);
   }
 
   & .site-footer__bottom {

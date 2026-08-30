@@ -384,10 +384,9 @@ model Lesson {
 
 /// Declara un tramo entrenable del PGN. `path` usa rutas punteadas de índices
 /// de hijos desde la raíz ("0.0.1.0"); startFen + line van congelados para que
-/// el entrenador no dependa del parseo ni se rompa si el autor edita el PGN
-/// (marcar stale cuando Lesson.pgnUpdatedAt sea posterior).
+/// el entrenador no dependa del parseo ni se rompa si el autor edita el PGN.
 model TrainingExercise {
-  id         String  @id @default(uuid())
+  id         String    @id @default(uuid())
   lessonId   String
   order      Int
   modeId     Int
@@ -397,6 +396,10 @@ model TrainingExercise {
   startFen   String
   /// SAN del tramo, separado por espacios, congelado al publicar.
   line       String
+  /// Momento en que se congelaron startFen y line. El ejercicio queda «stale»
+  /// cuando Lesson.pgnUpdatedAt es posterior: sigue siendo entrenable (la copia
+  /// congelada es autosuficiente) pero puede no reflejar ya la lección.
+  frozenAt   DateTime?
   promptText String?
 
   lesson Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)

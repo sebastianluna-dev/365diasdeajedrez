@@ -4,7 +4,9 @@ export interface DashboardProfile {
   memberSinceLabel: string;
 }
 
-export type StatsRangeKey = "week" | "month" | "year" | "all";
+import type { StatsRangeKey } from "@/lib/date-ranges";
+
+export type { StatsRangeKey };
 
 export interface StatCount {
   label: string;

@@ -2,8 +2,8 @@
   position: relative;
   min-width: 1100px;
   overflow-x: clip;
-  background: #16110d;
-  color: #f2ede7;
+  background: var(--color-dark);
+  color: var(--foreground);
 }
 
 .mentor-profile {
@@ -44,7 +44,7 @@
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: #f2ede7;
+    color: var(--foreground);
   }
 
   & .mentor-profile__photo-overlay {
@@ -75,7 +75,7 @@
     font-size: 12px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: #ff9143;
+    color: var(--color-primary);
     border: 1px solid rgba(255, 145, 67, 0.34);
     background: rgba(255, 145, 67, 0.08);
     border-radius: 999px;
@@ -172,14 +172,14 @@
   font-family: var(--font-gramatika), sans-serif;
   font-size: 20px;
   font-weight: 700;
-  color: #ff9143;
+  color: var(--color-primary);
 }
 
 .mentor-achievements__title {
   font-size: 18px;
   font-weight: 700;
   margin: 0 0 6px;
-  color: #f2ede7;
+  color: var(--foreground);
 }
 
 .mentor-achievements__text {

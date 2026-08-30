@@ -20,7 +20,21 @@ export async function getArticles(): Promise<Article[]> {
   return articles.map(mapArticle);
 }
 
+// Consulta dirigida: abrir un artículo no debe traerse la colección entera.
+// cache() deduplica por slug, así que la página y su generateMetadata
+// comparten una sola consulta.
+const getPublishedArticleBySlug = cache(async (slug: string) => {
+  const payload = await getPayload();
+  const result = await payload.find({
+    collection: "articles",
+    where: { and: [{ slug: { equals: slug } }, { _status: { equals: "published" } }] },
+    limit: 1,
+    depth: 2,
+  });
+  return result.docs[0];
+});
+
 export async function getArticleBySlug(slug: string): Promise<Article | undefined> {
-  const articles = await getArticles();
-  return articles.find((article) => article.slug === slug);
+  const article = await getPublishedArticleBySlug(slug);
+  return article ? mapArticle(article) : undefined;
 }

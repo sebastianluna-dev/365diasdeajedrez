@@ -5,6 +5,16 @@ const SPANISH_LETTER: Record<string, string> = { N: "C", B: "A", R: "T", Q: "D",
 
 const toSpanish = (san: string) =>
   san.indexOf("O-O") === 0 ? san : (SPANISH_LETTER[san[0]] || "") + (SPANISH_LETTER[san[0]] ? san.slice(1) : san);
+
+/**
+ * Traduce la inicial de pieza de un SAN al castellano (N→C, B→A, R→T, Q→D,
+ * K→R), conservando el resto intacto. Los enroques no se traducen. También
+ * traduce la pieza de coronación (`=Q` → `=D`).
+ */
+export function sanToSpanish(san: string): string {
+  const translated = toSpanish(san);
+  return translated.replace(/=([NBRQK])/, (_, piece: string) => `=${SPANISH_LETTER[piece] ?? piece}`);
+}
 const withoutInitial = (san: string) => (PIECE_KIND_BY_LETTER[san[0]] ? san.slice(1) : san);
 const pieceGlyphOf = (san: string): string | null => PIECE_KIND_BY_LETTER[san[0]] ?? null;
 

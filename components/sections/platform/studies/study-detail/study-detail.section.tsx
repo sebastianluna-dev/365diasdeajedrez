@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { EmptyState } from "@/components/common/empty-state.comp";
 import { platformRoutes } from "@/lib/platform-routes";
+import { importPgnGames } from "@/services/studies/studies.actions";
 import type { StudyDetail } from "@/services/studies/studies.types";
 import { GameTable } from "./game-table.comp";
 import "./study-detail.section.css";
@@ -10,6 +11,8 @@ interface StudyDetailSectionProps {
 }
 
 export function StudyDetailSection({ study }: StudyDetailSectionProps) {
+  const importAction = importPgnGames.bind(null, study.id);
+
   return (
     <section className="study-detail">
       <nav className="study-detail__breadcrumb" aria-label="Ruta de estudios">
@@ -37,6 +40,25 @@ export function StudyDetailSection({ study }: StudyDetailSectionProps) {
           title="Sin partidas todavía"
           description="Este estudio no tiene partidas. Crea una o importa un PGN para empezar."
         />
+      )}
+
+      {!study.isCourseStudy && (
+        <form className="study-detail__import platform-card" action={importAction}>
+          <h2 className="platform-card__title">Importar partidas (PGN)</h2>
+          <p className="study-detail__import-hint">
+            Pega una o varias partidas en formato PGN: cada una se guardará como una partida del estudio.
+          </p>
+          <textarea
+            className="study-detail__import-field"
+            name="pgn"
+            rows={8}
+            required
+            placeholder={'[Event "Torneo"]\n[White "Capablanca"]\n[Black "Alekhine"]\n\n1. e4 e5 2. Cf3 *'}
+          />
+          <button type="submit" className="platform-button platform-button_variant_secondary">
+            Importar partidas
+          </button>
+        </form>
       )}
     </section>
   );

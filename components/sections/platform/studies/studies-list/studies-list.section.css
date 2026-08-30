@@ -3,6 +3,59 @@
   flex-direction: column;
   gap: 28px;
 
+  & .studies-list__create {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  & .studies-list__create-fields {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
+
+    @media (max-width: 700px) {
+      flex-direction: column;
+    }
+  }
+
+  & .studies-list__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1 1 220px;
+    min-width: 0;
+  }
+
+  & .studies-list__field_size_small {
+    flex: 0 1 180px;
+  }
+
+  & .studies-list__field-label {
+    font-size: 13px;
+    color: var(--platform-text-muted);
+  }
+
+  & .studies-list__input,
+  & .studies-list__select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 14px;
+  }
+
+  & .studies-list__input:focus,
+  & .studies-list__select:focus {
+    outline: 2px solid var(--platform-accent-soft);
+    border-color: var(--platform-accent);
+  }
+
   & .studies-list__group-title {
     margin: 0 0 12px;
     font-size: 18px;

@@ -19,13 +19,13 @@
   }
 
   & .float-badge__icon {
-    background: linear-gradient(to right, #ff9143, #f0c04b);
+    background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
     padding: 8px;
     border-radius: 9999px;
     height: 32px;
     width: 32px;
     font-family: var(--font-chessglyph);
-    color: #16110d;
+    color: var(--color-dark);
     font-weight: 600;
     font-size: 1.875rem;
     display: flex;
@@ -35,7 +35,7 @@
 
   & .float-badge__text {
     margin-left: 4px;
-    color: #16110d;
+    color: var(--color-dark);
     font-weight: 600;
     padding-right: 8px;
   }

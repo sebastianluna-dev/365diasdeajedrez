@@ -5,7 +5,7 @@
   padding: 34px 30px 30px;
   background: rgba(22, 17, 13, 0.035);
   border: 1px solid rgba(22, 17, 13, 0.1);
-  color: #16110d;
+  color: var(--color-dark);
   display: flex;
   flex-direction: column;
 
@@ -81,7 +81,7 @@
   }
 
   & .plan-card__list-icon {
-    color: #ff9143;
+    color: var(--color-primary);
     flex-shrink: 0;
     margin-top: 3px;
   }
@@ -89,8 +89,8 @@
   & .plan-card__button {
     display: block;
     text-align: center;
-    background: #16110d;
-    color: #f2ede7;
+    background: var(--color-dark);
+    color: var(--foreground);
     font-weight: 700;
     font-size: 17px;
     padding: 16px 0;
@@ -99,8 +99,8 @@
     box-shadow: 0 4px 0 #000;
 
     &.plan-card__button_variant_alt {
-      background: #ff9143;
-      color: #16110d;
+      background: var(--color-primary);
+      color: var(--color-dark);
       border-color: #b8611f;
       box-shadow: 0 4px 0 #b8611f;
     }

@@ -29,7 +29,7 @@
     line-height: 1.12;
     margin: 0 0 16px;
     max-width: 26ch;
-    color: #16110d;
+    color: var(--color-dark);
   }
 
   & .blog-articles__intro {

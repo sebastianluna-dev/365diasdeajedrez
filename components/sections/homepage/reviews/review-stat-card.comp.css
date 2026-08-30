@@ -27,7 +27,7 @@
   & .reviews__stat-label {
     display: block;
     font-size: 16px;
-    color: #16110d;
+    color: var(--color-dark);
     margin-bottom: 4px;
   }
 
@@ -39,13 +39,13 @@
     line-height: 1;
     letter-spacing: -0.01em;
     margin-bottom: 18px;
-    color: #16110d;
+    color: var(--color-dark);
   }
 
   & .reviews__stat-text {
     font-size: 16px;
     line-height: 1.5;
-    color: #16110d;
+    color: var(--color-dark);
     margin: 0;
     max-width: 26ch;
   }

@@ -10,7 +10,7 @@ import "@lichess-org/chessground/assets/chessground.base.css";
 import "@lichess-org/chessground/assets/chessground.cburnett.css";
 import { legalDests } from "@/lib/chess/legal-moves";
 import { buildNotationRows } from "@/lib/chess/notation";
-import { replayGame, sanForMove, turnColor } from "@/lib/chess/replay";
+import { isPromotionMove, replayGame, sanForMove, turnColor, type PromotionRole } from "@/lib/chess/replay";
 import type { MoveAnnotations } from "@/lib/chess/types";
 import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
 import { SkipIcon } from "@/components/icons/skip-icon.comp";
@@ -21,6 +21,23 @@ import { chessMoveQualityIconFor } from "@/components/common/chess-move-quality-
 import "./chess-board.comp.css";
 
 const AUTOPLAY_MS = 900;
+
+/** Piezas ofrecidas al coronar, en el orden habitual de los tableros. */
+const PROMOTION_ROLES: PromotionRole[] = ["queen", "rook", "bishop", "knight"];
+
+const PROMOTION_LABELS: Record<PromotionRole, string> = {
+  queen: "Dama",
+  rook: "Torre",
+  bishop: "Alfil",
+  knight: "Caballo",
+};
+
+interface PendingPromotion {
+  orig: Key;
+  dest: Key;
+  fen: string;
+  color: "white" | "black";
+}
 
 export interface ChessBoardControlledPosition {
   fen: string;
@@ -68,9 +85,12 @@ export function ChessBoard({ pgn, position, flipBoard = false, annotations, inte
   const isInViewportRef = useRef(false);
   const hasBeenClickedRef = useRef(false);
   const onMoveRef = useRef(onMove);
-  onMoveRef.current = onMove;
+  useEffect(() => {
+    onMoveRef.current = onMove;
+  }, [onMove]);
 
   const [notationHeight, setNotationHeight] = useState<number | undefined>(undefined);
+  const [pendingPromotion, setPendingPromotion] = useState<PendingPromotion | null>(null);
 
   const setPly = useCallback((n: number) => setPlyState(Math.max(0, Math.min(total, n))), [total]);
 
@@ -145,6 +165,12 @@ export function ChessBoard({ pgn, position, flipBoard = false, annotations, inte
         showDests: true,
         events: {
           after: (orig, dest) => {
+            // Al coronar se pregunta la pieza antes de confirmar; el resto de
+            // jugadas se resuelven directamente.
+            if (isPromotionMove(fen, orig as Key, dest as Key)) {
+              setPendingPromotion({ orig: orig as Key, dest: dest as Key, fen, color });
+              return;
+            }
             const san = sanForMove(fen, orig as Key, dest as Key);
             if (san) onMoveRef.current?.(san, fen);
             apiRef.current?.set({ fen });
@@ -202,11 +228,52 @@ export function ChessBoard({ pgn, position, flipBoard = false, annotations, inte
     activeCellRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [ply]);
 
+  const cancelPromotion = useCallback(() => {
+    setPendingPromotion((pending) => {
+      if (pending) apiRef.current?.set({ fen: pending.fen });
+      return null;
+    });
+  }, []);
+
+  const confirmPromotion = useCallback((role: PromotionRole) => {
+    setPendingPromotion((pending) => {
+      if (pending) {
+        const san = sanForMove(pending.fen, pending.orig, pending.dest, role);
+        if (san) onMoveRef.current?.(san, pending.fen);
+        apiRef.current?.set({ fen: pending.fen });
+      }
+      return null;
+    });
+  }, []);
+
+  // Selector de coronación: chessground base no trae diálogo, así que la
+  // jugada queda pendiente hasta que el usuario elige la pieza.
+  const promotionOverlay = pendingPromotion && (
+    <div className="chess-board__promotion" role="dialog" aria-label="Elige la pieza de coronación">
+      <div className="chess-board__promotion-panel">
+        {PROMOTION_ROLES.map((role) => (
+          <button
+            key={role}
+            type="button"
+            aria-label={PROMOTION_LABELS[role]}
+            title={PROMOTION_LABELS[role]}
+            onClick={() => confirmPromotion(role)}
+            className={`chess-board__promotion-piece chess-board__promotion-piece_glyph_${pendingPromotion.color === "white" ? "w" : "b"}-${role}`}
+          />
+        ))}
+        <button type="button" onClick={cancelPromotion} className="chess-board__promotion-cancel">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  );
+
   if (position) {
     return (
       <div className="chess-board chess-board_mode_controlled" ref={rootRef}>
         <div className="chess-board__frame" ref={frameRef}>
           <div className="chess-board__surface" ref={boardRef} />
+          {promotionOverlay}
         </div>
       </div>
     );
@@ -217,6 +284,7 @@ export function ChessBoard({ pgn, position, flipBoard = false, annotations, inte
       <div className="chess-board__columns">
         <div className="chess-board__frame" ref={frameRef}>
           <div className="chess-board__surface" ref={boardRef} />
+          {promotionOverlay}
         </div>
 
         <div className="chess-board__notation" style={notationHeight ? { height: notationHeight } : undefined}>

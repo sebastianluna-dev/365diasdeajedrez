@@ -12,7 +12,7 @@
     font-family: var(--font-gramatika), sans-serif;
     font-size: 24px;
     font-weight: 700;
-    color: #f2ede7;
+    color: var(--foreground);
   }
 
   & .teacher__stat-label {

@@ -4,6 +4,8 @@ export interface ClassSummary {
   id: string;
   title: string;
   teacherName: string;
+  /** Instante en UTC; la interfaz lo reformatea en la zona del alumno. */
+  scheduledAtIso: string;
   dateLabel: string;
   timeLabel: string;
   durationMin: number;
@@ -47,6 +49,8 @@ export interface ClassDetail {
   description?: string;
   teacherName: string;
   teacherTitle?: string;
+  /** Instante en UTC; la interfaz lo reformatea en la zona del alumno. */
+  scheduledAtIso: string;
   dateLabel: string;
   timeLabel: string;
   durationMin: number;

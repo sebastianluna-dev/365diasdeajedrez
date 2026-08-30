@@ -6,7 +6,7 @@
   justify-content: center;
   gap: 34px;
   padding: 56px 24px;
-  color: #f2ede7;
+  color: var(--foreground);
 
   & .chess-clock__intro {
     text-align: center;
@@ -101,9 +101,9 @@
   }
 
   & .chess-clock__control.chess-clock__control_active {
-    background: #f2ede7;
-    color: #16110d;
-    border-color: #f2ede7;
+    background: var(--foreground);
+    color: var(--color-dark);
+    border-color: var(--foreground);
   }
 
   & .chess-clock__actions {
@@ -124,15 +124,15 @@
   }
 
   & .chess-clock__action.chess-clock__action_variant_primary {
-    background: #ff9143;
-    color: #16110d;
+    background: var(--color-primary);
+    color: var(--color-dark);
     border: none;
     box-shadow: 0 4px 0 #b8611f;
   }
 
   & .chess-clock__action.chess-clock__action_variant_secondary {
     background: transparent;
-    color: #f2ede7;
+    color: var(--foreground);
     border: 1px solid rgba(242, 237, 231, 0.4);
     padding: 15px 28px;
   }

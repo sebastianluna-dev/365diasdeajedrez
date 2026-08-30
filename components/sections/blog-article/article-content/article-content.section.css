@@ -20,7 +20,7 @@
   }
 
   & .article-content__breadcrumb-link:hover {
-    color: #16110d;
+    color: var(--color-dark);
   }
 
   & .article-content__breadcrumb-sep {
@@ -28,7 +28,7 @@
   }
 
   & .article-content__breadcrumb-current {
-    color: #a81e22;
+    color: var(--color-accent-red);
   }
 
   & .article-content__title {
@@ -53,8 +53,8 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: #a81e22;
-    color: #f2ede7;
+    background: var(--color-accent-red);
+    color: var(--foreground);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -71,7 +71,7 @@
     display: block;
     font-weight: 600;
     font-size: 14px;
-    color: #a81e22;
+    color: var(--color-accent-red);
   }
 
   & .article-content__author-meta {

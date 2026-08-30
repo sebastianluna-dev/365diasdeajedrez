@@ -58,9 +58,13 @@ export function useChessClock() {
     flagged: null,
   });
 
-  const lastTick = useRef(Date.now());
+  // Date.now() y la sincronización del ref viven en efectos: llamarlos durante
+  // el render es impuro (regla react-hooks/purity).
+  const lastTick = useRef(0);
   const stateRef = useRef(state);
-  stateRef.current = state;
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
 
   useEffect(() => {
     lastTick.current = Date.now();

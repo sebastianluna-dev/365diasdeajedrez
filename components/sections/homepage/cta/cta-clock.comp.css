@@ -10,7 +10,7 @@
   width: 124px;
   box-sizing: border-box;
   justify-content: center;
-  color: #16110d;
+  color: var(--color-dark);
   font-weight: 700;
 
   & .sticky-cta__clock-time {

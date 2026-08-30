@@ -31,6 +31,7 @@ import {
   USERS,
 } from "./seed-data";
 import { AUTHOR_ROLE } from "../constants/platform/course-codes.const";
+import { STAT_METRIC_BY_ACTIVITY_TYPE, type ActivityTypeCode } from "../constants/platform/activity-codes.const";
 
 const connectionString = process.env.PLATFORM_DATABASE_URL;
 if (!connectionString) throw new Error("Falta PLATFORM_DATABASE_URL en el entorno (ver .env.example).");
@@ -82,6 +83,42 @@ function idOf(map: Map<string, number>, code: string): number {
   const id = map.get(code);
   if (id === undefined) throw new Error(`Code de catálogo no sembrado: ${code}`);
   return id;
+}
+
+/**
+ * Recalcula el agregado diario de un usuario desde cero: una fila por
+ * (día, métrica, tema) más la fila total con topicId nulo.
+ */
+async function rebuildDailyStats(userId: string) {
+  const activities = await db.userActivity.findMany({
+    where: { userId },
+    select: { occurredAt: true, topicId: true, type: { select: { code: true } } },
+  });
+  const metrics = await db.statMetric.findMany({ select: { id: true, code: true } });
+  const metricIdByCode = new Map(metrics.map((metric) => [metric.code, metric.id]));
+
+  const buckets = new Map<string, { day: Date; metricId: number; topicId: number | null; value: number }>();
+  for (const activity of activities) {
+    const metricCode = STAT_METRIC_BY_ACTIVITY_TYPE[activity.type.code as ActivityTypeCode];
+    const metricId = metricCode ? metricIdByCode.get(metricCode) : undefined;
+    if (metricId === undefined) continue;
+
+    const day = new Date(
+      Date.UTC(activity.occurredAt.getUTCFullYear(), activity.occurredAt.getUTCMonth(), activity.occurredAt.getUTCDate()),
+    );
+    // Cada hecho suma en el total de su métrica y, si tiene tema, en su desglose.
+    for (const topicId of activity.topicId === null ? [null] : [null, activity.topicId]) {
+      const key = `${day.toISOString()}|${metricId}|${topicId ?? "null"}`;
+      const bucket = buckets.get(key);
+      if (bucket) bucket.value += 1;
+      else buckets.set(key, { day, metricId, topicId, value: 1 });
+    }
+  }
+
+  await db.userStatDaily.deleteMany({ where: { userId } });
+  for (const bucket of buckets.values()) {
+    await db.userStatDaily.create({ data: { userId, ...bucket } });
+  }
 }
 
 async function main() {
@@ -230,6 +267,8 @@ async function main() {
             endPly: exercise.afterSans.length + exercise.lineSans.length,
             startFen: makeFen(startPos.toSetup()),
             line: exercise.lineSans.join(" "),
+            // Congelado a la vez que el PGN de la lección: no nace stale.
+            frozenAt: new Date(now.getTime() - 30 * DAY_MS),
             promptText: exercise.promptText,
           };
           await db.trainingExercise.upsert({
@@ -430,6 +469,10 @@ async function main() {
       create: { id: activity.id, ...data },
     });
   }
+
+  // UserStatDaily es derivada: se reconstruye entera desde UserActivity para
+  // que el agregado y la fuente de verdad no puedan desincronizarse.
+  await rebuildDailyStats(IDS.demoUser);
 
   console.log("Seed de la plataforma completado.");
 }

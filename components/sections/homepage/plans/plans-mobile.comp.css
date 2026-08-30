@@ -26,8 +26,8 @@
   }
 
   & .plans-mobile__tab.plans-mobile__tab_active {
-    background: #16110d;
-    color: #f2ede7;
+    background: var(--color-dark);
+    color: var(--foreground);
   }
 
   & .plans-mobile__card {

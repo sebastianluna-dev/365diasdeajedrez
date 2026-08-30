@@ -37,7 +37,7 @@
     font-size: 14px;
     font-weight: 600;
     letter-spacing: 0.05em;
-    color: #ff9143;
+    color: var(--color-primary);
     margin-bottom: 16px;
   }
 
@@ -68,7 +68,7 @@
     font-family: var(--font-gramatika), sans-serif;
     font-size: 38px;
     font-weight: 700;
-    color: #ff9143;
+    color: var(--color-primary);
     line-height: 1;
   }
 

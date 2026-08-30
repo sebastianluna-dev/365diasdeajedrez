@@ -15,7 +15,7 @@
     font-size: 27px;
     font-weight: 600;
     margin: 12px 0 0;
-    color: #16110d;
+    color: var(--color-dark);
   }
 
   & .article-body__list {
@@ -27,13 +27,13 @@
   }
 
   & .article-body__list strong {
-    color: #16110d;
+    color: var(--color-dark);
     font-weight: 700;
   }
 
   & .article-body__quote {
     margin: 0;
-    border-left: 2px solid #a81e22;
+    border-left: 2px solid var(--color-accent-red);
     padding-left: 18px;
     font-style: italic;
     color: #5c5348;

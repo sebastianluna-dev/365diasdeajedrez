@@ -21,11 +21,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="es"
-      className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} h-full antialiased`}
-    >
-      <body className="min-h-full bg-[#16110d] text-[#f2ede7]">
+    <html lang="es" className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable}`}>
+      <body>
         {children}
         <GoogleAnalytics />
         <MetaPixel />

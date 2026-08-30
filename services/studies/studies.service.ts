@@ -10,7 +10,7 @@ import {
   studyDetailInclude,
   studySummaryInclude,
 } from "./studies.mapper";
-import type { GameView, StudyDetail, StudySummary } from "./studies.types";
+import type { GameView, StudyDetail, StudyKindOption, StudySummary } from "./studies.types";
 
 // «Mis estudios» en la interfaz; GameDatabase en el dominio. El alumno ve sus
 // bases propias (editables) y las de los cursos publicados (sólo lectura).
@@ -31,6 +31,13 @@ export async function getUserStudies(): Promise<StudySummary[]> {
   });
   return rows.map(mapStudySummary);
 }
+
+/** Tipos de estudio del catálogo: las etiquetas viven en la base, no en la UI. */
+export const getStudyKinds = cache(async (): Promise<StudyKindOption[]> => {
+  const db = getPlatformDb();
+  const rows = await db.databaseKind.findMany({ orderBy: { order: "asc" }, select: { code: true, label: true } });
+  return rows.map((row) => ({ code: row.code, label: row.label }));
+});
 
 export async function getStudyById(studyId: string): Promise<StudyDetail | null> {
   const db = getPlatformDb();

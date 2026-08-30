@@ -36,12 +36,12 @@
   }
 
   & .program-panel__badge_variant_primary {
-    background: #ff9143;
+    background: var(--color-primary);
   }
 
   & .program-panel__badge_variant_outline {
     background: rgba(22, 17, 13, 0.05);
-    border: 1px solid #aca7a3;
+    border: 1px solid var(--color-normal-gray);
   }
 
   & .program-panel__title {

@@ -27,7 +27,7 @@
 
   & .faq-item__icon {
     flex: none;
-    color: #ff9143;
+    color: var(--color-primary);
     transition: transform 0.25s ease;
   }
 

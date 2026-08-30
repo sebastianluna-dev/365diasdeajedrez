@@ -41,7 +41,7 @@
     place-items: center;
     font-family: var(--font-gramatika), sans-serif;
     font-weight: 800;
-    color: #16110d;
+    color: var(--color-dark);
   }
 
   & .reviews__chat-avatar_color_teal {
@@ -49,7 +49,7 @@
   }
 
   & .reviews__chat-avatar_color_orange {
-    background: #ff9143;
+    background: var(--color-primary);
   }
 
   & .reviews__chat-avatar_color_gold {
@@ -59,7 +59,7 @@
   & .reviews__chat-name {
     font-size: 19px;
     font-weight: 700;
-    color: #16110d;
+    color: var(--color-dark);
   }
 
   & .reviews__chat-time {
@@ -85,7 +85,7 @@
   & .reviews__chat-body p {
     font-size: 17px;
     line-height: 1.5;
-    color: #16110d;
+    color: var(--color-dark);
     margin: 0;
   }
 
@@ -97,7 +97,7 @@
     align-items: center;
     justify-content: center;
     background: #fff;
-    color: #f26c00;
+    color: var(--color-primary-on-light);
     border-radius: 999px;
     padding: 7px 12px;
     box-shadow: 0 2px 6px rgba(22, 17, 13, 0.12);

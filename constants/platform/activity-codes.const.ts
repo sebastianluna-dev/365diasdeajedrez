@@ -30,3 +30,16 @@ export const STAT_METRIC = {
 } as const;
 
 export type StatMetricCode = (typeof STAT_METRIC)[keyof typeof STAT_METRIC];
+
+/**
+ * Métrica del agregado diario que incrementa cada tipo de actividad.
+ * UserActivity sigue siendo la fuente de verdad; UserStatDaily es la copia
+ * agregada que hace baratos los rangos temporales.
+ */
+export const STAT_METRIC_BY_ACTIVITY_TYPE: Record<ActivityTypeCode, StatMetricCode> = {
+  [ACTIVITY_TYPE.LESSON_COMPLETED]: STAT_METRIC.LESSONS_COMPLETED,
+  [ACTIVITY_TYPE.COURSE_COMPLETED]: STAT_METRIC.COURSES_COMPLETED,
+  [ACTIVITY_TYPE.CLASS_ATTENDED]: STAT_METRIC.CLASSES_ATTENDED,
+  [ACTIVITY_TYPE.GAME_ANALYZED]: STAT_METRIC.GAMES_ANALYZED,
+  [ACTIVITY_TYPE.EXERCISE_PASSED]: STAT_METRIC.EXERCISES_PASSED,
+};

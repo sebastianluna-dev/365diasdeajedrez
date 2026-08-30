@@ -11,8 +11,8 @@
     flex: none;
     display: flex;
     align-items: center;
-    background: #a81e22;
-    color: #f2ede7;
+    background: var(--color-accent-red);
+    color: var(--foreground);
     font-size: 11.5px;
     font-weight: 700;
     letter-spacing: 0.14em;
@@ -29,7 +29,7 @@
     font-family: var(--font-suisse), sans-serif;
     font-size: 14px;
     font-weight: 500;
-    color: #16110d;
+    color: var(--color-dark);
     padding: 11px 20px;
     align-self: stretch;
   }
@@ -39,6 +39,6 @@
   }
 
   & .category-filter__button.category-filter__button_active {
-    color: #a81e22;
+    color: var(--color-accent-red);
   }
 }

@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Scripts importados del kit de diseño: no son código de la app y usan
+    // APIs antiguas de React a propósito.
+    "public/**",
+    // Cliente de Prisma generado.
+    "lib/platform-db/generated/**",
   ]),
 ]);
 

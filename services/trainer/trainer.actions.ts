@@ -6,6 +6,17 @@ import { ATTEMPT_CONTEXT, ATTEMPT_RESULT, type AttemptResultCode } from "@/const
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
+import { allowAction } from "@/lib/rate-limit";
+import { recordUserActivity } from "@/services/shared/user-activity.service";
+
+const MAX_MISTAKES = 999;
+/** Dos horas: por encima de eso el dato no es creíble. */
+const MAX_DURATION_MS = 2 * 60 * 60 * 1000;
+
+function clamp(value: number, min: number, max: number): number {
+  if (!Number.isFinite(value)) return min;
+  return Math.min(max, Math.max(min, Math.floor(value)));
+}
 
 // Las server actions son alcanzables por POST directo: el usuario se resuelve
 // aquí dentro y las entradas del cliente se validan contra la base.
@@ -22,6 +33,7 @@ export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<
   const user = await getCurrentUser();
 
   if (input.resultCode !== ATTEMPT_RESULT.PASSED && input.resultCode !== ATTEMPT_RESULT.FAILED) return;
+  if (!allowAction(`${user.id}:training-attempt`, 120, 60_000)) return;
 
   const exercise = await db.trainingExercise.findUnique({
     where: { id: input.exerciseId },
@@ -35,24 +47,22 @@ export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<
       user: { connect: { id: user.id } },
       exercise: { connect: { id: exercise.id } },
       result: { connect: { code: input.resultCode } },
-      mistakes: Math.max(0, Math.floor(input.mistakes)),
-      durationMs: Math.max(0, Math.floor(input.durationMs)),
+      // Los números llegan del cliente: se acotan por arriba y por abajo.
+      mistakes: clamp(input.mistakes, 0, MAX_MISTAKES),
+      durationMs: clamp(input.durationMs, 0, MAX_DURATION_MS),
       context: { connect: { code: ATTEMPT_CONTEXT.TRAINER } },
       createdAt: now,
     },
   });
 
   if (input.resultCode === ATTEMPT_RESULT.PASSED) {
-    const topicId = exercise.lesson.lessonTopics[0]?.topicId ?? null;
-    await db.userActivity.create({
-      data: {
-        user: { connect: { id: user.id } },
-        type: { connect: { code: ACTIVITY_TYPE.EXERCISE_PASSED } },
-        subjectType: { connect: { code: SUBJECT_TYPE.EXERCISE } },
-        subjectId: exercise.id,
-        ...(topicId !== null ? { topic: { connect: { id: topicId } } } : {}),
-        occurredAt: now,
-      },
+    await recordUserActivity({
+      userId: user.id,
+      typeCode: ACTIVITY_TYPE.EXERCISE_PASSED,
+      subjectTypeCode: SUBJECT_TYPE.EXERCISE,
+      subjectId: exercise.id,
+      topicId: exercise.lesson.lessonTopics[0]?.topicId ?? null,
+      occurredAt: now,
     });
   }
 
@@ -63,6 +73,8 @@ export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<
 export async function toggleTrainerChapter(chapterId: string, add: boolean): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
+
+  if (!allowAction(`${user.id}:toggle-trainer-chapter`, 60, 60_000)) return;
 
   const chapter = await db.chapter.findUnique({ where: { id: chapterId }, select: { id: true, courseId: true } });
   if (!chapter) return;

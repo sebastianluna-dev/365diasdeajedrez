@@ -86,6 +86,18 @@ export function GameViewer({ pgn, orientation = "white", initialPath, title }: G
     <div className="game-viewer" ref={rootRef} onClick={() => (hasBeenClickedRef.current = true)}>
       {title && <p className="game-viewer__title">{title}</p>}
 
+      {/* Un PGN con jugadas ilegales se mostraría recortado sin avisar; en
+          desarrollo se listan los problemas para que el autor los corrija. */}
+      {process.env.NODE_ENV !== "production" && tree.warnings.length > 0 && (
+        <ul className="game-viewer__warnings">
+          {tree.warnings.map((warning) => (
+            <li key={warning} className="game-viewer__warning">
+              {warning}
+            </li>
+          ))}
+        </ul>
+      )}
+
       <div className="game-viewer__layout">
         <div className="game-viewer__board">
           <ChessBoard

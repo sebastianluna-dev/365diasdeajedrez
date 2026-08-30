@@ -33,7 +33,7 @@
   & .orbit__dot_ring_1_top {
     width: 8px;
     height: 8px;
-    background: #ff9143;
+    background: var(--color-primary);
     top: -5px;
     right: 50%;
   }
@@ -41,7 +41,7 @@
   & .orbit__dot_ring_1_right {
     width: 6px;
     height: 6px;
-    background: #f0c04b;
+    background: var(--color-secondary);
     top: 50%;
     right: -4px;
   }

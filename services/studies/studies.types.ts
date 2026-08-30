@@ -11,6 +11,12 @@ export interface StudySummary {
   href: string;
 }
 
+/** Opción del catálogo DatabaseKind para el formulario de crear estudio. */
+export interface StudyKindOption {
+  code: string;
+  label: string;
+}
+
 export interface StudyGameItem {
   id: string;
   white: string;

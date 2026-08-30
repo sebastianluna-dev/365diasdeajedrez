@@ -24,11 +24,8 @@ export const dynamic = "force-dynamic";
 // (regla de Next 16): la identidad se resuelve en el DAL por página/servicio.
 export default function PlatformLayout({ children }: { children: ReactNode }) {
   return (
-    <html
-      lang="es"
-      className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} h-full antialiased`}
-    >
-      <body className="min-h-full bg-[#16110d] text-[#f2ede7]">
+    <html lang="es" className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable}`}>
+      <body>
         <PlatformShell>{children}</PlatformShell>
       </body>
     </html>

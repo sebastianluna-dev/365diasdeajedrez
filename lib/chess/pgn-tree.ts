@@ -35,6 +35,12 @@ export interface PgnTree {
   /** children[0] es la continuación principal. */
   children: PgnTreeNode[];
   nodesByPath: Map<string, PgnTreeNode>;
+  /**
+   * Ramas descartadas por contener jugadas ilegales o no parseables. Vacío
+   * cuando el PGN es correcto; la interfaz lo muestra en desarrollo para que
+   * un PGN mal cargado no se vea simplemente «recortado».
+   */
+  warnings: string[];
 }
 
 const BRUSH_BY_LETTER: Record<string, string> = { G: "green", R: "red", Y: "yellow", B: "blue" };
@@ -84,12 +90,18 @@ function walk(
   parentPath: string,
   ply: number,
   nodesByPath: Map<string, PgnTreeNode>,
+  warnings: string[],
 ): PgnTreeNode[] {
   const result: PgnTreeNode[] = [];
 
   children.forEach((child, index) => {
     const move = parseSan(pos, child.data.san);
-    if (!move) return; // SAN ilegal: se descarta esa rama, el resto sigue.
+    if (!move) {
+      // SAN ilegal: se descarta esa rama y se anota; el resto del árbol sigue.
+      const at = parentPath.length > 0 ? `tras la ruta "${parentPath}"` : "en la posición inicial";
+      warnings.push(`Jugada ilegal o no reconocida "${child.data.san}" ${at} (jugada ${ply}).`);
+      return;
+    }
 
     const next = pos.clone();
     next.play(move);
@@ -110,7 +122,7 @@ function walk(
       showDiagram,
       children: [],
     };
-    node.children = walk(child.children, next, path, ply + 1, nodesByPath);
+    node.children = walk(child.children, next, path, ply + 1, nodesByPath, warnings);
     nodesByPath.set(path, node);
     result.push(node);
   });
@@ -129,8 +141,9 @@ export function parsePgnTree(pgn: string): PgnTree | null {
   );
 
   const nodesByPath = new Map<string, PgnTreeNode>();
+  const warnings: string[] = [];
   const { text, shapes } = parseCommentCommands(game.comments);
-  const children = walk(game.moves.children, pos, "", 1, nodesByPath);
+  const children = walk(game.moves.children, pos, "", 1, nodesByPath, warnings);
 
   return {
     initialFen: makeFen(pos.toSetup()),
@@ -138,6 +151,7 @@ export function parsePgnTree(pgn: string): PgnTree | null {
     initialShapes: shapes,
     children,
     nodesByPath,
+    warnings,
   };
 }
 

@@ -6,6 +6,8 @@ import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
+import { allowAction } from "@/lib/rate-limit";
+import { recordUserActivity } from "@/services/shared/user-activity.service";
 
 // Las server actions son alcanzables por POST directo: el usuario SIEMPRE se
 // resuelve aquí dentro (DAL) y jamás llega del cliente.
@@ -39,6 +41,8 @@ function revalidateLessonPaths(courseId: string, chapterId: string, lessonId: st
 export async function touchLesson(lessonId: string): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
+  if (!allowAction(`${user.id}:touch-lesson`, 120, 60_000)) return;
+
   const lesson = await getLessonContext(lessonId);
   if (!lesson) return;
 
@@ -105,6 +109,8 @@ export async function touchLesson(lessonId: string): Promise<void> {
 export async function completeLesson(lessonId: string): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
+  if (!allowAction(`${user.id}:complete-lesson`, 60, 60_000)) return;
+
   const lesson = await getLessonContext(lessonId);
   if (!lesson) return;
 
@@ -124,15 +130,13 @@ export async function completeLesson(lessonId: string): Promise<void> {
     },
   });
 
-  await db.userActivity.create({
-    data: {
-      user: { connect: { id: user.id } },
-      type: { connect: { code: ACTIVITY_TYPE.LESSON_COMPLETED } },
-      subjectType: { connect: { code: SUBJECT_TYPE.LESSON } },
-      subjectId: lessonId,
-      ...(topicId !== null ? { topic: { connect: { id: topicId } } } : {}),
-      occurredAt: now,
-    },
+  await recordUserActivity({
+    userId: user.id,
+    typeCode: ACTIVITY_TYPE.LESSON_COMPLETED,
+    subjectTypeCode: SUBJECT_TYPE.LESSON,
+    subjectId: lessonId,
+    topicId,
+    occurredAt: now,
   });
 
   // ¿Se completó el capítulo?
@@ -182,14 +186,12 @@ export async function completeLesson(lessonId: string): Promise<void> {
   });
 
   if (courseDone) {
-    await db.userActivity.create({
-      data: {
-        user: { connect: { id: user.id } },
-        type: { connect: { code: ACTIVITY_TYPE.COURSE_COMPLETED } },
-        subjectType: { connect: { code: SUBJECT_TYPE.COURSE } },
-        subjectId: courseId,
-        occurredAt: now,
-      },
+    await recordUserActivity({
+      userId: user.id,
+      typeCode: ACTIVITY_TYPE.COURSE_COMPLETED,
+      subjectTypeCode: SUBJECT_TYPE.COURSE,
+      subjectId: courseId,
+      occurredAt: now,
     });
   }
 

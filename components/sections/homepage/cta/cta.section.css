@@ -22,7 +22,7 @@
     font-family: var(--font-gramatika), sans-serif;
     font-size: 16px;
     font-weight: 700;
-    color: #f2ede7;
+    color: var(--foreground);
   }
 
   & .sticky-cta__subtitle {
@@ -43,7 +43,7 @@
     display: inline-flex;
     align-items: center;
     gap: 9px;
-    color: #f2ede7;
+    color: var(--foreground);
     font-size: 14.5px;
     font-weight: 600;
     border: 1px solid rgba(242, 237, 231, 0.3);
@@ -52,8 +52,8 @@
   }
 
   & .sticky-cta__link.sticky-cta__link_variant_primary {
-    background: #ff9143;
-    color: #16110d !important;
+    background: var(--color-primary);
+    color: var(--color-dark) !important;
     border-color: transparent;
     box-shadow: 0 4px 0 #b8611f;
   }

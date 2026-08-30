@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LocalDateTime } from "@/components/common/local-datetime.comp";
 import { CLASS_STATUS } from "@/constants/platform/class-codes.const";
 import type { ClassSummary } from "@/services/classes/classes.types";
 import "./class-card.comp.css";
@@ -22,7 +23,11 @@ export function ClassCard({ classSummary }: ClassCardProps) {
 
       <div className="class-card__meta">
         <span className="class-card__schedule">
-          {classSummary.dateLabel} · {classSummary.timeLabel} · {classSummary.durationMin} min
+          <LocalDateTime
+            iso={classSummary.scheduledAtIso}
+            fallback={`${classSummary.dateLabel} · ${classSummary.timeLabel}`}
+          />{" "}
+          · {classSummary.durationMin} min
         </span>
         <span
           className={`platform-tag class-card__status class-card__status_code_${classSummary.statusCode.toLowerCase()}`}

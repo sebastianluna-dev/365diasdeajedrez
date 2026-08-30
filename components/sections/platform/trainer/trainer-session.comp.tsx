@@ -138,6 +138,11 @@ export function TrainerSession({ exercises }: TrainerSessionProps) {
         <span className="trainer-session__color">
           Juegas con {exercise.userColor === "white" ? "blancas" : "negras"}
         </span>
+        {exercise.isStale && (
+          <span className="platform-tag trainer-session__stale" title="La lección se editó después de crear este ejercicio">
+            Desactualizado
+          </span>
+        )}
       </div>
 
       {exercise.promptText && <p className="trainer-session__prompt">{exercise.promptText}</p>}

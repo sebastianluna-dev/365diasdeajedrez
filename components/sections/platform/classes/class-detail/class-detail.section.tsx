@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ClassContentRenderer } from "@/components/common/class-content-renderer.comp";
 import { EmptyState } from "@/components/common/empty-state.comp";
+import { LocalDateTime } from "@/components/common/local-datetime.comp";
 import { CLASS_STATUS, TRANSCRIPT_STATUS } from "@/constants/platform/class-codes.const";
 import { platformRoutes } from "@/lib/platform-routes";
 import type { ClassDetail } from "@/services/classes/classes.types";
@@ -31,8 +32,12 @@ export function ClassDetailSection({ classDetail }: ClassDetailSectionProps) {
         {classDetail.description && <p className="platform-page__subtitle">{classDetail.description}</p>}
         <p className="class-detail__meta">
           {classDetail.teacherName}
-          {classDetail.teacherTitle ? ` · ${classDetail.teacherTitle}` : ""} · {classDetail.dateLabel} ·{" "}
-          {classDetail.timeLabel} · {classDetail.durationMin} min
+          {classDetail.teacherTitle ? ` · ${classDetail.teacherTitle}` : ""} ·{" "}
+          <LocalDateTime
+            iso={classDetail.scheduledAtIso}
+            fallback={`${classDetail.dateLabel} · ${classDetail.timeLabel}`}
+          />{" "}
+          · {classDetail.durationMin} min
         </p>
 
         {isUpcoming && (

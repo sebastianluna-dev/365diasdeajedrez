@@ -16,7 +16,7 @@ export default function LandingPage() {
   const mentorsSlot = getHomeMentorsSlot();
 
   return (
-    <div className="landingPage">
+    <div className="landing-page">
       <Header />
       {sections.hero && <HeroSection />}
       {sections.program && <ProgramSection />}

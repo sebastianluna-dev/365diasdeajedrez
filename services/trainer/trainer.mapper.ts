@@ -6,10 +6,21 @@ import type { TrainerChapterItem, TrainerExercise } from "./trainer.types";
 
 export const trainerExerciseInclude = {
   mode: { select: { code: true } },
-  lesson: { select: { name: true, chapter: { select: { name: true } } } },
+  lesson: { select: { name: true, pgnUpdatedAt: true, chapter: { select: { name: true } } } },
 } satisfies Prisma.TrainingExerciseInclude;
 
 export type TrainerExerciseRow = Prisma.TrainingExerciseGetPayload<{ include: typeof trainerExerciseInclude }>;
+
+/**
+ * Un ejercicio queda obsoleto cuando el PGN de su lección se editó después de
+ * congelar startFen/line. Sin fecha de congelado se asume obsoleto: son
+ * ejercicios anteriores a que existiera el campo.
+ */
+export function isExerciseStale(frozenAt: Date | null, pgnUpdatedAt: Date | null): boolean {
+  if (!pgnUpdatedAt) return false;
+  if (!frozenAt) return true;
+  return pgnUpdatedAt > frozenAt;
+}
 
 export function mapTrainerExercise(row: TrainerExerciseRow): TrainerExercise {
   return {
@@ -21,6 +32,7 @@ export function mapTrainerExercise(row: TrainerExerciseRow): TrainerExercise {
     lessonName: row.lesson.name,
     chapterName: row.lesson.chapter.name,
     userColor: turnColor(row.startFen),
+    isStale: isExerciseStale(row.frozenAt, row.lesson.pgnUpdatedAt),
   };
 }
 

@@ -12,6 +12,6 @@
 
   &.reviews__dot_active {
     width: 28px;
-    background: #ff9143;
+    background: var(--color-primary);
   }
 }

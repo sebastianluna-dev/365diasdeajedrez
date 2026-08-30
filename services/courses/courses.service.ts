@@ -13,8 +13,7 @@ import {
 } from "./courses.mapper";
 import type { ChapterView, CourseDetail, CourseSummary, LessonView } from "./courses.types";
 
-// Catálogo de cursos publicados con toda su estructura. Deduplicado por
-// request via cache(): listado, detalle, capítulo y lección lo comparten.
+// Listado completo: sólo lo usa la página de «Mis cursos», que necesita todos.
 const getPublishedCourses = cache(async () => {
   const db = getPlatformDb();
   return db.course.findMany({
@@ -22,6 +21,39 @@ const getPublishedCourses = cache(async () => {
     orderBy: { name: "asc" },
     include: courseContentInclude,
   });
+});
+
+// Consulta dirigida para las vistas de un solo curso (detalle, capítulo y
+// lección): cache() deduplica por courseId dentro del mismo request.
+const getPublishedCourse = cache(async (courseId: string) => {
+  const db = getPlatformDb();
+  return db.course.findFirst({
+    where: { id: courseId, status: { code: COURSE_STATUS.PUBLISHED } },
+    include: courseContentInclude,
+  });
+});
+
+/** Progreso del usuario acotado a un curso, para las vistas de detalle. */
+const getCourseProgressState = cache(async (courseId: string): Promise<UserCourseState> => {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+
+  const [lessonRows, courseRow] = await Promise.all([
+    db.lessonProgress.findMany({
+      where: { userId: user.id, lesson: { chapter: { courseId } } },
+      select: { lessonId: true, status: { select: { code: true } } },
+    }),
+    db.courseProgress.findUnique({
+      where: { userId_courseId: { userId: user.id, courseId } },
+      select: { lastLessonId: true, status: { select: { code: true } } },
+    }),
+  ]);
+
+  return {
+    lessonStatus: new Map(lessonRows.map((row) => [row.lessonId, row.status.code as ProgressStatusCode])),
+    courseStatus: courseRow?.status.code as ProgressStatusCode | undefined,
+    lastLessonId: courseRow?.lastLessonId ?? undefined,
+  };
 });
 
 const getUserProgressState = cache(async (): Promise<Map<string, UserCourseState>> => {
@@ -68,16 +100,18 @@ export async function getUserCourses(): Promise<CourseSummary[]> {
 }
 
 export async function getCourseById(courseId: string): Promise<CourseDetail | null> {
-  const [courses, progress] = await Promise.all([getPublishedCourses(), getUserProgressState()]);
-  const course = courses.find((candidate) => candidate.id === courseId);
+  const [course, progress] = await Promise.all([getPublishedCourse(courseId), getCourseProgressState(courseId)]);
   if (!course) return null;
-  return mapCourseDetail(course, progress.get(course.id) ?? EMPTY_STATE);
+  return mapCourseDetail(course, progress);
 }
 
 export async function getChapterView(courseId: string, chapterId: string): Promise<ChapterView | null> {
   const db = getPlatformDb();
-  const [courses, progress, user] = await Promise.all([getPublishedCourses(), getUserProgressState(), getCurrentUser()]);
-  const course = courses.find((candidate) => candidate.id === courseId);
+  const [course, progress, user] = await Promise.all([
+    getPublishedCourse(courseId),
+    getCourseProgressState(courseId),
+    getCurrentUser(),
+  ]);
   if (!course) return null;
 
   const [exerciseCount, trainerRow] = await Promise.all([
@@ -85,7 +119,7 @@ export async function getChapterView(courseId: string, chapterId: string): Promi
     db.userTrainerChapter.findUnique({ where: { userId_chapterId: { userId: user.id, chapterId } } }),
   ]);
 
-  return mapChapterView(course, chapterId, progress.get(course.id) ?? EMPTY_STATE, {
+  return mapChapterView(course, chapterId, progress, {
     hasExercises: exerciseCount > 0,
     inTrainer: trainerRow !== null,
   });
@@ -93,8 +127,11 @@ export async function getChapterView(courseId: string, chapterId: string): Promi
 
 export async function getLessonView(courseId: string, lessonId: string): Promise<LessonView | null> {
   const db = getPlatformDb();
-  const [courses, progress, user] = await Promise.all([getPublishedCourses(), getUserProgressState(), getCurrentUser()]);
-  const course = courses.find((candidate) => candidate.id === courseId);
+  const [course, progress, user] = await Promise.all([
+    getPublishedCourse(courseId),
+    getCourseProgressState(courseId),
+    getCurrentUser(),
+  ]);
   if (!course) return null;
 
   const [lesson, settings] = await Promise.all([
@@ -121,5 +158,5 @@ export async function getLessonView(courseId: string, lessonId: string): Promise
   ]);
   if (!lesson) return null;
 
-  return mapLessonView(course, lesson, progress.get(course.id) ?? EMPTY_STATE, settings?.boardOrientation.code);
+  return mapLessonView(course, lesson, progress, settings?.boardOrientation.code);
 }

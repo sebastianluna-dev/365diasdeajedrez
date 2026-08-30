@@ -21,6 +21,11 @@
     color: var(--platform-text-muted);
   }
 
+  & .trainer-session__stale {
+    background: rgba(240, 192, 75, 0.18);
+    color: var(--color-secondary);
+  }
+
   & .trainer-session__prompt {
     margin: 0;
     font-size: 15px;
