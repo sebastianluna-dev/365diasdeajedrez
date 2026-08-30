@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Chessground } from "@lichess-org/chessground";
 import type { Api } from "@lichess-org/chessground/api";
 import type { Config } from "@lichess-org/chessground/config";
+import type { DrawShape } from "@lichess-org/chessground/draw";
 import type { Key } from "@lichess-org/chessground/types";
 import "@lichess-org/chessground/assets/chessground.base.css";
 import "@lichess-org/chessground/assets/chessground.cburnett.css";
@@ -21,9 +22,22 @@ import "./chess-board.comp.css";
 
 const AUTOPLAY_MS = 900;
 
+export interface ChessBoardControlledPosition {
+  fen: string;
+  lastMove?: [Key, Key];
+  check?: boolean;
+  /** Flechas [%cal] y casillas [%csl] a dibujar sobre el tablero. */
+  shapes?: DrawShape[];
+}
+
 interface ChessBoardProps {
-  /** Full PGN or bare SAN movetext. */
-  pgn: string;
+  /** Full PGN or bare SAN movetext. Ignored when `position` is set. */
+  pgn?: string;
+  /**
+   * Controlled mode: the parent owns the position and navigation (GameViewer,
+   * trainer). Only the board surface renders — no move list, no toolbar.
+   */
+  position?: ChessBoardControlledPosition;
   flipBoard?: boolean;
   annotations?: MoveAnnotations;
   /** Allow the viewer to drag/click legal moves (chessops-validated). */
@@ -32,8 +46,8 @@ interface ChessBoardProps {
   onMove?: (san: string, fromFen: string) => void;
 }
 
-export function ChessBoard({ pgn, flipBoard = false, annotations, interactive = false, onMove }: ChessBoardProps) {
-  const positions = useMemo(() => replayGame(pgn), [pgn]);
+export function ChessBoard({ pgn, position, flipBoard = false, annotations, interactive = false, onMove }: ChessBoardProps) {
+  const positions = useMemo(() => replayGame(pgn ?? ""), [pgn]);
   const total = positions.length - 1;
   const rows = useMemo(
     () => buildNotationRows(positions.slice(1).map((position) => position.san), annotations),
@@ -114,7 +128,7 @@ export function ChessBoard({ pgn, flipBoard = false, annotations, interactive = 
   useEffect(() => {
     const api = apiRef.current;
     if (!api) return;
-    const { fen, lastMove, check } = positions[ply];
+    const { fen, lastMove, check } = position ?? positions[ply];
     const color = turnColor(fen);
     const config: Config = {
       fen,
@@ -139,7 +153,8 @@ export function ChessBoard({ pgn, flipBoard = false, annotations, interactive = 
       };
     }
     api.set(config);
-  }, [ply, positions, orientation, interactive]);
+    api.setAutoShapes(position?.shapes ?? []);
+  }, [ply, positions, position, orientation, interactive]);
 
   // Keep chessground sized to its container.
   useEffect(() => {
@@ -168,6 +183,7 @@ export function ChessBoard({ pgn, flipBoard = false, annotations, interactive = 
   }, []);
 
   useEffect(() => {
+    if (position) return; // Controlled mode: navigation belongs to the parent.
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!isInViewportRef.current && !hasBeenClickedRef.current) return;
       if (event.key === "ArrowRight") {
@@ -180,11 +196,21 @@ export function ChessBoard({ pgn, flipBoard = false, annotations, interactive = 
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [goToNext, goToPrevious]);
+  }, [goToNext, goToPrevious, position]);
 
   useEffect(() => {
     activeCellRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }, [ply]);
+
+  if (position) {
+    return (
+      <div className="chess-board chess-board_mode_controlled" ref={rootRef}>
+        <div className="chess-board__frame" ref={frameRef}>
+          <div className="chess-board__surface" ref={boardRef} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="chess-board" ref={rootRef} onClick={() => (hasBeenClickedRef.current = true)}>

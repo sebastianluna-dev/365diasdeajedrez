@@ -1,0 +1,40 @@
+.course-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  & .course-detail__head {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  & .course-detail__tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  & .course-detail__authors {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .course-detail__progress {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  & .course-detail__cta {
+    margin-top: 6px;
+  }
+
+  & .course-detail__chapters-title {
+    margin: 10px 0 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+}

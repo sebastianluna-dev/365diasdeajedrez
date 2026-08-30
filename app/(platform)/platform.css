@@ -1,0 +1,101 @@
+/* Base visual de la plataforma autenticada: tokens y fondo. La estética fina
+   llegará en la etapa de rediseño; esto prioriza legibilidad y estructura. */
+
+:root {
+  --platform-bg: #16110d;
+  --platform-surface: #1e1813;
+  --platform-border: rgba(245, 240, 232, 0.08);
+  --platform-text: #f2ede7;
+  --platform-text-muted: #a89f92;
+  --platform-accent: #ff9143;
+  --platform-accent-soft: rgba(255, 145, 67, 0.14);
+}
+
+/* Primitivas compartidas de las páginas de plataforma (equivalente al
+   .section/.button de globals.css, pero para la zona autenticada). */
+
+.platform-page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.platform-page__head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.platform-page__title {
+  margin: 0;
+  font-family: var(--font-gramatika), sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--platform-text);
+}
+
+.platform-page__subtitle {
+  margin: 0;
+  font-size: 15px;
+  color: var(--platform-text-muted);
+}
+
+.platform-card {
+  background: var(--platform-surface);
+  border: 1px solid var(--platform-border);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.platform-card__title {
+  margin: 0 0 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--platform-text);
+}
+
+.platform-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--platform-accent);
+  color: #16110d;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.platform-button:hover {
+  background: #f0a05e;
+}
+
+.platform-button_variant_secondary {
+  background: transparent;
+  border: 1px solid rgba(245, 240, 232, 0.22);
+  color: var(--platform-text);
+}
+
+.platform-button_variant_secondary:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(245, 240, 232, 0.35);
+}
+
+.platform-tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--platform-text-muted);
+}
+
+.platform-tag_variant_accent {
+  background: var(--platform-accent-soft);
+  color: var(--platform-accent);
+}

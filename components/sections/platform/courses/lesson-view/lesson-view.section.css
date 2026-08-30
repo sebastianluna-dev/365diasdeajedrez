@@ -1,0 +1,48 @@
+.lesson-view {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  & .lesson-view__head {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  & .lesson-view__priority {
+    margin-left: 10px;
+    vertical-align: middle;
+  }
+
+  & .lesson-view__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  & .lesson-view__completed {
+    background: rgba(118, 150, 86, 0.2);
+    color: #a9c58c;
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  & .lesson-view__pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 8px;
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .lesson-view__pager-link {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
+  & .lesson-view__pager-link:hover {
+    color: var(--platform-accent);
+  }
+}

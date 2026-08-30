@@ -1,0 +1,781 @@
+// Plataforma educativa — dominio de la app autenticada.
+// Base de datos SEPARADA de Payload (Payload usa DATABASE_URI; esto usa
+// PLATFORM_DATABASE_URL). Ninguna tabla de este schema convive con las del CMS.
+//
+// Decisiones fijadas por el diagrama conceptual v2:
+// - El PGN es la fuente del contenido ajedrecístico (Lesson.pgn, Game.pgn).
+//   No existen tablas por movimiento ni árboles relacionales de jugadas.
+// - Sin enums de Prisma/Postgres: cada dominio restringido es una tabla
+//   catálogo (code único y estable; la lógica de negocio compara codes,
+//   nunca ids). Los valores se cargan por seed idempotente.
+// - Claves compuestas para las tablas de progreso/intermedias.
+//
+// Restricciones que Prisma no puede expresar (añadidas a mano en la
+// migración inicial como CHECK constraints — ver prisma/migrations):
+// - GameDatabase: exactamente uno de (userId, courseId) con valor.
+// - Position: exactamente uno de (userId, courseId) con valor
+//   (los propietarios TEACHER apuntan por userId; Teacher es 1:1 con User).
+// - ClassBlock: como máximo una referencia (gameId, lessonId, positionId).
+// - UserStatDaily: índice único con NULLS NOT DISTINCT para que topicId NULL
+//   no duplique filas.
+// Reglas que se validan en la capa de servicios (imposibles en CHECK sin
+// cruzar tablas): coherencia ownerType↔columna poblada, ClassBlock.kind↔campo
+// usado, Lesson.initialFen nulo sólo cuando initialPositionType=STARTING_POSITION.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/platform-db/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Catálogos (reemplazan enums; upsert por code en el seed)
+// ---------------------------------------------------------------------------
+
+model CourseType {
+  id       Int     @id @default(autoincrement())
+  code     String  @unique
+  label    String
+  order    Int     @default(0)
+  isActive Boolean @default(true)
+
+  courses Course[]
+}
+
+model CourseStatus {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  courses Course[]
+}
+
+model AuthorRole {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  courseAuthors CourseAuthor[]
+}
+
+model Level {
+  id       Int     @id @default(autoincrement())
+  code     String  @unique
+  label    String
+  order    Int     @default(0)
+  isActive Boolean @default(true)
+
+  courseLevels CourseLevel[]
+}
+
+model PresentationMode {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  lessons Lesson[]
+}
+
+model InitialPositionType {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  lessons Lesson[]
+}
+
+/// Orientación del tablero. Catálogo compartido por Lesson, Position y
+/// UserCourseSettings porque es el mismo concepto de dominio; AUTO sólo es
+/// válido en UserCourseSettings (subconjuntos por contexto en
+/// constants/platform/shared-codes.const.ts, validados por servicios).
+model BoardOrientation {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  lessons            Lesson[]
+  positions          Position[]
+  userCourseSettings UserCourseSettings[]
+}
+
+model ExerciseMode {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  exercises TrainingExercise[]
+}
+
+/// Compartido por CourseProgress, ChapterProgress y LessonProgress.
+model ProgressStatus {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  courseProgresses  CourseProgress[]
+  chapterProgresses ChapterProgress[]
+  lessonProgresses  LessonProgress[]
+}
+
+model AttemptResult {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  attempts TrainingAttempt[]
+}
+
+model AttemptContext {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  attempts TrainingAttempt[]
+}
+
+/// Propietario polimórfico. Compartido por GameDatabase (USER/COURSE) y
+/// Position (USER/COURSE/TEACHER); la validez por tabla la aplican los
+/// servicios — la integridad real vive en los CHECK XOR de la migración.
+model OwnerType {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  gameDatabases GameDatabase[]
+  positions     Position[]
+}
+
+model DatabaseKind {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  gameDatabases GameDatabase[]
+}
+
+model GameSource {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  games Game[]
+}
+
+/// Resultado de partida como catálogo (el spec prohíbe strings libres en
+/// dominios restringidos). `label` lleva el token PGN: "1-0", "0-1",
+/// "1/2-1/2", "*".
+model GameResult {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  games Game[]
+}
+
+model ClassStatus {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  classes Class[]
+}
+
+model MeetingProvider {
+  id       Int     @id @default(autoincrement())
+  code     String  @unique
+  label    String
+  order    Int     @default(0)
+  isActive Boolean @default(true)
+
+  classes Class[]
+}
+
+model ClassBlockKind {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  blocks ClassBlock[]
+}
+
+model TranscriptStatus {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  transcripts ClassTranscript[]
+}
+
+model ActivityType {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  activities UserActivity[]
+}
+
+model SubjectType {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  activities UserActivity[]
+}
+
+model StatMetric {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  dailyStats UserStatDaily[]
+}
+
+/// Catálogo de temas con jerarquía (sub-temas via parentId). Añadir un tema
+/// nuevo es una fila, no una migración.
+model Topic {
+  id       Int    @id @default(autoincrement())
+  code     String @unique
+  label    String
+  parentId Int?
+  order    Int    @default(0)
+
+  parent   Topic?  @relation("TopicHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children Topic[] @relation("TopicHierarchy")
+
+  lessonTopics LessonTopic[]
+  activities   UserActivity[]
+  dailyStats   UserStatDaily[]
+}
+
+// ---------------------------------------------------------------------------
+// Contenido: Course → Chapter → Lesson (la lección ES un PGN)
+// ---------------------------------------------------------------------------
+
+model Course {
+  id          String    @id @default(uuid())
+  name        String
+  slug        String    @unique
+  description String?
+  cover       String?
+  typeId      Int
+  statusId    Int
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  type   CourseType   @relation(fields: [typeId], references: [id])
+  status CourseStatus @relation(fields: [statusId], references: [id])
+
+  chapters        Chapter[]
+  courseAuthors   CourseAuthor[]
+  courseLevels    CourseLevel[]
+  progresses      CourseProgress[]
+  settings        UserCourseSettings[]
+  gameDatabases   GameDatabase[]
+  positions       Position[]
+}
+
+model Author {
+  id    String  @id @default(uuid())
+  name  String
+  slug  String  @unique
+  bio   String?
+  photo String?
+
+  courseAuthors CourseAuthor[]
+}
+
+model CourseAuthor {
+  courseId String
+  authorId String
+  roleId   Int
+  order    Int    @default(0)
+
+  course Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  author Author     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  role   AuthorRole @relation(fields: [roleId], references: [id])
+
+  @@id([courseId, authorId])
+}
+
+model CourseLevel {
+  courseId String
+  levelId  Int
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  level  Level  @relation(fields: [levelId], references: [id])
+
+  @@id([courseId, levelId])
+}
+
+model Chapter {
+  id                String  @id @default(uuid())
+  courseId          String
+  name              String
+  description       String?
+  order             Int
+  /// Minutos estimados.
+  estimatedDuration Int?
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  lessons         Lesson[]
+  progresses      ChapterProgress[]
+  trainerChapters UserTrainerChapter[]
+
+  @@unique([courseId, order])
+}
+
+model Lesson {
+  id                    String    @id @default(uuid())
+  chapterId             String
+  name                  String
+  description           String?
+  order                 Int
+  /// Lección imprescindible del curso (marca editorial; el filtro es del alumno).
+  isPriority            Boolean   @default(false)
+  /// Minutos estimados.
+  estimatedDuration     Int?
+  presentationModeId    Int
+  initialPositionTypeId Int
+  /// Nulo cuando initialPositionType = STARTING_POSITION (regla de servicios).
+  initialFen            String?
+  orientationId         Int
+  /// Fuente única del contenido: movimientos, variantes, comentarios, NAGs,
+  /// [%cal]/[%csl] y [%diagram] viven dentro del PGN.
+  pgn                   String    @db.Text
+  pgnUpdatedAt          DateTime?
+
+  chapter             Chapter             @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  presentationMode    PresentationMode    @relation(fields: [presentationModeId], references: [id])
+  initialPositionType InitialPositionType @relation(fields: [initialPositionTypeId], references: [id])
+  orientation         BoardOrientation    @relation(fields: [orientationId], references: [id])
+
+  exercises        TrainingExercise[]
+  progresses       LessonProgress[]
+  lessonTopics     LessonTopic[]
+  classBlocks      ClassBlock[]
+  courseProgresses CourseProgress[]   @relation("CourseProgressLastLesson")
+
+  @@unique([chapterId, order])
+}
+
+/// Declara un tramo entrenable del PGN. `path` usa rutas punteadas de índices
+/// de hijos desde la raíz ("0.0.1.0"); startFen + line van congelados para que
+/// el entrenador no dependa del parseo ni se rompa si el autor edita el PGN
+/// (marcar stale cuando Lesson.pgnUpdatedAt sea posterior).
+model TrainingExercise {
+  id         String  @id @default(uuid())
+  lessonId   String
+  order      Int
+  modeId     Int
+  path       String
+  startPly   Int
+  endPly     Int
+  startFen   String
+  /// SAN del tramo, separado por espacios, congelado al publicar.
+  line       String
+  promptText String?
+
+  lesson Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  mode   ExerciseMode @relation(fields: [modeId], references: [id])
+
+  attempts TrainingAttempt[]
+
+  @@unique([lessonId, order])
+}
+
+model LessonTopic {
+  lessonId String
+  topicId  Int
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  topic  Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([lessonId, topicId])
+}
+
+// ---------------------------------------------------------------------------
+// Usuario, progreso y configuración de estudio
+// ---------------------------------------------------------------------------
+
+/// Identidad mínima. La autenticación queda fuera de alcance en esta etapa:
+/// lib/platform-auth/current-user.ts resuelve el usuario demo del seed.
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  displayName String
+  createdAt   DateTime @default(now())
+
+  teacher           Teacher?
+  courseProgresses  CourseProgress[]
+  chapterProgresses ChapterProgress[]
+  lessonProgresses  LessonProgress[]
+  attempts          TrainingAttempt[]
+  courseSettings    UserCourseSettings[]
+  trainerChapters   UserTrainerChapter[]
+  gameDatabases     GameDatabase[]
+  positions         Position[]
+  classParticipants ClassParticipant[]
+  activities        UserActivity[]
+  dailyStats        UserStatDaily[]
+}
+
+model CourseProgress {
+  userId       String
+  courseId     String
+  statusId     Int
+  startedAt    DateTime?
+  completedAt  DateTime?
+  /// Punto de retorno de «continuar estudiando».
+  lastLessonId String?
+
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course     Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  status     ProgressStatus @relation(fields: [statusId], references: [id])
+  lastLesson Lesson?        @relation("CourseProgressLastLesson", fields: [lastLessonId], references: [id], onDelete: SetNull)
+
+  @@id([userId, courseId])
+}
+
+model ChapterProgress {
+  userId       String
+  chapterId    String
+  statusId     Int
+  startedAt    DateTime?
+  completedAt  DateTime?
+  quizPassedAt DateTime?
+
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter Chapter        @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  status  ProgressStatus @relation(fields: [statusId], references: [id])
+
+  @@id([userId, chapterId])
+}
+
+model LessonProgress {
+  userId      String
+  lessonId    String
+  statusId    Int
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  status ProgressStatus @relation(fields: [statusId], references: [id])
+
+  @@id([userId, lessonId])
+}
+
+/// Histórico append-only; nunca se actualiza.
+model TrainingAttempt {
+  id         String   @id @default(uuid())
+  userId     String
+  exerciseId String
+  resultId   Int
+  mistakes   Int      @default(0)
+  durationMs Int?
+  contextId  Int
+  createdAt  DateTime @default(now())
+
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise TrainingExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  result   AttemptResult    @relation(fields: [resultId], references: [id])
+  context  AttemptContext   @relation(fields: [contextId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([exerciseId])
+}
+
+/// Una fila por usuario y curso, creada al primer cambio. Su ausencia
+/// significa «valores por defecto»: no se crea al inscribirse.
+model UserCourseSettings {
+  userId             String
+  courseId           String
+  onlyPriorityLessons Boolean  @default(false)
+  boardOrientationId Int
+  trainingAfterLesson Boolean  @default(true)
+  updatedAt          DateTime @updatedAt
+
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course           Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  boardOrientation BoardOrientation @relation(fields: [boardOrientationId], references: [id])
+
+  @@id([userId, courseId])
+}
+
+/// Capítulos que el usuario eligió entrenar de forma recurrente.
+model UserTrainerChapter {
+  userId    String
+  chapterId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@id([userId, chapterId])
+}
+
+// ---------------------------------------------------------------------------
+// Bases de datos de partidas («Mis estudios» en la interfaz)
+// ---------------------------------------------------------------------------
+
+/// Una tabla, dos propietarios: usuario (bases privadas) o curso (bases del
+/// contenido publicado). CHECK XOR (userId, courseId) en la migración.
+model GameDatabase {
+  id          String   @id @default(uuid())
+  ownerTypeId Int
+  userId      String?
+  courseId    String?
+  name        String
+  description String?
+  kindId      Int
+  /// La base creada al registrarse.
+  isDefault   Boolean  @default(false)
+  /// Orden dentro del curso.
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ownerType OwnerType    @relation(fields: [ownerTypeId], references: [id])
+  user      User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course?      @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  kind      DatabaseKind @relation(fields: [kindId], references: [id])
+
+  games Game[]
+
+  @@index([userId])
+  @@index([courseId])
+}
+
+/// Cabeceras en columnas (listar/ordenar/filtrar sin parsear); el PGN sigue
+/// siendo la fuente del contenido.
+model Game {
+  id         String    @id @default(uuid())
+  databaseId String
+  white      String
+  black      String
+  whiteElo   Int?
+  blackElo   Int?
+  resultId   Int
+  playedAt   DateTime? @db.Date
+  event      String?
+  site       String?
+  round      String?
+  eco        String?
+  /// Nulo si la partida empieza en la posición inicial.
+  initialFen String?
+  pgn        String    @db.Text
+  /// Etiquetas libres del usuario.
+  tags       Json?
+  sourceId   Int
+  /// Sólo con sentido en bases de usuario.
+  isOwnGame  Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  database GameDatabase @relation(fields: [databaseId], references: [id], onDelete: Cascade)
+  result   GameResult   @relation(fields: [resultId], references: [id])
+  source   GameSource   @relation(fields: [sourceId], references: [id])
+
+  classBlocks ClassBlock[]
+
+  @@index([databaseId])
+}
+
+// ---------------------------------------------------------------------------
+// Clases y profesores
+// ---------------------------------------------------------------------------
+
+/// Rol sobre User: el panel del profesor se abre si existe esta fila.
+model Teacher {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  displayName String
+  title       String?
+  bio         String?
+  photo       String?
+  timezone    String?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  classes Class[]
+}
+
+model Class {
+  id                    String    @id @default(uuid())
+  teacherId             String
+  title                 String
+  description           String?
+  /// Fecha y hora de la clase (UTC).
+  scheduledAt           DateTime
+  durationMin           Int
+  statusId              Int
+  meetingProviderId     Int?
+  meetingUrl            String?
+  /// El enlace sólo se devuelve al cliente cuando now >= meetingUrlVisibleFrom.
+  meetingUrlVisibleFrom DateTime?
+  recordingUrl          String?
+  summary               String?   @db.Text
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  teacher         Teacher          @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  status          ClassStatus      @relation(fields: [statusId], references: [id])
+  meetingProvider MeetingProvider? @relation(fields: [meetingProviderId], references: [id])
+
+  participants ClassParticipant[]
+  blocks       ClassBlock[]
+  transcript   ClassTranscript?
+
+  @@index([scheduledAt])
+  @@index([teacherId])
+}
+
+model ClassParticipant {
+  classId    String
+  userId     String
+  paidAt     DateTime?
+  amount     Decimal?  @db.Decimal(10, 2)
+  currency   String?
+  paymentRef String?
+  attended   Boolean   @default(false)
+  joinedAt   DateTime?
+  createdAt  DateTime  @default(now())
+
+  class Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([classId, userId])
+}
+
+/// Contenido ordenado de la clase. Un bloque usa el campo de su kind y las
+/// referencias son punteros, nunca copias. CHECK «máx. una referencia» en la
+/// migración. `movePath` usa la misma ruta punteada que TrainingExercise.path.
+model ClassBlock {
+  id         String  @id @default(uuid())
+  classId    String
+  order      Int
+  kindId     Int
+  text       String? @db.Text
+  videoUrl   String?
+  gameId     String?
+  lessonId   String?
+  positionId String?
+  movePath   String?
+  caption    String?
+
+  class    Class          @relation(fields: [classId], references: [id], onDelete: Cascade)
+  kind     ClassBlockKind @relation(fields: [kindId], references: [id])
+  game     Game?          @relation(fields: [gameId], references: [id], onDelete: SetNull)
+  lesson   Lesson?        @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+  position Position?      @relation(fields: [positionId], references: [id], onDelete: SetNull)
+
+  @@unique([classId, order])
+}
+
+model ClassTranscript {
+  classId    String   @id
+  provider   String?
+  language   String?
+  statusId   Int
+  text       String?  @db.Text
+  /// [{ startMs, speaker, text }]
+  segments   Json?
+  durationMs Int?
+  createdAt  DateTime @default(now())
+
+  class  Class            @relation(fields: [classId], references: [id], onDelete: Cascade)
+  status TranscriptStatus @relation(fields: [statusId], references: [id])
+}
+
+/// Diagrama guardado y reutilizable. CHECK XOR (userId, courseId) en la
+/// migración; los propietarios TEACHER usan userId (Teacher es 1:1 con User).
+model Position {
+  id            String   @id @default(uuid())
+  ownerTypeId   Int
+  userId        String?
+  courseId      String?
+  title         String?
+  fen           String
+  orientationId Int
+  /// json de flechas [{ orig, dest, color }]
+  arrows        Json?
+  /// json de casillas resaltadas [{ square, color }]
+  highlights    Json?
+  createdAt     DateTime @default(now())
+
+  ownerType   OwnerType        @relation(fields: [ownerTypeId], references: [id])
+  user        User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course      Course?          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  orientation BoardOrientation @relation(fields: [orientationId], references: [id])
+
+  classBlocks ClassBlock[]
+}
+
+// ---------------------------------------------------------------------------
+// Actividad y estadísticas
+// ---------------------------------------------------------------------------
+
+/// Registro append-only de cada hecho del alumno: fuente de verdad de todas
+/// las estadísticas. Nunca se actualiza ni se borra.
+model UserActivity {
+  id            String   @id @default(uuid())
+  userId        String
+  typeId        Int
+  subjectTypeId Int
+  /// uuid del sujeto; polimórfico a propósito, sin FK.
+  subjectId     String
+  topicId       Int?
+  occurredAt    DateTime @default(now())
+  meta          Json?
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        ActivityType @relation(fields: [typeId], references: [id])
+  subjectType SubjectType  @relation(fields: [subjectTypeId], references: [id])
+  topic       Topic?       @relation(fields: [topicId], references: [id], onDelete: SetNull)
+
+  @@index([userId, occurredAt])
+}
+
+/// Agregado derivado por usuario/día/métrica/tema; reconstruible entero desde
+/// UserActivity. topicId NULL = total. En v1 el dashboard calcula directo de
+/// UserActivity; esta tabla queda lista para el rollup. El índice único se
+/// reemplaza en la migración por NULLS NOT DISTINCT.
+model UserStatDaily {
+  id       String   @id @default(uuid())
+  userId   String
+  day      DateTime @db.Date
+  metricId Int
+  topicId  Int?
+  value    Int      @default(0)
+
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  metric StatMetric @relation(fields: [metricId], references: [id])
+  topic  Topic?     @relation(fields: [topicId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, day, metricId, topicId])
+}

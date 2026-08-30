@@ -1,0 +1,53 @@
+.move-tree {
+  font-size: 15px;
+  line-height: 1.9;
+  color: #e8dfd4;
+  word-break: break-word;
+
+  & .move-tree__move {
+    display: inline;
+    border: 0;
+    background: transparent;
+    padding: 2px 4px;
+    margin: 0 1px;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 500;
+    color: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  & .move-tree__move:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  & .move-tree__move.move-tree__move_active {
+    background: rgba(255, 145, 67, 0.22);
+    color: #ffc79b;
+  }
+
+  & .move-tree__comment {
+    color: #a89f92;
+    font-weight: 400;
+    margin: 0 3px;
+  }
+
+  & .move-tree__variation {
+    color: #8a8175;
+
+    & .move-tree__move {
+      font-weight: 400;
+      color: #b5aca0;
+    }
+
+    & .move-tree__move.move-tree__move_active {
+      color: #ffc79b;
+    }
+
+    & .move-tree__comment {
+      color: #837a6e;
+    }
+  }
+}

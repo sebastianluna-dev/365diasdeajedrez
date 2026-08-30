@@ -1,0 +1,25 @@
+.continue-studying {
+  & .continue-studying__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  & .continue-studying__course {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .continue-studying__lesson {
+    margin: 0;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  & .continue-studying__cta {
+    margin-top: 6px;
+  }
+}

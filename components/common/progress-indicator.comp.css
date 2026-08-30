@@ -1,0 +1,26 @@
+.progress-indicator {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  & .progress-indicator__track {
+    flex: 1;
+    min-width: 60px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.09);
+    overflow: hidden;
+  }
+
+  & .progress-indicator__fill {
+    height: 100%;
+    border-radius: 999px;
+    background: var(--platform-accent, #ff9143);
+  }
+
+  & .progress-indicator__label {
+    font-size: 13px;
+    color: var(--platform-text-muted, #a89f92);
+    white-space: nowrap;
+  }
+}

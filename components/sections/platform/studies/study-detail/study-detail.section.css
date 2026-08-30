@@ -1,0 +1,35 @@
+.study-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  & .study-detail__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+  }
+
+  & .study-detail__breadcrumb-link {
+    color: var(--platform-text-muted);
+  }
+
+  & .study-detail__breadcrumb-link:hover {
+    color: var(--platform-accent);
+  }
+
+  & .study-detail__breadcrumb-separator {
+    color: rgba(245, 240, 232, 0.25);
+  }
+
+  & .study-detail__breadcrumb-current {
+    color: var(--platform-text);
+    font-weight: 600;
+  }
+
+  & .study-detail__tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+}

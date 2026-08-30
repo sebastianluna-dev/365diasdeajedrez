@@ -1,0 +1,27 @@
+.empty-state {
+  border: 1px dashed rgba(245, 240, 232, 0.16);
+  border-radius: 12px;
+  padding: 28px 24px;
+  text-align: center;
+
+  & .empty-state__title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--platform-text, #f2ede7);
+  }
+
+  & .empty-state__description {
+    margin: 6px 0 0;
+    font-size: 14px;
+    color: var(--platform-text-muted, #a89f92);
+  }
+
+  & .empty-state__action {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--platform-accent, #ff9143);
+  }
+}

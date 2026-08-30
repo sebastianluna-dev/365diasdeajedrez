@@ -25,6 +25,17 @@
     }
   }
 
+  /* Modo controlado (GameViewer / trainer): sólo la superficie del tablero. */
+  &.chess-board_mode_controlled {
+    max-width: none;
+    border-radius: 0;
+    box-shadow: none;
+
+    & .chess-board__frame {
+      width: 100%;
+    }
+  }
+
   & .chess-board__surface {
     width: 100%;
     aspect-ratio: 1;

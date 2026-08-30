@@ -1,0 +1,22 @@
+.studies-list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+
+  & .studies-list__group-title {
+    margin: 0 0 12px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .studies-list__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}

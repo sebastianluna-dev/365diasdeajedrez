@@ -60,6 +60,29 @@ export function turnColor(fen: string): "white" | "black" {
 }
 
 /**
+ * Plays a SAN move on a FEN and returns the resulting FEN, or `undefined` if
+ * the FEN or the move is invalid. Used by the Move Trainer to advance through
+ * a frozen exercise line without re-parsing any PGN.
+ */
+export function applySan(fen: string, san: string): string | undefined {
+  const setup = parseFen(fen).unwrap(
+    (s) => s,
+    () => null,
+  );
+  if (!setup) return undefined;
+  const pos = Chess.fromSetup(setup).unwrap(
+    (p) => p,
+    () => null,
+  );
+  if (!pos) return undefined;
+
+  const move = parseSan(pos, san);
+  if (!move) return undefined;
+  pos.play(move);
+  return makeFen(pos.toSetup());
+}
+
+/**
  * SAN for a legal move played from `fen` between two squares — for interactive
  * boards. Auto-promotes to queen (base chessground has no promotion dialog).
  * Returns `undefined` if the FEN or move is invalid.

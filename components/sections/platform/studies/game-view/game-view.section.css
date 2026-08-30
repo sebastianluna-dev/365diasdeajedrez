@@ -1,0 +1,42 @@
+.game-view {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  & .game-view__breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 13.5px;
+  }
+
+  & .game-view__breadcrumb-link {
+    color: var(--platform-text-muted);
+  }
+
+  & .game-view__breadcrumb-link:hover {
+    color: var(--platform-accent);
+  }
+
+  & .game-view__breadcrumb-separator {
+    color: rgba(245, 240, 232, 0.25);
+  }
+
+  & .game-view__breadcrumb-current {
+    color: var(--platform-text);
+    font-weight: 600;
+  }
+
+  & .game-view__head {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  & .game-view__source {
+    margin: 0;
+    font-size: 13px;
+    color: var(--platform-text-muted);
+  }
+}

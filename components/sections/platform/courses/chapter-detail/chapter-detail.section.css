@@ -1,0 +1,30 @@
+.chapter-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  & .chapter-detail__head {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  & .chapter-detail__meta {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .chapter-detail__progress {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  & .chapter-detail__lessons-title {
+    margin: 10px 0 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+}

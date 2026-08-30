@@ -1,0 +1,80 @@
+.trainer-session {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  & .trainer-session__status {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  & .trainer-session__lesson {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .trainer-session__color {
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .trainer-session__prompt {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--platform-text-muted);
+    max-width: 70ch;
+  }
+
+  & .trainer-session__board {
+    max-width: 560px;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  & .trainer-session__feedback-area {
+    min-height: 26px;
+  }
+
+  & .trainer-session__feedback {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 600;
+  }
+
+  & .trainer-session__feedback.trainer-session__feedback_kind_ok {
+    color: #a9c58c;
+  }
+
+  & .trainer-session__feedback.trainer-session__feedback_kind_error {
+    color: #f58a8d;
+  }
+
+  & .trainer-session__feedback.trainer-session__feedback_kind_info {
+    color: var(--platform-text-muted);
+  }
+
+  & .trainer-session__actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  & .trainer-session__mistakes {
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  & .trainer-session__exit {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
+  & .trainer-session__exit:hover {
+    color: var(--platform-accent);
+  }
+}

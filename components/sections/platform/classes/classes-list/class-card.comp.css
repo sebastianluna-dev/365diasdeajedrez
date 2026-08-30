@@ -1,0 +1,75 @@
+.class-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  &:hover {
+    border-color: rgba(255, 145, 67, 0.45);
+  }
+
+  &.class-card_cancelled {
+    opacity: 0.55;
+  }
+
+  & .class-card__info {
+    min-width: 0;
+  }
+
+  & .class-card__title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .class-card__teacher {
+    margin: 3px 0 0;
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-card__meta {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    @media (max-width: 720px) {
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+  }
+
+  & .class-card__schedule {
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-card__status.class-card__status_code_scheduled {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent);
+  }
+
+  & .class-card__status.class-card__status_code_live {
+    background: rgba(244, 64, 70, 0.18);
+    color: #f58a8d;
+  }
+
+  & .class-card__status.class-card__status_code_completed {
+    background: rgba(118, 150, 86, 0.2);
+    color: #a9c58c;
+  }
+
+  @media (max-width: 720px) {
+    flex-direction: column;
+    align-items: stretch;
+
+    & .class-card__meta {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}

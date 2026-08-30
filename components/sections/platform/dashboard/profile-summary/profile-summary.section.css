@@ -1,0 +1,28 @@
+.profile-summary {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+
+  & .profile-summary__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+
+    @media (max-width: 720px) {
+      align-items: flex-start;
+    }
+  }
+
+  & .profile-summary__email {
+    font-size: 14px;
+    color: var(--platform-text);
+  }
+
+  & .profile-summary__since {
+    font-size: 13px;
+    color: var(--platform-text-muted);
+  }
+}

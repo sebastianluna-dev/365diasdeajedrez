@@ -1,0 +1,44 @@
+.course-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  & .course-card__tags {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  & .course-card__name {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  & .course-card__name-link {
+    color: var(--platform-text);
+  }
+
+  & .course-card__name-link:hover {
+    color: var(--platform-accent);
+  }
+
+  & .course-card__description {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--platform-text-muted);
+  }
+
+  & .course-card__authors {
+    margin: 0;
+    font-size: 13px;
+    color: var(--platform-text-muted);
+  }
+
+  & .course-card__actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+  }
+}

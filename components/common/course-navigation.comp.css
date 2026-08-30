@@ -1,0 +1,24 @@
+.course-navigation {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 13.5px;
+
+  & .course-navigation__link {
+    color: var(--platform-text-muted, #a89f92);
+  }
+
+  & .course-navigation__link:hover {
+    color: var(--platform-accent, #ff9143);
+  }
+
+  & .course-navigation__separator {
+    color: rgba(245, 240, 232, 0.25);
+  }
+
+  & .course-navigation__current {
+    color: var(--platform-text, #f2ede7);
+    font-weight: 600;
+  }
+}

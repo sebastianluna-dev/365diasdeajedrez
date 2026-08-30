@@ -1,0 +1,71 @@
+.trainer-home {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+
+  & .trainer-home__group-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  & .trainer-home__group-title {
+    margin: 0 0 12px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .trainer-home__group-head .trainer-home__group-title {
+    margin-bottom: 0;
+  }
+
+  & .trainer-home__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  & .trainer-home__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    @media (max-width: 720px) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  }
+
+  & .trainer-home__row-info {
+    min-width: 0;
+  }
+
+  & .trainer-home__row-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .trainer-home__row-name:hover {
+    color: var(--platform-accent);
+  }
+
+  & .trainer-home__row-meta {
+    margin: 3px 0 0;
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .trainer-home__row-actions {
+    flex: none;
+    display: flex;
+    gap: 10px;
+  }
+}
