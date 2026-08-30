@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import { StudiesListSection } from "@/components/sections/platform/studies/studies-list/studies-list.section";
+import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import "./studies-page.css";
 
 export const metadata: Metadata = {
   title: "Mis estudios",
 };
 
-export default function StudiesPage() {
+export default async function StudiesPage() {
+  // Frontera de la zona privada: sin sesión válida, redirige al login.
+  await getCurrentUser();
+
   return (
     <div className="platform-page studies-page">
       <header className="platform-page__head">

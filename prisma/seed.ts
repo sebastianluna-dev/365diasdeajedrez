@@ -12,6 +12,7 @@ import { Chess } from "chessops/chess";
 import { makeFen, parseFen } from "chessops/fen";
 import { parseSan } from "chessops/san";
 import { PrismaClient } from "../lib/platform-db/generated/client";
+import { hashPassword } from "../lib/platform-auth/password";
 import {
   ACTIVITIES,
   AUTHOR,
@@ -39,6 +40,9 @@ if (!connectionString) throw new Error("Falta PLATFORM_DATABASE_URL en el entorn
 const db = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 
 const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** Contraseña de las cuentas demo. Sobreescribible por entorno. */
+const DEMO_PASSWORD = process.env.PLATFORM_DEMO_PASSWORD ?? "ajedrez365";
 
 /** Replica jugadas SAN con chessops para congelar posiciones siempre legales. */
 function positionAfter(initialFen: string | null, sans: string[]): Chess {
@@ -159,11 +163,21 @@ async function main() {
   }
 
   // --- Usuarios, autor, profesor ------------------------------------------
+  // La contraseña sólo se pone cuando la cuenta aún no tiene ninguna: así un
+  // re-seed no revierte la que se haya cambiado con `npm run user:password`.
   for (const user of USERS) {
+    const existing = await db.user.findUnique({
+      where: { email: user.email },
+      select: { passwordHash: true },
+    });
+    const credential = existing?.passwordHash
+      ? {}
+      : { passwordHash: await hashPassword(DEMO_PASSWORD), passwordUpdatedAt: new Date() };
+
     await db.user.upsert({
       where: { email: user.email },
-      update: { displayName: user.displayName },
-      create: user,
+      update: { displayName: user.displayName, ...credential },
+      create: { ...user, ...credential },
     });
   }
 

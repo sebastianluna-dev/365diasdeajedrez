@@ -13,7 +13,10 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma db seed",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "user:create": "tsx scripts/platform-user.ts create",
+    "user:password": "tsx scripts/platform-user.ts password",
+    "user:list": "tsx scripts/platform-user.ts list"
   },
   "dependencies": {
     "@lichess-org/chessground": "^10.1.1",

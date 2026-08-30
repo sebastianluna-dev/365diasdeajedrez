@@ -3,52 +3,23 @@
 Backlog de deuda técnica y mejoras del proyecto. Cada punto lleva **área** y **prioridad**
 (baja · media · alta · extrema) y una guía de cómo abordarlo.
 
-> Última revisión: 2026-08-30. En esa ronda se resolvieron 16 de los 22 puntos originales
-> (ver «Resueltos» al final). Lo que sigue abierto está arriba.
-
----
-
-## Prioridad EXTREMA
-
-### 1. La plataforma no tiene autenticación real — [Seguridad]
-Todas las rutas de `app/(platform)/` (dashboard, cursos, clases, estudios, trainer) son públicas y
-operan con un usuario demo fijo. Las server actions escriben progreso e intentos sin verificar
-identidad real.
-
-*Estado: aplazado a propósito (decisión del 2026-08-30: seguir con el usuario demo en esta ronda).*
-
-**Cómo abordarlo:** implementar login de alumnos. La opción de menor fricción es una colección
-`students` con `auth: true` en Payload (reutiliza sesiones, cookies y hash sin dependencias
-nuevas); la alternativa es Auth.js sobre la base de la plataforma. El único punto de swap es
-`lib/platform-auth/current-user.ts` (`getCurrentUser()`): debe leer la sesión real y buscar/crear el
-`User` de Prisma vinculado por email. Añadir `proxy.ts` en la raíz (Next 16 renombró
-`middleware.ts` → `proxy.ts`) con un matcher sobre las rutas de plataforma para el check optimista,
-y mantener la verificación de verdad en el DAL. NUNCA hacer el check de auth en
-`app/(platform)/layout.tsx` (la doc de Next 16 lo desaconseja explícitamente: el layout no controla
-el render de los segmentos).
-
-**Depende de esto:** cerrar del todo los puntos 2 y 7.
+> Última revisión: 2026-08-30 (segunda ronda). De los 22 puntos originales quedan resueltos 18,
+> incluido el #1 (autenticación real). Lo que sigue abierto está arriba.
 
 ---
 
 ## Prioridad ALTA
 
-### 2. Indexación y aislamiento de la zona privada — [SEO / Seguridad]
-*Parcialmente resuelto:* el layout de plataforma ya declara `robots: { index: false, follow: false }`
-y `app/robots.ts` excluye `/dashboard`, `/classes`, `/studies`, `/courses` y `/trainer`.
-
-**Lo que falta:** con autenticación real, comprobar que esas rutas devuelven contenido sólo a
-sesiones válidas (hoy cualquiera con la URL ve los datos del alumno demo).
-
-### 7. Validación de esquema y rate limit en server actions — [Seguridad]
-*Parcialmente resuelto:* todas las actions de escritura resuelven el usuario en el servidor, acotan
-sus entradas (longitud de nombres, tamaño del PGN, tope de partidas importadas, `clamp` de
-`mistakes`/`durationMs`) y pasan por `allowAction()` de `lib/rate-limit.ts`.
+### 7. Validación de esquema en server actions y rate limit compartido — [Seguridad]
+*Mayormente resuelto:* todas las actions de escritura resuelven el usuario en el servidor mediante
+el DAL (que ahora comprueba la sesión de verdad), acotan sus entradas (longitud de nombres, tamaño
+del PGN, tope de partidas importadas, `clamp` de `mistakes`/`durationMs`) y pasan por
+`allowAction()` de `lib/rate-limit.ts`. El login añade doble techo, por cuenta y por origen.
 
 **Lo que falta:** (a) el contador de `lib/rate-limit.ts` vive **en memoria del proceso**, así que con
 varias instancias el límite es por instancia — mover a un almacén compartido (Redis/Upstash) al
-desplegar en serio; (b) validación declarativa con zod en la entrada de cada action, que cobra
-sentido cuando el usuario deje de ser fijo.
+desplegar en serio. Es lo más urgente que queda, porque el techo del login es justo lo que frena un
+ataque de fuerza bruta; (b) validación declarativa con zod en la entrada de cada action.
 
 ### 15. Falta gestión de contenido de la plataforma — [Arquitectura / Producto]
 Cursos, lecciones y clases sólo pueden crearse vía seed. El panel del profesor (crear clases,
@@ -59,11 +30,33 @@ inscribir alumnos, marcar pagos) descrito en el diagrama no existe aún.
 **Cómo abordarlo:** rutas `/teacher` cuya llave es la existencia de la fila `Teacher` (sin sistema de
 roles, como dice el diagrama): alta y edición de clases, editor de bloques de contenido,
 inscripción de alumnos y marcado de pago/asistencia. Después, un editor mínimo de cursos. No
-convertir catálogos en CRUDs: siguen siendo seed.
+convertir catálogos en CRUDs: siguen siendo seed. Incluye el alta de alumnos, que hoy sólo se puede
+hacer con `npm run user:create`.
 
 ---
 
 ## Prioridad MEDIA
+
+### 1b. Recuperación de contraseña y verificación de correo — [Seguridad / Producto]
+El login ya existe (punto 1), pero un alumno que olvida su contraseña depende de que la academia se
+la cambie a mano con `npm run user:password`.
+
+**Cómo abordarlo:** hace falta un servicio de correo, que el proyecto todavía no tiene. Después:
+tabla de tokens de un solo uso con caducidad corta (mismo patrón que `Session`: guardar el SHA-256,
+nunca el token), página `/recuperar`, y responder siempre lo mismo exista o no la cuenta, para no
+revelar quién está dado de alta. Al usar el token, cerrar todas las sesiones del usuario
+(`destroyAllSessionsOf`, ya escrita).
+
+### 1c. Sesión inválida: redirección dentro del stream, no 307 — [Seguridad / UX]
+Entrar sin cookie lo corta el proxy con un 307 limpio. Pero con una cookie **presente y ya no
+válida** (caducada o revocada), el proxy la deja pasar y la redirección la lanza el DAL cuando la
+respuesta ya ha empezado a transmitirse: Next la manda dentro del stream y el estado HTTP es 200.
+No se filtra ningún dato —nada del alumno llega a renderizarse— y el navegador redirige igual, pero
+un cliente sin JavaScript vería el armazón vacío. Comprobado que no depende de los `loading.tsx`.
+
+**Cómo abordarlo:** o se valida la sesión en el proxy (implica consultar la base ahí, que es
+justo lo que se quiso evitar), o se espera a `unauthorized()` + `unauthorized.tsx`, hoy
+experimental en Next 16.
 
 ### 11b. Un SAN malformado se descarta sin aviso — [Arquitectura / Ajedrez]
 *Parcialmente resuelto:* `parsePgnTree` ya devuelve `warnings[]` y el `GameViewer` los muestra en
@@ -123,6 +116,8 @@ re-ejecuta en semanas, la «próxima clase» queda en el pasado.
 
 | # | Punto | Cómo se resolvió |
 |---|---|---|
+| 1 | Sin autenticación real | Login propio en la base de la plataforma (decisión: la identidad no se delega en Payload). `User.passwordHash` con **scrypt** y sus parámetros de coste dentro del hash; sesiones opacas en la tabla `Session`, de las que sólo se guarda el SHA-256 del token, con caducidad de 30 días y renovación deslizante. `getCurrentUser()` pasa a exigir sesión o redirigir; `proxy.ts` hace el rechazo optimista. Sin registro público: alta por `npm run user:create`. El login es una server action plana, para que funcione sin JavaScript. |
+| 2 | Aislamiento de la zona privada | Cierra con el punto 1: las cinco rutas privadas devuelven 307 al login sin sesión (verificado ruta a ruta). Se mantienen `robots: { index: false }` en el layout y la exclusión en `app/robots.ts`, que ahora incluye `/login`. |
 | 3 | Servicios que cargaban colecciones completas | `getArticleBySlug` consulta por slug con `limit: 1`; los cursos usan `getPublishedCourse(courseId)` y `getCourseProgressState(courseId)` dirigidos, deduplicados por `cache()`. `getMentorBySlug` se queda filtrando en memoria a propósito: los mentores viven en un **Global** de Payload, un único documento. |
 | 4 | `UserStatDaily` no se alimentaba | `services/shared/user-activity.service.ts` registra el hecho e incrementa el bucket diario (total + desglose por tema) con `ON CONFLICT` en SQL crudo, necesario por el índice `NULLS NOT DISTINCT`. El dashboard lee de ahí; el seed reconstruye la tabla entera desde `UserActivity`. |
 | 5 | Ejercicios «stale» sin detectar | Columna `TrainingExercise.frozenAt` (migración `add_exercise_frozen_at`); `isExerciseStale()` compara con `Lesson.pgnUpdatedAt` y la sesión de entrenamiento marca el ejercicio como «Desactualizado». |

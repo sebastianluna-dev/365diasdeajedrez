@@ -42,12 +42,23 @@ npm run dev                  # http://localhost:3000
 | `npm run db:deploy` | `prisma migrate deploy` (producción). |
 | `npm run db:seed` | `prisma db seed`. |
 | `npm run db:studio` | `prisma studio`. |
+| `npm run user:create -- <correo> "<Nombre>"` | Da de alta un alumno (pide la contraseña sin eco). |
+| `npm run user:password -- <correo>` | Cambia su contraseña y cierra sus sesiones. |
+| `npm run user:list` | Lista las cuentas, si tienen contraseña y sus sesiones abiertas. |
 
-## Usuario demo
+## Acceso a la plataforma
 
-El seed crea al alumno demo **`alumno.demo@365diasdeajedrez.com`**. La autenticación real **está pendiente**: hoy la sesión se simula resolviendo siempre ese usuario.
+La zona privada (`/dashboard`, `/classes`, `/studies`, `/courses`, `/trainer`) exige iniciar sesión en `/login`. El seed deja lista la cuenta de pruebas **`alumno.demo@365diasdeajedrez.com`** con la contraseña `ajedrez365` (o la de `PLATFORM_DEMO_PASSWORD`); sólo se asigna a cuentas que aún no tienen contraseña, así que un re-seed nunca revierte un cambio hecho a mano.
 
-El único punto de cambio es `lib/platform-auth/current-user.ts` — el DAL de identidad. Cuando exista login real basta con leer la sesión y buscar por id ahí, sin tocar servicios ni UI. Todo servicio o server action debe resolver el usuario a través de esa función y nunca confiar en datos del cliente.
+**No hay registro público**: en una academia el alumno existe porque se le da de alta. Mientras no exista el panel del profesor, la vía es `npm run user:create`.
+
+Cómo está montado:
+
+- **Identidad y credencial viven en la base de la plataforma** (Prisma), no en Payload: `User.passwordHash` guarda un hash **scrypt** con sus parámetros de coste dentro, para poder subirlos sin invalidar los hashes antiguos (`lib/platform-auth/password.ts`).
+- **Sesiones opacas en base de datos** (`lib/platform-auth/session.ts`): la cookie lleva un token aleatorio del que sólo se almacena su SHA-256, y la caducidad de verdad es `Session.expiresAt` (30 días, con renovación deslizante). Cerrar sesión o cambiar la contraseña revoca al instante, sin depender del navegador.
+- **`lib/platform-auth/current-user.ts` es el DAL de identidad**: `getCurrentUser()` devuelve al usuario o redirige al login, y `getSessionUser()` es su versión que admite null. Todo servicio y toda server action resuelve el usuario ahí y nunca confía en datos del cliente.
+- **`proxy.ts` sólo hace un rechazo optimista** (¿existe la cookie?) para ahorrar un render; no valida nada. La comprobación real es siempre la del DAL, que es además la que cubre las server actions —alcanzables por POST directo—.
+- El login es una **server action plana**, no `useActionState`: así funciona también sin JavaScript, que es lo mínimo exigible en la puerta de entrada.
 
 ## Mapa de rutas
 
@@ -63,7 +74,11 @@ El único punto de cambio es `lib/platform-auth/current-user.ts` — el DAL de i
 
 - `/admin` (más `/api/*` y `/api/graphql`)
 
-**Plataforma** — `app/(platform)`
+**Acceso** — `app/(auth)`
+
+- `/login`
+
+**Plataforma** — `app/(platform)` (requiere sesión)
 
 - `/dashboard`
 - `/classes`, `/classes/[classId]`
@@ -73,7 +88,7 @@ El único punto de cambio es `lib/platform-auth/current-user.ts` — el DAL de i
 
 ## Arquitectura en breve
 
-- **Route groups**: `(frontend)` (sitio público), `(payload)` (CMS) y `(platform)` (zona autenticada, con su propio `layout`, `loading`, `error` y `platform.css`).
+- **Route groups**: `(frontend)` (sitio público), `(payload)` (CMS), `(auth)` (login) y `(platform)` (zona autenticada, con su propio `layout`, `loading`, `error` y `platform.css`). Cada uno tiene su propio root layout.
 - **Cada sección llama a su propio servicio**: los componentes de página no consultan la base de datos directamente.
 - **Tríada por dominio**: `services/<dominio>/{<dominio>.service.ts, <dominio>.mapper.ts, <dominio>.types.ts}` (más `.actions.ts` donde hay server actions). El *service* obtiene datos, el *mapper* traduce al tipo de vista y los *types* son el contrato de la UI.
 - **CSS BEM por componente**, sin Tailwind: cada archivo `.css` anida bajo su propio selector raíz para que los estilos no se filtren entre secciones.

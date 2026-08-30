@@ -424,14 +424,22 @@ model LessonTopic {
 // Usuario, progreso y configuración de estudio
 // ---------------------------------------------------------------------------
 
-/// Identidad mínima. La autenticación queda fuera de alcance en esta etapa:
-/// lib/platform-auth/current-user.ts resuelve el usuario demo del seed.
+/// Identidad del alumno. Es también la credencial: la plataforma no delega la
+/// autenticación en Payload (que sólo gestiona el CMS del sitio público) ni en
+/// un proveedor externo, así que el hash de la contraseña vive aquí.
 model User {
   id          String   @id @default(uuid())
   email       String   @unique
   displayName String
   createdAt   DateTime @default(now())
 
+  /// Hash scrypt con sus parámetros embebidos (ver lib/platform-auth/password.ts).
+  /// null = cuenta dada de alta sin credencial todavía: no puede iniciar sesión.
+  passwordHash      String?
+  passwordUpdatedAt DateTime?
+  lastLoginAt       DateTime?
+
+  sessions          Session[]
   teacher           Teacher?
   courseProgresses  CourseProgress[]
   chapterProgresses ChapterProgress[]
@@ -444,6 +452,28 @@ model User {
   classParticipants ClassParticipant[]
   activities        UserActivity[]
   dailyStats        UserStatDaily[]
+}
+
+/// Sesión iniciada. El token que viaja en la cookie es un valor aleatorio
+/// opaco del que sólo se guarda su SHA-256: si alguien lee esta tabla no puede
+/// suplantar a nadie. La caducidad de verdad es `expiresAt` (la cookie sólo
+/// transporta el token), de modo que cerrar sesión o revocarla surte efecto
+/// inmediato sin depender del navegador.
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  tokenHash String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  /// Última vez que se usó; sirve para la renovación deslizante y para
+  /// distinguir sesiones vivas de las abandonadas.
+  lastSeenAt DateTime @default(now())
+  userAgent  String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
 }
 
 model CourseProgress {

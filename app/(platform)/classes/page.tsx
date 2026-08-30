@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import { ClassesListSection } from "@/components/sections/platform/classes/classes-list/classes-list.section";
+import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import "./classes-page.css";
 
 export const metadata: Metadata = {
   title: "Mis clases",
 };
 
-export default function ClassesPage() {
+export default async function ClassesPage() {
+  // Frontera de la zona privada: sin sesión válida, redirige al login.
+  await getCurrentUser();
+
   return (
     <div className="platform-page classes-page">
       <header className="platform-page__head">
