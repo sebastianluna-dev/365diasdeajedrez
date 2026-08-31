@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { LOGIN_PATH } from "@/constants/platform/auth.const";
 import { Logo } from "@/components/common/logo.comp";
 import { getHeaderData } from "@/services/home/home.service";
 import { HeaderDropdown } from "./header-dropdown.comp";
@@ -9,6 +10,13 @@ import "./header.section.css";
 interface HeaderProps {
   theme?: "dark" | "light";
 }
+
+// El botón principal del header es la entrada a la plataforma, y por eso su
+// texto y su destino van fijos en el código en lugar de salir del CMS: un
+// rótulo editable podría acabar prometiendo algo distinto de lo que hace el
+// enlace. El campo `ctaLabel` del global `home-header` sigue existiendo (y lo
+// sigue mapeando services/home), pero ya no lo lee nadie.
+const LOGIN_CTA_LABEL = "Iniciar sesión";
 
 export async function Header({ theme = "dark" }: HeaderProps) {
   const content = await getHeaderData();
@@ -36,12 +44,12 @@ export async function Header({ theme = "dark" }: HeaderProps) {
               )}
             </div>
           </nav>
-          <Link href="/#planes" className="site-header__button">
-            {content.ctaLabel}
+          <Link href={LOGIN_PATH} className="site-header__button">
+            {LOGIN_CTA_LABEL}
             <ChevronRight size={16} />
           </Link>
 
-          <HeaderMobileMenu navItems={content.navItems} ctaLabel={content.ctaLabel} />
+          <HeaderMobileMenu navItems={content.navItems} ctaLabel={LOGIN_CTA_LABEL} ctaHref={LOGIN_PATH} />
         </div>
 
         <div className="site-header-nav__spacer" />

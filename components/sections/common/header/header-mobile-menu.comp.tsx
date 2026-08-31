@@ -7,10 +7,12 @@ import type { HeaderNavItem } from "@/services/home/home.types";
 
 interface HeaderMobileMenuProps {
   navItems: HeaderNavItem[];
+  /** Mismo botón que en escritorio: lo decide header.section.tsx, no el CMS. */
   ctaLabel: string;
+  ctaHref: string;
 }
 
-export function HeaderMobileMenu({ navItems, ctaLabel }: HeaderMobileMenuProps) {
+export function HeaderMobileMenu({ navItems, ctaLabel, ctaHref }: HeaderMobileMenuProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const mobileLinks = navItems.flatMap((item) => (item.type === "link" ? [item] : item.links));
 
@@ -35,7 +37,7 @@ export function HeaderMobileMenu({ navItems, ctaLabel }: HeaderMobileMenuProps) 
           ))}
         </div>
         <Link
-          href="/#planes"
+          href={ctaHref}
           className="site-header__button site-header-mobile__button"
           onClick={() => setMobileOpen(false)}
         >
