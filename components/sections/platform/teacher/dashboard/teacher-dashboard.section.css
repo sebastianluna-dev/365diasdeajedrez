@@ -1,0 +1,83 @@
+.teacher-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  & .teacher-dashboard__metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  & .teacher-dashboard__metric {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  & .teacher-dashboard__metric-value {
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .teacher-dashboard__metric-label {
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .teacher-dashboard__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .teacher-dashboard__class {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--platform-border);
+  }
+
+  & .teacher-dashboard__class:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  & .teacher-dashboard__class-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .teacher-dashboard__class-title:hover {
+    color: var(--platform-accent);
+  }
+
+  & .teacher-dashboard__class-meta {
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .teacher-dashboard__empty {
+    margin: 0;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  & .teacher-dashboard__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}

@@ -1,0 +1,35 @@
+.teacher-page {
+  & .teacher-page__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  & .teacher-page__metric {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  & .teacher-page__metric-value {
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .teacher-page__metric-label {
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .teacher-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}

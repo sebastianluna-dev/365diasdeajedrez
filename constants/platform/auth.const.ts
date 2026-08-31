@@ -44,4 +44,12 @@ export const LOGIN_ERROR_MESSAGES: Record<string, string> = {
  * el sitemap/robots para excluirlos; la comprobación de verdad vive siempre en
  * el DAL (`getCurrentUser`), porque el proxy sólo ve la cookie, no la sesión.
  */
-export const PROTECTED_PATH_PREFIXES = ["/dashboard", "/classes", "/studies", "/courses", "/trainer"] as const;
+export const PROTECTED_PATH_PREFIXES = [
+  "/dashboard",
+  "/classes",
+  "/studies",
+  "/courses",
+  "/trainer",
+  "/teacher",
+  "/staff",
+] as const;

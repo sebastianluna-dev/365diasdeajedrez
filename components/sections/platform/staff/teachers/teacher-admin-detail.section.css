@@ -1,0 +1,27 @@
+.teacher-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  & .teacher-admin__form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    max-width: 620px;
+
+    & .platform-field {
+      width: 100%;
+    }
+  }
+
+  & .teacher-admin__meta {
+    margin: 14px 0 0;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  & .teacher-admin__status {
+    margin-top: 14px;
+  }
+}

@@ -1,0 +1,115 @@
+.assignment-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+
+  & .assignment-panel__current {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .assignment-panel__current strong {
+    color: var(--platform-text);
+  }
+
+  & .assignment-panel__form {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
+
+    & .platform-field {
+      flex: 1 1 240px;
+    }
+  }
+
+  & .assignment-panel__students {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+  }
+
+  & .assignment-panel__student {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--platform-border);
+  }
+
+  & .assignment-panel__student:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  & .assignment-panel__student-name {
+    flex: 1 1 200px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .assignment-panel__student-name:hover {
+    color: var(--platform-accent);
+  }
+
+  & .assignment-panel__end {
+    padding: 5px 10px;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  & .assignment-panel__end:hover {
+    color: var(--platform-text);
+    border-color: rgba(245, 240, 232, 0.3);
+  }
+
+  & .assignment-panel__history {
+    width: 100%;
+    padding-top: 14px;
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .assignment-panel__history-title {
+    margin: 0 0 10px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .assignment-panel__history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .assignment-panel__history-item {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .assignment-panel__history-teacher {
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+}

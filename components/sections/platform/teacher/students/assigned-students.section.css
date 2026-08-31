@@ -1,0 +1,22 @@
+.assigned-students {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  & .assigned-students__search {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    & .platform-field {
+      flex: 0 1 320px;
+    }
+
+    @media (max-width: 620px) {
+      & .platform-field {
+        flex: 1 1 100%;
+      }
+    }
+  }
+}

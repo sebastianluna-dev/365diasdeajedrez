@@ -1,0 +1,16 @@
+.staff-classes {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  & .staff-classes__filters {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    & .platform-field {
+      flex: 1 1 170px;
+    }
+  }
+}

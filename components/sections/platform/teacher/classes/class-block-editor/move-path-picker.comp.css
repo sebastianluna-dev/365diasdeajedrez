@@ -1,0 +1,32 @@
+.move-path-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--platform-border);
+  border-radius: 12px;
+
+  & .move-path-picker__hint {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .move-path-picker__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  & .move-path-picker__value {
+    font-size: 13px;
+    color: var(--platform-text-muted);
+  }
+}
+
+.move-path-picker__status {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--platform-text-muted);
+}

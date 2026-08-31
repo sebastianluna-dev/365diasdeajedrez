@@ -1,0 +1,21 @@
+.lesson-pgn {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  & .platform-field__control textarea {
+    min-height: 240px;
+    font-family: ui-monospace, "SF Mono", "Menlo", monospace;
+    font-size: 13px;
+  }
+
+  & .lesson-pgn__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  & .lesson-pgn__preview {
+    padding-top: 8px;
+  }
+}

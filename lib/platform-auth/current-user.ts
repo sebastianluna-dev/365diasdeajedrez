@@ -2,7 +2,7 @@ import "server-only";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import { LOGIN_PATH } from "@/constants/platform/auth.const";
-import { readSessionUser } from "@/lib/platform-auth/session";
+import { readSessionUser, type SessionUser } from "@/lib/platform-auth/session";
 
 export interface CurrentUser {
   id: string;
@@ -20,9 +20,18 @@ export interface CurrentUser {
 // es la que protege también a las server actions, que son alcanzables por POST
 // directo sin pasar por la navegación.
 
+/**
+ * Sesión completa (identidad + roles), memorizada por petición. Es el ÚNICO
+ * punto que consulta la sesión: getSessionUser y lib/platform-auth/roles.ts se
+ * apoyan aquí para que una página que necesita identidad Y rol no dispare dos
+ * consultas. Fuera del DAL y de roles.ts no debe usarse: las páginas piden
+ * `CurrentUser`, que no lleva roles a propósito.
+ */
+export const getSessionContext = cache(async (): Promise<SessionUser | null> => readSessionUser());
+
 /** Usuario de la sesión, o null si no hay ninguna válida. No redirige. */
 export const getSessionUser = cache(async (): Promise<CurrentUser | null> => {
-  const session = await readSessionUser();
+  const session = await getSessionContext();
   if (!session) return null;
 
   const { id, email, displayName, createdAt } = session;

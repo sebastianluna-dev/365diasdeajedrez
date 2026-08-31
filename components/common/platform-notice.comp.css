@@ -1,0 +1,25 @@
+.platform-notice {
+  margin: 0;
+  padding: 11px 14px;
+  border: 1px solid var(--platform-border);
+  border-radius: 10px;
+  font-size: 14px;
+  line-height: 1.45;
+
+  &.platform-notice_variant_error {
+    border-color: rgba(255, 120, 96, 0.4);
+    background: rgba(255, 120, 96, 0.1);
+    color: #ffb3a3;
+  }
+
+  &.platform-notice_variant_success {
+    border-color: rgba(120, 220, 150, 0.35);
+    background: rgba(120, 220, 150, 0.1);
+    color: #9ee6b4;
+  }
+
+  &.platform-notice_variant_info {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--platform-text-muted);
+  }
+}

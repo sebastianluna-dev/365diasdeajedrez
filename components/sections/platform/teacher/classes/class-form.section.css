@@ -1,0 +1,28 @@
+.class-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  & .class-form__hint {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-form__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  & .class-form__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 4px;
+  }
+}

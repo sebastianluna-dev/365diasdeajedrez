@@ -23,6 +23,12 @@ export interface SessionUser {
   displayName: string;
   createdAt: Date;
   sessionId: string;
+  /// Roles de plataforma, resueltos en la MISMA consulta de sesión: son filas
+  /// cuya existencia es el rol (ver prisma/schema.prisma). Se exponen sólo a
+  /// través de lib/platform-auth/roles.ts; `CurrentUser` no los lleva, para no
+  /// acoplar las páginas del alumno a los roles.
+  teacher: { id: string; displayName: string; isActive: boolean } | null;
+  staff: { id: string } | null;
 }
 
 function hashToken(token: string): string {
@@ -75,7 +81,19 @@ export async function readSessionUser(): Promise<SessionUser | null> {
       id: true,
       expiresAt: true,
       lastSeenAt: true,
-      user: { select: { id: true, email: true, displayName: true, createdAt: true } },
+      user: {
+        select: {
+          id: true,
+          email: true,
+          displayName: true,
+          createdAt: true,
+          // Roles por existencia de fila. Van en el select anidado para que
+          // este camino —por el que pasa toda petición autenticada— siga
+          // costando una sola consulta.
+          teacher: { select: { id: true, displayName: true, isActive: true } },
+          staff: { select: { id: true } },
+        },
+      },
     },
   });
 

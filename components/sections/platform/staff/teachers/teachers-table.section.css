@@ -1,0 +1,10 @@
+.teachers-table {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  & .teachers-table__bar {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

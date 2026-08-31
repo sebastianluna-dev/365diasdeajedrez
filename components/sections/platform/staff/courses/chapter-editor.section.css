@@ -1,0 +1,122 @@
+.chapter-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  & .chapter-editor__breadcrumb {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .chapter-editor__breadcrumb a {
+    color: var(--platform-text-muted);
+  }
+
+  & .chapter-editor__breadcrumb a:hover {
+    color: var(--platform-accent);
+  }
+
+  & .chapter-editor__form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    max-width: 640px;
+
+    & .platform-field {
+      width: 100%;
+    }
+  }
+
+  & .chapter-editor__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0 0 16px;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .chapter-editor__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--platform-border);
+  }
+
+  & .chapter-editor__row:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  & .chapter-editor__row-title {
+    flex: 1 1 220px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .chapter-editor__row-title:hover {
+    color: var(--platform-accent);
+  }
+
+  & .chapter-editor__row-meta {
+    font-size: 13px;
+    color: var(--platform-text-muted);
+  }
+
+  & .chapter-editor__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  & .chapter-editor__control {
+    padding: 6px 11px;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  & .chapter-editor__control:hover:not(:disabled) {
+    color: var(--platform-text);
+    border-color: rgba(245, 240, 232, 0.3);
+  }
+
+  & .chapter-editor__control:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  & .chapter-editor__control_variant_danger:hover {
+    color: #ffb3a3;
+    border-color: rgba(255, 120, 96, 0.45);
+  }
+
+  & .chapter-editor__inline {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid var(--platform-border);
+
+    & .platform-field {
+      flex: 1 1 260px;
+    }
+  }
+
+  & .chapter-editor__empty {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+}

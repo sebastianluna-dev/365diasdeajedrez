@@ -1,0 +1,119 @@
+.course-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  & .course-editor__form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    max-width: 640px;
+
+    & .platform-field {
+      width: 100%;
+    }
+  }
+
+  & .course-editor__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0 0 16px;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .course-editor__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--platform-border);
+  }
+
+  & .course-editor__row:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  & .course-editor__row-title {
+    flex: 1 1 220px;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .course-editor__row-title_link:hover {
+    color: var(--platform-accent);
+  }
+
+  & .course-editor__row-meta {
+    font-size: 13px;
+    color: var(--platform-text-muted);
+  }
+
+  & .course-editor__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  & .course-editor__control {
+    padding: 6px 11px;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  & .course-editor__control:hover:not(:disabled) {
+    color: var(--platform-text);
+    border-color: rgba(245, 240, 232, 0.3);
+  }
+
+  & .course-editor__control:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  & .course-editor__control_variant_danger:hover {
+    color: #ffb3a3;
+    border-color: rgba(255, 120, 96, 0.45);
+  }
+
+  & .course-editor__inline {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid var(--platform-border);
+
+    & .platform-field {
+      flex: 1 1 240px;
+    }
+  }
+
+  & .course-editor__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  & .course-editor__empty {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  & .course-editor__empty strong {
+    color: var(--platform-text);
+  }
+}

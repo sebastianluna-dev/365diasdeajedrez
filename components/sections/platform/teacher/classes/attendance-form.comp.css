@@ -1,0 +1,70 @@
+.attendance-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+
+  & .attendance-form__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+  }
+
+  & .attendance-form__item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--platform-border);
+  }
+
+  & .attendance-form__item:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  & .attendance-form__check {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1 1 220px;
+  }
+
+  & .attendance-form__name {
+    font-size: 14.5px;
+    color: var(--platform-text);
+  }
+
+  & .attendance-form__meta {
+    font-size: 13px;
+    color: var(--platform-text-muted);
+  }
+
+  & .attendance-form__remove {
+    padding: 5px 10px;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  & .attendance-form__remove:hover {
+    color: #ffb3a3;
+    border-color: rgba(255, 120, 96, 0.45);
+  }
+}
+
+.attendance-form__empty {
+  margin: 0;
+  font-size: 14px;
+  color: var(--platform-text-muted);
+}

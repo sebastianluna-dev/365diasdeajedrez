@@ -16,6 +16,13 @@ interface GameViewerProps {
   /** Ruta punteada donde abrir el visor (TrainingExercise.path / ClassBlock.movePath). */
   initialPath?: string;
   title?: string;
+  /**
+   * Se avisa con la ruta punteada del nodo actual cada vez que cambia. Existe
+   * para que el editor de bloques de clase pueda capturar «esta posición» sin
+   * un segundo visor; el visor sigue siendo de sólo lectura y quien no pase
+   * esta prop no nota ninguna diferencia.
+   */
+  onPathChange?: (path: string) => void;
 }
 
 /**
@@ -23,7 +30,7 @@ interface GameViewerProps {
  * bloques de clase usan este mismo componente (tablero + árbol de jugadas con
  * variantes y comentarios + navegación). No crear visores paralelos.
  */
-export function GameViewer({ pgn, orientation = "white", initialPath, title }: GameViewerProps) {
+export function GameViewer({ pgn, orientation = "white", initialPath, title, onPathChange }: GameViewerProps) {
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
   const [currentPath, setCurrentPath] = useState<string>(() =>
     initialPath && tree?.nodesByPath.has(initialPath) ? initialPath : "",
@@ -33,6 +40,16 @@ export function GameViewer({ pgn, orientation = "white", initialPath, title }: G
   const rootRef = useRef<HTMLDivElement>(null);
   const isInViewportRef = useRef(false);
   const hasBeenClickedRef = useRef(false);
+
+  // Por referencia: así avisar del cambio de ruta no depende de que quien
+  // consume el visor memorice el callback.
+  const onPathChangeRef = useRef(onPathChange);
+  useEffect(() => {
+    onPathChangeRef.current = onPathChange;
+  });
+  useEffect(() => {
+    onPathChangeRef.current?.(currentPath);
+  }, [currentPath]);
 
   const goToStart = useCallback(() => setCurrentPath(""), []);
   const goToPrevious = useCallback(() => setCurrentPath((path) => parentPathOf(path)), []);

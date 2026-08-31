@@ -1,0 +1,31 @@
+.student-study {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  & .student-study__breadcrumb {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .student-study__breadcrumb a {
+    color: var(--platform-text-muted);
+  }
+
+  & .student-study__breadcrumb a:hover {
+    color: var(--platform-accent);
+  }
+
+  & .student-study__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  & .student-study__description {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--platform-text-muted);
+  }
+}

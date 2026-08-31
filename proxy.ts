@@ -15,6 +15,10 @@ import {
 // actions: son peticiones POST a la ruta donde se declaran, así que un cambio
 // de matcher podría dejarlas fuera de este proxy sin que se note.
 //
+// La cookie tampoco distingue roles, y no debe: un alumno con sesión que entre
+// a /teacher o /staff pasa este filtro y lo expulsa el `require*` del DAL hacia
+// su dashboard. Correcto por diseño — aquí no se consulta la base de datos.
+//
 // No se hace el salto contrario (con cookie → /dashboard) a propósito: una
 // cookie caducada provocaría un bucle entre /login y /dashboard, porque el
 // proxy la ve presente y el DAL la rechaza. Esa redirección la hace la página
@@ -38,5 +42,13 @@ export function proxy(request: NextRequest): NextResponse {
 // Los prefijos deben ser literales: Next analiza el matcher en tiempo de build
 // y descarta cualquier valor calculado (por eso no se deriva de la constante).
 export const config = {
-  matcher: ["/dashboard/:path*", "/classes/:path*", "/studies/:path*", "/courses/:path*", "/trainer/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/classes/:path*",
+    "/studies/:path*",
+    "/courses/:path*",
+    "/trainer/:path*",
+    "/teacher/:path*",
+    "/staff/:path*",
+  ],
 };

@@ -18,6 +18,8 @@
 // - ClassBlock: como máximo una referencia (gameId, lessonId, positionId).
 // - UserStatDaily: índice único con NULLS NOT DISTINCT para que topicId NULL
 //   no duplique filas.
+// - TeacherStudent: índice único parcial teacher_student_one_active sobre
+//   studentId WHERE endedAt IS NULL (un profesor activo por alumno).
 // Reglas que se validan en la capa de servicios (imposibles en CHECK sin
 // cruzar tablas): coherencia ownerType↔columna poblada, ClassBlock.kind↔campo
 // usado, Lesson.initialFen nulo sólo cuando initialPositionType=STARTING_POSITION.
@@ -441,6 +443,7 @@ model User {
 
   sessions          Session[]
   teacher           Teacher?
+  staff             Staff?
   courseProgresses  CourseProgress[]
   chapterProgresses ChapterProgress[]
   lessonProgresses  LessonProgress[]
@@ -452,6 +455,11 @@ model User {
   classParticipants ClassParticipant[]
   activities        UserActivity[]
   dailyStats        UserStatDaily[]
+
+  /// Asignaciones en las que este usuario es el alumno.
+  studentAssignments TeacherStudent[] @relation("StudentAssignments")
+  /// Asignaciones que este usuario (staff) hizo: auditoría ligera.
+  assignmentsMade    TeacherStudent[] @relation("AssignmentsMade")
 }
 
 /// Sesión iniciada. El token que viaja en la cookie es un valor aleatorio
@@ -643,6 +651,9 @@ model Game {
 // ---------------------------------------------------------------------------
 
 /// Rol sobre User: el panel del profesor se abre si existe esta fila.
+/// Un profesor nunca se borra (rompería clases y asignaciones históricas): se
+/// desactiva con isActive, y entonces deja de poder entrar a /teacher y de
+/// admitir asignaciones nuevas.
 model Teacher {
   id          String   @id @default(uuid())
   userId      String   @unique
@@ -651,11 +662,51 @@ model Teacher {
   bio         String?
   photo       String?
   timezone    String?
+  isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  classes Class[]
+  classes  Class[]
+  students TeacherStudent[]
+}
+
+/// Asignación profesor↔alumno, independiente de las clases: sin ella un alumno
+/// que aún no tiene clases sería invisible para su profesor. endedAt = null ⇒
+/// activa. Reasignar CIERRA la fila y crea otra: el historial nunca se borra.
+/// La regla «un profesor activo por alumno» la impone el índice único parcial
+/// teacher_student_one_active (SQL manual en la migración); para permitir
+/// varios profesores en el futuro basta con eliminar ese índice, sin tocar el
+/// modelo. Sin catálogo de estado: activa/terminada se deriva de endedAt.
+model TeacherStudent {
+  id         String    @id @default(uuid())
+  teacherId  String
+  studentId  String
+  assignedAt DateTime  @default(now())
+  endedAt    DateTime?
+  /// User del staff que hizo la asignación (auditoría ligera).
+  assignedBy String?
+  note       String?
+
+  teacher  Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  student  User    @relation("StudentAssignments", fields: [studentId], references: [id], onDelete: Cascade)
+  assigner User?   @relation("AssignmentsMade", fields: [assignedBy], references: [id], onDelete: SetNull)
+
+  @@index([teacherId, endedAt])
+  @@index([studentId])
+}
+
+/// Rol Administrador/Editor de la PLATAFORMA (la fila existe = tiene el rol),
+/// mismo patrón que Teacher. NO confundir con los roles admin/editor de
+/// Payload, que pertenecen al CMS del sitio público y viven en otra base de
+/// datos: no se mezclan ni se reutilizan. Si algún día se separan admin y
+/// editor, se añade aquí un roleId + catálogo StaffRole, sin tocar User.
+model Staff {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Class {
@@ -703,6 +754,9 @@ model ClassParticipant {
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([classId, userId])
+  /// «Las clases de este alumno» desde el panel del profesor y del staff: la
+  /// clave compuesta empieza por classId y no sirve para ese acceso.
+  @@index([userId])
 }
 
 /// Contenido ordenado de la clase. Un bloque usa el campo de su kind y las
@@ -767,6 +821,9 @@ model Position {
   orientation BoardOrientation @relation(fields: [orientationId], references: [id])
 
   classBlocks ClassBlock[]
+
+  @@index([userId])
+  @@index([courseId])
 }
 
 // ---------------------------------------------------------------------------

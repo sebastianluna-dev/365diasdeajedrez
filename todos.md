@@ -3,6 +3,44 @@
 > **Estado: las diez tareas de esta tanda (T1–T10) están hechas** (2026-08-30). Se dejan
 > registradas abajo con lo que acabó cambiando, para no repetirlas. Las mejoras que siguen
 > abiertas viven en `MEJORAS.md`.
+>
+> **2026-08-31 — `PLAN-TEACHER-ADMIN.md` ejecutado por completo** (fases 1 a 7): panel del
+> profesor (`/teacher`) y de administración (`/staff`). Lo verificado de verdad, fase a fase,
+> está en la sección siguiente; lo que quedó pendiente se anotó en `MEJORAS.md` (puntos 23 a 27).
+
+## Paneles de profesor y administración (2026-08-31)
+
+Validado ejecutando cada comprobación, no por lectura del código:
+
+- **F1 · Esquema y datos** — migración `add_teacher_staff_panels` aplicada sobre la base poblada
+  (aditiva); `npm run db:seed` dos veces sin cambios; un segundo `INSERT` de asignación activa
+  para el mismo alumno **falla en SQL** (P2002 del índice parcial `teacher_student_one_active`);
+  los CHECK previos y el índice `NULLS NOT DISTINCT` intactos.
+- **F2 · Autorización** — las 15 rutas de panel redirigen al login sin cookie; con sesión, el rol
+  equivocado es expulsado sin que se pinte ningún dato (comprobado buscando marcadores de
+  contenido en el HTML de las tres cuentas demo); el menú apila el grupo correcto por rol.
+- **F3 · Profesor, sólo lectura** — el estudio y la partida de un alumno **no asignado** dan «no
+  encontrado» por URL directa, sin filtrar su nombre; el `meetingUrl` lo ve siempre el profesor y
+  el alumno sólo desde `meetingUrlVisibleFrom` (test unitario del mapper).
+- **F4 · Clases y bloques** — reordenación probada contra PostgreSQL con 5 bloques: subir, bajar,
+  extremos, cadena completa y borrado del tercero, siempre orden denso y **sin un solo P2002**;
+  una partida de alumno no asignado se rechaza en el `where` del guard, y sigue rechazándose tras
+  cerrar la asignación.
+- **F5 · Staff** — reasignar conserva la fila anterior cerrada; reasignar al mismo profesor no
+  crea fila; el email duplicado y la asignación duplicada dan mensaje amigable (hizo falta
+  `services/shared/prisma-errors.ts`, ver MEJORAS #23); reiniciar la contraseña borra todas las
+  sesiones de la cuenta.
+- **F6 · Cursos** — `deriveExerciseData` extraída de `prisma/seed.ts` **moviendo el código, no
+  reescribiéndolo**: tras el refactor el re-seed produce datos derivados idénticos campo a campo
+  (`path`, `startPly`, `endPly`, `startFen`, `line`); un ejercicio creado por el staff **no nace
+  desactualizado**, es entrenable, y se marca desactualizado al tocar el PGN de la lección; un
+  curso en borrador da «no encontrado» en `/courses` por URL directa.
+- **F7 · Transversal** — matriz de permisos recorrida celda a celda por HTTP con las tres cuentas
+  demo; `npm run build` limpio; cero archivos de Payload tocados.
+
+**Lo único que no se pudo cerrar como pedía el plan:** el POST directo de server actions con el
+rol equivocado (MEJORAS #27) — Next 16 no acepta esas peticiones desde un cliente HTTP sintético.
+En su lugar se auditó que las 44 acciones de `/teacher` y `/staff` abren con su `require*`.
 
 Reglas del proyecto para cualquier tarea nueva que se añada aquí (no negociables):
 

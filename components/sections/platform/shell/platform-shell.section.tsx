@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { buildPlatformNavGroups } from "@/constants/platform/nav-items.const";
 import { getSessionUser } from "@/lib/platform-auth/current-user";
+import { getSessionRoles } from "@/lib/platform-auth/roles";
 import { platformRoutes } from "@/lib/platform-routes";
 import { logoutAction } from "@/services/auth/auth.actions";
 import { PlatformNav } from "./platform-nav.comp";
@@ -13,13 +15,16 @@ interface PlatformShellProps {
 /**
  * Layout interno de la plataforma: sidebar de navegación + área de contenido.
  *
- * Lee la sesión sólo para mostrar quién ha entrado, nunca para proteger: si no
- * hay usuario se limita a no pintar el bloque. Quien corta el paso es el DAL
- * dentro de cada página (la doc de Next 16 desaconseja el check de auth en el
- * layout, que no controla el render de sus segmentos).
+ * Lee la sesión sólo para mostrar quién ha entrado y qué menús le tocan, nunca
+ * para proteger: si no hay usuario se limita a no pintar el bloque. Quien corta
+ * el paso es el DAL dentro de cada página (la doc de Next 16 desaconseja el
+ * check de auth en el layout, que no controla el render de sus segmentos), y
+ * ocultar un grupo del menú no autoriza nada: cada página y cada action de
+ * /teacher y /staff vuelve a comprobar el rol.
  */
 export async function PlatformShell({ children }: PlatformShellProps) {
-  const user = await getSessionUser();
+  const [user, roles] = await Promise.all([getSessionUser(), getSessionRoles()]);
+  const navGroups = buildPlatformNavGroups(roles);
 
   return (
     <div className="platform-shell">
@@ -28,7 +33,7 @@ export async function PlatformShell({ children }: PlatformShellProps) {
           365 Días<span className="platform-shell__logo-accent"> de Ajedrez</span>
         </Link>
 
-        <PlatformNav />
+        <PlatformNav groups={navGroups} />
 
         <div className="platform-shell__footer">
           {user && (

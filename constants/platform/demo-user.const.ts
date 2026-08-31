@@ -4,3 +4,4 @@
 // Compartido aquí (sin server-only) para que el seed también pueda importarlo.
 export const DEMO_USER_EMAIL = "alumno.demo@365diasdeajedrez.com";
 export const DEMO_TEACHER_EMAIL = "profesor.demo@365diasdeajedrez.com";
+export const DEMO_STAFF_EMAIL = "staff.demo@365diasdeajedrez.com";

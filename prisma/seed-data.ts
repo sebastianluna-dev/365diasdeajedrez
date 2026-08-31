@@ -16,7 +16,8 @@ import { BOARD_ORIENTATION, OWNER_TYPE, PROGRESS_STATUS, TOPIC } from "../consta
 import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "../constants/platform/study-codes.const";
 import { ATTEMPT_CONTEXT, ATTEMPT_RESULT, EXERCISE_MODE } from "../constants/platform/training-codes.const";
 
-import { DEMO_TEACHER_EMAIL, DEMO_USER_EMAIL } from "../constants/platform/demo-user.const";
+import { DEMO_STAFF_EMAIL, DEMO_TEACHER_EMAIL, DEMO_USER_EMAIL } from "../constants/platform/demo-user.const";
+import { mainlinePath } from "../lib/chess/exercise-derivation";
 
 // ---------------------------------------------------------------------------
 // Catálogos: [code, label] (order = índice)
@@ -163,6 +164,9 @@ export const IDS = {
   teacherUser: "a0000000-0000-4000-8000-000000000002",
   teacher: "a0000000-0000-4000-8000-000000000003",
   author: "a0000000-0000-4000-8000-000000000004",
+  staffUser: "a0000000-0000-4000-8000-000000000005",
+  staff: "a0000000-0000-4000-8000-000000000006",
+  teacherStudent: "a0000000-0000-4000-8000-000000000007",
 
   courseSicilian: "c0000000-0000-4000-8000-000000000001",
   courseRookEndings: "c0000000-0000-4000-8000-000000000002",
@@ -214,6 +218,7 @@ export const IDS = {
 export const USERS = [
   { id: IDS.demoUser, email: DEMO_USER_EMAIL, displayName: "Alumno Demo" },
   { id: IDS.teacherUser, email: DEMO_TEACHER_EMAIL, displayName: "Profesor Demo" },
+  { id: IDS.staffUser, email: DEMO_STAFF_EMAIL, displayName: "Staff Demo" },
 ];
 
 export const TEACHER = {
@@ -223,6 +228,23 @@ export const TEACHER = {
   title: "Gran Maestro",
   bio: "Profesor titular de la academia. Especialista en aperturas abiertas y finales de torre.",
   timezone: "America/Mexico_City",
+};
+
+/// Rol Administrador/Editor de la plataforma para la cuenta de staff demo.
+export const STAFF = {
+  id: IDS.staff,
+  userId: IDS.staffUser,
+};
+
+/// Asignación activa del alumno demo con el profesor demo. El seed la deja
+/// abierta al crearla, pero NO toca endedAt al actualizar: si alguien la cerró
+/// desde el panel, un re-seed no la resucita.
+export const TEACHER_STUDENT = {
+  id: IDS.teacherStudent,
+  teacherId: IDS.teacher,
+  studentId: IDS.demoUser,
+  assignedBy: IDS.staffUser,
+  note: "Asignación de ejemplo creada por el seed.",
 };
 
 export const AUTHOR = {
@@ -673,11 +695,6 @@ export function buildClasses(now: Date) {
       summary: null as string | null,
     },
   ];
-}
-
-/** Ruta punteada del mainline hasta el ply indicado ("0", "0.0", ...). */
-export function mainlinePath(ply: number): string {
-  return Array.from({ length: ply }, () => "0").join(".");
 }
 
 export const CLASS_BLOCKS = [

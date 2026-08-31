@@ -1,0 +1,13 @@
+.new-course-page {
+  & .new-course-page__form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    max-width: 520px;
+
+    & .platform-field {
+      width: 100%;
+    }
+  }
+}

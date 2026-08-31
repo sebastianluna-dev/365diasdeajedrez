@@ -1,0 +1,10 @@
+.courses-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  & .courses-admin__bar {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

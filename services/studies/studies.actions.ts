@@ -10,6 +10,7 @@ import {
   GAME_SOURCE,
   type DatabaseKindCode,
 } from "@/constants/platform/study-codes.const";
+import { PGN_MAX_GAMES, PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
@@ -22,9 +23,6 @@ import { allowAction } from "@/lib/rate-limit";
 
 const STUDY_NAME_MAX_LENGTH = 120;
 const STUDY_DESCRIPTION_MAX_LENGTH = 500;
-/** Techos de la importación: un archivo PGN puede traer miles de partidas. */
-const PGN_MAX_LENGTH = 2_000_000;
-const PGN_MAX_GAMES = 500;
 const UNKNOWN_PLAYER = "Desconocido";
 /** Sólo fechas completas: el PGN admite "????.??.??" y "2024.??.??". */
 const FULL_PGN_DATE = /^(\d{4})\.(\d{2})\.(\d{2})$/;

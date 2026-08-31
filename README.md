@@ -48,9 +48,21 @@ npm run dev                  # http://localhost:3000
 
 ## Acceso a la plataforma
 
-La zona privada (`/dashboard`, `/classes`, `/studies`, `/courses`, `/trainer`) exige iniciar sesión en `/login`. El seed deja lista la cuenta de pruebas **`alumno.demo@365diasdeajedrez.com`** con la contraseña `ajedrez365` (o la de `PLATFORM_DEMO_PASSWORD`); sólo se asigna a cuentas que aún no tienen contraseña, así que un re-seed nunca revierte un cambio hecho a mano.
+La zona privada (`/dashboard`, `/classes`, `/studies`, `/courses`, `/trainer`, `/teacher`, `/staff`) exige iniciar sesión en `/login`. El seed deja listas tres cuentas de pruebas con la contraseña `ajedrez365` (o la de `PLATFORM_DEMO_PASSWORD`); sólo se asigna a cuentas que aún no tienen contraseña, así que un re-seed nunca revierte un cambio hecho a mano:
 
-**No hay registro público**: en una academia el alumno existe porque se le da de alta. Mientras no exista el panel del profesor, la vía es `npm run user:create`.
+| Cuenta | Rol | Qué ve además de lo del alumno |
+|---|---|---|
+| `alumno.demo@365diasdeajedrez.com` | Alumno | — |
+| `profesor.demo@365diasdeajedrez.com` | Profesor | `/teacher/*` |
+| `staff.demo@365diasdeajedrez.com` | Administrador/Editor | `/staff/*` |
+
+**No hay registro público**: en una academia el alumno existe porque se le da de alta. Lo hace el equipo de administración desde `/staff/students/new`, que genera una contraseña temporal y la muestra una sola vez (no hay servicio de correo). `npm run user:create` sigue existiendo como vía alternativa desde la línea de comandos.
+
+### Roles
+
+No hay tabla de roles ni columna en `User`: **el rol es la existencia de una fila** (`Teacher`, `Staff`), y son ortogonales — una misma persona puede ser profesor y staff, y sigue siendo alumno. Se resuelven en la misma consulta que la sesión (sin consultas extra) y se exponen sólo por `lib/platform-auth/roles.ts`, cuyos `requireTeacher()` / `requireStaff()` son el primer `await` de toda página y de toda server action de esos paneles. Un profesor se **desactiva** (`Teacher.isActive`), nunca se borra: sus clases y asignaciones son historial.
+
+Los roles `admin`/`editor` de `collections/Users.ts` son de **Payload**, del CMS del sitio público: otra base de datos, otro login, y no se mezclan con esto.
 
 Cómo está montado:
 
@@ -78,13 +90,30 @@ Cómo está montado:
 
 - `/login`
 
-**Plataforma** — `app/(platform)` (requiere sesión)
+**Plataforma — alumno** — `app/(platform)` (requiere sesión)
 
 - `/dashboard`
 - `/classes`, `/classes/[classId]`
 - `/studies`, `/studies/[studyId]`, `/studies/[studyId]/games/[gameId]`
 - `/courses`, `/courses/[courseId]`, `/courses/[courseId]/chapters/[chapterId]`, `/courses/[courseId]/chapters/[chapterId]/lessons/[lessonId]`
 - `/trainer`
+
+**Plataforma — profesor** (requiere fila `Teacher` activa)
+
+- `/teacher`
+- `/teacher/students`, `/teacher/students/[studentId]`
+- `/teacher/students/[studentId]/studies/[studyId]`, `…/games/[gameId]` (**sólo lectura** de los estudios de sus alumnos asignados)
+- `/teacher/classes`, `/teacher/classes/new`, `/teacher/classes/[classId]`, `/teacher/classes/[classId]/edit`
+- `/teacher/profile`
+
+**Plataforma — administración** (requiere fila `Staff`; `/admin` es de Payload)
+
+- `/staff`
+- `/staff/students`, `/staff/students/new`, `/staff/students/[userId]`
+- `/staff/teachers`, `/staff/teachers/new`, `/staff/teachers/[teacherId]`
+- `/staff/courses`, `/staff/courses/new`, `/staff/courses/[courseId]`, `…/chapters/[chapterId]`, `…/lessons/[lessonId]`
+- `/staff/authors`
+- `/staff/classes`, `/staff/classes/[classId]` (lectura global; sólo grabación y cancelación de soporte)
 
 ## Arquitectura en breve
 
@@ -94,7 +123,9 @@ Cómo está montado:
 - **CSS BEM por componente**, sin Tailwind: cada archivo `.css` anida bajo su propio selector raíz para que los estilos no se filtren entre secciones.
 - **Catálogos en lugar de enums**: el schema de Prisma no usa enums; cada dominio restringido es una tabla catálogo con `code` único y estable (la lógica compara `code`, nunca ids) y el seed los carga de forma idempotente.
 - **El PGN es la fuente del contenido ajedrecístico** (`Lesson.pgn`, `Game.pgn`): no hay tablas por movimiento ni árboles relacionales de jugadas.
-- Algunas invariantes se expresan como CHECK constraints escritos a mano en la migración inicial (`prisma/migrations`); el resto se valida en la capa de servicios. La cabecera de `prisma/schema.prisma` las documenta.
+- Algunas invariantes se expresan como CHECK constraints e índices escritos a mano en las migraciones (`prisma/migrations`); el resto se valida en la capa de servicios. La cabecera de `prisma/schema.prisma` las documenta. Entre ellas, el índice parcial `teacher_student_one_active`, que es la verdad última de «un profesor activo por alumno» (el servicio cierra la asignación anterior antes de crear la nueva, pero dos peticiones simultáneas sólo las separa el índice).
+- **Autorización dentro del `where`**: las lecturas de profesor y staff filtran por rol y pertenencia en la propia consulta; no existe «leer y luego comprobar». Para las escrituras hay guards centralizados en `lib/platform-auth/guards.ts`. Ocultar un botón nunca autoriza nada: cada action revalida en el servidor.
+- **Reordenar listas con `@@unique([padre, order])`** (bloques de clase, capítulos, lecciones, ejercicios) pasa siempre por `services/shared/reorder.ts`: PostgreSQL valida el índice fila a fila, así que un intercambio directo lanza P2002 de forma intermitente.
 
 ## Convención de documentación de Next.js
 

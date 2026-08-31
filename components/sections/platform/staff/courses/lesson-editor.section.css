@@ -1,0 +1,50 @@
+.lesson-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  & .lesson-editor__breadcrumb {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+  }
+
+  & .lesson-editor__breadcrumb a {
+    color: var(--platform-text-muted);
+  }
+
+  & .lesson-editor__breadcrumb a:hover {
+    color: var(--platform-accent);
+  }
+
+  & .lesson-editor__form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    max-width: 720px;
+
+    & .platform-field {
+      width: 100%;
+    }
+  }
+
+  & .lesson-editor__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    width: 100%;
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  & .lesson-editor__check {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--platform-text);
+  }
+}

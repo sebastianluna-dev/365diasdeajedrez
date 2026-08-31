@@ -1,0 +1,30 @@
+import type { Metadata } from "next";
+import { AuthorsAdminSection } from "@/components/sections/platform/staff/authors/authors-admin.section";
+import { requireStaff } from "@/lib/platform-auth/roles";
+import { listAuthors } from "@/services/staff-courses/staff-courses.service";
+
+export const metadata: Metadata = {
+  title: "Autores",
+};
+
+interface StaffAuthorsPageProps {
+  searchParams: Promise<{ error?: string }>;
+}
+
+export default async function StaffAuthorsPage({ searchParams }: StaffAuthorsPageProps) {
+  await requireStaff();
+  const [authors, { error }] = await Promise.all([listAuthors(), searchParams]);
+
+  return (
+    <div className="platform-page staff-authors-page">
+      <header className="platform-page__head">
+        <h1 className="platform-page__title">Autores</h1>
+        <p className="platform-page__subtitle">
+          Quiénes firman los cursos. El resto de catálogos (temas, niveles, tipos…) se gestionan por seed.
+        </p>
+      </header>
+
+      <AuthorsAdminSection authors={authors} errorCode={error} />
+    </div>
+  );
+}

@@ -8,9 +8,7 @@ config({ path: ".env.local" });
 config();
 
 import { PrismaPg } from "@prisma/adapter-pg";
-import { Chess } from "chessops/chess";
-import { makeFen, parseFen } from "chessops/fen";
-import { parseSan } from "chessops/san";
+import { deriveExerciseData } from "../lib/chess/exercise-derivation";
 import { PrismaClient } from "../lib/platform-db/generated/client";
 import { hashPassword } from "../lib/platform-auth/password";
 import {
@@ -26,8 +24,9 @@ import {
   GAME_DATABASES,
   GAMES,
   IDS,
-  mainlinePath,
+  STAFF,
   TEACHER,
+  TEACHER_STUDENT,
   TOPIC_VALUES,
   USERS,
 } from "./seed-data";
@@ -43,19 +42,6 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 
 /** Contraseña de las cuentas demo. Sobreescribible por entorno. */
 const DEMO_PASSWORD = process.env.PLATFORM_DEMO_PASSWORD ?? "ajedrez365";
-
-/** Replica jugadas SAN con chessops para congelar posiciones siempre legales. */
-function positionAfter(initialFen: string | null, sans: string[]): Chess {
-  const pos = initialFen
-    ? Chess.fromSetup(parseFen(initialFen).unwrap()).unwrap()
-    : Chess.default();
-  for (const san of sans) {
-    const move = parseSan(pos, san);
-    if (!move) throw new Error(`SAN ilegal en el seed: "${san}" tras [${sans.join(" ")}]`);
-    pos.play(move);
-  }
-  return pos;
-}
 
 interface CatalogRow {
   id: number;
@@ -193,6 +179,27 @@ async function main() {
     create: TEACHER,
   });
 
+  // Rol Administrador/Editor de la plataforma: la fila existe = tiene el rol.
+  await db.staff.upsert({
+    where: { userId: STAFF.userId },
+    update: {},
+    create: STAFF,
+  });
+
+  // Asignación profesor↔alumno de ejemplo. El update NO toca endedAt a
+  // propósito: si se cerró desde el panel, el re-seed no la reabre (y el índice
+  // parcial teacher_student_one_active rechazaría una segunda activa).
+  await db.teacherStudent.upsert({
+    where: { id: TEACHER_STUDENT.id },
+    update: {
+      teacherId: TEACHER_STUDENT.teacherId,
+      studentId: TEACHER_STUDENT.studentId,
+      assignedBy: TEACHER_STUDENT.assignedBy,
+      note: TEACHER_STUDENT.note,
+    },
+    create: TEACHER_STUDENT,
+  });
+
   // --- Cursos → capítulos → lecciones → ejercicios -------------------------
   for (const course of COURSES) {
     const courseData = {
@@ -267,20 +274,19 @@ async function main() {
         }
 
         for (const exercise of lesson.exercises) {
-          // startFen congelado: se calcula replicando las jugadas previas, y la
-          // línea se valida entera para que el entrenador nunca reciba SAN ilegal.
-          const startPos = positionAfter(lesson.initialFen, exercise.afterSans);
-          positionAfter(makeFen(startPos.toSetup()), exercise.lineSans);
-          const startPly = exercise.afterSans.length + 1;
+          // La copia congelada (startFen, línea, ruta) la calcula el mismo
+          // módulo que usa el editor del staff: si divergieran, los ejercicios
+          // sembrados y los creados a mano se comportarían distinto.
+          const derived = deriveExerciseData({
+            initialFen: lesson.initialFen,
+            afterSans: exercise.afterSans,
+            lineSans: exercise.lineSans,
+          });
           const exerciseData = {
             lessonId: lesson.id,
             order: exercise.order,
             modeId: idOf(exerciseMode, exercise.mode),
-            path: mainlinePath(startPly),
-            startPly,
-            endPly: exercise.afterSans.length + exercise.lineSans.length,
-            startFen: makeFen(startPos.toSetup()),
-            line: exercise.lineSans.join(" "),
+            ...derived,
             // Congelado a la vez que el PGN de la lección: no nace stale.
             frozenAt: new Date(now.getTime() - 30 * DAY_MS),
             promptText: exercise.promptText,

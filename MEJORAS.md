@@ -3,8 +3,9 @@
 Backlog de deuda técnica y mejoras del proyecto. Cada punto lleva **área** y **prioridad**
 (baja · media · alta · extrema) y una guía de cómo abordarlo.
 
-> Última revisión: 2026-08-30 (segunda ronda). De los 22 puntos originales quedan resueltos 18,
-> incluido el #1 (autenticación real). Lo que sigue abierto está arriba.
+> Última revisión: 2026-08-31 (tras implementar los paneles de profesor y administración,
+> `PLAN-TEACHER-ADMIN.md`). De los 22 puntos originales quedan resueltos 18, incluido el #1
+> (autenticación real); el #15 se cierra con esta tanda. Lo que sigue abierto está arriba.
 
 ---
 
@@ -20,18 +21,6 @@ del PGN, tope de partidas importadas, `clamp` de `mistakes`/`durationMs`) y pasa
 varias instancias el límite es por instancia — mover a un almacén compartido (Redis/Upstash) al
 desplegar en serio. Es lo más urgente que queda, porque el techo del login es justo lo que frena un
 ataque de fuerza bruta; (b) validación declarativa con zod en la entrada de cada action.
-
-### 15. Falta gestión de contenido de la plataforma — [Arquitectura / Producto]
-Cursos, lecciones y clases sólo pueden crearse vía seed. El panel del profesor (crear clases,
-inscribir alumnos, marcar pagos) descrito en el diagrama no existe aún.
-
-*Estado: aplazado a propósito (decisión del 2026-08-30) — es una fase propia, no una mejora.*
-
-**Cómo abordarlo:** rutas `/teacher` cuya llave es la existencia de la fila `Teacher` (sin sistema de
-roles, como dice el diagrama): alta y edición de clases, editor de bloques de contenido,
-inscripción de alumnos y marcado de pago/asistencia. Después, un editor mínimo de cursos. No
-convertir catálogos en CRUDs: siguen siendo seed. Incluye el alta de alumnos, que hoy sólo se puede
-hacer con `npm run user:create`.
 
 ---
 
@@ -83,7 +72,65 @@ bucket en la zona del usuario (haría falta persistir su zona horaria) o agregan
 
 ---
 
+### 23. La forma del error P2002 depende del driver — [Datos / Seguridad]
+Prisma 7 con el *driver adapter* de PostgreSQL **no** rellena `meta.target` en las violaciones de
+unicidad: el nombre real del índice viaja en `meta.driverAdapterError.cause.constraint.index`.
+Cualquier `catch` escrito contra `meta.target` (el patrón habitual y el que suele estar en los
+ejemplos) no reconoce el conflicto y deja escapar un 500 sin mensaje. Se detectó al probar la
+carrera de asignación contra la base real.
+
+**Estado:** resuelto donde importaba con `services/shared/prisma-errors.ts`
+(`isUniqueConstraintError`, que mira los dos caminos y siempre contra un nombre concreto), usado
+en el alta de cuentas, el alta de profesor, la asignación alumno↔profesor y los slugs de curso y
+autor. **Lo que queda:** usar ese helper —y no un `catch` a mano— en cualquier `catch` de P2002
+que se añada en el futuro; conviene revisarlo si algún día se cambia de adaptador.
+
+### 24. Entrada de ejercicios por SAN escrito a mano — [UX / Contenido]
+El editor de ejercicios del staff pide `afterSans` y `lineSans` como texto SAN separado por
+espacios (el mismo formato que `prisma/seed-data.ts`). Funciona y el servidor valida la legalidad
+jugada a jugada con `deriveExerciseData`, pero es incómodo y propenso a erratas.
+
+**Cómo abordarlo:** un selector visual sobre el PGN de la lección —reutilizando `GameViewer` con
+`onPathChange`, igual que hace `move-path-picker.comp.tsx` en el editor de bloques de clase— que
+derive los SAN del camino elegido. Además, `afterSans` no se puede precargar al editar: la copia
+congelada guarda la posición, no el camino que llevó hasta ella; con el picker eso deja de ser un
+problema.
+
+### 25. El seed reescribe `frozenAt` y `pgnUpdatedAt` en cada ejecución — [Datos / DX]
+`npm run db:seed` sella ambas fechas como «hace 30 días» contando desde el momento de ejecutarlo,
+así que dos ejecuciones seguidas producen valores distintos aunque nada haya cambiado. No rompe
+nada (las dos se mueven juntas, de modo que los ejercicios sembrados nunca nacen desactualizados)
+y es anterior a esta tanda, pero significa que la idempotencia del seed es de *contenido*, no de
+*fila byte a byte*. Emparentado con el punto 20.
+
+**Cómo abordarlo:** junto con el 20, fijar un instante de referencia estable (variable de entorno
+o una constante) en lugar de `now`.
+
+---
+
 ## Prioridad BAJA
+
+### 26. El `<title>` de un panel ajeno se ve antes de la expulsión — [UX / Privacidad menor]
+Al entrar por URL a `/teacher` o `/staff` sin el rol, Next evalúa el `export const metadata` de la
+página antes de que el `redirect()` de `require*` surta efecto, así que la respuesta trae
+`<title>Panel del profesor…</title>` aunque no se pinte ni un dato. Comprobado con las tres
+cuentas demo: **no se filtra ningún dato**, sólo el texto estático del título.
+
+**Cómo abordarlo:** si molesta, mover el título a `generateMetadata` y resolver ahí el rol (con
+`cache()` no cuesta una consulta extra). Prioridad baja: es cosmético.
+
+### 27. Las server actions no se pueden ejercitar por HTTP crudo — [DX / Pruebas]
+La verificación de «POST directo con el rol equivocado» no se pudo completar desde un cliente HTTP
+sintético: Next 16 rechaza las peticiones de server action que no vienen del runtime de cliente
+(fallan con «Connection closed» y un 500 antes de entrar en la acción), tanto por el camino del
+campo oculto `$ACTION_ID_` como por la cabecera `Next-Action`, con `Origin` correcto y todo. Lo
+que sí se verificó: (a) que las 44 acciones de `/teacher` y `/staff` abren con
+`requireTeacher()`/`requireStaff()` —dos lo hacen delegando en otra función que ya guarda—, y (b)
+que esos mismos `require*` expulsan al rol equivocado a nivel HTTP en las 15 rutas de panel.
+
+**Cómo abordarlo:** una prueba de extremo a extremo con un navegador real (Playwright) es la vía
+natural para cerrar esta celda de la matriz de permisos.
+
 
 ### 16b. Vulnerabilidades restantes de npm audit — [DX / Seguridad]
 *Parcialmente resuelto:* de 21 se bajó a **10** (1 low, 6 moderate, 3 high) retirando Tailwind y

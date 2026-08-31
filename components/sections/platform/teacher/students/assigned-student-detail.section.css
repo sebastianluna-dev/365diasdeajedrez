@@ -1,0 +1,123 @@
+.assigned-student {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  & .assigned-student__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin: 0;
+  }
+
+  & .assigned-student__fact {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  & .assigned-student__fact-label {
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--platform-text-muted);
+  }
+
+  & .assigned-student__fact-value {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--platform-text);
+  }
+
+  & .assigned-student__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  & .assigned-student__courses,
+  & .assigned-student__classes,
+  & .assigned-student__activity {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .assigned-student__course {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--platform-border);
+  }
+
+  & .assigned-student__course:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  & .assigned-student__course-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  & .assigned-student__course-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .assigned-student__course-last {
+    font-size: 13px;
+    color: var(--platform-text-muted);
+  }
+
+  & .assigned-student__class {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 9px;
+  }
+
+  & .assigned-student__class-title {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .assigned-student__class-title:hover {
+    color: var(--platform-accent);
+  }
+
+  & .assigned-student__class-meta {
+    font-size: 13px;
+    color: var(--platform-text-muted);
+  }
+
+  & .assigned-student__activity-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  & .assigned-student__activity-label {
+    color: var(--platform-text);
+  }
+
+  & .assigned-student__empty,
+  & .assigned-student__note {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+}

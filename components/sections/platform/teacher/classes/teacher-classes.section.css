@@ -1,0 +1,50 @@
+.teacher-classes {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  & .teacher-classes__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  & .teacher-classes__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  & .teacher-classes__filter {
+    padding: 7px 13px;
+    border-radius: 999px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--platform-text-muted);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  & .teacher-classes__filter:hover {
+    color: var(--platform-text);
+  }
+
+  & .teacher-classes__filter_active {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent);
+  }
+
+  & .teacher-classes__group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  & .teacher-classes__group-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+}
