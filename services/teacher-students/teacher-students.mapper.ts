@@ -5,7 +5,7 @@ import type { GameView, StudyDetail, StudySummary } from "@/services/studies/stu
 
 // Los view-models de «Mis estudios» sirven tal cual para la vista del profesor:
 // lo único que cambia son los enlaces, que tienen que quedarse dentro de
-// /teacher/students/<id> (si apuntaran a /studies el profesor recibiría un 404,
+// /profesor/alumnos/<id> (si apuntaran a /estudios el profesor recibiría un 404,
 // porque esas rutas sólo muestran los estudios de quien las abre).
 
 export function mapStudentStudySummary(studentId: string, row: StudySummaryRow): StudySummary {

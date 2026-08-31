@@ -1,60 +1,82 @@
 // Constructores de rutas de la plataforma autenticada. Centralizados para que
 // un cambio de jerarquía no obligue a cazar template strings por la UI.
+//
+// Las URLs son en español porque el producto lo es: lo que ve el alumno en la
+// barra del navegador está en su idioma, hasta el último segmento. Lo único
+// que queda en inglés son los NOMBRES de los parámetros dinámicos
+// (`[courseId]`, `[studyId]`…), que no salen en la URL —lo que se ve ahí es su
+// valor— y son identificadores del código, no texto para el usuario.
 
 export const platformRoutes = {
-  dashboard: "/dashboard",
-  classes: "/classes",
-  classDetail: (classId: string) => `/classes/${classId}`,
-  studies: "/studies",
-  studyDetail: (studyId: string) => `/studies/${studyId}`,
-  gameDetail: (studyId: string, gameId: string) => `/studies/${studyId}/games/${gameId}`,
-  courses: "/courses",
-  courseDetail: (courseId: string) => `/courses/${courseId}`,
-  chapterDetail: (courseId: string, chapterId: string) => `/courses/${courseId}/chapters/${chapterId}`,
+  dashboard: "/inicio",
+  classes: "/clases",
+  classDetail: (classId: string) => `/clases/${classId}`,
+  studies: "/estudios",
+  studyDetail: (studyId: string) => `/estudios/${studyId}`,
+  gameDetail: (studyId: string, gameId: string) => `/estudios/${studyId}/partidas/${gameId}`,
+  courses: "/cursos",
+  courseDetail: (courseId: string) => `/cursos/${courseId}`,
+  chapterDetail: (courseId: string, chapterId: string) => `/cursos/${courseId}/capitulos/${chapterId}`,
   lessonDetail: (courseId: string, chapterId: string, lessonId: string) =>
-    `/courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}`,
-  trainer: "/trainer",
+    `/cursos/${courseId}/capitulos/${chapterId}/lecciones/${lessonId}`,
+  trainer: "/entrenador",
 } as const;
 
 /**
  * Panel del profesor. La llave es la existencia de una fila `Teacher` activa
  * (ver lib/platform-auth/roles.ts); un profesor sigue siendo además un usuario
- * normal, así que estas rutas conviven con las de `platformRoutes`.
+ * normal, así que estas rutas conviven con las de `platformRoutes` aunque el
+ * menú ya no las pinte juntas (ver constants/platform/nav-items.const.ts).
  */
 export const teacherRoutes = {
-  home: "/teacher",
-  students: "/teacher/students",
-  studentDetail: (studentId: string) => `/teacher/students/${studentId}`,
-  studentStudy: (studentId: string, studyId: string) => `/teacher/students/${studentId}/studies/${studyId}`,
+  home: "/profesor",
+  students: "/profesor/alumnos",
+  studentDetail: (studentId: string) => `/profesor/alumnos/${studentId}`,
+  studentStudy: (studentId: string, studyId: string) => `/profesor/alumnos/${studentId}/estudios/${studyId}`,
   studentGame: (studentId: string, studyId: string, gameId: string) =>
-    `/teacher/students/${studentId}/studies/${studyId}/games/${gameId}`,
-  classes: "/teacher/classes",
-  newClass: "/teacher/classes/new",
-  classDetail: (classId: string) => `/teacher/classes/${classId}`,
-  classEdit: (classId: string) => `/teacher/classes/${classId}/edit`,
-  profile: "/teacher/profile",
+    `/profesor/alumnos/${studentId}/estudios/${studyId}/partidas/${gameId}`,
+  classes: "/profesor/clases",
+  newClass: "/profesor/clases/nuevo",
+  classDetail: (classId: string) => `/profesor/clases/${classId}`,
+  classEdit: (classId: string) => `/profesor/clases/${classId}/editar`,
+  profile: "/profesor/perfil",
 } as const;
 
 /**
- * Panel del Administrador/Editor. Cuelga de `/staff` y no de `/admin` porque
- * esa ruta es del panel de Payload (el CMS del sitio público, otra base de
- * datos y otro login: nada que ver con estos roles).
+ * Panel del Administrador/Editor. Cuelga de `/administracion` y no de `/admin`
+ * porque esa ruta es del panel de Payload (el CMS del sitio público, otra base
+ * de datos y otro login: nada que ver con estos roles). Sin tilde a propósito:
+ * una URL con caracteres no ASCII se transmite percent-encoded y se vuelve
+ * ilegible al copiarla.
  */
 export const staffRoutes = {
-  home: "/staff",
-  students: "/staff/students",
-  newStudent: "/staff/students/new",
-  studentDetail: (userId: string) => `/staff/students/${userId}`,
-  teachers: "/staff/teachers",
-  newTeacher: "/staff/teachers/new",
-  teacherDetail: (teacherId: string) => `/staff/teachers/${teacherId}`,
-  courses: "/staff/courses",
-  newCourse: "/staff/courses/new",
-  courseDetail: (courseId: string) => `/staff/courses/${courseId}`,
-  chapterDetail: (courseId: string, chapterId: string) => `/staff/courses/${courseId}/chapters/${chapterId}`,
+  home: "/administracion",
+  students: "/administracion/alumnos",
+  newStudent: "/administracion/alumnos/nuevo",
+  studentDetail: (userId: string) => `/administracion/alumnos/${userId}`,
+  teachers: "/administracion/profesores",
+  newTeacher: "/administracion/profesores/nuevo",
+  teacherDetail: (teacherId: string) => `/administracion/profesores/${teacherId}`,
+  courses: "/administracion/cursos",
+  newCourse: "/administracion/cursos/nuevo",
+  courseDetail: (courseId: string) => `/administracion/cursos/${courseId}`,
+  chapterDetail: (courseId: string, chapterId: string) =>
+    `/administracion/cursos/${courseId}/capitulos/${chapterId}`,
   lessonDetail: (courseId: string, chapterId: string, lessonId: string) =>
-    `/staff/courses/${courseId}/chapters/${chapterId}/lessons/${lessonId}`,
-  authors: "/staff/authors",
-  classes: "/staff/classes",
-  staffClassDetail: (classId: string) => `/staff/classes/${classId}`,
+    `/administracion/cursos/${courseId}/capitulos/${chapterId}/lecciones/${lessonId}`,
+  authors: "/administracion/autores",
+  classes: "/administracion/clases",
+  staffClassDetail: (classId: string) => `/administracion/clases/${classId}`,
 } as const;
+
+/**
+ * Portada que le toca a cada quien: con el menú excluyente por rol (ver
+ * nav-items.const.ts) el dashboard del alumno deja de estar en el menú del
+ * profesor y del staff, así que mandarlos ahí tras el login los dejaría en una
+ * página sin salida. Mismo orden de precedencia que el menú.
+ */
+export function homeRouteFor(roles: { isTeacher: boolean; isStaff: boolean }): string {
+  if (roles.isStaff) return staffRoutes.home;
+  if (roles.isTeacher) return teacherRoutes.home;
+  return platformRoutes.dashboard;
+}

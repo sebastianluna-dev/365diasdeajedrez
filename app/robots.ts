@@ -6,14 +6,14 @@ const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://365diasdeajedrez.c
 // Zonas privadas: plataforma autenticada (alumno, profesor y administración),
 // su login, panel de Payload y API.
 const DISALLOWED_PATHS = [
-  "/dashboard",
-  "/classes",
-  "/studies",
-  "/courses",
-  "/trainer",
-  "/teacher",
-  "/staff",
-  "/login",
+  "/inicio",
+  "/clases",
+  "/estudios",
+  "/cursos",
+  "/entrenador",
+  "/profesor",
+  "/administracion",
+  "/iniciar-sesion",
   "/admin",
   "/api",
 ];

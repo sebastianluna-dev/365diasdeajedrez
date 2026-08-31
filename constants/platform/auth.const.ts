@@ -18,7 +18,7 @@ export const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 /** Renovación deslizante: se refresca como mucho una vez al día. */
 export const SESSION_RENEW_AFTER_MS = 24 * 60 * 60 * 1000;
 
-export const LOGIN_PATH = "/login";
+export const LOGIN_PATH = "/iniciar-sesion";
 
 /** Parámetro con el destino al que volver tras iniciar sesión. */
 export const RETURN_TO_PARAM = "next";
@@ -45,11 +45,11 @@ export const LOGIN_ERROR_MESSAGES: Record<string, string> = {
  * el DAL (`getCurrentUser`), porque el proxy sólo ve la cookie, no la sesión.
  */
 export const PROTECTED_PATH_PREFIXES = [
-  "/dashboard",
-  "/classes",
-  "/studies",
-  "/courses",
-  "/trainer",
-  "/teacher",
-  "/staff",
+  "/inicio",
+  "/clases",
+  "/estudios",
+  "/cursos",
+  "/entrenador",
+  "/profesor",
+  "/administracion",
 ] as const;

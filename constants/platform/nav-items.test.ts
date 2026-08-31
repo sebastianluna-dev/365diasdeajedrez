@@ -8,50 +8,66 @@ import {
 } from "./nav-items.const";
 
 describe("buildPlatformNavGroups", () => {
-  it("da sólo el grupo base al alumno, sin encabezado", () => {
+  it("da sólo el grupo del alumno, sin encabezado", () => {
     const groups = buildPlatformNavGroups({ isTeacher: false, isStaff: false });
     expect(groups).toHaveLength(1);
     expect(groups[0].label).toBeUndefined();
     expect(groups[0].items).toEqual(STUDENT_NAV_ITEMS);
   });
 
-  it("apila el grupo del profesor sobre el del alumno", () => {
+  it("sustituye el menú del alumno por el del profesor, no lo apila", () => {
     const groups = buildPlatformNavGroups({ isTeacher: true, isStaff: false });
-    expect(groups.map((group) => group.label)).toEqual([undefined, "Profesor"]);
-    expect(groups[1].items).toEqual(TEACHER_NAV_ITEMS);
+    expect(groups).toHaveLength(1);
+    expect(groups[0].label).toBe("Profesor");
+    expect(groups[0].items).toEqual(TEACHER_NAV_ITEMS);
   });
 
-  it("acumula ambos roles: son ortogonales, no excluyentes", () => {
+  it("da el menú de administración al staff", () => {
+    const groups = buildPlatformNavGroups({ isTeacher: false, isStaff: true });
+    expect(groups).toHaveLength(1);
+    expect(groups[0].items).toEqual(STAFF_NAV_ITEMS);
+  });
+
+  it("con varios roles manda el de mayor alcance: staff sobre profesor", () => {
     const groups = buildPlatformNavGroups({ isTeacher: true, isStaff: true });
-    expect(groups.map((group) => group.label)).toEqual([undefined, "Profesor", "Administración"]);
-    expect(groups[2].items).toEqual(STAFF_NAV_ITEMS);
+    expect(groups).toHaveLength(1);
+    expect(groups[0].label).toBe("Administración");
+    expect(groups[0].items).toEqual(STAFF_NAV_ITEMS);
   });
 });
 
 describe("activeNavHref", () => {
-  const groups = buildPlatformNavGroups({ isTeacher: true, isStaff: true });
+  const alumno = buildPlatformNavGroups({ isTeacher: false, isStaff: false });
+  const profesor = buildPlatformNavGroups({ isTeacher: true, isStaff: false });
+  const staff = buildPlatformNavGroups({ isTeacher: false, isStaff: true });
 
   it("marca la coincidencia exacta", () => {
-    expect(activeNavHref(groups, "/dashboard")).toBe("/dashboard");
+    expect(activeNavHref(alumno, "/inicio")).toBe("/inicio");
   });
 
   it("marca el ítem por prefijo en las rutas hijas", () => {
-    expect(activeNavHref(groups, "/studies/abc/games/xyz")).toBe("/studies");
+    expect(activeNavHref(alumno, "/estudios/abc/partidas/xyz")).toBe("/estudios");
   });
 
   it("se queda con la coincidencia más larga y no enciende dos ítems", () => {
-    expect(activeNavHref(groups, "/teacher/students")).toBe("/teacher/students");
-    expect(activeNavHref(groups, "/teacher/students/abc")).toBe("/teacher/students");
-    expect(activeNavHref(groups, "/teacher")).toBe("/teacher");
-    expect(activeNavHref(groups, "/staff/courses/abc/chapters/def")).toBe("/staff/courses");
+    expect(activeNavHref(profesor, "/profesor/alumnos")).toBe("/profesor/alumnos");
+    expect(activeNavHref(profesor, "/profesor/alumnos/abc")).toBe("/profesor/alumnos");
+    expect(activeNavHref(profesor, "/profesor")).toBe("/profesor");
+    expect(activeNavHref(staff, "/administracion/cursos/abc/capitulos/def")).toBe("/administracion/cursos");
   });
 
   it("no marca nada fuera de la plataforma", () => {
-    expect(activeNavHref(groups, "/login")).toBeNull();
+    expect(activeNavHref(alumno, "/iniciar-sesion")).toBeNull();
+  });
+
+  it("no marca las áreas del alumno en el menú del profesor", () => {
+    // Con el menú excluyente, un profesor que entre a /estudios (sigue siendo
+    // suyo como usuario) no tiene ningún ítem que encender.
+    expect(activeNavHref(profesor, "/estudios")).toBeNull();
   });
 
   it("no confunde un prefijo textual con una ruta hija", () => {
-    // "/staff" no debe encenderse en "/stafftest".
-    expect(activeNavHref(groups, "/stafftest")).toBeNull();
+    // "/profesor" no debe encenderse en "/profesorado".
+    expect(activeNavHref(profesor, "/profesorado")).toBeNull();
   });
 });

@@ -1,13 +1,17 @@
 import { platformRoutes, staffRoutes, teacherRoutes } from "@/lib/platform-routes";
 
-// Navegación de la plataforma. Un mismo usuario puede ser alumno, profesor y
-// staff a la vez, así que el menú no se sustituye según el rol: se APILAN
-// grupos sobre la base del alumno (un profesor también estudia cursos y guarda
-// estudios). Los href salen siempre de los builders de rutas, nunca de strings
+// Navegación de la plataforma. El menú es EXCLUYENTE por rol: cada quien ve
+// sólo el suyo, no la suma. Un mismo usuario puede seguir siendo alumno,
+// profesor y staff a la vez (los roles son ortogonales en la base de datos),
+// así que cuando acumula varios manda el de mayor alcance —staff sobre
+// profesor, profesor sobre alumno— y el resto de áreas dejan de aparecer en el
+// menú. Los href salen siempre de los builders de rutas, nunca de strings
 // sueltos.
 //
-// Que un grupo se pinte o no es cosmético: quien decide de verdad es
-// `requireTeacher`/`requireStaff` en cada página y action.
+// Ojo con lo que esto NO es: ocultar un grupo no retira ningún permiso. Un
+// profesor que teclee /estudios sigue entrando, porque esas páginas son suyas
+// como usuario; lo que decide de verdad es `requireTeacher`/`requireStaff` en
+// cada página y action, y ahí nada ha cambiado.
 
 export interface PlatformNavItem {
   label: string;
@@ -44,17 +48,22 @@ export const STAFF_NAV_ITEMS: PlatformNavItem[] = [
   { label: "Clases", href: staffRoutes.classes },
 ];
 
-/** Función pura (testeable) que compone el menú a partir de los roles. */
+/**
+ * Función pura (testeable) que elige el menú que toca. Devuelve siempre UN solo
+ * grupo: es la lista del rol de mayor alcance que tenga el usuario.
+ *
+ * Sigue devolviendo un array (y no un grupo suelto) para no obligar al
+ * componente a cambiar de forma si algún día vuelve a haber más de uno.
+ */
 export function buildPlatformNavGroups(roles: { isTeacher: boolean; isStaff: boolean }): PlatformNavGroup[] {
-  const groups: PlatformNavGroup[] = [{ items: STUDENT_NAV_ITEMS }];
-  if (roles.isTeacher) groups.push({ label: "Profesor", items: TEACHER_NAV_ITEMS });
-  if (roles.isStaff) groups.push({ label: "Administración", items: STAFF_NAV_ITEMS });
-  return groups;
+  if (roles.isStaff) return [{ label: "Administración", items: STAFF_NAV_ITEMS }];
+  if (roles.isTeacher) return [{ label: "Profesor", items: TEACHER_NAV_ITEMS }];
+  return [{ items: STUDENT_NAV_ITEMS }];
 }
 
 /**
  * Href del ítem que debe aparecer activo, o null. Se queda con la coincidencia
- * MÁS LARGA: `/teacher` y `/teacher/students` son ítems distintos y el prefijo
+ * MÁS LARGA: `/profesor` y `/profesor/alumnos` son ítems distintos y el prefijo
  * simple encendería los dos a la vez.
  */
 export function activeNavHref(groups: PlatformNavGroup[], pathname: string): string | null {

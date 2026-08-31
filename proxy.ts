@@ -16,7 +16,7 @@ import {
 // de matcher podría dejarlas fuera de este proxy sin que se note.
 //
 // La cookie tampoco distingue roles, y no debe: un alumno con sesión que entre
-// a /teacher o /staff pasa este filtro y lo expulsa el `require*` del DAL hacia
+// a /profesor o /administracion pasa este filtro y lo expulsa el `require*` del DAL hacia
 // su dashboard. Correcto por diseño — aquí no se consulta la base de datos.
 //
 // No se hace el salto contrario (con cookie → /dashboard) a propósito: una
@@ -43,12 +43,12 @@ export function proxy(request: NextRequest): NextResponse {
 // y descarta cualquier valor calculado (por eso no se deriva de la constante).
 export const config = {
   matcher: [
-    "/dashboard/:path*",
-    "/classes/:path*",
-    "/studies/:path*",
-    "/courses/:path*",
-    "/trainer/:path*",
-    "/teacher/:path*",
-    "/staff/:path*",
+    "/inicio/:path*",
+    "/clases/:path*",
+    "/estudios/:path*",
+    "/cursos/:path*",
+    "/entrenador/:path*",
+    "/profesor/:path*",
+    "/administracion/:path*",
   ],
 };

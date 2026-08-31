@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { buildPlatformNavGroups } from "@/constants/platform/nav-items.const";
 import { getSessionUser } from "@/lib/platform-auth/current-user";
 import { getSessionRoles } from "@/lib/platform-auth/roles";
-import { platformRoutes } from "@/lib/platform-routes";
+import { homeRouteFor } from "@/lib/platform-routes";
 import { logoutAction } from "@/services/auth/auth.actions";
 import { PlatformNav } from "./platform-nav.comp";
 import "./platform-shell.section.css";
@@ -25,11 +25,14 @@ interface PlatformShellProps {
 export async function PlatformShell({ children }: PlatformShellProps) {
   const [user, roles] = await Promise.all([getSessionUser(), getSessionRoles()]);
   const navGroups = buildPlatformNavGroups(roles);
+  // El logo lleva a la portada del rol, no al dashboard del alumno: con el menú
+  // excluyente esa página ya no está en el menú de un profesor ni del staff.
+  const homeHref = homeRouteFor(roles);
 
   return (
     <div className="platform-shell">
       <aside className="platform-shell__sidebar">
-        <Link href={platformRoutes.dashboard} className="platform-shell__logo">
+        <Link href={homeHref} className="platform-shell__logo">
           365 Días<span className="platform-shell__logo-accent"> de Ajedrez</span>
         </Link>
 

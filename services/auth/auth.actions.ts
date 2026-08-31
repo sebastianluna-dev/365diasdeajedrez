@@ -6,7 +6,7 @@ import { LOGIN_ERROR_PARAM, LOGIN_PATH, RETURN_TO_PARAM } from "@/constants/plat
 import { DUMMY_PASSWORD_HASH, PASSWORD_MAX_LENGTH, verifyPassword } from "@/lib/platform-auth/password";
 import { createSession, destroyCurrentSession } from "@/lib/platform-auth/session";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
-import { platformRoutes } from "@/lib/platform-routes";
+import { homeRouteFor } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 
 // Server action plana (sin useActionState) para que el login funcione también
@@ -26,9 +26,13 @@ function readText(formData: FormData, field: string): string {
  * enlace `?next=https://otro-sitio` convertiría el login en un trampolín de
  * phishing. `//host` y `/\host` son URLs absolutas para el navegador, de ahí
  * la segunda comprobación.
+ *
+ * El `fallback` es la portada del rol (ver homeRouteFor): con el menú
+ * excluyente, mandar a un profesor o a un administrador al dashboard del
+ * alumno lo dejaría en una página que su propio menú ya no enlaza.
  */
-function safeReturnTo(raw: string): string {
-  if (!raw.startsWith("/") || raw.startsWith("//") || raw.startsWith("/\\")) return platformRoutes.dashboard;
+function safeReturnTo(raw: string, fallback: string): string {
+  if (!raw.startsWith("/") || raw.startsWith("//") || raw.startsWith("/\\")) return fallback;
   return raw;
 }
 
@@ -43,7 +47,6 @@ export async function loginAction(formData: FormData): Promise<void> {
   const email = readText(formData, "email").toLowerCase().slice(0, EMAIL_MAX_LENGTH);
   const password = readText(formData, "password");
   const rawReturnTo = readText(formData, RETURN_TO_PARAM);
-  const returnTo = safeReturnTo(rawReturnTo);
 
   if (email.length === 0 || password.length === 0 || password.length > PASSWORD_MAX_LENGTH) {
     backToLogin("credentials", rawReturnTo);
@@ -60,7 +63,15 @@ export async function loginAction(formData: FormData): Promise<void> {
   const db = getPlatformDb();
   const user = await db.user.findUnique({
     where: { email },
-    select: { id: true, passwordHash: true },
+    // Los roles salen de esta misma consulta (son filas cuya existencia es el
+    // rol) sólo para elegir a dónde aterriza; autorizar sigue siendo cosa de
+    // `requireTeacher`/`requireStaff` en cada página.
+    select: {
+      id: true,
+      passwordHash: true,
+      teacher: { select: { isActive: true } },
+      staff: { select: { id: true } },
+    },
   });
 
   // Se verifica siempre, incluso sin usuario, contra un hash de descarte: así
@@ -73,7 +84,11 @@ export async function loginAction(formData: FormData): Promise<void> {
   await createSession(user.id, requestHeaders.get("user-agent"));
   await db.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
 
-  redirect(returnTo);
+  const home = homeRouteFor({
+    isTeacher: user.teacher?.isActive === true,
+    isStaff: user.staff !== null,
+  });
+  redirect(safeReturnTo(rawReturnTo, home));
 }
 
 export async function logoutAction(): Promise<void> {
