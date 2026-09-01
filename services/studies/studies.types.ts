@@ -57,6 +57,8 @@ export interface StudyDetail {
 
 export interface GameView {
   id: string;
+  /** El que mira es el dueño de la base: puede abrir el tablero de análisis. */
+  canEdit: boolean;
   studyId: string;
   studyName: string;
   studyHref: string;

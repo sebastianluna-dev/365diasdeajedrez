@@ -61,9 +61,28 @@ interface ChessBoardProps {
   interactive?: boolean;
   /** Called after a legal interactive move, with its SAN and the FEN it was played from. */
   onMove?: (san: string, fromFen: string) => void;
+  /**
+   * Deja dibujar flechas y círculos con el clic derecho, y avisa al soltar.
+   *
+   * Cambia además DÓNDE viven las formas: sin esto son `autoShapes`, que
+   * chessground pinta pero no deja tocar; con esto pasan a ser las formas del
+   * usuario, que es lo único que puede editar. Sólo lo usa el editor de
+   * análisis; el visor las sigue pintando en modo lectura.
+   */
+  editableShapes?: boolean;
+  onShapesChange?: (shapes: DrawShape[]) => void;
 }
 
-export function ChessBoard({ pgn, position, flipBoard = false, annotations, interactive = false, onMove }: ChessBoardProps) {
+export function ChessBoard({
+  pgn,
+  position,
+  flipBoard = false,
+  annotations,
+  interactive = false,
+  onMove,
+  editableShapes = false,
+  onShapesChange,
+}: ChessBoardProps) {
   const positions = useMemo(() => replayGame(pgn ?? ""), [pgn]);
   const total = positions.length - 1;
   const rows = useMemo(
@@ -84,6 +103,11 @@ export function ChessBoard({ pgn, position, flipBoard = false, annotations, inte
   const activeCellRef = useRef<HTMLButtonElement>(null);
   const isInViewportRef = useRef(false);
   const hasBeenClickedRef = useRef(false);
+  const onShapesChangeRef = useRef(onShapesChange);
+  useEffect(() => {
+    onShapesChangeRef.current = onShapesChange;
+  }, [onShapesChange]);
+
   const onMoveRef = useRef(onMove);
   useEffect(() => {
     onMoveRef.current = onMove;
@@ -135,14 +159,17 @@ export function ChessBoard({ pgn, position, flipBoard = false, annotations, inte
       viewOnly: !interactive,
       draggable: { enabled: interactive },
       selectable: { enabled: interactive },
-      drawable: { enabled: false },
+      drawable: {
+        enabled: editableShapes,
+        onChange: editableShapes ? (shapes) => onShapesChangeRef.current?.(shapes) : undefined,
+      },
     });
     apiRef.current = api;
     return () => {
       api.destroy();
       apiRef.current = null;
     };
-  }, [interactive]);
+  }, [interactive, editableShapes]);
 
   // Push the current position into chessground.
   useEffect(() => {
@@ -178,9 +205,12 @@ export function ChessBoard({ pgn, position, flipBoard = false, annotations, inte
         },
       };
     }
+    // Editables van como formas del usuario; si no, como autoShapes de sólo
+    // lectura. Mezclarlas pintaría cada flecha dos veces.
+    if (editableShapes) config.drawable = { shapes: position?.shapes ?? [] };
     api.set(config);
-    api.setAutoShapes(position?.shapes ?? []);
-  }, [ply, positions, position, orientation, interactive]);
+    if (!editableShapes) api.setAutoShapes(position?.shapes ?? []);
+  }, [ply, positions, position, orientation, interactive, editableShapes]);
 
   // Keep chessground sized to its container.
   useEffect(() => {

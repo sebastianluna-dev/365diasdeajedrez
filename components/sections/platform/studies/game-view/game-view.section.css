@@ -39,4 +39,8 @@
     font-size: 13px;
     color: var(--platform-text-muted);
   }
+
+  & .game-view__analyse {
+    margin: 0;
+  }
 }

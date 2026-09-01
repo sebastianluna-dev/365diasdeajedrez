@@ -1,0 +1,49 @@
+.game-analysis {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  & .game-analysis__breadcrumb {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 13.5px;
+  }
+
+  & .game-analysis__breadcrumb-link {
+    color: var(--platform-text-muted);
+  }
+
+  & .game-analysis__breadcrumb-link:hover {
+    color: var(--platform-accent);
+  }
+
+  & .game-analysis__breadcrumb-separator {
+    color: rgba(245, 240, 232, 0.25);
+  }
+
+  & .game-analysis__breadcrumb-current {
+    color: var(--platform-text);
+    font-weight: 600;
+  }
+
+  & .game-analysis__head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  & .game-analysis__form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  & .game-analysis__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+}

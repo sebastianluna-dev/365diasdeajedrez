@@ -22,4 +22,8 @@
     flex-wrap: wrap;
     gap: 10px;
   }
+
+  & .block-form__annotate {
+    margin: 0;
+  }
 }

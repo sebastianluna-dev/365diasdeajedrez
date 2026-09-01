@@ -25,7 +25,7 @@ export type StudyDetailRow = Prisma.GameDatabaseGetPayload<{ include: typeof stu
 export const gameViewInclude = {
   result: { select: { label: true } },
   source: { select: { label: true } },
-  database: { select: { id: true, name: true } },
+  database: { select: { id: true, name: true, userId: true } },
 } satisfies Prisma.GameInclude;
 
 export type GameViewRow = Prisma.GameGetPayload<{ include: typeof gameViewInclude }>;
@@ -69,8 +69,15 @@ export function mapStudyDetail(row: StudyDetailRow): StudyDetail {
   };
 }
 
-export function mapGameView(row: GameViewRow): GameView {
+/**
+ * @param viewerId id de quien mira, o `null` cuando la vista es de sólo lectura
+ *   por su propia naturaleza (el profesor revisando a un alumno).
+ */
+export function mapGameView(row: GameViewRow, viewerId: string | null): GameView {
   return {
+    // Un profesor VE las partidas de sus alumnos para poder citarlas en clase,
+    // pero anotarlas es cosa del dueño.
+    canEdit: viewerId !== null && row.database.userId === viewerId,
     id: row.id,
     studyId: row.database.id,
     studyName: row.database.name,

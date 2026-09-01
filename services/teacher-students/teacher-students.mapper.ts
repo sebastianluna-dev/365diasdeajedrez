@@ -21,7 +21,9 @@ export function mapStudentStudyDetail(studentId: string, row: StudyDetailRow): S
 }
 
 export function mapStudentGameView(studentId: string, row: GameViewRow): GameView {
-  const view = mapGameView(row);
+  // `null`: el profesor revisa la partida de su alumno, no la anota. El
+  // servidor lo rechazaría igual, pero así tampoco se le ofrece el botón.
+  const view = mapGameView(row, null);
   return { ...view, studyHref: teacherRoutes.studentStudy(studentId, view.studyId) };
 }
 

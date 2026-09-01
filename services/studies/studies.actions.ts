@@ -16,6 +16,7 @@ import type { Prisma } from "@/lib/platform-db/generated/client";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
+import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
 
 // Las server actions son alcanzables por POST directo: el usuario SIEMPRE se
@@ -154,5 +155,44 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
   });
 
   revalidatePath(platformRoutes.studies);
+  revalidatePath(platformRoutes.studyDetail(studyId));
+}
+
+/**
+ * Guarda el PGN anotado de una partida, tal y como lo dejó el tablero de
+ * análisis.
+ *
+ * Sólo escribe el DUEÑO de la base. `listReferenceableGames` deja a un profesor
+ * VER las partidas de sus alumnos para poder citarlas en clase; sin la
+ * condición sobre `userId` esa misma visibilidad le dejaría reescribirlas.
+ *
+ * Reindexa las posiciones después: el buscador por posición se alimenta de
+ * `GamePosition`, y dejarlo con las de la versión anterior encontraría jugadas
+ * que ya no están en la partida.
+ */
+export async function updateGamePgn(studyId: string, gameId: string, formData: FormData): Promise<void> {
+  const pgn = readText(formData, "pgn");
+  if (pgn.length === 0 || pgn.length > PGN_MAX_LENGTH) return;
+
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  if (!allowAction(`${user.id}:game-pgn`, 60, 60_000)) return;
+
+  // La previsualización del editor es una comodidad; quien decide es el
+  // servidor, que vuelve a parsear antes de escribir.
+  if (parsePgnTree(pgn) === null) return;
+
+  const game = await db.game.findFirst({
+    where: { id: gameId, databaseId: studyId, database: { userId: user.id } },
+    select: { id: true },
+  });
+  if (!game) return;
+
+  await db.$transaction(async (tx) => {
+    await tx.game.update({ where: { id: game.id }, data: { pgn } });
+    await indexGamePositions(tx, { gameId: game.id, databaseId: studyId, pgn });
+  });
+
+  revalidatePath(platformRoutes.gameDetail(studyId, gameId));
   revalidatePath(platformRoutes.studyDetail(studyId));
 }

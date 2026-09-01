@@ -73,6 +73,9 @@ export interface ReferenceableGame {
 }
 
 export interface ReferenceableGameGroup {
+  studyId: string;
+  /** La base es del profesor: puede anotar sus partidas, no sólo citarlas. */
+  isOwn: boolean;
   /** «Mis estudios» o el nombre del alumno dueño de la base. */
   ownerLabel: string;
   studyName: string;

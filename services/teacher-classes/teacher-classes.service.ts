@@ -106,6 +106,9 @@ export async function listReferenceableGames(): Promise<ReferenceableGameGroup[]
   return databases
     .filter((database) => database.games.length > 0)
     .map((database) => ({
+      studyId: database.id,
+      // Sólo las suyas se pueden anotar: las del alumno se ven para citarlas.
+      isOwn: database.userId === user.id,
       ownerLabel: database.userId === user.id ? "Mis estudios" : (database.user?.displayName ?? "Alumno"),
       studyName: database.name,
       games: database.games.map((game) => ({ id: game.id, label: `${game.white} – ${game.black}` })),

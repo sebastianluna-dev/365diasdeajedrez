@@ -19,6 +19,7 @@ export const platformRoutes = {
   classGames: "/estudios/clases",
   studyDetail: (studyId: string) => `/estudios/${studyId}`,
   gameDetail: (studyId: string, gameId: string) => `/estudios/${studyId}/partidas/${gameId}`,
+  gameAnalysis: (studyId: string, gameId: string) => `/estudios/${studyId}/partidas/${gameId}/analizar`,
   courses: "/cursos",
   courseDetail: (courseId: string) => `/cursos/${courseId}`,
   chapterDetail: (courseId: string, chapterId: string) => `/cursos/${courseId}/capitulos/${chapterId}`,

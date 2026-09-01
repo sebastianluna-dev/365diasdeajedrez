@@ -142,6 +142,7 @@ export function LessonEditorSection({
         <LessonPgnEditor
           action={updateLessonPgn.bind(null, lesson.courseId, lesson.chapterId, lesson.id)}
           pgn={lesson.pgn}
+          initialFen={lesson.initialFen}
           pgnUpdatedAtLabel={lesson.pgnUpdatedAtLabel}
         />
       </section>

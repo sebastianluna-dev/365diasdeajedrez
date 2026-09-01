@@ -203,3 +203,36 @@ const NAG_GLYPHS: Record<number, string> = {
 export function nagGlyph(nag: number): string {
   return NAG_GLYPHS[nag] ?? `$${nag}`;
 }
+
+export interface NagOption {
+  nag: number;
+  glyph: string;
+  label: string;
+}
+
+/**
+ * Los NAGs que ofrece el editor, en dos grupos EXCLUYENTES entre sí.
+ *
+ * Son dos cosas distintas y una jugada puede llevar una de cada: qué tal fue la
+ * jugada («??») y cómo queda la posición después («∓»). Por eso elegir dentro de
+ * un grupo sustituye lo que hubiera de ese grupo, pero no toca al otro.
+ */
+export const MOVE_QUALITY_NAGS: NagOption[] = [
+  { nag: 3, glyph: "!!", label: "Jugada brillante" },
+  { nag: 1, glyph: "!", label: "Buena jugada" },
+  { nag: 5, glyph: "!?", label: "Jugada interesante" },
+  { nag: 6, glyph: "?!", label: "Jugada dudosa" },
+  { nag: 2, glyph: "?", label: "Error" },
+  { nag: 4, glyph: "??", label: "Error grave" },
+];
+
+export const POSITION_EVAL_NAGS: NagOption[] = [
+  { nag: 10, glyph: "=", label: "Posición igualada" },
+  { nag: 13, glyph: "∞", label: "Posición poco clara" },
+  { nag: 14, glyph: "⩲", label: "Blancas algo mejor" },
+  { nag: 15, glyph: "⩱", label: "Negras algo mejor" },
+  { nag: 16, glyph: "±", label: "Blancas mejor" },
+  { nag: 17, glyph: "∓", label: "Negras mejor" },
+  { nag: 18, glyph: "+−", label: "Blancas ganan" },
+  { nag: 19, glyph: "−+", label: "Negras ganan" },
+];

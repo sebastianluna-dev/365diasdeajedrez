@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { FormField } from "@/components/common/form-field.comp";
+import { platformRoutes } from "@/lib/platform-routes";
 import { CLASS_BLOCK_KIND, type ClassBlockKindCode } from "@/constants/platform/class-codes.const";
 import type {
   LessonRefOption,
@@ -31,6 +33,13 @@ interface BlockFormProps {
   onCancel?: () => void;
 }
 
+/** Estudio al que pertenece la partida elegida, si el profesor puede anotarla. */
+function annotatableStudyOf(groups: BlockFormOptions["games"], gameId: string): string | null {
+  if (gameId.length === 0) return null;
+  const group = groups.find((candidate) => candidate.games.some((game) => game.id === gameId));
+  return group?.isOwn ? group.studyId : null;
+}
+
 /**
  * Campos de un bloque según su tipo. El estado que vive aquí es sólo de
  * interfaz (qué referencia está elegida, qué posición se ha marcado): guardar
@@ -44,6 +53,7 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
 
   const referenceId = kind === CLASS_BLOCK_KIND.GAME_REF ? gameId : lessonId;
   const supportsMovePath = kind === CLASS_BLOCK_KIND.GAME_REF || kind === CLASS_BLOCK_KIND.LESSON_REF;
+  const annotatableStudyId = annotatableStudyOf(options.games, gameId);
 
   return (
     <form className="block-form" action={action}>
@@ -62,7 +72,20 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
       )}
 
       {kind === CLASS_BLOCK_KIND.GAME_REF && (
-        <GameSelector groups={options.games} value={gameId} onChange={setGameId} />
+        <>
+          <GameSelector groups={options.games} value={gameId} onChange={setGameId} />
+          {/* La partida y su análisis son la MISMA entidad, así que aquí no hay
+              un segundo editor: se enlaza al de «Mis estudios». Sólo aparece
+              para las partidas del profesor; las de sus alumnos las ve para
+              citarlas, no para reescribirlas. */}
+          {annotatableStudyId && (
+            <p className="block-form__annotate">
+              <Link href={platformRoutes.gameAnalysis(annotatableStudyId, gameId)} className="platform-button">
+                Anotar esta partida
+              </Link>
+            </p>
+          )}
+        </>
       )}
 
       {kind === CLASS_BLOCK_KIND.LESSON_REF && (

@@ -38,6 +38,14 @@ export function GameViewSection({ game }: GameViewSectionProps) {
         </p>
       </header>
 
+      {game.canEdit && (
+        <p className="game-view__analyse">
+          <Link href={platformRoutes.gameAnalysis(game.studyId, game.id)} className="platform-button">
+            Analizar
+          </Link>
+        </p>
+      )}
+
       <GameViewer pgn={game.pgn} />
 
       <p className="game-view__source">Origen: {game.sourceLabel}</p>

@@ -61,12 +61,12 @@ export async function getStudyById(studyId: string): Promise<StudyDetail | null>
 
 export async function getGameById(studyId: string, gameId: string): Promise<GameView | null> {
   const db = getPlatformDb();
-  const where = await getVisibleStudiesWhere();
+  const [where, user] = await Promise.all([getVisibleStudiesWhere(), getCurrentUser()]);
   const row = await db.game.findFirst({
     where: { id: gameId, databaseId: studyId, database: where },
     include: gameViewInclude,
   });
-  return row ? mapGameView(row) : null;
+  return row ? mapGameView(row, user.id) : null;
 }
 
 // --- Partidas vistas en clase ----------------------------------------------
