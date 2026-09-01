@@ -23,14 +23,20 @@ export const platformRoutes = {
   newStudyGame: (studyId: string) => `/estudios/${studyId}/partidas/nueva`,
   courses: "/cursos",
   /**
-   * Las rutas del ALUMNO van por slug: son las que se comparten y se leen. El
-   * panel de staff sigue yendo por id a propósito —allí el slug es un campo
-   * editable, y cambiarlo dejaría al staff en una URL que ya no existe—.
+   * Las rutas del ALUMNO van por identificador numérico de 8 dígitos. El panel
+   * de staff conserva los suyos: son dos zonas con identificadores distintos a
+   * propósito.
+   *
+   * El capítulo se direcciona por su NÚMERO DE ORDEN dentro del curso, que es
+   * el que el alumno ve en pantalla. Reordenar capítulos en el panel reasigna
+   * esas URLs entre ellos, que es justo lo que se espera de un número de orden.
+   *
+   * La lección cuelga de la raíz y no del curso: su identificador ya la
+   * localiza, y anidarla obligaba a arrastrar curso y capítulo en cada enlace.
    */
-  courseDetail: (courseSlug: string) => `/cursos/${courseSlug}`,
-  chapterDetail: (courseSlug: string, chapterSlug: string) => `/cursos/${courseSlug}/capitulos/${chapterSlug}`,
-  lessonDetail: (courseSlug: string, chapterSlug: string, lessonId: string) =>
-    `/cursos/${courseSlug}/capitulos/${chapterSlug}/lecciones/${lessonId}`,
+  courseDetail: (courseId: string) => `/cursos/${courseId}`,
+  chapterDetail: (courseId: string, chapterOrder: number) => `/cursos/${courseId}/${chapterOrder}`,
+  lessonDetail: (lessonId: string) => `/lecciones/${lessonId}`,
   trainer: "/entrenador",
   /** Buscador de partidas por posición; lo comparten alumno y profesor. */
   explorer: "/explorador",

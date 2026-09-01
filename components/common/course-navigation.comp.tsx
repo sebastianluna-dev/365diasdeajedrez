@@ -3,10 +3,10 @@ import { platformRoutes } from "@/lib/platform-routes";
 import "./course-navigation.comp.css";
 
 interface CourseNavigationProps {
-  /** Slug, no id: las rutas del alumno van por slug. */
-  courseSlug: string;
+  courseId: string;
   courseName: string;
-  chapterSlug?: string;
+  /** Número de orden: es lo que direcciona al capítulo en la URL. */
+  chapterOrder?: number;
   chapterName?: string;
   /** Nombre de la lección actual (no enlazada). */
   lessonName?: string;
@@ -14,9 +14,9 @@ interface CourseNavigationProps {
 
 /** Navegación contextual Curso → Capítulo → Lección. */
 export function CourseNavigation({
-  courseSlug,
+  courseId,
   courseName,
-  chapterSlug,
+  chapterOrder,
   chapterName,
   lessonName,
 }: CourseNavigationProps) {
@@ -26,13 +26,13 @@ export function CourseNavigation({
         Mis cursos
       </Link>
       <span className="course-navigation__separator">/</span>
-      <Link href={platformRoutes.courseDetail(courseSlug)} className="course-navigation__link">
+      <Link href={platformRoutes.courseDetail(courseId)} className="course-navigation__link">
         {courseName}
       </Link>
-      {chapterSlug && chapterName && (
+      {chapterOrder !== undefined && chapterName && (
         <>
           <span className="course-navigation__separator">/</span>
-          <Link href={platformRoutes.chapterDetail(courseSlug, chapterSlug)} className="course-navigation__link">
+          <Link href={platformRoutes.chapterDetail(courseId, chapterOrder)} className="course-navigation__link">
             {chapterName}
           </Link>
         </>

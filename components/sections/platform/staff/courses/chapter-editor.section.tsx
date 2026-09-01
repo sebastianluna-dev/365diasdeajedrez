@@ -35,19 +35,6 @@ export function ChapterEditorSection({ chapter, errorCode }: ChapterEditorSectio
             <input type="text" name="name" defaultValue={chapter.name} maxLength={160} required />
           </FormField>
 
-          <FormField
-            label="Identificador en la URL (slug)"
-            hint="Lo que verá el alumno en la dirección. Si lo dejas vacío se deriva del nombre; sólo tiene que ser único dentro de este curso."
-          >
-            <input
-              type="text"
-              name="slug"
-              defaultValue={chapter.slug}
-              maxLength={160}
-              pattern="[a-z0-9]+(-[a-z0-9]+)*"
-            />
-          </FormField>
-
           <FormField label="Descripción (opcional)">
             <textarea name="description" defaultValue={chapter.description ?? ""} maxLength={1000} />
           </FormField>

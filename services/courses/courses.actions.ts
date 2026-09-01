@@ -19,19 +19,19 @@ async function getLessonContext(lessonId: string) {
     select: {
       id: true,
       chapterId: true,
-      // Los slugs son para revalidar las rutas del alumno, que van por slug.
-      chapter: { select: { courseId: true, slug: true, course: { select: { slug: true } } } },
+      // El orden y el curso son para revalidar las rutas del alumno.
+      chapter: { select: { courseId: true, order: true } },
       lessonTopics: { select: { topicId: true }, take: 1 },
     },
   });
 }
 
-function revalidateLessonPaths(courseSlug: string, chapterSlug: string, lessonId: string) {
+function revalidateLessonPaths(courseId: string, chapterOrder: number, lessonId: string) {
   revalidatePath(platformRoutes.dashboard);
   revalidatePath(platformRoutes.courses);
-  revalidatePath(platformRoutes.courseDetail(courseSlug));
-  revalidatePath(platformRoutes.chapterDetail(courseSlug, chapterSlug));
-  revalidatePath(platformRoutes.lessonDetail(courseSlug, chapterSlug, lessonId));
+  revalidatePath(platformRoutes.courseDetail(courseId));
+  revalidatePath(platformRoutes.chapterDetail(courseId, chapterOrder));
+  revalidatePath(platformRoutes.lessonDetail(lessonId));
 }
 
 /**
@@ -196,5 +196,5 @@ export async function completeLesson(lessonId: string): Promise<void> {
     });
   }
 
-  revalidateLessonPaths(lesson.chapter.course.slug, lesson.chapter.slug, lessonId);
+  revalidateLessonPaths(lesson.chapter.courseId, lesson.chapter.order, lessonId);
 }

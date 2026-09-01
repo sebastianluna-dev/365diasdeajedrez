@@ -173,20 +173,20 @@ export const IDS = {
   staff: "a0000000-0000-4000-8000-000000000006",
   teacherStudent: "a0000000-0000-4000-8000-000000000007",
 
-  courseSicilian: "c0000000-0000-4000-8000-000000000001",
-  courseRookEndings: "c0000000-0000-4000-8000-000000000002",
+  courseSicilian: "10000001",
+  courseRookEndings: "10000002",
 
   chSicilianBasics: "c1000000-0000-4000-8000-000000000001",
   chSicilianNajdorf: "c1000000-0000-4000-8000-000000000002",
   chRookFundamentals: "c1000000-0000-4000-8000-000000000003",
 
-  lsWhatIsSicilian: "sicIdea1",
-  lsPawnStructure: "sicIdea2",
-  lsBreakD5: "sicIdea3",
-  lsNajdorfStart: "sicNajd1",
-  lsPoisonedPawn: "sicNajd2",
-  lsLucena: "torreLuc",
-  lsPhilidor: "torrePhi",
+  lsWhatIsSicilian: "20000001",
+  lsPawnStructure: "20000002",
+  lsBreakD5: "20000003",
+  lsNajdorfStart: "20000004",
+  lsPoisonedPawn: "20000005",
+  lsLucena: "20000006",
+  lsPhilidor: "20000007",
 
   exNajdorfLine: "e0000000-0000-4000-8000-000000000001",
   exPoisonedPawn: "e0000000-0000-4000-8000-000000000002",
@@ -294,8 +294,6 @@ export interface SeedLesson {
 
 export interface SeedChapter {
   id: string;
-  /** Identificador en la URL, único dentro del curso. */
-  slug: string;
   order: number;
   name: string;
   description: string;
@@ -327,7 +325,6 @@ export const COURSES: SeedCourse[] = [
     chapters: [
       {
         id: IDS.chSicilianBasics,
-        slug: "ideas-basicas",
         order: 1,
         name: "Ideas básicas",
         description: "Qué busca el negro con 1...c5 y cómo se forman las estructuras sicilianas.",
@@ -382,7 +379,6 @@ export const COURSES: SeedCourse[] = [
       },
       {
         id: IDS.chSicilianNajdorf,
-        slug: "la-variante-najdorf",
         order: 2,
         name: "La Variante Najdorf",
         description: "La línea favorita de Fischer y Kasparov: 5...a6 y sus planes.",
@@ -451,7 +447,6 @@ export const COURSES: SeedCourse[] = [
     chapters: [
       {
         id: IDS.chRookFundamentals,
-        slug: "posiciones-fundamentales",
         order: 1,
         name: "Posiciones fundamentales",
         description: "Las dos posiciones teóricas imprescindibles del final de torre y peón.",

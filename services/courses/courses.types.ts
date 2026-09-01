@@ -64,9 +64,7 @@ export interface ChapterLessonItem {
 }
 
 export interface ChapterView {
-  /** El id lo usan las server actions; el slug, los enlaces. */
   courseId: string;
-  courseSlug: string;
   courseName: string;
   courseHref: string;
   id: string;
@@ -84,12 +82,11 @@ export interface ChapterView {
 }
 
 export interface LessonView {
-  /** El id lo usan las server actions; el slug, los enlaces. */
   courseId: string;
-  courseSlug: string;
   courseName: string;
   chapterId: string;
-  chapterSlug: string;
+  /** Número de orden: es lo que direcciona al capítulo en la URL. */
+  chapterOrder: number;
   chapterName: string;
   id: string;
   order: number;

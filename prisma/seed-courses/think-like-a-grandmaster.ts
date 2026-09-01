@@ -15,7 +15,6 @@
 // vale para uso interno de la academia, no para publicarlo sin licencia.
 
 import { createHash } from "node:crypto";
-import { generateSlug } from "../../lib/generate-slug";
 import { readFileSync } from "node:fs";
 import { Chess } from "chessops/chess";
 import { parseFen } from "chessops/fen";
@@ -26,7 +25,7 @@ import type { SeedChapter, SeedCourse, SeedLesson } from "../seed-data";
 
 /** Ids fijos, en rangos propios para no chocar con los de seed-data.ts. */
 export const GM_IDS = {
-  course: "c0000000-0000-4000-8000-000000000003",
+  course: "10000003",
 
   chAnalysis: "c1000000-0000-4000-8000-000000000010",
   chJudgement: "c1000000-0000-4000-8000-000000000011",
@@ -172,20 +171,21 @@ function resolvePgn(lesson: ImportLesson): string {
  * sobre la misma fila y nunca duplica; y como no depende del orden, mover una
  * lección de sitio no la convierte en otra.
  */
-const ID_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+const ID_DIGITS = "0123456789";
 
 /**
  * Ocho caracteres, porque el id de la lección va en la URL. Sigue derivando del
  * `stableKey`, así que reimportar el paquete cae sobre las mismas filas.
  *
- * 62^8 son 2,2·10¹⁴ combinaciones para 162 lecciones: la probabilidad de que
- * dos claves distintas den el mismo id es despreciable, y si ocurriera lo
- * cantaría la clave primaria al sembrar en vez de mezclar dos lecciones.
+ * Ocho dígitos son 100 millones de valores para 162 lecciones. La probabilidad
+ * de que dos claves den el mismo número no es despreciable del todo —el
+ * problema del cumpleaños—, así que el importador lo comprueba al arrancar en
+ * vez de dejar que dos lecciones se pisen en silencio.
  */
 function deterministicId(namespace: string, key: string): string {
   const bytes = createHash("sha1").update(`${namespace}:${key}`).digest();
   let id = "";
-  for (let index = 0; index < 8; index++) id += ID_ALPHABET[bytes[index] % ID_ALPHABET.length];
+  for (let index = 0; index < 8; index++) id += ID_DIGITS[bytes[index] % 10];
   return id;
 }
 
@@ -263,7 +263,6 @@ function toSeedChapter(chapter: ImportChapter): SeedChapter {
   const topics = CHAPTER_TOPICS[index];
   return {
     id,
-    slug: generateSlug(chapter.title),
     order: chapter.order,
     name: chapter.title,
     description: CHAPTER_DESCRIPTIONS[index],

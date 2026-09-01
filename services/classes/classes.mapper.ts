@@ -23,14 +23,7 @@ export const classDetailInclude = {
     include: {
       kind: true,
       game: { select: { id: true, white: true, black: true, pgn: true, databaseId: true } },
-      lesson: {
-        select: {
-          id: true,
-          name: true,
-          chapterId: true,
-          chapter: { select: { slug: true, course: { select: { slug: true } } } },
-        },
-      },
+      lesson: { select: { id: true, name: true } },
       position: { select: { fen: true, title: true, orientation: { select: { code: true } } } },
     },
   },
@@ -83,11 +76,7 @@ function mapBlock(block: ClassDetailRow["blocks"][number]): ClassBlockView | nul
             lesson: {
               id: block.lesson.id,
               name: block.lesson.name,
-              href: platformRoutes.lessonDetail(
-                block.lesson.chapter.course.slug,
-                block.lesson.chapter.slug,
-                block.lesson.id,
-              ),
+              href: platformRoutes.lessonDetail(block.lesson.id),
             },
           }
         : null;

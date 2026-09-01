@@ -15,7 +15,7 @@ import { CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
 import { EXERCISE_MODE } from "@/constants/platform/training-codes.const";
 import { deriveExerciseData } from "@/lib/chess/exercise-derivation";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
-import { generateSlug } from "@/lib/generate-slug";
+import { numericId } from "@/lib/numeric-id";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
@@ -71,6 +71,10 @@ export async function createCourse(formData: FormData): Promise<void> {
     const created = await getPlatformDb().course.create({
       // Nace en BORRADOR: publicar es una decisión aparte y con requisitos.
       data: {
+        // El id va en la URL del alumno, así que lo pone la aplicación. Un
+        // choque entre dos números lo canta la clave primaria, y se ve como un
+        // error de creación en vez de pisar un curso existente.
+        id: numericId(),
         name,
         slug,
         type: { connect: { code: typeCode } },
@@ -185,31 +189,6 @@ export async function archiveCourse(courseId: string): Promise<void> {
 
 // --- Capítulos ------------------------------------------------------------
 
-/**
- * Slug libre dentro del curso, derivado del nombre.
- *
- * Sólo tiene que ser único POR CURSO —la ruta lleva también el slug del curso—,
- * así que dos cursos pueden tener su «introduccion» sin estorbarse. Si dentro
- * del mismo curso ya está cogido, se numera.
- */
-async function uniqueChapterSlug(courseId: string, base: string, exceptId?: string): Promise<string> {
-  const root = generateSlug(base) || "capitulo";
-  const taken = new Set(
-    (
-      await getPlatformDb().chapter.findMany({
-        where: { courseId, ...(exceptId ? { id: { not: exceptId } } : {}) },
-        select: { slug: true },
-      })
-    ).map((chapter) => chapter.slug),
-  );
-
-  if (!taken.has(root)) return root;
-  for (let suffix = 2; ; suffix++) {
-    const candidate = `${root}-${suffix}`;
-    if (!taken.has(candidate)) return candidate;
-  }
-}
-
 export async function createChapter(courseId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.courseDetail(courseId);
@@ -220,9 +199,7 @@ export async function createChapter(courseId: string, formData: FormData): Promi
 
   const db = getPlatformDb();
   const count = await db.chapter.count({ where: { courseId } });
-  await db.chapter.create({
-    data: { courseId, name, slug: await uniqueChapterSlug(courseId, name), order: nextOrder(count) },
-  });
+  await db.chapter.create({ data: { courseId, name, order: nextOrder(count) } });
 
   revalidatePath(detailPath);
 }
@@ -235,17 +212,10 @@ export async function updateChapter(courseId: string, chapterId: string, formDat
   const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
   if (name.length === 0) fail(chapterPath, "invalid");
 
-  // El slug es opcional en el formulario: vacío significa «derívalo del nombre».
-  // Escrito a mano tiene que cumplir la misma forma que el del curso.
-  const slugInput = readText(formData, "slug").toLowerCase().slice(0, SLUG_MAX_LENGTH);
-  if (slugInput.length > 0 && !SLUG_SHAPE.test(slugInput)) fail(chapterPath, "invalid");
-  const slug = await uniqueChapterSlug(courseId, slugInput.length > 0 ? slugInput : name, chapterId);
-
   const updated = await getPlatformDb().chapter.updateMany({
     where: { id: chapterId, courseId },
     data: {
       name,
-      slug,
       description: readOptionalText(formData, "description", DESCRIPTION_MAX_LENGTH),
       estimatedDuration: readClampedInt(formData, "estimatedDuration", 0, DURATION_MAX),
     },
@@ -331,6 +301,7 @@ export async function createLesson(courseId: string, chapterId: string, formData
   // Valores de arranque razonables: el resto se edita dentro de la lección.
   await db.lesson.create({
     data: {
+      id: numericId(),
       chapter: { connect: { id: chapter.id } },
       name,
       order: nextOrder(count),
@@ -440,15 +411,9 @@ export async function updateLessonPgn(
 
   revalidatePath(lessonPath);
 
-  // La ruta del ALUMNO va por slug, y aquí sólo hay ids: hay que resolverlos.
-  // El panel se queda con ids a propósito —el slug es editable y cambiarlo
-  // dejaría al staff en una URL que ya no existe—, así que esta traducción es
-  // el precio de tener las dos zonas con identificadores distintos.
-  const chapter = await db.chapter.findUnique({
-    where: { id: chapterId },
-    select: { slug: true, course: { select: { slug: true } } },
-  });
-  if (chapter) revalidatePath(platformRoutes.lessonDetail(chapter.course.slug, chapter.slug, lessonId));
+  // La lección se direcciona sola en la zona del alumno, así que aquí ya no
+  // hace falta resolver curso ni capítulo para revalidar su página.
+  revalidatePath(platformRoutes.lessonDetail(lessonId));
 }
 
 export async function moveLesson(courseId: string, chapterId: string, formData: FormData): Promise<void> {

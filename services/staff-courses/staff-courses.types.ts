@@ -69,8 +69,6 @@ export interface LessonAdminRow {
 
 export interface ChapterAdminDetail {
   id: string;
-  /** Identificador del capítulo en la URL del alumno, único dentro del curso. */
-  slug: string;
   courseId: string;
   courseName: string;
   courseStatusCode: CourseStatusCode;

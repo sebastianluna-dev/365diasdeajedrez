@@ -25,32 +25,26 @@ const getPublishedCourses = cache(async () => {
 
 // Consulta dirigida para las vistas de un solo curso (detalle, capítulo y
 // lección): cache() deduplica por slug dentro del mismo request.
-const getPublishedCourse = cache(async (courseSlug: string) => {
+const getPublishedCourse = cache(async (courseId: string) => {
   const db = getPlatformDb();
   return db.course.findFirst({
-    where: { slug: courseSlug, status: { code: COURSE_STATUS.PUBLISHED } },
+    where: { id: courseId, status: { code: COURSE_STATUS.PUBLISHED } },
     include: courseContentInclude,
   });
 });
 
-/**
- * Progreso del usuario acotado a un curso, para las vistas de detalle.
- *
- * Filtra por SLUG y no por id para poder pedirse en paralelo con el curso: si
- * necesitara el id habría que resolver el curso antes, y sería un viaje de más
- * en cada una de las tres páginas.
- */
-const getCourseProgressState = cache(async (courseSlug: string): Promise<UserCourseState> => {
+/** Progreso del usuario acotado a un curso, para las vistas de detalle. */
+const getCourseProgressState = cache(async (courseId: string): Promise<UserCourseState> => {
   const db = getPlatformDb();
   const user = await getCurrentUser();
 
   const [lessonRows, courseRow] = await Promise.all([
     db.lessonProgress.findMany({
-      where: { userId: user.id, lesson: { chapter: { course: { slug: courseSlug } } } },
+      where: { userId: user.id, lesson: { chapter: { courseId } } },
       select: { lessonId: true, status: { select: { code: true } } },
     }),
-    db.courseProgress.findFirst({
-      where: { userId: user.id, course: { slug: courseSlug } },
+    db.courseProgress.findUnique({
+      where: { userId_courseId: { userId: user.id, courseId } },
       select: { lastLessonId: true, status: { select: { code: true } } },
     }),
   ]);
@@ -105,27 +99,27 @@ export async function getUserCourses(): Promise<CourseSummary[]> {
   return courses.map((course) => mapCourseSummary(course, progress.get(course.id) ?? EMPTY_STATE));
 }
 
-export async function getCourseBySlug(courseSlug: string): Promise<CourseDetail | null> {
+export async function getCourseById(courseId: string): Promise<CourseDetail | null> {
   const [course, progress] = await Promise.all([
-    getPublishedCourse(courseSlug),
-    getCourseProgressState(courseSlug),
+    getPublishedCourse(courseId),
+    getCourseProgressState(courseId),
   ]);
   if (!course) return null;
   return mapCourseDetail(course, progress);
 }
 
-export async function getChapterView(courseSlug: string, chapterSlug: string): Promise<ChapterView | null> {
+export async function getChapterView(courseId: string, chapterOrder: number): Promise<ChapterView | null> {
   const db = getPlatformDb();
   const [course, progress, user] = await Promise.all([
-    getPublishedCourse(courseSlug),
-    getCourseProgressState(courseSlug),
+    getPublishedCourse(courseId),
+    getCourseProgressState(courseId),
     getCurrentUser(),
   ]);
   if (!course) return null;
 
   // El capítulo sale del curso ya cargado: el include trae todos sus capítulos,
-  // así que resolver el slug no cuesta una consulta más.
-  const chapterId = course.chapters.find((chapter) => chapter.slug === chapterSlug)?.id;
+  // así que resolver su número de orden no cuesta una consulta más.
+  const chapterId = course.chapters.find((chapter) => chapter.order === chapterOrder)?.id;
   if (!chapterId) return null;
 
   const [exerciseCount, trainerRow] = await Promise.all([
@@ -139,38 +133,47 @@ export async function getChapterView(courseSlug: string, chapterSlug: string): P
   });
 }
 
-export async function getLessonView(courseSlug: string, lessonId: string): Promise<LessonView | null> {
+/**
+ * La lección se direcciona sola (`/lecciones/02482009`), así que el curso no
+ * llega por la URL: se deduce de la propia lección.
+ *
+ * Eso obliga a dos viajes en vez de uno —primero la lección, después su curso—
+ * pero es el precio de que el enlace a una lección no tenga que arrastrar curso
+ * y capítulo. Si el curso no está publicado, la lección tampoco se sirve.
+ */
+export async function getLessonView(lessonId: string): Promise<LessonView | null> {
   const db = getPlatformDb();
-  const [course, progress, user] = await Promise.all([
-    getPublishedCourse(courseSlug),
-    getCourseProgressState(courseSlug),
-    getCurrentUser(),
-  ]);
-  if (!course) return null;
+  const user = await getCurrentUser();
 
-  const [lesson, settings] = await Promise.all([
-    db.lesson.findUnique({
-      where: { id: lessonId },
-      select: {
-        id: true,
-        chapterId: true,
-        name: true,
-        description: true,
-        order: true,
-        isPriority: true,
-        estimatedDuration: true,
-        initialFen: true,
-        pgn: true,
-        orientation: { select: { code: true } },
-        exercises: { select: { id: true } },
-      },
-    }),
+  const lesson = await db.lesson.findUnique({
+    where: { id: lessonId },
+    select: {
+      id: true,
+      chapterId: true,
+      name: true,
+      description: true,
+      order: true,
+      isPriority: true,
+      estimatedDuration: true,
+      initialFen: true,
+      pgn: true,
+      orientation: { select: { code: true } },
+      exercises: { select: { id: true } },
+      chapter: { select: { courseId: true } },
+    },
+  });
+  if (!lesson) return null;
+
+  const courseId = lesson.chapter.courseId;
+  const [course, progress, settings] = await Promise.all([
+    getPublishedCourse(courseId),
+    getCourseProgressState(courseId),
     db.userCourseSettings.findUnique({
-      where: { userId_courseId: { userId: user.id, courseId: course.id } },
+      where: { userId_courseId: { userId: user.id, courseId } },
       select: { boardOrientation: { select: { code: true } } },
     }),
   ]);
-  if (!lesson) return null;
+  if (!course) return null;
 
   return mapLessonView(course, lesson, progress, settings?.boardOrientation.code);
 }

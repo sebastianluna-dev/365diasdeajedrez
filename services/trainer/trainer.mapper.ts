@@ -39,9 +39,10 @@ export function mapTrainerExercise(row: TrainerExerciseRow): TrainerExercise {
 export interface TrainerChapterRow {
   id: string;
   name: string;
-  slug: string;
+  /** Número de orden: es lo que direcciona al capítulo en la URL. */
+  order: number;
   courseId: string;
-  course: { name: string; slug: string };
+  course: { name: string };
   exerciseCount: number;
 }
 
@@ -52,6 +53,6 @@ export function mapTrainerChapter(row: TrainerChapterRow, inTrainer: boolean): T
     courseName: row.course.name,
     exerciseCount: row.exerciseCount,
     inTrainer,
-    chapterHref: platformRoutes.chapterDetail(row.course.slug, row.slug),
+    chapterHref: platformRoutes.chapterDetail(row.courseId, row.order),
   };
 }

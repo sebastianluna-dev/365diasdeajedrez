@@ -78,7 +78,7 @@ export async function toggleTrainerChapter(chapterId: string, add: boolean): Pro
 
   const chapter = await db.chapter.findUnique({
     where: { id: chapterId },
-    select: { id: true, slug: true, course: { select: { slug: true } } },
+    select: { id: true, order: true, courseId: true },
   });
   if (!chapter) return;
 
@@ -93,5 +93,5 @@ export async function toggleTrainerChapter(chapterId: string, add: boolean): Pro
   }
 
   revalidatePath(platformRoutes.trainer);
-  revalidatePath(platformRoutes.chapterDetail(chapter.course.slug, chapter.slug));
+  revalidatePath(platformRoutes.chapterDetail(chapter.courseId, chapter.order));
 }

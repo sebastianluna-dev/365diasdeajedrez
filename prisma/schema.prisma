@@ -276,7 +276,9 @@ model Topic {
 // ---------------------------------------------------------------------------
 
 model Course {
-  id          String    @id @default(uuid())
+  /// Numérico de 8 dígitos: va en la URL del alumno (`/cursos/00020212`).
+  /// Lo pone la aplicación (lib/numeric-id.ts), no Prisma.
+  id          String    @id
   name        String
   slug        String    @unique
   description String?
@@ -335,9 +337,6 @@ model CourseLevel {
 model Chapter {
   id                String  @id @default(uuid())
   courseId          String
-  /// Identificador del capítulo en la URL. Único DENTRO del curso: la ruta
-  /// lleva también el slug del curso, así que dos cursos pueden repetirlo.
-  slug              String
   name              String
   description       String?
   order             Int
@@ -351,12 +350,11 @@ model Chapter {
   trainerChapters UserTrainerChapter[]
 
   @@unique([courseId, order])
-  @@unique([courseId, slug])
 }
 
 model Lesson {
-  /// Corto porque va en la URL, igual que los de estudio y partida.
-  id                    String    @id @default(nanoid(8))
+  /// Numérico de 8 dígitos: va en la URL del alumno (`/lecciones/02482009`).
+  id                    String    @id
   chapterId             String
   name                  String
   description           String?

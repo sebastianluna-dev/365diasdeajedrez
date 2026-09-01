@@ -5,18 +5,18 @@ import { getChapterView } from "@/services/courses/courses.service";
 import "./chapter-page.css";
 
 interface ChapterPageProps {
-  params: Promise<{ courseSlug: string; chapterSlug: string }>;
+  params: Promise<{ courseId: string; chapterOrder: string }>;
 }
 
 export async function generateMetadata({ params }: ChapterPageProps): Promise<Metadata> {
-  const { courseSlug, chapterSlug } = await params;
-  const chapter = await getChapterView(courseSlug, chapterSlug);
+  const { courseId, chapterOrder } = await params;
+  const chapter = await getChapterView(courseId, Number(chapterOrder));
   return chapter ? { title: chapter.name } : {};
 }
 
 export default async function ChapterPage({ params }: ChapterPageProps) {
-  const { courseSlug, chapterSlug } = await params;
-  const chapter = await getChapterView(courseSlug, chapterSlug);
+  const { courseId, chapterOrder } = await params;
+  const chapter = await getChapterView(courseId, Number(chapterOrder));
   if (!chapter) notFound();
 
   return (

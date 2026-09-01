@@ -14,7 +14,7 @@ export function ChapterDetailSection({ chapter }: ChapterDetailSectionProps) {
 
   return (
     <section className="chapter-detail">
-      <CourseNavigation courseSlug={chapter.courseSlug} courseName={chapter.courseName} />
+      <CourseNavigation courseId={chapter.courseId} courseName={chapter.courseName} />
 
       <header className="chapter-detail__head">
         <h1 className="platform-page__title">
