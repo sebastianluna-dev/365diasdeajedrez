@@ -1,5 +1,5 @@
 import type { TextField } from "payload";
-import { generateSlug } from "@/lib/payload/generate-slug";
+import { generateSlug } from "@/lib/generate-slug";
 
 /**
  * A `slug` text field that auto-generates from `sourceFieldName` (e.g. "title")

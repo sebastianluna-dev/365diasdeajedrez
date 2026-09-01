@@ -335,6 +335,9 @@ model CourseLevel {
 model Chapter {
   id                String  @id @default(uuid())
   courseId          String
+  /// Identificador del capítulo en la URL. Único DENTRO del curso: la ruta
+  /// lleva también el slug del curso, así que dos cursos pueden repetirlo.
+  slug              String
   name              String
   description       String?
   order             Int
@@ -348,10 +351,12 @@ model Chapter {
   trainerChapters UserTrainerChapter[]
 
   @@unique([courseId, order])
+  @@unique([courseId, slug])
 }
 
 model Lesson {
-  id                    String    @id @default(uuid())
+  /// Corto porque va en la URL, igual que los de estudio y partida.
+  id                    String    @id @default(nanoid(8))
   chapterId             String
   name                  String
   description           String?

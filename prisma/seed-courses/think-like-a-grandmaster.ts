@@ -15,6 +15,7 @@
 // vale para uso interno de la academia, no para publicarlo sin licencia.
 
 import { createHash } from "node:crypto";
+import { generateSlug } from "../../lib/generate-slug";
 import { readFileSync } from "node:fs";
 import { Chess } from "chessops/chess";
 import { parseFen } from "chessops/fen";
@@ -171,12 +172,21 @@ function resolvePgn(lesson: ImportLesson): string {
  * sobre la misma fila y nunca duplica; y como no depende del orden, mover una
  * lección de sitio no la convierte en otra.
  */
+const ID_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+/**
+ * Ocho caracteres, porque el id de la lección va en la URL. Sigue derivando del
+ * `stableKey`, así que reimportar el paquete cae sobre las mismas filas.
+ *
+ * 62^8 son 2,2·10¹⁴ combinaciones para 162 lecciones: la probabilidad de que
+ * dos claves distintas den el mismo id es despreciable, y si ocurriera lo
+ * cantaría la clave primaria al sembrar en vez de mezclar dos lecciones.
+ */
 function deterministicId(namespace: string, key: string): string {
-  const bytes = createHash("sha1").update(`${namespace}:${key}`).digest().subarray(0, 16);
-  bytes[6] = (bytes[6] & 0x0f) | 0x50; // versión 5
-  bytes[8] = (bytes[8] & 0x3f) | 0x80; // variante RFC 4122
-  const hex = bytes.toString("hex");
-  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+  const bytes = createHash("sha1").update(`${namespace}:${key}`).digest();
+  let id = "";
+  for (let index = 0; index < 8; index++) id += ID_ALPHABET[bytes[index] % ID_ALPHABET.length];
+  return id;
 }
 
 /** Ids de los capítulos por orden: los cinco del libro, fijos desde siempre. */
@@ -253,6 +263,7 @@ function toSeedChapter(chapter: ImportChapter): SeedChapter {
   const topics = CHAPTER_TOPICS[index];
   return {
     id,
+    slug: generateSlug(chapter.title),
     order: chapter.order,
     name: chapter.title,
     description: CHAPTER_DESCRIPTIONS[index],

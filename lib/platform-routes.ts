@@ -22,10 +22,15 @@ export const platformRoutes = {
   gameEdit: (studyId: string, gameId: string) => `/estudios/${studyId}/partidas/${gameId}/editar`,
   newStudyGame: (studyId: string) => `/estudios/${studyId}/partidas/nueva`,
   courses: "/cursos",
-  courseDetail: (courseId: string) => `/cursos/${courseId}`,
-  chapterDetail: (courseId: string, chapterId: string) => `/cursos/${courseId}/capitulos/${chapterId}`,
-  lessonDetail: (courseId: string, chapterId: string, lessonId: string) =>
-    `/cursos/${courseId}/capitulos/${chapterId}/lecciones/${lessonId}`,
+  /**
+   * Las rutas del ALUMNO van por slug: son las que se comparten y se leen. El
+   * panel de staff sigue yendo por id a propósito —allí el slug es un campo
+   * editable, y cambiarlo dejaría al staff en una URL que ya no existe—.
+   */
+  courseDetail: (courseSlug: string) => `/cursos/${courseSlug}`,
+  chapterDetail: (courseSlug: string, chapterSlug: string) => `/cursos/${courseSlug}/capitulos/${chapterSlug}`,
+  lessonDetail: (courseSlug: string, chapterSlug: string, lessonId: string) =>
+    `/cursos/${courseSlug}/capitulos/${chapterSlug}/lecciones/${lessonId}`,
   trainer: "/entrenador",
   /** Buscador de partidas por posición; lo comparten alumno y profesor. */
   explorer: "/explorador",

@@ -180,13 +180,13 @@ export const IDS = {
   chSicilianNajdorf: "c1000000-0000-4000-8000-000000000002",
   chRookFundamentals: "c1000000-0000-4000-8000-000000000003",
 
-  lsWhatIsSicilian: "d0000000-0000-4000-8000-000000000001",
-  lsPawnStructure: "d0000000-0000-4000-8000-000000000002",
-  lsBreakD5: "d0000000-0000-4000-8000-000000000003",
-  lsNajdorfStart: "d0000000-0000-4000-8000-000000000004",
-  lsPoisonedPawn: "d0000000-0000-4000-8000-000000000005",
-  lsLucena: "d0000000-0000-4000-8000-000000000006",
-  lsPhilidor: "d0000000-0000-4000-8000-000000000007",
+  lsWhatIsSicilian: "sicIdea1",
+  lsPawnStructure: "sicIdea2",
+  lsBreakD5: "sicIdea3",
+  lsNajdorfStart: "sicNajd1",
+  lsPoisonedPawn: "sicNajd2",
+  lsLucena: "torreLuc",
+  lsPhilidor: "torrePhi",
 
   exNajdorfLine: "e0000000-0000-4000-8000-000000000001",
   exPoisonedPawn: "e0000000-0000-4000-8000-000000000002",
@@ -294,6 +294,8 @@ export interface SeedLesson {
 
 export interface SeedChapter {
   id: string;
+  /** Identificador en la URL, único dentro del curso. */
+  slug: string;
   order: number;
   name: string;
   description: string;
@@ -325,6 +327,7 @@ export const COURSES: SeedCourse[] = [
     chapters: [
       {
         id: IDS.chSicilianBasics,
+        slug: "ideas-basicas",
         order: 1,
         name: "Ideas básicas",
         description: "Qué busca el negro con 1...c5 y cómo se forman las estructuras sicilianas.",
@@ -379,6 +382,7 @@ export const COURSES: SeedCourse[] = [
       },
       {
         id: IDS.chSicilianNajdorf,
+        slug: "la-variante-najdorf",
         order: 2,
         name: "La Variante Najdorf",
         description: "La línea favorita de Fischer y Kasparov: 5...a6 y sus planes.",
@@ -447,6 +451,7 @@ export const COURSES: SeedCourse[] = [
     chapters: [
       {
         id: IDS.chRookFundamentals,
+        slug: "posiciones-fundamentales",
         order: 1,
         name: "Posiciones fundamentales",
         description: "Las dos posiciones teóricas imprescindibles del final de torre y peón.",

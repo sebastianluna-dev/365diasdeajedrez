@@ -5,18 +5,18 @@ import { getLessonView } from "@/services/courses/courses.service";
 import "./lesson-page.css";
 
 interface LessonPageProps {
-  params: Promise<{ courseId: string; chapterId: string; lessonId: string }>;
+  params: Promise<{ courseSlug: string; chapterSlug: string; lessonId: string }>;
 }
 
 export async function generateMetadata({ params }: LessonPageProps): Promise<Metadata> {
-  const { courseId, lessonId } = await params;
-  const lesson = await getLessonView(courseId, lessonId);
+  const { courseSlug, lessonId } = await params;
+  const lesson = await getLessonView(courseSlug, lessonId);
   return lesson ? { title: lesson.name } : {};
 }
 
 export default async function LessonPage({ params }: LessonPageProps) {
-  const { courseId, lessonId } = await params;
-  const lesson = await getLessonView(courseId, lessonId);
+  const { courseSlug, lessonId } = await params;
+  const lesson = await getLessonView(courseSlug, lessonId);
   if (!lesson) notFound();
 
   return (

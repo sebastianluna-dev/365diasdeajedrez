@@ -3,29 +3,36 @@ import { platformRoutes } from "@/lib/platform-routes";
 import "./course-navigation.comp.css";
 
 interface CourseNavigationProps {
-  courseId: string;
+  /** Slug, no id: las rutas del alumno van por slug. */
+  courseSlug: string;
   courseName: string;
-  chapterId?: string;
+  chapterSlug?: string;
   chapterName?: string;
   /** Nombre de la lección actual (no enlazada). */
   lessonName?: string;
 }
 
 /** Navegación contextual Curso → Capítulo → Lección. */
-export function CourseNavigation({ courseId, courseName, chapterId, chapterName, lessonName }: CourseNavigationProps) {
+export function CourseNavigation({
+  courseSlug,
+  courseName,
+  chapterSlug,
+  chapterName,
+  lessonName,
+}: CourseNavigationProps) {
   return (
     <nav className="course-navigation" aria-label="Ruta del curso">
       <Link href={platformRoutes.courses} className="course-navigation__link">
         Mis cursos
       </Link>
       <span className="course-navigation__separator">/</span>
-      <Link href={platformRoutes.courseDetail(courseId)} className="course-navigation__link">
+      <Link href={platformRoutes.courseDetail(courseSlug)} className="course-navigation__link">
         {courseName}
       </Link>
-      {chapterId && chapterName && (
+      {chapterSlug && chapterName && (
         <>
           <span className="course-navigation__separator">/</span>
-          <Link href={platformRoutes.chapterDetail(courseId, chapterId)} className="course-navigation__link">
+          <Link href={platformRoutes.chapterDetail(courseSlug, chapterSlug)} className="course-navigation__link">
             {chapterName}
           </Link>
         </>

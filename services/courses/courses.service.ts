@@ -24,27 +24,33 @@ const getPublishedCourses = cache(async () => {
 });
 
 // Consulta dirigida para las vistas de un solo curso (detalle, capítulo y
-// lección): cache() deduplica por courseId dentro del mismo request.
-const getPublishedCourse = cache(async (courseId: string) => {
+// lección): cache() deduplica por slug dentro del mismo request.
+const getPublishedCourse = cache(async (courseSlug: string) => {
   const db = getPlatformDb();
   return db.course.findFirst({
-    where: { id: courseId, status: { code: COURSE_STATUS.PUBLISHED } },
+    where: { slug: courseSlug, status: { code: COURSE_STATUS.PUBLISHED } },
     include: courseContentInclude,
   });
 });
 
-/** Progreso del usuario acotado a un curso, para las vistas de detalle. */
-const getCourseProgressState = cache(async (courseId: string): Promise<UserCourseState> => {
+/**
+ * Progreso del usuario acotado a un curso, para las vistas de detalle.
+ *
+ * Filtra por SLUG y no por id para poder pedirse en paralelo con el curso: si
+ * necesitara el id habría que resolver el curso antes, y sería un viaje de más
+ * en cada una de las tres páginas.
+ */
+const getCourseProgressState = cache(async (courseSlug: string): Promise<UserCourseState> => {
   const db = getPlatformDb();
   const user = await getCurrentUser();
 
   const [lessonRows, courseRow] = await Promise.all([
     db.lessonProgress.findMany({
-      where: { userId: user.id, lesson: { chapter: { courseId } } },
+      where: { userId: user.id, lesson: { chapter: { course: { slug: courseSlug } } } },
       select: { lessonId: true, status: { select: { code: true } } },
     }),
-    db.courseProgress.findUnique({
-      where: { userId_courseId: { userId: user.id, courseId } },
+    db.courseProgress.findFirst({
+      where: { userId: user.id, course: { slug: courseSlug } },
       select: { lastLessonId: true, status: { select: { code: true } } },
     }),
   ]);
@@ -99,20 +105,28 @@ export async function getUserCourses(): Promise<CourseSummary[]> {
   return courses.map((course) => mapCourseSummary(course, progress.get(course.id) ?? EMPTY_STATE));
 }
 
-export async function getCourseById(courseId: string): Promise<CourseDetail | null> {
-  const [course, progress] = await Promise.all([getPublishedCourse(courseId), getCourseProgressState(courseId)]);
+export async function getCourseBySlug(courseSlug: string): Promise<CourseDetail | null> {
+  const [course, progress] = await Promise.all([
+    getPublishedCourse(courseSlug),
+    getCourseProgressState(courseSlug),
+  ]);
   if (!course) return null;
   return mapCourseDetail(course, progress);
 }
 
-export async function getChapterView(courseId: string, chapterId: string): Promise<ChapterView | null> {
+export async function getChapterView(courseSlug: string, chapterSlug: string): Promise<ChapterView | null> {
   const db = getPlatformDb();
   const [course, progress, user] = await Promise.all([
-    getPublishedCourse(courseId),
-    getCourseProgressState(courseId),
+    getPublishedCourse(courseSlug),
+    getCourseProgressState(courseSlug),
     getCurrentUser(),
   ]);
   if (!course) return null;
+
+  // El capítulo sale del curso ya cargado: el include trae todos sus capítulos,
+  // así que resolver el slug no cuesta una consulta más.
+  const chapterId = course.chapters.find((chapter) => chapter.slug === chapterSlug)?.id;
+  if (!chapterId) return null;
 
   const [exerciseCount, trainerRow] = await Promise.all([
     db.trainingExercise.count({ where: { lesson: { chapterId } } }),
@@ -125,11 +139,11 @@ export async function getChapterView(courseId: string, chapterId: string): Promi
   });
 }
 
-export async function getLessonView(courseId: string, lessonId: string): Promise<LessonView | null> {
+export async function getLessonView(courseSlug: string, lessonId: string): Promise<LessonView | null> {
   const db = getPlatformDb();
   const [course, progress, user] = await Promise.all([
-    getPublishedCourse(courseId),
-    getCourseProgressState(courseId),
+    getPublishedCourse(courseSlug),
+    getCourseProgressState(courseSlug),
     getCurrentUser(),
   ]);
   if (!course) return null;
@@ -152,7 +166,7 @@ export async function getLessonView(courseId: string, lessonId: string): Promise
       },
     }),
     db.userCourseSettings.findUnique({
-      where: { userId_courseId: { userId: user.id, courseId } },
+      where: { userId_courseId: { userId: user.id, courseId: course.id } },
       select: { boardOrientation: { select: { code: true } } },
     }),
   ]);

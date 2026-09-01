@@ -42,7 +42,9 @@ function asStatus(code: string | undefined): ProgressStatusCode {
 }
 
 function flattenLessons(course: CourseWithContent) {
-  return course.chapters.flatMap((chapter) => chapter.lessons.map((lesson) => ({ ...lesson, chapterId: chapter.id })));
+  return course.chapters.flatMap((chapter) =>
+    chapter.lessons.map((lesson) => ({ ...lesson, chapterId: chapter.id, chapterSlug: chapter.slug })),
+  );
 }
 
 export function mapCourseProgress(course: CourseWithContent, state: UserCourseState): CourseProgressSummary {
@@ -62,7 +64,9 @@ export function mapCourseProgress(course: CourseWithContent, state: UserCourseSt
 function continueTarget(course: CourseWithContent, state: UserCourseState) {
   const lessons = flattenLessons(course);
   const target = lessons.find((lesson) => lesson.id === state.lastLessonId) ?? lessons[0];
-  return target ? platformRoutes.lessonDetail(course.id, target.chapterId, target.id) : platformRoutes.courseDetail(course.id);
+  return target
+    ? platformRoutes.lessonDetail(course.slug, target.chapterSlug, target.id)
+    : platformRoutes.courseDetail(course.slug);
 }
 
 function ctaLabelFor(statusCode: ProgressStatusCode): CourseSummary["ctaLabel"] {
@@ -84,7 +88,7 @@ export function mapCourseSummary(course: CourseWithContent, state: UserCourseSta
     progress,
     continueHref: continueTarget(course, state),
     ctaLabel: ctaLabelFor(progress.statusCode),
-    href: platformRoutes.courseDetail(course.id),
+    href: platformRoutes.courseDetail(course.slug),
   };
 }
 
@@ -100,7 +104,7 @@ function mapChapterItem(course: CourseWithContent, chapter: CourseWithContent["c
     estimatedDuration: chapter.estimatedDuration ?? undefined,
     totalLessons: chapter.lessons.length,
     completedLessons,
-    href: platformRoutes.chapterDetail(course.id, chapter.id),
+    href: platformRoutes.chapterDetail(course.slug, chapter.slug),
   };
 }
 
@@ -140,13 +144,14 @@ export function mapChapterView(
     isPriority: lesson.isPriority,
     estimatedDuration: lesson.estimatedDuration ?? undefined,
     statusCode: asStatus(state.lessonStatus.get(lesson.id)),
-    href: platformRoutes.lessonDetail(course.id, chapter.id, lesson.id),
+    href: platformRoutes.lessonDetail(course.slug, chapter.slug, lesson.id),
   }));
 
   return {
     courseId: course.id,
+    courseSlug: course.slug,
     courseName: course.name,
-    courseHref: platformRoutes.courseDetail(course.id),
+    courseHref: platformRoutes.courseDetail(course.slug),
     id: chapter.id,
     order: chapter.order,
     name: chapter.name,
@@ -195,8 +200,10 @@ export function mapLessonView(
 
   return {
     courseId: course.id,
+    courseSlug: course.slug,
     courseName: course.name,
     chapterId: chapter.id,
+    chapterSlug: chapter.slug,
     chapterName: chapter.name,
     id: lesson.id,
     order: lesson.order,
@@ -209,9 +216,9 @@ export function mapLessonView(
     orientation: effective === BOARD_ORIENTATION.BLACK ? "black" : "white",
     statusCode: asStatus(state.lessonStatus.get(lesson.id)),
     exerciseCount: lesson.exercises.length,
-    prevLessonHref: prev ? platformRoutes.lessonDetail(course.id, prev.chapterId, prev.id) : undefined,
-    nextLessonHref: next ? platformRoutes.lessonDetail(course.id, next.chapterId, next.id) : undefined,
-    chapterHref: platformRoutes.chapterDetail(course.id, chapter.id),
+    prevLessonHref: prev ? platformRoutes.lessonDetail(course.slug, prev.chapterSlug, prev.id) : undefined,
+    nextLessonHref: next ? platformRoutes.lessonDetail(course.slug, next.chapterSlug, next.id) : undefined,
+    chapterHref: platformRoutes.chapterDetail(course.slug, chapter.slug),
     trainerHref: lesson.exercises.length > 0 ? `${platformRoutes.trainer}?lesson=${lesson.id}` : undefined,
   };
 }

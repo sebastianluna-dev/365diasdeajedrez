@@ -20,9 +20,9 @@ export function LessonViewSection({ lesson }: LessonViewSectionProps) {
       <LessonTracker lessonId={lesson.id} />
 
       <CourseNavigation
-        courseId={lesson.courseId}
+        courseSlug={lesson.courseSlug}
         courseName={lesson.courseName}
-        chapterId={lesson.chapterId}
+        chapterSlug={lesson.chapterSlug}
         chapterName={lesson.chapterName}
         lessonName={lesson.name}
       />

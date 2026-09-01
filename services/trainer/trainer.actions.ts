@@ -76,7 +76,10 @@ export async function toggleTrainerChapter(chapterId: string, add: boolean): Pro
 
   if (!allowAction(`${user.id}:toggle-trainer-chapter`, 60, 60_000)) return;
 
-  const chapter = await db.chapter.findUnique({ where: { id: chapterId }, select: { id: true, courseId: true } });
+  const chapter = await db.chapter.findUnique({
+    where: { id: chapterId },
+    select: { id: true, slug: true, course: { select: { slug: true } } },
+  });
   if (!chapter) return;
 
   if (add) {
@@ -90,5 +93,5 @@ export async function toggleTrainerChapter(chapterId: string, add: boolean): Pro
   }
 
   revalidatePath(platformRoutes.trainer);
-  revalidatePath(platformRoutes.chapterDetail(chapter.courseId, chapterId));
+  revalidatePath(platformRoutes.chapterDetail(chapter.course.slug, chapter.slug));
 }

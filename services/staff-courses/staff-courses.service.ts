@@ -138,6 +138,7 @@ export async function getChapterAdmin(courseId: string, chapterId: string): Prom
     where: { id: chapterId, courseId },
     select: {
       id: true,
+      slug: true,
       courseId: true,
       name: true,
       description: true,
@@ -162,6 +163,7 @@ export async function getChapterAdmin(courseId: string, chapterId: string): Prom
 
   return {
     id: chapter.id,
+    slug: chapter.slug,
     courseId: chapter.courseId,
     courseName: chapter.course.name,
     courseStatusCode: chapter.course.status.code as CourseStatusCode,

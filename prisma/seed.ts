@@ -250,6 +250,7 @@ async function main() {
     for (const chapter of course.chapters) {
       const chapterData = {
         courseId: course.id,
+        slug: chapter.slug,
         name: chapter.name,
         description: chapter.description,
         order: chapter.order,

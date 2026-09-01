@@ -39,8 +39,9 @@ export function mapTrainerExercise(row: TrainerExerciseRow): TrainerExercise {
 export interface TrainerChapterRow {
   id: string;
   name: string;
+  slug: string;
   courseId: string;
-  course: { name: string };
+  course: { name: string; slug: string };
   exerciseCount: number;
 }
 
@@ -51,6 +52,6 @@ export function mapTrainerChapter(row: TrainerChapterRow, inTrainer: boolean): T
     courseName: row.course.name,
     exerciseCount: row.exerciseCount,
     inTrainer,
-    chapterHref: platformRoutes.chapterDetail(row.courseId, row.id),
+    chapterHref: platformRoutes.chapterDetail(row.course.slug, row.slug),
   };
 }
