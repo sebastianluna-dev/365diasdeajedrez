@@ -1,0 +1,83 @@
+.explorer-next-moves {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  & .explorer-next-moves__title {
+    font-size: 12.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--platform-text-muted);
+    margin: 0;
+  }
+
+  & .explorer-next-moves__empty {
+    margin: 0;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  & .explorer-next-moves__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  & .explorer-next-moves__button {
+    position: relative;
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    font: inherit;
+    color: var(--platform-text);
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  & .explorer-next-moves__button:hover {
+    border-color: var(--platform-accent);
+  }
+
+  /* Fondo proporcional a la frecuencia. Va detrás del contenido (z-index 0
+     frente al 1 de los textos) para no tapar nada. */
+  & .explorer-next-moves__bar {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: var(--platform-accent);
+    opacity: 0.16;
+    z-index: 0;
+  }
+
+  & .explorer-next-moves__san,
+  & .explorer-next-moves__count,
+  & .explorer-next-moves__percentage {
+    position: relative;
+    z-index: 1;
+  }
+
+  & .explorer-next-moves__san {
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  & .explorer-next-moves__count {
+    font-size: 13px;
+    color: var(--platform-text-muted);
+  }
+
+  & .explorer-next-moves__percentage {
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    color: var(--platform-text-muted);
+  }
+}

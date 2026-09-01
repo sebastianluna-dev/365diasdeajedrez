@@ -1,0 +1,87 @@
+.class-games {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  & .class-games__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--platform-text-muted);
+  }
+
+  & .class-games__breadcrumb-link {
+    color: var(--platform-text-muted);
+  }
+
+  & .class-games__breadcrumb-link:hover {
+    color: var(--platform-accent);
+  }
+
+  & .class-games__breadcrumb-current {
+    color: var(--platform-text);
+  }
+
+  & .class-games__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  /* La tabla es ancha: el desbordamiento se queda dentro de su caja y nunca
+     empuja el ancho de la página. */
+  & .class-games__table-wrap {
+    border: 1px solid var(--platform-border);
+    border-radius: 12px;
+    overflow-x: auto;
+    background: var(--platform-surface);
+  }
+
+  & .class-games__table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 640px;
+  }
+
+  & .class-games__header {
+    text-align: left;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--platform-text-muted);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--platform-border);
+  }
+
+  & .class-games__row:hover {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  & .class-games__cell {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+    border-bottom: 1px solid var(--platform-border);
+  }
+
+  & .class-games__row:last-child .class-games__cell {
+    border-bottom: 0;
+  }
+
+  & .class-games__cell_strong {
+    color: var(--platform-text);
+    font-weight: 600;
+  }
+
+  & .class-games__link {
+    color: var(--platform-text);
+    font-weight: 600;
+  }
+
+  & .class-games__link:hover {
+    color: var(--platform-accent);
+  }
+}

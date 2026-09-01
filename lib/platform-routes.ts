@@ -12,6 +12,11 @@ export const platformRoutes = {
   classes: "/clases",
   classDetail: (classId: string) => `/clases/${classId}`,
   studies: "/estudios",
+  /**
+   * Colección derivada, no una base de datos: las partidas que el alumno ha
+   * visto en sus clases. Segmento fijo, así que gana a `/estudios/[studyId]`.
+   */
+  classGames: "/estudios/clases",
   studyDetail: (studyId: string) => `/estudios/${studyId}`,
   gameDetail: (studyId: string, gameId: string) => `/estudios/${studyId}/partidas/${gameId}`,
   courses: "/cursos",
@@ -20,6 +25,8 @@ export const platformRoutes = {
   lessonDetail: (courseId: string, chapterId: string, lessonId: string) =>
     `/cursos/${courseId}/capitulos/${chapterId}/lecciones/${lessonId}`,
   trainer: "/entrenador",
+  /** Buscador de partidas por posición; lo comparten alumno y profesor. */
+  explorer: "/explorador",
 } as const;
 
 /**

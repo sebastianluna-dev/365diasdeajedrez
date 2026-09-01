@@ -1,0 +1,110 @@
+.explorer-move-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  & .explorer-move-list__title {
+    font-size: 12.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--platform-text-muted);
+    margin: 0;
+  }
+
+  & .explorer-move-list__hint {
+    margin: 0;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  /* Alto acotado: la línea puede crecer mucho y no debe empujar hacia abajo a
+     las continuaciones y a las partidas, que son el resultado de la búsqueda. */
+  & .explorer-move-list__rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 168px;
+    overflow-y: auto;
+  }
+
+  & .explorer-move-list__row {
+    display: grid;
+    grid-template-columns: 34px 1fr 1fr;
+    align-items: center;
+    gap: 4px;
+  }
+
+  & .explorer-move-list__number {
+    font-size: 13px;
+    color: var(--platform-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .explorer-move-list__move {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: none;
+    border: 0;
+    border-radius: 6px;
+    padding: 4px 6px;
+    font: inherit;
+    font-size: 14px;
+    color: var(--platform-text);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  & .explorer-move-list__move:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  & .explorer-move-list__move_current {
+    background: var(--platform-accent);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  & .explorer-move-list__empty {
+    display: block;
+  }
+
+  /* Misma técnica que la notación del tablero: el SVG de la pieza como máscara,
+     así el glifo hereda el color del texto y funciona sobre cualquier fondo. */
+  & .explorer-move-list__glyph {
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    vertical-align: -3px;
+    background-color: currentColor;
+    mask-size: contain;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    opacity: 0.85;
+  }
+
+  & .explorer-move-list__glyph_kind_knight {
+    mask-image: url("/design-import/assets/pieces/b-knight.svg");
+    -webkit-mask-image: url("/design-import/assets/pieces/b-knight.svg");
+  }
+  & .explorer-move-list__glyph_kind_bishop {
+    mask-image: url("/design-import/assets/pieces/b-bishop.svg");
+    -webkit-mask-image: url("/design-import/assets/pieces/b-bishop.svg");
+  }
+  & .explorer-move-list__glyph_kind_rook {
+    mask-image: url("/design-import/assets/pieces/b-rook.svg");
+    -webkit-mask-image: url("/design-import/assets/pieces/b-rook.svg");
+  }
+  & .explorer-move-list__glyph_kind_queen {
+    mask-image: url("/design-import/assets/pieces/b-queen.svg");
+    -webkit-mask-image: url("/design-import/assets/pieces/b-queen.svg");
+  }
+  & .explorer-move-list__glyph_kind_king {
+    mask-image: url("/design-import/assets/pieces/b-king.svg");
+    -webkit-mask-image: url("/design-import/assets/pieces/b-king.svg");
+  }
+}

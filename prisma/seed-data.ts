@@ -18,6 +18,11 @@ import { ATTEMPT_CONTEXT, ATTEMPT_RESULT, EXERCISE_MODE } from "../constants/pla
 
 import { DEMO_STAFF_EMAIL, DEMO_TEACHER_EMAIL, DEMO_USER_EMAIL } from "../constants/platform/demo-user.const";
 import { mainlinePath } from "../lib/chess/exercise-derivation";
+import {
+  THINK_LIKE_A_GRANDMASTER,
+  THINK_LIKE_A_GRANDMASTER_DATABASE,
+  THINK_LIKE_A_GRANDMASTER_GAMES,
+} from "./seed-courses/think-like-a-grandmaster";
 
 // ---------------------------------------------------------------------------
 // Catálogos: [code, label] (order = índice)
@@ -503,6 +508,7 @@ export const COURSES: SeedCourse[] = [
       },
     ],
   },
+  THINK_LIKE_A_GRANDMASTER,
 ];
 
 // ---------------------------------------------------------------------------
@@ -543,6 +549,7 @@ export const GAME_DATABASES = [
     isDefault: false,
     order: 0,
   },
+  THINK_LIKE_A_GRANDMASTER_DATABASE,
 ];
 
 export const GAMES = [
@@ -652,6 +659,7 @@ export const GAMES = [
 
 1. e4 c5 2. c3 {La Alapin: el blanco evita la Siciliana Abierta.} 2... Nf6 3. e5 Nd5 4. d4 cxd4 5. Nf3 Nc6 6. cxd4 d6 7. Bc4 Nb6 8. Bb5 dxe5 9. Nxe5 Bd7 10. Nxd7 Qxd7 {El negro iguala sin problemas: éste es el esquema que recomendamos.} 1/2-1/2`,
   },
+  ...THINK_LIKE_A_GRANDMASTER_GAMES,
 ];
 
 // ---------------------------------------------------------------------------

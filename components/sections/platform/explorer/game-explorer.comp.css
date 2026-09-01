@@ -1,0 +1,75 @@
+.game-explorer {
+  display: grid;
+  /* Escritorio: tablero a la izquierda, panel a la derecha. */
+  grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
+  gap: 24px;
+  align-items: start;
+
+  & .game-explorer__board {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  & .game-explorer__controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  & .game-explorer__control {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  & .game-explorer__control:hover:not(:disabled) {
+    border-color: var(--platform-accent);
+  }
+
+  & .game-explorer__control:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  & .game-explorer__control_wide {
+    margin-left: auto;
+  }
+
+  & .game-explorer__panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+  }
+
+  /* Mientras se consulta, el panel se atenúa pero el tablero NO: se puede
+     seguir jugando y navegando sin esperar a la respuesta. */
+  & .game-explorer__panel_loading {
+    opacity: 0.55;
+    transition: opacity 120ms ease-out;
+  }
+
+  & .game-explorer__error {
+    margin: 0;
+    font-size: 14px;
+    color: var(--platform-danger, #e5484d);
+  }
+}
+
+@media (max-width: 900px) {
+  .game-explorer {
+    grid-template-columns: 1fr;
+  }
+}

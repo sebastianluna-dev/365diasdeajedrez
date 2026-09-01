@@ -4,11 +4,17 @@ import { chessgroundMove } from "chessops/compat";
 import { makeFen, parseFen } from "chessops/fen";
 import { parsePgn, startingPosition } from "chessops/pgn";
 import { makeSanAndPlay, parseSan } from "chessops/san";
-import { parseUci, squareRank } from "chessops/util";
+import { makeUci, parseUci, squareRank } from "chessops/util";
 
 export interface ReplayPosition {
   /** SAN of the move that produced this position ("" for the starting position). */
   san: string;
+  /**
+   * UCI de la jugada que produjo esta posición ("" en la inicial). A diferencia
+   * de `san`, no depende del contexto: es la forma estable de agrupar la misma
+   * jugada venida de partidas distintas (ver services/game-explorer).
+   */
+  uci: string;
   /** Full FEN of the position. */
   fen: string;
   /** [from, to] of the move that produced this position, for chessground highlighting. */
@@ -44,7 +50,7 @@ export function replayGameDetailed(pgn: string): ReplayResult {
   const pos = game ? startPos(game.headers) : Chess.default();
 
   const positions: ReplayPosition[] = [
-    { san: "", fen: makeFen(pos.toSetup()), check: pos.isCheck() },
+    { san: "", uci: "", fen: makeFen(pos.toSetup()), check: pos.isCheck() },
   ];
   const warnings: string[] = [];
   if (!game) {
@@ -60,10 +66,14 @@ export function replayGameDetailed(pgn: string): ReplayResult {
       );
       break;
     }
+    // El UCI se toma ANTES de jugar: makeUci sólo mira la jugada, pero dejarlo
+    // junto a parseSan evita que un futuro cambio del bucle lo desordene.
+    const uci = makeUci(move);
     pos.play(move);
     const [from, to] = chessgroundMove(move);
     positions.push({
       san: node.san,
+      uci,
       fen: makeFen(pos.toSetup()),
       lastMove: [from as Key, to as Key],
       check: pos.isCheck(),

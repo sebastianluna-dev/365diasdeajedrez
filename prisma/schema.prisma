@@ -605,7 +605,8 @@ model GameDatabase {
   course    Course?      @relation(fields: [courseId], references: [id], onDelete: Cascade)
   kind      DatabaseKind @relation(fields: [kindId], references: [id])
 
-  games Game[]
+  games         Game[]
+  gamePositions GamePosition[]
 
   @@index([userId])
   @@index([courseId])
@@ -642,8 +643,44 @@ model Game {
   source   GameSource   @relation(fields: [sourceId], references: [id])
 
   classBlocks ClassBlock[]
+  positions   GamePosition[]
 
   @@index([databaseId])
+}
+
+/// Índice de posiciones: una fila por cada posición por la que pasó la partida.
+/// Es lo que permite buscar «qué partidas llegaron aquí» por POSICIÓN y no por
+/// secuencia de jugadas, de modo que las transposiciones cuentan como
+/// coincidencia. Se genera al importar (ver services/game-positions) y se
+/// regenera entera si el PGN cambia; nunca se edita a mano.
+///
+/// Sin columna `fen` a propósito: son ~80 filas por partida y el FEN completo
+/// no lo lee nadie —quien busca ya aporta el suyo y el de cualquier ply se
+/// recupera reproduciendo el PGN—, así que sólo engordaría la tabla.
+model GamePosition {
+  id     String @id @default(uuid())
+  gameId String
+  /// Denormalizado desde Game: deja filtrar por propietario y origen sin unir
+  /// con Game en la consulta caliente del explorador.
+  databaseId String
+  /// Medias jugadas desde el inicio; 0 es la posición de partida.
+  ply Int
+  /// SHA-256 del FEN normalizado (ver lib/chess/position-hash).
+  positionHash String
+  /// Jugada hecha DESDE esta posición; nula en la última. De aquí salen las
+  /// estadísticas de continuaciones.
+  nextMoveSan String?
+  nextMoveUci String?
+
+  game     Game         @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  database GameDatabase @relation(fields: [databaseId], references: [id], onDelete: Cascade)
+
+  /// Una posición repetida en la misma partida da varias filas, una por ply:
+  /// contar partidas exige contar gameId distintos, nunca filas.
+  @@unique([gameId, ply])
+  @@index([positionHash])
+  @@index([positionHash, databaseId])
+  @@index([positionHash, nextMoveUci])
 }
 
 // ---------------------------------------------------------------------------

@@ -16,6 +16,7 @@ import type { Prisma } from "@/lib/platform-db/generated/client";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
+import { indexGamePositions } from "@/services/game-positions/game-positions.service";
 
 // Las server actions son alcanzables por POST directo: el usuario SIEMPRE se
 // resuelve aquí dentro (DAL) y la propiedad de la base se comprueba contra la
@@ -141,7 +142,16 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
 
   // createMany no admite connect por code, así que la transacción encadena
   // un create por partida (atómico: o entran todas o no entra ninguna).
-  await db.$transaction(games.map((data) => db.game.create({ data })));
+  //
+  // El índice de posiciones se escribe DENTRO de la misma transacción: una
+  // partida guardada sin indexar sería invisible para el buscador por posición
+  // y nadie se enteraría hasta buscarla.
+  await db.$transaction(async (tx) => {
+    for (const data of games) {
+      const created = await tx.game.create({ data, select: { id: true } });
+      await indexGamePositions(tx, { gameId: created.id, databaseId: study.id, pgn: data.pgn });
+    }
+  });
 
   revalidatePath(platformRoutes.studies);
   revalidatePath(platformRoutes.studyDetail(studyId));

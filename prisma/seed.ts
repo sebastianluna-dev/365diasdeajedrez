@@ -11,6 +11,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { deriveExerciseData } from "../lib/chess/exercise-derivation";
 import { PrismaClient } from "../lib/platform-db/generated/client";
 import { hashPassword } from "../lib/platform-auth/password";
+import { indexGamePositions } from "../services/game-positions/game-positions.service";
 import {
   ACTIVITIES,
   AUTHOR,
@@ -340,6 +341,14 @@ async function main() {
       where: { id: game.id },
       update: gameData,
       create: { id: game.id, ...gameData },
+    });
+    // Indexar aquí y no en un paso aparte deja el seed autosuficiente: tras
+    // sembrar, el buscador por posición ya encuentra estas partidas.
+    // `indexGamePositions` borra y regenera, así que un re-seed no duplica.
+    await indexGamePositions(db, {
+      gameId: game.id,
+      databaseId: game.databaseId,
+      pgn: game.pgn,
     });
   }
 

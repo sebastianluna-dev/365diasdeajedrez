@@ -11,6 +11,7 @@ const DISALLOWED_PATHS = [
   "/estudios",
   "/cursos",
   "/entrenador",
+  "/explorador",
   "/profesor",
   "/administracion",
   "/iniciar-sesion",

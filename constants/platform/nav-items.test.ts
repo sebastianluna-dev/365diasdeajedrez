@@ -28,6 +28,15 @@ describe("buildPlatformNavGroups", () => {
     expect(groups[0].items).toEqual(STAFF_NAV_ITEMS);
   });
 
+  it("ofrece el explorador tanto al alumno como al profesor", () => {
+    // Es una herramienta transversal: quién ve qué partidas lo decide el filtro
+    // de visibilidad, no el menú.
+    const hasExplorer = (items: { href: string }[]) => items.some((item) => item.href === "/explorador");
+
+    expect(hasExplorer(STUDENT_NAV_ITEMS)).toBe(true);
+    expect(hasExplorer(TEACHER_NAV_ITEMS)).toBe(true);
+  });
+
   it("con varios roles manda el de mayor alcance: staff sobre profesor", () => {
     const groups = buildPlatformNavGroups({ isTeacher: true, isStaff: true });
     expect(groups).toHaveLength(1);

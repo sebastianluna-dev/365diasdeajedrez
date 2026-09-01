@@ -29,6 +29,22 @@ export interface StudyGameItem {
   href: string;
 }
 
+/**
+ * Partida vista en clase. Como no vive en una base del alumno, su enlace lleva
+ * a la clase donde se vio, no al visor de estudios.
+ */
+export interface ClassGameItem {
+  id: string;
+  white: string;
+  black: string;
+  resultLabel: string;
+  eco?: string;
+  playedAtLabel?: string;
+  className: string;
+  classDateLabel: string;
+  href: string;
+}
+
 export interface StudyDetail {
   id: string;
   name: string;

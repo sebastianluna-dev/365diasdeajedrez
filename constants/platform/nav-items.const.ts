@@ -24,18 +24,26 @@ export interface PlatformNavGroup {
   items: PlatformNavItem[];
 }
 
-/** Sólo estas cuatro áreas: el trainer se alcanza desde cursos y dashboard. */
+/**
+ * El trainer se alcanza desde cursos y dashboard, así que no ocupa sitio aquí.
+ * El explorador sí: es una herramienta transversal, no el paso siguiente de
+ * ninguna otra pantalla.
+ */
 export const STUDENT_NAV_ITEMS: PlatformNavItem[] = [
   { label: "Inicio", href: platformRoutes.dashboard },
   { label: "Mis clases", href: platformRoutes.classes },
   { label: "Mis estudios", href: platformRoutes.studies },
   { label: "Mis cursos", href: platformRoutes.courses },
+  { label: "Explorador", href: platformRoutes.explorer },
 ];
 
 export const TEACHER_NAV_ITEMS: PlatformNavItem[] = [
   { label: "Panel del profesor", href: teacherRoutes.home },
   { label: "Mis alumnos", href: teacherRoutes.students },
   { label: "Clases que imparto", href: teacherRoutes.classes },
+  // Mismo destino que en el menú del alumno: el explorador no es de un rol, y
+  // lo que ve cada quien lo decide el filtro de visibilidad, no el menú.
+  { label: "Explorador", href: platformRoutes.explorer },
   { label: "Mi perfil", href: teacherRoutes.profile },
 ];
 
