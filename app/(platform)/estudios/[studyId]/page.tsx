@@ -6,6 +6,7 @@ import "./study-page.css";
 
 interface StudyPageProps {
   params: Promise<{ studyId: string }>;
+  searchParams: Promise<{ error?: string }>;
 }
 
 export async function generateMetadata({ params }: StudyPageProps): Promise<Metadata> {
@@ -14,14 +15,14 @@ export async function generateMetadata({ params }: StudyPageProps): Promise<Meta
   return study ? { title: study.name } : {};
 }
 
-export default async function StudyPage({ params }: StudyPageProps) {
+export default async function StudyPage({ params, searchParams }: StudyPageProps) {
   const { studyId } = await params;
-  const study = await getStudyById(studyId);
+  const [study, { error }] = await Promise.all([getStudyById(studyId), searchParams]);
   if (!study) notFound();
 
   return (
     <div className="platform-page study-page">
-      <StudyDetailSection study={study} />
+      <StudyDetailSection study={study} errorCode={error} />
     </div>
   );
 }

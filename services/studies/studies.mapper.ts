@@ -18,7 +18,12 @@ export const studyDetailInclude = {
     // `createdAt` ASC para que los capítulos se lean 1, 2, 3: no tienen fecha
     // de partida, así que el orden descendente los mostraba al revés.
     orderBy: [{ playedAt: "desc" }, { createdAt: "asc" }],
-    include: { result: { select: { label: true } } },
+    include: {
+      result: { select: { label: true } },
+      // Para poder avisar antes de borrar el estudio: estas partidas están
+      // citadas en clases y esos bloques se quedarían vacíos.
+      _count: { select: { classBlocks: true } },
+    },
   },
 } satisfies Prisma.GameDatabaseInclude;
 
@@ -69,6 +74,7 @@ export function mapStudyDetail(row: StudyDetailRow): StudyDetail {
     kindLabel: row.kind.label,
     isCourseStudy: row.courseId !== null,
     courseName: row.course?.name,
+    citedGameCount: row.games.filter((game) => game._count.classBlocks > 0).length,
     games: row.games.map((game) => mapStudyGameItem(row.id, game)),
   };
 }

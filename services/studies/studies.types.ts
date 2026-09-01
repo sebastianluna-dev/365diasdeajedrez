@@ -54,6 +54,8 @@ export interface StudyDetail {
   kindLabel: string;
   isCourseStudy: boolean;
   courseName?: string;
+  /** Partidas del estudio citadas en el contenido de alguna clase. */
+  citedGameCount: number;
   games: StudyGameItem[];
 }
 

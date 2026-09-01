@@ -502,3 +502,38 @@ export async function deleteStudyGame(studyId: string, gameId: string, formData:
   revalidatePath(platformRoutes.studyDetail(studyId));
   redirect(platformRoutes.studyDetail(studyId));
 }
+
+/**
+ * Borra un estudio propio con todo lo que contiene.
+ *
+ * Las partidas y su índice por posición caen en cascada (`Game.databaseId` y
+ * `GamePosition.databaseId` son `onDelete: Cascade`), así que esto se lleva por
+ * delante bastante más que una fila. Por eso, si el estudio tiene partidas o
+ * alguna está citada en una clase, hace falta confirmarlo explícitamente.
+ *
+ * Los estudios de curso no se tocan nunca: tienen `userId` nulo y la condición
+ * de propiedad ya los deja fuera.
+ */
+export async function deleteStudy(studyId: string, formData: FormData): Promise<void> {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  const studyPath = platformRoutes.studyDetail(studyId);
+  if (!allowAction(`${user.id}:delete-study`, 20, 60_000)) return;
+
+  const study = await db.gameDatabase.findFirst({
+    where: { id: studyId, userId: user.id },
+    select: { id: true, _count: { select: { games: true } } },
+  });
+  if (!study) return;
+
+  const citedGames = await db.classBlock.count({ where: { game: { databaseId: studyId } } });
+
+  if ((study._count.games > 0 || citedGames > 0) && readText(formData, "confirmDelete") !== "yes") {
+    redirect(`${studyPath}?error=confirmStudyDelete`);
+  }
+
+  await db.gameDatabase.delete({ where: { id: study.id } });
+
+  revalidatePath(platformRoutes.studies);
+  redirect(platformRoutes.studies);
+}

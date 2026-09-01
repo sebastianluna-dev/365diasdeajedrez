@@ -36,4 +36,27 @@
   & .study-detail__new-game {
     margin: 0;
   }
+
+  & .study-detail__delete {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 12px;
+  }
+
+  & .study-detail__delete-text {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+
+  & .study-detail__confirm {
+    display: flex;
+    align-items: start;
+    gap: 8px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--platform-text);
+  }
 }
