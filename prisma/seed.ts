@@ -217,6 +217,22 @@ async function main() {
       create: { id: course.id, ...courseData },
     });
 
+    // El temario del curso se reemplaza entero: lo que ya no está en los datos
+    // se borra ANTES de sembrar lo nuevo. Sin esto, una lección retirada y otra
+    // recién llegada se pelearían por el mismo (chapterId, order), que es
+    // único. El borrado se limita a los capítulos de ESTE curso: los cursos
+    // creados desde el panel no se tocan. Las filas que cuelgan de una lección
+    // (ejercicios, progreso, temas) caen por cascada; las referencias externas
+    // —bloque de clase, «última lección vista»— quedan a null.
+    const seededChapterIds = course.chapters.map((chapter) => chapter.id);
+    const seededLessonIds = course.chapters.flatMap((chapter) => chapter.lessons.map((lesson) => lesson.id));
+    await db.lesson.deleteMany({
+      where: { chapter: { courseId: course.id }, id: { notIn: seededLessonIds } },
+    });
+    await db.chapter.deleteMany({
+      where: { courseId: course.id, id: { notIn: seededChapterIds } },
+    });
+
     await db.courseAuthor.upsert({
       where: { courseId_authorId: { courseId: course.id, authorId: AUTHOR.id } },
       update: { roleId: idOf(authorRole, AUTHOR_ROLE.CONTENT_AUTHOR), order: 0 },

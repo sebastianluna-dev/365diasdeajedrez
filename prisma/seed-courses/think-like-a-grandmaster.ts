@@ -1,20 +1,27 @@
-// Curso «Piense como un gran maestro»: el método de trabajo de Alexander Kotov
-// llevado a la plataforma.
+// Curso «Piense como un gran maestro»: los 162 diagramas del libro de Alexander
+// Kotov, repartidos en sus 5 capítulos, como lecciones de posición.
 //
-// SOBRE LAS FUENTES. El curso sigue el itinerario del libro homónimo de Kotov
-// y usa las partidas magistrales que él eligió para ilustrarlo. Las jugadas de
-// una partida son un hecho y se pueden citar libremente; el texto del libro no,
-// así que TODOS los comentarios de estas lecciones están redactados para la
-// academia y ninguno reproduce la prosa del original. Al añadir lecciones,
-// mantener esa regla: partidas del libro, palabras nuestras.
+// EL CONTENIDO NO SE ESCRIBE AQUÍ. La fuente canónica es el paquete de
+// importación `data/think-like-a-grandmaster.import.json`; este módulo sólo lo
+// valida y lo traduce a la forma `SeedCourse` que consume prisma/seed.ts. Para
+// cambiar el contenido se regenera el paquete, no se edita este fichero: por
+// eso las lecciones no llevan id fijo escrito a mano, sino derivado de su
+// `stableKey` (ver `deterministicId`).
 //
-// Fichero aparte de seed-data.ts porque es el curso más grande de la
-// plataforma y allí no cabría sin sepultar el resto.
+// SOBRE LAS FUENTES. Las posiciones y las jugadas son hechos y se citan
+// libremente. El comentario que el paquete adjunta a cada diagrama, en cambio,
+// es transcripción literal del libro —traducción de Ediciones Polo, 2016, aún
+// en derechos— y viaja dentro del PGN de la lección. Es material de terceros:
+// vale para uso interno de la academia, no para publicarlo sin licencia.
 
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+import { Chess } from "chessops/chess";
+import { parseFen } from "chessops/fen";
 import { COURSE_STATUS, COURSE_TYPE, INITIAL_POSITION_TYPE, LEVEL, PRESENTATION_MODE } from "../../constants/platform/course-codes.const";
 import { BOARD_ORIENTATION, OWNER_TYPE, TOPIC } from "../../constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "../../constants/platform/study-codes.const";
-import type { SeedCourse } from "../seed-data";
+import type { SeedChapter, SeedCourse, SeedLesson } from "../seed-data";
 
 /** Ids fijos, en rangos propios para no chocar con los de seed-data.ts. */
 export const GM_IDS = {
@@ -25,36 +32,261 @@ export const GM_IDS = {
   chPlanning: "c1000000-0000-4000-8000-000000000012",
   chEndgame: "c1000000-0000-4000-8000-000000000013",
   chPreparation: "c1000000-0000-4000-8000-000000000014",
-
-  lsTree: "d0000000-0000-4000-8000-000000000010",
-  lsBranchOnce: "d0000000-0000-4000-8000-000000000011",
-  lsCandidates: "d0000000-0000-4000-8000-000000000012",
-  lsGrove: "d0000000-0000-4000-8000-000000000013",
-  lsQuietMoves: "d0000000-0000-4000-8000-000000000014",
-  lsBlumenfeld: "d0000000-0000-4000-8000-000000000015",
-
-  lsOpenFiles: "d0000000-0000-4000-8000-000000000020",
-  lsSeventhRank: "d0000000-0000-4000-8000-000000000021",
-  lsWeakSquares: "d0000000-0000-4000-8000-000000000022",
-  lsColourComplex: "d0000000-0000-4000-8000-000000000023",
-  lsBadKnight: "d0000000-0000-4000-8000-000000000024",
-  lsPieceHarmony: "d0000000-0000-4000-8000-000000000025",
-
-  lsSinglePlan: "d0000000-0000-4000-8000-000000000030",
-  lsNoPlan: "d0000000-0000-4000-8000-000000000031",
-  lsChangePlan: "d0000000-0000-4000-8000-000000000032",
-  lsCentreTypes: "d0000000-0000-4000-8000-000000000033",
-
-  lsKingToCentre: "d0000000-0000-4000-8000-000000000040",
-  lsActiveRook: "d0000000-0000-4000-8000-000000000041",
-  lsWhatToTrade: "d0000000-0000-4000-8000-000000000042",
-
-  lsKeyPositions: "d0000000-0000-4000-8000-000000000050",
-  lsTypicalMiddlegame: "d0000000-0000-4000-8000-000000000051",
-  lsSelfReview: "d0000000-0000-4000-8000-000000000052",
-
 } as const;
 
+// ---------------------------------------------------------------------------
+// Paquete de importación
+// ---------------------------------------------------------------------------
+
+const IMPORT_FILE = new URL("./data/think-like-a-grandmaster.import.json", import.meta.url);
+
+interface ImportLesson {
+  stableKey: string;
+  lessonOrder: number;
+  lessonTitle: string;
+  lessonSlug: string;
+  contentType: string;
+  sourceSequence: number;
+  sourcePdfPage: number;
+  diagramNumber: number | null;
+  white: string | null;
+  black: string | null;
+  sideToMove: string;
+  fen: string;
+  commentary: string;
+  pgn: string;
+}
+
+interface ImportChapter {
+  order: number;
+  title: string;
+  sourceLabel: string;
+  slug: string;
+  lessons: ImportLesson[];
+}
+
+interface ImportFile {
+  formatVersion: number;
+  course: {
+    title: string;
+    slug: string;
+    source: string;
+    lessonCount: number;
+    chapterCount: number;
+    chapters: ImportChapter[];
+  };
+}
+
+function fail(message: string): never {
+  throw new Error(`Paquete «Piense como un gran maestro» inválido: ${message}`);
+}
+
+/**
+ * Comprueba el paquete antes de que llegue a la base: cuentas declaradas,
+ * unicidad de las claves y legalidad de cada posición. Se ejecuta en cada seed
+ * a propósito —162 FEN se parsean en milisegundos— para que un paquete
+ * regenerado no pueda meter una posición imposible sin que salte nada.
+ */
+function validate(data: ImportFile): void {
+  if (data.formatVersion !== 1) fail(`formatVersion ${data.formatVersion} desconocida`);
+
+  const { course } = data;
+  if (course.chapters.length !== course.chapterCount) {
+    fail(`declara ${course.chapterCount} capítulos y trae ${course.chapters.length}`);
+  }
+
+  const lessons = course.chapters.flatMap((chapter) => chapter.lessons);
+  if (lessons.length !== course.lessonCount) {
+    fail(`declara ${course.lessonCount} lecciones y trae ${lessons.length}`);
+  }
+
+  const stableKeys = new Set<string>();
+  const lessonSlugs = new Set<string>();
+
+  for (const chapter of course.chapters) {
+    chapter.lessons.forEach((lesson, index) => {
+      if (lesson.lessonOrder !== index + 1) {
+        fail(`el capítulo ${chapter.order} tiene un lessonOrder fuera de secuencia en «${lesson.stableKey}»`);
+      }
+      if (lesson.contentType !== "chess-position") fail(`contentType no soportado: ${lesson.contentType}`);
+      if (stableKeys.has(lesson.stableKey)) fail(`stableKey duplicado: ${lesson.stableKey}`);
+      if (lessonSlugs.has(lesson.lessonSlug)) fail(`lessonSlug duplicado: ${lesson.lessonSlug}`);
+      stableKeys.add(lesson.stableKey);
+      lessonSlugs.add(lesson.lessonSlug);
+
+      if (!lesson.fen?.trim()) fail(`FEN vacío en «${lesson.stableKey}»`);
+      if (!lesson.pgn?.trim()) fail(`PGN vacío en «${lesson.stableKey}»`);
+
+      const fen = resolveFen(lesson);
+      const setup = parseFen(fen);
+      if (setup.isErr) fail(`FEN ilegible en «${lesson.stableKey}»: ${setup.error.message}`);
+      const position = Chess.fromSetup(setup.value);
+      if (position.isErr) fail(`posición ilegal en «${lesson.stableKey}» (${fen}): ${position.error.message}`);
+    });
+  }
+}
+
+/**
+ * Dos diagramas llegan del paquete con el turno invertido: el bando que no
+ * mueve queda en jaque, así que la posición es ilegal tal cual. En los dos
+ * casos el propio texto del libro dice de quién es la jugada —el diagrama 6
+ * viene de `16.Txe6+` y el 60 de `1…Rxa5`—, de modo que esto no corrige el
+ * tablero por suposición: sólo repone el turno que la inferencia automática
+ * erró. Cualquier otro campo del FEN se deja intacto.
+ */
+const SIDE_TO_MOVE_OVERRIDES: Record<string, "w" | "b"> = {
+  "kotov-source-006": "b",
+  "kotov-source-063": "b",
+};
+
+/** FEN de la lección con el turno corregido si está en la lista de arriba. */
+function resolveFen(lesson: ImportLesson): string {
+  const override = SIDE_TO_MOVE_OVERRIDES[lesson.stableKey];
+  if (!override) return lesson.fen;
+
+  const fields = lesson.fen.split(" ");
+  fields[1] = override;
+  return fields.join(" ");
+}
+
+/**
+ * El PGN es la fuente única del contenido de la lección (jugadas, comentario y
+ * cabeceras `SourcePDFPage`, `DiagramNumber`, `White`/`Black`…), así que se
+ * conserva verbatim. Lo único que se toca es la cabecera FEN de los diagramas
+ * corregidos, para que no contradiga a `initialFen`.
+ */
+function resolvePgn(lesson: ImportLesson): string {
+  const fen = resolveFen(lesson);
+  if (fen === lesson.fen) return lesson.pgn;
+  return lesson.pgn.replace(`[FEN "${lesson.fen}"]`, `[FEN "${fen}"]`);
+}
+
+// ---------------------------------------------------------------------------
+// Traducción a SeedCourse
+// ---------------------------------------------------------------------------
+
+/**
+ * Id estable derivado del `stableKey` de la lección (UUID v5 sobre SHA-1). El
+ * seed hace upsert por id, así que reimportar el mismo paquete cae siempre
+ * sobre la misma fila y nunca duplica; y como no depende del orden, mover una
+ * lección de sitio no la convierte en otra.
+ */
+function deterministicId(namespace: string, key: string): string {
+  const bytes = createHash("sha1").update(`${namespace}:${key}`).digest().subarray(0, 16);
+  bytes[6] = (bytes[6] & 0x0f) | 0x50; // versión 5
+  bytes[8] = (bytes[8] & 0x3f) | 0x80; // variante RFC 4122
+  const hex = bytes.toString("hex");
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
+/** Ids de los capítulos por orden: los cinco del libro, fijos desde siempre. */
+const CHAPTER_IDS = [
+  GM_IDS.chAnalysis,
+  GM_IDS.chJudgement,
+  GM_IDS.chPlanning,
+  GM_IDS.chEndgame,
+  GM_IDS.chPreparation,
+];
+
+/** Lo único que no viene en el paquete: qué se estudia en cada capítulo. */
+const CHAPTER_DESCRIPTIONS = [
+  "Enumerar las jugadas candidatas, recorrer el árbol sin volver dos veces por la misma rama y comprobar lo evidente antes de mover.",
+  "Leer una posición por sus elementos: líneas abiertas, casillas y peones débiles, peones pasados y piezas mal colocadas.",
+  "Del juicio al plan: elegir un objetivo, subordinarle las jugadas y saber cuándo hay que cambiar de plan.",
+  "Lo que cambia al simplificar: pensar por esquemas, no tener prisa y llevar el rey al centro.",
+  "El trabajo fuera del tablero: qué estudiar, cómo analizar una partida aplazada y cómo conocerse a uno mismo.",
+];
+
+const CHAPTER_TOPICS = [
+  [TOPIC.TACTICS, TOPIC.STRATEGY],
+  [TOPIC.STRATEGY, TOPIC.PAWN_STRUCTURE],
+  [TOPIC.STRATEGY],
+  [TOPIC.ENDGAME],
+  [TOPIC.STRATEGY],
+];
+
+/** Minutos por diagrama; el del capítulo es la suma de los suyos. */
+const MINUTES_PER_LESSON = 6;
+
+/**
+ * Ficha corta de la lección a partir de los metadatos del paquete. No resume el
+ * comentario del libro a propósito: es texto de terceros y ya viaja en el PGN.
+ */
+function buildDescription(lesson: ImportLesson, fen: string): string {
+  const parts: string[] = [];
+  if (lesson.white && lesson.black) parts.push(`${lesson.white}–${lesson.black}`);
+  parts.push(fen.split(" ")[1] === "b" ? "juegan las negras" : "juegan las blancas");
+  parts.push(lesson.diagramNumber === null ? "posición sin numerar" : `diagrama ${lesson.diagramNumber}`);
+
+  const text = parts.join(" · ");
+  return `${text.charAt(0).toUpperCase()}${text.slice(1)} (pág. ${lesson.sourcePdfPage} del original).`;
+}
+
+function toSeedLesson(lesson: ImportLesson, topics: string[]): SeedLesson {
+  const fen = resolveFen(lesson);
+  return {
+    id: deterministicId("lesson", lesson.stableKey),
+    order: lesson.lessonOrder,
+    name: lesson.lessonTitle,
+    description: buildDescription(lesson, fen),
+    isPriority: false,
+    estimatedDuration: MINUTES_PER_LESSON,
+    // Cada lección es un diagrama con su comentario, no una partida que se
+    // recorre: el PGN no lleva jugadas, sólo la posición de partida.
+    presentationMode: PRESENTATION_MODE.STATIC_DIAGRAMS,
+    initialPositionType: INITIAL_POSITION_TYPE.FEN,
+    initialFen: fen,
+    orientation: fen.split(" ")[1] === "b" ? BOARD_ORIENTATION.BLACK : BOARD_ORIENTATION.WHITE,
+    pgn: resolvePgn(lesson),
+    topics,
+    // Un diagrama suelto no tiene línea forzada que entrenar: los ejercicios
+    // llegarán cuando se anoten las variantes de cada posición.
+    exercises: [],
+  };
+}
+
+function toSeedChapter(chapter: ImportChapter): SeedChapter {
+  const index = chapter.order - 1;
+  const id = CHAPTER_IDS[index];
+  if (!id) fail(`capítulo ${chapter.order} fuera de los cinco del libro`);
+
+  const topics = CHAPTER_TOPICS[index];
+  return {
+    id,
+    order: chapter.order,
+    name: chapter.title,
+    description: CHAPTER_DESCRIPTIONS[index],
+    estimatedDuration: chapter.lessons.length * MINUTES_PER_LESSON,
+    lessons: chapter.lessons.map((lesson) => toSeedLesson(lesson, topics)),
+  };
+}
+
+function loadCourse(): SeedCourse {
+  const data = JSON.parse(readFileSync(IMPORT_FILE, "utf8")) as ImportFile;
+  validate(data);
+
+  return {
+    id: GM_IDS.course,
+    name: data.course.title,
+    slug: data.course.slug,
+    description:
+      "El método de trabajo de Alexander Kotov, capítulo a capítulo: cómo se calcula una variante, cómo se juzga una posición, cómo se traza un plan y qué cambia en el final. Los 162 diagramas del libro, uno por lección.",
+    type: COURSE_TYPE.STRATEGY,
+    status: COURSE_STATUS.PUBLISHED,
+    levels: [LEVEL.INTERMEDIATE, LEVEL.ADVANCED],
+    chapters: data.course.chapters.map(toSeedChapter),
+  };
+}
+
+export const THINK_LIKE_A_GRANDMASTER: SeedCourse = loadCourse();
+
+// ---------------------------------------------------------------------------
+// Partidas magistrales del curso
+// ---------------------------------------------------------------------------
+//
+// Estas partidas NO son lecciones: forman la base de partidas del curso, que
+// además es el corpus del buscador por posición. Se agrupan por el capítulo
+// cuyo tema ilustran.
 // ---------------------------------------------------------------------------
 // Capítulo 1 — Análisis de variantes
 // ---------------------------------------------------------------------------
@@ -124,432 +356,6 @@ const PETROSIAN_EUWE = `1. Nf3 Nf6 2. g3 d5 3. Bg2 Bf5 4. d3 e6 5. Nbd2 h6 6. O-
  */
 const TAIMANOV_BRONSTEIN = `1. d4 Nf6 2. c4 c5 3. d5 g6 4. Nc3 d6 5. e4 b5 {El sacrificio: un peón por las columnas a y b, que son por donde el negro va a trabajar el resto de la partida. [%csl Ga8,Gb8]} 6. cxb5 Bg7 7. Nf3 O-O 8. Be2 a6 9. bxa6 Bxa6 10. O-O Qc7 11. Re1 Nbd7 12. Bxa6 Rxa6 13. Qe2 Rfa8 {Las dos torres ya están donde el sacrificio las quería. El peón de menos no se nota. [%cal Ga6a2,Ga8a2]} 14. h3 Nb6 15. Bg5 Ne8 16. Bd2 Na4 17. Nxa4 Rxa4 18. Bc3 Bxc3 19. bxc3 Qa5 20. Qd3 Qa6 21. Qd2 Rxa2 22. Rxa2 Qxa2 23. e5 Qxd2 24. Nxd2 dxe5 25. Rxe5 Kf8 {Empieza el final, y aquí la torre activa vale más que el peón. [%cal Ga1a2]} 26. Nb3 c4 27. Nc5 Ra1+ 28. Kh2 Nf6 29. Ne4 Nd7 30. Rg5 Ra2 31. Rg4 f5 32. Rf4 Nb6 33. Ng5 Nxd5 34. Rd4 Nb6 35. Rd8+ Kg7 36. f4 h6 37. Ne6+ Kf7 38. Nd4 Na4 39. Rc8 Nxc3 40. Rxc4 Nd5 41. Nf3 Rxg2+ 42. Kh1 Rf2 {Las blancas abandonaron. } *`;
 
-// ---------------------------------------------------------------------------
-// Capítulo 5 — Preparación: posiciones clave, no listas de variantes
-// ---------------------------------------------------------------------------
-
-/** Nimzoindia: la posición base sobre la que se explica todo el sistema. */
-const NIMZO_KEY_POSITION = `1. d4 Nf6 2. c4 e6 3. Nc3 Bb4 4. e3 c5 5. Bd3 O-O 6. Nf3 d5 7. O-O Nc6 8. a3 Bxc3 9. bxc3 dxc4 10. Bxc4 Qc7 {La posición clave del sistema. Memorizar las diez jugadas no sirve de nada; entender esto sí: el blanco quiere avanzar e4 y después e5 para echar al defensor del rey, y el negro quiere frenar ese avance y presionar los peones doblados hasta ganarlos. [%csl Gc3,Gd4][%cal Ge3e4,Ge4e5]} *`;
-
-/** India de Rey / Grünfeld: el centro cedido a cambio de contraataque. */
-const KINGS_INDIAN_KEY_POSITION = `1. d4 Nf6 2. c4 g6 3. Nc3 d5 4. Nf3 Bg7 5. Qb3 dxc4 6. Qxc4 O-O 7. e4 Bg4 8. Be3 Nfd7 {Un siglo atrás esta posición se habría dado por perdida para el negro: el blanco tiene todo el centro. Hoy se juega a diario, porque el centro grande también es un centro que atacar. [%csl Rd4,Re4][%cal Gg7d4,Gd7c5]} *`;
-
-// ---------------------------------------------------------------------------
-// Curso
-// ---------------------------------------------------------------------------
-
-export const THINK_LIKE_A_GRANDMASTER: SeedCourse = {
-  id: GM_IDS.course,
-  name: "Piense como un gran maestro",
-  slug: "piense-como-un-gran-maestro",
-  description:
-    "El método de trabajo de Alexander Kotov, capítulo a capítulo: cómo se calcula una variante, cómo se juzga una posición, cómo se traza un plan y qué cambia en el final. Con las partidas magistrales que él eligió para explicarlo.",
-  type: COURSE_TYPE.STRATEGY,
-  status: COURSE_STATUS.PUBLISHED,
-  levels: [LEVEL.INTERMEDIATE, LEVEL.ADVANCED],
-  chapters: [
-    {
-      id: GM_IDS.chAnalysis,
-      order: 1,
-      name: "Análisis de variantes",
-      description:
-        "Enumerar las jugadas candidatas, recorrer el árbol sin volver dos veces por la misma rama y comprobar lo evidente antes de mover.",
-      estimatedDuration: 110,
-      lessons: [
-        {
-          id: GM_IDS.lsTree,
-          order: 1,
-          name: "El árbol de análisis",
-          description: "Antes de calcular, enumerar. Las cuatro respuestas del rival y sus cuatro ramas.",
-          isPriority: true,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.WHITE,
-          topics: [TOPIC.TACTICS, TOPIC.STRATEGY],
-          exercises: [],
-          pgn: BOLESLAVSKY_FLOHR,
-        },
-        {
-          id: GM_IDS.lsBranchOnce,
-          order: 2,
-          name: "Cada rama, una sola vez",
-          description:
-            "El error que más reloj cuesta: ir y volver entre dos variantes sin terminar ninguna. Disciplina de recorrido.",
-          isPriority: true,
-          estimatedDuration: 15,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.WHITE,
-          topics: [TOPIC.TACTICS],
-          exercises: [],
-          pgn: BOLESLAVSKY_FLOHR,
-        },
-        {
-          id: GM_IDS.lsCandidates,
-          order: 3,
-          name: "Jugadas candidatas",
-          description:
-            "Cuántas jugadas mirar: ni tres de más ni una de menos. La que no se enumera es la que gana la partida.",
-          isPriority: true,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.WHITE,
-          topics: [TOPIC.TACTICS, TOPIC.STRATEGY],
-          exercises: [],
-          pgn: RAUZER_RIUMIN,
-        },
-        {
-          id: GM_IDS.lsGrove,
-          order: 4,
-          name: "Árboles anchos y árboles profundos",
-          description:
-            "Hay posiciones que piden una variante larga y otras que piden cinco cortas. Reconocer cuál tienes delante.",
-          isPriority: false,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.BLACK,
-          topics: [TOPIC.TACTICS],
-          exercises: [],
-          pgn: ALEKHINE_RETI,
-        },
-        {
-          id: GM_IDS.lsQuietMoves,
-          order: 5,
-          name: "Jugadas tranquilas",
-          description:
-            "La jugada que no da jaque ni come nada y decide la partida. Por qué cuesta tanto encontrarlas.",
-          isPriority: false,
-          estimatedDuration: 15,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.WHITE,
-          topics: [TOPIC.TACTICS, TOPIC.STRATEGY],
-          exercises: [],
-          pgn: RAUZER_RIUMIN,
-        },
-        {
-          id: GM_IDS.lsBlumenfeld,
-          order: 6,
-          name: "Comprobar lo evidente antes de mover",
-          description:
-            "Terminado el cálculo, mirar la posición con ojos de principiante: ¿hay mate en una?, ¿está algo en el aire?",
-          isPriority: true,
-          estimatedDuration: 15,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.WHITE,
-          topics: [TOPIC.TACTICS],
-          exercises: [],
-          pgn: BOTVINNIK_YUDOVICH,
-        },
-      ],
-    },
-    {
-      id: GM_IDS.chJudgement,
-      order: 2,
-      name: "Juicio posicional",
-      description:
-        "Descomponer la posición en sus elementos —líneas abiertas, peones, casillas débiles, colocación de las piezas— y volver a juntarlos en un veredicto.",
-      estimatedDuration: 120,
-      lessons: [
-        {
-          id: GM_IDS.lsOpenFiles,
-          order: 1,
-          name: "Una columna abierta puede bastar",
-          description: "Ocuparla, penetrar y partir en dos las fuerzas del rival.",
-          isPriority: true,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.BLACK,
-          topics: [TOPIC.STRATEGY],
-          exercises: [],
-          pgn: PLATER_BOTVINNIK,
-        },
-        {
-          id: GM_IDS.lsSeventhRank,
-          order: 2,
-          name: "La torre que paraliza",
-          description:
-            "No toda torre en la séptima viene a comer: a veces su sola presencia deja al rival sin jugadas útiles.",
-          isPriority: true,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.BLACK,
-          topics: [TOPIC.STRATEGY],
-          exercises: [],
-          pgn: STAHLBERG_TAIMANOV,
-        },
-        {
-          id: GM_IDS.lsWeakSquares,
-          order: 3,
-          name: "Columnas, diagonales y el plan que las une",
-          description:
-            "Las líneas abiertas no valen por sí solas: valen cuando llevan a algo. Un plan de apertura construido sobre ellas.",
-          isPriority: false,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.WHITE,
-          topics: [TOPIC.STRATEGY, TOPIC.OPENING_LINE],
-          exercises: [],
-          pgn: RAUZER_RIUMIN,
-        },
-        {
-          id: GM_IDS.lsColourComplex,
-          order: 4,
-          name: "Las casillas de un color",
-          description:
-            "Cuando desaparece el alfil que las cuidaba, todas las casillas de ese color quedan huérfanas a la vez.",
-          isPriority: true,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.BLACK,
-          topics: [TOPIC.STRATEGY, TOPIC.PAWN_STRUCTURE],
-          exercises: [],
-          pgn: MAKAGONOV_BOTVINNIK,
-        },
-        {
-          id: GM_IDS.lsBadKnight,
-          order: 5,
-          name: "La pieza que está lejos",
-          description:
-            "Un caballo en la orilla no está perdido: está a tres jugadas de donde se decide la partida, que es peor.",
-          isPriority: true,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.WHITE,
-          topics: [TOPIC.STRATEGY],
-          exercises: [],
-          pgn: KOTOV_TAIMANOV,
-        },
-        {
-          id: GM_IDS.lsPieceHarmony,
-          order: 6,
-          name: "Una jugada y la pieza no vuelve",
-          description:
-            "Cómo se provoca que una pieza rival quede fuera de la partida, y cómo se explota mientras dura.",
-          isPriority: false,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.WHITE,
-          topics: [TOPIC.STRATEGY],
-          exercises: [],
-          pgn: BOTVINNIK_ALEKHINE,
-        },
-      ],
-    },
-    {
-      id: GM_IDS.chPlanning,
-      order: 3,
-      name: "Planeamiento",
-      description:
-        "Qué es de verdad un plan, cuándo se cambia y cómo el tipo de centro decide en qué parte del tablero se juega.",
-      estimatedDuration: 80,
-      lessons: [
-        {
-          id: GM_IDS.lsSinglePlan,
-          order: 1,
-          name: "Un objetivo y todo lo demás detrás",
-          description:
-            "Elegir una casilla, calcular el camino más corto para llegar a ella y subordinar cada jugada a eso.",
-          isPriority: true,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.WHITE,
-          topics: [TOPIC.STRATEGY],
-          exercises: [],
-          pgn: ROMANOVSKY_VILNER,
-        },
-        {
-          id: GM_IDS.lsNoPlan,
-          order: 2,
-          name: "Desarrollar no es un plan",
-          description:
-            "Once jugadas correctas seguidas pueden dejarte en una posición pasiva si ninguna responde a una idea.",
-          isPriority: true,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.BLACK,
-          topics: [TOPIC.STRATEGY],
-          exercises: [],
-          pgn: SOKOLSKY_BOTVINNIK,
-        },
-        {
-          id: GM_IDS.lsChangePlan,
-          order: 3,
-          name: "Cambiar de plan a tiempo",
-          description:
-            "Mejor un plan mediocre que ninguno; pero peor que ninguno es aferrarse al que la posición ya ha desmentido.",
-          isPriority: false,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.WHITE,
-          topics: [TOPIC.STRATEGY],
-          exercises: [],
-          pgn: PETROSIAN_EUWE,
-        },
-        {
-          id: GM_IDS.lsCentreTypes,
-          order: 4,
-          name: "El centro manda dónde se juega",
-          description:
-            "Centro cerrado, abierto, móvil, fijo o en tensión: cada uno pide un tipo de plan distinto.",
-          isPriority: true,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.BLACK,
-          topics: [TOPIC.STRATEGY, TOPIC.PAWN_STRUCTURE],
-          exercises: [],
-          pgn: TAIMANOV_BRONSTEIN,
-        },
-      ],
-    },
-    {
-      id: GM_IDS.chEndgame,
-      order: 4,
-      name: "El final",
-      description:
-        "Lo que cambia cuando quedan pocas piezas: pensar por esquemas, no tener prisa y llevar el rey al centro.",
-      estimatedDuration: 60,
-      lessons: [
-        {
-          id: GM_IDS.lsKingToCentre,
-          order: 1,
-          name: "El rey al centro",
-          description:
-            "La pieza que en el medio juego se esconde es la que decide el final. Llevarla pronto, aunque no urja.",
-          isPriority: true,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.BLACK,
-          topics: [TOPIC.ENDGAME],
-          exercises: [],
-          pgn: PLATER_BOTVINNIK,
-        },
-        {
-          id: GM_IDS.lsActiveRook,
-          order: 2,
-          name: "Una torre activa vale más que un peón",
-          description:
-            "En los finales de torre la actividad pesa más que el material. Cómo se cambia lo uno por lo otro.",
-          isPriority: true,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.BLACK,
-          topics: [TOPIC.ENDGAME],
-          exercises: [],
-          pgn: TAIMANOV_BRONSTEIN,
-        },
-        {
-          id: GM_IDS.lsWhatToTrade,
-          order: 3,
-          name: "Qué cambiar y qué dejar",
-          description:
-            "La decisión más frecuente al entrar en el final, y la que más partidas decide antes de que se note.",
-          isPriority: false,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.WHITE,
-          topics: [TOPIC.ENDGAME],
-          exercises: [],
-          pgn: PETROSIAN_EUWE,
-        },
-      ],
-    },
-    {
-      id: GM_IDS.chPreparation,
-      order: 5,
-      name: "Preparación del jugador",
-      description:
-        "Cómo estudiar una apertura, cómo estudiar el medio juego y cómo hacerse una revisión honesta cada cierto tiempo.",
-      estimatedDuration: 55,
-      lessons: [
-        {
-          id: GM_IDS.lsKeyPositions,
-          order: 1,
-          name: "Estudiar posiciones clave, no listas de variantes",
-          description:
-            "Dos o tres aperturas a fondo y del resto lo básico. Y de cada una, la posición base y sus dos planes.",
-          isPriority: true,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.MOVE_SEQUENCE,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.WHITE,
-          topics: [TOPIC.OPENING_LINE, TOPIC.STRATEGY],
-          exercises: [],
-          pgn: NIMZO_KEY_POSITION,
-        },
-        {
-          id: GM_IDS.lsTypicalMiddlegame,
-          order: 2,
-          name: "Las posiciones típicas del medio juego",
-          description:
-            "El medio juego también se estudia: reconocer la estructura y saber de antemano qué se hace con ella.",
-          isPriority: true,
-          estimatedDuration: 20,
-          presentationMode: PRESENTATION_MODE.MOVE_SEQUENCE,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.BLACK,
-          topics: [TOPIC.OPENING_LINE, TOPIC.PAWN_STRUCTURE],
-          exercises: [],
-          pgn: KINGS_INDIAN_KEY_POSITION,
-        },
-        {
-          id: GM_IDS.lsSelfReview,
-          order: 3,
-          name: "La revisión periódica",
-          description:
-            "Cada dos o tres meses, repasar las derrotas propias y escribir qué falló. Es lo que más rating da.",
-          isPriority: false,
-          estimatedDuration: 15,
-          presentationMode: PRESENTATION_MODE.GAME_ANALYSIS,
-          initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-          initialFen: null,
-          orientation: BOARD_ORIENTATION.WHITE,
-          topics: [TOPIC.STRATEGY],
-          exercises: [],
-          pgn: KOTOV_TAIMANOV,
-        },
-      ],
-    },
-  ],
-};
 
 // ---------------------------------------------------------------------------
 // Base de partidas del curso
