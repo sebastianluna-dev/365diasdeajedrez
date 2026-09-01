@@ -586,7 +586,9 @@ model UserTrainerChapter {
 /// Una tabla, dos propietarios: usuario (bases privadas) o curso (bases del
 /// contenido publicado). CHECK XOR (userId, courseId) en la migración.
 model GameDatabase {
-  id          String   @id @default(uuid())
+  /// Corto porque va en la URL: `/estudios/aB3xK9pQ`. Lo genera Prisma en el
+  /// cliente, igual que `uuid()`, así que la columna sigue siendo TEXT.
+  id          String   @id @default(nanoid(8))
   ownerTypeId Int
   userId      String?
   courseId    String?
@@ -615,7 +617,8 @@ model GameDatabase {
 /// Cabeceras en columnas (listar/ordenar/filtrar sin parsear); el PGN sigue
 /// siendo la fuente del contenido.
 model Game {
-  id         String    @id @default(uuid())
+  /// Corto por el mismo motivo que el del estudio: los dos van en la URL.
+  id         String    @id @default(nanoid(8))
   databaseId String
   /// Cómo se distingue esta partida DENTRO de su estudio («Capítulo 1»).
   /// Anulable a propósito: una partida se identifica por sus jugadores, y sólo

@@ -367,7 +367,7 @@ const TAIMANOV_BRONSTEIN = `1. d4 Nf6 2. c4 c5 3. d5 g6 4. Nc3 d6 5. e4 b5 {El s
  * posición: sin partidas de verdad, el explorador no tiene nada que encontrar.
  */
 export const THINK_LIKE_A_GRANDMASTER_DATABASE = {
-  id: "f0000000-0000-4000-8000-000000000010",
+  id: "kotovDb0",
   ownerType: OWNER_TYPE.COURSE,
   userId: null as string | null,
   courseId: GM_IDS.course as string | null,
@@ -380,7 +380,7 @@ export const THINK_LIKE_A_GRANDMASTER_DATABASE = {
 
 export const THINK_LIKE_A_GRANDMASTER_GAMES = [
   {
-    id: "f1000000-0000-4000-8000-000000000010",
+    id: "kotovG01",
     databaseId: THINK_LIKE_A_GRANDMASTER_DATABASE.id,
     white: "Isaac Boleslavsky",
     black: "Salo Flohr",
@@ -395,7 +395,7 @@ export const THINK_LIKE_A_GRANDMASTER_GAMES = [
     pgn: BOLESLAVSKY_FLOHR,
   },
   {
-    id: "f1000000-0000-4000-8000-000000000011",
+    id: "kotovG02",
     databaseId: THINK_LIKE_A_GRANDMASTER_DATABASE.id,
     white: "Alexander Alekhine",
     black: "Richard Réti",
@@ -410,7 +410,7 @@ export const THINK_LIKE_A_GRANDMASTER_GAMES = [
     pgn: ALEKHINE_RETI,
   },
   {
-    id: "f1000000-0000-4000-8000-000000000012",
+    id: "kotovG03",
     databaseId: THINK_LIKE_A_GRANDMASTER_DATABASE.id,
     white: "Vsevolod Rauzer",
     black: "Nikolai Riumin",
@@ -425,7 +425,7 @@ export const THINK_LIKE_A_GRANDMASTER_GAMES = [
     pgn: RAUZER_RIUMIN,
   },
   {
-    id: "f1000000-0000-4000-8000-000000000013",
+    id: "kotovG04",
     databaseId: THINK_LIKE_A_GRANDMASTER_DATABASE.id,
     white: "Wlodzimierz Plater",
     black: "Mijaíl Botvinnik",
@@ -440,7 +440,7 @@ export const THINK_LIKE_A_GRANDMASTER_GAMES = [
     pgn: PLATER_BOTVINNIK,
   },
   {
-    id: "f1000000-0000-4000-8000-000000000014",
+    id: "kotovG05",
     databaseId: THINK_LIKE_A_GRANDMASTER_DATABASE.id,
     white: "Gideon Stahlberg",
     black: "Mark Taimanov",
@@ -455,7 +455,7 @@ export const THINK_LIKE_A_GRANDMASTER_GAMES = [
     pgn: STAHLBERG_TAIMANOV,
   },
   {
-    id: "f1000000-0000-4000-8000-000000000015",
+    id: "kotovG06",
     databaseId: THINK_LIKE_A_GRANDMASTER_DATABASE.id,
     white: "Vladimir Makagonov",
     black: "Mijaíl Botvinnik",
@@ -470,7 +470,7 @@ export const THINK_LIKE_A_GRANDMASTER_GAMES = [
     pgn: MAKAGONOV_BOTVINNIK,
   },
   {
-    id: "f1000000-0000-4000-8000-000000000016",
+    id: "kotovG07",
     databaseId: THINK_LIKE_A_GRANDMASTER_DATABASE.id,
     white: "Alexander Kotov",
     black: "Mark Taimanov",
@@ -485,7 +485,7 @@ export const THINK_LIKE_A_GRANDMASTER_GAMES = [
     pgn: KOTOV_TAIMANOV,
   },
   {
-    id: "f1000000-0000-4000-8000-000000000017",
+    id: "kotovG08",
     databaseId: THINK_LIKE_A_GRANDMASTER_DATABASE.id,
     white: "Mijaíl Botvinnik",
     black: "Alexander Alekhine",
@@ -500,7 +500,7 @@ export const THINK_LIKE_A_GRANDMASTER_GAMES = [
     pgn: BOTVINNIK_ALEKHINE,
   },
   {
-    id: "f1000000-0000-4000-8000-000000000018",
+    id: "kotovG09",
     databaseId: THINK_LIKE_A_GRANDMASTER_DATABASE.id,
     white: "Mijaíl Botvinnik",
     black: "Mijaíl Yudovich",
@@ -515,7 +515,7 @@ export const THINK_LIKE_A_GRANDMASTER_GAMES = [
     pgn: BOTVINNIK_YUDOVICH,
   },
   {
-    id: "f1000000-0000-4000-8000-000000000019",
+    id: "kotovG10",
     databaseId: THINK_LIKE_A_GRANDMASTER_DATABASE.id,
     white: "Piotr Romanovsky",
     black: "Yakov Vilner",
@@ -530,7 +530,7 @@ export const THINK_LIKE_A_GRANDMASTER_GAMES = [
     pgn: ROMANOVSKY_VILNER,
   },
   {
-    id: "f1000000-0000-4000-8000-000000000020",
+    id: "kotovG11",
     databaseId: THINK_LIKE_A_GRANDMASTER_DATABASE.id,
     white: "Alexey Sokolsky",
     black: "Mijaíl Botvinnik",
@@ -545,7 +545,7 @@ export const THINK_LIKE_A_GRANDMASTER_GAMES = [
     pgn: SOKOLSKY_BOTVINNIK,
   },
   {
-    id: "f1000000-0000-4000-8000-000000000021",
+    id: "kotovG12",
     databaseId: THINK_LIKE_A_GRANDMASTER_DATABASE.id,
     white: "Tigran Petrosian",
     black: "Max Euwe",
@@ -560,7 +560,7 @@ export const THINK_LIKE_A_GRANDMASTER_GAMES = [
     pgn: PETROSIAN_EUWE,
   },
   {
-    id: "f1000000-0000-4000-8000-000000000022",
+    id: "kotovG13",
     databaseId: THINK_LIKE_A_GRANDMASTER_DATABASE.id,
     white: "Mark Taimanov",
     black: "David Bronstein",

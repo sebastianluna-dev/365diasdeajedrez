@@ -24,8 +24,8 @@ const getVisibleStudiesWhere = getVisibleDatabasesWhere;
 
 /**
  * Identificador de la tarjeta de partidas de clase. No es un id de base: existe
- * sólo para que la lista tenga una clave estable, y por eso no es un uuid —
- * confundirlo con uno se ve a simple vista.
+ * sólo para que la lista tenga una clave estable, y por eso mide 11 caracteres
+ * cuando los ids miden 8 — confundirlo con uno se ve a simple vista.
  */
 const CLASS_GAMES_ID = "class-games";
 

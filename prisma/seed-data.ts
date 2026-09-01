@@ -193,15 +193,15 @@ export const IDS = {
   exLucenaBridge: "e0000000-0000-4000-8000-000000000003",
   exPhilidorDefense: "e0000000-0000-4000-8000-000000000004",
 
-  dbMyGames: "f0000000-0000-4000-8000-000000000001",
-  dbKingAttacks: "f0000000-0000-4000-8000-000000000002",
-  dbSicilianModels: "f0000000-0000-4000-8000-000000000003",
+  dbMyGames: "demoMisP",
+  dbKingAttacks: "demoAtaq",
+  dbSicilianModels: "demoSici",
 
-  gameOpera: "f1000000-0000-4000-8000-000000000001",
-  gameImmortal: "f1000000-0000-4000-8000-000000000002",
-  gameEvergreen: "f1000000-0000-4000-8000-000000000003",
-  gameModelOpocensky: "f1000000-0000-4000-8000-000000000004",
-  gameModelAlapin: "f1000000-0000-4000-8000-000000000005",
+  gameOpera: "demoOper",
+  gameImmortal: "demoInmo",
+  gameEvergreen: "demoSiem",
+  gameModelOpocensky: "demoOpoc",
+  gameModelAlapin: "demoAlap",
 
   classPast: "b0000000-0000-4000-8000-000000000001",
   classUpcoming: "b0000000-0000-4000-8000-000000000002",
