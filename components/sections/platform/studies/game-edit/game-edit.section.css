@@ -1,9 +1,9 @@
-.game-analysis {
+.game-edit {
   display: flex;
   flex-direction: column;
   gap: 18px;
 
-  & .game-analysis__breadcrumb {
+  & .game-edit__breadcrumb {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -11,57 +11,57 @@
     font-size: 13.5px;
   }
 
-  & .game-analysis__breadcrumb-link {
+  & .game-edit__breadcrumb-link {
     color: var(--platform-text-muted);
   }
 
-  & .game-analysis__breadcrumb-link:hover {
+  & .game-edit__breadcrumb-link:hover {
     color: var(--platform-accent);
   }
 
-  & .game-analysis__breadcrumb-separator {
+  & .game-edit__breadcrumb-separator {
     color: rgba(245, 240, 232, 0.25);
   }
 
-  & .game-analysis__breadcrumb-current {
+  & .game-edit__breadcrumb-current {
     color: var(--platform-text);
     font-weight: 600;
   }
 
-  & .game-analysis__head {
+  & .game-edit__head {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
 
-  & .game-analysis__form {
+  & .game-edit__form {
     display: flex;
     flex-direction: column;
     gap: 16px;
   }
 
-  & .game-analysis__actions {
+  & .game-edit__actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 10px;
   }
 
-  & .game-analysis__note {
+  & .game-edit__note {
     margin: 0;
     font-size: 13px;
     line-height: 1.5;
     color: var(--platform-text-muted);
   }
 
-  & .game-analysis__delete {
+  & .game-edit__delete {
     display: flex;
     flex-direction: column;
     align-items: start;
     gap: 12px;
   }
 
-  & .game-analysis__confirm {
+  & .game-edit__confirm {
     display: flex;
     align-items: start;
     gap: 8px;
@@ -70,7 +70,7 @@
     color: var(--platform-text);
   }
 
-  & .game-analysis__back {
+  & .game-edit__back {
     margin: 0;
   }
 }

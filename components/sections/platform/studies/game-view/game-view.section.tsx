@@ -40,8 +40,8 @@ export function GameViewSection({ game }: GameViewSectionProps) {
 
       {game.canEdit && (
         <p className="game-view__analyse">
-          <Link href={platformRoutes.gameAnalysis(game.studyId, game.id)} className="platform-button">
-            Analizar
+          <Link href={platformRoutes.gameEdit(game.studyId, game.id)} className="platform-button">
+            Editar
           </Link>
         </p>
       )}

@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { GameAnalysisSection } from "@/components/sections/platform/studies/game-analysis/game-analysis.section";
+import { GameEditSection } from "@/components/sections/platform/studies/game-edit/game-edit.section";
 import { getGameById, getGameResultOptions } from "@/services/studies/studies.service";
 
-interface GameAnalysisPageProps {
+interface GameEditPageProps {
   params: Promise<{ studyId: string; gameId: string }>;
   searchParams: Promise<{ error?: string }>;
 }
 
-export async function generateMetadata({ params }: GameAnalysisPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: GameEditPageProps): Promise<Metadata> {
   const { studyId, gameId } = await params;
   const game = await getGameById(studyId, gameId);
-  return game ? { title: `Analizar ${game.white} – ${game.black}` } : {};
+  return game ? { title: `Editar ${game.white} – ${game.black}` } : {};
 }
 
-export default async function GameAnalysisPage({ params, searchParams }: GameAnalysisPageProps) {
+export default async function GameEditPage({ params, searchParams }: GameEditPageProps) {
   const { studyId, gameId } = await params;
   const [game, results, { error }] = await Promise.all([
     getGameById(studyId, gameId),
@@ -27,7 +27,7 @@ export default async function GameAnalysisPage({ params, searchParams }: GameAna
 
   return (
     <div className="platform-page">
-      <GameAnalysisSection game={game} results={results} errorCode={error} />
+      <GameEditSection game={game} results={results} errorCode={error} />
     </div>
   );
 }

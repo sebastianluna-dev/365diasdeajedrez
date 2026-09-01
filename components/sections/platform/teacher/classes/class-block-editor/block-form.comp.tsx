@@ -80,7 +80,7 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
               citarlas, no para reescribirlas. */}
           {annotatableStudyId && (
             <p className="block-form__annotate">
-              <Link href={platformRoutes.gameAnalysis(annotatableStudyId, gameId)} className="platform-button">
+              <Link href={platformRoutes.gameEdit(annotatableStudyId, gameId)} className="platform-button">
                 Anotar esta partida
               </Link>
             </p>

@@ -341,7 +341,7 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
 
   revalidatePath(platformRoutes.studies);
   revalidatePath(platformRoutes.studyDetail(studyId));
-  redirect(platformRoutes.gameAnalysis(studyId, created.id));
+  redirect(platformRoutes.gameEdit(studyId, created.id));
 }
 
 /** Cabecera del PGN: se escribe el valor, o se quita si no hay dato. */
@@ -429,7 +429,7 @@ export async function updateGameDetails(studyId: string, gameId: string, formDat
 
   revalidatePath(platformRoutes.studyDetail(studyId));
   revalidatePath(platformRoutes.gameDetail(studyId, gameId));
-  revalidatePath(platformRoutes.gameAnalysis(studyId, gameId));
+  revalidatePath(platformRoutes.gameEdit(studyId, gameId));
 }
 
 export interface AutosaveResult {
@@ -482,7 +482,7 @@ export async function autosaveGamePgn(studyId: string, gameId: string, pgn: stri
 export async function deleteStudyGame(studyId: string, gameId: string, formData: FormData): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  const analysisPath = platformRoutes.gameAnalysis(studyId, gameId);
+  const analysisPath = platformRoutes.gameEdit(studyId, gameId);
   if (!allowAction(`${user.id}:delete-game`, 30, 60_000)) return;
 
   const game = await db.game.findFirst({
