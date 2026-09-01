@@ -1,0 +1,28 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { NewGameSection } from "@/components/sections/platform/studies/new-game/new-game.section";
+import { getStudyById, getGameResultOptions } from "@/services/studies/studies.service";
+
+interface NewGamePageProps {
+  params: Promise<{ studyId: string }>;
+  searchParams: Promise<{ error?: string }>;
+}
+
+export const metadata: Metadata = { title: "Nueva partida" };
+
+export default async function NewGamePage({ params, searchParams }: NewGamePageProps) {
+  const { studyId } = await params;
+  const [study, results, { error }] = await Promise.all([
+    getStudyById(studyId),
+    getGameResultOptions(),
+    searchParams,
+  ]);
+  // En un estudio de curso no se escribe: es material del curso, no del alumno.
+  if (!study || study.isCourseStudy) notFound();
+
+  return (
+    <div className="platform-page">
+      <NewGameSection study={study} results={results} errorCode={error} />
+    </div>
+  );
+}

@@ -19,6 +19,8 @@ export interface StudyKindOption {
 
 export interface StudyGameItem {
   id: string;
+  /** Cómo se distingue dentro del estudio. Ausente = se identifica por la pareja. */
+  title?: string;
   white: string;
   black: string;
   /** Token PGN del resultado: "1-0", "0-1", "1/2-1/2", "*". */
@@ -59,6 +61,16 @@ export interface GameView {
   id: string;
   /** El que mira es el dueño de la base: puede abrir el tablero de análisis. */
   canEdit: boolean;
+  /** Cómo se distingue dentro del estudio. Ausente = se identifica por la pareja. */
+  title?: string;
+  /** Códigos crudos, para poder rellenar el formulario de datos. */
+  resultCode: string;
+  /** ISO corto (aaaa-mm-dd) para el <input type="date">. */
+  playedAtValue?: string;
+  round?: string;
+  initialFen?: string;
+  /** Bloques de clase que citan esta partida: borrarla los dejaría vacíos. */
+  classBlockCount: number;
   studyId: string;
   studyName: string;
   studyHref: string;

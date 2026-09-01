@@ -55,7 +55,22 @@ interface AnalysisBoardProps {
   /** Posición de partida cuando no hay PGN previo. */
   initialFen?: string;
   orientation?: "white" | "black";
+  /**
+   * Guarda solo, sin botón. Devuelve si la escritura salió bien.
+   *
+   * Opcional a propósito: sin ella el componente se comporta como siempre
+   * —input oculto y botón del formulario—, que es lo que sigue necesitando el
+   * editor de lecciones del staff, donde cada guardado marca como
+   * desactualizados los ejercicios congelados y autoguardar los invalidaría sin
+   * parar mientras se escribe.
+   */
+  onAutoSave?: (pgn: string) => Promise<boolean>;
 }
+
+/** Espera tras el último cambio antes de guardar. */
+const AUTOSAVE_DELAY_MS = 1500;
+
+type SaveStatus = "idle" | "saving" | "saved" | "error";
 
 type EditorTab = "comment" | "quality";
 
@@ -64,7 +79,13 @@ function buildInitialGame(defaultPgn: string | undefined, initialFen: string | u
   return parsed ?? emptyGame(initialFen);
 }
 
-export function AnalysisBoard({ name, defaultPgn, initialFen, orientation = "white" }: AnalysisBoardProps) {
+export function AnalysisBoard({
+  name,
+  defaultPgn,
+  initialFen,
+  orientation = "white",
+  onAutoSave,
+}: AnalysisBoardProps) {
   // El juego mutable es la fuente de verdad; el PGN serializado es lo que se
   // pinta y lo que se envía. Se reserializa tras cada cambio en vez de mantener
   // dos representaciones que se puedan desincronizar.
@@ -91,6 +112,18 @@ export function AnalysisBoard({ name, defaultPgn, initialFen, orientation = "whi
   const node = tree ? nodeAtPath(tree, currentPath) : undefined;
   const isDirty = pgn !== baseline.pgn;
 
+  // Lo último que el servidor confirmó. «Hay cambios sin guardar» se DEDUCE de
+  // compararlo con el PGN actual, en vez de guardarse como un estado más: así no
+  // hay dos verdades que puedan desincronizarse.
+  const [lastSaved, setLastSaved] = useState(baseline.pgn);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+  // Por referencia para que el temporizador no dependa de que quien consume el
+  // componente memorice el callback.
+  const onAutoSaveRef = useRef(onAutoSave);
+  useEffect(() => {
+    onAutoSaveRef.current = onAutoSave;
+  }, [onAutoSave]);
+
   const sync = useCallback(() => {
     setPgn(serializeGame(gameRef.current));
   }, []);
@@ -101,6 +134,40 @@ export function AnalysisBoard({ name, defaultPgn, initialFen, orientation = "whi
   useEffect(() => {
     setCommentDraft(commentTextAt(gameRef.current, currentPath));
   }, [currentPath, pgn]);
+
+  // Autoguardado: se espera a que pare de escribir y se guarda lo ÚLTIMO. Si
+  // durante la espera cambia algo más, el temporizador se reinicia y la versión
+  // intermedia no llega a enviarse.
+  useEffect(() => {
+    if (!onAutoSave || pgn === lastSaved) return;
+
+    const timer = setTimeout(async () => {
+      setSaveStatus("saving");
+      try {
+        if (await onAutoSaveRef.current?.(pgn)) {
+          setLastSaved(pgn);
+          setSaveStatus("saved");
+        } else {
+          setSaveStatus("error");
+        }
+      } catch {
+        setSaveStatus("error");
+      }
+    }, AUTOSAVE_DELAY_MS);
+
+    return () => clearTimeout(timer);
+  }, [pgn, lastSaved, onAutoSave]);
+
+  // Avisa si se cierra la pestaña con algo aún sin guardar. No se puede esperar
+  // a una petición aquí, así que lo único honesto es preguntar.
+  useEffect(() => {
+    if (!onAutoSave) return;
+    const handler = (event: BeforeUnloadEvent) => {
+      if (pgn !== lastSaved) event.preventDefault();
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [onAutoSave, pgn, lastSaved]);
 
   const goToStart = useCallback(() => setCurrentPath(""), []);
   const goToPrevious = useCallback(() => setCurrentPath((path) => parentPathOf(path)), []);
@@ -211,6 +278,22 @@ export function AnalysisBoard({ name, defaultPgn, initialFen, orientation = "whi
     setCurrentPath("");
     setPgn(baseline.pgn);
   };
+
+  // El aviso sale de comparar, no de un estado paralelo. El error manda sobre
+  // todo lo demás: si la última escritura falló hay que decirlo aunque después
+  // se haya vuelto a escribir.
+  const saveTone: SaveStatus | "unsaved" =
+    saveStatus === "error" ? "error" : saveStatus === "saving" ? "saving" : pgn !== lastSaved ? "unsaved" : saveStatus;
+  const saveLabel =
+    saveTone === "error"
+      ? "No se pudo guardar. Sigue intentándolo o copia el PGN antes de salir."
+      : saveTone === "saving"
+        ? "Guardando…"
+        : saveTone === "unsaved"
+          ? "Cambios sin guardar…"
+          : saveTone === "saved"
+            ? "Guardado"
+            : null;
 
   const flipBoard = (orientation === "black") !== flipToggled;
   const activeNags = node?.nags ?? [];
@@ -386,16 +469,28 @@ export function AnalysisBoard({ name, defaultPgn, initialFen, orientation = "whi
       </div>
 
       <div className="analysis-board__footer">
-        <button type="button" className="platform-button" onClick={() => setPasteOpen((open) => !open)}>
+        <button type="button" className="platform-button platform-button_variant_secondary" onClick={() => setPasteOpen((open) => !open)}>
           {pasteOpen ? "Cerrar" : "Pegar un PGN"}
         </button>
-        {isDirty && (
-          <>
-            <span className="analysis-board__dirty">Hay cambios sin guardar.</span>
-            <button type="button" className="platform-button" onClick={discardChanges}>
-              Descartar cambios
-            </button>
-          </>
+        {onAutoSave ? (
+          saveLabel && (
+            <span
+              className={`analysis-board__save analysis-board__save_state_${saveTone}`}
+              role="status"
+              aria-live="polite"
+            >
+              {saveLabel}
+            </span>
+          )
+        ) : (
+          isDirty && (
+            <>
+              <span className="analysis-board__dirty">Hay cambios sin guardar.</span>
+              <button type="button" className="platform-button platform-button_variant_secondary" onClick={discardChanges}>
+                Descartar cambios
+              </button>
+            </>
+          )
         )}
       </div>
 

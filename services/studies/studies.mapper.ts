@@ -15,7 +15,9 @@ export const studyDetailInclude = {
   kind: true,
   course: { select: { name: true } },
   games: {
-    orderBy: [{ playedAt: "desc" }, { createdAt: "desc" }],
+    // `createdAt` ASC para que los capítulos se lean 1, 2, 3: no tienen fecha
+    // de partida, así que el orden descendente los mostraba al revés.
+    orderBy: [{ playedAt: "desc" }, { createdAt: "asc" }],
     include: { result: { select: { label: true } } },
   },
 } satisfies Prisma.GameDatabaseInclude;
@@ -23,9 +25,10 @@ export const studyDetailInclude = {
 export type StudyDetailRow = Prisma.GameDatabaseGetPayload<{ include: typeof studyDetailInclude }>;
 
 export const gameViewInclude = {
-  result: { select: { label: true } },
+  result: { select: { label: true, code: true } },
   source: { select: { label: true } },
   database: { select: { id: true, name: true, userId: true } },
+  _count: { select: { classBlocks: true } },
 } satisfies Prisma.GameInclude;
 
 export type GameViewRow = Prisma.GameGetPayload<{ include: typeof gameViewInclude }>;
@@ -47,6 +50,7 @@ export function mapStudySummary(row: StudySummaryRow): StudySummary {
 function mapStudyGameItem(studyId: string, game: StudyDetailRow["games"][number]): StudyGameItem {
   return {
     id: game.id,
+    title: game.title ?? undefined,
     white: game.white,
     black: game.black,
     resultLabel: game.result.label,
@@ -79,6 +83,12 @@ export function mapGameView(row: GameViewRow, viewerId: string | null): GameView
     // pero anotarlas es cosa del dueño.
     canEdit: viewerId !== null && row.database.userId === viewerId,
     id: row.id,
+    title: row.title ?? undefined,
+    resultCode: row.result.code,
+    playedAtValue: row.playedAt ? row.playedAt.toISOString().slice(0, 10) : undefined,
+    round: row.round ?? undefined,
+    initialFen: row.initialFen ?? undefined,
+    classBlockCount: row._count.classBlocks,
     studyId: row.database.id,
     studyName: row.database.name,
     studyHref: platformRoutes.studyDetail(row.database.id),

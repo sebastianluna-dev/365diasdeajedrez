@@ -617,6 +617,11 @@ model GameDatabase {
 model Game {
   id         String    @id @default(uuid())
   databaseId String
+  /// Cómo se distingue esta partida DENTRO de su estudio («Capítulo 1»).
+  /// Anulable a propósito: una partida se identifica por sus jugadores, y sólo
+  /// las creadas en blanco necesitan un nombre para no ser todas iguales. Las
+  /// importadas de un PGN se quedan a NULL y se siguen mostrando por su pareja.
+  title      String?
   white      String
   black      String
   whiteElo   Int?

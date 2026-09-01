@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { GameAnalysisSection } from "@/components/sections/platform/studies/game-analysis/game-analysis.section";
-import { getGameById } from "@/services/studies/studies.service";
+import { getGameById, getGameResultOptions } from "@/services/studies/studies.service";
 
 interface GameAnalysisPageProps {
   params: Promise<{ studyId: string; gameId: string }>;
+  searchParams: Promise<{ error?: string }>;
 }
 
 export async function generateMetadata({ params }: GameAnalysisPageProps): Promise<Metadata> {
@@ -13,16 +14,20 @@ export async function generateMetadata({ params }: GameAnalysisPageProps): Promi
   return game ? { title: `Analizar ${game.white} – ${game.black}` } : {};
 }
 
-export default async function GameAnalysisPage({ params }: GameAnalysisPageProps) {
+export default async function GameAnalysisPage({ params, searchParams }: GameAnalysisPageProps) {
   const { studyId, gameId } = await params;
-  const game = await getGameById(studyId, gameId);
+  const [game, results, { error }] = await Promise.all([
+    getGameById(studyId, gameId),
+    getGameResultOptions(),
+    searchParams,
+  ]);
   // Ruta aparte de la vista de lectura a propósito: quien no es el dueño no
   // llega aquí ni por URL, y la página que ve un profesor sigue siendo la otra.
   if (!game || !game.canEdit) notFound();
 
   return (
     <div className="platform-page">
-      <GameAnalysisSection game={game} />
+      <GameAnalysisSection game={game} results={results} errorCode={error} />
     </div>
   );
 }

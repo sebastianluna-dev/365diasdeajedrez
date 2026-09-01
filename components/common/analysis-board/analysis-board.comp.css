@@ -176,6 +176,21 @@
     color: var(--platform-accent);
   }
 
+  & .analysis-board__save {
+    font-size: 13px;
+    color: var(--platform-text-muted);
+  }
+
+  & .analysis-board__save.analysis-board__save_state_unsaved,
+  & .analysis-board__save.analysis-board__save_state_saving {
+    color: var(--platform-accent);
+  }
+
+  & .analysis-board__save.analysis-board__save_state_error {
+    color: var(--platform-danger);
+    font-weight: 600;
+  }
+
   & .analysis-board__paste {
     display: flex;
     flex-direction: column;

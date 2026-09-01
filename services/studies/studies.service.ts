@@ -52,6 +52,15 @@ export const getStudyKinds = cache(async (): Promise<StudyKindOption[]> => {
   return rows.map((row) => ({ code: row.code, label: row.label }));
 });
 
+/** Resultados del catálogo. El label ES el token PGN («1-0», «*»…). */
+export const getGameResultOptions = cache(async (): Promise<StudyKindOption[]> => {
+  const rows = await getPlatformDb().gameResult.findMany({
+    orderBy: { order: "asc" },
+    select: { code: true, label: true },
+  });
+  return rows.map((row) => ({ code: row.code, label: row.label }));
+});
+
 export async function getStudyById(studyId: string): Promise<StudyDetail | null> {
   const db = getPlatformDb();
   const where = await getVisibleStudiesWhere();

@@ -46,4 +46,31 @@
     align-items: center;
     gap: 10px;
   }
+
+  & .game-analysis__note {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+
+  & .game-analysis__delete {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 12px;
+  }
+
+  & .game-analysis__confirm {
+    display: flex;
+    align-items: start;
+    gap: 8px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--platform-text);
+  }
+
+  & .game-analysis__back {
+    margin: 0;
+  }
 }

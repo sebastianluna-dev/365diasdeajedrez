@@ -1,0 +1,15 @@
+.game-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  & .game-fields__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    & .platform-field {
+      flex: 1 1 220px;
+    }
+  }
+}

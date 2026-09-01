@@ -85,6 +85,17 @@
   border-color: rgba(245, 240, 232, 0.35);
 }
 
+.platform-button_variant_danger {
+  background: transparent;
+  border: 1px solid var(--platform-danger);
+  color: var(--platform-danger);
+}
+
+.platform-button_variant_danger:hover {
+  background: var(--platform-danger);
+  color: #fff;
+}
+
 .platform-tag {
   display: inline-block;
   padding: 3px 10px;

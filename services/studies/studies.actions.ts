@@ -1,7 +1,10 @@
 "use server";
 
+import { Chess } from "chessops/chess";
+import { parseFen } from "chessops/fen";
 import { makePgn, parsePgn } from "chessops/pgn";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 import {
   DATABASE_KIND,
@@ -9,6 +12,7 @@ import {
   GAME_RESULT_BY_PGN_TOKEN,
   GAME_SOURCE,
   type DatabaseKindCode,
+  type GameResultCode,
 } from "@/constants/platform/study-codes.const";
 import { PGN_MAX_GAMES, PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
@@ -16,6 +20,7 @@ import type { Prisma } from "@/lib/platform-db/generated/client";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
+import { emptyGame, serializeGame } from "@/lib/chess/pgn-edit";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
 
@@ -195,4 +200,305 @@ export async function updateGamePgn(studyId: string, gameId: string, formData: F
 
   revalidatePath(platformRoutes.gameDetail(studyId, gameId));
   revalidatePath(platformRoutes.studyDetail(studyId));
+}
+
+// --- Partidas creadas a mano -----------------------------------------------
+//
+// El otro camino para meter una partida en un estudio, además de pegar un PGN:
+// crearla vacía y construirla sobre el tablero. Todo el formulario es opcional,
+// porque cuando se empieza a analizar todavía no se sabe qué partida va a ser.
+
+const GAME_FIELD_MAX_LENGTH = 120;
+/** Rango de Elo que se acepta; fuera de él es una errata, no un dato. */
+const ELO_MIN = 100;
+const ELO_MAX = 4000;
+/** El formulario usa <input type="date">, que envía ISO. */
+const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
+
+function readOptionalField(formData: FormData, field: string): string | null {
+  const value = readText(formData, field);
+  return value.length > 0 ? value.slice(0, GAME_FIELD_MAX_LENGTH) : null;
+}
+
+function readElo(formData: FormData, field: string): number | null {
+  const value = readText(formData, field);
+  if (!/^\d+$/.test(value)) return null;
+  const elo = Number.parseInt(value, 10);
+  return elo >= ELO_MIN && elo <= ELO_MAX ? elo : null;
+}
+
+/** Fecha del formulario (ISO). Una fecha imposible se descarta, no se corrige. */
+function readIsoDate(formData: FormData, field: string): Date | null {
+  const match = ISO_DATE.exec(readText(formData, field));
+  if (!match) return null;
+
+  const [, year, month, day] = match;
+  const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+  const isRealDate = date.getUTCMonth() === Number(month) - 1 && date.getUTCDate() === Number(day);
+  return isRealDate ? date : null;
+}
+
+/**
+ * ¿El FEN describe una posición que puede existir sobre un tablero?
+ *
+ * `parseFen` a secas no vale: acepta «8/8/8/8/8/8/8/8», un tablero sin reyes.
+ * Guardar eso daría una partida que revienta al abrirla.
+ */
+function isLegalFen(fen: string): boolean {
+  const setup = parseFen(fen);
+  return setup.isOk && Chess.fromSetup(setup.value).isOk;
+}
+
+function isGameResultCode(value: string): value is GameResultCode {
+  return (Object.values(GAME_RESULT) as string[]).includes(value);
+}
+
+/** El estudio, sólo si es del usuario. Los de curso tienen `userId` nulo. */
+async function ownedStudy(studyId: string, userId: string): Promise<{ id: string } | null> {
+  return getPlatformDb().gameDatabase.findFirst({
+    where: { id: studyId, userId },
+    select: { id: true },
+  });
+}
+
+/**
+ * Crea una partida en un estudio propio, con o sin PGN.
+ *
+ * Todos los campos son opcionales: enviar el formulario vacío da una partida en
+ * blanco lista para analizar. Si se pega un PGN, sus cabeceras rellenan los
+ * huecos que la persona haya dejado — lo que ella escriba siempre manda.
+ *
+ * Termina redirigiendo al tablero de análisis, que es el sitio al que se venía.
+ */
+export async function createStudyGame(studyId: string, formData: FormData): Promise<void> {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  if (!allowAction(`${user.id}:create-game`, 30, 60_000)) return;
+
+  const study = await ownedStudy(studyId, user.id);
+  if (!study) return;
+
+  const pgnText = readText(formData, "pgn");
+  if (pgnText.length > PGN_MAX_LENGTH) return;
+
+  // El PGN pegado es una FUENTE de datos, no una orden: si no se entiende, se
+  // descarta y la partida se crea en blanco en vez de perder lo tecleado.
+  let parsed: ReturnType<typeof parsePgn>[number] | undefined;
+  if (pgnText.length > 0) {
+    try {
+      parsed = parsePgn(pgnText)[0];
+    } catch {
+      parsed = undefined;
+    }
+  }
+  const headers = parsed?.headers ?? new Map<string, string>();
+
+  const initialFen = readOptionalField(formData, "initialFen") ?? readHeader(headers, "FEN");
+  // Un FEN malo sí se dice: es lo único que la persona puede haber escrito mal
+  // y no notar, porque el resto de campos son texto libre.
+  if (initialFen !== null && !isLegalFen(initialFen)) {
+    redirect(`${platformRoutes.newStudyGame(studyId)}?error=fen`);
+  }
+
+  const pgn = parsed ? makePgn(parsed) : serializeGame(emptyGame(initialFen ?? undefined));
+
+  const resultCode = readText(formData, "resultCode");
+  const result = isGameResultCode(resultCode)
+    ? resultCode
+    : (GAME_RESULT_BY_PGN_TOKEN[readHeader(headers, "Result") ?? ""] ?? GAME_RESULT.ONGOING);
+
+  // Sin nombre propio se numera por lo que ya hay en el estudio. No pretende ser
+  // un contador exacto —dos creaciones a la vez podrían repetir «Capítulo 3»—,
+  // y no pasa nada: es una etiqueta que se puede cambiar, no una clave.
+  const explicitTitle = readOptionalField(formData, "title");
+  const title = explicitTitle ?? `Capítulo ${(await db.game.count({ where: { databaseId: studyId } })) + 1}`;
+
+  const created = await db.$transaction(async (tx) => {
+    const game = await tx.game.create({
+      data: {
+        database: { connect: { id: studyId } },
+        title,
+        white: readOptionalField(formData, "white") ?? readHeader(headers, "White") ?? UNKNOWN_PLAYER,
+        black: readOptionalField(formData, "black") ?? readHeader(headers, "Black") ?? UNKNOWN_PLAYER,
+        whiteElo: readElo(formData, "whiteElo") ?? readEloHeader(headers, "WhiteElo"),
+        blackElo: readElo(formData, "blackElo") ?? readEloHeader(headers, "BlackElo"),
+        result: { connect: { code: result } },
+        playedAt: readIsoDate(formData, "playedAt") ?? readDateHeader(headers),
+        event: readOptionalField(formData, "event") ?? readHeader(headers, "Event"),
+        site: readOptionalField(formData, "site") ?? readHeader(headers, "Site"),
+        round: readOptionalField(formData, "round") ?? readHeader(headers, "Round"),
+        eco: readOptionalField(formData, "eco") ?? readHeader(headers, "ECO"),
+        initialFen,
+        pgn,
+        source: { connect: { code: GAME_SOURCE.MANUAL } },
+        isOwnGame: false,
+      },
+      select: { id: true },
+    });
+    await indexGamePositions(tx, { gameId: game.id, databaseId: studyId, pgn });
+    return game;
+  });
+
+  revalidatePath(platformRoutes.studies);
+  revalidatePath(platformRoutes.studyDetail(studyId));
+  redirect(platformRoutes.gameAnalysis(studyId, created.id));
+}
+
+/** Cabecera del PGN: se escribe el valor, o se quita si no hay dato. */
+function setHeader(headers: Map<string, string>, key: string, value: string | null): void {
+  if (value === null || value.length === 0) headers.delete(key);
+  else headers.set(key, value);
+}
+
+/** Fecha en el formato del PGN («2024.03.17»). */
+function pgnDate(date: Date | null): string | null {
+  if (!date) return null;
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  return `${date.getUTCFullYear()}.${month}.${day}`;
+}
+
+/**
+ * Edita la ficha de la partida: jugadores, Elos, evento, fecha, resultado…
+ *
+ * Reescribe TAMBIÉN las cabeceras del PGN. Si no, un PGN exportado diría una
+ * cosa y la ficha otra sobre la misma partida, y no habría forma de saber cuál
+ * de las dos es la buena. Las jugadas y la posición de partida no se tocan:
+ * esto sólo cambia quién jugó y dónde.
+ */
+export async function updateGameDetails(studyId: string, gameId: string, formData: FormData): Promise<void> {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  if (!allowAction(`${user.id}:game-details`, 60, 60_000)) return;
+
+  const game = await db.game.findFirst({
+    where: { id: gameId, databaseId: studyId, database: { userId: user.id } },
+    select: { id: true, pgn: true },
+  });
+  if (!game) return;
+
+  const resultCode = readText(formData, "resultCode");
+  const result = isGameResultCode(resultCode) ? resultCode : GAME_RESULT.ONGOING;
+  const white = readOptionalField(formData, "white") ?? UNKNOWN_PLAYER;
+  const black = readOptionalField(formData, "black") ?? UNKNOWN_PLAYER;
+  const whiteElo = readElo(formData, "whiteElo");
+  const blackElo = readElo(formData, "blackElo");
+  const playedAt = readIsoDate(formData, "playedAt");
+  const event = readOptionalField(formData, "event");
+  const site = readOptionalField(formData, "site");
+  const round = readOptionalField(formData, "round");
+  const eco = readOptionalField(formData, "eco");
+
+  // El token del resultado vive en el label del catálogo («1-0», «*»…), que es
+  // justo lo que el PGN espera en su cabecera Result.
+  const resultRow = await db.gameResult.findUnique({ where: { code: result }, select: { label: true } });
+
+  let pgn = game.pgn;
+  const parsed = parsePgnTree(pgn) === null ? null : parsePgn(pgn)[0];
+  if (parsed) {
+    setHeader(parsed.headers, "White", white);
+    setHeader(parsed.headers, "Black", black);
+    setHeader(parsed.headers, "WhiteElo", whiteElo === null ? null : String(whiteElo));
+    setHeader(parsed.headers, "BlackElo", blackElo === null ? null : String(blackElo));
+    setHeader(parsed.headers, "Event", event);
+    setHeader(parsed.headers, "Site", site);
+    setHeader(parsed.headers, "Round", round);
+    setHeader(parsed.headers, "ECO", eco);
+    setHeader(parsed.headers, "Date", pgnDate(playedAt));
+    setHeader(parsed.headers, "Result", resultRow?.label ?? "*");
+    pgn = makePgn(parsed);
+  }
+
+  await db.game.update({
+    where: { id: game.id },
+    data: {
+      title: readOptionalField(formData, "title"),
+      white,
+      black,
+      whiteElo,
+      blackElo,
+      result: { connect: { code: result } },
+      playedAt,
+      event,
+      site,
+      round,
+      eco,
+      pgn,
+    },
+  });
+
+  revalidatePath(platformRoutes.studyDetail(studyId));
+  revalidatePath(platformRoutes.gameDetail(studyId, gameId));
+  revalidatePath(platformRoutes.gameAnalysis(studyId, gameId));
+}
+
+export interface AutosaveResult {
+  ok: boolean;
+  /** Por qué no se guardó, para poder decirlo en pantalla. */
+  reason?: "invalid" | "denied" | "throttled";
+}
+
+/**
+ * Igual que `updateGamePgn` pero informando de lo ocurrido.
+ *
+ * El autoguardado no puede fallar en silencio: quien está analizando tiene que
+ * enterarse de que su trabajo NO está a salvo, y por eso esta variante devuelve
+ * el motivo en vez de salir sin más.
+ */
+export async function autosaveGamePgn(studyId: string, gameId: string, pgn: string): Promise<AutosaveResult> {
+  if (pgn.length === 0 || pgn.length > PGN_MAX_LENGTH) return { ok: false, reason: "invalid" };
+
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  if (!allowAction(`${user.id}:game-autosave`, 240, 60_000)) return { ok: false, reason: "throttled" };
+  if (parsePgnTree(pgn) === null) return { ok: false, reason: "invalid" };
+
+  const game = await db.game.findFirst({
+    where: { id: gameId, databaseId: studyId, database: { userId: user.id } },
+    select: { id: true },
+  });
+  if (!game) return { ok: false, reason: "denied" };
+
+  await db.$transaction(async (tx) => {
+    await tx.game.update({ where: { id: game.id }, data: { pgn } });
+    await indexGamePositions(tx, { gameId: game.id, databaseId: studyId, pgn });
+  });
+
+  // La vista de lectura y la lista, no la propia página de análisis: revalidarla
+  // en cada autoguardado la recargaría bajo los pies de quien está escribiendo.
+  revalidatePath(platformRoutes.gameDetail(studyId, gameId));
+  revalidatePath(platformRoutes.studyDetail(studyId));
+  return { ok: true };
+}
+
+/**
+ * Borra una partida de un estudio propio.
+ *
+ * `ClassBlock.gameId` es `onDelete: SetNull`, así que borrar no rompe ninguna
+ * clase: el bloque se queda sin referencia y el mapper ya lo omite. Pero eso
+ * hace desaparecer contenido de una clase sin que nadie se entere, así que si
+ * la partida está citada se exige una confirmación explícita.
+ */
+export async function deleteStudyGame(studyId: string, gameId: string, formData: FormData): Promise<void> {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  const analysisPath = platformRoutes.gameAnalysis(studyId, gameId);
+  if (!allowAction(`${user.id}:delete-game`, 30, 60_000)) return;
+
+  const game = await db.game.findFirst({
+    where: { id: gameId, databaseId: studyId, database: { userId: user.id } },
+    select: { id: true, _count: { select: { classBlocks: true } } },
+  });
+  if (!game) return;
+
+  if (game._count.classBlocks > 0 && readText(formData, "confirmClassBlocks") !== "yes") {
+    redirect(`${analysisPath}?error=gameInClasses`);
+  }
+
+  // GamePosition es `onDelete: Cascade`: el índice por posición se limpia solo.
+  await db.game.delete({ where: { id: game.id } });
+
+  revalidatePath(platformRoutes.studies);
+  revalidatePath(platformRoutes.studyDetail(studyId));
+  redirect(platformRoutes.studyDetail(studyId));
 }
