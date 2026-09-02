@@ -1,5 +1,9 @@
 .move-tree {
-  font-size: 16.5px;
+  /* El tamaño sale de una variable para que el visor pueda agrandarlo a
+     pantalla completa sin alcanzar desde su hoja a las clases de esta. Todo lo
+     de dentro hereda, así que con esta línea escalan jugadas, comentarios y
+     variantes a la vez. */
+  font-size: var(--move-tree-font-size, 16.5px);
   line-height: 1.9;
   color: var(--platform-text);
   word-break: break-word;

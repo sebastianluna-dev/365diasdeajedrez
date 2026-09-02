@@ -190,20 +190,107 @@
   /* A pantalla completa el visor pinta su propio fondo: por debajo queda el
      negro del navegador, no la página. */
   &.game-viewer_state_fullscreen {
-    background: var(--platform-bg);
-    padding: 22px;
-    overflow: auto;
-  }
+    /* Alto que el tablero NO puede ocupar: el relleno del visor (20+20), el de
+       la tarjeta (16+16), la fila de botones (48) y su hueco (14). Si cambia
+       alguno de esos valores, este número cambia con ellos. */
+    --viewer-chrome-block: 134px;
+    /* Ancho que tampoco puede ocupar: esos mismos rellenos, el hueco entre las
+       dos tarjetas (22) y un mínimo habitable para el panel de jugadas (360). */
+    --viewer-chrome-inline: 454px;
+    /* El lado del tablero. Manda el alto de la pantalla, que es lo que se pide;
+       el ancho sólo entra en juego si de verdad no cabe. */
+    --viewer-board-size: min(
+      calc(100vh - var(--viewer-chrome-block)),
+      calc(100vw - var(--viewer-chrome-inline))
+    );
+    /* La tipografía crece con la pantalla, igual que el tablero: si el lado del
+       tablero sale de `vh`, el texto de al lado tiene que seguir la misma regla
+       o se queda enano contra un tablero enorme. El `clamp` pone suelo y techo
+       para que ni en una pantalla baja se lea peor que en modo normal, ni en
+       una de 4K salga desproporcionado. La consume `.move-tree`, que hereda a
+       todo lo suyo: jugadas, comentarios y variantes. */
+    --move-tree-font-size: clamp(19px, 2.2vh, 30px);
 
-  /* Cuando el tablero ya no cabe al lado del panel, se apilan. El panel deja
-     de estirarse a lo alto para no dejar un hueco vacío bajo las jugadas. */
-  @media (max-width: 1080px) {
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    background: var(--platform-bg);
+    /* Nada desborda: todo se ajusta al alto de la pantalla. */
+    overflow: hidden;
+
+    /* Fila flexible en vez de rejilla: la columna del tablero ya no mide un
+       número fijo, mide lo que le deje la altura. */
     & .game-viewer__layout {
-      grid-template-columns: minmax(0, 1fr);
+      display: flex;
+      height: 100%;
+      align-items: stretch;
+    }
+
+    /* La tarjeta se ciñe a su contenido y se centra; estirarla dejaría un
+       manchón blanco bajo los botones. */
+    & .game-viewer__board-card {
+      flex: none;
+      width: auto;
+      height: auto;
+      align-self: center;
+    }
+
+    /* La medida va explícita, en las dos dimensiones, y NO por `aspect-ratio`
+       sobre un alto flexible: eso creaba una pelea circular —el ancho de la
+       tarjeta lo decide su contenido, y el contenido quería medir según la
+       tarjeta— que el navegador zanjaba dándole al tablero el ancho de la fila
+       de botones. Partiendo de `100vh` no hay nada que resolver. */
+    & .game-viewer__board {
+      flex: none;
+      align-self: center;
+      width: var(--viewer-board-size);
+      height: var(--viewer-board-size);
+    }
+
+    & .game-viewer__panel {
+      flex: 1;
+      min-width: 0;
+    }
+
+    & .game-viewer__panel-head {
+      padding: 26px 28px;
+    }
+
+    & .game-viewer__panel-title {
+      font-size: clamp(21px, 2.4vh, 32px);
+    }
+
+    & .game-viewer__panel-subtitle,
+    & .game-viewer__panel-description {
+      font-size: clamp(15px, 1.6vh, 21px);
+    }
+
+    & .game-viewer__panel-badge {
+      font-size: clamp(13px, 1.35vh, 17px);
     }
 
     & .game-viewer__moves {
-      max-height: 420px;
+      padding: 28px;
+    }
+
+    /* En pantalla estrecha no hay ancho que repartir: se apila y el tablero
+       vuelve a mandar por ancho, que es lo que cabe. */
+    @media (max-width: 1080px) {
+      overflow: auto;
+
+      & .game-viewer__layout {
+        flex-direction: column;
+        height: auto;
+      }
+
+      & .game-viewer__board-card {
+        align-self: stretch;
+      }
+
+      & .game-viewer__board {
+        width: auto;
+        height: auto;
+      }
     }
   }
 }
