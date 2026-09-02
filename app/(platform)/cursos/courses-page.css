@@ -1,3 +1,65 @@
 .courses-page {
-  /* Estructura heredada de .platform-page; el grid vive en la sección. */
+  gap: 32px;
+
+  & .courses-page__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  & .courses-page__stats {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    margin: 0;
+    padding: 0 4px 4px 0;
+  }
+
+  & .courses-page__stat {
+    text-align: right;
+  }
+
+  /* El <dd> va primero (la cifra manda visualmente) y el <dt> debajo hace de
+     rótulo, así que hay que quitarle a `dd` la sangría que trae de serie. */
+  & .courses-page__stat-value {
+    margin: 0;
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .courses-page__stat-value_tone_accent {
+    color: var(--platform-accent-ink);
+  }
+
+  & .courses-page__stat-label {
+    margin-top: 2px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--platform-text-subtle);
+  }
+
+  & .courses-page__stat-divider {
+    width: 1px;
+    height: 38px;
+    background: var(--platform-border);
+  }
+
+  /* Apretado, el resumen se va debajo del título en vez de estrujarlo. */
+  @media (max-width: 720px) {
+    & .courses-page__head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    & .courses-page__stats {
+      padding: 0;
+    }
+  }
 }

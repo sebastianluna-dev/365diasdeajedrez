@@ -4,10 +4,31 @@ interface ProgressIndicatorProps {
   percent: number;
   /** "3 de 7 lecciones", opcional. */
   detail?: string;
+  /**
+   * `inline` (por defecto): barra y etiqueta en la misma línea.
+   * `stacked`: porcentaje y detalle a los extremos y la barra debajo, como en
+   * la tarjeta de curso.
+   */
+  layout?: "inline" | "stacked";
 }
 
-export function ProgressIndicator({ percent, detail }: ProgressIndicatorProps) {
+export function ProgressIndicator({ percent, detail, layout = "inline" }: ProgressIndicatorProps) {
   const clamped = Math.max(0, Math.min(100, Math.round(percent)));
+
+  if (layout === "stacked") {
+    return (
+      <div className="progress-indicator progress-indicator_layout_stacked">
+        <div className="progress-indicator__legend">
+          <span className="progress-indicator__percent">{clamped}%</span>
+          {detail && <span className="progress-indicator__detail">{detail}</span>}
+        </div>
+
+        <div className="progress-indicator__track">
+          <div className="progress-indicator__fill" style={{ width: `${clamped}%` }} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="progress-indicator">

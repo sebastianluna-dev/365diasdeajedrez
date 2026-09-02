@@ -26,7 +26,7 @@
   }
 
   & .platform-table__row:hover {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--platform-bg);
   }
 
   & .platform-table__cell {
@@ -55,7 +55,7 @@
   }
 
   & .platform-table__cell a:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .platform-table__empty {

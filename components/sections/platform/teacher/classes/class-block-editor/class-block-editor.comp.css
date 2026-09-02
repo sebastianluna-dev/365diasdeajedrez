@@ -60,7 +60,7 @@
 
   & .class-block-editor__control:hover:not(:disabled) {
     color: var(--platform-text);
-    border-color: rgba(245, 240, 232, 0.3);
+    border-color: var(--platform-border-strong);
   }
 
   & .class-block-editor__control:disabled {
@@ -76,7 +76,7 @@
   & .class-block-editor__warning {
     margin: 0;
     font-size: 13px;
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .class-block-editor__add {

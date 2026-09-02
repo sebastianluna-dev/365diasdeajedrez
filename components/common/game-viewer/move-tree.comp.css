@@ -20,7 +20,7 @@
   }
 
   & .move-tree__move:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--platform-surface-neutral);
   }
 
   & .move-tree__move.move-tree__move_active {
@@ -29,7 +29,7 @@
   }
 
   & .move-tree__comment {
-    color: #a89f92;
+    color: var(--platform-text-muted);
     font-weight: 400;
     margin: 0 3px;
   }

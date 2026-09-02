@@ -17,7 +17,7 @@
   }
 
   & .student-game__breadcrumb-link:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .student-game__breadcrumb-separator {
@@ -37,7 +37,7 @@
   }
 
   & .student-game__use-hint a {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .student-game__use-list {

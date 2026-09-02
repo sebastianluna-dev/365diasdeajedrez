@@ -1,3 +1,13 @@
+/* Este tablero se pinta en los DOS temas: en la web pública, que es oscura, y
+   dentro de la plataforma, que es clara. De ahí el `var(--token, respaldo)` de
+   abajo: los `--platform-*` sólo existen bajo los layouts de (platform) y
+   (auth) —platform.css no se importa en ningún otro sitio—, así que fuera de
+   ellos entra solo el valor oscuro de respaldo.
+
+   No son respaldos muertos como los que se limpiaron en el resto de hojas:
+   aquí sostienen el tema oscuro. Quitarlos deja el tablero de la home sin
+   bordes ni contraste. */
+
 .chess-board {
   width: 100%;
   max-width: 800px;
@@ -52,9 +62,9 @@
   & .chess-board__promotion-piece {
     width: 52px;
     height: 52px;
-    border: 1px solid rgba(245, 240, 232, 0.14);
+    border: 1px solid var(--platform-border, rgba(245, 240, 232, 0.14));
     border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: var(--platform-surface-neutral, rgba(255, 255, 255, 0.06));
     background-size: 78%;
     background-position: center;
     background-repeat: no-repeat;
@@ -77,17 +87,17 @@
 
   & .chess-board__promotion-cancel {
     padding: 8px 14px;
-    border: 1px solid rgba(245, 240, 232, 0.2);
+    border: 1px solid var(--platform-border-strong, rgba(245, 240, 232, 0.2));
     border-radius: 10px;
     background: transparent;
-    color: var(--foreground);
+    color: var(--platform-text, var(--foreground));
     font-family: inherit;
     font-size: 13px;
     cursor: pointer;
   }
 
   & .chess-board__promotion-cancel:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--platform-surface-neutral, rgba(255, 255, 255, 0.08));
   }
 
   /* Modo controlado (GameViewer / trainer): sólo la superficie del tablero. */
@@ -157,7 +167,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    border-left: 1px solid rgba(245, 240, 232, 0.07);
+    border-left: 1px solid var(--platform-border, rgba(245, 240, 232, 0.07));
 
     @media (max-width: 720px) {
       display: none;
@@ -195,7 +205,7 @@
   }
 
   & .chess-board__notation-row.chess-board__notation-row_striped {
-    background: rgba(255, 255, 255, 0.035);
+    background: var(--platform-bg, rgba(255, 255, 255, 0.035));
   }
 
   & .chess-board__notation-number {
@@ -284,7 +294,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 8px 12px;
-    border-top: 1px solid rgba(245, 240, 232, 0.07);
+    border-top: 1px solid var(--platform-border, rgba(245, 240, 232, 0.07));
   }
 
   & .chess-board__toolbar-group {
@@ -306,8 +316,8 @@
   }
 
   & .chess-board__tool:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #f2ede7;
+    background: var(--platform-surface-neutral, rgba(255, 255, 255, 0.08));
+    color: var(--platform-text, #f2ede7);
   }
 
   & .chess-board__tool.chess-board__tool_variant_play.chess-board__tool_active {

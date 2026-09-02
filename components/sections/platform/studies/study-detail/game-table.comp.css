@@ -22,7 +22,7 @@
   }
 
   & .game-table__row:hover {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--platform-bg);
   }
 
   & .game-table__cell {
@@ -46,6 +46,6 @@
   }
 
   & .game-table__link:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 }

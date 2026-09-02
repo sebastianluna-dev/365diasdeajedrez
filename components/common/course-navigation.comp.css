@@ -6,19 +6,19 @@
   font-size: 13.5px;
 
   & .course-navigation__link {
-    color: var(--platform-text-muted, #a89f92);
+    color: var(--platform-text-muted);
   }
 
   & .course-navigation__link:hover {
-    color: var(--platform-accent, #ff9143);
+    color: var(--platform-accent-ink);
   }
 
   & .course-navigation__separator {
-    color: rgba(245, 240, 232, 0.25);
+    color: var(--platform-text-subtle);
   }
 
   & .course-navigation__current {
-    color: var(--platform-text, #f2ede7);
+    color: var(--platform-text);
     font-weight: 600;
   }
 }

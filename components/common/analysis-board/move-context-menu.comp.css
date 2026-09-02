@@ -33,6 +33,6 @@
 
   & .move-context-menu__item.move-context-menu__item_variant_danger:hover:not(:disabled) {
     background: var(--platform-danger);
-    color: #fff;
+    color: var(--platform-surface);
   }
 }

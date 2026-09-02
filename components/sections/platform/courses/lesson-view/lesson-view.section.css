@@ -43,6 +43,6 @@
   }
 
   & .lesson-view__pager-link:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 }

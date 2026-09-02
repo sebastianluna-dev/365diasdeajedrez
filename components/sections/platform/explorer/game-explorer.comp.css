@@ -64,7 +64,7 @@
   & .game-explorer__error {
     margin: 0;
     font-size: 14px;
-    color: var(--platform-danger, #e5484d);
+    color: var(--platform-danger);
   }
 }
 

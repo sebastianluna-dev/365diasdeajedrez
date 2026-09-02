@@ -7,7 +7,7 @@
   & .platform-error__message {
     margin: 0;
     font-size: 15px;
-    color: var(--platform-text, #f2ede7);
+    color: var(--platform-text);
   }
 
   & .platform-error__retry {
@@ -15,8 +15,8 @@
     padding: 10px 22px;
     border: 0;
     border-radius: 10px;
-    background: var(--platform-accent, #ff9143);
-    color: #16110d;
+    background: var(--platform-accent);
+    color: var(--platform-text);
     font-size: 14px;
     font-weight: 700;
     font-family: inherit;

@@ -49,7 +49,7 @@
 
   & .class-card__status.class-card__status_code_scheduled {
     background: var(--platform-accent-soft);
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .class-card__status.class-card__status_code_live {

@@ -95,6 +95,6 @@
 
   & .explorer-games__tag_variant_class {
     border-color: var(--platform-accent);
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 }

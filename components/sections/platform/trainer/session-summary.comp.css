@@ -18,7 +18,7 @@
     align-items: center;
     gap: 12px;
     padding: 9px 0;
-    border-bottom: 1px solid rgba(245, 240, 232, 0.07);
+    border-bottom: 1px solid var(--platform-border);
   }
 
   & .session-summary__item:last-child {

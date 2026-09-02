@@ -13,7 +13,20 @@ interface PlatformShellProps {
 }
 
 /**
- * Layout interno de la plataforma: sidebar de navegación + área de contenido.
+ * Iniciales para el avatar: la primera letra de las dos primeras palabras.
+ * «Alumno Demo» → «AD»; un nombre de una sola palabra da una sola letra.
+ */
+function initialsOf(displayName: string): string {
+  return displayName
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
+/**
+ * Layout interno de la plataforma: barra superior + área de contenido.
  *
  * Lee la sesión sólo para mostrar quién ha entrado y qué menús le tocan, nunca
  * para proteger: si no hay usuario se limita a no pintar el bloque. Quien corta
@@ -31,34 +44,42 @@ export async function PlatformShell({ children }: PlatformShellProps) {
 
   return (
     <div className="platform-shell">
-      <aside className="platform-shell__sidebar">
-        <Link href={homeHref} className="platform-shell__logo">
-          365 Días<span className="platform-shell__logo-accent"> de Ajedrez</span>
-        </Link>
+      <header className="platform-shell__bar">
+        <div className="platform-shell__bar-inner">
+          <Link href={homeHref} className="platform-shell__logo">
+            365 Días<span className="platform-shell__logo-accent"> de Ajedrez</span>
+          </Link>
 
-        <PlatformNav groups={navGroups} />
+          <PlatformNav groups={navGroups} />
 
-        <div className="platform-shell__footer">
           {user && (
-            <>
-              <div className="platform-shell__user">
+            <div className="platform-shell__user">
+              <div className="platform-shell__user-text">
                 <span className="platform-shell__user-name">{user.displayName}</span>
-                <span className="platform-shell__user-email">{user.email}</span>
+
+                <span className="platform-shell__user-links">
+                  <Link href="/" className="platform-shell__user-link">
+                    Sitio público
+                  </Link>
+                  <span aria-hidden="true">·</span>
+                  {/* El formulario va aquí dentro para que «Salir» comparta la
+                      línea con el enlace al sitio: la barra sólo tiene dos
+                      renglones y perder el cierre de sesión no es opción. */}
+                  <form action={logoutAction}>
+                    <button type="submit" className="platform-shell__user-link">
+                      Salir
+                    </button>
+                  </form>
+                </span>
               </div>
 
-              <form action={logoutAction}>
-                <button type="submit" className="platform-shell__logout">
-                  Cerrar sesión
-                </button>
-              </form>
-            </>
+              <span className="platform-shell__avatar" aria-hidden="true">
+                {initialsOf(user.displayName)}
+              </span>
+            </div>
           )}
-
-          <Link href="/" className="platform-shell__site-link">
-            Ir al sitio público
-          </Link>
         </div>
-      </aside>
+      </header>
 
       <main className="platform-shell__content">{children}</main>
     </div>

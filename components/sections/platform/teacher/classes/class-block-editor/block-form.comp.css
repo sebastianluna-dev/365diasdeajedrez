@@ -5,7 +5,7 @@
   padding: 16px;
   border: 1px solid var(--platform-border);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--platform-surface);
 
   & .block-form__warning {
     margin: 0;
@@ -14,7 +14,7 @@
     border-radius: 10px;
     background: var(--platform-accent-soft);
     font-size: 13.5px;
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .block-form__actions {

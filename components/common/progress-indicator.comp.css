@@ -8,19 +8,48 @@
     min-width: 60px;
     height: 6px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.09);
+    background: var(--platform-track);
     overflow: hidden;
   }
 
   & .progress-indicator__fill {
     height: 100%;
     border-radius: 999px;
-    background: var(--platform-accent, #ff9143);
+    background: var(--platform-accent);
   }
 
   & .progress-indicator__label {
     font-size: 13px;
-    color: var(--platform-text-muted, #a89f92);
+    color: var(--platform-text-muted);
     white-space: nowrap;
+  }
+
+  & .progress-indicator__legend {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  & .progress-indicator__percent {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .progress-indicator__detail {
+    font-size: 13px;
+    color: var(--platform-text-muted);
+  }
+
+  /* La variante apilada deja de ser una fila: el porcentaje y el detalle se van
+     a los extremos y la barra ocupa el ancho completo debajo. */
+  &.progress-indicator_layout_stacked {
+    display: block;
+
+    & .progress-indicator__track {
+      width: 100%;
+    }
   }
 }

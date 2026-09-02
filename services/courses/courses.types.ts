@@ -13,6 +13,8 @@ export interface CourseSummary {
   name: string;
   slug: string;
   description?: string;
+  /** URL de la portada (Cloudinary). La rellena el staff; hoy ninguna la tiene. */
+  cover?: string;
   typeLabel: string;
   levelLabels: string[];
   authorNames: string[];

@@ -18,8 +18,10 @@ export function PlatformNav({ groups }: PlatformNavProps) {
     <nav className="platform-nav" aria-label="Navegación principal">
       {groups.map((group, index) => (
         <div key={group.label ?? `group-${index}`} className="platform-nav__group">
-          {group.label && <p className="platform-nav__group-label">{group.label}</p>}
-
+          {/* El rótulo del grupo (`group.label`) no se pinta en la barra
+              superior: no hay renglón donde ponerlo y repite lo que ya dice el
+              primer ítem («Administración», «Panel del profesor»). El menú es
+              excluyente por rol, así que no hay dos grupos que distinguir. */}
           {group.items.map((item) => {
             const isActive = item.href === activeHref;
             return (

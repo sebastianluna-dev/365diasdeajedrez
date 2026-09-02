@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es" className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable}`}>
-      <body>{children}</body>
+      <body className="platform-theme">{children}</body>
     </html>
   );
 }

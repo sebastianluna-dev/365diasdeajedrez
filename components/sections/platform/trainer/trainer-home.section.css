@@ -54,7 +54,7 @@
   }
 
   & .trainer-home__row-name:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .trainer-home__row-meta {

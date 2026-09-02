@@ -1,14 +1,63 @@
-/* Base visual de la plataforma autenticada: tokens y fondo. La estética fina
-   llegará en la etapa de rediseño; esto prioriza legibilidad y estructura. */
+/* Base visual de la plataforma autenticada: tokens y primitivas.
+ *
+ * Tema CLARO, tomado del diseño «Mis Cursos - Claro». La zona pública sigue
+ * siendo oscura (globals.css), así que aquí se reescriben `body` y los tokens
+ * `--platform-*`: todo lo que pinte con ellos cambia solo.
+ *
+ * Los tres colores de marca no cambian de valor, cambian de papel: #16110D
+ * pasa de fondo a texto, y el naranja #FF9143 se reserva para RELLENOS (botón,
+ * barra de progreso), donde sí contrasta. Sobre fondo claro, como TEXTO, ese
+ * naranja no se lee: para eso está --platform-accent-ink (#B8611F).
+ */
 
 :root {
-  --platform-bg: #16110d;
-  --platform-surface: #1e1813;
-  --platform-border: rgba(245, 240, 232, 0.08);
-  --platform-text: #f2ede7;
-  --platform-text-muted: #a89f92;
+  --platform-bg: #f6f4f1;
+  --platform-surface: #ffffff;
+  /* Superficie hundida: hueco de portada, celdas vacías, insets. */
+  --platform-surface-sunken: #ede7de;
+  /* Neutro para chips y rellenos suaves que no son de acento. */
+  --platform-surface-neutral: #f2efea;
+
+  /* Dos pesos de línea: la fina separa zonas, la fuerte perfila controles. */
+  --platform-border: #eae4dc;
+  --platform-border-strong: #e2dbd1;
+
+  /* Tres pesos de texto: cuerpo, secundario y el de las etiquetas pequeñas. */
+  --platform-text: #16110d;
+  --platform-text-muted: #6e655c;
+  --platform-text-subtle: #9a9189;
+
   --platform-accent: #ff9143;
-  --platform-accent-soft: rgba(255, 145, 67, 0.14);
+  --platform-accent-hover: #f07f2c;
+  /* Naranja legible sobre claro: enlaces, cifras y texto de acento. */
+  --platform-accent-ink: #b8611f;
+  --platform-accent-soft: #fbeadb;
+  /* Lavado aún más tenue: el ítem activo del menú. */
+  --platform-accent-wash: #fbf1e7;
+
+  /* Rojo sobre fondo claro. Es el --color-accent-red de la web pública, que ya
+     estaba elegido para este mismo caso; #e5484d se aclaraba demasiado aquí. */
+  --platform-danger: #a81e22;
+
+  --platform-track: #efeae3;
+
+  /* Sobre claro las capas se separan con sombra, no con borde. */
+  --platform-shadow-card: 0 1px 2px rgba(22, 17, 13, 0.05), 0 8px 24px rgba(22, 17, 13, 0.06);
+  --platform-shadow-bar: 0 1px 0 var(--platform-border);
+}
+
+/* globals.css pinta el `body` con la paleta oscura del sitio público, y esa
+   hoja la comparten los dos layouts que usan estos tokens —(platform) y
+   (auth)—, así que hay que devolvérselo. La clase la ponen ellos en el <body>:
+   sin esto el rebote del scroll asoma en negro por debajo del contenido, y la
+   página de acceso, que no lleva shell, se quedaría a medio tema. */
+body.platform-theme {
+  background: var(--platform-bg);
+  color: var(--platform-text);
+}
+
+.platform-theme ::selection {
+  background: rgba(255, 145, 67, 0.3);
 }
 
 /* Primitivas compartidas de las páginas de plataforma (equivalente al
@@ -29,22 +78,24 @@
 .platform-page__title {
   margin: 0;
   font-family: var(--font-gramatika), sans-serif;
-  font-size: 28px;
+  font-size: 38px;
   font-weight: 700;
+  letter-spacing: -0.025em;
   color: var(--platform-text);
+  text-wrap: balance;
 }
 
 .platform-page__subtitle {
   margin: 0;
-  font-size: 15px;
+  font-size: 16px;
   color: var(--platform-text-muted);
 }
 
 .platform-card {
   background: var(--platform-surface);
-  border: 1px solid var(--platform-border);
-  border-radius: 14px;
-  padding: 20px;
+  border-radius: 18px;
+  box-shadow: var(--platform-shadow-card);
+  padding: 22px 24px 24px;
 }
 
 .platform-card__title {
@@ -59,11 +110,11 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px 20px;
+  padding: 12px 22px;
   border: 0;
-  border-radius: 10px;
+  border-radius: 11px;
   background: var(--platform-accent);
-  color: #16110d;
+  color: var(--platform-text);
   font-size: 14px;
   font-weight: 700;
   font-family: inherit;
@@ -71,42 +122,50 @@
 }
 
 .platform-button:hover {
-  background: #f0a05e;
+  background: var(--platform-accent-hover);
+  color: var(--platform-text);
 }
 
+/* El perfilado va en `box-shadow` y no en `border` a propósito: así el botón
+   secundario mide exactamente lo mismo que el primario, que no lleva borde. */
 .platform-button_variant_secondary {
-  background: transparent;
-  border: 1px solid rgba(245, 240, 232, 0.22);
+  padding: 12px 20px;
+  background: var(--platform-surface);
+  box-shadow: inset 0 0 0 1px var(--platform-border-strong);
   color: var(--platform-text);
 }
 
 .platform-button_variant_secondary:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(245, 240, 232, 0.35);
+  background: var(--platform-surface);
+  box-shadow: inset 0 0 0 1px var(--platform-text);
+  color: var(--platform-text);
 }
 
 .platform-button_variant_danger {
-  background: transparent;
-  border: 1px solid var(--platform-danger);
+  padding: 12px 20px;
+  background: var(--platform-surface);
+  box-shadow: inset 0 0 0 1px var(--platform-danger);
   color: var(--platform-danger);
 }
 
 .platform-button_variant_danger:hover {
   background: var(--platform-danger);
-  color: #fff;
+  color: var(--platform-surface);
 }
 
 .platform-tag {
   display: inline-block;
-  padding: 3px 10px;
+  padding: 5px 11px;
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 600;
-  background: rgba(255, 255, 255, 0.07);
+  font-weight: 500;
+  background: var(--platform-surface-neutral);
   color: var(--platform-text-muted);
 }
 
 .platform-tag_variant_accent {
+  font-weight: 700;
+  letter-spacing: 0.02em;
   background: var(--platform-accent-soft);
-  color: var(--platform-accent);
+  color: var(--platform-accent-ink);
 }

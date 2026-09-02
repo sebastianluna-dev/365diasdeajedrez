@@ -61,7 +61,7 @@
   }
 
   & .teacher-dashboard__class-title:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .teacher-dashboard__class-meta {

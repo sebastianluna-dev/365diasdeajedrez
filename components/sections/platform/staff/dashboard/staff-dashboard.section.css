@@ -76,7 +76,7 @@
   }
 
   & a.staff-dashboard__item-title:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .staff-dashboard__item-meta {

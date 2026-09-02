@@ -7,7 +7,7 @@
     margin: 0 0 10px;
     font-size: 17px;
     font-weight: 700;
-    color: var(--platform-text, #f2ede7);
+    color: var(--platform-text);
   }
 
   & .class-content__text-paragraph {
@@ -27,9 +27,9 @@
     align-items: center;
     gap: 12px;
     padding: 14px 16px;
-    border: 1px solid rgba(245, 240, 232, 0.1);
+    border: 1px solid var(--platform-border);
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--platform-surface);
   }
 
   & .class-content__link-card:hover {
@@ -42,12 +42,12 @@
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--platform-accent, #ff9143);
+    color: var(--platform-accent-ink);
   }
 
   & .class-content__link-label {
     font-size: 14.5px;
-    color: var(--platform-text, #f2ede7);
+    color: var(--platform-text);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -58,12 +58,12 @@
     margin-top: 10px;
     font-size: 14px;
     font-weight: 600;
-    color: var(--platform-accent, #ff9143);
+    color: var(--platform-accent-ink);
   }
 
   & .class-content__caption {
     margin: 8px 0 0;
     font-size: 13.5px;
-    color: var(--platform-text-muted, #a89f92);
+    color: var(--platform-text-muted);
   }
 }

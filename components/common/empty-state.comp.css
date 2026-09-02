@@ -1,5 +1,5 @@
 .empty-state {
-  border: 1px dashed rgba(245, 240, 232, 0.16);
+  border: 1px dashed var(--platform-border);
   border-radius: 12px;
   padding: 28px 24px;
   text-align: center;
@@ -8,13 +8,13 @@
     margin: 0;
     font-size: 15px;
     font-weight: 600;
-    color: var(--platform-text, #f2ede7);
+    color: var(--platform-text);
   }
 
   & .empty-state__description {
     margin: 6px 0 0;
     font-size: 14px;
-    color: var(--platform-text-muted, #a89f92);
+    color: var(--platform-text-muted);
   }
 
   & .empty-state__action {
@@ -22,6 +22,6 @@
     margin-top: 14px;
     font-size: 14px;
     font-weight: 600;
-    color: var(--platform-accent, #ff9143);
+    color: var(--platform-accent-ink);
   }
 }

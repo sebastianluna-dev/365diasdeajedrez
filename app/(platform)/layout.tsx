@@ -30,7 +30,7 @@ export const dynamic = "force-dynamic";
 export default function PlatformLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es" className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable}`}>
-      <body>
+      <body className="platform-theme">
         <PlatformShell>{children}</PlatformShell>
       </body>
     </html>

@@ -16,11 +16,11 @@
   }
 
   & .game-view__breadcrumb-link:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .game-view__breadcrumb-separator {
-    color: rgba(245, 240, 232, 0.25);
+    color: var(--platform-text-subtle);
   }
 
   & .game-view__breadcrumb-current {

@@ -16,7 +16,7 @@
   }
 
   & .class-games__breadcrumb-link:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .class-games__breadcrumb-current {
@@ -57,7 +57,7 @@
   }
 
   & .class-games__row:hover {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--platform-bg);
   }
 
   & .class-games__cell {
@@ -82,6 +82,6 @@
   }
 
   & .class-games__link:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 }

@@ -94,7 +94,7 @@
   }
 
   & .assigned-student__class-title:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .assigned-student__class-meta {

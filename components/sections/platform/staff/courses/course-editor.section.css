@@ -46,7 +46,7 @@
   }
 
   & .course-editor__row-title_link:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .course-editor__row-meta {
@@ -74,7 +74,7 @@
 
   & .course-editor__control:hover:not(:disabled) {
     color: var(--platform-text);
-    border-color: rgba(245, 240, 232, 0.3);
+    border-color: var(--platform-border-strong);
   }
 
   & .course-editor__control:disabled {

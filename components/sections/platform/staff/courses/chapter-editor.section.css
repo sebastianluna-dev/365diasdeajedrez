@@ -14,7 +14,7 @@
   }
 
   & .chapter-editor__breadcrumb a:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .chapter-editor__form {
@@ -60,7 +60,7 @@
   }
 
   & .chapter-editor__row-title:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .chapter-editor__row-meta {
@@ -88,7 +88,7 @@
 
   & .chapter-editor__control:hover:not(:disabled) {
     color: var(--platform-text);
-    border-color: rgba(245, 240, 232, 0.3);
+    border-color: var(--platform-border-strong);
   }
 
   & .chapter-editor__control:disabled {

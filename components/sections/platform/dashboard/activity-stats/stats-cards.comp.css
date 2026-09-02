@@ -11,7 +11,7 @@
 
   & .stats-cards__filter {
     padding: 7px 14px;
-    border: 1px solid rgba(245, 240, 232, 0.14);
+    border: 1px solid var(--platform-border);
     border-radius: 999px;
     background: transparent;
     color: var(--platform-text-muted);
@@ -28,7 +28,7 @@
   & .stats-cards__filter.stats-cards__filter_active {
     background: var(--platform-accent-soft);
     border-color: rgba(255, 145, 67, 0.4);
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .stats-cards__grid {
@@ -52,7 +52,7 @@
     padding: 16px;
     border: 1px solid var(--platform-border);
     border-radius: 12px;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--platform-surface);
   }
 
   & .stats-cards__value {

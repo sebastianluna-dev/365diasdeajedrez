@@ -14,7 +14,7 @@
   }
 
   & .student-study__breadcrumb a:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .student-study__meta {

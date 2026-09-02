@@ -76,7 +76,7 @@
 
   & .analysis-board__tool:hover {
     border-color: var(--platform-accent);
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .analysis-board__tool-icon_flipped {
@@ -173,7 +173,7 @@
 
   & .analysis-board__dirty {
     font-size: 13px;
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .analysis-board__save {
@@ -183,7 +183,7 @@
 
   & .analysis-board__save.analysis-board__save_state_unsaved,
   & .analysis-board__save.analysis-board__save_state_saving {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .analysis-board__save.analysis-board__save_state_error {

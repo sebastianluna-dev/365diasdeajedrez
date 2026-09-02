@@ -15,11 +15,11 @@
   }
 
   & .study-detail__breadcrumb-link:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .study-detail__breadcrumb-separator {
-    color: rgba(245, 240, 232, 0.25);
+    color: var(--platform-text-subtle);
   }
 
   & .study-detail__breadcrumb-current {

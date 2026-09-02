@@ -3,12 +3,12 @@
   border-radius: 14px;
   overflow: hidden;
   background: #2b2723;
-  border: 1px solid rgba(245, 240, 232, 0.07);
+  border: 1px solid var(--platform-border);
 
   &.game-viewer_state_error {
     display: block;
     padding: 24px;
-    color: #a89f92;
+    color: var(--platform-text-muted);
     font-size: 15px;
   }
 
@@ -17,15 +17,15 @@
     padding: 14px 18px;
     font-size: 15px;
     font-weight: 700;
-    color: #f2ede7;
-    border-bottom: 1px solid rgba(245, 240, 232, 0.07);
+    color: var(--platform-text);
+    border-bottom: 1px solid var(--platform-border);
   }
 
   & .game-viewer__warnings {
     list-style: none;
     margin: 0;
     padding: 10px 18px;
-    border-bottom: 1px solid rgba(245, 240, 232, 0.07);
+    border-bottom: 1px solid var(--platform-border);
     background: rgba(244, 64, 70, 0.1);
   }
 
@@ -59,11 +59,11 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    border-left: 1px solid rgba(245, 240, 232, 0.07);
+    border-left: 1px solid var(--platform-border);
 
     @media (max-width: 900px) {
       border-left: 0;
-      border-top: 1px solid rgba(245, 240, 232, 0.07);
+      border-top: 1px solid var(--platform-border);
     }
   }
 
@@ -84,7 +84,7 @@
     display: flex;
     gap: 4px;
     padding: 8px 12px;
-    border-top: 1px solid rgba(245, 240, 232, 0.07);
+    border-top: 1px solid var(--platform-border);
   }
 
   & .game-viewer__tool {
@@ -101,8 +101,8 @@
   }
 
   & .game-viewer__tool:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #f2ede7;
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
   }
 
   & .game-viewer__tool-icon_flipped {

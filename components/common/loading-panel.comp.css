@@ -4,15 +4,15 @@
   justify-content: center;
   gap: 12px;
   padding: 64px 24px;
-  color: var(--platform-text-muted, #a89f92);
+  color: var(--platform-text-muted);
   font-size: 15px;
 
   & .loading-panel__spinner {
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    border: 2px solid rgba(245, 240, 232, 0.2);
-    border-top-color: var(--platform-accent, #ff9143);
+    border: 2px solid var(--platform-border-strong);
+    border-top-color: var(--platform-accent);
     animation: loading-panel-spin 0.8s linear infinite;
   }
 

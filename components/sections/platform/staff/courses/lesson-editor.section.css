@@ -14,7 +14,7 @@
   }
 
   & .lesson-editor__breadcrumb a:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .lesson-editor__form {

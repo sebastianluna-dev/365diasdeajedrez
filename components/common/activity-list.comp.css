@@ -9,7 +9,7 @@
     justify-content: space-between;
     gap: 16px;
     padding: 11px 0;
-    border-bottom: 1px solid rgba(245, 240, 232, 0.07);
+    border-bottom: 1px solid var(--platform-border);
   }
 
   & .activity-list__item:last-child {
@@ -26,12 +26,12 @@
   & .activity-list__type {
     font-size: 14px;
     font-weight: 600;
-    color: var(--platform-text, #f2ede7);
+    color: var(--platform-text);
   }
 
   & .activity-list__subject {
     font-size: 13px;
-    color: var(--platform-text-muted, #a89f92);
+    color: var(--platform-text-muted);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -49,12 +49,12 @@
     padding: 2px 8px;
     border-radius: 999px;
     background: rgba(255, 145, 67, 0.14);
-    color: var(--platform-accent, #ff9143);
+    color: var(--platform-accent-ink);
   }
 
   & .activity-list__date {
     font-size: 13px;
-    color: var(--platform-text-muted, #a89f92);
+    color: var(--platform-text-muted);
     white-space: nowrap;
   }
 }

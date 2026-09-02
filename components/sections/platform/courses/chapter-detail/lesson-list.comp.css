@@ -28,7 +28,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--platform-surface-neutral);
     color: var(--platform-text-muted);
     font-weight: 700;
     font-size: 13.5px;
@@ -76,13 +76,13 @@
     font-weight: 600;
     padding: 3px 10px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.07);
+    background: var(--platform-surface-neutral);
     color: var(--platform-text-muted);
   }
 
   & .lesson-list__status.lesson-list__status_code_in_progress {
     background: var(--platform-accent-soft);
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .lesson-list__status.lesson-list__status_code_completed {

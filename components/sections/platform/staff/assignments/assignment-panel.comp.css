@@ -58,7 +58,7 @@
   }
 
   & .assignment-panel__student-name:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .assignment-panel__end {
@@ -75,7 +75,7 @@
 
   & .assignment-panel__end:hover {
     color: var(--platform-text);
-    border-color: rgba(245, 240, 232, 0.3);
+    border-color: var(--platform-border-strong);
   }
 
   & .assignment-panel__history {

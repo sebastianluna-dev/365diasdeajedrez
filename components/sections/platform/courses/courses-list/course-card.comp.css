@@ -1,18 +1,44 @@
 .course-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  background: var(--platform-surface);
+  border-radius: 18px;
+  box-shadow: var(--platform-shadow-card);
+  /* La portada llega a los bordes: el redondeo la tiene que recortar. */
+  overflow: hidden;
+
+  & .course-card__cover {
+    display: block;
+    position: relative;
+    aspect-ratio: 21 / 9;
+    background: var(--platform-surface-sunken);
+    overflow: hidden;
+  }
+
+  & .course-card__cover-image {
+    object-fit: cover;
+  }
+
+  & .course-card__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 22px 24px 24px;
+  }
 
   & .course-card__tags {
     display: flex;
-    gap: 6px;
+    gap: 7px;
     flex-wrap: wrap;
   }
 
   & .course-card__name {
-    margin: 0;
-    font-size: 19px;
+    margin: 15px 0 0;
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 23px;
     font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
   }
 
   & .course-card__name-link {
@@ -20,25 +46,34 @@
   }
 
   & .course-card__name-link:hover {
-    color: var(--platform-accent);
+    color: var(--platform-accent-ink);
   }
 
   & .course-card__description {
-    margin: 0;
-    font-size: 14px;
+    margin: 10px 0 0;
+    font-size: 14.5px;
     line-height: 1.6;
     color: var(--platform-text-muted);
+    text-wrap: pretty;
   }
 
   & .course-card__authors {
-    margin: 0;
+    margin: 14px 0 0;
     font-size: 13px;
-    color: var(--platform-text-muted);
+    color: var(--platform-text-subtle);
+  }
+
+  /* `margin-top: auto` empuja el progreso al pie: en una rejilla de tarjetas
+     estiradas, las barras y los botones quedan alineados entre columnas por
+     mucho que las descripciones midan distinto. */
+  & .course-card__progress {
+    margin-top: auto;
+    padding-top: 22px;
   }
 
   & .course-card__actions {
     display: flex;
     gap: 10px;
-    margin-top: 4px;
+    margin-top: 18px;
   }
 }

@@ -5,13 +5,13 @@
     border: 1px dashed rgba(255, 145, 67, 0.4);
     border-radius: 10px;
     font-size: 14px;
-    color: var(--platform-accent, #ff9143);
+    color: var(--platform-accent-ink);
     display: inline-block;
   }
 
   & .meeting-access__pending {
     margin: 0;
     font-size: 14px;
-    color: var(--platform-text-muted, #a89f92);
+    color: var(--platform-text-muted);
   }
 }

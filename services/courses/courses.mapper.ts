@@ -80,6 +80,7 @@ export function mapCourseSummary(course: CourseWithContent, state: UserCourseSta
     name: course.name,
     slug: course.slug,
     description: course.description ?? undefined,
+    cover: course.cover ?? undefined,
     typeLabel: course.type.label,
     levelLabels: course.courseLevels.map((courseLevel) => courseLevel.level.label),
     authorNames: course.courseAuthors.map((courseAuthor) => courseAuthor.author.name),

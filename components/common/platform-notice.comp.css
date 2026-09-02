@@ -19,7 +19,7 @@
   }
 
   &.platform-notice_variant_info {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--platform-surface-neutral);
     color: var(--platform-text-muted);
   }
 }
