@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 9px;
   font-size: 13.5px;
 
   & .course-navigation__link {
@@ -19,6 +19,6 @@
 
   & .course-navigation__current {
     color: var(--platform-text);
-    font-weight: 600;
+    font-weight: 500;
   }
 }

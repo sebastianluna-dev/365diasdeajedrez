@@ -10,6 +10,12 @@ interface CourseNavigationProps {
   chapterName?: string;
   /** Nombre de la lección actual (no enlazada). */
   lessonName?: string;
+  /**
+   * El curso ES la página actual, así que se pinta como último tramo sin
+   * enlazar. No se puede deducir de la ausencia de capítulo: la vista de
+   * capítulo también llega sólo con el curso, y ahí sí tiene que enlazar.
+   */
+  isCourseCurrent?: boolean;
 }
 
 /** Navegación contextual Curso → Capítulo → Lección. */
@@ -19,6 +25,7 @@ export function CourseNavigation({
   chapterOrder,
   chapterName,
   lessonName,
+  isCourseCurrent = false,
 }: CourseNavigationProps) {
   return (
     <nav className="course-navigation" aria-label="Ruta del curso">
@@ -26,9 +33,13 @@ export function CourseNavigation({
         Mis cursos
       </Link>
       <span className="course-navigation__separator">/</span>
-      <Link href={platformRoutes.courseDetail(courseId)} className="course-navigation__link">
-        {courseName}
-      </Link>
+      {isCourseCurrent ? (
+        <span className="course-navigation__current">{courseName}</span>
+      ) : (
+        <Link href={platformRoutes.courseDetail(courseId)} className="course-navigation__link">
+          {courseName}
+        </Link>
+      )}
       {chapterOrder !== undefined && chapterName && (
         <>
           <span className="course-navigation__separator">/</span>

@@ -1,3 +1,8 @@
 .course-page {
-  /* Estructura heredada de .platform-page. */
+  /* Las migas van pegadas a la barra (26px en el diseño), no a la altura de
+     una página que abre con título grande, que es para lo que el armazón
+     reserva 44px. Los 18 de diferencia se recuperan aquí en vez de tocar el
+     relleno del armazón, que sirve a todas las demás pantallas. */
+  margin-top: -18px;
+  gap: 22px;
 }

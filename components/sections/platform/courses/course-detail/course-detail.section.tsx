@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ProgressIndicator } from "@/components/common/progress-indicator.comp";
 import type { CourseDetail } from "@/services/courses/courses.types";
@@ -8,42 +9,78 @@ interface CourseDetailSectionProps {
   course: CourseDetail;
 }
 
+/** La portada ocupa una columna fija de 470px, y todo el ancho al apilarse. */
+const COVER_SIZES = "(max-width: 980px) 100vw, 470px";
+
 export function CourseDetailSection({ course }: CourseDetailSectionProps) {
+  const chapterCount = course.chapters.length;
+  const { totalLessons } = course.progress;
+
   return (
     <section className="course-detail">
-      <header className="course-detail__head">
-        <div className="course-detail__tags">
-          <span className="platform-tag platform-tag_variant_accent">{course.typeLabel}</span>
-          {course.levelLabels.map((level) => (
-            <span key={level} className="platform-tag">
-              {level}
-            </span>
-          ))}
+      <div className="course-detail__hero">
+        <div className="course-detail__intro">
+          <div className="course-detail__tags">
+            <span className="platform-tag platform-tag_variant_accent">{course.typeLabel}</span>
+            {course.levelLabels.map((level) => (
+              <span key={level} className="platform-tag">
+                {level}
+              </span>
+            ))}
+          </div>
+
+          <h1 className="course-detail__name">{course.name}</h1>
+          {course.description && <p className="course-detail__description">{course.description}</p>}
+
+          {course.authors.length > 0 && (
+            <p className="course-detail__authors">
+              {course.authors.map((author, index) => (
+                <span key={`${author.name}-${author.roleLabel}`}>
+                  {index > 0 && <span className="course-detail__dot"> · </span>}
+                  {author.name}
+                  <span className="course-detail__dot"> · </span>
+                  {author.roleLabel}
+                </span>
+              ))}
+            </p>
+          )}
+
+          <div className="course-detail__resume">
+            <div className="course-detail__progress">
+              <ProgressIndicator
+                layout="stacked"
+                percent={course.progress.percent}
+                detail={`${course.progress.completedLessons} de ${totalLessons} lecciones completadas`}
+              />
+            </div>
+
+            <Link href={course.continueHref} className="platform-button course-detail__cta">
+              {course.ctaLabel} curso
+            </Link>
+          </div>
         </div>
 
-        <h1 className="platform-page__title">{course.name}</h1>
-        {course.description && <p className="platform-page__subtitle">{course.description}</p>}
-
-        {course.authors.length > 0 && (
-          <p className="course-detail__authors">
-            {course.authors.map((author) => `${author.name} (${author.roleLabel})`).join(" · ")}
-          </p>
-        )}
-
-        <div className="course-detail__progress">
-          <ProgressIndicator
-            percent={course.progress.percent}
-            detail={`${course.progress.completedLessons} de ${course.progress.totalLessons} lecciones completadas`}
-          />
-        </div>
-
-        <Link href={course.continueHref} className="platform-button course-detail__cta">
-          {course.ctaLabel === "Comenzar" ? "Comenzar curso" : `${course.ctaLabel} curso`}
+        {/* Mismo destino que «Continuar curso», que ya lo nombra: fuera del
+            recorrido de teclado para no anunciar dos veces el mismo enlace. */}
+        <Link href={course.continueHref} className="course-detail__cover" tabIndex={-1} aria-hidden="true">
+          {course.cover && (
+            <Image src={course.cover} alt="" fill sizes={COVER_SIZES} className="course-detail__cover-image" />
+          )}
         </Link>
-      </header>
+      </div>
 
-      <h2 className="course-detail__chapters-title">Capítulos</h2>
-      <ChapterList chapters={course.chapters} />
+      <div className="course-detail__chapters">
+        <header className="course-detail__chapters-head">
+          <h2 className="course-detail__chapters-title">Capítulos</h2>
+          <p className="course-detail__chapters-count">
+            {chapterCount} {chapterCount === 1 ? "capítulo" : "capítulos"}
+            <span className="course-detail__dot"> · </span>
+            {totalLessons} {totalLessons === 1 ? "lección" : "lecciones"}
+          </p>
+        </header>
+
+        <ChapterList chapters={course.chapters} />
+      </div>
     </section>
   );
 }

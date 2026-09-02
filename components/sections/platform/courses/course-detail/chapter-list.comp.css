@@ -7,35 +7,38 @@
   gap: 12px;
 
   & .chapter-list__item {
-    display: flex;
+    display: grid;
+    grid-template-columns: 52px minmax(0, 1fr) 230px 20px;
+    gap: 22px;
     align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-
-    @media (max-width: 720px) {
-      flex-direction: column;
-      align-items: stretch;
-    }
+    padding: 22px 24px;
+    background: var(--platform-surface);
+    border-radius: 16px;
+    box-shadow: var(--platform-shadow-card);
+    color: var(--platform-text);
   }
 
-  & .chapter-list__main {
-    display: flex;
-    gap: 16px;
-    min-width: 0;
+  /* Al pasar por encima la fila se levanta: la sombra crece, el color no
+     cambia. Es lo único que separa una fila pulsable de una tarjeta. */
+  & .chapter-list__item:hover {
+    box-shadow:
+      0 1px 2px rgba(22, 17, 13, 0.06),
+      0 12px 30px rgba(22, 17, 13, 0.1);
+    color: var(--platform-text);
   }
 
   & .chapter-list__order {
-    flex: none;
-    width: 34px;
-    height: 34px;
+    width: 52px;
+    height: 52px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
-    background: var(--platform-accent-soft);
+    border-radius: 14px;
+    background: var(--platform-accent-wash);
     color: var(--platform-accent-ink);
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 19px;
     font-weight: 700;
-    font-size: 15px;
   }
 
   & .chapter-list__info {
@@ -43,33 +46,45 @@
   }
 
   & .chapter-list__name {
-    font-size: 16px;
+    display: block;
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 18.5px;
     font-weight: 700;
-    color: var(--platform-text);
-  }
-
-  & .chapter-list__name:hover {
-    color: var(--platform-accent-ink);
+    letter-spacing: -0.01em;
   }
 
   & .chapter-list__description {
-    margin: 4px 0 0;
-    font-size: 13.5px;
+    margin: 7px 0 0;
+    font-size: 14.5px;
+    line-height: 1.55;
     color: var(--platform-text-muted);
+    text-wrap: pretty;
   }
 
   & .chapter-list__meta {
-    margin: 4px 0 0;
+    margin: 9px 0 0;
     font-size: 13px;
-    color: var(--platform-text-muted);
+    color: var(--platform-text-subtle);
   }
 
-  & .chapter-list__progress {
-    flex: none;
-    width: 200px;
+  & .chapter-list__chevron {
+    color: var(--platform-text-faint);
+  }
 
-    @media (max-width: 720px) {
-      width: 100%;
+  /* Sin sitio para la columna de progreso al lado: se va debajo del texto y
+     el galón desaparece, que ahí ya no señala hacia ningún lado. */
+  @media (max-width: 900px) {
+    & .chapter-list__item {
+      grid-template-columns: 52px minmax(0, 1fr);
+      gap: 16px 18px;
+    }
+
+    & .chapter-list__progress {
+      grid-column: 2;
+    }
+
+    & .chapter-list__chevron {
+      display: none;
     }
   }
 }

@@ -26,6 +26,9 @@
   --platform-text: #16110d;
   --platform-text-muted: #6e655c;
   --platform-text-subtle: #9a9189;
+  /* Más claro todavía: sólo para adornos que no se leen —los puntos
+     separadores y el galón de las filas—, nunca para texto. */
+  --platform-text-faint: #c3bbb1;
 
   --platform-accent: #ff9143;
   --platform-accent-hover: #f07f2c;

@@ -45,6 +45,7 @@ export interface CourseDetail {
   id: string;
   name: string;
   description?: string;
+  cover?: string;
   typeLabel: string;
   levelLabels: string[];
   authors: CourseAuthorItem[];

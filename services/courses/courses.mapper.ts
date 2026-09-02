@@ -113,6 +113,7 @@ export function mapCourseDetail(course: CourseWithContent, state: UserCourseStat
     id: course.id,
     name: course.name,
     description: course.description ?? undefined,
+    cover: course.cover ?? undefined,
     typeLabel: course.type.label,
     levelLabels: course.courseLevels.map((courseLevel) => courseLevel.level.label),
     authors: course.courseAuthors.map((courseAuthor) => ({

@@ -1,40 +1,165 @@
 .course-detail {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 44px;
 
-  & .course-detail__head {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
+  & .course-detail__hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 470px;
+    gap: 34px;
+    align-items: start;
+    padding: 32px;
+    background: var(--platform-surface);
+    border-radius: 20px;
+    box-shadow: var(--platform-shadow-card);
+    box-sizing: border-box;
+  }
+
+  & .course-detail__intro {
+    min-width: 0;
   }
 
   & .course-detail__tags {
     display: flex;
-    gap: 6px;
+    gap: 7px;
     flex-wrap: wrap;
   }
 
-  & .course-detail__authors {
-    margin: 0;
-    font-size: 13.5px;
+  & .course-detail__name {
+    margin: 16px 0 0;
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    color: var(--platform-text);
+    text-wrap: balance;
+  }
+
+  & .course-detail__description {
+    margin: 14px 0 0;
+    /* Medida de lectura: el texto no se estira aunque la columna crezca. */
+    max-width: 56ch;
+    font-size: 16px;
+    line-height: 1.6;
     color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .course-detail__authors {
+    margin: 16px 0 0;
+    font-size: 13.5px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-detail__dot {
+    color: var(--platform-text-faint);
+  }
+
+  & .course-detail__resume {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    margin-top: 26px;
+    padding-top: 24px;
+    /* Filo superior sin caja, como el resto de separaciones del tema. */
+    box-shadow: inset 0 1px 0 var(--platform-track);
   }
 
   & .course-detail__progress {
-    width: 100%;
-    max-width: 420px;
+    flex: 1;
+    min-width: 0;
+    font-size: 13.5px;
+  }
+
+  /* Aquí la barra es un pelo más gruesa que en las tarjetas: es el progreso
+     principal de la página, no un dato de una lista. */
+  & .course-detail__progress .progress-indicator__track {
+    height: 7px;
+  }
+
+  & .course-detail__progress .progress-indicator__legend {
+    margin-bottom: 9px;
+  }
+
+  & .course-detail__progress .progress-indicator__percent,
+  & .course-detail__progress .progress-indicator__detail {
+    font-size: 13.5px;
   }
 
   & .course-detail__cta {
-    margin-top: 6px;
+    flex: none;
+    padding: 13px 24px;
+    font-size: 14.5px;
+  }
+
+  & .course-detail__cover {
+    display: block;
+    position: relative;
+    aspect-ratio: 21 / 9;
+    border-radius: 14px;
+    background: var(--platform-surface-sunken);
+    overflow: hidden;
+  }
+
+  & .course-detail__cover-image {
+    object-fit: cover;
+  }
+
+  & .course-detail__chapters {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  & .course-detail__chapters-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
   }
 
   & .course-detail__chapters-title {
-    margin: 10px 0 0;
-    font-size: 18px;
+    margin: 0;
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 24px;
     font-weight: 700;
+    letter-spacing: -0.02em;
     color: var(--platform-text);
+  }
+
+  & .course-detail__chapters-count {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--platform-text-subtle);
+  }
+
+  /* La portada deja de caber al lado del texto: pasa arriba, a lo ancho. */
+  @media (max-width: 980px) {
+    & .course-detail__hero {
+      grid-template-columns: 1fr;
+      gap: 26px;
+    }
+
+    & .course-detail__cover {
+      order: -1;
+    }
+  }
+
+  @media (max-width: 640px) {
+    & .course-detail__hero {
+      padding: 22px;
+    }
+
+    & .course-detail__name {
+      font-size: 28px;
+    }
+
+    /* Apretado, el botón se pone debajo de la barra en vez de estrujarla. */
+    & .course-detail__resume {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 18px;
+    }
   }
 }
