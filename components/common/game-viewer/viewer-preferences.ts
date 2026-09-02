@@ -1,28 +1,22 @@
 "use client";
 
-// Preferencias del visor que viven en el navegador de cada quien: no son datos
-// de la cuenta, no viajan al servidor y no valen la pena en base de datos.
+// Preferencia del visor que vive en el navegador de cada quien: no es un dato
+// de la cuenta, no viaja al servidor y no vale la pena en base de datos.
 //
 // Se expone como almacén externo (`useSyncExternalStore`) y no como estado con
 // un efecto que lo rellena, por dos razones: en el servidor no hay
-// `localStorage`, así que la primera pintada tiene que dar los valores por
+// `localStorage`, así que la primera pintada tiene que dar el valor por
 // defecto o la hidratación no cuadra; y varios visores en la misma página
-// comparten estas opciones, así que al cambiarlas en uno se enteran todos.
+// comparten el ajuste, así que al silenciar uno se enteran todos.
 //
-// Todo acceso va envuelto: en una ventana privada, o con las cookies de sitio
+// El acceso va envuelto: en una ventana privada, o con las cookies de sitio
 // bloqueadas, `localStorage` no falla devolviendo null sino LANZANDO.
 
 export interface ViewerPreferences {
   sound: boolean;
-  coordinates: boolean;
-  animation: boolean;
 }
 
-export const DEFAULT_VIEWER_PREFERENCES: ViewerPreferences = {
-  sound: true,
-  coordinates: true,
-  animation: true,
-};
+export const DEFAULT_VIEWER_PREFERENCES: ViewerPreferences = { sound: true };
 
 const STORAGE_KEY = "365-viewer-preferences";
 
@@ -38,12 +32,7 @@ function parse(raw: string | null): ViewerPreferences {
   if (!raw) return DEFAULT_VIEWER_PREFERENCES;
   try {
     const parsed = JSON.parse(raw) as Partial<ViewerPreferences>;
-    return {
-      sound: typeof parsed.sound === "boolean" ? parsed.sound : DEFAULT_VIEWER_PREFERENCES.sound,
-      coordinates:
-        typeof parsed.coordinates === "boolean" ? parsed.coordinates : DEFAULT_VIEWER_PREFERENCES.coordinates,
-      animation: typeof parsed.animation === "boolean" ? parsed.animation : DEFAULT_VIEWER_PREFERENCES.animation,
-    };
+    return { sound: typeof parsed.sound === "boolean" ? parsed.sound : DEFAULT_VIEWER_PREFERENCES.sound };
   } catch {
     return DEFAULT_VIEWER_PREFERENCES;
   }
@@ -66,7 +55,7 @@ export function getViewerPreferences(): ViewerPreferences {
   return cached;
 }
 
-/** En el servidor no hay dónde leer: siempre los valores por defecto. */
+/** En el servidor no hay dónde leer: siempre el valor por defecto. */
 export function getServerViewerPreferences(): ViewerPreferences {
   return DEFAULT_VIEWER_PREFERENCES;
 }
@@ -77,7 +66,7 @@ export function setViewerPreferences(preferences: ViewerPreferences): void {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
   } catch {
     // Sin sitio donde guardar, la preferencia dura lo que la pestaña. Es
-    // aceptable: ninguna de estas opciones es importante.
+    // aceptable: silenciar el tablero no es un dato importante.
   }
   for (const listener of listeners) listener();
 }

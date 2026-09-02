@@ -6,7 +6,6 @@ import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
 import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
 import { BoardFlipIcon } from "@/components/icons/board-flip-icon.comp";
 import { FullscreenIcon } from "@/components/icons/fullscreen-icon.comp";
-import { GearIcon } from "@/components/icons/gear-icon.comp";
 import { JumpEndIcon } from "@/components/icons/jump-end-icon.comp";
 import { JumpStartIcon } from "@/components/icons/jump-start-icon.comp";
 import { SoundOffIcon } from "@/components/icons/sound-off-icon.comp";
@@ -14,7 +13,6 @@ import { SoundOnIcon } from "@/components/icons/sound-on-icon.comp";
 import { endPathOf, nextPathOf, nodeAtPath, parentPathOf, parsePgnTree } from "@/lib/chess/pgn-tree";
 import { MoveTree } from "./move-tree.comp";
 import { playMoveSound } from "./move-sound";
-import { ViewerSettingsMenu } from "./viewer-settings-menu.comp";
 import {
   getServerViewerPreferences,
   getViewerPreferences,
@@ -22,7 +20,6 @@ import {
   subscribeToViewerPreferences,
   type ViewerPreferences,
 } from "./viewer-preferences";
-import "./viewer-settings-menu.comp.css";
 import "./game-viewer.comp.css";
 
 interface GameViewerProps {
@@ -85,7 +82,6 @@ export function GameViewer({
     initialPath && tree?.nodesByPath.has(initialPath) ? initialPath : "",
   );
   const [flipToggled, setFlipToggled] = useState(false);
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Almacén externo: la primera pintada usa los valores por defecto (que es lo
@@ -216,8 +212,6 @@ export function GameViewer({
                 shapes: node ? node.shapes : tree.initialShapes,
               }}
               flipBoard={flipBoard}
-              coordinates={preferences.coordinates}
-              animated={preferences.animation}
             />
           </div>
 
@@ -261,26 +255,6 @@ export function GameViewer({
           </div>
 
           <div className="game-viewer__toolbar">
-            <div className="game-viewer__toolbar-anchor">
-              <button
-                type="button"
-                title="Ajustes del tablero"
-                aria-expanded={settingsOpen}
-                onClick={() => setSettingsOpen((open) => !open)}
-                className={`game-viewer__tool${settingsOpen ? " game-viewer__tool_state_active" : ""}`}
-              >
-                <GearIcon className="game-viewer__tool-icon" />
-              </button>
-
-              {settingsOpen && (
-                <ViewerSettingsMenu
-                  preferences={preferences}
-                  onChange={updatePreferences}
-                  onClose={() => setSettingsOpen(false)}
-                />
-              )}
-            </div>
-
             <button
               type="button"
               title="Girar el tablero"

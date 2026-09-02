@@ -137,12 +137,6 @@
     box-shadow: inset 0 1px 0 var(--platform-track);
   }
 
-  /* Ancla del menú de ajustes, que se despliega hacia arriba. */
-  & .game-viewer__toolbar-anchor {
-    position: relative;
-    display: flex;
-  }
-
   & .game-viewer__tool {
     width: 42px;
     height: 42px;
@@ -157,8 +151,7 @@
     cursor: pointer;
   }
 
-  & .game-viewer__tool:hover,
-  & .game-viewer__tool.game-viewer__tool_state_active {
+  & .game-viewer__tool:hover {
     background: var(--platform-bg);
     color: var(--platform-text);
   }
