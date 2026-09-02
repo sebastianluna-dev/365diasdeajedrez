@@ -95,6 +95,154 @@ export async function createStudy(formData: FormData): Promise<void> {
 }
 
 /**
+ * Siguiente posición libre del estudio. Sin esto una partida nueva nacería en 0
+ * y se colocaría la primera, que no es donde nadie espera encontrarla.
+ */
+async function nextGameOrder(db: Prisma.TransactionClient, databaseId: string): Promise<number> {
+  const last = await db.game.aggregate({ where: { databaseId }, _max: { order: true } });
+  return (last._max.order ?? 0) + 1;
+}
+
+/**
+ * Copia a un estudio propio partidas vistas en clase.
+ *
+ * COPIA, no referencia: a partir de aquí son suyas y editarlas no toca la clase
+ * original ni la base de quien las trajo. Por eso se duplica el PGN y se vuelve
+ * a indexar; el `sourceId` se hereda de la original, que es lo veraz —una copia
+ * tiene la misma procedencia que aquello de lo que se copió—.
+ *
+ * El filtro de origen es el mismo que alimenta «Partidas de mis clases»: sólo
+ * se puede copiar de una clase a la que se asistió. Un id de otra parte no
+ * pasa el `where` y sale de la lista sin escribir nada.
+ */
+export async function copyClassGamesToStudy(studyId: string, gameIds: string[]): Promise<void> {
+  if (gameIds.length === 0) return;
+
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  if (!allowAction(`${user.id}:copy-class-games`, 20, 60_000)) return;
+
+  const study = await db.gameDatabase.findFirst({
+    where: { id: studyId, userId: user.id },
+    select: { id: true },
+  });
+  if (!study) return;
+
+  const sources = await db.game.findMany({
+    where: {
+      id: { in: gameIds.slice(0, PGN_MAX_GAMES) },
+      classBlocks: { some: { class: { participants: { some: { userId: user.id } } } } },
+    },
+    select: {
+      title: true,
+      white: true,
+      black: true,
+      whiteElo: true,
+      blackElo: true,
+      resultId: true,
+      playedAt: true,
+      event: true,
+      site: true,
+      round: true,
+      eco: true,
+      initialFen: true,
+      pgn: true,
+      sourceId: true,
+    },
+  });
+  if (sources.length === 0) return;
+
+  let order = await nextGameOrder(db, study.id);
+
+  await db.$transaction(async (tx) => {
+    for (const source of sources) {
+      const game = await tx.game.create({
+        data: { ...source, databaseId: study.id, order: order++ },
+        select: { id: true },
+      });
+      await indexGamePositions(tx, { gameId: game.id, databaseId: study.id, pgn: source.pgn });
+    }
+  });
+
+  revalidatePath(platformRoutes.studies);
+  revalidatePath(platformRoutes.studyDetail(studyId));
+}
+
+/**
+ * Coloca las partidas de un estudio propio en el orden recibido.
+ *
+ * Se comprueba que los ids sean EXACTAMENTE los del estudio —mismos y todos—
+ * antes de escribir nada: un id de otra base colado en la lista escribiría
+ * fuera, y una lista incompleta dejaría partidas con el orden viejo mezcladas
+ * entre las nuevas. Ante cualquier discrepancia no se toca nada.
+ *
+ * No devuelve error visible: si la comprobación falla, la vista se revalida y
+ * el arrastre se deshace solo al recargar, que es lo que el usuario entiende.
+ */
+export async function reorderStudyGames(studyId: string, orderedIds: string[]): Promise<void> {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  if (!allowAction(`${user.id}:reorder-games`, 60, 60_000)) return;
+
+  const study = await db.gameDatabase.findFirst({
+    where: { id: studyId, userId: user.id },
+    select: { id: true, games: { select: { id: true } } },
+  });
+  if (!study) return;
+
+  const actual = new Set(study.games.map((game) => game.id));
+  const received = new Set(orderedIds);
+  if (received.size !== orderedIds.length) return;
+  if (received.size !== actual.size) return;
+  for (const id of received) if (!actual.has(id)) return;
+
+  await db.$transaction(
+    orderedIds.map((id, index) =>
+      db.game.update({ where: { id }, data: { order: index + 1 } }),
+    ),
+  );
+
+  revalidatePath(platformRoutes.studyDetail(studyId));
+}
+
+/**
+ * Cambia el nombre, la descripción y el tipo de un estudio propio.
+ *
+ * El `where` lleva `userId` como todas las escrituras de aquí: ver una base de
+ * curso no da derecho a renombrarla. El tipo se valida contra el catálogo, y
+ * `COLLECTION` no está entre los que el alumno puede poner —igual que al
+ * crear— porque una colección le llega, no la hace.
+ */
+export async function updateStudy(studyId: string, formData: FormData): Promise<void> {
+  const name = readText(formData, "name");
+  const kindCode = readText(formData, "kindCode");
+  if (name.length === 0 || !isDatabaseKindCode(kindCode) || kindCode === DATABASE_KIND.COLLECTION) return;
+
+  const description = readText(formData, "description");
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  if (!allowAction(`${user.id}:update-study`, 30, 60_000)) return;
+
+  const study = await db.gameDatabase.findFirst({
+    where: { id: studyId, userId: user.id },
+    select: { id: true },
+  });
+  if (!study) return;
+
+  await db.gameDatabase.update({
+    where: { id: study.id },
+    data: {
+      name: name.slice(0, STUDY_NAME_MAX_LENGTH),
+      description: description.length > 0 ? description.slice(0, STUDY_DESCRIPTION_MAX_LENGTH) : null,
+      kind: { connect: { code: kindCode } },
+    },
+  });
+
+  revalidatePath(platformRoutes.studies);
+  revalidatePath(platformRoutes.studyDetail(study.id));
+}
+
+/**
  * Importa un PGN con una o varias partidas en un estudio del propio alumno.
  * Cada partida se guarda como una fila Game con sus cabeceras en columnas y el
  * PGN individual reserializado. Nunca escribe en bases de curso.
@@ -117,6 +265,10 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
     return;
   }
 
+  // Se importan al final del estudio y en el orden en que vienen en el PGN,
+  // que es como las escribió quien lo exportó.
+  let order = await nextGameOrder(db, study.id);
+
   const games: Prisma.GameCreateInput[] = [];
   for (const parsedGame of parsedGames.slice(0, PGN_MAX_GAMES)) {
     const headers = parsedGame.headers;
@@ -127,6 +279,7 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
     const resultToken = readHeader(headers, "Result") ?? "";
     games.push({
       database: { connect: { id: study.id } },
+      order: order++,
       white: readHeader(headers, "White") ?? UNKNOWN_PLAYER,
       black: readHeader(headers, "Black") ?? UNKNOWN_PLAYER,
       whiteElo: readEloHeader(headers, "WhiteElo"),
@@ -317,6 +470,7 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
     const game = await tx.game.create({
       data: {
         database: { connect: { id: studyId } },
+        order: await nextGameOrder(tx, studyId),
         title,
         white: readOptionalField(formData, "white") ?? readHeader(headers, "White") ?? UNKNOWN_PLAYER,
         black: readOptionalField(formData, "black") ?? readHeader(headers, "Black") ?? UNKNOWN_PLAYER,

@@ -2,18 +2,23 @@
 
 import { useRef, useState } from "react";
 import { deleteStudy } from "@/services/studies/studies.actions";
-import type { StudySummary } from "@/services/studies/studies.types";
 import "./delete-study.comp.css";
 
 interface DeleteStudyProps {
-  study: StudySummary;
+  id: string;
+  name: string;
+  gameCount: number;
+  citedGameCount: number;
+  /**
+   * `icon` es el aspa de la tarjeta; `button` el botón con texto de la ficha
+   * del estudio. Cambia el disparador, no el diálogo.
+   */
+  trigger?: "icon" | "button";
 }
 
-export function DeleteStudy({ study }: DeleteStudyProps) {
+export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "icon" }: DeleteStudyProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [confirmed, setConfirmed] = useState(false);
-
-  const { gameCount, citedGameCount } = study;
 
   // Misma condición que el servidor: sólo se exige la casilla cuando hay algo
   // que perder. Si el cliente dejara enviar sin ella donde el servidor la pide,
@@ -40,24 +45,34 @@ export function DeleteStudy({ study }: DeleteStudyProps) {
 
   return (
     <div className="delete-study">
-      <button
-        type="button"
-        className="delete-study__open"
-        title={`Borrar «${study.name}»`}
-        onClick={() => dialogRef.current?.showModal()}
-      >
-        <span aria-hidden="true">✕</span>
-        <span className="delete-study__open-label">Borrar «{study.name}»</span>
-      </button>
+      {trigger === "icon" ? (
+        <button
+          type="button"
+          className="delete-study__open"
+          title={`Borrar «${name}»`}
+          onClick={() => dialogRef.current?.showModal()}
+        >
+          <span aria-hidden="true">✕</span>
+          <span className="delete-study__open-label">Borrar «{name}»</span>
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="delete-study__open-wide"
+          onClick={() => dialogRef.current?.showModal()}
+        >
+          Borrar estudio
+        </button>
+      )}
 
       <dialog ref={dialogRef} className="platform-dialog delete-study__dialog" onClose={() => setConfirmed(false)}>
-        <form action={deleteStudy.bind(null, study.id)} className="delete-study__form">
+        <form action={deleteStudy.bind(null, id)} className="delete-study__form">
           <div className="delete-study__head">
             <span className="delete-study__icon" aria-hidden="true">
               ✕
             </span>
             <div className="delete-study__heading">
-              <h2 className="delete-study__title">¿Borrar «{study.name}»?</h2>
+              <h2 className="delete-study__title">¿Borrar «{name}»?</h2>
               <p className="delete-study__description">{description}</p>
             </div>
           </div>

@@ -1,3 +1,5 @@
 .study-page {
-  /* Estructura heredada de .platform-page. */
+  /* Las migas van pegadas a la barra, como en las vistas de curso. */
+  margin-top: -18px;
+  gap: 14px;
 }

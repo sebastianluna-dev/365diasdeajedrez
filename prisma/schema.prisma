@@ -732,6 +732,10 @@ model Game {
   sourceId   Int
   /// Sólo con sentido en bases de usuario.
   isOwnGame  Boolean   @default(false)
+  /// Posición dentro del estudio, ordenable a mano. Manda sobre la fecha: una
+  /// vez que alguien coloca sus partidas, el orden es el suyo. Las nuevas se
+  /// crean al final (max+1), no en 0, para que no salten al principio.
+  order      Int       @default(0)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 

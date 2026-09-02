@@ -29,6 +29,13 @@ export interface StudyGameItem {
   id: string;
   /** Cómo se distingue dentro del estudio. Ausente = se identifica por la pareja. */
   title?: string;
+  /**
+   * Lo que se lee en la columna «Nombre». Nunca vacío: cae al número de ronda
+   * y, a falta de él, a la posición dentro del estudio.
+   */
+  label: string;
+  /** Citada en el contenido de alguna clase: se marca en la lista. */
+  citedInClass: boolean;
   white: string;
   black: string;
   /** Token PGN del resultado: "1-0", "0-1", "1/2-1/2", "*". */
@@ -60,6 +67,9 @@ export interface StudyDetail {
   name: string;
   description?: string;
   kindLabel: string;
+  /** Code del catálogo, para preseleccionar el tipo al editar. */
+  kindCode: string;
+  createdAtLabel: string;
   isCourseStudy: boolean;
   courseName?: string;
   /** Partidas del estudio citadas en el contenido de alguna clase. */

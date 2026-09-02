@@ -159,6 +159,16 @@ re-ejecuta en semanas, la «próxima clase» queda en el pasado.
 
 ---
 
+### 29. Página de «nueva partida» huérfana — [Deuda / Limpieza]
+Al pasar la creación de partidas al modal de la ficha del estudio, `/estudios/[studyId]/partidas/nueva`
+se quedó sin ningún enlace que apunte a ella. Sigue funcionando por URL directa y comparte
+`game-fields.comp` con la edición, así que no estorba, pero es una segunda puerta a la misma acción
+con validación duplicada.
+
+**Cómo abordarlo:** decidir si se retira la ruta junto a `new-game.section.tsx` y
+`platformRoutes.newStudyGame`, o si se conserva como enlace profundo. Si se conserva, conviene que
+comparta el formulario con el modal en vez de mantener dos.
+
 ## Resueltos (2026-08-30)
 
 | # | Punto | Cómo se resolvió |

@@ -1,0 +1,78 @@
+.edit-study {
+  & .edit-study__open {
+    padding: 11px 17px;
+    border: 1px solid var(--platform-border);
+    border-radius: 11px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  & .edit-study__open:hover {
+    background: var(--platform-bg);
+  }
+
+  & .edit-study__dialog {
+    width: min(460px, calc(100vw - 32px));
+  }
+
+  & .edit-study__form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 26px;
+  }
+
+  & .edit-study__title {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  & .edit-study__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  & .edit-study__label {
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  & .edit-study__input,
+  & .edit-study__select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 13px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 16px;
+  }
+
+  & .edit-study__input:focus,
+  & .edit-study__select:focus {
+    outline: none;
+    border-color: var(--platform-accent);
+  }
+
+  & .edit-study__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  & .edit-study__note {
+    margin-right: auto;
+    font-size: 13.5px;
+    color: var(--platform-text-subtle);
+  }
+}

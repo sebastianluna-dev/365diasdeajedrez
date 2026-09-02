@@ -1,14 +1,20 @@
-import Link from "next/link";
 import { EmptyState } from "@/components/common/empty-state.comp";
 import { PlatformNotice } from "@/components/common/platform-notice.comp";
-import { platformRoutes } from "@/lib/platform-routes";
-import { deleteStudy } from "@/services/studies/studies.actions";
-import type { StudyDetail } from "@/services/studies/studies.types";
+import { DeleteStudy } from "@/components/sections/platform/studies/studies-list/delete-study.comp";
+import type { ClassGameItem, StudyDetail, StudyKindOption } from "@/services/studies/studies.types";
+import { EditStudy } from "./edit-study.comp";
 import { GameTable } from "./game-table.comp";
+import { NewGame } from "./new-game.comp";
 import "./study-detail.section.css";
 
 interface StudyDetailSectionProps {
   study: StudyDetail;
+  /** Tipos que el alumno puede poner al editar. Vacío en bases de curso. */
+  kinds: StudyKindOption[];
+  /** Resultados del catálogo, para el formulario de partida en blanco. */
+  results: StudyKindOption[];
+  /** Partidas vistas en clase que puede copiarse. Vacío = no sale esa pestaña. */
+  classGames: ClassGameItem[];
   errorCode?: string;
 }
 
@@ -16,69 +22,71 @@ const ERROR_MESSAGES: Record<string, string> = {
   confirmStudyDelete: "Este estudio tiene contenido. Marca la casilla para confirmar que quieres borrarlo.",
 };
 
-export function StudyDetailSection({ study, errorCode }: StudyDetailSectionProps) {
-  const hasContent = study.games.length > 0 || study.citedGameCount > 0;
+export function StudyDetailSection({ study, kinds, results, classGames, errorCode }: StudyDetailSectionProps) {
+  const canWrite = !study.isCourseStudy;
 
   return (
     <section className="study-detail">
-      <nav className="study-detail__breadcrumb" aria-label="Ruta de estudios">
-        <Link href={platformRoutes.studies} className="study-detail__breadcrumb-link">
-          Mis estudios
-        </Link>
-        <span className="study-detail__breadcrumb-separator">/</span>
-        <span className="study-detail__breadcrumb-current">{study.name}</span>
-      </nav>
+      <header className="study-detail__head">
+        <div className="study-detail__heading">
+          <div className="study-detail__tags">
+            <span className="study-detail__kind">{study.kindLabel}</span>
+            {study.courseName && <span className="study-detail__origin">{study.courseName}</span>}
+            {study.isCourseStudy && <span className="study-detail__readonly">Sólo lectura</span>}
+          </div>
 
-      <header className="platform-page__head">
-        <div className="study-detail__tags">
-          <span className="platform-tag platform-tag_variant_accent">{study.kindLabel}</span>
-          {study.courseName && <span className="platform-tag">{study.courseName}</span>}
-          {study.isCourseStudy && <span className="platform-tag">Sólo lectura</span>}
+          <h1 className="study-detail__name">{study.name}</h1>
+
+          <p className="study-detail__meta">
+            {study.description && <span>{study.description}</span>}
+            {study.description && <span className="study-detail__dot">·</span>}
+            <span>
+              {study.games.length} {study.games.length === 1 ? "partida" : "partidas"}
+            </span>
+            <span className="study-detail__dot">·</span>
+            <span>Creado el {study.createdAtLabel}</span>
+          </p>
         </div>
-        <h1 className="platform-page__title">{study.name}</h1>
-        {study.description && <p className="platform-page__subtitle">{study.description}</p>}
+
+        {canWrite && (
+          <div className="study-detail__actions">
+            <DeleteStudy
+              id={study.id}
+              name={study.name}
+              gameCount={study.games.length}
+              citedGameCount={study.citedGameCount}
+              trigger="button"
+            />
+            <EditStudy
+              id={study.id}
+              name={study.name}
+              description={study.description}
+              kindCode={study.kindCode}
+              kinds={kinds}
+            />
+            <NewGame
+              studyId={study.id}
+              studyName={study.name}
+              results={results}
+              classGames={classGames}
+            />
+          </div>
+        )}
       </header>
 
       {errorCode && <PlatformNotice message={ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
 
-      {!study.isCourseStudy && (
-        <p className="study-detail__new-game">
-          <Link href={platformRoutes.newStudyGame(study.id)} className="platform-button">
-            Nueva partida
-          </Link>
-        </p>
-      )}
-
       {study.games.length > 0 ? (
-        <GameTable games={study.games} />
+        <GameTable studyId={study.id} games={study.games} canReorder={canWrite} />
       ) : (
         <EmptyState
           title="Sin partidas todavía"
-          description="Este estudio no tiene partidas. Crea una para empezar."
+          description={
+            canWrite
+              ? "Este estudio no tiene partidas. Crea una para empezar."
+              : "Esta base todavía no tiene partidas."
+          }
         />
-      )}
-
-      {!study.isCourseStudy && (
-        <section className="platform-card study-detail__danger">
-          <h2 className="platform-card__title">Borrar el estudio</h2>
-          <form action={deleteStudy.bind(null, study.id)} className="study-detail__delete">
-            <p className="study-detail__delete-text">
-              Se borra el estudio con sus {study.games.length} partida{study.games.length === 1 ? "" : "s"}, y con
-              ellas sus variantes y comentarios. No se puede deshacer.
-            </p>
-            {hasContent && (
-              <label className="study-detail__confirm">
-                <input type="checkbox" name="confirmDelete" value="yes" />
-                {study.citedGameCount > 0
-                  ? `Entiendo que se borrará todo, y que ${study.citedGameCount} partida${study.citedGameCount === 1 ? " citada" : "s citadas"} en clases dejará${study.citedGameCount === 1 ? "" : "n"} esos bloques vacíos.`
-                  : "Entiendo que se borrará todo su contenido."}
-              </label>
-            )}
-            <button type="submit" className="platform-button platform-button_variant_danger">
-              Borrar estudio
-            </button>
-          </form>
-        </section>
       )}
     </section>
   );

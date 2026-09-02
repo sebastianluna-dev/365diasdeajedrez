@@ -1,62 +1,104 @@
 .study-detail {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 34px;
 
-  & .study-detail__breadcrumb {
+  & .study-detail__head {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 15px;
+    align-items: flex-end;
+    gap: 20px;
   }
 
-  & .study-detail__breadcrumb-link {
-    color: var(--platform-text-muted);
-  }
-
-  & .study-detail__breadcrumb-link:hover {
-    color: var(--platform-accent-ink);
-  }
-
-  & .study-detail__breadcrumb-separator {
-    color: var(--platform-text-subtle);
-  }
-
-  & .study-detail__breadcrumb-current {
-    color: var(--platform-text);
-    font-weight: 600;
+  & .study-detail__heading {
+    min-width: 0;
   }
 
   & .study-detail__tags {
     display: flex;
-    gap: 6px;
+    align-items: center;
+    gap: 8px;
     flex-wrap: wrap;
   }
 
-  & .study-detail__new-game {
-    margin: 0;
+  & .study-detail__kind,
+  & .study-detail__origin {
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 13px;
   }
 
-  & .study-detail__delete {
+  & .study-detail__kind {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-weight: 700;
+  }
+
+  & .study-detail__origin {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text-muted);
+    font-weight: 500;
+  }
+
+  & .study-detail__readonly {
+    font-size: 13px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .study-detail__name {
+    margin: 12px 0 0;
+    font-size: 39.5px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--platform-text);
+    text-wrap: balance;
+  }
+
+  /* Descripción, número de partidas y fecha en una sola línea, separados por
+     puntos: son tres datos menores y en tres renglones pesarían más de lo que
+     valen. */
+  & .study-detail__meta {
     display: flex;
-    flex-direction: column;
-    align-items: start;
-    gap: 12px;
-  }
-
-  & .study-detail__delete-text {
-    margin: 0;
-    font-size: 15px;
-    line-height: 1.5;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 0;
+    font-size: 16px;
     color: var(--platform-text-muted);
   }
 
-  & .study-detail__confirm {
+  & .study-detail__dot {
+    color: var(--platform-text-faint);
+  }
+
+  & .study-detail__actions {
+    flex: none;
+    margin-left: auto;
     display: flex;
-    align-items: start;
-    gap: 8px;
+    align-items: center;
+    gap: 9px;
+  }
+
+  & .study-detail__new {
+    padding: 11px 20px;
+    border-radius: 11px;
     font-size: 15px;
-    line-height: 1.5;
-    color: var(--platform-text);
+  }
+
+  @media (max-width: 900px) {
+    & .study-detail__head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 18px;
+    }
+
+    & .study-detail__name {
+      font-size: 30px;
+    }
+
+    & .study-detail__actions {
+      margin-left: 0;
+      flex-wrap: wrap;
+    }
   }
 }

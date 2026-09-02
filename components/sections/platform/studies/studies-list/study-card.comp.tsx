@@ -15,7 +15,12 @@ export function StudyCard({ study }: StudyCardProps) {
         {study.courseName && <span className="study-card__origin">{study.courseName}</span>}
 
         {study.canDelete ? (
-          <DeleteStudy study={study} />
+          <DeleteStudy
+            id={study.id}
+            name={study.name}
+            gameCount={study.gameCount}
+            citedGameCount={study.citedGameCount}
+          />
         ) : (
           study.isCourseStudy && <span className="study-card__readonly">Sólo lectura</span>
         )}

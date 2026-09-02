@@ -19,9 +19,11 @@ export const studyDetailInclude = {
   kind: true,
   course: { select: { name: true } },
   games: {
-    // `createdAt` ASC para que los capítulos se lean 1, 2, 3: no tienen fecha
-    // de partida, así que el orden descendente los mostraba al revés.
-    orderBy: [{ playedAt: "desc" }, { createdAt: "asc" }],
+    // El orden que puso el alumno manda. La fecha queda de desempate para las
+    // que aún no se han colocado a mano —`createdAt` ASC para que los capítulos
+    // se lean 1, 2, 3: no tienen fecha de partida, así que el descendente los
+    // mostraba al revés.
+    orderBy: [{ order: "asc" }, { playedAt: "desc" }, { createdAt: "asc" }],
     include: {
       result: { select: { label: true } },
       // Para poder avisar antes de borrar el estudio: estas partidas están
@@ -58,10 +60,38 @@ export function mapStudySummary(row: StudySummaryRow): StudySummary {
   };
 }
 
-function mapStudyGameItem(studyId: string, game: StudyDetailRow["games"][number]): StudyGameItem {
+/**
+ * Cómo se llama una partida dentro de su estudio. La columna no puede quedarse
+ * en blanco, así que baja por una escalera:
+ *
+ * 1. el título, que es lo que alguien decidió llamarla;
+ * 2. la ronda del PGN, que es como se nombran las de un torneo;
+ * 3. el evento, PERO sólo si distingue —«La Inmortal» sirve, «Material del
+ *    curso» repetido en trece partidas no dice cuál es cuál—;
+ * 4. la posición, que al menos es un asidero estable.
+ */
+function gameLabel(
+  game: StudyDetailRow["games"][number],
+  index: number,
+  eventCounts: Map<string, number>,
+): string {
+  if (game.title) return game.title;
+  if (game.round) return `Ronda ${game.round}`;
+  if (game.event && eventCounts.get(game.event) === 1) return game.event;
+  return `Partida ${index + 1}`;
+}
+
+function mapStudyGameItem(
+  studyId: string,
+  game: StudyDetailRow["games"][number],
+  index: number,
+  eventCounts: Map<string, number>,
+): StudyGameItem {
   return {
     id: game.id,
     title: game.title ?? undefined,
+    label: gameLabel(game, index, eventCounts),
+    citedInClass: game._count.classBlocks > 0,
     white: game.white,
     black: game.black,
     resultLabel: game.result.label,
@@ -72,16 +102,30 @@ function mapStudyGameItem(studyId: string, game: StudyDetailRow["games"][number]
   };
 }
 
+/** Cuántas veces se repite cada evento dentro del estudio. */
+function eventCounts(row: StudyDetailRow): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const game of row.games) {
+    if (game.event) counts.set(game.event, (counts.get(game.event) ?? 0) + 1);
+  }
+  return counts;
+}
+
 export function mapStudyDetail(row: StudyDetailRow): StudyDetail {
+  // Fuera del bucle: dentro se recalcularía una vez por partida.
+  const events = eventCounts(row);
+
   return {
     id: row.id,
     name: row.name,
     description: row.description ?? undefined,
     kindLabel: row.kind.label,
+    kindCode: row.kind.code,
+    createdAtLabel: formatSpanishDate(row.createdAt),
     isCourseStudy: row.courseId !== null,
     courseName: row.course?.name,
     citedGameCount: row.games.filter((game) => game._count.classBlocks > 0).length,
-    games: row.games.map((game) => mapStudyGameItem(row.id, game)),
+    games: row.games.map((game, index) => mapStudyGameItem(row.id, game, index, events)),
   };
 }
 
