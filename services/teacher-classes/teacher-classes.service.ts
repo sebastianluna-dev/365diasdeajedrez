@@ -13,7 +13,6 @@ import {
   teacherClassSummaryInclude,
 } from "./teacher-classes.mapper";
 import type {
-  LessonRefOption,
   PositionOption,
   ReferenceableGameGroup,
   TeacherClassDetail,
@@ -115,30 +114,6 @@ export async function listReferenceableGames(): Promise<ReferenceableGameGroup[]
     }));
 }
 
-/**
- * Lecciones referenciables: sólo de cursos PUBLICADOS, porque el bloque le
- * ofrece al alumno un enlace para abrir la lección y en un curso en borrador
- * ese enlace no lleva a ninguna parte.
- */
-export async function listPublishedLessons(): Promise<LessonRefOption[]> {
-  await requireTeacher();
-
-  const lessons = await getPlatformDb().lesson.findMany({
-    where: { chapter: { course: { status: { code: COURSE_STATUS.PUBLISHED } } } },
-    select: {
-      id: true,
-      name: true,
-      chapter: { select: { name: true, order: true, course: { select: { name: true } } } },
-      order: true,
-    },
-    orderBy: [{ chapter: { course: { name: "asc" } } }, { chapter: { order: "asc" } }, { order: "asc" }],
-  });
-
-  return lessons.map((lesson) => ({
-    id: lesson.id,
-    label: `${lesson.chapter.course.name} › ${lesson.chapter.name} › ${lesson.name}`,
-  }));
-}
 
 export async function listTeacherPositions(): Promise<PositionOption[]> {
   const { user } = await requireTeacher();

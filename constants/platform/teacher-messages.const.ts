@@ -23,4 +23,7 @@ export const TEACHER_ERROR_MESSAGES: Record<string, string> = {
   blockMissing: "Ese bloque ya no existe.",
   fen: "La posición FEN no es válida.",
   profile: "El nombre para mostrar es obligatorio.",
+  blockPgn: "Esa partida no se puede leer. Revisa las jugadas del tablero antes de guardar.",
+  blockPgnEmpty: "La partida no tiene ninguna jugada. Juega la partida en el tablero o pega su PGN.",
+  blockPgnTooLong: "La partida es demasiado larga.",
 };

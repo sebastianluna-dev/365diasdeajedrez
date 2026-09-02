@@ -36,6 +36,8 @@ export interface TeacherClassBlock {
   /** Etiqueta legible del recurso referenciado, si el bloque referencia algo. */
   referenceLabel?: string;
   gameId?: string;
+  /** Partida transcrita en el propio bloque, si la hay. */
+  pgn?: string;
   lessonId?: string;
   positionId?: string;
   /** El movePath guardado ya no resuelve contra el PGN actual del recurso. */
@@ -80,12 +82,6 @@ export interface ReferenceableGameGroup {
   ownerLabel: string;
   studyName: string;
   games: ReferenceableGame[];
-}
-
-export interface LessonRefOption {
-  id: string;
-  /** Curso › Capítulo › Lección. */
-  label: string;
 }
 
 export interface PositionOption {

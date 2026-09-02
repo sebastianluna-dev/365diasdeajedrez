@@ -26,4 +26,21 @@
   & .block-form__annotate {
     margin: 0;
   }
+
+  & .block-form__alternative {
+    padding: 10px 12px;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+  }
+
+  & .block-form__alternative summary {
+    font-size: 13.5px;
+    color: var(--platform-text-muted);
+    cursor: pointer;
+  }
+
+  & .block-form__alternative[open] summary {
+    margin-bottom: 12px;
+    color: var(--platform-text);
+  }
 }

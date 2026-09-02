@@ -104,6 +104,7 @@ function mapBlock(block: TeacherClassDetailRow["blocks"][number]): TeacherClassB
     movePath: block.movePath ?? undefined,
     referenceLabel,
     gameId: block.gameId ?? undefined,
+    pgn: block.pgn ?? undefined,
     lessonId: block.lessonId ?? undefined,
     positionId: block.positionId ?? undefined,
     isMovePathBroken: isMovePathBroken(block.movePath, referencedPgn),

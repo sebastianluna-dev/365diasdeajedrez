@@ -26,9 +26,23 @@ export type ClassBlockView =
       id: string;
       kind: "GAME_REF";
       caption?: string;
-      game: { id: string; label: string; pgn: string; href: string; movePath?: string };
+      /** `href` sólo cuando la partida vive en un estudio; la transcrita no tiene dónde abrirse. */
+      game: { id: string; label: string; pgn: string; href?: string; movePath?: string };
     }
-  | { id: string; kind: "LESSON_REF"; caption?: string; lesson: { id: string; name: string; href: string } }
+  | {
+      id: string;
+      kind: "LESSON_REF";
+      caption?: string;
+      lesson: {
+        id: string;
+        name: string;
+        /** Contenido de la lección, para verla dentro de la clase. */
+        pgn: string;
+        orientation: "white" | "black";
+        href: string;
+        movePath?: string;
+      };
+    }
   | {
       id: string;
       kind: "POSITION_REF";

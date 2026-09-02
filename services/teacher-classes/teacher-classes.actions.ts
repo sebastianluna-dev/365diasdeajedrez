@@ -19,6 +19,8 @@ import {
   assertTeacherOwnsClass,
 } from "@/lib/platform-auth/guards";
 import { requireTeacher, type TeacherContext } from "@/lib/platform-auth/roles";
+import { PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
+import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
@@ -297,6 +299,8 @@ interface BlockFields {
   text: string | null;
   videoUrl: string | null;
   movePath: string | null;
+  /** Partida transcrita en el bloque; no es una referencia, es contenido. */
+  pgn: string | null;
 }
 
 /** Campos del bloque en un `create`: las referencias que no aplican se omiten. */
@@ -305,6 +309,7 @@ function toCreateData(fields: BlockFields) {
     text: fields.text,
     videoUrl: fields.videoUrl,
     movePath: fields.movePath,
+    pgn: fields.pgn,
     ...(fields.gameId ? { game: { connect: { id: fields.gameId } } } : {}),
     ...(fields.lessonId ? { lesson: { connect: { id: fields.lessonId } } } : {}),
     ...(fields.positionId ? { position: { connect: { id: fields.positionId } } } : {}),
@@ -322,6 +327,7 @@ function toUpdateData(fields: BlockFields) {
     text: fields.text,
     videoUrl: fields.videoUrl,
     movePath: fields.movePath,
+    pgn: fields.pgn,
     game: fields.gameId ? { connect: { id: fields.gameId } } : { disconnect: true },
     lesson: fields.lessonId ? { connect: { id: fields.lessonId } } : { disconnect: true },
     position: fields.positionId ? { connect: { id: fields.positionId } } : { disconnect: true },
@@ -347,6 +353,7 @@ async function readBlockFields(
     text: null,
     videoUrl: null,
     movePath: null,
+    pgn: null,
   };
   const movePath = readOptionalText(formData, "movePath", 200);
   const db = getPlatformDb();
@@ -365,6 +372,19 @@ async function readBlockFields(
     }
 
     case CLASS_BLOCK_KIND.GAME_REF: {
+      // La partida transcrita en el bloque es el camino principal y gana sobre
+      // la referenciada, igual que al pintarla. Si viene, la de un alumno ni se
+      // mira: el profesor eligió transcribir.
+      const pgn = readText(formData, "pgn");
+      if (pgn.length > 0) {
+        if (pgn.length > PGN_MAX_LENGTH) fail(failPath, "blockPgnTooLong");
+        // El tablero valida en el cliente por comodidad; quien decide es esto.
+        const tree = parsePgnTree(pgn);
+        if (tree === null) fail(failPath, "blockPgn");
+        if (tree.children.length === 0) fail(failPath, "blockPgnEmpty");
+        return { ...empty, pgn, movePath };
+      }
+
       const gameId = readText(formData, "gameId");
       if (gameId.length === 0) fail(failPath, "blockRef");
       // La asignación se valida AQUÍ, al insertar: un bloque ya creado sigue

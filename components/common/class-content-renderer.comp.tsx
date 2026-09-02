@@ -51,17 +51,28 @@ export function ClassContentRenderer({ blocks }: ClassContentRendererProps) {
           {block.kind === "GAME_REF" && (
             <div className="class-content__game">
               <GameViewer pgn={block.game.pgn} title={block.game.label} initialPath={block.game.movePath} />
-              <Link href={block.game.href} className="class-content__game-link">
-                Abrir la partida en Mis estudios
-              </Link>
+              {block.game.href && (
+                <Link href={block.game.href} className="class-content__game-link">
+                  Abrir la partida en Mis estudios
+                </Link>
+              )}
             </div>
           )}
 
+          {/* La lección se ve DENTRO de la clase, igual que la partida: el
+              enlace se queda debajo para abrirla entera con su navegación. */}
           {block.kind === "LESSON_REF" && (
-            <Link href={block.lesson.href} className="class-content__link-card">
-              <span className="class-content__link-kind">Lección</span>
-              <span className="class-content__link-label">{block.lesson.name}</span>
-            </Link>
+            <div className="class-content__game">
+              <GameViewer
+                pgn={block.lesson.pgn}
+                title={block.lesson.name}
+                orientation={block.lesson.orientation}
+                initialPath={block.lesson.movePath}
+              />
+              <Link href={block.lesson.href} className="class-content__game-link">
+                Abrir la lección completa
+              </Link>
+            </div>
           )}
 
           {block.kind === "POSITION_REF" && (

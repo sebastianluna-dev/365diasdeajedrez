@@ -908,6 +908,12 @@ model ClassBlock {
   positionId String?
   movePath   String?
   caption    String?
+  /// Partida transcrita por el profesor para esta clase. Vive aquí y no como
+  /// `Game` porque un profesor puede no tener ningún estudio, y crearle uno por
+  /// detrás sólo para esto le añadiría una entidad que no pidió.
+  ///
+  /// Cuando hay PGN aquí, MANDA sobre `gameId`: es la partida de este bloque.
+  pgn        String? @db.Text
 
   class    Class          @relation(fields: [classId], references: [id], onDelete: Cascade)
   kind     ClassBlockKind @relation(fields: [kindId], references: [id])

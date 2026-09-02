@@ -4,7 +4,6 @@ import { TeacherClassDetailSection } from "@/components/sections/platform/teache
 import {
   getTeacherClassDetail,
   getTeacherClassPreview,
-  listPublishedLessons,
   listReferenceableGames,
   listTeacherPositions,
 } from "@/services/teacher-classes/teacher-classes.service";
@@ -30,11 +29,10 @@ export default async function TeacherClassPage({ params, searchParams }: Teacher
 
   // Los datasets del editor son listas ligeras (id + etiqueta): los PGN
   // completos se piden uno a uno sólo cuando hay que previsualizar.
-  const [previewBlocks, students, games, lessons, positions, { gameId, error }] = await Promise.all([
+  const [previewBlocks, students, games, positions, { gameId, error }] = await Promise.all([
     getTeacherClassPreview(classId),
     getAssignedStudents(),
     listReferenceableGames(),
-    listPublishedLessons(),
     listTeacherPositions(),
     searchParams,
   ]);
@@ -53,7 +51,7 @@ export default async function TeacherClassPage({ params, searchParams }: Teacher
         classDetail={classDetail}
         previewBlocks={previewBlocks}
         students={students}
-        blockOptions={{ games, lessons, positions }}
+        blockOptions={{ games, positions }}
         initialGameId={gameId}
         errorCode={error}
       />

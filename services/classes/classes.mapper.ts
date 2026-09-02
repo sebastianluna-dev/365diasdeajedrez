@@ -23,7 +23,11 @@ export const classDetailInclude = {
     include: {
       kind: true,
       game: { select: { id: true, white: true, black: true, pgn: true, databaseId: true } },
-      lesson: { select: { id: true, name: true } },
+      // El PGN y la orientación son para pintar la lección DENTRO de la clase,
+      // no sólo enlazarla: el alumno no debería tener que salir para verla.
+      lesson: {
+        select: { id: true, name: true, pgn: true, orientation: { select: { code: true } } },
+      },
       position: { select: { fen: true, title: true, orientation: { select: { code: true } } } },
     },
   },
@@ -54,7 +58,22 @@ function mapBlock(block: ClassDetailRow["blocks"][number]): ClassBlockView | nul
       return block.text ? { ...base, kind: "TEXT", text: block.text } : null;
     case CLASS_BLOCK_KIND.VIDEO:
       return block.videoUrl ? { ...base, kind: "VIDEO", videoUrl: block.videoUrl } : null;
-    case CLASS_BLOCK_KIND.GAME_REF:
+    case CLASS_BLOCK_KIND.GAME_REF: {
+      // El PGN transcrito en el bloque manda; la partida referenciada es el
+      // respaldo. La regla vive AQUÍ y en un solo sitio: repartirla por la
+      // interfaz dejaría dos fuentes de verdad para el mismo bloque.
+      if (block.pgn && block.pgn.trim().length > 0) {
+        return {
+          ...base,
+          kind: "GAME_REF",
+          game: {
+            id: block.id,
+            label: block.caption ?? "Partida de la clase",
+            pgn: block.pgn,
+            movePath: block.movePath ?? undefined,
+          },
+        };
+      }
       return block.game
         ? {
             ...base,
@@ -68,6 +87,7 @@ function mapBlock(block: ClassDetailRow["blocks"][number]): ClassBlockView | nul
             },
           }
         : null;
+    }
     case CLASS_BLOCK_KIND.LESSON_REF:
       return block.lesson
         ? {
@@ -76,7 +96,10 @@ function mapBlock(block: ClassDetailRow["blocks"][number]): ClassBlockView | nul
             lesson: {
               id: block.lesson.id,
               name: block.lesson.name,
+              pgn: block.lesson.pgn,
+              orientation: block.lesson.orientation.code === BOARD_ORIENTATION.BLACK ? "black" : "white",
               href: platformRoutes.lessonDetail(block.lesson.id),
+              movePath: block.movePath ?? undefined,
             },
           }
         : null;
