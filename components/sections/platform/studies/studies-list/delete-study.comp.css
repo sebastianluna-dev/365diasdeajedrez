@@ -1,0 +1,166 @@
+.delete-study {
+  margin-left: auto;
+
+  & .delete-study__open {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    color: var(--platform-text-subtle);
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  & .delete-study__open:hover {
+    border-color: var(--platform-danger);
+    color: var(--platform-danger);
+  }
+
+  /* El aspa es decorativa; el nombre real lo lee el lector de pantalla, que si
+     no anunciaría «✕» y nada más. */
+  & .delete-study__open-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Sólo la medida: el centrado, el fondo y la superficie los pone
+     `.platform-dialog`. */
+  & .delete-study__dialog {
+    width: min(520px, calc(100vw - 32px));
+  }
+
+  & .delete-study__head {
+    display: flex;
+    gap: 15px;
+    padding: 26px 28px 0;
+  }
+
+  & .delete-study__icon {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--platform-danger-soft);
+    color: var(--platform-danger);
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  & .delete-study__heading {
+    min-width: 0;
+  }
+
+  & .delete-study__title {
+    margin: 0;
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  & .delete-study__description {
+    margin: 8px 0 0;
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .delete-study__confirm {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    margin: 18px 28px 0;
+    padding: 14px;
+    border-radius: 12px;
+    background: var(--platform-bg);
+    cursor: pointer;
+  }
+
+  & .delete-study__checkbox {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    margin-top: 1px;
+    accent-color: var(--platform-danger);
+  }
+
+  & .delete-study__warning {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+
+  & .delete-study__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 6px;
+    padding: 20px 28px;
+    box-shadow: inset 0 1px 0 var(--platform-track);
+  }
+
+  & .delete-study__note {
+    font-size: 13.5px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .delete-study__cancel,
+  & .delete-study__submit {
+    padding: 11px 18px;
+    border-radius: 11px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  & .delete-study__cancel {
+    margin-left: auto;
+    border: 1px solid var(--platform-border);
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-weight: 600;
+  }
+
+  & .delete-study__cancel:hover {
+    background: var(--platform-bg);
+  }
+
+  & .delete-study__submit {
+    border: 0;
+    background: var(--platform-danger);
+    color: var(--platform-surface);
+  }
+
+  /* Apagado mientras falte la casilla: el color se va, el sitio no, para que
+     el botón no salte cuando se marque. */
+  & .delete-study__submit:disabled {
+    background: var(--platform-track);
+    color: var(--platform-text-faint);
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 520px) {
+    & .delete-study__actions {
+      flex-wrap: wrap;
+    }
+
+    & .delete-study__note {
+      flex: 1 0 100%;
+    }
+  }
+}

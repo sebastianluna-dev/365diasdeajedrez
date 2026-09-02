@@ -177,6 +177,29 @@ body.platform-theme {
   color: var(--platform-surface);
 }
 
+/* Diálogo modal. El `<dialog>` nativo ya trae el foco atrapado, el cierre con
+   Escape y el fondo, pero su centrado depende de la hoja del navegador y no
+   todas lo resuelven igual: aquí se fija a mano —`inset: 0` más `margin: auto`
+   centra en los dos ejes— para que no dependa de nadie. */
+.platform-dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  background: var(--platform-surface);
+  color: var(--platform-text);
+  box-shadow: var(--platform-shadow-card);
+  /* Un modal alto se desplaza por dentro en vez de salirse de la pantalla. */
+  max-height: calc(100dvh - 40px);
+  overflow: auto;
+}
+
+.platform-dialog::backdrop {
+  background: rgba(22, 17, 13, 0.35);
+}
+
 .platform-tag {
   display: inline-block;
   padding: 5px 11px;

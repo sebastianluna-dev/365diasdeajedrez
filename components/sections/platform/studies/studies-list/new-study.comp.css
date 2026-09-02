@@ -1,0 +1,60 @@
+.new-study {
+  flex: none;
+
+  /* Sólo la medida: el centrado, el fondo y la superficie los pone
+     `.platform-dialog`. */
+  & .new-study__dialog {
+    width: min(440px, calc(100vw - 32px));
+  }
+
+  & .new-study__form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 26px;
+  }
+
+  & .new-study__title {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+  }
+
+  & .new-study__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  & .new-study__label {
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  & .new-study__input,
+  & .new-study__select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 13px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 16px;
+  }
+
+  & .new-study__input:focus,
+  & .new-study__select:focus {
+    outline: none;
+    border-color: var(--platform-accent);
+  }
+
+  & .new-study__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 4px;
+  }
+}

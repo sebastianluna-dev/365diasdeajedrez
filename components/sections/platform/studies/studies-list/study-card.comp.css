@@ -1,34 +1,89 @@
 .study-card {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 9px;
+  padding: 26px;
+  background: var(--platform-surface);
+  border-radius: 18px;
+  box-shadow: 0 1px 2px rgba(22, 17, 13, 0.05);
+}
 
-  &:hover {
-    border-color: rgba(255, 145, 67, 0.45);
-  }
+.study-card:hover {
+  box-shadow: 0 1px 2px rgba(22, 17, 13, 0.06), 0 10px 24px rgba(22, 17, 13, 0.07);
+}
 
+.study-card {
   & .study-card__tags {
     display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  & .study-card__kind,
+  & .study-card__origin {
+    padding: 5px 11px;
+    border-radius: 999px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  & .study-card__kind {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-weight: 700;
+  }
+
+  /* De qué curso viene, cuando no es tuya. */
+  & .study-card__origin {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text-muted);
+    font-weight: 500;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  & .study-card__readonly {
+    flex: none;
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--platform-text-subtle);
   }
 
   & .study-card__name {
-    margin: 0;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
+    letter-spacing: -0.015em;
     color: var(--platform-text);
+  }
+
+  & .study-card__name:hover {
+    color: var(--platform-accent-ink);
   }
 
   & .study-card__description {
     margin: 0;
-    font-size: 15.5px;
+    font-size: 16px;
+    line-height: 1.45;
     color: var(--platform-text-muted);
+    text-wrap: pretty;
   }
 
   & .study-card__meta {
-    margin: 4px 0 0;
-    font-size: 14.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 2px 0 0;
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .study-card__count {
+    font-weight: 600;
     color: var(--platform-text-muted);
+  }
+
+  & .study-card__dot {
+    color: var(--platform-text-faint);
   }
 }

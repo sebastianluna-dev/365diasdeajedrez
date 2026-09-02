@@ -8,6 +8,14 @@ export interface StudySummary {
   /** Nombre del curso cuando la base pertenece a un curso (sólo lectura). */
   courseName?: string;
   isCourseStudy: boolean;
+  /**
+   * Si esta tarjeta ofrece borrar. Fuera quedan las bases de curso (no son
+   * suyas), la tarjeta de partidas de clase (no es una base real) y «Mis
+   * partidas», que se crea con la cuenta y es única.
+   */
+  canDelete: boolean;
+  /** Partidas de este estudio citadas en alguna clase; se avisa antes de borrar. */
+  citedGameCount: number;
   href: string;
 }
 

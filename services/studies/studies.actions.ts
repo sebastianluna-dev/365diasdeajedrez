@@ -520,8 +520,11 @@ export async function deleteStudy(studyId: string, formData: FormData): Promise<
   const studyPath = platformRoutes.studyDetail(studyId);
   if (!allowAction(`${user.id}:delete-study`, 20, 60_000)) return;
 
+  // `isDefault: false` queda dentro a propósito: «Mis partidas» se crea con la
+  // cuenta y es única, así que no se borra. Que el botón no salga en la tarjeta
+  // no basta — una server action es alcanzable por POST directo.
   const study = await db.gameDatabase.findFirst({
-    where: { id: studyId, userId: user.id },
+    where: { id: studyId, userId: user.id, isDefault: false },
     select: { id: true, _count: { select: { games: true } } },
   });
   if (!study) return;

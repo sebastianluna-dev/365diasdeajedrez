@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
@@ -45,10 +46,23 @@ export async function getUserStudies(): Promise<StudySummary[]> {
   return classGames ? [...studies, classGames] : studies;
 }
 
-/** Tipos de estudio del catálogo: las etiquetas viven en la base, no en la UI. */
+/**
+ * Tipos de estudio que el alumno PUEDE crear. Las etiquetas viven en la base,
+ * no en la UI, pero la regla de quién crea qué es de dominio y vive aquí.
+ *
+ * Fuera queda «Colección»: al alumno le llega, nunca la hace. Sus dos vías son
+ * de sólo lectura —las partidas de sus clases y las bases de los cursos que ha
+ * empezado— y ninguna se crea desde aquí. Filtrarlo en la consulta y no en el
+ * desplegable es a propósito: `createStudy` valida el code contra el catálogo
+ * entero, así que la lista es lo que de verdad decide qué se ofrece.
+ */
 export const getStudyKinds = cache(async (): Promise<StudyKindOption[]> => {
   const db = getPlatformDb();
-  const rows = await db.databaseKind.findMany({ orderBy: { order: "asc" }, select: { code: true, label: true } });
+  const rows = await db.databaseKind.findMany({
+    where: { code: { not: DATABASE_KIND.COLLECTION } },
+    orderBy: { order: "asc" },
+    select: { code: true, label: true },
+  });
   return rows.map((row) => ({ code: row.code, label: row.label }));
 });
 
@@ -148,6 +162,9 @@ async function getClassGamesSummary(): Promise<StudySummary | null> {
     gameCount: items.length,
     updatedAtLabel: items[0].classDateLabel,
     isCourseStudy: false,
+    // No es una base: no hay nada que borrar.
+    canDelete: false,
+    citedGameCount: 0,
     href: platformRoutes.classGames,
   };
 }

@@ -7,6 +7,10 @@ export const studySummaryInclude = {
   kind: true,
   course: { select: { name: true } },
   _count: { select: { games: true } },
+  // Sólo las citadas en alguna clase, para poder avisar antes de borrar: esos
+  // bloques se quedarían sin partida. Se traen los ids en vez de contarlos
+  // aparte porque son pocos y evita una segunda consulta por estudio.
+  games: { where: { classBlocks: { some: {} } }, select: { id: true } },
 } satisfies Prisma.GameDatabaseInclude;
 
 export type StudySummaryRow = Prisma.GameDatabaseGetPayload<{ include: typeof studySummaryInclude }>;
@@ -48,6 +52,8 @@ export function mapStudySummary(row: StudySummaryRow): StudySummary {
     updatedAtLabel: formatSpanishDate(row.updatedAt),
     courseName: row.course?.name,
     isCourseStudy: row.courseId !== null,
+    canDelete: row.courseId === null && !row.isDefault,
+    citedGameCount: row.games.length,
     href: platformRoutes.studyDetail(row.id),
   };
 }

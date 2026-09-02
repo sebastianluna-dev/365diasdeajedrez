@@ -1,3 +1,18 @@
 .studies-page {
-  /* Estructura heredada de .platform-page. */
+  gap: 34px;
+
+  & .studies-page__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  @media (max-width: 640px) {
+    & .studies-page__head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 18px;
+    }
+  }
 }

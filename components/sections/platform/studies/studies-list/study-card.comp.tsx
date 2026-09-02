@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { StudySummary } from "@/services/studies/studies.types";
+import { DeleteStudy } from "./delete-study.comp";
 import "./study-card.comp.css";
 
 interface StudyCardProps {
@@ -8,18 +9,31 @@ interface StudyCardProps {
 
 export function StudyCard({ study }: StudyCardProps) {
   return (
-    <Link href={study.href} className="platform-card study-card">
+    <article className="study-card">
       <div className="study-card__tags">
-        <span className="platform-tag platform-tag_variant_accent">{study.kindLabel}</span>
-        {study.courseName && <span className="platform-tag">{study.courseName}</span>}
+        <span className="study-card__kind">{study.kindLabel}</span>
+        {study.courseName && <span className="study-card__origin">{study.courseName}</span>}
+
+        {study.canDelete ? (
+          <DeleteStudy study={study} />
+        ) : (
+          study.isCourseStudy && <span className="study-card__readonly">Sólo lectura</span>
+        )}
       </div>
 
-      <h3 className="study-card__name">{study.name}</h3>
+      <Link href={study.href} className="study-card__name">
+        {study.name}
+      </Link>
+
       {study.description && <p className="study-card__description">{study.description}</p>}
 
       <p className="study-card__meta">
-        {study.gameCount} {study.gameCount === 1 ? "partida" : "partidas"} · Actualizado el {study.updatedAtLabel}
+        <span className="study-card__count">
+          {study.gameCount} {study.gameCount === 1 ? "partida" : "partidas"}
+        </span>
+        <span className="study-card__dot">·</span>
+        <span>Actualizado el {study.updatedAtLabel}</span>
       </p>
-    </Link>
+    </article>
   );
 }
