@@ -104,6 +104,8 @@ export interface LessonAdminDetail {
   isPriority: boolean;
   /** La lección puede entrenarse de memoria (su línea principal). */
   isTrainable: boolean;
+  /** Bando que juega el alumno. Ausente = el que mueva primero. */
+  trainingColorCode?: string;
   estimatedDuration?: number;
   presentationModeCode: PresentationModeCode;
   initialPositionTypeCode: InitialPositionTypeCode;

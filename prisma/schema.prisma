@@ -104,6 +104,7 @@ model BoardOrientation {
   order Int    @default(0)
 
   lessons            Lesson[]
+  trainingLessons    Lesson[]             @relation("LessonTrainingColor")
   positions          Position[]
   userCourseSettings UserCourseSettings[]
 }
@@ -376,11 +377,17 @@ model Lesson {
   /// deriva un TrainingExercise con SU LÍNEA PRINCIPAL; las variantes siguen
   /// existiendo para el modo estudiar, pero el repaso no las evalúa.
   isTrainable           Boolean   @default(false)
+  /// Bando que juega el ALUMNO al entrenar, cuando no es el que mueve primero.
+  /// Nulo = el que mueva primero en la línea. Sirve para los repertorios de
+  /// negras: en «1.e4 c6 2.d4 d5» el alumno debe responder c6 y d5, no jugar e4.
+  /// Es distinto de `orientation`, que sólo decide cómo se ve el tablero.
+  trainingColorId       Int?
 
   chapter             Chapter             @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   presentationMode    PresentationMode    @relation(fields: [presentationModeId], references: [id])
   initialPositionType InitialPositionType @relation(fields: [initialPositionTypeId], references: [id])
   orientation         BoardOrientation    @relation(fields: [orientationId], references: [id])
+  trainingColor       BoardOrientation?   @relation("LessonTrainingColor", fields: [trainingColorId], references: [id])
 
   exercises        TrainingExercise[]
   trainings        UserLessonTraining[]

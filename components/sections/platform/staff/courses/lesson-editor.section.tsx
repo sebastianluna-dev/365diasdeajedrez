@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FormField, FormFieldset } from "@/components/common/form-field.comp";
 import { PlatformNotice } from "@/components/common/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
-import { CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
+import { BOARD_ORIENTATION, CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
 import { staffRoutes } from "@/lib/platform-routes";
 import { updateLesson, updateLessonPgn } from "@/services/staff-courses/staff-courses.actions";
 import type { CatalogOption, LessonAdminDetail, TopicOption } from "@/services/staff-courses/staff-courses.types";
@@ -124,6 +124,17 @@ export function LessonEditorSection({
                 <input type="checkbox" name="isTrainable" defaultChecked={lesson.isTrainable} />
                 Esta lección puede entrenarse de memoria
               </label>
+            </FormField>
+
+            <FormField
+              label="Bando que entrena el alumno"
+              hint="Con «Negras» en una línea que abre el blanco, la primera jugada la hace el sistema y al alumno se le pide la respuesta. Es lo que necesita un repertorio de negras."
+            >
+              <select name="trainingColorCode" defaultValue={lesson.trainingColorCode ?? ""}>
+                <option value="">El que mueva primero</option>
+                <option value={BOARD_ORIENTATION.WHITE}>Blancas</option>
+                <option value={BOARD_ORIENTATION.BLACK}>Negras</option>
+              </select>
             </FormField>
           </div>
 

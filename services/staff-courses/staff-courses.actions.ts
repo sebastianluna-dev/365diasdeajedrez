@@ -366,6 +366,12 @@ export async function updateLesson(
     .filter((value) => Number.isInteger(value));
 
   const isTrainable = readBoolean(formData, "isTrainable");
+  // Vacío = «el que mueva primero». Cualquier otra cosa que no sea del catálogo
+  // de contenido se trata igual, para no guardar un bando inventado.
+  const trainingColorInput = readText(formData, "trainingColorCode");
+  const trainingColor = (CONTENT_ORIENTATIONS as readonly string[]).includes(trainingColorInput)
+    ? (trainingColorInput as "WHITE" | "BLACK")
+    : null;
 
   const db = getPlatformDb();
   const current = await db.lesson.findFirst({ where: { id: lessonId, chapterId }, select: { id: true, pgn: true } });
@@ -386,13 +392,19 @@ export async function updateLesson(
         initialFen,
         orientation: { connect: { code: orientationCode } },
         isTrainable,
+        trainingColor: trainingColor ? { connect: { code: trainingColor } } : { disconnect: true },
       },
     });
 
     // El ejercicio derivado se mantiene aquí, dentro de la misma transacción:
     // marcar la lección como entrenable y no dejarle línea que entrenar sería
     // un estado a medias.
-    const sync = await syncLessonTrainingExercise(tx, { lessonId: lesson.id, pgn: current.pgn, isTrainable });
+    const sync = await syncLessonTrainingExercise(tx, {
+      lessonId: lesson.id,
+      pgn: current.pgn,
+      isTrainable,
+      trainingColor,
+    });
     if (isTrainable && !sync.ok) throw new TrainingSyncError(sync.reason);
 
     await tx.lessonTopic.deleteMany({ where: { lessonId: lesson.id } });
@@ -431,14 +443,23 @@ export async function updateLessonPgn(
   if (pgn.length > 0 && parsePgnTree(pgn) === null) fail(lessonPath, "pgn");
 
   const db = getPlatformDb();
-  const lesson = await db.lesson.findFirst({ where: { id: lessonId, chapterId }, select: { id: true, isTrainable: true } });
+  const lesson = await db.lesson.findFirst({
+    where: { id: lessonId, chapterId },
+    select: { id: true, isTrainable: true, trainingColor: { select: { code: true } } },
+  });
   if (!lesson) fail(lessonPath, "courseMissing");
 
   await db.$transaction(async (tx) => {
     await tx.lesson.update({ where: { id: lesson.id }, data: { pgn, pgnUpdatedAt: new Date() } });
     // Si la lección es entrenable, su línea principal acaba de cambiar: el
-    // ejercicio derivado se rehace para no seguir pidiendo la línea anterior.
-    await syncLessonTrainingExercise(tx, { lessonId: lesson.id, pgn, isTrainable: lesson.isTrainable });
+    // ejercicio derivado se rehace para no seguir pidiendo la línea anterior,
+    // conservando el bando que el staff ya había elegido.
+    await syncLessonTrainingExercise(tx, {
+      lessonId: lesson.id,
+      pgn,
+      isTrainable: lesson.isTrainable,
+      trainingColor: (lesson.trainingColor?.code as "WHITE" | "BLACK" | undefined) ?? null,
+    });
   });
 
   revalidatePath(lessonPath);

@@ -1,6 +1,8 @@
+import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { EXERCISE_MODE } from "@/constants/platform/training-codes.const";
 import { deriveExerciseData } from "@/lib/chess/exercise-derivation";
 import { extractMainline } from "@/lib/chess/mainline";
+import { turnColor } from "@/lib/chess/replay";
 
 // Mantiene sincronizado el ejercicio derivado de una lección entrenable.
 //
@@ -27,11 +29,16 @@ export interface SyncTrainingInput {
   lessonId: string;
   pgn: string;
   isTrainable: boolean;
+  /**
+   * Bando que juega el alumno. `null` = el que mueva primero en la línea, que
+   * es como se comportaba antes de que esto existiera.
+   */
+  trainingColor?: "WHITE" | "BLACK" | null;
 }
 
 export type SyncTrainingResult =
   | { ok: true; moves: number }
-  | { ok: false; reason: "notTrainable" | "noMainline" | "illegalLine" };
+  | { ok: false; reason: "notTrainable" | "noMainline" | "illegalLine" | "colorHasNoMoves" };
 
 /** Enunciado del ejercicio derivado. */
 const DERIVED_EXERCISE_PROMPT = "Reproduce la línea principal de memoria.";
@@ -54,7 +61,7 @@ const DERIVED_EXERCISE_ORDER = 0;
  */
 export async function syncLessonTrainingExercise(
   db: TrainingWriter,
-  { lessonId, pgn, isTrainable }: SyncTrainingInput,
+  { lessonId, pgn, isTrainable, trainingColor = null }: SyncTrainingInput,
 ): Promise<SyncTrainingResult> {
   const existing = (await db.trainingExercise.findFirst({
     where: { lessonId, isDerived: true },
@@ -69,16 +76,24 @@ export async function syncLessonTrainingExercise(
   const mainline = extractMainline(pgn);
   if (!mainline) return { ok: false, reason: "noMainline" };
 
+  // Quién mueve al empezar la línea. Sin FEN de partida, las blancas.
+  const opensWith = mainline.initialFen ? turnColor(mainline.initialFen) : "white";
+  const trains = trainingColor === BOARD_ORIENTATION.BLACK ? "black" : trainingColor === BOARD_ORIENTATION.WHITE ? "white" : opensWith;
+
+  // Si el alumno NO es quien abre, la primera jugada es del rival: se pre-juega
+  // y la línea arranca en la respuesta. El entrenador deduce el color del turno
+  // de `startFen`, así que con esto pide el bando correcto sin tocarlo.
+  const shift = trains === opensWith ? 0 : 1;
+  const afterSans = mainline.sans.slice(0, shift);
+  const lineSans = mainline.sans.slice(shift);
+  if (lineSans.length === 0) return { ok: false, reason: "colorHasNoMoves" };
+
   let derived;
   try {
     // La línea ya salió del árbol, así que es legal por construcción; se vuelve
     // a validar aquí porque es la función que congela el FEN y no queremos que
     // el entrenador reciba nunca un SAN que no se pueda jugar.
-    derived = deriveExerciseData({
-      initialFen: mainline.initialFen,
-      afterSans: [],
-      lineSans: mainline.sans,
-    });
+    derived = deriveExerciseData({ initialFen: mainline.initialFen, afterSans, lineSans });
   } catch {
     return { ok: false, reason: "illegalLine" };
   }
@@ -107,5 +122,5 @@ export async function syncLessonTrainingExercise(
     });
   }
 
-  return { ok: true, moves: mainline.sans.length };
+  return { ok: true, moves: lineSans.length };
 }

@@ -32,6 +32,8 @@ export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   noMainline:
     "Para entrenarla de memoria, la lección necesita al menos una jugada en su línea principal. Añade el PGN antes de marcarla.",
   illegalLine: "La línea principal del PGN tiene una jugada que no se puede jugar. Corrígela antes de marcarla como entrenable.",
+  colorHasNoMoves:
+    "Con ese bando no queda ninguna jugada que entrenar: la línea principal sólo tiene la jugada del rival. Alarga la línea o cambia el bando.",
 };
 
 /** Textos del alta de cuenta, que devuelve estado en vez de redirigir. */
