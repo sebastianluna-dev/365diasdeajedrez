@@ -16,39 +16,26 @@ export function LessonViewSection({ lesson }: LessonViewSectionProps) {
   const completeAction = completeLesson.bind(null, lesson.id);
   const isCompleted = lesson.statusCode === PROGRESS_STATUS.COMPLETED;
 
+  const subtitle = [
+    lesson.chapterName,
+    `Lección ${lesson.order} de ${lesson.chapterLessonCount}`,
+    lesson.estimatedDuration ? `${lesson.estimatedDuration} min` : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
   return (
     <section className="lesson-view">
       <LessonTracker lessonId={lesson.id} />
 
-      <header className="lesson-view__head">
-        <div className="lesson-view__heading">
-          <div className="lesson-view__title-row">
-            <h1 className="lesson-view__title">
-              {lesson.order}. {lesson.name}
-            </h1>
-            {lesson.isPriority && <span className="lesson-view__priority">Prioridad</span>}
-          </div>
-          {lesson.description && <p className="lesson-view__description">{lesson.description}</p>}
-        </div>
-
-        <p className="lesson-view__meta">
-          <span>
-            Lección {lesson.order} de {lesson.chapterLessonCount}
-          </span>
-          {lesson.estimatedDuration && (
-            <>
-              <span className="lesson-view__dot">·</span>
-              <span>{lesson.estimatedDuration} min</span>
-            </>
-          )}
-        </p>
-      </header>
-
       <GameViewer
         pgn={lesson.pgn}
         orientation={lesson.orientation}
-        title={lesson.name}
-        subtitle={`${lesson.chapterName} · Lección ${lesson.order}`}
+        title={`${lesson.order}. ${lesson.name}`}
+        // El subtítulo carga con todo lo que antes vivía encima del tablero:
+        // dónde está la lección dentro del capítulo y cuánto dura.
+        subtitle={subtitle}
+        description={lesson.description}
         badge={lesson.isPriority ? "Prioridad" : undefined}
         skip={
           lesson.nextLessonHref && (

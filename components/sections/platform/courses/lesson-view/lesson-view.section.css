@@ -3,68 +3,6 @@
   flex-direction: column;
   gap: 20px;
 
-  & .lesson-view__head {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 28px;
-  }
-
-  & .lesson-view__heading {
-    min-width: 0;
-  }
-
-  & .lesson-view__title-row {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    flex-wrap: wrap;
-  }
-
-  & .lesson-view__title {
-    margin: 0;
-    font-family: var(--platform-font);
-    font-size: 31px;
-    font-weight: 700;
-    letter-spacing: -0.025em;
-    color: var(--platform-text);
-    text-wrap: balance;
-  }
-
-  & .lesson-view__priority {
-    padding: 5px 11px;
-    border-radius: 999px;
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
-    font-size: 13px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-
-  & .lesson-view__description {
-    margin: 10px 0 0;
-    max-width: 70ch;
-    font-size: 16.5px;
-    line-height: 1.6;
-    color: var(--platform-text-muted);
-    text-wrap: pretty;
-  }
-
-  & .lesson-view__meta {
-    flex: none;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 15px;
-    color: var(--platform-text-subtle);
-    white-space: nowrap;
-  }
-
-  & .lesson-view__dot {
-    color: var(--platform-text-faint);
-  }
-
   /* «Saltar» vive dentro de la barra de navegación del visor, así que copia la
      medida de sus botones para no romper la fila. */
   & .lesson-view__skip {
@@ -134,16 +72,6 @@
   }
 
   @media (max-width: 760px) {
-    & .lesson-view__head {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    & .lesson-view__title {
-      font-size: 25px;
-    }
-
     & .lesson-view__back {
       margin-left: 0;
     }

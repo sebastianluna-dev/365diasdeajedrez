@@ -31,6 +31,8 @@ interface GameViewerProps {
   title?: string;
   /** Segunda línea de la cabecera: capítulo, evento, lo que sitúe la partida. */
   subtitle?: string;
+  /** Texto de la partida o la lección, bajo el subtítulo. */
+  description?: string;
   /** Distintivo a la derecha del título («Prioridad»). */
   badge?: string;
   /**
@@ -70,6 +72,7 @@ export function GameViewer({
   initialPath,
   title,
   subtitle,
+  description,
   badge,
   headerActions,
   footerActions,
@@ -181,7 +184,7 @@ export function GameViewer({
   }
 
   const flipBoard = (orientation === "black") !== flipToggled;
-  const hasHead = Boolean(title || subtitle || badge || headerActions);
+  const hasHead = Boolean(title || subtitle || description || badge || headerActions);
 
   return (
     <div
@@ -244,6 +247,7 @@ export function GameViewer({
               <div className="game-viewer__panel-heading">
                 {title && <p className="game-viewer__panel-title">{title}</p>}
                 {subtitle && <p className="game-viewer__panel-subtitle">{subtitle}</p>}
+                {description && <p className="game-viewer__panel-description">{description}</p>}
               </div>
               {badge && <span className="game-viewer__panel-badge">{badge}</span>}
               {headerActions}
