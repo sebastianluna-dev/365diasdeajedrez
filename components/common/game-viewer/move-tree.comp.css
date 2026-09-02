@@ -1,7 +1,7 @@
 .move-tree {
   font-size: 15px;
   line-height: 1.9;
-  color: #e8dfd4;
+  color: var(--platform-text);
   word-break: break-word;
 
   & .move-tree__move {
@@ -24,8 +24,8 @@
   }
 
   & .move-tree__move.move-tree__move_active {
-    background: rgba(255, 145, 67, 0.22);
-    color: #ffc79b;
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
   }
 
   & .move-tree__comment {
@@ -35,19 +35,19 @@
   }
 
   & .move-tree__variation {
-    color: #8a8175;
+    color: var(--platform-text-muted);
 
     & .move-tree__move {
       font-weight: 400;
-      color: #b5aca0;
+      color: var(--platform-text-subtle);
     }
 
     & .move-tree__move.move-tree__move_active {
-      color: #ffc79b;
+      color: var(--platform-accent-ink);
     }
 
     & .move-tree__comment {
-      color: #837a6e;
+      color: var(--platform-text-muted);
     }
   }
 }

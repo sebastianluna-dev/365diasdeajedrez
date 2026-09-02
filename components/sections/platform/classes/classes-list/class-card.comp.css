@@ -53,13 +53,13 @@
   }
 
   & .class-card__status.class-card__status_code_live {
-    background: rgba(244, 64, 70, 0.18);
-    color: #f58a8d;
+    background: var(--platform-danger-soft);
+    color: var(--platform-danger);
   }
 
   & .class-card__status.class-card__status_code_completed {
-    background: rgba(118, 150, 86, 0.2);
-    color: #a9c58c;
+    background: var(--platform-success-soft);
+    color: var(--platform-success-ink);
   }
 
   @media (max-width: 720px) {

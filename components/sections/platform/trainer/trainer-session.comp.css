@@ -22,8 +22,8 @@
   }
 
   & .trainer-session__stale {
-    background: rgba(240, 192, 75, 0.18);
-    color: var(--color-secondary);
+    background: var(--platform-warning-soft);
+    color: var(--platform-warning-ink);
   }
 
   & .trainer-session__prompt {
@@ -51,11 +51,11 @@
   }
 
   & .trainer-session__feedback.trainer-session__feedback_kind_ok {
-    color: #a9c58c;
+    color: var(--platform-success-ink);
   }
 
   & .trainer-session__feedback.trainer-session__feedback_kind_error {
-    color: #f58a8d;
+    color: var(--platform-danger);
   }
 
   & .trainer-session__feedback.trainer-session__feedback_kind_info {

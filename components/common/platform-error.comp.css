@@ -1,5 +1,5 @@
 .platform-error {
-  border: 1px solid rgba(244, 64, 70, 0.35);
+  border: 1px solid var(--platform-danger-border);
   border-radius: 12px;
   padding: 32px 24px;
   text-align: center;
@@ -24,6 +24,6 @@
   }
 
   & .platform-error__retry:hover {
-    background: #f0a05e;
+    background: var(--platform-accent-hover);
   }
 }

@@ -16,28 +16,51 @@ const STATUS_LABELS: Record<string, string> = {
 export function LessonList({ lessons }: LessonListProps) {
   return (
     <ol className="lesson-list">
-      {lessons.map((lesson) => (
-        <li key={lesson.id} className="lesson-list__item">
-          <Link href={lesson.href} className="lesson-list__link">
-            <span className="lesson-list__order">{lesson.order}</span>
-            <span className="lesson-list__info">
-              <span className="lesson-list__name">
-                {lesson.name}
-                {lesson.isPriority && <span className="platform-tag platform-tag_variant_accent lesson-list__priority">Clave</span>}
+      {lessons.map((lesson) => {
+        const isDone = lesson.statusCode === PROGRESS_STATUS.COMPLETED;
+
+        return (
+          <li key={lesson.id} className="lesson-list__row">
+            <Link href={lesson.href} className="lesson-list__item">
+              <span className={`lesson-list__order${isDone ? " lesson-list__order_state_done" : ""}`}>
+                {lesson.order}
               </span>
-              {lesson.description && <span className="lesson-list__description">{lesson.description}</span>}
-            </span>
-            <span className="lesson-list__meta">
-              {lesson.estimatedDuration && <span className="lesson-list__duration">{lesson.estimatedDuration} min</span>}
-              <span
-                className={`lesson-list__status lesson-list__status_code_${lesson.statusCode.toLowerCase()}`}
+
+              <span className="lesson-list__info">
+                <span className="lesson-list__title">
+                  <span className="lesson-list__name">{lesson.name}</span>
+                  {lesson.isPriority && <span className="lesson-list__priority">Clave</span>}
+                </span>
+                {lesson.description && <span className="lesson-list__description">{lesson.description}</span>}
+              </span>
+
+              <span className="lesson-list__meta">
+                {lesson.estimatedDuration && (
+                  <span className="lesson-list__duration">{lesson.estimatedDuration} min</span>
+                )}
+                <span className={`lesson-list__status lesson-list__status_code_${lesson.statusCode.toLowerCase()}`}>
+                  {STATUS_LABELS[lesson.statusCode] ?? lesson.statusCode}
+                </span>
+              </span>
+
+              <svg
+                className="lesson-list__chevron"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
               >
-                {STATUS_LABELS[lesson.statusCode] ?? lesson.statusCode}
-              </span>
-            </span>
-          </Link>
-        </li>
-      ))}
+                <path d="M9 6l6 6-6 6" />
+              </svg>
+            </Link>
+          </li>
+        );
+      })}
     </ol>
   );
 }

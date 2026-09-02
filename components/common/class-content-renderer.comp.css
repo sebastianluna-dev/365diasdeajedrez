@@ -14,7 +14,7 @@
     margin: 0 0 10px;
     font-size: 15px;
     line-height: 1.65;
-    color: var(--platform-text-muted, #b5aca0);
+    color: var(--platform-text-muted, var(--platform-text-subtle));
     white-space: pre-line;
   }
 

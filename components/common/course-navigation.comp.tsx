@@ -11,11 +11,12 @@ interface CourseNavigationProps {
   /** Nombre de la lección actual (no enlazada). */
   lessonName?: string;
   /**
-   * El curso ES la página actual, así que se pinta como último tramo sin
-   * enlazar. No se puede deducir de la ausencia de capítulo: la vista de
-   * capítulo también llega sólo con el curso, y ahí sí tiene que enlazar.
+   * Qué tramo es la página actual: se pinta sin enlazar y cierra la ruta.
+   * No se puede deducir de los datos que llegan —la vista de capítulo también
+   * recibe sólo el curso, y ahí el curso SÍ enlaza—, así que se dice aparte.
+   * La lección, cuando viene, siempre es el tramo actual.
    */
-  isCourseCurrent?: boolean;
+  current?: "course" | "chapter";
 }
 
 /** Navegación contextual Curso → Capítulo → Lección. */
@@ -25,7 +26,7 @@ export function CourseNavigation({
   chapterOrder,
   chapterName,
   lessonName,
-  isCourseCurrent = false,
+  current,
 }: CourseNavigationProps) {
   return (
     <nav className="course-navigation" aria-label="Ruta del curso">
@@ -33,7 +34,7 @@ export function CourseNavigation({
         Mis cursos
       </Link>
       <span className="course-navigation__separator">/</span>
-      {isCourseCurrent ? (
+      {current === "course" ? (
         <span className="course-navigation__current">{courseName}</span>
       ) : (
         <Link href={platformRoutes.courseDetail(courseId)} className="course-navigation__link">
@@ -43,9 +44,13 @@ export function CourseNavigation({
       {chapterOrder !== undefined && chapterName && (
         <>
           <span className="course-navigation__separator">/</span>
-          <Link href={platformRoutes.chapterDetail(courseId, chapterOrder)} className="course-navigation__link">
-            {chapterName}
-          </Link>
+          {current === "chapter" ? (
+            <span className="course-navigation__current">{chapterName}</span>
+          ) : (
+            <Link href={platformRoutes.chapterDetail(courseId, chapterOrder)} className="course-navigation__link">
+              {chapterName}
+            </Link>
+          )}
         </>
       )}
       {lessonName && (

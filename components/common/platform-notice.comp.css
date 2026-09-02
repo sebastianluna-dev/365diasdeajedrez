@@ -7,15 +7,15 @@
   line-height: 1.45;
 
   &.platform-notice_variant_error {
-    border-color: rgba(255, 120, 96, 0.4);
-    background: rgba(255, 120, 96, 0.1);
-    color: #ffb3a3;
+    border-color: var(--platform-danger-border);
+    background: var(--platform-danger-soft);
+    color: var(--platform-danger);
   }
 
   &.platform-notice_variant_success {
-    border-color: rgba(120, 220, 150, 0.35);
-    background: rgba(120, 220, 150, 0.1);
-    color: #9ee6b4;
+    border-color: var(--platform-success-border);
+    background: var(--platform-success-soft);
+    color: var(--platform-success-ink);
   }
 
   &.platform-notice_variant_info {

@@ -2,7 +2,7 @@
   width: 100%;
   border-radius: 14px;
   overflow: hidden;
-  background: #2b2723;
+  background: var(--platform-surface);
   border: 1px solid var(--platform-border);
 
   &.game-viewer_state_error {
@@ -26,13 +26,13 @@
     margin: 0;
     padding: 10px 18px;
     border-bottom: 1px solid var(--platform-border);
-    background: rgba(244, 64, 70, 0.1);
+    background: var(--platform-danger-soft);
   }
 
   & .game-viewer__warning {
     font-size: 13px;
     line-height: 1.5;
-    color: #f58a8d;
+    color: var(--platform-danger);
   }
 
   & .game-viewer__layout {
@@ -73,7 +73,7 @@
     max-height: 460px;
     overflow: auto;
     padding: 14px 16px;
-    scrollbar-color: #ffffff #2b2723;
+    scrollbar-color: var(--platform-text-muted) var(--platform-surface-neutral);
 
     @media (max-width: 900px) {
       max-height: 320px;
@@ -93,7 +93,7 @@
     border-radius: 8px;
     border: 0;
     background: transparent;
-    color: #8a8175;
+    color: var(--platform-text-muted);
     display: flex;
     align-items: center;
     justify-content: center;

@@ -22,7 +22,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
 
   return (
     <div className="platform-page course-page">
-      <CourseNavigation courseId={course.id} courseName={course.name} isCourseCurrent />
+      <CourseNavigation courseId={course.id} courseName={course.name} current="course" />
       <CourseDetailSection course={course} />
     </div>
   );

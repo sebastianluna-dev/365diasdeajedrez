@@ -147,6 +147,14 @@ export function mapChapterView(
     href: platformRoutes.lessonDetail(lesson.id),
   }));
 
+  const completedLessons = lessons.filter((lesson) => lesson.statusCode === PROGRESS_STATUS.COMPLETED).length;
+
+  // El botón del capítulo abre por donde se quedó: la primera sin completar.
+  // Si ya están todas, la primera, que es lo que toca para repasar.
+  const target = lessons.find((lesson) => lesson.statusCode !== PROGRESS_STATUS.COMPLETED) ?? lessons[0];
+  const allDone = lessons.length > 0 && completedLessons === lessons.length;
+  const untouched = lessons.every((lesson) => lesson.statusCode === PROGRESS_STATUS.NOT_STARTED);
+
   return {
     courseId: course.id,
     courseName: course.name,
@@ -156,9 +164,11 @@ export function mapChapterView(
     name: chapter.name,
     description: chapter.description ?? undefined,
     estimatedDuration: chapter.estimatedDuration ?? undefined,
-    completedLessons: lessons.filter((lesson) => lesson.statusCode === PROGRESS_STATUS.COMPLETED).length,
+    completedLessons,
     totalLessons: lessons.length,
     lessons,
+    continueHref: target ? target.href : platformRoutes.courseDetail(course.id),
+    ctaLabel: allDone ? "Revisar" : untouched ? "Comenzar" : "Continuar",
     hasExercises: options.hasExercises,
     inTrainer: options.inTrainer,
   };

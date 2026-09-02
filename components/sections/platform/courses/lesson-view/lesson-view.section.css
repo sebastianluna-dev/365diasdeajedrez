@@ -22,8 +22,8 @@
   }
 
   & .lesson-view__completed {
-    background: rgba(118, 150, 86, 0.2);
-    color: #a9c58c;
+    background: var(--platform-success-soft);
+    color: var(--platform-success-ink);
     font-size: 14px;
     padding: 8px 16px;
   }

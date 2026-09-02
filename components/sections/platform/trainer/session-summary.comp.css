@@ -38,13 +38,13 @@
   }
 
   & .session-summary__result.session-summary__result_passed {
-    background: rgba(118, 150, 86, 0.2);
-    color: #a9c58c;
+    background: var(--platform-success-soft);
+    color: var(--platform-success-ink);
   }
 
   & .session-summary__result.session-summary__result_failed {
-    background: rgba(244, 64, 70, 0.18);
-    color: #f58a8d;
+    background: var(--platform-danger-soft);
+    color: var(--platform-danger);
   }
 
   & .session-summary__lesson {

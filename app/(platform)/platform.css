@@ -44,6 +44,21 @@
 
   --platform-track: #efeae3;
 
+  /* Colores semánticos. El par de éxito viene del diseño del capítulo
+     (#E7F0EA / #2F6B51); los de error y aviso están derivados con la misma
+     claridad de fondo y el mismo contraste de tinta, a falta de que el diseño
+     los fije. El rojo de tinta es el --platform-danger de arriba. */
+  --platform-success-soft: #e7f0ea;
+  --platform-success-ink: #2f6b51;
+  --platform-success-border: #cfe1d7;
+
+  --platform-danger-soft: #fbeaea;
+  --platform-danger-border: #f0cfcf;
+
+  --platform-warning-soft: #fdf0dc;
+  --platform-warning-ink: #8a5a12;
+  --platform-warning-border: #eddcb4;
+
   /* Sobre claro las capas se separan con sombra, no con borde. */
   --platform-shadow-card: 0 1px 2px rgba(22, 17, 13, 0.05), 0 8px 24px rgba(22, 17, 13, 0.06);
   --platform-shadow-bar: 0 1px 0 var(--platform-border);

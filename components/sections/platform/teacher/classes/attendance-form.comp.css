@@ -58,8 +58,8 @@
   }
 
   & .attendance-form__remove:hover {
-    color: #ffb3a3;
-    border-color: rgba(255, 120, 96, 0.45);
+    color: var(--platform-danger);
+    border-color: var(--platform-danger-border);
   }
 }
 

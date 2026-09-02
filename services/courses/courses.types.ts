@@ -78,6 +78,9 @@ export interface ChapterView {
   completedLessons: number;
   totalLessons: number;
   lessons: ChapterLessonItem[];
+  /** Primera lección sin completar del capítulo; la primera si ya están todas. */
+  continueHref: string;
+  ctaLabel: CourseSummary["ctaLabel"];
   /** true si alguna lección del capítulo tiene ejercicios entrenables. */
   hasExercises: boolean;
   /** true si el usuario ya lo agregó al Move Trainer. */

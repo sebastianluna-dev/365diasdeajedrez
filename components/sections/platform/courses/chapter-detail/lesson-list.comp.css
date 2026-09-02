@@ -4,80 +4,105 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 
-  & .lesson-list__link {
-    display: flex;
+  & .lesson-list__item {
+    display: grid;
+    grid-template-columns: 46px minmax(0, 1fr) auto 20px;
+    gap: 20px;
     align-items: center;
-    gap: 16px;
-    padding: 14px 16px;
-    border: 1px solid var(--platform-border);
-    border-radius: 12px;
+    padding: 20px 24px;
     background: var(--platform-surface);
+    border-radius: 16px;
+    box-shadow: var(--platform-shadow-card);
+    color: var(--platform-text);
   }
 
-  & .lesson-list__link:hover {
-    border-color: rgba(255, 145, 67, 0.45);
+  & .lesson-list__item:hover {
+    box-shadow:
+      0 1px 2px rgba(22, 17, 13, 0.06),
+      0 12px 30px rgba(22, 17, 13, 0.1);
+    color: var(--platform-text);
   }
 
   & .lesson-list__order {
-    flex: none;
-    width: 30px;
-    height: 30px;
+    width: 46px;
+    height: 46px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 13px;
     background: var(--platform-surface-neutral);
     color: var(--platform-text-muted);
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 17px;
     font-weight: 700;
-    font-size: 13.5px;
+  }
+
+  /* La lección hecha se reconoce por el número en verde, antes de leer nada. */
+  & .lesson-list__order.lesson-list__order_state_done {
+    background: var(--platform-success-soft);
+    color: var(--platform-success-ink);
   }
 
   & .lesson-list__info {
     min-width: 0;
+    display: block;
+  }
+
+  & .lesson-list__title {
     display: flex;
-    flex-direction: column;
-    gap: 2px;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
   }
 
   & .lesson-list__name {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--platform-text);
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 17.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 
-  & .lesson-list__description {
-    font-size: 13px;
-    color: var(--platform-text-muted);
-    overflow: hidden;
-    text-overflow: ellipsis;
+  & .lesson-list__priority {
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-size: 11.5px;
+    font-weight: 700;
     white-space: nowrap;
   }
 
+  & .lesson-list__description {
+    display: block;
+    margin-top: 6px;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
   & .lesson-list__meta {
-    margin-left: auto;
-    flex: none;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
   }
 
   & .lesson-list__duration {
     font-size: 13px;
-    color: var(--platform-text-muted);
+    color: var(--platform-text-subtle);
+    white-space: nowrap;
   }
 
   & .lesson-list__status {
-    font-size: 12.5px;
-    font-weight: 600;
-    padding: 3px 10px;
+    padding: 6px 12px;
     border-radius: 999px;
     background: var(--platform-surface-neutral);
     color: var(--platform-text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
   }
 
   & .lesson-list__status.lesson-list__status_code_in_progress {
@@ -86,7 +111,28 @@
   }
 
   & .lesson-list__status.lesson-list__status_code_completed {
-    background: rgba(118, 150, 86, 0.2);
-    color: #a9c58c;
+    background: var(--platform-success-soft);
+    color: var(--platform-success-ink);
+  }
+
+  /* Sin sitio a lo ancho: la duración y el estado bajan bajo el texto y el
+     galón se retira, que ahí ya no apunta a nada. */
+  @media (max-width: 760px) {
+    & .lesson-list__item {
+      grid-template-columns: 46px minmax(0, 1fr);
+      gap: 14px 18px;
+    }
+
+    & .lesson-list__meta {
+      grid-column: 2;
+    }
+
+    & .lesson-list__chevron {
+      display: none;
+    }
+  }
+
+  & .lesson-list__chevron {
+    color: var(--platform-text-faint);
   }
 }
