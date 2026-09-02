@@ -372,6 +372,10 @@ model Lesson {
   /// [%cal]/[%csl] y [%diagram] viven dentro del PGN.
   pgn                   String    @db.Text
   pgnUpdatedAt          DateTime?
+  /// La lección puede entrenarse de memoria en el Move Trainer. Al activarla se
+  /// deriva un TrainingExercise con SU LÍNEA PRINCIPAL; las variantes siguen
+  /// existiendo para el modo estudiar, pero el repaso no las evalúa.
+  isTrainable           Boolean   @default(false)
 
   chapter             Chapter             @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   presentationMode    PresentationMode    @relation(fields: [presentationModeId], references: [id])
@@ -379,6 +383,7 @@ model Lesson {
   orientation         BoardOrientation    @relation(fields: [orientationId], references: [id])
 
   exercises        TrainingExercise[]
+  trainings        UserLessonTraining[]
   progresses       LessonProgress[]
   lessonTopics     LessonTopic[]
   classBlocks      ClassBlock[]
@@ -406,6 +411,10 @@ model TrainingExercise {
   /// congelada es autosuficiente) pero puede no reflejar ya la lección.
   frozenAt   DateTime?
   promptText String?
+  /// Lo generó el sistema desde la línea principal de la lección, no el staff.
+  /// Se regenera al editar el PGN y desaparece si la lección deja de ser
+  /// entrenable; los ejercicios creados a mano no se tocan nunca.
+  isDerived  Boolean   @default(false)
 
   lesson Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   mode   ExerciseMode @relation(fields: [modeId], references: [id])
@@ -451,6 +460,7 @@ model User {
   chapterProgresses ChapterProgress[]
   lessonProgresses  LessonProgress[]
   attempts          TrainingAttempt[]
+  lessonTrainings   UserLessonTraining[]
   courseSettings    UserCourseSettings[]
   trainerChapters   UserTrainerChapter[]
   gameDatabases     GameDatabase[]
@@ -535,22 +545,91 @@ model LessonProgress {
 
 /// Histórico append-only; nunca se actualiza.
 model TrainingAttempt {
-  id         String   @id @default(uuid())
-  userId     String
-  exerciseId String
-  resultId   Int
-  mistakes   Int      @default(0)
-  durationMs Int?
-  contextId  Int
-  createdAt  DateTime @default(now())
+  id            String   @id @default(uuid())
+  userId        String
+  exerciseId    String
+  resultId      Int
+  mistakes      Int      @default(0)
+  durationMs    Int?
+  contextId     Int
+  /// Jugadas del alumno que pedía la línea.
+  requiredMoves Int      @default(0)
+  /// Acertadas a la primera. `mistakes` cuenta los fallos, que pueden repetirse
+  /// sobre la misma jugada, así que correctMoves NO es requiredMoves - mistakes.
+  correctMoves  Int      @default(0)
+  /// Hasta qué ply llegó. Es el DENOMINADOR para saber cuántas veces se pasó por
+  /// una posición: sin esto, los fallos guardados no se pueden convertir en un
+  /// porcentaje de aciertos.
+  reachedPly    Int      @default(0)
+  hintsUsed     Int      @default(0)
+  /// Toda la secuencia a la primera y sin pistas. Se guarda aparte de la
+  /// precisión: se puede acertar el 92 % y no ser un repaso perfecto.
+  isPerfect     Boolean  @default(false)
+  createdAt     DateTime @default(now())
 
   user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   exercise TrainingExercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
   result   AttemptResult    @relation(fields: [resultId], references: [id])
   context  AttemptContext   @relation(fields: [contextId], references: [id])
 
+  mistakeDetails TrainingMistake[]
+
   @@index([userId, createdAt])
   @@index([exerciseId])
+}
+
+/// Una fila POR JUGADA FALLADA, no por jugada. Un alumno que acierta todo no
+/// escribe ninguna, así que la tabla crece con los errores y no con el uso.
+///
+/// La posición se identifica por el hash de su FEN (lib/chess/position-hash.ts)
+/// y no por el número de jugada: así el dato sobrevive a que se edite el PGN, y
+/// agrupa la misma posición alcanzada por transposición desde otra lección.
+model TrainingMistake {
+  id           String   @id @default(uuid())
+  attemptId    String
+  positionHash String
+  fen          String
+  expectedSan  String
+  playedSan    String
+  /// Ply dentro de la línea, para poder cruzarlo con `reachedPly`.
+  ply          Int
+  usedHint     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  attempt TrainingAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+
+  @@index([attemptId])
+  @@index([positionHash])
+}
+
+/// Estado actual del alumno con una lección entrenable, separado del historial
+/// de intentos para poder saber de un vistazo qué toca repasar.
+///
+/// Cuelga de (userId, lessonId) y NO de la ruta punteada dentro del PGN: esas
+/// rutas se reordenan al promover una variante, así que atar el progreso a
+/// ellas lo perdería en la primera edición. La lección es la identidad estable.
+model UserLessonTraining {
+  userId              String
+  lessonId            String
+  totalAttempts       Int       @default(0)
+  perfectAttempts     Int       @default(0)
+  /// Porcentaje 0-100 del último intento y del mejor.
+  lastAccuracy        Int       @default(0)
+  bestAccuracy        Int       @default(0)
+  /// Repasos perfectos seguidos: es lo que sube el peldaño de la escalera.
+  consecutivePerfect  Int       @default(0)
+  currentIntervalDays Int       @default(0)
+  /// Peldaño actual, para no recalcularlo desde el intervalo.
+  masteryLevel        Int       @default(0)
+  lastReviewedAt      DateTime?
+  nextReviewAt        DateTime?
+  updatedAt           DateTime  @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@id([userId, lessonId])
+  @@index([userId, nextReviewAt])
 }
 
 /// Una fila por usuario y curso, creada al primer cambio. Su ausencia

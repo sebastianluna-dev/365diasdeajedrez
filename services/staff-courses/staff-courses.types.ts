@@ -102,6 +102,8 @@ export interface LessonAdminDetail {
   description?: string;
   order: number;
   isPriority: boolean;
+  /** La lección puede entrenarse de memoria (su línea principal). */
+  isTrainable: boolean;
   estimatedDuration?: number;
   presentationModeCode: PresentationModeCode;
   initialPositionTypeCode: InitialPositionTypeCode;

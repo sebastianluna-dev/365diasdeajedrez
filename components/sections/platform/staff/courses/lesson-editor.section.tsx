@@ -115,6 +115,16 @@ export function LessonEditorSection({
                 Lección imprescindible del curso
               </label>
             </FormField>
+
+            <FormField
+              label="Entrenamiento"
+              hint="Se entrena la LÍNEA PRINCIPAL del PGN. Las variantes siguen estando en el modo estudiar, pero el repaso no las evalúa."
+            >
+              <label className="lesson-editor__check">
+                <input type="checkbox" name="isTrainable" defaultChecked={lesson.isTrainable} />
+                Esta lección puede entrenarse de memoria
+              </label>
+            </FormField>
           </div>
 
           <FormFieldset legend="Temas">

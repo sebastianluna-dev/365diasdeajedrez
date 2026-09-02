@@ -15,6 +15,7 @@ import { CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
 import { EXERCISE_MODE } from "@/constants/platform/training-codes.const";
 import { deriveExerciseData } from "@/lib/chess/exercise-derivation";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
+import { syncLessonTrainingExercise } from "@/services/shared/lesson-training.service";
 import { numericId } from "@/lib/numeric-id";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
@@ -187,6 +188,18 @@ export async function archiveCourse(courseId: string): Promise<void> {
   revalidatePath(platformRoutes.courses);
 }
 
+/**
+ * La derivación falló al marcar la lección como entrenable.
+ *
+ * Se lanza para abortar la transacción —`fail` redirige y no serviría dentro de
+ * ella— y se traduce a un mensaje concreto al salir.
+ */
+class TrainingSyncError extends Error {
+  constructor(readonly errorCode: string) {
+    super(errorCode);
+  }
+}
+
 // --- Capítulos ------------------------------------------------------------
 
 export async function createChapter(courseId: string, formData: FormData): Promise<void> {
@@ -352,11 +365,15 @@ export async function updateLesson(
     .map((value) => Number.parseInt(value, 10))
     .filter((value) => Number.isInteger(value));
 
-  const db = getPlatformDb();
-  const lesson = await db.lesson.findFirst({ where: { id: lessonId, chapterId }, select: { id: true } });
-  if (!lesson) fail(lessonPath, "courseMissing");
+  const isTrainable = readBoolean(formData, "isTrainable");
 
-  await db.$transaction(async (tx) => {
+  const db = getPlatformDb();
+  const current = await db.lesson.findFirst({ where: { id: lessonId, chapterId }, select: { id: true, pgn: true } });
+  if (!current) fail(lessonPath, "courseMissing");
+  const lesson = current;
+
+  try {
+    await db.$transaction(async (tx) => {
     await tx.lesson.update({
       where: { id: lesson.id },
       data: {
@@ -368,15 +385,26 @@ export async function updateLesson(
         initialPositionType: { connect: { code: initialPositionTypeCode } },
         initialFen,
         orientation: { connect: { code: orientationCode } },
+        isTrainable,
       },
     });
+
+    // El ejercicio derivado se mantiene aquí, dentro de la misma transacción:
+    // marcar la lección como entrenable y no dejarle línea que entrenar sería
+    // un estado a medias.
+    const sync = await syncLessonTrainingExercise(tx, { lessonId: lesson.id, pgn: current.pgn, isTrainable });
+    if (isTrainable && !sync.ok) throw new TrainingSyncError(sync.reason);
 
     await tx.lessonTopic.deleteMany({ where: { lessonId: lesson.id } });
     for (const topicId of topicIds) {
       const topic = await tx.topic.findUnique({ where: { id: topicId }, select: { id: true } });
       if (topic) await tx.lessonTopic.create({ data: { lessonId: lesson.id, topicId: topic.id } });
     }
-  });
+    });
+  } catch (error) {
+    if (error instanceof TrainingSyncError) fail(lessonPath, error.errorCode);
+    throw error;
+  }
 
   revalidatePath(lessonPath);
   revalidatePath(staffRoutes.chapterDetail(courseId, chapterId));
@@ -403,11 +431,15 @@ export async function updateLessonPgn(
   if (pgn.length > 0 && parsePgnTree(pgn) === null) fail(lessonPath, "pgn");
 
   const db = getPlatformDb();
-  const updated = await db.lesson.updateMany({
-    where: { id: lessonId, chapterId },
-    data: { pgn, pgnUpdatedAt: new Date() },
+  const lesson = await db.lesson.findFirst({ where: { id: lessonId, chapterId }, select: { id: true, isTrainable: true } });
+  if (!lesson) fail(lessonPath, "courseMissing");
+
+  await db.$transaction(async (tx) => {
+    await tx.lesson.update({ where: { id: lesson.id }, data: { pgn, pgnUpdatedAt: new Date() } });
+    // Si la lección es entrenable, su línea principal acaba de cambiar: el
+    // ejercicio derivado se rehace para no seguir pidiendo la línea anterior.
+    await syncLessonTrainingExercise(tx, { lessonId: lesson.id, pgn, isTrainable: lesson.isTrainable });
   });
-  if (updated.count === 0) fail(lessonPath, "courseMissing");
 
   revalidatePath(lessonPath);
 
