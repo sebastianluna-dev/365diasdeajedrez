@@ -5,7 +5,7 @@
   min-width: 0;
 
   & .platform-field__label {
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-text-muted);
   }
 
@@ -30,7 +30,7 @@
     background: var(--platform-surface);
     color: var(--platform-text);
     font-family: inherit;
-    font-size: 14px;
+    font-size: 15.5px;
   }
 
   & .platform-field__control textarea {
@@ -47,12 +47,12 @@
   }
 
   & .platform-field__hint {
-    font-size: 12.5px;
+    font-size: 14px;
     color: var(--platform-text-muted);
   }
 
   & .platform-field__error {
-    font-size: 12.5px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--platform-danger);
   }
@@ -75,7 +75,7 @@
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text);
   }
 }

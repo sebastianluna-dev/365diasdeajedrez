@@ -11,7 +11,7 @@
 
   & .chapter-detail__eyebrow {
     margin: 0;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -20,8 +20,8 @@
 
   & .chapter-detail__name {
     margin: 10px 0 0;
-    font-family: var(--font-gramatika), sans-serif;
-    font-size: 34px;
+    font-family: var(--platform-font);
+    font-size: 35.5px;
     font-weight: 700;
     line-height: 1.15;
     letter-spacing: -0.025em;
@@ -32,7 +32,7 @@
   & .chapter-detail__description {
     margin: 12px 0 0;
     max-width: 60ch;
-    font-size: 16px;
+    font-size: 17px;
     line-height: 1.6;
     color: var(--platform-text-muted);
     text-wrap: pretty;
@@ -40,7 +40,7 @@
 
   & .chapter-detail__meta {
     margin: 14px 0 0;
-    font-size: 13.5px;
+    font-size: 15px;
     color: var(--platform-text-subtle);
   }
 
@@ -72,7 +72,7 @@
 
   & .chapter-detail__progress .progress-indicator__percent,
   & .chapter-detail__progress .progress-indicator__detail {
-    font-size: 13.5px;
+    font-size: 15px;
   }
 
   & .chapter-detail__actions {
@@ -84,13 +84,13 @@
 
   & .chapter-detail__cta {
     padding: 13px 24px;
-    font-size: 14.5px;
+    font-size: 16px;
   }
 
   & .chapter-detail__lessons-title {
     margin: 42px 0 16px;
-    font-family: var(--font-gramatika), sans-serif;
-    font-size: 24px;
+    font-family: var(--platform-font);
+    font-size: 25px;
     font-weight: 700;
     letter-spacing: -0.02em;
     color: var(--platform-text);
@@ -102,7 +102,7 @@
     }
 
     & .chapter-detail__name {
-      font-size: 27px;
+      font-size: 28px;
     }
 
     /* Con dos botones, la fila del pie no cabe al lado de la barra. */

@@ -29,7 +29,7 @@ export function LessonList({ lessons }: LessonListProps) {
               <span className="lesson-list__info">
                 <span className="lesson-list__title">
                   <span className="lesson-list__name">{lesson.name}</span>
-                  {lesson.isPriority && <span className="lesson-list__priority">Clave</span>}
+                  {lesson.isPriority && <span className="lesson-list__priority">Prioridad</span>}
                 </span>
                 {lesson.description && <span className="lesson-list__description">{lesson.description}</span>}
               </span>

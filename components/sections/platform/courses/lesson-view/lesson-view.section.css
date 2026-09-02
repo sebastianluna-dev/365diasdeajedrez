@@ -5,44 +5,147 @@
 
   & .lesson-view__head {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 28px;
+  }
+
+  & .lesson-view__heading {
+    min-width: 0;
+  }
+
+  & .lesson-view__title-row {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    flex-wrap: wrap;
+  }
+
+  & .lesson-view__title {
+    margin: 0;
+    font-family: var(--platform-font);
+    font-size: 31px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--platform-text);
+    text-wrap: balance;
   }
 
   & .lesson-view__priority {
-    margin-left: 10px;
-    vertical-align: middle;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  & .lesson-view__description {
+    margin: 10px 0 0;
+    max-width: 70ch;
+    font-size: 16.5px;
+    line-height: 1.6;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .lesson-view__meta {
+    flex: none;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    color: var(--platform-text-subtle);
+    white-space: nowrap;
+  }
+
+  & .lesson-view__dot {
+    color: var(--platform-text-faint);
+  }
+
+  /* «Saltar» vive dentro de la barra de navegación del visor, así que copia la
+     medida de sus botones para no romper la fila. */
+  & .lesson-view__skip {
+    display: inline-flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 22px;
+    border-radius: 12px;
+    background: var(--platform-surface);
+    box-shadow: inset 0 0 0 1px var(--platform-border-strong);
+    color: var(--platform-text);
+    font-size: 15.5px;
+    font-weight: 700;
+  }
+
+  & .lesson-view__skip:hover {
+    box-shadow: inset 0 0 0 1px var(--platform-text);
+    color: var(--platform-text);
   }
 
   & .lesson-view__actions {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     flex-wrap: wrap;
   }
 
+  & .lesson-view__action {
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-size: 16px;
+  }
+
+  & .lesson-view__action-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  /* Ya hecha: verde y sin acción. No es un botón porque no hay nada que
+     pulsar; deshacerlo no es una operación que exista. */
   & .lesson-view__completed {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin: 0;
+    padding: 14px 24px;
+    border-radius: 12px;
     background: var(--platform-success-soft);
     color: var(--platform-success-ink);
-    font-size: 14px;
-    padding: 8px 16px;
+    font-size: 16px;
+    font-weight: 700;
   }
 
-  & .lesson-view__pager {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    padding-top: 8px;
-    border-top: 1px solid var(--platform-border);
+  & .lesson-view__completed-icon {
+    width: 17px;
+    height: 17px;
   }
 
-  & .lesson-view__pager-link {
-    font-size: 14px;
-    font-weight: 600;
+  & .lesson-view__back {
+    margin-left: auto;
+    font-size: 15px;
     color: var(--platform-text-muted);
   }
 
-  & .lesson-view__pager-link:hover {
+  & .lesson-view__back:hover {
     color: var(--platform-accent-ink);
+  }
+
+  @media (max-width: 760px) {
+    & .lesson-view__head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    & .lesson-view__title {
+      font-size: 25px;
+    }
+
+    & .lesson-view__back {
+      margin-left: 0;
+    }
   }
 }

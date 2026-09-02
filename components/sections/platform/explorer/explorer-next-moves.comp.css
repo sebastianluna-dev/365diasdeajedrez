@@ -4,7 +4,7 @@
   gap: 10px;
 
   & .explorer-next-moves__title {
-    font-size: 12.5px;
+    font-size: 14px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -14,7 +14,7 @@
 
   & .explorer-next-moves__empty {
     margin: 0;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text-muted);
   }
 
@@ -67,16 +67,16 @@
 
   & .explorer-next-moves__san {
     font-weight: 600;
-    font-size: 15px;
+    font-size: 16.5px;
   }
 
   & .explorer-next-moves__count {
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-text-muted);
   }
 
   & .explorer-next-moves__percentage {
-    font-size: 13px;
+    font-size: 14.5px;
     font-variant-numeric: tabular-nums;
     color: var(--platform-text-muted);
   }

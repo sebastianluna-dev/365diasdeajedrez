@@ -29,7 +29,7 @@
   }
 
   & .teacher-class__fact-label {
-    font-size: 12.5px;
+    font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--platform-text-muted);
@@ -37,7 +37,7 @@
 
   & .teacher-class__fact-value {
     margin: 0;
-    font-size: 14.5px;
+    font-size: 16px;
     color: var(--platform-text);
   }
 
@@ -47,7 +47,7 @@
 
   & .teacher-class__description {
     margin: 16px 0 0;
-    font-size: 14.5px;
+    font-size: 16px;
     line-height: 1.55;
     color: var(--platform-text-muted);
   }
@@ -60,14 +60,14 @@
 
   & .teacher-class__summary-title {
     margin: 0 0 6px;
-    font-size: 14px;
+    font-size: 15.5px;
     font-weight: 700;
     color: var(--platform-text);
   }
 
   & .teacher-class__summary-text {
     margin: 0;
-    font-size: 14.5px;
+    font-size: 16px;
     line-height: 1.55;
     color: var(--platform-text-muted);
     white-space: pre-wrap;
@@ -97,7 +97,7 @@
   & .teacher-class__transcript,
   & .teacher-class__preview-hint {
     margin: 0 0 12px;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text-muted);
   }
 }

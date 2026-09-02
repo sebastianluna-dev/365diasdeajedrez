@@ -1,12 +1,28 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { ChessBoard } from "@/components/common/chess-board.comp";
-import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
-import { FlipIcon } from "@/components/icons/flip-icon.comp";
-import { SkipIcon } from "@/components/icons/skip-icon.comp";
+import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
+import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
+import { BoardFlipIcon } from "@/components/icons/board-flip-icon.comp";
+import { FullscreenIcon } from "@/components/icons/fullscreen-icon.comp";
+import { GearIcon } from "@/components/icons/gear-icon.comp";
+import { JumpEndIcon } from "@/components/icons/jump-end-icon.comp";
+import { JumpStartIcon } from "@/components/icons/jump-start-icon.comp";
+import { SoundOffIcon } from "@/components/icons/sound-off-icon.comp";
+import { SoundOnIcon } from "@/components/icons/sound-on-icon.comp";
 import { endPathOf, nextPathOf, nodeAtPath, parentPathOf, parsePgnTree } from "@/lib/chess/pgn-tree";
 import { MoveTree } from "./move-tree.comp";
+import { playMoveSound } from "./move-sound";
+import { ViewerSettingsMenu } from "./viewer-settings-menu.comp";
+import {
+  getServerViewerPreferences,
+  getViewerPreferences,
+  setViewerPreferences,
+  subscribeToViewerPreferences,
+  type ViewerPreferences,
+} from "./viewer-preferences";
+import "./viewer-settings-menu.comp.css";
 import "./game-viewer.comp.css";
 
 interface GameViewerProps {
@@ -16,6 +32,22 @@ interface GameViewerProps {
   /** Ruta punteada donde abrir el visor (TrainingExercise.path / ClassBlock.movePath). */
   initialPath?: string;
   title?: string;
+  /** Segunda línea de la cabecera: capítulo, evento, lo que sitúe la partida. */
+  subtitle?: string;
+  /** Distintivo a la derecha del título («Prioridad»). */
+  badge?: string;
+  /**
+   * Botones extra de la cabecera del panel (abrir en el libro, guardar…). Van
+   * aquí y no dentro porque dependen de cada pantalla; el visor sólo reserva
+   * el sitio que el diseño les da.
+   */
+  headerActions?: ReactNode;
+  /** Botón que cierra la barra inferior, alineado a la derecha (las notas). */
+  footerActions?: ReactNode;
+  /** Acción de la barra inferior que trabaja sobre la posición actual. */
+  positionActions?: (fen: string) => ReactNode;
+  /** Botón «Saltar» bajo el tablero. Sin destino no se pinta. */
+  skip?: ReactNode;
   /**
    * Se avisa con la ruta punteada del nodo actual cada vez que cambia. Existe
    * para que el editor de bloques de clase pueda capturar «esta posición» sin
@@ -25,17 +57,46 @@ interface GameViewerProps {
   onPathChange?: (path: string) => void;
 }
 
+/** Piezas sobre el tablero, para distinguir una captura de una jugada normal. */
+function pieceCount(fen: string): number {
+  return (fen.split(" ")[0] ?? "").replace(/[^a-zA-Z]/g, "").length;
+}
+
 /**
  * EL visor de partidas de la plataforma: lecciones, partidas de Mis estudios y
  * bloques de clase usan este mismo componente (tablero + árbol de jugadas con
  * variantes y comentarios + navegación). No crear visores paralelos.
  */
-export function GameViewer({ pgn, orientation = "white", initialPath, title, onPathChange }: GameViewerProps) {
+export function GameViewer({
+  pgn,
+  orientation = "white",
+  initialPath,
+  title,
+  subtitle,
+  badge,
+  headerActions,
+  footerActions,
+  positionActions,
+  skip,
+  onPathChange,
+}: GameViewerProps) {
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
   const [currentPath, setCurrentPath] = useState<string>(() =>
     initialPath && tree?.nodesByPath.has(initialPath) ? initialPath : "",
   );
   const [flipToggled, setFlipToggled] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Almacén externo: la primera pintada usa los valores por defecto (que es lo
+  // único que el servidor puede saber) y React se pone al día con lo guardado
+  // en cuanto hidrata, sin un efecto que llame a setState.
+  const preferences = useSyncExternalStore<ViewerPreferences>(
+    subscribeToViewerPreferences,
+    getViewerPreferences,
+    getServerViewerPreferences,
+  );
+  const updatePreferences = useCallback((next: ViewerPreferences) => setViewerPreferences(next), []);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const isInViewportRef = useRef(false);
@@ -92,17 +153,46 @@ export function GameViewer({ pgn, orientation = "white", initialPath, title, onP
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goToNext, goToPrevious]);
 
+  // La pantalla completa puede salirse por Escape sin pasar por el botón, así
+  // que el estado se lee del documento y no de quien pulsó.
+  useEffect(() => {
+    const sync = () => setIsFullscreen(document.fullscreenElement === rootRef.current);
+    document.addEventListener("fullscreenchange", sync);
+    return () => document.removeEventListener("fullscreenchange", sync);
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    if (document.fullscreenElement) void document.exitFullscreen();
+    else void rootRef.current?.requestFullscreen().catch(() => undefined);
+  }, []);
+
+  const node = tree ? nodeAtPath(tree, currentPath) : null;
+  const fen = node?.fen ?? tree?.initialFen ?? "";
+
+  // Suena al cambiar de posición, nunca al montar: quien abre una lección no
+  // espera un golpe de salida.
+  const previousFenRef = useRef<string | null>(null);
+  useEffect(() => {
+    const previous = previousFenRef.current;
+    previousFenRef.current = fen;
+    if (previous === null || previous === fen || !fen) return;
+    if (!preferences.sound) return;
+    playMoveSound(pieceCount(fen) < pieceCount(previous) ? "capture" : "move");
+  }, [fen, preferences.sound]);
+
   if (!tree) {
     return <p className="game-viewer game-viewer_state_error">No se pudo leer el PGN de esta partida.</p>;
   }
 
-  const node = nodeAtPath(tree, currentPath);
   const flipBoard = (orientation === "black") !== flipToggled;
+  const hasHead = Boolean(title || subtitle || badge || headerActions);
 
   return (
-    <div className="game-viewer" ref={rootRef} onClick={() => (hasBeenClickedRef.current = true)}>
-      {title && <p className="game-viewer__title">{title}</p>}
-
+    <div
+      className={`game-viewer${isFullscreen ? " game-viewer_state_fullscreen" : ""}`}
+      ref={rootRef}
+      onClick={() => (hasBeenClickedRef.current = true)}
+    >
       {/* Un PGN con jugadas ilegales se mostraría recortado sin avisar; en
           desarrollo se listan los problemas para que el autor los corrija. */}
       {process.env.NODE_ENV !== "production" && tree.warnings.length > 0 && (
@@ -116,48 +206,116 @@ export function GameViewer({ pgn, orientation = "white", initialPath, title, onP
       )}
 
       <div className="game-viewer__layout">
-        <div className="game-viewer__board">
-          <ChessBoard
-            position={{
-              fen: node?.fen ?? tree.initialFen,
-              lastMove: node?.lastMove,
-              check: node?.check ?? false,
-              shapes: node ? node.shapes : tree.initialShapes,
-            }}
-            flipBoard={flipBoard}
-          />
+        <div className="game-viewer__board-card">
+          <div className="game-viewer__board">
+            <ChessBoard
+              position={{
+                fen,
+                lastMove: node?.lastMove,
+                check: node?.check ?? false,
+                shapes: node ? node.shapes : tree.initialShapes,
+              }}
+              flipBoard={flipBoard}
+              coordinates={preferences.coordinates}
+              animated={preferences.animation}
+            />
+          </div>
+
+          <div className="game-viewer__nav">
+            <button type="button" title="Primera jugada" onClick={goToStart} className="game-viewer__nav-button">
+              <JumpStartIcon className="game-viewer__nav-icon" />
+            </button>
+            <button type="button" title="Jugada anterior" onClick={goToPrevious} className="game-viewer__nav-button">
+              <ArrowLeftIcon className="game-viewer__nav-icon" />
+            </button>
+            <button
+              type="button"
+              title="Jugada siguiente"
+              onClick={goToNext}
+              className="game-viewer__nav-button game-viewer__nav-button_emphasis_strong"
+            >
+              <ArrowRightIcon className="game-viewer__nav-icon" />
+            </button>
+            <button type="button" title="Última jugada" onClick={goToEnd} className="game-viewer__nav-button">
+              <JumpEndIcon className="game-viewer__nav-icon" />
+            </button>
+
+            {skip && <div className="game-viewer__skip">{skip}</div>}
+          </div>
         </div>
 
         <div className="game-viewer__panel">
+          {hasHead && (
+            <div className="game-viewer__panel-head">
+              <div className="game-viewer__panel-heading">
+                {title && <p className="game-viewer__panel-title">{title}</p>}
+                {subtitle && <p className="game-viewer__panel-subtitle">{subtitle}</p>}
+              </div>
+              {badge && <span className="game-viewer__panel-badge">{badge}</span>}
+              {headerActions}
+            </div>
+          )}
+
           <div className="game-viewer__moves">
             <MoveTree tree={tree} currentPath={currentPath} onSelect={setCurrentPath} />
           </div>
 
           <div className="game-viewer__toolbar">
+            <div className="game-viewer__toolbar-anchor">
+              <button
+                type="button"
+                title="Ajustes del tablero"
+                aria-expanded={settingsOpen}
+                onClick={() => setSettingsOpen((open) => !open)}
+                className={`game-viewer__tool${settingsOpen ? " game-viewer__tool_state_active" : ""}`}
+              >
+                <GearIcon className="game-viewer__tool-icon" />
+              </button>
+
+              {settingsOpen && (
+                <ViewerSettingsMenu
+                  preferences={preferences}
+                  onChange={updatePreferences}
+                  onClose={() => setSettingsOpen(false)}
+                />
+              )}
+            </div>
+
             <button
               type="button"
-              aria-label="Voltear tablero"
+              title="Girar el tablero"
               onClick={() => setFlipToggled((current) => !current)}
               className="game-viewer__tool"
             >
-              <FlipIcon />
+              <BoardFlipIcon className="game-viewer__tool-icon" />
             </button>
-            <button type="button" aria-label="Ir al inicio" onClick={goToStart} className="game-viewer__tool">
-              <span className="game-viewer__tool-icon_flipped">
-                <SkipIcon />
-              </span>
+
+            <button
+              type="button"
+              title={preferences.sound ? "Silenciar" : "Activar el sonido"}
+              aria-pressed={preferences.sound}
+              onClick={() => updatePreferences({ ...preferences, sound: !preferences.sound })}
+              className="game-viewer__tool"
+            >
+              {preferences.sound ? (
+                <SoundOnIcon className="game-viewer__tool-icon" />
+              ) : (
+                <SoundOffIcon className="game-viewer__tool-icon" />
+              )}
             </button>
-            <button type="button" aria-label="Jugada anterior" onClick={goToPrevious} className="game-viewer__tool">
-              <span className="game-viewer__tool-icon_flipped">
-                <ChevronIcon />
-              </span>
+
+            <button
+              type="button"
+              title={isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
+              onClick={toggleFullscreen}
+              className="game-viewer__tool"
+            >
+              <FullscreenIcon className="game-viewer__tool-icon" />
             </button>
-            <button type="button" aria-label="Jugada siguiente" onClick={goToNext} className="game-viewer__tool">
-              <ChevronIcon />
-            </button>
-            <button type="button" aria-label="Ir al final" onClick={goToEnd} className="game-viewer__tool">
-              <SkipIcon />
-            </button>
+
+            {positionActions?.(fen)}
+
+            {footerActions && <div className="game-viewer__toolbar-end">{footerActions}</div>}
           </div>
         </div>
       </div>

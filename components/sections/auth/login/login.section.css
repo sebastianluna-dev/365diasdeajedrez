@@ -20,8 +20,8 @@
   }
 
   & .login__logo {
-    font-family: var(--font-gramatika), sans-serif;
-    font-size: 18px;
+    font-family: var(--platform-font);
+    font-size: 19px;
     font-weight: 700;
   }
 
@@ -36,13 +36,13 @@
   }
 
   & .login__title {
-    font-family: var(--font-gramatika), sans-serif;
-    font-size: 24px;
+    font-family: var(--platform-font);
+    font-size: 25px;
     font-weight: 700;
   }
 
   & .login__subtitle {
-    font-size: 14px;
+    font-size: 15.5px;
     line-height: 1.5;
     color: var(--platform-text-muted);
   }
@@ -60,7 +60,7 @@
   }
 
   & .login__label {
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-text-muted);
   }
 
@@ -72,7 +72,7 @@
     background: var(--platform-surface);
     color: var(--platform-text);
     font-family: inherit;
-    font-size: 15px;
+    font-size: 16.5px;
   }
 
   & .login__input:focus {
@@ -81,7 +81,7 @@
   }
 
   & .login__error {
-    font-size: 13px;
+    font-size: 14.5px;
     line-height: 1.4;
     color: var(--platform-danger);
   }
@@ -96,7 +96,7 @@
   }
 
   & .login__help {
-    font-size: 13px;
+    font-size: 14.5px;
     line-height: 1.5;
     color: var(--platform-text-muted);
   }

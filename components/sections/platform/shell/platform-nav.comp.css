@@ -4,7 +4,7 @@
   gap: 6px;
   /* Empuja el menú (y con él el bloque de usuario) al lado derecho de la barra. */
   margin-left: auto;
-  font-size: 14.5px;
+  font-size: 16px;
   font-weight: 500;
 
   & .platform-nav__group {

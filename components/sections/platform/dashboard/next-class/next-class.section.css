@@ -8,20 +8,20 @@
 
   & .next-class__name {
     margin: 0;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--platform-text);
   }
 
   & .next-class__teacher {
     margin: 0;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text-muted);
   }
 
   & .next-class__schedule {
     margin: 0;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text);
   }
 

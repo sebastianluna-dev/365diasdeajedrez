@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "@/app/(frontend)/globals.css";
-import { chessGlyph, gramatika, suisseIntl } from "@/app/(frontend)/fonts";
+import { chessGlyph, gramatika, sfProDisplay, suisseIntl } from "@/app/(frontend)/fonts";
 import "@/app/(platform)/platform.css";
 
 export const metadata: Metadata = {
@@ -14,7 +14,10 @@ export const metadata: Metadata = {
 // que ofrecer a quien todavía no ha entrado) pero con sus tokens visuales.
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="es" className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable}`}>
+    <html
+      lang="es"
+      className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} ${sfProDisplay.variable}`}
+    >
       <body className="platform-theme">{children}</body>
     </html>
   );

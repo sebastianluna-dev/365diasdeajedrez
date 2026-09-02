@@ -27,8 +27,8 @@
 
   & .course-detail__name {
     margin: 16px 0 0;
-    font-family: var(--font-gramatika), sans-serif;
-    font-size: 36px;
+    font-family: var(--platform-font);
+    font-size: 37.5px;
     font-weight: 700;
     line-height: 1.12;
     letter-spacing: -0.025em;
@@ -40,7 +40,7 @@
     margin: 14px 0 0;
     /* Medida de lectura: el texto no se estira aunque la columna crezca. */
     max-width: 56ch;
-    font-size: 16px;
+    font-size: 17px;
     line-height: 1.6;
     color: var(--platform-text-muted);
     text-wrap: pretty;
@@ -48,7 +48,7 @@
 
   & .course-detail__authors {
     margin: 16px 0 0;
-    font-size: 13.5px;
+    font-size: 15px;
     color: var(--platform-text-subtle);
   }
 
@@ -69,7 +69,7 @@
   & .course-detail__progress {
     flex: 1;
     min-width: 0;
-    font-size: 13.5px;
+    font-size: 15px;
   }
 
   /* Aquí la barra es un pelo más gruesa que en las tarjetas: es el progreso
@@ -84,13 +84,13 @@
 
   & .course-detail__progress .progress-indicator__percent,
   & .course-detail__progress .progress-indicator__detail {
-    font-size: 13.5px;
+    font-size: 15px;
   }
 
   & .course-detail__cta {
     flex: none;
     padding: 13px 24px;
-    font-size: 14.5px;
+    font-size: 16px;
   }
 
   & .course-detail__cover {
@@ -121,8 +121,8 @@
 
   & .course-detail__chapters-title {
     margin: 0;
-    font-family: var(--font-gramatika), sans-serif;
-    font-size: 24px;
+    font-family: var(--platform-font);
+    font-size: 25px;
     font-weight: 700;
     letter-spacing: -0.02em;
     color: var(--platform-text);
@@ -130,7 +130,7 @@
 
   & .course-detail__chapters-count {
     margin: 0;
-    font-size: 13.5px;
+    font-size: 15px;
     color: var(--platform-text-subtle);
   }
 
@@ -152,7 +152,7 @@
     }
 
     & .course-detail__name {
-      font-size: 28px;
+      font-size: 29px;
     }
 
     /* Apretado, el botón se pone debajo de la barra en vez de estrujarla. */

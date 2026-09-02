@@ -17,12 +17,12 @@
   }
 
   & .profile-summary__email {
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text);
   }
 
   & .profile-summary__since {
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-text-muted);
   }
 }

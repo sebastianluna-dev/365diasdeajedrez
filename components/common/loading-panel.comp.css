@@ -5,7 +5,7 @@
   gap: 12px;
   padding: 64px 24px;
   color: var(--platform-text-muted);
-  font-size: 15px;
+  font-size: 16.5px;
 
   & .loading-panel__spinner {
     width: 18px;

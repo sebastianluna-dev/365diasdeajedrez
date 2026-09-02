@@ -34,8 +34,8 @@
 
   & .course-card__name {
     margin: 15px 0 0;
-    font-family: var(--font-gramatika), sans-serif;
-    font-size: 23px;
+    font-family: var(--platform-font);
+    font-size: 24.5px;
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: -0.015em;
@@ -51,7 +51,7 @@
 
   & .course-card__description {
     margin: 10px 0 0;
-    font-size: 14.5px;
+    font-size: 16px;
     line-height: 1.6;
     color: var(--platform-text-muted);
     text-wrap: pretty;
@@ -59,7 +59,7 @@
 
   & .course-card__authors {
     margin: 14px 0 0;
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-text-subtle);
   }
 

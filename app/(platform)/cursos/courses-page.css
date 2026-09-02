@@ -25,8 +25,8 @@
      rótulo, así que hay que quitarle a `dd` la sangría que trae de serie. */
   & .courses-page__stat-value {
     margin: 0;
-    font-family: var(--font-gramatika), sans-serif;
-    font-size: 26px;
+    font-family: var(--platform-font);
+    font-size: 27px;
     font-weight: 700;
     color: var(--platform-text);
   }
@@ -37,7 +37,7 @@
 
   & .courses-page__stat-label {
     margin-top: 2px;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.09em;
     text-transform: uppercase;

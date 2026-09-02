@@ -213,6 +213,7 @@ export function mapLessonView(
     chapterId: chapter.id,
     chapterOrder: chapter.order,
     chapterName: chapter.name,
+    chapterLessonCount: chapter.lessons.length,
     id: lesson.id,
     order: lesson.order,
     name: lesson.name,

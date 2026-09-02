@@ -25,7 +25,7 @@
 
   & .teacher-form__hint {
     margin: 0;
-    font-size: 13.5px;
+    font-size: 15px;
     color: var(--platform-text-muted);
   }
 }

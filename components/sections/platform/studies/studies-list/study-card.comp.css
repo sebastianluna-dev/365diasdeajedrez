@@ -15,20 +15,20 @@
 
   & .study-card__name {
     margin: 0;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--platform-text);
   }
 
   & .study-card__description {
     margin: 0;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text-muted);
   }
 
   & .study-card__meta {
     margin: 4px 0 0;
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-text-muted);
   }
 }

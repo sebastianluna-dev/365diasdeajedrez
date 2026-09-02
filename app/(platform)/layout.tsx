@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "@/app/(frontend)/globals.css";
-import { chessGlyph, gramatika, suisseIntl } from "@/app/(frontend)/fonts";
+import { chessGlyph, gramatika, sfProDisplay, suisseIntl } from "@/app/(frontend)/fonts";
 import { PlatformShell } from "@/components/sections/platform/shell/platform-shell.section";
 import "./platform.css";
 
@@ -29,7 +29,10 @@ export const dynamic = "force-dynamic";
 // lo llaman en claro porque delegan los datos en sus secciones.
 export default function PlatformLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="es" className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable}`}>
+    <html
+      lang="es"
+      className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} ${sfProDisplay.variable}`}
+    >
       <body className="platform-theme">
         <PlatformShell>{children}</PlatformShell>
       </body>

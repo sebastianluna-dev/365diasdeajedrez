@@ -15,7 +15,7 @@
     border-radius: 999px;
     background: transparent;
     color: var(--platform-text-muted);
-    font-size: 13px;
+    font-size: 14.5px;
     font-weight: 600;
     font-family: inherit;
     cursor: pointer;
@@ -56,14 +56,14 @@
   }
 
   & .stats-cards__value {
-    font-size: 26px;
+    font-size: 27px;
     font-weight: 700;
     color: var(--platform-text);
     line-height: 1;
   }
 
   & .stats-cards__label {
-    font-size: 12.5px;
+    font-size: 14px;
     color: var(--platform-text-muted);
   }
 
@@ -75,7 +75,7 @@
   }
 
   & .stats-cards__topics-title {
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-text-muted);
   }
 }

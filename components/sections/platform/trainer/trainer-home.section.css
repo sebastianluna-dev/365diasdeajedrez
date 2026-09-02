@@ -13,7 +13,7 @@
 
   & .trainer-home__group-title {
     margin: 0 0 12px;
-    font-size: 18px;
+    font-size: 19px;
     font-weight: 700;
     color: var(--platform-text);
   }
@@ -48,7 +48,7 @@
   }
 
   & .trainer-home__row-name {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
     color: var(--platform-text);
   }
@@ -59,7 +59,7 @@
 
   & .trainer-home__row-meta {
     margin: 3px 0 0;
-    font-size: 13.5px;
+    font-size: 15px;
     color: var(--platform-text-muted);
   }
 

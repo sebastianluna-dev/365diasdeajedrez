@@ -6,21 +6,21 @@
 
   & .empty-state__title {
     margin: 0;
-    font-size: 15px;
+    font-size: 16.5px;
     font-weight: 600;
     color: var(--platform-text);
   }
 
   & .empty-state__description {
     margin: 6px 0 0;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text-muted);
   }
 
   & .empty-state__action {
     display: inline-block;
     margin-top: 14px;
-    font-size: 14px;
+    font-size: 15.5px;
     font-weight: 600;
     color: var(--platform-accent-ink);
   }

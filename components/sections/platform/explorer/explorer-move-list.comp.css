@@ -4,7 +4,7 @@
   gap: 10px;
 
   & .explorer-move-list__title {
-    font-size: 12.5px;
+    font-size: 14px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -14,7 +14,7 @@
 
   & .explorer-move-list__hint {
     margin: 0;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text-muted);
   }
 
@@ -36,7 +36,7 @@
   }
 
   & .explorer-move-list__number {
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-text-muted);
     font-variant-numeric: tabular-nums;
   }
@@ -50,7 +50,7 @@
     border-radius: 6px;
     padding: 4px 6px;
     font: inherit;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text);
     cursor: pointer;
     text-align: left;

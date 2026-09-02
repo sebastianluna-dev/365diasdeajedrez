@@ -30,7 +30,7 @@
     background: var(--platform-surface);
     color: var(--platform-text);
     font: inherit;
-    font-size: 14px;
+    font-size: 15.5px;
     cursor: pointer;
   }
 
@@ -63,7 +63,7 @@
 
   & .game-explorer__error {
     margin: 0;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-danger);
   }
 }

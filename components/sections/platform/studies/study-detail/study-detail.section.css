@@ -7,7 +7,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 13.5px;
+    font-size: 15px;
   }
 
   & .study-detail__breadcrumb-link {
@@ -46,7 +46,7 @@
 
   & .study-detail__delete-text {
     margin: 0;
-    font-size: 13.5px;
+    font-size: 15px;
     line-height: 1.5;
     color: var(--platform-text-muted);
   }
@@ -55,7 +55,7 @@
     display: flex;
     align-items: start;
     gap: 8px;
-    font-size: 13.5px;
+    font-size: 15px;
     line-height: 1.5;
     color: var(--platform-text);
   }

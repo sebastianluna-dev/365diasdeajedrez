@@ -19,7 +19,7 @@
   }
 
   & .progress-indicator__label {
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-text-muted);
     white-space: nowrap;
   }
@@ -33,13 +33,13 @@
   }
 
   & .progress-indicator__percent {
-    font-size: 13px;
+    font-size: 14.5px;
     font-weight: 700;
     color: var(--platform-text);
   }
 
   & .progress-indicator__detail {
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-text-muted);
   }
 

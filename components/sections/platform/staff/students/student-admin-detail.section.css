@@ -30,7 +30,7 @@
   }
 
   & .student-admin__fact-label {
-    font-size: 12.5px;
+    font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--platform-text-muted);
@@ -38,7 +38,7 @@
 
   & .student-admin__fact-value {
     margin: 0;
-    font-size: 14.5px;
+    font-size: 16px;
     color: var(--platform-text);
   }
 }

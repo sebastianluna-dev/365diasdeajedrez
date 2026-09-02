@@ -8,7 +8,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 8px;
-    font-size: 13.5px;
+    font-size: 15px;
   }
 
   & .game-view__breadcrumb-link {
@@ -36,7 +36,7 @@
 
   & .game-view__source {
     margin: 0;
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-text-muted);
   }
 

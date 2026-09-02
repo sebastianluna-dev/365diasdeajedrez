@@ -12,7 +12,7 @@
 
   & .game-table__header {
     text-align: left;
-    font-size: 12.5px;
+    font-size: 14px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -27,7 +27,7 @@
 
   & .game-table__cell {
     padding: 12px 16px;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text-muted);
     border-bottom: 1px solid var(--platform-border);
   }

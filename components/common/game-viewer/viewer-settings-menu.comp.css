@@ -1,0 +1,54 @@
+.viewer-settings-menu {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  z-index: 5;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  background: var(--platform-surface);
+  border-radius: 14px;
+  box-shadow:
+    var(--platform-shadow-card),
+    0 0 0 1px var(--platform-border);
+
+  & .viewer-settings-menu__option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+
+  & .viewer-settings-menu__option:hover {
+    background: var(--platform-bg);
+  }
+
+  & .viewer-settings-menu__input {
+    margin: 2px 0 0;
+    flex: none;
+    accent-color: var(--platform-accent);
+  }
+
+  & .viewer-settings-menu__text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+
+  & .viewer-settings-menu__label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .viewer-settings-menu__hint {
+    font-size: 13px;
+    line-height: 1.35;
+    color: var(--platform-text-subtle);
+  }
+}

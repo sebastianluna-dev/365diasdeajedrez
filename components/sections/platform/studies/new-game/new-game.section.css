@@ -8,7 +8,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 8px;
-    font-size: 13.5px;
+    font-size: 15px;
   }
 
   & .new-game__breadcrumb-link {
@@ -36,7 +36,7 @@
 
   & .new-game__hint {
     margin: 0 0 12px;
-    font-size: 13.5px;
+    font-size: 15px;
     color: var(--platform-text-muted);
   }
 

@@ -5,7 +5,7 @@
 
   & .student-study__breadcrumb {
     margin: 0;
-    font-size: 13.5px;
+    font-size: 15px;
     color: var(--platform-text-muted);
   }
 
@@ -25,7 +25,7 @@
 
   & .student-study__description {
     margin: 0;
-    font-size: 14.5px;
+    font-size: 16px;
     color: var(--platform-text-muted);
   }
 }

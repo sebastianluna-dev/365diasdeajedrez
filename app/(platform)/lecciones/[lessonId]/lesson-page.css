@@ -1,3 +1,5 @@
 .lesson-page {
-  /* Estructura heredada de .platform-page. */
+  /* Las migas van pegadas a la barra, como en curso y capítulo. */
+  margin-top: -20px;
+  gap: 18px;
 }

@@ -71,6 +71,10 @@ interface ChessBoardProps {
    */
   editableShapes?: boolean;
   onShapesChange?: (shapes: DrawShape[]) => void;
+  /** Letras y números del borde. Ajuste del visor, por defecto encendido. */
+  coordinates?: boolean;
+  /** Deslizar la pieza al cambiar de jugada, en vez de aparecer y ya. */
+  animated?: boolean;
 }
 
 export function ChessBoard({
@@ -82,6 +86,8 @@ export function ChessBoard({
   onMove,
   editableShapes = false,
   onShapesChange,
+  coordinates = true,
+  animated = true,
 }: ChessBoardProps) {
   const positions = useMemo(() => replayGame(pgn ?? ""), [pgn]);
   const total = positions.length - 1;
@@ -154,8 +160,8 @@ export function ChessBoard({
   useEffect(() => {
     if (!boardRef.current) return;
     const api = Chessground(boardRef.current, {
-      coordinates: true,
-      animation: { enabled: true, duration: 200 },
+      coordinates,
+      animation: { enabled: animated, duration: 200 },
       viewOnly: !interactive,
       draggable: { enabled: interactive },
       selectable: { enabled: interactive },
@@ -169,6 +175,10 @@ export function ChessBoard({
       api.destroy();
       apiRef.current = null;
     };
+  // `coordinates` y `animated` quedan fuera a propósito: aquí sólo son el
+  // valor de arranque. Meterlos destruiría y recrearía el tablero en cada
+  // cambio de ajuste; del cambio se encarga el api.set() de abajo.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interactive, editableShapes]);
 
   // Push the current position into chessground.
@@ -183,6 +193,8 @@ export function ChessBoard({
       orientation,
       turnColor: color,
       check: check ? color : false,
+      coordinates,
+      animation: { enabled: animated, duration: 200 },
     };
     if (interactive) {
       config.movable = {
@@ -210,7 +222,7 @@ export function ChessBoard({
     if (editableShapes) config.drawable = { shapes: position?.shapes ?? [] };
     api.set(config);
     if (!editableShapes) api.setAutoShapes(position?.shapes ?? []);
-  }, [ply, positions, position, orientation, interactive, editableShapes]);
+  }, [ply, positions, position, orientation, interactive, editableShapes, coordinates, animated]);
 
   // Keep chessground sized to its container.
   useEffect(() => {

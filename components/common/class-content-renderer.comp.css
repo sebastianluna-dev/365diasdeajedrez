@@ -5,14 +5,14 @@
 
   & .class-content__text-heading {
     margin: 0 0 10px;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--platform-text);
   }
 
   & .class-content__text-paragraph {
     margin: 0 0 10px;
-    font-size: 15px;
+    font-size: 16.5px;
     line-height: 1.65;
     color: var(--platform-text-muted, var(--platform-text-subtle));
     white-space: pre-line;
@@ -38,7 +38,7 @@
 
   & .class-content__link-kind {
     flex: none;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -46,7 +46,7 @@
   }
 
   & .class-content__link-label {
-    font-size: 14.5px;
+    font-size: 16px;
     color: var(--platform-text);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -56,14 +56,14 @@
   & .class-content__game-link {
     display: inline-block;
     margin-top: 10px;
-    font-size: 14px;
+    font-size: 15.5px;
     font-weight: 600;
     color: var(--platform-accent-ink);
   }
 
   & .class-content__caption {
     margin: 8px 0 0;
-    font-size: 13.5px;
+    font-size: 15px;
     color: var(--platform-text-muted);
   }
 }

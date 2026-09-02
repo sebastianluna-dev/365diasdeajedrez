@@ -20,7 +20,7 @@
   & .teacher-classes__filter {
     padding: 7px 13px;
     border-radius: 999px;
-    font-size: 13.5px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--platform-text-muted);
     background: var(--platform-surface-neutral);
@@ -43,7 +43,7 @@
 
   & .teacher-classes__group-title {
     margin: 0;
-    font-size: 18px;
+    font-size: 19px;
     font-weight: 700;
     color: var(--platform-text);
   }

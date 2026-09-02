@@ -8,14 +8,14 @@
 
   & .continue-studying__course {
     margin: 0;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--platform-text);
   }
 
   & .continue-studying__lesson {
     margin: 0;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text-muted);
   }
 

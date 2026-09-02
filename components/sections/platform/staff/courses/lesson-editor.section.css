@@ -5,7 +5,7 @@
 
   & .lesson-editor__breadcrumb {
     margin: 0;
-    font-size: 13.5px;
+    font-size: 15px;
     color: var(--platform-text-muted);
   }
 
@@ -44,7 +44,7 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text);
   }
 }

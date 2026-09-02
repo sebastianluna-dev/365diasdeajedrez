@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { CourseNavigation } from "@/components/common/course-navigation.comp";
 import { GameViewer } from "@/components/common/game-viewer/game-viewer.comp";
+import { CheckIcon } from "@/components/icons/check-icon.comp";
+import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { completeLesson } from "@/services/courses/courses.actions";
 import type { LessonView } from "@/services/courses/courses.types";
@@ -19,60 +20,97 @@ export function LessonViewSection({ lesson }: LessonViewSectionProps) {
     <section className="lesson-view">
       <LessonTracker lessonId={lesson.id} />
 
-      <CourseNavigation
-        courseId={lesson.courseId}
-        courseName={lesson.courseName}
-        chapterOrder={lesson.chapterOrder}
-        chapterName={lesson.chapterName}
-        lessonName={lesson.name}
-      />
-
       <header className="lesson-view__head">
-        <h1 className="platform-page__title">
-          {lesson.order}. {lesson.name}
-          {lesson.isPriority && <span className="platform-tag platform-tag_variant_accent lesson-view__priority">Clave</span>}
-        </h1>
-        {lesson.description && <p className="platform-page__subtitle">{lesson.description}</p>}
+        <div className="lesson-view__heading">
+          <div className="lesson-view__title-row">
+            <h1 className="lesson-view__title">
+              {lesson.order}. {lesson.name}
+            </h1>
+            {lesson.isPriority && <span className="lesson-view__priority">Prioridad</span>}
+          </div>
+          {lesson.description && <p className="lesson-view__description">{lesson.description}</p>}
+        </div>
+
+        <p className="lesson-view__meta">
+          <span>
+            Lección {lesson.order} de {lesson.chapterLessonCount}
+          </span>
+          {lesson.estimatedDuration && (
+            <>
+              <span className="lesson-view__dot">·</span>
+              <span>{lesson.estimatedDuration} min</span>
+            </>
+          )}
+        </p>
       </header>
 
-      <GameViewer pgn={lesson.pgn} orientation={lesson.orientation} />
+      <GameViewer
+        pgn={lesson.pgn}
+        orientation={lesson.orientation}
+        title={lesson.name}
+        subtitle={`${lesson.chapterName} · Lección ${lesson.order}`}
+        badge={lesson.isPriority ? "Prioridad" : undefined}
+        skip={
+          lesson.nextLessonHref && (
+            <Link
+              href={lesson.nextLessonHref}
+              className="lesson-view__skip"
+              title="Pasar a la siguiente lección sin marcar esta"
+            >
+              Saltar
+            </Link>
+          )
+        }
+      />
 
       <div className="lesson-view__actions">
         {isCompleted ? (
-          <span className="platform-tag lesson-view__completed">Lección completada ✓</span>
+          <p className="lesson-view__completed">
+            <CheckIcon className="lesson-view__completed-icon" />
+            Lección completada
+          </p>
         ) : (
           <form action={completeAction}>
-            <button type="submit" className="platform-button">
+            <button type="submit" className="platform-button lesson-view__action">
               Marcar como completada
             </button>
           </form>
         )}
 
-        {lesson.trainerHref && (
-          <Link href={lesson.trainerHref} className="platform-button platform-button_variant_secondary">
-            Entrenar esta lección ({lesson.exerciseCount})
-          </Link>
-        )}
-      </div>
-
-      <nav className="lesson-view__pager" aria-label="Navegación entre lecciones">
-        {lesson.prevLessonHref ? (
-          <Link href={lesson.prevLessonHref} className="lesson-view__pager-link">
-            ← Lección anterior
-          </Link>
-        ) : (
-          <span />
-        )}
         {lesson.nextLessonHref ? (
-          <Link href={lesson.nextLessonHref} className="lesson-view__pager-link">
-            Siguiente lección →
+          <Link
+            href={lesson.nextLessonHref}
+            className="platform-button platform-button_variant_secondary lesson-view__action"
+          >
+            Siguiente lección
+            <ArrowRightIcon className="lesson-view__action-icon" />
           </Link>
         ) : (
-          <Link href={lesson.chapterHref} className="lesson-view__pager-link">
+          <Link
+            href={lesson.chapterHref}
+            className="platform-button platform-button_variant_secondary lesson-view__action"
+          >
             Volver al capítulo
           </Link>
         )}
-      </nav>
+
+        {lesson.trainerHref && (
+          <Link
+            href={lesson.trainerHref}
+            className="platform-button platform-button_variant_secondary lesson-view__action"
+          >
+            Entrenar esta lección ({lesson.exerciseCount})
+          </Link>
+        )}
+
+        {/* El diseño no lo dibuja, pero sin esto sólo se puede retroceder por
+            el botón del navegador. Va apartado a la derecha y en discreto. */}
+        {lesson.prevLessonHref && (
+          <Link href={lesson.prevLessonHref} className="lesson-view__back">
+            ← Lección anterior
+          </Link>
+        )}
+      </div>
     </section>
   );
 }

@@ -19,7 +19,7 @@
 
   & .analysis-board__hint {
     margin: 0;
-    font-size: 12.5px;
+    font-size: 14px;
     line-height: 1.5;
     color: var(--platform-text-muted);
   }
@@ -43,7 +43,7 @@
 
   & .analysis-board__empty {
     margin: 0;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text-muted);
   }
 
@@ -52,7 +52,7 @@
     padding: 8px 12px 8px 28px;
     border-left: 3px solid var(--platform-danger);
     border-radius: 4px;
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-text-muted);
   }
 
@@ -96,7 +96,7 @@
     border-bottom: 2px solid transparent;
     background: transparent;
     font-family: inherit;
-    font-size: 13.5px;
+    font-size: 15px;
     color: var(--platform-text-muted);
     cursor: pointer;
   }
@@ -119,20 +119,20 @@
     border-radius: 8px;
     background: var(--platform-surface);
     font-family: inherit;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text);
     resize: vertical;
   }
 
   & .analysis-board__note {
     margin: 0;
-    font-size: 12.5px;
+    font-size: 14px;
     color: var(--platform-text-muted);
   }
 
   & .analysis-board__group-title {
     margin: 4px 0 0;
-    font-size: 12.5px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--platform-text-muted);
   }
@@ -150,7 +150,7 @@
     border-radius: 6px;
     background: transparent;
     font-family: inherit;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text);
     cursor: pointer;
   }
@@ -172,12 +172,12 @@
   }
 
   & .analysis-board__dirty {
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-accent-ink);
   }
 
   & .analysis-board__save {
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-text-muted);
   }
 
@@ -205,14 +205,14 @@
     border-radius: 8px;
     background: var(--platform-surface);
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 12.5px;
+    font-size: 14px;
     color: var(--platform-text);
     resize: vertical;
   }
 
   & .analysis-board__paste-error {
     margin: 0;
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-danger);
   }
 }

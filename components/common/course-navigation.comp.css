@@ -3,7 +3,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 9px;
-  font-size: 13.5px;
+  font-size: 15px;
 
   & .course-navigation__link {
     color: var(--platform-text-muted);

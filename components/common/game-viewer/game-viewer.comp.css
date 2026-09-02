@@ -1,112 +1,217 @@
 .game-viewer {
-  width: 100%;
-  border-radius: 14px;
-  overflow: hidden;
-  background: var(--platform-surface);
-  border: 1px solid var(--platform-border);
-
-  &.game-viewer_state_error {
-    display: block;
-    padding: 24px;
-    color: var(--platform-text-muted);
-    font-size: 15px;
-  }
-
-  & .game-viewer__title {
-    margin: 0;
-    padding: 14px 18px;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--platform-text);
-    border-bottom: 1px solid var(--platform-border);
-  }
-
-  & .game-viewer__warnings {
-    list-style: none;
-    margin: 0;
-    padding: 10px 18px;
-    border-bottom: 1px solid var(--platform-border);
-    background: var(--platform-danger-soft);
-  }
-
-  & .game-viewer__warning {
-    font-size: 13px;
-    line-height: 1.5;
-    color: var(--platform-danger);
-  }
-
   & .game-viewer__layout {
-    display: flex;
+    display: grid;
+    /* El tablero manda: crece hasta 632px y ahí se planta, para que el panel
+       de jugadas se quede con el resto en vez de estirarse a lo tonto. */
+    grid-template-columns: minmax(0, 632px) minmax(0, 1fr);
+    gap: 22px;
     align-items: stretch;
+  }
 
-    @media (max-width: 900px) {
-      flex-direction: column;
-    }
+  & .game-viewer__board-card,
+  & .game-viewer__panel {
+    background: var(--platform-surface);
+    border-radius: 20px;
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .game-viewer__board-card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+    min-width: 0;
   }
 
   & .game-viewer__board {
-    width: 58%;
-    flex: none;
-    align-self: flex-start;
+    border-radius: 12px;
+    overflow: hidden;
+  }
 
-    @media (max-width: 900px) {
-      width: 100%;
-    }
+  & .game-viewer__nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  & .game-viewer__nav-button {
+    width: 56px;
+    height: 48px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 12px;
+    background: var(--platform-surface);
+    color: var(--platform-text-muted);
+    box-shadow: inset 0 0 0 1px var(--platform-border-strong);
+    cursor: pointer;
+  }
+
+  & .game-viewer__nav-button:hover {
+    box-shadow: inset 0 0 0 1px var(--platform-text);
+    color: var(--platform-text);
+  }
+
+  /* «Siguiente» es lo que se pulsa el 90 % de las veces: va perfilado en
+     oscuro para encontrarlo sin leer los iconos. */
+  & .game-viewer__nav-button.game-viewer__nav-button_emphasis_strong {
+    color: var(--platform-text);
+    box-shadow: inset 0 0 0 1px var(--platform-text);
+  }
+
+  & .game-viewer__nav-button.game-viewer__nav-button_emphasis_strong:hover {
+    background: var(--platform-text);
+    color: var(--platform-surface);
+  }
+
+  & .game-viewer__nav-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  & .game-viewer__skip {
+    margin-left: auto;
   }
 
   & .game-viewer__panel {
-    flex: 1;
-    min-width: 0;
     display: flex;
     flex-direction: column;
-    border-left: 1px solid var(--platform-border);
+    min-width: 0;
+    /* Recorta la cabecera y la barra contra el redondeo de la tarjeta. */
+    overflow: hidden;
+  }
 
-    @media (max-width: 900px) {
-      border-left: 0;
-      border-top: 1px solid var(--platform-border);
-    }
+  & .game-viewer__panel-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px;
+    box-shadow: inset 0 -1px 0 var(--platform-track);
+  }
+
+  & .game-viewer__panel-heading {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & .game-viewer__panel-title {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+    color: var(--platform-text);
+  }
+
+  & .game-viewer__panel-subtitle {
+    margin: 5px 0 0;
+    font-size: 14.5px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .game-viewer__panel-badge {
+    flex: none;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
   }
 
   & .game-viewer__moves {
     flex: 1;
     min-height: 0;
-    max-height: 460px;
+    padding: 22px;
     overflow: auto;
-    padding: 14px 16px;
-    scrollbar-color: var(--platform-text-muted) var(--platform-surface-neutral);
-
-    @media (max-width: 900px) {
-      max-height: 320px;
-    }
   }
 
   & .game-viewer__toolbar {
     display: flex;
+    align-items: center;
     gap: 4px;
-    padding: 8px 12px;
-    border-top: 1px solid var(--platform-border);
+    padding: 12px 18px;
+    box-shadow: inset 0 1px 0 var(--platform-track);
+  }
+
+  /* Ancla del menú de ajustes, que se despliega hacia arriba. */
+  & .game-viewer__toolbar-anchor {
+    position: relative;
+    display: flex;
   }
 
   & .game-viewer__tool {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    border: 0;
-    background: transparent;
-    color: var(--platform-text-muted);
+    width: 42px;
+    height: 42px;
+    flex: none;
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 0;
+    border-radius: 11px;
+    background: transparent;
+    color: var(--platform-text-subtle);
     cursor: pointer;
   }
 
-  & .game-viewer__tool:hover {
-    background: var(--platform-surface-neutral);
+  & .game-viewer__tool:hover,
+  & .game-viewer__tool.game-viewer__tool_state_active {
+    background: var(--platform-bg);
     color: var(--platform-text);
   }
 
-  & .game-viewer__tool-icon_flipped {
-    display: flex;
-    transform: rotate(180deg);
+  & .game-viewer__tool-icon {
+    width: 19px;
+    height: 19px;
   }
+
+  & .game-viewer__toolbar-end {
+    margin-left: auto;
+  }
+
+  & .game-viewer__warnings {
+    margin: 0 0 12px;
+    padding: 10px 14px;
+    list-style: none;
+    border-radius: 10px;
+    background: var(--platform-danger-soft);
+    color: var(--platform-danger);
+    font-size: 14.5px;
+  }
+
+  & .game-viewer__warning + .game-viewer__warning {
+    margin-top: 4px;
+  }
+
+  /* A pantalla completa el visor pinta su propio fondo: por debajo queda el
+     negro del navegador, no la página. */
+  &.game-viewer_state_fullscreen {
+    background: var(--platform-bg);
+    padding: 22px;
+    overflow: auto;
+  }
+
+  /* Cuando el tablero ya no cabe al lado del panel, se apilan. El panel deja
+     de estirarse a lo alto para no dejar un hueco vacío bajo las jugadas. */
+  @media (max-width: 1080px) {
+    & .game-viewer__layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    & .game-viewer__moves {
+      max-height: 420px;
+    }
+  }
+}
+
+.game-viewer.game-viewer_state_error {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--platform-danger-soft);
+  color: var(--platform-danger);
+  font-size: 15.5px;
 }

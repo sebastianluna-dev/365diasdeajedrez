@@ -44,6 +44,11 @@
 
   --platform-track: #efeae3;
 
+  /* Tipografía. La plataforma va entera con SF Pro Display —display y texto—;
+     Gramatika y Suisse Intl se quedan en la web pública. Un solo token para
+     que ningún archivo de la zona privada nombre una fuente concreta. */
+  --platform-font: var(--font-sf-pro), -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+
   /* Colores semánticos. El par de éxito viene del diseño del capítulo
      (#E7F0EA / #2F6B51); los de error y aviso están derivados con la misma
      claridad de fondo y el mismo contraste de tinta, a falta de que el diseño
@@ -72,6 +77,7 @@
 body.platform-theme {
   background: var(--platform-bg);
   color: var(--platform-text);
+  font-family: var(--platform-font);
 }
 
 .platform-theme ::selection {
@@ -95,8 +101,8 @@ body.platform-theme {
 
 .platform-page__title {
   margin: 0;
-  font-family: var(--font-gramatika), sans-serif;
-  font-size: 38px;
+  font-family: var(--platform-font);
+  font-size: 39.5px;
   font-weight: 700;
   letter-spacing: -0.025em;
   color: var(--platform-text);
@@ -105,7 +111,7 @@ body.platform-theme {
 
 .platform-page__subtitle {
   margin: 0;
-  font-size: 16px;
+  font-size: 17px;
   color: var(--platform-text-muted);
 }
 
@@ -118,7 +124,7 @@ body.platform-theme {
 
 .platform-card__title {
   margin: 0 0 14px;
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--platform-text);
 }
@@ -133,7 +139,7 @@ body.platform-theme {
   border-radius: 11px;
   background: var(--platform-accent);
   color: var(--platform-text);
-  font-size: 14px;
+  font-size: 15.5px;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
@@ -175,7 +181,7 @@ body.platform-theme {
   display: inline-block;
   padding: 5px 11px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
   background: var(--platform-surface-neutral);
   color: var(--platform-text-muted);

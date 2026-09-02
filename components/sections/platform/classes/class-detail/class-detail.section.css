@@ -8,7 +8,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 8px;
-    font-size: 13.5px;
+    font-size: 15px;
   }
 
   & .class-detail__breadcrumb-link {
@@ -37,27 +37,27 @@
 
   & .class-detail__meta {
     margin: 0;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text-muted);
   }
 
   & .class-detail__summary-text {
     margin: 0;
-    font-size: 14.5px;
+    font-size: 16px;
     line-height: 1.65;
     color: var(--platform-text-muted);
   }
 
   & .class-detail__content-title {
     margin: 0 0 14px;
-    font-size: 18px;
+    font-size: 19px;
     font-weight: 700;
     color: var(--platform-text);
   }
 
   & .class-detail__transcript-text {
     margin: 0;
-    font-size: 14px;
+    font-size: 15.5px;
     line-height: 1.7;
     color: var(--platform-text-muted);
     white-space: pre-line;
@@ -65,7 +65,7 @@
 
   & .class-detail__transcript-status {
     margin: 0;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text-muted);
   }
 }

@@ -32,7 +32,7 @@
   & .class-block-editor__summary {
     flex: 1 1 220px;
     min-width: 0;
-    font-size: 14px;
+    font-size: 15.5px;
     color: var(--platform-text);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -53,7 +53,7 @@
     background: transparent;
     color: var(--platform-text-muted);
     font-family: inherit;
-    font-size: 13px;
+    font-size: 14.5px;
     font-weight: 600;
     cursor: pointer;
   }
@@ -75,7 +75,7 @@
 
   & .class-block-editor__warning {
     margin: 0;
-    font-size: 13px;
+    font-size: 14.5px;
     color: var(--platform-accent-ink);
   }
 

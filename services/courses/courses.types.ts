@@ -94,6 +94,8 @@ export interface LessonView {
   /** Número de orden: es lo que direcciona al capítulo en la URL. */
   chapterOrder: number;
   chapterName: string;
+  /** Lecciones del capítulo, para situar esta dentro («Lección 1 de 3»). */
+  chapterLessonCount: number;
   id: string;
   order: number;
   name: string;
