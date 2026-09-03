@@ -14,6 +14,7 @@ import {
   setCommentText,
   setNags,
   setShapes,
+  variationPgn,
 } from "./pgn-edit";
 import { nodeAtPath, parsePgnTree } from "./pgn-tree";
 
@@ -193,6 +194,41 @@ describe("positionAtPath", () => {
   it("devuelve null ante una ruta rota", () => {
     const game = parseEditableGame("1. e4 *")!;
     expect(positionAtPath(game, "5")).toBeNull();
+  });
+});
+
+describe("variationPgn", () => {
+  it("copia la línea que pasa por la jugada, sin las hermanas", () => {
+    const game = parseEditableGame("1. e4 e5 ( 1... c5 2. Nf3 d6 ) 2. Nf3 *")!;
+
+    // Desde la siciliana: la línea entera hasta su final, con 1.e4 delante y
+    // sin rastro de 1...e5.
+    expect(movetext(variationPgn(game, "0.1")!)).toBe("1. e4 c5 2. Nf3 d6 *");
+  });
+
+  it("conserva comentarios, anotaciones y cabeceras", () => {
+    const pgn = '[Event "Prueba"]\n\n1. e4 {Centro} e5 $1 *';
+    const game = parseEditableGame(pgn)!;
+
+    const copy = variationPgn(game, "0.0")!;
+
+    expect(copy).toContain('[Event "Prueba"]');
+    expect(movetext(copy)).toBe("1. e4 {Centro} e5 $1 *");
+  });
+
+  it("devuelve null en la posición inicial y ante una ruta rota", () => {
+    const game = parseEditableGame("1. e4 *")!;
+
+    expect(variationPgn(game, "")).toBeNull();
+    expect(variationPgn(game, "7")).toBeNull();
+  });
+
+  it("no arranca los hijos de la partida original", () => {
+    const game = parseEditableGame("1. e4 e5 2. Nf3 *")!;
+
+    variationPgn(game, "0");
+
+    expect(movetext(serializeGame(game))).toBe("1. e4 e5 2. Nf3 *");
   });
 });
 

@@ -214,6 +214,42 @@ export function promoteToMainLine(game: Game<PgnNodeData>, path: string): boolea
   return true;
 }
 
+/**
+ * PGN de UNA línea: desde la posición inicial hasta la jugada de `path` y
+ * siguiendo después por su continuación principal.
+ *
+ * Sin hermanas ni paréntesis, que es lo que se espera al copiar una variante
+ * para pegarla en otro sitio: la secuencia legal de jugadas que lleva hasta
+ * ella y cómo termina. Las cabeceras viajan con ella para que el receptor sepa
+ * de qué partida salió.
+ */
+export function variationPgn(game: Game<PgnNodeData>, path: string): string | null {
+  if (path.length === 0) return null;
+
+  const line: ChildNode<PgnNodeData>[] = [];
+  let current: Node<PgnNodeData> = game.moves;
+  for (const segment of path.split(".")) {
+    const child: ChildNode<PgnNodeData> | undefined = current.children[Number.parseInt(segment, 10)];
+    if (!child) return null;
+    line.push(child);
+    current = child;
+  }
+
+  for (let tail = current.children[0]; tail; tail = tail.children[0]) line.push(tail);
+
+  // Se copia nodo a nodo en vez de reutilizar los originales: encadenarlos
+  // movería los hijos reales de la partida a este árbol de usar y tirar.
+  const moves = new Node<PgnNodeData>();
+  let cursor: Node<PgnNodeData> = moves;
+  for (const node of line) {
+    const copy = new ChildNode<PgnNodeData>({ ...node.data });
+    cursor.children.push(copy);
+    cursor = copy;
+  }
+
+  return makePgn({ headers: new Map(game.headers), comments: game.comments, moves });
+}
+
 // --- Comentarios, flechas y anotaciones -------------------------------------
 
 /** El comentario partido en sus dos mitades: lo que escribió el autor y los comandos. */

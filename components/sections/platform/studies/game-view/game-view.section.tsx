@@ -69,6 +69,7 @@ export function GameViewSection({ game, siblings, newGame, editGame }: GameViewS
           // En Mis estudios la partida se recorre: los controles van junto a
           // las jugadas, no bajo el tablero.
           controls="panel"
+          engine
           onPathChange={setCurrentPath}
           players={{
             white: (

@@ -165,3 +165,41 @@ export function sanForMove(fen: string, orig: Key, dest: Key, promotion: Promoti
 
   return pos.isLegal(finalMove) ? makeSanAndPlay(pos, finalMove) : undefined;
 }
+
+/**
+ * Traduce a SAN la línea que propone el módulo, que la da en UCI («e2e4 e7e5»).
+ *
+ * Se reproduce sobre el tablero porque el SAN depende de la posición: la misma
+ * jugada se escribe «Cf3» o «Cgf3» según haya otro caballo que pueda llegar. Se
+ * corta en la primera jugada que no encaje, en vez de devolver la línea a
+ * medias sin avisar: una línea rara es preferible a una equivocada.
+ */
+export function uciLineToSan(fen: string, uciMoves: string[]): string[] {
+  const out: string[] = [];
+  let current = fen;
+
+  for (const uci of uciMoves) {
+    const orig = uci.slice(0, 2) as Key;
+    const dest = uci.slice(2, 4) as Key;
+    const promotion = uci.length > 4 ? PROMOTION_BY_LETTER[uci[4]] : undefined;
+
+    const san = sanForMove(current, orig, dest, promotion ?? "queen");
+    if (!san) break;
+
+    const next = applySan(current, san);
+    if (!next) break;
+
+    out.push(san);
+    current = next;
+  }
+
+  return out;
+}
+
+/** Letra de coronación del UCI a la pieza que espera `sanForMove`. */
+const PROMOTION_BY_LETTER: Record<string, PromotionRole> = {
+  q: "queen",
+  r: "rook",
+  b: "bishop",
+  n: "knight",
+};

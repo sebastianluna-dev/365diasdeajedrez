@@ -22,6 +22,45 @@
     min-width: 0;
   }
 
+  /* Tablero y barra de evaluación, uno al lado del otro. */
+  & .game-viewer__board-row {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  & .game-viewer__board-row .game-viewer__board {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* La barra se llena desde abajo con la ventaja de las blancas: el fondo es el
+     bando negro y el relleno el blanco, igual que el tablero. */
+  & .game-viewer__evaluation {
+    flex: none;
+    width: 14px;
+    border-radius: 7px;
+    overflow: hidden;
+    background: var(--platform-text);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  & .game-viewer__evaluation-fill {
+    display: block;
+    width: 100%;
+    background: var(--platform-surface);
+    transition: height 220ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .game-viewer__evaluation-fill {
+      transition: none;
+    }
+  }
+
   & .game-viewer__board {
     /* Sin redondeo: las casillas de los bordes se ven enteras. */
     overflow: hidden;

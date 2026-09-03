@@ -11,6 +11,9 @@ import { JumpStartIcon } from "@/components/icons/jump-start-icon.comp";
 import { SoundOffIcon } from "@/components/icons/sound-off-icon.comp";
 import { SoundOnIcon } from "@/components/icons/sound-on-icon.comp";
 import { endPathOf, nextPathOf, nodeAtPath, parentPathOf, parsePgnTree } from "@/lib/chess/pgn-tree";
+import { EnginePanel } from "./engine-panel.comp";
+import { useEngine } from "./use-engine";
+import { evaluationBarFill } from "@/lib/chess/engine-protocol";
 import { MoveTable } from "./move-table.comp";
 import { MoveTree } from "./move-tree.comp";
 import { playMoveSound } from "./move-sound";
@@ -69,6 +72,11 @@ interface GameViewerProps {
   /** Contenido bajo el tablero: comentario, calidad y compartir. */
   boardFooter?: ReactNode;
   /**
+   * Ofrece el módulo de análisis. Apagado por defecto: son 7 MB de WebAssembly
+   * que sólo se descargan cuando alguien lo enciende, y ni eso hasta entonces.
+   */
+  engine?: boolean;
+  /**
    * Se avisa con la ruta punteada del nodo actual cada vez que cambia. Existe
    * para que el editor de bloques de clase pueda capturar «esta posición» sin
    * un segundo visor; el visor sigue siendo de sólo lectura y quien no pase
@@ -103,6 +111,7 @@ export function GameViewer({
   moveList = "table",
   controls = "board",
   boardFooter,
+  engine = false,
   onPathChange,
 }: GameViewerProps) {
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
@@ -110,6 +119,7 @@ export function GameViewer({
     initialPath && tree?.nodesByPath.has(initialPath) ? initialPath : "",
   );
   const [flipToggled, setFlipToggled] = useState(false);
+  const [engineOn, setEngineOn] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Almacén externo: la primera pintada usa los valores por defecto (que es lo
@@ -193,6 +203,11 @@ export function GameViewer({
   const node = tree ? nodeAtPath(tree, currentPath) : null;
   const fen = node?.fen ?? tree?.initialFen ?? "";
 
+  // El motor vive aquí y no en su panel porque su evaluación la usan DOS sitios
+  // muy separados de la pantalla: la barra pegada al tablero y la línea de la
+  // notación. Con `engine` apagado el hook no crea worker ni descarga nada.
+  const engineState = useEngine(fen, engine && engineOn);
+
   // Suena al cambiar de posición, nunca al montar: quien abre una lección no
   // espera un golpe de salida.
   const previousFenRef = useRef<string | null>(null);
@@ -261,7 +276,21 @@ export function GameViewer({
             </div>
           )}
 
-          <div className="game-viewer__board">
+          <div className="game-viewer__board-row">
+            {engine && engineOn && (
+              <div className="game-viewer__evaluation" aria-hidden="true">
+                <span
+                  className="game-viewer__evaluation-fill"
+                  style={{
+                    // La barra se llena desde ABAJO con la ventaja de las
+                    // blancas, que es como se lee en cualquier tablero.
+                    height: `${(engineState.info === null ? 0.5 : evaluationBarFill(engineState.info.score)) * 100}%`,
+                  }}
+                />
+              </div>
+            )}
+
+            <div className="game-viewer__board">
             <ChessBoard
               position={{
                 fen,
@@ -271,6 +300,7 @@ export function GameViewer({
               }}
               flipBoard={flipBoard}
             />
+            </div>
           </div>
 
           {players && (
@@ -295,6 +325,15 @@ export function GameViewer({
               {badge && <span className="game-viewer__panel-badge">{badge}</span>}
               {headerActions}
             </div>
+          )}
+
+          {engine && (
+            <EnginePanel
+              fen={fen}
+              enabled={engineOn}
+              onToggle={() => setEngineOn((on) => !on)}
+              state={engineState}
+            />
           )}
 
           <div className="game-viewer__moves">
