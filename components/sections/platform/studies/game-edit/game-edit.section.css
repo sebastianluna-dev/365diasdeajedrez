@@ -3,74 +3,62 @@
   flex-direction: column;
   gap: 18px;
 
-  & .game-edit__breadcrumb {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    font-size: 15px;
-  }
-
-  & .game-edit__breadcrumb-link {
-    color: var(--platform-text-muted);
-  }
-
-  & .game-edit__breadcrumb-link:hover {
-    color: var(--platform-accent-ink);
-  }
-
-  & .game-edit__breadcrumb-separator {
-    color: var(--platform-text-subtle);
-  }
-
-  & .game-edit__breadcrumb-current {
-    color: var(--platform-text);
-    font-weight: 600;
-  }
-
   & .game-edit__head {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    align-items: flex-end;
+    gap: 20px;
   }
 
-  & .game-edit__form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+  & .game-edit__heading {
+    min-width: 0;
+  }
+
+  & .game-edit__title {
+    margin: 0;
+    font-family: var(--platform-font);
+    font-size: 39.5px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--platform-text);
+    text-wrap: balance;
+  }
+
+  & .game-edit__subtitle {
+    margin: 8px 0 0;
+    font-size: 16px;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
   }
 
   & .game-edit__actions {
+    flex: none;
+    margin-left: auto;
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
+    gap: 9px;
   }
 
-  & .game-edit__note {
-    margin: 0;
-    font-size: 14.5px;
-    line-height: 1.5;
-    color: var(--platform-text-muted);
-  }
-
-  & .game-edit__delete {
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    gap: 12px;
-  }
-
-  & .game-edit__confirm {
-    display: flex;
-    align-items: start;
-    gap: 8px;
+  & .game-edit__done {
+    padding: 11px 20px;
+    border-radius: 11px;
     font-size: 15px;
-    line-height: 1.5;
-    color: var(--platform-text);
   }
 
-  & .game-edit__back {
-    margin: 0;
+  @media (max-width: 900px) {
+    & .game-edit__head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 18px;
+    }
+
+    & .game-edit__title {
+      font-size: 30px;
+    }
+
+    & .game-edit__actions {
+      margin-left: 0;
+      flex-wrap: wrap;
+    }
   }
 }

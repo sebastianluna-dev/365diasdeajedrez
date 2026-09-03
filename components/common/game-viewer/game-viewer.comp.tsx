@@ -11,6 +11,7 @@ import { JumpStartIcon } from "@/components/icons/jump-start-icon.comp";
 import { SoundOffIcon } from "@/components/icons/sound-off-icon.comp";
 import { SoundOnIcon } from "@/components/icons/sound-on-icon.comp";
 import { endPathOf, nextPathOf, nodeAtPath, parentPathOf, parsePgnTree } from "@/lib/chess/pgn-tree";
+import { MoveTable } from "./move-table.comp";
 import { MoveTree } from "./move-tree.comp";
 import { playMoveSound } from "./move-sound";
 import {
@@ -48,6 +49,26 @@ interface GameViewerProps {
   /** Botón «Saltar» bajo el tablero. Sin destino no se pinta. */
   skip?: ReactNode;
   /**
+   * Tiras de jugador alrededor del tablero. Se dan por bando, no por posición,
+   * porque el visor puede girarse: quien está arriba depende de la orientación
+   * y sólo el visor la conoce.
+   */
+  players?: { white: ReactNode; black: ReactNode };
+  /**
+   * `table` (por defecto): rejilla nº · blancas · negras, como Lichess.
+   * `flow`: el texto corrido de siempre, que es como se leen las lecciones —
+   * ahí la partida se sigue leyendo, no consultando jugada a jugada.
+   */
+  moveList?: "table" | "flow";
+  /**
+   * Dónde van los cuatro botones de navegación. Bajo el tablero en las
+   * lecciones; dentro del panel de jugadas en Mis estudios, que es donde se
+   * recorre la partida.
+   */
+  controls?: "board" | "panel";
+  /** Contenido bajo el tablero: comentario, calidad y compartir. */
+  boardFooter?: ReactNode;
+  /**
    * Se avisa con la ruta punteada del nodo actual cada vez que cambia. Existe
    * para que el editor de bloques de clase pueda capturar «esta posición» sin
    * un segundo visor; el visor sigue siendo de sólo lectura y quien no pase
@@ -78,6 +99,10 @@ export function GameViewer({
   footerActions,
   positionActions,
   skip,
+  players,
+  moveList = "table",
+  controls = "board",
+  boardFooter,
   onPathChange,
 }: GameViewerProps) {
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
@@ -184,6 +209,30 @@ export function GameViewer({
   }
 
   const flipBoard = (orientation === "black") !== flipToggled;
+
+  const nav = (
+    <div className="game-viewer__nav">
+      <button type="button" title="Primera jugada" onClick={goToStart} className="game-viewer__nav-button">
+        <JumpStartIcon className="game-viewer__nav-icon" />
+      </button>
+      <button type="button" title="Jugada anterior" onClick={goToPrevious} className="game-viewer__nav-button">
+        <ArrowLeftIcon className="game-viewer__nav-icon" />
+      </button>
+      <button
+        type="button"
+        title="Jugada siguiente"
+        onClick={goToNext}
+        className="game-viewer__nav-button game-viewer__nav-button_emphasis_strong"
+      >
+        <ArrowRightIcon className="game-viewer__nav-icon" />
+      </button>
+      <button type="button" title="Última jugada" onClick={goToEnd} className="game-viewer__nav-button">
+        <JumpEndIcon className="game-viewer__nav-icon" />
+      </button>
+
+      {skip && <div className="game-viewer__skip">{skip}</div>}
+    </div>
+  );
   const hasHead = Boolean(title || subtitle || description || badge || headerActions);
 
   return (
@@ -206,6 +255,12 @@ export function GameViewer({
 
       <div className="game-viewer__layout">
         <div className="game-viewer__board-card">
+          {players && (
+            <div className="game-viewer__player game-viewer__player_side_top">
+              {flipBoard ? players.white : players.black}
+            </div>
+          )}
+
           <div className="game-viewer__board">
             <ChessBoard
               position={{
@@ -218,28 +273,16 @@ export function GameViewer({
             />
           </div>
 
-          <div className="game-viewer__nav">
-            <button type="button" title="Primera jugada" onClick={goToStart} className="game-viewer__nav-button">
-              <JumpStartIcon className="game-viewer__nav-icon" />
-            </button>
-            <button type="button" title="Jugada anterior" onClick={goToPrevious} className="game-viewer__nav-button">
-              <ArrowLeftIcon className="game-viewer__nav-icon" />
-            </button>
-            <button
-              type="button"
-              title="Jugada siguiente"
-              onClick={goToNext}
-              className="game-viewer__nav-button game-viewer__nav-button_emphasis_strong"
-            >
-              <ArrowRightIcon className="game-viewer__nav-icon" />
-            </button>
-            <button type="button" title="Última jugada" onClick={goToEnd} className="game-viewer__nav-button">
-              <JumpEndIcon className="game-viewer__nav-icon" />
-            </button>
+          {players && (
+            <div className="game-viewer__player game-viewer__player_side_bottom">
+              {flipBoard ? players.black : players.white}
+            </div>
+          )}
 
-            {skip && <div className="game-viewer__skip">{skip}</div>}
-          </div>
+          {controls === "board" && nav}
         </div>
+
+        {boardFooter && <div className="game-viewer__board-footer">{boardFooter}</div>}
 
         <div className="game-viewer__panel">
           {hasHead && (
@@ -255,8 +298,14 @@ export function GameViewer({
           )}
 
           <div className="game-viewer__moves">
-            <MoveTree tree={tree} currentPath={currentPath} onSelect={setCurrentPath} />
+            {moveList === "flow" ? (
+              <MoveTree tree={tree} currentPath={currentPath} onSelect={setCurrentPath} />
+            ) : (
+              <MoveTable tree={tree} currentPath={currentPath} onSelect={setCurrentPath} />
+            )}
           </div>
+
+          {controls === "panel" && <div className="game-viewer__panel-nav">{nav}</div>}
 
           <div className="game-viewer__toolbar">
             <button

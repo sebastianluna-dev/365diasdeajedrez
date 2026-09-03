@@ -31,6 +31,9 @@ export function LessonViewSection({ lesson }: LessonViewSectionProps) {
       <GameViewer
         pgn={lesson.pgn}
         orientation={lesson.orientation}
+        // La lección se LEE: el texto corrido acompaña al relato, mientras que
+        // la tabla es para consultar una partida jugada a jugada.
+        moveList="flow"
         title={`${lesson.order}. ${lesson.name}`}
         // El subtítulo carga con todo lo que antes vivía encima del tablero:
         // dónde está la lección dentro del capítulo y cuánto dura.

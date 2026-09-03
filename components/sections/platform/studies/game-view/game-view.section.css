@@ -1,46 +1,78 @@
 .game-view {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+  display: grid;
+  /* El aside mide lo suyo; el visor se queda con el resto y reparte por dentro
+     entre tablero y notación. */
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
 
-  & .game-view__breadcrumb {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    font-size: 15px;
+  & .game-view__board {
+    min-width: 0;
+    /* La lista de jugadas se planta y se desplaza por dentro: sin tope, una
+       partida larga estiraba el panel muy por debajo del tablero. */
+    --viewer-moves-max-height: 560px;
   }
 
-  & .game-view__breadcrumb-link {
-    color: var(--platform-text-muted);
+  /* Cuadrito del bando: sin banderas ni títulos que mostrar, al menos se sabe
+     de un vistazo quién lleva las blancas. */
+  & .game-view__chip {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    box-shadow: inset 0 0 0 1px var(--platform-border-strong);
   }
 
-  & .game-view__breadcrumb-link:hover {
-    color: var(--platform-accent-ink);
+  & .game-view__chip_side_white {
+    background: var(--platform-surface);
   }
 
-  & .game-view__breadcrumb-separator {
+  & .game-view__chip_side_black {
+    background: var(--platform-text);
+  }
+
+  /* Federación en letras: es el dato. La bandera de al lado sólo lo adorna. */
+  & .game-view__player-country {
+    flex: none;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
     color: var(--platform-text-subtle);
   }
 
-  & .game-view__breadcrumb-current {
-    color: var(--platform-text);
-    font-weight: 600;
+  & .game-view__player-flag {
+    flex: none;
+    font-size: 17px;
+    line-height: 1;
   }
 
-  & .game-view__head {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+  & .game-view__player-title {
+    flex: none;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--platform-accent-ink);
   }
 
-  & .game-view__source {
-    margin: 0;
+  & .game-view__player-name {
+    font-size: 15.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .game-view__player-elo {
+    margin-left: auto;
+    flex: none;
     font-size: 14.5px;
+    font-weight: 600;
     color: var(--platform-text-muted);
+    font-variant-numeric: tabular-nums;
   }
 
-  & .game-view__analyse {
-    margin: 0;
+  @media (max-width: 1180px) {
+    grid-template-columns: minmax(0, 1fr);
   }
 }

@@ -284,6 +284,12 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
       black: readHeader(headers, "Black") ?? UNKNOWN_PLAYER,
       whiteElo: readEloHeader(headers, "WhiteElo"),
       blackElo: readEloHeader(headers, "BlackElo"),
+      whiteTitle: readHeader(headers, "WhiteTitle"),
+      blackTitle: readHeader(headers, "BlackTitle"),
+      // `WhiteTeam` es lo que escriben las retransmisiones de Lichess para la
+      // federación; el PGN estándar no tiene cabecera propia para ella.
+      whiteCountry: readHeader(headers, "WhiteTeam"),
+      blackCountry: readHeader(headers, "BlackTeam"),
       result: { connect: { code: GAME_RESULT_BY_PGN_TOKEN[resultToken] ?? GAME_RESULT.ONGOING } },
       playedAt: readDateHeader(headers),
       event: readHeader(headers, "Event"),
@@ -476,6 +482,10 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
         black: readOptionalField(formData, "black") ?? readHeader(headers, "Black") ?? UNKNOWN_PLAYER,
         whiteElo: readElo(formData, "whiteElo") ?? readEloHeader(headers, "WhiteElo"),
         blackElo: readElo(formData, "blackElo") ?? readEloHeader(headers, "BlackElo"),
+        whiteTitle: readOptionalField(formData, "whiteTitle") ?? readHeader(headers, "WhiteTitle"),
+        blackTitle: readOptionalField(formData, "blackTitle") ?? readHeader(headers, "BlackTitle"),
+        whiteCountry: readOptionalField(formData, "whiteCountry") ?? readHeader(headers, "WhiteTeam"),
+        blackCountry: readOptionalField(formData, "blackCountry") ?? readHeader(headers, "BlackTeam"),
         result: { connect: { code: result } },
         playedAt: readIsoDate(formData, "playedAt") ?? readDateHeader(headers),
         event: readOptionalField(formData, "event") ?? readHeader(headers, "Event"),
@@ -498,8 +508,23 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
   redirect(platformRoutes.gameEdit(studyId, created.id));
 }
 
-/** Cabecera del PGN: se escribe el valor, o se quita si no hay dato. */
-function setHeader(headers: Map<string, string>, key: string, value: string | null): void {
+/**
+ * Lee un campo SÓLO si el formulario lo trae.
+ *
+ * `readOptionalField` devuelve null tanto cuando el campo llega vacío como
+ * cuando no llega, y para un formulario que reescribe la ficha entera eso no es
+ * lo mismo: vacío significa «bórralo», ausente significa «no lo toques». Sin
+ * esta distinción, un formulario al que le falte un campo borra ese dato al
+ * guardar — que es exactamente como se perdieron la federación y el título de
+ * una partida al añadirlos a la acción antes que al formulario.
+ */
+function readFieldIfPresent(formData: FormData, field: string): string | null | undefined {
+  return formData.has(field) ? readOptionalField(formData, field) : undefined;
+}
+
+/** Cabecera del PGN: se escribe el valor, se quita si es null, se deja si es undefined. */
+function setHeader(headers: Map<string, string>, key: string, value: string | null | undefined): void {
+  if (value === undefined) return;
   if (value === null || value.length === 0) headers.delete(key);
   else headers.set(key, value);
 }
@@ -542,6 +567,10 @@ export async function updateGameDetails(studyId: string, gameId: string, formDat
   const site = readOptionalField(formData, "site");
   const round = readOptionalField(formData, "round");
   const eco = readOptionalField(formData, "eco");
+  const whiteTitle = readFieldIfPresent(formData, "whiteTitle");
+  const blackTitle = readFieldIfPresent(formData, "blackTitle");
+  const whiteCountry = readFieldIfPresent(formData, "whiteCountry");
+  const blackCountry = readFieldIfPresent(formData, "blackCountry");
 
   // El token del resultado vive en el label del catálogo («1-0», «*»…), que es
   // justo lo que el PGN espera en su cabecera Result.
@@ -560,6 +589,12 @@ export async function updateGameDetails(studyId: string, gameId: string, formDat
     setHeader(parsed.headers, "ECO", eco);
     setHeader(parsed.headers, "Date", pgnDate(playedAt));
     setHeader(parsed.headers, "Result", resultRow?.label ?? "*");
+    setHeader(parsed.headers, "WhiteTitle", whiteTitle);
+    setHeader(parsed.headers, "BlackTitle", blackTitle);
+    // La federación viaja en `WhiteTeam`/`BlackTeam`, que es la cabecera que
+    // usan las retransmisiones: el PGN estándar no tiene una para el país.
+    setHeader(parsed.headers, "WhiteTeam", whiteCountry);
+    setHeader(parsed.headers, "BlackTeam", blackCountry);
     pgn = makePgn(parsed);
   }
 
@@ -571,6 +606,10 @@ export async function updateGameDetails(studyId: string, gameId: string, formDat
       black,
       whiteElo,
       blackElo,
+      whiteTitle,
+      blackTitle,
+      whiteCountry,
+      blackCountry,
       result: { connect: { code: result } },
       playedAt,
       event,

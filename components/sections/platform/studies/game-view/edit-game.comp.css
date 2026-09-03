@@ -1,0 +1,74 @@
+.edit-game {
+  & .edit-game__open {
+    padding: 6px 11px;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  & .edit-game__open:hover {
+    background: var(--platform-bg);
+  }
+
+  /* En la barra del editor el botón va a la altura de sus vecinos. */
+  & .edit-game__open_size_wide {
+    padding: 11px 17px;
+  }
+
+  & .edit-game__dialog {
+    width: min(680px, calc(100vw - 32px));
+  }
+
+  & .edit-game__head {
+    padding: 26px 28px 0;
+  }
+
+  & .edit-game__title {
+    margin: 0;
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  & .edit-game__subtitle {
+    margin: 6px 0 0;
+    font-size: 16px;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .edit-game__body {
+    padding: 20px 28px 0;
+  }
+
+  & .edit-game__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    padding: 20px 28px;
+    box-shadow: inset 0 1px 0 var(--platform-track);
+  }
+
+  & .edit-game__note {
+    margin-right: auto;
+    font-size: 13.5px;
+    color: var(--platform-text-subtle);
+  }
+
+  @media (max-width: 560px) {
+    & .edit-game__actions {
+      flex-wrap: wrap;
+    }
+
+    & .edit-game__note {
+      flex: 1 0 100%;
+      margin-right: 0;
+    }
+  }
+}

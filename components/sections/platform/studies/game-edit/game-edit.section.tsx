@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { PlatformNotice } from "@/components/common/platform-notice.comp";
+import { StudiesNavigation } from "@/components/common/studies-navigation.comp";
+import { EditGame } from "@/components/sections/platform/studies/game-view/edit-game.comp";
 import { platformRoutes } from "@/lib/platform-routes";
-import { deleteStudyGame, updateGameDetails } from "@/services/studies/studies.actions";
 import type { GameView, StudyKindOption } from "@/services/studies/studies.types";
-import { GameFields } from "../game-fields.comp";
+import { DeleteGame } from "./delete-game.comp";
 import { GameEditBoard } from "./game-edit-board.comp";
 import "./game-edit.section.css";
 
@@ -19,11 +20,11 @@ const ERROR_MESSAGES: Record<string, string> = {
 };
 
 /**
- * Edición de una partida del estudio, en tres tarjetas independientes —jugadas,
- * datos y borrado— con el mismo criterio que el editor de lecciones: son tres
- * decisiones distintas y guardar una no debería arrastrar a las otras.
+ * Edición de una partida del estudio.
  *
- * Las jugadas no llevan botón: se guardan solas.
+ * Las jugadas no llevan botón de guardar: se guardan solas mientras se trabaja.
+ * Los datos y el borrado son decisiones aparte y viven en sus propios modales,
+ * para que la pantalla sea el tablero y no un formulario con un tablero encima.
  */
 export function GameEditSection({ game, results, errorCode }: GameEditSectionProps) {
   const gameHref = platformRoutes.gameDetail(game.studyId, game.id);
@@ -31,42 +32,34 @@ export function GameEditSection({ game, results, errorCode }: GameEditSectionPro
 
   return (
     <section className="game-edit">
-      <nav className="game-edit__breadcrumb" aria-label="Ruta de estudios">
-        <Link href={platformRoutes.studies} className="game-edit__breadcrumb-link">
-          Mis estudios
-        </Link>
-        <span className="game-edit__breadcrumb-separator">/</span>
-        <Link href={game.studyHref} className="game-edit__breadcrumb-link">
-          {game.studyName}
-        </Link>
-        <span className="game-edit__breadcrumb-separator">/</span>
-        <Link href={gameHref} className="game-edit__breadcrumb-link">
-          {heading}
-        </Link>
-        <span className="game-edit__breadcrumb-separator">/</span>
-        <span className="game-edit__breadcrumb-current">Editar</span>
-      </nav>
+      <StudiesNavigation
+        studyName={game.studyName}
+        studyHref={game.studyHref}
+        gameName={heading}
+        gameHref={gameHref}
+        current="Editar"
+      />
 
       <header className="game-edit__head">
-        <h1 className="platform-page__title">{heading}</h1>
-        <p className="platform-page__subtitle">
-          Juega sobre el tablero para construir la partida. Se guarda sola mientras trabajas.
-        </p>
-      </header>
+        <div className="game-edit__heading">
+          <h1 className="game-edit__title">Editar la partida</h1>
+          <p className="game-edit__subtitle">
+            Juega sobre el tablero para construir la línea. Se guarda sola mientras trabajas.
+          </p>
+        </div>
 
-      {errorCode && <PlatformNotice message={ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
+        <div className="game-edit__actions">
+          <DeleteGame
+            studyId={game.studyId}
+            gameId={game.id}
+            name={heading}
+            classBlockCount={game.classBlockCount}
+          />
 
-      <section className="platform-card">
-        <h2 className="platform-card__title">Jugadas y variantes</h2>
-        <GameEditBoard studyId={game.studyId} gameId={game.id} pgn={game.pgn} />
-      </section>
-
-      <section className="platform-card">
-        <h2 className="platform-card__title">Datos de la partida</h2>
-        <form action={updateGameDetails.bind(null, game.studyId, game.id)} className="game-edit__form">
-          <GameFields
+          <EditGame
+            studyId={game.studyId}
+            gameId={game.id}
             results={results}
-            titleHint="Cómo se distingue esta partida dentro del estudio. Puedes dejarlo vacío."
             values={{
               title: game.title,
               white: game.white,
@@ -80,41 +73,18 @@ export function GameEditSection({ game, results, errorCode }: GameEditSectionPro
               round: game.round,
               eco: game.eco,
             }}
+            label="Datos de la partida"
           />
-          <p className="game-edit__note">
-            Al guardar, estos datos se escriben también en las cabeceras del PGN, para que un PGN exportado
-            diga lo mismo que esta ficha.
-          </p>
-          <button type="submit" className="platform-button">
-            Guardar datos
-          </button>
-        </form>
-      </section>
 
-      <section className="platform-card">
-        <h2 className="platform-card__title">Borrar la partida</h2>
-        <form action={deleteStudyGame.bind(null, game.studyId, game.id)} className="game-edit__delete">
-          <p className="game-edit__note">
-            Se borra la partida entera, con sus variantes y comentarios. No se puede deshacer.
-          </p>
-          {game.classBlockCount > 0 && (
-            <label className="game-edit__confirm">
-              <input type="checkbox" name="confirmClassBlocks" value="yes" />
-              Esta partida se usa en {game.classBlockCount} bloque
-              {game.classBlockCount === 1 ? "" : "s"} de clase. Entiendo que se quedarán vacíos.
-            </label>
-          )}
-          <button type="submit" className="platform-button platform-button_variant_danger">
-            Borrar partida
-          </button>
-        </form>
-      </section>
+          <Link href={gameHref} className="platform-button game-edit__done">
+            Terminar
+          </Link>
+        </div>
+      </header>
 
-      <p className="game-edit__back">
-        <Link href={gameHref} className="platform-button platform-button_variant_secondary">
-          Volver a la partida
-        </Link>
-      </p>
+      {errorCode && <PlatformNotice message={ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
+
+      <GameEditBoard studyId={game.studyId} gameId={game.id} pgn={game.pgn} />
     </section>
   );
 }

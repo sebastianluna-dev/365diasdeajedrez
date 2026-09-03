@@ -718,6 +718,13 @@ model Game {
   black      String
   whiteElo   Int?
   blackElo   Int?
+  /// Título FIDE tal cual viene en el PGN: «GM», «WGM», «IM»…
+  whiteTitle String?
+  blackTitle String?
+  /// Federación en el código de tres letras del PGN («MEX», «USA»). No es
+  /// ISO-3166: FIDE usa el código olímpico, que difiere en varios países.
+  whiteCountry String?
+  blackCountry String?
   resultId   Int
   playedAt   DateTime? @db.Date
   event      String?

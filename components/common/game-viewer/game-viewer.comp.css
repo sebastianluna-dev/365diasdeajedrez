@@ -1,31 +1,52 @@
 .game-viewer {
   & .game-viewer__layout {
     display: grid;
-    /* El tablero manda: crece hasta 632px y ahí se planta, para que el panel
-       de jugadas se quede con el resto en vez de estirarse a lo tonto. */
-    grid-template-columns: minmax(0, 632px) minmax(0, 1fr);
+    /* El tablero manda: crece hasta 600px y ahí se planta, para que el panel
+       de jugadas se quede con el resto en vez de estirarse a lo tonto. Eran 632
+       cuando el tablero iba en tarjeta: al quitarle el relleno de 16px por lado
+       el tablero mide lo mismo y la notación gana esos 32. */
+    grid-template-columns: minmax(0, 600px) minmax(0, 1fr);
+    grid-template-rows: auto auto;
     gap: 22px;
     align-items: stretch;
   }
 
-  & .game-viewer__board-card,
-  & .game-viewer__panel {
-    background: var(--platform-surface);
-    border-radius: 20px;
-    box-shadow: var(--platform-shadow-card);
-  }
-
+  /* El tablero va suelto sobre el fondo, sin tarjeta: la caja blanca no
+     aportaba nada y sus 16px de relleno a cada lado se los queda la notación. */
   & .game-viewer__board-card {
+    grid-column: 1;
+    grid-row: 1;
     display: flex;
     flex-direction: column;
     gap: 14px;
-    padding: 16px;
     min-width: 0;
   }
 
   & .game-viewer__board {
-    border-radius: 12px;
+    /* Sin redondeo: las casillas de los bordes se ven enteras. */
     overflow: hidden;
+  }
+
+  /* Tiras de jugador pegadas al tablero, sin una raya de fondo entre medias:
+     el margen negativo cancela el `gap` de la tarjeta —no lo reduce— para que
+     tira y tablero se toquen. El redondeo sólo existe por el lado de fuera. */
+  & .game-viewer__player {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 9px 12px;
+    background: var(--platform-surface);
+    font-size: 15px;
+  }
+
+  & .game-viewer__player_side_top {
+    border-radius: 10px 10px 0 0;
+    margin-bottom: -14px;
+  }
+
+  & .game-viewer__player_side_bottom {
+    border-radius: 0 0 10px 10px;
+    margin-top: -14px;
   }
 
   & .game-viewer__nav {
@@ -75,7 +96,31 @@
     margin-left: auto;
   }
 
+  /* Bajo el tablero, dentro de su tarjeta: comentario, calidad y compartir. */
+  & .game-viewer__board-footer {
+    grid-column: 1;
+    background: var(--platform-surface);
+    border-radius: 20px;
+    box-shadow: var(--platform-shadow-card);
+    padding: 16px;
+  }
+
+  /* Los controles dentro del panel de jugadas: pegados abajo, separados por un
+     filo, como el resto de barras del visor. */
+  & .game-viewer__panel-nav {
+    padding: 12px 18px;
+    box-shadow: inset 0 1px 0 var(--platform-track);
+  }
+
+  /* La única caja que queda en el visor: el tablero va suelto y esto lo separa
+     de él, que es lo que le da sentido. */
   & .game-viewer__panel {
+    grid-column: 2;
+    /* Ocupa las dos filas: queda a la altura del tablero MÁS su pie. */
+    grid-row: 1 / -1;
+    background: var(--platform-surface);
+    border-radius: 20px;
+    box-shadow: var(--platform-shadow-card);
     display: flex;
     flex-direction: column;
     min-width: 0;
@@ -135,6 +180,9 @@
     min-height: 0;
     padding: 22px;
     overflow: auto;
+    /* Tope de alto opcional: quien monta el visor decide si la lista puede
+       crecer sin fin (lecciones) o se planta y se desplaza por dentro. */
+    max-height: var(--viewer-moves-max-height, none);
   }
 
   & .game-viewer__toolbar {
@@ -190,13 +238,14 @@
   /* A pantalla completa el visor pinta su propio fondo: por debajo queda el
      negro del navegador, no la página. */
   &.game-viewer_state_fullscreen {
-    /* Alto que el tablero NO puede ocupar: el relleno del visor (20+20), el de
-       la tarjeta (16+16), la fila de botones (48) y su hueco (14). Si cambia
+    /* Alto que el tablero NO puede ocupar: el relleno del visor (20+20), la
+       fila de botones (48) y su hueco (14). Bajó de 134 al quitarle la tarjeta
+       al tablero, que ponía 16 por arriba y otros 16 por abajo. Si cambia
        alguno de esos valores, este número cambia con ellos. */
-    --viewer-chrome-block: 134px;
-    /* Ancho que tampoco puede ocupar: esos mismos rellenos, el hueco entre las
-       dos tarjetas (22) y un mínimo habitable para el panel de jugadas (360). */
-    --viewer-chrome-inline: 454px;
+    --viewer-chrome-block: 102px;
+    /* Ancho que tampoco puede ocupar: el relleno del visor (20+20), el hueco
+       entre tablero y panel (22) y un mínimo habitable para la notación (360). */
+    --viewer-chrome-inline: 422px;
     /* El lado del tablero. Manda el alto de la pantalla, que es lo que se pide;
        el ancho sólo entra en juego si de verdad no cabe. */
     --viewer-board-size: min(

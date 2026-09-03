@@ -1,0 +1,124 @@
+.move-table {
+  font-size: var(--move-tree-font-size, 16.5px);
+  color: var(--platform-text);
+  /* Escalón de sangría por nivel de variante. */
+  --move-table-step: 15px;
+
+  & .move-table__row {
+    display: grid;
+    /* Número angosto y dos columnas iguales para el par: así las jugadas de
+       negras quedan alineadas entre filas y la vista se lee en vertical. */
+    grid-template-columns: 44px 1fr 1fr;
+    align-items: stretch;
+  }
+
+  /* Rayado por pares para no perder la fila al recorrer una partida larga. */
+  & .move-table__row:nth-of-type(odd) {
+    background: var(--platform-bg);
+  }
+
+  & .move-table__number {
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    color: var(--platform-text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .move-table__cell {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 5px 10px;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  & .move-table__move:hover {
+    background: var(--platform-surface-neutral);
+  }
+
+  & .move-table__move.move-table__move_state_active {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-weight: 700;
+  }
+
+  /* «…» donde la jugada existe pero se pinta en otro renglón. */
+  & .move-table__ellipsis {
+    color: var(--platform-text-faint);
+  }
+
+  & .move-table__nag {
+    font-weight: 700;
+  }
+
+  /* Comentario de la línea principal: a lo ancho y sin sangrar, porque no
+     cuelga de ninguna rama — es de la partida, no de una alternativa. */
+  & .move-table__comment {
+    margin: 0;
+    padding: 8px 12px;
+    font-size: 0.9em;
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  /* Cada variante es un renglón sangrado según su profundidad, con un codo a
+     la izquierda que la ata a la línea de la que sale. Sin él, dos variantes
+     de niveles distintos se leerían como hermanas. */
+  & .move-table__line {
+    position: relative;
+    margin: 0;
+    padding: 3px 12px 3px calc(var(--move-table-depth, 0) * var(--move-table-step) + 26px);
+    font-size: 0.92em;
+    line-height: 1.75;
+    color: var(--platform-text-muted);
+  }
+
+  & .move-table__line::before {
+    content: "";
+    position: absolute;
+    left: calc(var(--move-table-depth, 0) * var(--move-table-step) + 12px);
+    top: 0;
+    bottom: 50%;
+    width: 8px;
+    border-left: 1px solid var(--platform-border-strong);
+    border-bottom: 1px solid var(--platform-border-strong);
+    border-bottom-left-radius: 4px;
+  }
+
+  & .move-table__inline {
+    padding: 1px 3px;
+    border: 0;
+    border-radius: 5px;
+    background: transparent;
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  & .move-table__inline:hover {
+    background: var(--platform-surface-neutral);
+  }
+
+  & .move-table__inline.move-table__inline_state_active {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-weight: 700;
+  }
+
+  & .move-table__inline-comment {
+    margin: 0 4px;
+    color: var(--platform-text-subtle);
+    white-space: normal;
+  }
+}

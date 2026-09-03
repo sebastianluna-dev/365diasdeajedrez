@@ -1,0 +1,160 @@
+.game-tools {
+  & .game-tools__tabs {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    box-shadow: inset 0 -1px 0 var(--platform-track);
+  }
+
+  & .game-tools__tab {
+    padding: 9px 13px;
+    border: 0;
+    border-radius: 9px 9px 0 0;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  & .game-tools__tab:hover {
+    color: var(--platform-text);
+  }
+
+  & .game-tools__tab.game-tools__tab_state_active {
+    color: var(--platform-text);
+    font-weight: 700;
+    box-shadow: inset 0 -2px 0 var(--platform-accent);
+  }
+
+  /* Sobre qué jugada se está trabajando, y si ya se guardó. Va aquí y no bajo
+     el campo porque vale para las tres pestañas. */
+  & .game-tools__target {
+    margin-left: auto;
+    padding-right: 4px;
+    font-size: 13.5px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .game-tools__panel {
+    padding-top: 14px;
+  }
+
+  & .game-tools__textarea {
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 96px;
+    resize: vertical;
+    padding: 12px 14px;
+    border: 1px solid var(--platform-border);
+    border-radius: 11px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 15.5px;
+    line-height: 1.5;
+  }
+
+  & .game-tools__textarea:focus {
+    outline: none;
+    border-color: var(--platform-accent);
+  }
+
+  & .game-tools__nags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  & .game-tools__nag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 13px;
+    border: 1px solid var(--platform-border);
+    border-radius: 999px;
+    background: var(--platform-surface);
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  & .game-tools__nag:hover:not(:disabled) {
+    border-color: var(--platform-border-strong);
+    color: var(--platform-text);
+  }
+
+  & .game-tools__nag:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  & .game-tools__nag.game-tools__nag_state_active {
+    border-color: var(--platform-accent);
+    background: var(--platform-accent-wash);
+    color: var(--platform-accent-ink);
+    font-weight: 700;
+  }
+
+  & .game-tools__nag-glyph {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  & .game-tools__hint {
+    margin: 11px 0 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--platform-text-subtle);
+  }
+
+  & .game-tools__share + .game-tools__share {
+    margin-top: 12px;
+  }
+
+  & .game-tools__share-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
+  & .game-tools__share-row {
+    display: flex;
+    gap: 7px;
+  }
+
+  & .game-tools__share-input {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 13px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-surface);
+    color: var(--platform-text-muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+  }
+
+  & .game-tools__share-button {
+    flex: none;
+    padding: 0 15px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  & .game-tools__share-button:hover {
+    background: var(--platform-bg);
+  }
+}

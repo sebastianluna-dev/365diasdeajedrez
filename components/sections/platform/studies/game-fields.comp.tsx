@@ -24,6 +24,10 @@ export interface GameFieldValues {
   site?: string;
   round?: string;
   eco?: string;
+  whiteTitle?: string;
+  blackTitle?: string;
+  whiteCountry?: string;
+  blackCountry?: string;
 }
 
 interface GameFieldsProps {
@@ -50,11 +54,29 @@ export function GameFields({ values, results, titleHint }: GameFieldsProps) {
       </div>
 
       <div className="game-fields__row">
+        <FormField label="Título de las blancas" hint="GM, IM, WGM…">
+          <input type="text" name="whiteTitle" defaultValue={values?.whiteTitle ?? ""} maxLength={8} />
+        </FormField>
+        <FormField label="Federación de las blancas" hint="Código de tres letras, como «MEX».">
+          <input type="text" name="whiteCountry" defaultValue={values?.whiteCountry ?? ""} maxLength={3} />
+        </FormField>
+      </div>
+
+      <div className="game-fields__row">
         <FormField label="Negras">
           <input type="text" name="black" defaultValue={values?.black ?? ""} maxLength={120} />
         </FormField>
         <FormField label="Elo de las negras">
           <input type="number" name="blackElo" defaultValue={values?.blackElo ?? ""} min={100} max={4000} />
+        </FormField>
+      </div>
+
+      <div className="game-fields__row">
+        <FormField label="Título de las negras" hint="GM, IM, WGM…">
+          <input type="text" name="blackTitle" defaultValue={values?.blackTitle ?? ""} maxLength={8} />
+        </FormField>
+        <FormField label="Federación de las negras" hint="Código de tres letras, como «USA».">
+          <input type="text" name="blackCountry" defaultValue={values?.blackCountry ?? ""} maxLength={3} />
         </FormField>
       </div>
 

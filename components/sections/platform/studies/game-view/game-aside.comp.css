@@ -1,0 +1,223 @@
+.game-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  /* Se queda a la vista mientras se recorre la partida: el listado de al lado
+     es para saltar de una a otra, y perderlo al bajar lo haría inútil. */
+  position: sticky;
+  top: 90px;
+
+  & .game-aside__card {
+    padding: 16px;
+    background: var(--platform-surface);
+    border-radius: 18px;
+    box-shadow: 0 1px 2px rgba(22, 17, 13, 0.05);
+  }
+
+  & .game-aside__card-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  & .game-aside__label {
+    margin: 0;
+    padding: 2px 0 10px;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--platform-text-subtle);
+  }
+
+  & .game-aside__card-head .game-aside__label {
+    /* Empuja el botón de editar al extremo. Va aquí y no en el propio botón,
+       que también se usa en la barra del editor y allí no debe separarse. */
+    margin-right: auto;
+    padding-bottom: 0;
+  }
+
+  & .game-aside__edit {
+    margin-left: auto;
+    padding: 6px 11px;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .game-aside__edit:hover {
+    background: var(--platform-bg);
+    color: var(--platform-text);
+  }
+
+  & .game-aside__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  & .game-aside__item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    color: var(--platform-text);
+  }
+
+  & .game-aside__item:hover {
+    background: var(--platform-bg);
+    color: var(--platform-text);
+  }
+
+  & .game-aside__item.game-aside__item_state_active {
+    background: var(--platform-accent-wash);
+    color: var(--platform-accent-ink);
+  }
+
+  & .game-aside__item-name {
+    font-size: 14.5px;
+    font-weight: 700;
+    line-height: 1.3;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .game-aside__item-result {
+    margin-left: auto;
+    flex: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--platform-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .game-aside__item_state_active .game-aside__item-result {
+    color: var(--platform-accent-ink);
+  }
+
+  /* El botón del modal hereda el ancho de la tarjeta y se pinta como un hueco
+     por rellenar, no como una acción principal: aquí compite con la lista. */
+  & .game-aside__new {
+    margin-top: 10px;
+  }
+
+  & .game-aside__new .platform-button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--platform-border-strong);
+    color: var(--platform-text-muted);
+    font-size: 14px;
+  }
+
+  & .game-aside__new .platform-button:hover {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--platform-accent);
+    color: var(--platform-accent-ink);
+  }
+
+  & .game-aside__players {
+    margin: 12px 0 0;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  & .game-aside__meta {
+    margin: 12px 0 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  & .game-aside__meta-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 7px 0;
+    box-shadow: inset 0 -1px 0 var(--platform-track);
+  }
+
+  & .game-aside__meta-row:last-child {
+    box-shadow: none;
+  }
+
+  & .game-aside__meta-key {
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--platform-text-subtle);
+  }
+
+  & .game-aside__meta-value {
+    margin: 0 0 0 auto;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: right;
+    min-width: 0;
+  }
+
+  /* Acceso al tablero de análisis. Va a lo ancho y por encima de exportar
+     porque es una acción, no una salida del contenido. */
+  & .game-aside__edit-moves {
+    display: block;
+    margin-top: 14px;
+    padding: 10px;
+    border-radius: 10px;
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  & .game-aside__edit-moves:hover {
+    background: var(--platform-accent-wash);
+    color: var(--platform-accent-ink);
+  }
+
+  & .game-aside__export {
+    display: flex;
+    gap: 7px;
+    margin-top: 14px;
+  }
+
+  & .game-aside__export-button {
+    flex: 1;
+    padding: 9px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  & .game-aside__export-button:hover {
+    background: var(--platform-bg);
+  }
+
+  /* Sin ancho para tres columnas el aside deja de ser columna: se coloca arriba
+     y suelta el sticky, que ahí sólo taparía el tablero. */
+  @media (max-width: 1180px) {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    & .game-aside__card {
+      flex: 1 1 280px;
+    }
+  }
+}

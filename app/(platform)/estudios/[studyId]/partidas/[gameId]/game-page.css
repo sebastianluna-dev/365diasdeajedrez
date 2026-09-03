@@ -1,3 +1,5 @@
 .game-page {
-  /* Estructura heredada de .platform-page. */
+  /* Las migas pegadas a la barra, como en el resto de vistas de estudio. */
+  margin-top: -18px;
+  gap: 14px;
 }

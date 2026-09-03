@@ -98,6 +98,11 @@ export interface GameView {
   black: string;
   whiteElo?: number;
   blackElo?: number;
+  whiteTitle?: string;
+  blackTitle?: string;
+  /** Código de federación del PGN («MEX»); la bandera se compone al pintar. */
+  whiteCountry?: string;
+  blackCountry?: string;
   resultLabel: string;
   event?: string;
   site?: string;
