@@ -546,7 +546,16 @@ export function GameViewer({
           {controls === "board" && nav}
         </div>
 
-        {boardFooter && <div className="game-viewer__board-footer">{boardFooter}</div>}
+        {/* A pantalla completa el pie no se pinta: ahí se lee la partida, y
+            comentar y anotar se hacen en la pantalla normal —por eso el menú de
+            la jugada tampoco ofrece esas dos opciones—. */}
+        {boardFooter && (
+          <div
+            className={`game-viewer__board-footer${isFullscreen ? " game-viewer__board-footer_state_hidden" : ""}`}
+          >
+            {boardFooter}
+          </div>
+        )}
 
         {/* La columna derecha entera: la tarjeta de la notación y, por debajo y
             ya fuera de ella, la botonera con la que se recorre la partida. */}
@@ -626,8 +635,8 @@ export function GameViewer({
             editing.promoteToMainAt(menu.path);
             setMenu(null);
           }}
-          onComment={onRequestEdit && (() => requestEdit("comment"))}
-          onAnnotate={onRequestEdit && (() => requestEdit("annotate"))}
+          onComment={onRequestEdit && !isFullscreen ? () => requestEdit("comment") : undefined}
+          onAnnotate={onRequestEdit && !isFullscreen ? () => requestEdit("annotate") : undefined}
           onCopyVariation={() => editing.copyVariation(menu.path)}
           onDelete={() => {
             editing.deleteAt(menu.path);

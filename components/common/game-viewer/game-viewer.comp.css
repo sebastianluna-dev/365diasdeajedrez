@@ -101,7 +101,9 @@
     gap: 11px;
     padding: 9px 12px;
     background: var(--platform-surface);
-    font-size: 15px;
+    /* Lo que hay dentro (nombre, Elo, título, federación) va en `em` sobre
+       esto, así que agrandar la tira los agranda a todos a la vez. */
+    font-size: var(--viewer-player-font-size, 15px);
   }
 
   & .game-viewer__player_side_top {
@@ -162,6 +164,12 @@
 
   & .game-viewer__skip {
     margin-left: auto;
+  }
+
+  /* A pantalla completa se esconde sin desmontarse: lo que se esté escribiendo
+     en el comentario sigue ahí al salir. */
+  & .game-viewer__board-footer.game-viewer__board-footer_state_hidden {
+    display: none;
   }
 
   /* Bajo el tablero, dentro de su tarjeta: comentario, calidad y compartir. */
@@ -421,6 +429,11 @@
        una de 4K salga desproporcionado. La consume `.move-tree`, que hereda a
        todo lo suyo: jugadas, comentarios y variantes. */
     --move-tree-font-size: clamp(19px, 2.2vh, 30px);
+    /* Por la misma razón crecen las tiras de jugador y las líneas del módulo:
+       en una pantalla de 27 pulgadas, un nombre a 15px contra un tablero de
+       900 no se lee, se adivina. */
+    --viewer-player-font-size: clamp(15px, 1.9vh, 26px);
+    --engine-panel-font-size: clamp(14px, 1.75vh, 24px);
 
     height: 100%;
     padding: 20px;
@@ -429,10 +442,13 @@
     /* Nada desborda: todo se ajusta al alto de la pantalla. */
     overflow: hidden;
 
-    /* Fila flexible en vez de rejilla: la columna del tablero ya no mide un
-       número fijo, mide lo que le deje la altura. */
+    /* Dos columnas y una sola fila: el tablero, midiendo lo que le deje la
+       altura, y la notación con TODO el alto de su columna. Las herramientas no
+       se pintan aquí, así que no hay una segunda fila que repartir. */
     & .game-viewer__layout {
-      display: flex;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
       height: 100%;
       align-items: stretch;
     }
@@ -440,7 +456,8 @@
     /* La tarjeta se ciñe a su contenido y se centra; estirarla dejaría un
        manchón blanco bajo los botones. */
     & .game-viewer__board-card {
-      flex: none;
+      grid-column: 1;
+      grid-row: 1;
       width: auto;
       height: auto;
       align-self: center;
@@ -459,14 +476,18 @@
     }
 
     & .game-viewer__panel-column {
-      flex: 1;
+      grid-column: 2;
+      grid-row: 1;
       min-width: 0;
+      /* Sin esto la notación empujaría la fila en vez de desplazarse dentro. */
+      min-height: 0;
     }
 
     /* A pantalla completa sí llena el alto: es lo que se ha pedido al abrirla,
        y la notación se desplaza por dentro. */
     & .game-viewer__panel {
       flex: 1;
+      min-height: 0;
     }
 
     & .game-viewer__panel-head {
@@ -486,22 +507,37 @@
       font-size: clamp(13px, 1.35vh, 17px);
     }
 
-    & .game-viewer__moves {
+    /* Aquí manda la pantalla, no el tope que ponga la sección: la notación se
+       queda con todo el alto de su fila y se desplaza por dentro. */
+    & .game-viewer__moves,
+    & .game-viewer__panel_engine_on .game-viewer__moves,
+    & .game-viewer__panel_engine_expanded .game-viewer__moves {
       padding: 0;
+      height: auto;
+      max-height: none;
     }
 
-    /* En pantalla estrecha no hay ancho que repartir: se apila y el tablero
-       vuelve a mandar por ancho, que es lo que cabe. */
+    /* En pantalla estrecha no hay ancho que repartir: se apila en una columna
+       —tablero, notación, herramientas— y el tablero vuelve a mandar por ancho,
+       que es lo que cabe. */
     @media (max-width: 1080px) {
       overflow: auto;
 
       & .game-viewer__layout {
-        flex-direction: column;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto;
         height: auto;
       }
 
       & .game-viewer__board-card {
+        grid-column: 1;
+        grid-row: 1;
         align-self: stretch;
+      }
+
+      & .game-viewer__panel-column {
+        grid-column: 1;
+        grid-row: 2;
       }
 
       & .game-viewer__board {

@@ -45,24 +45,11 @@ export default async function GamePage({ params, searchParams }: GamePageProps) 
         errorCode={error}
         editGame={
           game.canEdit ? (
-            <EditGame
-              studyId={game.studyId}
-              gameId={game.id}
-              results={results}
-              values={{
-                title: game.title,
-                white: game.white,
-                black: game.black,
-                whiteElo: game.whiteElo,
-                blackElo: game.blackElo,
-                resultCode: game.resultCode,
-                playedAtValue: game.playedAtValue,
-                event: game.event,
-                site: game.site,
-                round: game.round,
-                eco: game.eco,
-              }}
-            />
+            /* La ficha entera, sin ir campo por campo: `GameView` ya contiene
+               todos los de `GameFieldValues`, y enumerarlos aquí es cómo se
+               perdieron una vez el título y la federación —el formulario los
+               pedía y esta lista no los pasaba, así que guardar los borraba—. */
+            <EditGame studyId={game.studyId} gameId={game.id} results={results} values={game} />
           ) : undefined
         }
         newGame={

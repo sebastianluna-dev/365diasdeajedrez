@@ -62,44 +62,48 @@
     border-color: var(--platform-accent);
   }
 
-  /* Cada grupo con su título: los signos son muchos y sin agrupar no se ve que
-     una jugada puede llevar uno de cada. */
-  & .game-tools__nag-group + .game-tools__nag-group {
-    margin-top: 12px;
-  }
-
-  & .game-tools__nag-title {
-    margin: 0 0 7px;
-    font-size: 12.5px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--platform-text-subtle);
-  }
-
+  /* Dos columnas de renglones estrechos, como el menú de anotación de
+     cualquier programa de ajedrez: el símbolo en su casilla, con un filo que
+     lo separa, y al lado lo que significa. Así caben los veinticuatro sin
+     tener que buscarlos ni adivinarlos. */
   & .game-tools__nags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 7px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    align-items: start;
+  }
+
+  & .game-tools__nag-column {
+    min-width: 0;
+  }
+
+  /* El segundo bloque de la columna es otro grupo: un filo lo dice sin gastar
+     un título entero en ello. */
+  & .game-tools__nag-group.game-tools__nag-group_divided {
+    margin-top: 5px;
+    padding-top: 5px;
+    border-top: 1px solid var(--platform-border);
   }
 
   & .game-tools__nag {
-    display: inline-flex;
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr);
     align-items: center;
-    gap: 7px;
-    padding: 8px 13px;
-    border: 1px solid var(--platform-border);
-    border-radius: 1000px;
-    background: var(--platform-surface);
+    gap: 9px;
+    width: 100%;
+    padding: 2px 6px 2px 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
     color: var(--platform-text-muted);
     font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    text-align: left;
     cursor: pointer;
   }
 
   & .game-tools__nag:hover:not(:disabled) {
-    border-color: var(--platform-border-strong);
+    background: var(--platform-bg);
     color: var(--platform-text);
   }
 
@@ -109,19 +113,30 @@
   }
 
   & .game-tools__nag.game-tools__nag_state_active {
-    border-color: var(--platform-accent);
     background: var(--platform-accent-wash);
     color: var(--platform-accent-ink);
-    font-weight: 700;
+    font-weight: 600;
   }
 
   & .game-tools__nag-glyph {
-    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 22px;
+    border-right: 1px solid var(--platform-border);
+    font-size: 14px;
     font-weight: 700;
+    line-height: 1;
+  }
+
+  & .game-tools__nag-label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   & .game-tools__hint {
-    margin: 11px 0 0;
+    margin: 9px 0 0;
     font-size: 13.5px;
     line-height: 1.5;
     color: var(--platform-text-subtle);

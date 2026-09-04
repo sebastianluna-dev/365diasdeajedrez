@@ -1,4 +1,9 @@
 .engine-panel {
+  /* El tamaño del bloque entero sale de una variable para que el visor pueda
+     agrandarlo a pantalla completa sin alcanzar desde su hoja a estas clases;
+     lo de dentro va en `em`, así que basta con esta línea. */
+  font-size: var(--engine-panel-font-size, 14px);
+
   /* Referencia de la vista previa: su sitio se mide contra el bloque del
      módulo, no contra la jugada que se esté señalando. */
   position: relative;
@@ -12,7 +17,7 @@
   }
 
   & .engine-panel__label {
-    font-size: 12.5px;
+    font-size: 0.89em;
     font-weight: 700;
     letter-spacing: 0.07em;
     text-transform: uppercase;
@@ -31,7 +36,7 @@
     background: var(--platform-surface);
     color: var(--platform-text-muted);
     font-family: inherit;
-    font-size: 13px;
+    font-size: 0.93em;
     font-weight: 600;
     cursor: pointer;
   }
@@ -119,7 +124,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 14px;
     color: var(--platform-text-subtle);
   }
 
@@ -211,14 +215,13 @@
   }
 
   & .engine-panel__depth {
-    font-size: 12.5px;
+    font-size: 0.89em;
     color: var(--platform-text-subtle);
     font-variant-numeric: tabular-nums;
   }
 
   & .engine-panel__message {
     margin: 0;
-    font-size: 14px;
     color: var(--platform-text-subtle);
   }
 }

@@ -37,10 +37,14 @@
     background: var(--platform-text);
   }
 
+  /* Todo lo de la tira va en `em`: el tamaño lo pone el visor —que a pantalla
+     completa lo agranda con la pantalla— y aquí sólo se guarda la proporción
+     entre el nombre, el Elo y lo que los acompaña. */
+
   /* Federación en letras: es el dato. La bandera de al lado sólo lo adorna. */
   & .game-view__player-country {
     flex: none;
-    font-size: 12px;
+    font-size: 0.8em;
     font-weight: 700;
     letter-spacing: 0.06em;
     color: var(--platform-text-subtle);
@@ -48,19 +52,19 @@
 
   & .game-view__player-flag {
     flex: none;
-    font-size: 17px;
+    font-size: 1.13em;
     line-height: 1;
   }
 
   & .game-view__player-title {
     flex: none;
-    font-size: 13px;
+    font-size: 0.87em;
     font-weight: 700;
     color: var(--platform-accent-ink);
   }
 
   & .game-view__player-name {
-    font-size: 15.5px;
+    font-size: 1.03em;
     font-weight: 700;
     letter-spacing: -0.01em;
     min-width: 0;
@@ -72,7 +76,7 @@
   & .game-view__player-elo {
     margin-left: auto;
     flex: none;
-    font-size: 14.5px;
+    font-size: 0.97em;
     font-weight: 600;
     color: var(--platform-text-muted);
     font-variant-numeric: tabular-nums;

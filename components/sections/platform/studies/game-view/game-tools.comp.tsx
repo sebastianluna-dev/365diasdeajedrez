@@ -21,10 +21,15 @@ export type GameToolsTab = "comment" | "quality" | "share";
  * Los tres grupos de signos, cada uno excluyente por dentro: una jugada no es
  * «!» y «?» a la vez, pero sí puede ser «!» con «→» y «±».
  */
-const NAG_GROUPS: { title: string; options: NagOption[] }[] = [
-  { title: "Calidad de la jugada", options: MOVE_QUALITY_NAGS },
-  { title: "Qué pasa en la partida", options: MOVE_REMARK_NAGS },
-  { title: "Evaluación de la posición", options: POSITION_EVAL_NAGS },
+/**
+ * Los tres grupos, repartidos en dos columnas: a la izquierda todo lo que
+ * califica LA JUGADA —cómo fue y qué pasa en la partida— y a la derecha cómo
+ * queda la posición. Es la disposición de toda la vida en los programas de
+ * ajedrez, y cabe entera sin desplazarse.
+ */
+const NAG_COLUMNS: NagOption[][][] = [
+  [MOVE_QUALITY_NAGS, MOVE_REMARK_NAGS],
+  [POSITION_EVAL_NAGS],
 ];
 
 interface GameToolsProps {
@@ -181,34 +186,38 @@ export function GameTools({
 
       {tab === "quality" && (
         <div className="game-tools__panel">
-          {NAG_GROUPS.map((group) => (
-            <div key={group.title} className="game-tools__nag-group">
-              <p className="game-tools__nag-title">{group.title}</p>
-              <div className="game-tools__nags">
-                {group.options.map((option) => {
-                  const code = nagCodeFor(option, isWhiteMove);
-                  const active = nags.includes(code);
-                  return (
-                    <button
-                      key={option.nag}
-                      type="button"
-                      disabled={!node}
-                      aria-pressed={active}
-                      onClick={() => apply((game) => setNags(game, currentPath, nextNags(group.options, option)))}
-                      className={`game-tools__nag${active ? " game-tools__nag_state_active" : ""}`}
-                    >
-                      <span className="game-tools__nag-glyph">{option.glyph}</span>
-                      {option.label}
-                    </button>
-                  );
-                })}
+          <div className="game-tools__nags">
+            {NAG_COLUMNS.map((groups, column) => (
+              <div key={column} className="game-tools__nag-column">
+                {groups.map((group, index) => (
+                  <div
+                    key={index}
+                    className={`game-tools__nag-group${index > 0 ? " game-tools__nag-group_divided" : ""}`}
+                  >
+                    {group.map((option) => {
+                      const code = nagCodeFor(option, isWhiteMove);
+                      const active = nags.includes(code);
+                      return (
+                        <button
+                          key={option.nag}
+                          type="button"
+                          disabled={!node}
+                          aria-pressed={active}
+                          onClick={() => apply((game) => setNags(game, currentPath, nextNags(group, option)))}
+                          className={`game-tools__nag${active ? " game-tools__nag_state_active" : ""}`}
+                        >
+                          <span className="game-tools__nag-glyph">{option.glyph}</span>
+                          <span className="game-tools__nag-label">{option.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
           <p className="game-tools__hint">
-            {node
-              ? "Se guarda como NAG dentro del PGN, así que viaja con la partida al exportarla. Una jugada puede llevar un signo de cada grupo."
-              : "Elige una jugada en la lista para calificarla."}
+            {node ? "Un signo de cada fila, y se guarda dentro del PGN." : "Elige una jugada para calificarla."}
           </p>
         </div>
       )}
