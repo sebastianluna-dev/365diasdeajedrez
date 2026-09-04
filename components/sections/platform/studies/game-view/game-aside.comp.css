@@ -126,15 +126,6 @@
     color: var(--platform-accent-ink);
   }
 
-  & .game-aside__players {
-    margin: 12px 0 0;
-    font-size: 15px;
-    font-weight: 700;
-    line-height: 1.35;
-    letter-spacing: -0.01em;
-    text-wrap: pretty;
-  }
-
   & .game-aside__meta {
     margin: 12px 0 0;
     display: flex;
@@ -174,29 +165,6 @@
     margin-top: 14px;
     padding-top: 14px;
     border-top: 1px solid var(--platform-border);
-  }
-
-  & .game-aside__export {
-    display: flex;
-    gap: 7px;
-    margin-top: 14px;
-  }
-
-  & .game-aside__export-button {
-    flex: 1;
-    padding: 9px;
-    border: 1px solid var(--platform-border);
-    border-radius: 10px;
-    background: var(--platform-surface);
-    color: var(--platform-text);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  & .game-aside__export-button:hover {
-    background: var(--platform-bg);
   }
 
   /* Sin ancho para dos columnas el aside pasa arriba, y sus tarjetas se

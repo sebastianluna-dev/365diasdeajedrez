@@ -155,9 +155,25 @@ export function GameViewer({
   onRequestEdit,
 }: GameViewerProps) {
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
-  const [currentPath, setCurrentPath] = useState<string>(() =>
+  const [selectedPath, setCurrentPath] = useState<string>(() =>
     initialPath && tree?.nodesByPath.has(initialPath) ? initialPath : "",
   );
+
+  /**
+   * La jugada elegida, o el antepasado suyo que siga existiendo.
+   *
+   * El PGN puede cambiar bajo los pies —se deshace un cambio, se borra una
+   * rama, lo edita el panel de abajo— y dejar la ruta señalando a una jugada
+   * que ya no está. Se resuelve al pintar y no con un efecto que corrija el
+   * estado: así no hay un fotograma con el tablero en la posición inicial.
+   */
+  const currentPath = useMemo(() => {
+    if (!tree || selectedPath.length === 0 || tree.nodesByPath.has(selectedPath)) return selectedPath;
+
+    let path = parentPathOf(selectedPath);
+    while (path.length > 0 && !tree.nodesByPath.has(path)) path = parentPathOf(path);
+    return path;
+  }, [tree, selectedPath]);
   const [flipToggled, setFlipToggled] = useState(false);
   const [engineOn, setEngineOn] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);

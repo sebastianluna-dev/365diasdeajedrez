@@ -2,7 +2,6 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import type { GameView, StudyGameItem } from "@/services/studies/studies.types";
 import { DeleteGame } from "./delete-game.comp";
-import { ExportPgn } from "./export-pgn.comp";
 import "./game-aside.comp.css";
 
 interface GameAsideProps {
@@ -65,12 +64,6 @@ export function GameAside({ game, siblings, newGame, editGame }: GameAsideProps)
           {editGame}
         </div>
 
-        <p className="game-aside__players">
-          {game.white}
-          {game.whiteElo ? ` (${game.whiteElo})` : ""} – {game.black}
-          {game.blackElo ? ` (${game.blackElo})` : ""}
-        </p>
-
         <dl className="game-aside__meta">
           {rows.map((row) => (
             <div key={row.key} className="game-aside__meta-row">
@@ -79,8 +72,6 @@ export function GameAside({ game, siblings, newGame, editGame }: GameAsideProps)
             </div>
           ))}
         </dl>
-
-        <ExportPgn pgn={game.pgn} white={game.white} black={game.black} title={game.title} />
 
         {/* Las jugadas se editan en el propio tablero, así que lo único que
             queda aquí es lo que no cabe en él: borrar la partida entera. */}
