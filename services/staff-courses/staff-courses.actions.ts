@@ -58,7 +58,7 @@ function readSans(formData: FormData, field: string): string[] {
 
 export async function createCourse(formData: FormData): Promise<void> {
   const staff = await requireStaff();
-  if (!allowAction(`${staff.user.id}:course-create`, 20, 3_600_000)) fail(staffRoutes.newCourse, "throttled");
+  if (!(await allowAction(`${staff.user.id}:course-create`, 20, 3_600_000))) fail(staffRoutes.newCourse, "throttled");
 
   const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
   const slug = readText(formData, "slug").toLowerCase().slice(0, SLUG_MAX_LENGTH);
@@ -96,7 +96,7 @@ export async function createCourse(formData: FormData): Promise<void> {
 export async function updateCourse(courseId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.courseDetail(courseId);
-  if (!allowAction(`${staff.user.id}:course-update`, 60, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:course-update`, 60, 60_000))) fail(detailPath, "throttled");
 
   const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
   const slug = readText(formData, "slug").toLowerCase().slice(0, SLUG_MAX_LENGTH);
@@ -143,7 +143,7 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
 export async function publishCourse(courseId: string): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.courseDetail(courseId);
-  if (!allowAction(`${staff.user.id}:course-publish`, 60, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:course-publish`, 60, 60_000))) fail(detailPath, "throttled");
 
   const db = getPlatformDb();
   const course = await db.course.findUnique({
@@ -176,7 +176,7 @@ export async function publishCourse(courseId: string): Promise<void> {
 export async function archiveCourse(courseId: string): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.courseDetail(courseId);
-  if (!allowAction(`${staff.user.id}:course-archive`, 60, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:course-archive`, 60, 60_000))) fail(detailPath, "throttled");
 
   await getPlatformDb().course.update({
     where: { id: courseId },
@@ -205,7 +205,7 @@ class TrainingSyncError extends Error {
 export async function createChapter(courseId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.courseDetail(courseId);
-  if (!allowAction(`${staff.user.id}:chapter-create`, 60, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:chapter-create`, 60, 60_000))) fail(detailPath, "throttled");
 
   const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
   if (name.length === 0) fail(detailPath, "invalid");
@@ -220,7 +220,7 @@ export async function createChapter(courseId: string, formData: FormData): Promi
 export async function updateChapter(courseId: string, chapterId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
-  if (!allowAction(`${staff.user.id}:chapter-update`, 60, 60_000)) fail(chapterPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:chapter-update`, 60, 60_000))) fail(chapterPath, "throttled");
 
   const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
   if (name.length === 0) fail(chapterPath, "invalid");
@@ -242,7 +242,7 @@ export async function updateChapter(courseId: string, chapterId: string, formDat
 export async function moveChapter(courseId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.courseDetail(courseId);
-  if (!allowAction(`${staff.user.id}:chapter-move`, 120, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:chapter-move`, 120, 60_000))) fail(detailPath, "throttled");
 
   const chapterId = readText(formData, "chapterId");
   const direction = readText(formData, "direction");
@@ -267,7 +267,7 @@ export async function moveChapter(courseId: string, formData: FormData): Promise
 export async function deleteChapter(courseId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.courseDetail(courseId);
-  if (!allowAction(`${staff.user.id}:chapter-delete`, 60, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:chapter-delete`, 60, 60_000))) fail(detailPath, "throttled");
 
   const chapterId = readText(formData, "chapterId");
   const db = getPlatformDb();
@@ -301,7 +301,7 @@ export async function deleteChapter(courseId: string, formData: FormData): Promi
 export async function createLesson(courseId: string, chapterId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
-  if (!allowAction(`${staff.user.id}:lesson-create`, 60, 60_000)) fail(chapterPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:lesson-create`, 60, 60_000))) fail(chapterPath, "throttled");
 
   const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
   if (name.length === 0) fail(chapterPath, "invalid");
@@ -336,7 +336,7 @@ export async function updateLesson(
 ): Promise<void> {
   const staff = await requireStaff();
   const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
-  if (!allowAction(`${staff.user.id}:lesson-update`, 60, 60_000)) fail(lessonPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:lesson-update`, 60, 60_000))) fail(lessonPath, "throttled");
 
   const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
   const presentationModeCode = readText(formData, "presentationModeCode");
@@ -436,7 +436,7 @@ export async function updateLessonPgn(
 ): Promise<void> {
   const staff = await requireStaff();
   const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
-  if (!allowAction(`${staff.user.id}:lesson-pgn`, 60, 60_000)) fail(lessonPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:lesson-pgn`, 60, 60_000))) fail(lessonPath, "throttled");
 
   const pgn = readText(formData, "pgn");
   if (pgn.length > PGN_MAX_LENGTH) fail(lessonPath, "pgnTooLong");
@@ -472,7 +472,7 @@ export async function updateLessonPgn(
 export async function moveLesson(courseId: string, chapterId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
-  if (!allowAction(`${staff.user.id}:lesson-move`, 120, 60_000)) fail(chapterPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:lesson-move`, 120, 60_000))) fail(chapterPath, "throttled");
 
   const lessonId = readText(formData, "lessonId");
   const direction = readText(formData, "direction");
@@ -493,7 +493,7 @@ export async function moveLesson(courseId: string, chapterId: string, formData: 
 export async function deleteLesson(courseId: string, chapterId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
-  if (!allowAction(`${staff.user.id}:lesson-delete`, 60, 60_000)) fail(chapterPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:lesson-delete`, 60, 60_000))) fail(chapterPath, "throttled");
 
   const lessonId = readText(formData, "lessonId");
   const db = getPlatformDb();
@@ -577,7 +577,7 @@ export async function createExercise(
 ): Promise<void> {
   const staff = await requireStaff();
   const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
-  if (!allowAction(`${staff.user.id}:exercise-create`, 60, 60_000)) fail(lessonPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:exercise-create`, 60, 60_000))) fail(lessonPath, "throttled");
 
   const input = readExerciseInput(formData, lessonPath);
   const derived = await deriveForLesson(lessonId, input, lessonPath);
@@ -609,7 +609,7 @@ export async function updateExercise(
 ): Promise<void> {
   const staff = await requireStaff();
   const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
-  if (!allowAction(`${staff.user.id}:exercise-update`, 60, 60_000)) fail(lessonPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:exercise-update`, 60, 60_000))) fail(lessonPath, "throttled");
 
   const input = readExerciseInput(formData, lessonPath);
   const derived = await deriveForLesson(lessonId, input, lessonPath);
@@ -654,7 +654,7 @@ export async function deleteExercise(
 ): Promise<void> {
   const staff = await requireStaff();
   const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
-  if (!allowAction(`${staff.user.id}:exercise-delete`, 60, 60_000)) fail(lessonPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:exercise-delete`, 60, 60_000))) fail(lessonPath, "throttled");
 
   const exerciseId = readText(formData, "exerciseId");
   const db = getPlatformDb();
@@ -680,7 +680,7 @@ export async function moveExercise(
 ): Promise<void> {
   const staff = await requireStaff();
   const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
-  if (!allowAction(`${staff.user.id}:exercise-move`, 120, 60_000)) fail(lessonPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:exercise-move`, 120, 60_000))) fail(lessonPath, "throttled");
 
   const exerciseId = readText(formData, "exerciseId");
   const direction = readText(formData, "direction");
@@ -703,7 +703,7 @@ export async function moveExercise(
 
 export async function createAuthor(formData: FormData): Promise<void> {
   const staff = await requireStaff();
-  if (!allowAction(`${staff.user.id}:author-create`, 20, 3_600_000)) fail(staffRoutes.authors, "throttled");
+  if (!(await allowAction(`${staff.user.id}:author-create`, 20, 3_600_000))) fail(staffRoutes.authors, "throttled");
 
   const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
   const slug = readText(formData, "slug").toLowerCase().slice(0, SLUG_MAX_LENGTH);
@@ -727,7 +727,7 @@ export async function createAuthor(formData: FormData): Promise<void> {
 
 export async function updateAuthor(authorId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
-  if (!allowAction(`${staff.user.id}:author-update`, 60, 60_000)) fail(staffRoutes.authors, "throttled");
+  if (!(await allowAction(`${staff.user.id}:author-update`, 60, 60_000))) fail(staffRoutes.authors, "throttled");
 
   const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
   const slug = readText(formData, "slug").toLowerCase().slice(0, SLUG_MAX_LENGTH);
@@ -754,7 +754,7 @@ export async function updateAuthor(authorId: string, formData: FormData): Promis
 export async function manageCourseAuthors(courseId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.courseDetail(courseId);
-  if (!allowAction(`${staff.user.id}:course-authors`, 60, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:course-authors`, 60, 60_000))) fail(detailPath, "throttled");
 
   const operation = readText(formData, "operation");
   const authorId = readText(formData, "authorId");

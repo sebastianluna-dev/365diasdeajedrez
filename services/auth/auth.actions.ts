@@ -56,7 +56,7 @@ export async function loginAction(formData: FormData): Promise<void> {
   // (frena el barrido de muchas cuentas desde la misma máquina).
   const requestHeaders = await headers();
   const origin = requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() || "desconocido";
-  if (!allowAction(`login:${email}`, 10, 60_000) || !allowAction(`login-origin:${origin}`, 30, 60_000)) {
+  if (!(await allowAction(`login:${email}`, 10, 60_000)) || !(await allowAction(`login-origin:${origin}`, 30, 60_000))) {
     backToLogin("throttled", rawReturnTo);
   }
 

@@ -39,7 +39,7 @@ function fail(path: string, code: string): never {
  */
 export async function createTeacher(formData: FormData): Promise<void> {
   const staff = await requireStaff();
-  if (!allowAction(`${staff.user.id}:teacher-create`, 20, 3_600_000)) fail(staffRoutes.newTeacher, "throttled");
+  if (!(await allowAction(`${staff.user.id}:teacher-create`, 20, 3_600_000))) fail(staffRoutes.newTeacher, "throttled");
 
   const displayName = readText(formData, "displayName").slice(0, DISPLAY_NAME_MAX_LENGTH);
   if (displayName.length === 0) fail(staffRoutes.newTeacher, "displayName");
@@ -111,7 +111,7 @@ export async function createTeacher(formData: FormData): Promise<void> {
 export async function updateTeacher(teacherId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.teacherDetail(teacherId);
-  if (!allowAction(`${staff.user.id}:teacher-update`, 60, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:teacher-update`, 60, 60_000))) fail(detailPath, "throttled");
 
   const displayName = readText(formData, "displayName").slice(0, DISPLAY_NAME_MAX_LENGTH);
   if (displayName.length === 0) fail(detailPath, "displayName");
@@ -144,7 +144,7 @@ export async function updateTeacher(teacherId: string, formData: FormData): Prom
 export async function setTeacherActive(teacherId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.teacherDetail(teacherId);
-  if (!allowAction(`${staff.user.id}:teacher-active`, 60, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:teacher-active`, 60, 60_000))) fail(detailPath, "throttled");
 
   await getPlatformDb().teacher.update({
     where: { id: teacherId },
@@ -162,7 +162,7 @@ export async function assignStudent(formData: FormData): Promise<void> {
   const teacherId = readText(formData, "teacherId");
   const returnTo = readText(formData, "returnTo") || staffRoutes.studentDetail(studentId);
 
-  if (!allowAction(`${staff.user.id}:assign-student`, 60, 60_000)) fail(returnTo, "throttled");
+  if (!(await allowAction(`${staff.user.id}:assign-student`, 60, 60_000))) fail(returnTo, "throttled");
 
   const db = getPlatformDb();
   const [teacher, student] = await Promise.all([
@@ -211,7 +211,7 @@ export async function assignStudent(formData: FormData): Promise<void> {
 export async function endAssignment(assignmentId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const returnTo = readText(formData, "returnTo") || staffRoutes.teachers;
-  if (!allowAction(`${staff.user.id}:end-assignment`, 60, 60_000)) fail(returnTo, "throttled");
+  if (!(await allowAction(`${staff.user.id}:end-assignment`, 60, 60_000))) fail(returnTo, "throttled");
 
   const db = getPlatformDb();
   const closed = await db.teacherStudent.updateMany({

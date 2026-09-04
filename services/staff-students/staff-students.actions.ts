@@ -49,7 +49,7 @@ export async function createStudentAccount(
   formData: FormData,
 ): Promise<AccountActionState> {
   const staff = await requireStaff();
-  if (!allowAction(`${staff.user.id}:account-create`, 10, 60_000)) {
+  if (!(await allowAction(`${staff.user.id}:account-create`, 10, 60_000))) {
     return { status: "error", message: "Demasiadas altas seguidas. Espera un minuto." };
   }
 
@@ -94,7 +94,7 @@ export async function resetStudentPassword(
   formData: FormData,
 ): Promise<AccountActionState> {
   const staff = await requireStaff();
-  if (!allowAction(`${staff.user.id}:account-reset`, 10, 60_000)) {
+  if (!(await allowAction(`${staff.user.id}:account-reset`, 10, 60_000))) {
     return { status: "error", message: "Demasiados reinicios seguidos. Espera un minuto." };
   }
 
@@ -130,7 +130,7 @@ export async function updateStudent(userId: string, formData: FormData): Promise
   const staff = await requireStaff();
   const detailPath = staffRoutes.studentDetail(userId);
 
-  if (!allowAction(`${staff.user.id}:account-update`, 60, 60_000)) redirect(`${detailPath}?error=throttled`);
+  if (!(await allowAction(`${staff.user.id}:account-update`, 60, 60_000))) redirect(`${detailPath}?error=throttled`);
 
   const displayName = readText(formData, "displayName").slice(0, DISPLAY_NAME_MAX_LENGTH);
   if (displayName.length === 0) redirect(`${detailPath}?error=displayName`);

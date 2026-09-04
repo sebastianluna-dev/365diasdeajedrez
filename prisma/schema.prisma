@@ -504,6 +504,24 @@ model Session {
   @@index([expiresAt])
 }
 
+/// Ventanas del límite de frecuencia de las server actions.
+///
+/// Vive en la base y no en la memoria del proceso porque el techo tiene que ser
+/// UNO para toda la app: con el contador en memoria, dos instancias detrás de un
+/// balanceador dan el doble de intentos —y en serverless cada arranque en frío
+/// empieza a cero, que es justo lo que un ataque de fuerza bruta necesita—.
+///
+/// `key` identifica al sujeto y la operación (`login:ana@ejemplo.com`,
+/// `<userId>:import`). Las filas caducan solas: se borran al vencer, sin
+/// necesidad de un proceso aparte que las recoja.
+model RateLimit {
+  key     String   @id
+  count   Int
+  resetAt DateTime
+
+  @@index([resetAt])
+}
+
 model CourseProgress {
   userId       String
   courseId     String

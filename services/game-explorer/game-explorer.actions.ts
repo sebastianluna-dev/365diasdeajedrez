@@ -27,7 +27,7 @@ export async function searchPosition(
   const user = await getCurrentUser();
   // Holgado a propósito: una búsqueda por jugada es el uso normal del tablero,
   // y quien navega rápido por una partida larga no debe toparse con el tope.
-  if (!allowAction(`${user.id}:search-position`, 240, 60_000)) return EMPTY_RESULT;
+  if (!(await allowAction(`${user.id}:search-position`, 240, 60_000))) return EMPTY_RESULT;
 
   return searchGamesByPosition(fen, filters);
 }

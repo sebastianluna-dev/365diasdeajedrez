@@ -78,7 +78,7 @@ export async function createStudy(formData: FormData): Promise<void> {
   const description = readText(formData, "description");
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!allowAction(`${user.id}:create-study`, 20, 60_000)) return;
+  if (!(await allowAction(`${user.id}:create-study`, 20, 60_000))) return;
 
   await db.gameDatabase.create({
     data: {
@@ -120,7 +120,7 @@ export async function copyClassGamesToStudy(studyId: string, gameIds: string[]):
 
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!allowAction(`${user.id}:copy-class-games`, 20, 60_000)) return;
+  if (!(await allowAction(`${user.id}:copy-class-games`, 20, 60_000))) return;
 
   const study = await db.gameDatabase.findFirst({
     where: { id: studyId, userId: user.id },
@@ -182,7 +182,7 @@ export async function copyClassGamesToStudy(studyId: string, gameIds: string[]):
 export async function reorderStudyGames(studyId: string, orderedIds: string[]): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!allowAction(`${user.id}:reorder-games`, 60, 60_000)) return;
+  if (!(await allowAction(`${user.id}:reorder-games`, 60, 60_000))) return;
 
   const study = await db.gameDatabase.findFirst({
     where: { id: studyId, userId: user.id },
@@ -221,7 +221,7 @@ export async function updateStudy(studyId: string, formData: FormData): Promise<
   const description = readText(formData, "description");
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!allowAction(`${user.id}:update-study`, 30, 60_000)) return;
+  if (!(await allowAction(`${user.id}:update-study`, 30, 60_000))) return;
 
   const study = await db.gameDatabase.findFirst({
     where: { id: studyId, userId: user.id },
@@ -253,7 +253,7 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
 
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!allowAction(`${user.id}:import-pgn`, 10, 60_000)) return;
+  if (!(await allowAction(`${user.id}:import-pgn`, 10, 60_000))) return;
 
   const study = await db.gameDatabase.findFirst({ where: { id: studyId, userId: user.id }, select: { id: true } });
   if (!study) return;
@@ -340,7 +340,7 @@ export async function updateGamePgn(studyId: string, gameId: string, formData: F
 
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!allowAction(`${user.id}:game-pgn`, 60, 60_000)) return;
+  if (!(await allowAction(`${user.id}:game-pgn`, 60, 60_000))) return;
 
   // La previsualización del editor es una comodidad; quien decide es el
   // servidor, que vuelve a parsear antes de escribir.
@@ -433,7 +433,7 @@ async function ownedStudy(studyId: string, userId: string): Promise<{ id: string
 export async function createStudyGame(studyId: string, formData: FormData): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!allowAction(`${user.id}:create-game`, 30, 60_000)) return;
+  if (!(await allowAction(`${user.id}:create-game`, 30, 60_000))) return;
 
   const study = await ownedStudy(studyId, user.id);
   if (!study) return;
@@ -549,7 +549,7 @@ function pgnDate(date: Date | null): string | null {
 export async function updateGameDetails(studyId: string, gameId: string, formData: FormData): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!allowAction(`${user.id}:game-details`, 60, 60_000)) return;
+  if (!(await allowAction(`${user.id}:game-details`, 60, 60_000))) return;
 
   const game = await db.game.findFirst({
     where: { id: gameId, databaseId: studyId, database: { userId: user.id } },
@@ -643,7 +643,7 @@ export async function autosaveGamePgn(studyId: string, gameId: string, pgn: stri
 
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!allowAction(`${user.id}:game-autosave`, 240, 60_000)) return { ok: false, reason: "throttled" };
+  if (!(await allowAction(`${user.id}:game-autosave`, 240, 60_000))) return { ok: false, reason: "throttled" };
   if (parsePgnTree(pgn) === null) return { ok: false, reason: "invalid" };
 
   const game = await db.game.findFirst({
@@ -677,7 +677,7 @@ export async function deleteStudyGame(studyId: string, gameId: string, formData:
   const db = getPlatformDb();
   const user = await getCurrentUser();
   const gamePath = platformRoutes.gameDetail(studyId, gameId);
-  if (!allowAction(`${user.id}:delete-game`, 30, 60_000)) return;
+  if (!(await allowAction(`${user.id}:delete-game`, 30, 60_000))) return;
 
   const game = await db.game.findFirst({
     where: { id: gameId, databaseId: studyId, database: { userId: user.id } },
@@ -712,7 +712,7 @@ export async function deleteStudy(studyId: string, formData: FormData): Promise<
   const db = getPlatformDb();
   const user = await getCurrentUser();
   const studyPath = platformRoutes.studyDetail(studyId);
-  if (!allowAction(`${user.id}:delete-study`, 20, 60_000)) return;
+  if (!(await allowAction(`${user.id}:delete-study`, 20, 60_000))) return;
 
   // `isDefault: false` queda dentro a propósito: «Mis partidas» se crea con la
   // cuenta y es única, así que no se borra. Que el botón no salga en la tarjeta

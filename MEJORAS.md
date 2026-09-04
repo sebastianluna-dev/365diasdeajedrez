@@ -3,7 +3,7 @@
 Backlog de deuda técnica y mejoras del proyecto. Cada punto lleva **área** y **prioridad**
 (baja · media · alta · extrema) y una guía de cómo abordarlo.
 
-> Última revisión: 2026-09-04. En esta tanda se cierran los puntos 11b, 24, 25 y 30, y el 20 se
+> Última revisión: 2026-09-04. En esta tanda se cierran los puntos 7a, 11b, 24, 25 y 30, y el 20 se
 > queda en lo que de verdad le falta. Lo que sigue abierto está arriba; lo que ya está resuelto se
 > deja anotado con lo que se hizo, para no volver a abrirlo.
 
@@ -11,16 +11,21 @@ Backlog de deuda técnica y mejoras del proyecto. Cada punto lleva **área** y *
 
 ## Prioridad ALTA
 
-### 7. Validación de esquema en server actions y rate limit compartido — [Seguridad]
+### 7. Validación de esquema en server actions — [Seguridad]
 *Mayormente resuelto:* todas las actions de escritura resuelven el usuario en el servidor mediante
 el DAL (que ahora comprueba la sesión de verdad), acotan sus entradas (longitud de nombres, tamaño
 del PGN, tope de partidas importadas, `clamp` de `mistakes`/`durationMs`) y pasan por
 `allowAction()` de `lib/rate-limit.ts`. El login añade doble techo, por cuenta y por origen.
 
-**Lo que falta:** (a) el contador de `lib/rate-limit.ts` vive **en memoria del proceso**, así que con
-varias instancias el límite es por instancia — mover a un almacén compartido (Redis/Upstash) al
-desplegar en serio. Es lo más urgente que queda, porque el techo del login es justo lo que frena un
-ataque de fuerza bruta; (b) validación declarativa con zod en la entrada de cada action.
+**(a) Rate limit compartido — RESUELTO (2026-09-04).** El contador vivía en un `Map` del proceso,
+así que el techo era por instancia. Ahora vive en la tabla `RateLimit` (migración
+`20260904150000_rate_limit`): una sentencia con `ON CONFLICT` que decide si la ventana sigue viva o
+arranca otra, con las horas del reloj de la aplicación y no del de la base. Se eligió la base que ya
+existe en vez de un Redis para no meter un servicio más que pueda caerse por su cuenta. Ante un
+fallo de la base se deja pasar, a propósito: sin base no hay login que proteger. Las ventanas
+vencidas se barren desde la app, una de cada cien llamadas.
+
+**Lo que falta:** validación declarativa con zod en la entrada de cada action.
 
 ---
 

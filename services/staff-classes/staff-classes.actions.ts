@@ -24,7 +24,7 @@ function fail(path: string, code: string): never {
 export async function setRecordingUrl(classId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.staffClassDetail(classId);
-  if (!allowAction(`${staff.user.id}:class-recording`, 60, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:class-recording`, 60, 60_000))) fail(detailPath, "throttled");
 
   const raw = readText(formData, "recordingUrl");
   const recordingUrl = raw.length > 0 ? readUrl(formData, "recordingUrl") : null;
@@ -44,7 +44,7 @@ export async function setRecordingUrl(classId: string, formData: FormData): Prom
 export async function cancelClassAsStaff(classId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.staffClassDetail(classId);
-  if (!allowAction(`${staff.user.id}:class-cancel`, 60, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${staff.user.id}:class-cancel`, 60, 60_000))) fail(detailPath, "throttled");
 
   const note = readText(formData, "note").slice(0, NOTE_MAX_LENGTH);
   if (note.length === 0) fail(detailPath, "invalid");

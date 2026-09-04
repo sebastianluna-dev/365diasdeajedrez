@@ -22,7 +22,7 @@ export async function updateTeacherProfile(formData: FormData): Promise<void> {
 
   const displayName = readText(formData, "displayName");
   if (displayName.length === 0) redirect(`${teacherRoutes.profile}?error=profile`);
-  if (!allowAction(`${user.id}:teacher-profile`, 60, 60_000)) redirect(`${teacherRoutes.profile}?error=throttled`);
+  if (!(await allowAction(`${user.id}:teacher-profile`, 60, 60_000))) redirect(`${teacherRoutes.profile}?error=throttled`);
 
   const timezone = readText(formData, "timezone");
   // La foto es una URL de texto: la plataforma no tiene pipeline de subida

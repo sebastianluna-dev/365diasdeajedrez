@@ -42,7 +42,7 @@ function revalidateLessonPaths(courseId: string, chapterOrder: number, lessonId:
 export async function touchLesson(lessonId: string): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!allowAction(`${user.id}:touch-lesson`, 120, 60_000)) return;
+  if (!(await allowAction(`${user.id}:touch-lesson`, 120, 60_000))) return;
 
   const lesson = await getLessonContext(lessonId);
   if (!lesson) return;
@@ -110,7 +110,7 @@ export async function touchLesson(lessonId: string): Promise<void> {
 export async function completeLesson(lessonId: string): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!allowAction(`${user.id}:complete-lesson`, 60, 60_000)) return;
+  if (!(await allowAction(`${user.id}:complete-lesson`, 60, 60_000))) return;
 
   const lesson = await getLessonContext(lessonId);
   if (!lesson) return;

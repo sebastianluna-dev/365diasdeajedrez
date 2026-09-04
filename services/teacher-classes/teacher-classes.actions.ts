@@ -112,7 +112,7 @@ async function readClassMeta(formData: FormData, teacher: TeacherContext["teache
 
 export async function createClass(formData: FormData): Promise<void> {
   const { teacher, user } = await requireTeacher();
-  if (!allowAction(`${user.id}:class-create`, 20, 3_600_000)) fail(teacherRoutes.newClass, "throttled");
+  if (!(await allowAction(`${user.id}:class-create`, 20, 3_600_000))) fail(teacherRoutes.newClass, "throttled");
 
   const meta = await readClassMeta(formData, teacher, teacherRoutes.newClass);
 
@@ -147,7 +147,7 @@ export async function updateClassMeta(classId: string, formData: FormData): Prom
   await assertTeacherOwnsClass(teacher.id, classId);
 
   const editPath = teacherRoutes.classEdit(classId);
-  if (!allowAction(`${user.id}:class-update`, 60, 60_000)) fail(editPath, "throttled");
+  if (!(await allowAction(`${user.id}:class-update`, 60, 60_000))) fail(editPath, "throttled");
 
   const meta = await readClassMeta(formData, teacher, editPath);
 
@@ -179,7 +179,7 @@ export async function setClassStatus(classId: string, formData: FormData): Promi
   await assertTeacherOwnsClass(teacher.id, classId);
 
   const detailPath = teacherRoutes.classDetail(classId);
-  if (!allowAction(`${user.id}:class-status`, 60, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${user.id}:class-status`, 60, 60_000))) fail(detailPath, "throttled");
 
   const target = readText(formData, "statusCode") as ClassStatusCode;
   const db = getPlatformDb();
@@ -202,7 +202,7 @@ export async function addParticipant(classId: string, formData: FormData): Promi
   await assertTeacherOwnsClass(teacher.id, classId);
 
   const detailPath = teacherRoutes.classDetail(classId);
-  if (!allowAction(`${user.id}:class-participant`, 60, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${user.id}:class-participant`, 60, 60_000))) fail(detailPath, "throttled");
 
   const studentId = readText(formData, "studentId");
   if (studentId.length === 0) fail(detailPath, "student");
@@ -222,7 +222,7 @@ export async function removeParticipant(classId: string, formData: FormData): Pr
   await assertTeacherOwnsClass(teacher.id, classId);
 
   const detailPath = teacherRoutes.classDetail(classId);
-  if (!allowAction(`${user.id}:class-participant`, 60, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${user.id}:class-participant`, 60, 60_000))) fail(detailPath, "throttled");
 
   const studentId = readText(formData, "studentId");
   const db = getPlatformDb();
@@ -242,7 +242,7 @@ export async function markAttendance(classId: string, formData: FormData): Promi
   await assertTeacherOwnsClass(teacher.id, classId);
 
   const detailPath = teacherRoutes.classDetail(classId);
-  if (!allowAction(`${user.id}:class-attendance`, 60, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${user.id}:class-attendance`, 60, 60_000))) fail(detailPath, "throttled");
 
   const db = getPlatformDb();
   const classRow = await db.class.findUniqueOrThrow({
@@ -436,7 +436,7 @@ export async function addClassBlock(classId: string, formData: FormData): Promis
   await assertTeacherOwnsClass(teacher.id, classId);
 
   const detailPath = teacherRoutes.classDetail(classId);
-  if (!allowAction(`${user.id}:class-block`, 120, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${user.id}:class-block`, 120, 60_000))) fail(detailPath, "throttled");
 
   const kind = readBlockKind(formData, detailPath);
   const fields = await readBlockFields(kind, formData, teacher, user.id, detailPath);
@@ -463,7 +463,7 @@ export async function updateClassBlock(classId: string, blockId: string, formDat
   await assertTeacherOwnsClass(teacher.id, classId);
 
   const detailPath = teacherRoutes.classDetail(classId);
-  if (!allowAction(`${user.id}:class-block`, 120, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${user.id}:class-block`, 120, 60_000))) fail(detailPath, "throttled");
 
   const kind = readBlockKind(formData, detailPath);
   const fields = await readBlockFields(kind, formData, teacher, user.id, detailPath);
@@ -492,7 +492,7 @@ export async function deleteClassBlock(classId: string, formData: FormData): Pro
   await assertTeacherOwnsClass(teacher.id, classId);
 
   const detailPath = teacherRoutes.classDetail(classId);
-  if (!allowAction(`${user.id}:class-block`, 120, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${user.id}:class-block`, 120, 60_000))) fail(detailPath, "throttled");
 
   const blockId = readText(formData, "blockId");
   const db = getPlatformDb();
@@ -518,7 +518,7 @@ export async function moveClassBlock(classId: string, formData: FormData): Promi
   await assertTeacherOwnsClass(teacher.id, classId);
 
   const detailPath = teacherRoutes.classDetail(classId);
-  if (!allowAction(`${user.id}:class-block-move`, 120, 60_000)) fail(detailPath, "throttled");
+  if (!(await allowAction(`${user.id}:class-block-move`, 120, 60_000))) fail(detailPath, "throttled");
 
   const blockId = readText(formData, "blockId");
   const direction = readText(formData, "direction");
@@ -542,7 +542,7 @@ export async function createTeacherPosition(formData: FormData): Promise<void> {
   const { user } = await requireTeacher();
 
   const returnTo = readText(formData, "returnTo") || teacherRoutes.classes;
-  if (!allowAction(`${user.id}:teacher-position`, 60, 60_000)) fail(returnTo, "throttled");
+  if (!(await allowAction(`${user.id}:teacher-position`, 60, 60_000))) fail(returnTo, "throttled");
 
   const fen = readText(formData, "fen");
   // La legalidad la decide chessops, no una expresión regular: un FEN mal

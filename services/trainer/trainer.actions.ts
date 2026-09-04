@@ -33,7 +33,7 @@ export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<
   const user = await getCurrentUser();
 
   if (input.resultCode !== ATTEMPT_RESULT.PASSED && input.resultCode !== ATTEMPT_RESULT.FAILED) return;
-  if (!allowAction(`${user.id}:training-attempt`, 120, 60_000)) return;
+  if (!(await allowAction(`${user.id}:training-attempt`, 120, 60_000))) return;
 
   const exercise = await db.trainingExercise.findUnique({
     where: { id: input.exerciseId },
@@ -74,7 +74,7 @@ export async function toggleTrainerChapter(chapterId: string, add: boolean): Pro
   const db = getPlatformDb();
   const user = await getCurrentUser();
 
-  if (!allowAction(`${user.id}:toggle-trainer-chapter`, 60, 60_000)) return;
+  if (!(await allowAction(`${user.id}:toggle-trainer-chapter`, 60, 60_000))) return;
 
   const chapter = await db.chapter.findUnique({
     where: { id: chapterId },
