@@ -1,4 +1,9 @@
 .game-viewer {
+  /* Lo que ocupan las líneas del módulo. Está aquí, y no en su hoja, porque lo
+     leen DOS reglas que tienen que cuadrar entre sí: el alto fijo del bloque y
+     lo que la notación le cede al encenderlo. */
+  --viewer-engine-body: 92px;
+
   & .game-viewer__layout {
     display: grid;
     /* El tablero manda: crece hasta 600px y ahí se planta, para que el panel
@@ -22,11 +27,13 @@
     min-width: 0;
   }
 
-  /* Tablero y barra de evaluación, uno al lado del otro. */
+  /* El tablero, con la barra de evaluación colgada de su borde derecho. La
+     barra va FUERA del flujo: el ancho entero de la columna es del tablero, y
+     ella se mete en el hueco que la rejilla deja hasta la notación. */
   & .game-viewer__board-row {
+    position: relative;
     display: flex;
     align-items: stretch;
-    gap: 10px;
     min-width: 0;
   }
 
@@ -36,10 +43,14 @@
   }
 
   /* La barra se llena desde abajo con la ventaja de las blancas: el fondo es el
-     bando negro y el relleno el blanco, igual que el tablero. Va a la derecha
-     del tablero, entre él y la notación. */
+     bando negro y el relleno el blanco, igual que el tablero. Ocupa el hueco
+     entre el tablero y la notación —22px de rejilla, 14 de barra y 4 a cada
+     lado— y mide exactamente lo que el tablero. */
   & .game-viewer__evaluation {
-    flex: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(100% + 4px);
     width: 14px;
     border-radius: 7px;
     overflow: hidden;
@@ -49,8 +60,8 @@
     justify-content: flex-end;
   }
 
-  /* Con el módulo apagado la barra sigue ocupando su sitio y sólo se oculta:
-     encenderlo no puede empujar al tablero ni a la notación. */
+  /* Con el módulo apagado la barra sólo se oculta; encenderlo no mueve nada,
+     porque fuera del flujo no le quita el sitio a nadie. */
   & .game-viewer__evaluation.game-viewer__evaluation_state_off {
     visibility: hidden;
   }
@@ -235,6 +246,14 @@
     font-size: 13px;
     font-weight: 700;
     white-space: nowrap;
+  }
+
+  /* Encender el módulo no agranda la tarjeta: la notación cede exactamente el
+     alto que ocupan sus líneas. El respaldo de 560px es el tope que pone Mis
+     estudios, que es la única pantalla con módulo; sin él, `calc` con un tope
+     `none` no valdría y la regla se caería entera. */
+  & .game-viewer__panel_engine_on .game-viewer__moves {
+    max-height: calc(var(--viewer-moves-max-height, 560px) - var(--viewer-engine-body));
   }
 
   & .game-viewer__moves {

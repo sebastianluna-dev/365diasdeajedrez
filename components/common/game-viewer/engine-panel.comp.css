@@ -51,8 +51,18 @@
     background: var(--platform-success-ink);
   }
 
+  /* Las líneas van sin relleno a los lados, como la notación de debajo: las dos
+     listas de la tarjeta arrancan en el mismo borde y se leen como una sola
+     columna. La cabecera sí conserva el suyo: es un título, no una lista.
+
+     Alto FIJO, el mismo que la notación cede al encenderlo: el bloque pasa por
+     «Cargando», «Pensando» y tres líneas en cuestión de segundos, y si midiera
+     lo que ocupa su contenido movería la partida entera tres veces seguidas. */
   & .engine-panel__body {
-    padding: 8px 22px 10px;
+    height: var(--viewer-engine-body, 92px);
+    padding: 6px 0 8px;
+    box-sizing: border-box;
+    overflow: hidden;
     background: var(--platform-bg);
   }
 

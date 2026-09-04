@@ -490,7 +490,9 @@ export function GameViewer({
         {/* La columna derecha entera: la tarjeta de la notación y, por debajo y
             ya fuera de ella, la botonera con la que se recorre la partida. */}
         <div className="game-viewer__panel-column">
-          <div className="game-viewer__panel">
+          <div
+            className={`game-viewer__panel${engine && engineOn ? " game-viewer__panel_engine_on" : ""}`}
+          >
             {hasHead && (
               <div className="game-viewer__panel-head">
                 <div className="game-viewer__panel-heading">
