@@ -1,4 +1,5 @@
 import { FormField } from "@/components/common/form-field.comp";
+import { federationOptions, FIDE_TITLE_LABELS, FIDE_TITLES } from "@/lib/chess/federations";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import "./game-fields.comp.css";
 
@@ -30,6 +31,43 @@ export interface GameFieldValues {
   blackCountry?: string;
 }
 
+/**
+ * El desplegable de un dato que viene del PGN.
+ *
+ * Un PGN puede traer un título o una federación que no estén en nuestras
+ * listas —las cabeceras las escribe quien quiere—, así que el valor guardado se
+ * añade como una opción más. Sin eso, abrir el formulario y guardarlo sin tocar
+ * nada convertiría ese dato en otro distinto, en silencio.
+ */
+function CodeSelect({
+  name,
+  value,
+  options,
+  emptyLabel,
+}: {
+  name: string;
+  value: string | undefined;
+  options: { code: string; label: string }[];
+  emptyLabel: string;
+}) {
+  const current = value?.trim() ?? "";
+  const isKnown = current.length === 0 || options.some((option) => option.code === current);
+
+  return (
+    <select name={name} defaultValue={current}>
+      <option value="">{emptyLabel}</option>
+      {!isKnown && <option value={current}>{current} (del PGN)</option>}
+      {options.map((option) => (
+        <option key={option.code} value={option.code}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+const TITLE_OPTIONS = FIDE_TITLES.map((code) => ({ code, label: `${code} · ${FIDE_TITLE_LABELS[code]}` }));
+
 interface GameFieldsProps {
   values?: GameFieldValues;
   results: StudyKindOption[];
@@ -54,11 +92,16 @@ export function GameFields({ values, results, titleHint }: GameFieldsProps) {
       </div>
 
       <div className="game-fields__row">
-        <FormField label="Título de las blancas" hint="GM, IM, WGM…">
-          <input type="text" name="whiteTitle" defaultValue={values?.whiteTitle ?? ""} maxLength={8} />
+        <FormField label="Título de las blancas">
+          <CodeSelect name="whiteTitle" value={values?.whiteTitle} options={TITLE_OPTIONS} emptyLabel="Sin título" />
         </FormField>
-        <FormField label="Federación de las blancas" hint="Código de tres letras, como «MEX».">
-          <input type="text" name="whiteCountry" defaultValue={values?.whiteCountry ?? ""} maxLength={3} />
+        <FormField label="Federación de las blancas">
+          <CodeSelect
+            name="whiteCountry"
+            value={values?.whiteCountry}
+            options={federationOptions()}
+            emptyLabel="Sin federación"
+          />
         </FormField>
       </div>
 
@@ -72,11 +115,16 @@ export function GameFields({ values, results, titleHint }: GameFieldsProps) {
       </div>
 
       <div className="game-fields__row">
-        <FormField label="Título de las negras" hint="GM, IM, WGM…">
-          <input type="text" name="blackTitle" defaultValue={values?.blackTitle ?? ""} maxLength={8} />
+        <FormField label="Título de las negras">
+          <CodeSelect name="blackTitle" value={values?.blackTitle} options={TITLE_OPTIONS} emptyLabel="Sin título" />
         </FormField>
-        <FormField label="Federación de las negras" hint="Código de tres letras, como «USA».">
-          <input type="text" name="blackCountry" defaultValue={values?.blackCountry ?? ""} maxLength={3} />
+        <FormField label="Federación de las negras">
+          <CodeSelect
+            name="blackCountry"
+            value={values?.blackCountry}
+            options={federationOptions()}
+            emptyLabel="Sin federación"
+          />
         </FormField>
       </div>
 
