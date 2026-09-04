@@ -12,7 +12,9 @@ import {
   POSITION_EVAL_NAGS,
   type NagOption,
 } from "@/lib/chess/pgn-tree";
+import { downloadGameGif, downloadPositionImage } from "@/components/common/game-viewer/board-export";
 import { sanToSpanish } from "@/lib/chess/notation";
+import { plainMovetext } from "@/lib/chess/plain-movetext";
 import "./game-tools.comp.css";
 
 export type GameToolsTab = "comment" | "quality" | "share";
@@ -68,7 +70,11 @@ export function GameTools({
   focusRequest,
   onPgnChange,
 }: GameToolsProps) {
-  const [copied, setCopied] = useState<"fen" | "pgn" | null>(null);
+  const [copied, setCopied] = useState<"fen" | "pgn" | "plain" | null>(null);
+  // Qué se está generando, para no dejar pulsar dos veces mientras tanto: un
+  // GIF de sesenta cuadros tarda lo suyo y no avisa por sí solo.
+  const [exporting, setExporting] = useState<"image" | "gif" | null>(null);
+  const [exportError, setExportError] = useState<string | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const commentRef = useRef<HTMLTextAreaElement>(null);
 
@@ -98,6 +104,7 @@ export function GameTools({
   }, [pgn, currentPath]);
 
   const nags = node?.nags ?? [];
+  const plainPgn = useMemo(() => plainMovetext(pgn), [pgn]);
 
   // Los signos con pareja (blancas/negras) se escriben según de quién sea la
   // jugada; en la posición de partida no hay ninguna y el panel está apagado.
@@ -123,13 +130,37 @@ export function GameTools({
     onPgnChange(serializeGame(game));
   };
 
-  const copy = async (text: string, what: "fen" | "pgn") => {
+  const copy = async (text: string, what: "fen" | "pgn" | "plain") => {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(what);
       window.setTimeout(() => setCopied(null), 2000);
     } catch {
       // Sin permiso de portapapeles el campo sigue ahí para seleccionarlo a mano.
+    }
+  };
+
+  const exportImage = async () => {
+    setExporting("image");
+    setExportError(null);
+    try {
+      await downloadPositionImage(fen, "posicion.png", { size: 720, lastMove: node?.lastMove });
+    } catch {
+      setExportError("No se pudo generar la imagen en este navegador.");
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const exportGif = async () => {
+    setExporting("gif");
+    setExportError(null);
+    try {
+      await downloadGameGif(pgn, "partida.gif");
+    } catch {
+      setExportError("No se pudo generar el GIF en este navegador.");
+    } finally {
+      setExporting(null);
     }
   };
 
@@ -243,6 +274,47 @@ export function GameTools({
               </button>
             </div>
           </div>
+
+          {/* Las jugadas a secas, para pegarlas en otro sitio: ni variantes, ni
+              comentarios, ni de quién es la partida. */}
+          <div className="game-tools__share">
+            <span className="game-tools__share-label">Sólo la línea principal</span>
+            <div className="game-tools__share-row">
+              <input readOnly value={plainPgn ?? "Esta partida no tiene jugadas."} className="game-tools__share-input" />
+              <button
+                type="button"
+                disabled={plainPgn === null}
+                className="game-tools__share-button"
+                onClick={() => plainPgn && void copy(plainPgn, "plain")}
+              >
+                {copied === "plain" ? "Copiado" : "Copiar"}
+              </button>
+            </div>
+          </div>
+
+          <div className="game-tools__export">
+            <button
+              type="button"
+              disabled={exporting !== null}
+              className="game-tools__export-button"
+              onClick={() => void exportImage()}
+            >
+              {exporting === "image" ? "Generando…" : "Descargar la posición (PNG)"}
+            </button>
+            <button
+              type="button"
+              disabled={exporting !== null}
+              className="game-tools__export-button"
+              onClick={() => void exportGif()}
+            >
+              {exporting === "gif" ? "Generando el GIF…" : "Exportar la partida (GIF)"}
+            </button>
+          </div>
+
+          <p className="game-tools__hint">
+            {exportError ??
+              "La imagen sale del tablero como se ve, desde el lado de las blancas. El GIF recorre la línea principal, una jugada por cuadro."}
+          </p>
         </div>
       )}
     </div>

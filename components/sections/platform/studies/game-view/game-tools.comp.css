@@ -146,6 +146,40 @@
     margin-top: 12px;
   }
 
+  /* Sacar la partida del navegador: son acciones, no campos que copiar, así que
+     van juntas y separadas del bloque de arriba. */
+  & .game-tools__export {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .game-tools__export-button {
+    flex: 1 1 200px;
+    padding: 9px 12px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  & .game-tools__export-button:hover:not(:disabled) {
+    border-color: var(--platform-border-strong);
+    background: var(--platform-bg);
+  }
+
+  & .game-tools__export-button:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+
   & .game-tools__share-label {
     display: block;
     margin-bottom: 6px;
