@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   endPathOf,
+  MOVE_REMARK_NAGS,
+  nagCodeFor,
+  nagCodesOf,
   nagGlyph,
   nextPathOf,
   nodeAtPath,
@@ -216,10 +219,35 @@ describe("nagGlyph", () => {
     expect(nagGlyph(1)).toBe("!");
     expect(nagGlyph(4)).toBe("??");
     expect(nagGlyph(14)).toBe("⩲");
+    expect(nagGlyph(146)).toBe("N");
+  });
+
+  it("da el mismo símbolo a las dos mitades de una pareja", () => {
+    // $36 es «las blancas tienen la iniciativa» y $37 el equivalente negro: de
+    // quién es se sabe por la jugada, así que el símbolo es uno solo.
+    expect(nagGlyph(36)).toBe(nagGlyph(37));
+    expect(nagGlyph(132)).toBe("⇆");
   });
 
   it("cae en $<n> para NAGs desconocidos", () => {
-    expect(nagGlyph(140)).toBe("$140");
+    expect(nagGlyph(250)).toBe("$250");
     expect(nagGlyph(0)).toBe("$0");
+  });
+});
+
+describe("nagCodeFor", () => {
+  const initiative = MOVE_REMARK_NAGS.find((option) => option.glyph === "↑")!;
+  const novelty = MOVE_REMARK_NAGS.find((option) => option.glyph === "N")!;
+
+  it("escribe el código del bando que juega", () => {
+    expect(nagCodeFor(initiative, true)).toBe(36);
+    expect(nagCodeFor(initiative, false)).toBe(37);
+  });
+
+  it("usa el único que hay cuando el signo no distingue bando", () => {
+    expect(nagCodeFor(novelty, true)).toBe(146);
+    expect(nagCodeFor(novelty, false)).toBe(146);
+    expect(nagCodesOf(novelty)).toEqual([146]);
+    expect(nagCodesOf(initiative)).toEqual([36, 37]);
   });
 });

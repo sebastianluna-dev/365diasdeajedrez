@@ -36,7 +36,8 @@
   }
 
   /* La barra se llena desde abajo con la ventaja de las blancas: el fondo es el
-     bando negro y el relleno el blanco, igual que el tablero. */
+     bando negro y el relleno el blanco, igual que el tablero. Va a la derecha
+     del tablero, entre él y la notación. */
   & .game-viewer__evaluation {
     flex: none;
     width: 14px;
@@ -46,6 +47,12 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+  }
+
+  /* Con el módulo apagado la barra sigue ocupando su sitio y sólo se oculta:
+     encenderlo no puede empujar al tablero ni a la notación. */
+  & .game-viewer__evaluation.game-viewer__evaluation_state_off {
+    visibility: hidden;
   }
 
   & .game-viewer__evaluation-fill {
@@ -88,10 +95,11 @@
     margin-top: -14px;
   }
 
+  /* Los botones se tocan: son una sola botonera y el hueco entre ellos los
+     leía como cuatro acciones sueltas. */
   & .game-viewer__nav {
     display: flex;
     align-items: center;
-    gap: 8px;
   }
 
   & .game-viewer__nav-button {
@@ -103,22 +111,21 @@
     justify-content: center;
     border: 0;
     border-radius: 12px;
-    background: var(--platform-surface);
+    background: transparent;
     color: var(--platform-text-muted);
-    box-shadow: inset 0 0 0 1px var(--platform-border-strong);
     cursor: pointer;
   }
 
+  /* Sin filo: lo que marca el botón es el color, y sólo al pasar por encima. */
   & .game-viewer__nav-button:hover {
-    box-shadow: inset 0 0 0 1px var(--platform-text);
+    background: var(--platform-bg);
     color: var(--platform-text);
   }
 
-  /* «Siguiente» es lo que se pulsa el 90 % de las veces: va perfilado en
-     oscuro para encontrarlo sin leer los iconos. */
+  /* «Siguiente» es lo que se pulsa el 90 % de las veces: va en el color del
+     texto para encontrarlo sin leer los iconos. */
   & .game-viewer__nav-button.game-viewer__nav-button_emphasis_strong {
     color: var(--platform-text);
-    box-shadow: inset 0 0 0 1px var(--platform-text);
   }
 
   & .game-viewer__nav-button.game-viewer__nav-button_emphasis_strong:hover {
@@ -144,19 +151,35 @@
     padding: 16px;
   }
 
-  /* Los controles dentro del panel de jugadas: pegados abajo, separados por un
-     filo, como el resto de barras del visor. */
+  /* La botonera va FUERA de la tarjeta, colgando de ella: es con lo que se
+     recorre la partida, no parte de la notación. Sobre el fondo de la página,
+     sin filo ni caja que la encierre. */
   & .game-viewer__panel-nav {
-    padding: 12px 18px;
-    box-shadow: inset 0 1px 0 var(--platform-track);
+    flex: none;
+  }
+
+  /* La columna derecha entera: la tarjeta de la notación y la botonera debajo.
+     Ocupa las dos filas de la rejilla, así que llega a la altura del tablero
+     MÁS su pie, y reparte ese alto entre las dos. */
+  & .game-viewer__panel-column {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
   }
 
   /* La única caja que queda en el visor: el tablero va suelto y esto lo separa
-     de él, que es lo que le da sentido. */
+     de él, que es lo que le da sentido.
+
+     Mide LO QUE MIDE la notación, no el alto del tablero: estirada dejaba un
+     blancal enorme bajo la última jugada en cuanto la partida era corta. Si no
+     cabe, encoge —de ahí el `min-height: 0`— y la lista se desplaza por dentro
+     en vez de empujar la columna. */
   & .game-viewer__panel {
-    grid-column: 2;
-    /* Ocupa las dos filas: queda a la altura del tablero MÁS su pie. */
-    grid-row: 1 / -1;
+    flex: 0 1 auto;
+    min-height: 0;
     background: var(--platform-surface);
     border-radius: 20px;
     box-shadow: var(--platform-shadow-card);
@@ -217,7 +240,10 @@
   & .game-viewer__moves {
     flex: 1;
     min-height: 0;
-    padding: 22px;
+    /* Sin relleno: las filas de la notación llegan a los cuatro bordes del
+       panel, que es lo que da la lectura en columna —la banda de los números
+       de un lado a otro y la primera jugada arriba del todo—. */
+    padding: 0;
     overflow: auto;
     /* Tope de alto opcional: quien monta el visor decide si la lista puede
        crecer sin fin (lecciones) o se planta y se desplaza por dentro. */
@@ -258,6 +284,56 @@
 
   & .game-viewer__toolbar-end {
     margin-left: auto;
+  }
+
+  /* Ancla del desplegable de opciones: el menú se cuelga de este botón. */
+  & .game-viewer__options {
+    position: relative;
+    display: flex;
+  }
+
+  & .game-viewer__options-menu {
+    position: absolute;
+    z-index: 30;
+    /* Hacia arriba y alineado por la derecha: la botonera es lo último de la
+       columna, y hacia abajo el menú se saldría de la pantalla. */
+    bottom: calc(100% + 6px);
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    min-width: 230px;
+    padding: 4px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .game-viewer__options-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 14.5px;
+    color: var(--platform-text);
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  & .game-viewer__options-item:hover {
+    background: var(--platform-bg);
+  }
+
+  & .game-viewer__options-icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: var(--platform-text-subtle);
   }
 
   & .game-viewer__warnings {
@@ -335,9 +411,15 @@
       height: var(--viewer-board-size);
     }
 
-    & .game-viewer__panel {
+    & .game-viewer__panel-column {
       flex: 1;
       min-width: 0;
+    }
+
+    /* A pantalla completa sí llena el alto: es lo que se ha pedido al abrirla,
+       y la notación se desplaza por dentro. */
+    & .game-viewer__panel {
+      flex: 1;
     }
 
     & .game-viewer__panel-head {
@@ -358,7 +440,7 @@
     }
 
     & .game-viewer__moves {
-      padding: 28px;
+      padding: 0;
     }
 
     /* En pantalla estrecha no hay ancho que repartir: se apila y el tablero

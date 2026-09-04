@@ -62,6 +62,21 @@
     border-color: var(--platform-accent);
   }
 
+  /* Cada grupo con su título: los signos son muchos y sin agrupar no se ve que
+     una jugada puede llevar uno de cada. */
+  & .game-tools__nag-group + .game-tools__nag-group {
+    margin-top: 12px;
+  }
+
+  & .game-tools__nag-title {
+    margin: 0 0 7px;
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--platform-text-subtle);
+  }
+
   & .game-tools__nags {
     display: flex;
     flex-wrap: wrap;

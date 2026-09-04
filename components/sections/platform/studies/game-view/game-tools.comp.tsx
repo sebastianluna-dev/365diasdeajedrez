@@ -2,11 +2,30 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { commentTextAt, parseEditableGame, serializeGame, setCommentText, setNags } from "@/lib/chess/pgn-edit";
-import { MOVE_QUALITY_NAGS, nodeAtPath, parsePgnTree } from "@/lib/chess/pgn-tree";
+import {
+  MOVE_QUALITY_NAGS,
+  MOVE_REMARK_NAGS,
+  nagCodeFor,
+  nagCodesOf,
+  nodeAtPath,
+  parsePgnTree,
+  POSITION_EVAL_NAGS,
+  type NagOption,
+} from "@/lib/chess/pgn-tree";
 import { sanToSpanish } from "@/lib/chess/notation";
 import "./game-tools.comp.css";
 
 export type GameToolsTab = "comment" | "quality" | "share";
+
+/**
+ * Los tres grupos de signos, cada uno excluyente por dentro: una jugada no es
+ * «!» y «?» a la vez, pero sí puede ser «!» con «→» y «±».
+ */
+const NAG_GROUPS: { title: string; options: NagOption[] }[] = [
+  { title: "Calidad de la jugada", options: MOVE_QUALITY_NAGS },
+  { title: "Qué pasa en la partida", options: MOVE_REMARK_NAGS },
+  { title: "Evaluación de la posición", options: POSITION_EVAL_NAGS },
+];
 
 interface GameToolsProps {
   pgn: string;
@@ -74,6 +93,22 @@ export function GameTools({
   }, [pgn, currentPath]);
 
   const nags = node?.nags ?? [];
+
+  // Los signos con pareja (blancas/negras) se escriben según de quién sea la
+  // jugada; en la posición de partida no hay ninguna y el panel está apagado.
+  const isWhiteMove = node ? node.ply % 2 === 1 : true;
+
+  /**
+   * Los NAGs que quedan tras pulsar una opción: se conserva lo de los OTROS
+   * grupos, y dentro del suyo la elegida sustituye a la que hubiera —o se quita,
+   * si era ella misma—.
+   */
+  const nextNags = (group: NagOption[], option: NagOption): number[] => {
+    const code = nagCodeFor(option, isWhiteMove);
+    const inGroup = new Set(group.flatMap(nagCodesOf));
+    const others = nags.filter((nag) => !inGroup.has(nag));
+    return nags.includes(code) ? others : [...others, code];
+  };
 
   /** Aplica un cambio sobre el PGN; guardarlo es cosa de la sección. */
   const apply = (mutate: (game: NonNullable<ReturnType<typeof parseEditableGame>>) => boolean) => {
@@ -146,33 +181,33 @@ export function GameTools({
 
       {tab === "quality" && (
         <div className="game-tools__panel">
-          <div className="game-tools__nags">
-            {MOVE_QUALITY_NAGS.map((option) => {
-              const active = nags.includes(option.nag);
-              return (
-                <button
-                  key={option.nag}
-                  type="button"
-                  disabled={!node}
-                  aria-pressed={active}
-                  onClick={() =>
-                    apply((game) =>
-                      // Pulsar la que ya está puesta la quita: es un interruptor,
-                      // no una lista que sólo crece.
-                      setNags(game, currentPath, active ? [] : [option.nag]),
-                    )
-                  }
-                  className={`game-tools__nag${active ? " game-tools__nag_state_active" : ""}`}
-                >
-                  <span className="game-tools__nag-glyph">{option.glyph}</span>
-                  {option.label}
-                </button>
-              );
-            })}
-          </div>
+          {NAG_GROUPS.map((group) => (
+            <div key={group.title} className="game-tools__nag-group">
+              <p className="game-tools__nag-title">{group.title}</p>
+              <div className="game-tools__nags">
+                {group.options.map((option) => {
+                  const code = nagCodeFor(option, isWhiteMove);
+                  const active = nags.includes(code);
+                  return (
+                    <button
+                      key={option.nag}
+                      type="button"
+                      disabled={!node}
+                      aria-pressed={active}
+                      onClick={() => apply((game) => setNags(game, currentPath, nextNags(group.options, option)))}
+                      className={`game-tools__nag${active ? " game-tools__nag_state_active" : ""}`}
+                    >
+                      <span className="game-tools__nag-glyph">{option.glyph}</span>
+                      {option.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
           <p className="game-tools__hint">
             {node
-              ? "Se guarda como NAG dentro del PGN, así que viaja con la partida al exportarla."
+              ? "Se guarda como NAG dentro del PGN, así que viaja con la partida al exportarla. Una jugada puede llevar un signo de cada grupo."
               : "Elige una jugada en la lista para calificarla."}
           </p>
         </div>

@@ -182,7 +182,14 @@ export function endPathOf(tree: PgnTree, path: string): string {
   }
 }
 
-/** Glifo de un NAG numérico ($1, $14, ...) para mostrar junto al SAN. */
+/**
+ * Glifo de un NAG numérico ($1, $14, ...) para mostrar junto al SAN.
+ *
+ * Los códigos que van en pareja (blancas/negras) comparten símbolo: «↑» es la
+ * iniciativa, la tenga quien la tenga, y quién la tiene ya lo dice de quién es
+ * la jugada. Los números son los del estándar PGN, con las extensiones que usa
+ * ChessBase para novedad ($146), idea ($140) y apuro de tiempo ($138).
+ */
 const NAG_GLYPHS: Record<number, string> = {
   1: "!",
   2: "?",
@@ -190,6 +197,7 @@ const NAG_GLYPHS: Record<number, string> = {
   4: "??",
   5: "!?",
   6: "?!",
+  7: "□",
   10: "=",
   13: "∞",
   14: "⩲",
@@ -198,6 +206,22 @@ const NAG_GLYPHS: Record<number, string> = {
   17: "∓",
   18: "+−",
   19: "−+",
+  22: "⊙",
+  23: "⊙",
+  32: "↑↑",
+  33: "↑↑",
+  36: "↑",
+  37: "↑",
+  40: "→",
+  41: "→",
+  44: "=∞",
+  45: "=∞",
+  132: "⇆",
+  133: "⇆",
+  138: "⊕",
+  139: "⊕",
+  140: "Δ",
+  146: "N",
 };
 
 export function nagGlyph(nag: number): string {
@@ -205,17 +229,36 @@ export function nagGlyph(nag: number): string {
 }
 
 export interface NagOption {
+  /** El código que se escribe cuando la jugada es de las blancas. */
   nag: number;
+  /**
+   * El mismo símbolo para una jugada de las negras. El PGN distingue bando en
+   * casi todos los comentarios simbólicos —$36 es «las blancas tienen la
+   * iniciativa» y $37 el equivalente negro—, así que se guarda el que
+   * corresponde en vez de escribir siempre el de las blancas.
+   */
+  blackNag?: number;
   glyph: string;
   label: string;
 }
 
+/** Los códigos que ocupa una opción, para saber qué sustituye al elegirla. */
+export function nagCodesOf(option: NagOption): number[] {
+  return option.blackNag === undefined ? [option.nag] : [option.nag, option.blackNag];
+}
+
+/** El código que toca escribir según de quién sea la jugada. */
+export function nagCodeFor(option: NagOption, isWhiteMove: boolean): number {
+  return isWhiteMove || option.blackNag === undefined ? option.nag : option.blackNag;
+}
+
 /**
- * Los NAGs que ofrece el editor, en dos grupos EXCLUYENTES entre sí.
+ * Los NAGs que ofrece el editor, en tres grupos EXCLUYENTES entre sí.
  *
- * Son dos cosas distintas y una jugada puede llevar una de cada: qué tal fue la
- * jugada («??») y cómo queda la posición después («∓»). Por eso elegir dentro de
- * un grupo sustituye lo que hubiera de ese grupo, pero no toca al otro.
+ * Son tres cosas distintas y una jugada puede llevar una de cada: qué tal fue
+ * la jugada («??»), qué se quiso decir con ella («N», «→») y cómo queda la
+ * posición después («∓»). Por eso elegir dentro de un grupo sustituye lo que
+ * hubiera de ese grupo, pero no toca a los otros.
  */
 export const MOVE_QUALITY_NAGS: NagOption[] = [
   { nag: 3, glyph: "!!", label: "Jugada brillante" },
@@ -226,13 +269,27 @@ export const MOVE_QUALITY_NAGS: NagOption[] = [
   { nag: 4, glyph: "??", label: "Error grave" },
 ];
 
+/** El comentario simbólico de siempre: qué pasa en la partida tras la jugada. */
+export const MOVE_REMARK_NAGS: NagOption[] = [
+  { nag: 7, glyph: "□", label: "Única jugada" },
+  { nag: 22, blackNag: 23, glyph: "⊙", label: "Zugzwang" },
+  { nag: 146, glyph: "N", label: "Novedad" },
+  { nag: 32, blackNag: 33, glyph: "↑↑", label: "Desarrollo" },
+  { nag: 36, blackNag: 37, glyph: "↑", label: "Iniciativa" },
+  { nag: 40, blackNag: 41, glyph: "→", label: "Ataque" },
+  { nag: 132, blackNag: 133, glyph: "⇆", label: "Contrajuego" },
+  { nag: 138, blackNag: 139, glyph: "⊕", label: "Problema de tiempo" },
+  { nag: 44, blackNag: 45, glyph: "=∞", label: "Con compensación" },
+  { nag: 140, glyph: "Δ", label: "Con la idea" },
+];
+
 export const POSITION_EVAL_NAGS: NagOption[] = [
   { nag: 10, glyph: "=", label: "Posición igualada" },
   { nag: 13, glyph: "∞", label: "Posición poco clara" },
-  { nag: 14, glyph: "⩲", label: "Blancas algo mejor" },
-  { nag: 15, glyph: "⩱", label: "Negras algo mejor" },
-  { nag: 16, glyph: "±", label: "Blancas mejor" },
-  { nag: 17, glyph: "∓", label: "Negras mejor" },
-  { nag: 18, glyph: "+−", label: "Blancas ganan" },
-  { nag: 19, glyph: "−+", label: "Negras ganan" },
+  { nag: 14, glyph: "⩲", label: "Las blancas están ligeramente mejor" },
+  { nag: 15, glyph: "⩱", label: "Las negras están ligeramente mejor" },
+  { nag: 16, glyph: "±", label: "Las blancas están mejor" },
+  { nag: 17, glyph: "∓", label: "Las negras están mejor" },
+  { nag: 18, glyph: "+−", label: "Las blancas están ganando" },
+  { nag: 19, glyph: "−+", label: "Las negras están ganando" },
 ];

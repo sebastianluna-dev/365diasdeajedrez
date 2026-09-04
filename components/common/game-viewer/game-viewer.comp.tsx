@@ -17,6 +17,7 @@ import { BoardFlipIcon } from "@/components/icons/board-flip-icon.comp";
 import { FullscreenIcon } from "@/components/icons/fullscreen-icon.comp";
 import { JumpEndIcon } from "@/components/icons/jump-end-icon.comp";
 import { JumpStartIcon } from "@/components/icons/jump-start-icon.comp";
+import { MenuIcon } from "@/components/icons/menu-icon.comp";
 import { SoundOffIcon } from "@/components/icons/sound-off-icon.comp";
 import { SoundOnIcon } from "@/components/icons/sound-on-icon.comp";
 import { numberedMoveLabel } from "@/lib/chess/notation";
@@ -155,6 +156,8 @@ export function GameViewer({
   const [engineOn, setEngineOn] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [menu, setMenu] = useState<MoveContextMenuTarget | null>(null);
+  const [optionsOpen, setOptionsOpen] = useState(false);
+  const optionsRef = useRef<HTMLDivElement>(null);
 
   // Editar es cosa de dos: el permiso y alguien a quien entregarle el PGN. Sin
   // las dos cosas el visor es exactamente el de antes.
@@ -236,6 +239,25 @@ export function GameViewer({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goToNext, goToPrevious]);
+
+  // El menú de opciones se cierra como cualquier otro: pulsando fuera o con
+  // Escape.
+  useEffect(() => {
+    if (!optionsOpen) return;
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!optionsRef.current?.contains(event.target as Node)) setOptionsOpen(false);
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOptionsOpen(false);
+    };
+
+    window.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [optionsOpen]);
 
   // La pantalla completa puede salirse por Escape sin pasar por el botón, así
   // que el estado se lee del documento y no de quien pulsó.
@@ -321,6 +343,69 @@ export function GameViewer({
       <button type="button" title="Última jugada" onClick={goToEnd} className="game-viewer__nav-button">
         <JumpEndIcon className="game-viewer__nav-icon" />
       </button>
+      {/* Girar el tablero es una acción de la partida, no un ajuste del visor:
+          va con los botones con los que se la recorre. */}
+      <button
+        type="button"
+        title="Girar el tablero"
+        onClick={() => setFlipToggled((current) => !current)}
+        className="game-viewer__nav-button"
+      >
+        <BoardFlipIcon className="game-viewer__nav-icon" />
+      </button>
+
+      {/* Sonido y pantalla completa son ajustes del visor, no de la partida: se
+          pulsan una vez y estorban el resto del rato, así que van plegados en
+          este menú, al final de la misma botonera. */}
+      <div className="game-viewer__options" ref={optionsRef}>
+        <button
+          type="button"
+          title="Opciones del visor"
+          aria-haspopup="menu"
+          aria-expanded={optionsOpen}
+          onClick={() => setOptionsOpen((open) => !open)}
+          className="game-viewer__nav-button"
+        >
+          <MenuIcon className="game-viewer__nav-icon" />
+        </button>
+
+        {optionsOpen && (
+          <div className="game-viewer__options-menu" role="menu">
+            <button
+              type="button"
+              // `menuitemcheckbox` y no `menuitem`: es un interruptor y el
+              // lector de pantalla tiene que decir si está puesto.
+              role="menuitemcheckbox"
+              aria-checked={preferences.sound}
+              onClick={() => {
+                updatePreferences({ ...preferences, sound: !preferences.sound });
+                setOptionsOpen(false);
+              }}
+              className="game-viewer__options-item"
+            >
+              {preferences.sound ? (
+                <SoundOnIcon className="game-viewer__options-icon" />
+              ) : (
+                <SoundOffIcon className="game-viewer__options-icon" />
+              )}
+              {preferences.sound ? "Silenciar" : "Activar el sonido"}
+            </button>
+
+            <button
+              type="button"
+              role="menuitem"
+              onClick={() => {
+                toggleFullscreen();
+                setOptionsOpen(false);
+              }}
+              className="game-viewer__options-item"
+            >
+              <FullscreenIcon className="game-viewer__options-icon" />
+              {isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
+            </button>
+          </div>
+        )}
+      </div>
 
       {skip && <div className="game-viewer__skip">{skip}</div>}
     </div>
@@ -354,19 +439,6 @@ export function GameViewer({
           )}
 
           <div className="game-viewer__board-row">
-            {engine && engineOn && (
-              <div className="game-viewer__evaluation" aria-hidden="true">
-                <span
-                  className="game-viewer__evaluation-fill"
-                  style={{
-                    // La barra se llena desde ABAJO con la ventaja de las
-                    // blancas, que es como se lee en cualquier tablero.
-                    height: `${(engineState.info === null ? 0.5 : evaluationBarFill(engineState.info.score)) * 100}%`,
-                  }}
-                />
-              </div>
-            )}
-
             <div className="game-viewer__board">
             <ChessBoard
               position={{
@@ -382,6 +454,26 @@ export function GameViewer({
               onShapesChange={(shapes) => editing.updateShapes(currentPath, shapes)}
             />
             </div>
+
+            {/* La barra va entre el tablero y la notación, y se pinta SIEMPRE
+                que el visor ofrezca módulo: encenderlo o apagarlo no puede
+                mover de sitio ni el tablero ni el panel, así que su hueco está
+                reservado desde el principio y lo único que cambia es si se ve. */}
+            {engine && (
+              <div
+                className={`game-viewer__evaluation${engineOn ? "" : " game-viewer__evaluation_state_off"}`}
+                aria-hidden="true"
+              >
+                <span
+                  className="game-viewer__evaluation-fill"
+                  style={{
+                    // La barra se llena desde ABAJO con la ventaja de las
+                    // blancas, que es como se lee en cualquier tablero.
+                    height: `${(engineState.info === null ? 0.5 : evaluationBarFill(engineState.info.score)) * 100}%`,
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           {players && (
@@ -395,85 +487,61 @@ export function GameViewer({
 
         {boardFooter && <div className="game-viewer__board-footer">{boardFooter}</div>}
 
-        <div className="game-viewer__panel">
-          {hasHead && (
-            <div className="game-viewer__panel-head">
-              <div className="game-viewer__panel-heading">
-                {title && <p className="game-viewer__panel-title">{title}</p>}
-                {subtitle && <p className="game-viewer__panel-subtitle">{subtitle}</p>}
-                {description && <p className="game-viewer__panel-description">{description}</p>}
+        {/* La columna derecha entera: la tarjeta de la notación y, por debajo y
+            ya fuera de ella, la botonera con la que se recorre la partida. */}
+        <div className="game-viewer__panel-column">
+          <div className="game-viewer__panel">
+            {hasHead && (
+              <div className="game-viewer__panel-head">
+                <div className="game-viewer__panel-heading">
+                  {title && <p className="game-viewer__panel-title">{title}</p>}
+                  {subtitle && <p className="game-viewer__panel-subtitle">{subtitle}</p>}
+                  {description && <p className="game-viewer__panel-description">{description}</p>}
+                </div>
+                {badge && <span className="game-viewer__panel-badge">{badge}</span>}
+                {headerActions}
               </div>
-              {badge && <span className="game-viewer__panel-badge">{badge}</span>}
-              {headerActions}
+            )}
+
+            {engine && (
+              <EnginePanel
+                fen={fen}
+                enabled={engineOn}
+                onToggle={() => setEngineOn((on) => !on)}
+                state={engineState}
+              />
+            )}
+
+            <div className="game-viewer__moves">
+              {moveList === "flow" ? (
+                <MoveTree
+                  tree={tree}
+                  currentPath={currentPath}
+                  onSelect={setCurrentPath}
+                  onContextMenu={isEditing ? openMenu : undefined}
+                />
+              ) : (
+                <MoveTable
+                  tree={tree}
+                  currentPath={currentPath}
+                  onSelect={setCurrentPath}
+                  onContextMenu={isEditing ? openMenu : undefined}
+                />
+              )}
             </div>
-          )}
 
-          {engine && (
-            <EnginePanel
-              fen={fen}
-              enabled={engineOn}
-              onToggle={() => setEngineOn((on) => !on)}
-              state={engineState}
-            />
-          )}
+            {/* El pie de la tarjeta sólo existe si la pantalla que monta el
+                visor le da algo que poner: vacío era una franja blanca. */}
+            {(positionActions || footerActions) && (
+              <div className="game-viewer__toolbar">
+                {positionActions?.(fen)}
 
-          <div className="game-viewer__moves">
-            {moveList === "flow" ? (
-              <MoveTree
-                tree={tree}
-                currentPath={currentPath}
-                onSelect={setCurrentPath}
-                onContextMenu={isEditing ? openMenu : undefined}
-              />
-            ) : (
-              <MoveTable
-                tree={tree}
-                currentPath={currentPath}
-                onSelect={setCurrentPath}
-                onContextMenu={isEditing ? openMenu : undefined}
-              />
+                {footerActions && <div className="game-viewer__toolbar-end">{footerActions}</div>}
+              </div>
             )}
           </div>
 
           {controls === "panel" && <div className="game-viewer__panel-nav">{nav}</div>}
-
-          <div className="game-viewer__toolbar">
-            <button
-              type="button"
-              title="Girar el tablero"
-              onClick={() => setFlipToggled((current) => !current)}
-              className="game-viewer__tool"
-            >
-              <BoardFlipIcon className="game-viewer__tool-icon" />
-            </button>
-
-            <button
-              type="button"
-              title={preferences.sound ? "Silenciar" : "Activar el sonido"}
-              aria-pressed={preferences.sound}
-              onClick={() => updatePreferences({ ...preferences, sound: !preferences.sound })}
-              className="game-viewer__tool"
-            >
-              {preferences.sound ? (
-                <SoundOnIcon className="game-viewer__tool-icon" />
-              ) : (
-                <SoundOffIcon className="game-viewer__tool-icon" />
-              )}
-            </button>
-
-            <button
-              type="button"
-              title={isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
-              onClick={toggleFullscreen}
-              className="game-viewer__tool"
-            >
-              <FullscreenIcon className="game-viewer__tool-icon" />
-            </button>
-
-            {positionActions?.(fen)}
-
-            {footerActions && <div className="game-viewer__toolbar-end">{footerActions}</div>}
-          </div>
         </div>
       </div>
 

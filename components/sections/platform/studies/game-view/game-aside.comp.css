@@ -1,17 +1,18 @@
 .game-aside {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  /* Se queda a la vista mientras se recorre la partida: el listado de al lado
-     es para saltar de una a otra, y perderlo al bajar lo haría inútil. */
-  position: sticky;
-  top: 90px;
+  /* Columna normal, que sube y baja con la página: pegada arriba se quedaba
+     flotando junto al tablero y robaba la vista a lo que se está mirando. */
+  display: block;
 
   & .game-aside__card {
     padding: 16px;
     background: var(--platform-surface);
     border-radius: 18px;
     box-shadow: 0 1px 2px rgba(22, 17, 13, 0.05);
+  }
+
+  /* El hueco entre tarjetas lo pone el margen, no un `gap`: ya no hay flex. */
+  & .game-aside__card + .game-aside__card {
+    margin-top: 20px;
   }
 
   & .game-aside__card-head {
@@ -198,15 +199,19 @@
     background: var(--platform-bg);
   }
 
-  /* Sin ancho para tres columnas el aside deja de ser columna: se coloca arriba
-     y suelta el sticky, que ahí sólo taparía el tablero. */
+  /* Sin ancho para dos columnas el aside pasa arriba, y sus tarjetas se
+     reparten el ancho en vez de apilarse a lo largo. */
   @media (max-width: 1180px) {
-    position: static;
-    flex-direction: row;
+    display: flex;
     flex-wrap: wrap;
+    gap: 20px;
 
     & .game-aside__card {
       flex: 1 1 280px;
+    }
+
+    & .game-aside__card + .game-aside__card {
+      margin-top: 0;
     }
   }
 }

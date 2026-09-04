@@ -1,5 +1,5 @@
 .move-table {
-  font-size: var(--move-tree-font-size, 16.5px);
+  font-size: var(--move-tree-font-size, 15px);
   color: var(--platform-text);
   /* Escalón de sangría por nivel de variante. */
   --move-table-step: 15px;
@@ -12,15 +12,16 @@
     align-items: stretch;
   }
 
-  /* Rayado por pares para no perder la fila al recorrer una partida larga. */
-  & .move-table__row:nth-of-type(odd) {
-    background: var(--platform-bg);
-  }
-
+  /* Lo que separa no son rayas por fila, sino las dos zonas de la tabla: la
+     columna de números tiene su propio fondo y un filo a la derecha, y las
+     jugadas se quedan sobre el fondo del panel. Entre blancas y negras no hay
+     nada: son la misma jugada. */
   & .move-table__number {
     display: flex;
     align-items: center;
     padding: 5px 10px;
+    background: var(--platform-bg);
+    box-shadow: inset -1px 0 0 var(--platform-border);
     color: var(--platform-text-subtle);
     font-variant-numeric: tabular-nums;
   }
@@ -60,10 +61,14 @@
   }
 
   /* Comentario de la línea principal: a lo ancho y sin sangrar, porque no
-     cuelga de ninguna rama — es de la partida, no de una alternativa. */
+     cuelga de ninguna rama — es de la partida, no de una alternativa. Es lo
+     ÚNICO que corta la tabla con un filo: interrumpe la lista de jugadas y sin
+     él se leería como una fila más. */
   & .move-table__comment {
     margin: 0;
     padding: 8px 12px;
+    border-top: 1px solid var(--platform-border);
+    border-bottom: 1px solid var(--platform-border);
     font-size: 0.9em;
     line-height: 1.5;
     color: var(--platform-text-muted);
@@ -77,9 +82,39 @@
     position: relative;
     margin: 0;
     padding: 3px 12px 3px calc(var(--move-table-depth, 0) * var(--move-table-step) + 26px);
+    border-top: 1px solid var(--platform-border);
+    border-bottom: 1px solid var(--platform-border);
     font-size: 0.92em;
     line-height: 1.75;
     color: var(--platform-text-muted);
+  }
+
+  /* El filo enmarca el ÁRBOL entero, no cada renglón: las variantes seguidas
+     son un bloque —una rama con sus subramas— y dentro no se corta nada. Queda
+     el de arriba de la primera y el de abajo de la última. */
+  & .move-table__line + .move-table__line {
+    border-top: 0;
+  }
+
+  & .move-table__line:has(+ .move-table__line) {
+    border-bottom: 0;
+  }
+
+  /* Nada que cortar si no hay jugadas encima, ni dos filos juntos donde acaba
+     un bloque y empieza el siguiente. */
+  & .move-table__comment:first-child,
+  & .move-table__line:first-child,
+  & .move-table__comment + .move-table__comment,
+  & .move-table__comment + .move-table__line,
+  & .move-table__line + .move-table__comment {
+    border-top: 0;
+  }
+
+  /* Un comentario con sus variantes detrás es UN bloque: lo que dice el
+     comentario es de la jugada de la que salen esas ramas, así que entre ellos
+     no va nada. El marco lo cierra la última variante. */
+  & .move-table__comment:has(+ .move-table__line) {
+    border-bottom: 0;
   }
 
   & .move-table__line::before {
