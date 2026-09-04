@@ -19,7 +19,7 @@
     gap: 12px;
     padding: 12px 14px;
     border: 1px solid var(--platform-border);
-    border-radius: 12px;
+    border-radius: 10px;
   }
 
   & .class-block-editor__row {

@@ -23,7 +23,7 @@
   & .study-detail__kind,
   & .study-detail__origin {
     padding: 5px 11px;
-    border-radius: 999px;
+    border-radius: 1000px;
     font-size: 13px;
   }
 
@@ -81,7 +81,7 @@
 
   & .study-detail__new {
     padding: 11px 20px;
-    border-radius: 11px;
+    border-radius: 10px;
     font-size: 15px;
   }
 

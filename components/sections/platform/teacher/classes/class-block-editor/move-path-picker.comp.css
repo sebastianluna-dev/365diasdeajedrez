@@ -4,7 +4,7 @@
   gap: 12px;
   padding: 14px;
   border: 1px solid var(--platform-border);
-  border-radius: 12px;
+  border-radius: 10px;
 
   & .move-path-picker__hint {
     margin: 0;

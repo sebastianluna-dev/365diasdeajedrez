@@ -2,7 +2,7 @@
   & .edit-study__open {
     padding: 11px 17px;
     border: 1px solid var(--platform-border);
-    border-radius: 11px;
+    border-radius: 10px;
     background: var(--platform-surface);
     color: var(--platform-text);
     font-family: inherit;

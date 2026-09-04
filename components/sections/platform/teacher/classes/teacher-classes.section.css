@@ -19,7 +19,7 @@
 
   & .teacher-classes__filter {
     padding: 7px 13px;
-    border-radius: 999px;
+    border-radius: 1000px;
     font-size: 15px;
     font-weight: 600;
     color: var(--platform-text-muted);

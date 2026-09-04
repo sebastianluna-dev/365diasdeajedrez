@@ -121,7 +121,7 @@
     align-items: center;
     justify-content: center;
     border: 0;
-    border-radius: 12px;
+    border-radius: 10px;
     background: transparent;
     color: var(--platform-text-muted);
     cursor: pointer;
@@ -157,7 +157,7 @@
   & .game-viewer__board-footer {
     grid-column: 1;
     background: var(--platform-surface);
-    border-radius: 20px;
+    border-radius: 10px;
     box-shadow: var(--platform-shadow-card);
     padding: 16px;
   }
@@ -192,7 +192,7 @@
     flex: 0 1 auto;
     min-height: 0;
     background: var(--platform-surface);
-    border-radius: 20px;
+    border-radius: 10px;
     box-shadow: var(--platform-shadow-card);
     display: flex;
     flex-direction: column;
@@ -240,7 +240,7 @@
   & .game-viewer__panel-badge {
     flex: none;
     padding: 6px 12px;
-    border-radius: 999px;
+    border-radius: 1000px;
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
     font-size: 13px;
@@ -285,7 +285,7 @@
     align-items: center;
     justify-content: center;
     border: 0;
-    border-radius: 11px;
+    border-radius: 10px;
     background: transparent;
     color: var(--platform-text-subtle);
     cursor: pointer;
@@ -487,7 +487,7 @@
 .game-viewer.game-viewer_state_error {
   margin: 0;
   padding: 14px 16px;
-  border-radius: 12px;
+  border-radius: 10px;
   background: var(--platform-danger-soft);
   color: var(--platform-danger);
   font-size: 15.5px;

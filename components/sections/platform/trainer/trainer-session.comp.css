@@ -36,7 +36,7 @@
 
   & .trainer-session__board {
     max-width: 560px;
-    border-radius: 14px;
+    border-radius: 10px;
     overflow: hidden;
   }
 

@@ -13,7 +13,7 @@
     align-items: center;
     padding: 22px 24px;
     background: var(--platform-surface);
-    border-radius: 16px;
+    border-radius: 10px;
     box-shadow: var(--platform-shadow-card);
     color: var(--platform-text);
   }
@@ -33,7 +33,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 14px;
+    border-radius: 10px;
     background: var(--platform-accent-wash);
     color: var(--platform-accent-ink);
     font-family: var(--platform-font);

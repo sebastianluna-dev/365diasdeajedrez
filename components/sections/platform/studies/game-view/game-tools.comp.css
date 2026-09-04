@@ -49,7 +49,7 @@
     resize: vertical;
     padding: 12px 14px;
     border: 1px solid var(--platform-border);
-    border-radius: 11px;
+    border-radius: 10px;
     background: var(--platform-surface);
     color: var(--platform-text);
     font-family: inherit;
@@ -89,7 +89,7 @@
     gap: 7px;
     padding: 8px 13px;
     border: 1px solid var(--platform-border);
-    border-radius: 999px;
+    border-radius: 1000px;
     background: var(--platform-surface);
     color: var(--platform-text-muted);
     font-family: inherit;

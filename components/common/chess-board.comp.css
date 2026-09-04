@@ -11,7 +11,7 @@
 .chess-board {
   width: 100%;
   max-width: 800px;
-  border-radius: 14px;
+  border-radius: 10px;
   overflow: hidden;
   background: var(--platform-surface, #2b2723);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
@@ -52,7 +52,7 @@
     align-items: center;
     gap: 8px;
     padding: 12px;
-    border-radius: 12px;
+    border-radius: 10px;
     background: var(--platform-surface, #2b2723);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
     flex-wrap: wrap;
@@ -195,7 +195,7 @@
 
   & .chess-board__notation-rows::-webkit-scrollbar-thumb {
     background: var(--platform-text-muted, #ffffff);
-    border-radius: 999px;
+    border-radius: 1000px;
   }
 
   & .chess-board__notation-row {

@@ -1,6 +1,6 @@
 .platform-table {
   border: 1px solid var(--platform-border);
-  border-radius: 12px;
+  border-radius: 10px;
   overflow-x: auto;
   background: var(--platform-surface);
 

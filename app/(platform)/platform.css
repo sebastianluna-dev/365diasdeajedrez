@@ -117,7 +117,7 @@ body.platform-theme {
 
 .platform-card {
   background: var(--platform-surface);
-  border-radius: 18px;
+  border-radius: 10px;
   box-shadow: var(--platform-shadow-card);
   padding: 22px 24px 24px;
 }
@@ -136,7 +136,7 @@ body.platform-theme {
   gap: 8px;
   padding: 12px 22px;
   border: 0;
-  border-radius: 11px;
+  border-radius: 10px;
   background: var(--platform-accent);
   color: var(--platform-text);
   font-size: 15.5px;
@@ -187,7 +187,7 @@ body.platform-theme {
   margin: auto;
   padding: 0;
   border: 0;
-  border-radius: 18px;
+  border-radius: 10px;
   background: var(--platform-surface);
   color: var(--platform-text);
   box-shadow: var(--platform-shadow-card);
@@ -203,7 +203,7 @@ body.platform-theme {
 .platform-tag {
   display: inline-block;
   padding: 5px 11px;
-  border-radius: 999px;
+  border-radius: 1000px;
   font-size: 13px;
   font-weight: 500;
   background: var(--platform-surface-neutral);

@@ -5,7 +5,7 @@
   & .chapter-detail__head {
     padding: 30px 32px;
     background: var(--platform-surface);
-    border-radius: 20px;
+    border-radius: 10px;
     box-shadow: var(--platform-shadow-card);
   }
 

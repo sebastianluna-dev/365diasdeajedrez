@@ -6,7 +6,7 @@
   & .game-aside__card {
     padding: 16px;
     background: var(--platform-surface);
-    border-radius: 18px;
+    border-radius: 10px;
     box-shadow: 0 1px 2px rgba(22, 17, 13, 0.05);
   }
 

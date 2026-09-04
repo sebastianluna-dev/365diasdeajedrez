@@ -4,7 +4,7 @@
   gap: 14px;
   padding: 16px;
   border: 1px solid var(--platform-border);
-  border-radius: 12px;
+  border-radius: 10px;
   background: var(--platform-surface);
 
   & .block-form__warning {
