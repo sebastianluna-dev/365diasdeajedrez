@@ -40,6 +40,7 @@ export interface StudyGameItem {
   black: string;
   /** Token PGN del resultado: "1-0", "0-1", "1/2-1/2", "*". */
   resultLabel: string;
+  round?: string;
   eco?: string;
   event?: string;
   playedAtLabel?: string;

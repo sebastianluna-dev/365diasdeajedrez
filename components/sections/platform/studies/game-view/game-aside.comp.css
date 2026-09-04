@@ -15,9 +15,82 @@
     margin-top: 20px;
   }
 
+  & .game-aside__card_variant_meta,
+  & .game-aside__card_variant_list {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  & .game-aside__card_variant_list .game-aside__card-head {
+    padding: 16px;
+    box-shadow: 0 1px 0 var(--platform-border);
+  }
+
+  /* Cuántas partidas hay, junto al título: el listado puede quedar cortado por
+     el alto y el número no engaña. */
+  & .game-aside__count {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--platform-text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .game-aside__meta-head {
+    padding: 16px;
+  }
+
+  & .game-aside__event {
+    margin: 10px 0 0;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  & .game-aside__site {
+    margin: 6px 0 0;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
+  /* Dos por dos, con las rayas de la rejilla dibujadas por los propios huecos:
+     el fondo se ve por ellos y no hay que poner un borde por celda ni cuadrar
+     cuál lo lleva y cuál no. */
+  & .game-aside__meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin: 0;
+    background: var(--platform-border);
+    box-shadow: 0 -1px 0 var(--platform-border);
+  }
+
+  & .game-aside__meta-cell {
+    padding: 12px 16px;
+    background: var(--platform-surface);
+  }
+
+  & .game-aside__meta-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    box-shadow: 0 -1px 0 var(--platform-border);
+  }
+
+  & .game-aside__source {
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
   & .game-aside__card-head {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
   }
 
@@ -56,15 +129,15 @@
   & .game-aside__list {
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 8px;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 2px;
   }
 
   & .game-aside__item {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 10px;
     padding: 9px 10px;
     border-radius: 10px;
@@ -76,9 +149,19 @@
     color: var(--platform-text);
   }
 
+  /* La actual, además del fondo, lleva un filo a la izquierda: en una lista de
+     capítulos que se parecen entre sí, el color solo no basta para encontrarla. */
   & .game-aside__item.game-aside__item_state_active {
     background: var(--platform-accent-wash);
+    box-shadow: inset 3px 0 0 var(--platform-accent);
     color: var(--platform-accent-ink);
+  }
+
+  & .game-aside__item-main {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
   }
 
   & .game-aside__item-name {
@@ -91,80 +174,73 @@
     white-space: nowrap;
   }
 
+  & .game-aside__item-meta {
+    font-size: 13px;
+    line-height: 1.3;
+    color: var(--platform-text-subtle);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   & .game-aside__item-result {
     margin-left: auto;
     flex: none;
-    font-size: 13.5px;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
     color: var(--platform-text-muted);
     font-variant-numeric: tabular-nums;
   }
 
+  & .game-aside__item_state_active .game-aside__item-meta,
   & .game-aside__item_state_active .game-aside__item-result {
     color: var(--platform-accent-ink);
   }
 
-  /* El botón del modal hereda el ancho de la tarjeta y se pinta como un hueco
-     por rellenar, no como una acción principal: aquí compite con la lista. */
+  /* Al pie de la tarjeta, como una acción escrita y no como una caja: en la
+     columna compite con el listado, que es a lo que se viene. */
   & .game-aside__new {
-    margin-top: 10px;
+    padding: 6px 8px;
+    box-shadow: 0 -1px 0 var(--platform-border);
   }
 
   & .game-aside__new .platform-button {
     width: 100%;
+    justify-content: flex-start;
+    gap: 10px;
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 8px;
     background: transparent;
-    box-shadow: inset 0 0 0 1px var(--platform-border-strong);
-    color: var(--platform-text-muted);
-    font-size: 14px;
+    color: var(--platform-accent-ink);
+    font-size: 14.5px;
+  }
+
+  /* El signo, sólo en esta tarjeta: el mismo botón se usa en la ficha del
+     estudio, donde es el botón naranja de siempre. */
+  & .game-aside__new .platform-button::before {
+    content: "+";
+    font-size: 17px;
+    line-height: 1;
   }
 
   & .game-aside__new .platform-button:hover {
-    background: transparent;
-    box-shadow: inset 0 0 0 1px var(--platform-accent);
+    background: var(--platform-accent-wash);
     color: var(--platform-accent-ink);
   }
 
-  & .game-aside__meta {
-    margin: 12px 0 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  & .game-aside__meta-row {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    padding: 7px 0;
-    box-shadow: inset 0 -1px 0 var(--platform-track);
-  }
-
-  & .game-aside__meta-row:last-child {
-    box-shadow: none;
-  }
-
   & .game-aside__meta-key {
-    font-size: 12.5px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
     color: var(--platform-text-subtle);
   }
 
   & .game-aside__meta-value {
-    margin: 0 0 0 auto;
-    font-size: 14px;
-    font-weight: 600;
-    text-align: right;
-    min-width: 0;
-  }
-
-  /* Borrar la partida cierra la ficha, separado por una línea: es lo único
-     de aquí que no tiene vuelta atrás. */
-  & .game-aside__danger {
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px solid var(--platform-border);
+    margin: 5px 0 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 
   /* Sin ancho para dos columnas el aside pasa arriba, y sus tarjetas se

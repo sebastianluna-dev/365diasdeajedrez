@@ -19,9 +19,23 @@
     font-size: 14px;
   }
 
+  /* Al pie de la ficha no es una caja: es la última palabra de la fila, y sólo
+     se tiñe de rojo al ir a por ella. */
+  & .delete-game__open.delete-game__open_size_inline {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
   & .delete-game__open:hover {
     border-color: var(--platform-danger);
     color: var(--platform-danger);
+  }
+
+  & .delete-game__open.delete-game__open_size_inline:hover {
+    border: 0;
   }
 
   & .delete-game__dialog {

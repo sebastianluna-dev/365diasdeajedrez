@@ -12,12 +12,22 @@ interface DeleteGameProps {
   classBlockCount: number;
   /**
    * `compact` para la columna de la ficha, donde el botón va a lo ancho y a la
-   * medida del resto de acciones de la tarjeta.
+   * medida del resto de acciones de la tarjeta; `inline` para el pie de la
+   * ficha, donde es una palabra más de la fila y no una caja.
    */
-  size?: "regular" | "compact";
+  size?: "regular" | "compact" | "inline";
+  /** El texto del disparador. Al pie basta «Borrar», que ya está en contexto. */
+  label?: string;
 }
 
-export function DeleteGame({ studyId, gameId, name, classBlockCount, size = "regular" }: DeleteGameProps) {
+export function DeleteGame({
+  studyId,
+  gameId,
+  name,
+  classBlockCount,
+  size = "regular",
+  label = "Borrar partida",
+}: DeleteGameProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [confirmed, setConfirmed] = useState(false);
 
@@ -35,10 +45,10 @@ export function DeleteGame({ studyId, gameId, name, classBlockCount, size = "reg
     <div className="delete-game">
       <button
         type="button"
-        className={`delete-game__open${size === "compact" ? " delete-game__open_size_compact" : ""}`}
+        className={`delete-game__open${size === "regular" ? "" : ` delete-game__open_size_${size}`}`}
         onClick={() => dialogRef.current?.showModal()}
       >
-        Borrar partida
+        {label}
       </button>
 
       <dialog ref={dialogRef} className="platform-dialog delete-game__dialog" onClose={() => setConfirmed(false)}>

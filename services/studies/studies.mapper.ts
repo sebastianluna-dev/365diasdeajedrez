@@ -95,6 +95,7 @@ function mapStudyGameItem(
     white: game.white,
     black: game.black,
     resultLabel: game.result.label,
+    round: game.round ?? undefined,
     eco: game.eco ?? undefined,
     event: game.event ?? undefined,
     playedAtLabel: game.playedAt ? formatSpanishDate(game.playedAt) : undefined,
