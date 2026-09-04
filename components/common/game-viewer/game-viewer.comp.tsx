@@ -116,6 +116,12 @@ interface GameViewerProps {
   onRequestEdit?: (mode: "comment" | "annotate", path: string) => void;
 }
 
+/** Lo que hay que mantener pulsado antes de que la partida empiece a correr. */
+const HOLD_DELAY_MS = 400;
+
+/** Cada cuánto avanza una jugada mientras se mantenga pulsado. */
+const HOLD_STEP_MS = 130;
+
 /** Piezas sobre el tablero, para distinguir una captura de una jugada normal. */
 function pieceCount(fen: string): number {
   return (fen.split(" ")[0] ?? "").replace(/[^a-zA-Z]/g, "").length;
@@ -197,6 +203,26 @@ export function GameViewer({
   useEffect(() => {
     onPathChangeRef.current?.(currentPath);
   }, [currentPath]);
+
+  // Mantener pulsado «atrás» o «adelante» sigue recorriendo la partida: una
+  // espera antes de arrancar, para no disparar la repetición en un clic normal,
+  // y a partir de ahí una jugada cada poco.
+  const repeatRef = useRef<{ delay?: number; step?: number }>({});
+  const stopRepeat = useCallback(() => {
+    window.clearTimeout(repeatRef.current.delay);
+    window.clearInterval(repeatRef.current.step);
+    repeatRef.current = {};
+  }, []);
+  const startRepeat = useCallback(
+    (action: () => void) => {
+      stopRepeat();
+      repeatRef.current.delay = window.setTimeout(() => {
+        repeatRef.current.step = window.setInterval(action, HOLD_STEP_MS);
+      }, HOLD_DELAY_MS);
+    },
+    [stopRepeat],
+  );
+  useEffect(() => stopRepeat, [stopRepeat]);
 
   const goToStart = useCallback(() => setCurrentPath(""), []);
   const goToPrevious = useCallback(() => setCurrentPath((path) => parentPathOf(path)), []);
@@ -299,6 +325,8 @@ export function GameViewer({
   }
 
   const flipBoard = (orientation === "black") !== flipToggled;
+  const atStart = currentPath.length === 0;
+  const atEnd = nextPathOf(tree, currentPath) === undefined;
 
   /** La jugada como se lee en la lista («1… f5»): titula su menú. */
   const labelOf = (path: string): string => {
@@ -327,23 +355,53 @@ export function GameViewer({
     setMenu(null);
   };
 
+  // Soltar el botón, sacar el dedo de encima o perder el puntero paran la
+  // repetición: si sólo parase al soltar, arrastrar fuera la dejaría corriendo.
+  const holdProps = (action: () => void) => ({
+    onPointerDown: () => startRepeat(action),
+    onPointerUp: stopRepeat,
+    onPointerLeave: stopRepeat,
+    onPointerCancel: stopRepeat,
+  });
+
   const nav = (
     <div className="game-viewer__nav">
-      <button type="button" title="Primera jugada" onClick={goToStart} className="game-viewer__nav-button">
+      <button
+        type="button"
+        title="Primera jugada"
+        onClick={goToStart}
+        disabled={atStart}
+        className="game-viewer__nav-button"
+      >
         <JumpStartIcon className="game-viewer__nav-icon" />
       </button>
-      <button type="button" title="Jugada anterior" onClick={goToPrevious} className="game-viewer__nav-button">
+      <button
+        type="button"
+        title="Jugada anterior"
+        onClick={goToPrevious}
+        disabled={atStart}
+        {...holdProps(goToPrevious)}
+        className="game-viewer__nav-button"
+      >
         <ArrowLeftIcon className="game-viewer__nav-icon" />
       </button>
       <button
         type="button"
         title="Jugada siguiente"
         onClick={goToNext}
+        disabled={atEnd}
+        {...holdProps(goToNext)}
         className="game-viewer__nav-button game-viewer__nav-button_emphasis_strong"
       >
         <ArrowRightIcon className="game-viewer__nav-icon" />
       </button>
-      <button type="button" title="Última jugada" onClick={goToEnd} className="game-viewer__nav-button">
+      <button
+        type="button"
+        title="Última jugada"
+        onClick={goToEnd}
+        disabled={atEnd}
+        className="game-viewer__nav-button"
+      >
         <JumpEndIcon className="game-viewer__nav-icon" />
       </button>
       {/* Girar el tablero es una acción de la partida, no un ajuste del visor:

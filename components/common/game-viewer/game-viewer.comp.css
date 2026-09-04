@@ -114,17 +114,17 @@
     margin-top: -14px;
   }
 
-  /* Los botones se tocan: son una sola botonera y el hueco entre ellos los
-     leía como cuatro acciones sueltas. */
+  /* Los botones se tocan y se reparten el ancho de la columna: son una sola
+     botonera, y el hueco entre ellos los leía como acciones sueltas. */
   & .game-viewer__nav {
     display: flex;
     align-items: center;
   }
 
   & .game-viewer__nav-button {
-    width: 56px;
+    flex: 1;
+    min-width: 0;
     height: 48px;
-    flex: none;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -135,21 +135,24 @@
     cursor: pointer;
   }
 
-  /* Sin filo: lo que marca el botón es el color, y sólo al pasar por encima. */
-  & .game-viewer__nav-button:hover {
-    background: var(--platform-bg);
-    color: var(--platform-text);
+  /* Sin filo: lo que marca el botón es el naranja claro de la casa, y sólo al
+     pasar por encima. Todos igual, también el destacado. */
+  & .game-viewer__nav-button:hover:not(:disabled) {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
+
+  /* Al principio de la partida no se puede ir hacia atrás, y al final hacia
+     delante: el botón lo dice en vez de no hacer nada al pulsarlo. */
+  & .game-viewer__nav-button:disabled {
+    color: var(--platform-text-faint);
+    cursor: default;
   }
 
   /* «Siguiente» es lo que se pulsa el 90 % de las veces: va en el color del
      texto para encontrarlo sin leer los iconos. */
   & .game-viewer__nav-button.game-viewer__nav-button_emphasis_strong {
     color: var(--platform-text);
-  }
-
-  & .game-viewer__nav-button.game-viewer__nav-button_emphasis_strong:hover {
-    background: var(--platform-text);
-    color: var(--platform-surface);
   }
 
   & .game-viewer__nav-icon {
@@ -327,10 +330,13 @@
     margin-left: auto;
   }
 
-  /* Ancla del desplegable de opciones: el menú se cuelga de este botón. */
+  /* Ancla del desplegable de opciones: el menú se cuelga de este botón. Se
+     reparte el ancho como uno más de la botonera, porque eso es lo que es. */
   & .game-viewer__options {
     position: relative;
     display: flex;
+    flex: 1;
+    min-width: 0;
   }
 
   & .game-viewer__options-menu {
