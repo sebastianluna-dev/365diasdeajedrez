@@ -120,6 +120,54 @@ input[type="submit"] {
   appearance: button;
 }
 
+/* Ningún cambio de color es instantáneo: al pasar por encima, al enfocar o al
+ * marcar algo, el color va llegando en 150 ms en lugar de saltar.
+ *
+ * Se enumeran las propiedades y NO se pone `all`: con `all`, cualquier cosa que
+ * cambie —un alto, una posición— se animaría también, y eso convierte un
+ * despliegue en un arrastre. `box-shadow` entra porque en este proyecto los
+ * filos de los botones se pintan con él, no con `border`.
+ *
+ * Va sobre los elementos, así que cualquier regla de componente —que va por
+ * clase y gana en especificidad— puede pedir otra duración o quitarla. */
+a,
+button,
+summary,
+label,
+select,
+input,
+textarea,
+tr,
+article,
+[role="menuitem"],
+[role="menuitemcheckbox"],
+[role="tab"] {
+  transition:
+    background-color var(--transition-hover, 150ms) ease,
+    border-color var(--transition-hover, 150ms) ease,
+    box-shadow var(--transition-hover, 150ms) ease,
+    color var(--transition-hover, 150ms) ease,
+    opacity var(--transition-hover, 150ms) ease;
+}
+
+/* Quien pide menos movimiento no lo pide sólo para las animaciones grandes. */
+@media (prefers-reduced-motion: reduce) {
+  a,
+  button,
+  summary,
+  label,
+  select,
+  input,
+  textarea,
+  tr,
+  article,
+  [role="menuitem"],
+  [role="menuitemcheckbox"],
+  [role="tab"] {
+    transition: none;
+  }
+}
+
 ::placeholder {
   opacity: 1;
   color: color-mix(in oklab, currentColor 50%, transparent);
