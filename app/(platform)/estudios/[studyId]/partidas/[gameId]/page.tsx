@@ -8,6 +8,8 @@ import "./game-page.css";
 
 interface GamePageProps {
   params: Promise<{ studyId: string; gameId: string }>;
+  /** Lo que devuelve borrar sin confirmar: la partida está citada en clases. */
+  searchParams: Promise<{ error?: string }>;
 }
 
 export async function generateMetadata({ params }: GamePageProps): Promise<Metadata> {
@@ -16,8 +18,9 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
   return game ? { title: `${game.white} – ${game.black}` } : {};
 }
 
-export default async function GamePage({ params }: GamePageProps) {
+export default async function GamePage({ params, searchParams }: GamePageProps) {
   const { studyId, gameId } = await params;
+  const { error } = await searchParams;
   // `getGameById` pasa por el DAL, así que este primer await hace de frontera
   // de sesión. El estudio se pide después para el listado del aside.
   const game = await getGameById(studyId, gameId);
@@ -39,6 +42,7 @@ export default async function GamePage({ params }: GamePageProps) {
       <GameViewSection
         game={game}
         siblings={siblings}
+        errorCode={error}
         editGame={
           game.canEdit ? (
             <EditGame

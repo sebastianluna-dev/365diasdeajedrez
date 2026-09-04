@@ -15,6 +15,14 @@ export function sanToSpanish(san: string): string {
   const translated = toSpanish(san);
   return translated.replace(/=([NBRQK])/, (_, piece: string) => `=${SPANISH_LETTER[piece] ?? piece}`);
 }
+/**
+ * La jugada con su número, como se nombra al hablar de ella: «12. Cf3»,
+ * «12… Axf3». El ply es 1-based, así que los impares son de las blancas.
+ */
+export function numberedMoveLabel(ply: number, san: string): string {
+  return `${Math.ceil(ply / 2)}${ply % 2 === 1 ? "." : "…"} ${sanToSpanish(san)}`;
+}
+
 const withoutInitial = (san: string) => (PIECE_KIND_BY_LETTER[san[0]] ? san.slice(1) : san);
 const pieceGlyphOf = (san: string): string | null => PIECE_KIND_BY_LETTER[san[0]] ?? null;
 

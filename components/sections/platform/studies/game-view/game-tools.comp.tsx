@@ -1,31 +1,65 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { commentTextAt, parseEditableGame, serializeGame, setCommentText, setNags } from "@/lib/chess/pgn-edit";
 import { MOVE_QUALITY_NAGS, nodeAtPath, parsePgnTree } from "@/lib/chess/pgn-tree";
 import { sanToSpanish } from "@/lib/chess/notation";
-import { autosaveGamePgn } from "@/services/studies/studies.actions";
 import "./game-tools.comp.css";
 
-type Tab = "comment" | "quality" | "share";
+export type GameToolsTab = "comment" | "quality" | "share";
 
 interface GameToolsProps {
-  studyId: string;
-  gameId: string;
   pgn: string;
   /** Ruta punteada de la jugada seleccionada en el visor. */
   currentPath: string;
   /** Las bases de curso son de sólo lectura: allí sólo queda compartir. */
   canEdit: boolean;
+  /**
+   * Cómo va el autoguardado, que lo lleva la sección: aquí y en el visor se
+   * escribe sobre el MISMO PGN, así que el aviso tiene que ser uno solo.
+   */
+  saveLabel?: string;
+  /**
+   * La pestaña la manda la sección porque el menú de la jugada, que está en el
+   * visor, también la cambia: «Comentar este movimiento» abre ESTE panel.
+   */
+  tab: GameToolsTab;
+  onTabChange: (tab: GameToolsTab) => void;
+  /**
+   * Contador que sube cada vez que alguien pide escribir aquí. Al cambiar, el
+   * panel se trae el foco y se pone a la vista; es un contador y no un booleano
+   * para que dos peticiones seguidas sobre la misma pestaña se distingan.
+   */
+  focusRequest: number;
   onPgnChange: (pgn: string) => void;
 }
 
-type SaveState = "idle" | "saving" | "saved" | "error";
-
-export function GameTools({ studyId, gameId, pgn, currentPath, canEdit, onPgnChange }: GameToolsProps) {
-  const [tab, setTab] = useState<Tab>(canEdit ? "comment" : "share");
-  const [save, setSave] = useState<SaveState>("idle");
+export function GameTools({
+  pgn,
+  currentPath,
+  canEdit,
+  saveLabel,
+  tab,
+  onTabChange,
+  focusRequest,
+  onPgnChange,
+}: GameToolsProps) {
   const [copied, setCopied] = useState<"fen" | "pgn" | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const commentRef = useRef<HTMLTextAreaElement>(null);
+
+  // Llegar aquí desde el menú de la jugada tiene que dejar el cursor listo para
+  // escribir: si no, la acción sólo cambiaría una pestaña que está fuera de la
+  // vista y parecería que no ha hecho nada.
+  useEffect(() => {
+    if (focusRequest === 0) return;
+
+    rootRef.current?.scrollIntoView({ block: "nearest" });
+    const textarea = commentRef.current;
+    if (tab !== "comment" || !textarea) return;
+    textarea.focus();
+    textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+  }, [focusRequest, tab]);
 
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
   const node = tree && currentPath ? nodeAtPath(tree, currentPath) : undefined;
@@ -41,16 +75,12 @@ export function GameTools({ studyId, gameId, pgn, currentPath, canEdit, onPgnCha
 
   const nags = node?.nags ?? [];
 
-  /** Aplica un cambio sobre el PGN y lo guarda. */
-  const apply = async (mutate: (game: NonNullable<ReturnType<typeof parseEditableGame>>) => boolean) => {
+  /** Aplica un cambio sobre el PGN; guardarlo es cosa de la sección. */
+  const apply = (mutate: (game: NonNullable<ReturnType<typeof parseEditableGame>>) => boolean) => {
     const game = parseEditableGame(pgn);
     if (!game || !mutate(game)) return;
 
-    const next = serializeGame(game);
-    onPgnChange(next);
-    setSave("saving");
-    const result = await autosaveGamePgn(studyId, gameId, next);
-    setSave(result.ok ? "saved" : "error");
+    onPgnChange(serializeGame(game));
   };
 
   const copy = async (text: string, what: "fen" | "pgn") => {
@@ -63,13 +93,13 @@ export function GameTools({ studyId, gameId, pgn, currentPath, canEdit, onPgnCha
     }
   };
 
-  const tabs: { key: Tab; label: string }[] = [
+  const tabs: { key: GameToolsTab; label: string }[] = [
     ...(canEdit ? ([{ key: "comment", label: "Comentario" }, { key: "quality", label: "Calidad" }] as const) : []),
     { key: "share", label: "Compartir" },
   ];
 
   return (
-    <div className="game-tools">
+    <div className="game-tools" ref={rootRef}>
       <div className="game-tools__tabs" role="tablist" aria-label="Herramientas de la partida">
         {tabs.map((option) => (
           <button
@@ -77,7 +107,7 @@ export function GameTools({ studyId, gameId, pgn, currentPath, canEdit, onPgnCha
             type="button"
             role="tab"
             aria-selected={tab === option.key}
-            onClick={() => setTab(option.key)}
+            onClick={() => onTabChange(option.key)}
             className={`game-tools__tab${tab === option.key ? " game-tools__tab_state_active" : ""}`}
           >
             {option.label}
@@ -86,26 +116,29 @@ export function GameTools({ studyId, gameId, pgn, currentPath, canEdit, onPgnCha
 
         <span className="game-tools__target">
           Sobre {moveName}
-          {save === "saving" && " · guardando…"}
-          {save === "saved" && " · guardado"}
-          {save === "error" && " · no se pudo guardar"}
+          {saveLabel && ` · ${saveLabel}`}
         </span>
       </div>
 
       {tab === "comment" && (
         <div className="game-tools__panel">
           <textarea
-            key={currentPath}
+            ref={commentRef}
+            // Se remonta también cuando cambia el comentario guardado: la misma
+            // jugada se puede comentar desde su menú del clic derecho, y el
+            // campo tiene que enterarse.
+            key={`${currentPath}:${comment}`}
             defaultValue={comment}
             placeholder="Comentario de esta jugada"
             className="game-tools__textarea"
             onBlur={(event) => {
               if (event.target.value === comment) return;
-              void apply((game) => setCommentText(game, currentPath, event.target.value));
+              apply((game) => setCommentText(game, currentPath, event.target.value));
             }}
           />
           <p className="game-tools__hint">
-            Se guarda al salir del campo. Las flechas que dibujes en el editor se conservan junto al
+            Se guarda al salir del campo. También se llega aquí con «Comentar este movimiento», en el menú
+            del clic derecho de cada jugada. Las flechas que dibujes sobre el tablero se conservan junto al
             comentario.
           </p>
         </div>
@@ -123,7 +156,7 @@ export function GameTools({ studyId, gameId, pgn, currentPath, canEdit, onPgnCha
                   disabled={!node}
                   aria-pressed={active}
                   onClick={() =>
-                    void apply((game) =>
+                    apply((game) =>
                       // Pulsar la que ya está puesta la quita: es un interruptor,
                       // no una lista que sólo crece.
                       setNags(game, currentPath, active ? [] : [option.nag]),

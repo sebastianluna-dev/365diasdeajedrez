@@ -213,7 +213,7 @@ describe("variationPgn", () => {
     const copy = variationPgn(game, "0.0")!;
 
     expect(copy).toContain('[Event "Prueba"]');
-    expect(movetext(copy)).toBe("1. e4 {Centro} e5 $1 *");
+    expect(movetext(copy)).toBe("1. e4 { Centro } e5 $1 *");
   });
 
   it("devuelve null en la posición inicial y ante una ruta rota", () => {

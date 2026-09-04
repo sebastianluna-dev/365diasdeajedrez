@@ -11,9 +11,9 @@ interface MoveTreeProps {
   currentPath: string;
   onSelect: (path: string) => void;
   /**
-   * Clic derecho sobre una jugada. Opcional a propósito: el visor del alumno no
-   * la pasa y se comporta exactamente como antes; sólo el editor la usa, para
-   * abrir su menú de promover y borrar.
+   * Clic derecho sobre una jugada. Opcional a propósito: quien sólo lee la
+   * partida no la pasa y la lista se comporta exactamente como antes; quien
+   * puede editarla la usa para abrir el menú de la jugada.
    */
   onContextMenu?: (path: string, event: MouseEvent) => void;
 }

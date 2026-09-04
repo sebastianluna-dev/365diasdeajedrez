@@ -10,9 +10,14 @@ interface DeleteGameProps {
   name: string;
   /** Bloques de clase que la citan: borrarla los deja vacíos. */
   classBlockCount: number;
+  /**
+   * `compact` para la columna de la ficha, donde el botón va a lo ancho y a la
+   * medida del resto de acciones de la tarjeta.
+   */
+  size?: "regular" | "compact";
 }
 
-export function DeleteGame({ studyId, gameId, name, classBlockCount }: DeleteGameProps) {
+export function DeleteGame({ studyId, gameId, name, classBlockCount, size = "regular" }: DeleteGameProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [confirmed, setConfirmed] = useState(false);
 
@@ -28,7 +33,11 @@ export function DeleteGame({ studyId, gameId, name, classBlockCount }: DeleteGam
 
   return (
     <div className="delete-game">
-      <button type="button" className="delete-game__open" onClick={() => dialogRef.current?.showModal()}>
+      <button
+        type="button"
+        className={`delete-game__open${size === "compact" ? " delete-game__open_size_compact" : ""}`}
+        onClick={() => dialogRef.current?.showModal()}
+      >
         Borrar partida
       </button>
 

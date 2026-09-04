@@ -92,7 +92,9 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
             <GameSelector groups={options.games} value={gameId} onChange={setGameId} />
             {annotatableStudyId && (
               <p className="block-form__annotate">
-                <Link href={platformRoutes.gameEdit(annotatableStudyId, gameId)} className="platform-button platform-button_variant_secondary">
+                {/* La partida se anota en su propia pantalla: allí el dueño
+                    juega sobre el tablero y comenta desde la lista. */}
+                <Link href={platformRoutes.gameDetail(annotatableStudyId, gameId)} className="platform-button platform-button_variant_secondary">
                   Anotar esta partida
                 </Link>
               </p>

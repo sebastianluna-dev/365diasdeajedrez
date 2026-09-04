@@ -23,7 +23,9 @@ import {
   setCommentText,
   setNags,
   setShapes,
+  variationPgn,
 } from "@/lib/chess/pgn-edit";
+import { numberedMoveLabel } from "@/lib/chess/notation";
 import {
   endPathOf,
   MOVE_QUALITY_NAGS,
@@ -34,7 +36,10 @@ import {
   POSITION_EVAL_NAGS,
   type NagOption,
 } from "@/lib/chess/pgn-tree";
-import { MoveContextMenu, type MoveContextMenuTarget } from "./move-context-menu.comp";
+import {
+  MoveContextMenu,
+  type MoveContextMenuTarget,
+} from "@/components/common/game-viewer/move-context-menu.comp";
 import "./analysis-board.comp.css";
 
 // Tablero de análisis EDITABLE: se juega sobre el tablero y las jugadas se
@@ -107,6 +112,7 @@ export function AnalysisBoard({
   const [pasteOpen, setPasteOpen] = useState(false);
   const [pasteDraft, setPasteDraft] = useState("");
   const [pasteError, setPasteError] = useState<string | null>(null);
+  const commentRef = useRef<HTMLTextAreaElement>(null);
 
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
   const node = tree ? nodeAtPath(tree, currentPath) : undefined;
@@ -339,18 +345,20 @@ export function AnalysisBoard({
                 tree={tree}
                 currentPath={currentPath}
                 onSelect={setCurrentPath}
-                onContextMenu={(path, event) =>
+                onContextMenu={(path, event) => {
+                  const target = nodeAtPath(tree, path);
                   setMenu({
                     path,
                     x: event.clientX,
                     y: event.clientY,
+                    label: target ? numberedMoveLabel(target.ply, target.san) : "esta jugada",
                     // Los segmentos de la ruta SON los índices de hijo: todo
                     // ceros significa que la jugada ya es la línea principal.
                     canPromote: !path.split(".").every((segment) => segment === "0"),
                     // Y el último segmento, su puesto entre las hermanas.
                     canPromoteOneStep: path.split(".").at(-1) !== "0",
-                  })
-                }
+                  });
+                }}
               />
             ) : (
               <p className="analysis-board__empty">Todavía no hay jugadas.</p>
@@ -408,6 +416,7 @@ export function AnalysisBoard({
           {tab === "comment" ? (
             <div className="analysis-board__tabpanel">
               <textarea
+                ref={commentRef}
                 className="analysis-board__comment"
                 value={commentDraft}
                 rows={4}
@@ -521,6 +530,31 @@ export function AnalysisBoard({
           onPromoteToMainLine={() => mutateKeepingPlace(menu.path, () => promoteToMainLine(gameRef.current, menu.path))}
           onPromoteOneStep={() => mutateKeepingPlace(menu.path, () => promoteOneStep(gameRef.current, menu.path))}
           onDelete={() => mutateKeepingPlace(menu.path, () => deleteFrom(gameRef.current, menu.path), true)}
+          // Aquí comentar y anotar ya tienen su sitio fijo bajo la lista: el
+          // menú sólo lleva hasta él con la jugada ya elegida.
+          onComment={() => {
+            setCurrentPath(menu.path);
+            setTab("comment");
+            setMenu(null);
+            // El foco, en el siguiente fotograma: la pestaña acaba de cambiar y
+            // el campo todavía no está en el árbol.
+            requestAnimationFrame(() => commentRef.current?.focus());
+          }}
+          onAnnotate={() => {
+            setCurrentPath(menu.path);
+            setTab("quality");
+            setMenu(null);
+          }}
+          onCopyVariation={async () => {
+            const text = variationPgn(gameRef.current, menu.path);
+            if (!text) return;
+            try {
+              await navigator.clipboard.writeText(text);
+            } catch {
+              // Sin permiso de portapapeles el PGN completo sigue en el campo
+              // de «Pegar un PGN» para copiarlo a mano.
+            }
+          }}
           onClose={() => setMenu(null)}
         />
       )}

@@ -1,6 +1,15 @@
 "use client";
 
-import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import {
+  type MouseEvent,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { ChessBoard } from "@/components/common/chess-board.comp";
 import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
 import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
@@ -10,13 +19,16 @@ import { JumpEndIcon } from "@/components/icons/jump-end-icon.comp";
 import { JumpStartIcon } from "@/components/icons/jump-start-icon.comp";
 import { SoundOffIcon } from "@/components/icons/sound-off-icon.comp";
 import { SoundOnIcon } from "@/components/icons/sound-on-icon.comp";
+import { numberedMoveLabel } from "@/lib/chess/notation";
 import { endPathOf, nextPathOf, nodeAtPath, parentPathOf, parsePgnTree } from "@/lib/chess/pgn-tree";
 import { EnginePanel } from "./engine-panel.comp";
 import { useEngine } from "./use-engine";
 import { evaluationBarFill } from "@/lib/chess/engine-protocol";
+import { MoveContextMenu, type MoveContextMenuTarget } from "./move-context-menu.comp";
 import { MoveTable } from "./move-table.comp";
 import { MoveTree } from "./move-tree.comp";
 import { playMoveSound } from "./move-sound";
+import { usePgnEditing } from "./use-pgn-editing";
 import {
   getServerViewerPreferences,
   getViewerPreferences,
@@ -83,6 +95,24 @@ interface GameViewerProps {
    * esta prop no nota ninguna diferencia.
    */
   onPathChange?: (path: string) => void;
+  /**
+   * Convierte el visor en editor: se juega sobre el tablero para añadir
+   * jugadas y variantes, se dibujan flechas y el clic derecho sobre una jugada
+   * abre su menú (promover, comentar, anotar, copiar y borrar).
+   *
+   * No hay pantalla de edición aparte: la partida se anota donde se lee. Sin
+   * `onPgnChange` esto no hace nada, porque el visor no guarda: informa del PGN
+   * nuevo y quien lo monta decide qué hacer con él.
+   */
+  editable?: boolean;
+  onPgnChange?: (pgn: string) => void;
+  /**
+   * «Comentar» y «Anotar» del menú de la jugada. El visor NO abre nada: sólo
+   * selecciona la jugada y avisa, porque el sitio donde se escribe está fuera
+   * de él —el panel bajo el tablero— y quien lo monta es quien lo tiene.
+   * Sin esta prop, esas dos opciones no se pintan en el menú.
+   */
+  onRequestEdit?: (mode: "comment" | "annotate", path: string) => void;
 }
 
 /** Piezas sobre el tablero, para distinguir una captura de una jugada normal. */
@@ -113,6 +143,9 @@ export function GameViewer({
   boardFooter,
   engine = false,
   onPathChange,
+  editable = false,
+  onPgnChange,
+  onRequestEdit,
 }: GameViewerProps) {
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
   const [currentPath, setCurrentPath] = useState<string>(() =>
@@ -121,6 +154,19 @@ export function GameViewer({
   const [flipToggled, setFlipToggled] = useState(false);
   const [engineOn, setEngineOn] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [menu, setMenu] = useState<MoveContextMenuTarget | null>(null);
+
+  // Editar es cosa de dos: el permiso y alguien a quien entregarle el PGN. Sin
+  // las dos cosas el visor es exactamente el de antes.
+  const isEditing = editable && Boolean(onPgnChange);
+  // Por referencia, como el aviso de ruta: publicar el PGN no depende de que
+  // quien consume el visor memorice su callback.
+  const onPgnChangeRef = useRef(onPgnChange);
+  useEffect(() => {
+    onPgnChangeRef.current = onPgnChange;
+  });
+  const publishPgn = useCallback((next: string) => onPgnChangeRef.current?.(next), []);
+  const editing = usePgnEditing({ pgn, onPgnChange: publishPgn, onPathChange: setCurrentPath });
 
   // Almacén externo: la primera pintada usa los valores por defecto (que es lo
   // único que el servidor puede saber) y React se pone al día con lo guardado
@@ -175,6 +221,10 @@ export function GameViewer({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!isInViewportRef.current && !hasBeenClickedRef.current) return;
+      // Mientras se escribe un comentario las flechas mueven el cursor, no la
+      // partida.
+      const target = event.target as HTMLElement | null;
+      if (target && (target.tagName === "TEXTAREA" || target.tagName === "INPUT" || target.isContentEditable)) return;
       if (event.key === "ArrowRight") {
         event.preventDefault();
         goToNext();
@@ -224,6 +274,33 @@ export function GameViewer({
   }
 
   const flipBoard = (orientation === "black") !== flipToggled;
+
+  /** La jugada como se lee en la lista («1… f5»): titula su menú. */
+  const labelOf = (path: string): string => {
+    const target = nodeAtPath(tree, path);
+    return target ? numberedMoveLabel(target.ply, target.san) : "esta jugada";
+  };
+
+  const openMenu = (path: string, event: MouseEvent) => {
+    setCurrentPath(path);
+    setMenu({
+      path,
+      x: event.clientX,
+      y: event.clientY,
+      label: labelOf(path),
+      // Los segmentos de la ruta SON los índices de hijo: todo ceros significa
+      // que la jugada ya está en la línea principal.
+      canPromote: !path.split(".").every((segment) => segment === "0"),
+      // Y el último segmento, su puesto entre las hermanas.
+      canPromoteOneStep: path.split(".").at(-1) !== "0",
+    });
+  };
+
+  const requestEdit = (mode: "comment" | "annotate") => {
+    if (!menu) return;
+    onRequestEdit?.(mode, menu.path);
+    setMenu(null);
+  };
 
   const nav = (
     <div className="game-viewer__nav">
@@ -299,6 +376,10 @@ export function GameViewer({
                 shapes: node ? node.shapes : tree.initialShapes,
               }}
               flipBoard={flipBoard}
+              interactive={isEditing}
+              onMove={(san) => editing.addMoveAt(currentPath, san)}
+              editableShapes={isEditing}
+              onShapesChange={(shapes) => editing.updateShapes(currentPath, shapes)}
             />
             </div>
           </div>
@@ -338,9 +419,19 @@ export function GameViewer({
 
           <div className="game-viewer__moves">
             {moveList === "flow" ? (
-              <MoveTree tree={tree} currentPath={currentPath} onSelect={setCurrentPath} />
+              <MoveTree
+                tree={tree}
+                currentPath={currentPath}
+                onSelect={setCurrentPath}
+                onContextMenu={isEditing ? openMenu : undefined}
+              />
             ) : (
-              <MoveTable tree={tree} currentPath={currentPath} onSelect={setCurrentPath} />
+              <MoveTable
+                tree={tree}
+                currentPath={currentPath}
+                onSelect={setCurrentPath}
+                onContextMenu={isEditing ? openMenu : undefined}
+              />
             )}
           </div>
 
@@ -385,6 +476,28 @@ export function GameViewer({
           </div>
         </div>
       </div>
+
+      {menu && (
+        <MoveContextMenu
+          target={menu}
+          onPromoteOneStep={() => {
+            editing.promoteOneStepAt(menu.path);
+            setMenu(null);
+          }}
+          onPromoteToMainLine={() => {
+            editing.promoteToMainAt(menu.path);
+            setMenu(null);
+          }}
+          onComment={onRequestEdit && (() => requestEdit("comment"))}
+          onAnnotate={onRequestEdit && (() => requestEdit("annotate"))}
+          onCopyVariation={() => editing.copyVariation(menu.path)}
+          onDelete={() => {
+            editing.deleteAt(menu.path);
+            setMenu(null);
+          }}
+          onClose={() => setMenu(null)}
+        />
+      )}
     </div>
   );
 }

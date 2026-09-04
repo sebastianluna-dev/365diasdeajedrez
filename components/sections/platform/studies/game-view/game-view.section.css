@@ -13,6 +13,12 @@
     --viewer-moves-max-height: 560px;
   }
 
+  /* Lo que rebota de una acción del servidor, sobre el tablero: es la respuesta
+     a algo que se acaba de pulsar y tiene que verse sin buscarla. */
+  & .game-view__board .platform-notice {
+    margin-bottom: 14px;
+  }
+
   /* Cuadrito del bando: sin banderas ni títulos que mostrar, al menos se sabe
      de un vistazo quién lleva las blancas. */
   & .game-view__chip {

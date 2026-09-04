@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { GameView, StudyGameItem } from "@/services/studies/studies.types";
+import { DeleteGame } from "./delete-game.comp";
 import { ExportPgn } from "./export-pgn.comp";
 import "./game-aside.comp.css";
 
@@ -79,16 +80,21 @@ export function GameAside({ game, siblings, newGame, editGame }: GameAsideProps)
           ))}
         </dl>
 
-        {/* El editor de jugadas sigue siendo otra pantalla: aquí sólo se tocan
-            los datos, y perder el acceso al tablero de análisis lo dejaría
-            alcanzable únicamente escribiendo la URL. */}
-        {game.canEdit && (
-          <Link href={`${game.studyHref}/partidas/${game.id}/editar`} className="game-aside__edit-moves">
-            Editar jugadas y variantes
-          </Link>
-        )}
-
         <ExportPgn pgn={game.pgn} white={game.white} black={game.black} title={game.title} />
+
+        {/* Las jugadas se editan en el propio tablero, así que lo único que
+            queda aquí es lo que no cabe en él: borrar la partida entera. */}
+        {game.canEdit && (
+          <div className="game-aside__danger">
+            <DeleteGame
+              studyId={game.studyId}
+              gameId={game.id}
+              name={game.title ?? `${game.white} – ${game.black}`}
+              classBlockCount={game.classBlockCount}
+              size="compact"
+            />
+          </div>
+        )}
       </section>
     </aside>
   );

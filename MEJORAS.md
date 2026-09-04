@@ -169,6 +169,15 @@ con validación duplicada.
 `platformRoutes.newStudyGame`, o si se conserva como enlace profundo. Si se conserva, conviene que
 comparta el formulario con el modal en vez de mantener dos.
 
+---
+
+### 30. `StudiesNavigation` conserva un tramo que ya nadie pinta — [Deuda / Limpieza]
+La prop `current` («Editar») existía para la ruta `/estudios/[studyId]/partidas/[gameId]/editar`,
+retirada al unificar lectura y edición. El único uso que queda (`/estudios/[studyId]`) no la pasa.
+
+**Cómo abordarlo:** quitar la prop y su rama del JSX, o dejarla si se prevé otro tramo final; es un
+minuto de trabajo y no afecta a nada más.
+
 ## Resueltos (2026-08-30)
 
 | # | Punto | Cómo se resolvió |

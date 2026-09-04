@@ -11,6 +11,7 @@ interface MoveTableProps {
   /** Ruta punteada del nodo activo ("" = posición inicial). */
   currentPath: string;
   onSelect: (path: string) => void;
+  /** Clic derecho sobre una jugada: abre su menú donde se puede editar. */
   onContextMenu?: (path: string, event: MouseEvent) => void;
 }
 

@@ -167,23 +167,12 @@
     min-width: 0;
   }
 
-  /* Acceso al tablero de análisis. Va a lo ancho y por encima de exportar
-     porque es una acción, no una salida del contenido. */
-  & .game-aside__edit-moves {
-    display: block;
+  /* Borrar la partida cierra la ficha, separado por una línea: es lo único
+     de aquí que no tiene vuelta atrás. */
+  & .game-aside__danger {
     margin-top: 14px;
-    padding: 10px;
-    border-radius: 10px;
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text);
-    font-size: 14px;
-    font-weight: 600;
-    text-align: center;
-  }
-
-  & .game-aside__edit-moves:hover {
-    background: var(--platform-accent-wash);
-    color: var(--platform-accent-ink);
+    padding-top: 14px;
+    border-top: 1px solid var(--platform-border);
   }
 
   & .game-aside__export {

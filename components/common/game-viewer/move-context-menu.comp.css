@@ -1,0 +1,87 @@
+.move-context-menu {
+  position: fixed;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  min-width: 250px;
+  padding: 4px;
+  border: 1px solid var(--platform-border);
+  border-radius: 10px;
+  background: var(--platform-surface);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+
+  /* La jugada, para saber sobre cuál se está actuando: el menú tapa la lista
+     justo donde se hizo el clic. */
+  & .move-context-menu__title {
+    margin: 0;
+    padding: 8px 12px 10px;
+    border-bottom: 1px solid var(--platform-border);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--platform-text);
+    text-align: center;
+  }
+
+  & .move-context-menu__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--platform-text);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  & .move-context-menu__item:first-of-type {
+    margin-top: 4px;
+  }
+
+  & .move-context-menu__icon {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    color: var(--platform-text-muted);
+  }
+
+  & .move-context-menu__icon-svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Los signos de anotación no tienen icono propio: son su propio símbolo. */
+  & .move-context-menu__glyph {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -1px;
+  }
+
+  & .move-context-menu__item:hover:not(:disabled) {
+    background: var(--platform-accent-soft);
+  }
+
+  & .move-context-menu__item:hover:not(:disabled) .move-context-menu__icon {
+    color: inherit;
+  }
+
+  & .move-context-menu__item:disabled {
+    color: var(--platform-text-muted);
+    cursor: default;
+  }
+
+  & .move-context-menu__item:disabled .move-context-menu__icon {
+    opacity: 0.5;
+  }
+
+  & .move-context-menu__item.move-context-menu__item_variant_danger:hover:not(:disabled) {
+    background: var(--platform-danger);
+    color: var(--platform-surface);
+  }
+}

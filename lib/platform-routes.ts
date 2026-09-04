@@ -18,8 +18,12 @@ export const platformRoutes = {
    */
   classGames: "/estudios/clases",
   studyDetail: (studyId: string) => `/estudios/${studyId}`,
+  /**
+   * La partida se lee y se anota en la MISMA pantalla: quien es su dueño juega
+   * sobre el tablero y usa el menú de cada jugada. Por eso ya no hay ruta
+   * `/editar` que mantener en paralelo.
+   */
   gameDetail: (studyId: string, gameId: string) => `/estudios/${studyId}/partidas/${gameId}`,
-  gameEdit: (studyId: string, gameId: string) => `/estudios/${studyId}/partidas/${gameId}/editar`,
   newStudyGame: (studyId: string) => `/estudios/${studyId}/partidas/nueva`,
   courses: "/cursos",
   /**

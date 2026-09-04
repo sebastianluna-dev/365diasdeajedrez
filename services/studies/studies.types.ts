@@ -79,7 +79,7 @@ export interface StudyDetail {
 
 export interface GameView {
   id: string;
-  /** El que mira es el dueño de la base: puede abrir el tablero de análisis. */
+  /** El que mira es el dueño de la base: puede editar y anotar la partida. */
   canEdit: boolean;
   /** Cómo se distingue dentro del estudio. Ausente = se identifica por la pareja. */
   title?: string;

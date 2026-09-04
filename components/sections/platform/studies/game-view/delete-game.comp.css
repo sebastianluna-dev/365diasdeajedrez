@@ -11,6 +11,14 @@
     cursor: pointer;
   }
 
+  & .delete-game__open.delete-game__open_size_compact {
+    display: block;
+    width: 100%;
+    padding: 9px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+
   & .delete-game__open:hover {
     border-color: var(--platform-danger);
     color: var(--platform-danger);

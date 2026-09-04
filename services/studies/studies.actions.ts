@@ -427,7 +427,8 @@ async function ownedStudy(studyId: string, userId: string): Promise<{ id: string
  * blanco lista para analizar. Si se pega un PGN, sus cabeceras rellenan los
  * huecos que la persona haya dejado — lo que ella escriba siempre manda.
  *
- * Termina redirigiendo al tablero de análisis, que es el sitio al que se venía.
+ * Termina redirigiendo a la partida recién creada, que es donde se analiza:
+ * se juega sobre el tablero y se anota desde la lista de jugadas.
  */
 export async function createStudyGame(studyId: string, formData: FormData): Promise<void> {
   const db = getPlatformDb();
@@ -505,7 +506,7 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
 
   revalidatePath(platformRoutes.studies);
   revalidatePath(platformRoutes.studyDetail(studyId));
-  redirect(platformRoutes.gameEdit(studyId, created.id));
+  redirect(platformRoutes.gameDetail(studyId, created.id));
 }
 
 /**
@@ -622,7 +623,6 @@ export async function updateGameDetails(studyId: string, gameId: string, formDat
 
   revalidatePath(platformRoutes.studyDetail(studyId));
   revalidatePath(platformRoutes.gameDetail(studyId, gameId));
-  revalidatePath(platformRoutes.gameEdit(studyId, gameId));
 }
 
 export interface AutosaveResult {
@@ -657,9 +657,10 @@ export async function autosaveGamePgn(studyId: string, gameId: string, pgn: stri
     await indexGamePositions(tx, { gameId: game.id, databaseId: studyId, pgn });
   });
 
-  // La vista de lectura y la lista, no la propia página de análisis: revalidarla
-  // en cada autoguardado la recargaría bajo los pies de quien está escribiendo.
-  revalidatePath(platformRoutes.gameDetail(studyId, gameId));
+  // Sólo el listado del estudio: la página de la partida es AHORA la que se
+  // está editando —ahí se anota, ya no hay pantalla aparte— y revalidarla en
+  // cada autoguardado la recargaría bajo los pies de quien escribe. Se sirve
+  // por sesión, así que al volver a ella se lee de la base de datos igual.
   revalidatePath(platformRoutes.studyDetail(studyId));
   return { ok: true };
 }
@@ -675,7 +676,7 @@ export async function autosaveGamePgn(studyId: string, gameId: string, pgn: stri
 export async function deleteStudyGame(studyId: string, gameId: string, formData: FormData): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  const analysisPath = platformRoutes.gameEdit(studyId, gameId);
+  const gamePath = platformRoutes.gameDetail(studyId, gameId);
   if (!allowAction(`${user.id}:delete-game`, 30, 60_000)) return;
 
   const game = await db.game.findFirst({
@@ -685,7 +686,7 @@ export async function deleteStudyGame(studyId: string, gameId: string, formData:
   if (!game) return;
 
   if (game._count.classBlocks > 0 && readText(formData, "confirmClassBlocks") !== "yes") {
-    redirect(`${analysisPath}?error=gameInClasses`);
+    redirect(`${gamePath}?error=gameInClasses`);
   }
 
   // GamePosition es `onDelete: Cascade`: el índice por posición se limpia solo.
