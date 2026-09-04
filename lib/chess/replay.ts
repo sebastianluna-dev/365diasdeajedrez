@@ -166,16 +166,25 @@ export function sanForMove(fen: string, orig: Key, dest: Key, promotion: Promoti
   return pos.isLegal(finalMove) ? makeSanAndPlay(pos, finalMove) : undefined;
 }
 
+export interface UciLineStep {
+  san: string;
+  /** La posición DESPUÉS de la jugada: es la que se previsualiza al señalarla. */
+  fen: string;
+  /** [origen, destino], para marcar en el tablero de la vista previa. */
+  lastMove: [Key, Key];
+}
+
 /**
- * Traduce a SAN la línea que propone el módulo, que la da en UCI («e2e4 e7e5»).
+ * Reproduce la línea que propone el módulo, que la da en UCI («e2e4 e7e5»), y
+ * devuelve cada jugada con la posición a la que lleva.
  *
  * Se reproduce sobre el tablero porque el SAN depende de la posición: la misma
  * jugada se escribe «Cf3» o «Cgf3» según haya otro caballo que pueda llegar. Se
  * corta en la primera jugada que no encaje, en vez de devolver la línea a
  * medias sin avisar: una línea rara es preferible a una equivocada.
  */
-export function uciLineToSan(fen: string, uciMoves: string[]): string[] {
-  const out: string[] = [];
+export function uciLineSteps(fen: string, uciMoves: string[]): UciLineStep[] {
+  const out: UciLineStep[] = [];
   let current = fen;
 
   for (const uci of uciMoves) {
@@ -189,11 +198,16 @@ export function uciLineToSan(fen: string, uciMoves: string[]): string[] {
     const next = applySan(current, san);
     if (!next) break;
 
-    out.push(san);
+    out.push({ san, fen: next, lastMove: [orig, dest] });
     current = next;
   }
 
   return out;
+}
+
+/** Sólo los SAN de la línea, para quien no necesita las posiciones. */
+export function uciLineToSan(fen: string, uciMoves: string[]): string[] {
+  return uciLineSteps(fen, uciMoves).map((step) => step.san);
 }
 
 /** Letra de coronación del UCI a la pieza que espera `sanForMove`. */

@@ -1,8 +1,16 @@
 .game-viewer {
   /* Lo que ocupan las líneas del módulo. Está aquí, y no en su hoja, porque lo
      leen DOS reglas que tienen que cuadrar entre sí: el alto fijo del bloque y
-     lo que la notación le cede al encenderlo. */
-  --viewer-engine-body: 92px;
+     lo que la notación le cede al encenderlo.
+
+     Son las tres líneas (26px cada una) más el relleno del bloque, con holgura
+     de sobra: justo a la medida, el corte se comía el relleno de abajo y la
+     última línea quedaba pegada a la notación. */
+  --viewer-engine-body: 102px;
+  /* Lo que crece al desplegar una línea: un renglón más. Sólo se despliega una
+     a la vez, así que el crecimiento es siempre este y la notación puede
+     cederlo sin medir nada. */
+  --viewer-engine-extra: 26px;
 
   & .game-viewer__layout {
     display: grid;
@@ -256,6 +264,14 @@
     max-height: calc(var(--viewer-moves-max-height, 560px) - var(--viewer-engine-body));
   }
 
+  /* Desplegar una línea tampoco mueve la tarjeta: lo que crece el módulo sale
+     otra vez de la notación. */
+  & .game-viewer__panel_engine_expanded .game-viewer__moves {
+    max-height: calc(
+      var(--viewer-moves-max-height, 560px) - var(--viewer-engine-body) - var(--viewer-engine-extra)
+    );
+  }
+
   & .game-viewer__moves {
     flex: 1;
     min-height: 0;
@@ -265,7 +281,13 @@
     padding: 0;
     overflow: auto;
     /* Tope de alto opcional: quien monta el visor decide si la lista puede
-       crecer sin fin (lecciones) o se planta y se desplaza por dentro. */
+       crecer sin fin (lecciones) o se planta y se desplaza por dentro.
+
+       Donde hay tope, ese tope es TAMBIÉN el suelo: la tarjeta mide lo mismo
+       con una partida de cinco jugadas que con una de ochenta, y encender el
+       módulo tampoco la mueve —la notación le cede su alto y el total no
+       cambia—. Sin tope (las lecciones) sigue midiendo lo que ocupe. */
+    height: var(--viewer-moves-max-height, auto);
     max-height: var(--viewer-moves-max-height, none);
   }
 

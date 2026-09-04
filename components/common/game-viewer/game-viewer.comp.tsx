@@ -157,6 +157,9 @@ export function GameViewer({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [menu, setMenu] = useState<MoveContextMenuTarget | null>(null);
   const [optionsOpen, setOptionsOpen] = useState(false);
+  // Si el módulo tiene una línea desplegada. Vive aquí porque lo que decide es
+  // cuánto alto le cede la notación, y de eso responde la tarjeta.
+  const [engineExpanded, setEngineExpanded] = useState(false);
   const optionsRef = useRef<HTMLDivElement>(null);
 
   // Editar es cosa de dos: el permiso y alguien a quien entregarle el PGN. Sin
@@ -491,7 +494,9 @@ export function GameViewer({
             ya fuera de ella, la botonera con la que se recorre la partida. */}
         <div className="game-viewer__panel-column">
           <div
-            className={`game-viewer__panel${engine && engineOn ? " game-viewer__panel_engine_on" : ""}`}
+            className={`game-viewer__panel${engine && engineOn ? " game-viewer__panel_engine_on" : ""}${
+              engine && engineOn && engineExpanded ? " game-viewer__panel_engine_expanded" : ""
+            }`}
           >
             {hasHead && (
               <div className="game-viewer__panel-head">
@@ -509,8 +514,13 @@ export function GameViewer({
               <EnginePanel
                 fen={fen}
                 enabled={engineOn}
-                onToggle={() => setEngineOn((on) => !on)}
+                onToggle={() => {
+                  setEngineOn((on) => !on);
+                  setEngineExpanded(false);
+                }}
                 state={engineState}
+                flipBoard={flipBoard}
+                onExpandedChange={setEngineExpanded}
               />
             )}
 

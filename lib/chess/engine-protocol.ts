@@ -92,23 +92,36 @@ export function formatEvaluation(info: EngineInfo): string {
  * leería como si fuera la apertura. Cuando toca a las negras, la primera lleva
  * los puntos suspensivos que dicen que su par ya se jugó.
  */
-export function formatEngineLine(fen: string, sans: string[]): string {
+export interface EngineLineToken {
+  san: string;
+  /** «18.» o «18…» delante de la jugada, cuando toca ponerlo. */
+  number?: string;
+}
+
+/**
+ * La misma línea, jugada a jugada, para poder pintar cada una por su cuenta —y
+ * así señalarla con el ratón y previsualizar su posición—.
+ */
+export function engineLineTokens(fen: string, sans: string[]): EngineLineToken[] {
   const fields = fen.split(" ");
   let moveNumber = Number(fields[5]);
   let whiteToMove = fields[1] !== "b";
   if (!Number.isFinite(moveNumber) || moveNumber < 1) moveNumber = 1;
 
-  const parts: string[] = [];
-  for (const [index, san] of sans.entries()) {
-    if (whiteToMove) parts.push(`${moveNumber}.`);
-    else if (index === 0) parts.push(`${moveNumber}…`);
-
-    parts.push(san);
+  return sans.map((san, index) => {
+    const number = whiteToMove ? `${moveNumber}.` : index === 0 ? `${moveNumber}…` : undefined;
 
     if (!whiteToMove) moveNumber += 1;
     whiteToMove = !whiteToMove;
-  }
-  return parts.join(" ");
+
+    return { san, number };
+  });
+}
+
+export function formatEngineLine(fen: string, sans: string[]): string {
+  return engineLineTokens(fen, sans)
+    .flatMap((token) => (token.number ? [token.number, token.san] : [token.san]))
+    .join(" ");
 }
 
 /** Las continuaciones conocidas de una posición, indexadas por número de línea. */

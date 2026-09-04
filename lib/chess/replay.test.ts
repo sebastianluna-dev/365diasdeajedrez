@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { uciLineToSan } from "./replay";
+import { uciLineSteps, uciLineToSan } from "./replay";
 
 describe("uciLineToSan", () => {
   const START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -29,5 +29,22 @@ describe("uciLineToSan", () => {
 
   it("con una línea vacía no devuelve nada", () => {
     expect(uciLineToSan(START, [])).toEqual([]);
+  });
+});
+
+describe("uciLineSteps", () => {
+  const START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+  it("da la posición a la que lleva cada jugada, que es lo que se previsualiza", () => {
+    const steps = uciLineSteps(START, ["e2e4", "e7e5"]);
+
+    expect(steps.map((step) => step.san)).toEqual(["e4", "e5"]);
+    expect(steps[0].fen).toBe("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1");
+    expect(steps[0].lastMove).toEqual(["e2", "e4"]);
+    expect(steps[1].fen).toBe("rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2");
+  });
+
+  it("corta donde corta la línea, sin posiciones inventadas", () => {
+    expect(uciLineSteps(START, ["e2e4", "e2e4"]).map((step) => step.san)).toEqual(["e4"]);
   });
 });

@@ -1,4 +1,7 @@
 .engine-panel {
+  /* Referencia de la vista previa: su sitio se mide contra el bloque del
+     módulo, no contra la jugada que se esté señalando. */
+  position: relative;
   box-shadow: inset 0 -1px 0 var(--platform-track);
 
   & .engine-panel__head {
@@ -59,11 +62,18 @@
      «Cargando», «Pensando» y tres líneas en cuestión de segundos, y si midiera
      lo que ocupa su contenido movería la partida entera tres veces seguidas. */
   & .engine-panel__body {
-    height: var(--viewer-engine-body, 92px);
+    height: var(--viewer-engine-body, 102px);
     padding: 6px 0 8px;
     box-sizing: border-box;
     overflow: hidden;
     background: var(--platform-bg);
+  }
+
+  /* Con una línea desplegada el bloque crece EXACTAMENTE un renglón, que es lo
+     que la notación le cede: alto fijo también aquí, por la misma razón que
+     plegado —lo que no mide en firme, se mueve—. */
+  & .engine-panel__body.engine-panel__body_state_expanded {
+    height: calc(var(--viewer-engine-body, 102px) + var(--viewer-engine-extra, 26px));
   }
 
   & .engine-panel__lines {
@@ -76,35 +86,34 @@
      se comparan de un vistazo, que es para lo que están las tres líneas. */
   & .engine-panel__row {
     display: grid;
-    grid-template-columns: 52px minmax(0, 1fr);
+    /* La línea entera —evaluación incluida— y el botón de desplegarla. */
+    grid-template-columns: minmax(0, 1fr) 26px;
     gap: 10px;
     align-items: baseline;
-    padding: 3px 0;
+    /* Un poco de aire por la izquierda: pegadas al filo de la tarjeta las
+       evaluaciones se leían como parte del borde. */
+    padding: 3px 10px 3px 12px;
   }
 
+  /* Va dentro de la línea y con su mismo tamaño: lo único que la distingue de
+     las jugadas es la negrita, porque es el dato que se compara entre líneas. */
   & .engine-panel__score {
-    font-size: 14.5px;
-    font-weight: 600;
+    margin-right: 7px;
+    font-weight: 700;
     font-variant-numeric: tabular-nums;
-    color: var(--platform-text-muted);
-    text-align: right;
+    color: var(--platform-text);
   }
 
   /* La mejor destaca: es la que propone el módulo, las otras dos son el
      contexto que dice por cuánto gana. */
-  & .engine-panel__row_rank_best .engine-panel__score {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--platform-text);
-  }
-
   & .engine-panel__row_rank_best .engine-panel__line {
     color: var(--platform-text);
   }
 
   /* Cada continuación se corta con puntos suspensivos: son sugerencias, no algo
      que haya que leer entero, y partirlas en varias filas movería todo lo de
-     abajo cada vez que el módulo cambia de idea. */
+     abajo cada vez que el módulo cambia de idea. Quien quiera verla entera la
+     despliega con la flecha de su derecha. */
   & .engine-panel__line {
     min-width: 0;
     overflow: hidden;
@@ -112,6 +121,93 @@
     white-space: nowrap;
     font-size: 14px;
     color: var(--platform-text-subtle);
+  }
+
+  /* Desplegada enseña un renglón más y ahí se planta: dos son bastante para
+     ver a dónde va la línea, y tres líneas creciendo sin tope empujarían la
+     partida fuera de la vista. El corte pone sus propios puntos suspensivos. */
+  & .engine-panel__line.engine-panel__line_state_expanded {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    white-space: normal;
+    line-height: 1.6;
+  }
+
+  /* Número y jugada viajan juntos: al partir la línea en varios renglones, un
+     «34.» no puede quedarse solo al final de uno. */
+  & .engine-panel__token {
+    display: inline-block;
+    margin-right: 5px;
+    white-space: nowrap;
+  }
+
+  & .engine-panel__move-number {
+    margin-right: 3px;
+    color: var(--platform-text-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .engine-panel__move {
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  & .engine-panel__move:hover {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
+
+  & .engine-panel__more {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--platform-text-subtle);
+    cursor: pointer;
+  }
+
+  & .engine-panel__more:hover {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
+  }
+
+  /* El galón mira hacia abajo plegado y hacia arriba desplegado, que es lo que
+     dice si la línea se abre o se cierra. */
+  & .engine-panel__more-icon {
+    width: 16px;
+    height: 16px;
+    transform: rotate(90deg);
+  }
+
+  & .engine-panel__more.engine-panel__more_state_expanded .engine-panel__more-icon {
+    transform: rotate(-90deg);
+  }
+
+  /* Sitio FIJO, colgado del bloque del módulo y alineado con su borde derecho:
+     señalar una jugada tras otra no mueve el tablero de un lado a otro, que es
+     lo que hacía imposible seguir una línea con la vista.
+
+     Flota sobre la notación y no atrapa el ratón: en cuanto lo hiciera taparía
+     la jugada siguiente y no se podría recorrer la línea. */
+  & .engine-panel__preview {
+    position: absolute;
+    z-index: 45;
+    top: calc(100% + 6px);
+    right: 0;
+    width: 240px;
+    padding: 4px;
+    border-radius: 10px;
+    background: var(--platform-surface);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    pointer-events: none;
   }
 
   & .engine-panel__depth {
