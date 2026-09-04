@@ -176,6 +176,7 @@ export function LessonEditorSection({
           lessonId={lesson.id}
           exercises={lesson.exercises}
           modes={exerciseModes}
+          lessonPgn={lesson.pgn}
         />
       </section>
     </div>

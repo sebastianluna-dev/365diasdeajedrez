@@ -39,6 +39,37 @@ if (!connectionString) throw new Error("Falta PLATFORM_DATABASE_URL en el entorn
 
 const db = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 
+/**
+ * El instante del que cuelgan TODAS las fechas del seed.
+ *
+ * No es `new Date()` por dos razones que tiraban en direcciones distintas:
+ *
+ * - Dos ejecuciones seguidas escribían valores distintos aunque no hubiera
+ *   cambiado nada (`frozenAt`, `pgnUpdatedAt`, la actividad…), así que el seed
+ *   era idempotente de contenido pero no de fila. Redondeando al día, dos
+ *   pasadas del mismo día dan exactamente lo mismo.
+ * - Y a la vez las fechas tienen que seguir al calendario: con una constante
+ *   fija, la «próxima clase» de la demo nace en el pasado.
+ *
+ * `SEED_NOW` (ISO) fija el instante a mano cuando hace falta reproducir una
+ * base igual byte a byte, para una prueba o una captura.
+ *
+ * La hora es media tarde en UTC y no medianoche porque de aquí salen horas de
+ * clase: a las 00:00 la demo se lee como un error.
+ */
+function seedReferenceDate(): Date {
+  const pinned = process.env.SEED_NOW;
+  if (pinned) {
+    const fixed = new Date(pinned);
+    if (Number.isNaN(fixed.getTime())) throw new Error(`SEED_NOW no es una fecha válida: "${pinned}".`);
+    return fixed;
+  }
+
+  const today = new Date();
+  today.setUTCHours(18, 0, 0, 0);
+  return today;
+}
+
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /** Contraseña de las cuentas demo. Sobreescribible por entorno. */
@@ -113,7 +144,7 @@ async function rebuildDailyStats(userId: string) {
 }
 
 async function main() {
-  const now = new Date();
+  const now = seedReferenceDate();
 
   // --- Catálogos -----------------------------------------------------------
   const courseType = await seedCatalog(db.courseType, CATALOG_VALUES.courseType);

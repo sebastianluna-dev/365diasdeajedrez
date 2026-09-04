@@ -5,6 +5,7 @@ import { chessgroundMove } from "chessops/compat";
 import { makeFen } from "chessops/fen";
 import { parsePgn, startingPosition, type ChildNode, type PgnNodeData } from "chessops/pgn";
 import { parseSan } from "chessops/san";
+import { findMalformedMoveTokens } from "./movetext-scan";
 
 // Árbol completo de un PGN: variantes, comentarios, NAGs y anotaciones
 // visuales ([%cal] flechas, [%csl] casillas, [%diagram] diagrama forzado).
@@ -141,7 +142,12 @@ export function parsePgnTree(pgn: string): PgnTree | null {
   );
 
   const nodesByPath = new Map<string, PgnTreeNode>();
-  const warnings: string[] = [];
+  // Lo que ni siquiera llegó al árbol va primero: el tokenizador de chessops
+  // descarta los tokens sin forma de jugada antes de que `walk` los vea, así
+  // que ese aviso hay que sacarlo del texto crudo.
+  const warnings = findMalformedMoveTokens(pgn).map(
+    (token) => `Token no reconocido como jugada: "${token}". Esa rama no se ha cargado.`,
+  );
   const { text, shapes } = parseCommentCommands(game.comments);
   const children = walk(game.moves.children, pos, "", 1, nodesByPath, warnings);
 
@@ -170,6 +176,27 @@ export function parentPathOf(path: string): string {
 export function nextPathOf(tree: PgnTree, path: string): string | undefined {
   const children = path.length === 0 ? tree.children : nodeAtPath(tree, path)?.children;
   return children?.[0]?.path;
+}
+
+/**
+ * Los SAN desde la posición inicial hasta la jugada de `path`, en orden.
+ *
+ * Es lo que convierte «esta posición del visor» en el formato que guardan los
+ * ejercicios y el seed («e4 c5 Nf3»). Ante una ruta rota devuelve la lista
+ * vacía: media línea sería peor que ninguna, porque se guardaría sin avisar.
+ */
+export function sansAlongPath(tree: PgnTree, path: string): string[] {
+  if (path.length === 0) return [];
+
+  const sans: string[] = [];
+  let prefix = "";
+  for (const segment of path.split(".")) {
+    prefix = prefix.length === 0 ? segment : `${prefix}.${segment}`;
+    const node = tree.nodesByPath.get(prefix);
+    if (!node) return [];
+    sans.push(node.san);
+  }
+  return sans;
 }
 
 /** Final de la línea actual siguiendo siempre el hijo principal. */

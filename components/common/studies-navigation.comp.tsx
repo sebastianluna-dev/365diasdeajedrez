@@ -9,18 +9,10 @@ interface StudiesNavigationProps {
   /** Partida. Sin `gameHref` se pinta como tramo actual. */
   gameName?: string;
   gameHref?: string;
-  /** Último tramo suelto («Editar»), siempre sin enlazar. */
-  current?: string;
 }
 
 /** Ruta contextual Mis estudios → Estudio → Partida. */
-export function StudiesNavigation({
-  studyName,
-  studyHref,
-  gameName,
-  gameHref,
-  current,
-}: StudiesNavigationProps) {
+export function StudiesNavigation({ studyName, studyHref, gameName, gameHref }: StudiesNavigationProps) {
   return (
     <nav className="studies-navigation" aria-label="Ruta de estudios">
       <Link href={platformRoutes.studies} className="studies-navigation__link">
@@ -50,13 +42,6 @@ export function StudiesNavigation({
           ) : (
             <span className="studies-navigation__current">{gameName}</span>
           )}
-        </>
-      )}
-
-      {current && (
-        <>
-          <span className="studies-navigation__separator">/</span>
-          <span className="studies-navigation__current">{current}</span>
         </>
       )}
     </nav>

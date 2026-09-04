@@ -9,6 +9,7 @@ import {
   updateExercise,
 } from "@/services/staff-courses/staff-courses.actions";
 import type { CatalogOption, ExerciseAdminRow } from "@/services/staff-courses/staff-courses.types";
+import { ExerciseMovePicker } from "./exercise-move-picker.comp";
 import "./exercise-editor.comp.css";
 
 interface ExerciseEditorProps {
@@ -17,6 +18,8 @@ interface ExerciseEditorProps {
   lessonId: string;
   exercises: ExerciseAdminRow[];
   modes: CatalogOption[];
+  /** El PGN de la lección, para poder elegir las jugadas sobre el tablero. */
+  lessonPgn: string;
 }
 
 interface ExerciseFieldsProps {
@@ -24,10 +27,16 @@ interface ExerciseFieldsProps {
   modes: CatalogOption[];
   exercise?: ExerciseAdminRow;
   submitLabel: string;
+  lessonPgn: string;
   onCancel?: () => void;
 }
 
-function ExerciseFields({ action, modes, exercise, submitLabel, onCancel }: ExerciseFieldsProps) {
+function ExerciseFields({ action, modes, exercise, submitLabel, lessonPgn, onCancel }: ExerciseFieldsProps) {
+  // Los dos campos de jugadas son controlados porque el tablero también los
+  // escribe. Se siguen pudiendo teclear: el picker rellena, no sustituye.
+  const [afterSans, setAfterSans] = useState("");
+  const [lineSans, setLineSans] = useState(exercise?.line ?? "");
+
   return (
     <form className="exercise-editor__form" action={action}>
       <FormField label="Modo">
@@ -48,14 +57,37 @@ function ExerciseFields({ action, modes, exercise, submitLabel, onCancel }: Exer
         label="Jugadas previas (SAN, separadas por espacios)"
         hint="Desde la posición inicial de la lección hasta donde arranca el ejercicio. Vacío = desde el principio."
       >
-        {/* No se precarga: la copia congelada guarda la posición, no el camino
-            que llevó hasta ella, así que reconstruirlo no sería fiable. */}
-        <input type="text" name="afterSans" placeholder="e4 c5 Nf3" autoComplete="off" />
+        {/* No se precarga al editar: la copia congelada guarda la posición, no
+            el camino que llevó hasta ella, así que reconstruirlo no sería
+            fiable. El tablero de abajo sí puede rellenarlo. */}
+        <input
+          type="text"
+          name="afterSans"
+          value={afterSans}
+          onChange={(event) => setAfterSans(event.target.value)}
+          placeholder="e4 c5 Nf3"
+          autoComplete="off"
+        />
       </FormField>
 
       <FormField label="Línea a entrenar (SAN, separadas por espacios)">
-        <input type="text" name="lineSans" defaultValue={exercise?.line ?? ""} required autoComplete="off" />
+        <input
+          type="text"
+          name="lineSans"
+          value={lineSans}
+          onChange={(event) => setLineSans(event.target.value)}
+          required
+          autoComplete="off"
+        />
       </FormField>
+
+      <ExerciseMovePicker
+        pgn={lessonPgn}
+        onPick={(values) => {
+          if (values.afterSans !== undefined) setAfterSans(values.afterSans);
+          if (values.lineSans !== undefined) setLineSans(values.lineSans);
+        }}
+      />
 
       <div className="exercise-editor__actions">
         <button type="submit" className="platform-button">
@@ -73,10 +105,17 @@ function ExerciseFields({ action, modes, exercise, submitLabel, onCancel }: Exer
 
 /**
  * Ejercicios de la lección. Se describen con jugadas SAN (el mismo formato que
- * usa el seed) y el servidor deriva de ahí la posición congelada; un picker
- * visual sobre el PGN sería más cómodo y está anotado como mejora.
+ * usa el seed) y el servidor deriva de ahí la posición congelada; para no
+ * teclearlas, el formulario trae un tablero que las saca del PGN de la lección.
  */
-export function ExerciseEditor({ courseId, chapterId, lessonId, exercises, modes }: ExerciseEditorProps) {
+export function ExerciseEditor({
+  courseId,
+  chapterId,
+  lessonId,
+  exercises,
+  modes,
+  lessonPgn,
+}: ExerciseEditorProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -145,6 +184,7 @@ export function ExerciseEditor({ courseId, chapterId, lessonId, exercises, modes
                 modes={modes}
                 exercise={exercise}
                 submitLabel="Guardar ejercicio"
+                lessonPgn={lessonPgn}
                 onCancel={() => setEditingId(null)}
               />
             )}
@@ -157,6 +197,7 @@ export function ExerciseEditor({ courseId, chapterId, lessonId, exercises, modes
           action={createExercise.bind(null, courseId, chapterId, lessonId)}
           modes={modes}
           submitLabel="Crear ejercicio"
+          lessonPgn={lessonPgn}
           onCancel={() => setIsAdding(false)}
         />
       ) : (

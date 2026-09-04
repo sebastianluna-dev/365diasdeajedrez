@@ -1,0 +1,48 @@
+.exercise-move-picker {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid var(--platform-border);
+  border-radius: 10px;
+  background: var(--platform-bg);
+
+  & .exercise-move-picker__hint {
+    margin: 0 0 12px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--platform-text-subtle);
+  }
+
+  & .exercise-move-picker__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  & .exercise-move-picker__close {
+    margin-left: auto;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+    cursor: pointer;
+  }
+
+  & .exercise-move-picker__error {
+    margin: 10px 0 0;
+    font-size: 13.5px;
+    color: var(--platform-danger);
+  }
+}
+
+.exercise-move-picker__open {
+  margin-top: 10px;
+}
+
+.exercise-move-picker__status {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  color: var(--platform-danger);
+}

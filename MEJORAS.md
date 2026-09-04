@@ -3,9 +3,9 @@
 Backlog de deuda técnica y mejoras del proyecto. Cada punto lleva **área** y **prioridad**
 (baja · media · alta · extrema) y una guía de cómo abordarlo.
 
-> Última revisión: 2026-08-31 (tras implementar los paneles de profesor y administración,
-> `PLAN-TEACHER-ADMIN.md`). De los 22 puntos originales quedan resueltos 18, incluido el #1
-> (autenticación real); el #15 se cierra con esta tanda. Lo que sigue abierto está arriba.
+> Última revisión: 2026-09-04. En esta tanda se cierran los puntos 11b, 24, 25 y 30, y el 20 se
+> queda en lo que de verdad le falta. Lo que sigue abierto está arriba; lo que ya está resuelto se
+> deja anotado con lo que se hizo, para no volver a abrirlo.
 
 ---
 
@@ -47,18 +47,12 @@ un cliente sin JavaScript vería el armazón vacío. Comprobado que no depende d
 justo lo que se quiso evitar), o se espera a `unauthorized()` + `unauthorized.tsx`, hoy
 experimental en Next 16.
 
-### 11b. Un SAN malformado se descarta sin aviso — [Arquitectura / Ajedrez]
-*Parcialmente resuelto:* `parsePgnTree` ya devuelve `warnings[]` y el `GameViewer` los muestra en
-desarrollo, pero **sólo** para jugadas bien formadas e ilegales (`Nf6` cuando no se puede).
-
-**El hueco:** el tokenizador de chessops descarta los tokens que ni siquiera son SAN sintácticamente
-válido (`Qz9`, `Bx99`) antes de llegar a nuestra validación, así que la rama desaparece con
-`warnings` vacío — y ése es justo el error más probable en un PGN escrito a mano. Detectado por
-`lib/chess/pgn-tree.test.ts`, que lo documenta con un test.
-
-**Cómo abordarlo:** tokenizar el movetext por nuestra cuenta (quitar cabeceras, `{comentarios}`,
-paréntesis, NAGs, números de jugada y el resultado) y avisar de los tokens restantes que no casen
-con la gramática SAN. Ojo con los falsos positivos.
+### 11b. ~~Un SAN malformado se descarta sin aviso~~ — RESUELTO (2026-09-04)
+`lib/chess/movetext-scan.ts` rastrea el movetext crudo —quitando cabeceras, comentarios de llave y
+de línea, NAGs, números de jugada, paréntesis y el resultado— y avisa de los tokens que no encajan
+en la gramática SAN. `parsePgnTree` los añade a `warnings`, así que un «Qz9» ya no hace desaparecer
+una rama en silencio. El listón se dejó alto a propósito (se toleran `--`, `Z0` y los signos
+pegados al SAN): un falso positivo en una partida buena es peor que callarse en una mala.
 
 ### 14b. El bucket diario de estadísticas es UTC — [Datos / UX]
 *Parcialmente resuelto:* los rangos ya son de calendario (semana desde el lunes, mes y año en
@@ -85,26 +79,20 @@ en el alta de cuentas, el alta de profesor, la asignación alumno↔profesor y l
 autor. **Lo que queda:** usar ese helper —y no un `catch` a mano— en cualquier `catch` de P2002
 que se añada en el futuro; conviene revisarlo si algún día se cambia de adaptador.
 
-### 24. Entrada de ejercicios por SAN escrito a mano — [UX / Contenido]
-El editor de ejercicios del staff pide `afterSans` y `lineSans` como texto SAN separado por
-espacios (el mismo formato que `prisma/seed-data.ts`). Funciona y el servidor valida la legalidad
-jugada a jugada con `deriveExerciseData`, pero es incómodo y propenso a erratas.
+### 24. ~~Entrada de ejercicios por SAN escrito a mano~~ — RESUELTO (2026-09-04)
+`exercise-move-picker.comp.tsx` monta el `GameViewer` sobre el PGN de la lección dentro del
+formulario del ejercicio: se marca el inicio y el final de la línea sobre el tablero y de ahí salen
+`afterSans` y `lineSans` (`sansAlongPath` en `lib/chess/pgn-tree.ts`, con tests). Los campos de
+texto siguen ahí y se pueden teclear o corregir a mano —el tablero los rellena, no los sustituye—,
+así que la acción del servidor no cambió. `afterSans` sigue sin precargarse al editar, pero ahora
+se reconstruye en dos clics.
 
-**Cómo abordarlo:** un selector visual sobre el PGN de la lección —reutilizando `GameViewer` con
-`onPathChange`, igual que hace `move-path-picker.comp.tsx` en el editor de bloques de clase— que
-derive los SAN del camino elegido. Además, `afterSans` no se puede precargar al editar: la copia
-congelada guarda la posición, no el camino que llevó hasta ella; con el picker eso deja de ser un
-problema.
-
-### 25. El seed reescribe `frozenAt` y `pgnUpdatedAt` en cada ejecución — [Datos / DX]
-`npm run db:seed` sella ambas fechas como «hace 30 días» contando desde el momento de ejecutarlo,
-así que dos ejecuciones seguidas producen valores distintos aunque nada haya cambiado. No rompe
-nada (las dos se mueven juntas, de modo que los ejercicios sembrados nunca nacen desactualizados)
-y es anterior a esta tanda, pero significa que la idempotencia del seed es de *contenido*, no de
-*fila byte a byte*. Emparentado con el punto 20.
-
-**Cómo abordarlo:** junto con el 20, fijar un instante de referencia estable (variable de entorno
-o una constante) en lugar de `now`.
+### 25. ~~El seed reescribe `frozenAt` y `pgnUpdatedAt` en cada ejecución~~ — RESUELTO (2026-09-04)
+`prisma/seed.ts` cuelga todas sus fechas de `seedReferenceDate()` en vez de `new Date()`: el día en
+curso a las 18:00 UTC, o lo que diga `SEED_NOW` (ISO) si se quiere reproducir una base igual byte a
+byte. Dos pasadas del mismo día escriben exactamente lo mismo, y las fechas siguen al calendario
+para que la «próxima clase» de la demo no nazca en el pasado. La hora no es medianoche porque de
+ese instante salen horas de clase.
 
 ---
 
@@ -152,10 +140,12 @@ con Turbopack funciona sin incidencias. No se cambió el script porque validarlo
 falla, documentar el motivo real junto al flag en `package.json`.
 
 ### 20. Fechas del seed relativas al momento de ejecución — [Datos / DX]
-Las clases y la actividad demo se recalculan respecto a «ahora» en cada `db:seed`; si no se
-re-ejecuta en semanas, la «próxima clase» queda en el pasado.
+*Mayormente resuelto con el punto 25:* el instante de referencia ya es estable dentro del día y se
+puede fijar con `SEED_NOW`, así que re-sembrar no ensucia la base.
 
-**Cómo abordarlo:** re-ejecutar `npm run db:seed` (es idempotente) antes de demos.
+**Lo que queda:** las fechas siguen contándose desde «hoy», que es lo que se quiere para una demo
+viva; si no se re-ejecuta en semanas, la «próxima clase» queda en el pasado. Sigue haciendo falta
+`npm run db:seed` (idempotente) antes de una demo.
 
 ---
 
@@ -171,12 +161,8 @@ comparta el formulario con el modal en vez de mantener dos.
 
 ---
 
-### 30. `StudiesNavigation` conserva un tramo que ya nadie pinta — [Deuda / Limpieza]
-La prop `current` («Editar») existía para la ruta `/estudios/[studyId]/partidas/[gameId]/editar`,
-retirada al unificar lectura y edición. El único uso que queda (`/estudios/[studyId]`) no la pasa.
-
-**Cómo abordarlo:** quitar la prop y su rama del JSX, o dejarla si se prevé otro tramo final; es un
-minuto de trabajo y no afecta a nada más.
+### 30. ~~`StudiesNavigation` conserva un tramo que ya nadie pinta~~ — RESUELTO (2026-09-04)
+Retirada la prop `current` y su rama del JSX al desaparecer la ruta `/editar`.
 
 ## Resueltos (2026-08-30)
 

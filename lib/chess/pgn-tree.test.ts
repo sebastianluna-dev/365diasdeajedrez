@@ -10,6 +10,7 @@ import {
   nodeAtPath,
   parentPathOf,
   parsePgnTree,
+  sansAlongPath,
   type PgnTree,
 } from "@/lib/chess/pgn-tree";
 
@@ -205,12 +206,32 @@ describe("parsePgnTree — entradas inválidas", () => {
     expect(tree.warnings[0]).toContain("Nf6");
   });
 
-  it("descarta sin aviso un SAN que ni siquiera tiene forma de jugada", () => {
-    // Ojo: "Qz9" lo filtra el tokenizador de chessops antes de llegar a
-    // parseSan, así que la rama se pierde y warnings queda vacío.
+  it("avisa de un SAN que ni siquiera tiene forma de jugada", () => {
+    // "Qz9" lo filtra el tokenizador de chessops antes de llegar a parseSan,
+    // así que la rama se pierde igual; el aviso sale de rastrear el texto
+    // crudo (lib/chess/movetext-scan.ts).
     const tree = parseOrFail("1. e4 e5 2. Qz9");
     expect([...tree.nodesByPath.keys()].sort()).toEqual(["0", "0.0"]);
-    expect(tree.warnings).toEqual([]);
+    expect(tree.warnings).toHaveLength(1);
+    expect(tree.warnings[0]).toContain("Qz9");
+  });
+});
+
+describe("sansAlongPath", () => {
+  const tree = parseOrFail(SICILIANA_PGN);
+
+  it("da las jugadas que llevan hasta la posición, en orden", () => {
+    expect(sansAlongPath(tree, "0.0.0")).toEqual(["e4", "c5", "Nf3"]);
+    // Por dentro de una variante, las suyas: es el camino real, no la principal.
+    expect(sansAlongPath(tree, "0.0.1.0")).toEqual(["e4", "c5", "Nc3", "Nc6"]);
+  });
+
+  it("en la posición inicial no hay ninguna", () => {
+    expect(sansAlongPath(tree, "")).toEqual([]);
+  });
+
+  it("ante una ruta rota no devuelve media línea", () => {
+    expect(sansAlongPath(tree, "0.0.9")).toEqual([]);
   });
 });
 
