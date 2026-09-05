@@ -6,19 +6,20 @@ export const metadata: Metadata = {
   title: "Cursos",
 };
 
-export default async function StaffCoursesPage() {
-  await requireStaff();
+interface StaffCoursesPageProps {
+  /** `q` es la búsqueda y `estado` el filtro; los dos viven en la URL. */
+  searchParams: Promise<{ q?: string; estado?: string }>;
+}
 
+export default async function StaffCoursesPage({ searchParams }: StaffCoursesPageProps) {
+  await requireStaff();
+  const { q, estado } = await searchParams;
+
+  // La cabecera va DENTRO de la sección: lleva el buscador, y ése necesita
+  // saber lo que hay filtrado.
   return (
     <div className="platform-page staff-courses-page">
-      <header className="platform-page__head">
-        <h1 className="platform-page__title">Cursos</h1>
-        <p className="platform-page__subtitle">
-          Los cursos nacen en borrador y sólo se ven en la plataforma al publicarlos.
-        </p>
-      </header>
-
-      <CoursesAdminSection />
+      <CoursesAdminSection query={q} status={estado} />
     </div>
   );
 }

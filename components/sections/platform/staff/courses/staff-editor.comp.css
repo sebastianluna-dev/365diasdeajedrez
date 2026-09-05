@@ -1,0 +1,126 @@
+.staff-editor-head {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  & .staff-editor-head__crumbs {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 14px;
+  }
+
+  & .staff-editor-head__crumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  & .staff-editor-head__crumb-link {
+    color: var(--platform-text-muted);
+    transition: color 150ms;
+  }
+
+  & .staff-editor-head__crumb-link:hover {
+    color: var(--platform-accent-ink);
+  }
+
+  & .staff-editor-head__separator {
+    color: var(--platform-text-faint);
+  }
+
+  & .staff-editor-head__current {
+    color: var(--platform-text);
+    font-weight: 600;
+  }
+
+  & .staff-editor-head__bar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  & .staff-editor-head__heading {
+    min-width: 0;
+  }
+
+  & .staff-editor-head__title {
+    margin: 0;
+    font-family: var(--platform-font);
+    font-size: 31px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    color: var(--platform-text);
+    text-wrap: balance;
+  }
+
+  &.staff-editor-head_level_root .staff-editor-head__title {
+    font-size: 39.5px;
+  }
+
+  & .staff-editor-head__description {
+    margin: 8px 0 0;
+    max-width: 68ch;
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .staff-editor-head__meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .staff-editor-head__actions {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  @media (max-width: 760px) {
+    & .staff-editor-head__bar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 18px;
+    }
+
+    & .staff-editor-head__actions {
+      width: 100%;
+    }
+  }
+}
+
+.staff-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  align-items: start;
+  gap: 20px;
+
+  & .staff-editor__main,
+  & .staff-editor__aside {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+  }
+
+  &.staff-editor_layout_single {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* La columna estrecha baja entera antes de que los formularios de la
+     izquierda empiecen a estrujarse. */
+  @media (max-width: 1080px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { LessonEditorSection } from "@/components/sections/platform/staff/courses/lesson-editor.section";
 import {
   getLessonAdmin,
+  listCourseGames,
   listExerciseModes,
   listInitialPositionTypes,
   listPresentationModes,
@@ -11,7 +12,8 @@ import {
 
 interface StaffLessonPageProps {
   params: Promise<{ courseId: string; chapterId: string; lessonId: string }>;
-  searchParams: Promise<{ error?: string }>;
+  /** `partida` es la búsqueda en la colección del curso. */
+  searchParams: Promise<{ error?: string; partida?: string }>;
 }
 
 export async function generateMetadata({ params }: StaffLessonPageProps): Promise<Metadata> {
@@ -26,29 +28,26 @@ export default async function StaffLessonPage({ params, searchParams }: StaffLes
   // El capítulo tiene que pertenecer a este curso: si no, la URL es inventada.
   if (!lesson || lesson.courseId !== courseId) notFound();
 
-  const [presentationModes, initialPositionTypes, exerciseModes, topics, { error }] = await Promise.all([
+  const { error, partida } = await searchParams;
+  const [presentationModes, initialPositionTypes, exerciseModes, topics, courseGames] = await Promise.all([
     listPresentationModes(),
     listInitialPositionTypes(),
     listExerciseModes(),
     listTopics(),
-    searchParams,
+    listCourseGames(courseId, partida),
   ]);
 
+  // La cabecera va dentro de la sección: lleva las migas hasta el capítulo.
   return (
     <div className="platform-page staff-lesson-page">
-      <header className="platform-page__head">
-        <h1 className="platform-page__title">{lesson.name}</h1>
-        <p className="platform-page__subtitle">
-          Lección {lesson.order} de {lesson.chapterName}
-        </p>
-      </header>
-
       <LessonEditorSection
         lesson={lesson}
         presentationModes={presentationModes}
         initialPositionTypes={initialPositionTypes}
         exerciseModes={exerciseModes}
         topics={topics}
+        courseGames={courseGames}
+        gameQuery={partida}
         errorCode={error}
       />
     </div>

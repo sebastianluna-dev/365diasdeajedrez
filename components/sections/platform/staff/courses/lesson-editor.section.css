@@ -1,50 +1,86 @@
 .lesson-editor {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 
-  & .lesson-editor__breadcrumb {
-    margin: 0;
-    font-size: 15px;
-    color: var(--platform-text-muted);
-  }
-
-  & .lesson-editor__breadcrumb a {
-    color: var(--platform-text-muted);
-  }
-
-  & .lesson-editor__breadcrumb a:hover {
-    color: var(--platform-accent-ink);
-  }
-
-  & .lesson-editor__form {
+  & .lesson-editor__form,
+  & .lesson-editor__stack {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    max-width: 720px;
-
-    & .platform-field {
-      width: 100%;
-    }
+    gap: 16px;
   }
 
-  & .lesson-editor__row {
+  /* Dos controles cortos por renglón. En la columna estrecha del `aside` no
+     aplica: allí el layout ya baja a una sola. */
+  & .lesson-editor__pair {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
 
-    @media (max-width: 700px) {
-      grid-template-columns: 1fr;
+    @media (max-width: 860px) {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 
+  & .lesson-editor__submit {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  /* La casilla arriba y su explicación debajo del texto, no al lado: son
+     ajustes con consecuencias y la frase corta es la que las cuenta. */
   & .lesson-editor__check {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 15.5px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 15px;
     color: var(--platform-text);
+    cursor: pointer;
+  }
+
+  & .lesson-editor__check input {
+    margin-top: 2px;
+    flex: none;
+  }
+
+  & .lesson-editor__check-hint {
+    display: block;
+    margin-top: 3px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
+  & .lesson-editor__note {
+    margin: 0;
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .lesson-editor__facts {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  & .lesson-editor__fact {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+  }
+
+  & .lesson-editor__fact dt {
+    color: var(--platform-text-subtle);
+  }
+
+  & .lesson-editor__fact dd {
+    margin: 0;
+    font-weight: 600;
+    color: var(--platform-text);
+    text-align: right;
   }
 }

@@ -23,7 +23,14 @@ import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { readBoolean, readClampedInt, readOptionalText, readText, readUrl } from "@/services/shared/form-data";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
-import { nextOrder, planDenseRenumber, planSwap, type MoveDirection } from "@/services/shared/reorder";
+import { lessonHasContent, lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
+import {
+  nextOrder,
+  planDenseRenumber,
+  planFullReorder,
+  planSwap,
+  type MoveDirection,
+} from "@/services/shared/reorder";
 
 // Editor de cursos. Reglas que no se negocian:
 // - Toda action abre con requireStaff() (son alcanzables por POST directo).
@@ -148,13 +155,13 @@ export async function publishCourse(courseId: string): Promise<void> {
   const db = getPlatformDb();
   const course = await db.course.findUnique({
     where: { id: courseId },
-    select: { publishedAt: true, chapters: { select: { lessons: { select: { pgn: true } } } } },
+    select: { publishedAt: true, chapters: { select: { lessons: { select: lessonPgnSelect } } } },
   });
   if (!course) fail(detailPath, "courseMissing");
 
   // Mínimo publicable: un capítulo con una lección con PGN. Sin esto el alumno
   // se encontraría un curso con lecciones en blanco.
-  const hasContent = course.chapters.some((chapter) => chapter.lessons.some((lesson) => lesson.pgn.trim().length > 0));
+  const hasContent = course.chapters.some((chapter) => chapter.lessons.some(lessonHasContent));
   if (!hasContent) fail(detailPath, "publishRequirements");
 
   await db.course.update({
@@ -239,24 +246,53 @@ export async function updateChapter(courseId: string, chapterId: string, formDat
   revalidatePath(staffRoutes.courseDetail(courseId));
 }
 
-export async function moveChapter(courseId: string, formData: FormData): Promise<void> {
+/**
+ * Recoloca los capítulos en el orden que llega del navegador (arrastrar).
+ *
+ * Llega la lista ENTERA, no un «sube uno»: arrastrar el quinto al primer sitio
+ * corre los cuatro de en medio. `planFullReorder` es quien evita el choque con
+ * el índice único `[courseId, order]` —media lista quiere el orden que la otra
+ * media todavía ocupa— y quien descarta una lista que no sea exactamente la de
+ * este curso, porque viene del cliente.
+ *
+ * No usa `fail()` con redirect como el resto: la llama una transición desde el
+ * navegador, que ya tiene la lista pintada en su sitio. Si algo no cuadra, la
+ * revalidación devuelve el orden bueno y la fila vuelve sola.
+ */
+export async function reorderChapters(courseId: string, orderedIds: string[]): Promise<void> {
   const staff = await requireStaff();
-  const detailPath = staffRoutes.courseDetail(courseId);
-  if (!(await allowAction(`${staff.user.id}:chapter-move`, 120, 60_000))) fail(detailPath, "throttled");
-
-  const chapterId = readText(formData, "chapterId");
-  const direction = readText(formData, "direction");
-  if (direction !== "up" && direction !== "down") fail(detailPath, "order");
+  if (!(await allowAction(`${staff.user.id}:chapter-move`, 120, 60_000))) return;
 
   const db = getPlatformDb();
   await db.$transaction(async (tx) => {
     const chapters = await tx.chapter.findMany({ where: { courseId }, select: { id: true, order: true } });
-    for (const update of planSwap(chapters, chapterId, direction as MoveDirection)) {
+    for (const update of planFullReorder(chapters, orderedIds)) {
       await tx.chapter.update({ where: { id: update.id }, data: { order: update.order } });
     }
   });
 
-  revalidatePath(detailPath);
+  revalidatePath(staffRoutes.courseDetail(courseId));
+}
+
+/** Lo mismo para las lecciones de un capítulo; ver `reorderChapters`. */
+export async function reorderLessons(courseId: string, chapterId: string, orderedIds: string[]): Promise<void> {
+  const staff = await requireStaff();
+  if (!(await allowAction(`${staff.user.id}:lesson-move`, 120, 60_000))) return;
+
+  const db = getPlatformDb();
+  await db.$transaction(async (tx) => {
+    // El capítulo tiene que ser de este curso: el id llega del cliente y sin
+    // esto se podrían reordenar las lecciones de otro.
+    const chapter = await tx.chapter.findFirst({ where: { id: chapterId, courseId }, select: { id: true } });
+    if (!chapter) return;
+
+    const lessons = await tx.lesson.findMany({ where: { chapterId }, select: { id: true, order: true } });
+    for (const update of planFullReorder(lessons, orderedIds)) {
+      await tx.lesson.update({ where: { id: update.id }, data: { order: update.order } });
+    }
+  });
+
+  revalidatePath(staffRoutes.chapterDetail(courseId, chapterId));
 }
 
 /**
@@ -374,7 +410,12 @@ export async function updateLesson(
     : null;
 
   const db = getPlatformDb();
-  const current = await db.lesson.findFirst({ where: { id: lessonId, chapterId }, select: { id: true, pgn: true } });
+  // Con `lessonPgnSelect`: el ejercicio derivado se entrena contra el contenido
+  // que ve el alumno, que puede venir de la partida vinculada y no de `pgn`.
+  const current = await db.lesson.findFirst({
+    where: { id: lessonId, chapterId },
+    select: { id: true, ...lessonPgnSelect },
+  });
   if (!current) fail(lessonPath, "courseMissing");
   const lesson = current;
 
@@ -401,7 +442,7 @@ export async function updateLesson(
     // un estado a medias.
     const sync = await syncLessonTrainingExercise(tx, {
       lessonId: lesson.id,
-      pgn: current.pgn,
+      pgn: lessonPgnOf(current),
       isTrainable,
       trainingColor,
     });
@@ -420,6 +461,81 @@ export async function updateLesson(
 
   revalidatePath(lessonPath);
   revalidatePath(staffRoutes.chapterDetail(courseId, chapterId));
+}
+
+/**
+ * Vincula la lección a una partida de la colección del curso, o la desvincula.
+ *
+ * A partir de aquí el contenido de la lección ES el de esa partida
+ * (`lessonPgnOf`), así que corregirla arregla todas las lecciones que la usan.
+ * El `pgn` propio NO se borra: queda dormido y vuelve al desvincular, que es lo
+ * que hace que vincular no sea una decisión irreversible.
+ *
+ * La partida tiene que ser de la colección de ESTE curso. El id llega del
+ * navegador y sin la comprobación se podría enganchar la partida de cualquier
+ * otro, incluida la base privada de un alumno.
+ *
+ * Al cambiar el contenido cambia también la línea que se entrena, así que el
+ * ejercicio derivado se rehace en la misma transacción y se sella
+ * `pgnUpdatedAt`: es lo que marca como desactualizados los ejercicios que se
+ * congelaron contra el contenido anterior.
+ */
+export async function setLessonGame(
+  courseId: string,
+  chapterId: string,
+  lessonId: string,
+  formData: FormData,
+): Promise<void> {
+  const staff = await requireStaff();
+  const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
+  if (!(await allowAction(`${staff.user.id}:lesson-game`, 60, 60_000))) fail(lessonPath, "throttled");
+
+  const gameId = readText(formData, "gameId");
+  const db = getPlatformDb();
+
+  const lesson = await db.lesson.findFirst({
+    where: { id: lessonId, chapterId, chapter: { courseId } },
+    select: { id: true, pgn: true, isTrainable: true, trainingColor: { select: { code: true } } },
+  });
+  if (!lesson) fail(lessonPath, "courseMissing");
+
+  // Vacío = desvincular; entonces vuelve a mandar el PGN propio de la lección.
+  let nextPgn = lesson.pgn;
+  if (gameId.length > 0) {
+    const game = await db.game.findFirst({
+      where: { id: gameId, database: { courseId } },
+      select: { id: true, pgn: true },
+    });
+    if (!game) fail(lessonPath, "courseMissing");
+    nextPgn = game.pgn;
+  }
+
+  try {
+    await db.$transaction(async (tx) => {
+      await tx.lesson.update({
+        where: { id: lesson.id },
+        data: {
+          game: gameId.length > 0 ? { connect: { id: gameId } } : { disconnect: true },
+          pgnUpdatedAt: new Date(),
+        },
+      });
+
+      const sync = await syncLessonTrainingExercise(tx, {
+        lessonId: lesson.id,
+        pgn: nextPgn,
+        isTrainable: lesson.isTrainable,
+        trainingColor: (lesson.trainingColor?.code as "WHITE" | "BLACK" | undefined) ?? null,
+      });
+      if (lesson.isTrainable && !sync.ok) throw new TrainingSyncError(sync.reason);
+    });
+  } catch (error) {
+    if (error instanceof TrainingSyncError) fail(lessonPath, error.errorCode);
+    throw error;
+  }
+
+  revalidatePath(lessonPath);
+  revalidatePath(staffRoutes.chapterDetail(courseId, chapterId));
+  revalidatePath(platformRoutes.lessonDetail(lessonId));
 }
 
 /**
@@ -467,26 +583,6 @@ export async function updateLessonPgn(
   // La lección se direcciona sola en la zona del alumno, así que aquí ya no
   // hace falta resolver curso ni capítulo para revalidar su página.
   revalidatePath(platformRoutes.lessonDetail(lessonId));
-}
-
-export async function moveLesson(courseId: string, chapterId: string, formData: FormData): Promise<void> {
-  const staff = await requireStaff();
-  const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
-  if (!(await allowAction(`${staff.user.id}:lesson-move`, 120, 60_000))) fail(chapterPath, "throttled");
-
-  const lessonId = readText(formData, "lessonId");
-  const direction = readText(formData, "direction");
-  if (direction !== "up" && direction !== "down") fail(chapterPath, "order");
-
-  const db = getPlatformDb();
-  await db.$transaction(async (tx) => {
-    const lessons = await tx.lesson.findMany({ where: { chapterId }, select: { id: true, order: true } });
-    for (const update of planSwap(lessons, lessonId, direction as MoveDirection)) {
-      await tx.lesson.update({ where: { id: update.id }, data: { order: update.order } });
-    }
-  });
-
-  revalidatePath(chapterPath);
 }
 
 /** Misma regla que el capítulo: sólo en borrador y sin progreso de nadie. */

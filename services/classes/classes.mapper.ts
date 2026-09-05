@@ -4,6 +4,7 @@ import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { formatSpanishTime } from "@/lib/format-spanish-time";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { platformRoutes } from "@/lib/platform-routes";
+import { lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import type { ClassBlockView, ClassDetail, ClassSummary } from "./classes.types";
 
 export const classSummaryInclude = {
@@ -26,7 +27,7 @@ export const classDetailInclude = {
       // El PGN y la orientación son para pintar la lección DENTRO de la clase,
       // no sólo enlazarla: el alumno no debería tener que salir para verla.
       lesson: {
-        select: { id: true, name: true, pgn: true, orientation: { select: { code: true } } },
+        select: { id: true, name: true, ...lessonPgnSelect, orientation: { select: { code: true } } },
       },
       position: { select: { fen: true, title: true, orientation: { select: { code: true } } } },
     },
@@ -96,7 +97,7 @@ function mapBlock(block: ClassDetailRow["blocks"][number]): ClassBlockView | nul
             lesson: {
               id: block.lesson.id,
               name: block.lesson.name,
-              pgn: block.lesson.pgn,
+              pgn: lessonPgnOf(block.lesson),
               orientation: block.lesson.orientation.code === BOARD_ORIENTATION.BLACK ? "black" : "white",
               href: platformRoutes.lessonDetail(block.lesson.id),
               movePath: block.movePath ?? undefined,

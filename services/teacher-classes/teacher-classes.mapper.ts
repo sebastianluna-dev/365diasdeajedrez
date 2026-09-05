@@ -1,3 +1,4 @@
+import { lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import {
   CLASS_BLOCK_KIND,
   type ClassBlockKindCode,
@@ -40,7 +41,7 @@ export const teacherClassDetailInclude = {
     include: {
       kind: true,
       game: { select: { id: true, white: true, black: true, pgn: true } },
-      lesson: { select: { id: true, name: true, pgn: true, chapter: { select: { name: true } } } },
+      lesson: { select: { id: true, name: true, ...lessonPgnSelect, chapter: { select: { name: true } } } },
       position: { select: { id: true, title: true, fen: true } },
     },
   },
@@ -83,7 +84,7 @@ function mapBlock(block: TeacherClassDetailRow["blocks"][number]): TeacherClassB
     kind === CLASS_BLOCK_KIND.GAME_REF
       ? (block.game?.pgn ?? null)
       : kind === CLASS_BLOCK_KIND.LESSON_REF
-        ? (block.lesson?.pgn ?? null)
+        ? (block.lesson ? lessonPgnOf(block.lesson) : null)
         : null;
 
   const referenceLabel = block.game

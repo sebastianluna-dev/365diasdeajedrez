@@ -1,6 +1,7 @@
 import { BOARD_ORIENTATION, PROGRESS_STATUS, type ProgressStatusCode } from "@/constants/platform/shared-codes.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { platformRoutes } from "@/lib/platform-routes";
+import { lessonPgnOf } from "@/services/shared/lesson-pgn";
 import type {
   ChapterLessonItem,
   ChapterView,
@@ -195,6 +196,8 @@ export interface LessonRowForView {
   estimatedDuration: number | null;
   initialFen: string | null;
   pgn: string;
+  /** La partida de la colección del curso, si la lección la referencia. */
+  game: { pgn: string } | null;
   orientation: { code: string };
   exercises: { id: string }[];
 }
@@ -232,7 +235,7 @@ export function mapLessonView(
     isPriority: lesson.isPriority,
     estimatedDuration: lesson.estimatedDuration ?? undefined,
     initialFen: lesson.initialFen,
-    pgn: lesson.pgn,
+    pgn: lessonPgnOf(lesson),
     orientation: effective === BOARD_ORIENTATION.BLACK ? "black" : "white",
     statusCode: asStatus(state.lessonStatus.get(lesson.id)),
     exerciseCount: lesson.exercises.length,

@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { nextOrder, planDenseRenumber, planSwap, TEMP_ORDER, type OrderUpdate, type ReorderRow } from "./reorder";
+import {
+  nextOrder,
+  planDenseRenumber,
+  planFullReorder,
+  planSwap,
+  TEMP_ORDER,
+  type OrderUpdate,
+  type ReorderRow,
+} from "./reorder";
 
 // Se simula lo que hace PostgreSQL: aplicar los updates uno a uno y comprobar
 // que en NINGÚN paso intermedio hay dos filas con el mismo orden (que es
@@ -119,5 +127,79 @@ describe("nextOrder", () => {
   it("añade siempre al final, con la lista vacía incluida", () => {
     expect(nextOrder(0)).toBe(1);
     expect(nextOrder(4)).toBe(5);
+  });
+});
+
+describe("planFullReorder", () => {
+  const rows = (n: number): ReorderRow[] =>
+    Array.from({ length: n }, (_, index) => ({ id: `r${index + 1}`, order: index + 1 }));
+
+  /** Aplica los updates en orden y devuelve el orden final por id. */
+  function apply(start: ReorderRow[], updates: OrderUpdate[]): Map<string, number> {
+    const state = new Map(start.map((row) => [row.id, row.order]));
+    for (const update of updates) {
+      // El índice único de la base: dos filas no pueden compartir orden.
+      for (const [id, order] of state) {
+        if (id !== update.id && order === update.order) {
+          throw new Error(`orden ${update.order} ocupado por ${id} al mover ${update.id}`);
+        }
+      }
+      state.set(update.id, update.order);
+    }
+    return state;
+  }
+
+  it("no hace nada si el orden ya es el pedido", () => {
+    expect(planFullReorder(rows(4), ["r1", "r2", "r3", "r4"])).toEqual([]);
+  });
+
+  it("deja las filas en el orden pedido", () => {
+    const start = rows(5);
+    const wanted = ["r5", "r1", "r4", "r2", "r3"];
+    const state = apply(start, planFullReorder(start, wanted));
+    expect(wanted.map((id) => state.get(id))).toEqual([1, 2, 3, 4, 5]);
+  });
+
+  it("ningún paso intermedio comparte orden con otra fila", () => {
+    // `apply` lanza si dos filas coinciden, así que basta con no explotar. Se
+    // prueban TODAS las permutaciones de cuatro: es donde vive el choque.
+    const start = rows(4);
+    const ids = ["r1", "r2", "r3", "r4"];
+    const permute = (list: string[]): string[][] =>
+      list.length <= 1
+        ? [list]
+        : list.flatMap((item, index) =>
+            permute([...list.slice(0, index), ...list.slice(index + 1)]).map((rest) => [item, ...rest]),
+          );
+
+    for (const wanted of permute(ids)) {
+      const state = apply(start, planFullReorder(start, wanted));
+      expect(wanted.map((id) => state.get(id))).toEqual([1, 2, 3, 4]);
+    }
+  });
+
+  it("sólo toca las filas que cambian de sitio", () => {
+    const start = rows(4);
+    // Se intercambian las dos últimas; las dos primeras se quedan quietas.
+    const updates = planFullReorder(start, ["r1", "r2", "r4", "r3"]);
+    expect(new Set(updates.map((update) => update.id))).toEqual(new Set(["r3", "r4"]));
+  });
+
+  it("ignora una lista que no es exactamente la de las filas", () => {
+    const start = rows(3);
+    expect(planFullReorder(start, ["r1", "r2"])).toEqual([]);
+    expect(planFullReorder(start, ["r1", "r2", "r9"])).toEqual([]);
+    expect(planFullReorder(start, ["r1", "r2", "r2"])).toEqual([]);
+    expect(planFullReorder(start, [])).toEqual([]);
+  });
+
+  it("funciona aunque los órdenes de partida tengan huecos", () => {
+    const start: ReorderRow[] = [
+      { id: "a", order: 2 },
+      { id: "b", order: 7 },
+      { id: "c", order: 9 },
+    ];
+    const state = apply(start, planFullReorder(start, ["c", "a", "b"]));
+    expect([state.get("c"), state.get("a"), state.get("b")]).toEqual([1, 2, 3]);
   });
 });

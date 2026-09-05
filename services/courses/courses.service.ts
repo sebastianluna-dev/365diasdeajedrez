@@ -3,6 +3,7 @@ import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import type { ProgressStatusCode } from "@/constants/platform/shared-codes.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
+import { lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import {
   courseContentInclude,
   mapChapterView,
@@ -156,7 +157,7 @@ export async function getLessonView(lessonId: string): Promise<LessonView | null
       isPriority: true,
       estimatedDuration: true,
       initialFen: true,
-      pgn: true,
+      ...lessonPgnSelect,
       orientation: { select: { code: true } },
       exercises: { select: { id: true } },
       chapter: { select: { courseId: true } },

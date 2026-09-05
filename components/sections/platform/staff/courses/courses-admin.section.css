@@ -1,10 +1,270 @@
 .courses-admin {
+  /* Las siete columnas se declaran UNA vez y las comparten la cabecera y las
+     filas: si se separan, la cabecera deja de cuadrar con lo que rotula. */
+  --courses-admin-columns: minmax(0, 2.6fr) 0.9fr 0.9fr 0.8fr 0.8fr 0.9fr 24px;
+
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 22px;
+
+  & .courses-admin__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  & .courses-admin__search-icon {
+    position: absolute;
+    left: 13px;
+    width: 16px;
+    height: 16px;
+    color: var(--platform-text-subtle);
+    pointer-events: none;
+  }
+
+  & .courses-admin__search-input {
+    width: 268px;
+    padding: 12px 14px 12px 37px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 15px;
+    transition: 150ms;
+    transition-property: border-color, box-shadow;
+  }
+
+  & .courses-admin__search-input:focus {
+    outline: none;
+    border-color: var(--platform-accent);
+    box-shadow: 0 0 0 3px var(--platform-accent-soft);
+  }
 
   & .courses-admin__bar {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  & .courses-admin__filters {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  & .courses-admin__filter {
+    padding: 8px 15px;
+    border-radius: 1000px;
+    color: var(--platform-text-muted);
+    font-size: 14px;
+    font-weight: 600;
+    transition: 150ms;
+    transition-property: background-color, color;
+  }
+
+  & .courses-admin__filter:hover {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
+  }
+
+  & .courses-admin__filter_state_active {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
+
+  & .courses-admin__totals {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .courses-admin__totals strong {
+    color: var(--platform-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .courses-admin__dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 1000px;
+    background: var(--platform-border-strong);
+  }
+
+  & .courses-admin__table {
+    background: var(--platform-surface);
+    border-radius: 10px;
+    box-shadow: var(--platform-shadow-card);
+    overflow: hidden;
+  }
+
+  & .courses-admin__head {
+    display: grid;
+    grid-template-columns: var(--courses-admin-columns);
+    align-items: center;
+    gap: 14px;
+    padding: 13px 20px;
+    border-bottom: 1px solid var(--platform-border);
+    background: var(--platform-bg);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--platform-text-subtle);
+  }
+
+  & .courses-admin__rows {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .courses-admin__rows li + li .courses-admin__row {
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .courses-admin__row {
+    display: grid;
+    grid-template-columns: var(--courses-admin-columns);
+    align-items: center;
+    gap: 14px;
+    padding: 12px 20px;
+    color: var(--platform-text);
+    transition: background-color 150ms;
+  }
+
+  & .courses-admin__row:hover {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
+  }
+
+  & .courses-admin__course {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* El recuadro se pinta siempre, con portada o sin ella: si apareciera sólo
+     cuando hay imagen, los nombres de unas filas y otras no se alinearían. */
+  & .courses-admin__cover {
+    position: relative;
+    flex: none;
+    width: 44px;
+    height: 30px;
+    border-radius: 10px;
+    background: var(--platform-surface-sunken);
+    overflow: hidden;
+  }
+
+  & .courses-admin__cover-image {
+    object-fit: cover;
+    object-position: 0% 50%;
+  }
+
+  & .courses-admin__names {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  & .courses-admin__name {
+    font-size: 15px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .courses-admin__slug {
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .courses-admin__cell {
+    min-width: 0;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .courses-admin__number {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Los tres estados se distinguen por color y no sólo por la palabra: en una
+     lista larga es lo que deja ver de un vistazo qué está publicado. */
+  & .courses-admin__status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 11px;
+    border-radius: 1000px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  & .courses-admin__status_state_published {
+    background: var(--platform-success-soft);
+    color: var(--platform-success-ink);
+  }
+
+  & .courses-admin__status_state_draft {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
+
+  & .courses-admin__status_state_archived {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text-subtle);
+  }
+
+  & .courses-admin__chevron {
+    display: flex;
     justify-content: flex-end;
+    color: var(--platform-text-faint);
+  }
+
+  & .courses-admin__chevron svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  & .courses-admin__row:hover .courses-admin__chevron {
+    color: var(--platform-accent-ink);
+  }
+
+  /* Apretado, la tabla se desplaza a lo ancho en vez de romper la rejilla: son
+     siete datos por fila y ninguno sobra para quien administra el catálogo. */
+  @media (max-width: 1000px) {
+    & .courses-admin__table {
+      overflow-x: auto;
+    }
+
+    & .courses-admin__head,
+    & .courses-admin__row {
+      min-width: 860px;
+    }
+  }
+
+  @media (max-width: 620px) {
+    & .courses-admin__search-input {
+      width: 100%;
+    }
+
+    & .courses-admin__search {
+      flex: 1;
+    }
   }
 }

@@ -12,6 +12,8 @@ export interface CourseAdminSummary {
   id: string;
   name: string;
   slug: string;
+  /** URL de la portada; la fila enseña un recorte pequeño para reconocerlo. */
+  cover?: string;
   statusCode: CourseStatusCode;
   statusLabel: string;
   typeLabel: string;
@@ -19,6 +21,22 @@ export interface CourseAdminSummary {
   lessonCount: number;
   publishedAtLabel?: string;
   href: string;
+}
+
+/** Lo que se busca y por qué estado se filtra en la lista de cursos. */
+export interface CourseAdminFilter {
+  /** Texto libre: casa contra el nombre y el identificador. */
+  query?: string;
+  /** Code de CourseStatus; ausente = todos. */
+  status?: string;
+}
+
+/** La lista con lo que hace falta para pintar su cabecera. */
+export interface CourseAdminList {
+  courses: CourseAdminSummary[];
+  /** Totales de lo que se está viendo, no del catálogo entero. */
+  chapterCount: number;
+  lessonCount: number;
 }
 
 export interface CourseAuthorRow {
@@ -111,10 +129,32 @@ export interface LessonAdminDetail {
   initialPositionTypeCode: InitialPositionTypeCode;
   initialFen?: string;
   orientationCode: BoardOrientationCode;
+  /** El contenido que ve el alumno: el de la partida vinculada, o el propio. */
   pgn: string;
   pgnUpdatedAtLabel?: string;
+  /** La partida de la colección del curso de la que sale el contenido. */
+  game?: CourseGameRow;
+  /**
+   * Si se puede borrar: curso en borrador y sin progreso de ningún alumno. Es
+   * la misma condición que aplica el servidor, para no ofrecer un botón que
+   * después rebota.
+   */
+  canDelete: boolean;
   topicIds: number[];
   exercises: ExerciseAdminRow[];
+}
+
+/** Una partida de la colección de un curso, para vincularla a una lección. */
+export interface CourseGameRow {
+  id: string;
+  /** «Kotov — Plater». */
+  title: string;
+  /** Evento, año y apertura en una línea; vacío si no hay ninguno de los tres. */
+  detail: string;
+  /** Jugadas de la línea principal, para saber si la partida está entera. */
+  moveCount: number;
+  /** Cuántas lecciones la usan; borrarla las dejaría sin contenido. */
+  lessonCount: number;
 }
 
 export interface CatalogOption {

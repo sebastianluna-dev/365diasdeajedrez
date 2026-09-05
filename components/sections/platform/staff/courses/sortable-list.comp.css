@@ -1,0 +1,146 @@
+.sortable-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & .sortable-list__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    transition: 150ms;
+    transition-property: background-color, opacity;
+  }
+
+  & .sortable-list__row + .sortable-list__row {
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .sortable-list__row:hover {
+    background: var(--platform-surface-neutral);
+  }
+
+  /* La fila que viaja se atenúa: sin eso, arrastrando no se distingue cuál es
+     la que se mueve de la que se está señalando como destino. */
+  & .sortable-list__row_state_dragging {
+    opacity: 0.45;
+  }
+
+  /* El asa lleva el número Y el agarre: el número es lo que se busca con la
+     vista al reordenar, así que es el propio sitio por donde se agarra. */
+  & .sortable-list__handle {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 4px 8px 4px 4px;
+    border: 0;
+    border-radius: 1000px;
+    background: transparent;
+    color: var(--platform-text-subtle);
+    font-family: inherit;
+    cursor: grab;
+    transition: 150ms;
+    transition-property: background-color, color;
+  }
+
+  & .sortable-list__handle:hover {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
+
+  & .sortable-list__handle:active {
+    cursor: grabbing;
+  }
+
+  & .sortable-list__order {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 1000px;
+    background: var(--platform-surface-neutral);
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .sortable-list__grip {
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  & .sortable-list__text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  & .sortable-list__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  & .sortable-list__link {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--platform-text);
+    transition: color 150ms;
+  }
+
+  & .sortable-list__link:hover {
+    color: var(--platform-accent-ink);
+  }
+
+  & .sortable-list__meta {
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .sortable-list__controls {
+    margin-left: auto;
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  & .sortable-list__control {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    padding: 0 12px;
+    border: 1px solid var(--platform-border);
+    border-radius: 1000px;
+    background: var(--platform-surface);
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 150ms;
+    transition-property: background-color, border-color, color;
+  }
+
+  & .sortable-list__control_variant_danger:hover {
+    border-color: var(--platform-danger);
+    color: var(--platform-danger);
+  }
+
+  & .sortable-list__control_variant_go:hover {
+    border-color: var(--platform-accent);
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
+}
+
+.sortable-list__empty {
+  margin: 0;
+  font-size: 14px;
+  color: var(--platform-text-subtle);
+}

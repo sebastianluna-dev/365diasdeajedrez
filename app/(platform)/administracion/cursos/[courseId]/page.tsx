@@ -34,15 +34,10 @@ export default async function StaffCoursePage({ params, searchParams }: StaffCou
     searchParams,
   ]);
 
+  // La cabecera va DENTRO de la sección: lleva las migas y el estado, que son
+  // datos del curso y no de la página.
   return (
     <div className="platform-page staff-course-page">
-      <header className="platform-page__head">
-        <h1 className="platform-page__title">{course.name}</h1>
-        <p className="platform-page__subtitle">
-          {course.statusLabel} · {course.slug}
-        </p>
-      </header>
-
       <CourseEditorSection
         course={course}
         types={types}

@@ -80,3 +80,37 @@ export function planDenseRenumber(rows: ReorderRow[]): OrderUpdate[] {
 export function nextOrder(count: number): number {
   return count + 1;
 }
+
+/**
+ * Updates para dejar las filas en el orden que dice `orderedIds` (1..n).
+ *
+ * Es lo que hace falta al arrastrar: no se intercambian dos vecinas, se recoloca
+ * una en cualquier sitio y todas las de en medio se corren. Ahí el problema del
+ * índice único se agrava —media lista quiere el orden que otra media todavía
+ * ocupa—, así que va en DOS pasadas: primero las que se mueven salen del rango
+ * válido a temporales negativos distintos entre sí, y sólo después toman su
+ * orden definitivo. Ningún update intermedio choca con otro.
+ *
+ * Devuelve `[]` si `orderedIds` no es exactamente el conjunto de filas: viene
+ * del navegador y una lista incompleta borraría posiciones. Que no haga nada es
+ * lo correcto —el servidor no reordena a medias— y quien llama ya tiene la
+ * lista buena en la base de datos.
+ */
+export function planFullReorder(rows: ReorderRow[], orderedIds: string[]): OrderUpdate[] {
+  if (orderedIds.length !== rows.length) return [];
+
+  const received = new Set(orderedIds);
+  if (received.size !== orderedIds.length) return [];
+  for (const row of rows) if (!received.has(row.id)) return [];
+
+  const currentOrder = new Map(rows.map((row) => [row.id, row.order]));
+  const moving = orderedIds.filter((id, index) => currentOrder.get(id) !== index + 1);
+  if (moving.length === 0) return [];
+
+  return [
+    // Primera pasada: fuera del rango, cada una con su propio temporal.
+    ...moving.map((id, index) => ({ id, order: -(index + 1) })),
+    // Segunda: ya no queda nadie ocupando los sitios de destino.
+    ...moving.map((id) => ({ id, order: orderedIds.indexOf(id) + 1 })),
+  ];
+}

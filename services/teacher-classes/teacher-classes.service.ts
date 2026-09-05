@@ -1,3 +1,4 @@
+import { lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import { CLASS_BLOCK_KIND, type ClassStatusCode } from "@/constants/platform/class-codes.const";
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
@@ -161,7 +162,7 @@ export async function getPgnForReference(
 
   const lesson = await db.lesson.findFirst({
     where: { id, chapter: { course: { status: { code: COURSE_STATUS.PUBLISHED } } } },
-    select: { pgn: true },
+    select: lessonPgnSelect,
   });
-  return lesson?.pgn ?? null;
+  return lesson ? lessonPgnOf(lesson) : null;
 }

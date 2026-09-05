@@ -1,39 +1,75 @@
-import type {
-  AuthorRoleCode,
-  CourseStatusCode,
-  CourseTypeCode,
-  InitialPositionTypeCode,
-  PresentationModeCode,
+import {
+  COURSE_STATUS,
+  type AuthorRoleCode,
+  type CourseStatusCode,
+  type CourseTypeCode,
+  type InitialPositionTypeCode,
+  type PresentationModeCode,
 } from "@/constants/platform/course-codes.const";
 import type { BoardOrientationCode } from "@/constants/platform/shared-codes.const";
 import type { ExerciseModeCode } from "@/constants/platform/training-codes.const";
+import { extractMainline } from "@/lib/chess/mainline";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { staffRoutes } from "@/lib/platform-routes";
+import { lessonHasContent, lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import { isExerciseStale } from "@/services/trainer/trainer.mapper";
 import type {
   AuthorAdminRow,
   CatalogOption,
   ChapterAdminDetail,
   CourseAdminDetail,
-  CourseAdminSummary,
+  CourseAdminFilter,
+  CourseAdminList,
+  CourseGameRow,
   LessonAdminDetail,
   TopicOption,
 } from "./staff-courses.types";
+
+function isCourseStatusCode(value: string | undefined): value is CourseStatusCode {
+  return value !== undefined && (Object.values(COURSE_STATUS) as string[]).includes(value);
+}
 
 // Editor de cursos del staff. A diferencia de `services/courses/` —que filtra
 // siempre PUBLISHED porque es la vista del alumno— aquí se ven todos los
 // estados: el borrador es precisamente lo que hay que poder editar.
 
-export async function listCoursesAdmin(): Promise<CourseAdminSummary[]> {
+/**
+ * La lista del panel, filtrada por lo que se haya pedido en la URL.
+ *
+ * El filtro se resuelve en la CONSULTA y no en memoria: el catálogo crece con
+ * los años y buscar en el cliente obligaría a traerlo entero para descartar
+ * casi todo. Por eso también los totales se cuentan sobre lo que se ve —son el
+ * pie de la búsqueda, no del catálogo—.
+ *
+ * Un `status` que no sea un code del catálogo se ignora en vez de dar cero
+ * resultados: viene de la URL y una URL a mano no debería parecer una lista
+ * vacía.
+ */
+export async function listCoursesAdmin(filter: CourseAdminFilter = {}): Promise<CourseAdminList> {
   await requireStaff();
 
+  const query = filter.query?.trim();
+  const status = isCourseStatusCode(filter.status) ? filter.status : undefined;
+
   const courses = await getPlatformDb().course.findMany({
+    where: {
+      ...(status ? { status: { code: status } } : {}),
+      ...(query
+        ? {
+            OR: [
+              { name: { contains: query, mode: "insensitive" as const } },
+              { slug: { contains: query, mode: "insensitive" as const } },
+            ],
+          }
+        : {}),
+    },
     select: {
       id: true,
       name: true,
       slug: true,
+      cover: true,
       publishedAt: true,
       status: { select: { code: true, label: true } },
       type: { select: { label: true } },
@@ -42,10 +78,11 @@ export async function listCoursesAdmin(): Promise<CourseAdminSummary[]> {
     orderBy: [{ status: { order: "asc" } }, { name: "asc" }],
   });
 
-  return courses.map((course) => ({
+  const rows = courses.map((course) => ({
     id: course.id,
     name: course.name,
     slug: course.slug,
+    cover: course.cover ?? undefined,
     statusCode: course.status.code as CourseStatusCode,
     statusLabel: course.status.label,
     typeLabel: course.type.label,
@@ -54,6 +91,12 @@ export async function listCoursesAdmin(): Promise<CourseAdminSummary[]> {
     publishedAtLabel: course.publishedAt ? formatSpanishDate(course.publishedAt) : undefined,
     href: staffRoutes.courseDetail(course.id),
   }));
+
+  return {
+    courses: rows,
+    chapterCount: rows.reduce((total, course) => total + course.chapterCount, 0),
+    lessonCount: rows.reduce((total, course) => total + course.lessonCount, 0),
+  };
 }
 
 export async function getCourseAdminDetail(courseId: string): Promise<CourseAdminDetail | null> {
@@ -86,7 +129,7 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
           name: true,
           order: true,
           _count: { select: { lessons: true, progresses: true } },
-          lessons: { select: { pgn: true } },
+          lessons: { select: lessonPgnSelect },
         },
         orderBy: { order: "asc" },
       },
@@ -97,9 +140,7 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
 
   // Requisito mínimo para publicar: al menos un capítulo con una lección que
   // tenga PGN. Publicar un curso vacío enseñaría lecciones en blanco.
-  const canPublish = course.chapters.some((chapter) =>
-    chapter.lessons.some((lesson) => lesson.pgn.trim().length > 0),
-  );
+  const canPublish = course.chapters.some((chapter) => chapter.lessons.some(lessonHasContent));
 
   return {
     id: course.id,
@@ -150,7 +191,7 @@ export async function getChapterAdmin(courseId: string, chapterId: string): Prom
           name: true,
           order: true,
           isPriority: true,
-          pgn: true,
+          ...lessonPgnSelect,
           _count: { select: { exercises: true, progresses: true } },
         },
         orderBy: { order: "asc" },
@@ -174,12 +215,66 @@ export async function getChapterAdmin(courseId: string, chapterId: string): Prom
       name: lesson.name,
       order: lesson.order,
       isPriority: lesson.isPriority,
-      hasPgn: lesson.pgn.trim().length > 0,
+      hasPgn: lessonHasContent(lesson),
       exerciseCount: lesson._count.exercises,
       progressCount: lesson._count.progresses,
       href: staffRoutes.lessonDetail(chapter.courseId, chapter.id, lesson.id),
     })),
   };
+}
+
+/**
+ * Partidas de la colección del curso, para vincularlas a una lección.
+ *
+ * «La colección del curso» son todas las bases que le pertenecen —hoy es una,
+ * pero el modelo admite varias y filtrar por una sola dejaría partidas
+ * invisibles—. El texto libre casa contra los dos jugadores, el evento y la
+ * apertura, que es por lo que se busca una partida.
+ *
+ * `moveCount` sale de contar la línea principal del PGN. Se hace aquí y no en
+ * la base porque el PGN es texto: es el precio de tener una sola fuente del
+ * contenido, y la colección de un curso son decenas de partidas, no miles.
+ */
+export async function listCourseGames(courseId: string, query?: string): Promise<CourseGameRow[]> {
+  await requireStaff();
+
+  const search = query?.trim();
+  const games = await getPlatformDb().game.findMany({
+    where: {
+      database: { courseId },
+      ...(search
+        ? {
+            OR: [
+              { white: { contains: search, mode: "insensitive" as const } },
+              { black: { contains: search, mode: "insensitive" as const } },
+              { event: { contains: search, mode: "insensitive" as const } },
+              { eco: { contains: search, mode: "insensitive" as const } },
+              { title: { contains: search, mode: "insensitive" as const } },
+            ],
+          }
+        : {}),
+    },
+    select: {
+      id: true,
+      title: true,
+      white: true,
+      black: true,
+      event: true,
+      eco: true,
+      playedAt: true,
+      pgn: true,
+      _count: { select: { lessons: true } },
+    },
+    orderBy: [{ order: "asc" }, { white: "asc" }],
+  });
+
+  return games.map((game) => ({
+    id: game.id,
+    title: game.title ?? `${game.white} — ${game.black}`,
+    detail: [game.event, game.playedAt?.getUTCFullYear(), game.eco].filter(Boolean).join(" · "),
+    moveCount: extractMainline(game.pgn)?.sans.length ?? 0,
+    lessonCount: game._count.lessons,
+  }));
 }
 
 export async function getLessonAdmin(chapterId: string, lessonId: string): Promise<LessonAdminDetail | null> {
@@ -199,11 +294,22 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
       estimatedDuration: true,
       initialFen: true,
       pgn: true,
+      game: {
+        select: { id: true, title: true, white: true, black: true, event: true, eco: true, playedAt: true, pgn: true },
+      },
+      gameId: true,
       pgnUpdatedAt: true,
       presentationMode: { select: { code: true } },
       initialPositionType: { select: { code: true } },
       orientation: { select: { code: true } },
-      chapter: { select: { name: true, courseId: true, course: { select: { name: true } } } },
+      chapter: {
+        select: {
+          name: true,
+          courseId: true,
+          course: { select: { name: true, status: { select: { code: true } } } },
+        },
+      },
+      _count: { select: { progresses: true } },
       lessonTopics: { select: { topicId: true } },
       exercises: {
         select: {
@@ -240,7 +346,20 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
     initialPositionTypeCode: lesson.initialPositionType.code as InitialPositionTypeCode,
     initialFen: lesson.initialFen ?? undefined,
     orientationCode: lesson.orientation.code as BoardOrientationCode,
-    pgn: lesson.pgn,
+    canDelete:
+      lesson.chapter.course.status.code === COURSE_STATUS.DRAFT && lesson._count.progresses === 0,
+    pgn: lessonPgnOf(lesson),
+    game: lesson.game
+      ? {
+          id: lesson.game.id,
+          title: lesson.game.title ?? `${lesson.game.white} — ${lesson.game.black}`,
+          detail: [lesson.game.event, lesson.game.playedAt?.getUTCFullYear(), lesson.game.eco]
+            .filter(Boolean)
+            .join(" · "),
+          moveCount: extractMainline(lesson.game.pgn)?.sans.length ?? 0,
+          lessonCount: 0,
+        }
+      : undefined,
     pgnUpdatedAtLabel: lesson.pgnUpdatedAt ? formatSpanishDate(lesson.pgnUpdatedAt) : undefined,
     topicIds: lesson.lessonTopics.map((lessonTopic) => lessonTopic.topicId),
     exercises: lesson.exercises.map((exercise) => ({

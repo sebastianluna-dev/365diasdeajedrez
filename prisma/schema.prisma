@@ -369,9 +369,22 @@ model Lesson {
   /// Nulo cuando initialPositionType = STARTING_POSITION (regla de servicios).
   initialFen            String?
   orientationId         Int
-  /// Fuente única del contenido: movimientos, variantes, comentarios, NAGs,
-  /// [%cal]/[%csl] y [%diagram] viven dentro del PGN.
+  /// Partida de la colección del curso de la que sale el contenido.
+  ///
+  /// Cuando está puesta MANDA ELLA: el contenido de la lección es el PGN de esa
+  /// partida, de modo que corregirla arregla todas las lecciones que la usan.
+  /// Cuando es nula manda `pgn`, que es como nacieron las lecciones y como
+  /// siguen funcionando las que no referencian nada.
+  ///
+  /// Quién manda se resuelve en UN solo sitio: `lessonPgnOf`
+  /// (services/shared/lesson-pgn.ts). Nadie debe leer `pgn` por su cuenta.
+  gameId                String?
+  /// El contenido propio de la lección. Inerte mientras haya `gameId`; se
+  /// conserva y no se borra al vincular, para que desvincular devuelva la
+  /// lección a lo que tenía.
   pgn                   String    @db.Text
+  /// Cuándo cambió `pgn` por última vez. Es lo que marca como desactualizados
+  /// los ejercicios congelados antes del cambio.
   pgnUpdatedAt          DateTime?
   /// La lección puede entrenarse de memoria en el Move Trainer. Al activarla se
   /// deriva un TrainingExercise con SU LÍNEA PRINCIPAL; las variantes siguen
@@ -384,6 +397,10 @@ model Lesson {
   trainingColorId       Int?
 
   chapter             Chapter             @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  /// SetNull y no Cascade: si alguien borra la partida de la colección, la
+  /// lección sigue existiendo —con su nombre, sus temas y su progreso— y se
+  /// queda sin contenido hasta que se le vincule otra.
+  game                Game?               @relation(fields: [gameId], references: [id], onDelete: SetNull)
   presentationMode    PresentationMode    @relation(fields: [presentationModeId], references: [id])
   initialPositionType InitialPositionType @relation(fields: [initialPositionTypeId], references: [id])
   orientation         BoardOrientation    @relation(fields: [orientationId], references: [id])
@@ -397,6 +414,7 @@ model Lesson {
   courseProgresses CourseProgress[]     @relation("CourseProgressLastLesson")
 
   @@unique([chapterId, order])
+  @@index([gameId])
 }
 
 /// Declara un tramo entrenable del PGN. `path` usa rutas punteadas de índices
@@ -463,7 +481,7 @@ model User {
   /// Minutos de estudio que el alumno se marca al día. Columna y no tabla de
   /// ajustes porque hoy es el único ajuste que no cuelga de un curso (los que sí
   /// viven en UserCourseSettings); si aparecen más, se mudan juntos.
-  dailyGoalMinutes  Int       @default(30)
+  dailyGoalMinutes Int @default(30)
 
   sessions          Session[]
   teacher           Teacher?
@@ -804,6 +822,8 @@ model Game {
 
   classBlocks ClassBlock[]
   positions   GamePosition[]
+  /// Lecciones que sacan su contenido de esta partida.
+  lessons     Lesson[]
 
   @@index([databaseId])
 }

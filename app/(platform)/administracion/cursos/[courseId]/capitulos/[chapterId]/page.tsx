@@ -21,13 +21,9 @@ export default async function StaffChapterPage({ params, searchParams }: StaffCh
 
   const { error } = await searchParams;
 
+  // La cabecera va dentro de la sección: lleva las migas hasta el curso.
   return (
     <div className="platform-page staff-chapter-page">
-      <header className="platform-page__head">
-        <h1 className="platform-page__title">{chapter.name}</h1>
-        <p className="platform-page__subtitle">Capítulo {chapter.order} de {chapter.courseName}</p>
-      </header>
-
       <ChapterEditorSection chapter={chapter} errorCode={error} />
     </div>
   );

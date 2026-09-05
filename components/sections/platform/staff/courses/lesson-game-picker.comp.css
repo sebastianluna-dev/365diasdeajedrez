@@ -1,0 +1,138 @@
+.lesson-game-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  /* La partida vinculada se enmarca: es una decisión tomada, no una fila más
+     de una lista de candidatas. */
+  & .lesson-game-picker__current {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border: 1px solid var(--platform-accent);
+    border-radius: 10px;
+    background: var(--platform-accent-soft);
+  }
+
+  & .lesson-game-picker__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  & .lesson-game-picker__search-icon {
+    position: absolute;
+    left: 13px;
+    width: 16px;
+    height: 16px;
+    color: var(--platform-text-subtle);
+    pointer-events: none;
+  }
+
+  & .lesson-game-picker__search-input {
+    width: 100%;
+    padding: 12px 14px 12px 37px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-bg);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 15px;
+    transition: 150ms;
+    transition-property: border-color, box-shadow;
+  }
+
+  & .lesson-game-picker__search-input:focus {
+    outline: none;
+    border-color: var(--platform-accent);
+    box-shadow: 0 0 0 3px var(--platform-accent-soft);
+  }
+
+  & .lesson-game-picker__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+
+  & .lesson-game-picker__row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+    transition: background-color 150ms;
+  }
+
+  & .lesson-game-picker__row + .lesson-game-picker__row {
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .lesson-game-picker__text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  & .lesson-game-picker__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .lesson-game-picker__detail {
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .lesson-game-picker__link,
+  & .lesson-game-picker__change {
+    margin-left: auto;
+    flex: none;
+    padding: 7px 14px;
+    border: 1px solid var(--platform-border);
+    border-radius: 1000px;
+    background: var(--platform-surface);
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 150ms;
+    transition-property: background-color, border-color, color;
+  }
+
+  & .lesson-game-picker__link:hover {
+    border-color: var(--platform-accent);
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
+
+  & .lesson-game-picker__change:hover {
+    border-color: var(--platform-danger);
+    color: var(--platform-danger);
+  }
+
+  /* Los botones se van al filo derecho; el texto se queda con lo que sobre. */
+  & .lesson-game-picker__row .lesson-game-picker__link,
+  & .lesson-game-picker__current .lesson-game-picker__change {
+    margin-left: 0;
+  }
+
+  & .lesson-game-picker__row form,
+  & .lesson-game-picker__current form {
+    margin-left: auto;
+    flex: none;
+  }
+}
+
+.lesson-game-picker__note {
+  margin: 0;
+  max-width: 72ch;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--platform-text-subtle);
+  text-wrap: pretty;
+}
