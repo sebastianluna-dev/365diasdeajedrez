@@ -381,8 +381,11 @@ export const THINK_LIKE_A_GRANDMASTER_DATABASE = {
   ownerType: OWNER_TYPE.COURSE,
   userId: null as string | null,
   courseId: GM_IDS.course as string | null,
-  name: "Partidas del curso",
-  description: "Las partidas magistrales que ilustran cada capítulo del método.",
+  // Al primer capítulo: las colecciones son por capítulo, y el reparto fino
+  // entre los cinco lo hace `scripts/migrate-chapter-collections.ts`.
+  chapterId: GM_IDS.chAnalysis as string | null,
+  name: "Partidas de Análisis de variantes",
+  description: "Las partidas magistrales que ilustran el método.",
   kind: DATABASE_KIND.COLLECTION,
   isDefault: false,
   order: 0,

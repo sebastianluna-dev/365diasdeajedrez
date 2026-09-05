@@ -190,12 +190,13 @@
     flex: none;
   }
 
-  /* La columna derecha entera: la tarjeta de la notación y la botonera debajo.
-     Ocupa las dos filas de la rejilla, así que llega a la altura del tablero
-     MÁS su pie, y reparte ese alto entre las dos. */
+  /* La columna derecha: la tarjeta de la notación y la botonera debajo.
+     Ocupa SÓLO la fila del tablero, así que mide lo que él y reparte ese alto
+     entre las dos. Abarcando también la fila del pie —comentario, calidad,
+     compartir— la tarjeta se iba muy por debajo del tablero. */
   & .game-viewer__panel-column {
     grid-column: 2;
-    grid-row: 1 / -1;
+    grid-row: 1;
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -205,12 +206,16 @@
   /* La única caja que queda en el visor: el tablero va suelto y esto lo separa
      de él, que es lo que le da sentido.
 
-     Mide LO QUE MIDE la notación, no el alto del tablero: estirada dejaba un
-     blancal enorme bajo la última jugada en cuanto la partida era corta. Si no
-     cabe, encoge —de ahí el `min-height: 0`— y la lista se desplaza por dentro
-     en vez de empujar la columna. */
+     Llena su columna, que mide lo que el tablero: la tarjeta baja hasta él
+     aunque la partida tenga dos jugadas, dejándole a la botonera su tira de
+     debajo. Antes medía lo que midiera la notación y se quedaba corta y
+     descolgada.
+
+     De ahí sale además, gratis, lo que antes se calculaba a mano: como el alto
+     de la tarjeta lo pone la rejilla y no su contenido, encender el módulo no
+     la mueve —le quita sitio a la lista, que se desplaza por dentro—. */
   & .game-viewer__panel {
-    flex: 0 1 auto;
+    flex: 1;
     min-height: 0;
     background: var(--platform-surface);
     border-radius: 10px;
@@ -269,22 +274,11 @@
     white-space: nowrap;
   }
 
-  /* Encender el módulo no agranda la tarjeta: la notación cede exactamente el
-     alto que ocupan sus líneas. El respaldo de 560px es el tope que pone Mis
-     estudios, que es la única pantalla con módulo; sin él, `calc` con un tope
-     `none` no valdría y la regla se caería entera. */
-  & .game-viewer__panel_engine_on .game-viewer__moves {
-    max-height: calc(var(--viewer-moves-max-height, 560px) - var(--viewer-engine-body));
-  }
-
-  /* Desplegar una línea tampoco mueve la tarjeta: lo que crece el módulo sale
-     otra vez de la notación. */
-  & .game-viewer__panel_engine_expanded .game-viewer__moves {
-    max-height: calc(
-      var(--viewer-moves-max-height, 560px) - var(--viewer-engine-body) - var(--viewer-engine-extra)
-    );
-  }
-
+  /* La lista se queda con lo que sobra de la tarjeta y se desplaza por dentro.
+     No lleva alto propio a propósito: en una columna flexible, `flex: 1` fija
+     la base en 0 y cualquier `height` que se le ponga aquí queda inerte —era
+     justo lo que pasaba con el tope de 560px que ponía Mis estudios, que nunca
+     llegó a aplicarse—. Quien manda es el alto de la tarjeta. */
   & .game-viewer__moves {
     flex: 1;
     min-height: 0;
@@ -293,15 +287,6 @@
        de un lado a otro y la primera jugada arriba del todo—. */
     padding: 0;
     overflow: auto;
-    /* Tope de alto opcional: quien monta el visor decide si la lista puede
-       crecer sin fin (lecciones) o se planta y se desplaza por dentro.
-
-       Donde hay tope, ese tope es TAMBIÉN el suelo: la tarjeta mide lo mismo
-       con una partida de cinco jugadas que con una de ochenta, y encender el
-       módulo tampoco la mueve —la notación le cede su alto y el total no
-       cambia—. Sin tope (las lecciones) sigue midiendo lo que ocupe. */
-    height: var(--viewer-moves-max-height, auto);
-    max-height: var(--viewer-moves-max-height, none);
   }
 
   & .game-viewer__toolbar {
@@ -485,13 +470,6 @@
       min-height: 0;
     }
 
-    /* A pantalla completa sí llena el alto: es lo que se ha pedido al abrirla,
-       y la notación se desplaza por dentro. */
-    & .game-viewer__panel {
-      flex: 1;
-      min-height: 0;
-    }
-
     & .game-viewer__panel-head {
       padding: 26px 28px;
     }
@@ -509,15 +487,6 @@
       font-size: clamp(14px, 1.35vh, 17px);
     }
 
-    /* Aquí manda la pantalla, no el tope que ponga la sección: la notación se
-       queda con todo el alto de su fila y se desplaza por dentro. */
-    & .game-viewer__moves,
-    & .game-viewer__panel_engine_on .game-viewer__moves,
-    & .game-viewer__panel_engine_expanded .game-viewer__moves {
-      padding: 0;
-      height: auto;
-      max-height: none;
-    }
 
     /* En pantalla estrecha no hay ancho que repartir: se apila en una columna
        —tablero, notación, herramientas— y el tablero vuelve a mandar por ancho,

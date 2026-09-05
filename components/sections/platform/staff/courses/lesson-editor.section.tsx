@@ -3,7 +3,7 @@ import { PlatformNotice } from "@/components/common/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { BOARD_ORIENTATION, CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
 import { staffRoutes } from "@/lib/platform-routes";
-import { deleteLesson, updateLesson, updateLessonPgn } from "@/services/staff-courses/staff-courses.actions";
+import { deleteLesson, updateLesson } from "@/services/staff-courses/staff-courses.actions";
 import type {
   CatalogOption,
   CourseGameRow,
@@ -12,7 +12,6 @@ import type {
 } from "@/services/staff-courses/staff-courses.types";
 import { ExerciseEditor } from "./exercise-editor.comp";
 import { LessonGamePicker } from "./lesson-game-picker.comp";
-import { LessonPgnEditor } from "./lesson-pgn-editor.comp";
 import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./lesson-editor.section.css";
@@ -169,7 +168,7 @@ export function LessonEditorSection({
       >
         <StaffPanel
           title="Partida de la lección"
-          description="Las partidas viven en el curso y se referencian desde cualquier lección, así que una corrección vale para todas."
+          description="El contenido sale de una partida de la colección del curso; aquí sólo se elige cuál. El PGN se pega en el curso, y así una corrección vale para todas las lecciones que la usan."
         >
           <LessonGamePicker
             courseId={lesson.courseId}
@@ -180,23 +179,6 @@ export function LessonEditorSection({
             query={gameQuery}
           />
         </StaffPanel>
-
-        {/* Con partida vinculada NO se ofrece editar el PGN aquí: se editaría
-            el de la lección, que está dormido, y el cambio no se vería. Se
-            corrige la partida en la colección del curso. */}
-        {!lesson.game && (
-          <StaffPanel
-            title="Contenido propio (PGN)"
-            description="Lo que recorre el alumno mientras la lección no referencie una partida del curso."
-          >
-            <LessonPgnEditor
-              action={updateLessonPgn.bind(null, lesson.courseId, lesson.chapterId, lesson.id)}
-              pgn={lesson.pgn}
-              initialFen={lesson.initialFen}
-              pgnUpdatedAtLabel={lesson.pgnUpdatedAtLabel}
-            />
-          </StaffPanel>
-        )}
 
         <StaffPanel title="Metadatos">
           <form id={METADATA_FORM_ID} className="lesson-editor__form" action={saveLesson}>

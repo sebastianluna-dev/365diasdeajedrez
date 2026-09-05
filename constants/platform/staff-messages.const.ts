@@ -26,6 +26,8 @@ export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   deleteBlocked: "No se puede borrar: el curso no está en borrador o ya hay alumnos con progreso.",
   pgn: "Ese PGN no se puede leer. Revísalo antes de guardar.",
   pgnTooLong: "El PGN es demasiado grande.",
+  gameInUse:
+    "Esa partida la usan una o varias lecciones. Desvincúlala de ellas antes de quitarla de la colección.",
   sans: "Alguna jugada de la secuencia no es legal en esta posición.",
   fen: "La posición FEN no es válida.",
   order: "No se pudo reordenar. Recarga la página y vuelve a intentarlo.",

@@ -356,6 +356,7 @@ async function main() {
       ownerTypeId: idOf(ownerType, database.ownerType),
       userId: database.userId,
       courseId: database.courseId,
+      chapterId: database.chapterId,
       name: database.name,
       description: database.description,
       kindId: idOf(databaseKind, database.kind),

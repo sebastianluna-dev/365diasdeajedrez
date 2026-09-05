@@ -24,6 +24,7 @@ import { allowAction } from "@/lib/rate-limit";
 import { emptyGame, serializeGame } from "@/lib/chess/pgn-edit";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
+import { parseImportedGames } from "@/services/shared/pgn-import";
 import { canChangeKindTo, canCreateKind, studyPermissionsOf } from "./study-rules";
 
 // Las server actions son alcanzables por POST directo: el usuario SIEMPRE se
@@ -275,50 +276,37 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
   const study = await db.gameDatabase.findFirst({ where: { id: studyId, userId: user.id }, select: { id: true } });
   if (!study) return;
 
-  let parsedGames: ReturnType<typeof parsePgn>;
-  try {
-    parsedGames = parsePgn(pgnText);
-  } catch {
-    return;
-  }
+  // El PGN se lee en services/shared/pgn-import, que es el mismo lector que usa
+  // la colección de partidas de un curso: dos lectores acabarían con dos
+  // criterios distintos sobre qué es una fecha válida o cuándo un Elo es un Elo.
+  const imported = parseImportedGames(pgnText);
 
   // Se importan al final del estudio y en el orden en que vienen en el PGN,
   // que es como las escribió quien lo exportó.
   let order = await nextGameOrder(db, study.id);
 
-  const games: Prisma.GameCreateInput[] = [];
-  for (const parsedGame of parsedGames.slice(0, PGN_MAX_GAMES)) {
-    const headers = parsedGame.headers;
-    const initialFen = readHeader(headers, "FEN");
-    // Sin jugadas ni posición de partida no hay nada que guardar (texto basura).
-    if (parsedGame.moves.children.length === 0 && initialFen === null) continue;
-
-    const resultToken = readHeader(headers, "Result") ?? "";
-    games.push({
-      database: { connect: { id: study.id } },
-      order: order++,
-      white: readHeader(headers, "White") ?? UNKNOWN_PLAYER,
-      black: readHeader(headers, "Black") ?? UNKNOWN_PLAYER,
-      whiteElo: readEloHeader(headers, "WhiteElo"),
-      blackElo: readEloHeader(headers, "BlackElo"),
-      whiteTitle: readHeader(headers, "WhiteTitle"),
-      blackTitle: readHeader(headers, "BlackTitle"),
-      // `WhiteTeam` es lo que escriben las retransmisiones de Lichess para la
-      // federación; el PGN estándar no tiene cabecera propia para ella.
-      whiteCountry: readHeader(headers, "WhiteTeam"),
-      blackCountry: readHeader(headers, "BlackTeam"),
-      result: { connect: { code: GAME_RESULT_BY_PGN_TOKEN[resultToken] ?? GAME_RESULT.ONGOING } },
-      playedAt: readDateHeader(headers),
-      event: readHeader(headers, "Event"),
-      site: readHeader(headers, "Site"),
-      round: readHeader(headers, "Round"),
-      eco: readHeader(headers, "ECO"),
-      initialFen,
-      pgn: makePgn(parsedGame),
-      source: { connect: { code: GAME_SOURCE.PGN_IMPORT } },
-      isOwnGame: false,
-    });
-  }
+  const games: Prisma.GameCreateInput[] = imported.map((game) => ({
+    database: { connect: { id: study.id } },
+    order: order++,
+    white: game.white,
+    black: game.black,
+    whiteElo: game.whiteElo,
+    blackElo: game.blackElo,
+    whiteTitle: game.whiteTitle,
+    blackTitle: game.blackTitle,
+    whiteCountry: game.whiteCountry,
+    blackCountry: game.blackCountry,
+    result: { connect: { code: game.resultCode } },
+    playedAt: game.playedAt,
+    event: game.event,
+    site: game.site,
+    round: game.round,
+    eco: game.eco,
+    initialFen: game.initialFen,
+    pgn: game.pgn,
+    source: { connect: { code: GAME_SOURCE.PGN_IMPORT } },
+    isOwnGame: false,
+  }));
 
   if (games.length === 0) return;
 
@@ -473,8 +461,18 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
   const initialFen = readOptionalField(formData, "initialFen") ?? readHeader(headers, "FEN");
   // Un FEN malo sí se dice: es lo único que la persona puede haber escrito mal
   // y no notar, porque el resto de campos son texto libre.
+  //
+  // El aviso vuelve a DONDE se escribió. La partida se crea desde dos sitios
+  // —la página de «nueva partida» y el diálogo de la ficha del estudio— y
+  // mandar siempre a la página dejaría a quien usó el diálogo en otra pantalla
+  // preguntándose qué pasó. `origin` se compara contra un valor conocido, no se
+  // usa como URL: un campo del formulario no puede decidir a dónde se redirige.
   if (initialFen !== null && !isLegalFen(initialFen)) {
-    redirect(`${platformRoutes.newStudyGame(studyId)}?error=fen`);
+    const back =
+      readText(formData, "origin") === "detail"
+        ? platformRoutes.studyDetail(studyId)
+        : platformRoutes.newStudyGame(studyId);
+    redirect(`${back}?error=fen`);
   }
 
   const pgn = parsed ? makePgn(parsed) : serializeGame(emptyGame(initialFen ?? undefined));

@@ -77,6 +77,33 @@
     color: var(--platform-text-subtle);
   }
 
+  & .lesson-editor__danger {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--platform-border);
+  }
+
+  /* Borrar no compite con guardar: sin fondo y en rojo sólo al acercarse. */
+  & .lesson-editor__delete {
+    width: 100%;
+    padding: 10px 16px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 150ms;
+    transition-property: background-color, border-color, color;
+  }
+
+  & .lesson-editor__delete:hover {
+    border-color: var(--platform-danger);
+    color: var(--platform-danger);
+  }
+
   & .lesson-editor__fact dd {
     margin: 0;
     font-weight: 600;

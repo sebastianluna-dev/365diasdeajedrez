@@ -95,6 +95,39 @@
     box-shadow: 0 0 0 3px var(--platform-accent-soft);
   }
 
+  /* El PGN se pega en un área, no en una línea: entran varias partidas de una
+     vez y una sola fila de texto escondería lo que se está pegando. */
+  & .course-editor__import {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .course-editor__import-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-bg);
+    color: var(--platform-text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    transition: 150ms;
+    transition-property: border-color, box-shadow;
+  }
+
+  & .course-editor__import-input:focus {
+    outline: none;
+    border-color: var(--platform-accent);
+    box-shadow: 0 0 0 3px var(--platform-accent-soft);
+  }
+
   /* --- Lista de autores ---------------------------------------------------
      Los capítulos ya no están aquí: son una SortableList (sortable-list.comp). */
 

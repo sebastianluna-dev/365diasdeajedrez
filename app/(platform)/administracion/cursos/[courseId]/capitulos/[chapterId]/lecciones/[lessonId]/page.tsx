@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { LessonEditorSection } from "@/components/sections/platform/staff/courses/lesson-editor.section";
 import {
   getLessonAdmin,
-  listCourseGames,
+  listCollectionGames,
   listExerciseModes,
   listInitialPositionTypes,
   listPresentationModes,
@@ -34,7 +34,7 @@ export default async function StaffLessonPage({ params, searchParams }: StaffLes
     listInitialPositionTypes(),
     listExerciseModes(),
     listTopics(),
-    listCourseGames(courseId, partida),
+    listCollectionGames({ chapterId }, partida),
   ]);
 
   // La cabecera va dentro de la sección: lleva las migas hasta el capítulo.

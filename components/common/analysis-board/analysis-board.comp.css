@@ -31,9 +31,12 @@
     min-width: 0;
   }
 
+  /* El tope es TAMBIÉN el suelo: la lista mide lo mismo vacía que con ochenta
+     jugadas, así que la barra de herramientas y lo que venga debajo no bailan
+     mientras se juega. Antes iba de 200 a 320 y todo lo de abajo saltaba con
+     cada jugada. Se desplaza por dentro. */
   & .analysis-board__moves {
-    min-height: 200px;
-    max-height: 320px;
+    height: var(--analysis-moves-height, 320px);
     overflow-y: auto;
     padding: 10px 12px;
     border: 1px solid var(--platform-border);

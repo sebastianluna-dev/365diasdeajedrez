@@ -24,6 +24,7 @@ interface StudyDetailSectionProps {
 
 const ERROR_MESSAGES: Record<string, string> = {
   confirmStudyDelete: "Este estudio tiene contenido. Marca la casilla para confirmar que quieres borrarlo.",
+  fen: "Esa posición de partida no es válida. Revisa el FEN.",
 };
 
 export function StudyDetailSection({

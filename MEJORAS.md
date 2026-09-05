@@ -103,6 +103,18 @@ ese instante salen horas de clase.
 
 ## Prioridad BAJA
 
+### 30. `buildNotationRows` numera siempre desde la jugada 1 — [Ajedrez / Notación]
+`parsePgnTree` ya saca el ply del FEN de partida, así que la notación de «Mis estudios» numera bien
+una posición que arranca en la jugada 44. `lib/chess/notation.ts` no: `buildNotationRows` recibe una
+lista plana de SAN, empieza a contar en 1 y da por hecho que la primera es de las blancas. Lo usan
+`ChessBoard` (lecciones y bloques de clase) y el explorador por posición, los dos capaces de arrancar
+de un FEN.
+
+**Cómo abordarlo:** su `ply` NO es el número de jugada, es el índice dentro del array de posiciones
+—`setPly(row.white.ply)` lo usa para mover el tablero—, así que no vale con desplazarlo: hay que
+separar «índice» de «número que se enseña» y pasarle el ply inicial. Dos sitios que lo llaman.
+
+
 ### 26. El `<title>` de un panel ajeno se ve antes de la expulsión — [UX / Privacidad menor]
 Al entrar por URL a `/teacher` o `/staff` sin el rol, Next evalúa el `export const metadata` de la
 página antes de que el `redirect()` de `require*` surta efecto, así que la respuesta trae

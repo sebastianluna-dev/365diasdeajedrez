@@ -5,7 +5,7 @@ import { copyClassGamesToStudy, createStudyGame, importPgnGames } from "@/servic
 import type { ClassGameItem, StudyKindOption } from "@/services/studies/studies.types";
 import "./new-game.comp.css";
 
-type Tab = "pgn" | "blank" | "class";
+type Tab = "pgn" | "fen" | "blank" | "class";
 
 interface NewGameProps {
   studyId: string;
@@ -31,6 +31,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
 
   const tabs: { key: Tab; label: string }[] = [
     { key: "pgn", label: "Pegar PGN" },
+    { key: "fen", label: "Desde un FEN" },
     { key: "blank", label: "Crear vacía" },
     ...(classGames.length > 0 ? ([{ key: "class", label: "Desde una clase" }] as const) : []),
   ];
@@ -76,6 +77,46 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
             />
             <p className="new-game__hint">
               Se leen cabeceras, variantes, comentarios y NAGs. Si el PGN trae varias partidas, se crean todas.
+            </p>
+            <Footer onCancel={close} label="Añadir partida" />
+          </form>
+        )}
+
+        {/* Desde una posición suelta: el caso de «tengo este diagrama y quiero
+            analizarlo». La partida nace sin jugadas y en esa posición, y la
+            notación empieza a contar en el número que diga el FEN. */}
+        {tab === "fen" && (
+          <form action={createStudyGame.bind(null, studyId)} onSubmit={close} className="new-game__panel">
+            {/* Para que un FEN mal escrito avise AQUÍ y no en otra pantalla. */}
+            <input type="hidden" name="origin" value="detail" />
+
+            <label className="new-game__field">
+              <span className="new-game__label">FEN</span>
+              <input
+                className="new-game__input"
+                type="text"
+                name="initialFen"
+                required
+                maxLength={120}
+                spellCheck={false}
+                placeholder="8/Q3ppk1/1p2r1p1/4b3/P5Pp/1PB1P3/5P1q/2R3K1 w - - 2 44"
+              />
+            </label>
+
+            <label className="new-game__field">
+              <span className="new-game__label">Nombre de la partida</span>
+              <input
+                className="new-game__input"
+                type="text"
+                name="title"
+                maxLength={120}
+                placeholder="Final de torres, ronda 4…"
+              />
+            </label>
+
+            <p className="new-game__hint">
+              La partida arranca en esa posición y sin jugadas previas. Cópialo de Lichess, de un motor o de
+              donde lo tengas.
             </p>
             <Footer onCancel={close} label="Añadir partida" />
           </form>

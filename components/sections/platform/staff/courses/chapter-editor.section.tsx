@@ -6,11 +6,13 @@ import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const"
 import { staffRoutes } from "@/lib/platform-routes";
 import {
   createLesson,
+  deleteChapterGame,
   deleteLesson,
+  importChapterGames,
   reorderLessons,
   updateChapter,
 } from "@/services/staff-courses/staff-courses.actions";
-import type { ChapterAdminDetail } from "@/services/staff-courses/staff-courses.types";
+import type { ChapterAdminDetail, CourseGameRow } from "@/services/staff-courses/staff-courses.types";
 import { SortableList } from "./sortable-list.comp";
 import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
@@ -18,10 +20,12 @@ import "./chapter-editor.section.css";
 
 interface ChapterEditorSectionProps {
   chapter: ChapterAdminDetail;
+  /** La colección de partidas del capítulo. */
+  games: CourseGameRow[];
   errorCode?: string;
 }
 
-export function ChapterEditorSection({ chapter, errorCode }: ChapterEditorSectionProps) {
+export function ChapterEditorSection({ chapter, games, errorCode }: ChapterEditorSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
   const isDraft = chapter.courseStatusCode === COURSE_STATUS.DRAFT;
   const withPgn = chapter.lessons.filter((lesson) => lesson.hasPgn).length;
@@ -104,6 +108,70 @@ export function ChapterEditorSection({ chapter, errorCode }: ChapterEditorSectio
                 Guardar
               </button>
             </div>
+          </form>
+        </StaffPanel>
+
+        <StaffPanel
+          title="Colección de partidas"
+          meta={`${games.length}`}
+          description="Las partidas de este capítulo. Sus lecciones eligen de aquí, y corregir una arregla todas las lecciones que la usan. Es el único sitio donde se pega un PGN."
+        >
+          {games.length > 0 ? (
+            <ul className="chapter-editor__games">
+              {games.map((game) => (
+                <li key={game.id} className="chapter-editor__game">
+                  <span className="chapter-editor__row-text">
+                    <span className="chapter-editor__row-link">{game.title}</span>
+                    <span className="chapter-editor__row-meta">
+                      {game.detail}
+                      {game.detail && " · "}
+                      {game.moveCount} jugadas
+                      {game.lessonCount > 0 &&
+                        ` · en ${game.lessonCount} ${game.lessonCount === 1 ? "lección" : "lecciones"}`}
+                    </span>
+                  </span>
+
+                  {/* Sólo se ofrece quitar la que no usa ninguna lección: la
+                      clave ajena es SET NULL, así que borrarla no fallaría, las
+                      vaciaría en silencio. */}
+                  {game.lessonCount === 0 && (
+                    <div className="chapter-editor__controls">
+                      <form action={deleteChapterGame.bind(null, chapter.courseId, chapter.id)}>
+                        <input type="hidden" name="gameId" value={game.id} />
+                        <button
+                          type="submit"
+                          className="chapter-editor__control chapter-editor__control_variant_danger"
+                        >
+                          Quitar
+                        </button>
+                      </form>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="chapter-editor__empty">
+              Este capítulo todavía no tiene partidas. Pega un PGN para empezar: sus lecciones sólo pueden usar
+              partidas de aquí.
+            </p>
+          )}
+
+          <form
+            className="chapter-editor__import"
+            action={importChapterGames.bind(null, chapter.courseId, chapter.id)}
+          >
+            <textarea
+              name="pgn"
+              required
+              rows={4}
+              className="chapter-editor__import-input"
+              placeholder="Pega aquí un PGN con una o varias partidas"
+              aria-label="PGN a importar"
+            />
+            <button type="submit" className="platform-button platform-button_variant_secondary">
+              Importar PGN
+            </button>
           </form>
         </StaffPanel>
 

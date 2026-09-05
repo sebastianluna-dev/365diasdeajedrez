@@ -14,7 +14,6 @@ import {
 import { CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
 import { EXERCISE_MODE } from "@/constants/platform/training-codes.const";
 import { deriveExerciseData } from "@/lib/chess/exercise-derivation";
-import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { syncLessonTrainingExercise } from "@/services/shared/lesson-training.service";
 import { numericId } from "@/lib/numeric-id";
 import { requireStaff } from "@/lib/platform-auth/roles";
@@ -23,7 +22,12 @@ import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { readBoolean, readClampedInt, readOptionalText, readText, readUrl } from "@/services/shared/form-data";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
+import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
+import { DATABASE_KIND, GAME_SOURCE } from "@/constants/platform/study-codes.const";
+import type { Prisma } from "@/lib/platform-db/generated/client";
+import { indexGamePositions } from "@/services/game-positions/game-positions.service";
 import { lessonHasContent, lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
+import { parseImportedGames } from "@/services/shared/pgn-import";
 import {
   nextOrder,
   planDenseRenumber,
@@ -205,6 +209,144 @@ class TrainingSyncError extends Error {
   constructor(readonly errorCode: string) {
     super(errorCode);
   }
+}
+
+// --- Colección de partidas de un capítulo ---------------------------------
+//
+// Las partidas viven en el CAPÍTULO: cada uno junta las que usan sus lecciones,
+// y una lección referencia la que le toca (`setLessonGame`). Corregir la
+// partida arregla de una vez todas las lecciones que la usan. Éste es el único
+// sitio donde se pega un PGN; en la lección sólo se elige.
+//
+// La ficha del curso las lista todas juntas, pero no se importa desde ahí: una
+// partida sin capítulo no tendría colección a la que ir.
+
+/**
+ * La colección del capítulo, creándola la primera vez.
+ *
+ * No se crea con el capítulo porque la mayoría empiezan sin ninguna partida y
+ * una base vacía por capítulo sería ruido. Aparece cuando hace falta, que es al
+ * importar la primera.
+ */
+async function chapterGamesDatabase(
+  tx: Prisma.TransactionClient,
+  chapter: { id: string; name: string; courseId: string },
+) {
+  const existing = await tx.gameDatabase.findUnique({
+    where: { chapterId: chapter.id },
+    select: { id: true },
+  });
+  if (existing) return existing;
+
+  return tx.gameDatabase.create({
+    data: {
+      ownerType: { connect: { code: OWNER_TYPE.COURSE } },
+      course: { connect: { id: chapter.courseId } },
+      chapter: { connect: { id: chapter.id } },
+      kind: { connect: { code: DATABASE_KIND.COLLECTION } },
+      name: `Partidas de ${chapter.name}`,
+      description: "Las partidas que usan las lecciones de este capítulo.",
+    },
+    select: { id: true },
+  });
+}
+
+/** Importa a la colección del capítulo una o varias partidas de un PGN pegado. */
+export async function importChapterGames(
+  courseId: string,
+  chapterId: string,
+  formData: FormData,
+): Promise<void> {
+  const staff = await requireStaff();
+  const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
+  if (!(await allowAction(`${staff.user.id}:chapter-games-import`, 20, 60_000))) fail(chapterPath, "throttled");
+
+  const pgnText = readText(formData, "pgn");
+  if (pgnText.length === 0 || pgnText.length > PGN_MAX_LENGTH) fail(chapterPath, "pgnTooLong");
+
+  const games = parseImportedGames(pgnText);
+  if (games.length === 0) fail(chapterPath, "pgn");
+
+  const db = getPlatformDb();
+  // El capítulo tiene que ser de este curso: el id llega de la URL.
+  const chapter = await db.chapter.findFirst({
+    where: { id: chapterId, courseId },
+    select: { id: true, name: true, courseId: true },
+  });
+  if (!chapter) fail(chapterPath, "courseMissing");
+
+  // El índice de posiciones se escribe DENTRO de la misma transacción: una
+  // partida guardada sin indexar sería invisible para el buscador por posición
+  // y nadie se enteraría hasta buscarla.
+  await db.$transaction(async (tx) => {
+    const database = await chapterGamesDatabase(tx, chapter);
+    const last = await tx.game.aggregate({ where: { databaseId: database.id }, _max: { order: true } });
+    let order = (last._max.order ?? 0) + 1;
+
+    for (const game of games) {
+      const created = await tx.game.create({
+        data: {
+          database: { connect: { id: database.id } },
+          order: order++,
+          white: game.white,
+          black: game.black,
+          whiteElo: game.whiteElo,
+          blackElo: game.blackElo,
+          whiteTitle: game.whiteTitle,
+          blackTitle: game.blackTitle,
+          whiteCountry: game.whiteCountry,
+          blackCountry: game.blackCountry,
+          result: { connect: { code: game.resultCode } },
+          playedAt: game.playedAt,
+          event: game.event,
+          site: game.site,
+          round: game.round,
+          eco: game.eco,
+          initialFen: game.initialFen,
+          pgn: game.pgn,
+          source: { connect: { code: GAME_SOURCE.PGN_IMPORT } },
+          isOwnGame: false,
+        },
+        select: { id: true },
+      });
+      await indexGamePositions(tx, { gameId: created.id, databaseId: database.id, pgn: game.pgn });
+    }
+  });
+
+  revalidatePath(chapterPath);
+  revalidatePath(staffRoutes.courseDetail(courseId));
+}
+
+/**
+ * Quita una partida de la colección del capítulo.
+ *
+ * Sólo si NINGUNA lección la usa: borrarla dejaría esas lecciones sin
+ * contenido —la clave ajena es `SET NULL`, así que no fallaría, se vaciarían en
+ * silencio, que es peor—.
+ */
+export async function deleteChapterGame(
+  courseId: string,
+  chapterId: string,
+  formData: FormData,
+): Promise<void> {
+  const staff = await requireStaff();
+  const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
+  if (!(await allowAction(`${staff.user.id}:chapter-games-delete`, 60, 60_000))) fail(chapterPath, "throttled");
+
+  const gameId = readText(formData, "gameId");
+  const db = getPlatformDb();
+
+  const game = await db.game.findFirst({
+    where: { id: gameId, database: { chapterId, courseId } },
+    select: { id: true, _count: { select: { lessons: true } } },
+  });
+  if (!game) fail(chapterPath, "courseMissing");
+  if (game._count.lessons > 0) fail(chapterPath, "gameInUse");
+
+  await db.game.delete({ where: { id: game.id } });
+
+  revalidatePath(chapterPath);
+  revalidatePath(staffRoutes.courseDetail(courseId));
 }
 
 // --- Capítulos ------------------------------------------------------------
@@ -535,53 +677,6 @@ export async function setLessonGame(
 
   revalidatePath(lessonPath);
   revalidatePath(staffRoutes.chapterDetail(courseId, chapterId));
-  revalidatePath(platformRoutes.lessonDetail(lessonId));
-}
-
-/**
- * Guarda el PGN de la lección. El servidor SIEMPRE re-valida (la
- * previsualización del editor es una comodidad, no una garantía) y sella
- * `pgnUpdatedAt`: eso es lo que marca como desactualizados los ejercicios
- * congelados antes del cambio.
- */
-export async function updateLessonPgn(
-  courseId: string,
-  chapterId: string,
-  lessonId: string,
-  formData: FormData,
-): Promise<void> {
-  const staff = await requireStaff();
-  const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
-  if (!(await allowAction(`${staff.user.id}:lesson-pgn`, 60, 60_000))) fail(lessonPath, "throttled");
-
-  const pgn = readText(formData, "pgn");
-  if (pgn.length > PGN_MAX_LENGTH) fail(lessonPath, "pgnTooLong");
-  if (pgn.length > 0 && parsePgnTree(pgn) === null) fail(lessonPath, "pgn");
-
-  const db = getPlatformDb();
-  const lesson = await db.lesson.findFirst({
-    where: { id: lessonId, chapterId },
-    select: { id: true, isTrainable: true, trainingColor: { select: { code: true } } },
-  });
-  if (!lesson) fail(lessonPath, "courseMissing");
-
-  await db.$transaction(async (tx) => {
-    await tx.lesson.update({ where: { id: lesson.id }, data: { pgn, pgnUpdatedAt: new Date() } });
-    // Si la lección es entrenable, su línea principal acaba de cambiar: el
-    // ejercicio derivado se rehace para no seguir pidiendo la línea anterior,
-    // conservando el bando que el staff ya había elegido.
-    await syncLessonTrainingExercise(tx, {
-      lessonId: lesson.id,
-      pgn,
-      isTrainable: lesson.isTrainable,
-      trainingColor: (lesson.trainingColor?.code as "WHITE" | "BLACK" | undefined) ?? null,
-    });
-  });
-
-  revalidatePath(lessonPath);
-
-  // La lección se direcciona sola en la zona del alumno, así que aquí ya no
-  // hace falta resolver curso ni capítulo para revalidar su página.
   revalidatePath(platformRoutes.lessonDetail(lessonId));
 }
 

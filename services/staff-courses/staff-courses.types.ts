@@ -144,9 +144,11 @@ export interface LessonAdminDetail {
   exercises: ExerciseAdminRow[];
 }
 
-/** Una partida de la colección de un curso, para vincularla a una lección. */
+/** Una partida de la colección de un capítulo, para vincularla a una lección. */
 export interface CourseGameRow {
   id: string;
+  /** De qué capítulo es la colección. Sólo se llena en la vista del curso. */
+  chapterName?: string;
   /** «Kotov — Plater». */
   title: string;
   /** Evento, año y apertura en una línea; vacío si no hay ninguno de los tres. */

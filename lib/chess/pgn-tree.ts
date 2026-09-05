@@ -179,6 +179,17 @@ export function parsePgnTree(pgn: string): PgnTree | null {
     () => Chess.default(),
   );
 
+  // El ply es ABSOLUTO, no relativo al PGN: sale del turno y del número de
+  // jugada del FEN de partida. Una posición que arranca en «44.» tiene que
+  // numerarse 44 y no 1, y si mueven las negras la primera jugada tiene que
+  // leerse «44…» y no «44.».
+  //
+  // Todo lo que numera —la tabla, el árbol de variantes, las etiquetas de las
+  // jugadas y el lado que decide qué NAG se escribe— saca el número de aquí con
+  // `Math.ceil(ply / 2)` y el color con `ply % 2 === 1`, así que basta con
+  // empezar bien.
+  const startPly = (pos.fullmoves - 1) * 2 + (pos.turn === "white" ? 1 : 2);
+
   const nodesByPath = new Map<string, PgnTreeNode>();
   // Lo que ni siquiera llegó al árbol va primero: el tokenizador de chessops
   // descarta los tokens sin forma de jugada antes de que `walk` los vea, así
@@ -187,7 +198,7 @@ export function parsePgnTree(pgn: string): PgnTree | null {
     (token) => `Token no reconocido como jugada: "${token}". Esa rama no se ha cargado.`,
   );
   const { text, shapes, evaluation } = parseCommentCommands(game.comments);
-  const children = walk(game.moves.children, pos, "", 1, nodesByPath, warnings);
+  const children = walk(game.moves.children, pos, "", startPly, nodesByPath, warnings);
 
   return {
     initialFen: makeFen(pos.toSetup()),

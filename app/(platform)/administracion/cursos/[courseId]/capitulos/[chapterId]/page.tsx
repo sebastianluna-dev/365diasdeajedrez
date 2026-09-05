@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ChapterEditorSection } from "@/components/sections/platform/staff/courses/chapter-editor.section";
-import { getChapterAdmin } from "@/services/staff-courses/staff-courses.service";
+import { getChapterAdmin, listCollectionGames } from "@/services/staff-courses/staff-courses.service";
 
 interface StaffChapterPageProps {
   params: Promise<{ courseId: string; chapterId: string }>;
@@ -19,12 +19,12 @@ export default async function StaffChapterPage({ params, searchParams }: StaffCh
   const chapter = await getChapterAdmin(courseId, chapterId);
   if (!chapter) notFound();
 
-  const { error } = await searchParams;
+  const [{ error }, games] = await Promise.all([searchParams, listCollectionGames({ chapterId })]);
 
   // La cabecera va dentro de la sección: lleva las migas hasta el curso.
   return (
     <div className="platform-page staff-chapter-page">
-      <ChapterEditorSection chapter={chapter} errorCode={error} />
+      <ChapterEditorSection chapter={chapter} games={games} errorCode={error} />
     </div>
   );
 }

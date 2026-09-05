@@ -15,7 +15,12 @@ import {
   reorderChapters,
   updateCourse,
 } from "@/services/staff-courses/staff-courses.actions";
-import type { AuthorAdminRow, CatalogOption, CourseAdminDetail } from "@/services/staff-courses/staff-courses.types";
+import type {
+  AuthorAdminRow,
+  CatalogOption,
+  CourseAdminDetail,
+  CourseGameRow,
+} from "@/services/staff-courses/staff-courses.types";
 import { SortableList } from "./sortable-list.comp";
 import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
@@ -27,6 +32,8 @@ interface CourseEditorSectionProps {
   levels: CatalogOption[];
   authors: AuthorAdminRow[];
   authorRoles: CatalogOption[];
+  /** La colección de partidas del curso. */
+  games: CourseGameRow[];
   errorCode?: string;
 }
 
@@ -44,6 +51,7 @@ export function CourseEditorSection({
   levels,
   authors,
   authorRoles,
+  games,
   errorCode,
 }: CourseEditorSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
@@ -300,6 +308,37 @@ export function CourseEditorSection({
               </button>
             </div>
           </form>
+        </StaffPanel>
+
+        <StaffPanel
+          title="Partidas del curso"
+          meta={`${games.length}`}
+          description="Todas las de sus capítulos, de una vez. Se añaden y se quitan desde el capítulo al que pertenecen: una partida sin capítulo no tendría colección a la que ir."
+        >
+          {games.length > 0 ? (
+            <ul className="course-editor__list">
+              {games.map((game) => (
+                <li key={game.id} className="course-editor__row">
+                  <span className="course-editor__row-text">
+                    <span className="course-editor__row-title">{game.title}</span>
+                    <span className="course-editor__row-meta">
+                      {game.chapterName && `${game.chapterName} · `}
+                      {game.detail}
+                      {game.detail && " · "}
+                      {game.moveCount} jugadas
+                      {game.lessonCount > 0 &&
+                        ` · en ${game.lessonCount} ${game.lessonCount === 1 ? "lección" : "lecciones"}`}
+                    </span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="course-editor__empty">
+              Ningún capítulo tiene partidas todavía. Se pegan desde el capítulo: sus lecciones sólo pueden
+              usar partidas de su propia colección.
+            </p>
+          )}
         </StaffPanel>
 
         <StaffPanel

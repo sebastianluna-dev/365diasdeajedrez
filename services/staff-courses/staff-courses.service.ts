@@ -224,24 +224,29 @@ export async function getChapterAdmin(courseId: string, chapterId: string): Prom
 }
 
 /**
- * Partidas de la colección del curso, para vincularlas a una lección.
+ * Partidas de una colección, para listarlas o vincularlas a una lección.
  *
- * «La colección del curso» son todas las bases que le pertenecen —hoy es una,
- * pero el modelo admite varias y filtrar por una sola dejaría partidas
- * invisibles—. El texto libre casa contra los dos jugadores, el evento y la
- * apertura, que es por lo que se busca una partida.
+ * Las colecciones son por CAPÍTULO. `scope` decide qué se pide: la de un
+ * capítulo —lo que puede usar una lección suya— o todas las del curso, que es
+ * la vista de conjunto de la ficha del curso.
+ *
+ * El texto libre casa contra los dos jugadores, el evento, la apertura y el
+ * nombre, que es por lo que se busca una partida.
  *
  * `moveCount` sale de contar la línea principal del PGN. Se hace aquí y no en
  * la base porque el PGN es texto: es el precio de tener una sola fuente del
- * contenido, y la colección de un curso son decenas de partidas, no miles.
+ * contenido, y una colección son decenas de partidas, no miles.
  */
-export async function listCourseGames(courseId: string, query?: string): Promise<CourseGameRow[]> {
+export async function listCollectionGames(
+  scope: { courseId: string } | { chapterId: string },
+  query?: string,
+): Promise<CourseGameRow[]> {
   await requireStaff();
 
   const search = query?.trim();
   const games = await getPlatformDb().game.findMany({
     where: {
-      database: { courseId },
+      database: scope,
       ...(search
         ? {
             OR: [
@@ -263,13 +268,17 @@ export async function listCourseGames(courseId: string, query?: string): Promise
       eco: true,
       playedAt: true,
       pgn: true,
+      database: { select: { chapter: { select: { name: true, order: true } } } },
       _count: { select: { lessons: true } },
     },
-    orderBy: [{ order: "asc" }, { white: "asc" }],
+    // En la vista del curso salen agrupadas por capítulo y en su orden; dentro
+    // de uno, en el suyo.
+    orderBy: [{ database: { chapter: { order: "asc" } } }, { order: "asc" }],
   });
 
   return games.map((game) => ({
     id: game.id,
+    chapterName: game.database.chapter?.name,
     title: game.title ?? `${game.white} — ${game.black}`,
     detail: [game.event, game.playedAt?.getUTCFullYear(), game.eco].filter(Boolean).join(" · "),
     moveCount: extractMainline(game.pgn)?.sans.length ?? 0,

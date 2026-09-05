@@ -8,9 +8,6 @@
 
   & .game-view__board {
     min-width: 0;
-    /* La lista de jugadas se planta y se desplaza por dentro: sin tope, una
-       partida larga estiraba el panel muy por debajo del tablero. */
-    --viewer-moves-max-height: 560px;
   }
 
   /* Lo que rebota de una acción del servidor, sobre el tablero: es la respuesta

@@ -58,9 +58,8 @@ export function LessonGamePicker({
         </div>
 
         <p className="lesson-game-picker__note">
-          El contenido de la lección es el de esta partida. Corrígela en la colección del curso y todas las
-          lecciones que la usan quedan corregidas. El PGN propio de la lección sigue guardado y vuelve al
-          desvincular.
+          El contenido de la lección es el de esta partida. Corrígela en la colección del curso y quedan
+          corregidas todas las lecciones que la usan.
         </p>
       </div>
     );
@@ -71,8 +70,8 @@ export function LessonGamePicker({
   if (candidates.length === 0 && !query) {
     return (
       <p className="lesson-game-picker__note">
-        Este curso todavía no tiene partidas en su colección. Mientras no las tenga, la lección usa su propio
-        PGN, el de aquí abajo.
+        Este curso todavía no tiene partidas en su colección. Añádelas en la ficha del curso —ahí es donde se
+        pega el PGN— y luego vuelve a elegir una aquí.
       </p>
     );
   }
@@ -119,7 +118,7 @@ export function LessonGamePicker({
         <p className="lesson-game-picker__note">
           {query
             ? "No hay partidas que coincidan."
-            : "Este curso todavía no tiene partidas en su colección. Mientras no las tenga, la lección usa su propio PGN, el de aquí abajo."}
+            : "Este curso todavía no tiene partidas en su colección. Añádelas en la ficha del curso."}
         </p>
       )}
     </div>

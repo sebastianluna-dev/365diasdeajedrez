@@ -349,6 +349,8 @@ model Chapter {
   lessons         Lesson[]
   progresses      ChapterProgress[]
   trainerChapters UserTrainerChapter[]
+  /// Su colección de partidas; como mucho una (ver el índice de GameDatabase).
+  gameDatabases   GameDatabase[]
 
   @@unique([courseId, order])
 }
@@ -724,6 +726,14 @@ model GameDatabase {
   ownerTypeId Int
   userId      String?
   courseId    String?
+  /// El capítulo del que es la colección.
+  ///
+  /// Las colecciones de un curso son por CAPÍTULO: cada uno junta las partidas
+  /// que usan sus lecciones. `courseId` se queda además de éste —no en su
+  /// lugar— porque es lo que decide quién ve la base (un alumno ve las de los
+  /// cursos que ha empezado) y lo que permite listar de una vez todas las
+  /// partidas del curso sin unir por capítulo.
+  chapterId   String?
   name        String
   description String?
   kindId      Int
@@ -737,12 +747,16 @@ model GameDatabase {
   ownerType OwnerType    @relation(fields: [ownerTypeId], references: [id])
   user      User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
   course    Course?      @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  chapter   Chapter?     @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   kind      DatabaseKind @relation(fields: [kindId], references: [id])
 
   games         Game[]
   gamePositions GamePosition[]
   shares        StudyShare[]
 
+  /// Una sola colección por capítulo: es lo que hace que «la colección de este
+  /// capítulo» sea una fila y no una lista que haya que desempatar.
+  @@unique([chapterId])
   @@index([userId])
   @@index([courseId])
 }

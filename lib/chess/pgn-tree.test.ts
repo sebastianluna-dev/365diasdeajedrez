@@ -272,3 +272,42 @@ describe("nagCodeFor", () => {
     expect(nagCodesOf(initiative)).toEqual([36, 37]);
   });
 });
+
+describe("numeración cuando la partida arranca en un FEN", () => {
+  const FEN = "8/Q3ppk1/1p2r1p1/4b3/P5Pp/1PB1P3/5P1q/2R3K1 w - - 2 44";
+  const numberOf = (ply: number) => Math.ceil(ply / 2);
+  const isWhite = (ply: number) => ply % 2 === 1;
+
+  it("la primera jugada lleva el número del FEN, no el 1", () => {
+    const tree = parsePgnTree(`[FEN "${FEN}"]\n[SetUp "1"]\n\n1. Kf1 Qh1+ 2. Ke2 Qxc1 *`);
+    const [first] = tree!.children;
+    expect(numberOf(first.ply)).toBe(44);
+    expect(isWhite(first.ply)).toBe(true);
+  });
+
+  it("y la siguiente sigue contando desde ahí", () => {
+    const tree = parsePgnTree(`[FEN "${FEN}"]\n[SetUp "1"]\n\n1. Kf1 Qh1+ 2. Ke2 Qxc1 *`);
+    const plies: number[] = [];
+    let node = tree!.children[0];
+    while (node) {
+      plies.push(node.ply);
+      node = node.children[0];
+    }
+    expect(plies.map(numberOf)).toEqual([44, 44, 45, 45]);
+    expect(plies.map(isWhite)).toEqual([true, false, true, false]);
+  });
+
+  it("si en el FEN mueven las negras, la primera jugada es de las negras", () => {
+    // Misma posición un ply después: 44… Dh1+ y no «44. Dh1+».
+    const black = "8/Q3ppk1/1p2r1p1/4b3/P5Pp/1PB1P3/5P1q/2R2K2 b - - 3 44";
+    const tree = parsePgnTree(`[FEN "${black}"]\n[SetUp "1"]\n\n1... Qh1+ *`);
+    const [first] = tree!.children;
+    expect(numberOf(first.ply)).toBe(44);
+    expect(isWhite(first.ply)).toBe(false);
+  });
+
+  it("sin FEN se sigue empezando en 1", () => {
+    const tree = parsePgnTree("1. e4 e5 *");
+    expect(tree!.children[0].ply).toBe(1);
+  });
+});
