@@ -1,0 +1,132 @@
+.course-games {
+  /* Las cuatro columnas se declaran una vez y las comparten la cabecera y las
+     filas: si se separan, la cabecera deja de cuadrar con lo que rotula. */
+  --course-games-columns: minmax(0, 2.4fr) minmax(0, 1.2fr) 0.6fr 0.9fr;
+
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  /* Mismo distintivo que la ficha del curso: es la misma cabecera. */
+  & .course-games__status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 11px;
+    border-radius: 1000px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  & .course-games__status_state_published {
+    background: var(--platform-success-soft);
+    color: var(--platform-success-ink);
+  }
+
+  & .course-games__status_state_draft {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
+
+  & .course-games__status_state_archived {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-games__table {
+    margin: 0 -22px -22px;
+  }
+
+  & .course-games__head {
+    display: grid;
+    grid-template-columns: var(--course-games-columns);
+    align-items: center;
+    gap: 14px;
+    padding: 10px 22px;
+    border-top: 1px solid var(--platform-border);
+    border-bottom: 1px solid var(--platform-border);
+    background: var(--platform-bg);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-games__rows {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .course-games__row {
+    display: grid;
+    grid-template-columns: var(--course-games-columns);
+    align-items: center;
+    gap: 14px;
+    padding: 11px 22px;
+  }
+
+  & .course-games__row + .course-games__row {
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .course-games__text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  & .course-games__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--platform-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .course-games__detail {
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .course-games__cell {
+    min-width: 0;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .course-games__number {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .course-games__note {
+    margin: 0;
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-games__link {
+    color: var(--platform-accent-ink);
+    font-weight: 600;
+  }
+
+  /* Apretada, la tabla se desplaza a lo ancho en vez de romper la rejilla. */
+  @media (max-width: 860px) {
+    & .course-games__table {
+      overflow-x: auto;
+    }
+
+    & .course-games__head,
+    & .course-games__row {
+      min-width: 720px;
+    }
+  }
+}

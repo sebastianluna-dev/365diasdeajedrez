@@ -11,7 +11,9 @@ interface StaffEditorHeadProps {
   /** El camino hasta aquí SIN el sitio actual, que se pone con `title`. */
   crumbs?: Crumb[];
   title: string;
-  /** Datos cortos bajo el título: estado, identificador, cuántas lecciones… */
+  /** Distintivo al lado del título: el estado de un curso, por ejemplo. */
+  badge?: ReactNode;
+  /** Datos cortos bajo el título: identificador, cuántas lecciones… */
   meta?: ReactNode;
   /** Lo que se puede hacer con esto, arriba a la derecha. */
   actions?: ReactNode;
@@ -26,7 +28,7 @@ interface StaffEditorHeadProps {
  * tiene cuatro niveles: sin una miga en todas, la única forma de subir un
  * escalón es el botón de atrás del navegador.
  */
-export function StaffEditorHead({ crumbs, title, meta, actions, description }: StaffEditorHeadProps) {
+export function StaffEditorHead({ crumbs, title, badge, meta, actions, description }: StaffEditorHeadProps) {
   // Sin migas es una pantalla de primer nivel y su título pesa lo mismo que el
   // de «Alumnos» o «Profesores»; con migas está colgando de algo y baja un
   // escalón, para que la jerarquía se vea sin leer la ruta.
@@ -53,7 +55,12 @@ export function StaffEditorHead({ crumbs, title, meta, actions, description }: S
 
       <div className="staff-editor-head__bar">
         <div className="staff-editor-head__heading">
-          <h1 className="staff-editor-head__title">{title}</h1>
+          {/* El distintivo va en el renglón del título, no debajo: es parte de
+              cómo se nombra la ficha, no un dato más de la lista. */}
+          <div className="staff-editor-head__title-row">
+            <h1 className="staff-editor-head__title">{title}</h1>
+            {badge}
+          </div>
           {description && <p className="staff-editor-head__description">{description}</p>}
           {meta && <div className="staff-editor-head__meta">{meta}</div>}
         </div>

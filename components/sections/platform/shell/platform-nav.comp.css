@@ -16,7 +16,7 @@
   & .platform-nav__item {
     display: block;
     padding: 8px 13px;
-    border-radius: 9px;
+    border-radius: 10px;
     color: var(--platform-text-muted);
     white-space: nowrap;
   }

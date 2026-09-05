@@ -260,7 +260,9 @@ export async function importChapterGames(
   formData: FormData,
 ): Promise<void> {
   const staff = await requireStaff();
-  const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
+  // El formulario vive en la pestaña de partidas, así que los avisos vuelven
+  // ahí y no a la ficha del capítulo.
+  const chapterPath = staffRoutes.chapterGames(courseId, chapterId);
   if (!(await allowAction(`${staff.user.id}:chapter-games-import`, 20, 60_000))) fail(chapterPath, "throttled");
 
   const pgnText = readText(formData, "pgn");
@@ -316,7 +318,10 @@ export async function importChapterGames(
   });
 
   revalidatePath(chapterPath);
+  // La pestaña de la ficha enseña el número, y la del curso la lista entera.
+  revalidatePath(staffRoutes.chapterDetail(courseId, chapterId));
   revalidatePath(staffRoutes.courseDetail(courseId));
+  revalidatePath(staffRoutes.courseGames(courseId));
 }
 
 /**
@@ -332,7 +337,7 @@ export async function deleteChapterGame(
   formData: FormData,
 ): Promise<void> {
   const staff = await requireStaff();
-  const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
+  const chapterPath = staffRoutes.chapterGames(courseId, chapterId);
   if (!(await allowAction(`${staff.user.id}:chapter-games-delete`, 60, 60_000))) fail(chapterPath, "throttled");
 
   const gameId = readText(formData, "gameId");
@@ -348,7 +353,9 @@ export async function deleteChapterGame(
   await db.game.delete({ where: { id: game.id } });
 
   revalidatePath(chapterPath);
+  revalidatePath(staffRoutes.chapterDetail(courseId, chapterId));
   revalidatePath(staffRoutes.courseDetail(courseId));
+  revalidatePath(staffRoutes.courseGames(courseId));
 }
 
 // --- Capítulos ------------------------------------------------------------

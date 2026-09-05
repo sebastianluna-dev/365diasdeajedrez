@@ -1,0 +1,107 @@
+.chapter-games {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  & .chapter-games__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .chapter-games__row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 0;
+  }
+
+  & .chapter-games__row + .chapter-games__row {
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .chapter-games__text {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  & .chapter-games__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .chapter-games__meta {
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  /* Al filo derecho: es lo que se hace con la fila, no parte de su nombre. */
+  & .chapter-games__row form {
+    margin-left: auto;
+    flex: none;
+  }
+
+  & .chapter-games__remove {
+    padding: 7px 14px;
+    border: 1px solid var(--platform-border);
+    border-radius: 1000px;
+    background: var(--platform-surface);
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 150ms;
+    transition-property: background-color, border-color, color;
+  }
+
+  & .chapter-games__remove:hover {
+    border-color: var(--platform-danger);
+    color: var(--platform-danger);
+  }
+
+  & .chapter-games__empty {
+    margin: 0;
+    max-width: 72ch;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
+  /* El PGN se pega en un área, no en una línea: entran varias partidas de una
+     vez y una sola fila de texto escondería lo que se está pegando. */
+  & .chapter-games__import {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .chapter-games__import-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-bg);
+    color: var(--platform-text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    transition: 150ms;
+    transition-property: border-color, box-shadow;
+  }
+
+  & .chapter-games__import-input:focus {
+    outline: none;
+    border-color: var(--platform-accent);
+    box-shadow: 0 0 0 3px var(--platform-accent-soft);
+  }
+}

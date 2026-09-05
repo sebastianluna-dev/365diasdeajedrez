@@ -16,14 +16,10 @@ import {
   reorderChapters,
   updateCourse,
 } from "@/services/staff-courses/staff-courses.actions";
-import type {
-  AuthorAdminRow,
-  CatalogOption,
-  CourseAdminDetail,
-  CourseGameRow,
-} from "@/services/staff-courses/staff-courses.types";
+import type { AuthorAdminRow, CatalogOption, CourseAdminDetail } from "@/services/staff-courses/staff-courses.types";
 import { SortableList } from "./sortable-list.comp";
 import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
+import { StaffTabs } from "./staff-tabs.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./course-editor.section.css";
 
@@ -33,8 +29,8 @@ interface CourseEditorSectionProps {
   levels: CatalogOption[];
   authors: AuthorAdminRow[];
   authorRoles: CatalogOption[];
-  /** La colección de partidas del curso. */
-  games: CourseGameRow[];
+  /** Cuántas partidas tiene el curso; la lista vive en su propia pestaña. */
+  gameCount: number;
   errorCode?: string;
 }
 
@@ -52,7 +48,7 @@ export function CourseEditorSection({
   levels,
   authors,
   authorRoles,
-  games,
+  gameCount,
   errorCode,
 }: CourseEditorSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
@@ -66,14 +62,10 @@ export function CourseEditorSection({
       <StaffEditorHead
         crumbs={[{ label: "Cursos", href: staffRoutes.courses }]}
         title={course.name}
-        meta={
-          <>
-            <span className={`course-editor__status course-editor__status_state_${course.statusCode.toLowerCase()}`}>
-              {course.statusLabel}
-            </span>
-            <span className="course-editor__slug">{course.slug}</span>
-            {course.publishedAtLabel && <span>Publicado el {course.publishedAtLabel}</span>}
-          </>
+        badge={
+          <span className={`course-editor__status course-editor__status_state_${course.statusCode.toLowerCase()}`}>
+            {course.statusLabel}
+          </span>
         }
         actions={
           course.statusCode === COURSE_STATUS.PUBLISHED && (
@@ -85,6 +77,14 @@ export function CourseEditorSection({
             </Link>
           )
         }
+      />
+
+      <StaffTabs
+        current={staffRoutes.courseDetail(course.id)}
+        tabs={[
+          { label: "Curso", href: staffRoutes.courseDetail(course.id) },
+          { label: "Partidas", href: staffRoutes.courseGames(course.id), count: gameCount },
+        ]}
       />
 
       {errorMessage && <PlatformNotice message={errorMessage} />}
@@ -310,37 +310,6 @@ export function CourseEditorSection({
               </button>
             </div>
           </form>
-        </StaffPanel>
-
-        <StaffPanel
-          title="Partidas del curso"
-          meta={`${games.length}`}
-          description="Todas las de sus capítulos, de una vez. Se añaden y se quitan desde el capítulo al que pertenecen: una partida sin capítulo no tendría colección a la que ir."
-        >
-          {games.length > 0 ? (
-            <ul className="course-editor__list">
-              {games.map((game) => (
-                <li key={game.id} className="course-editor__row">
-                  <span className="course-editor__row-text">
-                    <span className="course-editor__row-title">{game.title}</span>
-                    <span className="course-editor__row-meta">
-                      {game.chapterName && `${game.chapterName} · `}
-                      {game.detail}
-                      {game.detail && " · "}
-                      {game.moveCount} jugadas
-                      {game.lessonCount > 0 &&
-                        ` · en ${game.lessonCount} ${game.lessonCount === 1 ? "lección" : "lecciones"}`}
-                    </span>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="course-editor__empty">
-              Ningún capítulo tiene partidas todavía. Se pegan desde el capítulo: sus lecciones sólo pueden
-              usar partidas de su propia colección.
-            </p>
-          )}
         </StaffPanel>
 
         <StaffPanel

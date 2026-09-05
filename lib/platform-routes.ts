@@ -84,8 +84,13 @@ export const staffRoutes = {
   courses: "/administracion/cursos",
   newCourse: "/administracion/cursos/nuevo",
   courseDetail: (courseId: string) => `/administracion/cursos/${courseId}`,
+  /** Las partidas del curso: sólo lectura, se editan en su capítulo. */
+  courseGames: (courseId: string) => `/administracion/cursos/${courseId}/partidas`,
   chapterDetail: (courseId: string, chapterId: string) =>
     `/administracion/cursos/${courseId}/capitulos/${chapterId}`,
+  /** La colección del capítulo: aquí sí se pega el PGN. */
+  chapterGames: (courseId: string, chapterId: string) =>
+    `/administracion/cursos/${courseId}/capitulos/${chapterId}/partidas`,
   lessonDetail: (courseId: string, chapterId: string, lessonId: string) =>
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/lecciones/${lessonId}`,
   authors: "/administracion/autores",

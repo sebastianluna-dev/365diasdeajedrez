@@ -46,6 +46,13 @@
     min-width: 0;
   }
 
+  & .staff-editor-head__title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
   & .staff-editor-head__title {
     margin: 0;
     font-family: var(--platform-font);

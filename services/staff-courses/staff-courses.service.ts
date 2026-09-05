@@ -235,6 +235,20 @@ export async function getChapterAdmin(courseId: string, chapterId: string): Prom
  * la base porque el PGN es texto: es el precio de tener una sola fuente del
  * contenido, y una colección son decenas de partidas, no miles.
  */
+/**
+ * Cuántas partidas hay, sin traérselas.
+ *
+ * Lo pide la pestaña de la ficha, que sólo necesita el número: la lista de un
+ * curso son cientos de filas y cada una arrastra su PGN entero para contar las
+ * jugadas.
+ */
+export async function countCollectionGames(
+  scope: { courseId: string } | { chapterId: string },
+): Promise<number> {
+  await requireStaff();
+  return getPlatformDb().game.count({ where: { database: scope } });
+}
+
 export async function listCollectionGames(
   scope: { courseId: string } | { chapterId: string },
   query?: string,
