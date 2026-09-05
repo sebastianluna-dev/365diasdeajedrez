@@ -8,6 +8,17 @@
     gap: 32px;
   }
 
+  /* Los cursos mandan y la columna de la derecha mide lo que necesita: fijarla
+     en píxeles y no en fracciones evita que la racha se estire en pantallas
+     anchas, donde una tarjeta de dos cifras a media pantalla se ve vacía.
+     `start` para que no se estire a lo alto de la lista. */
+  & .courses-page__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    align-items: start;
+    gap: 26px;
+  }
+
   & .courses-page__stats {
     flex: none;
     display: flex;
@@ -48,6 +59,14 @@
     width: 1px;
     height: 38px;
     background: var(--platform-border);
+  }
+
+  /* Antes de que la lista se estruje, la columna se va debajo: una tarjeta de
+     curso en fila necesita sitio para la portada, dos medidores y el botón. */
+  @media (max-width: 1080px) {
+    & .courses-page__layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 
   /* Apretado, el resumen se va debajo del título en vez de estrujarlo. */

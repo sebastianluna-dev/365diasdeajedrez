@@ -53,11 +53,22 @@ export function mapCourseProgress(course: CourseWithContent, state: UserCourseSt
     (lesson) => state.lessonStatus.get(lesson.id) === PROGRESS_STATUS.COMPLETED,
   ).length;
   const totalLessons = lessons.length;
+
+  const minutesOf = (list: typeof lessons) =>
+    list.reduce((total, lesson) => total + (lesson.estimatedDuration ?? 0), 0);
+  const completedMinutes = minutesOf(
+    lessons.filter((lesson) => state.lessonStatus.get(lesson.id) === PROGRESS_STATUS.COMPLETED),
+  );
+  const totalMinutes = minutesOf(lessons);
+
   return {
     statusCode: asStatus(state.courseStatus),
     completedLessons,
     totalLessons,
     percent: totalLessons === 0 ? 0 : Math.round((completedLessons / totalLessons) * 100),
+    completedMinutes,
+    totalMinutes,
+    minutesPercent: totalMinutes === 0 ? 0 : Math.round((completedMinutes / totalMinutes) * 100),
   };
 }
 

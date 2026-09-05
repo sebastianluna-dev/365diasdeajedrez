@@ -1,41 +1,49 @@
 .course-card {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  padding: 14px 22px 14px 14px;
   background: var(--platform-surface);
   border-radius: 10px;
   box-shadow: var(--platform-shadow-card);
-  /* La portada llega a los bordes: el redondeo la tiene que recortar. */
-  overflow: hidden;
 
   & .course-card__cover {
-    display: block;
+    flex: none;
     position: relative;
-    aspect-ratio: 21 / 9;
+    width: 168px;
+    aspect-ratio: 16 / 10;
+    border-radius: 10px;
     background: var(--platform-surface-sunken);
     overflow: hidden;
   }
 
+  /* Anclada a la izquierda: las portadas llevan el título del curso en ese
+     lado, y recortar por el centro se lo comía. */
   & .course-card__cover-image {
     object-fit: cover;
+    object-position: 0% 50%;
   }
 
   & .course-card__body {
     flex: 1;
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    padding: 22px 24px 24px;
+    gap: 16px;
   }
 
-  & .course-card__tags {
+  & .course-card__heading {
     display: flex;
-    gap: 7px;
+    align-items: center;
+    gap: 12px;
     flex-wrap: wrap;
   }
 
   & .course-card__name {
-    margin: 15px 0 0;
+    margin: 0;
+    min-width: 0;
     font-family: var(--platform-font);
-    font-size: 24.5px;
+    font-size: 21px;
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: -0.015em;
@@ -43,37 +51,159 @@
 
   & .course-card__name-link {
     color: var(--platform-text);
+    transition: color 150ms;
   }
 
   & .course-card__name-link:hover {
     color: var(--platform-accent-ink);
   }
 
-  & .course-card__description {
-    margin: 10px 0 0;
-    font-size: 16px;
-    line-height: 1.6;
+  /* Los dos medidores a lo ancho y en columnas iguales, con un filo entre
+     ellos: son dos lecturas del MISMO avance —lo hecho y el tiempo que
+     costó—, así que se leen de un vistazo y en paralelo. */
+  & .course-card__meters {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+  }
+
+  & .course-card__meter + .course-card__meter {
+    padding-left: 22px;
+    border-left: 1px solid var(--platform-border);
+  }
+
+  & .course-card__meter {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  & .course-card__meter-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--platform-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .course-card__meter-track {
+    height: 5px;
+    border-radius: 1000px;
+    background: var(--platform-track);
+    overflow: hidden;
+  }
+
+  & .course-card__meter-fill {
+    height: 100%;
+    border-radius: 1000px;
+    background: var(--platform-accent);
+    transition: width 150ms;
+  }
+
+  & .course-card__actions {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  & .course-card__cta {
+    min-width: 128px;
+    justify-content: center;
+  }
+
+  /* --- Menú «···» --------------------------------------------------------
+     El panel se ancla a la tarjeta, no al documento, así que el contenedor
+     necesita ser el origen de posición. */
+  & .course-card__menu {
+    position: relative;
+  }
+
+  & .course-card__menu-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 1000px;
+    color: var(--platform-text-subtle);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    list-style: none;
+    transition: 150ms;
+    transition-property: background-color, color;
+  }
+
+  /* Safari sigue pintando el triángulo del <summary> con su seudoelemento. */
+  & .course-card__menu-button::-webkit-details-marker {
+    display: none;
+  }
+
+  & .course-card__menu-button:hover {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
+
+  & .course-card__menu-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 2;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 18px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .course-card__menu-text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
     color: var(--platform-text-muted);
     text-wrap: pretty;
   }
 
-  & .course-card__authors {
-    margin: 14px 0 0;
-    font-size: 14.5px;
+  & .course-card__menu-meta {
+    margin: 0;
+    font-size: 14px;
     color: var(--platform-text-subtle);
   }
 
-  /* `margin-top: auto` empuja el progreso al pie: en una rejilla de tarjetas
-     estiradas, las barras y los botones quedan alineados entre columnas por
-     mucho que las descripciones midan distinto. */
-  & .course-card__progress {
-    margin-top: auto;
-    padding-top: 22px;
+  & .course-card__menu-link {
+    margin-top: 4px;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--platform-accent-ink);
   }
 
-  & .course-card__actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 18px;
+  /* Apretado, la portada se va arriba y los botones bajan a su propia línea:
+     una fila de cinco piezas no cabe en un móvil sin estrujar el nombre. */
+  @media (max-width: 720px) {
+    flex-wrap: wrap;
+    padding: 14px;
+
+    & .course-card__cover {
+      width: 100%;
+      aspect-ratio: 21 / 9;
+    }
+
+    & .course-card__body {
+      flex-basis: 100%;
+    }
+
+    & .course-card__actions {
+      flex-basis: 100%;
+      justify-content: space-between;
+    }
+
+    & .course-card__cta {
+      flex: 1;
+    }
   }
 }

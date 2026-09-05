@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { CoursesListSection } from "@/components/sections/platform/courses/courses-list/courses-list.section";
+import { StudyGoalAside } from "@/components/sections/platform/courses/courses-list/study-goal.comp";
 import { getUserCourses } from "@/services/courses/courses.service";
+import { getStudyGoal } from "@/services/study-goal/study-goal.service";
 import "./courses-page.css";
 
 export const metadata: Metadata = {
@@ -8,9 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default async function CoursesPage() {
-  // Frontera de la zona privada: getUserCourses pasa por getCurrentUser, así
-  // que este primer await hace de check de sesión además de traer los datos.
-  const courses = await getUserCourses();
+  // Frontera de la zona privada: los dos pasan por getCurrentUser, así que este
+  // primer await hace de check de sesión además de traer los datos.
+  const [courses, goal] = await Promise.all([getUserCourses(), getStudyGoal()]);
 
   // El resumen sale de la misma lista: no hace falta una segunda consulta para
   // contar lo que ya está en memoria.
@@ -41,7 +43,10 @@ export default async function CoursesPage() {
         )}
       </header>
 
-      <CoursesListSection courses={courses} />
+      <div className="courses-page__layout">
+        <CoursesListSection courses={courses} />
+        <StudyGoalAside goal={goal} />
+      </div>
     </div>
   );
 }

@@ -6,6 +6,19 @@ export interface CourseProgressSummary {
   totalLessons: number;
   /** Porcentaje entero 0–100 sobre el total real de lecciones. */
   percent: number;
+  /**
+   * Minutos de las lecciones terminadas y del curso entero. Es OTRA medida del
+   * avance, no la misma en otra unidad: dos lecciones de cinco minutos no valen
+   * lo que dos de cuarenta, y el alumno que estudia a ratos mide su día en
+   * minutos, no en lecciones.
+   *
+   * `estimatedDuration` es anulable, así que las lecciones sin duración cuentan
+   * como cero en los dos lados y el porcentaje sigue siendo cierto.
+   */
+  completedMinutes: number;
+  totalMinutes: number;
+  /** Porcentaje entero 0–100 sobre los minutos. */
+  minutesPercent: number;
 }
 
 export interface CourseSummary {

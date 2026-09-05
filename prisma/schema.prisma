@@ -460,6 +460,11 @@ model User {
   passwordUpdatedAt DateTime?
   lastLoginAt       DateTime?
 
+  /// Minutos de estudio que el alumno se marca al día. Columna y no tabla de
+  /// ajustes porque hoy es el único ajuste que no cuelga de un curso (los que sí
+  /// viven en UserCourseSettings); si aparecen más, se mudan juntos.
+  dailyGoalMinutes  Int       @default(30)
+
   sessions          Session[]
   teacher           Teacher?
   staff             Staff?

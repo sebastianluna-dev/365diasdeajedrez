@@ -1,0 +1,191 @@
+.study-goal {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  & .study-goal__card {
+    padding: 20px 22px 22px;
+    background: var(--platform-surface);
+    border-radius: 10px;
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  /* El título y lo que va debajo se separan con un filo a todo el ancho de la
+     tarjeta, así que el relleno horizontal se compensa con márgenes negativos:
+     una raya que no llega a los bordes parecería un subrayado del texto. */
+  & .study-goal__title {
+    margin: 0 -22px 18px;
+    padding: 0 22px 14px;
+    border-bottom: 1px solid var(--platform-border);
+    font-family: var(--platform-font);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--platform-text);
+  }
+
+  & .study-goal__streak {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 0;
+    padding: 10px 0 4px;
+  }
+
+  /* El naranja de la marca, no el multicolor del emoji: la llama acompaña a la
+     cifra y tiene que leerse como parte de ella. */
+  & .study-goal__flame {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    color: var(--platform-accent);
+  }
+
+  & .study-goal__streak-value {
+    font-family: var(--platform-font);
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--platform-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .study-goal__streak-note {
+    margin: 14px 0 0;
+    text-align: center;
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
+  & .study-goal__amount {
+    margin: 0;
+    font-family: var(--platform-font);
+    line-height: 1;
+    color: var(--platform-text);
+  }
+
+  & .study-goal__amount-value {
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .study-goal__amount-total {
+    font-size: 19px;
+    font-weight: 500;
+    color: var(--platform-text-subtle);
+  }
+
+  & .study-goal__legend {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 12px 0 8px;
+  }
+
+  & .study-goal__legend-label {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--platform-text-subtle);
+  }
+
+  & .study-goal__legend-percent {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--platform-accent-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .study-goal__track {
+    height: 7px;
+    border-radius: 1000px;
+    background: var(--platform-track);
+    overflow: hidden;
+  }
+
+  & .study-goal__fill {
+    height: 100%;
+    border-radius: 1000px;
+    background: var(--platform-accent);
+    transition: width 150ms;
+  }
+
+  & .study-goal__hint {
+    margin: 16px 0 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .study-goal__editor {
+    margin-top: 16px;
+  }
+
+  /* El resumen ES el botón: sin marcador propio y a todo el ancho, para que se
+     lea como el «Cambiar objetivo» de la maqueta y no como un desplegable. */
+  & .study-goal__editor-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 16px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    color: var(--platform-text);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+    transition: 150ms;
+    transition-property: background-color, border-color, color;
+  }
+
+  & .study-goal__editor-button::-webkit-details-marker {
+    display: none;
+  }
+
+  & .study-goal__editor-button:hover {
+    border-color: var(--platform-accent);
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
+
+  & .study-goal__form {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  & .study-goal__field {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  & .study-goal__field-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
+  & .study-goal__select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-bg);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 15px;
+  }
+}
