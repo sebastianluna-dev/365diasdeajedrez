@@ -264,7 +264,7 @@
     border-radius: 1000px;
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     white-space: nowrap;
   }
@@ -506,7 +506,7 @@
     }
 
     & .game-viewer__panel-badge {
-      font-size: clamp(13px, 1.35vh, 17px);
+      font-size: clamp(14px, 1.35vh, 17px);
     }
 
     /* Aquí manda la pantalla, no el tope que ponga la sección: la notación se

@@ -6,7 +6,7 @@
     background: var(--platform-surface);
     color: var(--platform-text);
     font-family: inherit;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     cursor: pointer;
   }
@@ -57,7 +57,7 @@
 
   & .edit-game__note {
     margin-right: auto;
-    font-size: 13.5px;
+    font-size: 14px;
     color: var(--platform-text-subtle);
   }
 

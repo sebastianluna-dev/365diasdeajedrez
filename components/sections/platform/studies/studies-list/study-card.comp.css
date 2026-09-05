@@ -23,7 +23,7 @@
   & .study-card__origin {
     padding: 5px 11px;
     border-radius: 1000px;
-    font-size: 13px;
+    font-size: 14px;
     white-space: nowrap;
   }
 
@@ -46,7 +46,7 @@
   & .study-card__readonly {
     flex: none;
     margin-left: auto;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--platform-text-subtle);
   }
 

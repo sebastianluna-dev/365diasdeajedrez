@@ -10,7 +10,7 @@
 
   & .game-review__lead {
     margin: 7px 0 0;
-    font-size: 12.5px;
+    font-size: 14px;
     line-height: 1.55;
     color: var(--platform-text-muted);
     text-wrap: pretty;
@@ -25,7 +25,7 @@
     background: var(--platform-accent);
     color: var(--platform-text);
     font-family: inherit;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
   }
@@ -48,7 +48,7 @@
 
   & .game-review__percent {
     margin-left: auto;
-    font-size: 12.5px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--platform-accent-ink);
     font-variant-numeric: tabular-nums;
@@ -84,7 +84,7 @@
   }
 
   & .game-review__note {
-    font-size: 11.5px;
+    font-size: 14px;
     color: var(--platform-text-subtle);
   }
 
@@ -99,7 +99,7 @@
     border-radius: 8px;
     background: transparent;
     font-family: inherit;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--platform-text-muted);
     cursor: pointer;
@@ -112,7 +112,7 @@
 
   & .game-review__error {
     margin: 10px 0 0;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--platform-danger);
   }
 }
@@ -165,7 +165,7 @@
   & .game-review__player-name {
     flex: 1;
     min-width: 0;
-    font-size: 12.5px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--platform-text);
     overflow: hidden;
@@ -189,7 +189,7 @@
   }
 
   & .game-review__accuracy-label {
-    font-size: 11.5px;
+    font-size: 14px;
     color: var(--platform-text-subtle);
   }
 
@@ -233,12 +233,12 @@
 
   & .game-review__row-label {
     flex: 1;
-    font-size: 12px;
+    font-size: 14px;
     color: var(--platform-text-muted);
   }
 
   & .game-review__row-value {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--platform-text);
     font-variant-numeric: tabular-nums;
@@ -259,7 +259,7 @@
     background: var(--platform-surface);
     box-shadow: inset 0 0 0 1px var(--platform-border-strong);
     font-family: inherit;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--platform-text);
     cursor: pointer;

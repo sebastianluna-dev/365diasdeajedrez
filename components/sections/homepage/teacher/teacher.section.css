@@ -81,7 +81,7 @@
     display: inline-flex;
     align-items: center;
     gap: 9px;
-    font-size: 12px;
+    font-size: 14px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--color-primary);

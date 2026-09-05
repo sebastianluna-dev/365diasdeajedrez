@@ -17,7 +17,7 @@
   }
 
   & .engine-panel__label {
-    font-size: 0.89em;
+    font-size: max(14px, 0.89em);
     font-weight: 700;
     letter-spacing: 0.07em;
     text-transform: uppercase;
@@ -36,7 +36,7 @@
     background: var(--platform-surface);
     color: var(--platform-text-muted);
     font-family: inherit;
-    font-size: 0.93em;
+    font-size: max(14px, 0.93em);
     font-weight: 600;
     cursor: pointer;
   }
@@ -215,7 +215,7 @@
   }
 
   & .engine-panel__depth {
-    font-size: 0.89em;
+    font-size: max(14px, 0.89em);
     color: var(--platform-text-subtle);
     font-variant-numeric: tabular-nums;
   }

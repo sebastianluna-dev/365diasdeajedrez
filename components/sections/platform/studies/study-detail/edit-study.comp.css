@@ -72,7 +72,7 @@
 
   & .edit-study__note {
     margin-right: auto;
-    font-size: 13.5px;
+    font-size: 14px;
     color: var(--platform-text-subtle);
   }
 }

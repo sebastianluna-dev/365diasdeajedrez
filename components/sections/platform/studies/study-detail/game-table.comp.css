@@ -20,7 +20,7 @@
   }
 
   & .game-table__head {
-    font-size: 12.5px;
+    font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.07em;
     text-transform: uppercase;
@@ -118,7 +118,7 @@
     border-radius: 1000px;
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     white-space: nowrap;
   }
@@ -145,7 +145,7 @@
 
   & .game-table__note {
     margin: 12px 2px 0;
-    font-size: 13.5px;
+    font-size: 14px;
     color: var(--platform-text-subtle);
   }
 

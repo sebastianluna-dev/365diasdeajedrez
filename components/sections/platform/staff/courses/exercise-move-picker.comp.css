@@ -7,7 +7,7 @@
 
   & .exercise-move-picker__hint {
     margin: 0 0 12px;
-    font-size: 13.5px;
+    font-size: 14px;
     line-height: 1.5;
     color: var(--platform-text-subtle);
   }
@@ -32,7 +32,7 @@
 
   & .exercise-move-picker__error {
     margin: 10px 0 0;
-    font-size: 13.5px;
+    font-size: 14px;
     color: var(--platform-danger);
   }
 }
@@ -43,6 +43,6 @@
 
 .exercise-move-picker__status {
   margin: 10px 0 0;
-  font-size: 13.5px;
+  font-size: 14px;
   color: var(--platform-danger);
 }

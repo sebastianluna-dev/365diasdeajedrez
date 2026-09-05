@@ -69,7 +69,7 @@
     border-radius: 1000px;
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
-    font-size: 12.5px;
+    font-size: 14px;
     font-weight: 700;
     white-space: nowrap;
   }
@@ -100,7 +100,7 @@
     border-radius: 1000px;
     background: var(--platform-surface-neutral);
     color: var(--platform-text-muted);
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 700;
     white-space: nowrap;
   }

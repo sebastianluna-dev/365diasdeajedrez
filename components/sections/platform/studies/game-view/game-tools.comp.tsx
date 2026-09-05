@@ -15,8 +15,6 @@ import {
 } from "@/lib/chess/pgn-tree";
 import { downloadGameGif, downloadPositionImage } from "@/components/common/game-viewer/board-export";
 import { GameReview } from "@/components/common/game-viewer/game-review.comp";
-import { mainlinePositions } from "@/components/common/game-viewer/mainline-positions";
-import { reviewGame } from "@/lib/chess/game-review";
 import { sanToSpanish } from "@/lib/chess/notation";
 import { plainMovetext } from "@/lib/chess/plain-movetext";
 import "./game-tools.comp.css";
@@ -120,9 +118,6 @@ export function GameTools({
   const nags = node?.nags ?? [];
   const plainPgn = useMemo(() => plainMovetext(pgn), [pgn]);
   const glyphs = nags.map(nagGlyph).join("");
-  // Para la insignia de la pestaña: si la partida ya está evaluada, su precisión
-  // se lee del propio PGN sin volver a analizar nada.
-  const review = useMemo(() => (tree ? reviewGame(mainlinePositions(tree)) : null), [tree]);
 
   // Los signos con pareja (blancas/negras) se escriben según de quién sea la
   // jugada; en la posición de partida no hay ninguna y el panel está apagado.
@@ -209,13 +204,6 @@ export function GameTools({
             )}
             {option.key === "quality" && glyphs.length > 0 && (
               <span className="game-tools__tab-badge">{glyphs}</span>
-            )}
-            {/* Las dos precisiones, blancas primero: cuál es «la tuya» sólo lo
-                sabe quien mira, así que se enseñan las dos. */}
-            {option.key === "review" && review && (
-              <span className="game-tools__tab-badge">
-                {review.white.accuracy} · {review.black.accuracy}
-              </span>
             )}
           </button>
         ))}

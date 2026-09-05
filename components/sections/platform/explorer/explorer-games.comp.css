@@ -86,7 +86,7 @@
   }
 
   & .explorer-games__tag {
-    font-size: 12.5px;
+    font-size: 14px;
     padding: 2px 8px;
     border-radius: 1000px;
     border: 1px solid var(--platform-border);

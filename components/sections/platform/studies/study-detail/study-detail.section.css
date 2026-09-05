@@ -24,7 +24,7 @@
   & .study-detail__origin {
     padding: 5px 11px;
     border-radius: 1000px;
-    font-size: 13px;
+    font-size: 14px;
   }
 
   & .study-detail__kind {
@@ -40,7 +40,7 @@
   }
 
   & .study-detail__readonly {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--platform-text-subtle);
   }
 

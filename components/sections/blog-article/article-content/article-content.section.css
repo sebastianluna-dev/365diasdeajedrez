@@ -10,7 +10,7 @@
   }
 
   & .article-content__breadcrumb {
-    font-size: 13.5px;
+    font-size: 14px;
     color: #5c5348;
     margin-bottom: 22px;
   }
@@ -76,7 +76,7 @@
 
   & .article-content__author-meta {
     display: block;
-    font-size: 13px;
+    font-size: 14px;
     color: #5c5348;
   }
 
