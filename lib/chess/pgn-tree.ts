@@ -14,6 +14,17 @@ import { findMalformedMoveTokens } from "./movetext-scan";
 // La ruta punteada ("0", "0.1.0", ...) son los índices de hijo desde la raíz
 // y es el formato canónico de TrainingExercise.path y ClassBlock.movePath.
 
+/**
+ * La evaluación de una posición, tal y como viaja dentro del PGN en el comando
+ * `[%eval …]` que escribe (y lee) Lichess.
+ */
+export interface MoveEvaluation {
+  /** Ventaja en peones, SIEMPRE en signo de blancas. */
+  score: number;
+  /** Jugadas hasta el mate, en signo de blancas. `null` si no hay mate. */
+  mateIn: number | null;
+}
+
 export interface PgnTreeNode {
   path: string;
   san: string;
@@ -26,6 +37,8 @@ export interface PgnTreeNode {
   nags: number[];
   shapes: DrawShape[];
   showDiagram: boolean;
+  /** Lo que puntuó el módulo para ESTA posición, si la partida está evaluada. */
+  evaluation?: MoveEvaluation;
   children: PgnTreeNode[];
 }
 
@@ -33,6 +46,8 @@ export interface PgnTree {
   initialFen: string;
   initialComment?: string;
   initialShapes: DrawShape[];
+  /** La de la posición de partida, que no cuelga de ninguna jugada. */
+  initialEvaluation?: MoveEvaluation;
   /** children[0] es la continuación principal. */
   children: PgnTreeNode[];
   nodesByPath: Map<string, PgnTreeNode>;
@@ -46,10 +61,32 @@ export interface PgnTree {
 
 const BRUSH_BY_LETTER: Record<string, string> = { G: "green", R: "red", Y: "yellow", B: "blue" };
 
+/**
+ * Un mate se dibuja como una ventaja enorme, no como un número aparte: la
+ * gráfica y la barra necesitan un valor con el que trabajar, y «va a dar mate»
+ * es el techo de la escala.
+ */
+const MATE_SCORE = 100;
+
+/** `[%eval 0.34]`, `[%eval -1.2]`, `[%eval #3]`, `[%eval #-3]`. */
+function parseEvaluation(raw: string): MoveEvaluation | undefined {
+  const match = /\[%eval\s+(#?)(-?\d+(?:\.\d+)?)\]/.exec(raw);
+  if (!match) return undefined;
+
+  const value = Number(match[2]);
+  if (!Number.isFinite(value)) return undefined;
+
+  if (match[1] === "#") {
+    return { score: value >= 0 ? MATE_SCORE : -MATE_SCORE, mateIn: value };
+  }
+  return { score: value, mateIn: null };
+}
+
 function parseCommentCommands(comments: string[] | undefined): {
   text?: string;
   shapes: DrawShape[];
   showDiagram: boolean;
+  evaluation?: MoveEvaluation;
 } {
   if (!comments || comments.length === 0) return { shapes: [], showDiagram: false };
 
@@ -82,7 +119,7 @@ function parseCommentCommands(comments: string[] | undefined): {
     .replace(/\s+/g, " ")
     .trim();
 
-  return { text: text.length > 0 ? text : undefined, shapes, showDiagram };
+  return { text: text.length > 0 ? text : undefined, shapes, showDiagram, evaluation: parseEvaluation(raw) };
 }
 
 function walk(
@@ -108,7 +145,7 @@ function walk(
     next.play(move);
     const [from, to] = chessgroundMove(move);
     const path = parentPath.length > 0 ? `${parentPath}.${index}` : `${index}`;
-    const { text, shapes, showDiagram } = parseCommentCommands(child.data.comments);
+    const { text, shapes, showDiagram, evaluation } = parseCommentCommands(child.data.comments);
 
     const node: PgnTreeNode = {
       path,
@@ -121,6 +158,7 @@ function walk(
       nags: child.data.nags ?? [],
       shapes,
       showDiagram,
+      evaluation,
       children: [],
     };
     node.children = walk(child.children, next, path, ply + 1, nodesByPath, warnings);
@@ -148,13 +186,14 @@ export function parsePgnTree(pgn: string): PgnTree | null {
   const warnings = findMalformedMoveTokens(pgn).map(
     (token) => `Token no reconocido como jugada: "${token}". Esa rama no se ha cargado.`,
   );
-  const { text, shapes } = parseCommentCommands(game.comments);
+  const { text, shapes, evaluation } = parseCommentCommands(game.comments);
   const children = walk(game.moves.children, pos, "", 1, nodesByPath, warnings);
 
   return {
     initialFen: makeFen(pos.toSetup()),
     initialComment: text,
     initialShapes: shapes,
+    initialEvaluation: evaluation,
     children,
     nodesByPath,
     warnings,

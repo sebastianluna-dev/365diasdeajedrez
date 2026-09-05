@@ -214,6 +214,10 @@ export function GameViewSection({ game, siblings, newGame, editGame, errorCode }
           engine
           editable={game.canEdit}
           onPgnChange={applyPgn}
+          // La ruta va y viene: el visor avisa de la jugada y la sección se la
+          // devuelve, que es lo que deja a la gráfica de la evaluación llevar el
+          // tablero a la jugada que se señale.
+          path={currentPath}
           onPathChange={setCurrentPath}
           onRequestEdit={(mode) => {
             setToolsTab(mode === "comment" ? "comment" : "quality");
@@ -248,6 +252,9 @@ export function GameViewSection({ game, siblings, newGame, editGame, errorCode }
               tab={toolsTab}
               onTabChange={setToolsTab}
               focusRequest={focusRequest}
+              white={game.white}
+              black={game.black}
+              onSelectPath={setCurrentPath}
               onPgnChange={applyPgn}
             />
           }

@@ -114,6 +114,15 @@ interface GameViewerProps {
    * Sin esta prop, esas dos opciones no se pintan en el menú.
    */
   onRequestEdit?: (mode: "comment" | "annotate", path: string) => void;
+  /**
+   * Qué jugada enseñar, cuando quien monta el visor quiere decidirlo —la
+   * gráfica de la evaluación lleva el tablero a la jugada que se señala—.
+   *
+   * Sin esta prop el visor sigue decidiéndolo él y no cambia nada; con ella
+   * manda quien la pasa, que tiene que devolver lo que llegue por
+   * `onPathChange` o el tablero no se moverá.
+   */
+  path?: string;
 }
 
 /** Lo que hay que mantener pulsado antes de que la partida empiece a correr. */
@@ -153,9 +162,10 @@ export function GameViewer({
   editable = false,
   onPgnChange,
   onRequestEdit,
+  path,
 }: GameViewerProps) {
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
-  const [selectedPath, setCurrentPath] = useState<string>(() =>
+  const [selectedPath, setSelectedPath] = useState<string>(() =>
     initialPath && tree?.nodesByPath.has(initialPath) ? initialPath : "",
   );
 
@@ -168,12 +178,13 @@ export function GameViewer({
    * estado: así no hay un fotograma con el tablero en la posición inicial.
    */
   const currentPath = useMemo(() => {
-    if (!tree || selectedPath.length === 0 || tree.nodesByPath.has(selectedPath)) return selectedPath;
+    const wanted = path ?? selectedPath;
+    if (!tree || wanted.length === 0 || tree.nodesByPath.has(wanted)) return wanted;
 
-    let path = parentPathOf(selectedPath);
-    while (path.length > 0 && !tree.nodesByPath.has(path)) path = parentPathOf(path);
-    return path;
-  }, [tree, selectedPath]);
+    let closest = parentPathOf(wanted);
+    while (closest.length > 0 && !tree.nodesByPath.has(closest)) closest = parentPathOf(closest);
+    return closest;
+  }, [tree, selectedPath, path]);
   const [flipToggled, setFlipToggled] = useState(false);
   const [engineOn, setEngineOn] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -183,18 +194,6 @@ export function GameViewer({
   // cuánto alto le cede la notación, y de eso responde la tarjeta.
   const [engineExpanded, setEngineExpanded] = useState(false);
   const optionsRef = useRef<HTMLDivElement>(null);
-
-  // Editar es cosa de dos: el permiso y alguien a quien entregarle el PGN. Sin
-  // las dos cosas el visor es exactamente el de antes.
-  const isEditing = editable && Boolean(onPgnChange);
-  // Por referencia, como el aviso de ruta: publicar el PGN no depende de que
-  // quien consume el visor memorice su callback.
-  const onPgnChangeRef = useRef(onPgnChange);
-  useEffect(() => {
-    onPgnChangeRef.current = onPgnChange;
-  });
-  const publishPgn = useCallback((next: string) => onPgnChangeRef.current?.(next), []);
-  const editing = usePgnEditing({ pgn, onPgnChange: publishPgn, onPathChange: setCurrentPath });
 
   // Almacén externo: la primera pintada usa los valores por defecto (que es lo
   // único que el servidor puede saber) y React se pone al día con lo guardado
@@ -220,6 +219,42 @@ export function GameViewer({
     onPathChangeRef.current?.(currentPath);
   }, [currentPath]);
 
+  /**
+   * Ir a una jugada: se apunta dentro y se avisa fuera.
+   *
+   * Las dos cosas, y no una: sin el estado interno el visor no funcionaría solo,
+   * y sin el aviso, en modo controlado no se movería nunca —quien manda tiene
+   * que enterarse para devolver la ruta nueva—.
+   */
+  const setCurrentPath = useCallback((next: string) => {
+    setSelectedPath(next);
+    onPathChangeRef.current?.(next);
+  }, []);
+
+  /**
+   * La jugada de ahora, para quien la necesite MÁS TARDE.
+   *
+   * Los botones de navegación se leen de aquí y no de una dependencia: si se
+   * recrearan con cada jugada, mantener pulsado «siguiente» repetiría siempre el
+   * mismo paso —el que se capturó al apretar—.
+   */
+  const currentPathRef = useRef(currentPath);
+  useEffect(() => {
+    currentPathRef.current = currentPath;
+  });
+
+  // Editar es cosa de dos: el permiso y alguien a quien entregarle el PGN. Sin
+  // las dos cosas el visor es exactamente el de antes.
+  const isEditing = editable && Boolean(onPgnChange);
+  // Por referencia, como el aviso de ruta: publicar el PGN no depende de que
+  // quien consume el visor memorice su callback.
+  const onPgnChangeRef = useRef(onPgnChange);
+  useEffect(() => {
+    onPgnChangeRef.current = onPgnChange;
+  });
+  const publishPgn = useCallback((next: string) => onPgnChangeRef.current?.(next), []);
+  const editing = usePgnEditing({ pgn, onPgnChange: publishPgn, onPathChange: setCurrentPath });
+
   // Mantener pulsado «atrás» o «adelante» sigue recorriendo la partida: una
   // espera antes de arrancar, para no disparar la repetición en un clic normal,
   // y a partir de ahí una jugada cada poco.
@@ -240,16 +275,20 @@ export function GameViewer({
   );
   useEffect(() => stopRepeat, [stopRepeat]);
 
-  const goToStart = useCallback(() => setCurrentPath(""), []);
-  const goToPrevious = useCallback(() => setCurrentPath((path) => parentPathOf(path)), []);
+  const goToStart = useCallback(() => setCurrentPath(""), [setCurrentPath]);
+  const goToPrevious = useCallback(
+    () => setCurrentPath(parentPathOf(currentPathRef.current)),
+    [setCurrentPath],
+  );
   const goToNext = useCallback(() => {
     if (!tree) return;
-    setCurrentPath((path) => nextPathOf(tree, path) ?? path);
-  }, [tree]);
+    const next = nextPathOf(tree, currentPathRef.current);
+    if (next) setCurrentPath(next);
+  }, [tree, setCurrentPath]);
   const goToEnd = useCallback(() => {
     if (!tree) return;
-    setCurrentPath((path) => endPathOf(tree, path));
-  }, [tree]);
+    setCurrentPath(endPathOf(tree, currentPathRef.current));
+  }, [tree, setCurrentPath]);
 
   // Las flechas sólo actúan cuando el visor está a la vista o fue clickeado,
   // igual que ChessBoard: puede haber varios visores en una misma página.
@@ -371,15 +410,6 @@ export function GameViewer({
     setMenu(null);
   };
 
-  // Soltar el botón, sacar el dedo de encima o perder el puntero paran la
-  // repetición: si sólo parase al soltar, arrastrar fuera la dejaría corriendo.
-  const holdProps = (action: () => void) => ({
-    onPointerDown: () => startRepeat(action),
-    onPointerUp: stopRepeat,
-    onPointerLeave: stopRepeat,
-    onPointerCancel: stopRepeat,
-  });
-
   const nav = (
     <div className="game-viewer__nav">
       <button
@@ -396,7 +426,10 @@ export function GameViewer({
         title="Jugada anterior"
         onClick={goToPrevious}
         disabled={atStart}
-        {...holdProps(goToPrevious)}
+        onPointerDown={() => startRepeat(goToPrevious)}
+        onPointerUp={stopRepeat}
+        onPointerLeave={stopRepeat}
+        onPointerCancel={stopRepeat}
         className="game-viewer__nav-button"
       >
         <ArrowLeftIcon className="game-viewer__nav-icon" />
@@ -406,7 +439,12 @@ export function GameViewer({
         title="Jugada siguiente"
         onClick={goToNext}
         disabled={atEnd}
-        {...holdProps(goToNext)}
+        // Mantener pulsado recorre la partida; parar al soltar, al salir del
+        // botón o si el navegador cancela el gesto.
+        onPointerDown={() => startRepeat(goToNext)}
+        onPointerUp={stopRepeat}
+        onPointerLeave={stopRepeat}
+        onPointerCancel={stopRepeat}
         className="game-viewer__nav-button game-viewer__nav-button_emphasis_strong"
       >
         <ArrowRightIcon className="game-viewer__nav-icon" />

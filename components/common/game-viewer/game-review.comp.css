@@ -1,0 +1,271 @@
+.game-review {
+  padding: 16px 18px;
+
+  & .game-review__title {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .game-review__lead {
+    margin: 7px 0 0;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .game-review__start {
+    width: 100%;
+    margin-top: 14px;
+    padding: 11px 14px;
+    border: 0;
+    border-radius: 9px;
+    background: var(--platform-accent);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  & .game-review__start:hover:not(:disabled) {
+    background: var(--platform-accent-hover);
+  }
+
+  & .game-review__start:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* --- Mientras analiza --------------------------------------------------- */
+  & .game-review__head {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  & .game-review__percent {
+    margin-left: auto;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--platform-accent-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .game-review__track {
+    height: 6px;
+    margin-top: 11px;
+    border-radius: 1000px;
+    background: var(--platform-track);
+    overflow: hidden;
+  }
+
+  & .game-review__bar {
+    display: block;
+    height: 100%;
+    border-radius: 1000px;
+    background: var(--platform-accent);
+    transition: width 200ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .game-review__bar {
+      transition: none;
+    }
+  }
+
+  & .game-review__foot {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 11px;
+  }
+
+  & .game-review__note {
+    font-size: 11.5px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .game-review__note:last-of-type {
+    margin-left: auto;
+  }
+
+  & .game-review__cancel {
+    margin-left: auto;
+    padding: 5px 8px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--platform-text-muted);
+    cursor: pointer;
+  }
+
+  & .game-review__cancel:hover {
+    background: var(--platform-bg);
+    color: var(--platform-text);
+  }
+
+  & .game-review__error {
+    margin: 10px 0 0;
+    font-size: 12px;
+    color: var(--platform-danger);
+  }
+}
+
+/* Ya evaluada: la tarjeta se reparte en zonas y el relleno lo pone cada una,
+   para que la gráfica llegue de borde a borde. */
+.game-review.game-review_state_done {
+  padding: 0;
+
+  & .game-review__chart {
+    padding: 14px 18px 12px;
+  }
+
+  & .game-review__players {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--platform-border);
+    box-shadow: inset 0 1px 0 var(--platform-border);
+  }
+
+  & .game-review__player {
+    padding: 13px 14px;
+    background: var(--platform-surface);
+    min-width: 0;
+  }
+
+  & .game-review__player-head {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  & .game-review__chip {
+    flex: none;
+    width: 11px;
+    height: 11px;
+    border-radius: 1000px;
+    box-shadow: inset 0 0 0 1.5px var(--platform-text);
+  }
+
+  & .game-review__chip_side_white {
+    background: var(--platform-surface);
+  }
+
+  & .game-review__chip_side_black {
+    background: var(--platform-text);
+  }
+
+  & .game-review__player-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--platform-text);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  & .game-review__accuracy {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin: 9px 0 0;
+  }
+
+  & .game-review__accuracy-value {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--platform-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .game-review__accuracy-label {
+    font-size: 11.5px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .game-review__row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  & .game-review__row:first-of-type {
+    margin-top: 10px;
+  }
+
+  /* La pérdida media resume las tres filas de arriba: va separada por un filo. */
+  & .game-review__row.game-review__row_variant_total {
+    margin-top: 9px;
+    padding-top: 9px;
+    box-shadow: inset 0 1px 0 var(--platform-track);
+  }
+
+  /* Del amarillo al rojo según lo que costó el fallo. */
+  & .game-review__dot {
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 1000px;
+  }
+
+  & .game-review__dot_kind_inaccuracies {
+    background: var(--platform-warning-ink);
+  }
+
+  & .game-review__dot_kind_mistakes {
+    background: var(--platform-accent-hover);
+  }
+
+  & .game-review__dot_kind_blunders {
+    background: var(--platform-danger);
+  }
+
+  & .game-review__row-label {
+    flex: 1;
+    font-size: 12px;
+    color: var(--platform-text-muted);
+  }
+
+  & .game-review__row-value {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--platform-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .game-review__foot.game-review__foot_variant_strip {
+    margin-top: 0;
+    padding: 12px 18px;
+    background: var(--platform-surface-soft);
+    box-shadow: inset 0 1px 0 var(--platform-border);
+  }
+
+  & .game-review__again {
+    margin-left: auto;
+    padding: 7px 12px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: inset 0 0 0 1px var(--platform-border-strong);
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--platform-text);
+    cursor: pointer;
+  }
+
+  & .game-review__again:hover {
+    box-shadow: inset 0 0 0 1px var(--platform-text);
+  }
+}

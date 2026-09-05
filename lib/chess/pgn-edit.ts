@@ -295,6 +295,43 @@ export function setCommentText(game: Game<PgnNodeData>, path: string, text: stri
   return true;
 }
 
+/**
+ * Escribe la evaluación del módulo CONSERVANDO el texto y las flechas.
+ *
+ * Va en el mismo campo que ellos —`{Buena jugada [%cal Ge2e4] [%eval 0.34]}`—,
+ * así que se sustituye sólo su comando: `null` lo quita. `path` vacío es la
+ * posición de partida, cuya evaluación vive en el comentario de la raíz.
+ */
+export function setEvaluation(
+  game: Game<PgnNodeData>,
+  path: string,
+  evaluation: { score: number; mateIn: number | null } | null,
+): boolean {
+  const command =
+    evaluation === null
+      ? ""
+      : evaluation.mateIn !== null
+        ? `[%eval #${evaluation.mateIn}]`
+        : `[%eval ${evaluation.score.toFixed(2)}]`;
+
+  if (path.length === 0) {
+    game.comments = joinComment(...withEvaluation(game.comments, command));
+    return true;
+  }
+
+  const node = nodeAtPathIn(game, path);
+  if (!node) return false;
+
+  node.data.comments = joinComment(...withEvaluation(node.data.comments, command));
+  return true;
+}
+
+/** El comentario partido en texto y comandos, con el `[%eval]` sustituido. */
+function withEvaluation(comments: string[] | undefined, command: string): [string, string] {
+  const { text, commands } = splitComment(comments);
+  return [text, commands.replace(/\[%eval[^\]]*\]/g, "") + command];
+}
+
 /** Serializa las formas al formato que lee `parseCommentCommands`. */
 function makeShapeCommands(shapes: DrawShape[]): string {
   const arrows: string[] = [];

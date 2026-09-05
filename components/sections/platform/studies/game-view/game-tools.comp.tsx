@@ -14,11 +14,14 @@ import {
   type NagOption,
 } from "@/lib/chess/pgn-tree";
 import { downloadGameGif, downloadPositionImage } from "@/components/common/game-viewer/board-export";
+import { GameReview } from "@/components/common/game-viewer/game-review.comp";
+import { mainlinePositions } from "@/components/common/game-viewer/mainline-positions";
+import { reviewGame } from "@/lib/chess/game-review";
 import { sanToSpanish } from "@/lib/chess/notation";
 import { plainMovetext } from "@/lib/chess/plain-movetext";
 import "./game-tools.comp.css";
 
-export type GameToolsTab = "comment" | "quality" | "share";
+export type GameToolsTab = "comment" | "quality" | "review" | "share";
 
 /**
  * Los tres grupos, repartidos en dos columnas: a la izquierda lo que califica
@@ -60,6 +63,11 @@ interface GameToolsProps {
    * para que dos peticiones seguidas sobre la misma pestaña se distingan.
    */
   focusRequest: number;
+  /** Los nombres, para las tarjetas de precisión de la evaluación. */
+  white: string;
+  black: string;
+  /** Llevar el tablero a una jugada, que es lo que hace la gráfica al pulsarla. */
+  onSelectPath: (path: string) => void;
   onPgnChange: (pgn: string) => void;
 }
 
@@ -71,6 +79,9 @@ export function GameTools({
   tab,
   onTabChange,
   focusRequest,
+  white,
+  black,
+  onSelectPath,
   onPgnChange,
 }: GameToolsProps) {
   const [copied, setCopied] = useState<"fen" | "pgn" | "plain" | null>(null);
@@ -109,6 +120,9 @@ export function GameTools({
   const nags = node?.nags ?? [];
   const plainPgn = useMemo(() => plainMovetext(pgn), [pgn]);
   const glyphs = nags.map(nagGlyph).join("");
+  // Para la insignia de la pestaña: si la partida ya está evaluada, su precisión
+  // se lee del propio PGN sin volver a analizar nada.
+  const review = useMemo(() => (tree ? reviewGame(mainlinePositions(tree)) : null), [tree]);
 
   // Los signos con pareja (blancas/negras) se escriben según de quién sea la
   // jugada; en la posición de partida no hay ninguna y el panel está apagado.
@@ -170,6 +184,7 @@ export function GameTools({
 
   const tabs: { key: GameToolsTab; label: string }[] = [
     ...(canEdit ? ([{ key: "comment", label: "Comentario" }, { key: "quality", label: "Calidad" }] as const) : []),
+    { key: "review", label: "Evaluación" },
     { key: "share", label: "Compartir" },
   ];
 
@@ -194,6 +209,13 @@ export function GameTools({
             )}
             {option.key === "quality" && glyphs.length > 0 && (
               <span className="game-tools__tab-badge">{glyphs}</span>
+            )}
+            {/* Las dos precisiones, blancas primero: cuál es «la tuya» sólo lo
+                sabe quien mira, así que se enseñan las dos. */}
+            {option.key === "review" && review && (
+              <span className="game-tools__tab-badge">
+                {review.white.accuracy} · {review.black.accuracy}
+              </span>
             )}
           </button>
         ))}
@@ -267,6 +289,18 @@ export function GameTools({
               : "Elige una jugada de la lista para calificarla."}
           </p>
         </>
+      )}
+
+      {tab === "review" && (
+        <GameReview
+          pgn={pgn}
+          canEdit={canEdit}
+          white={white}
+          black={black}
+          currentPath={currentPath}
+          onSelectPath={onSelectPath}
+          onPgnChange={onPgnChange}
+        />
       )}
 
       {tab === "share" && (

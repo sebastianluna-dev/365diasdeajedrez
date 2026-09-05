@@ -1,0 +1,59 @@
+.game-review-chart {
+  & .game-review-chart__plot {
+    display: block;
+    /* Recorre la partida al arrastrar, así que no se selecciona texto ni se
+       desplaza la página por el camino. */
+    touch-action: none;
+    cursor: pointer;
+  }
+
+  & .game-review-chart__ground {
+    fill: var(--platform-surface-neutral);
+  }
+
+  & .game-review-chart__area_side_white {
+    fill: var(--platform-surface);
+  }
+
+  & .game-review-chart__area_side_black {
+    fill: var(--platform-text);
+  }
+
+  & .game-review-chart__axis {
+    stroke: var(--platform-border-strong);
+    stroke-width: 1;
+  }
+
+  & .game-review-chart__line {
+    stroke: var(--platform-accent);
+    stroke-width: 2;
+    stroke-linejoin: round;
+  }
+
+  & .game-review-chart__cursor {
+    stroke: var(--platform-accent-ink);
+    stroke-width: 1.5;
+  }
+
+  & .game-review-chart__phases {
+    display: flex;
+    margin-top: 5px;
+  }
+
+  & .game-review-chart__phase {
+    flex: none;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--platform-text-subtle);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  /* La última se queda con lo que sobre: las otras dos miden lo que dura su
+     fase, y redondear tres porcentajes nunca suma cien exacto. */
+  & .game-review-chart__phase.game-review-chart__phase_last {
+    flex: 1;
+  }
+}
