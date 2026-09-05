@@ -5,8 +5,6 @@ import {
   getLessonAdmin,
   listCollectionGames,
   listExerciseModes,
-  listInitialPositionTypes,
-  listPresentationModes,
   listTopics,
 } from "@/services/staff-courses/staff-courses.service";
 
@@ -29,9 +27,7 @@ export default async function StaffLessonPage({ params, searchParams }: StaffLes
   if (!lesson || lesson.courseId !== courseId) notFound();
 
   const { error, partida } = await searchParams;
-  const [presentationModes, initialPositionTypes, exerciseModes, topics, courseGames] = await Promise.all([
-    listPresentationModes(),
-    listInitialPositionTypes(),
+  const [exerciseModes, topics, courseGames] = await Promise.all([
     listExerciseModes(),
     listTopics(),
     listCollectionGames({ chapterId }, partida),
@@ -42,8 +38,6 @@ export default async function StaffLessonPage({ params, searchParams }: StaffLes
     <div className="platform-page staff-lesson-page">
       <LessonEditorSection
         lesson={lesson}
-        presentationModes={presentationModes}
-        initialPositionTypes={initialPositionTypes}
         exerciseModes={exerciseModes}
         topics={topics}
         courseGames={courseGames}

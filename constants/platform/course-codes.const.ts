@@ -32,18 +32,3 @@ export const LEVEL = {
 } as const;
 
 export type LevelCode = (typeof LEVEL)[keyof typeof LEVEL];
-
-export const PRESENTATION_MODE = {
-  MOVE_SEQUENCE: "MOVE_SEQUENCE",
-  GAME_ANALYSIS: "GAME_ANALYSIS",
-  STATIC_DIAGRAMS: "STATIC_DIAGRAMS",
-} as const;
-
-export type PresentationModeCode = (typeof PRESENTATION_MODE)[keyof typeof PRESENTATION_MODE];
-
-export const INITIAL_POSITION_TYPE = {
-  STARTING_POSITION: "STARTING_POSITION",
-  FEN: "FEN",
-} as const;
-
-export type InitialPositionTypeCode = (typeof INITIAL_POSITION_TYPE)[keyof typeof INITIAL_POSITION_TYPE];

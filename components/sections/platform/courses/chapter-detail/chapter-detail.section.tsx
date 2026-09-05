@@ -1,3 +1,4 @@
+import { PriorityFilter } from "@/components/common/priority-filter.comp";
 import Link from "next/link";
 import { ProgressIndicator } from "@/components/common/progress-indicator.comp";
 import type { ChapterView } from "@/services/courses/courses.types";
@@ -60,8 +61,23 @@ export function ChapterDetailSection({ chapter }: ChapterDetailSectionProps) {
         </div>
       </header>
 
-      <h2 className="chapter-detail__lessons-title">Lecciones</h2>
-      <LessonList lessons={chapter.lessons} />
+      <div className="chapter-detail__lessons-head">
+        <h2 className="chapter-detail__lessons-title">Lecciones</h2>
+        <PriorityFilter
+          courseId={chapter.courseId}
+          enabled={chapter.onlyPriorityLessons}
+          hiddenLessons={chapter.hiddenLessons}
+        />
+      </div>
+
+      {chapter.lessons.length === 0 && chapter.onlyPriorityLessons ? (
+        <p className="chapter-detail__warning">
+          Este capítulo no tiene ninguna lección marcada como imprescindible. Quita el filtro para ver las{" "}
+          {chapter.hiddenLessons} que tiene.
+        </p>
+      ) : (
+        <LessonList lessons={chapter.lessons} />
+      )}
     </section>
   );
 }

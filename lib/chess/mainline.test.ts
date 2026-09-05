@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractMainline } from "./mainline";
+import { extractMainline, startFenOf } from "./mainline";
 
 describe("extractMainline", () => {
   it("sigue la línea principal e ignora las variantes", () => {
@@ -36,5 +36,31 @@ describe("extractMainline", () => {
     // parsePgnTree corta la rama mala y avisa; la línea principal sobrevive.
     const result = extractMainline("1. e4 e5 ( 1... Nf3 ) 2. Nf3 *")!;
     expect(result.sans).toEqual(["e4", "e5", "Nf3"]);
+  });
+});
+
+describe("startFenOf", () => {
+  const DIAGRAMA = "1brr2k1/1b3pp1/pp2pqnp/4N2Q/3P4/1B4R1/PP1B1PPP/4R1K1 w - - 0 1";
+
+  it("devuelve el FEN de partida cuando el PGN lo trae", () => {
+    expect(startFenOf(`[SetUp "1"]\n[FEN "${DIAGRAMA}"]\n\n1. Nxg6 *`)).toBe(DIAGRAMA);
+  });
+
+  it("responde también SIN jugadas, que es donde `extractMainline` se rinde", () => {
+    // Un diagrama suelto es contenido legítimo de una lección —casi todas las
+    // del curso de Kotov lo son— y quien sólo quiere la posición no debería
+    // quedarse sin respuesta por no haber línea que entrenar.
+    const soloDiagrama = `[SetUp "1"]\n[FEN "${DIAGRAMA}"]\n\n*`;
+    expect(extractMainline(soloDiagrama)).toBeNull();
+    expect(startFenOf(soloDiagrama)).toBe(DIAGRAMA);
+  });
+
+  it("la posición de partida es null: no aporta nada guardarla", () => {
+    expect(startFenOf("1. e4 e5 *")).toBeNull();
+    expect(startFenOf("*")).toBeNull();
+  });
+
+  it("un PGN ilegible es null en vez de una excepción", () => {
+    expect(startFenOf("esto no es un pgn")).toBeNull();
   });
 });

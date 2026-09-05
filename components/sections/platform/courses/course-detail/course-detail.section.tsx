@@ -1,3 +1,4 @@
+import { PriorityFilter } from "@/components/common/priority-filter.comp";
 import Image from "next/image";
 import Link from "next/link";
 import { ProgressIndicator } from "@/components/common/progress-indicator.comp";
@@ -58,15 +59,41 @@ export function CourseDetailSection({ course }: CourseDetailSectionProps) {
               {course.ctaLabel} curso
             </Link>
           </div>
+
         </div>
 
-        {/* Mismo destino que «Continuar curso», que ya lo nombra: fuera del
-            recorrido de teclado para no anunciar dos veces el mismo enlace. */}
-        <Link href={course.continueHref} className="course-detail__cover" tabIndex={-1} aria-hidden="true">
-          {course.cover && (
-            <Image src={course.cover} alt="" fill sizes={COVER_SIZES} className="course-detail__cover-image" />
-          )}
-        </Link>
+        {/* La portada y, colgando de ella, el filtro: se apoya en el pie de la
+            columna para caer a la altura de la barra de progreso de al lado. */}
+        <div className="course-detail__aside">
+          {/* Mismo destino que «Continuar curso», que ya lo nombra: fuera del
+              recorrido de teclado para no anunciar dos veces el mismo enlace. */}
+          <Link href={course.continueHref} className="course-detail__cover" tabIndex={-1} aria-hidden="true">
+            {course.cover && (
+              <Image
+                src={course.cover}
+                alt=""
+                fill
+                sizes={COVER_SIZES}
+                className="course-detail__cover-image"
+              />
+            )}
+          </Link>
+
+          <div className="course-detail__filter">
+            <PriorityFilter
+              courseId={course.id}
+              enabled={course.onlyPriorityLessons}
+              hiddenLessons={course.hiddenLessons}
+            />
+
+            {course.onlyPriorityLessons && totalLessons === 0 && (
+              <p className="course-detail__warning">
+                Ninguna lección de este curso está marcada como imprescindible. Quita el filtro para verlas
+                todas.
+              </p>
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="course-detail__chapters">

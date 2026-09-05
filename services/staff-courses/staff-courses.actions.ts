@@ -1,6 +1,5 @@
 "use server";
 
-import { parseFen } from "chessops/fen";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
@@ -8,8 +7,6 @@ import {
   AUTHOR_ROLE,
   COURSE_STATUS,
   COURSE_TYPE,
-  INITIAL_POSITION_TYPE,
-  PRESENTATION_MODE,
 } from "@/constants/platform/course-codes.const";
 import { CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
 import { EXERCISE_MODE } from "@/constants/platform/training-codes.const";
@@ -26,7 +23,12 @@ import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_SOURCE } from "@/constants/platform/study-codes.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
-import { lessonHasContent, lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
+import {
+  lessonHasContent,
+  lessonPgnOf,
+  lessonPgnSelect,
+  lessonStartFenOf,
+} from "@/services/shared/lesson-pgn";
 import { parseImportedGames } from "@/services/shared/pgn-import";
 import {
   nextOrder,
@@ -496,8 +498,6 @@ export async function createLesson(courseId: string, chapterId: string, formData
       chapter: { connect: { id: chapter.id } },
       name,
       order: nextOrder(count),
-      presentationMode: { connect: { code: PRESENTATION_MODE.MOVE_SEQUENCE } },
-      initialPositionType: { connect: { code: INITIAL_POSITION_TYPE.STARTING_POSITION } },
       orientation: { connect: { code: CONTENT_ORIENTATIONS[0] } },
       pgn: "",
     },
@@ -517,25 +517,11 @@ export async function updateLesson(
   if (!(await allowAction(`${staff.user.id}:lesson-update`, 60, 60_000))) fail(lessonPath, "throttled");
 
   const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
-  const presentationModeCode = readText(formData, "presentationModeCode");
-  const initialPositionTypeCode = readText(formData, "initialPositionTypeCode");
   const orientationCode = readText(formData, "orientationCode");
 
-  if (
-    name.length === 0 ||
-    !isCode(presentationModeCode, PRESENTATION_MODE) ||
-    !isCode(initialPositionTypeCode, INITIAL_POSITION_TYPE) ||
-    !(CONTENT_ORIENTATIONS as readonly string[]).includes(orientationCode)
-  ) {
+  if (name.length === 0 || !(CONTENT_ORIENTATIONS as readonly string[]).includes(orientationCode)) {
     fail(lessonPath, "invalid");
   }
-
-  // Coherencia documentada en el schema: initialFen sólo cuando el tipo es FEN,
-  // y obligatorio en ese caso.
-  const initialFenRaw = readText(formData, "initialFen");
-  const usesFen = initialPositionTypeCode === INITIAL_POSITION_TYPE.FEN;
-  if (usesFen && (initialFenRaw.length === 0 || parseFen(initialFenRaw).isErr)) fail(lessonPath, "fen");
-  const initialFen = usesFen ? initialFenRaw : null;
 
   const topicIds = formData
     .getAll("topicIds")
@@ -570,9 +556,6 @@ export async function updateLesson(
         description: readOptionalText(formData, "description", DESCRIPTION_MAX_LENGTH),
         isPriority: readBoolean(formData, "isPriority"),
         estimatedDuration: readClampedInt(formData, "estimatedDuration", 0, DURATION_MAX),
-        presentationMode: { connect: { code: presentationModeCode } },
-        initialPositionType: { connect: { code: initialPositionTypeCode } },
-        initialFen,
         orientation: { connect: { code: orientationCode } },
         isTrainable,
         trainingColor: trainingColor ? { connect: { code: trainingColor } } : { disconnect: true },
@@ -737,21 +720,28 @@ function readExerciseInput(formData: FormData, failPath: string): ExerciseInput 
 }
 
 /**
- * Deriva la copia congelada con el MISMO módulo que usa el seed, sobre el
- * `initialFen` actual de la lección. Si alguna jugada es ilegal se aborta sin
- * escribir: es mejor rechazar aquí que dejar un ejercicio que el entrenador no
- * puede reproducir.
+ * Deriva la copia congelada con el MISMO módulo que usa el seed, sobre la
+ * posición desde la que arranca el CONTENIDO EFECTIVO de la lección —el de su
+ * partida vinculada, si la tiene—.
+ *
+ * Antes salía de `Lesson.initialFen`, que era una segunda copia del mismo dato
+ * y quedó desalineada al vincular partidas: congelaba las jugadas contra un
+ * tablero que el alumno no llega a ver. Ahora sale del PGN, como en
+ * `syncLessonTrainingExercise`.
+ *
+ * Si alguna jugada es ilegal se aborta sin escribir: es mejor rechazar aquí que
+ * dejar un ejercicio que el entrenador no puede reproducir.
  */
 async function deriveForLesson(lessonId: string, input: ExerciseInput, failPath: string) {
   const lesson = await getPlatformDb().lesson.findUnique({
     where: { id: lessonId },
-    select: { id: true, initialFen: true },
+    select: { id: true, ...lessonPgnSelect },
   });
   if (!lesson) fail(failPath, "courseMissing");
 
   try {
     return deriveExerciseData({
-      initialFen: lesson.initialFen,
+      initialFen: lessonStartFenOf(lesson),
       afterSans: input.afterSans,
       lineSans: input.lineSans,
     });

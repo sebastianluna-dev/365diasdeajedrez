@@ -18,8 +18,6 @@ import "./lesson-editor.section.css";
 
 interface LessonEditorSectionProps {
   lesson: LessonAdminDetail;
-  presentationModes: CatalogOption[];
-  initialPositionTypes: CatalogOption[];
   exerciseModes: CatalogOption[];
   topics: TopicOption[];
   /** Partidas de la colección del curso que casan con la búsqueda. */
@@ -44,8 +42,6 @@ const METADATA_FORM_ID = "lesson-metadata";
  */
 export function LessonEditorSection({
   lesson,
-  presentationModes,
-  initialPositionTypes,
   exerciseModes,
   topics,
   courseGames,
@@ -190,17 +186,10 @@ export function LessonEditorSection({
               <textarea name="description" defaultValue={lesson.description ?? ""} maxLength={1000} />
             </FormField>
 
+            {/* La posición desde la que arranca la lección NO se teclea: sale
+                de la cabecera [FEN] de la partida vinculada, que es la única
+                fuente de su contenido. */}
             <div className="lesson-editor__pair">
-              <FormField label="Modo de presentación">
-                <select name="presentationModeCode" defaultValue={lesson.presentationModeCode}>
-                  {presentationModes.map((mode) => (
-                    <option key={mode.code} value={mode.code}>
-                      {mode.label}
-                    </option>
-                  ))}
-                </select>
-              </FormField>
-
               <FormField label="Orientación del tablero">
                 <select name="orientationCode" defaultValue={lesson.orientationCode}>
                   {CONTENT_ORIENTATIONS.map((code) => (
@@ -210,30 +199,16 @@ export function LessonEditorSection({
                   ))}
                 </select>
               </FormField>
-            </div>
 
-            <div className="lesson-editor__pair">
-              <FormField
-                label="Posición inicial"
-                hint="Con «FEN» hay que indicar la posición; con «posición de partida» se deja vacía."
-              >
-                <select name="initialPositionTypeCode" defaultValue={lesson.initialPositionTypeCode}>
-                  {initialPositionTypes.map((type) => (
-                    <option key={type.code} value={type.code}>
-                      {type.label}
-                    </option>
-                  ))}
-                </select>
-              </FormField>
-
-              <FormField label="FEN inicial">
-                <input type="text" name="initialFen" defaultValue={lesson.initialFen ?? ""} maxLength={120} />
+              <FormField label="Duración estimada (minutos, opcional)">
+                <input
+                  type="number"
+                  name="estimatedDuration"
+                  min={0}
+                  defaultValue={lesson.estimatedDuration ?? ""}
+                />
               </FormField>
             </div>
-
-            <FormField label="Duración estimada (minutos, opcional)">
-              <input type="number" name="estimatedDuration" min={0} defaultValue={lesson.estimatedDuration ?? ""} />
-            </FormField>
 
             <FormFieldset legend="Temas">
               {topics.map((topic) => (

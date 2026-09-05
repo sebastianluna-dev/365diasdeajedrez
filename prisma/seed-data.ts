@@ -8,9 +8,7 @@ import {
   AUTHOR_ROLE,
   COURSE_STATUS,
   COURSE_TYPE,
-  INITIAL_POSITION_TYPE,
   LEVEL,
-  PRESENTATION_MODE,
 } from "../constants/platform/course-codes.const";
 import { BOARD_ORIENTATION, OWNER_TYPE, PROGRESS_STATUS, TOPIC } from "../constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "../constants/platform/study-codes.const";
@@ -49,15 +47,6 @@ export const CATALOG_VALUES = {
     [LEVEL.INTERMEDIATE, "Intermedio"],
     [LEVEL.ADVANCED, "Avanzado"],
     [LEVEL.EXPERT, "Experto"],
-  ],
-  presentationMode: [
-    [PRESENTATION_MODE.MOVE_SEQUENCE, "Secuencia de jugadas"],
-    [PRESENTATION_MODE.GAME_ANALYSIS, "Análisis de partida"],
-    [PRESENTATION_MODE.STATIC_DIAGRAMS, "Diagramas estáticos"],
-  ],
-  initialPositionType: [
-    [INITIAL_POSITION_TYPE.STARTING_POSITION, "Posición inicial"],
-    [INITIAL_POSITION_TYPE.FEN, "Posición FEN"],
   ],
   boardOrientation: [
     [BOARD_ORIENTATION.WHITE, "Blancas"],
@@ -289,9 +278,6 @@ export interface SeedLesson {
   description: string;
   isPriority: boolean;
   estimatedDuration: number;
-  presentationMode: string;
-  initialPositionType: string;
-  initialFen: string | null;
   orientation: string;
   pgn: string;
   topics: string[];
@@ -343,9 +329,6 @@ export const COURSES: SeedCourse[] = [
             description: "La jugada 1...c5 y el desequilibrio central que define la apertura.",
             isPriority: true,
             estimatedDuration: 15,
-            presentationMode: PRESENTATION_MODE.MOVE_SEQUENCE,
-            initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-            initialFen: null,
             orientation: BOARD_ORIENTATION.BLACK,
             topics: [TOPIC.OPENING_LINE],
             exercises: [],
@@ -358,9 +341,6 @@ export const COURSES: SeedCourse[] = [
             description: "Columna c semiabierta, mayoría central blanca y los planes de cada bando.",
             isPriority: false,
             estimatedDuration: 15,
-            presentationMode: PRESENTATION_MODE.MOVE_SEQUENCE,
-            initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-            initialFen: null,
             orientation: BOARD_ORIENTATION.BLACK,
             topics: [TOPIC.OPENING_LINE, TOPIC.PAWN_STRUCTURE],
             exercises: [],
@@ -373,9 +353,6 @@ export const COURSES: SeedCourse[] = [
             description: "El plan liberador del negro en las estructuras Scheveningen.",
             isPriority: true,
             estimatedDuration: 15,
-            presentationMode: PRESENTATION_MODE.MOVE_SEQUENCE,
-            initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-            initialFen: null,
             orientation: BOARD_ORIENTATION.BLACK,
             topics: [TOPIC.OPENING_LINE, TOPIC.STRATEGY],
             exercises: [],
@@ -397,9 +374,6 @@ export const COURSES: SeedCourse[] = [
             description: "Por qué 5...a6 es útil y cómo responde el negro a los montajes principales.",
             isPriority: true,
             estimatedDuration: 20,
-            presentationMode: PRESENTATION_MODE.MOVE_SEQUENCE,
-            initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-            initialFen: null,
             orientation: BOARD_ORIENTATION.BLACK,
             topics: [TOPIC.OPENING_LINE],
             pgn: `1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 {La jugada que define la Najdorf: controla b5 y prepara ...e5 y ...b5 sin sobresaltos. [%csl Gb5][%cal Ga6b5,Gb7b5,Ge7e5]} 6. Be3 ( 6. Bg5 e6 7. f4 {La línea principal clásica, agudísima: aquí nace el Peón Envenenado.} ) ( 6. Be2 e5 {Contra la tranquila 6.Ae2 el negro toma el centro de inmediato.} 7. Nb3 Be7 ) 6... e5 {La respuesta principal contra el Ataque Inglés.} 7. Nb3 Be6 8. f3 Be7 *`,
@@ -421,9 +395,6 @@ export const COURSES: SeedCourse[] = [
             description: "La variante 7...Db6: el negro toma b2 y sobrevive para contarlo.",
             isPriority: false,
             estimatedDuration: 20,
-            presentationMode: PRESENTATION_MODE.MOVE_SEQUENCE,
-            initialPositionType: INITIAL_POSITION_TYPE.STARTING_POSITION,
-            initialFen: null,
             orientation: BOARD_ORIENTATION.BLACK,
             topics: [TOPIC.OPENING_LINE, TOPIC.TACTICS],
             pgn: `1. e4 c5 2. Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. Bg5 e6 7. f4 Qb6 {La Variante del Peón Envenenado: la dama ataca b2 y desafía al blanco a demostrar la compensación. [%csl Rb2][%cal Gb6b2]} 8. Qd2 ( 8. Nb3 {Demasiado pasiva: el negro iguala con comodidad.} 8... Be7 ) 8... Qxb2 9. Rb1 Qa3 {La posición crítica, analizada hasta la jugada 30 en la teoría moderna. El negro tiene un peón; el blanco, iniciativa. [%csl Ra3]} *`,
@@ -465,9 +436,6 @@ export const COURSES: SeedCourse[] = [
             description: "El puente: la técnica universal para ganar con torre y peón de más.",
             isPriority: true,
             estimatedDuration: 18,
-            presentationMode: PRESENTATION_MODE.MOVE_SEQUENCE,
-            initialPositionType: INITIAL_POSITION_TYPE.FEN,
-            initialFen: "1K6/1P1k4/8/8/8/8/r7/2R5 w - - 0 1",
             orientation: BOARD_ORIENTATION.WHITE,
             topics: [TOPIC.ENDGAME],
             pgn: `[FEN "1K6/1P1k4/8/8/8/8/r7/2R5 w - - 0 1"]
@@ -491,9 +459,6 @@ export const COURSES: SeedCourse[] = [
             description: "La torre en la tercera fila: el método de tablas que hay que saber de memoria.",
             isPriority: true,
             estimatedDuration: 17,
-            presentationMode: PRESENTATION_MODE.MOVE_SEQUENCE,
-            initialPositionType: INITIAL_POSITION_TYPE.FEN,
-            initialFen: "4k3/8/8/4PK2/8/8/r7/4R3 b - - 0 1",
             orientation: BOARD_ORIENTATION.BLACK,
             topics: [TOPIC.ENDGAME],
             pgn: `[FEN "4k3/8/8/4PK2/8/8/r7/4R3 b - - 0 1"]

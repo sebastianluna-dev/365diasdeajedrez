@@ -3,8 +3,6 @@ import {
   type AuthorRoleCode,
   type CourseStatusCode,
   type CourseTypeCode,
-  type InitialPositionTypeCode,
-  type PresentationModeCode,
 } from "@/constants/platform/course-codes.const";
 import type { BoardOrientationCode } from "@/constants/platform/shared-codes.const";
 import type { ExerciseModeCode } from "@/constants/platform/training-codes.const";
@@ -301,15 +299,12 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
       isTrainable: true,
       trainingColor: { select: { code: true } },
       estimatedDuration: true,
-      initialFen: true,
       pgn: true,
       game: {
         select: { id: true, title: true, white: true, black: true, event: true, eco: true, playedAt: true, pgn: true },
       },
       gameId: true,
       pgnUpdatedAt: true,
-      presentationMode: { select: { code: true } },
-      initialPositionType: { select: { code: true } },
       orientation: { select: { code: true } },
       chapter: {
         select: {
@@ -351,9 +346,6 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
     isTrainable: lesson.isTrainable,
     trainingColorCode: lesson.trainingColor?.code,
     estimatedDuration: lesson.estimatedDuration ?? undefined,
-    presentationModeCode: lesson.presentationMode.code as PresentationModeCode,
-    initialPositionTypeCode: lesson.initialPositionType.code as InitialPositionTypeCode,
-    initialFen: lesson.initialFen ?? undefined,
     orientationCode: lesson.orientation.code as BoardOrientationCode,
     canDelete:
       lesson.chapter.course.status.code === COURSE_STATUS.DRAFT && lesson._count.progresses === 0,
@@ -428,16 +420,6 @@ export async function listLevels(): Promise<CatalogOption[]> {
 export async function listTopics(): Promise<TopicOption[]> {
   await requireStaff();
   return getPlatformDb().topic.findMany({ select: { id: true, code: true, label: true }, orderBy: { order: "asc" } });
-}
-
-export async function listPresentationModes(): Promise<CatalogOption[]> {
-  await requireStaff();
-  return getPlatformDb().presentationMode.findMany({ select: { code: true, label: true }, orderBy: { order: "asc" } });
-}
-
-export async function listInitialPositionTypes(): Promise<CatalogOption[]> {
-  await requireStaff();
-  return getPlatformDb().initialPositionType.findMany({ select: { code: true, label: true }, orderBy: { order: "asc" } });
 }
 
 export async function listExerciseModes(): Promise<CatalogOption[]> {

@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { ACTIVITY_TYPE, SUBJECT_TYPE } from "@/constants/platform/activity-codes.const";
-import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
+import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
+import { BOARD_ORIENTATION, PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
@@ -197,4 +198,53 @@ export async function completeLesson(lessonId: string): Promise<void> {
   }
 
   revalidateLessonPaths(lesson.chapter.courseId, lesson.chapter.order, lessonId);
+}
+
+/**
+ * Enciende o apaga el filtro de lecciones imprescindibles de un curso.
+ *
+ * Es una LENTE, no un cambio en lo que el curso es: escribe exactamente una
+ * fila —la de los ajustes— y no toca ni una de progreso. Por eso encenderlo y
+ * apagarlo es gratis y reversible; el avance que había sigue donde estaba.
+ *
+ * El valor llega como argumento ligado y no por el formulario a propósito:
+ * `readBoolean` es por presencia, así que una casilla no puede transmitir
+ * «false» y apagar el filtro sería imposible.
+ */
+export async function setOnlyPriorityLessons(courseId: string, enabled: boolean): Promise<void> {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  if (!(await allowAction(`${user.id}:course-settings`, 30, 60_000))) return;
+
+  // Sólo cursos publicados: un POST directo no debe poder sembrar ajustes de
+  // cursos en borrador ni de ids inventados.
+  const course = await db.course.findFirst({
+    where: { id: courseId, status: { code: COURSE_STATUS.PUBLISHED } },
+    select: { id: true, chapters: { select: { order: true } } },
+  });
+  if (!course) return;
+
+  await db.userCourseSettings.upsert({
+    where: { userId_courseId: { userId: user.id, courseId } },
+    update: { onlyPriorityLessons: enabled },
+    // `boardOrientationId` es NOT NULL y sin valor por defecto. Si la fila la
+    // crea este interruptor, se conecta AUTO: un filtro de lecciones no puede
+    // fijar de tapadillo la orientación del tablero.
+    create: {
+      user: { connect: { id: user.id } },
+      course: { connect: { id: courseId } },
+      onlyPriorityLessons: enabled,
+      boardOrientation: { connect: { code: BOARD_ORIENTATION.AUTO } },
+    },
+  });
+
+  revalidatePath(platformRoutes.courses);
+  revalidatePath(platformRoutes.dashboard);
+  revalidatePath(platformRoutes.courseDetail(courseId));
+  for (const chapter of course.chapters) {
+    revalidatePath(platformRoutes.chapterDetail(courseId, chapter.order));
+  }
+  // El anterior/siguiente de TODAS las lecciones cambia; enumerarlas serían
+  // ciento y pico rutas, así que se revalida el patrón.
+  revalidatePath("/lecciones/[lessonId]", "page");
 }

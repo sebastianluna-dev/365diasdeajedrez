@@ -22,7 +22,7 @@
 //   studentId WHERE endedAt IS NULL (un profesor activo por alumno).
 // Reglas que se validan en la capa de servicios (imposibles en CHECK sin
 // cruzar tablas): coherencia ownerType↔columna poblada, ClassBlock.kind↔campo
-// usado, Lesson.initialFen nulo sólo cuando initialPositionType=STARTING_POSITION.
+// usado.
 
 generator client {
   provider = "prisma-client"
@@ -73,24 +73,6 @@ model Level {
   isActive Boolean @default(true)
 
   courseLevels CourseLevel[]
-}
-
-model PresentationMode {
-  id    Int    @id @default(autoincrement())
-  code  String @unique
-  label String
-  order Int    @default(0)
-
-  lessons Lesson[]
-}
-
-model InitialPositionType {
-  id    Int    @id @default(autoincrement())
-  code  String @unique
-  label String
-  order Int    @default(0)
-
-  lessons Lesson[]
 }
 
 /// Orientación del tablero. Catálogo compartido por Lesson, Position y
@@ -357,20 +339,16 @@ model Chapter {
 
 model Lesson {
   /// Numérico de 8 dígitos: va en la URL del alumno (`/lecciones/02482009`).
-  id                    String    @id
-  chapterId             String
-  name                  String
-  description           String?
-  order                 Int
+  id                String    @id
+  chapterId         String
+  name              String
+  description       String?
+  order             Int
   /// Lección imprescindible del curso (marca editorial; el filtro es del alumno).
-  isPriority            Boolean   @default(false)
+  isPriority        Boolean   @default(false)
   /// Minutos estimados.
-  estimatedDuration     Int?
-  presentationModeId    Int
-  initialPositionTypeId Int
-  /// Nulo cuando initialPositionType = STARTING_POSITION (regla de servicios).
-  initialFen            String?
-  orientationId         Int
+  estimatedDuration Int?
+  orientationId     Int
   /// Partida de la colección del curso de la que sale el contenido.
   ///
   /// Cuando está puesta MANDA ELLA: el contenido de la lección es el PGN de esa
@@ -380,33 +358,31 @@ model Lesson {
   ///
   /// Quién manda se resuelve en UN solo sitio: `lessonPgnOf`
   /// (services/shared/lesson-pgn.ts). Nadie debe leer `pgn` por su cuenta.
-  gameId                String?
+  gameId            String?
   /// El contenido propio de la lección. Inerte mientras haya `gameId`; se
   /// conserva y no se borra al vincular, para que desvincular devuelva la
   /// lección a lo que tenía.
-  pgn                   String    @db.Text
+  pgn               String    @db.Text
   /// Cuándo cambió `pgn` por última vez. Es lo que marca como desactualizados
   /// los ejercicios congelados antes del cambio.
-  pgnUpdatedAt          DateTime?
+  pgnUpdatedAt      DateTime?
   /// La lección puede entrenarse de memoria en el Move Trainer. Al activarla se
   /// deriva un TrainingExercise con SU LÍNEA PRINCIPAL; las variantes siguen
   /// existiendo para el modo estudiar, pero el repaso no las evalúa.
-  isTrainable           Boolean   @default(false)
+  isTrainable       Boolean   @default(false)
   /// Bando que juega el ALUMNO al entrenar, cuando no es el que mueve primero.
   /// Nulo = el que mueva primero en la línea. Sirve para los repertorios de
   /// negras: en «1.e4 c6 2.d4 d5» el alumno debe responder c6 y d5, no jugar e4.
   /// Es distinto de `orientation`, que sólo decide cómo se ve el tablero.
-  trainingColorId       Int?
+  trainingColorId   Int?
 
-  chapter             Chapter             @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapter       Chapter           @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   /// SetNull y no Cascade: si alguien borra la partida de la colección, la
   /// lección sigue existiendo —con su nombre, sus temas y su progreso— y se
   /// queda sin contenido hasta que se le vincule otra.
-  game                Game?               @relation(fields: [gameId], references: [id], onDelete: SetNull)
-  presentationMode    PresentationMode    @relation(fields: [presentationModeId], references: [id])
-  initialPositionType InitialPositionType @relation(fields: [initialPositionTypeId], references: [id])
-  orientation         BoardOrientation    @relation(fields: [orientationId], references: [id])
-  trainingColor       BoardOrientation?   @relation("LessonTrainingColor", fields: [trainingColorId], references: [id])
+  game          Game?             @relation(fields: [gameId], references: [id], onDelete: SetNull)
+  orientation   BoardOrientation  @relation(fields: [orientationId], references: [id])
+  trainingColor BoardOrientation? @relation("LessonTrainingColor", fields: [trainingColorId], references: [id])
 
   exercises        TrainingExercise[]
   trainings        UserLessonTraining[]

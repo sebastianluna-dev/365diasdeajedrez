@@ -7,7 +7,10 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) 470px;
     gap: 34px;
-    align-items: start;
+    /* `stretch` y no `start`: la columna de la portada tiene que llegar hasta
+       abajo para poder apoyar el filtro a la altura de la barra de progreso.
+       La portada no se deforma porque su alto lo fija su `aspect-ratio`. */
+    align-items: stretch;
     padding: 32px;
     background: var(--platform-surface);
     border-radius: 10px;
@@ -93,7 +96,36 @@
     font-size: 16px;
   }
 
+  & .course-detail__aside {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Empujado al pie de su columna: así cae junto a la barra de progreso de la
+     izquierda en vez de quedarse pegado a la portada. A la derecha, que es el
+     filo con el que se alinea todo lo de esta columna. */
+  & .course-detail__filter {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  & .course-detail__warning {
+    margin: 0;
+    max-width: 46ch;
+    font-size: 14px;
+    line-height: 1.55;
+    text-align: right;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
   & .course-detail__cover {
+    flex: none;
     display: block;
     position: relative;
     aspect-ratio: 21 / 9;
@@ -141,8 +173,19 @@
       gap: 26px;
     }
 
-    & .course-detail__cover {
+    & .course-detail__aside {
       order: -1;
+    }
+
+    /* En una sola columna no hay pie que apoyar ni filo derecho con el que
+       alinearse: el filtro se pone donde empieza todo lo demás. */
+    & .course-detail__filter {
+      margin-top: 0;
+      align-items: flex-start;
+    }
+
+    & .course-detail__warning {
+      text-align: left;
     }
   }
 

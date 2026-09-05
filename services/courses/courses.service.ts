@@ -39,7 +39,7 @@ const getCourseProgressState = cache(async (courseId: string): Promise<UserCours
   const db = getPlatformDb();
   const user = await getCurrentUser();
 
-  const [lessonRows, courseRow] = await Promise.all([
+  const [lessonRows, courseRow, settings] = await Promise.all([
     db.lessonProgress.findMany({
       where: { userId: user.id, lesson: { chapter: { courseId } } },
       select: { lessonId: true, status: { select: { code: true } } },
@@ -48,12 +48,21 @@ const getCourseProgressState = cache(async (courseId: string): Promise<UserCours
       where: { userId_courseId: { userId: user.id, courseId } },
       select: { lastLessonId: true, status: { select: { code: true } } },
     }),
+    // Los ajustes del curso entran en el ESTADO y no se consultan aparte: son
+    // «lo que este alumno tiene en este curso», igual que su progreso, y así
+    // hay un solo sitio que los lee.
+    db.userCourseSettings.findUnique({
+      where: { userId_courseId: { userId: user.id, courseId } },
+      select: { onlyPriorityLessons: true, boardOrientation: { select: { code: true } } },
+    }),
   ]);
 
   return {
     lessonStatus: new Map(lessonRows.map((row) => [row.lessonId, row.status.code as ProgressStatusCode])),
     courseStatus: courseRow?.status.code as ProgressStatusCode | undefined,
     lastLessonId: courseRow?.lastLessonId ?? undefined,
+    onlyPriorityLessons: settings?.onlyPriorityLessons ?? false,
+    boardOrientationCode: settings?.boardOrientation.code,
   };
 });
 
@@ -61,7 +70,7 @@ const getUserProgressState = cache(async (): Promise<Map<string, UserCourseState
   const db = getPlatformDb();
   const user = await getCurrentUser();
 
-  const [lessonRows, courseRows] = await Promise.all([
+  const [lessonRows, courseRows, settingsRows] = await Promise.all([
     db.lessonProgress.findMany({
       where: { userId: user.id },
       select: { lessonId: true, status: { select: { code: true } }, lesson: { select: { chapter: { select: { courseId: true } } } } },
@@ -70,18 +79,27 @@ const getUserProgressState = cache(async (): Promise<Map<string, UserCourseState
       where: { userId: user.id },
       select: { courseId: true, lastLessonId: true, status: { select: { code: true } } },
     }),
+    db.userCourseSettings.findMany({
+      where: { userId: user.id },
+      select: { courseId: true, onlyPriorityLessons: true, boardOrientation: { select: { code: true } } },
+    }),
   ]);
 
   const byCourse = new Map<string, UserCourseState>();
   const stateFor = (courseId: string): UserCourseState => {
     let state = byCourse.get(courseId);
     if (!state) {
-      state = { lessonStatus: new Map() };
+      state = { lessonStatus: new Map(), onlyPriorityLessons: false };
       byCourse.set(courseId, state);
     }
     return state;
   };
 
+  for (const row of settingsRows) {
+    const state = stateFor(row.courseId);
+    state.onlyPriorityLessons = row.onlyPriorityLessons;
+    state.boardOrientationCode = row.boardOrientation.code;
+  }
   for (const row of courseRows) {
     const state = stateFor(row.courseId);
     state.courseStatus = row.status.code as ProgressStatusCode;
@@ -93,7 +111,7 @@ const getUserProgressState = cache(async (): Promise<Map<string, UserCourseState
   return byCourse;
 });
 
-const EMPTY_STATE: UserCourseState = { lessonStatus: new Map() };
+const EMPTY_STATE: UserCourseState = { lessonStatus: new Map(), onlyPriorityLessons: false };
 
 export async function getUserCourses(): Promise<CourseSummary[]> {
   const [courses, progress] = await Promise.all([getPublishedCourses(), getUserProgressState()]);
@@ -144,7 +162,10 @@ export async function getChapterView(courseId: string, chapterOrder: number): Pr
  */
 export async function getLessonView(lessonId: string): Promise<LessonView | null> {
   const db = getPlatformDb();
-  const user = await getCurrentUser();
+  // Frontera de sesión: la lección se busca por su id suelto, así que hay que
+  // saber quién pregunta ANTES de consultarla. Los ajustes del alumno ya no se
+  // leen aquí —viajan dentro del estado del curso—, pero la frontera se queda.
+  await getCurrentUser();
 
   const lesson = await db.lesson.findUnique({
     where: { id: lessonId },
@@ -156,7 +177,6 @@ export async function getLessonView(lessonId: string): Promise<LessonView | null
       order: true,
       isPriority: true,
       estimatedDuration: true,
-      initialFen: true,
       ...lessonPgnSelect,
       orientation: { select: { code: true } },
       exercises: { select: { id: true } },
@@ -166,15 +186,12 @@ export async function getLessonView(lessonId: string): Promise<LessonView | null
   if (!lesson) return null;
 
   const courseId = lesson.chapter.courseId;
-  const [course, progress, settings] = await Promise.all([
+  // Los ajustes ya vienen dentro del estado; antes se consultaban aparte aquí.
+  const [course, progress] = await Promise.all([
     getPublishedCourse(courseId),
     getCourseProgressState(courseId),
-    db.userCourseSettings.findUnique({
-      where: { userId_courseId: { userId: user.id, courseId } },
-      select: { boardOrientation: { select: { code: true } } },
-    }),
   ]);
   if (!course) return null;
 
-  return mapLessonView(course, lesson, progress, settings?.boardOrientation.code);
+  return mapLessonView(course, lesson, progress);
 }

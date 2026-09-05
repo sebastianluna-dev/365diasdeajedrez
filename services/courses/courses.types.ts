@@ -65,6 +65,10 @@ export interface CourseDetail {
   progress: CourseProgressSummary;
   continueHref: string;
   ctaLabel: "Comenzar" | "Continuar" | "Revisar";
+  /** El alumno pidió ver sólo las imprescindibles de este curso. */
+  onlyPriorityLessons: boolean;
+  /** Cuántas esconde ese filtro, para poder decirlo en vez de callarlo. */
+  hiddenLessons: number;
   chapters: CourseChapterItem[];
 }
 
@@ -89,7 +93,11 @@ export interface ChapterView {
   description?: string;
   estimatedDuration?: number;
   completedLessons: number;
+  /** De las VISIBLES; con el filtro puesto no es el total del capítulo. */
   totalLessons: number;
+  /** Cuántas esconde el filtro. Se dice, para que la ausencia no desconcierte. */
+  hiddenLessons: number;
+  onlyPriorityLessons: boolean;
   lessons: ChapterLessonItem[];
   /** Primera lección sin completar del capítulo; la primera si ya están todas. */
   continueHref: string;
@@ -115,8 +123,6 @@ export interface LessonView {
   description?: string;
   isPriority: boolean;
   estimatedDuration?: number;
-  /** FEN inicial de la lección; null cuando parte de la posición inicial. */
-  initialFen: string | null;
   pgn: string;
   /** Orientación efectiva: la de la lección, salvo que el usuario la fuerce en sus ajustes. */
   orientation: "white" | "black";

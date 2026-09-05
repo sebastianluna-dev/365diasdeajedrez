@@ -18,7 +18,7 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { Chess } from "chessops/chess";
 import { parseFen } from "chessops/fen";
-import { COURSE_STATUS, COURSE_TYPE, INITIAL_POSITION_TYPE, LEVEL, PRESENTATION_MODE } from "../../constants/platform/course-codes.const";
+import { COURSE_STATUS, COURSE_TYPE, LEVEL } from "../../constants/platform/course-codes.const";
 import { BOARD_ORIENTATION, OWNER_TYPE, TOPIC } from "../../constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "../../constants/platform/study-codes.const";
 import type { SeedChapter, SeedCourse, SeedLesson } from "../seed-data";
@@ -153,7 +153,8 @@ function resolveFen(lesson: ImportLesson): string {
  * El PGN es la fuente única del contenido de la lección (jugadas, comentario y
  * cabeceras `SourcePDFPage`, `DiagramNumber`, `White`/`Black`…), así que se
  * conserva verbatim. Lo único que se toca es la cabecera FEN de los diagramas
- * corregidos, para que no contradiga a `initialFen`.
+ * corregidos: esa cabecera es AHORA la única fuente de la posición de la
+ * lección, así que un FEN mal puesto ahí es un diagrama mal puesto.
  */
 function resolvePgn(lesson: ImportLesson): string {
   const fen = resolveFen(lesson);
@@ -243,9 +244,6 @@ function toSeedLesson(lesson: ImportLesson, topics: string[]): SeedLesson {
     estimatedDuration: MINUTES_PER_LESSON,
     // Cada lección es un diagrama con su comentario, no una partida que se
     // recorre: el PGN no lleva jugadas, sólo la posición de partida.
-    presentationMode: PRESENTATION_MODE.STATIC_DIAGRAMS,
-    initialPositionType: INITIAL_POSITION_TYPE.FEN,
-    initialFen: fen,
     orientation: fen.split(" ")[1] === "b" ? BOARD_ORIENTATION.BLACK : BOARD_ORIENTATION.WHITE,
     pgn: resolvePgn(lesson),
     topics,

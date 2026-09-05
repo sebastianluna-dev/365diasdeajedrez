@@ -20,6 +20,21 @@ export interface MainlineResult {
 const STANDARD_START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 /**
+ * Desde qué posición arranca un PGN, o `null` si es la de partida.
+ *
+ * A diferencia de `extractMainline`, esto responde también cuando el PGN NO
+ * TIENE JUGADAS: un diagrama suelto —cabeceras y nada más— es contenido
+ * legítimo de una lección, y de hecho es lo que son casi todas las del curso de
+ * Kotov. Quien sólo necesita la posición no debería quedarse sin respuesta por
+ * no haber una línea que entrenar.
+ */
+export function startFenOf(pgn: string): string | null {
+  const initialFen = parsePgnTree(pgn)?.initialFen;
+  if (!initialFen || initialFen === STANDARD_START) return null;
+  return initialFen;
+}
+
+/**
  * Recorre `children[0]` desde la raíz, que es por convención la línea principal
  * —y es lo que da por hecho `makePgn` al serializar—.
  *

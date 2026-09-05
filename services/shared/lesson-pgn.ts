@@ -1,3 +1,5 @@
+import { startFenOf } from "@/lib/chess/mainline";
+
 // De dónde sale el contenido de una lección.
 //
 // Hay dos fuentes posibles y UN solo sitio que decide entre ellas:
@@ -33,4 +35,15 @@ export function lessonPgnOf(lesson: LessonPgnSource): string {
 /** Si la lección tiene contenido, venga de donde venga. */
 export function lessonHasContent(lesson: LessonPgnSource): boolean {
   return lessonPgnOf(lesson).trim().length > 0;
+}
+
+/**
+ * Desde qué posición arranca la lección, o `null` si es la de partida.
+ *
+ * Sale del PGN que MANDA, que es el de la partida vinculada cuando la hay. Es
+ * el FEN con el que hay que congelar un ejercicio: derivarlo de otro sitio es
+ * congelar jugadas contra un tablero que el alumno nunca ve.
+ */
+export function lessonStartFenOf(lesson: LessonPgnSource): string | null {
+  return startFenOf(lessonPgnOf(lesson));
 }

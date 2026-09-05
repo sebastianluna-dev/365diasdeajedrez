@@ -87,6 +87,25 @@
     font-size: 16px;
   }
 
+  /* El título de la lista y el interruptor comparten renglón: el filtro es lo
+     que decide qué hay debajo, así que va pegado a su rótulo. */
+  & .chapter-detail__lessons-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  & .chapter-detail__warning {
+    margin: 0;
+    max-width: 62ch;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
   & .chapter-detail__lessons-title {
     margin: 42px 0 16px;
     font-family: var(--platform-font);

@@ -8,6 +8,7 @@ config({ path: ".env.local" });
 config();
 
 import { PrismaPg } from "@prisma/adapter-pg";
+import { startFenOf } from "../lib/chess/mainline";
 import { deriveExerciseData } from "../lib/chess/exercise-derivation";
 import { PrismaClient } from "../lib/platform-db/generated/client";
 import { hashPassword } from "../lib/platform-auth/password";
@@ -152,8 +153,6 @@ async function main() {
   const courseStatus = await seedCatalog(db.courseStatus, CATALOG_VALUES.courseStatus);
   const authorRole = await seedCatalog(db.authorRole, CATALOG_VALUES.authorRole);
   const level = await seedCatalog(db.level, CATALOG_VALUES.level);
-  const presentationMode = await seedCatalog(db.presentationMode, CATALOG_VALUES.presentationMode);
-  const initialPositionType = await seedCatalog(db.initialPositionType, CATALOG_VALUES.initialPositionType);
   const boardOrientation = await seedCatalog(db.boardOrientation, CATALOG_VALUES.boardOrientation);
   const exerciseMode = await seedCatalog(db.exerciseMode, CATALOG_VALUES.exerciseMode);
   const progressStatus = await seedCatalog(db.progressStatus, CATALOG_VALUES.progressStatus);
@@ -301,9 +300,6 @@ async function main() {
           order: lesson.order,
           isPriority: lesson.isPriority,
           estimatedDuration: lesson.estimatedDuration,
-          presentationModeId: idOf(presentationMode, lesson.presentationMode),
-          initialPositionTypeId: idOf(initialPositionType, lesson.initialPositionType),
-          initialFen: lesson.initialFen,
           orientationId: idOf(boardOrientation, lesson.orientation),
           pgn: lesson.pgn,
           pgnUpdatedAt: new Date(now.getTime() - 30 * DAY_MS),
@@ -327,7 +323,11 @@ async function main() {
           // módulo que usa el editor del staff: si divergieran, los ejercicios
           // sembrados y los creados a mano se comportarían distinto.
           const derived = deriveExerciseData({
-            initialFen: lesson.initialFen,
+            // Del PGN, que es la única fuente de la posición desde que no hay
+            // `Lesson.initialFen`. Sin esto, los ejercicios de Lucena y
+            // Philidor se derivarían desde la posición de partida y el seed
+            // rompería al validar sus jugadas.
+            initialFen: startFenOf(lesson.pgn),
             afterSans: exercise.afterSans,
             lineSans: exercise.lineSans,
           });

@@ -23,7 +23,15 @@ export const courseContentInclude = {
     include: {
       lessons: {
         orderBy: { order: "asc" },
-        select: { id: true, chapterId: true, name: true, description: true, order: true, isPriority: true, estimatedDuration: true },
+        select: {
+          id: true,
+          chapterId: true,
+          name: true,
+          description: true,
+          order: true,
+          isPriority: true,
+          estimatedDuration: true,
+        },
       },
     },
   },
@@ -36,20 +44,43 @@ export interface UserCourseState {
   lessonStatus: Map<string, ProgressStatusCode>;
   courseStatus?: ProgressStatusCode;
   lastLessonId?: string;
+  /** El alumno pidió ver sólo las lecciones imprescindibles de este curso. */
+  onlyPriorityLessons: boolean;
+  /** Orientación que fijó el alumno; `AUTO` o ausente = manda la de la lección. */
+  boardOrientationCode?: string;
 }
 
 function asStatus(code: string | undefined): ProgressStatusCode {
   return (code as ProgressStatusCode | undefined) ?? PROGRESS_STATUS.NOT_STARTED;
 }
 
-function flattenLessons(course: CourseWithContent) {
+/**
+ * Si la lección entra en el recorrido que el alumno pidió ver.
+ *
+ * Con el filtro puesto pasan las prioritarias **y las que ya tocó**. Esa
+ * segunda mitad es la que evita el peor efecto del filtro: sin ella, activarlo
+ * escondería lecciones ya completadas y el contador de hechas BAJARÍA. Con
+ * ella, el porcentaje nunca retrocede y «ya la hice» nunca se vuelve «¿dónde
+ * está?».
+ */
+function isVisible(lesson: { id: string; isPriority: boolean }, state: UserCourseState): boolean {
+  return !state.onlyPriorityLessons || lesson.isPriority || state.lessonStatus.has(lesson.id);
+}
+
+/** Todas las lecciones del curso en su orden, sin filtrar. */
+function allLessons(course: CourseWithContent) {
   return course.chapters.flatMap((chapter) =>
     chapter.lessons.map((lesson) => ({ ...lesson, chapterId: chapter.id, chapterOrder: chapter.order })),
   );
 }
 
+/** Las que el alumno ve, que es sobre las que se cuenta y se navega. */
+function flattenLessons(course: CourseWithContent, state: UserCourseState) {
+  return allLessons(course).filter((lesson) => isVisible(lesson, state));
+}
+
 export function mapCourseProgress(course: CourseWithContent, state: UserCourseState): CourseProgressSummary {
-  const lessons = flattenLessons(course);
+  const lessons = flattenLessons(course, state);
   const completedLessons = lessons.filter(
     (lesson) => state.lessonStatus.get(lesson.id) === PROGRESS_STATUS.COMPLETED,
   ).length;
@@ -73,15 +104,33 @@ export function mapCourseProgress(course: CourseWithContent, state: UserCourseSt
   };
 }
 
+/**
+ * Por dónde sigue el curso.
+ *
+ * Donde se quedó, SI sigue a la vista; si el filtro la escondió, la primera
+ * visible sin terminar; y si están todas hechas, la primera, que es lo que toca
+ * para repasar. Sin ninguna visible, la ficha del curso.
+ */
 function continueTarget(course: CourseWithContent, state: UserCourseState) {
-  const lessons = flattenLessons(course);
-  const target = lessons.find((lesson) => lesson.id === state.lastLessonId) ?? lessons[0];
+  const lessons = flattenLessons(course, state);
+  const last = lessons.find((lesson) => lesson.id === state.lastLessonId);
+  const pending = lessons.find((lesson) => state.lessonStatus.get(lesson.id) !== PROGRESS_STATUS.COMPLETED);
+  const target = last ?? pending ?? lessons[0];
   return target ? platformRoutes.lessonDetail(target.id) : platformRoutes.courseDetail(course.id);
 }
 
-function ctaLabelFor(statusCode: ProgressStatusCode): CourseSummary["ctaLabel"] {
-  if (statusCode === PROGRESS_STATUS.COMPLETED) return "Revisar";
-  if (statusCode === PROGRESS_STATUS.IN_PROGRESS) return "Continuar";
+/**
+ * Qué dice el botón del curso.
+ *
+ * Se decide con el recuento VISIBLE, no con el estado guardado: si el alumno
+ * filtró y ya hizo todas las prioritarias, la barra está al 100 % y un
+ * «Continuar» ahí no tendría sentido, aunque `CourseProgress` siga en curso —y
+ * sigue en curso a propósito: el filtro es una lente, no un cambio en lo que el
+ * curso es—.
+ */
+function ctaLabelFor(progress: CourseProgressSummary): CourseSummary["ctaLabel"] {
+  if (progress.totalLessons > 0 && progress.completedLessons === progress.totalLessons) return "Revisar";
+  if (progress.completedLessons > 0 || progress.statusCode === PROGRESS_STATUS.IN_PROGRESS) return "Continuar";
   return "Comenzar";
 }
 
@@ -98,13 +147,20 @@ export function mapCourseSummary(course: CourseWithContent, state: UserCourseSta
     authorNames: course.courseAuthors.map((courseAuthor) => courseAuthor.author.name),
     progress,
     continueHref: continueTarget(course, state),
-    ctaLabel: ctaLabelFor(progress.statusCode),
+    ctaLabel: ctaLabelFor(progress),
     href: platformRoutes.courseDetail(course.id),
   };
 }
 
-function mapChapterItem(course: CourseWithContent, chapter: CourseWithContent["chapters"][number], state: UserCourseState): CourseChapterItem {
-  const completedLessons = chapter.lessons.filter(
+function mapChapterItem(
+  course: CourseWithContent,
+  chapter: CourseWithContent["chapters"][number],
+  state: UserCourseState,
+): CourseChapterItem {
+  // Sobre las visibles: la barra del capítulo tiene que cuadrar con la lista
+  // que se abre al pulsarla.
+  const lessons = chapter.lessons.filter((lesson) => isVisible(lesson, state));
+  const completedLessons = lessons.filter(
     (lesson) => state.lessonStatus.get(lesson.id) === PROGRESS_STATUS.COMPLETED,
   ).length;
   return {
@@ -113,7 +169,7 @@ function mapChapterItem(course: CourseWithContent, chapter: CourseWithContent["c
     name: chapter.name,
     description: chapter.description ?? undefined,
     estimatedDuration: chapter.estimatedDuration ?? undefined,
-    totalLessons: chapter.lessons.length,
+    totalLessons: lessons.length,
     completedLessons,
     href: platformRoutes.chapterDetail(course.id, chapter.order),
   };
@@ -134,7 +190,9 @@ export function mapCourseDetail(course: CourseWithContent, state: UserCourseStat
     })),
     progress,
     continueHref: continueTarget(course, state),
-    ctaLabel: ctaLabelFor(progress.statusCode),
+    ctaLabel: ctaLabelFor(progress),
+    onlyPriorityLessons: state.onlyPriorityLessons,
+    hiddenLessons: allLessons(course).length - progress.totalLessons,
     chapters: course.chapters.map((chapter) => mapChapterItem(course, chapter, state)),
   };
 }
@@ -148,17 +206,23 @@ export function mapChapterView(
   const chapter = course.chapters.find((candidate) => candidate.id === chapterId);
   if (!chapter) return null;
 
-  const lessons: ChapterLessonItem[] = chapter.lessons.map((lesson) => ({
-    id: lesson.id,
-    order: lesson.order,
-    name: lesson.name,
-    description: lesson.description ?? undefined,
-    isPriority: lesson.isPriority,
-    estimatedDuration: lesson.estimatedDuration ?? undefined,
-    statusCode: asStatus(state.lessonStatus.get(lesson.id)),
-    href: platformRoutes.lessonDetail(lesson.id),
-  }));
+  // El número que se pinta sigue siendo el REAL (1, 4, 7 con el filtro puesto):
+  // renumerar escondería que faltan lecciones y rompería la identidad de cada
+  // una dentro del curso.
+  const lessons: ChapterLessonItem[] = chapter.lessons
+    .filter((lesson) => isVisible(lesson, state))
+    .map((lesson) => ({
+      id: lesson.id,
+      order: lesson.order,
+      name: lesson.name,
+      description: lesson.description ?? undefined,
+      isPriority: lesson.isPriority,
+      estimatedDuration: lesson.estimatedDuration ?? undefined,
+      statusCode: asStatus(state.lessonStatus.get(lesson.id)),
+      href: platformRoutes.lessonDetail(lesson.id),
+    }));
 
+  const hiddenLessons = chapter.lessons.length - lessons.length;
   const completedLessons = lessons.filter((lesson) => lesson.statusCode === PROGRESS_STATUS.COMPLETED).length;
 
   // El botón del capítulo abre por donde se quedó: la primera sin completar.
@@ -178,6 +242,8 @@ export function mapChapterView(
     estimatedDuration: chapter.estimatedDuration ?? undefined,
     completedLessons,
     totalLessons: lessons.length,
+    hiddenLessons,
+    onlyPriorityLessons: state.onlyPriorityLessons,
     lessons,
     continueHref: target ? target.href : platformRoutes.courseDetail(course.id),
     ctaLabel: allDone ? "Revisar" : untouched ? "Comenzar" : "Continuar",
@@ -194,7 +260,6 @@ export interface LessonRowForView {
   order: number;
   isPriority: boolean;
   estimatedDuration: number | null;
-  initialFen: string | null;
   pgn: string;
   /** La partida de la colección del curso, si la lección la referencia. */
   game: { pgn: string } | null;
@@ -206,19 +271,28 @@ export function mapLessonView(
   course: CourseWithContent,
   lesson: LessonRowForView,
   state: UserCourseState,
-  settingsOrientationCode: string | undefined,
 ): LessonView | null {
   const chapter = course.chapters.find((candidate) => candidate.id === lesson.chapterId);
   if (!chapter) return null;
 
-  const flat = flattenLessons(course);
-  const index = flat.findIndex((candidate) => candidate.id === lesson.id);
-  const prev = index > 0 ? flat[index - 1] : undefined;
-  const next = index >= 0 && index < flat.length - 1 ? flat[index + 1] : undefined;
+  // Anterior y siguiente se buscan POR POSICIÓN, no por pertenencia: una
+  // lección escondida por el filtro se sigue sirviendo por URL —un enlace de
+  // una clase no puede romperse por una preferencia de visualización— y ahí
+  // buscarla en la lista visible daría -1, dejándola sin anterior Y sin
+  // siguiente.
+  const position = (candidate: { chapterOrder: number; order: number }) =>
+    candidate.chapterOrder * 100000 + candidate.order;
+  const here = position({ chapterOrder: chapter.order, order: lesson.order });
+
+  const visible = flattenLessons(course, state);
+  const prev = [...visible].reverse().find((candidate) => position(candidate) < here);
+  const next = visible.find((candidate) => position(candidate) > here);
 
   // La orientación del contenido manda salvo que el usuario fuerce una en sus
   // ajustes del curso (AUTO o ausencia de fila = la de la lección).
-  const forced = settingsOrientationCode && settingsOrientationCode !== BOARD_ORIENTATION.AUTO ? settingsOrientationCode : undefined;
+  const settingsOrientationCode = state.boardOrientationCode;
+  const forced =
+    settingsOrientationCode && settingsOrientationCode !== BOARD_ORIENTATION.AUTO ? settingsOrientationCode : undefined;
   const effective = forced ?? lesson.orientation.code;
 
   return {
@@ -234,7 +308,6 @@ export function mapLessonView(
     description: lesson.description ?? undefined,
     isPriority: lesson.isPriority,
     estimatedDuration: lesson.estimatedDuration ?? undefined,
-    initialFen: lesson.initialFen,
     pgn: lessonPgnOf(lesson),
     orientation: effective === BOARD_ORIENTATION.BLACK ? "black" : "white",
     statusCode: asStatus(state.lessonStatus.get(lesson.id)),

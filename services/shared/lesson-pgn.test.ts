@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { lessonHasContent, lessonPgnOf } from "@/services/shared/lesson-pgn";
+import { lessonHasContent, lessonPgnOf, lessonStartFenOf } from "@/services/shared/lesson-pgn";
 
 const OWN = "1. e4 e5 2. Nf3 *";
 const LINKED = "1. d4 d5 2. c4 *";
@@ -35,5 +35,25 @@ describe("lessonHasContent", () => {
   it("el blanco no cuenta como contenido", () => {
     expect(lessonHasContent({ pgn: "   \n  ", game: null })).toBe(false);
     expect(lessonHasContent({ pgn: OWN, game: null })).toBe(true);
+  });
+});
+
+describe("lessonStartFenOf", () => {
+  const DIAGRAMA = "1brr2k1/1b3pp1/pp2pqnp/4N2Q/3P4/1B4R1/PP1B1PPP/4R1K1 w - - 0 1";
+  const conFen = (fen: string) => `[SetUp "1"]\n[FEN "${fen}"]\n\n*`;
+
+  it("sale de la partida vinculada, no del PGN dormido de la lección", () => {
+    // Es el fallo que arregla: congelar un ejercicio contra el FEN equivocado
+    // valida las jugadas sobre un tablero que el alumno nunca ve.
+    const otro = "8/8/8/8/8/5k2/6q1/7K b - - 0 1";
+    expect(lessonStartFenOf({ pgn: conFen(otro), game: { pgn: conFen(DIAGRAMA) } })).toBe(DIAGRAMA);
+  });
+
+  it("sin partida vinculada, sale del suyo", () => {
+    expect(lessonStartFenOf({ pgn: conFen(DIAGRAMA), game: null })).toBe(DIAGRAMA);
+  });
+
+  it("es null cuando el contenido arranca en la posición de partida", () => {
+    expect(lessonStartFenOf({ pgn: "1. e4 e5 *", game: null })).toBeNull();
   });
 });

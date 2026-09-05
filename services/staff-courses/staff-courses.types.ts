@@ -2,8 +2,6 @@ import type {
   AuthorRoleCode,
   CourseStatusCode,
   CourseTypeCode,
-  InitialPositionTypeCode,
-  PresentationModeCode,
 } from "@/constants/platform/course-codes.const";
 import type { BoardOrientationCode } from "@/constants/platform/shared-codes.const";
 import type { ExerciseModeCode } from "@/constants/platform/training-codes.const";
@@ -125,9 +123,6 @@ export interface LessonAdminDetail {
   /** Bando que juega el alumno. Ausente = el que mueva primero. */
   trainingColorCode?: string;
   estimatedDuration?: number;
-  presentationModeCode: PresentationModeCode;
-  initialPositionTypeCode: InitialPositionTypeCode;
-  initialFen?: string;
   orientationCode: BoardOrientationCode;
   /** El contenido que ve el alumno: el de la partida vinculada, o el propio. */
   pgn: string;
