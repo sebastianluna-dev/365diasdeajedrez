@@ -259,6 +259,12 @@ export interface NagOption {
   /** El código que se escribe cuando la jugada es de las blancas. */
   nag: number;
   /**
+   * Nombre corto, para las listas donde el símbolo ya va al lado y lo que sobra
+   * es texto. El largo se queda para el título del botón, que es lo que lee
+   * quien no reconoce el símbolo —y lo que oye un lector de pantalla—.
+   */
+  short: string;
+  /**
    * El mismo símbolo para una jugada de las negras. El PGN distingue bando en
    * casi todos los comentarios simbólicos —$36 es «las blancas tienen la
    * iniciativa» y $37 el equivalente negro—, así que se guarda el que
@@ -288,35 +294,35 @@ export function nagCodeFor(option: NagOption, isWhiteMove: boolean): number {
  * hubiera de ese grupo, pero no toca a los otros.
  */
 export const MOVE_QUALITY_NAGS: NagOption[] = [
-  { nag: 3, glyph: "!!", label: "Jugada brillante" },
-  { nag: 1, glyph: "!", label: "Buena jugada" },
-  { nag: 5, glyph: "!?", label: "Jugada interesante" },
-  { nag: 6, glyph: "?!", label: "Jugada dudosa" },
-  { nag: 2, glyph: "?", label: "Error" },
-  { nag: 4, glyph: "??", label: "Error grave" },
+  { nag: 3, glyph: "!!", label: "Jugada brillante", short: "Brillante" },
+  { nag: 1, glyph: "!", label: "Buena jugada", short: "Buena" },
+  { nag: 5, glyph: "!?", label: "Jugada interesante", short: "Interesante" },
+  { nag: 6, glyph: "?!", label: "Jugada dudosa", short: "Dudosa" },
+  { nag: 2, glyph: "?", label: "Error", short: "Error" },
+  { nag: 4, glyph: "??", label: "Error grave", short: "Error grave" },
 ];
 
 /** El comentario simbólico de siempre: qué pasa en la partida tras la jugada. */
 export const MOVE_REMARK_NAGS: NagOption[] = [
-  { nag: 7, glyph: "□", label: "Única jugada" },
-  { nag: 22, blackNag: 23, glyph: "⊙", label: "Zugzwang" },
-  { nag: 146, glyph: "N", label: "Novedad" },
-  { nag: 32, blackNag: 33, glyph: "↑↑", label: "Desarrollo" },
-  { nag: 36, blackNag: 37, glyph: "↑", label: "Iniciativa" },
-  { nag: 40, blackNag: 41, glyph: "→", label: "Ataque" },
-  { nag: 132, blackNag: 133, glyph: "⇆", label: "Contrajuego" },
-  { nag: 138, blackNag: 139, glyph: "⊕", label: "Problema de tiempo" },
-  { nag: 44, blackNag: 45, glyph: "=∞", label: "Con compensación" },
-  { nag: 140, glyph: "Δ", label: "Con la idea" },
+  { nag: 7, glyph: "□", label: "Única jugada", short: "Única jugada" },
+  { nag: 22, blackNag: 23, glyph: "⊙", label: "Zugzwang", short: "Zugzwang" },
+  { nag: 146, glyph: "N", label: "Novedad", short: "Novedad" },
+  { nag: 32, blackNag: 33, glyph: "↑↑", label: "Desarrollo", short: "Desarrollo" },
+  { nag: 36, blackNag: 37, glyph: "↑", label: "Iniciativa", short: "Iniciativa" },
+  { nag: 40, blackNag: 41, glyph: "→", label: "Ataque", short: "Ataque" },
+  { nag: 132, blackNag: 133, glyph: "⇆", label: "Contrajuego", short: "Contrajuego" },
+  { nag: 138, blackNag: 139, glyph: "⊕", label: "Problema de tiempo", short: "Apuro de tiempo" },
+  { nag: 44, blackNag: 45, glyph: "=∞", label: "Con compensación", short: "Compensación" },
+  { nag: 140, glyph: "Δ", label: "Con la idea", short: "Con la idea" },
 ];
 
 export const POSITION_EVAL_NAGS: NagOption[] = [
-  { nag: 10, glyph: "=", label: "Posición igualada" },
-  { nag: 13, glyph: "∞", label: "Posición poco clara" },
-  { nag: 14, glyph: "⩲", label: "Las blancas están ligeramente mejor" },
-  { nag: 15, glyph: "⩱", label: "Las negras están ligeramente mejor" },
-  { nag: 16, glyph: "±", label: "Las blancas están mejor" },
-  { nag: 17, glyph: "∓", label: "Las negras están mejor" },
-  { nag: 18, glyph: "+−", label: "Las blancas están ganando" },
-  { nag: 19, glyph: "−+", label: "Las negras están ganando" },
+  { nag: 10, glyph: "=", label: "Posición igualada", short: "Igualada" },
+  { nag: 13, glyph: "∞", label: "Posición poco clara", short: "Poco clara" },
+  { nag: 14, glyph: "⩲", label: "Las blancas están ligeramente mejor", short: "Blancas algo mejor" },
+  { nag: 15, glyph: "⩱", label: "Las negras están ligeramente mejor", short: "Negras algo mejor" },
+  { nag: 16, glyph: "±", label: "Las blancas están mejor", short: "Blancas mejor" },
+  { nag: 17, glyph: "∓", label: "Las negras están mejor", short: "Negras mejor" },
+  { nag: 18, glyph: "+−", label: "Las blancas están ganando", short: "Blancas ganan" },
+  { nag: 19, glyph: "−+", label: "Las negras están ganando", short: "Negras ganan" },
 ];

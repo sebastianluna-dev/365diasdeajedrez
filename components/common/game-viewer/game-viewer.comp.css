@@ -172,13 +172,15 @@
     display: none;
   }
 
-  /* Bajo el tablero, dentro de su tarjeta: comentario, calidad y compartir. */
+  /* Bajo el tablero, dentro de su tarjeta: comentario, calidad y compartir. El
+     relleno lo pone cada zona del panel, para que sus filos lleguen de borde a
+     borde; aquí sólo se recorta contra el redondeo. */
   & .game-viewer__board-footer {
     grid-column: 1;
     background: var(--platform-surface);
     border-radius: 10px;
     box-shadow: var(--platform-shadow-card);
-    padding: 16px;
+    overflow: hidden;
   }
 
   /* La botonera va FUERA de la tarjeta, colgando de ella: es con lo que se

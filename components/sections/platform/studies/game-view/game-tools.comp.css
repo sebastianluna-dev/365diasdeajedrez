@@ -1,21 +1,28 @@
 .game-tools {
+  /* Cada zona pone su propio relleno —la tarjeta que lo envuelve no pone
+     ninguno—, para que los filos que separan las pestañas, las columnas y el
+     pie lleguen de borde a borde. */
+
+  /* --- Pestañas ---------------------------------------------------------- */
   & .game-tools__tabs {
     display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-wrap: wrap;
-    box-shadow: inset 0 -1px 0 var(--platform-track);
+    align-items: flex-end;
+    gap: 20px;
+    padding: 14px 18px 0;
+    box-shadow: inset 0 -1px 0 var(--platform-border);
   }
 
   & .game-tools__tab {
-    padding: 9px 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 0 11px;
     border: 0;
-    border-radius: 9px 9px 0 0;
     background: transparent;
-    color: var(--platform-text-muted);
     font-family: inherit;
-    font-size: 14.5px;
-    font-weight: 600;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--platform-text-subtle);
     cursor: pointer;
   }
 
@@ -23,88 +30,130 @@
     color: var(--platform-text);
   }
 
+  /* La activa se marca por debajo, no con una caja: es una pestaña. */
   & .game-tools__tab.game-tools__tab_state_active {
     color: var(--platform-text);
-    font-weight: 700;
     box-shadow: inset 0 -2px 0 var(--platform-accent);
   }
 
-  /* Sobre qué jugada se está trabajando, y si ya se guardó. Va aquí y no bajo
-     el campo porque vale para las tres pestañas. */
+  /* Un punto dice que la jugada ya está comentada, sin abrir la pestaña. */
+  & .game-tools__tab-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 1000px;
+    background: var(--platform-border-strong);
+  }
+
+  & .game-tools__tab-badge {
+    padding: 2px 6px;
+    border-radius: 6px;
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+
+  /* Sobre qué jugada se trabaja y cómo va el guardado. Al final de la fila y en
+     gris: es un estado, no una acción. */
   & .game-tools__target {
     margin-left: auto;
-    padding-right: 4px;
-    font-size: 13.5px;
+    padding-bottom: 11px;
+    font-size: 12px;
     color: var(--platform-text-subtle);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   & .game-tools__panel {
-    padding-top: 14px;
+    padding: 16px 18px;
   }
 
+  /* --- Comentario -------------------------------------------------------- */
   & .game-tools__textarea {
     width: 100%;
     box-sizing: border-box;
     min-height: 96px;
     resize: vertical;
-    padding: 12px 14px;
-    border: 1px solid var(--platform-border);
+    padding: 11px 13px;
+    border: 0;
     border-radius: 10px;
-    background: var(--platform-surface);
+    background: var(--platform-surface-soft);
+    box-shadow: inset 0 0 0 1px var(--platform-border-strong);
     color: var(--platform-text);
     font-family: inherit;
-    font-size: 15.5px;
+    font-size: 13.5px;
     line-height: 1.5;
   }
 
   & .game-tools__textarea:focus {
     outline: none;
-    border-color: var(--platform-accent);
+    background: var(--platform-surface);
+    box-shadow: inset 0 0 0 2px var(--platform-accent);
   }
 
-  /* Dos columnas de renglones estrechos, como el menú de anotación de
-     cualquier programa de ajedrez: el símbolo en su casilla, con un filo que
-     lo separa, y al lado lo que significa. Así caben los veinticuatro sin
-     tener que buscarlos ni adivinarlos. */
+  & .game-tools__hint {
+    margin: 10px 0 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
+  & .game-tools__hint.game-tools__hint_state_error {
+    color: var(--platform-danger);
+  }
+
+  /* --- Calidad ----------------------------------------------------------- */
+  /* Dos columnas con un filo entre ellas dibujado por el propio hueco de la
+     rejilla: así no hay que decidir qué columna lleva borde. */
   & .game-tools__nags {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-    align-items: start;
+    gap: 0 1px;
+    background: var(--platform-border);
   }
 
   & .game-tools__nag-column {
     min-width: 0;
+    padding: 13px 8px 14px 14px;
+    background: var(--platform-surface);
   }
 
-  /* El segundo bloque de la columna es otro grupo: un filo lo dice sin gastar
-     un título entero en ello. */
-  & .game-tools__nag-group.game-tools__nag-group_divided {
-    margin-top: 5px;
-    padding-top: 5px;
-    border-top: 1px solid var(--platform-border);
+  & .game-tools__nag-column:last-child {
+    padding: 13px 14px 14px 8px;
+  }
+
+  & .game-tools__nag-title {
+    margin: 0;
+    padding: 0 6px 7px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--platform-text-subtle);
+  }
+
+  & .game-tools__nag-group + .game-tools__nag-group .game-tools__nag-title {
+    padding-top: 14px;
   }
 
   & .game-tools__nag {
-    display: grid;
-    grid-template-columns: 30px minmax(0, 1fr);
+    display: flex;
     align-items: center;
-    gap: 9px;
+    gap: 10px;
     width: 100%;
-    padding: 2px 6px 2px 0;
+    padding: 6px 8px;
     border: 0;
-    border-radius: 6px;
+    border-radius: 8px;
     background: transparent;
-    color: var(--platform-text-muted);
     font-family: inherit;
-    font-size: 13px;
     text-align: left;
     cursor: pointer;
   }
 
   & .game-tools__nag:hover:not(:disabled) {
     background: var(--platform-bg);
-    color: var(--platform-text);
   }
 
   & .game-tools__nag:disabled {
@@ -114,111 +163,119 @@
 
   & .game-tools__nag.game-tools__nag_state_active {
     background: var(--platform-accent-wash);
-    color: var(--platform-accent-ink);
-    font-weight: 600;
   }
 
   & .game-tools__nag-glyph {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 22px;
-    border-right: 1px solid var(--platform-border);
-    font-size: 14px;
+    flex: none;
+    width: 26px;
+    text-align: center;
+    font-size: 13.5px;
     font-weight: 700;
-    line-height: 1;
+    color: var(--platform-text-muted);
+  }
+
+  & .game-tools__nag_state_active .game-tools__nag-glyph {
+    color: var(--platform-accent-ink);
   }
 
   & .game-tools__nag-label {
+    font-size: 13px;
+    color: var(--platform-text);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
-  & .game-tools__hint {
-    margin: 9px 0 0;
-    font-size: 13.5px;
-    line-height: 1.5;
+  & .game-tools__nag_state_active .game-tools__nag-label {
+    font-weight: 700;
+  }
+
+  /* Pie de la pestaña de calidad: la regla del panel, donde no estorba. */
+  & .game-tools__foot {
+    margin: 0;
+    padding: 12px 18px;
+    background: var(--platform-surface-soft);
+    box-shadow: inset 0 1px 0 var(--platform-border);
+    font-size: 12px;
     color: var(--platform-text-subtle);
   }
 
-  & .game-tools__share + .game-tools__share {
-    margin-top: 12px;
-  }
-
-  /* Sacar la partida del navegador: son acciones, no campos que copiar, así que
-     van juntas y separadas del bloque de arriba. */
-  & .game-tools__export {
+  /* --- Compartir --------------------------------------------------------- */
+  & .game-tools__share {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 14px;
-    padding-top: 14px;
-    border-top: 1px solid var(--platform-border);
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    box-shadow: inset 0 -1px 0 var(--platform-track);
   }
 
-  & .game-tools__export-button {
-    flex: 1 1 200px;
-    padding: 9px 12px;
-    border: 1px solid var(--platform-border);
-    border-radius: 10px;
-    background: var(--platform-surface);
-    color: var(--platform-text);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  & .game-tools__export-button:hover:not(:disabled) {
-    border-color: var(--platform-border-strong);
-    background: var(--platform-bg);
-  }
-
-  & .game-tools__export-button:disabled {
-    opacity: 0.6;
-    cursor: progress;
+  & .game-tools__share-text {
+    flex: 1;
+    min-width: 0;
   }
 
   & .game-tools__share-label {
     display: block;
-    margin-bottom: 6px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--platform-text-muted);
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--platform-text);
   }
 
-  & .game-tools__share-row {
-    display: flex;
-    gap: 7px;
+  & .game-tools__share-value {
+    display: block;
+    margin-top: 3px;
+    font-size: 11.5px;
+    color: var(--platform-text-subtle);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
-  & .game-tools__share-input {
-    flex: 1;
-    min-width: 0;
-    padding: 10px 13px;
-    border: 1px solid var(--platform-border);
-    border-radius: 10px;
-    background: var(--platform-surface);
-    color: var(--platform-text-muted);
+  /* El FEN y las jugadas, en monoespaciada: son datos que se leen carácter a
+     carácter cuando algo no cuadra. */
+  & .game-tools__share-value_kind_code {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 13px;
   }
 
-  & .game-tools__share-button {
+  & .game-tools__share-button,
+  & .game-tools__export-button {
     flex: none;
-    padding: 0 15px;
-    border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    padding: 7px 13px;
+    border: 0;
+    border-radius: 8px;
     background: var(--platform-surface);
+    box-shadow: inset 0 0 0 1px var(--platform-border-strong);
     color: var(--platform-text);
     font-family: inherit;
-    font-size: 13.5px;
-    font-weight: 600;
+    font-size: 12.5px;
+    font-weight: 700;
     cursor: pointer;
   }
 
-  & .game-tools__share-button:hover {
-    background: var(--platform-bg);
+  & .game-tools__share-button:hover:not(:disabled),
+  & .game-tools__export-button:hover:not(:disabled) {
+    box-shadow: inset 0 0 0 1px var(--platform-text);
+  }
+
+  & .game-tools__share-button:disabled,
+  & .game-tools__export-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  & .game-tools__export {
+    display: flex;
+    gap: 9px;
+    margin-top: 15px;
+  }
+
+  & .game-tools__export-button {
+    flex: 1;
+    padding: 10px 13px;
+    border-radius: 9px;
+  }
+
+  & .game-tools__export-button:disabled {
+    cursor: progress;
   }
 }

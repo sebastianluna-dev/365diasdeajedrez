@@ -7,6 +7,7 @@ import {
   MOVE_REMARK_NAGS,
   nagCodeFor,
   nagCodesOf,
+  nagGlyph,
   nodeAtPath,
   parsePgnTree,
   POSITION_EVAL_NAGS,
@@ -20,18 +21,20 @@ import "./game-tools.comp.css";
 export type GameToolsTab = "comment" | "quality" | "share";
 
 /**
- * Los tres grupos de signos, cada uno excluyente por dentro: una jugada no es
- * «!» y «?» a la vez, pero sí puede ser «!» con «→» y «±».
+ * Los tres grupos, repartidos en dos columnas: a la izquierda lo que califica
+ * LA JUGADA —cómo fue y qué pasa en la partida— y a la derecha cómo queda la
+ * posición. Es la disposición de toda la vida en los programas de ajedrez, y
+ * cabe entera sin desplazarse.
+ *
+ * Cada grupo es excluyente por dentro: una jugada no es «!» y «?» a la vez,
+ * pero sí puede ser «!» con «→» y «±».
  */
-/**
- * Los tres grupos, repartidos en dos columnas: a la izquierda todo lo que
- * califica LA JUGADA —cómo fue y qué pasa en la partida— y a la derecha cómo
- * queda la posición. Es la disposición de toda la vida en los programas de
- * ajedrez, y cabe entera sin desplazarse.
- */
-const NAG_COLUMNS: NagOption[][][] = [
-  [MOVE_QUALITY_NAGS, MOVE_REMARK_NAGS],
-  [POSITION_EVAL_NAGS],
+const NAG_COLUMNS: { title: string; options: NagOption[] }[][] = [
+  [
+    { title: "Jugada", options: MOVE_QUALITY_NAGS },
+    { title: "Matices", options: MOVE_REMARK_NAGS },
+  ],
+  [{ title: "Posición", options: POSITION_EVAL_NAGS }],
 ];
 
 interface GameToolsProps {
@@ -105,6 +108,7 @@ export function GameTools({
 
   const nags = node?.nags ?? [];
   const plainPgn = useMemo(() => plainMovetext(pgn), [pgn]);
+  const glyphs = nags.map(nagGlyph).join("");
 
   // Los signos con pareja (blancas/negras) se escriben según de quién sea la
   // jugada; en la posición de partida no hay ninguna y el panel está apagado.
@@ -182,11 +186,20 @@ export function GameTools({
             className={`game-tools__tab${tab === option.key ? " game-tools__tab_state_active" : ""}`}
           >
             {option.label}
+            {/* Lo que ya lleva la jugada, en la propia pestaña: un punto si está
+                comentada y sus signos si está anotada. Así se sabe qué hay
+                dentro sin entrar a mirar. */}
+            {option.key === "comment" && comment.length > 0 && (
+              <span className="game-tools__tab-dot" aria-hidden="true" />
+            )}
+            {option.key === "quality" && glyphs.length > 0 && (
+              <span className="game-tools__tab-badge">{glyphs}</span>
+            )}
           </button>
         ))}
 
         <span className="game-tools__target">
-          Sobre {moveName}
+          {moveName}
           {saveLabel && ` · ${saveLabel}`}
         </span>
       </div>
@@ -208,24 +221,21 @@ export function GameTools({
             }}
           />
           <p className="game-tools__hint">
-            Se guarda al salir del campo. También se llega aquí con «Comentar este movimiento», en el menú
-            del clic derecho de cada jugada. Las flechas que dibujes sobre el tablero se conservan junto al
-            comentario.
+            Se guarda al salir del campo. Las flechas del tablero se conservan junto al comentario.
           </p>
         </div>
       )}
 
       {tab === "quality" && (
-        <div className="game-tools__panel">
+        <>
           <div className="game-tools__nags">
             {NAG_COLUMNS.map((groups, column) => (
               <div key={column} className="game-tools__nag-column">
-                {groups.map((group, index) => (
-                  <div
-                    key={index}
-                    className={`game-tools__nag-group${index > 0 ? " game-tools__nag-group_divided" : ""}`}
-                  >
-                    {group.map((option) => {
+                {groups.map((group) => (
+                  <div key={group.title} className="game-tools__nag-group">
+                    <p className="game-tools__nag-title">{group.title}</p>
+
+                    {group.options.map((option) => {
                       const code = nagCodeFor(option, isWhiteMove);
                       const active = nags.includes(code);
                       return (
@@ -233,12 +243,15 @@ export function GameTools({
                           key={option.nag}
                           type="button"
                           disabled={!node}
+                          title={option.label}
                           aria-pressed={active}
-                          onClick={() => apply((game) => setNags(game, currentPath, nextNags(group, option)))}
+                          onClick={() =>
+                            apply((game) => setNags(game, currentPath, nextNags(group.options, option)))
+                          }
                           className={`game-tools__nag${active ? " game-tools__nag_state_active" : ""}`}
                         >
                           <span className="game-tools__nag-glyph">{option.glyph}</span>
-                          <span className="game-tools__nag-label">{option.label}</span>
+                          <span className="game-tools__nag-label">{option.short}</span>
                         </button>
                       );
                     })}
@@ -247,49 +260,54 @@ export function GameTools({
               </div>
             ))}
           </div>
-          <p className="game-tools__hint">
-            {node ? "Un signo de cada fila, y se guarda dentro del PGN." : "Elige una jugada para calificarla."}
+
+          <p className="game-tools__foot">
+            {node
+              ? "Un signo de jugada y uno de posición. Se guarda dentro del PGN."
+              : "Elige una jugada de la lista para calificarla."}
           </p>
-        </div>
+        </>
       )}
 
       {tab === "share" && (
         <div className="game-tools__panel">
           <div className="game-tools__share">
-            <span className="game-tools__share-label">FEN de esta posición</span>
-            <div className="game-tools__share-row">
-              <input readOnly value={fen} className="game-tools__share-input" />
-              <button type="button" className="game-tools__share-button" onClick={() => void copy(fen, "fen")}>
-                {copied === "fen" ? "Copiado" : "Copiar"}
-              </button>
+            <div className="game-tools__share-text">
+              <span className="game-tools__share-label">FEN de esta posición</span>
+              <span className="game-tools__share-value game-tools__share-value_kind_code">{fen}</span>
             </div>
+            <button type="button" className="game-tools__share-button" onClick={() => void copy(fen, "fen")}>
+              {copied === "fen" ? "Copiado" : "Copiar"}
+            </button>
           </div>
 
           <div className="game-tools__share">
-            <span className="game-tools__share-label">PGN completo</span>
-            <div className="game-tools__share-row">
-              <input readOnly value={pgn.replace(/\s+/g, " ").trim()} className="game-tools__share-input" />
-              <button type="button" className="game-tools__share-button" onClick={() => void copy(pgn, "pgn")}>
-                {copied === "pgn" ? "Copiado" : "Copiar"}
-              </button>
+            <div className="game-tools__share-text">
+              <span className="game-tools__share-label">PGN completo</span>
+              <span className="game-tools__share-value">Con cabeceras, comentarios y signos</span>
             </div>
+            <button type="button" className="game-tools__share-button" onClick={() => void copy(pgn, "pgn")}>
+              {copied === "pgn" ? "Copiado" : "Copiar"}
+            </button>
           </div>
 
           {/* Las jugadas a secas, para pegarlas en otro sitio: ni variantes, ni
               comentarios, ni de quién es la partida. */}
           <div className="game-tools__share">
-            <span className="game-tools__share-label">Sólo la línea principal</span>
-            <div className="game-tools__share-row">
-              <input readOnly value={plainPgn ?? "Esta partida no tiene jugadas."} className="game-tools__share-input" />
-              <button
-                type="button"
-                disabled={plainPgn === null}
-                className="game-tools__share-button"
-                onClick={() => plainPgn && void copy(plainPgn, "plain")}
-              >
-                {copied === "plain" ? "Copiado" : "Copiar"}
-              </button>
+            <div className="game-tools__share-text">
+              <span className="game-tools__share-label">Sólo la línea principal</span>
+              <span className="game-tools__share-value game-tools__share-value_kind_code">
+                {plainPgn ?? "Esta partida no tiene jugadas."}
+              </span>
             </div>
+            <button
+              type="button"
+              disabled={plainPgn === null}
+              className="game-tools__share-button"
+              onClick={() => plainPgn && void copy(plainPgn, "plain")}
+            >
+              {copied === "plain" ? "Copiado" : "Copiar"}
+            </button>
           </div>
 
           <div className="game-tools__export">
@@ -299,7 +317,7 @@ export function GameTools({
               className="game-tools__export-button"
               onClick={() => void exportImage()}
             >
-              {exporting === "image" ? "Generando…" : "Descargar la posición (PNG)"}
+              {exporting === "image" ? "Generando…" : "Posición (PNG)"}
             </button>
             <button
               type="button"
@@ -307,14 +325,11 @@ export function GameTools({
               className="game-tools__export-button"
               onClick={() => void exportGif()}
             >
-              {exporting === "gif" ? "Generando el GIF…" : "Exportar la partida (GIF)"}
+              {exporting === "gif" ? "Generando…" : "Partida (GIF)"}
             </button>
           </div>
 
-          <p className="game-tools__hint">
-            {exportError ??
-              "La imagen sale del tablero como se ve, desde el lado de las blancas. El GIF recorre la línea principal, una jugada por cuadro."}
-          </p>
+          {exportError && <p className="game-tools__hint game-tools__hint_state_error">{exportError}</p>}
         </div>
       )}
     </div>

@@ -17,6 +17,8 @@
   --platform-surface-sunken: #ede7de;
   /* Neutro para chips y rellenos suaves que no son de acento. */
   --platform-surface-neutral: #f2efea;
+  /* Blanco cálido para campos y pies dentro de una tarjeta blanca. */
+  --platform-surface-soft: #fcfbf9;
 
   /* Dos pesos de línea: la fina separa zonas, la fuerte perfila controles. */
   --platform-border: #eae4dc;
