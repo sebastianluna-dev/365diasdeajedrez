@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FormField, FormFieldset } from "@/components/common/form-field.comp";
+import { ImageUpload } from "@/components/common/image-upload.comp";
 import { PlatformNotice } from "@/components/common/platform-notice.comp";
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
@@ -107,9 +108,7 @@ export function CourseEditorSection({
                   </span>
                 )}
               </div>
-              <p className="course-editor__hint">
-                Se cambia en «Metadatos», con la URL de la imagen en Cloudinary.
-              </p>
+              <p className="course-editor__hint">Se sube y se cambia en «Metadatos».</p>
             </StaffPanel>
 
             <StaffPanel
@@ -280,9 +279,12 @@ export function CourseEditorSection({
               </FormField>
             </div>
 
-            <FormField label="Portada (URL, opcional)">
-              <input type="url" name="cover" defaultValue={course.cover ?? ""} maxLength={500} />
-            </FormField>
+            <ImageUpload
+              name="cover"
+              label="Portada"
+              defaultValue={course.cover ?? undefined}
+              hint="Se sube a Cloudinary y se guarda al guardar los metadatos. Sale en «Mis cursos» recortada por la izquierda, así que deja el título en ese lado."
+            />
 
             <FormField label="Descripción (opcional)">
               <textarea name="description" defaultValue={course.description ?? ""} maxLength={1000} />

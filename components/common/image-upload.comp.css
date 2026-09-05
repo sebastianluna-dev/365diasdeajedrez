@@ -1,0 +1,119 @@
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  & .image-upload__label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
+  & .image-upload__body {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  /* El recuadro se pinta siempre, con imagen o sin ella: si apareciera sólo
+     cuando la hay, el formulario daría un salto al subir la primera. */
+  & .image-upload__preview {
+    position: relative;
+    flex: none;
+    width: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-surface-sunken);
+    overflow: hidden;
+  }
+
+  & .image-upload__image {
+    object-fit: cover;
+    object-position: 0% 50%;
+  }
+
+  & .image-upload__placeholder {
+    padding: 0 10px;
+    font-size: 14px;
+    text-align: center;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
+  & .image-upload__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* El selector de archivos nativo no se enseña: lo abre el botón, que sí se
+     puede vestir como el resto de la plataforma. */
+  & .image-upload__file {
+    display: none;
+  }
+
+  & .image-upload__remove {
+    padding: 6px 12px;
+    border: 1px solid var(--platform-border);
+    border-radius: 1000px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 150ms;
+    transition-property: border-color, color;
+  }
+
+  & .image-upload__remove:hover {
+    border-color: var(--platform-danger);
+    color: var(--platform-danger);
+  }
+
+  & .image-upload__url {
+    padding: 10px 12px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-bg);
+    color: var(--platform-text-muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px;
+    transition: 150ms;
+    transition-property: border-color, box-shadow;
+  }
+
+  & .image-upload__url:focus {
+    outline: none;
+    border-color: var(--platform-accent);
+    box-shadow: 0 0 0 3px var(--platform-accent-soft);
+  }
+
+  & .image-upload__hint {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
+  & .image-upload__error {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--platform-danger);
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 620px) {
+    & .image-upload__body {
+      flex-direction: column;
+    }
+
+    & .image-upload__preview {
+      width: 100%;
+    }
+  }
+}
