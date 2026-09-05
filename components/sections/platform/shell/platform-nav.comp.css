@@ -26,9 +26,13 @@
     color: var(--platform-text);
   }
 
+  /* La sección en la que estás, en naranja suave con el texto en la tinta
+     naranja. Con el lavado y el texto en negro, la negrita sola apenas la
+     distinguía de un elemento en hover. El redondeo lo hereda del propio
+     elemento, para que activo y hover tengan la misma forma. */
   & .platform-nav__item.platform-nav__item_active {
-    background: var(--platform-accent-wash);
-    color: var(--platform-text);
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
     font-weight: 700;
   }
 
