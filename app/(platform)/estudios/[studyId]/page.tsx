@@ -2,7 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { StudiesNavigation } from "@/components/common/studies-navigation.comp";
 import { StudyDetailSection } from "@/components/sections/platform/studies/study-detail/study-detail.section";
-import { getClassGames, getGameResultOptions, getStudyById, getStudyKinds } from "@/services/studies/studies.service";
+import {
+  getClassGames,
+  getGameResultOptions,
+  getShareableStudents,
+  getStudyById,
+  getStudyKinds,
+} from "@/services/studies/studies.service";
 import "./study-page.css";
 
 interface StudyPageProps {
@@ -23,11 +29,12 @@ export default async function StudyPage({ params, searchParams }: StudyPageProps
   const [study, { error }] = await Promise.all([getStudyById(studyId), searchParams]);
   if (!study) notFound();
 
-  // Sólo hacen falta para el modal de nueva partida, que no sale en las bases
-  // de curso: allí no se pide nada.
-  const [kinds, results, classGames] = study.isCourseStudy
-    ? [[], [], []]
-    : await Promise.all([getStudyKinds(), getGameResultOptions(), getClassGames()]);
+  // Todo esto alimenta formularios que sólo existen si se puede escribir, así
+  // que en lo que llega hecho —bases de curso, colecciones repartidas— no se
+  // consulta nada.
+  const [kinds, results, classGames, students] = study.permissions.canEditGames
+    ? await Promise.all([getStudyKinds(), getGameResultOptions(), getClassGames(), getShareableStudents()])
+    : [[], [], [], []];
 
   return (
     <div className="platform-page study-page">
@@ -37,6 +44,7 @@ export default async function StudyPage({ params, searchParams }: StudyPageProps
         kinds={kinds}
         results={results}
         classGames={classGames}
+        students={students}
         errorCode={error}
       />
     </div>

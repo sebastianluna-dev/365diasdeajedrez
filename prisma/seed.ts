@@ -23,6 +23,7 @@ import {
   CLASS_TRANSCRIPT,
   COURSES,
   GAME_DATABASES,
+  STUDY_SHARES,
   GAMES,
   IDS,
   STAFF,
@@ -365,6 +366,16 @@ async function main() {
       where: { id: database.id },
       update: databaseData,
       create: { id: database.id, ...databaseData },
+    });
+  }
+
+  // El reparto va DESPUÉS de las bases y antes que las partidas: la fila apunta
+  // a la colección, que ya tiene que existir.
+  for (const share of STUDY_SHARES) {
+    await db.studyShare.upsert({
+      where: { databaseId_userId: { databaseId: share.databaseId, userId: share.userId } },
+      update: { teacherId: share.teacherId },
+      create: share,
     });
   }
 

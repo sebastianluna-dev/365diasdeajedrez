@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
+import { getTeacherContext } from "@/lib/platform-auth/roles";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
@@ -13,7 +14,15 @@ import {
   studyDetailInclude,
   studySummaryInclude,
 } from "./studies.mapper";
-import type { ClassGameItem, GameView, StudyDetail, StudyKindOption, StudySummary } from "./studies.types";
+import { creatableKinds, studyPermissionsOf } from "./study-rules";
+import type {
+  ClassGameItem,
+  GameView,
+  StudentOption,
+  StudyDetail,
+  StudyKindOption,
+  StudySummary,
+} from "./studies.types";
 
 // «Mis estudios» en la interfaz; GameDatabase en el dominio. El alumno ve sus
 // bases propias (editables), las de los cursos que ha empezado (sólo lectura) y
@@ -32,14 +41,16 @@ const CLASS_GAMES_ID = "class-games";
 
 export async function getUserStudies(): Promise<StudySummary[]> {
   const db = getPlatformDb();
-  const where = await getVisibleStudiesWhere();
+  const [where, user] = await Promise.all([getVisibleStudiesWhere(), getCurrentUser()]);
   const rows = await db.gameDatabase.findMany({
     where,
+    // «Mis partidas» primero: es la única que está siempre y donde va a parar
+    // lo que se registra deprisa.
     orderBy: [{ isDefault: "desc" }, { updatedAt: "desc" }],
     include: studySummaryInclude,
   });
 
-  const studies = rows.map(mapStudySummary);
+  const studies = rows.map((row) => mapStudySummary(row, user.id));
   const classGames = await getClassGamesSummary();
   // Al final de la lista y sólo si hay algo: una tarjeta vacía «partidas de
   // clase» sería ruido para quien todavía no ha ido a ninguna.
@@ -47,19 +58,21 @@ export async function getUserStudies(): Promise<StudySummary[]> {
 }
 
 /**
- * Tipos de estudio que el alumno PUEDE crear. Las etiquetas viven en la base,
- * no en la UI, pero la regla de quién crea qué es de dominio y vive aquí.
+ * Tipos de estudio que quien mira PUEDE crear. Las etiquetas viven en la base,
+ * pero la regla de quién crea qué es de dominio y está en `study-rules`.
  *
- * Fuera queda «Colección»: al alumno le llega, nunca la hace. Sus dos vías son
- * de sólo lectura —las partidas de sus clases y las bases de los cursos que ha
- * empezado— y ninguna se crea desde aquí. Filtrarlo en la consulta y no en el
- * desplegable es a propósito: `createStudy` valida el code contra el catálogo
- * entero, así que la lista es lo que de verdad decide qué se ofrece.
+ * Fuera queda siempre «Mis partidas», que nace con la cuenta. «Colección» sólo
+ * la ve un maestro: al alumno le llega repartida, nunca la hace.
+ *
+ * La lista es informativa, no la defensa: `createStudy` vuelve a preguntarle a
+ * `study-rules` antes de escribir, porque una server action es alcanzable por
+ * POST directo y ahí no hay desplegable que valga.
  */
 export const getStudyKinds = cache(async (): Promise<StudyKindOption[]> => {
   const db = getPlatformDb();
+  const teacher = await getTeacherContext();
   const rows = await db.databaseKind.findMany({
-    where: { code: { not: DATABASE_KIND.COLLECTION } },
+    where: { code: { in: [...creatableKinds(teacher !== null)] } },
     orderBy: { order: "asc" },
     select: { code: true, label: true },
   });
@@ -77,9 +90,29 @@ export const getGameResultOptions = cache(async (): Promise<StudyKindOption[]> =
 
 export async function getStudyById(studyId: string): Promise<StudyDetail | null> {
   const db = getPlatformDb();
-  const where = await getVisibleStudiesWhere();
+  const [where, user] = await Promise.all([getVisibleStudiesWhere(), getCurrentUser()]);
   const row = await db.gameDatabase.findFirst({ where: { AND: [{ id: studyId }, where] }, include: studyDetailInclude });
-  return row ? mapStudyDetail(row) : null;
+  return row ? mapStudyDetail(row, user.id) : null;
+}
+
+/**
+ * Alumnos a los que este profesor puede repartir una colección: los que tienen
+ * asignación ACTIVA con él, el mismo criterio que el resto de su panel.
+ *
+ * Devuelve la lista vacía si quien mira no es profesor. Es la misma condición
+ * que vuelve a comprobar `shareStudyWithStudent` contra la base de datos antes
+ * de escribir: esto sólo decide a quién se OFRECE repartir.
+ */
+export async function getShareableStudents(): Promise<StudentOption[]> {
+  const teacher = await getTeacherContext();
+  if (!teacher) return [];
+
+  const assignments = await getPlatformDb().teacherStudent.findMany({
+    where: { teacherId: teacher.teacher.id, endedAt: null },
+    select: { student: { select: { id: true, displayName: true, email: true } } },
+    orderBy: { student: { displayName: "asc" } },
+  });
+  return assignments.map((assignment) => assignment.student);
 }
 
 export async function getGameById(studyId: string, gameId: string): Promise<GameView | null> {
@@ -159,11 +192,12 @@ async function getClassGamesSummary(): Promise<StudySummary | null> {
     name: "Partidas de mis clases",
     description: "Las partidas que se han visto en las clases a las que asististe.",
     kindLabel: "Colección",
+    kindCode: DATABASE_KIND.COLLECTION,
     gameCount: items.length,
     updatedAtLabel: items[0].classDateLabel,
     isCourseStudy: false,
-    // No es una base: no hay nada que borrar.
-    canDelete: false,
+    // No es una base: no hay nada que editar ni que borrar.
+    permissions: studyPermissionsOf({ kindCode: DATABASE_KIND.COLLECTION, isOwner: false }),
     citedGameCount: 0,
     href: platformRoutes.classGames,
   };

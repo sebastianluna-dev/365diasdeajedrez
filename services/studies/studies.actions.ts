@@ -16,6 +16,7 @@ import {
 } from "@/constants/platform/study-codes.const";
 import { PGN_MAX_GAMES, PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
+import { getTeacherContext } from "@/lib/platform-auth/roles";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
@@ -23,6 +24,7 @@ import { allowAction } from "@/lib/rate-limit";
 import { emptyGame, serializeGame } from "@/lib/chess/pgn-edit";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
+import { canChangeKindTo, canCreateKind, studyPermissionsOf } from "./study-rules";
 
 // Las server actions son alcanzables por POST directo: el usuario SIEMPRE se
 // resuelve aquí dentro (DAL) y la propiedad de la base se comprueba contra la
@@ -67,8 +69,13 @@ function readDateHeader(headers: Map<string, string>): Date | null {
 }
 
 /**
- * Crea una base propia del alumno («estudio» en la interfaz). El tipo llega
- * como code del catálogo y se valida contra DATABASE_KIND antes de conectar.
+ * Crea una base propia («estudio» en la interfaz). El tipo llega como code del
+ * catálogo y lo decide `study-rules`, no el desplegable: un alumno crea
+ * estudios y torneos, un maestro además colecciones, y «Mis partidas» no la
+ * crea nadie a mano porque nace con la cuenta.
+ *
+ * Se vuelve a preguntar aquí aunque la lista ya venga filtrada: una server
+ * action es alcanzable por POST directo con el code que sea.
  */
 export async function createStudy(formData: FormData): Promise<void> {
   const name = readText(formData, "name");
@@ -78,6 +85,8 @@ export async function createStudy(formData: FormData): Promise<void> {
   const description = readText(formData, "description");
   const db = getPlatformDb();
   const user = await getCurrentUser();
+  const teacher = await getTeacherContext();
+  if (!canCreateKind(kindCode, teacher !== null)) return;
   if (!(await allowAction(`${user.id}:create-study`, 20, 60_000))) return;
 
   await db.gameDatabase.create({
@@ -209,14 +218,18 @@ export async function reorderStudyGames(studyId: string, orderedIds: string[]): 
  * Cambia el nombre, la descripción y el tipo de un estudio propio.
  *
  * El `where` lleva `userId` como todas las escrituras de aquí: ver una base de
- * curso no da derecho a renombrarla. El tipo se valida contra el catálogo, y
- * `COLLECTION` no está entre los que el alumno puede poner —igual que al
- * crear— porque una colección le llega, no la hace.
+ * curso —o una colección que a uno le repartieron— no da derecho a
+ * renombrarla.
+ *
+ * El tipo puede venir vacío: hay estudios que se renombran pero no cambian de
+ * tipo («Mis partidas» y las colecciones no pueden). Si viene, tiene que ser un
+ * cambio que `study-rules` permita, y si no lo es se ignora el tipo y se guarda
+ * el resto en vez de tirar el formulario entero.
  */
 export async function updateStudy(studyId: string, formData: FormData): Promise<void> {
   const name = readText(formData, "name");
   const kindCode = readText(formData, "kindCode");
-  if (name.length === 0 || !isDatabaseKindCode(kindCode) || kindCode === DATABASE_KIND.COLLECTION) return;
+  if (name.length === 0) return;
 
   const description = readText(formData, "description");
   const db = getPlatformDb();
@@ -225,16 +238,20 @@ export async function updateStudy(studyId: string, formData: FormData): Promise<
 
   const study = await db.gameDatabase.findFirst({
     where: { id: studyId, userId: user.id },
-    select: { id: true },
+    select: { id: true, kind: { select: { code: true } } },
   });
   if (!study) return;
+
+  const rule = { kindCode: study.kind.code, isOwner: true };
+  if (!studyPermissionsOf(rule).canEdit) return;
+  const nextKind = isDatabaseKindCode(kindCode) && canChangeKindTo(rule, kindCode) ? kindCode : null;
 
   await db.gameDatabase.update({
     where: { id: study.id },
     data: {
       name: name.slice(0, STUDY_NAME_MAX_LENGTH),
       description: description.length > 0 ? description.slice(0, STUDY_DESCRIPTION_MAX_LENGTH) : null,
-      kind: { connect: { code: kindCode } },
+      ...(nextKind ? { kind: { connect: { code: nextKind } } } : {}),
     },
   });
 
@@ -714,14 +731,16 @@ export async function deleteStudy(studyId: string, formData: FormData): Promise<
   const studyPath = platformRoutes.studyDetail(studyId);
   if (!(await allowAction(`${user.id}:delete-study`, 20, 60_000))) return;
 
-  // `isDefault: false` queda dentro a propósito: «Mis partidas» se crea con la
-  // cuenta y es única, así que no se borra. Que el botón no salga en la tarjeta
-  // no basta — una server action es alcanzable por POST directo.
   const study = await db.gameDatabase.findFirst({
-    where: { id: studyId, userId: user.id, isDefault: false },
-    select: { id: true, _count: { select: { games: true } } },
+    where: { id: studyId, userId: user.id },
+    select: { id: true, kind: { select: { code: true } }, _count: { select: { games: true } } },
   });
   if (!study) return;
+
+  // «Mis partidas» se crea con la cuenta y es única, así que no se borra. Que
+  // el botón no salga en la tarjeta no basta: una server action es alcanzable
+  // por POST directo.
+  if (!studyPermissionsOf({ kindCode: study.kind.code, isOwner: true }).canDelete) return;
 
   const citedGames = await db.classBlock.count({ where: { game: { databaseId: studyId } } });
 
@@ -733,4 +752,82 @@ export async function deleteStudy(studyId: string, formData: FormData): Promise<
 
   revalidatePath(platformRoutes.studies);
   redirect(platformRoutes.studies);
+}
+
+// --- Reparto de colecciones -------------------------------------------------
+//
+// Una colección es de su dueño —un maestro— y le LLEGA al alumno por una fila
+// de StudyShare. El reparto sólo da lectura, y eso no lo impone la tabla sino
+// la propiedad: todas las escrituras de este archivo llevan `userId: user.id`
+// en el `where`, así que un alumno con una colección repartida no pasa ninguna.
+//
+// Tres condiciones para repartir, y las tres se comprueban contra la base de
+// datos porque el id del alumno llega del cliente:
+//
+//  1. quien reparte es un profesor ACTIVO;
+//  2. la colección es suya y es una colección (un estudio personal no se
+//     reparte: para eso se hace una colección con las partidas que toquen);
+//  3. el alumno tiene asignación activa con él, el mismo criterio que el resto
+//     del panel del profesor.
+
+/** La colección de un profesor activo, o null si falla cualquiera de las dos. */
+async function ownedCollection(
+  studyId: string,
+): Promise<{ study: { id: string }; teacherId: string } | null> {
+  const teacher = await getTeacherContext();
+  if (!teacher) return null;
+
+  const study = await getPlatformDb().gameDatabase.findFirst({
+    where: { id: studyId, userId: teacher.user.id, kind: { code: DATABASE_KIND.COLLECTION } },
+    select: { id: true },
+  });
+  return study ? { study, teacherId: teacher.teacher.id } : null;
+}
+
+/** Reparte una colección a un alumno del profesor. */
+export async function shareStudyWithStudent(studyId: string, formData: FormData): Promise<void> {
+  const studentId = readText(formData, "studentId");
+  if (studentId.length === 0) return;
+
+  const owned = await ownedCollection(studyId);
+  if (!owned) return;
+
+  const db = getPlatformDb();
+  if (!(await allowAction(`${owned.teacherId}:share-study`, 60, 60_000))) return;
+
+  const assignment = await db.teacherStudent.findFirst({
+    where: { teacherId: owned.teacherId, studentId, endedAt: null },
+    select: { id: true },
+  });
+  if (!assignment) return;
+
+  // Repartirla dos veces al mismo alumno no es un error que merezca ruido: el
+  // resultado buscado —que la tenga— ya se cumple. El índice único de
+  // (colección, alumno) es lo que lo garantiza; esto sólo evita el estallido.
+  await db.studyShare.upsert({
+    where: { databaseId_userId: { databaseId: owned.study.id, userId: studentId } },
+    update: {},
+    create: { databaseId: owned.study.id, userId: studentId, teacherId: owned.teacherId },
+  });
+
+  revalidatePath(platformRoutes.studyDetail(owned.study.id));
+}
+
+/**
+ * Quita el reparto. No borra nada del material: la colección sigue entera en la
+ * base del maestro, el alumno simplemente deja de verla.
+ */
+export async function unshareStudyWithStudent(studyId: string, formData: FormData): Promise<void> {
+  const studentId = readText(formData, "studentId");
+  if (studentId.length === 0) return;
+
+  const owned = await ownedCollection(studyId);
+  if (!owned) return;
+
+  const db = getPlatformDb();
+  if (!(await allowAction(`${owned.teacherId}:share-study`, 60, 60_000))) return;
+
+  await db.studyShare.deleteMany({ where: { databaseId: owned.study.id, userId: studentId } });
+
+  revalidatePath(platformRoutes.studyDetail(owned.study.id));
 }

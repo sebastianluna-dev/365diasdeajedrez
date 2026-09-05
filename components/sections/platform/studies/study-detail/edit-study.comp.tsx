@@ -10,15 +10,21 @@ interface EditStudyProps {
   name: string;
   description?: string;
   kindCode: string;
-  /** Los que el alumno puede poner; «Colección» no está entre ellos. */
+  /** Cómo se llama su tipo, para poder decirlo cuando no se puede cambiar. */
+  kindLabel: string;
+  /** Los tipos a los que puede pasar. Ver services/studies/study-rules. */
   kinds: StudyKindOption[];
+  /**
+   * Si el tipo se puede cambiar. «Mis partidas» y las colecciones se quedan
+   * como están: la primera es única por alumno y la segunda dejaría a quienes
+   * la recibieron mirando algo que ya no es una colección.
+   */
+  canChangeKind: boolean;
 }
 
-export function EditStudy({ id, name, description, kindCode, kinds }: EditStudyProps) {
+export function EditStudy({ id, name, description, kindCode, kindLabel, kinds, canChangeKind }: EditStudyProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  // Un estudio de tipo «Colección» no se puede editar a sí mismo de vuelta a
-  // «Colección» porque ese tipo no se ofrece; se cae al primero disponible.
   const selected = kinds.some((kind) => kind.code === kindCode) ? kindCode : kinds[0]?.code;
 
   return (
@@ -60,19 +66,26 @@ export function EditStudy({ id, name, description, kindCode, kinds }: EditStudyP
             />
           </label>
 
-          <label className="edit-study__field">
-            <span className="edit-study__label">Tipo</span>
-            <select className="edit-study__select" name="kindCode" defaultValue={selected}>
-              {kinds.map((kind) => (
-                <option key={kind.code} value={kind.code}>
-                  {kind.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          {/* Sin selector cuando el tipo no se toca: un desplegable con una
+              sola opción imposible de cambiar sólo estorba. La acción tampoco
+              lo aceptaría, así que el formulario no manda `kindCode`. */}
+          {canChangeKind && (
+            <label className="edit-study__field">
+              <span className="edit-study__label">Tipo</span>
+              <select className="edit-study__select" name="kindCode" defaultValue={selected}>
+                {kinds.map((kind) => (
+                  <option key={kind.code} value={kind.code}>
+                    {kind.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
 
           <div className="edit-study__actions">
-            <span className="edit-study__note">El tipo se puede cambiar cuando quieras.</span>
+            <span className="edit-study__note">
+              {canChangeKind ? "El tipo se puede cambiar cuando quieras." : `El tipo «${kindLabel}» no se cambia.`}
+            </span>
             <button
               type="button"
               className="platform-button platform-button_variant_secondary"

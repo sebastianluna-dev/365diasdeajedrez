@@ -1,8 +1,18 @@
 // Codes estables de los catálogos de «Mis estudios» (GameDatabase / Game).
 
+/**
+ * Los cuatro tipos de estudio. Lo que puede hacerse con cada uno NO está aquí
+ * sino en services/studies/study-rules.ts: esto es sólo el catálogo.
+ *
+ * - `MY_GAMES`: se crea con la cuenta, hay exactamente uno y no se borra.
+ * - `TOURNAMENT`: las partidas que el alumno jugó en una misma competición.
+ * - `STUDY`: material libre que el alumno junta para analizar.
+ * - `COLLECTION`: contenido que le LLEGA —de un curso o de un maestro— y que
+ *   para él es de sólo lectura.
+ */
 export const DATABASE_KIND = {
   MY_GAMES: "MY_GAMES",
-  REPERTOIRE: "REPERTOIRE",
+  TOURNAMENT: "TOURNAMENT",
   STUDY: "STUDY",
   COLLECTION: "COLLECTION",
 } as const;

@@ -9,26 +9,30 @@ import "./studies-browser.comp.css";
 const ALL = "Todos";
 
 interface StudiesBrowserProps {
-  /** Los tuyos, incluida la tarjeta de partidas de clase. */
+  /** Los que son suyos: «Mis partidas», sus torneos y sus estudios. */
   own: StudySummary[];
-  /** Las bases de los cursos que has empezado. Sólo lectura. */
-  course: StudySummary[];
+  /**
+   * Lo que le llega hecho y no puede tocar: las bases de los cursos que ha
+   * empezado, las colecciones que le repartió un maestro y las partidas de sus
+   * clases.
+   */
+  received: StudySummary[];
 }
 
-export function StudiesBrowser({ own, course }: StudiesBrowserProps) {
+export function StudiesBrowser({ own, received }: StudiesBrowserProps) {
   const [active, setActive] = useState(ALL);
 
   // Los filtros salen de los tipos que hay delante, no de una lista fija: si
-  // mañana aparece un repertorio, su filtro aparece solo.
+  // mañana aparece otro tipo, su filtro aparece solo.
   const options = useMemo(() => {
-    const labels = [...own, ...course].map((study) => study.kindLabel);
+    const labels = [...own, ...received].map((study) => study.kindLabel);
     return [ALL, ...[...new Set(labels)]];
-  }, [own, course]);
+  }, [own, received]);
 
   const matches = (study: StudySummary) => active === ALL || study.kindLabel === active;
   const ownShown = own.filter(matches);
-  const courseShown = course.filter(matches);
-  const total = ownShown.length + courseShown.length;
+  const receivedShown = received.filter(matches);
+  const total = ownShown.length + receivedShown.length;
 
   return (
     <div className="studies-browser">
@@ -46,7 +50,7 @@ export function StudiesBrowser({ own, course }: StudiesBrowserProps) {
         ))}
 
         <span className="studies-browser__count">
-          {total} de {own.length + course.length} estudios
+          {total} de {own.length + received.length} estudios
         </span>
       </div>
 
@@ -68,11 +72,11 @@ export function StudiesBrowser({ own, course }: StudiesBrowserProps) {
         </section>
       )}
 
-      {courseShown.length > 0 && (
+      {receivedShown.length > 0 && (
         <section className="studies-browser__group">
-          <h2 className="studies-browser__group-title">Bases de tus cursos</h2>
+          <h2 className="studies-browser__group-title">Material que has recibido</h2>
           <div className="studies-browser__grid">
-            {courseShown.map((study) => (
+            {receivedShown.map((study) => (
               <StudyCard key={study.id} study={study} />
             ))}
           </div>

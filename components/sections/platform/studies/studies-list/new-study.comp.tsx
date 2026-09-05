@@ -6,7 +6,10 @@ import type { StudyKindOption } from "@/services/studies/studies.types";
 import "./new-study.comp.css";
 
 interface NewStudyProps {
-  /** Tipos que el alumno puede crear; «Colección» no está entre ellos. */
+  /**
+   * Tipos que quien mira puede crear. «Mis partidas» nunca está —nace con la
+   * cuenta— y «Colección» sólo si es maestro. Ver services/studies/study-rules.
+   */
   kinds: StudyKindOption[];
 }
 
@@ -44,7 +47,7 @@ export function NewStudy({ kinds }: NewStudyProps) {
               maxLength={120}
               required
               autoFocus
-              placeholder="Mi repertorio con blancas"
+              placeholder="Nacional Abierto 2026"
             />
           </label>
 

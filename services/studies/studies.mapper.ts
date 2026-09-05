@@ -1,11 +1,16 @@
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { platformRoutes } from "@/lib/platform-routes";
-import type { GameView, StudyDetail, StudyGameItem, StudySummary } from "./studies.types";
+import { studyPermissionsOf } from "./study-rules";
+import type { GameView, StudyDetail, StudyGameItem, StudyShareItem, StudySummary } from "./studies.types";
 
 export const studySummaryInclude = {
   kind: true,
   course: { select: { name: true } },
+  // Quién repartió la colección, para poder decir de dónde viene. `take: 1`
+  // porque al alumno sólo le toca UNA fila —la suya— y al dueño no le hace
+  // falta ninguna aquí: la lista de a quién se la repartió es de la ficha.
+  shares: { take: 1, select: { teacher: { select: { displayName: true } } } },
   _count: { select: { games: true } },
   // Sólo las citadas en alguna clase, para poder avisar antes de borrar: esos
   // bloques se quedarían sin partida. Se traen los ids en vez de contarlos
@@ -18,6 +23,14 @@ export type StudySummaryRow = Prisma.GameDatabaseGetPayload<{ include: typeof st
 export const studyDetailInclude = {
   kind: true,
   course: { select: { name: true } },
+  shares: {
+    orderBy: { createdAt: "asc" },
+    select: {
+      createdAt: true,
+      user: { select: { id: true, displayName: true, email: true } },
+      teacher: { select: { displayName: true } },
+    },
+  },
   games: {
     // El orden que puso el alumno manda. La fecha queda de desempate para las
     // que aún no se han colocado a mano —`createdAt` ASC para que los capítulos
@@ -38,23 +51,33 @@ export type StudyDetailRow = Prisma.GameDatabaseGetPayload<{ include: typeof stu
 export const gameViewInclude = {
   result: { select: { label: true, code: true } },
   source: { select: { label: true } },
-  database: { select: { id: true, name: true, userId: true } },
+  database: { select: { id: true, name: true, userId: true, kind: { select: { code: true } } } },
   _count: { select: { classBlocks: true } },
 } satisfies Prisma.GameInclude;
 
 export type GameViewRow = Prisma.GameGetPayload<{ include: typeof gameViewInclude }>;
 
-export function mapStudySummary(row: StudySummaryRow): StudySummary {
+/**
+ * @param viewerId id de quien mira, o `null` cuando la vista es de sólo lectura
+ *   por su propia naturaleza (el profesor revisando a un alumno). La propiedad
+ *   es lo único que separa una colección que se REPARTE de una que se RECIBE,
+ *   así que sin esto no se puede decidir qué se le ofrece.
+ */
+export function mapStudySummary(row: StudySummaryRow, viewerId: string | null): StudySummary {
+  const isOwner = row.userId === viewerId;
+
   return {
     id: row.id,
     name: row.name,
     description: row.description ?? undefined,
     kindLabel: row.kind.label,
+    kindCode: row.kind.code,
     gameCount: row._count.games,
     updatedAtLabel: formatSpanishDate(row.updatedAt),
     courseName: row.course?.name,
     isCourseStudy: row.courseId !== null,
-    canDelete: row.courseId === null && !row.isDefault,
+    sharedByName: isOwner ? undefined : (row.shares[0]?.teacher?.displayName ?? undefined),
+    permissions: studyPermissionsOf({ kindCode: row.kind.code, isOwner }),
     citedGameCount: row.games.length,
     href: platformRoutes.studyDetail(row.id),
   };
@@ -112,9 +135,20 @@ function eventCounts(row: StudyDetailRow): Map<string, number> {
   return counts;
 }
 
-export function mapStudyDetail(row: StudyDetailRow): StudyDetail {
+function mapStudyShare(share: StudyDetailRow["shares"][number]): StudyShareItem {
+  return {
+    userId: share.user.id,
+    displayName: share.user.displayName,
+    email: share.user.email,
+    sharedAtLabel: formatSpanishDate(share.createdAt),
+  };
+}
+
+/** @param viewerId id de quien mira, o `null`; ver `mapStudySummary`. */
+export function mapStudyDetail(row: StudyDetailRow, viewerId: string | null): StudyDetail {
   // Fuera del bucle: dentro se recalcularía una vez por partida.
   const events = eventCounts(row);
+  const isOwner = row.userId === viewerId;
 
   return {
     id: row.id,
@@ -125,6 +159,13 @@ export function mapStudyDetail(row: StudyDetailRow): StudyDetail {
     createdAtLabel: formatSpanishDate(row.createdAt),
     isCourseStudy: row.courseId !== null,
     courseName: row.course?.name,
+    // A quien la recibe se le dice de quién viene; a quien la reparte, a quién
+    // se la dio. Nunca las dos cosas: son las dos caras de la misma fila.
+    sharedByName: isOwner
+      ? undefined
+      : (row.shares.find((share) => share.user.id === viewerId)?.teacher?.displayName ?? undefined),
+    permissions: studyPermissionsOf({ kindCode: row.kind.code, isOwner }),
+    shares: isOwner ? row.shares.map(mapStudyShare) : [],
     citedGameCount: row.games.filter((game) => game._count.classBlocks > 0).length,
     games: row.games.map((game, index) => mapStudyGameItem(row.id, game, index, events)),
   };
@@ -137,8 +178,13 @@ export function mapStudyDetail(row: StudyDetailRow): StudyDetail {
 export function mapGameView(row: GameViewRow, viewerId: string | null): GameView {
   return {
     // Un profesor VE las partidas de sus alumnos para poder citarlas en clase,
-    // pero anotarlas es cosa del dueño.
-    canEdit: viewerId !== null && row.database.userId === viewerId,
+    // pero anotarlas es cosa del dueño; y lo mismo el alumno con una colección
+    // que le repartieron. Sale de la misma tabla que el resto de la sección
+    // para que no haya dos versiones de la regla.
+    canEdit:
+      viewerId !== null &&
+      studyPermissionsOf({ kindCode: row.database.kind.code, isOwner: row.database.userId === viewerId })
+        .canEditGames,
     id: row.id,
     title: row.title ?? undefined,
     resultCode: row.result.code,

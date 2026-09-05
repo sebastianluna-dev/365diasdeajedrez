@@ -11,6 +11,7 @@ import { staffRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { readText } from "@/services/shared/form-data";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
+import { createDefaultStudy } from "@/services/studies/default-study";
 import type { AccountActionState } from "./staff-students.types";
 
 // Alta y mantenimiento de cuentas.
@@ -63,14 +64,21 @@ export async function createStudentAccount(
   if ("problem" in resolved) return { status: "error", message: resolved.problem };
 
   try {
-    const created = await getPlatformDb().user.create({
-      data: {
-        email,
-        displayName,
-        passwordHash: await hashPassword(resolved.password),
-        passwordUpdatedAt: new Date(),
-      },
-      select: { id: true },
+    // La cuenta y su «Mis partidas» entran juntas o no entra ninguna: un alumno
+    // sin ese estudio no tendría dónde guardar una partida suelta, y crearlo
+    // después dejaría una ventana en la que la cuenta existe a medias.
+    const created = await getPlatformDb().$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          email,
+          displayName,
+          passwordHash: await hashPassword(resolved.password),
+          passwordUpdatedAt: new Date(),
+        },
+        select: { id: true },
+      });
+      await createDefaultStudy(tx, user.id);
+      return user;
     });
 
     revalidatePath(staffRoutes.students);

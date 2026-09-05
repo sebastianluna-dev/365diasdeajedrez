@@ -89,7 +89,7 @@ export const CATALOG_VALUES = {
   ],
   databaseKind: [
     [DATABASE_KIND.MY_GAMES, "Mis partidas"],
-    [DATABASE_KIND.REPERTOIRE, "Repertorio"],
+    [DATABASE_KIND.TOURNAMENT, "Torneo"],
     [DATABASE_KIND.STUDY, "Estudio"],
     [DATABASE_KIND.COLLECTION, "Colección"],
   ],
@@ -196,6 +196,12 @@ export const IDS = {
   dbMyGames: "demoMisP",
   dbKingAttacks: "demoAtaq",
   dbSicilianModels: "demoSici",
+  dbTeacherMyGames: "profMisP",
+  dbNationalOpen: "demoTorn",
+  dbTeacherPack: "demoColP",
+
+  gameNationalR1: "demoRon1",
+  gameTeacherPin: "demoClav",
 
   gameOpera: "demoOper",
   gameImmortal: "demoInmo",
@@ -549,10 +555,101 @@ export const GAME_DATABASES = [
     isDefault: false,
     order: 0,
   },
+  {
+    // Cada cuenta tiene la suya, también la del profesor: la crea el alta y la
+    // impone el índice único parcial `game_database_one_default_per_user`.
+    id: IDS.dbTeacherMyGames,
+    ownerType: OWNER_TYPE.USER,
+    userId: IDS.teacherUser as string | null,
+    courseId: null as string | null,
+    name: "Mis partidas",
+    description: "Tus partidas que no pertenecen a ningún torneo.",
+    kind: DATABASE_KIND.MY_GAMES,
+    isDefault: true,
+    order: 0,
+  },
+  {
+    // Un torneo: las partidas que el alumno jugó en una misma competición.
+    id: IDS.dbNationalOpen,
+    ownerType: OWNER_TYPE.USER,
+    userId: IDS.demoUser as string | null,
+    courseId: null as string | null,
+    name: "Nacional Abierto 2026",
+    description: "Mis partidas del Nacional Abierto.",
+    kind: DATABASE_KIND.TOURNAMENT,
+    isDefault: false,
+    order: 2,
+  },
+  {
+    // Una colección del PROFESOR, repartida al alumno demo (ver STUDY_SHARES).
+    // Es suya, así que él la mantiene; el alumno sólo la lee.
+    id: IDS.dbTeacherPack,
+    ownerType: OWNER_TYPE.USER,
+    userId: IDS.teacherUser as string | null,
+    courseId: null as string | null,
+    name: "Clavadas para esta semana",
+    description: "Ejemplos de clavada que vamos a ver en clase.",
+    kind: DATABASE_KIND.COLLECTION,
+    isDefault: false,
+    order: 0,
+  },
   THINK_LIKE_A_GRANDMASTER_DATABASE,
 ];
 
+/**
+ * Reparto de colecciones. Es lo que hace que al alumno demo le APAREZCA la
+ * colección del profesor en «Mis estudios», de sólo lectura.
+ */
+export const STUDY_SHARES = [
+  { databaseId: IDS.dbTeacherPack, userId: IDS.demoUser, teacherId: IDS.teacher },
+];
+
 export const GAMES = [
+  {
+    id: IDS.gameNationalR1,
+    databaseId: IDS.dbNationalOpen,
+    white: "Alumno Demo",
+    black: "Rival de la primera ronda",
+    whiteElo: 1780 as number | null,
+    blackElo: 1712 as number | null,
+    result: GAME_RESULT.WHITE_WINS,
+    playedAt: new Date("2026-02-14"),
+    event: "Nacional Abierto 2026",
+    site: "Ciudad de México",
+    eco: "C50",
+    source: GAME_SOURCE.MANUAL,
+    pgn: `[Event "Nacional Abierto 2026"]
+[Site "Ciudad de México"]
+[Date "2026.02.14"]
+[Round "1"]
+[White "Alumno Demo"]
+[Black "Rival de la primera ronda"]
+[Result "1-0"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3 Nf6 5. d4 exd4 6. cxd4 Bb4+ 7. Nc3 Nxe4 8. O-O Bxc3 9. d5 {La entrega de la italiana clásica: se cierra la diagonal y se gana tiempo.} 9... Bf6 10. Re1 Ne7 11. Rxe4 d6 12. Bg5 Bxg5 13. Nxg5 O-O 14. Nxh7 1-0`,
+  },
+  {
+    id: IDS.gameTeacherPin,
+    databaseId: IDS.dbTeacherPack,
+    white: "Wilhelm Steinitz",
+    black: "Curt von Bardeleben",
+    whiteElo: null as number | null,
+    blackElo: null as number | null,
+    result: GAME_RESULT.WHITE_WINS,
+    playedAt: new Date("1895-08-17"),
+    event: "Hastings",
+    site: "Hastings",
+    eco: "C54",
+    source: GAME_SOURCE.PGN_IMPORT,
+    pgn: `[Event "Hastings"]
+[Site "Hastings"]
+[Date "1895.08.17"]
+[White "Wilhelm Steinitz"]
+[Black "Curt von Bardeleben"]
+[Result "1-0"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. c3 Nf6 5. d4 exd4 6. cxd4 Bb4+ 7. Nc3 d5 8. exd5 Nxd5 9. O-O Be6 10. Bg5 Be7 11. Bxd5 Bxd5 12. Nxd5 Qxd5 13. Bxe7 Nxe7 14. Re1 f6 15. Qe2 Qd7 16. Rac1 c6 17. d5 {La clavada de la columna e es el tema: el rey negro no puede salir. [%csl Re7,Re8]} 17... cxd5 18. Nd4 Kf7 19. Ne6 Rhc8 20. Qg4 g6 21. Ng5+ Ke8 22. Rxe7+ 1-0`,
+  },
   {
     id: IDS.gameOpera,
     databaseId: IDS.dbKingAttacks,

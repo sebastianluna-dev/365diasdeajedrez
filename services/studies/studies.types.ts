@@ -1,22 +1,43 @@
+import type { StudyPermissions } from "./study-rules";
+
 export interface StudySummary {
   id: string;
   name: string;
   description?: string;
   kindLabel: string;
+  /** Code del catálogo: la interfaz decide con él, no con la etiqueta. */
+  kindCode: string;
   gameCount: number;
   updatedAtLabel: string;
   /** Nombre del curso cuando la base pertenece a un curso (sólo lectura). */
   courseName?: string;
   isCourseStudy: boolean;
+  /** Nombre del maestro cuando la colección se la repartieron (sólo lectura). */
+  sharedByName?: string;
   /**
-   * Si esta tarjeta ofrece borrar. Fuera quedan las bases de curso (no son
-   * suyas), la tarjeta de partidas de clase (no es una base real) y «Mis
-   * partidas», que se crea con la cuenta y es única.
+   * Qué puede hacer con este estudio quien está mirando. Sale de
+   * services/studies/study-rules, que es la misma tabla que aplican las server
+   * actions: la interfaz no ofrece nada que la acción vaya a rechazar.
    */
-  canDelete: boolean;
+  permissions: StudyPermissions;
   /** Partidas de este estudio citadas en alguna clase; se avisa antes de borrar. */
   citedGameCount: number;
   href: string;
+}
+
+/** Un alumno al que se le repartió una colección. */
+export interface StudyShareItem {
+  userId: string;
+  displayName: string;
+  email: string;
+  sharedAtLabel: string;
+}
+
+/** Alumno del profesor, para el desplegable de repartir una colección. */
+export interface StudentOption {
+  id: string;
+  displayName: string;
+  email: string;
 }
 
 /** Opción del catálogo DatabaseKind para el formulario de crear estudio. */
@@ -73,6 +94,14 @@ export interface StudyDetail {
   createdAtLabel: string;
   isCourseStudy: boolean;
   courseName?: string;
+  /** Nombre del maestro cuando la colección se la repartieron. */
+  sharedByName?: string;
+  permissions: StudyPermissions;
+  /**
+   * A quién se le repartió. Sólo se llena para el DUEÑO de una colección: a
+   * quien la recibe no le incumbe con quién más la comparten.
+   */
+  shares: StudyShareItem[];
   /** Partidas del estudio citadas en el contenido de alguna clase. */
   citedGameCount: number;
   games: StudyGameItem[];

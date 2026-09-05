@@ -14,12 +14,14 @@ export async function StudiesListSection() {
     );
   }
 
-  // El corte lo decide el dueño de la base, no el tipo: las de curso son de
-  // sólo lectura y por eso van en su propia sección.
+  // El corte lo decide la PROPIEDAD, no el tipo: lo que no es suyo —las bases
+  // de sus cursos y las colecciones que le repartió un maestro— es de sólo
+  // lectura y va en su propia sección para que no se mezcle con lo que sí puede
+  // tocar.
   return (
     <StudiesBrowser
-      own={studies.filter((study) => !study.isCourseStudy)}
-      course={studies.filter((study) => study.isCourseStudy)}
+      own={studies.filter((study) => study.permissions.canEditGames)}
+      received={studies.filter((study) => !study.permissions.canEditGames)}
     />
   );
 }

@@ -16,13 +16,24 @@ export interface GameViewer {
 }
 
 /**
- * Bases de partidas visibles: las propias y las de los cursos EMPEZADOS. No
- * basta con que el curso esté publicado: su base es material del curso y se
- * abre al entrar en él.
+ * Bases de partidas visibles. Tres caminos:
+ *
+ * - las propias;
+ * - las de los cursos EMPEZADOS: no basta con que el curso esté publicado, su
+ *   base es material del curso y se abre al entrar en él;
+ * - las colecciones que un maestro le repartió (StudyShare).
+ *
+ * Los tres son de LECTURA. Que las dos últimas no se puedan escribir no se
+ * decide aquí: las escrituras miran la propiedad de la base, y ni el curso ni
+ * la colección repartida son suyos.
  */
 export function buildVisibleDatabasesWhere({ userId }: GameViewer): Prisma.GameDatabaseWhereInput {
   return {
-    OR: [{ userId }, { course: { progresses: { some: { userId } } } }],
+    OR: [
+      { userId },
+      { course: { progresses: { some: { userId } } } },
+      { shares: { some: { userId } } },
+    ],
   };
 }
 
@@ -32,6 +43,7 @@ export function buildVisibleDatabasesWhere({ userId }: GameViewer): Prisma.GameD
  *
  * - las vistas en clase, que llegan por referencia desde un bloque de la clase
  *   (ClassBlock.gameId) y pueden vivir en la base de otra persona;
+ * - las de las colecciones que le repartió un maestro;
  * - las de los alumnos con asignación ACTIVA, si quien mira es su profesor;
  *   mismo criterio que los guards de lib/platform-auth/guards.ts.
  */
@@ -39,6 +51,7 @@ export function buildVisibleGamesWhere({ userId, teacherId }: GameViewer): Prism
   const visible: Prisma.GameWhereInput[] = [
     { database: { userId } },
     { database: { course: { progresses: { some: { userId } } } } },
+    { database: { shares: { some: { userId } } } },
     { classBlocks: { some: { class: { participants: { some: { userId } } } } } },
   ];
 

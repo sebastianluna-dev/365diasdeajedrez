@@ -12,9 +12,13 @@ export function StudyCard({ study }: StudyCardProps) {
     <article className="study-card">
       <div className="study-card__tags">
         <span className="study-card__kind">{study.kindLabel}</span>
+        {/* De dónde viene lo que no es suyo: el curso que lo trae o el maestro
+            que lo repartió. Sin esto, dos colecciones de sólo lectura serían
+            indistinguibles en la lista. */}
         {study.courseName && <span className="study-card__origin">{study.courseName}</span>}
+        {study.sharedByName && <span className="study-card__origin">{study.sharedByName}</span>}
 
-        {study.canDelete ? (
+        {study.permissions.canDelete ? (
           <DeleteStudy
             id={study.id}
             name={study.name}
@@ -22,7 +26,7 @@ export function StudyCard({ study }: StudyCardProps) {
             citedGameCount={study.citedGameCount}
           />
         ) : (
-          study.isCourseStudy && <span className="study-card__readonly">Sólo lectura</span>
+          !study.permissions.canEditGames && <span className="study-card__readonly">Sólo lectura</span>
         )}
       </div>
 

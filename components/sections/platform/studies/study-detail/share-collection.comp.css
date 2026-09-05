@@ -1,0 +1,141 @@
+.share-collection {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 22px 24px;
+  border: 1px solid var(--platform-border);
+  border-radius: 10px;
+  background: var(--platform-surface);
+
+  & .share-collection__head {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  & .share-collection__title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--platform-text);
+  }
+
+  & .share-collection__hint {
+    margin: 0;
+    max-width: 62ch;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .share-collection__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Un filo entre alumnos y ninguno arriba ni abajo: la lista ya está dentro de
+     una tarjeta y repetir su borde la encajonaría. */
+  & .share-collection__item + .share-collection__item {
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .share-collection__item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+  }
+
+  & .share-collection__student {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  & .share-collection__name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .share-collection__email {
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* La fecha se va al centro-derecha y deja el botón pegado al filo: es el dato
+     menos importante de la fila. */
+  & .share-collection__date {
+    margin-left: auto;
+    flex: none;
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .share-collection__remove {
+    flex: none;
+    padding: 6px 12px;
+    border: 1px solid var(--platform-border);
+    border-radius: 1000px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 150ms;
+    transition-property: background-color, border-color, color;
+  }
+
+  & .share-collection__remove:hover {
+    border-color: var(--platform-danger);
+    color: var(--platform-danger);
+  }
+
+  & .share-collection__empty {
+    margin: 0;
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .share-collection__form {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  & .share-collection__field {
+    flex: 1 1 260px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  & .share-collection__label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
+  & .share-collection__select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-bg);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 15px;
+  }
+}

@@ -293,13 +293,13 @@ model Course {
   type   CourseType   @relation(fields: [typeId], references: [id])
   status CourseStatus @relation(fields: [statusId], references: [id])
 
-  chapters        Chapter[]
-  courseAuthors   CourseAuthor[]
-  courseLevels    CourseLevel[]
-  progresses      CourseProgress[]
-  settings        UserCourseSettings[]
-  gameDatabases   GameDatabase[]
-  positions       Position[]
+  chapters      Chapter[]
+  courseAuthors CourseAuthor[]
+  courseLevels  CourseLevel[]
+  progresses    CourseProgress[]
+  settings      UserCourseSettings[]
+  gameDatabases GameDatabase[]
+  positions     Position[]
 }
 
 model Author {
@@ -394,7 +394,7 @@ model Lesson {
   progresses       LessonProgress[]
   lessonTopics     LessonTopic[]
   classBlocks      ClassBlock[]
-  courseProgresses CourseProgress[]   @relation("CourseProgressLastLesson")
+  courseProgresses CourseProgress[]     @relation("CourseProgressLastLesson")
 
   @@unique([chapterId, order])
 }
@@ -471,6 +471,8 @@ model User {
   courseSettings    UserCourseSettings[]
   trainerChapters   UserTrainerChapter[]
   gameDatabases     GameDatabase[]
+  /// Colecciones que le han repartido.
+  studyShares       StudyShare[]
   positions         Position[]
   classParticipants ClassParticipant[]
   activities        UserActivity[]
@@ -488,11 +490,11 @@ model User {
 /// transporta el token), de modo que cerrar sesión o revocarla surte efecto
 /// inmediato sin depender del navegador.
 model Session {
-  id        String   @id @default(uuid())
-  userId    String
-  tokenHash String   @unique
-  createdAt DateTime @default(now())
-  expiresAt DateTime
+  id         String   @id @default(uuid())
+  userId     String
+  tokenHash  String   @unique
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
   /// Última vez que se usó; sirve para la renovación deslizante y para
   /// distinguir sesiones vivas de las abandonadas.
   lastSeenAt DateTime @default(now())
@@ -660,12 +662,12 @@ model UserLessonTraining {
 /// Una fila por usuario y curso, creada al primer cambio. Su ausencia
 /// significa «valores por defecto»: no se crea al inscribirse.
 model UserCourseSettings {
-  userId             String
-  courseId           String
+  userId              String
+  courseId            String
   onlyPriorityLessons Boolean  @default(false)
-  boardOrientationId Int
+  boardOrientationId  Int
   trainingAfterLesson Boolean  @default(true)
-  updatedAt          DateTime @updatedAt
+  updatedAt           DateTime @updatedAt
 
   user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   course           Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -716,53 +718,80 @@ model GameDatabase {
 
   games         Game[]
   gamePositions GamePosition[]
+  shares        StudyShare[]
 
   @@index([userId])
   @@index([courseId])
+}
+
+/// Reparto de una COLECCIÓN a un alumno. La colección es de su dueño —un
+/// maestro— y al alumno le llega por aquí: ve la base y sus partidas, y no
+/// puede escribir nada. Eso último no lo impone esta tabla sino la propiedad,
+/// que es lo que miran todas las escrituras (ver services/studies/study-rules).
+///
+/// Una fila por (colección, alumno): la misma colección se reparte a varios y
+/// el índice único evita repartirla dos veces al mismo. Quitar el reparto es
+/// borrar la fila; no hay historial porque no hay nada que auditar —el material
+/// sigue existiendo en la base del maestro—.
+model StudyShare {
+  id         String   @id @default(uuid())
+  databaseId String
+  userId     String
+  /// Ficha del maestro que la repartió. Anulable para no perder el reparto si
+  /// algún día se retira la ficha: la colección la sigue teniendo el alumno.
+  teacherId  String?
+  createdAt  DateTime @default(now())
+
+  database GameDatabase @relation(fields: [databaseId], references: [id], onDelete: Cascade)
+  user     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teacher  Teacher?     @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+
+  @@unique([databaseId, userId])
+  @@index([userId])
 }
 
 /// Cabeceras en columnas (listar/ordenar/filtrar sin parsear); el PGN sigue
 /// siendo la fuente del contenido.
 model Game {
   /// Corto por el mismo motivo que el del estudio: los dos van en la URL.
-  id         String    @id @default(nanoid(8))
-  databaseId String
+  id           String    @id @default(nanoid(8))
+  databaseId   String
   /// Cómo se distingue esta partida DENTRO de su estudio («Capítulo 1»).
   /// Anulable a propósito: una partida se identifica por sus jugadores, y sólo
   /// las creadas en blanco necesitan un nombre para no ser todas iguales. Las
   /// importadas de un PGN se quedan a NULL y se siguen mostrando por su pareja.
-  title      String?
-  white      String
-  black      String
-  whiteElo   Int?
-  blackElo   Int?
+  title        String?
+  white        String
+  black        String
+  whiteElo     Int?
+  blackElo     Int?
   /// Título FIDE tal cual viene en el PGN: «GM», «WGM», «IM»…
-  whiteTitle String?
-  blackTitle String?
+  whiteTitle   String?
+  blackTitle   String?
   /// Federación en el código de tres letras del PGN («MEX», «USA»). No es
   /// ISO-3166: FIDE usa el código olímpico, que difiere en varios países.
   whiteCountry String?
   blackCountry String?
-  resultId   Int
-  playedAt   DateTime? @db.Date
-  event      String?
-  site       String?
-  round      String?
-  eco        String?
+  resultId     Int
+  playedAt     DateTime? @db.Date
+  event        String?
+  site         String?
+  round        String?
+  eco          String?
   /// Nulo si la partida empieza en la posición inicial.
-  initialFen String?
-  pgn        String    @db.Text
+  initialFen   String?
+  pgn          String    @db.Text
   /// Etiquetas libres del usuario.
-  tags       Json?
-  sourceId   Int
+  tags         Json?
+  sourceId     Int
   /// Sólo con sentido en bases de usuario.
-  isOwnGame  Boolean   @default(false)
+  isOwnGame    Boolean   @default(false)
   /// Posición dentro del estudio, ordenable a mano. Manda sobre la fecha: una
   /// vez que alguien coloca sus partidas, el orden es el suyo. Las nuevas se
   /// crean al final (max+1), no en 0, para que no salten al principio.
-  order      Int       @default(0)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  order        Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   database GameDatabase @relation(fields: [databaseId], references: [id], onDelete: Cascade)
   result   GameResult   @relation(fields: [resultId], references: [id])
@@ -784,19 +813,19 @@ model Game {
 /// no lo lee nadie —quien busca ya aporta el suyo y el de cualquier ply se
 /// recupera reproduciendo el PGN—, así que sólo engordaría la tabla.
 model GamePosition {
-  id     String @id @default(uuid())
-  gameId String
+  id           String  @id @default(uuid())
+  gameId       String
   /// Denormalizado desde Game: deja filtrar por propietario y origen sin unir
   /// con Game en la consulta caliente del explorador.
-  databaseId String
+  databaseId   String
   /// Medias jugadas desde el inicio; 0 es la posición de partida.
-  ply Int
+  ply          Int
   /// SHA-256 del FEN normalizado (ver lib/chess/position-hash).
   positionHash String
   /// Jugada hecha DESDE esta posición; nula en la última. De aquí salen las
   /// estadísticas de continuaciones.
-  nextMoveSan String?
-  nextMoveUci String?
+  nextMoveSan  String?
+  nextMoveUci  String?
 
   game     Game         @relation(fields: [gameId], references: [id], onDelete: Cascade)
   database GameDatabase @relation(fields: [databaseId], references: [id], onDelete: Cascade)
@@ -832,6 +861,8 @@ model Teacher {
 
   classes  Class[]
   students TeacherStudent[]
+  /// Repartos de colecciones que hizo.
+  shares   StudyShare[]
 }
 
 /// Asignación profesor↔alumno, independiente de las clases: sin ella un alumno

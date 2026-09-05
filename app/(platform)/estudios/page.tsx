@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default async function StudiesPage() {
-  // Frontera de la zona privada, y tiene que ser el PRIMER await:
-  // `getStudyKinds` sólo lee el catálogo y no pasa por el DAL, así que no
-  // sirve de comprobación de sesión.
+  // Frontera de la zona privada, y tiene que ser el PRIMER await: aunque
+  // `getStudyKinds` mire ahora si quien pregunta es profesor —para ofrecerle
+  // «Colección»—, resolver un rol no es comprobar una sesión.
   await getCurrentUser();
   const kinds = await getStudyKinds();
 
@@ -22,7 +22,7 @@ export default async function StudiesPage() {
         <div className="platform-page__head">
           <h1 className="platform-page__title">Mis estudios</h1>
           <p className="platform-page__subtitle">
-            Tu biblioteca personal: partidas, análisis, repertorios y colecciones.
+            Tus partidas, tus torneos, tus estudios y las colecciones que te han compartido.
           </p>
         </div>
 

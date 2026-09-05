@@ -11,6 +11,7 @@ import { staffRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { readBoolean, readOptionalText, readText, readUrl } from "@/services/shared/form-data";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
+import { createDefaultStudy } from "@/services/studies/default-study";
 import { planAssignment } from "./assignment-rules";
 
 // Profesores y asignaciones. Nada se borra aquí: un profesor se desactiva y una
@@ -85,6 +86,9 @@ export async function createTeacher(formData: FormData): Promise<void> {
         data: { email, displayName, passwordHash: await hashPassword(password), passwordUpdatedAt: new Date() },
         select: { id: true },
       });
+      // Un profesor también usa «Mis estudios» —ahí hace las colecciones que
+      // reparte—, así que su cuenta nace igual que la de un alumno.
+      await createDefaultStudy(tx, user.id);
       return tx.teacher.create({
         data: {
           user: { connect: { id: user.id } },

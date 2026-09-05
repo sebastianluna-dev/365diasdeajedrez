@@ -8,12 +8,16 @@ import type { GameView, StudyDetail, StudySummary } from "@/services/studies/stu
 // /profesor/alumnos/<id> (si apuntaran a /estudios el profesor recibiría un 404,
 // porque esas rutas sólo muestran los estudios de quien las abre).
 
+// `null` como espectador en los tres: el profesor MIRA el material de su alumno
+// —para poder citarlo en clase— y no lo edita ni lo borra. El servidor lo
+// rechazaría igual, pero así tampoco se le ofrecen los botones.
+
 export function mapStudentStudySummary(studentId: string, row: StudySummaryRow): StudySummary {
-  return { ...mapStudySummary(row), href: teacherRoutes.studentStudy(studentId, row.id) };
+  return { ...mapStudySummary(row, null), href: teacherRoutes.studentStudy(studentId, row.id) };
 }
 
 export function mapStudentStudyDetail(studentId: string, row: StudyDetailRow): StudyDetail {
-  const detail = mapStudyDetail(row);
+  const detail = mapStudyDetail(row, null);
   return {
     ...detail,
     games: detail.games.map((game) => ({ ...game, href: teacherRoutes.studentGame(studentId, row.id, game.id) })),
@@ -21,8 +25,6 @@ export function mapStudentStudyDetail(studentId: string, row: StudyDetailRow): S
 }
 
 export function mapStudentGameView(studentId: string, row: GameViewRow): GameView {
-  // `null`: el profesor revisa la partida de su alumno, no la anota. El
-  // servidor lo rechazaría igual, pero así tampoco se le ofrece el botón.
   const view = mapGameView(row, null);
   return { ...view, studyHref: teacherRoutes.studentStudy(studentId, view.studyId) };
 }
