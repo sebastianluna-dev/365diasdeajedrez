@@ -29,7 +29,6 @@
     color: var(--platform-text-subtle);
   }
 
-
   /* --- Formularios -------------------------------------------------------- */
 
   & .course-editor__form,
@@ -180,35 +179,6 @@
   }
 
   /* --- Columna estrecha --------------------------------------------------- */
-
-  & .course-editor__cover {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    aspect-ratio: 21 / 9;
-    border-radius: 10px;
-    background: var(--platform-surface-sunken);
-    overflow: hidden;
-  }
-
-  & .course-editor__cover-image {
-    object-fit: cover;
-    object-position: 0% 50%;
-  }
-
-  & .course-editor__cover-empty {
-    font-size: 14px;
-    color: var(--platform-text-subtle);
-  }
-
-  & .course-editor__hint {
-    margin: 12px 0 0;
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--platform-text-subtle);
-    text-wrap: pretty;
-  }
 
   & .course-editor__facts {
     margin: 0 0 16px;

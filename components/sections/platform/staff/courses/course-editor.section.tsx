@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { FormField, FormFieldset } from "@/components/common/form-field.comp";
 import { ImageUpload } from "@/components/common/image-upload.comp";
@@ -6,7 +5,6 @@ import { PlatformNotice } from "@/components/common/platform-notice.comp";
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
-import { isDisplayableImage } from "@/lib/remote-image";
 import {
   archiveCourse,
   createChapter,
@@ -22,6 +20,9 @@ import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffTabs } from "./staff-tabs.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./course-editor.section.css";
+
+/** Ata la portada, que vive en la columna de al lado, al formulario que guarda. */
+const METADATA_FORM_ID = "course-metadata";
 
 interface CourseEditorSectionProps {
   course: CourseAdminDetail;
@@ -93,22 +94,16 @@ export function CourseEditorSection({
         aside={
           <>
             <StaffPanel title="Portada">
-              <div className="course-editor__cover">
-                {isDisplayableImage(course.cover) ? (
-                  <Image
-                    src={course.cover}
-                    alt=""
-                    fill
-                    sizes="300px"
-                    className="course-editor__cover-image"
-                  />
-                ) : (
-                  <span className="course-editor__cover-empty">
-                    {course.cover ? "La portada no es de Cloudinary" : "Sin portada"}
-                  </span>
-                )}
-              </div>
-              <p className="course-editor__hint">Se sube y se cambia en «Metadatos».</p>
+              {/* Fuera del <form> de metadatos, atado a él por `form`: la
+                  portada se gestiona entera aquí y se guarda con el resto. */}
+              <ImageUpload
+                name="cover"
+                form={METADATA_FORM_ID}
+                defaultValue={course.cover ?? undefined}
+                label="Portada del curso"
+                aspectRatio="21:9"
+                hint="JPG, PNG, WebP o AVIF. Se guarda al pulsar «Guardar metadatos»."
+              />
             </StaffPanel>
 
             <StaffPanel
@@ -248,7 +243,7 @@ export function CourseEditorSection({
         }
       >
         <StaffPanel title="Metadatos">
-          <form className="course-editor__form" action={updateCourse.bind(null, course.id)}>
+          <form id={METADATA_FORM_ID} className="course-editor__form" action={updateCourse.bind(null, course.id)}>
             <FormField label="Nombre">
               <input type="text" name="name" defaultValue={course.name} maxLength={160} required />
             </FormField>
@@ -279,12 +274,6 @@ export function CourseEditorSection({
               </FormField>
             </div>
 
-            <ImageUpload
-              name="cover"
-              label="Portada"
-              defaultValue={course.cover ?? undefined}
-              hint="Se sube a Cloudinary y se guarda al guardar los metadatos. Sale en «Mis cursos» recortada por la izquierda, así que deja el título en ese lado."
-            />
 
             <FormField label="Descripción (opcional)">
               <textarea name="description" defaultValue={course.description ?? ""} maxLength={1000} />
