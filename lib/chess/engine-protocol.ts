@@ -71,8 +71,14 @@ export function evaluationBarFill(score: number): number {
   return 1 / (1 + Math.exp(-0.42 * score));
 }
 
-/** La puntuación como se escribe en un tablero: «+1.4», «−0.7», «M3». */
-export function formatEvaluation(info: EngineInfo): string {
+/**
+ * La puntuación como se escribe en un tablero: «+1.4», «−0.7», «M3».
+ *
+ * Pide sólo las dos cifras y no un `EngineInfo` entero porque lo mismo se
+ * escribe viniendo del módulo en vivo que de un `[%eval]` guardado en el PGN
+ * (`MoveEvaluation`), y las dos formas se leen igual.
+ */
+export function formatEvaluation(info: Pick<EngineInfo, "score" | "mateIn">): string {
   if (info.mateIn !== null) {
     const moves = Math.abs(info.mateIn);
     return `${info.mateIn >= 0 ? "+" : "−"}M${moves}`;

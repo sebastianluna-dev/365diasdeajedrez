@@ -2,6 +2,7 @@
 
 import { type CSSProperties, type MouseEvent, type RefObject, useEffect, useMemo, useRef } from "react";
 import { buildNotationBlocks } from "@/lib/chess/notation-blocks";
+import { formatEvaluation } from "@/lib/chess/engine-protocol";
 import { sanToSpanish } from "@/lib/chess/notation";
 import { nagGlyph, type PgnTree, type PgnTreeNode } from "@/lib/chess/pgn-tree";
 import "./move-table.comp.css";
@@ -61,6 +62,10 @@ export function MoveTable({ tree, currentPath, onSelect, onContextMenu }: MoveTa
       >
         {sanToSpanish(node.san)}
         {node.nags.length > 0 && <span className="move-table__nag">{node.nags.map(nagGlyph).join("")}</span>}
+        {/* La evaluación de la posición que deja la jugada, si la partida ya
+            se analizó. Viene del `[%eval]` del PGN, así que aparece sola al
+            volver a abrir la partida y no hace falta analizar otra vez. */}
+        {node.evaluation && <span className="move-table__eval">{formatEvaluation(node.evaluation)}</span>}
       </button>
     );
   };

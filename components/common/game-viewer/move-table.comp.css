@@ -60,6 +60,27 @@
     font-weight: 700;
   }
 
+  /* La evaluación se va al filo derecho de su media fila: así las cifras de
+     blancas y las de negras forman dos columnas que se leen en vertical, que
+     es para lo que sirven —ver de un vistazo dónde cambió la partida—, y la
+     jugada se queda pegada a la izquierda con su número. */
+  & .move-table__eval {
+    margin-left: auto;
+    flex: none;
+    padding-left: 8px;
+    font-size: max(14px, 0.88em);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    color: var(--platform-text-faint);
+  }
+
+  /* Sobre el naranja de la jugada activa, el gris de siempre no se lee: toma
+     el color del texto y se queda atrás por transparencia. */
+  & .move-table__move_state_active .move-table__eval {
+    color: inherit;
+    opacity: 0.65;
+  }
+
   /* Comentario de la línea principal: a lo ancho y sin sangrar, porque no
      cuelga de ninguna rama — es de la partida, no de una alternativa. Es lo
      ÚNICO que corta la tabla con un filo: interrumpe la lista de jugadas y sin
