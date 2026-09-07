@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FormField } from "@/components/common/form-field.comp";
 import { PlatformNotice } from "@/components/common/platform-notice.comp";
-import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
+import { CONTENT_ROLE, COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { staffRoutes } from "@/lib/platform-routes";
 import {
@@ -28,6 +28,8 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
   const isDraft = chapter.courseStatusCode === COURSE_STATUS.DRAFT;
   const withPgn = chapter.lessons.filter((lesson) => lesson.hasPgn).length;
+  const hasIntro = chapter.lessons.some((lesson) => lesson.roleCode === CONTENT_ROLE.INTRO);
+  const hasClosing = chapter.lessons.some((lesson) => lesson.roleCode === CONTENT_ROLE.CLOSING);
   const exercises = chapter.lessons.reduce((total, lesson) => total + lesson.exerciseCount, 0);
 
   return (
@@ -134,6 +136,7 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
                 lesson.exerciseCount === 1 ? "" : "s"
               }`,
               href: lesson.href,
+              roleLabel: lesson.roleLabel,
               badge: lesson.isPriority ? "Prioritaria" : undefined,
               // Borrar sólo donde el servidor lo permitiría: curso en borrador
               // y sin progreso de ningún alumno.
@@ -163,6 +166,31 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
               Añadir lección
             </button>
           </form>
+
+          {/* Opcionales y como mucho una de cada; el botón se va al crearla. */}
+          {(!hasIntro || !hasClosing) && (
+            <div className="chapter-editor__roles">
+              {!hasIntro && (
+                <form action={createLesson.bind(null, chapter.courseId, chapter.id)}>
+                  <input type="hidden" name="role" value={CONTENT_ROLE.INTRO} />
+                  <input type="hidden" name="name" value="Introducción" />
+                  <button type="submit" className="chapter-editor__role-button">
+                    Añadir introducción
+                  </button>
+                </form>
+              )}
+
+              {!hasClosing && (
+                <form action={createLesson.bind(null, chapter.courseId, chapter.id)}>
+                  <input type="hidden" name="role" value={CONTENT_ROLE.CLOSING} />
+                  <input type="hidden" name="name" value="Cierre" />
+                  <button type="submit" className="chapter-editor__role-button">
+                    Añadir cierre
+                  </button>
+                </form>
+              )}
+            </div>
+          )}
         </StaffPanel>
       </StaffEditorLayout>
     </div>

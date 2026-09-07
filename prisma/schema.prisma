@@ -65,6 +65,20 @@ model AuthorRole {
   courseAuthors CourseAuthor[]
 }
 
+/// Papel de un capítulo o de una lección dentro de lo que lo contiene: abrir o
+/// cerrar. Los normales NO tienen fila aquí —su `roleId` es nulo—, que es lo
+/// que permite exigir «como mucho uno de cada» con un índice único sobre
+/// (padre, rol) sin que los normales choquen entre sí.
+model ContentRole {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  chapters Chapter[]
+  lessons  Lesson[]
+}
+
 model Level {
   id       Int     @id @default(autoincrement())
   code     String  @unique
@@ -323,10 +337,14 @@ model Chapter {
   name              String
   description       String?
   order             Int
+  /// Introducción o cierre del curso; nulo en los capítulos normales, que son
+  /// la mayoría. Como mucho uno de cada por curso (índice único parcial).
+  roleId            Int?
   /// Minutos estimados.
   estimatedDuration Int?
 
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  course Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  role   ContentRole? @relation(fields: [roleId], references: [id])
 
   lessons         Lesson[]
   progresses      ChapterProgress[]
@@ -335,6 +353,9 @@ model Chapter {
   gameDatabases   GameDatabase[]
 
   @@unique([courseId, order])
+  /// Como mucho una introducción y un cierre por curso. Los normales tienen
+  /// `roleId` nulo y NULL no choca con NULL, así que quedan fuera del índice.
+  @@unique([courseId, roleId])
 }
 
 model Lesson {
@@ -346,6 +367,8 @@ model Lesson {
   order             Int
   /// Lección imprescindible del curso (marca editorial; el filtro es del alumno).
   isPriority        Boolean   @default(false)
+  /// Introducción o cierre del capítulo; nulo en las lecciones normales.
+  roleId            Int?
   /// Minutos estimados.
   estimatedDuration Int?
   orientationId     Int
@@ -377,6 +400,7 @@ model Lesson {
   trainingColorId   Int?
 
   chapter       Chapter           @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  role          ContentRole?      @relation(fields: [roleId], references: [id])
   /// SetNull y no Cascade: si alguien borra la partida de la colección, la
   /// lección sigue existiendo —con su nombre, sus temas y su progreso— y se
   /// queda sin contenido hasta que se le vincule otra.
@@ -392,6 +416,8 @@ model Lesson {
   courseProgresses CourseProgress[]     @relation("CourseProgressLastLesson")
 
   @@unique([chapterId, order])
+  /// Como mucho una introducción y un cierre por capítulo; ver Chapter.
+  @@unique([chapterId, roleId])
   @@index([gameId])
 }
 

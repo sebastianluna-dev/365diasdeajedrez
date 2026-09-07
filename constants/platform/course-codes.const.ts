@@ -32,3 +32,20 @@ export const LEVEL = {
 } as const;
 
 export type LevelCode = (typeof LEVEL)[keyof typeof LEVEL];
+
+/**
+ * Papel de un capítulo dentro del curso, o de una lección dentro del capítulo.
+ *
+ * Ausencia de papel = contenido normal, que es lo que son casi todos. Sólo se
+ * nombra lo que abre y lo que cierra.
+ */
+export const CONTENT_ROLE = {
+  INTRO: "INTRO",
+  CLOSING: "CLOSING",
+} as const;
+
+export type ContentRoleCode = (typeof CONTENT_ROLE)[keyof typeof CONTENT_ROLE];
+
+export function isContentRoleCode(value: string): value is ContentRoleCode {
+  return (Object.values(CONTENT_ROLE) as string[]).includes(value);
+}

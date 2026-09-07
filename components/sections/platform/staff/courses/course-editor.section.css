@@ -218,4 +218,33 @@
   & .course-editor__actions .platform-button {
     width: 100%;
   }
+
+  /* Los dos opcionales van al pie, separados del alta normal: se ponen una vez
+     y no se vuelven a tocar. */
+  & .course-editor__roles {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+
+  & .course-editor__role-button {
+    padding: 8px 14px;
+    border: 1px dashed var(--platform-border-strong);
+    border-radius: 1000px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 150ms;
+    transition-property: border-color, background-color, color;
+  }
+
+  & .course-editor__role-button:hover {
+    border-color: var(--platform-accent);
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
 }

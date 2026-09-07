@@ -11,6 +11,7 @@ import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { staffRoutes } from "@/lib/platform-routes";
+import { sortByRole } from "@/services/shared/content-order";
 import { lessonHasContent, lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import { isExerciseStale } from "@/services/trainer/trainer.mapper";
 import type {
@@ -126,6 +127,7 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
           id: true,
           name: true,
           order: true,
+          role: { select: { code: true, label: true } },
           _count: { select: { lessons: true, progresses: true } },
           lessons: { select: lessonPgnSelect },
         },
@@ -158,14 +160,19 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
       roleLabel: author.role.label,
       order: author.order,
     })),
-    chapters: course.chapters.map((chapter) => ({
-      id: chapter.id,
-      name: chapter.name,
-      order: chapter.order,
-      lessonCount: chapter._count.lessons,
-      progressCount: chapter._count.progresses,
-      href: staffRoutes.chapterDetail(course.id, chapter.id),
-    })),
+    // La introducción delante y el cierre al final; el resto, en su orden.
+    chapters: sortByRole(
+      course.chapters.map((chapter) => ({
+        roleCode: chapter.role?.code,
+        roleLabel: chapter.role?.label,
+        id: chapter.id,
+        name: chapter.name,
+        order: chapter.order,
+        lessonCount: chapter._count.lessons,
+        progressCount: chapter._count.progresses,
+        href: staffRoutes.chapterDetail(course.id, chapter.id),
+      })),
+    ),
     canPublish,
   };
 }
@@ -189,6 +196,7 @@ export async function getChapterAdmin(courseId: string, chapterId: string): Prom
           name: true,
           order: true,
           isPriority: true,
+          role: { select: { code: true, label: true } },
           ...lessonPgnSelect,
           _count: { select: { exercises: true, progresses: true } },
         },
@@ -208,16 +216,20 @@ export async function getChapterAdmin(courseId: string, chapterId: string): Prom
     description: chapter.description ?? undefined,
     order: chapter.order,
     estimatedDuration: chapter.estimatedDuration ?? undefined,
-    lessons: chapter.lessons.map((lesson) => ({
-      id: lesson.id,
-      name: lesson.name,
-      order: lesson.order,
-      isPriority: lesson.isPriority,
-      hasPgn: lessonHasContent(lesson),
-      exerciseCount: lesson._count.exercises,
-      progressCount: lesson._count.progresses,
-      href: staffRoutes.lessonDetail(chapter.courseId, chapter.id, lesson.id),
-    })),
+    lessons: sortByRole(
+      chapter.lessons.map((lesson) => ({
+        roleCode: lesson.role?.code,
+        roleLabel: lesson.role?.label,
+        id: lesson.id,
+        name: lesson.name,
+        order: lesson.order,
+        isPriority: lesson.isPriority,
+        hasPgn: lessonHasContent(lesson),
+        exerciseCount: lesson._count.exercises,
+        progressCount: lesson._count.progresses,
+        href: staffRoutes.lessonDetail(chapter.courseId, chapter.id, lesson.id),
+      })),
+    ),
   };
 }
 

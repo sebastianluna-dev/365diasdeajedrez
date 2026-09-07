@@ -20,6 +20,25 @@
     background: var(--platform-surface-neutral);
   }
 
+  /* La introducción y el cierre se separan del bloque que sí se ordena: su
+     sitio no se discute, y verlas con el mismo asa invitaría a arrastrarlas. */
+  & .sortable-list__row_state_fixed {
+    background: var(--platform-bg);
+  }
+
+  & .sortable-list__fixed {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 11px;
+    border-radius: 1000px;
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-size: 14px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
   /* La fila que viaja se atenúa: sin eso, arrastrando no se distingue cuál es
      la que se mueve de la que se está señalando como destino. */
   & .sortable-list__row_state_dragging {

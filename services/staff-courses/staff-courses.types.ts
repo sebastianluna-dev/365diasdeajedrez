@@ -46,6 +46,10 @@ export interface CourseAuthorRow {
 }
 
 export interface ChapterAdminRow {
+  /** Code de ContentRole; ausente en los capítulos normales. */
+  roleCode?: string;
+  /** «Introducción» o «Cierre», para rotularlo. */
+  roleLabel?: string;
   id: string;
   name: string;
   order: number;
@@ -73,6 +77,10 @@ export interface CourseAdminDetail {
 }
 
 export interface LessonAdminRow {
+  /** Code de ContentRole; ausente en las lecciones normales. */
+  roleCode?: string;
+  /** «Introducción» o «Cierre», para rotularla. */
+  roleLabel?: string;
   id: string;
   name: string;
   order: number;

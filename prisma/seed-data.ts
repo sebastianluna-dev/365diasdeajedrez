@@ -3,6 +3,7 @@
 // Los codes provienen de constants/platform/*; los labels van en español.
 
 import { ACTIVITY_TYPE, STAT_METRIC, SUBJECT_TYPE } from "../constants/platform/activity-codes.const";
+import { CONTENT_ROLE } from "../constants/platform/course-codes.const";
 import { CLASS_BLOCK_KIND, CLASS_STATUS, MEETING_PROVIDER, TRANSCRIPT_STATUS } from "../constants/platform/class-codes.const";
 import {
   AUTHOR_ROLE,
@@ -75,6 +76,10 @@ export const CATALOG_VALUES = {
     [OWNER_TYPE.USER, "Usuario"],
     [OWNER_TYPE.COURSE, "Curso"],
     [OWNER_TYPE.TEACHER, "Profesor"],
+  ],
+  contentRole: [
+    [CONTENT_ROLE.INTRO, "Introducción"],
+    [CONTENT_ROLE.CLOSING, "Cierre"],
   ],
   databaseKind: [
     [DATABASE_KIND.MY_GAMES, "Mis partidas"],

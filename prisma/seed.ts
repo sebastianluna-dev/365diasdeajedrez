@@ -159,6 +159,7 @@ async function main() {
   const attemptResult = await seedCatalog(db.attemptResult, CATALOG_VALUES.attemptResult);
   const attemptContext = await seedCatalog(db.attemptContext, CATALOG_VALUES.attemptContext);
   const ownerType = await seedCatalog(db.ownerType, CATALOG_VALUES.ownerType);
+  await seedCatalog(db.contentRole, CATALOG_VALUES.contentRole);
   const databaseKind = await seedCatalog(db.databaseKind, CATALOG_VALUES.databaseKind);
   const gameSource = await seedCatalog(db.gameSource, CATALOG_VALUES.gameSource);
   const gameResult = await seedCatalog(db.gameResult, CATALOG_VALUES.gameResult);

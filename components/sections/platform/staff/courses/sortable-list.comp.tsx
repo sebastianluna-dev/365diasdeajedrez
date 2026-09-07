@@ -12,6 +12,11 @@ export interface SortableItem {
   href: string;
   /** Distintivo junto al nombre, como «Prioritaria». */
   badge?: string;
+  /**
+   * «Introducción» o «Cierre». Quien lo tiene ocupa un sitio FIJO —delante o
+   * al final— y por eso no se arrastra: su posición no sale del orden.
+   */
+  roleLabel?: string;
   /** Si se ofrece borrarlo. Lo decide el servidor, no la interfaz. */
   canDelete: boolean;
 }
@@ -70,12 +75,23 @@ export function SortableList({
     setRows(items);
   }
 
+  /**
+   * Reordenar afecta SÓLO al contenido normal.
+   *
+   * La introducción y el cierre viajan en la misma lista para que se vean donde
+   * les toca, pero ni se arrastran ni entran en el orden que se manda: el
+   * servidor tampoco los aceptaría, porque los deja fuera de su consulta.
+   */
+  const isFixed = (index: number) => rows[index]?.roleLabel !== undefined;
+
   const move = (from: number, to: number) => {
     if (to < 0 || to >= rows.length || from === to) return;
+    if (isFixed(from) || isFixed(to)) return;
+
     const next = moved(rows, from, to);
     setRows(next);
     startTransition(() => {
-      void onReorder(next.map((row) => row.id));
+      void onReorder(next.filter((row) => row.roleLabel === undefined).map((row) => row.id));
     });
   };
 
@@ -83,13 +99,23 @@ export function SortableList({
     return <p className="sortable-list__empty">{emptyLabel}</p>;
   }
 
+  // El número que se pinta cuenta SÓLO el contenido normal: con una
+  // introducción delante, el primer capítulo de verdad es el 1, no el 2.
+  const plainNumbers = new Map<string, number>();
+  let plain = 0;
+  for (const row of rows) {
+    if (row.roleLabel === undefined) plainNumbers.set(row.id, ++plain);
+  }
+
   return (
     <ul className="sortable-list">
       {rows.map((row, index) => (
         <li
           key={row.id}
-          className={`sortable-list__row${dragging === index ? " sortable-list__row_state_dragging" : ""}`}
-          draggable
+          className={`sortable-list__row${dragging === index ? " sortable-list__row_state_dragging" : ""}${
+            row.roleLabel ? " sortable-list__row_state_fixed" : ""
+          }`}
+          draggable={row.roleLabel === undefined}
           onDragStart={() => setDragging(index)}
           onDragEnd={() => setDragging(null)}
           onDragOver={(event) => {
@@ -104,27 +130,33 @@ export function SortableList({
             setDragging(null);
           }}
         >
-          <button
-            type="button"
-            className="sortable-list__handle"
-            aria-label={`Mover ${noun} «${row.name}». Usa las flechas arriba y abajo para cambiarlo de sitio.`}
-            onKeyDown={(event) => {
-              if (event.key === "ArrowUp") {
-                event.preventDefault();
-                move(index, index - 1);
-              } else if (event.key === "ArrowDown") {
-                event.preventDefault();
-                move(index, index + 1);
-              }
-            }}
-          >
-            <span className="sortable-list__order" aria-hidden="true">
-              {index + 1}
-            </span>
-            <span className="sortable-list__grip" aria-hidden="true">
-              ⠿
-            </span>
-          </button>
+          {row.roleLabel ? (
+            /* Sin asa: su sitio no se elige. El rótulo ocupa ese hueco para que
+               las filas sigan alineadas. */
+            <span className="sortable-list__fixed">{row.roleLabel}</span>
+          ) : (
+            <button
+              type="button"
+              className="sortable-list__handle"
+              aria-label={`Mover ${noun} «${row.name}». Usa las flechas arriba y abajo para cambiarlo de sitio.`}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowUp") {
+                  event.preventDefault();
+                  move(index, index - 1);
+                } else if (event.key === "ArrowDown") {
+                  event.preventDefault();
+                  move(index, index + 1);
+                }
+              }}
+            >
+              <span className="sortable-list__order" aria-hidden="true">
+                {plainNumbers.get(row.id)}
+              </span>
+              <span className="sortable-list__grip" aria-hidden="true">
+                ⠿
+              </span>
+            </button>
+          )}
 
           <span className="sortable-list__text">
             <span className="sortable-list__head">

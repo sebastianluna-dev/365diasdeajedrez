@@ -1,6 +1,7 @@
 import { BOARD_ORIENTATION, PROGRESS_STATUS, type ProgressStatusCode } from "@/constants/platform/shared-codes.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { platformRoutes } from "@/lib/platform-routes";
+import { sortByRole } from "@/services/shared/content-order";
 import { lessonPgnOf } from "@/services/shared/lesson-pgn";
 import type {
   ChapterLessonItem,
@@ -21,6 +22,7 @@ export const courseContentInclude = {
   chapters: {
     orderBy: { order: "asc" },
     include: {
+      role: { select: { code: true, label: true } },
       lessons: {
         orderBy: { order: "asc" },
         select: {
@@ -31,6 +33,7 @@ export const courseContentInclude = {
           order: true,
           isPriority: true,
           estimatedDuration: true,
+          role: { select: { code: true, label: true } },
         },
       },
     },
@@ -67,10 +70,20 @@ function isVisible(lesson: { id: string; isPriority: boolean }, state: UserCours
   return !state.onlyPriorityLessons || lesson.isPriority || state.lessonStatus.has(lesson.id);
 }
 
-/** Todas las lecciones del curso en su orden, sin filtrar. */
+/**
+ * Todas las lecciones del curso en el orden en que se leen, sin filtrar.
+ *
+ * Dentro de cada capítulo, y entre capítulos, mandan la introducción y el
+ * cierre —que van fijos— sobre el número de orden. Es la MISMA función que usa
+ * el panel del staff, así que autor y alumno ven la misma secuencia.
+ */
 function allLessons(course: CourseWithContent) {
-  return course.chapters.flatMap((chapter) =>
-    chapter.lessons.map((lesson) => ({ ...lesson, chapterId: chapter.id, chapterOrder: chapter.order })),
+  return sortByRole(
+    course.chapters.map((chapter) => ({ ...chapter, roleCode: chapter.role?.code })),
+  ).flatMap((chapter, chapterIndex) =>
+    sortByRole(chapter.lessons.map((lesson) => ({ ...lesson, roleCode: lesson.role?.code }))).map(
+      (lesson) => ({ ...lesson, chapterId: chapter.id, chapterOrder: chapterIndex + 1 }),
+    ),
   );
 }
 
@@ -193,7 +206,9 @@ export function mapCourseDetail(course: CourseWithContent, state: UserCourseStat
     ctaLabel: ctaLabelFor(progress),
     onlyPriorityLessons: state.onlyPriorityLessons,
     hiddenLessons: allLessons(course).length - progress.totalLessons,
-    chapters: course.chapters.map((chapter) => mapChapterItem(course, chapter, state)),
+    chapters: sortByRole(
+      course.chapters.map((chapter) => ({ ...chapter, roleCode: chapter.role?.code })),
+    ).map((chapter) => mapChapterItem(course, chapter, state)),
   };
 }
 
@@ -209,7 +224,9 @@ export function mapChapterView(
   // El número que se pinta sigue siendo el REAL (1, 4, 7 con el filtro puesto):
   // renumerar escondería que faltan lecciones y rompería la identidad de cada
   // una dentro del curso.
-  const lessons: ChapterLessonItem[] = chapter.lessons
+  const lessons: ChapterLessonItem[] = sortByRole(
+    chapter.lessons.map((lesson) => ({ ...lesson, roleCode: lesson.role?.code })),
+  )
     .filter((lesson) => isVisible(lesson, state))
     .map((lesson) => ({
       id: lesson.id,

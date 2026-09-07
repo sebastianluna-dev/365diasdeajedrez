@@ -2,7 +2,7 @@ import Link from "next/link";
 import { FormField, FormFieldset } from "@/components/common/form-field.comp";
 import { ImageUpload } from "@/components/common/image-upload.comp";
 import { PlatformNotice } from "@/components/common/platform-notice.comp";
-import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
+import { CONTENT_ROLE, COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
 import {
@@ -57,6 +57,8 @@ export function CourseEditorSection({
   const availableAuthors = authors.filter((author) => !usedAuthorIds.has(author.id));
   const isDraft = course.statusCode === COURSE_STATUS.DRAFT;
   const lessonCount = course.chapters.reduce((total, chapter) => total + chapter.lessonCount, 0);
+  const hasIntro = course.chapters.some((chapter) => chapter.roleCode === CONTENT_ROLE.INTRO);
+  const hasClosing = course.chapters.some((chapter) => chapter.roleCode === CONTENT_ROLE.CLOSING);
 
   return (
     <div className="course-editor">
@@ -315,6 +317,7 @@ export function CourseEditorSection({
               name: chapter.name,
               meta: `${chapter.lessonCount} lección${chapter.lessonCount === 1 ? "" : "es"}`,
               href: chapter.href,
+              roleLabel: chapter.roleLabel,
               // Borrar sólo donde el servidor lo permitiría: curso en borrador
               // y sin progreso de ningún alumno.
               canDelete: isDraft && chapter.progressCount === 0,
@@ -340,6 +343,33 @@ export function CourseEditorSection({
               Añadir capítulo
             </button>
           </form>
+
+          {/* Los dos son opcionales y como mucho hay uno de cada, así que el
+              botón desaparece en cuanto existe. El índice único de la base es
+              quien lo garantiza de verdad. */}
+          {(!hasIntro || !hasClosing) && (
+            <div className="course-editor__roles">
+              {!hasIntro && (
+                <form action={createChapter.bind(null, course.id)}>
+                  <input type="hidden" name="role" value={CONTENT_ROLE.INTRO} />
+                  <input type="hidden" name="name" value="Introducción" />
+                  <button type="submit" className="course-editor__role-button">
+                    Añadir introducción
+                  </button>
+                </form>
+              )}
+
+              {!hasClosing && (
+                <form action={createChapter.bind(null, course.id)}>
+                  <input type="hidden" name="role" value={CONTENT_ROLE.CLOSING} />
+                  <input type="hidden" name="name" value="Cierre" />
+                  <button type="submit" className="course-editor__role-button">
+                    Añadir cierre
+                  </button>
+                </form>
+              )}
+            </div>
+          )}
         </StaffPanel>
       </StaffEditorLayout>
     </div>

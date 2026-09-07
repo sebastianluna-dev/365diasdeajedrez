@@ -7,6 +7,7 @@ import {
   AUTHOR_ROLE,
   COURSE_STATUS,
   COURSE_TYPE,
+  isContentRoleCode,
 } from "@/constants/platform/course-codes.const";
 import { CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
 import { EXERCISE_MODE } from "@/constants/platform/training-codes.const";
@@ -368,9 +369,31 @@ export async function createChapter(courseId: string, formData: FormData): Promi
   const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
   if (name.length === 0) fail(detailPath, "invalid");
 
+  // Papel opcional: sin él es un capítulo normal, que es lo que son casi todos.
+  // El sitio que ocupan la introducción y el cierre no sale de `order` sino de
+  // su papel (ver services/shared/content-order), así que aquí se numeran al
+  // final como cualquier otro.
+  const roleCode = readText(formData, "role");
+  const role = isContentRoleCode(roleCode) ? roleCode : null;
+
   const db = getPlatformDb();
   const count = await db.chapter.count({ where: { courseId } });
-  await db.chapter.create({ data: { courseId, name, order: nextOrder(count) } });
+
+  try {
+    await db.chapter.create({
+      data: {
+        course: { connect: { id: courseId } },
+        name,
+        order: nextOrder(count),
+        ...(role ? { role: { connect: { code: role } } } : {}),
+      },
+    });
+  } catch (error) {
+    // El índice único (curso, papel) es quien impide el segundo: la interfaz no
+    // ofrece el botón cuando ya existe, pero dos pestañas abiertas sí llegan.
+    if (isUniqueConstraintError(error, "Chapter_courseId_roleId_key", "roleId")) fail(detailPath, "roleTaken");
+    throw error;
+  }
 
   revalidatePath(detailPath);
 }
@@ -416,7 +439,12 @@ export async function reorderChapters(courseId: string, orderedIds: string[]): P
 
   const db = getPlatformDb();
   await db.$transaction(async (tx) => {
-    const chapters = await tx.chapter.findMany({ where: { courseId }, select: { id: true, order: true } });
+    // Sólo el contenido normal se reordena: la introducción y el cierre tienen
+    // su sitio por el papel, no por `order`, y arrastrarlos no significa nada.
+    const chapters = await tx.chapter.findMany({
+      where: { courseId, roleId: null },
+      select: { id: true, order: true },
+    });
     for (const update of planFullReorder(chapters, orderedIds)) {
       await tx.chapter.update({ where: { id: update.id }, data: { order: update.order } });
     }
@@ -437,7 +465,11 @@ export async function reorderLessons(courseId: string, chapterId: string, ordere
     const chapter = await tx.chapter.findFirst({ where: { id: chapterId, courseId }, select: { id: true } });
     if (!chapter) return;
 
-    const lessons = await tx.lesson.findMany({ where: { chapterId }, select: { id: true, order: true } });
+    // Ver `reorderChapters`: la introducción y el cierre quedan fuera.
+    const lessons = await tx.lesson.findMany({
+      where: { chapterId, roleId: null },
+      select: { id: true, order: true },
+    });
     for (const update of planFullReorder(lessons, orderedIds)) {
       await tx.lesson.update({ where: { id: update.id }, data: { order: update.order } });
     }
@@ -497,6 +529,9 @@ export async function createLesson(courseId: string, chapterId: string, formData
   const chapter = await db.chapter.findFirst({ where: { id: chapterId, courseId }, select: { id: true } });
   if (!chapter) fail(chapterPath, "courseMissing");
 
+  const roleCode = readText(formData, "role");
+  const role = isContentRoleCode(roleCode) ? roleCode : null;
+
   const count = await db.lesson.count({ where: { chapterId } });
   // Valores de arranque razonables: el resto se edita dentro de la lección.
   await db.lesson.create({
@@ -505,6 +540,7 @@ export async function createLesson(courseId: string, chapterId: string, formData
       chapter: { connect: { id: chapter.id } },
       name,
       order: nextOrder(count),
+      ...(role ? { role: { connect: { code: role } } } : {}),
       orientation: { connect: { code: CONTENT_ORIENTATIONS[0] } },
       pgn: "",
     },
