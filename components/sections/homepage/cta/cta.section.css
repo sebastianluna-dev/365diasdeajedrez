@@ -86,9 +86,5 @@
     & .sticky-cta__link-icon {
       display: none;
     }
-
-    & .sticky-cta__link_variant_primary {
-      display: none;
-    }
   }
 }
