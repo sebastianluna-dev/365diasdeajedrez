@@ -4,7 +4,7 @@ import type { MetadataRoute } from "next";
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://365diasdeajedrez.com";
 
 // Zonas privadas: plataforma autenticada (alumno, profesor y administración),
-// su login, panel de Payload y API.
+// su login y su puerta de entrada, panel de Payload y API.
 const DISALLOWED_PATHS = [
   "/inicio",
   "/clases",
@@ -15,6 +15,7 @@ const DISALLOWED_PATHS = [
   "/profesor",
   "/administracion",
   "/iniciar-sesion",
+  "/entrar",
   "/admin",
   "/api",
 ];

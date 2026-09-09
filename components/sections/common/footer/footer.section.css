@@ -63,7 +63,8 @@
     display: flex;
     justify-content: space-between;
     font-size: 14px;
-    color: #6b6259;
+    /* El mismo apagado que los enlaces de arriba: #6b6259 daba 3,3:1 sobre el fondo. */
+    color: #b4a99d;
   }
 
   @media (max-width: 1023px) {

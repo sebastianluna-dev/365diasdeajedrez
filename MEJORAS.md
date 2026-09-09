@@ -176,6 +176,35 @@ con validación duplicada.
 `platformRoutes.newStudyGame`, o si se conserva como enlace profundo. Si se conserva, conviene que
 comparta el formulario con el modal en vez de mantener dos.
 
+### 31. ~~La portada se renderiza por petición por la cookie de sesión~~ — RESUELTO (2026-09-09)
+`/` ya no lee cookies: se prerenderiza (ISR de una hora más `revalidatePath` desde los hooks del
+CMS) y se sirve desde la CDN. El salto de quien ya entró lo hace `proxy.ts`: con cookie manda a
+`/entrar`, un route handler que consulta la sesión real, reparte por rol y, si la cookie está
+caducada, la borra y devuelve a la portada. Eso último era lo que impedía hacerlo antes: sin borrar
+la cookie, quien la tuviera caducada no podía volver a ver la portada.
+
+**Lo que queda:** con `cacheComponents` se podría decidir en el propio render (comprobación de
+sesión dentro de un `<Suspense>` sobre un armazón prerenderizado) y ahorrarse el salto; y pasar los
+servicios de `unstable_cache` a `"use cache"` + `cacheTag`. Revisar entonces el `force-dynamic` de
+`app/(platform)/layout.tsx`.
+
+### 32. El sitemap carga todos los artículos con `depth: 2` para leer el `slug` — [Datos]
+`app/sitemap.ts` llama a `getArticles()` (`limit: 0`, `depth: 2`), que trae cada artículo con su
+contenido, categoría, etiquetas y portada, cuando el sitemap sólo necesita `slug` y `updatedAt`. Con
+pocas entradas no se nota; crecerá con el blog.
+
+**Cómo abordarlo:** una consulta propia con `select: { slug: true, updatedAt: true }` y `depth: 0`,
+y mandar `lastModified` en cada entrada, que hoy no va.
+
+### 33. Cabeceras de seguridad (CSP, COOP, X-Frame-Options) — [Seguridad]
+Lighthouse las lista como informativas: no pesan en la nota. Vercel añade HSTS por su cuenta; el
+resto no está. Una CSP estricta choca con los scripts en línea de GA y Meta (hace falta `nonce`).
+
+**Cómo abordarlo:** `headers()` en `next.config.ts` con `X-Frame-Options: DENY`,
+`Cross-Origin-Opener-Policy: same-origin` y `Referrer-Policy: strict-origin-when-cross-origin`; la
+CSP con nonce desde `proxy.ts` es un trabajo aparte. Comprobar que el panel de Payload (`/admin`)
+sigue funcionando.
+
 ---
 
 ### 30. ~~`StudiesNavigation` conserva un tramo que ya nadie pinta~~ — RESUELTO (2026-09-04)

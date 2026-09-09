@@ -16,9 +16,11 @@ export default function NosotrosPage() {
   return (
     <div className="nosotros-page">
       <Header />
-      <NosotrosHeroSection />
-      <ValoresSection />
-      <NosotrosCtaSection />
+      <main>
+        <NosotrosHeroSection />
+        <ValoresSection />
+        <NosotrosCtaSection />
+      </main>
       <Footer />
     </div>
   );

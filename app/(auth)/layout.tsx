@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "@/app/(frontend)/globals.css";
-import { chessGlyph, gramatika, sfProDisplay, suisseIntl } from "@/app/(frontend)/fonts";
+import { chessGlyph, gramatika, suisseIntl } from "@/app/(frontend)/fonts";
+import { sfProDisplay } from "@/app/(platform)/fonts";
 import "@/app/(platform)/platform.css";
 
 export const metadata: Metadata = {

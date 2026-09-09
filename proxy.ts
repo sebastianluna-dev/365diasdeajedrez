@@ -5,6 +5,7 @@ import {
   PROTECTED_PATH_PREFIXES,
   RETURN_TO_PARAM,
   SESSION_COOKIE_NAME,
+  SESSION_ENTRY_PATH,
 } from "@/constants/platform/auth.const";
 
 // Rechazo OPTIMISTA de la zona privada: aquí sólo se mira si existe la cookie
@@ -19,20 +20,26 @@ import {
 // a /profesor o /administracion pasa este filtro y lo expulsa el `require*` del DAL hacia
 // su dashboard. Correcto por diseño — aquí no se consulta la base de datos.
 //
-// No se hace el salto contrario (con cookie → /dashboard) a propósito: una
-// cookie caducada provocaría un bucle entre /login y /dashboard, porque el
-// proxy la ve presente y el DAL la rechaza. Esa redirección la hace la página
-// de login, que sí consulta la sesión de verdad.
+// El salto contrario (con cookie → su panel) sólo se hace desde la portada, y
+// sin decidir aquí el destino: se manda a /entrar, un route handler que
+// consulta la sesión de verdad y reparte por rol, y que si la cookie está
+// caducada la borra y devuelve a la portada. Así `/` no lee cookies y puede
+// prerenderizarse, y una cookie vieja no deja a nadie sin portada ni provoca
+// un bucle con el login (que sigue comprobando la sesión real, no la cookie).
 
 export function proxy(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
+  const hasSessionCookie = request.cookies.has(SESSION_COOKIE_NAME);
+
+  if (pathname === "/") {
+    if (!hasSessionCookie) return NextResponse.next();
+    return NextResponse.redirect(new URL(SESSION_ENTRY_PATH, request.url));
+  }
 
   const isProtected = PROTECTED_PATH_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
-  if (!isProtected) return NextResponse.next();
-
-  if (request.cookies.has(SESSION_COOKIE_NAME)) return NextResponse.next();
+  if (!isProtected || hasSessionCookie) return NextResponse.next();
 
   const loginUrl = new URL(LOGIN_PATH, request.url);
   loginUrl.searchParams.set(RETURN_TO_PARAM, pathname + request.nextUrl.search);
@@ -41,8 +48,11 @@ export function proxy(request: NextRequest): NextResponse {
 
 // Los prefijos deben ser literales: Next analiza el matcher en tiempo de build
 // y descarta cualquier valor calculado (por eso no se deriva de la constante).
+// La portada entra sólo por el salto de quien trae cookie; sin ella pasa tal
+// cual y se sirve la versión prerenderizada.
 export const config = {
   matcher: [
+    "/",
     "/inicio/:path*",
     "/clases/:path*",
     "/estudios/:path*",

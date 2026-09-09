@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { cache } from "react";
 import { LOGIN_PATH } from "@/constants/platform/auth.const";
 import { getSessionContext, type CurrentUser } from "@/lib/platform-auth/current-user";
+import type { SessionUser } from "@/lib/platform-auth/session";
 import { platformRoutes } from "@/lib/platform-routes";
 
 // Roles de la plataforma. No hay tabla de roles ni columna en `User`: el rol es
@@ -48,14 +49,20 @@ export const getStaffContext = cache(async (): Promise<StaffContext | null> => {
   return { user: { id, email, displayName, createdAt }, staffId: session.staff.id };
 });
 
-/** Para la navegación: qué grupos de menú se pintan. Nunca autoriza nada. */
-export const getSessionRoles = cache(async (): Promise<SessionRoles> => {
-  const session = await getSessionContext();
+/**
+ * Regla de roles a partir de la sesión. La comparten `getSessionRoles` y el
+ * route handler de /entrar, que no tiene render y por eso no pasa por los
+ * `cache()` de este módulo.
+ */
+export function rolesOf(session: SessionUser | null): SessionRoles {
   return {
     isTeacher: session?.teacher?.isActive === true,
     isStaff: session?.staff !== null && session?.staff !== undefined,
   };
-});
+}
+
+/** Para la navegación: qué grupos de menú se pintan. Nunca autoriza nada. */
+export const getSessionRoles = cache(async (): Promise<SessionRoles> => rolesOf(await getSessionContext()));
 
 /**
  * Frontera del panel del profesor: PRIMER await de toda página y de toda

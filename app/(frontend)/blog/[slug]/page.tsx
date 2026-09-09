@@ -43,8 +43,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <div className="article-page__glow article-page__glow_position_top-left" />
 
       <Header theme="light" />
-      <ArticleContent article={article} />
-      <RelatedArticles articles={relatedArticles} />
+      <main>
+        <ArticleContent article={article} />
+        <RelatedArticles articles={relatedArticles} />
+      </main>
       <Footer accent="red" />
     </div>
   );

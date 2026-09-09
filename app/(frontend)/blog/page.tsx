@@ -19,7 +19,9 @@ export default async function BlogPage() {
       <div className="blog-page__shell">
         <div className="blog-page__glow" />
         <Header theme="light" />
-        <BlogArticles articles={articles} />
+        <main>
+          <BlogArticles articles={articles} />
+        </main>
         <Footer accent="red" />
       </div>
     </div>

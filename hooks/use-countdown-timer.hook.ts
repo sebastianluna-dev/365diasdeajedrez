@@ -7,7 +7,15 @@ interface CountdownTimer {
   hands: { hour: number; min: number; sec: number };
 }
 
-export function useCountdownTimer(durationSeconds: number): CountdownTimer {
+/**
+ * Cuenta atrás que vuelve a empezar al llegar a cero.
+ *
+ * `tickMs` es cada cuánto se re-renderiza, no la precisión: el tiempo restante
+ * se calcula siempre con `Date.now()`, así que un tick lento no atrasa el
+ * reloj. Un reloj que muestra `mm:ss` no necesita más de un tick por segundo;
+ * a 100 ms se re-renderizaría diez veces por segundo durante toda la visita.
+ */
+export function useCountdownTimer(durationSeconds: number, tickMs = 100): CountdownTimer {
   const [remaining, setRemaining] = useState(durationSeconds);
   // Se inicializa dentro del efecto: Date.now() durante el render es impuro.
   const lastTick = useRef(0);
@@ -22,9 +30,9 @@ export function useCountdownTimer(durationSeconds: number): CountdownTimer {
         const next = current - dt;
         return next <= 0 ? durationSeconds : next;
       });
-    }, 100);
+    }, tickMs);
     return () => clearInterval(timer);
-  }, [durationSeconds]);
+  }, [durationSeconds, tickMs]);
 
   return { time: formatTime(remaining), seconds: remaining, hands: handAngles(remaining) };
 }

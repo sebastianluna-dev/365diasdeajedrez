@@ -64,7 +64,8 @@
 
   & .reviews__chat-time {
     font-size: 15px;
-    color: #9c968d;
+    /* #9c968d daba 2,9:1 sobre blanco; este es el apagado del tema claro (6,9:1). */
+    color: #5c5348;
   }
 
   & .reviews__chat-message {

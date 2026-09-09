@@ -5,9 +5,11 @@ import { useCountdownTimer } from "@/hooks/use-countdown-timer.hook";
 import "./cta-clock.comp.css";
 
 const STICKY_CTA_DURATION_SECONDS = 900;
+/** Muestra `mm:ss`: un tick por segundo basta, y está en pantalla toda la visita. */
+const STICKY_CTA_TICK_MS = 1000;
 
 export function CtaClock() {
-  const { time, seconds, hands } = useCountdownTimer(STICKY_CTA_DURATION_SECONDS);
+  const { time, seconds, hands } = useCountdownTimer(STICKY_CTA_DURATION_SECONDS, STICKY_CTA_TICK_MS);
 
   return (
     <div className="sticky-cta__clock">

@@ -42,6 +42,10 @@ export default buildConfig({
     SiteSettings,
   ],
   editor: lexicalEditor(),
+  // Nadie consume la API GraphQL (el sitio lee Payload con la API local) y
+  // construir su esquema es parte de cada arranque de Payload: en serverless,
+  // de cada arranque en frío.
+  graphQL: { disable: true },
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI,

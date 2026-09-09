@@ -24,7 +24,7 @@ export async function Footer({ accent = "orange" }: FooterProps) {
             </p>
           </div>
           <div>
-            <h4 className="site-footer__heading">Academia</h4>
+            <h2 className="site-footer__heading">Academia</h2>
             <div className="site-footer__links">
               <Link href="/#programa" className="site-footer__link">
                 Programa
@@ -44,7 +44,7 @@ export async function Footer({ accent = "orange" }: FooterProps) {
             </div>
           </div>
           <div>
-            <h4 className="site-footer__heading">Contacto</h4>
+            <h2 className="site-footer__heading">Contacto</h2>
             <div className="site-footer__links">
               <Link href="mailto:contacto@365diasdeajedrez.com" className="site-footer__link">
                 contacto@365diasdeajedrez.com

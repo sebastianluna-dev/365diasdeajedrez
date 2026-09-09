@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { CalendarCheck } from "lucide-react";
 import { EloTable } from "@/components/common/elo-table.comp";
-import { ChessBoard } from "@/components/common/chess-board.comp";
+import { ChessBoardLazy } from "@/components/common/chess-board-lazy.comp";
 import { getTeacherData } from "@/services/home/home.service";
 import { TeacherStat } from "./teacher-stat.comp";
 import "./teacher.section.css";
@@ -14,12 +14,16 @@ export async function TeacherSection() {
     <section id="maestro">
       <div className="teacher">
         <div className="teacher__media">
+          {/* `sizes` sigue al CSS de .teacher__media: ancho completo en móvil,
+              56 % en tablet, 480 px en escritorio. Sin él el navegador asumía
+              el ancho del viewport y pedía la foto a 3840 px (725 KB). */}
           <Image
             className="teacher__photo"
             src={content.photo.src}
             alt={content.photo.alt}
             width={content.photo.width ?? 1536}
             height={content.photo.height ?? 2048}
+            sizes="(max-width: 720px) 100vw, (max-width: 1023px) 56vw, 480px"
           />
           <div className="teacher__photo-overlay" />
 
@@ -32,7 +36,7 @@ export async function TeacherSection() {
 
         <div className="teacher__content">
           <span className="teacher__eyebrow">{content.eyebrow}</span>
-          <h1 className="teacher__name">{content.name}</h1>
+          <h2 className="teacher__name">{content.name}</h2>
           <span className="teacher__badge">{content.badge}</span>
           <p className="teacher__summary">{content.summary}</p>
 
@@ -69,7 +73,8 @@ export async function TeacherSection() {
             ))}
           </div>
 
-          <ChessBoard
+          {/* Diferido: está muy por debajo del pliegue y su JS es lo más pesado de la portada. */}
+          <ChessBoardLazy
             flipBoard={content.game.flipBoard}
             pgn={content.game.moves}
             annotations={content.game.annotations}

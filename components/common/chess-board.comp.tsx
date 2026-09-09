@@ -47,7 +47,7 @@ export interface ChessBoardControlledPosition {
   shapes?: DrawShape[];
 }
 
-interface ChessBoardProps {
+export interface ChessBoardProps {
   /** Full PGN or bare SAN movetext. Ignored when `position` is set. */
   pgn?: string;
   /**

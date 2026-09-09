@@ -18,14 +18,17 @@ export default function LandingPage() {
   return (
     <div className="landing-page">
       <Header />
-      {sections.hero && <HeroSection />}
-      {sections.program && <ProgramSection />}
-      {mentorsSlot === "teacher" && <TeacherSection />}
-      {mentorsSlot === "mentors" && <MentorsSection />}
-      {sections.plans && <PlansSection />}
-      {sections.resources && <ResourcesSection />}
-      {sections.faq && <FaqSection />}
-      {sections.reviews && <ReviewsSection />}
+      {/* El CTA pegajoso y el footer quedan fuera de <main>: son complementarios, no el contenido. */}
+      <main>
+        {sections.hero && <HeroSection />}
+        {sections.program && <ProgramSection />}
+        {mentorsSlot === "teacher" && <TeacherSection />}
+        {mentorsSlot === "mentors" && <MentorsSection />}
+        {sections.plans && <PlansSection />}
+        {sections.resources && <ResourcesSection />}
+        {sections.faq && <FaqSection />}
+        {sections.reviews && <ReviewsSection />}
+      </main>
       <CtaSection />
       <Footer />
     </div>

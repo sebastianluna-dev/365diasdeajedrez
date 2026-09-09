@@ -1,0 +1,27 @@
+/* Hueco con las medidas de .chess-board (chess-board.comp.css) para que el
+   tablero, al montarse, no mueva lo que hay debajo: tablero cuadrado al 58 %
+   del ancho más la barra de 52 px en escritorio; al 100 % en móvil, donde la
+   notación no se pinta. Mismos respaldos de color que el tablero: fuera de la
+   plataforma no existen los --platform-*. */
+.chess-board-lazy {
+  width: 100%;
+  max-width: 800px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--platform-surface, #2b2723);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+
+  & .chess-board-lazy__board {
+    width: 58%;
+    aspect-ratio: 1;
+
+    @media (max-width: 720px) {
+      width: 100%;
+    }
+  }
+
+  & .chess-board-lazy__toolbar {
+    height: 52px;
+    border-top: 1px solid var(--platform-border, rgba(245, 240, 232, 0.07));
+  }
+}

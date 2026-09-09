@@ -1,16 +1,33 @@
+/* La caja del botón mide 24×24 (el mínimo táctil) y lo que se ve es la
+   píldora de dentro: un botón de 10 px se pulsa mal en el móvil. La caja
+   crece con la píldora activa para que el hueco entre puntos no cambie. */
 .reviews__dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: rgba(22, 17, 13, 0.18);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
   border: 0;
   padding: 0;
+  background: transparent;
   cursor: pointer;
-  transition:
-    width 0.2s ease,
-    background 0.2s ease;
+  transition: width 0.2s ease;
+
+  & .reviews__dot-pill {
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(22, 17, 13, 0.18);
+    transition:
+      width 0.2s ease,
+      background 0.2s ease;
+  }
 
   &.reviews__dot_active {
+    width: 42px;
+  }
+
+  &.reviews__dot_active .reviews__dot-pill {
     width: 28px;
     background: var(--color-primary);
   }

@@ -20,6 +20,14 @@ export const SESSION_RENEW_AFTER_MS = 24 * 60 * 60 * 1000;
 
 export const LOGIN_PATH = "/iniciar-sesion";
 
+/**
+ * A dónde manda `proxy.ts` a quien llega a la portada con cookie de sesión. Es
+ * un route handler (app/(auth)/entrar/route.ts) que consulta la sesión real y
+ * reparte por rol; existe para que la portada no tenga que leer cookies y
+ * pueda prerenderizarse.
+ */
+export const SESSION_ENTRY_PATH = "/entrar";
+
 /** Parámetro con el destino al que volver tras iniciar sesión. */
 export const RETURN_TO_PARAM = "next";
 

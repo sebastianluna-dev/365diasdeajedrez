@@ -26,7 +26,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {children}
         <GoogleAnalytics />
         <MetaPixel />
-        <Analytics />
+        {/* Su script sólo existe en despliegues de Vercel; fuera de ahí (next start
+            en local, otro hosting) daba un 404 en consola en cada visita. */}
+        {process.env.VERCEL === "1" && <Analytics />}
       </body>
     </html>
   );

@@ -30,7 +30,19 @@ export async function HeroSection() {
               <div className="hero__stage">
                 <div className="hero__card">
                   <div className="hero__card-inner">
-                    <Image src={content.image.src} alt={content.image.alt} width={520} height={640} preload />
+                    {/* Es el LCP: `preload` la anuncia en el <head> y `fetchPriority`
+                        la sube de prioridad en ese preload y en el <img>. `sizes`
+                        es lo que pinta de verdad (la tarjeta), no el ancho del
+                        viewport: sin él el móvil pedía el doble de píxeles. */}
+                    <Image
+                      src={content.image.src}
+                      alt={content.image.alt}
+                      width={520}
+                      height={640}
+                      preload
+                      fetchPriority="high"
+                      sizes="(max-width: 1024px) 300px, 420px"
+                    />
                   </div>
                 </div>
                 <Orbit />
