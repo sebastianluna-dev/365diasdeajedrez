@@ -62,14 +62,16 @@ export async function getUserDashboard(): Promise<DashboardData> {
   ]);
 
   // Nombres de los sujetos de la actividad reciente, por tipo de sujeto.
-  const idsFor = (code: string) =>
-    recent.filter((row) => row.subjectType.code === code).map((row) => row.subjectId);
+  const idsFor = (code: string) => recent.filter((row) => row.subjectType.code === code).map((row) => row.subjectId);
 
   const [lessons, coursesRows, classes, games, exercises] = await Promise.all([
     db.lesson.findMany({ where: { id: { in: idsFor(SUBJECT_TYPE.LESSON) } }, select: { id: true, name: true } }),
     db.course.findMany({ where: { id: { in: idsFor(SUBJECT_TYPE.COURSE) } }, select: { id: true, name: true } }),
     db.class.findMany({ where: { id: { in: idsFor(SUBJECT_TYPE.CLASS) } }, select: { id: true, title: true } }),
-    db.game.findMany({ where: { id: { in: idsFor(SUBJECT_TYPE.GAME) } }, select: { id: true, white: true, black: true } }),
+    db.game.findMany({
+      where: { id: { in: idsFor(SUBJECT_TYPE.GAME) } },
+      select: { id: true, white: true, black: true },
+    }),
     db.trainingExercise.findMany({
       where: { id: { in: idsFor(SUBJECT_TYPE.EXERCISE) } },
       select: { id: true, lesson: { select: { name: true } } },

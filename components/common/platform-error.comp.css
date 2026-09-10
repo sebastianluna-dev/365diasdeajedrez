@@ -26,4 +26,11 @@
   & .platform-error__retry:hover {
     background: var(--platform-accent-hover);
   }
+
+  & .platform-error__digest {
+    margin-top: 12px;
+    color: var(--platform-text-muted);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+  }
 }

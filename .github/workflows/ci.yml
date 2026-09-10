@@ -1,0 +1,28 @@
+# Lint, tipos y pruebas en cada push y pull request. No hace `next build`: la
+# generación estática consulta Payload y la plataforma, y CI no tiene esas
+# bases; el build lo valida el despliegue.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      # `prisma generate` sólo necesita que la URL exista para leer
+      # prisma.config.ts; no se conecta.
+      PLATFORM_DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run db:generate
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test

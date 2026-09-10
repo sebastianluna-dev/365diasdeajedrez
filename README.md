@@ -1,7 +1,3 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
----
-
 # 365 días de ajedrez
 
 Monorepo de una sola app Next.js que reúne tres piezas: el **sitio público**, el **CMS** (Payload) y la **plataforma educativa** (Prisma + Postgres).
@@ -12,7 +8,7 @@ Monorepo de una sola app Next.js que reúne tres piezas: el **sitio público**, 
 - **Dos bases de datos Postgres distintas**, sin tablas compartidas:
   - `DATABASE_URI` → Payload / CMS.
   - `PLATFORM_DATABASE_URL` → plataforma educativa (Prisma). Usa `sslmode=verify-full`; con `sslmode=require` el driver `pg` avisa del cambio de semántica previsto para pg v9.
-- Variables de entorno en `.env.local` (copia `.env.example` y rellena): `PAYLOAD_SECRET`, credenciales de Cloudinary, `PREVIEW_SECRET`, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_APP_ENV` (sólo `production` activa Google Analytics y Meta Pixel), `NEXT_PUBLIC_GA_MEASUREMENT_ID` y `NEXT_PUBLIC_META_PIXEL_ID`.
+- Variables de entorno en `.env.local` (copia `.env.example` y rellena): `PAYLOAD_SECRET`, credenciales de Cloudinary, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_APP_ENV` (sólo `production` activa Google Analytics y Meta Pixel), `NEXT_PUBLIC_GA_MEASUREMENT_ID` y `NEXT_PUBLIC_META_PIXEL_ID`.
 
 El CLI de Prisma lee `PLATFORM_DATABASE_URL` a través de `prisma.config.ts`, que carga `.env.local` y `.env`.
 
@@ -46,18 +42,36 @@ npm run dev                  # http://localhost:3000
 | `npm run user:password -- <correo>` | Cambia su contraseña y cierra sus sesiones. |
 | `npm run user:list` | Lista las cuentas, si tienen contraseña y sus sesiones abiertas. |
 | `npm run pieces:sync` | Copia las piezas del tablero (chessground) a `public/pieces`; ejecutar al actualizar chessground. |
+| `npm run typecheck` | `tsc --noEmit`, lo mismo que corre CI. |
+| `npm run test:coverage` | Vitest con cobertura (v8) sobre `lib`, `services`, `constants` y `hooks`. |
+| `npm run format` / `npm run format:check` | Prettier sobre el repo (hoy `format:check` falla: el repo nunca se formateó, ver `MEJORAS.md` #39). |
+| `npm run positions:index` | Rellena el índice de posiciones de las partidas ya guardadas (`-- --all` reindexa todas). |
+| `npm run collections:by-chapter` | Migración de datos de una sola vez: colecciones de curso → colecciones por capítulo. |
+
+`.github/workflows/ci.yml` corre `lint`, `typecheck` y `test` en cada push a `main` y en cada pull request. No hace `next build`: la generación estática consulta las bases, que CI no tiene; el build lo valida el despliegue.
+
+## Copias de seguridad
+
+Hay dos bases y ninguna se puede reconstruir desde el código: en `PLATFORM_DATABASE_URL` viven las cuentas, el progreso y las anotaciones de partidas; en `DATABASE_URI`, el contenido del sitio y del blog. Las migraciones de Prisma no tienen camino inverso, así que **antes de cada `npm run db:deploy` en producción** se hace un volcado con marca de tiempo de las dos:
+
+```bash
+pg_dump --format=custom --no-owner --file="plataforma-$(date +%Y%m%d-%H%M).dump" "$PLATFORM_DATABASE_URL"
+pg_dump --format=custom --no-owner --file="payload-$(date +%Y%m%d-%H%M).dump" "$DATABASE_URI"
+```
+
+Se restaura sobre una base vacía o de pruebas con `pg_restore --no-owner --dbname="$URL" archivo.dump`. Conviene ensayar una restauración completa en una base aparte al menos una vez y anotar aquí cuánto tardó, junto con lo que ofrezca el proveedor (copias automáticas y retención).
 
 ## Acceso a la plataforma
 
-La zona privada (`/dashboard`, `/classes`, `/studies`, `/courses`, `/trainer`, `/teacher`, `/staff`) exige iniciar sesión en `/login`. El seed deja listas tres cuentas de pruebas con la contraseña `ajedrez365` (o la de `PLATFORM_DEMO_PASSWORD`); sólo se asigna a cuentas que aún no tienen contraseña, así que un re-seed nunca revierte un cambio hecho a mano:
+La zona privada (`/inicio`, `/clases`, `/estudios`, `/cursos`, `/lecciones`, `/entrenador`, `/explorador`, `/profesor`, `/administracion`) exige iniciar sesión en `/iniciar-sesion`. El seed deja listas tres cuentas de pruebas con la contraseña `ajedrez365` (o la de `PLATFORM_DEMO_PASSWORD`); sólo se asigna a cuentas que aún no tienen contraseña, así que un re-seed nunca revierte un cambio hecho a mano:
 
 | Cuenta | Rol | Qué ve además de lo del alumno |
 |---|---|---|
 | `alumno.demo@365diasdeajedrez.com` | Alumno | — |
-| `profesor.demo@365diasdeajedrez.com` | Profesor | `/teacher/*` |
-| `staff.demo@365diasdeajedrez.com` | Administrador/Editor | `/staff/*` |
+| `profesor.demo@365diasdeajedrez.com` | Profesor | `/profesor/*` |
+| `staff.demo@365diasdeajedrez.com` | Administrador/Editor | `/administracion/*` |
 
-**No hay registro público**: en una academia el alumno existe porque se le da de alta. Lo hace el equipo de administración desde `/staff/students/new`, que genera una contraseña temporal y la muestra una sola vez (no hay servicio de correo). `npm run user:create` sigue existiendo como vía alternativa desde la línea de comandos.
+**No hay registro público**: en una academia el alumno existe porque se le da de alta. Lo hace el equipo de administración desde `/administracion/alumnos/nuevo`, que genera una contraseña temporal y la muestra una sola vez (no hay servicio de correo). `npm run user:create` sigue existiendo como vía alternativa desde la línea de comandos.
 
 ### Roles
 
@@ -75,6 +89,8 @@ Cómo está montado:
 
 ## Mapa de rutas
 
+Las URLs de la plataforma están en español porque el producto lo está; sólo los nombres de los parámetros dinámicos (`[courseId]`…) siguen en inglés, y no salen en la URL. La fuente de verdad son las tres constantes de `lib/platform-routes.ts`.
+
 **Sitio público** — `app/(frontend)`
 
 - `/`
@@ -85,36 +101,39 @@ Cómo está montado:
 
 **CMS** — `app/(payload)`
 
-- `/admin` (más `/api/*` y `/api/graphql`)
+- `/admin` (más `/api/*`; GraphQL está desactivado)
 
 **Acceso** — `app/(auth)`
 
-- `/login`
+- `/iniciar-sesion`
+- `/entrar` — route handler: a quien llega a `/` con cookie de sesión lo reparte a su panel según el rol, o borra la cookie caducada y lo devuelve a la portada
 
 **Plataforma — alumno** — `app/(platform)` (requiere sesión)
 
-- `/dashboard`
-- `/classes`, `/classes/[classId]`
-- `/studies`, `/studies/[studyId]`, `/studies/[studyId]/games/[gameId]`
-- `/courses`, `/courses/[courseId]`, `/courses/[courseId]/chapters/[chapterId]`, `/courses/[courseId]/chapters/[chapterId]/lessons/[lessonId]`
-- `/trainer`
+- `/inicio`
+- `/clases`, `/clases/[classId]`
+- `/estudios`, `/estudios/clases` (partidas vistas en clase), `/estudios/[studyId]`, `/estudios/[studyId]/partidas/[gameId]`, `/estudios/[studyId]/partidas/nueva`
+- `/cursos`, `/cursos/[courseId]`, `/cursos/[courseId]/[chapterOrder]`
+- `/lecciones/[lessonId]` (la lección cuelga de la raíz: su identificador ya la localiza)
+- `/entrenador`
+- `/explorador` (buscador de partidas por posición; lo comparten alumno y profesor)
 
 **Plataforma — profesor** (requiere fila `Teacher` activa)
 
-- `/teacher`
-- `/teacher/students`, `/teacher/students/[studentId]`
-- `/teacher/students/[studentId]/studies/[studyId]`, `…/games/[gameId]` (**sólo lectura** de los estudios de sus alumnos asignados)
-- `/teacher/classes`, `/teacher/classes/new`, `/teacher/classes/[classId]`, `/teacher/classes/[classId]/edit`
-- `/teacher/profile`
+- `/profesor`
+- `/profesor/alumnos`, `/profesor/alumnos/[studentId]`
+- `/profesor/alumnos/[studentId]/estudios/[studyId]`, `…/partidas/[gameId]` (**sólo lectura** de los estudios de sus alumnos asignados)
+- `/profesor/clases`, `/profesor/clases/nuevo`, `/profesor/clases/[classId]`, `/profesor/clases/[classId]/editar`
+- `/profesor/perfil`
 
 **Plataforma — administración** (requiere fila `Staff`; `/admin` es de Payload)
 
-- `/staff`
-- `/staff/students`, `/staff/students/new`, `/staff/students/[userId]`
-- `/staff/teachers`, `/staff/teachers/new`, `/staff/teachers/[teacherId]`
-- `/staff/courses`, `/staff/courses/new`, `/staff/courses/[courseId]`, `…/chapters/[chapterId]`, `…/lessons/[lessonId]`
-- `/staff/authors`
-- `/staff/classes`, `/staff/classes/[classId]` (lectura global; sólo grabación y cancelación de soporte)
+- `/administracion`
+- `/administracion/alumnos`, `/administracion/alumnos/nuevo`, `/administracion/alumnos/[userId]`
+- `/administracion/profesores`, `/administracion/profesores/nuevo`, `/administracion/profesores/[teacherId]`
+- `/administracion/cursos`, `/administracion/cursos/nuevo`, `/administracion/cursos/[courseId]`, `…/partidas`, `…/capitulos/[chapterId]`, `…/capitulos/[chapterId]/partidas`, `…/capitulos/[chapterId]/lecciones/[lessonId]`
+- `/administracion/autores`
+- `/administracion/clases`, `/administracion/clases/[classId]` (lectura global; sólo grabación y cancelación de soporte)
 
 ## Arquitectura en breve
 
@@ -136,40 +155,3 @@ Esta versión de Next.js trae cambios de ruptura respecto a lo que suele estar e
 
 - `MEJORAS.md` — mejoras pendientes priorizadas (seguridad, arquitectura, CSS, UX).
 - `todos.md` — tareas concretas en cola.
-
----
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

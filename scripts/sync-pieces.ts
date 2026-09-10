@@ -51,7 +51,9 @@ function main(): void {
   }
 
   if (written.length !== EXPECTED_COUNT) {
-    throw new Error(`Esperaba ${EXPECTED_COUNT} piezas y salieron ${written.length}: ${written.join(", ") || "ninguna"}`);
+    throw new Error(
+      `Esperaba ${EXPECTED_COUNT} piezas y salieron ${written.length}: ${written.join(", ") || "ninguna"}`,
+    );
   }
   console.log(`${written.length} piezas escritas en public/pieces desde ${SOURCE}`);
 }

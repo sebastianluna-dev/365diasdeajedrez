@@ -89,6 +89,8 @@ export function ImageUpload({
     body.append("api_key", signature.apiKey);
     body.append("timestamp", String(signature.timestamp));
     body.append("folder", signature.folder);
+    // Va firmado: cambiarlo aquí invalidaría la firma, que es la gracia.
+    body.append("allowed_formats", signature.allowedFormats);
     body.append("signature", signature.signature);
 
     try {

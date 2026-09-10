@@ -1,4 +1,5 @@
 import { randomBytes, scrypt as scryptCallback, timingSafeEqual, type ScryptOptions } from "node:crypto";
+import { logWarning } from "@/lib/logger";
 import { promisify } from "node:util";
 
 // Hash de contraseñas con scrypt (módulo `crypto` de Node, sin dependencias).
@@ -65,7 +66,10 @@ export async function verifyPassword(password: string, storedHash: string): Prom
     const actual = await derive(password, Buffer.from(saltHex, "hex"), n, r, p);
     if (actual.length !== expected.length) return false;
     return timingSafeEqual(actual, expected);
-  } catch {
+  } catch (error) {
+    // Un hash guardado que no se puede leer no es un error de contraseña: es
+    // un dato corrupto, y conviene saberlo.
+    logWarning("password", "Hash almacenado ilegible; se rechaza la contraseña", { error: String(error) });
     return false;
   }
 }

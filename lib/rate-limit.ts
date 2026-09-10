@@ -1,4 +1,5 @@
 import "server-only";
+import { logError, logWarning } from "@/lib/logger";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 
 // Límite de frecuencia de las server actions de escritura. Las actions son
@@ -40,6 +41,8 @@ const PURGE_CHANCE = 0.01;
  * Si la base falla, se DEJA PASAR. Es deliberado: sin base no hay login que
  * proteger —la comprobación de la contraseña también la consulta— y bloquear
  * cada acción por una incidencia de la base sería un apagón en toda regla.
+ * Pero se deja rastro: un límite que desaparece en silencio es peor que uno
+ * que avisa de que ha desaparecido.
  */
 export async function allowAction(key: string, limit: number, windowMs: number): Promise<boolean> {
   const db = getPlatformDb();
@@ -57,12 +60,15 @@ export async function allowAction(key: string, limit: number, windowMs: number):
     `;
 
     if (Math.random() < PURGE_CHANCE) {
-      void db.$executeRaw`DELETE FROM "RateLimit" WHERE "resetAt" <= ${now}`.catch(() => undefined);
+      void db.$executeRaw`DELETE FROM "RateLimit" WHERE "resetAt" <= ${now}`.catch((error: unknown) =>
+        logWarning("rate-limit", "No se pudieron barrer las ventanas vencidas", { error: String(error) }),
+      );
     }
 
     // Sin fila devuelta no hay nada que decir: se deja pasar, como con un error.
     return (rows[0]?.count ?? 1) <= limit;
-  } catch {
+  } catch (error) {
+    logError("rate-limit", "Fallo de la base al contar; la acción se deja pasar sin límite", error, { key });
     return true;
   }
 }

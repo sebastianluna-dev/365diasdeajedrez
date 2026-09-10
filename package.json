@@ -19,7 +19,11 @@
     "user:create": "tsx scripts/platform-user.ts create",
     "user:password": "tsx scripts/platform-user.ts password",
     "user:list": "tsx scripts/platform-user.ts list",
-    "pieces:sync": "tsx scripts/sync-pieces.ts"
+    "pieces:sync": "tsx scripts/sync-pieces.ts",
+    "typecheck": "tsc --noEmit",
+    "test:coverage": "vitest run --coverage",
+    "format": "prettier --write . --ignore-path .gitignore",
+    "format:check": "prettier --check . --ignore-path .gitignore"
   },
   "dependencies": {
     "@lichess-org/chessground": "^10.1.1",
@@ -45,9 +49,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^4.1.11",
     "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
+    "prettier": "^3.9.6",
     "prisma": "^7.10.0",
     "tsx": "^4.23.13",
     "typescript": "^5",

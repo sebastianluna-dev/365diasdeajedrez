@@ -1,5 +1,6 @@
 import "server-only";
 import { v2 as cloudinary } from "cloudinary";
+import { IMAGE_ALLOWED_FORMATS } from "@/constants/platform/upload.const";
 
 // Cloudinary para la ZONA AUTENTICADA (portadas de curso, y lo que venga).
 //
@@ -19,12 +20,14 @@ const API_KEY = process.env.CLOUDINARY_API_KEY;
 const API_SECRET = process.env.CLOUDINARY_API_SECRET;
 
 /** Dónde aterrizan las imágenes de la plataforma, separadas de las del sitio. */
-export const PLATFORM_UPLOAD_FOLDER = "365-ajedrez/plataforma";
+const PLATFORM_UPLOAD_FOLDER = "365-ajedrez/plataforma";
 
 export interface UploadSignature {
   cloudName: string;
   apiKey: string;
   folder: string;
+  /** Formatos que la firma admite; el navegador los reenvía tal cual. */
+  allowedFormats: string;
   /** Segundos desde época; Cloudinary rechaza una firma vieja. */
   timestamp: number;
   signature: string;
@@ -37,10 +40,12 @@ export interface UploadSignature {
  * pantalla tiene que poder seguir enseñando el campo de URL a mano, no
  * romperse.
  *
- * Se firma exactamente lo que se manda: `folder` y `timestamp`. Cloudinary
- * comprueba que la firma cubra TODOS los parámetros que le llegan (menos el
- * archivo y la clave), así que el navegador no puede añadir nada por su cuenta
- * —ni cambiar de carpeta— sin invalidarla.
+ * Se firma exactamente lo que se manda: `folder`, `timestamp` y
+ * `allowed_formats`. Cloudinary comprueba que la firma cubra TODOS los
+ * parámetros que le llegan (menos el archivo y la clave), así que el navegador
+ * no puede añadir nada por su cuenta —ni cambiar de carpeta, ni colar un vídeo
+ * o un PDF— sin invalidarla. El peso máximo no se puede firmar (la API no
+ * tiene ese parámetro): ese techo es el del plan o el preset de la cuenta.
  */
 export function signPlatformUpload(): UploadSignature | null {
   if (!CLOUD_NAME || !API_KEY || !API_SECRET) return null;
@@ -49,9 +54,16 @@ export function signPlatformUpload(): UploadSignature | null {
 
   const timestamp = Math.round(Date.now() / 1000);
   const signature = cloudinary.utils.api_sign_request(
-    { folder: PLATFORM_UPLOAD_FOLDER, timestamp },
+    { folder: PLATFORM_UPLOAD_FOLDER, timestamp, allowed_formats: IMAGE_ALLOWED_FORMATS },
     API_SECRET,
   );
 
-  return { cloudName: CLOUD_NAME, apiKey: API_KEY, folder: PLATFORM_UPLOAD_FOLDER, timestamp, signature };
+  return {
+    cloudName: CLOUD_NAME,
+    apiKey: API_KEY,
+    folder: PLATFORM_UPLOAD_FOLDER,
+    allowedFormats: IMAGE_ALLOWED_FORMATS,
+    timestamp,
+    signature,
+  };
 }

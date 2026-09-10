@@ -39,39 +39,33 @@ la del repositorio: hay que definir `PLATFORM_DEMO_PASSWORD` propia o, para una 
 remota, `ALLOW_DEMO_SEED=1` (documentado en `.env.example`). En local no cambia nada.
 
 ### 37. Un ZIP de 57 MB versionado infla el repositorio a 365 MB — [DX / Repositorio]
-`Academia de Ajedrez Landing.zip` (60 MB) está en `git ls-files` desde el commit `2e1af25`; `.git`
-pesa 365 MB para 746 archivos. Cada clon y cada despliegue lo arrastran, y seguirá en el historial
-aunque se borre del árbol.
+*Parcialmente resuelto (2026-09-09):* `Academia de Ajedrez Landing.zip` retirado del árbol y
+`*.zip` en `.gitignore`.
 
-**Cómo abordarlo:** borrarlo del árbol y añadir `*.zip` a `.gitignore`. Recuperar los 350 MB exige
-reescribir el historial (`git filter-repo --path "Academia de Ajedrez Landing.zip" --invert-paths`),
-decisión aparte porque invalida los clones existentes.
+**Lo que queda:** sigue en el historial (commit `2e1af25`), así que cada clon arrastra los 57 MB.
+Recuperarlos exige reescribir el historial (`git filter-repo --path "Academia de Ajedrez Landing.zip"
+--invert-paths`) y volver a clonar: decisión aparte, porque invalida los clones existentes.
 
-### 38. `server-only` no resuelve en Vitest: servicios y actions no se pueden ni importar — [Pruebas]
-Diez módulos abren con `import "server-only"`, pero el paquete no está instalado: en la app lo
-aliasa Next y `vitest.config.mts` no lo hace. Por eso `services/shared/form-data.ts` —la primera
-línea de validación de todo formulario— y el resto de la capa de servidor no tienen ni una prueba.
-
-**Cómo abordarlo:** alias `server-only` → módulo vacío en `vitest.config.mts` y empezar por
-`form-data.ts`.
+### 38. ~~`server-only` no resuelve en Vitest: servicios y actions no se pueden ni importar~~ — RESUELTO (2026-09-09)
+`vitest.config.mts` aliasa `server-only` a `lib/testing/server-only.stub.ts` (un módulo vacío). La
+protección real —que no acabe en un Client Component— la sigue haciendo el bundler de Next.
+Primera prueba de la capa de servidor: `services/shared/form-data.test.ts`.
 
 ### 39. Nada verifica el código antes de llegar a `main`: sin CI, sin `typecheck`, prettier sin declarar — [DX]
-No hay `.github/` ni hooks; `tsc --noEmit` sólo corre dentro de `next build`, que no ve `scripts/*`
-ni `prisma/seed.ts`. `.prettierrc` existe pero `prettier` no está en `devDependencies` (llega como
-transitiva de Payload) y no hay script `format`.
+*Mayormente resuelto (2026-09-09):* `.github/workflows/ci.yml` corre `npm ci`, `db:generate`,
+`lint`, `typecheck` y `test` sobre Node 20 (sin `next build`: la generación estática consulta
+Payload). Scripts nuevos: `typecheck`, `test:coverage`, `format` y `format:check`; `prettier`
+fijado en `devDependencies` (3.9.6, la que ya traía Payload como transitiva).
 
-**Cómo abordarlo:** `typecheck` y `format:check` en `package.json`, `prettier` fijado en
-`devDependencies`, y un workflow con `lint`, `typecheck` y `test` sobre Node 20.
+**Lo que queda:** `format:check` no está en CI porque hoy fallaría: Prettier cambiaría 135
+archivos. Formatear el repo entero es un commit propio, sin lógica dentro (ver `todos.md`); hecho
+eso, añadir el paso al workflow.
 
-### 40. El README describe rutas en inglés que ya no existen — [Docs]
-`README.md` manda a `/login`, `/dashboard`, `/classes`, `/teacher/*`, `/staff/students/new` y a
-`/api/graphql` (desactivado), cuando las rutas reales son `/iniciar-sesion`, `/inicio`, `/clases`,
-`/profesor/*`, `/administracion/alumnos/nuevo` (`lib/platform-routes.ts`) y la jerarquía de cursos
-es otra (`/cursos/[courseId]/[chapterOrder]` + `/lecciones/[lessonId]`). Conserva además el
-boilerplate de `create-next-app` y omite `positions:index` y `collections:by-chapter`.
-
-**Cómo abordarlo:** regenerar el mapa desde las tres constantes de rutas, borrar el boilerplate y
-completar la tabla de scripts.
+### 40. ~~El README describe rutas en inglés que ya no existen~~ — RESUELTO (2026-09-09)
+Mapa de rutas regenerado desde `app/` y `lib/platform-routes.ts` (incluidos `/entrar`,
+`/lecciones/[lessonId]`, `/estudios/clases` y `/explorador`), rutas de acceso y de las cuentas
+demo corregidas, boilerplate de `create-next-app` borrado, y la tabla de comandos completa
+(`positions:index`, `collections:by-chapter`, `typecheck`, `test:coverage`, `format`).
 
 ### 41. `(frontend)` y `(auth)` no tienen `not-found.tsx` ni `error.tsx` — [UX / Frontend]
 Sólo `(platform)` los tiene. `blog/[slug]` y `mentor/[slug]` llaman a `notFound()`, así que un enlace
@@ -214,30 +208,34 @@ Las estadísticas salen de cuatro `groupBy` con `_sum` (uno por rango de calenda
 dirigida y carga sólo ese curso, en vez de `getUserCourses()` con el catálogo entero.
 
 ### 50. Ni un log en el servidor: los fallos se tragan en silencio — [Observabilidad]
-No hay `console.*` ni logger en `app/`, `lib/`, `services/`. `lib/rate-limit.ts` hace
-`catch { return true }` (un fallo de base apaga el límite de login sin rastro), los `warnings` de
-PGN se descartan en `game-positions.service.ts`, `error.tsx` no registra el `digest`, y una veintena
-de actions hacen `return` mudo ante throttle o validación.
+*Mayormente resuelto (2026-09-09):* `lib/logger.ts` (una línea JSON por evento en `stderr`, sin
+"server-only" para que sirva al seed y a los scripts) e `instrumentation.ts` con `onRequestError`,
+por donde pasa todo error que Next captura al servir una petición, con su `digest`. Registran
+también el `catch` de `allowAction` (un límite que desaparece ya avisa), los barridos de
+`RateLimit` y `Session`, los `warnings` del reproductor al indexar posiciones y un hash de
+contraseña ilegible. El error boundary de la plataforma enseña el `digest` («Código del error»)
+para poder cruzarlo con el registro.
 
-**Cómo abordarlo:** `lib/logger.ts` (JSON a `stderr`) en esos `catch`; estado visible en las actions
-mudas siguiendo el patrón `?error=<code>`.
+**Lo que queda:** las actions que hacen `return` mudo ante throttle o validación
+(`study-goal`, `trainer`, `courses`, `studies`, `game-explorer`) siguen sin decírselo al usuario;
+convendría devolver un estado visible con el patrón `?error=<code>` de los paneles.
 
-### 51. La firma de subida a Cloudinary no acota formato ni tamaño — [Seguridad / Datos]
-`signPlatformUpload` firma sólo `{ folder, timestamp }`; `IMAGE_MAX_BYTES` e `IMAGE_MIME_TYPES` se
-comprueban sólo en el navegador, aunque el comentario de `upload.const.ts` afirme lo contrario. Con
-una firma válida se puede subir cualquier archivo a la cuenta.
-
-**Cómo abordarlo:** firmar también `allowed_formats` y `resource_type: "image"` (Cloudinary invalida
-la firma si el cliente los cambia) y mandarlos desde el cliente; corregir el comentario.
+### 51. ~~La firma de subida a Cloudinary no acota formato ni tamaño~~ — RESUELTO (2026-09-09)
+`signPlatformUpload` firma también `allowed_formats` (`IMAGE_ALLOWED_FORMATS`, los mismos cuatro
+formatos que el `accept` del navegador) y `ImageUpload` lo reenvía tal cual: cambiarlo invalida la
+firma. El peso no se puede firmar —la API de subida no tiene ese parámetro—, así que
+`IMAGE_MAX_BYTES` sigue siendo del navegador y el techo real es el del plan o preset de la cuenta;
+el comentario de `upload.const.ts` ya lo dice así.
 
 ### 52. Payload sin `sharp`, subidas sin tope y preview a medias — [CMS]
-`payload.config.ts` no pasa `sharp`, así que `Media.width`/`height` quedan a `null` y el respaldo
-`?? 1536` de la foto del maestro está siempre activo. `Media` no limita tamaño de archivo.
-`Articles` tiene `versions.drafts` pero no hay `admin.preview` ni ruta; `PREVIEW_SECRET` está en
-`.env.example` sin que nada lo lea.
+*Mayormente resuelto (2026-09-09):* `sharp` instalado y pasado a `buildConfig`, así que las
+subidas nuevas rellenan `Media.width`/`height` (las existentes siguen a null hasta re-subirlas; el
+respaldo de la foto del maestro se queda por eso). `upload.limits.fileSize` de 5 MB con
+`abortOnLimit`, el mismo techo que la plataforma. `PREVIEW_SECRET` retirado de `.env.example` y del
+README: nada lo leía.
 
-**Cómo abordarlo:** instalar `sharp` y pasarlo a `buildConfig`; `upload.limits.fileSize`; decidir el
-preview o retirar la variable.
+**Lo que queda:** decidir si los borradores de `Articles` merecen `admin.preview` con una ruta de
+previsualización; hoy sólo se ven dentro del formulario del admin.
 
 ### 53. Casi ningún formulario de la plataforma avisa de que se está enviando — [UX]
 44 archivos con `<form>`; sólo el login y dos formularios de contraseña usan `useFormStatus` o
@@ -305,30 +303,29 @@ dos veces; `.new-game` es raíz de dos componentes distintos (`new-game.section.
 `.study-card` y renombrar uno de los `.new-game`.
 
 ### 61. Vitest ciego a `.test.tsx`, sin cobertura, y módulos puros sin una sola prueba — [Pruebas]
-`include: ["**/*.test.ts"]` y `environment: "node"`: un `.test.tsx` no correría nunca y los hooks
-no son probables; no hay `@vitest/coverage-v8`. Sin pruebas quedan `lib/date-ranges.ts` (la
-aritmética de semana del punto 14), `lib/format-spanish-date.ts`/`-time.ts` (~48 llamadas),
-`services/shared/form-data.ts`, `lib/chess/legal-moves.ts`, `lib/numeric-id.ts`,
-`lib/parse-fen-placement.ts`, `lib/generate-slug.ts` y 11 de 13 mappers. Las pruebas actuales son
-deterministas: nada que corregir ahí.
+*Mayormente resuelto (2026-09-09):* `include` con `{ts,tsx}`, `@vitest/coverage-v8` y
+`npm run test:coverage` (con `include`/`exclude` acotados a `lib`, `services`, `constants` y
+`hooks`). Pruebas nuevas (26) para `form-data`, `date-ranges`, `format-spanish-date`,
+`format-spanish-time`, `numeric-id`, `parse-fen-placement`, `generate-slug`, `legal-moves` y
+`studies.mapper` (escalera de nombres, citas en clase y reparto según quién mira).
 
-**Cómo abordarlo:** `include` con `{ts,tsx}`, `test:coverage`, y empezar por `date-ranges`,
-`form-data` y `studies.mapper`.
+**Lo que queda:** los demás mappers sin prueba (`classes`, `home`, `game-explorer`…) y los hooks
+de temporizadores, que necesitan un proyecto de Vitest con `jsdom`.
 
 ### 62. `tsconfig.json` con `target` ES2017 y sin los flags que atrapan bugs de índices — [DX]
-`ES2017` obliga a transpilar `async/await` para un runtime que lo soporta nativo, y no están
-`noUncheckedIndexedAccess` ni `noUnusedLocals`. `lib/chess/*` indexa arrays por ply constantemente
-(el punto 30 es un bug de índices).
+*Parcialmente resuelto (2026-09-09):* `target: ES2022` y `noUnusedLocals: true`, los dos sin un
+solo error.
 
-**Cómo abordarlo:** `ES2022` y `noUnusedLocals` ya; `noUncheckedIndexedAccess` en una tanda propia.
+**Lo que queda:** `noUncheckedIndexedAccess` da 172 errores (los que más: `trainer-session.comp`,
+`move-tree.comp`, `notation.ts`, `reorder.ts` y varias suites de `lib/chess`). Es una tanda propia:
+casi todos son accesos legítimos a `array[i]` que hay que reescribir con una comprobación.
 
 ### 63. Dos bases en producción sin procedimiento de copia ni restauración — [Ops]
-Ni README ni scripts mencionan `pg_dump`, retención ni prueba de restauración para
-`DATABASE_URI` y `PLATFORM_DATABASE_URL`; 22 migraciones con SQL a mano y sin camino inverso. Es lo
-único de la auditoría con pérdida irreversible posible.
+*Mayormente resuelto (2026-09-09):* sección «Copias de seguridad» en el README con el `pg_dump`
+de las dos bases, el paso obligatorio antes de cada `db:deploy` y cómo restaurar.
 
-**Cómo abordarlo:** documentar el volcado de las dos bases y el paso previo a `db:deploy`, y probar
-una restauración una vez.
+**Lo que queda:** ensayar una restauración completa en una base aparte, anotar cuánto tarda y
+documentar lo que ofrezca el proveedor (copias automáticas y retención).
 
 ### 64. Librerías de ajedrez cargadas antes de que nadie las pida — [Rendimiento]
 `game-tools.comp.tsx` importa `board-export` (y con él `gifenc`) estáticamente en todas las páginas
@@ -338,13 +335,11 @@ al final de la página, existiendo `ChessBoardLazy`.
 **Cómo abordarlo:** `await import()` de la exportación en el manejador del botón y `ChessBoardLazy`
 en las dos páginas públicas.
 
-### 65. `.env.example` desfasado y `AGENTS.md` sin las convenciones del proyecto — [Docs]
-`PREVIEW_SECRET` está documentado y nadie lo lee; faltan `PLATFORM_USER_PASSWORD`, `SEED_NOW` y
-`ALLOW_DEMO_SEED`. `AGENTS.md` sólo contiene el bloque autogenerado por `next dev`: nada de la tríada
-service/mapper/types, los sufijos de archivo, BEM ni los catálogos.
-
-**Cómo abordarlo:** cuadrar `.env.example` con `grep process.env` y resumir en `AGENTS.md` las
-convenciones que ya explica el README.
+### 65. ~~`.env.example` desfasado y `AGENTS.md` sin las convenciones del proyecto~~ — RESUELTO (2026-09-09)
+`.env.example` cuadra con `grep process.env`: fuera `PREVIEW_SECRET`, dentro `ALLOW_DEMO_SEED`,
+`SEED_NOW` y `PLATFORM_USER_PASSWORD` (comentadas y explicadas). `AGENTS.md` lleva ahora un
+resumen de las convenciones —capas, datos, auth, archivos, componentes, CSS, deuda y
+verificación— fuera del bloque que regenera `next dev`.
 
 ---
 

@@ -7,6 +7,7 @@ import {
   SESSION_RENEW_AFTER_MS,
   SESSION_TTL_MS,
 } from "@/constants/platform/auth.const";
+import { logWarning } from "@/lib/logger";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 
 // Sesiones opacas en base de datos. El token en claro sólo existe en la cookie
@@ -107,7 +108,9 @@ export async function readSessionUser(): Promise<SessionUser | null> {
 
   const now = new Date();
   if (Math.random() < PURGE_CHANCE) {
-    void db.session.deleteMany({ where: { expiresAt: { lte: now } } }).catch(() => undefined);
+    void db.session.deleteMany({ where: { expiresAt: { lte: now } } }).catch((error: unknown) =>
+      logWarning("session", "No se pudieron barrer las sesiones caducadas", { error: String(error) }),
+    );
   }
   if (!session) return null;
   if (session.expiresAt <= now) {

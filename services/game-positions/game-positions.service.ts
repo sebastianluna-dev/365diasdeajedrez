@@ -1,4 +1,5 @@
 import { extractGamePositions } from "@/lib/chess/extract-game-positions";
+import { logWarning } from "@/lib/logger";
 import type { Prisma, PrismaClient } from "@/lib/platform-db/generated/client";
 
 // Mantenimiento del índice de posiciones (GamePosition). Aquí se ESCRIBE; el
@@ -46,6 +47,11 @@ export async function indexGamePositions(
   { gameId, databaseId, pgn }: IndexGamePositionsInput,
 ): Promise<IndexGamePositionsResult> {
   const { positions, warnings } = extractGamePositions(pgn);
+  // Quien importa rara vez enseña estos avisos (una partida recortada por una
+  // jugada ilegal sigue entrando); que al menos queden en el registro.
+  if (warnings.length > 0) {
+    logWarning("game-positions", "PGN indexado con avisos del reproductor", { gameId, databaseId, warnings });
+  }
 
   await writer.gamePosition.deleteMany({ where: { gameId } });
   await writer.gamePosition.createMany({
