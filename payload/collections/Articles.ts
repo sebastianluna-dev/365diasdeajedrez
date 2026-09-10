@@ -14,10 +14,10 @@ import {
   UnorderedListFeature,
   UploadFeature,
 } from "@payloadcms/richtext-lexical";
-import { ImageBlock } from "@/blocks/image-block";
-import { CalloutBlock } from "@/blocks/callout-block";
-import { ChessDiagramBlock } from "@/blocks/chess-diagram-block";
-import { ChessGameBlock } from "@/blocks/chess-game-block";
+import { ImageBlock } from "@/payload/blocks/image-block";
+import { CalloutBlock } from "@/payload/blocks/callout-block";
+import { ChessDiagramBlock } from "@/payload/blocks/chess-diagram-block";
+import { ChessGameBlock } from "@/payload/blocks/chess-game-block";
 import { isAdminOrEditor, isPublishedOrLoggedIn } from "@/lib/payload/access";
 import { slugField } from "@/lib/payload/slug-field";
 

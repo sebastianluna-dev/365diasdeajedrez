@@ -28,11 +28,11 @@ buildConfig({
 
 | Slug | File | Purpose | Access |
 | --- | --- | --- | --- |
-| `users` | `collections/Users.ts` | CMS users with `role: admin \| editor`, `name`, `authorTitle` (shown next to the author in the blog). `auth: true`. | read/update: admin or self; create/delete: admin; only an admin can change `role` |
-| `categories` | `collections/Categories.ts` | Blog categories with auto slug | read: anyone; write: any logged-in user |
-| `tags` | `collections/Tags.ts` | Blog tags with auto slug | same |
-| `media` | `collections/Media.ts` | Images (`image/*`) with required `alt` and optional `caption`; stored on Cloudinary | read: anyone; write: logged in |
-| `articles` | `collections/Articles.ts` | Blog posts with **drafts/versions**. Tabs: *Contenido* (title, slug, excerpt, featured image, read time, Lexical `content`), *Organización* (author → users, categories, tags), *SEO* (`metaTitle`, `metaDescription`, `ogImage`); sidebar `publishedAt` | read: published only, or anything when logged in; write: logged in |
+| `users` | `payload/collections/Users.ts` | CMS users with `role: admin \| editor`, `name`, `authorTitle` (shown next to the author in the blog). `auth: true`. | read/update: admin or self; create/delete: admin; only an admin can change `role` |
+| `categories` | `payload/collections/Categories.ts` | Blog categories with auto slug | read: anyone; write: any logged-in user |
+| `tags` | `payload/collections/Tags.ts` | Blog tags with auto slug | same |
+| `media` | `payload/collections/Media.ts` | Images (`image/*`) with required `alt` and optional `caption`; stored on Cloudinary | read: anyone; write: logged in |
+| `articles` | `payload/collections/Articles.ts` | Blog posts with **drafts/versions**. Tabs: *Contenido* (title, slug, excerpt, featured image, read time, Lexical `content`), *Organización* (author → users, categories, tags), *SEO* (`metaTitle`, `metaDescription`, `ogImage`); sidebar `publishedAt` | read: published only, or anything when logged in; write: logged in |
 
 Hooks on `articles`: `beforeChange` stamps `publishedAt` the first time a document is published; `afterChange` and `afterDelete` call `revalidateArticlesAfterChange/Delete` (tag `articles`, `/blog`, `/blog/[slug]`, `/sitemap.xml`).
 
@@ -44,20 +44,20 @@ All Globals are readable by anyone and writable by any logged-in CMS user; each 
 
 | Slug | File | Content | Hook |
 | --- | --- | --- | --- |
-| `home-header` | `globals/HomeHeader.ts` | `navItems` blocks: `navLink` (label, href) and `navDropdown` (label + links) | `revalidateHeader` |
-| `home-hero` | `globals/HomeHero.ts` | H1, description, image, CTA | `revalidateHome` |
-| `home-program` | `globals/HomeProgram.ts` | Section title/description and modules | `revalidateHome` |
-| `home-teacher` | `globals/HomeTeacher.ts` | Tabs with the teacher's info, photo and a featured game (PGN) | `revalidateHome` |
-| `home-packages` | `globals/HomePackages.ts` | Pricing packages (name, price, previous price, currency, period, features…) | `revalidateHome` |
-| `home-faq` | `globals/HomeFaq.ts` | Eyebrow, title and Q&A items | `revalidateHome` |
-| `home-mentors` | `globals/HomeMentors.ts` | Mentors with short/long FIDE titles, slugs, bios and games; feeds `/mentor/[slug]` | `revalidateHome` |
-| `home-reviews` | `globals/HomeReviews.ts` | Testimonials | `revalidateHome` |
-| `home-cta` | `globals/HomeCta.ts` | Floating CTA texts | `revalidateHome` |
-| `site-settings` | `globals/SiteSettings.ts` | WhatsApp country code, local number and default message (footer and CTA) | `revalidateSiteSettings` |
+| `home-header` | `payload/globals/HomeHeader.ts` | `navItems` blocks: `navLink` (label, href) and `navDropdown` (label + links) | `revalidateHeader` |
+| `home-hero` | `payload/globals/HomeHero.ts` | H1, description, image, CTA | `revalidateHome` |
+| `home-program` | `payload/globals/HomeProgram.ts` | Section title/description and modules | `revalidateHome` |
+| `home-teacher` | `payload/globals/HomeTeacher.ts` | Tabs with the teacher's info, photo and a featured game (PGN) | `revalidateHome` |
+| `home-packages` | `payload/globals/HomePackages.ts` | Pricing packages (name, price, previous price, currency, period, features…) | `revalidateHome` |
+| `home-faq` | `payload/globals/HomeFaq.ts` | Eyebrow, title and Q&A items | `revalidateHome` |
+| `home-mentors` | `payload/globals/HomeMentors.ts` | Mentors with short/long FIDE titles, slugs, bios and games; feeds `/mentor/[slug]` | `revalidateHome` |
+| `home-reviews` | `payload/globals/HomeReviews.ts` | Testimonials | `revalidateHome` |
+| `home-cta` | `payload/globals/HomeCta.ts` | Floating CTA texts | `revalidateHome` |
+| `site-settings` | `payload/globals/SiteSettings.ts` | WhatsApp country code, local number and default message (footer and CTA) | `revalidateSiteSettings` |
 
 ## Blocks
 
-Reusable block definitions in `blocks/`:
+Reusable block definitions in `payload/blocks/`:
 
 - Article content: `image-block` (media + alt + caption), `callout-block` (title, content, type info/tip/warning), `chess-diagram-block` (FEN, caption, orientation), `chess-game-block` (PGN, title, players, event, date).
 - Navigation: `nav-link-block`, `nav-dropdown-block`.

@@ -77,7 +77,7 @@ La zona privada (`/inicio`, `/clases`, `/estudios`, `/cursos`, `/lecciones`, `/e
 
 No hay tabla de roles ni columna en `User`: **el rol es la existencia de una fila** (`Teacher`, `Staff`), y son ortogonales — una misma persona puede ser profesor y staff, y sigue siendo alumno. Se resuelven en la misma consulta que la sesión (sin consultas extra) y se exponen sólo por `lib/platform-auth/roles.ts`, cuyos `requireTeacher()` / `requireStaff()` son el primer `await` de toda página y de toda server action de esos paneles. Un profesor se **desactiva** (`Teacher.isActive`), nunca se borra: sus clases y asignaciones son historial.
 
-Los roles `admin`/`editor` de `collections/Users.ts` son de **Payload**, del CMS del sitio público: otra base de datos, otro login, y no se mezclan con esto.
+Los roles `admin`/`editor` de `payload/collections/Users.ts` son de **Payload**, del CMS del sitio público: otra base de datos, otro login, y no se mezclan con esto.
 
 Cómo está montado:
 

@@ -1,8 +1,8 @@
 import type { GlobalConfig } from "payload";
 import { anyone, isAdminOrEditor } from "@/lib/payload/access";
 import { revalidateHeader } from "@/lib/payload/revalidate-header";
-import { NavLinkBlock } from "@/blocks/nav-link-block";
-import { NavDropdownBlock } from "@/blocks/nav-dropdown-block";
+import { NavLinkBlock } from "@/payload/blocks/nav-link-block";
+import { NavDropdownBlock } from "@/payload/blocks/nav-dropdown-block";
 
 export const HomeHeader: GlobalConfig = {
   slug: "home-header",

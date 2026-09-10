@@ -70,14 +70,16 @@ lib/
   *.ts                logger, rate-limit, site-url, timezone, study-streak, date-ranges, numeric-id, cloudinary…
 constants/            chess-board-colors, chess-pieces, platform/ (codes, limits, auth, nav, messages, timezones)
 hooks/                use-chess-clock, use-countdown-timer
-collections/ globals/ blocks/   Payload collections, globals and reusable blocks
+payload/              the CMS's content model: collections/, globals/ and reusable blocks/
 config/ interfaces/   siteConfig (which home sections are enabled)
 prisma/               schema.prisma, migrations/, seed.ts, seed-data.ts
 scripts/              platform-user, index-game-positions, migrate-chapter-collections, sync-pieces
 public/               engine/ (Stockfish + licence), fonts/ (woff2 subsets), pieces/ (cburnett SVGs), sounds/
 instrumentation.ts    onRequestError → lib/logger
 proxy.ts              optimistic cookie check + literal matcher (proxy.test.ts guards it)
-payload.config.ts     Payload build config; payload-types.ts is generated from it
+payload.config.ts     Payload build config (stays at the root: `@payload-config` in tsconfig.json
+                      points at it and the generated files under app/(payload) import that alias);
+                      payload-types.ts is generated from it
 prisma.config.ts      Prisma 7 CLI config (schema path, migrations path, seed command, datasource URL)
 ```
 
