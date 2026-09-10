@@ -1,4 +1,4 @@
-import type { SiteConfig } from "@/interfaces/site-config.interface";
+import type { SiteConfig } from "@/types/site-config.types";
 
 export const siteConfig: SiteConfig = {
   home: {
