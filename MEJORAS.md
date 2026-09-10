@@ -205,6 +205,14 @@ resto no está. Una CSP estricta choca con los scripts en línea de GA y Meta (h
 CSP con nonce desde `proxy.ts` es un trabajo aparte. Comprobar que el panel de Payload (`/admin`)
 sigue funcionando.
 
+### 34. Los sonidos del tablero van sin licencia ni atribución — [Legal / Contenido]
+`public/sounds/move.mp3` y `capture.mp3` salen del paquete «standard» de lichess (lila). Al reordenar
+`public/` (2026-09-09) se retiraron los otros 63 ficheros de ese paquete, que nadie usaba, y estos
+dos quedaron sin nota de procedencia en el repo, al contrario que Stockfish en `public/engine/`.
+
+**Cómo abordarlo:** comprobar la licencia del paquete en el `COPYING.md` de lila y, si la exige,
+dejar un `LICENSE` junto a los sonidos con la atribución.
+
 ---
 
 ### 30. ~~`StudiesNavigation` conserva un tramo que ya nadie pinta~~ — RESUELTO (2026-09-04)

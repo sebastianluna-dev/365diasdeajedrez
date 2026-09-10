@@ -34,18 +34,18 @@
     background-repeat: no-repeat;
   }
 
-  & .rich-chess-diagram__piece_glyph_w-pawn { background-image: url("/design-import/assets/pieces/w-pawn.svg"); }
-  & .rich-chess-diagram__piece_glyph_w-knight { background-image: url("/design-import/assets/pieces/w-knight.svg"); }
-  & .rich-chess-diagram__piece_glyph_w-bishop { background-image: url("/design-import/assets/pieces/w-bishop.svg"); }
-  & .rich-chess-diagram__piece_glyph_w-rook { background-image: url("/design-import/assets/pieces/w-rook.svg"); }
-  & .rich-chess-diagram__piece_glyph_w-queen { background-image: url("/design-import/assets/pieces/w-queen.svg"); }
-  & .rich-chess-diagram__piece_glyph_w-king { background-image: url("/design-import/assets/pieces/w-king.svg"); }
-  & .rich-chess-diagram__piece_glyph_b-pawn { background-image: url("/design-import/assets/pieces/b-pawn.svg"); }
-  & .rich-chess-diagram__piece_glyph_b-knight { background-image: url("/design-import/assets/pieces/b-knight.svg"); }
-  & .rich-chess-diagram__piece_glyph_b-bishop { background-image: url("/design-import/assets/pieces/b-bishop.svg"); }
-  & .rich-chess-diagram__piece_glyph_b-rook { background-image: url("/design-import/assets/pieces/b-rook.svg"); }
-  & .rich-chess-diagram__piece_glyph_b-queen { background-image: url("/design-import/assets/pieces/b-queen.svg"); }
-  & .rich-chess-diagram__piece_glyph_b-king { background-image: url("/design-import/assets/pieces/b-king.svg"); }
+  & .rich-chess-diagram__piece_glyph_w-pawn { background-image: url("/pieces/w-pawn.svg"); }
+  & .rich-chess-diagram__piece_glyph_w-knight { background-image: url("/pieces/w-knight.svg"); }
+  & .rich-chess-diagram__piece_glyph_w-bishop { background-image: url("/pieces/w-bishop.svg"); }
+  & .rich-chess-diagram__piece_glyph_w-rook { background-image: url("/pieces/w-rook.svg"); }
+  & .rich-chess-diagram__piece_glyph_w-queen { background-image: url("/pieces/w-queen.svg"); }
+  & .rich-chess-diagram__piece_glyph_w-king { background-image: url("/pieces/w-king.svg"); }
+  & .rich-chess-diagram__piece_glyph_b-pawn { background-image: url("/pieces/b-pawn.svg"); }
+  & .rich-chess-diagram__piece_glyph_b-knight { background-image: url("/pieces/b-knight.svg"); }
+  & .rich-chess-diagram__piece_glyph_b-bishop { background-image: url("/pieces/b-bishop.svg"); }
+  & .rich-chess-diagram__piece_glyph_b-rook { background-image: url("/pieces/b-rook.svg"); }
+  & .rich-chess-diagram__piece_glyph_b-queen { background-image: url("/pieces/b-queen.svg"); }
+  & .rich-chess-diagram__piece_glyph_b-king { background-image: url("/pieces/b-king.svg"); }
 
   & .rich-chess-diagram__caption {
     margin-top: 10px;

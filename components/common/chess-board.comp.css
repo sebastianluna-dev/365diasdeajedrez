@@ -76,14 +76,14 @@
     border-color: var(--color-primary);
   }
 
-  & .chess-board__promotion-piece_glyph_w-queen { background-image: url("/design-import/assets/pieces/w-queen.svg"); }
-  & .chess-board__promotion-piece_glyph_w-rook { background-image: url("/design-import/assets/pieces/w-rook.svg"); }
-  & .chess-board__promotion-piece_glyph_w-bishop { background-image: url("/design-import/assets/pieces/w-bishop.svg"); }
-  & .chess-board__promotion-piece_glyph_w-knight { background-image: url("/design-import/assets/pieces/w-knight.svg"); }
-  & .chess-board__promotion-piece_glyph_b-queen { background-image: url("/design-import/assets/pieces/b-queen.svg"); }
-  & .chess-board__promotion-piece_glyph_b-rook { background-image: url("/design-import/assets/pieces/b-rook.svg"); }
-  & .chess-board__promotion-piece_glyph_b-bishop { background-image: url("/design-import/assets/pieces/b-bishop.svg"); }
-  & .chess-board__promotion-piece_glyph_b-knight { background-image: url("/design-import/assets/pieces/b-knight.svg"); }
+  & .chess-board__promotion-piece_glyph_w-queen { background-image: url("/pieces/w-queen.svg"); }
+  & .chess-board__promotion-piece_glyph_w-rook { background-image: url("/pieces/w-rook.svg"); }
+  & .chess-board__promotion-piece_glyph_w-bishop { background-image: url("/pieces/w-bishop.svg"); }
+  & .chess-board__promotion-piece_glyph_w-knight { background-image: url("/pieces/w-knight.svg"); }
+  & .chess-board__promotion-piece_glyph_b-queen { background-image: url("/pieces/b-queen.svg"); }
+  & .chess-board__promotion-piece_glyph_b-rook { background-image: url("/pieces/b-rook.svg"); }
+  & .chess-board__promotion-piece_glyph_b-bishop { background-image: url("/pieces/b-bishop.svg"); }
+  & .chess-board__promotion-piece_glyph_b-knight { background-image: url("/pieces/b-knight.svg"); }
 
   & .chess-board__promotion-cancel {
     padding: 8px 14px;
@@ -268,24 +268,24 @@
   }
 
   & .chess-board__notation-glyph.chess-board__notation-glyph_kind_knight {
-    mask-image: url("/design-import/assets/pieces/b-knight.svg");
-    -webkit-mask-image: url("/design-import/assets/pieces/b-knight.svg");
+    mask-image: url("/pieces/b-knight.svg");
+    -webkit-mask-image: url("/pieces/b-knight.svg");
   }
   & .chess-board__notation-glyph.chess-board__notation-glyph_kind_bishop {
-    mask-image: url("/design-import/assets/pieces/b-bishop.svg");
-    -webkit-mask-image: url("/design-import/assets/pieces/b-bishop.svg");
+    mask-image: url("/pieces/b-bishop.svg");
+    -webkit-mask-image: url("/pieces/b-bishop.svg");
   }
   & .chess-board__notation-glyph.chess-board__notation-glyph_kind_rook {
-    mask-image: url("/design-import/assets/pieces/b-rook.svg");
-    -webkit-mask-image: url("/design-import/assets/pieces/b-rook.svg");
+    mask-image: url("/pieces/b-rook.svg");
+    -webkit-mask-image: url("/pieces/b-rook.svg");
   }
   & .chess-board__notation-glyph.chess-board__notation-glyph_kind_queen {
-    mask-image: url("/design-import/assets/pieces/b-queen.svg");
-    -webkit-mask-image: url("/design-import/assets/pieces/b-queen.svg");
+    mask-image: url("/pieces/b-queen.svg");
+    -webkit-mask-image: url("/pieces/b-queen.svg");
   }
   & .chess-board__notation-glyph.chess-board__notation-glyph_kind_king {
-    mask-image: url("/design-import/assets/pieces/b-king.svg");
-    -webkit-mask-image: url("/design-import/assets/pieces/b-king.svg");
+    mask-image: url("/pieces/b-king.svg");
+    -webkit-mask-image: url("/pieces/b-king.svg");
   }
 
   /* --- toolbar --- */

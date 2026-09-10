@@ -14,29 +14,31 @@ import localFont from "next/font/local";
  * pide en vez de desde el <head> (unos cientos de ms la primera vez; `swap`
  * pinta el texto mientras tanto).
  *
- * Los .otf originales de Apple viven en public/design-import/fonts y pesan
- * 2,2 MB cada uno: no se sirven. Estos son subconjuntos woff2 recortados a
- * latín, puntuación, flechas y el visto (~40 KB por peso). Para regenerarlos:
+ * Los .otf originales de Apple (2,2 MB cada uno) no están en el repo: se
+ * descargan de developer.apple.com/fonts o se recuperan del historial (commit
+ * 26d6ee1, public/design-import/fonts). Estos son subconjuntos woff2
+ * recortados a latín, puntuación, flechas y el visto (~40 KB por peso). Para
+ * regenerarlos:
  *
  *   pyftsubset SF-Pro-Display-Regular.otf \
- *     --output-file=assets/fonts/sf-pro-display-regular.woff2 --flavor=woff2 \
+ *     --output-file=public/fonts/sf-pro-display-regular.woff2 --flavor=woff2 \
  *     --layout-features='*' \
  *     --unicodes='U+0000-00FF,U+0100-017F,U+2000-206F,U+20AC,U+2190-2193,U+2713,U+FEFF'
  */
 export const sfProDisplay = localFont({
   src: [
     {
-      path: "../../public/design-import/assets/fonts/sf-pro-display-regular.woff2",
+      path: "../../public/fonts/sf-pro-display-regular.woff2",
       weight: "400",
       style: "normal",
     },
     {
-      path: "../../public/design-import/assets/fonts/sf-pro-display-medium.woff2",
+      path: "../../public/fonts/sf-pro-display-medium.woff2",
       weight: "500",
       style: "normal",
     },
     {
-      path: "../../public/design-import/assets/fonts/sf-pro-display-bold.woff2",
+      path: "../../public/fonts/sf-pro-display-bold.woff2",
       weight: "700",
       style: "normal",
     },

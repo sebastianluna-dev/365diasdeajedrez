@@ -45,6 +45,7 @@ npm run dev                  # http://localhost:3000
 | `npm run user:create -- <correo> "<Nombre>"` | Da de alta un alumno (pide la contraseña sin eco). |
 | `npm run user:password -- <correo>` | Cambia su contraseña y cierra sus sesiones. |
 | `npm run user:list` | Lista las cuentas, si tienen contraseña y sus sesiones abiertas. |
+| `npm run pieces:sync` | Copia las piezas del tablero (chessground) a `public/pieces`; ejecutar al actualizar chessground. |
 
 ## Acceso a la plataforma
 

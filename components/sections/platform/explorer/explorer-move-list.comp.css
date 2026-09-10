@@ -88,23 +88,23 @@
   }
 
   & .explorer-move-list__glyph_kind_knight {
-    mask-image: url("/design-import/assets/pieces/b-knight.svg");
-    -webkit-mask-image: url("/design-import/assets/pieces/b-knight.svg");
+    mask-image: url("/pieces/b-knight.svg");
+    -webkit-mask-image: url("/pieces/b-knight.svg");
   }
   & .explorer-move-list__glyph_kind_bishop {
-    mask-image: url("/design-import/assets/pieces/b-bishop.svg");
-    -webkit-mask-image: url("/design-import/assets/pieces/b-bishop.svg");
+    mask-image: url("/pieces/b-bishop.svg");
+    -webkit-mask-image: url("/pieces/b-bishop.svg");
   }
   & .explorer-move-list__glyph_kind_rook {
-    mask-image: url("/design-import/assets/pieces/b-rook.svg");
-    -webkit-mask-image: url("/design-import/assets/pieces/b-rook.svg");
+    mask-image: url("/pieces/b-rook.svg");
+    -webkit-mask-image: url("/pieces/b-rook.svg");
   }
   & .explorer-move-list__glyph_kind_queen {
-    mask-image: url("/design-import/assets/pieces/b-queen.svg");
-    -webkit-mask-image: url("/design-import/assets/pieces/b-queen.svg");
+    mask-image: url("/pieces/b-queen.svg");
+    -webkit-mask-image: url("/pieces/b-queen.svg");
   }
   & .explorer-move-list__glyph_kind_king {
-    mask-image: url("/design-import/assets/pieces/b-king.svg");
-    -webkit-mask-image: url("/design-import/assets/pieces/b-king.svg");
+    mask-image: url("/pieces/b-king.svg");
+    -webkit-mask-image: url("/pieces/b-king.svg");
   }
 }

@@ -76,32 +76,33 @@ function readBoardPieceUrls(): Map<string, string> {
 }
 
 /**
- * Piezas de respaldo: las del selector de coronación, servidas por la app.
+ * Piezas de respaldo: las del selector de coronación, servidas por la app. Son
+ * el mismo juego cburnett del tablero, copiado por scripts/sync-pieces.ts.
  *
  * Sólo se usan si la hoja de chessground no está cargada —exportar desde una
  * pantalla sin tablero—, para que la función no dependa de quién la llame.
  */
 const FALLBACK_PIECE_URL: Record<string, string> = {
-  "white-pawn": "/design-import/assets/pieces/w-pawn.svg",
-  "white-knight": "/design-import/assets/pieces/w-knight.svg",
-  "white-bishop": "/design-import/assets/pieces/w-bishop.svg",
-  "white-rook": "/design-import/assets/pieces/w-rook.svg",
-  "white-queen": "/design-import/assets/pieces/w-queen.svg",
-  "white-king": "/design-import/assets/pieces/w-king.svg",
-  "black-pawn": "/design-import/assets/pieces/b-pawn.svg",
-  "black-knight": "/design-import/assets/pieces/b-knight.svg",
-  "black-bishop": "/design-import/assets/pieces/b-bishop.svg",
-  "black-rook": "/design-import/assets/pieces/b-rook.svg",
-  "black-queen": "/design-import/assets/pieces/b-queen.svg",
-  "black-king": "/design-import/assets/pieces/b-king.svg",
+  "white-pawn": "/pieces/w-pawn.svg",
+  "white-knight": "/pieces/w-knight.svg",
+  "white-bishop": "/pieces/w-bishop.svg",
+  "white-rook": "/pieces/w-rook.svg",
+  "white-queen": "/pieces/w-queen.svg",
+  "white-king": "/pieces/w-king.svg",
+  "black-pawn": "/pieces/b-pawn.svg",
+  "black-knight": "/pieces/b-knight.svg",
+  "black-bishop": "/pieces/b-bishop.svg",
+  "black-rook": "/pieces/b-rook.svg",
+  "black-queen": "/pieces/b-queen.svg",
+  "black-king": "/pieces/b-king.svg",
 };
 
 /**
  * A qué tamaño se rasteriza cada pieza antes de encogerla a su casilla.
  *
- * Se da explícito porque estos SVG traen `viewBox` pero no `width`/`height`, y
- * una imagen SVG sin medida propia es justo el caso que algunos navegadores
- * dibujan en blanco. Con la medida puesta no hay nada que deducir.
+ * Se da explícito para no depender de lo que declare cada SVG: una imagen SVG
+ * sin medida propia es justo el caso que algunos navegadores dibujan en
+ * blanco. Con la medida puesta no hay nada que deducir.
  */
 const PIECE_RASTER = 256;
 
