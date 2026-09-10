@@ -118,8 +118,13 @@
 
   /* --- chessground board surface --- */
   & cg-board {
-    background-color: #eeeed2;
-    background-image: conic-gradient(#769656 25%, #eeeed2 0 50%, #769656 0 75%, #eeeed2 0);
+    background-color: var(--board-light);
+    background-image: conic-gradient(
+      var(--board-dark) 25%,
+      var(--board-light) 0 50%,
+      var(--board-dark) 0 75%,
+      var(--board-light) 0
+    );
     background-size: 25% 25%;
   }
 
@@ -226,7 +231,6 @@
     cursor: pointer;
     border-radius: 8px;
     font-family: inherit;
-    outline: none;
   }
 
   & .chess-board__notation-cell.chess-board__notation-cell_active {

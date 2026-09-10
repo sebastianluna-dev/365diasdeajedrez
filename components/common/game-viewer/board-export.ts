@@ -3,6 +3,7 @@
 import type { Key } from "@lichess-org/chessground/types";
 import { parseFen } from "chessops/fen";
 import { GIFEncoder, applyPalette, quantize } from "gifenc";
+import { BOARD_DARK_SQUARE, BOARD_LIGHT_SQUARE } from "@/constants/chess-board-colors.const";
 import { replayGame } from "@/lib/chess/replay";
 
 // Sacar la partida del navegador: la posición como imagen y la partida entera
@@ -15,9 +16,9 @@ import { replayGame } from "@/lib/chess/replay";
 // idéntico en cualquier navegador, con el tamaño que se pida y sin las marcas
 // de la interfaz (jugada seleccionada, casillas de destino, flechas).
 
-/** Los colores del tablero, los mismos de `chess-board.comp.css`. */
-const LIGHT_SQUARE = "#eeeed2";
-const DARK_SQUARE = "#769656";
+/** Los colores del tablero, compartidos con los tokens CSS (ver la constante). */
+const LIGHT_SQUARE = BOARD_LIGHT_SQUARE;
+const DARK_SQUARE = BOARD_DARK_SQUARE;
 /** El amarillo de la última jugada, ya mezclado sobre cada color de casilla. */
 const LAST_MOVE_LIGHT = "#f6f682";
 const LAST_MOVE_DARK = "#bcc46a";

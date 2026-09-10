@@ -4,7 +4,7 @@ import { Header } from "@/components/sections/common/header/header.section";
 import { ArticleContent } from "@/components/sections/blog-article/article-content/article-content.section";
 import { RelatedArticles } from "@/components/sections/blog-article/related-articles/related-articles.section";
 import { Footer } from "@/components/sections/common/footer/footer.section";
-import { getArticleBySlug, getArticles } from "@/services/articles/articles.service";
+import { getArticleBySlug, getArticleSummaries } from "@/services/articles/articles.service";
 import "../blog.css";
 import "./article-page.css";
 
@@ -13,7 +13,7 @@ interface ArticlePageProps {
 }
 
 export async function generateStaticParams() {
-  const articles = await getArticles();
+  const articles = await getArticleSummaries();
   return articles.map((article) => ({ slug: article.slug }));
 }
 
@@ -21,10 +21,16 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
   if (!article) return {};
+  const title = article.metaTitle ?? article.title;
+  const description = article.metaDescription ?? article.excerpt;
   return {
-    title: `${article.metaTitle ?? article.title} | 365 Días de Ajedrez`,
-    description: article.metaDescription ?? article.excerpt,
+    title: `${title} | 365 Días de Ajedrez`,
+    description,
+    alternates: { canonical: article.href },
     openGraph: {
+      type: "article",
+      title,
+      description,
       images: article.ogImage ? [article.ogImage.src] : [article.image.src],
     },
   };
@@ -32,7 +38,7 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 
 export default async function ArticlePage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const [article, articles] = await Promise.all([getArticleBySlug(slug), getArticles()]);
+  const [article, articles] = await Promise.all([getArticleBySlug(slug), getArticleSummaries()]);
   if (!article) notFound();
 
   const relatedArticles = articles.filter((item) => item.slug !== article.slug).slice(0, 3);
@@ -43,7 +49,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       <div className="article-page__glow article-page__glow_position_top-left" />
 
       <Header theme="light" />
-      <main>
+      <main id="contenido">
         <ArticleContent article={article} />
         <RelatedArticles articles={relatedArticles} />
       </main>

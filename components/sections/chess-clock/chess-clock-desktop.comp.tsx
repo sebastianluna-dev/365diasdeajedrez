@@ -4,8 +4,13 @@ import { useChessClock } from "@/hooks/use-chess-clock.hook";
 import { ClockDial } from "./clock-dial.comp";
 import "./chess-clock-desktop.comp.css";
 
-export function ChessClockDesktop() {
-  const { white, black, controls, playLabel, statusText, toggle, reset } = useChessClock();
+interface ChessClockDesktopProps {
+  /** Ver `ChessClock`: sólo corre la variante que se ve. */
+  enabled?: boolean;
+}
+
+export function ChessClockDesktop({ enabled = true }: ChessClockDesktopProps) {
+  const { white, black, controls, playLabel, statusText, toggle, reset } = useChessClock({ enabled });
 
   return (
     <div className="chess-clock">

@@ -81,7 +81,9 @@ export async function PlatformShell({ children }: PlatformShellProps) {
         </div>
       </header>
 
-      <main className="platform-shell__content">{children}</main>
+      <main id="contenido" className="platform-shell__content">
+        {children}
+      </main>
     </div>
   );
 }

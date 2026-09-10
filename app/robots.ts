@@ -1,8 +1,6 @@
 import type { MetadataRoute } from "next";
 import { LOGIN_PATH, PROTECTED_PATH_PREFIXES, SESSION_ENTRY_PATH } from "@/constants/platform/auth.const";
-
-// URL base del sitio; en local puede sobreescribirse con NEXT_PUBLIC_SITE_URL.
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://365diasdeajedrez.com";
+import { SITE_URL } from "@/lib/site-url";
 
 // Zonas privadas: la plataforma autenticada sale de la misma constante que usa
 // el proxy —así una ruta nueva no puede quedar rastreable por olvido—, más su
@@ -16,6 +14,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: DISALLOWED_PATHS,
     },
-    sitemap: `${BASE_URL}/sitemap.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }

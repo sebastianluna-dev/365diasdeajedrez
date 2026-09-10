@@ -4,226 +4,226 @@
   overflow-x: clip;
   background: var(--color-dark);
   color: var(--foreground);
-}
 
-.mentor-profile {
-  & .mentor-profile__layout {
-    display: grid;
-    grid-template-columns: 340px 1fr;
-    gap: 64px;
-    align-items: start;
+  & .mentor-profile {
+    & .mentor-profile__layout {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+
+    & .mentor-profile__sidebar {
+      position: sticky;
+      top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    & .mentor-profile__photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    & .mentor-profile__photo img {
+      object-fit: cover;
+    }
+
+    & .mentor-profile__photo-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 2;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--foreground);
+    }
+
+    & .mentor-profile__photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(22, 17, 13, 0.55) 0%, rgba(22, 17, 13, 0) 30%);
+    }
+
+    & .mentor-profile__eyebrow {
+      font-size: 14px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #b4a99d;
+    }
+
+    & .mentor-profile__name {
+      font-family: var(--font-gramatika), sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1.1;
+      margin: 0;
+    }
+
+    & .mentor-profile__badge {
+      display: inline-flex;
+      align-items: center;
+      align-self: flex-start;
+      font-size: 14px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      border: 1px solid rgba(255, 145, 67, 0.34);
+      background: rgba(255, 145, 67, 0.08);
+      border-radius: 999px;
+      padding: 6px 12px;
+    }
+
+    & .mentor-profile__summary {
+      font-size: 15.5px;
+      line-height: 1.6;
+      color: #b4a99d;
+      margin: 4px 0 0;
+    }
+
+    & .mentor-profile__divider {
+      height: 1px;
+      background: rgba(242, 237, 231, 0.14);
+      margin: 4px 0;
+    }
+
+    & .mentor-profile__elo-label {
+      font-size: 14px;
+      color: #8a8175;
+    }
+
+    & .mentor-profile__elo-table {
+      margin-top: -2px;
+    }
+
+    & .mentor-profile__content {
+      display: flex;
+      flex-direction: column;
+      gap: 56px;
+    }
+
+    & .mentor-profile__block-title {
+      font-family: var(--font-gramatika), sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 24px;
+    }
+
+    & .mentor-profile__text {
+      font-size: 16px;
+      line-height: 1.65;
+      color: #b4a99d;
+      margin: 0 0 14px;
+    }
+
+    & .mentor-profile__text:last-of-type {
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 1023px) {
+      & .mentor-profile__layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      & .mentor-profile__sidebar {
+        position: static;
+      }
+
+      & .mentor-profile__photo {
+        max-width: 340px;
+      }
+    }
   }
 
-  & .mentor-profile__sidebar {
-    position: sticky;
-    top: 24px;
+  & .mentor-achievements__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 24px;
   }
 
-  & .mentor-profile__photo {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    border-radius: 14px;
-    overflow: hidden;
-    margin-bottom: 10px;
+  & .mentor-achievements__item {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(242, 237, 231, 0.1);
   }
 
-  & .mentor-profile__photo img {
-    object-fit: cover;
+  & .mentor-achievements__item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
   }
 
-  & .mentor-profile__photo-badge {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    z-index: 2;
-    font-size: 14px;
+  & .mentor-achievements__year {
+    flex: none;
+    width: 64px;
+    font-family: var(--font-gramatika), sans-serif;
+    font-size: 20px;
     font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+
+  & .mentor-achievements__title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 6px;
     color: var(--foreground);
   }
 
-  & .mentor-profile__photo-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(22, 17, 13, 0.55) 0%, rgba(22, 17, 13, 0) 30%);
-  }
-
-  & .mentor-profile__eyebrow {
-    font-size: 14px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+  & .mentor-achievements__text {
+    font-size: 15px;
+    line-height: 1.55;
     color: #b4a99d;
-  }
-
-  & .mentor-profile__name {
-    font-family: var(--font-gramatika), sans-serif;
-    font-size: 30px;
-    font-weight: 700;
-    line-height: 1.1;
     margin: 0;
   }
 
-  & .mentor-profile__badge {
-    display: inline-flex;
-    align-items: center;
-    align-self: flex-start;
+  & .mentor-testimonials__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  & .mentor-testimonials__card {
+    background: rgba(242, 237, 231, 0.04);
+    border: 1px solid rgba(242, 237, 231, 0.1);
+    border-radius: 14px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  & .mentor-testimonials__text {
+    font-size: 15px;
+    line-height: 1.55;
+    color: #d8d0c6;
+    margin: 0;
+  }
+
+  & .mentor-testimonials__name {
+    font-weight: 700;
     font-size: 14px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--color-primary);
-    border: 1px solid rgba(255, 145, 67, 0.34);
-    background: rgba(255, 145, 67, 0.08);
-    border-radius: 999px;
-    padding: 6px 12px;
   }
 
-  & .mentor-profile__summary {
-    font-size: 15.5px;
-    line-height: 1.6;
-    color: #b4a99d;
-    margin: 4px 0 0;
-  }
-
-  & .mentor-profile__divider {
-    height: 1px;
-    background: rgba(242, 237, 231, 0.14);
-    margin: 4px 0;
-  }
-
-  & .mentor-profile__elo-label {
+  & .mentor-testimonials__detail {
     font-size: 14px;
     color: #8a8175;
   }
 
-  & .mentor-profile__elo-table {
-    margin-top: -2px;
-  }
-
-  & .mentor-profile__content {
-    display: flex;
-    flex-direction: column;
-    gap: 56px;
-  }
-
-  & .mentor-profile__block-title {
-    font-family: var(--font-gramatika), sans-serif;
-    font-size: 28px;
-    font-weight: 700;
-    margin: 0 0 24px;
-  }
-
-  & .mentor-profile__text {
-    font-size: 16px;
-    line-height: 1.65;
-    color: #b4a99d;
-    margin: 0 0 14px;
-  }
-
-  & .mentor-profile__text:last-of-type {
-    margin-bottom: 24px;
-  }
-
   @media (max-width: 1023px) {
-    & .mentor-profile__layout {
+    & .mentor-testimonials__grid {
       grid-template-columns: 1fr;
-      gap: 40px;
     }
-
-    & .mentor-profile__sidebar {
-      position: static;
-    }
-
-    & .mentor-profile__photo {
-      max-width: 340px;
-    }
-  }
-}
-
-.mentor-achievements__list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.mentor-achievements__item {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-  padding-bottom: 24px;
-  border-bottom: 1px solid rgba(242, 237, 231, 0.1);
-}
-
-.mentor-achievements__item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.mentor-achievements__year {
-  flex: none;
-  width: 64px;
-  font-family: var(--font-gramatika), sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-primary);
-}
-
-.mentor-achievements__title {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0 0 6px;
-  color: var(--foreground);
-}
-
-.mentor-achievements__text {
-  font-size: 15px;
-  line-height: 1.55;
-  color: #b4a99d;
-  margin: 0;
-}
-
-.mentor-testimonials__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
-}
-
-.mentor-testimonials__card {
-  background: rgba(242, 237, 231, 0.04);
-  border: 1px solid rgba(242, 237, 231, 0.1);
-  border-radius: 14px;
-  padding: 22px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.mentor-testimonials__text {
-  font-size: 15px;
-  line-height: 1.55;
-  color: #d8d0c6;
-  margin: 0;
-}
-
-.mentor-testimonials__name {
-  font-weight: 700;
-  font-size: 14px;
-}
-
-.mentor-testimonials__detail {
-  font-size: 14px;
-  color: #8a8175;
-}
-
-@media (max-width: 1023px) {
-  .mentor-testimonials__grid {
-    grid-template-columns: 1fr;
   }
 }

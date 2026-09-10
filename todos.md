@@ -99,3 +99,50 @@ y arquitectura.
 
 ### T10 — `loading.tsx` por sección · [UX] ✅
 Uno en cada área de `app/(platform)/` reutilizando `LoadingPanel`.
+
+---
+
+## Tareas mecánicas pendientes (2026-09-09)
+
+Salen de la auditoría anotada en `MEJORAS.md` (puntos 35–70). Son cambios repetitivos y acotados;
+las reglas del proyecto de arriba siguen valiendo. Al terminar cada una, marcar el punto de
+`MEJORAS.md` como resuelto y correr `npm run typecheck`, `npm run lint` y `npm test`.
+
+### T11 — Formatear el repositorio con Prettier · [DX] (MEJORAS #39)
+`npm run format` cambia 135 archivos. Hacerlo en un commit propio, sin ninguna otra modificación,
+y después añadir `npm run format:check` como paso de `.github/workflows/ci.yml`.
+
+### T12 — Botón de envío con estado en todos los formularios · [UX] (MEJORAS #53)
+Crear `components/common/submit-button.comp.tsx` (`"use client"`, `useFormStatus`,
+`disabled={pending}` y rótulo alterno, p. ej. «Guardando…») a partir de
+`components/sections/auth/login/login-submit.comp.tsx`, y usarlo en el `<button type="submit">` de
+cada formulario de escritura de `components/sections/platform/**` (unos 40). Las secciones siguen
+siendo Server Components; sólo cambia el botón.
+
+### T13 — `GameTable` sobre `PlatformTable` · [Frontend / A11y] (MEJORAS #58)
+`components/sections/platform/studies/study-detail/game-table.comp.tsx` pinta la tabla con `div`s;
+montar cabecera y filas con `PlatformTable`/`PlatformTableRow`/`PlatformTableCell`
+(`components/common/platform-table.comp.tsx`) conservando el `<button>` tirador de reordenación en
+la primera celda y su manejo de teclado, y borrar la rejilla duplicada de `game-table.comp.css`.
+Referencia de los mismos datos con la tabla buena: `teacher/students/student-study-view.section.tsx`.
+
+### T14 — Hex sueltos a tokens · [CSS] (MEJORAS #59)
+Sustituir en `components/**` y `app/**`: `#b4a99d` → `var(--color-muted-on-dark)` (27 usos),
+`#5c5348` → `var(--color-muted-on-light)` (19), `#b8611f` → `var(--color-primary-deep)` (8) y, en la
+plataforma, `#8a8175` como texto → `var(--platform-text-muted)`. Sólo coincidencias exactas; no tocar
+`rgba(...)`.
+
+### T15 — Exports sin uso · [Calidad] (MEJORAS #45)
+Borrar `getStudentStudies` (`teacher-students.service.ts`), `reindexGame`
+(`game-positions.service.ts`), `formatOptionalDate` (`teacher-students.mapper.ts`), `isNumericId` y
+`NUMERIC_ID_DIGITS` (`lib/numeric-id.ts`, junto con su test), `CLOCK_TIME_CONTROLS` como export
+(`use-chess-clock.hook.ts`), `STUDENT_KINDS`/`TEACHER_KINDS` como export (`study-rules.ts`),
+`STAFF_ERROR_PARAM`, `STAFF_ACCOUNT_MESSAGES` (`staff-messages.const.ts`) y `TEACHER_ERROR_PARAM`
+(`teacher-messages.const.ts`); quitar el `export` de `getStaffContext` (`roles.ts`). Comprobar cada
+uno con `grep -rw` antes de borrar.
+
+### T16 — `noUncheckedIndexedAccess` · [DX] (MEJORAS #62)
+Activarlo en `tsconfig.json` y resolver los 172 errores (casi todos `array[i]` posiblemente
+`undefined`): `trainer-session.comp.tsx`, `move-tree.comp.tsx`, `lib/chess/notation.ts`,
+`services/shared/reorder.ts` y varias suites de `lib/chess`. Sin cambiar comportamiento: donde el
+índice es seguro por construcción, una comprobación con `throw` o un `?? valorPorDefecto`.

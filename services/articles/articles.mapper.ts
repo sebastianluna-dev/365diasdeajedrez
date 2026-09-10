@@ -1,7 +1,7 @@
 import type { Article as ArticleDoc } from "@/payload-types";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { mapContentImage } from "@/services/shared/map-content-image";
-import type { Article, ArticleAuthor } from "./articles.types";
+import type { Article, ArticleAuthor, ArticleSummary } from "./articles.types";
 
 function mapAuthor(author: ArticleDoc["author"]): ArticleAuthor | undefined {
   if (!author || typeof author === "number") return undefined;
@@ -17,7 +17,12 @@ function mapCategory(categories: ArticleDoc["categories"]): string | undefined {
   return first.name;
 }
 
-export function mapArticle(article: ArticleDoc): Article {
+/**
+ * Todo menos el cuerpo. Es lo que pinta el listado del blog, así que se mapea
+ * a partir de un documento que puede venir SIN `content` (ver
+ * `getArticleSummaries`, que lo excluye en la consulta).
+ */
+export function mapArticleSummary(article: Omit<ArticleDoc, "content">): ArticleSummary {
   const publishedDate = new Date(article.publishedAt ?? article.createdAt);
   const readTime = article.readTimeMinutes ? `${article.readTimeMinutes} min de lectura` : undefined;
   const meta = article.readTimeMinutes
@@ -31,7 +36,6 @@ export function mapArticle(article: ArticleDoc): Article {
     excerpt: article.excerpt,
     category: mapCategory(article.categories),
     image: mapContentImage(article.featuredImage),
-    content: article.content,
     meta,
     readTime,
     author: mapAuthor(article.author),
@@ -39,4 +43,8 @@ export function mapArticle(article: ArticleDoc): Article {
     metaDescription: article.seo?.metaDescription ?? undefined,
     ogImage: article.seo?.ogImage ? mapContentImage(article.seo.ogImage) : undefined,
   };
+}
+
+export function mapArticle(article: ArticleDoc): Article {
+  return { ...mapArticleSummary(article), content: article.content };
 }

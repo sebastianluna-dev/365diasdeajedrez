@@ -32,20 +32,28 @@ export function ExerciseMovePicker({ pgn, onPick }: ExerciseMovePickerProps) {
 
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
 
+  // Cerrado (o sin PGN legible) el bloque es el mismo, sin caja: así el botón
+  // y el aviso cuelgan de la raíz y no quedan como nodos sueltos.
   if (!isOpen) {
     return (
-      <button
-        type="button"
-        className="platform-button platform-button_variant_secondary exercise-move-picker__open"
-        onClick={() => setIsOpen(true)}
-      >
-        Elegir las jugadas sobre el tablero
-      </button>
+      <div className="exercise-move-picker exercise-move-picker_state_closed">
+        <button
+          type="button"
+          className="platform-button platform-button_variant_secondary exercise-move-picker__open"
+          onClick={() => setIsOpen(true)}
+        >
+          Elegir las jugadas sobre el tablero
+        </button>
+      </div>
     );
   }
 
   if (!tree) {
-    return <p className="exercise-move-picker__status">No se pudo leer el PGN de la lección.</p>;
+    return (
+      <div className="exercise-move-picker exercise-move-picker_state_closed">
+        <p className="exercise-move-picker__status">No se pudo leer el PGN de la lección.</p>
+      </div>
+    );
   }
 
   const markStart = () => {

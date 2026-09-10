@@ -1,10 +1,10 @@
 import Link from "next/link";
-import type { Article } from "@/services/articles/articles.types";
+import type { ArticleSummary } from "@/services/articles/articles.types";
 import { RelatedArticleCard } from "./related-article-card.comp";
 import "./related-articles.section.css";
 
 interface RelatedArticlesProps {
-  articles: Article[];
+  articles: ArticleSummary[];
 }
 
 export function RelatedArticles({ articles }: RelatedArticlesProps) {

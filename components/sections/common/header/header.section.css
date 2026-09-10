@@ -110,7 +110,8 @@
   }
 
   & .site-header__dropdown:hover .site-header__dropdown-menu,
-  & .site-header__dropdown:focus-within .site-header__dropdown-menu {
+  & .site-header__dropdown:focus-within .site-header__dropdown-menu,
+  & .site-header__dropdown.site-header__dropdown_open .site-header__dropdown-menu {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
@@ -199,15 +200,25 @@
       opacity: 0;
       transform: translateY(-16px);
       pointer-events: none;
+      /* `visibility` es lo que lo saca del orden de tabulación mientras está
+         cerrado; con opacidad sola el foco se perdía en enlaces invisibles.
+         Se retrasa al cerrar para que el fundido termine antes de ocultarlo. */
+      visibility: hidden;
       transition:
         opacity 0.2s ease,
-        transform 0.2s ease;
+        transform 0.2s ease,
+        visibility 0s linear 0.2s;
     }
 
     & .site-header-mobile.site-header-mobile_open {
       opacity: 1;
       transform: translateY(0);
       pointer-events: auto;
+      visibility: visible;
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        visibility 0s;
     }
 
     & .site-header-mobile__links {

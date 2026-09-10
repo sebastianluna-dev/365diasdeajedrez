@@ -13,4 +13,6 @@ export const CACHE_TAGS = {
   header: "home-header",
   /** Ajustes del sitio (WhatsApp), en el footer y el CTA. */
   siteSettings: "site-settings",
+  /** La lista de artículos publicados (blog, relacionados y sitemap). */
+  articles: "articles",
 } as const;

@@ -6,6 +6,15 @@ export interface ArticleAuthor {
   title?: string;
 }
 
+/** Un artículo sin su cuerpo: lo que necesitan las tarjetas del listado, los relacionados y el sitemap. */
+export type ArticleSummary = Omit<Article, "content">;
+
+/** Lo mínimo para enlazar un artículo (sitemap). */
+export interface ArticleLink {
+  slug: string;
+  updatedAt: string;
+}
+
 export interface Article {
   slug: string;
   href: string;

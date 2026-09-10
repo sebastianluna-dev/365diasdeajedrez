@@ -10,13 +10,14 @@ export const metadata: Metadata = {
   title: "Nosotros | 365 Días de Ajedrez",
   description:
     "365DiasDeAjedrez nació de años de competencia y de enseñanza. Conoce nuestra historia y los valores que guían cada clase.",
+  alternates: { canonical: "/nosotros" },
 };
 
 export default function NosotrosPage() {
   return (
     <div className="nosotros-page">
       <Header />
-      <main>
+      <main id="contenido">
         <NosotrosHeroSection />
         <ValoresSection />
         <NosotrosCtaSection />

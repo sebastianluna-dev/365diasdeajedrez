@@ -1,11 +1,11 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import type { Article } from "@/services/articles/articles.types";
+import type { ArticleSummary } from "@/services/articles/articles.types";
 import "./article-card.comp.css";
 
 interface ArticleCardProps {
-  article: Article;
+  article: ArticleSummary;
   id?: string;
   style?: CSSProperties;
 }

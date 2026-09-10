@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { getArticles } from "@/services/articles/articles.service";
+import { getArticleSummaries } from "@/services/articles/articles.service";
 import { BlogResourceCard } from "./blog-resource-card.comp";
 import "./resources.section.css";
 
 export async function ResourcesSection() {
-  const articles = await getArticles();
+  const articles = await getArticleSummaries();
   const featuredArticles = articles.slice(0, 3);
 
   return (

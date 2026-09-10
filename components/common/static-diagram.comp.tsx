@@ -5,19 +5,24 @@ interface StaticDiagramProps {
   fen: string;
   orientation?: "white" | "black";
   caption?: string;
+  /**
+   * Dónde se pinta: en la plataforma (por defecto, con sus tokens) o dentro
+   * de un artículo del blog, que tiene otro fondo y otra escala de texto.
+   */
+  context?: "platform" | "article";
 }
 
 /**
- * Diagrama estático de una posición (Server Component, sin chessground).
- * Mismo patrón que el bloque de diagrama del blog; para posiciones navegables
- * usar GameViewer.
+ * Diagrama estático de una posición (Server Component, sin chessground). Lo
+ * usan las clases y el bloque de diagrama del blog; para posiciones
+ * navegables usar GameViewer.
  */
-export function StaticDiagram({ fen, orientation = "white", caption }: StaticDiagramProps) {
+export function StaticDiagram({ fen, orientation = "white", caption, context = "platform" }: StaticDiagramProps) {
   const squares = parseFenPlacement(fen);
   const ordered = orientation === "black" ? [...squares].reverse() : squares;
 
   return (
-    <figure className="static-diagram">
+    <figure className={`static-diagram${context === "article" ? " static-diagram_context_article" : ""}`}>
       <div className="static-diagram__grid">
         {ordered.map((glyph, index) => {
           const file = index % 8;

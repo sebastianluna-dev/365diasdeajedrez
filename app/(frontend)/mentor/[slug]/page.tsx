@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Header } from "@/components/sections/common/header/header.section";
 import { Footer } from "@/components/sections/common/footer/footer.section";
 import { EloTable } from "@/components/common/elo-table.comp";
-import { ChessBoard } from "@/components/common/chess-board.comp";
+import { ChessBoardLazy } from "@/components/common/chess-board-lazy.comp";
 import { getMentorBySlug, getMentorsData } from "@/services/mentors/mentors.service";
 import "./mentor-page.css";
 
@@ -24,6 +24,7 @@ export async function generateMetadata({ params }: MentorPageProps): Promise<Met
   return {
     title: `${mentor.name} ${mentor.lastName} | 365 Días de Ajedrez`,
     description: mentor.shortDescription,
+    alternates: { canonical: `/mentor/${slug}` },
   };
 }
 
@@ -38,7 +39,7 @@ export default async function MentorPage({ params }: MentorPageProps) {
     <div className="mentor-page">
       <Header />
 
-      <main>
+      <main id="contenido">
         <section className="section section_theme_dark mentor-profile">
           <div className="section__inner mentor-profile__layout">
             <aside className="mentor-profile__sidebar">
@@ -105,7 +106,8 @@ export default async function MentorPage({ params }: MentorPageProps) {
                 <h2 className="mentor-profile__block-title">{mentor.featuredGame.gameTitle}</h2>
                 <p className="mentor-profile__text">{mentor.featuredGame.gameText}</p>
                 <p className="mentor-profile__text">{mentor.featuredGame.gameNote}</p>
-                <ChessBoard pgn={mentor.featuredGame.moves} flipBoard={mentor.featuredGame.flipBoard} />
+                {/* Al final de la ficha: se monta al acercarse, no en la carga. */}
+                <ChessBoardLazy pgn={mentor.featuredGame.moves} flipBoard={mentor.featuredGame.flipBoard} />
               </div>
             </div>
           </div>

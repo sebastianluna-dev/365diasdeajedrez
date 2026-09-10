@@ -17,6 +17,8 @@ const eslintConfig = defineConfig([
     "public/**",
     // Cliente de Prisma generado.
     "lib/platform-db/generated/**",
+    // Informe de cobertura de Vitest (`npm run test:coverage`).
+    "coverage/**",
   ]),
 ]);
 

@@ -10,9 +10,14 @@ import "./chess-clock-mobile.comp.css";
 
 type MobileStep = "select" | "play";
 
-export function ChessClockMobile() {
+interface ChessClockMobileProps {
+  /** Ver `ChessClock`: sólo corre la variante que se ve. */
+  enabled?: boolean;
+}
+
+export function ChessClockMobile({ enabled = true }: ChessClockMobileProps) {
   const [step, setStep] = useState<MobileStep>("select");
-  const { white, black, controls, toggle, reset } = useChessClock();
+  const { white, black, controls, toggle, reset } = useChessClock({ enabled });
 
   function handleStart() {
     setStep("play");

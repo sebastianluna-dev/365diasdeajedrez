@@ -35,6 +35,9 @@ export default function PlatformLayout({ children }: { children: ReactNode }) {
       className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} ${sfProDisplay.variable}`}
     >
       <body className="platform-theme">
+        <a className="skip-link" href="#contenido">
+          Saltar al contenido
+        </a>
         <PlatformShell>{children}</PlatformShell>
       </body>
     </html>

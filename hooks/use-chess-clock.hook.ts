@@ -47,7 +47,20 @@ export function handAngles(t: number) {
   };
 }
 
-export function useChessClock() {
+export interface UseChessClockOptions {
+  /**
+   * Con `false` el reloj no corre ni escucha el teclado. La página del reloj
+   * monta las dos variantes (escritorio y móvil) y las oculta por CSS, así que
+   * sin esto las dos contaban a la vez y las dos respondían a la barra
+   * espaciadora.
+   */
+  enabled?: boolean;
+}
+
+/** Elementos en los que la barra espaciadora ya tiene trabajo (activar el control). */
+const INTERACTIVE_TARGET = "button, a, input, select, textarea, [role='button']";
+
+export function useChessClock({ enabled = true }: UseChessClockOptions = {}) {
   const [state, setState] = useState<ClockState>({
     base: CLOCK_TIME_CONTROLS[0].base,
     inc: CLOCK_TIME_CONTROLS[0].inc,
@@ -67,6 +80,7 @@ export function useChessClock() {
   }, [state]);
 
   useEffect(() => {
+    if (!enabled) return;
     lastTick.current = Date.now();
     const timer = setInterval(() => {
       const now = Date.now();
@@ -86,7 +100,7 @@ export function useChessClock() {
       });
     }, 100);
     return () => clearInterval(timer);
-  }, []);
+  }, [enabled]);
 
   const press = useCallback((side: ClockSide) => {
     setState((s) => {
@@ -125,15 +139,18 @@ export function useChessClock() {
   }, []);
 
   useEffect(() => {
+    if (!enabled) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.code === "Space") {
-        e.preventDefault();
-        press(stateRef.current.active === "w" ? "w" : "b");
-      }
+      if (e.code !== "Space" || e.repeat) return;
+      // Con el foco en un botón o un enlace, la barra espaciadora es suya:
+      // interceptarla dejaba «Reiniciar» y «Configurar» sin teclado.
+      if (e.target instanceof Element && e.target.closest(INTERACTIVE_TARGET)) return;
+      e.preventDefault();
+      press(stateRef.current.active === "w" ? "w" : "b");
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [press]);
+  }, [press, enabled]);
 
   const whiteActive = state.active === "w" && state.running;
   const blackActive = state.active === "b" && state.running;

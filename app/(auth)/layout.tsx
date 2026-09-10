@@ -19,7 +19,12 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       lang="es"
       className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} ${sfProDisplay.variable}`}
     >
-      <body className="platform-theme">{children}</body>
+      <body className="platform-theme">
+        <a className="skip-link" href="#contenido">
+          Saltar al contenido
+        </a>
+        {children}
+      </body>
     </html>
   );
 }

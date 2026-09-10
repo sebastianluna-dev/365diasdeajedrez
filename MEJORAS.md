@@ -67,31 +67,26 @@ Mapa de rutas regenerado desde `app/` y `lib/platform-routes.ts` (incluidos `/en
 demo corregidas, boilerplate de `create-next-app` borrado, y la tabla de comandos completa
 (`positions:index`, `collections:by-chapter`, `typecheck`, `test:coverage`, `format`).
 
-### 41. `(frontend)` y `(auth)` no tienen `not-found.tsx` ni `error.tsx` — [UX / Frontend]
-Sólo `(platform)` los tiene. `blog/[slug]` y `mentor/[slug]` llaman a `notFound()`, así que un enlace
-viejo desde Google aterriza en el 404 por defecto de Next: en inglés, sin cabecera ni pie ni paleta.
-Tampoco hay `app/global-error.tsx`.
+### 41. ~~`(frontend)` y `(auth)` no tienen `not-found.tsx` ni `error.tsx`~~ — RESUELTO (2026-09-09)
+`app/(frontend)/not-found.tsx` (cabecera, pie y `SiteMessage`, la pantalla de aviso nueva en
+`components/sections/common/site-message`) atiende los `notFound()` del blog y de los mentores;
+`app/global-not-found.tsx` con `experimental.globalNotFound` cubre las URLs sin ruta, que con tres
+root layouts no podían componerse desde un `not-found.tsx`; `app/(frontend)/error.tsx` y
+`app/global-error.tsx` completan las fronteras. Todo en español y con la paleta del sitio.
 
-**Cómo abordarlo:** `not-found.tsx` y `error.tsx` en `(frontend)` con `Header`/`Footer`, y un
-`global-error.tsx` mínimo.
+### 42. ~~`/blog` manda el contenido íntegro de todos los artículos al navegador y pagina sin URL~~ — RESUELTO (2026-09-09)
+`getArticleSummaries()` excluye `content` en la consulta (`select: { content: false }`) y se
+cachea con `unstable_cache` y la etiqueta `articles`, que caducan los hooks `afterChange`/
+`afterDelete` nuevos de `collections/Articles.ts`. Categoría y página viajan en la URL
+(`/blog?categoria=…&pagina=…`, lógica pura en `services/articles/article-listing.ts`, con tests),
+`BlogArticles` vuelve a ser Server Component y filtro y paginación son enlaces. La página pasa de
+~74 KB a ~42 KB sin un solo nodo Lexical, y cada vista tiene su canónica.
 
-### 42. `/blog` manda el contenido íntegro de todos los artículos al navegador y pagina sin URL — [Rendimiento / SEO]
-`blog/page.tsx` pasa `getArticles()` completo —`Article.content` es el árbol Lexical entero— a
-`BlogArticles`, que es `"use client"` y filtra y corta de 9 en 9 en `useState`. El payload crece con
-cada artículo, y categoría y página no están en la URL: nada más allá del noveno es rastreable ni
-enlazable.
-
-**Cómo abordarlo:** una proyección sin `content` para las tarjetas, filtro y página por
-`searchParams`, y `BlogArticles` de vuelta a Server Component con `<Link>`.
-
-### 43. `/reloj-de-ajedrez` monta dos relojes a la vez y captura la barra espaciadora en `window` — [A11y / Rendimiento]
-La página renderiza `ChessClockDesktop` y `ChessClockMobile` siempre y los oculta por CSS; cada uno
-instancia `useChessClock`, con su `setInterval` de 100 ms y un `keydown` en `window` que hace
-`preventDefault()` de `Space`. El reloj oculto también corre, y ningún botón de la página se puede
-activar con la barra espaciadora.
-
-**Cómo abordarlo:** elegir la variante en cliente con `matchMedia` para que sólo haya una instancia,
-y no interceptar `Space` cuando el foco está en un control interactivo.
+### 43. ~~`/reloj-de-ajedrez` monta dos relojes a la vez y captura la barra espaciadora en `window`~~ — RESUELTO (2026-09-09)
+`useChessClock({ enabled })` no arranca el intervalo ni escucha el teclado cuando está apagado, y
+`ChessClock` (`chess-clock.comp.tsx`) enciende sólo la variante que corresponde al ancho con
+`matchMedia` (las dos se siguen montando para que el servidor pinte ambas y el CSS decida). La barra
+espaciadora ya no se intercepta con el foco en un botón o un enlace, ni con la tecla repetida.
 
 ---
 
@@ -238,69 +233,53 @@ README: nada lo leía.
 previsualización; hoy sólo se ven dentro del formulario del admin.
 
 ### 53. Casi ningún formulario de la plataforma avisa de que se está enviando — [UX]
-44 archivos con `<form>`; sólo el login y dos formularios de contraseña usan `useFormStatus` o
-`useActionState`. El resto no deshabilita el botón: un segundo clic en una conexión lenta da de alta
-dos veces.
+Sigue abierto: es una tarea mecánica sobre 40 formularios (T12 en `todos.md`): promover
+`LoginSubmit` a `components/common/submit-button.comp.tsx` con `useFormStatus` y usarlo en todos los
+formularios de escritura.
 
-**Cómo abordarlo:** `components/common/submit-button.comp.tsx` con `useFormStatus` y usarlo en
-todos los formularios de escritura (tarea mecánica, ver `todos.md`).
+### 54. ~~`StaticDiagram` y el bloque de diagrama del blog son el mismo componente duplicado~~ — RESUELTO (2026-09-09)
+`ChessDiagramBlockRenderer` es un adaptador de una línea sobre `StaticDiagram`, que gana la prop
+`context="article"` (pie más pequeño y con un gris que contrasta). `chess-diagram-block.comp.css`
+borrado.
 
-### 54. `StaticDiagram` y el bloque de diagrama del blog son el mismo componente duplicado — [Frontend / CSS]
-`static-diagram.comp.tsx` y `chess-diagram-block.comp.tsx` tienen el mismo JSX salvo el prefijo de
-clase, y las dos hojas sólo divergen en el pie (ya desincronizado: `var(--platform-text-muted)`
-frente a `#8a8175`, que no pasa el contraste).
-
-**Cómo abordarlo:** un solo `StaticDiagram` con modificador de contexto y el bloque del blog como
-adaptador.
-
-### 55. `--platform-text-subtle` se usa como texto en 46 hojas y no llega al contraste mínimo — [A11y]
-`#9a9189` sobre blanco da 3,09:1 (WCAG AA pide 4,5:1) y se usa en cabeceras de tabla, contadores y
-pies a 14 px. `--platform-text-muted` (`#6e655c`, 5,7:1) ya es correcto.
-
-**Cómo abordarlo:** oscurecer el token a ≥4,5:1 (`#7a7168` da 4,78:1) o reservarlo para lo que no se lee.
+### 55. ~~`--platform-text-subtle` se usa como texto en 46 hojas y no llega al contraste mínimo~~ — RESUELTO (2026-09-09)
+El token pasa de `#9a9189` (3,1:1) a `#7a7168` (4,8:1 sobre blanco). El pie del diagrama del blog
+usa el nuevo `--color-muted-on-light` en vez de `#8a8175`.
 
 ### 56. Sin estrategia de foco: ni `:focus-visible` global, `outline: none` en la notación y diálogos sin foco — [A11y]
-No hay regla `:focus-visible` en `globals.css` ni `platform.css`; `chess-board.comp.css` pone
-`outline: none` incondicional a los botones de notación; el selector de coronación es un
-`role="dialog"` sin `aria-modal`, sin recibir el foco ni cerrar con Escape; el menú de opciones del
-visor tampoco mueve el foco (`MoveContextMenu` sí lo hace: es el patrón a copiar).
+*Mayormente resuelto (2026-09-09):* `:focus-visible` global en `globals.css` (naranja sobre el
+fondo oscuro) y recoloreado en `platform.css` para el fondo claro; fuera el `outline: none` de la
+notación; el selector de coronación lleva `aria-modal`, recibe el foco en la primera pieza y se
+cierra con Escape.
 
-**Cómo abordarlo:** `:focus-visible` global, quitar el `outline: none`, y foco + Escape en los dos
-diálogos.
+**Lo que queda:** el menú de opciones del visor (`game-viewer.comp.tsx`) sigue sin mover el foco al
+abrirse ni devolverlo al cerrar; `MoveContextMenu` ya lo hace y es el patrón a copiar.
 
-### 57. Menú móvil enfocable estando cerrado, desplegable sin ARIA y sin enlace de salto — [A11y]
-El menú móvil cerrado es `opacity: 0` + `pointer-events: none`, que no lo saca del orden de
-tabulación; el disparador del desplegable no lleva `aria-expanded` ni `aria-haspopup`; no hay
-«Saltar al contenido» en ningún layout y los `<main>` no tienen `id`.
-
-**Cómo abordarlo:** `visibility: hidden` en el menú cerrado, ARIA en el disparador, y un
-`skip-link` a `#contenido` en los tres layouts.
+### 57. ~~Menú móvil enfocable estando cerrado, desplegable sin ARIA y sin enlace de salto~~ — RESUELTO (2026-09-09)
+El menú móvil cerrado lleva `visibility: hidden` (con la transición retrasada para no cortar el
+fundido). `HeaderDropdown` es ahora un Client Component con `aria-haspopup`, `aria-expanded`,
+`aria-controls`, cierre con Escape y con Tab al salir; con el ratón sigue abriéndose por CSS. Los
+tres layouts arrancan con «Saltar al contenido» y cada `<main>` lleva `id="contenido"`.
 
 ### 58. `GameTable` reimplementa una tabla con `div`s existiendo `PlatformTable` — [Frontend / A11y]
-La tabla de partidas del estudio (`game-table.comp.tsx`, 160 líneas de CSS de rejilla) usa `span` y
-`div`, mientras la vista del profesor pinta los mismos datos con `PlatformTable` semántica. Un lector
-de pantalla no asocia celda y columna.
-
-**Cómo abordarlo:** montar las filas sobre `PlatformTable` conservando el tirador de reordenación
-en la primera celda (tarea mecánica, ver `todos.md`).
+Sigue abierto: tarea mecánica T13 en `todos.md` (montar las filas sobre `PlatformTable` conservando
+el tirador de reordenación en la primera celda y borrar la rejilla de `game-table.comp.css`).
 
 ### 59. Los colores del tablero y varios hex recurrentes no son tokens — [CSS]
-`#eeeed2`/`#769656` están escritos en `chess-board.comp.css`, `static-diagram.comp.css`,
-`chess-diagram-block.comp.css` y `board-export.ts`. Quedan además `#b4a99d` ×27, `#5c5348` ×19,
-`#8a8175` ×10 y `#b8611f` ×8 sin token, y `globals.css` repite `#ff9143`/`#16110d` teniendo
-`--color-primary`/`--color-dark`.
+*Mayormente resuelto (2026-09-09):* `--board-light`/`--board-dark` en `globals.css`, usados por el
+tablero y el diagrama, con su gemelo en `constants/chess-board-colors.const.ts` para la exportación
+a canvas. Tokens nuevos `--color-muted-on-dark` (#b4a99d), `--color-muted-on-light` (#5c5348) y
+`--color-primary-deep` (#b8611f); `globals.css` ya no repite `#ff9143`, `#16110d` ni `#b8611f`.
 
-**Cómo abordarlo:** `--board-light`/`--board-dark` con constante compartida para JS; nombrar los
-dos grises de texto secundario y barrer los usos (mecánico, ver `todos.md`).
+**Lo que queda:** barrer los usos sueltos de esos tres hex en `components/**` y `app/**` (T14 en
+`todos.md`).
 
-### 60. Hojas CSS fuera de su raíz — [CSS]
-`app/(frontend)/blog/blog.css` abre con un `a {}` global (copia de `globals.css`);
-`mentor-page.css` tiene catorce selectores de primer nivel; `study-card.comp.css` declara la raíz
-dos veces; `.new-game` es raíz de dos componentes distintos (`new-game.section.css` y
-`new-game.comp.css`); `exercise-move-picker.comp.css` y `teacher.section.css` tienen bloques sueltos.
-
-**Cómo abordarlo:** borrar el `a {}`, anidar `mentor-page.css` bajo `.mentor-page`, fusionar
-`.study-card` y renombrar uno de los `.new-game`.
+### 60. ~~Hojas CSS fuera de su raíz~~ — RESUELTO (2026-09-09)
+Fuera el `a {}` global de `blog.css`; `mentor-page.css` anidado entero bajo `.mentor-page`;
+`study-card.comp.css` con una sola raíz; la ruta huérfana usa el bloque `new-game-page` y ya no choca
+con el modal; el botón y el aviso de `exercise-move-picker` cuelgan de la raíz con el modificador
+`_state_closed`; `.teacher-game` tiene su propia hoja (`teacher-game.section.css`). Los helpers de
+`blog.css` (`.blog-button`…) son globales a propósito y siguen así.
 
 ### 61. Vitest ciego a `.test.tsx`, sin cobertura, y módulos puros sin una sola prueba — [Pruebas]
 *Mayormente resuelto (2026-09-09):* `include` con `{ts,tsx}`, `@vitest/coverage-v8` y
@@ -327,13 +306,9 @@ de las dos bases, el paso obligatorio antes de cada `db:deploy` y cómo restaura
 **Lo que queda:** ensayar una restauración completa en una base aparte, anotar cuánto tarda y
 documentar lo que ofrezca el proveedor (copias automáticas y retención).
 
-### 64. Librerías de ajedrez cargadas antes de que nadie las pida — [Rendimiento]
-`game-tools.comp.tsx` importa `board-export` (y con él `gifenc`) estáticamente en todas las páginas
-de partida; `mentor/[slug]` y el bloque de partida del blog usan `ChessBoard` directo para tableros
-al final de la página, existiendo `ChessBoardLazy`.
-
-**Cómo abordarlo:** `await import()` de la exportación en el manejador del botón y `ChessBoardLazy`
-en las dos páginas públicas.
+### 64. ~~Librerías de ajedrez cargadas antes de que nadie las pida~~ — RESUELTO (2026-09-09)
+`game-tools.comp.tsx` importa `board-export` (y `gifenc`) con `await import()` al pulsar exportar;
+la ficha de mentor y el bloque de partida del blog usan `ChessBoardLazy`.
 
 ### 65. ~~`.env.example` desfasado y `AGENTS.md` sin las convenciones del proyecto~~ — RESUELTO (2026-09-09)
 `.env.example` cuadra con `grep process.env`: fuera `PREVIEW_SECRET`, dentro `ALLOW_DEMO_SEED`,
@@ -430,13 +405,9 @@ sesión dentro de un `<Suspense>` sobre un armazón prerenderizado) y ahorrarse 
 servicios de `unstable_cache` a `"use cache"` + `cacheTag`. Revisar entonces el `force-dynamic` de
 `app/(platform)/layout.tsx`.
 
-### 32. El sitemap carga todos los artículos con `depth: 2` para leer el `slug` — [Datos]
-`app/sitemap.ts` llama a `getArticles()` (`limit: 0`, `depth: 2`), que trae cada artículo con su
-contenido, categoría, etiquetas y portada, cuando el sitemap sólo necesita `slug` y `updatedAt`. Con
-pocas entradas no se nota; crecerá con el blog.
-
-**Cómo abordarlo:** una consulta propia con `select: { slug: true, updatedAt: true }` y `depth: 0`,
-y mandar `lastModified` en cada entrada, que hoy no va.
+### 32. ~~El sitemap carga todos los artículos con `depth: 2` para leer el `slug`~~ — RESUELTO (2026-09-09)
+`getArticleLinks()` (`articles.service.ts`) pide sólo `slug` y `updatedAt` con `depth: 0`, cacheado
+con la etiqueta `articles`; el sitemap manda además `lastModified`.
 
 ### 33. Cabeceras de seguridad (CSP, COOP, X-Frame-Options) — [Seguridad]
 Lighthouse las lista como informativas: no pesan en la nota. Vercel añade HSTS por su cuenta; el
@@ -464,13 +435,11 @@ El supuesto queda escrito junto al código de `auth.actions.ts` (fiable en Verce
 despliegue hay que leer el último salto o la cabecera de la plataforma). Los clientes sin cabecera
 ya caían en su propio cubo («desconocido») y el techo por cuenta sigue vigente igual.
 
-### 68. Metadata pública sin `metadataBase`, canónica ni OG por defecto — [SEO]
-`app/(frontend)/layout.tsx` no declara `metadataBase` (el `openGraph.images` relativo del blog se
-resuelve mal), ninguna página lleva `alternates.canonical`, y la portada, `/nosotros` y
-`/reloj-de-ajedrez` se comparten sin tarjeta.
-
-**Cómo abordarlo:** `metadataBase` desde `NEXT_PUBLIC_SITE_URL`, imagen OG por defecto y canónica
-por página.
+### 68. ~~Metadata pública sin `metadataBase`, canónica ni OG por defecto~~ — RESUELTO (2026-09-09)
+`metadataBase` desde `lib/site-url.ts` (que ahora comparten sitemap y robots), `twitter.card`,
+`openGraph.siteName`, imagen OG por defecto generada en el build con `ImageResponse`
+(`app/(frontend)/opengraph-image.tsx`, heredada por todas las páginas públicas) y canónica en la
+portada, `/blog` (con sus parámetros), `/nosotros`, `/reloj-de-ajedrez`, cada artículo y cada mentor.
 
 ### 69. ~~Desfase horario calculado dos veces e índices compuestos que faltan~~ — RESUELTO (2026-09-09)
 `lib/study-streak.ts` importa `offsetMsAt` de `lib/timezone.ts`. `Game` pasa a
@@ -479,12 +448,13 @@ cubren sobran); migración `20260909120000_composite_indexes`, generada con `pri
 **Pendiente de aplicar con `npm run db:migrate`.**
 
 ### 70. Ocho hojas CSS bloqueantes en la portada — [Rendimiento]
-El build de `/` enlaza 8 hojas (40 KB en total, la mayor de 15 KB) que Lighthouse simula en serie
-sobre HTTP/1.1; es lo que queda del LCP tras el punto 31. Next 16 con Turbopack ofrece
-`experimental.cssChunking: "graph"` para agruparlas por ruta.
+*Probado y descartado (2026-09-09):* `experimental.cssChunking: "graph"` dejó la portada con las
+mismas hojas (nueve, 47 KB); Turbopack ya las agrupa igual con el modo por defecto, así que se
+retiró. La novena es la pantalla de aviso (`site-message.section.css`, 1,3 KB), que entra en el
+árbol de `(frontend)` por `error.tsx`.
 
-**Cómo abordarlo:** probar `"graph"` en `next.config.ts`, contar hojas en `.next/server/app/index.html`
-y medir 3 pasadas; conservar sólo si baja el LCP.
+**Lo que queda:** menos archivos CSS en la ruta crítica de la portada sólo saldrá de fusionar hojas
+de secciones que siempre se pintan juntas (hero, programa, planes…) en menos módulos.
 
 ---
 

@@ -1,6 +1,15 @@
 :root {
   --background: #16110d;
   --foreground: #f2ede7;
+  /* Texto secundario, uno por fondo (los dos grises que más se repetían sueltos). */
+  --color-muted-on-dark: #b4a99d;
+  --color-muted-on-light: #5c5348;
+  /* Naranja profundo: la sombra de los botones y el acento legible sobre claro. */
+  --color-primary-deep: #b8611f;
+  /* Casillas del tablero. Los mismos valores en constants/chess-board-colors.const.ts,
+     que es lo que usa la exportación a imagen (un canvas no lee CSS). */
+  --board-light: #eeeed2;
+  --board-dark: #769656;
   --color-primary: #ff9143;
   --color-primary-on-light: #f26c00;
   --color-secondary: #f0c04b;
@@ -59,6 +68,33 @@ h6 {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* Foco visible en todo el sitio: sin una regla global, recorrer con Tab no
+   enseñaba nada en la mayoría de los controles. La plataforma lo recolorea en
+   platform.css para su fondo claro. */
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Enlace de salto al contenido: fuera de pantalla hasta que recibe el foco. */
+.skip-link {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: var(--color-dark);
+  font-weight: 700;
+  transform: translateY(-200%);
+  transition: transform 0.15s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
 }
 
 b,
@@ -252,7 +288,7 @@ hr {
   font-size: 14px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #ff9143;
+  color: var(--color-primary);
   font-weight: 600;
 }
 
@@ -308,9 +344,9 @@ hr {
 }
 
 .button_variant_primary {
-  background: #ff9143;
-  color: #16110d;
-  box-shadow: 0 4px 0 #b8611f;
+  background: var(--color-primary);
+  color: var(--color-dark);
+  box-shadow: 0 4px 0 var(--color-primary-deep);
 }
 
 .button_variant_primary:hover {

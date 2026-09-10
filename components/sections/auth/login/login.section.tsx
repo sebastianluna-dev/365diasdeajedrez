@@ -13,7 +13,7 @@ interface LoginSectionProps {
 
 export function LoginSection({ returnTo, errorMessage }: LoginSectionProps) {
   return (
-    <main className="login">
+    <main id="contenido" className="login">
       <div className="login__card">
         <Link href="/" className="login__logo">
           365 Días<span className="login__logo-accent"> de Ajedrez</span>

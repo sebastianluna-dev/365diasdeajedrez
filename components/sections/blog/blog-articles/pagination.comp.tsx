@@ -1,49 +1,51 @@
+import Link from "next/link";
 import "./pagination.comp.css";
 
 interface PaginationProps {
   page: number;
   totalPages: number;
   totalItems: number;
-  onSelect: (page: number) => void;
-  onPrev: () => void;
-  onNext: () => void;
+  /** URL de cada página; paginar es navegar. */
+  hrefFor: (page: number) => string;
 }
 
-export function Pagination({ page, totalPages, totalItems, onSelect, onPrev, onNext }: PaginationProps) {
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+export function Pagination({ page, totalPages, totalItems, hrefFor }: PaginationProps) {
+  const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
 
   return (
-    <nav className="pagination">
+    <nav className="pagination" aria-label="Páginas del blog">
       <span className="pagination__summary">
         Página {page} de {totalPages} · {totalItems} artículos
       </span>
       <div className="pagination__controls">
-        <button
-          type="button"
-          aria-label="Página anterior"
-          onClick={onPrev}
-          className={`pagination__arrow${page <= 1 ? " pagination__arrow_disabled" : ""}`}
-        >
-          ←
-        </button>
-        {pages.map((n) => (
-          <button
-            key={n}
-            type="button"
-            onClick={() => onSelect(n)}
-            className={`pagination__page${n === page ? " pagination__page_active" : ""}`}
+        {page <= 1 ? (
+          <span aria-hidden="true" className="pagination__arrow pagination__arrow_disabled">
+            ←
+          </span>
+        ) : (
+          <Link href={hrefFor(page - 1)} aria-label="Página anterior" className="pagination__arrow">
+            ←
+          </Link>
+        )}
+        {pages.map((number) => (
+          <Link
+            key={number}
+            href={hrefFor(number)}
+            aria-current={number === page ? "page" : undefined}
+            className={`pagination__page${number === page ? " pagination__page_active" : ""}`}
           >
-            {n}
-          </button>
+            {number}
+          </Link>
         ))}
-        <button
-          type="button"
-          aria-label="Página siguiente"
-          onClick={onNext}
-          className={`pagination__arrow${page >= totalPages ? " pagination__arrow_disabled" : ""}`}
-        >
-          →
-        </button>
+        {page >= totalPages ? (
+          <span aria-hidden="true" className="pagination__arrow pagination__arrow_disabled">
+            →
+          </span>
+        ) : (
+          <Link href={hrefFor(page + 1)} aria-label="Página siguiente" className="pagination__arrow">
+            →
+          </Link>
+        )}
       </div>
     </nav>
   );

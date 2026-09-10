@@ -27,7 +27,9 @@
   /* Tres pesos de texto: cuerpo, secundario y el de las etiquetas pequeñas. */
   --platform-text: #16110d;
   --platform-text-muted: #6e655c;
-  --platform-text-subtle: #9a9189;
+  /* 4,8:1 sobre blanco: se usa como TEXTO (cabeceras de tabla, contadores,
+     pies) y con el #9a9189 anterior no llegaba al mínimo de WCAG AA. */
+  --platform-text-subtle: #7a7168;
   /* Más claro todavía: sólo para adornos que no se leen —los puntos
      separadores y el galón de las filas—, nunca para texto. */
   --platform-text-faint: #c3bbb1;
@@ -69,6 +71,13 @@
   /* Sobre claro las capas se separan con sombra, no con borde. */
   --platform-shadow-card: 0 1px 2px rgba(22, 17, 13, 0.05), 0 8px 24px rgba(22, 17, 13, 0.06);
   --platform-shadow-bar: 0 1px 0 var(--platform-border);
+}
+
+/* El foco global de globals.css es naranja pensado para fondo oscuro; sobre el
+   claro de la plataforma se usa el naranja de tinta, que sí contrasta. */
+.platform-theme :focus-visible {
+  outline: 2px solid var(--platform-accent-ink);
+  outline-offset: 2px;
 }
 
 /* globals.css pinta el `body` con la paleta oscura del sitio público, y esa

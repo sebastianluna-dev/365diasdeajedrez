@@ -19,7 +19,7 @@ export default function LandingPage() {
     <div className="landing-page">
       <Header />
       {/* El CTA pegajoso y el footer quedan fuera de <main>: son complementarios, no el contenido. */}
-      <main>
+      <main id="contenido">
         {sections.hero && <HeroSection />}
         {sections.program && <ProgramSection />}
         {mentorsSlot === "teacher" && <TeacherSection />}

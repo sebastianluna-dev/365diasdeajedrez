@@ -27,17 +27,17 @@ export function NewGameSection({ study, results, errorCode }: NewGameSectionProp
   const nextNumber = study.games.length + 1;
 
   return (
-    <section className="new-game">
-      <nav className="new-game__breadcrumb" aria-label="Ruta de estudios">
-        <Link href={platformRoutes.studies} className="new-game__breadcrumb-link">
+    <section className="new-game-page">
+      <nav className="new-game-page__breadcrumb" aria-label="Ruta de estudios">
+        <Link href={platformRoutes.studies} className="new-game-page__breadcrumb-link">
           Mis estudios
         </Link>
-        <span className="new-game__breadcrumb-separator">/</span>
-        <Link href={platformRoutes.studyDetail(study.id)} className="new-game__breadcrumb-link">
+        <span className="new-game-page__breadcrumb-separator">/</span>
+        <Link href={platformRoutes.studyDetail(study.id)} className="new-game-page__breadcrumb-link">
           {study.name}
         </Link>
-        <span className="new-game__breadcrumb-separator">/</span>
-        <span className="new-game__breadcrumb-current">Nueva partida</span>
+        <span className="new-game-page__breadcrumb-separator">/</span>
+        <span className="new-game-page__breadcrumb-current">Nueva partida</span>
       </nav>
 
       <header className="platform-page__head">
@@ -49,7 +49,7 @@ export function NewGameSection({ study, results, errorCode }: NewGameSectionProp
 
       {errorCode && <PlatformNotice message={ERROR_MESSAGES[errorCode] ?? "No se pudo crear la partida."} />}
 
-      <form className="new-game__form" action={createStudyGame.bind(null, study.id)}>
+      <form className="new-game-page__form" action={createStudyGame.bind(null, study.id)}>
         <div className="platform-card">
           <h2 className="platform-card__title">Datos de la partida</h2>
           <GameFields
@@ -60,7 +60,7 @@ export function NewGameSection({ study, results, errorCode }: NewGameSectionProp
 
         <div className="platform-card">
           <h2 className="platform-card__title">Punto de partida</h2>
-          <p className="new-game__hint">
+          <p className="new-game-page__hint">
             Opcional. Si pegas un PGN, sus cabeceras rellenan los datos que hayas dejado en blanco.
           </p>
 
@@ -82,7 +82,7 @@ export function NewGameSection({ study, results, errorCode }: NewGameSectionProp
           </FormField>
         </div>
 
-        <div className="new-game__actions">
+        <div className="new-game-page__actions">
           <button type="submit" className="platform-button">
             Crear y analizar
           </button>

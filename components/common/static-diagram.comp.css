@@ -19,11 +19,11 @@
   }
 
   & .static-diagram__square_light {
-    background: #eeeed2;
+    background: var(--board-light);
   }
 
   & .static-diagram__square_dark {
-    background: #769656;
+    background: var(--board-dark);
   }
 
   & .static-diagram__piece {
@@ -34,23 +34,54 @@
     background-repeat: no-repeat;
   }
 
-  & .static-diagram__piece_glyph_w-pawn { background-image: url("/pieces/w-pawn.svg"); }
-  & .static-diagram__piece_glyph_w-knight { background-image: url("/pieces/w-knight.svg"); }
-  & .static-diagram__piece_glyph_w-bishop { background-image: url("/pieces/w-bishop.svg"); }
-  & .static-diagram__piece_glyph_w-rook { background-image: url("/pieces/w-rook.svg"); }
-  & .static-diagram__piece_glyph_w-queen { background-image: url("/pieces/w-queen.svg"); }
-  & .static-diagram__piece_glyph_w-king { background-image: url("/pieces/w-king.svg"); }
-  & .static-diagram__piece_glyph_b-pawn { background-image: url("/pieces/b-pawn.svg"); }
-  & .static-diagram__piece_glyph_b-knight { background-image: url("/pieces/b-knight.svg"); }
-  & .static-diagram__piece_glyph_b-bishop { background-image: url("/pieces/b-bishop.svg"); }
-  & .static-diagram__piece_glyph_b-rook { background-image: url("/pieces/b-rook.svg"); }
-  & .static-diagram__piece_glyph_b-queen { background-image: url("/pieces/b-queen.svg"); }
-  & .static-diagram__piece_glyph_b-king { background-image: url("/pieces/b-king.svg"); }
+  & .static-diagram__piece_glyph_w-pawn {
+    background-image: url("/pieces/w-pawn.svg");
+  }
+  & .static-diagram__piece_glyph_w-knight {
+    background-image: url("/pieces/w-knight.svg");
+  }
+  & .static-diagram__piece_glyph_w-bishop {
+    background-image: url("/pieces/w-bishop.svg");
+  }
+  & .static-diagram__piece_glyph_w-rook {
+    background-image: url("/pieces/w-rook.svg");
+  }
+  & .static-diagram__piece_glyph_w-queen {
+    background-image: url("/pieces/w-queen.svg");
+  }
+  & .static-diagram__piece_glyph_w-king {
+    background-image: url("/pieces/w-king.svg");
+  }
+  & .static-diagram__piece_glyph_b-pawn {
+    background-image: url("/pieces/b-pawn.svg");
+  }
+  & .static-diagram__piece_glyph_b-knight {
+    background-image: url("/pieces/b-knight.svg");
+  }
+  & .static-diagram__piece_glyph_b-bishop {
+    background-image: url("/pieces/b-bishop.svg");
+  }
+  & .static-diagram__piece_glyph_b-rook {
+    background-image: url("/pieces/b-rook.svg");
+  }
+  & .static-diagram__piece_glyph_b-queen {
+    background-image: url("/pieces/b-queen.svg");
+  }
+  & .static-diagram__piece_glyph_b-king {
+    background-image: url("/pieces/b-king.svg");
+  }
 
   & .static-diagram__caption {
     margin-top: 10px;
     font-size: 15.5px;
     color: var(--platform-text-muted);
     text-align: center;
+  }
+
+  /* Dentro de un artículo del blog: fondo claro del sitio público, texto un
+     punto más pequeño y un gris que sí contrasta (el #8a8175 de antes no). */
+  &.static-diagram_context_article .static-diagram__caption {
+    font-size: 14px;
+    color: var(--color-muted-on-light);
   }
 }

@@ -278,13 +278,26 @@ export function ChessBoard({
 
   // Selector de coronación: chessground base no trae diálogo, así que la
   // jugada queda pendiente hasta que el usuario elige la pieza.
+  // Recibe el foco al abrirse (la primera pieza) y se cierra con Escape: sin
+  // eso, quien juega con teclado arrastraba el peón y no llegaba al diálogo.
   const promotionOverlay = pendingPromotion && (
-    <div className="chess-board__promotion" role="dialog" aria-label="Elige la pieza de coronación">
+    <div
+      className="chess-board__promotion"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Elige la pieza de coronación"
+      onKeyDown={(event) => {
+        if (event.key !== "Escape") return;
+        event.stopPropagation();
+        cancelPromotion();
+      }}
+    >
       <div className="chess-board__promotion-panel">
-        {PROMOTION_ROLES.map((role) => (
+        {PROMOTION_ROLES.map((role, index) => (
           <button
             key={role}
             type="button"
+            autoFocus={index === 0}
             aria-label={PROMOTION_LABELS[role]}
             title={PROMOTION_LABELS[role]}
             onClick={() => confirmPromotion(role)}

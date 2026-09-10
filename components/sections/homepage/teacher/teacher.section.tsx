@@ -6,6 +6,7 @@ import { ChessBoardLazy } from "@/components/common/chess-board-lazy.comp";
 import { getTeacherData } from "@/services/home/home.service";
 import { TeacherStat } from "./teacher-stat.comp";
 import "./teacher.section.css";
+import "./teacher-game.section.css";
 
 export async function TeacherSection() {
   const content = await getTeacherData();

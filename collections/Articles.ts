@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { revalidateArticlesAfterChange, revalidateArticlesAfterDelete } from "@/lib/payload/revalidate-articles";
 import {
   BlockquoteFeature,
   BlocksFeature,
@@ -37,6 +38,8 @@ export const Articles: CollectionConfig = {
     delete: isAdminOrEditor,
   },
   hooks: {
+    afterChange: [revalidateArticlesAfterChange],
+    afterDelete: [revalidateArticlesAfterDelete],
     beforeChange: [
       ({ data }) => {
         if (data._status === "published" && !data.publishedAt) {

@@ -13,7 +13,6 @@ import {
   POSITION_EVAL_NAGS,
   type NagOption,
 } from "@/lib/chess/pgn-tree";
-import { downloadGameGif, downloadPositionImage } from "@/components/common/game-viewer/board-export";
 import { GameReview } from "@/components/common/game-viewer/game-review.comp";
 import { sanToSpanish } from "@/lib/chess/notation";
 import { plainMovetext } from "@/lib/chess/plain-movetext";
@@ -153,10 +152,13 @@ export function GameTools({
     }
   };
 
+  // La exportación (y con ella `gifenc` y el rasterizado del tablero) se carga
+  // al pulsar el botón: casi nadie exporta, y antes viajaba con cada partida.
   const exportImage = async () => {
     setExporting("image");
     setExportError(null);
     try {
+      const { downloadPositionImage } = await import("@/components/common/game-viewer/board-export");
       await downloadPositionImage(fen, "posicion.png", { size: 720, lastMove: node?.lastMove });
     } catch {
       setExportError("No se pudo generar la imagen en este navegador.");
@@ -169,6 +171,7 @@ export function GameTools({
     setExporting("gif");
     setExportError(null);
     try {
+      const { downloadGameGif } = await import("@/components/common/game-viewer/board-export");
       await downloadGameGif(pgn, "partida.gif");
     } catch {
       setExportError("No se pudo generar el GIF en este navegador.");

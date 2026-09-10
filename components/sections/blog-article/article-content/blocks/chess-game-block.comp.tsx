@@ -1,5 +1,5 @@
 import type { ChessGameBlock } from "@/payload-types";
-import { ChessBoard } from "@/components/common/chess-board.comp";
+import { ChessBoardLazy } from "@/components/common/chess-board-lazy.comp";
 import "./chess-game-block.comp.css";
 
 export function ChessGameBlockRenderer({ pgn, title, players, event, date }: ChessGameBlock) {
@@ -13,7 +13,8 @@ export function ChessGameBlockRenderer({ pgn, title, players, event, date }: Che
           {subtitle && <p className="rich-chess-game__subtitle">{subtitle}</p>}
         </div>
       )}
-      <ChessBoard pgn={pgn} />
+      {/* Dentro del cuerpo del artículo: se monta al acercarse, no en la carga. */}
+      <ChessBoardLazy pgn={pgn} />
     </div>
   );
 }

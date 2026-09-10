@@ -1,10 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { Article } from "@/services/articles/articles.types";
+import type { ArticleSummary } from "@/services/articles/articles.types";
 import "./related-article-card.comp.css";
 
 interface RelatedArticleCardProps {
-  article: Article;
+  article: ArticleSummary;
 }
 
 export function RelatedArticleCard({ article }: RelatedArticleCardProps) {
