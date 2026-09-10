@@ -1,7 +1,7 @@
 // Creating and maintaining student accounts from the terminal.
 //
 // There is no public sign-up on purpose: in an academy the student exists
-// because they are enrolled. Until the teacher panel exists (MEJORAS #15), this
+// because they are enrolled. Until the teacher panel exists (IMPROVEMENTS #15), this
 // is the official route.
 //
 //   npm run user:create   -- alumno@correo.com "Nombre Apellido"

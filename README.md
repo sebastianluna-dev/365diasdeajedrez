@@ -44,7 +44,7 @@ npm run dev                  # http://localhost:3000
 | `npm run pieces:sync` | Copia las piezas del tablero (chessground) a `public/pieces`; ejecutar al actualizar chessground. |
 | `npm run typecheck` | `tsc --noEmit`, lo mismo que corre CI. |
 | `npm run test:coverage` | Vitest con cobertura (v8) sobre `lib`, `services`, `constants` y `hooks`. |
-| `npm run format` / `npm run format:check` | Prettier sobre el repo (hoy `format:check` falla: el repo nunca se formateó, ver `MEJORAS.md` #39). |
+| `npm run format` / `npm run format:check` | Prettier sobre el repo (hoy `format:check` falla: el repo nunca se formateó, ver `IMPROVEMENTS.md` #39). |
 | `npm run positions:index` | Rellena el índice de posiciones de las partidas ya guardadas (`-- --all` reindexa todas). |
 | `npm run collections:by-chapter` | Migración de datos de una sola vez: colecciones de curso → colecciones por capítulo. |
 
@@ -166,7 +166,7 @@ Cubre arquitectura, rutas, acceso a datos, sitio público y CMS, autenticación,
 
 ## Backlog
 
-- `MEJORAS.md` — mejoras pendientes priorizadas (seguridad, arquitectura, CSS, UX).
+- `IMPROVEMENTS.md` — mejoras pendientes priorizadas (seguridad, arquitectura, CSS, UX).
 - `todos.md` — tareas concretas en cola.
 
 Los dos están en inglés, como los comentarios del código; este README sigue siendo la referencia rápida en español.

@@ -2,11 +2,11 @@
 
 > **Status: the ten tasks of this batch (T1–T10) are done** (2026-08-30). They are left recorded
 > below with what ended up changing, so they are not repeated. The improvements that are still open
-> live in `MEJORAS.md`.
+> live in `IMPROVEMENTS.md`.
 >
 > **2026-08-31 — `PLAN-TEACHER-ADMIN.md` executed in full** (phases 1 to 7): teacher panel
 > (`/teacher`) and administration panel (`/staff`). What was really verified, phase by phase, is in
-> the next section; what was left pending was noted in `MEJORAS.md` (entries 23 to 27).
+> the next section; what was left pending was noted in `IMPROVEMENTS.md` (entries 23 to 27).
 
 ## Teacher and administration panels (2026-08-31)
 
@@ -29,8 +29,8 @@ Validated by running every check, not by reading the code:
   closing the assignment.
 - **P5 · Staff** — reassigning keeps the previous row closed; reassigning to the same teacher
   creates no row; the duplicate email and the duplicate assignment give a friendly message (it took
-  `services/shared/prisma-errors.ts`, see MEJORAS #23); resetting the password deletes every session
-  of the account.
+  `services/shared/prisma-errors.ts`, see IMPROVEMENTS #23); resetting the password deletes
+  every session of the account.
 - **P6 · Courses** — `deriveExerciseData` extracted from `prisma/seed.ts` **by moving the code, not
   rewriting it**: after the refactor the re-seed produces derived data identical field by field
   (`path`, `startPly`, `endPly`, `startFen`, `line`); an exercise created by the staff **is not born
@@ -40,8 +40,8 @@ Validated by running every check, not by reading the code:
   accounts; `npm run build` clean; zero Payload files touched.
 
 **The only thing that could not be closed as the plan asked:** the direct POST of server actions
-with the wrong role (MEJORAS #27) — Next 16 does not accept those requests from a synthetic HTTP
-client. Instead it was audited that the 44 actions of `/teacher` and `/staff` open with their
+with the wrong role (IMPROVEMENTS #27) — Next 16 does not accept those requests from a synthetic
+HTTP client. Instead it was audited that the 44 actions of `/teacher` and `/staff` open with their
 `require*`.
 
 Project rules for any new task added here (non-negotiable):
@@ -95,7 +95,7 @@ and the number of games. Plain forms (server actions) in the listing and in the 
 ### T8 — Vitest and the first tests · [Quality] ✅
 `vitest.config.mts` + `npm test` / `npm run test:watch`. 33 tests in `lib/chess/pgn-tree.test.ts`,
 `lib/chess/notation.test.ts` and `constants/platform/study-codes.test.ts`. One of them documents a
-real gap in the parser (see entry 11b of `MEJORAS.md`).
+real gap in the parser (see entry 11b of `IMPROVEMENTS.md`).
 
 ### T9 — README · [Docs] ✅
 A Spanish section with the requirements, the setup, the script table, the demo user, the route map
@@ -108,35 +108,35 @@ One in each area of `app/(platform)/` reusing `LoadingPanel`.
 
 ## Pending mechanical tasks (2026-09-09)
 
-They come from the audit noted in `MEJORAS.md` (entries 35–70). They are repetitive and bounded
-changes; the project rules above still hold. On finishing each one, mark the `MEJORAS.md` entry as
-resolved and run `npm run typecheck`, `npm run lint` and `npm test`.
+They come from the audit noted in `IMPROVEMENTS.md` (entries 35–70). They are repetitive and
+bounded changes; the project rules above still hold. On finishing each one, mark the
+`IMPROVEMENTS.md` entry as resolved and run `npm run typecheck`, `npm run lint` and `npm test`.
 
-### T11 — Format the repository with Prettier · [DX] (MEJORAS #39)
+### T11 — Format the repository with Prettier · [DX] (IMPROVEMENTS #39)
 `npm run format` changes 135 files. Do it in a commit of its own, without any other modification,
 and afterwards add `npm run format:check` as a step of `.github/workflows/ci.yml`.
 
-### T12 — Submit button with a pending state in every form · [UX] (MEJORAS #53)
+### T12 — Submit button with a pending state in every form · [UX] (IMPROVEMENTS #53)
 Create `components/common/submit-button.comp.tsx` (`"use client"`, `useFormStatus`,
 `disabled={pending}` and an alternate label, e.g. "Guardando…") from
 `components/sections/auth/login/login-submit.comp.tsx`, and use it in the `<button type="submit">`
 of every write form of `components/sections/platform/**` (about 40). The sections stay Server
 Components; only the button changes.
 
-### T13 — `GameTable` on `PlatformTable` · [Frontend / A11y] (MEJORAS #58)
+### T13 — `GameTable` on `PlatformTable` · [Frontend / A11y] (IMPROVEMENTS #58)
 `components/sections/platform/studies/study-detail/game-table.comp.tsx` renders the table with
 `div`s; build the header and the rows with `PlatformTable`/`PlatformTableRow`/`PlatformTableCell`
 (`components/common/platform-table.comp.tsx`) keeping the reordering handle `<button>` in the first
 cell and its keyboard handling, and delete the duplicated grid in `game-table.comp.css`. Reference
 of the same data with the good table: `teacher/students/student-study-view.section.tsx`.
 
-### T14 — Loose hex values to tokens · [CSS] (MEJORAS #59)
+### T14 — Loose hex values to tokens · [CSS] (IMPROVEMENTS #59)
 Substitute in `components/**` and `app/**`: `#b4a99d` → `var(--color-muted-on-dark)` (27 uses),
 `#5c5348` → `var(--color-muted-on-light)` (19), `#b8611f` → `var(--color-primary-deep)` (8) and, in
 the platform, `#8a8175` as text → `var(--platform-text-muted)`. Exact matches only; do not touch
 `rgba(...)`.
 
-### T15 — Unused exports · [Quality] (MEJORAS #45)
+### T15 — Unused exports · [Quality] (IMPROVEMENTS #45)
 Delete `getStudentStudies` (`teacher-students.service.ts`), `reindexGame`
 (`game-positions.service.ts`), `formatOptionalDate` (`teacher-students.mapper.ts`), `isNumericId`
 and `NUMERIC_ID_DIGITS` (`lib/numeric-id.ts`, along with its test), `CLOCK_TIME_CONTROLS` as an
@@ -145,7 +145,7 @@ export (`use-chess-clock.hook.ts`), `STUDENT_KINDS`/`TEACHER_KINDS` as exports (
 (`teacher-messages.const.ts`); remove the `export` from `getStaffContext` (`roles.ts`). Check each
 one with `grep -rw` before deleting.
 
-### T16 — `noUncheckedIndexedAccess` · [DX] (MEJORAS #62)
+### T16 — `noUncheckedIndexedAccess` · [DX] (IMPROVEMENTS #62)
 Enable it in `tsconfig.json` and resolve the 172 errors (almost all `array[i]` possibly
 `undefined`): `trainer-session.comp.tsx`, `move-tree.comp.tsx`, `lib/chess/notation.ts`,
 `services/shared/reorder.ts` and several `lib/chess` suites. Without changing behaviour: where the

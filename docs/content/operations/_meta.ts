@@ -5,7 +5,7 @@ const meta: MetaRecord = {
   "scripts-and-seed": "Scripts & seed",
   deployment: "Deployment & backups",
   troubleshooting: "Troubleshooting",
-  backlog: "Backlog (MEJORAS & todos)",
+  backlog: "Backlog (IMPROVEMENTS & todos)",
 };
 
 export default meta;

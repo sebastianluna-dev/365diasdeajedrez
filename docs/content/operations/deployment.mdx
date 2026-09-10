@@ -44,7 +44,7 @@ Restore into an empty or test database:
 pg_restore --no-owner --dbname="$URL" archivo.dump
 ```
 
-A full restore drill has not been rehearsed yet (`MEJORAS.md` #63): do it once on a scratch database, note how long it takes, and record what the provider offers (automatic snapshots, retention).
+A full restore drill has not been rehearsed yet (`IMPROVEMENTS.md` #63): do it once on a scratch database, note how long it takes, and record what the provider offers (automatic snapshots, retention).
 
 ## After a deploy
 
@@ -60,8 +60,8 @@ Structured JSON lines on stderr (see [Caching, errors & logging](/architecture/c
 
 ## Security headers
 
-None are set by the app today (CSP, COOP/COEP, X-Frame-Options); Vercel adds HSTS. This is tracked as `MEJORAS.md` #33. COOP/COEP in particular would enable multi-threaded Stockfish but break cross-origin images, so it needs a plan.
+None are set by the app today (CSP, COOP/COEP, X-Frame-Options); Vercel adds HSTS. This is tracked as `IMPROVEMENTS.md` #33. COOP/COEP in particular would enable multi-threaded Stockfish but break cross-origin images, so it needs a plan.
 
 ## Performance
 
-Measure only against `npm run build && npm run start` (three Lighthouse runs, median). Known state on 2026-09-09: mobile performance 80 → 92 on `/`; the remaining cost is the number of blocking stylesheets on the home page (`MEJORAS.md` #70; `cssChunking: "graph"` was tried and did not reduce them).
+Measure only against `npm run build && npm run start` (three Lighthouse runs, median). Known state on 2026-09-09: mobile performance 80 → 92 on `/`; the remaining cost is the number of blocking stylesheets on the home page (`IMPROVEMENTS.md` #70; `cssChunking: "graph"` was tried and did not reduce them).

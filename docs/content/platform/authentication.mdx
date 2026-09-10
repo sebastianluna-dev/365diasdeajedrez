@@ -57,7 +57,7 @@ sequenceDiagram
   end
 ```
 
-`proxy.ts` is an **optimistic** filter that saves a render; it never validates. The DAL is the real check and it also covers server actions, which are reachable by POST without navigation. The "cookie present but session invalid" case therefore reaches the page and is redirected inside the RSC stream (HTTP 200), which is accepted and documented in `MEJORAS.md` #1c.
+`proxy.ts` is an **optimistic** filter that saves a render; it never validates. The DAL is the real check and it also covers server actions, which are reachable by POST without navigation. The "cookie present but session invalid" case therefore reaches the page and is redirected inside the RSC stream (HTTP 200), which is accepted and documented in `IMPROVEMENTS.md` #1c.
 
 Visiting `/` with a cookie goes to `/entrar` (`app/(auth)/entrar/route.ts`), a route handler that reads the real session, redirects to `homeRouteFor(roles)` and, if the cookie is stale, deletes it and returns to `/`. This keeps `/` static and prevents a redirect loop.
 

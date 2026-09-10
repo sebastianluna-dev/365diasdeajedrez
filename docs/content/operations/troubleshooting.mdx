@@ -35,7 +35,7 @@ By design all credential failures return the same message so the form cannot enu
 `allowAction` in `lib/rate-limit.ts` counted more calls than the limit for that key in the window (for example 10 logins per minute per account, 30 per origin, 20 course creations per hour per staff user). Wait for the window or, in development, delete the row in the `RateLimit` table. Keys look like `login:<email>` and `<userId>:<operation>`.
 
 **A cookie is present but the user keeps landing on the login page.**
-The cookie only carries the token; `Session.expiresAt` decides, and changing a password or logging out deletes the rows. `/entrar` deletes a stale cookie when it sees one; a page redirects inside the RSC stream (HTTP 200, `MEJORAS.md` #1c). Log in again.
+The cookie only carries the token; `Session.expiresAt` decides, and changing a password or logging out deletes the rows. `/entrar` deletes a stale cookie when it sees one; a page redirects inside the RSC stream (HTTP 200, `IMPROVEMENTS.md` #1c). Log in again.
 
 **A teacher opens `/profesor` and lands on `/inicio`.**
 `requireTeacher()` found no **active** `Teacher` row for that account. Staff activates teachers at `/administracion/profesores/[teacherId]`. The same applies to `/administracion` and the `Staff` row.
@@ -86,7 +86,7 @@ The Cloudinary SDK reads its own `package.json` at require time and breaks when 
 Only `res.cloudinary.com` is allowed in `images.remotePatterns`. User-typed URLs (teacher photo, author photo) must pass `isDisplayableImage` from `lib/remote-image.ts` before reaching `<Image>`.
 
 **Two dev servers conflict on `.next/dev`.**
-Run one `next dev` per checkout. The dev script uses webpack on purpose (`next dev --webpack`); switching dev to Turbopack is `MEJORAS.md` #17 and needs to be validated with no other dev server running.
+Run one `next dev` per checkout. The dev script uses webpack on purpose (`next dev --webpack`); switching dev to Turbopack is `IMPROVEMENTS.md` #17 and needs to be validated with no other dev server running.
 
 **`/_vercel/insights/script.js` returns 404 locally.**
 Vercel Analytics renders only when `VERCEL=1`. If you see the request locally, that variable is set in your environment.
@@ -106,7 +106,7 @@ Every Global and the `articles` collection have `afterChange` hooks that call `r
 The worker received `position` while a previous `go` had not answered `bestmove`. `use-engine.ts` and `use-game-review.ts` serialise commands for that reason and each owns its own worker; new engine code must wait for `bestmove` (or send `stop` and wait) before sending the next position.
 
 **The engine panel is slow or single-threaded.**
-That is the lite, single-thread build in `public/engine/`. Multi-threaded builds need `SharedArrayBuffer`, which requires COOP/COEP headers that would break cross-origin Cloudinary images (`MEJORAS.md` #33).
+That is the lite, single-thread build in `public/engine/`. Multi-threaded builds need `SharedArrayBuffer`, which requires COOP/COEP headers that would break cross-origin Cloudinary images (`IMPROVEMENTS.md` #33).
 
 **Pieces look different in the board, the promotion picker, the static diagram or an exported image.**
 The picker, diagrams and figurines use `public/pieces/*.svg`, which must match the chessground CSS sheet the board draws. After upgrading `@lichess-org/chessground`, run `npm run pieces:sync`.
