@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
-import type { ProgressStatusCode } from "@/constants/platform/shared-codes.const";
+import { PROGRESS_STATUS, type ProgressStatusCode } from "@/constants/platform/shared-codes.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { lessonPgnSelect } from "@/services/shared/lesson-pgn";
@@ -116,6 +116,32 @@ const EMPTY_STATE: UserCourseState = { lessonStatus: new Map(), onlyPriorityLess
 export async function getUserCourses(): Promise<CourseSummary[]> {
   const [courses, progress] = await Promise.all([getPublishedCourses(), getUserProgressState()]);
   return courses.map((course) => mapCourseSummary(course, progress.get(course.id) ?? EMPTY_STATE));
+}
+
+/**
+ * El curso de «Continuar estudiando» del dashboard: el primero en progreso,
+ * por nombre, que es el mismo orden de «Mis cursos». Se localiza con una
+ * consulta dirigida al progreso y después se carga SÓLO ese curso, en vez de
+ * traer el catálogo entero con capítulos y lecciones para quedarse con uno.
+ */
+export async function getContinueStudyingCourse(): Promise<(CourseSummary & { lastLessonName?: string }) | null> {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+
+  const row = await db.courseProgress.findFirst({
+    where: {
+      userId: user.id,
+      status: { code: PROGRESS_STATUS.IN_PROGRESS },
+      course: { status: { code: COURSE_STATUS.PUBLISHED } },
+    },
+    orderBy: { course: { name: "asc" } },
+    select: { courseId: true, lastLesson: { select: { name: true } } },
+  });
+  if (!row) return null;
+
+  const [course, progress] = await Promise.all([getPublishedCourse(row.courseId), getCourseProgressState(row.courseId)]);
+  if (!course) return null;
+  return { ...mapCourseSummary(course, progress), lastLessonName: row.lastLesson?.name };
 }
 
 export async function getCourseById(courseId: string): Promise<CourseDetail | null> {

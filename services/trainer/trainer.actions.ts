@@ -7,6 +7,7 @@ import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
+import { publishedChapterWhere, publishedLessonWhere } from "@/services/shared/published-content";
 import { recordUserActivity } from "@/services/shared/user-activity.service";
 
 const MAX_MISTAKES = 999;
@@ -35,8 +36,10 @@ export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<
   if (input.resultCode !== ATTEMPT_RESULT.PASSED && input.resultCode !== ATTEMPT_RESULT.FAILED) return;
   if (!(await allowAction(`${user.id}:training-attempt`, 120, 60_000))) return;
 
-  const exercise = await db.trainingExercise.findUnique({
-    where: { id: input.exerciseId },
+  // Sólo ejercicios de cursos publicados: un id de un curso en borrador no
+  // debe poder sembrar intentos ni actividad.
+  const exercise = await db.trainingExercise.findFirst({
+    where: { id: input.exerciseId, lesson: publishedLessonWhere },
     select: { id: true, lesson: { select: { lessonTopics: { select: { topicId: true }, take: 1 } } } },
   });
   if (!exercise) return;
@@ -76,8 +79,8 @@ export async function toggleTrainerChapter(chapterId: string, add: boolean): Pro
 
   if (!(await allowAction(`${user.id}:toggle-trainer-chapter`, 60, 60_000))) return;
 
-  const chapter = await db.chapter.findUnique({
-    where: { id: chapterId },
+  const chapter = await db.chapter.findFirst({
+    where: { id: chapterId, ...publishedChapterWhere },
     select: { id: true, order: true, courseId: true },
   });
   if (!chapter) return;

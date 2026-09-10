@@ -14,7 +14,7 @@ import {
   type DatabaseKindCode,
   type GameResultCode,
 } from "@/constants/platform/study-codes.const";
-import { PGN_MAX_GAMES, PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
+import { PGN_IMPORT_TRANSACTION, PGN_MAX_GAMES, PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getTeacherContext } from "@/lib/platform-auth/roles";
 import type { Prisma } from "@/lib/platform-db/generated/client";
@@ -172,7 +172,7 @@ export async function copyClassGamesToStudy(studyId: string, gameIds: string[]):
       });
       await indexGamePositions(tx, { gameId: game.id, databaseId: study.id, pgn: source.pgn });
     }
-  });
+  }, PGN_IMPORT_TRANSACTION);
 
   revalidatePath(platformRoutes.studies);
   revalidatePath(platformRoutes.studyDetail(studyId));
@@ -321,7 +321,7 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
       const created = await tx.game.create({ data, select: { id: true } });
       await indexGamePositions(tx, { gameId: created.id, databaseId: study.id, pgn: data.pgn });
     }
-  });
+  }, PGN_IMPORT_TRANSACTION);
 
   revalidatePath(platformRoutes.studies);
   revalidatePath(platformRoutes.studyDetail(studyId));

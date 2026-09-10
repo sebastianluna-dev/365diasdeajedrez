@@ -8,15 +8,18 @@ import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
+import { publishedLessonWhere } from "@/services/shared/published-content";
 import { recordUserActivity } from "@/services/shared/user-activity.service";
 
 // Las server actions son alcanzables por POST directo: el usuario SIEMPRE se
 // resuelve aquí dentro (DAL) y jamás llega del cliente.
 
+// Sólo lecciones de cursos publicados: el id llega del cliente y sin este
+// filtro un POST directo sembraría progreso sobre un curso en borrador.
 async function getLessonContext(lessonId: string) {
   const db = getPlatformDb();
-  return db.lesson.findUnique({
-    where: { id: lessonId },
+  return db.lesson.findFirst({
+    where: { id: lessonId, ...publishedLessonWhere },
     select: {
       id: true,
       chapterId: true,

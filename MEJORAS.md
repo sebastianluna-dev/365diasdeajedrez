@@ -187,39 +187,31 @@ las dos actions de asignación (`assignStudent`, `endAssignment`); `withErrorPar
 `TEACHER_ERROR_PARAM`, y el `export` sobrante de `getStaffContext` y `PLATFORM_UPLOAD_FOLDER`—
 (tarea mecánica, ver `todos.md`). `noUnusedLocals` (punto 62) evita la variante intra-archivo.
 
-### 46. El entrenador sirve ejercicios de cursos no publicados — [Autorización]
-`getTrainerSession` (`services/trainer/trainer.service.ts`) monta el `where` con `lessonId` o
-`chapterId` tal cual llegan por `searchParams`, sin exigir curso publicado y sin `take`, cuando
-`getTrainerData` y `getLessonView` sí lo exigen. Un alumno puede pedir `/entrenador?chapter=<uuid>`
-de un curso en borrador. Lo mismo aceptan `touchLesson`, `completeLesson`, `toggleTrainerChapter` y
-`recordTrainingAttempt`.
+### 46. ~~El entrenador sirve ejercicios de cursos no publicados~~ — RESUELTO (2026-09-09)
+`services/shared/published-content.ts` define `publishedCourseWhere`/`publishedChapterWhere`/
+`publishedLessonWhere`, encadenados en `getTrainerSession`, `recordTrainingAttempt`,
+`toggleTrainerChapter` y en `getLessonContext` (que alimenta `touchLesson` y `completeLesson`).
+`getTrainerData` usa el mismo `where`, así que ya no hay dos versiones de la regla.
 
-**Cómo abordarlo:** un helper `publishedLessonWhere()` encadenado en esas cinco consultas.
-
-### 47. Transacciones de importación de hasta 500 partidas sin `timeout` — [Datos]
-`importPgnGames`, `copyClassGamesToStudy` e `importChapterGames` abren `$transaction` interactivas y
-dentro del bucle `indexGamePositions` hace `deleteMany` + `createMany` por partida. Ningún
-`$transaction` del proyecto pasa opciones: el `timeout` por defecto es 5 s, así que el PGN de torneo
-que el tope de 2 MB contempla revienta con P2028 y revierte todo con un mensaje genérico.
-
-**Cómo abordarlo:** `{ timeout, maxWait }` acordes al tope, o lotes de N partidas.
+### 47. ~~Transacciones de importación de hasta 500 partidas sin `timeout`~~ — RESUELTO (2026-09-09)
+`PGN_IMPORT_TRANSACTION` (`content-limits.const.ts`: `maxWait` 5 s, `timeout` 120 s) acompaña a las
+tres transacciones que guardan e indexan importaciones (`importPgnGames`, `copyClassGamesToStudy`,
+`importChapterGames`). La atomicidad se conserva; sólo se le da el tiempo que el tope de 500
+partidas necesita.
 
 ### 48. La ficha de estudio carga el PGN de todas sus partidas sin paginar — [Datos / Rendimiento]
-`studyDetailInclude.games` (`services/studies/studies.mapper.ts`) usa `include` sin `select` ni
-`take`: trae `pgn` y `tags` de cada partida aunque `mapStudyGameItem` no los lea. Lo mismo paga la
-vista de una partida (`siblings = study.games`) y cada reordenación sube todos los ids.
-`listCollectionGames` (staff) lee el `pgn` entero sólo para contar jugadas.
+*Mayormente resuelto (2026-09-09):* `studyDetailInclude.games` usa `select` con los diez campos que
+lee el mapper (nunca `pgn` ni `tags`), y `listCollectionGames` cuenta las jugadas con
+`_count.positions` del índice de posiciones en vez de leer y reproducir el PGN de la colección.
 
-**Cómo abordarlo:** `select` con los campos del mapper; paginación por `searchParams`; persistir el
-número de jugadas al importar.
+**Lo que queda:** paginar la lista por `searchParams` (y el aside de la partida) cuando un estudio
+pase de unas decenas de partidas; hoy se pintan todas, ya sin el peso del PGN.
 
-### 49. El dashboard lee el histórico completo de estadísticas y el catálogo entero — [Datos]
-`getDailyStats` hace `userStatDaily.findMany({ where: { userId } })` sin fecha ni `take` para sumar
-cuatro cifras en memoria, y «Continuar estudiando» pasa por `getUserCourses()`, que trae todos los
-cursos con capítulos y lecciones y todo `LessonProgress`.
-
-**Cómo abordarlo:** `groupBy` con `_sum` y filtro de `day`; una consulta dirigida a
-`CourseProgress` (`orderBy updatedAt desc, take: 1`).
+### 49. ~~El dashboard lee el histórico completo de estadísticas y el catálogo entero~~ — RESUELTO (2026-09-09)
+Las estadísticas salen de cuatro `groupBy` con `_sum` (uno por rango de calendario) en
+`dashboard.service.ts`, y el mapper sólo pone nombre y orden. «Continuar estudiando» usa
+`getContinueStudyingCourse()` (`courses.service.ts`): localiza el progreso en curso con una consulta
+dirigida y carga sólo ese curso, en vez de `getUserCourses()` con el catálogo entero.
 
 ### 50. Ni un log en el servidor: los fallos se tragan en silencio — [Observabilidad]
 No hay `console.*` ni logger en `app/`, `lib/`, `services/`. `lib/rate-limit.ts` hace
@@ -485,13 +477,11 @@ resuelve mal), ninguna página lleva `alternates.canonical`, y la portada, `/nos
 **Cómo abordarlo:** `metadataBase` desde `NEXT_PUBLIC_SITE_URL`, imagen OG por defecto y canónica
 por página.
 
-### 69. Desfase horario calculado dos veces e índices compuestos que faltan — [Calidad / Datos]
-`lib/timezone.ts` (`offsetMsAt`) y `lib/study-streak.ts` (`offsetMs`) implementan el mismo
-algoritmo con `Intl.DateTimeFormat`. `Game` ordena por `order` dentro de `databaseId` sin índice
-compuesto, y `Class` filtra por `teacherId` y ordena por `scheduledAt` con dos índices sueltos.
-
-**Cómo abordarlo:** importar `offsetMsAt` desde `study-streak`; `@@index([databaseId, order])` y
-`@@index([teacherId, scheduledAt])`.
+### 69. ~~Desfase horario calculado dos veces e índices compuestos que faltan~~ — RESUELTO (2026-09-09)
+`lib/study-streak.ts` importa `offsetMsAt` de `lib/timezone.ts`. `Game` pasa a
+`@@index([databaseId, order])` y `Class` a `@@index([teacherId, scheduledAt])` (los simples que
+cubren sobran); migración `20260909120000_composite_indexes`, generada con `prisma migrate diff`.
+**Pendiente de aplicar con `npm run db:migrate`.**
 
 ### 70. Ocho hojas CSS bloqueantes en la portada — [Rendimiento]
 El build de `/` enlaza 8 hojas (40 KB en total, la mayor de 15 KB) que Lighthouse simula en serie

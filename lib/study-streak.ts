@@ -9,6 +9,8 @@
 // (STUDY_DAY_TIMEZONE), no en UTC: la racha es lo único que el alumno ve
 // cambiar al filo de la medianoche, y en UTC su medianoche sería la tarde.
 
+import { offsetMsAt } from "@/lib/timezone";
+
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /**
@@ -27,33 +29,6 @@ export function dayKey(date: Date, timeZone: string): string {
   }).format(date);
 }
 
-/** Cuánto va la zona por delante (+) o por detrás (−) de UTC en ese instante. */
-function offsetMs(instant: Date, timeZone: string): number {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone,
-    hourCycle: "h23",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  }).formatToParts(instant);
-
-  const value = (type: Intl.DateTimeFormatPartTypes): number =>
-    Number.parseInt(parts.find((part) => part.type === type)?.value ?? "0", 10);
-
-  const asUtc = Date.UTC(
-    value("year"),
-    value("month") - 1,
-    value("day"),
-    value("hour"),
-    value("minute"),
-    value("second"),
-  );
-  return asUtc - instant.getTime();
-}
-
 /**
  * El instante en que empieza un día, para acotar consultas: la medianoche de
  * esa fecha EN esa zona, expresada en UTC, que es como se guardan las fechas.
@@ -64,7 +39,7 @@ function offsetMs(instant: Date, timeZone: string): number {
  */
 export function startOfDay(key: string, timeZone: string): Date {
   const midday = new Date(`${key}T12:00:00.000Z`);
-  return new Date(Date.parse(`${key}T00:00:00.000Z`) - offsetMs(midday, timeZone));
+  return new Date(Date.parse(`${key}T00:00:00.000Z`) - offsetMsAt(midday, timeZone));
 }
 
 /**

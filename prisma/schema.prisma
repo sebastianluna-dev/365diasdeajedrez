@@ -841,7 +841,7 @@ model Game {
   /// Lecciones que sacan su contenido de esta partida.
   lessons     Lesson[]
 
-  @@index([databaseId])
+  @@index([databaseId, order])
 }
 
 /// Índice de posiciones: una fila por cada posición por la que pasó la partida.
@@ -971,7 +971,7 @@ model Class {
   transcript   ClassTranscript?
 
   @@index([scheduledAt])
-  @@index([teacherId])
+  @@index([teacherId, scheduledAt])
 }
 
 model ClassParticipant {

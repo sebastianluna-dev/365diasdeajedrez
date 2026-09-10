@@ -44,8 +44,12 @@ function wallClockIn(date: Date, timeZone: string): WallClock {
   };
 }
 
-/** Desfase de la zona en ese instante, en milisegundos (positivo al este). */
-function offsetMsAt(date: Date, timeZone: string): number {
+/**
+ * Desfase de la zona en ese instante, en milisegundos (positivo al este). Lo
+ * comparte `lib/study-streak.ts`, que necesita el mismo cálculo para la
+ * medianoche del día de estudio.
+ */
+export function offsetMsAt(date: Date, timeZone: string): number {
   const wall = wallClockIn(date, timeZone);
   const asIfUtc = Date.UTC(wall.year, wall.month - 1, wall.day, wall.hour, wall.minute, wall.second);
   return asIfUtc - date.getTime();

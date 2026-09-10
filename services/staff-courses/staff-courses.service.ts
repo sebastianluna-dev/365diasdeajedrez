@@ -291,9 +291,11 @@ export async function listCollectionGames(
       event: true,
       eco: true,
       playedAt: true,
-      pgn: true,
       database: { select: { chapter: { select: { name: true, order: true } } } },
-      _count: { select: { lessons: true } },
+      // Jugadas = posiciones indexadas menos la inicial (GamePosition guarda
+      // una fila por ply, la 0 incluida): así no hay que leer y reproducir el
+      // PGN de toda la colección para pintar un número.
+      _count: { select: { lessons: true, positions: true } },
     },
     // En la vista del curso salen agrupadas por capítulo y en su orden; dentro
     // de uno, en el suyo.
@@ -305,7 +307,7 @@ export async function listCollectionGames(
     chapterName: game.database.chapter?.name,
     title: game.title ?? `${game.white} — ${game.black}`,
     detail: [game.event, game.playedAt?.getUTCFullYear(), game.eco].filter(Boolean).join(" · "),
-    moveCount: extractMainline(game.pgn)?.sans.length ?? 0,
+    moveCount: Math.max(0, game._count.positions - 1),
     lessonCount: game._count.lessons,
   }));
 }

@@ -37,7 +37,18 @@ export const studyDetailInclude = {
     // se lean 1, 2, 3: no tienen fecha de partida, así que el descendente los
     // mostraba al revés.
     orderBy: [{ order: "asc" }, { playedAt: "desc" }, { createdAt: "asc" }],
-    include: {
+    // `select` y no `include`: la lista no enseña el PGN ni las etiquetas, y
+    // con quinientas partidas por importación esas dos columnas eran casi
+    // todo lo que viajaba desde la base para pintar una tabla.
+    select: {
+      id: true,
+      title: true,
+      white: true,
+      black: true,
+      round: true,
+      eco: true,
+      event: true,
+      playedAt: true,
       result: { select: { label: true } },
       // Para poder avisar antes de borrar el estudio: estas partidas están
       // citadas en clases y esos bloques se quedarían vacíos.

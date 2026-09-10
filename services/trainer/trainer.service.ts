@@ -1,6 +1,7 @@
-import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
+import type { Prisma } from "@/lib/platform-db/generated/client";
+import { publishedCourseWhere, publishedLessonWhere } from "@/services/shared/published-content";
 import { mapTrainerChapter, mapTrainerExercise, trainerExerciseInclude } from "./trainer.mapper";
 import type { TrainerData, TrainerExercise } from "./trainer.types";
 
@@ -11,7 +12,7 @@ export async function getTrainerData(): Promise<TrainerData> {
   const [chapters, trainerRows] = await Promise.all([
     db.chapter.findMany({
       where: {
-        course: { status: { code: COURSE_STATUS.PUBLISHED } },
+        course: publishedCourseWhere,
         lessons: { some: { exercises: { some: {} } } },
       },
       orderBy: [{ course: { name: "asc" } }, { order: "asc" }],
@@ -59,20 +60,24 @@ export interface TrainerSessionParams {
 /**
  * Ejercicios de la sesión: los de la lección o capítulo pedidos, o los de
  * todos los capítulos que el usuario agregó al Move Trainer.
+ *
+ * Los ids de lección y capítulo llegan por la URL, así que el filtro de curso
+ * publicado va encadenado en el `where`: sin él, `/entrenador?chapter=<id>`
+ * servía los ejercicios de un curso en borrador o archivado.
  */
 export async function getTrainerSession(params: TrainerSessionParams): Promise<TrainerExercise[]> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
 
-  let where;
+  let where: Prisma.TrainingExerciseWhereInput;
   if (params.lessonId) {
-    where = { lessonId: params.lessonId };
+    where = { lessonId: params.lessonId, lesson: publishedLessonWhere };
   } else if (params.chapterId) {
-    where = { lesson: { chapterId: params.chapterId } };
+    where = { lesson: { chapterId: params.chapterId, ...publishedLessonWhere } };
   } else {
     const trainerRows = await db.userTrainerChapter.findMany({ where: { userId: user.id }, select: { chapterId: true } });
     if (trainerRows.length === 0) return [];
-    where = { lesson: { chapterId: { in: trainerRows.map((row) => row.chapterId) } } };
+    where = { lesson: { chapterId: { in: trainerRows.map((row) => row.chapterId) }, ...publishedLessonWhere } };
   }
 
   const rows = await db.trainingExercise.findMany({

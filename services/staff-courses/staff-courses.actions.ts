@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
+import { PGN_IMPORT_TRANSACTION, PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
 import {
   AUTHOR_ROLE,
   COURSE_STATUS,
@@ -316,7 +316,7 @@ export async function importChapterGames(
       });
       await indexGamePositions(tx, { gameId: created.id, databaseId: database.id, pgn: game.pgn });
     }
-  });
+  }, PGN_IMPORT_TRANSACTION);
 
   revalidatePath(chapterPath);
   // La pestaña de la ficha enseña el número, y la del curso la lista entera.
