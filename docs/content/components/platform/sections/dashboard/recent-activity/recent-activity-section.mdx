@@ -1,0 +1,46 @@
+---
+description: "The 'Actividad reciente' card: the latest activity facts through ActivityList, or an empty state inviting the student to complete lessons."
+---
+
+# `RecentActivitySection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/dashboard/recent-activity/recent-activity.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `recent-activity.section.css` → block `.recent-activity` |
+| Used by | `/inicio` |
+| Composes | [`ActivityList`](/components/platform/shared/activity-list), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads | `getUserDashboard()` · `services/dashboard/dashboard.service.ts` (`recentActivity`) |
+
+## Purpose
+
+The last block of the dashboard: what the student did recently, newest first. The list itself is the shared [`ActivityList`](/components/platform/shared/activity-list); this section owns the card, the title and the empty case.
+
+## Props
+
+This component takes no props.
+
+## Behaviour
+
+Awaits the dashboard data; renders the list when `recentActivity` has items, otherwise an empty state ("Sin actividad todavía") without an action link, because the action is the whole platform.
+
+## Markup & styling
+
+Block `.recent-activity` (4 lines): card spacing only.
+
+**Other classes it renders:** `.platform-card`, `.platform-card__title`.
+
+## Usage
+
+From `app/(platform)/inicio/page.tsx`:
+
+```tsx
+<ActivityStatsSection />
+<RecentActivitySection />
+```
+
+## Related
+
+- [`ActivityList`](/components/platform/shared/activity-list).
+- The teacher sees the same facts for an assigned student in [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section).

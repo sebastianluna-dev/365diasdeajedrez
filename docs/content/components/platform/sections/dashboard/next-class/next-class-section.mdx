@@ -1,0 +1,55 @@
+---
+description: "The 'Próxima clase' card: the first upcoming class with its teacher, local date and time, duration, status tag and a link to its detail; an empty state otherwise."
+---
+
+# `NextClassSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/dashboard/next-class/next-class.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `next-class.section.css` → block `.next-class` |
+| Used by | `/inicio` |
+| Composes | [`EmptyState`](/components/platform/shared/empty-state), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Reads | `getUserClasses()` · `services/classes/classes.service.ts` (`upcoming[0]`) |
+| Uses | `platformRoutes` from `lib/platform-routes` |
+
+## Purpose
+
+The dashboard card for the next scheduled class. It reads the same `getUserClasses()` the classes page uses and takes the first upcoming one, so the dashboard and `/clases` can never disagree about which class is next.
+
+## Props
+
+This component takes no props.
+
+## Behaviour
+
+Renders title, teacher name, the schedule through [`LocalDateTime`](/components/platform/shared/local-datetime) (server fallback `dateLabel · timeLabel`, replaced by the browser's zone after hydration), the duration, the status tag and a secondary "Ver detalle" button. Without an upcoming class, an empty state links to "Mis clases".
+
+## Markup & styling
+
+Block `.next-class` (32 lines), inside a `.platform-card`.
+
+**Elements:** `.next-class__body`, `.next-class__name`, `.next-class__teacher`, `.next-class__schedule`, `.next-class__status`, `.next-class__cta`
+
+**Other classes it renders:** `.platform-card`, `.platform-card__title`, `.platform-tag`, `.platform-tag_variant_accent`, `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/inicio/page.tsx`:
+
+```tsx
+<div className="dashboard-page__row">
+  <ContinueStudyingSection />
+  <NextClassSection />
+</div>
+```
+
+## Related
+
+- [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section) and [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section).
+- [Student features › Classes](/platform/student).

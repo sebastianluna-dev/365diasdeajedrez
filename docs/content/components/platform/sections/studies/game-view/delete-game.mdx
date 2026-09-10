@@ -1,0 +1,70 @@
+---
+description: "The confirmation dialog for deleteStudyGame, with a checkbox required only when the game is cited in class blocks, and three trigger sizes for the places it appears."
+---
+
+# `DeleteGame`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/studies/game-view/delete-game.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `delete-game.comp.css` → block `.delete-game` |
+| Used by | [`GameAside`](/components/platform/sections/studies/game-view/game-aside) |
+| Writes | `deleteStudyGame()` · `services/studies/studies.actions.ts` |
+
+## Purpose
+
+Deleting one game with its variations, comments and arrows. Like [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study), the dialog requires a confirmation checkbox exactly when the server does: here, when the game is cited in class blocks, which will be left empty.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `studyId` | `string` | yes | Bound into the action. |
+| `gameId` | `string` | yes | Bound into the action. |
+| `name` | `string` | yes | For the title. |
+| `classBlockCount` | `number` | yes | Class blocks that cite it. Above zero, the checkbox is required. |
+| `size` | `"regular" \| "compact" \| "inline"` | no · default `"regular"` | `compact` spans the record column's width; `inline` is one more word of the record's foot. |
+| `label` | `string` | no · default `"Borrar partida"` | Trigger text; at the foot "Borrar" is enough. |
+
+## Behaviour
+
+- `needsConfirmation = classBlockCount > 0`, the same condition as the action; otherwise the submit would bounce to `?error=gameInClasses` instead of deleting.
+- The checkbox is `name="confirmClassBlocks" value="yes"`: sent only when ticked. `confirmed` gates the submit button and resets on close.
+- Native `<dialog>`, `<form action={deleteStudyGame.bind(null, studyId, gameId)}>`; the action redirects to the study after deleting.
+
+## Markup & styling
+
+Block `.delete-game` (163 lines).
+
+**Elements:** `.delete-game__open`, `.delete-game__dialog`, `.delete-game__form`, `.delete-game__head`, `.delete-game__icon`, `.delete-game__title`, `.delete-game__description`, `.delete-game__confirm`, `.delete-game__checkbox`, `.delete-game__warning`, `.delete-game__actions`, `.delete-game__note`, `.delete-game__cancel`, `.delete-game__submit`
+
+**Modifiers and states:** `.delete-game__open_size_compact`, `.delete-game__open_size_inline`
+
+**Other classes it renders:** `.platform-dialog`.
+
+**Tokens:** `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-danger-soft`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+
+**Breakpoints:** `(max-width: 520px)` stacks the action row.
+
+## Usage
+
+From `components/platform/sections/studies/game-view/game-aside.comp.tsx`:
+
+```tsx
+import { DeleteGame } from "./delete-game.comp";
+
+<DeleteGame
+  studyId={game.studyId}
+  gameId={game.id}
+  name={game.title ?? `${game.white} – ${game.black}`}
+  classBlockCount={game.classBlockCount}
+  size="inline"
+  label="Borrar"
+/>
+```
+
+## Related
+
+- [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study).
+- What a `GAME_REF` block does when its game is gone: [`ClassContentRenderer`](/components/platform/shared/class-content-renderer).

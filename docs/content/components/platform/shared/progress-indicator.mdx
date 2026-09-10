@@ -1,0 +1,59 @@
+---
+description: "A progress bar with its percentage and an optional detail, inline or stacked, with the value clamped to 0–100 and rounded."
+---
+
+# `ProgressIndicator`
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/progress-indicator.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `progress-indicator.comp.css` → block `.progress-indicator` |
+| Used by | [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section), [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section), [`ChapterList`](/components/platform/sections/courses/course-detail/chapter-list), [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section), [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section) |
+
+## Purpose
+
+The one progress bar of the platform, in two layouts: `inline` puts the bar and its label on one line (the dashboard card), `stacked` puts the percentage and the detail at the two ends with the bar underneath (course and chapter headers, chapter rows). The course card in "Mis cursos" draws its own two meters because it shows progress in two units at once; everything else uses this.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `percent` | `number` | yes | Any number; clamped to 0–100 and rounded before rendering. |
+| `detail` | `string` | no | "3 de 7 lecciones", appended to the label (inline) or placed at the right end (stacked). |
+| `layout` | `"inline" \| "stacked"` | no · default `"inline"` | See above. |
+
+## Behaviour
+
+None. The fill width is an inline style with the clamped percentage.
+
+## Markup & styling
+
+Block `.progress-indicator` (55 lines).
+
+**Elements:** `.progress-indicator__track`, `.progress-indicator__fill`, `.progress-indicator__label` (inline), `.progress-indicator__legend`, `.progress-indicator__percent`, `.progress-indicator__detail` (stacked)
+
+**Modifiers and states:** `.progress-indicator_layout_stacked`
+
+**Tokens:** `--platform-accent`, `--platform-track`, `--platform-text`, `--platform-text-muted`
+
+The course and chapter detail sheets restyle `.progress-indicator__legend`, `__percent`, `__detail` and `__track` inside their own block to enlarge the headline figure; that is the sanctioned way to adapt it, nested under the consumer's root.
+
+## Usage
+
+From `components/platform/sections/courses/chapter-detail/chapter-detail.section.tsx`:
+
+```tsx
+import { ProgressIndicator } from "@/components/platform/shared/progress-indicator.comp";
+
+<ProgressIndicator
+  layout="stacked"
+  percent={percent}
+  detail={`${chapter.completedLessons} de ${chapter.totalLessons} completadas`}
+/>
+```
+
+## Related
+
+- [`CourseCard`](/components/platform/sections/courses/courses-list/course-card) and its own `Meter`.
+- [`StudyGoalAside`](/components/platform/sections/courses/courses-list/study-goal) draws the daily-goal bar separately for the same reason (two figures around one bar).

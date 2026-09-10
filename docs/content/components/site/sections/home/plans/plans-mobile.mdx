@@ -1,0 +1,55 @@
+---
+description: "The narrow-screen version of the plans: a row of tabs with the plan names and the one active card; owns the active index."
+---
+
+# `PlansMobileSection`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/plans/plans-mobile.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `plans-mobile.comp.css` → block `.plans-mobile` |
+| Used by | [`PlansSection`](/components/site/sections/home/plans/plans-section) |
+| Composes | [`PlanCard`](/components/site/sections/home/plans/plan-card) |
+| Uses | `PackagePlanContent` from `services/home/home.types` |
+
+## Purpose
+
+On a phone three cards stacked would push the rest of the page far down, so the plans become tabs. This is the only client code of the pricing section; the section and the card stay on the server.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `plans` | `PackagePlanContent[]` | yes | One tab per plan, keyed by `name`. |
+
+## Behaviour
+
+- `activeIndex` state, default `0`; each tab button sets it and the matching card renders.
+- Hidden on desktop by CSS; the tree is still rendered on the server so both layouts arrive in the HTML.
+
+## Markup & styling
+
+Block `.plans-mobile` (42 lines).
+
+**Elements:** `.plans-mobile__tabs`, `.plans-mobile__tab`, `.plans-mobile__card`
+
+**Modifiers:** `.plans-mobile__tab_active`
+
+**Tokens:** `--color-dark`, `--foreground`
+
+**Breakpoints:** `(max-width: 1023px)` is where the block becomes visible.
+
+## Usage
+
+From `components/site/sections/home/plans/plans.section.tsx`:
+
+```tsx
+import { PlansMobileSection } from "./plans-mobile.comp";
+
+<PlansMobileSection plans={content.plans} />
+```
+
+## Related
+
+- [`PlanCard`](/components/site/sections/home/plans/plan-card).

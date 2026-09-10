@@ -1,0 +1,51 @@
+---
+description: "The /clases page body: upcoming and past classes as cards, each group with its own empty state, read from getUserClasses."
+---
+
+# `ClassesListSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/classes/classes-list/classes-list.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `classes-list.section.css` → block `.classes-list` |
+| Used by | `/clases` |
+| Composes | [`ClassCard`](/components/platform/sections/classes/classes-list/class-card), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads | `getUserClasses()` · `services/classes/classes.service.ts` |
+
+## Purpose
+
+The student's classes in two groups, "Próximas clases" and "Clases pasadas". The service does the split (by scheduled time against now) and the section only lays it out; the dashboard's [`NextClassSection`](/components/platform/sections/dashboard/next-class/next-class-section) reads the same service and takes the first upcoming one.
+
+## Props
+
+This component takes no props.
+
+## Behaviour
+
+Awaits `{ upcoming, past }`. Each group renders its cards or an empty state with copy specific to it ("No tienes clases programadas" with a hint about the teacher scheduling; "Todavía no has tomado clases").
+
+## Markup & styling
+
+Block `.classes-list` (19 lines).
+
+**Elements:** `.classes-list__group`, `.classes-list__group-title`, `.classes-list__items`
+
+**Tokens:** `--platform-text`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/clases/page.tsx`:
+
+```tsx
+import { ClassesListSection } from "@/components/platform/sections/classes/classes-list/classes-list.section";
+
+<ClassesListSection />
+```
+
+## Related
+
+- [`ClassCard`](/components/platform/sections/classes/classes-list/class-card), [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section).
+- [Student features › Classes](/platform/student).

@@ -1,0 +1,54 @@
+---
+description: "The teacher's students with an active assignment in a PlatformTable, searchable by name or email through a GET form whose query filters in the service's where."
+---
+
+# `AssignedStudentsSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/teacher/students/assigned-students.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `assigned-students.section.css` → block `.assigned-students` |
+| Used by | `/profesor/alumnos` |
+| Composes | [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Reads | `getAssignedStudents(query)` · `services/teacher-students/teacher-students.service.ts` |
+| Uses | `teacherRoutes` from `lib/platform-routes` |
+
+## Purpose
+
+"Mis alumnos": one row per student currently assigned to the teacher, with the assignment date, the next class with this teacher and the last activity. The search is a GET form against the same route, so the filter lives in the URL and the service applies it in the `where`; there is no client state.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `query` | `string` | no | Search by name or email, from `?q=`. |
+
+## Behaviour
+
+Awaits the filtered list. Name cells link to the student's page. Dates go through [`LocalDateTime`](/components/platform/shared/local-datetime) without time. The empty label distinguishes "no match" from "no assigned students yet (staff assigns them)".
+
+## Markup & styling
+
+Block `.assigned-students` (23 lines): the search bar layout.
+
+**Elements:** `.assigned-students__search`
+
+**Other selectors it styles:** `.platform-field` (inline in the bar).
+
+**Breakpoints:** `(max-width: 620px)` stacks the search field and button.
+
+## Usage
+
+From `app/(platform)/profesor/alumnos/page.tsx`:
+
+```tsx
+import { AssignedStudentsSection } from "@/components/platform/sections/teacher/students/assigned-students.section";
+
+<AssignedStudentsSection query={q} />
+```
+
+## Related
+
+- [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section).
+- Assignments are made by staff in [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel).

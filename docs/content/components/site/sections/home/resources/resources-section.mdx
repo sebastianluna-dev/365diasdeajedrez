@@ -1,0 +1,53 @@
+---
+description: "The three latest blog posts as cards under a 'Recursos' heading with a link to /blog; its stylesheet is one of the two still written mobile-first."
+---
+
+# `ResourcesSection`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/resources/resources.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `resources.section.css` → block `.resources` |
+| Used by | `app/(frontend)/landing-page.tsx` (`sections.resources`, currently off) |
+| Composes | [`BlogResourceCard`](/components/site/sections/home/resources/blog-resource-card) |
+| Reads | `getArticleSummaries()` · `services/articles/articles.service.ts` |
+
+## Purpose
+
+A teaser of the blog on the home page. The copy ("Material de estudio para todos los niveles.") is fixed in code; the cards are the first three summaries the articles service returns. It is switched off in `config/site.config.ts` at the moment.
+
+## Props
+
+None.
+
+## Behaviour
+
+- Awaits `getArticleSummaries()` and slices the first three.
+- Two "Ver más" links to `/blog`: one in the head (desktop) and one in a row under the cards (mobile); CSS shows one.
+- `id="blog"`.
+
+## Markup & styling
+
+Block `.resources` (54 lines), on top of the global `.section.section_theme_dark`.
+
+**Elements:** `.resources__head`, `.resources__head-cta`, `.resources__cards`, `.resources__cta-row`
+
+**Breakpoints:** `(max-width: 819px)` and `(min-width: 820px)`. The `min-width` query is the mobile-first exception tracked as T17 in `todos.md`.
+
+**Other classes:** `.section__inner`, `.section__head`, `.section__eyebrow`, `.section__title`, `.section__text`, `.button.button_variant_primary`.
+
+## Usage
+
+From `app/(frontend)/landing-page.tsx`:
+
+```tsx
+import { ResourcesSection } from "@/components/site/sections/home/resources/resources.section";
+
+{sections.resources && <ResourcesSection />}
+```
+
+## Related
+
+- [`BlogResourceCard`](/components/site/sections/home/resources/blog-resource-card).
+- The blog listing itself: [`BlogArticles`](/components/site/sections/blog/blog-articles/blog-articles-section).

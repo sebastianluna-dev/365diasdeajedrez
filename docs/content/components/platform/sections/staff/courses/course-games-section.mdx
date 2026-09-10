@@ -1,0 +1,55 @@
+---
+description: "Every game of a course at once, read-only and with its chapter, move count and how many lessons use it; games are added and removed from their chapter."
+---
+
+# `CourseGamesSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/courses/course-games.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `course-games.section.css` → block `.course-games` |
+| Used by | `/administracion/cursos/[courseId]/partidas` |
+| Composes | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses | `staffRoutes` from `lib/platform-routes`; `CourseAdminDetail`, `CourseGameRow` types |
+
+## Purpose
+
+The "Partidas" tab of a course: the overview that the split by chapters would otherwise take away. Games belong to a chapter's collection (a game without a chapter would have no collection to go to), so here they are only looked at, with the chapter named on each row and a note pointing back to the course record to add or remove.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `course` | `CourseAdminDetail` | yes | For the head, badge and tab links. |
+| `games` | `CourseGameRow[]` | yes | `{ id, title, detail?, chapterName?, moveCount, lessonCount }[]`. |
+
+## Behaviour
+
+None: a grid of rows or an [`EmptyState`](/components/platform/shared/empty-state).
+
+## Markup & styling
+
+Block `.course-games` (132 lines).
+
+**Elements:** `.course-games__status`, `.course-games__table`, `.course-games__head`, `.course-games__rows`, `.course-games__row`, `.course-games__text`, `.course-games__title`, `.course-games__detail`, `.course-games__cell`, `.course-games__number`, `.course-games__note`, `.course-games__link`
+
+**Modifiers and states:** `.course-games__status_state_{draft,published,archived}`
+
+**Tokens:** own `--course-games-columns`; `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-success-ink`, `--platform-success-soft`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 860px)` drops the numeric columns.
+
+## Usage
+
+From `app/(platform)/administracion/cursos/[courseId]/partidas/page.tsx`:
+
+```tsx
+import { CourseGamesSection } from "@/components/platform/sections/staff/courses/course-games.section";
+
+<CourseGamesSection course={course} games={games} />
+```
+
+## Related
+
+- [`ChapterGamesSection`](/components/platform/sections/staff/courses/chapter-games-section), where games are imported and removed.

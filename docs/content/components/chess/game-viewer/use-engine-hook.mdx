@@ -1,0 +1,74 @@
+---
+description: "The live-analysis hook: a lazily created Stockfish worker, three lines at depth 20, and the small UCI state machine that never sends a new position until the previous search has answered bestmove."
+---
+
+# `useEngine`
+
+Also exports the `EngineState` type.
+
+| | |
+| --- | --- |
+| File | `components/chess/game-viewer/use-engine.hook.ts` |
+| Kind | Client hook |
+| Stylesheet | none |
+| Used by | [`GameViewer`](/components/chess/game-viewer/game-viewer); [`EnginePanel`](/components/chess/game-viewer/engine-panel) imports the `EngineState` type |
+| Uses | `mergeEngineLines`, `orderedEngineLines`, `parseEngineInfo`, `EngineInfo`, `EngineLines` from `lib/chess/engine-protocol`<br />`turnColor` from `lib/chess/replay`<br />the worker script `public/engine/stockfish.js` |
+
+## Purpose
+
+The analysis engine tied to a component's lifecycle. Stockfish runs in its own Web Worker: it is a separate program, not platform code, and that way the analysis never blocks the interface however deep it goes. The worker is created **lazily**, only when `enabled` becomes true, because it is 7 MB of WebAssembly that make no sense to download for someone who will never switch the engine on.
+
+The important part of this file is not the worker but the conversation with it. UCI is a protocol in turns: `stop` does not halt a search at once, it asks it to finish, and until the engine answers `bestmove` it keeps analysing. Sending `position` in that gap violates the protocol and Stockfish aborts with `RuntimeError: unreachable`, taking the worker down. Hence a small state machine instead of firing commands point-blank.
+
+## API
+
+### `useEngine`
+
+```ts
+export function useEngine(fen: string, enabled: boolean): EngineState
+```
+
+| Argument | Meaning |
+| --- | --- |
+| `fen` | The position that should be under analysis. Changing it does not restart the worker. |
+| `enabled` | Creates the worker when it turns true and **terminates** it when it turns false; switching off must not leave an engine thinking in the background. |
+
+### `EngineState`
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `lines` | `EngineInfo[]` | The continuations of the **current** position, best first. Empty until the first `info` line for this FEN arrives. |
+| `info` | `EngineInfo \| null` | The best of them; drives the evaluation bar. |
+| `loading` | `boolean` | Enabled, not failed, and no line yet. |
+| `failed` | `boolean` | The worker could not be created or crashed: say so rather than leaving a switch that does nothing. |
+
+## Behaviour
+
+**Startup effect (keyed on `enabled`).** Creates the worker inside a `try` (a browser without Workers throws synchronously; the failure is flagged on the next tick to avoid a state change during the effect body), resets the conversation record, registers the message handler and sends `uci`, `setoption UCI_AnalyseMode`, `setoption MultiPV 3` and `isready`. Nothing is asked until `readyok` arrives. Cleanup terminates the worker without a prior `stop`. A `cancelled` flag ignores late messages and the `onerror` a terminated worker fires while its download is aborted, which in React strict mode used to mark the engine as failed even though the second worker started fine.
+
+**Position effect (keyed on `fen`).** Records the wanted FEN. If a search is running for another position, it sends `stop` and waits: the `bestmove` handler is what launches the next search. Otherwise it calls the launcher published by the startup effect.
+
+**Message handling.** `readyok` opens the door; `bestmove` releases the turn, records the finished FEN and launches the pending search if it differs; `info` lines are parsed with `parseEngineInfo` for the FEN that was actually asked (`searching_fen`, which may lag behind `wanted`) and merged into `result` **keyed by that FEN**. Storing evaluations next to the position that produced them means nothing has to be cleared on move change and another position's lines can never be shown: `orderedEngineLines(result, fen)` returns nothing when the FEN does not match.
+
+**Constants.** `MAX_DEPTH = 20` (trustworthy without pushing a laptop to full throttle) and `ENGINE_LINES = 3` (with one line you cannot tell whether the best move is best by a little or a lot; the engine analyses the three for real, which is why it is not five).
+
+## Markup & styling
+
+Nothing rendered.
+
+## Usage
+
+From `components/chess/game-viewer/game-viewer.comp.tsx`:
+
+```tsx
+import { useEngine } from "./use-engine.hook";
+
+// With `engine` off the hook creates no worker and downloads nothing.
+const engineState = useEngine(fen, engine && engineOn);
+```
+
+## Related
+
+- [`EnginePanel`](/components/chess/game-viewer/engine-panel) renders the state; the viewer's evaluation bar reads `info`.
+- [`useGameReview`](/components/chess/game-viewer/use-game-review-hook) is the other worker, kept separate on purpose.
+- [Stockfish, pieces & sounds](/chess/engine-and-assets) covers `public/engine`, headers and the protocol helpers in `lib/chess/engine-protocol.ts`.

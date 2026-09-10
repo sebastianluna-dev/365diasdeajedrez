@@ -1,0 +1,53 @@
+---
+description: "A 15-minute countdown on the sticky CTA drawn with the chess clock's compact dial, ticking once a second through useCountdownTimer and turning red under a minute."
+---
+
+# `CtaClock`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/cta/cta-clock.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `cta-clock.comp.css` → elements `.sticky-cta__clock`, `.sticky-cta__clock-time` of `.sticky-cta` |
+| Used by | [`CtaSection`](/components/site/sections/home/cta/cta-section) |
+| Composes | [`ClockDial`](/components/site/sections/chess-clock/clock-dial) |
+| Uses | `useCountdownTimer` from `hooks/use-countdown-timer.hook` |
+
+## Purpose
+
+The sense of urgency on the CTA, reusing the analogue dial of `/reloj-de-ajedrez` in its `compact` form. The countdown lasts `STICKY_CTA_DURATION_SECONDS` (900) and restarts at zero.
+
+## Props
+
+None.
+
+## Behaviour
+
+- `useCountdownTimer(900, 1000)`: one re-render per second is enough for a `mm:ss` readout that stays on screen for the whole visit; the remaining time is computed from `Date.now()`, so a slow tick does not drift.
+- Passes `hands` to the dial, `active` always on, `flagged` never, and `lowTime` when 60 seconds or fewer remain.
+
+## Markup & styling
+
+Elements of `.sticky-cta` (25 lines): `.sticky-cta__clock`, `.sticky-cta__clock-time`.
+
+**Tokens:** `--color-dark`
+
+**Breakpoints:** `(max-width: 1023px)` hides the clock.
+
+## Usage
+
+From `components/site/sections/home/cta/cta.section.tsx`:
+
+```tsx
+import { CtaClock } from "./cta-clock.comp";
+
+<div className="sticky-cta__inner">
+  <CtaClock />
+  …
+</div>
+```
+
+## Related
+
+- [`ClockDial`](/components/site/sections/chess-clock/clock-dial), the dial it reuses.
+- The hook shares `formatTime` and `handAngles` with `hooks/use-chess-clock.hook.ts`.

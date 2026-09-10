@@ -1,0 +1,63 @@
+---
+description: "The right column of 'Mis cursos': the daily streak and today's minutes against the daily goal, with a <details> form to change the goal through updateDailyGoal."
+---
+
+# `StudyGoalAside`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/courses/courses-list/study-goal.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `study-goal.comp.css` → block `.study-goal` |
+| Used by | `/cursos` |
+| Writes | `updateDailyGoal()` · `services/study-goal/study-goal.actions.ts` |
+| Uses | `GOAL_OPTIONS` from `constants/platform/study-goal.const`<br />`StudyGoal` from `services/study-goal/study-goal.types`<br />`FlameIcon` from `components/icons/` |
+
+## Purpose
+
+Two small cards beside the course list: "Racha diaria" (days in a row with study activity) and "Objetivo diario" (minutes studied today against the goal, with a bar).
+
+Neither figure is stored. The streak is counted backwards from the activity log (`lib/study-streak`) and today's minutes are the durations of the lessons finished today. The only thing persisted is the goal itself, because it is a decision, not a computation.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `goal` | `StudyGoal` | yes | `{ streakDays, minutesToday, goalMinutes, percent }`, from `getStudyGoal()` in the page. |
+
+## Behaviour
+
+- The streak note adapts its wording: "Estudia hoy para empezar una racha." at zero, otherwise "n días seguidos estudiando."
+- "Cambiar objetivo" is a `<details>` rather than a modal: choosing from a short list needs no JavaScript. Inside, a `<form action={updateDailyGoal}>` with a `<select name="goalMinutes">` over `GOAL_OPTIONS` and a save button. The action validates the value against the same list and revalidates `/cursos`.
+- The bar's width is `goal.percent` inline; the service clamps it.
+
+## Markup & styling
+
+Block `.study-goal` (188 lines).
+
+**Elements:** `.study-goal__card`, `.study-goal__title`, `.study-goal__streak`, `.study-goal__flame`, `.study-goal__streak-value`, `.study-goal__streak-note`, `.study-goal__amount`, `.study-goal__amount-value`, `.study-goal__amount-total`, `.study-goal__legend`, `.study-goal__legend-label`, `.study-goal__legend-percent`, `.study-goal__track`, `.study-goal__fill`, `.study-goal__hint`, `.study-goal__editor`, `.study-goal__editor-button`, `.study-goal__form`, `.study-goal__field`, `.study-goal__field-label`, `.study-goal__select`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-button`.
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-font`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+
+No media queries; the page's layout moves the aside under the list on narrow screens.
+
+## Usage
+
+From `app/(platform)/cursos/page.tsx`:
+
+```tsx
+import { StudyGoalAside } from "@/components/platform/sections/courses/courses-list/study-goal.comp";
+
+<div className="courses-page__layout">
+  <CoursesListSection courses={courses} />
+  <StudyGoalAside goal={goal} />
+</div>
+```
+
+## Related
+
+- `services/study-goal/*` and `lib/study-streak.ts`; [Student features › Courses](/platform/student).

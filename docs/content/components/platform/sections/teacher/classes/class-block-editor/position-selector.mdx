@@ -1,0 +1,48 @@
+---
+description: "A select of the teacher's own saved positions (diagrams) for a position block."
+---
+
+# `PositionSelector`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/teacher/classes/class-block-editor/position-selector.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | none |
+| Used by | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) |
+| Composes | [`FormField`](/components/platform/shared/form-field) |
+| Uses | `PositionOption` from `services/teacher-classes/teacher-classes.types` |
+
+## Purpose
+
+Position blocks reference a saved `Position` row owned by the teacher (`owner = TEACHER`), rendered to the student as a [`StaticDiagram`](/components/chess/static-diagram). This is the dropdown over those positions.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `positions` | `PositionOption[]` | yes | `{ id, label }[]`. Empty shows a hint that none is saved yet. |
+| `value` | `string` | yes | The `positionId`. |
+| `onChange` | `(positionId: string) => void` | yes | |
+
+## Behaviour
+
+A controlled `<select name="positionId" required>` with an empty placeholder option.
+
+## Markup & styling
+
+No stylesheet.
+
+## Usage
+
+From `components/platform/sections/teacher/classes/class-block-editor/block-form.comp.tsx`:
+
+```tsx
+import { PositionSelector } from "./position-selector.comp";
+
+<PositionSelector positions={options.positions} value={positionId} onChange={setPositionId} />
+```
+
+## Related
+
+- There is no interface yet to create saved positions; they come from the seed. See [Teacher & staff panels](/platform/teacher-and-staff).

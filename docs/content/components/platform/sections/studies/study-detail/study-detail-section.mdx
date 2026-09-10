@@ -1,0 +1,71 @@
+---
+description: "The study page: header with kind, origin and read-only mark, the action bar (delete, edit, new game) when writing is allowed, the sharing panel for a collection's owner, and the game table."
+---
+
+# `StudyDetailSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/studies/study-detail/study-detail.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `study-detail.section.css` → block `.study-detail` |
+| Used by | `/estudios/[studyId]` |
+| Composes | [`GameTable`](/components/platform/sections/studies/study-detail/game-table), [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study), [`NewGame`](/components/platform/sections/studies/study-detail/new-game), [`ShareCollection`](/components/platform/sections/studies/study-detail/share-collection), [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study), [`PlatformNotice`](/components/platform/shared/platform-notice), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses | `DATABASE_KIND` from `constants/platform/study-codes.const`; `StudyDetail`, `StudyKindOption`, `ClassGameItem`, `StudentOption` from `services/studies/studies.types` |
+
+## Purpose
+
+One study. The header names it and says what it is; the action bar offers what the viewer may do; the body is the ordered list of games. What is offered comes from `services/studies/study-rules`, the same table the server actions apply: this section only decides what is **shown**, never what is allowed.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `study` | `StudyDetail` | yes | The study with `games`, `shares`, `permissions`, `kindCode`, `citedGameCount` and labels. |
+| `kinds` | `StudyKindOption[]` | yes | Kinds the student can set when editing. Empty in course databases. |
+| `results` | `StudyKindOption[]` | yes | The results catalog, for the blank-game form. |
+| `classGames` | `ClassGameItem[]` | yes | Games seen in class that can be copied. Empty hides that tab of `NewGame`. |
+| `students` | `StudentOption[]` | yes | Students to hand a collection to, for a teacher's own collection. |
+| `errorCode` | `string` | no | `?error=` from a bounced action; translated by the local map (`confirmStudyDelete`, `fen`). |
+
+## Behaviour
+
+- `canWrite = permissions.canEditGames` gates the whole action bar; inside it `canDelete` gates the delete button ("Mis partidas" is editable but not deletable).
+- `canShare` is true only for a **collection** (`DATABASE_KIND.COLLECTION`) the viewer can delete, which means its owner; whoever receives one gets `shares` empty and fails this test too.
+- Tags: kind, course name or "Te la compartió …", and "Sólo lectura" when not writable.
+- The game table gets `canReorder={canWrite}`; with no games an empty state with different copy for writable and read-only studies.
+- Errors render through [`PlatformNotice`](/components/platform/shared/platform-notice) with a fallback message for unknown codes.
+
+## Markup & styling
+
+Block `.study-detail` (103 lines).
+
+**Elements:** `.study-detail__head`, `.study-detail__heading`, `.study-detail__tags`, `.study-detail__kind`, `.study-detail__origin`, `.study-detail__readonly`, `.study-detail__name`, `.study-detail__meta`, `.study-detail__dot`, `.study-detail__actions`, `.study-detail__new`
+
+No modifiers.
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 900px)` stacks the actions under the heading.
+
+## Usage
+
+From `app/(platform)/estudios/[studyId]/page.tsx`:
+
+```tsx
+import { StudyDetailSection } from "@/components/platform/sections/studies/study-detail/study-detail.section";
+
+<StudyDetailSection
+  study={study}
+  kinds={kinds}
+  results={results}
+  classGames={classGames}
+  students={students}
+  errorCode={error}
+/>
+```
+
+## Related
+
+- [`StudiesNavigation`](/components/platform/shared/studies-navigation) is rendered by the page above it.
+- [Student features › Studies](/platform/student) for the kinds and the permission table.

@@ -1,0 +1,46 @@
+---
+description: "The 'Tus estadísticas' card: fetches the four precomputed calendar ranges from the dashboard service and hands them to the StatsCards toggle."
+---
+
+# `ActivityStatsSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/dashboard/activity-stats/activity-stats.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `activity-stats.section.css` → block `.activity-stats` |
+| Used by | `/inicio` |
+| Composes | [`StatsCards`](/components/platform/sections/dashboard/activity-stats/stats-cards) |
+| Reads | `getUserDashboard()` · `services/dashboard/dashboard.service.ts` (`stats`) |
+
+## Purpose
+
+The server half of the statistics card. The service computes the counts for four ranges (week, month, year, all time) and their per-topic breakdown in one pass over the activity; this section awaits them and renders the card frame with the title. The client half, [`StatsCards`](/components/platform/sections/dashboard/activity-stats/stats-cards), only switches between ranges that already arrived, so changing the period costs no request.
+
+## Props
+
+This component takes no props.
+
+## Behaviour
+
+Awaits and delegates. No branching: the service always returns the four ranges, empty or not.
+
+## Markup & styling
+
+Block `.activity-stats` (4 lines): only the card's spacing. Everything visible is styled by `StatsCards`.
+
+**Other classes it renders:** `.platform-card`, `.platform-card__title`.
+
+## Usage
+
+From `app/(platform)/inicio/page.tsx`:
+
+```tsx
+<ActivityStatsSection />
+<RecentActivitySection />
+```
+
+## Related
+
+- [`StatsCards`](/components/platform/sections/dashboard/activity-stats/stats-cards).
+- `DashboardStats` and `StatsRangeKey` in `services/dashboard/dashboard.types.ts`.

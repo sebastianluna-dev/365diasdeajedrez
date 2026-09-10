@@ -1,0 +1,52 @@
+---
+description: "Renders a UTC instant in the browser's time zone: the server-formatted fallback is what the HTML carries, and the local text replaces it after hydration with no mismatch."
+---
+
+# `LocalDateTime`
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/local-datetime.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | none: renders a bare `<time>`, styled by whoever mounts it |
+| Used by | every place that shows a class date (15 importers): the class list and detail, the next-class card, the teacher's dashboard, class list and detail, student list and detail, the staff dashboard, class list and detail, student list and detail, teacher detail and the assignment panel |
+
+## Purpose
+
+Classes are stored in UTC and the server does not know the student's time zone. This component renders the **server's** formatted text first and, once hydrated, replaces it with the same instant formatted by the browser in the user's zone. The HTML therefore carries a correct date even if JavaScript never runs, and there is no hydration mismatch because the first client render still shows the fallback.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `iso` | `string` | yes | The instant in ISO 8601 (UTC), exactly as stored. Also the `dateTime` attribute. |
+| `fallback` | `string` | yes | Text already formatted on the server (the mapper's `dateLabel` and `timeLabel`). Rendered until hydration and forever if `iso` is invalid. |
+| `withTime` | `boolean` | no · default `true` | With `false` only the date is shown. |
+
+## Behaviour
+
+- `useSyncExternalStore` with an empty subscription, a client snapshot of `true` and a server snapshot of `false` yields an `isHydrated` flag without an effect and without a state update after mount. The value only ever changes between server and client.
+- Once hydrated, `Intl.DateTimeFormat("es", { day, month: "long", year, hour?, minute? })` formats the date in the browser's zone.
+- `suppressHydrationWarning` on the `<time>` covers the one intentional text difference.
+
+## Markup & styling
+
+No stylesheet. Output is `<time dateTime={iso}>label</time>`; consumers style it through their own elements (`.next-class__schedule`, `.class-card__date`…).
+
+## Usage
+
+From `components/platform/sections/classes/class-detail/class-detail.section.tsx`:
+
+```tsx
+import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp";
+
+<LocalDateTime
+  iso={classDetail.scheduledAtIso}
+  fallback={`${classDetail.dateLabel} · ${classDetail.timeLabel}`}
+/>
+```
+
+## Related
+
+- The same `useSyncExternalStore` pattern in [`viewer-preferences`](/components/chess/game-viewer/viewer-preferences) and the site's chess clock.
+- Teachers enter times in their own zone through `datetime-local`; see [Teacher & staff panels › Classes](/platform/teacher-and-staff).

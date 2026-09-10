@@ -1,0 +1,64 @@
+---
+description: "The lesson screen: the lesson's PGN in the GameViewer read as running text, the completion form, next and previous links, the trainer link, and the tracker that marks it opened."
+---
+
+# `LessonViewSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/courses/lesson-view/lesson-view.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `lesson-view.section.css` → block `.lesson-view` |
+| Used by | `/lecciones/[lessonId]` |
+| Composes | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker) |
+| Writes | `completeLesson()` · `services/courses/courses.actions.ts` |
+| Uses | `PROGRESS_STATUS` from `constants/platform/shared-codes.const`<br />`LessonView` from `services/courses/courses.types`<br />`CheckIcon`, `ArrowRightIcon` from `components/icons/` |
+
+## Purpose
+
+Where a student studies. The lesson is a PGN with commentary, so the screen is the [`GameViewer`](/components/chess/game-viewer/game-viewer) with `moveList="flow"`: a lesson is **read**, the running text accompanies the narrative, whereas the table is for consulting a game move by move. The viewer's header slots carry what used to sit above the board: "n. Name" as title, the chapter, position within it and duration as subtitle, the description, and a "Prioridad" badge.
+
+Under the viewer, the actions: mark as completed (or the completed state), next lesson or back to the chapter, "Entrenar esta lección (n)" when it has exercises, and a quiet "← Lección anterior" that the design does not draw but without which one could only go back with the browser button.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `lesson` | `LessonView` | yes | `id`, `order`, `name`, `description?`, `pgn`, `orientation`, `isPriority`, `statusCode`, `chapterName`, `chapterLessonCount`, `estimatedDuration?`, `chapterHref`, `nextLessonHref?`, `prevLessonHref?`, `trainerHref?`, `exerciseCount`. |
+
+## Behaviour
+
+- [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker) is rendered first and marks the lesson as opened from the client, because writes never happen during the server render.
+- "Marcar como completada" is `<form action={completeLesson.bind(null, lesson.id)}>`; the action records completion, updates the course's return point and revalidates. When `statusCode` is `COMPLETED` the form is replaced by the check mark and "Lección completada".
+- The viewer's `skip` slot gets a "Saltar" link to the next lesson (titled "Pasar a la siguiente lección sin marcar esta") when there is one.
+- Next and previous hrefs respect the priority filter: the mapper computes them over the visible lessons.
+
+## Markup & styling
+
+Block `.lesson-view` (78 lines).
+
+**Elements:** `.lesson-view__skip`, `.lesson-view__actions`, `.lesson-view__action`, `.lesson-view__action-icon`, `.lesson-view__completed`, `.lesson-view__completed-icon`, `.lesson-view__back`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-border-strong`, `--platform-success-ink`, `--platform-success-soft`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 760px)` stacks the action buttons.
+
+## Usage
+
+From `app/(platform)/lecciones/[lessonId]/page.tsx`:
+
+```tsx
+import { LessonViewSection } from "@/components/platform/sections/courses/lesson-view/lesson-view.section";
+
+<LessonViewSection lesson={lesson} />
+```
+
+## Related
+
+- [`GameViewer`](/components/chess/game-viewer/game-viewer) and the `flow` move list ([`MoveTree`](/components/chess/game-viewer/move-tree)).
+- [`TrainerSession`](/components/platform/sections/trainer/trainer-session), where `trainerHref` leads.
+- [Student features › Courses](/platform/student) for the progress rules.

@@ -1,0 +1,60 @@
+---
+description: "The teacher's classes as three PlatformTables (today, upcoming, past) behind a status filter that lives in the URL, plus the 'Crear una clase' button."
+---
+
+# `TeacherClassesSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/teacher/classes/teacher-classes.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `teacher-classes.section.css` → block `.teacher-classes` |
+| Used by | `/profesor/clases` |
+| Composes | [`PlatformTable`](/components/platform/shared/platform-table), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Reads | `getTeacherClasses(statusCode)` · `services/teacher-classes/teacher-classes.service.ts` |
+| Uses | `CLASS_STATUS`, `ClassStatusCode` from `constants/platform/class-codes.const`; `teacherRoutes` from `lib/platform-routes` |
+
+## Purpose
+
+"Mis clases" for a teacher. The status filter is a row of links (`?status=`), so it is shareable and the back button undoes it; the service applies it in the `where`. The result is then split into today, upcoming and past on the server, each in its own table with the same columns.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `statusCode` | `ClassStatusCode` | no | Filter from `?status=`, already validated by the page. |
+
+## Behaviour
+
+- `STATUS_FILTERS` renders "Todas", "Programadas", "En vivo", "Terminadas", "Canceladas" as links with `aria-current` on the active one.
+- The split uses the server's local midnight: `today` is within the current day, `upcoming` after it (reversed so the soonest is first), `past` before it. Being server time rather than the teacher's zone is a known approximation.
+- `ClassesTable` renders title (linked), local date and time, duration, participants, attended, status tag; `minWidth` 780.
+
+## Markup & styling
+
+Block `.teacher-classes` (51 lines).
+
+**Elements:** `.teacher-classes__bar`, `.teacher-classes__filters`, `.teacher-classes__filter`, `.teacher-classes__group`, `.teacher-classes__group-title`
+
+**Modifiers and states:** `.teacher-classes__filter_active`
+
+**Other classes it renders:** `.platform-button`, `.platform-tag`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`
+
+No media queries; the tables scroll.
+
+## Usage
+
+From `app/(platform)/profesor/clases/page.tsx`:
+
+```tsx
+import { TeacherClassesSection } from "@/components/platform/sections/teacher/classes/teacher-classes.section";
+
+<TeacherClassesSection statusCode={toStatusCode(status)} />
+```
+
+## Related
+
+- [`ClassFormSection`](/components/platform/sections/teacher/classes/class-form-section) (create), [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section).
+- The staff's global view: [`StaffClassesSection`](/components/platform/sections/staff/classes/staff-classes-section).

@@ -1,0 +1,59 @@
+---
+description: "The results at the end of a training session: passed count, total mistakes, one row per exercise with a pass or fail mark, and links back to the trainer and the dashboard."
+---
+
+# `SessionSummary`
+
+Also exports the `ExerciseResult` type.
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/trainer/session-summary.comp.tsx` |
+| Kind | Server-safe (no hooks); rendered by the client session |
+| Stylesheet | `session-summary.comp.css` → block `.session-summary` |
+| Used by | [`TrainerSession`](/components/platform/sections/trainer/trainer-session) |
+| Uses | `platformRoutes` from `lib/platform-routes` |
+
+## Purpose
+
+What replaces the board when the last exercise is done: how many were passed, how many mistakes in total, and the list of exercises with a ✓ or ✗. The results come from the session's local state; the server already recorded each attempt individually.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `results` | `ExerciseResult[]` | yes | `{ exerciseId, lessonName, passed, mistakes }[]` in session order. |
+
+## Behaviour
+
+None: totals are computed inline. Rows are keyed by exercise id and position, because "Entrenar todo" can include the same exercise twice.
+
+## Markup & styling
+
+Block `.session-summary` (66 lines), on top of `.platform-card`.
+
+**Elements:** `.session-summary__totals`, `.session-summary__list`, `.session-summary__item`, `.session-summary__result`, `.session-summary__lesson`, `.session-summary__mistakes`, `.session-summary__actions`
+
+**Modifiers and states:** `.session-summary__result_passed`, `.session-summary__result_failed`
+
+**Other classes it renders:** `.platform-card`, `.platform-card__title`, `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-border`, `--platform-danger`, `--platform-danger-soft`, `--platform-success-ink`, `--platform-success-soft`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/trainer/trainer-session.comp.tsx`:
+
+```tsx
+import { SessionSummary, type ExerciseResult } from "./session-summary.comp";
+
+if (finished) {
+  return <SessionSummary results={results} />;
+}
+```
+
+## Related
+
+- [`TrainerSession`](/components/platform/sections/trainer/trainer-session); attempts are stored through `recordTrainingAttempt` and feed the dashboard's statistics.

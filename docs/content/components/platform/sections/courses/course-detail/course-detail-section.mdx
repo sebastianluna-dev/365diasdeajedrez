@@ -1,0 +1,61 @@
+---
+description: "The course page: tags, name, description, authors, the stacked progress bar with the resume button, the cover with the essential-lessons filter under it, and the chapter list."
+---
+
+# `CourseDetailSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/courses/course-detail/course-detail.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `course-detail.section.css` → block `.course-detail` |
+| Used by | `/cursos/[courseId]` |
+| Composes | [`ChapterList`](/components/platform/sections/courses/course-detail/chapter-list), [`ProgressIndicator`](/components/platform/shared/progress-indicator), [`PriorityFilter`](/components/platform/shared/priority-filter) |
+| Uses | `CourseDetail` from `services/courses/courses.types`; `next/image`, `next/link` |
+
+## Purpose
+
+Everything about one course on one screen: the hero with the facts the card folded away (description, levels, authors), the overall progress and the "Continuar curso" button, the cover, and the chapters. The [`PriorityFilter`](/components/platform/shared/priority-filter) rests at the foot of the cover column so it lands at the height of the progress bar beside it.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `course` | `CourseDetail` | yes | `id`, `name`, `description?`, `cover?`, `typeLabel`, `levelLabels`, `authors: { name, roleLabel }[]`, `progress`, `continueHref`, `ctaLabel`, `chapters`, `onlyPriorityLessons`, `hiddenLessons`. Already filtered by the priority preference. |
+
+## Behaviour
+
+- The cover link goes to `continueHref`, the same as the button that already names it, so it is `tabIndex={-1}` and `aria-hidden` to avoid announcing one link twice. `next/image` with `sizes="(max-width: 980px) 100vw, 470px"`.
+- When the filter is on and it leaves zero lessons, a warning under the switch says so ("Ninguna lección de este curso está marcada como imprescindible…").
+- The chapters header counts chapters and lessons with singular/plural handling; the list is [`ChapterList`](/components/platform/sections/courses/course-detail/chapter-list).
+- No writes here: the filter's form belongs to `PriorityFilter`.
+
+## Markup & styling
+
+Block `.course-detail` (203 lines).
+
+**Elements:** `.course-detail__hero`, `.course-detail__intro`, `.course-detail__tags`, `.course-detail__name`, `.course-detail__description`, `.course-detail__authors`, `.course-detail__dot`, `.course-detail__resume`, `.course-detail__progress`, `.course-detail__cta`, `.course-detail__aside`, `.course-detail__cover`, `.course-detail__cover-image`, `.course-detail__filter`, `.course-detail__warning`, `.course-detail__chapters`, `.course-detail__chapters-head`, `.course-detail__chapters-title`, `.course-detail__chapters-count`
+
+**Other selectors it styles:** `.progress-indicator__legend`, `__percent`, `__detail`, `__track`, nested under `.course-detail__progress` to enlarge the headline figure.
+
+**Other classes it renders:** `.platform-tag`, `.platform-tag_variant_accent`, `.platform-button`.
+
+**Tokens:** `--platform-font`, `--platform-shadow-card`, `--platform-surface`, `--platform-surface-sunken`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+
+**Breakpoints:** `(max-width: 980px)` stacks the cover under the intro; `(max-width: 640px)` stacks the progress and the button.
+
+## Usage
+
+From `app/(platform)/cursos/[courseId]/page.tsx`:
+
+```tsx
+import { CourseDetailSection } from "@/components/platform/sections/courses/course-detail/course-detail.section";
+
+<CourseNavigation courseId={course.id} courseName={course.name} current="course" />
+<CourseDetailSection course={course} />
+```
+
+## Related
+
+- [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section), the next level down.
+- [`CourseNavigation`](/components/platform/shared/course-navigation) is rendered by the page above this section.

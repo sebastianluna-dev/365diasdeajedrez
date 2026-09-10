@@ -1,0 +1,66 @@
+---
+description: "Where a lesson gets its content: the linked game of the course collection with an unlink form, or a GET search over the collection with a 'Vincular' form per candidate."
+---
+
+# `LessonGamePicker`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/courses/lesson-game-picker.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `lesson-game-picker.comp.css` → block `.lesson-game-picker` |
+| Used by | [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section) |
+| Writes | `setLessonGame()` · `services/staff-courses/staff-courses.actions.ts` |
+| Uses | `staffRoutes` from `lib/platform-routes`; `SearchIcon` from `components/icons/`; `CourseGameRow` |
+
+## Purpose
+
+A lesson's content is a game from its course's collection. Linking is not irreversible, which is why it is offered without ceremony: the lesson's own PGN goes dormant and comes back on unlinking. The search box is a GET against the lesson page itself, so it needs neither state nor JavaScript: the query stays in the URL and the page returns the already filtered candidates.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `courseId`, `chapterId`, `lessonId` | `string` | yes | Bound into `setLessonGame` and used for the search form's action. |
+| `game` | `CourseGameRow` | no | The linked game, if any. |
+| `candidates` | `CourseGameRow[]` | yes | Collection games matching the search. |
+| `query` | `string` | no | What was searched, from `?partida=`. |
+
+## Behaviour
+
+- **Linked:** the game's title, detail and move count, a "Desvincular" form (posting the bound action without `gameId` unlinks) and a note about corrections propagating.
+- **Not linked, empty collection and no query:** a single note pointing to the course record, because a search that can only return "nothing" is noise.
+- **Otherwise:** the search form and the candidate list, each row with a "Vincular" form carrying a hidden `gameId`.
+
+## Markup & styling
+
+Block `.lesson-game-picker` (138 lines).
+
+**Elements:** `.lesson-game-picker__current`, `.lesson-game-picker__text`, `.lesson-game-picker__title`, `.lesson-game-picker__detail`, `.lesson-game-picker__change`, `.lesson-game-picker__note`, `.lesson-game-picker__search`, `.lesson-game-picker__search-icon`, `.lesson-game-picker__search-input`, `.lesson-game-picker__list`, `.lesson-game-picker__row`, `.lesson-game-picker__link`
+
+No modifiers.
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/staff/courses/lesson-editor.section.tsx`:
+
+```tsx
+import { LessonGamePicker } from "./lesson-game-picker.comp";
+
+<LessonGamePicker
+  courseId={lesson.courseId}
+  chapterId={lesson.chapterId}
+  lessonId={lesson.id}
+  game={lesson.game}
+  candidates={courseGames}
+  query={gameQuery}
+/>
+```
+
+## Related
+
+- [`ChapterGamesSection`](/components/platform/sections/staff/courses/chapter-games-section), where the collection is filled.

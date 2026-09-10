@@ -1,0 +1,61 @@
+---
+description: "A testimonial drawn as a chat: avatar initial with a colour, name, time, and the messages, some with a heart reaction."
+---
+
+# `ReviewChat`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/reviews/review-chat.comp.tsx` |
+| Kind | Server Component (rendered inside the client carousel) |
+| Stylesheet | `review-chat.comp.css` → element `.reviews__chat` of `.reviews` |
+| Used by | [`ReviewsInteractive`](/components/site/sections/home/reviews/reviews-interactive) |
+| Composes | `HeartIcon` from `components/icons/` |
+| Uses | `ReviewContent` from `services/home/home.types` |
+
+## Purpose
+
+A review that looks like a messaging thread rather than a quote. The avatar colour (`teal`, `orange`, `gold`) and the reactions come from the Global.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `review` | `ReviewContent` | yes | `avatarInitial`, `avatarColor`, `name`, `time`, `messages[{ text, reacted }]`. |
+| `position` | `"center" \| "left" \| "right"` | yes | Becomes `.reviews__chat_position_<position>`. |
+| `hidden` | `boolean` | yes | Sets `aria-hidden` on inactive slides. |
+
+## Behaviour
+
+None.
+
+## Markup & styling
+
+Element `.reviews__chat` (152 lines).
+
+**Elements:** `.reviews__chat-header`, `.reviews__chat-avatar`, `.reviews__chat-name`, `.reviews__chat-time`, `.reviews__chat-body`, `.reviews__chat-message`, `.reviews__chat-reaction`
+
+**Modifiers:** `.reviews__chat_position_center|left|right`, `.reviews__chat-avatar_color_teal|orange|gold`, `.reviews__chat-message_reacted`
+
+**Tokens:** `--color-primary`, `--color-primary-on-light`, `--color-dark`, `--font-gramatika`
+
+**Breakpoints:** `(max-width: 720px)`.
+
+## Usage
+
+From `components/site/sections/home/reviews/reviews-interactive.comp.tsx`:
+
+```tsx
+import { ReviewChat } from "./review-chat.comp";
+
+<ReviewChat
+  key={item.name}
+  review={item}
+  position={getSlidePosition(index, activeIndex, reviews.length)}
+  hidden={index !== activeIndex}
+/>
+```
+
+## Related
+
+- [`ReviewStatCard`](/components/site/sections/home/reviews/review-stat-card) travels with it.

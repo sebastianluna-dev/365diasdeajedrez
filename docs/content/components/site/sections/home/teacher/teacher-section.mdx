@@ -1,0 +1,62 @@
+---
+description: "The teacher's profile on the home page: photo with stats, eyebrow, name, badge, summary, the Elo table, a CTA, and an annotated game on the lazy board with its own stylesheet."
+---
+
+# `TeacherSection`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/teacher/teacher.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `teacher.section.css` → block `.teacher`; `teacher-game.section.css` → block `.teacher-game` |
+| Used by | `app/(frontend)/landing-page.tsx` (the `teacher` slot) |
+| Composes | [`TeacherStat`](/components/site/sections/home/teacher/teacher-stat), [`EloTable`](/components/chess/elo-table), [`ChessBoardLazy`](/components/chess/chess-board-lazy) |
+| Reads | `getTeacherData()` · `services/home/home.service.ts` (the `home-teacher` Global) |
+| Uses | `CalendarCheck` from `lucide-react`, `next/image` |
+
+## Purpose
+
+Who teaches. Two blocks inside one `<section id="maestro">`: the profile (photo, stats, ratings, CTA to `/#planes`) and the annotated game, which is where the site's heaviest JavaScript would load. The board is [`ChessBoardLazy`](/components/chess/chess-board-lazy) because the game sits far below the fold: chessground and chessops are not downloaded until the reader scrolls near.
+
+It shares the home slot with [`MentorsSection`](/components/site/sections/home/mentors/mentors-section); `config/site.config.ts` decides which one renders.
+
+## Props
+
+None.
+
+## Behaviour
+
+- Awaits `getTeacherData()`. The photo's `sizes` follows the CSS of `.teacher__media` (full width on mobile, 56 % on tablet, 480 px on desktop); without it the browser requested the photo at 3840 px.
+- The stats render twice, once in the photo overlay and once in the content column with `.teacher__stats_variant_mobile`; CSS shows one per breakpoint.
+- The Elo ratings go through [`EloTable`](/components/chess/elo-table) with four columns.
+- The game passes `flipBoard`, `pgn` and `annotations` from the Global.
+
+## Markup & styling
+
+Block `.teacher` (225 lines) and block `.teacher-game` (49 lines), both imported by this file.
+
+**Elements:** `.teacher__media`, `.teacher__photo`, `.teacher__photo-overlay`, `.teacher__stats`, `.teacher__content`, `.teacher__eyebrow`, `.teacher__name`, `.teacher__badge`, `.teacher__summary`, `.teacher__elo-label`, `.teacher__elo-table`, `.teacher__actions`; `.teacher-game__inner`, `.teacher-game__intro`, `.teacher-game__title`, `.teacher-game__text`
+
+**Modifiers:** `.teacher__stats_variant_mobile`
+
+**Tokens:** `--color-primary`, `--font-gramatika`
+
+**Breakpoints:** `(max-width: 1023px)`, `(max-width: 720px)`.
+
+**Other classes:** `.button.button_variant_primary`.
+
+## Usage
+
+From `app/(frontend)/landing-page.tsx`:
+
+```tsx
+import { TeacherSection } from "@/components/site/sections/home/teacher/teacher.section";
+
+{mentorsSlot === "teacher" && <TeacherSection />}
+```
+
+## Related
+
+- [`TeacherStat`](/components/site/sections/home/teacher/teacher-stat).
+- [`ChessBoardLazy`](/components/chess/chess-board-lazy) and [Board & game viewer › Which one to use](/chess/viewer#which-one-to-use).
+- The slot rule in [Pages](/public-site/pages).

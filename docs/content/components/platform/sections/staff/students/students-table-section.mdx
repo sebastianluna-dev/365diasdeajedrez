@@ -1,0 +1,53 @@
+---
+description: "Every account in a PlatformTable (name, email, whether it has a password, active teacher, last login), with a GET search and the 'Registrar alumno' button."
+---
+
+# `StudentsTableSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/students/students-table.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `students-table.section.css` → block `.students-table` |
+| Used by | `/administracion/alumnos` |
+| Composes | [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Reads | `listStudents(query)` · `services/staff-students/staff-students.service.ts` |
+| Uses | `staffRoutes` from `lib/platform-routes` |
+
+## Purpose
+
+The account list. Beyond identity it surfaces the two operational facts staff act on: whether the account can log in at all ("Sin contraseña" tag) and which teacher it is with ("Sin asignar"). The search is a GET form, so the filter lives in the URL.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `query` | `string` | no | Search by name or email, from `?q=`. |
+
+## Behaviour
+
+Awaits the filtered list; names link to the record; last login through a date-only [`LocalDateTime`](/components/platform/shared/local-datetime) or "Nunca". Empty label adapts to whether a query was given.
+
+## Markup & styling
+
+Block `.students-table` (25 lines): the bar with the search and the button.
+
+**Elements:** `.students-table__bar`, `.students-table__search`
+
+**Other selectors it styles:** `.platform-field`.
+
+No tokens or media queries of its own.
+
+## Usage
+
+From `app/(platform)/administracion/alumnos/page.tsx`:
+
+```tsx
+import { StudentsTableSection } from "@/components/platform/sections/staff/students/students-table.section";
+
+<StudentsTableSection query={q} />
+```
+
+## Related
+
+- [`CreateAccountForm`](/components/platform/sections/staff/students/create-account-form), [`StudentAdminDetailSection`](/components/platform/sections/staff/students/student-admin-detail-section).

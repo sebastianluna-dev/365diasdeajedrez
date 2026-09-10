@@ -1,0 +1,64 @@
+---
+description: "How components/ is organised, the rules every component follows, the icon set, and how to read the per-component reference pages."
+---
+
+# Components: map & rules
+
+`components/` mirrors the products in `app/`, and this section mirrors `components/`: **one page per file**, at the same path (`components/site/sections/home/hero/hero.section.tsx` → `/components/site/sections/home/hero/hero-section`). Each page says what the file is for, whether it runs on the server or the client, what it receives, who renders it, how it behaves, what it paints and how it is mounted in real code.
+
+```text
+components/
+  chess/                the chess domain, shared by the public site and the platform (React side of lib/chess)
+  icons/                one SVG icon component per file, used by every product
+  site/                 = app/(frontend)
+    sections/           shell/ home/ nosotros/ blog/ chess-clock/
+    shared/             logo, google-analytics, meta-pixel
+  platform/             = app/(platform)
+    sections/           shell/ dashboard/ courses/ studies/ classes/ explorer/ trainer/ teacher/ staff/
+    shared/             form-field, platform-table, platform-notice, empty-state, loading-panel, local-datetime…
+  auth/                 = app/(auth)
+    sections/           login/
+```
+
+| Page | Covers |
+| --- | --- |
+| [Public site](/components/site) | `site/shared` and every section of the home page, the about page, the blog and the chess clock: one page per file. |
+| [Platform](/components/platform) | `platform/shared` and every section of the student, teacher and staff screens: one page per file. |
+| [Auth](/components/auth) | `auth/sections/login`: one page per file. |
+| [Chess](/components/chess) | `chess/`: one page per file for the board, the viewer and its parts, the analysis board, the diagram. The narrative of how they fit together is in [Board & game viewer](/chess/viewer). |
+
+## Rules
+
+- **One product per folder.** A component belongs to `site/`, `platform/` or `auth/`, or to the `chess/` domain. There is no `common/` folder: if two products need the same piece and it is not chess, that is a design smell to look at, not a folder to create.
+- **`sections/` vs `shared/`.** Inside a product, `sections/<area>/<section>/` holds a page section (`*.section.tsx`) together with the `*.comp.tsx` pieces only that section uses. `shared/` holds pieces reused by several sections of the same product. A piece used by exactly one section stays next to it.
+- **Server by default.** `"use client"` goes on the leaf that owns state or touches a browser API, never on a section that could stay on the server. The reference pages mark every client component.
+- **One stylesheet per component**, same base name, imported by that component, with every rule nested under its BEM block (see [Styling](/ui/styling)). Entries say whether a component has one.
+- **Sections read, pieces render.** A section may call a service or receive props from its page; a `.comp.tsx` receives props only. Writes go through server actions bound in the section.
+- **Naming.** kebab-case files with the `.section.tsx`, `.comp.tsx`, `.hook.ts` suffixes; PascalCase exports; no barrels; imports through `@/components/...`.
+
+## How a page is laid out
+
+Every component page follows the same template, so the same fact is always in the same place:
+
+| Section | What it holds |
+| --- | --- |
+| Facts table | **File**, **Kind** (Server Component, Client Component, hook, module), **Stylesheet** and its BEM block, **Used by** (pages as routes, components as links), **Composes** (components it renders), **Reads** (services), **Writes** (server actions), **Uses** (library modules). |
+| Purpose | What it does, why it exists in this shape, the design decisions. |
+| Props (or API for hooks and modules) | One row per prop: name, type, required or default, meaning, from the source's own glosses. |
+| Behaviour | Client: state, effects, browser APIs, keyboard, focus, `aria`, what happens without JavaScript. Section: where the data comes from, what the page passes, which action the form posts, how errors come back, what is revalidated. |
+| Markup & styling | The block, its elements, modifiers and states, the tokens and breakpoints it uses, and any other class it renders. |
+| Usage | A snippet copied from a real importer. |
+| Related | The pieces it composes, whoever composes it, the narrative page of the area, the debt entry if there is one. |
+
+The pages are written from the code and kept in the same commit as any change to a component: rename a prop, update the row; add a file, add its page; delete a file, delete its page. `_meta.ts` files give the sidebar its titles (the main export) and its order (section first, then its pieces).
+
+## Icons — `components/icons/`
+
+Twenty-six hand-written SVG components, one per file, each exporting `<Name>Icon({ className })`: an inline `<svg>` with `viewBox`, `fill="currentColor"` or a stroke, and `aria-hidden="true"`. Colour and size come from the parent's CSS; an icon that stands alone needs its text in the button's `aria-label`.
+
+| Used by | Icons |
+| --- | --- |
+| Board and viewer (`chess/`) | `arrow-left`, `arrow-right`, `arrow-up`, `board-flip`, `check`, `chevron`, `circle-check`, `clipboard`, `flip`, `fullscreen`, `jump-end`, `jump-start`, `menu`, `note`, `pause`, `play`, `search`, `skip`, `sound-off`, `sound-on` |
+| Platform sections | `flame` (daily streak), `heart`, `image` (upload slot), `plus`, `trash`, `whatsapp` |
+
+The public site uses `lucide-react` in the header, the home teacher section and the mobile clock; platform code uses this folder so the private bundle does not pull the library. `book`, `email` and `share` were deleted on 2026-09-10 as unused.

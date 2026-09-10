@@ -1,0 +1,96 @@
+---
+description: "Index of components/site: the three shared pieces and every section of the public site (shell, home, about page, blog, chess clock), one page per file."
+---
+
+# Public site components
+
+`components/site/` mirrors `app/(frontend)`: `shared/` holds the three pieces several sections or the layout need, `sections/` holds one folder per area of the public site. Every section is a Server Component unless marked client; sections read the CMS through the services in `services/home`, `services/articles`, `services/mentors` and `services/site-settings`, whose reads are cached per request and between requests (see [Caching](/architecture/caching-errors-logging)). The pages that compose these sections are described in [Pages](/public-site/pages) and the Globals they read in [CMS](/public-site/cms).
+
+## `shared/`
+
+| Page | Kind | What it is |
+| --- | --- | --- |
+| [`Logo`](/components/site/shared/logo) | server | The wordmark as a link to `/`, with theme and accent modifiers. |
+| [`GoogleAnalytics`](/components/site/shared/google-analytics) | server | The gtag scripts, `lazyOnload`, only in production with a measurement id. |
+| [`MetaPixel`](/components/site/shared/meta-pixel) | client | The Meta Pixel snippet plus a `PageView` on every navigation. |
+
+## `sections/shell/`
+
+| Page | Kind | What it is |
+| --- | --- | --- |
+| [`Header`](/components/site/sections/shell/header/header-section) | server | Top navigation from the `home-header` Global; the login button is fixed in code. |
+| [`HeaderDropdown`](/components/site/sections/shell/header/header-dropdown) | client | A navigation dropdown: hover through CSS, keyboard and `aria` through state. |
+| [`HeaderMobileMenu`](/components/site/sections/shell/header/header-mobile-menu) | client | The hamburger menu with the flattened links and the same login button. |
+| [`Footer`](/components/site/sections/shell/footer/footer-section) | server | Footer with the academy links and the WhatsApp contact from site settings. |
+| [`SiteMessage`](/components/site/sections/shell/site-message/site-message-section) | server | The notice screen (404, error) with no hooks and no data. |
+
+## `sections/home/`
+
+Rendered by `app/(frontend)/landing-page.tsx` in the order fixed there, each behind its switch in `config/site.config.ts`; the teacher and mentors sections share one slot.
+
+| Page | Kind | What it is |
+| --- | --- | --- |
+| [`HeroSection`](/components/site/sections/home/hero/hero-section) | server | Title, description, CTA and the image that is the page's LCP. |
+| [`FloatBadge`](/components/site/sections/home/hero/float-badge) | server | A floating chip with a piece glyph and a word. |
+| [`Orbit`](/components/site/sections/home/hero/orbit) | server | The decorative rings around the hero image. |
+| [`ProgramSection`](/components/site/sections/home/program/program-section) | server | The course programme from the `home-program` Global. |
+| [`ProgramInteractive`](/components/site/sections/home/program/program-interactive) | client | The module list and the active module's panel. |
+| [`ProgramModuleListItem`](/components/site/sections/home/program/program-module-list-item) | server | One module button, numbered with two digits. |
+| [`TeacherSection`](/components/site/sections/home/teacher/teacher-section) | server | The teacher's profile, ratings and an annotated game on the lazy board. |
+| [`TeacherStat`](/components/site/sections/home/teacher/teacher-stat) | server | A value with its label. |
+| [`MentorsSection`](/components/site/sections/home/mentors/mentors-section) | server | The alternative to the teacher section, from `services/mentors`. |
+| [`MentorList`](/components/site/sections/home/mentors/mentor-list) | server | The grid of mentor cards. |
+| [`Mentor`](/components/site/sections/home/mentors/mentor) | server | One mentor card linking to `/mentor/[slug]`. |
+| [`PlansSection`](/components/site/sections/home/plans/plans-section) | server | Pricing from the `home-packages` Global: grid on desktop, tabs on mobile. |
+| [`PlanCard`](/components/site/sections/home/plans/plan-card) | server | One pricing card. |
+| [`PlansMobileSection`](/components/site/sections/home/plans/plans-mobile) | client | The tabbed version of the plans for narrow screens. |
+| [`ResourcesSection`](/components/site/sections/home/resources/resources-section) | server | The three latest posts as cards. |
+| [`BlogResourceCard`](/components/site/sections/home/resources/blog-resource-card) | server | One post card. |
+| [`ReviewsSection`](/components/site/sections/home/reviews/reviews-section) | server | Testimonials from the `home-reviews` Global. |
+| [`ReviewsInteractive`](/components/site/sections/home/reviews/reviews-interactive) | client | The auto-advancing carousel. |
+| [`ReviewChat`](/components/site/sections/home/reviews/review-chat) | server | A testimonial drawn as a chat. |
+| [`ReviewStatCard`](/components/site/sections/home/reviews/review-stat-card) | server | The stat card that travels with the carousel. |
+| [`ReviewSlideDot`](/components/site/sections/home/reviews/review-slide-dot) | server | One pagination dot with a 24 px press area. |
+| [`FaqSection`](/components/site/sections/home/faq/faq-section) | server | Questions from the `home-faq` Global and the WhatsApp CTA. |
+| [`FaqAccordionItem`](/components/site/sections/home/faq/faq-accordion-item) | client | One expandable question. |
+| [`CtaSection`](/components/site/sections/home/cta/cta-section) | server | The sticky call to action, outside `<main>`. |
+| [`CtaClock`](/components/site/sections/home/cta/cta-clock) | client | A 15-minute countdown on a compact clock dial. |
+
+## `sections/nosotros/`
+
+| Page | Kind | What it is |
+| --- | --- | --- |
+| [`NosotrosHeroSection`](/components/site/sections/nosotros/hero/hero-section) | server | Opening block of the about page with three fixed stats. |
+| [`ValoresSection`](/components/site/sections/nosotros/values/values-section) | server | The four values as a card grid. |
+| [`NosotrosCtaSection`](/components/site/sections/nosotros/cta/cta-section) | server | Closing call to action linking to the plans. |
+
+## `sections/blog/`
+
+| Page | Kind | What it is |
+| --- | --- | --- |
+| [`BlogArticles`](/components/site/sections/blog/blog-articles/blog-articles-section) | server | The listing driven by `?categoria=` and `?pagina=`. |
+| [`ArticleCard`](/components/site/sections/blog/blog-articles/article-card) | server | One post in the listing. |
+| [`CategoryFilter`](/components/site/sections/blog/blog-articles/category-filter) | server | Category links with `aria-current`. |
+| [`Pagination`](/components/site/sections/blog/blog-articles/pagination) | server | Page links with a summary line. |
+| [`ArticleContent`](/components/site/sections/blog/article-content/article-content-section) | server | Breadcrumb, title, byline, cover and the Lexical body. |
+| [`articleRichTextConverters`](/components/site/sections/blog/article-content/rich-text-converters) | module | The converter map for the Lexical tree and the four custom blocks. |
+| [`ImageBlockRenderer`](/components/site/sections/blog/article-content/blocks/image-block) | server | A Payload `imageBlock` as a figure. |
+| [`CalloutBlockRenderer`](/components/site/sections/blog/article-content/blocks/callout-block) | server | A `calloutBlock` box: info, tip or warning. |
+| [`ChessDiagramBlockRenderer`](/components/site/sections/blog/article-content/blocks/chess-diagram-block) | server | One-line adapter to `StaticDiagram`. |
+| [`ChessGameBlockRenderer`](/components/site/sections/blog/article-content/blocks/chess-game-block) | server | A `chessGameBlock` on the lazy board with its meta line. |
+| [`RelatedArticles`](/components/site/sections/blog/related-articles/related-articles-section) | server | The "Más artículos" strip under an article. |
+| [`RelatedArticleCard`](/components/site/sections/blog/related-articles/related-article-card) | server | One related post. |
+
+## `sections/chess-clock/`
+
+| Page | Kind | What it is |
+| --- | --- | --- |
+| [`ChessClock`](/components/site/sections/chess-clock/chess-clock) | client | Mounts both variants and enables only the one matching the width. |
+| [`ChessClockDesktop`](/components/site/sections/chess-clock/chess-clock-desktop) | client | Two dials side by side with knobs, time controls and actions. |
+| [`ChessClockMobile`](/components/site/sections/chess-clock/chess-clock-mobile) | client | The two-step stacked variant with rolling digits. |
+| [`ClockDial`](/components/site/sections/chess-clock/clock-dial) | server | An analogue dial with hands, flag, readout and label. |
+| [`TimeRoller`](/components/site/sections/chess-clock/time-roller) | client | Digits that roll when the time changes. |
+
+## Global classes
+
+Several sections render classes that are not their own block: `.section`, `.section__inner`, `.section__head`, `.section__eyebrow`, `.section__title`, `.section__text` and `.button` with its `_variant_` and `_size_` modifiers, plus `.eyebrow`, `.card-meta` and `.muted-text`. They live in `app/(frontend)/globals.css`; the entries below list them under "Other classes" so the dependency is visible. The site also uses `lucide-react` for a handful of icons (header, teacher CTA, mobile clock) where the platform uses `components/icons/`.

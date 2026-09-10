@@ -1,0 +1,67 @@
+---
+description: "The viewer's per-browser preference (sound on or off) as a localStorage-backed external store for useSyncExternalStore, shared by every viewer on the page and safe when storage throws."
+---
+
+# `viewer-preferences`
+
+Exports `DEFAULT_VIEWER_PREFERENCES`, `subscribeToViewerPreferences`, `getViewerPreferences`, `getServerViewerPreferences`, `setViewerPreferences` and the `ViewerPreferences` type.
+
+| | |
+| --- | --- |
+| File | `components/chess/game-viewer/viewer-preferences.ts` |
+| Kind | Module (plain TypeScript, browser only, `"use client"`) |
+| Stylesheet | none |
+| Used by | [`GameViewer`](/components/chess/game-viewer/game-viewer) |
+| Uses | `window.localStorage` under the key `365-viewer-preferences` |
+
+## Purpose
+
+A preference that lives in each person's browser: it is not account data, it does not travel to the server and it is not worth a database column. Today it holds one field, `sound`.
+
+It is exposed as an **external store** for `useSyncExternalStore` rather than as state filled by an effect, for two reasons. On the server there is no `localStorage`, so the first paint has to use the default value or hydration will not match. And several viewers on one page share the setting, so muting one has to tell all of them.
+
+## API
+
+| Export | Meaning |
+| --- | --- |
+| `DEFAULT_VIEWER_PREFERENCES` | `{ sound: true }`. |
+| `subscribeToViewerPreferences(listener)` | Registers a listener; returns the unsubscribe function. The `subscribe` argument of `useSyncExternalStore`. |
+| `getViewerPreferences()` | The current value, read from storage once and then cached. The `getSnapshot` argument. |
+| `getServerViewerPreferences()` | Always the default: on the server there is nowhere to read from. The `getServerSnapshot` argument. |
+| `setViewerPreferences(next)` | Replaces the value, writes it to storage and notifies every listener. |
+
+## Behaviour
+
+- `getSnapshot` must return **the same reference** while nothing changes; if it built a new object on every call React would see a perpetual change and re-render without end. Hence the module-level `cached` value.
+- Storage access is wrapped in `try`/`catch` on both read and write: in a private window, or with site data blocked, `localStorage` does not fail by returning `null` but by **throwing**. A failed write means the preference lasts as long as the tab, which is acceptable for a mute switch.
+- `parse` tolerates a missing or corrupted value and unknown fields, falling back to the default per field.
+
+## Markup & styling
+
+Nothing rendered.
+
+## Usage
+
+From `components/chess/game-viewer/game-viewer.comp.tsx`:
+
+```tsx
+import {
+  getServerViewerPreferences,
+  getViewerPreferences,
+  setViewerPreferences,
+  subscribeToViewerPreferences,
+  type ViewerPreferences,
+} from "./viewer-preferences";
+
+const preferences = useSyncExternalStore<ViewerPreferences>(
+  subscribeToViewerPreferences,
+  getViewerPreferences,
+  getServerViewerPreferences,
+);
+const updatePreferences = useCallback((next: ViewerPreferences) => setViewerPreferences(next), []);
+```
+
+## Related
+
+- [`move-sound`](/components/chess/game-viewer/move-sound), what the preference silences.
+- The same pattern (`useSyncExternalStore` with a server snapshot) is used by [`LocalDateTime`](/components/platform/shared/local-datetime) and the chess clock's `matchMedia` switch.

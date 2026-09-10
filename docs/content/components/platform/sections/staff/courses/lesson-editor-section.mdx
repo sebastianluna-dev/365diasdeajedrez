@@ -1,0 +1,72 @@
+---
+description: "The lesson in independent cards: the linked course game first, then metadata with the aside's options tied to the same form through the form attribute, then the exercises."
+---
+
+# `LessonEditorSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/courses/lesson-editor.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `lesson-editor.section.css` → block `.lesson-editor` |
+| Used by | `/administracion/cursos/[courseId]/capitulos/[chapterId]/lecciones/[lessonId]` |
+| Composes | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffEditorLayout`](/components/platform/sections/staff/courses/staff-editor), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`LessonGamePicker`](/components/platform/sections/staff/courses/lesson-game-picker), [`ExerciseEditor`](/components/platform/sections/staff/courses/exercise-editor), [`FormField`](/components/platform/shared/form-field), [`FormFieldset`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes | `updateLesson()`, `deleteLesson()` · `services/staff-courses/staff-courses.actions.ts` |
+| Uses | `BOARD_ORIENTATION`, `CONTENT_ORIENTATIONS` from `constants/platform/shared-codes.const`; `STAFF_ERROR_MESSAGES`; `staffRoutes`; `LessonAdminDetail`, `CatalogOption`, `TopicOption`, `CourseGameRow` types |
+
+## Purpose
+
+Content, metadata and exercises are different decisions, so they are different cards and saving one does not drag the others along. The content card goes **first**, not in alphabetical order: the lesson's content is a game of the course collection, chosen through [`LessonGamePicker`](/components/platform/sections/staff/courses/lesson-game-picker); the rest are settings on top of it.
+
+The "Opciones" controls in the aside (priority, trainable, training colour) are not inside any `<form>`: the `form` attribute ties them to the metadata form in the other column. Two forms against the same action would trample each other's fields, because `updateLesson` reads all of them.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `lesson` | `LessonAdminDetail` | yes | `id`, `courseId`, `chapterId`, names, `order`, `pgn`, `pgnUpdatedAtLabel?`, `game?`, `isPriority`, `isTrainable`, `trainingColorCode?`, `orientationCode`, `estimatedDuration?`, `topicIds`, `exercises[]`, `canDelete`. |
+| `exerciseModes` | `CatalogOption[]` | yes | Exercise mode catalog. |
+| `topics` | `TopicOption[]` | yes | Topics for the checkboxes. |
+| `courseGames` | `CourseGameRow[]` | yes | Collection games matching the search, for the picker. |
+| `gameQuery` | `string` | no | What was searched, from `?partida=`. |
+| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+
+## Behaviour
+
+- Metadata form (`id="lesson-metadata"`): name, description, board orientation, estimated duration, topics as a [`FormFieldset`](/components/platform/shared/form-field). The starting position is not typed: it comes from the linked game's `[FEN]` header.
+- Aside: the three option controls with `form="lesson-metadata"`, a status card with PGN date, exercise count and duration, and the delete form only when `canDelete` (draft course, no progress: once someone has studied it their history rules and the course is archived, not dismantled).
+- Exercises: [`ExerciseEditor`](/components/platform/sections/staff/courses/exercise-editor) with the lesson's PGN for its board picker.
+
+## Markup & styling
+
+Block `.lesson-editor` (112 lines).
+
+**Elements:** `.lesson-editor__stack`, `.lesson-editor__check`, `.lesson-editor__check-hint`, `.lesson-editor__note`, `.lesson-editor__facts`, `.lesson-editor__fact`, `.lesson-editor__danger`, `.lesson-editor__delete`, `.lesson-editor__form`, `.lesson-editor__pair`, `.lesson-editor__submit`
+
+No modifiers.
+
+**Tokens:** `--platform-border`, `--platform-danger`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 860px)` collapses the pair.
+
+## Usage
+
+From `app/(platform)/administracion/cursos/[courseId]/capitulos/[chapterId]/lecciones/[lessonId]/page.tsx`:
+
+```tsx
+import { LessonEditorSection } from "@/components/platform/sections/staff/courses/lesson-editor.section";
+
+<LessonEditorSection
+  lesson={lesson}
+  exerciseModes={exerciseModes}
+  topics={topics}
+  courseGames={courseGames}
+  gameQuery={partida}
+  errorCode={error}
+/>
+```
+
+## Related
+
+- What a save does to exercises (staleness): [`ExerciseEditor`](/components/platform/sections/staff/courses/exercise-editor), [Teacher & staff panels › Courses](/platform/teacher-and-staff).
+- The student's view: [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section).

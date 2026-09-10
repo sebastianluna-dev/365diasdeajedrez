@@ -1,0 +1,53 @@
+---
+description: "One pagination dot of the carousel: a 24 px button (the touch minimum) with the visible pill inside it."
+---
+
+# `ReviewSlideDot`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/reviews/review-slide-dot.comp.tsx` |
+| Kind | Server Component (receives a callback; rendered inside the client carousel) |
+| Stylesheet | `review-slide-dot.comp.css` → element `.reviews__dot` of `.reviews` |
+| Used by | [`ReviewsInteractive`](/components/site/sections/home/reviews/reviews-interactive) |
+
+## Purpose
+
+A dot small enough to look like one and big enough to tap. The `<button>` is the press area at 24×24; the pill inside, `aria-hidden`, is what the eye sees.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `label` | `string` | yes | The button's `aria-label` ("Ver testimonio de …"). |
+| `active` | `boolean` | yes | Adds `.reviews__dot_active`. |
+| `onClick` | `() => void` | yes | Selects the review. |
+
+## Behaviour
+
+None beyond the click.
+
+## Markup & styling
+
+Element `.reviews__dot` (34 lines) with `.reviews__dot-pill`; modifier `.reviews__dot_active`.
+
+**Tokens:** `--color-primary`
+
+## Usage
+
+From `components/site/sections/home/reviews/reviews-interactive.comp.tsx`:
+
+```tsx
+import { ReviewSlideDot } from "./review-slide-dot.comp";
+
+<ReviewSlideDot
+  key={item.name}
+  label={`Ver testimonio de ${item.name}`}
+  active={index === activeIndex}
+  onClick={() => setActiveIndex(index)}
+/>
+```
+
+## Related
+
+- [`ReviewsInteractive`](/components/site/sections/home/reviews/reviews-interactive).

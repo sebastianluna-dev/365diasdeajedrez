@@ -1,0 +1,60 @@
+---
+description: "The result of an action as a role=alert paragraph in error, success or info colours; pages translate ?error=<code> with their message map and pass the text here."
+---
+
+# `PlatformNotice`
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/platform-notice.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `platform-notice.comp.css` → block `.platform-notice` |
+| Used by | every screen that renders an action's outcome (18 importers): the staff editors and forms, the teacher's class and profile screens, the studies' detail, game view and new-game screens, and `/administracion/cursos/nuevo` |
+
+## Purpose
+
+Platform forms are `<form action={serverAction}>` and return failure by **redirect** with `?error=<code>` on the same URL. The page reads the code, looks it up in its message map (a code outside the map renders nothing, so a crafted link cannot put text on the page) and renders the message here. Success messages use the same component with `variant="success"`.
+
+`role="alert"` makes a screen reader announce the notice on return from the submit, without the user having to look for it.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `message` | `string` | yes | The text, already translated by the page. |
+| `variant` | `"error" \| "success" \| "info"` | no · default `"error"` | Colour and border. |
+
+## Behaviour
+
+None; a single `<p>`.
+
+## Markup & styling
+
+Block `.platform-notice` (26 lines).
+
+**Modifiers and states:** `.platform-notice_variant_error`, `.platform-notice_variant_success`, `.platform-notice_variant_info`
+
+**Tokens:** `--platform-danger`, `--platform-danger-border`, `--platform-danger-soft`, `--platform-success-ink`, `--platform-success-border`, `--platform-success-soft`, `--platform-surface-neutral`, `--platform-border`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/staff/authors/authors-admin.section.tsx`:
+
+```tsx
+import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+
+{errorMessage && <PlatformNotice message={errorMessage} />}
+```
+
+The page side, from a staff page:
+
+```tsx
+const errorMessage = STAFF_ERROR_MESSAGES[readParam(params, "error")];
+```
+
+## Related
+
+- [`FormField`](/components/platform/shared/form-field) carries field-level errors; this is the form-level one.
+- Message maps live in `constants/platform/*-messages.const.ts`; see [Teacher & staff panels](/platform/teacher-and-staff).

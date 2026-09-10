@@ -1,0 +1,57 @@
+---
+description: "Everything about a class for staff, payments included, rendered with the student's ClassContentRenderer; exactly two actions, setting the recording URL and cancelling with a note."
+---
+
+# `StaffClassDetailSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/classes/staff-class-detail.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `staff-class-detail.section.css` → block `.staff-class` |
+| Used by | `/administracion/clases/[classId]` |
+| Composes | [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice), [`LocalDateTime`](/components/platform/shared/local-datetime), [`EmptyState`](/components/platform/shared/empty-state) |
+| Writes | `setRecordingUrl()`, `cancelClassAsStaff()` · `services/staff-classes/staff-classes.actions.ts` |
+| Uses | `CLASS_STATUS` from `constants/platform/class-codes.const`; `STAFF_ERROR_MESSAGES`; `StaffClassDetail` from `services/staff-classes/staff-classes.types` |
+
+## Purpose
+
+Staff sees the whole class, including what the student does not (payments) and what the teacher composed (the blocks, through the same renderer). It may do exactly two things: set the recording URL, and cancel the class with a note that is stamped into the summary as a support action. Content, attendance and data belong to the teacher, and the card says so.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `classDetail` | `StaffClassDetail` | yes | Facts, `summary?`, `recordingUrl?`, `participants[]` with payment fields, `blocks`, `transcript?`. |
+| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+
+## Behaviour
+
+Five cards: facts (teacher, when, status, provider) with the summary; support with the two forms (the cancel form only while the class is not already cancelled and its note is required); participants in a [`PlatformTable`](/components/platform/shared/platform-table) with attended, paid date, amount and reference; content or an [`EmptyState`](/components/platform/shared/empty-state); transcript status and text.
+
+## Markup & styling
+
+Block `.staff-class` (58 lines).
+
+**Elements:** `.staff-class__facts`, `.staff-class__fact`, `.staff-class__fact-label`, `.staff-class__fact-value`, `.staff-class__summary`, `.staff-class__note`, `.staff-class__support`
+
+**Other selectors it styles:** `.platform-field`.
+
+**Tokens:** `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/administracion/clases/[classId]/page.tsx`:
+
+```tsx
+import { StaffClassDetailSection } from "@/components/platform/sections/staff/classes/staff-class-detail.section";
+
+<StaffClassDetailSection classDetail={classDetail} errorCode={error} />
+```
+
+## Related
+
+- [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section), [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section).
+- Payments in [Data model](/platform/data-model).

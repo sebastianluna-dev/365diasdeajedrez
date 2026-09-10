@@ -1,0 +1,48 @@
+---
+description: "The Meta Pixel base snippet, lazyOnload, its noscript fallback, and a client subcomponent that fires PageView on every navigation."
+---
+
+# `MetaPixel`
+
+| | |
+| --- | --- |
+| File | `components/site/shared/meta-pixel.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | none |
+| Used by | `app/(frontend)/layout.tsx` |
+| Uses | `fbEvent`, `META_PIXEL_ID` from `lib/meta-pixel`<br />`next/script`, `usePathname`, `useSearchParams` |
+
+## Purpose
+
+Meta's pixel for the public site, loaded the same way as [`GoogleAnalytics`](/components/site/shared/google-analytics): `lazyOnload`, so it does not compete with hydration. The base snippet fires the first `PageView` itself when it runs; the client-side navigations are covered by the inner `MetaPixelPageViews`, which calls `fbEvent("PageView")` whenever the pathname or the search params change. Nothing is lost in between because `fbEvent` is a no-op while `fbq` does not exist yet.
+
+## Props
+
+None.
+
+## Behaviour
+
+- Returns `null` unless `META_PIXEL_ID` is set and `NEXT_PUBLIC_APP_ENV` is `production`.
+- Renders the inline base snippet as `<Script id="meta-pixel-base" strategy="lazyOnload">` with `fbq('init', id)`.
+- Renders the `<noscript>` 1×1 image Meta requires. It is a plain `<img>` on purpose, with an ESLint exception: `next/image` cannot live inside `<noscript>`.
+- `MetaPixelPageViews` reads `usePathname()` and `useSearchParams()` in an effect; it sits inside a `Suspense` boundary because `useSearchParams` requires one during static rendering.
+
+## Markup & styling
+
+No markup of its own beyond the script, the noscript image and a component that returns `null`.
+
+## Usage
+
+From `app/(frontend)/layout.tsx`:
+
+```tsx
+import { MetaPixel } from "@/components/site/shared/meta-pixel.comp";
+
+<GoogleAnalytics />
+<MetaPixel />
+```
+
+## Related
+
+- `lib/meta-pixel.ts` exposes `fbEvent` for conversion events elsewhere on the site.
+- [`GoogleAnalytics`](/components/site/shared/google-analytics).

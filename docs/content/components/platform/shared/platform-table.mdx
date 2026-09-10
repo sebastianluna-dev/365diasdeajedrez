@@ -1,0 +1,93 @@
+---
+description: "A semantic <table> with one definition of the look for every listing in the teacher and staff panels, with row and cell helpers; no sorting or filtering state."
+---
+
+# `PlatformTable`
+
+Also exports `PlatformTableRow` and `PlatformTableCell`, and the `PlatformTableColumn` type.
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/platform-table.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `platform-table.comp.css` → block `.platform-table` |
+| Used by | [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section), [`StaffClassesSection`](/components/platform/sections/staff/classes/staff-classes-section), [`StudentAdminDetailSection`](/components/platform/sections/staff/students/student-admin-detail-section), [`StudentsTableSection`](/components/platform/sections/staff/students/students-table-section), [`TeacherAdminDetailSection`](/components/platform/sections/staff/teachers/teacher-admin-detail-section), [`TeachersTableSection`](/components/platform/sections/staff/teachers/teachers-table-section), [`TeacherClassesSection`](/components/platform/sections/teacher/classes/teacher-classes-section), [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section), [`AssignedStudentsSection`](/components/platform/sections/teacher/students/assigned-students-section), [`StudentStudyViewSection`](/components/platform/sections/teacher/students/student-study-view-section) |
+
+## Purpose
+
+Every list of records in the teacher and staff panels (students, classes, courses, teachers, assignments, payments) is this table, so the look is defined once and a `<table>` with `<th scope="col">` is what screen readers get.
+
+It holds no state: no sorting, no client filtering. Filters travel in search params and the page filters on the server, which keeps every listing addressable by URL. The component receives the rows as children and only decides whether to render them or the empty message.
+
+The student's `GameTable` in the study detail still draws its rows with `div`s because it needs drag reordering; rebuilding it on this component is `todos.md` T13.
+
+## Props
+
+### `PlatformTable`
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `columns` | `readonly (string \| PlatformTableColumn)[]` | yes | Header labels, or `{ label, align?: "right" }` for numeric columns. Rendered as `<th scope="col">`. |
+| `children` | `ReactNode` | no | `PlatformTableRow` elements. Empty (after flattening arrays) renders `emptyLabel` in one full-width cell. |
+| `emptyLabel` | `string` | no | Default "No hay nada que mostrar todavía." |
+| `minWidth` | `number` | no · default `640` | Minimum table width in pixels before the wrapper scrolls horizontally. |
+
+### `PlatformTableRow`
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | yes | `PlatformTableCell` elements. |
+
+### `PlatformTableCell`
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | yes | Cell content. |
+| `align` | `"right"` | no | Right-aligned, for numbers and amounts. |
+| `strong` | `boolean` | no | Highlighted cell: the column that identifies the row (a name). |
+
+## Behaviour
+
+`hasRows` flattens the children and checks that at least one is truthy, so a `.map()` over an empty array or a conditional that yields `false` still shows the empty message instead of a headless table. Nothing else: no effects, no handlers.
+
+## Markup & styling
+
+Block `.platform-table` (68 lines). The root is the scrolling wrapper; the `<table>` inside gets `min-width` inline.
+
+**Elements:** `.platform-table__table`, `.platform-table__head`, `.platform-table__row`, `.platform-table__cell`, `.platform-table__empty`
+
+**Modifiers and states:** `.platform-table__head_align_right`, `.platform-table__cell_align_right`, `.platform-table__cell_variant_strong`
+
+**Tokens:** `--platform-accent-ink`, `--platform-bg`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+No media queries: narrow screens scroll the wrapper.
+
+## Usage
+
+From `components/platform/sections/staff/classes/staff-class-detail.section.tsx`:
+
+```tsx
+import { PlatformTable, PlatformTableCell, PlatformTableRow } from "@/components/platform/shared/platform-table.comp";
+
+<PlatformTable
+  columns={["Alumno", "Email", "Asistió", "Pago", "Importe", "Referencia"]}
+  emptyLabel="Esta clase no tiene alumnos inscritos."
+  minWidth={860}
+>
+  {classDetail.participants.map((participant) => (
+    <PlatformTableRow key={participant.userId}>
+      <PlatformTableCell strong>{participant.displayName}</PlatformTableCell>
+      <PlatformTableCell>{participant.email}</PlatformTableCell>
+      <PlatformTableCell>{participant.attended ? "Sí" : "No"}</PlatformTableCell>
+      <PlatformTableCell>{participant.paidAtLabel ?? "—"}</PlatformTableCell>
+      <PlatformTableCell>{participant.amountLabel ?? "—"}</PlatformTableCell>
+      <PlatformTableCell>{participant.paymentRef ?? "—"}</PlatformTableCell>
+    </PlatformTableRow>
+  ))}
+</PlatformTable>
+```
+
+## Related
+
+- [`EmptyState`](/components/platform/shared/empty-state) for a list that is empty *and* has a call to action; the table's own empty row is for filters that matched nothing.
+- [Teacher & staff panels](/platform/teacher-and-staff) for the listings that use it.

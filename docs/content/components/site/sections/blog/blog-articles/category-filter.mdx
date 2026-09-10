@@ -1,0 +1,58 @@
+---
+description: "The category links of the blog listing with aria-current on the active one: navigation, not state."
+---
+
+# `CategoryFilter`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/blog/blog-articles/category-filter.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `category-filter.comp.css` → block `.category-filter` |
+| Used by | [`BlogArticles`](/components/site/sections/blog/blog-articles/blog-articles-section) |
+
+## Purpose
+
+A `<nav aria-label="Filtrar por categoría">` of links. Choosing a category navigates to its URL; the component holds no state and needs no JavaScript.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `categories` | `string[]` | yes | Including "Todos" first. |
+| `active` | `string` | yes | The current category. |
+| `hrefFor` | `(category: string) => string` | yes | URL of each category, built by the section. |
+
+## Behaviour
+
+- The active link gets `aria-current="page"` and `.category-filter__button_active`.
+
+## Markup & styling
+
+Block `.category-filter` (44 lines).
+
+**Elements:** `.category-filter__label`, `.category-filter__button`
+
+**Modifiers:** `.category-filter__button_active`
+
+**Tokens:** `--color-accent-red`, `--color-dark`, `--foreground`, `--font-suisse`
+
+No media queries.
+
+## Usage
+
+From `components/site/sections/blog/blog-articles/blog-articles.section.tsx`:
+
+```tsx
+import { CategoryFilter } from "./category-filter.comp";
+
+<CategoryFilter
+  categories={listing.categories}
+  active={listing.category}
+  hrefFor={(category) => listingHref({ category, page: 1 })}
+/>
+```
+
+## Related
+
+- [`Pagination`](/components/site/sections/blog/blog-articles/pagination) follows the same rule.

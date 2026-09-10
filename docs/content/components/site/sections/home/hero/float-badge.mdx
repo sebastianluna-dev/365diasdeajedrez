@@ -1,0 +1,55 @@
+---
+description: "A floating chip on the hero: a chess piece glyph from the chess font and a short word, positioned by an offset modifier the section passes as className."
+---
+
+# `FloatBadge`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/hero/float-badge.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `float-badge.comp.css` → block `.float-badge` |
+| Used by | [`HeroSection`](/components/site/sections/home/hero/hero-section) |
+| Uses | `ChessPieceUnicode` from `constants/chess-pieces.const` |
+
+## Purpose
+
+The small chips that float around the hero portrait naming the study areas. The glyph is a Unicode chess piece rendered with the `--font-chessglyph` face, so it needs no SVG.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `text` | `string` | yes | The word on the chip. |
+| `piece` | `ChessPieceUnicode` | yes | The piece glyph, injected with `dangerouslySetInnerHTML` because the constant is an HTML entity. |
+| `className` | `string` | no | Appended to the block; the hero passes `float-badge_offset_1..3`. |
+
+## Behaviour
+
+None.
+
+## Markup & styling
+
+Block `.float-badge` (42 lines).
+
+**Elements:** `.float-badge__icon`, `.float-badge__text`
+
+**Modifiers:** `.float-badge_offset_1`, `.float-badge_offset_2`, `.float-badge_offset_3` (vertical offsets of the float animation)
+
+**Tokens:** `--color-primary`, `--color-secondary`, `--color-dark`, `--font-chessglyph`
+
+No media queries.
+
+## Usage
+
+From `components/site/sections/home/hero/hero.section.tsx`:
+
+```tsx
+import { FloatBadge } from "./float-badge.comp";
+
+<FloatBadge text="Cálculo" piece={CHESS_PIECE_UNICODE.BLACK_KNIGHT} className="float-badge_offset_1" />
+```
+
+## Related
+
+- [`HeroSection`](/components/site/sections/home/hero/hero-section).

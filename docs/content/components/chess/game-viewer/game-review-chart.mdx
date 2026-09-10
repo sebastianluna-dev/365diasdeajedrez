@@ -1,0 +1,68 @@
+---
+description: "The advantage chart of a reviewed game as an SVG: win probability per ply, a scrubbable cursor, and the opening, middlegame and endgame phases marked underneath."
+---
+
+# `GameReviewChart`
+
+| | |
+| --- | --- |
+| File | `components/chess/game-viewer/game-review-chart.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `game-review-chart.comp.css` → block `.game-review-chart` |
+| Used by | [`GameReview`](/components/chess/game-viewer/game-review) |
+| Uses | `winPercent`, `GameReview` from `lib/chess/game-review`<br />`MoveEvaluation` from `lib/chess/pgn-tree` |
+
+## Purpose
+
+The curve that shows who was better and when. The vertical axis is **not** pawns but win probability: between +7 and +9 there is nothing to tell, while between +0.2 and +1 the game is decided, and a linear pawn scale would flatten exactly the part that matters. It is the same `winPercent` curve accuracy is computed with, so the chart and the numbers next to it tell one story.
+
+Pointing at the chart moves the board. That is what anyone tries the moment they see a chart like this, so clicking and dragging both select the nearest ply.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `evaluations` | `MoveEvaluation[]` | yes | One per main-line position; the first is the starting position. |
+| `review` | `GameReview` | yes | The computed review; only `phases.middlegame` and `phases.endgame` (ply indexes) are read, for the labels. |
+| `currentPly` | `number` | yes | The ply the board is at, for the cursor. 0 is the initial position. |
+| `onSelectPly` | `(ply: number) => void` | yes | Takes the board to the ply pointed at on the chart. |
+
+## Behaviour
+
+- The SVG has a fixed `viewBox` of 404×140 and `preserveAspectRatio="none"`, so it stretches to the container's width while the ratio of the drawing stays legible. Points are memoised from the evaluations: `x` is the ply's share of the width, `y` is the middle minus the advantage (−1…1) times an amplitude of 62.
+- The filled area is drawn twice from the same path, clipped above and below the axis: what sticks out past the middle belongs to whoever is winning, and is painted in their colour. A line traces the curve on top, and a vertical cursor line marks `currentPly`.
+- `onPointerDown` and, while a button is held, `onPointerMove` convert the pointer's horizontal position into the nearest ply and call `onSelectPly`, clamped to the range.
+- The three phase labels under the plot get their widths from the review's phase boundaries as percentages of the game's length, so they line up with the curve.
+- The SVG is `role="img"` with a Spanish label; it is not keyboard-navigable, because the board's own navigation already is.
+
+## Markup & styling
+
+Block `.game-review-chart` (59 lines).
+
+**Elements:** `.game-review-chart__plot`, `.game-review-chart__ground`, `.game-review-chart__axis`, `.game-review-chart__line`, `.game-review-chart__cursor`, `.game-review-chart__phases`, `.game-review-chart__phase`
+
+**Modifiers and states:** `.game-review-chart__area_side_white`, `.game-review-chart__area_side_black`, `.game-review-chart__phase_last`
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-border-strong`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/chess/game-viewer/game-review.comp.tsx`:
+
+```tsx
+import { GameReviewChart } from "./game-review-chart.comp";
+
+<GameReviewChart
+  evaluations={evaluations}
+  review={review}
+  currentPly={currentPly}
+  onSelectPly={(ply) => onSelectPath(paths[ply] ?? "")}
+/>
+```
+
+## Related
+
+- [`GameReview`](/components/chess/game-viewer/game-review), which computes `evaluations` and `review`.
+- `winPercent` and the phase detection in `lib/chess/game-review.ts` ([Chess library](/chess/library)).

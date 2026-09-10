@@ -1,0 +1,60 @@
+---
+description: "The chapter page: header with progress and the resume button, the Move Trainer toggle when the chapter has exercises, the essential-lessons filter beside the list title, and the lesson list."
+---
+
+# `ChapterDetailSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/courses/chapter-detail/chapter-detail.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `chapter-detail.section.css` → block `.chapter-detail` |
+| Used by | `/cursos/[courseId]/[chapterOrder]` |
+| Composes | [`LessonList`](/components/platform/sections/courses/chapter-detail/lesson-list), [`ProgressIndicator`](/components/platform/shared/progress-indicator), [`PriorityFilter`](/components/platform/shared/priority-filter) |
+| Writes | `toggleTrainerChapter()` · `services/trainer/trainer.actions.ts` |
+| Uses | `ChapterView` from `services/courses/courses.types` |
+
+## Purpose
+
+One chapter: "Capítulo n", name, description, lesson count and estimated time, the stacked progress bar with "Continuar capítulo", and the lessons. Two controls live here and nowhere else in the student area: the **Move Trainer toggle** ("Agregar al Move Trainer"), shown only when the chapter has exercises, and the [`PriorityFilter`](/components/platform/shared/priority-filter) next to the "Lecciones" title.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `chapter` | `ChapterView` | yes | `id`, `courseId`, `order`, `name`, `description?`, `totalLessons`, `completedLessons`, `estimatedDuration?`, `continueHref`, `ctaLabel`, `hasExercises`, `inTrainer`, `lessons`, `onlyPriorityLessons`, `hiddenLessons`. |
+
+## Behaviour
+
+- The trainer toggle is a `<form action={toggleTrainerChapter.bind(null, chapter.id, !chapter.inTrainer)}>`: bound argument rather than a checkbox for the same reason as the priority filter (a checkbox cannot submit `false`). The design does not draw this button, but the trainer is reached from here and from nowhere else, so it stays beside the primary button as a secondary one.
+- The resume button renders only when the chapter has lessons.
+- When the filter is on and leaves no lessons, a warning replaces the list and names how many lessons are hidden.
+
+## Markup & styling
+
+Block `.chapter-detail` (138 lines).
+
+**Elements:** `.chapter-detail__head`, `.chapter-detail__eyebrow`, `.chapter-detail__name`, `.chapter-detail__description`, `.chapter-detail__meta`, `.chapter-detail__dot`, `.chapter-detail__resume`, `.chapter-detail__progress`, `.chapter-detail__actions`, `.chapter-detail__cta`, `.chapter-detail__lessons-head`, `.chapter-detail__lessons-title`, `.chapter-detail__warning`
+
+**Other selectors it styles:** `.progress-indicator__legend`, `__percent`, `__detail`, `__track` under `.chapter-detail__progress`.
+
+**Other classes it renders:** `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-font`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+
+**Breakpoints:** `(max-width: 760px)` stacks progress and actions, and the filter under the title.
+
+## Usage
+
+From `app/(platform)/cursos/[courseId]/[chapterOrder]/page.tsx`:
+
+```tsx
+import { ChapterDetailSection } from "@/components/platform/sections/courses/chapter-detail/chapter-detail.section";
+
+<ChapterDetailSection chapter={chapter} />
+```
+
+## Related
+
+- [`TrainerHomeSection`](/components/platform/sections/trainer/trainer-home-section) lists the chapters added here.
+- [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section) one level up; [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section) one level down.

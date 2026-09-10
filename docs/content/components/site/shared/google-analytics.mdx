@@ -1,0 +1,47 @@
+---
+description: "The gtag scripts with strategy lazyOnload so they never compete with hydration; renders nothing outside production or without a measurement id."
+---
+
+# `GoogleAnalytics`
+
+| | |
+| --- | --- |
+| File | `components/site/shared/google-analytics.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | none |
+| Used by | `app/(frontend)/layout.tsx` |
+| Uses | `next/script` |
+
+## Purpose
+
+Loads Google Analytics on the public site without paying for it at startup. gtag weighs more than the home page's own JavaScript and has no reason to compete with hydration, so both scripts use `strategy="lazyOnload"`. The page view arrives a few hundred milliseconds later, after `load`, and is not lost: `gtag('config')` fires it whenever it runs.
+
+## Props
+
+None.
+
+## Behaviour
+
+- Returns `null` unless `NEXT_PUBLIC_APP_ENV` is `production` **and** `NEXT_PUBLIC_GA_MEASUREMENT_ID` is set. Preview and local builds send nothing.
+- Renders the loader `<Script>` for `googletagmanager.com/gtag/js` and an inline `<Script id="google-analytics">` that defines `dataLayer`, `gtag`, and calls `gtag('js')` and `gtag('config')`.
+
+## Markup & styling
+
+No markup of its own beyond the two script tags.
+
+## Usage
+
+From `app/(frontend)/layout.tsx`:
+
+```tsx
+import { GoogleAnalytics } from "@/components/site/shared/google-analytics.comp";
+
+{children}
+<GoogleAnalytics />
+<MetaPixel />
+```
+
+## Related
+
+- [`MetaPixel`](/components/site/shared/meta-pixel) follows the same production guard and loading strategy.
+- The environment variables are listed in [Getting started](/getting-started).

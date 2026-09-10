@@ -1,0 +1,60 @@
+---
+description: "An article page's body: breadcrumb, title, author byline, cover image and the Lexical rich text rendered through the article converters."
+---
+
+# `ArticleContent`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/blog/article-content/article-content.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `article-content.section.css` → block `.article-content` |
+| Used by | `/blog/[slug]` |
+| Composes | `RichText` from `@payloadcms/richtext-lexical/react` with [`articleRichTextConverters`](/components/site/sections/blog/article-content/rich-text-converters) |
+| Uses | `Article` from `services/articles/articles.types`, `next/image` |
+
+## Purpose
+
+Everything of an article that is not the header, the related strip or the footer. The Lexical tree stored by Payload is rendered on the server by `RichText`; the converters decide the markup of each node type and dispatch the custom blocks.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `article` | `Article` | yes | `category`, `title`, `author?` (`name`), `meta`, `image`, `content` (the Lexical tree). |
+
+## Behaviour
+
+- The breadcrumb is Inicio › Blog › category.
+- The byline renders only when the article has an author; the avatar is the author's initial.
+- The cover uses `fill` with `sizes="(max-width: 820px) 100vw, 684px"`.
+- `RichText` receives `className="article-body"`, the block the converters' stylesheet targets.
+
+## Markup & styling
+
+Block `.article-content` (108 lines).
+
+**Elements:** `.article-content__inner`, `.article-content__breadcrumb`, `.article-content__breadcrumb-link`, `.article-content__breadcrumb-sep`, `.article-content__breadcrumb-current`, `.article-content__title`, `.article-content__byline`, `.article-content__avatar`, `.article-content__author-name`, `.article-content__author-meta`, `.article-content__divider`, `.article-content__cover`, `.article-content__cover-image`
+
+**Tokens:** `--color-accent-red`, `--color-dark`, `--foreground`, `--font-gramatika`
+
+**Breakpoints:** `(max-width: 720px)`.
+
+## Usage
+
+From `app/(frontend)/blog/[slug]/page.tsx`:
+
+```tsx
+import { ArticleContent } from "@/components/site/sections/blog/article-content/article-content.section";
+
+<main id="contenido">
+  <ArticleContent article={article} />
+  <RelatedArticles articles={relatedArticles} />
+</main>
+```
+
+## Related
+
+- [`articleRichTextConverters`](/components/site/sections/blog/article-content/rich-text-converters) and the four block renderers.
+- [`RelatedArticles`](/components/site/sections/blog/related-articles/related-articles-section).
+- The article fields and blocks in [CMS](/public-site/cms).

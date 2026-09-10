@@ -1,0 +1,68 @@
+---
+description: "The 'Editar datos' dialog of a study: rename, describe and, when the rules allow it, change the kind; posts updateStudy."
+---
+
+# `EditStudy`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/studies/study-detail/edit-study.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `edit-study.comp.css` → block `.edit-study` |
+| Used by | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) |
+| Writes | `updateStudy()` · `services/studies/studies.actions.ts` |
+| Uses | `StudyKindOption` from `services/studies/studies.types` |
+
+## Purpose
+
+Editing a study's own data, in a native `<dialog>` like [`NewStudy`](/components/platform/sections/studies/studies-list/new-study). The one subtlety is the kind: "Mis partidas" is unique per student and a collection cannot stop being one without leaving the students who received it looking at something else, so for those the kind selector is not rendered at all. A dropdown with a single, unchangeable option would only get in the way, and the action would not accept the field anyway.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `id` | `string` | yes | Bound into the action. |
+| `name` | `string` | yes | Current name (required, max 120). |
+| `description` | `string` | no | Current description (max 500). |
+| `kindCode` | `string` | yes | Current kind; preselected when it is among `kinds`. |
+| `kindLabel` | `string` | yes | The kind's name, to state it when it cannot be changed. |
+| `kinds` | `StudyKindOption[]` | yes | The kinds it can change to (from `study-rules`). |
+| `canChangeKind` | `boolean` | yes | Whether the selector renders. |
+
+## Behaviour
+
+`<form action={updateStudy.bind(null, id)}>` with `onSubmit` closing the dialog after browser validation. The note under the fields says either "El tipo se puede cambiar cuando quieras." or "El tipo «…» no se cambia."
+
+## Markup & styling
+
+Block `.edit-study` (79 lines).
+
+**Elements:** `.edit-study__open`, `.edit-study__dialog`, `.edit-study__form`, `.edit-study__title`, `.edit-study__field`, `.edit-study__label`, `.edit-study__input`, `.edit-study__select`, `.edit-study__actions`, `.edit-study__note`
+
+**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-accent`, `--platform-bg`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/studies/study-detail/study-detail.section.tsx`:
+
+```tsx
+import { EditStudy } from "./edit-study.comp";
+
+<EditStudy
+  id={study.id}
+  name={study.name}
+  description={study.description}
+  kindCode={study.kindCode}
+  kindLabel={study.kindLabel}
+  kinds={kinds}
+  canChangeKind={study.permissions.canChangeKind}
+/>
+```
+
+## Related
+
+- [`NewStudy`](/components/platform/sections/studies/studies-list/new-study); `services/studies/study-rules.ts`.

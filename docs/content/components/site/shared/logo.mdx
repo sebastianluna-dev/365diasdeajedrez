@@ -1,0 +1,53 @@
+---
+description: "The wordmark as a link to the home page: '365' in the accent colour, 'DiasDeAjedrez' and four decorative marks, with theme and accent modifiers."
+---
+
+# `Logo`
+
+| | |
+| --- | --- |
+| File | `components/site/shared/logo.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `logo.comp.css` → block `.logo` |
+| Used by | [`Header`](/components/site/sections/shell/header/header-section), [`Footer`](/components/site/sections/shell/footer/footer-section) |
+
+## Purpose
+
+The one place the wordmark is drawn. The header and the footer render it on different backgrounds and with different accents (orange on the home page, red on the blog), so the variation is expressed as two BEM modifiers rather than two components.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `theme` | `"light" \| "dark"` | no, `"dark"` | Colour of the label; becomes `.logo_theme_<theme>`. |
+| `accent` | `"orange" \| "red"` | no, `"orange"` | Colour of the "365" and the marks; becomes `.logo_accent_<accent>`. |
+
+## Behaviour
+
+None. A `next/link` to `/`.
+
+## Markup & styling
+
+Block `.logo` (73 lines).
+
+**Elements:** `.logo__accent`, `.logo__label`, `.logo__marks`, `.logo__mark`
+
+**Modifiers:** `.logo_theme_light`, `.logo_theme_dark`, `.logo_accent_orange`, `.logo_accent_red`, `.logo__mark_hidden` (the two middle marks, hidden on narrow screens)
+
+**Tokens:** `--color-primary`, `--color-primary-on-light`, `--color-accent-red`, `--color-accent-red-on-dark`
+
+**Breakpoints:** `(max-width: 1023px)`.
+
+## Usage
+
+From `components/site/sections/shell/header/header.section.tsx`:
+
+```tsx
+import { Logo } from "@/components/site/shared/logo.comp";
+
+{theme === "light" ? <Logo theme="light" accent="red" /> : <Logo theme="dark" accent="orange" />}
+```
+
+## Related
+
+- [`Header`](/components/site/sections/shell/header/header-section) and [`Footer`](/components/site/sections/shell/footer/footer-section) pick the variant from their own `theme` and `accent` props.

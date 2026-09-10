@@ -1,0 +1,54 @@
+---
+description: "One mentor card linking to /mentor/[slug]: photo, name with FIDE title, tagline and the three FIDE ratings."
+---
+
+# `Mentor`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/mentors/mentor.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `mentor.comp.css` → block `.mentor-card` |
+| Used by | [`MentorList`](/components/site/sections/home/mentors/mentor-list) |
+| Uses | `MentorContent` from `services/mentors/mentors.types`, `next/image` |
+
+## Purpose
+
+The whole card is one link to the mentor's page. It prints the full name, the short FIDE title when there is one, the short description, and the standard, rapid and blitz ratings.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `mentor` | `MentorContent` | yes | `slug`, `name`, `lastName`, `photo`, `shortDescription`, `fideInfo` (`shortFideTitle`, `standardElo`, `rapidElo`, `blitzElo`). |
+
+## Behaviour
+
+None. The photo uses `fill` with `sizes="(max-width: 720px) 100vw, (max-width: 1024px) 50vw, 25vw"`.
+
+## Markup & styling
+
+Block `.mentor-card` (110 lines).
+
+**Elements:** `.mentor-card__photo`, `.mentor-card__body`, `.mentor-card__head`, `.mentor-card__name`, `.mentor-card__title`, `.mentor-card__tagline`, `.mentor-card__ratings`, `.mentor-card__rating`, `.mentor-card__rating-label`, `.mentor-card__rating-value`, `.mentor-card__cta`
+
+**Tokens:** `--color-primary`, `--color-dark`, `--foreground`, `--font-gramatika`
+
+No media queries.
+
+## Usage
+
+From `components/site/sections/home/mentors/mentor-list.comp.tsx`:
+
+```tsx
+import { Mentor } from "./mentor.comp";
+
+{mentors.map((mentor) => (
+  <Mentor key={mentor.slug} mentor={mentor} />
+))}
+```
+
+## Related
+
+- [`MentorList`](/components/site/sections/home/mentors/mentor-list).
+- The mentor page renders the same data at full size; see [Pages](/public-site/pages).

@@ -1,0 +1,68 @@
+---
+description: "Lichess-style tabular notation: the main line as number · white · black rows, comments and variations full width, and each move's stored [%eval] when the game was reviewed."
+---
+
+# `MoveTable`
+
+| | |
+| --- | --- |
+| File | `components/chess/game-viewer/move-table.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `move-table.comp.css` → block `.move-table` |
+| Used by | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="table"`, the default) |
+| Uses | `buildNotationBlocks` from `lib/chess/notation-blocks`<br />`formatEvaluation` from `lib/chess/engine-protocol`<br />`sanToSpanish` from `lib/chess/notation`<br />`nagGlyph`, `PgnTree`, `PgnTreeNode` from `lib/chess/pgn-tree` |
+
+## Purpose
+
+The notation as a table, the way Lichess shows a game: one row per move number with White's and Black's moves as cells, and everything that is not the main line (comments, variations at any depth) as full-width blocks between the rows. This is the list for **consulting** a game, which is what the studies do; lessons use the [`MoveTree`](/components/chess/game-viewer/move-tree).
+
+The hard part, deciding the order of rows and blocks and when Black's move has to be pushed to a new row after a variation, is not here: `lib/chess/notation-blocks.ts` is pure and tested against a real game with three levels of variations. This component only renders the blocks it returns.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `tree` | `PgnTree` | yes | The parsed game. |
+| `currentPath` | `string` | yes | Dotted path of the active node; `""` is the initial position. |
+| `onSelect` | `(path: string) => void` | yes | Click on a move. |
+| `onContextMenu` | `(path: string, event: MouseEvent) => void` | no | Right click on a move: opens its menu where it can be edited. Absent in read-only viewers. |
+
+## Behaviour
+
+- `buildNotationBlocks(tree)` is memoised and yields three block kinds: `row` (number, white, black, with `continuation` and `pushedBlack` flags rendered as "…" cells), `comment` (a paragraph) and `line` (an inline variation with its `depth`, exposed as the `--move-table-depth` custom property for indentation).
+- Each move cell shows the Spanish SAN, its NAG glyphs and, when the node carries an evaluation, `formatEvaluation` of it. The evaluation comes from the PGN's `[%eval]`, so a reviewed game shows its numbers again on reload with no engine involved.
+- The active move scrolls into view with `block: "nearest"` on every path change.
+- `bind(node)` attaches the ref, click and optional right-click handlers to both row cells and inline variation moves, so the two look different but behave the same.
+
+## Markup & styling
+
+Block `.move-table` (180 lines).
+
+**Elements:** `.move-table__row`, `.move-table__number`, `.move-table__cell`, `.move-table__move`, `.move-table__nag`, `.move-table__eval`, `.move-table__ellipsis`, `.move-table__comment`, `.move-table__line`, `.move-table__inline`, `.move-table__inline-comment`
+
+**Modifiers and states:** `.move-table__cell_side_white`, `.move-table__cell_side_black`, `.move-table__move_state_active`, `.move-table__inline_state_active`
+
+**Tokens:** own `--move-table-depth` (set inline per variation) and `--move-table-step` (indent per depth); `--move-tree-font-size` shared with the tree; `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/chess/game-viewer/game-viewer.comp.tsx`:
+
+```tsx
+import { MoveTable } from "./move-table.comp";
+
+<MoveTable
+  tree={tree}
+  currentPath={currentPath}
+  onSelect={setCurrentPath}
+  onContextMenu={isEditing ? openMenu : undefined}
+/>
+```
+
+## Related
+
+- [`MoveTree`](/components/chess/game-viewer/move-tree), the running-text alternative.
+- `lib/chess/notation-blocks.ts` and its tests in [Chess library](/chess/library).
+- [`GameReview`](/components/chess/game-viewer/game-review) is what writes the `[%eval]` values this table displays.

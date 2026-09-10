@@ -1,0 +1,72 @@
+---
+description: "A position as a 64-cell CSS grid with the piece SVGs, rendered on the server with no chessground and no JavaScript; used by class blocks and the blog's diagram block."
+---
+
+# `StaticDiagram`
+
+| | |
+| --- | --- |
+| File | `components/chess/static-diagram.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `static-diagram.comp.css` → block `.static-diagram` |
+| Used by | [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`ChessDiagramBlockRenderer`](/components/site/sections/blog/article-content/blocks/chess-diagram-block) |
+| Uses | `parseFenPlacement` from `lib/parse-fen-placement` |
+
+## Purpose
+
+A diagram of a position, the way a book prints one: nothing moves, nothing loads. The FEN placement is parsed into 64 glyphs and rendered as a `<figure>` with a grid of `<div>`s; the pieces are the SVG files in `public/pieces`, painted as CSS backgrounds by the piece modifiers. Because it is a Server Component it costs zero client JavaScript, which is why the class content renderer uses it for `POSITION_REF` blocks and the blog uses it for its diagram block.
+
+The blog block used to be a copy of this component with its own stylesheet, and the two drifted apart; it is now a one-line adapter that passes `context="article"`. Keep it that way: one diagram, two contexts.
+
+For a position the reader should navigate, use the [`GameViewer`](/components/chess/game-viewer/game-viewer).
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `fen` | `string` | yes | Full FEN or just its placement field; only the placement is read. |
+| `orientation` | `"white" \| "black"` | no · default `"white"` | Which side is at the bottom. `black` reverses the 64 squares. |
+| `caption` | `string` | no | Rendered as `<figcaption>` under the grid. |
+| `context` | `"platform" \| "article"` | no · default `"platform"` | Where it is rendered: the platform, with its tokens, or inside a blog article, which has another background and another text scale. |
+
+## Behaviour
+
+No state, no effects. `parseFenPlacement` returns the 64 squares in board order (rank 8 first); the component reverses them for the black orientation, computes light/dark from file and rank parity, and emits one `static-diagram__square` per cell with a `static-diagram__piece` inside when the cell is occupied. The glyph name (`w-king`, `b-pawn`…) becomes the piece modifier, which is where the SVG is referenced.
+
+## Markup & styling
+
+Block `.static-diagram` (88 lines).
+
+**Elements:** `.static-diagram__grid` (8×8, `aspect-ratio: 1`), `.static-diagram__square`, `.static-diagram__piece`, `.static-diagram__caption`
+
+**Modifiers and states:** `.static-diagram__square_light`, `.static-diagram__square_dark`, `.static-diagram__piece_glyph_{w,b}-{king,queen,rook,bishop,knight,pawn}` (twelve rules, each a `background-image: url("/pieces/….svg")`), `.static-diagram_context_article` (switches the caption colour and scale to the article's)
+
+**Tokens:** `--board-light`, `--board-dark` (the same square colours as the live board), `--platform-text-muted`, `--color-muted-on-light` (article context)
+
+No media queries: the grid is fluid and the caption inherits the surrounding text size.
+
+## Usage
+
+From `components/platform/shared/class-content-renderer.comp.tsx`:
+
+```tsx
+import { StaticDiagram } from "@/components/chess/static-diagram.comp";
+
+<StaticDiagram
+  fen={block.position.fen}
+  orientation={block.position.orientation}
+  caption={block.caption ?? block.position.title}
+/>
+```
+
+From the blog block, `components/site/sections/blog/article-content/blocks/chess-diagram-block.comp.tsx`:
+
+```tsx
+<StaticDiagram fen={fen} orientation={orientation} caption={caption} context="article" />
+```
+
+## Related
+
+- [`ChessBoard`](/components/chess/chess-board) and [`GameViewer`](/components/chess/game-viewer/game-viewer) when the position has to move.
+- [Stockfish, pieces & sounds](/chess/engine-and-assets) explains where `public/pieces` comes from (`scripts/sync-pieces.ts`).
+- [Board & game viewer › Which one to use](/chess/viewer#which-one-to-use).

@@ -1,0 +1,54 @@
+---
+description: "Frequently asked questions: the heading and a WhatsApp CTA on the left from the home-faq Global and site settings, the accordion on the right."
+---
+
+# `FaqSection`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/faq/faq.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `faq.section.css` → block `.faq` |
+| Used by | `app/(frontend)/landing-page.tsx` (`sections.faq`) |
+| Composes | [`FaqAccordionItem`](/components/site/sections/home/faq/faq-accordion-item) |
+| Reads | `getFaqData()` · `services/home/home.service.ts` (the `home-faq` Global)<br />`getSiteSettingsData()` · `services/site-settings/site-settings.service.ts` |
+| Uses | `buildWhatsappUrl` from `lib/build-whatsapp-url` |
+
+## Purpose
+
+The questions editors maintain in the CMS, with a direct line to WhatsApp for whatever is not answered. The two reads run in parallel.
+
+## Props
+
+None.
+
+## Behaviour
+
+- `Promise.all` of the FAQ Global and the site settings; the WhatsApp URL is built from the number and the default message.
+- The CTA opens in a new tab.
+- `id="preguntas"`, the target of the footer link.
+
+## Markup & styling
+
+Block `.faq` (40 lines), on top of the global `.section.section_theme_dark`.
+
+**Elements:** `.faq__grid`, `.faq__cta`, `.faq__list`
+
+**Breakpoints:** `(max-width: 1024px)` stacks the two columns.
+
+**Other classes:** `.section__inner`, `.section__eyebrow`, `.section__title`, `.section__text`, `.button.button_variant_primary`.
+
+## Usage
+
+From `app/(frontend)/landing-page.tsx`:
+
+```tsx
+import { FaqSection } from "@/components/site/sections/home/faq/faq.section";
+
+{sections.faq && <FaqSection />}
+```
+
+## Related
+
+- [`FaqAccordionItem`](/components/site/sections/home/faq/faq-accordion-item).
+- [`CtaSection`](/components/site/sections/home/cta/cta-section) builds the same WhatsApp link.

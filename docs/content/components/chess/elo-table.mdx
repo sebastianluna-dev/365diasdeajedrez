@@ -1,0 +1,69 @@
+---
+description: "A label/value grid for ratings and titles (EloTable with its EloTable.EloItem rows), used by the home teacher section and the mentor page."
+---
+
+# `EloTable`
+
+Also exports `EloTable.EloItem`, attached as a static property.
+
+| | |
+| --- | --- |
+| File | `components/chess/elo-table.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `elo-table.comp.css` → blocks `.elo-table` and `.elo-item` |
+| Used by | `/mentor/[slug]`, [`TeacherSection`](/components/site/sections/home/teacher/teacher-section) |
+
+## Purpose
+
+The small grid that shows a player's ratings and titles ("FIDE 2210", "Rápidas 2190", "MF"). It is a presentational pair: `EloTable` lays out the grid and `EloTable.EloItem` is one cell with a label over a value. The item is attached to the table as a static member so the call site reads as one thing and no second import is needed.
+
+It lives in `chess/` rather than in `site/` because it belongs to the chess domain (ratings) and both the home page and the mentor page use it; no platform screen does today.
+
+## Props
+
+### `EloTable`
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | yes | `EloTable.EloItem` elements. |
+| `columns` | `2 \| 3 \| 4` | no · default `3` | Grid columns; becomes the `_columns_` modifier. |
+| `className` | `string` | no | Extra class for the caller's layout hook (the teacher section passes `teacher__elo-table`). |
+
+### `EloTable.EloItem`
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `label` | `string` | yes | Small text above the value. |
+| `value` | `number \| string` | yes | The rating or title. |
+
+## Behaviour
+
+None: pure markup. The number of columns is a CSS modifier, so the table does not count its children.
+
+## Markup & styling
+
+Two blocks in one sheet (43 lines), because the item is its own component and is styled as such. `.elo-table` is the grid; `.elo-item` is a cell.
+
+**Elements:** `.elo-item__label`, `.elo-item__value`
+
+**Modifiers and states:** `.elo-table_columns_2`, `.elo-table_columns_4` (three columns is the default rule)
+
+**Tokens:** `--font-gramatika` for the value; the colours are inherited from the section that mounts it, which is why the block has no colour tokens of its own.
+
+## Usage
+
+From `components/site/sections/home/teacher/teacher.section.tsx`:
+
+```tsx
+import { EloTable } from "@/components/chess/elo-table.comp";
+
+<EloTable className="teacher__elo-table" columns={4}>
+  {content.eloRatings.map((rating) => (
+    <EloTable.EloItem key={rating.label} label={rating.label} value={rating.value} />
+  ))}
+</EloTable>
+```
+
+## Related
+
+- [`TeacherSection`](/components/site/sections/home/teacher/teacher-section) and the mentor page in [Pages & sections](/public-site/pages).

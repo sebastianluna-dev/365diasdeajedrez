@@ -1,0 +1,56 @@
+---
+description: "A card of the staff course screens: a header with title, a short fact and an action, an optional description, and the content; the header rule spans the full width."
+---
+
+# `StaffPanel`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/courses/staff-panel.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `staff-panel.comp.css` → block `.staff-panel` |
+| Used by | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section), [`CourseGamesSection`](/components/platform/sections/staff/courses/course-games-section), [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section), [`ChapterGamesSection`](/components/platform/sections/staff/courses/chapter-games-section), [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section), `/administracion/cursos/nuevo` |
+
+## Purpose
+
+The card every course-screen section sits in. The header carries its own full-width rule (negative margins cancel the padding) because a line that does not reach the edges reads as an underline of the title instead of the card's division. It is the courses panel's variant of `.platform-card`, with a stricter header.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `title` | `string` | yes | The `<h2>`. |
+| `meta` | `string` | no | A short fact next to the title: "5 capítulos · 162 lecciones". |
+| `action` | `ReactNode` | no | Aligned to the right edge of the header. |
+| `description` | `string` | no | Context sentence under the header, when the card does not explain itself. |
+| `children` | `ReactNode` | yes | The content. |
+
+## Behaviour
+
+None.
+
+## Markup & styling
+
+Block `.staff-panel` (50 lines).
+
+**Elements:** `.staff-panel__head`, `.staff-panel__title`, `.staff-panel__meta`, `.staff-panel__action`, `.staff-panel__description`
+
+**Tokens:** own `--staff-panel-gutter` (the padding the header rule cancels); `--platform-border`, `--platform-font`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/staff/courses/chapter-editor.section.tsx`:
+
+```tsx
+import { StaffPanel } from "./staff-panel.comp";
+
+<StaffPanel title="Resumen">
+  <dl className="chapter-editor__facts">…</dl>
+</StaffPanel>
+```
+
+## Related
+
+- [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs).

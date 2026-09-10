@@ -1,0 +1,53 @@
+---
+description: "Opening block of the about page: eyebrow, the founding idea as the title, a paragraph, and three fixed stats; all copy lives in the file."
+---
+
+# `NosotrosHeroSection`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/nosotros/hero/hero.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `hero.section.css` → block `.nosotros-hero` |
+| Used by | `/nosotros` |
+
+## Purpose
+
+The about page is not editable from the CMS: its copy changes rarely and is part of the site's voice, so it is written in the component. The three stats ("10 años enseñando", "2000+ clases impartidas", "12 meses de programa") are a constant at the top of the file.
+
+## Props
+
+None.
+
+## Behaviour
+
+None.
+
+## Markup & styling
+
+Block `.nosotros-hero` (102 lines).
+
+**Elements:** `.nosotros-hero__glow`, `.nosotros-hero__content`, `.nosotros-hero__eyebrow`, `.nosotros-hero__title`, `.nosotros-hero__text`, `.nosotros-hero__stats`, `.nosotros-hero__stat`, `.nosotros-hero__stat-value`, `.nosotros-hero__stat-label`
+
+**Tokens:** `--color-primary`, `--font-gramatika`
+
+**Breakpoints:** `(max-width: 1024px)`, `(max-width: 720px)`.
+
+## Usage
+
+From `app/(frontend)/nosotros/page.tsx`:
+
+```tsx
+import { NosotrosHeroSection } from "@/components/site/sections/nosotros/hero/hero.section";
+
+<main id="contenido">
+  <NosotrosHeroSection />
+  <ValoresSection />
+  <NosotrosCtaSection />
+</main>
+```
+
+## Related
+
+- [`ValoresSection`](/components/site/sections/nosotros/values/values-section), [`NosotrosCtaSection`](/components/site/sections/nosotros/cta/cta-section).
+- The home page's [`HeroSection`](/components/site/sections/home/hero/hero-section) is CMS-driven; this one is not.

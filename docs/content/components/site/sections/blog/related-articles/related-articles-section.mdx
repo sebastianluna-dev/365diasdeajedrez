@@ -1,0 +1,55 @@
+---
+description: "The 'Más artículos' strip under an article: a grid of related cards and a link back to the whole blog."
+---
+
+# `RelatedArticles`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/blog/related-articles/related-articles.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `related-articles.section.css` → block `.related-articles` |
+| Used by | `/blog/[slug]` |
+| Composes | [`RelatedArticleCard`](/components/site/sections/blog/related-articles/related-article-card) |
+| Uses | `ArticleSummary` from `services/articles/articles.types` |
+
+## Purpose
+
+Keeps the reader on the blog after an article. Which articles are related is decided by the page (the service picks them); the section only lays them out.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `articles` | `ArticleSummary[]` | yes | Keyed by `slug`. |
+
+## Behaviour
+
+None. `id="mas-articulos"`.
+
+## Markup & styling
+
+Block `.related-articles` (40 lines).
+
+**Elements:** `.related-articles__inner`, `.related-articles__title`, `.related-articles__grid`, `.related-articles__cta-row`
+
+**Tokens:** `--font-gramatika`
+
+**Breakpoints:** `(max-width: 1024px)`, `(max-width: 720px)`.
+
+**Other classes:** `.blog-button.blog-button_variant_secondary.blog-button_size_lg`, `.link-arrow` from `globals.css`.
+
+## Usage
+
+From `app/(frontend)/blog/[slug]/page.tsx`:
+
+```tsx
+import { RelatedArticles } from "@/components/site/sections/blog/related-articles/related-articles.section";
+
+<RelatedArticles articles={relatedArticles} />
+```
+
+## Related
+
+- [`RelatedArticleCard`](/components/site/sections/blog/related-articles/related-article-card).
+- [`ArticleContent`](/components/site/sections/blog/article-content/article-content-section).

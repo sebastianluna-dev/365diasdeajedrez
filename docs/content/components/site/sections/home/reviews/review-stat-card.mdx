@@ -1,0 +1,55 @@
+---
+description: "The stat card that accompanies each testimonial in the carousel: label, big value and a sentence, positioned like its chat."
+---
+
+# `ReviewStatCard`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/reviews/review-stat-card.comp.tsx` |
+| Kind | Server Component (rendered inside the client carousel) |
+| Stylesheet | `review-stat-card.comp.css` → element `.reviews__stat` of `.reviews` |
+| Used by | [`ReviewsInteractive`](/components/site/sections/home/reviews/reviews-interactive) |
+| Uses | `ReviewStatContent` from `services/home/home.types` |
+
+## Purpose
+
+Each review carries one figure ("+300 Elo en un año"); this card shows it beside the chat and slides with the same `position`.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `stat` | `ReviewStatContent` | yes | `label`, `value`, `text`. |
+| `position` | `"center" \| "left" \| "right"` | yes | Becomes `.reviews__stat_position_<position>`. |
+| `hidden` | `boolean` | yes | Sets `aria-hidden`. |
+
+## Behaviour
+
+None.
+
+## Markup & styling
+
+Element `.reviews__stat` (74 lines).
+
+**Elements:** `.reviews__stat-label`, `.reviews__stat-value`, `.reviews__stat-text`
+
+**Modifiers:** `.reviews__stat_position_center|left|right`
+
+**Tokens:** `--color-dark`, `--font-gramatika`
+
+**Breakpoints:** `(max-width: 900px)`, `(max-width: 720px)`.
+
+## Usage
+
+From `components/site/sections/home/reviews/reviews-interactive.comp.tsx`:
+
+```tsx
+import { ReviewStatCard } from "./review-stat-card.comp";
+
+<ReviewStatCard key={item.name} stat={item.stat} position={…} hidden={index !== activeIndex} />
+```
+
+## Related
+
+- [`ReviewChat`](/components/site/sections/home/reviews/review-chat).

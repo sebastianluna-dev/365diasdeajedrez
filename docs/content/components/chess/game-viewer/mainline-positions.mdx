@@ -1,0 +1,70 @@
+---
+description: "Three pure helpers that walk a PgnTree's main line: its positions with evaluations, its dotted paths, and its evaluations only when every move has one."
+---
+
+# `mainline-positions`
+
+Exports `mainlinePositions`, `mainlinePaths` and `mainlineEvaluations`.
+
+| | |
+| --- | --- |
+| File | `components/chess/game-viewer/mainline-positions.ts` |
+| Kind | Module (plain TypeScript, server-safe: no browser APIs) |
+| Stylesheet | none |
+| Used by | [`GameReview`](/components/chess/game-viewer/game-review) |
+| Uses | `ReviewedPosition` from `lib/chess/game-review`<br />`PgnTree`, `MoveEvaluation` from `lib/chess/pgn-tree` |
+
+## Purpose
+
+The bridge between the parsed tree and the review. `reviewGame` in `lib/chess/game-review` wants the main-line positions with their evaluations; the chart wants the paths so a ply can be turned back into a move; and both only make sense when the line is complete. These three walks live next to the viewer because they are about *its* tree shape, not about chess in general.
+
+## API
+
+### `mainlinePositions`
+
+```ts
+export function mainlinePositions(tree: PgnTree): ReviewedPosition[]
+```
+
+The main line's positions with their evaluation, starting with the **initial position**. A move is judged by what changes between the previous position and its own, so without the first one the first move could not be measured. Walks `tree.children[0]` down the first child each time.
+
+### `mainlinePaths`
+
+```ts
+export function mainlinePaths(tree: PgnTree): string[]
+```
+
+The dotted paths of that same line, in the same order, beginning with `""` for the start.
+
+### `mainlineEvaluations`
+
+```ts
+export function mainlineEvaluations(tree: PgnTree): MoveEvaluation[] | null
+```
+
+The evaluations, only if **all** of them are there and the line has at least one move; half a chart would mislead. `null` is what makes `GameReview` offer the "Generar evaluación" button.
+
+## Behaviour
+
+Pure functions with no state. The cost is one pass over the main line each; `GameReview` memoises the results on the tree.
+
+## Markup & styling
+
+Nothing rendered.
+
+## Usage
+
+From `components/chess/game-viewer/game-review.comp.tsx`:
+
+```tsx
+import { mainlineEvaluations, mainlinePaths, mainlinePositions } from "./mainline-positions";
+
+const evaluations = useMemo(() => (tree ? mainlineEvaluations(tree) : null), [tree]);
+const review = useMemo(() => (tree ? reviewGame(mainlinePositions(tree)) : null), [tree]);
+const paths = useMemo(() => (tree ? mainlinePaths(tree) : []), [tree]);
+```
+
+## Related
+
+- [`GameReview`](/components/chess/game-viewer/game-review) and [`GameReviewChart`](/components/chess/game-viewer/game-review-chart).
+- `PgnTree`, dotted paths and `[%eval]` parsing in [Chess library](/chess/library).

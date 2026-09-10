@@ -1,0 +1,70 @@
+---
+description: "The login screen: email, password, a hidden return path and the previous attempt's error, posted to loginAction as a plain server action so the door works without JavaScript."
+---
+
+# `LoginSection`
+
+| | |
+| --- | --- |
+| File | `components/auth/sections/login/login.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `login.section.css` → block `.login` |
+| Used by | `/iniciar-sesion` (`app/(auth)/iniciar-sesion/page.tsx`) |
+| Composes | [`LoginSubmit`](/components/auth/sections/login/login-submit) |
+| Writes | `loginAction()` · `services/auth/auth.actions.ts` |
+| Uses | `RETURN_TO_PARAM` from `constants/platform/auth.const` |
+
+## Purpose
+
+The only screen of `app/(auth)`: a card with the wordmark, a title, the form and a help line. It is deliberately the simplest form in the platform, because it is the one that must work when everything else does not: no client state, no fetch, a native `<form action>` that posts to a server action. Without JavaScript the form still submits; with it, the button shows a pending state.
+
+The page decides what the section shows. It reads `?returnTo=` and `?error=` from the URL, translates the error code with its message map (a code that is not in the map renders nothing, so nobody can inject text into the page through a crafted link) and passes plain strings down.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `returnTo` | `string` | yes | Internal path to return to after logging in; empty means the student's panel. Travels back to the action in a hidden input named `RETURN_TO_PARAM`. |
+| `errorMessage` | `string` | no | Message from the previous attempt, already translated by the page. Rendered with `role="alert"` so a screen reader announces the failure on returning from the submit. |
+
+## Behaviour
+
+- The `<main id="contenido">` is the skip-link target, as on every layout.
+- Fields: `email` (`type="email"`, `autoComplete="username"`, `maxLength` 254, `required`, `autoFocus`) and `password` (`autoComplete="current-password"`, `maxLength` 200, `required`). Browser validation runs before the submit.
+- `loginAction` validates the credentials, opens the session and redirects: to `returnTo` when it is an internal path, otherwise to the role's home. On failure it redirects back to `/iniciar-sesion?error=<code>` keeping `returnTo`, which is how `errorMessage` appears on the next render. See [Authentication & roles › Login and logout](/platform/authentication#login-and-logout).
+- The help line ("¿No puedes entrar? Escribe a la academia…") is static: there is no self-service password reset; staff resets passwords from `/administracion/alumnos`.
+
+## Markup & styling
+
+Block `.login` (112 lines). The card is centred on the auth layout's background.
+
+**Elements:** `.login__card`, `.login__logo`, `.login__logo-accent`, `.login__head`, `.login__title`, `.login__subtitle`, `.login__form`, `.login__field`, `.login__label`, `.login__input`, `.login__error`, `.login__submit`, `.login__help`
+
+No modifiers.
+
+**Other classes it renders:** the submit button also carries the platform's `.platform-button`.
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-font`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 480px)` removes the card's padding and shadow.
+
+## Usage
+
+From `app/(auth)/iniciar-sesion/page.tsx`:
+
+```tsx
+import { LoginSection } from "@/components/auth/sections/login/login.section";
+
+<LoginSection
+  returnTo={readParam(params, RETURN_TO_PARAM)}
+  // The code arrives through the URL: it is only rendered when it is in the map,
+  // so nobody can inject text into the page with a crafted link.
+  errorMessage={LOGIN_ERROR_MESSAGES[readParam(params, LOGIN_ERROR_PARAM)]}
+/>
+```
+
+## Related
+
+- [`LoginSubmit`](/components/auth/sections/login/login-submit), the button.
+- [Authentication & roles](/platform/authentication): sessions, the cookie, `proxy.ts` and `returnTo` rules.
+- `services/auth/auth.actions.ts` in [Data access](/architecture/data-access).

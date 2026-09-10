@@ -1,0 +1,57 @@
+---
+description: "The teacher's public profile form: display name, title, IANA time zone, photo URL and bio, posted to updateTeacherProfile; the login email is not editable here."
+---
+
+# `TeacherProfileSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/teacher/profile/teacher-profile.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `teacher-profile.section.css` → block `.teacher-profile` |
+| Used by | `/profesor/perfil` |
+| Composes | [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes | `updateTeacherProfile()` · `services/teacher/teacher.actions.ts` |
+| Uses | `TEACHER_ERROR_MESSAGES` from `constants/platform/teacher-messages.const`; `COMMON_TIMEZONES` from `constants/platform/timezones.const`; `TeacherProfile` from `services/teacher/teacher.types` |
+
+## Purpose
+
+What students see of their teacher in the classes they attend, plus the one setting that changes behaviour: the **time zone**, which is how the class form interprets the dates the teacher types and how the student's `datetime-local` values are converted to UTC. The login email is shown but not editable; staff changes accounts.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `profile` | `TeacherProfile` | yes | `displayName`, `email`, `title?`, `timezone?`, `photo?`, `bio?`. |
+| `errorCode` | `string` | no | `?error=` from the action, translated with `TEACHER_ERROR_MESSAGES` (unknown codes fall back to `invalid`). |
+
+## Behaviour
+
+The whole card is a `<form action={updateTeacherProfile}>`: name (required), title, time zone (`<select>` over `COMMON_TIMEZONES`, underscores shown as spaces), photo as a URL (moving it to [`ImageUpload`](/components/platform/shared/image-upload) is an open improvement) and a bio textarea. The action validates, saves and revalidates `/profesor/perfil`.
+
+## Markup & styling
+
+Block `.teacher-profile` (28 lines), on top of `.platform-card`.
+
+**Elements:** `.teacher-profile__hint`, `.teacher-profile__fields`
+
+**Other selectors it styles:** `.platform-field` (grid placement).
+
+**Tokens:** `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 760px)` collapses the two-column field grid.
+
+## Usage
+
+From `app/(platform)/profesor/perfil/page.tsx`:
+
+```tsx
+import { TeacherProfileSection } from "@/components/platform/sections/teacher/profile/teacher-profile.section";
+
+<TeacherProfileSection profile={profile} errorCode={error} />
+```
+
+## Related
+
+- [`ClassFormSection`](/components/platform/sections/teacher/classes/class-form-section) uses the time zone.
+- The staff-side edit of the same record: [`TeacherAdminDetailSection`](/components/platform/sections/staff/teachers/teacher-admin-detail-section).

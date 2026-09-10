@@ -1,0 +1,59 @@
+---
+description: "Authors, the one catalog with creation and editing from the interface: a create form and one inline form per author posting createAuthor and updateAuthor."
+---
+
+# `AuthorsAdminSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/authors/authors-admin.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `authors-admin.section.css` → block `.authors-admin` |
+| Used by | `/administracion/autores` |
+| Composes | [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes | `createAuthor()`, `updateAuthor()` · `services/staff-courses/staff-courses.actions.ts` |
+| Uses | `STAFF_ERROR_MESSAGES` from `constants/platform/staff-messages.const`; `AuthorAdminRow` from `services/staff-courses/staff-courses.types` |
+
+## Purpose
+
+Course authors are editorial content, not a restricted domain whose code the logic compares, so they are the only catalog edited from the interface; topics, levels, statuses and the rest stay seed. Each author is its own inline form, so saving one never touches another.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `authors` | `AuthorAdminRow[]` | yes | `{ id, name, slug, photo?, bio?, courseCount }[]`. |
+| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+
+## Behaviour
+
+Fields on both forms: name (required), slug (required, `pattern="[a-z0-9]+(-[a-z0-9]+)*"`, so the browser rejects bad slugs before the server does), photo URL, bio. The row title shows how many courses credit the author.
+
+## Markup & styling
+
+Block `.authors-admin` (45 lines).
+
+**Elements:** `.authors-admin__create`, `.authors-admin__fields`, `.authors-admin__row`, `.authors-admin__row-title`, `.authors-admin__row-meta`
+
+**Other selectors it styles:** `.platform-field`.
+
+**Other classes it renders:** `.platform-card`, `.platform-card__title`, `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 860px)` collapses the three-field row.
+
+## Usage
+
+From `app/(platform)/administracion/autores/page.tsx`:
+
+```tsx
+import { AuthorsAdminSection } from "@/components/platform/sections/staff/authors/authors-admin.section";
+
+<AuthorsAdminSection authors={authors} errorCode={error} />
+```
+
+## Related
+
+- Authors are attached to courses in [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section).
+- Catalogs and seed in [Scripts & seed](/operations/scripts-and-seed).

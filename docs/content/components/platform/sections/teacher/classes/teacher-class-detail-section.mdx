@@ -1,0 +1,77 @@
+---
+description: "The teacher's class page: facts and status transitions, enrolment and attendance, transcript status, the block editor, and a preview of the blocks exactly as the student will see them."
+---
+
+# `TeacherClassDetailSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/teacher/classes/teacher-class-detail.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `teacher-class-detail.section.css` → block `.teacher-class` |
+| Used by | `/profesor/clases/[classId]` |
+| Composes | [`AttendanceForm`](/components/platform/sections/teacher/classes/attendance-form), [`ClassBlockEditor`](/components/platform/sections/teacher/classes/class-block-editor/class-block-editor), [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime), [`PlatformNotice`](/components/platform/shared/platform-notice), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads | `nextClassStatuses()` · `services/teacher-classes/class-status-transitions.ts` (pure) |
+| Writes | `setClassStatus()`, `addParticipant()` · `services/teacher-classes/teacher-classes.actions.ts` |
+| Uses | `CLASS_STATUS`, `ClassStatusCode` from `constants/platform/class-codes.const`; `TEACHER_ERROR_MESSAGES`; `teacherRoutes`; `BlockFormOptions` type from `block-form.comp` |
+
+## Purpose
+
+The screen a teacher prepares and documents a class from, in cards: the facts with an "Editar" link and the status buttons; students and attendance with an enrolment form; the transcript status; the content editor; and a preview rendered with the **same** [`ClassContentRenderer`](/components/platform/shared/class-content-renderer) the student gets, so what the teacher sees is what the student will see.
+
+The teacher always sees the meeting link, because they set it; the student sees it only from the visibility instant.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `classDetail` | `TeacherClassDetail` | yes | The class with `participants`, `blocks` (editor shape), `transcript?`, meeting fields and labels. |
+| `previewBlocks` | `ClassBlockView[]` | yes | The same blocks mapped as the student will see them. |
+| `students` | `AssignedStudentSummary[]` | yes | Students with an active assignment: candidates to enrol; those already enrolled are filtered out. |
+| `blockOptions` | `BlockFormOptions` | yes | `{ games, positions }` the block forms can reference. |
+| `initialGameId` | `string` | no | Game preselected when arriving from "Usar en una clase" (`?gameId=`). |
+| `errorCode` | `string` | no | `?error=` translated with `TEACHER_ERROR_MESSAGES`. |
+
+## Behaviour
+
+- **Status transitions** come from `nextClassStatuses(statusCode)`, a pure function; each valid next status is a one-button `<form action={setClassStatus.bind(null, id)}>` with a hidden `statusCode`, labelled from `STATUS_ACTION_LABELS`. The action checks the transition again on the server.
+- **Enrolment:** a `<select name="studentId">` over `enrollable` posting `addParticipant`; rendered only when someone can still be enrolled.
+- The facts list shows when, status, meeting (linked for the teacher), link visibility instant, and recording.
+- Transcript card: status label and whether text exists.
+- Preview card falls back to an [`EmptyState`](/components/platform/shared/empty-state) when there are no blocks.
+
+## Markup & styling
+
+Block `.teacher-class` (104 lines).
+
+**Elements:** `.teacher-class__head`, `.teacher-class__facts`, `.teacher-class__fact`, `.teacher-class__fact-label`, `.teacher-class__fact-value`, `.teacher-class__status-actions`, `.teacher-class__description`, `.teacher-class__summary`, `.teacher-class__summary-title`, `.teacher-class__summary-text`, `.teacher-class__enroll`, `.teacher-class__transcript`, `.teacher-class__preview-hint`
+
+No modifiers.
+
+**Other selectors it styles:** `.platform-card__title`, `.platform-field` (inside the enrol row).
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/profesor/clases/[classId]/page.tsx`:
+
+```tsx
+import { TeacherClassDetailSection } from "@/components/platform/sections/teacher/classes/teacher-class-detail.section";
+
+<TeacherClassDetailSection
+  classDetail={classDetail}
+  previewBlocks={previewBlocks}
+  students={students}
+  blockOptions={{ games, positions }}
+  initialGameId={gameId}
+  errorCode={error}
+/>
+```
+
+## Related
+
+- `services/teacher-classes/class-status-transitions.ts` and its test.
+- [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section) (student), [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section) (staff).

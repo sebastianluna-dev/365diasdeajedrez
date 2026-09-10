@@ -1,0 +1,61 @@
+---
+description: "A teacher's record for staff: profile form, activate or deactivate (which never closes assignments), the assignment panel from the teacher's side, and the teacher's classes."
+---
+
+# `TeacherAdminDetailSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/teachers/teacher-admin-detail.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `teacher-admin-detail.section.css` → block `.teacher-admin` |
+| Used by | `/administracion/profesores/[teacherId]` |
+| Composes | [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice), [`PlatformTable`](/components/platform/shared/platform-table), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Writes | `updateTeacher()`, `setTeacherActive()` · `services/staff-teachers/staff-teachers.actions.ts` |
+| Uses | `STAFF_ERROR_MESSAGES`; `COMMON_TIMEZONES`; `StaffTeacherDetail`, `AssignableStudent` from `services/staff-teachers/staff-teachers.types` |
+
+## Purpose
+
+Four cards: the profile (the same fields the teacher edits in their own profile, plus the login email as a fact), the **status**, the assigned students, and the classes. Deactivating a teacher blocks their panel and new assignments but does **not** close the assignments they hold: reassigning students is a human decision, so the card warns how many assignments will stay open before the button.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `teacher` | `StaffTeacherDetail` | yes | `id`, `displayName`, `email`, `title?`, `timezone?`, `photo?`, `bio?`, `isActive`, `students[]`, `classes[]`. |
+| `assignable` | `AssignableStudent[]` | yes | Students the teacher could receive, with their current teacher's name if any. |
+| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+
+## Behaviour
+
+- Profile: `<form action={updateTeacher.bind(null, id)}>` with display name, title, time zone, photo URL and bio.
+- Status: a one-button form posting `setTeacherActive`; a hidden `isActive=on` travels only when reactivating, so an absent field means deactivate. An info [`PlatformNotice`](/components/platform/shared/platform-notice) precedes it when active assignments exist.
+- Assignments: [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel) in `byTeacher` mode.
+- Classes: a [`PlatformTable`](/components/platform/shared/platform-table) with title, date, status and participants.
+
+## Markup & styling
+
+Block `.teacher-admin` (28 lines).
+
+**Elements:** `.teacher-admin__form`, `.teacher-admin__meta`, `.teacher-admin__status`
+
+**Other selectors it styles:** `.platform-field`.
+
+**Tokens:** `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/administracion/profesores/[teacherId]/page.tsx`:
+
+```tsx
+import { TeacherAdminDetailSection } from "@/components/platform/sections/staff/teachers/teacher-admin-detail.section";
+
+<TeacherAdminDetailSection teacher={teacher} assignable={assignable} errorCode={error} />
+```
+
+## Related
+
+- [`TeacherProfileSection`](/components/platform/sections/teacher/profile/teacher-profile-section), the teacher's own edit of the same record.
+- What deactivation blocks: `requireTeacher()` in [Authentication & roles](/platform/authentication).

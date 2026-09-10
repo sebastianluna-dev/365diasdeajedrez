@@ -1,0 +1,59 @@
+---
+description: "Top navigation of the public site: the logo, the CMS navigation items (links and dropdowns), the login button fixed in code, and the mobile menu."
+---
+
+# `Header`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/shell/header/header.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `header.section.css` → block `.site-header-nav` (and `.site-header-bar`, `.site-header`, `.site-header-mobile`) |
+| Used by | `/`, `/nosotros`, `/blog`, `/blog/[slug]`, `/mentor/[slug]`, `/reloj-de-ajedrez`, `app/(frontend)/not-found.tsx` |
+| Composes | [`Logo`](/components/site/shared/logo), [`HeaderDropdown`](/components/site/sections/shell/header/header-dropdown), [`HeaderMobileMenu`](/components/site/sections/shell/header/header-mobile-menu) |
+| Reads | `getHeaderData()` · `services/home/home.service.ts` (the `home-header` Global) |
+| Uses | `LOGIN_PATH` from `constants/platform/auth.const`, `ChevronRight` from `lucide-react` |
+
+## Purpose
+
+The navigation bar every public page opens with. Its items come from the CMS so editors can add or reorder links; its main button does not. That button is the entrance to the platform, so its text ("Iniciar sesión") and its target (`LOGIN_PATH`) are fixed in code: an editable label could end up promising something different from what the link does. The `ctaLabel` field of the `home-header` Global still exists and `services/home` still maps it, but nobody reads it any more.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `theme` | `"dark" \| "light"` | no, `"dark"` | `"light"` is the blog's variant: red-accent logo and `.site-header-nav_theme_light`. |
+
+## Behaviour
+
+- Awaits `getHeaderData()` and maps `navItems`: a `link` item becomes a `next/link`, a `dropdown` item becomes a [`HeaderDropdown`](/components/site/sections/shell/header/header-dropdown).
+- Renders the desktop login button and hands the same label and href to [`HeaderMobileMenu`](/components/site/sections/shell/header/header-mobile-menu), so both menus agree without the CMS.
+- `.site-header-nav__spacer` reserves the bar's height so the fixed bar does not overlap the first section.
+
+## Markup & styling
+
+Block `.site-header-nav` (324 lines, shared by the three header files).
+
+**Elements:** `.site-header-nav__inner`, `.site-header-nav__spacer`, `.site-header__links`, `.site-header__button`, `.site-header__toggle`, `.site-header__dropdown`, `.site-header__dropdown-trigger`, `.site-header__dropdown-menu`, `.site-header-mobile__links`, `.site-header-mobile__button`
+
+**Modifiers:** `.site-header-nav_theme_light`, `.site-header__dropdown_open`, `.site-header-mobile_open`
+
+**Tokens:** `--color-primary`, `--color-accent-red`, `--color-dark`, `--foreground`
+
+**Breakpoints:** `(max-width: 1023px)` hides the desktop links and button and shows the toggle.
+
+## Usage
+
+From `app/(frontend)/blog/page.tsx`:
+
+```tsx
+import { Header } from "@/components/site/sections/shell/header/header.section";
+
+<Header theme="light" />
+```
+
+## Related
+
+- [`HeaderDropdown`](/components/site/sections/shell/header/header-dropdown) and [`HeaderMobileMenu`](/components/site/sections/shell/header/header-mobile-menu), the two client pieces.
+- [`Footer`](/components/site/sections/shell/footer/footer-section), the other half of the shell.
+- The Global's fields are in [CMS](/public-site/cms).

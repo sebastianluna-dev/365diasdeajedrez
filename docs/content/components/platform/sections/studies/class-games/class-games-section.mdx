@@ -1,0 +1,56 @@
+---
+description: "The games the student saw in class, as a read-only table whose rows lead to the class where each was seen rather than to the studies viewer."
+---
+
+# `ClassGamesSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/studies/class-games/class-games.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `class-games.section.css` → block `.class-games` |
+| Used by | `/estudios/clases` |
+| Composes | [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads | `getClassGames()` · `services/studies/studies.service.ts` |
+| Uses | `platformRoutes` from `lib/platform-routes` |
+
+## Purpose
+
+"Partidas de mis clases" is not a study of the student's: the rows are pointers to games that live in someone else's database (a teacher's study, a course collection). So each row leads to the **class** where the game was seen, where the student already has access and the context is kept, and not to the studies viewer. Copying one of them into an own study is done from [`NewGame`](/components/platform/sections/studies/study-detail/new-game)'s class tab.
+
+## Props
+
+This component takes no props. It is the page's first await; the service resolves the identity in the DAL.
+
+## Behaviour
+
+Renders its own breadcrumb (Mis estudios / Partidas de mis clases), a header with "Colección" and "Sólo lectura" tags, and a plain `<table>` with white, black, result, ECO, class (linked) and class date. No games renders an empty state.
+
+## Markup & styling
+
+Block `.class-games` (87 lines).
+
+**Elements:** `.class-games__breadcrumb`, `.class-games__breadcrumb-link`, `.class-games__breadcrumb-separator`, `.class-games__breadcrumb-current`, `.class-games__tags`, `.class-games__table-wrap`, `.class-games__table`, `.class-games__header`, `.class-games__row`, `.class-games__cell`, `.class-games__link`
+
+**Modifiers and states:** `.class-games__cell_strong`
+
+**Other classes it renders:** `.platform-page__head`, `.platform-page__title`, `.platform-page__subtitle`, `.platform-tag`, `.platform-tag_variant_accent`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-bg`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+No media queries; the wrapper scrolls.
+
+## Usage
+
+From `app/(platform)/estudios/clases/page.tsx`:
+
+```tsx
+import { ClassGamesSection } from "@/components/platform/sections/studies/class-games/class-games.section";
+
+<ClassGamesSection />
+```
+
+## Related
+
+- This table could be rebuilt on [`PlatformTable`](/components/platform/shared/platform-table); it predates it.
+- [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section), where the rows lead.

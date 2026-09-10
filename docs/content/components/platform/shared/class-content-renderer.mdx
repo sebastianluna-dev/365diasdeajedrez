@@ -1,0 +1,66 @@
+---
+description: "Renders a class's ordered blocks by kind: text as paragraphs, video and file as link cards, games and lessons in the single GameViewer at their saved move, positions as StaticDiagram."
+---
+
+# `ClassContentRenderer`
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/class-content-renderer.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `class-content-renderer.comp.css` → block `.class-content` |
+| Used by | [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section), [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) (preview), [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section) |
+| Composes | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`StaticDiagram`](/components/chess/static-diagram) |
+| Uses | `ClassBlockView` from `services/classes/classes.types` |
+
+## Purpose
+
+A class's content is an ordered list of blocks of six kinds. This component turns the `ClassBlockView` discriminated union into markup, and it is the same component for the student, for the teacher's preview and for staff, so the three see exactly the same thing.
+
+Chess blocks are **references** to the original material, not copies: a `GAME_REF` renders the referenced game's PGN in the [`GameViewer`](/components/chess/game-viewer/game-viewer) opened at the saved `movePath`, with a link to the game in "Mis estudios" when the viewer may open it; a `LESSON_REF` does the same with the lesson and a link to it in full; a `POSITION_REF` is a [`StaticDiagram`](/components/chess/static-diagram). Correcting the source corrects every class that cites it.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `blocks` | `ClassBlockView[]` | yes | Ordered blocks, each `{ id, kind, caption?, … }` with the kind-specific payload (`text`, `videoUrl`, `game`, `lesson`, `position`). |
+
+## Behaviour
+
+| `kind` | Rendered as |
+| --- | --- |
+| `TEXT` | Paragraphs split on blank lines; a paragraph starting with `## ` becomes an `<h3>`. Simple markdown only, no parser. |
+| `VIDEO` | An external link card (`target="_blank"`, `rel="noreferrer"`) labelled "Video" with the caption or the URL. |
+| `GAME_REF` | `GameViewer` with `title`, `initialPath`, plus "Abrir la partida en Mis estudios" when `game.href` is present (absent for games the viewer cannot access). |
+| `LESSON_REF` | `GameViewer` with the lesson's orientation and `initialPath`, plus "Abrir la lección completa". |
+| `POSITION_REF` | `StaticDiagram` with the caption or the position's title. |
+| `FILE` | A card labelled "Archivo" with the caption; the file itself is not linked yet. |
+
+A caption is rendered under text, game and lesson blocks; video, file and position blocks show it inside their own card.
+
+## Markup & styling
+
+Block `.class-content` (70 lines).
+
+**Elements:** `.class-content__block`, `.class-content__text`, `.class-content__text-heading`, `.class-content__text-paragraph`, `.class-content__link-card`, `.class-content__link-kind`, `.class-content__link-label`, `.class-content__game`, `.class-content__game-link`, `.class-content__caption`
+
+**Modifiers and states:** `.class-content__block_kind_{text,video,game_ref,lesson_ref,position_ref,file}` (set in markup for per-kind spacing)
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/classes/class-detail/class-detail.section.tsx`:
+
+```tsx
+import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer.comp";
+
+<ClassContentRenderer blocks={classDetail.blocks} />
+```
+
+## Related
+
+- Block kinds and `ClassBlockView` in [Data model](/platform/data-model); the teacher's editor is [`ClassBlockEditor`](/components/platform/sections/teacher/classes/class-block-editor/class-block-editor).
+- Why the lesson editor links course games instead of holding PGN: [Teacher & staff panels](/platform/teacher-and-staff).

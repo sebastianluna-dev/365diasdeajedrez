@@ -1,0 +1,43 @@
+---
+description: "A Payload chessGameBlock: an optional title and a players · event · year line above the lazy board, which mounts when it comes near the viewport."
+---
+
+# `ChessGameBlockRenderer`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/blog/article-content/blocks/chess-game-block.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `chess-game-block.comp.css` → block `.rich-chess-game` |
+| Used by | [`articleRichTextConverters`](/components/site/sections/blog/article-content/rich-text-converters) |
+| Composes | [`ChessBoardLazy`](/components/chess/chess-board-lazy) |
+| Uses | `ChessGameBlock` from `@/payload-types` |
+
+## Purpose
+
+A playable game inside an article. Articles are long and the board is the heaviest JavaScript on the site, so the block uses the lazy board: nothing is downloaded until the reader scrolls near it.
+
+## Props
+
+The block's fields: `pgn: string`, `title?`, `players?`, `event?`, `date?`.
+
+## Behaviour
+
+- Builds the subtitle from `players`, `event` and the year of `date`, joined with " · ", skipping empties.
+- The meta block renders only when there is a title or a subtitle.
+
+## Markup & styling
+
+Block `.rich-chess-game` (23 lines): `.rich-chess-game__meta`, `.rich-chess-game__title`, `.rich-chess-game__subtitle`.
+
+## Usage
+
+From `components/site/sections/blog/article-content/rich-text-converters.tsx`:
+
+```tsx
+chessGameBlock: ({ node }) => <ChessGameBlockRenderer {...node.fields} />,
+```
+
+## Related
+
+- [`ChessBoardLazy`](/components/chess/chess-board-lazy) and [Board & game viewer › Which one to use](/chess/viewer#which-one-to-use).

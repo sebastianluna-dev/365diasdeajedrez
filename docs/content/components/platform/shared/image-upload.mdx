@@ -1,0 +1,75 @@
+---
+description: "Drag or pick an image, upload it from the browser straight to Cloudinary with a server-issued signature, crop it to the target ratio and leave the URL in a hidden form field."
+---
+
+# `ImageUpload`
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/image-upload.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `image-upload.comp.css` → block `.image-upload` |
+| Used by | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) (the course cover) |
+| Writes | `createUploadSignature()` · `services/media/media.actions.ts` |
+| Uses | `IMAGE_ACCEPT`, `IMAGE_MAX_BYTES`, `isAllowedImageType` from `constants/platform/upload.const`<br />`withCoverCrop` from `lib/cloudinary-url`<br />`isDisplayableImage` from `lib/remote-image`<br />`ImageIcon` from `components/icons/` |
+
+## Purpose
+
+Uploads an image and leaves its URL in the form that saves it. Everything happens in this box: the file is dragged or chosen, the result is seen, changed or removed. The URL is neither shown nor asked for (whoever manages a course has no reason to know what Cloudinary is); it travels in a hidden field and is saved with the rest of the form.
+
+The bytes go **from the browser to Cloudinary directly**, with a signature requested from the server action: the credentials never reach the browser and the file never passes through our server, whose server actions have a 1 MB body limit, less than many photos. On upload the URL is normalised to the target ratio with a crop in the URL itself (`withCoverCrop`), which is what fixes a square photo into a 21:9 cover; the preview therefore shows exactly what the student will see.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `name` | `string` | yes | Name of the hidden field that carries the URL. |
+| `form` | `string` | no | Id of the `<form>` the field belongs to, when the component lives outside it. This is what lets the cover sit in its own card and still save with the metadata form. |
+| `defaultValue` | `string` | no | The URL already saved, if any. |
+| `label` | `string` | yes | What it is: "Portada del curso". Used in the placeholder and the `aria-label`. |
+| `aspectRatio` | `string` | no · default `"21:9"` | Ratio of the box and of the Cloudinary crop. |
+| `hint` | `string` | no | Text under the box when there is no error. |
+
+## Behaviour
+
+- **State:** `url` (what the form sees), `status` (`idle`, `uploading`, or `error` with a message) and `dragging`.
+- **Validation** runs in the browser first, against `upload.const` (jpg/png/webp/avif, 5 MB), to say so instantly; Cloudinary is the real authority because `allowed_formats` is part of the signed payload and cannot be altered client-side.
+- **Upload:** `createUploadSignature()` returns cloud name, API key, timestamp, folder, allowed formats and the signature; a `FormData` POST to `api.cloudinary.com/v1_1/<cloud>/image/upload` follows. A non-OK response or a body without `secure_url` becomes the error state.
+- **Empty box:** a `<button>` (so the keyboard can open the file picker) that also accepts drops; `dragover` toggles the `_state_over` modifier.
+- **Filled box:** only a preview, deliberately not a drop zone. When it was one, dragging the rendered image back onto itself (which browsers allow for any `<img>`) re-uploaded the same photo. The image is `draggable={false}`; changing it stays on its button.
+- The file input's value is cleared after each pick so choosing the same file twice fires `change` again. "Quitar" empties the URL; the form then saves an empty value.
+- Errors render with `role="alert"`; while uploading the buttons are disabled and read "Subiendo…".
+
+## Markup & styling
+
+Block `.image-upload` (159 lines).
+
+**Elements:** `.image-upload__file` (visually hidden input), `.image-upload__drop`, `.image-upload__image`, `.image-upload__placeholder`, `.image-upload__placeholder-icon`, `.image-upload__placeholder-title`, `.image-upload__placeholder-hint`, `.image-upload__actions`, `.image-upload__action`, `.image-upload__remove`, `.image-upload__hint`, `.image-upload__error`
+
+**Modifiers and states:** `.image-upload__drop_state_over`, `.image-upload__drop_state_filled`, `.image-upload__action_variant_primary`
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-danger`, `--platform-surface`, `--platform-surface-sunken`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+The box's `aspect-ratio` is set inline from the prop. No media queries.
+
+## Usage
+
+From `components/platform/sections/staff/courses/course-editor.section.tsx`:
+
+```tsx
+import { ImageUpload } from "@/components/platform/shared/image-upload.comp";
+
+<ImageUpload
+  name="cover"
+  form={METADATA_FORM_ID}
+  defaultValue={course.cover ?? undefined}
+  label="Portada del curso"
+  aspectRatio="21:9"
+  hint="JPG, PNG, WebP o AVIF. Se guarda al pulsar «Guardar metadatos»."
+/>
+```
+
+## Related
+
+- `services/media/media.actions.ts`, `lib/cloudinary-url.ts` and the Cloudinary environment variables in [Deployment](/operations/deployment).
+- The teacher profile still takes a photo URL by hand; moving it onto this component is an open improvement.

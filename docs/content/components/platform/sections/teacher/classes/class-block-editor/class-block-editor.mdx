@@ -1,0 +1,69 @@
+---
+description: "The class content editor: a list of blocks with move, edit and delete controls, and an 'add a block' picker; interface state only, every operation a server action that revalidates."
+---
+
+# `ClassBlockEditor`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/teacher/classes/class-block-editor/class-block-editor.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `class-block-editor.comp.css` → block `.class-block-editor` |
+| Used by | [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) |
+| Composes | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form), [`FormField`](/components/platform/shared/form-field) |
+| Writes | `addClassBlock()`, `updateClassBlock()`, `moveClassBlock()`, `deleteClassBlock()` · `services/teacher-classes/teacher-classes.actions.ts` |
+| Uses | `CLASS_BLOCK_KIND`, `ClassBlockKindCode` from `constants/platform/class-codes.const`; `TeacherClassBlock` from `services/teacher-classes/teacher-classes.types` |
+
+## Purpose
+
+Where a class's content is composed: an ordered list of blocks (text, video, game, lesson, position, file). The state that lives here is interface **only** (which block is open, which kind is being added); every operation is a server action that revalidates the page. Preparing a class is neither collaborative nor high-frequency, so there is no optimistic state that could drift from the database.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `classId` | `string` | yes | Bound into every action. |
+| `blocks` | `TeacherClassBlock[]` | yes | The blocks in order, editor shape (`kind`, `text?`, `videoUrl?`, `gameId?`, `lessonId?`, `positionId?`, `movePath?`, `caption?`, `pgn?`, `referenceLabel?`, `isMovePathBroken`). |
+| `options` | `BlockFormOptions` | yes | `{ games, positions }` the forms can reference. |
+| `initialGameId` | `string` | no | Game preselected when arriving from "Usar en una clase" (`?gameId=`): opens the add form on the game kind with that game filled. |
+
+## Behaviour
+
+- Each row: a kind tag, a summary (`blockSummary`: text excerpt, video URL, or the reference label), and controls: up and down (`<form action={moveClassBlock…}>` with hidden `blockId` and `direction`, disabled at the ends), "Editar" (toggles `editingId`), "Eliminar" (a form).
+- A block whose saved `movePath` no longer exists in the referenced content shows a `role="alert"` warning until it is edited.
+- Editing renders [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) inline with `updateClassBlock.bind(null, classId, block.id)`.
+- "Añadir un bloque" is a `<select>` over the kinds; choosing one mounts a `BlockForm` keyed by kind with `addClassBlock.bind(null, classId)`. With `initialGameId`, a synthetic `gamePrefill` block seeds it.
+
+## Markup & styling
+
+Block `.class-block-editor` (94 lines).
+
+**Elements:** `.class-block-editor__list`, `.class-block-editor__item`, `.class-block-editor__row`, `.class-block-editor__summary`, `.class-block-editor__controls`, `.class-block-editor__control`, `.class-block-editor__warning`, `.class-block-editor__add`
+
+**Modifiers and states:** `.class-block-editor__control_variant_danger`
+
+**Other selectors it styles:** `.platform-field` (the add row).
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-border-strong`, `--platform-danger`, `--platform-danger-border`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/teacher/classes/teacher-class-detail.section.tsx`:
+
+```tsx
+import { ClassBlockEditor } from "./class-block-editor/class-block-editor.comp";
+
+<ClassBlockEditor
+  classId={classDetail.id}
+  blocks={classDetail.blocks}
+  options={blockOptions}
+  initialGameId={initialGameId}
+/>
+```
+
+## Related
+
+- Block kinds in [Data model](/platform/data-model); how the student sees them in [`ClassContentRenderer`](/components/platform/shared/class-content-renderer).
+- Reordering goes through `services/shared/reorder`.

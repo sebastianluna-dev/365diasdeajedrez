@@ -1,0 +1,84 @@
+---
+description: "The panel under the board with four tabs: comment, quality (NAGs in exclusive groups), whole-game evaluation, and share/export; comment and signs are read from the PGN, never from local state."
+---
+
+# `GameTools`
+
+Also exports the `GameToolsTab` type.
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/studies/game-view/game-tools.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `game-tools.comp.css` → block `.game-tools` |
+| Used by | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section) (through the viewer's `boardFooter` slot) |
+| Composes | [`GameReview`](/components/chess/game-viewer/game-review); [`board-export`](/components/chess/game-viewer/board-export) through dynamic `import()` |
+| Uses | `commentTextAt`, `parseEditableGame`, `serializeGame`, `setCommentText`, `setNags` from `lib/chess/pgn-edit`<br />`MOVE_QUALITY_NAGS`, `MOVE_REMARK_NAGS`, `POSITION_EVAL_NAGS`, `nagCodeFor`, `nagCodesOf`, `nagGlyph`, `nodeAtPath`, `parsePgnTree` from `lib/chess/pgn-tree`<br />`sanToSpanish` from `lib/chess/notation`; `plainMovetext` from `lib/chess/plain-movetext` |
+
+## Purpose
+
+Everything one does to the **current move** that is not playing on the board: write its comment, mark its quality, evaluate the whole game, and get it out (FEN, full PGN, bare main line, PNG, GIF). It sits under the board as the viewer's `boardFooter`, so it is hidden in fullscreen.
+
+Comment and NAGs are read from the PGN on every render, not kept in state: what is seen is always what is saved and there are no two truths to sync. Editing them goes through `lib/chess/pgn-edit` and up through `onPgnChange`; saving is the section's job.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `pgn` | `string` | yes | The shared PGN. |
+| `currentPath` | `string` | yes | Dotted path of the move selected in the viewer. |
+| `canEdit` | `boolean` | yes | Course databases are read-only: only the evaluation and share tabs remain. |
+| `saveLabel` | `string` | no | The autosave status text, owned by the section because the viewer writes the same PGN and the notice must be one. |
+| `tab` | `GameToolsTab` | yes | Controlled by the section because the viewer's move menu changes it too. |
+| `onTabChange` | `(tab) => void` | yes | |
+| `focusRequest` | `number` | yes | Counter bumped whenever someone asks to write here; on change the panel scrolls into view and, on the comment tab, the textarea takes focus with the cursor at the end. |
+| `white`, `black` | `string` | yes | Names for the evaluation's accuracy cards. |
+| `onSelectPath` | `(path) => void` | yes | The chart moves the board. |
+| `onPgnChange` | `(pgn) => void` | yes | Receives the edited PGN. |
+
+## Behaviour
+
+- **Tabs** (`role="tablist"`): "Comentario" and "Calidad" only with `canEdit`, then "Evaluación" and "Compartir". The comment tab shows a dot when the move has a comment; the quality tab shows the move's glyphs, so one knows what is inside without opening it. The bar ends with the move's name and the save label.
+- **Comment:** an uncontrolled textarea keyed on `path:comment` so it remounts when the saved comment changes (the same move can be commented from the right-click menu). Saved on blur through `setCommentText` when the value differs.
+- **Quality:** three NAG groups in two columns, the layout of chess programs: left what qualifies the move ("Jugada", "Matices"), right how the position stands ("Posición"). Each group is exclusive inside (a move is not "!" and "?" at once) but combines across groups. Paired signs (white/black variants) are picked by whose move it is through `nagCodeFor`. Disabled at the initial position.
+- **Evaluación:** mounts [`GameReview`](/components/chess/game-viewer/game-review).
+- **Compartir:** copy buttons for the FEN, the full PGN and the bare main line (`plainMovetext`: no variations, comments or headers), each flashing "Copiado" for two seconds; PNG and GIF export buttons that `import()` the export module on click, because almost nobody exports and it used to travel with every game. `exporting` disables both buttons while one runs; failures show an error hint.
+
+## Markup & styling
+
+Block `.game-tools` (277 lines).
+
+**Elements:** `.game-tools__tabs`, `.game-tools__tab`, `.game-tools__tab-dot`, `.game-tools__tab-badge`, `.game-tools__target`, `.game-tools__panel`, `.game-tools__textarea`, `.game-tools__hint`, `.game-tools__nags`, `.game-tools__nag-column`, `.game-tools__nag-group`, `.game-tools__nag-title`, `.game-tools__nag`, `.game-tools__nag-glyph`, `.game-tools__nag-label`, `.game-tools__foot`, `.game-tools__share`, `.game-tools__share-text`, `.game-tools__share-label`, `.game-tools__share-value`, `.game-tools__share-button`, `.game-tools__export`, `.game-tools__export-button`
+
+**Modifiers and states:** `.game-tools__tab_state_active`, `.game-tools__nag_state_active`, `.game-tools__share-value_kind_code`, `.game-tools__hint_state_error`
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-danger`, `--platform-surface`, `--platform-surface-soft`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+
+No media queries; it is as wide as the board column.
+
+## Usage
+
+From `components/platform/sections/studies/game-view/game-view.section.tsx`:
+
+```tsx
+import { GameTools, type GameToolsTab } from "./game-tools.comp";
+
+<GameTools
+  pgn={pgn}
+  currentPath={currentPath}
+  canEdit={game.canEdit}
+  saveLabel={saveLabel}
+  tab={toolsTab}
+  onTabChange={setToolsTab}
+  focusRequest={focusRequest}
+  white={game.white}
+  black={game.black}
+  onSelectPath={setCurrentPath}
+  onPgnChange={applyPgn}
+/>
+```
+
+## Related
+
+- [`GameReview`](/components/chess/game-viewer/game-review), [`board-export`](/components/chess/game-viewer/board-export).
+- NAG groups in `lib/chess/pgn-tree.ts` ([Chess library](/chess/library)).

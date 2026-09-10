@@ -1,0 +1,64 @@
+---
+description: "Plays the frozen exercise lines on the board: the student moves, the opponent replies after a pause, SAN is compared ignoring suffixes, mistakes are counted and each result is recorded server-side."
+---
+
+# `TrainerSession`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/trainer/trainer-session.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `trainer-session.comp.css` → block `.trainer-session` |
+| Used by | `/entrenador?lesson=…`, `?chapter=…` or `?session=all` |
+| Composes | [`ChessBoard`](/components/chess/chess-board), [`SessionSummary`](/components/platform/sections/trainer/session-summary) |
+| Writes | `recordTrainingAttempt()` · `services/trainer/trainer.actions.ts` |
+| Uses | `ATTEMPT_RESULT`, `EXERCISE_MODE` from `constants/platform/training-codes.const`; `applySan` from `lib/chess/replay`; `platformRoutes` from `lib/platform-routes`; `TrainerExercise` from `services/trainer/trainer.types` |
+
+## Purpose
+
+The training session. Each exercise is a frozen line (`lineSans`) from a lesson, a starting FEN and the colour the student plays. The board is controlled: the student's move is compared with the expected one, a correct move is applied and, in play-the-line mode, the opponent's reply follows after 450 ms; a wrong move counts a mistake and shows feedback. When the line ends (or, in find-the-move mode, after the first correct move) the attempt is recorded and the next exercise loads; after the last one the [`SessionSummary`](/components/platform/sections/trainer/session-summary) replaces the board.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `exercises` | `TrainerExercise[]` | yes | `{ id, startFen, lineSans, userColor, modeCode, promptText?, chapterName, lessonName, isStale }[]`, at least one. The page builds the list from the query. |
+
+## Behaviour
+
+- **State:** `index`, `fen`, `plyIndex` (position in `lineSans`), `mistakes`, `feedback`, `results`, `finished`; a start timestamp and a list of pending timers in refs, cleared on unmount.
+- **Comparison:** `normalizeSan` strips `+`, `#`, `!`, `?` so "Nf3+" matches "Nf3" and a NAG in the source line does not break the exercise.
+- **Correct move:** `applySan` advances the FEN. In `FIND_MOVE` mode or at the end of the line the exercise passes; otherwise the reply is scheduled and `plyIndex` jumps two.
+- **Finishing:** `recordTrainingAttempt` receives the exercise id, `PASSED`/`FAILED`, the mistake count and the elapsed milliseconds; the action resolves the user. The next exercise loads after the feedback delay (1.6 s on success, 400 ms on surrender).
+- **Feedback** renders in an `aria-live="polite"` area and clears itself unless a newer message replaced it.
+- **Stale exercises** (`isStale`: the lesson was edited after the exercise was created) show a "Desactualizado" tag with a tooltip.
+- "Rendirse" fails the current exercise; "Terminar sesión" links back to the trainer home.
+
+## Markup & styling
+
+Block `.trainer-session` (86 lines).
+
+**Elements:** `.trainer-session__status`, `.trainer-session__lesson`, `.trainer-session__color`, `.trainer-session__stale`, `.trainer-session__prompt`, `.trainer-session__board`, `.trainer-session__feedback-area`, `.trainer-session__feedback`, `.trainer-session__actions`, `.trainer-session__mistakes`, `.trainer-session__exit`
+
+**Modifiers and states:** `.trainer-session__feedback_kind_ok`, `.trainer-session__feedback_kind_error`, `.trainer-session__feedback_kind_info`
+
+**Other classes it renders:** `.platform-tag`, `.platform-tag_variant_accent`, `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-danger`, `--platform-success-ink`, `--platform-text`, `--platform-text-muted`, `--platform-warning-ink`, `--platform-warning-soft`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/entrenador/page.tsx`:
+
+```tsx
+import { TrainerSession } from "@/components/platform/sections/trainer/trainer-session.comp";
+
+<TrainerSession exercises={exercises} />
+```
+
+## Related
+
+- Where exercises are authored and frozen: [`ExerciseEditor`](/components/platform/sections/staff/courses/exercise-editor).
+- [Student features › Move Trainer](/platform/student) for modes and staleness.

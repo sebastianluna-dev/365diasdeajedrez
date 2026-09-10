@@ -1,0 +1,71 @@
+---
+description: "The lesson's exercises, described as SAN lines: a list with move, edit and delete controls, stale warnings, and an add or edit form whose two move fields the board picker can fill."
+---
+
+# `ExerciseEditor`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/courses/exercise-editor.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `exercise-editor.comp.css` → block `.exercise-editor` |
+| Used by | [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section) |
+| Composes | [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker), [`FormField`](/components/platform/shared/form-field) |
+| Writes | `createExercise()`, `updateExercise()`, `moveExercise()`, `deleteExercise()` · `services/staff-courses/staff-courses.actions.ts` |
+| Uses | `CatalogOption`, `ExerciseAdminRow` from `services/staff-courses/staff-courses.types` |
+
+## Purpose
+
+An exercise is a mode, an optional prompt, the moves played **before** it starts and the line to train, all as SAN, the same format the seed uses. The server derives the frozen starting position from those moves. Typing SAN by hand works, but the internal `ExerciseFields` form brings an [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker) that fills the two move fields from the lesson's PGN, so a typo is not discovered only on save.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `courseId`, `chapterId`, `lessonId` | `string` | yes | Bound into every action. |
+| `exercises` | `ExerciseAdminRow[]` | yes | `{ id, modeCode, modeLabel, promptText?, line, startPly, endPly, isStale }[]`. |
+| `modes` | `CatalogOption[]` | yes | Exercise mode catalog. |
+| `lessonPgn` | `string` | yes | The lesson's PGN, for the board picker. |
+
+## Behaviour
+
+- Rows show the mode tag, the prompt or the line, a "Desactualizado" tag when `isStale`, the ply range, and controls: up and down (`moveExercise` forms), "Editar" (or "Volver a congelar" for stale ones, toggling `editingId`), "Eliminar".
+- A stale exercise not being edited shows a `role="alert"` warning: the lesson's PGN changed after it was frozen.
+- `ExerciseFields`: mode select, prompt, `afterSans` and `lineSans`. The two move inputs are **controlled** because the picker writes them too; `afterSans` is not preloaded when editing, because the frozen copy stores the position, not the path that led to it.
+- "Añadir ejercicio" toggles the create form.
+
+## Markup & styling
+
+Block `.exercise-editor` (105 lines).
+
+**Elements:** `.exercise-editor__list`, `.exercise-editor__item`, `.exercise-editor__row`, `.exercise-editor__summary`, `.exercise-editor__controls`, `.exercise-editor__control`, `.exercise-editor__meta`, `.exercise-editor__warning`, `.exercise-editor__form`, `.exercise-editor__actions`
+
+**Modifiers and states:** `.exercise-editor__control_variant_danger`
+
+**Other classes it renders:** `.platform-tag`, `.platform-tag_variant_accent`, `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-border-strong`, `--platform-danger`, `--platform-danger-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/staff/courses/lesson-editor.section.tsx`:
+
+```tsx
+import { ExerciseEditor } from "./exercise-editor.comp";
+
+<ExerciseEditor
+  courseId={lesson.courseId}
+  chapterId={lesson.chapterId}
+  lessonId={lesson.id}
+  exercises={lesson.exercises}
+  modes={exerciseModes}
+  lessonPgn={lesson.pgn}
+/>
+```
+
+## Related
+
+- How the student plays them: [`TrainerSession`](/components/platform/sections/trainer/trainer-session).
+- Freezing and staleness in [Teacher & staff panels › Courses](/platform/teacher-and-staff).

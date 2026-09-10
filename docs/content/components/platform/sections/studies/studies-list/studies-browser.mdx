@@ -1,0 +1,61 @@
+---
+description: "Two groups of study cards ('Tus estudios' and 'Material que has recibido') behind a kind filter whose chips are derived from the kinds present."
+---
+
+# `StudiesBrowser`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/studies/studies-list/studies-browser.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `studies-browser.comp.css` → block `.studies-browser` |
+| Used by | [`StudiesListSection`](/components/platform/sections/studies/studies-list/studies-list-section) |
+| Composes | [`StudyCard`](/components/platform/sections/studies/studies-list/study-card), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses | `StudySummary` from `services/studies/studies.types` |
+
+## Purpose
+
+The body of "Mis estudios": a row of filter chips, a count, and the studies in two titled groups. It is a Client Component only for the active chip; everything it renders arrived from the server. The filter options are not a fixed list but the set of `kindLabel`s present in both groups, so a new kind gets its chip without touching this file.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `own` | `StudySummary[]` | yes | Those that are theirs: "Mis partidas", their tournaments and their studies. |
+| `received` | `StudySummary[]` | yes | What reaches them ready-made and cannot be touched: course databases, collections a teacher handed them, games from their classes. |
+
+## Behaviour
+
+- `active` starts at "Todos". Chips are buttons with `aria-pressed`; the count reads "n de m estudios" for the current filter.
+- Each group renders only when it has matches; when neither does, an [`EmptyState`](/components/platform/shared/empty-state) names the filter ("Ningún estudio de tipo «…»").
+- Nothing is fetched or written here.
+
+## Markup & styling
+
+Block `.studies-browser` (63 lines).
+
+**Elements:** `.studies-browser__filters`, `.studies-browser__chip`, `.studies-browser__count`, `.studies-browser__group`, `.studies-browser__group-title`, `.studies-browser__grid`
+
+**Modifiers and states:** `.studies-browser__chip_state_active`
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 900px)` drops the grid to one column.
+
+## Usage
+
+From `components/platform/sections/studies/studies-list/studies-list.section.tsx`:
+
+```tsx
+import { StudiesBrowser } from "./studies-browser.comp";
+
+<StudiesBrowser
+  own={studies.filter((study) => study.permissions.canEditGames)}
+  received={studies.filter((study) => !study.permissions.canEditGames)}
+/>
+```
+
+## Related
+
+- [`StudyCard`](/components/platform/sections/studies/studies-list/study-card).
+- [Student features › Studies](/platform/student).

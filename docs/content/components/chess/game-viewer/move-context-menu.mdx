@@ -1,0 +1,82 @@
+---
+description: "The right-click menu on a move: promote, make main line, comment, annotate, copy the variation's PGN and delete from here, positioned to stay inside the window."
+---
+
+# `MoveContextMenu`
+
+Also exports the `MoveContextMenuTarget` type.
+
+| | |
+| --- | --- |
+| File | `components/chess/game-viewer/move-context-menu.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `move-context-menu.comp.css` → block `.move-context-menu` |
+| Used by | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`AnalysisBoard`](/components/chess/analysis-board/analysis-board) |
+| Uses | icons `ArrowUpIcon`, `CheckIcon`, `ClipboardIcon`, `NoteIcon`, `TrashIcon` from `components/icons/` |
+
+## Purpose
+
+What opens when a move is right-clicked in an editable list. It is kept apart from [`MoveTree`](/components/chess/game-viewer/move-tree) and [`MoveTable`](/components/chess/game-viewer/move-table) so the student's read-only viewer carries none of this: the lists only report that a right click happened, and the component that mounts them decides whether a menu exists and what it can do.
+
+The menu is a list of actions with callbacks. Three of them (comment, annotate, copy) are optional: a host with nowhere to write simply does not pass them and those items are not rendered. This is how the viewer hides "Comentar" and "Anotar" in fullscreen and when no `onRequestEdit` was given.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `target` | `MoveContextMenuTarget` | yes | `{ path, x, y, label, canPromote, canPromoteOneStep }`: which move, where the pointer was, the move as read in the list ("1… f5", used as the title and the `aria-label`), and whether the two promote items are enabled. `canPromote` is false when the move is already on the main line; `canPromoteOneStep` when it is already first among its siblings. |
+| `onPromoteToMainLine` | `() => void` | yes | "Convertir en línea principal". |
+| `onPromoteOneStep` | `() => void` | yes | "Promocionar variante". |
+| `onDelete` | `() => void` | yes | "Borrar a partir de aquí", styled as the danger item. |
+| `onComment` | `() => void` | no | "Comentar este movimiento". Not rendered when absent. |
+| `onAnnotate` | `() => void` | no | "Anotar con iconos". Not rendered when absent. |
+| `onCopyVariation` | `() => void \| Promise<void>` | no | "Copiar PGN de la variante". Not rendered when absent. |
+| `onClose` | `() => void` | yes | Called on outside click, Escape, and 900 ms after a copy. |
+
+## Behaviour
+
+- **Positioning.** The menu first renders at the pointer, then a `useLayoutEffect` measures itself and clamps `x`/`y` so it stays at least 8 px inside the window: a right click near the edge would otherwise open a menu that can be neither read nor clicked.
+- **Closing.** A window `pointerdown` outside the menu or an Escape key calls `onClose`, which is what anyone expects from a context menu. The host unmounts it.
+- **Focus.** On mount the first enabled item receives focus, so keyboard users land inside the menu.
+- **Copy feedback.** `handleCopy` awaits `onCopyVariation`, flips the label to "PGN copiado" and closes the menu after 900 ms.
+- The items are `role="menuitem"` buttons inside a `role="menu"` container labelled "Opciones de …" followed by the move's label. Disabled promote items stay visible so the user learns why nothing happens.
+
+## Markup & styling
+
+Block `.move-context-menu` (87 lines), positioned `fixed` with inline `top`/`left`.
+
+**Elements:** `.move-context-menu__title`, `.move-context-menu__item`, `.move-context-menu__icon`, `.move-context-menu__icon-svg`, `.move-context-menu__glyph` (the "!?" text icon of the annotate item)
+
+**Modifiers and states:** `.move-context-menu__item_variant_danger`
+
+**Tokens:** `--platform-accent-soft`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/chess/game-viewer/game-viewer.comp.tsx`:
+
+```tsx
+import { MoveContextMenu, type MoveContextMenuTarget } from "./move-context-menu.comp";
+
+{menu && (
+  <MoveContextMenu
+    target={menu}
+    onPromoteOneStep={() => { editing.promoteOneStepAt(menu.path); setMenu(null); }}
+    onPromoteToMainLine={() => { editing.promoteToMainAt(menu.path); setMenu(null); }}
+    onComment={onRequestEdit && !isFullscreen ? () => requestEdit("comment") : undefined}
+    onAnnotate={onRequestEdit && !isFullscreen ? () => requestEdit("annotate") : undefined}
+    onCopyVariation={() => editing.copyVariation(menu.path)}
+    onDelete={() => { editing.deleteAt(menu.path); setMenu(null); }}
+    onClose={() => setMenu(null)}
+  />
+)}
+```
+
+The viewer builds `menu` in `openMenu(path, event)`: `canPromote` is false when every path segment is `0`, `canPromoteOneStep` when the last segment is `0`.
+
+## Related
+
+- [`usePgnEditing`](/components/chess/game-viewer/use-pgn-editing-hook) implements the callbacks in the viewer; the analysis board wires `lib/chess/pgn-edit` directly.
+- [Board & game viewer](/chess/viewer) describes the editing model.

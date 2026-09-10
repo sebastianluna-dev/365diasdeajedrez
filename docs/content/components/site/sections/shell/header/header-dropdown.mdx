@@ -1,0 +1,50 @@
+---
+description: "A navigation dropdown of the header: opens on hover through CSS, while the client state serves the keyboard and screen readers with aria-expanded, Escape and focus handling."
+---
+
+# `HeaderDropdown`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/shell/header/header-dropdown.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | none of its own; styled by `header.section.css` under `.site-header__dropdown` |
+| Used by | [`Header`](/components/site/sections/shell/header/header-section) |
+| Uses | `ChevronDown` from `lucide-react`, `useId` |
+
+## Purpose
+
+A group of links under one label. With the mouse the menu opens through `:hover` in CSS, so the component would work with no JavaScript at all; the state it owns exists for everyone else: `aria-expanded` tells a screen reader whether the menu is open, a click toggles it for touch and keyboard, Escape closes it and returns focus to the trigger, and tabbing out of the block closes it.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `label` | `string` | yes | The trigger's text. |
+| `links` | `{ label: string; href: string }[]` | yes | The menu entries. |
+
+## Behaviour
+
+- `open` state, `useId` for the `aria-controls` link between trigger and menu.
+- `onFocusCapture` opens; `onBlurCapture` closes when focus leaves the block (`relatedTarget` outside `currentTarget`).
+- `onKeyDown` with Escape while open closes and focuses the trigger `<button>`.
+- The trigger carries `aria-haspopup="true"`, `aria-expanded` and `aria-controls`.
+
+## Markup & styling
+
+Element `.site-header__dropdown` of the header block, with `.site-header__dropdown-trigger` and `.site-header__dropdown-menu`; modifier `.site-header__dropdown_open` mirrors the state for CSS.
+
+## Usage
+
+From `components/site/sections/shell/header/header.section.tsx`:
+
+```tsx
+import { HeaderDropdown } from "./header-dropdown.comp";
+
+<HeaderDropdown key={`${item.label}-${index}`} label={item.label} links={item.links} />
+```
+
+## Related
+
+- [`Header`](/components/site/sections/shell/header/header-section).
+- [`HeaderMobileMenu`](/components/site/sections/shell/header/header-mobile-menu) flattens dropdowns into plain links.

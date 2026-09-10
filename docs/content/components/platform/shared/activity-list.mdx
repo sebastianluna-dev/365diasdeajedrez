@@ -1,0 +1,51 @@
+---
+description: "The dashboard's recent-activity list: a <ul> of activity facts already labelled by the dashboard mapper (type, subject, topic, date)."
+---
+
+# `ActivityList`
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/activity-list.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `activity-list.comp.css` → block `.activity-list` |
+| Used by | [`RecentActivitySection`](/components/platform/sections/dashboard/recent-activity/recent-activity-section) |
+| Uses | `ActivityItem` from `services/dashboard/dashboard.types` |
+
+## Purpose
+
+Renders the activity facts of a student ("Lección completada · Finales de torre · Aperturas · hace 2 días"). Every string arrives ready from `services/dashboard`'s mapper; the component lays them out and adds nothing. It sits in `shared/` because the teacher's student detail is expected to reuse it; today only the dashboard does.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `items` | `ActivityItem[]` | yes | `{ id, typeLabel, subjectName?, topicLabel?, dateLabel }` per fact, newest first. |
+
+## Behaviour
+
+None. The empty case is the caller's: `RecentActivitySection` renders an [`EmptyState`](/components/platform/shared/empty-state) instead.
+
+## Markup & styling
+
+Block `.activity-list` (61 lines).
+
+**Elements:** `.activity-list__item`, `.activity-list__main`, `.activity-list__type`, `.activity-list__subject`, `.activity-list__meta`, `.activity-list__topic`, `.activity-list__date`
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/dashboard/recent-activity/recent-activity.section.tsx`:
+
+```tsx
+import { ActivityList } from "@/components/platform/shared/activity-list.comp";
+
+<ActivityList items={recentActivity} />
+```
+
+## Related
+
+- `services/dashboard/dashboard.mapper.ts` builds the labels; see [Data access](/architecture/data-access).

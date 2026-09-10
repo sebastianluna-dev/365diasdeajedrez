@@ -1,0 +1,50 @@
+---
+description: "Closing call to action of the about page: a card with '¿Entrenamos juntos?', one sentence and a button to the plans."
+---
+
+# `NosotrosCtaSection`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/nosotros/cta/cta.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `cta.section.css` → block `.nosotros-cta` |
+| Used by | `/nosotros` |
+
+## Purpose
+
+A static card at the end of the about page pointing to `/#planes`. Unlike the home page's [`CtaSection`](/components/site/sections/home/cta/cta-section) it is not sticky, reads nothing, and sits inside `<main>`.
+
+## Props
+
+None.
+
+## Behaviour
+
+None.
+
+## Markup & styling
+
+Block `.nosotros-cta` (44 lines).
+
+**Elements:** `.nosotros-cta__card`, `.nosotros-cta__copy`, `.nosotros-cta__title`, `.nosotros-cta__text`
+
+**Tokens:** `--font-gramatika`
+
+**Breakpoints:** `(max-width: 720px)` stacks copy and button.
+
+**Other classes:** `.button.button_variant_primary`.
+
+## Usage
+
+From `app/(frontend)/nosotros/page.tsx`:
+
+```tsx
+import { NosotrosCtaSection } from "@/components/site/sections/nosotros/cta/cta.section";
+
+<NosotrosCtaSection />
+```
+
+## Related
+
+- [`CtaSection`](/components/site/sections/home/cta/cta-section), the sticky bar of the home page.

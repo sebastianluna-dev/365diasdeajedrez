@@ -1,0 +1,54 @@
+---
+description: "The course programme on the home page: section heading from the home-program Global, the interactive module list, and an optional closing note."
+---
+
+# `ProgramSection`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/program/program.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `program.section.css` → block `.program` |
+| Used by | `app/(frontend)/landing-page.tsx` (`sections.program`) |
+| Composes | [`ProgramInteractive`](/components/site/sections/home/program/program-interactive) |
+| Reads | `getProgramData()` · `services/home/home.service.ts` (the `home-program` Global) |
+
+## Purpose
+
+The twelve-month programme as a list of modules. The section only reads the Global and lays out the heading; the selection state lives in the client piece so the section itself stays on the server.
+
+## Props
+
+None.
+
+## Behaviour
+
+- Awaits `getProgramData()` and passes `modules` and `topicsHeading` down.
+- Renders `content.note` under the list when the Global has one.
+- `id="programa"` is the target of the header and footer links.
+
+## Markup & styling
+
+Block `.program` (49 lines), applied together with the global `.section.section_theme_light`.
+
+**Elements:** `.program__title`, `.program__note`
+
+**Tokens:** `--color-dark`, `--font-gramatika`
+
+**Breakpoints:** `(max-width: 1023px)`, `(max-width: 720px)`.
+
+**Other classes:** `.section__inner`, `.section__head`, `.section__title`, `.section__text` from `globals.css`.
+
+## Usage
+
+From `app/(frontend)/landing-page.tsx`:
+
+```tsx
+import { ProgramSection } from "@/components/site/sections/home/program/program.section";
+
+{sections.program && <ProgramSection />}
+```
+
+## Related
+
+- [`ProgramInteractive`](/components/site/sections/home/program/program-interactive), [`ProgramModuleListItem`](/components/site/sections/home/program/program-module-list-item).

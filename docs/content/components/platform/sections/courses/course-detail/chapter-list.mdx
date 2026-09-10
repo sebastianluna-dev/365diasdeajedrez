@@ -1,0 +1,54 @@
+---
+description: "The ordered chapter rows of a course, each a whole-row link with its order, name, description, lesson count, duration and a stacked progress bar."
+---
+
+# `ChapterList`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/courses/course-detail/chapter-list.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `chapter-list.comp.css` → block `.chapter-list` |
+| Used by | [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section) |
+| Composes | [`ProgressIndicator`](/components/platform/shared/progress-indicator) |
+| Uses | `CourseChapterItem` from `services/courses/courses.types` |
+
+## Purpose
+
+The chapters of a course as an `<ol>`. The **whole row** is the link, not just the name: it is what the design draws and it avoids having to aim at small text. Each row shows the order number, name, optional description, "n lecciones · m min", a progress bar and a chevron.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `chapters` | `CourseChapterItem[]` | yes | `{ id, order, name, description?, href, totalLessons, completedLessons, estimatedDuration? }[]`, already filtered by the priority preference. |
+
+## Behaviour
+
+None. The percentage is computed inline with a zero guard and passed to the stacked [`ProgressIndicator`](/components/platform/shared/progress-indicator) with "done/total" as detail. The chevron is an inline `aria-hidden` SVG.
+
+## Markup & styling
+
+Block `.chapter-list` (89 lines).
+
+**Elements:** `.chapter-list__row`, `.chapter-list__item`, `.chapter-list__order`, `.chapter-list__info`, `.chapter-list__name`, `.chapter-list__description`, `.chapter-list__meta`, `.chapter-list__progress`, `.chapter-list__chevron`
+
+No modifiers.
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-wash`, `--platform-font`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 900px)` wraps the progress under the info.
+
+## Usage
+
+From `components/platform/sections/courses/course-detail/course-detail.section.tsx`:
+
+```tsx
+import { ChapterList } from "./chapter-list.comp";
+
+<ChapterList chapters={course.chapters} />
+```
+
+## Related
+
+- [`LessonList`](/components/platform/sections/courses/chapter-detail/lesson-list), the same pattern one level down.

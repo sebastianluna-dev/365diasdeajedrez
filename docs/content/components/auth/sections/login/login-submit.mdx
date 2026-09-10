@@ -1,0 +1,49 @@
+---
+description: "The login form's submit button with a pending state through useFormStatus: disabled and labelled 'Entrando…' while the server action runs; the only client code on the screen."
+---
+
+# `LoginSubmit`
+
+| | |
+| --- | --- |
+| File | `components/auth/sections/login/login-submit.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | none (styled by `login.section.css` as `.login__submit`, plus `.platform-button`) |
+| Used by | [`LoginSection`](/components/auth/sections/login/login-section) |
+| Uses | `useFormStatus` from `react-dom` |
+
+## Purpose
+
+A submit button that knows whether its form is being submitted. It is the only thing on the login screen that needs JavaScript: the form is a plain server action, so without JS the button still submits, only without the "Entrando…" text and the disabled state.
+
+It is a separate file because `useFormStatus` must be called from a component rendered **inside** the `<form>`, and the section that renders the form is a Server Component.
+
+## Props
+
+This component takes no props.
+
+## Behaviour
+
+`useFormStatus().pending` is true from the submit until the action settles. While pending the button is `disabled` (no double submit) and reads "Entrando…"; otherwise "Entrar". No state of its own.
+
+## Markup & styling
+
+Renders `<button type="submit" className="platform-button login__submit">`. The look comes from the platform button in `app/(platform)/platform.css` and the `login__submit` element in the section's sheet; the disabled state is the platform button's.
+
+## Usage
+
+From `components/auth/sections/login/login.section.tsx`:
+
+```tsx
+import { LoginSubmit } from "./login-submit.comp";
+
+<form className="login__form" action={loginAction}>
+  …
+  <LoginSubmit />
+</form>
+```
+
+## Related
+
+- [`LoginSection`](/components/auth/sections/login/login-section).
+- `todos.md` T12 asks for a generic `SubmitButton` in `components/platform/shared/` built from this one and used by every write form of the platform. Until then, this is the model to copy.
