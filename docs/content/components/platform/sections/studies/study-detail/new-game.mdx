@@ -1,0 +1,76 @@
+---
+description: "The 'Nueva partida' dialog with four ways in: paste a PGN, start from a FEN, create a blank game with its data, or copy games seen in class; each tab posts its own action."
+---
+
+# `NewGame`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/studies/study-detail/new-game.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `new-game.comp.css` → block `.new-game` |
+| Used by | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section), `/estudios/[studyId]/partidas/[gameId]` (passed into the aside as a node) |
+| Writes | `importPgnGames()`, `createStudyGame()`, `copyClassGamesToStudy()` · `services/studies/studies.actions.ts` |
+| Uses | `StudyKindOption`, `ClassGameItem` from `services/studies/studies.types` |
+
+## Purpose
+
+Adding a game to a study, from wherever the student has it. Four tabs, each a form against its own action:
+
+| Tab | What it does |
+| --- | --- |
+| Pegar PGN | `importPgnGames`: headers, variations, comments and NAGs are read; a multi-game PGN creates all of them. |
+| Desde un FEN | `createStudyGame` with `initialFen`: the "I have this diagram and want to analyse it" case. The game is born without moves, in that position, with the notation numbered from what the FEN says. |
+| Crear vacía | `createStudyGame` with the game's data (names, Elos, result, date); everything optional. |
+| Desde una clase | `copyClassGamesToStudy` with the ticked games; the tab exists only when `classGames` is not empty. Copies, so editing them here does not touch the class. |
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `studyId` | `string` | yes | Bound into every action. |
+| `studyName` | `string` | yes | For the subtitle "Se añadirá a «…»". |
+| `results` | `StudyKindOption[]` | yes | The results catalog; its label is the PGN token. |
+| `classGames` | `ClassGameItem[]` | yes | Games seen in attended classes. Empty hides the tab. |
+
+## Behaviour
+
+- Native `<dialog>`; `tab` and the `picked` ids are local state, reset on close.
+- The FEN form carries a hidden `origin="detail"` so a badly written FEN bounces back **here** (`?error=fen` on the study page) and not to another screen.
+- The class tab is not a form: the footer button is `type="button"` and calls the action inside a transition with the picked ids, then closes.
+- The internal `Footer` renders the note, cancel and the confirm button; with `onConfirm` it becomes a plain button so it does not submit an enclosing form.
+- Tabs use `role="tablist"`/`role="tab"` with `aria-selected`.
+
+## Markup & styling
+
+Block `.new-game` (221 lines).
+
+**Elements:** `.new-game__open`, `.new-game__dialog`, `.new-game__head`, `.new-game__title`, `.new-game__subtitle`, `.new-game__tabs`, `.new-game__tab`, `.new-game__panel`, `.new-game__textarea`, `.new-game__hint`, `.new-game__grid`, `.new-game__field`, `.new-game__label`, `.new-game__input`, `.new-game__list`, `.new-game__pick`, `.new-game__checkbox`, `.new-game__pick-text`, `.new-game__pick-name`, `.new-game__pick-meta`, `.new-game__actions`, `.new-game__note`
+
+**Modifiers and states:** `.new-game__tab_state_active`, `.new-game__field_span_all`
+
+**Other selectors it styles:** `.platform-button` inside the dialog.
+
+**Tokens:** `--platform-accent`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+
+**Breakpoints:** `(max-width: 560px)` collapses the two-column grid.
+
+## Usage
+
+From `components/platform/sections/studies/study-detail/study-detail.section.tsx`:
+
+```tsx
+import { NewGame } from "./new-game.comp";
+
+<NewGame
+  studyId={study.id}
+  studyName={study.name}
+  results={results}
+  classGames={classGames}
+/>
+```
+
+## Related
+
+- [`NewGameSection`](/components/platform/sections/studies/new-game/new-game-section), the full-page form that duplicates the blank tab (`IMPROVEMENTS.md` #29).
+- [`GameFields`](/components/platform/sections/studies/game-fields) holds the complete data set; this dialog's blank tab is the short version.

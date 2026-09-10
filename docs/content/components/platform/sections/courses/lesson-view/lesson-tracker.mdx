@@ -1,0 +1,50 @@
+---
+description: "An invisible client piece that calls touchLesson once on mount, marking the lesson IN_PROGRESS and updating the course's return point without writing during the server render."
+---
+
+# `LessonTracker`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/courses/lesson-view/lesson-tracker.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | none (renders `null`) |
+| Used by | [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section) |
+| Writes | `touchLesson()` · `services/courses/courses.actions.ts` |
+
+## Purpose
+
+Opening a lesson is an event worth recording: it marks the lesson `IN_PROGRESS` and makes it the course's return point (what "Continuar" on the dashboard leads to). A Server Component must not write during render, so the write is moved into an effect in this tiny Client Component, which renders nothing.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `lessonId` | `string` | yes | The lesson being opened. |
+
+## Behaviour
+
+- An effect calls `touchLesson(lessonId)` once per lesson id, guarded by a ref so React strict mode's double effect and re-renders do not fire it twice.
+- The promise is not awaited and its result is ignored: the page does not depend on it, and the dashboard reads the effect on its next render. The action itself resolves the user through the DAL and ignores ids the student may not access.
+
+## Markup & styling
+
+Nothing rendered.
+
+## Usage
+
+From `components/platform/sections/courses/lesson-view/lesson-view.section.tsx`:
+
+```tsx
+import { LessonTracker } from "./lesson-tracker.comp";
+
+<section className="lesson-view">
+  <LessonTracker lessonId={lesson.id} />
+  <GameViewer … />
+</section>
+```
+
+## Related
+
+- [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section) reads what this writes.
+- `touchLesson` and `completeLesson` in `services/courses/courses.actions.ts`.

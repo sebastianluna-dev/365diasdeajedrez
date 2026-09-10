@@ -1,0 +1,58 @@
+---
+description: "A dashed box with a title, an optional description and an optional link, used wherever a list has nothing to show yet instead of an empty table or a bare sentence."
+---
+
+# `EmptyState`
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/empty-state.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `empty-state.comp.css` → block `.empty-state` |
+| Used by | 20 importers: the dashboard sections, the courses, classes, studies and trainer lists, the class detail, the teacher's dashboard, class detail and student detail, the staff dashboard, courses and class detail, `/entrenador` and the platform's `not-found.tsx` |
+
+## Purpose
+
+What renders when there is nothing yet: no course in progress, no upcoming class, no games in a study. A consistent box says so in words and, when there is an obvious next step, links to it ("Ver mis cursos"). Use it instead of an empty table or a lone sentence, so the empty case looks designed rather than broken.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `title` | `string` | yes | The headline ("No tienes clases programadas"). |
+| `description` | `string` | no | One sentence of context or what will make it non-empty. |
+| `actionLabel` | `string` | no | Link text. Rendered only together with `actionHref`. |
+| `actionHref` | `string` | no | Link target. |
+
+## Behaviour
+
+None.
+
+## Markup & styling
+
+Block `.empty-state` (28 lines): dashed border, centred text.
+
+**Elements:** `.empty-state__title`, `.empty-state__description`, `.empty-state__action`
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/dashboard/continue-studying/continue-studying.section.tsx`:
+
+```tsx
+import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+
+<EmptyState
+  title="No tienes ningún curso en progreso"
+  description="Empieza un curso para verlo aquí."
+  actionLabel="Ver mis cursos"
+  actionHref={platformRoutes.courses}
+/>
+```
+
+## Related
+
+- [`PlatformTable`](/components/platform/shared/platform-table) has its own empty row for filtered listings.

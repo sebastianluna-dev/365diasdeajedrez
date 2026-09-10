@@ -1,0 +1,55 @@
+---
+description: "The moves of the line being explored, numbered in Spanish with buildNotationRows, one button per half-move with the current ply marked."
+---
+
+# `ExplorerMoveList`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/explorer/explorer-move-list.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `explorer-move-list.comp.css` → block `.explorer-move-list` |
+| Used by | [`GameExplorer`](/components/platform/sections/explorer/game-explorer) |
+| Uses | `buildNotationRows`, `NotationHalfMove` from `lib/chess/notation` |
+
+## Purpose
+
+The "Jugadas" panel of the explorer. It uses `buildNotationRows`, the same row builder as the standalone board, so the notation comes out in Spanish piece letters, numbered and with piece glyphs exactly as in the rest of the platform.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `sans` | `string[]` | yes | The line. |
+| `index` | `number` | yes | Current ply; 0 is the initial position. |
+| `onSelect` | `(ply: number) => void` | yes | Click on a half-move. |
+
+## Behaviour
+
+None beyond rendering: rows of number, white, black; the current half-move gets `_current` and `aria-current="true"`; an empty line shows the hint "Mueve una pieza en el tablero para empezar a explorar."
+
+## Markup & styling
+
+Block `.explorer-move-list` (109 lines).
+
+**Elements:** `.explorer-move-list__title`, `.explorer-move-list__hint`, `.explorer-move-list__rows`, `.explorer-move-list__row`, `.explorer-move-list__number`, `.explorer-move-list__move`, `.explorer-move-list__glyph`, `.explorer-move-list__empty`
+
+**Modifiers and states:** `.explorer-move-list__move_current`, `.explorer-move-list__glyph_kind_{king,queen,rook,bishop,knight}`
+
+**Tokens:** `--platform-accent`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/explorer/game-explorer.comp.tsx`:
+
+```tsx
+import { ExplorerMoveList } from "./explorer-move-list.comp";
+
+<ExplorerMoveList sans={sans} index={index} onSelect={setIndex} />
+```
+
+## Related
+
+- The same rows in [`ChessBoard`](/components/chess/chess-board)'s standalone notation; `lib/chess/notation.ts` in [Chess library](/chess/library).

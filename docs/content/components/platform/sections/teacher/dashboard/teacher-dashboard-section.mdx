@@ -1,0 +1,59 @@
+---
+description: "The teacher's home: three counters, today's classes, the next seven days, the classes still to document (attendance or summary missing) and the three main actions."
+---
+
+# `TeacherDashboardSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/teacher/dashboard/teacher-dashboard.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `teacher-dashboard.section.css` → block `.teacher-dashboard` |
+| Used by | `/profesor` |
+| Composes | [`LocalDateTime`](/components/platform/shared/local-datetime), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads | `getTeacherDashboard()` · `services/teacher/teacher.service.ts` |
+| Uses | `teacherRoutes` from `lib/platform-routes`; `TeacherClassBrief` from `services/teacher/teacher.types` |
+
+## Purpose
+
+What a teacher needs on arrival: what I have today, what is coming, and what I still have to document. No analytics. The "Pendientes de documentar" card is the useful one: classes already held whose attendance or summary is missing, each tagged with what is missing, so nothing stays half-recorded.
+
+## Props
+
+This component takes no props. The page opens with `requireTeacher()`; the service reads the teacher's classes and assignments.
+
+## Behaviour
+
+- Three metric cards: classes today, classes in the next seven days, active assigned students.
+- Three lists (`today`, `upcoming`, `pending`) rendered by the local `ClassRow` (title linked, local date and time, duration, participant count, status tag). The pending list uses a date-only `LocalDateTime` and adds "Falta asistencia" / "Falta resumen" tags from `needsAttendance` and `needsSummary`.
+- Empty texts are inline for the first two; the pending card uses an [`EmptyState`](/components/platform/shared/empty-state) ("Todo al día").
+- Footer buttons link to new class, students and all classes.
+
+## Markup & styling
+
+Block `.teacher-dashboard` (84 lines).
+
+**Elements:** `.teacher-dashboard__metrics`, `.teacher-dashboard__metric`, `.teacher-dashboard__metric-value`, `.teacher-dashboard__metric-label`, `.teacher-dashboard__list`, `.teacher-dashboard__class`, `.teacher-dashboard__class-title`, `.teacher-dashboard__class-meta`, `.teacher-dashboard__empty`, `.teacher-dashboard__actions`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-card`, `.platform-card__title`, `.platform-tag`, `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-font`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 900px)` stacks the metrics.
+
+## Usage
+
+From `app/(platform)/profesor/page.tsx`:
+
+```tsx
+import { TeacherDashboardSection } from "@/components/platform/sections/teacher/dashboard/teacher-dashboard.section";
+
+<TeacherDashboardSection />
+```
+
+## Related
+
+- [`TeacherClassesSection`](/components/platform/sections/teacher/classes/teacher-classes-section), [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) (where attendance and summary are recorded).
+- [Teacher & staff panels](/platform/teacher-and-staff).

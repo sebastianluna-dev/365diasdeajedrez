@@ -1,0 +1,131 @@
+---
+description: "The platform's single game viewer: board, move tree with variations and comments, navigation, optional Stockfish, fullscreen, sounds and in-place editing, with slots each screen fills."
+---
+
+# `GameViewer`
+
+| | |
+| --- | --- |
+| File | `components/chess/game-viewer/game-viewer.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `game-viewer.comp.css` → block `.game-viewer` |
+| Used by | [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section), [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section), [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`StudentGameViewSection`](/components/platform/sections/teacher/students/student-game-view-section), [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker), [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker) |
+| Composes | [`ChessBoard`](/components/chess/chess-board), [`MoveTable`](/components/chess/game-viewer/move-table), [`MoveTree`](/components/chess/game-viewer/move-tree), [`EnginePanel`](/components/chess/game-viewer/engine-panel), [`MoveContextMenu`](/components/chess/game-viewer/move-context-menu), [`useEngine`](/components/chess/game-viewer/use-engine-hook), [`usePgnEditing`](/components/chess/game-viewer/use-pgn-editing-hook), [`playMoveSound`](/components/chess/game-viewer/move-sound), [`viewer-preferences`](/components/chess/game-viewer/viewer-preferences) |
+| Uses | `parsePgnTree`, `nodeAtPath`, `nextPathOf`, `endPathOf`, `parentPathOf` from `lib/chess/pgn-tree`<br />`numberedMoveLabel` from `lib/chess/notation`<br />`evaluationBarFill` from `lib/chess/engine-protocol` |
+
+## Purpose
+
+**The** platform's game viewer. Lessons, the studies' games, class blocks, the teacher's view of a student's game and the two position pickers all mount this same component. Do not create parallel viewers: a new need is a new prop or slot here.
+
+It renders a board with a notation panel next to it, the four navigation buttons plus flip, an options menu (sound, fullscreen), optional player strips, an optional engine with an evaluation bar, and slots for whatever each screen needs around it (title, badge, header actions, a footer under the board, position actions). With `editable` and `onPgnChange` it becomes an in-place editor: moves are played on the board, arrows are drawn, right-clicking a move opens its menu. There is no separate editing screen; the game is annotated where it is read.
+
+The viewer never saves and never fetches. It receives a PGN, reports the current path and, when editing, reports the new PGN; the screen that mounts it owns persistence.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `pgn` | `string` | yes | Full PGN: moves, variations, comments and annotations. |
+| `orientation` | `"white" \| "black"` | no · default `"white"` | Side at the bottom before the user flips. |
+| `initialPath` | `string` | no | Dotted path to open the viewer at (`TrainingExercise.path`, `ClassBlock.movePath`). Ignored if the path does not exist in the tree. |
+| `title` | `string` | no | First line of the panel header. |
+| `subtitle` | `string` | no | Second line: chapter, event, whatever places the game. |
+| `description` | `string` | no | Text of the game or the lesson, under the subtitle. |
+| `badge` | `string` | no | Badge to the right of the title ("Prioridad"). |
+| `headerActions` | `ReactNode` | no | Extra buttons in the panel header (open in the book, save…). They depend on each screen; the viewer only reserves the place. |
+| `footerActions` | `ReactNode` | no | Right-aligned content of the panel's bottom bar (the notes). |
+| `positionActions` | `(fen: string) => ReactNode` | no | Bottom-bar action that works on the current position; receives its FEN. |
+| `skip` | `ReactNode` | no | "Skip" control rendered at the end of the navigation bar. Not rendered without a value. |
+| `boardFooter` | `ReactNode` | no | Content under the board: comment, quality and share tools. Hidden in fullscreen. |
+| `players` | `{ white: ReactNode; black: ReactNode }` | no | Player strips around the board, given by colour because the viewer can flip: who is on top depends on the orientation and only the viewer knows it. |
+| `moveList` | `"table" \| "flow"` | no · default `"table"` | `table`: number · white · black grid, like Lichess. `flow`: running text, which is how lessons are read. |
+| `controls` | `"board" \| "panel"` | no · default `"board"` | Where the navigation bar goes: under the board (lessons) or under the notation panel (studies, where the game is traversed from the list). |
+| `engine` | `boolean` | no · default `false` | Offers the analysis engine. Off by default: it is 7 MB of WebAssembly, downloaded only when someone switches it on. |
+| `onPathChange` | `(path: string) => void` | no | Reports the dotted path of the current node every time it changes. Exists so the class block editor can capture "this position" without a second viewer. |
+| `editable` | `boolean` | no · default `false` | Turns the viewer into an editor. Does nothing without `onPgnChange`. |
+| `onPgnChange` | `(pgn: string) => void` | no | Receives the new PGN after every edit; the viewer keeps rendering the `pgn` prop, so the parent must feed it back. |
+| `onRequestEdit` | `(mode: "comment" \| "annotate", path: string) => void` | no | "Comentar" and "Anotar" from the move menu. The viewer opens nothing: it selects the move and notifies, because the place where one writes (the panel under the board) belongs to the parent. Without it those two items are not rendered. |
+| `path` | `string` | no | Controlled current move, for a parent that wants to decide (the evaluation chart scrubbing the board). Whoever passes it must feed back what arrives through `onPathChange` or the board will not move. |
+
+## Behaviour
+
+**Tree and current path.** `parsePgnTree(pgn)` is memoised. The current path is `path ?? selectedPath`, resolved at render time to the closest existing ancestor when the PGN changed underfoot (an undo, a deleted branch), so there is never a frame with the board at the start. Every path change is both stored and reported through `onPathChange` (kept in a ref so the parent need not memoise). An unparsable PGN renders a single error paragraph with the `_state_error` modifier.
+
+**Navigation.** First, previous, next, last read the current path from a ref so holding "previous" or "next" keeps traversing: 400 ms before the repeat starts, then one move every 130 ms, stopped on pointer up, leave or cancel. Arrow keys work only while the viewer is at least 60 % in view or has been clicked (there may be several on a page) and never while typing in an input, textarea or contenteditable.
+
+**Flip, sound, fullscreen.** Flip is a game action and sits with the navigation buttons. Sound and fullscreen are viewer settings and live in the options menu (`role="menu"`, closes on outside click or Escape). The sound toggle is a `menuitemcheckbox` backed by [`viewer-preferences`](/components/chess/game-viewer/viewer-preferences) through `useSyncExternalStore`, so every viewer on the page shares it and the server paint uses the default. Fullscreen state is read from `document.fullscreenElement` on `fullscreenchange`, because Escape leaves it without the button. A move sound plays on position change (capture when the piece count drops), never on mount.
+
+**Engine.** `useEngine(fen, engine && engineOn)` lives here and not in the panel because two far-apart places consume it: the evaluation bar next to the board and the panel's lines. The bar's slot is reserved whenever `engine` is true so switching it on does not move the layout; it fills from the bottom with White's advantage. `engineExpanded` is tracked here because the height an expanded line takes is given up by the notation.
+
+**Editing.** `isEditing = editable && Boolean(onPgnChange)`. Then the board becomes interactive with editable shapes, `onMove` calls `editing.addMoveAt`, `onShapesChange` calls `editing.updateShapes`, and both move lists receive `onContextMenu`, which opens the [`MoveContextMenu`](/components/chess/game-viewer/move-context-menu) with `canPromote` and `canPromoteOneStep` derived from the path (all-zero segments means main line; last segment `0` means first sibling). Comment and annotate items are offered only with `onRequestEdit` and never in fullscreen. All mutations go through [`usePgnEditing`](/components/chess/game-viewer/use-pgn-editing-hook).
+
+**Development aid.** Outside production, PGN warnings (illegal moves) are listed at the top so an author can fix the source.
+
+## Markup & styling
+
+Block `.game-viewer` (528 lines), the largest sheet in `components/`.
+
+**Elements:** `.game-viewer__layout`, `.game-viewer__board-card`, `.game-viewer__board-row`, `.game-viewer__board`, `.game-viewer__evaluation`, `.game-viewer__evaluation-fill`, `.game-viewer__player`, `.game-viewer__board-footer`, `.game-viewer__panel-column`, `.game-viewer__panel`, `.game-viewer__panel-head`, `.game-viewer__panel-heading`, `.game-viewer__panel-title`, `.game-viewer__panel-subtitle`, `.game-viewer__panel-description`, `.game-viewer__panel-badge`, `.game-viewer__moves`, `.game-viewer__toolbar`, `.game-viewer__toolbar-end`, `.game-viewer__panel-nav`, `.game-viewer__nav`, `.game-viewer__nav-button`, `.game-viewer__nav-icon`, `.game-viewer__options`, `.game-viewer__options-menu`, `.game-viewer__options-item`, `.game-viewer__options-icon`, `.game-viewer__skip`, `.game-viewer__tool`, `.game-viewer__tool-icon`, `.game-viewer__warnings`, `.game-viewer__warning`
+
+**Modifiers and states:** `.game-viewer_state_fullscreen`, `.game-viewer_state_error`, `.game-viewer__evaluation_state_off`, `.game-viewer__player_side_top`, `.game-viewer__player_side_bottom`, `.game-viewer__board-footer_state_hidden`, `.game-viewer__nav-button_emphasis_strong` (the "next" button), `.game-viewer__panel_engine_on`, `.game-viewer__panel_engine_expanded`
+
+**Other selectors it styles:** `.move-tree` (font size inside the panel).
+
+**Tokens:** own layout tokens `--viewer-board-size`, `--viewer-chrome-block`, `--viewer-chrome-inline`, `--viewer-player-font-size`, plus `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-danger-soft`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+
+**Breakpoints:** `(max-width: 1080px)` stacks the panel under the board; `(prefers-reduced-motion: reduce)` removes the evaluation bar transition.
+
+## Usage
+
+Read-only, from `components/platform/sections/courses/lesson-view/lesson-view.section.tsx`:
+
+```tsx
+import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
+
+<GameViewer
+  pgn={lesson.pgn}
+  orientation={lesson.orientation}
+  moveList="flow"
+  title={`${lesson.order}. ${lesson.name}`}
+  subtitle={subtitle}
+  description={lesson.description}
+  badge={lesson.isPriority ? "Prioridad" : undefined}
+  skip={
+    lesson.nextLessonHref && (
+      <Link href={lesson.nextLessonHref} className="lesson-view__skip" title="Pasar a la siguiente lección sin marcar esta">
+        Saltar
+      </Link>
+    )
+  }
+/>
+```
+
+Editing, with the engine and a controlled path, from `components/platform/sections/studies/game-view/game-view.section.tsx`:
+
+```tsx
+<GameViewer
+  pgn={pgn}
+  controls="panel"
+  engine
+  editable={game.canEdit}
+  onPgnChange={applyPgn}
+  path={currentPath}
+  onPathChange={setCurrentPath}
+  onRequestEdit={(mode) => {
+    setToolsTab(mode === "comment" ? "comment" : "quality");
+    setFocusRequest((count) => count + 1);
+  }}
+  players={{
+    white: <Player name={game.white} elo={game.whiteElo} title={game.whiteTitle} country={game.whiteCountry} side="white" />,
+    black: <Player name={game.black} elo={game.blackElo} title={game.blackTitle} country={game.blackCountry} side="black" />,
+  }}
+  boardFooter={/* GameTools */}
+/>
+```
+
+## Related
+
+- [Board & game viewer](/chess/viewer): the narrative, the decision table and the editing model.
+- Parts: [`MoveTable`](/components/chess/game-viewer/move-table), [`MoveTree`](/components/chess/game-viewer/move-tree), [`EnginePanel`](/components/chess/game-viewer/engine-panel), [`MoveContextMenu`](/components/chess/game-viewer/move-context-menu), [`useEngine`](/components/chess/game-viewer/use-engine-hook), [`usePgnEditing`](/components/chess/game-viewer/use-pgn-editing-hook).
+- Whole-game evaluation is not inside the viewer: [`GameReview`](/components/chess/game-viewer/game-review) is mounted by the studies' game tools in the `boardFooter` slot.
+- [`AnalysisBoard`](/components/chess/analysis-board/analysis-board) is the teacher's authoring editor.

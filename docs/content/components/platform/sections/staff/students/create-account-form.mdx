@@ -1,0 +1,60 @@
+---
+description: "Account creation with a temporary password, the one form (with the reset) that uses useActionState instead of redirect-with-?error=, because the generated password must be returned to be shown once and never placed in a URL."
+---
+
+# `CreateAccountForm`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/students/create-account-form.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `create-account-form.comp.css` → block `.create-account` |
+| Used by | `/administracion/alumnos/nuevo` |
+| Composes | [`TempPasswordNotice`](/components/platform/sections/staff/students/temp-password-notice), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes | `createStudentAccount()` · `services/staff-students/staff-students.actions.ts` |
+| Uses | `ACCOUNT_INITIAL_STATE` from `services/staff-students/staff-students.types` |
+
+## Purpose
+
+There is no public sign-up and no activation email: staff creates the account and hands the password over. When the password field is left empty the action generates a temporary one, and it has to come **back** to be shown once. That rules out the platform's usual redirect-with-`?error=` pattern, because a password in the URL would end up in the history, the Referer and the logs. Hence `useActionState`, the only exception together with [`ResetPasswordForm`](/components/platform/sections/staff/students/reset-password-form).
+
+Known and accepted consequence: this form **needs JavaScript**. Without it the action id is not emitted and the submit does not reach the server. It is an internal panel; the exception is not extended to any other form.
+
+## Props
+
+This component takes no props.
+
+## Behaviour
+
+- `useActionState(createStudentAccount, ACCOUNT_INITIAL_STATE)` yields `{ status, message?, tempPassword? }`, the action and `isPending`.
+- `status === "error"` renders a [`PlatformNotice`](/components/platform/shared/platform-notice); `status === "ok"` renders the [`TempPasswordNotice`](/components/platform/sections/staff/students/temp-password-notice) when a password was generated, otherwise a success notice.
+- Fields: display name (required), email (required, `autoComplete="off"`), optional initial password as a plain text input (staff is typing it to hand it over, not to hide it). The submit is disabled while pending.
+
+## Markup & styling
+
+Block `.create-account` (24 lines).
+
+**Elements:** `.create-account__form`, `.create-account__hint`
+
+**Other selectors it styles:** `.platform-field`.
+
+**Other classes it renders:** `.platform-card`, `.platform-card__title`, `.platform-button`.
+
+**Tokens:** `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/administracion/alumnos/nuevo/page.tsx`:
+
+```tsx
+import { CreateAccountForm } from "@/components/platform/sections/staff/students/create-account-form.comp";
+
+<CreateAccountForm />
+```
+
+## Related
+
+- [`ResetPasswordForm`](/components/platform/sections/staff/students/reset-password-form), [`TempPasswordNotice`](/components/platform/sections/staff/students/temp-password-notice).
+- The `useActionState` exception is recorded in [Teacher & staff panels](/platform/teacher-and-staff) and [Conventions](/conventions).

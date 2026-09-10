@@ -1,0 +1,90 @@
+---
+description: "The platform form field: a real <label> around a native control, with hint and server-side error, defining the input, select and textarea look once for the whole authenticated area; FormFieldset does the same for groups."
+---
+
+# `FormField`
+
+Also exports `FormFieldset`.
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/form-field.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `form-field.comp.css` → block `.platform-field` |
+| Used by | every write form of the platform (26 importers): the staff course, chapter, lesson, author, class, student and teacher editors, the assignment panel, the account and password forms, the studies' `GameFields` and `NewGameSection`, the teacher's class form, block editor pieces and profile, and `/administracion/cursos/nuevo` |
+
+## Purpose
+
+One field, one look. `FormField` wraps a native control in a real `<label>` (never a placeholder acting as a label), adds an optional hint and an optional error, and defines once how an input, select or textarea looks in the platform. `FormFieldset` does the same with `<fieldset>`/`<legend>` for groups of checkboxes or radios, where a single label does not apply.
+
+It is stateless on purpose. Platform forms are `<form action={serverAction}>`; validation happens in the action and the failure comes back through the page's `?error=` handling. There is no client validation to wire here.
+
+## Props
+
+### `FormField`
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `label` | `string` | yes | The label text. Clicking it focuses the control, because the control is inside the `<label>`. |
+| `children` | `ReactNode` | yes | The native control: input, select or textarea. |
+| `hint` | `string` | no | Small help text under the control. |
+| `error` | `string` | no | Field-level error, rendered with `role="alert"`. |
+
+### `FormFieldset`
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `legend` | `string` | yes | The group's `<legend>`. |
+| `children` | `ReactNode` | yes | The controls of the group. |
+| `hint` | `string` | no | Help text under the group. |
+
+## Behaviour
+
+None. The control keeps its own attributes (`name`, `required`, `maxLength`, `defaultValue`); the wrapper adds structure and styling only.
+
+## Markup & styling
+
+Block `.platform-field` (82 lines). The root is the `<label>` (or the `<fieldset>` with the group modifier); the control's look is defined through descendant selectors on `input`, `select` and `textarea` inside `.platform-field__control`, which is why no form in the platform styles its own inputs.
+
+**Elements:** `.platform-field__label`, `.platform-field__control`, `.platform-field__hint`, `.platform-field__error`
+
+**Modifiers and states:** `.platform-field_variant_group`
+
+**Tokens:** `--platform-accent`, `--platform-accent-soft`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/staff/authors/authors-admin.section.tsx`:
+
+```tsx
+import { FormField } from "@/components/platform/shared/form-field.comp";
+
+<FormField label="Nombre">
+  <input type="text" name="name" maxLength={160} required />
+</FormField>
+```
+
+A group, from `components/platform/sections/staff/courses/course-editor.section.tsx`:
+
+```tsx
+<FormFieldset legend="Niveles">
+  {levels.map((level) => (
+    <label key={level.code}>
+      <input
+        type="checkbox"
+        name="levelCodes"
+        value={level.code}
+        defaultChecked={course.levelCodes.includes(level.code)}
+      />
+      {level.label}
+    </label>
+  ))}
+</FormFieldset>
+```
+
+## Related
+
+- [`PlatformNotice`](/components/platform/shared/platform-notice) for the form-level result of an action.
+- The action pattern (`?error=<code>` → message map) in [Teacher & staff panels](/platform/teacher-and-staff) and [Caching, errors & logging](/architecture/caching-errors-logging).

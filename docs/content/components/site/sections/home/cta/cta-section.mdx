@@ -1,0 +1,57 @@
+---
+description: "The sticky call to action at the bottom of the home and about pages: the countdown clock, a title and subtitle from the home-cta Global, and the WhatsApp link; rendered outside main."
+---
+
+# `CtaSection`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/cta/cta.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `cta.section.css` → block `.sticky-cta` |
+| Used by | `app/(frontend)/landing-page.tsx` (always, after `<main>`) |
+| Composes | [`CtaClock`](/components/site/sections/home/cta/cta-clock), `WhatsappIcon` from `components/icons/` |
+| Reads | `getCtaData()` · `services/home/home.service.ts` (the `home-cta` Global)<br />`getSiteSettingsData()` · `services/site-settings/site-settings.service.ts` |
+| Uses | `buildWhatsappUrl` from `lib/build-whatsapp-url` |
+
+## Purpose
+
+A bar fixed to the bottom of the viewport inviting the reader to write on WhatsApp. The landing page renders it after `<main>` on purpose: it is complementary content, not part of the page's main flow, the same reason the footer sits there.
+
+## Props
+
+None.
+
+## Behaviour
+
+- `Promise.all` of the CTA Global and the site settings; builds the WhatsApp URL.
+- The link opens in a new tab.
+
+## Markup & styling
+
+Block `.sticky-cta` (90 lines).
+
+**Elements:** `.sticky-cta__inner`, `.sticky-cta__copy`, `.sticky-cta__title`, `.sticky-cta__subtitle`, `.sticky-cta__actions`, `.sticky-cta__link`, `.sticky-cta__link-icon`
+
+**Modifiers:** `.sticky-cta__link_variant_primary`
+
+**Tokens:** `--color-primary`, `--color-dark`, `--foreground`, `--font-gramatika`
+
+**Breakpoints:** `(max-width: 1024px)`, `(max-width: 1023px)`, `(max-width: 720px)` compress the bar and drop the subtitle.
+
+## Usage
+
+From `app/(frontend)/landing-page.tsx`:
+
+```tsx
+import { CtaSection } from "@/components/site/sections/home/cta/cta.section";
+
+<main id="contenido">…</main>
+<CtaSection />
+<Footer />
+```
+
+## Related
+
+- [`CtaClock`](/components/site/sections/home/cta/cta-clock).
+- [`NosotrosCtaSection`](/components/site/sections/nosotros/cta/cta-section) is the about page's static CTA, not this bar.

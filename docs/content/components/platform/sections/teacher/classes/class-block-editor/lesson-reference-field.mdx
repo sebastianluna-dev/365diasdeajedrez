@@ -1,0 +1,46 @@
+---
+description: "A lesson is referenced by typing its id; the viewer underneath loads it as soon as the id works, so the preview is the validation."
+---
+
+# `LessonReferenceField`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/teacher/classes/class-block-editor/lesson-reference-field.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | none |
+| Used by | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) |
+| Composes | [`FormField`](/components/platform/shared/form-field) |
+
+## Purpose
+
+A class can embed a lesson. There is no lesson picker: the teacher types the lesson's id, which is in its URL (`/lecciones/20000004`), and the [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker) below loads the content as soon as the id works. If nothing appears, the id is wrong. The real check is the server's, which also requires the lesson's course to be published.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `value` | `string` | yes | The `lessonId`. |
+| `onChange` | `(lessonId: string) => void` | yes | Receives the trimmed value. |
+
+## Behaviour
+
+A controlled text input, `inputMode="numeric"`, max 40, required, with a hint that explains where the id is found.
+
+## Markup & styling
+
+No stylesheet.
+
+## Usage
+
+From `components/platform/sections/teacher/classes/class-block-editor/block-form.comp.tsx`:
+
+```tsx
+import { LessonReferenceField } from "./lesson-reference-field.comp";
+
+<LessonReferenceField value={lessonId} onChange={setLessonId} />
+```
+
+## Related
+
+- A picker over published lessons would be a natural improvement; see `IMPROVEMENTS.md`.

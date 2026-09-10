@@ -1,0 +1,57 @@
+---
+description: "One expandable question: a button with aria-expanded and a plus icon, and the answer that opens with a CSS height transition; owns its open state."
+---
+
+# `FaqAccordionItem`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/faq/faq-accordion-item.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `faq-accordion-item.comp.css` → block `.faq-item` |
+| Used by | [`FaqSection`](/components/site/sections/home/faq/faq-section) |
+| Composes | `PlusIcon` from `components/icons/` |
+| Uses | `FaqQuestionContent` from `services/home/home.types` |
+
+## Purpose
+
+Each question toggles on its own; there is no "only one open" rule, so the state is local to the item and the section stays a Server Component.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `faq` | `FaqQuestionContent` | yes | `question`, `answer`. |
+
+## Behaviour
+
+- `open` state toggled by the `<button>`; `aria-expanded` follows it and the block gets `.faq-item_open`.
+- The answer is always in the DOM inside `.faq-item__answer-wrap`; the wrap animates its grid rows / height through CSS, and the plus icon rotates into a cross.
+
+## Markup & styling
+
+Block `.faq-item` (57 lines).
+
+**Elements:** `.faq-item__toggle`, `.faq-item__question`, `.faq-item__icon`, `.faq-item__answer-wrap`, `.faq-item__answer-inner`, `.faq-item__answer`
+
+**Modifiers:** `.faq-item_open`
+
+**Tokens:** `--color-primary`
+
+No media queries.
+
+## Usage
+
+From `components/site/sections/home/faq/faq.section.tsx`:
+
+```tsx
+import { FaqAccordionItem } from "./faq-accordion-item.comp";
+
+{content.questions.map((faq) => (
+  <FaqAccordionItem key={faq.question} faq={faq} />
+))}
+```
+
+## Related
+
+- [`FaqSection`](/components/site/sections/home/faq/faq-section).

@@ -1,0 +1,55 @@
+---
+description: "The continuations from the current position, most played first, each a playable button with the count and a percentage bar drawn behind the text."
+---
+
+# `ExplorerNextMoves`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/explorer/explorer-next-moves.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `explorer-next-moves.comp.css` → block `.explorer-next-moves` |
+| Used by | [`GameExplorer`](/components/platform/sections/explorer/game-explorer) |
+| Uses | `sanToSpanish` from `lib/chess/notation`; `ExplorerNextMove` from `services/game-explorer/game-explorer.types` |
+
+## Purpose
+
+The "Continuaciones" panel: what was played from this position and how often. Each row is a button that plays the move, which is the natural way to walk the tree of the games in the database. The percentages are over the total of continuations, so they add up to 100.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `moves` | `ExplorerNextMove[]` | yes | `{ uci, san, count, percentage }[]`, ordered by the service. |
+| `onPlay` | `(san: string) => void` | yes | Plays the row's move. |
+| `isSearching` | `boolean` | yes | Chooses "Buscando…" over "Ninguna partida siguió desde aquí." when the list is empty. |
+
+## Behaviour
+
+None beyond rendering. The frequency bar is an `aria-hidden` span whose width is the percentage, placed behind the text so it reads at a glance without depending on the number.
+
+## Markup & styling
+
+Block `.explorer-next-moves` (83 lines).
+
+**Elements:** `.explorer-next-moves__title`, `.explorer-next-moves__empty`, `.explorer-next-moves__list`, `.explorer-next-moves__item`, `.explorer-next-moves__button`, `.explorer-next-moves__bar`, `.explorer-next-moves__san`, `.explorer-next-moves__count`, `.explorer-next-moves__percentage`
+
+No modifiers.
+
+**Tokens:** `--platform-accent`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/explorer/game-explorer.comp.tsx`:
+
+```tsx
+import { ExplorerNextMoves } from "./explorer-next-moves.comp";
+
+<ExplorerNextMoves moves={result?.nextMoves ?? []} onPlay={playMove} isSearching={isSearching} />
+```
+
+## Related
+
+- [`ExplorerGames`](/components/platform/sections/explorer/explorer-games), the other half of the result.

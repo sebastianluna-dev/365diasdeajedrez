@@ -1,0 +1,63 @@
+---
+description: "The 'sólo lecciones imprescindibles' switch of a course: a form with a bound server action and one button, no JavaScript, shown on the course and the chapter page."
+---
+
+# `PriorityFilter`
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/priority-filter.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `priority-filter.comp.css` → block `.priority-filter` |
+| Used by | [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section), [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section) |
+| Writes | `setOnlyPriorityLessons()` · `services/courses/courses.actions.ts` |
+
+## Purpose
+
+A per-course preference: show only the lessons marked as essential. It is a `<form action>` with a single button and nothing else, because all there is to do is save a preference and render again. No state of its own, no JavaScript.
+
+The next value travels as a **bound argument** of the action (`setOnlyPriorityLessons.bind(null, courseId, !enabled)`) rather than as a checkbox field, because a checkbox cannot submit `false` and there would be no way to switch the filter off.
+
+Since it is a per-course setting, the same switch appears on the course page and on every chapter page of that course; those are the two places where lessons are listed.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `courseId` | `string` | yes | Which course's preference is toggled. |
+| `enabled` | `boolean` | yes | Whether it is on right now; decides the pressed state and the bound value. |
+| `hiddenLessons` | `number` | yes | How many lessons the filter hides. Stated next to the switch when it is on, because an unexplained absence is unsettling. |
+
+## Behaviour
+
+Submitting posts the bound action, which stores the preference for the current user and course and revalidates the page. The button carries `aria-pressed`; the note "n lecciones ocultas" renders only when the filter is on and hides something. The sections that mount it add their own warning when the filter leaves zero lessons.
+
+## Markup & styling
+
+Block `.priority-filter` (56 lines).
+
+**Elements:** `.priority-filter__button`, `.priority-filter__mark` (the toggle dot), `.priority-filter__note`
+
+**Modifiers and states:** `.priority-filter__button_state_on`
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/courses/chapter-detail/chapter-detail.section.tsx`:
+
+```tsx
+import { PriorityFilter } from "@/components/platform/shared/priority-filter.comp";
+
+<PriorityFilter
+  courseId={chapter.courseId}
+  enabled={chapter.onlyPriorityLessons}
+  hiddenLessons={chapter.hiddenLessons}
+/>
+```
+
+## Related
+
+- [Student features › Courses](/platform/student) for where the preference is stored and how lists honour it.

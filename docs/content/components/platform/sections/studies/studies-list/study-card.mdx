@@ -1,0 +1,58 @@
+---
+description: "One study in the list: kind, origin (course or teacher) when it is not the student's, the delete cross or a read-only mark, name, description, game count and last update."
+---
+
+# `StudyCard`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/studies/studies-list/study-card.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `study-card.comp.css` → block `.study-card` |
+| Used by | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser) |
+| Composes | [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) |
+| Uses | `StudySummary` from `services/studies/studies.types` |
+
+## Purpose
+
+A study as a card. The tag row states the kind and, for what is not the student's, **where it comes from**: the course that brings it or the teacher who handed it out. Without that, two read-only collections would be indistinguishable in the list. The name links to the study page.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `study` | `StudySummary` | yes | `id`, `name`, `href`, `description?`, `kindLabel`, `courseName?`, `sharedByName?`, `gameCount`, `citedGameCount`, `updatedAtLabel`, `permissions: { canEditGames, canDelete, … }`. |
+
+## Behaviour
+
+- `permissions.canDelete` renders the [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) cross with the counts it needs for its warning; otherwise, a read-only study shows the "Sólo lectura" mark. An editable study that cannot be deleted ("Mis partidas") shows neither.
+- Game count and "Actualizado el …" come formatted from the mapper.
+
+## Markup & styling
+
+Block `.study-card` (90 lines).
+
+**Elements:** `.study-card__tags`, `.study-card__kind`, `.study-card__origin`, `.study-card__readonly`, `.study-card__name`, `.study-card__description`, `.study-card__meta`, `.study-card__count`, `.study-card__dot`
+
+No modifiers.
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/studies/studies-list/studies-browser.comp.tsx`:
+
+```tsx
+import { StudyCard } from "./study-card.comp";
+
+{ownShown.map((study) => (
+  <StudyCard key={study.id} study={study} />
+))}
+```
+
+## Related
+
+- [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section), where the name leads.
+- `services/studies/study-rules.ts` decides the permissions.

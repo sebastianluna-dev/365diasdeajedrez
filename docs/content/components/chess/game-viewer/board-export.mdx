@@ -1,0 +1,80 @@
+---
+description: "Getting a game out of the browser: repaint a position on a canvas with the board's own piece set, save it as a PNG, or save the main line as a small 32-colour GIF with gifenc."
+---
+
+# `board-export`
+
+Exports `drawPosition`, `downloadPositionImage` and `downloadGameGif`.
+
+| | |
+| --- | --- |
+| File | `components/chess/game-viewer/board-export.ts` |
+| Kind | Module (plain TypeScript, browser only, `"use client"`) |
+| Stylesheet | none |
+| Used by | [`GameTools`](/components/platform/sections/studies/game-view/game-tools), through a dynamic `import()` in the share tab |
+| Uses | `gifenc` (`GIFEncoder`, `quantize`, `applyPalette`)<br />`parseFen` from `chessops/fen`<br />`replayGame` from `lib/chess/replay`<br />`BOARD_LIGHT_SQUARE`, `BOARD_DARK_SQUARE` from `constants/chess-board-colors.const` |
+
+## Purpose
+
+The position as an image and the whole game as an animated GIF, for sharing.
+
+The board is painted **on a separate canvas**; the on-screen chessground board is not captured. chessground draws with CSS (backgrounds, sprites, transforms) and turning that into pixels needs either a capture library or reimplementing how the browser resolves each rule. Repainting is forty lines, comes out identical in every browser, at any requested size, and without the interface marks (selected move, destination squares, arrows).
+
+The pieces come from the sheet chessground already has loaded: `chessground.cburnett.css` embeds the twelve SVGs as base64 `background-image`s. They are read from the computed style of a hidden probe (`.cg-wrap piece.pawn.white`) instead of being copied into the repository, so what is exported cannot stop matching what is on screen; that is exactly what happened when the promotion picker's pieces were used. If no board is on the page the same set is loaded from `public/pieces`, which `scripts/sync-pieces.ts` keeps identical.
+
+The module is loaded on demand by the game tools so its code and `gifenc` never enter the viewer's bundle.
+
+## API
+
+### `drawPosition`
+
+```ts
+export async function drawPosition(canvas: HTMLCanvasElement, fen: string, options: { size: number; lastMove?: [Key, Key] }): Promise<void>
+```
+
+Paints the position onto `canvas`, always from White's side: a shared image is read the way a diagram in a book is. Squares use the same colours as the CSS tokens (`--board-light`/`--board-dark`, mirrored in the constant); the last-move squares get the highlight yellow pre-blended over each colour. Pieces are rasterised at 256 px and scaled into their squares. Throws if the canvas has no 2D context.
+
+### `downloadPositionImage`
+
+```ts
+export async function downloadPositionImage(fen: string, filename: string, options = { size: 720 }): Promise<void>
+```
+
+Draws on an off-screen canvas, encodes a PNG and triggers a download through a temporary object URL that is revoked immediately.
+
+### `downloadGameGif`
+
+```ts
+export async function downloadGameGif(pgn: string, filename: string, options: { size?: number; delayMs?: number } = {}): Promise<void>
+```
+
+Saves the game's **main line** as a GIF, one move per frame (variations are not a sequence). Defaults: 320 px, 900 ms per move, three times that on the last frame so the loop pauses where the game ends. Throws if the PGN has no moves.
+
+## Behaviour
+
+The GIF is written to be **small**, which in a long game is the difference between shareable and not:
+
+- Every frame after the first paints only what changed (two squares, four with the highlight) and leaves the rest transparent, which compresses to almost nothing. That requires `dispose: 1` ("keep the previous frame"); gifenc switches to `2` as soon as there is transparency, and with that the board would flicker over an empty background.
+- A 32-entry palette (31 colours plus the transparent index) with `colorDepth: 5`, so each pixel takes five bits. Thirty-one are enough because the board and pieces are flat; only edge anti-aliasing brings real colour.
+- The palette is quantised from the **first two frames**: the highlight colours do not exist in the initial position, and without them the highlight would shift colour for the rest of the game. It is padded to exactly 32 entries so the file's table matches `colorDepth`.
+- The palette is written once, in the first frame, where it becomes the global table; passing it in the others would add a local table per frame.
+
+`loadPieces` caches the twelve `HTMLImageElement`s in a module-level promise, so the second export on a page pays nothing.
+
+## Markup & styling
+
+Nothing rendered.
+
+## Usage
+
+From `components/platform/sections/studies/game-view/game-tools.comp.tsx` (share tab):
+
+```tsx
+const { downloadPositionImage } = await import("@/components/chess/game-viewer/board-export");
+await downloadPositionImage(fen, `${slug}.png`, { size: 720, lastMove });
+```
+
+## Related
+
+- [`ChessBoard`](/components/chess/chess-board) is where the cburnett sheet is imported; [Stockfish, pieces & sounds](/chess/engine-and-assets) documents `public/pieces` and `scripts/sync-pieces.ts`.
+- `constants/chess-board-colors.const.ts` keeps the canvas colours in step with the CSS tokens ([Styling & design tokens](/ui/styling)).

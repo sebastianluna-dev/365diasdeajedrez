@@ -1,0 +1,55 @@
+---
+description: "One related post under an article: the same anatomy as the listing card (cover link, eyebrow, linked title, excerpt, meta) with its own block."
+---
+
+# `RelatedArticleCard`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/blog/related-articles/related-article-card.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `related-article-card.comp.css` → block `.related-article-card` |
+| Used by | [`RelatedArticles`](/components/site/sections/blog/related-articles/related-articles-section) |
+| Uses | `ArticleSummary` from `services/articles/articles.types`, `next/image` |
+
+## Purpose
+
+The card of the related strip. It mirrors [`ArticleCard`](/components/site/sections/blog/blog-articles/article-card) but has its own block because the two sit on different backgrounds and grids; merging them is a candidate for `IMPROVEMENTS.md` if the two sheets keep converging.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `article` | `ArticleSummary` | yes | `href`, `image`, `category`, `title`, `excerpt`, `meta`. |
+
+## Behaviour
+
+None. `sizes="(max-width: 1024px) 50vw, 33vw"`.
+
+## Markup & styling
+
+Block `.related-article-card` (38 lines).
+
+**Elements:** `.related-article-card__image-link`, `.related-article-card__image`, `.related-article-card__title`, `.related-article-card__title-link`, `.related-article-card__text`
+
+**Tokens:** `--color-accent-red`, `--color-dark`, `--font-gramatika`
+
+No media queries.
+
+**Other classes:** `.eyebrow`, `.card-meta`.
+
+## Usage
+
+From `components/site/sections/blog/related-articles/related-articles.section.tsx`:
+
+```tsx
+import { RelatedArticleCard } from "./related-article-card.comp";
+
+{articles.map((article) => (
+  <RelatedArticleCard key={article.slug} article={article} />
+))}
+```
+
+## Related
+
+- [`ArticleCard`](/components/site/sections/blog/blog-articles/article-card).

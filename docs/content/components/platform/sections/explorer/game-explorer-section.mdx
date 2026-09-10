@@ -1,0 +1,49 @@
+---
+description: "The frame of /explorador: resolves the identity on the server (the border of the private area), renders the heading and mounts the client explorer with nothing preloaded."
+---
+
+# `GameExplorerSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/explorer/game-explorer.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | none: uses the page-level classes |
+| Used by | `/explorador` |
+| Composes | [`GameExplorer`](/components/platform/sections/explorer/game-explorer) |
+| Reads | `getCurrentUser()` · `lib/platform-auth/current-user.ts` |
+
+## Purpose
+
+The explorer is interactive from the first move, so the work belongs to the Client Component. What this section does is the one thing a client cannot: resolve the identity through the DAL before rendering, which is what makes `/explorador` a private page. It also renders the title and the explanatory subtitle.
+
+No result is preloaded on the server on purpose. The first query (the initial position) is made by the client through the same path as all the others, so the explorer's own cache serves it just the same when the user returns to the start.
+
+## Props
+
+This component takes no props.
+
+## Behaviour
+
+`await getCurrentUser()` then static markup plus `<GameExplorer />`.
+
+## Markup & styling
+
+No stylesheet. Renders `.platform-page`, `.platform-page__head`, `.platform-page__title`, `.platform-page__subtitle` from `platform.css`.
+
+## Usage
+
+From `app/(platform)/explorador/page.tsx`:
+
+```tsx
+import { GameExplorerSection } from "@/components/platform/sections/explorer/game-explorer.section";
+
+export default function ExplorerPage() {
+  return <GameExplorerSection />;
+}
+```
+
+## Related
+
+- [`GameExplorer`](/components/platform/sections/explorer/game-explorer).
+- The search itself: `services/game-explorer` and the position index in [Data model](/platform/data-model).

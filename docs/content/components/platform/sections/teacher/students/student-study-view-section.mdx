@@ -1,0 +1,57 @@
+---
+description: "A student's study seen by their teacher: breadcrumb, kind and read-only tags, and the game table with links kept inside /profesor/alumnos; no write control and no studies action imported."
+---
+
+# `StudentStudyViewSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/teacher/students/student-study-view.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `student-study-view.section.css` → block `.student-study` |
+| Used by | `/profesor/alumnos/[studentId]/estudios/[studyId]` |
+| Composes | [`PlatformTable`](/components/platform/shared/platform-table) |
+| Uses | `teacherRoutes` from `lib/platform-routes`; `StudyDetail` from `services/studies/studies.types` |
+
+## Purpose
+
+The same games a student sees in their study, laid out for the teacher, **without a single write control**. The studies actions (create, import, reorder) are deliberately not imported here, and even if invoked by a direct POST they validate that the database belongs to the caller. Game links lead to the teacher's own game view under `/profesor/alumnos/…`, so the teacher never lands in the student's editing screen.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `studentId` | `string` | yes | For the breadcrumb link. |
+| `studentName` | `string` | yes | Breadcrumb text. |
+| `study` | `StudyDetail` | yes | Read with the teacher's rights; `games[].href` already points into the teacher's routes. |
+
+## Behaviour
+
+None. The breadcrumb is a plain paragraph (Mis alumnos › student), then kind and "Sólo lectura" tags, the description, and a [`PlatformTable`](/components/platform/shared/platform-table) with white (linked), black, result, ECO, event and date.
+
+## Markup & styling
+
+Block `.student-study` (32 lines).
+
+**Elements:** `.student-study__breadcrumb`, `.student-study__meta`, `.student-study__description`
+
+**Other classes it renders:** `.platform-tag`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/profesor/alumnos/[studentId]/estudios/[studyId]/page.tsx`:
+
+```tsx
+import { StudentStudyViewSection } from "@/components/platform/sections/teacher/students/student-study-view.section";
+
+<StudentStudyViewSection studentId={studentId} studentName={student.displayName} study={study} />
+```
+
+## Related
+
+- [`StudentGameViewSection`](/components/platform/sections/teacher/students/student-game-view-section), where each row leads.
+- The student's own version: [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section).

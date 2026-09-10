@@ -1,0 +1,62 @@
+---
+description: "The two board sounds (move and capture) from public/sounds, loaded lazily on first use and played through a fresh clone each time so quick navigation never cuts a note short."
+---
+
+# `move-sound`
+
+Exports `playMoveSound` and the `MoveSoundKind` type.
+
+| | |
+| --- | --- |
+| File | `components/chess/game-viewer/move-sound.ts` |
+| Kind | Module (plain TypeScript, browser only, `"use client"`) |
+| Stylesheet | none |
+| Used by | [`GameViewer`](/components/chess/game-viewer/game-viewer) |
+| Uses | `public/sounds/move.mp3`, `public/sounds/capture.mp3` |
+
+## Purpose
+
+Board sounds. There are only two, taken from lichess's "standard" set; check does **not** sound because in that set `Check.mp3` is a link to silence, and giving it a sound of its own would be inventing part of the set.
+
+The files load lazily and only when a sound is first needed: a page can hold several viewers that may never sound, and there is no point requesting the audio in every one of them.
+
+## API
+
+### `playMoveSound`
+
+```ts
+export function playMoveSound(kind: "move" | "capture"): void
+```
+
+Plays the sound once at 60 % volume. Safe to call on the server (returns without doing anything when `window` is undefined) and safe before any user gesture: the browser rejects the `play()` promise, which is expected and swallowed.
+
+## Behaviour
+
+- One `HTMLAudioElement` per kind is created on first use with `preload = "auto"` and kept in a module cache.
+- Every playback uses a **clone** of the cached element. Navigating quickly with the arrow keys fires several sounds in a row, and reusing one element would cut the previous note off mid-play.
+- The viewer decides **when**: on position change (never on mount) and only if the sound preference is on; it picks `capture` when the piece count on the board dropped.
+
+## Markup & styling
+
+Nothing rendered.
+
+## Usage
+
+From `components/chess/game-viewer/game-viewer.comp.tsx`:
+
+```tsx
+import { playMoveSound } from "./move-sound";
+
+useEffect(() => {
+  const previous = previousFenRef.current;
+  previousFenRef.current = fen;
+  if (previous === null || previous === fen || !fen) return;
+  if (!preferences.sound) return;
+  playMoveSound(pieceCount(fen) < pieceCount(previous) ? "capture" : "move");
+}, [fen, preferences.sound]);
+```
+
+## Related
+
+- [`viewer-preferences`](/components/chess/game-viewer/viewer-preferences) holds the mute toggle.
+- [Stockfish, pieces & sounds](/chess/engine-and-assets) lists the files under `public/sounds`.

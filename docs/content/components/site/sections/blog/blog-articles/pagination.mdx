@@ -1,0 +1,60 @@
+---
+description: "Page links of the blog listing with a summary line, previous and next arrows, and aria-current on the active page; paginating is navigating."
+---
+
+# `Pagination`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/blog/blog-articles/pagination.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `pagination.comp.css` → block `.pagination` |
+| Used by | [`BlogArticles`](/components/site/sections/blog/blog-articles/blog-articles-section) |
+
+## Purpose
+
+A `<nav aria-label="Páginas del blog">` with one link per page. At the edges the arrow is a disabled `<span aria-hidden>` instead of a dead link.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `page` | `number` | yes | Current page, 1-based. |
+| `totalPages` | `number` | yes | |
+| `totalItems` | `number` | yes | For the summary "Página 2 de 4 · 31 artículos". |
+| `hrefFor` | `(page: number) => string` | yes | URL of each page, built by the section. |
+
+## Behaviour
+
+- Arrows carry `aria-label` "Página anterior" / "Página siguiente"; the active number carries `aria-current="page"`.
+
+## Markup & styling
+
+Block `.pagination` (61 lines).
+
+**Elements:** `.pagination__summary`, `.pagination__controls`, `.pagination__arrow`, `.pagination__page`
+
+**Modifiers:** `.pagination__arrow_disabled`, `.pagination__page_active`
+
+**Tokens:** `--color-accent-red`, `--color-dark`, `--foreground`, `--font-suisse`
+
+No media queries.
+
+## Usage
+
+From `components/site/sections/blog/blog-articles/blog-articles.section.tsx`:
+
+```tsx
+import { Pagination } from "./pagination.comp";
+
+<Pagination
+  page={listing.page}
+  totalPages={listing.totalPages}
+  totalItems={listing.totalItems}
+  hrefFor={(page) => listingHref({ category: listing.category, page })}
+/>
+```
+
+## Related
+
+- [`CategoryFilter`](/components/site/sections/blog/blog-articles/category-filter).

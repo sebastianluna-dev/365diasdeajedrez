@@ -1,0 +1,60 @@
+---
+description: "One module button in the programme list, numbered with two digits and with the number inside its accessible name because on mobile it is the only visible part."
+---
+
+# `ProgramModuleListItem`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/program/program-module-list-item.comp.tsx` |
+| Kind | Server Component (receives a callback; rendered inside a client tree) |
+| Stylesheet | `program-module-list-item.comp.css` → element `.program-list__item` of `.program-list` |
+| Used by | [`ProgramInteractive`](/components/site/sections/home/program/program-interactive) |
+| Uses | `formatTwoDigitNumber` from `lib/format-two-digit-number` |
+
+## Purpose
+
+A row of the module list: the number, the title and the duration. Under 1024 px the CSS hides the label and leaves only the number, which is why the button's `aria-label` is "Módulo 01: " followed by the title: the visible "01" alone would be a meaningless name.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `module` | `{ title: string; durationLabel: string }` | yes | What is printed. |
+| `moduleNumber` | `number` | yes | 1-based; formatted with two digits. |
+| `isActive` | `boolean` | yes | Adds the `_active` modifiers and `aria-pressed`. |
+| `onSelect` | `() => void` | yes | Click handler, bound by the parent. |
+
+## Behaviour
+
+- `aria-pressed={isActive}` on the `<button type="button">`.
+
+## Markup & styling
+
+Elements of `.program-list` (72 lines): `.program-list__item`, `.program-list__number`, `.program-list__label`, `.program-list__title`.
+
+**Modifiers:** `.program-list__item_active`, `.program-list__label_active`
+
+**Tokens:** `--color-primary`, `--color-dark`, `--font-gramatika`
+
+**Breakpoints:** `(max-width: 1023px)` hides the label; `(max-width: 720px)`.
+
+## Usage
+
+From `components/site/sections/home/program/program-interactive.comp.tsx`:
+
+```tsx
+import { ProgramModuleListItem } from "./program-module-list-item.comp";
+
+<ProgramModuleListItem
+  key={module.title}
+  module={module}
+  moduleNumber={index + 1}
+  isActive={index === activeIndex}
+  onSelect={() => setActiveIndex(index)}
+/>
+```
+
+## Related
+
+- [`ProgramInteractive`](/components/site/sections/home/program/program-interactive).

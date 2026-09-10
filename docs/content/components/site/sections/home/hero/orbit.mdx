@@ -1,0 +1,53 @@
+---
+description: "The decorative rings around the hero portrait: two rotating rings with dots, pure CSS, no props."
+---
+
+# `Orbit`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/hero/orbit.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `orbit.comp.css` → block `.orbit` |
+| Used by | [`HeroSection`](/components/site/sections/home/hero/hero-section) |
+
+## Purpose
+
+Decoration only: two concentric rings that rotate around the hero card, each with two or three dots. It is a component so the hero's markup stays readable, not because it has any logic.
+
+## Props
+
+None.
+
+## Behaviour
+
+None; the rotation is a CSS animation.
+
+## Markup & styling
+
+Block `.orbit` (105 lines).
+
+**Elements:** `.orbit__ring`, `.orbit__dot`
+
+**Modifiers:** `.orbit__ring_index_1`, `.orbit__ring_index_2`, `.orbit__dot_ring_1_top`, `.orbit__dot_ring_1_right`, `.orbit__dot_ring_1_bottom`, `.orbit__dot_ring_2_top`, `.orbit__dot_ring_2_bottom`
+
+**Tokens:** `--color-primary`, `--color-secondary`
+
+**Breakpoints:** `(max-width: 1024px)`, `(max-width: 720px)` scale the rings with the card.
+
+## Usage
+
+From `components/site/sections/home/hero/hero.section.tsx`:
+
+```tsx
+import { Orbit } from "./orbit.comp";
+
+<div className="hero__stage">
+  <div className="hero__card">…</div>
+  <Orbit />
+</div>
+```
+
+## Related
+
+- [`HeroSection`](/components/site/sections/home/hero/hero-section).

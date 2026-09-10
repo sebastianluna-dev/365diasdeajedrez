@@ -1,0 +1,57 @@
+---
+description: "The public site's footer: the logo and a tagline, the academy links, and the contact column with the WhatsApp number from site settings."
+---
+
+# `Footer`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/shell/footer/footer.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `footer.section.css` → block `.site-footer` |
+| Used by | `/`, `/nosotros`, `/blog`, `/blog/[slug]`, `/mentor/[slug]`, `app/(frontend)/not-found.tsx` |
+| Composes | [`Logo`](/components/site/shared/logo) |
+| Reads | `getSiteSettingsData()` · `services/site-settings/site-settings.service.ts` |
+| Uses | `buildWhatsappUrl` from `lib/build-whatsapp-url` |
+
+## Purpose
+
+The closing block of every public page except the chess clock. Its copy and links are fixed in code (programme, teacher, packages, FAQ, the clock, the contact email); only the WhatsApp number and its default message come from the `site-settings` Global, so the contact stays editable without turning the footer into a CMS block.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `accent` | `"orange" \| "red"` | no, `"orange"` | Logo accent and `.site-footer_accent_<accent>`; the blog passes `"red"`. |
+
+## Behaviour
+
+- Awaits the site settings and builds the WhatsApp URL with the number and the default message.
+- Links to home anchors (`/#programa`, `/#maestro`, `/#planes`, `/#preguntas`) and to `/reloj-de-ajedrez`; the WhatsApp link opens in a new tab.
+
+## Markup & styling
+
+Block `.site-footer` (87 lines).
+
+**Elements:** `.site-footer__wrap`, `.site-footer__grid`, `.site-footer__description`, `.site-footer__heading`, `.site-footer__links`, `.site-footer__link`, `.site-footer__text`, `.site-footer__bottom`
+
+**Modifiers:** `.site-footer_accent_red`
+
+**Tokens:** `--color-primary`, `--color-accent-red-on-dark`, `--foreground`
+
+**Breakpoints:** `(max-width: 1023px)`, `(max-width: 720px)` collapse the three columns.
+
+## Usage
+
+From `app/(frontend)/blog/[slug]/page.tsx`:
+
+```tsx
+import { Footer } from "@/components/site/sections/shell/footer/footer.section";
+
+<Footer accent="red" />
+```
+
+## Related
+
+- [`Header`](/components/site/sections/shell/header/header-section).
+- The `site-settings` Global in [CMS](/public-site/cms).

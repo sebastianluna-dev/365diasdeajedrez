@@ -1,0 +1,83 @@
+---
+description: "Drag-sortable rows shared by a course's chapters and a chapter's lessons: order applied on drop and saved in a transition, a keyboard-operable handle, fixed intro and closing rows, optional delete."
+---
+
+# `SortableList`
+
+Also exports the `SortableItem` type.
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/courses/sortable-list.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `sortable-list.comp.css` → block `.sortable-list` |
+| Used by | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) (chapters), [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section) (lessons) |
+
+## Purpose
+
+Chapters in a course and lessons in a chapter are the same row with different content, so one list serves both. In a five-chapter course the arrow buttons were enough, but moving the fifth to the first place was four round trips to the server; dragging does it in one.
+
+The order is applied on the client on drop and saved in a transition without waiting for a response: reordering is where a flicker shows most, and the list already knows how it will end up. If the server rejects the change, its revalidation returns the good order and the row goes back.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `items` | `SortableItem[]` | yes | `{ id, name, meta, href, badge?, roleLabel?, canDelete }[]`. `roleLabel` ("Introducción", "Cierre") marks a fixed row. |
+| `onReorder` | `(orderedIds: string[]) => Promise<void>` | yes | Server action already bound to its course or chapter; receives the ids of the **normal** rows only. |
+| `deleteAction` | `(formData: FormData) => Promise<void>` | no | Delete action; rendered per row when `canDelete`. |
+| `deleteFieldName` | `string` | no | The hidden field the delete action reads (`chapterId`, `lessonId`). |
+| `noun` | `string` | yes | What an item is called, for the handle's `aria-label`. |
+| `emptyLabel` | `string` | yes | Text when there are no rows. |
+
+## Behaviour
+
+- **Fixed rows.** Intro and closing travel in the same list so they are seen where they belong, but they are not draggable, cannot be dropped onto, and are left out of the ids sent; the server would not accept them either. The displayed number counts only normal rows, so with an intro in front the first real chapter is 1, not 2.
+- **Drag.** Normal rows are `draggable`; `onDragOver` prevents default so the row is a valid drop target; `onDrop` moves the dragged index and commits.
+- **Keyboard.** The handle is a `<button>` with an `aria-label` naming the item and explaining the arrows; ArrowUp and ArrowDown move the row one step. Dragging has no keyboard equivalent, so this is the only accessible way to reorder.
+- **Sync with the server.** New `items` after revalidation replace the local rows **during render** (via a `baseline` comparison), not in an effect, avoiding a frame with the old list.
+- Each row shows a link to edit, the badge, the meta line, and a delete form when allowed.
+
+## Markup & styling
+
+Block `.sortable-list` (163 lines).
+
+**Elements:** `.sortable-list__row`, `.sortable-list__handle`, `.sortable-list__order`, `.sortable-list__grip`, `.sortable-list__fixed`, `.sortable-list__text`, `.sortable-list__head`, `.sortable-list__link`, `.sortable-list__meta`, `.sortable-list__controls`, `.sortable-list__control`, `.sortable-list__empty`
+
+**Modifiers and states:** `.sortable-list__row_state_dragging`, `.sortable-list__row_state_fixed`, `.sortable-list__control_variant_danger`, `.sortable-list__control_variant_go`
+
+**Other classes it renders:** `.platform-tag`, `.platform-tag_variant_accent`.
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/staff/courses/chapter-editor.section.tsx`:
+
+```tsx
+import { SortableList } from "./sortable-list.comp";
+
+<SortableList
+  items={chapter.lessons.map((lesson) => ({
+    id: lesson.id,
+    name: lesson.name,
+    meta: `${lesson.hasPgn ? "Con PGN" : "Sin PGN"} · ${lesson.exerciseCount} ejercicio${lesson.exerciseCount === 1 ? "" : "s"}`,
+    href: lesson.href,
+    roleLabel: lesson.roleLabel,
+    badge: lesson.isPriority ? "Prioritaria" : undefined,
+    canDelete: isDraft && lesson.progressCount === 0,
+  }))}
+  onReorder={reorderLessons.bind(null, chapter.courseId, chapter.id)}
+  deleteAction={deleteLesson.bind(null, chapter.courseId, chapter.id)}
+  deleteFieldName="lessonId"
+  noun="lección"
+  emptyLabel="Este capítulo todavía no tiene lecciones."
+/>
+```
+
+## Related
+
+- [`GameTable`](/components/platform/sections/studies/study-detail/game-table), the student-side list with the same handle-and-arrows idea.
+- `services/shared/reorder.ts` applies the order server-side.

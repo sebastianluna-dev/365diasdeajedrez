@@ -1,0 +1,61 @@
+---
+description: "ChessBoard behind next/dynamic with no SSR, mounted only when it comes within 600 px of the viewport; the placeholder reserves the exact height."
+---
+
+# `ChessBoardLazy`
+
+| | |
+| --- | --- |
+| File | `components/chess/chess-board-lazy.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `chess-board-lazy.comp.css` → block `.chess-board-lazy` |
+| Used by | `/mentor/[slug]`, [`ChessGameBlockRenderer`](/components/site/sections/blog/article-content/blocks/chess-game-block), [`TeacherSection`](/components/site/sections/home/teacher/teacher-section) |
+| Composes | [`ChessBoard`](/components/chess/chess-board) through `next/dynamic` |
+
+## Purpose
+
+A [`ChessBoard`](/components/chess/chess-board) that stays out of the page's startup. chessground, chessops and the piece stylesheet are the heaviest JavaScript on the public site, and on the home page the annotated game sits far below the fold: with this wrapper that code is not downloaded, parsed or hydrated until the reader scrolls near it.
+
+It exists as a separate file because `next/dynamic` with `ssr: false` is only allowed inside a Client Component; a Server Component section cannot call it directly.
+
+Use it where the board is an illustration on a long page. Where the board **is** the content (viewer, trainer, explorer, analysis board) the plain `ChessBoard` is used, because deferring it would only delay what the user came for.
+
+## Props
+
+The same props as [`ChessBoard`](/components/chess/chess-board#props) (`ChessBoardProps`), forwarded untouched once the board mounts.
+
+## Behaviour
+
+- Renders `ChessBoardPlaceholder` first: two empty boxes with the board's aspect ratio and the toolbar's height, `aria-hidden`, so mounting the real board moves nothing on the page.
+- An `IntersectionObserver` with `rootMargin: "600px 0px"` flips `isNear` the first time the slot comes within 600 px of the viewport, then disconnects. From then on the dynamic `ChessBoard` renders; while its chunk loads, `next/dynamic` shows the same placeholder.
+- No server rendering on purpose: the board's HTML adds nothing indexable, and skipping it means its chunk is not needed to hydrate the page either.
+
+## Markup & styling
+
+Block `.chess-board-lazy` (28 lines): the placeholder only.
+
+**Elements:** `.chess-board-lazy__board` (square, `aspect-ratio: 1`), `.chess-board-lazy__toolbar`
+
+**Tokens:** `--platform-border`, `--platform-surface`
+
+**Breakpoints:** `(max-width: 720px)`, matching the real board's stacking point so the reserved height is right on both layouts.
+
+## Usage
+
+From `components/site/sections/home/teacher/teacher.section.tsx`:
+
+```tsx
+import { ChessBoardLazy } from "@/components/chess/chess-board-lazy.comp";
+
+<ChessBoardLazy
+  flipBoard={content.game.flipBoard}
+  pgn={content.game.moves}
+  annotations={content.game.annotations}
+/>
+```
+
+## Related
+
+- [`ChessBoard`](/components/chess/chess-board), the component it defers.
+- [Board & game viewer › Which one to use](/chess/viewer#which-one-to-use).
+- The same idea for the exporter: `board-export` is loaded on demand by the game tools (see [`board-export`](/components/chess/game-viewer/board-export)).

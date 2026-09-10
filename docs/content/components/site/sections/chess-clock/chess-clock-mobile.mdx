@@ -1,0 +1,57 @@
+---
+description: "The phone clock in two steps: a select screen with the dials and time controls, then a rotated play screen with two tap zones, rolling digits and reset, home and settings actions."
+---
+
+# `ChessClockMobile`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/chess-clock/chess-clock-mobile.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `chess-clock-mobile.comp.css` → block `.chess-clock-mobile` |
+| Used by | [`ChessClock`](/components/site/sections/chess-clock/chess-clock) |
+| Composes | [`ClockDial`](/components/site/sections/chess-clock/clock-dial), [`TimeRoller`](/components/site/sections/chess-clock/time-roller) |
+| Uses | `useChessClock` from `hooks/use-chess-clock.hook`, `Settings`, `Home`, `RotateCcw` from `lucide-react` |
+
+## Purpose
+
+On a phone the two players sit across from each other, so the play screen is rotated and each half is a large tap zone. Choosing the time control happens on a separate first step; the "Configurar" action pauses the clock and returns to it.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `enabled` | `boolean` | no, `true` | Passed to the hook; only the visible variant runs. |
+
+## Behaviour
+
+- `step` state: `"select"` or `"play"`, mirrored as `.chess-clock-mobile_step_<step>`.
+- Select step: title, the two dials (no readout), the time-control buttons and "Iniciar".
+- Play step: two `<button>` tap zones ("Turno de las blancas" / "Turno de las negras") each holding a dial and a [`TimeRoller`](/components/site/sections/chess-clock/time-roller); knobs are decorative (`aria-hidden`) and reflect `knobPressed`; the middle row has reset, a link to `/` and settings.
+- `handleConfig` calls `toggle()` if either side is active before going back to the select step.
+
+## Markup & styling
+
+Block `.chess-clock-mobile` (229 lines).
+
+**Elements:** `.chess-clock-mobile__intro`, `.chess-clock-mobile__title`, `.chess-clock-mobile__subtitle`, `.chess-clock-mobile__case-wrap`, `.chess-clock-mobile__knobs`, `.chess-clock-mobile__knob`, `.chess-clock-mobile__case`, `.chess-clock-mobile__controls`, `.chess-clock-mobile__control`, `.chess-clock-mobile__start`, `.chess-clock-mobile__rotated`, `.chess-clock-mobile__tap-zone`, `.chess-clock-mobile__dial-time`, `.chess-clock-mobile__actions`, `.chess-clock-mobile__action`
+
+**Modifiers:** `.chess-clock-mobile_step_select`, `.chess-clock-mobile_step_play`, `.chess-clock-mobile__knob_pressed`, `.chess-clock-mobile__control_active`, `.chess-clock-mobile__tap-zone_active`
+
+**Tokens:** `--color-primary`, `--color-dark`, `--foreground`, `--font-gramatika`
+
+**Breakpoints:** `(max-width: 766px)` is where the block becomes visible. It also restyles `.clock-dial` inside the tap zones.
+
+## Usage
+
+From `components/site/sections/chess-clock/chess-clock.comp.tsx`:
+
+```tsx
+import { ChessClockMobile } from "./chess-clock-mobile.comp";
+
+<ChessClockMobile enabled={isMobile} />
+```
+
+## Related
+
+- [`ChessClockDesktop`](/components/site/sections/chess-clock/chess-clock-desktop), [`TimeRoller`](/components/site/sections/chess-clock/time-roller).

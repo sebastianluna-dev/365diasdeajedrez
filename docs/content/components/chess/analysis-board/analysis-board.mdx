@@ -1,0 +1,78 @@
+---
+description: "The editable analysis board: moves played on the board become the PGN of a hidden form input, with variations, comments, NAGs, arrows, a paste box and optional autosave."
+---
+
+# `AnalysisBoard`
+
+| | |
+| --- | --- |
+| File | `components/chess/analysis-board/analysis-board.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `analysis-board.comp.css` → block `.analysis-board` |
+| Used by | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) (transcribed game blocks) |
+| Composes | [`ChessBoard`](/components/chess/chess-board), [`MoveTree`](/components/chess/game-viewer/move-tree), [`MoveContextMenu`](/components/chess/game-viewer/move-context-menu) |
+| Uses | `addMove`, `commentTextAt`, `deleteFrom`, `emptyGame`, `parseEditableGame`, `pathOfNode`, `nodeAtPathIn`, `promoteOneStep`, `promoteToMainLine`, `serializeGame`, `setCommentText`, `setNags`, `setShapes`, `variationPgn` from `lib/chess/pgn-edit`<br />`parsePgnTree`, `nodeAtPath`, `nextPathOf`, `endPathOf`, `parentPathOf`, `MOVE_QUALITY_NAGS`, `POSITION_EVAL_NAGS` from `lib/chess/pgn-tree`<br />`numberedMoveLabel` from `lib/chess/notation`<br />`PGN_MAX_LENGTH` from `constants/platform/content-limits.const` |
+
+## Purpose
+
+The board a teacher transcribes a game on. Moves played on the board are written into the move list; going back and playing something else opens a variation; each move can carry a comment, quality and evaluation signs, and arrows drawn with the right button. The result is a PGN.
+
+It is built to sit **inside a `<form>`**: the PGN is published in a hidden input named by `name`, so saving is an ordinary submit and the server action reads `formData.get("pgn")` like any other field. The component knows nothing about where the game goes.
+
+It does not replace the [`GameViewer`](/components/chess/game-viewer/game-viewer). The viewer is the student's reader, which since the studies feature can also edit in place; this is the teacher's authoring tool with a paste box, a comment tab and a discard button. All the chess logic is in `lib/chess/pgn-edit.ts`; this file holds interface state only.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `name` | `string` | yes | Name of the hidden input the PGN travels in. |
+| `defaultPgn` | `string` | no | The game to start from. Empty or unparsable falls back to `initialFen`. |
+| `initialFen` | `string` | no | Starting position when there is no previous PGN; omitted means the standard start. |
+| `orientation` | `"white" \| "black"` | no · default `"white"` | Which side starts at the bottom; the flip button toggles on top of it. |
+| `onAutoSave` | `(pgn: string) => Promise<boolean>` | no | Saves on its own after a pause, returning whether the write succeeded. Optional on purpose: without it the component behaves as a plain form field, which is what a screen whose saves have side effects wants (a lesson save marks its frozen exercises stale, so autosaving there would invalidate them while typing). |
+
+## Behaviour
+
+**Source of truth.** A mutable chessops `Game` lives in a ref; after every change it is reserialised and the PGN string is what renders and what is sent. Two representations that could drift are avoided by deriving one from the other every time. The starting game and its PGN are computed once into `baseline`; "unsaved changes" is `pgn !== baseline.pgn`, never a separate flag.
+
+**Editing.** `onMove` from the board calls `addMove` at the current path and jumps to the new move; drawing calls `setShapes`; the comment textarea calls `setCommentText` on every keystroke (through a local draft, so typing a space does not get trimmed away); the two NAG groups (move quality, position evaluation) are exclusive within their group. Promote, promote one step and delete come from the [`MoveContextMenu`](/components/chess/game-viewer/move-context-menu) and go through `mutateKeepingPlace`, which keeps a reference to the node before mutating and asks where it ended up, because promoting reindexes siblings. "Comentar" and "Anotar" in the menu select the move and switch to the matching tab, focusing the textarea on the next frame.
+
+**Paste.** "Pegar un PGN" opens a textarea capped at `PGN_MAX_LENGTH`; an unreadable PGN shows a `role="alert"` error and nothing is replaced.
+
+**Autosave.** Only with `onAutoSave`: a 1.5 s timer after the last change saves the latest PGN; a change during the wait restarts it, so intermediate versions are never sent. `lastSaved` is what the server confirmed; the status text is derived by comparing (`error` wins over everything, then `saving`, then `unsaved`, then `saved`) and announced with `aria-live="polite"`. A `beforeunload` handler warns when `pgn !== lastSaved`. Without `onAutoSave`, the footer shows "Hay cambios sin guardar." and a "Descartar cambios" button that rebuilds the baseline game.
+
+**Keyboard.** Arrow keys move through the game except while typing in an input or textarea. Unlike the viewer there is no viewport check: only one analysis board is ever on a page.
+
+**Warnings.** Illegal moves in a pasted PGN are listed above the board (`tree.warnings`), in every environment, because the author has to fix them before saving.
+
+## Markup & styling
+
+Block `.analysis-board` (230 lines).
+
+**Elements:** `.analysis-board__layout`, `.analysis-board__board`, `.analysis-board__hint`, `.analysis-board__panel`, `.analysis-board__moves`, `.analysis-board__empty`, `.analysis-board__toolbar`, `.analysis-board__tool`, `.analysis-board__tabs`, `.analysis-board__tab`, `.analysis-board__tabpanel`, `.analysis-board__comment`, `.analysis-board__note`, `.analysis-board__group-title`, `.analysis-board__glyphs`, `.analysis-board__glyph`, `.analysis-board__footer`, `.analysis-board__save`, `.analysis-board__dirty`, `.analysis-board__paste`, `.analysis-board__paste-input`, `.analysis-board__paste-error`, `.analysis-board__warnings`
+
+**Modifiers and states:** `.analysis-board__glyph_active` (a pressed NAG), `.analysis-board__save_state_{saving,unsaved,error}`, `.analysis-board__tool-icon_flipped`
+
+**Other classes it renders:** the platform's `.platform-button` and `.platform-button_variant_secondary` for the footer buttons; the tabs use `role="tablist"`/`role="tab"` with `aria-selected`.
+
+**Tokens:** `--analysis-moves-height` (own, the move list's max height), `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 860px)` stacks the panel under the board.
+
+## Usage
+
+From `components/platform/sections/teacher/classes/class-block-editor/block-form.comp.tsx`:
+
+```tsx
+import { AnalysisBoard } from "@/components/chess/analysis-board/analysis-board.comp";
+
+<AnalysisBoard name="pgn" defaultPgn={block?.pgn ?? undefined} />
+```
+
+The surrounding `<form action={boundAction}>` receives the PGN as `formData.get("pgn")`.
+
+## Related
+
+- [`GameViewer`](/components/chess/game-viewer/game-viewer) with `editable` is the other editing surface; [`usePgnEditing`](/components/chess/game-viewer/use-pgn-editing-hook) binds the same `pgn-edit` operations there.
+- `lib/chess/pgn-edit.ts` in [Chess library](/chess/library).
+- [Board & game viewer › Editing](/chess/viewer) for how the two editors divide the work.

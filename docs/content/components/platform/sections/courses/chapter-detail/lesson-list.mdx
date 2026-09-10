@@ -1,0 +1,54 @@
+---
+description: "The lesson rows of a chapter: order number (green when completed), name with the 'Prioridad' mark, description, duration and status, each row a link."
+---
+
+# `LessonList`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/courses/chapter-detail/lesson-list.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `lesson-list.comp.css` → block `.lesson-list` |
+| Used by | [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section) |
+| Uses | `PROGRESS_STATUS` from `constants/platform/shared-codes.const`<br />`ChapterLessonItem` from `services/courses/courses.types` |
+
+## Purpose
+
+The lessons of a chapter as an `<ol>` of whole-row links. A completed lesson is recognisable before reading anything: its order number turns green (`_state_done`). Essential lessons carry a "Prioridad" mark next to the name; every row shows its duration and a status label.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `lessons` | `ChapterLessonItem[]` | yes | `{ id, order, name, description?, href, isPriority, estimatedDuration?, statusCode }[]`. |
+
+## Behaviour
+
+None. `statusCode` is one of the `PROGRESS_STATUS` codes (`NOT_STARTED`, `IN_PROGRESS`, `COMPLETED`); a local map turns it into "Sin empezar", "En curso", "Completada", and the lowercased code becomes the status modifier. The chevron is an inline `aria-hidden` SVG.
+
+## Markup & styling
+
+Block `.lesson-list` (138 lines).
+
+**Elements:** `.lesson-list__row`, `.lesson-list__item`, `.lesson-list__order`, `.lesson-list__info`, `.lesson-list__title`, `.lesson-list__name`, `.lesson-list__priority`, `.lesson-list__description`, `.lesson-list__meta`, `.lesson-list__duration`, `.lesson-list__status`, `.lesson-list__chevron`
+
+**Modifiers and states:** `.lesson-list__order_state_done`, `.lesson-list__status_code_in_progress`, `.lesson-list__status_code_completed` (`not_started` has no rule: it is the default look)
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-font`, `--platform-shadow-card`, `--platform-success-ink`, `--platform-success-soft`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 760px)` wraps the meta under the info.
+
+## Usage
+
+From `components/platform/sections/courses/chapter-detail/chapter-detail.section.tsx`:
+
+```tsx
+import { LessonList } from "./lesson-list.comp";
+
+<LessonList lessons={chapter.lessons} />
+```
+
+## Related
+
+- [`ChapterList`](/components/platform/sections/courses/course-detail/chapter-list), the same pattern one level up.
+- Progress status codes in [Data model](/platform/data-model).

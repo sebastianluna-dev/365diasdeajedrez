@@ -1,0 +1,64 @@
+---
+description: "A game's data fields in one place, shared by the create and edit forms so both offer exactly the same set; PGN-sourced titles and federations outside the catalog are kept as an extra option."
+---
+
+# `GameFields`
+
+Also exports the `GameFieldValues` type.
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/studies/game-fields.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `game-fields.comp.css` → block `.game-fields` |
+| Used by | [`NewGameSection`](/components/platform/sections/studies/new-game/new-game-section), [`EditGame`](/components/platform/sections/studies/game-view/edit-game) |
+| Composes | [`FormField`](/components/platform/shared/form-field) |
+| Uses | `federationOptions`, `FIDE_TITLES`, `FIDE_TITLE_LABELS` from `lib/chess/federations`; `StudyKindOption` from `services/studies/studies.types` |
+
+## Purpose
+
+The fields of a game (name, players with Elo, title and federation, result, date, event, site, round, ECO) defined once. Both forms, create and edit, have to offer exactly the same set: if something could be filled in on creation that cannot be corrected later, the data would be trapped. All fields are optional, also on creation, because when analysis starts one does not yet know which game it is going to be.
+
+It lives at the root of `studies/` rather than in a subfolder because two different subfolders use it.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `values` | `GameFieldValues` | no | Current values for the edit form; absent on creation. `playedAtValue` is short ISO (`yyyy-mm-dd`), what `<input type="date">` expects. |
+| `results` | `StudyKindOption[]` | yes | The results catalog; `ONGOING` is the default. |
+| `titleHint` | `string` | yes | Help text for the name, different on creation and on edit. |
+
+## Behaviour
+
+- Plain inputs with `defaultValue`; no state.
+- `CodeSelect` handles the title and federation dropdowns: a PGN may bring a title or a federation that is not in our lists (headers are written by whoever wants), so a stored value outside the options is added as one more option labelled "(del PGN)". Without that, opening the form and saving without touching anything would silently replace the value.
+- Elo inputs are `type="number"` between 100 and 4000.
+
+## Markup & styling
+
+Block `.game-fields` (16 lines): the two-column rows.
+
+**Elements:** `.game-fields__row`
+
+**Other selectors it styles:** `.platform-field` (spacing inside the rows).
+
+No tokens, no media queries of its own.
+
+## Usage
+
+From `components/platform/sections/studies/new-game/new-game.section.tsx`:
+
+```tsx
+import { GameFields } from "@/components/platform/sections/studies/game-fields.comp";
+
+<GameFields
+  results={results}
+  titleHint={`Si lo dejas vacío se llamará «Capítulo ${nextNumber}».`}
+/>
+```
+
+## Related
+
+- The field names match what `createStudyGame` and `updateGameDetails` read; both write the values into the PGN headers.
+- `lib/chess/federations.ts` in [Chess library](/chess/library).

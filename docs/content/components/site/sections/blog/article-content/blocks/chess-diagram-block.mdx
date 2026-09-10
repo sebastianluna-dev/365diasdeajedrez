@@ -1,0 +1,43 @@
+---
+description: "A one-line adapter from the Payload chessDiagramBlock to the shared StaticDiagram with context article; it replaced a drifting copy of the component."
+---
+
+# `ChessDiagramBlockRenderer`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/blog/article-content/blocks/chess-diagram-block.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | none; [`StaticDiagram`](/components/chess/static-diagram) brings its own |
+| Used by | [`articleRichTextConverters`](/components/site/sections/blog/article-content/rich-text-converters) |
+| Composes | [`StaticDiagram`](/components/chess/static-diagram) |
+| Uses | `ChessDiagramBlock` from `@/payload-types` |
+
+## Purpose
+
+A still position inside an article. This file used to be a copy of the diagram component and of its stylesheet, and the two had already drifted apart in the caption; now it only maps the block's fields to the shared component and sets `context="article"` so the diagram picks the article's sizing.
+
+## Props
+
+The block's fields: `fen: string`, `orientation`, `caption?: string | null` (mapped to `undefined`).
+
+## Behaviour
+
+None.
+
+## Markup & styling
+
+None of its own.
+
+## Usage
+
+From `components/site/sections/blog/article-content/rich-text-converters.tsx`:
+
+```tsx
+chessDiagramBlock: ({ node }) => <ChessDiagramBlockRenderer {...node.fields} />,
+```
+
+## Related
+
+- [`StaticDiagram`](/components/chess/static-diagram).
+- The platform renders the same diagram through [`ClassContentRenderer`](/components/platform/shared/class-content-renderer).

@@ -1,0 +1,69 @@
+---
+description: "Student↔teacher assignments seen from either side (a discriminated-union prop): current assignment, reassign and end forms, and the never-deleted history."
+---
+
+# `AssignmentPanel`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/assignments/assignment-panel.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `assignment-panel.comp.css` → block `.assignment-panel` |
+| Used by | [`StudentAdminDetailSection`](/components/platform/sections/staff/students/student-admin-detail-section), [`TeacherAdminDetailSection`](/components/platform/sections/staff/teachers/teacher-admin-detail-section) |
+| Composes | [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Writes | `assignStudent()`, `endAssignment()` · `services/staff-teachers/staff-teachers.actions.ts` |
+| Uses | `staffRoutes` from `lib/platform-routes`; `StudentAssignmentHistoryItem`, `TeacherStudentAssignment`, `AssignableStudent` types |
+
+## Purpose
+
+Assigning a student to a teacher is one operation seen from two records, so one component serves both pages and shares the same services and actions. Reassigning **closes** the active row and creates another; history is never deleted, and the student's page shows it.
+
+## Props
+
+A discriminated union on `mode`:
+
+| Mode | Props |
+| --- | --- |
+| `"byStudent"` | `studentId: string` · `assignments: StudentAssignmentHistoryItem[]` (full history; the active one has `isActive`) · `teachers: { id, displayName }[]` |
+| `"byTeacher"` | `teacherId: string` · `students: TeacherStudentAssignment[]` (active assignments) · `assignable: AssignableStudent[]` (with `currentTeacherName?`) |
+
+## Behaviour
+
+- **By student:** a line with the current teacher and date (or "no teacher"); a `<form action={assignStudent}>` with hidden `studentId` and `returnTo`, a `teacherId` select and an optional note, labelled "Asignar" or "Reasignar"; when active, a one-button form posting `endAssignment.bind(null, active.id)`; and the history list (teacher, dates, who assigned, note).
+- **By teacher:** the list of active students with a "Terminar" form each, and an add form with hidden `teacherId`, a `studentId` select over `assignable` (showing "ahora con …" for students who would be reassigned) and a note.
+- `returnTo` tells the action which record to redirect back to.
+
+## Markup & styling
+
+Block `.assignment-panel` (116 lines).
+
+**Elements:** `.assignment-panel__current`, `.assignment-panel__form`, `.assignment-panel__history`, `.assignment-panel__history-title`, `.assignment-panel__history-list`, `.assignment-panel__history-item`, `.assignment-panel__history-teacher`, `.assignment-panel__history-dates`, `.assignment-panel__history-meta`, `.assignment-panel__students`, `.assignment-panel__student`, `.assignment-panel__student-name`, `.assignment-panel__end`
+
+No modifiers.
+
+**Other selectors it styles:** `.platform-field`.
+
+**Other classes it renders:** `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-border-strong`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/staff/students/student-admin-detail.section.tsx`:
+
+```tsx
+import { AssignmentPanel } from "@/components/platform/sections/staff/assignments/assignment-panel.comp";
+
+<AssignmentPanel
+  mode="byStudent"
+  studentId={student.id}
+  assignments={student.assignments}
+  teachers={teachers}
+/>
+```
+
+## Related
+
+- The assignment table in [Data model](/platform/data-model); what an active assignment unlocks for the teacher in [Teacher & staff panels](/platform/teacher-and-staff).

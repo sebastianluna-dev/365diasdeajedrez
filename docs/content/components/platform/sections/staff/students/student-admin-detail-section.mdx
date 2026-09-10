@@ -1,0 +1,58 @@
+---
+description: "The administrative record of an account: name and email form, creation and login facts, the assignment panel, the password reset and the class participations; deliberately no access to the student's studies."
+---
+
+# `StudentAdminDetailSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/students/student-admin-detail.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `student-admin-detail.section.css` → block `.student-admin` |
+| Used by | `/administracion/alumnos/[userId]` |
+| Composes | [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel), [`ResetPasswordForm`](/components/platform/sections/staff/students/reset-password-form), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice), [`PlatformTable`](/components/platform/shared/platform-table), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Writes | `updateStudent()` · `services/staff-students/staff-students.actions.ts` |
+| Uses | `STAFF_ERROR_MESSAGES` from `constants/platform/staff-messages.const`; `StaffStudentDetail` from `services/staff-students/staff-students.types` |
+
+## Purpose
+
+Operating an account (name, email, password, teacher assignment, class participations and payments) is not the same as reading a student's private content. This record gives **no** access to the student's studies or games; that is the teacher's view, and only for assigned students.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `student` | `StaffStudentDetail` | yes | `id`, `displayName`, `email`, `createdAtLabel`, `lastLoginAtLabel?`, `hasPassword`, `passwordUpdatedAtLabel?`, `assignments[]`, `classes[]`. |
+| `teachers` | `{ id, displayName }[]` | yes | Active teachers, for the assignment panel. |
+| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+
+## Behaviour
+
+Four cards: a `<form action={updateStudent.bind(null, id)}>` with name and email plus a facts list (creation, last login, password state); the [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel) in `byStudent` mode; the [`ResetPasswordForm`](/components/platform/sections/staff/students/reset-password-form); and a [`PlatformTable`](/components/platform/shared/platform-table) of classes with teacher, date, status, attended and payment.
+
+## Markup & styling
+
+Block `.student-admin` (45 lines).
+
+**Elements:** `.student-admin__form`, `.student-admin__facts`, `.student-admin__fact`, `.student-admin__fact-label`, `.student-admin__fact-value`
+
+**Other selectors it styles:** `.platform-field`.
+
+**Tokens:** `--platform-border`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/administracion/alumnos/[userId]/page.tsx`:
+
+```tsx
+import { StudentAdminDetailSection } from "@/components/platform/sections/staff/students/student-admin-detail.section";
+
+<StudentAdminDetailSection student={student} teachers={teachers} errorCode={error} />
+```
+
+## Related
+
+- [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section), the teacher's view of the same person.
+- [Authentication & roles](/platform/authentication) for what a password reset does to sessions.

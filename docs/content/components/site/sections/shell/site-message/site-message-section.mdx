@@ -1,0 +1,67 @@
+---
+description: "The public site's notice screen (404, error): eyebrow, title, description and an actions row, with no hooks and no data so server and client pages can both render it."
+---
+
+# `SiteMessage`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/shell/site-message/site-message.section.tsx` |
+| Kind | Server Component (no hooks; also renderable from a Client Component) |
+| Stylesheet | `site-message.section.css` → block `.site-message` |
+| Used by | `app/(frontend)/not-found.tsx`, `app/(frontend)/error.tsx`, `app/global-not-found.tsx` |
+
+## Purpose
+
+One screen for "this page does not exist" and "something went wrong", with the site's palette and fonts. It deliberately has no hooks and reads no data: `not-found.tsx` is a Server Component and `error.tsx` is a Client Component, and both must be able to render it. The actions are passed as children and painted alike by the `site-message__action` class, so a `<Link>` and a `<button onClick={retry}>` look the same.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `eyebrow` | `string` | yes | Small label above the title: "Error 404", "Algo salió mal". |
+| `title` | `string` | yes | The `<h1>`. |
+| `description` | `string` | yes | One sentence under the title. |
+| `children` | `ReactNode` | no | Links or buttons; rendered inside `.site-message__actions` when present. |
+
+## Behaviour
+
+None.
+
+## Markup & styling
+
+Block `.site-message` (76 lines).
+
+**Elements:** `.site-message__inner`, `.site-message__eyebrow`, `.site-message__title`, `.site-message__text`, `.site-message__actions`, `.site-message__action`
+
+**Modifiers:** `.site-message__action_variant_secondary`
+
+**Tokens:** `--color-primary`, `--color-dark`, `--color-normal-gray`, `--foreground`, `--font-gramatika`, `--font-suisse`
+
+**Breakpoints:** `(max-width: 720px)`.
+
+## Usage
+
+From `app/(frontend)/error.tsx`:
+
+```tsx
+import { SiteMessage } from "@/components/site/sections/shell/site-message/site-message.section";
+
+<SiteMessage
+  eyebrow="Algo salió mal"
+  title="No pudimos cargar esta página"
+  description={error.digest ? `Inténtalo de nuevo en un momento. Código del error: ${error.digest}` : "Inténtalo de nuevo en un momento."}
+>
+  <button type="button" onClick={retry} className="site-message__action">
+    Reintentar
+  </button>
+  <Link href="/" className="site-message__action site-message__action_variant_secondary">
+    Volver a la portada
+  </Link>
+</SiteMessage>
+```
+
+## Related
+
+- Why there are three callers (segment 404, error boundary, global 404) is explained in [Caching, errors & logging](/architecture/caching-errors-logging) and [Routing](/architecture/routing).
+- The platform's equivalent is [`PlatformError`](/components/platform/shared/platform-error).

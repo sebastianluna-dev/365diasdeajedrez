@@ -1,0 +1,68 @@
+---
+description: "The platform's chassis: top bar with the wordmark, the role's navigation, the user block with 'Salir', and the content area; it reads the session to display, never to protect."
+---
+
+# `PlatformShell`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/shell/platform-shell.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `platform-shell.section.css` → block `.platform-shell` |
+| Used by | `app/(platform)/layout.tsx` |
+| Composes | [`PlatformNav`](/components/platform/sections/shell/platform-nav) |
+| Reads | `getSessionUser()` · `lib/platform-auth/current-user.ts`<br />`getSessionRoles()` · `lib/platform-auth/roles.ts` |
+| Writes | `logoutAction()` · `services/auth/auth.actions.ts` |
+| Uses | `buildPlatformNavGroups` from `constants/platform/nav-items.const`<br />`homeRouteFor` from `lib/platform-routes` |
+
+## Purpose
+
+The internal layout of every authenticated screen: a top bar and the `<main>` the page renders into. It is the counterpart of the public site's header and footer, and the only component the platform layout renders.
+
+It reads the session **only to show** who is logged in and which menu they get. It never protects anything: if there is no user it simply omits the user block. What blocks the way is the DAL inside each page (Next 16 advises against auth checks in a layout, which does not control the render of its segments), and hiding a menu group authorises nothing, because every page and action of `/profesor` and `/administracion` checks the role again.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | yes | The page, rendered inside `<main id="contenido">`. |
+
+## Behaviour
+
+- `getSessionUser()` and `getSessionRoles()` run in parallel. `buildPlatformNavGroups(roles)` returns exactly one group: staff, teacher or student; the menu is exclusive by role.
+- The wordmark links to `homeRouteFor(roles)`, the role's home rather than the student dashboard, because with the exclusive menu that page is no longer in a teacher's or staff's menu.
+- The user block shows the display name, a link to the public site and "Salir", which is a `<form action={logoutAction}>` with a submit button so it works without JavaScript and shares the line with the site link. The avatar shows the initials of the first two words of the name (`initialsOf`), `aria-hidden`.
+- `<main id="contenido">` is the target of the layout's skip link.
+
+## Markup & styling
+
+Block `.platform-shell` (138 lines).
+
+**Elements:** `.platform-shell__bar`, `.platform-shell__bar-inner`, `.platform-shell__logo`, `.platform-shell__logo-accent`, `.platform-shell__user`, `.platform-shell__user-text`, `.platform-shell__user-name`, `.platform-shell__user-links`, `.platform-shell__user-link`, `.platform-shell__avatar`, `.platform-shell__content`
+
+No modifiers.
+
+**Tokens:** `--platform-accent-ink`, `--platform-bg`, `--platform-border`, `--platform-font`, `--platform-shadow-bar`, `--platform-surface`, `--platform-text`, `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 1080px)` lets the navigation wrap under the wordmark; `(max-width: 640px)` hides the user text and keeps the avatar and "Salir".
+
+## Usage
+
+From `app/(platform)/layout.tsx`:
+
+```tsx
+import { PlatformShell } from "@/components/platform/sections/shell/platform-shell.section";
+
+<body className="platform-theme">
+  <a className="skip-link" href="#contenido">
+    Saltar al contenido
+  </a>
+  <PlatformShell>{children}</PlatformShell>
+</body>
+```
+
+## Related
+
+- [`PlatformNav`](/components/platform/sections/shell/platform-nav) renders the groups and marks the active item.
+- [Authentication & roles](/platform/authentication) for `getSessionUser` versus `getCurrentUser` and why the layout does not gate.
+- The public site's shell: [`Header`](/components/site/sections/shell/header/header-section) and [`Footer`](/components/site/sections/shell/footer/footer-section).

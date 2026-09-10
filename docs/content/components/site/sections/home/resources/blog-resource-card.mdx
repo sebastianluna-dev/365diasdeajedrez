@@ -1,0 +1,60 @@
+---
+description: "One post card of the resources section: the cover, a title and an excerpt, the whole card a link."
+---
+
+# `BlogResourceCard`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/resources/blog-resource-card.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `blog-resource-card.comp.css` → block `.resource-card` |
+| Used by | [`ResourcesSection`](/components/site/sections/home/resources/resources-section) |
+| Uses | `next/image` |
+
+## Purpose
+
+A compact post card for the home page. It takes plain strings rather than an `ArticleSummary` so the section decides which fields map to what.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `title` | `string` | yes | Heading and the image's `alt`. |
+| `text` | `string` | yes | The excerpt. |
+| `image` | `string` | yes | Cover URL, rendered with `fill` and `sizes="(max-width: 720px) 260px, 300px"`. |
+| `href` | `string` | yes | The article URL. |
+
+## Behaviour
+
+None.
+
+## Markup & styling
+
+Block `.resource-card` (32 lines).
+
+**Elements:** `.resource-card__image-frame`, `.resource-card__image`, `.resource-card__body`, `.resource-card__title`, `.resource-card__text`
+
+**Tokens:** `--font-gramatika`
+
+No media queries.
+
+## Usage
+
+From `components/site/sections/home/resources/resources.section.tsx`:
+
+```tsx
+import { BlogResourceCard } from "./blog-resource-card.comp";
+
+<BlogResourceCard
+  key={article.slug}
+  title={article.title}
+  text={article.excerpt}
+  image={article.image.src}
+  href={article.href}
+/>
+```
+
+## Related
+
+- [`ArticleCard`](/components/site/sections/blog/blog-articles/article-card), the listing's richer card.

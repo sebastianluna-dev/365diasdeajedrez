@@ -1,0 +1,59 @@
+---
+description: "The chapter's game collection, the only place where a PGN is pasted: the list with removal for games no lesson uses, and the import form."
+---
+
+# `ChapterGamesSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/courses/chapter-games.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `chapter-games.section.css` → block `.chapter-games` |
+| Used by | `/administracion/cursos/[courseId]/capitulos/[chapterId]/partidas` |
+| Composes | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes | `importChapterGames()`, `deleteChapterGame()` · `services/staff-courses/staff-courses.actions.ts` |
+| Uses | `STAFF_ERROR_MESSAGES`; `staffRoutes`; `ChapterAdminDetail`, `CourseGameRow` types |
+
+## Purpose
+
+Course content is PGN, and this is where it enters. Each chapter has a collection; its lessons choose their game from it, so fixing a game here fixes every lesson that uses it at once. It is the **only** place in the staff panel where a PGN is pasted.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `chapter` | `ChapterAdminDetail` | yes | For the head, tabs and bound actions. |
+| `games` | `CourseGameRow[]` | yes | The collection with `lessonCount` per game. |
+| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+
+## Behaviour
+
+- Rows show title, detail, move count and how many lessons use the game. "Quitar" is offered only when `lessonCount === 0`: the foreign key is `SET NULL`, so deleting a used game would not fail, it would empty those lessons silently.
+- The import form is a textarea posting `importChapterGames`; a PGN with several games creates all of them.
+
+## Markup & styling
+
+Block `.chapter-games` (107 lines).
+
+**Elements:** `.chapter-games__list`, `.chapter-games__row`, `.chapter-games__text`, `.chapter-games__title`, `.chapter-games__meta`, `.chapter-games__remove`, `.chapter-games__empty`, `.chapter-games__import`, `.chapter-games__import-input`
+
+No modifiers.
+
+**Tokens:** `--platform-accent`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/administracion/cursos/[courseId]/capitulos/[chapterId]/partidas/page.tsx`:
+
+```tsx
+import { ChapterGamesSection } from "@/components/platform/sections/staff/courses/chapter-games.section";
+
+<ChapterGamesSection chapter={chapter} games={games} errorCode={error} />
+```
+
+## Related
+
+- [`LessonGamePicker`](/components/platform/sections/staff/courses/lesson-game-picker) links a lesson to one of these games.
+- PGN as the content source in [Architecture › Overview](/architecture/overview).

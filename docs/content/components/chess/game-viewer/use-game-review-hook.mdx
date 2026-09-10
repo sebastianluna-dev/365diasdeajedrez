@@ -1,0 +1,74 @@
+---
+description: "The whole-game evaluation hook: a second Stockfish worker that evaluates every main-line position in series at depth 16, reports progress, and hands the results back once."
+---
+
+# `useGameReview`
+
+Also exports the `GameReviewState`, `GameReviewProgress` and `GameReviewRunner` types.
+
+| | |
+| --- | --- |
+| File | `components/chess/game-viewer/use-game-review.hook.ts` |
+| Kind | Client hook |
+| Stylesheet | none |
+| Used by | [`GameReview`](/components/chess/game-viewer/game-review) |
+| Uses | `parseEngineInfo` from `lib/chess/engine-protocol`<br />`replayGame`, `turnColor` from `lib/chess/replay`<br />`MoveEvaluation` from `lib/chess/pgn-tree`<br />the worker script `public/engine/stockfish.js` |
+
+## Purpose
+
+Evaluates a whole game: one engine pass per main-line position, in order, and one callback at the end with all the scores.
+
+It has its **own worker**, apart from the one in [`useEngine`](/components/chess/game-viewer/use-engine-hook), and not for convenience: that one chases the position the user is looking at and keeps stopping and relaunching its search, and injecting a second batch of positions into that conversation is exactly what makes Stockfish abort. Two different tasks, two engines.
+
+## API
+
+### `useGameReview`
+
+```ts
+export function useGameReview({ onFinished }: { onFinished: (evaluations: MoveEvaluation[]) => void }): GameReviewRunner
+```
+
+| Option | Meaning |
+| --- | --- |
+| `onFinished` | Called **once** on completion with one evaluation per main-line position, the first being the starting position. The hook does not touch the PGN; the caller decides what to do with the numbers. Kept in a ref, so it need not be memoised. |
+
+### `GameReviewRunner`
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `state` | `"idle" \| "running" \| "failed"` | `idle` both before and after a run; "done" is not a state here because the result lives in the PGN. |
+| `done`, `total` | `number` | Positions evaluated so far and how many there are. |
+| `depth` | `number` | The depth in use (16), so the interface can report it. |
+| `start` | `(pgn: string) => void` | Replays the PGN, creates the worker and begins. Calling it again stops any run in progress. |
+| `cancel` | `() => void` | Terminates the worker and resets progress. What was evaluated so far is discarded. |
+
+## Behaviour
+
+- `start` replays the main line with `replayGame`; an empty game fails immediately. It creates the worker (a constructor that throws also fails), sets `running` with the total, and sends `uci`, `UCI_AnalyseMode`, `MultiPV 1` (only the position's value matters here; three lines would triple the work for nothing) and `isready`.
+- The traversal is serial and in turns: on `readyok` and after every `bestmove` it sends `position fen` + `go depth 16` for the next index. The last `info` score seen for the current position is kept as `current`; on `bestmove` it is pushed, or, for a finished position with no score (mate, stalemate), the previous value is repeated so the chart has one value per position. Progress is updated after each.
+- When the index runs past the end the worker is terminated, `state` returns to `idle` and `onFinished` receives the array.
+- `worker.onerror` terminates and sets `failed`. Unmounting terminates too: leaving the screen mid-evaluation cannot leave an engine thinking.
+- `REVIEW_DEPTH = 16` rather than the live analysis's 20: this is sixty positions in a row, and at 20 a long game runs to minutes with the fan at full blast. At 16 the gross mistakes show all the same.
+
+## Markup & styling
+
+Nothing rendered.
+
+## Usage
+
+From `components/chess/game-viewer/game-review.comp.tsx`:
+
+```tsx
+import { useGameReview } from "./use-game-review.hook";
+
+const runner = useGameReview({ onFinished });
+// …
+<button type="button" onClick={() => runner.start(pgn)}>Generar evaluación</button>
+<span>Posición {runner.done} de {runner.total}</span>
+```
+
+## Related
+
+- [`GameReview`](/components/chess/game-viewer/game-review) mounts it and writes the results into the PGN.
+- [`useEngine`](/components/chess/game-viewer/use-engine-hook) for the protocol details the two share.
+- [Stockfish, pieces & sounds](/chess/engine-and-assets).

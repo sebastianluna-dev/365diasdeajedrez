@@ -1,0 +1,68 @@
+---
+description: "Running-text notation of a PGN tree: main line, inline comments and nested variations in parentheses, one button per move."
+---
+
+# `MoveTree`
+
+| | |
+| --- | --- |
+| File | `components/chess/game-viewer/move-tree.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `move-tree.comp.css` → block `.move-tree` |
+| Used by | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="flow"`), [`AnalysisBoard`](/components/chess/analysis-board/analysis-board) |
+| Uses | `sanToSpanish` from `lib/chess/notation`<br />`nagGlyph`, `PgnTree`, `PgnTreeNode` from `lib/chess/pgn-tree` |
+
+## Purpose
+
+The notation as prose: "1. e4 e5 2. Cf3 (2. Cc3 Cf6) Cc6 …". Moves are buttons, comments are inline spans, variations are nested spans in parentheses rendered recursively. This is the list a **lesson** uses, because a lesson is read like text with the game inside it; a game consulted move by move uses the [`MoveTable`](/components/chess/game-viewer/move-table).
+
+The tree carries no editing logic. It reports a right click when asked to and nothing else, so the student's viewer never ships menu code.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `tree` | `PgnTree` | yes | The parsed game from `parsePgnTree`. |
+| `currentPath` | `string` | yes | Dotted path of the active node; `""` is the initial position. |
+| `onSelect` | `(path: string) => void` | yes | Click on a move. |
+| `onContextMenu` | `(path: string, event: MouseEvent) => void` | no | Right click on a move. Optional on purpose: whoever only reads the game does not pass it and the list behaves exactly as before; an editor uses it to open the move's menu. |
+
+## Behaviour
+
+- `renderLine` walks a line: the first child is the main continuation, the rest are variations. A move gets its number when it is White's, when it starts a line, or when a comment or a variation came just before it ("2… Cc6"), the same rule a printed book follows.
+- SAN is rendered in Spanish piece letters (`sanToSpanish`) with NAG glyphs appended (`nagGlyph`).
+- The active move's button is kept in view with `scrollIntoView({ block: "nearest", inline: "nearest" })` on every path change: the minimum scroll, in the scrolling container only, so the page does not jump.
+- With `onContextMenu`, the button's `onContextMenu` prevents the browser menu and forwards the path and the event (the viewer needs the pointer position to place its menu).
+
+## Markup & styling
+
+Block `.move-tree` (57 lines).
+
+**Elements:** `.move-tree__move`, `.move-tree__comment`, `.move-tree__variation`
+
+**Modifiers and states:** `.move-tree__move_active`
+
+**Tokens:** `--move-tree-font-size` (set by the viewer's panel so the list scales with it), `--platform-accent-ink`, `--platform-accent-soft`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries; it wraps as text.
+
+## Usage
+
+From `components/chess/game-viewer/game-viewer.comp.tsx`:
+
+```tsx
+import { MoveTree } from "./move-tree.comp";
+
+<MoveTree
+  tree={tree}
+  currentPath={currentPath}
+  onSelect={setCurrentPath}
+  onContextMenu={isEditing ? openMenu : undefined}
+/>
+```
+
+## Related
+
+- [`MoveTable`](/components/chess/game-viewer/move-table), the tabular alternative.
+- [`MoveContextMenu`](/components/chess/game-viewer/move-context-menu), what the right click opens.
+- `PgnTree` and dotted paths in [Chess library](/chess/library).

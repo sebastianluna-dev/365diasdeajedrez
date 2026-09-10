@@ -1,0 +1,47 @@
+---
+description: "The Lexical converter map for articles: paragraphs, headings, lists and quotes with article-body classes, plus the four custom blocks dispatched by slug to the renderers in blocks/."
+---
+
+# `articleRichTextConverters`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/blog/article-content/rich-text-converters.tsx` |
+| Kind | Module (a `JSXConvertersFunction`) |
+| Stylesheet | `rich-text-converters.css` → block `.article-body` |
+| Used by | [`ArticleContent`](/components/site/sections/blog/article-content/article-content-section) |
+| Composes | [`ImageBlockRenderer`](/components/site/sections/blog/article-content/blocks/image-block), [`CalloutBlockRenderer`](/components/site/sections/blog/article-content/blocks/callout-block), [`ChessDiagramBlockRenderer`](/components/site/sections/blog/article-content/blocks/chess-diagram-block), [`ChessGameBlockRenderer`](/components/site/sections/blog/article-content/blocks/chess-game-block) |
+| Uses | `JSXConvertersFunction`, `DefaultNodeTypes`, `SerializedBlockNode` from `@payloadcms/richtext-lexical`; the block types from `@/payload-types` |
+
+## Purpose
+
+Payload's `RichText` renders a Lexical tree with a converter per node type. This map starts from `defaultConverters`, overrides the text nodes so they carry BEM classes instead of bare tags, and adds a `blocks` entry keyed by block slug for the four blocks the Articles collection allows.
+
+## API
+
+| Export | Meaning |
+| --- | --- |
+| `articleRichTextConverters` | `({ defaultConverters }) => converters`. Typed over `DefaultNodeTypes \| ArticleBlockNode`, where `ArticleBlockNode` is the union of `SerializedBlockNode` over the four block types (`ImageBlock`, `CalloutBlock`, `ChessDiagramBlock`, `ChessGameBlock`). |
+
+Overrides: `paragraph` → `<p class="article-body__paragraph">`, `heading` → the node's own tag with `article-body__heading`, `list` → the node's tag with `article-body__list`, `quote` → `<blockquote class="article-body__quote">`. Blocks: `imageBlock`, `calloutBlock`, `chessDiagramBlock`, `chessGameBlock`, each spreading `node.fields` into its renderer.
+
+## Markup & styling
+
+Block `.article-body` (41 lines): `.article-body__paragraph`, `.article-body__heading`, `.article-body__list`, `.article-body__quote`.
+
+**Tokens:** `--color-accent-red`, `--color-dark`, `--font-gramatika`
+
+## Usage
+
+From `components/site/sections/blog/article-content/article-content.section.tsx`:
+
+```tsx
+import { RichText } from "@payloadcms/richtext-lexical/react";
+import { articleRichTextConverters } from "./rich-text-converters";
+
+<RichText className="article-body" data={article.content} converters={articleRichTextConverters} />
+```
+
+## Related
+
+- Adding a block: register it in the Articles collection, regenerate `payload-types`, add a renderer in `blocks/` and a line in `blocks` here. See [CMS](/public-site/cms).

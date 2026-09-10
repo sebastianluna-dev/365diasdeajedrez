@@ -1,0 +1,60 @@
+---
+description: "The course catalog in every status, with a GET search, status filter links, totals, and whole-row links with cover thumbnail, slug, type, status, counts and publish date."
+---
+
+# `CoursesAdminSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/courses/courses-admin.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `courses-admin.section.css` → block `.courses-admin` |
+| Used by | `/administracion/cursos` |
+| Composes | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads | `listCoursesAdmin({ query, status })` · `services/staff-courses/staff-courses.service.ts` |
+| Uses | `COURSE_STATUS` from `constants/platform/course-codes.const`; `staffRoutes`; `isDisplayableImage` from `lib/remote-image`; `ChevronIcon`, `SearchIcon` from `components/icons/`; `next/image` |
+
+## Purpose
+
+The entry to course authoring. Courses are born in draft and are only visible in the platform once published, which the header states. The search is a plain GET so it can be shared and undone with the back button; the active status travels with it as a hidden field so it is not lost when searching. Each row is entirely a link: in a seven-column table, forcing the user to aim at the name is asking for marksmanship.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `query` | `string` | no | Text search over name and slug, from `?q=`. |
+| `status` | `string` | no | Status filter, from `?estado=`. |
+
+## Behaviour
+
+- `filterHref` builds the four filter links (Todos, Publicados, Borradores, Archivados) preserving the query; the active one gets `aria-current`.
+- Totals line: courses, chapters, lessons over the filtered set.
+- Rows show a 44 px cover frame (painted even without a cover; `isDisplayableImage` guards the URL), name and slug, type, a status pill with a per-status modifier, chapter and lesson counts, publish date, and a chevron.
+- Empty copy distinguishes "nothing matches" from "no courses yet".
+
+## Markup & styling
+
+Block `.courses-admin` (267 lines).
+
+**Elements:** `.courses-admin__search`, `.courses-admin__search-icon`, `.courses-admin__search-input`, `.courses-admin__bar`, `.courses-admin__filters`, `.courses-admin__filter`, `.courses-admin__totals`, `.courses-admin__dot`, `.courses-admin__table`, `.courses-admin__head`, `.courses-admin__rows`, `.courses-admin__row`, `.courses-admin__course`, `.courses-admin__cover`, `.courses-admin__cover-image`, `.courses-admin__names`, `.courses-admin__name`, `.courses-admin__slug`, `.courses-admin__cell`, `.courses-admin__number`, `.courses-admin__status`, `.courses-admin__chevron`
+
+**Modifiers and states:** `.courses-admin__filter_state_active`, `.courses-admin__status_state_{draft,published,archived}`
+
+**Tokens:** own `--courses-admin-columns` (the grid template shared by head and rows); `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-shadow-card`, `--platform-success-ink`, `--platform-success-soft`, `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-sunken`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 1000px)` drops columns; `(max-width: 620px)` stacks the bar.
+
+## Usage
+
+From `app/(platform)/administracion/cursos/page.tsx`:
+
+```tsx
+import { CoursesAdminSection } from "@/components/platform/sections/staff/courses/courses-admin.section";
+
+<CoursesAdminSection query={q} status={estado} />
+```
+
+## Related
+
+- [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section), where a row leads.
+- Course statuses in [Data model](/platform/data-model).

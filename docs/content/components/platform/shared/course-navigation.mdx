@@ -1,0 +1,63 @@
+---
+description: "The Mis cursos → Curso → Capítulo → Lección breadcrumb trail, with hrefs from lib/platform-routes and an explicit current crumb."
+---
+
+# `CourseNavigation`
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/course-navigation.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `course-navigation.comp.css` → block `.course-navigation` |
+| Used by | `/cursos/[courseId]`, `/cursos/[courseId]/[chapterOrder]`, `/lecciones/[lessonId]` |
+| Uses | `platformRoutes` from `lib/platform-routes` |
+
+## Purpose
+
+The contextual trail at the top of the three course screens. It always starts with "Mis cursos" and adds the course, the chapter and the lesson as they are given; the current page is rendered as plain text and closes the trail. Hrefs are built with `platformRoutes`, never typed by hand, so a route change lands here automatically.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `courseId` | `string` | yes | For the course link. |
+| `courseName` | `string` | yes | Course crumb text. |
+| `chapterOrder` | `number` | no | The chapter's order number, which is what addresses it in the URL. |
+| `chapterName` | `string` | no | Chapter crumb text; rendered only together with `chapterOrder`. |
+| `lessonName` | `string` | no | Name of the current lesson, never linked. |
+| `current` | `"course" \| "chapter"` | no | Which crumb is the current page. It cannot be deduced from the data alone (the chapter view also receives only the course, and there the course *does* link), so it is stated. The lesson, when present, is always current. |
+
+## Behaviour
+
+None. A `<nav aria-label="Ruta del curso">` with links and separators.
+
+## Markup & styling
+
+Block `.course-navigation` (25 lines).
+
+**Elements:** `.course-navigation__link`, `.course-navigation__separator`, `.course-navigation__current`
+
+**Tokens:** `--platform-accent-ink`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries; it wraps.
+
+## Usage
+
+From `app/(platform)/cursos/[courseId]/[chapterOrder]/page.tsx`:
+
+```tsx
+import { CourseNavigation } from "@/components/platform/shared/course-navigation.comp";
+
+<CourseNavigation
+  courseId={chapter.courseId}
+  courseName={chapter.courseName}
+  chapterOrder={chapter.order}
+  chapterName={chapter.name}
+  current="chapter"
+/>
+```
+
+## Related
+
+- [`StudiesNavigation`](/components/platform/shared/studies-navigation), the studies counterpart.
+- `lib/platform-routes.ts` in [Routes & URLs](/architecture/routing).

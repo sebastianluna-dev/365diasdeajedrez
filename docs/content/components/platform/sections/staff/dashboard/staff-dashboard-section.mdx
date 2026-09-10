@@ -1,0 +1,56 @@
+---
+description: "The staff home: four counters, the actionable list of students without a teacher, courses by status, classes in the next seven days, and a note on which catalogs are seed-only."
+---
+
+# `StaffDashboardSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/dashboard/staff-dashboard.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `staff-dashboard.section.css` → block `.staff-dashboard` |
+| Used by | `/administracion` |
+| Composes | [`EmptyState`](/components/platform/shared/empty-state), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Reads | `getStaffDashboard()` · `services/staff/staff.service.ts` |
+| Uses | `staffRoutes` from `lib/platform-routes` |
+
+## Purpose
+
+What the administration sees first. The one list that asks for action is "Alumnos sin profesor asignado": every account without an active assignment, linked to its record where the assignment is made. The rest is orientation: counts, courses by status with a link to the catalog, and the week's classes. The closing note states the rule that technical catalogs (topics, levels, course types, statuses) are managed by seed, because their codes are what the logic compares.
+
+## Props
+
+This component takes no props. The page opens with `requireStaff()`.
+
+## Behaviour
+
+Awaits the dashboard and renders. Unassigned students empty renders an [`EmptyState`](/components/platform/shared/empty-state) ("Todos los alumnos tienen profesor"); upcoming classes empty renders an inline line.
+
+## Markup & styling
+
+Block `.staff-dashboard` (94 lines).
+
+**Elements:** `.staff-dashboard__metrics`, `.staff-dashboard__metric`, `.staff-dashboard__metric-value`, `.staff-dashboard__metric-label`, `.staff-dashboard__list`, `.staff-dashboard__item`, `.staff-dashboard__item-title`, `.staff-dashboard__item-meta`, `.staff-dashboard__row`, `.staff-dashboard__empty`, `.staff-dashboard__note`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-card`, `.platform-card__title`, `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-font`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 1000px)` two metric columns; `(max-width: 900px)` stacks the row; `(max-width: 620px)` one metric column.
+
+## Usage
+
+From `app/(platform)/administracion/page.tsx`:
+
+```tsx
+import { StaffDashboardSection } from "@/components/platform/sections/staff/dashboard/staff-dashboard.section";
+
+<StaffDashboardSection />
+```
+
+## Related
+
+- [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel), where the unassigned students are handled.
+- [Teacher & staff panels › Staff](/platform/teacher-and-staff); catalogs in [Data model](/platform/data-model).

@@ -1,0 +1,53 @@
+---
+description: "The spinner and label every loading.tsx under app/(platform) renders while a route segment streams, announced politely to assistive technology."
+---
+
+# `LoadingPanel`
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/loading-panel.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `loading-panel.comp.css` → block `.loading-panel` |
+| Used by | `loading.tsx` of `/` (the platform root), `/inicio`, `/cursos`, `/clases`, `/estudios`, `/explorador`, `/entrenador`, `/profesor`, `/administracion` |
+
+## Purpose
+
+What the App Router shows in a segment while its Server Components await data. Every `loading.tsx` under `app/(platform)` returns this, so the platform has one loading look and the files are one line each.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `label` | `string` | no · default `"Cargando…"` | The visible text. |
+
+## Behaviour
+
+None. The root carries `role="status"` and `aria-live="polite"`, so the change is announced without interrupting; the spinner is `aria-hidden`.
+
+## Markup & styling
+
+Block `.loading-panel` (25 lines).
+
+**Elements:** `.loading-panel__spinner` (a CSS rotation), `.loading-panel__label`
+
+**Tokens:** `--platform-accent`, `--platform-border-strong`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/administracion/loading.tsx`:
+
+```tsx
+import { LoadingPanel } from "@/components/platform/shared/loading-panel.comp";
+
+export default function Loading() {
+  return <LoadingPanel />;
+}
+```
+
+## Related
+
+- [`PlatformError`](/components/platform/shared/platform-error), its counterpart for `error.tsx`.
+- [Routes & URLs](/architecture/routing) for which segments have a loading boundary.

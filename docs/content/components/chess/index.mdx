@@ -1,0 +1,53 @@
+---
+description: "Index of components/chess: the board, the lazy board, the static diagram, the Elo table, the analysis board, and the game viewer with its parts, hooks and utilities."
+---
+
+# Chess components
+
+`components/chess/` is the React side of `lib/chess`: everything here is shared by the public site and the platform. One page per file; the narrative of how they fit together, which one to pick and the engine protocol is in [Board & game viewer](/chess/viewer) and [Stockfish, pieces & sounds](/chess/engine-and-assets).
+
+## Root
+
+| Page | Kind | What it is |
+| --- | --- | --- |
+| [`ChessBoard`](/components/chess/chess-board) | client | The chessground surface: standalone with a PGN (list and toolbar) or controlled with a position; interactive moves validated by chessops, accessible promotion dialog. |
+| [`ChessBoardLazy`](/components/chess/chess-board-lazy) | client | `ChessBoard` behind `next/dynamic` with no SSR, mounted when it comes near the viewport; for boards below the fold. |
+| [`StaticDiagram`](/components/chess/static-diagram) | server | A position as a CSS grid with SVG pieces; no JavaScript. |
+| [`EloTable`](/components/chess/elo-table) | server | Label/value grid for ratings and titles, with `EloTable.EloItem`. |
+| [`ChessMoveQualityIcon`](/components/chess/chess-move-quality-icon) | server-safe | The ten move-quality badge SVGs and `chessMoveQualityIconFor(quality)`. |
+
+## `analysis-board/`
+
+| Page | Kind | What it is |
+| --- | --- | --- |
+| [`AnalysisBoard`](/components/chess/analysis-board/analysis-board) | client | The teacher's editable board: moves become the PGN of a hidden form input, with variations, comments, NAGs, arrows, paste and optional autosave. |
+
+## `game-viewer/`
+
+| Page | Kind | What it is |
+| --- | --- | --- |
+| [`GameViewer`](/components/chess/game-viewer/game-viewer) | client | The single viewer: board, notation, navigation, engine, fullscreen, sounds and in-place editing, with slots per screen. |
+| [`MoveTable`](/components/chess/game-viewer/move-table) | client | Lichess-style tabular notation with stored `[%eval]` values. |
+| [`MoveTree`](/components/chess/game-viewer/move-tree) | client | Running-text notation with inline comments and nested variations. |
+| [`MoveContextMenu`](/components/chess/game-viewer/move-context-menu) | client | The right-click menu on a move: promote, comment, annotate, copy, delete. |
+| [`EnginePanel`](/components/chess/game-viewer/engine-panel) | client | The engine switch and its three lines with a hover preview board. |
+| [`GameReview`](/components/chess/game-viewer/game-review) | client | Whole-game evaluation written into the PGN, with the chart and the accuracy cards. |
+| [`GameReviewChart`](/components/chess/game-viewer/game-review-chart) | client | The win-probability curve as a scrubbable SVG with phase labels. |
+| [`useEngine`](/components/chess/game-viewer/use-engine-hook) | hook | The live-analysis worker and its UCI state machine. |
+| [`useGameReview`](/components/chess/game-viewer/use-game-review-hook) | hook | The second worker that evaluates every main-line position in series. |
+| [`usePgnEditing`](/components/chess/game-viewer/use-pgn-editing-hook) | hook | Binds `lib/chess/pgn-edit` to the viewer's state. |
+| [`board-export`](/components/chess/game-viewer/board-export) | module | PNG of a position and GIF of the main line, painted on a canvas with the board's own pieces. |
+| [`move-sound`](/components/chess/game-viewer/move-sound) | module | The two board sounds, loaded lazily. |
+| [`viewer-preferences`](/components/chess/game-viewer/viewer-preferences) | module | The sound toggle as a `localStorage` external store. |
+| [`mainline-positions`](/components/chess/game-viewer/mainline-positions) | module | Pure walks of a tree's main line for the review and the chart. |
+
+## Which one to use
+
+| Need | Use |
+| --- | --- |
+| A game the student reads, navigates or annotates | `GameViewer`. Never a second viewer. |
+| A teacher composing a game inside a form | `AnalysisBoard`. |
+| An illustration on a long public page | `ChessBoardLazy`. |
+| A board that *is* the screen (explorer, trainer) | `ChessBoard` directly, controlled. |
+| A position that does not move | `StaticDiagram`. |
+| An image of a position or a GIF of a game | `board-export`, imported on demand. |

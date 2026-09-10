@@ -1,0 +1,64 @@
+---
+description: "Access to the video call: the link renders only once the server authorised it; before that a countdown ticks and, at zero, refreshes the page so the server hands the URL over."
+---
+
+# `MeetingAccess`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/classes/class-detail/meeting-access.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `meeting-access.comp.css` → block `.meeting-access` |
+| Used by | [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section) |
+| Uses | `useRouter` from `next/navigation` |
+
+## Purpose
+
+The meeting link must not be readable before the teacher's visibility instant. It therefore **never reaches the client ahead of time**: the service omits `meetingUrl` until the instant has passed, and this component only renders a countdown from `meetingVisibleFromIso`. When the countdown reaches zero it calls `router.refresh()`, the page re-renders on the server, and the URL arrives as a prop. There is no client-side check that could be bypassed.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `meetingUrl` | `string` | no | Present only when the server has already authorised showing the link. |
+| `meetingVisibleFromIso` | `string` | no | ISO instant when the link becomes visible, for the countdown. |
+| `providerLabel` | `string` | no | Appended to the button text, "Entrar a la clase (Zoom)". |
+
+## Behaviour
+
+- With `meetingUrl`: an external link styled as the primary button.
+- Without it but with `meetingVisibleFromIso`: an interval ticks every second, `formatRemaining` renders days/hours/minutes or minutes/seconds, and `router.refresh()` fires when the remaining time is not positive. The first render shows "…" until the effect runs, avoiding a hydration mismatch on the number.
+- With neither: "El enlace de la videollamada aún no está disponible." (no visibility instant set by the teacher yet).
+
+## Markup & styling
+
+Block `.meeting-access` (18 lines).
+
+**Elements:** `.meeting-access__countdown`, `.meeting-access__pending`
+
+**Other classes it renders:** `.platform-button`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/classes/class-detail/class-detail.section.tsx`:
+
+```tsx
+import { MeetingAccess } from "./meeting-access.comp";
+
+{isUpcoming && (
+  <MeetingAccess
+    meetingUrl={classDetail.meetingUrl}
+    meetingVisibleFromIso={classDetail.meetingVisibleFromIso}
+    providerLabel={classDetail.meetingProviderLabel}
+  />
+)}
+```
+
+## Related
+
+- Where the teacher sets the visibility instant: [`ClassFormSection`](/components/platform/sections/teacher/classes/class-form-section).
+- The rule in `services/classes/classes.mapper.ts`; [Student features › Classes](/platform/student).

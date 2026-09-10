@@ -1,0 +1,60 @@
+---
+description: "The 'Datos de la partida' dialog over GameFields, posting updateGameDetails, which also writes the values into the PGN headers."
+---
+
+# `EditGame`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/studies/game-view/edit-game.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `edit-game.comp.css` → block `.edit-game` |
+| Used by | `/estudios/[studyId]/partidas/[gameId]` (passed into the section as the `editGame` node) |
+| Composes | [`GameFields`](/components/platform/sections/studies/game-fields) |
+| Writes | `updateGameDetails()` · `services/studies/studies.actions.ts` |
+
+## Purpose
+
+Editing a game's data without leaving the board: a native `<dialog>` with the same [`GameFields`](/components/platform/sections/studies/game-fields) as the create form, so nothing set on creation is trapped. Saving writes the fields to the database and to the PGN headers, so an exported game carries them.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `studyId` | `string` | yes | Bound into the action. |
+| `gameId` | `string` | yes | Bound into the action. |
+| `values` | `GameFieldValues` | yes | Current values. The page passes the whole `GameView`, which is a superset. |
+| `results` | `StudyKindOption[]` | yes | The results catalog; its label is the PGN token. |
+| `label` | `string` | no · default `"Editar"` | Trigger text. In the aside "Editar" is enough; a longer label gets the `_size_wide` trigger. |
+
+## Behaviour
+
+`<form action={updateGameDetails.bind(null, studyId, gameId)}>` closing the dialog on submit. No state beyond the dialog ref.
+
+## Markup & styling
+
+Block `.edit-game` (75 lines).
+
+**Elements:** `.edit-game__open`, `.edit-game__dialog`, `.edit-game__form`, `.edit-game__head`, `.edit-game__title`, `.edit-game__subtitle`, `.edit-game__body`, `.edit-game__actions`, `.edit-game__note`
+
+**Modifiers and states:** `.edit-game__open_size_wide`
+
+**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-bg`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+
+**Breakpoints:** `(max-width: 560px)` stacks the action row.
+
+## Usage
+
+From `app/(platform)/estudios/[studyId]/partidas/[gameId]/page.tsx`:
+
+```tsx
+import { EditGame } from "@/components/platform/sections/studies/game-view/edit-game.comp";
+
+<EditGame studyId={game.studyId} gameId={game.id} results={results} values={game} />
+```
+
+## Related
+
+- [`GameAside`](/components/platform/sections/studies/game-view/game-aside) renders it in the record card's head.

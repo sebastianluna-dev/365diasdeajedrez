@@ -1,0 +1,57 @@
+---
+description: "The platform's error boundary view: a message, a retry button and the digest Next logged on the server, so a user can quote the code that matches the log line."
+---
+
+# `PlatformError`
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/platform-error.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `platform-error.comp.css` → block `.platform-error` |
+| Used by | `app/(platform)/error.tsx` |
+
+## Purpose
+
+What `app/(platform)/error.tsx` renders when a Server Component under it throws. An error boundary must be a Client Component, which is why this piece exists apart from the server-rendered notices. It shows a generic message, a "Reintentar" button wired to Next's `retry`, and the error **digest**: Next logs the real error on the server with that identifier (see `instrumentation.ts`), so a user quoting "Código del error: …" gives support the exact log line.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `retry` | `() => void` | yes | Next 16's error boundary `retry`: re-fetches the data and re-renders the segment. |
+| `message` | `string` | no · default `"Algo salió mal al cargar esta página."` | The visible text. Never the error's own message, which may leak internals. |
+| `digest` | `string` | no | The identifier from `error.digest`. Omitted when absent (client-side errors have none). |
+
+## Behaviour
+
+Clicking the button calls `retry`. Nothing else is stateful.
+
+## Markup & styling
+
+Block `.platform-error` (37 lines).
+
+**Elements:** `.platform-error__message`, `.platform-error__retry`, `.platform-error__digest`
+
+**Tokens:** `--platform-accent`, `--platform-accent-hover`, `--platform-danger-border`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/error.tsx`:
+
+```tsx
+"use client";
+
+import { PlatformError } from "@/components/platform/shared/platform-error.comp";
+
+export default function PlatformErrorPage({ error, retry }: { error: Error & { digest?: string }; retry: () => void }) {
+  return <PlatformError retry={retry} digest={error.digest} />;
+}
+```
+
+## Related
+
+- [Caching, errors & logging](/architecture/caching-errors-logging) explains digests, `instrumentation.ts` and what is logged.
+- The public site's equivalent is [`SiteMessage`](/components/site/sections/shell/site-message/site-message-section), which is server-safe because it takes no `retry`.

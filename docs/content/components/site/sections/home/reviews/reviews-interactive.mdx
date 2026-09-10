@@ -1,0 +1,50 @@
+---
+description: "The testimonials carousel: the stat cards and chats stacked, positioned centre, left or right around the active one, auto-advancing every six seconds, with a dot per review."
+---
+
+# `ReviewsInteractive`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/reviews/reviews-interactive.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `reviews-interactive.comp.css` → elements of `.reviews` |
+| Used by | [`ReviewsSection`](/components/site/sections/home/reviews/reviews-section) |
+| Composes | [`ReviewStatCard`](/components/site/sections/home/reviews/review-stat-card), [`ReviewChat`](/components/site/sections/home/reviews/review-chat), [`ReviewSlideDot`](/components/site/sections/home/reviews/review-slide-dot) |
+| Uses | `ReviewContent` from `services/home/home.types` |
+
+## Purpose
+
+Owns the active review. Every review's stat card and chat stay mounted in two stacks; each gets a `position` (`center`, `left`, `right`) relative to the active index so CSS can slide them, and `hidden` marks the inactive ones `aria-hidden`.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `reviews` | `ReviewContent[]` | yes | Keyed by `name`. |
+
+## Behaviour
+
+- `activeIndex` state. An effect sets an interval of `AUTO_ADVANCE_MS` (6000) that advances modulo the length; it depends on `activeIndex`, so clicking a dot restarts the six seconds.
+- `getSlidePosition(index, active, total)` returns `center` for the active one, `right` for the next half of the ring and `left` for the rest.
+- Dots call `setActiveIndex` with the label "Ver testimonio de …" plus the name.
+
+## Markup & styling
+
+Elements of `.reviews` (67 lines): `.reviews__showcase`, `.reviews__stat-stack`, `.reviews__chat-stack`, `.reviews__dots`.
+
+**Breakpoints:** `(max-width: 900px)` stacks the showcase; `(max-width: 560px)`.
+
+## Usage
+
+From `components/site/sections/home/reviews/reviews.section.tsx`:
+
+```tsx
+import { ReviewsInteractive } from "./reviews-interactive.comp";
+
+<ReviewsInteractive reviews={content.reviews} />
+```
+
+## Related
+
+- [`ReviewChat`](/components/site/sections/home/reviews/review-chat), [`ReviewStatCard`](/components/site/sections/home/reviews/review-stat-card), [`ReviewSlideDot`](/components/site/sections/home/reviews/review-slide-dot).

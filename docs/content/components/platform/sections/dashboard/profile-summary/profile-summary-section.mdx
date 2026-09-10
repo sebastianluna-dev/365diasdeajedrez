@@ -1,0 +1,55 @@
+---
+description: "The dashboard header: greeting with the display name, email and member-since date, read from the dashboard service."
+---
+
+# `ProfileSummarySection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/dashboard/profile-summary/profile-summary.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `profile-summary.section.css` → block `.profile-summary` |
+| Used by | `/inicio` |
+| Reads | `getUserDashboard()` · `services/dashboard/dashboard.service.ts` (`profile`) |
+
+## Purpose
+
+The first block of `/inicio`: "Hola, …" with the display name and the page subtitle, the email and "En la academia desde el …". It is one of five sections that each read their own slice of `getUserDashboard()`; the service deduplicates the underlying queries per request with `cache()`, so five awaits cost one round of queries.
+
+## Props
+
+This component takes no props. It reads its data itself, and the service resolves the user through the DAL.
+
+## Behaviour
+
+Awaits the dashboard data and renders `profile.displayName`, `profile.email` and `profile.memberSinceLabel` (already formatted by the mapper). The `<h1>` uses the page-level `platform-page__title` class so every platform page has the same heading scale.
+
+## Markup & styling
+
+Block `.profile-summary` (29 lines): a `<header>` with the title on the left and the meta on the right.
+
+**Elements:** `.profile-summary__meta`, `.profile-summary__email`, `.profile-summary__since`
+
+**Other classes it renders:** `.platform-page__title`, `.platform-page__subtitle` from `platform.css`.
+
+**Tokens:** `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 720px)` stacks the meta under the title.
+
+## Usage
+
+From `app/(platform)/inicio/page.tsx`:
+
+```tsx
+import { ProfileSummarySection } from "@/components/platform/sections/dashboard/profile-summary/profile-summary.section";
+
+<div className="platform-page dashboard-page">
+  <ProfileSummarySection />
+  …
+</div>
+```
+
+## Related
+
+- The other dashboard sections: [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section), [`NextClassSection`](/components/platform/sections/dashboard/next-class/next-class-section), [`ActivityStatsSection`](/components/platform/sections/dashboard/activity-stats/activity-stats-section), [`RecentActivitySection`](/components/platform/sections/dashboard/recent-activity/recent-activity-section).
+- [Student features › Dashboard](/platform/student).

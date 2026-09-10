@@ -1,0 +1,55 @@
+---
+description: "The 'Continuar estudiando' card: the course in progress, the lesson to return to and its progress bar, or an empty state pointing at the course list."
+---
+
+# `ContinueStudyingSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/dashboard/continue-studying/continue-studying.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `continue-studying.section.css` → block `.continue-studying` |
+| Used by | `/inicio` |
+| Composes | [`ProgressIndicator`](/components/platform/shared/progress-indicator), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads | `getUserDashboard()` · `services/dashboard/dashboard.service.ts` (`continueStudying`) |
+| Uses | `platformRoutes` from `lib/platform-routes` |
+
+## Purpose
+
+The card that answers "where was I?". The service picks the most recently touched course and its return lesson (the one marked in progress by [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker)); the card shows the course name, "Te quedaste en: …", the lessons-completed bar and a "Continuar" button straight to that lesson. Without any course in progress it shows an empty state linking to "Mis cursos".
+
+## Props
+
+This component takes no props.
+
+## Behaviour
+
+Awaits `getUserDashboard()` and branches on `continueStudying` being present. The progress bar is inline with "n de m lecciones" as detail. No client code.
+
+## Markup & styling
+
+Block `.continue-studying` (26 lines), rendered inside a `.platform-card`.
+
+**Elements:** `.continue-studying__body`, `.continue-studying__course`, `.continue-studying__lesson`, `.continue-studying__cta`
+
+**Other classes it renders:** `.platform-card`, `.platform-card__title`, `.platform-button`.
+
+**Tokens:** `--platform-text`, `--platform-text-muted`
+
+No media queries; the page's grid places it.
+
+## Usage
+
+From `app/(platform)/inicio/page.tsx`:
+
+```tsx
+<div className="dashboard-page__row">
+  <ContinueStudyingSection />
+  <NextClassSection />
+</div>
+```
+
+## Related
+
+- [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker) is what updates the return point.
+- [`ProgressIndicator`](/components/platform/shared/progress-indicator), [`EmptyState`](/components/platform/shared/empty-state).

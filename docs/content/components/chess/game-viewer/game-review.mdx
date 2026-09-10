@@ -1,0 +1,80 @@
+---
+description: "Whole-game evaluation: runs a dedicated Stockfish worker over every main-line position, writes the results into the PGN as [%eval], and renders the advantage chart with each player's accuracy card."
+---
+
+# `GameReview`
+
+| | |
+| --- | --- |
+| File | `components/chess/game-viewer/game-review.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `game-review.comp.css` → block `.game-review` |
+| Used by | [`GameTools`](/components/platform/sections/studies/game-view/game-tools) (the "Evaluación" tab under the board) |
+| Composes | [`GameReviewChart`](/components/chess/game-viewer/game-review-chart), [`useGameReview`](/components/chess/game-viewer/use-game-review-hook), [`mainline-positions`](/components/chess/game-viewer/mainline-positions) |
+| Uses | `reviewGame`, `PlayerReview` from `lib/chess/game-review`<br />`parseEditableGame`, `serializeGame`, `setEvaluation` from `lib/chess/pgn-edit`<br />`parsePgnTree`, `MoveEvaluation` from `lib/chess/pgn-tree` |
+
+## Purpose
+
+The game seen as a whole: a chart of the advantage over the course of the game, each side's accuracy, and how many inaccuracies, mistakes and blunders they made. It is the studies' equivalent of a "game report".
+
+There is no "already evaluated" state. The evaluation lives **inside the PGN**, one `[%eval]` per main-line move: if the values are there, the chart renders; if not, a "Generar evaluación" button offers to compute them. That makes the review survive a page reload, travel with the game when it is exported and show up in the [`MoveTable`](/components/chess/game-viewer/move-table) as a number next to each move.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `pgn` | `string` | yes | The game; evaluations are read from and written into it. |
+| `canEdit` | `boolean` | yes | Without write permission the review still runs and renders, but the PGN is not saved, and the footer says so ("no se guarda: la partida no es tuya"). |
+| `white` | `string` | yes | White's name for the player card. |
+| `black` | `string` | yes | Black's name for the player card. |
+| `currentPath` | `string` | yes | Dotted path of the board's move, for the chart cursor. |
+| `onSelectPath` | `(path: string) => void` | yes | The chart moves the board: clicking or dragging on a ply selects its path. |
+| `onPgnChange` | `(pgn: string) => void` | yes | Receives the PGN with the evaluations written in. |
+
+## Behaviour
+
+**Three states, derived from the PGN and the runner.**
+
+1. `runner.state === "running"`: a progress bar with "Posición n de N", the percentage and a "Cancelar" button.
+2. No complete set of evaluations (`mainlineEvaluations` returns `null` when any main-line node lacks one, because half a chart would mislead): the intro text, the move count, the depth and the start button; disabled when the game has no moves. A failed worker shows a `role="alert"` message.
+3. Evaluations present: the [`GameReviewChart`](/components/chess/game-viewer/game-review-chart), two `PlayerCard`s (accuracy, the three error counts with coloured dots, average loss in centipawns) and a strip with the depth, whether it is saved, and "Volver a evaluar".
+
+**Computing.** `runner.start(pgn)` hands the PGN to [`useGameReview`](/components/chess/game-viewer/use-game-review-hook), which evaluates every main-line position in its own worker. When it finishes, `onFinished` reparses the PGN **as it is now**, recomputes the main-line paths and writes one `setEvaluation` per path; if the game was edited during the run, leftover results are dropped instead of written onto the wrong moves. The new PGN goes up through `onPgnChange`; the section's autosave takes it from there.
+
+**Reading.** `reviewGame(mainlinePositions(tree))` in `lib/chess/game-review` turns the evaluations into accuracy, error counts and the phase boundaries the chart draws. `currentPly` is the index of `currentPath` among the main-line paths (0 when the board is on a variation).
+
+## Markup & styling
+
+Block `.game-review` (271 lines).
+
+**Elements:** `.game-review__head`, `.game-review__title`, `.game-review__percent`, `.game-review__track`, `.game-review__bar`, `.game-review__foot`, `.game-review__note`, `.game-review__cancel`, `.game-review__lead`, `.game-review__start`, `.game-review__error`, `.game-review__chart`, `.game-review__players`, `.game-review__player`, `.game-review__player-head`, `.game-review__chip`, `.game-review__player-name`, `.game-review__accuracy`, `.game-review__accuracy-value`, `.game-review__accuracy-label`, `.game-review__row`, `.game-review__dot`, `.game-review__row-label`, `.game-review__row-value`, `.game-review__again`
+
+**Modifiers and states:** `.game-review_state_done`, `.game-review__foot_variant_strip`, `.game-review__row_variant_total`, `.game-review__chip_side_{white,black}`, `.game-review__dot_kind_{inaccuracies,mistakes,blunders}`
+
+**Tokens:** `--platform-accent`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-danger`, `--platform-surface`, `--platform-surface-soft`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`, `--platform-warning-ink`
+
+**Breakpoints:** `(prefers-reduced-motion: reduce)` stops the progress bar transition. No width queries: the player cards wrap.
+
+## Usage
+
+From `components/platform/sections/studies/game-view/game-tools.comp.tsx`:
+
+```tsx
+import { GameReview } from "@/components/chess/game-viewer/game-review.comp";
+
+<GameReview
+  pgn={pgn}
+  canEdit={canEdit}
+  white={white}
+  black={black}
+  currentPath={currentPath}
+  onSelectPath={onSelectPath}
+  onPgnChange={onPgnChange}
+/>
+```
+
+## Related
+
+- [`useGameReview`](/components/chess/game-viewer/use-game-review-hook) runs the worker; [`GameReviewChart`](/components/chess/game-viewer/game-review-chart) draws the result; [`mainline-positions`](/components/chess/game-viewer/mainline-positions) walks the tree.
+- `lib/chess/game-review.ts` (accuracy, win probability, phases) in [Chess library](/chess/library).
+- [Stockfish, pieces & sounds](/chess/engine-and-assets) for why the review has its own worker.

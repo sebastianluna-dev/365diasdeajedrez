@@ -1,0 +1,50 @@
+---
+description: "The 'Mis cursos' list: one CourseCard per published course, or an empty state when the academy has published none."
+---
+
+# `CoursesListSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/courses/courses-list/courses-list.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `courses-list.section.css` → block `.courses-list` |
+| Used by | `/cursos` |
+| Composes | [`CourseCard`](/components/platform/sections/courses/courses-list/course-card), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses | `CourseSummary` from `services/courses/courses.types` |
+
+## Purpose
+
+The main column of `/cursos`. Unlike the dashboard sections it does not fetch: the page calls `getUserCourses()` because its header summary (course count, lessons done) comes from the same list, and fetching twice would be wasteful even with `cache()`.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `courses` | `CourseSummary[]` | yes | Published courses with the student's progress, from the page. |
+
+## Behaviour
+
+Empty array → an [`EmptyState`](/components/platform/shared/empty-state) ("Todavía no hay cursos disponibles"). Otherwise a column of cards, one per course, keyed by id.
+
+## Markup & styling
+
+Block `.courses-list` (7 lines): a vertical flex column with a gap. Everything else is the card's.
+
+## Usage
+
+From `app/(platform)/cursos/page.tsx`:
+
+```tsx
+import { CoursesListSection } from "@/components/platform/sections/courses/courses-list/courses-list.section";
+
+<div className="courses-page__layout">
+  <CoursesListSection courses={courses} />
+  <StudyGoalAside goal={goal} />
+</div>
+```
+
+## Related
+
+- [`CourseCard`](/components/platform/sections/courses/courses-list/course-card), [`StudyGoalAside`](/components/platform/sections/courses/courses-list/study-goal).
+- [Student features › Courses](/platform/student).

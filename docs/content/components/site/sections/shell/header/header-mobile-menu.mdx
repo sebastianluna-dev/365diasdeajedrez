@@ -1,0 +1,50 @@
+---
+description: "The hamburger menu of the header: a toggle button and a panel with every link flattened, plus the same login button as on desktop."
+---
+
+# `HeaderMobileMenu`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/shell/header/header-mobile-menu.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | none of its own; styled by `header.section.css` under `.site-header__toggle` and `.site-header-mobile` |
+| Used by | [`Header`](/components/site/sections/shell/header/header-section) |
+| Uses | `HeaderNavItem` from `services/home/home.types`, `Menu`, `X`, `ChevronRight` from `lucide-react` |
+
+## Purpose
+
+The narrow-screen navigation. Dropdown groups make no sense in a stacked list, so the items are flattened: a `link` stays, a `dropdown` contributes its `links`. The login button is passed in by the header so it is the same one as on desktop, decided in code, not by the CMS.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `navItems` | `HeaderNavItem[]` | yes | The CMS items, flattened here. |
+| `ctaLabel` | `string` | yes | The login button's text. |
+| `ctaHref` | `string` | yes | The login button's target. |
+
+## Behaviour
+
+- `mobileOpen` state. The toggle has `aria-expanded` and an `aria-label` that switches between "Abrir menú" and "Cerrar menú"; its icon switches between `Menu` and `X`.
+- Every link closes the panel on click, so a same-page anchor does not leave it open.
+- The closed panel is hidden with `visibility` in CSS, so its links leave the tab order.
+
+## Markup & styling
+
+Block `.site-header-mobile` inside the header stylesheet, with `.site-header-mobile__links` and `.site-header-mobile__button` (which also carries `.site-header__button`); modifier `.site-header-mobile_open`. The toggle is `.site-header__toggle`, visible only under `(max-width: 1023px)`.
+
+## Usage
+
+From `components/site/sections/shell/header/header.section.tsx`:
+
+```tsx
+import { HeaderMobileMenu } from "./header-mobile-menu.comp";
+
+<HeaderMobileMenu navItems={content.navItems} ctaLabel={LOGIN_CTA_LABEL} ctaHref={LOGIN_PATH} />
+```
+
+## Related
+
+- [`Header`](/components/site/sections/shell/header/header-section).
+- [`HeaderDropdown`](/components/site/sections/shell/header/header-dropdown), the desktop counterpart of a group.

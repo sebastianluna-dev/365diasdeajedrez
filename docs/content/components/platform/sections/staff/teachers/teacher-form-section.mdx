@@ -1,0 +1,59 @@
+---
+description: "Teacher creation in two separate forms so no field is silently ignored: link an existing account as a teacher, or create the account and the record at once; both post createTeacher."
+---
+
+# `TeacherFormSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/teachers/teacher-form.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `teacher-form.section.css` → block `.teacher-form` |
+| Used by | `/administracion/profesores/nuevo` |
+| Composes | [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes | `createTeacher()` · `services/staff-teachers/staff-teachers.actions.ts` |
+| Uses | `STAFF_ERROR_MESSAGES` from `constants/platform/staff-messages.const`; `COMMON_TIMEZONES` from `constants/platform/timezones.const`; `LinkableUser` from `services/staff-teachers/staff-teachers.types` |
+
+## Purpose
+
+A teacher is an account plus a teacher record. Two ways to get there, each its own form so that no field is silently ignored: **link** someone who already has an account (they keep using the platform as a student too), or **create** account and record together. The same action handles both, deciding by whether `userId` was sent.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `linkableUsers` | `LinkableUser[]` | yes | Accounts without a teacher record, for the link form's select. |
+| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+
+## Behaviour
+
+- Link form: `userId` (select, required), display name (required), title, time zone (default `America/Mexico_City`).
+- Create form: display name, email (required), optional initial password (a generated one is handed over by resetting it from the record, where it is shown once), title, time zone, bio.
+- Both redirect to the new record on success.
+
+## Markup & styling
+
+Block `.teacher-form` (32 lines): the two-card grid.
+
+**Elements:** `.teacher-form__card`, `.teacher-form__hint`
+
+**Other selectors it styles:** `.platform-field`, `.platform-notice`.
+
+**Tokens:** `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 940px)` stacks the two cards.
+
+## Usage
+
+From `app/(platform)/administracion/profesores/nuevo/page.tsx`:
+
+```tsx
+import { TeacherFormSection } from "@/components/platform/sections/staff/teachers/teacher-form.section";
+
+<TeacherFormSection linkableUsers={linkableUsers} errorCode={error} />
+```
+
+## Related
+
+- [`TeacherAdminDetailSection`](/components/platform/sections/staff/teachers/teacher-admin-detail-section), where the generated password is reset and shown.
+- Roles in [Authentication & roles](/platform/authentication).

@@ -1,0 +1,55 @@
+---
+description: "One post in the blog listing: cover link, category eyebrow, linked title, excerpt and the meta line; accepts an id and inline style for the staggered entrance."
+---
+
+# `ArticleCard`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/blog/blog-articles/article-card.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `article-card.comp.css` → block `.article-card` |
+| Used by | [`BlogArticles`](/components/site/sections/blog/blog-articles/blog-articles-section) |
+| Uses | `ArticleSummary` from `services/articles/articles.types`, `next/image` |
+
+## Purpose
+
+The listing card. Two links (image and title) rather than one wrapping link, so the excerpt stays selectable text and the accessible name of each link is the title.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `article` | `ArticleSummary` | yes | `href`, `image`, `category`, `title`, `excerpt`, `meta`. |
+| `id` | `string` | no | Forwarded to the `<article>`. |
+| `style` | `CSSProperties` | no | The listing passes `--blog-card-index` here. |
+
+## Behaviour
+
+None. The cover uses `fill` with `sizes="(max-width: 1024px) 50vw, 33vw"`.
+
+## Markup & styling
+
+Block `.article-card` (39 lines).
+
+**Elements:** `.article-card__image-link`, `.article-card__image`, `.article-card__title`, `.article-card__title-link`, `.article-card__text`
+
+**Tokens:** `--color-accent-red`, `--color-dark`, `--font-gramatika`
+
+No media queries.
+
+**Other classes:** `.eyebrow`, `.card-meta` from `globals.css`.
+
+## Usage
+
+From `components/site/sections/blog/blog-articles/blog-articles.section.tsx`:
+
+```tsx
+import { ArticleCard } from "./article-card.comp";
+
+<ArticleCard key={article.slug} article={article} style={{ "--blog-card-index": index } as CSSProperties} />
+```
+
+## Related
+
+- [`RelatedArticleCard`](/components/site/sections/blog/related-articles/related-article-card) is the same card under an article with its own block.

@@ -1,0 +1,67 @@
+---
+description: "The confirmation dialog for deleteStudy: a cross on the card or a text button on the study page, with a checkbox that is required exactly when the server requires it."
+---
+
+# `DeleteStudy`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/studies/studies-list/delete-study.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `delete-study.comp.css` → block `.delete-study` |
+| Used by | [`StudyCard`](/components/platform/sections/studies/studies-list/study-card) (icon trigger), [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (button trigger) |
+| Writes | `deleteStudy()` · `services/studies/studies.actions.ts` |
+
+## Purpose
+
+Deleting a study deletes its games, and with them variations, comments and arrows; a study whose games are cited in classes leaves those blocks empty. The dialog says exactly what will be lost and, when there is something to lose, requires a checkbox before the button enables. The same dialog is opened from two places with a different trigger.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `id` | `string` | yes | Study to delete; bound into the action. |
+| `name` | `string` | yes | For the title ("¿Borrar «…»?") and the trigger's tooltip. |
+| `gameCount` | `number` | yes | Drives the description. |
+| `citedGameCount` | `number` | yes | Games cited in class blocks; drives the warning text. |
+| `trigger` | `"icon" \| "button"` | no · default `"icon"` | `icon` is the card's cross; `button` the text button of the study page. The trigger changes, not the dialog. |
+
+## Behaviour
+
+- `needsConfirmation = gameCount > 0 || citedGameCount > 0`, **the same condition as the server**. If the client let the form submit without the checkbox where the server requires it, the action would bounce to `?error=confirmStudyDelete` instead of deleting.
+- The checkbox **is** the field the server reads (`name="confirmDelete" value="yes"`): unticked it is not sent, so the flag only arrives when it should. `confirmed` is local state so the submit button can be disabled until it is ticked.
+- The form is `<form action={deleteStudy.bind(null, id)}>` inside a native `<dialog>`; `onClose` resets the checkbox so reopening starts clean.
+- Copy adapts to counts: singular/plural for games and for cited games.
+
+## Markup & styling
+
+Block `.delete-study` (182 lines).
+
+**Elements:** `.delete-study__open`, `.delete-study__open-label` (visually hidden text of the cross), `.delete-study__open-wide`, `.delete-study__dialog`, `.delete-study__form`, `.delete-study__head`, `.delete-study__icon`, `.delete-study__heading`, `.delete-study__title`, `.delete-study__description`, `.delete-study__confirm`, `.delete-study__checkbox`, `.delete-study__warning`, `.delete-study__actions`, `.delete-study__note`, `.delete-study__cancel`, `.delete-study__submit`
+
+**Other classes it renders:** `.platform-dialog`.
+
+**Tokens:** `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-danger-soft`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+
+**Breakpoints:** `(max-width: 520px)` stacks the action row.
+
+## Usage
+
+From `components/platform/sections/studies/study-detail/study-detail.section.tsx`:
+
+```tsx
+import { DeleteStudy } from "@/components/platform/sections/studies/studies-list/delete-study.comp";
+
+<DeleteStudy
+  id={study.id}
+  name={study.name}
+  gameCount={study.games.length}
+  citedGameCount={study.citedGameCount}
+  trigger="button"
+/>
+```
+
+## Related
+
+- [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game), the same pattern for one game.
+- The action's confirmation rule in `services/studies/studies.actions.ts`.

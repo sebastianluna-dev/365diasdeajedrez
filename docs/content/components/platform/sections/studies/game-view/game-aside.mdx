@@ -1,0 +1,61 @@
+---
+description: "The right column of a game: the study's other games to jump between, the record (event, site, and four facts always rendered), the source, and the delete control."
+---
+
+# `GameAside`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/studies/game-view/game-aside.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `game-aside.comp.css` → block `.game-aside` |
+| Used by | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section) |
+| Composes | [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game) |
+| Uses | `GameView`, `StudyGameItem` from `services/studies/studies.types` |
+
+## Purpose
+
+Two cards beside the board. The first lists the study's games so one can jump between them without going back; the second is the game's record, read top to bottom: where it was played, when and how it ended, and at the foot where the game came from and, for the owner, the delete control. The moves are edited on the board itself, so nothing else is left here.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `game` | `GameView` | yes | The current game. |
+| `siblings` | `StudyGameItem[]` | yes | The study's games, current included; the current one gets `aria-current="page"`. |
+| `newGame` | `ReactNode` | no | The new-game modal, mounted by whoever has its data. Passed as a node so the aside does not carry the results catalog and the class games, which it uses for nothing else. |
+| `editGame` | `ReactNode` | no | The "Datos de la partida" modal, rendered in the record card's head; absent when writing is not allowed. |
+
+## Behaviour
+
+- Sibling rows show the student's title or the mapper's `label` fallback (round, event or position in the study), the players as a second line with a `title` tooltip because long names are cut, and the result.
+- `metaCells` always yields **four** cells (Fecha, Ronda, ECO, Resultado) with a dash where there is no value: in a two-by-two grid, hiding one cell displaces the other three, and an incomplete record reads worse than one with declared gaps.
+- With `game.canEdit`, [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game) renders at the foot in its `inline` size with the label "Borrar".
+
+## Markup & styling
+
+Block `.game-aside` (253 lines).
+
+**Elements:** `.game-aside__card`, `.game-aside__card-head`, `.game-aside__label`, `.game-aside__count`, `.game-aside__list`, `.game-aside__item`, `.game-aside__item-main`, `.game-aside__item-name`, `.game-aside__item-meta`, `.game-aside__item-result`, `.game-aside__new`, `.game-aside__meta-head`, `.game-aside__edit`, `.game-aside__event`, `.game-aside__site`, `.game-aside__meta`, `.game-aside__meta-cell`, `.game-aside__meta-key`, `.game-aside__meta-value`, `.game-aside__meta-foot`, `.game-aside__source`
+
+**Modifiers and states:** `.game-aside__card_variant_list`, `.game-aside__card_variant_meta`, `.game-aside__item_state_active`
+
+**Other selectors it styles:** `.platform-button` inside the new-game slot.
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 1180px)` lays the two cards side by side under the board.
+
+## Usage
+
+From `components/platform/sections/studies/game-view/game-view.section.tsx`:
+
+```tsx
+import { GameAside } from "./game-aside.comp";
+
+<GameAside game={game} siblings={siblings} newGame={newGame} editGame={editGame} />
+```
+
+## Related
+
+- [`EditGame`](/components/platform/sections/studies/game-view/edit-game), [`NewGame`](/components/platform/sections/studies/study-detail/new-game), [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game).

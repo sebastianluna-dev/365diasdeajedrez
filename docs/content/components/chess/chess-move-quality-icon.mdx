@@ -1,0 +1,79 @@
+---
+description: "The ten move-quality badge SVGs (chess.com's set) as a map of components, plus chessMoveQualityIconFor(quality) to pick one from a MoveQuality."
+---
+
+# `ChessMoveQualityIcon`
+
+Also exports `chessMoveQualityIconFor`.
+
+| | |
+| --- | --- |
+| File | `components/chess/chess-move-quality-icon.comp.tsx` |
+| Kind | Server-safe (no hooks, no `"use client"`; rendered inside the client board) |
+| Stylesheet | none: the colours are hard-coded in each SVG, as in the source set |
+| Used by | [`ChessBoard`](/components/chess/chess-board) (standalone notation column) |
+| Uses | `MoveQuality` from `lib/chess/types` |
+
+## Purpose
+
+The badges that mark a move as brilliant, best, a mistake and so on next to the notation of an annotated game. The ten SVGs are chess.com's move-quality set, copied path by path with their fill colours (`viewBox 0 0 18 19`, drawn at 20×20). They are grouped in one file instead of `components/icons/` because they are a set with one lookup, not ten independent icons, and because they carry their own colours whereas the icon folder's SVGs take `currentColor`.
+
+`ChessMoveQualityIcon` is a map of components keyed by name (`Best`, `Brilliant`, `Great`, `Excellent`, `Good`, `Book`, `Inaccuracy`, `Mistake`, `Blunder`, `Miss`); `chessMoveQualityIconFor` maps a `MoveQuality` code (`"best"`, `"brilliant"`…) to the right one, which is how the board's notation rows use it.
+
+## API
+
+### `ChessMoveQualityIcon`
+
+```ts
+export const ChessMoveQualityIcon: Record<
+  "Best" | "Brilliant" | "Great" | "Excellent" | "Good" | "Book" | "Inaccuracy" | "Mistake" | "Blunder" | "Miss",
+  (props: { className?: string }) => JSX.Element
+>
+```
+
+Each variant renders an `<svg aria-hidden="true">`; the surrounding cell carries the meaning.
+
+### `chessMoveQualityIconFor`
+
+```ts
+export function chessMoveQualityIconFor(quality: MoveQuality): (props: { className?: string }) => JSX.Element
+```
+
+Returns the variant for a quality code. Every `MoveQuality` value has an entry, so the lookup never returns `undefined`.
+
+## Props
+
+Each variant accepts one prop:
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `className` | `string` | no | Forwarded to the `<svg>`; the board uses it to size the badge inside `.chess-board__notation-quality`. |
+
+## Behaviour
+
+None. Pure SVG; nothing here depends on the browser.
+
+## Markup & styling
+
+No stylesheet. Each badge is a circle with a shadow ring and a white glyph; the colours are the set's (`#95b776` good, `#F7C631` inaccuracy, and so on) and are not themed. The caller decides the box: the board's `.chess-board__notation-quality` sets the size.
+
+## Usage
+
+From `components/chess/chess-board.comp.tsx`:
+
+```tsx
+import { chessMoveQualityIconFor } from "@/components/chess/chess-move-quality-icon.comp";
+
+const WhiteQualityIcon = row.white.quality ? chessMoveQualityIconFor(row.white.quality) : null;
+// …
+{WhiteQualityIcon && (
+  <span className="chess-board__notation-quality">
+    <WhiteQualityIcon />
+  </span>
+)}
+```
+
+## Related
+
+- `MoveAnnotations` and `MoveQuality` in [Chess library](/chess/library); the annotations come from the `home-teacher` Global and the mentor's game in the CMS.
+- The hand-written, single-colour icons in `components/icons/` are listed in [Components › Icons](/components#icons--componentsicons).

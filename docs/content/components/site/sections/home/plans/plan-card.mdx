@@ -1,0 +1,59 @@
+---
+description: "One pricing card: name, price with currency and period, the previous price when there is a discount, description, feature list with check icons, and the CTA link."
+---
+
+# `PlanCard`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/plans/plan-card.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `plan-card.comp.css` → block `.plan-card` |
+| Used by | [`PlansSection`](/components/site/sections/home/plans/plans-section), [`PlansMobileSection`](/components/site/sections/home/plans/plans-mobile) |
+| Composes | `CircleCheckIcon` from `components/icons/` |
+| Uses | `PackagePlanContent` from `services/home/home.types` |
+
+## Purpose
+
+The card both layouts share. A featured plan gets the `_featured` modifier and its button the `_variant_alt` one, so the highlighted package is a CMS flag, not a separate component.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `plan` | `PackagePlanContent` | yes | `name`, `price`, `previousPrice?`, `currency`, `period`, `description`, `features`, `ctaLabel`, `ctaUrl`, `featured`. |
+| `className` | `string` | no | Appended to the block; the mobile wrapper passes `plans-mobile__card`. |
+
+## Behaviour
+
+- Prices are formatted with `toLocaleString("en-US")` and a `$` prefix.
+- The discount row renders only when `previousPrice` is truthy.
+- The CTA opens `ctaUrl` in a new tab.
+
+## Markup & styling
+
+Block `.plan-card` (109 lines).
+
+**Elements:** `.plan-card__title`, `.plan-card__price-block`, `.plan-card__price-row`, `.plan-card__price`, `.plan-card__discount-row`, `.plan-card__price-previous`, `.plan-card__description`, `.plan-card__list`, `.plan-card__list-item`, `.plan-card__list-icon`, `.plan-card__button`
+
+**Modifiers:** `.plan-card_featured`, `.plan-card__button_variant_alt`
+
+**Tokens:** `--color-primary`, `--color-dark`, `--foreground`, `--font-gramatika`
+
+No media queries.
+
+**Other classes:** `.muted-text` from `globals.css` for the currency and period.
+
+## Usage
+
+From `components/site/sections/home/plans/plans-mobile.comp.tsx`:
+
+```tsx
+import { PlanCard } from "./plan-card.comp";
+
+<PlanCard plan={activePlan} className="plans-mobile__card" />
+```
+
+## Related
+
+- [`PlansSection`](/components/site/sections/home/plans/plans-section), [`PlansMobileSection`](/components/site/sections/home/plans/plans-mobile).

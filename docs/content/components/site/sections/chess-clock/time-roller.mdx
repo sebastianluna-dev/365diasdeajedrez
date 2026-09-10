@@ -1,0 +1,56 @@
+---
+description: "The mobile clock's digital readout: one slot per character, and when a digit changes the old one animates out while the new one animates in."
+---
+
+# `TimeRoller`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/chess-clock/time-roller.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `time-roller.comp.css` → block `.time-roller` |
+| Used by | [`ChessClockMobile`](/components/site/sections/chess-clock/chess-clock-mobile) |
+
+## Purpose
+
+Digits that roll instead of flicking. Each character is a `TimeRollerDigit` that remembers the previous value; when the prop changes it renders both, the leaving one with `_leave` and the entering one with `_enter`, and drops the leaving one on `animationend`.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `value` | `string` | yes | The formatted time (`mm:ss` or `ss.d`). |
+| `active` | `boolean` | no | `.time-roller_active`. |
+| `flagged` | `boolean` | no | `.time-roller_fallen`, which wins over active. |
+
+## Behaviour
+
+- Slots are keyed from the right (`lastIndex - i`), so when the string shortens (minutes to seconds with tenths) the rightmost digits keep their identity and only the left edge changes.
+- `TimeRollerDigit` updates `leaving` and `current` during render when `char` differs, the React pattern for deriving state from props; `onAnimationEnd` clears `leaving`.
+- Separators (`:` and `.`) get `.time-roller__slot_separator` for narrower spacing.
+
+## Markup & styling
+
+Block `.time-roller` (70 lines).
+
+**Elements:** `.time-roller__slot`, `.time-roller__digit`
+
+**Modifiers:** `.time-roller_active`, `.time-roller_fallen`, `.time-roller__slot_separator`, `.time-roller__digit_enter`, `.time-roller__digit_leave`
+
+**Tokens:** `--font-suisse`
+
+No media queries.
+
+## Usage
+
+From `components/site/sections/chess-clock/chess-clock-mobile.comp.tsx`:
+
+```tsx
+import { TimeRoller } from "./time-roller.comp";
+
+<TimeRoller value={white.time} active={white.active} flagged={white.flagged} />
+```
+
+## Related
+
+- [`ClockDial`](/components/site/sections/chess-clock/clock-dial) sits above it in the same tap zone.

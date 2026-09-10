@@ -1,0 +1,50 @@
+---
+description: "The academy's four values as a card grid, each with a piece glyph, a title and a sentence; the list is a constant in the file."
+---
+
+# `ValoresSection`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/nosotros/values/values.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `values.section.css` → block `.nosotros-values` |
+| Used by | `/nosotros` |
+
+## Purpose
+
+"En lo que creemos": passion for chess, unlearning to learn, memorising with understanding, respect and sportsmanship. Four objects (`icon`, `title`, `text`) mapped to cards; the icons are Unicode pieces.
+
+## Props
+
+None.
+
+## Behaviour
+
+None. `id="valores"`.
+
+## Markup & styling
+
+Block `.nosotros-values` (112 lines), on top of the global `.section`.
+
+**Elements:** `.nosotros-values__head`, `.nosotros-values__eyebrow`, `.nosotros-values__title`, `.nosotros-values__text`, `.nosotros-values__grid`, `.nosotros-values__card`, `.nosotros-values__card-icon`, `.nosotros-values__card-title`, `.nosotros-values__card-text`
+
+**Tokens:** `--color-primary`, `--font-gramatika`
+
+**Breakpoints:** `(max-width: 1024px)` two columns; `(max-width: 720px)` one.
+
+**Other classes:** `.section__inner`.
+
+## Usage
+
+From `app/(frontend)/nosotros/page.tsx`:
+
+```tsx
+import { ValoresSection } from "@/components/site/sections/nosotros/values/values.section";
+
+<ValoresSection />
+```
+
+## Related
+
+- [`NosotrosHeroSection`](/components/site/sections/nosotros/hero/hero-section), [`NosotrosCtaSection`](/components/site/sections/nosotros/cta/cta-section).

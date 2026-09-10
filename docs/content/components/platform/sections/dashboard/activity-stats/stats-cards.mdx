@@ -1,0 +1,60 @@
+---
+description: "The statistics cards with a week / month / year / all-time tab strip; the four ranges arrive precomputed from the server and only the selected tab is local state."
+---
+
+# `StatsCards`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/dashboard/activity-stats/stats-cards.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `stats-cards.comp.css` → block `.stats-cards` |
+| Used by | [`ActivityStatsSection`](/components/platform/sections/dashboard/activity-stats/activity-stats-section) |
+| Uses | `DashboardStats`, `StatsRangeKey` from `services/dashboard/dashboard.types` |
+
+## Purpose
+
+The metric cards ("Lecciones completadas", "Ejercicios resueltos"…) for a period, with a tab strip to change the period and a "Por tema" row of tags. It is a Client Component because the selected range is interface state; the numbers themselves are all in the props, so switching is instant and involves no data fetching.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `stats` | `DashboardStats` | yes | `Record<StatsRangeKey, { totals: { label, count }[]; topics: { label, count }[] }>` for `week`, `month`, `year` and `all`. |
+
+## Behaviour
+
+- `range` starts at `"week"`. The strip is a `role="tablist"` labelled "Periodo de estadísticas"; each button is `role="tab"` with `aria-selected`.
+- The grid renders `stats[range].totals`; the topics row renders only when the range has topics.
+- Labels come from a local constant (`RANGE_LABELS`), in Spanish.
+
+## Markup & styling
+
+Block `.stats-cards` (82 lines).
+
+**Elements:** `.stats-cards__filters`, `.stats-cards__filter`, `.stats-cards__grid`, `.stats-cards__card`, `.stats-cards__value`, `.stats-cards__label`, `.stats-cards__topics`, `.stats-cards__topics-title`, `.stats-cards__topic`
+
+**Modifiers and states:** `.stats-cards__filter_active`
+
+**Other classes it renders:** `.platform-tag` on each topic.
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 1100px)` drops the grid to two columns; `(max-width: 640px)` to one and lets the tabs wrap.
+
+## Usage
+
+From `components/platform/sections/dashboard/activity-stats/activity-stats.section.tsx`:
+
+```tsx
+import { StatsCards } from "./stats-cards.comp";
+
+const { stats } = await getUserDashboard();
+// …
+<StatsCards stats={stats} />
+```
+
+## Related
+
+- [`ActivityStatsSection`](/components/platform/sections/dashboard/activity-stats/activity-stats-section).
+- How the ranges are computed: `services/dashboard/dashboard.service.ts` and `lib/calendar-ranges.ts`.

@@ -1,0 +1,51 @@
+---
+description: "Pricing on the home page from the home-packages Global: the cards in a grid on desktop and the tabbed mobile version, both rendered and switched by CSS."
+---
+
+# `PlansSection`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/plans/plans.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `plans.section.css` → block `.plans` |
+| Used by | `app/(frontend)/landing-page.tsx` (`sections.plans`) |
+| Composes | [`PlanCard`](/components/site/sections/home/plans/plan-card), [`PlansMobileSection`](/components/site/sections/home/plans/plans-mobile) |
+| Reads | `getPackagesData()` · `services/home/home.service.ts` (the `home-packages` Global) |
+
+## Purpose
+
+The packages. Desktop shows every card side by side in `.plans__wrap`; narrow screens show one card at a time behind tabs. Both trees are rendered on the server and CSS hides one per breakpoint, so there is no layout jump after hydration and the mobile piece is the only client code.
+
+## Props
+
+None.
+
+## Behaviour
+
+- Awaits `getPackagesData()`; renders `sectionTitle`, `sectionDescription` and the plans.
+- `id="planes"`, the target of the CTAs across the site.
+
+## Markup & styling
+
+Block `.plans` (20 lines), on top of the global `.section.section_theme_light`.
+
+**Elements:** `.plans__head`, `.plans__wrap`
+
+**Breakpoints:** `(max-width: 1023px)` hides `.plans__wrap`; the mobile block shows itself at the same width.
+
+**Other classes:** `.section__inner`, `.section__head`, `.section__title`, `.section__text`.
+
+## Usage
+
+From `app/(frontend)/landing-page.tsx`:
+
+```tsx
+import { PlansSection } from "@/components/site/sections/home/plans/plans.section";
+
+{sections.plans && <PlansSection />}
+```
+
+## Related
+
+- [`PlanCard`](/components/site/sections/home/plans/plan-card), [`PlansMobileSection`](/components/site/sections/home/plans/plans-mobile).

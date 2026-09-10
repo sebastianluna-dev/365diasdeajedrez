@@ -1,0 +1,56 @@
+---
+description: "The wide-screen clock: two knobs, two dials with readouts and labels, the time-control buttons, play/pause and reset, and a status line; driven by useChessClock."
+---
+
+# `ChessClockDesktop`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/chess-clock/chess-clock-desktop.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `chess-clock-desktop.comp.css` → block `.chess-clock` (and `.clock-knob`) |
+| Used by | [`ChessClock`](/components/site/sections/chess-clock/chess-clock) |
+| Composes | [`ClockDial`](/components/site/sections/chess-clock/clock-dial) ×2 |
+| Uses | `useChessClock` from `hooks/use-chess-clock.hook` |
+
+## Purpose
+
+A physical clock drawn on the page: a case with two dials, the two press buttons above it, and the controls under it. The hook returns everything the markup needs (`white`, `black`, `controls`, `playLabel`, `statusText`, `toggle`, `reset`); the component only renders it.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `enabled` | `boolean` | no, `true` | Passed to the hook; when `false` the clock does not tick and ignores the space bar. |
+
+## Behaviour
+
+- Each side exposes `time`, `hands`, `active`, `flagged`, `lowTime`, `knobPressed`, `onPress`; the knob buttons ("Botón blancas", "Botón negras") and the dials both call `onPress`.
+- `controls` are the time controls from `CLOCK_TIME_CONTROLS`, each with `label`, `active`, `onSelect`.
+- The instructions mention the space bar; the hook listens for it when enabled.
+
+## Markup & styling
+
+Block `.chess-clock` (149 lines).
+
+**Elements:** `.chess-clock__intro`, `.chess-clock__title`, `.chess-clock__subtitle`, `.chess-clock__case-wrap`, `.chess-clock__knobs`, `.chess-clock__case`, `.chess-clock__controls`, `.chess-clock__control`, `.chess-clock__actions`, `.chess-clock__action`, `.chess-clock__status`; `.clock-knob`
+
+**Modifiers:** `.chess-clock__control_active`, `.chess-clock__action_variant_primary`, `.chess-clock__action_variant_secondary`, `.clock-knob_pressed`
+
+**Tokens:** `--color-primary`, `--color-dark`, `--foreground`, `--font-gramatika`
+
+**Breakpoints:** `(max-width: 766px)` hides the block.
+
+## Usage
+
+From `components/site/sections/chess-clock/chess-clock.comp.tsx`:
+
+```tsx
+import { ChessClockDesktop } from "./chess-clock-desktop.comp";
+
+<ChessClockDesktop enabled={!isMobile} />
+```
+
+## Related
+
+- [`ChessClockMobile`](/components/site/sections/chess-clock/chess-clock-mobile), [`ClockDial`](/components/site/sections/chess-clock/clock-dial).

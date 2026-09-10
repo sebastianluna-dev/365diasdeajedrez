@@ -1,0 +1,60 @@
+---
+description: "The /entrenador home: the chapters the student added to the Move Trainer and the trainable ones still available, each row with 'Entrenar' and an add/remove form, plus 'Entrenar todo'."
+---
+
+# `TrainerHomeSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/trainer/trainer-home.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `trainer-home.section.css` → block `.trainer-home` |
+| Used by | `/entrenador` (without `?lesson=` or `?chapter=`) |
+| Composes | [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads | `getTrainerData()` · `services/trainer/trainer.service.ts` |
+| Writes | `toggleTrainerChapter()` · `services/trainer/trainer.actions.ts` |
+| Uses | `platformRoutes` from `lib/platform-routes`; `TrainerChapterItem` from `services/trainer/trainer.types` |
+
+## Purpose
+
+The Move Trainer works on chapters the student has chosen. This section lists "Mis capítulos de entrenamiento" (with "Entrenar" per row and "Entrenar todo" in the head) and, below, "Capítulos entrenables": chapters with exercises the student has not added yet. Adding and removing is the same bound action as on the chapter page.
+
+## Props
+
+This component takes no props.
+
+## Behaviour
+
+- Awaits `{ myChapters, availableChapters }`. Each `ChapterRow` links the chapter name to its page, shows course and exercise count, and renders "Entrenar" (a link to `/entrenador?chapter=<id>`) only for chapters in the trainer, plus a `<form action={toggleTrainerChapter.bind(null, chapterId, !inTrainer)}>` with "Agregar"/"Quitar".
+- "Entrenar todo" links to `/entrenador?session=all`.
+- The available group renders only when non-empty; the own group shows an empty state otherwise.
+
+## Markup & styling
+
+Block `.trainer-home` (72 lines).
+
+**Elements:** `.trainer-home__group`, `.trainer-home__group-head`, `.trainer-home__group-title`, `.trainer-home__list`, `.trainer-home__row`, `.trainer-home__row-info`, `.trainer-home__row-name`, `.trainer-home__row-meta`, `.trainer-home__row-actions`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-card`, `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 720px)` stacks the actions under the info.
+
+## Usage
+
+From `app/(platform)/entrenador/page.tsx`:
+
+```tsx
+import { TrainerHomeSection } from "@/components/platform/sections/trainer/trainer-home.section";
+
+<TrainerHomeSection />
+```
+
+## Related
+
+- [`TrainerSession`](/components/platform/sections/trainer/trainer-session), where the links lead.
+- [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section), the other place the toggle appears.
+- [Student features › Move Trainer](/platform/student).

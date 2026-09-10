@@ -1,0 +1,66 @@
+---
+description: "Marks two positions of the lesson's PGN in the GameViewer and fills the exercise's 'before' and 'line' fields from them; hand typing still works and the server never knows it exists."
+---
+
+# `ExerciseMovePicker`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/courses/exercise-move-picker.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `exercise-move-picker.comp.css` → block `.exercise-move-picker` |
+| Used by | [`ExerciseEditor`](/components/platform/sections/staff/courses/exercise-editor) |
+| Composes | [`GameViewer`](/components/chess/game-viewer/game-viewer) |
+| Uses | `parsePgnTree`, `sansAlongPath` from `lib/chess/pgn-tree` |
+
+## Purpose
+
+Picks an exercise's moves on the board instead of typing them. Two positions of the lesson's PGN are marked and the two fields come out of that: the moves played before the exercise starts, and the line to be trained. It fills the text fields, it does not replace them: whoever prefers to type, or to fix one by hand, still can.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `pgn` | `string` | yes | The lesson's PGN; the exercise always comes out of it. |
+| `onPick` | `(values: { afterSans?: string; lineSans?: string }) => void` | yes | Fills the form's fields with what was chosen. |
+
+## Behaviour
+
+- Closed by default: a "Elegir las jugadas sobre el tablero" button. An unparsable PGN shows a status line instead.
+- Open: the viewer in `flow` mode with `onPathChange` tracking the current path, and three buttons. "Marcar el inicio aquí" stores the start path and emits `afterSans` (the SAN along that path) with an empty `lineSans`, because a saved line hung from another start would point at a segment that no longer exists. "Marcar el final aquí" requires the current path to descend from the start and be later than it (otherwise a `role="alert"` error), then emits `lineSans` as the SAN from the start to here. "Cerrar el tablero" closes.
+- The closed and unreadable states keep the same root block with a `_state_closed` modifier so the button and the notice hang from it rather than being loose nodes.
+
+## Markup & styling
+
+Block `.exercise-move-picker` (57 lines).
+
+**Elements:** `.exercise-move-picker__open`, `.exercise-move-picker__status`, `.exercise-move-picker__hint`, `.exercise-move-picker__actions`, `.exercise-move-picker__close`, `.exercise-move-picker__error`
+
+**Modifiers and states:** `.exercise-move-picker_state_closed`
+
+**Other classes it renders:** `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/staff/courses/exercise-editor.comp.tsx`:
+
+```tsx
+import { ExerciseMovePicker } from "./exercise-move-picker.comp";
+
+<ExerciseMovePicker
+  pgn={lessonPgn}
+  onPick={(values) => {
+    if (values.afterSans !== undefined) setAfterSans(values.afterSans);
+    if (values.lineSans !== undefined) setLineSans(values.lineSans);
+  }}
+/>
+```
+
+## Related
+
+- [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker), the teacher's single-position equivalent.
+- `sansAlongPath` in [Chess library](/chess/library).

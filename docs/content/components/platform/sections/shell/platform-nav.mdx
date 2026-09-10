@@ -1,0 +1,58 @@
+---
+description: "The top-bar navigation links, grouped by role, with the active item chosen by the longest matching href prefix so parent and child routes never light up together."
+---
+
+# `PlatformNav`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/shell/platform-nav.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `platform-nav.comp.css` → block `.platform-nav` |
+| Used by | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section) |
+| Uses | `activeNavHref`, `PlatformNavGroup` from `constants/platform/nav-items.const`<br />`usePathname` from `next/navigation` |
+
+## Purpose
+
+Renders the navigation groups the shell composed on the server and marks the current one. It is a Client Component only because knowing the current path needs `usePathname`; the groups themselves are decided by role on the server and arrive as data.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `groups` | `PlatformNavGroup[]` | yes | `{ label?, items: { href, label }[] }[]`, composed by role in the shell. Here they are only rendered. |
+
+## Behaviour
+
+- `activeNavHref(groups, pathname)` returns the item whose `href` is the **longest prefix** of the current path, so `/profesor` and `/profesor/alumnos` do not both appear active on the students page. The active link gets the `_active` modifier and `aria-current="page"`.
+- The group label (`group.label`) is not rendered in the top bar: there is no row to put it on and it would repeat what the first item says ("Administración", "Panel del profesor"). Since the menu is exclusive by role there are never two groups to tell apart.
+- `<nav aria-label="Navegación principal">`.
+
+## Markup & styling
+
+Block `.platform-nav` (45 lines).
+
+**Elements:** `.platform-nav__group`, `.platform-nav__item`
+
+**Modifiers and states:** `.platform-nav__item_active`
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 1080px)` lets the items wrap and shrinks their padding.
+
+## Usage
+
+From `components/platform/sections/shell/platform-shell.section.tsx`:
+
+```tsx
+import { PlatformNav } from "./platform-nav.comp";
+
+const navGroups = buildPlatformNavGroups(roles);
+// …
+<PlatformNav groups={navGroups} />
+```
+
+## Related
+
+- `constants/platform/nav-items.const.ts` holds the three item lists and `activeNavHref`; its test covers the prefix rule.
+- [Routes & URLs](/architecture/routing).

@@ -1,0 +1,59 @@
+---
+description: "A student's page for their teacher, entirely read-only: facts, course progress, shared classes, the student's studies as links and recent activity."
+---
+
+# `AssignedStudentDetailSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/teacher/students/assigned-student-detail.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `assigned-student-detail.section.css` → block `.assigned-student` |
+| Used by | `/profesor/alumnos/[studentId]` |
+| Composes | [`PlatformTable`](/components/platform/shared/platform-table), [`ProgressIndicator`](/components/platform/shared/progress-indicator), [`LocalDateTime`](/components/platform/shared/local-datetime), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses | `teacherRoutes` from `lib/platform-routes`; `AssignedStudentDetail`, `StudentSharedClass` from `services/teacher-students/teacher-students.types` |
+
+## Purpose
+
+Everything a teacher may know about an assigned student, in cards: assignment facts and note, progress per course, upcoming and past classes **with this teacher**, the student's own studies, and recent activity. All of it is read-only: the student's studies are theirs and the teacher consults them, which is why there is not a single write control on the page. The service already checked the assignment is active; the section never sees a student who is not the teacher's.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `student` | `AssignedStudentDetail` | yes | `id`, `email`, `assignedAtIso`, `assignedAtLabel`, `note?`, `courses[]` (with `percent`, `statusLabel`, `lastLessonName?`), `upcomingClasses[]`, `pastClasses[]`, `studies[]`, `activity[]`. |
+
+## Behaviour
+
+- The local `ClassList` renders shared classes with title link, local date, status tag and an "Asistió" tag.
+- Studies are a [`PlatformTable`](/components/platform/shared/platform-table) whose name links to `teacherRoutes.studentStudy(studentId, studyId)`, the teacher's read-only study view.
+- Activity rows show type and subject labels with a date-only local time; empty renders an [`EmptyState`](/components/platform/shared/empty-state).
+
+## Markup & styling
+
+Block `.assigned-student` (124 lines).
+
+**Elements:** `.assigned-student__facts`, `.assigned-student__fact`, `.assigned-student__fact-label`, `.assigned-student__fact-value`, `.assigned-student__courses`, `.assigned-student__course`, `.assigned-student__course-head`, `.assigned-student__course-name`, `.assigned-student__course-last`, `.assigned-student__row`, `.assigned-student__classes`, `.assigned-student__class`, `.assigned-student__class-title`, `.assigned-student__class-meta`, `.assigned-student__note`, `.assigned-student__activity`, `.assigned-student__activity-item`, `.assigned-student__activity-label`, `.assigned-student__activity-date`, `.assigned-student__empty`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-card`, `.platform-card__title`, `.platform-tag`, `.platform-tag_variant_accent`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 900px)` stacks the two class cards.
+
+## Usage
+
+From `app/(platform)/profesor/alumnos/[studentId]/page.tsx`:
+
+```tsx
+import { AssignedStudentDetailSection } from "@/components/platform/sections/teacher/students/assigned-student-detail.section";
+
+<AssignedStudentDetailSection student={student} />
+```
+
+## Related
+
+- [`StudentStudyViewSection`](/components/platform/sections/teacher/students/student-study-view-section), where the studies link.
+- [Teacher & staff panels › Students](/platform/teacher-and-staff).

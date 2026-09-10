@@ -1,0 +1,61 @@
+---
+description: "The student's class page: breadcrumb, header with teacher and local time, meeting access while upcoming, the recording link, the summary, the ordered blocks and the transcript status."
+---
+
+# `ClassDetailSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/classes/class-detail/class-detail.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `class-detail.section.css` → block `.class-detail` |
+| Used by | `/clases/[classId]` |
+| Composes | [`MeetingAccess`](/components/platform/sections/classes/class-detail/meeting-access), [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`LocalDateTime`](/components/platform/shared/local-datetime), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses | `CLASS_STATUS`, `TRANSCRIPT_STATUS` from `constants/platform/class-codes.const`; `platformRoutes` from `lib/platform-routes`; `ClassDetail` from `services/classes/classes.types` |
+
+## Purpose
+
+Everything a student gets from one class: how to join it while it is upcoming, the recording afterwards, the teacher's summary, the content blocks exactly as the teacher composed them, and the transcript when there is one. The section receives the class from the page; the service already decided what the student may see (the meeting URL is included only once authorised).
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `classDetail` | `ClassDetail` | yes | `title`, `description?`, `statusCode`, `statusLabel`, `teacherName`, `teacherTitle?`, `scheduledAtIso`, `dateLabel`, `timeLabel`, `durationMin`, `meetingUrl?`, `meetingVisibleFromIso?`, `meetingProviderLabel?`, `recordingUrl?`, `summary?`, `blocks`, `transcript?`. |
+
+## Behaviour
+
+- `isUpcoming` is `SCHEDULED` or `LIVE`; only then is [`MeetingAccess`](/components/platform/sections/classes/class-detail/meeting-access) rendered.
+- The recording is an external link button when `recordingUrl` exists.
+- Blocks go to [`ClassContentRenderer`](/components/platform/shared/class-content-renderer); an empty list shows an empty state whose copy depends on whether the class is still to come.
+- The transcript card shows the text when `statusCode === TRANSCRIPT_STATUS.READY`, otherwise "Estado de la transcripción: …".
+- The breadcrumb is local (Mis clases / title), not a shared component, because the classes area has only one level.
+
+## Markup & styling
+
+Block `.class-detail` (72 lines).
+
+**Elements:** `.class-detail__breadcrumb`, `.class-detail__breadcrumb-link`, `.class-detail__breadcrumb-separator`, `.class-detail__breadcrumb-current`, `.class-detail__head`, `.class-detail__meta`, `.class-detail__summary`, `.class-detail__summary-text`, `.class-detail__content`, `.class-detail__content-title`, `.class-detail__transcript`, `.class-detail__transcript-text`, `.class-detail__transcript-status`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-tag`, `.platform-tag_variant_accent`, `.platform-page__title`, `.platform-page__subtitle`, `.platform-card`, `.platform-card__title`, `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/clases/[classId]/page.tsx`:
+
+```tsx
+import { ClassDetailSection } from "@/components/platform/sections/classes/class-detail/class-detail.section";
+
+<ClassDetailSection classDetail={classDetail} />
+```
+
+## Related
+
+- The teacher's and staff's views of the same class: [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section), [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section).
+- Meeting visibility rules in [Student features › Classes](/platform/student).

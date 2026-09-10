@@ -1,0 +1,60 @@
+---
+description: "The position explorer: a playable board whose line is a list of SAN replayed with replayGame, a per-FEN search through searchPosition with a client cache, and the three result panels."
+---
+
+# `GameExplorer`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/explorer/game-explorer.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `game-explorer.comp.css` → block `.game-explorer` |
+| Used by | [`GameExplorerSection`](/components/platform/sections/explorer/game-explorer-section) |
+| Composes | [`ChessBoard`](/components/chess/chess-board), [`ExplorerMoveList`](/components/platform/sections/explorer/explorer-move-list), [`ExplorerNextMoves`](/components/platform/sections/explorer/explorer-next-moves), [`ExplorerGames`](/components/platform/sections/explorer/explorer-games) |
+| Writes | `searchPosition()` · `services/game-explorer/game-explorer.actions.ts` (a read behind a server action) |
+| Uses | `replayGame` from `lib/chess/replay`; `PositionSearchResult` from `services/game-explorer/game-explorer.types`; `FlipIcon` from `components/icons/` |
+
+## Purpose
+
+Move the pieces and see which games the student may see reached that position and how they continued. The search is by **position**, so it also finds games that arrived by another move order.
+
+The line lives as a list of SAN and the positions are derived with `replayGame`, the same replayer the rest of the platform uses: the board, the position index and the panels cannot disagree. The search fires with the position already changed, never while a piece is being dragged, because [`ChessBoard`](/components/chess/chess-board) only notifies legal, completed moves.
+
+## Props
+
+This component takes no props.
+
+## Behaviour
+
+- **State:** `sans` (the line), `index` (current ply), `flipped`, `result`, `isSearching`, `hasError`, plus a `Map<string, PositionSearchResult>` cache in a ref.
+- **Search effect (keyed on the current FEN):** a cached result is used immediately; otherwise `searchPosition(fen)` runs with a `cancelled` flag so the response of a position that is no longer current is discarded, and the result is cached either way. Going back and forth along the line, the explorer's most common gesture, costs no query. The cache is local because the project has no client data library and one screen does not justify adding one.
+- **Playing** a move (from the board or from the continuations panel) truncates the line at the current index and appends; navigation buttons move the index; "Reiniciar" clears the line.
+- The board is controlled with the current position and `interactive`; the panel dims with `_loading` while searching but the board stays playable, since waiting to be able to move would be worse than a stale figure for an instant.
+- A failed search shows a `role="status"` message instead of the two result panels.
+
+## Markup & styling
+
+Block `.game-explorer` (75 lines).
+
+**Elements:** `.game-explorer__board`, `.game-explorer__controls`, `.game-explorer__control`, `.game-explorer__panel`, `.game-explorer__error`
+
+**Modifiers and states:** `.game-explorer__control_wide`, `.game-explorer__panel_loading`
+
+**Tokens:** `--platform-accent`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`
+
+**Breakpoints:** `(max-width: 900px)` stacks the panel under the board.
+
+## Usage
+
+From `components/platform/sections/explorer/game-explorer.section.tsx`:
+
+```tsx
+import { GameExplorer } from "./game-explorer.comp";
+
+<GameExplorer />
+```
+
+## Related
+
+- [`ExplorerMoveList`](/components/platform/sections/explorer/explorer-move-list), [`ExplorerNextMoves`](/components/platform/sections/explorer/explorer-next-moves), [`ExplorerGames`](/components/platform/sections/explorer/explorer-games).
+- [Student features › Explorer](/platform/student) for what "games the student may see" means.

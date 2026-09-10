@@ -1,0 +1,63 @@
+---
+description: "The owner's panel of a collection: who already has it, with a 'Quitar' form per row, and a select-and-share form for the students who do not; two server actions, no JavaScript."
+---
+
+# `ShareCollection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/studies/study-detail/share-collection.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `share-collection.comp.css` → block `.share-collection` |
+| Used by | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (only when the viewer owns a collection) |
+| Writes | `shareStudyWithStudent()`, `unshareStudyWithStudent()` · `services/studies/studies.actions.ts` |
+| Uses | `StudyShareItem`, `StudentOption` from `services/studies/studies.types` |
+
+## Purpose
+
+A teacher's collection reaches students as read-only material in their "Mis estudios". This panel is where the teacher decides who. Only the **owner** sees it; whoever receives the collection has no business knowing who else it is shared with, which is why `StudyDetail.shares` arrives empty for them and the section never renders this.
+
+A share is a row that exists or does not, so there is no intermediate state worth a Client Component: two plain forms against their actions.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `studyId` | `string` | yes | Bound into both actions. |
+| `shares` | `StudyShareItem[]` | yes | Who already has it: `{ userId, displayName, email, sharedAtLabel }`. |
+| `students` | `StudentOption[]` | yes | Students with an active assignment to the teacher. |
+
+## Behaviour
+
+- `candidates` are the students not yet in `shares`. Sharing with someone who already has it would be a no-op (the action is idempotent), but offering it would look like it can be given twice.
+- Each share row has a `<form action={unshareStudyWithStudent.bind(null, studyId)}>` with a hidden `studentId` and a "Quitar" button.
+- The share form is a `<select name="studentId">` over the candidates plus "Compartir". With no candidates the message distinguishes "no assigned students" from "everyone already has it".
+
+## Markup & styling
+
+Block `.share-collection` (140 lines).
+
+**Elements:** `.share-collection__head`, `.share-collection__title`, `.share-collection__hint`, `.share-collection__list`, `.share-collection__item`, `.share-collection__student`, `.share-collection__name`, `.share-collection__email`, `.share-collection__date`, `.share-collection__remove`, `.share-collection__empty`, `.share-collection__form`, `.share-collection__field`, `.share-collection__label`, `.share-collection__select`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-button`.
+
+**Tokens:** `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/studies/study-detail/study-detail.section.tsx`:
+
+```tsx
+import { ShareCollection } from "./share-collection.comp";
+
+{canShare && <ShareCollection studyId={study.id} shares={study.shares} students={students} />}
+```
+
+## Related
+
+- How collections appear on the student side: [`StudiesListSection`](/components/platform/sections/studies/studies-list/studies-list-section) (the `received` group).
+- [Teacher & staff panels](/platform/teacher-and-staff) for assignments.

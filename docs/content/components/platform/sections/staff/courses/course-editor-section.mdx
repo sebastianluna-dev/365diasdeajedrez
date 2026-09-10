@@ -1,0 +1,73 @@
+---
+description: "The course in independent cards, each with its own form and action: metadata with the cover on ImageUpload, the sortable chapter list with add and role buttons, authors with ordering, and publish or archive."
+---
+
+# `CourseEditorSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/courses/course-editor.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `course-editor.section.css` → block `.course-editor` |
+| Used by | `/administracion/cursos/[courseId]` |
+| Composes | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffEditorLayout`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`SortableList`](/components/platform/sections/staff/courses/sortable-list), [`ImageUpload`](/components/platform/shared/image-upload), [`FormField`](/components/platform/shared/form-field), [`FormFieldset`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes | `updateCourse()`, `createChapter()`, `deleteChapter()`, `reorderChapters()`, `manageCourseAuthors()`, `publishCourse()`, `archiveCourse()` · `services/staff-courses/staff-courses.actions.ts` |
+| Uses | `CONTENT_ROLE`, `COURSE_STATUS` from `constants/platform/course-codes.const`; `STAFF_ERROR_MESSAGES`; `platformRoutes`, `staffRoutes`; `CourseAdminDetail`, `CatalogOption`, `AuthorAdminRow` types |
+
+## Purpose
+
+Editing a course as **independent cards**, each with its own form and action, instead of one giant form where a failure in one field throws away all the work. Left column, what is written and ordered: metadata and chapters. Right column, what is glanced at: cover, authors and status, touched once and looked at many times.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `course` | `CourseAdminDetail` | yes | `id`, `name`, `slug`, `description?`, `cover?`, `typeCode`, `levelCodes`, `statusCode`, `statusLabel`, `publishedAtLabel?`, `canPublish`, `chapters[]` (with `roleCode`, `lessonCount`, `progressCount`), `authors[]`. |
+| `types`, `levels`, `authorRoles` | `CatalogOption[]` | yes | Catalog options for the selects and checkboxes. |
+| `authors` | `AuthorAdminRow[]` | yes | All authors; those already on the course are filtered out of the add select. |
+| `gameCount` | `number` | yes | For the "Partidas" tab count; the list lives in its own tab. |
+| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+
+## Behaviour
+
+- **Metadata** form (`id="course-metadata"`): name, slug (pattern-checked), type, description, levels as a [`FormFieldset`](/components/platform/shared/form-field). The cover lives in the aside but belongs to this form through [`ImageUpload`](/components/platform/shared/image-upload)'s `form` prop, so it saves with "Guardar metadatos".
+- **Chapters:** a [`SortableList`](/components/platform/sections/staff/courses/sortable-list) with drag and keyboard reordering (`reorderChapters`), delete offered only where the server allows it (draft course, no student progress), an inline "Añadir capítulo" form, and "Añadir introducción" / "Añadir cierre" buttons that vanish once each role exists (the database's unique index is the real guarantee).
+- **Authors:** ordered rows with up, down and remove forms (`manageCourseAuthors` with an `operation` field) and an add form with author and role.
+- **Estado:** facts, an info notice when `canPublish` is false (needs a chapter with a lesson that has a game), and the publish (disabled until allowed) and archive forms. A published course gets a "Ver en la plataforma" link in the head.
+
+## Markup & styling
+
+Block `.course-editor` (245 lines).
+
+**Elements:** `.course-editor__status`, `.course-editor__form`, `.course-editor__pair`, `.course-editor__submit`, `.course-editor__inline`, `.course-editor__inline-input`, `.course-editor__roles`, `.course-editor__role-button`, `.course-editor__list`, `.course-editor__row`, `.course-editor__row-text`, `.course-editor__row-title`, `.course-editor__row-meta`, `.course-editor__controls`, `.course-editor__control`, `.course-editor__empty`, `.course-editor__stack`, `.course-editor__facts`, `.course-editor__fact`, `.course-editor__actions`
+
+**Modifiers and states:** `.course-editor__status_state_{draft,published,archived}`, `.course-editor__control_variant_danger`
+
+**Other selectors it styles:** `.platform-button` (full width in the actions).
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-danger`, `--platform-success-ink`, `--platform-success-soft`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 720px)` and `(max-width: 620px)` collapse the pairs and the inline form.
+
+## Usage
+
+From `app/(platform)/administracion/cursos/[courseId]/page.tsx`:
+
+```tsx
+import { CourseEditorSection } from "@/components/platform/sections/staff/courses/course-editor.section";
+
+<CourseEditorSection
+  course={course}
+  types={types}
+  levels={levels}
+  authors={authors}
+  authorRoles={authorRoles}
+  gameCount={gameCount}
+  errorCode={error}
+/>
+```
+
+## Related
+
+- [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section), [`CourseGamesSection`](/components/platform/sections/staff/courses/course-games-section).
+- Publishing rules in [Teacher & staff panels › Courses](/platform/teacher-and-staff).

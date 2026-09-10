@@ -1,0 +1,56 @@
+---
+description: "Opening block of the home page: title, description, the CTA and the portrait that is the page's LCP, preloaded with high fetch priority and sizes matched to the card."
+---
+
+# `HeroSection`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/hero/hero.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `hero.section.css` → block `.hero` |
+| Used by | `app/(frontend)/landing-page.tsx` (`sections.hero`) |
+| Composes | [`FloatBadge`](/components/site/sections/home/hero/float-badge) ×6, [`Orbit`](/components/site/sections/home/hero/orbit) |
+| Reads | `getHeroData()` · `services/home/home.service.ts` (the `home-hero` Global) |
+| Uses | `CHESS_PIECE_UNICODE` from `constants/chess-pieces.const`, `next/image` |
+
+## Purpose
+
+The first screen of `/`. Its image is the Largest Contentful Paint of the whole site, so the section is where the LCP work lives: `preload` announces the image in the `<head>`, `fetchPriority="high"` raises its priority in that preload and in the `<img>`, and `sizes` describes what actually renders (the card: 300 px under 1024 px, 420 px above) rather than the viewport width. Without `sizes`, mobile requested twice the pixels.
+
+## Props
+
+None.
+
+## Behaviour
+
+- Awaits `getHeroData()`; the title, description, CTA (`label`, `href`) and image (`src`, `alt`) come from the CMS.
+- The six badges ("Cálculo", "Visualización", "Estrategia", "Finales", "Aperturas", "Partidas") are fixed in code, each with a black piece glyph and one of three offset modifiers.
+- `id="inicio"` so the header can link back to the top.
+
+## Markup & styling
+
+Block `.hero` (190 lines).
+
+**Elements:** `.hero__inner`, `.hero__glow`, `.hero__grid`, `.hero__copy`, `.hero__title`, `.hero__text`, `.hero__actions`, `.hero__visual`, `.hero__stage`, `.hero__card`, `.hero__card-inner`, `.hero__badges`
+
+**Tokens:** `--font-gramatika`
+
+**Breakpoints:** `(max-width: 1024px)` stacks the grid and shrinks the card; `(max-width: 720px)`.
+
+**Other classes:** `.button.button_variant_primary.button_size_hero` from `globals.css`.
+
+## Usage
+
+From `app/(frontend)/landing-page.tsx`:
+
+```tsx
+import { HeroSection } from "@/components/site/sections/home/hero/hero.section";
+
+{sections.hero && <HeroSection />}
+```
+
+## Related
+
+- [`FloatBadge`](/components/site/sections/home/hero/float-badge), [`Orbit`](/components/site/sections/home/hero/orbit).
+- How the LCP was measured: [Pages › Accessibility and performance notes](/public-site/pages#accessibility-and-performance-notes).

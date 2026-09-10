@@ -1,0 +1,14 @@
+---
+description: "Index of components/auth: the two files of the login screen."
+---
+
+# Auth components
+
+`components/auth/` mirrors `app/(auth)`. It holds one section, the login screen, and the one client piece it needs. The flow behind it (sessions, the cookie, `proxy.ts`, return paths) is described in [Authentication & roles](/platform/authentication).
+
+## `sections/login/`
+
+| Page | Kind | What it is |
+| --- | --- | --- |
+| [`LoginSection`](/components/auth/sections/login/login-section) | server | The login form as a plain server action: email, password, hidden return path, previous error. |
+| [`LoginSubmit`](/components/auth/sections/login/login-submit) | client | The submit button with a `useFormStatus` pending state; the only client code on the screen. |

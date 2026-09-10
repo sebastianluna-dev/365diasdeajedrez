@@ -1,0 +1,58 @@
+---
+description: "One class as a whole-card link: title, teacher, local date and time with duration, and a status tag coloured by status code; cancelled classes are dimmed."
+---
+
+# `ClassCard`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/classes/classes-list/class-card.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `class-card.comp.css` → block `.class-card` |
+| Used by | [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section) |
+| Composes | [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Uses | `CLASS_STATUS` from `constants/platform/class-codes.const`; `ClassSummary` from `services/classes/classes.types` |
+
+## Purpose
+
+A class in the list. The whole card is a `<Link>` to the class detail; the date renders through [`LocalDateTime`](/components/platform/shared/local-datetime) so it is in the student's zone once hydrated and correct before.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `classSummary` | `ClassSummary` | yes | `id`, `href`, `title`, `teacherName`, `scheduledAtIso`, `dateLabel`, `timeLabel`, `durationMin`, `statusCode`, `statusLabel`. |
+
+## Behaviour
+
+None. `statusCode === CLASS_STATUS.CANCELLED` adds the `_cancelled` modifier; the lowercased status code becomes the tag's modifier so each status gets its colour from CSS.
+
+## Markup & styling
+
+Block `.class-card` (76 lines), on top of `.platform-card`.
+
+**Elements:** `.class-card__info`, `.class-card__title`, `.class-card__teacher`, `.class-card__meta`, `.class-card__schedule`, `.class-card__status`
+
+**Modifiers and states:** `.class-card_cancelled`, `.class-card__status_code_scheduled`, `.class-card__status_code_live`, `.class-card__status_code_completed` (cancelled has no tag rule beyond the card's dimming)
+
+**Other classes it renders:** `.platform-card`, `.platform-tag`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-danger`, `--platform-danger-soft`, `--platform-success-ink`, `--platform-success-soft`, `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 720px)` stacks meta under info.
+
+## Usage
+
+From `components/platform/sections/classes/classes-list/classes-list.section.tsx`:
+
+```tsx
+import { ClassCard } from "./class-card.comp";
+
+{upcoming.map((item) => (
+  <ClassCard key={item.id} classSummary={item} />
+))}
+```
+
+## Related
+
+- Status codes in [Data model](/platform/data-model); transitions in [Teacher & staff panels](/platform/teacher-and-staff).

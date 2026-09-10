@@ -1,0 +1,56 @@
+---
+description: "An analogue clock face: twelve numbers, three hands driven by a CSS custom property, the flag with alert and fallen states, an optional readout and label, a button when it has onPress, and a compact mode."
+---
+
+# `ClockDial`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/chess-clock/clock-dial.comp.tsx` |
+| Kind | Server Component (no hooks; rendered inside client trees) |
+| Stylesheet | `clock-dial.comp.css` → blocks `.clock-dial-column`, `.clock-dial`, `.clock-face`, `.clock-hand`, `.clock-flag`, `.clock-readout` |
+| Used by | [`ChessClockDesktop`](/components/site/sections/chess-clock/chess-clock-desktop), [`ChessClockMobile`](/components/site/sections/chess-clock/chess-clock-mobile), [`CtaClock`](/components/site/sections/home/cta/cta-clock) |
+
+## Purpose
+
+The dial every clock on the site shares. Hand angles arrive as numbers and become `--hand-rotation` inline, so the CSS rotates them with a transition and the component never touches the DOM.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `hands` | `{ hour: number; min: number; sec: number }` | yes | Degrees for each hand. |
+| `active` | `boolean` | yes | The side to move: `.clock-dial_active`, hands `_active`, readout `_active`. |
+| `flagged` | `boolean` | yes | Time ran out: `.clock-dial_fallen`, `.clock-flag_fallen`, `.clock-readout_fallen`. |
+| `lowTime` | `boolean` | yes | Under the threshold: `.clock-flag_alert` (unless already flagged). |
+| `label` | `string` | no | Caption under the dial ("Blancas"). |
+| `time` | `string` | no | Digital readout under the dial. |
+| `onPress` | `() => void` | no | When present the dial is a `<button>`; otherwise a `<div>`. |
+| `compact` | `boolean` | no | The CTA form: no readout, no label, `.clock-dial-column_compact`. |
+
+## Behaviour
+
+None beyond the optional click.
+
+## Markup & styling
+
+Blocks in `clock-dial.comp.css` (178 lines): `.clock-dial-column` (`__label`, `_compact`), `.clock-dial` (`_active`, `_fallen`), `.clock-face` (`__number` with `_position_1..12`, `__pin`), `.clock-flag` (`_alert`, `_fallen`), `.clock-hand` (`_type_hour|min|sec`, `_active`), `.clock-readout` (`_active`, `_fallen`).
+
+**Tokens:** `--font-suisse`; `--hand-rotation` is set inline per hand.
+
+No media queries; the mobile clock restyles the dial from its own sheet.
+
+## Usage
+
+From `components/site/sections/home/cta/cta-clock.comp.tsx`:
+
+```tsx
+import { ClockDial } from "@/components/site/sections/chess-clock/clock-dial.comp";
+
+<ClockDial compact hands={hands} active flagged={false} lowTime={seconds <= 60} />
+```
+
+## Related
+
+- `handAngles` in `hooks/use-chess-clock.hook.ts` produces the `hands` object.
+- [`TimeRoller`](/components/site/sections/chess-clock/time-roller), the mobile readout.

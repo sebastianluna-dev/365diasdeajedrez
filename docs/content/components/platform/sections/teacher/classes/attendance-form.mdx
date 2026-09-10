@@ -1,0 +1,59 @@
+---
+description: "Class attendance as one checkbox per participant, submitted whole to markAttendance so the server decides what changed; removal offered only for participants without attendance or payment."
+---
+
+# `AttendanceForm`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/teacher/classes/attendance-form.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `attendance-form.comp.css` → block `.attendance-form` |
+| Used by | [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) |
+| Writes | `markAttendance()`, `removeParticipant()` · `services/teacher-classes/teacher-classes.actions.ts` |
+| Uses | `TeacherClassParticipant` from `services/teacher-classes/teacher-classes.types` |
+
+## Purpose
+
+Marking a student as present records their activity (and with it their statistics) through the only write point that exists for that. The form is therefore submitted **whole**: every participant's checkbox travels and the server diffs against what is stored, so a single action handles ticking and unticking.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `classId` | `string` | yes | Bound into both actions. |
+| `participants` | `TeacherClassParticipant[]` | yes | `{ userId, displayName, attended, hasPayment }[]`. Empty renders a hint to enrol students first. |
+
+## Behaviour
+
+- `<form action={markAttendance.bind(null, classId)}>` with `name="attended" value={userId}` checkboxes and a "Guardar asistencia" submit.
+- Each row shows "Pago registrado" or "Sin pago registrado".
+- "Quitar" is a submit button with `formAction={removeParticipant.bind(null, classId)}` and `name="studentId"`, rendered only for a participant who left no trace (no attendance, no payment); the server rejects the others anyway.
+
+## Markup & styling
+
+Block `.attendance-form` (71 lines).
+
+**Elements:** `.attendance-form__empty`, `.attendance-form__list`, `.attendance-form__item`, `.attendance-form__check`, `.attendance-form__name`, `.attendance-form__meta`, `.attendance-form__remove`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-button`.
+
+**Tokens:** `--platform-border`, `--platform-danger`, `--platform-danger-border`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/teacher/classes/teacher-class-detail.section.tsx`:
+
+```tsx
+import { AttendanceForm } from "./attendance-form.comp";
+
+<AttendanceForm classId={classDetail.id} participants={classDetail.participants} />
+```
+
+## Related
+
+- Attendance feeds the activity log read by [`StatsCards`](/components/platform/sections/dashboard/activity-stats/stats-cards) and the streak in [`StudyGoalAside`](/components/platform/sections/courses/courses-list/study-goal).

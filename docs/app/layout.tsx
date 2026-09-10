@@ -27,6 +27,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
           navbar={navbar}
           pageMap={await getPageMap()}
           docsRepositoryBase={`${REPOSITORY}/tree/main/docs`}
+          // The Components section mirrors components/ file by file (~180 pages
+          // in nested folders); only the active branch stays open.
+          sidebar={{ defaultMenuCollapseLevel: 1 }}
           footer={footer}
         >
           {children}

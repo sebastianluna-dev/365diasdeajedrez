@@ -1,0 +1,51 @@
+---
+description: "Active and inactive teachers in a PlatformTable with title, email, status tag, active students and class count, plus the 'Registrar profesor' button."
+---
+
+# `TeachersTableSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/teachers/teachers-table.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `teachers-table.section.css` → block `.teachers-table` |
+| Used by | `/administracion/profesores` |
+| Composes | [`PlatformTable`](/components/platform/shared/platform-table) |
+| Reads | `listTeachers()` · `services/staff-teachers/staff-teachers.service.ts` |
+| Uses | `staffRoutes` from `lib/platform-routes` |
+
+## Purpose
+
+Every teacher record, active or deactivated, with the two numbers staff balances assignments by: active students and classes given. Names link to the record. No search: the list is short.
+
+## Props
+
+This component takes no props.
+
+## Behaviour
+
+Awaits the list and renders; the status cell is a tag with the accent variant for active teachers.
+
+## Markup & styling
+
+Block `.teachers-table` (11 lines): the button bar.
+
+**Elements:** `.teachers-table__bar`
+
+**Other classes it renders:** `.platform-button`, `.platform-tag`, `.platform-tag_variant_accent`.
+
+No tokens or media queries of its own.
+
+## Usage
+
+From `app/(platform)/administracion/profesores/page.tsx`:
+
+```tsx
+import { TeachersTableSection } from "@/components/platform/sections/staff/teachers/teachers-table.section";
+
+<TeachersTableSection />
+```
+
+## Related
+
+- [`TeacherFormSection`](/components/platform/sections/staff/teachers/teacher-form-section), [`TeacherAdminDetailSection`](/components/platform/sections/staff/teachers/teacher-admin-detail-section).

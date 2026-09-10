@@ -1,0 +1,61 @@
+---
+description: "The games that reached the current position, newest first, each with players and Elos, result, event, date, its origin tag and a 'Vista en clase' mark, linked when the viewer can open it."
+---
+
+# `ExplorerGames`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/explorer/explorer-games.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `explorer-games.comp.css` → block `.explorer-games` |
+| Used by | [`GameExplorer`](/components/platform/sections/explorer/game-explorer) |
+| Uses | `ExplorerGame` from `services/game-explorer/game-explorer.types` |
+
+## Purpose
+
+The "Partidas" panel. The list is capped by the service and the total is not: the heading counts every game found even when fewer are listed, and a footer line says "Se muestran las n más recientes de N".
+
+Each game carries its **origin** (a student's study, a course, the teaching staff) because a continuation played by twenty students does not mean the same as seeing it in twenty master games from the course material. Games seen in one of the student's classes are also marked.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `games` | `ExplorerGame[]` | yes | `{ id, href?, white, black, whiteElo?, blackElo?, resultLabel, event?, playedAtLabel?, originLabel, seenInClass }[]`. |
+| `totalGames` | `number` | yes | The full count, beyond the capped list. |
+| `isSearching` | `boolean` | yes | Chooses "Buscando…" over the no-results message. |
+
+## Behaviour
+
+None beyond rendering. A game without `href` (no screen the viewer could open it in) renders as a static row rather than a link to a 404.
+
+## Markup & styling
+
+Block `.explorer-games` (101 lines).
+
+**Elements:** `.explorer-games__title`, `.explorer-games__empty`, `.explorer-games__list`, `.explorer-games__item`, `.explorer-games__link`, `.explorer-games__players`, `.explorer-games__player`, `.explorer-games__elo`, `.explorer-games__separator`, `.explorer-games__meta`, `.explorer-games__result`, `.explorer-games__event`, `.explorer-games__tags`, `.explorer-games__tag`, `.explorer-games__more`
+
+**Modifiers and states:** `.explorer-games__link_static`, `.explorer-games__tag_variant_class`
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/explorer/game-explorer.comp.tsx`:
+
+```tsx
+import { ExplorerGames } from "./explorer-games.comp";
+
+<ExplorerGames
+  games={result?.games ?? []}
+  totalGames={result?.totalGames ?? 0}
+  isSearching={isSearching}
+/>
+```
+
+## Related
+
+- Which games are visible to whom: `services/game-explorer/game-explorer.service.ts` and [Student features › Explorer](/platform/student).

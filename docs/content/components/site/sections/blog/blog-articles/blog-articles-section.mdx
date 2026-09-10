@@ -1,0 +1,59 @@
+---
+description: "The blog listing as a Server Component driven by the URL: the category filter and the page come from ?categoria= and ?pagina=, so every state of the listing has an address."
+---
+
+# `BlogArticles`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/blog/blog-articles/blog-articles.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `blog-articles.section.css` → block `.blog-articles` |
+| Used by | `/blog` |
+| Composes | [`CategoryFilter`](/components/site/sections/blog/blog-articles/category-filter), [`ArticleCard`](/components/site/sections/blog/blog-articles/article-card), [`Pagination`](/components/site/sections/blog/blog-articles/pagination) |
+| Uses | `selectArticles`, `listingHref`, `ArticleListingQuery` from `services/articles/article-listing`<br />`ArticleSummary` from `services/articles/articles.types` |
+
+## Purpose
+
+The `/blog` page. It used to be a Client Component that received every article, body included, and filtered in `useState`, so nothing beyond the first page had an address of its own. Now the page parses `searchParams` into an `ArticleListingQuery`, this section calls `selectArticles` to filter and paginate, and `listingHref` builds every link, so a category or a page can be shared, indexed and reached with the back button.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `articles` | `ArticleSummary[]` | yes | Every summary; filtering happens here. |
+| `query` | `ArticleListingQuery` | yes | `category` and `page`, already validated by `parseListingQuery` in the page. |
+
+## Behaviour
+
+- `selectArticles(articles, query)` returns `categories`, `category`, `items`, `page`, `totalPages`, `totalItems`.
+- The filter's `hrefFor` resets to page 1; the pagination's keeps the category.
+- Each card receives `--blog-card-index` as an inline custom property so the CSS can stagger its entrance.
+
+## Markup & styling
+
+Block `.blog-articles` (62 lines).
+
+**Elements:** `.blog-articles__inner`, `.blog-articles__title`, `.blog-articles__intro`, `.blog-articles__grid`
+
+**Tokens:** `--color-dark`, `--font-gramatika`
+
+**Breakpoints:** `(max-width: 1280px)`, `(max-width: 1024px)`, `(max-width: 720px)` reduce the grid columns.
+
+## Usage
+
+From `app/(frontend)/blog/page.tsx`:
+
+```tsx
+import { BlogArticles } from "@/components/site/sections/blog/blog-articles/blog-articles.section";
+
+<Header theme="light" />
+<main id="contenido">
+  <BlogArticles articles={articles} query={query} />
+</main>
+<Footer accent="red" />
+```
+
+## Related
+
+- The query parsing and the constants (`ARTICLES_PER_PAGE`, `CATEGORY_PARAM`, `PAGE_PARAM`) live in `services/articles/article-listing.ts`; see [Pages](/public-site/pages).

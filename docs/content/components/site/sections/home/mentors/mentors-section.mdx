@@ -1,0 +1,50 @@
+---
+description: "The alternative to the teacher section: a dark section with the mentors heading from the home-mentors Global and the grid of mentor cards."
+---
+
+# `MentorsSection`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/mentors/mentors.section.tsx` |
+| Kind | Server Component (async) |
+| Stylesheet | `mentors.section.css` → block `.mentors` |
+| Used by | `app/(frontend)/landing-page.tsx` (the `mentors` slot) |
+| Composes | [`MentorList`](/components/site/sections/home/mentors/mentor-list) |
+| Reads | `getMentorsData()` · `services/mentors/mentors.service.ts` (the `home-mentors` Global and the mentors collection) |
+
+## Purpose
+
+For a home page with several mentors instead of one teacher. It occupies the same slot as [`TeacherSection`](/components/site/sections/home/teacher/teacher-section): `getHomeMentorsSlot()` in `config/site.config.ts` returns one of the two, and `teacher` wins if both are switched on by mistake. In the current config it is off.
+
+## Props
+
+None.
+
+## Behaviour
+
+- Awaits `getMentorsData()` and renders the eyebrow, title and description over the list.
+- `id="mentores"`.
+
+## Markup & styling
+
+Block `.mentors` (5 lines), on top of the global `.section.section_theme_dark`.
+
+**Elements:** `.mentors__head`
+
+**Other classes:** `.section__inner`, `.section__head`, `.section__eyebrow`, `.section__title`, `.section__text`.
+
+## Usage
+
+From `app/(frontend)/landing-page.tsx`:
+
+```tsx
+import { MentorsSection } from "@/components/site/sections/home/mentors/mentors.section";
+
+{mentorsSlot === "mentors" && <MentorsSection />}
+```
+
+## Related
+
+- [`MentorList`](/components/site/sections/home/mentors/mentor-list), [`Mentor`](/components/site/sections/home/mentors/mentor).
+- The mentor detail page `/mentor/[slug]` in [Pages](/public-site/pages).

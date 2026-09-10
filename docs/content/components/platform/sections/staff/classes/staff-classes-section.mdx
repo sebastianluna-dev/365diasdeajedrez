@@ -1,0 +1,56 @@
+---
+description: "The global read view of every class: a GET filter form (teacher, status, date range, title) and a PlatformTable; filters travel in the URL and are applied by the page's service."
+---
+
+# `StaffClassesSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/classes/staff-classes.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `staff-classes.section.css` → block `.staff-classes` |
+| Used by | `/administracion/clases` |
+| Composes | [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Uses | `CLASS_STATUS` from `constants/platform/class-codes.const`; `staffRoutes` from `lib/platform-routes`; `StaffClassSummary`, `StaffClassFilters` from `services/staff-classes/staff-classes.types` |
+
+## Purpose
+
+Every class of every teacher, for oversight. The page parses the URL into typed filters and queries; this section renders the filter form pre-filled with the **raw** URL values (so what the user typed stays as typed, even if the service normalised it) and the table.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `classes` | `StaffClassSummary[]` | yes | The filtered rows. |
+| `teachers` | `{ id, displayName }[]` | yes | For the teacher select. |
+| `filters` | `StaffClassFilters` | yes | The parsed filters (accepted for symmetry; the form uses `rawFilters`). |
+| `rawFilters` | `{ teacherId?, status?, from?, to?, q? }` | yes | The URL values, to re-render the form as is. |
+
+## Behaviour
+
+A GET `<form action={staffRoutes.classes}>` with teacher and status selects, two date inputs and a title search, then a table with title (linked), teacher, local date and time, status tag, participants and attended. Empty label: "Ninguna clase coincide con esos filtros."
+
+## Markup & styling
+
+Block `.staff-classes` (17 lines): the filter row.
+
+**Elements:** `.staff-classes__filters`
+
+**Other selectors it styles:** `.platform-field`.
+
+No tokens or media queries of its own.
+
+## Usage
+
+From `app/(platform)/administracion/clases/page.tsx`:
+
+```tsx
+import { StaffClassesSection } from "@/components/platform/sections/staff/classes/staff-classes.section";
+
+<StaffClassesSection classes={classes} teachers={teachers} filters={filters} rawFilters={raw} />
+```
+
+## Related
+
+- [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section).
+- The teacher's own list: [`TeacherClassesSection`](/components/platform/sections/teacher/classes/teacher-classes-section).

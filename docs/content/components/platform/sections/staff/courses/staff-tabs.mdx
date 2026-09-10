@@ -1,0 +1,61 @@
+---
+description: "Tabs that are pages: links with their own URL for a record's sections (course or chapter versus its games), so each loads only its data and the back button works."
+---
+
+# `StaffTabs`
+
+Also exports the `StaffTab` type.
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/staff/courses/staff-tabs.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `staff-tabs.comp.css` → block `.staff-tabs` |
+| Used by | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section), [`CourseGamesSection`](/components/platform/sections/staff/courses/course-games-section), [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section), [`ChapterGamesSection`](/components/platform/sections/staff/courses/chapter-games-section) |
+
+## Purpose
+
+A course and a chapter each split into two screens, "Curso"/"Capítulo" and "Partidas". They are links, not state: each tab has its URL, so it can be shared, the back button works, and each loads only its own data. A course's game list is hundreds of rows and has no reason to travel every time someone comes in to rename the course.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `tabs` | `StaffTab[]` | yes | `{ label, href, count? }[]`; `count` is a short fact next to the label. |
+| `current` | `string` | yes | The href of the tab we are on. |
+
+## Behaviour
+
+None: a `<nav aria-label="Secciones de la ficha">` of links, the active one with `aria-current="page"`.
+
+## Markup & styling
+
+Block `.staff-tabs` (44 lines).
+
+**Elements:** `.staff-tabs__tab`, `.staff-tabs__count`
+
+**Modifiers and states:** `.staff-tabs__tab_state_active`
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/staff/courses/chapter-editor.section.tsx`:
+
+```tsx
+import { StaffTabs } from "./staff-tabs.comp";
+
+<StaffTabs
+  current={staffRoutes.chapterDetail(chapter.courseId, chapter.id)}
+  tabs={[
+    { label: "Capítulo", href: staffRoutes.chapterDetail(chapter.courseId, chapter.id) },
+    { label: "Partidas", href: staffRoutes.chapterGames(chapter.courseId, chapter.id), count: gameCount },
+  ]}
+/>
+```
+
+## Related
+
+- [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel).

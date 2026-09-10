@@ -1,0 +1,51 @@
+---
+description: "A value with its label, used for the teacher's headline figures over the photo and in the content column."
+---
+
+# `TeacherStat`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/home/teacher/teacher-stat.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `teacher-stat.comp.css` → element `.teacher__stat` of `.teacher` |
+| Used by | [`TeacherSection`](/components/site/sections/home/teacher/teacher-section) |
+
+## Purpose
+
+One figure of the teacher's record ("10 años enseñando"). The section renders the same list twice for the two layouts, so the row is a component rather than repeated markup.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `value` | `string` | yes | The big number. |
+| `label` | `string` | yes | The caption under it. |
+
+## Behaviour
+
+None.
+
+## Markup & styling
+
+Elements of `.teacher` (24 lines): `.teacher__stat`, `.teacher__stat-value`, `.teacher__stat-label`.
+
+**Tokens:** `--font-gramatika`, `--foreground`
+
+No media queries.
+
+## Usage
+
+From `components/site/sections/home/teacher/teacher.section.tsx`:
+
+```tsx
+import { TeacherStat } from "./teacher-stat.comp";
+
+{content.stats.map((stat) => (
+  <TeacherStat key={stat.label} value={stat.value} label={stat.label} />
+))}
+```
+
+## Related
+
+- [`TeacherSection`](/components/site/sections/home/teacher/teacher-section).

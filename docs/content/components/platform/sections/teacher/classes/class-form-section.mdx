@@ -1,0 +1,66 @@
+---
+description: "A class's metadata form, shared by create and edit: title, description, datetime-local in the teacher's zone, duration, meeting provider and URL, link visibility, and on edit the recording and summary; initial participants only on create."
+---
+
+# `ClassFormSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/teacher/classes/class-form.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `class-form.section.css` → block `.class-form` |
+| Used by | `/profesor/clases/nuevo`, `/profesor/clases/[classId]/editar` |
+| Composes | [`FormField`](/components/platform/shared/form-field), [`FormFieldset`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes | `createClass()`, `updateClassMeta()` · `services/teacher-classes/teacher-classes.actions.ts` |
+| Uses | `TEACHER_ERROR_MESSAGES` from `constants/platform/teacher-messages.const`; `teacherRoutes` from `lib/platform-routes` |
+
+## Purpose
+
+One form for creating and editing a class: only the action and the defaults change. The initial participants are offered on creation only, because afterwards they are managed from the class page with attendance and payments in view. Dates are typed in `datetime-local` and interpreted in the teacher's time zone, which the form states in its hint; the action converts them to UTC.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `classDetail` | `TeacherClassDetail` | no | Absent means creation; present means editing that class (its `scheduledAtInput` is the zone-local value for the input). |
+| `students` | `AssignedStudentSummary[]` | yes | Students with an active assignment, for the enrolment checkboxes on create. |
+| `providers` | `{ code, label }[]` | yes | The meeting-provider catalog. |
+| `timeZone` | `string` | yes | The teacher's IANA zone, for the hint and the action's interpretation. |
+| `errorCode` | `string` | no | `?error=` translated with `TEACHER_ERROR_MESSAGES`. |
+
+## Behaviour
+
+- `action` is `createClass` or `updateClassMeta.bind(null, classDetail.id)`.
+- Fields: `title` (required), `description`, `scheduledAt` (`datetime-local`, required), `durationMin` (15–480, step 5, default 60), `meetingProviderCode` (select with "Sin plataforma"), `meetingUrl`, `meetingUrlVisibleFrom` (`datetime-local`; empty means 30 minutes before the class; the teacher always sees the link). On edit: `recordingUrl` and `summary`. On create: a [`FormFieldset`](/components/platform/shared/form-field) of `studentIds` checkboxes with a hint that adapts when there are no assigned students.
+- Cancel links back to the class or to the list.
+
+## Markup & styling
+
+Block `.class-form` (29 lines), on top of `.platform-card`.
+
+**Elements:** `.class-form__hint`, `.class-form__row`, `.class-form__actions`
+
+**Tokens:** `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 700px)` collapses the paired rows.
+
+## Usage
+
+From `app/(platform)/profesor/clases/[classId]/editar/page.tsx`:
+
+```tsx
+import { ClassFormSection } from "@/components/platform/sections/teacher/classes/class-form.section";
+
+<ClassFormSection
+  classDetail={classDetail}
+  students={students}
+  providers={providers}
+  timeZone={safeTimeZone(teacherRow?.timezone)}
+  errorCode={error}
+/>
+```
+
+## Related
+
+- [`MeetingAccess`](/components/platform/sections/classes/class-detail/meeting-access) honours `meetingUrlVisibleFrom` on the student side.
+- Time-zone handling in [Teacher & staff panels › Classes](/platform/teacher-and-staff).

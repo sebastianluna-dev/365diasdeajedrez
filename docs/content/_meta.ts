@@ -8,7 +8,8 @@ const meta: MetaRecord = {
   "public-site": "Public site & CMS",
   platform: "Learning platform",
   chess: "Chess library & viewer",
-  ui: "UI & styling",
+  ui: "Styling",
+  components: "Components",
   operations: "Operations",
   glossary: "Glossary",
 };

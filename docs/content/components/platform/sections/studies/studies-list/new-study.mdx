@@ -1,0 +1,57 @@
+---
+description: "The 'Nuevo estudio' button and its native <dialog> form (name, description, kind) posting createStudy; the dialog closes on submit after browser validation."
+---
+
+# `NewStudy`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/studies/studies-list/new-study.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `new-study.comp.css` → block `.new-study` |
+| Used by | `/estudios` (page header) |
+| Writes | `createStudy()` · `services/studies/studies.actions.ts` |
+| Uses | `StudyKindOption` from `services/studies/studies.types` |
+
+## Purpose
+
+Creating a study is three fields, so it lives in a modal on the list page rather than on a page of its own. The modal is a **native `<dialog>`**: it brings focus trapping, closing with Escape and the backdrop without writing any of that by hand. The only client code is the `showModal()`/`close()` calls.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `kinds` | `StudyKindOption[]` | yes | Kinds the viewer can create. "Mis partidas" is never there (it is born with the account) and "Colección" only for a teacher. Decided by `services/studies/study-rules`. |
+
+## Behaviour
+
+- The form is `<form action={createStudy}>` with `name` (required, max 120, autofocus), `description` (max 500) and `kindCode` (select over `kinds`, first selected).
+- `onSubmit` closes the dialog. The browser validates `required` before the submit event fires, so the dialog does not close with the form half filled.
+- The action creates the study and redirects to it; the dialog is unmounted with the page.
+
+## Markup & styling
+
+Block `.new-study` (60 lines).
+
+**Elements:** `.new-study__open`, `.new-study__dialog`, `.new-study__form`, `.new-study__title`, `.new-study__field`, `.new-study__label`, `.new-study__input`, `.new-study__select`, `.new-study__actions`
+
+**Other classes it renders:** `.platform-dialog` (the shared dialog frame in `platform.css`), `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-accent`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+No media queries; the shared dialog frame handles narrow screens.
+
+## Usage
+
+From `app/(platform)/estudios/page.tsx`:
+
+```tsx
+import { NewStudy } from "@/components/platform/sections/studies/studies-list/new-study.comp";
+
+<NewStudy kinds={kinds} />
+```
+
+## Related
+
+- [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study), the same dialog pattern for editing.
+- [Student features › Studies](/platform/student).

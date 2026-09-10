@@ -1,0 +1,62 @@
+---
+description: "A course in 'Mis cursos': cover, name, type tag, the two progress meters (lessons and minutes), the resume button, and a <details> menu with description, levels and authors."
+---
+
+# `CourseCard`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/courses/courses-list/course-card.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `course-card.comp.css` → block `.course-card` |
+| Used by | [`CoursesListSection`](/components/platform/sections/courses/courses-list/courses-list-section) |
+| Uses | `CourseSummary` from `services/courses/courses.types`; `next/image`, `next/link` |
+
+## Purpose
+
+One course, built for **resuming**, not for choosing. Whoever is enrolled already knows what the course is about, and an introduction paragraph on the card pushed down exactly what one comes to look at: the two progress measures and the button that returns to the last lesson. The description, the levels and the authors are therefore folded into a "···" menu, one click away, and shown in full on the course page.
+
+The two meters are the card's own (`Meter`), not the shared [`ProgressIndicator`](/components/platform/shared/progress-indicator): the card shows progress in two units at once (lessons and minutes) in a compact layout the shared bar does not have.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `course` | `CourseSummary` | yes | `id`, `name`, `href`, `continueHref`, `ctaLabel` ("Empezar"/"Continuar"), `cover?`, `typeLabel`, `description?`, `levelLabels`, `authorNames`, `progress: { completedLessons, totalLessons, completedMinutes, totalMinutes }`. |
+
+## Behaviour
+
+- **Cover link** goes to the same place as the title, so it is taken out of the tab order (`tabIndex={-1}`, `aria-hidden`): a screen reader gains nothing from the link twice, and a cover without text could not name itself. `next/image` with `fill` and `sizes="(max-width: 720px) 100vw, 340px"`.
+- **Menu** is a native `<details>`/`<summary>`, not a JavaScript menu: three facts and a link, opened and closed without hydrating anything. The summary has an `aria-label` of "Más sobre …" followed by the course name.
+- `Meter` computes the percentage with a guard for zero totals.
+
+## Markup & styling
+
+Block `.course-card` (204 lines).
+
+**Elements:** `.course-card__cover`, `.course-card__cover-image`, `.course-card__body`, `.course-card__heading`, `.course-card__name`, `.course-card__name-link`, `.course-card__meters`, `.course-card__meter`, `.course-card__meter-label`, `.course-card__meter-track`, `.course-card__meter-fill`, `.course-card__actions`, `.course-card__cta`, `.course-card__menu`, `.course-card__menu-button`, `.course-card__menu-panel`, `.course-card__menu-text`, `.course-card__menu-meta`, `.course-card__menu-link`
+
+No modifiers; the open menu is styled through `details[open]`.
+
+**Other classes it renders:** `.platform-tag`, `.platform-tag_variant_accent`, `.platform-button`.
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-font`, `--platform-shadow-card`, `--platform-surface`, `--platform-surface-sunken`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+
+**Breakpoints:** `(max-width: 720px)` stacks the cover above the body.
+
+## Usage
+
+From `components/platform/sections/courses/courses-list/courses-list.section.tsx`:
+
+```tsx
+import { CourseCard } from "./course-card.comp";
+
+{courses.map((course) => (
+  <CourseCard key={course.id} course={course} />
+))}
+```
+
+## Related
+
+- [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section) shows the folded facts in full.
+- `services/courses/courses.mapper.ts` decides `ctaLabel` and `continueHref`.

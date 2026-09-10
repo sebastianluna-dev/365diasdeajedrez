@@ -1,0 +1,47 @@
+---
+description: "The /reloj-de-ajedrez root: mounts the desktop and mobile variants so CSS can pick the visible one, and enables the clock only in the variant matching the width through matchMedia."
+---
+
+# `ChessClock`
+
+| | |
+| --- | --- |
+| File | `components/site/sections/chess-clock/chess-clock.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | none |
+| Used by | `/reloj-de-ajedrez` |
+| Composes | [`ChessClockDesktop`](/components/site/sections/chess-clock/chess-clock-desktop), [`ChessClockMobile`](/components/site/sections/chess-clock/chess-clock-mobile) |
+| Uses | `useSyncExternalStore` |
+
+## Purpose
+
+Both variants stay mounted, so the server renders both and the stylesheets decide which is visible without a jump after hydration. But only **one** may run: before this component, both counted in parallel and both captured the space bar. `enabled` goes to the variant matching `(max-width: 766px)`, the same breakpoint the two stylesheets use.
+
+## Props
+
+None.
+
+## Behaviour
+
+- `useSyncExternalStore(subscribe, isMobileNow, () => false)`: subscribes to the `matchMedia` change event, reads `.matches` on the client, and assumes desktop on the server.
+- Renders `<ChessClockDesktop enabled={!isMobile} />` and `<ChessClockMobile enabled={isMobile} />`.
+
+## Markup & styling
+
+No markup of its own.
+
+## Usage
+
+From `app/(frontend)/reloj-de-ajedrez/page.tsx`:
+
+```tsx
+import { ChessClock } from "@/components/site/sections/chess-clock/chess-clock.comp";
+
+<main id="contenido">
+  <ChessClock />
+</main>
+```
+
+## Related
+
+- `hooks/use-chess-clock.hook.ts` holds the clock state machine both variants use.

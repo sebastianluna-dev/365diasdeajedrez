@@ -1,0 +1,55 @@
+---
+description: "The Mis estudios → Estudio → Partida breadcrumb trail; a level without an href is the current page."
+---
+
+# `StudiesNavigation`
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/studies-navigation.comp.tsx` |
+| Kind | Server Component |
+| Stylesheet | `studies-navigation.comp.css` → block `.studies-navigation` |
+| Used by | `/estudios/[studyId]` (and the game and new-game pages through their sections) |
+| Uses | `platformRoutes` from `lib/platform-routes` |
+
+## Purpose
+
+The trail of the studies area. Unlike [`CourseNavigation`](/components/platform/shared/course-navigation) it does not need a `current` prop: a level given **with** an href is a link, a level given without one is the current page. That works here because the study page passes only the study name, and the game page passes the study with its href and the game without.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `studyName` | `string` | no | The study. Without `studyHref` it is the current crumb. |
+| `studyHref` | `string` | no | Link to the study when the page is deeper. |
+| `gameName` | `string` | no | The game. Without `gameHref` it is the current crumb. |
+| `gameHref` | `string` | no | Link to the game (unused today; kept for symmetry). |
+
+## Behaviour
+
+None. `<nav aria-label="Ruta de estudios">`.
+
+## Markup & styling
+
+Block `.studies-navigation` (29 lines).
+
+**Elements:** `.studies-navigation__link`, `.studies-navigation__separator`, `.studies-navigation__current`
+
+**Tokens:** `--platform-accent-ink`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/estudios/[studyId]/page.tsx`:
+
+```tsx
+import { StudiesNavigation } from "@/components/platform/shared/studies-navigation.comp";
+
+<StudiesNavigation studyName={study.name} />
+```
+
+## Related
+
+- [`CourseNavigation`](/components/platform/shared/course-navigation).
+- [Student features › Studies](/platform/student).

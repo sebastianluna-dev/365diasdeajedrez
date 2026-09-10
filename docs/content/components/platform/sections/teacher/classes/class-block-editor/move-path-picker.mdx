@@ -1,0 +1,69 @@
+---
+description: "Picks the opening position of a game or lesson block: fetches the referenced PGN, mounts the ordinary GameViewer and captures the current path through onPathChange."
+---
+
+# `MovePathPicker`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/teacher/classes/class-block-editor/move-path-picker.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | `move-path-picker.comp.css` → block `.move-path-picker` |
+| Used by | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) |
+| Composes | [`GameViewer`](/components/chess/game-viewer/game-viewer) |
+| Writes | `fetchReferencePgn()` · `services/teacher-classes/teacher-classes.actions.ts` (a read behind an action) |
+| Uses | `CLASS_BLOCK_KIND` from `constants/platform/class-codes.const` |
+
+## Purpose
+
+A game or lesson block opens at a chosen move (`movePath`). To choose it, this component mounts the usual viewer on the referenced PGN and reads where the teacher navigated. There is no second viewer and no PGN editor: it is the same component the student will see, which is also why the viewer's `onPathChange` prop exists.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `kind` | `GAME_REF \| LESSON_REF` | yes | What the id refers to. |
+| `referenceId` | `string` | yes | Game or lesson id. Empty renders nothing. |
+| `value` | `string` | yes | The dotted path already saved, if any. |
+| `onChange` | `(path: string) => void` | yes | Called with the current path on "Usar esta posición" and with `""` on "Quitar posición". |
+
+## Behaviour
+
+- An effect fetches the PGN with `fetchReferencePgn(kind, referenceId)` whenever either changes; the result is stored **together with the id it belongs to** and a `cancelled` flag drops late responses, so a slow answer is never painted over a reference the teacher already changed.
+- Status texts: "Cargando el contenido…" while pending, an error line when the action returned `null`.
+- The viewer is keyed by `referenceId` so changing the game resets it rather than dragging along the previous path; `initialPath` reopens at the saved value.
+- The footer shows "Posición guardada: jugada n" (n from the path's segment count) or "Sin posición marcada".
+
+## Markup & styling
+
+Block `.move-path-picker` (33 lines).
+
+**Elements:** `.move-path-picker__hint`, `.move-path-picker__status`, `.move-path-picker__actions`, `.move-path-picker__value`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-border`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/teacher/classes/class-block-editor/block-form.comp.tsx`:
+
+```tsx
+import { MovePathPicker } from "./move-path-picker.comp";
+
+<MovePathPicker
+  kind={kind === CLASS_BLOCK_KIND.GAME_REF ? CLASS_BLOCK_KIND.GAME_REF : CLASS_BLOCK_KIND.LESSON_REF}
+  referenceId={referenceId}
+  value={movePath}
+  onChange={setMovePath}
+/>
+```
+
+## Related
+
+- [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker), the staff's equivalent that marks two positions.
+- Dotted paths in [Chess library](/chess/library).

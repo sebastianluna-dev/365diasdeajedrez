@@ -1,0 +1,65 @@
+---
+description: "A student's game in the read-only viewer plus 'Usar en una clase': links into the block editor of one of the teacher's scheduled classes with the game preselected."
+---
+
+# `StudentGameViewSection`
+
+| | |
+| --- | --- |
+| File | `components/platform/sections/teacher/students/student-game-view.section.tsx` |
+| Kind | Server Component |
+| Stylesheet | `student-game-view.section.css` → block `.student-game` |
+| Used by | `/profesor/alumnos/[studentId]/estudios/[studyId]/partidas/[gameId]` |
+| Composes | [`GameViewer`](/components/chess/game-viewer/game-viewer) |
+| Uses | `teacherRoutes` from `lib/platform-routes`; `GameView` from `services/studies/studies.types`; `TeacherClassSummary` from `services/teacher-classes/teacher-classes.types` |
+
+## Purpose
+
+The teacher reads a student's game and, if it is worth discussing, takes it to class. "Usar en una clase" copies and modifies nothing: each button is a link to the block editor of one of the teacher's **scheduled** classes with `?gameId=` set, which preselects a game block there. It is on insert, in that class's action, that the server re-checks the assignment is still active.
+
+## Props
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `studentId` | `string` | yes | Breadcrumb link. |
+| `studentName` | `string` | yes | Breadcrumb text. |
+| `game` | `GameView` | yes | The game with `pgn`, players, record fields, `studyHref`, `studyName`, `sourceLabel`. |
+| `scheduledClasses` | `TeacherClassSummary[]` | yes | Destinations of "Usar en una clase". Empty shows a hint with a link to create one. |
+
+## Behaviour
+
+None beyond rendering: breadcrumb (Mis alumnos / student / study), a title with both players and Elos, a subtitle joining event, site, date, ECO and result, the viewer with defaults (read-only, table list, no engine), the "Usar en una clase" card and the source line.
+
+## Markup & styling
+
+Block `.student-game` (58 lines).
+
+**Elements:** `.student-game__breadcrumb`, `.student-game__breadcrumb-link`, `.student-game__breadcrumb-separator`, `.student-game__head`, `.student-game__use`, `.student-game__use-hint`, `.student-game__use-list`, `.student-game__source`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-page__title`, `.platform-page__subtitle`, `.platform-card`, `.platform-card__title`, `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `app/(platform)/profesor/alumnos/[studentId]/estudios/[studyId]/partidas/[gameId]/page.tsx`:
+
+```tsx
+import { StudentGameViewSection } from "@/components/platform/sections/teacher/students/student-game-view.section";
+
+<StudentGameViewSection
+  studentId={studentId}
+  studentName={student.displayName}
+  game={game}
+  scheduledClasses={scheduledClasses}
+/>
+```
+
+## Related
+
+- [`ClassBlockEditor`](/components/platform/sections/teacher/classes/class-block-editor/class-block-editor) reads `initialGameId`.
+- The student's own screen: [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section).
