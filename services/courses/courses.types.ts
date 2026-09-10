@@ -4,20 +4,20 @@ export interface CourseProgressSummary {
   statusCode: ProgressStatusCode;
   completedLessons: number;
   totalLessons: number;
-  /** Porcentaje entero 0–100 sobre el total real de lecciones. */
+  /** Whole percentage 0–100 over the real total of lessons. */
   percent: number;
   /**
-   * Minutos de las lecciones terminadas y del curso entero. Es OTRA medida del
-   * avance, no la misma en otra unidad: dos lecciones de cinco minutos no valen
-   * lo que dos de cuarenta, y el alumno que estudia a ratos mide su día en
-   * minutos, no en lecciones.
+   * Minutes of the finished lessons and of the whole course. It is ANOTHER
+   * measure of progress, not the same one in another unit: two five-minute
+   * lessons are not worth what two forty-minute ones are, and the student who
+   * studies in snatches measures their day in minutes, not in lessons.
    *
-   * `estimatedDuration` es anulable, así que las lecciones sin duración cuentan
-   * como cero en los dos lados y el porcentaje sigue siendo cierto.
+   * `estimatedDuration` is nullable, so lessons without a duration count as zero
+   * on both sides and the percentage is still true.
    */
   completedMinutes: number;
   totalMinutes: number;
-  /** Porcentaje entero 0–100 sobre los minutos. */
+  /** Whole percentage 0–100 over the minutes. */
   minutesPercent: number;
 }
 
@@ -26,13 +26,13 @@ export interface CourseSummary {
   name: string;
   slug: string;
   description?: string;
-  /** URL de la portada (Cloudinary). La rellena el staff; hoy ninguna la tiene. */
+  /** URL of the cover (Cloudinary). The staff fills it in; today none has one. */
   cover?: string;
   typeLabel: string;
   levelLabels: string[];
   authorNames: string[];
   progress: CourseProgressSummary;
-  /** Lección que abre el CTA según el estado del alumno. */
+  /** Lesson the CTA opens according to the student's state. */
   continueHref: string;
   ctaLabel: "Comenzar" | "Continuar" | "Revisar";
   href: string;
@@ -65,9 +65,9 @@ export interface CourseDetail {
   progress: CourseProgressSummary;
   continueHref: string;
   ctaLabel: "Comenzar" | "Continuar" | "Revisar";
-  /** El alumno pidió ver sólo las imprescindibles de este curso. */
+  /** The student asked to see only the essential ones of this course. */
   onlyPriorityLessons: boolean;
-  /** Cuántas esconde ese filtro, para poder decirlo en vez de callarlo. */
+  /** How many that filter hides, so it can be said instead of kept quiet. */
   hiddenLessons: number;
   chapters: CourseChapterItem[];
 }
@@ -93,18 +93,18 @@ export interface ChapterView {
   description?: string;
   estimatedDuration?: number;
   completedLessons: number;
-  /** De las VISIBLES; con el filtro puesto no es el total del capítulo. */
+  /** Of the VISIBLE ones; with the filter on it is not the chapter's total. */
   totalLessons: number;
-  /** Cuántas esconde el filtro. Se dice, para que la ausencia no desconcierte. */
+  /** How many the filter hides. It is stated, so the absence does not unsettle. */
   hiddenLessons: number;
   onlyPriorityLessons: boolean;
   lessons: ChapterLessonItem[];
-  /** Primera lección sin completar del capítulo; la primera si ya están todas. */
+  /** First uncompleted lesson of the chapter; the first one if they are all done. */
   continueHref: string;
   ctaLabel: CourseSummary["ctaLabel"];
-  /** true si alguna lección del capítulo tiene ejercicios entrenables. */
+  /** true if some lesson of the chapter has trainable exercises. */
   hasExercises: boolean;
-  /** true si el usuario ya lo agregó al Move Trainer. */
+  /** true if the user has already added it to the Move Trainer. */
   inTrainer: boolean;
 }
 
@@ -112,10 +112,10 @@ export interface LessonView {
   courseId: string;
   courseName: string;
   chapterId: string;
-  /** Número de orden: es lo que direcciona al capítulo en la URL. */
+  /** Order number: it is what addresses the chapter in the URL. */
   chapterOrder: number;
   chapterName: string;
-  /** Lecciones del capítulo, para situar esta dentro («Lección 1 de 3»). */
+  /** Lessons of the chapter, to place this one within it ("Lección 1 de 3"). */
   chapterLessonCount: number;
   id: string;
   order: number;
@@ -124,7 +124,7 @@ export interface LessonView {
   isPriority: boolean;
   estimatedDuration?: number;
   pgn: string;
-  /** Orientación efectiva: la de la lección, salvo que el usuario la fuerce en sus ajustes. */
+  /** Effective orientation: the lesson's, unless the user forces one in their settings. */
   orientation: "white" | "black";
   statusCode: ProgressStatusCode;
   exerciseCount: number;

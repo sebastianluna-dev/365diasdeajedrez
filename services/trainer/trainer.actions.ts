@@ -11,7 +11,7 @@ import { publishedChapterWhere, publishedLessonWhere } from "@/services/shared/p
 import { recordUserActivity } from "@/services/shared/user-activity.service";
 
 const MAX_MISTAKES = 999;
-/** Dos horas: por encima de eso el dato no es creíble. */
+/** Two hours: above that the figure is not credible. */
 const MAX_DURATION_MS = 2 * 60 * 60 * 1000;
 
 function clamp(value: number, min: number, max: number): number {
@@ -19,8 +19,8 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, Math.floor(value)));
 }
 
-// Las server actions son alcanzables por POST directo: el usuario se resuelve
-// aquí dentro y las entradas del cliente se validan contra la base.
+// Server actions are reachable by direct POST: the user is resolved in here and
+// the client's inputs are validated against the database.
 
 export interface RecordAttemptInput {
   exerciseId: string;
@@ -36,8 +36,8 @@ export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<
   if (input.resultCode !== ATTEMPT_RESULT.PASSED && input.resultCode !== ATTEMPT_RESULT.FAILED) return;
   if (!(await allowAction(`${user.id}:training-attempt`, 120, 60_000))) return;
 
-  // Sólo ejercicios de cursos publicados: un id de un curso en borrador no
-  // debe poder sembrar intentos ni actividad.
+  // Only exercises of published courses: an id from a draft course must not be
+  // able to seed attempts or activity.
   const exercise = await db.trainingExercise.findFirst({
     where: { id: input.exerciseId, lesson: publishedLessonWhere },
     select: { id: true, lesson: { select: { lessonTopics: { select: { topicId: true }, take: 1 } } } },
@@ -50,7 +50,7 @@ export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<
       user: { connect: { id: user.id } },
       exercise: { connect: { id: exercise.id } },
       result: { connect: { code: input.resultCode } },
-      // Los números llegan del cliente: se acotan por arriba y por abajo.
+      // The numbers come from the client: they are clamped above and below.
       mistakes: clamp(input.mistakes, 0, MAX_MISTAKES),
       durationMs: clamp(input.durationMs, 0, MAX_DURATION_MS),
       context: { connect: { code: ATTEMPT_CONTEXT.TRAINER } },
@@ -72,7 +72,7 @@ export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<
   revalidatePath(platformRoutes.dashboard);
 }
 
-/** Agrega o quita un capítulo del Move Trainer del usuario. */
+/** Adds or removes a chapter from the user's Move Trainer. */
 export async function toggleTrainerChapter(chapterId: string, add: boolean): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();

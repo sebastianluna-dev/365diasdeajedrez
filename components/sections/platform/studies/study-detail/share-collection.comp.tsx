@@ -4,27 +4,27 @@ import "./share-collection.comp.css";
 
 interface ShareCollectionProps {
   studyId: string;
-  /** A quién se le repartió ya. */
+  /** Who it has already been handed to. */
   shares: StudyShareItem[];
-  /** Alumnos con asignación activa del profesor que la reparte. */
+  /** Students with an active assignment to the teacher who hands it out. */
   students: StudentOption[];
 }
 
 /**
- * A quién le llega esta colección.
+ * Who this collection reaches.
  *
- * Sólo lo ve el DUEÑO de la colección —el maestro que la hizo—; a quien la
- * recibe no le incumbe con quién más se comparte, y por eso `StudyDetail.shares`
- * llega vacío para él.
+ * Only the OWNER of the collection sees it — the teacher who made it —; whoever
+ * receives it has no business knowing who else it is shared with, which is why
+ * `StudyDetail.shares` arrives empty for them.
  *
- * Sin JavaScript propio: dos formularios contra sus server actions. El reparto
- * es una fila que existe o no existe, así que no hay estado intermedio que
- * merezca un componente de cliente.
+ * No JavaScript of its own: two forms against their server actions. The
+ * share is a row that exists or does not, so there is no intermediate state
+ * that deserves a client component.
  */
 export function ShareCollection({ studyId, shares, students }: ShareCollectionProps) {
   const sharedIds = new Set(shares.map((share) => share.userId));
-  // Repartirla a quien ya la tiene no hace nada (la acción es idempotente),
-  // pero ofrecerlo confunde: parece que se puede dar dos veces.
+  // Handing it to someone who already has it does nothing (the action is
+  // idempotent), but offering it confuses: it looks like it can be given twice.
   const candidates = students.filter((student) => !sharedIds.has(student.id));
 
   return (

@@ -11,10 +11,10 @@ export const metadata: Metadata = {
   title: "Inicio",
 };
 
-// ¿Qué estoy estudiando, cómo voy y qué debería hacer ahora?
-// Cada sección obtiene sus datos de su servicio; cache() deduplica por request.
+// What am I studying, how am I doing and what should I do now?
+// Each section gets its data from its service; cache() deduplicates per request.
 export default async function DashboardPage() {
-  // Frontera de la zona privada: sin sesión válida, redirige al login.
+  // Border of the private area: without a valid session, redirect to the login.
   await getCurrentUser();
 
   return (

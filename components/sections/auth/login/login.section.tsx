@@ -5,9 +5,9 @@ import { LoginSubmit } from "./login-submit.comp";
 import "./login.section.css";
 
 interface LoginSectionProps {
-  /** Ruta interna a la que volver tras entrar; vacía = panel del alumno. */
+  /** Internal path to return to after logging in; empty = the student's panel. */
   returnTo: string;
-  /** Mensaje del intento anterior, si lo hubo. */
+  /** Message from the previous attempt, if there was one. */
   errorMessage?: string;
 }
 
@@ -52,8 +52,8 @@ export function LoginSection({ returnTo, errorMessage }: LoginSectionProps) {
             />
           </label>
 
-          {/* role=alert para que un lector de pantalla anuncie el fallo al
-              volver del envío, sin que el usuario tenga que buscarlo. */}
+          {/* role=alert so a screen reader announces the failure on returning
+              from the submit, without the user having to look for it. */}
           {errorMessage && (
             <p className="login__error" role="alert">
               {errorMessage}

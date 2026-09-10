@@ -10,8 +10,8 @@ interface DeleteStudyProps {
   gameCount: number;
   citedGameCount: number;
   /**
-   * `icon` es el aspa de la tarjeta; `button` el botón con texto de la ficha
-   * del estudio. Cambia el disparador, no el diálogo.
+   * `icon` is the card's cross; `button` the text button of the study page.
+   * The trigger changes, not the dialog.
    */
   trigger?: "icon" | "button";
 }
@@ -20,9 +20,9 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [confirmed, setConfirmed] = useState(false);
 
-  // Misma condición que el servidor: sólo se exige la casilla cuando hay algo
-  // que perder. Si el cliente dejara enviar sin ella donde el servidor la pide,
-  // la acción rebotaría a la página de error en vez de borrar.
+  // Same condition as the server: the checkbox is only required when there is
+  // something to lose. If the client let it submit without it where the server
+  // requires it, the action would bounce to the error page instead of deleting.
   const needsConfirmation = gameCount > 0 || citedGameCount > 0;
   const blocked = needsConfirmation && !confirmed;
 
@@ -79,8 +79,8 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
 
           {needsConfirmation && (
             <label className="delete-study__confirm">
-              {/* La casilla ES el campo que el servidor exige: sin marcar no se
-                  envía, así que `confirmDelete` sólo llega cuando toca. */}
+              {/* The checkbox IS the field the server requires: unticked it is not
+                  sent, so `confirmDelete` only arrives when it should. */}
               <input
                 type="checkbox"
                 name="confirmDelete"

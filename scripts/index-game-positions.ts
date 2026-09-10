@@ -1,12 +1,11 @@
-// Relleno del índice de posiciones de las partidas ya guardadas.
+// Backfill of the position index for the games already stored.
 //
-// El indexado normal ocurre al importar (services/studies) y al sembrar, así
-// que este script es para dos casos: las partidas que existían antes de que el
-// índice existiera, y una reindexación forzada tras cambiar la normalización
-// del FEN o el algoritmo de hash.
+// Normal indexing happens on import (services/studies) and on seeding, so this
+// script is for two cases: the games that existed before the index existed, and
+// a forced reindex after changing the FEN normalisation or the hash algorithm.
 //
-//   npm run positions:index          sólo las partidas sin indexar
-//   npm run positions:index -- --all reindexa TODAS (borra y regenera)
+//   npm run positions:index          only the unindexed games
+//   npm run positions:index -- --all reindexes ALL of them (deletes and regenerates)
 
 import { config } from "dotenv";
 config({ path: ".env.local" });
@@ -21,7 +20,7 @@ if (!connectionString) throw new Error("Falta PLATFORM_DATABASE_URL en el entorn
 
 const db = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 
-/// Lotes: una base grande no cabe en memoria de una vez.
+/// Batches: a large database does not fit in memory at once.
 const BATCH_SIZE = 200;
 
 async function main(): Promise<void> {
@@ -41,8 +40,8 @@ async function main(): Promise<void> {
   const failures: string[] = [];
   const truncated: string[] = [];
 
-  // Paginación por cursor y no por skip: con --all el `where` no cambia al
-  // avanzar, así que un offset se saltaría partidas.
+  // Cursor pagination and not skip: with --all the `where` does not change as it
+  // advances, so an offset would skip games.
   let cursor: string | undefined;
   for (;;) {
     const batch = await db.game.findMany({
@@ -57,8 +56,8 @@ async function main(): Promise<void> {
 
     for (const game of batch) {
       const label = `${game.white}-${game.black} (${game.id})`;
-      // Una partida corrupta no puede tumbar el relleno entero: se anota y se
-      // sigue, y al final se informa de todas.
+      // One corrupt game cannot bring down the whole backfill: it is noted and the
+      // run goes on, and at the end all of them are reported.
       try {
         const result = await db.$transaction((tx) =>
           indexGamePositions(tx, { gameId: game.id, databaseId: game.databaseId, pgn: game.pgn }),
@@ -73,9 +72,9 @@ async function main(): Promise<void> {
 
     console.log(`  ${indexed}/${total}`);
 
-    // Sin --all las partidas indexadas dejan de cumplir el `where`, así que el
-    // cursor por sí solo ya no basta para saber que se acabó: se acaba cuando
-    // el lote viene corto.
+    // Without --all the indexed games stop matching the `where`, so the cursor
+    // alone is no longer enough to know it has finished: it finishes when the batch
+    // comes back short.
     if (batch.length < BATCH_SIZE) break;
   }
 

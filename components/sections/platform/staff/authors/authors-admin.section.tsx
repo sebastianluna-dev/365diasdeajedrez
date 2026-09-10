@@ -11,9 +11,9 @@ interface AuthorsAdminSectionProps {
 }
 
 /**
- * Autores: el ÚNICO catálogo con alta y edición desde la interfaz, porque es
- * contenido editorial y no un dominio restringido cuyo código compare la
- * lógica (esos siguen siendo seed).
+ * Authors: the ONLY catalog with creation and editing from the interface,
+ * because it is editorial content and not a restricted domain whose code the
+ * logic compares (those remain seed).
  */
 export function AuthorsAdminSection({ authors, errorCode }: AuthorsAdminSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;

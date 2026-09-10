@@ -8,7 +8,7 @@ import type { TeacherClassSummary } from "@/services/teacher-classes/teacher-cla
 import "./teacher-classes.section.css";
 
 interface TeacherClassesSectionProps {
-  /** Filtro por estado; llega de searchParams y se aplica en el `where`. */
+  /** Filter by status; comes from searchParams and is applied in the `where`. */
   statusCode?: ClassStatusCode;
 }
 

@@ -5,27 +5,27 @@ export interface StudySummary {
   name: string;
   description?: string;
   kindLabel: string;
-  /** Code del catálogo: la interfaz decide con él, no con la etiqueta. */
+  /** Catalog code: the interface decides with it, not with the label. */
   kindCode: string;
   gameCount: number;
   updatedAtLabel: string;
-  /** Nombre del curso cuando la base pertenece a un curso (sólo lectura). */
+  /** Name of the course when the database belongs to a course (read-only). */
   courseName?: string;
   isCourseStudy: boolean;
-  /** Nombre del maestro cuando la colección se la repartieron (sólo lectura). */
+  /** Name of the teacher when the collection was shared with them (read-only). */
   sharedByName?: string;
   /**
-   * Qué puede hacer con este estudio quien está mirando. Sale de
-   * services/studies/study-rules, que es la misma tabla que aplican las server
-   * actions: la interfaz no ofrece nada que la acción vaya a rechazar.
+   * What whoever is looking can do with this study. It comes from
+   * services/studies/study-rules, which is the same table the server actions
+   * apply: the interface offers nothing the action is going to reject.
    */
   permissions: StudyPermissions;
-  /** Partidas de este estudio citadas en alguna clase; se avisa antes de borrar. */
+  /** Games of this study cited in some class; a warning is given before deleting. */
   citedGameCount: number;
   href: string;
 }
 
-/** Un alumno al que se le repartió una colección. */
+/** A student a collection was shared with. */
 export interface StudyShareItem {
   userId: string;
   displayName: string;
@@ -33,14 +33,14 @@ export interface StudyShareItem {
   sharedAtLabel: string;
 }
 
-/** Alumno del profesor, para el desplegable de repartir una colección. */
+/** Student of the teacher, for the dropdown to share a collection. */
 export interface StudentOption {
   id: string;
   displayName: string;
   email: string;
 }
 
-/** Opción del catálogo DatabaseKind para el formulario de crear estudio. */
+/** Option of the DatabaseKind catalog for the create-study form. */
 export interface StudyKindOption {
   code: string;
   label: string;
@@ -48,18 +48,18 @@ export interface StudyKindOption {
 
 export interface StudyGameItem {
   id: string;
-  /** Cómo se distingue dentro del estudio. Ausente = se identifica por la pareja. */
+  /** How it is told apart within the study. Absent = it is identified by the pairing. */
   title?: string;
   /**
-   * Lo que se lee en la columna «Nombre». Nunca vacío: cae al número de ronda
-   * y, a falta de él, a la posición dentro del estudio.
+   * What is read in the "Nombre" column. Never empty: it falls back to the round
+   * number and, failing that, to the position within the study.
    */
   label: string;
-  /** Citada en el contenido de alguna clase: se marca en la lista. */
+  /** Cited in the content of some class: it is marked in the list. */
   citedInClass: boolean;
   white: string;
   black: string;
-  /** Token PGN del resultado: "1-0", "0-1", "1/2-1/2", "*". */
+  /** PGN token of the result: "1-0", "0-1", "1/2-1/2", "*". */
   resultLabel: string;
   round?: string;
   eco?: string;
@@ -69,8 +69,8 @@ export interface StudyGameItem {
 }
 
 /**
- * Partida vista en clase. Como no vive en una base del alumno, su enlace lleva
- * a la clase donde se vio, no al visor de estudios.
+ * Game seen in class. Since it does not live in a database of the student's,
+ * its link leads to the class where it was seen, not to the studies viewer.
  */
 export interface ClassGameItem {
   id: string;
@@ -89,37 +89,37 @@ export interface StudyDetail {
   name: string;
   description?: string;
   kindLabel: string;
-  /** Code del catálogo, para preseleccionar el tipo al editar. */
+  /** Catalog code, to preselect the kind when editing. */
   kindCode: string;
   createdAtLabel: string;
   isCourseStudy: boolean;
   courseName?: string;
-  /** Nombre del maestro cuando la colección se la repartieron. */
+  /** Name of the teacher when the collection was shared with them. */
   sharedByName?: string;
   permissions: StudyPermissions;
   /**
-   * A quién se le repartió. Sólo se llena para el DUEÑO de una colección: a
-   * quien la recibe no le incumbe con quién más la comparten.
+   * Who it was shared with. It is only filled for the OWNER of a collection:
+   * whoever receives it has no business knowing who else it is shared with.
    */
   shares: StudyShareItem[];
-  /** Partidas del estudio citadas en el contenido de alguna clase. */
+  /** Games of the study cited in the content of some class. */
   citedGameCount: number;
   games: StudyGameItem[];
 }
 
 export interface GameView {
   id: string;
-  /** El que mira es el dueño de la base: puede editar y anotar la partida. */
+  /** Whoever is looking owns the database: they can edit and annotate the game. */
   canEdit: boolean;
-  /** Cómo se distingue dentro del estudio. Ausente = se identifica por la pareja. */
+  /** How it is told apart within the study. Absent = it is identified by the pairing. */
   title?: string;
-  /** Códigos crudos, para poder rellenar el formulario de datos. */
+  /** Raw codes, so the data form can be filled in. */
   resultCode: string;
-  /** ISO corto (aaaa-mm-dd) para el <input type="date">. */
+  /** Short ISO (yyyy-mm-dd) for the <input type="date">. */
   playedAtValue?: string;
   round?: string;
   initialFen?: string;
-  /** Bloques de clase que citan esta partida: borrarla los dejaría vacíos. */
+  /** Class blocks that cite this game: deleting it would leave them empty. */
   classBlockCount: number;
   studyId: string;
   studyName: string;
@@ -130,7 +130,7 @@ export interface GameView {
   blackElo?: number;
   whiteTitle?: string;
   blackTitle?: string;
-  /** Código de federación del PGN («MEX»); la bandera se compone al pintar. */
+  /** The PGN's federation code ("MEX"); the flag is composed when rendering. */
   whiteCountry?: string;
   blackCountry?: string;
   resultLabel: string;

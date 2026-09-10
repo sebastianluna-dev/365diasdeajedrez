@@ -9,7 +9,7 @@ interface PositionSelectorProps {
   onChange: (positionId: string) => void;
 }
 
-/** Diagramas guardados del propio profesor (Position con propietario TEACHER). */
+/** The teacher's own saved diagrams (Position with owner TEACHER). */
 export function PositionSelector({ positions, value, onChange }: PositionSelectorProps) {
   return (
     <FormField

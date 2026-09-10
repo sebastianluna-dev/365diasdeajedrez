@@ -15,8 +15,8 @@ export async function generateMetadata({ params }: TeacherStudentPageProps): Pro
 
 export default async function TeacherStudentPage({ params }: TeacherStudentPageProps) {
   const { studentId } = await params;
-  // El servicio abre con requireTeacher() y sólo devuelve al alumno si la
-  // asignación sigue activa: por URL directa, un alumno ajeno es un 404.
+  // The service opens with requireTeacher() and only returns the student when
+  // the assignment is still active: by direct URL, someone else's student is a 404.
   const student = await getAssignedStudentDetail(studentId);
   if (!student) notFound();
 

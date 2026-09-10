@@ -1,7 +1,7 @@
 .new-study {
   flex: none;
 
-  /* Sólo la medida: el centrado, el fondo y la superficie los pone
+  /* Only the size: the centring, the backdrop and the surface are set by
      `.platform-dialog`. */
   & .new-study__dialog {
     width: min(440px, calc(100vw - 32px));

@@ -1,8 +1,8 @@
 "use client";
 
-// Último recurso: sólo se usa si falla el propio root layout de alguna de las
-// tres zonas, así que tiene que traer su `<html>` y su `<body>` y no puede
-// contar con ninguna hoja de estilos cargada. Por eso va con estilos en línea.
+// Last resort: only used when the root layout of one of the three areas
+// itself fails, so it has to bring its own `<html>` and `<body>` and cannot
+// rely on any stylesheet being loaded. That is why it uses inline styles.
 export default function GlobalError({ error, retry }: { error: Error & { digest?: string }; retry: () => void }) {
   return (
     <html lang="es">

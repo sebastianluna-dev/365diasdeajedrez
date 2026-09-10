@@ -48,8 +48,8 @@
     border-color: var(--platform-accent);
   }
 
-  /* Fondo proporcional a la frecuencia. Va detrás del contenido (z-index 0
-     frente al 1 de los textos) para no tapar nada. */
+  /* Background proportional to the frequency. It goes behind the content
+     (z-index 0 against the texts' 1) so as not to cover anything. */
   & .explorer-next-moves__bar {
     position: absolute;
     inset: 0 auto 0 0;

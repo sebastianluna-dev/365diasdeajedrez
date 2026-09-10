@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 import { deriveExerciseData, mainlinePath, positionAfter } from "./exercise-derivation";
 import { makeFen } from "chessops/fen";
 
-// Los casos base son los ejercicios REALES del seed (prisma/seed-data.ts): son
-// los que ya están en la base y en el entrenador, así que sirven de red contra
-// cualquier desviación al compartir esta derivación con el editor del staff.
+// The base cases are the REAL exercises of the seed (prisma/seed-data.ts): they
+// are the ones already in the database and in the trainer, so they act as a net
+// against any drift when sharing this derivation with the staff editor.
 
 const NAJDORF_LINE = {
   initialFen: null,
@@ -50,7 +50,7 @@ describe("positionAfter", () => {
   it("señala la jugada ilegal y su posición dentro de la secuencia", () => {
     expect(() => positionAfter(null, ["e4", "e5", "Qh9"])).toThrow(/"Qh9"/);
     expect(() => positionAfter(null, ["e4", "e5", "Qh9"])).toThrow(/posición 3 de/);
-    // Legal en notación pero no en esta posición: también tiene que caer.
+    // Legal in notation but not in this position: it also has to fail.
     expect(() => positionAfter(null, ["e4", "e5", "Nf6"])).toThrow(/"Nf6"/);
   });
 });
@@ -63,7 +63,7 @@ describe("deriveExerciseData", () => {
     expect(derived.endPly).toBe(10);
     expect(derived.path).toBe("0.0");
     expect(derived.line).toBe("c5 Nf3 d6 d4 cxd4 Nxd4 Nf6 Nc3 a6");
-    // La posición congelada es la de después de 1.e4.
+    // The frozen position is the one after 1.e4.
     expect(derived.startFen).toBe("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1");
   });
 

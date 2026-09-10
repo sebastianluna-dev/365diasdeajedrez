@@ -14,7 +14,7 @@ import {
 } from "./courses.mapper";
 import type { ChapterView, CourseDetail, CourseSummary, LessonView } from "./courses.types";
 
-// Listado completo: sólo lo usa la página de «Mis cursos», que necesita todos.
+// Full listing: only the "Mis cursos" page uses it, and it needs them all.
 const getPublishedCourses = cache(async () => {
   const db = getPlatformDb();
   return db.course.findMany({
@@ -24,8 +24,8 @@ const getPublishedCourses = cache(async () => {
   });
 });
 
-// Consulta dirigida para las vistas de un solo curso (detalle, capítulo y
-// lección): cache() deduplica por slug dentro del mismo request.
+// Targeted query for the single-course views (detail, chapter and lesson):
+// cache() deduplicates by slug within the same request.
 const getPublishedCourse = cache(async (courseId: string) => {
   const db = getPlatformDb();
   return db.course.findFirst({
@@ -34,7 +34,7 @@ const getPublishedCourse = cache(async (courseId: string) => {
   });
 });
 
-/** Progreso del usuario acotado a un curso, para las vistas de detalle. */
+/** The user's progress narrowed to one course, for the detail views. */
 const getCourseProgressState = cache(async (courseId: string): Promise<UserCourseState> => {
   const db = getPlatformDb();
   const user = await getCurrentUser();
@@ -48,9 +48,9 @@ const getCourseProgressState = cache(async (courseId: string): Promise<UserCours
       where: { userId_courseId: { userId: user.id, courseId } },
       select: { lastLessonId: true, status: { select: { code: true } } },
     }),
-    // Los ajustes del curso entran en el ESTADO y no se consultan aparte: son
-    // «lo que este alumno tiene en este curso», igual que su progreso, y así
-    // hay un solo sitio que los lee.
+    // The course settings go into the STATE and are not queried separately: they
+    // are "what this student has in this course", just like their progress, and
+    // that way there is a single place that reads them.
     db.userCourseSettings.findUnique({
       where: { userId_courseId: { userId: user.id, courseId } },
       select: { onlyPriorityLessons: true, boardOrientation: { select: { code: true } } },
@@ -119,10 +119,10 @@ export async function getUserCourses(): Promise<CourseSummary[]> {
 }
 
 /**
- * El curso de «Continuar estudiando» del dashboard: el primero en progreso,
- * por nombre, que es el mismo orden de «Mis cursos». Se localiza con una
- * consulta dirigida al progreso y después se carga SÓLO ese curso, en vez de
- * traer el catálogo entero con capítulos y lecciones para quedarse con uno.
+ * The "Continuar estudiando" course of the dashboard: the first one in
+ * progress, by name, which is the same order as "Mis cursos". It is located
+ * with a query targeted at the progress and then ONLY that course is loaded,
+ * instead of bringing the whole catalog with chapters and lessons to keep one.
  */
 export async function getContinueStudyingCourse(): Promise<(CourseSummary & { lastLessonName?: string }) | null> {
   const db = getPlatformDb();
@@ -162,8 +162,8 @@ export async function getChapterView(courseId: string, chapterOrder: number): Pr
   ]);
   if (!course) return null;
 
-  // El capítulo sale del curso ya cargado: el include trae todos sus capítulos,
-  // así que resolver su número de orden no cuesta una consulta más.
+  // The chapter comes from the already loaded course: the include brings all of
+  // its chapters, so resolving its order number does not cost one more query.
   const chapterId = course.chapters.find((chapter) => chapter.order === chapterOrder)?.id;
   if (!chapterId) return null;
 
@@ -179,18 +179,19 @@ export async function getChapterView(courseId: string, chapterOrder: number): Pr
 }
 
 /**
- * La lección se direcciona sola (`/lecciones/02482009`), así que el curso no
- * llega por la URL: se deduce de la propia lección.
+ * The lesson addresses itself (`/lecciones/02482009`), so the course does not
+ * arrive through the URL: it is deduced from the lesson itself.
  *
- * Eso obliga a dos viajes en vez de uno —primero la lección, después su curso—
- * pero es el precio de que el enlace a una lección no tenga que arrastrar curso
- * y capítulo. Si el curso no está publicado, la lección tampoco se sirve.
+ * That forces two round trips instead of one — first the lesson, then its
+ * course — but it is the price of a link to a lesson not having to drag course
+ * and chapter along. If the course is not published, the lesson is not served
+ * either.
  */
 export async function getLessonView(lessonId: string): Promise<LessonView | null> {
   const db = getPlatformDb();
-  // Frontera de sesión: la lección se busca por su id suelto, así que hay que
-  // saber quién pregunta ANTES de consultarla. Los ajustes del alumno ya no se
-  // leen aquí —viajan dentro del estado del curso—, pero la frontera se queda.
+  // Session border: the lesson is looked up by its bare id, so who is asking has
+  // to be known BEFORE querying it. The student's settings are no longer read
+  // here — they travel inside the course's state — but the border stays.
   await getCurrentUser();
 
   const lesson = await db.lesson.findUnique({
@@ -212,7 +213,7 @@ export async function getLessonView(lessonId: string): Promise<LessonView | null
   if (!lesson) return null;
 
   const courseId = lesson.chapter.courseId;
-  // Los ajustes ya vienen dentro del estado; antes se consultaban aparte aquí.
+  // The settings already come inside the state; before they were queried separately here.
   const [course, progress] = await Promise.all([
     getPublishedCourse(courseId),
     getCourseProgressState(courseId),

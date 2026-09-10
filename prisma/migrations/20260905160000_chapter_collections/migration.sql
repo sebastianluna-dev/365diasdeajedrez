@@ -1,19 +1,19 @@
--- Las colecciones de partidas de un curso pasan a ser POR CAPÍTULO.
+-- A course's game collections become PER CHAPTER.
 --
--- Antes había una por curso. Cada capítulo junta ahora las partidas que usan
--- sus lecciones; `courseId` se queda además de `chapterId` —no en su lugar—
--- porque es lo que decide quién ve la base (un alumno ve las de los cursos que
--- ha empezado) y lo que permite listar de una vez todas las partidas del curso
--- sin unir por capítulo.
+-- Before there was one per course. Each chapter now gathers the games its
+-- lessons use; `courseId` stays alongside `chapterId` — not instead of it —
+-- because it is what decides who sees the database (a student sees those of the
+-- courses they have started) and what makes it possible to list all of the
+-- course's games at once without joining by chapter.
 --
--- Esto sólo abre el hueco. El traslado de las partidas que ya existen y el
--- alta de las que salen del PGN propio de cada lección los hace
--- `scripts/migrate-chapter-collections.ts`, que necesita leer PGN y no cabe en
--- SQL.
+-- This only opens the slot. Moving the games that already exist and creating
+-- those that come from each lesson's own PGN is done by
+-- `scripts/migrate-chapter-collections.ts`, which needs to read PGN and does
+-- not fit in SQL.
 ALTER TABLE "GameDatabase" ADD COLUMN "chapterId" TEXT;
 
--- Una sola colección por capítulo: es lo que hace que «la colección de este
--- capítulo» sea una fila y no una lista que haya que desempatar.
+-- A single collection per chapter: it is what makes "this chapter's collection"
+-- one row and not a list that has to be disambiguated.
 CREATE UNIQUE INDEX "GameDatabase_chapterId_key" ON "GameDatabase"("chapterId");
 
 ALTER TABLE "GameDatabase" ADD CONSTRAINT "GameDatabase_chapterId_fkey"

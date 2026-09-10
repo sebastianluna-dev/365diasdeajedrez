@@ -2,8 +2,8 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  /* Un filo a todo lo ancho por debajo: es lo que las hace leerse como
-     pestañas de una misma ficha y no como una fila de botones sueltos. */
+  /* A full-width rule underneath: it is what makes them read as tabs of one
+     record and not as a row of loose buttons. */
   box-shadow: inset 0 -1px 0 var(--platform-border);
 
   & .staff-tabs__tab {
@@ -11,8 +11,8 @@
     align-items: center;
     gap: 8px;
     padding: 11px 14px;
-    /* El subrayado activo se pinta con el mismo recurso que el filo de abajo,
-       así que se superpone limpio sin mover nada de sitio. */
+    /* The active underline is drawn with the same device as the rule below, so
+       it overlaps cleanly without moving anything. */
     box-shadow: inset 0 -2px 0 transparent;
     color: var(--platform-text-muted);
     font-size: 15px;

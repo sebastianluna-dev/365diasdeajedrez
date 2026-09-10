@@ -8,12 +8,12 @@ interface LessonReferenceFieldProps {
 }
 
 /**
- * La lección se referencia escribiendo su id, no eligiéndola de una lista.
+ * The lesson is referenced by typing its id, not by choosing it from a list.
  *
- * No hace falta validar aquí: el visor que va justo debajo (`MovePathPicker`)
- * carga la lección en cuanto el id sirve, así que la previsualización ES la
- * comprobación. Si no aparece nada, el id no vale. Quien decide de verdad es el
- * servidor, que además exige que su curso esté publicado.
+ * No need to validate here: the viewer right below (`MovePathPicker`) loads
+ * the lesson as soon as the id works, so the preview IS the check. If nothing
+ * appears, the id is no good. The real decision is the server's, which also
+ * requires its course to be published.
  */
 export function LessonReferenceField({ value, onChange }: LessonReferenceFieldProps) {
   return (

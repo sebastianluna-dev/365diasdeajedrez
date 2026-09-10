@@ -1,14 +1,14 @@
-// Codes estables de los catálogos de «Mis estudios» (GameDatabase / Game).
+// Stable codes of the "Mis estudios" catalogs (GameDatabase / Game).
 
 /**
- * Los cuatro tipos de estudio. Lo que puede hacerse con cada uno NO está aquí
- * sino en services/studies/study-rules.ts: esto es sólo el catálogo.
+ * The four study kinds. What can be done with each is NOT here but in
+ * services/studies/study-rules.ts: this is only the catalog.
  *
- * - `MY_GAMES`: se crea con la cuenta, hay exactamente uno y no se borra.
- * - `TOURNAMENT`: las partidas que el alumno jugó en una misma competición.
- * - `STUDY`: material libre que el alumno junta para analizar.
- * - `COLLECTION`: contenido que le LLEGA —de un curso o de un maestro— y que
- *   para él es de sólo lectura.
+ * - `MY_GAMES`: created with the account, there is exactly one and it is not deleted.
+ * - `TOURNAMENT`: the games the student played in one competition.
+ * - `STUDY`: free material the student gathers to analyse.
+ * - `COLLECTION`: content that REACHES them — from a course or a teacher — and
+ *   is read-only for them.
  */
 export const DATABASE_KIND = {
   MY_GAMES: "MY_GAMES",
@@ -27,7 +27,7 @@ export const GAME_SOURCE = {
 
 export type GameSourceCode = (typeof GAME_SOURCE)[keyof typeof GAME_SOURCE];
 
-/** El label del catálogo lleva el token PGN ("1-0", "0-1", "1/2-1/2", "*"). */
+/** The catalog label carries the PGN token ("1-0", "0-1", "1/2-1/2", "*"). */
 export const GAME_RESULT = {
   WHITE_WINS: "WHITE_WINS",
   BLACK_WINS: "BLACK_WINS",
@@ -37,7 +37,7 @@ export const GAME_RESULT = {
 
 export type GameResultCode = (typeof GAME_RESULT)[keyof typeof GAME_RESULT];
 
-/** Token PGN → code del catálogo GameResult (para importadores y seeds). */
+/** PGN token → GameResult catalog code (for importers and seeds). */
 export const GAME_RESULT_BY_PGN_TOKEN: Record<string, GameResultCode> = {
   "1-0": GAME_RESULT.WHITE_WINS,
   "0-1": GAME_RESULT.BLACK_WINS,

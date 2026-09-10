@@ -1,13 +1,13 @@
--- Slug de capítulo, e identificadores de lección cortos para la URL.
+-- Chapter slug, and short lesson identifiers for the URL.
 --
--- Los renombres de lección NO son aleatorios: los ids del curso importado se
--- derivan del `stableKey` de cada lección, así que el mapeo viejo→nuevo se
--- calculó con el mismo hash que usa prisma/seed-courses/think-like-a-grandmaster.ts.
--- Si fueran aleatorios, el siguiente seed no encontraría las filas y las duplicaría.
+-- The lesson renames are NOT random: the imported course's ids are derived from
+-- each lesson's `stableKey`, so the old→new mapping was computed with the same
+-- hash prisma/seed-courses/think-like-a-grandmaster.ts uses. If they were
+-- random, the next seed would not find the rows and would duplicate them.
 --
--- Renombrar la clave primaria de Lesson es seguro porque todo lo que apunta a
--- ella es ON UPDATE CASCADE: TrainingExercise, LessonTopic, LessonProgress,
--- CourseProgress.lastLessonId y ClassBlock.lessonId.
+-- Renaming Lesson's primary key is safe because everything pointing at it is
+-- ON UPDATE CASCADE: TrainingExercise, LessonTopic, LessonProgress,
+-- CourseProgress.lastLessonId and ClassBlock.lessonId.
 
 ALTER TABLE "Chapter" ADD COLUMN "slug" TEXT;
 
@@ -20,7 +20,7 @@ UPDATE "Chapter" SET slug = 'ideas-basicas' WHERE id = 'c1000000-0000-4000-8000-
 UPDATE "Chapter" SET slug = 'la-variante-najdorf' WHERE id = 'c1000000-0000-4000-8000-000000000002';
 UPDATE "Chapter" SET slug = 'posiciones-fundamentales' WHERE id = 'c1000000-0000-4000-8000-000000000003';
 
--- Cualquier capítulo que no venga del seed: se deriva del nombre.
+-- Any chapter that does not come from the seed: derived from the name.
 UPDATE "Chapter" SET slug = trim(both '-' from regexp_replace(lower(name), '[^a-z0-9]+', '-', 'g')) WHERE slug IS NULL;
 UPDATE "Chapter" SET slug = 'capitulo-' || "order" WHERE slug IS NULL OR slug = '';
 
@@ -197,7 +197,7 @@ UPDATE "Lesson" SET id = 'sicNajd2' WHERE id = 'd0000000-0000-4000-8000-00000000
 UPDATE "Lesson" SET id = 'torreLuc' WHERE id = 'd0000000-0000-4000-8000-000000000006';
 UPDATE "Lesson" SET id = 'torrePhi' WHERE id = 'd0000000-0000-4000-8000-000000000007';
 
--- Y las lecciones que no vengan del seed, con un id aleatorio.
+-- And the lessons that do not come from the seed, with a random id.
 DO $$
 DECLARE
   alphabet CONSTANT text := 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

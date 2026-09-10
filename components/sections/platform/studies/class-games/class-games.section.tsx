@@ -5,13 +5,13 @@ import { getClassGames } from "@/services/studies/studies.service";
 import "./class-games.section.css";
 
 /**
- * Las partidas que el alumno ha visto en sus clases. No es un estudio suyo:
- * son punteros a partidas que viven en la base de otra persona, así que cada
- * fila lleva a la CLASE donde se vio —allí ya tiene acceso y además conserva
- * el contexto— y no al visor de estudios.
+ * The games the student has seen in their classes. It is not a study of
+ * theirs: they are pointers to games that live in someone else's database, so
+ * each row leads to the CLASS where it was seen — there they already have
+ * access and the context is kept — and not to the studies viewer.
  */
 export async function ClassGamesSection() {
-  // Primer await de la página: el servicio resuelve la identidad en el DAL.
+  // First await of the page: the service resolves the identity in the DAL.
   const games = await getClassGames();
 
   return (

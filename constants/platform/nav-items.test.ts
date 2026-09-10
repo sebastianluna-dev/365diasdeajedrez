@@ -29,8 +29,8 @@ describe("buildPlatformNavGroups", () => {
   });
 
   it("ofrece el explorador tanto al alumno como al profesor", () => {
-    // Es una herramienta transversal: quién ve qué partidas lo decide el filtro
-    // de visibilidad, no el menú.
+    // It is a cross-cutting tool: who sees which games is decided by the
+    // visibility filter, not the menu.
     const hasExplorer = (items: { href: string }[]) => items.some((item) => item.href === "/explorador");
 
     expect(hasExplorer(STUDENT_NAV_ITEMS)).toBe(true);
@@ -70,13 +70,13 @@ describe("activeNavHref", () => {
   });
 
   it("no marca las áreas del alumno en el menú del profesor", () => {
-    // Con el menú excluyente, un profesor que entre a /estudios (sigue siendo
-    // suyo como usuario) no tiene ningún ítem que encender.
+    // With the exclusive menu, a teacher who enters /estudios (still theirs as
+    // a user) has no item to light up.
     expect(activeNavHref(profesor, "/estudios")).toBeNull();
   });
 
   it("no confunde un prefijo textual con una ruta hija", () => {
-    // "/profesor" no debe encenderse en "/profesorado".
+    // "/profesor" must not light up on "/profesorado".
     expect(activeNavHref(profesor, "/profesorado")).toBeNull();
   });
 });

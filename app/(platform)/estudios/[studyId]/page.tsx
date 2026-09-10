@@ -24,14 +24,14 @@ export async function generateMetadata({ params }: StudyPageProps): Promise<Meta
 
 export default async function StudyPage({ params, searchParams }: StudyPageProps) {
   const { studyId } = await params;
-  // `getStudyById` pasa por el DAL, así que este primer await hace de frontera
-  // de sesión además de traer los datos.
+  // `getStudyById` goes through the DAL, so this first await acts as the
+  // session border as well as fetching the data.
   const [study, { error }] = await Promise.all([getStudyById(studyId), searchParams]);
   if (!study) notFound();
 
-  // Todo esto alimenta formularios que sólo existen si se puede escribir, así
-  // que en lo que llega hecho —bases de curso, colecciones repartidas— no se
-  // consulta nada.
+  // All of this feeds forms that only exist when writing is allowed, so for
+  // what arrives ready-made — course databases, shared collections — nothing
+  // is queried.
   const [kinds, results, classGames, students] = study.permissions.canEditGames
     ? await Promise.all([getStudyKinds(), getGameResultOptions(), getClassGames(), getShareableStudents()])
     : [[], [], [], []];

@@ -7,29 +7,29 @@ import type { MoveEvaluation } from "@/lib/chess/pgn-tree";
 import "./game-review-chart.comp.css";
 
 interface GameReviewChartProps {
-  /** Una por posición de la línea principal; la primera es la de partida. */
+  /** One per main-line position; the first is the starting one. */
   evaluations: MoveEvaluation[];
   review: GameReview;
-  /** El ply en el que está el tablero, para el cursor. 0 es la posición inicial. */
+  /** The ply the board is at, for the cursor. 0 is the initial position. */
   currentPly: number;
-  /** Llevar el tablero al ply que se señale sobre la gráfica. */
+  /** Takes the board to the ply pointed at on the chart. */
   onSelectPly: (ply: number) => void;
 }
 
-/** Medidas del dibujo. El SVG escala solo; lo que se fija es la proporción. */
+/** Drawing measurements. The SVG scales by itself; what is fixed is the ratio. */
 const WIDTH = 404;
 const HEIGHT = 140;
 const MIDDLE = HEIGHT / 2;
-/** Cuánto sube la línea con una ventaja aplastante. */
+/** How far the line rises with a crushing advantage. */
 const AMPLITUDE = 62;
 
 /**
- * La ventaja a lo largo de la partida.
+ * The advantage over the course of the game.
  *
- * El eje vertical NO son peones sino probabilidad de ganar: entre +7 y +9 no
- * hay nada que contar, y entre +0,2 y +1 se decide la partida. Es la misma
- * curva con la que se calcula la precisión, así que la gráfica y los números de
- * al lado cuentan lo mismo.
+ * The vertical axis is NOT pawns but win probability: between +7 and +9
+ * there is nothing to tell, and between +0.2 and +1 the game is decided. It
+ * is the same curve accuracy is computed with, so the chart and the numbers
+ * next to it tell the same story.
  */
 export function GameReviewChart({ evaluations, review, currentPly, onSelectPly }: GameReviewChartProps) {
   const { line, area, points } = useMemo(() => {
@@ -49,7 +49,7 @@ export function GameReviewChart({ evaluations, review, currentPly, onSelectPly }
 
   const cursorX = points[Math.min(currentPly, points.length - 1)]?.x ?? 0;
 
-  /** De dónde está el ratón al ply más cercano. */
+  /** From where the mouse is to the nearest ply. */
   const selectAt = (event: ReactPointerEvent<SVGSVGElement>) => {
     const box = event.currentTarget.getBoundingClientRect();
     const ratio = (event.clientX - box.left) / box.width;
@@ -70,8 +70,8 @@ export function GameReviewChart({ evaluations, review, currentPly, onSelectPly }
         aria-label="Gráfica de ventaja a lo largo de la partida"
         className="game-review-chart__plot"
         onPointerDown={selectAt}
-        // Arrastrar recorre la partida, que es lo que uno intenta hacer nada
-        // más ver una gráfica así.
+        // Dragging scrubs through the game, which is what one tries to do the
+        // moment one sees a chart like this.
         onPointerMove={(event) => event.buttons > 0 && selectAt(event)}
       >
         <defs>
@@ -84,8 +84,8 @@ export function GameReviewChart({ evaluations, review, currentPly, onSelectPly }
         </defs>
 
         <rect x="0" y="0" width={WIDTH} height={HEIGHT} className="game-review-chart__ground" />
-        {/* El mismo trazo, recortado arriba y abajo: lo que sobresale de la
-            mitad es de quien va ganando, y se pinta de su color. */}
+        {/* The same stroke, clipped above and below: what sticks out past the
+            middle belongs to whoever is winning, and is painted in their colour. */}
         <path d={area} clipPath="url(#game-review-top)" className="game-review-chart__area_side_white" />
         <path d={area} clipPath="url(#game-review-bottom)" className="game-review-chart__area_side_black" />
         <line x1="0" y1={MIDDLE} x2={WIDTH} y2={MIDDLE} className="game-review-chart__axis" />

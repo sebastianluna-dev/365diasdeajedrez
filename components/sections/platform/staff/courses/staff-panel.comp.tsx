@@ -3,22 +3,22 @@ import "./staff-panel.comp.css";
 
 interface StaffPanelProps {
   title: string;
-  /** Un dato corto junto al título: «5 capítulos · 162 lecciones». */
+  /** A short fact next to the title: "5 capítulos · 162 lecciones". */
   meta?: string;
-  /** La acción de la tarjeta, alineada al filo derecho de su cabecera. */
+  /** The card's action, aligned to the right edge of its header. */
   action?: ReactNode;
-  /** Frase de contexto bajo la cabecera, cuando la tarjeta no se explica sola. */
+  /** Context sentence under the header, when the card does not explain itself. */
   description?: string;
   children: ReactNode;
 }
 
 /**
- * Una tarjeta del panel de cursos: cabecera con título, dato y acción, y debajo
- * el contenido.
+ * A card of the courses panel: header with title, fact and action, and the
+ * content below.
  *
- * La cabecera lleva su propio filo a todo el ancho —con márgenes negativos que
- * anulan el relleno— porque una raya que no llega a los bordes se lee como un
- * subrayado del título en vez de como la división de la tarjeta.
+ * The header carries its own full-width rule — with negative margins that
+ * cancel the padding — because a line that does not reach the edges reads as
+ * an underline of the title instead of as the card's division.
  */
 export function StaffPanel({ title, meta, action, description, children }: StaffPanelProps) {
   return (

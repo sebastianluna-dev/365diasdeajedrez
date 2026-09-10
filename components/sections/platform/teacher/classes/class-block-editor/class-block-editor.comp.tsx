@@ -17,7 +17,7 @@ interface ClassBlockEditorProps {
   classId: string;
   blocks: TeacherClassBlock[];
   options: BlockFormOptions;
-  /** Partida preseleccionada al llegar desde «Usar en una clase» (`?gameId=`). */
+  /** Game preselected when arriving from "Usar en una clase" (`?gameId=`). */
   initialGameId?: string;
 }
 
@@ -37,11 +37,11 @@ function blockSummary(block: TeacherClassBlock): string {
 }
 
 /**
- * Editor del contenido de la clase. El estado que vive aquí es SÓLO de interfaz
- * (qué bloque está abierto, qué tipo se está añadiendo): cada operación —añadir,
- * editar, mover, borrar— es una server action que revalida la página. Preparar
- * una clase no es colaborativo ni de alta frecuencia, así que no hay estado
- * optimista que pueda desincronizarse de la base.
+ * Editor of the class content. The state that lives here is interface ONLY
+ * (which block is open, which kind is being added): every operation — add,
+ * edit, move, delete — is a server action that revalidates the page. Preparing
+ * a class is neither collaborative nor high-frequency, so there is no
+ * optimistic state that could drift from the database.
  */
 export function ClassBlockEditor({ classId, blocks, options, initialGameId }: ClassBlockEditorProps) {
   const [editingId, setEditingId] = useState<string | null>(null);

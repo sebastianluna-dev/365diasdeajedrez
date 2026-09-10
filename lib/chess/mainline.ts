@@ -1,32 +1,31 @@
 import { parsePgnTree } from "./pgn-tree";
 
-// La línea principal de un PGN, que es lo único que se entrena de memoria.
+// The main line of a PGN, which is the only thing trained from memory.
 //
-// Las variantes y subvariantes siguen existiendo dentro del PGN y el modo
-// estudiar las recorre enteras; el repaso NO las evalúa. Por eso «una lección
-// entrenable» es UNA línea y no un conjunto de caminos raíz-hoja: encaja en el
-// TrainingExercise que ya existe sin inventar una tabla de líneas.
+// Variations and sub-variations still exist inside the PGN and study mode walks
+// through all of them; the review does NOT evaluate them. That is why "a
+// trainable lesson" is ONE line and not a set of root-to-leaf paths: it fits
+// the TrainingExercise that already exists without inventing a table of lines.
 //
-// Módulo puro: sólo reutiliza el árbol de pgn-tree.ts.
+// Pure module: it only reuses the tree from pgn-tree.ts.
 
 export interface MainlineResult {
-  /** SAN de la línea principal, en orden. */
+  /** SANs of the main line, in order. */
   sans: string[];
-  /** FEN de partida del PGN, o null si arranca en la posición inicial. */
+  /** Starting FEN of the PGN, or null when it starts at the initial position. */
   initialFen: string | null;
 }
 
-/** Posición de partida estándar, para no guardar un FEN que no aporta nada. */
+/** Standard starting position, so as not to store a FEN that adds nothing. */
 const STANDARD_START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 /**
- * Desde qué posición arranca un PGN, o `null` si es la de partida.
+ * Which position a PGN starts from, or `null` if it is the initial one.
  *
- * A diferencia de `extractMainline`, esto responde también cuando el PGN NO
- * TIENE JUGADAS: un diagrama suelto —cabeceras y nada más— es contenido
- * legítimo de una lección, y de hecho es lo que son casi todas las del curso de
- * Kotov. Quien sólo necesita la posición no debería quedarse sin respuesta por
- * no haber una línea que entrenar.
+ * Unlike `extractMainline`, this also answers when the PGN HAS NO MOVES: a lone
+ * diagram — headers and nothing else — is legitimate lesson content, and in fact
+ * that is what almost all of the Kotov course's lessons are. Whoever only needs
+ * the position should not be left without an answer for want of a line to train.
  */
 export function startFenOf(pgn: string): string | null {
   const initialFen = parsePgnTree(pgn)?.initialFen;
@@ -35,12 +34,12 @@ export function startFenOf(pgn: string): string | null {
 }
 
 /**
- * Recorre `children[0]` desde la raíz, que es por convención la línea principal
- * —y es lo que da por hecho `makePgn` al serializar—.
+ * Walks `children[0]` from the root, which by convention is the main line — and
+ * is what `makePgn` assumes when serialising.
  *
- * Devuelve null si el PGN no se puede leer o no tiene ninguna jugada: una
- * lección así no se puede entrenar, y es mejor decirlo que derivar un ejercicio
- * vacío que el entrenador rechazaría después.
+ * Returns null if the PGN cannot be read or has no moves at all: a lesson like
+ * that cannot be trained, and it is better to say so than to derive an empty
+ * exercise the trainer would reject later.
  */
 export function extractMainline(pgn: string): MainlineResult | null {
   const tree = parsePgnTree(pgn);

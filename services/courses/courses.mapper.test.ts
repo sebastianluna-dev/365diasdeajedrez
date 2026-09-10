@@ -10,10 +10,10 @@ import {
   type UserCourseState,
 } from "./courses.mapper";
 
-// El filtro de «sólo lecciones imprescindibles» vive entero aquí: la action se
-// limita a guardar una fila. Por eso se prueba en el mapper, sin base de datos.
+// The "only essential lessons" filter lives entirely here: the action merely
+// stores a row. That is why it is tested in the mapper, without a database.
 //
-// Curso de prueba: dos capítulos de tres lecciones. Prioritarias, la 1 y la 4.
+// Test course: two chapters of three lessons. Priority ones are 1 and 4.
 
 interface LessonSpec {
   id: string;
@@ -110,7 +110,7 @@ describe("con el filtro encendido", () => {
   });
 
   it("y también las que el alumno ya tocó, aunque no sean prioritarias", () => {
-    // Es la mitad de la regla que evita el peor efecto del filtro.
+    // It is half of the rule that avoids the filter's worst effect.
     const view = mapChapterView(COURSE, "cap-1", state({ onlyPriorityLessons: true, lessonStatus: completed("l3") }), {
       hasExercises: false,
       inTrainer: false,
@@ -127,8 +127,8 @@ describe("con el filtro encendido", () => {
   });
 
   it("el porcentaje NUNCA retrocede al encenderlo", () => {
-    // Dos completadas de seis (33 %). Al filtrar quedan las dos prioritarias
-    // más las dos hechas: las hechas siguen contando arriba y abajo.
+    // Two completed out of six (33 %). When filtering, the two priority ones plus
+    // the two done remain: the done ones keep counting above and below.
     const status = completed("l2", "l3");
     const antes = mapCourseProgress(COURSE, state({ lessonStatus: status }));
     const despues = mapCourseProgress(COURSE, state({ onlyPriorityLessons: true, lessonStatus: status }));
@@ -175,8 +175,8 @@ describe("por dónde sigue el curso", () => {
 });
 
 describe("anterior y siguiente desde una lección escondida", () => {
-  // Se sigue sirviendo por URL —un enlace de una clase no puede romperse por
-  // una preferencia de visualización—, así que tiene que tener vecinas.
+  // It is still served by URL — a link from a class cannot break over a display
+  // preference — so it has to have neighbours.
   const filtered = state({ onlyPriorityLessons: true });
 
   it("apuntan a las visibles de alrededor, no a la nada", () => {

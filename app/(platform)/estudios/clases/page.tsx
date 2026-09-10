@@ -6,13 +6,13 @@ export const metadata: Metadata = {
 };
 
 /**
- * Segmento fijo, así que gana a `/estudios/[studyId]`: «clases» nunca puede ser
- * el id de una base porque mide 6 caracteres y los ids miden 8. Es la invariante
- * de la que dependen las rutas fijas de esta zona —«clases» y «nueva»—: ninguna
- * mide 8, así que ninguna puede confundirse con un identificador.
+ * Fixed segment, so it wins over `/estudios/[studyId]`: "clases" can never be
+ * the id of a database because it is 6 characters long and ids are 8. That is
+ * the invariant the fixed routes of this area — "clases" and "nueva" — rely
+ * on: none of them is 8 characters, so none can be mistaken for an identifier.
  *
- * Sin `getCurrentUser()` aquí porque la sección hace su primer await contra el
- * servicio, que ya resuelve la identidad en el DAL.
+ * No `getCurrentUser()` here because the section makes its first await
+ * against the service, which already resolves the identity in the DAL.
  */
 export default function ClassGamesPage() {
   return (

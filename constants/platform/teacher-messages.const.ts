@@ -1,7 +1,7 @@
-// Mensajes de error de los formularios del panel del profesor. Viven aquí y no
-// en los módulos `.actions.ts` porque un archivo "use server" sólo puede
-// exportar funciones asíncronas. Las actions redirigen con `?error=<code>` y la
-// página traduce el code con este mapa (patrón del login y de studies).
+// Error messages of the teacher panel forms. They live here and not in the
+// `.actions.ts` modules because a "use server" file can only export async
+// functions. The actions redirect with `?error=<code>` and the page translates
+// the code with this map (the login and studies pattern).
 
 export const TEACHER_ERROR_PARAM = "error";
 

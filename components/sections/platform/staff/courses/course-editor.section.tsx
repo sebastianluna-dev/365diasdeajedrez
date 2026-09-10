@@ -21,7 +21,7 @@ import { StaffTabs } from "./staff-tabs.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./course-editor.section.css";
 
-/** Ata la portada, que vive en la columna de al lado, al formulario que guarda. */
+/** Ties the cover, which lives in the column next door, to the form that saves. */
 const METADATA_FORM_ID = "course-metadata";
 
 interface CourseEditorSectionProps {
@@ -30,18 +30,18 @@ interface CourseEditorSectionProps {
   levels: CatalogOption[];
   authors: AuthorAdminRow[];
   authorRoles: CatalogOption[];
-  /** Cuántas partidas tiene el curso; la lista vive en su propia pestaña. */
+  /** How many games the course has; the list lives in its own tab. */
   gameCount: number;
   errorCode?: string;
 }
 
 /**
- * Edición del curso por tarjetas independientes (metadatos, capítulos, autores,
- * estado): cada una tiene su formulario y su action, en lugar de un formulario
- * gigante donde un fallo en un campo tira todo el trabajo.
+ * Course editing in independent cards (metadata, chapters, authors, status):
+ * each has its own form and its own action, instead of a giant form where a
+ * failure in one field throws away all the work.
  *
- * A la izquierda lo que se escribe y se ordena; a la derecha lo que se consulta
- * de reojo —portada, autores y estado—, que se toca una vez y se mira muchas.
+ * On the left what is written and ordered; on the right what is glanced at
+ * — cover, authors and status — which is touched once and looked at many times.
  */
 export function CourseEditorSection({
   course,
@@ -96,8 +96,8 @@ export function CourseEditorSection({
         aside={
           <>
             <StaffPanel title="Portada">
-              {/* Fuera del <form> de metadatos, atado a él por `form`: la
-                  portada se gestiona entera aquí y se guarda con el resto. */}
+              {/* Outside the metadata <form>, tied to it through `form`: the cover
+                  is managed entirely here and saved with the rest. */}
               <ImageUpload
                 name="cover"
                 form={METADATA_FORM_ID}
@@ -307,10 +307,10 @@ export function CourseEditorSection({
           title="Capítulos"
           meta={`${course.chapters.length} · ${lessonCount} lecciones`}
         >
-          {/* Arrastrable: en un curso de cinco capítulos las flechas bastaban,
-              pero mover el quinto al primer sitio eran cuatro viajes de ida y
-              vuelta al servidor. El asa también responde a las flechas del
-              teclado, que es la única forma de reordenar sin ratón. */}
+          {/* Draggable: in a five-chapter course the arrows were enough, but moving
+              the fifth to the first place was four round trips to the server. The
+              handle also responds to the keyboard arrows, which is the only way to
+              reorder without a mouse. */}
           <SortableList
             items={course.chapters.map((chapter) => ({
               id: chapter.id,
@@ -318,8 +318,8 @@ export function CourseEditorSection({
               meta: `${chapter.lessonCount} lección${chapter.lessonCount === 1 ? "" : "es"}`,
               href: chapter.href,
               roleLabel: chapter.roleLabel,
-              // Borrar sólo donde el servidor lo permitiría: curso en borrador
-              // y sin progreso de ningún alumno.
+              // Delete only where the server would allow it: draft course and no
+              // progress from any student.
               canDelete: isDraft && chapter.progressCount === 0,
             }))}
             onReorder={reorderChapters.bind(null, course.id)}
@@ -344,9 +344,9 @@ export function CourseEditorSection({
             </button>
           </form>
 
-          {/* Los dos son opcionales y como mucho hay uno de cada, así que el
-              botón desaparece en cuanto existe. El índice único de la base es
-              quien lo garantiza de verdad. */}
+          {/* Both are optional and there is at most one of each, so the button
+              disappears as soon as it exists. The database's unique index is what
+              really guarantees it. */}
           {(!hasIntro || !hasClosing) && (
             <div className="course-editor__roles">
               {!hasIntro && (

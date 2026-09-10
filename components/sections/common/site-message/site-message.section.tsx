@@ -2,18 +2,18 @@ import type { ReactNode } from "react";
 import "./site-message.section.css";
 
 interface SiteMessageProps {
-  /** Rótulo pequeño encima del título: «Error 404», «Algo salió mal». */
+  /** Small label above the title: "Error 404", "Algo salió mal". */
   eyebrow: string;
   title: string;
   description: string;
-  /** Enlaces o botones; el estilo `site-message__action` los pinta iguales. */
+  /** Links or buttons; the `site-message__action` style paints them alike. */
   children?: ReactNode;
 }
 
 /**
- * Pantalla de aviso del sitio público (404, error). Sin hooks ni datos, para
- * que la puedan usar tanto `not-found.tsx` (servidor) como `error.tsx`
- * (cliente) con la misma paleta que el resto del sitio.
+ * Notice screen of the public site (404, error). No hooks or data, so both
+ * `not-found.tsx` (server) and `error.tsx` (client) can use it with the same
+ * palette as the rest of the site.
  */
 export function SiteMessage({ eyebrow, title, description, children }: SiteMessageProps) {
   return (

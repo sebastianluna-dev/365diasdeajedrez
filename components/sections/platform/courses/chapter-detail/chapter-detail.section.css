@@ -87,8 +87,8 @@
     font-size: 16px;
   }
 
-  /* El título de la lista y el interruptor comparten renglón: el filtro es lo
-     que decide qué hay debajo, así que va pegado a su rótulo. */
+  /* The list title and the switch share a row: the filter is what decides
+     what is below, so it sits next to its label. */
   & .chapter-detail__lessons-head {
     display: flex;
     align-items: center;
@@ -124,7 +124,7 @@
       font-size: 28px;
     }
 
-    /* Con dos botones, la fila del pie no cabe al lado de la barra. */
+    /* With two buttons, the footer row does not fit next to the bar. */
     & .chapter-detail__resume {
       flex-direction: column;
       align-items: stretch;

@@ -1,18 +1,18 @@
-// Copia las piezas del tablero (juego «cburnett» de lichess) a public/pieces.
+// Copies the board's pieces (lichess's "cburnett" set) to public/pieces.
 //
-// chessground no trae SVG sueltos: los doce dibujos van incrustados en base64
-// dentro de assets/chessground.cburnett.css, una regla por pieza. Este script
-// los decodifica y los escribe como archivos con el nombre que usan las hojas
-// de la app (w-knight.svg, b-queen.svg, …), para que el selector de coronación,
-// los figurines, los diagramas y la exportación a imagen pinten exactamente lo
-// mismo que el tablero.
+// chessground does not ship loose SVGs: the twelve drawings are embedded in
+// base64 inside assets/chessground.cburnett.css, one rule per piece. This script
+// decodes them and writes them as files with the names the app's stylesheets use
+// (w-knight.svg, b-queen.svg, …), so that the promotion picker, the figurines,
+// the diagrams and the image export render exactly the same as the board.
 //
-//   npm run pieces:sync      ejecutar tras actualizar @lichess-org/chessground
+//   npm run pieces:sync      run after updating @lichess-org/chessground
 //
-// Los SVG de chessground declaran width/height pero no viewBox, y sin viewBox
-// una imagen SVG no se escala al tamaño que le pide el CSS (chessground no lo
-// nota porque los usa a su tamaño natural). Al escribirlos se les añade el
-// viewBox equivalente, `0 0 width height`, que no cambia el dibujo.
+// chessground's SVGs declare width/height but no viewBox, and without a viewBox
+// an SVG image does not scale to the size the CSS asks for (chessground does not
+// notice because it uses them at their natural size). When writing them the
+// equivalent viewBox, `0 0 width height`, is added, which does not change the
+// drawing.
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";

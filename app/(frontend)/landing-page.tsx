@@ -18,7 +18,7 @@ export default function LandingPage() {
   return (
     <div className="landing-page">
       <Header />
-      {/* El CTA pegajoso y el footer quedan fuera de <main>: son complementarios, no el contenido. */}
+      {/* The sticky CTA and the footer stay outside <main>: they are complementary, not the content. */}
       <main id="contenido">
         {sections.hero && <HeroSection />}
         {sections.program && <ProgramSection />}

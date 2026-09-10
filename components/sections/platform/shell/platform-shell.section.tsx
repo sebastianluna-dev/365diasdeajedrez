@@ -13,8 +13,8 @@ interface PlatformShellProps {
 }
 
 /**
- * Iniciales para el avatar: la primera letra de las dos primeras palabras.
- * «Alumno Demo» → «AD»; un nombre de una sola palabra da una sola letra.
+ * Initials for the avatar: the first letter of the first two words.
+ * "Alumno Demo" → "AD"; a single-word name gives a single letter.
  */
 function initialsOf(displayName: string): string {
   return displayName
@@ -26,20 +26,20 @@ function initialsOf(displayName: string): string {
 }
 
 /**
- * Layout interno de la plataforma: barra superior + área de contenido.
+ * Internal layout of the platform: top bar + content area.
  *
- * Lee la sesión sólo para mostrar quién ha entrado y qué menús le tocan, nunca
- * para proteger: si no hay usuario se limita a no pintar el bloque. Quien corta
- * el paso es el DAL dentro de cada página (la doc de Next 16 desaconseja el
- * check de auth en el layout, que no controla el render de sus segmentos), y
- * ocultar un grupo del menú no autoriza nada: cada página y cada action de
- * /teacher y /staff vuelve a comprobar el rol.
+ * It reads the session only to show who is logged in and which menus they
+ * get, never to protect: if there is no user it simply does not render the
+ * block. What blocks the way is the DAL inside each page (the Next 16 docs
+ * advise against the auth check in the layout, which does not control the
+ * render of its segments), and hiding a menu group authorises nothing:
+ * every page and every action of /teacher and /staff checks the role again.
  */
 export async function PlatformShell({ children }: PlatformShellProps) {
   const [user, roles] = await Promise.all([getSessionUser(), getSessionRoles()]);
   const navGroups = buildPlatformNavGroups(roles);
-  // El logo lleva a la portada del rol, no al dashboard del alumno: con el menú
-  // excluyente esa página ya no está en el menú de un profesor ni del staff.
+  // The logo leads to the role's home, not to the student dashboard: with
+  // the exclusive menu that page is no longer in a teacher's or staff's menu.
   const homeHref = homeRouteFor(roles);
 
   return (
@@ -62,9 +62,9 @@ export async function PlatformShell({ children }: PlatformShellProps) {
                     Sitio público
                   </Link>
                   <span aria-hidden="true">·</span>
-                  {/* El formulario va aquí dentro para que «Salir» comparta la
-                      línea con el enlace al sitio: la barra sólo tiene dos
-                      renglones y perder el cierre de sesión no es opción. */}
+                  {/* The form goes in here so that "Salir" shares the line with the
+                      link to the site: the bar only has two rows and losing the
+                      logout is not an option. */}
                   <form action={logoutAction}>
                     <button type="submit" className="platform-shell__user-link">
                       Salir

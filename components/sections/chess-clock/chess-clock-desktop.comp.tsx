@@ -5,7 +5,7 @@ import { ClockDial } from "./clock-dial.comp";
 import "./chess-clock-desktop.comp.css";
 
 interface ChessClockDesktopProps {
-  /** Ver `ChessClock`: sólo corre la variante que se ve. */
+  /** See `ChessClock`: only the visible variant runs. */
   enabled?: boolean;
 }
 

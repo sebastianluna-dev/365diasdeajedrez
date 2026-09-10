@@ -16,9 +16,9 @@ interface StudentAdminDetailSectionProps {
 }
 
 /**
- * Ficha administrativa de una cuenta. Deliberadamente NO da acceso a los
- * estudios ni a las partidas del alumno: operar cuentas (altas, contraseñas,
- * asignaciones) no es lo mismo que leer contenido privado.
+ * Administrative record of an account. Deliberately gives NO access to the
+ * student's studies or games: operating accounts (creation, passwords,
+ * assignments) is not the same as reading private content.
  */
 export function StudentAdminDetailSection({ student, teachers, errorCode }: StudentAdminDetailSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;

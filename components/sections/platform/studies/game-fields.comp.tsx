@@ -3,14 +3,14 @@ import { federationOptions, FIDE_TITLE_LABELS, FIDE_TITLES } from "@/lib/chess/f
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import "./game-fields.comp.css";
 
-// Los datos de una partida, en un solo sitio.
+// A game's data, in one place.
 //
-// Los usan los dos formularios —crear y editar— y tienen que ofrecer
-// exactamente los mismos campos: si al crear se pudiera rellenar algo que
-// después no se puede corregir, el dato quedaría atrapado.
+// Both forms — create and edit — use them and have to offer exactly the
+// same fields: if something could be filled in on creation that cannot be
+// corrected later, the data would be trapped.
 //
-// TODOS son opcionales, también al crear: cuando se empieza a analizar todavía
-// no se sabe qué partida va a ser.
+// ALL are optional, also on creation: when analysis starts one does not yet
+// know which game it is going to be.
 
 export interface GameFieldValues {
   title?: string;
@@ -19,7 +19,7 @@ export interface GameFieldValues {
   whiteElo?: number;
   blackElo?: number;
   resultCode?: string;
-  /** ISO corto (aaaa-mm-dd), que es lo que espera <input type="date">. */
+  /** Short ISO (yyyy-mm-dd), which is what <input type="date"> expects. */
   playedAtValue?: string;
   event?: string;
   site?: string;
@@ -32,12 +32,12 @@ export interface GameFieldValues {
 }
 
 /**
- * El desplegable de un dato que viene del PGN.
+ * The dropdown of a value that comes from the PGN.
  *
- * Un PGN puede traer un título o una federación que no estén en nuestras
- * listas —las cabeceras las escribe quien quiere—, así que el valor guardado se
- * añade como una opción más. Sin eso, abrir el formulario y guardarlo sin tocar
- * nada convertiría ese dato en otro distinto, en silencio.
+ * A PGN may bring a title or a federation that is not in our lists — headers
+ * are written by whoever wants — so the stored value is added as one more
+ * option. Without that, opening the form and saving it without touching
+ * anything would silently turn that value into a different one.
  */
 function CodeSelect({
   name,
@@ -71,7 +71,7 @@ const TITLE_OPTIONS = FIDE_TITLES.map((code) => ({ code, label: `${code} · ${FI
 interface GameFieldsProps {
   values?: GameFieldValues;
   results: StudyKindOption[];
-  /** Texto de ayuda del nombre, distinto al crear que al editar. */
+  /** Help text for the name, different on creation and on edit. */
   titleHint: string;
 }
 

@@ -1,24 +1,25 @@
-// La racha diaria: cuántos días seguidos ha estudiado el alumno.
+// The daily streak: how many days in a row the student has studied.
 //
-// Módulo puro, sin base de datos ni fechas del sistema, porque una racha es
-// exactamente el tipo de cuenta que se rompe en los bordes —el cambio de mes,
-// el año bisiesto, el cambio de hora, el día que aún no ha terminado— y
-// comprobarla no debería exigir esperar a mañana.
+// Pure module, without a database or system dates, because a streak is exactly
+// the kind of count that breaks at the edges — the turn of the month, the leap
+// year, the clock change, the day that has not finished yet — and checking it
+// should not require waiting until tomorrow.
 //
-// Los días se manejan como claves «aaaa-mm-dd» en la zona del día de estudio
-// (STUDY_DAY_TIMEZONE), no en UTC: la racha es lo único que el alumno ve
-// cambiar al filo de la medianoche, y en UTC su medianoche sería la tarde.
+// Days are handled as "yyyy-mm-dd" keys in the study day's time zone
+// (STUDY_DAY_TIMEZONE), not in UTC: the streak is the only thing the student
+// sees change on the stroke of midnight, and in UTC their midnight would be the
+// afternoon.
 
 import { offsetMsAt } from "@/lib/timezone";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /**
- * La clave del día al que pertenece un instante, en la zona que se le pase.
+ * The key of the day an instant belongs to, in whichever zone is passed.
  *
- * `en-CA` porque su formato de fecha corto ES «aaaa-mm-dd»; se usa el
- * formateador y no aritmética de horas para que los cambios de horario de
- * verano los resuelva `Intl` y no este archivo.
+ * `en-CA` because its short date format IS "yyyy-mm-dd"; the formatter is used
+ * and not hour arithmetic so that daylight saving changes are resolved by
+ * `Intl` and not by this file.
  */
 export function dayKey(date: Date, timeZone: string): string {
   return new Intl.DateTimeFormat("en-CA", {
@@ -30,12 +31,12 @@ export function dayKey(date: Date, timeZone: string): string {
 }
 
 /**
- * El instante en que empieza un día, para acotar consultas: la medianoche de
- * esa fecha EN esa zona, expresada en UTC, que es como se guardan las fechas.
+ * The instant a day starts, to bound queries: the midnight of that date IN that
+ * zone, expressed in UTC, which is how dates are stored.
  *
- * El desfase se mide al mediodía y no a medianoche: en la noche del cambio de
- * hora, la medianoche puede no existir o existir dos veces, y el mediodía
- * siempre cae limpiamente dentro del día que se pregunta.
+ * The offset is measured at noon and not at midnight: on the night of the clock
+ * change, midnight may not exist or may exist twice, and noon always falls
+ * cleanly inside the day being asked about.
  */
 export function startOfDay(key: string, timeZone: string): Date {
   const midday = new Date(`${key}T12:00:00.000Z`);
@@ -43,30 +44,31 @@ export function startOfDay(key: string, timeZone: string): Date {
 }
 
 /**
- * El día anterior a una clave.
+ * The day before a key.
  *
- * Aritmética sobre la clave, sin zona: «el día antes del 1 de marzo» es el 28 o
- * el 29 de febrero mire quien lo mire, y meter husos aquí sólo añadiría un sitio
- * más donde equivocarse.
+ * Arithmetic on the key, without a zone: "the day before 1 March" is 28 or 29
+ * February wherever one looks from, and bringing time zones in here would only
+ * add one more place to get it wrong.
  */
 function previousDay(key: string): string {
   return new Date(Date.parse(`${key}T00:00:00.000Z`) - DAY_MS).toISOString().slice(0, 10);
 }
 
 /**
- * Días seguidos de estudio contando hacia atrás desde hoy.
+ * Consecutive days of study counting backwards from today.
  *
- * El día de HOY no cuenta para romperla: quien estudió ayer y todavía no ha
- * empezado hoy sigue teniendo su racha —el día no ha terminado—. Si hubiera que
- * estudiar antes de mirar la pantalla, la racha se vería rota cada mañana, que
- * es justo lo contrario de lo que anima a seguir.
+ * TODAY does not count towards breaking it: whoever studied yesterday and has
+ * not started today still has their streak — the day is not over. If one had to
+ * study before looking at the screen, the streak would look broken every
+ * morning, which is exactly the opposite of what encourages carrying on.
  *
- * Por eso la cuenta arranca en hoy si hay actividad hoy y, si no, en ayer. Si
- * tampoco hay nada ayer, la racha es cero: dos días sin estudiar sí la rompen.
+ * That is why the count starts at today if there is activity today and, if not,
+ * at yesterday. If there is nothing yesterday either, the streak is zero: two
+ * days without studying do break it.
  *
- * @param activeDays días con actividad, en claves «aaaa-mm-dd»; se admiten
- *   repetidos y desordenados.
- * @param today la clave del día en curso.
+ * @param activeDays days with activity, as "yyyy-mm-dd" keys; duplicates and
+ *   unordered input are accepted.
+ * @param today the key of the current day.
  */
 export function streakLength(activeDays: Iterable<string>, today: string): number {
   const days = activeDays instanceof Set ? activeDays : new Set(activeDays);

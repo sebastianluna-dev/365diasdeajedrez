@@ -58,12 +58,12 @@ export interface TrainerSessionParams {
 }
 
 /**
- * Ejercicios de la sesión: los de la lección o capítulo pedidos, o los de
- * todos los capítulos que el usuario agregó al Move Trainer.
+ * Exercises of the session: those of the requested lesson or chapter, or those
+ * of every chapter the user added to the Move Trainer.
  *
- * Los ids de lección y capítulo llegan por la URL, así que el filtro de curso
- * publicado va encadenado en el `where`: sin él, `/entrenador?chapter=<id>`
- * servía los ejercicios de un curso en borrador o archivado.
+ * The lesson and chapter ids arrive through the URL, so the published-course
+ * filter is chained into the `where`: without it, `/entrenador?chapter=<id>`
+ * served the exercises of a draft or archived course.
  */
 export async function getTrainerSession(params: TrainerSessionParams): Promise<TrainerExercise[]> {
   const db = getPlatformDb();

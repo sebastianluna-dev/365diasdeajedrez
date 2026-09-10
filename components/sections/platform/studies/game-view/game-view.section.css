@@ -1,7 +1,7 @@
 .game-view {
   display: grid;
-  /* El aside mide lo suyo; el visor se queda con el resto y reparte por dentro
-     entre tablero y notación. */
+  /* The aside measures its own; the viewer keeps the rest and splits it inside
+     between board and notation. */
   grid-template-columns: 280px minmax(0, 1fr);
   gap: 20px;
   align-items: start;
@@ -10,14 +10,14 @@
     min-width: 0;
   }
 
-  /* Lo que rebota de una acción del servidor, sobre el tablero: es la respuesta
-     a algo que se acaba de pulsar y tiene que verse sin buscarla. */
+  /* What bounces back from a server action, above the board: it is the answer
+     to something just pressed and has to be seen without looking for it. */
   & .game-view__board .platform-notice {
     margin-bottom: 14px;
   }
 
-  /* Cuadrito del bando: sin banderas ni títulos que mostrar, al menos se sabe
-     de un vistazo quién lleva las blancas. */
+  /* Colour square of the side: with no flags or titles to show, at least one
+     knows at a glance who has White. */
   & .game-view__chip {
     flex: none;
     width: 14px;
@@ -34,11 +34,11 @@
     background: var(--platform-text);
   }
 
-  /* Todo lo de la tira va en `em`: el tamaño lo pone el visor —que a pantalla
-     completa lo agranda con la pantalla— y aquí sólo se guarda la proporción
-     entre el nombre, el Elo y lo que los acompaña. */
+  /* Everything in the strip goes in `em`: the viewer sets the size — which in
+     full screen grows with the screen — and here only the proportion between
+     the name, the Elo and what accompanies them is kept. */
 
-  /* Federación en letras: es el dato. La bandera de al lado sólo lo adorna. */
+  /* Federation in letters: that is the value. The flag next to it only decorates it. */
   & .game-view__player-country {
     flex: none;
     font-size: max(14px, 0.8em);

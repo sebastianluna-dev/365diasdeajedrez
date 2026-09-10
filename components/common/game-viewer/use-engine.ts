@@ -10,66 +10,67 @@ import {
 } from "@/lib/chess/engine-protocol";
 import { turnColor } from "@/lib/chess/replay";
 
-// El módulo de análisis, atado al ciclo de vida de un componente.
+// The analysis engine, tied to a component's lifecycle.
 //
-// Stockfish corre en su propio Web Worker: es un programa aparte, no código de
-// la plataforma, y así el análisis no bloquea la interfaz por hondo que baje. El
-// worker se crea PEREZOSAMENTE, sólo al encenderlo, porque son 7 MB de
-// WebAssembly que no tiene sentido descargar a quien nunca lo va a usar.
+// Stockfish runs in its own Web Worker: it is a separate program, not
+// platform code, and that way the analysis does not block the interface
+// however deep it goes. The worker is created LAZILY, only when switched on,
+// because it is 7 MB of WebAssembly that make no sense to download for
+// someone who will never use it.
 //
-// LO IMPORTANTE DE ESTE ARCHIVO: el protocolo UCI es una conversación por
-// turnos, no un buzón. `stop` no detiene la búsqueda al momento —pide que
-// termine— y hasta que el motor no contesta `bestmove` sigue analizando.
-// Mandarle `position` en ese hueco es una violación del protocolo, y Stockfish
-// no la perdona: aborta con «RuntimeError: unreachable» y se lleva el worker por
-// delante. Por eso aquí hay una pequeña máquina de estados en vez de escribir
-// los comandos a bocajarro.
+// THE IMPORTANT PART OF THIS FILE: the UCI protocol is a conversation in
+// turns, not a mailbox. `stop` does not halt the search at once — it asks it
+// to finish — and until the engine answers `bestmove` it keeps analysing.
+// Sending it `position` in that gap violates the protocol, and Stockfish
+// does not forgive it: it aborts with "RuntimeError: unreachable" and takes
+// the worker down with it. That is why there is a small state machine here
+// instead of firing the commands point-blank.
 
-/** Hasta dónde analiza: de fiar sin dejar el portátil de nadie a pleno rendimiento. */
+/** How deep it analyses: trustworthy without pushing anyone's laptop to full throttle. */
 const MAX_DEPTH = 20;
 
 /**
- * Cuántas continuaciones se le piden.
+ * How many continuations are requested.
  *
- * Tres es lo que hace legible una posición: con una sola no se ve si la jugada
- * buena lo es por poco o por mucho. Cuesta trabajo al motor —analiza las tres
- * en serio, no reaprovecha—, por eso no son cinco.
+ * Three is what makes a position legible: with just one you cannot tell
+ * whether the good move is good by a little or by a lot. It costs the engine
+ * work — it analyses the three for real, with no reuse — which is why it is not five.
  */
 const ENGINE_LINES = 3;
 
 export interface EngineState {
-  /** Las continuaciones de la posición ACTUAL, la mejor primero. */
+  /** The continuations of the CURRENT position, best first. */
   lines: EngineInfo[];
-  /** La mejor de todas: es la que manda en la barra de evaluación. */
+  /** The best of them all: it is what drives the evaluation bar. */
   info: EngineInfo | null;
   loading: boolean;
-  /** No se pudo cargar: se avisa en vez de dejar un botón que no responde. */
+  /** It could not load: say so instead of leaving a button that does not respond. */
   failed: boolean;
 }
 
-/** Lo que hay que recordar entre mensajes para no romper el turno de palabra. */
+/** What has to be remembered between messages so as not to break the turn-taking. */
 interface Conversation {
-  /** El motor ya contestó `readyok`: antes de eso no se le pide nada. */
+  /** The engine already answered `readyok`: before that nothing is asked of it. */
   ready: boolean;
-  /** Hay un `go` en vuelo; hasta su `bestmove` no se puede cambiar de posición. */
+  /** A `go` is in flight; until its `bestmove` the position cannot be changed. */
   searching: boolean;
-  /** La posición que habría que estar analizando. */
+  /** The position that should be under analysis. */
   wanted: string;
-  /** La que se le pidió de verdad, que puede ir por detrás de `wanted`. */
+  /** The one it was actually asked for, which may lag behind `wanted`. */
   searching_fen: string;
-  /** La última que terminó, para no volver a lanzarla en bucle. */
+  /** The last one that finished, so it is not relaunched in a loop. */
   finished: string;
 }
 
 export function useEngine(fen: string, enabled: boolean): EngineState {
-  // Las evaluaciones se guardan JUNTO A LA POSICIÓN que las produjo. Así no hay
-  // que limpiarlas al cambiar de jugada —cosa que obligaría a tocar el estado
-  // dentro de un efecto— y además es imposible enseñar la evaluación de otra
-  // posición: si no coincide el FEN, no se usa.
+  // The evaluations are stored NEXT TO THE POSITION that produced them. That
+  // way they need not be cleared on move change — which would force touching
+  // the state inside an effect — and, besides, showing another position's
+  // evaluation is impossible: if the FEN does not match, it is not used.
   const [result, setResult] = useState<EngineLines | null>(null);
   const [failed, setFailed] = useState(false);
   const workerRef = useRef<Worker | null>(null);
-  /** El lanzador lo publica el efecto de arranque para que el de posición lo use. */
+  /** The launcher is published by the startup effect so the position effect can use it. */
   const startRef = useRef<(() => void) | null>(null);
   const talkRef = useRef<Conversation>({
     ready: false,
@@ -79,25 +80,25 @@ export function useEngine(fen: string, enabled: boolean): EngineState {
     finished: "",
   });
 
-  // Arranque y parada. Depende sólo de `enabled`: apagarlo tiene que MATAR el
-  // worker, no dejarlo pensando en segundo plano.
+  // Startup and shutdown. Depends only on `enabled`: switching off has to
+  // KILL the worker, not leave it thinking in the background.
   useEffect(() => {
     if (!enabled) return;
 
-    // En desarrollo, el modo estricto monta el efecto, lo limpia y lo vuelve a
-    // montar. Esa limpieza termina el PRIMER worker mientras todavía está
-    // descargando sus 7 MB, y abortar esa carga dispara su `onerror`. Sin esta
-    // marca, ese error de un worker ya muerto daba por fallido el módulo aunque
-    // el segundo arrancara perfectamente.
+    // In development, strict mode mounts the effect, cleans it up and mounts it
+    // again. That cleanup terminates the FIRST worker while it is still
+    // downloading its 7 MB, and aborting that load fires its `onerror`. Without
+    // this flag, that error from an already dead worker marked the engine as
+    // failed even though the second one started perfectly.
     let cancelled = false;
 
     let worker: Worker;
     try {
       worker = new Worker("/engine/stockfish.js");
     } catch {
-      // El constructor puede lanzar de forma síncrona —un navegador sin Workers
-      // o un entorno que los bloquea—. La marca se aplaza un tic: cambiar el
-      // estado en el cuerpo del efecto sería un render dentro de otro.
+      // The constructor can throw synchronously — a browser without Workers or
+      // an environment that blocks them. The flag is deferred one tick: changing
+      // state in the effect body would be a render inside another.
       const pending = window.setTimeout(() => {
         if (!cancelled) setFailed(true);
       }, 0);
@@ -114,7 +115,7 @@ export function useEngine(fen: string, enabled: boolean): EngineState {
     talk.searching_fen = "";
     talk.finished = "";
 
-    /** Lanza la búsqueda pendiente, si es que ahora se puede. */
+    /** Launches the pending search, if it can be done now. */
     const startIfPossible = () => {
       if (!talk.ready || talk.searching) return;
       if (!talk.wanted || talk.wanted === talk.finished) return;
@@ -137,8 +138,8 @@ export function useEngine(fen: string, enabled: boolean): EngineState {
       }
 
       if (line.startsWith("bestmove")) {
-        // Aquí es donde de verdad se libera el turno: hasta este mensaje el
-        // motor seguía analizando por mucho `stop` que se le hubiera mandado.
+        // This is where the turn is really released: until this message the
+        // engine kept analysing however many `stop`s it had been sent.
         talk.searching = false;
         talk.finished = talk.searching_fen;
         startIfPossible();
@@ -160,25 +161,25 @@ export function useEngine(fen: string, enabled: boolean): EngineState {
 
     worker.postMessage("uci");
     worker.postMessage("setoption name UCI_AnalyseMode value true");
-    // Se fija una vez, al arrancar: es una opción del motor, no de la posición.
+    // Set once, at startup: it is an engine option, not a position one.
     worker.postMessage(`setoption name MultiPV value ${ENGINE_LINES}`);
-    // Nada se le pide hasta que conteste: el `readyok` es lo que abre la puerta.
+    // Nothing is asked of it until it answers: the `readyok` is what opens the door.
     worker.postMessage("isready");
 
     return () => {
       cancelled = true;
       worker.removeEventListener("message", onMessage);
-      // `terminate()` a secas: mandarle «stop» antes no aporta nada —se muere
-      // igual— y es un mensaje más que puede fallar si aún no ha arrancado.
+      // Plain `terminate()`: sending it "stop" first adds nothing — it dies
+      // anyway — and is one more message that can fail if it has not started yet.
       worker.terminate();
       workerRef.current = null;
       startRef.current = null;
     };
   }, [enabled]);
 
-  // Cambiar de jugada NO reinicia el worker: sólo cambia qué posición se quiere.
-  // Si hay una búsqueda en marcha se pide que pare y se espera su `bestmove`;
-  // la nueva sale de ahí. Mandarla ahora mismo es lo que hacía abortar al motor.
+  // Changing move does NOT restart the worker: it only changes which position is wanted.
+  // If a search is running it is asked to stop and its `bestmove` is awaited;
+  // the new one comes out of that. Sending it right now is what made the engine abort.
   useEffect(() => {
     const worker = workerRef.current;
     if (!enabled || !fen || !worker) return;
@@ -187,8 +188,8 @@ export function useEngine(fen: string, enabled: boolean): EngineState {
     talk.wanted = fen;
 
     if (talk.searching && talk.searching_fen !== fen) {
-      // Sólo se PIDE que pare. La nueva posición la lanza el `bestmove` cuando
-      // llegue, que es cuando el motor de verdad ha soltado el turno.
+      // It is only ASKED to stop. The new position is launched by the `bestmove`
+      // when it arrives, which is when the engine has really given up the turn.
       worker.postMessage("stop");
     } else {
       startIfReady(startRef);
@@ -199,7 +200,7 @@ export function useEngine(fen: string, enabled: boolean): EngineState {
   return { lines, info: lines[0] ?? null, loading: enabled && !failed && lines.length === 0, failed };
 }
 
-/** Llama al lanzador si el efecto de arranque ya lo publicó. */
+/** Calls the launcher if the startup effect has already published it. */
 function startIfReady(ref: { current: (() => void) | null }): void {
   ref.current?.();
 }

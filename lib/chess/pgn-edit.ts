@@ -3,28 +3,28 @@ import { Chess } from "chessops/chess";
 import { ChildNode, type Game, makePgn, Node, parsePgn, type PgnNodeData, startingPosition } from "chessops/pgn";
 import { makeSan, parseSan } from "chessops/san";
 
-// Mutaciones sobre el árbol de un PGN: añadir jugadas, abrir y promover
-// variantes, comentar y anotar.
+// Mutations on the tree of a PGN: adding moves, opening and promoting
+// variations, commenting and annotating.
 //
-// El compañero de pgn-tree.ts, que sólo LEE. Aquí se trabaja directamente sobre
-// el `Game<PgnNodeData>` de chessops, que es mutable, y la línea principal es
-// por convención `children[0]` —es lo que `makePgn` da por hecho al serializar,
-// así que «promover» no es más que mover un hijo al índice 0—.
+// The companion of pgn-tree.ts, which only READS. Here the work is done
+// directly on chessops's `Game<PgnNodeData>`, which is mutable, and the main
+// line is by convention `children[0]` — that is what `makePgn` assumes when
+// serialising, so "promoting" is no more than moving a child to index 0.
 //
-// LAS RUTAS SE MUEVEN. Borrar o promover reindexa a los hermanos, así que una
-// ruta punteada guardada antes de la mutación puede señalar otra jugada después.
-// Por eso el patrón de uso no es «calcular la ruta nueva» sino:
+// PATHS MOVE. Deleting or promoting reindexes the siblings, so a dotted path
+// stored before the mutation may point at another move afterwards. That is why
+// the usage pattern is not "compute the new path" but:
 //
-//   const node = nodeAtPathIn(game, path);   // referencia al nodo
+//   const node = nodeAtPathIn(game, path);   // reference to the node
 //   promoteToMainLine(game, path);
-//   const nuevaRuta = pathOfNode(game, node);
+//   const newPath = pathOfNode(game, node);
 //
-// Módulo puro: sólo chessops. Sin React ni Prisma.
+// Pure module: only chessops. No React, no Prisma.
 
-/** Letra de color de los comandos [%cal]/[%csl], según la lee pgn-tree.ts. */
+/** Colour letter of the [%cal]/[%csl] commands, as pgn-tree.ts reads it. */
 const LETTER_BY_BRUSH: Record<string, string> = { green: "G", red: "R", yellow: "Y", blue: "B" };
 
-/** Los comandos que viven dentro de un comentario y NO son texto del autor. */
+/** The commands that live inside a comment and are NOT the author's text. */
 const COMMAND_PATTERN = /\[%[a-z]+(?:\s[^\]]*)?\]/g;
 
 export function parseEditableGame(pgn: string): Game<PgnNodeData> | null {
@@ -39,7 +39,7 @@ export function serializeGame(game: Game<PgnNodeData>): string {
   return makePgn(game);
 }
 
-/** Partida vacía desde una posición, para empezar a analizar de cero. */
+/** Empty game from a position, to start analysing from scratch. */
 export function emptyGame(initialFen?: string): Game<PgnNodeData> {
   const headers = new Map<string, string>();
   if (initialFen) {
@@ -49,9 +49,9 @@ export function emptyGame(initialFen?: string): Game<PgnNodeData> {
   return { headers, moves: new Node<PgnNodeData>() };
 }
 
-// --- Direccionar nodos ------------------------------------------------------
+// --- Addressing nodes ------------------------------------------------------
 
-/** Nodo en una ruta punteada. `""` es la raíz, que no es un `ChildNode`. */
+/** Node at a dotted path. `""` is the root, which is not a `ChildNode`. */
 export function nodeAtPathIn(game: Game<PgnNodeData>, path: string): ChildNode<PgnNodeData> | null {
   if (path.length === 0) return null;
 
@@ -66,11 +66,11 @@ export function nodeAtPathIn(game: Game<PgnNodeData>, path: string): ChildNode<P
 }
 
 /**
- * Ruta punteada de un nodo, buscándolo POR IDENTIDAD.
+ * Dotted path of a node, found BY IDENTITY.
  *
- * Es la pieza que hace seguras a las demás: tras mutar, la ruta que se tenía
- * puede haber dejado de valer, pero la referencia al nodo sigue siendo la misma
- * y de ella se saca dónde ha quedado.
+ * It is the piece that makes the others safe: after mutating, the path one had
+ * may have stopped being valid, but the reference to the node is still the same
+ * and from it comes where it ended up.
  */
 export function pathOfNode(game: Game<PgnNodeData>, node: ChildNode<PgnNodeData>): string | null {
   const walk = (parent: Node<PgnNodeData>, prefix: string): string | null => {
@@ -85,7 +85,7 @@ export function pathOfNode(game: Game<PgnNodeData>, node: ChildNode<PgnNodeData>
   return walk(game.moves, "");
 }
 
-/** El padre de una ruta, y el índice que ocupa el nodo dentro de él. */
+/** The parent of a path, and the index the node occupies within it. */
 function locate(
   game: Game<PgnNodeData>,
   path: string,
@@ -101,7 +101,7 @@ function locate(
   return { parent, index };
 }
 
-/** Posición sobre el tablero al final de una ruta. Null si la ruta no es legal. */
+/** Position on the board at the end of a path. Null if the path is not legal. */
 export function positionAtPath(game: Game<PgnNodeData>, path: string): Chess | null {
   const position = startingPosition(game.headers).unwrap(
     (start) => start,
@@ -122,23 +122,23 @@ export function positionAtPath(game: Game<PgnNodeData>, path: string): Chess | n
   return position;
 }
 
-// --- Jugadas ----------------------------------------------------------------
+// --- Moves -----------------------------------------------------------------
 
 export interface AddMoveResult {
   path: string;
-  /** false si la jugada ya estaba: entonces sólo se navega a ella. */
+  /** false when the move was already there: then it is only navigated to. */
   created: boolean;
 }
 
 /**
- * Añade una jugada después de `path`, o abre una variante si ese nodo ya tiene
- * continuación.
+ * Adds a move after `path`, or opens a variation if that node already has a
+ * continuation.
  *
- * Si la jugada YA existe entre los hijos, no se duplica: se devuelve su ruta con
- * `created: false`. Es lo que hace Lichess, y evita que repetir la línea
- * principal llene el árbol de ramas gemelas idénticas.
+ * If the move ALREADY exists among the children, it is not duplicated: its path
+ * is returned with `created: false`. It is what Lichess does, and it keeps
+ * replaying the main line from filling the tree with identical twin branches.
  *
- * Devuelve null si la jugada no es legal en esa posición.
+ * Returns null if the move is not legal in that position.
  */
 export function addMove(game: Game<PgnNodeData>, path: string, san: string): AddMoveResult | null {
   const position = positionAtPath(game, path);
@@ -146,8 +146,8 @@ export function addMove(game: Game<PgnNodeData>, path: string, san: string): Add
 
   const move = parseSan(position, san);
   if (!move) return null;
-  // Se guarda el SAN canónico de chessops, no el que llegue: así «e8=Q» y
-  // «e8=Q+» no acaban como dos ramas distintas de la misma jugada.
+  // Chessops's canonical SAN is stored, not whatever arrives: that way "e8=Q" and
+  // "e8=Q+" do not end up as two different branches of the same move.
   const canonical = makeSan(position, move);
 
   const parent = path.length === 0 ? game.moves : nodeAtPathIn(game, path);
@@ -166,7 +166,7 @@ export function addMove(game: Game<PgnNodeData>, path: string, san: string): Add
   return { path: path.length === 0 ? String(index) : `${path}.${index}`, created: true };
 }
 
-/** Borra el nodo y todo lo que cuelga de él. */
+/** Deletes the node and everything hanging from it. */
 export function deleteFrom(game: Game<PgnNodeData>, path: string): boolean {
   const found = locate(game, path);
   if (!found) return false;
@@ -175,7 +175,7 @@ export function deleteFrom(game: Game<PgnNodeData>, path: string): boolean {
   return true;
 }
 
-/** Sube la variante una posición entre sus hermanas. */
+/** Moves the variation up one place among its siblings. */
 export function promoteOneStep(game: Game<PgnNodeData>, path: string): boolean {
   const found = locate(game, path);
   if (!found || found.index === 0) return false;
@@ -186,11 +186,11 @@ export function promoteOneStep(game: Game<PgnNodeData>, path: string): boolean {
 }
 
 /**
- * Convierte la variante en la línea principal de la partida.
+ * Turns the variation into the game's main line.
  *
- * No basta con mover este nodo al índice 0: si cuelga de otra variante seguiría
- * estando dentro de un paréntesis. Hay que subir también a cada ancestro, y por
- * eso se recorre de abajo arriba.
+ * Moving this node to index 0 is not enough: if it hangs from another variation
+ * it would still be inside parentheses. Every ancestor has to be promoted too,
+ * which is why it walks from the bottom up.
  */
 export function promoteToMainLine(game: Game<PgnNodeData>, path: string): boolean {
   const node = nodeAtPathIn(game, path);
@@ -215,13 +215,13 @@ export function promoteToMainLine(game: Game<PgnNodeData>, path: string): boolea
 }
 
 /**
- * PGN de UNA línea: desde la posición inicial hasta la jugada de `path` y
- * siguiendo después por su continuación principal.
+ * PGN of ONE line: from the initial position to the move at `path` and then
+ * following its main continuation.
  *
- * Sin hermanas ni paréntesis, que es lo que se espera al copiar una variante
- * para pegarla en otro sitio: la secuencia legal de jugadas que lleva hasta
- * ella y cómo termina. Las cabeceras viajan con ella para que el receptor sepa
- * de qué partida salió.
+ * Without siblings or parentheses, which is what is expected when copying a
+ * variation to paste it somewhere else: the legal sequence of moves that leads
+ * to it and how it ends. The headers travel with it so the recipient knows
+ * which game it came from.
  */
 export function variationPgn(game: Game<PgnNodeData>, path: string): string | null {
   if (path.length === 0) return null;
@@ -237,8 +237,8 @@ export function variationPgn(game: Game<PgnNodeData>, path: string): string | nu
 
   for (let tail = current.children[0]; tail; tail = tail.children[0]) line.push(tail);
 
-  // Se copia nodo a nodo en vez de reutilizar los originales: encadenarlos
-  // movería los hijos reales de la partida a este árbol de usar y tirar.
+  // It is copied node by node instead of reusing the originals: chaining them
+  // would move the game's real children into this throwaway tree.
   const moves = new Node<PgnNodeData>();
   let cursor: Node<PgnNodeData> = moves;
   for (const node of line) {
@@ -250,9 +250,9 @@ export function variationPgn(game: Game<PgnNodeData>, path: string): string | nu
   return makePgn({ headers: new Map(game.headers), comments: game.comments, moves });
 }
 
-// --- Comentarios, flechas y anotaciones -------------------------------------
+// --- Comments, arrows and annotations ---------------------------------------
 
-/** El comentario partido en sus dos mitades: lo que escribió el autor y los comandos. */
+/** The comment split into its two halves: what the author wrote and the commands. */
 function splitComment(comments: string[] | undefined): { text: string; commands: string } {
   const raw = (comments ?? []).join(" ");
   const commands = (raw.match(COMMAND_PATTERN) ?? []).join("");
@@ -265,7 +265,7 @@ function joinComment(text: string, commands: string): string[] | undefined {
   return joined.length > 0 ? [joined] : undefined;
 }
 
-/** El texto del comentario de un nodo, ya sin los comandos. */
+/** The text of a node's comment, already without the commands. */
 export function commentTextAt(game: Game<PgnNodeData>, path: string): string {
   if (path.length === 0) return splitComment(game.comments).text;
 
@@ -274,11 +274,11 @@ export function commentTextAt(game: Game<PgnNodeData>, path: string): string {
 }
 
 /**
- * Cambia el texto del comentario CONSERVANDO las flechas.
+ * Changes the comment text KEEPING the arrows.
  *
- * Texto y comandos comparten el mismo campo del PGN —`{Buena jugada [%cal Ge2e4]}`—,
- * así que escribir el comentario entero borraría lo que dibujó el autor. Por eso
- * esto y `setShapes` sólo tocan su mitad.
+ * Text and commands share the same PGN field — `{Good move [%cal Ge2e4]}` —, so
+ * writing the whole comment would erase what the author drew. That is why this
+ * and `setShapes` only touch their own half.
  */
 export function setCommentText(game: Game<PgnNodeData>, path: string, text: string): boolean {
   if (path.length === 0) {
@@ -296,11 +296,11 @@ export function setCommentText(game: Game<PgnNodeData>, path: string, text: stri
 }
 
 /**
- * Escribe la evaluación del módulo CONSERVANDO el texto y las flechas.
+ * Writes the engine's evaluation KEEPING the text and the arrows.
  *
- * Va en el mismo campo que ellos —`{Buena jugada [%cal Ge2e4] [%eval 0.34]}`—,
- * así que se sustituye sólo su comando: `null` lo quita. `path` vacío es la
- * posición de partida, cuya evaluación vive en el comentario de la raíz.
+ * It goes in the same field as them — `{Good move [%cal Ge2e4] [%eval 0.34]}` —,
+ * so only its command is replaced: `null` removes it. An empty `path` is the
+ * starting position, whose evaluation lives in the root's comment.
  */
 export function setEvaluation(
   game: Game<PgnNodeData>,
@@ -326,13 +326,13 @@ export function setEvaluation(
   return true;
 }
 
-/** El comentario partido en texto y comandos, con el `[%eval]` sustituido. */
+/** The comment split into text and commands, with the `[%eval]` replaced. */
 function withEvaluation(comments: string[] | undefined, command: string): [string, string] {
   const { text, commands } = splitComment(comments);
   return [text, commands.replace(/\[%eval[^\]]*\]/g, "") + command];
 }
 
-/** Serializa las formas al formato que lee `parseCommentCommands`. */
+/** Serialises the shapes to the format `parseCommentCommands` reads. */
 function makeShapeCommands(shapes: DrawShape[]): string {
   const arrows: string[] = [];
   const circles: string[] = [];
@@ -351,7 +351,7 @@ function makeShapeCommands(shapes: DrawShape[]): string {
     .join("");
 }
 
-/** Cambia las flechas y casillas marcadas CONSERVANDO el texto del comentario. */
+/** Changes the arrows and highlighted squares KEEPING the comment text. */
 export function setShapes(game: Game<PgnNodeData>, path: string, shapes: DrawShape[]): boolean {
   const commands = makeShapeCommands(shapes);
 
@@ -369,7 +369,7 @@ export function setShapes(game: Game<PgnNodeData>, path: string, shapes: DrawSha
   return true;
 }
 
-/** Anotación de calidad ($1 = «!», $4 = «??»…). Lista vacía = quitarla. */
+/** Quality annotation ($1 = "!", $4 = "??"…). Empty list = remove it. */
 export function setNags(game: Game<PgnNodeData>, path: string, nags: number[]): boolean {
   const node = nodeAtPathIn(game, path);
   if (!node) return false;

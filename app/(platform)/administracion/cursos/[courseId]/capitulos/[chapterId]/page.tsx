@@ -21,7 +21,7 @@ export default async function StaffChapterPage({ params, searchParams }: StaffCh
 
   const [{ error }, gameCount] = await Promise.all([searchParams, countCollectionGames({ chapterId })]);
 
-  // La cabecera va dentro de la sección: lleva las migas hasta el curso.
+  // The header goes inside the section: it carries the breadcrumbs up to the course.
   return (
     <div className="platform-page staff-chapter-page">
       <ChapterEditorSection chapter={chapter} gameCount={gameCount} errorCode={error} />

@@ -8,9 +8,9 @@ interface AttendanceFormProps {
 }
 
 /**
- * Asistencia de la clase. Marcar a un alumno registra su actividad (y con ella
- * sus estadísticas) por el único punto de escritura que existe para eso, así
- * que el formulario se envía entero y el servidor decide qué cambió.
+ * Class attendance. Marking a student records their activity (and with it
+ * their statistics) through the only write point that exists for that, so
+ * the form is submitted whole and the server decides what changed.
  */
 export function AttendanceForm({ classId, participants }: AttendanceFormProps) {
   if (participants.length === 0) {
@@ -31,8 +31,8 @@ export function AttendanceForm({ classId, participants }: AttendanceFormProps) {
               {participant.hasPayment ? "Pago registrado" : "Sin pago registrado"}
             </span>
 
-            {/* Quitar sólo tiene sentido con quien no dejó rastro: el servidor
-                rechaza a quien ya asistió o pagó. */}
+            {/* Removing only makes sense for someone who left no trace: the server
+                rejects whoever already attended or paid. */}
             {!participant.attended && !participant.hasPayment && (
               <button
                 type="submit"

@@ -78,8 +78,8 @@
     text-align: center;
   }
 
-  /* Dentro de un artículo del blog: fondo claro del sitio público, texto un
-     punto más pequeño y un gris que sí contrasta (el #8a8175 de antes no). */
+  /* Inside a blog article: the public site's light background, text one step
+     smaller and a grey that does contrast (the previous #8a8175 did not). */
   &.static-diagram_context_article .static-diagram__caption {
     font-size: 14px;
     color: var(--color-muted-on-light);

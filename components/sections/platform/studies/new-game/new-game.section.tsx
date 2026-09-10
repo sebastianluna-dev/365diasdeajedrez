@@ -19,9 +19,9 @@ const ERROR_MESSAGES: Record<string, string> = {
 };
 
 /**
- * Alta de una partida. TODO es opcional: enviar el formulario vacío crea una
- * partida en blanco y abre el tablero, que es el camino corto para ponerse a
- * analizar sin tener aún un PGN ni saber quién jugó.
+ * Creating a game. EVERYTHING is optional: submitting the empty form creates a
+ * blank game and opens the board, which is the short path to start analysing
+ * without having a PGN yet or knowing who played.
  */
 export function NewGameSection({ study, results, errorCode }: NewGameSectionProps) {
   const nextNumber = study.games.length + 1;

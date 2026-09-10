@@ -22,8 +22,8 @@
     color: var(--platform-danger);
   }
 
-  /* El mismo diálogo con otro disparador: en la ficha del estudio el botón
-     lleva texto, porque ahí hay sitio y no compite con nada. */
+  /* The same dialog with another trigger: on the study page the button carries
+     text, because there is room there and it competes with nothing. */
   & .delete-study__open-wide {
     padding: 11px 17px;
     border: 1px solid var(--platform-border);
@@ -41,8 +41,8 @@
     color: var(--platform-danger);
   }
 
-  /* El aspa es decorativa; el nombre real lo lee el lector de pantalla, que si
-     no anunciaría «✕» y nada más. */
+  /* The cross is decorative; the real name is read by the screen reader, which
+     otherwise would announce "✕" and nothing else. */
   & .delete-study__open-label {
     position: absolute;
     width: 1px;
@@ -52,7 +52,7 @@
     white-space: nowrap;
   }
 
-  /* Sólo la medida: el centrado, el fondo y la superficie los pone
+  /* Only the size: the centring, the backdrop and the surface are set by
      `.platform-dialog`. */
   & .delete-study__dialog {
     width: min(520px, calc(100vw - 32px));
@@ -165,8 +165,8 @@
     color: var(--platform-surface);
   }
 
-  /* Apagado mientras falte la casilla: el color se va, el sitio no, para que
-     el botón no salte cuando se marque. */
+  /* Dimmed while the checkbox is missing: the colour goes, the place does not,
+     so the button does not jump when it is ticked. */
   & .delete-study__submit:disabled {
     background: var(--platform-track);
     color: var(--platform-text-faint);

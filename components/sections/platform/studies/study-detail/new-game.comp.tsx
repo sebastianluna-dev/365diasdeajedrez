@@ -10,9 +10,9 @@ type Tab = "pgn" | "fen" | "blank" | "class";
 interface NewGameProps {
   studyId: string;
   studyName: string;
-  /** Opciones del catálogo GameResult; su label ES el token PGN. */
+  /** Options of the GameResult catalog; its label IS the PGN token. */
   results: StudyKindOption[];
-  /** Partidas vistas en clases a las que asistió. Vacío = la pestaña no sale. */
+  /** Games seen in classes attended. Empty = the tab does not appear. */
   classGames: ClassGameItem[];
 }
 
@@ -82,12 +82,12 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
           </form>
         )}
 
-        {/* Desde una posición suelta: el caso de «tengo este diagrama y quiero
-            analizarlo». La partida nace sin jugadas y en esa posición, y la
-            notación empieza a contar en el número que diga el FEN. */}
+        {/* From a loose position: the "I have this diagram and want to analyse
+            it" case. The game is born without moves and in that position, and the
+            notation starts counting at the number the FEN says. */}
         {tab === "fen" && (
           <form action={createStudyGame.bind(null, studyId)} onSubmit={close} className="new-game__panel">
-            {/* Para que un FEN mal escrito avise AQUÍ y no en otra pantalla. */}
+            {/* So that a badly written FEN warns HERE and not on another screen. */}
             <input type="hidden" name="origin" value="detail" />
 
             <label className="new-game__field">
@@ -230,7 +230,7 @@ interface FooterProps {
   onCancel: () => void;
   label: string;
   disabled?: boolean;
-  /** Sin esto el botón envía el formulario que lo envuelve. */
+  /** Without this the button submits the form wrapping it. */
   onConfirm?: () => void;
 }
 

@@ -2,21 +2,21 @@ import { extractGamePositions } from "@/lib/chess/extract-game-positions";
 import { logWarning } from "@/lib/logger";
 import type { Prisma, PrismaClient } from "@/lib/platform-db/generated/client";
 
-// Mantenimiento del índice de posiciones (GamePosition). Aquí se ESCRIBE; el
-// buscador que lo lee vive en services/game-explorer.
+// Maintenance of the position index (GamePosition). Here it is WRITTEN; the
+// search that reads it lives in services/game-explorer.
 //
-// El índice se genera al importar una partida y se regenera entero si su PGN
-// cambia. Nadie debería escribir en GamePosition fuera de este módulo: es el
-// único punto que garantiza que el hash sale de lib/chess/position-hash.
+// The index is generated when a game is imported and regenerated whole if its
+// PGN changes. Nobody should write to GamePosition outside this module: it is
+// the only point that guarantees the hash comes from lib/chess/position-hash.
 //
-// El cliente de Prisma llega SIEMPRE por parámetro y este módulo no importa
-// get-platform-db (que es server-only): así lo comparten las server actions,
-// el seed y los scripts, que corren fuera de Next.
+// The Prisma client ALWAYS arrives as a parameter and this module does not
+// import get-platform-db (which is server-only): that way it is shared by the
+// server actions, the seed and the scripts, which run outside Next.
 
 /**
- * Cliente de escritura: el global o el de una transacción en curso. Recibirlo
- * como parámetro es lo que permite que importar partidas e indexar sus
- * posiciones sean el mismo movimiento atómico.
+ * Write client: the global one or that of a transaction in progress. Receiving
+ * it as a parameter is what lets importing games and indexing their positions
+ * be the same atomic movement.
  */
 export type GamePositionWriter = Prisma.TransactionClient | PrismaClient;
 
@@ -27,28 +27,27 @@ export interface IndexGamePositionsInput {
 }
 
 export interface IndexGamePositionsResult {
-  /** Filas escritas: una por ply, incluida la posición inicial. */
+  /** Rows written: one per ply, the initial position included. */
   positionCount: number;
-  /** Avisos del reproductor (PGN recortado por una jugada ilegal, por ejemplo). */
+  /** Warnings from the replayer (a PGN truncated by an illegal move, for instance). */
   warnings: string[];
 }
 
 /**
- * Deja el índice de una partida exactamente igual a su PGN.
+ * Leaves a game's index exactly equal to its PGN.
  *
- * Borra y regenera en lugar de hacer upsert: al editar un PGN el mapeo
- * ply→posición cambia en bloque, y un upsert dejaría colgando las filas
- * posteriores al nuevo final de la partida. Como consecuencia la operación es
- * idempotente, así que sirve igual para una partida recién creada que para una
- * reindexación.
+ * It deletes and regenerates instead of upserting: when a PGN is edited the
+ * ply→position mapping changes wholesale, and an upsert would leave dangling
+ * the rows after the game's new end. As a consequence the operation is
+ * idempotent, so it serves a freshly created game just as well as a reindex.
  */
 export async function indexGamePositions(
   writer: GamePositionWriter,
   { gameId, databaseId, pgn }: IndexGamePositionsInput,
 ): Promise<IndexGamePositionsResult> {
   const { positions, warnings } = extractGamePositions(pgn);
-  // Quien importa rara vez enseña estos avisos (una partida recortada por una
-  // jugada ilegal sigue entrando); que al menos queden en el registro.
+  // Whoever imports rarely shows these warnings (a game truncated by an illegal
+  // move still goes in); let them at least be in the log.
   if (warnings.length > 0) {
     logWarning("game-positions", "PGN indexado con avisos del reproductor", { gameId, databaseId, warnings });
   }
@@ -69,8 +68,8 @@ export async function indexGamePositions(
 }
 
 /**
- * Reindexa una partida ya guardada, leyendo su PGN de la base. Para el script
- * de relleno y para cuando se edite el PGN de una partida existente.
+ * Reindexes an already stored game, reading its PGN from the database. For the
+ * backfill script and for when an existing game's PGN is edited.
  */
 export async function reindexGame(
   db: PrismaClient,

@@ -6,7 +6,7 @@ import { activeNavHref, type PlatformNavGroup } from "@/constants/platform/nav-i
 import "./platform-nav.comp.css";
 
 interface PlatformNavProps {
-  /** Compuestos por rol en el shell (server): aquí sólo se pintan. */
+  /** Composed by role in the shell (server): here they are only rendered. */
   groups: PlatformNavGroup[];
 }
 
@@ -18,10 +18,10 @@ export function PlatformNav({ groups }: PlatformNavProps) {
     <nav className="platform-nav" aria-label="Navegación principal">
       {groups.map((group, index) => (
         <div key={group.label ?? `group-${index}`} className="platform-nav__group">
-          {/* El rótulo del grupo (`group.label`) no se pinta en la barra
-              superior: no hay renglón donde ponerlo y repite lo que ya dice el
-              primer ítem («Administración», «Panel del profesor»). El menú es
-              excluyente por rol, así que no hay dos grupos que distinguir. */}
+          {/* The group label (`group.label`) is not rendered in the top bar: there
+              is no row to put it on and it repeats what the first item already says
+              ("Administración", "Panel del profesor"). The menu is exclusive by
+              role, so there are no two groups to tell apart. */}
           {group.items.map((item) => {
             const isActive = item.href === activeHref;
             return (

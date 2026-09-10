@@ -11,7 +11,7 @@ interface TeacherProfilePageProps {
 }
 
 export default async function TeacherProfilePage({ searchParams }: TeacherProfilePageProps) {
-  // getTeacherProfile abre con requireTeacher(): es la frontera del panel.
+  // getTeacherProfile opens with requireTeacher(): it is the panel's border.
   const [profile, { error }] = await Promise.all([getTeacherProfile(), searchParams]);
 
   return (

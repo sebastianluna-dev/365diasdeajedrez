@@ -7,7 +7,7 @@ import type { HeaderNavItem } from "@/services/home/home.types";
 
 interface HeaderMobileMenuProps {
   navItems: HeaderNavItem[];
-  /** Mismo botón que en escritorio: lo decide header.section.tsx, no el CMS. */
+  /** Same button as on desktop: header.section.tsx decides it, not the CMS. */
   ctaLabel: string;
   ctaHref: string;
 }

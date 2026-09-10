@@ -30,10 +30,10 @@ export async function HeroSection() {
               <div className="hero__stage">
                 <div className="hero__card">
                   <div className="hero__card-inner">
-                    {/* Es el LCP: `preload` la anuncia en el <head> y `fetchPriority`
-                        la sube de prioridad en ese preload y en el <img>. `sizes`
-                        es lo que pinta de verdad (la tarjeta), no el ancho del
-                        viewport: sin él el móvil pedía el doble de píxeles. */}
+                    {/* It is the LCP: `preload` announces it in the <head> and `fetchPriority`
+                        raises its priority in that preload and in the <img>. `sizes` is
+                        what actually renders (the card), not the viewport width: without
+                        it, mobile requested twice the pixels. */}
                     <Image
                       src={content.image.src}
                       alt={content.image.alt}

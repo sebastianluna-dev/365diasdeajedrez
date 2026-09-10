@@ -3,10 +3,10 @@
 import "./platform-error.comp.css";
 
 interface PlatformErrorProps {
-  /** `retry` del error boundary de Next 16: reintenta datos y render. */
+  /** Next 16's error boundary `retry`: retries data and render. */
   retry: () => void;
   message?: string;
-  /** Identificador del error que Next registra en el servidor (ver instrumentation.ts). */
+  /** Identifier of the error Next logs on the server (see instrumentation.ts). */
   digest?: string;
 }
 

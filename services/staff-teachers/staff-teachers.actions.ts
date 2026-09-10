@@ -15,8 +15,8 @@ import { safeReturnTo, withErrorParam } from "@/services/shared/safe-return-to";
 import { createDefaultStudy } from "@/services/studies/default-study";
 import { planAssignment } from "./assignment-rules";
 
-// Profesores y asignaciones. Nada se borra aquí: un profesor se desactiva y una
-// asignación se cierra. El historial de quién llevó a quién es parte del dato.
+// Teachers and assignments. Nothing is deleted here: a teacher is deactivated
+// and an assignment is closed. The history of who took whom is part of the data.
 
 const DISPLAY_NAME_MAX_LENGTH = 120;
 const TITLE_MAX_LENGTH = 120;
@@ -25,7 +25,7 @@ const NOTE_MAX_LENGTH = 300;
 const EMAIL_MAX_LENGTH = 254;
 const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/** Índice parcial que impone «un profesor activo por alumno» (SQL manual). */
+/** Partial index that imposes "one active teacher per student" (manual SQL). */
 const ONE_ACTIVE_INDEX = "teacher_student_one_active";
 
 function fail(path: string, code: string): never {
@@ -33,11 +33,11 @@ function fail(path: string, code: string): never {
 }
 
 /**
- * Crea la ficha de profesor: o sobre una cuenta que ya existe, o creando cuenta
- * y ficha a la vez (en una transacción, para no dejar un usuario suelto si algo
- * falla). La contraseña temporal se muestra en la ficha del alumno; aquí, si se
- * crea la cuenta, se le pone una generada que el staff reinicia después desde
- * su ficha si hace falta.
+ * Creates the teacher record: either over an account that already exists, or
+ * creating account and record at once (in a transaction, so as not to leave a
+ * loose user if something fails). The temporary password is shown on the
+ * student's page; here, if the account is created, it is given a generated one
+ * that the staff resets afterwards from their page if needed.
  */
 export async function createTeacher(formData: FormData): Promise<void> {
   const staff = await requireStaff();
@@ -81,14 +81,14 @@ export async function createTeacher(formData: FormData): Promise<void> {
 
   let teacherId: string;
   try {
-    // Cuenta y ficha en la misma transacción: o entran las dos o ninguna.
+    // Account and record in the same transaction: either both go in or neither does.
     const created = await db.$transaction(async (tx) => {
       const user = await tx.user.create({
         data: { email, displayName, passwordHash: await hashPassword(password), passwordUpdatedAt: new Date() },
         select: { id: true },
       });
-      // Un profesor también usa «Mis estudios» —ahí hace las colecciones que
-      // reparte—, así que su cuenta nace igual que la de un alumno.
+      // A teacher also uses "Mis estudios" — that is where they make the collections
+      // they share — so their account is born just like a student's.
       await createDefaultStudy(tx, user.id);
       return tx.teacher.create({
         data: {
@@ -108,8 +108,8 @@ export async function createTeacher(formData: FormData): Promise<void> {
   }
 
   revalidatePath(staffRoutes.teachers);
-  // La contraseña de la cuenta nueva se entrega reiniciándola desde la ficha
-  // del alumno: así sólo hay UN sitio que la muestre (y una sola vez).
+  // The new account's password is handed over by resetting it from the student's
+  // page: that way there is only ONE place that shows it (and only once).
   redirect(staffRoutes.teacherDetail(teacherId));
 }
 
@@ -142,9 +142,9 @@ export async function updateTeacher(teacherId: string, formData: FormData): Prom
 }
 
 /**
- * Alta y baja del profesor. Desactivar NO cierra sus asignaciones: quien
- * reasigna a sus alumnos es una persona, no un efecto colateral. La ficha avisa
- * de cuántas quedan abiertas.
+ * Activating and deactivating the teacher. Deactivating does NOT close their
+ * assignments: whoever reassigns their students is a person, not a side effect.
+ * The page reports how many are left open.
  */
 export async function setTeacherActive(teacherId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
@@ -165,8 +165,8 @@ export async function assignStudent(formData: FormData): Promise<void> {
 
   const studentId = readText(formData, "studentId");
   const teacherId = readText(formData, "teacherId");
-  // `returnTo` viene de un campo oculto, es decir, del cliente: sólo rutas
-  // internas, o `redirect()` serviría para mandar al staff a otro dominio.
+  // `returnTo` comes from a hidden field, that is, from the client: internal
+  // paths only, or `redirect()` would serve to send the staff to another domain.
   const returnTo = safeReturnTo(readText(formData, "returnTo"), staffRoutes.studentDetail(studentId));
 
   if (!(await allowAction(`${staff.user.id}:assign-student`, 60, 60_000))) fail(returnTo, "throttled");
@@ -192,8 +192,8 @@ export async function assignStudent(formData: FormData): Promise<void> {
       const plan = planAssignment(active, teacherId);
       if (plan.alreadyAssigned) return;
 
-      // Cerrar y crear van en la MISMA transacción: si se separaran, un fallo
-      // en medio dejaría al alumno sin profesor.
+      // Closing and creating go in the SAME transaction: if they were separated, a
+      // failure in between would leave the student without a teacher.
       const now = new Date();
       if (plan.closeIds.length > 0) {
         await tx.teacherStudent.updateMany({ where: { id: { in: plan.closeIds } }, data: { endedAt: now } });
@@ -203,8 +203,8 @@ export async function assignStudent(formData: FormData): Promise<void> {
       });
     });
   } catch (error) {
-    // Carrera: dos altas simultáneas pasan las dos por el plan y sólo el índice
-    // parcial las separa. Se traduce a un mensaje que dice qué hacer.
+    // Race: two simultaneous creations both pass through the plan and only the
+    // partial index separates them. It is translated into a message that says what to do.
     if (isUniqueConstraintError(error, ONE_ACTIVE_INDEX)) fail(returnTo, "alreadyAssigned");
     throw error;
   }
@@ -214,7 +214,7 @@ export async function assignStudent(formData: FormData): Promise<void> {
   revalidatePath(staffRoutes.home);
 }
 
-/** Termina una asignación. Nunca borra la fila: es historial. */
+/** Ends an assignment. It never deletes the row: it is history. */
 export async function endAssignment(assignmentId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const returnTo = safeReturnTo(readText(formData, "returnTo"), staffRoutes.teachers);

@@ -7,8 +7,8 @@ const item = (order: number, roleCode: string | null = null) => ({ order, roleCo
 
 describe("sortByRole", () => {
   it("la introducción va delante y el cierre al final, pase lo que pase con `order`", () => {
-    // El cierre con el número más bajo y la introducción con el más alto: si el
-    // orden mandara, saldrían al revés.
+    // The closing with the lowest number and the introduction with the highest: if
+    // the order ruled, they would come out the other way round.
     const sorted = sortByRole([
       item(1, CONTENT_ROLE.CLOSING),
       item(5),

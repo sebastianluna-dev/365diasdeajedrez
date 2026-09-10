@@ -18,7 +18,7 @@ interface TrainerSessionProps {
 const OPPONENT_REPLY_MS = 450;
 const FEEDBACK_MS = 1600;
 
-/** Compara SAN ignorando sufijos de jaque/mate y signos de calidad. */
+/** Compares SAN ignoring check/mate suffixes and quality signs. */
 function normalizeSan(san: string): string {
   return san.replace(/[+#!?]+$/g, "");
 }
@@ -67,7 +67,7 @@ export function TrainerSession({ exercises }: TrainerSessionProps) {
   };
 
   const finishExercise = (passed: boolean, finalMistakes: number) => {
-    // El intento se registra en el servidor (la action resuelve al usuario).
+    // The attempt is recorded on the server (the action resolves the user).
     void recordTrainingAttempt({
       exerciseId: exercise.id,
       resultCode: passed ? ATTEMPT_RESULT.PASSED : ATTEMPT_RESULT.FAILED,

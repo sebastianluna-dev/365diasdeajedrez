@@ -20,11 +20,11 @@ import type {
   TeacherClassSummary,
 } from "./teacher-classes.types";
 
-// Clases QUE IMPARTE el profesor. `teacherId` va dentro del `where` en todas
-// las lecturas: pedir la clase de otro profesor por URL no devuelve nada que
-// haya que descartar después.
+// Classes the teacher GIVES. `teacherId` goes inside the `where` in every read:
+// asking for another teacher's class by URL returns nothing that has to be
+// discarded afterwards.
 
-/** Zona horaria del profesor para pintar y leer los `datetime-local`. */
+/** The teacher's time zone, to render and read the `datetime-local` fields. */
 async function teacherTimeZone(teacherId: string): Promise<string> {
   const row = await getPlatformDb().teacher.findUnique({ where: { id: teacherId }, select: { timezone: true } });
   return safeTimeZone(row?.timezone);
@@ -52,7 +52,7 @@ export async function getTeacherClassDetail(classId: string): Promise<TeacherCla
   return row ? mapTeacherClassDetail(row, timeZone) : null;
 }
 
-/** Catálogo de plataformas de reunión para el formulario de clase. */
+/** Catalog of meeting platforms for the class form. */
 export async function listMeetingProviders(): Promise<{ code: string; label: string }[]> {
   await requireTeacher();
   const rows = await getPlatformDb().meetingProvider.findMany({
@@ -63,9 +63,9 @@ export async function listMeetingProviders(): Promise<{ code: string; label: str
 }
 
 /**
- * Los bloques TAL Y COMO los verá el alumno. Se reutiliza el mapper del alumno
- * a propósito: si la previsualización usara su propia lógica, el profesor
- * podría estar viendo algo distinto de lo que se publica.
+ * The blocks EXACTLY as the student will see them. The student's mapper is
+ * reused on purpose: if the preview used its own logic, the teacher could be
+ * seeing something different from what is published.
  */
 export async function getTeacherClassPreview(classId: string): Promise<ClassBlockView[]> {
   const { teacher } = await requireTeacher();
@@ -78,10 +78,10 @@ export async function getTeacherClassPreview(classId: string): Promise<ClassBloc
 }
 
 /**
- * Partidas que el profesor puede referenciar en un bloque: las de sus propios
- * estudios y las de los alumnos con asignación activa. Devuelve sólo id y
- * etiqueta — los PGN completos no viajan a un selector (se piden uno a uno con
- * `getPgnForReference` cuando hace falta previsualizar).
+ * Games the teacher can reference in a block: those of their own studies and
+ * those of the students with an active assignment. It returns only id and label —
+ * full PGNs do not travel to a selector (they are requested one at a time with
+ * `getPgnForReference` when a preview is needed).
  */
 export async function listReferenceableGames(): Promise<ReferenceableGameGroup[]> {
   const { teacher, user } = await requireTeacher();
@@ -107,7 +107,7 @@ export async function listReferenceableGames(): Promise<ReferenceableGameGroup[]
     .filter((database) => database.games.length > 0)
     .map((database) => ({
       studyId: database.id,
-      // Sólo las suyas se pueden anotar: las del alumno se ven para citarlas.
+      // Only their own can be annotated: the student's are seen in order to cite them.
       isOwn: database.userId === user.id,
       ownerLabel: database.userId === user.id ? "Mis estudios" : (database.user?.displayName ?? "Alumno"),
       studyName: database.name,
@@ -133,9 +133,9 @@ export async function listTeacherPositions(): Promise<PositionOption[]> {
 }
 
 /**
- * PGN de un recurso para el selector de posición del editor de bloques.
- * Autoriza igual que el alta del bloque: partida propia o de alumno asignado
- * activo, lección de curso publicado.
+ * PGN of a resource for the position picker of the block editor. It authorises
+ * like creating the block: an own game or one of an actively assigned student, a
+ * lesson of a published course.
  */
 export async function getPgnForReference(
   kind: typeof CLASS_BLOCK_KIND.GAME_REF | typeof CLASS_BLOCK_KIND.LESSON_REF,

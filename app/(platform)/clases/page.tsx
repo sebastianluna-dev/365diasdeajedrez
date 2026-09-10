@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ClassesPage() {
-  // Frontera de la zona privada: sin sesión válida, redirige al login.
+  // Border of the private area: without a valid session, redirect to the login.
   await getCurrentUser();
 
   return (

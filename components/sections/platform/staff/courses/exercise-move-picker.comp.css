@@ -5,7 +5,7 @@
   border-radius: 10px;
   background: var(--platform-bg);
 
-  /* Cerrado: sólo el botón (o el aviso), sin caja alrededor. */
+  /* Closed: only the button (or the notice), without a box around it. */
   &.exercise-move-picker_state_closed {
     margin-top: 10px;
     padding: 0;

@@ -24,18 +24,18 @@ import type {
   StudySummary,
 } from "./studies.types";
 
-// «Mis estudios» en la interfaz; GameDatabase en el dominio. El alumno ve sus
-// bases propias (editables), las de los cursos que ha empezado (sólo lectura) y
-// una colección derivada con las partidas que ha visto en clase.
+// "Mis estudios" in the interface; GameDatabase in the domain. The student sees
+// their own databases (editable), those of the courses they have started (read-
+// only) and a derived collection with the games they have seen in class.
 //
-// El filtro de visibilidad vive en services/shared/game-visibility para que el
-// buscador por posición use exactamente el mismo.
+// The visibility filter lives in services/shared/game-visibility so that the
+// position search uses exactly the same one.
 const getVisibleStudiesWhere = getVisibleDatabasesWhere;
 
 /**
- * Identificador de la tarjeta de partidas de clase. No es un id de base: existe
- * sólo para que la lista tenga una clave estable, y por eso mide 11 caracteres
- * cuando los ids miden 8 — confundirlo con uno se ve a simple vista.
+ * Identifier of the class-games card. It is not a database id: it exists only so
+ * the list has a stable key, and that is why it is 11 characters long when the
+ * ids are 8 — mistaking it for one is visible at a glance.
  */
 const CLASS_GAMES_ID = "class-games";
 
@@ -44,29 +44,30 @@ export async function getUserStudies(): Promise<StudySummary[]> {
   const [where, user] = await Promise.all([getVisibleStudiesWhere(), getCurrentUser()]);
   const rows = await db.gameDatabase.findMany({
     where,
-    // «Mis partidas» primero: es la única que está siempre y donde va a parar
-    // lo que se registra deprisa.
+    // "Mis partidas" first: it is the only one that is always there and where what
+    // is recorded in a hurry ends up.
     orderBy: [{ isDefault: "desc" }, { updatedAt: "desc" }],
     include: studySummaryInclude,
   });
 
   const studies = rows.map((row) => mapStudySummary(row, user.id));
   const classGames = await getClassGamesSummary();
-  // Al final de la lista y sólo si hay algo: una tarjeta vacía «partidas de
-  // clase» sería ruido para quien todavía no ha ido a ninguna.
+  // At the end of the list and only if there is something: an empty "class games"
+  // card would be noise for whoever has not been to one yet.
   return classGames ? [...studies, classGames] : studies;
 }
 
 /**
- * Tipos de estudio que quien mira PUEDE crear. Las etiquetas viven en la base,
- * pero la regla de quién crea qué es de dominio y está en `study-rules`.
+ * Study kinds whoever is looking CAN create. The labels live in the database,
+ * but the rule of who creates what is domain and is in `study-rules`.
  *
- * Fuera queda siempre «Mis partidas», que nace con la cuenta. «Colección» sólo
- * la ve un maestro: al alumno le llega repartida, nunca la hace.
+ * "Mis partidas" is always left out, as it is born with the account.
+ * "Colección" is only seen by a teacher: the student receives it shared, they
+ * never make one.
  *
- * La lista es informativa, no la defensa: `createStudy` vuelve a preguntarle a
- * `study-rules` antes de escribir, porque una server action es alcanzable por
- * POST directo y ahí no hay desplegable que valga.
+ * The list is informative, not the defence: `createStudy` asks `study-rules`
+ * again before writing, because a server action is reachable by direct POST and
+ * there no dropdown counts.
  */
 export const getStudyKinds = cache(async (): Promise<StudyKindOption[]> => {
   const db = getPlatformDb();
@@ -79,7 +80,7 @@ export const getStudyKinds = cache(async (): Promise<StudyKindOption[]> => {
   return rows.map((row) => ({ code: row.code, label: row.label }));
 });
 
-/** Resultados del catálogo. El label ES el token PGN («1-0», «*»…). */
+/** Results from the catalog. The label IS the PGN token ("1-0", "*"…). */
 export const getGameResultOptions = cache(async (): Promise<StudyKindOption[]> => {
   const rows = await getPlatformDb().gameResult.findMany({
     orderBy: { order: "asc" },
@@ -96,12 +97,12 @@ export async function getStudyById(studyId: string): Promise<StudyDetail | null>
 }
 
 /**
- * Alumnos a los que este profesor puede repartir una colección: los que tienen
- * asignación ACTIVA con él, el mismo criterio que el resto de su panel.
+ * Students this teacher can share a collection with: those with an ACTIVE
+ * assignment to them, the same criterion as the rest of their panel.
  *
- * Devuelve la lista vacía si quien mira no es profesor. Es la misma condición
- * que vuelve a comprobar `shareStudyWithStudent` contra la base de datos antes
- * de escribir: esto sólo decide a quién se OFRECE repartir.
+ * It returns the empty list if whoever is looking is not a teacher. It is the
+ * same condition `shareStudyWithStudent` checks again against the database
+ * before writing: this only decides who is OFFERED the share.
  */
 export async function getShareableStudents(): Promise<StudentOption[]> {
   const teacher = await getTeacherContext();
@@ -125,15 +126,15 @@ export async function getGameById(studyId: string, gameId: string): Promise<Game
   return row ? mapGameView(row, user.id) : null;
 }
 
-// --- Partidas vistas en clase ----------------------------------------------
+// --- Games seen in class ---------------------------------------------------
 //
-// No son una base de datos: son punteros desde los bloques de las clases a las
-// que el alumno asistió (ClassBlock.gameId), y la partida puede vivir en la
-// base de su profesor. Por eso el enlace lleva a la CLASE donde se vio y no al
-// visor de estudios: allí ya tiene acceso y además conserva el contexto, y
-// evita enseñarle el nombre de la base privada de otra persona.
+// They are not a database: they are pointers from the blocks of the classes the
+// student attended (ClassBlock.gameId), and the game may live in their teacher's
+// database. That is why the link leads to the CLASS where it was seen and not to
+// the studies viewer: there they already have access and the context is kept,
+// and it avoids showing them the name of someone else's private database.
 
-/** Partidas de clase, memorizado: la lista y la tarjeta resumen lo comparten. */
+/** Class games, memoised: the list and the summary card share it. */
 const getClassGameItems = cache(async (): Promise<ClassGameItem[]> => {
   const db = getPlatformDb();
   const user = await getCurrentUser();
@@ -160,8 +161,8 @@ const getClassGameItems = cache(async (): Promise<ClassGameItem[]> => {
     },
   });
 
-  // La misma partida puede aparecer en varias clases: se queda la más reciente,
-  // que es la primera por el orden de la consulta.
+  // The same game can appear in several classes: the most recent one is kept,
+  // which is the first by the query's order.
   const seen = new Set<string>();
   const items: ClassGameItem[] = [];
   for (const block of blocks) {
@@ -182,7 +183,7 @@ const getClassGameItems = cache(async (): Promise<ClassGameItem[]> => {
   return items;
 });
 
-/** Tarjeta de la colección en «Mis estudios», o null si no hay ninguna. */
+/** Card of the collection in "Mis estudios", or null when there is none. */
 async function getClassGamesSummary(): Promise<StudySummary | null> {
   const items = await getClassGameItems();
   if (items.length === 0) return null;
@@ -196,14 +197,14 @@ async function getClassGamesSummary(): Promise<StudySummary | null> {
     gameCount: items.length,
     updatedAtLabel: items[0].classDateLabel,
     isCourseStudy: false,
-    // No es una base: no hay nada que editar ni que borrar.
+    // It is not a database: there is nothing to edit or delete.
     permissions: studyPermissionsOf({ kindCode: DATABASE_KIND.COLLECTION, isOwner: false }),
     citedGameCount: 0,
     href: platformRoutes.classGames,
   };
 }
 
-/** Contenido de la colección para su propia página. */
+/** Content of the collection for its own page. */
 export async function getClassGames(): Promise<ClassGameItem[]> {
   return getClassGameItems();
 }

@@ -8,16 +8,16 @@ interface CountdownTimer {
 }
 
 /**
- * Cuenta atrás que vuelve a empezar al llegar a cero.
+ * Countdown that starts over when it reaches zero.
  *
- * `tickMs` es cada cuánto se re-renderiza, no la precisión: el tiempo restante
- * se calcula siempre con `Date.now()`, así que un tick lento no atrasa el
- * reloj. Un reloj que muestra `mm:ss` no necesita más de un tick por segundo;
- * a 100 ms se re-renderizaría diez veces por segundo durante toda la visita.
+ * `tickMs` is how often it re-renders, not the precision: the remaining time
+ * is always computed with `Date.now()`, so a slow tick does not make the
+ * clock lag. A clock showing `mm:ss` needs no more than one tick per second;
+ * at 100 ms it would re-render ten times a second for the whole visit.
  */
 export function useCountdownTimer(durationSeconds: number, tickMs = 100): CountdownTimer {
   const [remaining, setRemaining] = useState(durationSeconds);
-  // Se inicializa dentro del efecto: Date.now() durante el render es impuro.
+  // Initialised inside the effect: Date.now() during render is impure.
   const lastTick = useRef(0);
 
   useEffect(() => {

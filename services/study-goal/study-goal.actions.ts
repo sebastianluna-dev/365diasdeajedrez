@@ -9,13 +9,13 @@ import { allowAction } from "@/lib/rate-limit";
 import { readText } from "@/services/shared/form-data";
 
 /**
- * Cambia el objetivo diario del alumno.
+ * Changes the student's daily goal.
  *
- * El valor se comprueba contra la lista de opciones y no contra un rango: una
- * server action es alcanzable por POST directo, y aceptar «7 minutos» o
- * «100000» dejaría una barra que no se puede llenar o que se llena sola. Un
- * valor que no esté en la lista sale sin escribir, igual que el resto de las
- * actions del proyecto.
+ * The value is checked against the list of options and not against a range: a
+ * server action is reachable by direct POST, and accepting "7 minutes" or
+ * "100000" would leave a bar that cannot be filled or that fills itself. A value
+ * that is not in the list comes out without writing, like the rest of the
+ * project's actions.
  */
 export async function updateDailyGoal(formData: FormData): Promise<void> {
   const minutes = Number.parseInt(readText(formData, "goalMinutes"), 10);

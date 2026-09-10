@@ -31,12 +31,12 @@ export function LessonViewSection({ lesson }: LessonViewSectionProps) {
       <GameViewer
         pgn={lesson.pgn}
         orientation={lesson.orientation}
-        // La lección se LEE: el texto corrido acompaña al relato, mientras que
-        // la tabla es para consultar una partida jugada a jugada.
+        // The lesson is READ: the running text accompanies the narrative, whereas
+        // the table is for consulting a game move by move.
         moveList="flow"
         title={`${lesson.order}. ${lesson.name}`}
-        // El subtítulo carga con todo lo que antes vivía encima del tablero:
-        // dónde está la lección dentro del capítulo y cuánto dura.
+        // The subtitle carries everything that used to live above the board:
+        // where the lesson sits within the chapter and how long it lasts.
         subtitle={subtitle}
         description={lesson.description}
         badge={lesson.isPriority ? "Prioridad" : undefined}
@@ -93,8 +93,8 @@ export function LessonViewSection({ lesson }: LessonViewSectionProps) {
           </Link>
         )}
 
-        {/* El diseño no lo dibuja, pero sin esto sólo se puede retroceder por
-            el botón del navegador. Va apartado a la derecha y en discreto. */}
+        {/* The design does not draw it, but without this one can only go back
+            with the browser button. Set apart on the right and understated. */}
         {lesson.prevLessonHref && (
           <Link href={lesson.prevLessonHref} className="lesson-view__back">
             ← Lección anterior

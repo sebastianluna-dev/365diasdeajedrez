@@ -14,11 +14,11 @@ import {
   type PgnTree,
 } from "@/lib/chess/pgn-tree";
 
-// PGN real de la lección «¿Qué es la Siciliana?» (prisma/seed-data.ts). Se copia
-// como literal a propósito: los tests son unitarios y no deben tocar Prisma.
+// Real PGN of the lesson "¿Qué es la Siciliana?" (prisma/seed-data.ts). It is
+// copied as a literal on purpose: the tests are unit tests and must not touch Prisma.
 const SICILIANA_PGN = `1. e4 c5 {La Defensa Siciliana: el negro evita la simetría y lucha por la casilla d4 desde la primera jugada. [%csl Gc5,Gd4][%cal Gc5d4]} 2. Nf3 ( 2. Nc3 Nc6 3. g3 g6 {La Siciliana Cerrada: un plan completamente distinto, sin apertura del centro.} ) 2... d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 {La posición base de la Siciliana Abierta. El negro cambió un peón de flanco por un peón central. [%cal Gf6e4,Gc3e4]} *`;
 
-// PGN de la lección «La posición de Lucena»: lleva cabecera FEN.
+// PGN of the lesson "La posición de Lucena": it carries a FEN header.
 const LUCENA_FEN = "1K6/1P1k4/8/8/8/8/r7/2R5 w - - 0 1";
 const LUCENA_PGN = `[FEN "${LUCENA_FEN}"]
 
@@ -26,7 +26,7 @@ const LUCENA_PGN = `[FEN "${LUCENA_FEN}"]
 
 const STARTING_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-/** Ruta del último nodo de la línea principal siciliana (5. Nc3). */
+/** Path of the last node of the Sicilian main line (5. Nc3). */
 const SICILIANA_MAINLINE_END = "0.0.0.0.0.0.0.0.0";
 
 function parseOrFail(pgn: string): PgnTree {
@@ -59,11 +59,11 @@ describe("parsePgnTree — PGN con variante, comentarios y anotaciones visuales"
     const c5 = nodeAtPath(tree, "0.0");
     expect(c5?.san).toBe("c5");
     expect(c5?.children).toHaveLength(2);
-    expect(c5?.children[0].san).toBe("Nf3"); // continuación principal
-    expect(c5?.children[1].san).toBe("Nc3"); // variante
+    expect(c5?.children[0].san).toBe("Nf3"); // main continuation
+    expect(c5?.children[1].san).toBe("Nc3"); // variation
     expect(c5?.children[1].path).toBe("0.0.1");
 
-    // La variante mantiene su propia numeración de ply y su propia línea.
+    // The variation keeps its own ply numbering and its own line.
     const variante = ["Nc3", "Nc6", "g3", "g6"];
     let path = "0.0";
     variante.forEach((san, index) => {
@@ -89,7 +89,7 @@ describe("parsePgnTree — PGN con variante, comentarios y anotaciones visuales"
 
   it("convierte [%cal] en flechas y [%csl] en casillas con el brush correcto", () => {
     const c5 = nodeAtPath(tree, "0.0");
-    // Las flechas ([%cal]) se leen antes que las casillas ([%csl]).
+    // The arrows ([%cal]) are read before the squares ([%csl]).
     expect(c5?.shapes).toEqual([
       { brush: "green", orig: "c5", dest: "d4" },
       { brush: "green", orig: "c5" },
@@ -111,7 +111,7 @@ describe("parsePgnTree — PGN con variante, comentarios y anotaciones visuales"
       { brush: "yellow", orig: "e4" },
       { brush: "green", orig: "a1" },
     ]);
-    // Sin texto suelto, el comentario queda en undefined (no en cadena vacía).
+    // Without loose text, the comment stays undefined (not an empty string).
     expect(anotado.children[0].comment).toBeUndefined();
   });
 
@@ -141,7 +141,7 @@ describe("navegación por rutas", () => {
   it("nextPathOf sigue el hijo principal y es undefined al final de la línea", () => {
     expect(nextPathOf(tree, "")).toBe("0");
     expect(nextPathOf(tree, "0")).toBe("0.0");
-    // Desde 1... c5 la «siguiente» es la principal (Nf3), nunca la variante.
+    // From 1... c5 the "next" one is the main line (Nf3), never the variation.
     expect(nextPathOf(tree, "0.0")).toBe("0.0.0");
     expect(nextPathOf(tree, SICILIANA_MAINLINE_END)).toBeUndefined();
     expect(nextPathOf(tree, "0.0.1.0.0.0")).toBeUndefined();
@@ -152,7 +152,7 @@ describe("navegación por rutas", () => {
     expect(endPathOf(tree, "")).toBe(SICILIANA_MAINLINE_END);
     expect(endPathOf(tree, "0.0")).toBe(SICILIANA_MAINLINE_END);
     expect(endPathOf(tree, SICILIANA_MAINLINE_END)).toBe(SICILIANA_MAINLINE_END);
-    // Dentro de la variante, el final es el final de ESA rama.
+    // Inside the variation, the end is the end of THAT branch.
     expect(endPathOf(tree, "0.0.1")).toBe("0.0.1.0.0.0");
   });
 });
@@ -197,7 +197,7 @@ describe("parsePgnTree — entradas inválidas", () => {
   });
 
   it("conserva el prefijo legal y avisa cuando un SAN es ilegal", () => {
-    // Nf6 no es una jugada legal para el blanco en esa posición.
+    // Nf6 is not a legal move for White in that position.
     const tree = parseOrFail("1. e4 e5 2. Nf6");
     expect([...tree.nodesByPath.keys()].sort()).toEqual(["0", "0.0"]);
     expect(nodeAtPath(tree, "0")?.san).toBe("e4");
@@ -207,9 +207,9 @@ describe("parsePgnTree — entradas inválidas", () => {
   });
 
   it("avisa de un SAN que ni siquiera tiene forma de jugada", () => {
-    // "Qz9" lo filtra el tokenizador de chessops antes de llegar a parseSan,
-    // así que la rama se pierde igual; el aviso sale de rastrear el texto
-    // crudo (lib/chess/movetext-scan.ts).
+    // "Qz9" is filtered by chessops's tokeniser before reaching parseSan, so the
+    // branch is lost all the same; the warning comes from scanning the raw text
+    // (lib/chess/movetext-scan.ts).
     const tree = parseOrFail("1. e4 e5 2. Qz9");
     expect([...tree.nodesByPath.keys()].sort()).toEqual(["0", "0.0"]);
     expect(tree.warnings).toHaveLength(1);
@@ -222,7 +222,7 @@ describe("sansAlongPath", () => {
 
   it("da las jugadas que llevan hasta la posición, en orden", () => {
     expect(sansAlongPath(tree, "0.0.0")).toEqual(["e4", "c5", "Nf3"]);
-    // Por dentro de una variante, las suyas: es el camino real, no la principal.
+    // Inside a variation, its own: it is the real path, not the main one.
     expect(sansAlongPath(tree, "0.0.1.0")).toEqual(["e4", "c5", "Nc3", "Nc6"]);
   });
 
@@ -244,8 +244,8 @@ describe("nagGlyph", () => {
   });
 
   it("da el mismo símbolo a las dos mitades de una pareja", () => {
-    // $36 es «las blancas tienen la iniciativa» y $37 el equivalente negro: de
-    // quién es se sabe por la jugada, así que el símbolo es uno solo.
+    // $36 is "White has the initiative" and $37 the black equivalent: whose it is
+    // is known from the move, so there is a single symbol.
     expect(nagGlyph(36)).toBe(nagGlyph(37));
     expect(nagGlyph(132)).toBe("⇆");
   });
@@ -298,7 +298,7 @@ describe("numeración cuando la partida arranca en un FEN", () => {
   });
 
   it("si en el FEN mueven las negras, la primera jugada es de las negras", () => {
-    // Misma posición un ply después: 44… Dh1+ y no «44. Dh1+».
+    // Same position one ply later: 44… Qh1+ and not "44. Qh1+".
     const black = "8/Q3ppk1/1p2r1p1/4b3/P5Pp/1PB1P3/5P1q/2R2K2 b - - 3 44";
     const tree = parsePgnTree(`[FEN "${black}"]\n[SetUp "1"]\n\n1... Qh1+ *`);
     const [first] = tree!.children;

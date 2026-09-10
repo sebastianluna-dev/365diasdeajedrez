@@ -39,14 +39,14 @@ import {
   type MoveDirection,
 } from "@/services/shared/reorder";
 
-// Editor de cursos. Reglas que no se negocian:
-// - Toda action abre con requireStaff() (son alcanzables por POST directo).
-// - Los catálogos se conectan por `code`, jamás por id.
-// - No se borra estructura con historial: capítulos y lecciones sólo se pueden
-//   borrar en un curso en BORRADOR y sin progreso de ningún alumno. Un curso
-//   publicado se archiva, no se desmonta.
-// - Reordenar pasa siempre por services/shared/reorder.ts (índice único
-//   compuesto: un intercambio directo lanza P2002).
+// Course editor. Rules that are not negotiable:
+// - Every action opens with requireStaff() (they are reachable by direct POST).
+// - Catalogs are connected by `code`, never by id.
+// - Structure with history is not deleted: chapters and lessons can only be
+//   deleted in a DRAFT course and without progress from any student. A published
+//   course is archived, not dismantled.
+// - Reordering always goes through services/shared/reorder.ts (composite unique
+//   index: a direct swap throws P2002).
 
 const NAME_MAX_LENGTH = 160;
 const SLUG_MAX_LENGTH = 160;
@@ -63,12 +63,12 @@ function isCode(value: string, catalog: Record<string, string>): boolean {
   return (Object.values(catalog) as string[]).includes(value);
 }
 
-/** Jugadas SAN separadas por espacios, como en `prisma/seed-data.ts`. */
+/** SAN moves separated by spaces, as in `prisma/seed-data.ts`. */
 function readSans(formData: FormData, field: string): string[] {
   return readText(formData, field).split(/\s+/).filter(Boolean);
 }
 
-// --- Cursos ---------------------------------------------------------------
+// --- Courses --------------------------------------------------------------
 
 export async function createCourse(formData: FormData): Promise<void> {
   const staff = await requireStaff();
@@ -84,11 +84,11 @@ export async function createCourse(formData: FormData): Promise<void> {
   let courseId: string;
   try {
     const created = await getPlatformDb().course.create({
-      // Nace en BORRADOR: publicar es una decisión aparte y con requisitos.
+      // It is born as a DRAFT: publishing is a separate decision and has requirements.
       data: {
-        // El id va en la URL del alumno, así que lo pone la aplicación. Un
-        // choque entre dos números lo canta la clave primaria, y se ve como un
-        // error de creación en vez de pisar un curso existente.
+        // The id goes in the student's URL, so the application sets it. A clash between
+        // two numbers is announced by the primary key, and is seen as a creation error
+        // instead of overwriting an existing course.
         id: numericId(),
         name,
         slug,
@@ -137,8 +137,8 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
         },
       });
 
-      // Los niveles son una lista de casillas: se reemplaza el conjunto entero
-      // en la misma transacción para no dejar un estado a medias.
+      // The levels are a list of checkboxes: the whole set is replaced in the same
+      // transaction so as not to leave a halfway state.
       await tx.courseLevel.deleteMany({ where: { courseId } });
       for (const code of levelCodes) {
         const level = await tx.level.findUnique({ where: { code }, select: { id: true } });
@@ -166,8 +166,8 @@ export async function publishCourse(courseId: string): Promise<void> {
   });
   if (!course) fail(detailPath, "courseMissing");
 
-  // Mínimo publicable: un capítulo con una lección con PGN. Sin esto el alumno
-  // se encontraría un curso con lecciones en blanco.
+  // Minimum publishable: a chapter with a lesson with a PGN. Without this the
+  // student would find a course with blank lessons.
   const hasContent = course.chapters.some((chapter) => chapter.lessons.some(lessonHasContent));
   if (!hasContent) fail(detailPath, "publishRequirements");
 
@@ -175,8 +175,8 @@ export async function publishCourse(courseId: string): Promise<void> {
     where: { id: courseId },
     data: {
       status: { connect: { code: COURSE_STATUS.PUBLISHED } },
-      // publishedAt se sella la primera vez y no se reescribe: es la fecha de
-      // publicación, no la del último cambio de estado.
+      // publishedAt is stamped the first time and is not rewritten: it is the
+      // publication date, not that of the last status change.
       publishedAt: course.publishedAt ?? new Date(),
     },
   });
@@ -186,7 +186,7 @@ export async function publishCourse(courseId: string): Promise<void> {
   revalidatePath(platformRoutes.courses);
 }
 
-/** Archivar es la baja de un curso: deja de listarse, pero nada se borra. */
+/** Archiving is a course's retirement: it stops being listed, but nothing is deleted. */
 export async function archiveCourse(courseId: string): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.courseDetail(courseId);
@@ -203,10 +203,10 @@ export async function archiveCourse(courseId: string): Promise<void> {
 }
 
 /**
- * La derivación falló al marcar la lección como entrenable.
+ * The derivation failed when marking the lesson as trainable.
  *
- * Se lanza para abortar la transacción —`fail` redirige y no serviría dentro de
- * ella— y se traduce a un mensaje concreto al salir.
+ * It is thrown to abort the transaction — `fail` redirects and would be no use
+ * inside it — and is translated into a specific message on the way out.
  */
 class TrainingSyncError extends Error {
   constructor(readonly errorCode: string) {
@@ -214,22 +214,22 @@ class TrainingSyncError extends Error {
   }
 }
 
-// --- Colección de partidas de un capítulo ---------------------------------
+// --- A chapter's game collection ------------------------------------------
 //
-// Las partidas viven en el CAPÍTULO: cada uno junta las que usan sus lecciones,
-// y una lección referencia la que le toca (`setLessonGame`). Corregir la
-// partida arregla de una vez todas las lecciones que la usan. Éste es el único
-// sitio donde se pega un PGN; en la lección sólo se elige.
+// The games live in the CHAPTER: each one gathers those its lessons use, and a
+// lesson references the one it needs (`setLessonGame`). Fixing the game fixes at
+// once every lesson that uses it. This is the only place where a PGN is pasted;
+// in the lesson it is only chosen.
 //
-// La ficha del curso las lista todas juntas, pero no se importa desde ahí: una
-// partida sin capítulo no tendría colección a la que ir.
+// The course page lists them all together, but importing is not done from there:
+// a game without a chapter would have no collection to go to.
 
 /**
- * La colección del capítulo, creándola la primera vez.
+ * The chapter's collection, creating it the first time.
  *
- * No se crea con el capítulo porque la mayoría empiezan sin ninguna partida y
- * una base vacía por capítulo sería ruido. Aparece cuando hace falta, que es al
- * importar la primera.
+ * It is not created with the chapter because most of them start without a single
+ * game and an empty database per chapter would be noise. It appears when it is
+ * needed, which is when the first one is imported.
  */
 async function chapterGamesDatabase(
   tx: Prisma.TransactionClient,
@@ -254,15 +254,15 @@ async function chapterGamesDatabase(
   });
 }
 
-/** Importa a la colección del capítulo una o varias partidas de un PGN pegado. */
+/** Imports one or several games from a pasted PGN into the chapter's collection. */
 export async function importChapterGames(
   courseId: string,
   chapterId: string,
   formData: FormData,
 ): Promise<void> {
   const staff = await requireStaff();
-  // El formulario vive en la pestaña de partidas, así que los avisos vuelven
-  // ahí y no a la ficha del capítulo.
+  // The form lives in the games tab, so the warnings go back there and not to the
+  // chapter's page.
   const chapterPath = staffRoutes.chapterGames(courseId, chapterId);
   if (!(await allowAction(`${staff.user.id}:chapter-games-import`, 20, 60_000))) fail(chapterPath, "throttled");
 
@@ -273,16 +273,16 @@ export async function importChapterGames(
   if (games.length === 0) fail(chapterPath, "pgn");
 
   const db = getPlatformDb();
-  // El capítulo tiene que ser de este curso: el id llega de la URL.
+  // The chapter has to belong to this course: the id comes from the URL.
   const chapter = await db.chapter.findFirst({
     where: { id: chapterId, courseId },
     select: { id: true, name: true, courseId: true },
   });
   if (!chapter) fail(chapterPath, "courseMissing");
 
-  // El índice de posiciones se escribe DENTRO de la misma transacción: una
-  // partida guardada sin indexar sería invisible para el buscador por posición
-  // y nadie se enteraría hasta buscarla.
+  // The position index is written WITHIN the same transaction: a game stored
+  // without indexing would be invisible to the position search and nobody would
+  // find out until they looked for it.
   await db.$transaction(async (tx) => {
     const database = await chapterGamesDatabase(tx, chapter);
     const last = await tx.game.aggregate({ where: { databaseId: database.id }, _max: { order: true } });
@@ -319,18 +319,18 @@ export async function importChapterGames(
   }, PGN_IMPORT_TRANSACTION);
 
   revalidatePath(chapterPath);
-  // La pestaña de la ficha enseña el número, y la del curso la lista entera.
+  // The page's tab shows the number, and the course's the whole list.
   revalidatePath(staffRoutes.chapterDetail(courseId, chapterId));
   revalidatePath(staffRoutes.courseDetail(courseId));
   revalidatePath(staffRoutes.courseGames(courseId));
 }
 
 /**
- * Quita una partida de la colección del capítulo.
+ * Removes a game from the chapter's collection.
  *
- * Sólo si NINGUNA lección la usa: borrarla dejaría esas lecciones sin
- * contenido —la clave ajena es `SET NULL`, así que no fallaría, se vaciarían en
- * silencio, que es peor—.
+ * Only if NO lesson uses it: deleting it would leave those lessons without
+ * content — the foreign key is `SET NULL`, so it would not fail, they would be
+ * emptied silently, which is worse.
  */
 export async function deleteChapterGame(
   courseId: string,
@@ -359,7 +359,7 @@ export async function deleteChapterGame(
   revalidatePath(staffRoutes.courseGames(courseId));
 }
 
-// --- Capítulos ------------------------------------------------------------
+// --- Chapters -------------------------------------------------------------
 
 export async function createChapter(courseId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
@@ -369,10 +369,10 @@ export async function createChapter(courseId: string, formData: FormData): Promi
   const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
   if (name.length === 0) fail(detailPath, "invalid");
 
-  // Papel opcional: sin él es un capítulo normal, que es lo que son casi todos.
-  // El sitio que ocupan la introducción y el cierre no sale de `order` sino de
-  // su papel (ver services/shared/content-order), así que aquí se numeran al
-  // final como cualquier otro.
+  // Optional role: without it, it is a normal chapter, which is what almost all of
+  // them are. The place the introduction and the closing take does not come from
+  // `order` but from their role (see services/shared/content-order), so here they
+  // are numbered at the end like any other.
   const roleCode = readText(formData, "role");
   const role = isContentRoleCode(roleCode) ? roleCode : null;
 
@@ -389,8 +389,8 @@ export async function createChapter(courseId: string, formData: FormData): Promi
       },
     });
   } catch (error) {
-    // El índice único (curso, papel) es quien impide el segundo: la interfaz no
-    // ofrece el botón cuando ya existe, pero dos pestañas abiertas sí llegan.
+    // The unique index (course, role) is what prevents the second one: the interface
+    // does not offer the button when one already exists, but two open tabs do get through.
     if (isUniqueConstraintError(error, "Chapter_courseId_roleId_key", "roleId")) fail(detailPath, "roleTaken");
     throw error;
   }
@@ -421,17 +421,18 @@ export async function updateChapter(courseId: string, chapterId: string, formDat
 }
 
 /**
- * Recoloca los capítulos en el orden que llega del navegador (arrastrar).
+ * Repositions the chapters in the order that arrives from the browser (dragging).
  *
- * Llega la lista ENTERA, no un «sube uno»: arrastrar el quinto al primer sitio
- * corre los cuatro de en medio. `planFullReorder` es quien evita el choque con
- * el índice único `[courseId, order]` —media lista quiere el orden que la otra
- * media todavía ocupa— y quien descarta una lista que no sea exactamente la de
- * este curso, porque viene del cliente.
+ * The WHOLE list arrives, not a "move one up": dragging the fifth to the first
+ * place shifts the four in between. `planFullReorder` is what avoids the clash
+ * with the unique index `[courseId, order]` — half the list wants the order the
+ * other half still occupies — and what discards a list that is not exactly this
+ * course's, because it comes from the client.
  *
- * No usa `fail()` con redirect como el resto: la llama una transición desde el
- * navegador, que ya tiene la lista pintada en su sitio. Si algo no cuadra, la
- * revalidación devuelve el orden bueno y la fila vuelve sola.
+ * It does not use `fail()` with a redirect like the rest: it is called by a
+ * transition from the browser, which already has the list rendered in place. If
+ * something does not add up, the revalidation returns the good order and the row
+ * goes back on its own.
  */
 export async function reorderChapters(courseId: string, orderedIds: string[]): Promise<void> {
   const staff = await requireStaff();
@@ -439,8 +440,8 @@ export async function reorderChapters(courseId: string, orderedIds: string[]): P
 
   const db = getPlatformDb();
   await db.$transaction(async (tx) => {
-    // Sólo el contenido normal se reordena: la introducción y el cierre tienen
-    // su sitio por el papel, no por `order`, y arrastrarlos no significa nada.
+    // Only normal content is reordered: the introduction and the closing have their
+    // place by role, not by `order`, and dragging them means nothing.
     const chapters = await tx.chapter.findMany({
       where: { courseId, roleId: null },
       select: { id: true, order: true },
@@ -453,19 +454,19 @@ export async function reorderChapters(courseId: string, orderedIds: string[]): P
   revalidatePath(staffRoutes.courseDetail(courseId));
 }
 
-/** Lo mismo para las lecciones de un capítulo; ver `reorderChapters`. */
+/** The same for a chapter's lessons; see `reorderChapters`. */
 export async function reorderLessons(courseId: string, chapterId: string, orderedIds: string[]): Promise<void> {
   const staff = await requireStaff();
   if (!(await allowAction(`${staff.user.id}:lesson-move`, 120, 60_000))) return;
 
   const db = getPlatformDb();
   await db.$transaction(async (tx) => {
-    // El capítulo tiene que ser de este curso: el id llega del cliente y sin
-    // esto se podrían reordenar las lecciones de otro.
+    // The chapter has to belong to this course: the id comes from the client and
+    // without this another course's lessons could be reordered.
     const chapter = await tx.chapter.findFirst({ where: { id: chapterId, courseId }, select: { id: true } });
     if (!chapter) return;
 
-    // Ver `reorderChapters`: la introducción y el cierre quedan fuera.
+    // See `reorderChapters`: the introduction and the closing are left out.
     const lessons = await tx.lesson.findMany({
       where: { chapterId, roleId: null },
       select: { id: true, order: true },
@@ -479,9 +480,9 @@ export async function reorderLessons(courseId: string, chapterId: string, ordere
 }
 
 /**
- * Borra un capítulo SÓLO si el curso está en borrador y nadie tiene progreso
- * sobre él. En cualquier otro caso el historial de progreso manda: se archiva
- * el curso, no se desmonta.
+ * Deletes a chapter ONLY if the course is a draft and nobody has progress over
+ * it. In any other case the progress history rules: the course is archived, not
+ * dismantled.
  */
 export async function deleteChapter(courseId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
@@ -515,7 +516,7 @@ export async function deleteChapter(courseId: string, formData: FormData): Promi
   revalidatePath(detailPath);
 }
 
-// --- Lecciones ------------------------------------------------------------
+// --- Lessons --------------------------------------------------------------
 
 export async function createLesson(courseId: string, chapterId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
@@ -533,7 +534,7 @@ export async function createLesson(courseId: string, chapterId: string, formData
   const role = isContentRoleCode(roleCode) ? roleCode : null;
 
   const count = await db.lesson.count({ where: { chapterId } });
-  // Valores de arranque razonables: el resto se edita dentro de la lección.
+  // Reasonable starting values: the rest is edited inside the lesson.
   await db.lesson.create({
     data: {
       id: numericId(),
@@ -573,16 +574,16 @@ export async function updateLesson(
     .filter((value) => Number.isInteger(value));
 
   const isTrainable = readBoolean(formData, "isTrainable");
-  // Vacío = «el que mueva primero». Cualquier otra cosa que no sea del catálogo
-  // de contenido se trata igual, para no guardar un bando inventado.
+  // Empty = "whoever moves first". Anything else that is not from the content
+  // catalog is treated the same, so as not to store a made-up side.
   const trainingColorInput = readText(formData, "trainingColorCode");
   const trainingColor = (CONTENT_ORIENTATIONS as readonly string[]).includes(trainingColorInput)
     ? (trainingColorInput as "WHITE" | "BLACK")
     : null;
 
   const db = getPlatformDb();
-  // Con `lessonPgnSelect`: el ejercicio derivado se entrena contra el contenido
-  // que ve el alumno, que puede venir de la partida vinculada y no de `pgn`.
+  // With `lessonPgnSelect`: the derived exercise is trained against the content
+  // the student sees, which may come from the linked game and not from `pgn`.
   const current = await db.lesson.findFirst({
     where: { id: lessonId, chapterId },
     select: { id: true, ...lessonPgnSelect },
@@ -605,9 +606,9 @@ export async function updateLesson(
       },
     });
 
-    // El ejercicio derivado se mantiene aquí, dentro de la misma transacción:
-    // marcar la lección como entrenable y no dejarle línea que entrenar sería
-    // un estado a medias.
+    // The derived exercise is maintained here, within the same transaction: marking
+    // the lesson as trainable and leaving it with no line to train would be a
+    // halfway state.
     const sync = await syncLessonTrainingExercise(tx, {
       lessonId: lesson.id,
       pgn: lessonPgnOf(current),
@@ -632,21 +633,21 @@ export async function updateLesson(
 }
 
 /**
- * Vincula la lección a una partida de la colección del curso, o la desvincula.
+ * Links the lesson to a game of the course collection, or unlinks it.
  *
- * A partir de aquí el contenido de la lección ES el de esa partida
- * (`lessonPgnOf`), así que corregirla arregla todas las lecciones que la usan.
- * El `pgn` propio NO se borra: queda dormido y vuelve al desvincular, que es lo
- * que hace que vincular no sea una decisión irreversible.
+ * From here on the lesson's content IS that game's (`lessonPgnOf`), so fixing it
+ * fixes every lesson that uses it. The own `pgn` is NOT deleted: it goes dormant
+ * and comes back on unlinking, which is what makes linking not an irreversible
+ * decision.
  *
- * La partida tiene que ser de la colección de ESTE curso. El id llega del
- * navegador y sin la comprobación se podría enganchar la partida de cualquier
- * otro, incluida la base privada de un alumno.
+ * The game has to belong to THIS course's collection. The id comes from the
+ * browser and without the check any other course's game could be hooked up,
+ * including a student's private database.
  *
- * Al cambiar el contenido cambia también la línea que se entrena, así que el
- * ejercicio derivado se rehace en la misma transacción y se sella
- * `pgnUpdatedAt`: es lo que marca como desactualizados los ejercicios que se
- * congelaron contra el contenido anterior.
+ * Changing the content also changes the line that is trained, so the derived
+ * exercise is remade in the same transaction and `pgnUpdatedAt` is stamped: it
+ * is what marks as stale the exercises that were frozen against the previous
+ * content.
  */
 export async function setLessonGame(
   courseId: string,
@@ -667,7 +668,7 @@ export async function setLessonGame(
   });
   if (!lesson) fail(lessonPath, "courseMissing");
 
-  // Vacío = desvincular; entonces vuelve a mandar el PGN propio de la lección.
+  // Empty = unlink; then the lesson's own PGN rules again.
   let nextPgn = lesson.pgn;
   if (gameId.length > 0) {
     const game = await db.game.findFirst({
@@ -706,7 +707,7 @@ export async function setLessonGame(
   revalidatePath(platformRoutes.lessonDetail(lessonId));
 }
 
-/** Misma regla que el capítulo: sólo en borrador y sin progreso de nadie. */
+/** Same rule as the chapter: only in a draft and without progress from anyone. */
 export async function deleteLesson(courseId: string, chapterId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
@@ -736,7 +737,7 @@ export async function deleteLesson(courseId: string, chapterId: string, formData
   revalidatePath(chapterPath);
 }
 
-// --- Ejercicios -----------------------------------------------------------
+// --- Exercises ------------------------------------------------------------
 
 interface ExerciseInput {
   modeCode: string;
@@ -755,25 +756,24 @@ function readExerciseInput(formData: FormData, failPath: string): ExerciseInput 
   return {
     modeCode,
     promptText: readOptionalText(formData, "promptText", PROMPT_MAX_LENGTH),
-    // Jugadas previas hasta el punto de arranque; vacío = desde la posición
-    // inicial de la lección. Mismo formato SAN separado por espacios que el seed.
+    // Previous moves up to the starting point; empty = from the lesson's initial
+    // position. Same space-separated SAN format as the seed.
     afterSans: readSans(formData, "afterSans"),
     lineSans,
   };
 }
 
 /**
- * Deriva la copia congelada con el MISMO módulo que usa el seed, sobre la
- * posición desde la que arranca el CONTENIDO EFECTIVO de la lección —el de su
- * partida vinculada, si la tiene—.
+ * Derives the frozen copy with the SAME module the seed uses, over the position
+ * the lesson's EFFECTIVE CONTENT starts from — its linked game's, if it has one.
  *
- * Antes salía de `Lesson.initialFen`, que era una segunda copia del mismo dato
- * y quedó desalineada al vincular partidas: congelaba las jugadas contra un
- * tablero que el alumno no llega a ver. Ahora sale del PGN, como en
+ * It used to come from `Lesson.initialFen`, which was a second copy of the same
+ * data and got out of line when games were linked: it froze the moves against a
+ * board the student never gets to see. Now it comes from the PGN, as in
  * `syncLessonTrainingExercise`.
  *
- * Si alguna jugada es ilegal se aborta sin escribir: es mejor rechazar aquí que
- * dejar un ejercicio que el entrenador no puede reproducir.
+ * If any move is illegal it aborts without writing: it is better to reject here
+ * than to leave an exercise the trainer cannot replay.
  */
 async function deriveForLesson(lessonId: string, input: ExerciseInput, failPath: string) {
   const lesson = await getPlatformDb().lesson.findUnique({
@@ -816,7 +816,7 @@ export async function createExercise(
       mode: { connect: { code: input.modeCode } },
       promptText: input.promptText,
       ...derived,
-      // Congelado ahora: nace al día con el PGN actual, no desactualizado.
+      // Frozen now: it is born up to date with the current PGN, not stale.
       frozenAt: new Date(),
     },
   });
@@ -906,9 +906,9 @@ export async function moveExercise(
   revalidatePath(lessonPath);
 }
 
-// --- Autores --------------------------------------------------------------
-// Author es el ÚNICO catálogo con CRUD: es contenido editorial, no un dominio
-// restringido cuyo código compare la lógica.
+// --- Authors --------------------------------------------------------------
+// Author is the ONLY catalog with CRUD: it is editorial content, not a
+// restricted domain whose code the logic compares.
 
 export async function createAuthor(formData: FormData): Promise<void> {
   const staff = await requireStaff();
@@ -959,7 +959,7 @@ export async function updateAuthor(authorId: string, formData: FormData): Promis
   revalidatePath(staffRoutes.authors);
 }
 
-/** Añade, quita o reordena los autores de un curso según la operación pedida. */
+/** Adds, removes or reorders a course's authors according to the requested operation. */
 export async function manageCourseAuthors(courseId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.courseDetail(courseId);
@@ -990,8 +990,8 @@ export async function manageCourseAuthors(courseId: string, formData: FormData):
   } else if (operation === "remove") {
     await db.courseAuthor.deleteMany({ where: { courseId, authorId } });
   } else if (operation === "up" || operation === "down") {
-    // CourseAuthor no tiene id propio (PK compuesta): se usa el authorId como
-    // identidad para el plan de reordenación.
+    // CourseAuthor has no id of its own (composite PK): the authorId is used as the
+    // identity for the reordering plan.
     await db.$transaction(async (tx) => {
       const rows = await tx.courseAuthor.findMany({ where: { courseId }, select: { authorId: true, order: true } });
       const plan = planSwap(

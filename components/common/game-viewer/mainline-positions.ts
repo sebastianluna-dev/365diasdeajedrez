@@ -2,12 +2,12 @@ import type { ReviewedPosition } from "@/lib/chess/game-review";
 import type { MoveEvaluation, PgnTree } from "@/lib/chess/pgn-tree";
 
 /**
- * Las posiciones de la línea principal con su evaluación, que es lo que comen
- * `reviewGame` y la gráfica.
+ * The main-line positions with their evaluation, which is what `reviewGame`
+ * and the chart consume.
  *
- * La primera es la de partida: una jugada se juzga por lo que cambia entre la
- * posición anterior y la suya, así que sin ella la primera jugada no se podría
- * medir.
+ * The first one is the starting position: a move is judged by what changes
+ * between the previous position and its own, so without it the first move
+ * could not be measured.
  */
 export function mainlinePositions(tree: PgnTree): ReviewedPosition[] {
   const positions: ReviewedPosition[] = [{ fen: tree.initialFen, evaluation: tree.initialEvaluation }];
@@ -20,7 +20,7 @@ export function mainlinePositions(tree: PgnTree): ReviewedPosition[] {
   return positions;
 }
 
-/** Las rutas punteadas de esa misma línea, en el mismo orden. */
+/** The dotted paths of that same line, in the same order. */
 export function mainlinePaths(tree: PgnTree): string[] {
   const paths: string[] = [""];
 
@@ -32,7 +32,7 @@ export function mainlinePaths(tree: PgnTree): string[] {
   return paths;
 }
 
-/** Las evaluaciones, sólo si están TODAS: media gráfica engañaría. */
+/** The evaluations, only if ALL of them are there: half a chart would mislead. */
 export function mainlineEvaluations(tree: PgnTree): MoveEvaluation[] | null {
   const positions = mainlinePositions(tree);
   if (positions.length < 2) return null;

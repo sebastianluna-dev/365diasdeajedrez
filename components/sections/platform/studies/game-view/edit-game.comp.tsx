@@ -10,11 +10,11 @@ interface EditGameProps {
   studyId: string;
   gameId: string;
   values: GameFieldValues;
-  /** Catálogo de resultados; su label ES el token PGN. */
+  /** Results catalog; its label IS the PGN token. */
   results: StudyKindOption[];
   /**
-   * Texto del disparador. En el aside cabe poco y basta «Editar»; en la barra
-   * del editor comparte fila con otros tres botones y necesita decir de qué es.
+   * Trigger text. In the aside there is little room and "Editar" is enough; in
+   * the editor bar it shares a row with three other buttons and needs to say what it is for.
    */
   label?: string;
 }
@@ -46,8 +46,8 @@ export function EditGame({ studyId, gameId, values, results, label = "Editar" }:
           </div>
 
           <div className="edit-game__body">
-            {/* Los mismos campos que el formulario de crear: si aquí faltara
-                alguno, el dato que se puso al crear quedaría atrapado. */}
+            {/* The same fields as the create form: if one were missing here, the
+                value set on creation would be trapped. */}
             <GameFields
               values={values}
               results={results}

@@ -4,7 +4,7 @@ export interface ClassSummary {
   id: string;
   title: string;
   teacherName: string;
-  /** Instante en UTC; la interfaz lo reformatea en la zona del alumno. */
+  /** Instant in UTC; the interface reformats it in the student's zone. */
   scheduledAtIso: string;
   dateLabel: string;
   timeLabel: string;
@@ -26,7 +26,7 @@ export type ClassBlockView =
       id: string;
       kind: "GAME_REF";
       caption?: string;
-      /** `href` sólo cuando la partida vive en un estudio; la transcrita no tiene dónde abrirse. */
+      /** `href` only when the game lives in a study; the transcribed one has nowhere to open. */
       game: { id: string; label: string; pgn: string; href?: string; movePath?: string };
     }
   | {
@@ -36,7 +36,7 @@ export type ClassBlockView =
       lesson: {
         id: string;
         name: string;
-        /** Contenido de la lección, para verla dentro de la clase. */
+        /** The lesson's content, to see it inside the class. */
         pgn: string;
         orientation: "white" | "black";
         href: string;
@@ -63,7 +63,7 @@ export interface ClassDetail {
   description?: string;
   teacherName: string;
   teacherTitle?: string;
-  /** Instante en UTC; la interfaz lo reformatea en la zona del alumno. */
+  /** Instant in UTC; the interface reformats it in the student's zone. */
   scheduledAtIso: string;
   dateLabel: string;
   timeLabel: string;
@@ -73,9 +73,9 @@ export interface ClassDetail {
   summary?: string;
   recordingUrl?: string;
   meetingProviderLabel?: string;
-  /** Sólo presente cuando now >= meetingUrlVisibleFrom: el enlace nunca llega antes al cliente. */
+  /** Only present when now >= meetingUrlVisibleFrom: the link never reaches the client earlier. */
   meetingUrl?: string;
-  /** ISO de cuándo se hará visible el enlace, para la cuenta atrás. */
+  /** ISO of when the link will become visible, for the countdown. */
   meetingVisibleFromIso?: string;
   blocks: ClassBlockView[];
   transcript?: ClassTranscriptView;

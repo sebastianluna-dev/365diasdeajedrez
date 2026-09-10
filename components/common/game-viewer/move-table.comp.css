@@ -1,21 +1,21 @@
 .move-table {
   font-size: var(--move-tree-font-size, 15px);
   color: var(--platform-text);
-  /* Escalón de sangría por nivel de variante. */
+  /* Indentation step per variation level. */
   --move-table-step: 15px;
 
   & .move-table__row {
     display: grid;
-    /* Número angosto y dos columnas iguales para el par: así las jugadas de
-       negras quedan alineadas entre filas y la vista se lee en vertical. */
+    /* Narrow number and two equal columns for the pair: that way Black's moves
+       line up across rows and the view reads vertically. */
     grid-template-columns: 44px 1fr 1fr;
     align-items: stretch;
   }
 
-  /* Lo que separa no son rayas por fila, sino las dos zonas de la tabla: la
-     columna de números tiene su propio fondo y un filo a la derecha, y las
-     jugadas se quedan sobre el fondo del panel. Entre blancas y negras no hay
-     nada: son la misma jugada. */
+  /* What separates is not a rule per row but the table's two zones: the
+     numbers column has its own background and a rule on the right, and the
+     moves stay on the panel background. Between White and Black there is
+     nothing: they are the same move. */
   & .move-table__number {
     display: flex;
     align-items: center;
@@ -51,7 +51,7 @@
     font-weight: 700;
   }
 
-  /* «…» donde la jugada existe pero se pinta en otro renglón. */
+  /* "…" where the move exists but is rendered on another row. */
   & .move-table__ellipsis {
     color: var(--platform-text-faint);
   }
@@ -60,10 +60,10 @@
     font-weight: 700;
   }
 
-  /* La evaluación se va al filo derecho de su media fila: así las cifras de
-     blancas y las de negras forman dos columnas que se leen en vertical, que
-     es para lo que sirven —ver de un vistazo dónde cambió la partida—, y la
-     jugada se queda pegada a la izquierda con su número. */
+  /* The evaluation goes to the right edge of its half row: that way White's
+     figures and Black's form two columns that read vertically, which is what
+     they are for — seeing at a glance where the game changed — and the move
+     stays pressed to the left with its number. */
   & .move-table__eval {
     margin-left: auto;
     flex: none;
@@ -74,17 +74,17 @@
     color: var(--platform-text-faint);
   }
 
-  /* Sobre el naranja de la jugada activa, el gris de siempre no se lee: toma
-     el color del texto y se queda atrás por transparencia. */
+  /* On the orange of the active move, the usual grey is not legible: it takes
+     the text colour and stays behind through transparency. */
   & .move-table__move_state_active .move-table__eval {
     color: inherit;
     opacity: 0.65;
   }
 
-  /* Comentario de la línea principal: a lo ancho y sin sangrar, porque no
-     cuelga de ninguna rama — es de la partida, no de una alternativa. Es lo
-     ÚNICO que corta la tabla con un filo: interrumpe la lista de jugadas y sin
-     él se leería como una fila más. */
+  /* Main-line comment: full width and unindented, because it hangs from no
+     branch — it belongs to the game, not to an alternative. It is the ONLY
+     thing that cuts the table with a rule: it interrupts the list of moves and
+     without it would read as one more row. */
   & .move-table__comment {
     margin: 0;
     padding: 8px 12px;
@@ -96,9 +96,9 @@
     text-wrap: pretty;
   }
 
-  /* Cada variante es un renglón sangrado según su profundidad, con un codo a
-     la izquierda que la ata a la línea de la que sale. Sin él, dos variantes
-     de niveles distintos se leerían como hermanas. */
+  /* Each variation is a row indented by its depth, with an elbow on the left
+     that ties it to the line it comes from. Without it, two variations of
+     different levels would read as siblings. */
   & .move-table__line {
     position: relative;
     margin: 0;
@@ -110,9 +110,9 @@
     color: var(--platform-text-muted);
   }
 
-  /* El filo enmarca el ÁRBOL entero, no cada renglón: las variantes seguidas
-     son un bloque —una rama con sus subramas— y dentro no se corta nada. Queda
-     el de arriba de la primera y el de abajo de la última. */
+  /* The rule frames the WHOLE tree, not each row: consecutive variations are
+     one block — a branch with its sub-branches — and nothing is cut inside.
+     What remains is the top one of the first and the bottom one of the last. */
   & .move-table__line + .move-table__line {
     border-top: 0;
   }
@@ -121,8 +121,8 @@
     border-bottom: 0;
   }
 
-  /* Nada que cortar si no hay jugadas encima, ni dos filos juntos donde acaba
-     un bloque y empieza el siguiente. */
+  /* Nothing to cut when there are no moves above, nor two rules together
+     where one block ends and the next begins. */
   & .move-table__comment:first-child,
   & .move-table__line:first-child,
   & .move-table__comment + .move-table__comment,
@@ -131,9 +131,9 @@
     border-top: 0;
   }
 
-  /* Un comentario con sus variantes detrás es UN bloque: lo que dice el
-     comentario es de la jugada de la que salen esas ramas, así que entre ellos
-     no va nada. El marco lo cierra la última variante. */
+  /* A comment with its variations behind it is ONE block: what the comment
+     says belongs to the move those branches come from, so nothing goes
+     between them. The frame is closed by the last variation. */
   & .move-table__comment:has(+ .move-table__line) {
     border-bottom: 0;
   }

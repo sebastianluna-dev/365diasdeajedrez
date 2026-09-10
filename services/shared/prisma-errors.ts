@@ -1,14 +1,14 @@
-// Identificación de violaciones de unicidad concretas.
+// Identifying specific uniqueness violations.
 //
-// Prisma reporta el P2002 de dos formas según por dónde venga: con el motor
-// clásico llena `meta.target` con las columnas, y con el driver adapter de
-// PostgreSQL (el que usa esta plataforma) la información útil viaja en
-// `meta.driverAdapterError.cause.constraint.index` con el nombre real del
-// índice. Comprobado en la base: un índice parcial hecho a mano sólo aparece
-// por el segundo camino.
+// Prisma reports the P2002 in two ways depending on where it comes from: with
+// the classic engine it fills `meta.target` with the columns, and with the
+// PostgreSQL driver adapter (the one this platform uses) the useful information
+// travels in `meta.driverAdapterError.cause.constraint.index` with the real name
+// of the index. Verified against the database: a hand-made partial index only
+// appears through the second route.
 //
-// Se miran los dos, y siempre contra un nombre CONCRETO: tragarse cualquier
-// P2002 escondería conflictos distintos bajo un mensaje que no les corresponde.
+// Both are looked at, and always against a SPECIFIC name: swallowing any P2002
+// would hide different conflicts under a message that does not belong to them.
 
 interface PrismaUniqueError {
   code?: string;
@@ -18,7 +18,7 @@ interface PrismaUniqueError {
   };
 }
 
-/** Nombres de constraint/columna que menciona el error, en minúsculas. */
+/** Constraint/column names the error mentions, in lower case. */
 function conflictTokens(error: unknown): string[] {
   if (typeof error !== "object" || error === null) return [];
   const candidate = error as PrismaUniqueError;
@@ -38,8 +38,8 @@ function conflictTokens(error: unknown): string[] {
 }
 
 /**
- * true si el error es un P2002 de ese índice o columna. `names` admite varias
- * grafías del mismo conflicto (nombre del índice y columna implicada).
+ * true when the error is a P2002 of that index or column. `names` admits several
+ * spellings of the same conflict (the index's name and the column involved).
  */
 export function isUniqueConstraintError(error: unknown, ...names: string[]): boolean {
   const tokens = conflictTokens(error);

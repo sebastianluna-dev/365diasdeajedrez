@@ -8,11 +8,11 @@ import type {
   StudentAssignmentHistoryItem,
 } from "./staff-students.types";
 
-// Panel de Administración: alumnos. El staff ve TODAS las cuentas, pero no su
-// contenido privado — ni estudios ni partidas aparecen por aquí. Operar cuentas
-// no es lo mismo que leer lo que la gente guarda.
+// Administration panel: students. The staff sees EVERY account, but not their
+// private content — neither studies nor games appear here. Operating accounts is
+// not the same as reading what people store.
 
-/** Sólo la asignación activa; el historial se lee en la ficha. */
+/** Only the active assignment; the history is read on the detail page. */
 const activeAssignmentSelect = {
   where: { endedAt: null },
   select: { teacher: { select: { displayName: true } } },
@@ -48,7 +48,7 @@ export async function listStudents(query?: string): Promise<StaffStudentSummary[
     id: user.id,
     displayName: user.displayName,
     email: user.email,
-    // El hash nunca sale del servicio: sólo si existe o no.
+    // The hash never leaves the service: only whether it exists or not.
     hasPassword: user.passwordHash !== null,
     activeTeacherName: user.studentAssignments[0]?.teacher.displayName,
     lastLoginAtIso: user.lastLoginAt?.toISOString(),

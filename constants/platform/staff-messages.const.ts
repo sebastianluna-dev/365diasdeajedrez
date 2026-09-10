@@ -1,10 +1,10 @@
-// Mensajes de los formularios del panel de Administración. Van aquí y no en los
-// módulos `.actions.ts` porque un archivo "use server" sólo puede exportar
-// funciones asíncronas.
+// Messages of the Administration panel forms. They live here and not in the
+// `.actions.ts` modules because a "use server" file can only export async
+// functions.
 //
-// Las altas y los reinicios de contraseña son la ÚNICA excepción a este patrón
-// (usan `useActionState`, ver §14.2 del plan): una contraseña no puede viajar
-// en un query param.
+// Account creation and password resets are the ONLY exception to this pattern
+// (they use `useActionState`, see §14.2 of the plan): a password cannot travel
+// in a query param.
 
 export const STAFF_ERROR_PARAM = "error";
 
@@ -39,7 +39,7 @@ export const STAFF_ERROR_MESSAGES: Record<string, string> = {
     "Con ese bando no queda ninguna jugada que entrenar: la línea principal sólo tiene la jugada del rival. Alarga la línea o cambia el bando.",
 };
 
-/** Textos del alta de cuenta, que devuelve estado en vez de redirigir. */
+/** Texts of the account creation, which returns state instead of redirecting. */
 export const STAFF_ACCOUNT_MESSAGES = {
   passwordShownOnce: "Anótala ahora: no se volverá a mostrar.",
   created: "Cuenta creada.",

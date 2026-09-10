@@ -63,7 +63,7 @@
     display: flex;
     justify-content: space-between;
     font-size: 14px;
-    /* El mismo apagado que los enlaces de arriba: #6b6259 daba 3,3:1 sobre el fondo. */
+    /* The same muted tone as the links above: #6b6259 gave 3.3:1 on the background. */
     color: #b4a99d;
   }
 

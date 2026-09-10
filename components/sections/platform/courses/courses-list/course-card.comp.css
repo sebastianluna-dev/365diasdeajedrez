@@ -17,8 +17,8 @@
     overflow: hidden;
   }
 
-  /* Anclada a la izquierda: las portadas llevan el título del curso en ese
-     lado, y recortar por el centro se lo comía. */
+  /* Anchored to the left: the covers carry the course title on that side,
+     and cropping through the centre ate it. */
   & .course-card__cover-image {
     object-fit: cover;
     object-position: 0% 50%;
@@ -58,9 +58,9 @@
     color: var(--platform-accent-ink);
   }
 
-  /* Los dos medidores a lo ancho y en columnas iguales, con un filo entre
-     ellos: son dos lecturas del MISMO avance —lo hecho y el tiempo que
-     costó—, así que se leen de un vistazo y en paralelo. */
+  /* The two meters full width and in equal columns, with a rule between
+     them: they are two readings of the SAME progress — what is done and the
+     time it took — so they are read at a glance and in parallel. */
   & .course-card__meters {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -112,9 +112,9 @@
     justify-content: center;
   }
 
-  /* --- Menú «···» --------------------------------------------------------
-     El panel se ancla a la tarjeta, no al documento, así que el contenedor
-     necesita ser el origen de posición. */
+  /* --- "···" menu -------------------------------------------------------
+     The panel is anchored to the card, not to the document, so the container
+     needs to be the positioning origin. */
   & .course-card__menu {
     position: relative;
   }
@@ -135,7 +135,7 @@
     transition-property: background-color, color;
   }
 
-  /* Safari sigue pintando el triángulo del <summary> con su seudoelemento. */
+  /* Safari still paints the <summary> triangle with its pseudo-element. */
   & .course-card__menu-button::-webkit-details-marker {
     display: none;
   }
@@ -182,8 +182,8 @@
     color: var(--platform-accent-ink);
   }
 
-  /* Apretado, la portada se va arriba y los botones bajan a su propia línea:
-     una fila de cinco piezas no cabe en un móvil sin estrujar el nombre. */
+  /* When cramped, the cover moves up and the buttons drop to their own line:
+     a row of five pieces does not fit on a phone without squeezing the name. */
   @media (max-width: 720px) {
     flex-wrap: wrap;
     padding: 14px;

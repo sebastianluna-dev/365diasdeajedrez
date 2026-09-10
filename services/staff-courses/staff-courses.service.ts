@@ -30,21 +30,21 @@ function isCourseStatusCode(value: string | undefined): value is CourseStatusCod
   return value !== undefined && (Object.values(COURSE_STATUS) as string[]).includes(value);
 }
 
-// Editor de cursos del staff. A diferencia de `services/courses/` —que filtra
-// siempre PUBLISHED porque es la vista del alumno— aquí se ven todos los
-// estados: el borrador es precisamente lo que hay que poder editar.
+// The staff's course editor. Unlike `services/courses/` — which always filters
+// PUBLISHED because it is the student's view — every status is seen here: the
+// draft is precisely what has to be editable.
 
 /**
- * La lista del panel, filtrada por lo que se haya pedido en la URL.
+ * The panel's list, filtered by what was asked for in the URL.
  *
- * El filtro se resuelve en la CONSULTA y no en memoria: el catálogo crece con
- * los años y buscar en el cliente obligaría a traerlo entero para descartar
- * casi todo. Por eso también los totales se cuentan sobre lo que se ve —son el
- * pie de la búsqueda, no del catálogo—.
+ * The filter is resolved in the QUERY and not in memory: the catalog grows over
+ * the years and searching on the client would force bringing it whole to discard
+ * almost all of it. That is also why the totals are counted over what is seen —
+ * they are the search's footer, not the catalog's.
  *
- * Un `status` que no sea un code del catálogo se ignora en vez de dar cero
- * resultados: viene de la URL y una URL a mano no debería parecer una lista
- * vacía.
+ * A `status` that is not a catalog code is ignored instead of giving zero
+ * results: it comes from the URL and a hand-typed URL should not look like an
+ * empty list.
  */
 export async function listCoursesAdmin(filter: CourseAdminFilter = {}): Promise<CourseAdminList> {
   await requireStaff();
@@ -138,8 +138,8 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
 
   if (!course) return null;
 
-  // Requisito mínimo para publicar: al menos un capítulo con una lección que
-  // tenga PGN. Publicar un curso vacío enseñaría lecciones en blanco.
+  // Minimum requirement to publish: at least one chapter with a lesson that has a
+  // PGN. Publishing an empty course would show blank lessons.
   const canPublish = course.chapters.some((chapter) => chapter.lessons.some(lessonHasContent));
 
   return {
@@ -160,7 +160,7 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
       roleLabel: author.role.label,
       order: author.order,
     })),
-    // La introducción delante y el cierre al final; el resto, en su orden.
+    // The introduction in front and the closing at the end; the rest, in their order.
     chapters: sortByRole(
       course.chapters.map((chapter) => ({
         roleCode: chapter.role?.code,
@@ -234,25 +234,24 @@ export async function getChapterAdmin(courseId: string, chapterId: string): Prom
 }
 
 /**
- * Partidas de una colección, para listarlas o vincularlas a una lección.
+ * Games of a collection, to list them or to link them to a lesson.
  *
- * Las colecciones son por CAPÍTULO. `scope` decide qué se pide: la de un
- * capítulo —lo que puede usar una lección suya— o todas las del curso, que es
- * la vista de conjunto de la ficha del curso.
+ * The collections are per CHAPTER. `scope` decides what is asked for: that of a
+ * chapter — what one of its lessons can use — or all of the course's, which is
+ * the course page's overview.
  *
- * El texto libre casa contra los dos jugadores, el evento, la apertura y el
- * nombre, que es por lo que se busca una partida.
+ * The free text matches against both players, the event, the opening and the
+ * name, which is what a game is searched by.
  *
- * `moveCount` sale de contar la línea principal del PGN. Se hace aquí y no en
- * la base porque el PGN es texto: es el precio de tener una sola fuente del
- * contenido, y una colección son decenas de partidas, no miles.
+ * `moveCount` comes from counting the PGN's main line. It is done here and not
+ * in the database because the PGN is text: it is the price of having a single
+ * source of the content, and a collection is dozens of games, not thousands.
  */
 /**
- * Cuántas partidas hay, sin traérselas.
+ * How many games there are, without bringing them over.
  *
- * Lo pide la pestaña de la ficha, que sólo necesita el número: la lista de un
- * curso son cientos de filas y cada una arrastra su PGN entero para contar las
- * jugadas.
+ * The page's tab asks for it, and only needs the number: a course's list is
+ * hundreds of rows and each one drags its whole PGN along to count the moves.
  */
 export async function countCollectionGames(
   scope: { courseId: string } | { chapterId: string },
@@ -292,13 +291,13 @@ export async function listCollectionGames(
       eco: true,
       playedAt: true,
       database: { select: { chapter: { select: { name: true, order: true } } } },
-      // Jugadas = posiciones indexadas menos la inicial (GamePosition guarda
-      // una fila por ply, la 0 incluida): así no hay que leer y reproducir el
-      // PGN de toda la colección para pintar un número.
+      // Moves = indexed positions minus the initial one (GamePosition stores one row
+      // per ply, 0 included): that way there is no need to read and replay the whole
+      // collection's PGN to render a number.
       _count: { select: { lessons: true, positions: true } },
     },
-    // En la vista del curso salen agrupadas por capítulo y en su orden; dentro
-    // de uno, en el suyo.
+    // In the course view they come out grouped by chapter and in its order; within
+    // one, in their own.
     orderBy: [{ database: { chapter: { order: "asc" } } }, { order: "asc" }],
   });
 
@@ -400,8 +399,7 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
       line: exercise.line,
       startPly: exercise.startPly,
       endPly: exercise.endPly,
-      // Mismo criterio que el entrenador del alumno: una sola definición de
-      // «desactualizado».
+      // Same criterion as the student's trainer: a single definition of "stale".
       isStale: isExerciseStale(exercise.frozenAt, lesson.pgnUpdatedAt),
     })),
   };
@@ -432,8 +430,8 @@ export async function listAuthors(): Promise<AuthorAdminRow[]> {
   }));
 }
 
-// Catálogos: se LEEN para poblar selectores, nunca se editan desde la interfaz
-// (sus códigos son estables y la lógica los compara por código).
+// Catalogs: they are READ to populate selectors, never edited from the interface
+// (their codes are stable and the logic compares them by code).
 
 export async function listCourseTypes(): Promise<CatalogOption[]> {
   await requireStaff();

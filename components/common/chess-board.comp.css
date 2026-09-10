@@ -1,12 +1,12 @@
-/* Este tablero se pinta en los DOS temas: en la web pública, que es oscura, y
-   dentro de la plataforma, que es clara. De ahí el `var(--token, respaldo)` de
-   abajo: los `--platform-*` sólo existen bajo los layouts de (platform) y
-   (auth) —platform.css no se importa en ningún otro sitio—, así que fuera de
-   ellos entra solo el valor oscuro de respaldo.
+/* This board is painted in BOTH themes: on the public site, which is dark,
+   and inside the platform, which is light. Hence the `var(--token, fallback)`
+   below: the `--platform-*` tokens only exist under the (platform) and
+   (auth) layouts — platform.css is imported nowhere else — so outside them
+   only the dark fallback value applies.
 
-   No son respaldos muertos como los que se limpiaron en el resto de hojas:
-   aquí sostienen el tema oscuro. Quitarlos deja el tablero de la home sin
-   bordes ni contraste. */
+   They are not dead fallbacks like the ones cleaned out of the other sheets:
+   here they hold up the dark theme. Removing them leaves the home page board
+   without borders or contrast. */
 
 .chess-board {
   width: 100%;
@@ -36,7 +36,7 @@
     }
   }
 
-  /* --- selector de coronación --- */
+  /* --- promotion picker --- */
   & .chess-board__promotion {
     position: absolute;
     inset: 0;
@@ -100,7 +100,7 @@
     background: var(--platform-surface-neutral, rgba(255, 255, 255, 0.08));
   }
 
-  /* Modo controlado (GameViewer / trainer): sólo la superficie del tablero. */
+  /* Controlled mode (GameViewer / trainer): only the board surface. */
   &.chess-board_mode_controlled {
     max-width: none;
     border-radius: 0;

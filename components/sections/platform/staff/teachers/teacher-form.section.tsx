@@ -12,9 +12,9 @@ interface TeacherFormSectionProps {
 }
 
 /**
- * Alta de profesor en dos modos, cada uno con su formulario para que no haya
- * campos que se ignoran en silencio: vincular una cuenta que ya existe, o crear
- * cuenta y ficha a la vez.
+ * Teacher creation in two modes, each with its own form so there are no
+ * fields silently ignored: link an account that already exists, or create
+ * account and record at once.
  */
 export function TeacherFormSection({ linkableUsers, errorCode }: TeacherFormSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;

@@ -1,16 +1,16 @@
 "use client";
 
-// Preferencia del visor que vive en el navegador de cada quien: no es un dato
-// de la cuenta, no viaja al servidor y no vale la pena en base de datos.
+// Viewer preference that lives in each person's browser: it is not account
+// data, it does not travel to the server and it is not worth a database.
 //
-// Se expone como almacén externo (`useSyncExternalStore`) y no como estado con
-// un efecto que lo rellena, por dos razones: en el servidor no hay
-// `localStorage`, así que la primera pintada tiene que dar el valor por
-// defecto o la hidratación no cuadra; y varios visores en la misma página
-// comparten el ajuste, así que al silenciar uno se enteran todos.
+// It is exposed as an external store (`useSyncExternalStore`) and not as
+// state filled by an effect, for two reasons: on the server there is no
+// `localStorage`, so the first paint has to give the default value or
+// hydration does not match; and several viewers on the same page share the
+// setting, so muting one tells all of them.
 //
-// El acceso va envuelto: en una ventana privada, o con las cookies de sitio
-// bloqueadas, `localStorage` no falla devolviendo null sino LANZANDO.
+// The access is wrapped: in a private window, or with site cookies blocked,
+// `localStorage` does not fail by returning null but by THROWING.
 
 export interface ViewerPreferences {
   sound: boolean;
@@ -21,9 +21,9 @@ export const DEFAULT_VIEWER_PREFERENCES: ViewerPreferences = { sound: true };
 const STORAGE_KEY = "365-viewer-preferences";
 
 /**
- * `getSnapshot` tiene que devolver SIEMPRE la misma referencia mientras no
- * cambie nada: si construyera un objeto nuevo en cada llamada, React lo leería
- * como un cambio perpetuo y se quedaría redibujando sin parar.
+ * `getSnapshot` has to return ALWAYS the same reference while nothing
+ * changes: if it built a new object on every call, React would read it as a
+ * perpetual change and keep re-rendering non-stop.
  */
 let cached: ViewerPreferences | null = null;
 const listeners = new Set<() => void>();
@@ -55,7 +55,7 @@ export function getViewerPreferences(): ViewerPreferences {
   return cached;
 }
 
-/** En el servidor no hay dónde leer: siempre el valor por defecto. */
+/** On the server there is nowhere to read from: always the default value. */
 export function getServerViewerPreferences(): ViewerPreferences {
   return DEFAULT_VIEWER_PREFERENCES;
 }
@@ -65,8 +65,8 @@ export function setViewerPreferences(preferences: ViewerPreferences): void {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
   } catch {
-    // Sin sitio donde guardar, la preferencia dura lo que la pestaña. Es
-    // aceptable: silenciar el tablero no es un dato importante.
+    // With nowhere to store it, the preference lasts as long as the tab. That
+    // is acceptable: muting the board is not important data.
   }
   for (const listener of listeners) listener();
 }

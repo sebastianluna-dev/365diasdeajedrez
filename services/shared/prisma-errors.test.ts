@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { isUniqueConstraintError } from "./prisma-errors";
 
-// Las dos formas reales del P2002. La del driver adapter está copiada de un
-// error observado contra la base de datos: es la única que trae el nombre de un
-// índice parcial hecho a mano.
+// The two real shapes of the P2002. The driver adapter's is copied from an error
+// observed against the database: it is the only one that carries the name of a
+// hand-made partial index.
 const driverAdapterError = {
   code: "P2002",
   meta: {

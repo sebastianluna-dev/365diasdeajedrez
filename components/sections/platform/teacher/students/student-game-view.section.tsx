@@ -9,15 +9,15 @@ interface StudentGameViewSectionProps {
   studentId: string;
   studentName: string;
   game: GameView;
-  /** Clases programadas del profesor: destinos de «Usar en una clase». */
+  /** The teacher's scheduled classes: destinations of "Usar en una clase". */
   scheduledClasses: TeacherClassSummary[];
 }
 
 /**
- * Partida de un alumno vista por su profesor. Sólo lectura: «Usar en una clase»
- * no copia ni modifica nada, lleva al editor de bloques de una clase propia con
- * la partida preseleccionada, y es allí donde el servidor revalida que la
- * asignación siga activa antes de insertar el bloque.
+ * A student's game seen by their teacher. Read-only: "Usar en una clase"
+ * copies and modifies nothing, it leads to the block editor of one of the
+ * teacher's own classes with the game preselected, and it is there that the
+ * server re-checks that the assignment is still active before inserting the block.
  */
 export function StudentGameViewSection({
   studentId,

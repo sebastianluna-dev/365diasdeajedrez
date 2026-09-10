@@ -49,8 +49,8 @@
     color: var(--platform-text);
   }
 
-  /* La pestaña viva se marca con un filo bajo el texto, que pisa la línea del
-     contenedor: así se lee como una carpeta y no como un botón más. */
+  /* The live tab is marked with a rule under the text that overlaps the
+     container's line: that way it reads as a folder and not as one more button. */
   & .new-game__tab.new-game__tab_state_active {
     color: var(--platform-text);
     font-weight: 700;
@@ -130,8 +130,8 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    /* La lista crece con las clases a las que se ha ido: se desplaza dentro
-       para que el pie del diálogo no se vaya de la pantalla. */
+    /* The list grows with the classes attended: it scrolls inside so the
+       dialog's foot does not run off the screen. */
     max-height: 320px;
     overflow: auto;
   }

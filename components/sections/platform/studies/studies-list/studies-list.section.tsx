@@ -14,10 +14,10 @@ export async function StudiesListSection() {
     );
   }
 
-  // El corte lo decide la PROPIEDAD, no el tipo: lo que no es suyo —las bases
-  // de sus cursos y las colecciones que le repartió un maestro— es de sólo
-  // lectura y va en su propia sección para que no se mezcle con lo que sí puede
-  // tocar.
+  // The split is decided by OWNERSHIP, not by kind: what is not theirs — the
+  // databases of their courses and the collections a teacher handed them — is
+  // read-only and goes in its own section so it does not mix with what they
+  // can touch.
   return (
     <StudiesBrowser
       own={studies.filter((study) => study.permissions.canEditGames)}

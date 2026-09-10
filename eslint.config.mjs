@@ -12,14 +12,14 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // Scripts importados del kit de diseño: no son código de la app y usan
-    // APIs antiguas de React a propósito.
+    // Scripts imported from the design kit: they are not app code and use old
+    // React APIs on purpose.
     "public/**",
-    // Cliente de Prisma generado.
+    // Generated Prisma client.
     "lib/platform-db/generated/**",
-    // Informe de cobertura de Vitest (`npm run test:coverage`).
+    // Vitest coverage report (`npm run test:coverage`).
     "coverage/**",
-    // Sitio de documentación (Nextra): es otra app, con su propio package.json.
+    // Documentation site (Nextra): it is another app, with its own package.json.
     "docs/**",
   ]),
 ]);

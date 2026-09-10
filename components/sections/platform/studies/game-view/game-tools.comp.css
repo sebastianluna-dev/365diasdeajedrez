@@ -1,9 +1,8 @@
 .game-tools {
-  /* Cada zona pone su propio relleno —la tarjeta que lo envuelve no pone
-     ninguno—, para que los filos que separan las pestañas, las columnas y el
-     pie lleguen de borde a borde. */
+  /* Each zone sets its own padding — the card wrapping it sets none — so the
+     rules separating the tabs, the columns and the foot reach from edge to edge. */
 
-  /* --- Pestañas ---------------------------------------------------------- */
+  /* --- Tabs -------------------------------------------------------------- */
   & .game-tools__tabs {
     display: flex;
     align-items: flex-end;
@@ -30,13 +29,13 @@
     color: var(--platform-text);
   }
 
-  /* La activa se marca por debajo, no con una caja: es una pestaña. */
+  /* The active one is marked underneath, not with a box: it is a tab. */
   & .game-tools__tab.game-tools__tab_state_active {
     color: var(--platform-text);
     box-shadow: inset 0 -2px 0 var(--platform-accent);
   }
 
-  /* Un punto dice que la jugada ya está comentada, sin abrir la pestaña. */
+  /* A dot says the move is already commented, without opening the tab. */
   & .game-tools__tab-dot {
     width: 6px;
     height: 6px;
@@ -53,8 +52,8 @@
     font-weight: 700;
   }
 
-  /* Sobre qué jugada se trabaja y cómo va el guardado. Al final de la fila y en
-     gris: es un estado, no una acción. */
+  /* Which move is being worked on and how the save is going. At the end of the
+     row and in grey: it is a status, not an action. */
   & .game-tools__target {
     margin-left: auto;
     padding-bottom: 11px;
@@ -69,7 +68,7 @@
     padding: 16px 18px;
   }
 
-  /* --- Comentario -------------------------------------------------------- */
+  /* --- Comment ----------------------------------------------------------- */
   & .game-tools__textarea {
     width: 100%;
     box-sizing: border-box;
@@ -104,9 +103,9 @@
     color: var(--platform-danger);
   }
 
-  /* --- Calidad ----------------------------------------------------------- */
-  /* Dos columnas con un filo entre ellas dibujado por el propio hueco de la
-     rejilla: así no hay que decidir qué columna lleva borde. */
+  /* --- Quality ----------------------------------------------------------- */
+  /* Two columns with a rule between them drawn by the grid gap itself: that
+     way there is no need to decide which column carries the border. */
   & .game-tools__nags {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -190,7 +189,7 @@
     font-weight: 700;
   }
 
-  /* Pie de la pestaña de calidad: la regla del panel, donde no estorba. */
+  /* Foot of the quality tab: the panel's rule, where it does not get in the way. */
   & .game-tools__foot {
     margin: 0;
     padding: 12px 18px;
@@ -200,7 +199,7 @@
     color: var(--platform-text-subtle);
   }
 
-  /* --- Compartir --------------------------------------------------------- */
+  /* --- Share ------------------------------------------------------------- */
   & .game-tools__share {
     display: flex;
     align-items: center;
@@ -231,8 +230,8 @@
     text-overflow: ellipsis;
   }
 
-  /* El FEN y las jugadas, en monoespaciada: son datos que se leen carácter a
-     carácter cuando algo no cuadra. */
+  /* The FEN and the moves, in monospace: they are data read character by
+     character when something does not add up. */
   & .game-tools__share-value_kind_code {
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   }

@@ -21,8 +21,8 @@ describe("parseEngineInfo", () => {
   });
 
   it("normaliza la puntuación al punto de vista de las blancas", () => {
-    // El motor puntúa a favor de quien mueve: con negras al turno, un +34 suyo
-    // son 0,34 A FAVOR DE LAS NEGRAS.
+    // The engine scores in favour of whoever moves: with Black to move, a +34 of
+    // its own is 0.34 IN BLACK'S FAVOUR.
     expect(parseEngineInfo(LINE, "black")!.score).toBeCloseTo(-0.34);
   });
 
@@ -31,7 +31,7 @@ describe("parseEngineInfo", () => {
     expect(white.mateIn).toBe(3);
     expect(white.score).toBeGreaterThan(50);
 
-    // El mismo mate anunciado con negras al turno lo dan las negras.
+    // The same mate announced with Black to move is Black giving it.
     const black = parseEngineInfo("info depth 12 score mate 3 pv e2e4", "black")!;
     expect(black.mateIn).toBe(-3);
     expect(black.score).toBeLessThan(-50);
@@ -93,7 +93,7 @@ describe("parseEngineInfo con varias líneas", () => {
   });
 
   it("asume la primera cuando el motor no la numera", () => {
-    // Con MultiPV en 1, Stockfish omite el campo.
+    // With MultiPV at 1, Stockfish omits the field.
     expect(parseEngineInfo("info depth 9 score cp 20 pv e2e4", "white")!.multipv).toBe(1);
   });
 
@@ -136,7 +136,7 @@ describe("acumular las tres líneas", () => {
     multipv, depth, score, mateIn: null, pv: ["e2e4"],
   });
 
-  /** Como llegan de verdad: una línea por mensaje, en orden, por cada profundidad. */
+  /** As they really arrive: one line per message, in order, for each depth. */
   function feed(fen: string, infos: ReturnType<typeof info>[]): EngineLines | null {
     return infos.reduce<EngineLines | null>((acc, next) => mergeEngineLines(acc, fen, next), null);
   }
@@ -152,7 +152,7 @@ describe("acumular las tres líneas", () => {
   });
 
   it("cada línea se actualiza sola sin pisar a las otras", () => {
-    // La profundidad 13 sólo ha emitido la primera todavía.
+    // Depth 13 has only emitted the first one so far.
     const state = feed(FEN, [info(1, 12, 0.3), info(2, 12, 0.1), info(3, 12, -0.2), info(1, 13, 0.5)]);
     const lines = orderedEngineLines(state, FEN);
     expect(lines.map((l) => l.depth)).toEqual([13, 12, 12]);
@@ -164,7 +164,7 @@ describe("acumular las tres líneas", () => {
     const next = mergeEngineLines(previous, OTHER, info(1, 8, -0.4));
 
     expect(orderedEngineLines(next, OTHER)).toHaveLength(1);
-    // Y lo viejo deja de estar disponible bajo su propio FEN.
+    // And the old one stops being available under its own FEN.
     expect(orderedEngineLines(next, FEN)).toEqual([]);
   });
 
@@ -173,7 +173,7 @@ describe("acumular las tres líneas", () => {
   });
 
   it("una posición con menos continuaciones que las pedidas no inventa las que faltan", () => {
-    // En un mate forzado el motor puede dar una sola.
+    // In a forced mate the engine may give only one.
     const state = feed(FEN, [info(1, 20, 100)]);
     expect(orderedEngineLines(state, FEN)).toHaveLength(1);
   });

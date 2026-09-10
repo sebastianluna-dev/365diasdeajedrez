@@ -11,11 +11,11 @@ interface HeaderProps {
   theme?: "dark" | "light";
 }
 
-// El botón principal del header es la entrada a la plataforma, y por eso su
-// texto y su destino van fijos en el código en lugar de salir del CMS: un
-// rótulo editable podría acabar prometiendo algo distinto de lo que hace el
-// enlace. El campo `ctaLabel` del global `home-header` sigue existiendo (y lo
-// sigue mapeando services/home), pero ya no lo lee nadie.
+// The header's main button is the entrance to the platform, which is why its
+// text and its target are fixed in code instead of coming from the CMS: an
+// editable label could end up promising something different from what the
+// link does. The `ctaLabel` field of the `home-header` global still exists
+// (and services/home still maps it), but nobody reads it any more.
 const LOGIN_CTA_LABEL = "Iniciar sesión";
 
 export async function Header({ theme = "dark" }: HeaderProps) {

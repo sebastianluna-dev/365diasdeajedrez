@@ -12,11 +12,11 @@ export interface MoveContextMenuTarget {
   path: string;
   x: number;
   y: number;
-  /** La jugada, como se lee en la lista («1… f5»): encabeza el menú. */
+  /** The move, as read in the list ("1… f5"): heads the menu. */
   label: string;
-  /** false cuando la jugada ya está en la línea principal de la partida. */
+  /** false when the move is already on the game's main line. */
   canPromote: boolean;
-  /** false cuando ya es la primera entre sus hermanas: subirla no haría nada. */
+  /** false when it is already the first among its siblings: moving it up would do nothing. */
   canPromoteOneStep: boolean;
 }
 
@@ -26,8 +26,8 @@ interface MoveContextMenuProps {
   onPromoteOneStep: () => void;
   onDelete: () => void;
   /**
-   * Las tres opcionales son las que necesitan sitio donde escribir: quien no
-   * tenga dónde ponerlas simplemente no las pasa y el menú se pinta sin ellas.
+   * The three optional ones are those that need somewhere to write: whoever
+   * has nowhere to put them simply does not pass them and the menu renders without them.
    */
   onComment?: () => void;
   onAnnotate?: () => void;
@@ -35,10 +35,10 @@ interface MoveContextMenuProps {
   onClose: () => void;
 }
 
-/** Lo que se ve en el menú mientras dura el aviso de copiado. */
+/** What the menu shows while the copied notice lasts. */
 const COPIED_MS = 900;
 
-/** Margen mínimo al borde de la ventana al recolocar el menú. */
+/** Minimum margin to the window edge when repositioning the menu. */
 const EDGE_GAP = 8;
 
 interface ItemProps {
@@ -67,11 +67,11 @@ function Item({ icon, label, onClick, disabled, danger }: ItemProps) {
 }
 
 /**
- * Menú del clic derecho sobre una jugada.
+ * Right-click menu on a move.
  *
- * Va aparte del `MoveTree` y del `MoveTable` para que el visor del alumno no
- * cargue con nada de esto: la lista sólo avisa de que hubo clic derecho, y
- * quien decide qué se puede hacer es quien la monta.
+ * Kept apart from `MoveTree` and `MoveTable` so the student's viewer does
+ * not carry any of this: the list only reports that there was a right
+ * click, and whoever mounts it decides what can be done.
  */
 export function MoveContextMenu({
   target,
@@ -87,8 +87,8 @@ export function MoveContextMenu({
   const [copied, setCopied] = useState(false);
   const [position, setPosition] = useState({ x: target.x, y: target.y });
 
-  // Se recoloca DESPUÉS de medirse: el clic derecho puede caer a un palmo del
-  // borde y un menú que se sale de la ventana no se puede ni leer ni pulsar.
+  // Repositioned AFTER measuring itself: the right click can land a hand's
+  // width from the edge, and a menu that runs off the window can be neither read nor clicked.
   useLayoutEffect(() => {
     const menu = rootRef.current;
     if (!menu) return;
@@ -99,8 +99,8 @@ export function MoveContextMenu({
     });
   }, [target.x, target.y]);
 
-  // Se cierra al pulsar fuera o con Escape, que es lo que espera cualquiera de
-  // un menú contextual.
+  // Closes on clicking outside or with Escape, which is what anyone expects
+  // from a context menu.
   useEffect(() => {
     const handlePointerDown = (event: PointerEvent) => {
       if (!rootRef.current?.contains(event.target as Node)) onClose();

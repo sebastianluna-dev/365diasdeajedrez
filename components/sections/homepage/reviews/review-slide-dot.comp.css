@@ -1,6 +1,6 @@
-/* La caja del botón mide 24×24 (el mínimo táctil) y lo que se ve es la
-   píldora de dentro: un botón de 10 px se pulsa mal en el móvil. La caja
-   crece con la píldora activa para que el hueco entre puntos no cambie. */
+/* The button's box measures 24×24 (the touch minimum) and what is seen is
+   the pill inside: a 10 px button is hard to press on mobile. The box grows
+   with the active pill so the gap between dots does not change. */
 .reviews__dot {
   display: inline-flex;
   align-items: center;

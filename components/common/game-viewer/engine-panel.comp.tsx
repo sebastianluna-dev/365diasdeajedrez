@@ -15,17 +15,17 @@ interface EnginePanelProps {
   enabled: boolean;
   onToggle: () => void;
   state: EngineState;
-  /** La vista previa se mira desde el mismo lado que el tablero de al lado. */
+  /** The preview is looked at from the same side as the board next to it. */
   flipBoard?: boolean;
   /**
-   * Avisa de si hay alguna línea desplegada. Lo necesita quien monta el panel
-   * —el visor— porque el alto que ocupa esto se lo cede la notación, y esa
-   * cuenta la lleva la tarjeta, no el módulo.
+   * Reports whether any line is expanded. The one mounting the panel — the
+   * viewer — needs it because the height this takes up is given up by the
+   * notation, and that accounting belongs to the card, not the engine.
    */
   onExpandedChange?: (expanded: boolean) => void;
 }
 
-/** Cuántas jugadas de cada continuación se reproducen. */
+/** How many moves of each continuation are replayed. */
 const LINE_LENGTH = 16;
 
 interface Preview {
@@ -34,11 +34,11 @@ interface Preview {
 }
 
 /**
- * El interruptor del módulo y las continuaciones que propone.
+ * The engine switch and the continuations it proposes.
  *
- * Sólo pinta: quien tiene el motor es el visor, porque su evaluación la usa
- * también la barra de al lado del tablero. Dos consumidores del mismo dato
- * pedían tenerlo en el sitio que los contiene a los dos.
+ * It only renders: the viewer is the one that owns the engine, because its
+ * evaluation is also used by the bar next to the board. Two consumers of the
+ * same data called for keeping it in the place that contains them both.
  */
 export function EnginePanel({
   fen,
@@ -49,13 +49,13 @@ export function EnginePanel({
   onExpandedChange,
 }: EnginePanelProps) {
   const { lines, info, loading, failed } = state;
-  // Una desplegada como mucho: plegadas caben en un renglón y las tres se
-  // comparan de un vistazo, que es para lo que están. Abrir una cierra la otra
-  // —así lo que crece el bloque es siempre lo mismo, un renglón, y la notación
-  // sabe cuánto tiene que ceder—.
+  // At most one expanded: collapsed they fit on one row and the three are
+  // compared at a glance, which is what they are for. Opening one closes the
+  // other — that way what the block grows is always the same, one row, and
+  // the notation knows how much it has to give up.
   const [expanded, setExpanded] = useState<number | null>(null);
-  // Con el módulo apagado no hay nada desplegado: se DEDUCE, en vez de tener
-  // que acordarse de ponerlo a cero al apagarlo.
+  // With the engine off nothing is expanded: it is DERIVED, instead of having
+  // to remember to reset it when switching off.
   const openLine = enabled ? expanded : null;
 
   const toggleLine = (multipv: number) => {
@@ -64,9 +64,9 @@ export function EnginePanel({
     onExpandedChange?.(next !== null);
   };
 
-  // La posición que se está señalando. NO se guarda dónde estaba el ratón: la
-  // vista previa sale siempre en el mismo sitio, colgada del bloque del módulo,
-  // así que la vista no salta de un lado a otro al recorrer una línea.
+  // The position being pointed at. Where the mouse was is NOT stored: the
+  // preview always appears in the same place, hanging from the engine block,
+  // so the view does not jump from side to side while traversing a line.
   const [preview, setPreview] = useState<Preview | null>(null);
 
   return (
@@ -74,8 +74,8 @@ export function EnginePanel({
       <div className="engine-panel__head">
         <span className="engine-panel__label">Módulo</span>
 
-        {/* La profundidad va aquí y no en cada línea: las tres se analizan a la
-            vez y a la misma hondura, así que repetirla tres veces sería ruido. */}
+        {/* The depth goes here and not on each line: the three are analysed at
+            once and to the same depth, so repeating it three times would be noise. */}
         {enabled && info && <span className="engine-panel__depth">prof. {info.depth}</span>}
 
         <button
@@ -110,17 +110,17 @@ export function EnginePanel({
                     className={`engine-panel__row${index === 0 ? " engine-panel__row_rank_best" : ""}`}
                   >
                     <span className={`engine-panel__line${isOpen ? " engine-panel__line_state_expanded" : ""}`}>
-                      {/* La evaluación abre la línea, dentro de ella: es lo
-                          primero que se lee de la sugerencia, no un dato aparte
-                          en su propia columna. */}
+                      {/* The evaluation opens the line, inside it: it is the
+                          first thing read of the suggestion, not a separate figure
+                          in its own column. */}
                       <span className="engine-panel__score">{formatEvaluation(line)}</span>
 
                       {tokens.map((token, position) => (
                         <span key={position} className="engine-panel__token">
                           {token.number && <span className="engine-panel__move-number">{token.number}</span>}
-                          {/* Señalar una jugada enseña a dónde lleva: leer una
-                              línea de ocho jugadas de cabeza es justo lo que
-                              cuesta de las sugerencias del módulo. */}
+                          {/* Pointing at a move shows where it leads: reading an
+                              eight-move line in one's head is exactly what makes
+                              the engine's suggestions hard. */}
                           <span
                             className="engine-panel__move"
                             onMouseEnter={() =>
@@ -153,8 +153,8 @@ export function EnginePanel({
         </div>
       )}
 
-      {/* Fuera del bloque de las líneas, que recorta lo que se le salga: la
-          vista previa cuelga por debajo y se pinta sobre la notación. */}
+      {/* Outside the lines block, which clips whatever overflows it: the
+          preview hangs below and is painted over the notation. */}
       {preview && (
         <div className="engine-panel__preview" aria-hidden="true">
           <ChessBoard position={{ fen: preview.fen, lastMove: preview.lastMove }} flipBoard={flipBoard} />

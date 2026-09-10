@@ -10,12 +10,12 @@ export const metadata: Metadata = {
 };
 
 export default async function CoursesPage() {
-  // Frontera de la zona privada: los dos pasan por getCurrentUser, así que este
-  // primer await hace de check de sesión además de traer los datos.
+  // Border of the private area: both go through getCurrentUser, so this first
+  // await acts as the session check as well as fetching the data.
   const [courses, goal] = await Promise.all([getUserCourses(), getStudyGoal()]);
 
-  // El resumen sale de la misma lista: no hace falta una segunda consulta para
-  // contar lo que ya está en memoria.
+  // The summary comes out of the same list: no second query is needed to count
+  // what is already in memory.
   const doneLessons = courses.reduce((total, course) => total + course.progress.completedLessons, 0);
 
   return (

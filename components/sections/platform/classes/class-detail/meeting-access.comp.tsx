@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import "./meeting-access.comp.css";
 
 interface MeetingAccessProps {
-  /** Presente sólo cuando el servidor ya autorizó mostrar el enlace. */
+  /** Present only when the server has already authorised showing the link. */
   meetingUrl?: string;
-  /** ISO de cuándo se hace visible el enlace (para la cuenta atrás). */
+  /** ISO of when the link becomes visible (for the countdown). */
   meetingVisibleFromIso?: string;
   providerLabel?: string;
 }
@@ -24,9 +24,9 @@ function formatRemaining(ms: number): string {
 }
 
 /**
- * Acceso a la videollamada. El enlace NUNCA llega al cliente antes de tiempo:
- * aquí sólo se pinta la cuenta atrás y, al llegar a cero, se refresca para que
- * el servidor lo entregue.
+ * Access to the video call. The link NEVER reaches the client ahead of time:
+ * here only the countdown is rendered and, when it reaches zero, the page
+ * refreshes so the server hands it over.
  */
 export function MeetingAccess({ meetingUrl, meetingVisibleFromIso, providerLabel }: MeetingAccessProps) {
   const router = useRouter();

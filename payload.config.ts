@@ -43,21 +43,20 @@ export default buildConfig({
     SiteSettings,
   ],
   editor: lexicalEditor(),
-  // Sin `sharp`, Payload no lee las dimensiones de lo que se sube y
-  // `Media.width`/`height` quedan a null para siempre: el sitio caía a un
-  // respaldo fijo (1536×2048) para la foto del maestro y cualquier otra
-  // proporción se deformaba. Sólo se usa para los metadatos: las
-  // transformaciones las hace Cloudinary.
+  // Without `sharp`, Payload does not read the dimensions of what is uploaded and
+  // `Media.width`/`height` stay null forever: the site fell back to a fixed
+  // 1536×2048 for the teacher's photo and any other ratio was distorted. It is
+  // only used for the metadata: the transformations are done by Cloudinary.
   sharp,
-  // Tope de peso por archivo subido al CMS. Los editores no tienen por qué
-  // saber exportar ligero, y sin esto una foto de 40 MB entraba tal cual.
+  // Weight cap per file uploaded to the CMS. Editors have no reason to know how
+  // to export light, and without this a 40 MB photo went in as it was.
   upload: {
     limits: { fileSize: 5 * 1024 * 1024 },
     abortOnLimit: true,
   },
-  // Nadie consume la API GraphQL (el sitio lee Payload con la API local) y
-  // construir su esquema es parte de cada arranque de Payload: en serverless,
-  // de cada arranque en frío.
+  // Nobody consumes the GraphQL API (the site reads Payload with the local API)
+  // and building its schema is part of every Payload start: in serverless, of
+  // every cold start.
   graphQL: { disable: true },
   db: postgresAdapter({
     pool: {

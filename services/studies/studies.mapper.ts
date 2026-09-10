@@ -7,14 +7,15 @@ import type { GameView, StudyDetail, StudyGameItem, StudyShareItem, StudySummary
 export const studySummaryInclude = {
   kind: true,
   course: { select: { name: true } },
-  // Quién repartió la colección, para poder decir de dónde viene. `take: 1`
-  // porque al alumno sólo le toca UNA fila —la suya— y al dueño no le hace
-  // falta ninguna aquí: la lista de a quién se la repartió es de la ficha.
+  // Who shared the collection, so it can be said where it comes from. `take: 1`
+  // because the student only gets ONE row — theirs — and the owner needs none
+  // here: the list of who it was shared with belongs to the detail page.
   shares: { take: 1, select: { teacher: { select: { displayName: true } } } },
   _count: { select: { games: true } },
-  // Sólo las citadas en alguna clase, para poder avisar antes de borrar: esos
-  // bloques se quedarían sin partida. Se traen los ids en vez de contarlos
-  // aparte porque son pocos y evita una segunda consulta por estudio.
+  // Only those cited in some class, so a warning can be given before deleting:
+  // those blocks would be left without a game. The ids are brought instead of
+  // counting them separately because there are few and it avoids a second query
+  // per study.
   games: { where: { classBlocks: { some: {} } }, select: { id: true } },
 } satisfies Prisma.GameDatabaseInclude;
 
@@ -32,14 +33,13 @@ export const studyDetailInclude = {
     },
   },
   games: {
-    // El orden que puso el alumno manda. La fecha queda de desempate para las
-    // que aún no se han colocado a mano —`createdAt` ASC para que los capítulos
-    // se lean 1, 2, 3: no tienen fecha de partida, así que el descendente los
-    // mostraba al revés.
+    // The order the student set rules. The date is left as a tie-breaker for those
+    // not yet placed by hand — `createdAt` ASC so the chapters read 1, 2, 3: they
+    // have no game date, so the descending order showed them backwards.
     orderBy: [{ order: "asc" }, { playedAt: "desc" }, { createdAt: "asc" }],
-    // `select` y no `include`: la lista no enseña el PGN ni las etiquetas, y
-    // con quinientas partidas por importación esas dos columnas eran casi
-    // todo lo que viajaba desde la base para pintar una tabla.
+    // `select` and not `include`: the list shows neither the PGN nor the tags, and
+    // with five hundred games per import those two columns were almost everything
+    // that travelled from the database to render a table.
     select: {
       id: true,
       title: true,
@@ -50,8 +50,8 @@ export const studyDetailInclude = {
       event: true,
       playedAt: true,
       result: { select: { label: true } },
-      // Para poder avisar antes de borrar el estudio: estas partidas están
-      // citadas en clases y esos bloques se quedarían vacíos.
+      // So a warning can be given before deleting the study: these games are cited in
+      // classes and those blocks would be left empty.
       _count: { select: { classBlocks: true } },
     },
   },
@@ -69,10 +69,10 @@ export const gameViewInclude = {
 export type GameViewRow = Prisma.GameGetPayload<{ include: typeof gameViewInclude }>;
 
 /**
- * @param viewerId id de quien mira, o `null` cuando la vista es de sólo lectura
- *   por su propia naturaleza (el profesor revisando a un alumno). La propiedad
- *   es lo único que separa una colección que se REPARTE de una que se RECIBE,
- *   así que sin esto no se puede decidir qué se le ofrece.
+ * @param viewerId id of whoever is looking, or `null` when the view is read-only
+ *   by its own nature (the teacher reviewing a student). Ownership is the only
+ *   thing that separates a collection that is SHARED from one that is RECEIVED,
+ *   so without this what to offer them cannot be decided.
  */
 export function mapStudySummary(row: StudySummaryRow, viewerId: string | null): StudySummary {
   const isOwner = row.userId === viewerId;
@@ -95,14 +95,14 @@ export function mapStudySummary(row: StudySummaryRow, viewerId: string | null): 
 }
 
 /**
- * Cómo se llama una partida dentro de su estudio. La columna no puede quedarse
- * en blanco, así que baja por una escalera:
+ * What a game is called within its study. The column cannot be left blank, so it
+ * goes down a ladder:
  *
- * 1. el título, que es lo que alguien decidió llamarla;
- * 2. la ronda del PGN, que es como se nombran las de un torneo;
- * 3. el evento, PERO sólo si distingue —«La Inmortal» sirve, «Material del
- *    curso» repetido en trece partidas no dice cuál es cuál—;
- * 4. la posición, que al menos es un asidero estable.
+ * 1. the title, which is what someone decided to call it;
+ * 2. the PGN's round, which is how a tournament's games are named;
+ * 3. the event, BUT only if it distinguishes — "La Inmortal" serves, "Material
+ *    del curso" repeated in thirteen games does not say which is which;
+ * 4. the position, which is at least a stable handle.
  */
 function gameLabel(
   game: StudyDetailRow["games"][number],
@@ -137,7 +137,7 @@ function mapStudyGameItem(
   };
 }
 
-/** Cuántas veces se repite cada evento dentro del estudio. */
+/** How many times each event repeats within the study. */
 function eventCounts(row: StudyDetailRow): Map<string, number> {
   const counts = new Map<string, number>();
   for (const game of row.games) {
@@ -155,9 +155,9 @@ function mapStudyShare(share: StudyDetailRow["shares"][number]): StudyShareItem 
   };
 }
 
-/** @param viewerId id de quien mira, o `null`; ver `mapStudySummary`. */
+/** @param viewerId id of whoever is looking, or `null`; see `mapStudySummary`. */
 export function mapStudyDetail(row: StudyDetailRow, viewerId: string | null): StudyDetail {
-  // Fuera del bucle: dentro se recalcularía una vez por partida.
+  // Outside the loop: inside, it would be recomputed once per game.
   const events = eventCounts(row);
   const isOwner = row.userId === viewerId;
 
@@ -170,8 +170,8 @@ export function mapStudyDetail(row: StudyDetailRow, viewerId: string | null): St
     createdAtLabel: formatSpanishDate(row.createdAt),
     isCourseStudy: row.courseId !== null,
     courseName: row.course?.name,
-    // A quien la recibe se le dice de quién viene; a quien la reparte, a quién
-    // se la dio. Nunca las dos cosas: son las dos caras de la misma fila.
+    // Whoever receives it is told who it comes from; whoever shares it, who it was
+    // given to. Never both: they are the two faces of the same row.
     sharedByName: isOwner
       ? undefined
       : (row.shares.find((share) => share.user.id === viewerId)?.teacher?.displayName ?? undefined),
@@ -183,15 +183,15 @@ export function mapStudyDetail(row: StudyDetailRow, viewerId: string | null): St
 }
 
 /**
- * @param viewerId id de quien mira, o `null` cuando la vista es de sólo lectura
- *   por su propia naturaleza (el profesor revisando a un alumno).
+ * @param viewerId id of whoever is looking, or `null` when the view is read-only
+ *   by its own nature (the teacher reviewing a student).
  */
 export function mapGameView(row: GameViewRow, viewerId: string | null): GameView {
   return {
-    // Un profesor VE las partidas de sus alumnos para poder citarlas en clase,
-    // pero anotarlas es cosa del dueño; y lo mismo el alumno con una colección
-    // que le repartieron. Sale de la misma tabla que el resto de la sección
-    // para que no haya dos versiones de la regla.
+    // A teacher SEES their students' games so they can cite them in class, but
+    // annotating them is the owner's business; and the same for a student with a
+    // collection someone shared with them. It comes from the same table as the rest
+    // of the section so there are no two versions of the rule.
     canEdit:
       viewerId !== null &&
       studyPermissionsOf({ kindCode: row.database.kind.code, isOwner: row.database.userId === viewerId })

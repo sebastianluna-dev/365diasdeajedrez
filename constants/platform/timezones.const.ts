@@ -1,6 +1,6 @@
-// Zonas horarias IANA ofrecidas en el perfil del profesor. Lista corta a
-// propósito (las de la academia y su alumnado); el campo admite cualquier zona
-// válida en base de datos, así que ampliarla es sólo añadir entradas aquí.
+// IANA time zones offered in the teacher profile. Short list on purpose (the
+// academy's and its students'); the field admits any valid zone in the
+// database, so extending it is only a matter of adding entries here.
 
 export const COMMON_TIMEZONES = [
   "America/Mexico_City",
@@ -22,13 +22,13 @@ export function isCommonTimezone(value: string): value is CommonTimezone {
 }
 
 /**
- * La zona en la que empieza y acaba el DÍA DE ESTUDIO: la racha y los minutos
- * de hoy se cortan aquí.
+ * The zone in which the STUDY DAY starts and ends: the streak and today's
+ * minutes are cut here.
  *
- * Es una constante y no un dato del alumno porque hoy no se le pregunta su zona
- * (sólo el profesor tiene la suya, para programar clases). En UTC el día
- * cambiaría a las seis de la tarde en México, y ver la racha reiniciarse
- * mientras se cena es peor que la imprecisión de quien estudia desde otro huso.
- * Cuando el alumno tenga zona propia, esto pasa a ser su valor por defecto.
+ * It is a constant and not a student setting because today they are not asked
+ * their zone (only the teacher has one, to schedule classes). In UTC the day
+ * would change at six in the evening in Mexico, and seeing the streak reset
+ * over dinner is worse than the imprecision for whoever studies from another
+ * zone. When the student gets a zone of their own, this becomes their default.
  */
 export const STUDY_DAY_TIMEZONE = "America/Mexico_City";

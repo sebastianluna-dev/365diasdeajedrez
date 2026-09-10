@@ -15,10 +15,10 @@ interface ChapterGamesSectionProps {
 }
 
 /**
- * La colección de partidas del capítulo: aquí sí se escribe.
+ * The chapter's game collection: here writing does happen.
  *
- * Es el ÚNICO sitio donde se pega un PGN. Las lecciones del capítulo eligen de
- * esta lista, y corregir una partida arregla de una vez todas las que la usan.
+ * It is the ONLY place where a PGN is pasted. The chapter's lessons choose
+ * from this list, and fixing a game fixes at once every lesson that uses it.
  */
 export function ChapterGamesSection({ chapter, games, errorCode }: ChapterGamesSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
@@ -68,9 +68,9 @@ export function ChapterGamesSection({ chapter, games, errorCode }: ChapterGamesS
                   </span>
                 </span>
 
-                {/* Sólo se ofrece quitar la que no usa ninguna lección: la clave
-                    ajena es SET NULL, así que borrarla no fallaría, las vaciaría
-                    en silencio. */}
+                {/* Removal is only offered for the one no lesson uses: the foreign key
+                    is SET NULL, so deleting it would not fail, it would empty them
+                    silently. */}
                 {game.lessonCount === 0 && (
                   <form action={deleteChapterGame.bind(null, chapter.courseId, chapter.id)}>
                     <input type="hidden" name="gameId" value={game.id} />

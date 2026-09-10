@@ -1,4 +1,4 @@
-// Codes estables de los catálogos de entrenamiento.
+// Stable codes of the training catalogs.
 
 export const EXERCISE_MODE = {
   REPRODUCE_LINE: "REPRODUCE_LINE",

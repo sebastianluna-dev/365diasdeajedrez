@@ -1,13 +1,13 @@
--- Título FIDE y federación de cada jugador.
+-- FIDE title and federation of each player.
 --
--- El dato ya venía dentro del PGN de las partidas importadas: la cabecera
--- `WhiteTitle` para el título y `WhiteTeam` para la federación, que es lo que
--- escriben las retransmisiones de Lichess. Se extrae de ahí en vez de dejar las
--- columnas vacías esperando a que alguien las reescriba a mano.
+-- The data already came inside the PGN of the imported games: the `WhiteTitle`
+-- header for the title and `WhiteTeam` for the federation, which is what
+-- Lichess's broadcasts write. It is extracted from there instead of leaving the
+-- columns empty waiting for someone to rewrite them by hand.
 --
--- `substring(... from '...')` con un grupo devuelve ese grupo, o NULL si no
--- casa, que es justo lo que hace falta: una partida sin la cabecera se queda a
--- NULL sin necesidad de un CASE.
+-- `substring(... from '...')` with a group returns that group, or NULL when it
+-- does not match, which is exactly what is needed: a game without the header
+-- stays at NULL with no need for a CASE.
 ALTER TABLE "Game" ADD COLUMN "whiteTitle" TEXT;
 ALTER TABLE "Game" ADD COLUMN "blackTitle" TEXT;
 ALTER TABLE "Game" ADD COLUMN "whiteCountry" TEXT;

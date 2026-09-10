@@ -12,20 +12,20 @@ import { getVisibleGamesWhere } from "@/services/shared/game-visibility";
 import { explorerGameInclude, mapExplorerGame, type ExplorerViewer } from "./game-explorer.mapper";
 import type { ExplorerNextMove, PositionSearchFilters, PositionSearchResult } from "./game-explorer.types";
 
-// Buscador por POSICIÓN: qué partidas pasaron por aquí y qué se jugó después.
-// Lee el índice de services/game-positions; no reproduce ningún PGN ni recorre
-// partidas en memoria, así que el coste no crece con el tamaño de la base sino
-// con el número de coincidencias.
+// Search by POSITION: which games went through here and what was played
+// afterwards. It reads the index of services/game-positions; it replays no PGN
+// and walks no games in memory, so the cost does not grow with the size of the
+// database but with the number of matches.
 
-/** Partidas listadas por búsqueda; el total va aparte y sí es completo. */
+/** Games listed per search; the total goes separately and is complete. */
 const GAME_LIMIT = 20;
 
 const EMPTY_RESULT: PositionSearchResult = { totalGames: 0, nextMoves: [], games: [] };
 
 /**
- * El FEN llega del cliente, así que se valida antes de tocar la base: no basta
- * con que parsee, la posición tiene que ser legal. Una entrada inválida sale
- * como «sin resultados» y nunca como excepción.
+ * The FEN comes from the client, so it is validated before touching the
+ * database: it is not enough that it parses, the position has to be legal. An
+ * invalid input comes out as "no results" and never as an exception.
  */
 function isLegalPosition(fen: string): boolean {
   const setup = parseFen(fen).unwrap(
@@ -40,7 +40,10 @@ function isLegalPosition(fen: string): boolean {
   );
 }
 
-/** Quién busca: su id y, si es profesor, sus alumnos con asignación activa. */
+/**
+ * Who is searching: their id and, if they are a teacher, their students with an
+ * active assignment.
+ */
 const getExplorerViewer = cache(async (): Promise<ExplorerViewer> => {
   const user = await getCurrentUser();
   const teacherContext = await getTeacherContext();
@@ -54,9 +57,9 @@ const getExplorerViewer = cache(async (): Promise<ExplorerViewer> => {
 });
 
 /**
- * Traduce el filtro de origen a condiciones sobre la base propietaria. El
- * origen no es una columna: se deduce de quién es el dueño y de sus roles (ver
- * services/shared/game-origin), así que el filtro replica esa misma regla.
+ * Translates the origin filter into conditions over the owning database. The
+ * origin is not a column: it is deduced from who the owner is and from their
+ * roles (see services/shared/game-origin), so the filter replicates that same rule.
  */
 function originWhere(origins: GameOriginCode[] | undefined): Prisma.GameWhereInput | null {
   if (!origins || origins.length === 0) return null;
@@ -87,8 +90,8 @@ function originWhere(origins: GameOriginCode[] | undefined): Prisma.GameWhereInp
 function toNextMoves(
   groups: { nextMoveSan: string | null; nextMoveUci: string | null; _count: { _all: number } }[],
 ): ExplorerNextMove[] {
-  // Las filas sin continuación son partidas que terminaron en esta posición:
-  // cuentan como partida encontrada, pero no son una jugada que listar.
+  // The rows without a continuation are games that ended in this position: they
+  // count as a game found, but they are not a move to list.
   const moves = groups
     .filter((group) => group.nextMoveSan !== null && group.nextMoveUci !== null)
     .map((group) => ({ san: group.nextMoveSan as string, uci: group.nextMoveUci as string, count: group._count._all }))
@@ -97,17 +100,17 @@ function toNextMoves(
   const total = moves.reduce((sum, move) => sum + move.count, 0);
   return moves.map((move) => ({
     ...move,
-    // Sobre el total de continuaciones, no sobre las partidas: así los
-    // porcentajes de la lista suman 100 (salvo el redondeo a un decimal).
+    // Over the total of continuations, not over the games: that way the list's
+    // percentages add up to 100 (bar the rounding to one decimal).
     percentage: total === 0 ? 0 : Math.round((move.count / total) * 1000) / 10,
   }));
 }
 
 /**
- * Busca una posición entre las partidas que quien pregunta puede ver.
+ * Searches for a position among the games whoever asks can see.
  *
- * La igualdad es por posición y no por secuencia de jugadas: dos partidas que
- * llegan aquí por órdenes distintos cuentan las dos.
+ * Equality is by position and not by sequence of moves: two games that get here
+ * through different orders both count.
  */
 export async function searchGamesByPosition(
   fen: string,
@@ -124,8 +127,8 @@ export async function searchGamesByPosition(
   const gameConditions: Prisma.GameWhereInput[] = origin ? [visibleGames, origin] : [visibleGames];
 
   const [totalGames, moveGroups, gameRows] = await Promise.all([
-    // Cuenta PARTIDAS, no filas del índice: una posición repetida dentro de la
-    // misma partida da varias filas y contarlas la duplicaría.
+    // It counts GAMES, not index rows: a position repeated within the same game
+    // gives several rows and counting them would double it.
     db.game.count({
       where: { AND: [...gameConditions, { positions: { some: { positionHash } } }] },
     }),

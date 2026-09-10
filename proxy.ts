@@ -8,24 +8,26 @@ import {
   SESSION_ENTRY_PATH,
 } from "@/constants/platform/auth.const";
 
-// Rechazo OPTIMISTA de la zona privada: aquí sólo se mira si existe la cookie
-// de sesión, nunca si es válida. Es a propósito — el proxy corre delante de la
-// app y no debe tocar la base de datos; su papel es ahorrar un render, no
-// autorizar. La comprobación real está en el DAL
-// (lib/platform-auth/current-user.ts), que es además quien cubre las server
-// actions: son peticiones POST a la ruta donde se declaran, así que un cambio
-// de matcher podría dejarlas fuera de este proxy sin que se note.
+// OPTIMISTIC rejection of the private area: here only whether the session cookie
+// exists is looked at, never whether it is valid. That is on purpose — the proxy
+// runs in front of the app and must not touch the database; its role is to save
+// a render, not to authorise. The real check is in the DAL
+// (lib/platform-auth/current-user.ts), which is also what covers the server
+// actions: they are POST requests to the route where they are declared, so a
+// change of matcher could leave them outside this proxy without anyone noticing.
 //
-// La cookie tampoco distingue roles, y no debe: un alumno con sesión que entre
-// a /profesor o /administracion pasa este filtro y lo expulsa el `require*` del DAL hacia
-// su dashboard. Correcto por diseño — aquí no se consulta la base de datos.
+// The cookie does not distinguish roles either, and it must not: a student with
+// a session who enters /profesor or /administracion passes this filter and is
+// thrown out by the DAL's `require*` towards their dashboard. Correct by design
+// — the database is not queried here.
 //
-// El salto contrario (con cookie → su panel) sólo se hace desde la portada, y
-// sin decidir aquí el destino: se manda a /entrar, un route handler que
-// consulta la sesión de verdad y reparte por rol, y que si la cookie está
-// caducada la borra y devuelve a la portada. Así `/` no lee cookies y puede
-// prerenderizarse, y una cookie vieja no deja a nadie sin portada ni provoca
-// un bucle con el login (que sigue comprobando la sesión real, no la cookie).
+// The opposite jump (with a cookie → their panel) is only made from the home
+// page, and without deciding the destination here: they are sent to /entrar, a
+// route handler that queries the real session and dispatches by role, and which,
+// if the cookie is expired, deletes it and returns them to the home page. That
+// way `/` does not read cookies and can be prerendered, and an old cookie leaves
+// nobody without a home page nor causes a loop with the login (which still
+// checks the real session, not the cookie).
 
 export function proxy(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
@@ -46,11 +48,11 @@ export function proxy(request: NextRequest): NextResponse {
   return NextResponse.redirect(loginUrl);
 }
 
-// Los prefijos deben ser literales: Next analiza el matcher en tiempo de build
-// y descarta cualquier valor calculado (por eso no se deriva de la constante;
-// `proxy.test.ts` vigila que las dos listas no se separen). La portada entra
-// sólo por el salto de quien trae cookie; sin ella pasa tal cual y se sirve la
-// versión prerenderizada.
+// The prefixes must be literal: Next analyses the matcher at build time and
+// discards any computed value (which is why it is not derived from the
+// constant; `proxy.test.ts` watches that the two lists do not drift apart). The
+// home page is included only for the jump of whoever brings a cookie; without
+// one it passes straight through and the prerendered version is served.
 export const config = {
   matcher: [
     "/",

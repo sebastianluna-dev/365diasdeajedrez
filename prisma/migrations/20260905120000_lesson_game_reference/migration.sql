@@ -1,20 +1,19 @@
--- La lección puede sacar su contenido de una partida de la colección del curso.
+-- The lesson can take its content from a game of the course collection.
 --
--- Hasta ahora `Lesson.pgn` era la fuente única. Sigue siéndolo para las
--- lecciones que no referencian nada —que son todas las de hoy, porque la
--- columna nace nula—, pero cuando hay `gameId` manda la partida: corregirla
--- arregla de una vez todas las lecciones que la usan.
+-- Until now `Lesson.pgn` was the single source. It still is for lessons that
+-- reference nothing — which is all of today's, because the column is born null
+-- — but when there is a `gameId` the game rules: fixing it fixes at once every
+-- lesson that uses it.
 --
--- Quién manda se decide en services/shared/lesson-pgn.ts y en ningún otro
--- sitio.
+-- Which one rules is decided in services/shared/lesson-pgn.ts and nowhere else.
 ALTER TABLE "Lesson" ADD COLUMN "gameId" TEXT;
 
--- SET NULL y no CASCADE: borrar una partida de la colección no puede llevarse
--- por delante una lección con su nombre, sus temas y el progreso de los
--- alumnos. Se queda sin contenido hasta que se le vincule otra.
+-- SET NULL and not CASCADE: deleting a game from the collection cannot take
+-- down a lesson with its name, its topics and the students' progress. It is
+-- left without content until another one is linked to it.
 ALTER TABLE "Lesson" ADD CONSTRAINT "Lesson_gameId_fkey"
   FOREIGN KEY ("gameId") REFERENCES "Game"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
--- Para «qué lecciones usan esta partida», que es lo que hay que avisar antes de
--- borrarla y lo que se enseña en la colección del curso.
+-- For "which lessons use this game", which is what has to be warned about
+-- before deleting it and what is shown in the course collection.
 CREATE INDEX "Lesson_gameId_idx" ON "Lesson"("gameId");

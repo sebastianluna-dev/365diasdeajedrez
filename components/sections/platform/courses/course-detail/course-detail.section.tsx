@@ -10,7 +10,7 @@ interface CourseDetailSectionProps {
   course: CourseDetail;
 }
 
-/** La portada ocupa una columna fija de 470px, y todo el ancho al apilarse. */
+/** The cover takes a fixed 470px column, and the full width when stacked. */
 const COVER_SIZES = "(max-width: 980px) 100vw, 470px";
 
 export function CourseDetailSection({ course }: CourseDetailSectionProps) {
@@ -62,11 +62,11 @@ export function CourseDetailSection({ course }: CourseDetailSectionProps) {
 
         </div>
 
-        {/* La portada y, colgando de ella, el filtro: se apoya en el pie de la
-            columna para caer a la altura de la barra de progreso de al lado. */}
+        {/* The cover and, hanging from it, the filter: it rests on the foot of the
+            column to land at the height of the progress bar next to it. */}
         <div className="course-detail__aside">
-          {/* Mismo destino que «Continuar curso», que ya lo nombra: fuera del
-              recorrido de teclado para no anunciar dos veces el mismo enlace. */}
+          {/* Same destination as "Continuar curso", which already names it: out of
+              the tab order so the same link is not announced twice. */}
           <Link href={course.continueHref} className="course-detail__cover" tabIndex={-1} aria-hidden="true">
             {course.cover && (
               <Image

@@ -1,25 +1,26 @@
-// Cuándo toca volver a repasar una lección.
+// When a lesson is due for review again.
 //
-// Escalera de intervalos que sube con cada repaso PERFECTO seguido y vuelve al
-// principio al fallar. Se eligió frente a un SM-2 porque es explicable al alumno
-// —«dos repasos perfectos y no vuelve hasta dentro de una semana»— y porque se
-// puede comprobar leyendo una tabla, no ajustando un factor opaco.
+// A ladder of intervals that goes up with each consecutive PERFECT review and
+// returns to the beginning on a failure. It was chosen over an SM-2 because it
+// is explainable to the student — "two perfect reviews and it does not come
+// back for a week" — and because it can be checked by reading a table, not by
+// tuning an opaque factor.
 //
-// Módulo puro: sin Prisma ni React, para poder ejercitarlo entero en tests.
+// Pure module: no Prisma, no React, so it can be exercised whole in tests.
 
 /**
- * Días hasta el siguiente repaso, por peldaño.
+ * Days until the next review, per rung.
  *
- * El primero es 0: un repaso fallado vuelve a estar pendiente HOY, que es lo que
- * espera quien acaba de equivocarse. A partir de ahí sube.
+ * The first is 0: a failed review is due again TODAY, which is what whoever has
+ * just got it wrong expects. From there it goes up.
  */
 export const REVIEW_INTERVALS_DAYS = [0, 1, 3, 7, 21, 60] as const;
 
-/** Último peldaño; una vez arriba, no se sigue subiendo. */
+/** Last rung; once at the top, it does not keep climbing. */
 export const MAX_MASTERY_LEVEL = REVIEW_INTERVALS_DAYS.length - 1;
 
 export interface ReviewState {
-  /** Repasos perfectos seguidos ANTES de este intento. */
+  /** Consecutive perfect reviews BEFORE this attempt. */
   consecutivePerfect: number;
   masteryLevel: number;
 }
@@ -34,12 +35,12 @@ export interface ReviewOutcome {
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /**
- * El estado de repaso tras un intento.
+ * The review state after an attempt.
  *
- * Sólo un intento PERFECTO sube el peldaño: acertar con pistas o tras un fallo
- * demuestra reconocimiento, no memoria, y es justo lo que el repaso mide. Un
- * fallo devuelve al principio en vez de bajar un escalón, porque olvidar una
- * línea no es «saberla un poco menos».
+ * Only a PERFECT attempt climbs a rung: getting it right with hints or after a
+ * failure shows recognition, not memory, and that is exactly what the review
+ * measures. A failure returns to the beginning instead of dropping one step,
+ * because forgetting a line is not "knowing it a little less".
  */
 export function applyReview(state: ReviewState, isPerfect: boolean, now: Date = new Date()): ReviewOutcome {
   const consecutivePerfect = isPerfect ? state.consecutivePerfect + 1 : 0;
@@ -54,18 +55,18 @@ export function applyReview(state: ReviewState, isPerfect: boolean, now: Date = 
   };
 }
 
-/** ¿Toca repasarla ya? Sin fecha programada, sí: nunca se ha entrenado. */
+/** Is it due yet? Without a scheduled date, yes: it has never been trained. */
 export function isDueForReview(nextReviewAt: Date | null | undefined, now: Date = new Date()): boolean {
   return !nextReviewAt || nextReviewAt.getTime() <= now.getTime();
 }
 
 /**
- * Precisión del intento, 0-100.
+ * Accuracy of the attempt, 0-100.
  *
- * Se mide sobre las jugadas ACERTADAS A LA PRIMERA, no sobre las completadas: la
- * sesión no avanza hasta acertar, así que contar las completadas daría siempre
- * el 100 %. Es una métrica distinta de «perfecto», que además exige no haber
- * usado pistas.
+ * It is measured over the moves got RIGHT FIRST TIME, not over the completed
+ * ones: the session does not advance until the move is right, so counting the
+ * completed ones would always give 100 %. It is a different metric from
+ * "perfect", which additionally requires no hints having been used.
  */
 export function accuracyPercent(correctMoves: number, requiredMoves: number): number {
   if (requiredMoves <= 0) return 0;

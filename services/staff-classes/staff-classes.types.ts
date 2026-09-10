@@ -51,7 +51,7 @@ export interface StaffClassDetail {
   recordingUrl?: string;
   summary?: string;
   participants: StaffClassParticipant[];
-  /** Los bloques tal y como los ve el alumno (mismo renderer). */
+  /** The blocks exactly as the student sees them (same renderer). */
   blocks: ClassBlockView[];
   transcript?: { statusLabel: string; statusCode: TranscriptStatusCode; text?: string };
 }

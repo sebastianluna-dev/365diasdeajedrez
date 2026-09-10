@@ -31,10 +31,10 @@
     min-width: 0;
   }
 
-  /* El tope es TAMBIÉN el suelo: la lista mide lo mismo vacía que con ochenta
-     jugadas, así que la barra de herramientas y lo que venga debajo no bailan
-     mientras se juega. Antes iba de 200 a 320 y todo lo de abajo saltaba con
-     cada jugada. Se desplaza por dentro. */
+  /* The cap is ALSO the floor: the list measures the same empty as with eighty
+     moves, so the toolbar and whatever comes below do not dance while playing.
+     It used to go from 200 to 320 and everything below jumped with every
+     move. It scrolls inside. */
   & .analysis-board__moves {
     height: var(--analysis-moves-height, 320px);
     overflow-y: auto;

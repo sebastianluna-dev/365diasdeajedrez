@@ -6,15 +6,15 @@ import { getSessionContext, type CurrentUser } from "@/lib/platform-auth/current
 import type { SessionUser } from "@/lib/platform-auth/session";
 import { platformRoutes } from "@/lib/platform-routes";
 
-// Roles de la plataforma. No hay tabla de roles ni columna en `User`: el rol es
-// la existencia de una fila (`Teacher`, `Staff`), el patrón que ya establecía
-// el modelo. Son ortogonales — un mismo usuario puede ser profesor Y staff — y
-// se leen de la MISMA consulta que resuelve la sesión (ver session.ts), así que
-// preguntar por el rol no cuesta una consulta extra.
+// Platform roles. There is no roles table and no column in `User`: the role is
+// the existence of a row (`Teacher`, `Staff`), the pattern the model already
+// established. They are orthogonal — the same user can be teacher AND staff —
+// and they are read from the SAME query that resolves the session (see
+// session.ts), so asking for the role does not cost an extra query.
 //
-// Nada de esto sustituye a la autorización de datos: `require*` decide si se
-// puede ENTRAR a un panel; qué filas se ven se sigue decidiendo dentro del
-// `where` de cada servicio y con los guards de guards.ts.
+// None of this replaces data authorisation: `require*` decides whether one can
+// ENTER a panel; which rows are seen is still decided inside each service's
+// `where` and with the guards of guards.ts.
 
 export interface TeacherContext {
   user: CurrentUser;
@@ -33,8 +33,8 @@ export interface SessionRoles {
 
 export const getTeacherContext = cache(async (): Promise<TeacherContext | null> => {
   const session = await getSessionContext();
-  // Un profesor desactivado conserva sus clases y su historial, pero deja de
-  // tener panel: es la baja sin borrar datos.
+  // A deactivated teacher keeps their classes and their history, but stops having
+  // a panel: it is the deactivation without deleting data.
   if (!session?.teacher || !session.teacher.isActive) return null;
 
   const { id, email, displayName, createdAt } = session;
@@ -50,9 +50,9 @@ export const getStaffContext = cache(async (): Promise<StaffContext | null> => {
 });
 
 /**
- * Regla de roles a partir de la sesión. La comparten `getSessionRoles` y el
- * route handler de /entrar, que no tiene render y por eso no pasa por los
- * `cache()` de este módulo.
+ * Role rule from the session. It is shared by `getSessionRoles` and the /entrar
+ * route handler, which has no render and therefore does not go through this
+ * module's `cache()`.
  */
 export function rolesOf(session: SessionUser | null): SessionRoles {
   return {
@@ -61,14 +61,15 @@ export function rolesOf(session: SessionUser | null): SessionRoles {
   };
 }
 
-/** Para la navegación: qué grupos de menú se pintan. Nunca autoriza nada. */
+/** For the navigation: which menu groups are rendered. It never authorises anything. */
 export const getSessionRoles = cache(async (): Promise<SessionRoles> => rolesOf(await getSessionContext()));
 
 /**
- * Frontera del panel del profesor: PRIMER await de toda página y de toda
- * server action de `/teacher`. Sin sesión manda al login (el proxy ya corta el
- * caso normal, pero una cookie caducada llega hasta aquí); con sesión pero sin
- * el rol, al dashboard: la cuenta es válida, sólo que ese panel no es suyo.
+ * Border of the teacher panel: FIRST await of every page and every server
+ * action of `/teacher`. Without a session it sends to the login (the proxy
+ * already cuts the normal case, but an expired cookie reaches here); with a
+ * session but without the role, to the dashboard: the account is valid, that
+ * panel just is not theirs.
  */
 export async function requireTeacher(): Promise<TeacherContext> {
   const context = await getTeacherContext();
@@ -78,7 +79,7 @@ export async function requireTeacher(): Promise<TeacherContext> {
   redirect(session ? platformRoutes.dashboard : LOGIN_PATH);
 }
 
-/** Frontera del panel de Administración. Mismas reglas que `requireTeacher`. */
+/** Border of the Administration panel. Same rules as `requireTeacher`. */
 export async function requireStaff(): Promise<StaffContext> {
   const context = await getStaffContext();
   if (context) return context;

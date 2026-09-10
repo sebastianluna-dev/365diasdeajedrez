@@ -1,6 +1,6 @@
 .game-aside {
-  /* Columna normal, que sube y baja con la página: pegada arriba se quedaba
-     flotando junto al tablero y robaba la vista a lo que se está mirando. */
+  /* A normal column that scrolls with the page: stuck to the top it was left
+     floating next to the board and stole the eye from what is being looked at. */
   display: block;
 
   & .game-aside__card {
@@ -10,7 +10,7 @@
     box-shadow: 0 1px 2px rgba(22, 17, 13, 0.05);
   }
 
-  /* El hueco entre tarjetas lo pone el margen, no un `gap`: ya no hay flex. */
+  /* The gap between cards is set by the margin, not by a `gap`: there is no flex any more. */
   & .game-aside__card + .game-aside__card {
     margin-top: 20px;
   }
@@ -26,8 +26,8 @@
     box-shadow: 0 1px 0 var(--platform-border);
   }
 
-  /* Cuántas partidas hay, junto al título: el listado puede quedar cortado por
-     el alto y el número no engaña. */
+  /* How many games there are, next to the title: the listing may be cut by the
+     height and the number does not lie. */
   & .game-aside__count {
     font-size: 14px;
     font-weight: 700;
@@ -56,9 +56,9 @@
     text-wrap: pretty;
   }
 
-  /* Dos por dos, con las rayas de la rejilla dibujadas por los propios huecos:
-     el fondo se ve por ellos y no hay que poner un borde por celda ni cuadrar
-     cuál lo lleva y cuál no. */
+  /* Two by two, with the grid lines drawn by the gaps themselves: the
+     background shows through them and there is no need to set a border per
+     cell nor to work out which one carries it and which does not. */
   & .game-aside__meta {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -105,8 +105,8 @@
   }
 
   & .game-aside__card-head .game-aside__label {
-    /* Empuja el botón de editar al extremo. Va aquí y no en el propio botón,
-       que también se usa en la barra del editor y allí no debe separarse. */
+    /* Pushes the edit button to the end. It goes here and not on the button
+       itself, which is also used in the editor bar and must not be set apart there. */
     margin-right: auto;
     padding-bottom: 0;
   }
@@ -149,8 +149,8 @@
     color: var(--platform-text);
   }
 
-  /* La actual, además del fondo, lleva un filo a la izquierda: en una lista de
-     capítulos que se parecen entre sí, el color solo no basta para encontrarla. */
+  /* The current one, besides the background, carries a rule on the left: in a
+     list of chapters that look alike, colour alone is not enough to find it. */
   & .game-aside__item.game-aside__item_state_active {
     background: var(--platform-accent-wash);
     box-shadow: inset 3px 0 0 var(--platform-accent);
@@ -197,8 +197,8 @@
     color: var(--platform-accent-ink);
   }
 
-  /* Al pie de la tarjeta, como una acción escrita y no como una caja: en la
-     columna compite con el listado, que es a lo que se viene. */
+  /* At the foot of the card, as a written action and not as a box: in the
+     column it competes with the listing, which is what one comes for. */
   & .game-aside__new {
     padding: 6px 8px;
     box-shadow: 0 -1px 0 var(--platform-border);
@@ -215,8 +215,8 @@
     font-size: 14.5px;
   }
 
-  /* El signo, sólo en esta tarjeta: el mismo botón se usa en la ficha del
-     estudio, donde es el botón naranja de siempre. */
+  /* The sign, only in this card: the same button is used on the study page,
+     where it is the usual orange button. */
   & .game-aside__new .platform-button::before {
     content: "+";
     font-size: 17px;
@@ -243,8 +243,8 @@
     letter-spacing: -0.01em;
   }
 
-  /* Sin ancho para dos columnas el aside pasa arriba, y sus tarjetas se
-     reparten el ancho en vez de apilarse a lo largo. */
+  /* Without width for two columns the aside moves to the top, and its cards
+     share the width instead of stacking lengthwise. */
   @media (max-width: 1180px) {
     display: flex;
     flex-wrap: wrap;

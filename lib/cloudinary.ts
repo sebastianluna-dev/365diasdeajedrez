@@ -2,50 +2,50 @@ import "server-only";
 import { v2 as cloudinary } from "cloudinary";
 import { IMAGE_ALLOWED_FORMATS } from "@/constants/platform/upload.const";
 
-// Cloudinary para la ZONA AUTENTICADA (portadas de curso, y lo que venga).
+// Cloudinary for the AUTHENTICATED AREA (course covers, and whatever comes).
 //
-// El sitio público sube por Payload, que trae su propio adaptador
-// (lib/payload/cloudinary-adapter.ts) y configura el SDK por su cuenta. Aquí no
-// se puede depender de que aquello se haya cargado —son dos entradas distintas
-// de la aplicación—, así que se configura otra vez y se deja dicho.
+// The public site uploads through Payload, which brings its own adapter
+// (lib/payload/cloudinary-adapter.ts) and configures the SDK on its own. Here
+// one cannot depend on that having been loaded — they are two different entry
+// points of the application — so it is configured again and said so.
 //
-// Las credenciales NO salen de aquí. Lo que viaja al navegador es una FIRMA:
-// una cadena caducable que autoriza una subida concreta a una carpeta concreta.
-// El archivo va del navegador a Cloudinary sin pasar por nuestro servidor, que
-// además esquiva el tope de tamaño del cuerpo de las server actions —1 MB por
-// defecto, menos que muchas fotos—.
+// The credentials do NOT leave here. What travels to the browser is a SIGNATURE:
+// an expiring string that authorises one specific upload to one specific folder.
+// The file goes from the browser to Cloudinary without passing through our
+// server, which besides dodges the body size cap of server actions — 1 MB by
+// default, less than many photos.
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const API_KEY = process.env.CLOUDINARY_API_KEY;
 const API_SECRET = process.env.CLOUDINARY_API_SECRET;
 
-/** Dónde aterrizan las imágenes de la plataforma, separadas de las del sitio. */
+/** Where the platform's images land, kept apart from the site's. */
 const PLATFORM_UPLOAD_FOLDER = "365-ajedrez/plataforma";
 
 export interface UploadSignature {
   cloudName: string;
   apiKey: string;
   folder: string;
-  /** Formatos que la firma admite; el navegador los reenvía tal cual. */
+  /** Formats the signature admits; the browser forwards them as is. */
   allowedFormats: string;
-  /** Segundos desde época; Cloudinary rechaza una firma vieja. */
+  /** Seconds since the epoch; Cloudinary rejects an old signature. */
   timestamp: number;
   signature: string;
 }
 
 /**
- * Firma una subida a la carpeta de la plataforma.
+ * Signs an upload to the platform's folder.
  *
- * Devuelve `null` si faltan credenciales, en vez de lanzar: sin ellas la
- * pantalla tiene que poder seguir enseñando el campo de URL a mano, no
- * romperse.
+ * Returns `null` when credentials are missing, instead of throwing: without
+ * them the screen has to be able to go on showing the manual URL field, not
+ * break.
  *
- * Se firma exactamente lo que se manda: `folder`, `timestamp` y
- * `allowed_formats`. Cloudinary comprueba que la firma cubra TODOS los
- * parámetros que le llegan (menos el archivo y la clave), así que el navegador
- * no puede añadir nada por su cuenta —ni cambiar de carpeta, ni colar un vídeo
- * o un PDF— sin invalidarla. El peso máximo no se puede firmar (la API no
- * tiene ese parámetro): ese techo es el del plan o el preset de la cuenta.
+ * Exactly what is sent is signed: `folder`, `timestamp` and `allowed_formats`.
+ * Cloudinary checks that the signature covers ALL the parameters that reach it
+ * (except the file and the key), so the browser cannot add anything on its own
+ * — neither change folder nor sneak in a video or a PDF — without invalidating
+ * it. The maximum weight cannot be signed (the API has no such parameter): that
+ * ceiling is the account's plan or preset.
  */
 export function signPlatformUpload(): UploadSignature | null {
   if (!CLOUD_NAME || !API_KEY || !API_SECRET) return null;

@@ -6,9 +6,9 @@ import { teacherRoutes } from "@/lib/platform-routes";
 import { mapTeacherClassBrief, teacherClassBriefInclude } from "./teacher.mapper";
 import type { TeacherDashboard, TeacherPendingClass, TeacherProfile } from "./teacher.types";
 
-// Servicios del panel del profesor. Identidad y rol SIEMPRE por requireTeacher()
-// (nunca un id que venga del cliente) y la autorización va dentro del `where`:
-// no existe «leer y luego comprobar».
+// Services of the teacher panel. Identity and role ALWAYS through
+// requireTeacher() (never an id coming from the client) and the authorisation
+// goes inside the `where`: there is no "read and then check".
 
 const UPCOMING_WINDOW_DAYS = 7;
 const PENDING_LIMIT = 8;
@@ -38,8 +38,8 @@ export async function getTeacherDashboard(): Promise<TeacherDashboard> {
       orderBy: { scheduledAt: "asc" },
     }),
     db.teacherStudent.count({ where: { teacherId: teacher.id, endedAt: null } }),
-    // «Pendientes de documentar»: clases ya terminadas sin asistencia marcada o
-    // sin resumen. Es la lista de trabajo real del profesor tras dar la clase.
+    // "Pending documentation": classes already finished without attendance marked or
+    // without a summary. It is the teacher's real work list after giving the class.
     db.class.findMany({
       where: {
         teacherId: teacher.id,

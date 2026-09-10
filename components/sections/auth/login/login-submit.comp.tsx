@@ -3,9 +3,9 @@
 import { useFormStatus } from "react-dom";
 
 /**
- * Botón de envío con estado de espera. Es lo único que necesita JavaScript en
- * el login: el formulario es una server action plana, así que sin JS el botón
- * sigue enviando igual, sólo que sin el texto de «Entrando…».
+ * Submit button with a pending state. It is the only thing that needs
+ * JavaScript in the login: the form is a plain server action, so without JS
+ * the button still submits, only without the "Entrando…" text.
  */
 export function LoginSubmit() {
   const { pending } = useFormStatus();

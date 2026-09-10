@@ -43,7 +43,7 @@ export interface StaffTeacherDetail {
   classes: StaffTeacherClass[];
 }
 
-/** Alumno candidato a ser asignado, con su profesor actual si lo tiene. */
+/** Student who is a candidate to be assigned, with their current teacher if they have one. */
 export interface AssignableStudent {
   id: string;
   displayName: string;
@@ -51,7 +51,7 @@ export interface AssignableStudent {
   currentTeacherName?: string;
 }
 
-/** Cuenta sin ficha de profesor: candidata a convertirse en una. */
+/** Account without a teacher record: a candidate to become one. */
 export interface LinkableUser {
   id: string;
   displayName: string;

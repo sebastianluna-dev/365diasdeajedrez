@@ -40,106 +40,105 @@ import {
 import "./game-viewer.comp.css";
 
 interface GameViewerProps {
-  /** PGN completo: movimientos, variantes, comentarios y anotaciones. */
+  /** Full PGN: moves, variations, comments and annotations. */
   pgn: string;
   orientation?: "white" | "black";
-  /** Ruta punteada donde abrir el visor (TrainingExercise.path / ClassBlock.movePath). */
+  /** Dotted path to open the viewer at (TrainingExercise.path / ClassBlock.movePath). */
   initialPath?: string;
   title?: string;
-  /** Segunda línea de la cabecera: capítulo, evento, lo que sitúe la partida. */
+  /** Second line of the header: chapter, event, whatever places the game. */
   subtitle?: string;
-  /** Texto de la partida o la lección, bajo el subtítulo. */
+  /** Text of the game or the lesson, under the subtitle. */
   description?: string;
-  /** Distintivo a la derecha del título («Prioridad»). */
+  /** Badge to the right of the title ("Prioridad"). */
   badge?: string;
   /**
-   * Botones extra de la cabecera del panel (abrir en el libro, guardar…). Van
-   * aquí y no dentro porque dependen de cada pantalla; el visor sólo reserva
-   * el sitio que el diseño les da.
+   * Extra buttons in the panel header (open in the book, save…). They go here
+   * and not inside because they depend on each screen; the viewer only
+   * reserves the place the design gives them.
    */
   headerActions?: ReactNode;
-  /** Botón que cierra la barra inferior, alineado a la derecha (las notas). */
+  /** Button that closes the bottom bar, right-aligned (the notes). */
   footerActions?: ReactNode;
-  /** Acción de la barra inferior que trabaja sobre la posición actual. */
+  /** Bottom-bar action that works on the current position. */
   positionActions?: (fen: string) => ReactNode;
-  /** Botón «Saltar» bajo el tablero. Sin destino no se pinta. */
+  /** "Skip" button under the board. Without a destination it is not rendered. */
   skip?: ReactNode;
   /**
-   * Tiras de jugador alrededor del tablero. Se dan por bando, no por posición,
-   * porque el visor puede girarse: quien está arriba depende de la orientación
-   * y sólo el visor la conoce.
+   * Player strips around the board. Given by colour, not by position, because
+   * the viewer can be flipped: who is on top depends on the orientation and
+   * only the viewer knows it.
    */
   players?: { white: ReactNode; black: ReactNode };
   /**
-   * `table` (por defecto): rejilla nº · blancas · negras, como Lichess.
-   * `flow`: el texto corrido de siempre, que es como se leen las lecciones —
-   * ahí la partida se sigue leyendo, no consultando jugada a jugada.
+   * `table` (default): a no. · white · black grid, like Lichess.
+   * `flow`: the usual running text, which is how lessons are read —
+   * there the game is still read, not consulted move by move.
    */
   moveList?: "table" | "flow";
   /**
-   * Dónde van los cuatro botones de navegación. Bajo el tablero en las
-   * lecciones; dentro del panel de jugadas en Mis estudios, que es donde se
-   * recorre la partida.
+   * Where the four navigation buttons go. Under the board in lessons; inside
+   * the moves panel in Mis estudios, which is where the game is traversed.
    */
   controls?: "board" | "panel";
-  /** Contenido bajo el tablero: comentario, calidad y compartir. */
+  /** Content under the board: comment, quality and share. */
   boardFooter?: ReactNode;
   /**
-   * Ofrece el módulo de análisis. Apagado por defecto: son 7 MB de WebAssembly
-   * que sólo se descargan cuando alguien lo enciende, y ni eso hasta entonces.
+   * Offers the analysis engine. Off by default: it is 7 MB of WebAssembly that
+   * are only downloaded when someone switches it on, and not even that until then.
    */
   engine?: boolean;
   /**
-   * Se avisa con la ruta punteada del nodo actual cada vez que cambia. Existe
-   * para que el editor de bloques de clase pueda capturar «esta posición» sin
-   * un segundo visor; el visor sigue siendo de sólo lectura y quien no pase
-   * esta prop no nota ninguna diferencia.
+   * Reports the dotted path of the current node every time it changes. It
+   * exists so the class block editor can capture "this position" without a
+   * second viewer; the viewer stays read-only and whoever does not pass this
+   * prop notices no difference.
    */
   onPathChange?: (path: string) => void;
   /**
-   * Convierte el visor en editor: se juega sobre el tablero para añadir
-   * jugadas y variantes, se dibujan flechas y el clic derecho sobre una jugada
-   * abre su menú (promover, comentar, anotar, copiar y borrar).
+   * Turns the viewer into an editor: moves are played on the board to add
+   * moves and variations, arrows are drawn, and right-clicking a move opens
+   * its menu (promote, comment, annotate, copy and delete).
    *
-   * No hay pantalla de edición aparte: la partida se anota donde se lee. Sin
-   * `onPgnChange` esto no hace nada, porque el visor no guarda: informa del PGN
-   * nuevo y quien lo monta decide qué hacer con él.
+   * There is no separate editing screen: the game is annotated where it is
+   * read. Without `onPgnChange` this does nothing, because the viewer does
+   * not save: it reports the new PGN and whoever mounts it decides what to do with it.
    */
   editable?: boolean;
   onPgnChange?: (pgn: string) => void;
   /**
-   * «Comentar» y «Anotar» del menú de la jugada. El visor NO abre nada: sólo
-   * selecciona la jugada y avisa, porque el sitio donde se escribe está fuera
-   * de él —el panel bajo el tablero— y quien lo monta es quien lo tiene.
-   * Sin esta prop, esas dos opciones no se pintan en el menú.
+   * "Comment" and "Annotate" from the move menu. The viewer opens NOTHING: it
+   * only selects the move and notifies, because the place where one writes
+   * is outside it — the panel under the board — and whoever mounts it owns that.
+   * Without this prop, those two options are not rendered in the menu.
    */
   onRequestEdit?: (mode: "comment" | "annotate", path: string) => void;
   /**
-   * Qué jugada enseñar, cuando quien monta el visor quiere decidirlo —la
-   * gráfica de la evaluación lleva el tablero a la jugada que se señala—.
+   * Which move to show, when whoever mounts the viewer wants to decide — the
+   * evaluation chart takes the board to the move being pointed at.
    *
-   * Sin esta prop el visor sigue decidiéndolo él y no cambia nada; con ella
-   * manda quien la pasa, que tiene que devolver lo que llegue por
-   * `onPathChange` o el tablero no se moverá.
+   * Without this prop the viewer keeps deciding by itself and nothing
+   * changes; with it, whoever passes it is in charge and has to feed back
+   * whatever arrives through `onPathChange` or the board will not move.
    */
   path?: string;
 }
 
-/** Lo que hay que mantener pulsado antes de que la partida empiece a correr. */
+/** How long the button has to be held before the game starts running. */
 const HOLD_DELAY_MS = 400;
 
-/** Cada cuánto avanza una jugada mientras se mantenga pulsado. */
+/** How often it advances one move while held. */
 const HOLD_STEP_MS = 130;
 
-/** Piezas sobre el tablero, para distinguir una captura de una jugada normal. */
+/** Pieces on the board, to tell a capture from an ordinary move. */
 function pieceCount(fen: string): number {
   return (fen.split(" ")[0] ?? "").replace(/[^a-zA-Z]/g, "").length;
 }
 
 /**
- * EL visor de partidas de la plataforma: lecciones, partidas de Mis estudios y
- * bloques de clase usan este mismo componente (tablero + árbol de jugadas con
- * variantes y comentarios + navegación). No crear visores paralelos.
+ * THE platform's game viewer: lessons, Mis estudios games and class blocks
+ * use this same component (board + move tree with variations and comments +
+ * navigation). Do not create parallel viewers.
  */
 export function GameViewer({
   pgn,
@@ -170,12 +169,13 @@ export function GameViewer({
   );
 
   /**
-   * La jugada elegida, o el antepasado suyo que siga existiendo.
+   * The chosen move, or the closest ancestor of it that still exists.
    *
-   * El PGN puede cambiar bajo los pies —se deshace un cambio, se borra una
-   * rama, lo edita el panel de abajo— y dejar la ruta señalando a una jugada
-   * que ya no está. Se resuelve al pintar y no con un efecto que corrija el
-   * estado: así no hay un fotograma con el tablero en la posición inicial.
+   * The PGN can change underfoot — a change is undone, a branch is deleted,
+   * the panel below edits it — and leave the path pointing at a move that is
+   * no longer there. It is resolved at render time and not with an effect
+   * that corrects the state: that way there is no frame with the board at the
+   * initial position.
    */
   const currentPath = useMemo(() => {
     const wanted = path ?? selectedPath;
@@ -190,14 +190,14 @@ export function GameViewer({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [menu, setMenu] = useState<MoveContextMenuTarget | null>(null);
   const [optionsOpen, setOptionsOpen] = useState(false);
-  // Si el módulo tiene una línea desplegada. Vive aquí porque lo que decide es
-  // cuánto alto le cede la notación, y de eso responde la tarjeta.
+  // Whether the engine has an expanded line. It lives here because what it
+  // decides is how much height the notation gives up, and the card answers for that.
   const [engineExpanded, setEngineExpanded] = useState(false);
   const optionsRef = useRef<HTMLDivElement>(null);
 
-  // Almacén externo: la primera pintada usa los valores por defecto (que es lo
-  // único que el servidor puede saber) y React se pone al día con lo guardado
-  // en cuanto hidrata, sin un efecto que llame a setState.
+  // External store: the first paint uses the defaults (the only thing the
+  // server can know) and React catches up with what is stored as soon as it
+  // hydrates, without an effect calling setState.
   const preferences = useSyncExternalStore<ViewerPreferences>(
     subscribeToViewerPreferences,
     getViewerPreferences,
@@ -209,8 +209,8 @@ export function GameViewer({
   const isInViewportRef = useRef(false);
   const hasBeenClickedRef = useRef(false);
 
-  // Por referencia: así avisar del cambio de ruta no depende de que quien
-  // consume el visor memorice el callback.
+  // By reference: that way notifying the path change does not depend on the
+  // consumer of the viewer memoising the callback.
   const onPathChangeRef = useRef(onPathChange);
   useEffect(() => {
     onPathChangeRef.current = onPathChange;
@@ -220,11 +220,11 @@ export function GameViewer({
   }, [currentPath]);
 
   /**
-   * Ir a una jugada: se apunta dentro y se avisa fuera.
+   * Go to a move: point at it inside and notify outside.
    *
-   * Las dos cosas, y no una: sin el estado interno el visor no funcionaría solo,
-   * y sin el aviso, en modo controlado no se movería nunca —quien manda tiene
-   * que enterarse para devolver la ruta nueva—.
+   * Both things, not one: without the internal state the viewer would not
+   * work on its own, and without the notification it would never move in
+   * controlled mode — whoever is in charge has to find out to feed back the new path.
    */
   const setCurrentPath = useCallback((next: string) => {
     setSelectedPath(next);
@@ -232,22 +232,22 @@ export function GameViewer({
   }, []);
 
   /**
-   * La jugada de ahora, para quien la necesite MÁS TARDE.
+   * The current move, for whoever needs it LATER.
    *
-   * Los botones de navegación se leen de aquí y no de una dependencia: si se
-   * recrearan con cada jugada, mantener pulsado «siguiente» repetiría siempre el
-   * mismo paso —el que se capturó al apretar—.
+   * The navigation buttons read it from here and not from a dependency: if
+   * they were recreated with every move, holding "next" would always repeat
+   * the same step — the one captured when pressing.
    */
   const currentPathRef = useRef(currentPath);
   useEffect(() => {
     currentPathRef.current = currentPath;
   });
 
-  // Editar es cosa de dos: el permiso y alguien a quien entregarle el PGN. Sin
-  // las dos cosas el visor es exactamente el de antes.
+  // Editing takes two: the permission and someone to hand the PGN to. Without
+  // both the viewer is exactly the one it was before.
   const isEditing = editable && Boolean(onPgnChange);
-  // Por referencia, como el aviso de ruta: publicar el PGN no depende de que
-  // quien consume el visor memorice su callback.
+  // By reference, like the path notification: publishing the PGN does not
+  // depend on the consumer of the viewer memoising its callback.
   const onPgnChangeRef = useRef(onPgnChange);
   useEffect(() => {
     onPgnChangeRef.current = onPgnChange;
@@ -255,9 +255,9 @@ export function GameViewer({
   const publishPgn = useCallback((next: string) => onPgnChangeRef.current?.(next), []);
   const editing = usePgnEditing({ pgn, onPgnChange: publishPgn, onPathChange: setCurrentPath });
 
-  // Mantener pulsado «atrás» o «adelante» sigue recorriendo la partida: una
-  // espera antes de arrancar, para no disparar la repetición en un clic normal,
-  // y a partir de ahí una jugada cada poco.
+  // Holding "back" or "forward" keeps traversing the game: a wait before
+  // starting, so an ordinary click does not trigger the repeat, and from
+  // then on one move every so often.
   const repeatRef = useRef<{ delay?: number; step?: number }>({});
   const stopRepeat = useCallback(() => {
     window.clearTimeout(repeatRef.current.delay);
@@ -290,8 +290,8 @@ export function GameViewer({
     setCurrentPath(endPathOf(tree, currentPathRef.current));
   }, [tree, setCurrentPath]);
 
-  // Las flechas sólo actúan cuando el visor está a la vista o fue clickeado,
-  // igual que ChessBoard: puede haber varios visores en una misma página.
+  // The arrow keys only act when the viewer is in view or was clicked, like
+  // ChessBoard: there may be several viewers on the same page.
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -308,8 +308,8 @@ export function GameViewer({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (!isInViewportRef.current && !hasBeenClickedRef.current) return;
-      // Mientras se escribe un comentario las flechas mueven el cursor, no la
-      // partida.
+      // While a comment is being typed the arrow keys move the cursor, not the
+      // game.
       const target = event.target as HTMLElement | null;
       if (target && (target.tagName === "TEXTAREA" || target.tagName === "INPUT" || target.isContentEditable)) return;
       if (event.key === "ArrowRight") {
@@ -324,7 +324,7 @@ export function GameViewer({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goToNext, goToPrevious]);
 
-  // El menú de opciones se cierra como cualquier otro: pulsando fuera o con
+  // The options menu closes like any other: clicking outside or with
   // Escape.
   useEffect(() => {
     if (!optionsOpen) return;
@@ -343,8 +343,8 @@ export function GameViewer({
     };
   }, [optionsOpen]);
 
-  // La pantalla completa puede salirse por Escape sin pasar por el botón, así
-  // que el estado se lee del documento y no de quien pulsó.
+  // Full screen can be left with Escape without going through the button, so
+  // the state is read from the document and not from who pressed.
   useEffect(() => {
     const sync = () => setIsFullscreen(document.fullscreenElement === rootRef.current);
     document.addEventListener("fullscreenchange", sync);
@@ -359,13 +359,13 @@ export function GameViewer({
   const node = tree ? nodeAtPath(tree, currentPath) : null;
   const fen = node?.fen ?? tree?.initialFen ?? "";
 
-  // El motor vive aquí y no en su panel porque su evaluación la usan DOS sitios
-  // muy separados de la pantalla: la barra pegada al tablero y la línea de la
-  // notación. Con `engine` apagado el hook no crea worker ni descarga nada.
+  // The engine lives here and not in its panel because its evaluation is used
+  // by TWO places far apart on the screen: the bar next to the board and the
+  // notation line. With `engine` off the hook creates no worker and downloads nothing.
   const engineState = useEngine(fen, engine && engineOn);
 
-  // Suena al cambiar de posición, nunca al montar: quien abre una lección no
-  // espera un golpe de salida.
+  // It sounds on position change, never on mount: whoever opens a lesson
+  // does not expect a starting gun.
   const previousFenRef = useRef<string | null>(null);
   useEffect(() => {
     const previous = previousFenRef.current;
@@ -383,7 +383,7 @@ export function GameViewer({
   const atStart = currentPath.length === 0;
   const atEnd = nextPathOf(tree, currentPath) === undefined;
 
-  /** La jugada como se lee en la lista («1… f5»): titula su menú. */
+  /** The move as read in the list ("1… f5"): titles its menu. */
   const labelOf = (path: string): string => {
     const target = nodeAtPath(tree, path);
     return target ? numberedMoveLabel(target.ply, target.san) : "esta jugada";
@@ -396,10 +396,10 @@ export function GameViewer({
       x: event.clientX,
       y: event.clientY,
       label: labelOf(path),
-      // Los segmentos de la ruta SON los índices de hijo: todo ceros significa
-      // que la jugada ya está en la línea principal.
+      // The path segments ARE the child indexes: all zeros means the move is
+      // already on the main line.
       canPromote: !path.split(".").every((segment) => segment === "0"),
-      // Y el último segmento, su puesto entre las hermanas.
+      // And the last segment, its place among its siblings.
       canPromoteOneStep: path.split(".").at(-1) !== "0",
     });
   };
@@ -439,8 +439,8 @@ export function GameViewer({
         title="Jugada siguiente"
         onClick={goToNext}
         disabled={atEnd}
-        // Mantener pulsado recorre la partida; parar al soltar, al salir del
-        // botón o si el navegador cancela el gesto.
+        // Holding traverses the game; stop on release, on leaving the button
+        // or if the browser cancels the gesture.
         onPointerDown={() => startRepeat(goToNext)}
         onPointerUp={stopRepeat}
         onPointerLeave={stopRepeat}
@@ -458,8 +458,8 @@ export function GameViewer({
       >
         <JumpEndIcon className="game-viewer__nav-icon" />
       </button>
-      {/* Girar el tablero es una acción de la partida, no un ajuste del visor:
-          va con los botones con los que se la recorre. */}
+      {/* Flipping the board is an action on the game, not a viewer setting:
+          it goes with the buttons the game is traversed with. */}
       <button
         type="button"
         title="Girar el tablero"
@@ -469,9 +469,9 @@ export function GameViewer({
         <BoardFlipIcon className="game-viewer__nav-icon" />
       </button>
 
-      {/* Sonido y pantalla completa son ajustes del visor, no de la partida: se
-          pulsan una vez y estorban el resto del rato, así que van plegados en
-          este menú, al final de la misma botonera. */}
+      {/* Sound and full screen are viewer settings, not game ones: they are
+          pressed once and get in the way the rest of the time, so they are folded
+          into this menu, at the end of the same button bar. */}
       <div className="game-viewer__options" ref={optionsRef}>
         <button
           type="button"
@@ -488,8 +488,8 @@ export function GameViewer({
           <div className="game-viewer__options-menu" role="menu">
             <button
               type="button"
-              // `menuitemcheckbox` y no `menuitem`: es un interruptor y el
-              // lector de pantalla tiene que decir si está puesto.
+              // `menuitemcheckbox` and not `menuitem`: it is a toggle and the
+              // screen reader has to say whether it is on.
               role="menuitemcheckbox"
               aria-checked={preferences.sound}
               onClick={() => {
@@ -533,8 +533,8 @@ export function GameViewer({
       ref={rootRef}
       onClick={() => (hasBeenClickedRef.current = true)}
     >
-      {/* Un PGN con jugadas ilegales se mostraría recortado sin avisar; en
-          desarrollo se listan los problemas para que el autor los corrija. */}
+      {/* A PGN with illegal moves would show truncated without warning; in
+          development the problems are listed so the author can fix them. */}
       {process.env.NODE_ENV !== "production" && tree.warnings.length > 0 && (
         <ul className="game-viewer__warnings">
           {tree.warnings.map((warning) => (
@@ -570,10 +570,10 @@ export function GameViewer({
             />
             </div>
 
-            {/* La barra va entre el tablero y la notación, y se pinta SIEMPRE
-                que el visor ofrezca módulo: encenderlo o apagarlo no puede
-                mover de sitio ni el tablero ni el panel, así que su hueco está
-                reservado desde el principio y lo único que cambia es si se ve. */}
+            {/* The bar goes between the board and the notation, and is painted
+                WHENEVER the viewer offers an engine: switching it on or off cannot
+                move either the board or the panel, so its slot is reserved from the
+                start and the only thing that changes is whether it is visible. */}
             {engine && (
               <div
                 className={`game-viewer__evaluation${engineOn ? "" : " game-viewer__evaluation_state_off"}`}
@@ -582,8 +582,8 @@ export function GameViewer({
                 <span
                   className="game-viewer__evaluation-fill"
                   style={{
-                    // La barra se llena desde ABAJO con la ventaja de las
-                    // blancas, que es como se lee en cualquier tablero.
+                    // The bar fills from the BOTTOM with White's advantage, which
+                    // is how it is read on any board.
                     height: `${(engineState.info === null ? 0.5 : evaluationBarFill(engineState.info.score)) * 100}%`,
                   }}
                 />
@@ -600,9 +600,9 @@ export function GameViewer({
           {controls === "board" && nav}
         </div>
 
-        {/* A pantalla completa el pie no se pinta: ahí se lee la partida, y
-            comentar y anotar se hacen en la pantalla normal —por eso el menú de
-            la jugada tampoco ofrece esas dos opciones—. */}
+        {/* In full screen the footer is not rendered: there the game is read, and
+            commenting and annotating are done on the normal screen — that is why
+            the move menu does not offer those two options either. */}
         {boardFooter && (
           <div
             className={`game-viewer__board-footer${isFullscreen ? " game-viewer__board-footer_state_hidden" : ""}`}
@@ -611,8 +611,8 @@ export function GameViewer({
           </div>
         )}
 
-        {/* La columna derecha entera: la tarjeta de la notación y, por debajo y
-            ya fuera de ella, la botonera con la que se recorre la partida. */}
+        {/* The whole right column: the notation card and, below it and already
+            outside it, the button bar the game is traversed with. */}
         <div className="game-viewer__panel-column">
           <div
             className={`game-viewer__panel${engine && engineOn ? " game-viewer__panel_engine_on" : ""}${
@@ -663,8 +663,8 @@ export function GameViewer({
               )}
             </div>
 
-            {/* El pie de la tarjeta sólo existe si la pantalla que monta el
-                visor le da algo que poner: vacío era una franja blanca. */}
+            {/* The card's footer only exists when the screen mounting the viewer
+                gives it something to show: empty, it was a white strip. */}
             {(positionActions || footerActions) && (
               <div className="game-viewer__toolbar">
                 {positionActions?.(fen)}

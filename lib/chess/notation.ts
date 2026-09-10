@@ -7,17 +7,17 @@ const toSpanish = (san: string) =>
   san.indexOf("O-O") === 0 ? san : (SPANISH_LETTER[san[0]] || "") + (SPANISH_LETTER[san[0]] ? san.slice(1) : san);
 
 /**
- * Traduce la inicial de pieza de un SAN al castellano (N→C, B→A, R→T, Q→D,
- * K→R), conservando el resto intacto. Los enroques no se traducen. También
- * traduce la pieza de coronación (`=Q` → `=D`).
+ * Translates the piece initial of a SAN into Spanish (N→C, B→A, R→T, Q→D,
+ * K→R), leaving the rest intact. Castling is not translated. It also translates
+ * the promotion piece (`=Q` → `=D`).
  */
 export function sanToSpanish(san: string): string {
   const translated = toSpanish(san);
   return translated.replace(/=([NBRQK])/, (_, piece: string) => `=${SPANISH_LETTER[piece] ?? piece}`);
 }
 /**
- * La jugada con su número, como se nombra al hablar de ella: «12. Cf3»,
- * «12… Axf3». El ply es 1-based, así que los impares son de las blancas.
+ * The move with its number, as it is named when talking about it: "12. Cf3",
+ * "12… Axf3". The ply is 1-based, so odd ones are White's.
  */
 export function numberedMoveLabel(ply: number, san: string): string {
   return `${Math.ceil(ply / 2)}${ply % 2 === 1 ? "." : "…"} ${sanToSpanish(san)}`;

@@ -1,31 +1,31 @@
 .game-viewer {
-  /* Lo que ocupan las líneas del módulo. Está aquí, y no en su hoja, porque lo
-     leen DOS reglas que tienen que cuadrar entre sí: el alto fijo del bloque y
-     lo que la notación le cede al encenderlo.
+  /* What the engine's lines take up. It is here, and not in its own sheet,
+     because TWO rules that have to agree with each other read it: the block's
+     fixed height and what the notation gives up when it is switched on.
 
-     Son las tres líneas (26px cada una) más el relleno del bloque, con holgura
-     de sobra: justo a la medida, el corte se comía el relleno de abajo y la
-     última línea quedaba pegada a la notación. */
+     It is the three lines (26px each) plus the block's padding, with plenty of
+     slack: at the exact size, the clamp ate the bottom padding and the last
+     line was pressed against the notation. */
   --viewer-engine-body: 102px;
-  /* Lo que crece al desplegar una línea: un renglón más. Sólo se despliega una
-     a la vez, así que el crecimiento es siempre este y la notación puede
-     cederlo sin medir nada. */
+  /* What grows when a line is expanded: one more row. Only one is expanded at
+     a time, so the growth is always this and the notation can give it up
+     without measuring anything. */
   --viewer-engine-extra: 26px;
 
   & .game-viewer__layout {
     display: grid;
-    /* El tablero manda: crece hasta 600px y ahí se planta, para que el panel
-       de jugadas se quede con el resto en vez de estirarse a lo tonto. Eran 632
-       cuando el tablero iba en tarjeta: al quitarle el relleno de 16px por lado
-       el tablero mide lo mismo y la notación gana esos 32. */
+    /* The board rules: it grows up to 600px and stops there, so the moves panel
+       keeps the rest instead of stretching pointlessly. It was 632 when the
+       board sat in a card: with its 16px of padding per side removed the board
+       measures the same and the notation gains those 32. */
     grid-template-columns: minmax(0, 600px) minmax(0, 1fr);
     grid-template-rows: auto auto;
     gap: 22px;
     align-items: stretch;
   }
 
-  /* El tablero va suelto sobre el fondo, sin tarjeta: la caja blanca no
-     aportaba nada y sus 16px de relleno a cada lado se los queda la notación. */
+  /* The board sits loose on the background, without a card: the white box
+     added nothing and its 16px of padding on each side go to the notation. */
   & .game-viewer__board-card {
     grid-column: 1;
     grid-row: 1;
@@ -35,9 +35,9 @@
     min-width: 0;
   }
 
-  /* El tablero, con la barra de evaluación colgada de su borde derecho. La
-     barra va FUERA del flujo: el ancho entero de la columna es del tablero, y
-     ella se mete en el hueco que la rejilla deja hasta la notación. */
+  /* The board, with the evaluation bar hanging from its right edge. The bar
+     is OUT of the flow: the column's whole width belongs to the board, and the
+     bar fits into the gap the grid leaves before the notation. */
   & .game-viewer__board-row {
     position: relative;
     display: flex;
@@ -50,10 +50,10 @@
     min-width: 0;
   }
 
-  /* La barra se llena desde abajo con la ventaja de las blancas: el fondo es el
-     bando negro y el relleno el blanco, igual que el tablero. Ocupa el hueco
-     entre el tablero y la notación —22px de rejilla, 14 de barra y 4 a cada
-     lado— y mide exactamente lo que el tablero. */
+  /* The bar fills from the bottom with White's advantage: the background is
+     the black side and the fill the white one, like the board. It takes up the
+     gap between the board and the notation — 22px of grid, 14 of bar and 4 on
+     each side — and measures exactly what the board does. */
   & .game-viewer__evaluation {
     position: absolute;
     top: 0;
@@ -68,8 +68,8 @@
     justify-content: flex-end;
   }
 
-  /* Con el módulo apagado la barra sólo se oculta; encenderlo no mueve nada,
-     porque fuera del flujo no le quita el sitio a nadie. */
+  /* With the engine off the bar is only hidden; switching it on moves nothing,
+     because out of the flow it takes nobody's place. */
   & .game-viewer__evaluation.game-viewer__evaluation_state_off {
     visibility: hidden;
   }
@@ -88,21 +88,21 @@
   }
 
   & .game-viewer__board {
-    /* Sin redondeo: las casillas de los bordes se ven enteras. */
+    /* No rounding: the edge squares are seen whole. */
     overflow: hidden;
   }
 
-  /* Tiras de jugador pegadas al tablero, sin una raya de fondo entre medias:
-     el margen negativo cancela el `gap` de la tarjeta —no lo reduce— para que
-     tira y tablero se toquen. El redondeo sólo existe por el lado de fuera. */
+  /* Player strips pressed against the board, without a stripe of background
+     in between: the negative margin cancels the card's `gap` — it does not
+     reduce it — so strip and board touch. The rounding only exists on the outer side. */
   & .game-viewer__player {
     display: flex;
     align-items: center;
     gap: 11px;
     padding: 9px 12px;
     background: var(--platform-surface);
-    /* Lo que hay dentro (nombre, Elo, título, federación) va en `em` sobre
-       esto, así que agrandar la tira los agranda a todos a la vez. */
+    /* What is inside (name, Elo, title, federation) goes in `em` relative to
+       this, so enlarging the strip enlarges all of them at once. */
     font-size: var(--viewer-player-font-size, 15px);
   }
 
@@ -116,8 +116,8 @@
     margin-top: -14px;
   }
 
-  /* Los botones se tocan y se reparten el ancho de la columna: son una sola
-     botonera, y el hueco entre ellos los leía como acciones sueltas. */
+  /* The buttons touch and share the column's width: they are a single button
+     bar, and the gap between them read them as loose actions. */
   & .game-viewer__nav {
     display: flex;
     align-items: center;
@@ -137,22 +137,22 @@
     cursor: pointer;
   }
 
-  /* Sin filo: lo que marca el botón es el naranja claro de la casa, y sólo al
-     pasar por encima. Todos igual, también el destacado. */
+  /* No outline: what marks the button is the house's light orange, and only
+     on hover. All the same, the highlighted one too. */
   & .game-viewer__nav-button:hover:not(:disabled) {
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
   }
 
-  /* Al principio de la partida no se puede ir hacia atrás, y al final hacia
-     delante: el botón lo dice en vez de no hacer nada al pulsarlo. */
+  /* At the start of the game one cannot go back, and at the end not forward:
+     the button says so instead of doing nothing when pressed. */
   & .game-viewer__nav-button:disabled {
     color: var(--platform-text-faint);
     cursor: default;
   }
 
-  /* «Siguiente» es lo que se pulsa el 90 % de las veces: va en el color del
-     texto para encontrarlo sin leer los iconos. */
+  /* "Next" is what gets pressed 90 % of the time: it goes in the text colour
+     so it can be found without reading the icons. */
   & .game-viewer__nav-button.game-viewer__nav-button_emphasis_strong {
     color: var(--platform-text);
   }
@@ -166,15 +166,15 @@
     margin-left: auto;
   }
 
-  /* A pantalla completa se esconde sin desmontarse: lo que se esté escribiendo
-     en el comentario sigue ahí al salir. */
+  /* In full screen it hides without unmounting: whatever is being typed in
+     the comment is still there on the way out. */
   & .game-viewer__board-footer.game-viewer__board-footer_state_hidden {
     display: none;
   }
 
-  /* Bajo el tablero, dentro de su tarjeta: comentario, calidad y compartir. El
-     relleno lo pone cada zona del panel, para que sus filos lleguen de borde a
-     borde; aquí sólo se recorta contra el redondeo. */
+  /* Under the board, inside its card: comment, quality and share. Each zone of
+     the panel sets its own padding, so their rules reach from edge to edge;
+     here it is only clipped against the rounding. */
   & .game-viewer__board-footer {
     grid-column: 1;
     background: var(--platform-surface);
@@ -183,17 +183,17 @@
     overflow: hidden;
   }
 
-  /* La botonera va FUERA de la tarjeta, colgando de ella: es con lo que se
-     recorre la partida, no parte de la notación. Sobre el fondo de la página,
-     sin filo ni caja que la encierre. */
+  /* The button bar goes OUTSIDE the card, hanging from it: it is what the game
+     is traversed with, not part of the notation. On the page background,
+     without an outline or a box enclosing it. */
   & .game-viewer__panel-nav {
     flex: none;
   }
 
-  /* La columna derecha: la tarjeta de la notación y la botonera debajo.
-     Ocupa SÓLO la fila del tablero, así que mide lo que él y reparte ese alto
-     entre las dos. Abarcando también la fila del pie —comentario, calidad,
-     compartir— la tarjeta se iba muy por debajo del tablero. */
+  /* The right column: the notation card and the button bar below.
+     It takes ONLY the board's row, so it measures what the board does and
+     splits that height between the two. Spanning the footer row as well —
+     comment, quality, share — the card went far below the board. */
   & .game-viewer__panel-column {
     grid-column: 2;
     grid-row: 1;
@@ -203,17 +203,17 @@
     min-width: 0;
   }
 
-  /* La única caja que queda en el visor: el tablero va suelto y esto lo separa
-     de él, que es lo que le da sentido.
+  /* The only box left in the viewer: the board sits loose and this sets it
+     apart from it, which is what gives it meaning.
 
-     Llena su columna, que mide lo que el tablero: la tarjeta baja hasta él
-     aunque la partida tenga dos jugadas, dejándole a la botonera su tira de
-     debajo. Antes medía lo que midiera la notación y se quedaba corta y
-     descolgada.
+     It fills its column, which measures what the board does: the card goes
+     down to it even when the game has two moves, leaving the button bar its
+     strip below. Before, it measured whatever the notation did and came up
+     short and dangling.
 
-     De ahí sale además, gratis, lo que antes se calculaba a mano: como el alto
-     de la tarjeta lo pone la rejilla y no su contenido, encender el módulo no
-     la mueve —le quita sitio a la lista, que se desplaza por dentro—. */
+     That also yields, for free, what used to be computed by hand: since the
+     card's height is set by the grid and not by its content, switching on the
+     engine does not move it — it takes room from the list, which scrolls inside. */
   & .game-viewer__panel {
     flex: 1;
     min-height: 0;
@@ -223,7 +223,7 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
-    /* Recorta la cabecera y la barra contra el redondeo de la tarjeta. */
+    /* Clips the header and the bar against the card's rounding. */
     overflow: hidden;
   }
 
@@ -274,17 +274,17 @@
     white-space: nowrap;
   }
 
-  /* La lista se queda con lo que sobra de la tarjeta y se desplaza por dentro.
-     No lleva alto propio a propósito: en una columna flexible, `flex: 1` fija
-     la base en 0 y cualquier `height` que se le ponga aquí queda inerte —era
-     justo lo que pasaba con el tope de 560px que ponía Mis estudios, que nunca
-     llegó a aplicarse—. Quien manda es el alto de la tarjeta. */
+  /* The list keeps what is left of the card and scrolls inside. It carries no
+     height of its own on purpose: in a flexible column, `flex: 1` fixes the
+     basis at 0 and any `height` set here stays inert — which is exactly what
+     happened with the 560px cap Mis estudios set, which never applied. The
+     card's height is what rules. */
   & .game-viewer__moves {
     flex: 1;
     min-height: 0;
-    /* Sin relleno: las filas de la notación llegan a los cuatro bordes del
-       panel, que es lo que da la lectura en columna —la banda de los números
-       de un lado a otro y la primera jugada arriba del todo—. */
+    /* No padding: the notation rows reach the panel's four edges, which is what
+       gives the column reading — the numbers band from side to side and the
+       first move at the very top. */
     padding: 0;
     overflow: auto;
   }
@@ -325,8 +325,8 @@
     margin-left: auto;
   }
 
-  /* Ancla del desplegable de opciones: el menú se cuelga de este botón. Se
-     reparte el ancho como uno más de la botonera, porque eso es lo que es. */
+  /* Anchor of the options dropdown: the menu hangs from this button. It
+     shares the width like one more of the button bar, because that is what it is. */
   & .game-viewer__options {
     position: relative;
     display: flex;
@@ -337,8 +337,8 @@
   & .game-viewer__options-menu {
     position: absolute;
     z-index: 30;
-    /* Hacia arriba y alineado por la derecha: la botonera es lo último de la
-       columna, y hacia abajo el menú se saldría de la pantalla. */
+    /* Upwards and right-aligned: the button bar is the last thing in the
+       column, and downwards the menu would run off the screen. */
     bottom: calc(100% + 6px);
     right: 0;
     display: flex;
@@ -392,33 +392,32 @@
     margin-top: 4px;
   }
 
-  /* A pantalla completa el visor pinta su propio fondo: por debajo queda el
-     negro del navegador, no la página. */
+  /* In full screen the viewer paints its own background: underneath is the
+     browser's black, not the page. */
   &.game-viewer_state_fullscreen {
-    /* Alto que el tablero NO puede ocupar: el relleno del visor (20+20), la
-       fila de botones (48) y su hueco (14). Bajó de 134 al quitarle la tarjeta
-       al tablero, que ponía 16 por arriba y otros 16 por abajo. Si cambia
-       alguno de esos valores, este número cambia con ellos. */
+    /* Height the board can NOT take: the viewer's padding (20+20), the button
+       row (48) and its gap (14). It went down from 134 when the board lost its
+       card, which added 16 above and another 16 below. If any of those values
+       changes, this number changes with them. */
     --viewer-chrome-block: 102px;
-    /* Ancho que tampoco puede ocupar: el relleno del visor (20+20), el hueco
-       entre tablero y panel (22) y un mínimo habitable para la notación (360). */
+    /* Width it cannot take either: the viewer's padding (20+20), the gap
+       between board and panel (22) and a livable minimum for the notation (360). */
     --viewer-chrome-inline: 422px;
-    /* El lado del tablero. Manda el alto de la pantalla, que es lo que se pide;
-       el ancho sólo entra en juego si de verdad no cabe. */
+    /* The board's side. The screen height rules, which is what is asked for;
+       the width only comes into play when it really does not fit. */
     --viewer-board-size: min(
       calc(100vh - var(--viewer-chrome-block)),
       calc(100vw - var(--viewer-chrome-inline))
     );
-    /* La tipografía crece con la pantalla, igual que el tablero: si el lado del
-       tablero sale de `vh`, el texto de al lado tiene que seguir la misma regla
-       o se queda enano contra un tablero enorme. El `clamp` pone suelo y techo
-       para que ni en una pantalla baja se lea peor que en modo normal, ni en
-       una de 4K salga desproporcionado. La consume `.move-tree`, que hereda a
-       todo lo suyo: jugadas, comentarios y variantes. */
+    /* The typography grows with the screen, like the board: if the board's side
+       comes from `vh`, the text next to it has to follow the same rule or it
+       ends up tiny against a huge board. The `clamp` sets a floor and a ceiling
+       so it neither reads worse than normal mode on a short screen nor comes
+       out oversized on a 4K one. `.move-tree` consumes it and passes it down to
+       everything of its own: moves, comments and variations. */
     --move-tree-font-size: clamp(19px, 2.2vh, 30px);
-    /* Por la misma razón crecen las tiras de jugador y las líneas del módulo:
-       en una pantalla de 27 pulgadas, un nombre a 15px contra un tablero de
-       900 no se lee, se adivina. */
+    /* The player strips and the engine lines grow for the same reason: on a
+       27-inch screen, a name at 15px against a 900px board is not read, it is guessed. */
     --viewer-player-font-size: clamp(15px, 1.9vh, 26px);
     --engine-panel-font-size: clamp(14px, 1.75vh, 24px);
 
@@ -426,12 +425,12 @@
     padding: 20px;
     box-sizing: border-box;
     background: var(--platform-bg);
-    /* Nada desborda: todo se ajusta al alto de la pantalla. */
+    /* Nothing overflows: everything fits the screen height. */
     overflow: hidden;
 
-    /* Dos columnas y una sola fila: el tablero, midiendo lo que le deje la
-       altura, y la notación con TODO el alto de su columna. Las herramientas no
-       se pintan aquí, así que no hay una segunda fila que repartir. */
+    /* Two columns and a single row: the board, measuring what the height
+       allows, and the notation with ALL the height of its column. The tools are
+       not rendered here, so there is no second row to share out. */
     & .game-viewer__layout {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
@@ -440,8 +439,8 @@
       align-items: stretch;
     }
 
-    /* La tarjeta se ciñe a su contenido y se centra; estirarla dejaría un
-       manchón blanco bajo los botones. */
+    /* The card hugs its content and centres itself; stretching it would leave a
+       white smear under the buttons. */
     & .game-viewer__board-card {
       grid-column: 1;
       grid-row: 1;
@@ -450,11 +449,11 @@
       align-self: center;
     }
 
-    /* La medida va explícita, en las dos dimensiones, y NO por `aspect-ratio`
-       sobre un alto flexible: eso creaba una pelea circular —el ancho de la
-       tarjeta lo decide su contenido, y el contenido quería medir según la
-       tarjeta— que el navegador zanjaba dándole al tablero el ancho de la fila
-       de botones. Partiendo de `100vh` no hay nada que resolver. */
+    /* The size is explicit, in both dimensions, and NOT via `aspect-ratio` on a
+       flexible height: that created a circular fight — the card's width is
+       decided by its content, and the content wanted to measure against the
+       card — which the browser settled by giving the board the width of the
+       button row. Starting from `100vh` there is nothing to resolve. */
     & .game-viewer__board {
       flex: none;
       align-self: center;
@@ -466,7 +465,7 @@
       grid-column: 2;
       grid-row: 1;
       min-width: 0;
-      /* Sin esto la notación empujaría la fila en vez de desplazarse dentro. */
+      /* Without this the notation would push the row instead of scrolling inside. */
       min-height: 0;
     }
 
@@ -488,9 +487,9 @@
     }
 
 
-    /* En pantalla estrecha no hay ancho que repartir: se apila en una columna
-       —tablero, notación, herramientas— y el tablero vuelve a mandar por ancho,
-       que es lo que cabe. */
+    /* On a narrow screen there is no width to share out: it stacks in one column
+       — board, notation, tools — and the board rules by width again, which is
+       what fits. */
     @media (max-width: 1080px) {
       overflow: auto;
 

@@ -2,7 +2,7 @@ export interface StaffStudentSummary {
   id: string;
   displayName: string;
   email: string;
-  /** Sin contraseña no puede iniciar sesión (cuenta dada de alta a medias). */
+  /** Without a password they cannot log in (account created by halves). */
   hasPassword: boolean;
   activeTeacherName?: string;
   lastLoginAtIso?: string;
@@ -47,21 +47,21 @@ export interface StaffStudentDetail {
   classes: StudentClassParticipation[];
 }
 
-/** Opción de profesor para los selectores de asignación. */
+/** Teacher option for the assignment selectors. */
 export interface TeacherOption {
   id: string;
   displayName: string;
 }
 
 /**
- * Resultado de las acciones de cuenta (alta y reinicio de contraseña). Vive
- * aquí y no junto a las actions porque un módulo "use server" sólo puede
- * exportar funciones asíncronas: exportar este objeto desde allí rompe el build.
+ * Result of the account actions (creation and password reset). It lives here
+ * and not next to the actions because a "use server" module can only export
+ * async functions: exporting this object from there breaks the build.
  */
 export interface AccountActionState {
   status: "idle" | "ok" | "error";
   message?: string;
-  /** Sólo presente en la respuesta inmediata de la acción. Nunca se persiste. */
+  /** Only present in the action's immediate response. It is never persisted. */
   tempPassword?: string;
   userId?: string;
 }

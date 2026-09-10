@@ -5,7 +5,7 @@ interface PaginationProps {
   page: number;
   totalPages: number;
   totalItems: number;
-  /** URL de cada página; paginar es navegar. */
+  /** URL of each page; paginating is navigating. */
   hrefFor: (page: number) => string;
 }
 

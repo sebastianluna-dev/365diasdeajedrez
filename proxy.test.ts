@@ -58,8 +58,8 @@ describe("proxy", () => {
     }
   });
 
-  // El matcher tiene que ser literal (Next lo analiza en build), así que la
-  // única forma de que no se separe de la constante es comprobarlo aquí.
+  // The matcher has to be literal (Next analyses it at build time), so the only
+  // way for it not to drift from the constant is to check it here.
   it("el matcher cubre exactamente los prefijos privados más la portada", () => {
     const fromConstant = PROTECTED_PATH_PREFIXES.map((prefix) => `${prefix}/:path*`);
     expect([...config.matcher].sort()).toEqual(["/", ...fromConstant].sort());

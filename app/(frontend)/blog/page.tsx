@@ -10,9 +10,9 @@ interface BlogPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-// La categoría y la página viajan en la URL, así que la página se renderiza
-// por petición; los datos vienen del Data Cache (ver articles.service.ts), no
-// de Payload en cada visita.
+// The category and the page travel in the URL, so the page renders per
+// request; the data comes from the Data Cache (see articles.service.ts), not
+// from Payload on every visit.
 async function resolveQuery(searchParams: BlogPageProps["searchParams"]) {
   const [params, articles] = await Promise.all([searchParams, getArticleSummaries()]);
   return { articles, query: parseListingQuery(params, categoriesOf(articles)) };

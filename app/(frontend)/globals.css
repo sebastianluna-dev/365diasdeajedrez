@@ -1,13 +1,13 @@
 :root {
   --background: #16110d;
   --foreground: #f2ede7;
-  /* Texto secundario, uno por fondo (los dos grises que más se repetían sueltos). */
+  /* Secondary text, one per background (the two greys that were most often repeated loose). */
   --color-muted-on-dark: #b4a99d;
   --color-muted-on-light: #5c5348;
-  /* Naranja profundo: la sombra de los botones y el acento legible sobre claro. */
+  /* Deep orange: the buttons' shadow and the accent that stays legible on light. */
   --color-primary-deep: #b8611f;
-  /* Casillas del tablero. Los mismos valores en constants/chess-board-colors.const.ts,
-     que es lo que usa la exportación a imagen (un canvas no lee CSS). */
+  /* Board squares. The same values live in constants/chess-board-colors.const.ts,
+     which is what the image export uses (a canvas cannot read CSS). */
   --board-light: #eeeed2;
   --board-dark: #769656;
   --color-primary: #ff9143;
@@ -22,10 +22,10 @@
 }
 
 /* ---------------------------------------------------------------------------
-   Reset base
-   Sustituye al preflight de Tailwind (retirado del proyecto): la hoja de
-   estilos de la app da por hecho que los títulos no traen tamaño propio, que
-   las listas no traen viñeta ni sangría y que las imágenes son de bloque.
+   Base reset
+   Replaces Tailwind's preflight (removed from the project): the app's
+   stylesheets assume headings carry no size of their own, lists carry no
+   bullet or indentation, and images are block elements.
    --------------------------------------------------------------------------- */
 
 *,
@@ -70,15 +70,15 @@ a {
   text-decoration: none;
 }
 
-/* Foco visible en todo el sitio: sin una regla global, recorrer con Tab no
-   enseñaba nada en la mayoría de los controles. La plataforma lo recolorea en
-   platform.css para su fondo claro. */
+/* Visible focus across the whole site: without a global rule, tabbing through
+   showed nothing on most controls. The platform recolours it in platform.css
+   for its light background. */
 :focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
 }
 
-/* Enlace de salto al contenido: fuera de pantalla hasta que recibe el foco. */
+/* Skip link to the content: off-screen until it receives focus. */
 .skip-link {
   position: absolute;
   top: 12px;
@@ -156,16 +156,18 @@ input[type="submit"] {
   appearance: button;
 }
 
-/* Ningún cambio de color es instantáneo: al pasar por encima, al enfocar o al
- * marcar algo, el color va llegando en 150 ms en lugar de saltar.
+/*
+ * No colour change is instantaneous: on hover, on focus or when something is
+ * checked, the colour arrives over 150 ms instead of jumping.
  *
- * Se enumeran las propiedades y NO se pone `all`: con `all`, cualquier cosa que
- * cambie —un alto, una posición— se animaría también, y eso convierte un
- * despliegue en un arrastre. `box-shadow` entra porque en este proyecto los
- * filos de los botones se pintan con él, no con `border`.
+ * The properties are listed and `all` is NOT used: with `all`, anything that
+ * changes — a height, a position — would animate too, and that turns a
+ * dropdown opening into a drag. `box-shadow` is included because in this
+ * project button outlines are drawn with it, not with `border`.
  *
- * Va sobre los elementos, así que cualquier regla de componente —que va por
- * clase y gana en especificidad— puede pedir otra duración o quitarla. */
+ * It applies to the elements, so any component rule — which goes by class and
+ * wins on specificity — can ask for another duration or remove it.
+ */
 a,
 button,
 summary,
@@ -186,7 +188,7 @@ article,
     opacity var(--transition-hover, 150ms) ease;
 }
 
-/* Quien pide menos movimiento no lo pide sólo para las animaciones grandes. */
+/* Whoever asks for less motion is not asking only for the big animations. */
 @media (prefers-reduced-motion: reduce) {
   a,
   button,

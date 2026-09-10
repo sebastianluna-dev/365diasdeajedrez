@@ -1,16 +1,14 @@
-// Reordenación de listas con `@@unique([padre, order])` (bloques de clase,
-// capítulos, lecciones, ejercicios).
+// Reordering lists with `@@unique([parent, order])` (class blocks, chapters,
+// lessons, exercises).
 //
-// El problema: PostgreSQL valida el índice único fila a fila y Prisma no emite
-// constraints diferibles, así que el intercambio «obvio» —A→orden de B, B→orden
-// de A— lanza P2002 de forma intermitente: durante un instante las dos filas
-// comparten orden. Por eso el intercambio pasa SIEMPRE por un valor temporal
-// fuera de rango.
+// The problem: PostgreSQL validates the unique index row by row and Prisma does
+// not emit deferrable constraints, so the "obvious" swap — A→B's order, B→A's
+// order — throws P2002 intermittently: for an instant the two rows share an
+// order. That is why the swap ALWAYS goes through a temporary out-of-range value.
 //
-// Toda la lógica de secuencia vive en funciones puras (testeables con
-// permutaciones); los servicios sólo ejecutan la lista de updates que devuelven,
-// en orden y dentro de una `$transaction`. Prohibido reordenar «a mano» fuera de
-// este módulo.
+// All the sequence logic lives in pure functions (testable with permutations);
+// the services only execute the list of updates they return, in order and within
+// a `$transaction`. Reordering "by hand" outside this module is forbidden.
 
 export interface ReorderRow {
   id: string;
@@ -25,8 +23,8 @@ export interface OrderUpdate {
 export type MoveDirection = "up" | "down";
 
 /**
- * Orden temporal para el intercambio. Negativo a propósito: los órdenes reales
- * empiezan en 1, así que ningún valor legítimo puede colisionar con él.
+ * Temporary order for the swap. Negative on purpose: the real orders start at 1,
+ * so no legitimate value can collide with it.
  */
 export const TEMP_ORDER = -1;
 
@@ -35,9 +33,9 @@ function sortByOrder(rows: ReorderRow[]): ReorderRow[] {
 }
 
 /**
- * Updates —en orden— para mover una fila una posición arriba o abajo.
- * Devuelve [] si la fila no existe o ya está en el extremo: mover el primero
- * hacia arriba no es un error, simplemente no hace nada.
+ * Updates — in order — to move a row one position up or down.
+ * It returns [] if the row does not exist or is already at the end: moving the
+ * first one up is not an error, it simply does nothing.
  */
 export function planSwap(rows: ReorderRow[], id: string, direction: MoveDirection): OrderUpdate[] {
   const sorted = sortByOrder(rows);
@@ -51,8 +49,8 @@ export function planSwap(rows: ReorderRow[], id: string, direction: MoveDirectio
   const displaced = sorted[targetIndex];
 
   return [
-    // La fila que se mueve sale primero del rango válido: así la que ocupa su
-    // sitio nunca comparte orden con ella.
+    // The row that moves leaves the valid range first: that way the one taking its
+    // place never shares an order with it.
     { id: moved.id, order: TEMP_ORDER },
     { id: displaced.id, order: moved.order },
     { id: moved.id, order: displaced.order },
@@ -60,41 +58,41 @@ export function planSwap(rows: ReorderRow[], id: string, direction: MoveDirectio
 }
 
 /**
- * Updates para dejar la lista densa (1..n) después de borrar una fila. Van en
- * orden ASCENDENTE a propósito: el hueco que deja la fila borrada viaja por
- * delante de cada actualización, así que ninguna encuentra su destino ocupado.
- * Se llama DESPUÉS del delete, con las filas restantes.
+ * Updates to leave the list dense (1..n) after deleting a row. They go in
+ * ASCENDING order on purpose: the gap the deleted row leaves travels ahead of
+ * each update, so none finds its destination occupied.
+ * It is called AFTER the delete, with the remaining rows.
  */
 export function planDenseRenumber(rows: ReorderRow[]): OrderUpdate[] {
   const updates: OrderUpdate[] = [];
   sortByOrder(rows).forEach((row, index) => {
     const order = index + 1;
-    // Cerrar huecos sólo baja los órdenes, nunca los sube: por eso el destino
-    // siempre está libre cuando se aplica en ascendente.
+    // Closing gaps only lowers the orders, never raises them: that is why the
+    // destination is always free when applied in ascending order.
     if (row.order !== order) updates.push({ id: row.id, order });
   });
   return updates;
 }
 
-/** Orden de la fila que se añade al final de una lista de `count` elementos. */
+/** Order of the row added at the end of a list of `count` elements. */
 export function nextOrder(count: number): number {
   return count + 1;
 }
 
 /**
- * Updates para dejar las filas en el orden que dice `orderedIds` (1..n).
+ * Updates to leave the rows in the order `orderedIds` says (1..n).
  *
- * Es lo que hace falta al arrastrar: no se intercambian dos vecinas, se recoloca
- * una en cualquier sitio y todas las de en medio se corren. Ahí el problema del
- * índice único se agrava —media lista quiere el orden que otra media todavía
- * ocupa—, así que va en DOS pasadas: primero las que se mueven salen del rango
- * válido a temporales negativos distintos entre sí, y sólo después toman su
- * orden definitivo. Ningún update intermedio choca con otro.
+ * It is what is needed when dragging: two neighbours are not swapped, one is
+ * placed anywhere and all those in between shift. There the unique index
+ * problem gets worse — half the list wants the order the other half still
+ * occupies — so it goes in TWO passes: first the ones that move leave the valid
+ * range to temporaries that differ from each other, and only afterwards do they
+ * take their final order. No intermediate update clashes with another.
  *
- * Devuelve `[]` si `orderedIds` no es exactamente el conjunto de filas: viene
- * del navegador y una lista incompleta borraría posiciones. Que no haga nada es
- * lo correcto —el servidor no reordena a medias— y quien llama ya tiene la
- * lista buena en la base de datos.
+ * It returns `[]` if `orderedIds` is not exactly the set of rows: it comes from
+ * the browser and an incomplete list would erase positions. Doing nothing is
+ * the right thing — the server does not reorder halfway — and whoever calls it
+ * already has the good list in the database.
  */
 export function planFullReorder(rows: ReorderRow[], orderedIds: string[]): OrderUpdate[] {
   if (orderedIds.length !== rows.length) return [];
@@ -108,9 +106,9 @@ export function planFullReorder(rows: ReorderRow[], orderedIds: string[]): Order
   if (moving.length === 0) return [];
 
   return [
-    // Primera pasada: fuera del rango, cada una con su propio temporal.
+    // First pass: out of the range, each one with its own temporary.
     ...moving.map((id, index) => ({ id, order: -(index + 1) })),
-    // Segunda: ya no queda nadie ocupando los sitios de destino.
+    // Second: nobody is left occupying the destination places.
     ...moving.map((id) => ({ id, order: orderedIds.indexOf(id) + 1 })),
   ];
 }

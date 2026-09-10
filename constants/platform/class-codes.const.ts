@@ -1,4 +1,4 @@
-// Codes estables de los catálogos de clases.
+// Stable codes of the class catalogs.
 
 export const CLASS_STATUS = {
   SCHEDULED: "SCHEDULED",

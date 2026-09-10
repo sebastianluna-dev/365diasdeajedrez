@@ -4,7 +4,7 @@ import { useSyncExternalStore } from "react";
 import { ChessClockDesktop } from "./chess-clock-desktop.comp";
 import { ChessClockMobile } from "./chess-clock-mobile.comp";
 
-/** El mismo corte que usan chess-clock-desktop.comp.css y chess-clock-mobile.comp.css. */
+/** The same breakpoint chess-clock-desktop.comp.css and chess-clock-mobile.comp.css use. */
 const MOBILE_QUERY = "(max-width: 766px)";
 
 function subscribe(onChange: () => void): () => void {
@@ -18,12 +18,12 @@ function isMobileNow(): boolean {
 }
 
 /**
- * Las dos variantes se siguen montando —así el servidor puede pintar las dos y
- * el CSS decide cuál se ve sin un salto tras hidratar—, pero sólo UNA tiene el
- * reloj encendido: la que corresponde al ancho actual. Antes las dos contaban
- * en paralelo y las dos capturaban la barra espaciadora.
+ * Both variants are still mounted — so the server can render both and the
+ * CSS decides which one is visible without a jump after hydration — but only
+ * ONE has its clock running: the one matching the current width. Before,
+ * both counted in parallel and both captured the space bar.
  *
- * En el servidor se asume escritorio; en cuanto hidrata, `matchMedia` manda.
+ * On the server desktop is assumed; as soon as it hydrates, `matchMedia` rules.
  */
 export function ChessClock() {
   const isMobile = useSyncExternalStore(subscribe, isMobileNow, () => false);

@@ -13,8 +13,8 @@ import type {
   LessonView,
 } from "./courses.types";
 
-// Includes compartidos entre servicio y mapper: el mapper es dueño de la forma
-// que necesita y el servicio sólo la consulta.
+// Includes shared between service and mapper: the mapper owns the shape it
+// needs and the service only queries it.
 export const courseContentInclude = {
   type: true,
   courseLevels: { include: { level: true }, orderBy: { level: { order: "asc" } } },
@@ -43,13 +43,13 @@ export const courseContentInclude = {
 export type CourseWithContent = Prisma.CourseGetPayload<{ include: typeof courseContentInclude }>;
 
 export interface UserCourseState {
-  /** statusCode de LessonProgress por lessonId. */
+  /** statusCode of LessonProgress by lessonId. */
   lessonStatus: Map<string, ProgressStatusCode>;
   courseStatus?: ProgressStatusCode;
   lastLessonId?: string;
-  /** El alumno pidió ver sólo las lecciones imprescindibles de este curso. */
+  /** The student asked to see only this course's essential lessons. */
   onlyPriorityLessons: boolean;
-  /** Orientación que fijó el alumno; `AUTO` o ausente = manda la de la lección. */
+  /** Orientation the student fixed; `AUTO` or absent = the lesson's rules. */
   boardOrientationCode?: string;
 }
 
@@ -58,24 +58,24 @@ function asStatus(code: string | undefined): ProgressStatusCode {
 }
 
 /**
- * Si la lección entra en el recorrido que el alumno pidió ver.
+ * Whether the lesson is part of the path the student asked to see.
  *
- * Con el filtro puesto pasan las prioritarias **y las que ya tocó**. Esa
- * segunda mitad es la que evita el peor efecto del filtro: sin ella, activarlo
- * escondería lecciones ya completadas y el contador de hechas BAJARÍA. Con
- * ella, el porcentaje nunca retrocede y «ya la hice» nunca se vuelve «¿dónde
- * está?».
+ * With the filter on, the priority ones **and the ones already touched** pass.
+ * That second half is what avoids the filter's worst effect: without it,
+ * enabling it would hide already completed lessons and the done counter would
+ * GO DOWN. With it, the percentage never goes backwards and "I already did it"
+ * never becomes "where is it?".
  */
 function isVisible(lesson: { id: string; isPriority: boolean }, state: UserCourseState): boolean {
   return !state.onlyPriorityLessons || lesson.isPriority || state.lessonStatus.has(lesson.id);
 }
 
 /**
- * Todas las lecciones del curso en el orden en que se leen, sin filtrar.
+ * Every lesson of the course in the order they are read, unfiltered.
  *
- * Dentro de cada capítulo, y entre capítulos, mandan la introducción y el
- * cierre —que van fijos— sobre el número de orden. Es la MISMA función que usa
- * el panel del staff, así que autor y alumno ven la misma secuencia.
+ * Within each chapter, and between chapters, the introduction and the closing
+ * — which are fixed — rule over the order number. It is the SAME function the
+ * staff panel uses, so author and student see the same sequence.
  */
 function allLessons(course: CourseWithContent) {
   return sortByRole(
@@ -87,7 +87,7 @@ function allLessons(course: CourseWithContent) {
   );
 }
 
-/** Las que el alumno ve, que es sobre las que se cuenta y se navega. */
+/** The ones the student sees, which are what is counted and navigated over. */
 function flattenLessons(course: CourseWithContent, state: UserCourseState) {
   return allLessons(course).filter((lesson) => isVisible(lesson, state));
 }
@@ -118,11 +118,11 @@ export function mapCourseProgress(course: CourseWithContent, state: UserCourseSt
 }
 
 /**
- * Por dónde sigue el curso.
+ * Where the course carries on.
  *
- * Donde se quedó, SI sigue a la vista; si el filtro la escondió, la primera
- * visible sin terminar; y si están todas hechas, la primera, que es lo que toca
- * para repasar. Sin ninguna visible, la ficha del curso.
+ * Where they left off, IF it is still in view; if the filter hid it, the first
+ * visible unfinished one; and if they are all done, the first, which is what
+ * comes next for review. With none visible, the course page.
  */
 function continueTarget(course: CourseWithContent, state: UserCourseState) {
   const lessons = flattenLessons(course, state);
@@ -133,13 +133,13 @@ function continueTarget(course: CourseWithContent, state: UserCourseState) {
 }
 
 /**
- * Qué dice el botón del curso.
+ * What the course's button says.
  *
- * Se decide con el recuento VISIBLE, no con el estado guardado: si el alumno
- * filtró y ya hizo todas las prioritarias, la barra está al 100 % y un
- * «Continuar» ahí no tendría sentido, aunque `CourseProgress` siga en curso —y
- * sigue en curso a propósito: el filtro es una lente, no un cambio en lo que el
- * curso es—.
+ * It is decided with the VISIBLE count, not with the stored state: if the
+ * student filtered and has already done every priority lesson, the bar is at
+ * 100 % and a "Continuar" there would make no sense, even though
+ * `CourseProgress` is still in progress — and it is still in progress on
+ * purpose: the filter is a lens, not a change in what the course is.
  */
 function ctaLabelFor(progress: CourseProgressSummary): CourseSummary["ctaLabel"] {
   if (progress.totalLessons > 0 && progress.completedLessons === progress.totalLessons) return "Revisar";
@@ -170,8 +170,8 @@ function mapChapterItem(
   chapter: CourseWithContent["chapters"][number],
   state: UserCourseState,
 ): CourseChapterItem {
-  // Sobre las visibles: la barra del capítulo tiene que cuadrar con la lista
-  // que se abre al pulsarla.
+  // Over the visible ones: the chapter's bar has to match the list that opens
+  // when it is pressed.
   const lessons = chapter.lessons.filter((lesson) => isVisible(lesson, state));
   const completedLessons = lessons.filter(
     (lesson) => state.lessonStatus.get(lesson.id) === PROGRESS_STATUS.COMPLETED,
@@ -221,9 +221,9 @@ export function mapChapterView(
   const chapter = course.chapters.find((candidate) => candidate.id === chapterId);
   if (!chapter) return null;
 
-  // El número que se pinta sigue siendo el REAL (1, 4, 7 con el filtro puesto):
-  // renumerar escondería que faltan lecciones y rompería la identidad de cada
-  // una dentro del curso.
+  // The number rendered is still the REAL one (1, 4, 7 with the filter on):
+  // renumbering would hide that lessons are missing and would break each one's
+  // identity within the course.
   const lessons: ChapterLessonItem[] = sortByRole(
     chapter.lessons.map((lesson) => ({ ...lesson, roleCode: lesson.role?.code })),
   )
@@ -242,8 +242,8 @@ export function mapChapterView(
   const hiddenLessons = chapter.lessons.length - lessons.length;
   const completedLessons = lessons.filter((lesson) => lesson.statusCode === PROGRESS_STATUS.COMPLETED).length;
 
-  // El botón del capítulo abre por donde se quedó: la primera sin completar.
-  // Si ya están todas, la primera, que es lo que toca para repasar.
+  // The chapter's button opens where they left off: the first uncompleted one.
+  // If they are all done, the first, which is what comes next for review.
   const target = lessons.find((lesson) => lesson.statusCode !== PROGRESS_STATUS.COMPLETED) ?? lessons[0];
   const allDone = lessons.length > 0 && completedLessons === lessons.length;
   const untouched = lessons.every((lesson) => lesson.statusCode === PROGRESS_STATUS.NOT_STARTED);
@@ -278,7 +278,7 @@ export interface LessonRowForView {
   isPriority: boolean;
   estimatedDuration: number | null;
   pgn: string;
-  /** La partida de la colección del curso, si la lección la referencia. */
+  /** The game of the course collection, if the lesson references it. */
   game: { pgn: string } | null;
   orientation: { code: string };
   exercises: { id: string }[];
@@ -292,11 +292,10 @@ export function mapLessonView(
   const chapter = course.chapters.find((candidate) => candidate.id === lesson.chapterId);
   if (!chapter) return null;
 
-  // Anterior y siguiente se buscan POR POSICIÓN, no por pertenencia: una
-  // lección escondida por el filtro se sigue sirviendo por URL —un enlace de
-  // una clase no puede romperse por una preferencia de visualización— y ahí
-  // buscarla en la lista visible daría -1, dejándola sin anterior Y sin
-  // siguiente.
+  // Previous and next are looked up BY POSITION, not by membership: a lesson
+  // hidden by the filter is still served by URL — a link from a class cannot
+  // break over a display preference — and there, looking for it in the visible
+  // list would give -1, leaving it without a previous AND without a next.
   const position = (candidate: { chapterOrder: number; order: number }) =>
     candidate.chapterOrder * 100000 + candidate.order;
   const here = position({ chapterOrder: chapter.order, order: lesson.order });
@@ -305,8 +304,8 @@ export function mapLessonView(
   const prev = [...visible].reverse().find((candidate) => position(candidate) < here);
   const next = visible.find((candidate) => position(candidate) > here);
 
-  // La orientación del contenido manda salvo que el usuario fuerce una en sus
-  // ajustes del curso (AUTO o ausencia de fila = la de la lección).
+  // The content's orientation rules unless the user forces one in their course
+  // settings (AUTO or the absence of a row = the lesson's).
   const settingsOrientationCode = state.boardOrientationCode;
   const forced =
     settingsOrientationCode && settingsOrientationCode !== BOARD_ORIENTATION.AUTO ? settingsOrientationCode : undefined;

@@ -7,9 +7,9 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) 470px;
     gap: 34px;
-    /* `stretch` y no `start`: la columna de la portada tiene que llegar hasta
-       abajo para poder apoyar el filtro a la altura de la barra de progreso.
-       La portada no se deforma porque su alto lo fija su `aspect-ratio`. */
+    /* `stretch` and not `start`: the cover column has to reach the bottom so
+       the filter can rest at the height of the progress bar.
+       The cover does not distort because its height is fixed by its `aspect-ratio`. */
     align-items: stretch;
     padding: 32px;
     background: var(--platform-surface);
@@ -41,7 +41,7 @@
 
   & .course-detail__description {
     margin: 14px 0 0;
-    /* Medida de lectura: el texto no se estira aunque la columna crezca. */
+    /* Reading measure: the text does not stretch even if the column grows. */
     max-width: 56ch;
     font-size: 17px;
     line-height: 1.6;
@@ -65,7 +65,7 @@
     gap: 26px;
     margin-top: 26px;
     padding-top: 24px;
-    /* Filo superior sin caja, como el resto de separaciones del tema. */
+    /* Top rule without a box, like the rest of the theme's separators. */
     box-shadow: inset 0 1px 0 var(--platform-track);
   }
 
@@ -75,8 +75,8 @@
     font-size: 15px;
   }
 
-  /* Aquí la barra es un pelo más gruesa que en las tarjetas: es el progreso
-     principal de la página, no un dato de una lista. */
+  /* Here the bar is a touch thicker than in the cards: it is the page's main
+     progress, not a figure in a list. */
   & .course-detail__progress .progress-indicator__track {
     height: 7px;
   }
@@ -103,9 +103,9 @@
     gap: 16px;
   }
 
-  /* Empujado al pie de su columna: así cae junto a la barra de progreso de la
-     izquierda en vez de quedarse pegado a la portada. A la derecha, que es el
-     filo con el que se alinea todo lo de esta columna. */
+  /* Pushed to the foot of its column: that way it lands next to the progress
+     bar on the left instead of sticking to the cover. On the right, which is
+     the edge everything in this column aligns to. */
   & .course-detail__filter {
     margin-top: auto;
     display: flex;
@@ -166,7 +166,7 @@
     color: var(--platform-text-subtle);
   }
 
-  /* La portada deja de caber al lado del texto: pasa arriba, a lo ancho. */
+  /* The cover no longer fits next to the text: it moves up, full width. */
   @media (max-width: 980px) {
     & .course-detail__hero {
       grid-template-columns: 1fr;
@@ -177,8 +177,8 @@
       order: -1;
     }
 
-    /* En una sola columna no hay pie que apoyar ni filo derecho con el que
-       alinearse: el filtro se pone donde empieza todo lo demás. */
+    /* In a single column there is no foot to rest on nor a right edge to align
+       with: the filter goes where everything else starts. */
     & .course-detail__filter {
       margin-top: 0;
       align-items: flex-start;
@@ -198,7 +198,7 @@
       font-size: 29px;
     }
 
-    /* Apretado, el botón se pone debajo de la barra en vez de estrujarla. */
+    /* When cramped, the button goes under the bar instead of squeezing it. */
     & .course-detail__resume {
       flex-direction: column;
       align-items: stretch;

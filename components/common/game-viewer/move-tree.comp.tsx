@@ -7,13 +7,13 @@ import "./move-tree.comp.css";
 
 interface MoveTreeProps {
   tree: PgnTree;
-  /** Ruta punteada del nodo activo ("" = posición inicial). */
+  /** Dotted path of the active node ("" = initial position). */
   currentPath: string;
   onSelect: (path: string) => void;
   /**
-   * Clic derecho sobre una jugada. Opcional a propósito: quien sólo lee la
-   * partida no la pasa y la lista se comporta exactamente como antes; quien
-   * puede editarla la usa para abrir el menú de la jugada.
+   * Right click on a move. Optional on purpose: whoever only reads the game
+   * does not pass it and the list behaves exactly as before; whoever can edit
+   * it uses it to open the move's menu.
    */
   onContextMenu?: (path: string, event: MouseEvent) => void;
 }
@@ -87,8 +87,8 @@ function renderLine(nodes: PgnTreeNode[], context: RenderContext, lineStart: boo
 export function MoveTree({ tree, currentPath, onSelect, onContextMenu }: MoveTreeProps) {
   const activeRef = useRef<HTMLButtonElement>(null);
 
-  // La jugada activa, a la vista. `nearest` desplaza lo mínimo y sólo el
-  // contenedor con scroll, así que no da tirones a la página entera.
+  // The active move, in view. `nearest` scrolls the minimum and only the
+  // scrolling container, so it does not yank the whole page.
   useEffect(() => {
     activeRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
   }, [currentPath]);

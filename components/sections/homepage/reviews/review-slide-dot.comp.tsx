@@ -14,7 +14,7 @@ export function ReviewSlideDot({ label, active, onClick }: ReviewSlideDotProps) 
       onClick={onClick}
       className={`reviews__dot${active ? " reviews__dot_active" : ""}`}
     >
-      {/* Lo visible; el botón que lo envuelve es la zona que se pulsa. */}
+      {/* The visible part; the button wrapping it is the press area. */}
       <span className="reviews__dot-pill" aria-hidden="true" />
     </button>
   );

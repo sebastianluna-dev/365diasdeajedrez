@@ -1,10 +1,10 @@
-// Registro mínimo del servidor: una línea JSON por evento en stderr, que es lo
-// que Vercel (y cualquier contenedor) recoge sin configurar nada. No es un
-// servicio de observabilidad: es lo justo para que un fallo deje rastro y se
-// pueda correlacionar con el `digest` que ve el usuario en pantalla.
+// Minimal server logging: one JSON line per event on stderr, which is what
+// Vercel (and any container) collects without configuring anything. It is not
+// an observability service: it is just enough for a failure to leave a trace
+// and to be correlated with the `digest` the user sees on screen.
 //
-// Sin "server-only" a propósito: lo usan también el seed, los scripts y
-// `instrumentation.ts`, que corren fuera del árbol de React.
+// Without "server-only" on purpose: it is also used by the seed, the scripts
+// and `instrumentation.ts`, which run outside the React tree.
 
 type LogLevel = "warn" | "error";
 type LogFields = Record<string, unknown>;
@@ -30,12 +30,12 @@ function write(level: LogLevel, scope: string, message: string, fields: LogField
   else console.warn(line);
 }
 
-/** Algo que no rompe la petición pero que alguien debería ver (PGN recortado, purga fallida…). */
+/** Something that does not break the request but that someone should see (truncated PGN, failed purge…). */
 export function logWarning(scope: string, message: string, fields: LogFields = {}): void {
   write("warn", scope, message, fields);
 }
 
-/** Un fallo de verdad, con el error serializado (nombre, mensaje, pila y `digest` si lo trae). */
+/** A real failure, with the error serialised (name, message, stack and `digest` if it carries one). */
 export function logError(scope: string, message: string, error: unknown, fields: LogFields = {}): void {
   write("error", scope, message, { ...fields, error: describeError(error) });
 }

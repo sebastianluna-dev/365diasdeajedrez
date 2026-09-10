@@ -1,7 +1,7 @@
-// Seed idempotente de la plataforma: catálogos por upsert(code), dominio por
-// upsert(id fijo) o clave natural. Ejecutarlo varias veces nunca duplica.
-// Se ejecuta con `npm run db:seed` (prisma db seed → tsx, fuera de Next, por
-// eso no reutiliza lib/platform-db/get-platform-db.ts, que es server-only).
+// Idempotent seed of the platform: catalogs by upsert(code), domain rows by
+// upsert(fixed id) or natural key. Running it several times never duplicates.
+// It runs with `npm run db:seed` (prisma db seed → tsx, outside Next, which is
+// why it does not reuse lib/platform-db/get-platform-db.ts, which is server-only).
 
 import { config } from "dotenv";
 config({ path: ".env.local" });
@@ -39,13 +39,13 @@ import { STAT_METRIC_BY_ACTIVITY_TYPE, type ActivityTypeCode } from "../constant
 const connectionString = process.env.PLATFORM_DATABASE_URL;
 if (!connectionString) throw new Error("Falta PLATFORM_DATABASE_URL en el entorno (ver .env.example).");
 
-/** Contraseña de las cuentas demo. Sobreescribible por entorno. */
+/** Password of the demo accounts. Overridable by the environment. */
 const DEMO_PASSWORD = process.env.PLATFORM_DEMO_PASSWORD ?? "ajedrez365";
 
-// Las cuentas demo —una de ellas con rol de administración— nacen con una
-// contraseña que está escrita en este repositorio. Contra una base que no sea
-// local eso es una puerta abierta, así que fuera de local sólo se siembra si
-// la contraseña la pone el entorno o si se pide expresamente.
+// The demo accounts — one of them with an administration role — are born with a
+// password that is written in this repository. Against a database that is not
+// local that is an open door, so outside local it only seeds if the password is
+// set by the environment or if it is expressly requested.
 function isLocalDatabase(url: string): boolean {
   try {
     const host = new URL(url).hostname;
@@ -66,22 +66,22 @@ if (looksRemote && usesRepoPassword && process.env.ALLOW_DEMO_SEED !== "1") {
 const db = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 
 /**
- * El instante del que cuelgan TODAS las fechas del seed.
+ * The instant ALL the seed's dates hang from.
  *
- * No es `new Date()` por dos razones que tiraban en direcciones distintas:
+ * It is not `new Date()` for two reasons that pulled in different directions:
  *
- * - Dos ejecuciones seguidas escribían valores distintos aunque no hubiera
- *   cambiado nada (`frozenAt`, `pgnUpdatedAt`, la actividad…), así que el seed
- *   era idempotente de contenido pero no de fila. Redondeando al día, dos
- *   pasadas del mismo día dan exactamente lo mismo.
- * - Y a la vez las fechas tienen que seguir al calendario: con una constante
- *   fija, la «próxima clase» de la demo nace en el pasado.
+ * - Two consecutive runs wrote different values even when nothing had changed
+ *   (`frozenAt`, `pgnUpdatedAt`, the activity…), so the seed was idempotent in
+ *   content but not in rows. Rounding to the day, two passes on the same day
+ *   give exactly the same thing.
+ * - And at the same time the dates have to follow the calendar: with a fixed
+ *   constant, the demo's "next class" is born in the past.
  *
- * `SEED_NOW` (ISO) fija el instante a mano cuando hace falta reproducir una
- * base igual byte a byte, para una prueba o una captura.
+ * `SEED_NOW` (ISO) fixes the instant by hand when a database has to be
+ * reproduced byte for byte, for a test or a screenshot.
  *
- * La hora es media tarde en UTC y no medianoche porque de aquí salen horas de
- * clase: a las 00:00 la demo se lee como un error.
+ * The time is mid-afternoon in UTC and not midnight because class times come
+ * out of it: at 00:00 the demo reads like a mistake.
  */
 function seedReferenceDate(): Date {
   const pinned = process.env.SEED_NOW;
@@ -131,8 +131,8 @@ function idOf(map: Map<string, number>, code: string): number {
 }
 
 /**
- * Recalcula el agregado diario de un usuario desde cero: una fila por
- * (día, métrica, tema) más la fila total con topicId nulo.
+ * Recomputes a user's daily aggregate from scratch: one row per
+ * (day, metric, topic) plus the total row with a null topicId.
  */
 async function rebuildDailyStats(userId: string) {
   const activities = await db.userActivity.findMany({
@@ -151,7 +151,7 @@ async function rebuildDailyStats(userId: string) {
     const day = new Date(
       Date.UTC(activity.occurredAt.getUTCFullYear(), activity.occurredAt.getUTCMonth(), activity.occurredAt.getUTCDate()),
     );
-    // Cada hecho suma en el total de su métrica y, si tiene tema, en su desglose.
+    // Each fact adds to its metric's total and, if it has a topic, to its breakdown.
     for (const topicId of activity.topicId === null ? [null] : [null, activity.topicId]) {
       const key = `${day.toISOString()}|${metricId}|${topicId ?? "null"}`;
       const bucket = buckets.get(key);
@@ -169,7 +169,7 @@ async function rebuildDailyStats(userId: string) {
 async function main() {
   const now = seedReferenceDate();
 
-  // --- Catálogos -----------------------------------------------------------
+  // --- Catalogs ------------------------------------------------------------
   const courseType = await seedCatalog(db.courseType, CATALOG_VALUES.courseType);
   const courseStatus = await seedCatalog(db.courseStatus, CATALOG_VALUES.courseStatus);
   const authorRole = await seedCatalog(db.authorRole, CATALOG_VALUES.authorRole);
@@ -202,9 +202,9 @@ async function main() {
     topic.set(code, row.id);
   }
 
-  // --- Usuarios, autor, profesor ------------------------------------------
-  // La contraseña sólo se pone cuando la cuenta aún no tiene ninguna: así un
-  // re-seed no revierte la que se haya cambiado con `npm run user:password`.
+  // --- Users, author, teacher ----------------------------------------------
+  // The password is only set when the account has none yet: that way a re-seed
+  // does not revert one that was changed with `npm run user:password`.
   for (const user of USERS) {
     const existing = await db.user.findUnique({
       where: { email: user.email },
@@ -233,16 +233,16 @@ async function main() {
     create: TEACHER,
   });
 
-  // Rol Administrador/Editor de la plataforma: la fila existe = tiene el rol.
+  // Platform Administrator/Editor role: the row exists = they have the role.
   await db.staff.upsert({
     where: { userId: STAFF.userId },
     update: {},
     create: STAFF,
   });
 
-  // Asignación profesor↔alumno de ejemplo. El update NO toca endedAt a
-  // propósito: si se cerró desde el panel, el re-seed no la reabre (y el índice
-  // parcial teacher_student_one_active rechazaría una segunda activa).
+  // Example teacher↔student assignment. The update does NOT touch endedAt on
+  // purpose: if it was closed from the panel, the re-seed does not reopen it (and
+  // the partial index teacher_student_one_active would reject a second active one).
   await db.teacherStudent.upsert({
     where: { id: TEACHER_STUDENT.id },
     update: {
@@ -254,7 +254,7 @@ async function main() {
     create: TEACHER_STUDENT,
   });
 
-  // --- Cursos → capítulos → lecciones → ejercicios -------------------------
+  // --- Courses → chapters → lessons → exercises ----------------------------
   for (const course of COURSES) {
     const courseData = {
       name: course.name,
@@ -270,13 +270,13 @@ async function main() {
       create: { id: course.id, ...courseData },
     });
 
-    // El temario del curso se reemplaza entero: lo que ya no está en los datos
-    // se borra ANTES de sembrar lo nuevo. Sin esto, una lección retirada y otra
-    // recién llegada se pelearían por el mismo (chapterId, order), que es
-    // único. El borrado se limita a los capítulos de ESTE curso: los cursos
-    // creados desde el panel no se tocan. Las filas que cuelgan de una lección
-    // (ejercicios, progreso, temas) caen por cascada; las referencias externas
-    // —bloque de clase, «última lección vista»— quedan a null.
+    // The course's syllabus is replaced whole: what is no longer in the data is
+    // deleted BEFORE seeding the new content. Without this, a withdrawn lesson and a
+    // newly arrived one would fight over the same (chapterId, order), which is
+    // unique. The deletion is limited to THIS course's chapters: courses created
+    // from the panel are not touched. The rows hanging from a lesson (exercises,
+    // progress, topics) fall by cascade; the external references — class block,
+    // "last lesson seen" — are left null.
     const seededChapterIds = course.chapters.map((chapter) => chapter.id);
     const seededLessonIds = course.chapters.flatMap((chapter) => chapter.lessons.map((lesson) => lesson.id));
     await db.lesson.deleteMany({
@@ -341,14 +341,14 @@ async function main() {
         }
 
         for (const exercise of lesson.exercises) {
-          // La copia congelada (startFen, línea, ruta) la calcula el mismo
-          // módulo que usa el editor del staff: si divergieran, los ejercicios
-          // sembrados y los creados a mano se comportarían distinto.
+          // The frozen copy (startFen, line, path) is computed by the same module the
+          // staff editor uses: if they diverged, the seeded exercises and the hand-made
+          // ones would behave differently.
           const derived = deriveExerciseData({
-            // Del PGN, que es la única fuente de la posición desde que no hay
-            // `Lesson.initialFen`. Sin esto, los ejercicios de Lucena y
-            // Philidor se derivarían desde la posición de partida y el seed
-            // rompería al validar sus jugadas.
+            // From the PGN, which is the only source of the position since there is no
+            // `Lesson.initialFen`. Without this, the Lucena and Philidor exercises would be
+            // derived from the starting position and the seed would break when validating
+            // their moves.
             initialFen: startFenOf(lesson.pgn),
             afterSans: exercise.afterSans,
             lineSans: exercise.lineSans,
@@ -358,7 +358,7 @@ async function main() {
             order: exercise.order,
             modeId: idOf(exerciseMode, exercise.mode),
             ...derived,
-            // Congelado a la vez que el PGN de la lección: no nace stale.
+            // Frozen at the same time as the lesson's PGN: it is not born stale.
             frozenAt: new Date(now.getTime() - 30 * DAY_MS),
             promptText: exercise.promptText,
           };
@@ -372,7 +372,7 @@ async function main() {
     }
   }
 
-  // --- Estudios y partidas -------------------------------------------------
+  // --- Studies and games ---------------------------------------------------
   for (const database of GAME_DATABASES) {
     const databaseData = {
       ownerTypeId: idOf(ownerType, database.ownerType),
@@ -392,8 +392,8 @@ async function main() {
     });
   }
 
-  // El reparto va DESPUÉS de las bases y antes que las partidas: la fila apunta
-  // a la colección, que ya tiene que existir.
+  // The share goes AFTER the databases and before the games: the row points at
+  // the collection, which has to exist already.
   for (const share of STUDY_SHARES) {
     await db.studyShare.upsert({
       where: { databaseId_userId: { databaseId: share.databaseId, userId: share.userId } },
@@ -423,9 +423,9 @@ async function main() {
       update: gameData,
       create: { id: game.id, ...gameData },
     });
-    // Indexar aquí y no en un paso aparte deja el seed autosuficiente: tras
-    // sembrar, el buscador por posición ya encuentra estas partidas.
-    // `indexGamePositions` borra y regenera, así que un re-seed no duplica.
+    // Indexing here and not in a separate step leaves the seed self-sufficient:
+    // after seeding, the position search already finds these games.
+    // `indexGamePositions` deletes and regenerates, so a re-seed does not duplicate.
     await indexGamePositions(db, {
       gameId: game.id,
       databaseId: game.databaseId,
@@ -433,7 +433,7 @@ async function main() {
     });
   }
 
-  // --- Clases --------------------------------------------------------------
+  // --- Classes -------------------------------------------------------------
   for (const cls of buildClasses(now)) {
     const classData = {
       teacherId: cls.teacherId,
@@ -503,7 +503,7 @@ async function main() {
     create: { classId: CLASS_TRANSCRIPT.classId, ...transcriptData },
   });
 
-  // --- Progreso, entrenamiento y actividad ---------------------------------
+  // --- Progress, training and activity -------------------------------------
   const progress = buildProgress(now);
 
   for (const row of progress.courseProgress) {
@@ -580,8 +580,8 @@ async function main() {
     });
   }
 
-  // UserStatDaily es derivada: se reconstruye entera desde UserActivity para
-  // que el agregado y la fuente de verdad no puedan desincronizarse.
+  // UserStatDaily is derived: it is rebuilt whole from UserActivity so that the
+  // aggregate and the source of truth cannot drift apart.
   await rebuildDailyStats(IDS.demoUser);
 
   console.log("Seed de la plataforma completado.");

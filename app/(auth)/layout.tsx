@@ -11,8 +11,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-// Puerta de entrada a la plataforma: sin el shell interno (no hay navegación
-// que ofrecer a quien todavía no ha entrado) pero con sus tokens visuales.
+// Entry door to the platform: without the internal shell (there is no
+// navigation to offer someone who has not logged in yet) but with its visual tokens.
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <html

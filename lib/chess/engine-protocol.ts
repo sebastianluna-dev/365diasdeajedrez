@@ -1,35 +1,35 @@
-// Lectura de las líneas `info` que escupe un motor UCI.
+// Reading the `info` lines a UCI engine spits out.
 //
-// Módulo puro: el worker sólo pasa texto, y todo lo que hay que entender de él
-// —a quién favorece la puntuación, cómo se lee un mate, dónde acaba la línea—
-// se decide y se prueba aquí.
+// Pure module: the worker only passes text, and everything that has to be
+// understood about it — who the score favours, how a mate reads, where the
+// line ends — is decided and tested here.
 
 export interface EngineInfo {
   /**
-   * Qué línea de las pedidas es ésta: 1 es la mejor. El motor la omite cuando
-   * sólo se le pide una, así que se asume 1 en ese caso.
+   * Which of the requested lines this is: 1 is the best. The engine omits it
+   * when only one is asked for, so 1 is assumed in that case.
    */
   multipv: number;
   depth: number;
-  /** Ventaja en peones, SIEMPRE desde el punto de vista de las blancas. */
+  /** Advantage in pawns, ALWAYS from White's point of view. */
   score: number;
-  /** Jugadas hasta el mate, en signo de blancas. `null` si no hay mate a la vista. */
+  /** Moves to mate, in White's sign. `null` when there is no mate in sight. */
   mateIn: number | null;
-  /** Línea principal en UCI («e2e4 e7e5»), tal cual la da el motor. */
+  /** Principal variation in UCI ("e2e4 e7e5"), exactly as the engine gives it. */
   pv: string[];
 }
 
-/** Con cuántas medias jugadas de ventaja se pinta la barra llena en un mate. */
+/** How many half-moves of advantage fill the bar completely on a mate. */
 const MATE_SCORE = 100;
 
 /**
- * Lee una línea `info` del motor. Devuelve `null` si no es una con evaluación
- * —hay muchas de trámite, como las de `currmove` o `string`—.
+ * Reads an `info` line from the engine. Returns `null` when it is not one with
+ * an evaluation — there are many routine ones, like `currmove` or `string`.
  *
- * El motor puntúa desde el punto de vista de QUIEN MUEVE, así que en una
- * posición de negras un `+1.2` significa que van mejor las negras. Aquí se
- * normaliza a blancas de una vez, que es como se lee un tablero: si no, la
- * barra saltaría de lado en cada jugada.
+ * The engine scores from the point of view of WHOEVER MOVES, so in a Black
+ * position a `+1.2` means Black is better. Here it is normalised to White once
+ * and for all, which is how a board is read: otherwise the bar would jump
+ * sides on every move.
  */
 export function parseEngineInfo(line: string, turn: "white" | "black"): EngineInfo | null {
   if (!line.startsWith("info ")) return null;
@@ -61,22 +61,23 @@ export function parseEngineInfo(line: string, turn: "white" | "black"): EngineIn
 }
 
 /**
- * Cuánto llena la barra, de 0 (ganan las negras) a 1 (ganan las blancas).
+ * How full the bar is, from 0 (Black wins) to 1 (White wins).
  *
- * No es lineal a propósito: la diferencia entre +0,3 y +1,0 se nota en la
- * partida, y entre +7 y +9 ya no. La curva logística reparte casi todo el
- * recorrido en el rango donde la ventaja aún se discute.
+ * It is not linear on purpose: the difference between +0.3 and +1.0 shows in
+ * the game, and between +7 and +9 it no longer does. The logistic curve
+ * spends almost all of its travel in the range where the advantage is still
+ * in dispute.
  */
 export function evaluationBarFill(score: number): number {
   return 1 / (1 + Math.exp(-0.42 * score));
 }
 
 /**
- * La puntuación como se escribe en un tablero: «+1.4», «−0.7», «M3».
+ * The score as it is written on a board: "+1.4", "−0.7", "M3".
  *
- * Pide sólo las dos cifras y no un `EngineInfo` entero porque lo mismo se
- * escribe viniendo del módulo en vivo que de un `[%eval]` guardado en el PGN
- * (`MoveEvaluation`), y las dos formas se leen igual.
+ * It asks only for the two figures and not for a whole `EngineInfo` because
+ * the same thing is written whether it comes from the live engine or from an
+ * `[%eval]` stored in the PGN (`MoveEvaluation`), and both forms read alike.
  */
 export function formatEvaluation(info: Pick<EngineInfo, "score" | "mateIn">): string {
   if (info.mateIn !== null) {
@@ -90,23 +91,23 @@ export function formatEvaluation(info: Pick<EngineInfo, "score" | "mateIn">): st
 }
 
 /**
- * Numera una línea del módulo como se escribiría en una partida: «18. Cd5 Dxb2
- * 19. Axf7+».
+ * Numbers an engine line the way it would be written in a game: "18. Nd5 Qxb2
+ * 19. Bxf7+".
  *
- * El número y el turno salen del FEN, no de la posición inicial: la línea
- * empieza donde está el tablero, y sin eso una sugerencia en la jugada 30 se
- * leería como si fuera la apertura. Cuando toca a las negras, la primera lleva
- * los puntos suspensivos que dicen que su par ya se jugó.
+ * The number and the turn come from the FEN, not from the initial position:
+ * the line starts where the board is, and without that a suggestion at move 30
+ * would read as if it were the opening. When it is Black to move, the first
+ * one carries the ellipsis that says its pair has already been played.
  */
 export interface EngineLineToken {
   san: string;
-  /** «18.» o «18…» delante de la jugada, cuando toca ponerlo. */
+  /** "18." or "18…" before the move, when it needs to be there. */
   number?: string;
 }
 
 /**
- * La misma línea, jugada a jugada, para poder pintar cada una por su cuenta —y
- * así señalarla con el ratón y previsualizar su posición—.
+ * The same line, move by move, so each one can be rendered on its own — and
+ * thus be pointed at with the mouse and have its position previewed.
  */
 export function engineLineTokens(fen: string, sans: string[]): EngineLineToken[] {
   const fields = fen.split(" ");
@@ -130,19 +131,19 @@ export function formatEngineLine(fen: string, sans: string[]): string {
     .join(" ");
 }
 
-/** Las continuaciones conocidas de una posición, indexadas por número de línea. */
+/** The known continuations of a position, indexed by line number. */
 export interface EngineLines {
   fen: string;
   byIndex: Record<number, EngineInfo>;
 }
 
 /**
- * Incorpora una evaluación recién llegada a lo que ya se sabe.
+ * Merges a freshly arrived evaluation into what is already known.
  *
- * El motor emite cada línea por separado y cada una avanza a su ritmo, así que
- * se guardan por índice y la nueva sustituye a la suya. Si el FEN no es el de
- * lo acumulado se empieza de cero: mezclar líneas de dos posiciones dejaría en
- * pantalla una sugerencia imposible.
+ * The engine emits each line separately and each advances at its own pace, so
+ * they are stored by index and the new one replaces its own. If the FEN is not
+ * that of the accumulated data it starts from scratch: mixing lines from two
+ * positions would leave an impossible suggestion on screen.
  */
 export function mergeEngineLines(
   current: EngineLines | null,
@@ -154,7 +155,7 @@ export function mergeEngineLines(
   return { fen, byIndex };
 }
 
-/** Las líneas de `fen`, la mejor primero. Vacío si lo guardado es de otra posición. */
+/** The lines of `fen`, best first. Empty when what is stored is from another position. */
 export function orderedEngineLines(current: EngineLines | null, fen: string): EngineInfo[] {
   if (current?.fen !== fen) return [];
   return Object.keys(current.byIndex)

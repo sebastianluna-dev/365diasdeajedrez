@@ -6,8 +6,8 @@ const MX = "America/Mexico_City";
 
 describe("dayKey", () => {
   it("da el día de la zona, no el de UTC", () => {
-    // 00:10 UTC del día 16 son todavía las 18:10 del día 15 en México: la racha
-    // de esa tarde tiene que contar como del 15.
+    // 00:10 UTC on the 16th is still 18:10 on the 15th in Mexico: that
+    // afternoon's streak has to count as the 15th's.
     expect(dayKey(new Date("2026-03-16T00:10:00.000Z"), MX)).toBe("2026-03-15");
     expect(dayKey(new Date("2026-03-16T06:10:00.000Z"), MX)).toBe("2026-03-16");
   });
@@ -26,14 +26,14 @@ describe("startOfDay", () => {
   it("es la vuelta de dayKey: el primer instante del día pertenece a ese día", () => {
     for (const key of ["2026-01-01", "2026-03-15", "2026-07-04", "2026-11-02", "2026-12-31"]) {
       expect(dayKey(startOfDay(key, MX), MX)).toBe(key);
-      // Y un milisegundo antes es del día anterior, que es lo que hace que
-      // acotar una consulta con `gte` no se coma parte de ayer.
+      // And a millisecond earlier belongs to the previous day, which is what keeps
+      // bounding a query with `gte` from eating part of yesterday.
       expect(dayKey(new Date(startOfDay(key, MX).getTime() - 1), MX)).not.toBe(key);
     }
   });
 
   it("sigue al horario de verano en lugar de suponer un desfase fijo", () => {
-    // España cambia la hora el último domingo de marzo: antes va +1, después +2.
+    // Spain changes the clock on the last Sunday of March: before it is +1, after +2.
     expect(startOfDay("2026-03-01", "Europe/Madrid").toISOString()).toBe("2026-02-28T23:00:00.000Z");
     expect(startOfDay("2026-04-01", "Europe/Madrid").toISOString()).toBe("2026-03-31T22:00:00.000Z");
   });
@@ -50,8 +50,8 @@ describe("streakLength", () => {
   });
 
   it("el día de hoy todavía en blanco NO rompe la racha", () => {
-    // Son las nueve de la mañana y aún no ha estudiado: ayer, anteayer y el
-    // anterior siguen contando.
+    // It is nine in the morning and they have not studied yet: yesterday, the day
+    // before and the one before that still count.
     const days = ["2026-03-12", "2026-03-13", "2026-03-14"];
     expect(streakLength(days, "2026-03-15")).toBe(3);
   });
@@ -61,7 +61,7 @@ describe("streakLength", () => {
   });
 
   it("un hueco corta la cuenta ahí, no antes", () => {
-    // Falta el 13: sólo cuentan el 14 y el 15.
+    // The 13th is missing: only the 14th and the 15th count.
     const days = ["2026-03-10", "2026-03-11", "2026-03-12", "2026-03-14", "2026-03-15"];
     expect(streakLength(days, "2026-03-15")).toBe(2);
   });
@@ -92,8 +92,8 @@ describe("streakLength", () => {
   });
 
   it("la actividad futura no infla la racha de hoy", () => {
-    // Un desfase de reloj podría dejar una fila con fecha de mañana; contarla
-    // regalaría un día que no se ha estudiado.
+    // A clock skew could leave a row dated tomorrow; counting it would hand over a
+    // day that has not been studied.
     const days = ["2026-03-15", "2026-03-16"];
     expect(streakLength(days, "2026-03-15")).toBe(1);
   });

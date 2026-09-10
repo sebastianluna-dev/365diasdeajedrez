@@ -6,29 +6,29 @@ import "./game-aside.comp.css";
 
 interface GameAsideProps {
   game: GameView;
-  /** Las demás partidas del estudio, para saltar entre ellas sin volver. */
+  /** The other games of the study, to jump between them without going back. */
   siblings: StudyGameItem[];
   /**
-   * El modal de nueva partida, montado por quien tiene sus datos. Llega como
-   * nodo y no como props para no arrastrar hasta aquí el catálogo de resultados
-   * y las partidas de clase, que el aside no usa para nada más.
+   * The new-game modal, mounted by whoever has its data. It arrives as a node
+   * and not as props so as not to drag the results catalog and the class games
+   * all the way here, which the aside uses for nothing else.
    */
   newGame?: ReactNode;
-  /** Modal de «Datos de la partida»; ausente si no se puede escribir. */
+  /** "Datos de la partida" modal; absent when writing is not allowed. */
   editGame?: ReactNode;
 }
 
-/** La segunda línea de cada partida: quiénes la jugaron. */
+/** The second line of each game: who played it. */
 function gameMeta(game: StudyGameItem): string {
   return `${game.white} — ${game.black}`;
 }
 
 /**
- * Los cuatro datos cortos, en rejilla.
+ * The four short facts, in a grid.
  *
- * Se pintan SIEMPRE los cuatro, con una raya donde no hay dato: en una rejilla
- * de dos por dos, esconder una celda descoloca a las otras tres, y una ficha
- * incompleta se lee peor que una con huecos declarados.
+ * All four are ALWAYS rendered, with a dash where there is no value: in a
+ * two-by-two grid, hiding one cell displaces the other three, and an
+ * incomplete record reads worse than one with declared gaps.
  */
 function metaCells(game: GameView): { key: string; value: string }[] {
   return [
@@ -62,12 +62,12 @@ export function GameAside({ game, siblings, newGame, editGame }: GameAsideProps)
                   className={`game-aside__item${sibling.id === game.id ? " game-aside__item_state_active" : ""}`}
                 >
                   <span className="game-aside__item-main">
-                    {/* El nombre que le puso el alumno encabeza la fila; sin él,
-                      `label` ya cae a la ronda, al evento o a su posición dentro
-                      del estudio. */}
+                    {/* The name the student gave it heads the row; without it,
+                      `label` already falls back to the round, the event or its position
+                      within the study. */}
                     <span className="game-aside__item-name">{sibling.title ?? sibling.label}</span>
-                    {/* Los nombres largos se cortan para no descuadrar la fila,
-                      así que el completo se enseña al pasar por encima. */}
+                    {/* Long names are cut so as not to misalign the row, so the
+                      full one is shown on hover. */}
                     <span className="game-aside__item-meta" title={meta}>
                       {meta}
                     </span>
@@ -82,8 +82,8 @@ export function GameAside({ game, siblings, newGame, editGame }: GameAsideProps)
         {newGame && <div className="game-aside__new">{newGame}</div>}
       </section>
 
-      {/* La ficha se lee de arriba abajo: dónde se jugó, cuándo y cómo acabó, y
-          al pie de dónde salió la partida. */}
+      {/* The record reads top to bottom: where it was played, when and how it
+          ended, and at the foot where the game came from. */}
       <section className="game-aside__card game-aside__card_variant_meta">
         <div className="game-aside__meta-head">
           <div className="game-aside__card-head">
@@ -104,8 +104,8 @@ export function GameAside({ game, siblings, newGame, editGame }: GameAsideProps)
           ))}
         </dl>
 
-        {/* De dónde salió y, para el dueño, borrarla: las jugadas se editan en
-            el propio tablero, así que aquí ya no queda nada más. */}
+        {/* Where it came from and, for the owner, deleting it: the moves are edited
+            on the board itself, so nothing else is left here. */}
         <div className="game-aside__meta-foot">
           <span className="game-aside__source">{game.sourceLabel}</span>
           {game.canEdit && (

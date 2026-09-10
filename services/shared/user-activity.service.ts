@@ -13,19 +13,19 @@ export interface RecordActivityInput {
   typeCode: ActivityTypeCode;
   subjectTypeCode: SubjectTypeCode;
   subjectId: string;
-  /** Tema del contenido, cuando se conoce: permite desglosar las estadísticas. */
+  /** Topic of the content, when it is known: it allows breaking the statistics down. */
   topicId?: number | null;
   occurredAt?: Date;
   meta?: Record<string, string>;
 }
 
 /**
- * Registra un hecho del alumno y actualiza el agregado diario.
+ * Records a fact about the student and updates the daily aggregate.
  *
- * UserActivity es append-only y la fuente de verdad; UserStatDaily es una
- * copia derivada (reconstruible con `rebuildUserStatDaily`) que hace baratos
- * los rangos temporales del dashboard. Se incrementan dos filas por hecho: el
- * total de la métrica (topicId null) y, si hay tema, su desglose.
+ * UserActivity is append-only and the source of truth; UserStatDaily is a
+ * derived copy (rebuildable with `rebuildUserStatDaily`) that makes the
+ * dashboard's time ranges cheap. Two rows are incremented per fact: the
+ * metric's total (topicId null) and, if there is a topic, its breakdown.
  */
 export async function recordUserActivity(input: RecordActivityInput): Promise<void> {
   const db = getPlatformDb();
@@ -55,9 +55,9 @@ export async function recordUserActivity(input: RecordActivityInput): Promise<vo
 }
 
 /**
- * Upsert +1 sobre el bucket diario. Va en SQL crudo porque el índice único usa
- * NULLS NOT DISTINCT (para que topicId nulo no duplique filas) y el `upsert`
- * tipado de Prisma no puede expresar esa condición.
+ * Upsert +1 over the daily bucket. It goes in raw SQL because the unique index
+ * uses NULLS NOT DISTINCT (so a null topicId does not duplicate rows) and
+ * Prisma's typed `upsert` cannot express that condition.
  */
 async function incrementDailyStat(userId: string, day: Date, metricId: number, topicId: number | null): Promise<void> {
   const db = getPlatformDb();

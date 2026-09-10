@@ -1,17 +1,16 @@
 import { platformRoutes, staffRoutes, teacherRoutes } from "@/lib/platform-routes";
 
-// Navegación de la plataforma. El menú es EXCLUYENTE por rol: cada quien ve
-// sólo el suyo, no la suma. Un mismo usuario puede seguir siendo alumno,
-// profesor y staff a la vez (los roles son ortogonales en la base de datos),
-// así que cuando acumula varios manda el de mayor alcance —staff sobre
-// profesor, profesor sobre alumno— y el resto de áreas dejan de aparecer en el
-// menú. Los href salen siempre de los builders de rutas, nunca de strings
-// sueltos.
+// Platform navigation. The menu is EXCLUSIVE by role: each person sees only
+// their own, not the sum. The same user can still be student, teacher and
+// staff at once (roles are orthogonal in the database), so when they
+// accumulate several the widest one rules — staff over teacher, teacher over
+// student — and the other areas stop appearing in the menu. Hrefs always
+// come from the route builders, never from loose strings.
 //
-// Ojo con lo que esto NO es: ocultar un grupo no retira ningún permiso. Un
-// profesor que teclee /estudios sigue entrando, porque esas páginas son suyas
-// como usuario; lo que decide de verdad es `requireTeacher`/`requireStaff` en
-// cada página y action, y ahí nada ha cambiado.
+// Mind what this is NOT: hiding a group removes no permission. A teacher who
+// types /estudios still gets in, because those pages are theirs as a user;
+// what really decides is `requireTeacher`/`requireStaff` in every page and
+// action, and nothing has changed there.
 
 export interface PlatformNavItem {
   label: string;
@@ -19,15 +18,15 @@ export interface PlatformNavItem {
 }
 
 export interface PlatformNavGroup {
-  /** Sin label = grupo base, se pinta sin encabezado. */
+  /** No label = base group, rendered without a heading. */
   label?: string;
   items: PlatformNavItem[];
 }
 
 /**
- * El trainer se alcanza desde cursos y dashboard, así que no ocupa sitio aquí.
- * El explorador sí: es una herramienta transversal, no el paso siguiente de
- * ninguna otra pantalla.
+ * The trainer is reached from courses and dashboard, so it takes no room here.
+ * The explorer does: it is a cross-cutting tool, not the next step of any
+ * other screen.
  */
 export const STUDENT_NAV_ITEMS: PlatformNavItem[] = [
   { label: "Inicio", href: platformRoutes.dashboard },
@@ -41,8 +40,8 @@ export const TEACHER_NAV_ITEMS: PlatformNavItem[] = [
   { label: "Panel del profesor", href: teacherRoutes.home },
   { label: "Mis alumnos", href: teacherRoutes.students },
   { label: "Clases que imparto", href: teacherRoutes.classes },
-  // Mismo destino que en el menú del alumno: el explorador no es de un rol, y
-  // lo que ve cada quien lo decide el filtro de visibilidad, no el menú.
+  // Same destination as in the student menu: the explorer belongs to no role,
+  // and what each person sees is decided by the visibility filter, not the menu.
   { label: "Explorador", href: platformRoutes.explorer },
   { label: "Mi perfil", href: teacherRoutes.profile },
 ];
@@ -57,11 +56,11 @@ export const STAFF_NAV_ITEMS: PlatformNavItem[] = [
 ];
 
 /**
- * Función pura (testeable) que elige el menú que toca. Devuelve siempre UN solo
- * grupo: es la lista del rol de mayor alcance que tenga el usuario.
+ * Pure (testable) function that picks the right menu. It always returns ONE
+ * single group: the list of the widest role the user has.
  *
- * Sigue devolviendo un array (y no un grupo suelto) para no obligar al
- * componente a cambiar de forma si algún día vuelve a haber más de uno.
+ * It still returns an array (and not a loose group) so as not to force the
+ * component to change shape if one day there is more than one again.
  */
 export function buildPlatformNavGroups(roles: { isTeacher: boolean; isStaff: boolean }): PlatformNavGroup[] {
   if (roles.isStaff) return [{ label: "Administración", items: STAFF_NAV_ITEMS }];
@@ -70,9 +69,9 @@ export function buildPlatformNavGroups(roles: { isTeacher: boolean; isStaff: boo
 }
 
 /**
- * Href del ítem que debe aparecer activo, o null. Se queda con la coincidencia
- * MÁS LARGA: `/profesor` y `/profesor/alumnos` son ítems distintos y el prefijo
- * simple encendería los dos a la vez.
+ * Href of the item that should appear active, or null. It keeps the LONGEST
+ * match: `/profesor` and `/profesor/alumnos` are different items and a plain
+ * prefix would light up both at once.
  */
 export function activeNavHref(groups: PlatformNavGroup[], pathname: string): string | null {
   let best: string | null = null;

@@ -9,10 +9,10 @@ interface HeaderDropdownProps {
   links: { label: string; href: string }[];
 }
 
-// Con el ratón sigue abriéndose por CSS (`:hover`); el estado de aquí es para
-// el teclado y los lectores de pantalla: `aria-expanded` dice si está abierto,
-// el clic lo alterna, Escape lo cierra y devuelve el foco al disparador, y
-// salir del bloque con Tab lo cierra.
+// With the mouse it still opens through CSS (`:hover`); the state here is for
+// the keyboard and screen readers: `aria-expanded` says whether it is open,
+// click toggles it, Escape closes it and returns focus to the trigger, and
+// tabbing out of the block closes it.
 export function HeaderDropdown({ label, links }: HeaderDropdownProps) {
   const [open, setOpen] = useState(false);
   const menuId = useId();

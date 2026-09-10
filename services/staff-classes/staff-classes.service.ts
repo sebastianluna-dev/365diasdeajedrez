@@ -7,10 +7,10 @@ import { staffRoutes } from "@/lib/platform-routes";
 import { classDetailInclude, mapClassDetail } from "@/services/classes/classes.mapper";
 import type { StaffClassDetail, StaffClassFilters, StaffClassSummary } from "./staff-classes.types";
 
-// Vista global de clases para soporte. El staff LEE todo (incluidos los pagos,
-// que son un dato administrativo) pero no es dueño de las clases: sólo tiene
-// dos acciones, en staff-classes.actions.ts. Los bloques, la asistencia, los
-// metadatos y los participantes son del profesor.
+// Global view of classes for support. The staff READS everything (payments
+// included, which are administrative data) but does not own the classes: it has
+// only two actions, in staff-classes.actions.ts. The blocks, the attendance, the
+// metadata and the participants belong to the teacher.
 
 export async function listAllClasses(filters: StaffClassFilters = {}): Promise<StaffClassSummary[]> {
   await requireStaff();
@@ -90,8 +90,8 @@ export async function getClassAdminDetail(classId: string): Promise<StaffClassDe
         transcript: { select: { text: true, status: { select: { code: true, label: true } } } },
       },
     }),
-    // Los bloques se mapean con el mapper del ALUMNO: soporte tiene que ver
-    // exactamente lo que ve quien asistió a la clase.
+    // The blocks are mapped with the STUDENT's mapper: support has to see exactly
+    // what whoever attended the class sees.
     db.class.findUnique({ where: { id: classId }, include: classDetailInclude }),
   ]);
 
@@ -132,7 +132,7 @@ export async function getClassAdminDetail(classId: string): Promise<StaffClassDe
   };
 }
 
-/** Profesores para el filtro del listado. */
+/** Teachers for the listing's filter. */
 export async function listTeacherFilterOptions(): Promise<{ id: string; displayName: string }[]> {
   await requireStaff();
   return getPlatformDb().teacher.findMany({ select: { id: true, displayName: true }, orderBy: { displayName: "asc" } });

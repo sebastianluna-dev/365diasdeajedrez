@@ -30,8 +30,8 @@
     margin-bottom: 12px;
   }
 
-  /* La tabla es ancha: el desbordamiento se queda dentro de su caja y nunca
-     empuja el ancho de la página. */
+  /* The table is wide: the overflow stays inside its box and never pushes the
+     page width. */
   & .class-games__table-wrap {
     border: 1px solid var(--platform-border);
     border-radius: 10px;

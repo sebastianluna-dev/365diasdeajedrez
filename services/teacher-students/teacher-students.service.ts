@@ -16,18 +16,18 @@ import type {
   StudentSharedClass,
 } from "./teacher-students.types";
 
-// «Mis alumnos»: sólo los que tienen asignación ACTIVA con este profesor. Esa
-// condición viaja SIEMPRE dentro del `where` —nunca «leer y luego comprobar»—
-// de modo que entrar por URL directa al estudio de un alumno no asignado no
-// devuelve una fila que después haya que descartar: no devuelve nada.
+// "Mis alumnos": only those with an ACTIVE assignment to this teacher. That
+// condition ALWAYS travels inside the `where` — never "read and then check" — so
+// that entering an unassigned student's study by direct URL does not return a
+// row that has to be discarded afterwards: it returns nothing.
 //
-// Todo aquí es de sólo lectura, por decisión de producto: el profesor consulta
-// los estudios de su alumno, no los edita. Por eso este dominio no tiene
+// Everything here is read-only, by product decision: the teacher consults their
+// student's studies, they do not edit them. That is why this domain has no
 // `.actions.ts`.
 
 const ACTIVITY_LIMIT = 8;
 
-/** Asignación activa o null. Es la llave de todo lo demás. */
+/** Active assignment or null. It is the key to everything else. */
 const findActiveAssignment = cache(async (teacherId: string, studentId: string) => {
   return getPlatformDb().teacherStudent.findFirst({
     where: { teacherId, studentId, endedAt: null },
@@ -65,8 +65,8 @@ export async function getAssignedStudents(query?: string): Promise<AssignedStude
   if (assignments.length === 0) return [];
   const studentIds = assignments.map((assignment) => assignment.student.id);
 
-  // Dos consultas agregadas en vez de dos por alumno: la ficha de «Mis alumnos»
-  // no puede degradarse en N+1 al crecer la lista.
+  // Two aggregate queries instead of two per student: the "Mis alumnos" page
+  // cannot degrade into an N+1 as the list grows.
   const [lastActivities, nextClasses] = await Promise.all([
     db.userActivity.groupBy({
       by: ["userId"],
@@ -157,8 +157,8 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
       orderBy: { occurredAt: "desc" },
       take: ACTIVITY_LIMIT,
     }),
-    // Lecciones completadas con su curso, en UNA consulta: el porcentaje por
-    // curso se cuenta en memoria en vez de con una consulta por curso.
+    // Completed lessons with their course, in ONE query: the percentage per course
+    // is counted in memory instead of with a query per course.
     db.lessonProgress.findMany({
       where: { userId: studentId, status: { code: PROGRESS_STATUS.COMPLETED } },
       select: { lesson: { select: { chapter: { select: { courseId: true } } } } },
@@ -227,7 +227,7 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
 export async function getStudentStudies(studentId: string): Promise<StudySummary[]> {
   const { teacher } = await requireTeacher();
   const rows = await getPlatformDb().gameDatabase.findMany({
-    // La asignación activa va encadenada en el where: sin ella no hay filas.
+    // The active assignment is chained into the where: without it there are no rows.
     where: { userId: studentId, user: { studentAssignments: { some: { teacherId: teacher.id, endedAt: null } } } },
     include: studySummaryInclude,
     orderBy: [{ isDefault: "desc" }, { updatedAt: "desc" }],

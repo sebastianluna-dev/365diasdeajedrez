@@ -1,13 +1,13 @@
--- Índices compuestos para dos ordenaciones calientes.
+-- Composite indexes for two hot orderings.
 --
--- `Game` se lee siempre por colección y en su orden (`databaseId` + `order`):
--- con el índice sólo sobre `databaseId`, PostgreSQL localizaba las filas y
--- después las ordenaba aparte. `Class` se filtra por profesor y se ordena por
--- fecha en el panel del profesor; los dos índices sueltos no sirven para las
--- dos cosas a la vez. Los compuestos cubren también las consultas que sólo
--- filtran por la primera columna, así que los simples que sustituyen sobran.
+-- `Game` is always read by collection and in its order (`databaseId` +
+-- `order`): with the index on `databaseId` alone, PostgreSQL located the rows
+-- and then sorted them separately. `Class` is filtered by teacher and sorted by
+-- date in the teacher panel; the two separate indexes do not serve both at
+-- once. The composite ones also cover the queries that only filter by the first
+-- column, so the simple ones they replace are redundant.
 --
--- Generado con `prisma migrate diff` a partir del cambio en schema.prisma.
+-- Generated with `prisma migrate diff` from the change in schema.prisma.
 
 -- DropIndex
 DROP INDEX "Game_databaseId_idx";

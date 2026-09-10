@@ -9,13 +9,13 @@ interface StudyGoalAsideProps {
 }
 
 /**
- * La columna de la derecha de «Mis cursos»: cuántos días seguidos lleva
- * estudiando y cuánto ha estudiado hoy.
+ * The right column of "Mis cursos": how many days in a row the student has
+ * been studying and how much they have studied today.
  *
- * Ninguna de las dos cifras está guardada: la racha se cuenta hacia atrás desde
- * la actividad (lib/study-streak) y los minutos de hoy salen de las lecciones
- * terminadas hoy. Lo único que se almacena es el objetivo, porque es una
- * decisión y no un cálculo.
+ * Neither figure is stored: the streak is counted backwards from the
+ * activity (lib/study-streak) and today's minutes come from the lessons
+ * finished today. The only thing stored is the goal, because it is a
+ * decision and not a computation.
  */
 export function StudyGoalAside({ goal }: StudyGoalAsideProps) {
   return (
@@ -54,8 +54,8 @@ export function StudyGoalAside({ goal }: StudyGoalAsideProps) {
 
         <p className="study-goal__hint">Los alumnos que se marcan un objetivo terminan más cursos.</p>
 
-        {/* `<details>` en vez de un modal: cambiar el objetivo es elegir de una
-            lista corta, y así el formulario no necesita JavaScript propio. */}
+        {/* `<details>` instead of a modal: changing the goal is choosing from a
+            short list, and this way the form needs no JavaScript of its own. */}
         <details className="study-goal__editor">
           <summary className="study-goal__editor-button">Cambiar objetivo</summary>
 

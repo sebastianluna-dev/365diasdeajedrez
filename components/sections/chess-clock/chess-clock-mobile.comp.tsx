@@ -11,7 +11,7 @@ import "./chess-clock-mobile.comp.css";
 type MobileStep = "select" | "play";
 
 interface ChessClockMobileProps {
-  /** Ver `ChessClock`: sólo corre la variante que se ve. */
+  /** See `ChessClock`: only the visible variant runs. */
   enabled?: boolean;
 }
 

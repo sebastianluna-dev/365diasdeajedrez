@@ -7,7 +7,7 @@ export interface AssignedStudentSummary {
   email: string;
   assignedAtLabel: string;
   assignedAtIso: string;
-  /** Próxima clase compartida con este profesor, si la hay. */
+  /** Next class shared with this teacher, if there is one. */
   nextClassLabel?: string;
   nextClassIso?: string;
   lastActivityLabel?: string;

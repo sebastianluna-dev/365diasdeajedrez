@@ -18,9 +18,9 @@ function mapCategory(categories: ArticleDoc["categories"]): string | undefined {
 }
 
 /**
- * Todo menos el cuerpo. Es lo que pinta el listado del blog, así que se mapea
- * a partir de un documento que puede venir SIN `content` (ver
- * `getArticleSummaries`, que lo excluye en la consulta).
+ * Everything but the body. It is what the blog listing renders, so it is mapped
+ * from a document that may come WITHOUT `content` (see `getArticleSummaries`,
+ * which excludes it in the query).
  */
 export function mapArticleSummary(article: Omit<ArticleDoc, "content">): ArticleSummary {
   const publishedDate = new Date(article.publishedAt ?? article.createdAt);

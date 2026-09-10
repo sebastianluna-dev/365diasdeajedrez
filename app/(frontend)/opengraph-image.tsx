@@ -1,13 +1,13 @@
 import { ImageResponse } from "next/og";
 
-// Imagen Open Graph por defecto del sitio público, generada en el build. Se
-// dibuja con código y no con una foto porque así no depende de ningún archivo
-// en public/ ni de Cloudinary, y cambia con el texto. Las páginas que tienen
-// imagen propia (los artículos) la sustituyen desde su `generateMetadata`.
+// Default Open Graph image of the public site, generated at build time. It is
+// drawn with code and not with a photo so it depends on no file in public/
+// nor on Cloudinary, and changes with the text. Pages that have their own
+// image (the articles) replace it from their `generateMetadata`.
 //
-// `ImageResponse` no lee woff2, y las fuentes del sitio sólo existen en ese
-// formato; se usa la fuente por defecto del generador. Sólo texto latino: un
-// glifo de pieza (♞) obligaba al generador a descargar una fuente en el build.
+// `ImageResponse` does not read woff2, and the site's fonts only exist in that
+// format; the generator's default font is used. Latin text only: a piece
+// glyph (♞) forced the generator to download a font at build time.
 
 export const alt = "365 Días de Ajedrez, academia de ajedrez en línea";
 export const size = { width: 1200, height: 630 };

@@ -1,9 +1,9 @@
-// Sustituto de "server-only" para Vitest.
+// Stand-in for "server-only" in Vitest.
 //
-// En la app, `import "server-only"` lo resuelve Next (y lanza si el módulo
-// acaba en un Client Component). Vitest no conoce ese alias y el paquete no
-// está instalado, así que sin este archivo vacío ningún módulo de la capa de
-// servidor —`services/shared/form-data.ts`, `lib/rate-limit.ts`…— se podía ni
-// importar desde una prueba. Ver `vitest.config.mts`.
+// In the app, `import "server-only"` is resolved by Next (and throws if the
+// module ends up in a Client Component). Vitest does not know that alias and the
+// package is not installed, so without this empty file no server-layer module
+// — `services/shared/form-data.ts`, `lib/rate-limit.ts`… — could even be
+// imported from a test. See `vitest.config.mts`.
 
 export {};

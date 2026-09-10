@@ -4,8 +4,8 @@
   gap: 10px;
   flex-wrap: wrap;
 
-  /* Es un interruptor, no una acción: apagado se lee como un ajuste
-     disponible; encendido, en el naranja de la marca, como uno puesto. */
+  /* It is a switch, not an action: off it reads as an available setting; on,
+     in the brand orange, as one that is set. */
   & .priority-filter__button {
     display: inline-flex;
     align-items: center;

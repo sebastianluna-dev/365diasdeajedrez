@@ -9,9 +9,9 @@ import {
   type ReorderRow,
 } from "./reorder";
 
-// Se simula lo que hace PostgreSQL: aplicar los updates uno a uno y comprobar
-// que en NINGÚN paso intermedio hay dos filas con el mismo orden (que es
-// exactamente lo que lanzaría el P2002 del índice único).
+// What PostgreSQL does is simulated: applying the updates one by one and
+// checking that at NO intermediate step are there two rows with the same order
+// (which is exactly what the unique index's P2002 would throw).
 function applyUpdates(rows: ReorderRow[], updates: OrderUpdate[]): ReorderRow[] {
   const state = new Map(rows.map((row) => [row.id, row.order]));
 
@@ -86,7 +86,7 @@ describe("planSwap", () => {
 
 describe("planDenseRenumber", () => {
   it("cierra el hueco que deja un borrado en el medio", () => {
-    // Se ha borrado el que tenía order 3.
+    // The one with order 3 has been deleted.
     const remaining: ReorderRow[] = [
       { id: "b1", order: 1 },
       { id: "b2", order: 2 },
@@ -134,11 +134,11 @@ describe("planFullReorder", () => {
   const rows = (n: number): ReorderRow[] =>
     Array.from({ length: n }, (_, index) => ({ id: `r${index + 1}`, order: index + 1 }));
 
-  /** Aplica los updates en orden y devuelve el orden final por id. */
+  /** Applies the updates in order and returns the final order by id. */
   function apply(start: ReorderRow[], updates: OrderUpdate[]): Map<string, number> {
     const state = new Map(start.map((row) => [row.id, row.order]));
     for (const update of updates) {
-      // El índice único de la base: dos filas no pueden compartir orden.
+      // The database's unique index: two rows cannot share an order.
       for (const [id, order] of state) {
         if (id !== update.id && order === update.order) {
           throw new Error(`orden ${update.order} ocupado por ${id} al mover ${update.id}`);
@@ -161,8 +161,8 @@ describe("planFullReorder", () => {
   });
 
   it("ningún paso intermedio comparte orden con otra fila", () => {
-    // `apply` lanza si dos filas coinciden, así que basta con no explotar. Se
-    // prueban TODAS las permutaciones de cuatro: es donde vive el choque.
+    // `apply` throws if two rows coincide, so not blowing up is enough. ALL the
+    // permutations of four are tested: that is where the clash lives.
     const start = rows(4);
     const ids = ["r1", "r2", "r3", "r4"];
     const permute = (list: string[]): string[][] =>
@@ -180,7 +180,7 @@ describe("planFullReorder", () => {
 
   it("sólo toca las filas que cambian de sitio", () => {
     const start = rows(4);
-    // Se intercambian las dos últimas; las dos primeras se quedan quietas.
+    // The last two are swapped; the first two stay put.
     const updates = planFullReorder(start, ["r1", "r2", "r4", "r3"]);
     expect(new Set(updates.map((update) => update.id))).toEqual(new Set(["r3", "r4"]));
   });

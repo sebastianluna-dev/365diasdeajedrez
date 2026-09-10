@@ -2,10 +2,10 @@ import { describe, expect, it } from "vitest";
 import { moveAccuracy, reviewGame, winPercent, type ReviewedPosition } from "./game-review";
 
 const START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-/** Un final de torres: material sin peones muy por debajo del corte. */
+/** A rook endgame: non-pawn material well below the cutoff. */
 const ENDGAME = "4k3/8/8/8/8/8/4P3/R3K3 w - - 0 40";
 
-/** Posiciones con la evaluación dada, todas con el mismo FEN salvo que se diga. */
+/** Positions with the given evaluation, all with the same FEN unless stated. */
 function positions(scores: number[], fen = START): ReviewedPosition[] {
   return scores.map((score) => ({ fen, evaluation: { score, mateIn: null } }));
 }
@@ -18,7 +18,7 @@ describe("winPercent", () => {
   it("crece con la ventaja de las blancas y se satura", () => {
     expect(winPercent(1)).toBeGreaterThan(winPercent(0));
     expect(winPercent(9)).toBeGreaterThan(winPercent(3));
-    // Entre +9 y +30 ya casi no hay diferencia: la partida está ganada igual.
+    // Between +9 and +30 there is hardly any difference: the game is won either way.
     expect(winPercent(30) - winPercent(9)).toBeLessThan(5);
   });
 
@@ -29,7 +29,7 @@ describe("winPercent", () => {
 
 describe("moveAccuracy", () => {
   it("no perder nada es jugar perfecto", () => {
-    // La fórmula de Lichess da 99,9999 en su tope: es el cien por cien.
+    // Lichess's formula gives 99.9999 at its ceiling: that is a hundred per cent.
     expect(moveAccuracy(0)).toBeCloseTo(100, 3);
   });
 
@@ -42,21 +42,21 @@ describe("moveAccuracy", () => {
 
 describe("reviewGame", () => {
   it("mide cada jugada desde el punto de vista de quien la hizo", () => {
-    // 1. e4 (las blancas mejoran un poco) 1... ?? (la posición se va a +5: para
-    // las negras eso es hundirse, aunque el número suba).
+    // 1. e4 (White improves a little) 1... ?? (the position goes to +5: for
+    // Black that is collapsing, even though the number goes up).
     const review = reviewGame(positions([0.2, 0.3, 5]))!;
 
     expect(review.moves).toHaveLength(2);
     expect(review.moves[0]).toMatchObject({ ply: 1, color: "white", quality: "good" });
     expect(review.moves[1]).toMatchObject({ ply: 2, color: "black", quality: "blunder" });
-    // Las blancas no perdieron nada: su posición mejoró.
+    // White lost nothing: their position improved.
     expect(review.moves[0].centipawnLoss).toBe(0);
     expect(review.moves[1].centipawnLoss).toBe(470);
   });
 
   it("reparte los errores entre los dos jugadores", () => {
-    // Blancas sueltan un error grave —de +0,2 a −5 son 38 puntos de caída— y
-    // las negras devuelven parte con una imprecisión.
+    // White drops a serious mistake — from +0.2 to −5 is a 38-point fall — and
+    // Black gives part of it back with an inaccuracy.
     const review = reviewGame(positions([0.2, -5, -4, -5.5]))!;
 
     expect(review.white.blunders).toBe(1);
@@ -94,7 +94,7 @@ describe("reviewGame", () => {
     const review = reviewGame([...middle, ...end])!;
 
     expect(review.phases.endgame).toBe(3);
-    // El medio juego no puede empezar después del final.
+    // The middlegame cannot start after the endgame.
     expect(review.phases.middlegame).toBeLessThanOrEqual(review.phases.endgame);
   });
 });

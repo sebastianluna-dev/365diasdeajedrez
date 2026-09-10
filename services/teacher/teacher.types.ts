@@ -3,7 +3,7 @@ import type { ClassStatusCode } from "@/constants/platform/class-codes.const";
 export interface TeacherClassBrief {
   id: string;
   title: string;
-  /** Instante en UTC; la interfaz lo reformatea en la zona del profesor. */
+  /** Instant in UTC; the interface reformats it in the teacher's zone. */
   scheduledAtIso: string;
   dateLabel: string;
   timeLabel: string;
@@ -14,7 +14,7 @@ export interface TeacherClassBrief {
   href: string;
 }
 
-/** Clase terminada a la que le falta documentación: asistencia o resumen. */
+/** Finished class that is missing documentation: attendance or summary. */
 export interface TeacherPendingClass {
   id: string;
   title: string;

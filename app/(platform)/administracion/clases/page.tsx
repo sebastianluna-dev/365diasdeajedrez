@@ -16,7 +16,7 @@ function toStatusCode(value: string | undefined): ClassStatusCode | undefined {
   return value && (Object.values(CLASS_STATUS) as string[]).includes(value) ? (value as ClassStatusCode) : undefined;
 }
 
-/** "YYYY-MM-DD" → instante, o undefined si la fecha no es válida. */
+/** "YYYY-MM-DD" → instant, or undefined when the date is not valid. */
 function toDate(value: string | undefined, endOfDay = false): Date | undefined {
   if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return undefined;
   const date = new Date(`${value}T${endOfDay ? "23:59:59.999" : "00:00:00.000"}Z`);

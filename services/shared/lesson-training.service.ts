@@ -4,18 +4,18 @@ import { deriveExerciseData } from "@/lib/chess/exercise-derivation";
 import { extractMainline } from "@/lib/chess/mainline";
 import { turnColor } from "@/lib/chess/replay";
 
-// Mantiene sincronizado el ejercicio derivado de una lección entrenable.
+// Keeps the exercise derived from a trainable lesson in sync.
 //
-// Una lección entrenable tiene UN ejercicio, que es su línea principal. No se
-// duplica el PGN: el ejercicio guarda una copia congelada (FEN de partida y SAN)
-// porque es lo que permite que el entrenador siga funcionando si el PGN cambia
-// después, con el aviso de desactualizado que ya existe.
+// A trainable lesson has ONE exercise, which is its main line. The PGN is not
+// duplicated: the exercise stores a frozen copy (starting FEN and SANs) because
+// that is what lets the trainer go on working if the PGN changes afterwards,
+// with the stale warning that already exists.
 //
-// Se llama desde el panel de staff: al marcar la lección como entrenable y al
-// guardar su PGN. Recibe el cliente como parámetro para poder ejecutarse dentro
-// de la misma transacción que la escritura que lo provoca.
+// It is called from the staff panel: when marking the lesson as trainable and
+// when saving its PGN. It receives the client as a parameter so it can run
+// within the same transaction as the write that triggers it.
 
-/** El mínimo de Prisma que necesita este servicio, para aceptar también una transacción. */
+/** The minimum of Prisma this service needs, so it also accepts a transaction. */
 interface TrainingWriter {
   trainingExercise: {
     findFirst(args: unknown): Promise<{ id: string } | null>;
@@ -30,8 +30,8 @@ export interface SyncTrainingInput {
   pgn: string;
   isTrainable: boolean;
   /**
-   * Bando que juega el alumno. `null` = el que mueva primero en la línea, que
-   * es como se comportaba antes de que esto existiera.
+   * Side the student plays. `null` = whoever moves first in the line, which is
+   * how it behaved before this existed.
    */
   trainingColor?: "WHITE" | "BLACK" | null;
 }
@@ -40,24 +40,25 @@ export type SyncTrainingResult =
   | { ok: true; moves: number }
   | { ok: false; reason: "notTrainable" | "noMainline" | "illegalLine" | "colorHasNoMoves" };
 
-/** Enunciado del ejercicio derivado. */
+/** Prompt of the derived exercise. */
 const DERIVED_EXERCISE_PROMPT = "Reproduce la línea principal de memoria.";
 
 /**
- * Orden del derivado. Va en 0 porque los manuales empiezan en 1 (`nextOrder`),
- * así que abre la lista sin desplazarlos; quien manda para reconocerlo es
- * `isDerived`, no este número.
+ * Order of the derived one. It goes at 0 because the manual ones start at 1
+ * (`nextOrder`), so it opens the list without displacing them; what identifies
+ * it is `isDerived`, not this number.
  */
 const DERIVED_EXERCISE_ORDER = 0;
 
 /**
- * Deja el ejercicio derivado acorde con el PGN y con la marca de entrenable.
+ * Brings the derived exercise in line with the PGN and with the trainable flag.
  *
- * Si la lección deja de ser entrenable, se borra: dejarlo vivo lo mantendría en
- * las sesiones del entrenador aunque el staff ya no quiera que se entrene.
+ * If the lesson stops being trainable, it is deleted: leaving it alive would
+ * keep it in the trainer's sessions even though the staff no longer wants it
+ * trained.
  *
- * Sólo toca el ejercicio DERIVADO. Los que el staff haya creado a mano en el
- * editor se quedan como están, porque responden a otra intención.
+ * It only touches the DERIVED exercise. Those the staff created by hand in the
+ * editor stay as they are, because they answer another intent.
  */
 export async function syncLessonTrainingExercise(
   db: TrainingWriter,
@@ -76,13 +77,14 @@ export async function syncLessonTrainingExercise(
   const mainline = extractMainline(pgn);
   if (!mainline) return { ok: false, reason: "noMainline" };
 
-  // Quién mueve al empezar la línea. Sin FEN de partida, las blancas.
+  // Who moves at the start of the line. Without a starting FEN, White.
   const opensWith = mainline.initialFen ? turnColor(mainline.initialFen) : "white";
   const trains = trainingColor === BOARD_ORIENTATION.BLACK ? "black" : trainingColor === BOARD_ORIENTATION.WHITE ? "white" : opensWith;
 
-  // Si el alumno NO es quien abre, la primera jugada es del rival: se pre-juega
-  // y la línea arranca en la respuesta. El entrenador deduce el color del turno
-  // de `startFen`, así que con esto pide el bando correcto sin tocarlo.
+  // If the student is NOT the one who opens, the first move is the opponent's: it
+  // is pre-played and the line starts at the reply. The trainer deduces the
+  // colour from `startFen`'s turn, so with this it asks for the right side
+  // without touching it.
   const shift = trains === opensWith ? 0 : 1;
   const afterSans = mainline.sans.slice(0, shift);
   const lineSans = mainline.sans.slice(shift);
@@ -90,9 +92,9 @@ export async function syncLessonTrainingExercise(
 
   let derived;
   try {
-    // La línea ya salió del árbol, así que es legal por construcción; se vuelve
-    // a validar aquí porque es la función que congela el FEN y no queremos que
-    // el entrenador reciba nunca un SAN que no se pueda jugar.
+    // The line already came from the tree, so it is legal by construction; it is
+    // validated again here because this is the function that freezes the FEN and we
+    // never want the trainer to receive a SAN that cannot be played.
     derived = deriveExerciseData({ initialFen: mainline.initialFen, afterSans, lineSans });
   } catch {
     return { ok: false, reason: "illegalLine" };

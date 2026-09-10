@@ -10,9 +10,9 @@ export const metadata: Metadata = {
 };
 
 export default async function StudiesPage() {
-  // Frontera de la zona privada, y tiene que ser el PRIMER await: aunque
-  // `getStudyKinds` mire ahora si quien pregunta es profesor —para ofrecerle
-  // «Colección»—, resolver un rol no es comprobar una sesión.
+  // Border of the private area, and it has to be the FIRST await: even though
+  // `getStudyKinds` now checks whether the caller is a teacher — to offer them
+  // "Colección" — resolving a role is not checking a session.
   await getCurrentUser();
   const kinds = await getStudyKinds();
 

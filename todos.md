@@ -1,155 +1,159 @@
-# TODOs delegables
+# Delegable TODOs
 
-> **Estado: las diez tareas de esta tanda (T1–T10) están hechas** (2026-08-30). Se dejan
-> registradas abajo con lo que acabó cambiando, para no repetirlas. Las mejoras que siguen
-> abiertas viven en `MEJORAS.md`.
+> **Status: the ten tasks of this batch (T1–T10) are done** (2026-08-30). They are left recorded
+> below with what ended up changing, so they are not repeated. The improvements that are still open
+> live in `MEJORAS.md`.
 >
-> **2026-08-31 — `PLAN-TEACHER-ADMIN.md` ejecutado por completo** (fases 1 a 7): panel del
-> profesor (`/teacher`) y de administración (`/staff`). Lo verificado de verdad, fase a fase,
-> está en la sección siguiente; lo que quedó pendiente se anotó en `MEJORAS.md` (puntos 23 a 27).
+> **2026-08-31 — `PLAN-TEACHER-ADMIN.md` executed in full** (phases 1 to 7): teacher panel
+> (`/teacher`) and administration panel (`/staff`). What was really verified, phase by phase, is in
+> the next section; what was left pending was noted in `MEJORAS.md` (entries 23 to 27).
 
-## Paneles de profesor y administración (2026-08-31)
+## Teacher and administration panels (2026-08-31)
 
-Validado ejecutando cada comprobación, no por lectura del código:
+Validated by running every check, not by reading the code:
 
-- **F1 · Esquema y datos** — migración `add_teacher_staff_panels` aplicada sobre la base poblada
-  (aditiva); `npm run db:seed` dos veces sin cambios; un segundo `INSERT` de asignación activa
-  para el mismo alumno **falla en SQL** (P2002 del índice parcial `teacher_student_one_active`);
-  los CHECK previos y el índice `NULLS NOT DISTINCT` intactos.
-- **F2 · Autorización** — las 15 rutas de panel redirigen al login sin cookie; con sesión, el rol
-  equivocado es expulsado sin que se pinte ningún dato (comprobado buscando marcadores de
-  contenido en el HTML de las tres cuentas demo); el menú apila el grupo correcto por rol.
-- **F3 · Profesor, sólo lectura** — el estudio y la partida de un alumno **no asignado** dan «no
-  encontrado» por URL directa, sin filtrar su nombre; el `meetingUrl` lo ve siempre el profesor y
-  el alumno sólo desde `meetingUrlVisibleFrom` (test unitario del mapper).
-- **F4 · Clases y bloques** — reordenación probada contra PostgreSQL con 5 bloques: subir, bajar,
-  extremos, cadena completa y borrado del tercero, siempre orden denso y **sin un solo P2002**;
-  una partida de alumno no asignado se rechaza en el `where` del guard, y sigue rechazándose tras
-  cerrar la asignación.
-- **F5 · Staff** — reasignar conserva la fila anterior cerrada; reasignar al mismo profesor no
-  crea fila; el email duplicado y la asignación duplicada dan mensaje amigable (hizo falta
-  `services/shared/prisma-errors.ts`, ver MEJORAS #23); reiniciar la contraseña borra todas las
-  sesiones de la cuenta.
-- **F6 · Cursos** — `deriveExerciseData` extraída de `prisma/seed.ts` **moviendo el código, no
-  reescribiéndolo**: tras el refactor el re-seed produce datos derivados idénticos campo a campo
-  (`path`, `startPly`, `endPly`, `startFen`, `line`); un ejercicio creado por el staff **no nace
-  desactualizado**, es entrenable, y se marca desactualizado al tocar el PGN de la lección; un
-  curso en borrador da «no encontrado» en `/courses` por URL directa.
-- **F7 · Transversal** — matriz de permisos recorrida celda a celda por HTTP con las tres cuentas
-  demo; `npm run build` limpio; cero archivos de Payload tocados.
+- **P1 · Schema and data** — migration `add_teacher_staff_panels` applied over the populated
+  database (additive); `npm run db:seed` twice with no changes; a second `INSERT` of an active
+  assignment for the same student **fails in SQL** (P2002 of the partial index
+  `teacher_student_one_active`); the previous CHECKs and the `NULLS NOT DISTINCT` index intact.
+- **P2 · Authorisation** — the 15 panel routes redirect to the login without a cookie; with a
+  session, the wrong role is ejected without a single piece of data being rendered (checked by
+  searching for content markers in the HTML of the three demo accounts); the menu stacks the right
+  group by role.
+- **P3 · Teacher, read-only** — the study and the game of an **unassigned** student give "not
+  found" by direct URL, without leaking their name; the `meetingUrl` is always seen by the teacher
+  and by the student only from `meetingUrlVisibleFrom` (unit test of the mapper).
+- **P4 · Classes and blocks** — reordering tested against PostgreSQL with 5 blocks: up, down, the
+  ends, the full chain and deleting the third, always a dense order and **without a single P2002**;
+  an unassigned student's game is rejected in the guard's `where`, and goes on being rejected after
+  closing the assignment.
+- **P5 · Staff** — reassigning keeps the previous row closed; reassigning to the same teacher
+  creates no row; the duplicate email and the duplicate assignment give a friendly message (it took
+  `services/shared/prisma-errors.ts`, see MEJORAS #23); resetting the password deletes every session
+  of the account.
+- **P6 · Courses** — `deriveExerciseData` extracted from `prisma/seed.ts` **by moving the code, not
+  rewriting it**: after the refactor the re-seed produces derived data identical field by field
+  (`path`, `startPly`, `endPly`, `startFen`, `line`); an exercise created by the staff **is not born
+  stale**, is trainable, and is marked stale when the lesson's PGN is touched; a draft course gives
+  "not found" in `/courses` by direct URL.
+- **P7 · Cross-cutting** — permissions matrix walked cell by cell over HTTP with the three demo
+  accounts; `npm run build` clean; zero Payload files touched.
 
-**Lo único que no se pudo cerrar como pedía el plan:** el POST directo de server actions con el
-rol equivocado (MEJORAS #27) — Next 16 no acepta esas peticiones desde un cliente HTTP sintético.
-En su lugar se auditó que las 44 acciones de `/teacher` y `/staff` abren con su `require*`.
+**The only thing that could not be closed as the plan asked:** the direct POST of server actions
+with the wrong role (MEJORAS #27) — Next 16 does not accept those requests from a synthetic HTTP
+client. Instead it was audited that the 44 actions of `/teacher` and `/staff` open with their
+`require*`.
 
-Reglas del proyecto para cualquier tarea nueva que se añada aquí (no negociables):
+Project rules for any new task added here (non-negotiable):
 
-- **CSS**: BEM estricto estilo Yandex (`bloque__elemento`, modificador `_clave_valor`, booleano `_abierto`),
-  archivos kebab-case, cada archivo CSS anida TODAS sus reglas bajo su selector raíz con nesting nativo (`&`),
-  media queries anidadas dentro del bloque, desktop-first (`max-width`). NO Tailwind (se retiró del proyecto),
-  NO CSS-in-JS. Los colores usan los tokens de `app/(frontend)/globals.css` (`--color-*`) y, en la
-  plataforma, los `--platform-*` de `app/(platform)/platform.css`.
-- **Archivos**: kebab-case con sufijos `.comp.tsx`, `.section.tsx`, `.hook.ts`, `.const.ts`, etc.
-  Named exports (default sólo en archivos de App Router). Sin barrels: imports con ruta completa `@/...`.
-- **Componentes**: Server Components por defecto; `"use client"` sólo en la hoja que posee estado.
-- **Datos**: la UI nunca llama Prisma directo; siempre `services/<dominio>/*.service.ts`.
-- Al terminar cada tarea: `npx tsc --noEmit`, `npm run lint` y `npm test` deben pasar.
+- **CSS**: strict Yandex-style BEM (`block__element`, modifier `_key_value`, boolean `_open`),
+  kebab-case files, every CSS file nests ALL of its rules under its root selector with native
+  nesting (`&`), media queries nested inside the block, desktop-first (`max-width`). NO Tailwind (it
+  was removed from the project), NO CSS-in-JS. The colours use the tokens of
+  `app/(frontend)/globals.css` (`--color-*`) and, in the platform, the `--platform-*` of
+  `app/(platform)/platform.css`.
+- **Files**: kebab-case with the suffixes `.comp.tsx`, `.section.tsx`, `.hook.ts`, `.const.ts`, etc.
+  Named exports (default only in App Router files). No barrels: imports with the full `@/...` path.
+- **Components**: Server Components by default; `"use client"` only on the leaf that owns state.
+- **Data**: the UI never calls Prisma directly; always `services/<domain>/*.service.ts`.
+- **Comments**: in English, like the rest of the code. The UI copy stays in Spanish.
+- On finishing each task: `npx tsc --noEmit`, `npm run lint` and `npm test` must pass.
 
 ---
 
-## Hechas
+## Done
 
-### T1 — Tokens CSS en lugar de hex · [CSS] ✅
-110 sustituciones en 34 archivos de `components/sections/**` y `app/(frontend)/**`. Sólo se
-sustituyeron los hex que coincidían exactamente con un token; el resto (`#b4a99d`, `#8a8175`,
-`#1c1611`, `#5c5348`…) se dejó intacto porque no existe token equivalente.
+### T1 — CSS tokens instead of hex values · [CSS] ✅
+110 substitutions in 34 files of `components/sections/**` and `app/(frontend)/**`. Only the hex
+values that matched a token exactly were substituted; the rest (`#b4a99d`, `#8a8175`, `#1c1611`,
+`#5c5348`…) were left intact because there is no equivalent token.
 
-### T2 — `app/sitemap.ts` y `app/robots.ts` · [SEO] ✅
-Sitemap con `/`, `/blog`, `/nosotros`, `/reloj-de-ajedrez` y cada `/blog/<slug>`; robots bloquea
-`/dashboard`, `/classes`, `/studies`, `/courses`, `/trainer`, `/admin` y `/api`. URL base desde
-`NEXT_PUBLIC_SITE_URL` (añadida a `.env.example`).
+### T2 — `app/sitemap.ts` and `app/robots.ts` · [SEO] ✅
+Sitemap with `/`, `/blog`, `/nosotros`, `/reloj-de-ajedrez` and every `/blog/<slug>`; robots blocks
+`/dashboard`, `/classes`, `/studies`, `/courses`, `/trainer`, `/admin` and `/api`. Base URL from
+`NEXT_PUBLIC_SITE_URL` (added to `.env.example`).
 
-### T3 — `enums/chess-pieces.enum.ts` → `as const` · [Arquitectura] ✅
-Ahora `constants/chess-pieces.const.ts`; actualizados los usos del hero y eliminada la carpeta `enums/`.
+### T3 — `enums/chess-pieces.enum.ts` → `as const` · [Architecture] ✅
+Now `constants/chess-pieces.const.ts`; the hero's usages updated and the `enums/` folder deleted.
 
-### T4 — Clase `landingPage` · [CSS] ✅
-Renombrada a `landing-page` en `app/(frontend)/landing-page.tsx`.
+### T4 — `landingPage` class · [CSS] ✅
+Renamed to `landing-page` in `app/(frontend)/landing-page.tsx`.
 
-### T5 — `priority` → `preload` en `next/image` · [SEO / Next 16] ✅
-Única aparición: el `<Image>` del hero.
+### T5 — `priority` → `preload` in `next/image` · [SEO / Next 16] ✅
+Only occurrence: the hero's `<Image>`.
 
-### T6 — SAN en español en el MoveTree · [Ajedrez / UX] ✅
-`sanToSpanish()` exportada desde `lib/chess/notation.ts` (traduce también la pieza de coronación,
-`e8=Q` → `e8=D`, y respeta los enroques) y usada por `move-tree.comp.tsx`.
+### T6 — Spanish SAN in the MoveTree · [Chess / UX] ✅
+`sanToSpanish()` exported from `lib/chess/notation.ts` (it also translates the promotion piece,
+`e8=Q` → `e8=D`, and respects castling) and used by `move-tree.comp.tsx`.
 
-### T7 — Crear estudio e importar PGN · [Plataforma] ✅
-`services/studies/studies.actions.ts` con `createStudy` e `importPgnGames`: valida el tipo contra el
-catálogo, comprueba que la base es del alumno antes de escribir (nunca toca bases de curso), parsea
-con `chessops/pgn` volcando cabeceras a columnas, y acota tamaño de PGN y número de partidas.
-Formularios planos (server actions) en el listado y en el detalle de estudio.
+### T7 — Creating a study and importing a PGN · [Platform] ✅
+`services/studies/studies.actions.ts` with `createStudy` and `importPgnGames`: it validates the kind
+against the catalog, checks that the database is the student's before writing (it never touches
+course databases), parses with `chessops/pgn` dumping headers into columns, and bounds the PGN size
+and the number of games. Plain forms (server actions) in the listing and in the study detail.
 
-### T8 — Vitest y primeras pruebas · [Calidad] ✅
-`vitest.config.mts` + `npm test` / `npm run test:watch`. 33 pruebas en `lib/chess/pgn-tree.test.ts`,
-`lib/chess/notation.test.ts` y `constants/platform/study-codes.test.ts`. Una de ellas documenta un
-hueco real del parser (ver punto 11b de `MEJORAS.md`).
+### T8 — Vitest and the first tests · [Quality] ✅
+`vitest.config.mts` + `npm test` / `npm run test:watch`. 33 tests in `lib/chess/pgn-tree.test.ts`,
+`lib/chess/notation.test.ts` and `constants/platform/study-codes.test.ts`. One of them documents a
+real gap in the parser (see entry 11b of `MEJORAS.md`).
 
 ### T9 — README · [Docs] ✅
-Sección en español con requisitos, puesta en marcha, tabla de scripts, usuario demo, mapa de rutas
-y arquitectura.
+A Spanish section with the requirements, the setup, the script table, the demo user, the route map
+and the architecture.
 
-### T10 — `loading.tsx` por sección · [UX] ✅
-Uno en cada área de `app/(platform)/` reutilizando `LoadingPanel`.
+### T10 — `loading.tsx` per section · [UX] ✅
+One in each area of `app/(platform)/` reusing `LoadingPanel`.
 
 ---
 
-## Tareas mecánicas pendientes (2026-09-09)
+## Pending mechanical tasks (2026-09-09)
 
-Salen de la auditoría anotada en `MEJORAS.md` (puntos 35–70). Son cambios repetitivos y acotados;
-las reglas del proyecto de arriba siguen valiendo. Al terminar cada una, marcar el punto de
-`MEJORAS.md` como resuelto y correr `npm run typecheck`, `npm run lint` y `npm test`.
+They come from the audit noted in `MEJORAS.md` (entries 35–70). They are repetitive and bounded
+changes; the project rules above still hold. On finishing each one, mark the `MEJORAS.md` entry as
+resolved and run `npm run typecheck`, `npm run lint` and `npm test`.
 
-### T11 — Formatear el repositorio con Prettier · [DX] (MEJORAS #39)
-`npm run format` cambia 135 archivos. Hacerlo en un commit propio, sin ninguna otra modificación,
-y después añadir `npm run format:check` como paso de `.github/workflows/ci.yml`.
+### T11 — Format the repository with Prettier · [DX] (MEJORAS #39)
+`npm run format` changes 135 files. Do it in a commit of its own, without any other modification,
+and afterwards add `npm run format:check` as a step of `.github/workflows/ci.yml`.
 
-### T12 — Botón de envío con estado en todos los formularios · [UX] (MEJORAS #53)
-Crear `components/common/submit-button.comp.tsx` (`"use client"`, `useFormStatus`,
-`disabled={pending}` y rótulo alterno, p. ej. «Guardando…») a partir de
-`components/sections/auth/login/login-submit.comp.tsx`, y usarlo en el `<button type="submit">` de
-cada formulario de escritura de `components/sections/platform/**` (unos 40). Las secciones siguen
-siendo Server Components; sólo cambia el botón.
+### T12 — Submit button with a pending state in every form · [UX] (MEJORAS #53)
+Create `components/common/submit-button.comp.tsx` (`"use client"`, `useFormStatus`,
+`disabled={pending}` and an alternate label, e.g. "Guardando…") from
+`components/sections/auth/login/login-submit.comp.tsx`, and use it in the `<button type="submit">`
+of every write form of `components/sections/platform/**` (about 40). The sections stay Server
+Components; only the button changes.
 
-### T13 — `GameTable` sobre `PlatformTable` · [Frontend / A11y] (MEJORAS #58)
-`components/sections/platform/studies/study-detail/game-table.comp.tsx` pinta la tabla con `div`s;
-montar cabecera y filas con `PlatformTable`/`PlatformTableRow`/`PlatformTableCell`
-(`components/common/platform-table.comp.tsx`) conservando el `<button>` tirador de reordenación en
-la primera celda y su manejo de teclado, y borrar la rejilla duplicada de `game-table.comp.css`.
-Referencia de los mismos datos con la tabla buena: `teacher/students/student-study-view.section.tsx`.
+### T13 — `GameTable` on `PlatformTable` · [Frontend / A11y] (MEJORAS #58)
+`components/sections/platform/studies/study-detail/game-table.comp.tsx` renders the table with
+`div`s; build the header and the rows with `PlatformTable`/`PlatformTableRow`/`PlatformTableCell`
+(`components/common/platform-table.comp.tsx`) keeping the reordering handle `<button>` in the first
+cell and its keyboard handling, and delete the duplicated grid in `game-table.comp.css`. Reference
+of the same data with the good table: `teacher/students/student-study-view.section.tsx`.
 
-### T14 — Hex sueltos a tokens · [CSS] (MEJORAS #59)
-Sustituir en `components/**` y `app/**`: `#b4a99d` → `var(--color-muted-on-dark)` (27 usos),
-`#5c5348` → `var(--color-muted-on-light)` (19), `#b8611f` → `var(--color-primary-deep)` (8) y, en la
-plataforma, `#8a8175` como texto → `var(--platform-text-muted)`. Sólo coincidencias exactas; no tocar
+### T14 — Loose hex values to tokens · [CSS] (MEJORAS #59)
+Substitute in `components/**` and `app/**`: `#b4a99d` → `var(--color-muted-on-dark)` (27 uses),
+`#5c5348` → `var(--color-muted-on-light)` (19), `#b8611f` → `var(--color-primary-deep)` (8) and, in
+the platform, `#8a8175` as text → `var(--platform-text-muted)`. Exact matches only; do not touch
 `rgba(...)`.
 
-### T15 — Exports sin uso · [Calidad] (MEJORAS #45)
-Borrar `getStudentStudies` (`teacher-students.service.ts`), `reindexGame`
-(`game-positions.service.ts`), `formatOptionalDate` (`teacher-students.mapper.ts`), `isNumericId` y
-`NUMERIC_ID_DIGITS` (`lib/numeric-id.ts`, junto con su test), `CLOCK_TIME_CONTROLS` como export
-(`use-chess-clock.hook.ts`), `STUDENT_KINDS`/`TEACHER_KINDS` como export (`study-rules.ts`),
-`STAFF_ERROR_PARAM`, `STAFF_ACCOUNT_MESSAGES` (`staff-messages.const.ts`) y `TEACHER_ERROR_PARAM`
-(`teacher-messages.const.ts`); quitar el `export` de `getStaffContext` (`roles.ts`). Comprobar cada
-uno con `grep -rw` antes de borrar.
+### T15 — Unused exports · [Quality] (MEJORAS #45)
+Delete `getStudentStudies` (`teacher-students.service.ts`), `reindexGame`
+(`game-positions.service.ts`), `formatOptionalDate` (`teacher-students.mapper.ts`), `isNumericId`
+and `NUMERIC_ID_DIGITS` (`lib/numeric-id.ts`, along with its test), `CLOCK_TIME_CONTROLS` as an
+export (`use-chess-clock.hook.ts`), `STUDENT_KINDS`/`TEACHER_KINDS` as exports (`study-rules.ts`),
+`STAFF_ERROR_PARAM`, `STAFF_ACCOUNT_MESSAGES` (`staff-messages.const.ts`) and `TEACHER_ERROR_PARAM`
+(`teacher-messages.const.ts`); remove the `export` from `getStaffContext` (`roles.ts`). Check each
+one with `grep -rw` before deleting.
 
 ### T16 — `noUncheckedIndexedAccess` · [DX] (MEJORAS #62)
-Activarlo en `tsconfig.json` y resolver los 172 errores (casi todos `array[i]` posiblemente
+Enable it in `tsconfig.json` and resolve the 172 errors (almost all `array[i]` possibly
 `undefined`): `trainer-session.comp.tsx`, `move-tree.comp.tsx`, `lib/chess/notation.ts`,
-`services/shared/reorder.ts` y varias suites de `lib/chess`. Sin cambiar comportamiento: donde el
-índice es seguro por construcción, una comprobación con `throw` o un `?? valorPorDefecto`.
+`services/shared/reorder.ts` and several `lib/chess` suites. Without changing behaviour: where the
+index is safe by construction, a check with a `throw` or a `?? defaultValue`.
 
-### T17 — Dos hojas con media queries *mobile-first* · [CSS]
-`components/ui/section-heading.comp.css` y `components/sections/homepage/resources/resources.section.css`
-usan `@media (min-width: …)` cuando la convención es desktop-first (`max-width`). Invertirlas: los
-valores del bloque pasan a ser los de escritorio y la media query `max-width` (con el mismo umbral
-menos 1 px) recibe los de móvil. Comprobar visualmente la portada a 375, 768 y 1280 px antes y
-después; no debe cambiar nada.
+### T17 — Two stylesheets with *mobile-first* media queries · [CSS]
+`components/ui/section-heading.comp.css` and
+`components/sections/homepage/resources/resources.section.css` use `@media (min-width: …)` when the
+convention is desktop-first (`max-width`). Invert them: the block's values become the desktop ones
+and the `max-width` media query (with the same threshold minus 1 px) receives the mobile ones. Check
+the home page visually at 375, 768 and 1280 px before and after; nothing should change.

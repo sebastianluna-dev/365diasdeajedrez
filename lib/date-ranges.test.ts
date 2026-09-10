@@ -11,13 +11,13 @@ describe("toUtcDay", () => {
 
 describe("rangeStart", () => {
   it("la semana empieza el lunes anterior (o el mismo día si es lunes)", () => {
-    expect(iso(rangeStart("week", new Date("2026-09-09T15:00:00Z")))).toBe("2026-09-07"); // miércoles
-    expect(iso(rangeStart("week", new Date("2026-09-13T01:00:00Z")))).toBe("2026-09-07"); // domingo
-    expect(iso(rangeStart("week", new Date("2026-09-07T00:00:00Z")))).toBe("2026-09-07"); // lunes
+    expect(iso(rangeStart("week", new Date("2026-09-09T15:00:00Z")))).toBe("2026-09-07"); // Wednesday
+    expect(iso(rangeStart("week", new Date("2026-09-13T01:00:00Z")))).toBe("2026-09-07"); // Sunday
+    expect(iso(rangeStart("week", new Date("2026-09-07T00:00:00Z")))).toBe("2026-09-07"); // Monday
   });
 
   it("cruza el cambio de año hacia atrás sin perder el lunes", () => {
-    expect(iso(rangeStart("week", new Date("2026-01-01T12:00:00Z")))).toBe("2025-12-29"); // jueves
+    expect(iso(rangeStart("week", new Date("2026-01-01T12:00:00Z")))).toBe("2025-12-29"); // Thursday
   });
 
   it("mes y año en curso, desde su día 1", () => {

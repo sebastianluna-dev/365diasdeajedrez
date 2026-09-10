@@ -16,7 +16,7 @@ export async function StudentsTableSection({ query }: StudentsTableSectionProps)
   return (
     <div className="students-table">
       <div className="students-table__bar">
-        {/* GET: el filtro vive en la URL, sin estado de cliente. */}
+        {/* GET: the filter lives in the URL, no client state. */}
         <form className="students-table__search" action={staffRoutes.students}>
           <FormField label="Buscar">
             <input type="search" name="q" defaultValue={query ?? ""} placeholder="Nombre o email" maxLength={120} />

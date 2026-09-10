@@ -1,10 +1,10 @@
--- Objetivo diario de estudio, en minutos.
+-- Daily study goal, in minutes.
 --
--- Con valor por defecto para que las cuentas que ya existen tengan uno sin
--- rellenar nada: treinta minutos es media hora de estudio, que es la medida en
--- la que la gente piensa su día.
+-- With a default value so the accounts that already exist have one without
+-- backfilling anything: thirty minutes is half an hour of study, which is the
+-- unit people think of their day in.
 --
--- La racha diaria NO se guarda: se deriva de UserActivity contando días
--- seguidos hacia atrás (ver lib/study-streak.ts). Guardarla obligaría a
--- mantenerla al día con una tarea nocturna y a repararla cuando se desfasara.
+-- The daily streak is NOT stored: it is derived from UserActivity by counting
+-- consecutive days backwards (see lib/study-streak.ts). Storing it would force
+-- keeping it up to date with a nightly job and repairing it when it drifted.
 ALTER TABLE "User" ADD COLUMN "dailyGoalMinutes" INTEGER NOT NULL DEFAULT 30;

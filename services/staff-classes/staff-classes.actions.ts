@@ -9,10 +9,10 @@ import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { readText, readUrl } from "@/services/shared/form-data";
 
-// El staff NO es dueño de las clases: exactamente dos acciones de soporte y
-// nada más. Bloques, asistencia, metadatos y participantes son del profesor —
-// si alguna de esas apareciera aquí, dos roles estarían editando lo mismo sin
-// que ninguno sea responsable.
+// The staff does NOT own the classes: exactly two support actions and nothing
+// else. Blocks, attendance, metadata and participants belong to the teacher —
+// if any of those appeared here, two roles would be editing the same thing
+// without either being responsible.
 
 const NOTE_MAX_LENGTH = 300;
 
@@ -20,7 +20,7 @@ function fail(path: string, code: string): never {
   redirect(`${path}?error=${code}`);
 }
 
-/** Añade o corrige el enlace de la grabación. */
+/** Adds or corrects the recording's link. */
 export async function setRecordingUrl(classId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.staffClassDetail(classId);
@@ -37,9 +37,10 @@ export async function setRecordingUrl(classId: string, formData: FormData): Prom
 }
 
 /**
- * Cancela una clase desde soporte. Exige una nota, que se antepone al resumen
- * con marca de fecha: así queda rastro de que la cancelación no vino del
- * profesor. Cancelar es el borrado de una clase — no hay borrado físico.
+ * Cancels a class from support. It requires a note, which is prepended to the
+ * summary with a date stamp: that way there is a trace that the cancellation did
+ * not come from the teacher. Cancelling is a class's deletion — there is no
+ * physical delete.
  */
 export async function cancelClassAsStaff(classId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
@@ -64,8 +65,8 @@ export async function cancelClassAsStaff(classId: string, formData: FormData): P
     where: { id: classId },
     data: {
       status: { connect: { code: CLASS_STATUS.CANCELLED } },
-      // La nota se antepone y nunca sustituye a lo que hubiera escrito el
-      // profesor: el resumen es suyo.
+      // The note is prepended and never replaces what the teacher may have written:
+      // the summary is theirs.
       summary: current.summary ? `${trace}\n\n${current.summary}` : trace,
     },
   });

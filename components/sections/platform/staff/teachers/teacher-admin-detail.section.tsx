@@ -68,7 +68,7 @@ export function TeacherAdminDetailSection({ teacher, assignable, errorCode }: Te
             : "Desactivado: no puede entrar a /teacher ni recibir asignaciones. Sus clases y su historial siguen intactos."}
         </p>
 
-        {/* Desactivar NO cierra asignaciones: reasignar es una decisión humana. */}
+        {/* Deactivating does NOT close assignments: reassigning is a human decision. */}
         {teacher.isActive && teacher.students.length > 0 && (
           <PlatformNotice
             variant="info"

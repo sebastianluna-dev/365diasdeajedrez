@@ -1,6 +1,6 @@
-# Lint, tipos y pruebas en cada push y pull request. No hace `next build`: la
-# generación estática consulta Payload y la plataforma, y CI no tiene esas
-# bases; el build lo valida el despliegue.
+# Lint, types and tests on every push and pull request. No `next build`: static
+# generation queries Payload and the platform, and CI has neither database; the
+# deployment is what validates the build.
 name: CI
 
 on:
@@ -12,8 +12,8 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     env:
-      # `prisma generate` sólo necesita que la URL exista para leer
-      # prisma.config.ts; no se conecta.
+      # `prisma generate` only needs the URL to exist in order to read
+      # prisma.config.ts; it does not connect.
       PLATFORM_DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
     steps:
       - uses: actions/checkout@v4

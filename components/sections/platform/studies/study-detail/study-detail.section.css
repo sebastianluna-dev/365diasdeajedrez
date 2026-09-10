@@ -54,9 +54,9 @@
     text-wrap: balance;
   }
 
-  /* Descripción, número de partidas y fecha en una sola línea, separados por
-     puntos: son tres datos menores y en tres renglones pesarían más de lo que
-     valen. */
+  /* Description, number of games and date on a single line, separated by
+     dots: they are three minor facts and on three lines they would weigh more
+     than they are worth. */
   & .study-detail__meta {
     display: flex;
     align-items: baseline;

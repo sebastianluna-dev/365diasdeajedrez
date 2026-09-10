@@ -43,8 +43,8 @@
     color: var(--platform-text-muted);
   }
 
-  /* La variante apilada deja de ser una fila: el porcentaje y el detalle se van
-     a los extremos y la barra ocupa el ancho completo debajo. */
+  /* The stacked variant stops being a row: the percentage and the detail go to
+     the ends and the bar takes the full width below. */
   &.progress-indicator_layout_stacked {
     display: block;
 

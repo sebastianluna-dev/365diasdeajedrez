@@ -20,11 +20,11 @@ export interface TeacherClassParticipant {
   email: string;
   attended: boolean;
   joinedAtIso?: string;
-  /** El profesor no gestiona pagos en esta fase; sólo ve si hay uno registrado. */
+  /** The teacher does not manage payments at this stage; they only see whether one is recorded. */
   hasPayment: boolean;
 }
 
-/** Bloque tal y como lo edita el profesor: datos crudos, no el render del alumno. */
+/** Block exactly as the teacher edits it: raw data, not the student's render. */
 export interface TeacherClassBlock {
   id: string;
   order: number;
@@ -33,14 +33,14 @@ export interface TeacherClassBlock {
   videoUrl?: string;
   caption?: string;
   movePath?: string;
-  /** Etiqueta legible del recurso referenciado, si el bloque referencia algo. */
+  /** Readable label of the referenced resource, if the block references something. */
   referenceLabel?: string;
   gameId?: string;
-  /** Partida transcrita en el propio bloque, si la hay. */
+  /** Game transcribed in the block itself, if there is one. */
   pgn?: string;
   lessonId?: string;
   positionId?: string;
-  /** El movePath guardado ya no resuelve contra el PGN actual del recurso. */
+  /** The stored movePath no longer resolves against the resource's current PGN. */
   isMovePathBroken: boolean;
 }
 
@@ -49,7 +49,7 @@ export interface TeacherClassDetail {
   title: string;
   description?: string;
   scheduledAtIso: string;
-  /** Valor para `<input type="datetime-local">`, en la zona del profesor. */
+  /** Value for `<input type="datetime-local">`, in the teacher's zone. */
   scheduledAtInput: string;
   dateLabel: string;
   timeLabel: string;
@@ -58,7 +58,7 @@ export interface TeacherClassDetail {
   statusLabel: string;
   meetingProviderCode?: MeetingProviderCode;
   meetingProviderLabel?: string;
-  /** El profesor ve SIEMPRE el enlace: la ocultación es una regla del alumno. */
+  /** The teacher ALWAYS sees the link: the hiding is a student rule. */
   meetingUrl?: string;
   meetingUrlVisibleFromIso?: string;
   recordingUrl?: string;
@@ -76,9 +76,9 @@ export interface ReferenceableGame {
 
 export interface ReferenceableGameGroup {
   studyId: string;
-  /** La base es del profesor: puede anotar sus partidas, no sólo citarlas. */
+  /** The database is the teacher's: they can annotate its games, not only cite them. */
   isOwn: boolean;
-  /** «Mis estudios» o el nombre del alumno dueño de la base. */
+  /** "Mis estudios" or the name of the student who owns the database. */
   ownerLabel: string;
   studyName: string;
   games: ReferenceableGame[];

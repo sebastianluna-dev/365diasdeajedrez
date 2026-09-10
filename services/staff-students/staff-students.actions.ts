@@ -14,19 +14,20 @@ import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 import { createDefaultStudy } from "@/services/studies/default-study";
 import type { AccountActionState } from "./staff-students.types";
 
-// Alta y mantenimiento de cuentas.
+// Creating and maintaining accounts.
 //
-// [Excepción deliberada al patrón de formularios del proyecto]
-// `createStudentAccount` y `resetStudentPassword` devuelven ESTADO en vez de
-// redirigir con `?error=`, porque tienen que enseñar la contraseña temporal una
-// vez: una contraseña en un query param queda en el historial del navegador, en
-// el Referer y en los logs del servidor. El precio es que sus formularios usan
-// `useActionState` y por tanto NECESITAN JavaScript (comprobado: sin JS no
-// emiten el `$ACTION_ID` y el envío no llega). Se acepta porque es un panel
-// interno, y no se extiende esta excepción a ninguna otra action.
+// [Deliberate exception to the project's form pattern]
+// `createStudentAccount` and `resetStudentPassword` return STATE instead of
+// redirecting with `?error=`, because they have to show the temporary password
+// once: a password in a query param stays in the browser's history, in the
+// Referer and in the server's logs. The price is that their forms use
+// `useActionState` and therefore NEED JavaScript (verified: without JS they do
+// not emit the `$ACTION_ID` and the submit does not arrive). It is accepted
+// because it is an internal panel, and this exception is not extended to any
+// other action.
 //
-// La contraseña temporal no se guarda, ni se registra en el log, ni se vuelve a
-// mostrar tras navegar: sólo viaja en la respuesta de esta llamada.
+// The temporary password is not stored, nor written to the log, nor shown again
+// after navigating: it only travels in this call's response.
 
 const DISPLAY_NAME_MAX_LENGTH = 120;
 const EMAIL_MAX_LENGTH = 254;
@@ -36,7 +37,7 @@ function normalizeEmail(formData: FormData): string {
   return readText(formData, "email").toLowerCase().slice(0, EMAIL_MAX_LENGTH);
 }
 
-/** Contraseña tecleada por el staff, la generada, o el problema que la invalida. */
+/** Password typed by the staff, the generated one, or the problem that invalidates it. */
 function resolvePassword(formData: FormData): { password: string; generated: boolean } | { problem: string } {
   const typed = readText(formData, "password");
   if (typed.length === 0) return { password: generateTempPassword(), generated: true };
@@ -64,9 +65,9 @@ export async function createStudentAccount(
   if ("problem" in resolved) return { status: "error", message: resolved.problem };
 
   try {
-    // La cuenta y su «Mis partidas» entran juntas o no entra ninguna: un alumno
-    // sin ese estudio no tendría dónde guardar una partida suelta, y crearlo
-    // después dejaría una ventana en la que la cuenta existe a medias.
+    // The account and its "Mis partidas" go in together or neither does: a student
+    // without that study would have nowhere to save a loose game, and creating it
+    // afterwards would leave a window in which the account exists by halves.
     const created = await getPlatformDb().$transaction(async (tx) => {
       const user = await tx.user.create({
         data: {
@@ -88,7 +89,7 @@ export async function createStudentAccount(
       status: "ok",
       userId: created.id,
       message: "Cuenta creada.",
-      // Sólo se devuelve la generada: si el staff tecleó una, ya la conoce.
+      // Only the generated one is returned: if the staff typed one, they already know it.
       tempPassword: resolved.generated ? resolved.password : undefined,
     };
   } catch (error) {
@@ -119,8 +120,8 @@ export async function resetStudentPassword(
     data: { passwordHash: await hashPassword(resolved.password), passwordUpdatedAt: new Date() },
   });
 
-  // Cambiar la contraseña tiene que expulsar de verdad: las sesiones abiertas
-  // sobrevivirían al cambio porque la cookie no lleva la contraseña.
+  // Changing the password has to really throw them out: the open sessions would
+  // survive the change because the cookie does not carry the password.
   await destroyAllSessionsOf(target.id);
 
   revalidatePath(staffRoutes.studentDetail(target.id));
@@ -133,7 +134,7 @@ export async function resetStudentPassword(
   };
 }
 
-/** Datos básicos de la cuenta. Sigue el patrón normal: redirect con `?error=`. */
+/** Basic account data. It follows the normal pattern: redirect with `?error=`. */
 export async function updateStudent(userId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.studentDetail(userId);
@@ -157,7 +158,7 @@ export async function updateStudent(userId: string, formData: FormData): Promise
   revalidatePath(staffRoutes.students);
 }
 
-/** P2002 sobre `User.email` y no cualquier otro conflicto. */
+/** P2002 over `User.email` and not any other conflict. */
 function isEmailTaken(error: unknown): boolean {
   return isUniqueConstraintError(error, "User_email_key", "email");
 }

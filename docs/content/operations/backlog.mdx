@@ -4,11 +4,11 @@ description: "How technical debt is tracked in MEJORAS.md and todos.md, and a sn
 
 # Backlog (MEJORAS & todos)
 
-Two files in the repository root hold the backlog; both are in Spanish and both are the source of truth. This page explains how they work and summarises what was open on 2026-09-09.
+Two files in the repository root hold the backlog, and both are the source of truth. This page explains how they work and summarises what was open on 2026-09-09.
 
 ## `MEJORAS.md`
 
-Prioritised technical debt and improvements. Every entry has a number, an **area** tag (Seguridad, Datos, CSS, UX, DX, Ops…), a **priority** (baja · media · alta · extrema) and a note on how to approach it. Resolved entries stay in the file with a strikethrough title and a summary of what was done, so the same idea is not reopened. When you find something you will not fix now, add an entry; when you fix one, mark it resolved in the same commit.
+Prioritised technical debt and improvements. Every entry has a number, an **area** tag (Security, Data, CSS, UX, DX, Ops…), a **priority** (low · medium · high · extreme) and a note on how to approach it. Resolved entries stay in the file with a strikethrough title and a summary of what was done, so the same idea is not reopened. When you find something you will not fix now, add an entry; when you fix one, mark it resolved in the same commit.
 
 ### Open on 2026-09-09
 
@@ -58,4 +58,4 @@ Concrete, mechanical tasks with a full specification, meant to be executed witho
 ## Working with the backlog
 
 - Read `MEJORAS.md` before starting a refactor: the reasoning behind a decision is often recorded there (why the rate limit lives in Postgres, why `/` cannot read cookies, why the seed guard exists).
-- Keep the two files in Spanish; this documentation summarises them in English but never replaces them.
+- The two files are the source of truth; this documentation summarises them but never replaces them.

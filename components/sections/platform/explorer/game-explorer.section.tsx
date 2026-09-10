@@ -2,12 +2,12 @@ import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { GameExplorer } from "./game-explorer.comp";
 
 /**
- * Marco del explorador. El trabajo interactivo es del componente de cliente;
- * aquí se resuelve la identidad, que es la frontera de la zona privada.
+ * Frame of the explorer. The interactive work belongs to the client
+ * component; here the identity is resolved, which is the border of the private area.
  *
- * No se precarga ningún resultado en servidor a propósito: la primera consulta
- * (la posición inicial) la hace el cliente por el mismo camino que todas las
- * demás, así que la caché del explorador la sirve igual al volver al principio.
+ * No result is preloaded on the server on purpose: the first query (the
+ * initial position) is made by the client through the same path as all the
+ * others, so the explorer's cache serves it just the same when returning to the start.
  */
 export async function GameExplorerSection() {
   await getCurrentUser();

@@ -9,17 +9,17 @@ import { TempPasswordNotice } from "./temp-password-notice.comp";
 import "./create-account-form.comp.css";
 
 /**
- * Alta de cuenta con contraseña temporal.
+ * Account creation with a temporary password.
  *
- * ÚNICO formulario de la plataforma (junto al reinicio de contraseña) que usa
- * `useActionState` en vez del patrón `<form action={serverAction}>` + redirect
- * con `?error=`: la acción tiene que DEVOLVER la contraseña generada para
- * enseñarla una sola vez, y una contraseña en la URL acabaría en el historial,
- * en el Referer y en los logs.
+ * The ONLY form of the platform (together with the password reset) that uses
+ * `useActionState` instead of the `<form action={serverAction}>` + redirect
+ * with `?error=` pattern: the action has to RETURN the generated password to
+ * show it once, and a password in the URL would end up in the history, the
+ * Referer and the logs.
  *
- * Consecuencia conocida y aceptada: este formulario NECESITA JavaScript (sin él
- * no se emite el `$ACTION_ID` y el envío no llega al servidor). Es un panel
- * interno, así que se asume; no se extiende a ningún otro formulario.
+ * Known and accepted consequence: this form NEEDS JavaScript (without it the
+ * `$ACTION_ID` is not emitted and the submit does not reach the server). It is
+ * an internal panel, so it is assumed; it is not extended to any other form.
  */
 export function CreateAccountForm() {
   const [state, formAction, isPending] = useActionState(createStudentAccount, ACCOUNT_INITIAL_STATE);

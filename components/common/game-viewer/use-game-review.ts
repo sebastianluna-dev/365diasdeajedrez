@@ -5,24 +5,23 @@ import { parseEngineInfo } from "@/lib/chess/engine-protocol";
 import type { MoveEvaluation } from "@/lib/chess/pgn-tree";
 import { replayGame, turnColor } from "@/lib/chess/replay";
 
-// Evaluar la partida ENTERA: una pasada del módulo por cada posición de la
-// línea principal.
+// Evaluate the WHOLE game: one engine pass per main-line position.
 //
-// Worker propio, aparte del de `use-engine.ts`. No es por comodidad: ése
-// persigue la posición en la que está el usuario y va parando y relanzando la
-// búsqueda; meter en esa conversación una segunda tanda de posiciones es
-// exactamente lo que hace abortar a Stockfish (ver el comentario largo de aquel
-// archivo). Dos tareas distintas, dos motores.
+// Its own worker, apart from the one in `use-engine.ts`. Not for convenience:
+// that one chases the position the user is at and keeps stopping and
+// relaunching the search; injecting a second batch of positions into that
+// conversation is exactly what makes Stockfish abort (see the long comment in
+// that file). Two different tasks, two engines.
 //
-// El recorrido es en serie y por turnos: `position` + `go`, se apunta la última
-// puntuación que dé y NO se pasa a la siguiente hasta su `bestmove`.
+// The traversal is serial and in turns: `position` + `go`, the last score it
+// gives is noted and it does NOT move on to the next until its `bestmove`.
 
 /**
- * Hasta dónde baja en cada posición.
+ * How deep it goes on each position.
  *
- * Dieciséis y no los veinte del análisis en vivo: aquí son sesenta posiciones
- * seguidas, y a veinte una partida larga se va a varios minutos de espera con
- * el ventilador a tope. A dieciséis, los errores de bulto salen igual.
+ * Sixteen and not the twenty of the live analysis: here it is sixty positions
+ * in a row, and at twenty a long game runs to several minutes of waiting with
+ * the fan at full blast. At sixteen, the gross mistakes show up all the same.
  */
 const REVIEW_DEPTH = 16;
 
@@ -30,26 +29,26 @@ export type GameReviewState = "idle" | "running" | "failed";
 
 export interface GameReviewProgress {
   state: GameReviewState;
-  /** Posiciones ya evaluadas y cuántas son en total. */
+  /** Positions already evaluated and how many there are in total. */
   done: number;
   total: number;
-  /** La profundidad a la que se está analizando, para poder decirlo. */
+  /** The depth being analysed at, so it can be reported. */
   depth: number;
 }
 
 interface Options {
   /**
-   * Se llama UNA vez al terminar, con la evaluación de cada posición de la
-   * línea principal —la primera es la posición de partida—. Quien lo monta
-   * decide qué hacer con ellas; este hook no toca el PGN.
+   * Called ONCE on completion, with the evaluation of every main-line
+   * position — the first is the starting position. Whoever mounts it decides
+   * what to do with them; this hook does not touch the PGN.
    */
   onFinished: (evaluations: MoveEvaluation[]) => void;
 }
 
 export interface GameReviewRunner extends GameReviewProgress {
-  /** Arranca el recorrido de una partida. */
+  /** Starts the traversal of a game. */
   start: (pgn: string) => void;
-  /** Lo corta y mata el motor. Lo evaluado hasta ahí se descarta. */
+  /** Cuts it short and kills the engine. What was evaluated so far is discarded. */
   cancel: () => void;
 }
 
@@ -62,8 +61,8 @@ export function useGameReview({ onFinished }: Options): GameReviewRunner {
   });
 
   const workerRef = useRef<Worker | null>(null);
-  // Por referencia para que arrancar el recorrido no dependa de que quien monta
-  // el hook memorice su callback.
+  // By reference so starting the traversal does not depend on whoever mounts
+  // the hook memoising its callback.
   const onFinishedRef = useRef(onFinished);
   useEffect(() => {
     onFinishedRef.current = onFinished;
@@ -74,7 +73,7 @@ export function useGameReview({ onFinished }: Options): GameReviewRunner {
     workerRef.current = null;
   }, []);
 
-  // Salir de la pantalla a media evaluación no puede dejar el motor pensando.
+  // Leaving the screen mid-evaluation cannot leave the engine thinking.
   useEffect(() => stop, [stop]);
 
   const cancel = useCallback(() => {
@@ -105,7 +104,7 @@ export function useGameReview({ onFinished }: Options): GameReviewRunner {
 
       const evaluations: MoveEvaluation[] = [];
       let index = 0;
-      /** La mejor lectura de la posición que se está analizando ahora mismo. */
+      /** The best reading of the position being analysed right now. */
       let current: MoveEvaluation | null = null;
 
       const askNext = () => {
@@ -129,8 +128,8 @@ export function useGameReview({ onFinished }: Options): GameReviewRunner {
         }
 
         if (line.startsWith("bestmove")) {
-          // Sin puntuación —posición ya terminada, mate o ahogado— se guarda la
-          // última conocida: la gráfica necesita un valor por posición.
+          // Without a score — a finished position, mate or stalemate — the last
+          // known one is kept: the chart needs a value per position.
           evaluations.push(current ?? evaluations[evaluations.length - 1] ?? { score: 0, mateIn: null });
           index += 1;
           setProgress((previous) => ({ ...previous, done: index }));
@@ -149,8 +148,8 @@ export function useGameReview({ onFinished }: Options): GameReviewRunner {
 
       worker.postMessage("uci");
       worker.postMessage("setoption name UCI_AnalyseMode value true");
-      // Una sola línea: aquí sólo interesa cuánto vale la posición, y pedir tres
-      // multiplicaría el trabajo por posición sin aportar nada a la gráfica.
+      // A single line: here only the position's value matters, and asking for
+      // three would multiply the work per position without adding anything to the chart.
       worker.postMessage("setoption name MultiPV value 1");
       worker.postMessage("isready");
     },

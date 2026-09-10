@@ -1,62 +1,64 @@
-/* Base visual de la plataforma autenticada: tokens y primitivas.
+/*
+ * Visual base of the authenticated platform: tokens and primitives.
  *
- * Tema CLARO, tomado del diseño «Mis Cursos - Claro». La zona pública sigue
- * siendo oscura (globals.css), así que aquí se reescriben `body` y los tokens
- * `--platform-*`: todo lo que pinte con ellos cambia solo.
+ * LIGHT theme, taken from the "Mis Cursos - Claro" design. The public area
+ * stays dark (globals.css), so `body` and the `--platform-*` tokens are
+ * rewritten here: everything that paints with them changes on its own.
  *
- * Los tres colores de marca no cambian de valor, cambian de papel: #16110D
- * pasa de fondo a texto, y el naranja #FF9143 se reserva para RELLENOS (botón,
- * barra de progreso), donde sí contrasta. Sobre fondo claro, como TEXTO, ese
- * naranja no se lee: para eso está --platform-accent-ink (#B8611F).
+ * The three brand colours keep their values and change roles: #16110D goes
+ * from background to text, and the orange #FF9143 is reserved for FILLS
+ * (button, progress bar), where it does contrast. On a light background, as
+ * TEXT, that orange is not legible: that is what --platform-accent-ink
+ * (#B8611F) is for.
  */
 
 :root {
   --platform-bg: #f6f4f1;
   --platform-surface: #ffffff;
-  /* Superficie hundida: hueco de portada, celdas vacías, insets. */
+  /* Sunken surface: cover slot, empty cells, insets. */
   --platform-surface-sunken: #ede7de;
-  /* Neutro para chips y rellenos suaves que no son de acento. */
+  /* Neutral for chips and soft fills that are not accent. */
   --platform-surface-neutral: #f2efea;
-  /* Blanco cálido para campos y pies dentro de una tarjeta blanca. */
+  /* Warm white for fields and footers inside a white card. */
   --platform-surface-soft: #fcfbf9;
 
-  /* Dos pesos de línea: la fina separa zonas, la fuerte perfila controles. */
+  /* Two line weights: the thin one separates zones, the strong one outlines controls. */
   --platform-border: #eae4dc;
   --platform-border-strong: #e2dbd1;
 
-  /* Tres pesos de texto: cuerpo, secundario y el de las etiquetas pequeñas. */
+  /* Three text weights: body, secondary and the one for small labels. */
   --platform-text: #16110d;
   --platform-text-muted: #6e655c;
-  /* 4,8:1 sobre blanco: se usa como TEXTO (cabeceras de tabla, contadores,
-     pies) y con el #9a9189 anterior no llegaba al mínimo de WCAG AA. */
+  /* 4.8:1 on white: used as TEXT (table headers, counters, footers), and with
+     the previous #9a9189 it did not reach the WCAG AA minimum. */
   --platform-text-subtle: #7a7168;
-  /* Más claro todavía: sólo para adornos que no se leen —los puntos
-     separadores y el galón de las filas—, nunca para texto. */
+  /* Lighter still: only for decorations that are not read — the separator
+     dots and the row chevron — never for text. */
   --platform-text-faint: #c3bbb1;
 
   --platform-accent: #ff9143;
   --platform-accent-hover: #f07f2c;
-  /* Naranja legible sobre claro: enlaces, cifras y texto de acento. */
+  /* Orange that is legible on light: links, figures and accent text. */
   --platform-accent-ink: #b8611f;
   --platform-accent-soft: #fbeadb;
-  /* Lavado aún más tenue: el ítem activo del menú. */
+  /* An even fainter wash: the active menu item. */
   --platform-accent-wash: #fbf1e7;
 
-  /* Rojo sobre fondo claro. Es el --color-accent-red de la web pública, que ya
-     estaba elegido para este mismo caso; #e5484d se aclaraba demasiado aquí. */
+  /* Red on a light background. It is the public site's --color-accent-red,
+     already chosen for this very case; #e5484d washed out too much here. */
   --platform-danger: #a81e22;
 
   --platform-track: #efeae3;
 
-  /* Tipografía. La plataforma va entera con SF Pro Display —display y texto—;
-     Gramatika y Suisse Intl se quedan en la web pública. Un solo token para
-     que ningún archivo de la zona privada nombre una fuente concreta. */
+  /* Typography. The whole platform uses SF Pro Display — display and text —;
+     Gramatika and Suisse Intl stay on the public site. A single token so that
+     no file of the private area names a specific font. */
   --platform-font: var(--font-sf-pro), -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
 
-  /* Colores semánticos. El par de éxito viene del diseño del capítulo
-     (#E7F0EA / #2F6B51); los de error y aviso están derivados con la misma
-     claridad de fondo y el mismo contraste de tinta, a falta de que el diseño
-     los fije. El rojo de tinta es el --platform-danger de arriba. */
+  /* Semantic colours. The success pair comes from the chapter design
+     (#E7F0EA / #2F6B51); the error and warning ones are derived with the same
+     background lightness and the same ink contrast, until the design fixes
+     them. The ink red is the --platform-danger above. */
   --platform-success-soft: #e7f0ea;
   --platform-success-ink: #2f6b51;
   --platform-success-border: #cfe1d7;
@@ -68,23 +70,23 @@
   --platform-warning-ink: #8a5a12;
   --platform-warning-border: #eddcb4;
 
-  /* Sobre claro las capas se separan con sombra, no con borde. */
+  /* On light, layers are separated by shadow, not by border. */
   --platform-shadow-card: 0 1px 2px rgba(22, 17, 13, 0.05), 0 8px 24px rgba(22, 17, 13, 0.06);
   --platform-shadow-bar: 0 1px 0 var(--platform-border);
 }
 
-/* El foco global de globals.css es naranja pensado para fondo oscuro; sobre el
-   claro de la plataforma se usa el naranja de tinta, que sí contrasta. */
+/* The global focus of globals.css is an orange meant for a dark background; on
+   the platform's light one the ink orange is used, which does contrast. */
 .platform-theme :focus-visible {
   outline: 2px solid var(--platform-accent-ink);
   outline-offset: 2px;
 }
 
-/* globals.css pinta el `body` con la paleta oscura del sitio público, y esa
-   hoja la comparten los dos layouts que usan estos tokens —(platform) y
-   (auth)—, así que hay que devolvérselo. La clase la ponen ellos en el <body>:
-   sin esto el rebote del scroll asoma en negro por debajo del contenido, y la
-   página de acceso, que no lleva shell, se quedaría a medio tema. */
+/* globals.css paints the `body` with the public site's dark palette, and that
+   sheet is shared by the two layouts that use these tokens — (platform) and
+   (auth) — so it has to be handed back. They set the class on the <body>:
+   without this the scroll bounce shows black under the content, and the
+   login page, which has no shell, would be left half-themed. */
 body.platform-theme {
   background: var(--platform-bg);
   color: var(--platform-text);
@@ -95,8 +97,8 @@ body.platform-theme {
   background: rgba(255, 145, 67, 0.3);
 }
 
-/* Primitivas compartidas de las páginas de plataforma (equivalente al
-   .section/.button de globals.css, pero para la zona autenticada). */
+/* Shared primitives of the platform pages (the equivalent of
+   .section/.button in globals.css, but for the authenticated area). */
 
 .platform-page {
   display: flex;
@@ -161,8 +163,8 @@ body.platform-theme {
   color: var(--platform-text);
 }
 
-/* El perfilado va en `box-shadow` y no en `border` a propósito: así el botón
-   secundario mide exactamente lo mismo que el primario, que no lleva borde. */
+/* The outline goes in `box-shadow` and not in `border` on purpose: that way
+   the secondary button measures exactly the same as the primary, which has no border. */
 .platform-button_variant_secondary {
   padding: 12px 20px;
   background: var(--platform-surface);
@@ -188,10 +190,10 @@ body.platform-theme {
   color: var(--platform-surface);
 }
 
-/* Diálogo modal. El `<dialog>` nativo ya trae el foco atrapado, el cierre con
-   Escape y el fondo, pero su centrado depende de la hoja del navegador y no
-   todas lo resuelven igual: aquí se fija a mano —`inset: 0` más `margin: auto`
-   centra en los dos ejes— para que no dependa de nadie. */
+/* Modal dialog. The native `<dialog>` already brings focus trapping, closing
+   with Escape and the backdrop, but its centring depends on the browser's
+   stylesheet and not all of them solve it the same way: it is fixed by hand
+   here — `inset: 0` plus `margin: auto` centres on both axes — so it depends on nobody. */
 .platform-dialog {
   position: fixed;
   inset: 0;
@@ -202,7 +204,7 @@ body.platform-theme {
   background: var(--platform-surface);
   color: var(--platform-text);
   box-shadow: var(--platform-shadow-card);
-  /* Un modal alto se desplaza por dentro en vez de salirse de la pantalla. */
+  /* A tall modal scrolls inside instead of running off the screen. */
   max-height: calc(100dvh - 40px);
   overflow: auto;
 }

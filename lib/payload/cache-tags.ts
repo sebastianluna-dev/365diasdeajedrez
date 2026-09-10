@@ -1,18 +1,18 @@
-// Etiquetas del Data Cache de Next para lo que se lee del CMS.
+// Next Data Cache tags for what is read from the CMS.
 //
-// Los servicios las ponen al cachear con `unstable_cache` y los hooks
-// `afterChange` de los Globals las caducan al guardar en Payload, así que un
-// cambio en el CMS se ve en la siguiente visita sin esperar a ningún plazo.
-// Sin "server-only": las importan los hooks de Payload, que corren dentro de
-// su API y no dentro de un render de React.
+// The services set them when caching with `unstable_cache` and the Globals'
+// `afterChange` hooks expire them on save in Payload, so a change in the CMS is
+// seen on the next visit without waiting for any deadline.
+// Without "server-only": they are imported by Payload's hooks, which run inside
+// its API and not inside a React render.
 
 export const CACHE_TAGS = {
-  /** Los siete Globals de la portada (hero, programa, maestro, paquetes, FAQ, CTA, reseñas). */
+  /** The home page's seven Globals (hero, program, teacher, packages, FAQ, CTA, reviews). */
   home: "home-globals",
-  /** El menú, que se pinta en todas las páginas públicas. */
+  /** The menu, which is rendered on every public page. */
   header: "home-header",
-  /** Ajustes del sitio (WhatsApp), en el footer y el CTA. */
+  /** Site settings (WhatsApp), in the footer and the CTA. */
   siteSettings: "site-settings",
-  /** La lista de artículos publicados (blog, relacionados y sitemap). */
+  /** The list of published articles (blog, related ones and sitemap). */
   articles: "articles",
 } as const;

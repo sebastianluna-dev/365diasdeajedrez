@@ -1,35 +1,35 @@
 import { createHash } from "node:crypto";
 
-// Identidad de una posición para el buscador por posición. ÚNICA fuente de
-// verdad: el cliente manda el FEN y el hash se calcula siempre aquí, en
-// servidor. No importar desde un componente "use client" (node:crypto no
-// existe en el navegador) ni duplicar esta lógica en ninguna otra parte.
+// Identity of a position for the position search. THE ONLY source of truth: the
+// client sends the FEN and the hash is always computed here, on the server. Do
+// not import from a "use client" component (node:crypto does not exist in the
+// browser) nor duplicate this logic anywhere else.
 //
-// Sin "server-only" a propósito, igual que constants/platform/demo-user.const:
-// el seed y los scripts de indexado corren fuera de Next y necesitan importarlo.
+// Without "server-only" on purpose, like constants/platform/demo-user.const:
+// the seed and the indexing scripts run outside Next and need to import it.
 
 /**
- * Los cuatro campos que definen la posición: piezas, turno, derechos de enroque
- * y casilla al paso. Se descartan el reloj de medias jugadas y el número de
- * jugada, que cuentan la historia de la partida y no la posición: dos partidas
- * que transponen por órdenes distintos llegan al mismo sitio con relojes
- * distintos y deben contar como la misma posición.
+ * The four fields that define the position: pieces, turn, castling rights and
+ * en passant square. The half-move clock and the move number are discarded, as
+ * they tell the history of the game and not the position: two games that
+ * transpose through different orders reach the same place with different clocks
+ * and must count as the same position.
  *
- * La casilla al paso no necesita tratamiento especial: chessops sólo la escribe
- * cuando la captura es legal de verdad (`legalEpSquare` en `Position.toSetup`),
- * así que un FEN suyo ya viene normalizado en ese punto.
+ * The en passant square needs no special treatment: chessops only writes it
+ * when the capture is really legal (`legalEpSquare` in `Position.toSetup`), so
+ * one of its FENs already comes normalised on that point.
  */
 export function normalizePositionFen(fen: string): string {
   return fen.trim().split(/\s+/).slice(0, 4).join(" ");
 }
 
 /**
- * Hash determinista de la posición, para indexar y buscar por igualdad.
+ * Deterministic hash of the position, to index and search by equality.
  *
- * SHA-256 y no Zobrist: el hash sólo tiene que ser estable y sin colisiones
- * prácticas, y esto lo da la librería estándar sin estado que mantener ni
- * tablas que versionar. Zobrist sólo valdría la pena si hubiera que actualizar
- * el hash de forma incremental jugada a jugada, que no es el caso.
+ * SHA-256 and not Zobrist: the hash only has to be stable and free of practical
+ * collisions, and this is provided by the standard library with no state to
+ * maintain nor tables to version. Zobrist would only be worth it if the hash had
+ * to be updated incrementally move by move, which is not the case.
  */
 export function createPositionHash(fen: string): string {
   return createHash("sha256").update(normalizePositionFen(fen)).digest("hex");

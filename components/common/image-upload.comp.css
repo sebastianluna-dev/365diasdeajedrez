@@ -3,14 +3,14 @@
   flex-direction: column;
   gap: 14px;
 
-  /* El selector de archivos nativo no se enseña: lo abren la zona y el botón,
-     que sí se pueden vestir como el resto de la plataforma. */
+  /* The native file picker is not shown: the drop zone and the button open
+     it, and those can be dressed like the rest of the platform. */
   & .image-upload__file {
     display: none;
   }
 
-  /* Vacía es una zona de arrastre; con imagen, la propia imagen. Es el mismo
-     botón en los dos casos: pulsar siempre lleva a elegir archivo. */
+  /* Empty it is a drop zone; with an image, the image itself. It is the same
+     button in both cases: pressing always leads to choosing a file. */
   & .image-upload__drop {
     position: relative;
     width: 100%;
@@ -38,9 +38,8 @@
     cursor: default;
   }
 
-  /* Con imagen ya no hay nada que insinuar ni nada que pulsar: filo continuo y
-     cursor normal, para que se lea como una foto y no como un hueco por
-     rellenar ni como un botón. */
+  /* With an image there is nothing left to hint at or to press: solid rule and
+     normal cursor, so it reads as a photo and not as a slot to fill in or a button. */
   & .image-upload__drop_state_filled {
     border-style: solid;
     border-color: var(--platform-border);
@@ -114,7 +113,7 @@
     cursor: default;
   }
 
-  /* La acción principal, en el naranja suave: es lo que se viene a hacer. */
+  /* The main action, in the soft orange: it is what one comes here to do. */
   & .image-upload__action_variant_primary {
     border-color: transparent;
     background: var(--platform-accent-soft);
@@ -125,7 +124,7 @@
     border-color: var(--platform-accent);
   }
 
-  /* Quitar no compite con las otras dos: sin caja hasta que te acercas. */
+  /* Remove does not compete with the other two: no box until you get close. */
   & .image-upload__remove {
     margin-left: auto;
     padding: 9px 12px;

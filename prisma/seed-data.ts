@@ -1,6 +1,6 @@
-// Datos del seed de la plataforma. IDs fijos (UUIDs literales) para que el
-// seed sea idempotente: ejecutarlo varias veces actualiza, nunca duplica.
-// Los codes provienen de constants/platform/*; los labels van en español.
+// Data of the platform's seed. Fixed IDs (literal UUIDs) so the seed is
+// idempotent: running it several times updates, never duplicates.
+// The codes come from constants/platform/*; the labels are in Spanish.
 
 import { ACTIVITY_TYPE, STAT_METRIC, SUBJECT_TYPE } from "../constants/platform/activity-codes.const";
 import { CONTENT_ROLE } from "../constants/platform/course-codes.const";
@@ -24,7 +24,7 @@ import {
 } from "./seed-courses/think-like-a-grandmaster";
 
 // ---------------------------------------------------------------------------
-// Catálogos: [code, label] (order = índice)
+// Catalogs: [code, label] (order = index)
 // ---------------------------------------------------------------------------
 
 export const CATALOG_VALUES = {
@@ -155,7 +155,7 @@ export const TOPIC_VALUES: [code: string, label: string][] = [
 ];
 
 // ---------------------------------------------------------------------------
-// IDs fijos
+// Fixed IDs
 // ---------------------------------------------------------------------------
 
 export const IDS = {
@@ -217,7 +217,7 @@ export const IDS = {
 } as const;
 
 // ---------------------------------------------------------------------------
-// Usuarios, autor, profesor
+// Users, author, teacher
 // ---------------------------------------------------------------------------
 
 export const USERS = [
@@ -235,15 +235,15 @@ export const TEACHER = {
   timezone: "America/Mexico_City",
 };
 
-/// Rol Administrador/Editor de la plataforma para la cuenta de staff demo.
+/// Platform Administrator/Editor role for the demo staff account.
 export const STAFF = {
   id: IDS.staff,
   userId: IDS.staffUser,
 };
 
-/// Asignación activa del alumno demo con el profesor demo. El seed la deja
-/// abierta al crearla, pero NO toca endedAt al actualizar: si alguien la cerró
-/// desde el panel, un re-seed no la resucita.
+/// Active assignment of the demo student with the demo teacher. The seed leaves
+/// it open when creating it, but does NOT touch endedAt on update: if someone
+/// closed it from the panel, a re-seed does not resurrect it.
 export const TEACHER_STUDENT = {
   id: IDS.teacherStudent,
   teacherId: IDS.teacher,
@@ -260,11 +260,11 @@ export const AUTHOR = {
 };
 
 // ---------------------------------------------------------------------------
-// Cursos → capítulos → lecciones → ejercicios
-// Los ejercicios definen afterSans (jugadas previas desde la posición inicial
-// de la lección) y lineSans (el tramo a entrenar); el seed calcula startFen
-// replicando esas jugadas con chessops, de modo que la copia congelada siempre
-// es legal y coherente con el PGN.
+// Courses → chapters → lessons → exercises
+// The exercises define afterSans (previous moves from the lesson's initial
+// position) and lineSans (the segment to be trained); the seed computes startFen
+// by replaying those moves with chessops, so that the frozen copy is always
+// legal and coherent with the PGN.
 // ---------------------------------------------------------------------------
 
 export interface SeedExercise {
@@ -488,7 +488,7 @@ export const COURSES: SeedCourse[] = [
 ];
 
 // ---------------------------------------------------------------------------
-// Estudios (GameDatabase) y partidas
+// Studies (GameDatabase) and games
 // ---------------------------------------------------------------------------
 
 export const GAME_DATABASES = [
@@ -517,9 +517,9 @@ export const GAME_DATABASES = [
     order: 1,
   },
   {
-    // Las colecciones de un curso son POR CAPÍTULO: `courseId` se queda además
-    // de `chapterId` porque es lo que decide quién la ve y lo que permite
-    // listar de una vez todas las partidas del curso.
+    // A course's collections are PER CHAPTER: `courseId` stays alongside
+    // `chapterId` because it is what decides who sees it and what makes it possible
+    // to list all of the course's games at once.
     id: IDS.dbSicilianModels,
     ownerType: OWNER_TYPE.COURSE,
     userId: null as string | null,
@@ -532,8 +532,8 @@ export const GAME_DATABASES = [
     order: 0,
   },
   {
-    // Cada cuenta tiene la suya, también la del profesor: la crea el alta y la
-    // impone el índice único parcial `game_database_one_default_per_user`.
+    // Every account has its own, the teacher's included: creation makes it and the
+    // partial unique index `game_database_one_default_per_user` imposes it.
     id: IDS.dbTeacherMyGames,
     ownerType: OWNER_TYPE.USER,
     userId: IDS.teacherUser as string | null,
@@ -546,7 +546,7 @@ export const GAME_DATABASES = [
     order: 0,
   },
   {
-    // Un torneo: las partidas que el alumno jugó en una misma competición.
+    // A tournament: the games the student played in one competition.
     id: IDS.dbNationalOpen,
     ownerType: OWNER_TYPE.USER,
     userId: IDS.demoUser as string | null,
@@ -559,8 +559,8 @@ export const GAME_DATABASES = [
     order: 2,
   },
   {
-    // Una colección del PROFESOR, repartida al alumno demo (ver STUDY_SHARES).
-    // Es suya, así que él la mantiene; el alumno sólo la lee.
+    // A collection of the TEACHER's, shared with the demo student (see STUDY_SHARES).
+    // It is theirs, so they maintain it; the student only reads it.
     id: IDS.dbTeacherPack,
     ownerType: OWNER_TYPE.USER,
     userId: IDS.teacherUser as string | null,
@@ -576,8 +576,8 @@ export const GAME_DATABASES = [
 ];
 
 /**
- * Reparto de colecciones. Es lo que hace que al alumno demo le APAREZCA la
- * colección del profesor en «Mis estudios», de sólo lectura.
+ * Sharing of collections. It is what makes the teacher's collection APPEAR to
+ * the demo student in "Mis estudios", read-only.
  */
 export const STUDY_SHARES = [
   { databaseId: IDS.dbTeacherPack, userId: IDS.demoUser, teacherId: IDS.teacher },
@@ -739,7 +739,7 @@ export const GAMES = [
 ];
 
 // ---------------------------------------------------------------------------
-// Clases (fechas relativas a "ahora", recalculadas en cada seed)
+// Classes (dates relative to "now", recomputed on every seed)
 // ---------------------------------------------------------------------------
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -851,7 +851,7 @@ export const CLASS_TRANSCRIPT = {
 };
 
 // ---------------------------------------------------------------------------
-// Progreso y actividad del alumno demo
+// Progress and activity of the demo student
 // ---------------------------------------------------------------------------
 
 export function buildProgress(now: Date) {
@@ -950,24 +950,24 @@ export interface SeedActivity {
   meta?: Record<string, string>;
 }
 
-/** ~15 eventos repartidos para que semana/mes/año/histórico den cifras distintas. */
+/** ~15 events spread out so week/month/year/all-time give different figures. */
 export const ACTIVITIES: SeedActivity[] = [
-  // Esta semana
+  // This week
   { id: "ac000000-0000-4000-8000-000000000001", type: ACTIVITY_TYPE.EXERCISE_PASSED, subjectType: SUBJECT_TYPE.EXERCISE, subjectId: IDS.exPoisonedPawn, topic: TOPIC.TACTICS, daysAgo: 2 },
   { id: "ac000000-0000-4000-8000-000000000002", type: ACTIVITY_TYPE.GAME_ANALYZED, subjectType: SUBJECT_TYPE.GAME, subjectId: IDS.gameOpera, topic: TOPIC.TACTICS, daysAgo: 3 },
   { id: "ac000000-0000-4000-8000-000000000003", type: ACTIVITY_TYPE.EXERCISE_PASSED, subjectType: SUBJECT_TYPE.EXERCISE, subjectId: IDS.exNajdorfLine, topic: TOPIC.OPENING_LINE, daysAgo: 4 },
-  // Este mes (fuera de esta semana)
+  // This month (outside this week)
   { id: "ac000000-0000-4000-8000-000000000004", type: ACTIVITY_TYPE.CLASS_ATTENDED, subjectType: SUBJECT_TYPE.CLASS, subjectId: IDS.classPast, topic: null, daysAgo: 7 },
   { id: "ac000000-0000-4000-8000-000000000005", type: ACTIVITY_TYPE.LESSON_COMPLETED, subjectType: SUBJECT_TYPE.LESSON, subjectId: IDS.lsWhatIsSicilian, topic: TOPIC.OPENING_LINE, daysAgo: 14 },
   { id: "ac000000-0000-4000-8000-000000000006", type: ACTIVITY_TYPE.GAME_ANALYZED, subjectType: SUBJECT_TYPE.GAME, subjectId: IDS.gameImmortal, topic: TOPIC.TACTICS, daysAgo: 16 },
   { id: "ac000000-0000-4000-8000-000000000007", type: ACTIVITY_TYPE.EXERCISE_PASSED, subjectType: SUBJECT_TYPE.EXERCISE, subjectId: IDS.exLucenaBridge, topic: TOPIC.ENDGAME, daysAgo: 20 },
-  // Este año (fuera de este mes)
+  // This year (outside this month)
   { id: "ac000000-0000-4000-8000-000000000008", type: ACTIVITY_TYPE.GAME_ANALYZED, subjectType: SUBJECT_TYPE.GAME, subjectId: IDS.gameEvergreen, topic: TOPIC.TACTICS, daysAgo: 45 },
   { id: "ac000000-0000-4000-8000-000000000009", type: ACTIVITY_TYPE.CLASS_ATTENDED, subjectType: SUBJECT_TYPE.CLASS, subjectId: IDS.classPast, topic: null, daysAgo: 60, meta: { nota: "clase anterior del ciclo" } },
   { id: "ac000000-0000-4000-8000-00000000000a", type: ACTIVITY_TYPE.EXERCISE_PASSED, subjectType: SUBJECT_TYPE.EXERCISE, subjectId: IDS.exPhilidorDefense, topic: TOPIC.ENDGAME, daysAgo: 75 },
   { id: "ac000000-0000-4000-8000-00000000000b", type: ACTIVITY_TYPE.LESSON_COMPLETED, subjectType: SUBJECT_TYPE.LESSON, subjectId: IDS.lsLucena, topic: TOPIC.ENDGAME, daysAgo: 90 },
   { id: "ac000000-0000-4000-8000-00000000000c", type: ACTIVITY_TYPE.EXERCISE_PASSED, subjectType: SUBJECT_TYPE.EXERCISE, subjectId: IDS.exLucenaBridge, topic: TOPIC.ENDGAME, daysAgo: 120 },
-  // Histórico (año pasado)
+  // All time (last year)
   { id: "ac000000-0000-4000-8000-00000000000d", type: ACTIVITY_TYPE.COURSE_COMPLETED, subjectType: SUBJECT_TYPE.COURSE, subjectId: IDS.courseRookEndings, topic: TOPIC.ENDGAME, daysAgo: 400, meta: { nota: "edición anterior del curso" } },
   { id: "ac000000-0000-4000-8000-00000000000e", type: ACTIVITY_TYPE.CLASS_ATTENDED, subjectType: SUBJECT_TYPE.CLASS, subjectId: IDS.classPast, topic: null, daysAgo: 420 },
   { id: "ac000000-0000-4000-8000-00000000000f", type: ACTIVITY_TYPE.GAME_ANALYZED, subjectType: SUBJECT_TYPE.GAME, subjectId: IDS.gameModelOpocensky, topic: TOPIC.PAWN_STRUCTURE, daysAgo: 450 },

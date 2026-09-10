@@ -1,8 +1,8 @@
--- Bando que entrena el alumno en una lección entrenable.
+-- The side the student trains in a trainable lesson.
 --
--- Nulo significa «el que mueva primero», que es como se comportaba hasta ahora,
--- así que la migración no cambia ninguna fila. Sirve para los repertorios de
--- negras: en «1.e4 c6 2.d4 d5» el alumno debe responder c6 y d5, no jugar e4.
+-- Null means "whoever moves first", which is how it behaved until now, so the
+-- migration changes no row. It serves black repertoires: in "1.e4 c6 2.d4 d5"
+-- the student must answer c6 and d5, not play e4.
 ALTER TABLE "Lesson" ADD COLUMN "trainingColorId" INTEGER;
 
 ALTER TABLE "Lesson" ADD CONSTRAINT "Lesson_trainingColorId_fkey"

@@ -9,8 +9,8 @@ export default function PlatformErrorBoundary({
   error: Error & { digest?: string };
   retry: () => void;
 }) {
-  // El `digest` es lo único del error que llega al navegador en producción, y
-  // es el mismo que registra `instrumentation.ts` en el servidor: enseñarlo es
-  // lo que permite que un alumno diga «me salió el código X» y se encuentre.
+  // The `digest` is the only part of the error that reaches the browser in
+  // production, and it is the same one `instrumentation.ts` logs on the server:
+  // showing it is what lets a student say "I got code X" and have it found.
   return <PlatformError retry={retry} digest={error.digest} />;
 }

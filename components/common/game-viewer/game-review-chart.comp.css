@@ -1,8 +1,8 @@
 .game-review-chart {
   & .game-review-chart__plot {
     display: block;
-    /* Recorre la partida al arrastrar, así que no se selecciona texto ni se
-       desplaza la página por el camino. */
+    /* Scrubs through the game on drag, so no text gets selected and the page
+       does not scroll along the way. */
     touch-action: none;
     cursor: pointer;
   }
@@ -51,8 +51,8 @@
     white-space: nowrap;
   }
 
-  /* La última se queda con lo que sobre: las otras dos miden lo que dura su
-     fase, y redondear tres porcentajes nunca suma cien exacto. */
+  /* The last one takes whatever is left: the other two measure what their
+     phase lasts, and rounding three percentages never adds up to exactly a hundred. */
   & .game-review-chart__phase.game-review-chart__phase_last {
     flex: 1;
   }

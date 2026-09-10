@@ -1,8 +1,8 @@
 .move-tree {
-  /* El tamaño sale de una variable para que el visor pueda agrandarlo a
-     pantalla completa sin alcanzar desde su hoja a las clases de esta. Todo lo
-     de dentro hereda, así que con esta línea escalan jugadas, comentarios y
-     variantes a la vez. */
+  /* The size comes from a variable so the viewer can enlarge it to full
+     screen without reaching this sheet's classes from its own. Everything
+     inside inherits, so with this one line moves, comments and variations
+     scale at once. */
   font-size: var(--move-tree-font-size, 15px);
   line-height: 1.9;
   color: var(--platform-text);

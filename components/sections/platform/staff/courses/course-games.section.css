@@ -1,13 +1,13 @@
 .course-games {
-  /* Las cuatro columnas se declaran una vez y las comparten la cabecera y las
-     filas: si se separan, la cabecera deja de cuadrar con lo que rotula. */
+  /* The four columns are declared once and shared by the header and the rows:
+     if they diverge, the header stops lining up with what it labels. */
   --course-games-columns: minmax(0, 2.4fr) minmax(0, 1.2fr) 0.6fr 0.9fr;
 
   display: flex;
   flex-direction: column;
   gap: 22px;
 
-  /* Mismo distintivo que la ficha del curso: es la misma cabecera. */
+  /* Same badge as the course page: it is the same header. */
   & .course-games__status {
     display: inline-flex;
     align-items: center;
@@ -118,7 +118,7 @@
     font-weight: 600;
   }
 
-  /* Apretada, la tabla se desplaza a lo ancho en vez de romper la rejilla. */
+  /* When cramped, the table scrolls sideways instead of breaking the grid. */
   @media (max-width: 860px) {
     & .course-games__table {
       overflow-x: auto;

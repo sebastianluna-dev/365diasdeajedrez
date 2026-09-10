@@ -1,19 +1,19 @@
-// Topes del contenido ajedrecístico, compartidos por la importación de partidas
-// del alumno y por el editor de lecciones del staff: el mismo dato (un PGN) no
-// puede tener dos límites según quién lo escriba.
+// Caps on chess content, shared by the student's game import and by the
+// staff lesson editor: the same data (a PGN) cannot have two limits depending
+// on who writes it.
 
-/** Un archivo PGN de torneo puede traer miles de partidas: 2 MB de techo. */
+/** A tournament PGN file can bring thousands of games: 2 MB ceiling. */
 export const PGN_MAX_LENGTH = 2_000_000;
 
-/** Partidas que se aceptan de una sola importación. */
+/** Games accepted from a single import. */
 export const PGN_MAX_GAMES = 500;
 
 /**
- * Opciones de la transacción que guarda e indexa una importación. Por defecto
- * Prisma corta una transacción interactiva a los 5 s, y quinientas partidas son
- * unos mil quinientos viajes a la base (un `create` más el borrado y la
- * inserción de ~80 posiciones por partida): el PGN de torneo que el tope de
- * arriba contempla revienta con P2028 y se revierte entero. Dos minutos cubren
- * ese caso con margen; `maxWait` es cuánto se espera a que haya conexión.
+ * Options of the transaction that saves and indexes an import. By default
+ * Prisma cuts an interactive transaction at 5 s, and five hundred games are
+ * about fifteen hundred round trips to the database (a `create` plus the
+ * deletion and insertion of ~80 positions per game): the tournament PGN the
+ * cap above allows for blows up with P2028 and is rolled back whole. Two
+ * minutes cover that case with margin; `maxWait` is how long to wait for a connection.
  */
 export const PGN_IMPORT_TRANSACTION = { maxWait: 5_000, timeout: 120_000 } as const;

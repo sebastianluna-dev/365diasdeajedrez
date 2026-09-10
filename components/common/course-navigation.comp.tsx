@@ -5,21 +5,21 @@ import "./course-navigation.comp.css";
 interface CourseNavigationProps {
   courseId: string;
   courseName: string;
-  /** Número de orden: es lo que direcciona al capítulo en la URL. */
+  /** Order number: it is what addresses the chapter in the URL. */
   chapterOrder?: number;
   chapterName?: string;
-  /** Nombre de la lección actual (no enlazada). */
+  /** Name of the current lesson (not linked). */
   lessonName?: string;
   /**
-   * Qué tramo es la página actual: se pinta sin enlazar y cierra la ruta.
-   * No se puede deducir de los datos que llegan —la vista de capítulo también
-   * recibe sólo el curso, y ahí el curso SÍ enlaza—, así que se dice aparte.
-   * La lección, cuando viene, siempre es el tramo actual.
+   * Which crumb is the current page: it is rendered without a link and closes the trail.
+   * It cannot be deduced from the incoming data — the chapter view also
+   * receives only the course, and there the course DOES link — so it is stated separately.
+   * The lesson, when present, is always the current crumb.
    */
   current?: "course" | "chapter";
 }
 
-/** Navegación contextual Curso → Capítulo → Lección. */
+/** Contextual navigation Course → Chapter → Lesson. */
 export function CourseNavigation({
   courseId,
   courseName,

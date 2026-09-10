@@ -7,10 +7,10 @@ interface CourseCardProps {
   course: CourseSummary;
 }
 
-/** Una sola columna de ~1000px; la portada mide poco más de 300 en pantallas densas. */
+/** A single ~1000px column; the cover measures little over 300 on dense screens. */
 const COVER_SIZES = "(max-width: 720px) 100vw, 340px";
 
-/** «0/2 lecciones» con su barra: el avance en la unidad que dice la etiqueta. */
+/** "0/2 lecciones" with its bar: the progress in the unit the label states. */
 function Meter({ done, total, unit }: { done: number; total: number; unit: string }) {
   const percent = total === 0 ? 0 : Math.min(100, Math.round((done / total) * 100));
 
@@ -27,22 +27,23 @@ function Meter({ done, total, unit }: { done: number; total: number; unit: strin
 }
 
 /**
- * Un curso en «Mis cursos»: portada, nombre y las dos medidas del avance
- * —lecciones y minutos—, con el botón que lleva donde lo dejó.
+ * A course in "Mis cursos": cover, name and the two progress measures
+ * — lessons and minutes — with the button that takes you where you left off.
  *
- * La descripción, el nivel y los autores viven en el menú «···» y no en la
- * tarjeta. La lista es para RETOMAR un curso, no para elegirlo: quien ya está
- * matriculado sabe de qué va, y el texto de presentación empujaba hacia abajo
- * justo lo que se viene a mirar. Sigue estando a un clic, y entero, en la ficha.
+ * The description, the level and the authors live in the "···" menu and not
+ * in the card. The list is for RESUMING a course, not for choosing one:
+ * whoever is already enrolled knows what it is about, and the introduction
+ * text pushed down exactly what one comes to look at. It is still one click
+ * away, and in full, on the course page.
  */
 export function CourseCard({ course }: CourseCardProps) {
   const { progress } = course;
 
   return (
     <article className="course-card">
-      {/* Mismo destino que el título, así que se saca del recorrido de teclado:
-          un lector de pantalla no gana nada anunciando el enlace dos veces, y
-          una portada sin texto no tendría cómo nombrarse. */}
+      {/* Same destination as the title, so it is taken out of the tab order: a
+          screen reader gains nothing by announcing the link twice, and a cover
+          without text would have no way to name itself. */}
       <Link href={course.href} className="course-card__cover" tabIndex={-1} aria-hidden="true">
         {course.cover && (
           <Image src={course.cover} alt="" fill sizes={COVER_SIZES} className="course-card__cover-image" />
@@ -74,8 +75,8 @@ export function CourseCard({ course }: CourseCardProps) {
           {course.ctaLabel}
         </Link>
 
-        {/* `<details>` y no un menú de JavaScript: son tres datos y un enlace, y
-            así se abre y se cierra sin hidratar nada. */}
+        {/* `<details>` and not a JavaScript menu: it is three facts and a link, and
+            this way it opens and closes without hydrating anything. */}
         <details className="course-card__menu">
           <summary className="course-card__menu-button" aria-label={`Más sobre ${course.name}`}>
             <span aria-hidden="true">···</span>

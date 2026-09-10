@@ -15,9 +15,9 @@ export async function TeacherSection() {
     <section id="maestro">
       <div className="teacher">
         <div className="teacher__media">
-          {/* `sizes` sigue al CSS de .teacher__media: ancho completo en móvil,
-              56 % en tablet, 480 px en escritorio. Sin él el navegador asumía
-              el ancho del viewport y pedía la foto a 3840 px (725 KB). */}
+          {/* `sizes` follows the CSS of .teacher__media: full width on mobile,
+              56 % on tablet, 480 px on desktop. Without it the browser assumed
+              the viewport width and requested the photo at 3840 px (725 KB). */}
           <Image
             className="teacher__photo"
             src={content.photo.src}
@@ -74,7 +74,7 @@ export async function TeacherSection() {
             ))}
           </div>
 
-          {/* Diferido: está muy por debajo del pliegue y su JS es lo más pesado de la portada. */}
+          {/* Deferred: it is far below the fold and its JS is the heaviest on the home page. */}
           <ChessBoardLazy
             flipBoard={content.game.flipBoard}
             pgn={content.game.moves}

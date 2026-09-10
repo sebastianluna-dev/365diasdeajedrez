@@ -10,35 +10,35 @@ import { PrismaClient, type Prisma } from "../lib/platform-db/generated/client";
 import { indexGamePositions } from "../services/game-positions/game-positions.service";
 import { parseImportedGames } from "../services/shared/pgn-import";
 
-// Traslado de las colecciones de curso a colecciones por CAPÍTULO.
+// Moving course collections to PER-CHAPTER collections.
 //
-// La migración SQL sólo abre la columna `GameDatabase.chapterId`. Este script
-// hace el movimiento de datos, que no cabe en SQL porque necesita leer las
-// cabeceras del PGN de cada lección para dar de alta su partida.
+// The SQL migration only opens the `GameDatabase.chapterId` column. This script
+// does the data movement, which does not fit in SQL because it needs to read the
+// PGN headers of each lesson to create its game.
 //
-// Hace tres cosas:
+// It does three things:
 //
-//  1. Crea la colección de cada capítulo que vaya a necesitarla.
-//  2. Mueve las partidas de la colección VIEJA del curso a la del capítulo que
-//     les toca: el de la lección que ya las referenciaba y, si no la
-//     referencia ninguna, el primer capítulo del curso.
-//  3. Da de alta como partida el PGN propio de cada lección que no referencie
-//     ninguna, y la deja vinculada. Es lo que devuelve ese contenido —hoy sin
-//     ningún sitio donde editarse— a un sitio donde se puede editar.
+//  1. Creates the collection of each chapter that is going to need one.
+//  2. Moves the games from the course's OLD collection to the one of the chapter
+//     they belong to: that of the lesson that already referenced them and, if no
+//     lesson references them, the course's first chapter.
+//  3. Creates as a game the own PGN of each lesson that references none, and
+//     leaves it linked. It is what returns that content — today with nowhere to
+//     be edited — to a place where it can be edited.
 //
-// TRANSACCIONES CORTAS, una por partida. No es una preferencia de estilo: en
-// una transacción interactiva larga, este Prisma con el adaptador de pg empieza
-// a devolver `null` en los `create` a partir de la séptima operación, SIN
-// lanzar. Comprobado. Un script que se fiara del valor devuelto escribiría
-// basura en silencio, así que además se comprueba lo que devuelve cada alta.
+// SHORT TRANSACTIONS, one per game. It is not a style preference: in a long
+// interactive transaction, this Prisma with the pg adapter starts returning
+// `null` from `create` from the seventh operation on, WITHOUT throwing. Verified.
+// A script that trusted the returned value would silently write rubbish, so what
+// each creation returns is checked as well.
 //
-// Es IDEMPOTENTE y reanudable: cada lección se salta si ya está vinculada, así
-// que si algo falla a medias basta con volver a correrlo.
+// It is IDEMPOTENT and resumable: each lesson is skipped if it is already
+// linked, so if something fails halfway it is enough to run it again.
 //
-// Con `--dry` no escribe nada: recorre lo mismo y cuenta lo que haría.
+// With `--dry` it writes nothing: it walks the same and counts what it would do.
 //
-// Se corre también después de un `prisma db seed`: el seed deja las lecciones
-// con su PGN propio y esto las pasa a la colección de su capítulo.
+// It is also run after a `prisma db seed`: the seed leaves the lessons with
+// their own PGN and this moves them to their chapter's collection.
 //
 //   npx tsx scripts/migrate-chapter-collections.ts [--dry]
 
@@ -56,7 +56,7 @@ interface ChapterRow {
   lessons: { id: string; name: string; gameId: string | null; pgn: string }[];
 }
 
-/** La colección del capítulo, creándola si no la tiene. */
+/** The chapter's collection, creating it if it has none. */
 async function chapterCollection(chapter: ChapterRow): Promise<string> {
   const existing = await db.gameDatabase.findUnique({
     where: { chapterId: chapter.id },
@@ -80,19 +80,19 @@ async function chapterCollection(chapter: ChapterRow): Promise<string> {
   return created.id;
 }
 
-/** Siguiente hueco de orden en una colección. */
+/** Next free order slot in a collection. */
 async function nextOrder(databaseId: string): Promise<number> {
   const last = await db.game.aggregate({ where: { databaseId }, _max: { order: true } });
   return (last._max.order ?? 0) + 1;
 }
 
 /**
- * Cambia una partida de base.
+ * Moves a game to another database.
  *
- * `GamePosition.databaseId` está denormalizado desde `Game`, así que mover la
- * partida sin actualizar sus posiciones dejaría el índice del buscador
- * apuntando a una base que ya no la contiene: seguiría encontrándola, pero
- * atribuida al sitio equivocado. Las dos escrituras van juntas o ninguna.
+ * `GamePosition.databaseId` is denormalised from `Game`, so moving the game
+ * without updating its positions would leave the search index pointing at a
+ * database that no longer contains it: it would still find it, but attributed to
+ * the wrong place. The two writes go together or neither does.
  */
 async function moveGame(gameId: string, databaseId: string, order: number) {
   await db.$transaction(async (tx: Prisma.TransactionClient) => {
@@ -101,7 +101,7 @@ async function moveGame(gameId: string, databaseId: string, order: number) {
   });
 }
 
-/** Da de alta el PGN de la lección como partida del capítulo y la vincula. */
+/** Creates the lesson's PGN as a game of the chapter and links it. */
 async function adoptLessonPgn(
   lesson: ChapterRow["lessons"][number],
   databaseId: string,
@@ -114,7 +114,7 @@ async function adoptLessonPgn(
       data: {
         database: { connect: { id: databaseId } },
         order,
-        // El nombre de la lección: es como la reconoce quien la editó.
+        // The lesson's name: it is how whoever edited it recognises it.
         title: lesson.name,
         white: parsed?.white ?? "Desconocido",
         black: parsed?.black ?? "Desconocido",
@@ -124,21 +124,21 @@ async function adoptLessonPgn(
         eco: parsed?.eco ?? null,
         playedAt: parsed?.playedAt ?? null,
         initialFen: parsed?.initialFen ?? null,
-        // Si el PGN de la lección no se deja leer se guarda tal cual: es su
-        // contenido y perderlo sería peor que guardarlo sin cabeceras.
+        // If the lesson's PGN cannot be read it is stored as is: it is its content and
+        // losing it would be worse than storing it without headers.
         pgn: parsed?.pgn ?? lesson.pgn,
         source: { connect: { code: GAME_SOURCE.MANUAL } },
       },
       select: { id: true },
     });
-    // Ver la nota de arriba: este cliente puede devolver null sin lanzar.
+    // See the note above: this client can return null without throwing.
     if (!game?.id) throw new Error(`El alta de la partida de «${lesson.name}» no devolvió id`);
 
     await tx.lesson.update({ where: { id: lesson.id }, data: { gameId: game.id } });
 
-    // El índice de posiciones, en la misma transacción que el alta: una partida
-    // guardada sin indexar es invisible para el buscador por posición y nadie
-    // se entera hasta buscarla. Es lo mismo que hace la importación de PGN.
+    // The position index, in the same transaction as the creation: a game stored
+    // without indexing is invisible to the position search and nobody finds out
+    // until they look for it. It is the same thing the PGN import does.
     await indexGamePositions(tx, { gameId: game.id, databaseId, pgn: parsed?.pgn ?? lesson.pgn });
   });
 }
@@ -174,7 +174,7 @@ async function main() {
     if (course.chapters.length === 0) continue;
     log(`curso «${course.name}»`);
 
-    // Qué capítulo reclama cada partida: el de la lección que la referencia.
+    // Which chapter claims each game: that of the lesson that references it.
     const claimedBy = new Map<string, ChapterRow>();
     for (const chapter of course.chapters) {
       for (const lesson of chapter.lessons) {
@@ -191,24 +191,24 @@ async function main() {
       return id;
     };
 
-    // 1 y 2. Las partidas de la colección vieja del curso.
+    // 1 and 2. The games of the course's old collection.
     for (const old of course.gameDatabases) {
       for (const game of old.games) {
-        // Sin lección que la reclame va al primer capítulo: es material del
-        // curso y dejarla fuera de toda colección la volvería invisible.
+        // With no lesson claiming it, it goes to the first chapter: it is course
+        // material and leaving it out of every collection would make it invisible.
         const chapter = claimedBy.get(game.id) ?? course.chapters[0];
         const databaseId = await collectionFor(chapter);
         if (!dryRun) await moveGame(game.id, databaseId, await nextOrder(databaseId));
         moved += 1;
       }
 
-      // La base vieja se queda vacía; se retira para no dejar una colección del
-      // curso sin capítulo compitiendo con la de cada uno.
+      // The old database is left empty; it is removed so as not to leave a course
+      // collection without a chapter competing with each chapter's own.
       if (!dryRun) await db.gameDatabase.delete({ where: { id: old.id } });
       log(`  colección de curso «${old.name}» retirada (${old.games.length} partidas movidas)`);
     }
 
-    // 3. El PGN propio de cada lección pasa a ser una partida de su capítulo.
+    // 3. Each lesson's own PGN becomes a game of its chapter.
     for (const chapter of course.chapters) {
       let pending = 0;
       for (const lesson of chapter.lessons) {

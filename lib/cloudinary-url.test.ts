@@ -12,8 +12,8 @@ describe("withCoverCrop", () => {
   });
 
   it("SUSTITUYE el recorte anterior en vez de encadenarlo", () => {
-    // Acumularlos aplicaría cada recorte sobre el resultado del anterior, y a
-    // las dos o tres subidas la imagen sería un sello.
+    // Accumulating them would apply each crop over the result of the previous one,
+    // and after two or three uploads the image would be a postage stamp.
     const twice = withCoverCrop(withCoverCrop(PLAIN, "auto"), "auto");
     expect(twice.match(/c_fill/g)).toHaveLength(1);
     expect(twice).toBe(withCoverCrop(PLAIN, "auto"));

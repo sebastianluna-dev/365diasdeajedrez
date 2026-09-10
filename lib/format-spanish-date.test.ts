@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { formatSpanishDate } from "./format-spanish-date";
 
-// Fechas construidas con el constructor local: el formateador usa la hora
-// local del proceso, así que el test no depende de la zona de la máquina.
+// Dates built with the local constructor: the formatter uses the process's
+// local time, so the test does not depend on the machine's time zone.
 describe("formatSpanishDate", () => {
   it("escribe día, mes en minúscula y año", () => {
     expect(formatSpanishDate(new Date(2026, 8, 9))).toBe("9 de septiembre, 2026");

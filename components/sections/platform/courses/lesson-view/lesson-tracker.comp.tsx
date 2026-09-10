@@ -8,9 +8,9 @@ interface LessonTrackerProps {
 }
 
 /**
- * Marca la lección como abierta (IN_PROGRESS + punto de retorno del curso) al
- * montarse. Las escrituras nunca ocurren durante el render del servidor: se
- * disparan aquí, una sola vez por lección.
+ * Marks the lesson as opened (IN_PROGRESS + the course's return point) on
+ * mount. The writes never happen during the server render: they fire here,
+ * once per lesson.
  */
 export function LessonTracker({ lessonId }: LessonTrackerProps) {
   const trackedRef = useRef<string | null>(null);

@@ -8,7 +8,7 @@ import "./game-page.css";
 
 interface GamePageProps {
   params: Promise<{ studyId: string; gameId: string }>;
-  /** Lo que devuelve borrar sin confirmar: la partida está citada en clases. */
+  /** What deleting without confirmation returns: the game is cited in classes. */
   searchParams: Promise<{ error?: string }>;
 }
 
@@ -21,8 +21,8 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
 export default async function GamePage({ params, searchParams }: GamePageProps) {
   const { studyId, gameId } = await params;
   const { error } = await searchParams;
-  // `getGameById` pasa por el DAL, así que este primer await hace de frontera
-  // de sesión. El estudio se pide después para el listado del aside.
+  // `getGameById` goes through the DAL, so this first await acts as the session
+  // border. The study is requested afterwards for the aside's listing.
   const game = await getGameById(studyId, gameId);
   if (!game) notFound();
 
@@ -30,9 +30,9 @@ export default async function GamePage({ params, searchParams }: GamePageProps) 
   const siblings = study?.games ?? [];
   const canWrite = study !== null && !study.isCourseStudy;
 
-  // Los resultados los piden los DOS modales del aside, y cada uno se pinta con
-  // su propia condición: se traen si cualquiera de las dos se cumple, o el
-  // desplegable de resultado saldría vacío el día que dejen de coincidir.
+  // The results are requested by BOTH modals of the aside, and each one renders
+  // under its own condition: they are fetched when either holds, or the result
+  // dropdown would come out empty the day the two stop coinciding.
   const [results, classGames] = await Promise.all([
     canWrite || game.canEdit ? getGameResultOptions() : [],
     canWrite ? getClassGames() : [],
@@ -45,10 +45,10 @@ export default async function GamePage({ params, searchParams }: GamePageProps) 
         errorCode={error}
         editGame={
           game.canEdit ? (
-            /* La ficha entera, sin ir campo por campo: `GameView` ya contiene
-               todos los de `GameFieldValues`, y enumerarlos aquí es cómo se
-               perdieron una vez el título y la federación —el formulario los
-               pedía y esta lista no los pasaba, así que guardar los borraba—. */
+            /* The whole record, without going field by field: `GameView` already
+               contains every field of `GameFieldValues`, and listing them here is
+               how the title and the federation got lost once — the form asked for
+               them and this list did not pass them, so saving erased them. */
             <EditGame studyId={game.studyId} gameId={game.id} results={results} values={game} />
           ) : undefined
         }

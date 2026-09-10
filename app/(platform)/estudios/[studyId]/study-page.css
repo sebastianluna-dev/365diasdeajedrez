@@ -1,5 +1,5 @@
 .study-page {
-  /* Las migas van pegadas a la barra, como en las vistas de curso. */
+  /* The breadcrumbs sit right under the bar, as in the course views. */
   margin-top: -18px;
   gap: 14px;
 }

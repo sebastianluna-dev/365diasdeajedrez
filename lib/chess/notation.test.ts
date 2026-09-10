@@ -12,7 +12,7 @@ describe("buildNotationRows", () => {
     expect(rows[1].number).toBe("2.");
     expect(rows[0].white.label).toBe("e4");
     expect(rows[0].black?.label).toBe("c5");
-    // La inicial de pieza se extrae al glyph, así que la etiqueta va sin ella.
+    // The piece initial is extracted into the glyph, so the label goes without it.
     expect(rows[1].white).toMatchObject({ label: "f3", glyph: "knight" });
     expect(rows[1].black).toMatchObject({ label: "d6", glyph: null });
   });

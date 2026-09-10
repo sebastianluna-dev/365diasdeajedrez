@@ -4,7 +4,7 @@ import { CourseCard } from "./course-card.comp";
 import "./courses-list.section.css";
 
 interface CoursesListSectionProps {
-  /** Los trae la página: el resumen de la cabecera sale de la misma lista. */
+  /** The page fetches them: the header summary comes from the same list. */
   courses: CourseSummary[];
 }
 

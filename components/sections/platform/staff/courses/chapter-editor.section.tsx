@@ -19,7 +19,7 @@ import "./chapter-editor.section.css";
 
 interface ChapterEditorSectionProps {
   chapter: ChapterAdminDetail;
-  /** Cuántas tiene su colección; la lista vive en su propia pestaña. */
+  /** How many its collection has; the list lives in its own tab. */
   gameCount: number;
   errorCode?: string;
 }
@@ -138,8 +138,8 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
               href: lesson.href,
               roleLabel: lesson.roleLabel,
               badge: lesson.isPriority ? "Prioritaria" : undefined,
-              // Borrar sólo donde el servidor lo permitiría: curso en borrador
-              // y sin progreso de ningún alumno.
+              // Delete only where the server would allow it: draft course and no
+              // progress from any student.
               canDelete: isDraft && lesson.progressCount === 0,
             }))}
             onReorder={reorderLessons.bind(null, chapter.courseId, chapter.id)}
@@ -167,7 +167,7 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
             </button>
           </form>
 
-          {/* Opcionales y como mucho una de cada; el botón se va al crearla. */}
+          {/* Optional and at most one of each; the button goes away once it is created. */}
           {(!hasIntro || !hasClosing) && (
             <div className="chapter-editor__roles">
               {!hasIntro && (

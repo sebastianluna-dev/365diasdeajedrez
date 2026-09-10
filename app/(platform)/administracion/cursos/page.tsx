@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 interface StaffCoursesPageProps {
-  /** `q` es la búsqueda y `estado` el filtro; los dos viven en la URL. */
+  /** `q` is the search and `estado` the filter; both live in the URL. */
   searchParams: Promise<{ q?: string; estado?: string }>;
 }
 
@@ -15,8 +15,8 @@ export default async function StaffCoursesPage({ searchParams }: StaffCoursesPag
   await requireStaff();
   const { q, estado } = await searchParams;
 
-  // La cabecera va DENTRO de la sección: lleva el buscador, y ése necesita
-  // saber lo que hay filtrado.
+  // The header goes INSIDE the section: it carries the search box, and that
+  // needs to know what is being filtered.
   return (
     <div className="platform-page staff-courses-page">
       <CoursesAdminSection query={q} status={estado} />

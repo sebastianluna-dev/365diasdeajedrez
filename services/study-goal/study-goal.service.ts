@@ -6,25 +6,25 @@ import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { dayKey, startOfDay, streakLength } from "@/lib/study-streak";
 import type { StudyGoal } from "./study-goal.types";
 
-// Racha y objetivo diario: las dos cifras de la columna de «Mis cursos».
+// Streak and daily goal: the two figures of the "Mis cursos" column.
 //
-// Ninguna de las dos se guarda como tal. La racha se DERIVA de la actividad y
-// los minutos de hoy de las lecciones terminadas hoy; lo único que se almacena
-// es el objetivo, que es una decisión del alumno y no un cálculo.
+// Neither of the two is stored as such. The streak is DERIVED from the activity
+// and today's minutes from the lessons finished today; the only thing stored is
+// the goal, which is a decision of the student's and not a computation.
 
-/** Hasta dónde mirar hacia atrás para la racha. */
+/** How far back to look for the streak. */
 const STREAK_WINDOW_DAYS = 400;
 
 /**
- * Días con actividad, de más reciente a más antiguo, dentro de la ventana.
+ * Days with activity, most recent to oldest, within the window.
  *
- * Cuenta CUALQUIER actividad —una lección, una clase, un ejercicio, una partida
- * analizada—, no sólo las lecciones: la racha premia haber estudiado, y quien
- * pasó la tarde analizando sus partidas estudió.
+ * It counts ANY activity — a lesson, a class, an exercise, a game analysed —
+ * not only lessons: the streak rewards having studied, and whoever spent the
+ * afternoon analysing their games studied.
  *
- * La ventana existe para que la consulta no crezca con los años. Una racha más
- * larga que eso se seguiría contando entera sólo hasta el borde, que es un
- * problema que da gusto tener.
+ * The window exists so the query does not grow with the years. A streak longer
+ * than that would still be counted whole only up to the edge, which is a problem
+ * one would be glad to have.
  */
 async function activeDaysOf(userId: string, now: Date): Promise<Set<string>> {
   const since = new Date(now.getTime() - STREAK_WINDOW_DAYS * 24 * 60 * 60 * 1000);
@@ -37,9 +37,8 @@ async function activeDaysOf(userId: string, now: Date): Promise<Set<string>> {
 }
 
 /**
- * Minutos estudiados hoy: la duración estimada de las lecciones que terminó
- * hoy. Las que no tienen duración cuentan como cero, igual que en el avance del
- * curso.
+ * Minutes studied today: the estimated duration of the lessons they finished
+ * today. Those without a duration count as zero, as in the course's progress.
  */
 async function minutesTodayOf(userId: string, today: string): Promise<number> {
   const rows = await getPlatformDb().lessonProgress.findMany({
@@ -66,8 +65,8 @@ export const getStudyGoal = cache(async (): Promise<StudyGoal> => {
     streakDays: streakLength(activeDays, today),
     minutesToday,
     goalMinutes,
-    // Tapado arriba: la barra no puede desbordarse y «120 %» no dice nada que
-    // no diga ya «45 de 30 minutos».
+    // Capped at the top: the bar cannot overflow and "120 %" says nothing that
+    // "45 of 30 minutes" does not already say.
     percent: goalMinutes === 0 ? 0 : Math.min(100, Math.round((minutesToday / goalMinutes) * 100)),
   };
 });

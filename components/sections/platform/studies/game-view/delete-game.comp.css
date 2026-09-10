@@ -19,8 +19,8 @@
     font-size: 14px;
   }
 
-  /* Al pie de la ficha no es una caja: es la última palabra de la fila, y sólo
-     se tiñe de rojo al ir a por ella. */
+  /* At the foot of the record it is not a box: it is the last word of the row,
+     and only turns red when you go for it. */
   & .delete-game__open.delete-game__open_size_inline {
     padding: 0;
     border: 0;

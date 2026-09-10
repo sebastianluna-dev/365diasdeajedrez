@@ -8,15 +8,15 @@ interface DeleteGameProps {
   studyId: string;
   gameId: string;
   name: string;
-  /** Bloques de clase que la citan: borrarla los deja vacíos. */
+  /** Class blocks that cite it: deleting it leaves them empty. */
   classBlockCount: number;
   /**
-   * `compact` para la columna de la ficha, donde el botón va a lo ancho y a la
-   * medida del resto de acciones de la tarjeta; `inline` para el pie de la
-   * ficha, donde es una palabra más de la fila y no una caja.
+   * `compact` for the record column, where the button spans the width and
+   * matches the rest of the card's actions; `inline` for the record's foot,
+   * where it is one more word of the row and not a box.
    */
   size?: "regular" | "compact" | "inline";
-  /** El texto del disparador. Al pie basta «Borrar», que ya está en contexto. */
+  /** The trigger text. At the foot "Borrar" is enough, it is already in context. */
   label?: string;
 }
 
@@ -31,9 +31,9 @@ export function DeleteGame({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [confirmed, setConfirmed] = useState(false);
 
-  // Misma condición que el servidor: sólo se exige la casilla cuando la partida
-  // está citada en alguna clase. Si el cliente dejara enviar sin ella donde el
-  // servidor la pide, la acción rebotaría a la página de error en vez de borrar.
+  // Same condition as the server: the checkbox is only required when the game
+  // is cited in some class. If the client let it submit without it where the
+  // server requires it, the action would bounce to the error page instead of deleting.
   const needsConfirmation = classBlockCount > 0;
 
   const close = () => {

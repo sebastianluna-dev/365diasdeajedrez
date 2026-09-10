@@ -1,11 +1,11 @@
 .engine-panel {
-  /* El tamaño del bloque entero sale de una variable para que el visor pueda
-     agrandarlo a pantalla completa sin alcanzar desde su hoja a estas clases;
-     lo de dentro va en `em`, así que basta con esta línea. */
+  /* The size of the whole block comes from a variable so the viewer can enlarge
+     it to full screen without reaching these classes from its own sheet; what
+     is inside goes in `em`, so this one line is enough. */
   font-size: var(--engine-panel-font-size, 14px);
 
-  /* Referencia de la vista previa: su sitio se mide contra el bloque del
-     módulo, no contra la jugada que se esté señalando. */
+  /* Reference for the preview: its place is measured against the engine block,
+     not against whichever move is being pointed at. */
   position: relative;
   box-shadow: inset 0 -1px 0 var(--platform-track);
 
@@ -47,7 +47,7 @@
     color: var(--platform-success-ink);
   }
 
-  /* Un punto que se enciende: dice si está pensando sin leer el texto. */
+  /* A dot that lights up: says whether it is thinking without reading the text. */
   & .engine-panel__dot {
     width: 8px;
     height: 8px;
@@ -59,13 +59,14 @@
     background: var(--platform-success-ink);
   }
 
-  /* Las líneas van sin relleno a los lados, como la notación de debajo: las dos
-     listas de la tarjeta arrancan en el mismo borde y se leen como una sola
-     columna. La cabecera sí conserva el suyo: es un título, no una lista.
+  /* The lines have no side padding, like the notation below: the card's two
+     lists start at the same edge and read as a single column. The header does
+     keep its own: it is a title, not a list.
 
-     Alto FIJO, el mismo que la notación cede al encenderlo: el bloque pasa por
-     «Cargando», «Pensando» y tres líneas en cuestión de segundos, y si midiera
-     lo que ocupa su contenido movería la partida entera tres veces seguidas. */
+     FIXED height, the same the notation gives up when it is switched on: the
+     block goes through "Loading", "Thinking" and three lines within seconds,
+     and if it measured what its content takes up it would move the whole game
+     three times in a row. */
   & .engine-panel__body {
     height: var(--viewer-engine-body, 102px);
     padding: 6px 0 8px;
@@ -74,9 +75,9 @@
     background: var(--platform-bg);
   }
 
-  /* Con una línea desplegada el bloque crece EXACTAMENTE un renglón, que es lo
-     que la notación le cede: alto fijo también aquí, por la misma razón que
-     plegado —lo que no mide en firme, se mueve—. */
+  /* With one line expanded the block grows EXACTLY one row, which is what the
+     notation gives up: fixed height here too, for the same reason as when
+     collapsed — what is not measured firmly, moves. */
   & .engine-panel__body.engine-panel__body_state_expanded {
     height: calc(var(--viewer-engine-body, 102px) + var(--viewer-engine-extra, 26px));
   }
@@ -87,21 +88,21 @@
     padding: 0;
   }
 
-  /* Rejilla y no flex: así las tres puntuaciones quedan alineadas en columna y
-     se comparan de un vistazo, que es para lo que están las tres líneas. */
+  /* Grid and not flex: that way the three scores line up in a column and are
+     compared at a glance, which is what the three lines are for. */
   & .engine-panel__row {
     display: grid;
-    /* La línea entera —evaluación incluida— y el botón de desplegarla. */
+    /* The whole line — evaluation included — and the button that expands it. */
     grid-template-columns: minmax(0, 1fr) 26px;
     gap: 10px;
     align-items: baseline;
-    /* Un poco de aire por la izquierda: pegadas al filo de la tarjeta las
-       evaluaciones se leían como parte del borde. */
+    /* A little air on the left: pressed against the card's edge the evaluations
+       read as part of the border. */
     padding: 3px 10px 3px 12px;
   }
 
-  /* Va dentro de la línea y con su mismo tamaño: lo único que la distingue de
-     las jugadas es la negrita, porque es el dato que se compara entre líneas. */
+  /* It goes inside the line and at the same size: the only thing that sets it
+     apart from the moves is the bold, because it is the figure compared across lines. */
   & .engine-panel__score {
     margin-right: 7px;
     font-weight: 700;
@@ -109,16 +110,16 @@
     color: var(--platform-text);
   }
 
-  /* La mejor destaca: es la que propone el módulo, las otras dos son el
-     contexto que dice por cuánto gana. */
+  /* The best one stands out: it is the one the engine proposes, the other two
+     are the context that says by how much it wins. */
   & .engine-panel__row_rank_best .engine-panel__line {
     color: var(--platform-text);
   }
 
-  /* Cada continuación se corta con puntos suspensivos: son sugerencias, no algo
-     que haya que leer entero, y partirlas en varias filas movería todo lo de
-     abajo cada vez que el módulo cambia de idea. Quien quiera verla entera la
-     despliega con la flecha de su derecha. */
+  /* Each continuation is cut with an ellipsis: they are suggestions, not
+     something to be read in full, and breaking them over several rows would
+     move everything below every time the engine changes its mind. Whoever wants
+     to see it whole expands it with the arrow on its right. */
   & .engine-panel__line {
     min-width: 0;
     overflow: hidden;
@@ -127,9 +128,9 @@
     color: var(--platform-text-subtle);
   }
 
-  /* Desplegada enseña un renglón más y ahí se planta: dos son bastante para
-     ver a dónde va la línea, y tres líneas creciendo sin tope empujarían la
-     partida fuera de la vista. El corte pone sus propios puntos suspensivos. */
+  /* Expanded it shows one more row and stops there: two are enough to see
+     where the line goes, and three lines growing without a cap would push the
+     game out of view. The clamp adds its own ellipsis. */
   & .engine-panel__line.engine-panel__line_state_expanded {
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -140,8 +141,8 @@
     line-height: 1.6;
   }
 
-  /* Número y jugada viajan juntos: al partir la línea en varios renglones, un
-     «34.» no puede quedarse solo al final de uno. */
+  /* Number and move travel together: when the line breaks over several rows,
+     a "34." cannot be left alone at the end of one. */
   & .engine-panel__token {
     display: inline-block;
     margin-right: 5px;
@@ -183,8 +184,8 @@
     color: var(--platform-text);
   }
 
-  /* El galón mira hacia abajo plegado y hacia arriba desplegado, que es lo que
-     dice si la línea se abre o se cierra. */
+  /* The chevron points down when collapsed and up when expanded, which is what
+     says whether the line opens or closes. */
   & .engine-panel__more-icon {
     width: 16px;
     height: 16px;
@@ -195,12 +196,12 @@
     transform: rotate(-90deg);
   }
 
-  /* Sitio FIJO, colgado del bloque del módulo y alineado con su borde derecho:
-     señalar una jugada tras otra no mueve el tablero de un lado a otro, que es
-     lo que hacía imposible seguir una línea con la vista.
+  /* FIXED place, hanging from the engine block and aligned with its right edge:
+     pointing at one move after another does not move the board from side to
+     side, which is what made it impossible to follow a line with the eyes.
 
-     Flota sobre la notación y no atrapa el ratón: en cuanto lo hiciera taparía
-     la jugada siguiente y no se podría recorrer la línea. */
+     It floats over the notation and does not catch the mouse: as soon as it
+     did it would cover the next move and the line could not be traversed. */
   & .engine-panel__preview {
     position: absolute;
     z-index: 45;

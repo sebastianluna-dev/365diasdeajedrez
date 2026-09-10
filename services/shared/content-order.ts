@@ -1,16 +1,16 @@
 import { CONTENT_ROLE, type ContentRoleCode } from "@/constants/platform/course-codes.const";
 
-// Dónde cae lo que abre y lo que cierra.
+// Where what opens and what closes falls.
 //
-// Un curso puede tener un capítulo de introducción y otro de cierre, y un
-// capítulo lo mismo con sus lecciones. Su sitio NO se guarda en `order`: se
-// deduce del papel, así que reordenar el contenido nunca los mueve y no hay
-// forma de dejar el cierre en medio.
+// A course can have an introduction chapter and a closing one, and a chapter
+// the same with its lessons. Their place is NOT stored in `order`: it is
+// deduced from the role, so reordering the content never moves them and there
+// is no way to leave the closing in the middle.
 //
-// Módulo puro para que lo usen igual los servicios del alumno, los del staff y
-// los tests.
+// Pure module so it is used alike by the student's services, the staff's and
+// the tests.
 
-/** Introducción, contenido, cierre. Es el orden en que se leen. */
+/** Introduction, content, closing. It is the order they are read in. */
 function rankOf(role: string | null | undefined): number {
   if (role === CONTENT_ROLE.INTRO) return 0;
   if (role === CONTENT_ROLE.CLOSING) return 2;
@@ -19,15 +19,15 @@ function rankOf(role: string | null | undefined): number {
 
 export interface WithRole {
   order: number;
-  /** Code de ContentRole, o nulo si es contenido normal. */
+  /** Code of ContentRole, or null when it is normal content. */
   roleCode?: string | null;
 }
 
 /**
- * Ordena poniendo la introducción delante y el cierre al final, y dejando el
- * resto en su orden.
+ * Sorts putting the introduction in front and the closing at the end, and
+ * leaving the rest in their order.
  *
- * No modifica la lista que recibe: devuelve una nueva.
+ * It does not modify the list it receives: it returns a new one.
  */
 export function sortByRole<T extends WithRole>(items: T[]): T[] {
   return [...items].sort((left, right) => {
@@ -36,12 +36,12 @@ export function sortByRole<T extends WithRole>(items: T[]): T[] {
   });
 }
 
-/** Si es contenido normal, que es lo único que se puede reordenar y mover. */
+/** Whether it is normal content, which is the only thing that can be reordered and moved. */
 export function isPlainContent(item: WithRole): boolean {
   return rankOf(item.roleCode) === 1;
 }
 
-/** El que tiene ese papel, si existe. */
+/** The one with that role, if it exists. */
 export function withRole<T extends WithRole>(items: T[], role: ContentRoleCode): T | undefined {
   return items.find((item) => item.roleCode === role);
 }

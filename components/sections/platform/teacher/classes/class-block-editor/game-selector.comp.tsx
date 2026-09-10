@@ -10,9 +10,9 @@ interface GameSelectorProps {
 }
 
 /**
- * Partidas que el profesor puede referenciar, agrupadas por dueño (las suyas y
- * las de sus alumnos activos). Sólo id y etiqueta: los PGN se piden uno a uno
- * cuando hace falta previsualizar.
+ * Games the teacher can reference, grouped by owner (their own and those of
+ * their active students). Only id and label: PGNs are requested one at a time
+ * when a preview is needed.
  */
 export function GameSelector({ groups, value, onChange }: GameSelectorProps) {
   return (

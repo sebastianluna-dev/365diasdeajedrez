@@ -12,7 +12,7 @@ const NOW = new Date("2026-09-01T10:00:00.000Z");
 const DAY_MS = 24 * 60 * 60 * 1000;
 const START = { consecutivePerfect: 0, masteryLevel: 0 };
 
-/** Días entre `NOW` y la fecha programada. */
+/** Days between `NOW` and the scheduled date. */
 function daysUntil(date: Date): number {
   return Math.round((date.getTime() - NOW.getTime()) / DAY_MS);
 }
@@ -37,7 +37,7 @@ describe("applyReview", () => {
 
     expect(state.masteryLevel).toBe(MAX_MASTERY_LEVEL);
     expect(state.intervalDays).toBe(REVIEW_INTERVALS_DAYS[MAX_MASTERY_LEVEL]);
-    // La racha sí sigue contando aunque el intervalo esté tope.
+    // The streak does keep counting even when the interval is at its cap.
     expect(state.consecutivePerfect).toBe(20);
   });
 
@@ -50,7 +50,7 @@ describe("applyReview", () => {
 
     expect(failed.masteryLevel).toBe(0);
     expect(failed.consecutivePerfect).toBe(0);
-    // Y vuelve a estar pendiente hoy mismo.
+    // And it is due again today.
     expect(failed.intervalDays).toBe(0);
     expect(daysUntil(failed.nextReviewAt)).toBe(0);
   });
@@ -64,8 +64,8 @@ describe("applyReview", () => {
   });
 
   it("repasar antes de tiempo no adelanta el siguiente repaso", () => {
-    // La fecha se calcula desde AHORA, no desde la que estaba programada: quien
-    // repasa de más no se penaliza acortando su intervalo.
+    // The date is computed from NOW, not from the one that was scheduled: whoever
+    // reviews early is not penalised by having their interval shortened.
     const state = applyReview(START, true, NOW);
     const early = new Date(NOW.getTime() + 2 * 60 * 60 * 1000);
 
@@ -94,7 +94,7 @@ describe("isDueForReview", () => {
 
 describe("accuracyPercent", () => {
   it("mide sobre las jugadas acertadas a la primera", () => {
-    // El ejemplo del documento: 12 requeridas, 11 correctas, 1 error.
+    // The example from the document: 12 required, 11 correct, 1 mistake.
     expect(accuracyPercent(11, 12)).toBe(92);
     expect(accuracyPercent(12, 12)).toBe(100);
     expect(accuracyPercent(0, 12)).toBe(0);

@@ -1,16 +1,16 @@
 import type { PgnTree, PgnTreeNode } from "./pgn-tree";
 
-// Cómo se ordena una notación de ajedrez para leerla.
+// How chess notation is ordered so it can be read.
 //
-// La línea principal va en una rejilla de dos columnas (blancas / negras) y
-// todo lo demás —comentarios y variantes— va a lo ancho. Son dos cajas que
-// tienen que alternarse, así que en vez de pintar el árbol recursivamente se
-// emite una LISTA de bloques en el orden en que se leen. Aquí sólo se decide
-// ese orden; quién lo pinta es cosa del componente.
+// The main line goes in a two-column grid (white / black) and everything else
+// — comments and variations — goes full width. They are two boxes that have to
+// alternate, so instead of rendering the tree recursively a LIST of blocks is
+// emitted in the order they are read. Only that order is decided here; who
+// renders it is the component's business.
 //
-// Módulo puro y sin JSX a propósito: las reglas de abajo son sutiles —cuándo se
-// parte un par, qué baja de nivel— y se comprueban con tests en lugar de
-// mirando una pantalla.
+// Pure module and without JSX on purpose: the rules below are subtle — when a
+// pair is split, what drops a level — and they are checked with tests instead of
+// by looking at a screen.
 
 export interface NotationRow {
   kind: "row";
@@ -18,9 +18,9 @@ export interface NotationRow {
   number: number;
   white?: PgnTreeNode;
   black?: PgnTreeNode;
-  /** Las blancas jugaron en un renglón anterior: su hueco lleva «…». */
+  /** White played on an earlier row: its slot carries "…". */
   continuation: boolean;
-  /** La respuesta de negras bajó de renglón: su hueco lleva «…». */
+  /** Black's reply dropped a row: its slot carries "…". */
   pushedBlack: boolean;
 }
 
@@ -37,7 +37,7 @@ export type LineItem =
 export interface NotationLine {
   kind: "line";
   key: string;
-  /** 0 = variante de la línea principal; cada nivel sangra un escalón más. */
+  /** 0 = variation of the main line; each level indents one step more. */
   depth: number;
   items: LineItem[];
 }
@@ -48,16 +48,16 @@ const moveNumberOf = (node: PgnTreeNode): number => Math.ceil(node.ply / 2);
 const isWhite = (node: PgnTreeNode): boolean => node.ply % 2 === 1;
 
 /**
- * Emite una variante y lo que cuelga de ella.
+ * Emits a variation and what hangs from it.
  *
- * La regla que decide dónde se corta es la BIFURCACIÓN, no el comentario: una
- * jugada con una sola continuación sigue en el mismo renglón, y una con varias
- * lo cierra y baja **todas** sus opciones un nivel —también la principal—.
+ * The rule that decides where it is cut is the FORK, not the comment: a move
+ * with a single continuation stays on the same row, and one with several closes
+ * it and drops **all** of its options one level — the main one included.
  *
- * Se ve claro en una línea real: `1...e6 2.Cf3 f5` se corta en f5 porque de ahí
- * salen tres jugadas, y las tres se listan sangradas debajo. Si sólo bajaran
- * las alternativas, la principal quedaría pegada a f5 y las otras dos parecerían
- * colgar de otro sitio.
+ * It is clear in a real line: `1...e6 2.Nf3 f5` is cut at f5 because three moves
+ * come from there, and all three are listed indented below. If only the
+ * alternatives dropped, the main one would stay glued to f5 and the other two
+ * would look as though they hung from somewhere else.
  */
 function emitLine(start: PgnTreeNode, depth: number, out: NotationBlock[]): void {
   const items: LineItem[] = [];
@@ -71,8 +71,8 @@ function emitLine(start: PgnTreeNode, depth: number, out: NotationBlock[]): void
 
     if (node.comment) {
       items.push({ type: "comment", text: node.comment });
-      // Tras un comentario la jugada siguiente vuelve a numerarse: el texto de
-      // por medio corta la lectura y «Cf6» a secas no diría de quién es.
+      // After a comment the next move is numbered again: the text in between cuts the
+      // reading and a bare "Nf6" would not say whose it is.
       withNumber = true;
     }
 
@@ -88,7 +88,7 @@ function emitLine(start: PgnTreeNode, depth: number, out: NotationBlock[]): void
   out.push({ kind: "line", key: start.path, depth, items });
 }
 
-/** La notación entera, en el orden en que se lee. */
+/** The whole notation, in the order it is read. */
 export function buildNotationBlocks(tree: PgnTree): NotationBlock[] {
   const blocks: NotationBlock[] = [];
   let pending: NotationRow | null = null;
@@ -99,9 +99,9 @@ export function buildNotationBlocks(tree: PgnTree): NotationBlock[] {
   };
 
   let current: PgnTreeNode | undefined = tree.children[0];
-  // Las alternativas a una jugada NO viven en ella, sino entre los hermanos que
-  // cuelgan de su padre: se calculan al pasar por el padre y se emiten en la
-  // vuelta siguiente, junto a la jugada a la que sustituyen.
+  // The alternatives to a move do NOT live in it, but among the siblings hanging
+  // from its parent: they are computed when passing through the parent and emitted
+  // on the next round, next to the move they replace.
   let variationsForCurrent = tree.children.slice(1);
 
   while (current) {
@@ -123,9 +123,9 @@ export function buildNotationBlocks(tree: PgnTree): NotationBlock[] {
     }
 
     if (node.comment || variations.length > 0) {
-      // Lo que va a lo ancho cierra la fila. Si quien lo trae es una jugada de
-      // blancas Y hay respuesta detrás, el hueco de negras lleva «…»: si no, la
-      // fila se leería como que las negras no contestaron.
+      // What goes full width closes the row. If what brings it is a White move AND
+      // there is a reply behind, Black's slot carries "…": otherwise the row would
+      // read as though Black had not replied.
       if (pending && isWhite(node) && next && !isWhite(next)) pending.pushedBlack = true;
       flush();
 

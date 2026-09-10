@@ -21,7 +21,7 @@ function ClassRow({ item }: { item: TeacherClassBrief }) {
   );
 }
 
-/** Qué tengo hoy, qué viene y qué me falta documentar. Sin analítica avanzada. */
+/** What I have today, what is coming and what I still have to document. No advanced analytics. */
 export async function TeacherDashboardSection() {
   const dashboard = await getTeacherDashboard();
 

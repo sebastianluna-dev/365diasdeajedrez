@@ -1,4 +1,4 @@
-// Codes estables de los catálogos de contenido (cursos, capítulos, lecciones).
+// Stable codes of the content catalogs (courses, chapters, lessons).
 
 export const COURSE_TYPE = {
   OPENING: "OPENING",
@@ -34,10 +34,10 @@ export const LEVEL = {
 export type LevelCode = (typeof LEVEL)[keyof typeof LEVEL];
 
 /**
- * Papel de un capítulo dentro del curso, o de una lección dentro del capítulo.
+ * Role of a chapter within the course, or of a lesson within the chapter.
  *
- * Ausencia de papel = contenido normal, que es lo que son casi todos. Sólo se
- * nombra lo que abre y lo que cierra.
+ * No role = normal content, which is what almost all of them are. Only what
+ * opens and what closes is named.
  */
 export const CONTENT_ROLE = {
   INTRO: "INTRO",

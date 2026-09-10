@@ -7,7 +7,7 @@ import { getAssignedStudents } from "@/services/teacher-students/teacher-student
 import "./assigned-students.section.css";
 
 interface AssignedStudentsSectionProps {
-  /** Búsqueda por nombre o email; llega de searchParams y filtra en el `where`. */
+  /** Search by name or email; comes from searchParams and filters in the `where`. */
   query?: string;
 }
 
@@ -16,7 +16,7 @@ export async function AssignedStudentsSection({ query }: AssignedStudentsSection
 
   return (
     <div className="assigned-students">
-      {/* Formulario GET: el filtro vive en la URL, no en estado de cliente. */}
+      {/* GET form: the filter lives in the URL, not in client state. */}
       <form className="assigned-students__search" action={teacherRoutes.students}>
         <FormField label="Buscar alumno">
           <input type="search" name="q" defaultValue={query ?? ""} placeholder="Nombre o email" maxLength={120} />

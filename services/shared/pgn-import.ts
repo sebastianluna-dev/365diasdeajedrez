@@ -2,22 +2,22 @@ import { makePgn, parsePgn } from "chessops/pgn";
 import { PGN_MAX_GAMES } from "@/constants/platform/content-limits.const";
 import { GAME_RESULT, GAME_RESULT_BY_PGN_TOKEN, type GameResultCode } from "@/constants/platform/study-codes.const";
 
-// De un PGN pegado a filas de `Game`.
+// From a pasted PGN to `Game` rows.
 //
-// Vivía dentro de las acciones de «Mis estudios», que era su único usuario.
-// Ahora también importa la colección de partidas de un curso, y tener dos
-// lectores de cabeceras distintos acabaría con dos criterios distintos sobre
-// qué es una fecha válida o cuándo un Elo es un Elo.
+// It used to live inside the "Mis estudios" actions, which were its only user.
+// Now a course's game collection is also imported, and having two different
+// header readers would end up with two different criteria about what a valid
+// date is or when an Elo is an Elo.
 //
-// Módulo puro: sólo chessops y catálogos, nada de Prisma ni de sesión. Quien lo
-// llama decide en qué base entran las partidas y con qué origen.
+// Pure module: only chessops and catalogs, no Prisma and no session. Whoever
+// calls it decides which database the games go into and with what origin.
 
 const UNKNOWN_PLAYER = "Desconocido";
 
-/** Sólo fechas completas: el PGN admite "????.??.??" y "2024.??.??". */
+/** Full dates only: the PGN admits "????.??.??" and "2024.??.??". */
 const FULL_PGN_DATE = /^(\d{4})\.(\d{2})\.(\d{2})$/;
 
-/** Cabecera útil o null: el PGN usa "?" como marcador de dato desconocido. */
+/** A useful header or null: the PGN uses "?" as the marker for unknown data. */
 function readHeader(headers: Map<string, string>, key: string): string | null {
   const value = headers.get(key)?.trim();
   return value && value !== "?" ? value : null;
@@ -36,12 +36,12 @@ function readDateHeader(headers: Map<string, string>): Date | null {
 
   const [, year, month, day] = match;
   const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
-  // Rechaza el 31 de febrero, que `Date.UTC` convertiría en marzo sin quejarse.
+  // Rejects 31 February, which `Date.UTC` would turn into March without complaining.
   const isRealDate = date.getUTCMonth() === Number(month) - 1 && date.getUTCDate() === Number(day);
   return isRealDate ? date : null;
 }
 
-/** Las columnas de una partida, sin decidir todavía a qué base pertenece. */
+/** A game's columns, without deciding yet which database it belongs to. */
 export interface ImportedGame {
   white: string;
   black: string;
@@ -58,18 +58,18 @@ export interface ImportedGame {
   round: string | null;
   eco: string | null;
   initialFen: string | null;
-  /** El PGN de ESA partida, reserializado. */
+  /** THAT game's PGN, reserialised. */
   pgn: string;
 }
 
 /**
- * Lee un PGN con una o varias partidas.
+ * Reads a PGN with one or several games.
  *
- * Devuelve `[]` si el texto no es PGN o no hay nada aprovechable, en vez de
- * lanzar: lo teclea una persona y un texto raro no es un error del programa.
+ * It returns `[]` if the text is not PGN or there is nothing usable, instead of
+ * throwing: a person types it and odd text is not a program error.
  *
- * Se descartan las partidas sin jugadas Y sin posición de partida, que es lo
- * que queda cuando alguien pega texto suelto entre cabeceras.
+ * Games without moves AND without a starting position are discarded, which is
+ * what is left when someone pastes loose text between headers.
  */
 export function parseImportedGames(pgnText: string): ImportedGame[] {
   let parsed: ReturnType<typeof parsePgn>;
@@ -93,8 +93,8 @@ export function parseImportedGames(pgnText: string): ImportedGame[] {
       blackElo: readEloHeader(headers, "BlackElo"),
       whiteTitle: readHeader(headers, "WhiteTitle"),
       blackTitle: readHeader(headers, "BlackTitle"),
-      // `WhiteTeam` es lo que escriben las retransmisiones de Lichess para la
-      // federación; el PGN estándar no tiene cabecera propia para ella.
+      // `WhiteTeam` is what Lichess's broadcasts write for the federation; the
+      // standard PGN has no header of its own for it.
       whiteCountry: readHeader(headers, "WhiteTeam"),
       blackCountry: readHeader(headers, "BlackTeam"),
       resultCode: GAME_RESULT_BY_PGN_TOKEN[resultToken] ?? GAME_RESULT.ONGOING,

@@ -9,11 +9,11 @@ import type { AssignedStudentSummary } from "@/services/teacher-students/teacher
 import "./class-form.section.css";
 
 interface ClassFormSectionProps {
-  /** Sin clase = alta; con clase = edición de la misma. */
+  /** No class = creation; with a class = editing it. */
   classDetail?: TeacherClassDetail;
   students: AssignedStudentSummary[];
   providers: { code: string; label: string }[];
-  /** Zona horaria del profesor: en ella se interpretan las fechas del formulario. */
+  /** The teacher's time zone: the form's dates are interpreted in it. */
   timeZone: string;
   errorCode?: string;
 }
@@ -21,9 +21,9 @@ interface ClassFormSectionProps {
 const DEFAULT_DURATION = 60;
 
 /**
- * Metadatos de una clase. El mismo formulario sirve para crear y para editar
- * (cambia la action y los valores por defecto); los participantes iniciales
- * sólo se ofrecen al crear, porque después se gestionan desde la ficha.
+ * Metadata of a class. The same form serves to create and to edit (the
+ * action and the defaults change); the initial participants are only offered
+ * on creation, because afterwards they are managed from the class page.
  */
 export function ClassFormSection({ classDetail, students, providers, timeZone, errorCode }: ClassFormSectionProps) {
   const isEdit = classDetail !== undefined;

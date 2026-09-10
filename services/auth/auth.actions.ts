@@ -10,10 +10,10 @@ import { homeRouteFor } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { safeReturnTo } from "@/services/shared/safe-return-to";
 
-// Server action plana (sin useActionState) para que el login funcione también
-// sin JavaScript: es la puerta de entrada, y un fallo de hidratación no puede
-// dejar a un alumno fuera. El error viaja de vuelta en la query, con el patrón
-// POST → redirect → GET.
+// Plain server action (no useActionState) so the login works without JavaScript
+// too: it is the entrance door, and a hydration failure cannot leave a student
+// outside. The error travels back in the query, with the POST → redirect → GET
+// pattern.
 
 const EMAIL_MAX_LENGTH = 254;
 
@@ -23,7 +23,7 @@ function readText(formData: FormData, field: string): string {
 }
 
 
-/** Vuelve al formulario conservando el destino pendiente y el motivo del fallo. */
+/** Returns to the form keeping the pending destination and the reason for the failure. */
 function backToLogin(errorCode: string, returnTo: string): never {
   const params = new URLSearchParams({ [LOGIN_ERROR_PARAM]: errorCode });
   if (returnTo.length > 0) params.set(RETURN_TO_PARAM, returnTo);
@@ -39,15 +39,14 @@ export async function loginAction(formData: FormData): Promise<void> {
     backToLogin("credentials", rawReturnTo);
   }
 
-  // Dos techos: por cuenta (frena el ataque a un alumno concreto) y por origen
-  // (frena el barrido de muchas cuentas desde la misma máquina).
+  // Two ceilings: per account (it slows an attack on one particular student) and
+  // per origin (it slows a sweep of many accounts from the same machine).
   //
-  // El origen sale de `x-forwarded-for`, que sólo es fiable detrás de un proxy
-  // que la reescriba: Vercel lo hace; un contenedor a pelo o un nginx sin
-  // `proxy_set_header`, no, y ahí la pondría el cliente. Si el despliegue deja
-  // de ser Vercel hay que leer el último salto o la cabecera de la plataforma.
-  // Sin cabecera, todos los clientes caen en un mismo cubo («desconocido»);
-  // el techo por cuenta sigue vigente igual.
+  // The origin comes from `x-forwarded-for`, which is only trustworthy behind a
+  // proxy that rewrites it: Vercel does; a bare container or an nginx without
+  // `proxy_set_header` does not, and there the client would set it. If the
+  // deployment stops being Vercel, the last hop or the platform's header has to be
+  // read instead.
   const requestHeaders = await headers();
   const origin = requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() || "desconocido";
   if (!(await allowAction(`login:${email}`, 10, 60_000)) || !(await allowAction(`login-origin:${origin}`, 30, 60_000))) {
@@ -57,9 +56,9 @@ export async function loginAction(formData: FormData): Promise<void> {
   const db = getPlatformDb();
   const user = await db.user.findUnique({
     where: { email },
-    // Los roles salen de esta misma consulta (son filas cuya existencia es el
-    // rol) sólo para elegir a dónde aterriza; autorizar sigue siendo cosa de
-    // `requireTeacher`/`requireStaff` en cada página.
+    // The roles come from this same query (they are rows whose existence is the
+    // role) only to choose where they land; authorising is still the job of
+    // `requireTeacher`/`requireStaff` in each page.
     select: {
       id: true,
       passwordHash: true,
@@ -68,8 +67,8 @@ export async function loginAction(formData: FormData): Promise<void> {
     },
   });
 
-  // Se verifica siempre, incluso sin usuario, contra un hash de descarte: así
-  // el login tarda lo mismo exista la cuenta o no.
+  // It is always verified, even without a user, against a throwaway hash: that
+  // way the login takes the same time whether the account exists or not.
   const matches = await verifyPassword(password, user?.passwordHash ?? DUMMY_PASSWORD_HASH);
   if (!user || !user.passwordHash || !matches) {
     backToLogin("credentials", rawReturnTo);
@@ -82,9 +81,9 @@ export async function loginAction(formData: FormData): Promise<void> {
     isTeacher: user.teacher?.isActive === true,
     isStaff: user.staff !== null,
   });
-  // El destino por defecto es la portada del rol (ver homeRouteFor): con el
-  // menú excluyente, mandar a un profesor o a un administrador al dashboard
-  // del alumno lo dejaría en una página que su propio menú ya no enlaza.
+  // The default destination is the role's home (see homeRouteFor): with the
+  // exclusive menu, sending a teacher or an administrator to the student
+  // dashboard would leave them on a page their own menu no longer links to.
   redirect(safeReturnTo(rawReturnTo, home));
 }
 

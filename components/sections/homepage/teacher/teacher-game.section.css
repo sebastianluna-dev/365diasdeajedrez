@@ -1,4 +1,4 @@
-/* La partida comentada del maestro: bloque hermano de `.teacher`, con hoja propia. */
+/* The teacher's annotated game: a sibling block of `.teacher`, with its own sheet. */
 .teacher-game {
   position: relative;
   z-index: 1;

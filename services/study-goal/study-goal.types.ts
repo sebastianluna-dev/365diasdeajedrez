@@ -1,10 +1,10 @@
 export interface StudyGoal {
-  /** Días seguidos estudiando, contando hacia atrás desde hoy. */
+  /** Consecutive days studying, counting backwards from today. */
   streakDays: number;
-  /** Minutos estudiados hoy, sumando la duración de las lecciones terminadas. */
+  /** Minutes studied today, adding up the duration of the finished lessons. */
   minutesToday: number;
-  /** Los que el alumno se marca al día. */
+  /** The ones the student sets themselves per day. */
   goalMinutes: number;
-  /** Cuánto lleva del objetivo, 0–100 y tapado arriba: pasarse no es un 140 %. */
+  /** How much of the goal is done, 0–100 and capped at the top: overshooting is not a 140 %. */
   percent: number;
 }

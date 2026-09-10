@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function StaffPage() {
-  // Frontera del panel: sin fila Staff, al dashboard; sin sesión, al login.
+  // Panel border: no Staff row, to the dashboard; no session, to the login.
   await requireStaff();
 
   return (

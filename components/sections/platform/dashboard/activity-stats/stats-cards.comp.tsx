@@ -15,7 +15,7 @@ interface StatsCardsProps {
   stats: DashboardStats;
 }
 
-// Los cuatro rangos llegan precalculados del servidor; el toggle es local.
+// The four ranges arrive precomputed from the server; the toggle is local.
 export function StatsCards({ stats }: StatsCardsProps) {
   const [range, setRange] = useState<StatsRangeKey>("week");
   const current = stats[range];

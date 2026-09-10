@@ -1,5 +1,5 @@
 .lesson-page {
-  /* Las migas van pegadas a la barra, como en curso y capítulo. */
+  /* The breadcrumbs sit right under the bar, as in course and chapter. */
   margin-top: -20px;
   gap: 18px;
 }

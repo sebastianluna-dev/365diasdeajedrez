@@ -1,27 +1,27 @@
-// Reencuadre de una imagen de Cloudinary, escribiendo en su URL.
+// Reframing a Cloudinary image by writing in its URL.
 //
-// Cloudinary recorta al vuelo con lo que se le ponga entre `/upload/` y el
-// identificador del archivo, así que cambiar el encuadre NO exige volver a
-// subir nada: se reescribe la URL y ya. Por eso vive aquí, en un módulo puro,
-// y no en el componente.
+// Cloudinary crops on the fly with whatever is put between `/upload/` and the
+// file identifier, so changing the framing does NOT require uploading anything
+// again: the URL is rewritten and that is that. Which is why it lives here, in
+// a pure module, and not in the component.
 //
-// El recorte es siempre `c_fill` a la proporción pedida: la portada se enseña
-// en 21:9 y una imagen que no lo sea se vería con bandas o deformada. `g_auto`
-// deja que Cloudinary elija qué parte conservar.
+// The crop is always `c_fill` to the requested ratio: the cover is shown in
+// 21:9 and an image that is not would be seen with bands or distorted. `g_auto`
+// lets Cloudinary choose which part to keep.
 //
-// OJO con lo que esto NO puede hacer: si la imagen ya viene en la proporción de
-// destino, `c_fill` no recorta nada y la gravedad da igual —comprobado: las
-// tres portadas del catálogo son 21:9 exactos y los cuatro encuadres devuelven
-// el MISMO archivo—. Reencuadrar de verdad exige acercar la imagen y elegir la
-// región, que es otro asunto.
+// MIND what this CANNOT do: if the image already comes in the target ratio,
+// `c_fill` crops nothing and the gravity makes no difference — verified: the
+// catalog's three covers are exactly 21:9 and the four framings return the SAME
+// file. Really reframing requires zooming in and choosing the region, which is
+// another matter.
 
-/** Por dónde se queda la imagen al recortarla. Sólo se usa el automático. */
+/** Which part of the image is kept when cropping. Only the automatic one is used. */
 type CropGravity = "auto";
 
 /**
- * Un tramo de transformaciones de Cloudinary son parámetros `x_y` separados por
- * comas: `c_fill,ar_21:9,g_auto`. Se distingue así del identificador del
- * archivo y de la versión (`v1788629615`), que es lo que suele venir después.
+ * A stretch of Cloudinary transformations is `x_y` parameters separated by
+ * commas: `c_fill,ar_21:9,g_auto`. That is how it is told apart from the file
+ * identifier and the version (`v1788629615`), which is what usually comes next.
  */
 function isTransformSegment(segment: string): boolean {
   if (/^v\d+$/.test(segment)) return false;
@@ -29,10 +29,10 @@ function isTransformSegment(segment: string): boolean {
 }
 
 /**
- * La misma URL con el encuadre pedido.
+ * The same URL with the requested framing.
  *
- * Devuelve la URL tal cual si no es de Cloudinary: quien la guardó a mano —o
- * quien tenga una imagen antigua— no debería ver cómo se la estropeamos.
+ * It returns the URL as is when it is not Cloudinary's: whoever stored it by
+ * hand — or whoever has an old image — should not see us spoil it.
  */
 export function withCoverCrop(url: string, gravity: CropGravity, aspectRatio = "21:9"): string {
   const marker = "/upload/";
@@ -43,8 +43,8 @@ export function withCoverCrop(url: string, gravity: CropGravity, aspectRatio = "
   const rest = url.slice(at + marker.length);
   const [first, ...tail] = rest.split("/");
 
-  // Si ya había transformaciones se sustituyen enteras: acumularlas dejaría
-  // recortes encadenados y cada reencuadre se aplicaría sobre el anterior.
+  // If there were already transformations they are replaced whole: accumulating
+  // them would leave chained crops and each reframing would apply over the previous one.
   const body = isTransformSegment(first) ? tail.join("/") : rest;
   return `${head}c_fill,ar_${aspectRatio},g_${gravity}/${body}`;
 }

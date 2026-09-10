@@ -10,19 +10,19 @@ import { createUploadSignature } from "@/services/media/media.actions";
 import "./image-upload.comp.css";
 
 interface ImageUploadProps {
-  /** Nombre del campo que viaja en el formulario, con la URL como valor. */
+  /** Name of the field that travels in the form, with the URL as its value. */
   name: string;
   /**
-   * Id del `<form>` al que pertenece el campo, cuando el componente vive fuera
-   * de él. Es lo que permite que la portada se gestione en su propia tarjeta y
-   * se guarde con el resto de los metadatos.
+   * Id of the `<form>` the field belongs to, when the component lives outside
+   * it. It is what lets the cover be managed in its own card and saved with
+   * the rest of the metadata.
    */
   form?: string;
-  /** La imagen que ya tiene guardada, si la tiene. */
+  /** The image it already has saved, if any. */
   defaultValue?: string;
-  /** Qué es y en qué proporción: «Portada del curso». */
+  /** What it is and in which ratio: "Portada del curso". */
   label: string;
-  /** Proporción del recuadro y del recorte: «21:9». */
+  /** Ratio of the box and of the crop: "21:9". */
   aspectRatio?: string;
   hint?: string;
 }
@@ -32,21 +32,21 @@ type Status = { kind: "idle" } | { kind: "uploading" } | { kind: "error"; messag
 const MAX_MB = Math.round(IMAGE_MAX_BYTES / (1024 * 1024));
 
 /**
- * Sube una imagen a Cloudinary y deja su URL en el formulario que la guarda.
+ * Uploads an image to Cloudinary and leaves its URL in the form that saves it.
  *
- * TODO se hace aquí: se arrastra o se elige el archivo, se ve el resultado y se
- * quita. La URL no se enseña ni se pide —quien administra un
- * curso no tiene por qué saber qué es Cloudinary—; viaja en un campo oculto y
- * se guarda cuando se guarda el formulario, como el resto de los campos.
+ * EVERYTHING happens here: the file is dragged or chosen, the result is seen
+ * and removed. The URL is neither shown nor asked for — whoever manages a
+ * course has no reason to know what Cloudinary is —; it travels in a hidden
+ * field and is saved when the form is saved, like the rest of the fields.
  *
- * El archivo va del navegador a Cloudinary DIRECTAMENTE, con una firma que pide
- * al servidor: ni las credenciales bajan al navegador ni los bytes suben por
- * nuestro servidor, que además tiene un tope de 1 MB por petición en las server
- * actions —menos que muchas fotos—.
+ * The file goes from the browser to Cloudinary DIRECTLY, with a signature
+ * requested from the server: neither the credentials come down to the
+ * browser nor the bytes go up through our server, which besides has a 1 MB
+ * cap per request in server actions — less than many photos.
  *
- * Al subir se normaliza a la proporción de destino con un recorte en la propia
- * URL (ver lib/cloudinary-url), que es lo que arregla una foto cuadrada. Una
- * imagen ya exportada en esa proporción se queda como está.
+ * On upload it is normalised to the target ratio with a crop in the URL
+ * itself (see lib/cloudinary-url), which is what fixes a square photo. An
+ * image already exported in that ratio stays as it is.
  */
 export function ImageUpload({
   name,
@@ -66,8 +66,8 @@ export function ImageUpload({
   const boxRatio = aspectRatio.replace(":", " / ");
 
   const upload = async (file: File) => {
-    // Se comprueba aquí para decirlo al instante; quien de verdad manda es
-    // Cloudinary, que rechaza lo que no encaje con la firma.
+    // Checked here to say so instantly; the real authority is Cloudinary,
+    // which rejects whatever does not match the signature.
     if (!isAllowedImageType(file.type)) {
       setStatus({ kind: "error", message: "Tiene que ser una imagen JPG, PNG, WebP o AVIF." });
       return;
@@ -89,7 +89,7 @@ export function ImageUpload({
     body.append("api_key", signature.apiKey);
     body.append("timestamp", String(signature.timestamp));
     body.append("folder", signature.folder);
-    // Va firmado: cambiarlo aquí invalidaría la firma, que es la gracia.
+    // It is signed: changing it here would invalidate the signature, which is the point.
     body.append("allowed_formats", signature.allowedFormats);
     body.append("signature", signature.signature);
 
@@ -103,8 +103,8 @@ export function ImageUpload({
       const uploaded: { secure_url?: string } = await response.json();
       if (!uploaded.secure_url) throw new Error("sin URL");
 
-      // Recortada de entrada a la proporción en la que se va a ver: así lo que
-      // se enseña aquí es exactamente lo que verá el alumno.
+      // Cropped from the start to the ratio it will be seen in: that way what
+      // is shown here is exactly what the student will see.
       setUrl(withCoverCrop(uploaded.secure_url, "auto", aspectRatio));
       setStatus({ kind: "idle" });
     } catch {
@@ -118,7 +118,7 @@ export function ImageUpload({
 
   return (
     <div className="image-upload">
-      {/* Lo único que ve el formulario. */}
+      {/* The only thing the form sees. */}
       <input type="hidden" name={name} value={url} form={form} />
 
       <input
@@ -128,18 +128,18 @@ export function ImageUpload({
         className="image-upload__file"
         onChange={(event) => {
           const file = event.target.files?.[0];
-          // El valor se limpia para que elegir DOS VECES el mismo archivo
-          // vuelva a disparar el cambio.
+          // The value is cleared so that choosing the same file TWICE fires the
+          // change again.
           event.target.value = "";
           pick(file);
         }}
       />
 
-      {/* Con imagen es sólo una vista previa: ni zona de soltar ni botón.
-          Siéndolo, arrastrar la propia imagen de vuelta —que es lo que hace un
-          navegador con cualquier `<img>`— disparaba otra subida de la misma
-          foto. El arrastre vuelve al quitarla; cambiarla sigue estando en su
-          botón. */}
+      {/* With an image it is only a preview: neither a drop zone nor a button.
+          When it was one, dragging the image itself back — which is what a
+          browser does with any `<img>` — fired another upload of the same
+          photo. Dragging returns when it is removed; changing it is still on
+          its button. */}
       {hasImage ? (
         <div
           className="image-upload__drop image-upload__drop_state_filled"
@@ -150,15 +150,15 @@ export function ImageUpload({
             alt=""
             fill
             sizes="440px"
-            // Que no se pueda arrastrar fuera ni de vuelta: no es un archivo
-            // que el staff esté manejando, es lo que ya está guardado.
+            // Not draggable out or back in: it is not a file the staff is
+            // handling, it is what is already saved.
             draggable={false}
             className="image-upload__image"
           />
         </div>
       ) : (
-        /* Vacía: arrastrar o pulsar llevan al mismo sitio. Es un `<button>`
-           para que el teclado también pueda abrirlo. */
+        /* Empty: dragging or pressing lead to the same place. It is a `<button>`
+           so the keyboard can open it too. */
         <button
           type="button"
           disabled={isUploading}
@@ -190,8 +190,8 @@ export function ImageUpload({
       )}
 
       <div className="image-upload__actions">
-        {/* Elegir archivo sigue estando a un clic: lo que pedía quitarla antes
-            es el arrastre, porque ahí el gesto se confunde con mover la foto. */}
+        {/* Choosing a file is still one click away: what called for removing it
+            before was dragging, because there the gesture gets confused with moving the photo. */}
         <button
           type="button"
           className="image-upload__action image-upload__action_variant_primary"

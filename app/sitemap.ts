@@ -2,11 +2,11 @@ import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site-url";
 import { getArticleLinks } from "@/services/articles/articles.service";
 
-// Rutas públicas estáticas del sitio (las de plataforma quedan fuera del sitemap).
+// Static public routes of the site (platform routes stay out of the sitemap).
 const STATIC_ROUTES = ["/", "/blog", "/nosotros", "/reloj-de-ajedrez"] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Sólo slug y fecha: el sitemap no necesita el contenido de los artículos.
+  // Only slug and date: the sitemap does not need the articles' content.
   const articles = await getArticleLinks();
 
   return [

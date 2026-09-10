@@ -1,13 +1,13 @@
--- Identificadores numéricos en la URL del alumno, y retirada del slug de capítulo.
+-- Numeric identifiers in the student's URL, and removal of the chapter slug.
 --
--- El capítulo pasa a direccionarse por su NÚMERO DE ORDEN dentro del curso
--- (`/cursos/10000003/1`), así que su slug se queda sin uso y se elimina.
+-- The chapter comes to be addressed by its ORDER NUMBER within the course
+-- (`/cursos/10000003/1`), so its slug is left unused and is dropped.
 --
--- Los ids de lección del curso importado se derivan del `stableKey`, igual que
--- antes: el mapeo viejo→nuevo se calculó con el mismo hash que usa el módulo de
--- sembrado, para que el seed siga encontrando sus filas y no las duplique.
+-- The imported course's lesson ids are derived from the `stableKey`, as before:
+-- the old→new mapping was computed with the same hash the seeding module uses,
+-- so the seed goes on finding its rows and does not duplicate them.
 --
--- Renombrar Course.id y Lesson.id es seguro: todo lo que apunta a ellos es
+-- Renaming Course.id and Lesson.id is safe: everything pointing at them is
 -- ON UPDATE CASCADE.
 
 DROP INDEX IF EXISTS "Chapter_courseId_slug_key";
@@ -187,7 +187,7 @@ UPDATE "Lesson" SET id = '20000005' WHERE id = 'sicNajd2';
 UPDATE "Lesson" SET id = '20000006' WHERE id = 'torreLuc';
 UPDATE "Lesson" SET id = '20000007' WHERE id = 'torrePhi';
 
--- Y lo que no venga del seed, con un número aleatorio de 8 dígitos.
+-- And what does not come from the seed, with a random 8-digit number.
 DO $$
 DECLARE
   row_id text;

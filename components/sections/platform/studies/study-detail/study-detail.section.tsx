@@ -11,13 +11,13 @@ import "./study-detail.section.css";
 
 interface StudyDetailSectionProps {
   study: StudyDetail;
-  /** Tipos que el alumno puede poner al editar. Vacío en bases de curso. */
+  /** Kinds the student can set when editing. Empty in course databases. */
   kinds: StudyKindOption[];
-  /** Resultados del catálogo, para el formulario de partida en blanco. */
+  /** Results from the catalog, for the blank-game form. */
   results: StudyKindOption[];
-  /** Partidas vistas en clase que puede copiarse. Vacío = no sale esa pestaña. */
+  /** Games seen in class that can be copied. Empty = that tab does not appear. */
   classGames: ClassGameItem[];
-  /** Alumnos a los que repartir, si esto es una colección propia de un maestro. */
+  /** Students to hand it to, if this is a teacher's own collection. */
   students: StudentOption[];
   errorCode?: string;
 }
@@ -35,11 +35,11 @@ export function StudyDetailSection({
   students,
   errorCode,
 }: StudyDetailSectionProps) {
-  // Lo que puede hacer quien mira sale de services/studies/study-rules, la misma
-  // tabla que aplican las server actions: aquí sólo se decide qué se enseña.
+  // What the viewer can do comes from services/studies/study-rules, the same
+  // table the server actions apply: here only what is shown is decided.
   const canWrite = study.permissions.canEditGames;
-  // El panel de reparto es del DUEÑO de una colección; a quien la recibe le
-  // llega `shares` vacío y además no pasa este filtro.
+  // The sharing panel belongs to the OWNER of a collection; whoever receives
+  // it gets `shares` empty and does not pass this filter either.
   const canShare = study.kindCode === DATABASE_KIND.COLLECTION && study.permissions.canDelete;
 
   return (

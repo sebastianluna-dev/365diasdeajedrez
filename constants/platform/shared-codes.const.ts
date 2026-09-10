@@ -1,6 +1,6 @@
-// Codes estables de los catálogos compartidos. La tabla catálogo es la fuente
-// de verdad persistente; estas constantes sólo dan tipado y evitan strings
-// mágicos (spec: sin enums de TS ni de Prisma).
+// Stable codes of the shared catalogs. The catalog table is the persistent
+// source of truth; these constants only provide typing and avoid magic
+// strings (spec: no TS or Prisma enums).
 
 export const PROGRESS_STATUS = {
   NOT_STARTED: "NOT_STARTED",
@@ -18,7 +18,7 @@ export const BOARD_ORIENTATION = {
 
 export type BoardOrientationCode = (typeof BOARD_ORIENTATION)[keyof typeof BOARD_ORIENTATION];
 
-/** Subconjunto válido para contenido (Lesson, Position): AUTO es sólo de usuario. */
+/** Subset valid for content (Lesson, Position): AUTO is user-only. */
 export const CONTENT_ORIENTATIONS = [BOARD_ORIENTATION.WHITE, BOARD_ORIENTATION.BLACK] as const;
 
 export const OWNER_TYPE = {
@@ -29,7 +29,7 @@ export const OWNER_TYPE = {
 
 export type OwnerTypeCode = (typeof OWNER_TYPE)[keyof typeof OWNER_TYPE];
 
-/** GameDatabase sólo admite USER o COURSE; TEACHER es válido únicamente en Position. */
+/** GameDatabase only admits USER or COURSE; TEACHER is valid only in Position. */
 export const GAME_DATABASE_OWNER_TYPES = [OWNER_TYPE.USER, OWNER_TYPE.COURSE] as const;
 
 export const TOPIC = {

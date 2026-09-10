@@ -1,11 +1,11 @@
-// Constructores de rutas de la plataforma autenticada. Centralizados para que
-// un cambio de jerarquía no obligue a cazar template strings por la UI.
+// Route builders for the authenticated platform. Centralised so that a change
+// of hierarchy does not force hunting template strings through the UI.
 //
-// Las URLs son en español porque el producto lo es: lo que ve el alumno en la
-// barra del navegador está en su idioma, hasta el último segmento. Lo único
-// que queda en inglés son los NOMBRES de los parámetros dinámicos
-// (`[courseId]`, `[studyId]`…), que no salen en la URL —lo que se ve ahí es su
-// valor— y son identificadores del código, no texto para el usuario.
+// The URLs are in Spanish because the product is: what the student sees in the
+// browser bar is in their language, down to the last segment. The only thing
+// left in English are the NAMES of the dynamic parameters (`[courseId]`,
+// `[studyId]`…), which do not appear in the URL — what is seen there is their
+// value — and are code identifiers, not text for the user.
 
 export const platformRoutes = {
   dashboard: "/inicio",
@@ -13,44 +13,44 @@ export const platformRoutes = {
   classDetail: (classId: string) => `/clases/${classId}`,
   studies: "/estudios",
   /**
-   * Colección derivada, no una base de datos: las partidas que el alumno ha
-   * visto en sus clases. Segmento fijo, así que gana a `/estudios/[studyId]`.
+   * Derived collection, not a database: the games the student has seen in their
+   * classes. Fixed segment, so it wins over `/estudios/[studyId]`.
    */
   classGames: "/estudios/clases",
   studyDetail: (studyId: string) => `/estudios/${studyId}`,
   /**
-   * La partida se lee y se anota en la MISMA pantalla: quien es su dueño juega
-   * sobre el tablero y usa el menú de cada jugada. Por eso ya no hay ruta
-   * `/editar` que mantener en paralelo.
+   * The game is read and annotated on the SAME screen: its owner plays on the
+   * board and uses each move's menu. That is why there is no longer an `/editar`
+   * route to maintain in parallel.
    */
   gameDetail: (studyId: string, gameId: string) => `/estudios/${studyId}/partidas/${gameId}`,
   newStudyGame: (studyId: string) => `/estudios/${studyId}/partidas/nueva`,
   courses: "/cursos",
   /**
-   * Las rutas del ALUMNO van por identificador numérico de 8 dígitos. El panel
-   * de staff conserva los suyos: son dos zonas con identificadores distintos a
-   * propósito.
+   * The STUDENT's routes go by an 8-digit numeric identifier. The staff panel
+   * keeps its own: they are two areas with different identifiers on purpose.
    *
-   * El capítulo se direcciona por su NÚMERO DE ORDEN dentro del curso, que es
-   * el que el alumno ve en pantalla. Reordenar capítulos en el panel reasigna
-   * esas URLs entre ellos, que es justo lo que se espera de un número de orden.
+   * The chapter is addressed by its ORDER NUMBER within the course, which is the
+   * one the student sees on screen. Reordering chapters in the panel reassigns
+   * those URLs among them, which is exactly what is expected of an order number.
    *
-   * La lección cuelga de la raíz y no del curso: su identificador ya la
-   * localiza, y anidarla obligaba a arrastrar curso y capítulo en cada enlace.
+   * The lesson hangs from the root and not from the course: its identifier
+   * already locates it, and nesting it forced dragging course and chapter into
+   * every link.
    */
   courseDetail: (courseId: string) => `/cursos/${courseId}`,
   chapterDetail: (courseId: string, chapterOrder: number) => `/cursos/${courseId}/${chapterOrder}`,
   lessonDetail: (lessonId: string) => `/lecciones/${lessonId}`,
   trainer: "/entrenador",
-  /** Buscador de partidas por posición; lo comparten alumno y profesor. */
+  /** Game search by position; shared by student and teacher. */
   explorer: "/explorador",
 } as const;
 
 /**
- * Panel del profesor. La llave es la existencia de una fila `Teacher` activa
- * (ver lib/platform-auth/roles.ts); un profesor sigue siendo además un usuario
- * normal, así que estas rutas conviven con las de `platformRoutes` aunque el
- * menú ya no las pinte juntas (ver constants/platform/nav-items.const.ts).
+ * Teacher panel. The key is the existence of an active `Teacher` row (see
+ * lib/platform-auth/roles.ts); a teacher is also still an ordinary user, so
+ * these routes coexist with those of `platformRoutes` even though the menu no
+ * longer renders them together (see constants/platform/nav-items.const.ts).
  */
 export const teacherRoutes = {
   home: "/profesor",
@@ -67,11 +67,11 @@ export const teacherRoutes = {
 } as const;
 
 /**
- * Panel del Administrador/Editor. Cuelga de `/administracion` y no de `/admin`
- * porque esa ruta es del panel de Payload (el CMS del sitio público, otra base
- * de datos y otro login: nada que ver con estos roles). Sin tilde a propósito:
- * una URL con caracteres no ASCII se transmite percent-encoded y se vuelve
- * ilegible al copiarla.
+ * Administrator/Editor panel. It hangs from `/administracion` and not from
+ * `/admin` because that route belongs to Payload's panel (the public site's
+ * CMS, another database and another login: nothing to do with these roles).
+ * Without an accent on purpose: a URL with non-ASCII characters is transmitted
+ * percent-encoded and becomes unreadable when copied.
  */
 export const staffRoutes = {
   home: "/administracion",
@@ -84,11 +84,11 @@ export const staffRoutes = {
   courses: "/administracion/cursos",
   newCourse: "/administracion/cursos/nuevo",
   courseDetail: (courseId: string) => `/administracion/cursos/${courseId}`,
-  /** Las partidas del curso: sólo lectura, se editan en su capítulo. */
+  /** The course's games: read-only, they are edited in their chapter. */
   courseGames: (courseId: string) => `/administracion/cursos/${courseId}/partidas`,
   chapterDetail: (courseId: string, chapterId: string) =>
     `/administracion/cursos/${courseId}/capitulos/${chapterId}`,
-  /** La colección del capítulo: aquí sí se pega el PGN. */
+  /** The chapter's collection: here the PGN does get pasted. */
   chapterGames: (courseId: string, chapterId: string) =>
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/partidas`,
   lessonDetail: (courseId: string, chapterId: string, lessonId: string) =>
@@ -99,10 +99,10 @@ export const staffRoutes = {
 } as const;
 
 /**
- * Portada que le toca a cada quien: con el menú excluyente por rol (ver
- * nav-items.const.ts) el dashboard del alumno deja de estar en el menú del
- * profesor y del staff, así que mandarlos ahí tras el login los dejaría en una
- * página sin salida. Mismo orden de precedencia que el menú.
+ * The home each person gets: with the menu exclusive by role (see
+ * nav-items.const.ts) the student dashboard stops being in the teacher's and
+ * the staff's menu, so sending them there after login would leave them on a
+ * page with no way out. Same precedence order as the menu.
  */
 export function homeRouteFor(roles: { isTeacher: boolean; isStaff: boolean }): string {
   if (roles.isStaff) return staffRoutes.home;

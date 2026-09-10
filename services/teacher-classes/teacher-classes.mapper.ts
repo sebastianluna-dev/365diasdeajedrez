@@ -14,11 +14,11 @@ import { teacherRoutes } from "@/lib/platform-routes";
 import { formatDateTimeLocal } from "@/lib/timezone";
 import type { TeacherClassBlock, TeacherClassDetail, TeacherClassSummary } from "./teacher-classes.types";
 
-// Mapper PROPIO del profesor, separado del de `services/classes/` a propósito:
-// aquel oculta `meetingUrl` hasta `meetingUrlVisibleFrom` porque es la vista del
-// alumno; el profesor es quien pone ese enlace y tiene que verlo siempre. Tocar
-// el mapper del alumno para reutilizarlo aquí filtraría el enlace antes de
-// tiempo a toda la clase.
+// The teacher's OWN mapper, kept apart from `services/classes/`'s on purpose:
+// that one hides `meetingUrl` until `meetingUrlVisibleFrom` because it is the
+// student's view; the teacher is the one who sets that link and has to see it
+// always. Touching the student's mapper to reuse it here would leak the link
+// ahead of time to the whole class.
 
 export const teacherClassSummaryInclude = {
   status: true,
@@ -66,10 +66,10 @@ export function mapTeacherClassSummary(row: TeacherClassSummaryRow): TeacherClas
 }
 
 /**
- * Un `movePath` guardado apunta a un nodo por índices, y el PGN referenciado
- * puede haber cambiado después (el alumno editó su partida, el staff editó la
- * lección). Se comprueba aquí para poder avisar en el editor; el visor ya
- * degrada a la posición inicial por su cuenta, así que nada se rompe.
+ * A stored `movePath` points at a node by indexes, and the referenced PGN may
+ * have changed afterwards (the student edited their game, the staff edited the
+ * lesson). It is checked here so a warning can be given in the editor; the viewer
+ * already degrades to the initial position on its own, so nothing breaks.
  */
 function isMovePathBroken(movePath: string | null, pgn: string | null): boolean {
   if (!movePath || !pgn) return false;

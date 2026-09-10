@@ -11,7 +11,7 @@ import type { ContinueStudyingCard, DashboardData } from "./dashboard.types";
 const RECENT_ACTIVITY_LIMIT = 8;
 const STATS_RANGES: StatsRangeKey[] = ["week", "month", "year", "all"];
 
-/** Sólo los hechos recientes: la lista de actividad, no las estadísticas. */
+/** Only the recent facts: the activity list, not the statistics. */
 const getRecentActivities = cache(async () => {
   const db = getPlatformDb();
   const user = await getCurrentUser();
@@ -24,10 +24,11 @@ const getRecentActivities = cache(async () => {
 });
 
 /**
- * Las estadísticas son un SUM del agregado diario por rango de calendario, y
- * ese SUM lo hace la base: los cuatro rangos son cuatro `groupBy` con distinto
- * filtro de `day`. Antes se leía el histórico entero del alumno y se sumaba
- * en memoria, y ese histórico crece con (día × métrica × tema) por alumno.
+ * The statistics are a SUM of the daily aggregate per calendar range, and that
+ * SUM is done by the database: the four ranges are four `groupBy` with a
+ * different `day` filter. Before, the student's whole history was read and
+ * summed in memory, and that history grows with (day × metric × topic) per
+ * student.
  */
 async function getStatTotals(userId: string, now: Date): Promise<Record<StatsRangeKey, StatTotalRow[]>> {
   const db = getPlatformDb();
@@ -61,7 +62,7 @@ export async function getUserDashboard(): Promise<DashboardData> {
     getContinueStudyingCourse(),
   ]);
 
-  // Nombres de los sujetos de la actividad reciente, por tipo de sujeto.
+  // Names of the subjects of the recent activity, by subject type.
   const idsFor = (code: string) => recent.filter((row) => row.subjectType.code === code).map((row) => row.subjectId);
 
   const [lessons, coursesRows, classes, games, exercises] = await Promise.all([
@@ -85,7 +86,7 @@ export async function getUserDashboard(): Promise<DashboardData> {
   for (const row of games) subjectNames.set(row.id, `${row.white} – ${row.black}`);
   for (const row of exercises) subjectNames.set(row.id, row.lesson.name);
 
-  // «Continuar estudiando»: el curso en progreso, con su punto de retorno.
+  // "Continuar estudiando": the course in progress, with its return point.
   const continueStudying: ContinueStudyingCard | undefined = inProgress
     ? {
         courseName: inProgress.name,

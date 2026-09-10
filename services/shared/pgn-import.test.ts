@@ -52,9 +52,8 @@ describe("parseImportedGames", () => {
   });
 
   it("sin resultado reconocible, la partida queda en curso", () => {
-    // El resultado hay que quitarlo también del final del movetext: chessops
-    // rellena la cabecera `Result` desde ahí, así que cambiar sólo la cabecera
-    // no lo borra.
+    // The result has to be removed from the end of the movetext too: chessops fills
+    // the `Result` header from there, so changing only the header does not erase it.
     const sinResultado = OPERA.replace('[Result "1-0"]', '[Result "*"]').replace(/1-0$/, "*");
     expect(parseImportedGames(sinResultado)[0].resultCode).toBe(GAME_RESULT.ONGOING);
   });

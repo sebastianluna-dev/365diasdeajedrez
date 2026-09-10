@@ -4,24 +4,24 @@ import "./staff-tabs.comp.css";
 export interface StaffTab {
   label: string;
   href: string;
-  /** Un dato corto junto al rótulo: cuántas partidas hay, por ejemplo. */
+  /** A short fact next to the label: how many games there are, for instance. */
   count?: number;
 }
 
 interface StaffTabsProps {
   tabs: StaffTab[];
-  /** La pestaña en la que se está; se compara con `href`. */
+  /** The tab we are on; compared with `href`. */
   current: string;
 }
 
 /**
- * Navegación interna de una ficha del panel: curso y capítulo se reparten en
- * pestañas que son PÁGINAS.
+ * Internal navigation of a panel record: course and chapter are split into
+ * tabs that are PAGES.
  *
- * Son enlaces, no estado: cada pestaña tiene su URL, así que se puede compartir,
- * el botón de atrás funciona y cada una carga sólo sus datos —la lista de
- * partidas de un curso son cientos de filas y no tiene por qué viajar cada vez
- * que alguien entra a cambiarle el nombre—.
+ * They are links, not state: each tab has its URL, so it can be shared, the
+ * back button works and each one loads only its data — a course's game list
+ * is hundreds of rows and has no reason to travel every time someone comes
+ * in to rename it.
  */
 export function StaffTabs({ tabs, current }: StaffTabsProps) {
   return (

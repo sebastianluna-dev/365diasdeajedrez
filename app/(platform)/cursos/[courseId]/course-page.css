@@ -1,8 +1,8 @@
 .course-page {
-  /* Las migas van pegadas a la barra (26px en el diseño), no a la altura de
-     una página que abre con título grande, que es para lo que el armazón
-     reserva 44px. Los 18 de diferencia se recuperan aquí en vez de tocar el
-     relleno del armazón, que sirve a todas las demás pantallas. */
+  /* The breadcrumbs sit right under the bar (26px in the design), not at the
+     height of a page that opens with a big title, which is what the shell
+     reserves 44px for. The 18px difference is recovered here instead of
+     touching the shell's padding, which serves every other screen. */
   margin-top: -18px;
   gap: 22px;
 }

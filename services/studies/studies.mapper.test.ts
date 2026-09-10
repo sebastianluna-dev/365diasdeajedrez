@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
 import { mapStudyDetail, type StudyDetailRow } from "./studies.mapper";
 
-// Fixture mínimo con la forma que devuelve `studyDetailInclude`. Se construye
-// a mano y se afirma el tipo: lo que se prueba es el mapeo, no Prisma.
+// Minimal fixture with the shape `studyDetailInclude` returns. It is built by
+// hand and the type is asserted: what is tested is the mapping, not Prisma.
 type GameRow = StudyDetailRow["games"][number];
 
 function game(overrides: Partial<GameRow> & { id: string }): GameRow {

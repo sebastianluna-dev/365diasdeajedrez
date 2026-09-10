@@ -4,7 +4,7 @@ import "./category-filter.comp.css";
 interface CategoryFilterProps {
   categories: string[];
   active: string;
-  /** URL de cada categoría; el filtro es navegación, no estado. */
+  /** URL of each category; the filter is navigation, not state. */
   hrefFor: (category: string) => string;
 }
 

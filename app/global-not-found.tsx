@@ -4,12 +4,12 @@ import { SiteMessage } from "@/components/sections/common/site-message/site-mess
 import "./(frontend)/globals.css";
 import { gramatika, suisseIntl } from "./(frontend)/fonts";
 
-// 404 de las URLs que no encajan con NINGUNA ruta (`/lo-que-sea`). Con tres
-// root layouts (sitio, plataforma y acceso) Next no puede componerlo desde un
-// `not-found.tsx` y lo sirve saltándose los layouts, así que este archivo trae
-// su propio <html> y <body>, la hoja global y las fuentes del sitio. Los
-// `notFound()` de dentro del sitio (un artículo o un mentor que no existen)
-// siguen usando app/(frontend)/not-found.tsx, con cabecera y pie.
+// 404 for URLs that match NO route at all (`/whatever`). With three root
+// layouts (site, platform and login) Next cannot compose it from a
+// `not-found.tsx` and serves it bypassing the layouts, so this file brings
+// its own <html> and <body>, the global sheet and the site's fonts. The
+// `notFound()` calls inside the site (an article or a mentor that does not
+// exist) keep using app/(frontend)/not-found.tsx, with header and footer.
 export const metadata: Metadata = {
   title: "Página no encontrada | 365 Días de Ajedrez",
 };

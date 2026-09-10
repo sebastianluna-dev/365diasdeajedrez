@@ -3,22 +3,22 @@ import "./priority-filter.comp.css";
 
 interface PriorityFilterProps {
   courseId: string;
-  /** Si está encendido ahora mismo. */
+  /** Whether it is on right now. */
   enabled: boolean;
-  /** Cuántas lecciones esconde. Se dice: una ausencia sin explicar desconcierta. */
+  /** How many lessons it hides. It is stated: an unexplained absence is unsettling. */
   hiddenLessons: number;
 }
 
 /**
- * El interruptor de «sólo lecciones imprescindibles» de un curso.
+ * The "only essential lessons" switch of a course.
  *
- * Un `<form action>` con un botón y nada más: sin estado propio ni JavaScript,
- * porque lo único que hay que hacer es guardar una preferencia y volver a
- * pintar. El valor viaja como argumento ligado y no como campo, porque una
- * casilla no puede transmitir «false» y entonces no habría forma de apagarlo.
+ * A `<form action>` with a button and nothing else: no state of its own and
+ * no JavaScript, because all there is to do is save a preference and render
+ * again. The value travels as a bound argument and not as a field, because
+ * a checkbox cannot transmit "false" and then there would be no way to switch it off.
  *
- * Es un ajuste POR CURSO, así que el mismo interruptor sale en la ficha del
- * curso y en la del capítulo: son los dos sitios donde se nota.
+ * It is a PER-COURSE setting, so the same switch appears on the course page
+ * and on the chapter page: those are the two places where it shows.
  */
 export function PriorityFilter({ courseId, enabled, hiddenLessons }: PriorityFilterProps) {
   return (

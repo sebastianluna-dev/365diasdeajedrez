@@ -1,24 +1,24 @@
 import { DATABASE_KIND, type DatabaseKindCode } from "@/constants/platform/study-codes.const";
 
-// Qué se puede hacer con un estudio según su TIPO y quién pregunta.
+// What can be done with a study according to its KIND and who is asking.
 //
-// Módulo puro —sin DAL, sin `server-only`— por el mismo motivo que
-// services/shared/game-visibility-rules: es la frontera que decide si una
-// colección es de sólo lectura, y comprobarla no debería exigir montar una
-// petición con sesión. Lo consultan las server actions (que además vuelven a
-// mirar la propiedad contra la base de datos) y la interfaz, para no ofrecer
-// botones que la acción va a rechazar.
+// Pure module — no DAL, no `server-only` — for the same reason as
+// services/shared/game-visibility-rules: it is the border that decides whether a
+// collection is read-only, and checking it should not require setting up a
+// request with a session. It is consulted by the server actions (which also
+// check ownership against the database again) and by the interface, so as not to
+// offer buttons the action is going to reject.
 //
-// La propiedad NO se decide aquí: llega resuelta en `isOwner`.
+// Ownership is NOT decided here: it arrives resolved in `isOwner`.
 
 export interface StudyPermissions {
-  /** Renombrar el estudio y cambiar su descripción. */
+  /** Renaming the study and changing its description. */
   canEdit: boolean;
-  /** Borrar el estudio entero. */
+  /** Deleting the whole study. */
   canDelete: boolean;
-  /** Crear, importar, editar y borrar sus partidas, y anotar sus PGN. */
+  /** Creating, importing, editing and deleting its games, and annotating their PGNs. */
   canEditGames: boolean;
-  /** Cambiar el tipo por otro. */
+  /** Changing the kind for another. */
   canChangeKind: boolean;
 }
 
@@ -30,17 +30,17 @@ const READ_ONLY: StudyPermissions = {
 };
 
 /**
- * Tipos que un alumno crea desde «Mis estudios».
+ * Kinds a student creates from "Mis estudios".
  *
- * Fuera quedan los dos que no se crean a mano: `MY_GAMES` nace con la cuenta y
- * `COLLECTION` le llega hecha. Este mismo par es al que se puede CAMBIAR un
- * estudio existente, y por eso hay una sola lista.
+ * Left out are the two that are not created by hand: `MY_GAMES` is born with the
+ * account and `COLLECTION` reaches them ready-made. This same pair is what an
+ * existing study can be CHANGED to, which is why there is a single list.
  */
 export const STUDENT_KINDS: readonly DatabaseKindCode[] = [DATABASE_KIND.STUDY, DATABASE_KIND.TOURNAMENT];
 
 /**
- * Tipos que puede crear un profesor: los del alumno más la colección, que es
- * la que reparte a sus alumnos.
+ * Kinds a teacher can create: the student's plus the collection, which is the
+ * one they share with their students.
  */
 export const TEACHER_KINDS: readonly DatabaseKindCode[] = [...STUDENT_KINDS, DATABASE_KIND.COLLECTION];
 
@@ -55,48 +55,49 @@ export function canCreateKind(kindCode: string, isTeacher: boolean): boolean {
 export interface StudyRuleInput {
   kindCode: string;
   /**
-   * Si quien pregunta es el dueño de la base. Es lo único que separa a un
-   * alumno que RECIBE una colección del profesor que la HIZO: los dos ven la
-   * misma fila y sólo uno la escribe.
+   * Whether whoever is asking owns the database. It is the only thing that
+   * separates a student who RECEIVES a collection from the teacher who MADE it:
+   * both see the same row and only one writes it.
    */
   isOwner: boolean;
 }
 
 /**
- * La tabla de la spec, en una función.
+ * The spec's table, in a function.
  *
- * Quien no es dueño no puede nada: ahí caen las bases de curso, las colecciones
- * repartidas por un maestro y la mirada del profesor sobre el estudio de su
- * alumno. Que la colección sea de sólo lectura NO es una regla aparte, es esta
- * misma: al alumno le llega repartida, nunca es suya.
+ * Whoever is not the owner can do nothing: that is where course databases, the
+ * collections shared by a teacher and the teacher's look at their student's
+ * study fall. That the collection is read-only is NOT a separate rule, it is
+ * this same one: the student receives it shared, it is never theirs.
  */
 export function studyPermissionsOf({ kindCode, isOwner }: StudyRuleInput): StudyPermissions {
   if (!isOwner) return READ_ONLY;
 
-  // «Mis partidas» es la única cuenta pendiente del alumno consigo mismo: hace
-  // lo que quiera con las partidas de dentro, pero la base no se borra ni deja
-  // de ser «Mis partidas» —es única por alumno y algo tiene que ocupar ese
-  // sitio—.
+  // "Mis partidas" is the student's only outstanding account with themselves:
+  // they do what they like with the games inside, but the database is neither
+  // deleted nor stops being "Mis partidas" — it is unique per student and
+  // something has to occupy that place.
   if (kindCode === DATABASE_KIND.MY_GAMES) {
     return { canEdit: true, canDelete: false, canEditGames: true, canChangeKind: false };
   }
 
-  // Una colección sólo la posee quien la reparte. Cambiarle el tipo dejaría a
-  // sus alumnos mirando algo que ya no es una colección, así que se queda
-  // quieta; borrarla sí puede, es suya.
+  // A collection is owned only by whoever shares it. Changing its kind would
+  // leave their students looking at something that is no longer a collection, so
+  // it stays put; deleting it they can, it is theirs.
   if (kindCode === DATABASE_KIND.COLLECTION) {
     return { canEdit: true, canDelete: true, canEditGames: true, canChangeKind: false };
   }
 
-  // Torneo y Estudio: del alumno de principio a fin, y se puede pasar de uno a
-  // otro —lo que empezó como material suelto acaba siendo un torneo—.
+  // Tournament and Study: the student's from beginning to end, and one can be
+  // turned into the other — what began as loose material ends up a tournament.
   return { canEdit: true, canDelete: true, canEditGames: true, canChangeKind: true };
 }
 
 /**
- * Si un estudio puede pasar a `nextKind`. Se comprueba el tipo de PARTIDA y el
- * de DESTINO: un torneo puede volverse estudio, pero ninguno de los dos puede
- * volverse colección —eso lo reparte un maestro— ni «Mis partidas».
+ * Whether a study can move to `nextKind`. Both the STARTING kind and the
+ * DESTINATION one are checked: a tournament can become a study, but neither of
+ * the two can become a collection — that is shared by a teacher — nor
+ * "Mis partidas".
  */
 export function canChangeKindTo(current: StudyRuleInput, nextKind: string): boolean {
   return studyPermissionsOf(current).canChangeKind && (STUDENT_KINDS as readonly string[]).includes(nextKind);

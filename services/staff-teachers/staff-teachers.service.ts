@@ -9,8 +9,8 @@ import type {
   StaffTeacherSummary,
 } from "./staff-teachers.types";
 
-// Panel de Administración: profesores y asignaciones. Un profesor NUNCA se
-// borra (arrastraría clases y asignaciones históricas): se desactiva.
+// Administration panel: teachers and assignments. A teacher is NEVER deleted
+// (it would drag along classes and historical assignments): they are deactivated.
 
 export async function listTeachers(): Promise<StaffTeacherSummary[]> {
   await requireStaff();
@@ -111,7 +111,7 @@ export async function getTeacherAdminDetail(teacherId: string): Promise<StaffTea
   };
 }
 
-/** Profesores activos: los únicos que pueden recibir asignaciones. */
+/** Active teachers: the only ones who can receive assignments. */
 export async function listActiveTeachers(): Promise<{ id: string; displayName: string }[]> {
   await requireStaff();
   return getPlatformDb().teacher.findMany({
@@ -122,9 +122,9 @@ export async function listActiveTeachers(): Promise<{ id: string; displayName: s
 }
 
 /**
- * Alumnos que se pueden asignar, con el profesor que tienen ahora (para poder
- * avisar de que asignarlos es reasignarlos). Se excluyen las cuentas que son
- * profesor o staff: no son alumnos de nadie.
+ * Students who can be assigned, with the teacher they have now (so it can be
+ * said that assigning them is reassigning them). Accounts that are teacher or
+ * staff are excluded: they are nobody's students.
  */
 export async function listAssignableStudents(): Promise<AssignableStudent[]> {
   await requireStaff();
@@ -152,7 +152,7 @@ export async function listAssignableStudents(): Promise<AssignableStudent[]> {
   }));
 }
 
-/** Cuentas sin ficha de profesor, para el modo «vincular usuario existente». */
+/** Accounts without a teacher record, for the "link existing user" mode. */
 export async function listLinkableUsers(): Promise<LinkableUser[]> {
   await requireStaff();
   return getPlatformDb().user.findMany({

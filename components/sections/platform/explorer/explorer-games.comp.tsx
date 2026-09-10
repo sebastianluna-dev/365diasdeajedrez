@@ -11,14 +11,14 @@ interface ExplorerGamesProps {
 }
 
 /**
- * Las partidas que pasaron por la posición actual, la más reciente primero.
+ * The games that went through the current position, most recent first.
  *
- * La lista está acotada y el total no: el número del encabezado es el de todas
- * las partidas encontradas, aunque abajo se vean menos.
+ * The list is capped and the total is not: the number in the heading is that
+ * of all the games found, even if fewer are shown below.
  *
- * Cada partida lleva su origen (estudio de alumno, curso, profesorado) porque
- * no significa lo mismo que una continuación la jugaran veinte alumnos que
- * verla en veinte partidas magistrales del material del curso.
+ * Each game carries its origin (student study, course, teaching staff) because
+ * a continuation played by twenty students does not mean the same as seeing
+ * it in twenty master games from the course material.
  */
 export function ExplorerGames({ games, totalGames, isSearching }: ExplorerGamesProps) {
   return (
@@ -70,8 +70,8 @@ export function ExplorerGames({ games, totalGames, isSearching }: ExplorerGamesP
 
               return (
                 <li key={game.id} className="explorer-games__item">
-                  {/* Sin enlace cuando no hay ninguna vista donde abrirla: antes
-                      listarla sin destino que mandar a un 404. */}
+                  {/* No link when there is no view to open it in: better to list it
+                      without a destination than to send to a 404. */}
                   {game.href ? (
                     <Link href={game.href} className="explorer-games__link">
                       {content}

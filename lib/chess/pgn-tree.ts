@@ -7,28 +7,28 @@ import { parsePgn, startingPosition, type ChildNode, type PgnNodeData } from "ch
 import { parseSan } from "chessops/san";
 import { findMalformedMoveTokens } from "./movetext-scan";
 
-// Árbol completo de un PGN: variantes, comentarios, NAGs y anotaciones
-// visuales ([%cal] flechas, [%csl] casillas, [%diagram] diagrama forzado).
-// Complementa a replay.ts (que sólo sigue la línea principal y el blog usa).
+// Complete tree of a PGN: variations, comments, NAGs and visual annotations
+// ([%cal] arrows, [%csl] squares, [%diagram] forced diagram).
+// Complements replay.ts (which only follows the main line and is used by the blog).
 //
-// La ruta punteada ("0", "0.1.0", ...) son los índices de hijo desde la raíz
-// y es el formato canónico de TrainingExercise.path y ClassBlock.movePath.
+// The dotted path ("0", "0.1.0", ...) is the child indexes from the root and is
+// the canonical format of TrainingExercise.path and ClassBlock.movePath.
 
 /**
- * La evaluación de una posición, tal y como viaja dentro del PGN en el comando
- * `[%eval …]` que escribe (y lee) Lichess.
+ * The evaluation of a position, exactly as it travels inside the PGN in the
+ * `[%eval …]` command that Lichess writes (and reads).
  */
 export interface MoveEvaluation {
-  /** Ventaja en peones, SIEMPRE en signo de blancas. */
+  /** Advantage in pawns, ALWAYS in White's sign. */
   score: number;
-  /** Jugadas hasta el mate, en signo de blancas. `null` si no hay mate. */
+  /** Moves to mate, in White's sign. `null` when there is no mate. */
   mateIn: number | null;
 }
 
 export interface PgnTreeNode {
   path: string;
   san: string;
-  /** Ply 1-based desde la posición inicial de SU línea troncal. */
+  /** 1-based ply from the initial position of ITS trunk line. */
   ply: number;
   fen: string;
   lastMove?: [Key, Key];
@@ -37,7 +37,7 @@ export interface PgnTreeNode {
   nags: number[];
   shapes: DrawShape[];
   showDiagram: boolean;
-  /** Lo que puntuó el módulo para ESTA posición, si la partida está evaluada. */
+  /** What the engine scored for THIS position, if the game is evaluated. */
   evaluation?: MoveEvaluation;
   children: PgnTreeNode[];
 }
@@ -46,15 +46,15 @@ export interface PgnTree {
   initialFen: string;
   initialComment?: string;
   initialShapes: DrawShape[];
-  /** La de la posición de partida, que no cuelga de ninguna jugada. */
+  /** That of the starting position, which hangs from no move. */
   initialEvaluation?: MoveEvaluation;
-  /** children[0] es la continuación principal. */
+  /** children[0] is the main continuation. */
   children: PgnTreeNode[];
   nodesByPath: Map<string, PgnTreeNode>;
   /**
-   * Ramas descartadas por contener jugadas ilegales o no parseables. Vacío
-   * cuando el PGN es correcto; la interfaz lo muestra en desarrollo para que
-   * un PGN mal cargado no se vea simplemente «recortado».
+   * Branches discarded for containing illegal or unparseable moves. Empty when
+   * the PGN is correct; the interface shows it in development so a badly loaded
+   * PGN is not simply seen "truncated".
    */
   warnings: string[];
 }
@@ -62,9 +62,9 @@ export interface PgnTree {
 const BRUSH_BY_LETTER: Record<string, string> = { G: "green", R: "red", Y: "yellow", B: "blue" };
 
 /**
- * Un mate se dibuja como una ventaja enorme, no como un número aparte: la
- * gráfica y la barra necesitan un valor con el que trabajar, y «va a dar mate»
- * es el techo de la escala.
+ * A mate is drawn as an enormous advantage, not as a separate number: the chart
+ * and the bar need a value to work with, and "is going to mate" is the ceiling
+ * of the scale.
  */
 const MATE_SCORE = 100;
 
@@ -135,7 +135,7 @@ function walk(
   children.forEach((child, index) => {
     const move = parseSan(pos, child.data.san);
     if (!move) {
-      // SAN ilegal: se descarta esa rama y se anota; el resto del árbol sigue.
+      // Illegal SAN: that branch is discarded and noted; the rest of the tree goes on.
       const at = parentPath.length > 0 ? `tras la ruta "${parentPath}"` : "en la posición inicial";
       warnings.push(`Jugada ilegal o no reconocida "${child.data.san}" ${at} (jugada ${ply}).`);
       return;
@@ -169,7 +169,7 @@ function walk(
   return result;
 }
 
-/** Parsea el PGN completo a árbol. Devuelve null si no hay nada parseable. */
+/** Parses the whole PGN into a tree. Returns null if there is nothing parseable. */
 export function parsePgnTree(pgn: string): PgnTree | null {
   const game = parsePgn(pgn)[0];
   if (!game) return null;
@@ -179,21 +179,21 @@ export function parsePgnTree(pgn: string): PgnTree | null {
     () => Chess.default(),
   );
 
-  // El ply es ABSOLUTO, no relativo al PGN: sale del turno y del número de
-  // jugada del FEN de partida. Una posición que arranca en «44.» tiene que
-  // numerarse 44 y no 1, y si mueven las negras la primera jugada tiene que
-  // leerse «44…» y no «44.».
+  // The ply is ABSOLUTE, not relative to the PGN: it comes from the turn and the
+  // move number of the starting FEN. A position that starts at "44." has to be
+  // numbered 44 and not 1, and if Black moves the first move has to read "44…"
+  // and not "44.".
   //
-  // Todo lo que numera —la tabla, el árbol de variantes, las etiquetas de las
-  // jugadas y el lado que decide qué NAG se escribe— saca el número de aquí con
-  // `Math.ceil(ply / 2)` y el color con `ply % 2 === 1`, así que basta con
-  // empezar bien.
+  // Everything that numbers — the table, the variation tree, the move labels and
+  // the side that decides which NAG is written — takes the number from here with
+  // `Math.ceil(ply / 2)` and the colour with `ply % 2 === 1`, so starting right
+  // is enough.
   const startPly = (pos.fullmoves - 1) * 2 + (pos.turn === "white" ? 1 : 2);
 
   const nodesByPath = new Map<string, PgnTreeNode>();
-  // Lo que ni siquiera llegó al árbol va primero: el tokenizador de chessops
-  // descarta los tokens sin forma de jugada antes de que `walk` los vea, así
-  // que ese aviso hay que sacarlo del texto crudo.
+  // What did not even reach the tree goes first: chessops's tokeniser discards
+  // tokens without the shape of a move before `walk` sees them, so that warning
+  // has to come from the raw text.
   const warnings = findMalformedMoveTokens(pgn).map(
     (token) => `Token no reconocido como jugada: "${token}". Esa rama no se ha cargado.`,
   );
@@ -211,29 +211,29 @@ export function parsePgnTree(pgn: string): PgnTree | null {
   };
 }
 
-/** Nodo en una ruta punteada; undefined para "" (posición inicial) o ruta rota. */
+/** Node at a dotted path; undefined for "" (initial position) or a broken path. */
 export function nodeAtPath(tree: PgnTree, path: string): PgnTreeNode | undefined {
   return path.length > 0 ? tree.nodesByPath.get(path) : undefined;
 }
 
-/** Ruta del padre ("" si el nodo cuelga de la raíz). */
+/** Path of the parent ("" when the node hangs from the root). */
 export function parentPathOf(path: string): string {
   const cut = path.lastIndexOf(".");
   return cut === -1 ? "" : path.slice(0, cut);
 }
 
-/** Siguiente jugada de la línea actual (el hijo principal). */
+/** Next move of the current line (the main child). */
 export function nextPathOf(tree: PgnTree, path: string): string | undefined {
   const children = path.length === 0 ? tree.children : nodeAtPath(tree, path)?.children;
   return children?.[0]?.path;
 }
 
 /**
- * Los SAN desde la posición inicial hasta la jugada de `path`, en orden.
+ * The SANs from the initial position to the move at `path`, in order.
  *
- * Es lo que convierte «esta posición del visor» en el formato que guardan los
- * ejercicios y el seed («e4 c5 Nf3»). Ante una ruta rota devuelve la lista
- * vacía: media línea sería peor que ninguna, porque se guardaría sin avisar.
+ * It is what turns "this position in the viewer" into the format the exercises
+ * and the seed store ("e4 c5 Nf3"). On a broken path it returns the empty list:
+ * half a line would be worse than none, because it would be stored without warning.
  */
 export function sansAlongPath(tree: PgnTree, path: string): string[] {
   if (path.length === 0) return [];
@@ -249,7 +249,7 @@ export function sansAlongPath(tree: PgnTree, path: string): string[] {
   return sans;
 }
 
-/** Final de la línea actual siguiendo siempre el hijo principal. */
+/** End of the current line, always following the main child. */
 export function endPathOf(tree: PgnTree, path: string): string {
   let current = path;
   for (;;) {
@@ -260,12 +260,12 @@ export function endPathOf(tree: PgnTree, path: string): string {
 }
 
 /**
- * Glifo de un NAG numérico ($1, $14, ...) para mostrar junto al SAN.
+ * Glyph of a numeric NAG ($1, $14, ...) to show next to the SAN.
  *
- * Los códigos que van en pareja (blancas/negras) comparten símbolo: «↑» es la
- * iniciativa, la tenga quien la tenga, y quién la tiene ya lo dice de quién es
- * la jugada. Los números son los del estándar PGN, con las extensiones que usa
- * ChessBase para novedad ($146), idea ($140) y apuro de tiempo ($138).
+ * The codes that come in pairs (white/black) share a symbol: "↑" is the
+ * initiative, whoever has it, and who has it is already said by whose move it
+ * is. The numbers are those of the PGN standard, with the extensions ChessBase
+ * uses for novelty ($146), idea ($140) and time trouble ($138).
  */
 const NAG_GLYPHS: Record<number, string> = {
   1: "!",
@@ -306,42 +306,43 @@ export function nagGlyph(nag: number): string {
 }
 
 export interface NagOption {
-  /** El código que se escribe cuando la jugada es de las blancas. */
+  /** The code written when the move is White's. */
   nag: number;
   /**
-   * Nombre corto, para las listas donde el símbolo ya va al lado y lo que sobra
-   * es texto. El largo se queda para el título del botón, que es lo que lee
-   * quien no reconoce el símbolo —y lo que oye un lector de pantalla—.
+   * Short name, for the lists where the symbol is already next to it and what is
+   * left over is text. The long one stays for the button's title, which is what
+   * whoever does not recognise the symbol reads — and what a screen reader hears.
    */
   short: string;
   /**
-   * El mismo símbolo para una jugada de las negras. El PGN distingue bando en
-   * casi todos los comentarios simbólicos —$36 es «las blancas tienen la
-   * iniciativa» y $37 el equivalente negro—, así que se guarda el que
-   * corresponde en vez de escribir siempre el de las blancas.
+   * The same symbol for a Black move. The PGN distinguishes side in almost every
+   * symbolic comment — $36 is "White has the initiative" and $37 the black
+   * equivalent — so the corresponding one is stored instead of always writing
+   * White's.
    */
   blackNag?: number;
   glyph: string;
   label: string;
 }
 
-/** Los códigos que ocupa una opción, para saber qué sustituye al elegirla. */
+/** The codes an option occupies, to know what it replaces when chosen. */
 export function nagCodesOf(option: NagOption): number[] {
   return option.blackNag === undefined ? [option.nag] : [option.nag, option.blackNag];
 }
 
-/** El código que toca escribir según de quién sea la jugada. */
+/** The code to write depending on whose move it is. */
 export function nagCodeFor(option: NagOption, isWhiteMove: boolean): number {
   return isWhiteMove || option.blackNag === undefined ? option.nag : option.blackNag;
 }
 
 /**
- * Los NAGs que ofrece el editor, en tres grupos EXCLUYENTES entre sí.
+ * The NAGs the editor offers, in three groups that are EXCLUSIVE among
+ * themselves.
  *
- * Son tres cosas distintas y una jugada puede llevar una de cada: qué tal fue
- * la jugada («??»), qué se quiso decir con ella («N», «→») y cómo queda la
- * posición después («∓»). Por eso elegir dentro de un grupo sustituye lo que
- * hubiera de ese grupo, pero no toca a los otros.
+ * They are three different things and a move can carry one of each: how the move
+ * went ("??"), what was meant by it ("N", "→") and how the position stands
+ * afterwards ("∓"). That is why choosing within a group replaces whatever that
+ * group had, but does not touch the others.
  */
 export const MOVE_QUALITY_NAGS: NagOption[] = [
   { nag: 3, glyph: "!!", label: "Jugada brillante", short: "Brillante" },
@@ -352,7 +353,7 @@ export const MOVE_QUALITY_NAGS: NagOption[] = [
   { nag: 4, glyph: "??", label: "Error grave", short: "Error grave" },
 ];
 
-/** El comentario simbólico de siempre: qué pasa en la partida tras la jugada. */
+/** The time-honoured symbolic comment: what happens in the game after the move. */
 export const MOVE_REMARK_NAGS: NagOption[] = [
   { nag: 7, glyph: "□", label: "Única jugada", short: "Única jugada" },
   { nag: 22, blackNag: 23, glyph: "⊙", label: "Zugzwang", short: "Zugzwang" },

@@ -19,10 +19,10 @@ function MetaPixelPageViews() {
 export function MetaPixel() {
   if (!META_PIXEL_ID || process.env.NEXT_PUBLIC_APP_ENV !== "production") return null;
 
-  // `lazyOnload` como GA: el píxel no compite con la hidratación. Su PageView
-  // inicial lo dispara el propio snippet al ejecutarse, y los de navegación
-  // (MetaPixelPageViews) no se pierden porque `fbEvent` no-opea si `fbq`
-  // todavía no existe.
+  // `lazyOnload` like GA: the pixel does not compete with hydration. Its
+  // initial PageView is fired by the snippet itself when it runs, and the
+  // navigation ones (MetaPixelPageViews) are not lost because `fbEvent` is a
+  // no-op if `fbq` does not exist yet.
   return (
     <>
       <Script id="meta-pixel-base" strategy="lazyOnload">

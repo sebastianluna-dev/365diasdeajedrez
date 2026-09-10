@@ -18,10 +18,10 @@ import {
 import { parentPathOf } from "@/lib/chess/pgn-tree";
 
 interface UsePgnEditingOptions {
-  /** El PGN actual: cada cambio parte de él, nunca de una copia guardada. */
+  /** The current PGN: every change starts from it, never from a stored copy. */
   pgn: string;
   onPgnChange: (pgn: string) => void;
-  /** Dónde dejar la jugada seleccionada después de cada cambio. */
+  /** Where to leave the selected move after each change. */
   onPathChange: (path: string) => void;
 }
 
@@ -35,26 +35,27 @@ export interface PgnEditing {
 }
 
 /**
- * Editar la partida DESDE el visor: añadir jugadas, dibujar flechas, promover,
- * copiar una línea y borrar.
+ * Editing the game FROM the viewer: adding moves, drawing arrows, promoting,
+ * copying a line and deleting.
  *
- * El comentario y los signos NO están aquí: se escriben en el panel bajo el
- * tablero, y el menú de la jugada sólo lleva hasta él (ver `onRequestEdit`).
+ * The comment and the signs are NOT here: they are written in the panel
+ * under the board, and the move menu only leads to it (see `onRequestEdit`).
  *
- * Cada operación reparsea el PGN, muta el juego de chessops y devuelve el PGN
- * nuevo hacia arriba. Es reparsear de más, sí, pero deja UNA sola fuente de
- * verdad —el PGN que el visor pinta— en vez de un juego mutable en paralelo que
- * pueda desincronizarse con él; una partida cabe de sobra en ese presupuesto.
+ * Each operation reparses the PGN, mutates the chessops game and returns the
+ * new PGN upwards. It is reparsing more than needed, yes, but it leaves ONE
+ * source of truth — the PGN the viewer renders — instead of a parallel
+ * mutable game that could drift out of sync with it; a game fits easily
+ * within that budget.
  *
- * La lógica de ajedrez vive entera en lib/chess/pgn-edit.ts: aquí sólo se ata
- * al estado de la pantalla.
+ * The chess logic lives entirely in lib/chess/pgn-edit.ts: here it is only
+ * bound to the screen state.
  */
 export function usePgnEditing({ pgn, onPgnChange, onPathChange }: UsePgnEditingOptions): PgnEditing {
   /**
-   * Aplica un cambio y publica el PGN resultante.
+   * Applies a change and publishes the resulting PGN.
    *
-   * `mutate` devuelve la ruta en la que dejar al visor, o null para no tocar
-   * nada —jugada ilegal, ruta rota, PGN que no se puede leer—.
+   * `mutate` returns the path to leave the viewer at, or null to touch
+   * nothing — illegal move, broken path, unreadable PGN.
    */
   const edit = useCallback(
     (mutate: (game: Game<PgnNodeData>) => string | null) => {
@@ -71,11 +72,11 @@ export function usePgnEditing({ pgn, onPgnChange, onPathChange }: UsePgnEditingO
   );
 
   /**
-   * Muta y sigue a la jugada allá donde quede.
+   * Mutates and follows the move wherever it ends up.
    *
-   * Promover reindexa a los hermanos, así que la ruta de partida puede dejar de
-   * señalar la misma jugada. Por eso se guarda la REFERENCIA al nodo antes de
-   * mutar y se le vuelve a preguntar dónde ha quedado.
+   * Promoting reindexes the siblings, so the starting path may stop pointing
+   * at the same move. That is why the REFERENCE to the node is kept before
+   * mutating and the node is asked again where it ended up.
    */
   const keepingPlace = useCallback(
     (path: string, mutate: (game: Game<PgnNodeData>) => boolean) => (game: Game<PgnNodeData>) => {
@@ -92,8 +93,8 @@ export function usePgnEditing({ pgn, onPgnChange, onPathChange }: UsePgnEditingO
       updateShapes: (path, shapes) => edit((game) => (setShapes(game, path, shapes) ? path : null)),
       promoteOneStepAt: (path) => edit(keepingPlace(path, (game) => promoteOneStep(game, path))),
       promoteToMainAt: (path) => edit(keepingPlace(path, (game) => promoteToMainLine(game, path))),
-      // Borrar es el único que no puede quedarse donde estaba: la jugada ya no
-      // existe, así que se sube al padre.
+      // Deleting is the only one that cannot stay where it was: the move no
+      // longer exists, so it goes up to the parent.
       deleteAt: (path) => edit((game) => (deleteFrom(game, path) ? parentPathOf(path) : null)),
       copyVariation: async (path) => {
         const game = parseEditableGame(pgn);
@@ -102,8 +103,8 @@ export function usePgnEditing({ pgn, onPgnChange, onPathChange }: UsePgnEditingO
         try {
           await navigator.clipboard.writeText(text);
         } catch {
-          // Sin permiso de portapapeles no hay nada que hacer desde aquí; el
-          // PGN completo sigue a mano en las herramientas de la partida.
+          // Without clipboard permission there is nothing to do from here; the
+          // full PGN is still at hand in the game tools.
         }
       },
     }),

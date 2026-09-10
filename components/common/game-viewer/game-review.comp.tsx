@@ -11,23 +11,22 @@ import "./game-review.comp.css";
 
 interface GameReviewProps {
   pgn: string;
-  /** Sin permiso de escritura se puede evaluar, pero no se guarda. */
+  /** Without write permission it can be evaluated, but it is not saved. */
   canEdit: boolean;
   white: string;
   black: string;
-  /** Ruta punteada de la jugada del tablero, para el cursor de la gráfica. */
+  /** Dotted path of the board's move, for the chart cursor. */
   currentPath: string;
   onSelectPath: (path: string) => void;
   onPgnChange: (pgn: string) => void;
 }
 
 /**
- * La partida vista de una pieza: gráfica de ventaja y cómo de bien jugó cada
- * uno.
+ * The game seen as a whole: advantage chart and how well each side played.
  *
- * No hay estado de «ya evaluada»: la evaluación vive DENTRO del PGN, un
- * `[%eval]` por jugada, así que si está, se pinta. Eso la hace sobrevivir a
- * recargar la página y viajar con la partida al exportarla.
+ * There is no "already evaluated" state: the evaluation lives INSIDE the
+ * PGN, one `[%eval]` per move, so if it is there, it is rendered. That makes
+ * it survive a page reload and travel with the game when exported.
  */
 export function GameReview({
   pgn,
@@ -43,15 +42,15 @@ export function GameReview({
   const review = useMemo(() => (tree ? reviewGame(mainlinePositions(tree)) : null), [tree]);
   const paths = useMemo(() => (tree ? mainlinePaths(tree) : []), [tree]);
 
-  /** Al terminar, las evaluaciones se escriben en el PGN y suben a guardarse. */
+  /** When finished, the evaluations are written into the PGN and go up to be saved. */
   const onFinished = useCallback(
     (results: MoveEvaluation[]) => {
       const game = parseEditableGame(pgn);
       const current = parsePgnTree(pgn);
       if (!game || !current) return;
 
-      // Las rutas se recalculan del PGN de AHORA: si se editó algo mientras el
-      // motor trabajaba, lo que sobra se descarta en vez de escribirse encima.
+      // The paths are recomputed from the PGN as it is NOW: if something was edited
+      // while the engine worked, what is left over is discarded instead of overwritten.
       const targets = mainlinePaths(current);
       results.forEach((evaluation, index) => {
         const path = targets[index];
@@ -162,7 +161,7 @@ interface PlayerCardProps {
   player: PlayerReview;
 }
 
-/** Lo que hizo un jugador: su precisión y en qué se le fue la partida. */
+/** What a player did: their accuracy and where the game slipped away from them. */
 function PlayerCard({ name, side, player }: PlayerCardProps) {
   const rows = [
     { key: "inaccuracies", label: "Imprecisiones", value: player.inaccuracies },

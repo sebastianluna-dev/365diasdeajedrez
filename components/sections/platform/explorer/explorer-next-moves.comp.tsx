@@ -11,11 +11,11 @@ interface ExplorerNextMovesProps {
 }
 
 /**
- * Qué se jugó desde esta posición y con qué frecuencia, de la más jugada a la
- * menos. Cada fila es jugable: es la forma natural de recorrer el árbol de las
- * partidas que hay en la base.
+ * What was played from this position and how often, from most played to
+ * least. Each row is playable: it is the natural way to walk the tree of the
+ * games in the database.
  *
- * Los porcentajes son sobre el total de continuaciones, así que suman 100.
+ * The percentages are over the total of continuations, so they add up to 100.
  */
 export function ExplorerNextMoves({ moves, onPlay, isSearching }: ExplorerNextMovesProps) {
   return (
@@ -31,8 +31,8 @@ export function ExplorerNextMoves({ moves, onPlay, isSearching }: ExplorerNextMo
           {moves.map((move) => (
             <li key={move.uci} className="explorer-next-moves__item">
               <button type="button" className="explorer-next-moves__button" onClick={() => onPlay(move.san)}>
-                {/* La barra va detrás del texto, como fondo proporcional: se lee
-                    la frecuencia de un vistazo sin depender del número. */}
+                {/* The bar goes behind the text, as a proportional background: the
+                    frequency is read at a glance without depending on the number. */}
                 <span className="explorer-next-moves__bar" style={{ width: `${move.percentage}%` }} aria-hidden="true" />
                 <span className="explorer-next-moves__san">{sanToSpanish(move.san)}</span>
                 <span className="explorer-next-moves__count">

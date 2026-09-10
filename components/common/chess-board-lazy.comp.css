@@ -1,8 +1,8 @@
-/* Hueco con las medidas de .chess-board (chess-board.comp.css) para que el
-   tablero, al montarse, no mueva lo que hay debajo: tablero cuadrado al 58 %
-   del ancho más la barra de 52 px en escritorio; al 100 % en móvil, donde la
-   notación no se pinta. Mismos respaldos de color que el tablero: fuera de la
-   plataforma no existen los --platform-*. */
+/* Placeholder with the measurements of .chess-board (chess-board.comp.css) so
+   that mounting the board does not move what is below it: square board at
+   58 % of the width plus the 52 px bar on desktop; at 100 % on mobile, where
+   the notation is not rendered. Same colour fallbacks as the board: outside
+   the platform the --platform-* tokens do not exist. */
 .chess-board-lazy {
   width: 100%;
   max-width: 800px;

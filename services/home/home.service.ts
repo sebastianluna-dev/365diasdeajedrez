@@ -19,16 +19,17 @@ import type {
 // via React's cache() so Payload is only queried once regardless of how many
 // sections ask for it.
 //
-// Y ENTRE peticiones lo guarda `unstable_cache`. La portada se renderiza por
-// petición (lee la cookie de sesión para mandar a su panel a quien ya entró),
-// así que sin esto cada visita hacía las siete consultas contra una base
-// remota: era casi todo el tiempo de respuesta. Los hooks `afterChange` de los
-// Globals caducan la etiqueta al guardar en el CMS (lib/payload/revalidate-*);
-// el plazo de una hora es sólo la red de seguridad para cambios que no pasen
-// por Payload (seed, SQL a mano).
+// And BETWEEN requests `unstable_cache` keeps it. The home page renders per
+// request (it reads the session cookie to send whoever already logged in to
+// their panel), so without this every visit made the seven queries against a
+// remote database: it was almost all of the response time. The Globals'
+// `afterChange` hooks expire the tag on save in the CMS
+// (lib/payload/revalidate-*); the one-hour window is only the safety net for
+// changes that do not go through Payload (seed, SQL by hand).
 //
-// `unstable_cache` y no `"use cache"`: la directiva exige `cacheComponents`,
-// que la plataforma todavía no tiene activado (ver app/(platform)/layout.tsx).
+// `unstable_cache` and not `"use cache"`: the directive requires
+// `cacheComponents`, which the platform does not have enabled yet (see
+// app/(platform)/layout.tsx).
 const CACHE_REVALIDATE_SECONDS = 3600;
 
 const readHomeGlobals = unstable_cache(

@@ -23,8 +23,8 @@ describe("plainMovetext", () => {
   });
 
   it("conserva la posición de partida cuando no es la inicial", () => {
-    // Sin el FEN, las jugadas no se pueden reproducir en ningún sitio: eso es
-    // peor que llevar dos líneas de cabecera.
+    // Without the FEN, the moves cannot be replayed anywhere: that is worse than
+    // carrying two header lines.
     const fen = "4k3/8/8/8/8/8/4P3/4K3 w - - 0 40";
     const copy = plainMovetext(`[SetUp "1"]\n[FEN "${fen}"]\n\n40. e4 Kd7 *`) ?? "";
 

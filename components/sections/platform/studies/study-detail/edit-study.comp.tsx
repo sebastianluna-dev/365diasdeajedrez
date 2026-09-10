@@ -10,14 +10,14 @@ interface EditStudyProps {
   name: string;
   description?: string;
   kindCode: string;
-  /** Cómo se llama su tipo, para poder decirlo cuando no se puede cambiar. */
+  /** The name of its kind, to be able to state it when it cannot be changed. */
   kindLabel: string;
-  /** Los tipos a los que puede pasar. Ver services/studies/study-rules. */
+  /** The kinds it can change to. See services/studies/study-rules. */
   kinds: StudyKindOption[];
   /**
-   * Si el tipo se puede cambiar. «Mis partidas» y las colecciones se quedan
-   * como están: la primera es única por alumno y la segunda dejaría a quienes
-   * la recibieron mirando algo que ya no es una colección.
+   * Whether the kind can be changed. "Mis partidas" and collections stay as
+   * they are: the first is unique per student and the second would leave those
+   * who received it looking at something that is no longer a collection.
    */
   canChangeKind: boolean;
 }
@@ -66,9 +66,9 @@ export function EditStudy({ id, name, description, kindCode, kindLabel, kinds, c
             />
           </label>
 
-          {/* Sin selector cuando el tipo no se toca: un desplegable con una
-              sola opción imposible de cambiar sólo estorba. La acción tampoco
-              lo aceptaría, así que el formulario no manda `kindCode`. */}
+          {/* No selector when the kind is not touched: a dropdown with a single
+              option impossible to change only gets in the way. The action would
+              not accept it either, so the form does not send `kindCode`. */}
           {canChangeKind && (
             <label className="edit-study__field">
               <span className="edit-study__label">Tipo</span>

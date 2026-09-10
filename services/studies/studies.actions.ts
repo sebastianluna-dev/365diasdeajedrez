@@ -27,14 +27,14 @@ import { indexGamePositions } from "@/services/game-positions/game-positions.ser
 import { parseImportedGames } from "@/services/shared/pgn-import";
 import { canChangeKindTo, canCreateKind, studyPermissionsOf } from "./study-rules";
 
-// Las server actions son alcanzables por POST directo: el usuario SIEMPRE se
-// resuelve aquí dentro (DAL) y la propiedad de la base se comprueba contra la
-// base de datos antes de escribir. Entradas vacías o basura salen sin lanzar.
+// Server actions are reachable by direct POST: the user is ALWAYS resolved in
+// here (DAL) and the ownership of the database is checked against the database
+// before writing. Empty or rubbish inputs come out without throwing.
 
 const STUDY_NAME_MAX_LENGTH = 120;
 const STUDY_DESCRIPTION_MAX_LENGTH = 500;
 const UNKNOWN_PLAYER = "Desconocido";
-/** Sólo fechas completas: el PGN admite "????.??.??" y "2024.??.??". */
+/** Full dates only: the PGN admits "????.??.??" and "2024.??.??". */
 const FULL_PGN_DATE = /^(\d{4})\.(\d{2})\.(\d{2})$/;
 
 function readText(formData: FormData, field: string): string {
@@ -46,7 +46,7 @@ function isDatabaseKindCode(value: string): value is DatabaseKindCode {
   return (Object.values(DATABASE_KIND) as string[]).includes(value);
 }
 
-/** Cabecera útil o null: el PGN usa "?" como marcador de dato desconocido. */
+/** A useful header or null: the PGN uses "?" as the marker for unknown data. */
 function readHeader(headers: Map<string, string>, key: string): string | null {
   const value = headers.get(key)?.trim();
   return value && value !== "?" ? value : null;
@@ -70,13 +70,13 @@ function readDateHeader(headers: Map<string, string>): Date | null {
 }
 
 /**
- * Crea una base propia («estudio» en la interfaz). El tipo llega como code del
- * catálogo y lo decide `study-rules`, no el desplegable: un alumno crea
- * estudios y torneos, un maestro además colecciones, y «Mis partidas» no la
- * crea nadie a mano porque nace con la cuenta.
+ * Creates an own database ("estudio" in the interface). The kind arrives as a
+ * catalog code and `study-rules` decides it, not the dropdown: a student creates
+ * studies and tournaments, a teacher additionally collections, and "Mis
+ * partidas" is created by hand by nobody because it is born with the account.
  *
- * Se vuelve a preguntar aquí aunque la lista ya venga filtrada: una server
- * action es alcanzable por POST directo con el code que sea.
+ * It is asked again here even though the list already comes filtered: a server
+ * action is reachable by direct POST with whatever code.
  */
 export async function createStudy(formData: FormData): Promise<void> {
   const name = readText(formData, "name");
@@ -105,8 +105,8 @@ export async function createStudy(formData: FormData): Promise<void> {
 }
 
 /**
- * Siguiente posición libre del estudio. Sin esto una partida nueva nacería en 0
- * y se colocaría la primera, que no es donde nadie espera encontrarla.
+ * Next free position of the study. Without this a new game would be born at 0
+ * and placed first, which is not where anyone expects to find it.
  */
 async function nextGameOrder(db: Prisma.TransactionClient, databaseId: string): Promise<number> {
   const last = await db.game.aggregate({ where: { databaseId }, _max: { order: true } });
@@ -114,16 +114,17 @@ async function nextGameOrder(db: Prisma.TransactionClient, databaseId: string): 
 }
 
 /**
- * Copia a un estudio propio partidas vistas en clase.
+ * Copies games seen in class into an own study.
  *
- * COPIA, no referencia: a partir de aquí son suyas y editarlas no toca la clase
- * original ni la base de quien las trajo. Por eso se duplica el PGN y se vuelve
- * a indexar; el `sourceId` se hereda de la original, que es lo veraz —una copia
- * tiene la misma procedencia que aquello de lo que se copió—.
+ * A COPY, not a reference: from here on they are theirs and editing them does
+ * not touch the original class nor the database of whoever brought them. That is
+ * why the PGN is duplicated and reindexed; the `sourceId` is inherited from the
+ * original, which is the truthful thing — a copy has the same provenance as what
+ * it was copied from.
  *
- * El filtro de origen es el mismo que alimenta «Partidas de mis clases»: sólo
- * se puede copiar de una clase a la que se asistió. Un id de otra parte no
- * pasa el `where` y sale de la lista sin escribir nada.
+ * The origin filter is the same one that feeds "Partidas de mis clases": one can
+ * only copy from a class one attended. An id from elsewhere does not pass the
+ * `where` and drops out of the list without writing anything.
  */
 export async function copyClassGamesToStudy(studyId: string, gameIds: string[]): Promise<void> {
   if (gameIds.length === 0) return;
@@ -179,15 +180,15 @@ export async function copyClassGamesToStudy(studyId: string, gameIds: string[]):
 }
 
 /**
- * Coloca las partidas de un estudio propio en el orden recibido.
+ * Places the games of an own study in the order received.
  *
- * Se comprueba que los ids sean EXACTAMENTE los del estudio —mismos y todos—
- * antes de escribir nada: un id de otra base colado en la lista escribiría
- * fuera, y una lista incompleta dejaría partidas con el orden viejo mezcladas
- * entre las nuevas. Ante cualquier discrepancia no se toca nada.
+ * It is checked that the ids are EXACTLY the study's — the same ones and all of
+ * them — before writing anything: an id from another database slipped into the
+ * list would write outside, and an incomplete list would leave games with the
+ * old order mixed among the new ones. On any discrepancy nothing is touched.
  *
- * No devuelve error visible: si la comprobación falla, la vista se revalida y
- * el arrastre se deshace solo al recargar, que es lo que el usuario entiende.
+ * It returns no visible error: if the check fails, the view is revalidated and
+ * the drag undoes itself on reload, which is what the user understands.
  */
 export async function reorderStudyGames(studyId: string, orderedIds: string[]): Promise<void> {
   const db = getPlatformDb();
@@ -216,16 +217,15 @@ export async function reorderStudyGames(studyId: string, orderedIds: string[]): 
 }
 
 /**
- * Cambia el nombre, la descripción y el tipo de un estudio propio.
+ * Changes the name, the description and the kind of an own study.
  *
- * El `where` lleva `userId` como todas las escrituras de aquí: ver una base de
- * curso —o una colección que a uno le repartieron— no da derecho a
- * renombrarla.
+ * The `where` carries `userId` like every write here: seeing a course database
+ * — or a collection someone shared with you — does not give the right to rename it.
  *
- * El tipo puede venir vacío: hay estudios que se renombran pero no cambian de
- * tipo («Mis partidas» y las colecciones no pueden). Si viene, tiene que ser un
- * cambio que `study-rules` permita, y si no lo es se ignora el tipo y se guarda
- * el resto en vez de tirar el formulario entero.
+ * The kind can come empty: there are studies that get renamed but do not change
+ * kind ("Mis partidas" and collections cannot). If it comes, it has to be a
+ * change `study-rules` allows, and if it is not, the kind is ignored and the
+ * rest is saved instead of throwing away the whole form.
  */
 export async function updateStudy(studyId: string, formData: FormData): Promise<void> {
   const name = readText(formData, "name");
@@ -261,9 +261,9 @@ export async function updateStudy(studyId: string, formData: FormData): Promise<
 }
 
 /**
- * Importa un PGN con una o varias partidas en un estudio del propio alumno.
- * Cada partida se guarda como una fila Game con sus cabeceras en columnas y el
- * PGN individual reserializado. Nunca escribe en bases de curso.
+ * Imports a PGN with one or several games into a study of the student's own.
+ * Each game is stored as a Game row with its headers in columns and the
+ * individual PGN reserialised. It never writes into course databases.
  */
 export async function importPgnGames(studyId: string, formData: FormData): Promise<void> {
   const pgnText = readText(formData, "pgn");
@@ -276,13 +276,13 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
   const study = await db.gameDatabase.findFirst({ where: { id: studyId, userId: user.id }, select: { id: true } });
   if (!study) return;
 
-  // El PGN se lee en services/shared/pgn-import, que es el mismo lector que usa
-  // la colección de partidas de un curso: dos lectores acabarían con dos
-  // criterios distintos sobre qué es una fecha válida o cuándo un Elo es un Elo.
+  // The PGN is read in services/shared/pgn-import, which is the same reader a
+  // course's game collection uses: two readers would end up with two different
+  // criteria about what a valid date is or when an Elo is an Elo.
   const imported = parseImportedGames(pgnText);
 
-  // Se importan al final del estudio y en el orden en que vienen en el PGN,
-  // que es como las escribió quien lo exportó.
+  // They are imported at the end of the study and in the order they come in the
+  // PGN, which is how whoever exported it wrote them.
   let order = await nextGameOrder(db, study.id);
 
   const games: Prisma.GameCreateInput[] = imported.map((game) => ({
@@ -310,12 +310,12 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
 
   if (games.length === 0) return;
 
-  // createMany no admite connect por code, así que la transacción encadena
-  // un create por partida (atómico: o entran todas o no entra ninguna).
+  // createMany does not admit connect by code, so the transaction chains one
+  // create per game (atomic: either they all go in or none does).
   //
-  // El índice de posiciones se escribe DENTRO de la misma transacción: una
-  // partida guardada sin indexar sería invisible para el buscador por posición
-  // y nadie se enteraría hasta buscarla.
+  // The position index is written WITHIN the same transaction: a game stored
+  // without indexing would be invisible to the position search and nobody would
+  // find out until they looked for it.
   await db.$transaction(async (tx) => {
     for (const data of games) {
       const created = await tx.game.create({ data, select: { id: true } });
@@ -327,17 +327,17 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
   revalidatePath(platformRoutes.studyDetail(studyId));
 }
 
-// --- Partidas creadas a mano -----------------------------------------------
+// --- Games created by hand -------------------------------------------------
 //
-// El otro camino para meter una partida en un estudio, además de pegar un PGN:
-// crearla vacía y construirla sobre el tablero. Todo el formulario es opcional,
-// porque cuando se empieza a analizar todavía no se sabe qué partida va a ser.
+// The other route to put a game into a study, besides pasting a PGN: creating it
+// empty and building it on the board. The whole form is optional, because when
+// analysis starts one does not yet know which game it is going to be.
 
 const GAME_FIELD_MAX_LENGTH = 120;
-/** Rango de Elo que se acepta; fuera de él es una errata, no un dato. */
+/** Elo range that is accepted; outside it, it is a typo, not data. */
 const ELO_MIN = 100;
 const ELO_MAX = 4000;
-/** El formulario usa <input type="date">, que envía ISO. */
+/** The form uses <input type="date">, which sends ISO. */
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 
 function readOptionalField(formData: FormData, field: string): string | null {
@@ -352,7 +352,7 @@ function readElo(formData: FormData, field: string): number | null {
   return elo >= ELO_MIN && elo <= ELO_MAX ? elo : null;
 }
 
-/** Fecha del formulario (ISO). Una fecha imposible se descarta, no se corrige. */
+/** Date from the form (ISO). An impossible date is discarded, not corrected. */
 function readIsoDate(formData: FormData, field: string): Date | null {
   const match = ISO_DATE.exec(readText(formData, field));
   if (!match) return null;
@@ -364,10 +364,10 @@ function readIsoDate(formData: FormData, field: string): Date | null {
 }
 
 /**
- * ¿El FEN describe una posición que puede existir sobre un tablero?
+ * Does the FEN describe a position that can exist on a board?
  *
- * `parseFen` a secas no vale: acepta «8/8/8/8/8/8/8/8», un tablero sin reyes.
- * Guardar eso daría una partida que revienta al abrirla.
+ * Plain `parseFen` is no good: it accepts "8/8/8/8/8/8/8/8", a board without
+ * kings. Storing that would give a game that blows up when opened.
  */
 function isLegalFen(fen: string): boolean {
   const setup = parseFen(fen);
@@ -378,7 +378,7 @@ function isGameResultCode(value: string): value is GameResultCode {
   return (Object.values(GAME_RESULT) as string[]).includes(value);
 }
 
-/** El estudio, sólo si es del usuario. Los de curso tienen `userId` nulo. */
+/** The study, only if it is the user's. The course ones have a null `userId`. */
 async function ownedStudy(studyId: string, userId: string): Promise<{ id: string } | null> {
   return getPlatformDb().gameDatabase.findFirst({
     where: { id: studyId, userId },
@@ -387,14 +387,14 @@ async function ownedStudy(studyId: string, userId: string): Promise<{ id: string
 }
 
 /**
- * Crea una partida en un estudio propio, con o sin PGN.
+ * Creates a game in an own study, with or without a PGN.
  *
- * Todos los campos son opcionales: enviar el formulario vacío da una partida en
- * blanco lista para analizar. Si se pega un PGN, sus cabeceras rellenan los
- * huecos que la persona haya dejado — lo que ella escriba siempre manda.
+ * Every field is optional: submitting the empty form gives a blank game ready to
+ * analyse. If a PGN is pasted, its headers fill in the gaps the person left —
+ * what they write always rules.
  *
- * Termina redirigiendo a la partida recién creada, que es donde se analiza:
- * se juega sobre el tablero y se anota desde la lista de jugadas.
+ * It ends by redirecting to the freshly created game, which is where it is
+ * analysed: it is played on the board and annotated from the move list.
  */
 export async function createStudyGame(studyId: string, formData: FormData): Promise<void> {
   const db = getPlatformDb();
@@ -407,8 +407,8 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
   const pgnText = readText(formData, "pgn");
   if (pgnText.length > PGN_MAX_LENGTH) return;
 
-  // El PGN pegado es una FUENTE de datos, no una orden: si no se entiende, se
-  // descarta y la partida se crea en blanco en vez de perder lo tecleado.
+  // The pasted PGN is a SOURCE of data, not an order: if it is not understood, it
+  // is discarded and the game is created blank instead of losing what was typed.
   let parsed: ReturnType<typeof parsePgn>[number] | undefined;
   if (pgnText.length > 0) {
     try {
@@ -420,14 +420,14 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
   const headers = parsed?.headers ?? new Map<string, string>();
 
   const initialFen = readOptionalField(formData, "initialFen") ?? readHeader(headers, "FEN");
-  // Un FEN malo sí se dice: es lo único que la persona puede haber escrito mal
-  // y no notar, porque el resto de campos son texto libre.
+  // A bad FEN is reported: it is the only thing the person may have written wrong
+  // without noticing, because the rest of the fields are free text.
   //
-  // El aviso vuelve a DONDE se escribió. La partida se crea desde dos sitios
-  // —la página de «nueva partida» y el diálogo de la ficha del estudio— y
-  // mandar siempre a la página dejaría a quien usó el diálogo en otra pantalla
-  // preguntándose qué pasó. `origin` se compara contra un valor conocido, no se
-  // usa como URL: un campo del formulario no puede decidir a dónde se redirige.
+  // The warning goes back to WHERE it was written. The game is created from two
+  // places — the "new game" page and the study page's dialog — and always sending
+  // to the page would leave whoever used the dialog on another screen wondering
+  // what happened. `origin` is compared against a known value, not used as a URL:
+  // a form field cannot decide where a redirect goes.
   if (initialFen !== null && !isLegalFen(initialFen)) {
     const back =
       readText(formData, "origin") === "detail"
@@ -443,9 +443,10 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
     ? resultCode
     : (GAME_RESULT_BY_PGN_TOKEN[readHeader(headers, "Result") ?? ""] ?? GAME_RESULT.ONGOING);
 
-  // Sin nombre propio se numera por lo que ya hay en el estudio. No pretende ser
-  // un contador exacto —dos creaciones a la vez podrían repetir «Capítulo 3»—,
-  // y no pasa nada: es una etiqueta que se puede cambiar, no una clave.
+  // Without a name of its own it is numbered by what is already in the study. It
+  // does not claim to be an exact counter — two simultaneous creations could
+  // repeat "Capítulo 3" — and that is fine: it is a label that can be changed,
+  // not a key.
   const explicitTitle = readOptionalField(formData, "title");
   const title = explicitTitle ?? `Capítulo ${(await db.game.count({ where: { databaseId: studyId } })) + 1}`;
 
@@ -486,27 +487,27 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
 }
 
 /**
- * Lee un campo SÓLO si el formulario lo trae.
+ * Reads a field ONLY if the form brings it.
  *
- * `readOptionalField` devuelve null tanto cuando el campo llega vacío como
- * cuando no llega, y para un formulario que reescribe la ficha entera eso no es
- * lo mismo: vacío significa «bórralo», ausente significa «no lo toques». Sin
- * esta distinción, un formulario al que le falte un campo borra ese dato al
- * guardar — que es exactamente como se perdieron la federación y el título de
- * una partida al añadirlos a la acción antes que al formulario.
+ * `readOptionalField` returns null both when the field arrives empty and when it
+ * does not arrive, and for a form that rewrites the whole record that is not the
+ * same: empty means "delete it", absent means "do not touch it". Without this
+ * distinction, a form missing a field erases that data on save — which is
+ * exactly how a game's federation and title were lost when they were added to
+ * the action before the form.
  */
 function readFieldIfPresent(formData: FormData, field: string): string | null | undefined {
   return formData.has(field) ? readOptionalField(formData, field) : undefined;
 }
 
-/** Cabecera del PGN: se escribe el valor, se quita si es null, se deja si es undefined. */
+/** PGN header: the value is written, it is removed when null, it is left when undefined. */
 function setHeader(headers: Map<string, string>, key: string, value: string | null | undefined): void {
   if (value === undefined) return;
   if (value === null || value.length === 0) headers.delete(key);
   else headers.set(key, value);
 }
 
-/** Fecha en el formato del PGN («2024.03.17»). */
+/** Date in the PGN's format ("2024.03.17"). */
 function pgnDate(date: Date | null): string | null {
   if (!date) return null;
   const month = String(date.getUTCMonth() + 1).padStart(2, "0");
@@ -515,12 +516,12 @@ function pgnDate(date: Date | null): string | null {
 }
 
 /**
- * Edita la ficha de la partida: jugadores, Elos, evento, fecha, resultado…
+ * Edits the game's record: players, Elos, event, date, result…
  *
- * Reescribe TAMBIÉN las cabeceras del PGN. Si no, un PGN exportado diría una
- * cosa y la ficha otra sobre la misma partida, y no habría forma de saber cuál
- * de las dos es la buena. Las jugadas y la posición de partida no se tocan:
- * esto sólo cambia quién jugó y dónde.
+ * It rewrites the PGN's headers TOO. Otherwise an exported PGN would say one
+ * thing and the record another about the same game, and there would be no way to
+ * know which of the two is the good one. The moves and the starting position are
+ * not touched: this only changes who played and where.
  */
 export async function updateGameDetails(studyId: string, gameId: string, formData: FormData): Promise<void> {
   const db = getPlatformDb();
@@ -549,8 +550,8 @@ export async function updateGameDetails(studyId: string, gameId: string, formDat
   const whiteCountry = readFieldIfPresent(formData, "whiteCountry");
   const blackCountry = readFieldIfPresent(formData, "blackCountry");
 
-  // El token del resultado vive en el label del catálogo («1-0», «*»…), que es
-  // justo lo que el PGN espera en su cabecera Result.
+  // The result's token lives in the catalog's label ("1-0", "*"…), which is
+  // exactly what the PGN expects in its Result header.
   const resultRow = await db.gameResult.findUnique({ where: { code: result }, select: { label: true } });
 
   let pgn = game.pgn;
@@ -568,8 +569,8 @@ export async function updateGameDetails(studyId: string, gameId: string, formDat
     setHeader(parsed.headers, "Result", resultRow?.label ?? "*");
     setHeader(parsed.headers, "WhiteTitle", whiteTitle);
     setHeader(parsed.headers, "BlackTitle", blackTitle);
-    // La federación viaja en `WhiteTeam`/`BlackTeam`, que es la cabecera que
-    // usan las retransmisiones: el PGN estándar no tiene una para el país.
+    // The federation travels in `WhiteTeam`/`BlackTeam`, which is the header the
+    // broadcasts use: the standard PGN does not have one for the country.
     setHeader(parsed.headers, "WhiteTeam", whiteCountry);
     setHeader(parsed.headers, "BlackTeam", blackCountry);
     pgn = makePgn(parsed);
@@ -603,16 +604,16 @@ export async function updateGameDetails(studyId: string, gameId: string, formDat
 
 export interface AutosaveResult {
   ok: boolean;
-  /** Por qué no se guardó, para poder decirlo en pantalla. */
+  /** Why it was not saved, so it can be said on screen. */
   reason?: "invalid" | "denied" | "throttled";
 }
 
 /**
- * Guarda el PGN anotado de una partida informando de lo ocurrido.
+ * Saves a game's annotated PGN reporting what happened.
  *
- * El autoguardado no puede fallar en silencio: quien está analizando tiene que
- * enterarse de que su trabajo NO está a salvo, y por eso esta variante devuelve
- * el motivo en vez de salir sin más.
+ * The autosave cannot fail silently: whoever is analysing has to find out that
+ * their work is NOT safe, which is why this variant returns the reason instead
+ * of just leaving.
  */
 export async function autosaveGamePgn(studyId: string, gameId: string, pgn: string): Promise<AutosaveResult> {
   if (pgn.length === 0 || pgn.length > PGN_MAX_LENGTH) return { ok: false, reason: "invalid" };
@@ -633,21 +634,21 @@ export async function autosaveGamePgn(studyId: string, gameId: string, pgn: stri
     await indexGamePositions(tx, { gameId: game.id, databaseId: studyId, pgn });
   });
 
-  // Sólo el listado del estudio: la página de la partida es AHORA la que se
-  // está editando —ahí se anota, ya no hay pantalla aparte— y revalidarla en
-  // cada autoguardado la recargaría bajo los pies de quien escribe. Se sirve
-  // por sesión, así que al volver a ella se lee de la base de datos igual.
+  // Only the study's listing: the game's page is NOW the one being edited — it is
+  // annotated there, there is no separate screen any more — and revalidating it on
+  // every autosave would reload it under the feet of whoever is writing. It is
+  // served per session, so on returning to it the database is read all the same.
   revalidatePath(platformRoutes.studyDetail(studyId));
   return { ok: true };
 }
 
 /**
- * Borra una partida de un estudio propio.
+ * Deletes a game from an own study.
  *
- * `ClassBlock.gameId` es `onDelete: SetNull`, así que borrar no rompe ninguna
- * clase: el bloque se queda sin referencia y el mapper ya lo omite. Pero eso
- * hace desaparecer contenido de una clase sin que nadie se entere, así que si
- * la partida está citada se exige una confirmación explícita.
+ * `ClassBlock.gameId` is `onDelete: SetNull`, so deleting breaks no class: the
+ * block is left without a reference and the mapper already omits it. But that
+ * makes content disappear from a class without anyone finding out, so if the
+ * game is cited an explicit confirmation is required.
  */
 export async function deleteStudyGame(studyId: string, gameId: string, formData: FormData): Promise<void> {
   const db = getPlatformDb();
@@ -665,7 +666,7 @@ export async function deleteStudyGame(studyId: string, gameId: string, formData:
     redirect(`${gamePath}?error=gameInClasses`);
   }
 
-  // GamePosition es `onDelete: Cascade`: el índice por posición se limpia solo.
+  // GamePosition is `onDelete: Cascade`: the position index cleans itself.
   await db.game.delete({ where: { id: game.id } });
 
   revalidatePath(platformRoutes.studies);
@@ -674,15 +675,15 @@ export async function deleteStudyGame(studyId: string, gameId: string, formData:
 }
 
 /**
- * Borra un estudio propio con todo lo que contiene.
+ * Deletes an own study with everything it contains.
  *
- * Las partidas y su índice por posición caen en cascada (`Game.databaseId` y
- * `GamePosition.databaseId` son `onDelete: Cascade`), así que esto se lleva por
- * delante bastante más que una fila. Por eso, si el estudio tiene partidas o
- * alguna está citada en una clase, hace falta confirmarlo explícitamente.
+ * The games and their position index fall by cascade (`Game.databaseId` and
+ * `GamePosition.databaseId` are `onDelete: Cascade`), so this takes down rather
+ * more than one row. That is why, if the study has games or one of them is cited
+ * in a class, it has to be confirmed explicitly.
  *
- * Los estudios de curso no se tocan nunca: tienen `userId` nulo y la condición
- * de propiedad ya los deja fuera.
+ * The course studies are never touched: they have a null `userId` and the
+ * ownership condition already leaves them out.
  */
 export async function deleteStudy(studyId: string, formData: FormData): Promise<void> {
   const db = getPlatformDb();
@@ -696,9 +697,9 @@ export async function deleteStudy(studyId: string, formData: FormData): Promise<
   });
   if (!study) return;
 
-  // «Mis partidas» se crea con la cuenta y es única, así que no se borra. Que
-  // el botón no salga en la tarjeta no basta: una server action es alcanzable
-  // por POST directo.
+  // "Mis partidas" is created with the account and is unique, so it is not
+  // deleted. The button not appearing on the card is not enough: a server action
+  // is reachable by direct POST.
   if (!studyPermissionsOf({ kindCode: study.kind.code, isOwner: true }).canDelete) return;
 
   const citedGames = await db.classBlock.count({ where: { game: { databaseId: studyId } } });
@@ -713,23 +714,24 @@ export async function deleteStudy(studyId: string, formData: FormData): Promise<
   redirect(platformRoutes.studies);
 }
 
-// --- Reparto de colecciones -------------------------------------------------
+// --- Sharing of collections -------------------------------------------------
 //
-// Una colección es de su dueño —un maestro— y le LLEGA al alumno por una fila
-// de StudyShare. El reparto sólo da lectura, y eso no lo impone la tabla sino
-// la propiedad: todas las escrituras de este archivo llevan `userId: user.id`
-// en el `where`, así que un alumno con una colección repartida no pasa ninguna.
+// A collection belongs to its owner — a teacher — and REACHES the student
+// through a StudyShare row. The share only gives read access, and that is not
+// imposed by the table but by ownership: every write in this file carries
+// `userId: user.id` in the `where`, so a student with a shared collection passes
+// none of them.
 //
-// Tres condiciones para repartir, y las tres se comprueban contra la base de
-// datos porque el id del alumno llega del cliente:
+// Three conditions to share, and all three are checked against the database
+// because the student's id comes from the client:
 //
-//  1. quien reparte es un profesor ACTIVO;
-//  2. la colección es suya y es una colección (un estudio personal no se
-//     reparte: para eso se hace una colección con las partidas que toquen);
-//  3. el alumno tiene asignación activa con él, el mismo criterio que el resto
-//     del panel del profesor.
+//  1. whoever shares is an ACTIVE teacher;
+//  2. the collection is theirs and is a collection (a personal study is not
+//     shared: for that a collection is made with whichever games are needed);
+//  3. the student has an active assignment with them, the same criterion as the
+//     rest of the teacher panel.
 
-/** La colección de un profesor activo, o null si falla cualquiera de las dos. */
+/** The collection of an active teacher, or null if either of the two fails. */
 async function ownedCollection(
   studyId: string,
 ): Promise<{ study: { id: string }; teacherId: string } | null> {
@@ -743,7 +745,7 @@ async function ownedCollection(
   return study ? { study, teacherId: teacher.teacher.id } : null;
 }
 
-/** Reparte una colección a un alumno del profesor. */
+/** Shares a collection with a student of the teacher's. */
 export async function shareStudyWithStudent(studyId: string, formData: FormData): Promise<void> {
   const studentId = readText(formData, "studentId");
   if (studentId.length === 0) return;
@@ -760,9 +762,9 @@ export async function shareStudyWithStudent(studyId: string, formData: FormData)
   });
   if (!assignment) return;
 
-  // Repartirla dos veces al mismo alumno no es un error que merezca ruido: el
-  // resultado buscado —que la tenga— ya se cumple. El índice único de
-  // (colección, alumno) es lo que lo garantiza; esto sólo evita el estallido.
+  // Sharing it twice with the same student is not an error that deserves noise:
+  // the intended result — that they have it — is already met. The unique index on
+  // (collection, student) is what guarantees it; this only avoids the blow-up.
   await db.studyShare.upsert({
     where: { databaseId_userId: { databaseId: owned.study.id, userId: studentId } },
     update: {},
@@ -773,8 +775,8 @@ export async function shareStudyWithStudent(studyId: string, formData: FormData)
 }
 
 /**
- * Quita el reparto. No borra nada del material: la colección sigue entera en la
- * base del maestro, el alumno simplemente deja de verla.
+ * Removes the share. It deletes nothing of the material: the collection is still
+ * whole in the teacher's database, the student simply stops seeing it.
  */
 export async function unshareStudyWithStudent(studyId: string, formData: FormData): Promise<void> {
   const studentId = readText(formData, "studentId");

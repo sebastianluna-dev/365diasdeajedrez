@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: ChapterGamesPageProps): Promi
 
 export default async function ChapterGamesPage({ params, searchParams }: ChapterGamesPageProps) {
   const { courseId, chapterId } = await params;
-  // El servicio abre con requireStaff(): es la frontera del panel.
+  // The service opens with requireStaff(): it is the panel's border.
   const chapter = await getChapterAdmin(courseId, chapterId);
   if (!chapter) notFound();
 

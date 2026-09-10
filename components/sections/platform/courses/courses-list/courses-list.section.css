@@ -1,7 +1,7 @@
 .courses-list {
-  /* Una fila por curso, no una rejilla: la tarjeta ya es horizontal y en dos
-     columnas cada una tendría la mitad del ancho para portada, nombre, dos
-     medidores y el botón. */
+  /* One row per course, not a grid: the card is already horizontal and in
+     two columns each would have half the width for cover, name, two meters
+     and the button. */
   display: flex;
   flex-direction: column;
   gap: 14px;

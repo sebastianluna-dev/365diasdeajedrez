@@ -1,18 +1,17 @@
-// Destino de vuelta que llega del cliente (un `?next=` o un campo oculto
-// `returnTo`). Sólo se aceptan rutas internas: sin esto, `redirect()` desde un
-// origen de confianza se convierte en un trampolín de phishing hacia
-// `https://otro-sitio`. `//host` y `/\\host` son URLs absolutas para el
-// navegador, de ahí la segunda comprobación.
+// Return destination arriving from the client (a `?next=` or a hidden
+// `returnTo` field). Only internal paths are accepted: without this,
+// `redirect()` from a trusted origin becomes a phishing springboard towards
+// `https://another-site`. `//host` and `/\\host` are absolute URLs for the
+// browser, hence the second check.
 //
-// Módulo puro y sin "server-only" para que lo compartan las actions y sus
-// pruebas.
+// Pure module and without "server-only" so the actions and their tests share it.
 
 export function safeReturnTo(raw: string, fallback: string): string {
   if (!raw.startsWith("/") || raw.startsWith("//") || raw.startsWith("/\\")) return fallback;
   return raw;
 }
 
-/** Añade `?error=<code>` a una ruta interna respetando la query que ya traiga. */
+/** Adds `?error=<code>` to an internal path respecting the query it already carries. */
 export function withErrorParam(path: string, code: string): string {
   const separator = path.includes("?") ? "&" : "?";
   return `${path}${separator}error=${encodeURIComponent(code)}`;

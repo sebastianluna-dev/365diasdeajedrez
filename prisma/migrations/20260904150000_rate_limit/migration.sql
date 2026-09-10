@@ -1,12 +1,12 @@
--- Ventanas del límite de frecuencia, fuera de la memoria del proceso.
+-- Rate-limit windows, outside the process's memory.
 --
--- El contador vivía en un Map de Node, así que el techo era por instancia: con
--- la app en varios procesos, un atacante multiplica sus intentos de login por
--- el número de instancias, y en serverless cada arranque en frío se los
--- devuelve a cero. En una tabla, el techo es uno solo para toda la app.
+-- The counter lived in a Node Map, so the ceiling was per instance: with the app
+-- in several processes, an attacker multiplies their login attempts by the
+-- number of instances, and in serverless every cold start returns them to zero.
+-- In a table, the ceiling is a single one for the whole app.
 --
--- Sin `id` propio: la clave es la de negocio (`login:<email>`, `<userId>:<op>`)
--- y una fila por clave es exactamente lo que hace falta para contar.
+-- Without an `id` of its own: the key is the business one (`login:<email>`,
+-- `<userId>:<op>`)
 CREATE TABLE "RateLimit" (
     "key" TEXT NOT NULL,
     "count" INTEGER NOT NULL,
@@ -15,6 +15,6 @@ CREATE TABLE "RateLimit" (
     CONSTRAINT "RateLimit_pkey" PRIMARY KEY ("key")
 );
 
--- Para el barrido de ventanas vencidas, que se hace de vez en cuando desde la
--- propia aplicación en lugar de con una tarea programada.
+-- For the sweep of expired windows, which is done every so often from the
+-- application itself instead of with a scheduled job.
 CREATE INDEX "RateLimit_resetAt_idx" ON "RateLimit"("resetAt");

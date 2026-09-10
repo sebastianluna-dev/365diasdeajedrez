@@ -22,13 +22,13 @@ export async function generateMetadata({ params }: TeacherClassPageProps): Promi
 
 export default async function TeacherClassPage({ params, searchParams }: TeacherClassPageProps) {
   const { classId } = await params;
-  // El servicio abre con requireTeacher() y filtra por teacherId en el where:
-  // la clase de otro profesor es un 404, no una fila que haya que descartar.
+  // The service opens with requireTeacher() and filters by teacherId in the where:
+  // another teacher's class is a 404, not a row to be discarded.
   const classDetail = await getTeacherClassDetail(classId);
   if (!classDetail) notFound();
 
-  // Los datasets del editor son listas ligeras (id + etiqueta): los PGN
-  // completos se piden uno a uno sólo cuando hay que previsualizar.
+  // The editor's datasets are light lists (id + label): full PGNs are
+  // requested one at a time only when a preview is needed.
   const [previewBlocks, students, games, positions, { gameId, error }] = await Promise.all([
     getTeacherClassPreview(classId),
     getAssignedStudents(),

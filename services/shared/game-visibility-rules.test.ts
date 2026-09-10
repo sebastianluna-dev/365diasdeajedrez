@@ -2,11 +2,11 @@ import { describe, expect, it } from "vitest";
 
 import { buildVisibleDatabasesWhere, buildVisibleGamesWhere } from "@/services/shared/game-visibility-rules";
 
-// Se comprueba la FORMA del `where` porque es lo único que este módulo produce:
-// la frontera que impide que alguien vea material de otro. Cada rama es un
-// camino de acceso distinto y perder una en una refactorización sería una fuga
-// silenciosa —la consulta seguiría funcionando, sólo que enseñando de menos o
-// de más—.
+// The SHAPE of the `where` is checked because it is the only thing this module
+// produces: the border that keeps anyone from seeing someone else's material.
+// Each branch is a different access path and losing one in a refactor would be
+// a silent leak — the query would go on working, only showing too little or too
+// much.
 
 const ALICE = "user-alice";
 const BOB = "user-bob";
@@ -31,7 +31,7 @@ describe("partidas visibles", () => {
   it("añade el camino del reparto a los de siempre", () => {
     const where = buildVisibleGamesWhere({ userId: ALICE });
     expect(where.OR).toContainEqual({ database: { shares: { some: { userId: ALICE } } } });
-    // Propias, de curso, repartidas y vistas en clase.
+    // Own, course, shared and seen in class.
     expect(where.OR).toHaveLength(4);
   });
 

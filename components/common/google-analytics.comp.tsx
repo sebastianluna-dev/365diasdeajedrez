@@ -2,10 +2,10 @@ import Script from "next/script";
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
-// `lazyOnload`: gtag pesa más que el JS propio de la portada y no tiene por
-// qué competir con la hidratación. El pageview llega unos cientos de ms más
-// tarde, después de `load`, y no se pierde: `gtag('config')` lo dispara al
-// ejecutarse, sea cuando sea.
+// `lazyOnload`: gtag weighs more than the home page's own JS and has no
+// reason to compete with hydration. The pageview arrives a few hundred ms
+// later, after `load`, and is not lost: `gtag('config')` fires it when it
+// runs, whenever that is.
 export function GoogleAnalytics() {
   if (!GA_MEASUREMENT_ID || process.env.NEXT_PUBLIC_APP_ENV !== "production") {
     return null;

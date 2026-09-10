@@ -1,25 +1,25 @@
-// `gifenc` no trae tipos: sólo se declara lo que este proyecto usa, que es el
-// codificador de GIF de la exportación de partidas
+// `gifenc` ships no types: only what this project uses is declared, which is the
+// GIF encoder of the game export
 // (components/common/game-viewer/board-export.ts).
 //
-// Se escriben a mano y no se instala un `@types/*` porque no existe: el paquete
-// son unos pocos kilobytes sin dependencias y su superficie es esta.
+// They are written by hand and no `@types/*` is installed because none exists:
+// the package is a few kilobytes without dependencies and this is its surface.
 declare module "gifenc" {
   interface WriteFrameOptions {
-    /** Paleta del cuadro; sin ella, gifenc reutiliza la global. */
+    /** Palette of the frame; without it, gifenc reuses the global one. */
     palette?: number[][];
-    /** Duración del cuadro en milisegundos. */
+    /** Duration of the frame in milliseconds. */
     delay?: number;
-    /** Veces que se repite la animación; 0 es «sin fin», el valor por defecto. */
+    /** Times the animation repeats; 0 is "endless", the default value. */
     repeat?: number;
-    /** Bits por píxel: 8 por defecto, 5 con una paleta de 32 colores. */
+    /** Bits per pixel: 8 by default, 5 with a 32-colour palette. */
     colorDepth?: number;
     transparent?: boolean;
     transparentIndex?: number;
     /**
-     * Qué hacer con el cuadro al pasar al siguiente (campo del estándar GIF):
-     * 0 sin indicar, 1 dejarlo puesto, 2 borrarlo, 3 restaurar el anterior. Con
-     * transparencia, gifenc pone 2 salvo que se diga otra cosa.
+     * What to do with the frame when moving to the next (a field of the GIF
+     * standard): 0 unspecified, 1 leave it in place, 2 clear it, 3 restore the
+     * previous one. With transparency, gifenc sets 2 unless told otherwise.
      */
     dispose?: number;
   }
@@ -34,14 +34,14 @@ declare module "gifenc" {
 
   export function GIFEncoder(options?: { auto?: boolean; initialCapacity?: number }): Encoder;
 
-  /** Paleta de hasta `maxColors` colores a partir de los píxeles RGBA. */
+  /** Palette of up to `maxColors` colours from the RGBA pixels. */
   export function quantize(
     data: Uint8Array | Uint8ClampedArray,
     maxColors: number,
     options?: { format?: "rgb565" | "rgb444" | "rgba4444"; oneBitAlpha?: boolean | number; clearAlpha?: boolean },
   ): number[][];
 
-  /** Los píxeles RGBA traducidos a índices de la paleta. */
+  /** The RGBA pixels translated to palette indexes. */
   export function applyPalette(
     data: Uint8Array | Uint8ClampedArray,
     palette: number[][],

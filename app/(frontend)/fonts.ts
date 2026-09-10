@@ -1,16 +1,16 @@
 import localFont from "next/font/local";
 
-// Fuentes de la web pública. La de la plataforma (SF Pro Display) está en
-// app/(platform)/fonts.ts, y allí se explica por qué va sin precarga: con
-// Turbopack, todo lo que se precarga se precarga en TODAS las páginas.
+// Fonts of the public site. The platform's (SF Pro Display) lives in
+// app/(platform)/fonts.ts, which explains why it is not preloaded: with
+// Turbopack, everything that is preloaded is preloaded on EVERY page.
 //
-// Los ficheros viven en public/fonts. next/font los lee en el build y los
-// sirve con hash desde /_next/static/media, así que nada pide /fonts/* a mano.
+// The files live in public/fonts. next/font reads them at build time and
+// serves them hashed from /_next/static/media, so nothing requests /fonts/* by hand.
 
 /**
- * Subconjunto woff2 (latín, puntuación, flechas y el visto) hecho con el mismo
- * recorte que las SF Pro. El .woff original ya no está en el repo (queda en el
- * historial, bajo public/design-import/):
+ * woff2 subset (Latin, punctuation, arrows and the check mark) cut the same
+ * way as the SF Pro files. The original .woff is no longer in the repo (it
+ * remains in the history, under public/design-import/):
  *
  *   pyftsubset gramatikabold.woff --flavor=woff2 \
  *     --output-file=public/fonts/gramatika-bold.woff2 --layout-features='*' \
@@ -51,9 +51,9 @@ export const suisseIntl = localFont({
 });
 
 /**
- * Glifos de piezas. Sin precarga: 68 KB que sólo hacen falta cuando aparece
- * notación en pantalla, nunca arriba del pliegue. Al no precargarse, el
- * navegador la descarga cuando algo la usa (y `swap` no bloquea el texto).
+ * Piece glyphs. Not preloaded: 68 KB that are only needed when notation
+ * appears on screen, never above the fold. Since it is not preloaded, the
+ * browser downloads it when something uses it (and `swap` does not block the text).
  */
 export const chessGlyph = localFont({
   src: [

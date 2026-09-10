@@ -76,8 +76,8 @@
     width: 100%;
   }
 
-  /* Los dos opcionales van al pie, separados del alta normal: se ponen una vez
-     y no se vuelven a tocar. */
+  /* The two optional ones go at the foot, apart from the normal creation:
+     they are set once and never touched again. */
   & .chapter-editor__roles {
     display: flex;
     gap: 8px;

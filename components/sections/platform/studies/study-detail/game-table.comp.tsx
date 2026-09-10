@@ -9,11 +9,11 @@ import "./game-table.comp.css";
 interface GameTableProps {
   studyId: string;
   games: StudyGameItem[];
-  /** Las bases de curso son de sólo lectura: allí no se arrastra nada. */
+  /** Course databases are read-only: nothing is dragged there. */
   canReorder: boolean;
 }
 
-/** Devuelve la lista con el elemento de `from` colocado en `to`. */
+/** Returns the list with the item at `from` placed at `to`. */
 function moved<T>(items: T[], from: number, to: number): T[] {
   const next = [...items];
   const [item] = next.splice(from, 1);
@@ -26,9 +26,9 @@ export function GameTable({ studyId, games, canReorder }: GameTableProps) {
   const [dragging, setDragging] = useState<number | null>(null);
   const [, startTransition] = useTransition();
 
-  // Cuando el servidor revalida llegan partidas nuevas por props. Se ajusta el
-  // estado durante el render —no en un efecto— para no pintar una vez con la
-  // lista vieja antes de corregirla.
+  // When the server revalidates, new games arrive through props. The state is
+  // adjusted during render — not in an effect — so as not to paint once with
+  // the old list before correcting it.
   const [baseline, setBaseline] = useState(games);
   if (games !== baseline) {
     setBaseline(games);
@@ -72,7 +72,7 @@ export function GameTable({ studyId, games, canReorder }: GameTableProps) {
             onDragEnd={() => setDragging(null)}
             onDragOver={(event) => {
               if (!canReorder || dragging === null || dragging === index) return;
-              // Sin esto el navegador no considera la fila un destino válido.
+              // Without this the browser does not consider the row a valid drop target.
               event.preventDefault();
             }}
             onDrop={(event) => {

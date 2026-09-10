@@ -9,8 +9,8 @@ describe("uciLineToSan", () => {
   });
 
   it("desambigua según la posición, que es lo que obliga a reproducirla", () => {
-    // Caballos en c3 y f4: a d5 llegan LOS DOS, así que el SAN tiene que decir
-    // cuál va. Con uno en g3 no habría ambigüedad, porque g3 no alcanza d5.
+    // Knights on c3 and f4: BOTH reach d5, so the SAN has to say which one goes.
+    // With one on g3 there would be no ambiguity, because g3 does not reach d5.
     const twoKnights = "4k3/8/8/8/5N2/2N5/8/4K3 w - - 0 1";
     expect(uciLineToSan(twoKnights, ["c3d5"])).toEqual(["Ncd5"]);
   });
@@ -20,8 +20,8 @@ describe("uciLineToSan", () => {
   });
 
   it("entiende la coronación", () => {
-    // El rey negro va en e6 y no en e8: desde a8 la dama daría jaque por la
-    // octava, y el «+» del SAN taparía lo que se quiere comprobar aquí.
+    // The black king goes on e6 and not on e8: from a8 the queen would give check
+    // along the eighth, and the SAN's "+" would hide what is being checked here.
     const promoting = "8/P7/4k3/8/8/8/8/4K3 w - - 0 1";
     expect(uciLineToSan(promoting, ["a7a8q"])).toEqual(["a8=Q"]);
     expect(uciLineToSan(promoting, ["a7a8n"])).toEqual(["a8=N"]);

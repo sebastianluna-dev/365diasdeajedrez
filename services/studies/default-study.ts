@@ -3,27 +3,26 @@ import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 
-// «Mis partidas»: el estudio que existe automáticamente para cada alumno y
-// donde van a parar las partidas que no pertenecen a ningún torneo.
+// "Mis partidas": the study that exists automatically for every student and
+// where the games that belong to no tournament end up.
 //
-// Se crea al dar de alta la cuenta y no se crea en ningún otro sitio: el alumno
-// no lo pide y la interfaz no lo ofrece. La unicidad no depende de que este
-// código se llame una sola vez —dos altas a la vez pasarían las dos cualquier
-// comprobación— sino del índice único parcial `game_database_one_default_per_user`
-// (SQL manual en la migración 20260904190000, igual que el de asignaciones
-// activas de TeacherStudent).
+// It is created when the account is created and is created nowhere else: the
+// student does not ask for it and the interface does not offer it. Uniqueness
+// does not depend on this code being called only once — two simultaneous
+// creations would both pass any check — but on the partial unique index
+// `game_database_one_default_per_user` (manual SQL in migration 20260904190000,
+// like the one for TeacherStudent's active assignments).
 //
-// Las cuentas anteriores a esto quedaron cubiertas por el relleno de la misma
-// migración, así que no hace falta crearlo perezosamente al entrar: no puede
-// faltarle a nadie.
+// The accounts predating this were covered by that same migration's backfill, so
+// there is no need to create it lazily on entry: nobody can be missing it.
 
 export const DEFAULT_STUDY_NAME = "Mis partidas";
 
 /**
- * Crea «Mis partidas» para un alumno recién dado de alta.
+ * Creates "Mis partidas" for a newly created student.
  *
- * @param db cliente o transacción: la alta puede querer que la cuenta y su
- *   estudio entren juntos o ninguno.
+ * @param db client or transaction: the creation may want the account and its
+ *   study to go in together or not at all.
  */
 export async function createDefaultStudy(db: Prisma.TransactionClient, userId: string): Promise<void> {
   await db.gameDatabase.create({

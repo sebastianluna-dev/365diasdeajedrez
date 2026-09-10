@@ -12,14 +12,14 @@ import { ExplorerNextMoves } from "./explorer-next-moves.comp";
 import "./game-explorer.comp.css";
 
 /**
- * Explorador de partidas por posición.
+ * Game explorer by position.
  *
- * La línea vive como una lista de SAN y las posiciones se derivan con
- * `replayGame`, el mismo reproductor que usa el resto de la plataforma: así el
- * tablero, el índice de posiciones y este panel no pueden discrepar.
+ * The line lives as a list of SAN and the positions are derived with
+ * `replayGame`, the same replayer the rest of the platform uses: that way the
+ * board, the position index and this panel cannot disagree.
  *
- * La búsqueda se dispara con la posición ya cambiada, nunca durante el arrastre
- * de una pieza: `ChessBoard` sólo avisa cuando la jugada es legal y está hecha.
+ * The search fires with the position already changed, never while a piece is
+ * being dragged: `ChessBoard` only notifies when the move is legal and done.
  */
 export function GameExplorer() {
   const [sans, setSans] = useState<string[]>([]);
@@ -29,10 +29,10 @@ export function GameExplorer() {
   const [isSearching, setIsSearching] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  // Caché por FEN: ir y volver por la línea es el gesto más común del
-  // explorador y no debe costar una consulta cada vez. Vive en el componente
-  // porque el proyecto no tiene librería de datos en cliente y una sola
-  // pantalla no justifica añadir una.
+  // Cache by FEN: going back and forth along the line is the explorer's most
+  // common gesture and must not cost a query each time. It lives in the
+  // component because the project has no client-side data library and a
+  // single screen does not justify adding one.
   const cacheRef = useRef(new Map<string, PositionSearchResult>());
 
   const positions = useMemo(() => replayGame(sans.join(" ")), [sans]);
@@ -48,8 +48,8 @@ export function GameExplorer() {
       return;
     }
 
-    // `cancelled` descarta la respuesta de una posición que ya no es la actual:
-    // quien navega rápido no puede acabar viendo los datos de otra jugada.
+    // `cancelled` discards the response of a position that is no longer the
+    // current one: whoever navigates fast cannot end up seeing another move's data.
     let cancelled = false;
     setIsSearching(true);
     setHasError(false);
@@ -72,7 +72,7 @@ export function GameExplorer() {
     };
   }, [current.fen]);
 
-  /** Jugar desde una posición anterior abandona la continuación que había. */
+  /** Playing from an earlier position abandons the continuation that was there. */
   const playMove = useCallback(
     (san: string) => {
       setSans((previous) => [...previous.slice(0, index), san]);
@@ -157,9 +157,9 @@ export function GameExplorer() {
         </div>
       </div>
 
-      {/* El panel se atenúa mientras busca, pero el tablero de al lado sigue
-          jugable: esperar a la consulta para poder mover sería peor que ver un
-          dato viejo un instante. */}
+      {/* The panel dims while searching, but the board next to it stays
+          playable: waiting for the query to be able to move would be worse than
+          seeing a stale figure for an instant. */}
       <div className={`game-explorer__panel${isSearching ? " game-explorer__panel_loading" : ""}`}>
         <ExplorerMoveList sans={sans} index={index} onSelect={setIndex} />
 

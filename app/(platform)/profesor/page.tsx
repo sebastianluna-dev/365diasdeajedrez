@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function TeacherPage() {
-  // Frontera del panel: sin fila Teacher activa, al dashboard; sin sesión, al login.
+  // Panel border: no active Teacher row, to the dashboard; no session, to the login.
   const { teacher } = await requireTeacher();
 
   return (

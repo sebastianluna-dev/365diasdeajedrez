@@ -11,11 +11,11 @@ import { allowAction } from "@/lib/rate-limit";
 import { publishedLessonWhere } from "@/services/shared/published-content";
 import { recordUserActivity } from "@/services/shared/user-activity.service";
 
-// Las server actions son alcanzables por POST directo: el usuario SIEMPRE se
-// resuelve aquí dentro (DAL) y jamás llega del cliente.
+// Server actions are reachable by direct POST: the user is ALWAYS resolved in
+// here (DAL) and never arrives from the client.
 
-// Sólo lecciones de cursos publicados: el id llega del cliente y sin este
-// filtro un POST directo sembraría progreso sobre un curso en borrador.
+// Only lessons of published courses: the id comes from the client and without
+// this filter a direct POST would seed progress over a draft course.
 async function getLessonContext(lessonId: string) {
   const db = getPlatformDb();
   return db.lesson.findFirst({
@@ -23,7 +23,7 @@ async function getLessonContext(lessonId: string) {
     select: {
       id: true,
       chapterId: true,
-      // El orden y el curso son para revalidar las rutas del alumno.
+      // The order and the course are for revalidating the student's routes.
       chapter: { select: { courseId: true, order: true } },
       lessonTopics: { select: { topicId: true }, take: 1 },
     },
@@ -39,9 +39,9 @@ function revalidateLessonPaths(courseId: string, chapterOrder: number, lessonId:
 }
 
 /**
- * Marca la lección como abierta: LessonProgress pasa a IN_PROGRESS y el curso
- * actualiza su punto de retorno (lastLessonId). Idempotente; nunca degrada un
- * estado COMPLETED.
+ * Marks the lesson as opened: LessonProgress moves to IN_PROGRESS and the
+ * course updates its return point (lastLessonId). Idempotent; it never
+ * downgrades a COMPLETED state.
  */
 export async function touchLesson(lessonId: string): Promise<void> {
   const db = getPlatformDb();
@@ -108,8 +108,8 @@ export async function touchLesson(lessonId: string): Promise<void> {
 }
 
 /**
- * Completa la lección: sella LessonProgress, registra la actividad y, si con
- * ello se termina el capítulo o el curso, sella también esos progresos.
+ * Completes the lesson: it seals LessonProgress, records the activity and, if
+ * that finishes the chapter or the course, seals those progresses too.
  */
 export async function completeLesson(lessonId: string): Promise<void> {
   const db = getPlatformDb();
@@ -144,7 +144,7 @@ export async function completeLesson(lessonId: string): Promise<void> {
     occurredAt: now,
   });
 
-  // ¿Se completó el capítulo?
+  // Was the chapter completed?
   const [chapterLessonCount, chapterCompletedCount] = await Promise.all([
     db.lesson.count({ where: { chapterId: lesson.chapterId } }),
     db.lessonProgress.count({
@@ -165,7 +165,7 @@ export async function completeLesson(lessonId: string): Promise<void> {
     });
   }
 
-  // ¿Se completó el curso?
+  // Was the course completed?
   const [courseLessonCount, courseCompletedCount] = await Promise.all([
     db.lesson.count({ where: { chapter: { courseId } } }),
     db.lessonProgress.count({
@@ -204,23 +204,24 @@ export async function completeLesson(lessonId: string): Promise<void> {
 }
 
 /**
- * Enciende o apaga el filtro de lecciones imprescindibles de un curso.
+ * Switches a course's essential-lessons filter on or off.
  *
- * Es una LENTE, no un cambio en lo que el curso es: escribe exactamente una
- * fila —la de los ajustes— y no toca ni una de progreso. Por eso encenderlo y
- * apagarlo es gratis y reversible; el avance que había sigue donde estaba.
+ * It is a LENS, not a change in what the course is: it writes exactly one row
+ * — the settings one — and does not touch a single progress row. That is why
+ * switching it on and off is free and reversible; the progress that was there
+ * stays where it was.
  *
- * El valor llega como argumento ligado y no por el formulario a propósito:
- * `readBoolean` es por presencia, así que una casilla no puede transmitir
- * «false» y apagar el filtro sería imposible.
+ * The value arrives as a bound argument and not through the form on purpose:
+ * `readBoolean` works by presence, so a checkbox cannot transmit "false" and
+ * switching the filter off would be impossible.
  */
 export async function setOnlyPriorityLessons(courseId: string, enabled: boolean): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
   if (!(await allowAction(`${user.id}:course-settings`, 30, 60_000))) return;
 
-  // Sólo cursos publicados: un POST directo no debe poder sembrar ajustes de
-  // cursos en borrador ni de ids inventados.
+  // Only published courses: a direct POST must not be able to seed settings of
+  // draft courses nor of made-up ids.
   const course = await db.course.findFirst({
     where: { id: courseId, status: { code: COURSE_STATUS.PUBLISHED } },
     select: { id: true, chapters: { select: { order: true } } },
@@ -230,9 +231,9 @@ export async function setOnlyPriorityLessons(courseId: string, enabled: boolean)
   await db.userCourseSettings.upsert({
     where: { userId_courseId: { userId: user.id, courseId } },
     update: { onlyPriorityLessons: enabled },
-    // `boardOrientationId` es NOT NULL y sin valor por defecto. Si la fila la
-    // crea este interruptor, se conecta AUTO: un filtro de lecciones no puede
-    // fijar de tapadillo la orientación del tablero.
+    // `boardOrientationId` is NOT NULL and has no default value. If the row is
+    // created by this switch, AUTO is wired in: a lesson filter cannot quietly fix
+    // the board's orientation.
     create: {
       user: { connect: { id: user.id } },
       course: { connect: { id: courseId } },
@@ -247,7 +248,7 @@ export async function setOnlyPriorityLessons(courseId: string, enabled: boolean)
   for (const chapter of course.chapters) {
     revalidatePath(platformRoutes.chapterDetail(courseId, chapter.order));
   }
-  // El anterior/siguiente de TODAS las lecciones cambia; enumerarlas serían
-  // ciento y pico rutas, así que se revalida el patrón.
+  // The previous/next of EVERY lesson changes; enumerating them would be a
+  // hundred-odd routes, so the pattern is revalidated.
   revalidatePath("/lecciones/[lessonId]", "page");
 }

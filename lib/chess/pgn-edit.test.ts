@@ -18,14 +18,14 @@ import {
 } from "./pgn-edit";
 import { nodeAtPath, parsePgnTree } from "./pgn-tree";
 
-/** Atajo: el árbol de lectura que verá la interfaz, desde el juego mutable. */
+/** Shortcut: the read tree the interface will see, from the mutable game. */
 function treeOf(pgn: string) {
   const tree = parsePgnTree(pgn);
   if (!tree) throw new Error("PGN no parseable");
   return tree;
 }
 
-/** Sólo los movimientos, sin cabeceras, para comparar sin ruido. */
+/** Only the moves, without headers, to compare without noise. */
 function movetext(pgn: string): string {
   return pgn
     .split("\n")
@@ -48,7 +48,7 @@ describe("addMove", () => {
   it("abre una variante al jugar sobre un nodo que ya tiene continuación", () => {
     const game = parseEditableGame("1. e4 e5 2. Nf3 *")!;
 
-    // Sobre 1.e4, que ya lleva 1...e5: la segunda respuesta es una variante.
+    // Over 1.e4, which already has 1...e5: the second reply is a variation.
     const result = addMove(game, "0", "c5");
 
     expect(result).toEqual({ path: "0.1", created: true });
@@ -61,14 +61,14 @@ describe("addMove", () => {
     const result = addMove(game, "0", "e5");
 
     expect(result).toEqual({ path: "0.0", created: false });
-    // El árbol queda exactamente igual que antes.
+    // The tree ends up exactly as it was before.
     expect(movetext(serializeGame(game))).toBe("1. e4 e5 2. Nf3 *");
   });
 
   it("guarda el SAN canónico, para que la misma jugada no genere dos ramas", () => {
     const game = parseEditableGame('[FEN "7k/3P4/8/8/8/8/8/4K3 w - - 0 1"]\n*')!;
 
-    // Se pide sin el «+» que la jugada realmente da; chessops lo canoniza.
+    // Asked for without the "+" the move really gives; chessops canonicalises it.
     const first = addMove(game, "", "d8=Q");
     const second = addMove(game, "", "d8=Q+");
 
@@ -80,7 +80,7 @@ describe("addMove", () => {
   it("rechaza una jugada ilegal sin tocar el árbol", () => {
     const game = parseEditableGame("1. e4 *")!;
 
-    // Tras 1.e4 juegan las negras, y sus caballos (b8, g8) no llegan a f3.
+    // After 1.e4 it is Black to move, and their knights (b8, g8) do not reach f3.
     expect(addMove(game, "0", "Nf3")).toBeNull();
     expect(addMove(game, "0", "esto no es una jugada")).toBeNull();
     expect(movetext(serializeGame(game))).toBe("1. e4 *");
@@ -102,7 +102,7 @@ describe("addMove", () => {
 
     const pgn = serializeGame(game);
     expect(pgn).toContain('[FEN "3b1kn1/6p1/3q1p2/4pPP1/pP2P1N1/3P1NQ1/1rr5/5RRK w - - 0 48"]');
-    // La jugada 48, no la 1.
+    // Move 48, not move 1.
     expect(movetext(pgn)).toBe("48. gxf6 *");
   });
 });
@@ -132,8 +132,8 @@ describe("promover y borrar", () => {
   });
 
   it("al promover arrastra también a los ancestros", () => {
-    // La jugada a promover cuelga de una variante: subirla sola la dejaría
-    // dentro del paréntesis igualmente.
+    // The move to promote hangs from a variation: promoting it alone would leave
+    // it inside the parentheses all the same.
     const game = parseEditableGame("1. e4 e5 ( 1... c5 2. Nf3 d6 ) 2. Nc3 *")!;
     const target = nodeAtPathIn(game, "0.1.0.0")!;
 
@@ -167,7 +167,7 @@ describe("pathOfNode", () => {
 
     promoteToMainLine(game, "0.1");
 
-    // La ruta vieja ya señala otra jugada; la referencia sigue valiendo.
+    // The old path now points at another move; the reference still holds.
     expect(pathOfNode(game, siciliana)).toBe("0.0");
     expect(nodeAtPathIn(game, "0.1")!.data.san).toBe("e5");
   });
@@ -201,8 +201,8 @@ describe("variationPgn", () => {
   it("copia la línea que pasa por la jugada, sin las hermanas", () => {
     const game = parseEditableGame("1. e4 e5 ( 1... c5 2. Nf3 d6 ) 2. Nf3 *")!;
 
-    // Desde la siciliana: la línea entera hasta su final, con 1.e4 delante y
-    // sin rastro de 1...e5.
+    // From the Sicilian: the whole line to its end, with 1.e4 in front and no
+    // trace of 1...e5.
     expect(movetext(variationPgn(game, "0.1")!)).toBe("1. e4 c5 2. Nf3 d6 *");
   });
 
@@ -253,8 +253,8 @@ describe("comentarios y flechas", () => {
 
     const node = nodeAtPath(treeOf(serializeGame(game)), "0")!;
     expect(node.comment).toBe("Avance central");
-    // El lector recoge primero [%cal] y después [%csl], así que las flechas
-    // salen antes que los círculos sea cual sea el orden en que se escriban.
+    // The reader picks up [%cal] first and [%csl] afterwards, so the arrows come
+    // out before the circles whatever order they are written in.
     expect(node.shapes).toEqual([
       { brush: "red", orig: "d1", dest: "h5" },
       { brush: "blue", orig: "d4" },
@@ -310,8 +310,8 @@ describe("ida y vuelta", () => {
     const once = serializeGame(game);
     const twice = serializeGame(parseEditableGame(once)!);
 
-    // Estable: serializar dos veces da lo mismo, así que guardar y reabrir no
-    // va degradando la partida.
+    // Stable: serialising twice gives the same thing, so saving and reopening does
+    // not degrade the game.
     expect(twice).toBe(once);
 
     const tree = treeOf(once);

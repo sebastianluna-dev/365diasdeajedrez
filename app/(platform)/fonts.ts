@@ -1,24 +1,24 @@
 import localFont from "next/font/local";
 
 /**
- * Tipografía de la plataforma autenticada. La web pública sigue con Gramatika
- * y Suisse Intl (app/(frontend)/fonts.ts); aquí manda SF Pro Display para
- * display Y para texto.
+ * Typography of the authenticated platform. The public site keeps Gramatika
+ * and Suisse Intl (app/(frontend)/fonts.ts); here SF Pro Display rules for
+ * display AND text.
  *
- * Sin precarga y en su propio módulo, las dos cosas por lo mismo: la portada
- * precargaba estos tres pesos (130 KB) sin usar ninguno y eso retrasaba su
- * imagen principal. Con Turbopack el manifiesto de fuentes lista TODAS las
- * fuentes del proyecto en cada página —no las del layout que las importa—,
- * así que separar el módulo no basta: sólo `preload: false` saca una fuente
- * de la precarga. El coste es que la plataforma la descarga cuando su CSS la
- * pide en vez de desde el <head> (unos cientos de ms la primera vez; `swap`
- * pinta el texto mientras tanto).
+ * Not preloaded and in its own module, both for the same reason: the home
+ * page preloaded these three weights (130 KB) without using any of them, and
+ * that delayed its main image. With Turbopack the font manifest lists EVERY
+ * font of the project on each page — not those of the layout that imports
+ * them — so splitting the module is not enough: only `preload: false` takes a
+ * font out of the preload. The cost is that the platform downloads it when
+ * its CSS asks for it instead of from the <head> (a few hundred ms the first
+ * time; `swap` paints the text meanwhile).
  *
- * Los .otf originales de Apple (2,2 MB cada uno) no están en el repo: se
- * descargan de developer.apple.com/fonts o se recuperan del historial (commit
- * 26d6ee1, public/design-import/fonts). Estos son subconjuntos woff2
- * recortados a latín, puntuación, flechas y el visto (~40 KB por peso). Para
- * regenerarlos:
+ * Apple's original .otf files (2.2 MB each) are not in the repo: download
+ * them from developer.apple.com/fonts or recover them from the history
+ * (commit 26d6ee1, public/design-import/fonts). These are woff2 subsets cut
+ * down to Latin, punctuation, arrows and the check mark (~40 KB per weight).
+ * To regenerate them:
  *
  *   pyftsubset SF-Pro-Display-Regular.otf \
  *     --output-file=public/fonts/sf-pro-display-regular.woff2 --flavor=woff2 \

@@ -12,22 +12,22 @@ export const metadata: Metadata = {
     template: "%s | 365 Días de Ajedrez",
   },
   description: "Plataforma de estudio de la academia 365 Días de Ajedrez.",
-  // Zona privada del alumno: fuera de los buscadores.
+  // The student's private area: out of the search engines.
   robots: { index: false, follow: false },
 };
 
-// Zona autenticada: siempre render por request (nunca prerender con los datos
-// del build). Válido mientras cacheComponents siga deshabilitado.
+// Authenticated area: always rendered per request (never prerendered with
+// build-time data). Valid as long as cacheComponents stays disabled.
 export const dynamic = "force-dynamic";
 
-// Root layout propio del route group (platform): la plataforma no comparte
-// header/footer ni analytics con el sitio público.
+// Root layout of the (platform) route group: the platform shares neither
+// header/footer nor analytics with the public site.
 //
-// Sin checks de auth aquí (regla de Next 16: el layout no controla el render
-// de sus segmentos). La identidad se resuelve en el DAL, y la regla para toda
-// página de este grupo es: su PRIMER await tiene que ser un servicio de datos
-// (que llama a getCurrentUser) o el propio getCurrentUser. Las páginas índice
-// lo llaman en claro porque delegan los datos en sus secciones.
+// No auth checks here (Next 16 rule: the layout does not control the render
+// of its segments). Identity is resolved in the DAL, and the rule for every
+// page of this group is: its FIRST await has to be a data service (which
+// calls getCurrentUser) or getCurrentUser itself. Index pages call it
+// explicitly because they delegate the data to their sections.
 export default function PlatformLayout({ children }: { children: ReactNode }) {
   return (
     <html

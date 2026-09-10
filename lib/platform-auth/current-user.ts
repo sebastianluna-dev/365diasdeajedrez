@@ -11,25 +11,25 @@ export interface CurrentUser {
   createdAt: Date;
 }
 
-// DAL de identidad: ÚNICO punto que decide quién es el usuario actual. Los
-// servicios y las server actions lo resuelven siempre por aquí y nunca confían
-// en un id que venga del cliente.
+// Identity DAL: the ONLY point that decides who the current user is. Services
+// and server actions always resolve it here and never trust an id coming from
+// the client.
 //
-// `proxy.ts` hace un rechazo optimista mirando sólo si existe la cookie; esta
-// es la comprobación de verdad (la que consulta la sesión en base de datos), y
-// es la que protege también a las server actions, que son alcanzables por POST
-// directo sin pasar por la navegación.
+// `proxy.ts` does an optimistic rejection by looking only at whether the cookie
+// exists; this is the real check (the one that queries the session in the
+// database), and it is the one that also protects the server actions, which are
+// reachable by direct POST without going through navigation.
 
 /**
- * Sesión completa (identidad + roles), memorizada por petición. Es el ÚNICO
- * punto que consulta la sesión: getSessionUser y lib/platform-auth/roles.ts se
- * apoyan aquí para que una página que necesita identidad Y rol no dispare dos
- * consultas. Fuera del DAL y de roles.ts no debe usarse: las páginas piden
- * `CurrentUser`, que no lleva roles a propósito.
+ * Full session (identity + roles), memoised per request. It is the ONLY point
+ * that queries the session: getSessionUser and lib/platform-auth/roles.ts rely
+ * on it so that a page needing identity AND role does not fire two queries.
+ * Outside the DAL and roles.ts it must not be used: pages ask for
+ * `CurrentUser`, which deliberately carries no roles.
  */
 export const getSessionContext = cache(async (): Promise<SessionUser | null> => readSessionUser());
 
-/** Usuario de la sesión, o null si no hay ninguna válida. No redirige. */
+/** The session's user, or null when there is no valid one. It does not redirect. */
 export const getSessionUser = cache(async (): Promise<CurrentUser | null> => {
   const session = await getSessionContext();
   if (!session) return null;
@@ -39,16 +39,17 @@ export const getSessionUser = cache(async (): Promise<CurrentUser | null> => {
 });
 
 /**
- * Usuario de la sesión o redirección al login. Es lo que usan las páginas y
- * acciones de la zona privada: si devuelve, hay identidad verificada.
+ * The session's user or a redirect to the login. It is what the pages and
+ * actions of the private area use: if it returns, identity is verified.
  *
- * Matiz del caso «cookie presente pero sesión ya no válida» (caducada o
- * revocada): el proxy la deja pasar, y para cuando esta redirección se lanza
- * la respuesta ya ha empezado a transmitirse, así que Next la manda dentro del
- * stream y el estado HTTP es 200 en vez de 307. El navegador redirige igual y
- * no se filtra ningún dato del alumno (nada llega a renderizarse), pero un
- * cliente sin JavaScript se quedaría viendo el armazón vacío. Se acepta porque
- * el caso frecuente —entrar sin cookie— sí lo corta el proxy con un 307 limpio.
+ * Nuance of the "cookie present but session no longer valid" case (expired or
+ * revoked): the proxy lets it through, and by the time this redirect is thrown
+ * the response has already started streaming, so Next sends it inside the
+ * stream and the HTTP status is 200 instead of 307. The browser redirects all
+ * the same and no student data leaks (nothing gets rendered), but a client
+ * without JavaScript would be left looking at the empty shell. It is accepted
+ * because the frequent case — entering without a cookie — is cut by the proxy
+ * with a clean 307.
  */
 export const getCurrentUser = cache(async (): Promise<CurrentUser> => {
   const user = await getSessionUser();

@@ -18,8 +18,8 @@
     color: var(--platform-text);
   }
 
-  /* Al pasar por encima la fila se levanta: la sombra crece, el color no
-     cambia. Es lo único que separa una fila pulsable de una tarjeta. */
+  /* On hover the row lifts: the shadow grows, the colour does not change. It
+     is the only thing that sets a clickable row apart from a card. */
   & .chapter-list__item:hover {
     box-shadow:
       0 1px 2px rgba(22, 17, 13, 0.06),
@@ -71,8 +71,8 @@
     color: var(--platform-text-faint);
   }
 
-  /* Sin sitio para la columna de progreso al lado: se va debajo del texto y
-     el galón desaparece, que ahí ya no señala hacia ningún lado. */
+  /* No room for the progress column at the side: it goes under the text and
+     the chevron disappears, since there it no longer points anywhere. */
   @media (max-width: 900px) {
     & .chapter-list__item {
       grid-template-columns: 52px minmax(0, 1fr);

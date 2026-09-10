@@ -20,25 +20,25 @@ interface LessonEditorSectionProps {
   lesson: LessonAdminDetail;
   exerciseModes: CatalogOption[];
   topics: TopicOption[];
-  /** Partidas de la colección del curso que casan con la búsqueda. */
+  /** Games of the course collection that match the search. */
   courseGames: CourseGameRow[];
-  /** Lo que se buscó en la colección; viaja en la URL. */
+  /** What was searched in the collection; travels in the URL. */
   gameQuery?: string;
   errorCode?: string;
 }
 
 const ORIENTATION_LABELS: Record<string, string> = { WHITE: "Blancas", BLACK: "Negras" };
 
-/** Ata los controles de «Opciones» al formulario de metadatos de la otra columna. */
+/** Ties the "Opciones" controls to the metadata form in the other column. */
 const METADATA_FORM_ID = "lesson-metadata";
 
 /**
- * La lección se edita en tarjetas independientes —contenido, metadatos y
- * ejercicios— porque son decisiones distintas y guardar una no debería
- * arrastrar a las otras.
+ * The lesson is edited in independent cards — content, metadata and
+ * exercises — because they are different decisions and saving one should
+ * not drag the others along.
  *
- * El PGN va PRIMERO y no en su orden alfabético: es el contenido de la lección;
- * el resto son ajustes sobre él.
+ * The PGN goes FIRST and not in its alphabetical order: it is the lesson's
+ * content; the rest are settings on top of it.
  */
 export function LessonEditorSection({
   lesson,
@@ -75,11 +75,11 @@ export function LessonEditorSection({
         aside={
           <>
             <StaffPanel title="Opciones">
-              {/* Estos controles NO están dentro de ningún <form>: el atributo
-                  `form` los ata al de metadatos de la otra columna. Es la única
-                  forma honesta de repartir un formulario en dos sitios; dos
-                  formularios contra la misma action se pisarían los campos
-                  —`updateLesson` lee TODOS y guardar aquí borraría lo de allí—. */}
+              {/* These controls are NOT inside any <form>: the `form` attribute ties
+                  them to the metadata form in the other column. It is the only honest
+                  way to split a form across two places; two forms against the same
+                  action would trample each other's fields — `updateLesson` reads ALL of
+                  them and saving here would erase what is there. */}
               <div className="lesson-editor__stack">
                 <label className="lesson-editor__check">
                   <input
@@ -143,10 +143,9 @@ export function LessonEditorSection({
                 </div>
               </dl>
 
-              {/* Sólo donde el servidor lo permitiría: curso en borrador y sin
-                  progreso de ningún alumno. En cuanto alguien ha estudiado la
-                  lección manda su historial y el curso se archiva, no se
-                  desmonta. */}
+              {/* Only where the server would allow it: draft course and no progress
+                  from any student. As soon as someone has studied the lesson their
+                  history rules and the course is archived, not dismantled. */}
               {lesson.canDelete && (
                 <form
                   className="lesson-editor__danger"
@@ -186,9 +185,8 @@ export function LessonEditorSection({
               <textarea name="description" defaultValue={lesson.description ?? ""} maxLength={1000} />
             </FormField>
 
-            {/* La posición desde la que arranca la lección NO se teclea: sale
-                de la cabecera [FEN] de la partida vinculada, que es la única
-                fuente de su contenido. */}
+            {/* The position the lesson starts from is NOT typed: it comes from the
+                [FEN] header of the linked game, which is the only source of its content. */}
             <div className="lesson-editor__pair">
               <FormField label="Orientación del tablero">
                 <select name="orientationCode" defaultValue={lesson.orientationCode}>

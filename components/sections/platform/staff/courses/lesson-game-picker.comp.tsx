@@ -8,23 +8,23 @@ interface LessonGamePickerProps {
   courseId: string;
   chapterId: string;
   lessonId: string;
-  /** La partida vinculada, si la hay. */
+  /** The linked game, if any. */
   game?: CourseGameRow;
-  /** Las de la colección del curso que casan con la búsqueda. */
+  /** Those of the course collection that match the search. */
   candidates: CourseGameRow[];
-  /** Lo que se buscó; viaja en la URL para que el servidor filtre. */
+  /** What was searched; travels in the URL so the server filters. */
   query?: string;
 }
 
 /**
- * De dónde saca la lección su contenido: una partida de la colección del curso.
+ * Where the lesson gets its content from: a game of the course collection.
  *
- * Vincular no es irreversible y por eso se ofrece sin ceremonia: el PGN propio
- * de la lección se queda dormido y vuelve al desvincular.
+ * Linking is not irreversible, which is why it is offered without ceremony:
+ * the lesson's own PGN goes dormant and comes back on unlinking.
  *
- * El buscador es un GET contra la propia página, así que no necesita estado ni
- * JavaScript: la búsqueda queda en la URL y el servidor devuelve la lista ya
- * filtrada.
+ * The search box is a GET against the page itself, so it needs neither state
+ * nor JavaScript: the search stays in the URL and the server returns the
+ * already filtered list.
  */
 export function LessonGamePicker({
   courseId,
@@ -50,7 +50,7 @@ export function LessonGamePicker({
           </span>
 
           <form action={save}>
-            {/* Sin `gameId` la acción desvincula. */}
+            {/* Without `gameId` the action unlinks. */}
             <button type="submit" className="lesson-game-picker__change">
               Desvincular
             </button>
@@ -65,8 +65,8 @@ export function LessonGamePicker({
     );
   }
 
-  // Sin nada que buscar no se enseña el buscador: un campo que sólo puede
-  // devolver «no hay nada» es ruido.
+  // With nothing to search the search box is not shown: a field that can
+  // only return "there is nothing" is noise.
   if (candidates.length === 0 && !query) {
     return (
       <p className="lesson-game-picker__note">

@@ -168,3 +168,5 @@ Cubre arquitectura, rutas, acceso a datos, sitio público y CMS, autenticación,
 
 - `MEJORAS.md` — mejoras pendientes priorizadas (seguridad, arquitectura, CSS, UX).
 - `todos.md` — tareas concretas en cola.
+
+Los dos están en inglés, como los comentarios del código; este README sigue siendo la referencia rápida en español.

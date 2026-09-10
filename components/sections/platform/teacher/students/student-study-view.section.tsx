@@ -11,10 +11,10 @@ interface StudentStudyViewSectionProps {
 }
 
 /**
- * Estudio de un alumno visto por su profesor: la misma tabla de partidas que en
- * «Mis estudios», SIN un solo control de escritura. Las actions de estudios
- * (crear, importar) no se importan aquí a propósito — y aunque se invocaran por
- * POST directo, validan que la base sea del usuario que las llama.
+ * A student's study seen by their teacher: the same game table as in
+ * "Mis estudios", WITHOUT a single write control. The studies actions
+ * (create, import) are deliberately not imported here — and even if invoked
+ * by direct POST, they validate that the database belongs to the caller.
  */
 export function StudentStudyViewSection({ studentId, studentName, study }: StudentStudyViewSectionProps) {
   return (

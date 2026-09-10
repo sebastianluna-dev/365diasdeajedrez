@@ -1,17 +1,17 @@
-// Federaciones de ajedrez: del código del PGN a su bandera.
+// Chess federations: from the PGN code to its flag.
 //
-// FIDE usa el código olímpico de tres letras, que NO es el ISO-3166 alfa-3 y
-// difiere en unos cuantos países: CHI es Chile (no China, que es CHN), SUI es
-// Suiza, GER Alemania, NED Países Bajos, LAT Letonia. Traducir a ciegas daría
-// banderas equivocadas, así que la tabla es explícita.
+// FIDE uses the three-letter Olympic code, which is NOT ISO-3166 alpha-3 and
+// differs in quite a few countries: CHI is Chile (not China, which is CHN),
+// SUI is Switzerland, GER Germany, NED the Netherlands, LAT Latvia.
+// Translating blindly would give the wrong flags, so the table is explicit.
 //
-// Está la mayoría de federaciones con actividad, no todas: lo que falte se
-// queda sin bandera y enseña su código, que sigue siendo el dato de verdad.
+// Most active federations are here, not all: whatever is missing goes without
+// a flag and shows its code, which is still the real data.
 
 interface Federation {
-  /** ISO-3166 alfa-2, del que se compone la bandera. */
+  /** ISO-3166 alpha-2, from which the flag is composed. */
   iso: string;
-  /** Nombre en castellano, para poder elegir la federación por su país. */
+  /** Name in Spanish, so the federation can be chosen by its country. */
   name: string;
 }
 
@@ -119,10 +119,10 @@ const FEDERATIONS: Record<string, Federation> = {
 };
 
 /**
- * Bandera de una federación, o `null` si no está en la tabla.
+ * Flag of a federation, or `null` if it is not in the table.
  *
- * El emoji se compone con los dos indicadores regionales del código ISO: no hay
- * una lista de banderas que mantener, sólo la correspondencia de arriba.
+ * The emoji is composed from the two regional indicators of the ISO code: there
+ * is no list of flags to maintain, only the mapping above.
  */
 export function federationFlag(code: string | null | undefined): string | null {
   if (!code) return null;
@@ -136,10 +136,10 @@ export function federationFlag(code: string | null | undefined): string | null {
   );
 }
 
-/** Títulos FIDE que se aceptan; cualquier otra cosa se guarda tal cual. */
+/** FIDE titles that are accepted; anything else is stored as is. */
 export const FIDE_TITLES = ["GM", "IM", "FM", "CM", "WGM", "WIM", "WFM", "WCM"] as const;
 
-/** Cómo se llama cada título, para poder elegirlo sin saberse las siglas. */
+/** What each title is called, so it can be chosen without knowing the acronyms. */
 export const FIDE_TITLE_LABELS: Record<string, string> = {
   GM: "Gran Maestro",
   IM: "Maestro Internacional",
@@ -152,14 +152,14 @@ export const FIDE_TITLE_LABELS: Record<string, string> = {
 };
 
 /**
- * Nombre del país de una federación, o null si el código no está en la tabla.
+ * Country name of a federation, or null if the code is not in the table.
  *
- * Los nombres van escritos aquí y NO salen de `Intl.DisplayNames`: los datos de
- * idioma de Node y los del navegador no son los mismos —«Hong Kong» en uno,
- * «RAE de Hong Kong (China)» en el otro—, y con la lista ordenada por nombre
- * eso cambiaba el orden de las opciones entre el servidor y el cliente,
- * rompiendo la hidratación. Además, así se elige cómo se llama cada país en el
- * producto en vez de heredarlo de la versión de ICU que toque.
+ * The names are written here and do NOT come from `Intl.DisplayNames`: Node's
+ * locale data and the browser's are not the same — "Hong Kong" in one, "RAE de
+ * Hong Kong (China)" in the other — and with the list sorted by name that
+ * changed the order of the options between server and client, breaking
+ * hydration. Besides, this way what each country is called in the product is a
+ * choice instead of being inherited from whichever ICU version is around.
  */
 export function federationName(code: string | null | undefined): string | null {
   if (!code) return null;
@@ -174,12 +174,12 @@ export interface FederationOption {
 let cachedOptions: FederationOption[] | null = null;
 
 /**
- * Clave de orden sin acentos ni mayúsculas.
+ * Sort key without accents or capitals.
  *
- * Se ordena con esto y no con `localeCompare`, que consulta los datos de
- * intercalación del entorno: como este listado se pinta en el servidor y se
- * hidrata en el navegador, el orden tiene que salir igual en los dos aunque
- * tengan versiones distintas de ICU.
+ * Sorting uses this and not `localeCompare`, which consults the environment's
+ * collation data: since this listing is rendered on the server and hydrated in
+ * the browser, the order has to come out the same in both even if they have
+ * different ICU versions.
  */
 function sortKey(label: string): string {
   return label
@@ -189,10 +189,10 @@ function sortKey(label: string): string {
 }
 
 /**
- * Las federaciones para un desplegable, por orden alfabético del país.
+ * The federations for a dropdown, in alphabetical order of country.
  *
- * Se ordena por el NOMBRE y no por el código porque es lo que se lee: nadie
- * busca «NED» entre la N, busca «Países Bajos» entre las pes.
+ * Sorted by NAME and not by code because that is what is read: nobody looks for
+ * "NED" among the Ns, they look for "Países Bajos" among the Ps.
  */
 export function federationOptions(): FederationOption[] {
   if (cachedOptions) return cachedOptions;

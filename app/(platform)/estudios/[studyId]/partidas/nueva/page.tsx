@@ -17,7 +17,7 @@ export default async function NewGamePage({ params, searchParams }: NewGamePageP
     getGameResultOptions(),
     searchParams,
   ]);
-  // En un estudio de curso no se escribe: es material del curso, no del alumno.
+  // Nothing is written in a course study: it is the course's material, not the student's.
   if (!study || study.isCourseStudy) notFound();
 
   return (

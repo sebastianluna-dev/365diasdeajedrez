@@ -9,9 +9,9 @@ interface TempPasswordNoticeProps {
 }
 
 /**
- * Enseña la contraseña temporal UNA vez. No se guarda, no viaja en la URL y no
- * se vuelve a mostrar al recargar: sólo existe en la respuesta de la acción que
- * la generó. Si se pierde, se genera otra desde la ficha.
+ * Shows the temporary password ONCE. It is not stored, does not travel in the
+ * URL and is not shown again on reload: it only exists in the response of the
+ * action that generated it. If it is lost, another one is generated from the record.
  */
 export function TempPasswordNotice({ password, message }: TempPasswordNoticeProps) {
   const [copied, setCopied] = useState(false);
@@ -21,7 +21,7 @@ export function TempPasswordNotice({ password, message }: TempPasswordNoticeProp
       await navigator.clipboard.writeText(password);
       setCopied(true);
     } catch {
-      // Sin permiso de portapapeles se copia a mano: la contraseña está a la vista.
+      // Without clipboard permission it is copied by hand: the password is in plain view.
       setCopied(false);
     }
   };

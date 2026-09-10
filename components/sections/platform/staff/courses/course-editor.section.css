@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 22px;
 
-  /* --- Cabecera ---------------------------------------------------------- */
+  /* --- Header ------------------------------------------------------------ */
 
   & .course-editor__status {
     display: inline-flex;
@@ -29,7 +29,7 @@
     color: var(--platform-text-subtle);
   }
 
-  /* --- Formularios -------------------------------------------------------- */
+  /* --- Forms ------------------------------------------------------------- */
 
   & .course-editor__form,
   & .course-editor__stack {
@@ -38,8 +38,8 @@
     gap: 16px;
   }
 
-  /* Dos campos cortos comparten renglón: el identificador y el tipo caben de
-     sobra y en dos líneas separarían el nombre de la descripción. */
+  /* Two short fields share a row: the identifier and the type fit easily and
+     on two lines they would separate the name from the description. */
   & .course-editor__pair {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -55,8 +55,8 @@
     justify-content: flex-end;
   }
 
-  /* El añadir rápido va al pie de su lista, en una línea: es un solo dato y
-     un `<label>` encima lo haría parecer un formulario aparte. */
+  /* The quick add goes at the foot of its list, on one line: it is a single
+     value and a `<label>` above would make it look like a separate form. */
   & .course-editor__inline {
     display: flex;
     gap: 10px;
@@ -89,8 +89,8 @@
     box-shadow: 0 0 0 3px var(--platform-accent-soft);
   }
 
-  /* --- Lista de autores ---------------------------------------------------
-     Los capítulos ya no están aquí: son una SortableList (sortable-list.comp). */
+  /* --- Authors list -------------------------------------------------------
+     The chapters are no longer here: they are a SortableList (sortable-list.comp). */
 
   & .course-editor__list {
     margin: 0;
@@ -128,8 +128,8 @@
     color: var(--platform-text-subtle);
   }
 
-  /* Los controles se van al filo derecho y no se estrujan: son los mismos tres
-     en todas las filas y tienen que caer en la misma columna. */
+  /* The controls go to the right edge and do not get squeezed: they are the
+     same three in every row and have to land in the same column. */
   & .course-editor__controls {
     margin-left: auto;
     flex: none;
@@ -178,7 +178,7 @@
     color: var(--platform-text-subtle);
   }
 
-  /* --- Columna estrecha --------------------------------------------------- */
+  /* --- Narrow column ------------------------------------------------------ */
 
   & .course-editor__facts {
     margin: 0 0 16px;
@@ -212,15 +212,15 @@
     gap: 10px;
   }
 
-  /* A lo ancho de la columna estrecha: apilados y con anchos distintos se
-     verían como dos botones sin relación. */
+  /* Across the narrow column: stacked and with different widths they would
+     look like two unrelated buttons. */
   & .course-editor__actions form,
   & .course-editor__actions .platform-button {
     width: 100%;
   }
 
-  /* Los dos opcionales van al pie, separados del alta normal: se ponen una vez
-     y no se vuelven a tocar. */
+  /* The two optional ones go at the foot, apart from the normal creation:
+     they are set once and never touched again. */
   & .course-editor__roles {
     display: flex;
     gap: 8px;

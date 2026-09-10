@@ -49,15 +49,14 @@ export function handAngles(t: number) {
 
 export interface UseChessClockOptions {
   /**
-   * Con `false` el reloj no corre ni escucha el teclado. La página del reloj
-   * monta las dos variantes (escritorio y móvil) y las oculta por CSS, así que
-   * sin esto las dos contaban a la vez y las dos respondían a la barra
-   * espaciadora.
+   * With `false` the clock neither runs nor listens to the keyboard. The clock
+   * page mounts both variants (desktop and mobile) and hides them with CSS, so
+   * without this both counted at once and both responded to the space bar.
    */
   enabled?: boolean;
 }
 
-/** Elementos en los que la barra espaciadora ya tiene trabajo (activar el control). */
+/** Elements on which the space bar already has a job (activating the control). */
 const INTERACTIVE_TARGET = "button, a, input, select, textarea, [role='button']";
 
 export function useChessClock({ enabled = true }: UseChessClockOptions = {}) {
@@ -71,8 +70,8 @@ export function useChessClock({ enabled = true }: UseChessClockOptions = {}) {
     flagged: null,
   });
 
-  // Date.now() y la sincronización del ref viven en efectos: llamarlos durante
-  // el render es impuro (regla react-hooks/purity).
+  // Date.now() and the ref sync live in effects: calling them during render is
+  // impure (react-hooks/purity rule).
   const lastTick = useRef(0);
   const stateRef = useRef(state);
   useEffect(() => {
@@ -142,8 +141,8 @@ export function useChessClock({ enabled = true }: UseChessClockOptions = {}) {
     if (!enabled) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.code !== "Space" || e.repeat) return;
-      // Con el foco en un botón o un enlace, la barra espaciadora es suya:
-      // interceptarla dejaba «Reiniciar» y «Configurar» sin teclado.
+      // With the focus on a button or a link, the space bar is theirs:
+      // intercepting it left "Reiniciar" and "Configurar" without keyboard.
       if (e.target instanceof Element && e.target.closest(INTERACTIVE_TARGET)) return;
       e.preventDefault();
       press(stateRef.current.active === "w" ? "w" : "b");

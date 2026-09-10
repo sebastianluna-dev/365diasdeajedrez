@@ -28,8 +28,8 @@
     max-width: 64ch;
   }
 
-  /* El filtro y la paginación navegan (cada vista tiene su URL), así que ya no
-     hay un fundido entre estados que animar. */
+  /* The filter and the pagination navigate (each view has its URL), so there
+     is no longer a fade between states to animate. */
   & .blog-articles__grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));

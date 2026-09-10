@@ -10,7 +10,7 @@ import "./assignment-panel.comp.css";
 interface ByStudentProps {
   mode: "byStudent";
   studentId: string;
-  /** Historial completo: la activa es la que tiene endedAt nulo. */
+  /** Full history: the active one is the one with a null endedAt. */
   assignments: StudentAssignmentHistoryItem[];
   teachers: { id: string; displayName: string }[];
 }
@@ -25,9 +25,9 @@ interface ByTeacherProps {
 type AssignmentPanelProps = ByStudentProps | ByTeacherProps;
 
 /**
- * Panel de asignación alumno↔profesor, compartido por las dos fichas: es la
- * misma operación vista desde cada lado, así que comparte servicios y actions.
- * Reasignar cierra la fila activa y crea otra — el historial no se borra nunca.
+ * Student↔teacher assignment panel, shared by both detail pages: it is the
+ * same operation seen from each side, so it shares services and actions.
+ * Reassigning closes the active row and creates another — the history is never deleted.
  */
 export function AssignmentPanel(props: AssignmentPanelProps) {
   if (props.mode === "byStudent") {

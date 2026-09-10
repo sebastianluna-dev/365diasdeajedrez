@@ -3,7 +3,7 @@ import { extractMainline, startFenOf } from "./mainline";
 
 describe("extractMainline", () => {
   it("sigue la línea principal e ignora las variantes", () => {
-    // El ejemplo del documento: dos variantes que NO deben entrenarse.
+    // The example from the document: two variations that must NOT be trained.
     const pgn = "1. e4 c6 2. d4 d5 3. e5 ( 3. exd5 cxd5 4. Bd3 ) 3... Bf5 4. Nf3 e6 5. Be2 ( 5. Bd3 Bxd3 ) *";
 
     const result = extractMainline(pgn)!;
@@ -26,14 +26,14 @@ describe("extractMainline", () => {
   });
 
   it("devuelve null si no hay nada entrenable", () => {
-    // Un diagrama suelto: sin jugadas no hay línea que memorizar.
+    // A lone diagram: without moves there is no line to memorise.
     expect(extractMainline('[FEN "4k3/8/8/8/8/8/8/4K3 w - - 0 1"]\n*')).toBeNull();
     expect(extractMainline("*")).toBeNull();
     expect(extractMainline("")).toBeNull();
   });
 
   it("descarta una rama con jugadas ilegales sin romperse", () => {
-    // parsePgnTree corta la rama mala y avisa; la línea principal sobrevive.
+    // parsePgnTree cuts the bad branch and warns; the main line survives.
     const result = extractMainline("1. e4 e5 ( 1... Nf3 ) 2. Nf3 *")!;
     expect(result.sans).toEqual(["e4", "e5", "Nf3"]);
   });
@@ -47,9 +47,9 @@ describe("startFenOf", () => {
   });
 
   it("responde también SIN jugadas, que es donde `extractMainline` se rinde", () => {
-    // Un diagrama suelto es contenido legítimo de una lección —casi todas las
-    // del curso de Kotov lo son— y quien sólo quiere la posición no debería
-    // quedarse sin respuesta por no haber línea que entrenar.
+    // A lone diagram is legitimate lesson content — almost all of the ones in the
+    // Kotov course are — and whoever only wants the position should not be left
+    // without an answer for want of a line to train.
     const soloDiagrama = `[SetUp "1"]\n[FEN "${DIAGRAMA}"]\n\n*`;
     expect(extractMainline(soloDiagrama)).toBeNull();
     expect(startFenOf(soloDiagrama)).toBe(DIAGRAMA);

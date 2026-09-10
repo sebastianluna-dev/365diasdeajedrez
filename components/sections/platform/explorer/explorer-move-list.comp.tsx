@@ -5,15 +5,15 @@ import "./explorer-move-list.comp.css";
 
 interface ExplorerMoveListProps {
   sans: string[];
-  /** Ply actual: 0 es la posición inicial. */
+  /** Current ply: 0 is the initial position. */
   index: number;
   onSelect: (ply: number) => void;
 }
 
 /**
- * Las jugadas de la línea que se está explorando. Usa `buildNotationRows`, el
- * mismo constructor de filas que el visor de partidas, así que la notación sale
- * en español y numerada igual que en el resto de la plataforma.
+ * The moves of the line being explored. Uses `buildNotationRows`, the same
+ * row builder as the game viewer, so the notation comes out in Spanish and
+ * numbered the same as in the rest of the platform.
  */
 export function ExplorerMoveList({ sans, index, onSelect }: ExplorerMoveListProps) {
   const rows = buildNotationRows(sans);

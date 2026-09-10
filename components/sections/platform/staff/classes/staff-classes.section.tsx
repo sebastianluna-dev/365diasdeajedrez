@@ -11,7 +11,7 @@ interface StaffClassesSectionProps {
   classes: StaffClassSummary[];
   teachers: { id: string; displayName: string }[];
   filters: StaffClassFilters;
-  /** Valores crudos de la URL, para repintar el formulario tal cual. */
+  /** Raw values from the URL, to re-render the form as is. */
   rawFilters: { teacherId?: string; status?: string; from?: string; to?: string; q?: string };
 }
 
@@ -22,7 +22,7 @@ const STATUS_LABELS: Record<string, string> = {
   [CLASS_STATUS.CANCELLED]: "Canceladas",
 };
 
-/** Vista global de lectura: los filtros van por searchParams, sin estado de cliente. */
+/** Global read view: filters go through searchParams, no client state. */
 export function StaffClassesSection({ classes, teachers, rawFilters }: StaffClassesSectionProps) {
   return (
     <div className="staff-classes">

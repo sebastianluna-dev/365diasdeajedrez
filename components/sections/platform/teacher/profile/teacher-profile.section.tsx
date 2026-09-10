@@ -8,7 +8,7 @@ import "./teacher-profile.section.css";
 
 interface TeacherProfileSectionProps {
   profile: TeacherProfile;
-  /** Code de error devuelto por la action en `?error=`. */
+  /** Error code returned by the action in `?error=`. */
   errorCode?: string;
 }
 

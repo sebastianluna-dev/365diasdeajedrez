@@ -3,8 +3,8 @@
   flex-direction: column;
   gap: 20px;
 
-  /* «Saltar» vive dentro de la barra de navegación del visor, así que copia la
-     medida de sus botones para no romper la fila. */
+  /* "Saltar" lives inside the viewer's navigation bar, so it copies the size
+     of its buttons so as not to break the row. */
   & .lesson-view__skip {
     display: inline-flex;
     align-items: center;
@@ -41,8 +41,8 @@
     height: 17px;
   }
 
-  /* Ya hecha: verde y sin acción. No es un botón porque no hay nada que
-     pulsar; deshacerlo no es una operación que exista. */
+  /* Already done: green and without an action. It is not a button because
+     there is nothing to press; undoing it is not an operation that exists. */
   & .lesson-view__completed {
     display: inline-flex;
     align-items: center;

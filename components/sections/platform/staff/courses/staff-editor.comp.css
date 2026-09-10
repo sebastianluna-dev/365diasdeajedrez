@@ -125,8 +125,8 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* La columna estrecha baja entera antes de que los formularios de la
-     izquierda empiecen a estrujarse. */
+  /* The narrow column drops down whole before the forms on the left start
+     getting squeezed. */
   @media (max-width: 1080px) {
     grid-template-columns: minmax(0, 1fr);
   }

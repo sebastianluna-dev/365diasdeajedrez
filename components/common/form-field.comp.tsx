@@ -3,19 +3,19 @@ import "./form-field.comp.css";
 
 interface FormFieldProps {
   label: string;
-  /** El control nativo: input, select o textarea. */
+  /** The native control: input, select or textarea. */
   children: ReactNode;
   hint?: string;
   error?: string;
 }
 
 /**
- * Campo de formulario de la plataforma. Envuelve el control en un `<label>`
- * real (nada de placeholders haciendo de etiqueta) y define UNA sola vez el
- * aspecto de input/select/textarea de toda la zona autenticada.
+ * Platform form field. Wraps the control in a real `<label>` (no placeholders
+ * acting as labels) and defines ONCE the look of input/select/textarea for
+ * the whole authenticated area.
  *
- * Sin estado: los formularios son `<form action={serverAction}>` y los errores
- * llegan del servidor, no de validación en el cliente.
+ * Stateless: forms are `<form action={serverAction}>` and errors come from
+ * the server, not from client-side validation.
  */
 export function FormField({ label, children, hint, error }: FormFieldProps) {
   return (
@@ -38,7 +38,7 @@ interface FormFieldsetProps {
   hint?: string;
 }
 
-/** Para grupos de controles (checkboxes, radios), donde un `<label>` único no vale. */
+/** For groups of controls (checkboxes, radios), where a single `<label>` does not work. */
 export function FormFieldset({ legend, children, hint }: FormFieldsetProps) {
   return (
     <fieldset className="platform-field platform-field_variant_group">

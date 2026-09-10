@@ -2,12 +2,12 @@ import "./progress-indicator.comp.css";
 
 interface ProgressIndicatorProps {
   percent: number;
-  /** "3 de 7 lecciones", opcional. */
+  /** "3 de 7 lecciones", optional. */
   detail?: string;
   /**
-   * `inline` (por defecto): barra y etiqueta en la misma línea.
-   * `stacked`: porcentaje y detalle a los extremos y la barra debajo, como en
-   * la tarjeta de curso.
+   * `inline` (default): bar and label on the same line.
+   * `stacked`: percentage and detail at the ends and the bar below, as in
+   * the course card.
    */
   layout?: "inline" | "stacked";
 }

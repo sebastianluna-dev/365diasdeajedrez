@@ -2,47 +2,50 @@ import "server-only";
 import { logError, logWarning } from "@/lib/logger";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 
-// Límite de frecuencia de las server actions de escritura. Las actions son
-// alcanzables por POST directo, no sólo desde la interfaz, así que conviene
-// poner un techo por sujeto y operación.
+// Rate limit for the write server actions. Actions are reachable by direct
+// POST, not only from the interface, so it is worth putting a ceiling per
+// subject and operation.
 //
-// El contador vive en la tabla `RateLimit` y NO en la memoria del proceso: con
-// un Map, dos instancias detrás de un balanceador dan el doble de intentos y en
-// serverless cada arranque en frío empieza a cero —justo lo que necesita un
-// ataque de fuerza bruta contra el login—. En la base, el techo es uno solo
-// para toda la app.
+// The counter lives in the `RateLimit` table and NOT in the process's memory:
+// with a Map, two instances behind a load balancer give twice the attempts and
+// in serverless every cold start begins at zero — exactly what a brute-force
+// attack against the login needs. In the database, the ceiling is a single one
+// for the whole app.
 //
-// Se eligió la base que ya existe en lugar de un Redis: no añade un servicio
-// más que pueda caerse por su cuenta, y el coste es una escritura por acción
-// protegida, casi siempre pegada a otra que ya iba a la base de todas formas.
+// The database that already exists was chosen instead of a Redis: it does not
+// add one more service that can go down on its own, and the cost is one write
+// per protected action, almost always next to another that was going to the
+// database anyway.
 
 /**
- * Cada cuánto se barren las ventanas vencidas, en tanto por uno de llamadas.
+ * How often expired windows are swept, as a fraction of calls.
  *
- * Se limpia desde la propia aplicación y no con una tarea programada porque la
- * tabla sólo crece con lo que ella misma escribe. Una de cada cien llamadas
- * basta para que no se acumulen, y el borrado no bloquea la respuesta.
+ * It is cleaned from the application itself and not with a scheduled job
+ * because the table only grows with what it writes itself. One call in a
+ * hundred is enough to keep them from piling up, and the deletion does not
+ * block the response.
  */
 const PURGE_CHANCE = 0.01;
 
 /**
- * Devuelve true si la operación cabe dentro del límite, y la contabiliza.
+ * Returns true if the operation fits within the limit, and counts it.
  *
- * `key` identifica al sujeto y a la operación, p. ej. `${userId}:import` o
- * `login:${email}`. `limit` es cuántas caben en `windowMs`.
+ * `key` identifies the subject and the operation, e.g. `${userId}:import` or
+ * `login:${email}`. `limit` is how many fit in `windowMs`.
  *
- * Todo ocurre en UNA sentencia: el `ON CONFLICT` decide si la ventana sigue
- * viva —y suma— o si ya venció —y arranca otra—, así que dos peticiones
- * simultáneas no pueden colarse leyendo el mismo contador antes de escribirlo.
+ * Everything happens in ONE statement: the `ON CONFLICT` decides whether the
+ * window is still alive — and adds — or has already expired — and starts
+ * another —, so two simultaneous requests cannot slip through by reading the
+ * same counter before writing it.
  *
- * Las horas salen del reloj de la aplicación, no del de la base: así el corte
- * de la ventana no depende de que los dos relojes coincidan.
+ * The times come from the application's clock, not the database's: that way
+ * the window's cutoff does not depend on the two clocks agreeing.
  *
- * Si la base falla, se DEJA PASAR. Es deliberado: sin base no hay login que
- * proteger —la comprobación de la contraseña también la consulta— y bloquear
- * cada acción por una incidencia de la base sería un apagón en toda regla.
- * Pero se deja rastro: un límite que desaparece en silencio es peor que uno
- * que avisa de que ha desaparecido.
+ * If the database fails, it is LET THROUGH. That is deliberate: without a
+ * database there is no login to protect — checking the password queries it too
+ * — and blocking every action over a database incident would be a full-blown
+ * outage. But a trace is left: a limit that disappears silently is worse than
+ * one that says it has disappeared.
  */
 export async function allowAction(key: string, limit: number, windowMs: number): Promise<boolean> {
   const db = getPlatformDb();
@@ -65,7 +68,7 @@ export async function allowAction(key: string, limit: number, windowMs: number):
       );
     }
 
-    // Sin fila devuelta no hay nada que decir: se deja pasar, como con un error.
+    // With no row returned there is nothing to say: it is let through, as with an error.
     return (rows[0]?.count ?? 1) <= limit;
   } catch (error) {
     logError("rate-limit", "Fallo de la base al contar; la acción se deja pasar sin límite", error, { key });

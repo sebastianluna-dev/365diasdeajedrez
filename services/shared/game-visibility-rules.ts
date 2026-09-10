@@ -1,31 +1,31 @@
 import type { Prisma } from "@/lib/platform-db/generated/client";
 
-// La REGLA de visibilidad, separada de quién la pregunta.
+// The visibility RULE, kept apart from whoever asks it.
 //
-// Módulo puro (sólo tipos de Prisma, nada de DAL ni de server-only) para que
-// puedan ejercitarla los tests y los scripts con ids explícitos: es la frontera
-// que impide que el buscador enseñe partidas de los estudios privados de otro
-// alumno, y comprobarla no debería exigir montar una petición con sesión.
+// Pure module (only Prisma types, no DAL and no server-only) so that tests and
+// scripts can exercise it with explicit ids: it is the border that keeps the
+// search from showing games from another student's private studies, and
+// checking it should not require setting up a request with a session.
 //
-// El envoltorio que resuelve la identidad vive en game-visibility.ts.
+// The wrapper that resolves the identity lives in game-visibility.ts.
 
 export interface GameViewer {
   userId: string;
-  /** Id de Teacher si quien mira es profesor activo; ausente si no lo es. */
+  /** Teacher id when whoever is looking is an active teacher; absent when they are not. */
   teacherId?: string;
 }
 
 /**
- * Bases de partidas visibles. Tres caminos:
+ * Visible game databases. Three paths:
  *
- * - las propias;
- * - las de los cursos EMPEZADOS: no basta con que el curso esté publicado, su
- *   base es material del curso y se abre al entrar en él;
- * - las colecciones que un maestro le repartió (StudyShare).
+ * - their own;
+ * - those of the courses they have STARTED: it is not enough for the course to
+ *   be published, its database is course material and opens on entering it;
+ * - the collections a teacher shared with them (StudyShare).
  *
- * Los tres son de LECTURA. Que las dos últimas no se puedan escribir no se
- * decide aquí: las escrituras miran la propiedad de la base, y ni el curso ni
- * la colección repartida son suyos.
+ * All three are READ-only. That the last two cannot be written is not decided
+ * here: the writes look at the ownership of the database, and neither the
+ * course nor the shared collection is theirs.
  */
 export function buildVisibleDatabasesWhere({ userId }: GameViewer): Prisma.GameDatabaseWhereInput {
   return {
@@ -38,14 +38,14 @@ export function buildVisibleDatabasesWhere({ userId }: GameViewer): Prisma.GameD
 }
 
 /**
- * Partidas visibles. Es más ancho que «las partidas de las bases visibles»,
- * porque hay dos caminos que no pasan por la propiedad de la base:
+ * Visible games. It is wider than "the games of the visible databases", because
+ * there are two paths that do not go through the ownership of the database:
  *
- * - las vistas en clase, que llegan por referencia desde un bloque de la clase
- *   (ClassBlock.gameId) y pueden vivir en la base de otra persona;
- * - las de las colecciones que le repartió un maestro;
- * - las de los alumnos con asignación ACTIVA, si quien mira es su profesor;
- *   mismo criterio que los guards de lib/platform-auth/guards.ts.
+ * - those seen in class, which arrive by reference from a class block
+ *   (ClassBlock.gameId) and can live in another person's database;
+ * - those of the collections a teacher shared with them;
+ * - those of the students with an ACTIVE assignment, if whoever is looking is
+ *   their teacher; the same criterion as the guards in lib/platform-auth/guards.ts.
  */
 export function buildVisibleGamesWhere({ userId, teacherId }: GameViewer): Prisma.GameWhereInput {
   const visible: Prisma.GameWhereInput[] = [

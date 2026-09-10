@@ -3,9 +3,9 @@ import { CLASS_BLOCK_KIND, CLASS_STATUS } from "@/constants/platform/class-codes
 import { mapClassDetail, type ClassDetailRow } from "@/services/classes/classes.mapper";
 import { mapTeacherClassDetail, type TeacherClassDetailRow } from "./teacher-classes.mapper";
 
-// El enlace de la reunión es la diferencia que justifica que el profesor tenga
-// su propio mapper: el del alumno lo esconde hasta `meetingUrlVisibleFrom` y el
-// profesor —que es quien lo pone— tiene que verlo siempre.
+// The meeting link is the difference that justifies the teacher having their own
+// mapper: the student's hides it until `meetingUrlVisibleFrom` and the teacher —
+// who is the one who sets it — has to see it always.
 
 const SCHEDULED_AT = new Date("2026-09-15T17:00:00.000Z");
 const VISIBLE_FROM = new Date("2026-09-15T16:30:00.000Z");

@@ -9,8 +9,8 @@ interface ClassContentRendererProps {
 }
 
 function TextBlock({ text }: { text: string }) {
-  // El texto del bloque es markdown sencillo; en esta etapa se renderiza como
-  // párrafos planos (los "## " se tratan como subtítulos).
+  // The block's text is simple markdown; at this stage it is rendered as plain
+  // paragraphs ("## " lines are treated as subheadings).
   const paragraphs = text.split(/\n{2,}/);
   return (
     <div className="class-content__text">
@@ -30,9 +30,9 @@ function TextBlock({ text }: { text: string }) {
 }
 
 /**
- * Renderiza los bloques ordenados de una clase según su tipo. Los bloques de
- * ajedrez son referencias al material original: partidas con GameViewer (el
- * visor único) y posiciones con StaticDiagram.
+ * Renders a class's ordered blocks by kind. Chess blocks are references to
+ * the original material: games with GameViewer (the single viewer) and
+ * positions with StaticDiagram.
  */
 export function ClassContentRenderer({ blocks }: ClassContentRendererProps) {
   return (
@@ -59,8 +59,8 @@ export function ClassContentRenderer({ blocks }: ClassContentRendererProps) {
             </div>
           )}
 
-          {/* La lección se ve DENTRO de la clase, igual que la partida: el
-              enlace se queda debajo para abrirla entera con su navegación. */}
+          {/* The lesson is viewed INSIDE the class, just like the game: the
+              link stays below to open it in full with its navigation. */}
           {block.kind === "LESSON_REF" && (
             <div className="class-content__game">
               <GameViewer

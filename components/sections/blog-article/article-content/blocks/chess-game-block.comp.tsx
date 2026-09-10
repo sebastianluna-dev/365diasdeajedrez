@@ -13,7 +13,7 @@ export function ChessGameBlockRenderer({ pgn, title, players, event, date }: Che
           {subtitle && <p className="rich-chess-game__subtitle">{subtitle}</p>}
         </div>
       )}
-      {/* Dentro del cuerpo del artículo: se monta al acercarse, no en la carga. */}
+      {/* Inside the article body: mounts when it comes near, not on load. */}
       <ChessBoardLazy pgn={pgn} />
     </div>
   );

@@ -2,10 +2,10 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from "payload";
 import { CACHE_TAGS } from "./cache-tags";
 
-// Al guardar o borrar un artículo caduca la lista cacheada (`getArticleSummaries`
-// y `getArticleLinks`) y se regeneran las páginas que la pintan. `expire: 0`
-// porque esto corre dentro de la API de Payload, no en un render: el cambio
-// tiene que verse en la siguiente visita, no cuando venza el plazo.
+// On saving or deleting an article the cached list (`getArticleSummaries` and
+// `getArticleLinks`) expires and the pages that render it are regenerated.
+// `expire: 0` because this runs inside Payload's API, not in a render: the
+// change has to be seen on the next visit, not when the deadline runs out.
 function revalidateArticles(): void {
   revalidateTag(CACHE_TAGS.articles, { expire: 0 });
   revalidatePath("/blog");

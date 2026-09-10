@@ -10,8 +10,8 @@
   background: var(--platform-surface);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
 
-  /* La jugada, para saber sobre cuál se está actuando: el menú tapa la lista
-     justo donde se hizo el clic. */
+  /* The move, to know which one is being acted on: the menu covers the list
+     right where the click happened. */
   & .move-context-menu__title {
     margin: 0;
     padding: 8px 12px 10px;
@@ -56,7 +56,7 @@
     height: 20px;
   }
 
-  /* Los signos de anotación no tienen icono propio: son su propio símbolo. */
+  /* The annotation signs have no icon of their own: they are their own symbol. */
   & .move-context-menu__glyph {
     font-size: 16px;
     font-weight: 700;

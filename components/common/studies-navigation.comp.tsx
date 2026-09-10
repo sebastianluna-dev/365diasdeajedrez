@@ -3,15 +3,15 @@ import { platformRoutes } from "@/lib/platform-routes";
 import "./studies-navigation.comp.css";
 
 interface StudiesNavigationProps {
-  /** Estudio al que pertenece. Sin `studyHref` se pinta como tramo actual. */
+  /** Study it belongs to. Without `studyHref` it is rendered as the current crumb. */
   studyName?: string;
   studyHref?: string;
-  /** Partida. Sin `gameHref` se pinta como tramo actual. */
+  /** Game. Without `gameHref` it is rendered as the current crumb. */
   gameName?: string;
   gameHref?: string;
 }
 
-/** Ruta contextual Mis estudios → Estudio → Partida. */
+/** Contextual trail Mis estudios → Study → Game. */
 export function StudiesNavigation({ studyName, studyHref, gameName, gameHref }: StudiesNavigationProps) {
   return (
     <nav className="studies-navigation" aria-label="Ruta de estudios">

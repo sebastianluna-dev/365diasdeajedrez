@@ -14,9 +14,9 @@ export interface StatCount {
 }
 
 export interface DashboardStatsRange {
-  /** Totales por tipo de actividad (cursos completados, clases asistidas...). */
+  /** Totals per activity type (courses completed, classes attended...). */
   totals: StatCount[];
-  /** Desglose por tema (táctica, aperturas, finales...). */
+  /** Breakdown by topic (tactics, openings, endgames...). */
   topics: StatCount[];
 }
 

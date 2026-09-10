@@ -1,13 +1,13 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vitest/config";
 
-// Pruebas unitarias puras (sin DOM, sin base de datos). El alias "@" replica el
-// "paths" de tsconfig.json para que los tests puedan importar "@/lib/...".
+// Pure unit tests (no DOM, no database). The "@" alias replicates the "paths" of
+// tsconfig.json so the tests can import "@/lib/...".
 //
-// "server-only" se sustituye por un módulo vacío: en la app lo aliasa Next,
-// pero aquí no existe y bloqueaba cualquier import de la capa de servidor.
-// Lo que de verdad protege (que no acabe en un Client Component) lo sigue
-// haciendo el bundler de Next; las pruebas corren en Node.
+// "server-only" is replaced by an empty module: in the app Next aliases it, but
+// here it does not exist and it blocked any import of the server layer. What it
+// really protects (that it does not end up in a Client Component) is still done
+// by Next's bundler; the tests run in Node.
 export default defineConfig({
   resolve: {
     alias: {
@@ -21,8 +21,8 @@ export default defineConfig({
     exclude: ["node_modules/**", ".next/**", "lib/platform-db/generated/**", "docs/**"],
     coverage: {
       provider: "v8",
-      // Sólo código: los `__fixtures__` (PGN de prueba) no son módulos y v8
-      // intentaba parsearlos.
+      // Code only: the `__fixtures__` (test PGNs) are not modules and v8 tried to
+      // parse them.
       include: ["lib/**/*.ts", "services/**/*.ts", "constants/**/*.ts", "hooks/**/*.ts"],
       exclude: ["lib/platform-db/generated/**", "lib/testing/**", "**/__fixtures__/**", "**/*.test.*", "**/*.types.ts"],
     },

@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: CourseGamesPageProps): Promis
 
 export default async function CourseGamesPage({ params }: CourseGamesPageProps) {
   const { courseId } = await params;
-  // El servicio abre con requireStaff(): es la frontera del panel.
+  // The service opens with requireStaff(): it is the panel's border.
   const course = await getCourseAdminDetail(courseId);
   if (!course) notFound();
 

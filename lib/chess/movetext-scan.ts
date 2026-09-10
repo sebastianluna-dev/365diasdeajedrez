@@ -1,52 +1,47 @@
-// Rastreo del movetext en busca de tokens que NI SIQUIERA tienen forma de
-// jugada («Qz9», «Bx99»), que es el error más probable en un PGN escrito a
-// mano.
+// Scanning the movetext for tokens that do not EVEN have the shape of a move
+// ("Qz9", "Bx99"), which is the most likely error in a hand-written PGN.
 //
-// Por qué hace falta: el tokenizador de chessops los descarta antes de que
-// nuestra validación los vea, así que la rama desaparece del árbol sin dejar
-// rastro y `parsePgnTree` no tiene nada de lo que avisar. Aquí se mira el texto
-// crudo, antes de que nadie lo interprete.
-//
-// El listón es ALTO a propósito: sólo se avisa de lo que no encaja en la
-// gramática SAN habiendo quitado todo lo que legítimamente vive en un movetext.
-// Un falso positivo en una partida buena es peor que callarse en una mala.
+// Why it is needed: chessops's tokeniser discards them before our validation
+// sees them, so the branch disappears from the tree without a trace and
+// `parsePgnTree` has nothing to warn about. Here the raw text is inspected,
+// before anyone interprets it.
 
 /**
- * La gramática SAN, tal y como se escribe en un PGN:
- * enroques, jugada de pieza (con desambiguación y captura opcionales) y jugada
- * de peón (con captura y coronación opcionales), más jaque, mate y los signos
- * que a veces se pegan al final.
+ * The SAN grammar, as it is written in a PGN:
+ * castling, a piece move (with optional disambiguation and capture) and a pawn
+ * move (with optional capture and promotion), plus check, mate and the signs
+ * that are sometimes stuck at the end.
  */
 const SAN_PATTERN =
   /^(?:[O0]-[O0](?:-[O0])?|[KQRBN][a-h]?[1-8]?x?[a-h][1-8]|[a-h](?:[1-8]|x[a-h][1-8])(?:=?[QRBN])?)[+#]?[!?]{0,2}$/;
 
-/** El resultado de la partida, que cierra el movetext y no es una jugada. */
+/** The game result, which closes the movetext and is not a move. */
 const RESULT_PATTERN = /^(?:1-0|0-1|1\/2-1\/2|\*)$/;
 
 /**
- * Tokens que no son jugadas pero aparecen en movetexts reales: la jugada nula
- * de los módulos y los puntos suspensivos sueltos de algunos exportadores.
+ * Tokens that are not moves but appear in real movetexts: the engines' null
+ * move and the loose ellipses of some exporters.
  */
 const TOLERATED = new Set(["--", "Z0", "...", "…"]);
 
-/** Deja sólo el movetext: fuera cabeceras, comentarios y comandos. */
+/** Leaves only the movetext: out go headers, comments and commands. */
 function movetextOf(pgn: string): string {
   return pgn
-    .replace(/^\s*\[[^\]]*\]\s*$/gm, " ") // cabeceras
-    .replace(/\{[^}]*\}/g, " ") // comentarios entre llaves
-    .replace(/;[^\n]*/g, " ") // comentario hasta el fin de línea, empiece donde empiece
-    .replace(/^\s*%.*$/gm, " ") // líneas de escape del estándar
-    .replace(/<[^>]*>/g, " ") // tokens reservados
-    .replace(/[()]/g, " ") // paréntesis de variante
+    .replace(/^\s*\[[^\]]*\]\s*$/gm, " ") // headers
+    .replace(/\{[^}]*\}/g, " ") // comments in braces
+    .replace(/;[^\n]*/g, " ") // comment to the end of the line, wherever it starts
+    .replace(/^\s*%.*$/gm, " ") // escape lines from the standard
+    .replace(/<[^>]*>/g, " ") // reserved tokens
+    .replace(/[()]/g, " ") // variation parentheses
     .replace(/\$\d+/g, " ") // NAGs
-    .replace(/\b\d+\.(?:\.\.)?/g, " "); // números de jugada, con o sin puntos
+    .replace(/\b\d+\.(?:\.\.)?/g, " "); // move numbers, with or without dots
 }
 
 /**
- * Los tokens del movetext que no son una jugada válida.
+ * The movetext tokens that are not a valid move.
  *
- * Devuelve cada uno UNA vez y en el orden en que aparecen: un PGN con la misma
- * errata repetida se avisa una sola vez, que es lo que hay que corregir.
+ * Returns each one ONCE and in the order they appear: a PGN with the same typo
+ * repeated is reported a single time, which is what has to be fixed.
  */
 export function findMalformedMoveTokens(pgn: string): string[] {
   const seen = new Set<string>();

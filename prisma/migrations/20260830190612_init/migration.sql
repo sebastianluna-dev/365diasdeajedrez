@@ -898,23 +898,23 @@ ALTER TABLE "UserStatDaily" ADD CONSTRAINT "UserStatDaily_metricId_fkey" FOREIGN
 ALTER TABLE "UserStatDaily" ADD CONSTRAINT "UserStatDaily_topicId_fkey" FOREIGN KEY ("topicId") REFERENCES "Topic"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- ---------------------------------------------------------------------------
--- Constraints manuales (no expresables en Prisma Schema; ver prisma/schema.prisma)
+-- Manual constraints (not expressible in the Prisma schema; see prisma/schema.prisma)
 -- ---------------------------------------------------------------------------
 
--- GameDatabase: exactamente un propietario (USER -> userId, COURSE -> courseId)
+-- GameDatabase: exactly one owner (USER -> userId, COURSE -> courseId)
 ALTER TABLE "GameDatabase" ADD CONSTRAINT "game_database_owner_xor"
   CHECK (("userId" IS NOT NULL) <> ("courseId" IS NOT NULL));
 
--- Position: exactamente una columna de propietario (los TEACHER usan userId)
+-- Position: exactly one owner column (TEACHER ones use userId)
 ALTER TABLE "Position" ADD CONSTRAINT "position_owner_xor"
   CHECK (("userId" IS NOT NULL) <> ("courseId" IS NOT NULL));
 
--- ClassBlock: como máximo una referencia de contenido
+-- ClassBlock: at most one content reference
 ALTER TABLE "ClassBlock" ADD CONSTRAINT "class_block_single_ref"
   CHECK ((("gameId" IS NOT NULL)::int + ("lessonId" IS NOT NULL)::int + ("positionId" IS NOT NULL)::int) <= 1);
 
--- UserStatDaily: reemplaza el índice único de Prisma para que topicId NULL
--- no permita filas duplicadas (PostgreSQL 15+)
+-- UserStatDaily: replaces Prisma's unique index so that a NULL topicId does
+-- not allow duplicate rows (PostgreSQL 15+)
 DROP INDEX "UserStatDaily_userId_day_metricId_topicId_key";
 CREATE UNIQUE INDEX "UserStatDaily_userId_day_metricId_topicId_key"
   ON "UserStatDaily"("userId", "day", "metricId", "topicId") NULLS NOT DISTINCT;

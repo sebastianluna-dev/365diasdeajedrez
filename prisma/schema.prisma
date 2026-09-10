@@ -1,28 +1,28 @@
-// Plataforma educativa — dominio de la app autenticada.
-// Base de datos SEPARADA de Payload (Payload usa DATABASE_URI; esto usa
-// PLATFORM_DATABASE_URL). Ninguna tabla de este schema convive con las del CMS.
+// Learning platform — domain of the authenticated app.
+// Database SEPARATE from Payload's (Payload uses DATABASE_URI; this uses
+// PLATFORM_DATABASE_URL). No table of this schema lives with the CMS's.
 //
-// Decisiones fijadas por el diagrama conceptual v2:
-// - El PGN es la fuente del contenido ajedrecístico (Lesson.pgn, Game.pgn).
-//   No existen tablas por movimiento ni árboles relacionales de jugadas.
-// - Sin enums de Prisma/Postgres: cada dominio restringido es una tabla
-//   catálogo (code único y estable; la lógica de negocio compara codes,
-//   nunca ids). Los valores se cargan por seed idempotente.
-// - Claves compuestas para las tablas de progreso/intermedias.
+// Decisions fixed by the v2 conceptual diagram:
+// - The PGN is the source of the chess content (Lesson.pgn, Game.pgn).
+//   There are no per-move tables nor relational move trees.
+// - No Prisma/Postgres enums: every restricted domain is a catalog table
+//   (unique and stable code; the business logic compares codes, never ids).
+//   The values are loaded by an idempotent seed.
+// - Composite keys for the progress/join tables.
 //
-// Restricciones que Prisma no puede expresar (añadidas a mano en la
-// migración inicial como CHECK constraints — ver prisma/migrations):
-// - GameDatabase: exactamente uno de (userId, courseId) con valor.
-// - Position: exactamente uno de (userId, courseId) con valor
-//   (los propietarios TEACHER apuntan por userId; Teacher es 1:1 con User).
-// - ClassBlock: como máximo una referencia (gameId, lessonId, positionId).
-// - UserStatDaily: índice único con NULLS NOT DISTINCT para que topicId NULL
-//   no duplique filas.
-// - TeacherStudent: índice único parcial teacher_student_one_active sobre
-//   studentId WHERE endedAt IS NULL (un profesor activo por alumno).
-// Reglas que se validan en la capa de servicios (imposibles en CHECK sin
-// cruzar tablas): coherencia ownerType↔columna poblada, ClassBlock.kind↔campo
-// usado.
+// Constraints Prisma cannot express (added by hand in the initial migration as
+// CHECK constraints — see prisma/migrations):
+// - GameDatabase: exactly one of (userId, courseId) with a value.
+// - Position: exactly one of (userId, courseId) with a value
+//   (TEACHER owners point through userId; Teacher is 1:1 with User).
+// - ClassBlock: at most one reference (gameId, lessonId, positionId).
+// - UserStatDaily: unique index with NULLS NOT DISTINCT so a NULL topicId does
+//   not duplicate rows.
+// - TeacherStudent: partial unique index teacher_student_one_active over
+//   studentId WHERE endedAt IS NULL (one active teacher per student).
+// Rules validated in the services layer (impossible in a CHECK without
+// crossing tables): ownerType↔populated column coherence, ClassBlock.kind↔field
+// used.
 
 generator client {
   provider = "prisma-client"
@@ -34,7 +34,7 @@ datasource db {
 }
 
 // ---------------------------------------------------------------------------
-// Catálogos (reemplazan enums; upsert por code en el seed)
+// Catalogs (they replace enums; upserted by code in the seed)
 // ---------------------------------------------------------------------------
 
 model CourseType {
@@ -65,10 +65,10 @@ model AuthorRole {
   courseAuthors CourseAuthor[]
 }
 
-/// Papel de un capítulo o de una lección dentro de lo que lo contiene: abrir o
-/// cerrar. Los normales NO tienen fila aquí —su `roleId` es nulo—, que es lo
-/// que permite exigir «como mucho uno de cada» con un índice único sobre
-/// (padre, rol) sin que los normales choquen entre sí.
+/// Role of a chapter or of a lesson within what contains it: to open or to
+/// close. The normal ones have NO row here — their `roleId` is null — which is
+/// what makes it possible to require "at most one of each" with a unique index
+/// over (parent, role) without the normal ones clashing with each other.
 model ContentRole {
   id    Int    @id @default(autoincrement())
   code  String @unique
@@ -89,10 +89,10 @@ model Level {
   courseLevels CourseLevel[]
 }
 
-/// Orientación del tablero. Catálogo compartido por Lesson, Position y
-/// UserCourseSettings porque es el mismo concepto de dominio; AUTO sólo es
-/// válido en UserCourseSettings (subconjuntos por contexto en
-/// constants/platform/shared-codes.const.ts, validados por servicios).
+/// Board orientation. Catalog shared by Lesson, Position and
+/// UserCourseSettings because it is the same domain concept; AUTO is only valid
+/// in UserCourseSettings (subsets by context in
+/// constants/platform/shared-codes.const.ts, validated by the services).
 model BoardOrientation {
   id    Int    @id @default(autoincrement())
   code  String @unique
@@ -114,7 +114,7 @@ model ExerciseMode {
   exercises TrainingExercise[]
 }
 
-/// Compartido por CourseProgress, ChapterProgress y LessonProgress.
+/// Shared by CourseProgress, ChapterProgress and LessonProgress.
 model ProgressStatus {
   id    Int    @id @default(autoincrement())
   code  String @unique
@@ -144,9 +144,9 @@ model AttemptContext {
   attempts TrainingAttempt[]
 }
 
-/// Propietario polimórfico. Compartido por GameDatabase (USER/COURSE) y
-/// Position (USER/COURSE/TEACHER); la validez por tabla la aplican los
-/// servicios — la integridad real vive en los CHECK XOR de la migración.
+/// Polymorphic owner. Shared by GameDatabase (USER/COURSE) and Position
+/// (USER/COURSE/TEACHER); validity per table is applied by the services — the
+/// real integrity lives in the migration's XOR CHECKs.
 model OwnerType {
   id    Int    @id @default(autoincrement())
   code  String @unique
@@ -175,9 +175,8 @@ model GameSource {
   games Game[]
 }
 
-/// Resultado de partida como catálogo (el spec prohíbe strings libres en
-/// dominios restringidos). `label` lleva el token PGN: "1-0", "0-1",
-/// "1/2-1/2", "*".
+/// Game result as a catalog (the spec forbids free strings in restricted
+/// domains). `label` carries the PGN token: "1-0", "0-1", "1/2-1/2", "*".
 model GameResult {
   id    Int    @id @default(autoincrement())
   code  String @unique
@@ -251,8 +250,8 @@ model StatMetric {
   dailyStats UserStatDaily[]
 }
 
-/// Catálogo de temas con jerarquía (sub-temas via parentId). Añadir un tema
-/// nuevo es una fila, no una migración.
+/// Topic catalog with hierarchy (sub-topics via parentId). Adding a new topic is
+/// a row, not a migration.
 model Topic {
   id       Int    @id @default(autoincrement())
   code     String @unique
@@ -269,12 +268,12 @@ model Topic {
 }
 
 // ---------------------------------------------------------------------------
-// Contenido: Course → Chapter → Lesson (la lección ES un PGN)
+// Content: Course → Chapter → Lesson (the lesson IS a PGN)
 // ---------------------------------------------------------------------------
 
 model Course {
-  /// Numérico de 8 dígitos: va en la URL del alumno (`/cursos/00020212`).
-  /// Lo pone la aplicación (lib/numeric-id.ts), no Prisma.
+  /// 8-digit numeric: it goes in the student's URL (`/cursos/00020212`).
+  /// The application sets it (lib/numeric-id.ts), not Prisma.
   id          String    @id
   name        String
   slug        String    @unique
@@ -337,10 +336,10 @@ model Chapter {
   name              String
   description       String?
   order             Int
-  /// Introducción o cierre del curso; nulo en los capítulos normales, que son
-  /// la mayoría. Como mucho uno de cada por curso (índice único parcial).
+  /// Introduction or closing of the course; null in normal chapters, which are
+  /// the majority. At most one of each per course (partial unique index).
   roleId            Int?
-  /// Minutos estimados.
+  /// Estimated minutes.
   estimatedDuration Int?
 
   course Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -349,61 +348,59 @@ model Chapter {
   lessons         Lesson[]
   progresses      ChapterProgress[]
   trainerChapters UserTrainerChapter[]
-  /// Su colección de partidas; como mucho una (ver el índice de GameDatabase).
+  /// Its game collection; at most one (see GameDatabase's index).
   gameDatabases   GameDatabase[]
 
   @@unique([courseId, order])
-  /// Como mucho una introducción y un cierre por curso. Los normales tienen
-  /// `roleId` nulo y NULL no choca con NULL, así que quedan fuera del índice.
+  /// At most one introduction and one closing per course. The normal ones have a
+  /// null `roleId` and NULL does not clash with NULL, so they stay out of the index.
   @@unique([courseId, roleId])
 }
 
 model Lesson {
-  /// Numérico de 8 dígitos: va en la URL del alumno (`/lecciones/02482009`).
+  /// 8-digit numeric: it goes in the student's URL (`/lecciones/02482009`).
   id                String    @id
   chapterId         String
   name              String
   description       String?
   order             Int
-  /// Lección imprescindible del curso (marca editorial; el filtro es del alumno).
+  /// Essential lesson of the course (editorial mark; the filter is the student's).
   isPriority        Boolean   @default(false)
-  /// Introducción o cierre del capítulo; nulo en las lecciones normales.
+  /// Introduction or closing of the chapter; null in normal lessons.
   roleId            Int?
-  /// Minutos estimados.
+  /// Estimated minutes.
   estimatedDuration Int?
   orientationId     Int
-  /// Partida de la colección del curso de la que sale el contenido.
+  /// Game of the course collection the content comes from.
   ///
-  /// Cuando está puesta MANDA ELLA: el contenido de la lección es el PGN de esa
-  /// partida, de modo que corregirla arregla todas las lecciones que la usan.
-  /// Cuando es nula manda `pgn`, que es como nacieron las lecciones y como
-  /// siguen funcionando las que no referencian nada.
+  /// When it is set IT RULES: the lesson's content is that game's PGN, so that
+  /// fixing it fixes every lesson that uses it. When it is null `pgn` rules, which
+  /// is how lessons were born and how the ones that reference nothing still work.
   ///
-  /// Quién manda se resuelve en UN solo sitio: `lessonPgnOf`
-  /// (services/shared/lesson-pgn.ts). Nadie debe leer `pgn` por su cuenta.
+  /// Which one rules is resolved in ONE single place: `lessonPgnOf`
+  /// (services/shared/lesson-pgn.ts). Nobody should read `pgn` on their own.
   gameId            String?
-  /// El contenido propio de la lección. Inerte mientras haya `gameId`; se
-  /// conserva y no se borra al vincular, para que desvincular devuelva la
-  /// lección a lo que tenía.
+  /// The lesson's own content. Inert while there is a `gameId`; it is kept and not
+  /// deleted on linking, so that unlinking returns the lesson to what it had.
   pgn               String    @db.Text
-  /// Cuándo cambió `pgn` por última vez. Es lo que marca como desactualizados
-  /// los ejercicios congelados antes del cambio.
+  /// When `pgn` last changed. It is what marks as stale the exercises frozen
+  /// before the change.
   pgnUpdatedAt      DateTime?
-  /// La lección puede entrenarse de memoria en el Move Trainer. Al activarla se
-  /// deriva un TrainingExercise con SU LÍNEA PRINCIPAL; las variantes siguen
-  /// existiendo para el modo estudiar, pero el repaso no las evalúa.
+  /// The lesson can be trained from memory in the Move Trainer. Enabling it
+  /// derives a TrainingExercise with ITS MAIN LINE; the variations go on existing
+  /// for study mode, but the review does not evaluate them.
   isTrainable       Boolean   @default(false)
-  /// Bando que juega el ALUMNO al entrenar, cuando no es el que mueve primero.
-  /// Nulo = el que mueva primero en la línea. Sirve para los repertorios de
-  /// negras: en «1.e4 c6 2.d4 d5» el alumno debe responder c6 y d5, no jugar e4.
-  /// Es distinto de `orientation`, que sólo decide cómo se ve el tablero.
+  /// Side the STUDENT plays when training, when it is not the one that moves
+  /// first. Null = whoever moves first in the line. It serves black repertoires:
+  /// in "1.e4 c6 2.d4 d5" the student must answer c6 and d5, not play e4.
+  /// It is different from `orientation`, which only decides how the board is seen.
   trainingColorId   Int?
 
   chapter       Chapter           @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   role          ContentRole?      @relation(fields: [roleId], references: [id])
-  /// SetNull y no Cascade: si alguien borra la partida de la colección, la
-  /// lección sigue existiendo —con su nombre, sus temas y su progreso— y se
-  /// queda sin contenido hasta que se le vincule otra.
+  /// SetNull and not Cascade: if someone deletes the game from the collection, the
+  /// lesson goes on existing — with its name, its topics and its progress — and is
+  /// left without content until another one is linked to it.
   game          Game?             @relation(fields: [gameId], references: [id], onDelete: SetNull)
   orientation   BoardOrientation  @relation(fields: [orientationId], references: [id])
   trainingColor BoardOrientation? @relation("LessonTrainingColor", fields: [trainingColorId], references: [id])
@@ -416,14 +413,14 @@ model Lesson {
   courseProgresses CourseProgress[]     @relation("CourseProgressLastLesson")
 
   @@unique([chapterId, order])
-  /// Como mucho una introducción y un cierre por capítulo; ver Chapter.
+  /// At most one introduction and one closing per chapter; see Chapter.
   @@unique([chapterId, roleId])
   @@index([gameId])
 }
 
-/// Declara un tramo entrenable del PGN. `path` usa rutas punteadas de índices
-/// de hijos desde la raíz ("0.0.1.0"); startFen + line van congelados para que
-/// el entrenador no dependa del parseo ni se rompa si el autor edita el PGN.
+/// Declares a trainable segment of the PGN. `path` uses dotted paths of child
+/// indexes from the root ("0.0.1.0"); startFen + line are frozen so the trainer
+/// does not depend on parsing nor break if the author edits the PGN.
 model TrainingExercise {
   id         String    @id @default(uuid())
   lessonId   String
@@ -433,16 +430,16 @@ model TrainingExercise {
   startPly   Int
   endPly     Int
   startFen   String
-  /// SAN del tramo, separado por espacios, congelado al publicar.
+  /// SAN of the segment, space-separated, frozen on publishing.
   line       String
-  /// Momento en que se congelaron startFen y line. El ejercicio queda «stale»
-  /// cuando Lesson.pgnUpdatedAt es posterior: sigue siendo entrenable (la copia
-  /// congelada es autosuficiente) pero puede no reflejar ya la lección.
+  /// Moment startFen and line were frozen. The exercise becomes "stale" when
+  /// Lesson.pgnUpdatedAt is later: it is still trainable (the frozen copy is
+  /// self-sufficient) but it may no longer reflect the lesson.
   frozenAt   DateTime?
   promptText String?
-  /// Lo generó el sistema desde la línea principal de la lección, no el staff.
-  /// Se regenera al editar el PGN y desaparece si la lección deja de ser
-  /// entrenable; los ejercicios creados a mano no se tocan nunca.
+  /// The system generated it from the lesson's main line, not the staff. It is
+  /// regenerated when the PGN is edited and disappears if the lesson stops being
+  /// trainable; hand-made exercises are never touched.
   isDerived  Boolean   @default(false)
 
   lesson Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
@@ -464,27 +461,28 @@ model LessonTopic {
 }
 
 // ---------------------------------------------------------------------------
-// Usuario, progreso y configuración de estudio
+// User, progress and study settings
 // ---------------------------------------------------------------------------
 
-/// Identidad del alumno. Es también la credencial: la plataforma no delega la
-/// autenticación en Payload (que sólo gestiona el CMS del sitio público) ni en
-/// un proveedor externo, así que el hash de la contraseña vive aquí.
+/// The student's identity. It is also the credential: the platform delegates
+/// authentication neither to Payload (which only manages the public site's CMS)
+/// nor to an external provider, so the password hash lives here.
 model User {
   id          String   @id @default(uuid())
   email       String   @unique
   displayName String
   createdAt   DateTime @default(now())
 
-  /// Hash scrypt con sus parámetros embebidos (ver lib/platform-auth/password.ts).
-  /// null = cuenta dada de alta sin credencial todavía: no puede iniciar sesión.
+  /// scrypt hash with its parameters embedded (see lib/platform-auth/password.ts).
+  /// null = account created without a credential yet: it cannot log in.
   passwordHash      String?
   passwordUpdatedAt DateTime?
   lastLoginAt       DateTime?
 
-  /// Minutos de estudio que el alumno se marca al día. Columna y no tabla de
-  /// ajustes porque hoy es el único ajuste que no cuelga de un curso (los que sí
-  /// viven en UserCourseSettings); si aparecen más, se mudan juntos.
+  /// Minutes of study the student sets themselves per day. A column and not a
+  /// settings table because today it is the only setting that does not hang from a
+  /// course (the ones that do live in UserCourseSettings); if more appear, they
+  /// move together.
   dailyGoalMinutes Int @default(30)
 
   sessions          Session[]
@@ -498,32 +496,32 @@ model User {
   courseSettings    UserCourseSettings[]
   trainerChapters   UserTrainerChapter[]
   gameDatabases     GameDatabase[]
-  /// Colecciones que le han repartido.
+  /// Collections that have been shared with them.
   studyShares       StudyShare[]
   positions         Position[]
   classParticipants ClassParticipant[]
   activities        UserActivity[]
   dailyStats        UserStatDaily[]
 
-  /// Asignaciones en las que este usuario es el alumno.
+  /// Assignments in which this user is the student.
   studentAssignments TeacherStudent[] @relation("StudentAssignments")
-  /// Asignaciones que este usuario (staff) hizo: auditoría ligera.
+  /// Assignments this user (staff) made: lightweight auditing.
   assignmentsMade    TeacherStudent[] @relation("AssignmentsMade")
 }
 
-/// Sesión iniciada. El token que viaja en la cookie es un valor aleatorio
-/// opaco del que sólo se guarda su SHA-256: si alguien lee esta tabla no puede
-/// suplantar a nadie. La caducidad de verdad es `expiresAt` (la cookie sólo
-/// transporta el token), de modo que cerrar sesión o revocarla surte efecto
-/// inmediato sin depender del navegador.
+/// Open session. The token travelling in the cookie is an opaque random value of
+/// which only its SHA-256 is stored: if someone reads this table they cannot
+/// impersonate anyone. The real expiry is `expiresAt` (the cookie only
+/// transports the token), so logging out or revoking takes effect immediately
+/// without depending on the browser.
 model Session {
   id         String   @id @default(uuid())
   userId     String
   tokenHash  String   @unique
   createdAt  DateTime @default(now())
   expiresAt  DateTime
-  /// Última vez que se usó; sirve para la renovación deslizante y para
-  /// distinguir sesiones vivas de las abandonadas.
+  /// Last time it was used; it serves the sliding renewal and telling live
+  /// sessions from abandoned ones.
   lastSeenAt DateTime @default(now())
   userAgent  String?
 
@@ -533,16 +531,16 @@ model Session {
   @@index([expiresAt])
 }
 
-/// Ventanas del límite de frecuencia de las server actions.
+/// Rate-limit windows for the server actions.
 ///
-/// Vive en la base y no en la memoria del proceso porque el techo tiene que ser
-/// UNO para toda la app: con el contador en memoria, dos instancias detrás de un
-/// balanceador dan el doble de intentos —y en serverless cada arranque en frío
-/// empieza a cero, que es justo lo que un ataque de fuerza bruta necesita—.
+/// It lives in the database and not in the process's memory because the ceiling
+/// has to be ONE for the whole app: with the counter in memory, two instances
+/// behind a load balancer give twice the attempts — and in serverless every cold
+/// start begins at zero, which is exactly what a brute-force attack needs.
 ///
-/// `key` identifica al sujeto y la operación (`login:ana@ejemplo.com`,
-/// `<userId>:import`). Las filas caducan solas: se borran al vencer, sin
-/// necesidad de un proceso aparte que las recoja.
+/// `key` identifies the subject and the operation (`login:ana@ejemplo.com`,
+/// `<userId>:import`). The rows expire on their own: they are deleted when they
+/// run out, with no need for a separate process to collect them.
 model RateLimit {
   key     String   @id
   count   Int
@@ -557,7 +555,7 @@ model CourseProgress {
   statusId     Int
   startedAt    DateTime?
   completedAt  DateTime?
-  /// Punto de retorno de «continuar estudiando».
+  /// Return point of "continue studying".
   lastLessonId String?
 
   user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -597,7 +595,7 @@ model LessonProgress {
   @@id([userId, lessonId])
 }
 
-/// Histórico append-only; nunca se actualiza.
+/// Append-only history; it is never updated.
 model TrainingAttempt {
   id            String   @id @default(uuid())
   userId        String
@@ -606,18 +604,18 @@ model TrainingAttempt {
   mistakes      Int      @default(0)
   durationMs    Int?
   contextId     Int
-  /// Jugadas del alumno que pedía la línea.
+  /// Moves of the student the line asked for.
   requiredMoves Int      @default(0)
-  /// Acertadas a la primera. `mistakes` cuenta los fallos, que pueden repetirse
-  /// sobre la misma jugada, así que correctMoves NO es requiredMoves - mistakes.
+  /// Got right first time. `mistakes` counts the failures, which can repeat on the
+  /// same move, so correctMoves is NOT requiredMoves - mistakes.
   correctMoves  Int      @default(0)
-  /// Hasta qué ply llegó. Es el DENOMINADOR para saber cuántas veces se pasó por
-  /// una posición: sin esto, los fallos guardados no se pueden convertir en un
-  /// porcentaje de aciertos.
+  /// How far in plies they got. It is the DENOMINATOR for knowing how many times a
+  /// position was passed through: without this, the stored mistakes cannot be
+  /// turned into a percentage of successes.
   reachedPly    Int      @default(0)
   hintsUsed     Int      @default(0)
-  /// Toda la secuencia a la primera y sin pistas. Se guarda aparte de la
-  /// precisión: se puede acertar el 92 % y no ser un repaso perfecto.
+  /// The whole sequence first time and without hints. It is stored apart from the
+  /// accuracy: one can get 92 % right and not have a perfect review.
   isPerfect     Boolean  @default(false)
   createdAt     DateTime @default(now())
 
@@ -632,12 +630,12 @@ model TrainingAttempt {
   @@index([exerciseId])
 }
 
-/// Una fila POR JUGADA FALLADA, no por jugada. Un alumno que acierta todo no
-/// escribe ninguna, así que la tabla crece con los errores y no con el uso.
+/// One row PER FAILED MOVE, not per move. A student who gets everything right
+/// writes none, so the table grows with the mistakes and not with the usage.
 ///
-/// La posición se identifica por el hash de su FEN (lib/chess/position-hash.ts)
-/// y no por el número de jugada: así el dato sobrevive a que se edite el PGN, y
-/// agrupa la misma posición alcanzada por transposición desde otra lección.
+/// The position is identified by the hash of its FEN (lib/chess/position-hash.ts)
+/// and not by the move number: that way the data survives the PGN being edited,
+/// and it groups the same position reached by transposition from another lesson.
 model TrainingMistake {
   id           String   @id @default(uuid())
   attemptId    String
@@ -645,7 +643,7 @@ model TrainingMistake {
   fen          String
   expectedSan  String
   playedSan    String
-  /// Ply dentro de la línea, para poder cruzarlo con `reachedPly`.
+  /// Ply within the line, so it can be crossed with `reachedPly`.
   ply          Int
   usedHint     Boolean  @default(false)
   createdAt    DateTime @default(now())
@@ -656,24 +654,24 @@ model TrainingMistake {
   @@index([positionHash])
 }
 
-/// Estado actual del alumno con una lección entrenable, separado del historial
-/// de intentos para poder saber de un vistazo qué toca repasar.
+/// Current state of the student with a trainable lesson, kept apart from the
+/// attempt history so that what is due for review can be known at a glance.
 ///
-/// Cuelga de (userId, lessonId) y NO de la ruta punteada dentro del PGN: esas
-/// rutas se reordenan al promover una variante, así que atar el progreso a
-/// ellas lo perdería en la primera edición. La lección es la identidad estable.
+/// It hangs from (userId, lessonId) and NOT from the dotted path within the PGN:
+/// those paths are reordered when a variation is promoted, so tying the progress
+/// to them would lose it on the first edit. The lesson is the stable identity.
 model UserLessonTraining {
   userId              String
   lessonId            String
   totalAttempts       Int       @default(0)
   perfectAttempts     Int       @default(0)
-  /// Porcentaje 0-100 del último intento y del mejor.
+  /// Percentage 0-100 of the last attempt and of the best one.
   lastAccuracy        Int       @default(0)
   bestAccuracy        Int       @default(0)
-  /// Repasos perfectos seguidos: es lo que sube el peldaño de la escalera.
+  /// Consecutive perfect reviews: it is what climbs the ladder's rung.
   consecutivePerfect  Int       @default(0)
   currentIntervalDays Int       @default(0)
-  /// Peldaño actual, para no recalcularlo desde el intervalo.
+  /// Current rung, so as not to recompute it from the interval.
   masteryLevel        Int       @default(0)
   lastReviewedAt      DateTime?
   nextReviewAt        DateTime?
@@ -686,8 +684,8 @@ model UserLessonTraining {
   @@index([userId, nextReviewAt])
 }
 
-/// Una fila por usuario y curso, creada al primer cambio. Su ausencia
-/// significa «valores por defecto»: no se crea al inscribirse.
+/// One row per user and course, created on the first change. Its absence means
+/// "default values": it is not created on enrolment.
 model UserCourseSettings {
   userId              String
   courseId            String
@@ -703,7 +701,7 @@ model UserCourseSettings {
   @@id([userId, courseId])
 }
 
-/// Capítulos que el usuario eligió entrenar de forma recurrente.
+/// Chapters the user chose to train recurrently.
 model UserTrainerChapter {
   userId    String
   chapterId String
@@ -716,32 +714,32 @@ model UserTrainerChapter {
 }
 
 // ---------------------------------------------------------------------------
-// Bases de datos de partidas («Mis estudios» en la interfaz)
+// Game databases ("Mis estudios" in the interface)
 // ---------------------------------------------------------------------------
 
-/// Una tabla, dos propietarios: usuario (bases privadas) o curso (bases del
-/// contenido publicado). CHECK XOR (userId, courseId) en la migración.
+/// One table, two owners: user (private databases) or course (databases of the
+/// published content). CHECK XOR (userId, courseId) in the migration.
 model GameDatabase {
-  /// Corto porque va en la URL: `/estudios/aB3xK9pQ`. Lo genera Prisma en el
-  /// cliente, igual que `uuid()`, así que la columna sigue siendo TEXT.
+  /// Short because it goes in the URL: `/estudios/aB3xK9pQ`. Prisma generates it
+  /// on the client, just like `uuid()`, so the column is still TEXT.
   id          String   @id @default(nanoid(8))
   ownerTypeId Int
   userId      String?
   courseId    String?
-  /// El capítulo del que es la colección.
+  /// The chapter whose collection it is.
   ///
-  /// Las colecciones de un curso son por CAPÍTULO: cada uno junta las partidas
-  /// que usan sus lecciones. `courseId` se queda además de éste —no en su
-  /// lugar— porque es lo que decide quién ve la base (un alumno ve las de los
-  /// cursos que ha empezado) y lo que permite listar de una vez todas las
-  /// partidas del curso sin unir por capítulo.
+  /// A course's collections are per CHAPTER: each one gathers the games its
+  /// lessons use. `courseId` stays alongside this one — not instead of it —
+  /// because it is what decides who sees the database (a student sees those of the
+  /// courses they have started) and what makes it possible to list all of the
+  /// course's games at once without joining by chapter.
   chapterId   String?
   name        String
   description String?
   kindId      Int
-  /// La base creada al registrarse.
+  /// The database created on sign-up.
   isDefault   Boolean  @default(false)
-  /// Orden dentro del curso.
+  /// Order within the course.
   order       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -756,28 +754,29 @@ model GameDatabase {
   gamePositions GamePosition[]
   shares        StudyShare[]
 
-  /// Una sola colección por capítulo: es lo que hace que «la colección de este
-  /// capítulo» sea una fila y no una lista que haya que desempatar.
+  /// A single collection per chapter: it is what makes "this chapter's collection"
+  /// one row and not a list that has to be disambiguated.
   @@unique([chapterId])
   @@index([userId])
   @@index([courseId])
 }
 
-/// Reparto de una COLECCIÓN a un alumno. La colección es de su dueño —un
-/// maestro— y al alumno le llega por aquí: ve la base y sus partidas, y no
-/// puede escribir nada. Eso último no lo impone esta tabla sino la propiedad,
-/// que es lo que miran todas las escrituras (ver services/studies/study-rules).
+/// Sharing of a COLLECTION with a student. The collection belongs to its owner —
+/// a teacher — and reaches the student through here: they see the database and
+/// its games, and cannot write anything. That last part is not imposed by this
+/// table but by ownership, which is what every write looks at (see
+/// services/studies/study-rules).
 ///
-/// Una fila por (colección, alumno): la misma colección se reparte a varios y
-/// el índice único evita repartirla dos veces al mismo. Quitar el reparto es
-/// borrar la fila; no hay historial porque no hay nada que auditar —el material
-/// sigue existiendo en la base del maestro—.
+/// One row per (collection, student): the same collection is shared with several
+/// and the unique index prevents sharing it twice with the same one. Removing
+/// the share is deleting the row; there is no history because there is nothing
+/// to audit — the material goes on existing in the teacher's database.
 model StudyShare {
   id         String   @id @default(uuid())
   databaseId String
   userId     String
-  /// Ficha del maestro que la repartió. Anulable para no perder el reparto si
-  /// algún día se retira la ficha: la colección la sigue teniendo el alumno.
+  /// Record of the teacher who shared it. Nullable so as not to lose the share if
+  /// the record is ever removed: the student still has the collection.
   teacherId  String?
   createdAt  DateTime @default(now())
 
@@ -789,26 +788,26 @@ model StudyShare {
   @@index([userId])
 }
 
-/// Cabeceras en columnas (listar/ordenar/filtrar sin parsear); el PGN sigue
-/// siendo la fuente del contenido.
+/// Headers in columns (list/sort/filter without parsing); the PGN is still the
+/// source of the content.
 model Game {
-  /// Corto por el mismo motivo que el del estudio: los dos van en la URL.
+  /// Short for the same reason as the study's: both go in the URL.
   id           String    @id @default(nanoid(8))
   databaseId   String
-  /// Cómo se distingue esta partida DENTRO de su estudio («Capítulo 1»).
-  /// Anulable a propósito: una partida se identifica por sus jugadores, y sólo
-  /// las creadas en blanco necesitan un nombre para no ser todas iguales. Las
-  /// importadas de un PGN se quedan a NULL y se siguen mostrando por su pareja.
+  /// How this game is told apart WITHIN its study ("Capítulo 1").
+  /// Nullable on purpose: a game is identified by its players, and only the ones
+  /// created blank need a name so they are not all alike. Those imported from a
+  /// PGN stay at NULL and go on being shown by their pairing.
   title        String?
   white        String
   black        String
   whiteElo     Int?
   blackElo     Int?
-  /// Título FIDE tal cual viene en el PGN: «GM», «WGM», «IM»…
+  /// FIDE title exactly as it comes in the PGN: "GM", "WGM", "IM"…
   whiteTitle   String?
   blackTitle   String?
-  /// Federación en el código de tres letras del PGN («MEX», «USA»). No es
-  /// ISO-3166: FIDE usa el código olímpico, que difiere en varios países.
+  /// Federation in the PGN's three-letter code ("MEX", "USA"). It is not
+  /// ISO-3166: FIDE uses the Olympic code, which differs in several countries.
   whiteCountry String?
   blackCountry String?
   resultId     Int
@@ -817,17 +816,17 @@ model Game {
   site         String?
   round        String?
   eco          String?
-  /// Nulo si la partida empieza en la posición inicial.
+  /// Null when the game starts at the initial position.
   initialFen   String?
   pgn          String    @db.Text
-  /// Etiquetas libres del usuario.
+  /// The user's free tags.
   tags         Json?
   sourceId     Int
-  /// Sólo con sentido en bases de usuario.
+  /// Only meaningful in user databases.
   isOwnGame    Boolean   @default(false)
-  /// Posición dentro del estudio, ordenable a mano. Manda sobre la fecha: una
-  /// vez que alguien coloca sus partidas, el orden es el suyo. Las nuevas se
-  /// crean al final (max+1), no en 0, para que no salten al principio.
+  /// Position within the study, sortable by hand. It rules over the date: once
+  /// someone arranges their games, the order is theirs. New ones are created at
+  /// the end (max+1), not at 0, so they do not jump to the front.
   order        Int       @default(0)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
@@ -838,41 +837,41 @@ model Game {
 
   classBlocks ClassBlock[]
   positions   GamePosition[]
-  /// Lecciones que sacan su contenido de esta partida.
+  /// Lessons that take their content from this game.
   lessons     Lesson[]
 
   @@index([databaseId, order])
 }
 
-/// Índice de posiciones: una fila por cada posición por la que pasó la partida.
-/// Es lo que permite buscar «qué partidas llegaron aquí» por POSICIÓN y no por
-/// secuencia de jugadas, de modo que las transposiciones cuentan como
-/// coincidencia. Se genera al importar (ver services/game-positions) y se
-/// regenera entera si el PGN cambia; nunca se edita a mano.
+/// Position index: one row per position the game went through. It is what makes
+/// it possible to search "which games got here" by POSITION and not by sequence
+/// of moves, so that transpositions count as a match. It is generated on import
+/// (see services/game-positions) and regenerated whole if the PGN changes; it is
+/// never edited by hand.
 ///
-/// Sin columna `fen` a propósito: son ~80 filas por partida y el FEN completo
-/// no lo lee nadie —quien busca ya aporta el suyo y el de cualquier ply se
-/// recupera reproduciendo el PGN—, así que sólo engordaría la tabla.
+/// Without a `fen` column on purpose: it is ~80 rows per game and nobody reads
+/// the full FEN — whoever searches already brings their own and any ply's can be
+/// recovered by replaying the PGN — so it would only bloat the table.
 model GamePosition {
   id           String  @id @default(uuid())
   gameId       String
-  /// Denormalizado desde Game: deja filtrar por propietario y origen sin unir
-  /// con Game en la consulta caliente del explorador.
+  /// Denormalised from Game: it allows filtering by owner and origin without
+  /// joining Game in the explorer's hot query.
   databaseId   String
-  /// Medias jugadas desde el inicio; 0 es la posición de partida.
+  /// Half-moves from the start; 0 is the starting position.
   ply          Int
-  /// SHA-256 del FEN normalizado (ver lib/chess/position-hash).
+  /// SHA-256 of the normalised FEN (see lib/chess/position-hash).
   positionHash String
-  /// Jugada hecha DESDE esta posición; nula en la última. De aquí salen las
-  /// estadísticas de continuaciones.
+  /// Move made FROM this position; null in the last one. The statistics of
+  /// continuations come from here.
   nextMoveSan  String?
   nextMoveUci  String?
 
   game     Game         @relation(fields: [gameId], references: [id], onDelete: Cascade)
   database GameDatabase @relation(fields: [databaseId], references: [id], onDelete: Cascade)
 
-  /// Una posición repetida en la misma partida da varias filas, una por ply:
-  /// contar partidas exige contar gameId distintos, nunca filas.
+  /// A position repeated in the same game gives several rows, one per ply:
+  /// counting games requires counting distinct gameIds, never rows.
   @@unique([gameId, ply])
   @@index([positionHash])
   @@index([positionHash, databaseId])
@@ -880,13 +879,13 @@ model GamePosition {
 }
 
 // ---------------------------------------------------------------------------
-// Clases y profesores
+// Classes and teachers
 // ---------------------------------------------------------------------------
 
-/// Rol sobre User: el panel del profesor se abre si existe esta fila.
-/// Un profesor nunca se borra (rompería clases y asignaciones históricas): se
-/// desactiva con isActive, y entonces deja de poder entrar a /teacher y de
-/// admitir asignaciones nuevas.
+/// Role over User: the teacher panel opens if this row exists.
+/// A teacher is never deleted (it would break classes and historical
+/// assignments): they are deactivated with isActive, and then they stop being
+/// able to enter /teacher and to take new assignments.
 model Teacher {
   id          String   @id @default(uuid())
   userId      String   @unique
@@ -902,24 +901,25 @@ model Teacher {
 
   classes  Class[]
   students TeacherStudent[]
-  /// Repartos de colecciones que hizo.
+  /// Collection shares they made.
   shares   StudyShare[]
 }
 
-/// Asignación profesor↔alumno, independiente de las clases: sin ella un alumno
-/// que aún no tiene clases sería invisible para su profesor. endedAt = null ⇒
-/// activa. Reasignar CIERRA la fila y crea otra: el historial nunca se borra.
-/// La regla «un profesor activo por alumno» la impone el índice único parcial
-/// teacher_student_one_active (SQL manual en la migración); para permitir
-/// varios profesores en el futuro basta con eliminar ese índice, sin tocar el
-/// modelo. Sin catálogo de estado: activa/terminada se deriva de endedAt.
+/// Teacher↔student assignment, independent of the classes: without it a student
+/// who does not have classes yet would be invisible to their teacher. endedAt =
+/// null ⇒ active. Reassigning CLOSES the row and creates another: the history is
+/// never deleted. The "one active teacher per student" rule is imposed by the
+/// partial unique index teacher_student_one_active (manual SQL in the
+/// migration); to allow several teachers in the future it is enough to remove
+/// that index, without touching the model. No status catalog: active/ended is
+/// derived from endedAt.
 model TeacherStudent {
   id         String    @id @default(uuid())
   teacherId  String
   studentId  String
   assignedAt DateTime  @default(now())
   endedAt    DateTime?
-  /// User del staff que hizo la asignación (auditoría ligera).
+  /// Staff User who made the assignment (lightweight auditing).
   assignedBy String?
   note       String?
 
@@ -931,11 +931,11 @@ model TeacherStudent {
   @@index([studentId])
 }
 
-/// Rol Administrador/Editor de la PLATAFORMA (la fila existe = tiene el rol),
-/// mismo patrón que Teacher. NO confundir con los roles admin/editor de
-/// Payload, que pertenecen al CMS del sitio público y viven en otra base de
-/// datos: no se mezclan ni se reutilizan. Si algún día se separan admin y
-/// editor, se añade aquí un roleId + catálogo StaffRole, sin tocar User.
+/// Administrator/Editor role of the PLATFORM (the row exists = they have the
+/// role), the same pattern as Teacher. NOT to be confused with Payload's
+/// admin/editor roles, which belong to the public site's CMS and live in another
+/// database: they are neither mixed nor reused. If admin and editor are ever
+/// separated, a roleId + StaffRole catalog is added here, without touching User.
 model Staff {
   id        String   @id @default(uuid())
   userId    String   @unique
@@ -949,13 +949,13 @@ model Class {
   teacherId             String
   title                 String
   description           String?
-  /// Fecha y hora de la clase (UTC).
+  /// Date and time of the class (UTC).
   scheduledAt           DateTime
   durationMin           Int
   statusId              Int
   meetingProviderId     Int?
   meetingUrl            String?
-  /// El enlace sólo se devuelve al cliente cuando now >= meetingUrlVisibleFrom.
+  /// The link is only returned to the client when now >= meetingUrlVisibleFrom.
   meetingUrlVisibleFrom DateTime?
   recordingUrl          String?
   summary               String?   @db.Text
@@ -989,14 +989,14 @@ model ClassParticipant {
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([classId, userId])
-  /// «Las clases de este alumno» desde el panel del profesor y del staff: la
-  /// clave compuesta empieza por classId y no sirve para ese acceso.
+  /// "This student's classes" from the teacher and staff panels: the composite key
+  /// starts with classId and does not serve that access.
   @@index([userId])
 }
 
-/// Contenido ordenado de la clase. Un bloque usa el campo de su kind y las
-/// referencias son punteros, nunca copias. CHECK «máx. una referencia» en la
-/// migración. `movePath` usa la misma ruta punteada que TrainingExercise.path.
+/// Ordered content of the class. A block uses the field of its kind and the
+/// references are pointers, never copies. CHECK "at most one reference" in the
+/// migration. `movePath` uses the same dotted path as TrainingExercise.path.
 model ClassBlock {
   id         String  @id @default(uuid())
   classId    String
@@ -1009,11 +1009,11 @@ model ClassBlock {
   positionId String?
   movePath   String?
   caption    String?
-  /// Partida transcrita por el profesor para esta clase. Vive aquí y no como
-  /// `Game` porque un profesor puede no tener ningún estudio, y crearle uno por
-  /// detrás sólo para esto le añadiría una entidad que no pidió.
+  /// Game transcribed by the teacher for this class. It lives here and not as a
+  /// `Game` because a teacher may have no study at all, and creating one behind
+  /// their back just for this would add an entity they did not ask for.
   ///
-  /// Cuando hay PGN aquí, MANDA sobre `gameId`: es la partida de este bloque.
+  /// When there is a PGN here, it RULES over `gameId`: it is this block's game.
   pgn        String? @db.Text
 
   class    Class          @relation(fields: [classId], references: [id], onDelete: Cascade)
@@ -1040,8 +1040,8 @@ model ClassTranscript {
   status TranscriptStatus @relation(fields: [statusId], references: [id])
 }
 
-/// Diagrama guardado y reutilizable. CHECK XOR (userId, courseId) en la
-/// migración; los propietarios TEACHER usan userId (Teacher es 1:1 con User).
+/// Saved and reusable diagram. CHECK XOR (userId, courseId) in the migration;
+/// TEACHER owners use userId (Teacher is 1:1 with User).
 model Position {
   id            String   @id @default(uuid())
   ownerTypeId   Int
@@ -1050,9 +1050,9 @@ model Position {
   title         String?
   fen           String
   orientationId Int
-  /// json de flechas [{ orig, dest, color }]
+  /// json of arrows [{ orig, dest, color }]
   arrows        Json?
-  /// json de casillas resaltadas [{ square, color }]
+  /// json of highlighted squares [{ square, color }]
   highlights    Json?
   createdAt     DateTime @default(now())
 
@@ -1068,17 +1068,17 @@ model Position {
 }
 
 // ---------------------------------------------------------------------------
-// Actividad y estadísticas
+// Activity and statistics
 // ---------------------------------------------------------------------------
 
-/// Registro append-only de cada hecho del alumno: fuente de verdad de todas
-/// las estadísticas. Nunca se actualiza ni se borra.
+/// Append-only record of every fact about the student: source of truth of all
+/// the statistics. It is never updated nor deleted.
 model UserActivity {
   id            String   @id @default(uuid())
   userId        String
   typeId        Int
   subjectTypeId Int
-  /// uuid del sujeto; polimórfico a propósito, sin FK.
+  /// uuid of the subject; polymorphic on purpose, without an FK.
   subjectId     String
   topicId       Int?
   occurredAt    DateTime @default(now())
@@ -1092,10 +1092,10 @@ model UserActivity {
   @@index([userId, occurredAt])
 }
 
-/// Agregado derivado por usuario/día/métrica/tema; reconstruible entero desde
-/// UserActivity. topicId NULL = total. En v1 el dashboard calcula directo de
-/// UserActivity; esta tabla queda lista para el rollup. El índice único se
-/// reemplaza en la migración por NULLS NOT DISTINCT.
+/// Aggregate derived per user/day/metric/topic; rebuildable in full from
+/// UserActivity. topicId NULL = total. In v1 the dashboard computes directly
+/// from UserActivity; this table is ready for the rollup. The unique index is
+/// replaced in the migration by NULLS NOT DISTINCT.
 model UserStatDaily {
   id       String   @id @default(uuid())
   userId   String

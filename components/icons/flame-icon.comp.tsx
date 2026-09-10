@@ -2,7 +2,7 @@ interface FlameIconProps {
   className?: string;
 }
 
-/** Llama de la racha diaria. El `viewBox` sube de 0 porque el original la deja asomar por arriba. */
+/** Flame of the daily streak. The `viewBox` starts above 0 because the original lets it peek out at the top. */
 export function FlameIcon({ className }: FlameIconProps) {
   return (
     <svg className={className} viewBox="0 -32 448 544" width="32" height="32" fill="currentColor" aria-hidden="true">

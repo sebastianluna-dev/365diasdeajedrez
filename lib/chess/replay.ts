@@ -10,9 +10,9 @@ export interface ReplayPosition {
   /** SAN of the move that produced this position ("" for the starting position). */
   san: string;
   /**
-   * UCI de la jugada que produjo esta posición ("" en la inicial). A diferencia
-   * de `san`, no depende del contexto: es la forma estable de agrupar la misma
-   * jugada venida de partidas distintas (ver services/game-explorer).
+   * UCI of the move that produced this position ("" in the initial one). Unlike
+   * `san`, it does not depend on context: it is the stable way to group the same
+   * move coming from different games (see services/game-explorer).
    */
   uci: string;
   /** Full FEN of the position. */
@@ -33,8 +33,8 @@ function startPos(headers: Map<string, string>): Position {
 export interface ReplayResult {
   positions: ReplayPosition[];
   /**
-   * Motivo por el que la reproducción se cortó antes de terminar, si ocurrió.
-   * Vacío cuando el PGN se reprodujo entero.
+   * Reason why the replay stopped before finishing, if it happened.
+   * Empty when the PGN was replayed in full.
    */
   warnings: string[];
 }
@@ -66,8 +66,8 @@ export function replayGameDetailed(pgn: string): ReplayResult {
       );
       break;
     }
-    // El UCI se toma ANTES de jugar: makeUci sólo mira la jugada, pero dejarlo
-    // junto a parseSan evita que un futuro cambio del bucle lo desordene.
+    // The UCI is taken BEFORE playing: makeUci only looks at the move, but keeping
+    // it next to parseSan prevents a future change to the loop from reordering it.
     const uci = makeUci(move);
     pos.play(move);
     const [from, to] = chessgroundMove(move);
@@ -83,7 +83,7 @@ export function replayGameDetailed(pgn: string): ReplayResult {
   return { positions, warnings };
 }
 
-/** Igual que `replayGameDetailed` pero devolviendo sólo las posiciones. */
+/** Same as `replayGameDetailed` but returning only the positions. */
 export function replayGame(pgn: string): ReplayPosition[] {
   return replayGameDetailed(pgn).positions;
 }
@@ -116,7 +116,7 @@ export function applySan(fen: string, san: string): string | undefined {
   return makeFen(pos.toSetup());
 }
 
-/** Piezas a las que puede coronar un peón. */
+/** Pieces a pawn can promote to. */
 export type PromotionRole = "queen" | "rook" | "bishop" | "knight";
 
 function positionFromFen(fen: string): Position | null {
@@ -132,8 +132,8 @@ function positionFromFen(fen: string): Position | null {
 }
 
 /**
- * Indica si mover entre esas dos casillas es una coronación de peón, para que
- * el tablero pueda pedir la pieza antes de confirmar la jugada.
+ * Says whether moving between those two squares is a pawn promotion, so the
+ * board can ask for the piece before confirming the move.
  */
 export function isPromotionMove(fen: string, orig: Key, dest: Key): boolean {
   const pos = positionFromFen(fen);
@@ -168,20 +168,20 @@ export function sanForMove(fen: string, orig: Key, dest: Key, promotion: Promoti
 
 export interface UciLineStep {
   san: string;
-  /** La posición DESPUÉS de la jugada: es la que se previsualiza al señalarla. */
+  /** The position AFTER the move: it is the one previewed when pointing at it. */
   fen: string;
-  /** [origen, destino], para marcar en el tablero de la vista previa. */
+  /** [from, to], to highlight on the preview board. */
   lastMove: [Key, Key];
 }
 
 /**
- * Reproduce la línea que propone el módulo, que la da en UCI («e2e4 e7e5»), y
- * devuelve cada jugada con la posición a la que lleva.
+ * Replays the line the engine proposes, which it gives in UCI ("e2e4 e7e5"),
+ * and returns each move with the position it leads to.
  *
- * Se reproduce sobre el tablero porque el SAN depende de la posición: la misma
- * jugada se escribe «Cf3» o «Cgf3» según haya otro caballo que pueda llegar. Se
- * corta en la primera jugada que no encaje, en vez de devolver la línea a
- * medias sin avisar: una línea rara es preferible a una equivocada.
+ * It is replayed on the board because the SAN depends on the position: the same
+ * move is written "Nf3" or "Ngf3" depending on whether another knight can get
+ * there. It stops at the first move that does not fit, instead of returning the
+ * line half-done without warning: an odd line is preferable to a wrong one.
  */
 export function uciLineSteps(fen: string, uciMoves: string[]): UciLineStep[] {
   const out: UciLineStep[] = [];
@@ -205,12 +205,12 @@ export function uciLineSteps(fen: string, uciMoves: string[]): UciLineStep[] {
   return out;
 }
 
-/** Sólo los SAN de la línea, para quien no necesita las posiciones. */
+/** Only the SANs of the line, for whoever does not need the positions. */
 export function uciLineToSan(fen: string, uciMoves: string[]): string[] {
   return uciLineSteps(fen, uciMoves).map((step) => step.san);
 }
 
-/** Letra de coronación del UCI a la pieza que espera `sanForMove`. */
+/** Promotion letter of the UCI to the piece `sanForMove` expects. */
 const PROMOTION_BY_LETTER: Record<string, PromotionRole> = {
   q: "queen",
   r: "rook",

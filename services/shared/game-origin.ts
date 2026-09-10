@@ -1,19 +1,19 @@
 import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 
-// De dónde viene una partida. No es un catálogo de la base: se DERIVA de quién
-// es el dueño de su base y de qué roles tiene ese dueño, igual que el resto de
-// la plataforma deduce los roles de la existencia de una fila.
+// Where a game comes from. It is not a catalog in the database: it is DERIVED
+// from who owns its database and from what roles that owner has, just as the
+// rest of the platform deduces roles from the existence of a row.
 //
-// Importa en el buscador por posición: ver que una continuación la jugaron
-// treinta alumnos no significa lo mismo que verla en treinta partidas
-// magistrales de un curso.
+// It matters in the position search: seeing that a continuation was played by
+// thirty students does not mean the same as seeing it in thirty master games of
+// a course.
 
 export const GAME_ORIGIN = {
-  /** Base personal de un alumno. */
+  /** A student's personal database. */
   STUDENT_STUDY: "STUDENT_STUDY",
-  /** Base de un curso: partidas modelo del material publicado. */
+  /** A course's database: model games of the published material. */
   COURSE: "COURSE",
-  /** Base personal de un profesor o de un editor. */
+  /** A teacher's or an editor's personal database. */
   EDITOR: "EDITOR",
 } as const;
 
@@ -26,22 +26,22 @@ export const GAME_ORIGIN_LABEL: Record<GameOriginCode, string> = {
 };
 
 export interface GameOriginInput {
-  /** Code del catálogo OwnerType de la base que contiene la partida. */
+  /** Code of the OwnerType catalog of the database containing the game. */
   ownerTypeCode: string;
-  /** Roles del dueño cuando la base es de un usuario; null si es de un curso. */
+  /** Roles of the owner when the database belongs to a user; null when it belongs to a course. */
   owner: { isTeacher: boolean; isStaff: boolean } | null;
 }
 
 /**
- * Clasifica una partida en uno de los tres orígenes.
+ * Classifies a game into one of the three origins.
  *
- * El orden de las comprobaciones es el que manda: una base de curso es del
- * curso aunque la creara un editor, y la base personal de un profesor cuenta
- * como material del profesorado aunque él mismo sea alumno de otro curso.
+ * The order of the checks is what rules: a course database belongs to the
+ * course even if an editor created it, and a teacher's personal database counts
+ * as teaching-staff material even if they are themselves a student of another course.
  *
- * «Vista en clase» no es un origen y no se decide aquí: una partida de clase
- * siempre vive además en la base de alguien, así que viaja como una marca
- * aparte sobre el mismo view-model.
+ * "Seen in class" is not an origin and is not decided here: a class game always
+ * lives in someone's database as well, so it travels as a separate mark over
+ * the same view model.
  */
 export function gameOriginOf({ ownerTypeCode, owner }: GameOriginInput): GameOriginCode {
   if (ownerTypeCode === OWNER_TYPE.COURSE) return GAME_ORIGIN.COURSE;

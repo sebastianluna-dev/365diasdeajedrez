@@ -24,8 +24,8 @@ export const classDetailInclude = {
     include: {
       kind: true,
       game: { select: { id: true, white: true, black: true, pgn: true, databaseId: true } },
-      // El PGN y la orientación son para pintar la lección DENTRO de la clase,
-      // no sólo enlazarla: el alumno no debería tener que salir para verla.
+      // The PGN and the orientation are for rendering the lesson INSIDE the class,
+      // not just linking it: the student should not have to leave to see it.
       lesson: {
         select: { id: true, name: true, ...lessonPgnSelect, orientation: { select: { code: true } } },
       },
@@ -60,9 +60,9 @@ function mapBlock(block: ClassDetailRow["blocks"][number]): ClassBlockView | nul
     case CLASS_BLOCK_KIND.VIDEO:
       return block.videoUrl ? { ...base, kind: "VIDEO", videoUrl: block.videoUrl } : null;
     case CLASS_BLOCK_KIND.GAME_REF: {
-      // El PGN transcrito en el bloque manda; la partida referenciada es el
-      // respaldo. La regla vive AQUÍ y en un solo sitio: repartirla por la
-      // interfaz dejaría dos fuentes de verdad para el mismo bloque.
+      // The PGN transcribed in the block rules; the referenced game is the fallback.
+      // The rule lives HERE and in one single place: spreading it through the
+      // interface would leave two sources of truth for the same block.
       if (block.pgn && block.pgn.trim().length > 0) {
         return {
           ...base,
@@ -124,8 +124,8 @@ function mapBlock(block: ClassDetailRow["blocks"][number]): ClassBlockView | nul
 }
 
 export function mapClassDetail(row: ClassDetailRow, now: Date): ClassDetail {
-  // El enlace de la reunión sólo se expone cuando ya es visible; antes, el
-  // cliente recibe únicamente la fecha para pintar la cuenta atrás.
+  // The meeting link is only exposed once it is visible; before that, the client
+  // receives only the date to render the countdown.
   const visibleFrom = row.meetingUrlVisibleFrom;
   const meetingVisible = row.meetingUrl !== null && (visibleFrom === null || now >= visibleFrom);
 

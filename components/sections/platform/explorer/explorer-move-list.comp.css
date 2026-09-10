@@ -18,8 +18,8 @@
     color: var(--platform-text-muted);
   }
 
-  /* Alto acotado: la línea puede crecer mucho y no debe empujar hacia abajo a
-     las continuaciones y a las partidas, que son el resultado de la búsqueda. */
+  /* Bounded height: the line can grow a lot and must not push down the
+     continuations and the games, which are the result of the search. */
   & .explorer-move-list__rows {
     list-style: none;
     margin: 0;
@@ -70,8 +70,8 @@
     display: block;
   }
 
-  /* Misma técnica que la notación del tablero: el SVG de la pieza como máscara,
-     así el glifo hereda el color del texto y funciona sobre cualquier fondo. */
+  /* Same technique as the board notation: the piece SVG as a mask, so the
+     glyph inherits the text colour and works on any background. */
   & .explorer-move-list__glyph {
     display: inline-block;
     width: 17px;

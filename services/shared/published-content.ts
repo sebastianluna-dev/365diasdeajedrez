@@ -1,12 +1,12 @@
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 
-// Lo que el ALUMNO puede ver o tocar es sólo el contenido de cursos publicados.
-// Las lecturas ya lo aplicaban (`getPublishedCourse`, `getTrainerData`), pero
-// las escrituras de progreso y el entrenador aceptaban ids sueltos: un POST con
-// el id de una lección en borrador sembraba progreso —o devolvía sus
-// ejercicios— sin que nada lo parase. Un solo `where` para las tres alturas,
-// que se encadena en la consulta en vez de «leer y luego comprobar».
+// What the STUDENT can see or touch is only the content of published courses.
+// The reads already applied it (`getPublishedCourse`, `getTrainerData`), but the
+// progress writes and the trainer accepted bare ids: a POST with the id of a
+// draft lesson seeded progress — or returned its exercises — with nothing
+// stopping it. A single `where` for the three levels, chained into the query
+// instead of "read and then check".
 
 export const publishedCourseWhere = {
   status: { code: COURSE_STATUS.PUBLISHED },

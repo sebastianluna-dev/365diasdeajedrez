@@ -18,6 +18,7 @@ These rules are enforced by review, tests (`proxy.test.ts`, `nav-items.test.ts`)
 - **Server Components by default.** `"use client"` goes only on the leaf that owns state or browser APIs (the game viewer, the board, the header dropdown, the upload widget…).
 - Images always go through `next/image`; never a raw `<img>`. Remote images are limited to `res.cloudinary.com` (`next.config.ts`), and `lib/remote-image.ts` guards user-typed URLs before they reach `next/image`.
 - Copy shown to users is **Spanish**, including URLs (`/estudios`, `/profesor/alumnos`). Dynamic segment names (`[courseId]`) stay in English because they are code identifiers and never appear in the address bar.
+- **Comments are written in English**, like every other identifier. A comment that quotes a label, a URL parameter or a catalog value keeps it verbatim in Spanish, because that is the string in the product.
 - Shared UI lives in `components/common/`; page sections in `components/sections/<area>/<section>/`; icons in `components/icons/`.
 
 ## CSS
@@ -53,7 +54,8 @@ These rules are enforced by review, tests (`proxy.test.ts`, `nav-items.test.ts`)
 
 ## Documentation and debt
 
-- Debt you find but do not fix goes to `MEJORAS.md` with area, priority (baja · media · alta · extrema) and how to approach it. Mechanical, well-specified tasks go to `todos.md`.
+- Debt you find but do not fix goes to `MEJORAS.md` with area, priority (low · medium · high · extreme) and how to approach it. Mechanical, well-specified tasks go to `todos.md`. Both files are in English.
+- **Every important change is documented in the same commit**, not afterwards: behaviour, a convention, a route, the data model, a script, an environment variable, or a decision worth recording. Edit the page of this site that covers the area you touched, and rebuild it (`cd docs && npm run build`) when its pages changed.
 - `README.md` stays the Spanish quick reference; this site is the long-form English documentation.
 - Before touching framework APIs, read `node_modules/next/dist/docs/`: Next 16 renamed middleware to `proxy.ts`, made `params`/`searchParams` promises, changed caching APIs and more.
 
@@ -63,4 +65,4 @@ These rules are enforced by review, tests (`proxy.test.ts`, `nav-items.test.ts`)
 npm run typecheck && npm run lint && npm test
 ```
 
-Performance work is measured with Lighthouse against `npm run build && npm run start`, three runs, median.
+Plus the documentation of whatever you touched, updated in the same commit. Performance work is measured with Lighthouse against `npm run build && npm run start`, three runs, median.

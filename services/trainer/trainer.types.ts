@@ -10,9 +10,9 @@ export interface TrainerChapterItem {
 }
 
 export interface TrainerData {
-  /** Capítulos que el usuario agregó al entrenamiento. */
+  /** Chapters the user added to the training. */
   myChapters: TrainerChapterItem[];
-  /** Capítulos entrenables aún no agregados. */
+  /** Trainable chapters not added yet. */
   availableChapters: TrainerChapterItem[];
 }
 
@@ -20,17 +20,17 @@ export interface TrainerExercise {
   id: string;
   modeCode: ExerciseModeCode;
   promptText?: string;
-  /** Posición congelada desde la que arranca el ejercicio. */
+  /** Frozen position the exercise starts from. */
   startFen: string;
-  /** Línea congelada en SAN; el alumno juega los plies de su color. */
+  /** Line frozen in SAN; the student plays the plies of their colour. */
   lineSans: string[];
   lessonName: string;
   chapterName: string;
-  /** Color que mueve en startFen: el que juega el alumno. */
+  /** Colour that moves in startFen: the one the student plays. */
   userColor: "white" | "black";
   /**
-   * El PGN de la lección se editó después de congelar el ejercicio: la línea
-   * sigue siendo jugable pero puede no coincidir ya con la lección.
+   * The lesson's PGN was edited after the exercise was frozen: the line is still
+   * playable but it may no longer match the lesson.
    */
   isStale: boolean;
 }

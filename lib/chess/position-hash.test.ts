@@ -16,8 +16,8 @@ describe("normalizePositionFen", () => {
 
 describe("createPositionHash", () => {
   it("ignora el reloj de medias jugadas y el número de jugada", () => {
-    // Misma posición alcanzada por caminos de distinta longitud: los relojes
-    // cuentan la historia de la partida, no la posición.
+    // The same position reached by paths of different lengths: the clocks tell the
+    // history of the game, not the position.
     const early = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     const late = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 12 30";
 

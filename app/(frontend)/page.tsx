@@ -7,15 +7,15 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-// Portada estática: se prerenderiza en el build y se sirve desde la CDN. Quien
-// ya entró no la ve: `proxy.ts` manda a /entrar a quien traiga cookie de
-// sesión, y ese route handler reparte por rol (o borra la cookie caducada y
-// devuelve aquí). Por eso esta página no puede leer cookies ni cabeceras: en
-// cuanto lo hiciera volvería a renderizarse por petición.
+// Static home page: prerendered at build time and served from the CDN. Whoever
+// is already logged in does not see it: `proxy.ts` sends anyone carrying a
+// session cookie to /entrar, and that route handler dispatches by role (or
+// deletes the expired cookie and returns here). That is why this page cannot
+// read cookies or headers: as soon as it did, it would render per request again.
 //
-// Los hooks `afterChange` de los Globals la regeneran al guardar en el CMS
-// (revalidatePath); el plazo de una hora es la red de seguridad para cambios
-// que no pasen por Payload, la misma que en services/home/home.service.ts.
+// The Globals' `afterChange` hooks regenerate it on save in the CMS
+// (revalidatePath); the one-hour window is the safety net for changes that
+// bypass Payload, the same one as in services/home/home.service.ts.
 export const revalidate = 3600;
 
 export default function HomePage() {

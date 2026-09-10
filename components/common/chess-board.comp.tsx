@@ -22,7 +22,7 @@ import "./chess-board.comp.css";
 
 const AUTOPLAY_MS = 900;
 
-/** Piezas ofrecidas al coronar, en el orden habitual de los tableros. */
+/** Pieces offered on promotion, in the usual order of boards. */
 const PROMOTION_ROLES: PromotionRole[] = ["queen", "rook", "bishop", "knight"];
 
 const PROMOTION_LABELS: Record<PromotionRole, string> = {
@@ -43,7 +43,7 @@ export interface ChessBoardControlledPosition {
   fen: string;
   lastMove?: [Key, Key];
   check?: boolean;
-  /** Flechas [%cal] y casillas [%csl] a dibujar sobre el tablero. */
+  /** [%cal] arrows and [%csl] squares to draw on the board. */
   shapes?: DrawShape[];
 }
 
@@ -62,12 +62,12 @@ export interface ChessBoardProps {
   /** Called after a legal interactive move, with its SAN and the FEN it was played from. */
   onMove?: (san: string, fromFen: string) => void;
   /**
-   * Deja dibujar flechas y círculos con el clic derecho, y avisa al soltar.
+   * Lets the user draw arrows and circles with the right click, and notifies on release.
    *
-   * Cambia además DÓNDE viven las formas: sin esto son `autoShapes`, que
-   * chessground pinta pero no deja tocar; con esto pasan a ser las formas del
-   * usuario, que es lo único que puede editar. Sólo lo usa el editor de
-   * análisis; el visor las sigue pintando en modo lectura.
+   * It also changes WHERE the shapes live: without this they are `autoShapes`,
+   * which chessground paints but does not let you touch; with this they become
+   * the user's shapes, the only ones that can be edited. Only the analysis
+   * editor uses it; the viewer keeps painting them in read mode.
    */
   editableShapes?: boolean;
   onShapesChange?: (shapes: DrawShape[]) => void;
@@ -192,8 +192,8 @@ export function ChessBoard({
         showDests: true,
         events: {
           after: (orig, dest) => {
-            // Al coronar se pregunta la pieza antes de confirmar; el resto de
-            // jugadas se resuelven directamente.
+            // On promotion the piece is asked for before confirming; every other
+            // move resolves directly.
             if (isPromotionMove(fen, orig as Key, dest as Key)) {
               setPendingPromotion({ orig: orig as Key, dest: dest as Key, fen, color });
               return;
@@ -205,8 +205,8 @@ export function ChessBoard({
         },
       };
     }
-    // Editables van como formas del usuario; si no, como autoShapes de sólo
-    // lectura. Mezclarlas pintaría cada flecha dos veces.
+    // Editable ones go as the user's shapes; otherwise as read-only
+    // autoShapes. Mixing them would paint every arrow twice.
     if (editableShapes) config.drawable = { shapes: position?.shapes ?? [] };
     api.set(config);
     if (!editableShapes) api.setAutoShapes(position?.shapes ?? []);
@@ -276,10 +276,10 @@ export function ChessBoard({
     });
   }, []);
 
-  // Selector de coronación: chessground base no trae diálogo, así que la
-  // jugada queda pendiente hasta que el usuario elige la pieza.
-  // Recibe el foco al abrirse (la primera pieza) y se cierra con Escape: sin
-  // eso, quien juega con teclado arrastraba el peón y no llegaba al diálogo.
+  // Promotion picker: base chessground brings no dialog, so the move stays
+  // pending until the user picks the piece.
+  // It receives focus when it opens (the first piece) and closes with Escape:
+  // without that, keyboard players dragged the pawn and never reached the dialog.
   const promotionOverlay = pendingPromotion && (
     <div
       className="chess-board__promotion"

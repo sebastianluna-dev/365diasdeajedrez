@@ -2,7 +2,7 @@ interface ImageIconProps {
   className?: string;
 }
 
-/** Marco con una montaña y un sol: el hueco donde todavía no hay imagen. */
+/** Frame with a mountain and a sun: the slot where there is no image yet. */
 export function ImageIcon({ className }: ImageIconProps) {
   return (
     <svg

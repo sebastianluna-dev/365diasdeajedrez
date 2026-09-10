@@ -8,30 +8,30 @@ export interface Crumb {
 }
 
 interface StaffEditorHeadProps {
-  /** El camino hasta aquí SIN el sitio actual, que se pone con `title`. */
+  /** The trail up to here WITHOUT the current place, which is set with `title`. */
   crumbs?: Crumb[];
   title: string;
-  /** Distintivo al lado del título: el estado de un curso, por ejemplo. */
+  /** Badge next to the title: a course's status, for instance. */
   badge?: ReactNode;
-  /** Datos cortos bajo el título: identificador, cuántas lecciones… */
+  /** Short facts under the title: identifier, how many lessons… */
   meta?: ReactNode;
-  /** Lo que se puede hacer con esto, arriba a la derecha. */
+  /** What can be done with this, top right. */
   actions?: ReactNode;
   description?: string;
 }
 
 /**
- * Cabecera de las cuatro pantallas de cursos del panel: migas, título, datos
- * cortos y acciones.
+ * Header of the panel's four course screens: breadcrumbs, title, short facts
+ * and actions.
  *
- * Vive aquí y no en cada página porque el camino curso → capítulo → lección
- * tiene cuatro niveles: sin una miga en todas, la única forma de subir un
- * escalón es el botón de atrás del navegador.
+ * It lives here and not in each page because the course → chapter → lesson
+ * trail has four levels: without a breadcrumb on all of them, the only way
+ * to go up one step is the browser's back button.
  */
 export function StaffEditorHead({ crumbs, title, badge, meta, actions, description }: StaffEditorHeadProps) {
-  // Sin migas es una pantalla de primer nivel y su título pesa lo mismo que el
-  // de «Alumnos» o «Profesores»; con migas está colgando de algo y baja un
-  // escalón, para que la jerarquía se vea sin leer la ruta.
+  // Without breadcrumbs it is a top-level screen and its title weighs the same
+  // as "Alumnos" or "Profesores"; with breadcrumbs it hangs from something
+  // and goes down one step, so the hierarchy is seen without reading the trail.
   const isRoot = !crumbs || crumbs.length === 0;
 
   return (
@@ -48,15 +48,15 @@ export function StaffEditorHead({ crumbs, title, badge, meta, actions, descripti
               </span>
             </span>
           ))}
-          {/* El sitio actual cierra la miga y no es un enlace: ya se está aquí. */}
+          {/* The current place closes the trail and is not a link: we are already here. */}
           <span className="staff-editor-head__current">{title}</span>
         </nav>
       )}
 
       <div className="staff-editor-head__bar">
         <div className="staff-editor-head__heading">
-          {/* El distintivo va en el renglón del título, no debajo: es parte de
-              cómo se nombra la ficha, no un dato más de la lista. */}
+          {/* The badge goes on the title row, not below: it is part of how the
+              record is named, not one more fact in the list. */}
           <div className="staff-editor-head__title-row">
             <h1 className="staff-editor-head__title">{title}</h1>
             {badge}
@@ -73,15 +73,14 @@ export function StaffEditorHead({ crumbs, title, badge, meta, actions, descripti
 
 interface StaffEditorLayoutProps {
   children: ReactNode;
-  /** La columna estrecha: resúmenes y acciones sueltas, nunca el trabajo principal. */
+  /** The narrow column: summaries and loose actions, never the main work. */
   aside?: ReactNode;
 }
 
 /**
- * Dos columnas: el trabajo a la izquierda y a la derecha lo que se consulta de
- * reojo. La estrecha va en píxeles y no en fracciones para que no se estire en
- * pantallas anchas, donde una lista de cuatro cifras a media pantalla se ve
- * vacía.
+ * Two columns: the work on the left and on the right what is glanced at. The
+ * narrow one is in pixels and not in fractions so it does not stretch on wide
+ * screens, where a four-figure list at half the screen looks empty.
  */
 export function StaffEditorLayout({ children, aside }: StaffEditorLayoutProps) {
   return (

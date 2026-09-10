@@ -1,24 +1,23 @@
-// Rangos de calendario para las estadísticas del alumno: «esta semana» es la
-// semana en curso (desde el lunes), no los últimos siete días.
+// Calendar ranges for the student's statistics: "this week" is the current week
+// (from Monday), not the last seven days.
 
 export type StatsRangeKey = "week" | "month" | "year" | "all";
 
-/** Fecha UTC a medianoche: el bucket diario de UserStatDaily. */
+/** UTC date at midnight: the daily bucket of UserStatDaily. */
 export function toUtcDay(date: Date): Date {
   return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
 }
 
 /**
- * Primer día (inclusive) del rango de calendario, o null para «todo el
- * tiempo». La semana empieza en lunes, como es costumbre en España y
- * Latinoamérica.
+ * First day (inclusive) of the calendar range, or null for "all time". The week
+ * starts on Monday, as is customary in Spain and Latin America.
  */
 export function rangeStart(range: StatsRangeKey, now: Date): Date | null {
   const today = toUtcDay(now);
 
   switch (range) {
     case "week": {
-      // getUTCDay(): 0 = domingo. Se retrocede hasta el lunes anterior.
+      // getUTCDay(): 0 = Sunday. It steps back to the previous Monday.
       const weekday = (today.getUTCDay() + 6) % 7;
       return new Date(today.getTime() - weekday * 24 * 60 * 60 * 1000);
     }

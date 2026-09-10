@@ -20,8 +20,9 @@
     background: var(--platform-surface-neutral);
   }
 
-  /* La introducción y el cierre se separan del bloque que sí se ordena: su
-     sitio no se discute, y verlas con el mismo asa invitaría a arrastrarlas. */
+  /* The intro and the closing are set apart from the block that does get
+     ordered: their place is not up for debate, and seeing them with the same
+     handle would invite dragging them. */
   & .sortable-list__row_state_fixed {
     background: var(--platform-bg);
   }
@@ -39,14 +40,14 @@
     white-space: nowrap;
   }
 
-  /* La fila que viaja se atenúa: sin eso, arrastrando no se distingue cuál es
-     la que se mueve de la que se está señalando como destino. */
+  /* The travelling row dims: without that, while dragging you cannot tell the
+     one that moves from the one being pointed at as the destination. */
   & .sortable-list__row_state_dragging {
     opacity: 0.45;
   }
 
-  /* El asa lleva el número Y el agarre: el número es lo que se busca con la
-     vista al reordenar, así que es el propio sitio por donde se agarra. */
+  /* The handle carries the number AND the grip: the number is what the eye
+     looks for when reordering, so it is the very place to grab. */
   & .sortable-list__handle {
     flex: none;
     display: inline-flex;

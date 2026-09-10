@@ -1,21 +1,21 @@
 import { extractMainline } from "./mainline";
 
-// El PGN «en limpio»: sólo la línea principal, sin variantes, sin comentarios,
-// sin anotaciones y sin cabeceras.
+// The PGN "in the clear": only the main line, without variations, without
+// comments, without annotations and without headers.
 //
-// Es lo que se pega en un chat, en un buscador de aperturas o en otro programa
-// cuando lo que se quiere compartir son LAS JUGADAS y no el trabajo de análisis
-// que hay alrededor. El PGN completo sigue estando a un botón de distancia.
+// It is what gets pasted into a chat, into an opening search engine or into
+// another program when what one wants to share are THE MOVES and not the
+// analysis work around them. The full PGN is still one button away.
 
-/** Posición de partida estándar: cuando es esa, no hace falta decir nada. */
+/** Standard starting position: when it is that one, there is no need to say anything. */
 const STANDARD_START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 /**
- * Numera los SAN como se escriben: «1. e4 e5 2. Cf3».
+ * Numbers the SANs as they are written: "1. e4 e5 2. Nf3".
  *
- * El número de la primera jugada y de quién es sale del FEN de partida, no de
- * cero: una partida que arranca en la jugada 24 y de negras se leería como una
- * apertura si se numerase desde el principio.
+ * The number of the first move and whose it is come from the starting FEN, not
+ * from zero: a game that starts at move 24 and with Black would read like an
+ * opening if it were numbered from the beginning.
  */
 function numberMoves(sans: string[], initialFen: string): string {
   const fields = initialFen.split(" ");
@@ -37,13 +37,12 @@ function numberMoves(sans: string[], initialFen: string): string {
 }
 
 /**
- * La línea principal de un PGN, a secas. Null si no hay ninguna jugada que
- * copiar.
+ * The main line of a PGN, plain. Null when there is not a single move to copy.
  *
- * ÚNICA excepción a lo de «sin cabeceras»: si la partida no empieza en la
- * posición inicial, se conservan `SetUp` y `FEN`. Sin ellas, las jugadas no se
- * pueden reproducir en ningún sitio y lo copiado no valdría para nada, que es
- * peor que llevar dos líneas de más.
+ * THE ONLY exception to "without headers": if the game does not start at the
+ * initial position, `SetUp` and `FEN` are kept. Without them the moves cannot
+ * be replayed anywhere and what was copied would be useless, which is worse
+ * than carrying two extra lines.
  */
 export function plainMovetext(pgn: string): string | null {
   const mainline = extractMainline(pgn);

@@ -7,8 +7,8 @@ import "./new-study.comp.css";
 
 interface NewStudyProps {
   /**
-   * Tipos que quien mira puede crear. «Mis partidas» nunca está —nace con la
-   * cuenta— y «Colección» sólo si es maestro. Ver services/studies/study-rules.
+   * Kinds the viewer can create. "Mis partidas" is never there — it is born
+   * with the account — and "Colección" only for a teacher. See services/studies/study-rules.
    */
   kinds: StudyKindOption[];
 }
@@ -26,14 +26,14 @@ export function NewStudy({ kinds }: NewStudyProps) {
         Nuevo estudio
       </button>
 
-      {/* `<dialog>` nativo: trae el foco atrapado, el cierre con Escape y el
-          fondo modal sin escribir nada de eso a mano. */}
+      {/* Native `<dialog>`: it brings focus trapping, closing with Escape and the
+          modal backdrop without writing any of that by hand. */}
       <dialog ref={dialogRef} className="platform-dialog new-study__dialog">
         <form
           action={createStudy}
           className="new-study__form"
-          // El navegador valida `required` antes de llegar aquí, así que el
-          // diálogo no se cierra con el formulario a medias.
+          // The browser validates `required` before getting here, so the
+          // dialog does not close with the form half filled.
           onSubmit={() => dialogRef.current?.close()}
         >
           <h2 className="new-study__title">Nuevo estudio</h2>

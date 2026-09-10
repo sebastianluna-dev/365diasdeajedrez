@@ -39,7 +39,7 @@
     font-weight: 700;
   }
 
-  /* La lección hecha se reconoce por el número en verde, antes de leer nada. */
+  /* A completed lesson is recognised by the number in green, before reading anything. */
   & .lesson-list__order.lesson-list__order_state_done {
     background: var(--platform-success-soft);
     color: var(--platform-success-ink);
@@ -115,8 +115,8 @@
     color: var(--platform-success-ink);
   }
 
-  /* Sin sitio a lo ancho: la duración y el estado bajan bajo el texto y el
-     galón se retira, que ahí ya no apunta a nada. */
+  /* No room across: the duration and the status go under the text and the
+     chevron withdraws, since there it no longer points at anything. */
   @media (max-width: 760px) {
     & .lesson-list__item {
       grid-template-columns: 46px minmax(0, 1fr);

@@ -6,16 +6,16 @@ interface StaticDiagramProps {
   orientation?: "white" | "black";
   caption?: string;
   /**
-   * Dónde se pinta: en la plataforma (por defecto, con sus tokens) o dentro
-   * de un artículo del blog, que tiene otro fondo y otra escala de texto.
+   * Where it is rendered: in the platform (default, with its tokens) or inside
+   * a blog article, which has another background and another text scale.
    */
   context?: "platform" | "article";
 }
 
 /**
- * Diagrama estático de una posición (Server Component, sin chessground). Lo
- * usan las clases y el bloque de diagrama del blog; para posiciones
- * navegables usar GameViewer.
+ * Static diagram of a position (Server Component, no chessground). Used by
+ * classes and by the blog's diagram block; for navigable positions use
+ * GameViewer.
  */
 export function StaticDiagram({ fen, orientation = "white", caption, context = "platform" }: StaticDiagramProps) {
   const squares = parseFenPlacement(fen);

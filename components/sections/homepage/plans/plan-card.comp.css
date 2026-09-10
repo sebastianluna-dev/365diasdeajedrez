@@ -51,7 +51,7 @@
 
   & .plan-card__price-previous {
     font-size: 15px;
-    /* El mismo apagado que la descripción: #8a8078 no llegaba al contraste mínimo sobre la tarjeta. */
+    /* The same muted tone as the description: #8a8078 did not reach the minimum contrast on the card. */
     color: #5c5348;
     text-decoration: line-through;
     text-decoration-thickness: 1px;

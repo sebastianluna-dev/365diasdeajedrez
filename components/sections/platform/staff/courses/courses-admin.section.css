@@ -1,6 +1,6 @@
 .courses-admin {
-  /* Las siete columnas se declaran UNA vez y las comparten la cabecera y las
-     filas: si se separan, la cabecera deja de cuadrar con lo que rotula. */
+  /* The seven columns are declared ONCE and shared by the header and the rows:
+     if they diverge, the header stops lining up with what it labels. */
   --courses-admin-columns: minmax(0, 2.6fr) 0.9fr 0.9fr 0.8fr 0.8fr 0.9fr 24px;
 
   display: flex;
@@ -150,8 +150,8 @@
     gap: 12px;
   }
 
-  /* El recuadro se pinta siempre, con portada o sin ella: si apareciera sólo
-     cuando hay imagen, los nombres de unas filas y otras no se alinearían. */
+  /* The frame is always painted, with or without a cover: if it appeared only
+     when there is an image, the names of different rows would not line up. */
   & .courses-admin__cover {
     position: relative;
     flex: none;
@@ -204,8 +204,8 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Los tres estados se distinguen por color y no sólo por la palabra: en una
-     lista larga es lo que deja ver de un vistazo qué está publicado. */
+  /* The three statuses are told apart by colour and not only by the word: in
+     a long list it is what lets you see at a glance what is published. */
   & .courses-admin__status {
     display: inline-flex;
     align-items: center;
@@ -245,8 +245,8 @@
     color: var(--platform-accent-ink);
   }
 
-  /* Apretado, la tabla se desplaza a lo ancho en vez de romper la rejilla: son
-     siete datos por fila y ninguno sobra para quien administra el catálogo. */
+  /* When cramped, the table scrolls sideways instead of breaking the grid:
+     it is seven facts per row and none is superfluous for whoever manages the catalog. */
   @media (max-width: 1000px) {
     & .courses-admin__table {
       overflow-x: auto;

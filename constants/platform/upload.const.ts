@@ -1,24 +1,24 @@
-// Límites de las imágenes que sube el staff (portadas de curso, y lo que venga).
+// Limits of the images the staff uploads (course covers, and whatever comes).
 //
-// En un archivo aparte porque los comprueban los dos lados: el navegador antes
-// de mandar el archivo —para decirlo al instante en vez de tras la subida— y
-// la firma del servidor, que fija los formatos admitidos (`allowed_formats` va
-// firmado, así que el navegador no puede cambiarlo sin invalidarla).
+// In a file apart because both sides check them: the browser before sending
+// the file — to say so instantly instead of after the upload — and the
+// server's signature, which fixes the admitted formats (`allowed_formats` is
+// signed, so the browser cannot change it without invalidating it).
 //
-// El TAMAÑO no viaja en la firma: la API de subida de Cloudinary no tiene un
-// parámetro de peso máximo por petición, así que `IMAGE_MAX_BYTES` sólo lo
-// aplica el navegador y el techo de verdad es el del plan/preset de la cuenta.
+// The SIZE does not travel in the signature: Cloudinary's upload API has no
+// maximum-weight parameter per request, so `IMAGE_MAX_BYTES` is only applied
+// by the browser and the real ceiling is the account's plan/preset.
 
-/** 5 MB. Una portada bien exportada no pasa de uno o dos. */
+/** 5 MB. A well-exported cover does not exceed one or two. */
 export const IMAGE_MAX_BYTES = 5 * 1024 * 1024;
 
-/** Lo que Cloudinary sirve bien y los navegadores enseñan sin sorpresas. */
+/** What Cloudinary serves well and browsers display without surprises. */
 export const IMAGE_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"] as const;
 
-/** Los mismos cuatro, como los nombra Cloudinary en `allowed_formats`. */
+/** The same four, as Cloudinary names them in `allowed_formats`. */
 export const IMAGE_ALLOWED_FORMATS = "jpg,png,webp,avif";
 
-/** Para el `accept` del selector de archivos. */
+/** For the file picker's `accept`. */
 export const IMAGE_ACCEPT = IMAGE_MIME_TYPES.join(",");
 
 export function isAllowedImageType(type: string): boolean {

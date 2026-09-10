@@ -29,7 +29,7 @@
     color: var(--platform-text-subtle);
   }
 
-  /* Al filo derecho: es lo que se hace con la tarjeta, no parte del título. */
+  /* At the right edge: it is what is done with the card, not part of the title. */
   & .staff-panel__action {
     margin-left: auto;
     flex: none;

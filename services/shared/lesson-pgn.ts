@@ -1,21 +1,21 @@
 import { startFenOf } from "@/lib/chess/mainline";
 
-// De dónde sale el contenido de una lección.
+// Where a lesson's content comes from.
 //
-// Hay dos fuentes posibles y UN solo sitio que decide entre ellas:
+// There are two possible sources and ONE single place that decides between them:
 //
-//  - si la lección referencia una partida de la colección del curso
-//    (`gameId`), el contenido es el PGN de esa partida —así, corregirla arregla
-//    todas las lecciones que la usan—;
-//  - si no, el contenido es su propio `pgn`, que es como nacieron las lecciones.
+//  - if the lesson references a game of the course collection (`gameId`), the
+//    content is that game's PGN — that way, fixing it fixes every lesson that
+//    uses it;
+//  - if not, the content is its own `pgn`, which is how lessons were born.
 //
-// Módulo puro (sólo tipos estructurales, nada de Prisma ni de `server-only`)
-// para que lo puedan usar los servicios, los mappers y los tests sin arrastrar
-// acceso a datos. `lessonPgnSelect` viaja con él a propósito: quien lee el PGN
-// de una lección tiene que traerse también el de su partida, y tenerlos juntos
-// es lo que evita que una consulta se olvide de la mitad.
+// Pure module (only structural types, no Prisma and no `server-only`) so that
+// services, mappers and tests can use it without dragging in data access.
+// `lessonPgnSelect` travels with it on purpose: whoever reads a lesson's PGN
+// has to bring its game's along too, and having them together is what keeps a
+// query from forgetting half of it.
 
-/** Lo que hay que pedirle a Prisma para poder resolver el contenido. */
+/** What has to be asked of Prisma in order to resolve the content. */
 export const lessonPgnSelect = {
   pgn: true,
   game: { select: { pgn: true } },
@@ -23,26 +23,26 @@ export const lessonPgnSelect = {
 
 export interface LessonPgnSource {
   pgn: string;
-  /** La partida referenciada, o `null` si la lección tiene contenido propio. */
+  /** The referenced game, or `null` when the lesson has its own content. */
   game: { pgn: string } | null;
 }
 
-/** El PGN que se le enseña al alumno. */
+/** The PGN the student is shown. */
 export function lessonPgnOf(lesson: LessonPgnSource): string {
   return lesson.game?.pgn ?? lesson.pgn;
 }
 
-/** Si la lección tiene contenido, venga de donde venga. */
+/** Whether the lesson has content, wherever it comes from. */
 export function lessonHasContent(lesson: LessonPgnSource): boolean {
   return lessonPgnOf(lesson).trim().length > 0;
 }
 
 /**
- * Desde qué posición arranca la lección, o `null` si es la de partida.
+ * Which position the lesson starts from, or `null` when it is the initial one.
  *
- * Sale del PGN que MANDA, que es el de la partida vinculada cuando la hay. Es
- * el FEN con el que hay que congelar un ejercicio: derivarlo de otro sitio es
- * congelar jugadas contra un tablero que el alumno nunca ve.
+ * It comes from the PGN that RULES, which is the linked game's when there is
+ * one. It is the FEN an exercise has to be frozen with: deriving it from
+ * anywhere else is freezing moves against a board the student never sees.
  */
 export function lessonStartFenOf(lesson: LessonPgnSource): string | null {
   return startFenOf(lessonPgnOf(lesson));

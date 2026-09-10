@@ -12,9 +12,9 @@ export const trainerExerciseInclude = {
 export type TrainerExerciseRow = Prisma.TrainingExerciseGetPayload<{ include: typeof trainerExerciseInclude }>;
 
 /**
- * Un ejercicio queda obsoleto cuando el PGN de su lección se editó después de
- * congelar startFen/line. Sin fecha de congelado se asume obsoleto: son
- * ejercicios anteriores a que existiera el campo.
+ * An exercise becomes stale when its lesson's PGN was edited after freezing
+ * startFen/line. Without a freezing date it is assumed stale: those are
+ * exercises from before the field existed.
  */
 export function isExerciseStale(frozenAt: Date | null, pgnUpdatedAt: Date | null): boolean {
   if (!pgnUpdatedAt) return false;
@@ -39,7 +39,7 @@ export function mapTrainerExercise(row: TrainerExerciseRow): TrainerExercise {
 export interface TrainerChapterRow {
   id: string;
   name: string;
-  /** Número de orden: es lo que direcciona al capítulo en la URL. */
+  /** Order number: it is what addresses the chapter in the URL. */
   order: number;
   courseId: string;
   course: { name: string };

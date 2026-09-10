@@ -10,9 +10,9 @@
     box-shadow: var(--platform-shadow-card);
   }
 
-  /* El título y lo que va debajo se separan con un filo a todo el ancho de la
-     tarjeta, así que el relleno horizontal se compensa con márgenes negativos:
-     una raya que no llega a los bordes parecería un subrayado del texto. */
+  /* The title and what goes below are separated by a rule across the full
+     width of the card, so the horizontal padding is offset with negative
+     margins: a line that does not reach the edges would look like an underline of the text. */
   & .study-goal__title {
     margin: 0 -22px 18px;
     padding: 0 22px 14px;
@@ -33,8 +33,8 @@
     padding: 10px 0 4px;
   }
 
-  /* El naranja de la marca, no el multicolor del emoji: la llama acompaña a la
-     cifra y tiene que leerse como parte de ella. */
+  /* The brand orange, not the emoji's multicolour: the flame accompanies the
+     figure and has to read as part of it. */
   & .study-goal__flame {
     flex: none;
     width: 34px;
@@ -129,8 +129,8 @@
     margin-top: 16px;
   }
 
-  /* El resumen ES el botón: sin marcador propio y a todo el ancho, para que se
-     lea como el «Cambiar objetivo» de la maqueta y no como un desplegable. */
+  /* The summary IS the button: without a marker of its own and full width, so
+     it reads like the mockup's "Cambiar objetivo" and not like a dropdown. */
   & .study-goal__editor-button {
     display: flex;
     align-items: center;

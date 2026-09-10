@@ -12,13 +12,13 @@ import "./game-view.section.css";
 
 interface GameViewSectionProps {
   game: GameView;
-  /** Todas las del estudio, la actual incluida: alimentan el aside. */
+  /** All of the study's games, the current one included: they feed the aside. */
   siblings: StudyGameItem[];
-  /** Modal de nueva partida; ausente en las bases de curso. */
+  /** New-game modal; absent in course databases. */
   newGame?: ReactNode;
-  /** Modal de datos de la partida; ausente en las bases de curso. */
+  /** Game data modal; absent in course databases. */
   editGame?: ReactNode;
-  /** Lo que rebotó de una acción del servidor (borrar sin confirmar). */
+  /** What bounced back from a server action (delete without confirming). */
   errorCode?: string;
 }
 
@@ -27,13 +27,13 @@ const ERROR_MESSAGES: Record<string, string> = {
     "Esta partida está usada en el contenido de alguna clase. Si la borras, esos bloques se quedarán vacíos. Marca la casilla para confirmarlo.",
 };
 
-/** Espera tras el último cambio antes de guardar. */
+/** Wait after the last change before saving. */
 const AUTOSAVE_DELAY_MS = 1200;
 
 /**
- * Cuántos pasos atrás se recuerdan. Se guarda el PGN entero de cada uno —una
- * partida ocupa unos pocos kilobytes—, que es infinitamente más simple que
- * llevar un registro de operaciones inversas y no puede desincronizarse.
+ * How many steps back are remembered. The whole PGN of each one is stored — a
+ * game takes a few kilobytes — which is infinitely simpler than keeping a log
+ * of inverse operations and cannot drift out of sync.
  */
 const HISTORY_LIMIT = 50;
 
@@ -41,16 +41,16 @@ type SaveState = "idle" | "saving" | "saved" | "error";
 
 interface PgnHistory {
   pgn: string;
-  /** Los estados anteriores, del más viejo al más reciente. */
+  /** The previous states, oldest to most recent. */
   past: string[];
 }
 
 type PgnAction = { type: "edit"; pgn: string } | { type: "undo" };
 
 /**
- * El PGN y por dónde ha pasado, en un reducer y no en dos estados sueltos:
- * deshacer tiene que mover los dos a la vez, y con `useState` habría un momento
- * en que el historial y el PGN no se corresponden.
+ * The PGN and where it has been, in a reducer and not in two loose states:
+ * undo has to move both at once, and with `useState` there would be a moment
+ * when the history and the PGN do not correspond.
  */
 function pgnReducer(state: PgnHistory, action: PgnAction): PgnHistory {
   if (action.type === "undo") {
@@ -58,8 +58,8 @@ function pgnReducer(state: PgnHistory, action: PgnAction): PgnHistory {
     return previous === undefined ? state : { pgn: previous, past: state.past.slice(0, -1) };
   }
 
-  // Guardar dos veces el mismo PGN gastaría un paso de deshacer que no deshace
-  // nada, y eso se nota: el primer Ctrl+Z parecería no funcionar.
+  // Storing the same PGN twice would spend an undo step that undoes nothing,
+  // and that shows: the first Ctrl+Z would seem not to work.
   if (action.pgn === state.pgn) return state;
   return { pgn: action.pgn, past: [...state.past, state.pgn].slice(-HISTORY_LIMIT) };
 }
@@ -80,8 +80,8 @@ function Player({ name, elo, title, country, side }: PlayerProps) {
       <span className={`game-view__chip game-view__chip_side_${side}`} aria-hidden="true" />
 
       {country && <span className="game-view__player-country">{country}</span>}
-      {/* La bandera es adorno del código que va al lado: si el código no está
-          en la tabla no se pinta nada, en vez de inventarse una. */}
+      {/* The flag decorates the code next to it: if the code is not in the
+          table nothing is painted, instead of making one up. */}
       {flag && (
         <span className="game-view__player-flag" aria-hidden="true">
           {flag}
@@ -96,25 +96,25 @@ function Player({ name, elo, title, country, side }: PlayerProps) {
 }
 
 /**
- * La pantalla de una partida de Mis estudios: se lee y se anota en el MISMO
- * sitio.
+ * The screen of a Mis estudios game: it is read and annotated in the SAME
+ * place.
  *
- * No hay pantalla de edición aparte. Quien es dueño de la partida juega sobre
- * el tablero para añadir jugadas y usa el clic derecho de la lista para
- * comentarlas, anotarlas, promoverlas o borrarlas; todo eso se guarda solo.
+ * There is no separate editing screen. Whoever owns the game plays on the
+ * board to add moves and uses the list's right click to comment, annotate,
+ * promote or delete them; all of that saves by itself.
  */
 export function GameViewSection({ game, siblings, newGame, editGame, errorCode }: GameViewSectionProps) {
-  // El PGN vive aquí porque lo comparten el visor —que lo lee y lo edita— y el
-  // panel de herramientas —que también lo escribe—. Si cada uno guardara el
-  // suyo, comentar una jugada no se vería en la lista hasta recargar.
+  // The PGN lives here because it is shared by the viewer — which reads and
+  // edits it — and the tools panel — which also writes it. If each kept its
+  // own, commenting a move would not show in the list until reload.
   const [history, dispatch] = useReducer(pgnReducer, { pgn: game.pgn, past: [] });
   const pgn = history.pgn;
   const applyPgn = useCallback((next: string) => dispatch({ type: "edit", pgn: next }), []);
   const [currentPath, setCurrentPath] = useState("");
 
-  // Ctrl+Z (⌘Z en Mac) deshace el último cambio sobre la partida. Mientras se
-  // escribe un comentario manda el deshacer del propio campo, que es lo que
-  // cualquiera espera con el cursor dentro de un texto.
+  // Ctrl+Z (⌘Z on Mac) undoes the last change to the game. While a comment is
+  // being typed the field's own undo rules, which is what anyone expects with
+  // the cursor inside a text.
   useEffect(() => {
     if (!game.canEdit) return;
 
@@ -135,22 +135,21 @@ export function GameViewSection({ game, siblings, newGame, editGame, errorCode }
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [game.canEdit]);
 
-  // Qué pestaña de las herramientas está abierta y cuándo llevar el foco hasta
-  // ella: «Comentar este movimiento» del menú de la jugada no abre nada propio,
-  // baja a este panel, que es donde se escribe siempre. El contador es lo que
-  // distingue dos peticiones seguidas sobre la MISMA pestaña, que en un
-  // booleano serían indistinguibles.
+  // Which tools tab is open and when to take the focus to it: "Comentar este
+  // movimiento" from the move menu opens nothing of its own, it goes down to
+  // this panel, which is where one always writes. The counter is what tells
+  // apart two consecutive requests on the SAME tab, which in a boolean would
+  // be indistinguishable.
   const [toolsTab, setToolsTab] = useState<GameToolsTab>(game.canEdit ? "comment" : "share");
   const [focusRequest, setFocusRequest] = useState(0);
 
-  // Lo último que el servidor confirmó. «Hay cambios sin guardar» se DEDUCE de
-  // compararlo con el PGN actual, en vez de ser un estado más que mantener.
+  // The last thing the server confirmed. "There are unsaved changes" is DERIVED
+  // by comparing it with the current PGN, instead of being one more state to maintain.
   const [lastSaved, setLastSaved] = useState(game.pgn);
   const [saveState, setSaveState] = useState<SaveState>("idle");
 
-  // Se espera a que pare de trabajar y se guarda lo ÚLTIMO: si durante la
-  // espera cambia algo más, el temporizador se reinicia y la versión intermedia
-  // no llega a enviarse.
+  // Wait until work stops and save the LATEST: if something else changes
+  // during the wait, the timer restarts and the intermediate version is never sent.
   useEffect(() => {
     if (!game.canEdit || pgn === lastSaved) return;
 
@@ -172,8 +171,8 @@ export function GameViewSection({ game, siblings, newGame, editGame, errorCode }
     return () => clearTimeout(timer);
   }, [pgn, lastSaved, game.canEdit, game.studyId, game.id]);
 
-  // Avisa si se cierra la pestaña con algo aún sin guardar. No se puede esperar
-  // a una petición aquí, así que lo único honesto es preguntar.
+  // Warns when the tab is closed with something still unsaved. No request can
+  // be awaited here, so the only honest thing to do is ask.
   useEffect(() => {
     if (!game.canEdit) return;
     const handler = (event: BeforeUnloadEvent) => {
@@ -183,8 +182,8 @@ export function GameViewSection({ game, siblings, newGame, editGame, errorCode }
     return () => window.removeEventListener("beforeunload", handler);
   }, [game.canEdit, pgn, lastSaved]);
 
-  // El error manda sobre todo lo demás: si la última escritura falló hay que
-  // decirlo aunque después se haya vuelto a escribir.
+  // The error wins over everything else: if the last write failed it has to
+  // be said even if something was written again afterwards.
   const saveLabel =
     !game.canEdit || (saveState === "idle" && pgn === lastSaved)
       ? undefined
@@ -205,18 +204,18 @@ export function GameViewSection({ game, siblings, newGame, editGame, errorCode }
 
         <GameViewer
           pgn={pgn}
-          // Sin cabecera en el panel: los jugadores ya están en las tiras del
-          // tablero y en la ficha del aside, y repetirlos aquí robaba alto a
-          // las jugadas, que es lo que se viene a mirar.
-          // En Mis estudios la partida se recorre: los controles van junto a
-          // las jugadas, no bajo el tablero.
+          // No header in the panel: the players are already in the board strips
+          // and in the aside's record, and repeating them here stole height from
+          // the moves, which is what one comes to look at.
+          // In Mis estudios the game is traversed: the controls go next to the
+          // moves, not under the board.
           controls="panel"
           engine
           editable={game.canEdit}
           onPgnChange={applyPgn}
-          // La ruta va y viene: el visor avisa de la jugada y la sección se la
-          // devuelve, que es lo que deja a la gráfica de la evaluación llevar el
-          // tablero a la jugada que se señale.
+          // The path goes back and forth: the viewer reports the move and the section
+          // feeds it back, which is what lets the evaluation chart take the board to
+          // the move being pointed at.
           path={currentPath}
           onPathChange={setCurrentPath}
           onRequestEdit={(mode) => {

@@ -6,23 +6,23 @@ import { parsePgnTree, sansAlongPath } from "@/lib/chess/pgn-tree";
 import "./exercise-move-picker.comp.css";
 
 interface ExerciseMovePickerProps {
-  /** El PGN de la lección: el ejercicio siempre sale de él. */
+  /** The lesson's PGN: the exercise always comes out of it. */
   pgn: string;
-  /** Rellena los dos campos del formulario con lo elegido en el tablero. */
+  /** Fills the form's two fields with what was chosen on the board. */
   onPick: (values: { afterSans?: string; lineSans?: string }) => void;
 }
 
 /**
- * Elige sobre el tablero las jugadas de un ejercicio, en vez de teclearlas.
+ * Picks an exercise's moves on the board instead of typing them.
  *
- * Escribir SAN a mano funciona —el servidor valida la legalidad jugada a
- * jugada— pero una errata sólo se descubre al guardar. Aquí se marcan dos
- * posiciones del PGN de la lección y de ahí salen los dos campos: lo que se
- * juega ANTES de empezar y la línea que hay que entrenar.
+ * Writing SAN by hand works — the server validates legality move by move —
+ * but a typo is only discovered on save. Here two positions of the lesson's
+ * PGN are marked and the two fields come out of that: what is played BEFORE
+ * starting and the line to be trained.
  *
- * No sustituye a los campos de texto: los rellena. Quien prefiera escribirlos
- * —o corregir uno a mano— sigue pudiendo, y la acción del servidor no se entera
- * de que este componente existe.
+ * It does not replace the text fields: it fills them. Whoever prefers to
+ * type them — or to fix one by hand — still can, and the server action does
+ * not know this component exists.
  */
 export function ExerciseMovePicker({ pgn, onPick }: ExerciseMovePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,8 +32,8 @@ export function ExerciseMovePicker({ pgn, onPick }: ExerciseMovePickerProps) {
 
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
 
-  // Cerrado (o sin PGN legible) el bloque es el mismo, sin caja: así el botón
-  // y el aviso cuelgan de la raíz y no quedan como nodos sueltos.
+  // Closed (or without a readable PGN) the block is the same, without a box:
+  // that way the button and the notice hang from the root and are not left as loose nodes.
   if (!isOpen) {
     return (
       <div className="exercise-move-picker exercise-move-picker_state_closed">
@@ -59,15 +59,15 @@ export function ExerciseMovePicker({ pgn, onPick }: ExerciseMovePickerProps) {
   const markStart = () => {
     setStartPath(currentPath);
     setError(null);
-    // La línea guardada colgaba de OTRO inicio: se borra en vez de quedarse
-    // apuntando a un tramo que ya no existe.
+    // The saved line hung from ANOTHER start: it is cleared instead of being
+    // left pointing at a segment that no longer exists.
     onPick({ afterSans: sansAlongPath(tree, currentPath).join(" "), lineSans: "" });
   };
 
   const markEnd = () => {
     const start = startPath ?? "";
-    // El final tiene que colgar del inicio: si no, no hay una línea que los
-    // una y lo que se guardaría serían dos ramas distintas.
+    // The end has to hang from the start: otherwise there is no line joining
+    // them and what would be saved is two different branches.
     const descends = start.length === 0 || currentPath === start || currentPath.startsWith(`${start}.`);
     if (!descends || currentPath === start) {
       setError("El final tiene que ser una jugada posterior al inicio marcado, dentro de la misma línea.");

@@ -18,7 +18,7 @@ interface ExerciseEditorProps {
   lessonId: string;
   exercises: ExerciseAdminRow[];
   modes: CatalogOption[];
-  /** El PGN de la lección, para poder elegir las jugadas sobre el tablero. */
+  /** The lesson's PGN, so the moves can be chosen on the board. */
   lessonPgn: string;
 }
 
@@ -32,8 +32,8 @@ interface ExerciseFieldsProps {
 }
 
 function ExerciseFields({ action, modes, exercise, submitLabel, lessonPgn, onCancel }: ExerciseFieldsProps) {
-  // Los dos campos de jugadas son controlados porque el tablero también los
-  // escribe. Se siguen pudiendo teclear: el picker rellena, no sustituye.
+  // The two move fields are controlled because the board writes them too.
+  // They can still be typed: the picker fills in, it does not replace.
   const [afterSans, setAfterSans] = useState("");
   const [lineSans, setLineSans] = useState(exercise?.line ?? "");
 
@@ -57,9 +57,9 @@ function ExerciseFields({ action, modes, exercise, submitLabel, lessonPgn, onCan
         label="Jugadas previas (SAN, separadas por espacios)"
         hint="Desde la posición inicial de la lección hasta donde arranca el ejercicio. Vacío = desde el principio."
       >
-        {/* No se precarga al editar: la copia congelada guarda la posición, no
-            el camino que llevó hasta ella, así que reconstruirlo no sería
-            fiable. El tablero de abajo sí puede rellenarlo. */}
+        {/* Not preloaded when editing: the frozen copy stores the position, not
+            the path that led to it, so rebuilding it would not be reliable.
+            The board below can fill it in. */}
         <input
           type="text"
           name="afterSans"
@@ -104,9 +104,9 @@ function ExerciseFields({ action, modes, exercise, submitLabel, lessonPgn, onCan
 }
 
 /**
- * Ejercicios de la lección. Se describen con jugadas SAN (el mismo formato que
- * usa el seed) y el servidor deriva de ahí la posición congelada; para no
- * teclearlas, el formulario trae un tablero que las saca del PGN de la lección.
+ * Exercises of the lesson. They are described with SAN moves (the same format
+ * the seed uses) and the server derives the frozen position from there; to
+ * avoid typing them, the form brings a board that takes them from the lesson's PGN.
  */
 export function ExerciseEditor({
   courseId,

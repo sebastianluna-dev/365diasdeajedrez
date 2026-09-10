@@ -4,8 +4,8 @@ import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { staffRoutes } from "@/lib/platform-routes";
 import type { StaffDashboard } from "./staff.types";
 
-// Panel de Administración. Métricas sobrias y, sobre todo, la lista accionable:
-// alumnos sin profesor asignado.
+// Administration panel. Sober metrics and, above all, the actionable list:
+// students without an assigned teacher.
 
 const UNASSIGNED_LIMIT = 20;
 const UPCOMING_WINDOW_DAYS = 7;
@@ -17,8 +17,8 @@ export async function getStaffDashboard(): Promise<StaffDashboard> {
   const now = new Date();
   const windowEnd = new Date(now.getTime() + UPCOMING_WINDOW_DAYS * 24 * 60 * 60 * 1000);
 
-  // Un alumno es una cuenta que no es profesor ni staff: no hay columna de rol
-  // (el rol es la existencia de la fila), así que se filtra por ausencia.
+  // A student is an account that is neither teacher nor staff: there is no role
+  // column (the role is the existence of the row), so it is filtered by absence.
   const studentWhere = { teacher: null, staff: null } as const;
 
   const [studentCount, activeTeacherCount, inactiveTeacherCount, statuses, unassigned, upcoming] = await Promise.all([

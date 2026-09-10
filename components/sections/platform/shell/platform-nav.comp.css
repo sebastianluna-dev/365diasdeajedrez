@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  /* Empuja el menú (y con él el bloque de usuario) al lado derecho de la barra. */
+  /* Pushes the menu (and with it the user block) to the right side of the bar. */
   margin-left: auto;
   font-size: 16px;
   font-weight: 500;
@@ -26,18 +26,18 @@
     color: var(--platform-text);
   }
 
-  /* La sección en la que estás, en naranja suave con el texto en la tinta
-     naranja. Con el lavado y el texto en negro, la negrita sola apenas la
-     distinguía de un elemento en hover. El redondeo lo hereda del propio
-     elemento, para que activo y hover tengan la misma forma. */
+  /* The section you are in, in soft orange with the text in the orange ink.
+     With the wash and the text in black, bold alone barely set it apart
+     from a hovered item. The rounding is inherited from the element itself,
+     so active and hover have the same shape. */
   & .platform-nav__item.platform-nav__item_active {
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
     font-weight: 700;
   }
 
-  /* En dos filas el menú ocupa la suya entera y se desplaza si no cabe, en
-     lugar de partirse en varias líneas dentro de la barra. */
+  /* In two rows the menu takes its whole row and scrolls if it does not fit,
+     instead of breaking into several lines inside the bar. */
   @media (max-width: 1080px) {
     width: 100%;
     order: 3;

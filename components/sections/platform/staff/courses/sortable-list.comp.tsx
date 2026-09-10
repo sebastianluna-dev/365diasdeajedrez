@@ -7,33 +7,33 @@ import "./sortable-list.comp.css";
 export interface SortableItem {
   id: string;
   name: string;
-  /** Línea de debajo: «12 lecciones», «Con PGN · 2 ejercicios». */
+  /** Line below: "12 lecciones", "Con PGN · 2 ejercicios". */
   meta: string;
   href: string;
-  /** Distintivo junto al nombre, como «Prioritaria». */
+  /** Badge next to the name, like "Prioritaria". */
   badge?: string;
   /**
-   * «Introducción» o «Cierre». Quien lo tiene ocupa un sitio FIJO —delante o
-   * al final— y por eso no se arrastra: su posición no sale del orden.
+   * "Introducción" or "Cierre". Whoever has it takes a FIXED place — at the
+   * front or at the end — and so is not dragged: its position does not come from the order.
    */
   roleLabel?: string;
-  /** Si se ofrece borrarlo. Lo decide el servidor, no la interfaz. */
+  /** Whether deleting is offered. The server decides it, not the interface. */
   canDelete: boolean;
 }
 
 interface SortableListProps {
   items: SortableItem[];
-  /** Guarda el orden nuevo. Server action ya atada a su curso o capítulo. */
+  /** Saves the new order. Server action already bound to its course or chapter. */
   onReorder: (orderedIds: string[]) => Promise<void>;
-  /** Server action de borrado; recibe el id en el campo `deleteFieldName`. */
+  /** Delete server action; receives the id in the `deleteFieldName` field. */
   deleteAction?: (formData: FormData) => Promise<void>;
   deleteFieldName?: string;
-  /** Cómo se llama un elemento, para los textos de accesibilidad: «capítulo». */
+  /** What an item is called, for the accessibility texts: "capítulo". */
   noun: string;
   emptyLabel: string;
 }
 
-/** La lista con el elemento de `from` colocado en `to`. */
+/** The list with the item at `from` placed at `to`. */
 function moved<T>(items: T[], from: number, to: number): T[] {
   const next = [...items];
   const [item] = next.splice(from, 1);
@@ -42,17 +42,18 @@ function moved<T>(items: T[], from: number, to: number): T[] {
 }
 
 /**
- * Lista ordenable por arrastre, compartida por los capítulos de un curso y las
- * lecciones de un capítulo: son la misma fila con distinto contenido.
+ * Drag-sortable list, shared by a course's chapters and a chapter's lessons:
+ * they are the same row with different content.
  *
- * El orden se aplica en el cliente al soltar y se guarda en una transición, sin
- * esperar respuesta: reordenar es la operación en la que más se nota un
- * parpadeo, y la lista ya sabe cómo va a quedar. Si el servidor rechaza el
- * cambio, su revalidación devuelve el orden bueno y la fila vuelve a su sitio.
+ * The order is applied on the client on drop and saved in a transition,
+ * without waiting for a response: reordering is the operation where a
+ * flicker shows most, and the list already knows how it will end up. If the
+ * server rejects the change, its revalidation returns the good order and
+ * the row goes back to its place.
  *
- * El asa NO es sólo para el ratón: es un `<button>` y con las flechas arriba y
- * abajo mueve el elemento, que es la única forma de reordenar con el teclado
- * —arrastrar no la tiene—.
+ * The handle is NOT only for the mouse: it is a `<button>` and with the up
+ * and down arrows it moves the item, which is the only way to reorder with
+ * the keyboard — dragging has none.
  */
 export function SortableList({
   items,
@@ -66,9 +67,9 @@ export function SortableList({
   const [dragging, setDragging] = useState<number | null>(null);
   const [, startTransition] = useTransition();
 
-  // Cuando el servidor revalida llegan elementos nuevos por props. Se ajusta el
-  // estado durante el render —no en un efecto— para no pintar una vez con la
-  // lista vieja antes de corregirla.
+  // When the server revalidates, new items arrive through props. The state is
+  // adjusted during render — not in an effect — so as not to paint once with
+  // the old list before correcting it.
   const [baseline, setBaseline] = useState(items);
   if (items !== baseline) {
     setBaseline(items);
@@ -76,11 +77,11 @@ export function SortableList({
   }
 
   /**
-   * Reordenar afecta SÓLO al contenido normal.
+   * Reordering affects ONLY the normal content.
    *
-   * La introducción y el cierre viajan en la misma lista para que se vean donde
-   * les toca, pero ni se arrastran ni entran en el orden que se manda: el
-   * servidor tampoco los aceptaría, porque los deja fuera de su consulta.
+   * The intro and the closing travel in the same list so they are seen where
+   * they belong, but they are neither dragged nor part of the order that is
+   * sent: the server would not accept them either, because it leaves them out of its query.
    */
   const isFixed = (index: number) => rows[index]?.roleLabel !== undefined;
 
@@ -99,8 +100,8 @@ export function SortableList({
     return <p className="sortable-list__empty">{emptyLabel}</p>;
   }
 
-  // El número que se pinta cuenta SÓLO el contenido normal: con una
-  // introducción delante, el primer capítulo de verdad es el 1, no el 2.
+  // The number rendered counts ONLY the normal content: with an intro in
+  // front, the first real chapter is 1, not 2.
   const plainNumbers = new Map<string, number>();
   let plain = 0;
   for (const row of rows) {
@@ -120,7 +121,7 @@ export function SortableList({
           onDragEnd={() => setDragging(null)}
           onDragOver={(event) => {
             if (dragging === null || dragging === index) return;
-            // Sin esto el navegador no considera la fila un destino válido.
+            // Without this the browser does not consider the row a valid drop target.
             event.preventDefault();
           }}
           onDrop={(event) => {
@@ -131,8 +132,8 @@ export function SortableList({
           }}
         >
           {row.roleLabel ? (
-            /* Sin asa: su sitio no se elige. El rótulo ocupa ese hueco para que
-               las filas sigan alineadas. */
+            /* No handle: its place is not chosen. The label takes that slot so the
+               rows stay aligned. */
             <span className="sortable-list__fixed">{row.roleLabel}</span>
           ) : (
             <button

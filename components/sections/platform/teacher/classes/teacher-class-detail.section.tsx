@@ -20,12 +20,12 @@ import "./teacher-class-detail.section.css";
 
 interface TeacherClassDetailSectionProps {
   classDetail: TeacherClassDetail;
-  /** Los bloques mapeados como los verá el alumno. */
+  /** The blocks mapped as the student will see them. */
   previewBlocks: ClassBlockView[];
-  /** Alumnos con asignación activa: candidatos a inscribir. */
+  /** Students with an active assignment: candidates to enrol. */
   students: AssignedStudentSummary[];
   blockOptions: BlockFormOptions;
-  /** Partida preseleccionada al llegar desde «Usar en una clase». */
+  /** Game preselected when arriving from "Usar en una clase". */
   initialGameId?: string;
   errorCode?: string;
 }
@@ -81,8 +81,8 @@ export function TeacherClassDetailSection({
             <div className="teacher-class__fact">
               <dt className="teacher-class__fact-label">Reunión</dt>
               <dd className="teacher-class__fact-value">
-                {/* El profesor ve el enlace siempre: es quien lo pone. Al alumno
-                    se le muestra sólo desde meetingUrlVisibleFrom. */}
+                {/* The teacher always sees the link: they are the one who sets it. The
+                    student is shown it only from meetingUrlVisibleFrom. */}
                 {classDetail.meetingUrl ? (
                   <a href={classDetail.meetingUrl} target="_blank" rel="noreferrer">
                     {classDetail.meetingProviderLabel}
@@ -114,8 +114,8 @@ export function TeacherClassDetailSection({
         </dl>
 
         <div className="teacher-class__status-actions">
-          {/* Las transiciones válidas las decide una función pura, y la action
-              vuelve a comprobarlas en el servidor. */}
+          {/* The valid transitions are decided by a pure function, and the action
+              checks them again on the server. */}
           {nextClassStatuses(classDetail.statusCode).map((status) => (
             <form key={status} action={setClassStatus.bind(null, classDetail.id)}>
               <input type="hidden" name="statusCode" value={status} />

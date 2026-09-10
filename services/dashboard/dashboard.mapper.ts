@@ -11,7 +11,10 @@ export const activityInclude = {
 
 export type ActivityRow = Prisma.UserActivityGetPayload<{ include: typeof activityInclude }>;
 
-/** Una fila del `groupBy` de `UserStatDaily`: la suma de una métrica (y tema) en un rango. */
+/**
+ * One row of the `groupBy` over `UserStatDaily`: the sum of a metric (and
+ * topic) in a range.
+ */
 export interface StatTotalRow {
   metricId: number;
   topicId: number | null;
@@ -19,13 +22,13 @@ export interface StatTotalRow {
 }
 
 export interface StatLabels {
-  /** Métricas en su orden de catálogo: las cards no bailan al cambiar el rango. */
+  /** Metrics in their catalog order: the cards do not dance when the range changes. */
   metrics: { id: number; label: string }[];
   topics: Map<number, string>;
 }
 
 function mapRange(rows: StatTotalRow[], labels: StatLabels): DashboardStatsRange {
-  // topicId nulo = total de la métrica; el resto son el desglose por tema.
+  // A null topicId = total of the metric; the rest are the breakdown by topic.
   const byMetric = new Map<number, number>();
   const byTopic = new Map<string, number>();
   for (const row of rows) {
@@ -38,15 +41,15 @@ function mapRange(rows: StatTotalRow[], labels: StatLabels): DashboardStatsRange
   }
 
   return {
-    // Siempre las mismas métricas, aunque valgan cero.
+    // Always the same metrics, even when they are zero.
     totals: labels.metrics.map((metric) => ({ label: metric.label, count: byMetric.get(metric.id) ?? 0 })),
     topics: [...byTopic.entries()].sort((a, b) => b[1] - a[1]).map(([label, count]) => ({ label, count })),
   };
 }
 
 /**
- * Las sumas por rango ya vienen hechas de la base (ver `getStatTotals`); aquí
- * sólo se les pone nombre y orden.
+ * The sums per range already come done from the database (see `getStatTotals`);
+ * here they are only given a name and an order.
  */
 export function mapDashboardStats(totals: Record<StatsRangeKey, StatTotalRow[]>, labels: StatLabels): DashboardStats {
   return {

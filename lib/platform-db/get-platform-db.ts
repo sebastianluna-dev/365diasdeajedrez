@@ -2,23 +2,23 @@ import "server-only";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/client";
 
-// Singleton contra la base de datos de la plataforma (separada de Payload),
-// mismo patrón que lib/payload/get-payload.ts. El guard en globalThis evita
-// agotar conexiones con el hot-reload de `next dev`.
+// Singleton against the platform database (separate from Payload's), the same
+// pattern as lib/payload/get-payload.ts. The guard on globalThis avoids
+// exhausting connections with `next dev`'s hot reload.
 const globalStore = globalThis as unknown as { platformDb?: PrismaClient };
 
 /**
- * Si el cliente guardado se generó con OTRO esquema.
+ * Whether the stored client was generated from ANOTHER schema.
  *
- * El guard de `globalThis` sobrevive al hot-reload, que es para lo que está,
- * pero también sobrevivía a `prisma generate`: tras cambiar el esquema la
- * instancia seguía siendo la anterior y cualquier campo nuevo daba «Unknown
- * field», con la única cura de reiniciar el servidor a mano.
+ * The `globalThis` guard survives hot reload, which is what it is for, but it
+ * also survived `prisma generate`: after changing the schema the instance was
+ * still the previous one and any new field gave "Unknown field", with the only
+ * cure being restarting the server by hand.
  *
- * Se detecta comparando la CLASE: cuando el cliente generado cambia, su módulo
- * se vuelve a evaluar y `PrismaClient` es un objeto distinto del que construyó
- * la instancia guardada. Un hot-reload que no toque el cliente no cambia esa
- * identidad, así que la conexión se sigue reutilizando como antes.
+ * It is detected by comparing the CLASS: when the generated client changes, its
+ * module is evaluated again and `PrismaClient` is a different object from the
+ * one that built the stored instance. A hot reload that does not touch the
+ * client does not change that identity, so the connection keeps being reused as before.
  */
 function isStale(client: PrismaClient): boolean {
   return client.constructor !== PrismaClient;
@@ -26,7 +26,7 @@ function isStale(client: PrismaClient): boolean {
 
 export function getPlatformDb(): PrismaClient {
   if (globalStore.platformDb && isStale(globalStore.platformDb)) {
-    // Se cierra la vieja para no dejar la conexión colgando en el pool.
+    // The old one is closed so as not to leave the connection hanging in the pool.
     void globalStore.platformDb.$disconnect();
     globalStore.platformDb = undefined;
   }

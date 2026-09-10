@@ -10,7 +10,7 @@ import {
 
 interface StaffLessonPageProps {
   params: Promise<{ courseId: string; chapterId: string; lessonId: string }>;
-  /** `partida` es la búsqueda en la colección del curso. */
+  /** `partida` is the search within the course collection. */
   searchParams: Promise<{ error?: string; partida?: string }>;
 }
 
@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: StaffLessonPageProps): Promis
 export default async function StaffLessonPage({ params, searchParams }: StaffLessonPageProps) {
   const { courseId, chapterId, lessonId } = await params;
   const lesson = await getLessonAdmin(chapterId, lessonId);
-  // El capítulo tiene que pertenecer a este curso: si no, la URL es inventada.
+  // The chapter has to belong to this course: otherwise the URL is made up.
   if (!lesson || lesson.courseId !== courseId) notFound();
 
   const { error, partida } = await searchParams;
@@ -33,7 +33,7 @@ export default async function StaffLessonPage({ params, searchParams }: StaffLes
     listCollectionGames({ chapterId }, partida),
   ]);
 
-  // La cabecera va dentro de la sección: lleva las migas hasta el capítulo.
+  // The header goes inside the section: it carries the breadcrumbs up to the chapter.
   return (
     <div className="platform-page staff-lesson-page">
       <LessonEditorSection

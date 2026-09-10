@@ -13,12 +13,12 @@ interface CourseGamesSectionProps {
 }
 
 /**
- * Todas las partidas del curso, de una vez y de SÓLO LECTURA.
+ * Every game of the course, at once and READ-ONLY.
  *
- * Se añaden y se quitan desde el capítulo al que pertenecen —una partida sin
- * capítulo no tendría colección a la que ir—, así que aquí sólo se miran y se
- * salta a su capítulo. Es la vista de conjunto que el reparto por capítulos
- * quitaría de en medio si no existiera.
+ * They are added and removed from the chapter they belong to — a game
+ * without a chapter would have no collection to go to — so here they are
+ * only looked at, with a jump to their chapter. It is the overview that the
+ * split by chapters would take away if it did not exist.
  */
 export function CourseGamesSection({ course, games }: CourseGamesSectionProps) {
   return (

@@ -8,9 +8,9 @@ export const metadata: Metadata = {
   title: "Página no encontrada | 365 Días de Ajedrez",
 };
 
-// El 404 del sitio público: con cabecera, pie y paleta propios. Sin este
-// archivo, un enlace viejo a un artículo o a un mentor caía en la pantalla
-// por defecto de Next, en inglés y sin nada del sitio alrededor.
+// The public site's 404: with its own header, footer and palette. Without
+// this file, an old link to an article or a mentor fell into Next's default
+// screen, in English and with nothing of the site around it.
 export default function NotFound() {
   return (
     <>

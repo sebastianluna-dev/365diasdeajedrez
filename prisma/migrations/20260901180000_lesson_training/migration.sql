@@ -1,20 +1,20 @@
--- Entrenamiento de memoria por lección: marca, métricas del intento, detalle de
--- los fallos y estado de repaso del alumno.
+-- Memory training per lesson: the flag, the attempt's metrics, the detail of
+-- the mistakes and the student's review state.
 --
--- Puramente ADITIVA: ninguna fila existente cambia. `isTrainable` nace en false,
--- así que hasta que el staff marque una lección todo se comporta igual.
+-- Purely ADDITIVE: no existing row changes. `isTrainable` is born false, so
+-- until the staff marks a lesson everything behaves the same.
 
 ALTER TABLE "Lesson" ADD COLUMN "isTrainable" BOOLEAN NOT NULL DEFAULT false;
 
--- Precisión y «perfecto» son métricas distintas y se guardan por separado.
+-- Accuracy and "perfect" are different metrics and are stored separately.
 ALTER TABLE "TrainingAttempt" ADD COLUMN "requiredMoves" INTEGER NOT NULL DEFAULT 0;
 ALTER TABLE "TrainingAttempt" ADD COLUMN "correctMoves" INTEGER NOT NULL DEFAULT 0;
 ALTER TABLE "TrainingAttempt" ADD COLUMN "reachedPly" INTEGER NOT NULL DEFAULT 0;
 ALTER TABLE "TrainingAttempt" ADD COLUMN "hintsUsed" INTEGER NOT NULL DEFAULT 0;
 ALTER TABLE "TrainingAttempt" ADD COLUMN "isPerfect" BOOLEAN NOT NULL DEFAULT false;
 
--- Una fila por jugada FALLADA. La posición se identifica por el hash de su FEN,
--- no por el número de jugada, para que sobreviva a una edición del PGN.
+-- One row per FAILED move. The position is identified by the hash of its FEN,
+-- not by the move number, so it survives an edit of the PGN.
 CREATE TABLE "TrainingMistake" (
     "id" TEXT NOT NULL,
     "attemptId" TEXT NOT NULL,
@@ -35,7 +35,7 @@ CREATE INDEX "TrainingMistake_positionHash_idx" ON "TrainingMistake"("positionHa
 ALTER TABLE "TrainingMistake" ADD CONSTRAINT "TrainingMistake_attemptId_fkey"
     FOREIGN KEY ("attemptId") REFERENCES "TrainingAttempt"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
--- Estado agregado por alumno y lección: es lo que responde «qué toca repasar».
+-- Aggregate state per student and lesson: it is what answers "what is due for review".
 CREATE TABLE "UserLessonTraining" (
     "userId" TEXT NOT NULL,
     "lessonId" TEXT NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE "UserLessonTraining" (
     CONSTRAINT "UserLessonTraining_pkey" PRIMARY KEY ("userId","lessonId")
 );
 
--- Por este índice pasa la consulta de «repasos pendientes» de cada tarjeta.
+-- This index is what each card's "pending reviews" query goes through.
 CREATE INDEX "UserLessonTraining_userId_nextReviewAt_idx" ON "UserLessonTraining"("userId", "nextReviewAt");
 
 ALTER TABLE "UserLessonTraining" ADD CONSTRAINT "UserLessonTraining_userId_fkey"

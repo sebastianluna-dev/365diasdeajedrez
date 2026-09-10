@@ -1,15 +1,15 @@
 import { randomBytes } from "node:crypto";
 
-// Contraseña temporal para las altas y los reinicios que hace el staff.
+// Temporary password for the account creations and resets the staff performs.
 //
-// La plataforma no tiene servicio de correo, así que no hay enlace de
-// activación: el staff genera esta contraseña, se la entrega a la persona por
-// el canal que corresponda y ella la cambia. Se muestra UNA sola vez y no se
-// guarda en claro en ninguna parte.
+// The platform has no mail service, so there is no activation link: the staff
+// generates this password, hands it to the person through whatever channel
+// fits, and they change it. It is shown ONCE and is never stored in the clear
+// anywhere.
 //
-// Sin "server-only" a propósito: `scripts/platform-user.ts` corre fuera de Next.
+// Without "server-only" on purpose: `scripts/platform-user.ts` runs outside Next.
 
-/** 9 bytes aleatorios en base64url ⇒ 12 caracteres, 72 bits de entropía. */
+/** 9 random bytes in base64url ⇒ 12 characters, 72 bits of entropy. */
 const TEMP_PASSWORD_BYTES = 9;
 
 export const TEMP_PASSWORD_LENGTH = 12;

@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: StaffCoursePageProps): Promis
 
 export default async function StaffCoursePage({ params, searchParams }: StaffCoursePageProps) {
   const { courseId } = await params;
-  // El servicio abre con requireStaff(): es la frontera del panel.
+  // The service opens with requireStaff(): it is the panel's border.
   const course = await getCourseAdminDetail(courseId);
   if (!course) notFound();
 
@@ -36,8 +36,8 @@ export default async function StaffCoursePage({ params, searchParams }: StaffCou
     searchParams,
   ]);
 
-  // La cabecera va DENTRO de la sección: lleva las migas y el estado, que son
-  // datos del curso y no de la página.
+  // The header goes INSIDE the section: it carries the breadcrumbs and the
+  // status, which are data of the course and not of the page.
   return (
     <div className="platform-page staff-course-page">
       <CourseEditorSection

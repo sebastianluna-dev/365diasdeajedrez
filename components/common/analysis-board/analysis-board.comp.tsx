@@ -42,37 +42,36 @@ import {
 } from "@/components/common/game-viewer/move-context-menu.comp";
 import "./analysis-board.comp.css";
 
-// Tablero de análisis EDITABLE: se juega sobre el tablero y las jugadas se
-// escriben en la lista; volver atrás y jugar otra cosa abre una variante.
+// EDITABLE analysis board: moves are played on the board and written into
+// the list; going back and playing something else opens a variation.
 //
-// No sustituye a `GameViewer`, que sigue siendo el visor de sólo lectura del
-// alumno. Este componente se monta dentro de un <form> y publica el PGN
-// resultante en un input oculto, así que guardar es un envío normal y la acción
-// del servidor no tiene que saber nada de él.
+// It does not replace `GameViewer`, which remains the student's read-only
+// viewer. This component mounts inside a <form> and publishes the resulting
+// PGN in a hidden input, so saving is an ordinary submit and the server
+// action does not need to know anything about it.
 //
-// Toda la lógica de ajedrez vive en lib/chess/pgn-edit.ts; aquí sólo hay estado
-// de interfaz.
+// All the chess logic lives in lib/chess/pgn-edit.ts; here there is only
+// interface state.
 
 interface AnalysisBoardProps {
-  /** Nombre del input oculto donde viaja el PGN. */
+  /** Name of the hidden input the PGN travels in. */
   name: string;
   defaultPgn?: string;
-  /** Posición de partida cuando no hay PGN previo. */
+  /** Starting position when there is no previous PGN. */
   initialFen?: string;
   orientation?: "white" | "black";
   /**
-   * Guarda solo, sin botón. Devuelve si la escritura salió bien.
+   * Saves on its own, without a button. Returns whether the write succeeded.
    *
-   * Opcional a propósito: sin ella el componente se comporta como siempre
-   * —input oculto y botón del formulario—, que es lo que sigue necesitando el
-   * editor de lecciones del staff, donde cada guardado marca como
-   * desactualizados los ejercicios congelados y autoguardar los invalidaría sin
-   * parar mientras se escribe.
+   * Optional on purpose: without it the component behaves as always — hidden
+   * input and the form's button — which is what the staff lesson editor still
+   * needs, where every save marks the frozen exercises as stale and autosaving
+   * would invalidate them non-stop while typing.
    */
   onAutoSave?: (pgn: string) => Promise<boolean>;
 }
 
-/** Espera tras el último cambio antes de guardar. */
+/** Wait after the last change before saving. */
 const AUTOSAVE_DELAY_MS = 1500;
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
@@ -91,12 +90,12 @@ export function AnalysisBoard({
   orientation = "white",
   onAutoSave,
 }: AnalysisBoardProps) {
-  // El juego mutable es la fuente de verdad; el PGN serializado es lo que se
-  // pinta y lo que se envía. Se reserializa tras cada cambio en vez de mantener
-  // dos representaciones que se puedan desincronizar.
-  // El juego de partida y su PGN se calculan UNA vez y viven en estado, no en
-  // una ref: `baseline` es lo que decide si hay cambios sin guardar, y leerlo
-  // durante el render tiene que ser legítimo.
+  // The mutable game is the source of truth; the serialised PGN is what is
+  // rendered and what is sent. It is reserialised after every change instead of
+  // keeping two representations that could drift apart.
+  // The starting game and its PGN are computed ONCE and live in state, not in
+  // a ref: `baseline` is what decides whether there are unsaved changes, and
+  // reading it during render has to be legitimate.
   const [baseline] = useState(() => {
     const game = buildInitialGame(defaultPgn, initialFen);
     return { game, pgn: serializeGame(game) };
@@ -118,13 +117,13 @@ export function AnalysisBoard({
   const node = tree ? nodeAtPath(tree, currentPath) : undefined;
   const isDirty = pgn !== baseline.pgn;
 
-  // Lo último que el servidor confirmó. «Hay cambios sin guardar» se DEDUCE de
-  // compararlo con el PGN actual, en vez de guardarse como un estado más: así no
-  // hay dos verdades que puedan desincronizarse.
+  // The last thing the server confirmed. "There are unsaved changes" is DERIVED
+  // by comparing it with the current PGN, instead of being stored as one more
+  // piece of state: that way there are no two truths that could drift apart.
   const [lastSaved, setLastSaved] = useState(baseline.pgn);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
-  // Por referencia para que el temporizador no dependa de que quien consume el
-  // componente memorice el callback.
+  // By reference so the timer does not depend on the consumer of the
+  // component memoising the callback.
   const onAutoSaveRef = useRef(onAutoSave);
   useEffect(() => {
     onAutoSaveRef.current = onAutoSave;
@@ -134,16 +133,16 @@ export function AnalysisBoard({
     setPgn(serializeGame(gameRef.current));
   }, []);
 
-  // El comentario se edita con borrador propio: al guardarlo se recorta, y sin
-  // borrador no se podría ni teclear un espacio —el valor volvería recortado y
-  // el cursor saltaría—.
+  // The comment is edited with its own draft: on save it is trimmed, and
+  // without a draft one could not even type a space — the value would come
+  // back trimmed and the cursor would jump.
   useEffect(() => {
     setCommentDraft(commentTextAt(gameRef.current, currentPath));
   }, [currentPath, pgn]);
 
-  // Autoguardado: se espera a que pare de escribir y se guarda lo ÚLTIMO. Si
-  // durante la espera cambia algo más, el temporizador se reinicia y la versión
-  // intermedia no llega a enviarse.
+  // Autosave: wait until typing stops and save the LATEST. If something else
+  // changes during the wait, the timer restarts and the intermediate version
+  // is never sent.
   useEffect(() => {
     if (!onAutoSave || pgn === lastSaved) return;
 
@@ -164,8 +163,8 @@ export function AnalysisBoard({
     return () => clearTimeout(timer);
   }, [pgn, lastSaved, onAutoSave]);
 
-  // Avisa si se cierra la pestaña con algo aún sin guardar. No se puede esperar
-  // a una petición aquí, así que lo único honesto es preguntar.
+  // Warns when the tab is closed with something still unsaved. No request can
+  // be awaited here, so the only honest thing to do is ask.
   useEffect(() => {
     if (!onAutoSave) return;
     const handler = (event: BeforeUnloadEvent) => {
@@ -188,7 +187,7 @@ export function AnalysisBoard({
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Las flechas navegan salvo mientras se escribe.
+      // The arrow keys navigate except while typing.
       const target = event.target as HTMLElement | null;
       if (target && (target.tagName === "TEXTAREA" || target.tagName === "INPUT")) return;
       if (event.key === "ArrowRight") {
@@ -230,7 +229,7 @@ export function AnalysisBoard({
     [currentPath, sync],
   );
 
-  /** Elegir dentro de un grupo sustituye lo que hubiera de ESE grupo. */
+  /** Choosing within a group replaces whatever THAT group had. */
   const toggleNag = useCallback(
     (option: NagOption, group: NagOption[]) => {
       if (currentPath.length === 0) return;
@@ -246,11 +245,11 @@ export function AnalysisBoard({
   );
 
   /**
-   * Muta y se queda donde toca.
+   * Mutates and stays where it belongs.
    *
-   * Promover y borrar reindexan a los hermanos, así que la ruta actual puede
-   * dejar de señalar la misma jugada. Por eso se guarda la REFERENCIA al nodo
-   * antes de mutar y se le vuelve a preguntar dónde ha quedado.
+   * Promoting and deleting reindex the siblings, so the current path may stop
+   * pointing at the same move. That is why the REFERENCE to the node is kept
+   * before mutating and the node is asked again where it ended up.
    */
   const mutateKeepingPlace = useCallback(
     (path: string, mutate: () => void, fallbackToParent = false) => {
@@ -285,9 +284,9 @@ export function AnalysisBoard({
     setPgn(baseline.pgn);
   };
 
-  // El aviso sale de comparar, no de un estado paralelo. El error manda sobre
-  // todo lo demás: si la última escritura falló hay que decirlo aunque después
-  // se haya vuelto a escribir.
+  // The notice comes from comparing, not from parallel state. The error wins
+  // over everything else: if the last write failed it has to be said even if
+  // something was written again afterwards.
   const saveTone: SaveStatus | "unsaved" =
     saveStatus === "error" ? "error" : saveStatus === "saving" ? "saving" : pgn !== lastSaved ? "unsaved" : saveStatus;
   const saveLabel =
@@ -306,7 +305,7 @@ export function AnalysisBoard({
 
   return (
     <div className="analysis-board">
-      {/* Lo que se envía. Todo lo demás son controles para componerlo. */}
+      {/* What gets sent. Everything else is controls to compose it. */}
       <input type="hidden" name={name} value={pgn} readOnly />
 
       {tree && tree.warnings.length > 0 && (
@@ -352,10 +351,10 @@ export function AnalysisBoard({
                     x: event.clientX,
                     y: event.clientY,
                     label: target ? numberedMoveLabel(target.ply, target.san) : "esta jugada",
-                    // Los segmentos de la ruta SON los índices de hijo: todo
-                    // ceros significa que la jugada ya es la línea principal.
+                    // The path segments ARE the child indexes: all zeros means the move
+                    // is already the main line.
                     canPromote: !path.split(".").every((segment) => segment === "0"),
-                    // Y el último segmento, su puesto entre las hermanas.
+                    // And the last segment, its place among its siblings.
                     canPromoteOneStep: path.split(".").at(-1) !== "0",
                   });
                 }}
@@ -530,14 +529,14 @@ export function AnalysisBoard({
           onPromoteToMainLine={() => mutateKeepingPlace(menu.path, () => promoteToMainLine(gameRef.current, menu.path))}
           onPromoteOneStep={() => mutateKeepingPlace(menu.path, () => promoteOneStep(gameRef.current, menu.path))}
           onDelete={() => mutateKeepingPlace(menu.path, () => deleteFrom(gameRef.current, menu.path), true)}
-          // Aquí comentar y anotar ya tienen su sitio fijo bajo la lista: el
-          // menú sólo lleva hasta él con la jugada ya elegida.
+          // Here commenting and annotating already have a fixed place under the
+          // list: the menu only leads to it with the move already selected.
           onComment={() => {
             setCurrentPath(menu.path);
             setTab("comment");
             setMenu(null);
-            // El foco, en el siguiente fotograma: la pestaña acaba de cambiar y
-            // el campo todavía no está en el árbol.
+            // Focus on the next frame: the tab has just changed and the field is
+            // not in the tree yet.
             requestAnimationFrame(() => commentRef.current?.focus());
           }}
           onAnnotate={() => {
@@ -551,8 +550,8 @@ export function AnalysisBoard({
             try {
               await navigator.clipboard.writeText(text);
             } catch {
-              // Sin permiso de portapapeles el PGN completo sigue en el campo
-              // de «Pegar un PGN» para copiarlo a mano.
+              // Without clipboard permission the full PGN is still in the "Paste a
+              // PGN" field to copy it by hand.
             }
           }}
           onClose={() => setMenu(null)}

@@ -11,12 +11,12 @@ import { StaffEditorHead } from "./staff-editor.comp";
 import "./courses-admin.section.css";
 
 interface CoursesAdminSectionProps {
-  /** Lo que se busca y el estado por el que se filtra; los dos vienen de la URL. */
+  /** What is searched and the status filtered by; both come from the URL. */
   query?: string;
   status?: string;
 }
 
-/** Los filtros de estado, con «Todos» delante. `status` vacío = todos. */
+/** The status filters, with "Todos" first. Empty `status` = all. */
 const FILTERS: { label: string; status?: string }[] = [
   { label: "Todos" },
   { label: "Publicados", status: COURSE_STATUS.PUBLISHED },
@@ -24,7 +24,7 @@ const FILTERS: { label: string; status?: string }[] = [
   { label: "Archivados", status: COURSE_STATUS.ARCHIVED },
 ];
 
-/** Miniatura de 40 px: el recuadro se pinta aunque no haya portada. */
+/** 40 px thumbnail: the frame is painted even when there is no cover. */
 const COVER_SIZES = "44px";
 
 function filterHref(status: string | undefined, query: string | undefined): string {
@@ -46,8 +46,8 @@ export async function CoursesAdminSection({ query, status }: CoursesAdminSection
         description="Los cursos nacen en borrador y sólo se ven en la plataforma al publicarlos."
         actions={
           <>
-            {/* Un GET normal: la búsqueda queda en la URL, así que se puede
-                compartir y el botón de atrás la deshace. */}
+            {/* An ordinary GET: the search stays in the URL, so it can be shared
+                and the back button undoes it. */}
             <form className="courses-admin__search" action={staffRoutes.courses}>
               <SearchIcon className="courses-admin__search-icon" />
               <input
@@ -58,7 +58,7 @@ export async function CoursesAdminSection({ query, status }: CoursesAdminSection
                 placeholder="Buscar curso o identificador"
                 aria-label="Buscar curso o identificador"
               />
-              {/* El estado activo viaja con la búsqueda para no perderlo al buscar. */}
+              {/* The active status travels with the search so it is not lost when searching. */}
               {status && <input type="hidden" name="estado" value={status} />}
             </form>
 
@@ -119,8 +119,8 @@ export async function CoursesAdminSection({ query, status }: CoursesAdminSection
           <ul className="courses-admin__rows">
             {courses.map((course) => (
               <li key={course.id}>
-                {/* La FILA entera es el enlace: en una tabla de siete columnas,
-                    obligar a apuntar al nombre es pedir puntería. */}
+                {/* The whole ROW is the link: in a seven-column table, forcing the
+                    user to aim at the name is asking for marksmanship. */}
                 <Link href={course.href} className="courses-admin__row">
                   <span className="courses-admin__course">
                     <span className="courses-admin__cover">

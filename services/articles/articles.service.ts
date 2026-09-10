@@ -5,16 +5,16 @@ import { getPayload } from "@/lib/payload/get-payload";
 import { mapArticle, mapArticleSummary } from "./articles.mapper";
 import type { Article, ArticleLink, ArticleSummary } from "./articles.types";
 
-/** Red de seguridad para cambios que no pasen por los hooks de Payload. */
+/** Safety net for changes that do not go through Payload's hooks. */
 const CACHE_REVALIDATE_SECONDS = 3600;
 
-// La lista del blog va SIN el cuerpo de los artículos: `select` en modo
-// exclusión deja fuera `content` (el árbol Lexical entero) y conserva el resto
-// con sus relaciones pobladas. Antes cada visita a /blog cargaba y mandaba al
-// navegador el texto íntegro de todos los artículos para pintar nueve tarjetas.
+// The blog's list goes WITHOUT the articles' body: `select` in exclusion mode
+// leaves out `content` (the whole Lexical tree) and keeps the rest with its
+// relations populated. Before, every visit to /blog loaded and sent to the
+// browser the full text of every article in order to render nine cards.
 //
-// Entre peticiones la guarda `unstable_cache` con la etiqueta que caducan los
-// hooks de `collections/Articles.ts`; dentro de la misma petición, `cache()`.
+// Between requests it is kept by `unstable_cache` with the tag the hooks of
+// `collections/Articles.ts` expire; within the same request, `cache()`.
 const readPublishedSummaries = unstable_cache(
   async (): Promise<ArticleSummary[]> => {
     const payload = await getPayload();
@@ -34,7 +34,7 @@ const readPublishedSummaries = unstable_cache(
 
 export const getArticleSummaries = cache((): Promise<ArticleSummary[]> => readPublishedSummaries());
 
-// Para el sitemap: sólo slug y fecha, sin poblar relaciones.
+// For the sitemap: only slug and date, without populating relations.
 const readArticleLinks = unstable_cache(
   async (): Promise<ArticleLink[]> => {
     const payload = await getPayload();
@@ -54,9 +54,9 @@ const readArticleLinks = unstable_cache(
 
 export const getArticleLinks = cache((): Promise<ArticleLink[]> => readArticleLinks());
 
-// Consulta dirigida: abrir un artículo no debe traerse la colección entera.
-// cache() deduplica por slug, así que la página y su generateMetadata
-// comparten una sola consulta.
+// Targeted query: opening an article must not bring the whole collection.
+// cache() deduplicates by slug, so the page and its generateMetadata share a
+// single query.
 const getPublishedArticleBySlug = cache(async (slug: string) => {
   const payload = await getPayload();
   const result = await payload.find({

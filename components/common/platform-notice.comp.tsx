@@ -6,10 +6,10 @@ interface PlatformNoticeProps {
 }
 
 /**
- * Aviso de resultado de una acción. Los formularios de la plataforma son
- * `<form action={serverAction}>` y devuelven el fallo por redirect con
- * `?error=<code>`; la página traduce el code con su mapa de mensajes y lo pinta
- * aquí. `role="alert"` para que un lector de pantalla lo anuncie al volver.
+ * Notice with the result of an action. Platform forms are
+ * `<form action={serverAction}>` and return the failure by redirect with
+ * `?error=<code>`; the page translates the code with its message map and
+ * renders it here. `role="alert"` so a screen reader announces it on return.
  */
 export function PlatformNotice({ message, variant = "error" }: PlatformNoticeProps) {
   return (

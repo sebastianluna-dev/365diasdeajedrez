@@ -1,18 +1,18 @@
 import { CLASS_STATUS, type ClassStatusCode } from "@/constants/platform/class-codes.const";
 
-// Transiciones válidas del estado de una clase. Función pura y sin Prisma para
-// poder probarla; la action la consulta antes de escribir.
+// Valid transitions of a class's status. A pure function and without Prisma so
+// it can be tested; the action consults it before writing.
 //
-// No hay borrado físico de clases: CANCELLED **es** el borrado. Una clase
-// cancelada o terminada es historia y no vuelve atrás — si hubo un error, se
-// crea otra clase.
+// There is no physical deletion of classes: CANCELLED **is** the deletion. A
+// cancelled or finished class is history and does not go back — if there was a
+// mistake, another class is created.
 
 const ALLOWED_TRANSITIONS: Record<ClassStatusCode, readonly ClassStatusCode[]> = {
   [CLASS_STATUS.SCHEDULED]: [
     CLASS_STATUS.LIVE,
     CLASS_STATUS.CANCELLED,
-    // Se permite saltar a COMPLETED: es la clase que se documenta a posteriori,
-    // sin haber pasado por «en vivo» en la plataforma.
+    // Jumping to COMPLETED is allowed: it is the class documented after the fact,
+    // without having gone through "live" on the platform.
     CLASS_STATUS.COMPLETED,
   ],
   [CLASS_STATUS.LIVE]: [CLASS_STATUS.COMPLETED, CLASS_STATUS.CANCELLED],
@@ -24,7 +24,7 @@ export function canTransitionClassStatus(from: ClassStatusCode, to: ClassStatusC
   return ALLOWED_TRANSITIONS[from]?.includes(to) ?? false;
 }
 
-/** Estados a los que se puede pasar desde el actual (para pintar los botones). */
+/** Statuses that can be moved to from the current one (to render the buttons). */
 export function nextClassStatuses(from: ClassStatusCode): readonly ClassStatusCode[] {
   return ALLOWED_TRANSITIONS[from] ?? [];
 }

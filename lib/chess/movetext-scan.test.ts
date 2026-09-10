@@ -24,8 +24,8 @@ describe("findMalformedMoveTokens", () => {
   });
 
   it("caza el token que ni siquiera tiene forma de jugada", () => {
-    // El caso del punto 11b: chessops lo descarta antes de validarlo, así que
-    // sin esto la rama desaparecía del árbol sin decir nada.
+    // The case from point 11b: chessops discards it before validating it, so
+    // without this the branch disappeared from the tree without a word.
     expect(findMalformedMoveTokens("1. e4 e5 2. Qz9")).toEqual(["Qz9"]);
     expect(findMalformedMoveTokens("1. e4 Bx99 2. Nf3")).toEqual(["Bx99"]);
   });

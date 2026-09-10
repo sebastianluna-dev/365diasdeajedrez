@@ -13,9 +13,9 @@ interface ResetPasswordFormProps {
 }
 
 /**
- * Reinicio de contraseña. Misma excepción que el alta: usa `useActionState`
- * para poder devolver la contraseña temporal sin meterla en la URL, y por eso
- * necesita JavaScript. Reiniciar cierra TODAS las sesiones de esa cuenta.
+ * Password reset. Same exception as account creation: it uses `useActionState`
+ * to be able to return the temporary password without putting it in the URL,
+ * which is why it needs JavaScript. Resetting closes ALL sessions of that account.
  */
 export function ResetPasswordForm({ userId }: ResetPasswordFormProps) {
   const [state, formAction, isPending] = useActionState(resetStudentPassword, ACCOUNT_INITIAL_STATE);

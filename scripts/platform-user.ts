@@ -1,15 +1,16 @@
-// Alta y mantenimiento de cuentas de alumno desde la terminal.
+// Creating and maintaining student accounts from the terminal.
 //
-// No hay registro público a propósito: en una academia el alumno existe porque
-// se le da de alta. Mientras no exista el panel del profesor (MEJORAS #15),
-// esta es la vía oficial.
+// There is no public sign-up on purpose: in an academy the student exists
+// because they are enrolled. Until the teacher panel exists (MEJORAS #15), this
+// is the official route.
 //
 //   npm run user:create   -- alumno@correo.com "Nombre Apellido"
 //   npm run user:password -- alumno@correo.com
 //   npm run user:list
 //
-// La contraseña nunca se pasa como argumento (acabaría en el historial del
-// shell): se pide por stdin sin eco, o se toma de PLATFORM_USER_PASSWORD.
+// The password is never passed as an argument (it would end up in the shell's
+// history): it is asked for on stdin without echo, or taken from
+// PLATFORM_USER_PASSWORD.
 
 import { config } from "dotenv";
 config({ path: ".env.local" });
@@ -33,13 +34,13 @@ function fail(message: string): never {
   process.exit(1);
 }
 
-/** Pide la contraseña por consola sin mostrarla mientras se teclea. */
+/** Asks for the password on the console without showing it while it is typed. */
 async function promptPassword(label: string): Promise<string> {
   const fromEnv = process.env.PLATFORM_USER_PASSWORD;
   if (fromEnv) return fromEnv;
 
-  // readline escribe por su `output`; se le da uno que deja pasar el prompt y
-  // descarta el resto, que es justamente el eco de lo que se teclea.
+  // readline writes through its `output`; it is given one that lets the prompt
+  // through and discards the rest, which is precisely the echo of what is typed.
   let silenced = false;
   const output = new Writable({
     write(chunk, _encoding, done) {
@@ -55,8 +56,8 @@ async function promptPassword(label: string): Promise<string> {
       process.stdout.write("\n");
       resolve(value);
     });
-    // question() ya ha escrito el prompt de forma síncrona: a partir de aquí
-    // todo lo que salga es eco.
+    // question() has already written the prompt synchronously: from here on,
+    // everything that comes out is echo.
     silenced = true;
   });
 }
@@ -101,8 +102,8 @@ async function setPassword(rawEmail: string | undefined): Promise<void> {
     data: { passwordHash: await hashPassword(password), passwordUpdatedAt: new Date() },
   });
 
-  // Cambiar la contraseña cierra las sesiones abiertas: es lo que se espera
-  // cuando el motivo del cambio es que alguien más tenía acceso.
+  // Changing the password closes the open sessions: it is what is expected when
+  // the reason for the change is that someone else had access.
   const { count } = await db.session.deleteMany({ where: { userId: user.id } });
   console.log(`✔ Contraseña actualizada para ${user.displayName} (${count} sesión/es cerradas).`);
 }

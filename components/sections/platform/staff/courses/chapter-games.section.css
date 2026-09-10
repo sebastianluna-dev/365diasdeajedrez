@@ -38,7 +38,7 @@
     color: var(--platform-text-subtle);
   }
 
-  /* Al filo derecho: es lo que se hace con la fila, no parte de su nombre. */
+  /* At the right edge: it is what is done with the row, not part of its name. */
   & .chapter-games__row form {
     margin-left: auto;
     flex: none;
@@ -72,8 +72,8 @@
     text-wrap: pretty;
   }
 
-  /* El PGN se pega en un área, no en una línea: entran varias partidas de una
-     vez y una sola fila de texto escondería lo que se está pegando. */
+  /* The PGN is pasted into an area, not a line: several games come in at
+     once and a single row of text would hide what is being pasted. */
   & .chapter-games__import {
     display: flex;
     flex-direction: column;

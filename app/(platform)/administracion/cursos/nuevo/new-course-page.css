@@ -1,6 +1,6 @@
 .new-course-page {
-  /* El formulario no se estira a lo ancho de la pantalla: son tres campos y a
-     mil trescientos píxeles el nombre quedaría en un renglón de un palmo. */
+  /* The form does not stretch across the screen: it is three fields, and at
+     thirteen hundred pixels the name would sit on a hand-wide line. */
   & .new-course-page__panel {
     max-width: 640px;
   }

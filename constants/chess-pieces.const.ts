@@ -1,5 +1,5 @@
-// Entidades HTML de las piezas de ajedrez en Unicode. El proyecto no usa enums
-// de TS: un objeto `as const` + tipo derivado da el mismo tipado sin runtime extra.
+// HTML entities of the chess pieces in Unicode. The project does not use TS
+// enums: an `as const` object + derived type gives the same typing with no extra runtime.
 
 export const CHESS_PIECE_UNICODE = {
   WHITE_KING: "&#x2654;",

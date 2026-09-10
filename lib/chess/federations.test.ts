@@ -9,14 +9,14 @@ describe("federationFlag", () => {
   });
 
   it("acierta donde el código FIDE NO es el ISO alfa-3", () => {
-    // Los que se traducirían mal copiando las tres letras a ciegas.
-    expect(federationFlag("CHI")).toBe("🇨🇱"); // Chile, no China
+    // The ones that would be mistranslated by copying the three letters blindly.
+    expect(federationFlag("CHI")).toBe("🇨🇱"); // Chile, not China
     expect(federationFlag("CHN")).toBe("🇨🇳");
-    expect(federationFlag("SUI")).toBe("🇨🇭"); // Suiza
+    expect(federationFlag("SUI")).toBe("🇨🇭"); // Switzerland
     expect(federationFlag("GER")).toBe("🇩🇪");
     expect(federationFlag("NED")).toBe("🇳🇱");
-    expect(federationFlag("LAT")).toBe("🇱🇻"); // Letonia
-    expect(federationFlag("IRI")).toBe("🇮🇷"); // Irán
+    expect(federationFlag("LAT")).toBe("🇱🇻"); // Latvia
+    expect(federationFlag("IRI")).toBe("🇮🇷"); // Iran
   });
 
   it("no se inventa una bandera cuando no conoce el código", () => {
@@ -35,7 +35,7 @@ describe("federationName", () => {
   it("da el nombre del país en castellano", () => {
     expect(federationName("MEX")).toBe("México");
     expect(federationName("GER")).toBe("Alemania");
-    // El que se traduciría mal copiando las tres letras a ciegas.
+    // The one that would be mistranslated by copying the three letters blindly.
     expect(federationName("CHI")).toBe("Chile");
   });
 
@@ -51,8 +51,8 @@ describe("federationOptions", () => {
   it("lleva el país y su código, ordenados por nombre", () => {
     expect(options.find((option) => option.code === "MEX")?.label).toBe("México (MEX)");
 
-    // El orden NO depende de los datos de idioma del entorno: se compara sin
-    // acentos, para que el servidor y el navegador pinten la misma lista.
+    // The order does NOT depend on the environment's locale data: it is compared
+    // without accents, so the server and the browser render the same list.
     const keys = options.map((option) =>
       option.label
         .normalize("NFD")

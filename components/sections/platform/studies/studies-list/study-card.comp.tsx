@@ -12,9 +12,9 @@ export function StudyCard({ study }: StudyCardProps) {
     <article className="study-card">
       <div className="study-card__tags">
         <span className="study-card__kind">{study.kindLabel}</span>
-        {/* De dónde viene lo que no es suyo: el curso que lo trae o el maestro
-            que lo repartió. Sin esto, dos colecciones de sólo lectura serían
-            indistinguibles en la lista. */}
+        {/* Where what is not theirs comes from: the course that brings it or the
+            teacher who handed it out. Without this, two read-only collections would
+            be indistinguishable in the list. */}
         {study.courseName && <span className="study-card__origin">{study.courseName}</span>}
         {study.sharedByName && <span className="study-card__origin">{study.sharedByName}</span>}
 

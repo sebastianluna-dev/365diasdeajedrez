@@ -31,12 +31,12 @@ import { recordUserActivity } from "@/services/shared/user-activity.service";
 import { withErrorParam } from "@/services/shared/safe-return-to";
 import { canTransitionClassStatus } from "./class-status-transitions";
 
-// Escrituras del panel del profesor. Reglas que NO se negocian:
-// - Toda action abre con requireTeacher(); las que reciben un classId siguen
-//   con assertTeacherOwnsClass. Son alcanzables por POST directo, así que
-//   ocultar un botón no protege nada.
-// - Los catálogos se conectan por `code`, nunca por id.
-// - Los errores vuelven por redirect con `?error=<code>` (mapa de mensajes en
+// Writes of the teacher panel. Rules that are NOT negotiable:
+// - Every action opens with requireTeacher(); those that receive a classId
+//   continue with assertTeacherOwnsClass. They are reachable by direct POST, so
+//   hiding a button protects nothing.
+// - Catalogs are connected by `code`, never by id.
+// - Errors come back by redirect with `?error=<code>` (message map in
 //   constants/platform/teacher-messages.const.ts).
 
 const TITLE_MAX_LENGTH = 120;
@@ -46,7 +46,7 @@ const CAPTION_MAX_LENGTH = 200;
 const BLOCK_TEXT_MAX_LENGTH = 10_000;
 const DURATION_MIN = 15;
 const DURATION_MAX = 480;
-/** El enlace se abre media hora antes por defecto. */
+/** The link opens half an hour early by default. */
 const MEETING_VISIBLE_LEAD_MS = 30 * 60 * 1000;
 
 function fail(path: string, code: string): never {
@@ -68,14 +68,14 @@ interface ClassMetaInput {
   meetingUrlVisibleFrom: Date | null;
 }
 
-/** Lee y valida los metadatos comunes al alta y a la edición de una clase. */
+/** Reads and validates the metadata common to creating and editing a class. */
 async function readClassMeta(formData: FormData, teacher: TeacherContext["teacher"], failPath: string): Promise<ClassMetaInput> {
   const title = readText(formData, "title");
   if (title.length === 0) fail(failPath, "title");
 
   const timeZone = await teacherTimeZone(teacher.id);
-  // El input es `datetime-local`: hora de pared del profesor, que se convierte
-  // a UTC con SU zona (o UTC si no tiene ninguna configurada).
+  // The input is `datetime-local`: the teacher's wall-clock time, which is
+  // converted to UTC with THEIR zone (or UTC if they have none configured).
   const scheduledAt = parseDateTimeLocal(readText(formData, "scheduledAt"), timeZone);
   if (!scheduledAt) fail(failPath, "schedule");
 
@@ -115,8 +115,8 @@ export async function createClass(formData: FormData): Promise<void> {
 
   const meta = await readClassMeta(formData, teacher, teacherRoutes.newClass);
 
-  // Participantes iniciales: sólo alumnos con asignación activa. Se comprueba
-  // uno a uno contra la base, nunca por lo que venga marcado en el formulario.
+  // Initial participants: only students with an active assignment. Each is checked
+  // one by one against the database, never by whatever comes ticked in the form.
   const studentIds = formData.getAll("studentIds").filter((value): value is string => typeof value === "string");
   for (const studentId of studentIds) await assertTeacherHasStudent(teacher.id, studentId);
 
@@ -152,7 +152,7 @@ export async function updateClassMeta(classId: string, formData: FormData): Prom
 
   await getPlatformDb().class.update({
     where: { id: classId },
-    // `teacherId` no aparece nunca aquí: una clase no cambia de profesor.
+    // `teacherId` never appears here: a class does not change teacher.
     data: {
       title: meta.title,
       description: meta.description,
@@ -226,8 +226,8 @@ export async function removeParticipant(classId: string, formData: FormData): Pr
   const studentId = readText(formData, "studentId");
   const db = getPlatformDb();
 
-  // Sólo se puede sacar a quien no dejó rastro: si asistió o pagó, la fila es
-  // historial (y contabilidad), no una inscripción que se pueda deshacer.
+  // Only whoever left no trace can be removed: if they attended or paid, the row
+  // is history (and accounting), not an enrolment that can be undone.
   const removed = await db.classParticipant.deleteMany({
     where: { classId, userId: studentId, attended: false, paidAt: null },
   });
@@ -266,16 +266,16 @@ export async function markAttendance(classId: string, formData: FormData): Promi
         where: { classId_userId: { classId, userId: participant.userId } },
         data: {
           attended,
-          // joinedAt sólo se sella la primera vez: no se pierde la hora real
-          // si la asistencia se corrige después.
+          // joinedAt is only stamped the first time: the real time is not lost if the
+          // attendance is corrected afterwards.
           joinedAt: attended ? (participant.joinedAt ?? classRow.scheduledAt) : participant.joinedAt,
         },
       });
     }),
   );
 
-  // La asistencia cuenta como actividad del ALUMNO: alimenta sus estadísticas
-  // por el único punto de escritura que existe para ellas.
+  // The attendance counts as the STUDENT's activity: it feeds their statistics
+  // through the only write point that exists for them.
   for (const participant of changed) {
     if (!attendedNow.has(participant.userId)) continue;
     await recordUserActivity({
@@ -298,11 +298,11 @@ interface BlockFields {
   text: string | null;
   videoUrl: string | null;
   movePath: string | null;
-  /** Partida transcrita en el bloque; no es una referencia, es contenido. */
+  /** Game transcribed in the block; it is not a reference, it is content. */
   pgn: string | null;
 }
 
-/** Campos del bloque en un `create`: las referencias que no aplican se omiten. */
+/** Fields of the block in a `create`: the references that do not apply are omitted. */
 function toCreateData(fields: BlockFields) {
   return {
     text: fields.text,
@@ -316,10 +316,10 @@ function toCreateData(fields: BlockFields) {
 }
 
 /**
- * Campos del bloque en un `update`. Aquí las referencias que no aplican se
- * DESCONECTAN explícitamente: al cambiar el tipo de un bloque hay que dejar el
- * puntero anterior a null o el CHECK `class_block_single_ref` saltaría (y el
- * bloque arrastraría datos del tipo viejo).
+ * Fields of the block in an `update`. Here the references that do not apply are
+ * explicitly DISCONNECTED: when a block's kind changes the previous pointer has
+ * to be left null or the `class_block_single_ref` CHECK would go off (and the
+ * block would drag along data of the old kind).
  */
 function toUpdateData(fields: BlockFields) {
   return {
@@ -334,9 +334,10 @@ function toUpdateData(fields: BlockFields) {
 }
 
 /**
- * Campos del bloque según su kind, con TODOS los que no aplican puestos a null.
- * Es lo que exige el CHECK `class_block_single_ref` (como mucho una referencia)
- * y evita que un cambio de tipo deje datos huérfanos del tipo anterior.
+ * Fields of the block according to its kind, with ALL those that do not apply
+ * set to null. It is what the `class_block_single_ref` CHECK requires (at most
+ * one reference) and it keeps a change of kind from leaving orphaned data of the
+ * previous one.
  */
 async function readBlockFields(
   kind: ClassBlockKindCode,
@@ -371,13 +372,13 @@ async function readBlockFields(
     }
 
     case CLASS_BLOCK_KIND.GAME_REF: {
-      // La partida transcrita en el bloque es el camino principal y gana sobre
-      // la referenciada, igual que al pintarla. Si viene, la de un alumno ni se
-      // mira: el profesor eligió transcribir.
+      // The game transcribed in the block is the main route and wins over the
+      // referenced one, just as when rendering it. If it comes, a student's is not
+      // even looked at: the teacher chose to transcribe.
       const pgn = readText(formData, "pgn");
       if (pgn.length > 0) {
         if (pgn.length > PGN_MAX_LENGTH) fail(failPath, "blockPgnTooLong");
-        // El tablero valida en el cliente por comodidad; quien decide es esto.
+        // The board validates on the client for convenience; what decides is this.
         const tree = parsePgnTree(pgn);
         if (tree === null) fail(failPath, "blockPgn");
         if (tree.children.length === 0) fail(failPath, "blockPgnEmpty");
@@ -386,16 +387,16 @@ async function readBlockFields(
 
       const gameId = readText(formData, "gameId");
       if (gameId.length === 0) fail(failPath, "blockRef");
-      // La asignación se valida AQUÍ, al insertar: un bloque ya creado sigue
-      // siendo válido aunque después se reasigne al alumno (§8.3 del plan).
+      // The assignment is validated HERE, on insertion: an already created block stays
+      // valid even if the student is reassigned afterwards (§8.3 of the plan).
       await assertTeacherCanReferenceGame({ id: teacher.id, userId: teacherUserId }, gameId);
       return { ...empty, gameId, movePath };
     }
 
     case CLASS_BLOCK_KIND.LESSON_REF: {
       const lessonId = readText(formData, "lessonId");
-      // Sólo lecciones de cursos PUBLICADOS: el bloque le ofrece al alumno un
-      // enlace para abrirla, y en un borrador ese enlace no lleva a ningún sitio.
+      // Only lessons of PUBLISHED courses: the block offers the student a link to open
+      // it, and in a draft that link leads nowhere.
       const lesson = await db.lesson.findFirst({
         where: { id: lessonId, chapter: { course: { status: { code: COURSE_STATUS.PUBLISHED } } } },
         select: { id: true },
@@ -415,8 +416,8 @@ async function readBlockFields(
     }
 
     case CLASS_BLOCK_KIND.FILE:
-      // Sin pipeline de subida propio todavía: el bloque guarda el enlace en
-      // el pie y sirve de marcador del material.
+      // Without an upload pipeline of its own yet: the block stores the link in the
+      // caption and serves as a marker for the material.
       return empty;
 
     default:
@@ -467,8 +468,8 @@ export async function updateClassBlock(classId: string, blockId: string, formDat
   const kind = readBlockKind(formData, detailPath);
   const fields = await readBlockFields(kind, formData, teacher, user.id, detailPath);
 
-  // El bloque se busca con classId en el where: un blockId de otra clase no
-  // coincide y la action termina sin escribir nada.
+  // The block is looked up with classId in the where: a blockId from another class
+  // does not match and the action ends without writing anything.
   const db = getPlatformDb();
   const block = await db.classBlock.findFirst({ where: { id: blockId, classId }, select: { id: true } });
   if (!block) fail(detailPath, "blockMissing");
@@ -500,8 +501,8 @@ export async function deleteClassBlock(classId: string, formData: FormData): Pro
     const deleted = await tx.classBlock.deleteMany({ where: { id: blockId, classId } });
     if (deleted.count === 0) return;
 
-    // Renumeración densa: los updates van en ascendente, con el hueco por
-    // delante, para no chocar con @@unique([classId, order]).
+    // Dense renumbering: the updates go in ascending order, with the gap ahead, so as
+    // not to clash with @@unique([classId, order]).
     const remaining = await tx.classBlock.findMany({ where: { classId }, select: { id: true, order: true } });
     for (const update of planDenseRenumber(remaining)) {
       await tx.classBlock.update({ where: { id: update.id }, data: { order: update.order } });
@@ -526,8 +527,8 @@ export async function moveClassBlock(classId: string, formData: FormData): Promi
   const db = getPlatformDb();
   await db.$transaction(async (tx) => {
     const blocks = await tx.classBlock.findMany({ where: { classId }, select: { id: true, order: true } });
-    // planSwap pasa por un orden temporal fuera de rango: sin eso, el
-    // intercambio directo violaría el índice único a mitad de camino.
+    // planSwap goes through a temporary out-of-range order: without that, the direct
+    // swap would violate the unique index halfway.
     for (const update of planSwap(blocks, blockId, direction as MoveDirection)) {
       await tx.classBlock.update({ where: { id: update.id }, data: { order: update.order } });
     }
@@ -538,10 +539,10 @@ export async function moveClassBlock(classId: string, formData: FormData): Promi
 }
 
 /**
- * PGN de un recurso para el selector de posición del editor de bloques. Es una
- * server action y no una llamada directa al servicio porque quien la necesita
- * es un componente de cliente; autoriza exactamente igual que el alta del
- * bloque (dentro de `getPgnForReference`).
+ * PGN of a resource for the position picker of the block editor. It is a server
+ * action and not a direct call to the service because whoever needs it is a
+ * client component; it authorises exactly like creating the block (inside
+ * `getPgnForReference`).
  */
 export async function fetchReferencePgn(
   kind: typeof CLASS_BLOCK_KIND.GAME_REF | typeof CLASS_BLOCK_KIND.LESSON_REF,

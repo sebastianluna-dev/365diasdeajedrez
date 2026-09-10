@@ -47,9 +47,9 @@ export function ChapterDetailSection({ chapter }: ChapterDetailSectionProps) {
               </Link>
             )}
 
-            {/* El diseño no dibuja este botón, pero el Move Trainer se alcanza
-                desde aquí y desde ningún otro sitio: se queda al lado del
-                principal, en secundario para no competir con él. */}
+            {/* The design does not draw this button, but the Move Trainer is reached
+                from here and from nowhere else: it stays next to the primary one,
+                as secondary so as not to compete with it. */}
             {chapter.hasExercises && (
               <form action={toggleAction}>
                 <button type="submit" className="platform-button platform-button_variant_secondary">

@@ -3,13 +3,13 @@
     background: var(--platform-surface);
     border-radius: 10px;
     box-shadow: 0 1px 2px rgba(22, 17, 13, 0.05);
-    /* Recorta las filas contra el redondeo. */
+    /* Clips the rows against the rounding. */
     overflow: hidden;
   }
 
-  /* Cabecera y filas comparten rejilla para que las columnas cuadren sin usar
-     una <table>, que aquí no aporta: cada fila es un enlace, no datos que se
-     lean cruzados. */
+  /* Header and rows share a grid so the columns line up without using a
+     <table>, which adds nothing here: each row is a link, not data to be
+     read across. */
   & .game-table__head,
   & .game-table__row {
     display: grid;
@@ -46,9 +46,9 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* El número hace de tirador: no se añade una columna sólo para arrastrar.
-     Es un <button> y no un adorno porque el arrastre por sí solo deja fuera a
-     quien navega con teclado; con las flechas se mueve igual. */
+  /* The number acts as the handle: no column is added just for dragging.
+     It is a <button> and not a decoration because dragging alone leaves out
+     whoever navigates with the keyboard; with the arrows it moves just the same. */
   & .game-table__handle {
     display: flex;
     align-items: center;
@@ -72,8 +72,8 @@
     outline-offset: 2px;
   }
 
-  /* La rejilla asoma al pasar por encima o al enfocar: si estuviera siempre
-     visible añadiría ruido a trece filas por una acción que se usa poco. */
+  /* The grid shows through on hover or focus: if it were always visible it
+     would add noise to thirteen rows for an action that is rarely used. */
   & .game-table__grip {
     color: var(--platform-text-faint);
     font-size: 14px;
@@ -149,7 +149,7 @@
     color: var(--platform-text-subtle);
   }
 
-  /* Sin ancho para cuatro columnas: los jugadores bajan bajo el nombre. */
+  /* No width for four columns: the players go under the name. */
   @media (max-width: 820px) {
     & .game-table__head {
       display: none;

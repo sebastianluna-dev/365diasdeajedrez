@@ -8,10 +8,10 @@
     gap: 32px;
   }
 
-  /* Los cursos mandan y la columna de la derecha mide lo que necesita: fijarla
-     en píxeles y no en fracciones evita que la racha se estire en pantallas
-     anchas, donde una tarjeta de dos cifras a media pantalla se ve vacía.
-     `start` para que no se estire a lo alto de la lista. */
+  /* The courses rule and the right column measures what it needs: fixing it in
+     pixels and not in fractions keeps the streak from stretching on wide
+     screens, where a two-digit card at half the screen looks empty.
+     `start` so it does not stretch to the height of the list. */
   & .courses-page__layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 320px;
@@ -32,8 +32,8 @@
     text-align: right;
   }
 
-  /* El <dd> va primero (la cifra manda visualmente) y el <dt> debajo hace de
-     rótulo, así que hay que quitarle a `dd` la sangría que trae de serie. */
+  /* The <dd> goes first (the figure rules visually) and the <dt> below acts as
+     the label, so `dd` has to lose the indentation it comes with by default. */
   & .courses-page__stat-value {
     margin: 0;
     font-family: var(--platform-font);
@@ -61,15 +61,15 @@
     background: var(--platform-border);
   }
 
-  /* Antes de que la lista se estruje, la columna se va debajo: una tarjeta de
-     curso en fila necesita sitio para la portada, dos medidores y el botón. */
+  /* Before the list gets squeezed, the column moves below: a course card in a
+     row needs room for the cover, two meters and the button. */
   @media (max-width: 1080px) {
     & .courses-page__layout {
       grid-template-columns: minmax(0, 1fr);
     }
   }
 
-  /* Apretado, el resumen se va debajo del título en vez de estrujarlo. */
+  /* When cramped, the summary goes below the title instead of squeezing it. */
   @media (max-width: 720px) {
     & .courses-page__head {
       flex-direction: column;

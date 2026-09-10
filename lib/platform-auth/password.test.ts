@@ -35,9 +35,9 @@ describe("hashPassword / verifyPassword", () => {
   });
 
   it("verifica hashes creados con parámetros distintos a los actuales", async () => {
-    // Hash real de "historica" con N=16384 (coste menor que el vigente). Es la
-    // razón de guardar N/r/p dentro del hash: subir el coste no debe expulsar a
-    // quien se registró antes.
+    // Real hash of "historica" with N=16384 (lower cost than the current one). It
+    // is the reason for storing N/r/p inside the hash: raising the cost must not
+    // lock out whoever registered earlier.
     const legacy =
       "scrypt$16384$8$1$0f1e2d3c4b5a69788796a5b4c3d2e1f0$f13665439682794e1a0240536a992d906ac5cee03e3738c898bad5ae163b036f2302cd2ee5485f82d67e4de2a9cfe3b3db919a7c29a651765f8b51f4858160db";
     expect(await verifyPassword("historica", legacy)).toBe(true);

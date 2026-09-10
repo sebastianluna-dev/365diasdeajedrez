@@ -54,13 +54,13 @@ ALTER TABLE "TeacherStudent" ADD CONSTRAINT "TeacherStudent_assignedBy_fkey" FOR
 ALTER TABLE "Staff" ADD CONSTRAINT "Staff_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- ---------------------------------------------------------------------------
--- Constraints manuales (no expresables en Prisma Schema; ver prisma/schema.prisma)
+-- Manual constraints (not expressible in the Prisma schema; see prisma/schema.prisma)
 -- ---------------------------------------------------------------------------
 
--- Un solo profesor activo por alumno. Es la verdad última: el servicio cierra
--- la asignación anterior antes de crear la nueva, pero dos peticiones a la vez
--- pasan ambas ese chequeo y sólo el índice las separa (la action captura el
--- P2002 con este nombre). Para permitir varios profesores por alumno: DROP
--- INDEX y nada más — el modelo ya lo soporta.
+-- One active teacher per student. It is the final truth: the service closes the
+-- previous assignment before creating the new one, but two simultaneous requests
+-- both pass that check and only the index separates them (the action catches the
+-- P2002 by this name). To allow several teachers per student: DROP INDEX and
+-- nothing else — the model already supports it.
 CREATE UNIQUE INDEX "teacher_student_one_active"
   ON "TeacherStudent" ("studentId") WHERE "endedAt" IS NULL;

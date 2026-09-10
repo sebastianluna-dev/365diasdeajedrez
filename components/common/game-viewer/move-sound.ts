@@ -1,18 +1,18 @@
 "use client";
 
-// Sonidos de tablero, servidos desde public/sounds.
+// Board sounds, served from public/sounds.
 //
-// Se cargan PEREZOSAMENTE y sólo cuando hace falta sonar: son dos ficheros y
-// no tiene sentido pedirlos en cada visor de una página que quizá nunca suene.
-// Cada reproducción usa un clon del elemento porque navegar rápido con las
-// flechas dispara varias seguidas, y reutilizar el mismo elemento cortaría la
-// anterior a media nota.
+// They load LAZILY and only when a sound is needed: they are two files and
+// there is no point requesting them in every viewer of a page that may
+// never sound. Each playback uses a clone of the element because navigating
+// quickly with the arrow keys fires several in a row, and reusing the same
+// element would cut the previous one mid-note.
 
 export type MoveSoundKind = "move" | "capture";
 
-// Sólo dos, sacados del paquete «standard» de lichess. Allí el jaque NO suena
-// (su Check.mp3 es un enlace a Silence.mp3), así que darle sonido propio
-// sería inventarse el paquete.
+// Only two, taken from lichess's "standard" set. There, check does NOT
+// sound (its Check.mp3 is a link to Silence.mp3), so giving it a sound of
+// its own would be making up the set.
 const SOURCES: Record<MoveSoundKind, string> = {
   move: "/sounds/move.mp3",
   capture: "/sounds/capture.mp3",
@@ -36,7 +36,7 @@ export function playMoveSound(kind: MoveSoundKind): void {
   if (!element) return;
   const voice = element.cloneNode() as HTMLAudioElement;
   voice.volume = 0.6;
-  // Sin gesto previo del usuario el navegador rechaza la promesa; es lo
-  // esperado y no hay nada que reportar.
+  // Without a prior user gesture the browser rejects the promise; that is
+  // expected and there is nothing to report.
   void voice.play().catch(() => undefined);
 }

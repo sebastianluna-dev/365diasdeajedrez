@@ -4,8 +4,8 @@ import { CACHE_TAGS } from "@/lib/payload/cache-tags";
 import { getPayload } from "@/lib/payload/get-payload";
 import type { SiteSettingsContent } from "./site-settings.types";
 
-// Cacheado entre peticiones igual que los Globals de la portada (ver el
-// comentario en services/home/home.service.ts); lo caduca el hook del Global.
+// Cached between requests just like the home page's Globals (see the comment in
+// services/home/home.service.ts); the Global's hook expires it.
 const readSiteSettingsGlobal = unstable_cache(
   async () => {
     const payload = await getPayload();

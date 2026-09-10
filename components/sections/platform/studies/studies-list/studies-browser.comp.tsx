@@ -9,12 +9,12 @@ import "./studies-browser.comp.css";
 const ALL = "Todos";
 
 interface StudiesBrowserProps {
-  /** Los que son suyos: «Mis partidas», sus torneos y sus estudios. */
+  /** Those that are theirs: "Mis partidas", their tournaments and their studies. */
   own: StudySummary[];
   /**
-   * Lo que le llega hecho y no puede tocar: las bases de los cursos que ha
-   * empezado, las colecciones que le repartió un maestro y las partidas de sus
-   * clases.
+   * What reaches them ready-made and cannot be touched: the databases of the
+   * courses they have started, the collections a teacher handed them and the
+   * games from their classes.
    */
   received: StudySummary[];
 }
@@ -22,8 +22,8 @@ interface StudiesBrowserProps {
 export function StudiesBrowser({ own, received }: StudiesBrowserProps) {
   const [active, setActive] = useState(ALL);
 
-  // Los filtros salen de los tipos que hay delante, no de una lista fija: si
-  // mañana aparece otro tipo, su filtro aparece solo.
+  // The filters come from the kinds that are present, not from a fixed list: if
+  // another kind appears tomorrow, its filter appears by itself.
   const options = useMemo(() => {
     const labels = [...own, ...received].map((study) => study.kindLabel);
     return [ALL, ...[...new Set(labels)]];

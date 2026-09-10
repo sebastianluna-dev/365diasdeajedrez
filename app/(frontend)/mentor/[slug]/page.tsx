@@ -106,7 +106,7 @@ export default async function MentorPage({ params }: MentorPageProps) {
                 <h2 className="mentor-profile__block-title">{mentor.featuredGame.gameTitle}</h2>
                 <p className="mentor-profile__text">{mentor.featuredGame.gameText}</p>
                 <p className="mentor-profile__text">{mentor.featuredGame.gameNote}</p>
-                {/* Al final de la ficha: se monta al acercarse, no en la carga. */}
+                {/* At the end of the profile: mounts when it comes near, not on load. */}
                 <ChessBoardLazy pgn={mentor.featuredGame.moves} flipBoard={mentor.featuredGame.flipBoard} />
               </div>
             </div>

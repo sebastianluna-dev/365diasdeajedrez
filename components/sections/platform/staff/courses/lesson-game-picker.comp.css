@@ -3,8 +3,8 @@
   flex-direction: column;
   gap: 14px;
 
-  /* La partida vinculada se enmarca: es una decisión tomada, no una fila más
-     de una lista de candidatas. */
+  /* The linked game is framed: it is a decision made, not one more row of a
+     list of candidates. */
   & .lesson-game-picker__current {
     display: flex;
     align-items: center;
@@ -115,7 +115,7 @@
     color: var(--platform-danger);
   }
 
-  /* Los botones se van al filo derecho; el texto se queda con lo que sobre. */
+  /* The buttons go to the right edge; the text keeps whatever is left. */
   & .lesson-game-picker__row .lesson-game-picker__link,
   & .lesson-game-picker__current .lesson-game-picker__change {
     margin-left: 0;

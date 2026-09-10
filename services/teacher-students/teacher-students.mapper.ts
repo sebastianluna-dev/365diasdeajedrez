@@ -3,14 +3,15 @@ import { teacherRoutes } from "@/lib/platform-routes";
 import { mapGameView, mapStudyDetail, mapStudySummary, type GameViewRow, type StudyDetailRow, type StudySummaryRow } from "@/services/studies/studies.mapper";
 import type { GameView, StudyDetail, StudySummary } from "@/services/studies/studies.types";
 
-// Los view-models de «Mis estudios» sirven tal cual para la vista del profesor:
-// lo único que cambia son los enlaces, que tienen que quedarse dentro de
-// /profesor/alumnos/<id> (si apuntaran a /estudios el profesor recibiría un 404,
-// porque esas rutas sólo muestran los estudios de quien las abre).
+// The "Mis estudios" view models serve the teacher's view as they are: the only
+// thing that changes are the links, which have to stay inside
+// /profesor/alumnos/<id> (if they pointed at /estudios the teacher would get a
+// 404, because those routes only show the studies of whoever opens them).
 
-// `null` como espectador en los tres: el profesor MIRA el material de su alumno
-// —para poder citarlo en clase— y no lo edita ni lo borra. El servidor lo
-// rechazaría igual, pero así tampoco se le ofrecen los botones.
+// `null` as the viewer in all three: the teacher LOOKS at their student's
+// material — so they can cite it in class — and neither edits nor deletes it.
+// The server would reject it all the same, but this way the buttons are not
+// offered either.
 
 export function mapStudentStudySummary(studentId: string, row: StudySummaryRow): StudySummary {
   return { ...mapStudySummary(row, null), href: teacherRoutes.studentStudy(studentId, row.id) };

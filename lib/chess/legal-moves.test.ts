@@ -8,12 +8,12 @@ describe("legalDests", () => {
     const dests = legalDests(START);
     expect(dests.get("e2")).toEqual(expect.arrayContaining(["e3", "e4"]));
     expect(dests.get("g1")).toEqual(expect.arrayContaining(["f3", "h3"]));
-    expect(dests.has("e1")).toBe(false); // el rey no tiene casillas libres
-    expect(dests.size).toBe(10); // ocho peones y dos caballos
+    expect(dests.has("e1")).toBe(false); // the king has no free squares
+    expect(dests.size).toBe(10); // eight pawns and two knights
   });
 
   it("en jaque sólo deja las jugadas que lo resuelven", () => {
-    // Rey blanco en e1 con jaque de la torre negra en e8; nada más en el tablero.
+    // White king on e1 in check from the black rook on e8; nothing else on the board.
     const dests = legalDests("4r2k/8/8/8/8/8/8/4K3 w - - 0 1");
     expect([...dests.keys()]).toEqual(["e1"]);
     expect(dests.get("e1")).not.toContain("e2");

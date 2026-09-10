@@ -9,10 +9,10 @@ import "./move-table.comp.css";
 
 interface MoveTableProps {
   tree: PgnTree;
-  /** Ruta punteada del nodo activo ("" = posición inicial). */
+  /** Dotted path of the active node ("" = initial position). */
   currentPath: string;
   onSelect: (path: string) => void;
-  /** Clic derecho sobre una jugada: abre su menú donde se puede editar. */
+  /** Right click on a move: opens its menu where it can be edited. */
   onContextMenu?: (path: string, event: MouseEvent) => void;
 }
 
@@ -20,19 +20,19 @@ const moveNumberOf = (node: PgnTreeNode) => Math.ceil(node.ply / 2);
 const isWhite = (node: PgnTreeNode) => node.ply % 2 === 1;
 
 /**
- * Notación en tabla, al estilo Lichess: la línea principal en pares
- * blancas/negras y todo lo demás a lo ancho.
+ * Tabular notation, Lichess style: the main line in white/black pairs and
+ * everything else full width.
  *
- * El ORDEN de los bloques lo decide `lib/chess/notation-blocks`, que es puro y
- * está probado contra una partida real con variantes de tres niveles. Aquí sólo
- * se pintan.
+ * The ORDER of the blocks is decided by `lib/chess/notation-blocks`, which is
+ * pure and tested against a real game with three levels of variations. Here
+ * they are only rendered.
  */
 export function MoveTable({ tree, currentPath, onSelect, onContextMenu }: MoveTableProps) {
   const activeRef = useRef<HTMLButtonElement>(null);
   const blocks = useMemo(() => buildNotationBlocks(tree), [tree]);
 
-  // La jugada activa, a la vista. `nearest` desplaza lo mínimo y sólo el
-  // contenedor con scroll, así que no da tirones a la página entera.
+  // The active move, in view. `nearest` scrolls the minimum and only the
+  // scrolling container, so it does not yank the whole page.
   useEffect(() => {
     activeRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
   }, [currentPath]);
@@ -62,9 +62,9 @@ export function MoveTable({ tree, currentPath, onSelect, onContextMenu }: MoveTa
       >
         {sanToSpanish(node.san)}
         {node.nags.length > 0 && <span className="move-table__nag">{node.nags.map(nagGlyph).join("")}</span>}
-        {/* La evaluación de la posición que deja la jugada, si la partida ya
-            se analizó. Viene del `[%eval]` del PGN, así que aparece sola al
-            volver a abrir la partida y no hace falta analizar otra vez. */}
+        {/* The evaluation of the position the move leaves, if the game has
+            already been analysed. It comes from the PGN's `[%eval]`, so it shows
+            up by itself when the game is reopened and there is no need to analyse again. */}
         {node.evaluation && <span className="move-table__eval">{formatEvaluation(node.evaluation)}</span>}
       </button>
     );

@@ -1,46 +1,46 @@
-// Constantes de autenticación compartidas por el DAL, las server actions y
-// `proxy.ts`. Van aquí (sin "server-only") porque proxy corre antes del render
-// y no debe arrastrar el cliente de Prisma ni módulos de React.
+// Authentication constants shared by the DAL, the server actions and
+// `proxy.ts`. They live here (without "server-only") because proxy runs before
+// the render and must not drag in the Prisma client or React modules.
 
 export const SESSION_COOKIE_NAME = "platform_session";
 
 /**
- * Vida de la cookie: muy larga a propósito. Quien manda sobre la caducidad es
- * `Session.expiresAt` en la base de datos, así que la cookie sólo tiene que
- * seguir ahí para transportar el token; si el navegador la conserva de más, el
- * servidor rechaza igualmente la sesión caducada.
+ * Cookie lifetime: very long on purpose. What rules over expiry is
+ * `Session.expiresAt` in the database, so the cookie only has to stay around
+ * to transport the token; if the browser keeps it longer, the server rejects
+ * the expired session all the same.
  */
 export const SESSION_COOKIE_MAX_AGE_SECONDS = 400 * 24 * 60 * 60;
 
-/** Duración real de una sesión sin actividad. */
+/** Real duration of a session without activity. */
 export const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
-/** Renovación deslizante: se refresca como mucho una vez al día. */
+/** Sliding renewal: refreshed at most once a day. */
 export const SESSION_RENEW_AFTER_MS = 24 * 60 * 60 * 1000;
 
 export const LOGIN_PATH = "/iniciar-sesion";
 
 /**
- * A dónde manda `proxy.ts` a quien llega a la portada con cookie de sesión. Es
- * un route handler (app/(auth)/entrar/route.ts) que consulta la sesión real y
- * reparte por rol; existe para que la portada no tenga que leer cookies y
- * pueda prerenderizarse.
+ * Where `proxy.ts` sends whoever reaches the home page with a session cookie.
+ * It is a route handler (app/(auth)/entrar/route.ts) that queries the real
+ * session and dispatches by role; it exists so the home page does not have to
+ * read cookies and can be prerendered.
  */
 export const SESSION_ENTRY_PATH = "/entrar";
 
-/** Parámetro con el destino al que volver tras iniciar sesión. */
+/** Parameter with the destination to return to after logging in. */
 export const RETURN_TO_PARAM = "next";
 
-/** Parámetro con el que el login se devuelve a sí mismo el motivo del fallo. */
+/** Parameter with which the login reports the failure reason back to itself. */
 export const LOGIN_ERROR_PARAM = "error";
 
 /**
- * Mensajes de error del login. Viven aquí y no en `auth.actions.ts` porque un
- * módulo "use server" sólo puede exportar funciones asíncronas.
+ * Login error messages. They live here and not in `auth.actions.ts` because a
+ * "use server" module can only export async functions.
  *
- * Un único texto para todos los fallos de credenciales a propósito: distinguir
- * «ese correo no existe» de «esa contraseña no es» le regala a un atacante la
- * lista de alumnos dados de alta.
+ * A single text for every credential failure on purpose: distinguishing
+ * "that email does not exist" from "that password is wrong" hands an
+ * attacker the list of enrolled students.
  */
 export const LOGIN_ERROR_MESSAGES: Record<string, string> = {
   credentials: "Email o contraseña incorrectos.",
@@ -48,14 +48,14 @@ export const LOGIN_ERROR_MESSAGES: Record<string, string> = {
 };
 
 /**
- * Prefijos de la zona privada. `proxy.ts` los usa para el rechazo optimista y
- * `app/robots.ts` para excluirlos del rastreo; la comprobación de verdad vive
- * siempre en el DAL (`getCurrentUser`), porque el proxy sólo ve la cookie, no
- * la sesión.
+ * Prefixes of the private area. `proxy.ts` uses them for the optimistic
+ * rejection and `app/robots.ts` to exclude them from crawling; the real check
+ * always lives in the DAL (`getCurrentUser`), because the proxy only sees the
+ * cookie, not the session.
  *
- * El `matcher` de `proxy.ts` no puede derivarse de aquí (Next lo exige
- * literal), así que `proxy.test.ts` comprueba que las dos listas coincidan:
- * una ruta nueva de `app/(platform)` se añade AQUÍ y en el matcher.
+ * The `matcher` of `proxy.ts` cannot be derived from here (Next requires it
+ * literal), so `proxy.test.ts` checks that the two lists match: a new route
+ * under `app/(platform)` is added HERE and in the matcher.
  */
 export const PROTECTED_PATH_PREFIXES = [
   "/inicio",

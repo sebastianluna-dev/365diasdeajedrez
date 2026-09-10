@@ -1,4 +1,4 @@
-// Codes estables de los catálogos de actividad y estadísticas.
+// Stable codes of the activity and statistics catalogs.
 
 export const ACTIVITY_TYPE = {
   LESSON_COMPLETED: "LESSON_COMPLETED",
@@ -32,9 +32,9 @@ export const STAT_METRIC = {
 export type StatMetricCode = (typeof STAT_METRIC)[keyof typeof STAT_METRIC];
 
 /**
- * Métrica del agregado diario que incrementa cada tipo de actividad.
- * UserActivity sigue siendo la fuente de verdad; UserStatDaily es la copia
- * agregada que hace baratos los rangos temporales.
+ * Daily aggregate metric each activity type increments.
+ * UserActivity remains the source of truth; UserStatDaily is the aggregated
+ * copy that makes time ranges cheap.
  */
 export const STAT_METRIC_BY_ACTIVITY_TYPE: Record<ActivityTypeCode, StatMetricCode> = {
   [ACTIVITY_TYPE.LESSON_COMPLETED]: STAT_METRIC.LESSONS_COMPLETED,

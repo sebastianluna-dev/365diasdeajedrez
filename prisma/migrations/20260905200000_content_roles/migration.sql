@@ -1,14 +1,14 @@
--- Capítulos y lecciones de introducción y de cierre.
+-- Introduction and closing chapters and lessons.
 --
--- Un curso puede tener un capítulo que lo abre y otro que lo cierra, y un
--- capítulo puede tener una lección de cada. Los cuatro son OPCIONALES, así que
--- el papel va en una columna anulable: los normales —la inmensa mayoría— tienen
--- `roleId` nulo.
+-- A course can have a chapter that opens it and another that closes it, and a
+-- chapter can have one lesson of each. All four are OPTIONAL, so the role goes
+-- in a nullable column: the normal ones — the vast majority — have a null
+-- `roleId`.
 --
--- Esa nulidad es además lo que hace cumplible la regla «como mucho uno de cada»
--- con un índice único corriente sobre (padre, rol): en PostgreSQL NULL no choca
--- con NULL, así que los capítulos normales no compiten entre sí, y dos
--- introducciones en el mismo curso sí.
+-- That nullability is also what makes the "at most one of each" rule
+-- enforceable with an ordinary unique index over (parent, role): in PostgreSQL
+-- NULL does not clash with NULL, so normal chapters do not compete with each
+-- other, and two introductions in the same course do.
 
 CREATE TABLE "ContentRole" (
     "id" SERIAL NOT NULL,
@@ -28,8 +28,8 @@ INSERT INTO "ContentRole" ("code", "label", "order") VALUES
 ALTER TABLE "Chapter" ADD COLUMN "roleId" INTEGER;
 ALTER TABLE "Lesson" ADD COLUMN "roleId" INTEGER;
 
--- SET NULL y no CASCADE: si algún día se retira un papel del catálogo, el
--- capítulo sigue existiendo con su contenido y pasa a ser uno normal.
+-- SET NULL and not CASCADE: if a role is ever removed from the catalog, the
+-- chapter goes on existing with its content and becomes a normal one.
 ALTER TABLE "Chapter" ADD CONSTRAINT "Chapter_roleId_fkey"
   FOREIGN KEY ("roleId") REFERENCES "ContentRole"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 ALTER TABLE "Lesson" ADD CONSTRAINT "Lesson_roleId_fkey"

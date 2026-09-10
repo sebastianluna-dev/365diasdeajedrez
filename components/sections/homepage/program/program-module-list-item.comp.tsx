@@ -14,8 +14,8 @@ export function ProgramModuleListItem({ module, moduleNumber, isActive, onSelect
       type="button"
       className={`program-list__item${isActive ? " program-list__item_active" : ""}`}
       onClick={onSelect}
-      // Con el número en dos cifras: en móvil el «01» es lo único visible del
-      // botón y tiene que estar dentro de su nombre accesible.
+      // With the number in two digits: on mobile the "01" is the only visible
+      // part of the button and it has to be inside its accessible name.
       aria-label={`Módulo ${formatTwoDigitNumber(moduleNumber)}: ${module.title}`}
       aria-pressed={isActive}
     >

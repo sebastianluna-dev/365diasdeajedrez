@@ -38,8 +38,8 @@
     flex-direction: column;
   }
 
-  /* Un filo entre alumnos y ninguno arriba ni abajo: la lista ya está dentro de
-     una tarjeta y repetir su borde la encajonaría. */
+  /* A rule between students and none above or below: the list is already
+     inside a card and repeating its border would box it in. */
   & .share-collection__item + .share-collection__item {
     border-top: 1px solid var(--platform-border);
   }
@@ -72,8 +72,8 @@
     white-space: nowrap;
   }
 
-  /* La fecha se va al centro-derecha y deja el botón pegado al filo: es el dato
-     menos importante de la fila. */
+  /* The date goes centre-right and leaves the button against the edge: it is
+     the least important fact of the row. */
   & .share-collection__date {
     margin-left: auto;
     flex: none;

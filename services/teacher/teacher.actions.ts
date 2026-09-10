@@ -9,9 +9,9 @@ import { teacherRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { readOptionalText, readText, readUrl } from "@/services/shared/form-data";
 
-// Las server actions son alcanzables por POST directo: el rol se resuelve
-// SIEMPRE aquí dentro con requireTeacher() y nunca se confía en un id del
-// cliente. Los errores vuelven por redirect con `?error=<code>`.
+// Server actions are reachable by direct POST: the role is ALWAYS resolved in
+// here with requireTeacher() and an id from the client is never trusted. Errors
+// come back by redirect with `?error=<code>`.
 
 const DISPLAY_NAME_MAX_LENGTH = 120;
 const TITLE_MAX_LENGTH = 120;
@@ -25,8 +25,8 @@ export async function updateTeacherProfile(formData: FormData): Promise<void> {
   if (!(await allowAction(`${user.id}:teacher-profile`, 60, 60_000))) redirect(`${teacherRoutes.profile}?error=throttled`);
 
   const timezone = readText(formData, "timezone");
-  // La foto es una URL de texto: la plataforma no tiene pipeline de subida
-  // propio (el de Payload es del CMS y no se toca).
+  // The photo is a text URL: the platform has no upload pipeline of its own
+  // (Payload's belongs to the CMS and is not touched).
   const photo = readOptionalText(formData, "photo", 500);
   if (photo !== null && readUrl(formData, "photo") === null) redirect(`${teacherRoutes.profile}?error=invalid`);
 

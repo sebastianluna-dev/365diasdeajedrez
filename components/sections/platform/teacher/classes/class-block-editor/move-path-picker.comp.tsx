@@ -9,23 +9,25 @@ import "./move-path-picker.comp.css";
 interface MovePathPickerProps {
   kind: typeof CLASS_BLOCK_KIND.GAME_REF | typeof CLASS_BLOCK_KIND.LESSON_REF;
   referenceId: string;
-  /** Ruta punteada ya guardada, si la hay. */
+  /** Dotted path already saved, if any. */
   value: string;
   onChange: (path: string) => void;
 }
 
-/** PGN cargado, junto al id al que pertenece: así un resultado que llega tarde
- *  no se pinta sobre una referencia que el profesor ya cambió. */
+/**
+ * Loaded PGN, together with the id it belongs to: that way a result that
+ * arrives late is not painted over a reference the teacher already changed.
+ */
 interface LoadedPgn {
   referenceId: string;
   pgn: string | null;
 }
 
 /**
- * Elige la posición de apertura de un bloque de partida o lección: monta el
- * visor de siempre sobre el PGN referenciado y captura la ruta del nodo actual
- * con `onPathChange`. No hay un segundo visor ni un editor de PGN — es el mismo
- * componente que verá el alumno.
+ * Picks the opening position of a game or lesson block: mounts the usual
+ * viewer on the referenced PGN and captures the current node's path with
+ * `onPathChange`. There is no second viewer nor a PGN editor — it is the same
+ * component the student will see.
  */
 export function MovePathPicker({ kind, referenceId, value, onChange }: MovePathPickerProps) {
   const [loaded, setLoaded] = useState<LoadedPgn | null>(null);
@@ -63,8 +65,8 @@ export function MovePathPicker({ kind, referenceId, value, onChange }: MovePathP
         desde el principio.
       </p>
 
-      {/* key por referencia: cambiar de partida reinicia el visor en vez de
-          arrastrar la ruta de la anterior. */}
+      {/* key by reference: changing game resets the viewer instead of
+          dragging along the previous one's path. */}
       <GameViewer key={referenceId} pgn={current.pgn} onPathChange={setCurrentPath} initialPath={value || undefined} />
 
       <div className="move-path-picker__actions">

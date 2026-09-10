@@ -15,10 +15,10 @@ function readParam(params: Record<string, string | string[] | undefined>, key: s
 }
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
-  // Comprobación real (no la optimista del proxy): quien ya tiene sesión no
-  // necesita ver el formulario y va a la portada de su rol, igual que tras el
-  // login. Hacerlo aquí y no en el proxy evita el bucle que provocaría una
-  // cookie caducada. Las dos llamadas comparten la consulta de sesión.
+  // Real check (not the proxy's optimistic one): whoever already has a session
+  // does not need to see the form and goes to their role's home, just like after
+  // login. Doing it here and not in the proxy avoids the loop an expired cookie
+  // would cause. The two calls share the session query.
   if (await getSessionUser()) redirect(homeRouteFor(await getSessionRoles()));
 
   const params = await searchParams;
@@ -26,8 +26,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   return (
     <LoginSection
       returnTo={readParam(params, RETURN_TO_PARAM)}
-      // El código llega por la URL: sólo se pinta si está en el mapa, para que
-      // nadie pueda inyectar texto en la página con un enlace preparado.
+      // The code arrives through the URL: it is only rendered when it is in the map,
+      // so nobody can inject text into the page with a crafted link.
       errorMessage={LOGIN_ERROR_MESSAGES[readParam(params, LOGIN_ERROR_PARAM)]}
     />
   );

@@ -10,19 +10,18 @@ import {
 import { logWarning } from "@/lib/logger";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 
-// Sesiones opacas en base de datos. El token en claro sólo existe en la cookie
-// del navegador; en la tabla se guarda su SHA-256, así que un volcado de la
-// base no permite suplantar a nadie. SHA-256 a secas basta aquí (a diferencia
-// de las contraseñas) porque el token son 256 bits aleatorios: no hay
-// diccionario que probar.
+// Opaque sessions in the database. The plain token only exists in the browser's
+// cookie; the table stores its SHA-256, so a dump of the database does not let
+// anyone impersonate anybody. Plain SHA-256 is enough here (unlike passwords)
+// because the token is 256 random bits: there is no dictionary to try.
 
 const USER_AGENT_MAX_LENGTH = 255;
 
 /**
- * Cada cuánto se barren las sesiones caducadas, en tanto por uno de lecturas.
- * Mismo patrón que `allowAction` con `RateLimit`: la tabla sólo crece con lo
- * que ella misma escribe, así que se limpia desde la propia app y sin bloquear
- * la respuesta. La fila que se acaba de detectar caducada se borra siempre.
+ * How often expired sessions are swept, as a fraction of reads. Same pattern as
+ * `allowAction` with `RateLimit`: the table only grows with what it writes
+ * itself, so it is cleaned from the app itself and without blocking the
+ * response. The row just detected as expired is always deleted.
  */
 const PURGE_CHANCE = 0.01;
 
@@ -32,10 +31,10 @@ export interface SessionUser {
   displayName: string;
   createdAt: Date;
   sessionId: string;
-  /// Roles de plataforma, resueltos en la MISMA consulta de sesión: son filas
-  /// cuya existencia es el rol (ver prisma/schema.prisma). Se exponen sólo a
-  /// través de lib/platform-auth/roles.ts; `CurrentUser` no los lleva, para no
-  /// acoplar las páginas del alumno a los roles.
+  /// Platform roles, resolved in the SAME session query: they are rows whose
+  /// existence is the role (see prisma/schema.prisma). They are exposed only
+  /// through lib/platform-auth/roles.ts; `CurrentUser` does not carry them, so as
+  /// not to couple the student's pages to the roles.
   teacher: { id: string; displayName: string; isActive: boolean } | null;
   staff: { id: string } | null;
 }
@@ -45,9 +44,9 @@ function hashToken(token: string): string {
 }
 
 /**
- * Abre sesión para el usuario y deja la cookie puesta. Sólo puede llamarse
- * desde una server action o un route handler: fuera de ahí Next no permite
- * escribir cookies.
+ * Opens a session for the user and sets the cookie. It can only be called from
+ * a server action or a route handler: outside those Next does not allow writing
+ * cookies.
  */
 export async function createSession(userId: string, userAgent?: string | null): Promise<void> {
   const token = randomBytes(32).toString("base64url");
@@ -73,10 +72,11 @@ export async function createSession(userId: string, userAgent?: string | null): 
 }
 
 /**
- * Usuario de la sesión vigente, o null. Caduca por `expiresAt` y se renueva de
- * forma deslizante (como mucho una vez al día) para que quien entra a diario no
- * acabe expulsado; la renovación es sólo en base de datos porque durante el
- * render no se pueden reescribir cookies, y la cookie ya vive más que la sesión.
+ * User of the current session, or null. It expires by `expiresAt` and is
+ * renewed in a sliding fashion (at most once a day) so that whoever comes in
+ * daily does not end up locked out; the renewal is database-only because
+ * cookies cannot be rewritten during a render, and the cookie already lives
+ * longer than the session.
  */
 export async function readSessionUser(): Promise<SessionUser | null> {
   const cookieStore = await cookies();
@@ -96,9 +96,8 @@ export async function readSessionUser(): Promise<SessionUser | null> {
           email: true,
           displayName: true,
           createdAt: true,
-          // Roles por existencia de fila. Van en el select anidado para que
-          // este camino —por el que pasa toda petición autenticada— siga
-          // costando una sola consulta.
+          // Roles by row existence. They go in the nested select so that this path —
+          // which every authenticated request goes through — keeps costing a single query.
           teacher: { select: { id: true, displayName: true, isActive: true } },
           staff: { select: { id: true } },
         },
@@ -129,22 +128,22 @@ export async function readSessionUser(): Promise<SessionUser | null> {
 }
 
 /**
- * Cierra la sesión actual: borra la fila (revocación inmediata, aunque la
- * cookie sobreviva en el navegador) y retira la cookie.
+ * Closes the current session: deletes the row (immediate revocation, even if
+ * the cookie survives in the browser) and removes the cookie.
  */
 export async function destroyCurrentSession(): Promise<void> {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
   if (token) {
-    // deleteMany y no delete: si la fila ya no está, no hay nada que reportar.
+    // deleteMany and not delete: if the row is already gone, there is nothing to report.
     await getPlatformDb().session.deleteMany({ where: { tokenHash: hashToken(token) } });
   }
 
   cookieStore.delete(SESSION_COOKIE_NAME);
 }
 
-/** Cierra todas las sesiones del usuario (cambio de contraseña, robo de cuenta). */
+/** Closes every session of the user (password change, account theft). */
 export async function destroyAllSessionsOf(userId: string): Promise<void> {
   await getPlatformDb().session.deleteMany({ where: { userId } });
 }

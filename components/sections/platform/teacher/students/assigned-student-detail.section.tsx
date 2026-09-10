@@ -33,9 +33,9 @@ function ClassList({ classes, emptyLabel }: { classes: StudentSharedClass[]; emp
 }
 
 /**
- * Ficha del alumno para su profesor. Todo lo que se ve aquí es de LECTURA: los
- * estudios del alumno son suyos y el profesor los consulta, no los edita (por
- * eso no hay ni un control de escritura sobre ellos).
+ * The student's page for their teacher. Everything seen here is READ-ONLY: the
+ * student's studies are theirs and the teacher consults them, does not edit
+ * them (which is why there is not a single write control on them).
  */
 export function AssignedStudentDetailSection({ student }: AssignedStudentDetailSectionProps) {
   return (

@@ -11,10 +11,10 @@ interface BlogArticlesProps {
   query: ArticleListingQuery;
 }
 
-// Server Component: el filtro y la página llegan de la URL y se resuelven aquí.
-// Antes era un Client Component que recibía todos los artículos —con su cuerpo—
-// y filtraba en `useState`, con lo que nada más allá de la primera página
-// tenía dirección propia.
+// Server Component: the filter and the page come from the URL and are resolved here.
+// It used to be a Client Component that received every article — body
+// included — and filtered in `useState`, so nothing beyond the first page
+// had an address of its own.
 export function BlogArticles({ articles, query }: BlogArticlesProps) {
   const listing = selectArticles(articles, query);
 

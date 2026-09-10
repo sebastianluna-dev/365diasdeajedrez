@@ -1,5 +1,5 @@
--- Partida transcrita por el profesor dentro del bloque de la clase.
+-- Game transcribed by the teacher inside the class block.
 --
--- Aditiva: los bloques que hoy referencian una partida se quedan con su gameId y
--- el pgn a NULL, así que se siguen viendo igual.
+-- Additive: the blocks that today reference a game keep their gameId and the pgn
+-- at NULL, so they go on being seen the same.
 ALTER TABLE "ClassBlock" ADD COLUMN "pgn" TEXT;

@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: StaffClassPageProps): Promise
 
 export default async function StaffClassPage({ params, searchParams }: StaffClassPageProps) {
   const { classId } = await params;
-  // El servicio abre con requireStaff(): es la frontera del panel.
+  // The service opens with requireStaff(): it is the panel's border.
   const classDetail = await getClassAdminDetail(classId);
   if (!classDetail) notFound();
 

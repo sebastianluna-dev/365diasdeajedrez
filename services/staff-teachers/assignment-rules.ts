@@ -1,10 +1,10 @@
-// Regla de la asignación alumno↔profesor, aislada del acceso a datos para
-// poder probarla: reasignar CIERRA la fila activa y crea otra, nunca borra.
-// El historial es el registro de quién llevó a quién y cuándo.
+// Rule of the student↔teacher assignment, isolated from data access so it can
+// be tested: reassigning CLOSES the active row and creates another, it never
+// deletes. The history is the record of who took whom and when.
 //
-// Esto NO es la verdad última: dos peticiones simultáneas pasan las dos por
-// aquí. Quien impide de verdad dos asignaciones activas es el índice único
-// parcial `teacher_student_one_active`, y la action captura su P2002.
+// This is NOT the final truth: two simultaneous requests both pass through
+// here. What really prevents two active assignments is the partial unique index
+// `teacher_student_one_active`, and the action catches its P2002.
 
 export interface ActiveAssignment {
   id: string;
@@ -12,17 +12,17 @@ export interface ActiveAssignment {
 }
 
 export interface AssignmentPlan {
-  /** Filas activas que hay que cerrar (`endedAt = now`). */
+  /** Active rows that have to be closed (`endedAt = now`). */
   closeIds: string[];
-  /** Si hay que crear la fila nueva. */
+  /** Whether the new row has to be created. */
   create: boolean;
-  /** El alumno ya estaba con ese mismo profesor: no se toca nada. */
+  /** The student was already with that same teacher: nothing is touched. */
   alreadyAssigned: boolean;
 }
 
 export function planAssignment(active: ActiveAssignment[], teacherId: string): AssignmentPlan {
-  // Reasignar al mismo profesor sería cerrar y reabrir la misma relación:
-  // ensuciaría el historial sin cambiar nada.
+  // Reassigning to the same teacher would be closing and reopening the same
+  // relationship: it would dirty the history without changing anything.
   if (active.some((assignment) => assignment.teacherId === teacherId)) {
     return { closeIds: [], create: false, alreadyAssigned: true };
   }

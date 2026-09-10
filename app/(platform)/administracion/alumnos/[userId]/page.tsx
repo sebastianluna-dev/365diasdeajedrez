@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: StaffStudentPageProps): Promi
 
 export default async function StaffStudentPage({ params, searchParams }: StaffStudentPageProps) {
   const { userId } = await params;
-  // El servicio abre con requireStaff(): es la frontera del panel.
+  // The service opens with requireStaff(): it is the panel's border.
   const student = await getStudentAdminDetail(userId);
   if (!student) notFound();
 

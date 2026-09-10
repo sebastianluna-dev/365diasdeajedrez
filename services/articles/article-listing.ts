@@ -1,12 +1,12 @@
 import type { ArticleSummary } from "./articles.types";
 
-// Filtro por categoría y paginación del blog. Es lógica pura y vive fuera del
-// componente porque la usan la página (para leer los `searchParams`), la
-// metadata (para la canónica) y las pruebas.
+// Category filter and pagination of the blog. It is pure logic and lives outside
+// the component because it is used by the page (to read the `searchParams`), the
+// metadata (for the canonical) and the tests.
 //
-// Categoría y página van en la URL (`/blog?categoria=Táctica&pagina=2`) y no
-// en estado de React: así cada página del blog se puede enlazar, compartir,
-// rastrear y recuperar con «atrás». Los valores por defecto no se escriben.
+// Category and page go in the URL (`/blog?categoria=Táctica&pagina=2`) and not
+// in React state: that way every page of the blog can be linked, shared, crawled
+// and recovered with "back". The default values are not written.
 
 export const ALL_CATEGORY = "Todos";
 export const ARTICLES_PER_PAGE = 9;
@@ -24,14 +24,14 @@ function single(value: string | string[] | undefined): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
 
-/** Categorías con al menos un artículo, en orden de aparición, con «Todos» delante. */
+/** Categories with at least one article, in order of appearance, with "Todos" first. */
 export function categoriesOf(articles: ArticleSummary[]): string[] {
   const unique = new Set<string>();
   for (const article of articles) if (article.category) unique.add(article.category);
   return [ALL_CATEGORY, ...unique];
 }
 
-/** Lee la consulta de la URL; lo que no encaja vuelve al valor por defecto. */
+/** Reads the query from the URL; what does not fit falls back to the default value. */
 export function parseListingQuery(params: SearchParams, categories: string[]): ArticleListingQuery {
   const rawCategory = single(params[CATEGORY_PARAM]);
   const category = rawCategory && categories.includes(rawCategory) ? rawCategory : ALL_CATEGORY;
@@ -45,7 +45,7 @@ export function parseListingQuery(params: SearchParams, categories: string[]): A
 export interface ArticleListing {
   categories: string[];
   category: string;
-  /** Página vigente, acotada al total (pedir la 40 de 3 enseña la 3). */
+  /** Current page, clamped to the total (asking for page 40 of 3 shows the 3rd). */
   page: number;
   totalPages: number;
   totalItems: number;
@@ -71,7 +71,7 @@ export function selectArticles(articles: ArticleSummary[], query: ArticleListing
   };
 }
 
-/** URL de una vista del listado; omite los valores por defecto para que `/blog` siga siendo `/blog`. */
+/** URL of a view of the listing; it omits the default values so `/blog` stays `/blog`. */
 export function listingHref(query: ArticleListingQuery): string {
   const params = new URLSearchParams();
   if (query.category !== ALL_CATEGORY) params.set(CATEGORY_PARAM, query.category);

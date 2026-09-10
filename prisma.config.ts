@@ -1,9 +1,9 @@
 import { config } from "dotenv";
 import { defineConfig } from "prisma/config";
 
-// El CLI de Prisma no lee .env.local por sí solo y este proyecto guarda los
-// secretos ahí (igual que Payload con DATABASE_URI). .env sigue disponible
-// como alternativa; el primero que defina la variable gana.
+// The Prisma CLI does not read .env.local on its own and this project keeps the
+// secrets there (just like Payload with DATABASE_URI). .env is still available
+// as an alternative; the first one to define the variable wins.
 config({ path: ".env.local" });
 config();
 
@@ -13,8 +13,8 @@ export default defineConfig({
     path: "prisma/migrations",
     seed: "tsx prisma/seed.ts",
   },
-  // En Prisma 7 la URL vive aquí (CLI: migrate/studio) y en el adapter del
-  // PrismaClient (runtime: lib/platform-db/get-platform-db.ts), no en el schema.
+  // In Prisma 7 the URL lives here (CLI: migrate/studio) and in the PrismaClient's
+  // adapter (runtime: lib/platform-db/get-platform-db.ts), not in the schema.
   datasource: {
     url: process.env.PLATFORM_DATABASE_URL,
   },

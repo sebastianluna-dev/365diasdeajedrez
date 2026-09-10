@@ -12,8 +12,8 @@ export function ChapterList({ chapters }: ChapterListProps) {
     <ol className="chapter-list">
       {chapters.map((chapter) => (
         <li key={chapter.id} className="chapter-list__row">
-          {/* La fila entera es el enlace, no sólo el nombre: es lo que el
-              diseño dibuja y evita tener que apuntar a un texto pequeño. */}
+          {/* The whole row is the link, not just the name: it is what the
+              design draws and avoids having to aim at small text. */}
           <Link href={chapter.href} className="chapter-list__item">
             <span className="chapter-list__order">{chapter.order}</span>
 

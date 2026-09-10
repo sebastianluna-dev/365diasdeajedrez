@@ -8,18 +8,18 @@ export interface PlatformTableColumn {
 
 interface PlatformTableProps {
   columns: readonly (string | PlatformTableColumn)[];
-  /** Filas (`PlatformTableRow`). Vacío ⇒ se pinta `emptyLabel`. */
+  /** Rows (`PlatformTableRow`). Empty ⇒ `emptyLabel` is rendered. */
   children?: ReactNode;
   emptyLabel?: string;
-  /** Ancho mínimo antes de que la tabla haga scroll horizontal. */
+  /** Minimum width before the table scrolls horizontally. */
   minWidth?: number;
 }
 
 /**
- * Tabla de la plataforma: `<table>` semántica y una sola definición del look
- * para los listados de profesor y staff (alumnos, clases, cursos…). Server
- * component: recibe las filas por children, no gestiona estado ni ordenación
- * (los filtros van por searchParams, en el servidor).
+ * Platform table: a semantic `<table>` and a single definition of the look
+ * for the teacher and staff listings (students, classes, courses…). Server
+ * component: it receives the rows as children and manages neither state nor
+ * sorting (filters go through searchParams, on the server).
  */
 export function PlatformTable({ columns, children, emptyLabel, minWidth = 640 }: PlatformTableProps) {
   const hasRows = Array.isArray(children) ? children.flat().some(Boolean) : Boolean(children);
@@ -66,7 +66,7 @@ export function PlatformTableRow({ children }: { children: ReactNode }) {
 interface PlatformTableCellProps {
   children: ReactNode;
   align?: "right";
-  /** Celda destacada: la columna que identifica la fila. */
+  /** Highlighted cell: the column that identifies the row. */
   strong?: boolean;
 }
 

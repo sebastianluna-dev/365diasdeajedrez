@@ -15,8 +15,8 @@ const nextConfig: NextConfig = {
     ],
   },
   experimental: {
-    // Con tres root layouts no hay un `not-found.tsx` que cubra las URLs que
-    // no encajan con ninguna ruta: lo hace app/global-not-found.tsx.
+    // With three root layouts there is no `not-found.tsx` covering the URLs that
+    // match no route: app/global-not-found.tsx does that.
     globalNotFound: true,
   },
 };

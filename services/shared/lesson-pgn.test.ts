@@ -21,7 +21,8 @@ describe("lessonPgnOf", () => {
   });
 
   it("una partida vacía gana igual: es lo que dice la lección que hay que enseñar", () => {
-    // Y no cae al PGN propio, que sería enseñar un contenido que nadie eligió.
+    // And it does not fall back to the own PGN, which would be showing content
+    // nobody chose.
     expect(lessonPgnOf({ pgn: OWN, game: { pgn: "" } })).toBe("");
   });
 });
@@ -43,8 +44,8 @@ describe("lessonStartFenOf", () => {
   const conFen = (fen: string) => `[SetUp "1"]\n[FEN "${fen}"]\n\n*`;
 
   it("sale de la partida vinculada, no del PGN dormido de la lección", () => {
-    // Es el fallo que arregla: congelar un ejercicio contra el FEN equivocado
-    // valida las jugadas sobre un tablero que el alumno nunca ve.
+    // It is the bug this fixes: freezing an exercise against the wrong FEN
+    // validates the moves over a board the student never sees.
     const otro = "8/8/8/8/8/5k2/6q1/7K b - - 0 1";
     expect(lessonStartFenOf({ pgn: conFen(otro), game: { pgn: conFen(DIAGRAMA) } })).toBe(DIAGRAMA);
   });

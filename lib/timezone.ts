@@ -1,13 +1,13 @@
-// Conversión entre un instante (UTC, como se guarda) y la hora de pared de una
-// zona IANA, que es lo que teclea y lee una persona en un
+// Conversion between an instant (UTC, as it is stored) and the wall-clock time
+// of an IANA zone, which is what a person types and reads in a
 // `<input type="datetime-local">`.
 //
-// Las clases se guardan en UTC y el profesor las programa en SU zona
-// (`Teacher.timezone`); sin esto, «lunes a las 18:00» se guardaría desplazado.
-// Se resuelve con `Intl` —presente en Node y en el navegador— en vez de añadir
-// una dependencia de fechas.
+// Classes are stored in UTC and the teacher schedules them in THEIR zone
+// (`Teacher.timezone`); without this, "Monday at 18:00" would be stored shifted.
+// It is solved with `Intl` — present in Node and in the browser — instead of
+// adding a date dependency.
 
-/** Formato de `<input type="datetime-local">`: "YYYY-MM-DDTHH:mm". */
+/** Format of `<input type="datetime-local">`: "YYYY-MM-DDTHH:mm". */
 const DATETIME_LOCAL = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/;
 
 interface WallClock {
@@ -45,9 +45,9 @@ function wallClockIn(date: Date, timeZone: string): WallClock {
 }
 
 /**
- * Desfase de la zona en ese instante, en milisegundos (positivo al este). Lo
- * comparte `lib/study-streak.ts`, que necesita el mismo cálculo para la
- * medianoche del día de estudio.
+ * Offset of the zone at that instant, in milliseconds (positive to the east).
+ * `lib/study-streak.ts` shares it, as it needs the same computation for the
+ * midnight of the study day.
  */
 export function offsetMsAt(date: Date, timeZone: string): number {
   const wall = wallClockIn(date, timeZone);
@@ -55,7 +55,7 @@ export function offsetMsAt(date: Date, timeZone: string): number {
   return asIfUtc - date.getTime();
 }
 
-/** Instante → "YYYY-MM-DDTHH:mm" en la zona indicada, listo para el input. */
+/** Instant → "YYYY-MM-DDTHH:mm" in the given zone, ready for the input. */
 export function formatDateTimeLocal(date: Date, timeZone: string): string {
   const wall = wallClockIn(date, timeZone);
   const pad = (value: number) => value.toString().padStart(2, "0");
@@ -63,10 +63,10 @@ export function formatDateTimeLocal(date: Date, timeZone: string): string {
 }
 
 /**
- * "YYYY-MM-DDTHH:mm" en una zona → instante UTC, o null si no es una fecha
- * válida. Se aplica el desfase dos veces porque el propio desfase depende del
- * instante: en un cambio de horario de verano, la primera estimación puede caer
- * al otro lado del salto.
+ * "YYYY-MM-DDTHH:mm" in a zone → UTC instant, or null when it is not a valid
+ * date. The offset is applied twice because the offset itself depends on the
+ * instant: on a daylight saving change, the first estimate can land on the
+ * other side of the jump.
  */
 export function parseDateTimeLocal(value: string, timeZone: string): Date | null {
   const match = DATETIME_LOCAL.exec(value.trim());
@@ -79,13 +79,13 @@ export function parseDateTimeLocal(value: string, timeZone: string): Date | null
   const instant = new Date(asIfUtc - offsetMsAt(firstGuess, timeZone));
   if (Number.isNaN(instant.getTime())) return null;
 
-  // Fechas imposibles ("2026-02-31") se normalizarían en silencio: se rechazan.
+  // Impossible dates ("2026-02-31") would be normalised silently: they are rejected.
   const wall = wallClockIn(instant, timeZone);
   const roundTrips = wall.year === year && wall.month === month && wall.day === day;
   return roundTrips ? instant : null;
 }
 
-/** Zona válida para `Intl`, o UTC como respaldo documentado. */
+/** A zone valid for `Intl`, or UTC as a documented fallback. */
 export function safeTimeZone(timeZone: string | null | undefined): string {
   if (!timeZone) return "UTC";
   try {

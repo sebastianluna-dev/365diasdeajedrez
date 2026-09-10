@@ -10,7 +10,7 @@ export interface CourseAdminSummary {
   id: string;
   name: string;
   slug: string;
-  /** URL de la portada; la fila enseña un recorte pequeño para reconocerlo. */
+  /** URL of the cover; the row shows a small crop to recognise it. */
   cover?: string;
   statusCode: CourseStatusCode;
   statusLabel: string;
@@ -21,18 +21,18 @@ export interface CourseAdminSummary {
   href: string;
 }
 
-/** Lo que se busca y por qué estado se filtra en la lista de cursos. */
+/** What is searched and which status the course list is filtered by. */
 export interface CourseAdminFilter {
-  /** Texto libre: casa contra el nombre y el identificador. */
+  /** Free text: it matches against the name and the identifier. */
   query?: string;
-  /** Code de CourseStatus; ausente = todos. */
+  /** Code of CourseStatus; absent = all. */
   status?: string;
 }
 
-/** La lista con lo que hace falta para pintar su cabecera. */
+/** The list with what is needed to render its header. */
 export interface CourseAdminList {
   courses: CourseAdminSummary[];
-  /** Totales de lo que se está viendo, no del catálogo entero. */
+  /** Totals of what is being seen, not of the whole catalog. */
   chapterCount: number;
   lessonCount: number;
 }
@@ -46,15 +46,15 @@ export interface CourseAuthorRow {
 }
 
 export interface ChapterAdminRow {
-  /** Code de ContentRole; ausente en los capítulos normales. */
+  /** Code of ContentRole; absent in normal chapters. */
   roleCode?: string;
-  /** «Introducción» o «Cierre», para rotularlo. */
+  /** "Introducción" or "Cierre", to label it. */
   roleLabel?: string;
   id: string;
   name: string;
   order: number;
   lessonCount: number;
-  /** Alumnos con progreso: si hay alguno, el capítulo ya no se borra. */
+  /** Students with progress: if there is any, the chapter is no longer deleted. */
   progressCount: number;
   href: string;
 }
@@ -72,14 +72,14 @@ export interface CourseAdminDetail {
   levelCodes: string[];
   authors: CourseAuthorRow[];
   chapters: ChapterAdminRow[];
-  /** Cumple los requisitos mínimos para publicarse (§22.3 del plan). */
+  /** It meets the minimum requirements to be published (§22.3 of the plan). */
   canPublish: boolean;
 }
 
 export interface LessonAdminRow {
-  /** Code de ContentRole; ausente en las lecciones normales. */
+  /** Code of ContentRole; absent in normal lessons. */
   roleCode?: string;
-  /** «Introducción» o «Cierre», para rotularla. */
+  /** "Introducción" or "Cierre", to label it. */
   roleLabel?: string;
   id: string;
   name: string;
@@ -112,7 +112,7 @@ export interface ExerciseAdminRow {
   line: string;
   startPly: number;
   endPly: number;
-  /** El PGN de la lección cambió después de congelar este ejercicio. */
+  /** The lesson's PGN changed after this exercise was frozen. */
   isStale: boolean;
 }
 
@@ -126,39 +126,39 @@ export interface LessonAdminDetail {
   description?: string;
   order: number;
   isPriority: boolean;
-  /** La lección puede entrenarse de memoria (su línea principal). */
+  /** The lesson can be trained from memory (its main line). */
   isTrainable: boolean;
-  /** Bando que juega el alumno. Ausente = el que mueva primero. */
+  /** Side the student plays. Absent = whoever moves first. */
   trainingColorCode?: string;
   estimatedDuration?: number;
   orientationCode: BoardOrientationCode;
-  /** El contenido que ve el alumno: el de la partida vinculada, o el propio. */
+  /** The content the student sees: the linked game's, or its own. */
   pgn: string;
   pgnUpdatedAtLabel?: string;
-  /** La partida de la colección del curso de la que sale el contenido. */
+  /** The game of the course collection the content comes from. */
   game?: CourseGameRow;
   /**
-   * Si se puede borrar: curso en borrador y sin progreso de ningún alumno. Es
-   * la misma condición que aplica el servidor, para no ofrecer un botón que
-   * después rebota.
+   * Whether it can be deleted: a draft course and without progress from any
+   * student. It is the same condition the server applies, so as not to offer a
+   * button that bounces afterwards.
    */
   canDelete: boolean;
   topicIds: number[];
   exercises: ExerciseAdminRow[];
 }
 
-/** Una partida de la colección de un capítulo, para vincularla a una lección. */
+/** A game of a chapter's collection, to link it to a lesson. */
 export interface CourseGameRow {
   id: string;
-  /** De qué capítulo es la colección. Sólo se llena en la vista del curso. */
+  /** Which chapter the collection belongs to. It is only filled in the course view. */
   chapterName?: string;
-  /** «Kotov — Plater». */
+  /** "Kotov — Plater". */
   title: string;
-  /** Evento, año y apertura en una línea; vacío si no hay ninguno de los tres. */
+  /** Event, year and opening on one line; empty when there is none of the three. */
   detail: string;
-  /** Jugadas de la línea principal, para saber si la partida está entera. */
+  /** Moves of the main line, to know whether the game is complete. */
   moveCount: number;
-  /** Cuántas lecciones la usan; borrarla las dejaría sin contenido. */
+  /** How many lessons use it; deleting it would leave them without content. */
   lessonCount: number;
 }
 

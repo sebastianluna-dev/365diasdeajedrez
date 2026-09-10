@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type Ref } from "react";
 import type { ChessBoardProps } from "./chess-board.comp";
 import "./chess-board-lazy.comp.css";
 
-/** Cuánto antes de asomar por la pantalla empieza a cargar, en píxeles de scroll. */
+/** How far before it appears on screen it starts loading, in scroll pixels. */
 const PRELOAD_MARGIN = "600px 0px";
 
 function ChessBoardPlaceholder({ ref }: { ref?: Ref<HTMLDivElement> }) {
@@ -17,23 +17,23 @@ function ChessBoardPlaceholder({ ref }: { ref?: Ref<HTMLDivElement> }) {
   );
 }
 
-// `ssr: false` sólo se admite dentro de un Client Component; por eso este
-// envoltorio existe en vez de llamar a `dynamic` desde la sección.
+// `ssr: false` is only allowed inside a Client Component; that is why this
+// wrapper exists instead of calling `dynamic` from the section.
 const ChessBoard = dynamic(() => import("./chess-board.comp").then((module) => module.ChessBoard), {
   ssr: false,
   loading: () => <ChessBoardPlaceholder />,
 });
 
 /**
- * ChessBoard que no entra en el arranque de la página: chessground, chessops
- * y la hoja con las piezas sólo se descargan cuando el tablero se acerca a la
- * pantalla. Es para tableros muy por debajo del pliegue, como el de la
- * portada; donde el tablero ES el contenido (visor, entrenador, explorador)
- * se sigue usando ChessBoard directamente.
+ * A ChessBoard that stays out of the page's startup: chessground, chessops
+ * and the piece stylesheet are only downloaded when the board comes near the
+ * screen. It is for boards far below the fold, like the home page's; where
+ * the board IS the content (viewer, trainer, explorer) ChessBoard is still
+ * used directly.
  *
- * Sin SSR a propósito: el HTML del tablero no aporta nada indexable y así su
- * chunk tampoco hace falta para hidratar. El hueco reserva el alto exacto del
- * tablero (misma proporción y misma barra) para que montarlo no mueva nada.
+ * No SSR on purpose: the board's HTML adds nothing indexable, and that way
+ * its chunk is not needed to hydrate either. The placeholder reserves the
+ * board's exact height (same ratio and same bar) so mounting it moves nothing.
  */
 export function ChessBoardLazy(props: ChessBoardProps) {
   const slotRef = useRef<HTMLDivElement>(null);
