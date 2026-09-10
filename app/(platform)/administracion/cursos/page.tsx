@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CoursesAdminSection } from "@/components/sections/platform/staff/courses/courses-admin.section";
+import { CoursesAdminSection } from "@/components/platform/sections/staff/courses/courses-admin.section";
 import { requireStaff } from "@/lib/platform-auth/roles";
 
 export const metadata: Metadata = {

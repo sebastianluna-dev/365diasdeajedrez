@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { StudentAdminDetailSection } from "@/components/sections/platform/staff/students/student-admin-detail.section";
+import { StudentAdminDetailSection } from "@/components/platform/sections/staff/students/student-admin-detail.section";
 import { getStudentAdminDetail } from "@/services/staff-students/staff-students.service";
 import { listActiveTeachers } from "@/services/staff-teachers/staff-teachers.service";
 

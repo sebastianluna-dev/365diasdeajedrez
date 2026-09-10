@@ -62,7 +62,7 @@ Reusable block definitions in `payload/blocks/`:
 - Article content: `image-block` (media + alt + caption), `callout-block` (title, content, type info/tip/warning), `chess-diagram-block` (FEN, caption, orientation), `chess-game-block` (PGN, title, players, event, date).
 - Navigation: `nav-link-block`, `nav-dropdown-block`.
 
-Each block declares an `interfaceName`, so `payload-types.ts` exports a TypeScript interface per block and the renderers in `components/sections/blog-article/article-content/blocks/` switch on the block slug.
+Each block declares an `interfaceName`, so `payload-types.ts` exports a TypeScript interface per block and the renderers in `components/site/sections/blog/article-content/blocks/` switch on the block slug.
 
 ## Access helpers and the slug field
 

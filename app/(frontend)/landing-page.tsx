@@ -1,15 +1,15 @@
 import { siteConfig, getHomeMentorsSlot } from "@/config/site.config";
-import { Header } from "@/components/sections/common/header/header.section";
-import { Footer } from "@/components/sections/common/footer/footer.section";
-import { HeroSection } from "@/components/sections/homepage/hero/hero.section";
-import { ProgramSection } from "@/components/sections/homepage/program/program.section";
-import { MentorsSection } from "@/components/sections/homepage/mentors/mentors.section";
-import { TeacherSection } from "@/components/sections/homepage/teacher/teacher.section";
-import { PlansSection } from "@/components/sections/homepage/plans/plans.section";
-import { ResourcesSection } from "@/components/sections/homepage/resources/resources.section";
-import { ReviewsSection } from "@/components/sections/homepage/reviews/reviews.section";
-import { FaqSection } from "@/components/sections/homepage/faq/faq.section";
-import { CtaSection } from "@/components/sections/homepage/cta/cta.section";
+import { Header } from "@/components/site/sections/shell/header/header.section";
+import { Footer } from "@/components/site/sections/shell/footer/footer.section";
+import { HeroSection } from "@/components/site/sections/home/hero/hero.section";
+import { ProgramSection } from "@/components/site/sections/home/program/program.section";
+import { MentorsSection } from "@/components/site/sections/home/mentors/mentors.section";
+import { TeacherSection } from "@/components/site/sections/home/teacher/teacher.section";
+import { PlansSection } from "@/components/site/sections/home/plans/plans.section";
+import { ResourcesSection } from "@/components/site/sections/home/resources/resources.section";
+import { ReviewsSection } from "@/components/site/sections/home/reviews/reviews.section";
+import { FaqSection } from "@/components/site/sections/home/faq/faq.section";
+import { CtaSection } from "@/components/site/sections/home/cta/cta.section";
 
 export default function LandingPage() {
   const { sections } = siteConfig.home;

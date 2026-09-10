@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ClassGamesSection } from "@/components/sections/platform/studies/class-games/class-games.section";
+import { ClassGamesSection } from "@/components/platform/sections/studies/class-games/class-games.section";
 
 export const metadata: Metadata = {
   title: "Partidas de mis clases",

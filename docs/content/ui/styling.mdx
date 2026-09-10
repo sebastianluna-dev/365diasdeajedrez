@@ -85,7 +85,7 @@ The naming is Yandex-style BEM and the scoping is native CSS nesting. Both are m
 - **Every rule nests under the root selector** with `&`, so nothing can leak out of the block. Media queries go inside the block too.
 - **Desktop-first**: media queries use `max-width`. There is no fixed breakpoint scale; the ones used most are 1024/1023, 900 and 720 px, with 640/620 and 560 for the narrowest layouts. Pick the one where the layout actually breaks. Two files still use `min-width` (`section-heading.comp.css`, `resources.section.css`); inverting them is `todos.md` T17.
 
-A complete example (`components/common/empty-state.comp.css`):
+A complete example (`components/platform/shared/empty-state.comp.css`):
 
 ```css
 .empty-state {
@@ -117,7 +117,7 @@ A complete example (`components/common/empty-state.comp.css`):
 }
 ```
 
-Modifiers on the root use the compound form (`&.block_key_value`) so they still nest; a media query sits inside the element it changes (`components/common/chess-board-lazy.comp.css`, abridged). Note the token fallbacks: this component also renders on the public site, where the `--platform-*` tokens do not exist.
+Modifiers on the root use the compound form (`&.block_key_value`) so they still nest; a media query sits inside the element it changes (`components/chess/chess-board-lazy.comp.css`, abridged). Note the token fallbacks: this component also renders on the public site, where the `--platform-*` tokens do not exist.
 
 ```css
 .chess-board-lazy {

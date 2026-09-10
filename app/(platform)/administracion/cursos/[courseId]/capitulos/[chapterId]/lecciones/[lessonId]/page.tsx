@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { LessonEditorSection } from "@/components/sections/platform/staff/courses/lesson-editor.section";
+import { LessonEditorSection } from "@/components/platform/sections/staff/courses/lesson-editor.section";
 import {
   getLessonAdmin,
   listCollectionGames,

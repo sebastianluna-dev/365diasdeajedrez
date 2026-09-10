@@ -1,17 +1,18 @@
 ---
-description: "The catalogue of shared components under components/common, components/ui, components/icons and the shared sections: purpose, props, server or client, and which one to reach for."
+description: "The catalogue of shared components under components/chess, components/platform/shared, components/site/shared and components/icons, plus each product's shell sections: purpose, props, server or client, and which one to reach for."
 ---
 
 # Shared UI components
 
-Everything reusable lives in three folders. Page-specific sections live under `components/sections/<area>/<section>/` and are not listed here.
+`components/` mirrors the products in `app/`: `site/`, `platform/` and `auth/`, each split into `sections/` (page sections, `.section.tsx` files with the `.comp.tsx` pieces only they use) and `shared/` (pieces several of that product's sections reuse). `chess/` and `icons/` serve every product. Page-specific sections are not listed here.
 
 | Folder | Content |
 | --- | --- |
-| `components/common/` | Primitives shared across the platform and the public site: tables, fields, notices, boards, navigation crumbs, uploads. |
-| `components/ui/` | `SectionHeading`, the public site's eyebrow/title/description block. |
+| `components/chess/` | The board, the lazy board, the game viewer, the analysis board and the static diagram: the chess domain, shared by the public site and the platform and paired with `lib/chess`. |
+| `components/platform/shared/` | The platform's primitives: tables, fields, notices, navigation crumbs, uploads, loading and error panels. |
+| `components/site/shared/` | The public site's pieces used by more than one section: `Logo`, `GoogleAnalytics`, `MetaPixel`. |
 | `components/icons/` | One hand-written SVG icon component per file (`play-icon.comp.tsx` → `PlayIcon`). |
-| `components/sections/common/` | Header, footer and site message of the public site. |
+| `components/site/sections/shell/` | Header, footer and site message of the public site; `components/platform/sections/shell/` is its counterpart (top bar and navigation). |
 
 Everything is a **Server Component unless marked (client)**. The client ones are exactly those that own state or touch browser APIs; keep it that way when you add one.
 
@@ -74,7 +75,7 @@ Renders the ordered blocks of a class from the `ClassBlockView` discriminated un
 
 Drag-and-drop or pick an image, upload it straight from the browser to Cloudinary with a signature from `createUploadSignature()`, and leave the resulting URL in a hidden input (`name`, optionally `form`) that the surrounding server-action form saves like any other field. Props: `name`, `form`, `defaultValue`, `label`, `aspectRatio` (default `"21:9"`, applied as a Cloudinary crop through `withCoverCrop`), `hint`. The file is checked in the browser against `constants/platform/upload.const.ts` (jpg/png/webp/avif, 5 MB) for instant feedback, and Cloudinary enforces the same list because `allowed_formats` is part of the signature. The bytes never pass through the app's server, whose server actions have a 1 MB body limit.
 
-### `LoginSubmit` — `sections/auth/login/login-submit.comp.tsx` (client)
+### `LoginSubmit` — `auth/sections/login/login-submit.comp.tsx` (client)
 
 The only client code on the login page: `useFormStatus()` disables the button and swaps the label to "Entrando…" while the plain server action runs. Without JavaScript the form still submits. `todos.md` T12 asks for a generic `SubmitButton` built from it and used by every write form.
 
@@ -96,11 +97,10 @@ Documented in [Board & game viewer](/chess/viewer); listed here so the catalogue
 
 | Component | Kind | Notes |
 | --- | --- | --- |
-| `Logo` — `common/logo.comp.tsx` | server | Link to `/` with `theme` (`dark` \| `light`) and `accent` (`orange` \| `red`) modifiers. |
-| `SectionHeading` — `ui/section-heading.comp.tsx` | server | `eyebrow`, `title`, `description`, `align` (`left` \| `center`). |
-| `Header` — `sections/common/header/header.section.tsx` | server | Reads the `home-header` Global through `getHeaderData()`; the login button text and target are fixed in code so the CMS cannot make it promise something else. `HeaderDropdown` (client) adds keyboard and screen-reader behaviour (`aria-expanded`, Escape, close on blur) on top of the CSS hover; `HeaderMobileMenu` (client) owns the open state of the mobile menu, hidden with `visibility` when closed. |
-| `Footer` — `sections/common/footer` | server | WhatsApp number from `site-settings`. |
-| `SiteMessage` — `sections/common/site-message` | server-safe | `eyebrow`, `title`, `description`, `children` (actions). No hooks or data, so `not-found.tsx` (server) and `error.tsx` (client) can both render it. |
+| `Logo` — `site/shared/logo.comp.tsx` | server | Link to `/` with `theme` (`dark` \| `light`) and `accent` (`orange` \| `red`) modifiers. |
+| `Header` — `site/sections/shell/header/header.section.tsx` | server | Reads the `home-header` Global through `getHeaderData()`; the login button text and target are fixed in code so the CMS cannot make it promise something else. `HeaderDropdown` (client) adds keyboard and screen-reader behaviour (`aria-expanded`, Escape, close on blur) on top of the CSS hover; `HeaderMobileMenu` (client) owns the open state of the mobile menu, hidden with `visibility` when closed. |
+| `Footer` — `site/sections/shell/footer` | server | WhatsApp number from `site-settings`. |
+| `SiteMessage` — `site/sections/shell/site-message` | server-safe | `eyebrow`, `title`, `description`, `children` (actions). No hooks or data, so `not-found.tsx` (server) and `error.tsx` (client) can both render it. |
 | `GoogleAnalytics`, `MetaPixel` | server / client | Render nothing unless `NEXT_PUBLIC_APP_ENV=production` and the id is set; both load with `strategy="lazyOnload"`. The pixel re-fires `PageView` on navigation from a client subcomponent. |
 
 ## Icons
@@ -121,4 +121,4 @@ Documented in [Board & game viewer](/chess/viewer); listed here so the catalogue
 | A cover or photo | `ImageUpload` inside the form that will save the URL. |
 | Anything with a board | see the [decision table](/chess/viewer#which-one-to-use) in the viewer page. |
 
-When you add a shared component: kebab-case file with the `.comp.tsx` suffix, a named export, its own `.comp.css` nested under the block, `"use client"` only if it owns state, Spanish copy, and a row in this page.
+When you add a component: put it in the product that owns it (`sections/` if it is a page section, `shared/` if several sections reuse it, `chess/` if it is chess), kebab-case file with the `.comp.tsx` suffix, a named export, its own `.comp.css` nested under the block, `"use client"` only if it owns state, Spanish copy, and a row in this page.

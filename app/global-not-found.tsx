@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SiteMessage } from "@/components/sections/common/site-message/site-message.section";
+import { SiteMessage } from "@/components/site/sections/shell/site-message/site-message.section";
 import "./(frontend)/globals.css";
 import { gramatika, suisseIntl } from "./(frontend)/fonts";
 

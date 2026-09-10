@@ -64,7 +64,7 @@ Project rules for any new task added here (non-negotiable):
 ## Done
 
 ### T1 — CSS tokens instead of hex values · [CSS] ✅
-110 substitutions in 34 files of `components/sections/**` and `app/(frontend)/**`. Only the hex
+110 substitutions in 34 files of `components/**` and `app/(frontend)/**`. Only the hex
 values that matched a token exactly were substituted; the rest (`#b4a99d`, `#8a8175`, `#1c1611`,
 `#5c5348`…) were left intact because there is no equivalent token.
 
@@ -117,16 +117,16 @@ bounded changes; the project rules above still hold. On finishing each one, mark
 and afterwards add `npm run format:check` as a step of `.github/workflows/ci.yml`.
 
 ### T12 — Submit button with a pending state in every form · [UX] (IMPROVEMENTS #53)
-Create `components/common/submit-button.comp.tsx` (`"use client"`, `useFormStatus`,
+Create `components/platform/shared/submit-button.comp.tsx` (`"use client"`, `useFormStatus`,
 `disabled={pending}` and an alternate label, e.g. "Guardando…") from
-`components/sections/auth/login/login-submit.comp.tsx`, and use it in the `<button type="submit">`
-of every write form of `components/sections/platform/**` (about 40). The sections stay Server
+`components/auth/sections/login/login-submit.comp.tsx`, and use it in the `<button type="submit">`
+of every write form of `components/platform/sections/**` (about 40). The sections stay Server
 Components; only the button changes.
 
 ### T13 — `GameTable` on `PlatformTable` · [Frontend / A11y] (IMPROVEMENTS #58)
-`components/sections/platform/studies/study-detail/game-table.comp.tsx` renders the table with
+`components/platform/sections/studies/study-detail/game-table.comp.tsx` renders the table with
 `div`s; build the header and the rows with `PlatformTable`/`PlatformTableRow`/`PlatformTableCell`
-(`components/common/platform-table.comp.tsx`) keeping the reordering handle `<button>` in the first
+(`components/platform/shared/platform-table.comp.tsx`) keeping the reordering handle `<button>` in the first
 cell and its keyboard handling, and delete the duplicated grid in `game-table.comp.css`. Reference
 of the same data with the good table: `teacher/students/student-study-view.section.tsx`.
 
@@ -151,9 +151,9 @@ Enable it in `tsconfig.json` and resolve the 172 errors (almost all `array[i]` p
 `services/shared/reorder.ts` and several `lib/chess` suites. Without changing behaviour: where the
 index is safe by construction, a check with a `throw` or a `?? defaultValue`.
 
-### T17 — Two stylesheets with *mobile-first* media queries · [CSS]
-`components/ui/section-heading.comp.css` and
-`components/sections/homepage/resources/resources.section.css` use `@media (min-width: …)` when the
-convention is desktop-first (`max-width`). Invert them: the block's values become the desktop ones
+### T17 — A stylesheet with *mobile-first* media queries · [CSS]
+`components/site/sections/home/resources/resources.section.css` uses `@media (min-width: …)` when
+the convention is desktop-first (`max-width`). Invert it: the block's values become the desktop ones
 and the `max-width` media query (with the same threshold minus 1 px) receives the mobile ones. Check
-the home page visually at 375, 768 and 1280 px before and after; nothing should change.
+the home page visually at 375, 768 and 1280 px before and after; nothing should change. (The other
+offender, `ui/section-heading.comp.css`, was deleted as dead code when `components/` was reorganised.)

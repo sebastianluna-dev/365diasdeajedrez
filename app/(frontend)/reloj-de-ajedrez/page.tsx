@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/sections/common/header/header.section";
-import { ChessClock } from "@/components/sections/chess-clock/chess-clock.comp";
+import { Header } from "@/components/site/sections/shell/header/header.section";
+import { ChessClock } from "@/components/site/sections/chess-clock/chess-clock.comp";
 import "./reloj-page.css";
 
 export const metadata: Metadata = {

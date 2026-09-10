@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { chessGlyph, gramatika, suisseIntl } from "./fonts";
-import { GoogleAnalytics } from "@/components/common/google-analytics.comp";
-import { MetaPixel } from "@/components/common/meta-pixel.comp";
+import { GoogleAnalytics } from "@/components/site/shared/google-analytics.comp";
+import { MetaPixel } from "@/components/site/shared/meta-pixel.comp";
 import { SITE_URL } from "@/lib/site-url";
 
 // `metadataBase` is what lets each page's canonical and Open Graph image be

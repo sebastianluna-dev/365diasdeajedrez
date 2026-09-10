@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Header } from "@/components/sections/common/header/header.section";
-import { Footer } from "@/components/sections/common/footer/footer.section";
-import { SiteMessage } from "@/components/sections/common/site-message/site-message.section";
+import { Header } from "@/components/site/sections/shell/header/header.section";
+import { Footer } from "@/components/site/sections/shell/footer/footer.section";
+import { SiteMessage } from "@/components/site/sections/shell/site-message/site-message.section";
 
 export const metadata: Metadata = {
   title: "Página no encontrada | 365 Días de Ajedrez",

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { TeacherClassesSection } from "@/components/sections/platform/teacher/classes/teacher-classes.section";
+import { TeacherClassesSection } from "@/components/platform/sections/teacher/classes/teacher-classes.section";
 import { CLASS_STATUS, type ClassStatusCode } from "@/constants/platform/class-codes.const";
 import { requireTeacher } from "@/lib/platform-auth/roles";
 

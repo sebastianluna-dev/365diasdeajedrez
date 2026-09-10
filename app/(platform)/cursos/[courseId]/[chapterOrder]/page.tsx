@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CourseNavigation } from "@/components/common/course-navigation.comp";
-import { ChapterDetailSection } from "@/components/sections/platform/courses/chapter-detail/chapter-detail.section";
+import { CourseNavigation } from "@/components/platform/shared/course-navigation.comp";
+import { ChapterDetailSection } from "@/components/platform/sections/courses/chapter-detail/chapter-detail.section";
 import { getChapterView } from "@/services/courses/courses.service";
 import "./chapter-page.css";
 

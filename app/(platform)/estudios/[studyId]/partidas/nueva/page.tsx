@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { NewGameSection } from "@/components/sections/platform/studies/new-game/new-game.section";
+import { NewGameSection } from "@/components/platform/sections/studies/new-game/new-game.section";
 import { getStudyById, getGameResultOptions } from "@/services/studies/studies.service";
 
 interface NewGamePageProps {

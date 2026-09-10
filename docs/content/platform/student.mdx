@@ -34,7 +34,7 @@ The lesson page renders `GameViewer` in `moveList="flow"` mode (lessons are read
 
 - **Home** (`getTrainerData()`): chapters with exercises, split into "my chapters" (`UserTrainerChapter`) and available ones; `toggleTrainerChapter` adds or removes.
 - **Session** (`getTrainerSession({ lessonId | chapterId | none })`): exercises of a lesson, a chapter, or all chapters added by the student, always filtered by published course. Each `TrainerExercise` carries the frozen `startFen`, `lineSans`, `userColor` (the colour to move in `startFen`; `Lesson.trainingColorId` lets black repertoires start with white's move played), `modeCode` and `isStale`.
-- **Play** (`components/sections/platform/trainer/trainer-session.comp.tsx`, client): the student plays their plies on `ChessBoard`; the opponent replies after 450 ms; SAN comparison ignores `+ # ! ?`; mistakes are counted; a summary closes the session.
+- **Play** (`components/platform/sections/trainer/trainer-session.comp.tsx`, client): the student plays their plies on `ChessBoard`; the opponent replies after 450 ms; SAN comparison ignores `+ # ! ?`; mistakes are counted; a summary closes the session.
 - **Record** (`recordTrainingAttempt` in `trainer.actions.ts`): validates the exercise against the database, clamps `mistakes` (≤ 999) and `durationMs` (≤ 2 h), stores `TrainingAttempt` and `TrainingMistake` rows (hashed positions), updates `UserLessonTraining` with `applyReview()` and records `EXERCISE_PASSED` activity when passed.
 
 Spaced repetition (`lib/training/review-schedule.ts`): intervals `[0, 1, 3, 7, 21, 60]` days; only a **perfect** attempt (no mistakes, no hints) climbs one step; any failure returns to step 0 (due today). `isDueForReview` and `accuracyPercent` are pure and tested.
@@ -59,7 +59,7 @@ Actions (`studies.actions.ts`): `createStudy`, `updateStudy`, `deleteStudy` (war
 
 ## Classes — `/clases`
 
-`services/classes/classes.service.ts`: `getUserClasses()` splits into upcoming and past; `getClassById()` returns the detail with `meetingUrl` only when `now >= meetingUrlVisibleFrom` (and `meetingVisibleFromIso` for the countdown), the ordered blocks as a discriminated union (`TEXT`, `VIDEO`, `GAME_REF` with PGN and optional `movePath`, `LESSON_REF`, `POSITION_REF`, `FILE`) and the transcript status. `components/common/class-content-renderer.comp.tsx` renders blocks: text as paragraphs (lines starting with `## ` become headings), games in `GameViewer` opened at `initialPath`, positions in `StaticDiagram`. Times are shown in the student's browser zone by `LocalDateTime`.
+`services/classes/classes.service.ts`: `getUserClasses()` splits into upcoming and past; `getClassById()` returns the detail with `meetingUrl` only when `now >= meetingUrlVisibleFrom` (and `meetingVisibleFromIso` for the countdown), the ordered blocks as a discriminated union (`TEXT`, `VIDEO`, `GAME_REF` with PGN and optional `movePath`, `LESSON_REF`, `POSITION_REF`, `FILE`) and the transcript status. `components/platform/shared/class-content-renderer.comp.tsx` renders blocks: text as paragraphs (lines starting with `## ` become headings), games in `GameViewer` opened at `initialPath`, positions in `StaticDiagram`. Times are shown in the student's browser zone by `LocalDateTime`.
 
 ## Position explorer — `/explorador`
 

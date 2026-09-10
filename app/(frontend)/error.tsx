@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { SiteMessage } from "@/components/sections/common/site-message/site-message.section";
+import { SiteMessage } from "@/components/site/sections/shell/site-message/site-message.section";
 
 // Error boundary of the public site. It is a Client Component, so it cannot
 // render the header or the footer (they are server components): only the

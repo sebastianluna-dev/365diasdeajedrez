@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/sections/common/header/header.section";
-import { Footer } from "@/components/sections/common/footer/footer.section";
-import { NosotrosHeroSection } from "@/components/sections/nosotros/hero/hero.section";
-import { ValoresSection } from "@/components/sections/nosotros/values/values.section";
-import { NosotrosCtaSection } from "@/components/sections/nosotros/cta/cta.section";
+import { Header } from "@/components/site/sections/shell/header/header.section";
+import { Footer } from "@/components/site/sections/shell/footer/footer.section";
+import { NosotrosHeroSection } from "@/components/site/sections/nosotros/hero/hero.section";
+import { ValoresSection } from "@/components/site/sections/nosotros/values/values.section";
+import { NosotrosCtaSection } from "@/components/site/sections/nosotros/cta/cta.section";
 import "./nosotros-page.css";
 
 export const metadata: Metadata = {

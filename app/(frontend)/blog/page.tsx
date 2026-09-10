@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/sections/common/header/header.section";
-import { BlogArticles } from "@/components/sections/blog/blog-articles/blog-articles.section";
-import { Footer } from "@/components/sections/common/footer/footer.section";
+import { Header } from "@/components/site/sections/shell/header/header.section";
+import { BlogArticles } from "@/components/site/sections/blog/blog-articles/blog-articles.section";
+import { Footer } from "@/components/site/sections/shell/footer/footer.section";
 import { categoriesOf, listingHref, parseListingQuery } from "@/services/articles/article-listing";
 import { getArticleSummaries } from "@/services/articles/articles.service";
 import "./blog.css";

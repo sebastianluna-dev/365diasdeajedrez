@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { NewStudy } from "@/components/sections/platform/studies/studies-list/new-study.comp";
-import { StudiesListSection } from "@/components/sections/platform/studies/studies-list/studies-list.section";
+import { NewStudy } from "@/components/platform/sections/studies/studies-list/new-study.comp";
+import { StudiesListSection } from "@/components/platform/sections/studies/studies-list/studies-list.section";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getStudyKinds } from "@/services/studies/studies.service";
 import "./studies-page.css";

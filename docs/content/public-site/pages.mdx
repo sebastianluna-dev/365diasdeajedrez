@@ -12,7 +12,7 @@ All public pages live in `app/(frontend)` and share the root layout there: `meta
 
 | Section | Component | Content source |
 | --- | --- | --- |
-| Header | `components/sections/common/header` | Global `home-header` (nav links and dropdown blocks) |
+| Header | `components/site/sections/shell/header` | Global `home-header` (nav links and dropdown blocks) |
 | Hero | `homepage/hero` | Global `home-hero` (title, description, image with `preload` and `fetchPriority="high"`) |
 | Program | `homepage/program` | Global `home-program` (modules list) |
 | Teacher **or** Mentors | `homepage/teacher` / `homepage/mentors` | Globals `home-teacher` / `home-mentors`; they share one slot and `teacher` wins if both are enabled |
@@ -29,7 +29,7 @@ Each section calls its own `getXData()` from `services/home/home.service.ts`; th
 
 - `/blog` is a **Server Component** driven by search params. `services/articles/article-listing.ts` (pure, tested) parses `?categoria=` and `?pagina=`, filters and paginates (`ARTICLES_PER_PAGE = 9`, `ALL_CATEGORY = "Todos"`) and builds canonical hrefs with `listingHref(query)`. Category filter and pagination are plain links with `aria-current`, so they work without JavaScript and every state has a URL.
 - The listing uses `getArticleSummaries()` — every published article **without** its Lexical `content` — so the page payload no longer carries the body of every post.
-- `/blog/[slug]` uses `getArticleBySlug()` (drafts visible only to logged-in Payload users, through the collection's `read` access) and renders the Lexical tree with `components/sections/blog-article/article-content`. Custom blocks:
+- `/blog/[slug]` uses `getArticleBySlug()` (drafts visible only to logged-in Payload users, through the collection's `read` access) and renders the Lexical tree with `components/site/sections/blog/article-content`. Custom blocks:
   - `imageBlock` → `next/image` with Cloudinary URL;
   - `calloutBlock` → info / tip / warning box;
   - `chessDiagramBlock` → `StaticDiagram` (Server Component, no chessground) with `context="article"`;
@@ -38,9 +38,9 @@ Each section calls its own `getXData()` from `services/home/home.service.ts`; th
 
 ## Other pages
 
-- `/nosotros` — static about page (`components/sections/nosotros/*`).
+- `/nosotros` — static about page (`components/site/sections/nosotros/*`).
 - `/mentor/[slug]` — profile built from the `home-mentors` Global (`services/mentors`), with FIDE title options and a lazy board for the featured game.
-- `/reloj-de-ajedrez` — the chess clock. `components/sections/chess-clock/chess-clock.comp.tsx` picks the desktop or mobile variant with `useSyncExternalStore` on `matchMedia("(max-width: 766px)")` so only **one** clock instance runs; `hooks/use-chess-clock.hook.ts` owns the state (time controls 3+2, 5+0, 10+0, 15+10, 30+0), ticks every 100 ms from `Date.now()`, and handles the space bar only when the event does not come from a focused control and is not a key repeat.
+- `/reloj-de-ajedrez` — the chess clock. `components/site/sections/chess-clock/chess-clock.comp.tsx` picks the desktop or mobile variant with `useSyncExternalStore` on `matchMedia("(max-width: 766px)")` so only **one** clock instance runs; `hooks/use-chess-clock.hook.ts` owns the state (time controls 3+2, 5+0, 10+0, 15+10, 30+0), ticks every 100 ms from `Date.now()`, and handles the space bar only when the event does not come from a focused control and is not a key repeat.
 
 ## SEO and metadata
 

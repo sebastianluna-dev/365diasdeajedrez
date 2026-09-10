@@ -54,5 +54,5 @@ Related pure modules outside the folder: `lib/training/review-schedule.ts` (spac
 **Evaluate a game**
 
 1. `replayGame(pgn)` → FEN per ply.
-2. A dedicated Stockfish worker analyses each position at depth 16 (`use-game-review.ts`), collecting `MoveEvaluation`s.
+2. A dedicated Stockfish worker analyses each position at depth 16 (`use-game-review.hook.ts`), collecting `MoveEvaluation`s.
 3. `reviewGame(positions)` → accuracy, grades, phases; `setEvaluation` can write them back into the PGN as `[%eval]`.

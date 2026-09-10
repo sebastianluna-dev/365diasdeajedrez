@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ChapterGamesSection } from "@/components/sections/platform/staff/courses/chapter-games.section";
+import { ChapterGamesSection } from "@/components/platform/sections/staff/courses/chapter-games.section";
 import { getChapterAdmin, listCollectionGames } from "@/services/staff-courses/staff-courses.service";
 
 interface ChapterGamesPageProps {

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CourseEditorSection } from "@/components/sections/platform/staff/courses/course-editor.section";
+import { CourseEditorSection } from "@/components/platform/sections/staff/courses/course-editor.section";
 import {
   getCourseAdminDetail,
   listAuthorRoles,

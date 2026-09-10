@@ -92,7 +92,7 @@ CI runs exactly these three on every push to `main` and on every pull request. I
 
 ```text
 app/                 App Router: (frontend) public site, (payload) CMS, (auth) login, (platform) private area
-components/          common/ (shared), icons/, ui/, sections/<area>/<section>/ (page sections)
+components/          site/, platform/, auth/ (each with sections/ and shared/), chess/ (shared board and viewer), icons/
 services/<domain>/   service (data), mapper (rows → view types), types (UI contract), actions (server actions)
 lib/                 chess/, platform-auth/, platform-db/, payload/, training/, utilities
 constants/           catalog codes, limits, routes protection, navigation, messages

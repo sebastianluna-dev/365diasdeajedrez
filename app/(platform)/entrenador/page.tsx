@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { EmptyState } from "@/components/common/empty-state.comp";
-import { TrainerHomeSection } from "@/components/sections/platform/trainer/trainer-home.section";
-import { TrainerSession } from "@/components/sections/platform/trainer/trainer-session.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { TrainerHomeSection } from "@/components/platform/sections/trainer/trainer-home.section";
+import { TrainerSession } from "@/components/platform/sections/trainer/trainer-session.comp";
 import { platformRoutes } from "@/lib/platform-routes";
 import { getTrainerSession } from "@/services/trainer/trainer.service";
 import "./trainer-page.css";

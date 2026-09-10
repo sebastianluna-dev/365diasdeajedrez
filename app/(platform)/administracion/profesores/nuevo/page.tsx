@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { TeacherFormSection } from "@/components/sections/platform/staff/teachers/teacher-form.section";
+import { TeacherFormSection } from "@/components/platform/sections/staff/teachers/teacher-form.section";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { listLinkableUsers } from "@/services/staff-teachers/staff-teachers.service";
 

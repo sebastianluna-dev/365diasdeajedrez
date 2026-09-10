@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AssignedStudentsSection } from "@/components/sections/platform/teacher/students/assigned-students.section";
+import { AssignedStudentsSection } from "@/components/platform/sections/teacher/students/assigned-students.section";
 import { requireTeacher } from "@/lib/platform-auth/roles";
 
 export const metadata: Metadata = {

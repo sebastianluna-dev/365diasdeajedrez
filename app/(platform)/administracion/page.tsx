@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { StaffDashboardSection } from "@/components/sections/platform/staff/dashboard/staff-dashboard.section";
+import { StaffDashboardSection } from "@/components/platform/sections/staff/dashboard/staff-dashboard.section";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import "./staff-page.css";
 

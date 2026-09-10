@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { AssignedStudentDetailSection } from "@/components/sections/platform/teacher/students/assigned-student-detail.section";
+import { AssignedStudentDetailSection } from "@/components/platform/sections/teacher/students/assigned-student-detail.section";
 import { getAssignedStudentDetail } from "@/services/teacher-students/teacher-students.service";
 
 interface TeacherStudentPageProps {

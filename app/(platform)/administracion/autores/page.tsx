@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { AuthorsAdminSection } from "@/components/sections/platform/staff/authors/authors-admin.section";
+import { AuthorsAdminSection } from "@/components/platform/sections/staff/authors/authors-admin.section";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { listAuthors } from "@/services/staff-courses/staff-courses.service";
 

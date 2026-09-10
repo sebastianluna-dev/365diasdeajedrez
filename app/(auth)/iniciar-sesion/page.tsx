@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { LOGIN_ERROR_MESSAGES, LOGIN_ERROR_PARAM, RETURN_TO_PARAM } from "@/constants/platform/auth.const";
-import { LoginSection } from "@/components/sections/auth/login/login.section";
+import { LoginSection } from "@/components/auth/sections/login/login.section";
 import { getSessionUser } from "@/lib/platform-auth/current-user";
 import { getSessionRoles } from "@/lib/platform-auth/roles";
 import { homeRouteFor } from "@/lib/platform-routes";

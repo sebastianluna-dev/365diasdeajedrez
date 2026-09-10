@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { StudentStudyViewSection } from "@/components/sections/platform/teacher/students/student-study-view.section";
+import { StudentStudyViewSection } from "@/components/platform/sections/teacher/students/student-study-view.section";
 import { getAssignedStudentDetail, getStudentStudy } from "@/services/teacher-students/teacher-students.service";
 
 interface StudentStudyPageProps {

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { TeacherAdminDetailSection } from "@/components/sections/platform/staff/teachers/teacher-admin-detail.section";
+import { TeacherAdminDetailSection } from "@/components/platform/sections/staff/teachers/teacher-admin-detail.section";
 import { getTeacherAdminDetail, listAssignableStudents } from "@/services/staff-teachers/staff-teachers.service";
 
 interface StaffTeacherPageProps {

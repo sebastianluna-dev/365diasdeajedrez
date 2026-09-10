@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { GameViewSection } from "@/components/sections/platform/studies/game-view/game-view.section";
-import { EditGame } from "@/components/sections/platform/studies/game-view/edit-game.comp";
-import { NewGame } from "@/components/sections/platform/studies/study-detail/new-game.comp";
+import { GameViewSection } from "@/components/platform/sections/studies/game-view/game-view.section";
+import { EditGame } from "@/components/platform/sections/studies/game-view/edit-game.comp";
+import { NewGame } from "@/components/platform/sections/studies/study-detail/new-game.comp";
 import { getClassGames, getGameById, getGameResultOptions, getStudyById } from "@/services/studies/studies.service";
 import "./game-page.css";
 

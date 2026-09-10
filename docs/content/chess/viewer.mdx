@@ -4,7 +4,7 @@ description: "ChessBoard, ChessBoardLazy, GameViewer and its parts, AnalysisBoar
 
 # Board & game viewer
 
-There is **one** game viewer in the codebase and every screen that shows a game uses it: lessons, studies, class blocks, the teacher's read-only student view, the blog (through the simpler board). All of it lives in `components/common/`.
+There is **one** game viewer in the codebase and every screen that shows a game uses it: lessons, studies, class blocks, the teacher's read-only student view, the blog (through the simpler board). All of it lives in `components/chess/`.
 
 ## `ChessBoard` — `chess-board.comp.tsx` (client)
 
@@ -41,8 +41,8 @@ The full experience around a PGN tree (`parsePgnTree`):
 Parts:
 
 - `move-tree.comp.tsx` renders `buildNotationBlocks` output (mainline rows, comments, nested variations); `move-table.comp.tsx` the tabular list with evaluations; `move-context-menu.comp.tsx` the right-click menu; `mainline-positions.ts` the FEN list for the review chart.
-- `engine-panel.comp.tsx` + `use-engine.ts`: Stockfish in a Web Worker, created lazily, `MAX_DEPTH = 20`, `ENGINE_LINES = 3`, a small state machine that never sends `position` until the previous search answered `bestmove` (Stockfish aborts otherwise). The evaluation bar next to the board uses the same data (`evaluationBarFill`). Each line can be expanded into a preview board that follows the main orientation.
-- `game-review.comp.tsx` + `game-review-chart.comp.tsx` + `use-game-review.ts`: a **second** worker evaluates every mainline position at depth 16, in series, then `reviewGame` grades the moves; the chart shows win probability per ply and the cards show accuracy, inaccuracies, mistakes and blunders per player.
+- `engine-panel.comp.tsx` + `use-engine.hook.ts`: Stockfish in a Web Worker, created lazily, `MAX_DEPTH = 20`, `ENGINE_LINES = 3`, a small state machine that never sends `position` until the previous search answered `bestmove` (Stockfish aborts otherwise). The evaluation bar next to the board uses the same data (`evaluationBarFill`). Each line can be expanded into a preview board that follows the main orientation.
+- `game-review.comp.tsx` + `game-review-chart.comp.tsx` + `use-game-review.hook.ts`: a **second** worker evaluates every mainline position at depth 16, in series, then `reviewGame` grades the moves; the chart shows win probability per ply and the cards show accuracy, inaccuracies, mistakes and blunders per player.
 - `board-export.ts` (loaded on demand with `import()`): repaints the position on a canvas — pieces decoded from the chessground CSS sheet so exports always match the board — to download a PNG, or encodes the whole game as a GIF with `gifenc` (`types/gifenc.d.ts` declares the subset used).
 - `move-sound.ts`: `move.mp3` and `capture.mp3` from `public/sounds`, lazy, cloned per play; `viewer-preferences.ts` keeps the sound toggle in `localStorage` through `useSyncExternalStore` (shared by every viewer on the page, safe when storage throws).
 - Fullscreen, keyboard navigation (arrows, home/end), hold-to-repeat on the navigation buttons, responsive layout (board size and panel height negotiated with the engine panel).

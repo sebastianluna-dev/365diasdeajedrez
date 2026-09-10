@@ -103,7 +103,7 @@ Every Global and the `articles` collection have `afterChange` hooks that call `r
 ## Chess engine and board
 
 **Stockfish dies with `RuntimeError: unreachable`.**
-The worker received `position` while a previous `go` had not answered `bestmove`. `use-engine.ts` and `use-game-review.ts` serialise commands for that reason and each owns its own worker; new engine code must wait for `bestmove` (or send `stop` and wait) before sending the next position.
+The worker received `position` while a previous `go` had not answered `bestmove`. `use-engine.hook.ts` and `use-game-review.hook.ts` serialise commands for that reason and each owns its own worker; new engine code must wait for `bestmove` (or send `stop` and wait) before sending the next position.
 
 **The engine panel is slow or single-threaded.**
 That is the lite, single-thread build in `public/engine/`. Multi-threaded builds need `SharedArrayBuffer`, which requires COOP/COEP headers that would break cross-origin Cloudinary images (`IMPROVEMENTS.md` #33).

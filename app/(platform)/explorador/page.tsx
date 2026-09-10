@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { GameExplorerSection } from "@/components/sections/platform/explorer/game-explorer.section";
+import { GameExplorerSection } from "@/components/platform/sections/explorer/game-explorer.section";
 
 export const metadata: Metadata = {
   title: "Explorador de partidas",

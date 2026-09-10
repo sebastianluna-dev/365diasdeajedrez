@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { StudentGameViewSection } from "@/components/sections/platform/teacher/students/student-game-view.section";
+import { StudentGameViewSection } from "@/components/platform/sections/teacher/students/student-game-view.section";
 import { CLASS_STATUS } from "@/constants/platform/class-codes.const";
 import { getTeacherClasses } from "@/services/teacher-classes/teacher-classes.service";
 import { getAssignedStudentDetail, getStudentGame } from "@/services/teacher-students/teacher-students.service";

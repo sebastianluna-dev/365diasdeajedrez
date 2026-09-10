@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { TeacherProfileSection } from "@/components/sections/platform/teacher/profile/teacher-profile.section";
+import { TeacherProfileSection } from "@/components/platform/sections/teacher/profile/teacher-profile.section";
 import { getTeacherProfile } from "@/services/teacher/teacher.service";
 
 export const metadata: Metadata = {

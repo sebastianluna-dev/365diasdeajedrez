@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { TeacherClassDetailSection } from "@/components/sections/platform/teacher/classes/teacher-class-detail.section";
+import { TeacherClassDetailSection } from "@/components/platform/sections/teacher/classes/teacher-class-detail.section";
 import {
   getTeacherClassDetail,
   getTeacherClassPreview,

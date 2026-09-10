@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { StaffClassesSection } from "@/components/sections/platform/staff/classes/staff-classes.section";
+import { StaffClassesSection } from "@/components/platform/sections/staff/classes/staff-classes.section";
 import { CLASS_STATUS, type ClassStatusCode } from "@/constants/platform/class-codes.const";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { listAllClasses, listTeacherFilterOptions } from "@/services/staff-classes/staff-classes.service";

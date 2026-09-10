@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ClassesListSection } from "@/components/sections/platform/classes/classes-list/classes-list.section";
+import { ClassesListSection } from "@/components/platform/sections/classes/classes-list/classes-list.section";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import "./classes-page.css";
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { TeacherDashboardSection } from "@/components/sections/platform/teacher/dashboard/teacher-dashboard.section";
+import { TeacherDashboardSection } from "@/components/platform/sections/teacher/dashboard/teacher-dashboard.section";
 import { requireTeacher } from "@/lib/platform-auth/roles";
 import "./teacher-page.css";
 

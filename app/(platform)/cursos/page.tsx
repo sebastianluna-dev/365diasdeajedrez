@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { CoursesListSection } from "@/components/sections/platform/courses/courses-list/courses-list.section";
-import { StudyGoalAside } from "@/components/sections/platform/courses/courses-list/study-goal.comp";
+import { CoursesListSection } from "@/components/platform/sections/courses/courses-list/courses-list.section";
+import { StudyGoalAside } from "@/components/platform/sections/courses/courses-list/study-goal.comp";
 import { getUserCourses } from "@/services/courses/courses.service";
 import { getStudyGoal } from "@/services/study-goal/study-goal.service";
 import "./courses-page.css";

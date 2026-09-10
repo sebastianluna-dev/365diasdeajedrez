@@ -19,7 +19,7 @@ These rules are enforced by review, tests (`proxy.test.ts`, `nav-items.test.ts`)
 - Images always go through `next/image`; never a raw `<img>`. Remote images are limited to `res.cloudinary.com` (`next.config.ts`), and `lib/remote-image.ts` guards user-typed URLs before they reach `next/image`.
 - Copy shown to users is **Spanish**, including URLs (`/estudios`, `/profesor/alumnos`). Dynamic segment names (`[courseId]`) stay in English because they are code identifiers and never appear in the address bar.
 - **Comments are written in English**, like every other identifier. A comment that quotes a label, a URL parameter or a catalog value keeps it verbatim in Spanish, because that is the string in the product.
-- Shared UI lives in `components/common/`; page sections in `components/sections/<area>/<section>/`; icons in `components/icons/`.
+- `components/` mirrors the products in `app/`: `site/`, `platform/` and `auth/`. Inside each product, `sections/` holds the page sections (`.section.tsx`, with the `.comp.tsx` pieces only they use) and `shared/` the pieces several of that product's sections reuse; `chess/` (board, viewer, diagram) and `icons/` serve every product. There is no `common/` folder: a piece belongs to one product or to the chess domain.
 
 ## CSS
 

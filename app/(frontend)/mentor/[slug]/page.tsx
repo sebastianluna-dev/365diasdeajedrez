@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { Header } from "@/components/sections/common/header/header.section";
-import { Footer } from "@/components/sections/common/footer/footer.section";
-import { EloTable } from "@/components/common/elo-table.comp";
-import { ChessBoardLazy } from "@/components/common/chess-board-lazy.comp";
+import { Header } from "@/components/site/sections/shell/header/header.section";
+import { Footer } from "@/components/site/sections/shell/footer/footer.section";
+import { EloTable } from "@/components/chess/elo-table.comp";
+import { ChessBoardLazy } from "@/components/chess/chess-board-lazy.comp";
 import { getMentorBySlug, getMentorsData } from "@/services/mentors/mentors.service";
 import "./mentor-page.css";
 

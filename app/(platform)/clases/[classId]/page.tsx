@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ClassDetailSection } from "@/components/sections/platform/classes/class-detail/class-detail.section";
+import { ClassDetailSection } from "@/components/platform/sections/classes/class-detail/class-detail.section";
 import { getClassById } from "@/services/classes/classes.service";
 import "./class-page.css";
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { TeachersTableSection } from "@/components/sections/platform/staff/teachers/teachers-table.section";
+import { TeachersTableSection } from "@/components/platform/sections/staff/teachers/teachers-table.section";
 import { requireStaff } from "@/lib/platform-auth/roles";
 
 export const metadata: Metadata = {

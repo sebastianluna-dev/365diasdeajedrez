@@ -70,7 +70,7 @@ routes corrected, `create-next-app` boilerplate deleted, and the command table c
 
 ### 41. ~~`(frontend)` and `(auth)` have neither `not-found.tsx` nor `error.tsx`~~ — RESOLVED (2026-09-09)
 `app/(frontend)/not-found.tsx` (header, footer and `SiteMessage`, the new notice screen in
-`components/sections/common/site-message`) serves the `notFound()` calls of the blog and the
+`components/site/sections/shell/site-message`) serves the `notFound()` calls of the blog and the
 mentors; `app/global-not-found.tsx` with `experimental.globalNotFound` covers the URLs without a
 route, which with three root layouts could not be composed from a `not-found.tsx`;
 `app/(frontend)/error.tsx` and `app/global-error.tsx` complete the borders. All in Spanish and with
@@ -237,7 +237,7 @@ route; today they are only seen inside the admin form.
 
 ### 53. Hardly any platform form says that it is being submitted — [UX]
 Still open: it is a mechanical task over 40 forms (T12 in `todos.md`): promote `LoginSubmit` to
-`components/common/submit-button.comp.tsx` with `useFormStatus` and use it in every write form.
+`components/platform/shared/submit-button.comp.tsx` with `useFormStatus` and use it in every write form.
 
 ### 54. ~~`StaticDiagram` and the blog's diagram block are the same duplicated component~~ — RESOLVED (2026-09-09)
 `ChessDiagramBlockRenderer` is a one-line adapter over `StaticDiagram`, which gains the

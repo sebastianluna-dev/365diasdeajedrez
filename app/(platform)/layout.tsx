@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import "@/app/(frontend)/globals.css";
 import { chessGlyph, gramatika, suisseIntl } from "@/app/(frontend)/fonts";
 import { sfProDisplay } from "@/app/(platform)/fonts";
-import { PlatformShell } from "@/components/sections/platform/shell/platform-shell.section";
+import { PlatformShell } from "@/components/platform/sections/shell/platform-shell.section";
 import "./platform.css";
 
 export const metadata: Metadata = {

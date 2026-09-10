@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { StaffClassDetailSection } from "@/components/sections/platform/staff/classes/staff-class-detail.section";
+import { StaffClassDetailSection } from "@/components/platform/sections/staff/classes/staff-class-detail.section";
 import { getClassAdminDetail } from "@/services/staff-classes/staff-classes.service";
 
 interface StaffClassPageProps {

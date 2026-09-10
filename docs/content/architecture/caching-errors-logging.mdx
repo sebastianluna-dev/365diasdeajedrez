@@ -24,7 +24,7 @@ description: "What is cached and how it is invalidated, how errors surface to us
 
 - `app/(platform)/layout.tsx` sets `dynamic = "force-dynamic"`: every private page renders per request. The comment there says it is valid while `cacheComponents` stays disabled.
 - Per-request deduplication only: `cache()` around the session (`getSessionContext`), roles, and read functions shared by several sections (`getPublishedCourses`, `getRecentActivities`, `getStudyGoal`, `getVisibleGamesWhere`…).
-- Browser-side: viewer preferences (sound on/off) in `localStorage` through a `useSyncExternalStore` store (`components/common/game-viewer/viewer-preferences.ts`); nothing else persists in the browser.
+- Browser-side: viewer preferences (sound on/off) in `localStorage` through a `useSyncExternalStore` store (`components/chess/game-viewer/viewer-preferences.ts`); nothing else persists in the browser.
 
 ### Assets
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CreateAccountForm } from "@/components/sections/platform/staff/students/create-account-form.comp";
+import { CreateAccountForm } from "@/components/platform/sections/staff/students/create-account-form.comp";
 import { requireStaff } from "@/lib/platform-auth/roles";
 
 export const metadata: Metadata = {

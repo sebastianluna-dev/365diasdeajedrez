@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Header } from "@/components/sections/common/header/header.section";
-import { ArticleContent } from "@/components/sections/blog-article/article-content/article-content.section";
-import { RelatedArticles } from "@/components/sections/blog-article/related-articles/related-articles.section";
-import { Footer } from "@/components/sections/common/footer/footer.section";
+import { Header } from "@/components/site/sections/shell/header/header.section";
+import { ArticleContent } from "@/components/site/sections/blog/article-content/article-content.section";
+import { RelatedArticles } from "@/components/site/sections/blog/related-articles/related-articles.section";
+import { Footer } from "@/components/site/sections/shell/footer/footer.section";
 import { getArticleBySlug, getArticleSummaries } from "@/services/articles/articles.service";
 import "../blog.css";
 import "./article-page.css";

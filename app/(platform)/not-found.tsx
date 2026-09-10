@@ -1,4 +1,4 @@
-import { EmptyState } from "@/components/common/empty-state.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state.comp";
 import { platformRoutes } from "@/lib/platform-routes";
 
 export default function PlatformNotFound() {

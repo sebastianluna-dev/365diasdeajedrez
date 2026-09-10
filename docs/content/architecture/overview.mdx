@@ -28,7 +28,7 @@ flowchart LR
   S --> PR["Prisma client → PLATFORM_DATABASE_URL"]
   S --> PL["Payload local API → DATABASE_URI (unstable_cache + tags)"]
   S --> M["*.mapper.ts → *.types.ts"]
-  M --> SEC["components/sections/** render props"]
+  M --> SEC["components/*/sections/** render props"]
 ```
 
 1. **`proxy.ts`** (Next 16's middleware) runs on a literal matcher. It only checks whether the session cookie *exists*: private prefixes without a cookie are redirected to `/iniciar-sesion?next=…`; a visit to `/` with a cookie is redirected to `/entrar`, which reads the real session and sends the user to the home of their highest role (or deletes a stale cookie and returns to `/`). The proxy never touches a database.
@@ -51,13 +51,15 @@ app/
                       administracion/, layout.tsx, loading.tsx, error.tsx, not-found.tsx, platform.css, fonts.ts
   global-error.tsx  global-not-found.tsx  robots.ts  sitemap.ts  favicon.ico
 components/
-  common/             chess-board, chess-board-lazy, game-viewer/, analysis-board/, static-diagram, platform-table,
-                      image-upload, form-field, empty-state, loading-panel, platform-error, course-navigation…
+  chess/              chess-board, chess-board-lazy, static-diagram, elo-table, analysis-board/, game-viewer/
+                      (shared by the public site and the platform; the React side of lib/chess)
   icons/              one file per SVG icon component
-  ui/                 section-heading
-  sections/           auth/, blog/, blog-article/, chess-clock/, common/ (header, footer, site-message),
-                      homepage/, nosotros/, platform/ (classes, courses, dashboard, explorer, shell, staff,
-                      studies, teacher, trainer)
+  site/               = app/(frontend): sections/ (shell, home, nosotros, blog, chess-clock)
+                      and shared/ (logo, google-analytics, meta-pixel)
+  platform/           = app/(platform): sections/ (shell, dashboard, courses, studies, classes,
+                      explorer, trainer, teacher, staff) and shared/ (form-field, platform-table,
+                      platform-notice, empty-state, loading-panel, local-datetime, image-upload…)
+  auth/               = app/(auth): sections/login
 services/             articles, auth, classes, courses, dashboard, game-explorer, game-positions, home, media,
                       mentors, shared, site-settings, staff, staff-classes, staff-courses, staff-students,
                       staff-teachers, studies, study-goal, teacher, teacher-classes, teacher-students, trainer

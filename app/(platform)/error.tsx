@@ -1,6 +1,6 @@
 "use client";
 
-import { PlatformError } from "@/components/common/platform-error.comp";
+import { PlatformError } from "@/components/platform/shared/platform-error.comp";
 
 export default function PlatformErrorBoundary({
   error,

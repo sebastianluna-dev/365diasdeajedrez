@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { StudiesNavigation } from "@/components/common/studies-navigation.comp";
-import { StudyDetailSection } from "@/components/sections/platform/studies/study-detail/study-detail.section";
+import { StudiesNavigation } from "@/components/platform/shared/studies-navigation.comp";
+import { StudyDetailSection } from "@/components/platform/sections/studies/study-detail/study-detail.section";
 import {
   getClassGames,
   getGameResultOptions,

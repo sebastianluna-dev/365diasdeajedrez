@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CourseNavigation } from "@/components/common/course-navigation.comp";
-import { CourseDetailSection } from "@/components/sections/platform/courses/course-detail/course-detail.section";
+import { CourseNavigation } from "@/components/platform/shared/course-navigation.comp";
+import { CourseDetailSection } from "@/components/platform/sections/courses/course-detail/course-detail.section";
 import { getCourseById } from "@/services/courses/courses.service";
 import "./course-page.css";
 

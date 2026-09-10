@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { FormField } from "@/components/common/form-field.comp";
-import { PlatformNotice } from "@/components/common/platform-notice.comp";
+import { FormField } from "@/components/platform/shared/form-field.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
-import { StaffEditorHead } from "@/components/sections/platform/staff/courses/staff-editor.comp";
-import { StaffPanel } from "@/components/sections/platform/staff/courses/staff-panel.comp";
+import { StaffEditorHead } from "@/components/platform/sections/staff/courses/staff-editor.comp";
+import { StaffPanel } from "@/components/platform/sections/staff/courses/staff-panel.comp";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { staffRoutes } from "@/lib/platform-routes";
 import { createCourse } from "@/services/staff-courses/staff-courses.actions";

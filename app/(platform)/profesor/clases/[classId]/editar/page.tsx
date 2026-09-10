@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ClassFormSection } from "@/components/sections/platform/teacher/classes/class-form.section";
+import { ClassFormSection } from "@/components/platform/sections/teacher/classes/class-form.section";
 import { requireTeacher } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { safeTimeZone } from "@/lib/timezone";
