@@ -3,9 +3,9 @@
 Backlog de deuda técnica y mejoras del proyecto. Cada punto lleva **área** y **prioridad**
 (baja · media · alta · extrema) y una guía de cómo abordarlo.
 
-> Última revisión: 2026-09-04. En esta tanda se cierran los puntos 7a, 11b, 24, 25 y 30, y el 20 se
-> queda en lo que de verdad le falta. Lo que sigue abierto está arriba; lo que ya está resuelto se
-> deja anotado con lo que se hizo, para no volver a abrirlo.
+> Última revisión: 2026-09-09. Auditoría completa del proyecto (auth y datos, frontend y CSS,
+> pruebas y herramientas): entran los puntos 35 a 70. Lo que sigue abierto está arriba; lo que ya
+> está resuelto se deja anotado con lo que se hizo, para no volver a abrirlo.
 
 ---
 
@@ -26,6 +26,78 @@ fallo de la base se deja pasar, a propósito: sin base no hay login que proteger
 vencidas se barren desde la app, una de cada cien llamadas.
 
 **Lo que falta:** validación declarativa con zod en la entrada de cada action.
+
+### 35. ~~`/lecciones` queda fuera de las rutas protegidas, del proxy y de `robots.txt`~~ — RESUELTO (2026-09-09)
+`/lecciones` añadido a `PROTECTED_PATH_PREFIXES` y al matcher de `proxy.ts`; `app/robots.ts` ya
+importa la constante en vez de copiarla. `proxy.test.ts` recorre todos los prefijos sin cookie y
+comprueba que el matcher sea exactamente la constante más la portada, así que una ruta nueva que
+se añada sólo en un sitio rompe la prueba.
+
+### 36. ~~El seed crea una cuenta de administración con contraseña pública y sin guarda de entorno~~ — RESUELTO (2026-09-09)
+`prisma/seed.ts` aborta si la base no es local (o `NODE_ENV=production`) y la contraseña demo es
+la del repositorio: hay que definir `PLATFORM_DEMO_PASSWORD` propia o, para una base de pruebas
+remota, `ALLOW_DEMO_SEED=1` (documentado en `.env.example`). En local no cambia nada.
+
+### 37. Un ZIP de 57 MB versionado infla el repositorio a 365 MB — [DX / Repositorio]
+`Academia de Ajedrez Landing.zip` (60 MB) está en `git ls-files` desde el commit `2e1af25`; `.git`
+pesa 365 MB para 746 archivos. Cada clon y cada despliegue lo arrastran, y seguirá en el historial
+aunque se borre del árbol.
+
+**Cómo abordarlo:** borrarlo del árbol y añadir `*.zip` a `.gitignore`. Recuperar los 350 MB exige
+reescribir el historial (`git filter-repo --path "Academia de Ajedrez Landing.zip" --invert-paths`),
+decisión aparte porque invalida los clones existentes.
+
+### 38. `server-only` no resuelve en Vitest: servicios y actions no se pueden ni importar — [Pruebas]
+Diez módulos abren con `import "server-only"`, pero el paquete no está instalado: en la app lo
+aliasa Next y `vitest.config.mts` no lo hace. Por eso `services/shared/form-data.ts` —la primera
+línea de validación de todo formulario— y el resto de la capa de servidor no tienen ni una prueba.
+
+**Cómo abordarlo:** alias `server-only` → módulo vacío en `vitest.config.mts` y empezar por
+`form-data.ts`.
+
+### 39. Nada verifica el código antes de llegar a `main`: sin CI, sin `typecheck`, prettier sin declarar — [DX]
+No hay `.github/` ni hooks; `tsc --noEmit` sólo corre dentro de `next build`, que no ve `scripts/*`
+ni `prisma/seed.ts`. `.prettierrc` existe pero `prettier` no está en `devDependencies` (llega como
+transitiva de Payload) y no hay script `format`.
+
+**Cómo abordarlo:** `typecheck` y `format:check` en `package.json`, `prettier` fijado en
+`devDependencies`, y un workflow con `lint`, `typecheck` y `test` sobre Node 20.
+
+### 40. El README describe rutas en inglés que ya no existen — [Docs]
+`README.md` manda a `/login`, `/dashboard`, `/classes`, `/teacher/*`, `/staff/students/new` y a
+`/api/graphql` (desactivado), cuando las rutas reales son `/iniciar-sesion`, `/inicio`, `/clases`,
+`/profesor/*`, `/administracion/alumnos/nuevo` (`lib/platform-routes.ts`) y la jerarquía de cursos
+es otra (`/cursos/[courseId]/[chapterOrder]` + `/lecciones/[lessonId]`). Conserva además el
+boilerplate de `create-next-app` y omite `positions:index` y `collections:by-chapter`.
+
+**Cómo abordarlo:** regenerar el mapa desde las tres constantes de rutas, borrar el boilerplate y
+completar la tabla de scripts.
+
+### 41. `(frontend)` y `(auth)` no tienen `not-found.tsx` ni `error.tsx` — [UX / Frontend]
+Sólo `(platform)` los tiene. `blog/[slug]` y `mentor/[slug]` llaman a `notFound()`, así que un enlace
+viejo desde Google aterriza en el 404 por defecto de Next: en inglés, sin cabecera ni pie ni paleta.
+Tampoco hay `app/global-error.tsx`.
+
+**Cómo abordarlo:** `not-found.tsx` y `error.tsx` en `(frontend)` con `Header`/`Footer`, y un
+`global-error.tsx` mínimo.
+
+### 42. `/blog` manda el contenido íntegro de todos los artículos al navegador y pagina sin URL — [Rendimiento / SEO]
+`blog/page.tsx` pasa `getArticles()` completo —`Article.content` es el árbol Lexical entero— a
+`BlogArticles`, que es `"use client"` y filtra y corta de 9 en 9 en `useState`. El payload crece con
+cada artículo, y categoría y página no están en la URL: nada más allá del noveno es rastreable ni
+enlazable.
+
+**Cómo abordarlo:** una proyección sin `content` para las tarjetas, filtro y página por
+`searchParams`, y `BlogArticles` de vuelta a Server Component con `<Link>`.
+
+### 43. `/reloj-de-ajedrez` monta dos relojes a la vez y captura la barra espaciadora en `window` — [A11y / Rendimiento]
+La página renderiza `ChessClockDesktop` y `ChessClockMobile` siempre y los oculta por CSS; cada uno
+instancia `useChessClock`, con su `setInterval` de 100 ms y un `keydown` en `window` que hace
+`preventDefault()` de `Space`. El reloj oculto también corre, y ningún botón de la página se puede
+activar con la barra espaciadora.
+
+**Cómo abordarlo:** elegir la variante en cliente con `matchMedia` para que sólo haya una instancia,
+y no interceptar `Space` cuando el foco está en un control interactivo.
 
 ---
 
@@ -98,6 +170,189 @@ curso a las 18:00 UTC, o lo que diga `SEED_NOW` (ISO) si se quiere reproducir un
 byte. Dos pasadas del mismo día escriben exactamente lo mismo, y las fechas siguen al calendario
 para que la «próxima clase» de la demo no nazca en el pasado. La hora no es medianoche porque de
 ese instante salen horas de clase.
+
+### 44. ~~Redirección abierta: `returnTo` llega crudo a `redirect()`~~ — RESUELTO (2026-09-09)
+`safeReturnTo` vive ahora en `services/shared/safe-return-to.ts` (con tests) y la usan el login y
+las dos actions de asignación (`assignStudent`, `endAssignment`); `withErrorParam` construye el
+`?error=` respetando la query existente en los `fail()` de staff y profesor. La tercera action con
+`returnTo`, `createTeacherPosition`, era huérfana y se borró (punto 45).
+
+### 45. Exports sin ningún consumidor, tres de ellos server actions — [Calidad / Seguridad]
+*Parcialmente resuelto (2026-09-09):* borradas las tres acciones de escritura sin interfaz
+(`updateGamePgn`, `refreezeExercise`, `createTeacherPosition`) y los imports que sólo ellas usaban.
+
+**Lo que queda:** los símbolos sueltos sin uso —`getStudentStudies`, `reindexGame`,
+`formatOptionalDate`, `isNumericId`/`NUMERIC_ID_DIGITS`, `CLOCK_TIME_CONTROLS`,
+`STUDENT_KINDS`/`TEACHER_KINDS`, `STAFF_ERROR_PARAM`, `STAFF_ACCOUNT_MESSAGES`,
+`TEACHER_ERROR_PARAM`, y el `export` sobrante de `getStaffContext` y `PLATFORM_UPLOAD_FOLDER`—
+(tarea mecánica, ver `todos.md`). `noUnusedLocals` (punto 62) evita la variante intra-archivo.
+
+### 46. El entrenador sirve ejercicios de cursos no publicados — [Autorización]
+`getTrainerSession` (`services/trainer/trainer.service.ts`) monta el `where` con `lessonId` o
+`chapterId` tal cual llegan por `searchParams`, sin exigir curso publicado y sin `take`, cuando
+`getTrainerData` y `getLessonView` sí lo exigen. Un alumno puede pedir `/entrenador?chapter=<uuid>`
+de un curso en borrador. Lo mismo aceptan `touchLesson`, `completeLesson`, `toggleTrainerChapter` y
+`recordTrainingAttempt`.
+
+**Cómo abordarlo:** un helper `publishedLessonWhere()` encadenado en esas cinco consultas.
+
+### 47. Transacciones de importación de hasta 500 partidas sin `timeout` — [Datos]
+`importPgnGames`, `copyClassGamesToStudy` e `importChapterGames` abren `$transaction` interactivas y
+dentro del bucle `indexGamePositions` hace `deleteMany` + `createMany` por partida. Ningún
+`$transaction` del proyecto pasa opciones: el `timeout` por defecto es 5 s, así que el PGN de torneo
+que el tope de 2 MB contempla revienta con P2028 y revierte todo con un mensaje genérico.
+
+**Cómo abordarlo:** `{ timeout, maxWait }` acordes al tope, o lotes de N partidas.
+
+### 48. La ficha de estudio carga el PGN de todas sus partidas sin paginar — [Datos / Rendimiento]
+`studyDetailInclude.games` (`services/studies/studies.mapper.ts`) usa `include` sin `select` ni
+`take`: trae `pgn` y `tags` de cada partida aunque `mapStudyGameItem` no los lea. Lo mismo paga la
+vista de una partida (`siblings = study.games`) y cada reordenación sube todos los ids.
+`listCollectionGames` (staff) lee el `pgn` entero sólo para contar jugadas.
+
+**Cómo abordarlo:** `select` con los campos del mapper; paginación por `searchParams`; persistir el
+número de jugadas al importar.
+
+### 49. El dashboard lee el histórico completo de estadísticas y el catálogo entero — [Datos]
+`getDailyStats` hace `userStatDaily.findMany({ where: { userId } })` sin fecha ni `take` para sumar
+cuatro cifras en memoria, y «Continuar estudiando» pasa por `getUserCourses()`, que trae todos los
+cursos con capítulos y lecciones y todo `LessonProgress`.
+
+**Cómo abordarlo:** `groupBy` con `_sum` y filtro de `day`; una consulta dirigida a
+`CourseProgress` (`orderBy updatedAt desc, take: 1`).
+
+### 50. Ni un log en el servidor: los fallos se tragan en silencio — [Observabilidad]
+No hay `console.*` ni logger en `app/`, `lib/`, `services/`. `lib/rate-limit.ts` hace
+`catch { return true }` (un fallo de base apaga el límite de login sin rastro), los `warnings` de
+PGN se descartan en `game-positions.service.ts`, `error.tsx` no registra el `digest`, y una veintena
+de actions hacen `return` mudo ante throttle o validación.
+
+**Cómo abordarlo:** `lib/logger.ts` (JSON a `stderr`) en esos `catch`; estado visible en las actions
+mudas siguiendo el patrón `?error=<code>`.
+
+### 51. La firma de subida a Cloudinary no acota formato ni tamaño — [Seguridad / Datos]
+`signPlatformUpload` firma sólo `{ folder, timestamp }`; `IMAGE_MAX_BYTES` e `IMAGE_MIME_TYPES` se
+comprueban sólo en el navegador, aunque el comentario de `upload.const.ts` afirme lo contrario. Con
+una firma válida se puede subir cualquier archivo a la cuenta.
+
+**Cómo abordarlo:** firmar también `allowed_formats` y `resource_type: "image"` (Cloudinary invalida
+la firma si el cliente los cambia) y mandarlos desde el cliente; corregir el comentario.
+
+### 52. Payload sin `sharp`, subidas sin tope y preview a medias — [CMS]
+`payload.config.ts` no pasa `sharp`, así que `Media.width`/`height` quedan a `null` y el respaldo
+`?? 1536` de la foto del maestro está siempre activo. `Media` no limita tamaño de archivo.
+`Articles` tiene `versions.drafts` pero no hay `admin.preview` ni ruta; `PREVIEW_SECRET` está en
+`.env.example` sin que nada lo lea.
+
+**Cómo abordarlo:** instalar `sharp` y pasarlo a `buildConfig`; `upload.limits.fileSize`; decidir el
+preview o retirar la variable.
+
+### 53. Casi ningún formulario de la plataforma avisa de que se está enviando — [UX]
+44 archivos con `<form>`; sólo el login y dos formularios de contraseña usan `useFormStatus` o
+`useActionState`. El resto no deshabilita el botón: un segundo clic en una conexión lenta da de alta
+dos veces.
+
+**Cómo abordarlo:** `components/common/submit-button.comp.tsx` con `useFormStatus` y usarlo en
+todos los formularios de escritura (tarea mecánica, ver `todos.md`).
+
+### 54. `StaticDiagram` y el bloque de diagrama del blog son el mismo componente duplicado — [Frontend / CSS]
+`static-diagram.comp.tsx` y `chess-diagram-block.comp.tsx` tienen el mismo JSX salvo el prefijo de
+clase, y las dos hojas sólo divergen en el pie (ya desincronizado: `var(--platform-text-muted)`
+frente a `#8a8175`, que no pasa el contraste).
+
+**Cómo abordarlo:** un solo `StaticDiagram` con modificador de contexto y el bloque del blog como
+adaptador.
+
+### 55. `--platform-text-subtle` se usa como texto en 46 hojas y no llega al contraste mínimo — [A11y]
+`#9a9189` sobre blanco da 3,09:1 (WCAG AA pide 4,5:1) y se usa en cabeceras de tabla, contadores y
+pies a 14 px. `--platform-text-muted` (`#6e655c`, 5,7:1) ya es correcto.
+
+**Cómo abordarlo:** oscurecer el token a ≥4,5:1 (`#7a7168` da 4,78:1) o reservarlo para lo que no se lee.
+
+### 56. Sin estrategia de foco: ni `:focus-visible` global, `outline: none` en la notación y diálogos sin foco — [A11y]
+No hay regla `:focus-visible` en `globals.css` ni `platform.css`; `chess-board.comp.css` pone
+`outline: none` incondicional a los botones de notación; el selector de coronación es un
+`role="dialog"` sin `aria-modal`, sin recibir el foco ni cerrar con Escape; el menú de opciones del
+visor tampoco mueve el foco (`MoveContextMenu` sí lo hace: es el patrón a copiar).
+
+**Cómo abordarlo:** `:focus-visible` global, quitar el `outline: none`, y foco + Escape en los dos
+diálogos.
+
+### 57. Menú móvil enfocable estando cerrado, desplegable sin ARIA y sin enlace de salto — [A11y]
+El menú móvil cerrado es `opacity: 0` + `pointer-events: none`, que no lo saca del orden de
+tabulación; el disparador del desplegable no lleva `aria-expanded` ni `aria-haspopup`; no hay
+«Saltar al contenido» en ningún layout y los `<main>` no tienen `id`.
+
+**Cómo abordarlo:** `visibility: hidden` en el menú cerrado, ARIA en el disparador, y un
+`skip-link` a `#contenido` en los tres layouts.
+
+### 58. `GameTable` reimplementa una tabla con `div`s existiendo `PlatformTable` — [Frontend / A11y]
+La tabla de partidas del estudio (`game-table.comp.tsx`, 160 líneas de CSS de rejilla) usa `span` y
+`div`, mientras la vista del profesor pinta los mismos datos con `PlatformTable` semántica. Un lector
+de pantalla no asocia celda y columna.
+
+**Cómo abordarlo:** montar las filas sobre `PlatformTable` conservando el tirador de reordenación
+en la primera celda (tarea mecánica, ver `todos.md`).
+
+### 59. Los colores del tablero y varios hex recurrentes no son tokens — [CSS]
+`#eeeed2`/`#769656` están escritos en `chess-board.comp.css`, `static-diagram.comp.css`,
+`chess-diagram-block.comp.css` y `board-export.ts`. Quedan además `#b4a99d` ×27, `#5c5348` ×19,
+`#8a8175` ×10 y `#b8611f` ×8 sin token, y `globals.css` repite `#ff9143`/`#16110d` teniendo
+`--color-primary`/`--color-dark`.
+
+**Cómo abordarlo:** `--board-light`/`--board-dark` con constante compartida para JS; nombrar los
+dos grises de texto secundario y barrer los usos (mecánico, ver `todos.md`).
+
+### 60. Hojas CSS fuera de su raíz — [CSS]
+`app/(frontend)/blog/blog.css` abre con un `a {}` global (copia de `globals.css`);
+`mentor-page.css` tiene catorce selectores de primer nivel; `study-card.comp.css` declara la raíz
+dos veces; `.new-game` es raíz de dos componentes distintos (`new-game.section.css` y
+`new-game.comp.css`); `exercise-move-picker.comp.css` y `teacher.section.css` tienen bloques sueltos.
+
+**Cómo abordarlo:** borrar el `a {}`, anidar `mentor-page.css` bajo `.mentor-page`, fusionar
+`.study-card` y renombrar uno de los `.new-game`.
+
+### 61. Vitest ciego a `.test.tsx`, sin cobertura, y módulos puros sin una sola prueba — [Pruebas]
+`include: ["**/*.test.ts"]` y `environment: "node"`: un `.test.tsx` no correría nunca y los hooks
+no son probables; no hay `@vitest/coverage-v8`. Sin pruebas quedan `lib/date-ranges.ts` (la
+aritmética de semana del punto 14), `lib/format-spanish-date.ts`/`-time.ts` (~48 llamadas),
+`services/shared/form-data.ts`, `lib/chess/legal-moves.ts`, `lib/numeric-id.ts`,
+`lib/parse-fen-placement.ts`, `lib/generate-slug.ts` y 11 de 13 mappers. Las pruebas actuales son
+deterministas: nada que corregir ahí.
+
+**Cómo abordarlo:** `include` con `{ts,tsx}`, `test:coverage`, y empezar por `date-ranges`,
+`form-data` y `studies.mapper`.
+
+### 62. `tsconfig.json` con `target` ES2017 y sin los flags que atrapan bugs de índices — [DX]
+`ES2017` obliga a transpilar `async/await` para un runtime que lo soporta nativo, y no están
+`noUncheckedIndexedAccess` ni `noUnusedLocals`. `lib/chess/*` indexa arrays por ply constantemente
+(el punto 30 es un bug de índices).
+
+**Cómo abordarlo:** `ES2022` y `noUnusedLocals` ya; `noUncheckedIndexedAccess` en una tanda propia.
+
+### 63. Dos bases en producción sin procedimiento de copia ni restauración — [Ops]
+Ni README ni scripts mencionan `pg_dump`, retención ni prueba de restauración para
+`DATABASE_URI` y `PLATFORM_DATABASE_URL`; 22 migraciones con SQL a mano y sin camino inverso. Es lo
+único de la auditoría con pérdida irreversible posible.
+
+**Cómo abordarlo:** documentar el volcado de las dos bases y el paso previo a `db:deploy`, y probar
+una restauración una vez.
+
+### 64. Librerías de ajedrez cargadas antes de que nadie las pida — [Rendimiento]
+`game-tools.comp.tsx` importa `board-export` (y con él `gifenc`) estáticamente en todas las páginas
+de partida; `mentor/[slug]` y el bloque de partida del blog usan `ChessBoard` directo para tableros
+al final de la página, existiendo `ChessBoardLazy`.
+
+**Cómo abordarlo:** `await import()` de la exportación en el manejador del botón y `ChessBoardLazy`
+en las dos páginas públicas.
+
+### 65. `.env.example` desfasado y `AGENTS.md` sin las convenciones del proyecto — [Docs]
+`PREVIEW_SECRET` está documentado y nadie lo lee; faltan `PLATFORM_USER_PASSWORD`, `SEED_NOW` y
+`ALLOW_DEMO_SEED`. `AGENTS.md` sólo contiene el bloque autogenerado por `next dev`: nada de la tríada
+service/mapper/types, los sufijos de archivo, BEM ni los catálogos.
+
+**Cómo abordarlo:** cuadrar `.env.example` con `grep process.env` y resumir en `AGENTS.md` las
+convenciones que ya explica el README.
 
 ---
 
@@ -212,6 +467,39 @@ dos quedaron sin nota de procedencia en el repo, al contrario que Stockfish en `
 
 **Cómo abordarlo:** comprobar la licencia del paquete en el `COPYING.md` de lila y, si la exige,
 dejar un `LICENSE` junto a los sonidos con la atribución.
+
+### 66. ~~La tabla `Session` no se purga nunca~~ — RESUELTO (2026-09-09)
+`readSessionUser` borra la fila en cuanto la detecta caducada y, una de cada cien lecturas, barre
+todas las vencidas sin bloquear la respuesta (mismo patrón que `allowAction` con `RateLimit`).
+
+### 67. ~~El techo de login por origen confía en `x-forwarded-for` sin dejarlo escrito~~ — RESUELTO (2026-09-09)
+El supuesto queda escrito junto al código de `auth.actions.ts` (fiable en Vercel; en otro
+despliegue hay que leer el último salto o la cabecera de la plataforma). Los clientes sin cabecera
+ya caían en su propio cubo («desconocido») y el techo por cuenta sigue vigente igual.
+
+### 68. Metadata pública sin `metadataBase`, canónica ni OG por defecto — [SEO]
+`app/(frontend)/layout.tsx` no declara `metadataBase` (el `openGraph.images` relativo del blog se
+resuelve mal), ninguna página lleva `alternates.canonical`, y la portada, `/nosotros` y
+`/reloj-de-ajedrez` se comparten sin tarjeta.
+
+**Cómo abordarlo:** `metadataBase` desde `NEXT_PUBLIC_SITE_URL`, imagen OG por defecto y canónica
+por página.
+
+### 69. Desfase horario calculado dos veces e índices compuestos que faltan — [Calidad / Datos]
+`lib/timezone.ts` (`offsetMsAt`) y `lib/study-streak.ts` (`offsetMs`) implementan el mismo
+algoritmo con `Intl.DateTimeFormat`. `Game` ordena por `order` dentro de `databaseId` sin índice
+compuesto, y `Class` filtra por `teacherId` y ordena por `scheduledAt` con dos índices sueltos.
+
+**Cómo abordarlo:** importar `offsetMsAt` desde `study-streak`; `@@index([databaseId, order])` y
+`@@index([teacherId, scheduledAt])`.
+
+### 70. Ocho hojas CSS bloqueantes en la portada — [Rendimiento]
+El build de `/` enlaza 8 hojas (40 KB en total, la mayor de 15 KB) que Lighthouse simula en serie
+sobre HTTP/1.1; es lo que queda del LCP tras el punto 31. Next 16 con Turbopack ofrece
+`experimental.cssChunking: "graph"` para agruparlas por ruta.
+
+**Cómo abordarlo:** probar `"graph"` en `next.config.ts`, contar hojas en `.next/server/app/index.html`
+y medir 3 pasadas; conservar sólo si baja el LCP.
 
 ---
 

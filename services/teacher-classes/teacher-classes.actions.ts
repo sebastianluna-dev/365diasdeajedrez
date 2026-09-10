@@ -1,6 +1,5 @@
 "use server";
 
-import { parseFen } from "chessops/fen";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { ACTIVITY_TYPE, SUBJECT_TYPE } from "@/constants/platform/activity-codes.const";
@@ -12,7 +11,7 @@ import {
   type ClassStatusCode,
 } from "@/constants/platform/class-codes.const";
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
-import { BOARD_ORIENTATION, CONTENT_ORIENTATIONS, OWNER_TYPE } from "@/constants/platform/shared-codes.const";
+import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 import {
   assertTeacherCanReferenceGame,
   assertTeacherHasStudent,
@@ -29,6 +28,7 @@ import { readClampedInt, readOptionalText, readText, readUrl } from "@/services/
 import { getPgnForReference } from "./teacher-classes.service";
 import { planDenseRenumber, planSwap, nextOrder, type MoveDirection } from "@/services/shared/reorder";
 import { recordUserActivity } from "@/services/shared/user-activity.service";
+import { withErrorParam } from "@/services/shared/safe-return-to";
 import { canTransitionClassStatus } from "./class-status-transitions";
 
 // Escrituras del panel del profesor. Reglas que NO se negocian:
@@ -44,14 +44,13 @@ const DESCRIPTION_MAX_LENGTH = 500;
 const SUMMARY_MAX_LENGTH = 5000;
 const CAPTION_MAX_LENGTH = 200;
 const BLOCK_TEXT_MAX_LENGTH = 10_000;
-const POSITION_TITLE_MAX_LENGTH = 120;
 const DURATION_MIN = 15;
 const DURATION_MAX = 480;
 /** El enlace se abre media hora antes por defecto. */
 const MEETING_VISIBLE_LEAD_MS = 30 * 60 * 1000;
 
 function fail(path: string, code: string): never {
-  redirect(`${path}?error=${code}`);
+  redirect(withErrorParam(path, code));
 }
 
 async function teacherTimeZone(teacherId: string): Promise<string> {
@@ -536,37 +535,6 @@ export async function moveClassBlock(classId: string, formData: FormData): Promi
 
   revalidatePath(detailPath);
   revalidatePath(`/classes/${classId}`);
-}
-
-export async function createTeacherPosition(formData: FormData): Promise<void> {
-  const { user } = await requireTeacher();
-
-  const returnTo = readText(formData, "returnTo") || teacherRoutes.classes;
-  if (!(await allowAction(`${user.id}:teacher-position`, 60, 60_000))) fail(returnTo, "throttled");
-
-  const fen = readText(formData, "fen");
-  // La legalidad la decide chessops, no una expresión regular: un FEN mal
-  // formado reventaría después en el tablero del alumno.
-  if (fen.length === 0 || parseFen(fen).isErr) fail(returnTo, "fen");
-
-  const orientationCode = readText(formData, "orientationCode");
-  const orientation = (CONTENT_ORIENTATIONS as readonly string[]).includes(orientationCode)
-    ? orientationCode
-    : BOARD_ORIENTATION.WHITE;
-
-  await getPlatformDb().position.create({
-    data: {
-      // ownerType TEACHER apunta por userId: Teacher es 1:1 con User y así se
-      // respeta el CHECK position_owner_xor.
-      ownerType: { connect: { code: OWNER_TYPE.TEACHER } },
-      user: { connect: { id: user.id } },
-      title: readOptionalText(formData, "title", POSITION_TITLE_MAX_LENGTH),
-      fen,
-      orientation: { connect: { code: orientation } },
-    },
-  });
-
-  revalidatePath(returnTo);
 }
 
 /**

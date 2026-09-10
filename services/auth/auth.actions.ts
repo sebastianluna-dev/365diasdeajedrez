@@ -8,6 +8,7 @@ import { createSession, destroyCurrentSession } from "@/lib/platform-auth/sessio
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { homeRouteFor } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
+import { safeReturnTo } from "@/services/shared/safe-return-to";
 
 // Server action plana (sin useActionState) para que el login funcione también
 // sin JavaScript: es la puerta de entrada, y un fallo de hidratación no puede
@@ -21,20 +22,6 @@ function readText(formData: FormData, field: string): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-/**
- * Destino tras iniciar sesión. Sólo se aceptan rutas internas: sin esto, un
- * enlace `?next=https://otro-sitio` convertiría el login en un trampolín de
- * phishing. `//host` y `/\host` son URLs absolutas para el navegador, de ahí
- * la segunda comprobación.
- *
- * El `fallback` es la portada del rol (ver homeRouteFor): con el menú
- * excluyente, mandar a un profesor o a un administrador al dashboard del
- * alumno lo dejaría en una página que su propio menú ya no enlaza.
- */
-function safeReturnTo(raw: string, fallback: string): string {
-  if (!raw.startsWith("/") || raw.startsWith("//") || raw.startsWith("/\\")) return fallback;
-  return raw;
-}
 
 /** Vuelve al formulario conservando el destino pendiente y el motivo del fallo. */
 function backToLogin(errorCode: string, returnTo: string): never {
@@ -54,6 +41,13 @@ export async function loginAction(formData: FormData): Promise<void> {
 
   // Dos techos: por cuenta (frena el ataque a un alumno concreto) y por origen
   // (frena el barrido de muchas cuentas desde la misma máquina).
+  //
+  // El origen sale de `x-forwarded-for`, que sólo es fiable detrás de un proxy
+  // que la reescriba: Vercel lo hace; un contenedor a pelo o un nginx sin
+  // `proxy_set_header`, no, y ahí la pondría el cliente. Si el despliegue deja
+  // de ser Vercel hay que leer el último salto o la cabecera de la plataforma.
+  // Sin cabecera, todos los clientes caen en un mismo cubo («desconocido»);
+  // el techo por cuenta sigue vigente igual.
   const requestHeaders = await headers();
   const origin = requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() || "desconocido";
   if (!(await allowAction(`login:${email}`, 10, 60_000)) || !(await allowAction(`login-origin:${origin}`, 30, 60_000))) {
@@ -88,6 +82,9 @@ export async function loginAction(formData: FormData): Promise<void> {
     isTeacher: user.teacher?.isActive === true,
     isStaff: user.staff !== null,
   });
+  // El destino por defecto es la portada del rol (ver homeRouteFor): con el
+  // menú excluyente, mandar a un profesor o a un administrador al dashboard
+  // del alumno lo dejaría en una página que su propio menú ya no enlaza.
   redirect(safeReturnTo(rawReturnTo, home));
 }
 

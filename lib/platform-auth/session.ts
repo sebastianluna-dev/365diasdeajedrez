@@ -17,6 +17,14 @@ import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 
 const USER_AGENT_MAX_LENGTH = 255;
 
+/**
+ * Cada cuánto se barren las sesiones caducadas, en tanto por uno de lecturas.
+ * Mismo patrón que `allowAction` con `RateLimit`: la tabla sólo crece con lo
+ * que ella misma escribe, así que se limpia desde la propia app y sin bloquear
+ * la respuesta. La fila que se acaba de detectar caducada se borra siempre.
+ */
+const PURGE_CHANCE = 0.01;
+
 export interface SessionUser {
   id: string;
   email: string;
@@ -98,7 +106,14 @@ export async function readSessionUser(): Promise<SessionUser | null> {
   });
 
   const now = new Date();
-  if (!session || session.expiresAt <= now) return null;
+  if (Math.random() < PURGE_CHANCE) {
+    void db.session.deleteMany({ where: { expiresAt: { lte: now } } }).catch(() => undefined);
+  }
+  if (!session) return null;
+  if (session.expiresAt <= now) {
+    await db.session.deleteMany({ where: { id: session.id } });
+    return null;
+  }
 
   if (now.getTime() - session.lastSeenAt.getTime() > SESSION_RENEW_AFTER_MS) {
     await db.session.update({

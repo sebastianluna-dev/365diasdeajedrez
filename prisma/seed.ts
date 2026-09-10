@@ -39,6 +39,30 @@ import { STAT_METRIC_BY_ACTIVITY_TYPE, type ActivityTypeCode } from "../constant
 const connectionString = process.env.PLATFORM_DATABASE_URL;
 if (!connectionString) throw new Error("Falta PLATFORM_DATABASE_URL en el entorno (ver .env.example).");
 
+/** Contraseña de las cuentas demo. Sobreescribible por entorno. */
+const DEMO_PASSWORD = process.env.PLATFORM_DEMO_PASSWORD ?? "ajedrez365";
+
+// Las cuentas demo —una de ellas con rol de administración— nacen con una
+// contraseña que está escrita en este repositorio. Contra una base que no sea
+// local eso es una puerta abierta, así que fuera de local sólo se siembra si
+// la contraseña la pone el entorno o si se pide expresamente.
+function isLocalDatabase(url: string): boolean {
+  try {
+    const host = new URL(url).hostname;
+    return host === "localhost" || host === "127.0.0.1" || host === "::1" || host === "";
+  } catch {
+    return false;
+  }
+}
+const usesRepoPassword = !process.env.PLATFORM_DEMO_PASSWORD;
+const looksRemote = process.env.NODE_ENV === "production" || !isLocalDatabase(connectionString);
+if (looksRemote && usesRepoPassword && process.env.ALLOW_DEMO_SEED !== "1") {
+  throw new Error(
+    "El seed crea cuentas demo con la contraseña por defecto del repositorio y la base no es local. " +
+      "Define PLATFORM_DEMO_PASSWORD con una contraseña propia o, si de verdad es una base de pruebas, ALLOW_DEMO_SEED=1.",
+  );
+}
+
 const db = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
 
 /**
@@ -73,9 +97,6 @@ function seedReferenceDate(): Date {
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;
-
-/** Contraseña de las cuentas demo. Sobreescribible por entorno. */
-const DEMO_PASSWORD = process.env.PLATFORM_DEMO_PASSWORD ?? "ajedrez365";
 
 interface CatalogRow {
   id: number;

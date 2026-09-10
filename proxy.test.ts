@@ -2,11 +2,12 @@ import { NextRequest } from "next/server";
 import { describe, expect, it } from "vitest";
 import {
   LOGIN_PATH,
+  PROTECTED_PATH_PREFIXES,
   RETURN_TO_PARAM,
   SESSION_COOKIE_NAME,
   SESSION_ENTRY_PATH,
 } from "@/constants/platform/auth.const";
-import { proxy } from "./proxy";
+import { config, proxy } from "./proxy";
 
 function requestTo(path: string, { withCookie = false } = {}): NextRequest {
   const request = new NextRequest(`http://localhost${path}`);
@@ -47,5 +48,20 @@ describe("proxy", () => {
 
   it("deja pasar la zona privada con cookie sin comprobarla (eso lo hace el DAL)", () => {
     expect(proxy(requestTo("/inicio", { withCookie: true })).headers.get("location")).toBeNull();
+  });
+
+  it("corta TODOS los prefijos privados sin cookie, en la raíz y en sus hijos", () => {
+    for (const prefix of PROTECTED_PATH_PREFIXES) {
+      for (const path of [prefix, `${prefix}/abc`]) {
+        expect(redirectTarget(proxy(requestTo(path))).pathname, path).toBe(LOGIN_PATH);
+      }
+    }
+  });
+
+  // El matcher tiene que ser literal (Next lo analiza en build), así que la
+  // única forma de que no se separe de la constante es comprobarlo aquí.
+  it("el matcher cubre exactamente los prefijos privados más la portada", () => {
+    const fromConstant = PROTECTED_PATH_PREFIXES.map((prefix) => `${prefix}/:path*`);
+    expect([...config.matcher].sort()).toEqual(["/", ...fromConstant].sort());
   });
 });

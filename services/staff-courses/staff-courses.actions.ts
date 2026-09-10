@@ -855,21 +855,6 @@ export async function updateExercise(
   revalidatePath(lessonPath);
 }
 
-/**
- * Vuelve a congelar un ejercicio desactualizado contra el PGN actual. Pide las
- * jugadas otra vez porque `afterSans` no se puede reconstruir con fiabilidad a
- * partir de lo guardado (sólo se conserva la posición congelada, no el camino).
- */
-export async function refreezeExercise(
-  courseId: string,
-  chapterId: string,
-  lessonId: string,
-  exerciseId: string,
-  formData: FormData,
-): Promise<void> {
-  return updateExercise(courseId, chapterId, lessonId, exerciseId, formData);
-}
-
 export async function deleteExercise(
   courseId: string,
   chapterId: string,

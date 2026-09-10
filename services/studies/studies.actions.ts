@@ -327,45 +327,6 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
   revalidatePath(platformRoutes.studyDetail(studyId));
 }
 
-/**
- * Guarda el PGN anotado de una partida, tal y como lo dejó el tablero de
- * análisis.
- *
- * Sólo escribe el DUEÑO de la base. `listReferenceableGames` deja a un profesor
- * VER las partidas de sus alumnos para poder citarlas en clase; sin la
- * condición sobre `userId` esa misma visibilidad le dejaría reescribirlas.
- *
- * Reindexa las posiciones después: el buscador por posición se alimenta de
- * `GamePosition`, y dejarlo con las de la versión anterior encontraría jugadas
- * que ya no están en la partida.
- */
-export async function updateGamePgn(studyId: string, gameId: string, formData: FormData): Promise<void> {
-  const pgn = readText(formData, "pgn");
-  if (pgn.length === 0 || pgn.length > PGN_MAX_LENGTH) return;
-
-  const db = getPlatformDb();
-  const user = await getCurrentUser();
-  if (!(await allowAction(`${user.id}:game-pgn`, 60, 60_000))) return;
-
-  // La previsualización del editor es una comodidad; quien decide es el
-  // servidor, que vuelve a parsear antes de escribir.
-  if (parsePgnTree(pgn) === null) return;
-
-  const game = await db.game.findFirst({
-    where: { id: gameId, databaseId: studyId, database: { userId: user.id } },
-    select: { id: true },
-  });
-  if (!game) return;
-
-  await db.$transaction(async (tx) => {
-    await tx.game.update({ where: { id: game.id }, data: { pgn } });
-    await indexGamePositions(tx, { gameId: game.id, databaseId: studyId, pgn });
-  });
-
-  revalidatePath(platformRoutes.gameDetail(studyId, gameId));
-  revalidatePath(platformRoutes.studyDetail(studyId));
-}
-
 // --- Partidas creadas a mano -----------------------------------------------
 //
 // El otro camino para meter una partida en un estudio, además de pegar un PGN:
@@ -647,7 +608,7 @@ export interface AutosaveResult {
 }
 
 /**
- * Igual que `updateGamePgn` pero informando de lo ocurrido.
+ * Guarda el PGN anotado de una partida informando de lo ocurrido.
  *
  * El autoguardado no puede fallar en silencio: quien está analizando tiene que
  * enterarse de que su trabajo NO está a salvo, y por eso esta variante devuelve

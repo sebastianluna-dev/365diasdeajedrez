@@ -47,9 +47,10 @@ export function proxy(request: NextRequest): NextResponse {
 }
 
 // Los prefijos deben ser literales: Next analiza el matcher en tiempo de build
-// y descarta cualquier valor calculado (por eso no se deriva de la constante).
-// La portada entra sólo por el salto de quien trae cookie; sin ella pasa tal
-// cual y se sirve la versión prerenderizada.
+// y descarta cualquier valor calculado (por eso no se deriva de la constante;
+// `proxy.test.ts` vigila que las dos listas no se separen). La portada entra
+// sólo por el salto de quien trae cookie; sin ella pasa tal cual y se sirve la
+// versión prerenderizada.
 export const config = {
   matcher: [
     "/",
@@ -57,6 +58,7 @@ export const config = {
     "/clases/:path*",
     "/estudios/:path*",
     "/cursos/:path*",
+    "/lecciones/:path*",
     "/entrenador/:path*",
     "/explorador/:path*",
     "/profesor/:path*",

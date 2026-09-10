@@ -11,6 +11,7 @@ import { staffRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { readBoolean, readOptionalText, readText, readUrl } from "@/services/shared/form-data";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
+import { safeReturnTo, withErrorParam } from "@/services/shared/safe-return-to";
 import { createDefaultStudy } from "@/services/studies/default-study";
 import { planAssignment } from "./assignment-rules";
 
@@ -28,7 +29,7 @@ const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const ONE_ACTIVE_INDEX = "teacher_student_one_active";
 
 function fail(path: string, code: string): never {
-  redirect(`${path}?error=${code}`);
+  redirect(withErrorParam(path, code));
 }
 
 /**
@@ -164,7 +165,9 @@ export async function assignStudent(formData: FormData): Promise<void> {
 
   const studentId = readText(formData, "studentId");
   const teacherId = readText(formData, "teacherId");
-  const returnTo = readText(formData, "returnTo") || staffRoutes.studentDetail(studentId);
+  // `returnTo` viene de un campo oculto, es decir, del cliente: sólo rutas
+  // internas, o `redirect()` serviría para mandar al staff a otro dominio.
+  const returnTo = safeReturnTo(readText(formData, "returnTo"), staffRoutes.studentDetail(studentId));
 
   if (!(await allowAction(`${staff.user.id}:assign-student`, 60, 60_000))) fail(returnTo, "throttled");
 
@@ -214,7 +217,7 @@ export async function assignStudent(formData: FormData): Promise<void> {
 /** Termina una asignación. Nunca borra la fila: es historial. */
 export async function endAssignment(assignmentId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
-  const returnTo = readText(formData, "returnTo") || staffRoutes.teachers;
+  const returnTo = safeReturnTo(readText(formData, "returnTo"), staffRoutes.teachers);
   if (!(await allowAction(`${staff.user.id}:end-assignment`, 60, 60_000))) fail(returnTo, "throttled");
 
   const db = getPlatformDb();

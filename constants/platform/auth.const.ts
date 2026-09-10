@@ -49,14 +49,20 @@ export const LOGIN_ERROR_MESSAGES: Record<string, string> = {
 
 /**
  * Prefijos de la zona privada. `proxy.ts` los usa para el rechazo optimista y
- * el sitemap/robots para excluirlos; la comprobación de verdad vive siempre en
- * el DAL (`getCurrentUser`), porque el proxy sólo ve la cookie, no la sesión.
+ * `app/robots.ts` para excluirlos del rastreo; la comprobación de verdad vive
+ * siempre en el DAL (`getCurrentUser`), porque el proxy sólo ve la cookie, no
+ * la sesión.
+ *
+ * El `matcher` de `proxy.ts` no puede derivarse de aquí (Next lo exige
+ * literal), así que `proxy.test.ts` comprueba que las dos listas coincidan:
+ * una ruta nueva de `app/(platform)` se añade AQUÍ y en el matcher.
  */
 export const PROTECTED_PATH_PREFIXES = [
   "/inicio",
   "/clases",
   "/estudios",
   "/cursos",
+  "/lecciones",
   "/entrenador",
   "/explorador",
   "/profesor",
