@@ -1,0 +1,67 @@
+---
+description: "What 365 Días de Ajedrez is, how the codebase is organised and where to read next."
+---
+
+# 365 Días de Ajedrez
+
+**365 Días de Ajedrez** is an online chess academy. This repository is a single Next.js 16 application that ships three products from one codebase:
+
+| Piece | Where | Backed by | Who uses it |
+| --- | --- | --- | --- |
+| **Public site** | `app/(frontend)` — `/`, `/blog`, `/nosotros`, `/mentor/[slug]`, `/reloj-de-ajedrez` | Payload CMS on Postgres (`DATABASE_URI`) | Visitors and prospective students |
+| **CMS** | `app/(payload)` — `/admin`, `/api/*` | Payload 3 | Editors who maintain the home page and the blog |
+| **Learning platform** | `app/(platform)` + `app/(auth)` — `/inicio`, `/cursos`, `/estudios`, `/profesor`, `/administracion`… | Prisma 7 on a **separate** Postgres (`PLATFORM_DATABASE_URL`) | Students, teachers and academy staff |
+
+The two databases share no tables, no users and no login. Payload's `admin`/`editor` roles belong to the CMS; the platform has its own accounts, sessions and roles.
+
+## The product in one paragraph
+
+Students log in to a private area where they follow **courses** (course → chapter → lesson, and every lesson *is* a PGN), train lines from memory in the **Move Trainer** with a spaced-repetition ladder, keep their own games in **studies** (with an analysis board, Stockfish running in the browser and a full game review), attend live **classes** prepared by their teacher, and search every game they are allowed to see **by position**. Teachers get a panel for their assigned students and the classes they teach; staff get a panel to manage accounts, teachers, courses, authors and classes. Everything the user sees is in Spanish, including URLs; code identifiers and this documentation are in English.
+
+## Technology
+
+| Concern | Choice |
+| --- | --- |
+| Framework | Next.js 16.3 (App Router, `proxy.ts`, React 19.2, Server Components by default) |
+| CMS | Payload 3.88 with `@payloadcms/db-postgres`, Lexical rich text, Cloudinary storage through a custom adapter |
+| Platform database | Prisma 7.10 (`prisma-client` generator + `@prisma/adapter-pg`), hand-written SQL for the constraints Prisma cannot express |
+| Chess | `chessops` (rules, PGN, SAN, FEN), `@lichess-org/chessground` (board UI), Stockfish lite single-thread WASM (analysis in a Web Worker) |
+| Styling | Plain CSS, strict BEM with native nesting and design tokens; no Tailwind, no CSS-in-JS |
+| Quality | TypeScript strict, ESLint 9, Prettier 3, Vitest 4, GitHub Actions |
+| Hosting assumptions | Vercel (Vercel Analytics, serverless cold starts) |
+
+## How to read these docs
+
+- **New to the repository** → [Getting started](/getting-started), then [Conventions](/conventions).
+- **Where does X live?** → [Architecture › Overview](/architecture/overview) and [Routes & URLs](/architecture/routing).
+- **Public site or CMS work** → [Pages & sections](/public-site/pages) and [Payload CMS](/public-site/cms).
+- **Private area work** → start with [Authentication & roles](/platform/authentication), then the [Data model](/platform/data-model).
+- **Anything with a board or a PGN** → [Chess library](/chess/library) and [Board & game viewer](/chess/viewer).
+- **Styling a screen or reusing a component** → [Styling & design tokens](/ui/styling) and [Shared UI components](/ui/components).
+- **A Spanish word from the UI you cannot find in the code** → [Glossary](/glossary).
+- **Running, testing, deploying** → [Operations](/operations/testing-and-ci).
+
+## Rules that never change
+
+- **The UI never talks to a database.** Pages and sections call `services/<domain>/*.service.ts`; the service reads Prisma or Payload, the mapper turns rows into view types, the section renders props.
+- **Identity comes from the server, never from the client.** Every platform page and every server action resolves the user through `lib/platform-auth/current-user.ts` (and `requireTeacher()` / `requireStaff()` for the panels). Hiding a button authorises nothing.
+- **Authorisation lives inside the `where`.** Reads filter by ownership and role in the query itself; there is no "read, then check".
+- **PGN is the source of chess content.** No per-move tables, no relational move trees.
+- **Catalog tables instead of enums.** Restricted domains are tables with a stable `code`; business logic compares codes, never ids.
+- **Green before done:** `npm run typecheck`, `npm run lint` and `npm test` must pass.
+- **This is not the Next.js you remember.** Read `node_modules/next/dist/docs/` before writing framework code; `AGENTS.md` explains why.
+
+## About this documentation site
+
+It lives in `docs/` as its own small Next.js + Nextra app with its own `package.json`, so the production build of the academy never includes MDX, Pagefind or the docs theme.
+
+```bash
+cd docs
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # static pages + Pagefind search index (postbuild)
+```
+
+`docs/package.json` pins `zod` to 4.3.x through an npm `override`: nextra-theme-docs 4.6 validates the `Layout` props after removing `children`, and zod 4.4+ rejects the missing required key ([shuding/nextra#5008](https://github.com/shuding/nextra/issues/5008)). Drop the override once Nextra ships the fix.
+
+When you change behaviour described here, update the page in the same commit; the "Edit this page" link on every page points at the file in the repository.

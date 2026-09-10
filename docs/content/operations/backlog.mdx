@@ -1,0 +1,61 @@
+---
+description: "How technical debt is tracked in MEJORAS.md and todos.md, and a snapshot of what is open."
+---
+
+# Backlog (MEJORAS & todos)
+
+Two files in the repository root hold the backlog; both are in Spanish and both are the source of truth. This page explains how they work and summarises what was open on 2026-09-09.
+
+## `MEJORAS.md`
+
+Prioritised technical debt and improvements. Every entry has a number, an **area** tag (Seguridad, Datos, CSS, UX, DX, Ops…), a **priority** (baja · media · alta · extrema) and a note on how to approach it. Resolved entries stay in the file with a strikethrough title and a summary of what was done, so the same idea is not reopened. When you find something you will not fix now, add an entry; when you fix one, mark it resolved in the same commit.
+
+### Open on 2026-09-09
+
+**High**
+
+- #7 — Declarative schema validation (zod) at the entry of every server action; rate limiting and bounds are done, the schema layer is not.
+- #37 — A 57 MB design ZIP is still in the git history (the repo weighs ~365 MB). Rewriting history with `git filter-repo` invalidates clones; it is the maintainer's call.
+- #39 — Prettier: the repo was never formatted; `format:check` is not in CI (see `todos.md` T11).
+
+**Medium**
+
+- #1b — Password recovery and email verification (no mail service yet).
+- #1c — Invalid session with a cookie present is redirected inside the RSC stream (200) instead of a 307.
+- #14b — The daily stats bucket is UTC while the study day is `America/Mexico_City`.
+- #23 — P2002 error shape depends on the Prisma driver.
+- #45 — Exports without consumers (list in `todos.md` T15).
+- #48 — Study detail loads the PGN of every game without pagination.
+- #50 — Logging is minimal (JSON to stderr); silent failures remain in some actions.
+- #52 — Payload draft preview is not wired.
+- #53 — Most platform forms do not show a pending state (`todos.md` T12).
+- #56 — Focus management: the viewer's options menu still lacks focus handling.
+- #58 — `GameTable` reimplements a table with `div`s instead of `PlatformTable` (`todos.md` T13).
+- #59 — Remaining hard-coded hex colours (`todos.md` T14).
+- #61 — Tests: coverage exists, no component tests, some mappers untested.
+- #62 — `noUncheckedIndexedAccess` is off (`todos.md` T16, 172 errors to fix).
+- #63 — Restore drill never rehearsed.
+
+**Low**
+
+- #16b npm audit leftovers · #17 dev on webpack, build on Turbopack · #20 seed dates relative to now · #26 title of a foreign panel flashes before the redirect · #27 server actions cannot be exercised over raw HTTP · #29 orphan "new game" page · #30 `buildNotationRows` always numbers from move 1 · #33 security headers · #34 sound attribution · #70 blocking stylesheets on the home page.
+
+## `todos.md`
+
+Concrete, mechanical tasks with a full specification, meant to be executed without further design (by a junior developer or a cheaper model). Each task names the files, the expected change and the checks to run. Finished tasks stay in the file with what actually changed.
+
+### Pending on 2026-09-09
+
+| Task | Summary |
+| --- | --- |
+| T11 | Run `npm run format` in a commit of its own, then add `npm run format:check` to CI. |
+| T12 | `SubmitButton` (`useFormStatus`, disabled + alternate label) in the ~40 write forms under `components/sections/platform/**`. |
+| T13 | Rebuild `GameTable` on `PlatformTable`, keeping the drag handle and keyboard reordering. |
+| T14 | Replace remaining hex values with tokens (`#b4a99d`, `#5c5348`, `#b8611f`, `#8a8175` as text). |
+| T15 | Delete the listed unused exports after a `grep -rw` for each. |
+| T16 | Enable `noUncheckedIndexedAccess` and fix the resulting errors without changing behaviour. |
+
+## Working with the backlog
+
+- Read `MEJORAS.md` before starting a refactor: the reasoning behind a decision is often recorded there (why the rate limit lives in Postgres, why `/` cannot read cookies, why the seed guard exists).
+- Keep the two files in Spanish; this documentation summarises them in English but never replaces them.

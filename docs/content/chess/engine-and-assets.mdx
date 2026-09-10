@@ -1,0 +1,58 @@
+---
+description: "The Stockfish build served from public/engine, how the workers talk UCI, the cburnett piece set, board sounds and fonts, with their licences and update steps."
+---
+
+# Stockfish, pieces & sounds
+
+## Stockfish — `public/engine/`
+
+- `stockfish.js` + `stockfish.wasm`: the **lite, single-threaded** build. Multi-threaded builds need `SharedArrayBuffer`, which requires COOP/COEP headers that would break the Cloudinary images of course covers. The licence (GPL-3.0) is kept next to it in `LICENSE-stockfish.txt`; the engine runs as a separate program in a Web Worker and is not linked with the app's code.
+- It is copied into the repo instead of depending on the `stockfish` npm package, which weighs 250 MB because it ships every build.
+
+Update:
+
+```bash
+npm install stockfish@<version> --no-save
+cp node_modules/stockfish/bin/stockfish-<v>-lite-single.js   public/engine/stockfish.js
+cp node_modules/stockfish/bin/stockfish-<v>-lite-single.wasm public/engine/stockfish.wasm
+cp node_modules/stockfish/Copying.txt public/engine/LICENSE-stockfish.txt
+npm uninstall stockfish
+```
+
+### How the app talks to it
+
+Two hooks own two independent workers, because Stockfish aborts (`RuntimeError: unreachable`) if it receives `position` while a previous `go` has not answered `bestmove`:
+
+| Hook | Worker | Depth | Lines | Use |
+| --- | --- | --- | --- | --- |
+| `use-engine.ts` | created lazily when the user switches the module on | 20 | 3 (`MultiPV`) | Live analysis of the current position; stops and relaunches as the user navigates; feeds the evaluation bar and the engine panel. |
+| `use-game-review.ts` | its own worker | 16 | 1 | Evaluates every mainline position in series for the game review. |
+
+`lib/chess/engine-protocol.ts` parses the `info` lines (score normalised to White, mate distances, PV as UCI) and orders/merges the lines; nothing else in the app reads raw engine output.
+
+## Pieces — `public/pieces/`
+
+The **cburnett** set (Colin M. L. Burnett, CC BY-SA 3.0) that chessground draws, extracted from `@lichess-org/chessground/assets/chessground.cburnett.css` into twelve standalone SVGs (`w-knight.svg`, `b-queen.svg`, …) so the promotion picker, figurines, static diagrams and image exports show exactly the pieces the board shows.
+
+- Never edit them by hand. `npm run pieces:sync` (`scripts/sync-pieces.ts`) decodes the base64 images from the CSS and adds the `viewBox` the originals lack (without it the SVGs would not scale outside the board). Run it after upgrading chessground; the script fails if it does not find exactly twelve pieces.
+- `board-export.ts` reads the pieces from the loaded CSS sheet at export time, not from these files, for the same "always identical" reason.
+- Unicode figurines for the hero come from `constants/chess-pieces.const.ts`; figurine notation uses the `ChessGlyph` font.
+
+## Sounds — `public/sounds/`
+
+`move.mp3` and `capture.mp3` from lichess' *standard* sound set. There is deliberately no check sound: in that set `Check.mp3` is a link to silence, so inventing one would misrepresent the set. Played by `components/common/game-viewer/move-sound.ts`, loaded lazily, toggled by the viewer preference. Attribution/licence text for the sounds is still an open backlog item (`MEJORAS.md` #34).
+
+## Fonts — `public/fonts/`
+
+All are woff2 subsets (Latin, punctuation, arrows, check mark) generated with `pyftsubset`; the originals are not in the repository (SF Pro from Apple's site, Gramatika/Suisse in the git history under `public/design-import/`).
+
+| Font | Used by | Loaded in |
+| --- | --- | --- |
+| Gramatika Bold | Public site headings | `app/(frontend)/fonts.ts` |
+| Suisse Intl (400/500/700) | Public site text | `app/(frontend)/fonts.ts` |
+| ChessGlyph | Figurine notation | `app/(frontend)/fonts.ts`, `preload: false` |
+| SF Pro Display (400/500/700) | Platform display and text | `app/(platform)/fonts.ts`, `preload: false` (with Turbopack, every preloaded font is preloaded on every page) |
+
+## Board colours
+
+`--board-light: #eeeed2` and `--board-dark: #769656` in `globals.css`, mirrored in `constants/chess-board-colors.const.ts` for the canvas export, which cannot read CSS variables. Change both together.

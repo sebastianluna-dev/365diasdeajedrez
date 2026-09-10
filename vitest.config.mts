@@ -18,7 +18,7 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["**/*.test.{ts,tsx}"],
-    exclude: ["node_modules/**", ".next/**", "lib/platform-db/generated/**"],
+    exclude: ["node_modules/**", ".next/**", "lib/platform-db/generated/**", "docs/**"],
     coverage: {
       provider: "v8",
       // Sólo código: los `__fixtures__` (PGN de prueba) no son módulos y v8

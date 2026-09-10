@@ -146,3 +146,10 @@ Activarlo en `tsconfig.json` y resolver los 172 errores (casi todos `array[i]` p
 `undefined`): `trainer-session.comp.tsx`, `move-tree.comp.tsx`, `lib/chess/notation.ts`,
 `services/shared/reorder.ts` y varias suites de `lib/chess`. Sin cambiar comportamiento: donde el
 índice es seguro por construcción, una comprobación con `throw` o un `?? valorPorDefecto`.
+
+### T17 — Dos hojas con media queries *mobile-first* · [CSS]
+`components/ui/section-heading.comp.css` y `components/sections/homepage/resources/resources.section.css`
+usan `@media (min-width: …)` cuando la convención es desktop-first (`max-width`). Invertirlas: los
+valores del bloque pasan a ser los de escritorio y la media query `max-width` (con el mismo umbral
+menos 1 px) recibe los de móvil. Comprobar visualmente la portada a 375, 768 y 1280 px antes y
+después; no debe cambiar nada.

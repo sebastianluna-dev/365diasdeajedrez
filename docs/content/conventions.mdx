@@ -1,0 +1,66 @@
+---
+description: "The coding, naming, CSS and workflow rules the codebase follows, and how to keep new code inside them."
+---
+
+# Conventions
+
+These rules are enforced by review, tests (`proxy.test.ts`, `nav-items.test.ts`) and habit rather than by tooling, so read them once and keep them close. `AGENTS.md` (loaded as `CLAUDE.md`) carries the short version; when the code and a rule disagree, the code wins and the rule should be fixed.
+
+## Files and modules
+
+- **kebab-case** for every file: `study-card.comp.tsx`, `use-chess-clock.hook.ts`, `auth.const.ts`. Suffixes say what a file is: `.comp.tsx` (component), `.section.tsx` (page section), `.hook.ts`, `.const.ts`, `.service.ts`, `.mapper.ts`, `.types.ts`, `.actions.ts`, `.test.ts`.
+- **Named exports** everywhere. Default exports only where the App Router requires them (`page.tsx`, `layout.tsx`, `route.ts`, `error.tsx`…).
+- **No barrels** (`index.ts` re-exports). Import the concrete file with the `@/` alias: `@/services/studies/studies.service`.
+- The App Router files stay thin: a page resolves params, calls a service, and renders sections.
+
+## Components
+
+- **Server Components by default.** `"use client"` goes only on the leaf that owns state or browser APIs (the game viewer, the board, the header dropdown, the upload widget…).
+- Images always go through `next/image`; never a raw `<img>`. Remote images are limited to `res.cloudinary.com` (`next.config.ts`), and `lib/remote-image.ts` guards user-typed URLs before they reach `next/image`.
+- Copy shown to users is **Spanish**, including URLs (`/estudios`, `/profesor/alumnos`). Dynamic segment names (`[courseId]`) stay in English because they are code identifiers and never appear in the address bar.
+- Shared UI lives in `components/common/`; page sections in `components/sections/<area>/<section>/`; icons in `components/icons/`.
+
+## CSS
+
+- **Strict BEM, Yandex flavour:** `block__element`, modifier `_key_value` (`platform-table__head_align_right`), boolean modifier `_open`.
+- **One CSS file per component**, imported by that component, and **every rule nested under the root selector** with native CSS nesting (`&`). Media queries go inside the block. Nothing global except `globals.css`, `platform.css` and the intentional `.blog-button` helpers.
+- **Desktop-first** media queries (`max-width`).
+- Colours and spacing come from tokens: `--color-*` in `app/(frontend)/globals.css` (public site, plus board colours `--board-light`/`--board-dark`) and `--platform-*` in `app/(platform)/platform.css` (private area). Hex values are the exception, and the remaining ones are tracked in `todos.md`.
+- No Tailwind (it was removed), no CSS-in-JS, no CSS Modules.
+- The full token list, the helper classes and worked examples are in [Styling & design tokens](/ui/styling).
+
+## Data and authorisation
+
+- The UI never imports Prisma or Payload. Pages call `services/<domain>/<domain>.service.ts`; the mapper returns the `*.types.ts` view model with labels and hrefs already built.
+- Route hrefs come from `lib/platform-routes.ts` (`platformRoutes`, `teacherRoutes`, `staffRoutes`), never from template strings in components.
+- Every platform page's **first `await`** is either a data service (which calls the DAL) or `getCurrentUser()` itself. Every `/profesor` page and action opens with `requireTeacher()`; every `/administracion` one with `requireStaff()`.
+- A new route under `app/(platform)` must be added to `PROTECTED_PATH_PREFIXES` (`constants/platform/auth.const.ts`) **and** to the literal `matcher` in `proxy.ts`; `proxy.test.ts` fails if the two lists diverge.
+- Restricted domains are catalog tables with a stable `code`. TypeScript mirrors them as `as const` objects in `constants/platform/*-codes.const.ts`; no TS enums, no Prisma enums.
+- Lists with `@@unique([parent, order])` are reordered only through `services/shared/reorder.ts`.
+
+## Server actions
+
+- `"use server"` modules export **async functions only**; messages and constants live in `constants/platform/*-messages.const.ts`.
+- Read form fields with `services/shared/form-data.ts` (`readText`, `readOptionalText`, `readUrl`, `readClampedInt`, `readBoolean`); bound every input.
+- Resolve the user first, then rate-limit with `allowAction(key, limit, windowMs)` (`lib/rate-limit.ts`), then validate, then write, then `revalidatePath`.
+- Errors travel back as a redirect to the page with `?error=<code>` (`withErrorParam`), and the page translates the code with the message map. The only exceptions return state through `useActionState`: account creation and password reset, because a temporary password must never sit in a URL.
+
+## Chess content
+
+- The PGN is the content. Lessons, games and class blocks store PGN text; positions are derived at read time by `lib/chess`.
+- A move inside a PGN tree is addressed by a **dotted path** of child indexes from the root (`"0.0.1.0"`). `TrainingExercise.path` and `ClassBlock.movePath` use it.
+- Positions are identified by `createPositionHash(fen)` (`lib/chess/position-hash.ts`), computed on the server only.
+
+## Documentation and debt
+
+- Debt you find but do not fix goes to `MEJORAS.md` with area, priority (baja · media · alta · extrema) and how to approach it. Mechanical, well-specified tasks go to `todos.md`.
+- `README.md` stays the Spanish quick reference; this site is the long-form English documentation.
+- Before touching framework APIs, read `node_modules/next/dist/docs/`: Next 16 renamed middleware to `proxy.ts`, made `params`/`searchParams` promises, changed caching APIs and more.
+
+## Definition of done
+
+```bash
+npm run typecheck && npm run lint && npm test
+```
+
+Performance work is measured with Lighthouse against `npm run build && npm run start`, three runs, median.

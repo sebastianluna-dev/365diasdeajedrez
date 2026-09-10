@@ -1,0 +1,61 @@
+---
+description: "The CLI scripts under scripts/, the seed and its environment switches, and when to run each of them."
+---
+
+# Scripts & seed
+
+All scripts run with `tsx` outside Next, load `.env.local` then `.env`, and build their own `PrismaClient` with `@prisma/adapter-pg` (the app's singleton is `server-only`). They fail fast if `PLATFORM_DATABASE_URL` is missing.
+
+## `prisma/seed.ts` — `npm run db:seed`
+
+Idempotent seed of the platform database: catalogs by `upsert(code)`, domain rows by fixed ids or natural keys, so running it twice never duplicates.
+
+What it creates (data in `prisma/seed-data.ts`):
+
+- every catalog value and the topic tree;
+- three demo accounts (student, teacher with an active `Teacher` row, staff) — the password is only set when the account has none;
+- an author, a course with chapters, lessons (PGN or linked games), topics and exercises derived with the same `deriveExerciseData` the staff panel uses;
+- studies and games for the demo student (positions indexed with `indexGamePositions`), shared collections;
+- classes with participants, blocks and a transcript, a teacher–student assignment;
+- activities and the rebuilt `UserStatDaily` aggregates.
+
+Environment switches:
+
+| Variable | Effect |
+| --- | --- |
+| `PLATFORM_DEMO_PASSWORD` | Password for the demo accounts (default `ajedrez365`). |
+| `ALLOW_DEMO_SEED=1` | Allows seeding a **non-local** database with the default password. Test databases only. |
+| `SEED_NOW=2026-09-01T18:00:00Z` | Reference instant; without it, today at 18:00 UTC. Pin it to reproduce a database byte for byte. |
+| `NODE_ENV=production` | Treated as remote: the guard applies. |
+
+The guard: if the database host is not `localhost`/`127.0.0.1`/`::1` (or `NODE_ENV=production`) and the password is the repository default and `ALLOW_DEMO_SEED` is not `1`, the seed throws before writing anything.
+
+After a seed, run `npm run collections:by-chapter` if you need the lessons' own PGNs to be materialised as games in chapter collections (the script is idempotent and documents why it uses one short transaction per game).
+
+## `scripts/platform-user.ts` — `npm run user:*`
+
+```bash
+npm run user:create   -- alumno@correo.com "Nombre Apellido"   # asks for the password without echo
+npm run user:password -- alumno@correo.com                      # new password + closes all sessions
+npm run user:list                                               # accounts, has-password, open sessions
+```
+
+Passwords are never accepted as arguments (they would end up in the shell history); use `PLATFORM_USER_PASSWORD` for non-interactive runs. Validation uses the same `passwordProblem()` and `hashPassword()` as the app.
+
+## `scripts/index-game-positions.ts` — `npm run positions:index`
+
+Fills `GamePosition` for games saved before the index existed, in batches of 200. `-- --all` deletes and regenerates every game's index; run it after changing FEN normalisation or the hash algorithm.
+
+## `scripts/migrate-chapter-collections.ts` — `npm run collections:by-chapter`
+
+One-off data migration from course-level collections to **chapter** collections (the SQL migration only added the column). Creates the chapter collections, moves games to the chapter of the lesson that references them (or the first chapter), and registers each lesson's own PGN as a game linked to it. Idempotent, resumable, `--dry` mode. Uses one short transaction per game because long interactive transactions with the pg adapter were observed to return `null` from `create` without throwing.
+
+## `scripts/sync-pieces.ts` — `npm run pieces:sync`
+
+Regenerates `public/pieces/*.svg` from chessground's cburnett CSS (adds `viewBox`). Run after upgrading `@lichess-org/chessground`.
+
+## Adding a script
+
+- Put it in `scripts/`, add an `npm run` alias, start with the `dotenv` lines and the connection guard.
+- Share logic with the app through pure modules or modules that avoid `server-only` (`password.ts`, `logger.ts`, `position-hash.ts`, the catalog constants, `game-positions.service.ts` which takes the client as a parameter).
+- Prefer idempotent, resumable behaviour and a `--dry` flag for anything that writes.

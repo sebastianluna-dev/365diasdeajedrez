@@ -1,0 +1,126 @@
+---
+description: "The errors and surprises people actually hit — environment, Prisma, Payload, tests, build, engine, images, sessions, docs site — with the cause and the fix for each."
+---
+
+# Troubleshooting
+
+Symptoms first, then the cause and what to do. Most of these are deliberate guards, so the fix is usually "do the thing the guard is asking for", not "remove the guard".
+
+## Environment and databases
+
+**`Falta PLATFORM_DATABASE_URL en el entorno (ver .env.example).`**
+Thrown by the Prisma singleton (`lib/platform-db/get-platform-db.ts`), the seed and every script. Copy `.env.example` to `.env.local` and fill it in; the Prisma CLI reads it through `prisma.config.ts`, the scripts through `dotenv`.
+
+**The `pg` driver warns about `sslmode=require`.**
+The driver announces a semantics change for `require` in pg v9. Use `sslmode=verify-full` in both connection strings.
+
+**`npm run db:seed` throws "El seed crea cuentas demo con la contraseña por defecto del repositorio y la base no es local".**
+The seed refuses to write the demo accounts (which include a staff account) with the repository password into a database that is not on `localhost`, or when `NODE_ENV=production`. Either set your own `PLATFORM_DEMO_PASSWORD` or, for a throwaway test database only, `ALLOW_DEMO_SEED=1`. Never set the latter in production.
+
+**Prisma says `Unknown field` after a schema change.**
+Run `npm run db:generate`. The singleton on `globalThis` used to keep the old client alive across `prisma generate`; it now detects a client generated from a different schema by comparing the class identity and replaces it, so restarting `next dev` is no longer needed. If the error persists, the generate did not run.
+
+**`relation "…" does not exist` on the CMS side.**
+Payload has no committed migrations; its tables are created and altered by Drizzle push while `next dev` runs against `DATABASE_URI`. Start the dev server once against that database before building or seeding content. To move to explicit migrations, use `payload migrate:create`.
+
+**`npx prisma migrate dev` wants to reset the database.**
+The migration history in `prisma/migrations/` and the `_prisma_migrations` table disagree, usually because a migration was edited after being applied or the database came from a different branch. Do not reset a database with real data; restore a backup instead and apply with `npm run db:deploy`.
+
+## Authentication and sessions
+
+**Every login attempt says the credentials are wrong.**
+By design all credential failures return the same message so the form cannot enumerate accounts. Check `npm run user:list`: an account with `passwordHash = null` (created by staff without a password, or by a script that was interrupted) cannot log in until `npm run user:password -- <email>` or a staff reset.
+
+**"Demasiadas operaciones seguidas" (throttled).**
+`allowAction` in `lib/rate-limit.ts` counted more calls than the limit for that key in the window (for example 10 logins per minute per account, 30 per origin, 20 course creations per hour per staff user). Wait for the window or, in development, delete the row in the `RateLimit` table. Keys look like `login:<email>` and `<userId>:<operation>`.
+
+**A cookie is present but the user keeps landing on the login page.**
+The cookie only carries the token; `Session.expiresAt` decides, and changing a password or logging out deletes the rows. `/entrar` deletes a stale cookie when it sees one; a page redirects inside the RSC stream (HTTP 200, `MEJORAS.md` #1c). Log in again.
+
+**A teacher opens `/profesor` and lands on `/inicio`.**
+`requireTeacher()` found no **active** `Teacher` row for that account. Staff activates teachers at `/administracion/profesores/[teacherId]`. The same applies to `/administracion` and the `Staff` row.
+
+**A new private route is reachable without logging in, or `proxy.test.ts` fails.**
+Add the prefix to `PROTECTED_PATH_PREFIXES` in `constants/platform/auth.const.ts` **and** to the literal `matcher` in `proxy.ts`; the test asserts they match. The page itself must still start with `getCurrentUser()` or a service that calls it.
+
+## Data and services
+
+**A unique-constraint race returns a 500 instead of the friendly message.**
+With the Prisma driver adapter, `P2002` carries the index name in `meta.driverAdapterError.cause.constraint.index`, not in `meta.target`. Catch it with `isUniqueConstraintError(error, "index_name")` from `services/shared/prisma-errors.ts`, which understands both shapes.
+
+**Intermittent `P2002` when reordering chapters, lessons, blocks or games.**
+PostgreSQL validates `@@unique([parent, order])` row by row, so a direct swap collides. Use the plans in `services/shared/reorder.ts` (`planSwap`, `planDenseRenumber`, `planFullReorder`) inside a `$transaction`; they go through a temporary out-of-range order.
+
+**A `create` inside a long transaction returned `null` without throwing.**
+Observed with the pg adapter in long interactive transactions (`scripts/migrate-chapter-collections.ts`). Keep transactions short: one per game when moving data, and the bounded `PGN_IMPORT_TRANSACTION` options for imports.
+
+**Position search finds nothing for games that exist.**
+Games saved before the position index existed have no `GamePosition` rows. Run `npm run positions:index` (or `-- --all` after changing FEN normalisation or the hash).
+
+**An exercise shows "Desactualizado".**
+The lesson's PGN changed after the exercise was frozen (`pgnUpdatedAt` is later than `frozenAt`). Derived exercises are regenerated when staff saves the lesson's PGN or toggles the trainable flag; hand-made exercises stay stale until staff edits them.
+
+**`Expected populated Media relationship, got raw id …`**
+`getMediaUrl` received an id instead of a document because the Payload query's `depth` was too low for that relationship. Raise `depth` in the service; do not make the mapper tolerate ids.
+
+## Tests and static checks
+
+**Importing a service in a test throws about `server-only`.**
+Vitest aliases `server-only` to `lib/testing/server-only.stub.ts` (`vitest.config.mts`). If a new test config or a `tsx` script imports a module that has `import "server-only"`, it will throw outside Next: scripts must use the modules that deliberately avoid it (`password.ts`, `logger.ts`, `position-hash.ts`, the catalog constants, `game-positions.service.ts` with the client as a parameter).
+
+**`npm run format:check` fails.**
+Expected: the repository has never been formatted with Prettier. `todos.md` T11 asks for a single formatting commit, after which the check joins CI.
+
+**Lint complains about files in `docs/`, `coverage/` or the generated Prisma client.**
+Those folders are ignored in `eslint.config.mjs`, `tsconfig.json` and `vitest.config.mts`; if you see errors there, a config edit dropped an ignore.
+
+## Build and runtime
+
+**`next build` fails in CI or on a machine without databases.**
+Static generation reads Payload (`/`, `/blog`, the sitemap) and prerenders with both databases reachable. CI does not build for that reason; the deployment validates the build. Locally, point `.env.local` at reachable databases.
+
+**`Must supply sdk_semver` from Cloudinary.**
+The Cloudinary SDK reads its own `package.json` at require time and breaks when bundled. `next.config.ts` keeps it external with `serverExternalPackages: ["cloudinary"]`; do not remove that line.
+
+**`next/image` refuses a URL.**
+Only `res.cloudinary.com` is allowed in `images.remotePatterns`. User-typed URLs (teacher photo, author photo) must pass `isDisplayableImage` from `lib/remote-image.ts` before reaching `<Image>`.
+
+**Two dev servers conflict on `.next/dev`.**
+Run one `next dev` per checkout. The dev script uses webpack on purpose (`next dev --webpack`); switching dev to Turbopack is `MEJORAS.md` #17 and needs to be validated with no other dev server running.
+
+**`/_vercel/insights/script.js` returns 404 locally.**
+Vercel Analytics renders only when `VERCEL=1`. If you see the request locally, that variable is set in your environment.
+
+**Google Analytics or the Meta Pixel do not fire.**
+Both render only when `NEXT_PUBLIC_APP_ENV=production` and their id is set; in every other environment they return `null` on purpose.
+
+**A change to a Payload field does not show in TypeScript, or the admin UI complains about a missing component.**
+Regenerate the generated files: `npx payload generate:types` (writes `payload-types.ts`) and `npx payload generate:importmap` (writes `app/(payload)/admin/importMap.js`). Never edit those files by hand.
+
+**An editor saves in `/admin` and the site still shows the old content.**
+Every Global and the `articles` collection have `afterChange` hooks that call `revalidateTag(tag, { expire: 0 })` and `revalidatePath`. If a new Global or collection was added without its hook, add one in `lib/payload/revalidate-*.ts` and register it; the one-hour `revalidate` is only a safety net.
+
+## Chess engine and board
+
+**Stockfish dies with `RuntimeError: unreachable`.**
+The worker received `position` while a previous `go` had not answered `bestmove`. `use-engine.ts` and `use-game-review.ts` serialise commands for that reason and each owns its own worker; new engine code must wait for `bestmove` (or send `stop` and wait) before sending the next position.
+
+**The engine panel is slow or single-threaded.**
+That is the lite, single-thread build in `public/engine/`. Multi-threaded builds need `SharedArrayBuffer`, which requires COOP/COEP headers that would break cross-origin Cloudinary images (`MEJORAS.md` #33).
+
+**Pieces look different in the board, the promotion picker, the static diagram or an exported image.**
+The picker, diagrams and figurines use `public/pieces/*.svg`, which must match the chessground CSS sheet the board draws. After upgrading `@lichess-org/chessground`, run `npm run pieces:sync`.
+
+**A PGN imports with fewer moves than expected.**
+`replayGame` stops at the first illegal or unparseable move and reports it as a warning (logged during indexing, shown by the analysis tools). `findMalformedMoveTokens` flags tokens that are not even SAN-shaped. Fix the PGN; the importer does not guess.
+
+## Docs site
+
+**`cd docs && npm run build` fails inside `nextra-theme-docs` with a zod validation error about `Layout` props.**
+`docs/package.json` pins `zod` to 4.3.x through an npm `override` because zod 4.4+ rejects the theme's schema after `children` is removed ([shuding/nextra#5008](https://github.com/shuding/nextra/issues/5008)). Keep the override until Nextra ships the fix.
+
+**Search returns nothing after a build.**
+The Pagefind index is produced by the `postbuild` script into `docs/public/_pagefind/` (git-ignored). Run `npm run build` from `docs/`, not `next build` directly.
+
+**The root `npm run lint`, `typecheck` or `npm test` picks up `docs/`.**
+It must not: `docs/` is excluded in the three root configs and has its own `tsconfig.json`. Restore the exclusion.

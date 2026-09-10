@@ -19,6 +19,8 @@ const eslintConfig = defineConfig([
     "lib/platform-db/generated/**",
     // Informe de cobertura de Vitest (`npm run test:coverage`).
     "coverage/**",
+    // Sitio de documentación (Nextra): es otra app, con su propio package.json.
+    "docs/**",
   ]),
 ]);
 

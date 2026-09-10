@@ -1,0 +1,89 @@
+---
+description: "The Spanish words users see in the interface and URLs, the English identifiers the code uses for them, and the chess terms the codebase relies on."
+---
+
+# Glossary
+
+The product speaks Spanish (labels, URLs, catalog labels, error messages) and the code speaks English (models, services, codes, routes builders). This page maps one to the other so you can go from a screenshot or a URL to the right module, and from a model name to what the user calls it.
+
+## Product terms
+
+| In the UI / URL | In the code | Notes |
+| --- | --- | --- |
+| **Sitio público** | public site, `app/(frontend)` | Home, blog, `/nosotros`, `/mentor/[slug]`, `/reloj-de-ajedrez`. |
+| **Plataforma** | platform, `app/(platform)` | Everything behind the login. |
+| **Iniciar sesión** / **Entrar** / **Salir** | `/iniciar-sesion` (login page), `/entrar` (route handler that picks the home by role), `logoutAction` | `LOGIN_PATH`, `SESSION_ENTRY_PATH` in `constants/platform/auth.const.ts`. |
+| **Inicio** | dashboard, `/inicio`, `services/dashboard` | The student home. |
+| **Cuenta** | account = `User` | Identity and credential in one table; `passwordHash = null` means it cannot log in yet. |
+| **Alumno** | student | A `User` seen as a learner. In teacher routes the param is `studentId`; in staff routes `userId`. There is no `Student` table. |
+| **Profesor** | teacher = `Teacher` row, `/profesor`, `services/teacher*` | Role by row existence; `isActive` turns the panel on and off. |
+| **Administración** / staff | `Staff` row, `/administracion`, `services/staff*` | Not `/admin`, which is Payload's. |
+| **Asignación** / **alumnos asignados** | `TeacherStudent` (`endedAt = NULL` ⇒ active) | One active teacher per student, enforced by a partial unique index. |
+| **Curso** / **Capítulo** / **Lección** | `Course` / `Chapter` / `Lesson`, `services/courses`, `services/staff-courses` | Student URLs use the course's 8-digit id and the chapter's order number: `/cursos/00020212/1`, `/lecciones/02482009`. |
+| **Introducción** / **Cierre** | `ContentRole` codes `INTRO` / `CLOSING` | At most one of each per course (chapters) and per chapter (lessons). |
+| **Lección imprescindible** | `Lesson.isPriority`; filter `onlyPriorityLessons` in `UserCourseSettings` | The "sólo imprescindibles" switch is `PriorityFilter`. |
+| **Autor** — *Autor del contenido*, *Adaptación digital* | `Author`, `CourseAuthor`, `AuthorRole` codes `CONTENT_AUTHOR` / `DIGITAL_ADAPTATION` | Managed at `/administracion/autores`. |
+| **Tipo de curso** — *Apertura*, *Finales*, *Estrategia*, *Táctica* | `CourseType` codes `OPENING`, `ENDGAME`, `STRATEGY`, `TACTICS` | |
+| **Nivel** — *Principiante*, *Intermedio*, *Avanzado*, *Experto* | `Level` codes `BEGINNER`…`EXPERT`, `CourseLevel` | |
+| **Estado del curso** — *Borrador*, *Publicado*, *Archivado* | `CourseStatus` codes `DRAFT`, `PUBLISHED`, `ARCHIVED` | Students only ever see `PUBLISHED` (`publishedCourseWhere`). |
+| **Portada** | cover, `Course.cover` | A Cloudinary URL cropped to 21:9 by `withCoverCrop`. |
+| **Temas** — *Táctica*, *Aperturas*, *Estructuras de peones*, *Finales*, *Estrategia* | `Topic` (hierarchical), `LessonTopic` | Feed the stats breakdown. |
+| **Orientación** — *Blancas*, *Negras*, *Automática* | `BoardOrientation` codes `WHITE`, `BLACK`, `AUTO` | `AUTO` is valid only in user settings, never on content. |
+| **Entrenador** (Move Trainer) | `/entrenador`, `services/trainer` | Chapters the student added: `UserTrainerChapter`. |
+| **Ejercicio** — *Reproducir la línea*, *Encontrar la jugada* | `TrainingExercise`, `ExerciseMode` codes `REPRODUCE_LINE` / `FIND_MOVE` | A frozen copy of a segment of the lesson's PGN. |
+| **Entrenable** | `Lesson.isTrainable`, `trainingColorId` | Turning it on derives the exercise from the mainline. |
+| **Desactualizado** | stale: `TrainingExercise.frozenAt` older than `Lesson.pgnUpdatedAt` (`isStale`) | Shown as a tag in the trainer and the exercise editor. |
+| **Intento** — *Superado*, *Fallado* | `TrainingAttempt`, `AttemptResult` codes `PASSED` / `FAILED`; `TrainingMistake` per failed move | Context: *Lección*, *Quiz de capítulo*, *Entrenador* (`AttemptContext`). |
+| *(no label yet)* — spaced repetition | `UserLessonTraining`, `lib/training/review-schedule.ts` (`nextReviewAt`, `isDueForReview`) | Intervals 0, 1, 3, 7, 21, 60 days; only a perfect attempt climbs. The trainer does not show the schedule to the student yet. |
+| **Meta diaria** | daily goal: `User.dailyGoalMinutes`, `services/study-goal` | Minutes today = estimated duration of lessons completed today. |
+| **Racha** | streak, `lib/study-streak.ts` | Consecutive study days in `America/Mexico_City`, derived from `UserActivity`. |
+| **Actividad reciente** / **estadísticas** | `UserActivity` (facts) and `UserStatDaily` (aggregates), `services/shared/user-activity.service.ts` | Activity types: *Lección completada*, *Curso completado*, *Clase asistida*, *Partida analizada*, *Ejercicio superado*. |
+| **Estudio** / **Mis estudios** | `GameDatabase`, `/estudios`, `services/studies` | A study **is** a game database; the UI never says "base de datos". |
+| **Mis partidas** | `DatabaseKind` code `MY_GAMES`, `isDefault = true` | Created with the account; exactly one; cannot be deleted or re-typed. |
+| **Torneo** / **Estudio** / **Colección** | codes `TOURNAMENT` / `STUDY` / `COLLECTION` | Permissions per kind in `services/studies/study-rules.ts`. |
+| **Colección del capítulo** | `GameDatabase` with `ownerType = COURSE` and `chapterId` | Visible once the course is started; read-only for students. |
+| **Compartir** (a collection with a student) | `StudyShare` | Teacher action; the student reads only. |
+| **Partida** | `Game` | Headers as columns, PGN as content. URL `/estudios/[studyId]/partidas/[gameId]`. |
+| **Partidas de mis clases** | `/estudios/clases`, derived from `ClassBlock` references | Not a database; a list built at read time. |
+| **Nueva partida** | `/estudios/[studyId]/partidas/nueva`, `AnalysisBoard` or pasted PGN | |
+| **Resultado** — `1-0`, `0-1`, `1/2-1/2`, `*` | `GameResult` codes `WHITE_WINS`, `BLACK_WINS`, `DRAW`, `ONGOING` | The catalog label is the PGN token. |
+| **Origen** — *Registrada a mano*, *Importada de PGN*, *Jugada en la plataforma* | `GameSource` codes `MANUAL`, `PGN_IMPORT`, `PLATFORM_GAME` | Distinct from the explorer's "origin" (`services/shared/game-origin.ts`: student, course, teacher). |
+| **Explorador (de partidas)** | position explorer, `/explorador`, `services/game-explorer`, `GamePosition` | Search by position across every game the user may see. |
+| **Posición** (guardada) | `Position` | A saved diagram (FEN, orientation, arrows, highlights) reusable in class blocks. |
+| **Clase** — *Programada*, *En vivo*, *Finalizada*, *Cancelada* | `Class`, `ClassStatus` codes `SCHEDULED`, `LIVE`, `COMPLETED`, `CANCELLED`; `services/classes`, `services/teacher-classes`, `services/staff-classes` | Transitions in `class-status-transitions.ts`; cancelling is the delete. |
+| **Reunión** — *Zoom*, *Google Meet*, *Otro* | `meetingProvider`, `meetingUrl`, `meetingUrlVisibleFrom` | Students see the link only from the visibility instant. |
+| **Grabación** / **Resumen** | `recordingUrl`, `summary` | Staff may set the recording URL. |
+| **Transcripción** — *Pendiente*, *Lista*, *Fallida* | `ClassTranscript`, `TranscriptStatus` | Schema prepared; no provider wired. |
+| **Participante** / **asistencia** / **pago** | `ClassParticipant` (`attended`, `paidAt`, `amount`, `currency`, `paymentRef`) | Attendance is marked by the teacher and records an activity. |
+| **Bloque** — *Texto*, *Video*, *Partida*, *Lección*, *Posición*, *Archivo* | `ClassBlock`, `ClassBlockKind` codes `TEXT`, `VIDEO`, `GAME_REF`, `LESSON_REF`, `POSITION_REF`, `FILE` | Rendered by `ClassContentRenderer`; edited in `class-block-editor`. |
+| **Zona horaria** | `Teacher.timezone` (IANA), `lib/timezone.ts`, `constants/platform/timezones.const.ts` | Classes are stored in UTC; teachers type times in their zone. |
+| **Mentor** | Payload Global `home-mentors`, `services/mentors`, `/mentor/[slug]` | Public site only; unrelated to `Teacher`. |
+| **Artículo** / **Categoría** / **Etiqueta** | Payload collections `articles`, `categories`, `tags` | Blog; drafts visible only to logged-in CMS users. |
+| **Reloj de ajedrez** | `/reloj-de-ajedrez`, `hooks/use-chess-clock.hook.ts` | Public tool, no login. |
+
+## Chess terms used in the code
+
+| Term | Meaning here |
+| --- | --- |
+| **PGN** | Portable Game Notation: headers in brackets plus movetext with variations, comments and NAGs. The stored content of lessons, games and class blocks. Parsed by `chessops/pgn` through `lib/chess/pgn-tree.ts` (read) and `pgn-edit.ts` (write). |
+| **Movetext** | The moves part of a PGN without headers. `plainMovetext` produces a clean mainline; `movetext-scan` finds malformed tokens. |
+| **FEN** | Forsyth–Edwards Notation of a position. `initialFen` on games, `startFen` on exercises, `fen` on saved positions and on every replayed ply. |
+| **Normalised FEN** | The first four FEN fields (placement, side to move, castling, en passant), without move counters, so transpositions match. `normalizePositionFen`. |
+| **Position hash** | SHA-256 of the normalised FEN (`createPositionHash`), computed on the server. Identity of a position in `GamePosition` and `TrainingMistake`. |
+| **SAN** | Standard Algebraic Notation of a move (`Nf3`, `exd5`, `O-O`). Stored in English; shown in Spanish (`Cf3`, `Axf3`) by `sanToSpanish`. Comparisons ignore `+ # ! ?`. |
+| **UCI** | Long algebraic move (`g1f3`, `e7e8q`) used to talk to Stockfish and stored as `nextMoveUci` in the position index. |
+| **Ply** | A half-move. In the PGN tree the ply is **absolute and 1-based**, derived from the start FEN: `Math.ceil(ply / 2)` is the move number and odd plies are White (move 12 by White is ply 23, by Black ply 24). Exercises store `startPly`/`endPly` in that scale. The position index (`extractGamePositions`) numbers **positions** from 0, the starting position, so its `ply` is the number of half-moves played. |
+| **Mainline** | The principal sequence of a game: at every node, `children[0]`. `extractMainline`, `mainlinePath`. |
+| **Variation** | A sideline: any child other than the first. Can be promoted one step or to the mainline with `promoteOneStep` / `promoteToMainLine`. |
+| **Dotted path** | Address of a node inside a PGN tree as child indexes from the root: `"0.0.1.0"`. Used by `TrainingExercise.path` and `ClassBlock.movePath`. Paths move when siblings are deleted or promoted. |
+| **NAG** | Numeric Annotation Glyph (`$1` = `!`, `$2` = `?`, `$14` = ⩲…). Move-quality and position NAGs are mapped in `pgn-tree.ts`; the viewer shows them as glyphs and colours. |
+| **Move quality** | `MoveQuality` in `lib/chess/types.ts`: `brilliant`, `great`, `best`, `excellent`, `good`, `book`, `inaccuracy`, `mistake`, `miss`, `blunder`. The blog's featured games carry them as `MoveAnnotations` keyed `"12w"`/`"12b"`; the game review grades with the four-level subset `good`, `inaccuracy`, `mistake`, `blunder`. |
+| **Evaluation** | Engine score from White's point of view: centipawns or mate-in-N, parsed by `engine-protocol.ts`; `[%eval]` comments in a PGN carry the same. |
+| **Game review** | Analysis of every mainline position at depth 16 followed by Lichess' accuracy formulas (`game-review.ts`): win percentage per ply, per-move grade, per-player accuracy. |
+| **MultiPV** | Stockfish option that returns several best lines; the analysis panel asks for 3. |
+| **Shapes** | chessground arrows and circles. Stored in PGN comments as `[%cal]` (arrows) and `[%csl]` (squares); saved positions store them as JSON. |
+| **Orientation** | Which colour sits at the bottom of the board. |
+| **ECO** | Encyclopaedia of Chess Openings code (`B90`). A game header stored as a column. |
+| **Elo**, **FIDE title**, **federation** | Player rating, title (`GM`, `IM`, `WFM`…) and FIDE three-letter country code (`MEX`, `ESP`, `SUI`), stored per colour on `Game` and shown with flags by `lib/chess/federations.ts`. |
+| **Figurine** | Piece symbols in notation (♘f3) rendered with the ChessGlyph font. |
+| **cburnett** | The piece set drawn by chessground and extracted to `public/pieces/`. |

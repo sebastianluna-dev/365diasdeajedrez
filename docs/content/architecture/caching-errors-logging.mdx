@@ -1,0 +1,66 @@
+---
+description: "What is cached and how it is invalidated, how errors surface to users and to the logs, and what the logger writes."
+---
+
+# Caching, errors & logging
+
+## Caching
+
+### Public site (Payload data)
+
+| What | Where | Mechanism | Invalidation |
+| --- | --- | --- | --- |
+| Home Globals (hero, program, teacher, packages, FAQ, CTA, reviews) | `services/home/home.service.ts` | `unstable_cache(fn, ["home-globals"], { tags: [CACHE_TAGS.home], revalidate: 3600 })`, plus React `cache()` per request | `lib/payload/revalidate-home.ts` on each Global's `afterChange`: `revalidateTag(tag, { expire: 0 })` then `revalidatePath("/")` |
+| Header (menu) | same service | tag `home-header` | `revalidate-header.ts` |
+| Site settings (WhatsApp) | `services/site-settings` | tag `site-settings` | `revalidate-site-settings.ts` |
+| Published article summaries and links | `services/articles` | tag `articles`; summaries exclude the Lexical `content` (`select: { content: false }`) | `revalidate-articles.ts` on `Articles` `afterChange`/`afterDelete`: tag + `/blog`, `/blog/[slug]`, `/sitemap.xml` |
+
+- `{ expire: 0 }` is the documented way to expire immediately from a route handler; the Payload hooks run inside Payload's API, so without it the editor would see the old version once more after saving.
+- The one-hour `revalidate` is a safety net for changes that bypass the hooks (SQL by hand, seeds).
+- `/` is **statically prerendered** (`export const revalidate = 3600` in `app/(frontend)/page.tsx`) and must not read cookies or headers; the proxy handles logged-in visitors by redirecting them to `/entrar`.
+- The tags live in `lib/payload/cache-tags.ts`, which has no `server-only` because Payload hooks import it.
+
+### Platform
+
+- `app/(platform)/layout.tsx` sets `dynamic = "force-dynamic"`: every private page renders per request. The comment there says it is valid while `cacheComponents` stays disabled.
+- Per-request deduplication only: `cache()` around the session (`getSessionContext`), roles, and read functions shared by several sections (`getPublishedCourses`, `getRecentActivities`, `getStudyGoal`, `getVisibleGamesWhere`…).
+- Browser-side: viewer preferences (sound on/off) in `localStorage` through a `useSyncExternalStore` store (`components/common/game-viewer/viewer-preferences.ts`); nothing else persists in the browser.
+
+### Assets
+
+`next/font/local` hashes and serves the fonts from `/_next/static/media`. Stockfish (`public/engine`), pieces and sounds are static files fetched lazily by the components that need them.
+
+## Errors
+
+| Situation | Handled by |
+| --- | --- |
+| Unknown URL inside the public site | `app/(frontend)/not-found.tsx` (SiteMessage section) |
+| Unknown URL inside the platform | `app/(platform)/not-found.tsx` |
+| URL matching no root layout | `app/global-not-found.tsx` (`experimental.globalNotFound`), with its own `<html>`, fonts and `globals.css` |
+| Render error in the public site | `app/(frontend)/error.tsx` — Spanish message and retry |
+| Render error in the platform | `app/(platform)/error.tsx` → `PlatformError` with the error `digest` shown so a student can quote it |
+| Error thrown by a root layout | `app/global-error.tsx` (inline styles, no dependencies) |
+| Any error Next catches while serving a request (render, route handler, server action, proxy) | `instrumentation.ts` `onRequestError` → `logError("next.request", …)` with path, method, route path/type and render source |
+| Service returns `null` for an id the user cannot see | The page calls `notFound()`; guards also fail with `notFound()` so nothing leaks existence |
+
+`digest` is the same value the error boundary shows and the logger writes, which is how a report from a user is matched to a log line.
+
+## Logging
+
+`lib/logger.ts` is intentionally small: one JSON line per event on **stderr**, which Vercel and any container collect without configuration.
+
+```ts
+logWarning("session", "No se pudieron barrer las sesiones caducadas", { error: String(error) });
+logError("rate-limit", "Fallo de la base al contar; la acción se deja pasar sin límite", error, { key });
+```
+
+Output shape: `{ level, scope, message, time, ...fields, error?: { name, message, stack, digest } }`.
+
+Current callers: `instrumentation.ts`, `lib/rate-limit.ts` (database failure and purge failure), `lib/platform-auth/session.ts` (purge failure), `lib/platform-auth/password.ts` (unreadable stored hash), `services/game-positions` (PGN replay warnings during indexing). It has no `server-only` because the seed and scripts use it too. Structured observability beyond this is an open backlog item.
+
+## Housekeeping done from the app
+
+Two tables only grow with what the app itself writes, so they are swept from the request path instead of a scheduled job, with a 1 % chance per call and without blocking the response:
+
+- expired `Session` rows (`readSessionUser`, which also deletes the row it just found expired);
+- expired `RateLimit` windows (`allowAction`).

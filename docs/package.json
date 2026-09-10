@@ -1,0 +1,30 @@
+{
+  "name": "365-dias-de-ajedrez-docs",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Developer documentation for 365 D\u00edas de Ajedrez (Nextra).",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "postbuild": "pagefind --site .next/server/app --output-path public/_pagefind",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "next": "16.3.0",
+    "nextra": "^4.6.1",
+    "nextra-theme-docs": "^4.6.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "pagefind": "^1.5.2",
+    "typescript": "^5"
+  },
+  "overrides": {
+    "zod": "4.3.6"
+  }
+}

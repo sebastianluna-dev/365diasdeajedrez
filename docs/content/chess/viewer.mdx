@@ -1,0 +1,66 @@
+---
+description: "ChessBoard, ChessBoardLazy, GameViewer and its parts, AnalysisBoard and StaticDiagram — what each one is for and how they fit together."
+---
+
+# Board & game viewer
+
+There is **one** game viewer in the codebase and every screen that shows a game uses it: lessons, studies, class blocks, the teacher's read-only student view, the blog (through the simpler board). All of it lives in `components/common/`.
+
+## `ChessBoard` — `chess-board.comp.tsx` (client)
+
+The chessground surface plus, in standalone mode, a move list and toolbar.
+
+| Prop | Meaning |
+| --- | --- |
+| `pgn` | Full PGN or bare SAN movetext; replayed with `replayGame`. Standalone mode renders the notation rows and a toolbar (first/prev/play/next/last, flip). Autoplay steps every 900 ms. |
+| `position` | **Controlled mode**: the parent owns the position and navigation (GameViewer, trainer, explorer). Only the board renders. |
+| `flipBoard`, `annotations` | Orientation and move-quality tags for the notation rows. |
+| `interactive`, `onMove(san, fromFen)` | Lets the user play legal moves (validated by chessops via `legalDests`). Promotion opens an accessible dialog (`aria-modal`, autofocus, Escape cancels). |
+| `editableShapes`, `onShapesChange` | Right-click arrows and circles become the user's editable shapes (analysis board); otherwise shapes are read-only `autoShapes`. |
+
+It imports chessground's base CSS and the cburnett piece sheet; board colours come from `--board-light`/`--board-dark`.
+
+## `ChessBoardLazy` — `chess-board-lazy.comp.tsx`
+
+Same props, but the board (chessground, chessops, piece CSS) loads only when the slot comes within 600 px of the viewport (`IntersectionObserver`), with `ssr: false` and a placeholder that reserves the exact height. Use it where the board is far below the fold (home teacher section, mentor page, blog game block). Where the board **is** the content (viewer, trainer, explorer) use `ChessBoard` directly.
+
+## `GameViewer` — `game-viewer/game-viewer.comp.tsx` (client)
+
+The full experience around a PGN tree (`parsePgnTree`):
+
+| Prop | Meaning |
+| --- | --- |
+| `pgn`, `orientation`, `initialPath` | The game and where to open it (a `TrainingExercise.path` or `ClassBlock.movePath`). |
+| `title`, `subtitle`, `description`, `badge`, `headerActions`, `footerActions`, `positionActions(fen)`, `skip`, `boardFooter`, `players` | Slots each screen fills (open in book, save, notes, share, player strips by colour). |
+| `moveList` | `"table"` (number · white · black grid, like Lichess; studies) or `"flow"` (running text; lessons). |
+| `controls` | Navigation buttons under the board (lessons) or inside the moves panel (studies). |
+| `engine` | Offers the analysis module (off by default; the worker and the 7 MB WASM load only when switched on). |
+| `onPathChange(path)` | Reports the current node; the class block editor uses it to capture "this position". |
+| editing props | Turn the viewer into an editor: play on the board to add moves/variations, draw arrows, right-click a move for its menu (promote one step / to mainline, comment, NAGs, copy variation, delete). Changes flow through `usePgnEditing` → `lib/chess/pgn-edit` → `onPgnChange`, and the study page autosaves with `autosaveGamePgn`. |
+
+Parts:
+
+- `move-tree.comp.tsx` renders `buildNotationBlocks` output (mainline rows, comments, nested variations); `move-table.comp.tsx` the tabular list with evaluations; `move-context-menu.comp.tsx` the right-click menu; `mainline-positions.ts` the FEN list for the review chart.
+- `engine-panel.comp.tsx` + `use-engine.ts`: Stockfish in a Web Worker, created lazily, `MAX_DEPTH = 20`, `ENGINE_LINES = 3`, a small state machine that never sends `position` until the previous search answered `bestmove` (Stockfish aborts otherwise). The evaluation bar next to the board uses the same data (`evaluationBarFill`). Each line can be expanded into a preview board that follows the main orientation.
+- `game-review.comp.tsx` + `game-review-chart.comp.tsx` + `use-game-review.ts`: a **second** worker evaluates every mainline position at depth 16, in series, then `reviewGame` grades the moves; the chart shows win probability per ply and the cards show accuracy, inaccuracies, mistakes and blunders per player.
+- `board-export.ts` (loaded on demand with `import()`): repaints the position on a canvas — pieces decoded from the chessground CSS sheet so exports always match the board — to download a PNG, or encodes the whole game as a GIF with `gifenc` (`types/gifenc.d.ts` declares the subset used).
+- `move-sound.ts`: `move.mp3` and `capture.mp3` from `public/sounds`, lazy, cloned per play; `viewer-preferences.ts` keeps the sound toggle in `localStorage` through `useSyncExternalStore` (shared by every viewer on the page, safe when storage throws).
+- Fullscreen, keyboard navigation (arrows, home/end), hold-to-repeat on the navigation buttons, responsive layout (board size and panel height negotiated with the engine panel).
+
+## `AnalysisBoard` — `analysis-board/analysis-board.comp.tsx` (client)
+
+An editor that starts from an empty game or a FEN: play moves, add variations, comment, set NAGs and shapes, promote lines, copy a variation, and emit the serialised PGN (bounded by `PGN_MAX_LENGTH`). Used to create a new study game and to transcribe a game inside a class block.
+
+## `StaticDiagram` — `static-diagram.comp.tsx` (server)
+
+A position as a CSS grid of 64 squares with the piece SVGs from `public/pieces` (`parseFenPlacement`), no chessground, no JavaScript. Used by class position blocks and the blog's diagram block (`context="article"` switches tokens and caption scale).
+
+## Which one to use
+
+| Need | Component |
+| --- | --- |
+| Show a position, no interaction | `StaticDiagram` |
+| Replay a game far below the fold on a public page | `ChessBoardLazy` with `pgn` |
+| Navigate a game with variations, comments, engine, review | `GameViewer` |
+| Let the user build or annotate a game | `GameViewer` in editing mode (existing game) or `AnalysisBoard` (new game / class block) |
+| Board surface controlled by your own state (trainer, explorer) | `ChessBoard` with `position` (+ `interactive`) |

@@ -1,0 +1,67 @@
+---
+description: "Production assumptions (Vercel), environment, build and database deployment order, backups and restore, logs, and what to check after a deploy."
+---
+
+# Deployment & backups
+
+## Assumptions
+
+- The app is built for **Vercel**: `@vercel/analytics` renders only when `VERCEL=1`; logs are JSON lines on stderr; Payload's start cost matters on cold starts (GraphQL disabled for that reason).
+- Two managed Postgres databases (`DATABASE_URI`, `PLATFORM_DATABASE_URL`) with `sslmode=verify-full`.
+- Cloudinary for every image; delivery URLs use `f_auto,q_auto`, and `next/image` is limited to `res.cloudinary.com`.
+- The public site is served from the static home (`revalidate = 3600`) plus dynamic blog pages; the platform is fully dynamic.
+
+## Environment in production
+
+Everything in `.env.example` except the seed and script helpers, with:
+
+- `NEXT_PUBLIC_APP_ENV=production` (turns on GA and the Meta Pixel — only if their ids are set);
+- `NEXT_PUBLIC_SITE_URL=https://365diasdeajedrez.com` (canonicals, sitemap, robots, OG images);
+- `PAYLOAD_SECRET`, `DATABASE_URI`, `PLATFORM_DATABASE_URL`, Cloudinary credentials.
+
+Never set `ALLOW_DEMO_SEED` in production.
+
+## Release order
+
+1. **Back up both databases** (below). Prisma migrations have no down path.
+2. `npm run db:deploy` (`prisma migrate deploy`) against the production `PLATFORM_DATABASE_URL`.
+3. Deploy the app. `next build` prerenders `/`, the sitemap and static pages, so it needs read access to both databases at build time (which is why CI does not build).
+4. If a migration needs data movement, run its script (`scripts/…`) after the deploy, with `--dry` first.
+5. Payload schema changes: there are no committed Payload migrations; the CMS tables are synced by Drizzle push when `next dev` runs against the database. Do that before deploying a collection change, or introduce Payload migrations (`payload migrate:create`) when the team wants an explicit path.
+
+## Backups
+
+Neither database can be rebuilt from the code: the platform holds accounts, progress and annotated games; Payload holds the site and blog content.
+
+```bash
+pg_dump --format=custom --no-owner --file="plataforma-$(date +%Y%m%d-%H%M).dump" "$PLATFORM_DATABASE_URL"
+pg_dump --format=custom --no-owner --file="payload-$(date +%Y%m%d-%H%M).dump"    "$DATABASE_URI"
+```
+
+Restore into an empty or test database:
+
+```bash
+pg_restore --no-owner --dbname="$URL" archivo.dump
+```
+
+A full restore drill has not been rehearsed yet (`MEJORAS.md` #63): do it once on a scratch database, note how long it takes, and record what the provider offers (automatic snapshots, retention).
+
+## After a deploy
+
+- `/` loads and shows the current CMS content; save a Global in `/admin` and confirm the change appears on reload.
+- `/robots.txt` and `/sitemap.xml` use the production URL.
+- Log in with a real account; open `/entrar` behaviour indirectly by visiting `/` while logged in (it must land on the role's home).
+- Import a PGN and search a position (exercises the platform database, transactions and indexes).
+- Watch the logs for `level: "error"` lines from `next.request` (uncaught request errors) and `rate-limit` (database failures).
+
+## Logs
+
+Structured JSON lines on stderr (see [Caching, errors & logging](/architecture/caching-errors-logging)). Filter by `scope`: `next.request`, `rate-limit`, `session`, `password`, `game-positions`. The `error.digest` matches what the platform error page shows to the user.
+
+## Security headers
+
+None are set by the app today (CSP, COOP/COEP, X-Frame-Options); Vercel adds HSTS. This is tracked as `MEJORAS.md` #33. COOP/COEP in particular would enable multi-threaded Stockfish but break cross-origin images, so it needs a plan.
+
+## Performance
+
+Measure only against `npm run build && npm run start` (three Lighthouse runs, median). Known state on 2026-09-09: mobile performance 80 → 92 on `/`; the remaining cost is the number of blocking stylesheets on the home page (`MEJORAS.md` #70; `cssChunking: "graph"` was tried and did not reduce them).

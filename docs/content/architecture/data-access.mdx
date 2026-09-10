@@ -1,0 +1,66 @@
+---
+description: "The service, mapper and types triad, the Prisma and Payload clients, and the rules every server action follows."
+---
+
+# Data access & server actions
+
+## The triad
+
+Every domain under `services/<domain>/` follows the same shape:
+
+| File | Role |
+| --- | --- |
+| `<domain>.service.ts` | Reads. Resolves the user through the DAL, queries Prisma or Payload with the authorisation inside the `where`, returns view types. Read functions that several sections call in the same request are wrapped in React's `cache()` so the query runs once per request. |
+| `<domain>.mapper.ts` | Pure translation from rows to view types: Spanish labels from catalog rows, formatted dates (`lib/format-spanish-date.ts`), percentages, hrefs from `lib/platform-routes.ts`. Also exports the Prisma `include`/`select` objects the service uses, so the row type and the mapper stay together. |
+| `<domain>.types.ts` | The UI contract. Sections import only from here. Types carry `code`s next to labels when the UI has to decide something (`kindCode`, `statusCode`). |
+| `<domain>.actions.ts` | Server actions (`"use server"`). Writes only. |
+
+Domains: `articles`, `home`, `mentors`, `site-settings` (Payload); `auth`, `classes`, `courses`, `dashboard`, `game-explorer`, `game-positions`, `media`, `studies`, `study-goal`, `trainer` (student); `teacher`, `teacher-classes`, `teacher-students` (teacher panel); `staff`, `staff-classes`, `staff-courses`, `staff-students`, `staff-teachers` (staff panel); `shared` (pure rules and helpers used across domains).
+
+## Clients
+
+- **Prisma** — `lib/platform-db/get-platform-db.ts` returns a `PrismaClient` singleton stored on `globalThis` (survives `next dev` hot reloads without exhausting connections). It detects a client generated with a different schema by comparing the class identity and replaces it, so `prisma generate` no longer requires restarting the dev server. The client uses `@prisma/adapter-pg` with `PLATFORM_DATABASE_URL`; there is no `url` in `schema.prisma` (Prisma 7 puts it in `prisma.config.ts` for the CLI and in the adapter for runtime).
+- **Payload** — `lib/payload/get-payload.ts` memoises `getPayload({ config })`. Reads use the local API (`payload.find`, `payload.findGlobal`) and are cached between requests with `unstable_cache` + tags (see [Caching](/architecture/caching-errors-logging)).
+- The seed and the CLI scripts build their own `PrismaClient` because the singleton is `server-only`.
+
+## Authorisation inside the query
+
+There is no "fetch, then check". Examples:
+
+- `services/shared/published-content.ts` — `publishedCourseWhere`, `publishedChapterWhere`, `publishedLessonWhere`: chained into every student read **and write** (progress, trainer), so a POST with the id of a draft lesson does nothing.
+- `services/shared/game-visibility-rules.ts` — `buildVisibleDatabasesWhere` / `buildVisibleGamesWhere`: own databases, collections of *started* courses, collections shared by a teacher, plus (for teachers) the games of actively assigned students. `game-visibility.ts` binds them to the current user. Studies and the position explorer share these rules so the explorer can never list a game the student cannot open.
+- `services/studies/study-rules.ts` — `studyPermissionsOf({ kindCode, isOwner })`: the permissions table for studies (non-owners get nothing; `MY_GAMES` cannot be deleted or re-typed). Actions and UI use the same function.
+- Teacher services put `teacherId` inside the `where`; `lib/platform-auth/guards.ts` adds `assertTeacherOwnsClass`, `assertTeacherHasStudent` (active assignment) and `assertTeacherCanReferenceGame` for writes, failing with `notFound()` so nothing confirms the resource exists.
+
+## Server actions
+
+Server actions are reachable by a direct POST, not only from the UI. Every action in the codebase follows this order:
+
+```ts
+"use server";
+
+export async function updateStudy(studyId: string, formData: FormData): Promise<void> {
+  const user = await getCurrentUser();                                   // 1. identity from the DAL
+  if (!(await allowAction(`${user.id}:study-update`, 30, 60_000))) fail(…, "throttled"); // 2. rate limit
+  const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);     // 3. bounded inputs
+  if (!name) fail(…, "invalid");
+  // 4. ownership + rules (study-rules, guards, published-content…) inside the write's where
+  // 5. write, then revalidatePath(...)
+}
+```
+
+- **Identity:** `getCurrentUser()`, `requireTeacher()` or `requireStaff()` as the first `await`. Never an id from the client.
+- **Rate limit:** `allowAction(key, limit, windowMs)` in `lib/rate-limit.ts` keeps one counter per subject and operation in the `RateLimit` table with a single `INSERT … ON CONFLICT` statement, so the ceiling is global across instances and cold starts. If the database fails it lets the request through and logs it. Expired windows are purged from the app itself (1 % of calls).
+- **Inputs:** `services/shared/form-data.ts` readers; PGN size and count limits in `constants/platform/content-limits.const.ts` (`PGN_MAX_LENGTH` 2 MB, `PGN_MAX_GAMES` 500, `PGN_IMPORT_TRANSACTION` with a 120 s timeout).
+- **Errors:** redirect to the page with `?error=<code>`; the page maps the code with `LOGIN_ERROR_MESSAGES`, `TEACHER_ERROR_MESSAGES` or `STAFF_ERROR_MESSAGES`. `services/shared/safe-return-to.ts` validates any client-supplied return path. Account creation and password reset are the documented exception: they return state via `useActionState` so a temporary password is displayed once and never travels in a URL.
+- **Concurrency:** unique-constraint races are caught by name with `services/shared/prisma-errors.ts` (`isUniqueConstraintError(error, "teacher_student_one_active")`), which understands both the classic engine's `meta.target` and the pg driver adapter's `driverAdapterError` shape.
+- **Reordering:** `services/shared/reorder.ts` plans `planSwap`, `planDenseRenumber` and `planFullReorder` through a temporary out-of-range order (`TEMP_ORDER = -1`), because PostgreSQL validates `@@unique([parent, order])` row by row and a direct swap raises P2002 intermittently. Services execute the plan inside `$transaction`.
+- **Side effects:** `services/shared/user-activity.service.ts` appends to `UserActivity` and increments `UserStatDaily` in the same call; `services/game-positions/game-positions.service.ts` (re)indexes positions and receives the transaction client as a parameter so importing and indexing commit together.
+
+## Client-side data
+
+The platform has no route handlers of its own and no data client in the browser. When a Client Component needs data (the explorer board, autosave of a game PGN, the trainer recording an attempt, an upload signature) it calls a server action: `searchPosition`, `autosaveGamePgn`, `recordTrainingAttempt`, `createUploadSignature`. Those actions validate the input (FEN legality, PGN size, clamps) before touching the database.
+
+## Payload-side data
+
+The public site reads Payload with the local API inside services (`services/home`, `services/articles`, `services/mentors`, `services/site-settings`). Mappers convert Payload documents into plain view types (`services/shared/map-content-image.ts` turns a populated `Media` into `{ src, alt, width, height }`, throwing if the relationship was not populated, i.e. `depth` was too low).

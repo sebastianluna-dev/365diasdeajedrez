@@ -151,6 +151,19 @@ Las URLs de la plataforma están en español porque el producto lo está; sólo 
 
 Esta versión de Next.js trae cambios de ruptura respecto a lo que suele estar en los modelos: **consulta `node_modules/next/dist/docs/` antes de escribir código**. Lo explican `AGENTS.md` y `CLAUDE.md`.
 
+## Documentación
+
+La documentación completa del proyecto, en inglés, vive en `docs/` como un sitio [Nextra](https://nextra.site) independiente (con su propio `package.json`, para que el build de producción no cargue con MDX ni con el buscador):
+
+```bash
+cd docs
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # páginas estáticas + índice de búsqueda (Pagefind)
+```
+
+Cubre arquitectura, rutas, acceso a datos, sitio público y CMS, autenticación, modelo de datos, funciones de alumno, profesor y administración, la librería de ajedrez y el visor, estilos y componentes compartidos, pruebas, scripts, despliegue, el backlog y un glosario español ↔ código. Cuando cambie algo de lo que describe, se actualiza la página en el mismo commit.
+
 ## Backlog
 
 - `MEJORAS.md` — mejoras pendientes priorizadas (seguridad, arquitectura, CSS, UX).

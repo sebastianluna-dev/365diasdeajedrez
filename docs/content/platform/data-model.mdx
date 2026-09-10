@@ -1,0 +1,116 @@
+---
+description: "The Prisma 7 schema of the platform: catalogs, courses and lessons, users and progress, studies and games, classes, activity, hand-written constraints and migrations."
+---
+
+# Data model
+
+`prisma/schema.prisma` describes the platform database. Prisma 7 setup:
+
+- generator `prisma-client` with `output = "../lib/platform-db/generated"` (git-ignored; `npm run db:generate`);
+- no `url` in the datasource: the CLI reads it from `prisma.config.ts` (`schema`, `migrations.path`, `migrations.seed = "tsx prisma/seed.ts"`, `datasource.url = PLATFORM_DATABASE_URL`), the runtime from `@prisma/adapter-pg` in `lib/platform-db/get-platform-db.ts`;
+- `prisma.config.ts` loads `.env.local` and then `.env`.
+
+## Design decisions
+
+- **PGN is the content.** `Lesson.pgn`, `Game.pgn` and `ClassBlock.pgn` hold the chess material; there are no per-move tables. Positions, lines and diagrams are derived by `lib/chess` at read or index time.
+- **Catalogs instead of enums.** Every restricted domain is a table with `id`, `code` (unique, stable), `label` (Spanish), `order` and sometimes `isActive`. Business logic compares `code`; the seed upserts them; TypeScript mirrors them in `constants/platform/*-codes.const.ts`.
+- **Composite primary keys** for progress and join tables.
+- **Roles by row existence** (`Teacher`, `Staff`).
+- Constraints Prisma cannot express are written by hand in the migrations (below).
+
+## Catalogs
+
+`CourseType` (OPENING, ENDGAME, STRATEGY, TACTICS) · `CourseStatus` (DRAFT, PUBLISHED, ARCHIVED) · `AuthorRole` (CONTENT_AUTHOR, DIGITAL_ADAPTATION) · `ContentRole` (INTRO, CLOSING) · `Level` (BEGINNER…EXPERT) · `BoardOrientation` (WHITE, BLACK, AUTO — AUTO only for user settings) · `ExerciseMode` (REPRODUCE_LINE, FIND_MOVE) · `ProgressStatus` (NOT_STARTED, IN_PROGRESS, COMPLETED) · `AttemptResult` (PASSED, FAILED) · `AttemptContext` (LESSON, CHAPTER_QUIZ, TRAINER) · `OwnerType` (USER, COURSE, TEACHER) · `DatabaseKind` (MY_GAMES, TOURNAMENT, STUDY, COLLECTION) · `GameSource` (MANUAL, PGN_IMPORT, PLATFORM_GAME) · `GameResult` (WHITE_WINS, BLACK_WINS, DRAW, ONGOING; the label is the PGN token) · `ClassStatus` (SCHEDULED, LIVE, COMPLETED, CANCELLED) · `MeetingProvider` (ZOOM, MEET, OTHER) · `ClassBlockKind` (TEXT, VIDEO, GAME_REF, LESSON_REF, POSITION_REF, FILE) · `TranscriptStatus` (PENDING, READY, FAILED) · `ActivityType`, `SubjectType`, `StatMetric` (see Activity) · `Topic` (hierarchical via `parentId`: TACTICS, OPENING_LINE, PAWN_STRUCTURE, ENDGAME, STRATEGY…).
+
+Adding a value to a catalog is a seed row, not a migration.
+
+## Content: Course → Chapter → Lesson
+
+| Model | Key fields | Notes |
+| --- | --- | --- |
+| `Course` | `id` (8-digit numeric string, app-generated), `name`, `slug` (unique), `description`, `cover` (Cloudinary URL), `typeId`, `statusId`, `publishedAt` | Relations: chapters, `CourseAuthor` (with `AuthorRole`, ordered), `CourseLevel`, progress, settings, game databases, positions. |
+| `Author` | `name`, `slug`, `bio`, `photo` | Course authors, managed by staff. |
+| `Chapter` | `courseId`, `name`, `order`, `roleId?` (INTRO/CLOSING), `estimatedDuration` | `@@unique([courseId, order])`, `@@unique([courseId, roleId])` (at most one intro and one closing; normal chapters have `NULL`). One game collection per chapter. |
+| `Lesson` | `id` (8-digit numeric), `chapterId`, `name`, `order`, `isPriority`, `roleId?`, `estimatedDuration`, `orientationId`, `gameId?`, `pgn`, `pgnUpdatedAt`, `isTrainable`, `trainingColorId?` | **Content source:** when `gameId` is set the lesson's content is that game's PGN (fixing the game fixes every lesson using it); otherwise `pgn`. Only `lessonPgnOf()` (`services/shared/lesson-pgn.ts`) decides. `onDelete: SetNull` on the game keeps the lesson alive without content. `@@unique([chapterId, order])`, `@@unique([chapterId, roleId])`. |
+| `TrainingExercise` | `lessonId`, `order`, `modeId`, `path` (dotted), `startPly`, `endPly`, `startFen`, `line` (SAN, space-separated), `frozenAt`, `promptText`, `isDerived` | A **frozen copy** of a trainable segment so the trainer does not depend on parsing. Becomes *stale* when `Lesson.pgnUpdatedAt` is later than `frozenAt`. Derived exercises (`isDerived`) are regenerated from the mainline by `services/shared/lesson-training.service.ts`; hand-made ones are never touched. |
+| `LessonTopic` | `(lessonId, topicId)` | Topics feed the stats breakdown. |
+
+## Users, sessions, progress and settings
+
+| Model | Key fields | Notes |
+| --- | --- | --- |
+| `User` | `id` (uuid), `email` (unique), `displayName`, `passwordHash?`, `passwordUpdatedAt`, `lastLoginAt`, `dailyGoalMinutes` (default 30) | Identity **and** credential. `null` hash = cannot log in. |
+| `Session` | `tokenHash` (unique SHA-256), `expiresAt`, `lastSeenAt`, `userAgent` | Indexed by `userId` and `expiresAt`. |
+| `RateLimit` | `key` (pk), `count`, `resetAt` | One row per subject+operation window. |
+| `CourseProgress` | `(userId, courseId)`, `statusId`, `startedAt`, `completedAt`, `lastLessonId?` | `lastLessonId` is the "continue studying" pointer. |
+| `ChapterProgress` | `(userId, chapterId)`, `quizPassedAt` | |
+| `LessonProgress` | `(userId, lessonId)`, `startedAt`, `completedAt` | Completed lessons today × `estimatedDuration` = minutes studied today. |
+| `UserCourseSettings` | `(userId, courseId)`, `onlyPriorityLessons`, `boardOrientationId`, `trainingAfterLesson` | Row created on first change; absence means defaults. |
+| `UserTrainerChapter` | `(userId, chapterId)` | Chapters the student added to the Move Trainer. |
+| `TrainingAttempt` | `userId`, `exerciseId`, `resultId`, `contextId`, `mistakes`, `durationMs`, `requiredMoves`, `correctMoves`, `reachedPly`, `hintsUsed`, `isPerfect` | Append-only history. `correctMoves` is not `requiredMoves - mistakes` (mistakes can repeat on one move). |
+| `TrainingMistake` | `attemptId`, `positionHash`, `fen`, `expectedSan`, `playedSan`, `ply`, `usedHint` | One row **per failed move**; keyed by position hash so it survives PGN edits and groups transpositions. |
+| `UserLessonTraining` | `(userId, lessonId)`, `totalAttempts`, `perfectAttempts`, `lastAccuracy`, `bestAccuracy`, `consecutivePerfect`, `currentIntervalDays`, `masteryLevel`, `lastReviewedAt`, `nextReviewAt` | Current spaced-repetition state per lesson (`lib/training/review-schedule.ts`). Keyed by lesson, not by path, because paths move when variations are promoted. |
+
+## Studies: game databases and games
+
+| Model | Key fields | Notes |
+| --- | --- | --- |
+| `GameDatabase` | `id` (nanoid 8), `ownerTypeId`, `userId?`, `courseId?`, `chapterId?`, `name`, `description`, `kindId`, `isDefault`, `order` | One table, two owners: a **user** (private studies) or a **course** (published material). Course collections are **per chapter** (`@@unique([chapterId])`); `courseId` stays so visibility ("students who started the course") and "all games of the course" need no join. |
+| `Game` | `id` (nanoid 8), `databaseId`, `title?`, `white`, `black`, `whiteElo`, `blackElo`, `whiteTitle`, `blackTitle`, `whiteCountry`, `blackCountry` (FIDE 3-letter codes), `resultId`, `playedAt` (date), `event`, `site`, `round`, `eco`, `initialFen?`, `pgn`, `tags` (json), `sourceId`, `isOwnGame`, `order` | Headers as columns (list, sort, filter without parsing); PGN remains the content. `order` is manual and wins over date; new games go to the end. `@@index([databaseId, order])`. |
+| `GamePosition` | `gameId`, `databaseId` (denormalised), `ply`, `positionHash`, `nextMoveSan?`, `nextMoveUci?` | The position index: one row per ply (~80 per game), no FEN column. `@@unique([gameId, ply])`, indexes on `positionHash`, `(positionHash, databaseId)`, `(positionHash, nextMoveUci)`. Count games by distinct `gameId`, never rows. |
+| `StudyShare` | `databaseId`, `userId`, `teacherId?` | A **collection** handed to a student: read-only by ownership, not by this table. `@@unique([databaseId, userId])`. |
+| `Position` | `ownerTypeId`, `userId?`, `courseId?`, `title`, `fen`, `orientationId`, `arrows` (json), `highlights` (json) | Saved diagrams reusable in class blocks. |
+
+## Teachers, staff and classes
+
+| Model | Key fields | Notes |
+| --- | --- | --- |
+| `Teacher` | `userId` (unique), `displayName`, `title`, `bio`, `photo`, `timezone`, `isActive` | Never deleted; deactivated. |
+| `TeacherStudent` | `teacherId`, `studentId`, `assignedAt`, `endedAt?`, `assignedBy?`, `note` | Assignment history. `endedAt = NULL` ⇒ active. Reassigning closes the row and creates another. |
+| `Staff` | `userId` (unique) | Row = role. |
+| `Class` | `teacherId`, `title`, `description`, `scheduledAt` (UTC), `durationMin`, `statusId`, `meetingProviderId?`, `meetingUrl?`, `meetingUrlVisibleFrom?`, `recordingUrl?`, `summary` | `meetingUrl` reaches the student only when `now >= meetingUrlVisibleFrom`. Indexes on `scheduledAt` and `(teacherId, scheduledAt)`. |
+| `ClassParticipant` | `(classId, userId)`, `paidAt`, `amount`, `currency`, `paymentRef`, `attended`, `joinedAt` | Payments are recorded data, not a flow. |
+| `ClassBlock` | `classId`, `order`, `kindId`, `text?`, `videoUrl?`, `gameId?`, `lessonId?`, `positionId?`, `movePath?`, `caption?`, `pgn?` | Ordered class content; references are pointers (SetNull on delete). A `pgn` transcribed in the block wins over `gameId`. `@@unique([classId, order])`. |
+| `ClassTranscript` | `classId` (pk), `provider`, `language`, `statusId`, `text`, `segments` (json), `durationMs` | Prepared for recordings; no provider integration yet. |
+
+## Activity and statistics
+
+| Model | Notes |
+| --- | --- |
+| `UserActivity` | Append-only log of facts: `typeId` (LESSON_COMPLETED, COURSE_COMPLETED, CLASS_ATTENDED, GAME_ANALYZED, EXERCISE_PASSED), `subjectTypeId` (COURSE, CHAPTER, LESSON, CLASS, GAME, EXERCISE), polymorphic `subjectId` (no FK), `topicId?`, `occurredAt`, `meta` (json). Source of truth for stats and the study streak. |
+| `UserStatDaily` | Aggregate per user/day/metric/topic (`topicId NULL` = total), maintained by `recordUserActivity` and rebuildable from `UserActivity`. `STAT_METRIC_BY_ACTIVITY_TYPE` maps activity types to metrics. |
+
+## Constraints written by hand
+
+The initial migration and later ones add what Prisma cannot express:
+
+```sql
+-- exactly one owner
+ALTER TABLE "GameDatabase" ADD CONSTRAINT ... CHECK (("userId" IS NOT NULL) <> ("courseId" IS NOT NULL));
+ALTER TABLE "Position"     ADD CONSTRAINT ... CHECK (("userId" IS NOT NULL) <> ("courseId" IS NOT NULL));
+-- at most one reference per class block
+ALTER TABLE "ClassBlock" ADD CONSTRAINT ... CHECK ((("gameId" IS NOT NULL)::int + ("lessonId" IS NOT NULL)::int + ("positionId" IS NOT NULL)::int) <= 1);
+-- NULL topic must not duplicate rows
+CREATE UNIQUE INDEX ... ON "UserStatDaily"("userId", "day", "metricId", "topicId") NULLS NOT DISTINCT;
+-- one active teacher per student
+CREATE UNIQUE INDEX "teacher_student_one_active" ON "TeacherStudent" ("studentId") WHERE "endedAt" IS NULL;
+-- one default study per user (migration 20260904190000)
+CREATE UNIQUE INDEX "game_database_one_default_per_user" ...
+```
+
+Rules that need more than one table (owner type ↔ populated column, block kind ↔ populated field) are validated in the services.
+
+## Migrations
+
+`prisma/migrations/` (2026-08-30 → 2026-09-09): `init`, `add_exercise_frozen_at`, `add_auth_sessions`, `add_teacher_staff_panels`, `add_game_positions`, `add_game_title`, `shorten_study_and_game_ids`, `chapter_slug_and_short_lesson_ids`, `numeric_student_ids`, `lesson_training`, `derived_exercise_flag`, `lesson_training_color`, `class_block_pgn`, `game_order`, `game_player_details`, `rate_limit`, `study_types_and_shares`, `daily_goal`, `lesson_game_reference`, `chapter_collections`, `simplify_lesson_metadata`, `content_roles`, `composite_indexes`.
+
+Workflow:
+
+1. Edit `schema.prisma`, run `npm run db:migrate` (creates and applies a migration in development) or write the SQL by hand when the change needs a CHECK, a partial index or data movement. For index-only changes `npx prisma migrate diff --from-schema-datamodel <old> --to-schema-datamodel <new> --script` produces the SQL.
+2. `npm run db:generate`, then `npm run typecheck`.
+3. Production: back up first (`pg_dump`), then `npm run db:deploy`. Migrations have no down path.
+4. If the change needs data movement that SQL cannot do (reading PGN headers, for instance), write a script like `scripts/migrate-chapter-collections.ts`: short transactions, idempotent, resumable, with a `--dry` mode.
+
+## Seed
+
+`prisma/seed.ts` + `prisma/seed-data.ts`: idempotent (catalogs by `upsert(code)`, domain rows by fixed ids or natural keys), creates the three demo accounts, a course with chapters/lessons/exercises, studies and games (indexed with `indexGamePositions`), classes with blocks and a transcript, activities and rebuilt daily stats. `SEED_NOW` pins the reference instant. See [Scripts & seed](/operations/scripts-and-seed).

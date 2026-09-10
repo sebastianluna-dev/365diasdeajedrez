@@ -1,0 +1,63 @@
+---
+description: "Vitest setup, what is tested and how, coverage, the GitHub Actions workflow, and the checks that gate a change."
+---
+
+# Testing & CI
+
+## Vitest
+
+`vitest.config.mts`:
+
+- environment `node`; tests are `**/*.test.{ts,tsx}` outside `node_modules`, `.next`, the generated Prisma client and `docs/`;
+- alias `@` → repository root, and `server-only` → `lib/testing/server-only.stub.ts` (Next provides that package at bundle time; in Node it would throw and block importing any service);
+- coverage (`npm run test:coverage`, v8) over `lib/**`, `services/**`, `constants/**`, `hooks/**`, excluding generated code, fixtures, tests and `*.types.ts`. The report lands in `coverage/` (git-ignored, ESLint-ignored).
+
+As of 2026-09-09 there are **47 test files and 381 tests**, all on pure modules:
+
+| Area | Examples |
+| --- | --- |
+| Chess | `pgn-tree`, `pgn-edit`, `replay` (with `__fixtures__/continental-2026.pgn`), `mainline`, `notation`, `notation-blocks`, `movetext-scan`, `plain-movetext`, `position-hash`, `extract-game-positions`, `exercise-derivation`, `engine-protocol`, `game-review`, `legal-moves`, `federations` |
+| Rules | `study-rules`, `game-visibility-rules`, `game-origin`, `class-status-transitions`, `assignment-rules`, `content-order`, `reorder` (permutations), `prisma-errors`, `safe-return-to`, `form-data`, `pgn-import`, `lesson-pgn` |
+| Platform utilities | `password` (scrypt round trip, tampered hash), `temp-password`, `review-schedule`, `study-streak`, `timezone`, `date-ranges`, `numeric-id`, `generate-slug`, `parse-fen-placement`, `format-spanish-date/time`, `cloudinary-url`, `remote-image` |
+| Mappers and listing | `courses.mapper`, `studies.mapper`, `teacher-classes.mapper` (meeting URL visibility), `article-listing`, `nav-items`, `study-codes` |
+| Routing | `proxy.test.ts`: every protected prefix redirects without a cookie, `/` with a cookie goes to `/entrar`, and the literal matcher equals `PROTECTED_PATH_PREFIXES` plus `/` |
+
+Conventions:
+
+- Tests are deterministic: dates come in as parameters or are built with local constructors; nothing reads the clock.
+- Anything that needs Prisma or a request is not unit-tested; instead the logic is extracted into a pure module (`*-rules.ts`, `*-transitions.ts`, `reorder.ts`) and that module is tested. Manual verification of panels is recorded in `todos.md`.
+- Component tests (`.test.tsx`) are possible with the current config but none exist yet.
+
+```bash
+npm test                  # one run
+npm run test:watch        # watch mode
+npm run test:coverage     # coverage report in coverage/
+npx vitest run lib/chess  # a folder
+```
+
+## Static checks
+
+- `npm run typecheck` — `tsc --noEmit`, strict, `noUnusedLocals`, target ES2022. `docs/` is excluded (it has its own `tsconfig.json`).
+- `npm run lint` — ESLint 9 flat config with `eslint-config-next` (core web vitals + TypeScript); ignores `.next`, `public` (design-kit scripts), the generated Prisma client, `coverage` and `docs`.
+- `npm run format:check` — Prettier 3, `printWidth: 120`. The repository has never been formatted, so this currently fails; `todos.md` T11 asks for a single formatting commit, after which the check should be added to CI.
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs on every push to `main` and every pull request, on Node 20 with npm cache:
+
+```yaml
+- run: npm ci
+- run: npm run db:generate    # needs only a syntactically valid PLATFORM_DATABASE_URL
+- run: npm run lint
+- run: npm run typecheck
+- run: npm test
+```
+
+It does **not** run `next build`: static generation reads Payload (home, blog, sitemap) and the platform database, neither of which exists in CI. The deployment is what validates the build. The docs site is not built in CI either; build it locally (`cd docs && npm run build`) when you change it.
+
+## Manual checks worth repeating
+
+- Log in with the three demo accounts and open a page of each panel with the wrong role: it must redirect without rendering data.
+- Import a large PGN (hundreds of games) into a study and search a position in the explorer.
+- Save a Global in `/admin` and reload `/`: the change must be visible immediately.
+- Run Lighthouse against `npm run build && npm run start` before and after performance work.

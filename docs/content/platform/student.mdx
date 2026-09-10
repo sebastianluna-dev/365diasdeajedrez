@@ -1,0 +1,73 @@
+---
+description: "What a student can do — dashboard, courses and lessons, Move Trainer, studies, classes, position explorer, daily goal and streak — and which services implement it."
+---
+
+# Student features
+
+Everything here requires a session; the pages live in `app/(platform)` and the logic in `services/*`. Students see only **published** courses and only the games the visibility rules allow.
+
+## Dashboard — `/inicio`
+
+`services/dashboard/dashboard.service.ts` → `getUserDashboard()`:
+
+- **Profile**: display name, email, member since.
+- **Continue studying**: the course with the most recent `CourseProgress.lastLessonId` (`getContinueStudyingCourse()` in `services/courses`), with lesson name and percentage.
+- **Next class**: first upcoming class the student participates in.
+- **Stats** for four calendar ranges (`week` from Monday, `month`, `year`, `all` — `lib/date-ranges.ts`) computed with `groupBy` on `UserStatDaily` (metric totals and topic breakdown), labelled from the catalogs.
+- **Recent activity**: last 8 `UserActivity` rows.
+- **Daily goal and streak** (`services/study-goal`): the streak is derived from any activity in the last 400 days using day keys in `STUDY_DAY_TIMEZONE` (`America/Mexico_City`) via `lib/study-streak.ts`; minutes today = `estimatedDuration` of lessons completed today. The goal (`User.dailyGoalMinutes`, options 10…120) is changed by `updateDailyGoal`.
+
+## Courses and lessons — `/cursos`, `/lecciones/[lessonId]`
+
+`services/courses/courses.service.ts`:
+
+- `getUserCourses()` — published courses with progress (`completedLessons/totalLessons` **and** minutes), authors, levels and a CTA (`Comenzar` / `Continuar` / `Revisar`) pointing at the next lesson.
+- `getCourseById()` — chapters ordered by role (intro, content, closing — `services/shared/content-order.ts`) with per-chapter progress; honours `onlyPriorityLessons` and reports how many lessons the filter hides.
+- `getChapterView(courseId, chapterOrder)` — lessons of a chapter (by `order` number), `hasExercises`, `inTrainer`.
+- `getLessonView(lessonId)` — the lesson: name, description, PGN (`lessonPgnOf`: linked game or own `pgn`), orientation, position inside the chapter, previous/next, trainable flag.
+
+Actions (`courses.actions.ts`): `touchLesson` (marks course/chapter/lesson in progress and updates `lastLessonId`), `completeLesson` (completes lesson, cascades chapter and course completion, records `LESSON_COMPLETED`/`COURSE_COMPLETED` activity with the lesson's topics), `setOnlyPriorityLessons`. All three chain `publishedLessonWhere`/`publishedCourseWhere`.
+
+The lesson page renders `GameViewer` in `moveList="flow"` mode (lessons are read like text), with `LessonTracker` calling `touchLesson` on open and the completion button calling `completeLesson`.
+
+## Move Trainer — `/entrenador`
+
+- **Home** (`getTrainerData()`): chapters with exercises, split into "my chapters" (`UserTrainerChapter`) and available ones; `toggleTrainerChapter` adds or removes.
+- **Session** (`getTrainerSession({ lessonId | chapterId | none })`): exercises of a lesson, a chapter, or all chapters added by the student, always filtered by published course. Each `TrainerExercise` carries the frozen `startFen`, `lineSans`, `userColor` (the colour to move in `startFen`; `Lesson.trainingColorId` lets black repertoires start with white's move played), `modeCode` and `isStale`.
+- **Play** (`components/sections/platform/trainer/trainer-session.comp.tsx`, client): the student plays their plies on `ChessBoard`; the opponent replies after 450 ms; SAN comparison ignores `+ # ! ?`; mistakes are counted; a summary closes the session.
+- **Record** (`recordTrainingAttempt` in `trainer.actions.ts`): validates the exercise against the database, clamps `mistakes` (≤ 999) and `durationMs` (≤ 2 h), stores `TrainingAttempt` and `TrainingMistake` rows (hashed positions), updates `UserLessonTraining` with `applyReview()` and records `EXERCISE_PASSED` activity when passed.
+
+Spaced repetition (`lib/training/review-schedule.ts`): intervals `[0, 1, 3, 7, 21, 60]` days; only a **perfect** attempt (no mistakes, no hints) climbs one step; any failure returns to step 0 (due today). `isDueForReview` and `accuracyPercent` are pure and tested.
+
+## Studies — `/estudios`
+
+A study is a `GameDatabase`. `getUserStudies()` lists, with `study-rules` permissions already resolved:
+
+| Kind | Who creates it | Notes |
+| --- | --- | --- |
+| `MY_GAMES` "Mis partidas" | The system, at account creation (`services/studies/default-study.ts`) | Exactly one per student; cannot be deleted or re-typed. |
+| `STUDY` | Student or teacher | Free material. |
+| `TOURNAMENT` | Student or teacher | Games from one competition. |
+| `COLLECTION` | Teacher | Shared with students through `StudyShare`; read-only for them. |
+| Course collections | Staff (per chapter) | Visible once the course is started; read-only. |
+
+Actions (`studies.actions.ts`): `createStudy`, `updateStudy`, `deleteStudy` (warns about games cited in classes), `importPgnGames` (parses up to 500 games / 2 MB with `services/shared/pgn-import.ts`, maps headers to columns, indexes positions, all in one transaction with a 120 s timeout), `createStudyGame` (from the analysis board or a PGN), `updateGameDetails` (players, Elo, titles, federations, result, date, event, round, ECO), `autosaveGamePgn` (the viewer saves edits in place; returns an `AutosaveResult`), `deleteStudyGame`, `reorderStudyGames` (drag/keyboard; `planFullReorder`), `copyClassGamesToStudy`, `shareStudyWithStudent` / `unshareStudyWithStudent` (teachers).
+
+- Study detail shows games with `title` or a label built from round/position, players, result token, ECO, event, date, and a mark when the game is cited in a class.
+- Game page (`/estudios/[studyId]/partidas/[gameId]`) renders `GameViewer` with `engine`, editing enabled when `canEdit`, player strips with federation flags (`lib/chess/federations.ts`) and FIDE titles, game tools (comment, NAGs, share/export), and the game review.
+- `/estudios/clases` lists games seen in classes the student attended (derived from `ClassBlock` references), with a copy-to-study action.
+
+## Classes — `/clases`
+
+`services/classes/classes.service.ts`: `getUserClasses()` splits into upcoming and past; `getClassById()` returns the detail with `meetingUrl` only when `now >= meetingUrlVisibleFrom` (and `meetingVisibleFromIso` for the countdown), the ordered blocks as a discriminated union (`TEXT`, `VIDEO`, `GAME_REF` with PGN and optional `movePath`, `LESSON_REF`, `POSITION_REF`, `FILE`) and the transcript status. `components/common/class-content-renderer.comp.tsx` renders blocks: text as paragraphs (lines starting with `## ` become headings), games in `GameViewer` opened at `initialPath`, positions in `StaticDiagram`. Times are shown in the student's browser zone by `LocalDateTime`.
+
+## Position explorer — `/explorador`
+
+Shared by students and teachers. The client board sends a FEN to `searchPosition(fen, filters)` (`services/game-explorer`), which validates legality, hashes it with `createPositionHash` and reads `GamePosition`:
+
+- `totalGames` (distinct games that reached the position), `nextMoves` (continuations by UCI with counts and percentages), and up to 20 games, newest first, each with its **origin** (`services/shared/game-origin.ts`: student study, course, teacher/editor), whether it was seen in class, and an `href` if the viewer can open it.
+- Visibility comes from `getVisibleGamesWhere()`; teachers additionally see games of actively assigned students. Filters by origin exist; the signature leaves room for player, colour, Elo and date.
+
+## Activity and statistics
+
+`services/shared/user-activity.service.ts` → `recordUserActivity({ userId, typeCode, subjectTypeCode, subjectId, topicId?, occurredAt?, meta? })` appends the fact and upserts the daily aggregate for the metric (and per topic). Callers: lesson/course completion, class attendance (marked by the teacher), exercise passed, game analysed.

@@ -1,0 +1,58 @@
+---
+description: "The pure chess modules in lib/chess — PGN trees and editing, replay, notation, hashing, exercise derivation, engine protocol and game review — and the conventions they share."
+---
+
+# Chess library (`lib/chess`)
+
+Every module here is **pure**: no React, no Prisma, no `server-only` (except where Node's `crypto` is needed). They are unit-tested (`*.test.ts`, fixtures in `lib/chess/__fixtures__/`) and shared by the browser components, the services, the seed and the scripts. The rules engine underneath is [`chessops`](https://github.com/niklasf/chessops); the board is [`@lichess-org/chessground`](https://github.com/lichess-org/chessground).
+
+## Conventions
+
+- **PGN in, positions out.** Nothing stores moves relationally; every consumer parses the PGN it needs.
+- **Dotted paths** address a node inside a PGN tree: child indexes from the root, `"0"` is the first move, `"0.0.1.0"` goes down the mainline twice, into the second variation, then one more move. `children[0]` is the mainline by convention (which is what `makePgn` assumes when serialising). Stored in `TrainingExercise.path` and `ClassBlock.movePath`.
+- **Paths move.** Deleting or promoting reindexes siblings; hold a node reference and recompute the path with `pathOfNode` after mutating.
+- **Spanish SAN for display only.** `sanToSpanish` maps `N→C, B→A, R→T, Q→D, K→R` (and the promotion piece); storage and comparisons keep English SAN.
+- **Evaluations are always from White's point of view**, whether they come from the engine or from `[%eval]` comments.
+
+## Modules
+
+| Module | Exports | Purpose |
+| --- | --- | --- |
+| `pgn-tree.ts` | `parsePgnTree`, `nodeAtPath`, `parentPathOf`, `nextPathOf`, `endPathOf`, `sansAlongPath`, NAG helpers (`nagGlyph`, `MOVE_QUALITY_NAGS`, `MOVE_REMARK_NAGS`, `POSITION_EVAL_NAGS`), types `PgnTree`, `PgnTreeNode`, `MoveEvaluation` | Read-only tree of a full PGN: variations, comments, NAGs, `[%cal]` arrows, `[%csl]` squares, `[%diagram]`, `[%eval]`. Each node carries `fen`, `lastMove`, `check`, `ply`, `shapes`. Uses `movetext-scan` to report malformed tokens that chessops would silently drop. |
+| `pgn-edit.ts` | `parseEditableGame`, `serializeGame`, `emptyGame`, `nodeAtPathIn`, `pathOfNode`, `positionAtPath`, `addMove`, `deleteFrom`, `promoteOneStep`, `promoteToMainLine`, `variationPgn`, `commentTextAt`, `setCommentText`, `setEvaluation`, `setShapes`, `setNags` | Mutations on chessops' mutable `Game<PgnNodeData>`: the analysis board and the viewer's editing mode use it. |
+| `replay.ts` | `replayGame`, `replayGameDetailed` (with `warnings`), `turnColor`, `applySan`, `isPromotionMove`, `sanForMove`, `uciLineSteps`, `uciLineToSan`, type `ReplayPosition` (`san`, `uci`, `fen`, `lastMove`, `check`) | Mainline replay into one position per ply; stops at the first illegal/unparseable move and reports it. The blog board, indexing, exports and the trainer use it. |
+| `mainline.ts` | `extractMainline`, `startFenOf` | The mainline SANs and initial FEN of a PGN; `startFenOf` also answers for move-less PGNs (a diagram-only lesson). |
+| `plain-movetext.ts` | `plainMovetext` | The mainline as clean numbered movetext (keeps `SetUp`/`FEN` only when needed) for sharing. |
+| `notation.ts` | `sanToSpanish`, `numberedMoveLabel` ("12. Cf3", "12… Axf3"), `buildNotationRows` | Two-column notation rows with figurine glyphs and move-quality tags (blog and lessons). |
+| `notation-blocks.ts` | `buildNotationBlocks` | Reading order of a tree: mainline rows, comments and indented variation lines, as a flat list the `MoveTree` component renders. |
+| `movetext-scan.ts` | `findMalformedMoveTokens` | Finds tokens that are not even SAN-shaped (`Qz9`) in raw movetext; high bar to avoid false positives. |
+| `legal-moves.ts` | `legalDests(fen)` | `Map<from, to[]>` for chessground's `movable.dests`. |
+| `position-hash.ts` | `normalizePositionFen` (first four FEN fields), `createPositionHash` (SHA-256) | Position identity for the explorer and mistakes. Server-side only (Node `crypto`); never duplicate it in the browser. |
+| `extract-game-positions.ts` | `extractGamePositions(pgn)` | One hashed row per ply with the next move (SAN and UCI); what `services/game-positions` writes. |
+| `exercise-derivation.ts` | `mainlinePath`, `positionAfter`, `deriveExerciseData` | Frozen exercise data (`path`, `startPly`, `endPly`, `startFen`, `line`) from SANs; shared by seed and staff actions so both derive identically. |
+| `game-review.ts` | `winPercent`, `moveAccuracy`, `reviewGame` → `GameReview` (per-move loss and grade `good/inaccuracy/mistake/blunder`, per-player accuracy, averages, phase boundaries) | Lichess' formulas, so an 88 % here means the same as there. |
+| `engine-protocol.ts` | `parseEngineInfo(line, turn)`, `evaluationBarFill`, `formatEvaluation`, `engineLineTokens`, `formatEngineLine`, `mergeEngineLines`, `orderedEngineLines` | Reading UCI `info` lines (depth, multipv, score normalised to White, mate distance, PV) and shaping them for the panel. |
+| `federations.ts` | `federationFlag`, `federationName`, `federationOptions`, `FIDE_TITLES`, `FIDE_TITLE_LABELS` | FIDE three-letter federation codes (not ISO-3166; `CHI` is Chile, `SUI` Switzerland…) to flags and Spanish names. |
+| `types.ts` | `MoveQuality`, `MoveAnnotations` | Move-quality tags keyed by `"12w"`/`"12b"`, used by the blog's featured games. |
+
+Related pure modules outside the folder: `lib/training/review-schedule.ts` (spaced-repetition ladder), `lib/parse-fen-placement.ts` (64 squares for `StaticDiagram`), `services/shared/pgn-import.ts` (PGN headers → `Game` rows), `services/shared/lesson-pgn.ts` (which PGN is a lesson's content).
+
+## Typical flows
+
+**Import a PGN into a study**
+
+1. `parseImportedGames(text)` (chessops `parsePgn`) → headers to columns, result token to catalog code, full dates only, Elo/titles/federations.
+2. For each game, `indexGamePositions({ gameId, databaseId, pgn }, tx)` → `extractGamePositions` → `GamePosition` rows; replay warnings are logged, not fatal.
+3. All inside one `$transaction` with `PGN_IMPORT_TRANSACTION`.
+
+**Mark a lesson trainable**
+
+1. `extractMainline(lessonPgnOf(lesson))` → SANs + initial FEN (null if no moves → rejected).
+2. Choose the student's colour (`trainingColorId` or the side to move).
+3. `deriveExerciseData({ initialFen, afterSans, lineSans })` → frozen `startFen`, `line`, `path`, plies; stored as a derived `TrainingExercise`.
+
+**Evaluate a game**
+
+1. `replayGame(pgn)` → FEN per ply.
+2. A dedicated Stockfish worker analyses each position at depth 16 (`use-game-review.ts`), collecting `MoveEvaluation`s.
+3. `reviewGame(positions)` → accuracy, grades, phases; `setEvaluation` can write them back into the PGN as `[%eval]`.
