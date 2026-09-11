@@ -73,7 +73,10 @@
       gap: 32px;
     }
 
+    /* The top padding is the same 88px the sections above take from here down;
+       the bottom one clears the sticky bar. */
     & .site-footer__wrap {
+      padding-top: 88px;
       padding-bottom: 200px;
     }
   }

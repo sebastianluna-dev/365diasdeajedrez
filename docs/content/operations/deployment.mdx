@@ -25,7 +25,7 @@ Never set `ALLOW_DEMO_SEED` in production.
 
 1. **Back up both databases** (below). Prisma migrations have no down path.
 2. `npm run db:deploy` (`prisma migrate deploy`) against the production `PLATFORM_DATABASE_URL`.
-3. Deploy the app. `next build` prerenders `/`, the sitemap and static pages, so it needs read access to both databases at build time (which is why CI does not build).
+3. Deploy the app. `npm run build` first runs `prisma generate`: `lib/platform-db/generated/` is git-ignored, so without it Turbopack fails with `Can't resolve './generated/client'`. Then `next build` prerenders `/`, the sitemap and static pages, so it needs read access to both databases at build time (which is why CI does not build).
 4. If a migration needs data movement, run its script (`scripts/…`) after the deploy, with `--dry` first.
 5. Payload schema changes: there are no committed Payload migrations; the CMS tables are synced by Drizzle push when `next dev` runs against the database. Do that before deploying a collection change, or introduce Payload migrations (`payload migrate:create`) when the team wants an explicit path.
 

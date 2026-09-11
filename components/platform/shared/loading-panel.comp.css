@@ -15,10 +15,11 @@
     border-top-color: var(--platform-accent);
     animation: loading-panel-spin 0.8s linear infinite;
   }
+}
 
-  @keyframes loading-panel-spin {
-    to {
-      transform: rotate(360deg);
-    }
+/* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */
+@keyframes loading-panel-spin {
+  to {
+    transform: rotate(360deg);
   }
 }

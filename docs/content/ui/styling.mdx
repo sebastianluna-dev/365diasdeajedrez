@@ -29,7 +29,7 @@ Both files are global on purpose; every other stylesheet is scoped to its compon
 
 ## Tokens
 
-Tokens are the only place a colour is chosen. Component stylesheets use `var(--…)`; a bare hex value in a component is debt (the few that remain are listed in `todos.md` T14).
+Tokens are the only place a colour is chosen (plus the two layout tokens below, the measurements several stylesheets have to agree on). Component stylesheets use `var(--…)`; a bare hex value in a component is debt (the few that remain are listed in `todos.md` T14).
 
 ### Public site — `--color-*` (`globals.css`)
 
@@ -45,6 +45,8 @@ Tokens are the only place a colour is chosen. Component stylesheets use `var(--�
 | `--color-muted-on-dark` / `--color-muted-on-light` | `#b4a99d` / `#5c5348` | Secondary text, one per background. |
 | `--color-light-gray`, `--color-lighter-gray`, `--color-normal-gray` | `#e6e1dd`, `#eee9e5`, `#aca7a3` | Neutral surfaces and borders on light sections. |
 | `--board-light` / `--board-dark` | `#eeeed2` / `#769656` | Board squares. Mirrored in `constants/chess-board-colors.const.ts` because the canvas export cannot read CSS; change both together. |
+| `--site-logo-height` | `20px`, `28px` under 1024 px, `24px` under 400 px | Height the wordmark is drawn at (`logo.comp.css`). It is a token because the header is built around it: the fixed menu toggle centres itself on it and `--site-header-height` is made of it. |
+| `--site-header-height` | `100px`; `calc(25px + var(--site-logo-height) + 14px)` under 1024 px | Vertical space the header occupies, which the home hero reads to fill the first screen on mobile. On mobile the bar is only the logo, so the value follows the token; on desktop the bar is as tall as the login button instead, hence the flat number, composed by hand from `header.section.css` (28 px of padding + the 58 px button + the 14 px spacer). |
 
 ### Platform — `--platform-*` (`platform.css`)
 
@@ -82,7 +84,7 @@ The naming is Yandex-style BEM and the scoping is native CSS nesting. Both are m
 - **Element** = `block__element`: `.study-card__title`. Elements are never nested in the name (`.study-card__head__title` is wrong; use `.study-card__head-title`).
 - **Modifier** = `block_key_value` or `element_key_value`: `.platform-button_variant_secondary`, `.platform-table__cell_align_right`, `.progress-indicator_layout_stacked`. Boolean modifiers drop the value: `.site-header__dropdown_open`, `.logo__mark_hidden`.
 - **One file per component**, named after it (`study-card.comp.css` next to `study-card.comp.tsx`) and imported from that component only.
-- **Every rule nests under the root selector** with `&`, so nothing can leak out of the block. Media queries go inside the block too.
+- **Every rule nests under the root selector** with `&`, so nothing can leak out of the block. Media queries go inside the block too. The one exception is `@keyframes`: it is not valid inside a style rule (the browser drops it and the build warns), so it goes at the top level after the block, named `block-…` (`loading-panel-spin`, `time-roller-enter`).
 - **Desktop-first**: media queries use `max-width`. There is no fixed breakpoint scale; the ones used most are 1024/1023, 900 and 720 px, with 640/620 and 560 for the narrowest layouts. Pick the one where the layout actually breaks. Two files still use `min-width` (`section-heading.comp.css`, `resources.section.css`); inverting them is `todos.md` T17.
 
 A complete example (`components/platform/shared/empty-state.comp.css`):
