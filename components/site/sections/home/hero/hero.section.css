@@ -142,11 +142,37 @@
     }
   }
 
+  /* From 1023px down the portrait is the first thing on screen and can afford
+     to grow; the extra margin keeps it off the title. It is undone below 420px,
+     where the screen is too narrow for the bigger circle. */
+  @media (max-width: 1023px) {
+    & .hero__visual {
+      transform: scale(1.25);
+      margin-bottom: 20px;
+    }
+  }
+
   @media (max-width: 720px) {
     padding-top: 0;
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 0;
+    /* On a phone the hero takes the whole first screen: everything below the
+       header. `svh` is the viewport with the browser bars showing, which is
+       what is visible on load; `vh` stays as the fallback for browsers
+       without the unit, where it would end up slightly taller. */
+    min-height: calc(100vh - var(--site-header-height));
+    min-height: calc(100svh - var(--site-header-height));
+    display: flex;
+    align-items: center;
+
+    /* The bottom padding is what keeps the CTA clear of the sticky bar that
+       floats over the last ~70px of the screen (cta.section.css); with the
+       section centred, it also lifts the content above the exact middle. */
+    & .hero__inner {
+      width: 100%;
+      padding-bottom: 72px;
+    }
 
     & .hero__grid {
       gap: 20px;
@@ -185,6 +211,13 @@
       flex-direction: column;
       align-items: stretch;
       gap: 16px;
+    }
+  }
+
+  @media (max-width: 419px) {
+    & .hero__visual {
+      transform: none;
+      margin-bottom: 0;
     }
   }
 }

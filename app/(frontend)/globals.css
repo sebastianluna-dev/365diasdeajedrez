@@ -19,6 +19,30 @@
   --color-light-gray: #e6e1dd;
   --color-lighter-gray: #eee9e5;
   --color-normal-gray: #aca7a3;
+  /* Height the wordmark is drawn at (logo.comp.css). It is a token because the
+     header is built around it: the menu toggle is centred on it and the header's
+     own height is made of it. */
+  --site-logo-height: 20px;
+  /* Vertical space the site header takes up: the inner's top padding + the bar
+     + the spacer under it (see header.section.css). The hero reads it to fill
+     the rest of the viewport on mobile. On desktop the bar is as tall as the
+     login button, not as the logo, hence the flat value. */
+  --site-header-height: 100px;
+}
+
+@media (max-width: 1023px) {
+  :root {
+    --site-logo-height: 28px;
+    /* The bar loses the login button and is only the logo, so the height
+       follows it: 25px of top padding + the logo + the 14px spacer. */
+    --site-header-height: calc(25px + var(--site-logo-height) + 14px);
+  }
+}
+
+@media (max-width: 399px) {
+  :root {
+    --site-logo-height: 24px;
+  }
 }
 
 /* ---------------------------------------------------------------------------

@@ -33,17 +33,10 @@
     margin-bottom: 0;
   }
 
+  /* Off on the phone: the board is too small to read there and it is the
+     heaviest thing on the page. Hidden it never intersects, so ChessBoardLazy
+     does not download chessground either (chess-board-lazy.comp.tsx). */
   @media (max-width: 720px) {
-    & .teacher-game__inner {
-      padding: 28px 20px 88px;
-    }
-
-    & .teacher-game__title {
-      font-size: 32px;
-    }
-
-    & .teacher-game__text {
-      font-size: 18px;
-    }
+    display: none;
   }
 }

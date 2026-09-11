@@ -1,5 +1,5 @@
 ---
-description: "The teacher's profile on the home page: photo with stats, eyebrow, name, badge, summary, the Elo table, a CTA, and an annotated game on the lazy board with its own stylesheet."
+description: "The teacher's profile on the home page: photo with stats, eyebrow, name, badge, summary, the Elo table, a CTA, and an annotated game on the lazy board with its own stylesheet — the ratings and the game only from 720 px up."
 ---
 
 # `TeacherSection`
@@ -30,6 +30,7 @@ None.
 - The stats render twice, once in the photo overlay and once in the content column with `.teacher__stats_variant_mobile`; CSS shows one per breakpoint.
 - The Elo ratings go through [`EloTable`](/components/chess/elo-table) with four columns.
 - The game passes `flipBoard`, `pgn` and `annotations` from the Global.
+- Under 720 px the ratings and the whole game block are hidden by CSS. Both are still rendered on the server, which is deliberate: hiding the game with `display: none` leaves its placeholder without a box, so the observer inside [`ChessBoardLazy`](/components/chess/chess-board-lazy) never fires and chessground is not downloaded on a phone.
 
 ## Markup & styling
 
@@ -41,7 +42,7 @@ Block `.teacher` (225 lines) and block `.teacher-game` (49 lines), both imported
 
 **Tokens:** `--color-primary`, `--font-gramatika`
 
-**Breakpoints:** `(max-width: 1023px)`, `(max-width: 720px)`.
+**Breakpoints:** `(max-width: 1023px)`, `(max-width: 720px)` — the phone drops `.teacher__elo-label`, `.teacher__elo-table` and the entire `.teacher-game` block, and `.teacher` grows its own vertical padding (88 px, the same as the neighbouring sections) because the game block was what gave the section air underneath.
 
 **Other classes:** `.button.button_variant_primary`.
 

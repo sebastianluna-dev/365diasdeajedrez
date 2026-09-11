@@ -1,73 +1,64 @@
 .logo {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  font-weight: 700;
-  font-size: 20px;
+  display: inline-flex;
+  align-items: center;
 
-  & .logo__marks {
-    display: grid;
-    grid-template-columns: 6px 6px;
-    grid-template-rows: 6px 6px;
-    transform: translateY(-1px);
-    gap: 2px;
-  }
+  /* Nudged down to sit on the optical centre of the header's pill; `relative`
+     keeps the space it leaves, so the header's height does not change. */
+  position: relative;
+  top: 4px;
 
-  & .logo__mark {
+  /* The height is the only measurement: the wordmark keeps its 703×72 ratio.
+     It comes from a token because the header is measured from it
+     (--site-header-height). `display: block` removes the line box under an
+     inline SVG, which is what makes that measurement exact. */
+  & .logo__image {
     display: block;
-    width: 6px;
-    height: 6px;
+    width: auto;
+    height: var(--site-logo-height);
   }
 
-  & .logo__mark_hidden {
-    background: transparent;
+  /* The word and the two marks follow the theme through `color`; only the
+     "365" is painted by the accent modifier. */
+  & .logo__word,
+  & .logo__marks {
+    fill: currentColor;
   }
 
   &.logo_theme_dark {
-    color: #f2ede7;
-
-    & .logo__mark:not(.logo__mark_hidden) {
-      background: #f2ede7;
-    }
+    color: var(--foreground);
   }
 
   &.logo_theme_light {
-    color: #16110d;
-
-    & .logo__mark:not(.logo__mark_hidden) {
-      background: #16110d;
-    }
+    color: var(--color-dark);
   }
 
   &.logo_accent_orange.logo_theme_dark {
-    text-shadow: 0 0 18px rgba(255, 145, 67, 0.55);
-
     & .logo__accent {
-      color: var(--color-primary);
+      fill: var(--color-primary);
     }
   }
 
   &.logo_accent_orange.logo_theme_light {
     & .logo__accent {
-      color: var(--color-primary-on-light);
+      fill: var(--color-primary-on-light);
     }
   }
 
   &.logo_accent_red.logo_theme_light {
     & .logo__accent {
-      color: var(--color-accent-red);
+      fill: var(--color-accent-red);
     }
   }
 
   &.logo_accent_red.logo_theme_dark {
     & .logo__accent {
-      color: var(--color-accent-red-on-dark);
+      fill: var(--color-accent-red-on-dark);
     }
   }
 
+  /* The offset is a desktop correction: on mobile the logo is centred against
+     the menu toggle, which follows the same token. */
   @media (max-width: 1023px) {
-    & .logo__label {
-      display: none;
-    }
+    top: 0;
   }
 }
