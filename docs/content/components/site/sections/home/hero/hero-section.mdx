@@ -36,7 +36,7 @@ Block `.hero` (190 lines).
 
 **Tokens:** `--font-gramatika`, `--site-header-height`
 
-**Breakpoints:** `(max-width: 1024px)` stacks the grid and shrinks the card; `(max-width: 720px)` hides the badges, drops the vertical padding and gives the section `min-height: calc(100svh - var(--site-header-height))` so it covers the whole first screen under the header, with its content centred in that space (`100vh` is declared first as the fallback for browsers without `svh`).
+**Breakpoints:** `(max-width: 1024px)` stacks the grid and shrinks the card; `(max-width: 1023px)` scales the portrait to 1.25 and adds 20 px under it, which `(max-width: 419px)` undoes because the narrowest screens have no room for the bigger circle; `(max-width: 720px)` hides the badges, drops the vertical padding and gives the section `min-height: calc(100svh - var(--site-header-height))` so it covers the whole first screen under the header, with its content centred in that space (`100vh` is declared first as the fallback for browsers without `svh`).
 
 **Other classes:** `.button.button_variant_primary.button_size_hero` from `globals.css`.
 

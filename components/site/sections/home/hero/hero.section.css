@@ -142,6 +142,16 @@
     }
   }
 
+  /* From 1023px down the portrait is the first thing on screen and can afford
+     to grow; the extra margin keeps it off the title. It is undone below 420px,
+     where the screen is too narrow for the bigger circle. */
+  @media (max-width: 1023px) {
+    & .hero__visual {
+      transform: scale(1.25);
+      margin-bottom: 20px;
+    }
+  }
+
   @media (max-width: 720px) {
     padding-top: 0;
     padding-left: 20px;
@@ -201,6 +211,13 @@
       flex-direction: column;
       align-items: stretch;
       gap: 16px;
+    }
+  }
+
+  @media (max-width: 419px) {
+    & .hero__visual {
+      transform: none;
+      margin-bottom: 0;
     }
   }
 }
