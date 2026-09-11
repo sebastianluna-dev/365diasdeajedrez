@@ -29,7 +29,7 @@ Both files are global on purpose; every other stylesheet is scoped to its compon
 
 ## Tokens
 
-Tokens are the only place a colour is chosen. Component stylesheets use `var(--…)`; a bare hex value in a component is debt (the few that remain are listed in `todos.md` T14).
+Tokens are the only place a colour is chosen (plus `--site-header-height`, the one measurement that two stylesheets have to agree on). Component stylesheets use `var(--…)`; a bare hex value in a component is debt (the few that remain are listed in `todos.md` T14).
 
 ### Public site — `--color-*` (`globals.css`)
 
@@ -45,6 +45,7 @@ Tokens are the only place a colour is chosen. Component stylesheets use `var(--�
 | `--color-muted-on-dark` / `--color-muted-on-light` | `#b4a99d` / `#5c5348` | Secondary text, one per background. |
 | `--color-light-gray`, `--color-lighter-gray`, `--color-normal-gray` | `#e6e1dd`, `#eee9e5`, `#aca7a3` | Neutral surfaces and borders on light sections. |
 | `--board-light` / `--board-dark` | `#eeeed2` / `#769656` | Board squares. Mirrored in `constants/chess-board-colors.const.ts` because the canvas export cannot read CSS; change both together. |
+| `--site-header-height` | `100px`, `69px` under 1024 px | Vertical space the header occupies (the inner's top padding + the bar + the spacer). The only layout token: the home hero reads it to fill the first screen on mobile. Its value is composed by hand from `header.section.css`, so a change to the header's padding, the logo or the spacer has to be carried here. |
 
 ### Platform — `--platform-*` (`platform.css`)
 

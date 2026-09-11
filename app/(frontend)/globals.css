@@ -19,6 +19,17 @@
   --color-light-gray: #e6e1dd;
   --color-lighter-gray: #eee9e5;
   --color-normal-gray: #aca7a3;
+  /* Vertical space the site header takes up: the inner's top padding + the bar
+     + the spacer under it (see header.section.css). The hero reads it to fill
+     the rest of the viewport on mobile; keep both values in sync with that file. */
+  --site-header-height: 100px;
+}
+
+@media (max-width: 1023px) {
+  :root {
+    /* The bar loses the CTA button and keeps only the logo (25px + 30px + 14px). */
+    --site-header-height: 69px;
+  }
 }
 
 /* ---------------------------------------------------------------------------
