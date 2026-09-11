@@ -156,9 +156,12 @@
     display: flex;
     align-items: center;
 
+    /* The bottom padding is what keeps the CTA clear of the sticky bar that
+       floats over the last ~70px of the screen (cta.section.css); with the
+       section centred, it also lifts the content above the exact middle. */
     & .hero__inner {
       width: 100%;
-      padding-bottom: 48px;
+      padding-bottom: 72px;
     }
 
     & .hero__grid {

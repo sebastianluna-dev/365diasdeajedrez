@@ -138,7 +138,9 @@
   & .site-header__toggle {
     display: none;
     position: fixed;
-    top: 20px;
+    /* Centred on the logo: the 25px of top padding the bar has on mobile, plus
+       the difference between the wordmark and this 40px button. */
+    top: calc(25px + (var(--site-logo-height) - 40px) / 2);
     right: 20px;
     z-index: 41;
     flex: none;
@@ -185,7 +187,8 @@
 
     & .site-header-mobile {
       position: fixed;
-      top: 76px;
+      /* 16px under the toggle: its own top + its 40px + 16px. */
+      top: calc(81px + (var(--site-logo-height) - 40px) / 2);
       left: 20px;
       right: 20px;
       z-index: 41;
