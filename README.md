@@ -1,99 +1,99 @@
 # 365 días de ajedrez
 
-Monorepo de una sola app Next.js que reúne tres piezas: el **sitio público**, el **CMS** (Payload) y la **plataforma educativa** (Prisma + Postgres).
+Monorepo of a single Next.js app that brings three pieces together: the **public site**, the **CMS** (Payload) and the **learning platform** (Prisma + Postgres).
 
-## Requisitos
+## Requirements
 
-- **Node 20.9+** (requisito de Next 16).
-- **Dos bases de datos Postgres distintas**, sin tablas compartidas:
+- **Node 20.9+** (Next 16's requirement).
+- **Two separate Postgres databases**, with no shared tables:
   - `DATABASE_URI` → Payload / CMS.
-  - `PLATFORM_DATABASE_URL` → plataforma educativa (Prisma). Usa `sslmode=verify-full`; con `sslmode=require` el driver `pg` avisa del cambio de semántica previsto para pg v9.
-- Variables de entorno en `.env.local` (copia `.env.example` y rellena): `PAYLOAD_SECRET`, credenciales de Cloudinary, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_APP_ENV` (sólo `production` activa Google Analytics y Meta Pixel), `NEXT_PUBLIC_GA_MEASUREMENT_ID` y `NEXT_PUBLIC_META_PIXEL_ID`.
+  - `PLATFORM_DATABASE_URL` → learning platform (Prisma). Use `sslmode=verify-full`; with `sslmode=require` the `pg` driver warns about the change of semantics planned for pg v9.
+- Environment variables in `.env.local` (copy `.env.example` and fill it in): `PAYLOAD_SECRET`, the Cloudinary credentials, `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_APP_ENV` (only `production` turns Google Analytics and the Meta Pixel on), `NEXT_PUBLIC_GA_MEASUREMENT_ID` and `NEXT_PUBLIC_META_PIXEL_ID`.
 
-El CLI de Prisma lee `PLATFORM_DATABASE_URL` a través de `prisma.config.ts`, que carga `.env.local` y `.env`.
+Prisma's CLI reads `PLATFORM_DATABASE_URL` through `prisma.config.ts`, which loads `.env.local` and `.env`.
 
-## Puesta en marcha
+## Getting started
 
 ```bash
 npm install
-cp .env.example .env.local   # y rellena los valores
-npm run db:generate          # genera el cliente Prisma en lib/platform-db/generated
-npm run db:migrate           # aplica las migraciones sobre PLATFORM_DATABASE_URL
-npm run db:seed              # catálogos (idempotentes) + datos demo
+cp .env.example .env.local   # then fill in the values
+npm run db:generate          # generates the Prisma client in lib/platform-db/generated
+npm run db:migrate           # applies the migrations to PLATFORM_DATABASE_URL
+npm run db:seed              # catalogues (idempotent) + demo data
 npm run dev                  # http://localhost:3000
 ```
 
-## Comandos disponibles
+## Available commands
 
-| Comando | Descripción |
+| Command | Description |
 | --- | --- |
-| `npm run dev` | Servidor de desarrollo (Webpack). |
-| `npm run build` | `prisma generate` + build de producción (el cliente generado no está en git; Vercel sólo corre este script). |
-| `npm run start` | Sirve el build de producción. |
+| `npm run dev` | Development server (Webpack). |
+| `npm run build` | `prisma generate` + production build (the generated client is not in git; Vercel only runs this script). |
+| `npm run start` | Serves the production build. |
 | `npm run lint` | ESLint. |
-| `npm run test` | Vitest, una pasada. |
-| `npm run test:watch` | Vitest en modo watch. |
+| `npm run test` | Vitest, one pass. |
+| `npm run test:watch` | Vitest in watch mode. |
 | `npm run db:generate` | `prisma generate`. |
-| `npm run db:migrate` | `prisma migrate dev` (desarrollo). |
-| `npm run db:deploy` | `prisma migrate deploy` (producción). |
+| `npm run db:migrate` | `prisma migrate dev` (development). |
+| `npm run db:deploy` | `prisma migrate deploy` (production). |
 | `npm run db:seed` | `prisma db seed`. |
 | `npm run db:studio` | `prisma studio`. |
-| `npm run user:create -- <correo> "<Nombre>"` | Da de alta un alumno (pide la contraseña sin eco). |
-| `npm run user:password -- <correo>` | Cambia su contraseña y cierra sus sesiones. |
-| `npm run user:list` | Lista las cuentas, si tienen contraseña y sus sesiones abiertas. |
-| `npm run pieces:sync` | Copia las piezas del tablero (chessground) a `public/pieces`; ejecutar al actualizar chessground. |
-| `npm run typecheck` | `tsc --noEmit`, lo mismo que corre CI. |
-| `npm run storybook` | Storybook en `localhost:6006` (piloto: sólo `PlanCard`; guía en `docs/`, «Storybook»). |
-| `npm run storybook:build` | Build estática de Storybook en `storybook-static/` (ignorada por git). |
-| `npm run test:coverage` | Vitest con cobertura (v8) sobre `lib`, `services`, `constants` y `hooks`. |
-| `npm run format` / `npm run format:check` | Prettier sobre el repo (hoy `format:check` falla: el repo nunca se formateó, ver `IMPROVEMENTS.md` #39). |
-| `npm run positions:index` | Rellena el índice de posiciones de las partidas ya guardadas (`-- --all` reindexa todas). |
-| `npm run collections:by-chapter` | Migración de datos de una sola vez: colecciones de curso → colecciones por capítulo. |
+| `npm run user:create -- <email> "<Name>"` | Enrols a student (asks for the password without echoing it). |
+| `npm run user:password -- <email>` | Changes their password and closes their sessions. |
+| `npm run user:list` | Lists the accounts, whether they have a password and their open sessions. |
+| `npm run pieces:sync` | Copies the board pieces (chessground) to `public/pieces`; run it whenever chessground is updated. |
+| `npm run typecheck` | `tsc --noEmit`, the same CI runs. |
+| `npm run storybook` | Storybook at `localhost:6006` (pilot: `PlanCard` only; guide in `docs/`, "Storybook"). |
+| `npm run storybook:build` | Static Storybook build in `storybook-static/` (git-ignored). |
+| `npm run test:coverage` | Vitest with coverage (v8) over `lib`, `services`, `constants` and `hooks`. |
+| `npm run format` / `npm run format:check` | Prettier over the repo (`format:check` fails today: the repo was never formatted, see `IMPROVEMENTS.md` #39). |
+| `npm run positions:index` | Fills in the position index of the games already stored (`-- --all` reindexes every one). |
+| `npm run collections:by-chapter` | One-off data migration: course collections → per-chapter collections. |
 
-`.github/workflows/ci.yml` corre `lint`, `typecheck` y `test` en cada push a `main` y en cada pull request. No hace `next build`: la generación estática consulta las bases, que CI no tiene; el build lo valida el despliegue.
+`.github/workflows/ci.yml` runs `lint`, `typecheck` and `test` on every push to `main` and on every pull request. It does not run `next build`: static generation queries the databases, which CI does not have; the deployment is what validates the build.
 
-## Copias de seguridad
+## Backups
 
-Hay dos bases y ninguna se puede reconstruir desde el código: en `PLATFORM_DATABASE_URL` viven las cuentas, el progreso y las anotaciones de partidas; en `DATABASE_URI`, el contenido del sitio y del blog. Las migraciones de Prisma no tienen camino inverso, así que **antes de cada `npm run db:deploy` en producción** se hace un volcado con marca de tiempo de las dos:
+There are two databases and neither can be rebuilt from the code: `PLATFORM_DATABASE_URL` holds the accounts, the progress and the game annotations; `DATABASE_URI`, the content of the site and of the blog. Prisma's migrations have no way back, so **before every `npm run db:deploy` in production** take a timestamped dump of both:
 
 ```bash
 pg_dump --format=custom --no-owner --file="plataforma-$(date +%Y%m%d-%H%M).dump" "$PLATFORM_DATABASE_URL"
 pg_dump --format=custom --no-owner --file="payload-$(date +%Y%m%d-%H%M).dump" "$DATABASE_URI"
 ```
 
-Se restaura sobre una base vacía o de pruebas con `pg_restore --no-owner --dbname="$URL" archivo.dump`. Conviene ensayar una restauración completa en una base aparte al menos una vez y anotar aquí cuánto tardó, junto con lo que ofrezca el proveedor (copias automáticas y retención).
+They are restored onto an empty or test database with `pg_restore --no-owner --dbname="$URL" file.dump`. It is worth rehearsing a full restore on a separate database at least once and noting here how long it took, along with whatever the provider offers (automatic backups and retention).
 
-## Acceso a la plataforma
+## Access to the platform
 
-La zona privada (`/inicio`, `/clases`, `/estudios`, `/cursos`, `/lecciones`, `/entrenador`, `/explorador`, `/profesor`, `/administracion`) exige iniciar sesión en `/iniciar-sesion`. El seed deja listas tres cuentas de pruebas con la contraseña `ajedrez365` (o la de `PLATFORM_DEMO_PASSWORD`); sólo se asigna a cuentas que aún no tienen contraseña, así que un re-seed nunca revierte un cambio hecho a mano:
+The private area (`/inicio`, `/clases`, `/estudios`, `/cursos`, `/lecciones`, `/entrenador`, `/explorador`, `/profesor`, `/administracion`) requires signing in at `/iniciar-sesion`. The seed leaves three test accounts ready with the password `ajedrez365` (or the one in `PLATFORM_DEMO_PASSWORD`); it is only assigned to accounts that do not have a password yet, so a re-seed never reverts a change made by hand:
 
-| Cuenta | Rol | Qué ve además de lo del alumno |
+| Account | Role | What they see beyond the student's view |
 |---|---|---|
-| `alumno.demo@365diasdeajedrez.com` | Alumno | — |
-| `profesor.demo@365diasdeajedrez.com` | Profesor | `/profesor/*` |
-| `staff.demo@365diasdeajedrez.com` | Administrador/Editor | `/administracion/*` |
+| `alumno.demo@365diasdeajedrez.com` | Student | — |
+| `profesor.demo@365diasdeajedrez.com` | Teacher | `/profesor/*` |
+| `staff.demo@365diasdeajedrez.com` | Administrator/Editor | `/administracion/*` |
 
-**No hay registro público**: en una academia el alumno existe porque se le da de alta. Lo hace el equipo de administración desde `/administracion/alumnos/nuevo`, que genera una contraseña temporal y la muestra una sola vez (no hay servicio de correo). `npm run user:create` sigue existiendo como vía alternativa desde la línea de comandos.
+**There is no public sign-up**: in an academy a student exists because somebody enrols them. The administration team does it from `/administracion/alumnos/nuevo`, which generates a temporary password and shows it once (there is no email service). `npm run user:create` still exists as an alternative route from the command line.
 
 ### Roles
 
-No hay tabla de roles ni columna en `User`: **el rol es la existencia de una fila** (`Teacher`, `Staff`), y son ortogonales — una misma persona puede ser profesor y staff, y sigue siendo alumno. Se resuelven en la misma consulta que la sesión (sin consultas extra) y se exponen sólo por `lib/platform-auth/roles.ts`, cuyos `requireTeacher()` / `requireStaff()` son el primer `await` de toda página y de toda server action de esos paneles. Un profesor se **desactiva** (`Teacher.isActive`), nunca se borra: sus clases y asignaciones son historial.
+There is no roles table and no column on `User`: **the role is the existence of a row** (`Teacher`, `Staff`), and they are orthogonal — the same person can be a teacher and staff, and is still a student. They are resolved in the same query as the session (no extra queries) and are exposed only through `lib/platform-auth/roles.ts`, whose `requireTeacher()` / `requireStaff()` are the first `await` of every page and every server action of those panels. A teacher is **deactivated** (`Teacher.isActive`), never deleted: their classes and assignments are history.
 
-Los roles `admin`/`editor` de `payload/collections/Users.ts` son de **Payload**, del CMS del sitio público: otra base de datos, otro login, y no se mezclan con esto.
+The `admin`/`editor` roles of `payload/collections/Users.ts` belong to **Payload**, the CMS of the public site: another database, another login, and they do not mix with this.
 
-Cómo está montado:
+How it is put together:
 
-- **Identidad y credencial viven en la base de la plataforma** (Prisma), no en Payload: `User.passwordHash` guarda un hash **scrypt** con sus parámetros de coste dentro, para poder subirlos sin invalidar los hashes antiguos (`lib/platform-auth/password.ts`).
-- **Sesiones opacas en base de datos** (`lib/platform-auth/session.ts`): la cookie lleva un token aleatorio del que sólo se almacena su SHA-256, y la caducidad de verdad es `Session.expiresAt` (30 días, con renovación deslizante). Cerrar sesión o cambiar la contraseña revoca al instante, sin depender del navegador.
-- **`lib/platform-auth/current-user.ts` es el DAL de identidad**: `getCurrentUser()` devuelve al usuario o redirige al login, y `getSessionUser()` es su versión que admite null. Todo servicio y toda server action resuelve el usuario ahí y nunca confía en datos del cliente.
-- **`proxy.ts` sólo hace un rechazo optimista** (¿existe la cookie?) para ahorrar un render; no valida nada. La comprobación real es siempre la del DAL, que es además la que cubre las server actions —alcanzables por POST directo—.
-- El login es una **server action plana**, no `useActionState`: así funciona también sin JavaScript, que es lo mínimo exigible en la puerta de entrada.
+- **Identity and credential live in the platform's database** (Prisma), not in Payload: `User.passwordHash` stores a **scrypt** hash with its cost parameters inside, so they can be raised without invalidating the old hashes (`lib/platform-auth/password.ts`).
+- **Opaque sessions in the database** (`lib/platform-auth/session.ts`): the cookie carries a random token of which only the SHA-256 is stored, and the real expiry is `Session.expiresAt` (30 days, sliding). Signing out or changing the password revokes instantly, without depending on the browser.
+- **`lib/platform-auth/current-user.ts` is the identity DAL**: `getCurrentUser()` returns the user or redirects to the login, and `getSessionUser()` is its version that accepts null. Every service and every server action resolves the user there and never trusts data from the client.
+- **`proxy.ts` only makes an optimistic rejection** (is the cookie there?) to save a render; it validates nothing. The real check is always the DAL's, which is also the one that covers the server actions — reachable by a direct POST.
+- The login is a **plain server action**, not `useActionState`: that way it also works without JavaScript, which is the least one can ask of the front door.
 
-## Mapa de rutas
+## Route map
 
-Las URLs de la plataforma están en español porque el producto lo está; sólo los nombres de los parámetros dinámicos (`[courseId]`…) siguen en inglés, y no salen en la URL. La fuente de verdad son las tres constantes de `lib/platform-routes.ts`.
+The platform's URLs are in Spanish because the product is; only the names of the dynamic parameters (`[courseId]`…) stay in English, and they never show up in the URL. The source of truth are the three constants in `lib/platform-routes.ts`.
 
-**Sitio público** — `app/(frontend)`
+**Public site** — `app/(frontend)`
 
 - `/`
 - `/blog`, `/blog/[slug]`
@@ -103,72 +103,72 @@ Las URLs de la plataforma están en español porque el producto lo está; sólo 
 
 **CMS** — `app/(payload)`
 
-- `/admin` (más `/api/*`; GraphQL está desactivado)
+- `/admin` (plus `/api/*`; GraphQL is turned off)
 
-**Acceso** — `app/(auth)`
+**Access** — `app/(auth)`
 
 - `/iniciar-sesion`
-- `/entrar` — route handler: a quien llega a `/` con cookie de sesión lo reparte a su panel según el rol, o borra la cookie caducada y lo devuelve a la portada
+- `/entrar` — route handler: whoever arrives at `/` with a session cookie is sent on to their panel according to their role, or has the expired cookie deleted and is returned to the home page
 
-**Plataforma — alumno** — `app/(platform)` (requiere sesión)
+**Platform — student** — `app/(platform)` (requires a session)
 
 - `/inicio`
 - `/clases`, `/clases/[classId]`
-- `/estudios`, `/estudios/clases` (partidas vistas en clase), `/estudios/[studyId]`, `/estudios/[studyId]/partidas/[gameId]`, `/estudios/[studyId]/partidas/nueva`
+- `/estudios`, `/estudios/clases` (games seen in class), `/estudios/[studyId]`, `/estudios/[studyId]/partidas/[gameId]`, `/estudios/[studyId]/partidas/nueva`
 - `/cursos`, `/cursos/[courseId]`, `/cursos/[courseId]/[chapterOrder]`
-- `/lecciones/[lessonId]` (la lección cuelga de la raíz: su identificador ya la localiza)
+- `/lecciones/[lessonId]` (the lesson hangs off the root: its identifier already locates it)
 - `/entrenador`
-- `/explorador` (buscador de partidas por posición; lo comparten alumno y profesor)
+- `/explorador` (search for games by position; student and teacher share it)
 
-**Plataforma — profesor** (requiere fila `Teacher` activa)
+**Platform — teacher** (requires an active `Teacher` row)
 
 - `/profesor`
 - `/profesor/alumnos`, `/profesor/alumnos/[studentId]`
-- `/profesor/alumnos/[studentId]/estudios/[studyId]`, `…/partidas/[gameId]` (**sólo lectura** de los estudios de sus alumnos asignados)
+- `/profesor/alumnos/[studentId]/estudios/[studyId]`, `…/partidas/[gameId]` (**read-only** access to the studies of their assigned students)
 - `/profesor/clases`, `/profesor/clases/nuevo`, `/profesor/clases/[classId]`, `/profesor/clases/[classId]/editar`
 - `/profesor/perfil`
 
-**Plataforma — administración** (requiere fila `Staff`; `/admin` es de Payload)
+**Platform — administration** (requires a `Staff` row; `/admin` belongs to Payload)
 
 - `/administracion`
 - `/administracion/alumnos`, `/administracion/alumnos/nuevo`, `/administracion/alumnos/[userId]`
 - `/administracion/profesores`, `/administracion/profesores/nuevo`, `/administracion/profesores/[teacherId]`
 - `/administracion/cursos`, `/administracion/cursos/nuevo`, `/administracion/cursos/[courseId]`, `…/partidas`, `…/capitulos/[chapterId]`, `…/capitulos/[chapterId]/partidas`, `…/capitulos/[chapterId]/lecciones/[lessonId]`
 - `/administracion/autores`
-- `/administracion/clases`, `/administracion/clases/[classId]` (lectura global; sólo grabación y cancelación de soporte)
+- `/administracion/clases`, `/administracion/clases/[classId]` (global read; only support recording and cancellation)
 
-## Arquitectura en breve
+## Architecture in brief
 
-- **Route groups**: `(frontend)` (sitio público), `(payload)` (CMS), `(auth)` (login) y `(platform)` (zona autenticada, con su propio `layout`, `loading`, `error` y `platform.css`). Cada uno tiene su propio root layout.
-- **Cada sección llama a su propio servicio**: los componentes de página no consultan la base de datos directamente.
-- **Tríada por dominio**: `services/<dominio>/{<dominio>.service.ts, <dominio>.mapper.ts, <dominio>.types.ts}` (más `.actions.ts` donde hay server actions). El *service* obtiene datos, el *mapper* traduce al tipo de vista y los *types* son el contrato de la UI.
-- **CSS BEM por componente**, sin Tailwind: cada archivo `.css` anida bajo su propio selector raíz para que los estilos no se filtren entre secciones.
-- **Catálogos en lugar de enums**: el schema de Prisma no usa enums; cada dominio restringido es una tabla catálogo con `code` único y estable (la lógica compara `code`, nunca ids) y el seed los carga de forma idempotente.
-- **El PGN es la fuente del contenido ajedrecístico** (`Lesson.pgn`, `Game.pgn`): no hay tablas por movimiento ni árboles relacionales de jugadas.
-- Algunas invariantes se expresan como CHECK constraints e índices escritos a mano en las migraciones (`prisma/migrations`); el resto se valida en la capa de servicios. La cabecera de `prisma/schema.prisma` las documenta. Entre ellas, el índice parcial `teacher_student_one_active`, que es la verdad última de «un profesor activo por alumno» (el servicio cierra la asignación anterior antes de crear la nueva, pero dos peticiones simultáneas sólo las separa el índice).
-- **Autorización dentro del `where`**: las lecturas de profesor y staff filtran por rol y pertenencia en la propia consulta; no existe «leer y luego comprobar». Para las escrituras hay guards centralizados en `lib/platform-auth/guards.ts`. Ocultar un botón nunca autoriza nada: cada action revalida en el servidor.
-- **Reordenar listas con `@@unique([padre, order])`** (bloques de clase, capítulos, lecciones, ejercicios) pasa siempre por `services/shared/reorder.ts`: PostgreSQL valida el índice fila a fila, así que un intercambio directo lanza P2002 de forma intermitente.
+- **Route groups**: `(frontend)` (public site), `(payload)` (CMS), `(auth)` (login) and `(platform)` (the authenticated area, with its own `layout`, `loading`, `error` and `platform.css`). Each one has its own root layout.
+- **Every section calls its own service**: page components never query the database directly.
+- **A triad per domain**: `services/<domain>/{<domain>.service.ts, <domain>.mapper.ts, <domain>.types.ts}` (plus `.actions.ts` where there are server actions). The *service* fetches data, the *mapper* translates it into the view type and the *types* are the contract of the UI.
+- **BEM CSS per component**, no Tailwind: every `.css` file nests under its own root selector so that styles do not leak between sections.
+- **Catalogues instead of enums**: the Prisma schema uses no enums; every restricted domain is a catalogue table with a unique, stable `code` (the logic compares `code`, never ids) and the seed loads them idempotently.
+- **PGN is the source of the chess content** (`Lesson.pgn`, `Game.pgn`): there are no per-move tables and no relational trees of moves.
+- Some invariants are expressed as CHECK constraints and hand-written indexes in the migrations (`prisma/migrations`); the rest is validated in the service layer. The header of `prisma/schema.prisma` documents them. Among them, the partial index `teacher_student_one_active`, which is the last word on "one active teacher per student" (the service closes the previous assignment before creating the new one, but only the index separates two simultaneous requests).
+- **Authorisation inside the `where`**: teacher and staff reads filter by role and membership in the query itself; there is no "read and then check". For writes there are centralised guards in `lib/platform-auth/guards.ts`. Hiding a button never authorises anything: every action revalidates on the server.
+- **Reordering lists with `@@unique([parent, order])`** (class blocks, chapters, lessons, exercises) always goes through `services/shared/reorder.ts`: PostgreSQL validates the index row by row, so a direct swap throws P2002 intermittently.
 
-## Convención de documentación de Next.js
+## Next.js documentation convention
 
-Esta versión de Next.js trae cambios de ruptura respecto a lo que suele estar en los modelos: **consulta `node_modules/next/dist/docs/` antes de escribir código**. Lo explican `AGENTS.md` y `CLAUDE.md`.
+This version of Next.js brings breaking changes with respect to what models usually hold: **read `node_modules/next/dist/docs/` before writing code**. `AGENTS.md` and `CLAUDE.md` explain it.
 
-## Documentación
+## Documentation
 
-La documentación completa del proyecto, en inglés, vive en `docs/` como un sitio [Nextra](https://nextra.site) independiente (con su propio `package.json`, para que el build de producción no cargue con MDX ni con el buscador):
+The project's full documentation lives in `docs/` as a standalone [Nextra](https://nextra.site) site (with its own `package.json`, so the production build carries neither MDX nor the search index):
 
 ```bash
 cd docs
 npm install
 npm run dev      # http://localhost:3000
-npm run build    # páginas estáticas + índice de búsqueda (Pagefind)
+npm run build    # static pages + search index (Pagefind)
 ```
 
-Cubre arquitectura, rutas, acceso a datos, sitio público y CMS, autenticación, modelo de datos, funciones de alumno, profesor y administración, la librería de ajedrez y el visor, estilos y componentes compartidos, pruebas, scripts, despliegue, el backlog y un glosario español ↔ código. Cuando cambie algo de lo que describe, se actualiza la página en el mismo commit.
+It covers architecture, routes, data access, the public site and the CMS, authentication, the data model, the student, teacher and administration features, the chess library and the viewer, styles and shared components, testing, scripts, deployment, the backlog and a Spanish ↔ code glossary. Whenever something it describes changes, the page is updated in the same commit.
 
 ## Backlog
 
-- `IMPROVEMENTS.md` — mejoras pendientes priorizadas (seguridad, arquitectura, CSS, UX).
-- `todos.md` — tareas concretas en cola.
+- `IMPROVEMENTS.md` — pending improvements, prioritised (security, architecture, CSS, UX).
+- `todos.md` — concrete tasks in the queue.
 
-Los dos están en inglés, como los comentarios del código; este README sigue siendo la referencia rápida en español.
+Both are in English, like the code comments and this README, which stays the quick reference to the repository.
