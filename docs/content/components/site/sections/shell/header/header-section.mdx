@@ -42,6 +42,8 @@ Block `.site-header-nav` (324 lines, shared by the three header files).
 
 **Breakpoints:** `(max-width: 1023px)` hides the desktop links and button and shows the toggle.
 
+The toggle is `position: fixed`, so it cannot be centred by the layout: its `top` is `calc(25px + (var(--site-logo-height) - 40px) / 2)` — the bar's top padding on mobile plus the difference between the wordmark and the 40 px button — and the mobile menu opens 16 px under it, from the same expression. Both follow the logo's height on their own; the number to revisit is the 25 px, if the bar's padding changes. The height the whole header occupies is published as `--site-header-height` for the home hero to read (see [Styling › Tokens](/ui/styling#tokens)).
+
 ## Usage
 
 From `app/(frontend)/blog/page.tsx`:
