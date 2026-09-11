@@ -43,6 +43,8 @@ npm run dev                  # http://localhost:3000
 | `npm run user:list` | Lista las cuentas, si tienen contraseña y sus sesiones abiertas. |
 | `npm run pieces:sync` | Copia las piezas del tablero (chessground) a `public/pieces`; ejecutar al actualizar chessground. |
 | `npm run typecheck` | `tsc --noEmit`, lo mismo que corre CI. |
+| `npm run storybook` | Storybook en `localhost:6006` (piloto: sólo `PlanCard`; guía en `docs/`, «Storybook»). |
+| `npm run storybook:build` | Build estática de Storybook en `storybook-static/` (ignorada por git). |
 | `npm run test:coverage` | Vitest con cobertura (v8) sobre `lib`, `services`, `constants` y `hooks`. |
 | `npm run format` / `npm run format:check` | Prettier sobre el repo (hoy `format:check` falla: el repo nunca se formateó, ver `IMPROVEMENTS.md` #39). |
 | `npm run positions:index` | Rellena el índice de posiciones de las partidas ya guardadas (`-- --all` reindexa todas). |

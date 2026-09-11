@@ -51,3 +51,7 @@ next-env.d.ts
 /docs/.next/
 /docs/out/
 /docs/public/_pagefind/
+
+# storybook (build estática de `npm run storybook:build`)
+/storybook-static/
+*storybook.log

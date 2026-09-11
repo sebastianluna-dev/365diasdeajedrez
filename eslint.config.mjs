@@ -21,6 +21,8 @@ const eslintConfig = defineConfig([
     "coverage/**",
     // Documentation site (Nextra): it is another app, with its own package.json.
     "docs/**",
+    // Static Storybook build (`npm run storybook:build`).
+    "storybook-static/**",
   ]),
 ]);
 

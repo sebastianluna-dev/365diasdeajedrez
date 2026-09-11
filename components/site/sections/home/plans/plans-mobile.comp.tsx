@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { PackagePlanContent } from "@/services/home/home.types";
-import { PlanCard } from "./plan-card.comp";
+import { PlanCard } from "./plan-card/plan-card.comp";
 import "./plans-mobile.comp.css";
 
 interface PlansMobileSectionProps {

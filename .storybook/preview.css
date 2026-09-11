@@ -1,0 +1,65 @@
+/* The app declares these faces through next/font/local and sets the CSS
+   variables on <html>; components only ever read the variables. Here the
+   same files are served from public/fonts by staticDirs. */
+@font-face {
+  font-family: "Gramatika";
+  src: url("/fonts/gramatika-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("/fonts/suisseintl-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("/fonts/suisseintl-medium.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("/fonts/suisseintl-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ChessGlyph";
+  src: url("/fonts/chessglyph.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url("/fonts/sf-pro-display-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url("/fonts/sf-pro-display-medium.woff2") format("woff2");
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url("/fonts/sf-pro-display-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  --font-gramatika: "Gramatika";
+  --font-suisse: "Suisse Intl";
+  --font-chessglyph: "ChessGlyph";
+  --font-sf-pro: "SF Pro Display";
+}
+
+/* No min-height: in the Docs page every story is inlined and a full-viewport
+   canvas would push the controls table below several screens. */
+.sb-canvas {
+  padding: 32px;
+  box-sizing: border-box;
+}

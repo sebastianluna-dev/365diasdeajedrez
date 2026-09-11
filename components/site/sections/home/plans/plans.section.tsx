@@ -1,5 +1,5 @@
 import { getPackagesData } from "@/services/home/home.service";
-import { PlanCard } from "./plan-card.comp";
+import { PlanCard } from "./plan-card/plan-card.comp";
 import { PlansMobileSection } from "./plans-mobile.comp";
 import "./plans.section.css";
 

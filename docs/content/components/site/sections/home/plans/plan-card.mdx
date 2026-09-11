@@ -6,7 +6,8 @@ description: "One pricing card: name, price with currency and period, the previo
 
 | | |
 | --- | --- |
-| File | `components/site/sections/home/plans/plan-card.comp.tsx` |
+| File | `components/site/sections/home/plans/plan-card/plan-card.comp.tsx` |
+| Story | `plan-card/plan-card.stories.tsx` (`npm run storybook` → site/sections/home/plans/PlanCard: Default, Featured, WithDiscount) |
 | Kind | Server Component |
 | Stylesheet | `plan-card.comp.css` → block `.plan-card` |
 | Used by | [`PlansSection`](/components/site/sections/home/plans/plans-section), [`PlansMobileSection`](/components/site/sections/home/plans/plans-mobile) |
@@ -49,7 +50,7 @@ No media queries.
 From `components/site/sections/home/plans/plans-mobile.comp.tsx`:
 
 ```tsx
-import { PlanCard } from "./plan-card.comp";
+import { PlanCard } from "./plan-card/plan-card.comp";
 
 <PlanCard plan={activePlan} className="plans-mobile__card" />
 ```
