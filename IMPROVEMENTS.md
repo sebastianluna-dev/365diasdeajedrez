@@ -475,6 +475,21 @@ modules.
 ### 30. ~~`StudiesNavigation` keeps a crumb nobody renders any more~~ — RESOLVED (2026-09-04)
 The `current` prop and its JSX branch removed when the `/editar` route disappeared.
 
+### 71. `docs/` logs "Encountered a script tag while rendering React component" in dev — [DX / Docs]
+Every page of the Nextra site prints that console error in `next dev` (Next 16.3, React 19.2). It
+comes from `ThemeProvider` of `next-themes` 0.4.6, which `nextra-theme-docs` 4.6.1 always renders
+inside its `Layout`: the provider injects an inline `<script>` to set the colour scheme before
+hydration, and React 19 warns about any `<script>` rendered by a component on the client. The
+script still runs on the server render, so the theme works; the warning is noise in development
+only and does not appear in `npm run build && npm run start`. Upstream:
+[next-themes#387](https://github.com/pacocoursey/next-themes/issues/387).
+
+**How to address it:** nothing in our code causes it and Nextra exposes no way to drop the script.
+Wait for a `next-themes` release that moves the script out of the React tree (`useServerInsertedHTML`),
+then bump `nextra`/`nextra-theme-docs`. Do not filter `console.error` in the docs layout.
+
+---
+
 ## Resolved (2026-08-30)
 
 | # | Entry | How it was resolved |

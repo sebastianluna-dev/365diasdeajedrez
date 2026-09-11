@@ -1,0 +1,176 @@
+---
+description: "How Storybook is set up in this repo and, step by step, how to give a component its folder, its story, its controls and its docs page, as done for PlanCard."
+---
+
+# Storybook
+
+Storybook renders a component in isolation, with its real stylesheet, fonts and tokens, and lets you flip its states from a controls panel. It complements the [Components](/components) reference: that section says what a component receives and does; Storybook shows it.
+
+**Status:** pilot. Only `PlanCard` has a story. Everything below is what was done for it, written so the next component follows the same path. If the pilot is adopted the rules move to `AGENTS.md`; until then, nothing requires a story.
+
+## What is installed
+
+| Piece | Where | What it does |
+| --- | --- | --- |
+| `storybook`, `@storybook/nextjs-vite`, `@storybook/addon-docs` 10.6 | root `package.json` (devDependencies) | The Next.js framework on Vite, with autodocs. Root package, not a sibling like `docs/`: stories live next to the components and must share the app's `react`, `next` and `chessground`. |
+| `.storybook/main.ts` | root | Finds `components/**/*.stories.tsx`; serves `public/` as static files (fonts, engine, sounds, pieces at the same URLs as in Next); aliases `@` → repo root and `server-only` → `lib/testing/server-only.stub.ts`, the same two aliases as `vitest.config.mts`. |
+| `.storybook/preview.tsx` | root | Loads `app/(frontend)/globals.css` and `app/(platform)/platform.css`; adds the **theme toolbar** (`auto`, `site`, `platform`) that toggles `body.platform-theme`, which is exactly how the layouts pick a theme; sets `nextjs.appDirectory` so `next/link` and `next/navigation` work; enables autodocs for every story. |
+| `.storybook/preview.css` | root | `@font-face` for the eight files in `public/fonts` and the four `--font-*` variables the components read. In the app `next/font/local` does this on `<html>`; components never import the font modules, so nothing else is needed. |
+| Scripts | `npm run storybook` (port 6006), `npm run storybook:build` (static build in `storybook-static/`, gitignored and excluded from ESLint, `tsc` and Vitest). |
+
+Stories and `.storybook/` are **inside** the root typecheck and lint on purpose: a story types against the component's real props, so renaming a prop without updating the story fails `npm run typecheck`.
+
+## Adding a component: the PlanCard walkthrough
+
+### 1. Give the component its own folder
+
+A component with a story has three files, so it gets a folder named after it, inside its section:
+
+```text
+components/site/sections/home/plans/
+  plans.section.tsx
+  plans-mobile.comp.tsx
+  plan-card/
+    plan-card.comp.tsx
+    plan-card.comp.css
+    plan-card.stories.tsx
+```
+
+Move with `git mv` so history follows, then fix the importers (`./plan-card.comp` → `./plan-card/plan-card.comp` in `plans.section.tsx` and `plans-mobile.comp.tsx`) and the `File` row of the component's page under `docs/content/components/`. File names keep the usual suffixes; the story adds `.stories.tsx`.
+
+### 2. Write the story file (CSF3)
+
+```tsx
+import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type { PackagePlanContent } from "@/services/home/home.types";
+import { PlanCard } from "./plan-card.comp";
+
+const meta = {
+  title: "site/sections/home/plans/PlanCard",
+  args: defaults,
+  argTypes: { /* one entry per control, see step 3 */ },
+  render: (args) => <PlanCard plan={toPlan(args)} />,
+  decorators: [ /* see step 4 */ ],
+} satisfies Meta<PlanArgs>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+/** The regular plan as the CMS ships it: no discount, dark button. */
+export const Default: Story = {};
+
+/** The highlighted plan: accent border and background, orange button. */
+export const Featured: Story = {
+  args: { name: "Trimestral", price: 3200, period: "trimestre", featured: true },
+};
+
+/** A plan with a previous price: the struck-through row appears under the price. */
+export const WithDiscount: Story = { args: { previousPrice: 1500 } };
+```
+
+Rules that came out of it:
+
+- **`title` mirrors the path** with the product first and the export name as the leaf: `site/sections/home/plans/PlanCard`. The sidebar of Storybook then matches `components/` and the docs section.
+- **One story per meaningful state**, not one per prop: the default, the highlighted card, the card with a discount. Each story overrides only what differs from `meta.args`.
+- **A JSDoc line above each story.** Autodocs prints it under the story's heading.
+- Story identifiers are English; the rendered copy stays Spanish, like the app.
+- Data is typed with the domain type from `services/*/*.types.ts` (`PackagePlanContent`), never an untyped literal.
+
+### 3. Flatten the props into controls
+
+`PlanCard` takes a single `plan` object. Left as is, the controls panel shows one JSON editor, which is useless for flipping states. The story declares a flat args type instead, one field per control, and `render` folds them back into the prop:
+
+```tsx
+type PlanArgs = Omit<PackagePlanContent, "features"> & { features: string };
+
+render: ({ features, ...rest }) => (
+  <PlanCard plan={{ ...rest, features: features.split("\n").filter(Boolean) }} />
+),
+```
+
+`features` is edited as text with one line per item and split in `render`. Each arg then gets an `argTypes` entry with the right control, a description and a category:
+
+```tsx
+argTypes: {
+  name: { control: "text", description: "Plan name (title of the card).", table: { category: "Copy" } },
+  price: { control: { type: "number", min: 0, step: 50 }, table: { category: "Price" } },
+  previousPrice: {
+    control: { type: "number", min: 0, step: 50 },
+    description: "When set, shown struck through under the price.",
+    // Its default is `undefined`, which autodocs would otherwise report as `object`.
+    table: { category: "Price", type: { summary: "number" } },
+  },
+  currency: { control: "select", options: ["MXN", "USD", "EUR"], table: { category: "Price" } },
+  featured: { control: "boolean", table: { category: "State" } },
+},
+```
+
+Two things to know:
+
+- **Do not set `component`** in `meta` when the args are not the component's props. With `component: PlanCard`, Storybook merges `PlanCardProps` into the args type and every story fails typecheck asking for `plan`. Autodocs still builds the table from `argTypes`.
+- **`table.type.summary`** fixes the type autodocs infers from a default value: an `undefined` default shows as `object`, an array edited as text shows as `string`.
+
+### 4. Reproduce the component's real context with a decorator
+
+The first screenshot of the non-featured card was unreadable: dark text on the dark site background. In the app the card always sits inside `PlansSection`, whose `.section_theme_light` sets the text colour, and the card inherits it. The story wraps itself in that section:
+
+```tsx
+decorators: [
+  // In the app the card sits inside `.section_theme_light` (plans.section.tsx)
+  // and inherits its colour; without it the non-featured card is unreadable.
+  (Story) => (
+    <section className="section section_theme_light" style={{ padding: 32 }}>
+      <div style={{ maxWidth: 360 }}>
+        <Story />
+      </div>
+    </section>
+  ),
+],
+```
+
+This is the kind of coupling Storybook makes visible. When you find one, wrap the story in the same global class the parent renders (`.section`, `.section_theme_*`, `.platform-theme`…) and say why in a comment; do not change the component to make the story work.
+
+### 5. Document the component in Storybook
+
+Autodocs builds a Docs page per story file. It fills up from three places:
+
+- **`parameters.docs.description.component`** in `meta`: a Markdown string with what the component is, who renders it, its states and a link back to its page in this site (`/components/site/sections/home/plans/plan-card`).
+- **JSDoc on each story** (step 2).
+- **`description` on each `argTypes` entry** (step 3).
+
+Also add JSDoc to the component itself, on the props interface and on the function, in English like every comment:
+
+```tsx
+interface PlanCardProps {
+  /** One plan of the `home-packages` Global, already mapped by services/home. */
+  plan: PackagePlanContent;
+  /** Extra class on the block; the mobile wrapper passes `plans-mobile__card`. */
+  className?: string;
+}
+```
+
+### 6. Update the reference page
+
+The component's page under `docs/content/components/` gets a `Story` row in its facts table, after `File`:
+
+```md
+| File | `components/site/sections/home/plans/plan-card/plan-card.comp.tsx` |
+| Story | `plan-card/plan-card.stories.tsx` (`npm run storybook` → site/sections/home/plans/PlanCard: Default, Featured, WithDiscount) |
+```
+
+### 7. Check
+
+```bash
+npm run typecheck && npm run lint && npm test
+npm run storybook:build
+npm run storybook        # open the story, flip the theme toolbar, open the Docs tab
+```
+
+A story is done when the build is green, every state renders as it does in the app under both toolbar themes where it applies, and the Docs tab shows the description, the controls table and one section per story.
+
+## What the pilot does not cover yet
+
+- **Sections that read services** (`export async function` calling `services/*/*.service.ts`) and **client components bound to server actions** cannot run in the browser as they are. The plan for them is a manual mock per module in `services/<domain>/__mocks__/` registered with `sb.mock()` in `preview.tsx`, plus typed fixtures in `lib/testing/fixtures/`. Not started.
+- **Chess components** need `public/engine`, `public/sounds` and `public/pieces`; `staticDirs` already serves them, but no story exists.
+- **CI** does not build Storybook. If adopted, a `storybook-build` job joins `.github/workflows/ci.yml`.
+- A dev-only console error in the docs site ("Encountered a script tag…") is unrelated: it comes from `next-themes` inside Nextra, see `IMPROVEMENTS.md` #71.

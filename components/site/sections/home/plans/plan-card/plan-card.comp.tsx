@@ -4,10 +4,18 @@ import type { PackagePlanContent } from "@/services/home/home.types";
 import "./plan-card.comp.css";
 
 interface PlanCardProps {
+  /** One plan of the `home-packages` Global, already mapped by services/home. */
   plan: PackagePlanContent;
+  /** Extra class on the block; the mobile wrapper passes `plans-mobile__card`. */
   className?: string;
 }
 
+/**
+ * One pricing card. `plan.featured` adds the `_featured` modifier and the
+ * alternative button, so the highlighted plan is a CMS flag rather than a
+ * second component. Inherits its text colour from the surrounding
+ * `.section_theme_light`.
+ */
 export function PlanCard({ plan, className }: PlanCardProps) {
   return (
     <div className={`plan-card${plan.featured ? " plan-card_featured" : ""}${className ? ` ${className}` : ""}`}>

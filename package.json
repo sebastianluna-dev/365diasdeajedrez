@@ -23,7 +23,9 @@
     "typecheck": "tsc --noEmit",
     "test:coverage": "vitest run --coverage",
     "format": "prettier --write . --ignore-path .gitignore",
-    "format:check": "prettier --check . --ignore-path .gitignore"
+    "format:check": "prettier --check . --ignore-path .gitignore",
+    "storybook": "storybook dev -p 6006",
+    "storybook:build": "storybook build"
   },
   "dependencies": {
     "@lichess-org/chessground": "^10.1.1",
@@ -46,6 +48,8 @@
     "sharp": "^0.35.4"
   },
   "devDependencies": {
+    "@storybook/addon-docs": "^10.6.0",
+    "@storybook/nextjs-vite": "^10.6.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -55,6 +59,7 @@
     "eslint-config-next": "16.3.0",
     "prettier": "^3.9.6",
     "prisma": "^7.10.0",
+    "storybook": "^10.6.0",
     "tsx": "^4.23.13",
     "typescript": "^5",
     "vitest": "^4.1.11"
