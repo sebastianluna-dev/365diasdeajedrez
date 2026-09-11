@@ -138,7 +138,10 @@
   }
 
   @media (max-width: 720px) {
-    padding: 28px 20px 24px;
+    /* The vertical padding is the section's own air: the game block below used
+       to provide it and is hidden here. The 88px are the same the neighbouring
+       sections use (`.section` in globals.css). */
+    padding: 88px 20px;
     & .teacher__media {
       position: relative;
       top: auto;
@@ -200,16 +203,11 @@
       max-width: none;
     }
 
-    & .teacher__elo-label {
-      font-size: 18px;
-      line-height: 1.3;
-      color: #d8d0c6;
-      padding-top: 20px;
-      border-top: 1px solid rgba(242, 237, 231, 0.14);
-    }
-
+    /* The ratings are off on the phone: four columns of numbers that nobody
+       reads there, and the stats above already carry the credentials. */
+    & .teacher__elo-label,
     & .teacher__elo-table {
-      max-width: none;
+      display: none;
     }
 
     & .teacher__actions .button {
