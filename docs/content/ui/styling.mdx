@@ -84,7 +84,7 @@ The naming is Yandex-style BEM and the scoping is native CSS nesting. Both are m
 - **Element** = `block__element`: `.study-card__title`. Elements are never nested in the name (`.study-card__head__title` is wrong; use `.study-card__head-title`).
 - **Modifier** = `block_key_value` or `element_key_value`: `.platform-button_variant_secondary`, `.platform-table__cell_align_right`, `.progress-indicator_layout_stacked`. Boolean modifiers drop the value: `.site-header__dropdown_open`, `.logo__mark_hidden`.
 - **One file per component**, named after it (`study-card.comp.css` next to `study-card.comp.tsx`) and imported from that component only.
-- **Every rule nests under the root selector** with `&`, so nothing can leak out of the block. Media queries go inside the block too.
+- **Every rule nests under the root selector** with `&`, so nothing can leak out of the block. Media queries go inside the block too. The one exception is `@keyframes`: it is not valid inside a style rule (the browser drops it and the build warns), so it goes at the top level after the block, named `block-…` (`loading-panel-spin`, `time-roller-enter`).
 - **Desktop-first**: media queries use `max-width`. There is no fixed breakpoint scale; the ones used most are 1024/1023, 900 and 720 px, with 640/620 and 560 for the narrowest layouts. Pick the one where the layout actually breaks. Two files still use `min-width` (`section-heading.comp.css`, `resources.section.css`); inverting them is `todos.md` T17.
 
 A complete example (`components/platform/shared/empty-state.comp.css`):
