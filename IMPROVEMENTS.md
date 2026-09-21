@@ -463,24 +463,20 @@ cached with the `articles` tag; the sitemap also sends `lastModified`.
 
 ### 33. Security headers (CSP, COOP, X-Frame-Options) — [Security]
 
-Lighthouse lists them as informative: they do not weigh on the score. Vercel adds HSTS on its own;
-the rest are absent. A strict CSP clashes with the inline scripts of GA and Meta (a `nonce` is
-needed).
+_Mostly resolved (2026-09-21):_ `headers()` in `next.config.ts` sends `X-Frame-Options: DENY`,
+`X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`,
+`Cross-Origin-Opener-Policy: same-origin` and a `Permissions-Policy` on every route; checked on the
+login, the home page and Payload's `/admin`, which keeps working.
 
-**How to approach it:** `headers()` in `next.config.ts` with `X-Frame-Options: DENY`,
-`Cross-Origin-Opener-Policy: same-origin` and `Referrer-Policy: strict-origin-when-cross-origin`;
-the CSP with a nonce from `proxy.ts` is a separate job. Check that Payload's panel (`/admin`) still
-works.
+**What is left:** the CSP. It needs a nonce generated in `proxy.ts` and passed to the inline
+scripts of GA and the Meta Pixel (and to whatever Payload injects in `/admin`); a job of its own.
 
-### 34. The board sounds go without a licence or attribution — [Legal / Content]
+### 34. ~~The board sounds go without a licence or attribution~~ — RESOLVED (2026-09-21)
 
-`public/sounds/move.mp3` and `capture.mp3` come from lichess's (lila) "standard" package. When
-reorganising `public/` (2026-09-09) the other 63 files of that package, which nobody used, were
-removed, and these two were left without a provenance note in the repo, unlike Stockfish in
-`public/engine/`.
-
-**How to approach it:** check the package's licence in lila's `COPYING.md` and, if it requires it,
-leave a `LICENSE` next to the sounds with the attribution.
+Worse than missing attribution: lila's `COPYING.md` lists the sounds of `public/sound` that are not
+Enigmahack's sets among its **non-free exceptions**, so the two files could not be redistributed at
+all. They are now synthesised by `scripts/make-board-sounds.ts` (`npm run sounds:make`, seeded and
+reproducible) and there is nothing to attribute.
 
 ### 66. ~~The `Session` table is never purged~~ — RESOLVED (2026-09-09)
 

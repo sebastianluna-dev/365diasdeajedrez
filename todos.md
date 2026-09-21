@@ -123,6 +123,7 @@ bounded changes; the project rules above still hold. On finishing each one, mark
 `IMPROVEMENTS.md` entry as resolved and run `npm run typecheck`, `npm run lint` and `npm test`.
 
 ### T11 — Format the repository with Prettier · [DX] (IMPROVEMENTS #39) ✅ 2026-09-21
+
 One commit with `npm run format` alone (305 files, docs included) and `npm run format:check` as a CI step.
 
 Original task:
