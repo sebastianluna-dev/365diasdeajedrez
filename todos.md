@@ -133,7 +133,10 @@ Components; only the button changes.
 cell and its keyboard handling, and delete the duplicated grid in `game-table.comp.css`. Reference
 of the same data with the good table: `teacher/students/student-study-view.section.tsx`.
 
-### T14 — Loose hex values to tokens · [CSS] (IMPROVEMENTS #59)
+### T14 — Loose hex values to tokens · [CSS] (IMPROVEMENTS #59) ✅ 2026-09-21
+48 substitutions in 25 stylesheets; `#8a8175` only survives as the fallback of `var(--platform-text-muted, …)` in the board and as grey of the public site, where no token matches it.
+
+Original task:
 Substitute in `components/**` and `app/**`: `#b4a99d` → `var(--color-muted-on-dark)` (27 uses),
 `#5c5348` → `var(--color-muted-on-light)` (19), `#b8611f` → `var(--color-primary-deep)` (8) and, in
 the platform, `#8a8175` as text → `var(--platform-text-muted)`. Exact matches only; do not touch
@@ -157,7 +160,10 @@ Enable it in `tsconfig.json` and resolve the 172 errors (almost all `array[i]` p
 `services/shared/reorder.ts` and several `lib/chess` suites. Without changing behaviour: where the
 index is safe by construction, a check with a `throw` or a `?? defaultValue`.
 
-### T17 — A stylesheet with *mobile-first* media queries · [CSS]
+### T17 — A stylesheet with *mobile-first* media queries · [CSS] ✅ 2026-09-21
+`resources.section.css`: the head's grid is the block's value and `@media (max-width: 819px)` puts it back to `display: block`.
+
+Original task:
 `components/site/sections/home/resources/resources.section.css` uses `@media (min-width: …)` when
 the convention is desktop-first (`max-width`). Invert it: the block's values become the desktop ones
 and the `max-width` media query (with the same threshold minus 1 px) receives the mobile ones. Check

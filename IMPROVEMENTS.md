@@ -274,13 +274,13 @@ through CSS. The three layouts start with "Saltar al contenido" and each `<main>
 Still open: mechanical task T13 in `todos.md` (build the rows on `PlatformTable` keeping the
 reordering handle in the first cell and delete the grid in `game-table.comp.css`).
 
-### 59. The board colours and several recurring hex values are not tokens — [CSS]
+### 59. ~~The board colours and several recurring hex values are not tokens~~ — RESOLVED (2026-09-21)
 *Mostly resolved (2026-09-09):* `--board-light`/`--board-dark` in `globals.css`, used by the board
 and the diagram, with their twin in `constants/chess-board-colors.const.ts` for the canvas export.
 New tokens `--color-muted-on-dark` (#b4a99d), `--color-muted-on-light` (#5c5348) and
 `--color-primary-deep` (#b8611f); `globals.css` no longer repeats `#ff9143`, `#16110d` or `#b8611f`.
 
-**What is left:** sweeping the loose uses of those three hex values in `components/**` and `app/**`
+**Resolved (2026-09-21):** the 48 loose uses in `components/**` and `app/**` go through the tokens
 (T14 in `todos.md`).
 
 ### 60. ~~CSS stylesheets outside their root~~ — RESOLVED (2026-09-09)

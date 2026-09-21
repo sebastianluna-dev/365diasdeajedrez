@@ -11,12 +11,12 @@
 
   & .article-content__breadcrumb {
     font-size: 14px;
-    color: #5c5348;
+    color: var(--color-muted-on-light);
     margin-bottom: 22px;
   }
 
   & .article-content__breadcrumb-link {
-    color: #5c5348;
+    color: var(--color-muted-on-light);
   }
 
   & .article-content__breadcrumb-link:hover {
@@ -77,7 +77,7 @@
   & .article-content__author-meta {
     display: block;
     font-size: 14px;
-    color: #5c5348;
+    color: var(--color-muted-on-light);
   }
 
   & .article-content__divider {

@@ -29,7 +29,7 @@
   & .nosotros-cta__text {
     font-size: 17px;
     line-height: 1.6;
-    color: #b4a99d;
+    color: var(--color-muted-on-dark);
     margin: 0;
   }
 

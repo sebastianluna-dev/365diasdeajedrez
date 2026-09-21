@@ -36,6 +36,6 @@
     border-left: 2px solid var(--color-accent-red);
     padding-left: 18px;
     font-style: italic;
-    color: #5c5348;
+    color: var(--color-muted-on-light);
   }
 }

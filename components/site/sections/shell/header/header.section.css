@@ -126,7 +126,7 @@
     font-size: 15px;
     padding: 18px 28px;
     border-radius: 14px;
-    box-shadow: 0 4px 0 #b8611f;
+    box-shadow: 0 4px 0 var(--color-primary-deep);
     background: var(--color-primary);
   }
 
@@ -259,7 +259,7 @@
     }
 
     & .site-header__links a {
-      color: #5c5348;
+      color: var(--color-muted-on-light);
     }
 
     & .site-header__links a:hover {
@@ -267,7 +267,7 @@
     }
 
     & .site-header__dropdown-trigger {
-      color: #5c5348;
+      color: var(--color-muted-on-light);
     }
 
     & .site-header__dropdown:hover .site-header__dropdown-trigger,
@@ -281,7 +281,7 @@
     }
 
     & .site-header__dropdown-menu a {
-      color: #5c5348;
+      color: var(--color-muted-on-light);
     }
 
     & .site-header__dropdown-menu a:hover {
@@ -316,7 +316,7 @@
 
       & .site-header-mobile__links a {
         border-bottom-color: rgba(22, 17, 13, 0.1);
-        color: #5c5348;
+        color: var(--color-muted-on-light);
       }
 
       & .site-header-mobile__links a:hover {
