@@ -42,7 +42,7 @@ npm run dev                  # http://localhost:3000
 | `npm run user:password -- <email>`        | Changes their password and closes their sessions.                                                             |
 | `npm run user:list`                       | Lists the accounts, whether they have a password and their open sessions.                                     |
 | `npm run pieces:sync`                     | Copies the board pieces (chessground) to `public/pieces`; run it whenever chessground is updated.             |
-| `npm run typecheck`                       | `tsc --noEmit`, the same CI runs.                                                                             |
+| `npm run typecheck`                       | `next typegen` + `tsc --noEmit`, the same CI runs.                                                            |
 | `npm run storybook`                       | Storybook at `localhost:6006` (pilot: `PlanCard` only; guide in `docs/`, "Storybook").                        |
 | `npm run storybook:build`                 | Static Storybook build in `storybook-static/` (git-ignored).                                                  |
 | `npm run test:coverage`                   | Vitest with coverage (v8) over `lib`, `services`, `constants` and `hooks`.                                    |
