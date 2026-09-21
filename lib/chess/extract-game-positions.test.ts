@@ -32,16 +32,16 @@ describe("extractGamePositions", () => {
     const directOrder = extractGamePositions("1. d4 Nf6 2. c4 e6 *").positions;
     const transposed = extractGamePositions("1. c4 Nf6 2. d4 e6 *").positions;
 
-    expect(directOrder[4].positionHash).toBe(transposed[4].positionHash);
+    expect(directOrder[4]?.positionHash).toBe(transposed[4]?.positionHash);
   });
 
   it("reconoce una posición repetida dentro de la misma partida", () => {
     // Knights out and back: ply 4 returns the board to the initial position.
     const { positions } = extractGamePositions("1. Nf3 Nf6 2. Ng1 Ng8 *");
 
-    expect(positions[4].positionHash).toBe(positions[0].positionHash);
+    expect(positions[4]?.positionHash).toBe(positions[0]?.positionHash);
     // Two different rows, not one: each visit could have continued differently.
-    expect(positions[4].ply).not.toBe(positions[0].ply);
+    expect(positions[4]?.ply).not.toBe(positions[0]?.ply);
   });
 
   it("indexa hasta donde se puede reproducir y avisa si el PGN trae una jugada ilegal", () => {

@@ -176,7 +176,11 @@ export (`use-chess-clock.hook.ts`), `STUDENT_KINDS`/`TEACHER_KINDS` as exports (
 (`teacher-messages.const.ts`); remove the `export` from `getStaffContext` (`roles.ts`). Check each
 one with `grep -rw` before deleting.
 
-### T16 — `noUncheckedIndexedAccess` · [DX] (IMPROVEMENTS #62)
+### T16 — `noUncheckedIndexedAccess` · [DX] (IMPROVEMENTS #62) ✅ 2026-09-21
+
+On, with the 183 errors resolved without changing behaviour: `charAt` for single-character lookups, `?.`/`??` where a miss already meant "nothing", an explicit guard (`if (!x) return/break/throw`) where the index was safe by construction, `replayGame` typed as a non-empty tuple (`ReplayPositions`) and the clock's controls likewise; in tests, `!` on the element under assertion.
+
+Original task:
 
 Enable it in `tsconfig.json` and resolve the 172 errors (almost all `array[i]` possibly
 `undefined`): `trainer-session.comp.tsx`, `move-tree.comp.tsx`, `lib/chess/notation.ts`,

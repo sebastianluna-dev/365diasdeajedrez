@@ -39,9 +39,9 @@ describe("uciLineSteps", () => {
     const steps = uciLineSteps(START, ["e2e4", "e7e5"]);
 
     expect(steps.map((step) => step.san)).toEqual(["e4", "e5"]);
-    expect(steps[0].fen).toBe("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1");
-    expect(steps[0].lastMove).toEqual(["e2", "e4"]);
-    expect(steps[1].fen).toBe("rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2");
+    expect(steps[0]?.fen).toBe("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1");
+    expect(steps[0]?.lastMove).toEqual(["e2", "e4"]);
+    expect(steps[1]?.fen).toBe("rnbqkbnr/pppp1ppp/8/4p3/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2");
   });
 
   it("corta donde corta la línea, sin posiciones inventadas", () => {

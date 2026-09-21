@@ -30,8 +30,11 @@ function startPos(headers: Map<string, string>): Position {
   );
 }
 
+/** The positions of a game: the starting one is always there, so the list is never empty. */
+export type ReplayPositions = [ReplayPosition, ...ReplayPosition[]];
+
 export interface ReplayResult {
-  positions: ReplayPosition[];
+  positions: ReplayPositions;
   /**
    * Reason why the replay stopped before finishing, if it happened.
    * Empty when the PGN was replayed in full.
@@ -49,7 +52,7 @@ export function replayGameDetailed(pgn: string): ReplayResult {
   const game = parsePgn(pgn)[0];
   const pos = game ? startPos(game.headers) : Chess.default();
 
-  const positions: ReplayPosition[] = [{ san: "", uci: "", fen: makeFen(pos.toSetup()), check: pos.isCheck() }];
+  const positions: ReplayPositions = [{ san: "", uci: "", fen: makeFen(pos.toSetup()), check: pos.isCheck() }];
   const warnings: string[] = [];
   if (!game) {
     if (pgn.trim().length > 0) warnings.push("No se pudo leer ninguna partida en el PGN.");
@@ -82,7 +85,7 @@ export function replayGameDetailed(pgn: string): ReplayResult {
 }
 
 /** Same as `replayGameDetailed` but returning only the positions. */
-export function replayGame(pgn: string): ReplayPosition[] {
+export function replayGame(pgn: string): ReplayPositions {
   return replayGameDetailed(pgn).positions;
 }
 
@@ -188,7 +191,7 @@ export function uciLineSteps(fen: string, uciMoves: string[]): UciLineStep[] {
   for (const uci of uciMoves) {
     const orig = uci.slice(0, 2) as Key;
     const dest = uci.slice(2, 4) as Key;
-    const promotion = uci.length > 4 ? PROMOTION_BY_LETTER[uci[4]] : undefined;
+    const promotion = uci.length > 4 ? PROMOTION_BY_LETTER[uci.charAt(4)] : undefined;
 
     const san = sanForMove(current, orig, dest, promotion ?? "queen");
     if (!san) break;

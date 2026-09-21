@@ -30,7 +30,7 @@ interface Feedback {
 
 export function TrainerSession({ exercises }: TrainerSessionProps) {
   const [index, setIndex] = useState(0);
-  const [fen, setFen] = useState(exercises[0].startFen);
+  const [fen, setFen] = useState(exercises[0]?.startFen ?? "");
   const [plyIndex, setPlyIndex] = useState(0);
   const [mistakes, setMistakes] = useState(0);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
@@ -49,6 +49,10 @@ export function TrainerSession({ exercises }: TrainerSessionProps) {
     return () => timers.forEach(clearTimeout);
   }, []);
 
+  // The page only renders the session with at least one exercise; this keeps
+  // the type honest without a non-null assertion.
+  if (!exercise) return null;
+
   const schedule = (fn: () => void, ms: number) => {
     timersRef.current.push(setTimeout(fn, ms));
   };
@@ -59,8 +63,10 @@ export function TrainerSession({ exercises }: TrainerSessionProps) {
   };
 
   const loadExercise = (nextIndex: number) => {
+    const next = exercises[nextIndex];
+    if (!next) return;
     setIndex(nextIndex);
-    setFen(exercises[nextIndex].startFen);
+    setFen(next.startFen);
     setPlyIndex(0);
     setMistakes(0);
     setFeedback(null);
@@ -115,6 +121,7 @@ export function TrainerSession({ exercises }: TrainerSessionProps) {
 
     showFeedback({ kind: "ok", text: "¡Correcto!" });
     const replySan = exercise.lineSans[plyIndex + 1];
+    if (replySan === undefined) return;
     const nextPly = plyIndex + 2;
     setPlyIndex(nextPly);
 

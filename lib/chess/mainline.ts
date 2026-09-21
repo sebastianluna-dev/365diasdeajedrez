@@ -46,10 +46,9 @@ export function extractMainline(pgn: string): MainlineResult | null {
   if (!tree) return null;
 
   const sans: string[] = [];
-  let children = tree.children;
-  while (children.length > 0) {
-    sans.push(children[0].san);
-    children = children[0].children;
+  const children = tree.children;
+  for (let first = children[0]; first; first = first.children[0]) {
+    sans.push(first.san);
   }
 
   if (sans.length === 0) return null;

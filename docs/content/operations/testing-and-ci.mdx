@@ -37,7 +37,7 @@ npx vitest run lib/chess  # a folder
 
 ## Static checks
 
-- `npm run typecheck` — `tsc --noEmit`, strict, `noUnusedLocals`, target ES2022. `docs/` is excluded (it has its own `tsconfig.json`).
+- `npm run typecheck` — `tsc --noEmit`, strict, `noUnusedLocals`, `noUncheckedIndexedAccess`, target ES2022. `docs/` is excluded (it has its own `tsconfig.json`).
 - `npm run lint` — ESLint 9 flat config with `eslint-config-next` (core web vitals + TypeScript); ignores `.next`, `public` (design-kit scripts), the generated Prisma client, `coverage` and `docs`.
 - `npm run format:check` — Prettier 3, `printWidth: 120`. The repository has never been formatted, so this currently fails; `todos.md` T11 asks for a single formatting commit, after which the check should be added to CI.
 

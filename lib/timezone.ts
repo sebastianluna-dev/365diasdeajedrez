@@ -72,7 +72,7 @@ export function parseDateTimeLocal(value: string, timeZone: string): Date | null
   const match = DATETIME_LOCAL.exec(value.trim());
   if (!match) return null;
 
-  const [, year, month, day, hour, minute] = match.map(Number);
+  const [year = NaN, month = NaN, day = NaN, hour = NaN, minute = NaN] = match.slice(1, 6).map(Number);
   const asIfUtc = Date.UTC(year, month - 1, day, hour, minute);
 
   const firstGuess = new Date(asIfUtc - offsetMsAt(new Date(asIfUtc), timeZone));

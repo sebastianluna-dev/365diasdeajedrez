@@ -18,7 +18,7 @@ const OPERA = `[Event "Partida de la Ópera"]
 
 describe("parseImportedGames", () => {
   it("pasa las cabeceras a columnas", () => {
-    const [game] = parseImportedGames(OPERA);
+    const game = parseImportedGames(OPERA)[0]!;
     expect(game.white).toBe("Paul Morphy");
     expect(game.black).toBe("Duque de Brunswick");
     expect(game.resultCode).toBe(GAME_RESULT.WHITE_WINS);
@@ -29,24 +29,24 @@ describe("parseImportedGames", () => {
   });
 
   it("trata «?» como dato ausente, que es lo que significa en un PGN", () => {
-    const [game] = parseImportedGames(OPERA);
+    const game = parseImportedGames(OPERA)[0]!;
     expect(game.round).toBeNull();
   });
 
   it("la federación viene de WhiteTeam/BlackTeam, que es donde la pone Lichess", () => {
-    const [game] = parseImportedGames(OPERA);
+    const game = parseImportedGames(OPERA)[0]!;
     expect(game.blackCountry).toBe("FRA");
     expect(game.whiteCountry).toBeNull();
   });
 
   it("un Elo que no es un número no se guarda", () => {
-    const [game] = parseImportedGames(OPERA.replace('[WhiteElo "2500"]', '[WhiteElo "sin dato"]'));
+    const game = parseImportedGames(OPERA.replace('[WhiteElo "2500"]', '[WhiteElo "sin dato"]'))[0]!;
     expect(game.whiteElo).toBeNull();
   });
 
   it("una fecha incompleta o imposible no se guarda", () => {
     for (const date of ["????.??.??", "2024.??.??", "2024.02.31"]) {
-      const [game] = parseImportedGames(OPERA.replace('[Date "1858.11.02"]', `[Date "${date}"]`));
+      const game = parseImportedGames(OPERA.replace('[Date "1858.11.02"]', `[Date "${date}"]`))[0]!;
       expect(game.playedAt).toBeNull();
     }
   });
@@ -55,7 +55,7 @@ describe("parseImportedGames", () => {
     // The result has to be removed from the end of the movetext too: chessops fills
     // the `Result` header from there, so changing only the header does not erase it.
     const sinResultado = OPERA.replace('[Result "1-0"]', '[Result "*"]').replace(/1-0$/, "*");
-    expect(parseImportedGames(sinResultado)[0].resultCode).toBe(GAME_RESULT.ONGOING);
+    expect(parseImportedGames(sinResultado)[0]?.resultCode).toBe(GAME_RESULT.ONGOING);
   });
 
   it("lee varias partidas de un mismo texto", () => {
@@ -70,7 +70,7 @@ describe("parseImportedGames", () => {
     const fen = "8/8/8/8/8/5k2/6q1/7K b - - 0 1";
     const games = parseImportedGames(`[FEN "${fen}"]\n[White "A"]\n[Black "B"]\n\n*`);
     expect(games).toHaveLength(1);
-    expect(games[0].initialFen).toBe(fen);
+    expect(games[0]?.initialFen).toBe(fen);
   });
 
   it("con basura devuelve lista vacía en vez de estallar", () => {
@@ -79,7 +79,7 @@ describe("parseImportedGames", () => {
   });
 
   it("el PGN que devuelve conserva las jugadas", () => {
-    const [game] = parseImportedGames(OPERA);
+    const game = parseImportedGames(OPERA)[0]!;
     expect(game.pgn).toContain("1. e4 e5");
     expect(game.pgn).toContain("Paul Morphy");
   });

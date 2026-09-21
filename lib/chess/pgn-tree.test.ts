@@ -59,9 +59,9 @@ describe("parsePgnTree — PGN con variante, comentarios y anotaciones visuales"
     const c5 = nodeAtPath(tree, "0.0");
     expect(c5?.san).toBe("c5");
     expect(c5?.children).toHaveLength(2);
-    expect(c5?.children[0].san).toBe("Nf3"); // main continuation
-    expect(c5?.children[1].san).toBe("Nc3"); // variation
-    expect(c5?.children[1].path).toBe("0.0.1");
+    expect(c5?.children[0]?.san).toBe("Nf3"); // main continuation
+    expect(c5?.children[1]?.san).toBe("Nc3"); // variation
+    expect(c5?.children[1]?.path).toBe("0.0.1");
 
     // The variation keeps its own ply numbering and its own line.
     const variante = ["Nc3", "Nc6", "g3", "g6"];
@@ -105,14 +105,14 @@ describe("parsePgnTree — PGN con variante, comentarios y anotaciones visuales"
 
   it("traduce la letra del comando al brush de chessground", () => {
     const anotado = parseOrFail("1. e4 {[%cal Re1e2,Bd1d2][%csl Ye4,Ga1]} *");
-    expect(anotado.children[0].shapes).toEqual([
+    expect(anotado.children[0]?.shapes).toEqual([
       { brush: "red", orig: "e1", dest: "e2" },
       { brush: "blue", orig: "d1", dest: "d2" },
       { brush: "yellow", orig: "e4" },
       { brush: "green", orig: "a1" },
     ]);
     // Without loose text, the comment stays undefined (not an empty string).
-    expect(anotado.children[0].comment).toBeUndefined();
+    expect(anotado.children[0]?.comment).toBeUndefined();
   });
 
   it("no arrastra comentario ni shapes a la posición inicial", () => {
@@ -165,7 +165,7 @@ describe("parsePgnTree — cabecera FEN", () => {
 
   it("numera el primer ply como 1 aunque la partida arranque de un FEN", () => {
     const tree = parseOrFail(LUCENA_PGN);
-    const first = tree.children[0];
+    const first = tree.children[0]!;
     expect(first.san).toBe("Rd1+");
     expect(first.ply).toBe(1);
     expect(first.check).toBe(true);
@@ -280,7 +280,7 @@ describe("numeración cuando la partida arranca en un FEN", () => {
 
   it("la primera jugada lleva el número del FEN, no el 1", () => {
     const tree = parsePgnTree(`[FEN "${FEN}"]\n[SetUp "1"]\n\n1. Kf1 Qh1+ 2. Ke2 Qxc1 *`);
-    const [first] = tree!.children;
+    const first = tree!.children[0]!;
     expect(numberOf(first.ply)).toBe(44);
     expect(isWhite(first.ply)).toBe(true);
   });
@@ -301,13 +301,13 @@ describe("numeración cuando la partida arranca en un FEN", () => {
     // Same position one ply later: 44… Qh1+ and not "44. Qh1+".
     const black = "8/Q3ppk1/1p2r1p1/4b3/P5Pp/1PB1P3/5P1q/2R2K2 b - - 3 44";
     const tree = parsePgnTree(`[FEN "${black}"]\n[SetUp "1"]\n\n1... Qh1+ *`);
-    const [first] = tree!.children;
+    const first = tree!.children[0]!;
     expect(numberOf(first.ply)).toBe(44);
     expect(isWhite(first.ply)).toBe(false);
   });
 
   it("sin FEN se sigue empezando en 1", () => {
     const tree = parsePgnTree("1. e4 e5 *");
-    expect(tree!.children[0].ply).toBe(1);
+    expect(tree!.children[0]?.ply).toBe(1);
   });
 });

@@ -47,6 +47,7 @@ export function planSwap(rows: ReorderRow[], id: string, direction: MoveDirectio
 
   const moved = sorted[index];
   const displaced = sorted[targetIndex];
+  if (!moved || !displaced) return [];
 
   return [
     // The row that moves leaves the valid range first: that way the one taking its

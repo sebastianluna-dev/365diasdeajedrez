@@ -182,7 +182,9 @@ export function ChessBoard({
   useEffect(() => {
     const api = apiRef.current;
     if (!api) return;
-    const { fen, lastMove, check } = position ?? positions[ply];
+    const current = position ?? positions[ply];
+    if (!current) return;
+    const { fen, lastMove, check } = current;
     const color = turnColor(fen);
     const config: Config = {
       fen,
@@ -237,7 +239,7 @@ export function ChessBoard({
     if (!root) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        isInViewportRef.current = entry.isIntersecting;
+        if (entry) isInViewportRef.current = entry.isIntersecting;
       },
       { threshold: 1 },
     );

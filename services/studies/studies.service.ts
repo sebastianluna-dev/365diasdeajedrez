@@ -189,7 +189,8 @@ const getClassGameItems = cache(async (): Promise<ClassGameItem[]> => {
 /** Card of the collection in "Mis estudios", or null when there is none. */
 async function getClassGamesSummary(): Promise<StudySummary | null> {
   const items = await getClassGameItems();
-  if (items.length === 0) return null;
+  const [latest] = items;
+  if (!latest) return null;
 
   return {
     id: CLASS_GAMES_ID,
@@ -198,7 +199,7 @@ async function getClassGamesSummary(): Promise<StudySummary | null> {
     kindLabel: "Colección",
     kindCode: DATABASE_KIND.COLLECTION,
     gameCount: items.length,
-    updatedAtLabel: items[0].classDateLabel,
+    updatedAtLabel: latest.classDateLabel,
     isCourseStudy: false,
     // It is not a database: there is nothing to edit or delete.
     permissions: studyPermissionsOf({ kindCode: DATABASE_KIND.COLLECTION, isOwner: false }),

@@ -101,8 +101,8 @@ describe("mapTeacherClassDetail", () => {
     ];
 
     const view = mapTeacherClassDetail(teacherRow({ blocks } as Partial<TeacherClassDetailRow>), "UTC");
-    expect(view.blocks[0].isMovePathBroken).toBe(false);
-    expect(view.blocks[1].isMovePathBroken).toBe(true);
-    expect(view.blocks[0].referenceLabel).toBe("Morphy – Duque");
+    expect(view.blocks[0]?.isMovePathBroken).toBe(false);
+    expect(view.blocks[1]?.isMovePathBroken).toBe(true);
+    expect(view.blocks[0]?.referenceLabel).toBe("Morphy – Duque");
   });
 });

@@ -50,8 +50,8 @@ describe("reviewGame", () => {
     expect(review.moves[0]).toMatchObject({ ply: 1, color: "white", quality: "good" });
     expect(review.moves[1]).toMatchObject({ ply: 2, color: "black", quality: "blunder" });
     // White lost nothing: their position improved.
-    expect(review.moves[0].centipawnLoss).toBe(0);
-    expect(review.moves[1].centipawnLoss).toBe(470);
+    expect(review.moves[0]?.centipawnLoss).toBe(0);
+    expect(review.moves[1]?.centipawnLoss).toBe(470);
   });
 
   it("reparte los errores entre los dos jugadores", () => {

@@ -334,15 +334,14 @@ _Mostly resolved (2026-09-09):_ `include` with `{ts,tsx}`, `@vitest/coverage-v8`
 **What is left:** the other mappers without a test (`classes`, `home`, `game-explorer`…) and the
 timer hooks, which need a Vitest project with `jsdom`.
 
-### 62. `tsconfig.json` with `target` ES2017 and without the flags that catch index bugs — [DX]
+### 62. ~~`tsconfig.json` with `target` ES2017 and without the flags that catch index bugs~~ — RESOLVED (2026-09-21)
 
 _Partially resolved (2026-09-09):_ `target: ES2022` and `noUnusedLocals: true`, both without a
 single error.
 
-**What is left:** `noUncheckedIndexedAccess` gives 172 errors (the worst offenders:
-`trainer-session.comp`, `move-tree.comp`, `notation.ts`, `reorder.ts` and several `lib/chess`
-suites). It is a batch of its own: almost all are legitimate `array[i]` accesses that have to be
-rewritten with a check.
+**Resolved (2026-09-21):** `noUncheckedIndexedAccess: true` (T16 in `todos.md`). The pattern for
+new code: an index that is safe by construction still gets a guard or a `??`, never a `!` outside
+the tests; lists that cannot be empty are typed as non-empty tuples (`ReplayPositions`).
 
 ### 63. Two databases in production without a backup or restore procedure — [Ops]
 

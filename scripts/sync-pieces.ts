@@ -41,7 +41,7 @@ function main(): void {
   mkdirSync(TARGET_DIR, { recursive: true });
 
   const written: string[] = [];
-  for (const [, role, color, base64] of css.matchAll(PIECE_RULE)) {
+  for (const [, role = "", color = "", base64 = ""] of css.matchAll(PIECE_RULE)) {
     const prefix = COLOR_PREFIX[color];
     if (!prefix || !ROLES.has(role)) continue;
     const svg = withViewBox(Buffer.from(base64, "base64").toString("utf8"));

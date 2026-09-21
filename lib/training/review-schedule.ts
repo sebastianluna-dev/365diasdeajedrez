@@ -46,6 +46,7 @@ export function applyReview(state: ReviewState, isPerfect: boolean, now: Date = 
   const consecutivePerfect = isPerfect ? state.consecutivePerfect + 1 : 0;
   const masteryLevel = isPerfect ? Math.min(state.masteryLevel + 1, MAX_MASTERY_LEVEL) : 0;
   const intervalDays = REVIEW_INTERVALS_DAYS[masteryLevel];
+  if (intervalDays === undefined) throw new Error(`Sin intervalo de repaso para el nivel ${masteryLevel}.`);
 
   return {
     consecutivePerfect,

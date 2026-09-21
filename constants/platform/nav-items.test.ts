@@ -11,21 +11,21 @@ describe("buildPlatformNavGroups", () => {
   it("da sólo el grupo del alumno, sin encabezado", () => {
     const groups = buildPlatformNavGroups({ isTeacher: false, isStaff: false });
     expect(groups).toHaveLength(1);
-    expect(groups[0].label).toBeUndefined();
-    expect(groups[0].items).toEqual(STUDENT_NAV_ITEMS);
+    expect(groups[0]?.label).toBeUndefined();
+    expect(groups[0]?.items).toEqual(STUDENT_NAV_ITEMS);
   });
 
   it("sustituye el menú del alumno por el del profesor, no lo apila", () => {
     const groups = buildPlatformNavGroups({ isTeacher: true, isStaff: false });
     expect(groups).toHaveLength(1);
-    expect(groups[0].label).toBe("Profesor");
-    expect(groups[0].items).toEqual(TEACHER_NAV_ITEMS);
+    expect(groups[0]?.label).toBe("Profesor");
+    expect(groups[0]?.items).toEqual(TEACHER_NAV_ITEMS);
   });
 
   it("da el menú de administración al staff", () => {
     const groups = buildPlatformNavGroups({ isTeacher: false, isStaff: true });
     expect(groups).toHaveLength(1);
-    expect(groups[0].items).toEqual(STAFF_NAV_ITEMS);
+    expect(groups[0]?.items).toEqual(STAFF_NAV_ITEMS);
   });
 
   it("ofrece el explorador tanto al alumno como al profesor", () => {
@@ -40,8 +40,8 @@ describe("buildPlatformNavGroups", () => {
   it("con varios roles manda el de mayor alcance: staff sobre profesor", () => {
     const groups = buildPlatformNavGroups({ isTeacher: true, isStaff: true });
     expect(groups).toHaveLength(1);
-    expect(groups[0].label).toBe("Administración");
-    expect(groups[0].items).toEqual(STAFF_NAV_ITEMS);
+    expect(groups[0]?.label).toBe("Administración");
+    expect(groups[0]?.items).toEqual(STAFF_NAV_ITEMS);
   });
 });
 

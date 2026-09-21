@@ -39,6 +39,7 @@ function renderLine(nodes: PgnTreeNode[], context: RenderContext, lineStart: boo
 
   while (current.length > 0) {
     const [main, ...variations] = current;
+    if (!main) break;
     const isActive = main.path === context.currentPath;
 
     out.push(

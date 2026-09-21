@@ -135,8 +135,8 @@ export function reviewGame(positions: ReviewedPosition[]): GameReview | null {
   const accuracies: Record<"white" | "black", number[]> = { white: [], black: [] };
 
   for (let index = 1; index < positions.length; index += 1) {
-    const before = positions[index - 1].evaluation;
-    const after = positions[index].evaluation;
+    const before = positions[index - 1]?.evaluation;
+    const after = positions[index]?.evaluation;
     if (!before || !after) continue;
 
     // Everything is measured from the point of view of WHOEVER MOVED: losing half a

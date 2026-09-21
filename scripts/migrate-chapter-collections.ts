@@ -193,6 +193,7 @@ async function main() {
         // With no lesson claiming it, it goes to the first chapter: it is course
         // material and leaving it out of every collection would make it invisible.
         const chapter = claimedBy.get(game.id) ?? course.chapters[0];
+        if (!chapter) throw new Error(`El curso ${course.id} no tiene capítulos.`);
         const databaseId = await collectionFor(chapter);
         if (!dryRun) await moveGame(game.id, databaseId, await nextOrder(databaseId));
         moved += 1;

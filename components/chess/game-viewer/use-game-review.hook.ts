@@ -114,8 +114,10 @@ export function useGameReview({ onFinished }: Options): GameReviewRunner {
           onFinishedRef.current(evaluations);
           return;
         }
+        const position = positions[index];
+        if (!position) return;
         current = null;
-        worker.postMessage(`position fen ${positions[index].fen}`);
+        worker.postMessage(`position fen ${position.fen}`);
         worker.postMessage(`go depth ${REVIEW_DEPTH}`);
       };
 
@@ -137,7 +139,9 @@ export function useGameReview({ onFinished }: Options): GameReviewRunner {
           return;
         }
 
-        const parsed = parseEngineInfo(line, turnColor(positions[index].fen));
+        const position = positions[index];
+        if (!position) return;
+        const parsed = parseEngineInfo(line, turnColor(position.fen));
         if (parsed) current = { score: parsed.score, mateIn: parsed.mateIn };
       });
 

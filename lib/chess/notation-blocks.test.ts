@@ -26,15 +26,15 @@ describe("buildNotationBlocks", () => {
     const rows = blocks().filter((block) => block.kind === "row");
 
     expect(rows[0]).toMatchObject({ number: 1 });
-    expect(rows[0].white?.san).toBe("d4");
+    expect(rows[0]?.white?.san).toBe("d4");
     // d4 carries a comment and a variation, so its pair is split.
-    expect(rows[0].black).toBeUndefined();
-    expect(rows[0].pushedBlack).toBe(true);
+    expect(rows[0]?.black).toBeUndefined();
+    expect(rows[0]?.pushedBlack).toBe(true);
 
     // The reply drops to the next row and is marked as a continuation.
     expect(rows[1]).toMatchObject({ number: 1, continuation: true });
-    expect(rows[1].black?.san).toBe("Nf6");
-    expect(rows[1].white).toBeUndefined();
+    expect(rows[1]?.black?.san).toBe("Nf6");
+    expect(rows[1]?.white).toBeUndefined();
   });
 
   it("empareja normalmente cuando no hay nada que se meta en medio", () => {
@@ -47,7 +47,7 @@ describe("buildNotationBlocks", () => {
   });
 
   it("el comentario de la línea principal va a lo ancho, sin sangrar", () => {
-    const first = blocks()[1];
+    const first = blocks()[1]!;
     expect(first.kind).toBe("comment");
     expect(first).toMatchObject({ text: "Ejemplo de comentario" });
   });

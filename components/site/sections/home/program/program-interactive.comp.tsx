@@ -13,7 +13,8 @@ interface ProgramInteractiveProps {
 
 export function ProgramInteractive({ modules, topicsHeading }: ProgramInteractiveProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const activeModule = modules[activeIndex];
+  const activeModule = modules[activeIndex] ?? modules[0];
+  if (!activeModule) return null;
 
   return (
     <div className="program__wrap">

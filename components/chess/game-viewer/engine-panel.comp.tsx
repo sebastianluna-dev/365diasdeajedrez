@@ -116,9 +116,10 @@ export function EnginePanel({ fen, enabled, onToggle, state, flipBoard = false, 
                               the engine's suggestions hard. */}
                           <span
                             className="engine-panel__move"
-                            onMouseEnter={() =>
-                              setPreview({ fen: steps[position].fen, lastMove: steps[position].lastMove })
-                            }
+                            onMouseEnter={() => {
+                              const step = steps[position];
+                              if (step) setPreview({ fen: step.fen, lastMove: step.lastMove });
+                            }}
                           >
                             {sanToSpanish(token.san)}
                           </span>
