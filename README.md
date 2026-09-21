@@ -27,7 +27,7 @@ npm run dev                  # http://localhost:3000
 
 | Command                                   | Description                                                                                                   |
 | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `npm run dev`                             | Development server (Webpack).                                                                                 |
+| `npm run dev`                             | Development server (Turbopack, like the build).                                                               |
 | `npm run build`                           | `prisma generate` + production build (the generated client is not in git; Vercel only runs this script).      |
 | `npm run start`                           | Serves the production build.                                                                                  |
 | `npm run lint`                            | ESLint.                                                                                                       |

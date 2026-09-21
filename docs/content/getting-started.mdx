@@ -38,7 +38,7 @@ cp .env.example .env.local     # fill in the values
 npm run db:generate            # Prisma client → lib/platform-db/generated (git-ignored)
 npm run db:migrate             # applies prisma/migrations to PLATFORM_DATABASE_URL
 npm run db:seed                # catalogs (idempotent) + demo content and accounts
-npm run dev                    # http://localhost:3000 (webpack dev server)
+npm run dev                    # http://localhost:3000
 ```
 
 Payload creates and updates its own tables with Drizzle push while `next dev` runs against `DATABASE_URI`; there are no Payload migrations committed. The first visit to `/admin` asks you to create the first CMS user (`admin` role).
@@ -61,7 +61,7 @@ There is **no public sign-up**: students exist because staff creates them (`/adm
 
 | Command                                   | What it does                                                                                                                                                                                             |
 | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `npm run dev`                             | Development server. Uses **webpack** on purpose (`next dev --webpack`); production builds use Turbopack.                                                                                                 |
+| `npm run dev`                             | Development server, on Turbopack like the production build (the `--webpack` flag dated from Tailwind v4, long gone).                                                                                     |
 | `npm run build` / `npm run start`         | Production build and server. `build` runs `prisma generate` first, because the client is git-ignored and Vercel only runs this script. Measure performance only against these, never against `next dev`. |
 | `npm run typecheck`                       | `tsc --noEmit` (same as CI).                                                                                                                                                                             |
 | `npm run lint`                            | ESLint 9 with `eslint-config-next`.                                                                                                                                                                      |
