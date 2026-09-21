@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
-import { mapStudyDetail, type StudyDetailRow } from "./studies.mapper";
+import { mapStudyDetail, STUDY_GAMES_PAGE_SIZE, type StudyDetailRow } from "./studies.mapper";
 
 // Minimal fixture with the shape `studyDetailInclude` returns. It is built by
 // hand and the type is asserted: what is tested is the mapping, not Prisma.
@@ -84,5 +84,29 @@ describe("mapStudyDetail", () => {
     expect(asStudent.shares).toEqual([]);
     expect(asStudent.sharedByName).toBe("Maestro");
     expect(asStudent.permissions.canEditGames).toBe(false);
+  });
+});
+
+describe("mapStudyDetail con paginación", () => {
+  it("sin datos de paginación, la fila es el estudio entero: una página", () => {
+    const detail = mapStudyDetail(study({ games: [game({ id: "a" })] }), "owner");
+    expect(detail).toMatchObject({ gameCount: 1, page: 1, pageCount: 1 });
+  });
+
+  it("numera las partidas de una página con el desplazamiento de las anteriores", () => {
+    const row = study({ games: [game({ id: "x", event: "Repetido" }), game({ id: "y" })] });
+    const detail = mapStudyDetail(row, "owner", {
+      gameCount: STUDY_GAMES_PAGE_SIZE * 2 + 2,
+      citedGameCount: 7,
+      // The event repeats elsewhere in the study, so it does not name the game.
+      eventCounts: new Map([["Repetido", 3]]),
+      page: 3,
+    });
+    expect(detail.pageCount).toBe(3);
+    expect(detail.citedGameCount).toBe(7);
+    expect(detail.games.map((item) => item.label)).toEqual([
+      `Partida ${STUDY_GAMES_PAGE_SIZE * 2 + 1}`,
+      `Partida ${STUDY_GAMES_PAGE_SIZE * 2 + 2}`,
+    ]);
   });
 });
