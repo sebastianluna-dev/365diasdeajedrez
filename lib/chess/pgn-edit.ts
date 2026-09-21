@@ -90,7 +90,7 @@ function locate(game: Game<PgnNodeData>, path: string): { parent: Node<PgnNodeDa
   if (path.length === 0) return null;
 
   const segments = path.split(".");
-  const index = Number.parseInt(segments[segments.length - 1], 10);
+  const index = Number.parseInt(segments[segments.length - 1] ?? "", 10);
   const parentPath = segments.slice(0, -1).join(".");
   const parent = parentPath.length === 0 ? game.moves : nodeAtPathIn(game, parentPath);
 
@@ -178,7 +178,11 @@ export function promoteOneStep(game: Game<PgnNodeData>, path: string): boolean {
   if (!found || found.index === 0) return false;
 
   const { parent, index } = found;
-  [parent.children[index - 1], parent.children[index]] = [parent.children[index], parent.children[index - 1]];
+  const previous = parent.children[index - 1];
+  const node = parent.children[index];
+  if (!previous || !node) return false;
+  parent.children[index - 1] = node;
+  parent.children[index] = previous;
   return true;
 }
 
@@ -202,7 +206,7 @@ export function promoteToMainLine(game: Game<PgnNodeData>, path: string): boolea
     if (!found) return false;
     if (found.index !== 0) {
       const [moved] = found.parent.children.splice(found.index, 1);
-      found.parent.children.unshift(moved);
+      if (moved) found.parent.children.unshift(moved);
     }
 
     const parentPath = currentPath.split(".").slice(0, -1).join(".");

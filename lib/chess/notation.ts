@@ -4,7 +4,9 @@ const PIECE_KIND_BY_LETTER: Record<string, string> = { N: "knight", B: "bishop",
 const SPANISH_LETTER: Record<string, string> = { N: "C", B: "A", R: "T", Q: "D", K: "R" };
 
 const toSpanish = (san: string) =>
-  san.indexOf("O-O") === 0 ? san : (SPANISH_LETTER[san[0]] || "") + (SPANISH_LETTER[san[0]] ? san.slice(1) : san);
+  san.indexOf("O-O") === 0
+    ? san
+    : (SPANISH_LETTER[san.charAt(0)] || "") + (SPANISH_LETTER[san.charAt(0)] ? san.slice(1) : san);
 
 /**
  * Translates the piece initial of a SAN into Spanish (N→C, B→A, R→T, Q→D,
@@ -23,8 +25,8 @@ export function numberedMoveLabel(ply: number, san: string): string {
   return `${Math.ceil(ply / 2)}${ply % 2 === 1 ? "." : "…"} ${sanToSpanish(san)}`;
 }
 
-const withoutInitial = (san: string) => (PIECE_KIND_BY_LETTER[san[0]] ? san.slice(1) : san);
-const pieceGlyphOf = (san: string): string | null => PIECE_KIND_BY_LETTER[san[0]] ?? null;
+const withoutInitial = (san: string) => (PIECE_KIND_BY_LETTER[san.charAt(0)] ? san.slice(1) : san);
+const pieceGlyphOf = (san: string): string | null => PIECE_KIND_BY_LETTER[san.charAt(0)] ?? null;
 
 export interface NotationHalfMove {
   label: string;
@@ -75,10 +77,10 @@ export function buildNotationRows(sans: string[], annotations?: MoveAnnotations,
     const blackIndex = blackFirst ? index : index + 1;
     rows.push({
       number: `${moveNumber}${blackFirst ? "…" : "."}`,
-      white: blackFirst ? null : halfMove(sans[index], index + 1, annotations?.[`${moveNumber}w`] ?? null),
+      white: blackFirst ? null : halfMove(sans[index] ?? "", index + 1, annotations?.[`${moveNumber}w`] ?? null),
       black:
         blackIndex < sans.length
-          ? halfMove(sans[blackIndex], blackIndex + 1, annotations?.[`${moveNumber}b`] ?? null)
+          ? halfMove(sans[blackIndex] ?? "", blackIndex + 1, annotations?.[`${moveNumber}b`] ?? null)
           : null,
     });
     index = blackIndex + 1;

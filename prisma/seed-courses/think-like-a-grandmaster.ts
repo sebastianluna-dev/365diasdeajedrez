@@ -187,7 +187,7 @@ const ID_DIGITS = "0123456789";
 function deterministicId(namespace: string, key: string): string {
   const bytes = createHash("sha1").update(`${namespace}:${key}`).digest();
   let id = "";
-  for (let index = 0; index < 8; index++) id += ID_DIGITS[bytes[index] % 10];
+  for (let index = 0; index < 8; index++) id += ID_DIGITS.charAt((bytes[index] ?? 0) % 10);
   return id;
 }
 
@@ -255,11 +255,13 @@ function toSeedChapter(chapter: ImportChapter): SeedChapter {
   if (!id) fail(`capítulo ${chapter.order} fuera de los cinco del libro`);
 
   const topics = CHAPTER_TOPICS[index];
+  const description = CHAPTER_DESCRIPTIONS[index];
+  if (!topics || description === undefined) fail(`capítulo ${chapter.order} sin temas o descripción`);
   return {
     id,
     order: chapter.order,
     name: chapter.title,
-    description: CHAPTER_DESCRIPTIONS[index],
+    description,
     estimatedDuration: chapter.lessons.length * MINUTES_PER_LESSON,
     lessons: chapter.lessons.map((lesson) => toSeedLesson(lesson, topics)),
   };

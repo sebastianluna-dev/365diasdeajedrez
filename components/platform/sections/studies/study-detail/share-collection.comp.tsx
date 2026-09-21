@@ -66,7 +66,7 @@ export function ShareCollection({ studyId, shares, students }: ShareCollectionPr
         <form action={shareStudyWithStudent.bind(null, studyId)} className="share-collection__form">
           <label className="share-collection__field">
             <span className="share-collection__label">Dársela a</span>
-            <select className="share-collection__select" name="studentId" defaultValue={candidates[0].id}>
+            <select className="share-collection__select" name="studentId" defaultValue={candidates[0]?.id}>
               {candidates.map((student) => (
                 <option key={student.id} value={student.id}>
                   {student.displayName} · {student.email}

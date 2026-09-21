@@ -94,21 +94,21 @@ function parseCommentCommands(comments: string[] | undefined): {
   const shapes: DrawShape[] = [];
 
   for (const match of raw.matchAll(/\[%cal ([^\]]+)\]/g)) {
-    for (const entry of match[1].split(",")) {
+    for (const entry of (match[1] ?? "").split(",")) {
       const value = entry.trim();
       if (value.length < 5) continue;
       shapes.push({
-        brush: BRUSH_BY_LETTER[value[0]] ?? "green",
+        brush: BRUSH_BY_LETTER[value.charAt(0)] ?? "green",
         orig: value.slice(1, 3) as Key,
         dest: value.slice(3, 5) as Key,
       });
     }
   }
   for (const match of raw.matchAll(/\[%csl ([^\]]+)\]/g)) {
-    for (const entry of match[1].split(",")) {
+    for (const entry of (match[1] ?? "").split(",")) {
       const value = entry.trim();
       if (value.length < 3) continue;
-      shapes.push({ brush: BRUSH_BY_LETTER[value[0]] ?? "green", orig: value.slice(1, 3) as Key });
+      shapes.push({ brush: BRUSH_BY_LETTER[value.charAt(0)] ?? "green", orig: value.slice(1, 3) as Key });
     }
   }
 

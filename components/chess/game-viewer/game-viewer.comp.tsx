@@ -304,7 +304,7 @@ export function GameViewer({
     if (!root) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        isInViewportRef.current = entry.isIntersecting;
+        if (entry) isInViewportRef.current = entry.isIntersecting;
       },
       { threshold: 0.6 },
     );
@@ -367,7 +367,7 @@ export function GameViewer({
     event.stopPropagation();
     const current = items.findIndex((item) => item === document.activeElement);
     const step = event.key === "ArrowDown" ? 1 : -1;
-    items[(current + step + items.length) % items.length].focus();
+    items[(current + step + items.length) % items.length]?.focus();
   };
 
   // Full screen can be left with Escape without going through the button, so

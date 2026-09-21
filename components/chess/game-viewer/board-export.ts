@@ -67,7 +67,7 @@ function readBoardPieceUrls(): Map<string, string> {
   try {
     for (const { key, element } of elements) {
       const match = /url\(["']?(.+?)["']?\)/.exec(getComputedStyle(element).backgroundImage);
-      if (match) urls.set(key, match[1]);
+      if (match?.[1]) urls.set(key, match[1]);
     }
   } finally {
     probe.remove();
@@ -268,8 +268,9 @@ export async function downloadGameGif(pgn: string, filename: string, options: Gi
   const first = new Uint8ClampedArray(frameData(canvas, size));
 
   let sample: Uint8ClampedArray = first;
-  if (positions.length > 1) {
-    await drawPosition(canvas, positions[1].fen, { size, lastMove: positions[1].lastMove });
+  const secondPosition = positions[1];
+  if (secondPosition) {
+    await drawPosition(canvas, secondPosition.fen, { size, lastMove: secondPosition.lastMove });
     const second = frameData(canvas, size);
     sample = new Uint8ClampedArray(first.length + second.length);
     sample.set(first, 0);

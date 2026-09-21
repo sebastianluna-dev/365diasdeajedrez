@@ -157,5 +157,8 @@ export function orderedEngineLines(current: EngineLines | null, fen: string): En
   return Object.keys(current.byIndex)
     .map(Number)
     .sort((a, b) => a - b)
-    .map((index) => current.byIndex[index]);
+    .flatMap((index) => {
+      const line = current.byIndex[index];
+      return line ? [line] : [];
+    });
 }

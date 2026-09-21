@@ -160,7 +160,7 @@ describe("acumular las tres líneas", () => {
     const state = feed(FEN, [info(1, 12, 0.3), info(2, 12, 0.1), info(3, 12, -0.2), info(1, 13, 0.5)]);
     const lines = orderedEngineLines(state, FEN);
     expect(lines.map((l) => l.depth)).toEqual([13, 12, 12]);
-    expect(lines[0].score).toBe(0.5);
+    expect(lines[0]?.score).toBe(0.5);
   });
 
   it("cambiar de posición tira lo anterior en vez de mezclarlo", () => {

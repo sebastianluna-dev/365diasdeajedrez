@@ -101,7 +101,7 @@ function wav(samples: Int16Array): Buffer {
   buffer.writeUInt16LE(16, 34);
   buffer.write("data", 36);
   buffer.writeUInt32LE(dataBytes, 40);
-  for (let index = 0; index < samples.length; index++) buffer.writeInt16LE(samples[index], 44 + index * 2);
+  for (let index = 0; index < samples.length; index++) buffer.writeInt16LE(samples[index] ?? 0, 44 + index * 2);
   return buffer;
 }
 

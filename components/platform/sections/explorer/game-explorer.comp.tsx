@@ -36,7 +36,7 @@ export function GameExplorer() {
   const cacheRef = useRef(new Map<string, PositionSearchResult>());
 
   const positions = useMemo(() => replayGame(sans.join(" ")), [sans]);
-  const current = positions[Math.min(index, positions.length - 1)];
+  const current = positions[Math.min(index, positions.length - 1)] ?? positions[0];
 
   useEffect(() => {
     const fen = current.fen;

@@ -60,7 +60,7 @@ describe("mapStudyDetail", () => {
     const detail = mapStudyDetail(row, "owner");
     expect(detail.citedGameCount).toBe(1);
     expect(detail.games.map((item) => item.citedInClass)).toEqual([true, false]);
-    expect(detail.games[0].href).toBe("/estudios/study-1/partidas/a");
+    expect(detail.games[0]?.href).toBe("/estudios/study-1/partidas/a");
   });
 
   it("al dueño le enseña a quién repartió; a quien recibe, de quién viene", () => {

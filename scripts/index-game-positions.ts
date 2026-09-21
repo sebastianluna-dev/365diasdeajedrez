@@ -51,8 +51,9 @@ async function main(): Promise<void> {
       take: BATCH_SIZE,
       ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
     });
-    if (batch.length === 0) break;
-    cursor = batch[batch.length - 1].id;
+    const last = batch[batch.length - 1];
+    if (!last) break;
+    cursor = last.id;
 
     for (const game of batch) {
       const label = `${game.white}-${game.black} (${game.id})`;

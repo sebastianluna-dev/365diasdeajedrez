@@ -11,7 +11,8 @@ interface PlansMobileSectionProps {
 
 export function PlansMobileSection({ plans }: PlansMobileSectionProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const activePlan = plans[activeIndex];
+  const activePlan = plans[activeIndex] ?? plans[0];
+  if (!activePlan) return null;
 
   return (
     <div className="plans-mobile">

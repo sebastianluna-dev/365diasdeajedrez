@@ -45,6 +45,6 @@ export function withCoverCrop(url: string, gravity: CropGravity, aspectRatio = "
 
   // If there were already transformations they are replaced whole: accumulating
   // them would leave chained crops and each reframing would apply over the previous one.
-  const body = isTransformSegment(first) ? tail.join("/") : rest;
+  const body = first !== undefined && isTransformSegment(first) ? tail.join("/") : rest;
   return `${head}c_fill,ar_${aspectRatio},g_${gravity}/${body}`;
 }

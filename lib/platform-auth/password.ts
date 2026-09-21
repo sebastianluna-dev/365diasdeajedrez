@@ -55,6 +55,7 @@ export async function verifyPassword(password: string, storedHash: string): Prom
   if (parts.length !== 6 || parts[0] !== "scrypt") return false;
 
   const [, rawN, rawR, rawP, saltHex, keyHex] = parts;
+  if (saltHex === undefined || keyHex === undefined) return false;
   const n = Number(rawN);
   const r = Number(rawR);
   const p = Number(rawP);
