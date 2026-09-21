@@ -1,5 +1,12 @@
 import { teacherRoutes } from "@/lib/platform-routes";
-import { mapGameView, mapStudyDetail, mapStudySummary, type GameViewRow, type StudyDetailRow, type StudySummaryRow } from "@/services/studies/studies.mapper";
+import {
+  mapGameView,
+  mapStudyDetail,
+  mapStudySummary,
+  type GameViewRow,
+  type StudyDetailRow,
+  type StudySummaryRow,
+} from "@/services/studies/studies.mapper";
 import type { GameView, StudyDetail, StudySummary } from "@/services/studies/studies.types";
 
 // The "Mis estudios" view models serve the teacher's view as they are: the only

@@ -38,7 +38,5 @@ export function mainlineEvaluations(tree: PgnTree): MoveEvaluation[] | null {
   if (positions.length < 2) return null;
 
   const evaluations = positions.map((position) => position.evaluation);
-  return evaluations.every((evaluation): evaluation is MoveEvaluation => evaluation !== undefined)
-    ? evaluations
-    : null;
+  return evaluations.every((evaluation): evaluation is MoveEvaluation => evaluation !== undefined) ? evaluations : null;
 }

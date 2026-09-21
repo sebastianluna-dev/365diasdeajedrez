@@ -4,14 +4,14 @@ description: "Testimonials on the home page: the title from the home-reviews Glo
 
 # `ReviewsSection`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/reviews/reviews.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `reviews.section.css` → block `.reviews` (head part) |
-| Used by | `app/(frontend)/landing-page.tsx` (`sections.reviews`) |
-| Composes | [`ReviewsInteractive`](/components/site/sections/home/reviews/reviews-interactive) |
-| Reads | `getReviewsData()` · `services/home/home.service.ts` (the `home-reviews` Global) |
+|            |                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/reviews/reviews.section.tsx`                        |
+| Kind       | Server Component (async)                                                           |
+| Stylesheet | `reviews.section.css` → block `.reviews` (head part)                               |
+| Used by    | `app/(frontend)/landing-page.tsx` (`sections.reviews`)                             |
+| Composes   | [`ReviewsInteractive`](/components/site/sections/home/reviews/reviews-interactive) |
+| Reads      | `getReviewsData()` · `services/home/home.service.ts` (the `home-reviews` Global)   |
 
 ## Purpose
 
@@ -43,7 +43,9 @@ From `app/(frontend)/landing-page.tsx`:
 ```tsx
 import { ReviewsSection } from "@/components/site/sections/home/reviews/reviews.section";
 
-{sections.reviews && <ReviewsSection />}
+{
+  sections.reviews && <ReviewsSection />;
+}
 ```
 
 ## Related

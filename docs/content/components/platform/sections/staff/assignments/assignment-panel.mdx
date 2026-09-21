@@ -4,15 +4,15 @@ description: "Student↔teacher assignments seen from either side (a discriminat
 
 # `AssignmentPanel`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/assignments/assignment-panel.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `assignment-panel.comp.css` → block `.assignment-panel` |
-| Used by | [`StudentAdminDetailSection`](/components/platform/sections/staff/students/student-admin-detail-section), [`TeacherAdminDetailSection`](/components/platform/sections/staff/teachers/teacher-admin-detail-section) |
-| Composes | [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Writes | `assignStudent()`, `endAssignment()` · `services/staff-teachers/staff-teachers.actions.ts` |
-| Uses | `staffRoutes` from `lib/platform-routes`; `StudentAssignmentHistoryItem`, `TeacherStudentAssignment`, `AssignableStudent` types |
+|            |                                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/assignments/assignment-panel.comp.tsx`                                                                                                                                         |
+| Kind       | Server Component                                                                                                                                                                                                   |
+| Stylesheet | `assignment-panel.comp.css` → block `.assignment-panel`                                                                                                                                                            |
+| Used by    | [`StudentAdminDetailSection`](/components/platform/sections/staff/students/student-admin-detail-section), [`TeacherAdminDetailSection`](/components/platform/sections/staff/teachers/teacher-admin-detail-section) |
+| Composes   | [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime)                                                                                               |
+| Writes     | `assignStudent()`, `endAssignment()` · `services/staff-teachers/staff-teachers.actions.ts`                                                                                                                         |
+| Uses       | `staffRoutes` from `lib/platform-routes`; `StudentAssignmentHistoryItem`, `TeacherStudentAssignment`, `AssignableStudent` types                                                                                    |
 
 ## Purpose
 
@@ -22,10 +22,10 @@ Assigning a student to a teacher is one operation seen from two records, so one 
 
 A discriminated union on `mode`:
 
-| Mode | Props |
-| --- | --- |
+| Mode          | Props                                                                                                                                                 |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `"byStudent"` | `studentId: string` · `assignments: StudentAssignmentHistoryItem[]` (full history; the active one has `isActive`) · `teachers: { id, displayName }[]` |
-| `"byTeacher"` | `teacherId: string` · `students: TeacherStudentAssignment[]` (active assignments) · `assignable: AssignableStudent[]` (with `currentTeacherName?`) |
+| `"byTeacher"` | `teacherId: string` · `students: TeacherStudentAssignment[]` (active assignments) · `assignable: AssignableStudent[]` (with `currentTeacherName?`)    |
 
 ## Behaviour
 
@@ -56,12 +56,7 @@ From `components/platform/sections/staff/students/student-admin-detail.section.t
 ```tsx
 import { AssignmentPanel } from "@/components/platform/sections/staff/assignments/assignment-panel.comp";
 
-<AssignmentPanel
-  mode="byStudent"
-  studentId={student.id}
-  assignments={student.assignments}
-  teachers={teachers}
-/>
+<AssignmentPanel mode="byStudent" studentId={student.id} assignments={student.assignments} teachers={teachers} />;
 ```
 
 ## Related

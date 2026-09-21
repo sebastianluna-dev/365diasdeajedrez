@@ -54,7 +54,13 @@ function mentorFields(): Field[] {
             {
               type: "row",
               fields: [
-                { name: "birthYear", type: "number", label: "Año de nacimiento", required: true, admin: { width: "50%" } },
+                {
+                  name: "birthYear",
+                  type: "number",
+                  label: "Año de nacimiento",
+                  required: true,
+                  admin: { width: "50%" },
+                },
                 {
                   name: "gender",
                   type: "select",
@@ -80,7 +86,7 @@ function mentorFields(): Field[] {
               type: "text",
               label: "Enfoque de la foto",
               admin: {
-                description: "Posición del recorte de la foto en formato CSS object-position, ej: \"80% 20%\".",
+                description: 'Posición del recorte de la foto en formato CSS object-position, ej: "80% 20%".',
               },
             },
             {

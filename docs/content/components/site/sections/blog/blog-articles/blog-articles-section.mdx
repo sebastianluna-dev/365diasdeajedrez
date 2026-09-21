@@ -4,14 +4,14 @@ description: "The blog listing as a Server Component driven by the URL: the cate
 
 # `BlogArticles`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/blog/blog-articles/blog-articles.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `blog-articles.section.css` → block `.blog-articles` |
-| Used by | `/blog` |
-| Composes | [`CategoryFilter`](/components/site/sections/blog/blog-articles/category-filter), [`ArticleCard`](/components/site/sections/blog/blog-articles/article-card), [`Pagination`](/components/site/sections/blog/blog-articles/pagination) |
-| Uses | `selectArticles`, `listingHref`, `ArticleListingQuery` from `services/articles/article-listing`<br />`ArticleSummary` from `services/articles/articles.types` |
+|            |                                                                                                                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/blog/blog-articles/blog-articles.section.tsx`                                                                                                                                                               |
+| Kind       | Server Component                                                                                                                                                                                                                      |
+| Stylesheet | `blog-articles.section.css` → block `.blog-articles`                                                                                                                                                                                  |
+| Used by    | `/blog`                                                                                                                                                                                                                               |
+| Composes   | [`CategoryFilter`](/components/site/sections/blog/blog-articles/category-filter), [`ArticleCard`](/components/site/sections/blog/blog-articles/article-card), [`Pagination`](/components/site/sections/blog/blog-articles/pagination) |
+| Uses       | `selectArticles`, `listingHref`, `ArticleListingQuery` from `services/articles/article-listing`<br />`ArticleSummary` from `services/articles/articles.types`                                                                         |
 
 ## Purpose
 
@@ -19,10 +19,10 @@ The `/blog` page. It used to be a Client Component that received every article, 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `articles` | `ArticleSummary[]` | yes | Every summary; filtering happens here. |
-| `query` | `ArticleListingQuery` | yes | `category` and `page`, already validated by `parseListingQuery` in the page. |
+| Prop       | Type                  | Required | Meaning                                                                      |
+| ---------- | --------------------- | -------- | ---------------------------------------------------------------------------- |
+| `articles` | `ArticleSummary[]`    | yes      | Every summary; filtering happens here.                                       |
+| `query`    | `ArticleListingQuery` | yes      | `category` and `page`, already validated by `parseListingQuery` in the page. |
 
 ## Behaviour
 

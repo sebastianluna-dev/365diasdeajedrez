@@ -48,14 +48,7 @@ const MAX_MB = Math.round(IMAGE_MAX_BYTES / (1024 * 1024));
  * itself (see lib/cloudinary-url), which is what fixes a square photo. An
  * image already exported in that ratio stays as it is.
  */
-export function ImageUpload({
-  name,
-  form,
-  defaultValue,
-  label,
-  aspectRatio = "21:9",
-  hint,
-}: ImageUploadProps) {
+export function ImageUpload({ name, form, defaultValue, label, aspectRatio = "21:9", hint }: ImageUploadProps) {
   const [url, setUrl] = useState(defaultValue ?? "");
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const [dragging, setDragging] = useState(false);
@@ -141,10 +134,7 @@ export function ImageUpload({
           photo. Dragging returns when it is removed; changing it is still on
           its button. */}
       {hasImage ? (
-        <div
-          className="image-upload__drop image-upload__drop_state_filled"
-          style={{ aspectRatio: boxRatio }}
-        >
+        <div className="image-upload__drop image-upload__drop_state_filled" style={{ aspectRatio: boxRatio }}>
           <Image
             src={url}
             alt=""

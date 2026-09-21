@@ -38,9 +38,7 @@ describe("mainlinePath", () => {
 
 describe("positionAfter", () => {
   it("parte de la posición inicial cuando no hay FEN", () => {
-    expect(makeFen(positionAfter(null, []).toSetup())).toBe(
-      "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1",
-    );
+    expect(makeFen(positionAfter(null, []).toSetup())).toBe("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
   });
 
   it("parte del FEN dado cuando lo hay", () => {

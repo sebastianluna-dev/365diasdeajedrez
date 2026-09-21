@@ -6,13 +6,13 @@ description: "The whole-game evaluation hook: a second Stockfish worker that eva
 
 Also exports the `GameReviewState`, `GameReviewProgress` and `GameReviewRunner` types.
 
-| | |
-| --- | --- |
-| File | `components/chess/game-viewer/use-game-review.hook.ts` |
-| Kind | Client hook |
-| Stylesheet | none |
-| Used by | [`GameReview`](/components/chess/game-viewer/game-review) |
-| Uses | `parseEngineInfo` from `lib/chess/engine-protocol`<br />`replayGame`, `turnColor` from `lib/chess/replay`<br />`MoveEvaluation` from `lib/chess/pgn-tree`<br />the worker script `public/engine/stockfish.js` |
+|            |                                                                                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/use-game-review.hook.ts`                                                                                                                                                        |
+| Kind       | Client hook                                                                                                                                                                                                   |
+| Stylesheet | none                                                                                                                                                                                                          |
+| Used by    | [`GameReview`](/components/chess/game-viewer/game-review)                                                                                                                                                     |
+| Uses       | `parseEngineInfo` from `lib/chess/engine-protocol`<br />`replayGame`, `turnColor` from `lib/chess/replay`<br />`MoveEvaluation` from `lib/chess/pgn-tree`<br />the worker script `public/engine/stockfish.js` |
 
 ## Purpose
 
@@ -25,22 +25,26 @@ It has its **own worker**, apart from the one in [`useEngine`](/components/chess
 ### `useGameReview`
 
 ```ts
-export function useGameReview({ onFinished }: { onFinished: (evaluations: MoveEvaluation[]) => void }): GameReviewRunner
+export function useGameReview({
+  onFinished,
+}: {
+  onFinished: (evaluations: MoveEvaluation[]) => void;
+}): GameReviewRunner;
 ```
 
-| Option | Meaning |
-| --- | --- |
+| Option       | Meaning                                                                                                                                                                                                                                      |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `onFinished` | Called **once** on completion with one evaluation per main-line position, the first being the starting position. The hook does not touch the PGN; the caller decides what to do with the numbers. Kept in a ref, so it need not be memoised. |
 
 ### `GameReviewRunner`
 
-| Field | Type | Meaning |
-| --- | --- | --- |
-| `state` | `"idle" \| "running" \| "failed"` | `idle` both before and after a run; "done" is not a state here because the result lives in the PGN. |
-| `done`, `total` | `number` | Positions evaluated so far and how many there are. |
-| `depth` | `number` | The depth in use (16), so the interface can report it. |
-| `start` | `(pgn: string) => void` | Replays the PGN, creates the worker and begins. Calling it again stops any run in progress. |
-| `cancel` | `() => void` | Terminates the worker and resets progress. What was evaluated so far is discarded. |
+| Field           | Type                              | Meaning                                                                                             |
+| --------------- | --------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `state`         | `"idle" \| "running" \| "failed"` | `idle` both before and after a run; "done" is not a state here because the result lives in the PGN. |
+| `done`, `total` | `number`                          | Positions evaluated so far and how many there are.                                                  |
+| `depth`         | `number`                          | The depth in use (16), so the interface can report it.                                              |
+| `start`         | `(pgn: string) => void`           | Replays the PGN, creates the worker and begins. Calling it again stops any run in progress.         |
+| `cancel`        | `() => void`                      | Terminates the worker and resets progress. What was evaluated so far is discarded.                  |
 
 ## Behaviour
 

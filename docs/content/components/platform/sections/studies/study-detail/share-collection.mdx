@@ -4,14 +4,14 @@ description: "The owner's panel of a collection: who already has it, with a 'Qui
 
 # `ShareCollection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/study-detail/share-collection.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `share-collection.comp.css` → block `.share-collection` |
-| Used by | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (only when the viewer owns a collection) |
-| Writes | `shareStudyWithStudent()`, `unshareStudyWithStudent()` · `services/studies/studies.actions.ts` |
-| Uses | `StudyShareItem`, `StudentOption` from `services/studies/studies.types` |
+|            |                                                                                                                                          |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/study-detail/share-collection.comp.tsx`                                                            |
+| Kind       | Server Component                                                                                                                         |
+| Stylesheet | `share-collection.comp.css` → block `.share-collection`                                                                                  |
+| Used by    | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (only when the viewer owns a collection) |
+| Writes     | `shareStudyWithStudent()`, `unshareStudyWithStudent()` · `services/studies/studies.actions.ts`                                           |
+| Uses       | `StudyShareItem`, `StudentOption` from `services/studies/studies.types`                                                                  |
 
 ## Purpose
 
@@ -21,11 +21,11 @@ A share is a row that exists or does not, so there is no intermediate state wort
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `studyId` | `string` | yes | Bound into both actions. |
-| `shares` | `StudyShareItem[]` | yes | Who already has it: `{ userId, displayName, email, sharedAtLabel }`. |
-| `students` | `StudentOption[]` | yes | Students with an active assignment to the teacher. |
+| Prop       | Type               | Required | Meaning                                                              |
+| ---------- | ------------------ | -------- | -------------------------------------------------------------------- |
+| `studyId`  | `string`           | yes      | Bound into both actions.                                             |
+| `shares`   | `StudyShareItem[]` | yes      | Who already has it: `{ userId, displayName, email, sharedAtLabel }`. |
+| `students` | `StudentOption[]`  | yes      | Students with an active assignment to the teacher.                   |
 
 ## Behaviour
 
@@ -54,7 +54,9 @@ From `components/platform/sections/studies/study-detail/study-detail.section.tsx
 ```tsx
 import { ShareCollection } from "./share-collection.comp";
 
-{canShare && <ShareCollection studyId={study.id} shares={study.shares} students={students} />}
+{
+  canShare && <ShareCollection studyId={study.id} shares={study.shares} students={students} />;
+}
 ```
 
 ## Related

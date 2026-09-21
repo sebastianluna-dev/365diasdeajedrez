@@ -4,13 +4,13 @@ description: "One post in the blog listing: cover link, category eyebrow, linked
 
 # `ArticleCard`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/blog/blog-articles/article-card.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `article-card.comp.css` → block `.article-card` |
-| Used by | [`BlogArticles`](/components/site/sections/blog/blog-articles/blog-articles-section) |
-| Uses | `ArticleSummary` from `services/articles/articles.types`, `next/image` |
+|            |                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------ |
+| File       | `components/site/sections/blog/blog-articles/article-card.comp.tsx`                  |
+| Kind       | Server Component                                                                     |
+| Stylesheet | `article-card.comp.css` → block `.article-card`                                      |
+| Used by    | [`BlogArticles`](/components/site/sections/blog/blog-articles/blog-articles-section) |
+| Uses       | `ArticleSummary` from `services/articles/articles.types`, `next/image`               |
 
 ## Purpose
 
@@ -18,11 +18,11 @@ The listing card. Two links (image and title) rather than one wrapping link, so 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `article` | `ArticleSummary` | yes | `href`, `image`, `category`, `title`, `excerpt`, `meta`. |
-| `id` | `string` | no | Forwarded to the `<article>`. |
-| `style` | `CSSProperties` | no | The listing passes `--blog-card-index` here. |
+| Prop      | Type             | Required | Meaning                                                  |
+| --------- | ---------------- | -------- | -------------------------------------------------------- |
+| `article` | `ArticleSummary` | yes      | `href`, `image`, `category`, `title`, `excerpt`, `meta`. |
+| `id`      | `string`         | no       | Forwarded to the `<article>`.                            |
+| `style`   | `CSSProperties`  | no       | The listing passes `--blog-card-index` here.             |
 
 ## Behaviour
 
@@ -47,7 +47,7 @@ From `components/site/sections/blog/blog-articles/blog-articles.section.tsx`:
 ```tsx
 import { ArticleCard } from "./article-card.comp";
 
-<ArticleCard key={article.slug} article={article} style={{ "--blog-card-index": index } as CSSProperties} />
+<ArticleCard key={article.slug} article={article} style={{ "--blog-card-index": index } as CSSProperties} />;
 ```
 
 ## Related

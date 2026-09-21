@@ -8,22 +8,22 @@ The project uses **plain CSS** only: no Tailwind (it was removed and its preflig
 
 ## Two themes, two stylesheets
 
-| File | Theme | Contains |
-| --- | --- | --- |
-| `app/(frontend)/globals.css` | **Dark** — the public site | The reset, the `--color-*` tokens, the board colours, base element styles (`html`, `body`, headings, links, forms), the global `:focus-visible` outline, the skip link, the hover transition rules and the `.section` / `.button` primitives. |
+| File                          | Theme                                                 | Contains                                                                                                                                                                                                                                                     |
+| ----------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `app/(frontend)/globals.css`  | **Dark** — the public site                            | The reset, the `--color-*` tokens, the board colours, base element styles (`html`, `body`, headings, links, forms), the global `:focus-visible` outline, the skip link, the hover transition rules and the `.section` / `.button` primitives.                |
 | `app/(platform)/platform.css` | **Light** — the authenticated area and the login page | The `--platform-*` tokens, `body.platform-theme` (which repaints the dark `body` from `globals.css`), a platform-coloured focus outline, and the `.platform-page` / `.platform-card` / `.platform-button` / `.platform-dialog` / `.platform-tag` primitives. |
 
 Both files are global on purpose; every other stylesheet is scoped to its component.
 
 ### Which layout loads what
 
-| Root layout | Stylesheets | `<body>` class | Font variables on `<html>` |
-| --- | --- | --- | --- |
-| `app/(frontend)/layout.tsx` | `globals.css` | none | `--font-gramatika`, `--font-suisse`, `--font-chessglyph` |
-| `app/(auth)/layout.tsx` | `globals.css` + `platform.css` | `platform-theme` | the three above + `--font-sf-pro` |
-| `app/(platform)/layout.tsx` | `globals.css` + `platform.css` | `platform-theme` | the three above + `--font-sf-pro` |
-| `app/global-not-found.tsx` | `globals.css` | none | public fonts |
-| `app/(payload)/layout.tsx` | Payload's own CSS + `custom.css` | Payload's | — |
+| Root layout                 | Stylesheets                      | `<body>` class   | Font variables on `<html>`                               |
+| --------------------------- | -------------------------------- | ---------------- | -------------------------------------------------------- |
+| `app/(frontend)/layout.tsx` | `globals.css`                    | none             | `--font-gramatika`, `--font-suisse`, `--font-chessglyph` |
+| `app/(auth)/layout.tsx`     | `globals.css` + `platform.css`   | `platform-theme` | the three above + `--font-sf-pro`                        |
+| `app/(platform)/layout.tsx` | `globals.css` + `platform.css`   | `platform-theme` | the three above + `--font-sf-pro`                        |
+| `app/global-not-found.tsx`  | `globals.css`                    | none             | public fonts                                             |
+| `app/(payload)/layout.tsx`  | Payload's own CSS + `custom.css` | Payload's        | —                                                        |
 
 `platform.css` always sits **on top of** `globals.css`: the reset, the element defaults and the transition rules come from the public sheet, and the platform sheet only swaps the palette and the font. That is why `body.platform-theme` exists: `globals.css` paints the body dark, and without that rule the scroll bounce on the platform would show black under the content.
 
@@ -33,33 +33,33 @@ Tokens are the only place a colour is chosen (plus the two layout tokens below, 
 
 ### Public site — `--color-*` (`globals.css`)
 
-| Token | Value | Use |
-| --- | --- | --- |
-| `--background` / `--foreground` | `#16110d` / `#f2ede7` | Body background and text of the dark site. |
-| `--color-dark` | `#16110d` | The brand dark; text on orange buttons. |
-| `--color-primary` | `#ff9143` | Brand orange for fills (buttons, eyebrows, focus outline on dark). |
-| `--color-primary-on-light` | `#f26c00` | Orange that stays legible as text on a light section. |
-| `--color-primary-deep` | `#b8611f` | The button's hard shadow and the readable orange on light. Same value as `--platform-accent-ink`. |
-| `--color-secondary` | `#f0c04b` | Yellow accent. |
-| `--color-accent-red` / `--color-accent-red-on-dark` | `#a81e22` / `#f44046` | Red for light and dark backgrounds respectively. |
-| `--color-muted-on-dark` / `--color-muted-on-light` | `#b4a99d` / `#5c5348` | Secondary text, one per background. |
-| `--color-light-gray`, `--color-lighter-gray`, `--color-normal-gray` | `#e6e1dd`, `#eee9e5`, `#aca7a3` | Neutral surfaces and borders on light sections. |
-| `--board-light` / `--board-dark` | `#eeeed2` / `#769656` | Board squares. Mirrored in `constants/chess-board-colors.const.ts` because the canvas export cannot read CSS; change both together. |
-| `--site-logo-height` | `20px`, `28px` under 1024 px, `24px` under 400 px | Height the wordmark is drawn at (`logo.comp.css`). It is a token because the header is built around it: the fixed menu toggle centres itself on it and `--site-header-height` is made of it. |
-| `--site-header-height` | `100px`; `calc(25px + var(--site-logo-height) + 14px)` under 1024 px | Vertical space the header occupies, which the home hero reads to fill the first screen on mobile. On mobile the bar is only the logo, so the value follows the token; on desktop the bar is as tall as the login button instead, hence the flat number, composed by hand from `header.section.css` (28 px of padding + the 58 px button + the 14 px spacer). |
+| Token                                                               | Value                                                                | Use                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--background` / `--foreground`                                     | `#16110d` / `#f2ede7`                                                | Body background and text of the dark site.                                                                                                                                                                                                                                                                                                                   |
+| `--color-dark`                                                      | `#16110d`                                                            | The brand dark; text on orange buttons.                                                                                                                                                                                                                                                                                                                      |
+| `--color-primary`                                                   | `#ff9143`                                                            | Brand orange for fills (buttons, eyebrows, focus outline on dark).                                                                                                                                                                                                                                                                                           |
+| `--color-primary-on-light`                                          | `#f26c00`                                                            | Orange that stays legible as text on a light section.                                                                                                                                                                                                                                                                                                        |
+| `--color-primary-deep`                                              | `#b8611f`                                                            | The button's hard shadow and the readable orange on light. Same value as `--platform-accent-ink`.                                                                                                                                                                                                                                                            |
+| `--color-secondary`                                                 | `#f0c04b`                                                            | Yellow accent.                                                                                                                                                                                                                                                                                                                                               |
+| `--color-accent-red` / `--color-accent-red-on-dark`                 | `#a81e22` / `#f44046`                                                | Red for light and dark backgrounds respectively.                                                                                                                                                                                                                                                                                                             |
+| `--color-muted-on-dark` / `--color-muted-on-light`                  | `#b4a99d` / `#5c5348`                                                | Secondary text, one per background.                                                                                                                                                                                                                                                                                                                          |
+| `--color-light-gray`, `--color-lighter-gray`, `--color-normal-gray` | `#e6e1dd`, `#eee9e5`, `#aca7a3`                                      | Neutral surfaces and borders on light sections.                                                                                                                                                                                                                                                                                                              |
+| `--board-light` / `--board-dark`                                    | `#eeeed2` / `#769656`                                                | Board squares. Mirrored in `constants/chess-board-colors.const.ts` because the canvas export cannot read CSS; change both together.                                                                                                                                                                                                                          |
+| `--site-logo-height`                                                | `20px`, `28px` under 1024 px, `24px` under 400 px                    | Height the wordmark is drawn at (`logo.comp.css`). It is a token because the header is built around it: the fixed menu toggle centres itself on it and `--site-header-height` is made of it.                                                                                                                                                                 |
+| `--site-header-height`                                              | `100px`; `calc(25px + var(--site-logo-height) + 14px)` under 1024 px | Vertical space the header occupies, which the home hero reads to fill the first screen on mobile. On mobile the bar is only the logo, so the value follows the token; on desktop the bar is as tall as the login button instead, hence the flat number, composed by hand from `header.section.css` (28 px of padding + the 58 px button + the 14 px spacer). |
 
 ### Platform — `--platform-*` (`platform.css`)
 
 The three brand colours keep their values and change roles: `#16110d` goes from background to text, and orange is reserved for **fills** (buttons, progress bars). As text on a light background that orange does not pass contrast, hence the separate ink token.
 
-| Group | Tokens | Notes |
-| --- | --- | --- |
-| Surfaces | `--platform-bg` `#f6f4f1`, `--platform-surface` `#ffffff`, `--platform-surface-sunken` `#ede7de`, `--platform-surface-neutral` `#f2efea`, `--platform-surface-soft` `#fcfbf9` | Page, card, inset hollows (cover slot, empty cells), neutral chips, warm white for fields inside a white card. |
-| Borders | `--platform-border` `#eae4dc`, `--platform-border-strong` `#e2dbd1` | Thin separates zones; strong outlines controls. |
-| Text | `--platform-text` `#16110d`, `--platform-text-muted` `#6e655c`, `--platform-text-subtle` `#7a7168`, `--platform-text-faint` `#c3bbb1` | Body, secondary, small labels (subtle is 4.8:1 on white and may be used as text), and faint is **decoration only** (separator dots, row chevrons), never text. |
-| Accent | `--platform-accent` `#ff9143`, `--platform-accent-hover` `#f07f2c`, `--platform-accent-ink` `#b8611f`, `--platform-accent-soft` `#fbeadb`, `--platform-accent-wash` `#fbf1e7` | Fill, fill on hover, orange as text/links/figures, tinted chip background, the faintest wash (active menu item). |
-| Semantic | `--platform-success-{soft,ink,border}`, `--platform-danger` `#a81e22`, `--platform-danger-{soft,border}`, `--platform-warning-{soft,ink,border}` | Notices and tags. Each family has a background, an ink and a border of matching lightness. |
-| Misc | `--platform-track` `#efeae3`, `--platform-shadow-card`, `--platform-shadow-bar`, `--platform-font` | Progress-bar track; on the light theme layers are separated by shadow, not by border; the single font stack (`var(--font-sf-pro)` with system fallbacks). |
+| Group    | Tokens                                                                                                                                                                        | Notes                                                                                                                                                          |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Surfaces | `--platform-bg` `#f6f4f1`, `--platform-surface` `#ffffff`, `--platform-surface-sunken` `#ede7de`, `--platform-surface-neutral` `#f2efea`, `--platform-surface-soft` `#fcfbf9` | Page, card, inset hollows (cover slot, empty cells), neutral chips, warm white for fields inside a white card.                                                 |
+| Borders  | `--platform-border` `#eae4dc`, `--platform-border-strong` `#e2dbd1`                                                                                                           | Thin separates zones; strong outlines controls.                                                                                                                |
+| Text     | `--platform-text` `#16110d`, `--platform-text-muted` `#6e655c`, `--platform-text-subtle` `#7a7168`, `--platform-text-faint` `#c3bbb1`                                         | Body, secondary, small labels (subtle is 4.8:1 on white and may be used as text), and faint is **decoration only** (separator dots, row chevrons), never text. |
+| Accent   | `--platform-accent` `#ff9143`, `--platform-accent-hover` `#f07f2c`, `--platform-accent-ink` `#b8611f`, `--platform-accent-soft` `#fbeadb`, `--platform-accent-wash` `#fbf1e7` | Fill, fill on hover, orange as text/links/figures, tinted chip background, the faintest wash (active menu item).                                               |
+| Semantic | `--platform-success-{soft,ink,border}`, `--platform-danger` `#a81e22`, `--platform-danger-{soft,border}`, `--platform-warning-{soft,ink,border}`                              | Notices and tags. Each family has a background, an ink and a border of matching lightness.                                                                     |
+| Misc     | `--platform-track` `#efeae3`, `--platform-shadow-card`, `--platform-shadow-bar`, `--platform-font`                                                                            | Progress-bar track; on the light theme layers are separated by shadow, not by border; the single font stack (`var(--font-sf-pro)` with system fallbacks).      |
 
 `--transition-hover` is read by the global transition rule with a `150ms` default; a component may set it to change or remove the duration.
 
@@ -67,12 +67,12 @@ The three brand colours keep their values and change roles: `#16110d` goes from 
 
 `next/font/local` loads woff2 subsets from `public/fonts/` and exposes them as CSS variables on `<html>`:
 
-| Variable | Font | Where it is used |
-| --- | --- | --- |
-| `--font-gramatika` | Gramatika Bold | Public headings (`.section__title`, `.section-heading__title`). |
-| `--font-suisse` | Suisse Intl 400/500/700 | Public body text (`body` in `globals.css`). |
-| `--font-chessglyph` | ChessGlyph | Figurine notation. Not preloaded. |
-| `--font-sf-pro` | SF Pro Display 400/500/700 | The whole platform, through `--platform-font`. Not preloaded. |
+| Variable            | Font                       | Where it is used                                                |
+| ------------------- | -------------------------- | --------------------------------------------------------------- |
+| `--font-gramatika`  | Gramatika Bold             | Public headings (`.section__title`, `.section-heading__title`). |
+| `--font-suisse`     | Suisse Intl 400/500/700    | Public body text (`body` in `globals.css`).                     |
+| `--font-chessglyph` | ChessGlyph                 | Figurine notation. Not preloaded.                               |
+| `--font-sf-pro`     | SF Pro Display 400/500/700 | The whole platform, through `--platform-font`. Not preloaded.   |
 
 Platform stylesheets never name a font; they use `var(--platform-font)` or inherit it. See [Stockfish, pieces & sounds](/chess/engine-and-assets#fonts--publicfonts) for the subsetting commands and licences.
 
@@ -165,19 +165,19 @@ The React side mirrors this: modifiers are appended conditionally, and the class
 
 These are the only classes defined outside a component file, and they are meant to be used directly in JSX.
 
-| Class | Sheet | Purpose |
-| --- | --- | --- |
-| `.section`, `.section_theme_light`, `.section_theme_dark`, `.section__inner`, `.section__head`, `.section__eyebrow`, `.section__title`, `.section__text` | `globals.css` | The public page band: 88 px vertical padding, 1200 px inner column with responsive side padding, eyebrow/title/text typography. |
-| `.button`, `.button_variant_primary`, `.button_variant_secondary`, `.button_size_hero` | `globals.css` | Public buttons. The primary one has the deep-orange hard shadow. |
-| `.muted-text` | `globals.css` | Secondary text on light sections. |
-| `.skip-link` | `globals.css` | Off-screen "Saltar al contenido" link, visible on focus; every layout renders it and every `<main>` has `id="contenido"`. |
-| `.blog-button`, `.blog-button_variant_primary`, `.blog-button_variant_secondary` | `app/(frontend)/blog/blog.css` | Blog-specific buttons, intentionally shared by the listing and the article page. |
-| `.platform-page`, `.platform-page__head`, `.platform-page__title`, `.platform-page__subtitle` | `platform.css` | The vertical layout of every platform page: 28 px gaps, 39.5 px balanced title, muted subtitle. |
-| `.platform-card`, `.platform-card__title` | `platform.css` | White card with the card shadow. |
-| `.platform-button`, `.platform-button_variant_secondary`, `.platform-button_variant_danger` | `platform.css` | Platform buttons. Secondary and danger draw their outline with `box-shadow: inset` so they measure exactly like the primary. |
-| `.platform-dialog` | `platform.css` | A native `<dialog>` centred with `inset: 0; margin: auto`, scrolling inside when taller than the viewport; the backdrop is a translucent brand dark. |
-| `.platform-tag`, `.platform-tag_variant_accent` | `platform.css` | Pill labels ("Sólo lectura", "Desactualizado"). |
-| `.platform-theme` | `platform.css` | Set on `<body>` by the auth and platform layouts; scopes the light overrides. |
+| Class                                                                                                                                                    | Sheet                          | Purpose                                                                                                                                              |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `.section`, `.section_theme_light`, `.section_theme_dark`, `.section__inner`, `.section__head`, `.section__eyebrow`, `.section__title`, `.section__text` | `globals.css`                  | The public page band: 88 px vertical padding, 1200 px inner column with responsive side padding, eyebrow/title/text typography.                      |
+| `.button`, `.button_variant_primary`, `.button_variant_secondary`, `.button_size_hero`                                                                   | `globals.css`                  | Public buttons. The primary one has the deep-orange hard shadow.                                                                                     |
+| `.muted-text`                                                                                                                                            | `globals.css`                  | Secondary text on light sections.                                                                                                                    |
+| `.skip-link`                                                                                                                                             | `globals.css`                  | Off-screen "Saltar al contenido" link, visible on focus; every layout renders it and every `<main>` has `id="contenido"`.                            |
+| `.blog-button`, `.blog-button_variant_primary`, `.blog-button_variant_secondary`                                                                         | `app/(frontend)/blog/blog.css` | Blog-specific buttons, intentionally shared by the listing and the article page.                                                                     |
+| `.platform-page`, `.platform-page__head`, `.platform-page__title`, `.platform-page__subtitle`                                                            | `platform.css`                 | The vertical layout of every platform page: 28 px gaps, 39.5 px balanced title, muted subtitle.                                                      |
+| `.platform-card`, `.platform-card__title`                                                                                                                | `platform.css`                 | White card with the card shadow.                                                                                                                     |
+| `.platform-button`, `.platform-button_variant_secondary`, `.platform-button_variant_danger`                                                              | `platform.css`                 | Platform buttons. Secondary and danger draw their outline with `box-shadow: inset` so they measure exactly like the primary.                         |
+| `.platform-dialog`                                                                                                                                       | `platform.css`                 | A native `<dialog>` centred with `inset: 0; margin: auto`, scrolling inside when taller than the viewport; the backdrop is a translucent brand dark. |
+| `.platform-tag`, `.platform-tag_variant_accent`                                                                                                          | `platform.css`                 | Pill labels ("Sólo lectura", "Desactualizado").                                                                                                      |
+| `.platform-theme`                                                                                                                                        | `platform.css`                 | Set on `<body>` by the auth and platform layouts; scopes the light overrides.                                                                        |
 
 ## Cross-cutting rules in `globals.css`
 

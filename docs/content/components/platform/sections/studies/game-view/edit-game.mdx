@@ -4,14 +4,14 @@ description: "The 'Datos de la partida' dialog over GameFields, posting updateGa
 
 # `EditGame`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/game-view/edit-game.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `edit-game.comp.css` → block `.edit-game` |
-| Used by | `/estudios/[studyId]/partidas/[gameId]` (passed into the section as the `editGame` node) |
-| Composes | [`GameFields`](/components/platform/sections/studies/game-fields) |
-| Writes | `updateGameDetails()` · `services/studies/studies.actions.ts` |
+|            |                                                                                          |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/edit-game.comp.tsx`                      |
+| Kind       | Client Component                                                                         |
+| Stylesheet | `edit-game.comp.css` → block `.edit-game`                                                |
+| Used by    | `/estudios/[studyId]/partidas/[gameId]` (passed into the section as the `editGame` node) |
+| Composes   | [`GameFields`](/components/platform/sections/studies/game-fields)                        |
+| Writes     | `updateGameDetails()` · `services/studies/studies.actions.ts`                            |
 
 ## Purpose
 
@@ -19,13 +19,13 @@ Editing a game's data without leaving the board: a native `<dialog>` with the sa
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `studyId` | `string` | yes | Bound into the action. |
-| `gameId` | `string` | yes | Bound into the action. |
-| `values` | `GameFieldValues` | yes | Current values. The page passes the whole `GameView`, which is a superset. |
-| `results` | `StudyKindOption[]` | yes | The results catalog; its label is the PGN token. |
-| `label` | `string` | no · default `"Editar"` | Trigger text. In the aside "Editar" is enough; a longer label gets the `_size_wide` trigger. |
+| Prop      | Type                | Required                | Meaning                                                                                      |
+| --------- | ------------------- | ----------------------- | -------------------------------------------------------------------------------------------- |
+| `studyId` | `string`            | yes                     | Bound into the action.                                                                       |
+| `gameId`  | `string`            | yes                     | Bound into the action.                                                                       |
+| `values`  | `GameFieldValues`   | yes                     | Current values. The page passes the whole `GameView`, which is a superset.                   |
+| `results` | `StudyKindOption[]` | yes                     | The results catalog; its label is the PGN token.                                             |
+| `label`   | `string`            | no · default `"Editar"` | Trigger text. In the aside "Editar" is enough; a longer label gets the `_size_wide` trigger. |
 
 ## Behaviour
 
@@ -52,7 +52,7 @@ From `app/(platform)/estudios/[studyId]/partidas/[gameId]/page.tsx`:
 ```tsx
 import { EditGame } from "@/components/platform/sections/studies/game-view/edit-game.comp";
 
-<EditGame studyId={game.studyId} gameId={game.id} results={results} values={game} />
+<EditGame studyId={game.studyId} gameId={game.id} results={results} values={game} />;
 ```
 
 ## Related

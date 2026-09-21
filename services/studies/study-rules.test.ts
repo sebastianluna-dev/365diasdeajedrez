@@ -1,12 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
-import {
-  canChangeKindTo,
-  canCreateKind,
-  creatableKinds,
-  studyPermissionsOf,
-} from "@/services/studies/study-rules";
+import { canChangeKindTo, canCreateKind, creatableKinds, studyPermissionsOf } from "@/services/studies/study-rules";
 
 const OWNED = { isOwner: true };
 const RECEIVED = { isOwner: false };

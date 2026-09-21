@@ -4,12 +4,12 @@ description: "The wordmark as a link to the home page: an inline SVG whose '365'
 
 # `Logo`
 
-| | |
-| --- | --- |
-| File | `components/site/shared/logo.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `logo.comp.css` → block `.logo` |
-| Used by | [`Header`](/components/site/sections/shell/header/header-section), [`Footer`](/components/site/sections/shell/footer/footer-section) |
+|            |                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/site/shared/logo.comp.tsx`                                                                                               |
+| Kind       | Server Component                                                                                                                     |
+| Stylesheet | `logo.comp.css` → block `.logo`                                                                                                      |
+| Used by    | [`Header`](/components/site/sections/shell/header/header-section), [`Footer`](/components/site/sections/shell/footer/footer-section) |
 
 ## Purpose
 
@@ -19,10 +19,10 @@ The drawing is the brand SVG (`viewBox="0 0 703 72"`) inlined in the component i
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `theme` | `"light" \| "dark"` | no, `"dark"` | Colour of the word and the marks; becomes `.logo_theme_<theme>`. |
-| `accent` | `"orange" \| "red"` | no, `"orange"` | Colour of the "365"; becomes `.logo_accent_<accent>`. |
+| Prop     | Type                | Required       | Meaning                                                          |
+| -------- | ------------------- | -------------- | ---------------------------------------------------------------- |
+| `theme`  | `"light" \| "dark"` | no, `"dark"`   | Colour of the word and the marks; becomes `.logo_theme_<theme>`. |
+| `accent` | `"orange" \| "red"` | no, `"orange"` | Colour of the "365"; becomes `.logo_accent_<accent>`.            |
 
 ## Behaviour
 
@@ -49,7 +49,9 @@ From `components/site/sections/shell/header/header.section.tsx`:
 ```tsx
 import { Logo } from "@/components/site/shared/logo.comp";
 
-{theme === "light" ? <Logo theme="light" accent="red" /> : <Logo theme="dark" accent="orange" />}
+{
+  theme === "light" ? <Logo theme="light" accent="red" /> : <Logo theme="dark" accent="orange" />;
+}
 ```
 
 ## Related

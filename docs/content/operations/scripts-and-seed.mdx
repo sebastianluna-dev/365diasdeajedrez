@@ -21,12 +21,12 @@ What it creates (data in `prisma/seed-data.ts`):
 
 Environment switches:
 
-| Variable | Effect |
-| --- | --- |
-| `PLATFORM_DEMO_PASSWORD` | Password for the demo accounts (default `ajedrez365`). |
-| `ALLOW_DEMO_SEED=1` | Allows seeding a **non-local** database with the default password. Test databases only. |
+| Variable                        | Effect                                                                                           |
+| ------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `PLATFORM_DEMO_PASSWORD`        | Password for the demo accounts (default `ajedrez365`).                                           |
+| `ALLOW_DEMO_SEED=1`             | Allows seeding a **non-local** database with the default password. Test databases only.          |
 | `SEED_NOW=2026-09-01T18:00:00Z` | Reference instant; without it, today at 18:00 UTC. Pin it to reproduce a database byte for byte. |
-| `NODE_ENV=production` | Treated as remote: the guard applies. |
+| `NODE_ENV=production`           | Treated as remote: the guard applies.                                                            |
 
 The guard: if the database host is not `localhost`/`127.0.0.1`/`::1` (or `NODE_ENV=production`) and the password is the repository default and `ALLOW_DEMO_SEED` is not `1`, the seed throws before writing anything.
 

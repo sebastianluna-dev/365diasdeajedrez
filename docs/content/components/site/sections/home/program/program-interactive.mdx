@@ -4,14 +4,14 @@ description: "The module list and the panel that shows the active module's durat
 
 # `ProgramInteractive`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/program/program-interactive.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `program-interactive.comp.css` → blocks `.program-list` and `.program-panel` (plus `.program__wrap`) |
-| Used by | [`ProgramSection`](/components/site/sections/home/program/program-section) |
-| Composes | [`ProgramModuleListItem`](/components/site/sections/home/program/program-module-list-item) |
-| Uses | `ProgramModuleContent` from `services/home/home.types`, `formatTwoDigitNumber` from `lib/format-two-digit-number` |
+|            |                                                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/program/program-interactive.comp.tsx`                                              |
+| Kind       | Client Component                                                                                                  |
+| Stylesheet | `program-interactive.comp.css` → blocks `.program-list` and `.program-panel` (plus `.program__wrap`)              |
+| Used by    | [`ProgramSection`](/components/site/sections/home/program/program-section)                                        |
+| Composes   | [`ProgramModuleListItem`](/components/site/sections/home/program/program-module-list-item)                        |
+| Uses       | `ProgramModuleContent` from `services/home/home.types`, `formatTwoDigitNumber` from `lib/format-two-digit-number` |
 
 ## Purpose
 
@@ -19,10 +19,10 @@ The only state of the programme section: which module is open. The list on the l
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `modules` | `ProgramModuleContent[]` | yes | Title, `durationLabel`, `description`, `topics`. |
-| `topicsHeading` | `string` | yes | Heading above the topic list, from the Global. |
+| Prop            | Type                     | Required | Meaning                                          |
+| --------------- | ------------------------ | -------- | ------------------------------------------------ |
+| `modules`       | `ProgramModuleContent[]` | yes      | Title, `durationLabel`, `description`, `topics`. |
+| `topicsHeading` | `string`                 | yes      | Heading above the topic list, from the Global.   |
 
 ## Behaviour
 
@@ -48,7 +48,7 @@ From `components/site/sections/home/program/program.section.tsx`:
 ```tsx
 import { ProgramInteractive } from "./program-interactive.comp";
 
-<ProgramInteractive modules={content.modules} topicsHeading={content.topicsHeading} />
+<ProgramInteractive modules={content.modules} topicsHeading={content.topicsHeading} />;
 ```
 
 ## Related

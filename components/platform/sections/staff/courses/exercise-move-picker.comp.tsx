@@ -82,8 +82,8 @@ export function ExerciseMovePicker({ pgn, onPick }: ExerciseMovePickerProps) {
   return (
     <div className="exercise-move-picker">
       <p className="exercise-move-picker__hint">
-        Recorre la lección hasta donde arranca el ejercicio y marca el inicio; sigue hasta la última jugada de la
-        línea y marca el final. Sin inicio marcado, el ejercicio empieza desde el principio de la lección.
+        Recorre la lección hasta donde arranca el ejercicio y marca el inicio; sigue hasta la última jugada de la línea
+        y marca el final. Sin inicio marcado, el ejercicio empieza desde el principio de la lección.
       </p>
 
       <GameViewer pgn={pgn} onPathChange={setCurrentPath} moveList="flow" />

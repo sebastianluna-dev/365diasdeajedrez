@@ -4,14 +4,14 @@ description: "The course page: tags, name, description, authors, the stacked pro
 
 # `CourseDetailSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/courses/course-detail/course-detail.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `course-detail.section.css` → block `.course-detail` |
-| Used by | `/cursos/[courseId]` |
-| Composes | [`ChapterList`](/components/platform/sections/courses/course-detail/chapter-list), [`ProgressIndicator`](/components/platform/shared/progress-indicator), [`PriorityFilter`](/components/platform/shared/priority-filter) |
-| Uses | `CourseDetail` from `services/courses/courses.types`; `next/image`, `next/link` |
+|            |                                                                                                                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-detail/course-detail.section.tsx`                                                                                                                                            |
+| Kind       | Server Component                                                                                                                                                                                                          |
+| Stylesheet | `course-detail.section.css` → block `.course-detail`                                                                                                                                                                      |
+| Used by    | `/cursos/[courseId]`                                                                                                                                                                                                      |
+| Composes   | [`ChapterList`](/components/platform/sections/courses/course-detail/chapter-list), [`ProgressIndicator`](/components/platform/shared/progress-indicator), [`PriorityFilter`](/components/platform/shared/priority-filter) |
+| Uses       | `CourseDetail` from `services/courses/courses.types`; `next/image`, `next/link`                                                                                                                                           |
 
 ## Purpose
 
@@ -19,10 +19,10 @@ Everything about one course on one screen: the hero with the facts the card fold
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `course` | `CourseDetail` | yes | `id`, `name`, `description?`, `cover?`, `typeLabel`, `levelLabels`, `authors: { name, roleLabel }[]`, `progress`, `continueHref`, `ctaLabel`, `chapters`, `onlyPriorityLessons`, `hiddenLessons`. Already filtered by the priority preference. |
-| `errorCode` | `string` | no | Code from `?error=` (`throttled`, `invalid`…), translated with `STUDENT_ERROR_MESSAGES` into a `PlatformNotice`. |
+| Prop        | Type           | Required | Meaning                                                                                                                                                                                                                                        |
+| ----------- | -------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `course`    | `CourseDetail` | yes      | `id`, `name`, `description?`, `cover?`, `typeLabel`, `levelLabels`, `authors: { name, roleLabel }[]`, `progress`, `continueHref`, `ctaLabel`, `chapters`, `onlyPriorityLessons`, `hiddenLessons`. Already filtered by the priority preference. |
+| `errorCode` | `string`       | no       | Code from `?error=` (`throttled`, `invalid`…), translated with `STUDENT_ERROR_MESSAGES` into a `PlatformNotice`.                                                                                                                               |
 
 ## Behaviour
 

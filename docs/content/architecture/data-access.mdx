@@ -8,12 +8,12 @@ description: "The service, mapper and types triad, the Prisma and Payload client
 
 Every domain under `services/<domain>/` follows the same shape:
 
-| File | Role |
-| --- | --- |
-| `<domain>.service.ts` | Reads. Resolves the user through the DAL, queries Prisma or Payload with the authorisation inside the `where`, returns view types. Read functions that several sections call in the same request are wrapped in React's `cache()` so the query runs once per request. |
-| `<domain>.mapper.ts` | Pure translation from rows to view types: Spanish labels from catalog rows, formatted dates (`lib/format-spanish-date.ts`), percentages, hrefs from `lib/platform-routes.ts`. Also exports the Prisma `include`/`select` objects the service uses, so the row type and the mapper stay together. |
-| `<domain>.types.ts` | The UI contract. Sections import only from here. Types carry `code`s next to labels when the UI has to decide something (`kindCode`, `statusCode`). |
-| `<domain>.actions.ts` | Server actions (`"use server"`). Writes only. |
+| File                  | Role                                                                                                                                                                                                                                                                                             |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `<domain>.service.ts` | Reads. Resolves the user through the DAL, queries Prisma or Payload with the authorisation inside the `where`, returns view types. Read functions that several sections call in the same request are wrapped in React's `cache()` so the query runs once per request.                            |
+| `<domain>.mapper.ts`  | Pure translation from rows to view types: Spanish labels from catalog rows, formatted dates (`lib/format-spanish-date.ts`), percentages, hrefs from `lib/platform-routes.ts`. Also exports the Prisma `include`/`select` objects the service uses, so the row type and the mapper stay together. |
+| `<domain>.types.ts`   | The UI contract. Sections import only from here. Types carry `code`s next to labels when the UI has to decide something (`kindCode`, `statusCode`).                                                                                                                                              |
+| `<domain>.actions.ts` | Server actions (`"use server"`). Writes only.                                                                                                                                                                                                                                                    |
 
 Domains: `articles`, `home`, `mentors`, `site-settings` (Payload); `auth`, `classes`, `courses`, `dashboard`, `game-explorer`, `game-positions`, `media`, `studies`, `study-goal`, `trainer` (student); `teacher`, `teacher-classes`, `teacher-students` (teacher panel); `staff`, `staff-classes`, `staff-courses`, `staff-students`, `staff-teachers` (staff panel); `shared` (pure rules and helpers used across domains).
 
@@ -28,7 +28,7 @@ Domains: `articles`, `home`, `mentors`, `site-settings` (Payload); `auth`, `clas
 There is no "fetch, then check". Examples:
 
 - `services/shared/published-content.ts` — `publishedCourseWhere`, `publishedChapterWhere`, `publishedLessonWhere`: chained into every student read **and write** (progress, trainer), so a POST with the id of a draft lesson does nothing.
-- `services/shared/game-visibility-rules.ts` — `buildVisibleDatabasesWhere` / `buildVisibleGamesWhere`: own databases, collections of *started* courses, collections shared by a teacher, plus (for teachers) the games of actively assigned students. `game-visibility.ts` binds them to the current user. Studies and the position explorer share these rules so the explorer can never list a game the student cannot open.
+- `services/shared/game-visibility-rules.ts` — `buildVisibleDatabasesWhere` / `buildVisibleGamesWhere`: own databases, collections of _started_ courses, collections shared by a teacher, plus (for teachers) the games of actively assigned students. `game-visibility.ts` binds them to the current user. Studies and the position explorer share these rules so the explorer can never list a game the student cannot open.
 - `services/studies/study-rules.ts` — `studyPermissionsOf({ kindCode, isOwner })`: the permissions table for studies (non-owners get nothing; `MY_GAMES` cannot be deleted or re-typed). Actions and UI use the same function.
 - Teacher services put `teacherId` inside the `where`; `lib/platform-auth/guards.ts` adds `assertTeacherOwnsClass`, `assertTeacherHasStudent` (active assignment) and `assertTeacherCanReferenceGame` for writes, failing with `notFound()` so nothing confirms the resource exists.
 

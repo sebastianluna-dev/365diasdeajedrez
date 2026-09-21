@@ -4,14 +4,14 @@ description: "The first await of /estudios: reads the student's studies and spli
 
 # `StudiesListSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/studies-list/studies-list.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | none: the browser and the cards paint everything |
-| Used by | `/estudios` |
-| Composes | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser), [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads | `getUserStudies()` · `services/studies/studies.service.ts` |
+|            |                                                                                                                                                 |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/studies-list.section.tsx`                                                                    |
+| Kind       | Server Component (async)                                                                                                                        |
+| Stylesheet | none: the browser and the cards paint everything                                                                                                |
+| Used by    | `/estudios`                                                                                                                                     |
+| Composes   | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads      | `getUserStudies()` · `services/studies/studies.service.ts`                                                                                      |
 
 ## Purpose
 
@@ -36,7 +36,7 @@ From `app/(platform)/estudios/page.tsx`:
 ```tsx
 import { StudiesListSection } from "@/components/platform/sections/studies/studies-list/studies-list.section";
 
-<StudiesListSection />
+<StudiesListSection />;
 ```
 
 ## Related

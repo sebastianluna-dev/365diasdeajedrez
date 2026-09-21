@@ -4,14 +4,14 @@ description: "The alternative to the teacher section: a dark section with the me
 
 # `MentorsSection`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/mentors/mentors.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `mentors.section.css` → block `.mentors` |
-| Used by | `app/(frontend)/landing-page.tsx` (the `mentors` slot) |
-| Composes | [`MentorList`](/components/site/sections/home/mentors/mentor-list) |
-| Reads | `getMentorsData()` · `services/mentors/mentors.service.ts` (the `home-mentors` Global and the mentors collection) |
+|            |                                                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/mentors/mentors.section.tsx`                                                       |
+| Kind       | Server Component (async)                                                                                          |
+| Stylesheet | `mentors.section.css` → block `.mentors`                                                                          |
+| Used by    | `app/(frontend)/landing-page.tsx` (the `mentors` slot)                                                            |
+| Composes   | [`MentorList`](/components/site/sections/home/mentors/mentor-list)                                                |
+| Reads      | `getMentorsData()` · `services/mentors/mentors.service.ts` (the `home-mentors` Global and the mentors collection) |
 
 ## Purpose
 
@@ -41,7 +41,9 @@ From `app/(frontend)/landing-page.tsx`:
 ```tsx
 import { MentorsSection } from "@/components/site/sections/home/mentors/mentors.section";
 
-{mentorsSlot === "mentors" && <MentorsSection />}
+{
+  mentorsSlot === "mentors" && <MentorsSection />;
+}
 ```
 
 ## Related

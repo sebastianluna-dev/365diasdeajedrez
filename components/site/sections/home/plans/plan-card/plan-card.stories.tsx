@@ -87,9 +87,7 @@ Reference page: [Components › PlanCard](/components/site/sections/home/plans/p
       table: { category: "State" },
     },
   },
-  render: ({ features, ...rest }) => (
-    <PlanCard plan={{ ...rest, features: features.split("\n").filter(Boolean) }} />
-  ),
+  render: ({ features, ...rest }) => <PlanCard plan={{ ...rest, features: features.split("\n").filter(Boolean) }} />,
   decorators: [
     // In the app the card sits inside `.section_theme_light` (plans.section.tsx)
     // and inherits its colour; without it the non-featured card is unreadable.

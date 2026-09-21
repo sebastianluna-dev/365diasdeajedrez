@@ -4,12 +4,12 @@ description: "A card of the staff course screens: a header with title, a short f
 
 # `StaffPanel`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/courses/staff-panel.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `staff-panel.comp.css` → block `.staff-panel` |
-| Used by | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section), [`CourseGamesSection`](/components/platform/sections/staff/courses/course-games-section), [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section), [`ChapterGamesSection`](/components/platform/sections/staff/courses/chapter-games-section), [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section), `/administracion/cursos/nuevo` |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/staff-panel.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Stylesheet | `staff-panel.comp.css` → block `.staff-panel`                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section), [`CourseGamesSection`](/components/platform/sections/staff/courses/course-games-section), [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section), [`ChapterGamesSection`](/components/platform/sections/staff/courses/chapter-games-section), [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section), `/administracion/cursos/nuevo` |
 
 ## Purpose
 
@@ -17,13 +17,13 @@ The card every course-screen section sits in. The header carries its own full-wi
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `title` | `string` | yes | The `<h2>`. |
-| `meta` | `string` | no | A short fact next to the title: "5 capítulos · 162 lecciones". |
-| `action` | `ReactNode` | no | Aligned to the right edge of the header. |
-| `description` | `string` | no | Context sentence under the header, when the card does not explain itself. |
-| `children` | `ReactNode` | yes | The content. |
+| Prop          | Type        | Required | Meaning                                                                   |
+| ------------- | ----------- | -------- | ------------------------------------------------------------------------- |
+| `title`       | `string`    | yes      | The `<h2>`.                                                               |
+| `meta`        | `string`    | no       | A short fact next to the title: "5 capítulos · 162 lecciones".            |
+| `action`      | `ReactNode` | no       | Aligned to the right edge of the header.                                  |
+| `description` | `string`    | no       | Context sentence under the header, when the card does not explain itself. |
+| `children`    | `ReactNode` | yes      | The content.                                                              |
 
 ## Behaviour
 
@@ -48,7 +48,7 @@ import { StaffPanel } from "./staff-panel.comp";
 
 <StaffPanel title="Resumen">
   <dl className="chapter-editor__facts">…</dl>
-</StaffPanel>
+</StaffPanel>;
 ```
 
 ## Related

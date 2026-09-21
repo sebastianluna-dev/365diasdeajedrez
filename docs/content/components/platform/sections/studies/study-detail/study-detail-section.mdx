@@ -4,14 +4,14 @@ description: "The study page: header with kind, origin and read-only mark, the a
 
 # `StudyDetailSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/study-detail/study-detail.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `study-detail.section.css` → block `.study-detail` |
-| Used by | `/estudios/[studyId]` |
-| Composes | [`GameTable`](/components/platform/sections/studies/study-detail/game-table), [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study), [`NewGame`](/components/platform/sections/studies/study-detail/new-game), [`ShareCollection`](/components/platform/sections/studies/study-detail/share-collection), [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study), [`PlatformNotice`](/components/platform/shared/platform-notice), [`EmptyState`](/components/platform/shared/empty-state) |
-| Uses | `DATABASE_KIND` from `constants/platform/study-codes.const`; `StudyDetail`, `StudyKindOption`, `ClassGameItem`, `StudentOption` from `services/studies/studies.types` |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/studies/study-detail/study-detail.section.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Stylesheet | `study-detail.section.css` → block `.study-detail`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Used by    | `/estudios/[studyId]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Composes   | [`GameTable`](/components/platform/sections/studies/study-detail/game-table), [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study), [`NewGame`](/components/platform/sections/studies/study-detail/new-game), [`ShareCollection`](/components/platform/sections/studies/study-detail/share-collection), [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study), [`PlatformNotice`](/components/platform/shared/platform-notice), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses       | `DATABASE_KIND` from `constants/platform/study-codes.const`; `StudyDetail`, `StudyKindOption`, `ClassGameItem`, `StudentOption` from `services/studies/studies.types`                                                                                                                                                                                                                                                                                                                                                                      |
 
 ## Purpose
 
@@ -19,14 +19,14 @@ One study. The header names it and says what it is; the action bar offers what t
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `study` | `StudyDetail` | yes | The study with `games`, `shares`, `permissions`, `kindCode`, `citedGameCount` and labels. |
-| `kinds` | `StudyKindOption[]` | yes | Kinds the student can set when editing. Empty in course databases. |
-| `results` | `StudyKindOption[]` | yes | The results catalog, for the blank-game form. |
-| `classGames` | `ClassGameItem[]` | yes | Games seen in class that can be copied. Empty hides that tab of `NewGame`. |
-| `students` | `StudentOption[]` | yes | Students to hand a collection to, for a teacher's own collection. |
-| `errorCode` | `string` | no | `?error=` from a bounced action; translated by the local map (`confirmStudyDelete`, `fen`). |
+| Prop         | Type                | Required | Meaning                                                                                     |
+| ------------ | ------------------- | -------- | ------------------------------------------------------------------------------------------- |
+| `study`      | `StudyDetail`       | yes      | The study with `games`, `shares`, `permissions`, `kindCode`, `citedGameCount` and labels.   |
+| `kinds`      | `StudyKindOption[]` | yes      | Kinds the student can set when editing. Empty in course databases.                          |
+| `results`    | `StudyKindOption[]` | yes      | The results catalog, for the blank-game form.                                               |
+| `classGames` | `ClassGameItem[]`   | yes      | Games seen in class that can be copied. Empty hides that tab of `NewGame`.                  |
+| `students`   | `StudentOption[]`   | yes      | Students to hand a collection to, for a teacher's own collection.                           |
+| `errorCode`  | `string`            | no       | `?error=` from a bounced action; translated by the local map (`confirmStudyDelete`, `fen`). |
 
 ## Behaviour
 
@@ -62,7 +62,7 @@ import { StudyDetailSection } from "@/components/platform/sections/studies/study
   classGames={classGames}
   students={students}
   errorCode={error}
-/>
+/>;
 ```
 
 ## Related

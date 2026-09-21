@@ -4,13 +4,13 @@ description: "The 'sólo lecciones imprescindibles' switch of a course: a form w
 
 # `PriorityFilter`
 
-| | |
-| --- | --- |
-| File | `components/platform/shared/priority-filter.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `priority-filter.comp.css` → block `.priority-filter` |
-| Used by | [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section), [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section) |
-| Writes | `setOnlyPriorityLessons()` · `services/courses/courses.actions.ts` |
+|            |                                                                                                                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/priority-filter.comp.tsx`                                                                                                                                                     |
+| Kind       | Server Component                                                                                                                                                                                          |
+| Stylesheet | `priority-filter.comp.css` → block `.priority-filter`                                                                                                                                                     |
+| Used by    | [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section), [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section) |
+| Writes     | `setOnlyPriorityLessons()` · `services/courses/courses.actions.ts`                                                                                                                                        |
 
 ## Purpose
 
@@ -22,12 +22,12 @@ Since it is a per-course setting, the same switch appears on the course page and
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `courseId` | `string` | yes | Which course's preference is toggled. |
-| `enabled` | `boolean` | yes | Whether it is on right now; decides the pressed state and the bound value. |
-| `hiddenLessons` | `number` | yes | How many lessons the filter hides. Stated next to the switch when it is on, because an unexplained absence is unsettling. |
-| `returnTo` | `string` | yes | The page the switch sits on (course or chapter). Travels as a hidden `returnTo` field so a throttled action bounces back to it with `?error=throttled`. |
+| Prop            | Type      | Required | Meaning                                                                                                                                                 |
+| --------------- | --------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `courseId`      | `string`  | yes      | Which course's preference is toggled.                                                                                                                   |
+| `enabled`       | `boolean` | yes      | Whether it is on right now; decides the pressed state and the bound value.                                                                              |
+| `hiddenLessons` | `number`  | yes      | How many lessons the filter hides. Stated next to the switch when it is on, because an unexplained absence is unsettling.                               |
+| `returnTo`      | `string`  | yes      | The page the switch sits on (course or chapter). Travels as a hidden `returnTo` field so a throttled action bounces back to it with `?error=throttled`. |
 
 ## Behaviour
 
@@ -56,7 +56,7 @@ import { PriorityFilter } from "@/components/platform/shared/priority-filter.com
   courseId={chapter.courseId}
   enabled={chapter.onlyPriorityLessons}
   hiddenLessons={chapter.hiddenLessons}
-/>
+/>;
 ```
 
 ## Related

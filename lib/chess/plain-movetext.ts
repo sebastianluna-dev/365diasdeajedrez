@@ -51,7 +51,5 @@ export function plainMovetext(pgn: string): string | null {
   const initialFen = mainline.initialFen ?? STANDARD_START;
   const moves = numberMoves(mainline.sans, initialFen);
 
-  return mainline.initialFen === null
-    ? moves
-    : `[SetUp "1"]\n[FEN "${mainline.initialFen}"]\n\n${moves}`;
+  return mainline.initialFen === null ? moves : `[SetUp "1"]\n[FEN "${mainline.initialFen}"]\n\n${moves}`;
 }

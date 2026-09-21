@@ -4,15 +4,15 @@ description: "The lesson screen: the lesson's PGN in the GameViewer read as runn
 
 # `LessonViewSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/courses/lesson-view/lesson-view.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `lesson-view.section.css` → block `.lesson-view` |
-| Used by | `/lecciones/[lessonId]` |
-| Composes | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker) |
-| Writes | `completeLesson()` · `services/courses/courses.actions.ts` |
-| Uses | `PROGRESS_STATUS` from `constants/platform/shared-codes.const`<br />`LessonView` from `services/courses/courses.types`<br />`CheckIcon`, `ArrowRightIcon` from `components/icons/` |
+|            |                                                                                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/lesson-view/lesson-view.section.tsx`                                                                                                         |
+| Kind       | Server Component                                                                                                                                                                   |
+| Stylesheet | `lesson-view.section.css` → block `.lesson-view`                                                                                                                                   |
+| Used by    | `/lecciones/[lessonId]`                                                                                                                                                            |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker)                                     |
+| Writes     | `completeLesson()` · `services/courses/courses.actions.ts`                                                                                                                         |
+| Uses       | `PROGRESS_STATUS` from `constants/platform/shared-codes.const`<br />`LessonView` from `services/courses/courses.types`<br />`CheckIcon`, `ArrowRightIcon` from `components/icons/` |
 
 ## Purpose
 
@@ -22,10 +22,10 @@ Under the viewer, the actions: mark as completed (or the completed state), next 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `lesson` | `LessonView` | yes | `id`, `order`, `name`, `description?`, `pgn`, `orientation`, `isPriority`, `statusCode`, `chapterName`, `chapterLessonCount`, `estimatedDuration?`, `chapterHref`, `nextLessonHref?`, `prevLessonHref?`, `trainerHref?`, `exerciseCount`. |
-| `errorCode` | `string` | no | Code from `?error=` (`throttled`, `invalid`…), translated with `STUDENT_ERROR_MESSAGES` into a `PlatformNotice`. |
+| Prop        | Type         | Required | Meaning                                                                                                                                                                                                                                   |
+| ----------- | ------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lesson`    | `LessonView` | yes      | `id`, `order`, `name`, `description?`, `pgn`, `orientation`, `isPriority`, `statusCode`, `chapterName`, `chapterLessonCount`, `estimatedDuration?`, `chapterHref`, `nextLessonHref?`, `prevLessonHref?`, `trainerHref?`, `exerciseCount`. |
+| `errorCode` | `string`     | no       | Code from `?error=` (`throttled`, `invalid`…), translated with `STUDENT_ERROR_MESSAGES` into a `PlatformNotice`.                                                                                                                          |
 
 ## Behaviour
 
@@ -55,7 +55,7 @@ From `app/(platform)/lecciones/[lessonId]/page.tsx`:
 ```tsx
 import { LessonViewSection } from "@/components/platform/sections/courses/lesson-view/lesson-view.section";
 
-<LessonViewSection lesson={lesson} />
+<LessonViewSection lesson={lesson} />;
 ```
 
 ## Related

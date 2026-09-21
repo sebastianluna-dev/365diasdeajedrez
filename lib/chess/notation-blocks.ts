@@ -30,9 +30,7 @@ export interface NotationComment {
   text: string;
 }
 
-export type LineItem =
-  | { type: "move"; node: PgnTreeNode; withNumber: boolean }
-  | { type: "comment"; text: string };
+export type LineItem = { type: "move"; node: PgnTreeNode; withNumber: boolean } | { type: "comment"; text: string };
 
 export interface NotationLine {
   kind: "line";

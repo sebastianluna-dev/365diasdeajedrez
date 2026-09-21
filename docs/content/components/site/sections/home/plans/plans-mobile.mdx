@@ -4,14 +4,14 @@ description: "The narrow-screen version of the plans: a row of tabs with the pla
 
 # `PlansMobileSection`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/plans/plans-mobile.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `plans-mobile.comp.css` → block `.plans-mobile` |
-| Used by | [`PlansSection`](/components/site/sections/home/plans/plans-section) |
-| Composes | [`PlanCard`](/components/site/sections/home/plans/plan-card) |
-| Uses | `PackagePlanContent` from `services/home/home.types` |
+|            |                                                                      |
+| ---------- | -------------------------------------------------------------------- |
+| File       | `components/site/sections/home/plans/plans-mobile.comp.tsx`          |
+| Kind       | Client Component                                                     |
+| Stylesheet | `plans-mobile.comp.css` → block `.plans-mobile`                      |
+| Used by    | [`PlansSection`](/components/site/sections/home/plans/plans-section) |
+| Composes   | [`PlanCard`](/components/site/sections/home/plans/plan-card)         |
+| Uses       | `PackagePlanContent` from `services/home/home.types`                 |
 
 ## Purpose
 
@@ -19,9 +19,9 @@ On a phone three cards stacked would push the rest of the page far down, so the 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `plans` | `PackagePlanContent[]` | yes | One tab per plan, keyed by `name`. |
+| Prop    | Type                   | Required | Meaning                            |
+| ------- | ---------------------- | -------- | ---------------------------------- |
+| `plans` | `PackagePlanContent[]` | yes      | One tab per plan, keyed by `name`. |
 
 ## Behaviour
 
@@ -47,7 +47,7 @@ From `components/site/sections/home/plans/plans.section.tsx`:
 ```tsx
 import { PlansMobileSection } from "./plans-mobile.comp";
 
-<PlansMobileSection plans={content.plans} />
+<PlansMobileSection plans={content.plans} />;
 ```
 
 ## Related

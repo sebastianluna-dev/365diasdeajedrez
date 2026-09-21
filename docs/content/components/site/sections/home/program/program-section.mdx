@@ -4,14 +4,14 @@ description: "The course programme on the home page: section heading from the ho
 
 # `ProgramSection`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/program/program.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `program.section.css` → block `.program` |
-| Used by | `app/(frontend)/landing-page.tsx` (`sections.program`) |
-| Composes | [`ProgramInteractive`](/components/site/sections/home/program/program-interactive) |
-| Reads | `getProgramData()` · `services/home/home.service.ts` (the `home-program` Global) |
+|            |                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/program/program.section.tsx`                        |
+| Kind       | Server Component (async)                                                           |
+| Stylesheet | `program.section.css` → block `.program`                                           |
+| Used by    | `app/(frontend)/landing-page.tsx` (`sections.program`)                             |
+| Composes   | [`ProgramInteractive`](/components/site/sections/home/program/program-interactive) |
+| Reads      | `getProgramData()` · `services/home/home.service.ts` (the `home-program` Global)   |
 
 ## Purpose
 
@@ -46,7 +46,9 @@ From `app/(frontend)/landing-page.tsx`:
 ```tsx
 import { ProgramSection } from "@/components/site/sections/home/program/program.section";
 
-{sections.program && <ProgramSection />}
+{
+  sections.program && <ProgramSection />;
+}
 ```
 
 ## Related

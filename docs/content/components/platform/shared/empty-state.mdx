@@ -4,12 +4,12 @@ description: "A dashed box with a title, an optional description and an optional
 
 # `EmptyState`
 
-| | |
-| --- | --- |
-| File | `components/platform/shared/empty-state.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `empty-state.comp.css` → block `.empty-state` |
-| Used by | 20 importers: the dashboard sections, the courses, classes, studies and trainer lists, the class detail, the teacher's dashboard, class detail and student detail, the staff dashboard, courses and class detail, `/entrenador` and the platform's `not-found.tsx` |
+|            |                                                                                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/empty-state.comp.tsx`                                                                                                                                                                                                                  |
+| Kind       | Server Component                                                                                                                                                                                                                                                   |
+| Stylesheet | `empty-state.comp.css` → block `.empty-state`                                                                                                                                                                                                                      |
+| Used by    | 20 importers: the dashboard sections, the courses, classes, studies and trainer lists, the class detail, the teacher's dashboard, class detail and student detail, the staff dashboard, courses and class detail, `/entrenador` and the platform's `not-found.tsx` |
 
 ## Purpose
 
@@ -17,12 +17,12 @@ What renders when there is nothing yet: no course in progress, no upcoming class
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `title` | `string` | yes | The headline ("No tienes clases programadas"). |
-| `description` | `string` | no | One sentence of context or what will make it non-empty. |
-| `actionLabel` | `string` | no | Link text. Rendered only together with `actionHref`. |
-| `actionHref` | `string` | no | Link target. |
+| Prop          | Type     | Required | Meaning                                                 |
+| ------------- | -------- | -------- | ------------------------------------------------------- |
+| `title`       | `string` | yes      | The headline ("No tienes clases programadas").          |
+| `description` | `string` | no       | One sentence of context or what will make it non-empty. |
+| `actionLabel` | `string` | no       | Link text. Rendered only together with `actionHref`.    |
+| `actionHref`  | `string` | no       | Link target.                                            |
 
 ## Behaviour
 
@@ -50,7 +50,7 @@ import { EmptyState } from "@/components/platform/shared/empty-state.comp";
   description="Empieza un curso para verlo aquí."
   actionLabel="Ver mis cursos"
   actionHref={platformRoutes.courses}
-/>
+/>;
 ```
 
 ## Related

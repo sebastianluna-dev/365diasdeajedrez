@@ -4,14 +4,14 @@ description: "Where a lesson gets its content: the linked game of the course col
 
 # `LessonGamePicker`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/courses/lesson-game-picker.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `lesson-game-picker.comp.css` → block `.lesson-game-picker` |
-| Used by | [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section) |
-| Writes | `setLessonGame()` · `services/staff-courses/staff-courses.actions.ts` |
-| Uses | `staffRoutes` from `lib/platform-routes`; `SearchIcon` from `components/icons/`; `CourseGameRow` |
+|            |                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/courses/lesson-game-picker.comp.tsx`                         |
+| Kind       | Server Component                                                                                 |
+| Stylesheet | `lesson-game-picker.comp.css` → block `.lesson-game-picker`                                      |
+| Used by    | [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section)       |
+| Writes     | `setLessonGame()` · `services/staff-courses/staff-courses.actions.ts`                            |
+| Uses       | `staffRoutes` from `lib/platform-routes`; `SearchIcon` from `components/icons/`; `CourseGameRow` |
 
 ## Purpose
 
@@ -19,12 +19,12 @@ A lesson's content is a game from its course's collection. Linking is not irreve
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `courseId`, `chapterId`, `lessonId` | `string` | yes | Bound into `setLessonGame` and used for the search form's action. |
-| `game` | `CourseGameRow` | no | The linked game, if any. |
-| `candidates` | `CourseGameRow[]` | yes | Collection games matching the search. |
-| `query` | `string` | no | What was searched, from `?partida=`. |
+| Prop                                | Type              | Required | Meaning                                                           |
+| ----------------------------------- | ----------------- | -------- | ----------------------------------------------------------------- |
+| `courseId`, `chapterId`, `lessonId` | `string`          | yes      | Bound into `setLessonGame` and used for the search form's action. |
+| `game`                              | `CourseGameRow`   | no       | The linked game, if any.                                          |
+| `candidates`                        | `CourseGameRow[]` | yes      | Collection games matching the search.                             |
+| `query`                             | `string`          | no       | What was searched, from `?partida=`.                              |
 
 ## Behaviour
 
@@ -58,7 +58,7 @@ import { LessonGamePicker } from "./lesson-game-picker.comp";
   game={lesson.game}
   candidates={courseGames}
   query={gameQuery}
-/>
+/>;
 ```
 
 ## Related

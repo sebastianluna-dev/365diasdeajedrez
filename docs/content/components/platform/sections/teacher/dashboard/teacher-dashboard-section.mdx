@@ -4,15 +4,15 @@ description: "The teacher's home: three counters, today's classes, the next seve
 
 # `TeacherDashboardSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/dashboard/teacher-dashboard.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `teacher-dashboard.section.css` → block `.teacher-dashboard` |
-| Used by | `/profesor` |
-| Composes | [`LocalDateTime`](/components/platform/shared/local-datetime), [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads | `getTeacherDashboard()` · `services/teacher/teacher.service.ts` |
-| Uses | `teacherRoutes` from `lib/platform-routes`; `TeacherClassBrief` from `services/teacher/teacher.types` |
+|            |                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/dashboard/teacher-dashboard.section.tsx`                                         |
+| Kind       | Server Component (async)                                                                                               |
+| Stylesheet | `teacher-dashboard.section.css` → block `.teacher-dashboard`                                                           |
+| Used by    | `/profesor`                                                                                                            |
+| Composes   | [`LocalDateTime`](/components/platform/shared/local-datetime), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads      | `getTeacherDashboard()` · `services/teacher/teacher.service.ts`                                                        |
+| Uses       | `teacherRoutes` from `lib/platform-routes`; `TeacherClassBrief` from `services/teacher/teacher.types`                  |
 
 ## Purpose
 
@@ -50,7 +50,7 @@ From `app/(platform)/profesor/page.tsx`:
 ```tsx
 import { TeacherDashboardSection } from "@/components/platform/sections/teacher/dashboard/teacher-dashboard.section";
 
-<TeacherDashboardSection />
+<TeacherDashboardSection />;
 ```
 
 ## Related

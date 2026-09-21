@@ -4,15 +4,15 @@ description: "Plays the frozen exercise lines on the board: the student moves, t
 
 # `TrainerSession`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/trainer/trainer-session.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `trainer-session.comp.css` → block `.trainer-session` |
-| Used by | `/entrenador?lesson=…`, `?chapter=…` or `?session=all` |
-| Composes | [`ChessBoard`](/components/chess/chess-board), [`SessionSummary`](/components/platform/sections/trainer/session-summary) |
-| Writes | `recordTrainingAttempt()` · `services/trainer/trainer.actions.ts` |
-| Uses | `ATTEMPT_RESULT`, `EXERCISE_MODE` from `constants/platform/training-codes.const`; `applySan` from `lib/chess/replay`; `platformRoutes` from `lib/platform-routes`; `TrainerExercise` from `services/trainer/trainer.types` |
+|            |                                                                                                                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/trainer/trainer-session.comp.tsx`                                                                                                                                                            |
+| Kind       | Client Component                                                                                                                                                                                                           |
+| Stylesheet | `trainer-session.comp.css` → block `.trainer-session`                                                                                                                                                                      |
+| Used by    | `/entrenador?lesson=…`, `?chapter=…` or `?session=all`                                                                                                                                                                     |
+| Composes   | [`ChessBoard`](/components/chess/chess-board), [`SessionSummary`](/components/platform/sections/trainer/session-summary)                                                                                                   |
+| Writes     | `recordTrainingAttempt()` · `services/trainer/trainer.actions.ts`                                                                                                                                                          |
+| Uses       | `ATTEMPT_RESULT`, `EXERCISE_MODE` from `constants/platform/training-codes.const`; `applySan` from `lib/chess/replay`; `platformRoutes` from `lib/platform-routes`; `TrainerExercise` from `services/trainer/trainer.types` |
 
 ## Purpose
 
@@ -20,9 +20,9 @@ The training session. Each exercise is a frozen line (`lineSans`) from a lesson,
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `exercises` | `TrainerExercise[]` | yes | `{ id, startFen, lineSans, userColor, modeCode, promptText?, chapterName, lessonName, isStale }[]`, at least one. The page builds the list from the query. |
+| Prop        | Type                | Required | Meaning                                                                                                                                                    |
+| ----------- | ------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `exercises` | `TrainerExercise[]` | yes      | `{ id, startFen, lineSans, userColor, modeCode, promptText?, chapterName, lessonName, isStale }[]`, at least one. The page builds the list from the query. |
 
 ## Behaviour
 
@@ -55,7 +55,7 @@ From `app/(platform)/entrenador/page.tsx`:
 ```tsx
 import { TrainerSession } from "@/components/platform/sections/trainer/trainer-session.comp";
 
-<TrainerSession exercises={exercises} />
+<TrainerSession exercises={exercises} />;
 ```
 
 ## Related

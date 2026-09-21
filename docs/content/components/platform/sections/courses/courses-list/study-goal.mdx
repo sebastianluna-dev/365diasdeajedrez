@@ -4,14 +4,14 @@ description: "The right column of 'Mis cursos': the daily streak and today's min
 
 # `StudyGoalAside`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/courses/courses-list/study-goal.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `study-goal.comp.css` → block `.study-goal` |
-| Used by | `/cursos` |
-| Writes | `updateDailyGoal()` · `services/study-goal/study-goal.actions.ts` |
-| Uses | `GOAL_OPTIONS` from `constants/platform/study-goal.const`<br />`StudyGoal` from `services/study-goal/study-goal.types`<br />`FlameIcon` from `components/icons/` |
+|            |                                                                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/courses-list/study-goal.comp.tsx`                                                                                          |
+| Kind       | Server Component                                                                                                                                                 |
+| Stylesheet | `study-goal.comp.css` → block `.study-goal`                                                                                                                      |
+| Used by    | `/cursos`                                                                                                                                                        |
+| Writes     | `updateDailyGoal()` · `services/study-goal/study-goal.actions.ts`                                                                                                |
+| Uses       | `GOAL_OPTIONS` from `constants/platform/study-goal.const`<br />`StudyGoal` from `services/study-goal/study-goal.types`<br />`FlameIcon` from `components/icons/` |
 
 ## Purpose
 
@@ -21,10 +21,10 @@ Neither figure is stored. The streak is counted backwards from the activity log 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `goal` | `StudyGoal` | yes | `{ streakDays, minutesToday, goalMinutes, percent }`, from `getStudyGoal()` in the page. |
-| `errorCode` | `string` | no | What `updateDailyGoal` bounced back with in `?error=` (`goal`, `throttled`). Renders a `PlatformNotice` inside the editor and opens the `<details>` so the form is in view. |
+| Prop        | Type        | Required | Meaning                                                                                                                                                                     |
+| ----------- | ----------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `goal`      | `StudyGoal` | yes      | `{ streakDays, minutesToday, goalMinutes, percent }`, from `getStudyGoal()` in the page.                                                                                    |
+| `errorCode` | `string`    | no       | What `updateDailyGoal` bounced back with in `?error=` (`goal`, `throttled`). Renders a `PlatformNotice` inside the editor and opens the `<details>` so the form is in view. |
 
 ## Behaviour
 
@@ -56,7 +56,7 @@ import { StudyGoalAside } from "@/components/platform/sections/courses/courses-l
 <div className="courses-page__layout">
   <CoursesListSection courses={courses} />
   <StudyGoalAside goal={goal} />
-</div>
+</div>;
 ```
 
 ## Related

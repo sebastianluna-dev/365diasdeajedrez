@@ -4,15 +4,15 @@ description: "The course in independent cards, each with its own form and action
 
 # `CourseEditorSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/courses/course-editor.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `course-editor.section.css` → block `.course-editor` |
-| Used by | `/administracion/cursos/[courseId]` |
-| Composes | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffEditorLayout`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`SortableList`](/components/platform/sections/staff/courses/sortable-list), [`ImageUpload`](/components/platform/shared/image-upload), [`FormField`](/components/platform/shared/form-field), [`FormFieldset`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Writes | `updateCourse()`, `createChapter()`, `deleteChapter()`, `reorderChapters()`, `manageCourseAuthors()`, `publishCourse()`, `archiveCourse()` · `services/staff-courses/staff-courses.actions.ts` |
-| Uses | `CONTENT_ROLE`, `COURSE_STATUS` from `constants/platform/course-codes.const`; `STAFF_ERROR_MESSAGES`; `platformRoutes`, `staffRoutes`; `CourseAdminDetail`, `CatalogOption`, `AuthorAdminRow` types |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/course-editor.section.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Stylesheet | `course-editor.section.css` → block `.course-editor`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Used by    | `/administracion/cursos/[courseId]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffEditorLayout`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`SortableList`](/components/platform/sections/staff/courses/sortable-list), [`ImageUpload`](/components/platform/shared/image-upload), [`FormField`](/components/platform/shared/form-field), [`FormFieldset`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes     | `updateCourse()`, `createChapter()`, `deleteChapter()`, `reorderChapters()`, `manageCourseAuthors()`, `publishCourse()`, `archiveCourse()` · `services/staff-courses/staff-courses.actions.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Uses       | `CONTENT_ROLE`, `COURSE_STATUS` from `constants/platform/course-codes.const`; `STAFF_ERROR_MESSAGES`; `platformRoutes`, `staffRoutes`; `CourseAdminDetail`, `CatalogOption`, `AuthorAdminRow` types                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
 ## Purpose
 
@@ -20,13 +20,13 @@ Editing a course as **independent cards**, each with its own form and action, in
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `course` | `CourseAdminDetail` | yes | `id`, `name`, `slug`, `description?`, `cover?`, `typeCode`, `levelCodes`, `statusCode`, `statusLabel`, `publishedAtLabel?`, `canPublish`, `chapters[]` (with `roleCode`, `lessonCount`, `progressCount`), `authors[]`. |
-| `types`, `levels`, `authorRoles` | `CatalogOption[]` | yes | Catalog options for the selects and checkboxes. |
-| `authors` | `AuthorAdminRow[]` | yes | All authors; those already on the course are filtered out of the add select. |
-| `gameCount` | `number` | yes | For the "Partidas" tab count; the list lives in its own tab. |
-| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+| Prop                             | Type                | Required | Meaning                                                                                                                                                                                                                |
+| -------------------------------- | ------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `course`                         | `CourseAdminDetail` | yes      | `id`, `name`, `slug`, `description?`, `cover?`, `typeCode`, `levelCodes`, `statusCode`, `statusLabel`, `publishedAtLabel?`, `canPublish`, `chapters[]` (with `roleCode`, `lessonCount`, `progressCount`), `authors[]`. |
+| `types`, `levels`, `authorRoles` | `CatalogOption[]`   | yes      | Catalog options for the selects and checkboxes.                                                                                                                                                                        |
+| `authors`                        | `AuthorAdminRow[]`  | yes      | All authors; those already on the course are filtered out of the add select.                                                                                                                                           |
+| `gameCount`                      | `number`            | yes      | For the "Partidas" tab count; the list lives in its own tab.                                                                                                                                                           |
+| `errorCode`                      | `string`            | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`.                                                                                                                                                                      |
 
 ## Behaviour
 
@@ -64,7 +64,7 @@ import { CourseEditorSection } from "@/components/platform/sections/staff/course
   authorRoles={authorRoles}
   gameCount={gameCount}
   errorCode={error}
-/>
+/>;
 ```
 
 ## Related

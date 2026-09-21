@@ -4,14 +4,14 @@ description: "The 'Nuevo estudio' button and its native <dialog> form (name, des
 
 # `NewStudy`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/studies-list/new-study.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `new-study.comp.css` → block `.new-study` |
-| Used by | `/estudios` (page header) |
-| Writes | `createStudy()` · `services/studies/studies.actions.ts` |
-| Uses | `StudyKindOption` from `services/studies/studies.types` |
+|            |                                                                        |
+| ---------- | ---------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/new-study.comp.tsx` |
+| Kind       | Client Component                                                       |
+| Stylesheet | `new-study.comp.css` → block `.new-study`                              |
+| Used by    | `/estudios` (page header)                                              |
+| Writes     | `createStudy()` · `services/studies/studies.actions.ts`                |
+| Uses       | `StudyKindOption` from `services/studies/studies.types`                |
 
 ## Purpose
 
@@ -19,9 +19,9 @@ Creating a study is three fields, so it lives in a modal on the list page rather
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `kinds` | `StudyKindOption[]` | yes | Kinds the viewer can create. "Mis partidas" is never there (it is born with the account) and "Colección" only for a teacher. Decided by `services/studies/study-rules`. |
+| Prop    | Type                | Required | Meaning                                                                                                                                                                 |
+| ------- | ------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `kinds` | `StudyKindOption[]` | yes      | Kinds the viewer can create. "Mis partidas" is never there (it is born with the account) and "Colección" only for a teacher. Decided by `services/studies/study-rules`. |
 
 ## Behaviour
 
@@ -48,7 +48,7 @@ From `app/(platform)/estudios/page.tsx`:
 ```tsx
 import { NewStudy } from "@/components/platform/sections/studies/studies-list/new-study.comp";
 
-<NewStudy kinds={kinds} />
+<NewStudy kinds={kinds} />;
 ```
 
 ## Related

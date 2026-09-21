@@ -22,7 +22,6 @@ function readText(formData: FormData, field: string): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-
 /** Returns to the form keeping the pending destination and the reason for the failure. */
 function backToLogin(errorCode: string, returnTo: string): never {
   const params = new URLSearchParams({ [LOGIN_ERROR_PARAM]: errorCode });
@@ -49,7 +48,10 @@ export async function loginAction(formData: FormData): Promise<void> {
   // read instead.
   const requestHeaders = await headers();
   const origin = requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() || "desconocido";
-  if (!(await allowAction(`login:${email}`, 10, 60_000)) || !(await allowAction(`login-origin:${origin}`, 30, 60_000))) {
+  if (
+    !(await allowAction(`login:${email}`, 10, 60_000)) ||
+    !(await allowAction(`login-origin:${origin}`, 30, 60_000))
+  ) {
     backToLogin("throttled", rawReturnTo);
   }
 

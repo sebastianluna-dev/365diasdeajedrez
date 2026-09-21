@@ -4,15 +4,15 @@ description: "Teacher creation in two separate forms so no field is silently ign
 
 # `TeacherFormSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/teachers/teacher-form.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `teacher-form.section.css` → block `.teacher-form` |
-| Used by | `/administracion/profesores/nuevo` |
-| Composes | [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Writes | `createTeacher()` · `services/staff-teachers/staff-teachers.actions.ts` |
-| Uses | `STAFF_ERROR_MESSAGES` from `constants/platform/staff-messages.const`; `COMMON_TIMEZONES` from `constants/platform/timezones.const`; `LinkableUser` from `services/staff-teachers/staff-teachers.types` |
+|            |                                                                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/teachers/teacher-form.section.tsx`                                                                                                                                  |
+| Kind       | Server Component                                                                                                                                                                                        |
+| Stylesheet | `teacher-form.section.css` → block `.teacher-form`                                                                                                                                                      |
+| Used by    | `/administracion/profesores/nuevo`                                                                                                                                                                      |
+| Composes   | [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice)                                                                                  |
+| Writes     | `createTeacher()` · `services/staff-teachers/staff-teachers.actions.ts`                                                                                                                                 |
+| Uses       | `STAFF_ERROR_MESSAGES` from `constants/platform/staff-messages.const`; `COMMON_TIMEZONES` from `constants/platform/timezones.const`; `LinkableUser` from `services/staff-teachers/staff-teachers.types` |
 
 ## Purpose
 
@@ -20,10 +20,10 @@ A teacher is an account plus a teacher record. Two ways to get there, each its o
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `linkableUsers` | `LinkableUser[]` | yes | Accounts without a teacher record, for the link form's select. |
-| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+| Prop            | Type             | Required | Meaning                                                        |
+| --------------- | ---------------- | -------- | -------------------------------------------------------------- |
+| `linkableUsers` | `LinkableUser[]` | yes      | Accounts without a teacher record, for the link form's select. |
+| `errorCode`     | `string`         | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`.              |
 
 ## Behaviour
 
@@ -50,7 +50,7 @@ From `app/(platform)/administracion/profesores/nuevo/page.tsx`:
 ```tsx
 import { TeacherFormSection } from "@/components/platform/sections/staff/teachers/teacher-form.section";
 
-<TeacherFormSection linkableUsers={linkableUsers} errorCode={error} />
+<TeacherFormSection linkableUsers={linkableUsers} errorCode={error} />;
 ```
 
 ## Related

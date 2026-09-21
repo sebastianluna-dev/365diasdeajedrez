@@ -192,13 +192,7 @@ function deterministicId(namespace: string, key: string): string {
 }
 
 /** Chapter ids in order: the book's five, fixed from the start. */
-const CHAPTER_IDS = [
-  GM_IDS.chAnalysis,
-  GM_IDS.chJudgement,
-  GM_IDS.chPlanning,
-  GM_IDS.chEndgame,
-  GM_IDS.chPreparation,
-];
+const CHAPTER_IDS = [GM_IDS.chAnalysis, GM_IDS.chJudgement, GM_IDS.chPlanning, GM_IDS.chEndgame, GM_IDS.chPreparation];
 
 /** The only thing the package does not bring: what is studied in each chapter. */
 const CHAPTER_DESCRIPTIONS = [
@@ -365,7 +359,6 @@ const PETROSIAN_EUWE = `1. Nf3 Nf6 2. g3 d5 3. Bg2 Bf5 4. d3 e6 5. Nbd2 h6 6. O-
  * open files: the textbook case of the positional sacrifice.
  */
 const TAIMANOV_BRONSTEIN = `1. d4 Nf6 2. c4 c5 3. d5 g6 4. Nc3 d6 5. e4 b5 {El sacrificio: un peón por las columnas a y b, que son por donde el negro va a trabajar el resto de la partida. [%csl Ga8,Gb8]} 6. cxb5 Bg7 7. Nf3 O-O 8. Be2 a6 9. bxa6 Bxa6 10. O-O Qc7 11. Re1 Nbd7 12. Bxa6 Rxa6 13. Qe2 Rfa8 {Las dos torres ya están donde el sacrificio las quería. El peón de menos no se nota. [%cal Ga6a2,Ga8a2]} 14. h3 Nb6 15. Bg5 Ne8 16. Bd2 Na4 17. Nxa4 Rxa4 18. Bc3 Bxc3 19. bxc3 Qa5 20. Qd3 Qa6 21. Qd2 Rxa2 22. Rxa2 Qxa2 23. e5 Qxd2 24. Nxd2 dxe5 25. Rxe5 Kf8 {Empieza el final, y aquí la torre activa vale más que el peón. [%cal Ga1a2]} 26. Nb3 c4 27. Nc5 Ra1+ 28. Kh2 Nf6 29. Ne4 Nd7 30. Rg5 Ra2 31. Rg4 f5 32. Rf4 Nb6 33. Ng5 Nxd5 34. Rd4 Nb6 35. Rd8+ Kg7 36. f4 h6 37. Ne6+ Kf7 38. Nd4 Na4 39. Rc8 Nxc3 40. Rxc4 Nd5 41. Nf3 Rxg2+ 42. Kh1 Rf2 {Las blancas abandonaron. } *`;
-
 
 // ---------------------------------------------------------------------------
 // Game database of the course

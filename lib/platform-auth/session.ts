@@ -107,9 +107,11 @@ export async function readSessionUser(): Promise<SessionUser | null> {
 
   const now = new Date();
   if (Math.random() < PURGE_CHANCE) {
-    void db.session.deleteMany({ where: { expiresAt: { lte: now } } }).catch((error: unknown) =>
-      logWarning("session", "No se pudieron barrer las sesiones caducadas", { error: String(error) }),
-    );
+    void db.session
+      .deleteMany({ where: { expiresAt: { lte: now } } })
+      .catch((error: unknown) =>
+        logWarning("session", "No se pudieron barrer las sesiones caducadas", { error: String(error) }),
+      );
   }
   if (!session) return null;
   if (session.expiresAt <= now) {

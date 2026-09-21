@@ -4,13 +4,13 @@ description: "The dashboard's recent-activity list: a <ul> of activity facts alr
 
 # `ActivityList`
 
-| | |
-| --- | --- |
-| File | `components/platform/shared/activity-list.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `activity-list.comp.css` → block `.activity-list` |
-| Used by | [`RecentActivitySection`](/components/platform/sections/dashboard/recent-activity/recent-activity-section) |
-| Uses | `ActivityItem` from `services/dashboard/dashboard.types` |
+|            |                                                                                                            |
+| ---------- | ---------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/activity-list.comp.tsx`                                                        |
+| Kind       | Server Component                                                                                           |
+| Stylesheet | `activity-list.comp.css` → block `.activity-list`                                                          |
+| Used by    | [`RecentActivitySection`](/components/platform/sections/dashboard/recent-activity/recent-activity-section) |
+| Uses       | `ActivityItem` from `services/dashboard/dashboard.types`                                                   |
 
 ## Purpose
 
@@ -18,9 +18,9 @@ Renders the activity facts of a student ("Lección completada · Finales de torr
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `items` | `ActivityItem[]` | yes | `{ id, typeLabel, subjectName?, topicLabel?, dateLabel }` per fact, newest first. |
+| Prop    | Type             | Required | Meaning                                                                           |
+| ------- | ---------------- | -------- | --------------------------------------------------------------------------------- |
+| `items` | `ActivityItem[]` | yes      | `{ id, typeLabel, subjectName?, topicLabel?, dateLabel }` per fact, newest first. |
 
 ## Behaviour
 
@@ -43,7 +43,7 @@ From `components/platform/sections/dashboard/recent-activity/recent-activity.sec
 ```tsx
 import { ActivityList } from "@/components/platform/shared/activity-list.comp";
 
-<ActivityList items={recentActivity} />
+<ActivityList items={recentActivity} />;
 ```
 
 ## Related

@@ -4,15 +4,15 @@ description: "Picks the opening position of a game or lesson block: fetches the 
 
 # `MovePathPicker`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/classes/class-block-editor/move-path-picker.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `move-path-picker.comp.css` → block `.move-path-picker` |
-| Used by | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) |
-| Composes | [`GameViewer`](/components/chess/game-viewer/game-viewer) |
-| Writes | `fetchReferencePgn()` · `services/teacher-classes/teacher-classes.actions.ts` (a read behind an action) |
-| Uses | `CLASS_BLOCK_KIND` from `constants/platform/class-codes.const` |
+|            |                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/class-block-editor/move-path-picker.comp.tsx`             |
+| Kind       | Client Component                                                                                        |
+| Stylesheet | `move-path-picker.comp.css` → block `.move-path-picker`                                                 |
+| Used by    | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form)              |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer)                                               |
+| Writes     | `fetchReferencePgn()` · `services/teacher-classes/teacher-classes.actions.ts` (a read behind an action) |
+| Uses       | `CLASS_BLOCK_KIND` from `constants/platform/class-codes.const`                                          |
 
 ## Purpose
 
@@ -20,12 +20,12 @@ A game or lesson block opens at a chosen move (`movePath`). To choose it, this c
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `kind` | `GAME_REF \| LESSON_REF` | yes | What the id refers to. |
-| `referenceId` | `string` | yes | Game or lesson id. Empty renders nothing. |
-| `value` | `string` | yes | The dotted path already saved, if any. |
-| `onChange` | `(path: string) => void` | yes | Called with the current path on "Usar esta posición" and with `""` on "Quitar posición". |
+| Prop          | Type                     | Required | Meaning                                                                                  |
+| ------------- | ------------------------ | -------- | ---------------------------------------------------------------------------------------- |
+| `kind`        | `GAME_REF \| LESSON_REF` | yes      | What the id refers to.                                                                   |
+| `referenceId` | `string`                 | yes      | Game or lesson id. Empty renders nothing.                                                |
+| `value`       | `string`                 | yes      | The dotted path already saved, if any.                                                   |
+| `onChange`    | `(path: string) => void` | yes      | Called with the current path on "Usar esta posición" and with `""` on "Quitar posición". |
 
 ## Behaviour
 
@@ -60,7 +60,7 @@ import { MovePathPicker } from "./move-path-picker.comp";
   referenceId={referenceId}
   value={movePath}
   onChange={setMovePath}
-/>
+/>;
 ```
 
 ## Related

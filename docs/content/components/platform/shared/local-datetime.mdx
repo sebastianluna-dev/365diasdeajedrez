@@ -4,12 +4,12 @@ description: "Renders a UTC instant in the browser's time zone: the server-forma
 
 # `LocalDateTime`
 
-| | |
-| --- | --- |
-| File | `components/platform/shared/local-datetime.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | none: renders a bare `<time>`, styled by whoever mounts it |
-| Used by | every place that shows a class date (15 importers): the class list and detail, the next-class card, the teacher's dashboard, class list and detail, student list and detail, the staff dashboard, class list and detail, student list and detail, teacher detail and the assignment panel |
+|            |                                                                                                                                                                                                                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/local-datetime.comp.tsx`                                                                                                                                                                                                                                      |
+| Kind       | Client Component                                                                                                                                                                                                                                                                          |
+| Stylesheet | none: renders a bare `<time>`, styled by whoever mounts it                                                                                                                                                                                                                                |
+| Used by    | every place that shows a class date (15 importers): the class list and detail, the next-class card, the teacher's dashboard, class list and detail, student list and detail, the staff dashboard, class list and detail, student list and detail, teacher detail and the assignment panel |
 
 ## Purpose
 
@@ -17,11 +17,11 @@ Classes are stored in UTC and the server does not know the student's time zone. 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `iso` | `string` | yes | The instant in ISO 8601 (UTC), exactly as stored. Also the `dateTime` attribute. |
-| `fallback` | `string` | yes | Text already formatted on the server (the mapper's `dateLabel` and `timeLabel`). Rendered until hydration and forever if `iso` is invalid. |
-| `withTime` | `boolean` | no · default `true` | With `false` only the date is shown. |
+| Prop       | Type      | Required            | Meaning                                                                                                                                    |
+| ---------- | --------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `iso`      | `string`  | yes                 | The instant in ISO 8601 (UTC), exactly as stored. Also the `dateTime` attribute.                                                           |
+| `fallback` | `string`  | yes                 | Text already formatted on the server (the mapper's `dateLabel` and `timeLabel`). Rendered until hydration and forever if `iso` is invalid. |
+| `withTime` | `boolean` | no · default `true` | With `false` only the date is shown.                                                                                                       |
 
 ## Behaviour
 
@@ -40,10 +40,7 @@ From `components/platform/sections/classes/class-detail/class-detail.section.tsx
 ```tsx
 import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp";
 
-<LocalDateTime
-  iso={classDetail.scheduledAtIso}
-  fallback={`${classDetail.dateLabel} · ${classDetail.timeLabel}`}
-/>
+<LocalDateTime iso={classDetail.scheduledAtIso} fallback={`${classDetail.dateLabel} · ${classDetail.timeLabel}`} />;
 ```
 
 ## Related

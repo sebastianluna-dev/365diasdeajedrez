@@ -18,9 +18,7 @@ function blocks(): NotationBlock[] {
 /** One line, summarised as it would be read. */
 function lineText(block: NotationBlock): string {
   if (block.kind !== "line") throw new Error("no es una línea");
-  return block.items
-    .map((item) => (item.type === "move" ? item.node.san : `{${item.text.slice(0, 12)}}`))
-    .join(" ");
+  return block.items.map((item) => (item.type === "move" ? item.node.san : `{${item.text.slice(0, 12)}}`)).join(" ");
 }
 
 describe("buildNotationBlocks", () => {

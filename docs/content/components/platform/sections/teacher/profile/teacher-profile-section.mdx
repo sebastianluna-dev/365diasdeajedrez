@@ -4,15 +4,15 @@ description: "The teacher's public profile form: display name, title, IANA time 
 
 # `TeacherProfileSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/profile/teacher-profile.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `teacher-profile.section.css` → block `.teacher-profile` |
-| Used by | `/profesor/perfil` |
-| Composes | [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Writes | `updateTeacherProfile()` · `services/teacher/teacher.actions.ts` |
-| Uses | `TEACHER_ERROR_MESSAGES` from `constants/platform/teacher-messages.const`; `COMMON_TIMEZONES` from `constants/platform/timezones.const`; `TeacherProfile` from `services/teacher/teacher.types` |
+|            |                                                                                                                                                                                                 |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/profile/teacher-profile.section.tsx`                                                                                                                      |
+| Kind       | Server Component                                                                                                                                                                                |
+| Stylesheet | `teacher-profile.section.css` → block `.teacher-profile`                                                                                                                                        |
+| Used by    | `/profesor/perfil`                                                                                                                                                                              |
+| Composes   | [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice)                                                                          |
+| Writes     | `updateTeacherProfile()` · `services/teacher/teacher.actions.ts`                                                                                                                                |
+| Uses       | `TEACHER_ERROR_MESSAGES` from `constants/platform/teacher-messages.const`; `COMMON_TIMEZONES` from `constants/platform/timezones.const`; `TeacherProfile` from `services/teacher/teacher.types` |
 
 ## Purpose
 
@@ -20,10 +20,10 @@ What students see of their teacher in the classes they attend, plus the one sett
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `profile` | `TeacherProfile` | yes | `displayName`, `email`, `title?`, `timezone?`, `photo?`, `bio?`. |
-| `errorCode` | `string` | no | `?error=` from the action, translated with `TEACHER_ERROR_MESSAGES` (unknown codes fall back to `invalid`). |
+| Prop        | Type             | Required | Meaning                                                                                                     |
+| ----------- | ---------------- | -------- | ----------------------------------------------------------------------------------------------------------- |
+| `profile`   | `TeacherProfile` | yes      | `displayName`, `email`, `title?`, `timezone?`, `photo?`, `bio?`.                                            |
+| `errorCode` | `string`         | no       | `?error=` from the action, translated with `TEACHER_ERROR_MESSAGES` (unknown codes fall back to `invalid`). |
 
 ## Behaviour
 
@@ -48,7 +48,7 @@ From `app/(platform)/profesor/perfil/page.tsx`:
 ```tsx
 import { TeacherProfileSection } from "@/components/platform/sections/teacher/profile/teacher-profile.section";
 
-<TeacherProfileSection profile={profile} errorCode={error} />
+<TeacherProfileSection profile={profile} errorCode={error} />;
 ```
 
 ## Related

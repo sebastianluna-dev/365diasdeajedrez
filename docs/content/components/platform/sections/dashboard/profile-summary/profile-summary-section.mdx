@@ -4,13 +4,13 @@ description: "The dashboard header: greeting with the display name, email and me
 
 # `ProfileSummarySection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/dashboard/profile-summary/profile-summary.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `profile-summary.section.css` → block `.profile-summary` |
-| Used by | `/inicio` |
-| Reads | `getUserDashboard()` · `services/dashboard/dashboard.service.ts` (`profile`) |
+|            |                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/dashboard/profile-summary/profile-summary.section.tsx` |
+| Kind       | Server Component (async)                                                             |
+| Stylesheet | `profile-summary.section.css` → block `.profile-summary`                             |
+| Used by    | `/inicio`                                                                            |
+| Reads      | `getUserDashboard()` · `services/dashboard/dashboard.service.ts` (`profile`)         |
 
 ## Purpose
 
@@ -44,9 +44,8 @@ From `app/(platform)/inicio/page.tsx`:
 import { ProfileSummarySection } from "@/components/platform/sections/dashboard/profile-summary/profile-summary.section";
 
 <div className="platform-page dashboard-page">
-  <ProfileSummarySection />
-  …
-</div>
+  <ProfileSummarySection />…
+</div>;
 ```
 
 ## Related

@@ -4,13 +4,13 @@ description: "ChessBoard behind next/dynamic with no SSR, mounted only when it c
 
 # `ChessBoardLazy`
 
-| | |
-| --- | --- |
-| File | `components/chess/chess-board-lazy.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `chess-board-lazy.comp.css` → block `.chess-board-lazy` |
-| Used by | `/mentor/[slug]`, [`ChessGameBlockRenderer`](/components/site/sections/blog/article-content/blocks/chess-game-block), [`TeacherSection`](/components/site/sections/home/teacher/teacher-section) |
-| Composes | [`ChessBoard`](/components/chess/chess-board) through `next/dynamic` |
+|            |                                                                                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/chess/chess-board-lazy.comp.tsx`                                                                                                                                                     |
+| Kind       | Client Component                                                                                                                                                                                 |
+| Stylesheet | `chess-board-lazy.comp.css` → block `.chess-board-lazy`                                                                                                                                          |
+| Used by    | `/mentor/[slug]`, [`ChessGameBlockRenderer`](/components/site/sections/blog/article-content/blocks/chess-game-block), [`TeacherSection`](/components/site/sections/home/teacher/teacher-section) |
+| Composes   | [`ChessBoard`](/components/chess/chess-board) through `next/dynamic`                                                                                                                             |
 
 ## Purpose
 
@@ -47,11 +47,7 @@ From `components/site/sections/home/teacher/teacher.section.tsx`:
 ```tsx
 import { ChessBoardLazy } from "@/components/chess/chess-board-lazy.comp";
 
-<ChessBoardLazy
-  flipBoard={content.game.flipBoard}
-  pgn={content.game.moves}
-  annotations={content.game.annotations}
-/>
+<ChessBoardLazy flipBoard={content.game.flipBoard} pgn={content.game.moves} annotations={content.game.annotations} />;
 ```
 
 ## Related

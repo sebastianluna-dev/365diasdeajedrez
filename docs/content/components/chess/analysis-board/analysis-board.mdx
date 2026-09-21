@@ -4,14 +4,14 @@ description: "The editable analysis board: moves played on the board become the 
 
 # `AnalysisBoard`
 
-| | |
-| --- | --- |
-| File | `components/chess/analysis-board/analysis-board.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `analysis-board.comp.css` → block `.analysis-board` |
-| Used by | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) (transcribed game blocks) |
-| Composes | [`ChessBoard`](/components/chess/chess-board), [`MoveTree`](/components/chess/game-viewer/move-tree), [`MoveContextMenu`](/components/chess/game-viewer/move-context-menu) |
-| Uses | `addMove`, `commentTextAt`, `deleteFrom`, `emptyGame`, `parseEditableGame`, `pathOfNode`, `nodeAtPathIn`, `promoteOneStep`, `promoteToMainLine`, `serializeGame`, `setCommentText`, `setNags`, `setShapes`, `variationPgn` from `lib/chess/pgn-edit`<br />`parsePgnTree`, `nodeAtPath`, `nextPathOf`, `endPathOf`, `parentPathOf`, `MOVE_QUALITY_NAGS`, `POSITION_EVAL_NAGS` from `lib/chess/pgn-tree`<br />`numberedMoveLabel` from `lib/chess/notation`<br />`PGN_MAX_LENGTH` from `constants/platform/content-limits.const` |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/chess/analysis-board/analysis-board.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Stylesheet | `analysis-board.comp.css` → block `.analysis-board`                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Used by    | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) (transcribed game blocks)                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Composes   | [`ChessBoard`](/components/chess/chess-board), [`MoveTree`](/components/chess/game-viewer/move-tree), [`MoveContextMenu`](/components/chess/game-viewer/move-context-menu)                                                                                                                                                                                                                                                                                                                                                     |
+| Uses       | `addMove`, `commentTextAt`, `deleteFrom`, `emptyGame`, `parseEditableGame`, `pathOfNode`, `nodeAtPathIn`, `promoteOneStep`, `promoteToMainLine`, `serializeGame`, `setCommentText`, `setNags`, `setShapes`, `variationPgn` from `lib/chess/pgn-edit`<br />`parsePgnTree`, `nodeAtPath`, `nextPathOf`, `endPathOf`, `parentPathOf`, `MOVE_QUALITY_NAGS`, `POSITION_EVAL_NAGS` from `lib/chess/pgn-tree`<br />`numberedMoveLabel` from `lib/chess/notation`<br />`PGN_MAX_LENGTH` from `constants/platform/content-limits.const` |
 
 ## Purpose
 
@@ -23,13 +23,13 @@ It does not replace the [`GameViewer`](/components/chess/game-viewer/game-viewer
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `name` | `string` | yes | Name of the hidden input the PGN travels in. |
-| `defaultPgn` | `string` | no | The game to start from. Empty or unparsable falls back to `initialFen`. |
-| `initialFen` | `string` | no | Starting position when there is no previous PGN; omitted means the standard start. |
-| `orientation` | `"white" \| "black"` | no · default `"white"` | Which side starts at the bottom; the flip button toggles on top of it. |
-| `onAutoSave` | `(pgn: string) => Promise<boolean>` | no | Saves on its own after a pause, returning whether the write succeeded. Optional on purpose: without it the component behaves as a plain form field, which is what a screen whose saves have side effects wants (a lesson save marks its frozen exercises stale, so autosaving there would invalidate them while typing). |
+| Prop          | Type                                | Required               | Meaning                                                                                                                                                                                                                                                                                                                  |
+| ------------- | ----------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`        | `string`                            | yes                    | Name of the hidden input the PGN travels in.                                                                                                                                                                                                                                                                             |
+| `defaultPgn`  | `string`                            | no                     | The game to start from. Empty or unparsable falls back to `initialFen`.                                                                                                                                                                                                                                                  |
+| `initialFen`  | `string`                            | no                     | Starting position when there is no previous PGN; omitted means the standard start.                                                                                                                                                                                                                                       |
+| `orientation` | `"white" \| "black"`                | no · default `"white"` | Which side starts at the bottom; the flip button toggles on top of it.                                                                                                                                                                                                                                                   |
+| `onAutoSave`  | `(pgn: string) => Promise<boolean>` | no                     | Saves on its own after a pause, returning whether the write succeeded. Optional on purpose: without it the component behaves as a plain form field, which is what a screen whose saves have side effects wants (a lesson save marks its frozen exercises stale, so autosaving there would invalidate them while typing). |
 
 ## Behaviour
 
@@ -66,7 +66,7 @@ From `components/platform/sections/teacher/classes/class-block-editor/block-form
 ```tsx
 import { AnalysisBoard } from "@/components/chess/analysis-board/analysis-board.comp";
 
-<AnalysisBoard name="pgn" defaultPgn={block?.pgn ?? undefined} />
+<AnalysisBoard name="pgn" defaultPgn={block?.pgn ?? undefined} />;
 ```
 
 The surrounding `<form action={boundAction}>` receives the PGN as `formData.get("pgn")`.

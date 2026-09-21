@@ -88,10 +88,7 @@ export async function listReferenceableGames(): Promise<ReferenceableGameGroup[]
 
   const databases = await getPlatformDb().gameDatabase.findMany({
     where: {
-      OR: [
-        { userId: user.id },
-        { user: { studentAssignments: { some: { teacherId: teacher.id, endedAt: null } } } },
-      ],
+      OR: [{ userId: user.id }, { user: { studentAssignments: { some: { teacherId: teacher.id, endedAt: null } } } }],
     },
     select: {
       id: true,
@@ -114,7 +111,6 @@ export async function listReferenceableGames(): Promise<ReferenceableGameGroup[]
       games: database.games.map((game) => ({ id: game.id, label: `${game.white} – ${game.black}` })),
     }));
 }
-
 
 export async function listTeacherPositions(): Promise<PositionOption[]> {
   const { user } = await requireTeacher();

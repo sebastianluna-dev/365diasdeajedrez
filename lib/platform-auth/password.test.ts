@@ -1,11 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  DUMMY_PASSWORD_HASH,
-  hashPassword,
-  PASSWORD_MIN_LENGTH,
-  passwordProblem,
-  verifyPassword,
-} from "./password";
+import { DUMMY_PASSWORD_HASH, hashPassword, PASSWORD_MIN_LENGTH, passwordProblem, verifyPassword } from "./password";
 
 describe("hashPassword / verifyPassword", () => {
   it("acepta la contraseña correcta", async () => {

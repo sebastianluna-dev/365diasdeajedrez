@@ -4,16 +4,16 @@ description: "The teacher's class page: facts and status transitions, enrolment 
 
 # `TeacherClassDetailSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/classes/teacher-class-detail.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `teacher-class-detail.section.css` → block `.teacher-class` |
-| Used by | `/profesor/clases/[classId]` |
-| Composes | [`AttendanceForm`](/components/platform/sections/teacher/classes/attendance-form), [`ClassBlockEditor`](/components/platform/sections/teacher/classes/class-block-editor/class-block-editor), [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime), [`PlatformNotice`](/components/platform/shared/platform-notice), [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads | `nextClassStatuses()` · `services/teacher-classes/class-status-transitions.ts` (pure) |
-| Writes | `setClassStatus()`, `addParticipant()` · `services/teacher-classes/teacher-classes.actions.ts` |
-| Uses | `CLASS_STATUS`, `ClassStatusCode` from `constants/platform/class-codes.const`; `TEACHER_ERROR_MESSAGES`; `teacherRoutes`; `BlockFormOptions` type from `block-form.comp` |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/teacher-class-detail.section.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Stylesheet | `teacher-class-detail.section.css` → block `.teacher-class`                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Used by    | `/profesor/clases/[classId]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Composes   | [`AttendanceForm`](/components/platform/sections/teacher/classes/attendance-form), [`ClassBlockEditor`](/components/platform/sections/teacher/classes/class-block-editor/class-block-editor), [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime), [`PlatformNotice`](/components/platform/shared/platform-notice), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads      | `nextClassStatuses()` · `services/teacher-classes/class-status-transitions.ts` (pure)                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Writes     | `setClassStatus()`, `addParticipant()` · `services/teacher-classes/teacher-classes.actions.ts`                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Uses       | `CLASS_STATUS`, `ClassStatusCode` from `constants/platform/class-codes.const`; `TEACHER_ERROR_MESSAGES`; `teacherRoutes`; `BlockFormOptions` type from `block-form.comp`                                                                                                                                                                                                                                                                                                                                                   |
 
 ## Purpose
 
@@ -23,14 +23,14 @@ The teacher always sees the meeting link, because they set it; the student sees 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `classDetail` | `TeacherClassDetail` | yes | The class with `participants`, `blocks` (editor shape), `transcript?`, meeting fields and labels. |
-| `previewBlocks` | `ClassBlockView[]` | yes | The same blocks mapped as the student will see them. |
-| `students` | `AssignedStudentSummary[]` | yes | Students with an active assignment: candidates to enrol; those already enrolled are filtered out. |
-| `blockOptions` | `BlockFormOptions` | yes | `{ games, positions }` the block forms can reference. |
-| `initialGameId` | `string` | no | Game preselected when arriving from "Usar en una clase" (`?gameId=`). |
-| `errorCode` | `string` | no | `?error=` translated with `TEACHER_ERROR_MESSAGES`. |
+| Prop            | Type                       | Required | Meaning                                                                                           |
+| --------------- | -------------------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| `classDetail`   | `TeacherClassDetail`       | yes      | The class with `participants`, `blocks` (editor shape), `transcript?`, meeting fields and labels. |
+| `previewBlocks` | `ClassBlockView[]`         | yes      | The same blocks mapped as the student will see them.                                              |
+| `students`      | `AssignedStudentSummary[]` | yes      | Students with an active assignment: candidates to enrol; those already enrolled are filtered out. |
+| `blockOptions`  | `BlockFormOptions`         | yes      | `{ games, positions }` the block forms can reference.                                             |
+| `initialGameId` | `string`                   | no       | Game preselected when arriving from "Usar en una clase" (`?gameId=`).                             |
+| `errorCode`     | `string`                   | no       | `?error=` translated with `TEACHER_ERROR_MESSAGES`.                                               |
 
 ## Behaviour
 
@@ -68,7 +68,7 @@ import { TeacherClassDetailSection } from "@/components/platform/sections/teache
   blockOptions={{ games, positions }}
   initialGameId={gameId}
   errorCode={error}
-/>
+/>;
 ```
 
 ## Related

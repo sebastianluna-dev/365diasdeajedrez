@@ -4,13 +4,13 @@ description: "The games that reached the current position, newest first, each wi
 
 # `ExplorerGames`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/explorer/explorer-games.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `explorer-games.comp.css` → block `.explorer-games` |
-| Used by | [`GameExplorer`](/components/platform/sections/explorer/game-explorer) |
-| Uses | `ExplorerGame` from `services/game-explorer/game-explorer.types` |
+|            |                                                                        |
+| ---------- | ---------------------------------------------------------------------- |
+| File       | `components/platform/sections/explorer/explorer-games.comp.tsx`        |
+| Kind       | Client Component                                                       |
+| Stylesheet | `explorer-games.comp.css` → block `.explorer-games`                    |
+| Used by    | [`GameExplorer`](/components/platform/sections/explorer/game-explorer) |
+| Uses       | `ExplorerGame` from `services/game-explorer/game-explorer.types`       |
 
 ## Purpose
 
@@ -20,11 +20,11 @@ Each game carries its **origin** (a student's study, a course, the teaching staf
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `games` | `ExplorerGame[]` | yes | `{ id, href?, white, black, whiteElo?, blackElo?, resultLabel, event?, playedAtLabel?, originLabel, seenInClass }[]`. |
-| `totalGames` | `number` | yes | The full count, beyond the capped list. |
-| `isSearching` | `boolean` | yes | Chooses "Buscando…" over the no-results message. |
+| Prop          | Type             | Required | Meaning                                                                                                               |
+| ------------- | ---------------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
+| `games`       | `ExplorerGame[]` | yes      | `{ id, href?, white, black, whiteElo?, blackElo?, resultLabel, event?, playedAtLabel?, originLabel, seenInClass }[]`. |
+| `totalGames`  | `number`         | yes      | The full count, beyond the capped list.                                                                               |
+| `isSearching` | `boolean`        | yes      | Chooses "Buscando…" over the no-results message.                                                                      |
 
 ## Behaviour
 
@@ -49,11 +49,7 @@ From `components/platform/sections/explorer/game-explorer.comp.tsx`:
 ```tsx
 import { ExplorerGames } from "./explorer-games.comp";
 
-<ExplorerGames
-  games={result?.games ?? []}
-  totalGames={result?.totalGames ?? 0}
-  isSearching={isSearching}
-/>
+<ExplorerGames games={result?.games ?? []} totalGames={result?.totalGames ?? 0} isSearching={isSearching} />;
 ```
 
 ## Related

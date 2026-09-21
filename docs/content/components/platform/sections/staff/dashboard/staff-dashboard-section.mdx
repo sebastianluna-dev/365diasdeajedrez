@@ -4,15 +4,15 @@ description: "The staff home: four counters, the actionable list of students wit
 
 # `StaffDashboardSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/dashboard/staff-dashboard.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `staff-dashboard.section.css` → block `.staff-dashboard` |
-| Used by | `/administracion` |
-| Composes | [`EmptyState`](/components/platform/shared/empty-state), [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Reads | `getStaffDashboard()` · `services/staff/staff.service.ts` |
-| Uses | `staffRoutes` from `lib/platform-routes` |
+|            |                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/dashboard/staff-dashboard.section.tsx`                                             |
+| Kind       | Server Component (async)                                                                                               |
+| Stylesheet | `staff-dashboard.section.css` → block `.staff-dashboard`                                                               |
+| Used by    | `/administracion`                                                                                                      |
+| Composes   | [`EmptyState`](/components/platform/shared/empty-state), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Reads      | `getStaffDashboard()` · `services/staff/staff.service.ts`                                                              |
+| Uses       | `staffRoutes` from `lib/platform-routes`                                                                               |
 
 ## Purpose
 
@@ -47,7 +47,7 @@ From `app/(platform)/administracion/page.tsx`:
 ```tsx
 import { StaffDashboardSection } from "@/components/platform/sections/staff/dashboard/staff-dashboard.section";
 
-<StaffDashboardSection />
+<StaffDashboardSection />;
 ```
 
 ## Related

@@ -6,12 +6,12 @@ description: "The platform form field: a real <label> around a native control, w
 
 Also exports `FormFieldset`.
 
-| | |
-| --- | --- |
-| File | `components/platform/shared/form-field.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `form-field.comp.css` → block `.platform-field` |
-| Used by | every write form of the platform (26 importers): the staff course, chapter, lesson, author, class, student and teacher editors, the assignment panel, the account and password forms, the studies' `GameFields` and `NewGameSection`, the teacher's class form, block editor pieces and profile, and `/administracion/cursos/nuevo` |
+|            |                                                                                                                                                                                                                                                                                                                                     |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/form-field.comp.tsx`                                                                                                                                                                                                                                                                                    |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                    |
+| Stylesheet | `form-field.comp.css` → block `.platform-field`                                                                                                                                                                                                                                                                                     |
+| Used by    | every write form of the platform (26 importers): the staff course, chapter, lesson, author, class, student and teacher editors, the assignment panel, the account and password forms, the studies' `GameFields` and `NewGameSection`, the teacher's class form, block editor pieces and profile, and `/administracion/cursos/nuevo` |
 
 ## Purpose
 
@@ -23,20 +23,20 @@ It is stateless on purpose. Platform forms are `<form action={serverAction}>`; v
 
 ### `FormField`
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `label` | `string` | yes | The label text. Clicking it focuses the control, because the control is inside the `<label>`. |
-| `children` | `ReactNode` | yes | The native control: input, select or textarea. |
-| `hint` | `string` | no | Small help text under the control. |
-| `error` | `string` | no | Field-level error, rendered with `role="alert"`. |
+| Prop       | Type        | Required | Meaning                                                                                       |
+| ---------- | ----------- | -------- | --------------------------------------------------------------------------------------------- |
+| `label`    | `string`    | yes      | The label text. Clicking it focuses the control, because the control is inside the `<label>`. |
+| `children` | `ReactNode` | yes      | The native control: input, select or textarea.                                                |
+| `hint`     | `string`    | no       | Small help text under the control.                                                            |
+| `error`    | `string`    | no       | Field-level error, rendered with `role="alert"`.                                              |
 
 ### `FormFieldset`
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `legend` | `string` | yes | The group's `<legend>`. |
-| `children` | `ReactNode` | yes | The controls of the group. |
-| `hint` | `string` | no | Help text under the group. |
+| Prop       | Type        | Required | Meaning                    |
+| ---------- | ----------- | -------- | -------------------------- |
+| `legend`   | `string`    | yes      | The group's `<legend>`.    |
+| `children` | `ReactNode` | yes      | The controls of the group. |
+| `hint`     | `string`    | no       | Help text under the group. |
 
 ## Behaviour
 
@@ -63,7 +63,7 @@ import { FormField } from "@/components/platform/shared/form-field.comp";
 
 <FormField label="Nombre">
   <input type="text" name="name" maxLength={160} required />
-</FormField>
+</FormField>;
 ```
 
 A group, from `components/platform/sections/staff/courses/course-editor.section.tsx`:

@@ -4,13 +4,13 @@ description: "Access to the video call: the link renders only once the server au
 
 # `MeetingAccess`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/classes/class-detail/meeting-access.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `meeting-access.comp.css` → block `.meeting-access` |
-| Used by | [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section) |
-| Uses | `useRouter` from `next/navigation` |
+|            |                                                                                                 |
+| ---------- | ----------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/classes/class-detail/meeting-access.comp.tsx`                     |
+| Kind       | Client Component                                                                                |
+| Stylesheet | `meeting-access.comp.css` → block `.meeting-access`                                             |
+| Used by    | [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section) |
+| Uses       | `useRouter` from `next/navigation`                                                              |
 
 ## Purpose
 
@@ -18,11 +18,11 @@ The meeting link must not be readable before the teacher's visibility instant. I
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `meetingUrl` | `string` | no | Present only when the server has already authorised showing the link. |
-| `meetingVisibleFromIso` | `string` | no | ISO instant when the link becomes visible, for the countdown. |
-| `providerLabel` | `string` | no | Appended to the button text, "Entrar a la clase (Zoom)". |
+| Prop                    | Type     | Required | Meaning                                                               |
+| ----------------------- | -------- | -------- | --------------------------------------------------------------------- |
+| `meetingUrl`            | `string` | no       | Present only when the server has already authorised showing the link. |
+| `meetingVisibleFromIso` | `string` | no       | ISO instant when the link becomes visible, for the countdown.         |
+| `providerLabel`         | `string` | no       | Appended to the button text, "Entrar a la clase (Zoom)".              |
 
 ## Behaviour
 
@@ -49,13 +49,15 @@ From `components/platform/sections/classes/class-detail/class-detail.section.tsx
 ```tsx
 import { MeetingAccess } from "./meeting-access.comp";
 
-{isUpcoming && (
-  <MeetingAccess
-    meetingUrl={classDetail.meetingUrl}
-    meetingVisibleFromIso={classDetail.meetingVisibleFromIso}
-    providerLabel={classDetail.meetingProviderLabel}
-  />
-)}
+{
+  isUpcoming && (
+    <MeetingAccess
+      meetingUrl={classDetail.meetingUrl}
+      meetingVisibleFromIso={classDetail.meetingVisibleFromIso}
+      providerLabel={classDetail.meetingProviderLabel}
+    />
+  );
+}
 ```
 
 ## Related

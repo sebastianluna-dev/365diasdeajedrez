@@ -4,15 +4,15 @@ description: "A teacher's record for staff: profile form, activate or deactivate
 
 # `TeacherAdminDetailSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/teachers/teacher-admin-detail.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `teacher-admin-detail.section.css` → block `.teacher-admin` |
-| Used by | `/administracion/profesores/[teacherId]` |
-| Composes | [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice), [`PlatformTable`](/components/platform/shared/platform-table), [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Writes | `updateTeacher()`, `setTeacherActive()` · `services/staff-teachers/staff-teachers.actions.ts` |
-| Uses | `STAFF_ERROR_MESSAGES`; `COMMON_TIMEZONES`; `StaffTeacherDetail`, `AssignableStudent` from `services/staff-teachers/staff-teachers.types` |
+|            |                                                                                                                                                                                                                                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/teachers/teacher-admin-detail.section.tsx`                                                                                                                                                                                                                                                              |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                            |
+| Stylesheet | `teacher-admin-detail.section.css` → block `.teacher-admin`                                                                                                                                                                                                                                                                                 |
+| Used by    | `/administracion/profesores/[teacherId]`                                                                                                                                                                                                                                                                                                    |
+| Composes   | [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice), [`PlatformTable`](/components/platform/shared/platform-table), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Writes     | `updateTeacher()`, `setTeacherActive()` · `services/staff-teachers/staff-teachers.actions.ts`                                                                                                                                                                                                                                               |
+| Uses       | `STAFF_ERROR_MESSAGES`; `COMMON_TIMEZONES`; `StaffTeacherDetail`, `AssignableStudent` from `services/staff-teachers/staff-teachers.types`                                                                                                                                                                                                   |
 
 ## Purpose
 
@@ -20,11 +20,11 @@ Four cards: the profile (the same fields the teacher edits in their own profile,
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `teacher` | `StaffTeacherDetail` | yes | `id`, `displayName`, `email`, `title?`, `timezone?`, `photo?`, `bio?`, `isActive`, `students[]`, `classes[]`. |
-| `assignable` | `AssignableStudent[]` | yes | Students the teacher could receive, with their current teacher's name if any. |
-| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+| Prop         | Type                  | Required | Meaning                                                                                                       |
+| ------------ | --------------------- | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `teacher`    | `StaffTeacherDetail`  | yes      | `id`, `displayName`, `email`, `title?`, `timezone?`, `photo?`, `bio?`, `isActive`, `students[]`, `classes[]`. |
+| `assignable` | `AssignableStudent[]` | yes      | Students the teacher could receive, with their current teacher's name if any.                                 |
+| `errorCode`  | `string`              | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`.                                                             |
 
 ## Behaviour
 
@@ -52,7 +52,7 @@ From `app/(platform)/administracion/profesores/[teacherId]/page.tsx`:
 ```tsx
 import { TeacherAdminDetailSection } from "@/components/platform/sections/staff/teachers/teacher-admin-detail.section";
 
-<TeacherAdminDetailSection teacher={teacher} assignable={assignable} errorCode={error} />
+<TeacherAdminDetailSection teacher={teacher} assignable={assignable} errorCode={error} />;
 ```
 
 ## Related

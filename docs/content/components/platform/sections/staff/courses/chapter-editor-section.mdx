@@ -4,15 +4,15 @@ description: "The chapter record: metadata form, a summary aside, and the sortab
 
 # `ChapterEditorSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/courses/chapter-editor.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `chapter-editor.section.css` → block `.chapter-editor` |
-| Used by | `/administracion/cursos/[courseId]/capitulos/[chapterId]` |
-| Composes | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffEditorLayout`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`SortableList`](/components/platform/sections/staff/courses/sortable-list), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Writes | `updateChapter()`, `createLesson()`, `deleteLesson()`, `reorderLessons()` · `services/staff-courses/staff-courses.actions.ts` |
-| Uses | `CONTENT_ROLE`, `COURSE_STATUS`; `STAFF_ERROR_MESSAGES`; `staffRoutes`; `ChapterAdminDetail` |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/chapter-editor.section.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| Stylesheet | `chapter-editor.section.css` → block `.chapter-editor`                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Used by    | `/administracion/cursos/[courseId]/capitulos/[chapterId]`                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffEditorLayout`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`SortableList`](/components/platform/sections/staff/courses/sortable-list), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes     | `updateChapter()`, `createLesson()`, `deleteLesson()`, `reorderLessons()` · `services/staff-courses/staff-courses.actions.ts`                                                                                                                                                                                                                                                                                                                                                                                       |
+| Uses       | `CONTENT_ROLE`, `COURSE_STATUS`; `STAFF_ERROR_MESSAGES`; `staffRoutes`; `ChapterAdminDetail`                                                                                                                                                                                                                                                                                                                                                                                                                        |
 
 ## Purpose
 
@@ -20,11 +20,11 @@ The same shape as the course editor one level down: metadata on the left with th
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `chapter` | `ChapterAdminDetail` | yes | `id`, `courseId`, `courseName`, `courseStatusCode`, `order`, `name`, `description?`, `estimatedDuration?`, `lessons[]` (with `hasPgn`, `exerciseCount`, `roleCode`, `isPriority`, `progressCount`). |
-| `gameCount` | `number` | yes | For the "Partidas" tab count. |
-| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+| Prop        | Type                 | Required | Meaning                                                                                                                                                                                             |
+| ----------- | -------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chapter`   | `ChapterAdminDetail` | yes      | `id`, `courseId`, `courseName`, `courseStatusCode`, `order`, `name`, `description?`, `estimatedDuration?`, `lessons[]` (with `hasPgn`, `exerciseCount`, `roleCode`, `isPriority`, `progressCount`). |
+| `gameCount` | `number`             | yes      | For the "Partidas" tab count.                                                                                                                                                                       |
+| `errorCode` | `string`             | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`.                                                                                                                                                   |
 
 ## Behaviour
 
@@ -51,7 +51,7 @@ From `app/(platform)/administracion/cursos/[courseId]/capitulos/[chapterId]/page
 ```tsx
 import { ChapterEditorSection } from "@/components/platform/sections/staff/courses/chapter-editor.section";
 
-<ChapterEditorSection chapter={chapter} gameCount={gameCount} errorCode={error} />
+<ChapterEditorSection chapter={chapter} gameCount={gameCount} errorCode={error} />;
 ```
 
 ## Related

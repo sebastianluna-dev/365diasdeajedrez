@@ -6,12 +6,12 @@ description: "The header of the staff course screens (breadcrumbs, title, badge,
 
 Also exports `StaffEditorLayout` and the `Crumb` type.
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/courses/staff-editor.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `staff-editor.comp.css` → blocks `.staff-editor-head` and `.staff-editor` |
-| Used by | [`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section), [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section), [`CourseGamesSection`](/components/platform/sections/staff/courses/course-games-section), [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section), [`ChapterGamesSection`](/components/platform/sections/staff/courses/chapter-games-section), [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section), `/administracion/cursos/nuevo` |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/courses/staff-editor.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Stylesheet | `staff-editor.comp.css` → blocks `.staff-editor-head` and `.staff-editor`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Used by    | [`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section), [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section), [`CourseGamesSection`](/components/platform/sections/staff/courses/course-games-section), [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section), [`ChapterGamesSection`](/components/platform/sections/staff/courses/chapter-games-section), [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section), `/administracion/cursos/nuevo` |
 
 ## Purpose
 
@@ -23,21 +23,21 @@ The course → chapter → lesson trail has four levels. Without a breadcrumb on
 
 ### `StaffEditorHead`
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `crumbs` | `Crumb[]` | no | `{ label, href }[]` up to here, **without** the current place, which is `title`. Absent means a root screen. |
-| `title` | `string` | yes | The `<h1>`, and the last crumb. |
-| `badge` | `ReactNode` | no | Beside the title, on its row: a course's status pill, for instance. |
-| `meta` | `ReactNode` | no | Short facts under the title. |
-| `actions` | `ReactNode` | no | Top right: search, "Nuevo curso", "Ver en la plataforma". |
-| `description` | `string` | no | One sentence under the title. |
+| Prop          | Type        | Required | Meaning                                                                                                      |
+| ------------- | ----------- | -------- | ------------------------------------------------------------------------------------------------------------ |
+| `crumbs`      | `Crumb[]`   | no       | `{ label, href }[]` up to here, **without** the current place, which is `title`. Absent means a root screen. |
+| `title`       | `string`    | yes      | The `<h1>`, and the last crumb.                                                                              |
+| `badge`       | `ReactNode` | no       | Beside the title, on its row: a course's status pill, for instance.                                          |
+| `meta`        | `ReactNode` | no       | Short facts under the title.                                                                                 |
+| `actions`     | `ReactNode` | no       | Top right: search, "Nuevo curso", "Ver en la plataforma".                                                    |
+| `description` | `string`    | no       | One sentence under the title.                                                                                |
 
 ### `StaffEditorLayout`
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | yes | The main column. |
-| `aside` | `ReactNode` | no | The narrow column; without it the layout is single-column. |
+| Prop       | Type        | Required | Meaning                                                    |
+| ---------- | ----------- | -------- | ---------------------------------------------------------- |
+| `children` | `ReactNode` | yes      | The main column.                                           |
+| `aside`    | `ReactNode` | no       | The narrow column; without it the layout is single-column. |
 
 ## Behaviour
 
@@ -71,10 +71,12 @@ import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
   meta={
     <>
       <span>Capítulo {chapter.order}</span>
-      <span>{chapter.lessons.length} lección{chapter.lessons.length === 1 ? "" : "es"}</span>
+      <span>
+        {chapter.lessons.length} lección{chapter.lessons.length === 1 ? "" : "es"}
+      </span>
     </>
   }
-/>
+/>;
 ```
 
 ## Related

@@ -4,14 +4,14 @@ description: "The platform's single game viewer: board, move tree with variation
 
 # `GameViewer`
 
-| | |
-| --- | --- |
-| File | `components/chess/game-viewer/game-viewer.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `game-viewer.comp.css` → block `.game-viewer` |
-| Used by | [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section), [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section), [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`StudentGameViewSection`](/components/platform/sections/teacher/students/student-game-view-section), [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker), [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker) |
-| Composes | [`ChessBoard`](/components/chess/chess-board), [`MoveTable`](/components/chess/game-viewer/move-table), [`MoveTree`](/components/chess/game-viewer/move-tree), [`EnginePanel`](/components/chess/game-viewer/engine-panel), [`MoveContextMenu`](/components/chess/game-viewer/move-context-menu), [`useEngine`](/components/chess/game-viewer/use-engine-hook), [`usePgnEditing`](/components/chess/game-viewer/use-pgn-editing-hook), [`playMoveSound`](/components/chess/game-viewer/move-sound), [`viewer-preferences`](/components/chess/game-viewer/viewer-preferences) |
-| Uses | `parsePgnTree`, `nodeAtPath`, `nextPathOf`, `endPathOf`, `parentPathOf` from `lib/chess/pgn-tree`<br />`numberedMoveLabel` from `lib/chess/notation`<br />`evaluationBarFill` from `lib/chess/engine-protocol` |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/game-viewer.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Stylesheet | `game-viewer.comp.css` → block `.game-viewer`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Used by    | [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section), [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section), [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`StudentGameViewSection`](/components/platform/sections/teacher/students/student-game-view-section), [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker), [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker)    |
+| Composes   | [`ChessBoard`](/components/chess/chess-board), [`MoveTable`](/components/chess/game-viewer/move-table), [`MoveTree`](/components/chess/game-viewer/move-tree), [`EnginePanel`](/components/chess/game-viewer/engine-panel), [`MoveContextMenu`](/components/chess/game-viewer/move-context-menu), [`useEngine`](/components/chess/game-viewer/use-engine-hook), [`usePgnEditing`](/components/chess/game-viewer/use-pgn-editing-hook), [`playMoveSound`](/components/chess/game-viewer/move-sound), [`viewer-preferences`](/components/chess/game-viewer/viewer-preferences) |
+| Uses       | `parsePgnTree`, `nodeAtPath`, `nextPathOf`, `endPathOf`, `parentPathOf` from `lib/chess/pgn-tree`<br />`numberedMoveLabel` from `lib/chess/notation`<br />`evaluationBarFill` from `lib/chess/engine-protocol`                                                                                                                                                                                                                                                                                                                                                               |
 
 ## Purpose
 
@@ -23,29 +23,29 @@ The viewer never saves and never fetches. It receives a PGN, reports the current
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `pgn` | `string` | yes | Full PGN: moves, variations, comments and annotations. |
-| `orientation` | `"white" \| "black"` | no · default `"white"` | Side at the bottom before the user flips. |
-| `initialPath` | `string` | no | Dotted path to open the viewer at (`TrainingExercise.path`, `ClassBlock.movePath`). Ignored if the path does not exist in the tree. |
-| `title` | `string` | no | First line of the panel header. |
-| `subtitle` | `string` | no | Second line: chapter, event, whatever places the game. |
-| `description` | `string` | no | Text of the game or the lesson, under the subtitle. |
-| `badge` | `string` | no | Badge to the right of the title ("Prioridad"). |
-| `headerActions` | `ReactNode` | no | Extra buttons in the panel header (open in the book, save…). They depend on each screen; the viewer only reserves the place. |
-| `footerActions` | `ReactNode` | no | Right-aligned content of the panel's bottom bar (the notes). |
-| `positionActions` | `(fen: string) => ReactNode` | no | Bottom-bar action that works on the current position; receives its FEN. |
-| `skip` | `ReactNode` | no | "Skip" control rendered at the end of the navigation bar. Not rendered without a value. |
-| `boardFooter` | `ReactNode` | no | Content under the board: comment, quality and share tools. Hidden in fullscreen. |
-| `players` | `{ white: ReactNode; black: ReactNode }` | no | Player strips around the board, given by colour because the viewer can flip: who is on top depends on the orientation and only the viewer knows it. |
-| `moveList` | `"table" \| "flow"` | no · default `"table"` | `table`: number · white · black grid, like Lichess. `flow`: running text, which is how lessons are read. |
-| `controls` | `"board" \| "panel"` | no · default `"board"` | Where the navigation bar goes: under the board (lessons) or under the notation panel (studies, where the game is traversed from the list). |
-| `engine` | `boolean` | no · default `false` | Offers the analysis engine. Off by default: it is 7 MB of WebAssembly, downloaded only when someone switches it on. |
-| `onPathChange` | `(path: string) => void` | no | Reports the dotted path of the current node every time it changes. Exists so the class block editor can capture "this position" without a second viewer. |
-| `editable` | `boolean` | no · default `false` | Turns the viewer into an editor. Does nothing without `onPgnChange`. |
-| `onPgnChange` | `(pgn: string) => void` | no | Receives the new PGN after every edit; the viewer keeps rendering the `pgn` prop, so the parent must feed it back. |
-| `onRequestEdit` | `(mode: "comment" \| "annotate", path: string) => void` | no | "Comentar" and "Anotar" from the move menu. The viewer opens nothing: it selects the move and notifies, because the place where one writes (the panel under the board) belongs to the parent. Without it those two items are not rendered. |
-| `path` | `string` | no | Controlled current move, for a parent that wants to decide (the evaluation chart scrubbing the board). Whoever passes it must feed back what arrives through `onPathChange` or the board will not move. |
+| Prop              | Type                                                    | Required               | Meaning                                                                                                                                                                                                                                    |
+| ----------------- | ------------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `pgn`             | `string`                                                | yes                    | Full PGN: moves, variations, comments and annotations.                                                                                                                                                                                     |
+| `orientation`     | `"white" \| "black"`                                    | no · default `"white"` | Side at the bottom before the user flips.                                                                                                                                                                                                  |
+| `initialPath`     | `string`                                                | no                     | Dotted path to open the viewer at (`TrainingExercise.path`, `ClassBlock.movePath`). Ignored if the path does not exist in the tree.                                                                                                        |
+| `title`           | `string`                                                | no                     | First line of the panel header.                                                                                                                                                                                                            |
+| `subtitle`        | `string`                                                | no                     | Second line: chapter, event, whatever places the game.                                                                                                                                                                                     |
+| `description`     | `string`                                                | no                     | Text of the game or the lesson, under the subtitle.                                                                                                                                                                                        |
+| `badge`           | `string`                                                | no                     | Badge to the right of the title ("Prioridad").                                                                                                                                                                                             |
+| `headerActions`   | `ReactNode`                                             | no                     | Extra buttons in the panel header (open in the book, save…). They depend on each screen; the viewer only reserves the place.                                                                                                               |
+| `footerActions`   | `ReactNode`                                             | no                     | Right-aligned content of the panel's bottom bar (the notes).                                                                                                                                                                               |
+| `positionActions` | `(fen: string) => ReactNode`                            | no                     | Bottom-bar action that works on the current position; receives its FEN.                                                                                                                                                                    |
+| `skip`            | `ReactNode`                                             | no                     | "Skip" control rendered at the end of the navigation bar. Not rendered without a value.                                                                                                                                                    |
+| `boardFooter`     | `ReactNode`                                             | no                     | Content under the board: comment, quality and share tools. Hidden in fullscreen.                                                                                                                                                           |
+| `players`         | `{ white: ReactNode; black: ReactNode }`                | no                     | Player strips around the board, given by colour because the viewer can flip: who is on top depends on the orientation and only the viewer knows it.                                                                                        |
+| `moveList`        | `"table" \| "flow"`                                     | no · default `"table"` | `table`: number · white · black grid, like Lichess. `flow`: running text, which is how lessons are read.                                                                                                                                   |
+| `controls`        | `"board" \| "panel"`                                    | no · default `"board"` | Where the navigation bar goes: under the board (lessons) or under the notation panel (studies, where the game is traversed from the list).                                                                                                 |
+| `engine`          | `boolean`                                               | no · default `false`   | Offers the analysis engine. Off by default: it is 7 MB of WebAssembly, downloaded only when someone switches it on.                                                                                                                        |
+| `onPathChange`    | `(path: string) => void`                                | no                     | Reports the dotted path of the current node every time it changes. Exists so the class block editor can capture "this position" without a second viewer.                                                                                   |
+| `editable`        | `boolean`                                               | no · default `false`   | Turns the viewer into an editor. Does nothing without `onPgnChange`.                                                                                                                                                                       |
+| `onPgnChange`     | `(pgn: string) => void`                                 | no                     | Receives the new PGN after every edit; the viewer keeps rendering the `pgn` prop, so the parent must feed it back.                                                                                                                         |
+| `onRequestEdit`   | `(mode: "comment" \| "annotate", path: string) => void` | no                     | "Comentar" and "Anotar" from the move menu. The viewer opens nothing: it selects the move and notifies, because the place where one writes (the panel under the board) belongs to the parent. Without it those two items are not rendered. |
+| `path`            | `string`                                                | no                     | Controlled current move, for a parent that wants to decide (the evaluation chart scrubbing the board). Whoever passes it must feed back what arrives through `onPathChange` or the board will not move.                                    |
 
 ## Behaviour
 
@@ -92,12 +92,16 @@ import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
   badge={lesson.isPriority ? "Prioridad" : undefined}
   skip={
     lesson.nextLessonHref && (
-      <Link href={lesson.nextLessonHref} className="lesson-view__skip" title="Pasar a la siguiente lección sin marcar esta">
+      <Link
+        href={lesson.nextLessonHref}
+        className="lesson-view__skip"
+        title="Pasar a la siguiente lección sin marcar esta"
+      >
         Saltar
       </Link>
     )
   }
-/>
+/>;
 ```
 
 Editing, with the engine and a controlled path, from `components/platform/sections/studies/game-view/game-view.section.tsx`:
@@ -116,8 +120,12 @@ Editing, with the engine and a controlled path, from `components/platform/sectio
     setFocusRequest((count) => count + 1);
   }}
   players={{
-    white: <Player name={game.white} elo={game.whiteElo} title={game.whiteTitle} country={game.whiteCountry} side="white" />,
-    black: <Player name={game.black} elo={game.blackElo} title={game.blackTitle} country={game.blackCountry} side="black" />,
+    white: (
+      <Player name={game.white} elo={game.whiteElo} title={game.whiteTitle} country={game.whiteCountry} side="white" />
+    ),
+    black: (
+      <Player name={game.black} elo={game.blackElo} title={game.blackTitle} country={game.blackCountry} side="black" />
+    ),
   }}
   boardFooter={/* GameTools */}
 />

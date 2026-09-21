@@ -4,13 +4,13 @@ description: "A course in 'Mis cursos': cover, name, type tag, the two progress 
 
 # `CourseCard`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/courses/courses-list/course-card.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `course-card.comp.css` → block `.course-card` |
-| Used by | [`CoursesListSection`](/components/platform/sections/courses/courses-list/courses-list-section) |
-| Uses | `CourseSummary` from `services/courses/courses.types`; `next/image`, `next/link` |
+|            |                                                                                                 |
+| ---------- | ----------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/courses-list/course-card.comp.tsx`                        |
+| Kind       | Server Component                                                                                |
+| Stylesheet | `course-card.comp.css` → block `.course-card`                                                   |
+| Used by    | [`CoursesListSection`](/components/platform/sections/courses/courses-list/courses-list-section) |
+| Uses       | `CourseSummary` from `services/courses/courses.types`; `next/image`, `next/link`                |
 
 ## Purpose
 
@@ -20,9 +20,9 @@ The two meters are the card's own (`Meter`), not the shared [`ProgressIndicator`
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `course` | `CourseSummary` | yes | `id`, `name`, `href`, `continueHref`, `ctaLabel` ("Empezar"/"Continuar"), `cover?`, `typeLabel`, `description?`, `levelLabels`, `authorNames`, `progress: { completedLessons, totalLessons, completedMinutes, totalMinutes }`. |
+| Prop     | Type            | Required | Meaning                                                                                                                                                                                                                        |
+| -------- | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `course` | `CourseSummary` | yes      | `id`, `name`, `href`, `continueHref`, `ctaLabel` ("Empezar"/"Continuar"), `cover?`, `typeLabel`, `description?`, `levelLabels`, `authorNames`, `progress: { completedLessons, totalLessons, completedMinutes, totalMinutes }`. |
 
 ## Behaviour
 
@@ -51,9 +51,9 @@ From `components/platform/sections/courses/courses-list/courses-list.section.tsx
 ```tsx
 import { CourseCard } from "./course-card.comp";
 
-{courses.map((course) => (
-  <CourseCard key={course.id} course={course} />
-))}
+{
+  courses.map((course) => <CourseCard key={course.id} course={course} />);
+}
 ```
 
 ## Related

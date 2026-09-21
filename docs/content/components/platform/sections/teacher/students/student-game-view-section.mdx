@@ -4,14 +4,14 @@ description: "A student's game in the read-only viewer plus 'Usar en una clase':
 
 # `StudentGameViewSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/students/student-game-view.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `student-game-view.section.css` → block `.student-game` |
-| Used by | `/profesor/alumnos/[studentId]/estudios/[studyId]/partidas/[gameId]` |
-| Composes | [`GameViewer`](/components/chess/game-viewer/game-viewer) |
-| Uses | `teacherRoutes` from `lib/platform-routes`; `GameView` from `services/studies/studies.types`; `TeacherClassSummary` from `services/teacher-classes/teacher-classes.types` |
+|            |                                                                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/students/student-game-view.section.tsx`                                                                                             |
+| Kind       | Server Component                                                                                                                                                          |
+| Stylesheet | `student-game-view.section.css` → block `.student-game`                                                                                                                   |
+| Used by    | `/profesor/alumnos/[studentId]/estudios/[studyId]/partidas/[gameId]`                                                                                                      |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer)                                                                                                                 |
+| Uses       | `teacherRoutes` from `lib/platform-routes`; `GameView` from `services/studies/studies.types`; `TeacherClassSummary` from `services/teacher-classes/teacher-classes.types` |
 
 ## Purpose
 
@@ -19,12 +19,12 @@ The teacher reads a student's game and, if it is worth discussing, takes it to c
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `studentId` | `string` | yes | Breadcrumb link. |
-| `studentName` | `string` | yes | Breadcrumb text. |
-| `game` | `GameView` | yes | The game with `pgn`, players, record fields, `studyHref`, `studyName`, `sourceLabel`. |
-| `scheduledClasses` | `TeacherClassSummary[]` | yes | Destinations of "Usar en una clase". Empty shows a hint with a link to create one. |
+| Prop               | Type                    | Required | Meaning                                                                               |
+| ------------------ | ----------------------- | -------- | ------------------------------------------------------------------------------------- |
+| `studentId`        | `string`                | yes      | Breadcrumb link.                                                                      |
+| `studentName`      | `string`                | yes      | Breadcrumb text.                                                                      |
+| `game`             | `GameView`              | yes      | The game with `pgn`, players, record fields, `studyHref`, `studyName`, `sourceLabel`. |
+| `scheduledClasses` | `TeacherClassSummary[]` | yes      | Destinations of "Usar en una clase". Empty shows a hint with a link to create one.    |
 
 ## Behaviour
 
@@ -56,7 +56,7 @@ import { StudentGameViewSection } from "@/components/platform/sections/teacher/s
   studentName={student.displayName}
   game={game}
   scheduledClasses={scheduledClasses}
-/>
+/>;
 ```
 
 ## Related

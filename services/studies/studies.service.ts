@@ -92,7 +92,10 @@ export const getGameResultOptions = cache(async (): Promise<StudyKindOption[]> =
 export async function getStudyById(studyId: string): Promise<StudyDetail | null> {
   const db = getPlatformDb();
   const [where, user] = await Promise.all([getVisibleStudiesWhere(), getCurrentUser()]);
-  const row = await db.gameDatabase.findFirst({ where: { AND: [{ id: studyId }, where] }, include: studyDetailInclude });
+  const row = await db.gameDatabase.findFirst({
+    where: { AND: [{ id: studyId }, where] },
+    include: studyDetailInclude,
+  });
   return row ? mapStudyDetail(row, user.id) : null;
 }
 

@@ -102,11 +102,7 @@ async function moveGame(gameId: string, databaseId: string, order: number) {
 }
 
 /** Creates the lesson's PGN as a game of the chapter and links it. */
-async function adoptLessonPgn(
-  lesson: ChapterRow["lessons"][number],
-  databaseId: string,
-  order: number,
-): Promise<void> {
+async function adoptLessonPgn(lesson: ChapterRow["lessons"][number], databaseId: string, order: number): Promise<void> {
   const [parsed] = parseImportedGames(lesson.pgn);
 
   await db.$transaction(async (tx: Prisma.TransactionClient) => {

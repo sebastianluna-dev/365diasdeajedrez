@@ -4,14 +4,14 @@ description: "The chessground board surface: standalone with a PGN (move list an
 
 # `ChessBoard`
 
-| | |
-| --- | --- |
-| File | `components/chess/chess-board.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `chess-board.comp.css` → block `.chess-board` |
-| Used by | [`AnalysisBoard`](/components/chess/analysis-board/analysis-board), [`ChessBoardLazy`](/components/chess/chess-board-lazy), [`EnginePanel`](/components/chess/game-viewer/engine-panel), [`GameViewer`](/components/chess/game-viewer/game-viewer), [`GameExplorer`](/components/platform/sections/explorer/game-explorer), [`TrainerSession`](/components/platform/sections/trainer/trainer-session) |
-| Composes | [`chessMoveQualityIconFor`](/components/chess/chess-move-quality-icon) |
-| Uses | `@lichess-org/chessground` (board rendering, its base and `cburnett` piece stylesheets)<br />`legalDests` from `lib/chess/legal-moves`<br />`buildNotationRows` from `lib/chess/notation`<br />`isPromotionMove`, `replayGame`, `sanForMove`, `turnColor` from `lib/chess/replay` |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                       |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/chess-board.comp.tsx`                                                                                                                                                                                                                                                                                                                                                               |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                      |
+| Stylesheet | `chess-board.comp.css` → block `.chess-board`                                                                                                                                                                                                                                                                                                                                                         |
+| Used by    | [`AnalysisBoard`](/components/chess/analysis-board/analysis-board), [`ChessBoardLazy`](/components/chess/chess-board-lazy), [`EnginePanel`](/components/chess/game-viewer/engine-panel), [`GameViewer`](/components/chess/game-viewer/game-viewer), [`GameExplorer`](/components/platform/sections/explorer/game-explorer), [`TrainerSession`](/components/platform/sections/trainer/trainer-session) |
+| Composes   | [`chessMoveQualityIconFor`](/components/chess/chess-move-quality-icon)                                                                                                                                                                                                                                                                                                                                |
+| Uses       | `@lichess-org/chessground` (board rendering, its base and `cburnett` piece stylesheets)<br />`legalDests` from `lib/chess/legal-moves`<br />`buildNotationRows` from `lib/chess/notation`<br />`isPromotionMove`, `replayGame`, `sanForMove`, `turnColor` from `lib/chess/replay`                                                                                                                     |
 
 ## Purpose
 
@@ -26,16 +26,16 @@ Interactive moves are validated by chessops before they are reported: the board 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `pgn` | `string` | no | Full PGN or bare SAN movetext. Ignored when `position` is set. |
-| `position` | `ChessBoardControlledPosition` | no | Controlled mode: `{ fen, lastMove?, check?, shapes? }`. The parent owns the position and the navigation; only the board surface renders. `shapes` are the `[%cal]` arrows and `[%csl]` squares to draw. |
-| `flipBoard` | `boolean` | no · default `false` | Black at the bottom. In standalone mode the toolbar's flip button toggles on top of it. |
-| `annotations` | `MoveAnnotations` | no | Per-move quality and glyphs for the standalone notation column (see `lib/chess/types`). |
-| `interactive` | `boolean` | no · default `false` | Lets the user drag or click legal moves, computed by `legalDests`. |
-| `onMove` | `(san: string, fromFen: string) => void` | no | Called after a legal interactive move with its SAN and the FEN it was played from. The board resets itself to `fromFen` afterwards: the parent decides what the new position is. |
-| `editableShapes` | `boolean` | no · default `false` | Lets the user draw arrows and circles with the right mouse button. It also changes where the shapes live: without it they are chessground `autoShapes`, painted but untouchable; with it they are the user's shapes, the only ones that can be edited. Only the analysis editor sets it. |
-| `onShapesChange` | `(shapes: DrawShape[]) => void` | no | Called on release after drawing, with the full set of user shapes. |
+| Prop             | Type                                     | Required             | Meaning                                                                                                                                                                                                                                                                                  |
+| ---------------- | ---------------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pgn`            | `string`                                 | no                   | Full PGN or bare SAN movetext. Ignored when `position` is set.                                                                                                                                                                                                                           |
+| `position`       | `ChessBoardControlledPosition`           | no                   | Controlled mode: `{ fen, lastMove?, check?, shapes? }`. The parent owns the position and the navigation; only the board surface renders. `shapes` are the `[%cal]` arrows and `[%csl]` squares to draw.                                                                                  |
+| `flipBoard`      | `boolean`                                | no · default `false` | Black at the bottom. In standalone mode the toolbar's flip button toggles on top of it.                                                                                                                                                                                                  |
+| `annotations`    | `MoveAnnotations`                        | no                   | Per-move quality and glyphs for the standalone notation column (see `lib/chess/types`).                                                                                                                                                                                                  |
+| `interactive`    | `boolean`                                | no · default `false` | Lets the user drag or click legal moves, computed by `legalDests`.                                                                                                                                                                                                                       |
+| `onMove`         | `(san: string, fromFen: string) => void` | no                   | Called after a legal interactive move with its SAN and the FEN it was played from. The board resets itself to `fromFen` afterwards: the parent decides what the new position is.                                                                                                         |
+| `editableShapes` | `boolean`                                | no · default `false` | Lets the user draw arrows and circles with the right mouse button. It also changes where the shapes live: without it they are chessground `autoShapes`, painted but untouchable; with it they are the user's shapes, the only ones that can be edited. Only the analysis editor sets it. |
+| `onShapesChange` | `(shapes: DrawShape[]) => void`          | no                   | Called on release after drawing, with the full set of user shapes.                                                                                                                                                                                                                       |
 
 `ChessBoardControlledPosition` and `ChessBoardProps` are exported so wrappers such as `ChessBoardLazy` and the explorer can type their own props against them.
 
@@ -84,7 +84,7 @@ import { ChessBoard } from "@/components/chess/chess-board.comp";
   onMove={handleMove}
   editableShapes
   onShapesChange={handleShapes}
-/>
+/>;
 ```
 
 Standalone, from `components/site/sections/home/teacher/teacher.section.tsx` (through the lazy wrapper):

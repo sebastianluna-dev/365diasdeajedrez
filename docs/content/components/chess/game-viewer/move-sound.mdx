@@ -6,13 +6,13 @@ description: "The two board sounds (move and capture) from public/sounds, loaded
 
 Exports `playMoveSound` and the `MoveSoundKind` type.
 
-| | |
-| --- | --- |
-| File | `components/chess/game-viewer/move-sound.ts` |
-| Kind | Module (plain TypeScript, browser only, `"use client"`) |
-| Stylesheet | none |
-| Used by | [`GameViewer`](/components/chess/game-viewer/game-viewer) |
-| Uses | `public/sounds/move.mp3`, `public/sounds/capture.mp3` |
+|            |                                                           |
+| ---------- | --------------------------------------------------------- |
+| File       | `components/chess/game-viewer/move-sound.ts`              |
+| Kind       | Module (plain TypeScript, browser only, `"use client"`)   |
+| Stylesheet | none                                                      |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) |
+| Uses       | `public/sounds/move.mp3`, `public/sounds/capture.mp3`     |
 
 ## Purpose
 
@@ -25,7 +25,7 @@ The files load lazily and only when a sound is first needed: a page can hold sev
 ### `playMoveSound`
 
 ```ts
-export function playMoveSound(kind: "move" | "capture"): void
+export function playMoveSound(kind: "move" | "capture"): void;
 ```
 
 Plays the sound once at 60 % volume. Safe to call on the server (returns without doing anything when `window` is undefined) and safe before any user gesture: the browser rejects the `play()` promise, which is expected and swallowed.

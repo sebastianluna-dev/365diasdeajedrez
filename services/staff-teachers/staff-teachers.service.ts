@@ -2,12 +2,7 @@ import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { staffRoutes } from "@/lib/platform-routes";
-import type {
-  AssignableStudent,
-  LinkableUser,
-  StaffTeacherDetail,
-  StaffTeacherSummary,
-} from "./staff-teachers.types";
+import type { AssignableStudent, LinkableUser, StaffTeacherDetail, StaffTeacherSummary } from "./staff-teachers.types";
 
 // Administration panel: teachers and assignments. A teacher is NEVER deleted
 // (it would drag along classes and historical assignments): they are deactivated.

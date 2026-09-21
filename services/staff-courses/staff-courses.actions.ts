@@ -3,12 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { PGN_IMPORT_TRANSACTION, PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
-import {
-  AUTHOR_ROLE,
-  COURSE_STATUS,
-  COURSE_TYPE,
-  isContentRoleCode,
-} from "@/constants/platform/course-codes.const";
+import { AUTHOR_ROLE, COURSE_STATUS, COURSE_TYPE, isContentRoleCode } from "@/constants/platform/course-codes.const";
 import { CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
 import { EXERCISE_MODE } from "@/constants/platform/training-codes.const";
 import { deriveExerciseData } from "@/lib/chess/exercise-derivation";
@@ -24,20 +19,9 @@ import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_SOURCE } from "@/constants/platform/study-codes.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
-import {
-  lessonHasContent,
-  lessonPgnOf,
-  lessonPgnSelect,
-  lessonStartFenOf,
-} from "@/services/shared/lesson-pgn";
+import { lessonHasContent, lessonPgnOf, lessonPgnSelect, lessonStartFenOf } from "@/services/shared/lesson-pgn";
 import { parseImportedGames } from "@/services/shared/pgn-import";
-import {
-  nextOrder,
-  planDenseRenumber,
-  planFullReorder,
-  planSwap,
-  type MoveDirection,
-} from "@/services/shared/reorder";
+import { nextOrder, planDenseRenumber, planFullReorder, planSwap, type MoveDirection } from "@/services/shared/reorder";
 
 // Course editor. Rules that are not negotiable:
 // - Every action opens with requireStaff() (they are reachable by direct POST).
@@ -255,11 +239,7 @@ async function chapterGamesDatabase(
 }
 
 /** Imports one or several games from a pasted PGN into the chapter's collection. */
-export async function importChapterGames(
-  courseId: string,
-  chapterId: string,
-  formData: FormData,
-): Promise<void> {
+export async function importChapterGames(courseId: string, chapterId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   // The form lives in the games tab, so the warnings go back there and not to the
   // chapter's page.
@@ -332,11 +312,7 @@ export async function importChapterGames(
  * content — the foreign key is `SET NULL`, so it would not fail, they would be
  * emptied silently, which is worse.
  */
-export async function deleteChapterGame(
-  courseId: string,
-  chapterId: string,
-  formData: FormData,
-): Promise<void> {
+export async function deleteChapterGame(courseId: string, chapterId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const chapterPath = staffRoutes.chapterGames(courseId, chapterId);
   if (!(await allowAction(`${staff.user.id}:chapter-games-delete`, 60, 60_000))) fail(chapterPath, "throttled");
@@ -593,35 +569,35 @@ export async function updateLesson(
 
   try {
     await db.$transaction(async (tx) => {
-    await tx.lesson.update({
-      where: { id: lesson.id },
-      data: {
-        name,
-        description: readOptionalText(formData, "description", DESCRIPTION_MAX_LENGTH),
-        isPriority: readBoolean(formData, "isPriority"),
-        estimatedDuration: readClampedInt(formData, "estimatedDuration", 0, DURATION_MAX),
-        orientation: { connect: { code: orientationCode } },
+      await tx.lesson.update({
+        where: { id: lesson.id },
+        data: {
+          name,
+          description: readOptionalText(formData, "description", DESCRIPTION_MAX_LENGTH),
+          isPriority: readBoolean(formData, "isPriority"),
+          estimatedDuration: readClampedInt(formData, "estimatedDuration", 0, DURATION_MAX),
+          orientation: { connect: { code: orientationCode } },
+          isTrainable,
+          trainingColor: trainingColor ? { connect: { code: trainingColor } } : { disconnect: true },
+        },
+      });
+
+      // The derived exercise is maintained here, within the same transaction: marking
+      // the lesson as trainable and leaving it with no line to train would be a
+      // halfway state.
+      const sync = await syncLessonTrainingExercise(tx, {
+        lessonId: lesson.id,
+        pgn: lessonPgnOf(current),
         isTrainable,
-        trainingColor: trainingColor ? { connect: { code: trainingColor } } : { disconnect: true },
-      },
-    });
+        trainingColor,
+      });
+      if (isTrainable && !sync.ok) throw new TrainingSyncError(sync.reason);
 
-    // The derived exercise is maintained here, within the same transaction: marking
-    // the lesson as trainable and leaving it with no line to train would be a
-    // halfway state.
-    const sync = await syncLessonTrainingExercise(tx, {
-      lessonId: lesson.id,
-      pgn: lessonPgnOf(current),
-      isTrainable,
-      trainingColor,
-    });
-    if (isTrainable && !sync.ok) throw new TrainingSyncError(sync.reason);
-
-    await tx.lessonTopic.deleteMany({ where: { lessonId: lesson.id } });
-    for (const topicId of topicIds) {
-      const topic = await tx.topic.findUnique({ where: { id: topicId }, select: { id: true } });
-      if (topic) await tx.lessonTopic.create({ data: { lessonId: lesson.id, topicId: topic.id } });
-    }
+      await tx.lessonTopic.deleteMany({ where: { lessonId: lesson.id } });
+      for (const topicId of topicIds) {
+        const topic = await tx.topic.findUnique({ where: { id: topicId }, select: { id: true } });
+        if (topic) await tx.lessonTopic.create({ data: { lessonId: lesson.id, topicId: topic.id } });
+      }
     });
   } catch (error) {
     if (error instanceof TrainingSyncError) fail(lessonPath, error.errorCode);

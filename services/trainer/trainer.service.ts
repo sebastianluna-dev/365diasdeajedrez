@@ -40,10 +40,7 @@ export async function getTrainerData(): Promise<TrainerData> {
 
   const inTrainer = new Set(trainerRows.map((row) => row.chapterId));
   const items = chapters.map((chapter) =>
-    mapTrainerChapter(
-      { ...chapter, exerciseCount: countByChapter.get(chapter.id) ?? 0 },
-      inTrainer.has(chapter.id),
-    ),
+    mapTrainerChapter({ ...chapter, exerciseCount: countByChapter.get(chapter.id) ?? 0 }, inTrainer.has(chapter.id)),
   );
 
   return {
@@ -75,7 +72,10 @@ export async function getTrainerSession(params: TrainerSessionParams): Promise<T
   } else if (params.chapterId) {
     where = { lesson: { chapterId: params.chapterId, ...publishedLessonWhere } };
   } else {
-    const trainerRows = await db.userTrainerChapter.findMany({ where: { userId: user.id }, select: { chapterId: true } });
+    const trainerRows = await db.userTrainerChapter.findMany({
+      where: { userId: user.id },
+      select: { chapterId: true },
+    });
     if (trainerRows.length === 0) return [];
     where = { lesson: { chapterId: { in: trainerRows.map((row) => row.chapterId) }, ...publishedLessonWhere } };
   }

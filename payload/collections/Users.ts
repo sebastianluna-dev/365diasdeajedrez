@@ -25,7 +25,7 @@ export const Users: CollectionConfig = {
       type: "text",
       label: "Título público (autor de blog)",
       admin: {
-        description: "Ej: \"Instructor\". Se muestra junto al nombre en los artículos del blog.",
+        description: 'Ej: "Instructor". Se muestra junto al nombre en los artículos del blog.',
       },
     },
     {

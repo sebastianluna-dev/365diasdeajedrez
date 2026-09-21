@@ -4,15 +4,15 @@ description: "The course catalog in every status, with a GET search, status filt
 
 # `CoursesAdminSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/courses/courses-admin.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `courses-admin.section.css` → block `.courses-admin` |
-| Used by | `/administracion/cursos` |
-| Composes | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads | `listCoursesAdmin({ query, status })` · `services/staff-courses/staff-courses.service.ts` |
-| Uses | `COURSE_STATUS` from `constants/platform/course-codes.const`; `staffRoutes`; `isDisplayableImage` from `lib/remote-image`; `ChevronIcon`, `SearchIcon` from `components/icons/`; `next/image` |
+|            |                                                                                                                                                                                               |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/courses-admin.section.tsx`                                                                                                                        |
+| Kind       | Server Component (async)                                                                                                                                                                      |
+| Stylesheet | `courses-admin.section.css` → block `.courses-admin`                                                                                                                                          |
+| Used by    | `/administracion/cursos`                                                                                                                                                                      |
+| Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`EmptyState`](/components/platform/shared/empty-state)                                                        |
+| Reads      | `listCoursesAdmin({ query, status })` · `services/staff-courses/staff-courses.service.ts`                                                                                                     |
+| Uses       | `COURSE_STATUS` from `constants/platform/course-codes.const`; `staffRoutes`; `isDisplayableImage` from `lib/remote-image`; `ChevronIcon`, `SearchIcon` from `components/icons/`; `next/image` |
 
 ## Purpose
 
@@ -20,10 +20,10 @@ The entry to course authoring. Courses are born in draft and are only visible in
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `query` | `string` | no | Text search over name and slug, from `?q=`. |
-| `status` | `string` | no | Status filter, from `?estado=`. |
+| Prop     | Type     | Required | Meaning                                     |
+| -------- | -------- | -------- | ------------------------------------------- |
+| `query`  | `string` | no       | Text search over name and slug, from `?q=`. |
+| `status` | `string` | no       | Status filter, from `?estado=`.             |
 
 ## Behaviour
 
@@ -51,7 +51,7 @@ From `app/(platform)/administracion/cursos/page.tsx`:
 ```tsx
 import { CoursesAdminSection } from "@/components/platform/sections/staff/courses/courses-admin.section";
 
-<CoursesAdminSection query={q} status={estado} />
+<CoursesAdminSection query={q} status={estado} />;
 ```
 
 ## Related

@@ -4,13 +4,13 @@ description: "The stat card that accompanies each testimonial in the carousel: l
 
 # `ReviewStatCard`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/reviews/review-stat-card.comp.tsx` |
-| Kind | Server Component (rendered inside the client carousel) |
-| Stylesheet | `review-stat-card.comp.css` → element `.reviews__stat` of `.reviews` |
-| Used by | [`ReviewsInteractive`](/components/site/sections/home/reviews/reviews-interactive) |
-| Uses | `ReviewStatContent` from `services/home/home.types` |
+|            |                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/reviews/review-stat-card.comp.tsx`                  |
+| Kind       | Server Component (rendered inside the client carousel)                             |
+| Stylesheet | `review-stat-card.comp.css` → element `.reviews__stat` of `.reviews`               |
+| Used by    | [`ReviewsInteractive`](/components/site/sections/home/reviews/reviews-interactive) |
+| Uses       | `ReviewStatContent` from `services/home/home.types`                                |
 
 ## Purpose
 
@@ -18,11 +18,11 @@ Each review carries one figure ("+300 Elo en un año"); this card shows it besid
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `stat` | `ReviewStatContent` | yes | `label`, `value`, `text`. |
-| `position` | `"center" \| "left" \| "right"` | yes | Becomes `.reviews__stat_position_<position>`. |
-| `hidden` | `boolean` | yes | Sets `aria-hidden`. |
+| Prop       | Type                            | Required | Meaning                                       |
+| ---------- | ------------------------------- | -------- | --------------------------------------------- |
+| `stat`     | `ReviewStatContent`             | yes      | `label`, `value`, `text`.                     |
+| `position` | `"center" \| "left" \| "right"` | yes      | Becomes `.reviews__stat_position_<position>`. |
+| `hidden`   | `boolean`                       | yes      | Sets `aria-hidden`.                           |
 
 ## Behaviour
 

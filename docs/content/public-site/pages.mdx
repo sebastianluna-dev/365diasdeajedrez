@@ -10,18 +10,18 @@ All public pages live in `app/(frontend)` and share the root layout there: `meta
 
 `app/(frontend)/page.tsx` is statically prerendered (`revalidate = 3600`) and renders `landing-page.tsx`, which composes the sections enabled in `config/site.config.ts`:
 
-| Section | Component | Content source |
-| --- | --- | --- |
-| Header | `components/site/sections/shell/header` | Global `home-header` (nav links and dropdown blocks) |
-| Hero | `homepage/hero` | Global `home-hero` (title, description, image with `preload` and `fetchPriority="high"`) |
-| Program | `homepage/program` | Global `home-program` (modules list) |
+| Section                | Component                               | Content source                                                                                      |
+| ---------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Header                 | `components/site/sections/shell/header` | Global `home-header` (nav links and dropdown blocks)                                                |
+| Hero                   | `homepage/hero`                         | Global `home-hero` (title, description, image with `preload` and `fetchPriority="high"`)            |
+| Program                | `homepage/program`                      | Global `home-program` (modules list)                                                                |
 | Teacher **or** Mentors | `homepage/teacher` / `homepage/mentors` | Globals `home-teacher` / `home-mentors`; they share one slot and `teacher` wins if both are enabled |
-| Plans | `homepage/plans` | Global `home-packages` |
-| Resources | `homepage/resources` | Latest article summaries (`getArticleSummaries`) |
-| Reviews | `homepage/reviews` | Global `home-reviews` |
-| FAQ | `homepage/faq` | Global `home-faq` |
-| Sticky CTA | `homepage/cta` | Global `home-cta` + WhatsApp number from `site-settings`; sits outside `<main>` |
-| Footer | `common/footer` | `site-settings` |
+| Plans                  | `homepage/plans`                        | Global `home-packages`                                                                              |
+| Resources              | `homepage/resources`                    | Latest article summaries (`getArticleSummaries`)                                                    |
+| Reviews                | `homepage/reviews`                      | Global `home-reviews`                                                                               |
+| FAQ                    | `homepage/faq`                          | Global `home-faq`                                                                                   |
+| Sticky CTA             | `homepage/cta`                          | Global `home-cta` + WhatsApp number from `site-settings`; sits outside `<main>`                     |
+| Footer                 | `common/footer`                         | `site-settings`                                                                                     |
 
 Each section calls its own `getXData()` from `services/home/home.service.ts`; the underlying Payload reads are deduplicated per request and cached between requests (see [Caching](/architecture/caching-errors-logging)). The teacher section shows a game on `ChessBoardLazy`, so chessground and chessops are not part of the initial bundle.
 
@@ -44,14 +44,14 @@ Each section calls its own `getXData()` from `services/home/home.service.ts`; th
 
 ## SEO and metadata
 
-| Piece | Where |
-| --- | --- |
-| `metadataBase`, site name, locale `es_MX`, default OG/Twitter | `app/(frontend)/layout.tsx` |
-| Default Open Graph image (1200×630, `ImageResponse`, default font) | `app/(frontend)/opengraph-image.tsx`; pages without their own image inherit it |
-| Canonical URLs | `alternates.canonical` on every public page (`/`, `/nosotros`, `/blog` with its query, `/blog/[slug]`, `/mentor/[slug]`, `/reloj-de-ajedrez`) |
-| Sitemap | `app/sitemap.ts`: static routes + `/blog/<slug>` with `lastModified` from `getArticleLinks()` (slug and `updatedAt` only) |
-| Robots | `app/robots.ts`: disallows the platform prefixes, `/iniciar-sesion`, `/entrar`, `/admin`, `/api` |
-| Private pages | `(auth)` and `(platform)` layouts set `robots: { index: false, follow: false }` |
+| Piece                                                              | Where                                                                                                                                         |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `metadataBase`, site name, locale `es_MX`, default OG/Twitter      | `app/(frontend)/layout.tsx`                                                                                                                   |
+| Default Open Graph image (1200×630, `ImageResponse`, default font) | `app/(frontend)/opengraph-image.tsx`; pages without their own image inherit it                                                                |
+| Canonical URLs                                                     | `alternates.canonical` on every public page (`/`, `/nosotros`, `/blog` with its query, `/blog/[slug]`, `/mentor/[slug]`, `/reloj-de-ajedrez`) |
+| Sitemap                                                            | `app/sitemap.ts`: static routes + `/blog/<slug>` with `lastModified` from `getArticleLinks()` (slug and `updatedAt` only)                     |
+| Robots                                                             | `app/robots.ts`: disallows the platform prefixes, `/iniciar-sesion`, `/entrar`, `/admin`, `/api`                                              |
+| Private pages                                                      | `(auth)` and `(platform)` layouts set `robots: { index: false, follow: false }`                                                               |
 
 ## Accessibility and performance notes
 

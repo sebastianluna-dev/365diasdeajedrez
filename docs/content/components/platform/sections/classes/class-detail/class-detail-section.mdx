@@ -4,14 +4,14 @@ description: "The student's class page: breadcrumb, header with teacher and loca
 
 # `ClassDetailSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/classes/class-detail/class-detail.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `class-detail.section.css` → block `.class-detail` |
-| Used by | `/clases/[classId]` |
-| Composes | [`MeetingAccess`](/components/platform/sections/classes/class-detail/meeting-access), [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`LocalDateTime`](/components/platform/shared/local-datetime), [`EmptyState`](/components/platform/shared/empty-state) |
-| Uses | `CLASS_STATUS`, `TRANSCRIPT_STATUS` from `constants/platform/class-codes.const`; `platformRoutes` from `lib/platform-routes`; `ClassDetail` from `services/classes/classes.types` |
+|            |                                                                                                                                                                                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/classes/class-detail/class-detail.section.tsx`                                                                                                                                                                                                               |
+| Kind       | Server Component                                                                                                                                                                                                                                                                           |
+| Stylesheet | `class-detail.section.css` → block `.class-detail`                                                                                                                                                                                                                                         |
+| Used by    | `/clases/[classId]`                                                                                                                                                                                                                                                                        |
+| Composes   | [`MeetingAccess`](/components/platform/sections/classes/class-detail/meeting-access), [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`LocalDateTime`](/components/platform/shared/local-datetime), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses       | `CLASS_STATUS`, `TRANSCRIPT_STATUS` from `constants/platform/class-codes.const`; `platformRoutes` from `lib/platform-routes`; `ClassDetail` from `services/classes/classes.types`                                                                                                          |
 
 ## Purpose
 
@@ -19,9 +19,9 @@ Everything a student gets from one class: how to join it while it is upcoming, t
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `classDetail` | `ClassDetail` | yes | `title`, `description?`, `statusCode`, `statusLabel`, `teacherName`, `teacherTitle?`, `scheduledAtIso`, `dateLabel`, `timeLabel`, `durationMin`, `meetingUrl?`, `meetingVisibleFromIso?`, `meetingProviderLabel?`, `recordingUrl?`, `summary?`, `blocks`, `transcript?`. |
+| Prop          | Type          | Required | Meaning                                                                                                                                                                                                                                                                  |
+| ------------- | ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `classDetail` | `ClassDetail` | yes      | `title`, `description?`, `statusCode`, `statusLabel`, `teacherName`, `teacherTitle?`, `scheduledAtIso`, `dateLabel`, `timeLabel`, `durationMin`, `meetingUrl?`, `meetingVisibleFromIso?`, `meetingProviderLabel?`, `recordingUrl?`, `summary?`, `blocks`, `transcript?`. |
 
 ## Behaviour
 
@@ -52,7 +52,7 @@ From `app/(platform)/clases/[classId]/page.tsx`:
 ```tsx
 import { ClassDetailSection } from "@/components/platform/sections/classes/class-detail/class-detail.section";
 
-<ClassDetailSection classDetail={classDetail} />
+<ClassDetailSection classDetail={classDetail} />;
 ```
 
 ## Related

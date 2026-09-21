@@ -6,13 +6,13 @@ description: "The right-click menu on a move: promote, make main line, comment, 
 
 Also exports the `MoveContextMenuTarget` type.
 
-| | |
-| --- | --- |
-| File | `components/chess/game-viewer/move-context-menu.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `move-context-menu.comp.css` → block `.move-context-menu` |
-| Used by | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`AnalysisBoard`](/components/chess/analysis-board/analysis-board) |
-| Uses | icons `ArrowUpIcon`, `CheckIcon`, `ClipboardIcon`, `NoteIcon`, `TrashIcon` from `components/icons/` |
+|            |                                                                                                                               |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/move-context-menu.comp.tsx`                                                                     |
+| Kind       | Client Component                                                                                                              |
+| Stylesheet | `move-context-menu.comp.css` → block `.move-context-menu`                                                                     |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`AnalysisBoard`](/components/chess/analysis-board/analysis-board) |
+| Uses       | icons `ArrowUpIcon`, `CheckIcon`, `ClipboardIcon`, `NoteIcon`, `TrashIcon` from `components/icons/`                           |
 
 ## Purpose
 
@@ -22,16 +22,16 @@ The menu is a list of actions with callbacks. Three of them (comment, annotate, 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `target` | `MoveContextMenuTarget` | yes | `{ path, x, y, label, canPromote, canPromoteOneStep }`: which move, where the pointer was, the move as read in the list ("1… f5", used as the title and the `aria-label`), and whether the two promote items are enabled. `canPromote` is false when the move is already on the main line; `canPromoteOneStep` when it is already first among its siblings. |
-| `onPromoteToMainLine` | `() => void` | yes | "Convertir en línea principal". |
-| `onPromoteOneStep` | `() => void` | yes | "Promocionar variante". |
-| `onDelete` | `() => void` | yes | "Borrar a partir de aquí", styled as the danger item. |
-| `onComment` | `() => void` | no | "Comentar este movimiento". Not rendered when absent. |
-| `onAnnotate` | `() => void` | no | "Anotar con iconos". Not rendered when absent. |
-| `onCopyVariation` | `() => void \| Promise<void>` | no | "Copiar PGN de la variante". Not rendered when absent. |
-| `onClose` | `() => void` | yes | Called on outside click, Escape, and 900 ms after a copy. |
+| Prop                  | Type                          | Required | Meaning                                                                                                                                                                                                                                                                                                                                                     |
+| --------------------- | ----------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `target`              | `MoveContextMenuTarget`       | yes      | `{ path, x, y, label, canPromote, canPromoteOneStep }`: which move, where the pointer was, the move as read in the list ("1… f5", used as the title and the `aria-label`), and whether the two promote items are enabled. `canPromote` is false when the move is already on the main line; `canPromoteOneStep` when it is already first among its siblings. |
+| `onPromoteToMainLine` | `() => void`                  | yes      | "Convertir en línea principal".                                                                                                                                                                                                                                                                                                                             |
+| `onPromoteOneStep`    | `() => void`                  | yes      | "Promocionar variante".                                                                                                                                                                                                                                                                                                                                     |
+| `onDelete`            | `() => void`                  | yes      | "Borrar a partir de aquí", styled as the danger item.                                                                                                                                                                                                                                                                                                       |
+| `onComment`           | `() => void`                  | no       | "Comentar este movimiento". Not rendered when absent.                                                                                                                                                                                                                                                                                                       |
+| `onAnnotate`          | `() => void`                  | no       | "Anotar con iconos". Not rendered when absent.                                                                                                                                                                                                                                                                                                              |
+| `onCopyVariation`     | `() => void \| Promise<void>` | no       | "Copiar PGN de la variante". Not rendered when absent.                                                                                                                                                                                                                                                                                                      |
+| `onClose`             | `() => void`                  | yes      | Called on outside click, Escape, and 900 ms after a copy.                                                                                                                                                                                                                                                                                                   |
 
 ## Behaviour
 
@@ -60,18 +60,29 @@ From `components/chess/game-viewer/game-viewer.comp.tsx`:
 ```tsx
 import { MoveContextMenu, type MoveContextMenuTarget } from "./move-context-menu.comp";
 
-{menu && (
-  <MoveContextMenu
-    target={menu}
-    onPromoteOneStep={() => { editing.promoteOneStepAt(menu.path); setMenu(null); }}
-    onPromoteToMainLine={() => { editing.promoteToMainAt(menu.path); setMenu(null); }}
-    onComment={onRequestEdit && !isFullscreen ? () => requestEdit("comment") : undefined}
-    onAnnotate={onRequestEdit && !isFullscreen ? () => requestEdit("annotate") : undefined}
-    onCopyVariation={() => editing.copyVariation(menu.path)}
-    onDelete={() => { editing.deleteAt(menu.path); setMenu(null); }}
-    onClose={() => setMenu(null)}
-  />
-)}
+{
+  menu && (
+    <MoveContextMenu
+      target={menu}
+      onPromoteOneStep={() => {
+        editing.promoteOneStepAt(menu.path);
+        setMenu(null);
+      }}
+      onPromoteToMainLine={() => {
+        editing.promoteToMainAt(menu.path);
+        setMenu(null);
+      }}
+      onComment={onRequestEdit && !isFullscreen ? () => requestEdit("comment") : undefined}
+      onAnnotate={onRequestEdit && !isFullscreen ? () => requestEdit("annotate") : undefined}
+      onCopyVariation={() => editing.copyVariation(menu.path)}
+      onDelete={() => {
+        editing.deleteAt(menu.path);
+        setMenu(null);
+      }}
+      onClose={() => setMenu(null)}
+    />
+  );
+}
 ```
 
 The viewer builds `menu` in `openMenu(path, event)`: `canPromote` is false when every path segment is `0`, `canPromoteOneStep` when the last segment is `0`.

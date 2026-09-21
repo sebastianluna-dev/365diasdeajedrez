@@ -25,14 +25,14 @@ export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   pgn: "Ese PGN no se puede leer. Revísalo antes de guardar.",
   pgnTooLong: "El PGN es demasiado grande.",
   roleTaken: "Este curso ya tiene ese capítulo. Sólo puede haber una introducción y un cierre.",
-  gameInUse:
-    "Esa partida la usan una o varias lecciones. Desvincúlala de ellas antes de quitarla de la colección.",
+  gameInUse: "Esa partida la usan una o varias lecciones. Desvincúlala de ellas antes de quitarla de la colección.",
   sans: "Alguna jugada de la secuencia no es legal en esta posición.",
   fen: "La posición FEN no es válida.",
   order: "No se pudo reordenar. Recarga la página y vuelve a intentarlo.",
   noMainline:
     "Para entrenarla de memoria, la lección necesita al menos una jugada en su línea principal. Añade el PGN antes de marcarla.",
-  illegalLine: "La línea principal del PGN tiene una jugada que no se puede jugar. Corrígela antes de marcarla como entrenable.",
+  illegalLine:
+    "La línea principal del PGN tiene una jugada que no se puede jugar. Corrígela antes de marcarla como entrenable.",
   colorHasNoMoves:
     "Con ese bando no queda ninguna jugada que entrenar: la línea principal sólo tiene la jugada del rival. Alarga la línea o cambia el bando.",
 };

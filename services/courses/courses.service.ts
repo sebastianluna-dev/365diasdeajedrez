@@ -73,7 +73,11 @@ const getUserProgressState = cache(async (): Promise<Map<string, UserCourseState
   const [lessonRows, courseRows, settingsRows] = await Promise.all([
     db.lessonProgress.findMany({
       where: { userId: user.id },
-      select: { lessonId: true, status: { select: { code: true } }, lesson: { select: { chapter: { select: { courseId: true } } } } },
+      select: {
+        lessonId: true,
+        status: { select: { code: true } },
+        lesson: { select: { chapter: { select: { courseId: true } } } },
+      },
     }),
     db.courseProgress.findMany({
       where: { userId: user.id },
@@ -139,16 +143,16 @@ export async function getContinueStudyingCourse(): Promise<(CourseSummary & { la
   });
   if (!row) return null;
 
-  const [course, progress] = await Promise.all([getPublishedCourse(row.courseId), getCourseProgressState(row.courseId)]);
+  const [course, progress] = await Promise.all([
+    getPublishedCourse(row.courseId),
+    getCourseProgressState(row.courseId),
+  ]);
   if (!course) return null;
   return { ...mapCourseSummary(course, progress), lastLessonName: row.lastLesson?.name };
 }
 
 export async function getCourseById(courseId: string): Promise<CourseDetail | null> {
-  const [course, progress] = await Promise.all([
-    getPublishedCourse(courseId),
-    getCourseProgressState(courseId),
-  ]);
+  const [course, progress] = await Promise.all([getPublishedCourse(courseId), getCourseProgressState(courseId)]);
   if (!course) return null;
   return mapCourseDetail(course, progress);
 }
@@ -214,10 +218,7 @@ export async function getLessonView(lessonId: string): Promise<LessonView | null
 
   const courseId = lesson.chapter.courseId;
   // The settings already come inside the state; before they were queried separately here.
-  const [course, progress] = await Promise.all([
-    getPublishedCourse(courseId),
-    getCourseProgressState(courseId),
-  ]);
+  const [course, progress] = await Promise.all([getPublishedCourse(courseId), getCourseProgressState(courseId)]);
   if (!course) return null;
 
   return mapLessonView(course, lesson, progress);

@@ -4,15 +4,15 @@ description: "Account creation with a temporary password, the one form (with the
 
 # `CreateAccountForm`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/students/create-account-form.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `create-account-form.comp.css` → block `.create-account` |
-| Used by | `/administracion/alumnos/nuevo` |
-| Composes | [`TempPasswordNotice`](/components/platform/sections/staff/students/temp-password-notice), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Writes | `createStudentAccount()` · `services/staff-students/staff-students.actions.ts` |
-| Uses | `ACCOUNT_INITIAL_STATE` from `services/staff-students/staff-students.types` |
+|            |                                                                                                                                                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/students/create-account-form.comp.tsx`                                                                                                                                        |
+| Kind       | Client Component                                                                                                                                                                                                  |
+| Stylesheet | `create-account-form.comp.css` → block `.create-account`                                                                                                                                                          |
+| Used by    | `/administracion/alumnos/nuevo`                                                                                                                                                                                   |
+| Composes   | [`TempPasswordNotice`](/components/platform/sections/staff/students/temp-password-notice), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes     | `createStudentAccount()` · `services/staff-students/staff-students.actions.ts`                                                                                                                                    |
+| Uses       | `ACCOUNT_INITIAL_STATE` from `services/staff-students/staff-students.types`                                                                                                                                       |
 
 ## Purpose
 
@@ -51,7 +51,7 @@ From `app/(platform)/administracion/alumnos/nuevo/page.tsx`:
 ```tsx
 import { CreateAccountForm } from "@/components/platform/sections/staff/students/create-account-form.comp";
 
-<CreateAccountForm />
+<CreateAccountForm />;
 ```
 
 ## Related

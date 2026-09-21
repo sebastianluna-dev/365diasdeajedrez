@@ -39,7 +39,7 @@ export const HomeProgram: GlobalConfig = {
       label: "Encabezado de temas",
       required: true,
       admin: {
-        description: "Título que aparece sobre la lista de temas de cada módulo (ej. \"En qué trabajamos\").",
+        description: 'Título que aparece sobre la lista de temas de cada módulo (ej. "En qué trabajamos").',
       },
     },
     {

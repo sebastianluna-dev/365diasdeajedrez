@@ -86,7 +86,11 @@ export function ChessBoard({
   const positions = useMemo(() => replayGame(pgn ?? ""), [pgn]);
   const total = positions.length - 1;
   const rows = useMemo(
-    () => buildNotationRows(positions.slice(1).map((position) => position.san), annotations),
+    () =>
+      buildNotationRows(
+        positions.slice(1).map((position) => position.san),
+        annotations,
+      ),
     [positions, annotations],
   );
 
@@ -353,7 +357,9 @@ export function ChessBoard({
                       </span>
                     )}
                     {row.white.glyph && (
-                      <span className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.white.glyph}`} />
+                      <span
+                        className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.white.glyph}`}
+                      />
                     )}
                     {row.white.label}
                   </button>
@@ -370,7 +376,9 @@ export function ChessBoard({
                         </span>
                       )}
                       {row.black.glyph && (
-                        <span className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.black.glyph}`} />
+                        <span
+                          className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.black.glyph}`}
+                        />
                       )}
                       {row.black.label}
                     </button>

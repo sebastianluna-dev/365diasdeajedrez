@@ -8,12 +8,12 @@ description: "One Next.js app, four route groups, four root layouts, and the req
 
 `app/` holds four route groups, each with its **own root layout** (`<html>` and `<body>`), its own fonts and its own stylesheet. They share nothing visual; they only share the codebase.
 
-| Group | Root layout | Styles | Purpose |
-| --- | --- | --- | --- |
-| `app/(frontend)` | `(frontend)/layout.tsx` — `metadataBase`, Open Graph defaults, Google Analytics, Meta Pixel, Vercel Analytics (only when `VERCEL=1`) | `globals.css` + a CSS file per page | Public site |
-| `app/(payload)` | Payload's `RootLayout` from `@payloadcms/next/layouts` | Payload's CSS + `custom.css` | `/admin` and `/api/*` |
-| `app/(auth)` | `(auth)/layout.tsx` — platform tokens, no shell | `globals.css` + `platform.css` | `/iniciar-sesion`, `/entrar` |
-| `app/(platform)` | `(platform)/layout.tsx` — `PlatformShell` (top bar, role menu, logout), `dynamic = "force-dynamic"` | `globals.css` + `platform.css` | Everything behind login |
+| Group            | Root layout                                                                                                                          | Styles                              | Purpose                      |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------- | ---------------------------- |
+| `app/(frontend)` | `(frontend)/layout.tsx` — `metadataBase`, Open Graph defaults, Google Analytics, Meta Pixel, Vercel Analytics (only when `VERCEL=1`) | `globals.css` + a CSS file per page | Public site                  |
+| `app/(payload)`  | Payload's `RootLayout` from `@payloadcms/next/layouts`                                                                               | Payload's CSS + `custom.css`        | `/admin` and `/api/*`        |
+| `app/(auth)`     | `(auth)/layout.tsx` — platform tokens, no shell                                                                                      | `globals.css` + `platform.css`      | `/iniciar-sesion`, `/entrar` |
+| `app/(platform)` | `(platform)/layout.tsx` — `PlatformShell` (top bar, role menu, logout), `dynamic = "force-dynamic"`                                  | `globals.css` + `platform.css`      | Everything behind login      |
 
 Because there are several root layouts, a URL that matches none of them cannot fall back to a group's `not-found.tsx`; `next.config.ts` enables `experimental.globalNotFound` and `app/global-not-found.tsx` renders the Spanish 404 with its own `<html>`. `app/global-error.tsx` does the same for errors thrown by a root layout.
 
@@ -31,7 +31,7 @@ flowchart LR
   M --> SEC["components/*/sections/** render props"]
 ```
 
-1. **`proxy.ts`** (Next 16's middleware) runs on a literal matcher. It only checks whether the session cookie *exists*: private prefixes without a cookie are redirected to `/iniciar-sesion?next=…`; a visit to `/` with a cookie is redirected to `/entrar`, which reads the real session and sends the user to the home of their highest role (or deletes a stale cookie and returns to `/`). The proxy never touches a database.
+1. **`proxy.ts`** (Next 16's middleware) runs on a literal matcher. It only checks whether the session cookie _exists_: private prefixes without a cookie are redirected to `/iniciar-sesion?next=…`; a visit to `/` with a cookie is redirected to `/entrar`, which reads the real session and sends the user to the home of their highest role (or deletes a stale cookie and returns to `/`). The proxy never touches a database.
 2. **Pages** are Server Components. They `await params`, call one service per section, and render.
 3. **Services** resolve identity through the DAL, query Prisma or Payload with the authorisation inside the `where`, and hand rows to the mapper.
 4. **Mappers** produce the view types: Spanish labels, formatted dates, computed percentages and ready-made hrefs from `lib/platform-routes.ts`.
@@ -87,7 +87,7 @@ prisma.config.ts      Prisma 7 CLI config (schema path, migrations path, seed co
 
 ## Boundaries worth knowing
 
-- **`server-only`** marks modules that must never reach a Client Component (DAL, Prisma singleton, rate limit, Cloudinary signing). Modules shared with the seed and the CLI scripts (password hashing, logger, position hash, catalog constants) deliberately do *not* import it, because those run under `tsx` outside Next. Vitest aliases `server-only` to `lib/testing/server-only.stub.ts`.
+- **`server-only`** marks modules that must never reach a Client Component (DAL, Prisma singleton, rate limit, Cloudinary signing). Modules shared with the seed and the CLI scripts (password hashing, logger, position hash, catalog constants) deliberately do _not_ import it, because those run under `tsx` outside Next. Vitest aliases `server-only` to `lib/testing/server-only.stub.ts`.
 - **Two Cloudinary entry points.** Payload uploads go through `lib/payload/cloudinary-adapter.ts`; platform uploads (course covers) go straight from the browser to Cloudinary with a signature minted by `lib/cloudinary.ts`. They configure the SDK independently because they are different entry points of the app.
 - **`siteConfig`** (`config/site.config.ts`) toggles home sections at build time (`teacher` and `mentors` share one slot).
 - **Fonts** are `next/font/local` subsets in `public/fonts/`: Gramatika and Suisse Intl for the public site (`app/(frontend)/fonts.ts`), SF Pro Display for the platform (`app/(platform)/fonts.ts`, `preload: false`), ChessGlyph for figurine notation (`preload: false`).

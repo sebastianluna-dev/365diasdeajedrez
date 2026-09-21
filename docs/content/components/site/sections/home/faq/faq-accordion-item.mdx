@@ -4,14 +4,14 @@ description: "One expandable question: a button with aria-expanded and a plus ic
 
 # `FaqAccordionItem`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/faq/faq-accordion-item.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `faq-accordion-item.comp.css` → block `.faq-item` |
-| Used by | [`FaqSection`](/components/site/sections/home/faq/faq-section) |
-| Composes | `PlusIcon` from `components/icons/` |
-| Uses | `FaqQuestionContent` from `services/home/home.types` |
+|            |                                                                 |
+| ---------- | --------------------------------------------------------------- |
+| File       | `components/site/sections/home/faq/faq-accordion-item.comp.tsx` |
+| Kind       | Client Component                                                |
+| Stylesheet | `faq-accordion-item.comp.css` → block `.faq-item`               |
+| Used by    | [`FaqSection`](/components/site/sections/home/faq/faq-section)  |
+| Composes   | `PlusIcon` from `components/icons/`                             |
+| Uses       | `FaqQuestionContent` from `services/home/home.types`            |
 
 ## Purpose
 
@@ -19,9 +19,9 @@ Each question toggles on its own; there is no "only one open" rule, so the state
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `faq` | `FaqQuestionContent` | yes | `question`, `answer`. |
+| Prop  | Type                 | Required | Meaning               |
+| ----- | -------------------- | -------- | --------------------- |
+| `faq` | `FaqQuestionContent` | yes      | `question`, `answer`. |
 
 ## Behaviour
 
@@ -47,9 +47,9 @@ From `components/site/sections/home/faq/faq.section.tsx`:
 ```tsx
 import { FaqAccordionItem } from "./faq-accordion-item.comp";
 
-{content.questions.map((faq) => (
-  <FaqAccordionItem key={faq.question} faq={faq} />
-))}
+{
+  content.questions.map((faq) => <FaqAccordionItem key={faq.question} faq={faq} />);
+}
 ```
 
 ## Related

@@ -6,13 +6,13 @@ description: "The live-analysis hook: a lazily created Stockfish worker, three l
 
 Also exports the `EngineState` type.
 
-| | |
-| --- | --- |
-| File | `components/chess/game-viewer/use-engine.hook.ts` |
-| Kind | Client hook |
-| Stylesheet | none |
-| Used by | [`GameViewer`](/components/chess/game-viewer/game-viewer); [`EnginePanel`](/components/chess/game-viewer/engine-panel) imports the `EngineState` type |
-| Uses | `mergeEngineLines`, `orderedEngineLines`, `parseEngineInfo`, `EngineInfo`, `EngineLines` from `lib/chess/engine-protocol`<br />`turnColor` from `lib/chess/replay`<br />the worker script `public/engine/stockfish.js` |
+|            |                                                                                                                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/use-engine.hook.ts`                                                                                                                                                                      |
+| Kind       | Client hook                                                                                                                                                                                                            |
+| Stylesheet | none                                                                                                                                                                                                                   |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer); [`EnginePanel`](/components/chess/game-viewer/engine-panel) imports the `EngineState` type                                                                  |
+| Uses       | `mergeEngineLines`, `orderedEngineLines`, `parseEngineInfo`, `EngineInfo`, `EngineLines` from `lib/chess/engine-protocol`<br />`turnColor` from `lib/chess/replay`<br />the worker script `public/engine/stockfish.js` |
 
 ## Purpose
 
@@ -25,22 +25,22 @@ The important part of this file is not the worker but the conversation with it. 
 ### `useEngine`
 
 ```ts
-export function useEngine(fen: string, enabled: boolean): EngineState
+export function useEngine(fen: string, enabled: boolean): EngineState;
 ```
 
-| Argument | Meaning |
-| --- | --- |
-| `fen` | The position that should be under analysis. Changing it does not restart the worker. |
+| Argument  | Meaning                                                                                                                                             |
+| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fen`     | The position that should be under analysis. Changing it does not restart the worker.                                                                |
 | `enabled` | Creates the worker when it turns true and **terminates** it when it turns false; switching off must not leave an engine thinking in the background. |
 
 ### `EngineState`
 
-| Field | Type | Meaning |
-| --- | --- | --- |
-| `lines` | `EngineInfo[]` | The continuations of the **current** position, best first. Empty until the first `info` line for this FEN arrives. |
-| `info` | `EngineInfo \| null` | The best of them; drives the evaluation bar. |
-| `loading` | `boolean` | Enabled, not failed, and no line yet. |
-| `failed` | `boolean` | The worker could not be created or crashed: say so rather than leaving a switch that does nothing. |
+| Field     | Type                 | Meaning                                                                                                            |
+| --------- | -------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `lines`   | `EngineInfo[]`       | The continuations of the **current** position, best first. Empty until the first `info` line for this FEN arrives. |
+| `info`    | `EngineInfo \| null` | The best of them; drives the evaluation bar.                                                                       |
+| `loading` | `boolean`            | Enabled, not failed, and no line yet.                                                                              |
+| `failed`  | `boolean`            | The worker could not be created or crashed: say so rather than leaving a switch that does nothing.                 |
 
 ## Behaviour
 

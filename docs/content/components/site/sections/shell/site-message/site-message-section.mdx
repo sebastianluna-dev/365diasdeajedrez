@@ -4,12 +4,12 @@ description: "The public site's notice screen (404, error): eyebrow, title, desc
 
 # `SiteMessage`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/shell/site-message/site-message.section.tsx` |
-| Kind | Server Component (no hooks; also renderable from a Client Component) |
-| Stylesheet | `site-message.section.css` → block `.site-message` |
-| Used by | `app/(frontend)/not-found.tsx`, `app/(frontend)/error.tsx`, `app/global-not-found.tsx` |
+|            |                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/shell/site-message/site-message.section.tsx`                 |
+| Kind       | Server Component (no hooks; also renderable from a Client Component)                   |
+| Stylesheet | `site-message.section.css` → block `.site-message`                                     |
+| Used by    | `app/(frontend)/not-found.tsx`, `app/(frontend)/error.tsx`, `app/global-not-found.tsx` |
 
 ## Purpose
 
@@ -17,12 +17,12 @@ One screen for "this page does not exist" and "something went wrong", with the s
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `eyebrow` | `string` | yes | Small label above the title: "Error 404", "Algo salió mal". |
-| `title` | `string` | yes | The `<h1>`. |
-| `description` | `string` | yes | One sentence under the title. |
-| `children` | `ReactNode` | no | Links or buttons; rendered inside `.site-message__actions` when present. |
+| Prop          | Type        | Required | Meaning                                                                  |
+| ------------- | ----------- | -------- | ------------------------------------------------------------------------ |
+| `eyebrow`     | `string`    | yes      | Small label above the title: "Error 404", "Algo salió mal".              |
+| `title`       | `string`    | yes      | The `<h1>`.                                                              |
+| `description` | `string`    | yes      | One sentence under the title.                                            |
+| `children`    | `ReactNode` | no       | Links or buttons; rendered inside `.site-message__actions` when present. |
 
 ## Behaviour
 
@@ -50,7 +50,11 @@ import { SiteMessage } from "@/components/site/sections/shell/site-message/site-
 <SiteMessage
   eyebrow="Algo salió mal"
   title="No pudimos cargar esta página"
-  description={error.digest ? `Inténtalo de nuevo en un momento. Código del error: ${error.digest}` : "Inténtalo de nuevo en un momento."}
+  description={
+    error.digest
+      ? `Inténtalo de nuevo en un momento. Código del error: ${error.digest}`
+      : "Inténtalo de nuevo en un momento."
+  }
 >
   <button type="button" onClick={retry} className="site-message__action">
     Reintentar
@@ -58,7 +62,7 @@ import { SiteMessage } from "@/components/site/sections/shell/site-message/site-
   <Link href="/" className="site-message__action site-message__action_variant_secondary">
     Volver a la portada
   </Link>
-</SiteMessage>
+</SiteMessage>;
 ```
 
 ## Related

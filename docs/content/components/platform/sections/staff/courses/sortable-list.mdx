@@ -6,12 +6,12 @@ description: "Drag-sortable rows shared by a course's chapters and a chapter's l
 
 Also exports the `SortableItem` type.
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/courses/sortable-list.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `sortable-list.comp.css` → block `.sortable-list` |
-| Used by | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) (chapters), [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section) (lessons) |
+|            |                                                                                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/sortable-list.comp.tsx`                                                                                                                                           |
+| Kind       | Client Component                                                                                                                                                                                              |
+| Stylesheet | `sortable-list.comp.css` → block `.sortable-list`                                                                                                                                                             |
+| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) (chapters), [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section) (lessons) |
 
 ## Purpose
 
@@ -21,14 +21,14 @@ The order is applied on the client on drop and saved in a transition without wai
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `items` | `SortableItem[]` | yes | `{ id, name, meta, href, badge?, roleLabel?, canDelete }[]`. `roleLabel` ("Introducción", "Cierre") marks a fixed row. |
-| `onReorder` | `(orderedIds: string[]) => Promise<void>` | yes | Server action already bound to its course or chapter; receives the ids of the **normal** rows only. |
-| `deleteAction` | `(formData: FormData) => Promise<void>` | no | Delete action; rendered per row when `canDelete`. |
-| `deleteFieldName` | `string` | no | The hidden field the delete action reads (`chapterId`, `lessonId`). |
-| `noun` | `string` | yes | What an item is called, for the handle's `aria-label`. |
-| `emptyLabel` | `string` | yes | Text when there are no rows. |
+| Prop              | Type                                      | Required | Meaning                                                                                                                |
+| ----------------- | ----------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `items`           | `SortableItem[]`                          | yes      | `{ id, name, meta, href, badge?, roleLabel?, canDelete }[]`. `roleLabel` ("Introducción", "Cierre") marks a fixed row. |
+| `onReorder`       | `(orderedIds: string[]) => Promise<void>` | yes      | Server action already bound to its course or chapter; receives the ids of the **normal** rows only.                    |
+| `deleteAction`    | `(formData: FormData) => Promise<void>`   | no       | Delete action; rendered per row when `canDelete`.                                                                      |
+| `deleteFieldName` | `string`                                  | no       | The hidden field the delete action reads (`chapterId`, `lessonId`).                                                    |
+| `noun`            | `string`                                  | yes      | What an item is called, for the handle's `aria-label`.                                                                 |
+| `emptyLabel`      | `string`                                  | yes      | Text when there are no rows.                                                                                           |
 
 ## Behaviour
 
@@ -74,7 +74,7 @@ import { SortableList } from "./sortable-list.comp";
   deleteFieldName="lessonId"
   noun="lección"
   emptyLabel="Este capítulo todavía no tiene lecciones."
-/>
+/>;
 ```
 
 ## Related

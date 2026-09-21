@@ -4,13 +4,13 @@ description: "The advantage chart of a reviewed game as an SVG: win probability 
 
 # `GameReviewChart`
 
-| | |
-| --- | --- |
-| File | `components/chess/game-viewer/game-review-chart.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `game-review-chart.comp.css` → block `.game-review-chart` |
-| Used by | [`GameReview`](/components/chess/game-viewer/game-review) |
-| Uses | `winPercent`, `GameReview` from `lib/chess/game-review`<br />`MoveEvaluation` from `lib/chess/pgn-tree` |
+|            |                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/game-review-chart.comp.tsx`                                               |
+| Kind       | Client Component                                                                                        |
+| Stylesheet | `game-review-chart.comp.css` → block `.game-review-chart`                                               |
+| Used by    | [`GameReview`](/components/chess/game-viewer/game-review)                                               |
+| Uses       | `winPercent`, `GameReview` from `lib/chess/game-review`<br />`MoveEvaluation` from `lib/chess/pgn-tree` |
 
 ## Purpose
 
@@ -20,12 +20,12 @@ Pointing at the chart moves the board. That is what anyone tries the moment they
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `evaluations` | `MoveEvaluation[]` | yes | One per main-line position; the first is the starting position. |
-| `review` | `GameReview` | yes | The computed review; only `phases.middlegame` and `phases.endgame` (ply indexes) are read, for the labels. |
-| `currentPly` | `number` | yes | The ply the board is at, for the cursor. 0 is the initial position. |
-| `onSelectPly` | `(ply: number) => void` | yes | Takes the board to the ply pointed at on the chart. |
+| Prop          | Type                    | Required | Meaning                                                                                                    |
+| ------------- | ----------------------- | -------- | ---------------------------------------------------------------------------------------------------------- |
+| `evaluations` | `MoveEvaluation[]`      | yes      | One per main-line position; the first is the starting position.                                            |
+| `review`      | `GameReview`            | yes      | The computed review; only `phases.middlegame` and `phases.endgame` (ply indexes) are read, for the labels. |
+| `currentPly`  | `number`                | yes      | The ply the board is at, for the cursor. 0 is the initial position.                                        |
+| `onSelectPly` | `(ply: number) => void` | yes      | Takes the board to the ply pointed at on the chart.                                                        |
 
 ## Behaviour
 
@@ -59,7 +59,7 @@ import { GameReviewChart } from "./game-review-chart.comp";
   review={review}
   currentPly={currentPly}
   onSelectPly={(ply) => onSelectPath(paths[ply] ?? "")}
-/>
+/>;
 ```
 
 ## Related

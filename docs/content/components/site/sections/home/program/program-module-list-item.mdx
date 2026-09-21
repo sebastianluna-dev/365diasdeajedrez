@@ -4,13 +4,13 @@ description: "One module button in the programme list, numbered with two digits 
 
 # `ProgramModuleListItem`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/program/program-module-list-item.comp.tsx` |
-| Kind | Server Component (receives a callback; rendered inside a client tree) |
+|            |                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/program/program-module-list-item.comp.tsx`              |
+| Kind       | Server Component (receives a callback; rendered inside a client tree)                  |
 | Stylesheet | `program-module-list-item.comp.css` → element `.program-list__item` of `.program-list` |
-| Used by | [`ProgramInteractive`](/components/site/sections/home/program/program-interactive) |
-| Uses | `formatTwoDigitNumber` from `lib/format-two-digit-number` |
+| Used by    | [`ProgramInteractive`](/components/site/sections/home/program/program-interactive)     |
+| Uses       | `formatTwoDigitNumber` from `lib/format-two-digit-number`                              |
 
 ## Purpose
 
@@ -18,12 +18,12 @@ A row of the module list: the number, the title and the duration. Under 1024 px 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `module` | `{ title: string; durationLabel: string }` | yes | What is printed. |
-| `moduleNumber` | `number` | yes | 1-based; formatted with two digits. |
-| `isActive` | `boolean` | yes | Adds the `_active` modifiers and `aria-pressed`. |
-| `onSelect` | `() => void` | yes | Click handler, bound by the parent. |
+| Prop           | Type                                       | Required | Meaning                                          |
+| -------------- | ------------------------------------------ | -------- | ------------------------------------------------ |
+| `module`       | `{ title: string; durationLabel: string }` | yes      | What is printed.                                 |
+| `moduleNumber` | `number`                                   | yes      | 1-based; formatted with two digits.              |
+| `isActive`     | `boolean`                                  | yes      | Adds the `_active` modifiers and `aria-pressed`. |
+| `onSelect`     | `() => void`                               | yes      | Click handler, bound by the parent.              |
 
 ## Behaviour
 
@@ -52,7 +52,7 @@ import { ProgramModuleListItem } from "./program-module-list-item.comp";
   moduleNumber={index + 1}
   isActive={index === activeIndex}
   onSelect={() => setActiveIndex(index)}
-/>
+/>;
 ```
 
 ## Related

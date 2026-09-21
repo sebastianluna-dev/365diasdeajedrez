@@ -18,7 +18,10 @@ export async function NextClassSection() {
           <p className="next-class__name">{nextClass.title}</p>
           <p className="next-class__teacher">{nextClass.teacherName}</p>
           <p className="next-class__schedule">
-            <LocalDateTime iso={nextClass.scheduledAtIso} fallback={`${nextClass.dateLabel} · ${nextClass.timeLabel}`} />{" "}
+            <LocalDateTime
+              iso={nextClass.scheduledAtIso}
+              fallback={`${nextClass.dateLabel} · ${nextClass.timeLabel}`}
+            />{" "}
             · {nextClass.durationMin} min
           </p>
           <span className="platform-tag platform-tag_variant_accent next-class__status">{nextClass.statusLabel}</span>

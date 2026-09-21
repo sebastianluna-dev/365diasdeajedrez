@@ -40,14 +40,7 @@ interface Preview {
  * evaluation is also used by the bar next to the board. Two consumers of the
  * same data called for keeping it in the place that contains them both.
  */
-export function EnginePanel({
-  fen,
-  enabled,
-  onToggle,
-  state,
-  flipBoard = false,
-  onExpandedChange,
-}: EnginePanelProps) {
+export function EnginePanel({ fen, enabled, onToggle, state, flipBoard = false, onExpandedChange }: EnginePanelProps) {
   const { lines, info, loading, failed } = state;
   // At most one expanded: collapsed they fit on one row and the three are
   // compared at a glance, which is what they are for. Opening one closes the
@@ -149,7 +142,6 @@ export function EnginePanel({
           ) : (
             <p className="engine-panel__message">{loading ? "Cargando el módulo…" : "Pensando…"}</p>
           )}
-
         </div>
       )}
 

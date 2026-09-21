@@ -13,8 +13,7 @@ interface ClassDetailSectionProps {
 }
 
 export function ClassDetailSection({ classDetail }: ClassDetailSectionProps) {
-  const isUpcoming =
-    classDetail.statusCode === CLASS_STATUS.SCHEDULED || classDetail.statusCode === CLASS_STATUS.LIVE;
+  const isUpcoming = classDetail.statusCode === CLASS_STATUS.SCHEDULED || classDetail.statusCode === CLASS_STATUS.LIVE;
 
   return (
     <section className="class-detail">

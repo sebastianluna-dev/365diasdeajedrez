@@ -4,12 +4,12 @@ description: "One pagination dot of the carousel: a 24 px button (the touch mini
 
 # `ReviewSlideDot`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/reviews/review-slide-dot.comp.tsx` |
-| Kind | Server Component (receives a callback; rendered inside the client carousel) |
-| Stylesheet | `review-slide-dot.comp.css` → element `.reviews__dot` of `.reviews` |
-| Used by | [`ReviewsInteractive`](/components/site/sections/home/reviews/reviews-interactive) |
+|            |                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/reviews/review-slide-dot.comp.tsx`                  |
+| Kind       | Server Component (receives a callback; rendered inside the client carousel)        |
+| Stylesheet | `review-slide-dot.comp.css` → element `.reviews__dot` of `.reviews`                |
+| Used by    | [`ReviewsInteractive`](/components/site/sections/home/reviews/reviews-interactive) |
 
 ## Purpose
 
@@ -17,11 +17,11 @@ A dot small enough to look like one and big enough to tap. The `<button>` is the
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `label` | `string` | yes | The button's `aria-label` ("Ver testimonio de …"). |
-| `active` | `boolean` | yes | Adds `.reviews__dot_active`. |
-| `onClick` | `() => void` | yes | Selects the review. |
+| Prop      | Type         | Required | Meaning                                            |
+| --------- | ------------ | -------- | -------------------------------------------------- |
+| `label`   | `string`     | yes      | The button's `aria-label` ("Ver testimonio de …"). |
+| `active`  | `boolean`    | yes      | Adds `.reviews__dot_active`.                       |
+| `onClick` | `() => void` | yes      | Selects the review.                                |
 
 ## Behaviour
 
@@ -45,7 +45,7 @@ import { ReviewSlideDot } from "./review-slide-dot.comp";
   label={`Ver testimonio de ${item.name}`}
   active={index === activeIndex}
   onClick={() => setActiveIndex(index)}
-/>
+/>;
 ```
 
 ## Related

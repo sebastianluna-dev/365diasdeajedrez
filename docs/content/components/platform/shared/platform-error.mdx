@@ -4,12 +4,12 @@ description: "The platform's error boundary view: a message, a retry button and 
 
 # `PlatformError`
 
-| | |
-| --- | --- |
-| File | `components/platform/shared/platform-error.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `platform-error.comp.css` → block `.platform-error` |
-| Used by | `app/(platform)/error.tsx` |
+|            |                                                      |
+| ---------- | ---------------------------------------------------- |
+| File       | `components/platform/shared/platform-error.comp.tsx` |
+| Kind       | Client Component                                     |
+| Stylesheet | `platform-error.comp.css` → block `.platform-error`  |
+| Used by    | `app/(platform)/error.tsx`                           |
 
 ## Purpose
 
@@ -17,11 +17,11 @@ What `app/(platform)/error.tsx` renders when a Server Component under it throws.
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `retry` | `() => void` | yes | Next 16's error boundary `retry`: re-fetches the data and re-renders the segment. |
-| `message` | `string` | no · default `"Algo salió mal al cargar esta página."` | The visible text. Never the error's own message, which may leak internals. |
-| `digest` | `string` | no | The identifier from `error.digest`. Omitted when absent (client-side errors have none). |
+| Prop      | Type         | Required                                               | Meaning                                                                                 |
+| --------- | ------------ | ------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| `retry`   | `() => void` | yes                                                    | Next 16's error boundary `retry`: re-fetches the data and re-renders the segment.       |
+| `message` | `string`     | no · default `"Algo salió mal al cargar esta página."` | The visible text. Never the error's own message, which may leak internals.              |
+| `digest`  | `string`     | no                                                     | The identifier from `error.digest`. Omitted when absent (client-side errors have none). |
 
 ## Behaviour
 

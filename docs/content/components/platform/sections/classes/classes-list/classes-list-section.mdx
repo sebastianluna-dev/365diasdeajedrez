@@ -4,14 +4,14 @@ description: "The /clases page body: upcoming and past classes as cards, each gr
 
 # `ClassesListSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/classes/classes-list/classes-list.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `classes-list.section.css` → block `.classes-list` |
-| Used by | `/clases` |
-| Composes | [`ClassCard`](/components/platform/sections/classes/classes-list/class-card), [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads | `getUserClasses()` · `services/classes/classes.service.ts` |
+|            |                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/classes/classes-list/classes-list.section.tsx`                                                          |
+| Kind       | Server Component (async)                                                                                                              |
+| Stylesheet | `classes-list.section.css` → block `.classes-list`                                                                                    |
+| Used by    | `/clases`                                                                                                                             |
+| Composes   | [`ClassCard`](/components/platform/sections/classes/classes-list/class-card), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads      | `getUserClasses()` · `services/classes/classes.service.ts`                                                                            |
 
 ## Purpose
 
@@ -42,7 +42,7 @@ From `app/(platform)/clases/page.tsx`:
 ```tsx
 import { ClassesListSection } from "@/components/platform/sections/classes/classes-list/classes-list.section";
 
-<ClassesListSection />
+<ClassesListSection />;
 ```
 
 ## Related

@@ -9,12 +9,15 @@ Both panels are ordinary platform pages with a stricter border: `requireTeacher(
 ## Teacher panel — `/profesor`
 
 ### Dashboard
+
 `services/teacher/teacher.service.ts` → `getTeacherDashboard()`: today's classes, the next 7 days, classes that still need attendance marked, and the number of actively assigned students. `getTeacherProfile()` and `updateTeacherProfile` (`teacher.actions.ts`) manage display name, title, bio (≤ 1000 chars), photo and IANA timezone (`constants/platform/timezones.const.ts`).
 
 ### Students — `/profesor/alumnos`
+
 `services/teacher-students/`: only students with an **active** `TeacherStudent` row, and that condition is always inside the `where`. `getAssignedStudents(query?)`, `getAssignedStudentDetail(studentId)` (course progress, recent activity, shared classes), `getStudentStudy` and `getStudentGame` for the **read-only** view of a student's studies. Opening the study of an unassigned student by URL returns nothing, so the page 404s without revealing a name.
 
 ### Classes — `/profesor/clases`
+
 `services/teacher-classes/`:
 
 - `createClass`, `updateClassMeta` (title, description, `scheduledAt` typed in the teacher's zone and stored in UTC through `lib/timezone.ts`, duration 15–480 min, meeting provider and URL, visibility instant, recording URL, summary).
@@ -27,15 +30,19 @@ Both panels are ordinary platform pages with a stricter border: `requireTeacher(
 ## Staff panel — `/administracion`
 
 ### Dashboard
+
 `services/staff/staff.service.ts` → counts of students (accounts that are neither teacher nor staff), active/inactive teachers, courses by status, classes in the next 7 days, and the actionable list of **students without a teacher**.
 
 ### Students (accounts) — `/administracion/alumnos`
+
 `services/staff-students/`: staff sees every account but never its private content (no studies, no games). `createStudentAccount` (email + display name → account and default study in one transaction, with a password typed by staff or a generated temporary one, shown once), `resetStudentPassword` (new temporary password, all sessions destroyed), `updateStudent`. The detail shows the assignment history.
 
 ### Teachers and assignments — `/administracion/profesores`
+
 `services/staff-teachers/`: `createTeacher` links an existing account (`listLinkableUsers`), `updateTeacher`, `setTeacherActive` (never delete), `assignStudent` and `endAssignment`. `assignment-rules.ts` plans a reassignment (close active rows, create a new one, or no-op if already assigned to that teacher); the partial unique index `teacher_student_one_active` is the final arbiter and its P2002 is caught by name.
 
 ### Courses — `/administracion/cursos`
+
 `services/staff-courses/` is the content editor:
 
 - Course: `createCourse`, `updateCourse` (name, slug, description, type, levels, cover uploaded from the browser with `ImageUpload` and a signed Cloudinary request; `withCoverCrop` rewrites the URL to `c_fill,ar_21:9,g_auto`), `publishCourse` (requires at least one chapter with a lesson that has PGN), `archiveCourse`, delete only while draft and without progress.
@@ -47,6 +54,7 @@ Both panels are ordinary platform pages with a stricter border: `requireTeacher(
 - Catalog readers for forms: `listCourseTypes`, `listLevels`, `listTopics`, `listExerciseModes`, `listAuthorRoles`.
 
 ### Classes (support) — `/administracion/clases`
+
 `services/staff-classes/`: global read view with filters (teacher, status, date range, text), payment data included, but exactly **two** actions: `setRecordingUrl` and `cancelClassAsStaff`. Blocks, attendance, participants and metadata belong to the teacher so that no two roles edit the same thing.
 
 ## Forms

@@ -13,11 +13,7 @@ interface EloItemProps {
 }
 
 export function EloTable({ children, columns = 3, className = "" }: EloTableProps) {
-  return (
-    <div className={`elo-table elo-table_columns_${columns} ${className}`.trim()}>
-      {children}
-    </div>
-  );
+  return <div className={`elo-table elo-table_columns_${columns} ${className}`.trim()}>{children}</div>;
 }
 
 function EloItem({ label, value }: EloItemProps) {

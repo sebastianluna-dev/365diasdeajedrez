@@ -181,7 +181,12 @@ export function GameTools({
   };
 
   const tabs: { key: GameToolsTab; label: string }[] = [
-    ...(canEdit ? ([{ key: "comment", label: "Comentario" }, { key: "quality", label: "Calidad" }] as const) : []),
+    ...(canEdit
+      ? ([
+          { key: "comment", label: "Comentario" },
+          { key: "quality", label: "Calidad" },
+        ] as const)
+      : []),
     { key: "review", label: "Evaluación" },
     { key: "share", label: "Compartir" },
   ];
@@ -205,9 +210,7 @@ export function GameTools({
             {option.key === "comment" && comment.length > 0 && (
               <span className="game-tools__tab-dot" aria-hidden="true" />
             )}
-            {option.key === "quality" && glyphs.length > 0 && (
-              <span className="game-tools__tab-badge">{glyphs}</span>
-            )}
+            {option.key === "quality" && glyphs.length > 0 && <span className="game-tools__tab-badge">{glyphs}</span>}
           </button>
         ))}
 
@@ -257,9 +260,7 @@ export function GameTools({
                           disabled={!node}
                           title={option.label}
                           aria-pressed={active}
-                          onClick={() =>
-                            apply((game) => setNags(game, currentPath, nextNags(group.options, option)))
-                          }
+                          onClick={() => apply((game) => setNags(game, currentPath, nextNags(group.options, option)))}
                           className={`game-tools__nag${active ? " game-tools__nag_state_active" : ""}`}
                         >
                           <span className="game-tools__nag-glyph">{option.glyph}</span>

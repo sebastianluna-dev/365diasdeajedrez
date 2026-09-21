@@ -4,13 +4,13 @@ description: "Lichess-style tabular notation: the main line as number · white �
 
 # `MoveTable`
 
-| | |
-| --- | --- |
-| File | `components/chess/game-viewer/move-table.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `move-table.comp.css` → block `.move-table` |
-| Used by | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="table"`, the default) |
-| Uses | `buildNotationBlocks` from `lib/chess/notation-blocks`<br />`formatEvaluation` from `lib/chess/engine-protocol`<br />`sanToSpanish` from `lib/chess/notation`<br />`nagGlyph`, `PgnTree`, `PgnTreeNode` from `lib/chess/pgn-tree` |
+|            |                                                                                                                                                                                                                                   |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/move-table.comp.tsx`                                                                                                                                                                                |
+| Kind       | Client Component                                                                                                                                                                                                                  |
+| Stylesheet | `move-table.comp.css` → block `.move-table`                                                                                                                                                                                       |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="table"`, the default)                                                                                                                                       |
+| Uses       | `buildNotationBlocks` from `lib/chess/notation-blocks`<br />`formatEvaluation` from `lib/chess/engine-protocol`<br />`sanToSpanish` from `lib/chess/notation`<br />`nagGlyph`, `PgnTree`, `PgnTreeNode` from `lib/chess/pgn-tree` |
 
 ## Purpose
 
@@ -20,12 +20,12 @@ The hard part, deciding the order of rows and blocks and when Black's move has t
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `tree` | `PgnTree` | yes | The parsed game. |
-| `currentPath` | `string` | yes | Dotted path of the active node; `""` is the initial position. |
-| `onSelect` | `(path: string) => void` | yes | Click on a move. |
-| `onContextMenu` | `(path: string, event: MouseEvent) => void` | no | Right click on a move: opens its menu where it can be edited. Absent in read-only viewers. |
+| Prop            | Type                                        | Required | Meaning                                                                                    |
+| --------------- | ------------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `tree`          | `PgnTree`                                   | yes      | The parsed game.                                                                           |
+| `currentPath`   | `string`                                    | yes      | Dotted path of the active node; `""` is the initial position.                              |
+| `onSelect`      | `(path: string) => void`                    | yes      | Click on a move.                                                                           |
+| `onContextMenu` | `(path: string, event: MouseEvent) => void` | no       | Right click on a move: opens its menu where it can be edited. Absent in read-only viewers. |
 
 ## Behaviour
 
@@ -58,7 +58,7 @@ import { MoveTable } from "./move-table.comp";
   currentPath={currentPath}
   onSelect={setCurrentPath}
   onContextMenu={isEditing ? openMenu : undefined}
-/>
+/>;
 ```
 
 ## Related

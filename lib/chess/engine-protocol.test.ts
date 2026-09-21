@@ -133,7 +133,11 @@ describe("acumular las tres líneas", () => {
   const FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
   const OTHER = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1";
   const info = (multipv: number, depth: number, score: number) => ({
-    multipv, depth, score, mateIn: null, pv: ["e2e4"],
+    multipv,
+    depth,
+    score,
+    mateIn: null,
+    pv: ["e2e4"],
   });
 
   /** As they really arrive: one line per message, in order, for each depth. */

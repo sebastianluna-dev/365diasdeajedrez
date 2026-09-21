@@ -16,19 +16,19 @@ description: "Requirements, environment variables, databases, seed data and the 
 
 Copy `.env.example` to `.env.local` and fill it in. Both Payload and the Prisma CLI read `.env.local` (the CLI through `prisma.config.ts`, which loads `.env.local` and then `.env`).
 
-| Variable | Used by | Notes |
-| --- | --- | --- |
-| `NEXT_PUBLIC_APP_ENV` | Public site | Only the value `production` turns on Google Analytics and the Meta Pixel. |
-| `NEXT_PUBLIC_SITE_URL` | Sitemap, robots, canonicals, Open Graph | Absolute URL without trailing slash. Defaults to `https://365diasdeajedrez.com` (`lib/site-url.ts`). |
-| `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_META_PIXEL_ID` | Public site | Public ids; optional. |
-| `PAYLOAD_SECRET` | Payload | Any long random string. |
-| `DATABASE_URI` | Payload | Postgres connection string for the CMS. |
-| `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Payload adapter and platform upload signatures | The secret never reaches the browser. |
-| `PLATFORM_DATABASE_URL` | Prisma (runtime and CLI) | Use `sslmode=verify-full`; with `sslmode=require` the `pg` driver warns about the semantics change planned for pg v9. |
-| `PLATFORM_DEMO_PASSWORD` | Seed | Password for the three demo accounts. Default `ajedrez365`. |
-| `ALLOW_DEMO_SEED` | Seed | Set to `1` to seed a *remote* database with the default password (test databases only). |
-| `SEED_NOW` | Seed | ISO instant used as "now" so a seed can be reproduced byte for byte. |
-| `PLATFORM_USER_PASSWORD` | `user:create` / `user:password` scripts | Lets scripts and CI pass a password without a TTY. |
+| Variable                                                               | Used by                                        | Notes                                                                                                                 |
+| ---------------------------------------------------------------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_APP_ENV`                                                  | Public site                                    | Only the value `production` turns on Google Analytics and the Meta Pixel.                                             |
+| `NEXT_PUBLIC_SITE_URL`                                                 | Sitemap, robots, canonicals, Open Graph        | Absolute URL without trailing slash. Defaults to `https://365diasdeajedrez.com` (`lib/site-url.ts`).                  |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_META_PIXEL_ID`           | Public site                                    | Public ids; optional.                                                                                                 |
+| `PAYLOAD_SECRET`                                                       | Payload                                        | Any long random string.                                                                                               |
+| `DATABASE_URI`                                                         | Payload                                        | Postgres connection string for the CMS.                                                                               |
+| `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` | Payload adapter and platform upload signatures | The secret never reaches the browser.                                                                                 |
+| `PLATFORM_DATABASE_URL`                                                | Prisma (runtime and CLI)                       | Use `sslmode=verify-full`; with `sslmode=require` the `pg` driver warns about the semantics change planned for pg v9. |
+| `PLATFORM_DEMO_PASSWORD`                                               | Seed                                           | Password for the three demo accounts. Default `ajedrez365`.                                                           |
+| `ALLOW_DEMO_SEED`                                                      | Seed                                           | Set to `1` to seed a _remote_ database with the default password (test databases only).                               |
+| `SEED_NOW`                                                             | Seed                                           | ISO instant used as "now" so a seed can be reproduced byte for byte.                                                  |
+| `PLATFORM_USER_PASSWORD`                                               | `user:create` / `user:password` scripts        | Lets scripts and CI pass a password without a TTY.                                                                    |
 
 ## First run
 
@@ -47,11 +47,11 @@ Payload creates and updates its own tables with Drizzle push while `next dev` ru
 
 The seed creates three accounts. The password is `ajedrez365` unless `PLATFORM_DEMO_PASSWORD` says otherwise, and it is only set on accounts that do not have one yet, so re-seeding never reverts a password you changed by hand.
 
-| Account | Role | Sees |
-| --- | --- | --- |
-| `alumno.demo@365diasdeajedrez.com` | Student | `/inicio`, courses, studies, classes, trainer, explorer |
-| `profesor.demo@365diasdeajedrez.com` | Teacher (active `Teacher` row) | everything a student sees plus `/profesor/*` |
-| `staff.demo@365diasdeajedrez.com` | Staff (`Staff` row) | everything a student sees plus `/administracion/*` |
+| Account                              | Role                           | Sees                                                    |
+| ------------------------------------ | ------------------------------ | ------------------------------------------------------- |
+| `alumno.demo@365diasdeajedrez.com`   | Student                        | `/inicio`, courses, studies, classes, trainer, explorer |
+| `profesor.demo@365diasdeajedrez.com` | Teacher (active `Teacher` row) | everything a student sees plus `/profesor/*`            |
+| `staff.demo@365diasdeajedrez.com`    | Staff (`Staff` row)            | everything a student sees plus `/administracion/*`      |
 
 > **Safety guard.** Because those accounts include an administrator with a password that is written in the repository, `prisma/seed.ts` refuses to run against a database that is not local (or when `NODE_ENV=production`) unless you set your own `PLATFORM_DEMO_PASSWORD` or explicitly pass `ALLOW_DEMO_SEED=1`.
 
@@ -59,26 +59,26 @@ There is **no public sign-up**: students exist because staff creates them (`/adm
 
 ## Everyday commands
 
-| Command | What it does |
-| --- | --- |
-| `npm run dev` | Development server. Uses **webpack** on purpose (`next dev --webpack`); production builds use Turbopack. |
-| `npm run build` / `npm run start` | Production build and server. `build` runs `prisma generate` first, because the client is git-ignored and Vercel only runs this script. Measure performance only against these, never against `next dev`. |
-| `npm run typecheck` | `tsc --noEmit` (same as CI). |
-| `npm run lint` | ESLint 9 with `eslint-config-next`. |
-| `npm test` / `npm run test:watch` | Vitest, single run or watch mode. |
-| `npm run test:coverage` | Vitest with v8 coverage over `lib`, `services`, `constants` and `hooks`. |
-| `npm run format` / `npm run format:check` | Prettier (`printWidth: 120`). The repository has not been formatted yet, so `format:check` currently fails; see the backlog. |
-| `npm run db:generate` | `prisma generate`. Run after every schema change. |
-| `npm run db:migrate` | `prisma migrate dev` (development). |
-| `npm run db:deploy` | `prisma migrate deploy` (production, after a backup). |
-| `npm run db:seed` | `prisma db seed` → `tsx prisma/seed.ts`. |
-| `npm run db:studio` | Prisma Studio. |
-| `npm run user:create -- <email> "<Name>"` | Creates a student account; asks for the password without echo. |
-| `npm run user:password -- <email>` | Changes a password and closes all sessions of that account. |
-| `npm run user:list` | Lists accounts, whether they have a password and their open sessions. |
-| `npm run positions:index` | Fills the position index for games that predate it (`-- --all` reindexes everything). |
-| `npm run collections:by-chapter` | One-off data migration: course collections → chapter collections. |
-| `npm run pieces:sync` | Regenerates `public/pieces/*.svg` from chessground; run after upgrading chessground. |
+| Command                                   | What it does                                                                                                                                                                                             |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`                             | Development server. Uses **webpack** on purpose (`next dev --webpack`); production builds use Turbopack.                                                                                                 |
+| `npm run build` / `npm run start`         | Production build and server. `build` runs `prisma generate` first, because the client is git-ignored and Vercel only runs this script. Measure performance only against these, never against `next dev`. |
+| `npm run typecheck`                       | `tsc --noEmit` (same as CI).                                                                                                                                                                             |
+| `npm run lint`                            | ESLint 9 with `eslint-config-next`.                                                                                                                                                                      |
+| `npm test` / `npm run test:watch`         | Vitest, single run or watch mode.                                                                                                                                                                        |
+| `npm run test:coverage`                   | Vitest with v8 coverage over `lib`, `services`, `constants` and `hooks`.                                                                                                                                 |
+| `npm run format` / `npm run format:check` | Prettier (`printWidth: 120`). The repository has not been formatted yet, so `format:check` currently fails; see the backlog.                                                                             |
+| `npm run db:generate`                     | `prisma generate`. Run after every schema change.                                                                                                                                                        |
+| `npm run db:migrate`                      | `prisma migrate dev` (development).                                                                                                                                                                      |
+| `npm run db:deploy`                       | `prisma migrate deploy` (production, after a backup).                                                                                                                                                    |
+| `npm run db:seed`                         | `prisma db seed` → `tsx prisma/seed.ts`.                                                                                                                                                                 |
+| `npm run db:studio`                       | Prisma Studio.                                                                                                                                                                                           |
+| `npm run user:create -- <email> "<Name>"` | Creates a student account; asks for the password without echo.                                                                                                                                           |
+| `npm run user:password -- <email>`        | Changes a password and closes all sessions of that account.                                                                                                                                              |
+| `npm run user:list`                       | Lists accounts, whether they have a password and their open sessions.                                                                                                                                    |
+| `npm run positions:index`                 | Fills the position index for games that predate it (`-- --all` reindexes everything).                                                                                                                    |
+| `npm run collections:by-chapter`          | One-off data migration: course collections → chapter collections.                                                                                                                                        |
+| `npm run pieces:sync`                     | Regenerates `public/pieces/*.svg` from chessground; run after upgrading chessground.                                                                                                                     |
 
 ## Before you call something done
 

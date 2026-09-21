@@ -4,13 +4,13 @@ description: "The confirmation dialog for deleteStudy: a cross on the card or a 
 
 # `DeleteStudy`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/studies-list/delete-study.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `delete-study.comp.css` → block `.delete-study` |
-| Used by | [`StudyCard`](/components/platform/sections/studies/studies-list/study-card) (icon trigger), [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (button trigger) |
-| Writes | `deleteStudy()` · `services/studies/studies.actions.ts` |
+|            |                                                                                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/delete-study.comp.tsx`                                                                                                                                     |
+| Kind       | Client Component                                                                                                                                                                                              |
+| Stylesheet | `delete-study.comp.css` → block `.delete-study`                                                                                                                                                               |
+| Used by    | [`StudyCard`](/components/platform/sections/studies/studies-list/study-card) (icon trigger), [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (button trigger) |
+| Writes     | `deleteStudy()` · `services/studies/studies.actions.ts`                                                                                                                                                       |
 
 ## Purpose
 
@@ -18,13 +18,13 @@ Deleting a study deletes its games, and with them variations, comments and arrow
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `id` | `string` | yes | Study to delete; bound into the action. |
-| `name` | `string` | yes | For the title ("¿Borrar «…»?") and the trigger's tooltip. |
-| `gameCount` | `number` | yes | Drives the description. |
-| `citedGameCount` | `number` | yes | Games cited in class blocks; drives the warning text. |
-| `trigger` | `"icon" \| "button"` | no · default `"icon"` | `icon` is the card's cross; `button` the text button of the study page. The trigger changes, not the dialog. |
+| Prop             | Type                 | Required              | Meaning                                                                                                      |
+| ---------------- | -------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `id`             | `string`             | yes                   | Study to delete; bound into the action.                                                                      |
+| `name`           | `string`             | yes                   | For the title ("¿Borrar «…»?") and the trigger's tooltip.                                                    |
+| `gameCount`      | `number`             | yes                   | Drives the description.                                                                                      |
+| `citedGameCount` | `number`             | yes                   | Games cited in class blocks; drives the warning text.                                                        |
+| `trigger`        | `"icon" \| "button"` | no · default `"icon"` | `icon` is the card's cross; `button` the text button of the study page. The trigger changes, not the dialog. |
 
 ## Behaviour
 
@@ -58,7 +58,7 @@ import { DeleteStudy } from "@/components/platform/sections/studies/studies-list
   gameCount={study.games.length}
   citedGameCount={study.citedGameCount}
   trigger="button"
-/>
+/>;
 ```
 
 ## Related

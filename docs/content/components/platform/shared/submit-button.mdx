@@ -4,13 +4,13 @@ description: "The submit button of every write form of the platform: disabled an
 
 # `SubmitButton`
 
-| | |
-| --- | --- |
-| File | `components/platform/shared/submit-button.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | none (`.platform-button` from `app/(platform)/platform.css` by default, or the class the caller passes) |
-| Used by | Every write form of `components/platform/sections/**` (studies, courses, trainer, the shell's sign-out, the teacher and staff panels) |
-| Uses | `useFormStatus` from `react-dom` |
+|            |                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/submit-button.comp.tsx`                                                                                   |
+| Kind       | Client Component                                                                                                                      |
+| Stylesheet | none (`.platform-button` from `app/(platform)/platform.css` by default, or the class the caller passes)                               |
+| Used by    | Every write form of `components/platform/sections/**` (studies, courses, trainer, the shell's sign-out, the teacher and staff panels) |
+| Uses       | `useFormStatus` from `react-dom`                                                                                                      |
 
 ## Purpose
 
@@ -20,12 +20,12 @@ A submit button that knows whether its form is on its way. The sections that ren
 
 Everything a `<button>` takes except `type`, plus:
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | yes | The label at rest. |
-| `pendingLabel` | `ReactNode` | no · default `"Guardando…"` | The label while the form is pending. Pass the verb of the action ("Creando…", "Borrando…", "Publicando…"); a form with several submit buttons that share one label passes the resting label so only the disabled state changes. |
-| `className` | `string` | no · default `"platform-button"` | Passed through; secondary and danger buttons pass the full class list. |
-| `disabled` | `boolean` | no | Combined with the pending state. |
+| Prop           | Type        | Required                         | Meaning                                                                                                                                                                                                                         |
+| -------------- | ----------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `children`     | `ReactNode` | yes                              | The label at rest.                                                                                                                                                                                                              |
+| `pendingLabel` | `ReactNode` | no · default `"Guardando…"`      | The label while the form is pending. Pass the verb of the action ("Creando…", "Borrando…", "Publicando…"); a form with several submit buttons that share one label passes the resting label so only the disabled state changes. |
+| `className`    | `string`    | no · default `"platform-button"` | Passed through; secondary and danger buttons pass the full class list.                                                                                                                                                          |
+| `disabled`     | `boolean`   | no                               | Combined with the pending state.                                                                                                                                                                                                |
 
 ## Behaviour
 
@@ -43,9 +43,8 @@ From `components/platform/sections/studies/studies-list/new-study.comp.tsx`:
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 <form action={createStudy}>
-  …
-  <SubmitButton pendingLabel="Creando…">Crear estudio</SubmitButton>
-</form>
+  …<SubmitButton pendingLabel="Creando…">Crear estudio</SubmitButton>
+</form>;
 ```
 
 ## Related

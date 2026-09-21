@@ -6,12 +6,12 @@ description: "A semantic <table> with one definition of the look for every listi
 
 Also exports `PlatformTableRow` and `PlatformTableCell`, and the `PlatformTableColumn` type.
 
-| | |
-| --- | --- |
-| File | `components/platform/shared/platform-table.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `platform-table.comp.css` → block `.platform-table` |
-| Used by | [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section), [`StaffClassesSection`](/components/platform/sections/staff/classes/staff-classes-section), [`StudentAdminDetailSection`](/components/platform/sections/staff/students/student-admin-detail-section), [`StudentsTableSection`](/components/platform/sections/staff/students/students-table-section), [`TeacherAdminDetailSection`](/components/platform/sections/staff/teachers/teacher-admin-detail-section), [`TeachersTableSection`](/components/platform/sections/staff/teachers/teachers-table-section), [`TeacherClassesSection`](/components/platform/sections/teacher/classes/teacher-classes-section), [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section), [`AssignedStudentsSection`](/components/platform/sections/teacher/students/assigned-students-section), [`StudentStudyViewSection`](/components/platform/sections/teacher/students/student-study-view-section) |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-table.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Stylesheet | `platform-table.comp.css` → block `.platform-table`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Used by    | [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section), [`StaffClassesSection`](/components/platform/sections/staff/classes/staff-classes-section), [`StudentAdminDetailSection`](/components/platform/sections/staff/students/student-admin-detail-section), [`StudentsTableSection`](/components/platform/sections/staff/students/students-table-section), [`TeacherAdminDetailSection`](/components/platform/sections/staff/teachers/teacher-admin-detail-section), [`TeachersTableSection`](/components/platform/sections/staff/teachers/teachers-table-section), [`TeacherClassesSection`](/components/platform/sections/teacher/classes/teacher-classes-section), [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section), [`AssignedStudentsSection`](/components/platform/sections/teacher/students/assigned-students-section), [`StudentStudyViewSection`](/components/platform/sections/teacher/students/student-study-view-section) |
 
 ## Purpose
 
@@ -25,27 +25,27 @@ The student's `GameTable` in the study detail still draws its rows with `div`s b
 
 ### `PlatformTable`
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `columns` | `readonly (string \| PlatformTableColumn)[]` | yes | Header labels, or `{ label, align?: "right" }` for numeric columns. Rendered as `<th scope="col">`. |
-| `children` | `ReactNode` | no | `PlatformTableRow` elements. Empty (after flattening arrays) renders `emptyLabel` in one full-width cell. |
-| `emptyLabel` | `string` | no | Default "No hay nada que mostrar todavía." |
-| `minWidth` | `number` | no · default `640` | Minimum table width in pixels before the wrapper scrolls horizontally. |
+| Prop         | Type                                         | Required           | Meaning                                                                                                   |
+| ------------ | -------------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------- |
+| `columns`    | `readonly (string \| PlatformTableColumn)[]` | yes                | Header labels, or `{ label, align?: "right" }` for numeric columns. Rendered as `<th scope="col">`.       |
+| `children`   | `ReactNode`                                  | no                 | `PlatformTableRow` elements. Empty (after flattening arrays) renders `emptyLabel` in one full-width cell. |
+| `emptyLabel` | `string`                                     | no                 | Default "No hay nada que mostrar todavía."                                                                |
+| `minWidth`   | `number`                                     | no · default `640` | Minimum table width in pixels before the wrapper scrolls horizontally.                                    |
 
 ### `PlatformTableRow`
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | yes | `PlatformTableCell` elements. |
-| …`<tr>` attributes | `ComponentPropsWithoutRef<"tr">` | no | Passed through to the `<tr>`; a `className` is added after `platform-table__row`. This is how [`GameTable`](/components/platform/sections/studies/study-detail/game-table) hangs its drag handlers and its dragging state on the rows. |
+| Prop               | Type                             | Required | Meaning                                                                                                                                                                                                                                |
+| ------------------ | -------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `children`         | `ReactNode`                      | yes      | `PlatformTableCell` elements.                                                                                                                                                                                                          |
+| …`<tr>` attributes | `ComponentPropsWithoutRef<"tr">` | no       | Passed through to the `<tr>`; a `className` is added after `platform-table__row`. This is how [`GameTable`](/components/platform/sections/studies/study-detail/game-table) hangs its drag handlers and its dragging state on the rows. |
 
 ### `PlatformTableCell`
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | yes | Cell content. |
-| `align` | `"right"` | no | Right-aligned, for numbers and amounts. |
-| `strong` | `boolean` | no | Highlighted cell: the column that identifies the row (a name). |
+| Prop       | Type        | Required | Meaning                                                        |
+| ---------- | ----------- | -------- | -------------------------------------------------------------- |
+| `children` | `ReactNode` | yes      | Cell content.                                                  |
+| `align`    | `"right"`   | no       | Right-aligned, for numbers and amounts.                        |
+| `strong`   | `boolean`   | no       | Highlighted cell: the column that identifies the row (a name). |
 
 ## Behaviour
 
@@ -85,10 +85,10 @@ import { PlatformTable, PlatformTableCell, PlatformTableRow } from "@/components
       <PlatformTableCell>{participant.paymentRef ?? "—"}</PlatformTableCell>
     </PlatformTableRow>
   ))}
-</PlatformTable>
+</PlatformTable>;
 ```
 
 ## Related
 
-- [`EmptyState`](/components/platform/shared/empty-state) for a list that is empty *and* has a call to action; the table's own empty row is for filters that matched nothing.
+- [`EmptyState`](/components/platform/shared/empty-state) for a list that is empty _and_ has a call to action; the table's own empty row is for filters that matched nothing.
 - [Teacher & staff panels](/platform/teacher-and-staff) for the listings that use it.

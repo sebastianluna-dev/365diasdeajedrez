@@ -6,13 +6,13 @@ description: "Getting a game out of the browser: repaint a position on a canvas 
 
 Exports `drawPosition`, `downloadPositionImage` and `downloadGameGif`.
 
-| | |
-| --- | --- |
-| File | `components/chess/game-viewer/board-export.ts` |
-| Kind | Module (plain TypeScript, browser only, `"use client"`) |
-| Stylesheet | none |
-| Used by | [`GameTools`](/components/platform/sections/studies/game-view/game-tools), through a dynamic `import()` in the share tab |
-| Uses | `gifenc` (`GIFEncoder`, `quantize`, `applyPalette`)<br />`parseFen` from `chessops/fen`<br />`replayGame` from `lib/chess/replay`<br />`BOARD_LIGHT_SQUARE`, `BOARD_DARK_SQUARE` from `constants/chess-board-colors.const` |
+|            |                                                                                                                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/board-export.ts`                                                                                                                                                                             |
+| Kind       | Module (plain TypeScript, browser only, `"use client"`)                                                                                                                                                                    |
+| Stylesheet | none                                                                                                                                                                                                                       |
+| Used by    | [`GameTools`](/components/platform/sections/studies/game-view/game-tools), through a dynamic `import()` in the share tab                                                                                                   |
+| Uses       | `gifenc` (`GIFEncoder`, `quantize`, `applyPalette`)<br />`parseFen` from `chessops/fen`<br />`replayGame` from `lib/chess/replay`<br />`BOARD_LIGHT_SQUARE`, `BOARD_DARK_SQUARE` from `constants/chess-board-colors.const` |
 
 ## Purpose
 
@@ -29,7 +29,11 @@ The module is loaded on demand by the game tools so its code and `gifenc` never 
 ### `drawPosition`
 
 ```ts
-export async function drawPosition(canvas: HTMLCanvasElement, fen: string, options: { size: number; lastMove?: [Key, Key] }): Promise<void>
+export async function drawPosition(
+  canvas: HTMLCanvasElement,
+  fen: string,
+  options: { size: number; lastMove?: [Key, Key] },
+): Promise<void>;
 ```
 
 Paints the position onto `canvas`, always from White's side: a shared image is read the way a diagram in a book is. Squares use the same colours as the CSS tokens (`--board-light`/`--board-dark`, mirrored in the constant); the last-move squares get the highlight yellow pre-blended over each colour. Pieces are rasterised at 256 px and scaled into their squares. Throws if the canvas has no 2D context.
@@ -37,7 +41,7 @@ Paints the position onto `canvas`, always from White's side: a shared image is r
 ### `downloadPositionImage`
 
 ```ts
-export async function downloadPositionImage(fen: string, filename: string, options = { size: 720 }): Promise<void>
+export async function downloadPositionImage(fen: string, filename: string, options = { size: 720 }): Promise<void>;
 ```
 
 Draws on an off-screen canvas, encodes a PNG and triggers a download through a temporary object URL that is revoked immediately.
@@ -45,7 +49,11 @@ Draws on an off-screen canvas, encodes a PNG and triggers a download through a t
 ### `downloadGameGif`
 
 ```ts
-export async function downloadGameGif(pgn: string, filename: string, options: { size?: number; delayMs?: number } = {}): Promise<void>
+export async function downloadGameGif(
+  pgn: string,
+  filename: string,
+  options: { size?: number; delayMs?: number } = {},
+): Promise<void>;
 ```
 
 Saves the game's **main line** as a GIF, one move per frame (variations are not a sequence). Defaults: 320 px, 900 ms per move, three times that on the last frame so the loop pauses where the game ends. Throws if the PGN has no moves.

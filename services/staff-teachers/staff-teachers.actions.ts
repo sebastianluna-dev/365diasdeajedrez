@@ -53,7 +53,10 @@ export async function createTeacher(formData: FormData): Promise<void> {
 
   const existingUserId = readText(formData, "userId");
   if (existingUserId.length > 0) {
-    const user = await db.user.findUnique({ where: { id: existingUserId }, select: { id: true, teacher: { select: { id: true } } } });
+    const user = await db.user.findUnique({
+      where: { id: existingUserId },
+      select: { id: true, teacher: { select: { id: true } } },
+    });
     if (!user) fail(staffRoutes.newTeacher, "studentMissing");
     if (user.teacher) fail(staffRoutes.newTeacher, "userTaken");
 

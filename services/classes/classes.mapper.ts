@@ -1,4 +1,8 @@
-import { CLASS_BLOCK_KIND, type ClassStatusCode, type TranscriptStatusCode } from "@/constants/platform/class-codes.const";
+import {
+  CLASS_BLOCK_KIND,
+  type ClassStatusCode,
+  type TranscriptStatusCode,
+} from "@/constants/platform/class-codes.const";
 import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { formatSpanishTime } from "@/lib/format-spanish-time";

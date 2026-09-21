@@ -4,14 +4,14 @@ description: "Two groups of study cards ('Tus estudios' and 'Material que has re
 
 # `StudiesBrowser`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/studies-list/studies-browser.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `studies-browser.comp.css` → block `.studies-browser` |
-| Used by | [`StudiesListSection`](/components/platform/sections/studies/studies-list/studies-list-section) |
-| Composes | [`StudyCard`](/components/platform/sections/studies/studies-list/study-card), [`EmptyState`](/components/platform/shared/empty-state) |
-| Uses | `StudySummary` from `services/studies/studies.types` |
+|            |                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/studies-browser.comp.tsx`                                                          |
+| Kind       | Client Component                                                                                                                      |
+| Stylesheet | `studies-browser.comp.css` → block `.studies-browser`                                                                                 |
+| Used by    | [`StudiesListSection`](/components/platform/sections/studies/studies-list/studies-list-section)                                       |
+| Composes   | [`StudyCard`](/components/platform/sections/studies/studies-list/study-card), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses       | `StudySummary` from `services/studies/studies.types`                                                                                  |
 
 ## Purpose
 
@@ -19,10 +19,10 @@ The body of "Mis estudios": a row of filter chips, a count, and the studies in t
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `own` | `StudySummary[]` | yes | Those that are theirs: "Mis partidas", their tournaments and their studies. |
-| `received` | `StudySummary[]` | yes | What reaches them ready-made and cannot be touched: course databases, collections a teacher handed them, games from their classes. |
+| Prop       | Type             | Required | Meaning                                                                                                                            |
+| ---------- | ---------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `own`      | `StudySummary[]` | yes      | Those that are theirs: "Mis partidas", their tournaments and their studies.                                                        |
+| `received` | `StudySummary[]` | yes      | What reaches them ready-made and cannot be touched: course databases, collections a teacher handed them, games from their classes. |
 
 ## Behaviour
 
@@ -52,7 +52,7 @@ import { StudiesBrowser } from "./studies-browser.comp";
 <StudiesBrowser
   own={studies.filter((study) => study.permissions.canEditGames)}
   received={studies.filter((study) => !study.permissions.canEditGames)}
-/>
+/>;
 ```
 
 ## Related

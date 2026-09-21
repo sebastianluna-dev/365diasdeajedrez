@@ -79,7 +79,12 @@ export async function syncLessonTrainingExercise(
 
   // Who moves at the start of the line. Without a starting FEN, White.
   const opensWith = mainline.initialFen ? turnColor(mainline.initialFen) : "white";
-  const trains = trainingColor === BOARD_ORIENTATION.BLACK ? "black" : trainingColor === BOARD_ORIENTATION.WHITE ? "white" : opensWith;
+  const trains =
+    trainingColor === BOARD_ORIENTATION.BLACK
+      ? "black"
+      : trainingColor === BOARD_ORIENTATION.WHITE
+        ? "white"
+        : opensWith;
 
   // If the student is NOT the one who opens, the first move is the opponent's: it
   // is pre-played and the line starts at the reply. The trainer deduces the

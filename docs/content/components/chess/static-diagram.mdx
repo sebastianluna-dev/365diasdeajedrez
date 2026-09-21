@@ -4,13 +4,13 @@ description: "A position as a 64-cell CSS grid with the piece SVGs, rendered on 
 
 # `StaticDiagram`
 
-| | |
-| --- | --- |
-| File | `components/chess/static-diagram.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `static-diagram.comp.css` → block `.static-diagram` |
-| Used by | [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`ChessDiagramBlockRenderer`](/components/site/sections/blog/article-content/blocks/chess-diagram-block) |
-| Uses | `parseFenPlacement` from `lib/parse-fen-placement` |
+|            |                                                                                                                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/static-diagram.comp.tsx`                                                                                                                                             |
+| Kind       | Server Component                                                                                                                                                                       |
+| Stylesheet | `static-diagram.comp.css` → block `.static-diagram`                                                                                                                                    |
+| Used by    | [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`ChessDiagramBlockRenderer`](/components/site/sections/blog/article-content/blocks/chess-diagram-block) |
+| Uses       | `parseFenPlacement` from `lib/parse-fen-placement`                                                                                                                                     |
 
 ## Purpose
 
@@ -22,12 +22,12 @@ For a position the reader should navigate, use the [`GameViewer`](/components/ch
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `fen` | `string` | yes | Full FEN or just its placement field; only the placement is read. |
-| `orientation` | `"white" \| "black"` | no · default `"white"` | Which side is at the bottom. `black` reverses the 64 squares. |
-| `caption` | `string` | no | Rendered as `<figcaption>` under the grid. |
-| `context` | `"platform" \| "article"` | no · default `"platform"` | Where it is rendered: the platform, with its tokens, or inside a blog article, which has another background and another text scale. |
+| Prop          | Type                      | Required                  | Meaning                                                                                                                             |
+| ------------- | ------------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `fen`         | `string`                  | yes                       | Full FEN or just its placement field; only the placement is read.                                                                   |
+| `orientation` | `"white" \| "black"`      | no · default `"white"`    | Which side is at the bottom. `black` reverses the 64 squares.                                                                       |
+| `caption`     | `string`                  | no                        | Rendered as `<figcaption>` under the grid.                                                                                          |
+| `context`     | `"platform" \| "article"` | no · default `"platform"` | Where it is rendered: the platform, with its tokens, or inside a blog article, which has another background and another text scale. |
 
 ## Behaviour
 
@@ -56,7 +56,7 @@ import { StaticDiagram } from "@/components/chess/static-diagram.comp";
   fen={block.position.fen}
   orientation={block.position.orientation}
   caption={block.caption ?? block.position.title}
-/>
+/>;
 ```
 
 From the blog block, `components/site/sections/blog/article-content/blocks/chess-diagram-block.comp.tsx`:

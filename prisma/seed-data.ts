@@ -4,13 +4,13 @@
 
 import { ACTIVITY_TYPE, STAT_METRIC, SUBJECT_TYPE } from "../constants/platform/activity-codes.const";
 import { CONTENT_ROLE } from "../constants/platform/course-codes.const";
-import { CLASS_BLOCK_KIND, CLASS_STATUS, MEETING_PROVIDER, TRANSCRIPT_STATUS } from "../constants/platform/class-codes.const";
 import {
-  AUTHOR_ROLE,
-  COURSE_STATUS,
-  COURSE_TYPE,
-  LEVEL,
-} from "../constants/platform/course-codes.const";
+  CLASS_BLOCK_KIND,
+  CLASS_STATUS,
+  MEETING_PROVIDER,
+  TRANSCRIPT_STATUS,
+} from "../constants/platform/class-codes.const";
+import { AUTHOR_ROLE, COURSE_STATUS, COURSE_TYPE, LEVEL } from "../constants/platform/course-codes.const";
 import { BOARD_ORIENTATION, OWNER_TYPE, PROGRESS_STATUS, TOPIC } from "../constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "../constants/platform/study-codes.const";
 import { ATTEMPT_CONTEXT, ATTEMPT_RESULT, EXERCISE_MODE } from "../constants/platform/training-codes.const";
@@ -408,8 +408,25 @@ export const COURSES: SeedCourse[] = [
                 id: IDS.exPoisonedPawn,
                 order: 1,
                 mode: EXERCISE_MODE.FIND_MOVE,
-                promptText: "El blanco acaba de jugar 8.Dd2 defendiendo indirectamente. ¿Cómo gana un peón el negro de todas formas?",
-                afterSans: ["e4", "c5", "Nf3", "d6", "d4", "cxd4", "Nxd4", "Nf6", "Nc3", "a6", "Bg5", "e6", "f4", "Qb6", "Qd2"],
+                promptText:
+                  "El blanco acaba de jugar 8.Dd2 defendiendo indirectamente. ¿Cómo gana un peón el negro de todas formas?",
+                afterSans: [
+                  "e4",
+                  "c5",
+                  "Nf3",
+                  "d6",
+                  "d4",
+                  "cxd4",
+                  "Nxd4",
+                  "Nf6",
+                  "Nc3",
+                  "a6",
+                  "Bg5",
+                  "e6",
+                  "f4",
+                  "Qb6",
+                  "Qd2",
+                ],
                 lineSans: ["Qxb2"],
               },
             ],
@@ -453,7 +470,21 @@ export const COURSES: SeedCourse[] = [
                 mode: EXERCISE_MODE.REPRODUCE_LINE,
                 promptText: "Construye el puente de Lucena y lleva el peón a la coronación.",
                 afterSans: [],
-                lineSans: ["Rd1+", "Ke7", "Rd4", "Ra1", "Kc7", "Rc1+", "Kb6", "Rb1+", "Kc6", "Rc1+", "Kb5", "Rb1+", "Rb4"],
+                lineSans: [
+                  "Rd1+",
+                  "Ke7",
+                  "Rd4",
+                  "Ra1",
+                  "Kc7",
+                  "Rc1+",
+                  "Kb6",
+                  "Rb1+",
+                  "Kc6",
+                  "Rc1+",
+                  "Kb5",
+                  "Rb1+",
+                  "Rb4",
+                ],
               },
             ],
           },
@@ -579,9 +610,7 @@ export const GAME_DATABASES = [
  * Sharing of collections. It is what makes the teacher's collection APPEAR to
  * the demo student in "Mis estudios", read-only.
  */
-export const STUDY_SHARES = [
-  { databaseId: IDS.dbTeacherPack, userId: IDS.demoUser, teacherId: IDS.teacher },
-];
+export const STUDY_SHARES = [{ databaseId: IDS.dbTeacherPack, userId: IDS.demoUser, teacherId: IDS.teacher }];
 
 export const GAMES = [
   {
@@ -753,7 +782,8 @@ export function buildClasses(now: Date) {
       id: IDS.classPast,
       teacherId: IDS.teacher,
       title: "Ataques al rey en el centro",
-      description: "Clase práctica sobre cómo castigar al rey sin enrocar, con la Partida de la Ópera como hilo conductor.",
+      description:
+        "Clase práctica sobre cómo castigar al rey sin enrocar, con la Partida de la Ópera como hilo conductor.",
       scheduledAt: pastDate,
       durationMin: 60,
       status: CLASS_STATUS.COMPLETED,
@@ -843,7 +873,11 @@ export const CLASS_TRANSCRIPT = {
   status: TRANSCRIPT_STATUS.READY,
   text: "Bienvenidos. Hoy vamos a hablar de los ataques al rey en el centro... [transcripción de demostración]",
   segments: [
-    { startMs: 0, speaker: "GM Profesor Demo", text: "Bienvenidos. Hoy vamos a hablar de los ataques al rey en el centro." },
+    {
+      startMs: 0,
+      speaker: "GM Profesor Demo",
+      text: "Bienvenidos. Hoy vamos a hablar de los ataques al rey en el centro.",
+    },
     { startMs: 15000, speaker: "GM Profesor Demo", text: "La Partida de la Ópera es el mejor ejemplo de la historia." },
     { startMs: 42000, speaker: "Alumno Demo", text: "¿Por qué no funciona 3...Ag4 contra 3.d4?" },
   ],
@@ -953,22 +987,129 @@ export interface SeedActivity {
 /** ~15 events spread out so week/month/year/all-time give different figures. */
 export const ACTIVITIES: SeedActivity[] = [
   // This week
-  { id: "ac000000-0000-4000-8000-000000000001", type: ACTIVITY_TYPE.EXERCISE_PASSED, subjectType: SUBJECT_TYPE.EXERCISE, subjectId: IDS.exPoisonedPawn, topic: TOPIC.TACTICS, daysAgo: 2 },
-  { id: "ac000000-0000-4000-8000-000000000002", type: ACTIVITY_TYPE.GAME_ANALYZED, subjectType: SUBJECT_TYPE.GAME, subjectId: IDS.gameOpera, topic: TOPIC.TACTICS, daysAgo: 3 },
-  { id: "ac000000-0000-4000-8000-000000000003", type: ACTIVITY_TYPE.EXERCISE_PASSED, subjectType: SUBJECT_TYPE.EXERCISE, subjectId: IDS.exNajdorfLine, topic: TOPIC.OPENING_LINE, daysAgo: 4 },
+  {
+    id: "ac000000-0000-4000-8000-000000000001",
+    type: ACTIVITY_TYPE.EXERCISE_PASSED,
+    subjectType: SUBJECT_TYPE.EXERCISE,
+    subjectId: IDS.exPoisonedPawn,
+    topic: TOPIC.TACTICS,
+    daysAgo: 2,
+  },
+  {
+    id: "ac000000-0000-4000-8000-000000000002",
+    type: ACTIVITY_TYPE.GAME_ANALYZED,
+    subjectType: SUBJECT_TYPE.GAME,
+    subjectId: IDS.gameOpera,
+    topic: TOPIC.TACTICS,
+    daysAgo: 3,
+  },
+  {
+    id: "ac000000-0000-4000-8000-000000000003",
+    type: ACTIVITY_TYPE.EXERCISE_PASSED,
+    subjectType: SUBJECT_TYPE.EXERCISE,
+    subjectId: IDS.exNajdorfLine,
+    topic: TOPIC.OPENING_LINE,
+    daysAgo: 4,
+  },
   // This month (outside this week)
-  { id: "ac000000-0000-4000-8000-000000000004", type: ACTIVITY_TYPE.CLASS_ATTENDED, subjectType: SUBJECT_TYPE.CLASS, subjectId: IDS.classPast, topic: null, daysAgo: 7 },
-  { id: "ac000000-0000-4000-8000-000000000005", type: ACTIVITY_TYPE.LESSON_COMPLETED, subjectType: SUBJECT_TYPE.LESSON, subjectId: IDS.lsWhatIsSicilian, topic: TOPIC.OPENING_LINE, daysAgo: 14 },
-  { id: "ac000000-0000-4000-8000-000000000006", type: ACTIVITY_TYPE.GAME_ANALYZED, subjectType: SUBJECT_TYPE.GAME, subjectId: IDS.gameImmortal, topic: TOPIC.TACTICS, daysAgo: 16 },
-  { id: "ac000000-0000-4000-8000-000000000007", type: ACTIVITY_TYPE.EXERCISE_PASSED, subjectType: SUBJECT_TYPE.EXERCISE, subjectId: IDS.exLucenaBridge, topic: TOPIC.ENDGAME, daysAgo: 20 },
+  {
+    id: "ac000000-0000-4000-8000-000000000004",
+    type: ACTIVITY_TYPE.CLASS_ATTENDED,
+    subjectType: SUBJECT_TYPE.CLASS,
+    subjectId: IDS.classPast,
+    topic: null,
+    daysAgo: 7,
+  },
+  {
+    id: "ac000000-0000-4000-8000-000000000005",
+    type: ACTIVITY_TYPE.LESSON_COMPLETED,
+    subjectType: SUBJECT_TYPE.LESSON,
+    subjectId: IDS.lsWhatIsSicilian,
+    topic: TOPIC.OPENING_LINE,
+    daysAgo: 14,
+  },
+  {
+    id: "ac000000-0000-4000-8000-000000000006",
+    type: ACTIVITY_TYPE.GAME_ANALYZED,
+    subjectType: SUBJECT_TYPE.GAME,
+    subjectId: IDS.gameImmortal,
+    topic: TOPIC.TACTICS,
+    daysAgo: 16,
+  },
+  {
+    id: "ac000000-0000-4000-8000-000000000007",
+    type: ACTIVITY_TYPE.EXERCISE_PASSED,
+    subjectType: SUBJECT_TYPE.EXERCISE,
+    subjectId: IDS.exLucenaBridge,
+    topic: TOPIC.ENDGAME,
+    daysAgo: 20,
+  },
   // This year (outside this month)
-  { id: "ac000000-0000-4000-8000-000000000008", type: ACTIVITY_TYPE.GAME_ANALYZED, subjectType: SUBJECT_TYPE.GAME, subjectId: IDS.gameEvergreen, topic: TOPIC.TACTICS, daysAgo: 45 },
-  { id: "ac000000-0000-4000-8000-000000000009", type: ACTIVITY_TYPE.CLASS_ATTENDED, subjectType: SUBJECT_TYPE.CLASS, subjectId: IDS.classPast, topic: null, daysAgo: 60, meta: { nota: "clase anterior del ciclo" } },
-  { id: "ac000000-0000-4000-8000-00000000000a", type: ACTIVITY_TYPE.EXERCISE_PASSED, subjectType: SUBJECT_TYPE.EXERCISE, subjectId: IDS.exPhilidorDefense, topic: TOPIC.ENDGAME, daysAgo: 75 },
-  { id: "ac000000-0000-4000-8000-00000000000b", type: ACTIVITY_TYPE.LESSON_COMPLETED, subjectType: SUBJECT_TYPE.LESSON, subjectId: IDS.lsLucena, topic: TOPIC.ENDGAME, daysAgo: 90 },
-  { id: "ac000000-0000-4000-8000-00000000000c", type: ACTIVITY_TYPE.EXERCISE_PASSED, subjectType: SUBJECT_TYPE.EXERCISE, subjectId: IDS.exLucenaBridge, topic: TOPIC.ENDGAME, daysAgo: 120 },
+  {
+    id: "ac000000-0000-4000-8000-000000000008",
+    type: ACTIVITY_TYPE.GAME_ANALYZED,
+    subjectType: SUBJECT_TYPE.GAME,
+    subjectId: IDS.gameEvergreen,
+    topic: TOPIC.TACTICS,
+    daysAgo: 45,
+  },
+  {
+    id: "ac000000-0000-4000-8000-000000000009",
+    type: ACTIVITY_TYPE.CLASS_ATTENDED,
+    subjectType: SUBJECT_TYPE.CLASS,
+    subjectId: IDS.classPast,
+    topic: null,
+    daysAgo: 60,
+    meta: { nota: "clase anterior del ciclo" },
+  },
+  {
+    id: "ac000000-0000-4000-8000-00000000000a",
+    type: ACTIVITY_TYPE.EXERCISE_PASSED,
+    subjectType: SUBJECT_TYPE.EXERCISE,
+    subjectId: IDS.exPhilidorDefense,
+    topic: TOPIC.ENDGAME,
+    daysAgo: 75,
+  },
+  {
+    id: "ac000000-0000-4000-8000-00000000000b",
+    type: ACTIVITY_TYPE.LESSON_COMPLETED,
+    subjectType: SUBJECT_TYPE.LESSON,
+    subjectId: IDS.lsLucena,
+    topic: TOPIC.ENDGAME,
+    daysAgo: 90,
+  },
+  {
+    id: "ac000000-0000-4000-8000-00000000000c",
+    type: ACTIVITY_TYPE.EXERCISE_PASSED,
+    subjectType: SUBJECT_TYPE.EXERCISE,
+    subjectId: IDS.exLucenaBridge,
+    topic: TOPIC.ENDGAME,
+    daysAgo: 120,
+  },
   // All time (last year)
-  { id: "ac000000-0000-4000-8000-00000000000d", type: ACTIVITY_TYPE.COURSE_COMPLETED, subjectType: SUBJECT_TYPE.COURSE, subjectId: IDS.courseRookEndings, topic: TOPIC.ENDGAME, daysAgo: 400, meta: { nota: "edición anterior del curso" } },
-  { id: "ac000000-0000-4000-8000-00000000000e", type: ACTIVITY_TYPE.CLASS_ATTENDED, subjectType: SUBJECT_TYPE.CLASS, subjectId: IDS.classPast, topic: null, daysAgo: 420 },
-  { id: "ac000000-0000-4000-8000-00000000000f", type: ACTIVITY_TYPE.GAME_ANALYZED, subjectType: SUBJECT_TYPE.GAME, subjectId: IDS.gameModelOpocensky, topic: TOPIC.PAWN_STRUCTURE, daysAgo: 450 },
+  {
+    id: "ac000000-0000-4000-8000-00000000000d",
+    type: ACTIVITY_TYPE.COURSE_COMPLETED,
+    subjectType: SUBJECT_TYPE.COURSE,
+    subjectId: IDS.courseRookEndings,
+    topic: TOPIC.ENDGAME,
+    daysAgo: 400,
+    meta: { nota: "edición anterior del curso" },
+  },
+  {
+    id: "ac000000-0000-4000-8000-00000000000e",
+    type: ACTIVITY_TYPE.CLASS_ATTENDED,
+    subjectType: SUBJECT_TYPE.CLASS,
+    subjectId: IDS.classPast,
+    topic: null,
+    daysAgo: 420,
+  },
+  {
+    id: "ac000000-0000-4000-8000-00000000000f",
+    type: ACTIVITY_TYPE.GAME_ANALYZED,
+    subjectType: SUBJECT_TYPE.GAME,
+    subjectId: IDS.gameModelOpocensky,
+    topic: TOPIC.PAWN_STRUCTURE,
+    daysAgo: 450,
+  },
 ];

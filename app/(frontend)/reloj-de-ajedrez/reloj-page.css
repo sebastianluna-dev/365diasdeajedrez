@@ -1,3 +1,5 @@
 .reloj-page {
-  background: radial-gradient(ellipse 800px 500px at 50% 60%, rgba(255, 145, 67, 0.14) 0%, rgba(22, 17, 13, 0) 70%), var(--color-dark);
+  background:
+    radial-gradient(ellipse 800px 500px at 50% 60%, rgba(255, 145, 67, 0.14) 0%, rgba(22, 17, 13, 0) 70%),
+    var(--color-dark);
 }

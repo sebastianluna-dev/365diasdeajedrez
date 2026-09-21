@@ -4,15 +4,15 @@ description: "The teacher's students with an active assignment in a PlatformTabl
 
 # `AssignedStudentsSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/students/assigned-students.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `assigned-students.section.css` → block `.assigned-students` |
-| Used by | `/profesor/alumnos` |
-| Composes | [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Reads | `getAssignedStudents(query)` · `services/teacher-students/teacher-students.service.ts` |
-| Uses | `teacherRoutes` from `lib/platform-routes` |
+|            |                                                                                                                                                                                     |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/students/assigned-students.section.tsx`                                                                                                       |
+| Kind       | Server Component (async)                                                                                                                                                            |
+| Stylesheet | `assigned-students.section.css` → block `.assigned-students`                                                                                                                        |
+| Used by    | `/profesor/alumnos`                                                                                                                                                                 |
+| Composes   | [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Reads      | `getAssignedStudents(query)` · `services/teacher-students/teacher-students.service.ts`                                                                                              |
+| Uses       | `teacherRoutes` from `lib/platform-routes`                                                                                                                                          |
 
 ## Purpose
 
@@ -20,9 +20,9 @@ description: "The teacher's students with an active assignment in a PlatformTabl
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `query` | `string` | no | Search by name or email, from `?q=`. |
+| Prop    | Type     | Required | Meaning                              |
+| ------- | -------- | -------- | ------------------------------------ |
+| `query` | `string` | no       | Search by name or email, from `?q=`. |
 
 ## Behaviour
 
@@ -45,7 +45,7 @@ From `app/(platform)/profesor/alumnos/page.tsx`:
 ```tsx
 import { AssignedStudentsSection } from "@/components/platform/sections/teacher/students/assigned-students.section";
 
-<AssignedStudentsSection query={q} />
+<AssignedStudentsSection query={q} />;
 ```
 
 ## Related

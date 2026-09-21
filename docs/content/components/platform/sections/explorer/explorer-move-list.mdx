@@ -4,13 +4,13 @@ description: "The moves of the line being explored, numbered in Spanish with bui
 
 # `ExplorerMoveList`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/explorer/explorer-move-list.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `explorer-move-list.comp.css` → block `.explorer-move-list` |
-| Used by | [`GameExplorer`](/components/platform/sections/explorer/game-explorer) |
-| Uses | `buildNotationRows`, `NotationHalfMove` from `lib/chess/notation` |
+|            |                                                                        |
+| ---------- | ---------------------------------------------------------------------- |
+| File       | `components/platform/sections/explorer/explorer-move-list.comp.tsx`    |
+| Kind       | Client Component                                                       |
+| Stylesheet | `explorer-move-list.comp.css` → block `.explorer-move-list`            |
+| Used by    | [`GameExplorer`](/components/platform/sections/explorer/game-explorer) |
+| Uses       | `buildNotationRows`, `NotationHalfMove` from `lib/chess/notation`      |
 
 ## Purpose
 
@@ -18,11 +18,11 @@ The "Jugadas" panel of the explorer. It uses `buildNotationRows`, the same row b
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `sans` | `string[]` | yes | The line. |
-| `index` | `number` | yes | Current ply; 0 is the initial position. |
-| `onSelect` | `(ply: number) => void` | yes | Click on a half-move. |
+| Prop       | Type                    | Required | Meaning                                 |
+| ---------- | ----------------------- | -------- | --------------------------------------- |
+| `sans`     | `string[]`              | yes      | The line.                               |
+| `index`    | `number`                | yes      | Current ply; 0 is the initial position. |
+| `onSelect` | `(ply: number) => void` | yes      | Click on a half-move.                   |
 
 ## Behaviour
 
@@ -47,7 +47,7 @@ From `components/platform/sections/explorer/game-explorer.comp.tsx`:
 ```tsx
 import { ExplorerMoveList } from "./explorer-move-list.comp";
 
-<ExplorerMoveList sans={sans} index={index} onSelect={setIndex} />
+<ExplorerMoveList sans={sans} index={index} onSelect={setIndex} />;
 ```
 
 ## Related

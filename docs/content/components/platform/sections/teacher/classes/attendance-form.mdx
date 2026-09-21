@@ -4,14 +4,14 @@ description: "Class attendance as one checkbox per participant, submitted whole 
 
 # `AttendanceForm`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/classes/attendance-form.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `attendance-form.comp.css` → block `.attendance-form` |
-| Used by | [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) |
-| Writes | `markAttendance()`, `removeParticipant()` · `services/teacher-classes/teacher-classes.actions.ts` |
-| Uses | `TeacherClassParticipant` from `services/teacher-classes/teacher-classes.types` |
+|            |                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/attendance-form.comp.tsx`                                   |
+| Kind       | Server Component                                                                                          |
+| Stylesheet | `attendance-form.comp.css` → block `.attendance-form`                                                     |
+| Used by    | [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) |
+| Writes     | `markAttendance()`, `removeParticipant()` · `services/teacher-classes/teacher-classes.actions.ts`         |
+| Uses       | `TeacherClassParticipant` from `services/teacher-classes/teacher-classes.types`                           |
 
 ## Purpose
 
@@ -19,10 +19,10 @@ Marking a student as present records their activity (and with it their statistic
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `classId` | `string` | yes | Bound into both actions. |
-| `participants` | `TeacherClassParticipant[]` | yes | `{ userId, displayName, attended, hasPayment }[]`. Empty renders a hint to enrol students first. |
+| Prop           | Type                        | Required | Meaning                                                                                          |
+| -------------- | --------------------------- | -------- | ------------------------------------------------------------------------------------------------ |
+| `classId`      | `string`                    | yes      | Bound into both actions.                                                                         |
+| `participants` | `TeacherClassParticipant[]` | yes      | `{ userId, displayName, attended, hasPayment }[]`. Empty renders a hint to enrol students first. |
 
 ## Behaviour
 
@@ -51,7 +51,7 @@ From `components/platform/sections/teacher/classes/teacher-class-detail.section.
 ```tsx
 import { AttendanceForm } from "./attendance-form.comp";
 
-<AttendanceForm classId={classDetail.id} participants={classDetail.participants} />
+<AttendanceForm classId={classDetail.id} participants={classDetail.participants} />;
 ```
 
 ## Related

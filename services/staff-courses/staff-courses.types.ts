@@ -1,8 +1,4 @@
-import type {
-  AuthorRoleCode,
-  CourseStatusCode,
-  CourseTypeCode,
-} from "@/constants/platform/course-codes.const";
+import type { AuthorRoleCode, CourseStatusCode, CourseTypeCode } from "@/constants/platform/course-codes.const";
 import type { BoardOrientationCode } from "@/constants/platform/shared-codes.const";
 import type { ExerciseModeCode } from "@/constants/platform/training-codes.const";
 

@@ -13,53 +13,53 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-  | 'Pacific/Midway'
-  | 'Pacific/Niue'
-  | 'Pacific/Honolulu'
-  | 'Pacific/Rarotonga'
-  | 'America/Anchorage'
-  | 'Pacific/Gambier'
-  | 'America/Los_Angeles'
-  | 'America/Tijuana'
-  | 'America/Denver'
-  | 'America/Phoenix'
-  | 'America/Chicago'
-  | 'America/Guatemala'
-  | 'America/New_York'
-  | 'America/Bogota'
-  | 'America/Caracas'
-  | 'America/Santiago'
-  | 'America/Buenos_Aires'
-  | 'America/Sao_Paulo'
-  | 'Atlantic/South_Georgia'
-  | 'Atlantic/Azores'
-  | 'Atlantic/Cape_Verde'
-  | 'Europe/London'
-  | 'Europe/Berlin'
-  | 'Africa/Lagos'
-  | 'Europe/Athens'
-  | 'Africa/Cairo'
-  | 'Europe/Moscow'
-  | 'Asia/Riyadh'
-  | 'Asia/Dubai'
-  | 'Asia/Baku'
-  | 'Asia/Karachi'
-  | 'Asia/Tashkent'
-  | 'Asia/Calcutta'
-  | 'Asia/Dhaka'
-  | 'Asia/Almaty'
-  | 'Asia/Jakarta'
-  | 'Asia/Bangkok'
-  | 'Asia/Shanghai'
-  | 'Asia/Singapore'
-  | 'Asia/Tokyo'
-  | 'Asia/Seoul'
-  | 'Australia/Brisbane'
-  | 'Australia/Sydney'
-  | 'Pacific/Guam'
-  | 'Pacific/Noumea'
-  | 'Pacific/Auckland'
-  | 'Pacific/Fiji';
+  | "Pacific/Midway"
+  | "Pacific/Niue"
+  | "Pacific/Honolulu"
+  | "Pacific/Rarotonga"
+  | "America/Anchorage"
+  | "Pacific/Gambier"
+  | "America/Los_Angeles"
+  | "America/Tijuana"
+  | "America/Denver"
+  | "America/Phoenix"
+  | "America/Chicago"
+  | "America/Guatemala"
+  | "America/New_York"
+  | "America/Bogota"
+  | "America/Caracas"
+  | "America/Santiago"
+  | "America/Buenos_Aires"
+  | "America/Sao_Paulo"
+  | "Atlantic/South_Georgia"
+  | "Atlantic/Azores"
+  | "Atlantic/Cape_Verde"
+  | "Europe/London"
+  | "Europe/Berlin"
+  | "Africa/Lagos"
+  | "Europe/Athens"
+  | "Africa/Cairo"
+  | "Europe/Moscow"
+  | "Asia/Riyadh"
+  | "Asia/Dubai"
+  | "Asia/Baku"
+  | "Asia/Karachi"
+  | "Asia/Tashkent"
+  | "Asia/Calcutta"
+  | "Asia/Dhaka"
+  | "Asia/Almaty"
+  | "Asia/Jakarta"
+  | "Asia/Bangkok"
+  | "Asia/Shanghai"
+  | "Asia/Singapore"
+  | "Asia/Tokyo"
+  | "Asia/Seoul"
+  | "Australia/Brisbane"
+  | "Australia/Sydney"
+  | "Pacific/Guam"
+  | "Pacific/Noumea"
+  | "Pacific/Auckland"
+  | "Pacific/Fiji";
 
 export interface Config {
   auth: {
@@ -72,10 +72,10 @@ export interface Config {
     tags: Tag;
     media: Media;
     articles: Article;
-    'payload-kv': PayloadKv;
-    'payload-locked-documents': PayloadLockedDocument;
-    'payload-preferences': PayloadPreference;
-    'payload-migrations': PayloadMigration;
+    "payload-kv": PayloadKv;
+    "payload-locked-documents": PayloadLockedDocument;
+    "payload-preferences": PayloadPreference;
+    "payload-migrations": PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
@@ -84,38 +84,38 @@ export interface Config {
     tags: TagsSelect<false> | TagsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
-    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
-    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
-    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
-    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
+    "payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
+    "payload-locked-documents": PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    "payload-preferences": PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    "payload-migrations": PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
   };
   fallbackLocale: null;
   globals: {
-    'home-header': HomeHeader;
-    'home-hero': HomeHero;
-    'home-program': HomeProgram;
-    'home-teacher': HomeTeacher;
-    'home-packages': HomePackage;
-    'home-faq': HomeFaq;
-    'home-mentors': HomeMentors;
-    'home-reviews': HomeReviews;
-    'home-cta': HomeCta;
-    'site-settings': SiteSettings;
+    "home-header": HomeHeader;
+    "home-hero": HomeHero;
+    "home-program": HomeProgram;
+    "home-teacher": HomeTeacher;
+    "home-packages": HomePackage;
+    "home-faq": HomeFaq;
+    "home-mentors": HomeMentors;
+    "home-reviews": HomeReviews;
+    "home-cta": HomeCta;
+    "site-settings": SiteSettings;
   };
   globalsSelect: {
-    'home-header': HomeHeaderSelect<false> | HomeHeaderSelect<true>;
-    'home-hero': HomeHeroSelect<false> | HomeHeroSelect<true>;
-    'home-program': HomeProgramSelect<false> | HomeProgramSelect<true>;
-    'home-teacher': HomeTeacherSelect<false> | HomeTeacherSelect<true>;
-    'home-packages': HomePackagesSelect<false> | HomePackagesSelect<true>;
-    'home-faq': HomeFaqSelect<false> | HomeFaqSelect<true>;
-    'home-mentors': HomeMentorsSelect<false> | HomeMentorsSelect<true>;
-    'home-reviews': HomeReviewsSelect<false> | HomeReviewsSelect<true>;
-    'home-cta': HomeCtaSelect<false> | HomeCtaSelect<true>;
-    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    "home-header": HomeHeaderSelect<false> | HomeHeaderSelect<true>;
+    "home-hero": HomeHeroSelect<false> | HomeHeroSelect<true>;
+    "home-program": HomeProgramSelect<false> | HomeProgramSelect<true>;
+    "home-teacher": HomeTeacherSelect<false> | HomeTeacherSelect<true>;
+    "home-packages": HomePackagesSelect<false> | HomePackagesSelect<true>;
+    "home-faq": HomeFaqSelect<false> | HomeFaqSelect<true>;
+    "home-mentors": HomeMentorsSelect<false> | HomeMentorsSelect<true>;
+    "home-reviews": HomeReviewsSelect<false> | HomeReviewsSelect<true>;
+    "home-cta": HomeCtaSelect<false> | HomeCtaSelect<true>;
+    "site-settings": SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -153,7 +153,7 @@ export interface User {
   id: number;
   name: string;
   authorTitle?: string | null;
-  role: 'admin' | 'editor';
+  role: "admin" | "editor";
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -171,7 +171,7 @@ export interface User {
       }[]
     | null;
   password?: string | null;
-  collection: 'users';
+  collection: "users";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -244,8 +244,8 @@ export interface Article {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      direction: ("ltr" | "rtl") | null;
+      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
       indent: number;
       version: number;
     };
@@ -271,7 +271,7 @@ export interface Article {
   publishedAt?: string | null;
   updatedAt: string;
   createdAt: string;
-  _status?: ('draft' | 'published') | null;
+  _status?: ("draft" | "published") | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -298,28 +298,28 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
+        relationTo: "users";
         value: number | User;
       } | null)
     | ({
-        relationTo: 'categories';
+        relationTo: "categories";
         value: number | Category;
       } | null)
     | ({
-        relationTo: 'tags';
+        relationTo: "tags";
         value: number | Tag;
       } | null)
     | ({
-        relationTo: 'media';
+        relationTo: "media";
         value: number | Media;
       } | null)
     | ({
-        relationTo: 'articles';
+        relationTo: "articles";
         value: number | Article;
       } | null);
   globalSlug?: string | null;
   user: {
-    relationTo: 'users';
+    relationTo: "users";
     value: number | User;
   };
   updatedAt: string;
@@ -332,7 +332,7 @@ export interface PayloadLockedDocument {
 export interface PayloadPreference {
   id: number;
   user: {
-    relationTo: 'users';
+    relationTo: "users";
     value: number | User;
   };
   key?: string | null;
@@ -510,7 +510,7 @@ export interface NavLinkBlock {
   href: string;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'navLink';
+  blockType: "navLink";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -525,7 +525,7 @@ export interface NavDropdownBlock {
   }[];
   id?: string | null;
   blockName?: string | null;
-  blockType: 'navDropdown';
+  blockType: "navDropdown";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -682,7 +682,7 @@ export interface HomeMentors {
     lastName: string;
     city: string;
     birthYear: number;
-    gender: 'male' | 'female';
+    gender: "male" | "female";
     photo: number | Media;
     photoFocus?: string | null;
     shortDescription: string;
@@ -693,20 +693,20 @@ export interface HomeMentors {
     rapidElo: number;
     blitzElo: number;
     chessComElo?: number | null;
-    shortFideTitle?: ('GM' | 'IM' | 'FM' | 'CM' | 'NM' | 'WGM' | 'WIM' | 'WFM' | 'WCM' | 'WNM') | null;
+    shortFideTitle?: ("GM" | "IM" | "FM" | "CM" | "NM" | "WGM" | "WIM" | "WFM" | "WCM" | "WNM") | null;
     longFideTitle?:
       | (
-          | 'Grandmaster'
-          | 'International Master'
-          | 'FIDE Master'
-          | 'Candidate Master'
-          | 'National Master'
-          | 'Woman Grandmaster'
-          | 'Woman International Master'
-          | 'Woman FIDE Master'
-          | 'Woman Candidate Master'
-          | 'Woman National Master'
-          | 'Instructor · Jugador federado FIDE'
+          | "Grandmaster"
+          | "International Master"
+          | "FIDE Master"
+          | "Candidate Master"
+          | "National Master"
+          | "Woman Grandmaster"
+          | "Woman International Master"
+          | "Woman FIDE Master"
+          | "Woman Candidate Master"
+          | "Woman National Master"
+          | "Instructor · Jugador federado FIDE"
         )
       | null;
     achievements?:
@@ -748,7 +748,7 @@ export interface HomeReviews {
     name: string;
     time: string;
     avatarInitial: string;
-    avatarColor: 'teal' | 'orange' | 'gold';
+    avatarColor: "teal" | "orange" | "gold";
     messages: {
       text: string;
       reacted?: boolean | null;
@@ -783,24 +783,24 @@ export interface HomeCta {
 export interface SiteSettings {
   id: number;
   whatsappCountryCode:
-    | '52'
-    | '1'
-    | '34'
-    | '502'
-    | '504'
-    | '503'
-    | '505'
-    | '506'
-    | '507'
-    | '57'
-    | '58'
-    | '593'
-    | '51'
-    | '591'
-    | '56'
-    | '54'
-    | '598'
-    | '595';
+    | "52"
+    | "1"
+    | "34"
+    | "502"
+    | "504"
+    | "503"
+    | "505"
+    | "506"
+    | "507"
+    | "57"
+    | "58"
+    | "593"
+    | "51"
+    | "591"
+    | "56"
+    | "54"
+    | "598"
+    | "595";
   whatsappLocalNumber: string;
   whatsappDefaultMessage: string;
   updatedAt?: string | null;
@@ -1117,7 +1117,7 @@ export interface CollectionsWidget {
   data?: {
     [k: string]: unknown;
   };
-  width: 'full';
+  width: "full";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1129,7 +1129,7 @@ export interface ImageBlock {
   caption?: string | null;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'imageBlock';
+  blockType: "imageBlock";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1138,10 +1138,10 @@ export interface ImageBlock {
 export interface CalloutBlock {
   title?: string | null;
   content: string;
-  type: 'info' | 'tip' | 'warning';
+  type: "info" | "tip" | "warning";
   id?: string | null;
   blockName?: string | null;
-  blockType: 'calloutBlock';
+  blockType: "calloutBlock";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1153,10 +1153,10 @@ export interface ChessDiagramBlock {
    */
   fen: string;
   caption?: string | null;
-  orientation: 'white' | 'black';
+  orientation: "white" | "black";
   id?: string | null;
   blockName?: string | null;
-  blockType: 'chessDiagramBlock';
+  blockType: "chessDiagramBlock";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1173,7 +1173,7 @@ export interface ChessGameBlock {
   date?: string | null;
   id?: string | null;
   blockName?: string | null;
-  blockType: 'chessGameBlock';
+  blockType: "chessGameBlock";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1183,7 +1183,6 @@ export interface Auth {
   [k: string]: unknown;
 }
 
-
-declare module 'payload' {
+declare module "payload" {
   export interface GeneratedTypes extends Config {}
 }

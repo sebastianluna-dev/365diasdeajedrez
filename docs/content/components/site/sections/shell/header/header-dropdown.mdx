@@ -4,13 +4,13 @@ description: "A navigation dropdown of the header: opens on hover through CSS, w
 
 # `HeaderDropdown`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/shell/header/header-dropdown.comp.tsx` |
-| Kind | Client Component |
+|            |                                                                                |
+| ---------- | ------------------------------------------------------------------------------ |
+| File       | `components/site/sections/shell/header/header-dropdown.comp.tsx`               |
+| Kind       | Client Component                                                               |
 | Stylesheet | none of its own; styled by `header.section.css` under `.site-header__dropdown` |
-| Used by | [`Header`](/components/site/sections/shell/header/header-section) |
-| Uses | `ChevronDown` from `lucide-react`, `useId` |
+| Used by    | [`Header`](/components/site/sections/shell/header/header-section)              |
+| Uses       | `ChevronDown` from `lucide-react`, `useId`                                     |
 
 ## Purpose
 
@@ -18,10 +18,10 @@ A group of links under one label. With the mouse the menu opens through `:hover`
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `label` | `string` | yes | The trigger's text. |
-| `links` | `{ label: string; href: string }[]` | yes | The menu entries. |
+| Prop    | Type                                | Required | Meaning             |
+| ------- | ----------------------------------- | -------- | ------------------- |
+| `label` | `string`                            | yes      | The trigger's text. |
+| `links` | `{ label: string; href: string }[]` | yes      | The menu entries.   |
 
 ## Behaviour
 
@@ -41,7 +41,7 @@ From `components/site/sections/shell/header/header.section.tsx`:
 ```tsx
 import { HeaderDropdown } from "./header-dropdown.comp";
 
-<HeaderDropdown key={`${item.label}-${index}`} label={item.label} links={item.links} />
+<HeaderDropdown key={`${item.label}-${index}`} label={item.label} links={item.links} />;
 ```
 
 ## Related

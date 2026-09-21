@@ -4,13 +4,13 @@ description: "Running-text notation of a PGN tree: main line, inline comments an
 
 # `MoveTree`
 
-| | |
-| --- | --- |
-| File | `components/chess/game-viewer/move-tree.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `move-tree.comp.css` → block `.move-tree` |
-| Used by | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="flow"`), [`AnalysisBoard`](/components/chess/analysis-board/analysis-board) |
-| Uses | `sanToSpanish` from `lib/chess/notation`<br />`nagGlyph`, `PgnTree`, `PgnTreeNode` from `lib/chess/pgn-tree` |
+|            |                                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/move-tree.comp.tsx`                                                                                                 |
+| Kind       | Client Component                                                                                                                                  |
+| Stylesheet | `move-tree.comp.css` → block `.move-tree`                                                                                                         |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="flow"`), [`AnalysisBoard`](/components/chess/analysis-board/analysis-board) |
+| Uses       | `sanToSpanish` from `lib/chess/notation`<br />`nagGlyph`, `PgnTree`, `PgnTreeNode` from `lib/chess/pgn-tree`                                      |
 
 ## Purpose
 
@@ -20,12 +20,12 @@ The tree carries no editing logic. It reports a right click when asked to and no
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `tree` | `PgnTree` | yes | The parsed game from `parsePgnTree`. |
-| `currentPath` | `string` | yes | Dotted path of the active node; `""` is the initial position. |
-| `onSelect` | `(path: string) => void` | yes | Click on a move. |
-| `onContextMenu` | `(path: string, event: MouseEvent) => void` | no | Right click on a move. Optional on purpose: whoever only reads the game does not pass it and the list behaves exactly as before; an editor uses it to open the move's menu. |
+| Prop            | Type                                        | Required | Meaning                                                                                                                                                                     |
+| --------------- | ------------------------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tree`          | `PgnTree`                                   | yes      | The parsed game from `parsePgnTree`.                                                                                                                                        |
+| `currentPath`   | `string`                                    | yes      | Dotted path of the active node; `""` is the initial position.                                                                                                               |
+| `onSelect`      | `(path: string) => void`                    | yes      | Click on a move.                                                                                                                                                            |
+| `onContextMenu` | `(path: string, event: MouseEvent) => void` | no       | Right click on a move. Optional on purpose: whoever only reads the game does not pass it and the list behaves exactly as before; an editor uses it to open the move's menu. |
 
 ## Behaviour
 
@@ -58,7 +58,7 @@ import { MoveTree } from "./move-tree.comp";
   currentPath={currentPath}
   onSelect={setCurrentPath}
   onContextMenu={isEditing ? openMenu : undefined}
-/>
+/>;
 ```
 
 ## Related

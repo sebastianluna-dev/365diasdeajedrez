@@ -4,14 +4,14 @@ description: "A testimonial drawn as a chat: avatar initial with a colour, name,
 
 # `ReviewChat`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/reviews/review-chat.comp.tsx` |
-| Kind | Server Component (rendered inside the client carousel) |
-| Stylesheet | `review-chat.comp.css` → element `.reviews__chat` of `.reviews` |
-| Used by | [`ReviewsInteractive`](/components/site/sections/home/reviews/reviews-interactive) |
-| Composes | `HeartIcon` from `components/icons/` |
-| Uses | `ReviewContent` from `services/home/home.types` |
+|            |                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/reviews/review-chat.comp.tsx`                       |
+| Kind       | Server Component (rendered inside the client carousel)                             |
+| Stylesheet | `review-chat.comp.css` → element `.reviews__chat` of `.reviews`                    |
+| Used by    | [`ReviewsInteractive`](/components/site/sections/home/reviews/reviews-interactive) |
+| Composes   | `HeartIcon` from `components/icons/`                                               |
+| Uses       | `ReviewContent` from `services/home/home.types`                                    |
 
 ## Purpose
 
@@ -19,11 +19,11 @@ A review that looks like a messaging thread rather than a quote. The avatar colo
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `review` | `ReviewContent` | yes | `avatarInitial`, `avatarColor`, `name`, `time`, `messages[{ text, reacted }]`. |
-| `position` | `"center" \| "left" \| "right"` | yes | Becomes `.reviews__chat_position_<position>`. |
-| `hidden` | `boolean` | yes | Sets `aria-hidden` on inactive slides. |
+| Prop       | Type                            | Required | Meaning                                                                        |
+| ---------- | ------------------------------- | -------- | ------------------------------------------------------------------------------ |
+| `review`   | `ReviewContent`                 | yes      | `avatarInitial`, `avatarColor`, `name`, `time`, `messages[{ text, reacted }]`. |
+| `position` | `"center" \| "left" \| "right"` | yes      | Becomes `.reviews__chat_position_<position>`.                                  |
+| `hidden`   | `boolean`                       | yes      | Sets `aria-hidden` on inactive slides.                                         |
 
 ## Behaviour
 
@@ -53,7 +53,7 @@ import { ReviewChat } from "./review-chat.comp";
   review={item}
   position={getSlidePosition(index, activeIndex, reviews.length)}
   hidden={index !== activeIndex}
-/>
+/>;
 ```
 
 ## Related

@@ -4,13 +4,13 @@ description: "One related post under an article: the same anatomy as the listing
 
 # `RelatedArticleCard`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/blog/related-articles/related-article-card.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `related-article-card.comp.css` → block `.related-article-card` |
-| Used by | [`RelatedArticles`](/components/site/sections/blog/related-articles/related-articles-section) |
-| Uses | `ArticleSummary` from `services/articles/articles.types`, `next/image` |
+|            |                                                                                               |
+| ---------- | --------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/blog/related-articles/related-article-card.comp.tsx`                |
+| Kind       | Server Component                                                                              |
+| Stylesheet | `related-article-card.comp.css` → block `.related-article-card`                               |
+| Used by    | [`RelatedArticles`](/components/site/sections/blog/related-articles/related-articles-section) |
+| Uses       | `ArticleSummary` from `services/articles/articles.types`, `next/image`                        |
 
 ## Purpose
 
@@ -18,9 +18,9 @@ The card of the related strip. It mirrors [`ArticleCard`](/components/site/secti
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `article` | `ArticleSummary` | yes | `href`, `image`, `category`, `title`, `excerpt`, `meta`. |
+| Prop      | Type             | Required | Meaning                                                  |
+| --------- | ---------------- | -------- | -------------------------------------------------------- |
+| `article` | `ArticleSummary` | yes      | `href`, `image`, `category`, `title`, `excerpt`, `meta`. |
 
 ## Behaviour
 
@@ -45,9 +45,9 @@ From `components/site/sections/blog/related-articles/related-articles.section.ts
 ```tsx
 import { RelatedArticleCard } from "./related-article-card.comp";
 
-{articles.map((article) => (
-  <RelatedArticleCard key={article.slug} article={article} />
-))}
+{
+  articles.map((article) => <RelatedArticleCard key={article.slug} article={article} />);
+}
 ```
 
 ## Related

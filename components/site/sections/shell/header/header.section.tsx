@@ -26,11 +26,7 @@ export async function Header({ theme = "dark" }: HeaderProps) {
       <div className="site-header-nav__inner">
         <div className="site-header-bar">
           <nav className="site-header">
-            {theme === "light" ? (
-              <Logo theme="light" accent="red" />
-            ) : (
-              <Logo theme="dark" accent="orange" />
-            )}
+            {theme === "light" ? <Logo theme="light" accent="red" /> : <Logo theme="dark" accent="orange" />}
 
             <div className="site-header__links">
               {content.navItems.map((item, index) =>
