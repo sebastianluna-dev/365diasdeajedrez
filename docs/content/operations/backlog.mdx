@@ -4,56 +4,47 @@ description: "How technical debt is tracked in IMPROVEMENTS.md and todos.md, and
 
 # Backlog (IMPROVEMENTS & todos)
 
-Two files in the repository root hold the backlog, and both are the source of truth. This page explains how they work and summarises what was open on 2026-09-09.
+Two files in the repository root hold the backlog, and both are the source of truth. This page explains how they work and summarises what was open on 2026-09-21.
 
 ## `IMPROVEMENTS.md`
 
 Prioritised technical debt and improvements. Every entry has a number, an **area** tag (Security, Data, CSS, UX, DX, Ops…), a **priority** (low · medium · high · extreme) and a note on how to approach it. Resolved entries stay in the file with a strikethrough title and a summary of what was done, so the same idea is not reopened. When you find something you will not fix now, add an entry; when you fix one, mark it resolved in the same commit.
 
-### Open on 2026-09-09
+### Open on 2026-09-21
 
 **High**
 
-- #7 — Declarative schema validation (zod) at the entry of every server action; rate limiting and bounds are done, the schema layer is not.
+- #7 — Declarative schema validation (zod) at the entry of every server action; rate limiting, bounds and the error notices are done, the schema layer is not.
 - #37 — A 57 MB design ZIP is still in the git history (the repo weighs ~365 MB). Rewriting history with `git filter-repo` invalidates clones; it is the maintainer's call.
-- #39 — Prettier: the repo was never formatted; `format:check` is not in CI (see `todos.md` T11).
 
 **Medium**
 
 - #1b — Password recovery and email verification (no mail service yet).
 - #1c — Invalid session with a cookie present is redirected inside the RSC stream (200) instead of a 307.
-- #14b — The daily stats bucket is UTC while the study day is `America/Mexico_City`.
-- #23 — P2002 error shape depends on the Prisma driver.
-- #45 — Exports without consumers (list in `todos.md` T15).
-- #48 — Study detail loads the PGN of every game without pagination.
-- #50 — Logging is minimal (JSON to stderr); silent failures remain in some actions.
+- #23 — P2002 error shape depends on the Prisma driver (helper in place; keep using it).
+- #48 — Study detail renders every game without pagination (the PGN is no longer loaded).
 - #52 — Payload draft preview is not wired.
-- #53 — Most platform forms do not show a pending state (`todos.md` T12).
-- #56 — Focus management: the viewer's options menu still lacks focus handling.
-- #58 — `GameTable` reimplements a table with `div`s instead of `PlatformTable` (`todos.md` T13).
-- #59 — Remaining hard-coded hex colours (`todos.md` T14).
-- #61 — Tests: coverage exists, no component tests, some mappers untested.
-- #62 — `noUncheckedIndexedAccess` is off (`todos.md` T16, 172 errors to fix).
+- #61 — Tests: some mappers and the timer hooks are untested (they need jsdom).
+- #62 — `noUncheckedIndexedAccess` is off (`todos.md` T16, ~176 errors to fix).
 - #63 — Restore drill never rehearsed.
 
 **Low**
 
-- #16b npm audit leftovers · #17 dev on webpack, build on Turbopack · #20 seed dates relative to now · #26 title of a foreign panel flashes before the redirect · #27 server actions cannot be exercised over raw HTTP · #29 orphan "new game" page · #30 `buildNotationRows` always numbers from move 1 · #33 security headers · #34 sound attribution · #70 blocking stylesheets on the home page.
+- #16b npm audit leftovers · #20 seed dates relative to now · #26 title of a foreign panel flashes before the redirect · #27 server actions cannot be exercised over raw HTTP · #33 the CSP (the other security headers are set) · #70 blocking stylesheets on the home page · #71 `next-themes` warning in the docs' dev server.
+
+**Pending in production after the 2026-09-21 batch:** `npm run db:deploy` (migration `20260909120000_composite_indexes`) and, once deployed, `npm run stats:rebuild` (the daily buckets moved to the study day).
 
 ## `todos.md`
 
 Concrete, mechanical tasks with a full specification, meant to be executed without further design (by a junior developer or a cheaper model). Each task names the files, the expected change and the checks to run. Finished tasks stay in the file with what actually changed.
 
-### Pending on 2026-09-09
+### Pending on 2026-09-21
 
-| Task | Summary                                                                                                                      |
-| ---- | ---------------------------------------------------------------------------------------------------------------------------- |
-| T11  | Run `npm run format` in a commit of its own, then add `npm run format:check` to CI.                                          |
-| T12  | `SubmitButton` (`useFormStatus`, disabled + alternate label) in the ~40 write forms under `components/platform/sections/**`. |
-| T13  | Rebuild `GameTable` on `PlatformTable`, keeping the drag handle and keyboard reordering.                                     |
-| T14  | Replace remaining hex values with tokens (`#b4a99d`, `#5c5348`, `#b8611f`, `#8a8175` as text).                               |
-| T15  | Delete the listed unused exports after a `grep -rw` for each.                                                                |
-| T16  | Enable `noUncheckedIndexedAccess` and fix the resulting errors without changing behaviour.                                   |
+| Task | Summary                                                                                    |
+| ---- | ------------------------------------------------------------------------------------------ |
+| T16  | Enable `noUncheckedIndexedAccess` and fix the resulting errors without changing behaviour. |
+
+T11 to T15 and T17 were done on 2026-09-21 and stay in the file with what changed.
 
 ## Working with the backlog
 

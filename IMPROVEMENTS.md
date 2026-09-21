@@ -368,17 +368,13 @@ outside the block that `next dev` regenerates.
 
 ## LOW priority
 
-### 30. `buildNotationRows` always numbers from move 1 — [Chess / Notation]
+### 30. ~~`buildNotationRows` always numbers from move 1~~ — RESOLVED (2026-09-21)
 
-`parsePgnTree` already takes the ply from the starting FEN, so the notation of "Mis estudios"
-numbers a position starting at move 44 correctly. `lib/chess/notation.ts` does not:
-`buildNotationRows` receives a flat list of SANs, starts counting at 1 and assumes the first is
-White's. It is used by `ChessBoard` (lessons and class blocks) and the position explorer, both
-capable of starting from a FEN.
-
-**How to approach it:** its `ply` is NOT the move number, it is the index within the array of
-positions — `setPly(row.white.ply)` uses it to move the board — so shifting it is not enough:
-"index" has to be separated from "number shown" and the starting ply passed in. Two places call it.
+`buildNotationRows(sans, annotations, startPly)` separates the index that steps the board (`ply`,
+unchanged) from the number shown: `startPlyOfFen` reads the fullmove number and the side to move of
+the starting FEN, and a line that begins with Black gets a first row "44…" with no white half-move.
+`ChessBoard` passes the starting position's FEN; the explorer keeps 0 (it starts from the initial
+position). Annotation keys follow the number shown.
 
 ### 26. The `<title>` of someone else's panel is seen before the ejection — [UX / Minor privacy]
 

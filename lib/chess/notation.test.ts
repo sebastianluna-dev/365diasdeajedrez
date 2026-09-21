@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildNotationRows, sanToSpanish } from "@/lib/chess/notation";
+import { buildNotationRows, sanToSpanish, startPlyOfFen } from "@/lib/chess/notation";
 import type { MoveAnnotations } from "@/lib/chess/types";
 
 describe("buildNotationRows", () => {
@@ -10,7 +10,7 @@ describe("buildNotationRows", () => {
     expect(rows).toHaveLength(2);
     expect(rows[0].number).toBe("1.");
     expect(rows[1].number).toBe("2.");
-    expect(rows[0].white.label).toBe("e4");
+    expect(rows[0].white?.label).toBe("e4");
     expect(rows[0].black?.label).toBe("c5");
     // The piece initial is extracted into the glyph, so the label goes without it.
     expect(rows[1].white).toMatchObject({ label: "f3", glyph: "knight" });
@@ -21,34 +21,57 @@ describe("buildNotationRows", () => {
     const rows = buildNotationRows(["e4", "c5", "Nf3"]);
 
     expect(rows).toHaveLength(2);
-    expect(rows[1].white.label).toBe("f3");
+    expect(rows[1].white?.label).toBe("f3");
     expect(rows[1].black).toBeNull();
   });
 
   it("numera los ply desde 1 y de forma correlativa", () => {
     const rows = buildNotationRows(["e4", "c5", "Nf3", "d6", "d4"]);
 
-    expect(rows.flatMap((row) => [row.white.ply, row.black?.ply ?? []].flat())).toEqual([1, 2, 3, 4, 5]);
+    expect(rows.flatMap((row) => [row.white?.ply, row.black?.ply ?? []].flat())).toEqual([1, 2, 3, 4, 5]);
   });
 
   it("devuelve una lista vacía sin jugadas", () => {
     expect(buildNotationRows([])).toEqual([]);
   });
 
+  it("numera desde la posición inicial de un FEN, con la primera fila de negras si les toca", () => {
+    // Jugada 44, negras al turno: 87 medias jugadas ya hechas.
+    const rows = buildNotationRows(["Rc8", "Kb1", "Rc2"], undefined, 87);
+
+    expect(rows.map((row) => row.number)).toEqual(["44…", "45."]);
+    expect(rows[0].white).toBeNull();
+    expect(rows[0].black).toMatchObject({ label: "c8", glyph: "rook", ply: 1 });
+    expect(rows[1].white).toMatchObject({ label: "b1", ply: 2 });
+    expect(rows[1].black).toMatchObject({ label: "c2", ply: 3 });
+  });
+
+  it("con blancas al turno en un FEN la numeración empieza en esa jugada", () => {
+    const rows = buildNotationRows(["Kb1"], undefined, 86);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].number).toBe("44.");
+    expect(rows[0].white?.label).toBe("b1");
+  });
+
+  it("las anotaciones usan el número mostrado", () => {
+    const rows = buildNotationRows(["Rc8"], { "44b": "brilliant" }, 87);
+    expect(rows[0].black?.quality).toBe("brilliant");
+  });
+
   it("asocia las anotaciones por la clave `${numero}w` / `${numero}b`", () => {
     const annotations: MoveAnnotations = { "1w": "book", "2b": "blunder" };
     const rows = buildNotationRows(["e4", "c5", "Nf3", "Nf6"], annotations);
 
-    expect(rows[0].white.quality).toBe("book");
+    expect(rows[0].white?.quality).toBe("book");
     expect(rows[0].black?.quality).toBeNull();
-    expect(rows[1].white.quality).toBeNull();
+    expect(rows[1].white?.quality).toBeNull();
     expect(rows[1].black?.quality).toBe("blunder");
   });
 
   it("deja la calidad en null cuando no se pasan anotaciones", () => {
     const rows = buildNotationRows(["e4", "e5"]);
 
-    expect(rows[0].white.quality).toBeNull();
+    expect(rows[0].white?.quality).toBeNull();
     expect(rows[0].black?.quality).toBeNull();
   });
 });
@@ -82,5 +105,20 @@ describe("sanToSpanish", () => {
   it("mantiene la desambiguación de la jugada", () => {
     expect(sanToSpanish("Nbd7")).toBe("Cbd7");
     expect(sanToSpanish("R1a3")).toBe("T1a3");
+  });
+});
+
+describe("startPlyOfFen", () => {
+  it("es 0 en la posición inicial", () => {
+    expect(startPlyOfFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")).toBe(0);
+  });
+
+  it("cuenta las medias jugadas hechas según el número de jugada y el turno", () => {
+    expect(startPlyOfFen("8/8/8/8/8/8/8/K6k w - - 0 44")).toBe(86);
+    expect(startPlyOfFen("8/8/8/8/8/8/8/K6k b - - 0 44")).toBe(87);
+  });
+
+  it("tolera un FEN sin número de jugada", () => {
+    expect(startPlyOfFen("8/8/8/8/8/8/8/K6k b - -")).toBe(1);
   });
 });
