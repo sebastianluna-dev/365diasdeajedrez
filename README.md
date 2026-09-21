@@ -49,6 +49,7 @@ npm run dev                  # http://localhost:3000
 | `npm run format` / `npm run format:check` | Prettier over the repo (`format:check` fails today: the repo was never formatted, see `IMPROVEMENTS.md` #39). |
 | `npm run positions:index` | Fills in the position index of the games already stored (`-- --all` reindexes every one). |
 | `npm run collections:by-chapter` | One-off data migration: course collections → per-chapter collections. |
+| `npm run stats:rebuild` | Rebuilds `UserStatDaily` from `UserActivity` for every account (or `-- <email>` for one). |
 
 `.github/workflows/ci.yml` runs `lint`, `typecheck` and `test` on every push to `main` and on every pull request. It does not run `next build`: static generation queries the databases, which CI does not have; the deployment is what validates the build.
 

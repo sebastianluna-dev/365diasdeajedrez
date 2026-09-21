@@ -123,14 +123,13 @@ grammar. `parsePgnTree` adds them to `warnings`, so a "Qz9" no longer makes a br
 silently. The bar was deliberately set high (`--`, `Z0` and the signs stuck to the SAN are
 tolerated): a false positive in a good game is worse than staying quiet about a bad one.
 
-### 14b. The daily statistics bucket is UTC — [Data / UX]
-*Partially resolved:* the ranges are already calendar ones (week from Monday, current month and
-year) in `lib/date-ranges.ts`, and class times are shown in the student's zone with `LocalDateTime`.
-
-**What is missing:** `UserStatDaily.day` is computed in UTC (`toUtcDay`), so for a student in UTC-6
-the late-afternoon activity counts on the following day. It is fixed by storing the bucket in the
-user's zone (their time zone would have to be persisted) or by aggregating by `occurredAt` range
-instead of by day.
+### 14b. ~~The daily statistics bucket is UTC~~ — RESOLVED (2026-09-21)
+`UserStatDaily.day` is now the study day (`statsDay` in `lib/date-ranges.ts`, `STUDY_DAY_TIMEZONE`,
+the same day the streak already used) and `rangeStart` cuts the week, month and year on that same
+day. The aggregate is derived, so the existing rows are recomputed with the new
+`npm run stats:rebuild` (`services/shared/daily-stats.ts`, shared with the seed). **Pending in
+production: run `npm run stats:rebuild` once after deploying.** A zone per student is still the
+next step, when students get one.
 
 ---
 

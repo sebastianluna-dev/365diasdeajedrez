@@ -5,7 +5,7 @@ import {
   type ActivityTypeCode,
   type SubjectTypeCode,
 } from "@/constants/platform/activity-codes.const";
-import { toUtcDay } from "@/lib/date-ranges";
+import { statsDay } from "@/lib/date-ranges";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 
 export interface RecordActivityInput {
@@ -23,7 +23,7 @@ export interface RecordActivityInput {
  * Records a fact about the student and updates the daily aggregate.
  *
  * UserActivity is append-only and the source of truth; UserStatDaily is a
- * derived copy (rebuildable with `rebuildUserStatDaily`) that makes the
+ * derived copy (rebuildable with `rebuildDailyStats`, `npm run stats:rebuild`) that makes the
  * dashboard's time ranges cheap. Two rows are incremented per fact: the
  * metric's total (topicId null) and, if there is a topic, its breakdown.
  */
@@ -50,8 +50,9 @@ export async function recordUserActivity(input: RecordActivityInput): Promise<vo
   });
   if (!metric) return;
 
-  await incrementDailyStat(input.userId, toUtcDay(occurredAt), metric.id, null);
-  if (topicId !== null) await incrementDailyStat(input.userId, toUtcDay(occurredAt), metric.id, topicId);
+  const day = statsDay(occurredAt);
+  await incrementDailyStat(input.userId, day, metric.id, null);
+  if (topicId !== null) await incrementDailyStat(input.userId, day, metric.id, topicId);
 }
 
 /**

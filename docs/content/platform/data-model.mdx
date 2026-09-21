@@ -78,7 +78,7 @@ Adding a value to a catalog is a seed row, not a migration.
 | Model | Notes |
 | --- | --- |
 | `UserActivity` | Append-only log of facts: `typeId` (LESSON_COMPLETED, COURSE_COMPLETED, CLASS_ATTENDED, GAME_ANALYZED, EXERCISE_PASSED), `subjectTypeId` (COURSE, CHAPTER, LESSON, CLASS, GAME, EXERCISE), polymorphic `subjectId` (no FK), `topicId?`, `occurredAt`, `meta` (json). Source of truth for stats and the study streak. |
-| `UserStatDaily` | Aggregate per user/day/metric/topic (`topicId NULL` = total), maintained by `recordUserActivity` and rebuildable from `UserActivity`. `STAT_METRIC_BY_ACTIVITY_TYPE` maps activity types to metrics. |
+| `UserStatDaily` | Aggregate per user/day/metric/topic (`topicId NULL` = total), maintained by `recordUserActivity` and rebuildable from `UserActivity` (`npm run stats:rebuild`). `day` is the study day (`America/Mexico_City`) stored as that date; `STAT_METRIC_BY_ACTIVITY_TYPE` maps activity types to metrics. |
 
 ## Constraints written by hand
 

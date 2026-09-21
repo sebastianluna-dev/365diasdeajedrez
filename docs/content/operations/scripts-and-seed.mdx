@@ -50,6 +50,10 @@ Fills `GamePosition` for games saved before the index existed, in batches of 200
 
 One-off data migration from course-level collections to **chapter** collections (the SQL migration only added the column). Creates the chapter collections, moves games to the chapter of the lesson that references them (or the first chapter), and registers each lesson's own PGN as a game linked to it. Idempotent, resumable, `--dry` mode. Uses one short transaction per game because long interactive transactions with the pg adapter were observed to return `null` from `create` without throwing.
 
+## `scripts/rebuild-daily-stats.ts` — `npm run stats:rebuild`
+
+Rebuilds `UserStatDaily` from `UserActivity` through `services/shared/daily-stats.ts` (the same function the seed uses), for every account or for one (`-- <email>`). The aggregate is derived, so this is the answer whenever the bucketing changes — on 2026-09-21 the day moved from UTC to the study day, `America/Mexico_City` — or the two tables are suspected to have drifted apart. Each account is rebuilt in one transaction.
+
 ## `scripts/sync-pieces.ts` — `npm run pieces:sync`
 
 Regenerates `public/pieces/*.svg` from chessground's cburnett CSS (adds `viewBox`). Run after upgrading `@lichess-org/chessground`.
@@ -57,5 +61,5 @@ Regenerates `public/pieces/*.svg` from chessground's cburnett CSS (adds `viewBox
 ## Adding a script
 
 - Put it in `scripts/`, add an `npm run` alias, start with the `dotenv` lines and the connection guard.
-- Share logic with the app through pure modules or modules that avoid `server-only` (`password.ts`, `logger.ts`, `position-hash.ts`, the catalog constants, `game-positions.service.ts` which takes the client as a parameter).
+- Share logic with the app through pure modules or modules that avoid `server-only` (`password.ts`, `logger.ts`, `position-hash.ts`, the catalog constants, `game-positions.service.ts` and `daily-stats.ts`, which take the client as a parameter).
 - Prefer idempotent, resumable behaviour and a `--dry` flag for anything that writes.

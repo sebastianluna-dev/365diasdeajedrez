@@ -13,7 +13,7 @@ Everything here requires a session; the pages live in `app/(platform)` and the l
 - **Profile**: display name, email, member since.
 - **Continue studying**: the course with the most recent `CourseProgress.lastLessonId` (`getContinueStudyingCourse()` in `services/courses`), with lesson name and percentage.
 - **Next class**: first upcoming class the student participates in.
-- **Stats** for four calendar ranges (`week` from Monday, `month`, `year`, `all` — `lib/date-ranges.ts`) computed with `groupBy` on `UserStatDaily` (metric totals and topic breakdown), labelled from the catalogs.
+- **Stats** for four calendar ranges (`week` from Monday, `month`, `year`, `all` — `lib/date-ranges.ts`) computed with `groupBy` on `UserStatDaily` (metric totals and topic breakdown), labelled from the catalogs. The day of a bucket is the study day in `STUDY_DAY_TIMEZONE` (`statsDay`), the same day the streak uses, so an evening lesson in Mexico counts on that day and not on the next one in UTC.
 - **Recent activity**: last 8 `UserActivity` rows.
 - **Daily goal and streak** (`services/study-goal`): the streak is derived from any activity in the last 400 days using day keys in `STUDY_DAY_TIMEZONE` (`America/Mexico_City`) via `lib/study-streak.ts`; minutes today = `estimatedDuration` of lessons completed today. The goal (`User.dailyGoalMinutes`, options 10…120) is changed by `updateDailyGoal`.
 

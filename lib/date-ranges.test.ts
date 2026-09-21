@@ -1,19 +1,30 @@
 import { describe, expect, it } from "vitest";
-import { rangeStart, toUtcDay } from "./date-ranges";
+import { rangeStart, statsDay } from "./date-ranges";
 
 const iso = (date: Date | null) => date?.toISOString().slice(0, 10) ?? null;
 
-describe("toUtcDay", () => {
-  it("recorta a la medianoche UTC del mismo día", () => {
-    expect(toUtcDay(new Date("2026-09-09T23:59:59Z")).toISOString()).toBe("2026-09-09T00:00:00.000Z");
+describe("statsDay", () => {
+  it("es el día de estudio (México), guardado como esa fecha a medianoche UTC", () => {
+    // 21:00 del 9 de septiembre en México es ya el 10 en UTC.
+    expect(statsDay(new Date("2026-09-10T03:00:00Z")).toISOString()).toBe("2026-09-09T00:00:00.000Z");
+    expect(statsDay(new Date("2026-09-09T15:00:00Z")).toISOString()).toBe("2026-09-09T00:00:00.000Z");
+  });
+
+  it("acepta otra zona", () => {
+    expect(statsDay(new Date("2026-09-10T03:00:00Z"), "UTC").toISOString()).toBe("2026-09-10T00:00:00.000Z");
   });
 });
 
 describe("rangeStart", () => {
   it("la semana empieza el lunes anterior (o el mismo día si es lunes)", () => {
     expect(iso(rangeStart("week", new Date("2026-09-09T15:00:00Z")))).toBe("2026-09-07"); // Wednesday
-    expect(iso(rangeStart("week", new Date("2026-09-13T01:00:00Z")))).toBe("2026-09-07"); // Sunday
-    expect(iso(rangeStart("week", new Date("2026-09-07T00:00:00Z")))).toBe("2026-09-07"); // Monday
+    expect(iso(rangeStart("week", new Date("2026-09-13T01:00:00Z")))).toBe("2026-09-07"); // Saturday evening in Mexico
+    expect(iso(rangeStart("week", new Date("2026-09-07T15:00:00Z")))).toBe("2026-09-07"); // Monday
+  });
+
+  it("la tarde del domingo en México sigue siendo la semana que acaba", () => {
+    // 22:00 del domingo 13 en México; en UTC ya es lunes 14.
+    expect(iso(rangeStart("week", new Date("2026-09-14T04:00:00Z")))).toBe("2026-09-07");
   });
 
   it("cruza el cambio de año hacia atrás sin perder el lunes", () => {
