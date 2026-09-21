@@ -157,6 +157,10 @@
     color: var(--platform-accent-ink);
   }
 
+  & .study-goal__notice {
+    margin-top: 14px;
+  }
+
   & .study-goal__form {
     display: flex;
     align-items: flex-end;
