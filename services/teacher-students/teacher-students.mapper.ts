@@ -1,4 +1,3 @@
-import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { mapGameView, mapStudyDetail, mapStudySummary, type GameViewRow, type StudyDetailRow, type StudySummaryRow } from "@/services/studies/studies.mapper";
 import type { GameView, StudyDetail, StudySummary } from "@/services/studies/studies.types";
@@ -28,8 +27,4 @@ export function mapStudentStudyDetail(studentId: string, row: StudyDetailRow): S
 export function mapStudentGameView(studentId: string, row: GameViewRow): GameView {
   const view = mapGameView(row, null);
   return { ...view, studyHref: teacherRoutes.studentStudy(studentId, view.studyId) };
-}
-
-export function formatOptionalDate(date: Date | null | undefined): string | undefined {
-  return date ? formatSpanishDate(date) : undefined;
 }

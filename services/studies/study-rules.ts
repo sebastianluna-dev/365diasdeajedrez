@@ -36,13 +36,13 @@ const READ_ONLY: StudyPermissions = {
  * account and `COLLECTION` reaches them ready-made. This same pair is what an
  * existing study can be CHANGED to, which is why there is a single list.
  */
-export const STUDENT_KINDS: readonly DatabaseKindCode[] = [DATABASE_KIND.STUDY, DATABASE_KIND.TOURNAMENT];
+const STUDENT_KINDS: readonly DatabaseKindCode[] = [DATABASE_KIND.STUDY, DATABASE_KIND.TOURNAMENT];
 
 /**
  * Kinds a teacher can create: the student's plus the collection, which is the
  * one they share with their students.
  */
-export const TEACHER_KINDS: readonly DatabaseKindCode[] = [...STUDENT_KINDS, DATABASE_KIND.COLLECTION];
+const TEACHER_KINDS: readonly DatabaseKindCode[] = [...STUDENT_KINDS, DATABASE_KIND.COLLECTION];
 
 export function creatableKinds(isTeacher: boolean): readonly DatabaseKindCode[] {
   return isTeacher ? TEACHER_KINDS : STUDENT_KINDS;

@@ -11,16 +11,11 @@ import { randomInt } from "node:crypto";
 // `String`: changing the column to an integer would force migrating the type of
 // every foreign key pointing at it, and the leading zero of "00020212" would be lost.
 
-export const NUMERIC_ID_DIGITS = 8;
+const NUMERIC_ID_DIGITS = 8;
 
 /** A new identifier. Uniqueness is guaranteed by the primary key. */
 export function numericId(digits: number = NUMERIC_ID_DIGITS): string {
   let id = "";
   for (let index = 0; index < digits; index++) id += String(randomInt(10));
   return id;
-}
-
-/** Does it have the shape of a student-area identifier? */
-export function isNumericId(value: string): boolean {
-  return value.length === NUMERIC_ID_DIGITS && /^\d+$/.test(value);
 }

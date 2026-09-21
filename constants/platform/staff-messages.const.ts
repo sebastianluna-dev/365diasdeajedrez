@@ -6,8 +6,6 @@
 // (they use `useActionState`, see §14.2 of the plan): a password cannot travel
 // in a query param.
 
-export const STAFF_ERROR_PARAM = "error";
-
 export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   invalid: "Revisa los datos: falta algún campo obligatorio o tiene un formato incorrecto.",
   throttled: "Demasiadas operaciones seguidas. Espera un momento y vuelve a intentarlo.",
@@ -37,11 +35,4 @@ export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   illegalLine: "La línea principal del PGN tiene una jugada que no se puede jugar. Corrígela antes de marcarla como entrenable.",
   colorHasNoMoves:
     "Con ese bando no queda ninguna jugada que entrenar: la línea principal sólo tiene la jugada del rival. Alarga la línea o cambia el bando.",
-};
-
-/** Texts of the account creation, which returns state instead of redirecting. */
-export const STAFF_ACCOUNT_MESSAGES = {
-  passwordShownOnce: "Anótala ahora: no se volverá a mostrar.",
-  created: "Cuenta creada.",
-  passwordReset: "Contraseña restablecida. Se han cerrado todas las sesiones de esa cuenta.",
 };
