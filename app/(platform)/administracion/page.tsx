@@ -3,9 +3,12 @@ import { StaffDashboardSection } from "@/components/platform/sections/staff/dash
 import { requireStaff } from "@/lib/platform-auth/roles";
 import "./staff-page.css";
 
-export const metadata: Metadata = {
-  title: "Administración",
-};
+// The title is resolved with the role, like the page itself: without it the
+// response carries not even the panel's name (IMPROVEMENTS #26).
+export async function generateMetadata(): Promise<Metadata> {
+  await requireStaff();
+  return { title: "Administración" };
+}
 
 export default async function StaffPage() {
   // Panel border: no Staff row, to the dashboard; no session, to the login.

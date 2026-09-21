@@ -3,9 +3,12 @@ import { TeacherClassesSection } from "@/components/platform/sections/teacher/cl
 import { CLASS_STATUS, type ClassStatusCode } from "@/constants/platform/class-codes.const";
 import { requireTeacher } from "@/lib/platform-auth/roles";
 
-export const metadata: Metadata = {
-  title: "Clases que imparto",
-};
+// The title is resolved with the role, like the page itself: without it the
+// response carries not even the panel's name (IMPROVEMENTS #26).
+export async function generateMetadata(): Promise<Metadata> {
+  await requireTeacher();
+  return { title: "Clases que imparto" };
+}
 
 interface TeacherClassesPageProps {
   searchParams: Promise<{ status?: string }>;

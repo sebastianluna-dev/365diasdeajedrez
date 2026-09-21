@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import { TeacherProfileSection } from "@/components/platform/sections/teacher/profile/teacher-profile.section";
 import { getTeacherProfile } from "@/services/teacher/teacher.service";
+import { requireTeacher } from "@/lib/platform-auth/roles";
 
-export const metadata: Metadata = {
-  title: "Mi perfil",
-};
+// The title is resolved with the role, like the page itself: without it the
+// response carries not even the panel's name (IMPROVEMENTS #26).
+export async function generateMetadata(): Promise<Metadata> {
+  await requireTeacher();
+  return { title: "Mi perfil" };
+}
 
 interface TeacherProfilePageProps {
   searchParams: Promise<{ error?: string }>;

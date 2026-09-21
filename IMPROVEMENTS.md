@@ -375,15 +375,12 @@ the starting FEN, and a line that begins with Black gets a first row "44…" wit
 `ChessBoard` passes the starting position's FEN; the explorer keeps 0 (it starts from the initial
 position). Annotation keys follow the number shown.
 
-### 26. The `<title>` of someone else's panel is seen before the ejection — [UX / Minor privacy]
+### 26. ~~The `<title>` of someone else's panel is seen before the ejection~~ — RESOLVED (2026-09-21)
 
-When entering `/teacher` or `/staff` by URL without the role, Next evaluates the page's
-`export const metadata` before the `redirect()` of `require*` takes effect, so the response carries
-`<title>Panel del profesor…</title>` even though not a single piece of data is rendered. Verified
-with the three demo accounts: **no data leaks**, only the static text of the title.
-
-**How to approach it:** if it bothers, move the title to `generateMetadata` and resolve the role
-there (with `cache()` it costs no extra query). Low priority: it is cosmetic.
+The fourteen panel pages with a static title now export `generateMetadata`, whose first await is
+the same `requireTeacher()` / `requireStaff()` as the page (deduplicated by `cache()`, so no extra
+query). Checked with a student's session against `/profesor`, `/profesor/perfil` and
+`/administracion`: the response carries no `<title>` of the panel at all.
 
 ### 27. The server actions cannot be exercised over raw HTTP — [DX / Tests]
 

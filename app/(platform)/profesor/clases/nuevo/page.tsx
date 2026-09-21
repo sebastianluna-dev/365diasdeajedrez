@@ -6,9 +6,12 @@ import { safeTimeZone } from "@/lib/timezone";
 import { listMeetingProviders } from "@/services/teacher-classes/teacher-classes.service";
 import { getAssignedStudents } from "@/services/teacher-students/teacher-students.service";
 
-export const metadata: Metadata = {
-  title: "Nueva clase",
-};
+// The title is resolved with the role, like the page itself: without it the
+// response carries not even the panel's name (IMPROVEMENTS #26).
+export async function generateMetadata(): Promise<Metadata> {
+  await requireTeacher();
+  return { title: "Nueva clase" };
+}
 
 interface NewClassPageProps {
   searchParams: Promise<{ error?: string }>;

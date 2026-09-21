@@ -4,9 +4,12 @@ import { CLASS_STATUS, type ClassStatusCode } from "@/constants/platform/class-c
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { listAllClasses, listTeacherFilterOptions } from "@/services/staff-classes/staff-classes.service";
 
-export const metadata: Metadata = {
-  title: "Clases",
-};
+// The title is resolved with the role, like the page itself: without it the
+// response carries not even the panel's name (IMPROVEMENTS #26).
+export async function generateMetadata(): Promise<Metadata> {
+  await requireStaff();
+  return { title: "Clases" };
+}
 
 interface StaffClassesPageProps {
   searchParams: Promise<{ teacherId?: string; status?: string; from?: string; to?: string; q?: string }>;

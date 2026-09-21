@@ -3,9 +3,12 @@ import { TeacherDashboardSection } from "@/components/platform/sections/teacher/
 import { requireTeacher } from "@/lib/platform-auth/roles";
 import "./teacher-page.css";
 
-export const metadata: Metadata = {
-  title: "Panel del profesor",
-};
+// The title is resolved with the role, like the page itself: without it the
+// response carries not even the panel's name (IMPROVEMENTS #26).
+export async function generateMetadata(): Promise<Metadata> {
+  await requireTeacher();
+  return { title: "Panel del profesor" };
+}
 
 export default async function TeacherPage() {
   // Panel border: no active Teacher row, to the dashboard; no session, to the login.
