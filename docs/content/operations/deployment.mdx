@@ -60,7 +60,7 @@ Structured JSON lines on stderr (see [Caching, errors & logging](/architecture/c
 
 ## Security headers
 
-None are set by the app today (CSP, COOP/COEP, X-Frame-Options); Vercel adds HSTS. This is tracked as `IMPROVEMENTS.md` #33. COOP/COEP in particular would enable multi-threaded Stockfish but break cross-origin images, so it needs a plan.
+`next.config.ts` sets, on every route (Payload's panel included): `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Cross-Origin-Opener-Policy: same-origin` and a `Permissions-Policy` that switches camera, microphone and geolocation off. Vercel adds HSTS. There is no CSP: the inline scripts of Google Analytics and the Meta Pixel would need a nonce from `proxy.ts`, tracked in `IMPROVEMENTS.md` #33. COEP is not set either: it would enable multi-threaded Stockfish but break the Cloudinary images.
 
 ## Performance
 
