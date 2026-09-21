@@ -22,7 +22,7 @@
     "user:password": "tsx scripts/platform-user.ts password",
     "user:list": "tsx scripts/platform-user.ts list",
     "pieces:sync": "tsx scripts/sync-pieces.ts",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "test:coverage": "vitest run --coverage",
     "format": "prettier --write . --ignore-path .gitignore",
     "format:check": "prettier --check . --ignore-path .gitignore",
