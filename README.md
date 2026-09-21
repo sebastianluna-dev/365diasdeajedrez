@@ -116,7 +116,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 
 - `/inicio`
 - `/clases`, `/clases/[classId]`
-- `/estudios`, `/estudios/clases` (games seen in class), `/estudios/[studyId]`, `/estudios/[studyId]/partidas/[gameId]`, `/estudios/[studyId]/partidas/nueva`
+- `/estudios`, `/estudios/clases` (games seen in class), `/estudios/[studyId]`, `/estudios/[studyId]/partidas/[gameId]`
 - `/cursos`, `/cursos/[courseId]`, `/cursos/[courseId]/[chapterOrder]`
 - `/lecciones/[lessonId]` (the lesson hangs off the root: its identifier already locates it)
 - `/entrenador`

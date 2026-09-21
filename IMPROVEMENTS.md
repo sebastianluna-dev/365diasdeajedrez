@@ -431,16 +431,12 @@ is still needed before a demo.
 
 ---
 
-### 29. Orphaned "new game" page — [Debt / Cleanup]
+### 29. ~~Orphaned "new game" page~~ — RESOLVED (2026-09-21)
 
-When game creation moved to the study page's modal, `/estudios/[studyId]/partidas/nueva` was left
-without a single link pointing at it. It still works by direct URL and shares `game-fields.comp`
-with editing, so it does not get in the way, but it is a second door to the same action with
-duplicated validation.
-
-**How to approach it:** decide whether the route is withdrawn along with `new-game.section.tsx` and
-`platformRoutes.newStudyGame`, or whether it is kept as a deep link. If it is kept, it had better
-share the form with the modal instead of maintaining two.
+`/estudios/[studyId]/partidas/nueva`, `new-game.section.tsx` and `platformRoutes.newStudyGame` are
+gone: the study page's dialog was already the only door anyone was shown, and the second one kept a
+duplicated form and a duplicated validation. `createStudyGame` no longer needs the `origin` field
+to know where to bounce a bad FEN.
 
 ### 31. ~~The home page renders per request because of the session cookie~~ — RESOLVED (2026-09-09)
 

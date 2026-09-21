@@ -24,7 +24,6 @@ export const platformRoutes = {
    * route to maintain in parallel.
    */
   gameDetail: (studyId: string, gameId: string) => `/estudios/${studyId}/partidas/${gameId}`,
-  newStudyGame: (studyId: string) => `/estudios/${studyId}/partidas/nueva`,
   courses: "/cursos",
   /**
    * The STUDENT's routes go by an 8-digit numeric identifier. The staff panel
