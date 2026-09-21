@@ -104,6 +104,12 @@ export interface StudyDetail {
   shares: StudyShareItem[];
   /** Games of the study cited in the content of some class. */
   citedGameCount: number;
+  /** All the games of the study, not only the page below. */
+  gameCount: number;
+  /** The page of games this detail carries (1-based) and how many there are. */
+  page: number;
+  pageCount: number;
+  /** One page of games (`STUDY_GAMES_PAGE_SIZE`), in the study's order. */
   games: StudyGameItem[];
 }
 

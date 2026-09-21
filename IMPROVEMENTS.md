@@ -207,14 +207,14 @@ occasional `grep -rw`, there is no tool wired for it.
 three transactions that store and index imports (`importPgnGames`, `copyClassGamesToStudy`,
 `importChapterGames`). Atomicity is kept; it is only given the time the 500-game cap needs.
 
-### 48. The study page loads the PGN of every one of its games without paginating — [Data / Performance]
+### 48. ~~The study page loads the PGN of every one of its games without paginating~~ — RESOLVED (2026-09-21)
 
-_Mostly resolved (2026-09-09):_ `studyDetailInclude.games` uses `select` with the ten fields the
-mapper reads (never `pgn` nor `tags`), and `listCollectionGames` counts the moves with
-`_count.positions` of the position index instead of reading and replaying the collection's PGN.
-
-**What is left:** paginating the list by `searchParams` (and the game's aside) when a study goes
-beyond a few dozen games; today they are all rendered, already without the weight of the PGN.
+The `select` without PGN came first (2026-09-09). Now `getStudyById(studyId, page)` serves pages of
+`STUDY_GAMES_PAGE_SIZE` (100) games through `?pagina=`, clamped to the last page; the totals, the
+cited count and the event counts that name the games are asked of the whole study so a label reads
+the same on any page. Reordering needs the whole list in hand, so it is offered only on a
+single-page study, and the page says so. The game page's aside lists the first page. The teacher's
+read-only view is not paginated.
 
 ### 49. ~~The dashboard reads the full statistics history and the whole catalog~~ — RESOLVED (2026-09-09)
 

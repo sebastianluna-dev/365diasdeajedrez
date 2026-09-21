@@ -1,8 +1,10 @@
 import { STUDENT_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
+import Link from "next/link";
 import { EmptyState } from "@/components/platform/shared/empty-state.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { DeleteStudy } from "@/components/platform/sections/studies/studies-list/delete-study.comp";
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
+import { platformRoutes } from "@/lib/platform-routes";
 import type { ClassGameItem, StudentOption, StudyDetail, StudyKindOption } from "@/services/studies/studies.types";
 import { EditStudy } from "./edit-study.comp";
 import { GameTable } from "./game-table.comp";
@@ -61,7 +63,7 @@ export function StudyDetailSection({
             {study.description && <span>{study.description}</span>}
             {study.description && <span className="study-detail__dot">·</span>}
             <span>
-              {study.games.length} {study.games.length === 1 ? "partida" : "partidas"}
+              {study.gameCount} {study.gameCount === 1 ? "partida" : "partidas"}
             </span>
             <span className="study-detail__dot">·</span>
             <span>Creado el {study.createdAtLabel}</span>
@@ -74,7 +76,7 @@ export function StudyDetailSection({
               <DeleteStudy
                 id={study.id}
                 name={study.name}
-                gameCount={study.games.length}
+                gameCount={study.gameCount}
                 citedGameCount={study.citedGameCount}
                 trigger="button"
               />
@@ -98,7 +100,39 @@ export function StudyDetailSection({
       {canShare && <ShareCollection studyId={study.id} shares={study.shares} students={students} />}
 
       {study.games.length > 0 ? (
-        <GameTable studyId={study.id} games={study.games} canReorder={canWrite} />
+        <>
+          {/* Reordering needs the whole list in hand: with more than one page the
+              order is read-only, and it is said so instead of failing quietly. */}
+          <GameTable studyId={study.id} games={study.games} canReorder={canWrite && study.pageCount === 1} />
+          {study.pageCount > 1 && (
+            <nav className="study-detail__pages" aria-label="Páginas de partidas">
+              {study.page > 1 ? (
+                <Link
+                  href={`${platformRoutes.studyDetail(study.id)}?pagina=${study.page - 1}`}
+                  className="study-detail__page-link"
+                >
+                  ← Anteriores
+                </Link>
+              ) : (
+                <span className="study-detail__page-link study-detail__page-link_state_disabled">← Anteriores</span>
+              )}
+              <span className="study-detail__page-status">
+                Página {study.page} de {study.pageCount}
+                {canWrite && " · el orden se edita en estudios de una sola página"}
+              </span>
+              {study.page < study.pageCount ? (
+                <Link
+                  href={`${platformRoutes.studyDetail(study.id)}?pagina=${study.page + 1}`}
+                  className="study-detail__page-link"
+                >
+                  Siguientes →
+                </Link>
+              ) : (
+                <span className="study-detail__page-link study-detail__page-link_state_disabled">Siguientes →</span>
+              )}
+            </nav>
+          )}
+        </>
       ) : (
         <EmptyState
           title="Sin partidas todavía"

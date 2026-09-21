@@ -19,14 +19,14 @@ One study. The header names it and says what it is; the action bar offers what t
 
 ## Props
 
-| Prop         | Type                | Required | Meaning                                                                                     |
-| ------------ | ------------------- | -------- | ------------------------------------------------------------------------------------------- |
-| `study`      | `StudyDetail`       | yes      | The study with `games`, `shares`, `permissions`, `kindCode`, `citedGameCount` and labels.   |
-| `kinds`      | `StudyKindOption[]` | yes      | Kinds the student can set when editing. Empty in course databases.                          |
-| `results`    | `StudyKindOption[]` | yes      | The results catalog, for the blank-game form.                                               |
-| `classGames` | `ClassGameItem[]`   | yes      | Games seen in class that can be copied. Empty hides that tab of `NewGame`.                  |
-| `students`   | `StudentOption[]`   | yes      | Students to hand a collection to, for a teacher's own collection.                           |
-| `errorCode`  | `string`            | no       | `?error=` from a bounced action; translated by the local map (`confirmStudyDelete`, `fen`). |
+| Prop         | Type                | Required | Meaning                                                                                                                                 |
+| ------------ | ------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `study`      | `StudyDetail`       | yes      | The study with one page of `games`, `gameCount`, `page`, `pageCount`, `shares`, `permissions`, `kindCode`, `citedGameCount` and labels. |
+| `kinds`      | `StudyKindOption[]` | yes      | Kinds the student can set when editing. Empty in course databases.                                                                      |
+| `results`    | `StudyKindOption[]` | yes      | The results catalog, for the blank-game form.                                                                                           |
+| `classGames` | `ClassGameItem[]`   | yes      | Games seen in class that can be copied. Empty hides that tab of `NewGame`.                                                              |
+| `students`   | `StudentOption[]`   | yes      | Students to hand a collection to, for a teacher's own collection.                                                                       |
+| `errorCode`  | `string`            | no       | `?error=` from a bounced action; translated by the local map (`confirmStudyDelete`, `fen`).                                             |
 
 ## Behaviour
 
@@ -40,7 +40,7 @@ One study. The header names it and says what it is; the action bar offers what t
 
 Block `.study-detail` (103 lines).
 
-**Elements:** `.study-detail__head`, `.study-detail__heading`, `.study-detail__tags`, `.study-detail__kind`, `.study-detail__origin`, `.study-detail__readonly`, `.study-detail__name`, `.study-detail__meta`, `.study-detail__dot`, `.study-detail__actions`, `.study-detail__new`
+**Elements:** `.study-detail__head`, `.study-detail__heading`, `.study-detail__tags`, `.study-detail__kind`, `.study-detail__origin`, `.study-detail__readonly`, `.study-detail__name`, `.study-detail__meta`, `.study-detail__dot`, `.study-detail__actions`, `.study-detail__new`, `.study-detail__pages`, `.study-detail__page-link` (`_state_disabled`), `.study-detail__page-status`
 
 No modifiers.
 

@@ -11,6 +11,7 @@ import {
   mapGameView,
   mapStudyDetail,
   mapStudySummary,
+  STUDY_GAMES_PAGE_SIZE,
   studyDetailInclude,
   studySummaryInclude,
 } from "./studies.mapper";
@@ -89,14 +90,42 @@ export const getGameResultOptions = cache(async (): Promise<StudyKindOption[]> =
   return rows.map((row) => ({ code: row.code, label: row.label }));
 });
 
-export async function getStudyById(studyId: string): Promise<StudyDetail | null> {
+/**
+ * One page of the study's games (`STUDY_GAMES_PAGE_SIZE`). A page beyond the
+ * last one answers the last: a stale link must not show an empty study. The
+ * totals and the event counts — which name the games — are asked of the whole
+ * study, so a label on page three reads the same as it would on a single page.
+ */
+export async function getStudyById(studyId: string, requestedPage = 1): Promise<StudyDetail | null> {
   const db = getPlatformDb();
   const [where, user] = await Promise.all([getVisibleStudiesWhere(), getCurrentUser()]);
-  const row = await db.gameDatabase.findFirst({
-    where: { AND: [{ id: studyId }, where] },
-    include: studyDetailInclude,
-  });
-  return row ? mapStudyDetail(row, user.id) : null;
+  const studyWhere = { AND: [{ id: studyId }, where] };
+
+  const gameCount = await db.game.count({ where: { database: studyWhere } });
+  const pageCount = Math.max(1, Math.ceil(gameCount / STUDY_GAMES_PAGE_SIZE));
+  const page = Math.min(Math.max(1, Math.trunc(requestedPage) || 1), pageCount);
+
+  const [row, citedGameCount, events] = await Promise.all([
+    db.gameDatabase.findFirst({
+      where: studyWhere,
+      include: {
+        ...studyDetailInclude,
+        games: { ...studyDetailInclude.games, skip: (page - 1) * STUDY_GAMES_PAGE_SIZE, take: STUDY_GAMES_PAGE_SIZE },
+      },
+    }),
+    db.game.count({ where: { database: studyWhere, classBlocks: { some: {} } } }),
+    db.game.groupBy({
+      by: ["event"],
+      where: { database: studyWhere, event: { not: null } },
+      _count: { _all: true },
+    }),
+  ]);
+  if (!row) return null;
+
+  const eventCounts = new Map<string, number>();
+  for (const group of events) if (group.event) eventCounts.set(group.event, group._count._all);
+
+  return mapStudyDetail(row, user.id, { gameCount, citedGameCount, eventCounts, page });
 }
 
 /**

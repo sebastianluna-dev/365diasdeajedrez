@@ -13,7 +13,7 @@ import "./study-page.css";
 
 interface StudyPageProps {
   params: Promise<{ studyId: string }>;
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; pagina?: string }>;
 }
 
 export async function generateMetadata({ params }: StudyPageProps): Promise<Metadata> {
@@ -24,9 +24,10 @@ export async function generateMetadata({ params }: StudyPageProps): Promise<Meta
 
 export default async function StudyPage({ params, searchParams }: StudyPageProps) {
   const { studyId } = await params;
-  // `getStudyById` goes through the DAL, so this first await acts as the
-  // session border as well as fetching the data.
-  const [study, { error }] = await Promise.all([getStudyById(studyId), searchParams]);
+  // `getStudyById` goes through the DAL, so that await acts as the session
+  // border as well as fetching the data.
+  const { error, pagina } = await searchParams;
+  const study = await getStudyById(studyId, Number.parseInt(pagina ?? "1", 10));
   if (!study) notFound();
 
   // All of this feeds forms that only exist when writing is allowed, so for
