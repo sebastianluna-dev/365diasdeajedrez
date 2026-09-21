@@ -323,7 +323,7 @@ root with the `_state_closed` modifier; `.teacher-game` has its own stylesheet
 (`teacher-game.section.css`). The helpers of `blog.css` (`.blog-button`…) are global on purpose and
 stay that way.
 
-### 61. Vitest blind to `.test.tsx`, no coverage, and pure modules without a single test — [Tests]
+### 61. ~~Vitest blind to `.test.tsx`, no coverage, and pure modules without a single test~~ — RESOLVED (2026-09-21)
 
 _Mostly resolved (2026-09-09):_ `include` with `{ts,tsx}`, `@vitest/coverage-v8` and
 `npm run test:coverage` (with `include`/`exclude` narrowed to `lib`, `services`, `constants` and
@@ -331,8 +331,12 @@ _Mostly resolved (2026-09-09):_ `include` with `{ts,tsx}`, `@vitest/coverage-v8`
 `format-spanish-time`, `numeric-id`, `parse-fen-placement`, `generate-slug`, `legal-moves` and
 `studies.mapper` (the name ladder, class citations and sharing according to who is looking).
 
-**What is left:** the other mappers without a test (`classes`, `home`, `game-explorer`…) and the
-timer hooks, which need a Vitest project with `jsdom`.
+**Resolved (2026-09-21):** `classes`, `dashboard`, `game-explorer`, `trainer`, `teacher` and
+`teacher-students` mappers have tests (35), and so do the clock's pure helpers. The React hooks
+themselves (`use-chess-clock`, `use-countdown-timer`) are still untested: they need `jsdom` and a
+rendering harness, two dependencies that are not worth adding for two hooks whose logic is a
+`setInterval` over `Date.now()`; the public-site mappers (`home`, `articles`, `mentors`) shape CMS
+content and are covered by the page rendering in the deployment.
 
 ### 62. ~~`tsconfig.json` with `target` ES2017 and without the flags that catch index bugs~~ — RESOLVED (2026-09-21)
 
