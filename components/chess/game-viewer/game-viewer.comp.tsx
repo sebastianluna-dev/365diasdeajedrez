@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  type KeyboardEvent as ReactKeyboardEvent,
   type MouseEvent,
   type ReactNode,
   useCallback,
@@ -194,6 +195,15 @@ export function GameViewer({
   // decides is how much height the notation gives up, and the card answers for that.
   const [engineExpanded, setEngineExpanded] = useState(false);
   const optionsRef = useRef<HTMLDivElement>(null);
+  const optionsButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Closing from the keyboard or by choosing an option hands the focus back to
+  // the button that opened the menu; closing by clicking elsewhere does not,
+  // because the click already decided where the focus goes.
+  const closeOptions = useCallback((returnFocus: boolean) => {
+    setOptionsOpen(false);
+    if (returnFocus) optionsButtonRef.current?.focus();
+  }, []);
 
   // External store: the first paint uses the defaults (the only thing the
   // server can know) and React catches up with what is stored as soon as it
@@ -276,10 +286,7 @@ export function GameViewer({
   useEffect(() => stopRepeat, [stopRepeat]);
 
   const goToStart = useCallback(() => setCurrentPath(""), [setCurrentPath]);
-  const goToPrevious = useCallback(
-    () => setCurrentPath(parentPathOf(currentPathRef.current)),
-    [setCurrentPath],
-  );
+  const goToPrevious = useCallback(() => setCurrentPath(parentPathOf(currentPathRef.current)), [setCurrentPath]);
   const goToNext = useCallback(() => {
     if (!tree) return;
     const next = nextPathOf(tree, currentPathRef.current);
@@ -332,7 +339,7 @@ export function GameViewer({
       if (!optionsRef.current?.contains(event.target as Node)) setOptionsOpen(false);
     };
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setOptionsOpen(false);
+      if (event.key === "Escape") closeOptions(true);
     };
 
     window.addEventListener("pointerdown", handlePointerDown);
@@ -341,7 +348,27 @@ export function GameViewer({
       window.removeEventListener("pointerdown", handlePointerDown);
       window.removeEventListener("keydown", handleKeyDown);
     };
+  }, [optionsOpen, closeOptions]);
+
+  // A menu that opens takes the focus with it, like `MoveContextMenu`: otherwise
+  // a keyboard user opens it and is left on the button, with the options out
+  // of reach.
+  useEffect(() => {
+    if (!optionsOpen) return;
+    optionsRef.current?.querySelector<HTMLButtonElement>(".game-viewer__options-menu button")?.focus();
   }, [optionsOpen]);
+
+  /** Up and down walk the options and wrap around; the other keys are the page's. */
+  const handleOptionsKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    const items = Array.from(event.currentTarget.querySelectorAll("button"));
+    if (items.length === 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const current = items.findIndex((item) => item === document.activeElement);
+    const step = event.key === "ArrowDown" ? 1 : -1;
+    items[(current + step + items.length) % items.length].focus();
+  };
 
   // Full screen can be left with Escape without going through the button, so
   // the state is read from the document and not from who pressed.
@@ -480,12 +507,13 @@ export function GameViewer({
           aria-expanded={optionsOpen}
           onClick={() => setOptionsOpen((open) => !open)}
           className="game-viewer__nav-button"
+          ref={optionsButtonRef}
         >
           <MenuIcon className="game-viewer__nav-icon" />
         </button>
 
         {optionsOpen && (
-          <div className="game-viewer__options-menu" role="menu">
+          <div className="game-viewer__options-menu" role="menu" onKeyDown={handleOptionsKeyDown}>
             <button
               type="button"
               // `menuitemcheckbox` and not `menuitem`: it is a toggle and the
@@ -494,7 +522,7 @@ export function GameViewer({
               aria-checked={preferences.sound}
               onClick={() => {
                 updatePreferences({ ...preferences, sound: !preferences.sound });
-                setOptionsOpen(false);
+                closeOptions(true);
               }}
               className="game-viewer__options-item"
             >
@@ -511,7 +539,7 @@ export function GameViewer({
               role="menuitem"
               onClick={() => {
                 toggleFullscreen();
-                setOptionsOpen(false);
+                closeOptions(true);
               }}
               className="game-viewer__options-item"
             >
@@ -555,19 +583,19 @@ export function GameViewer({
 
           <div className="game-viewer__board-row">
             <div className="game-viewer__board">
-            <ChessBoard
-              position={{
-                fen,
-                lastMove: node?.lastMove,
-                check: node?.check ?? false,
-                shapes: node ? node.shapes : tree.initialShapes,
-              }}
-              flipBoard={flipBoard}
-              interactive={isEditing}
-              onMove={(san) => editing.addMoveAt(currentPath, san)}
-              editableShapes={isEditing}
-              onShapesChange={(shapes) => editing.updateShapes(currentPath, shapes)}
-            />
+              <ChessBoard
+                position={{
+                  fen,
+                  lastMove: node?.lastMove,
+                  check: node?.check ?? false,
+                  shapes: node ? node.shapes : tree.initialShapes,
+                }}
+                flipBoard={flipBoard}
+                interactive={isEditing}
+                onMove={(san) => editing.addMoveAt(currentPath, san)}
+                editableShapes={isEditing}
+                onShapesChange={(shapes) => editing.updateShapes(currentPath, shapes)}
+              />
             </div>
 
             {/* The bar goes between the board and the notation, and is painted
@@ -604,9 +632,7 @@ export function GameViewer({
             commenting and annotating are done on the normal screen — that is why
             the move menu does not offer those two options either. */}
         {boardFooter && (
-          <div
-            className={`game-viewer__board-footer${isFullscreen ? " game-viewer__board-footer_state_hidden" : ""}`}
-          >
+          <div className={`game-viewer__board-footer${isFullscreen ? " game-viewer__board-footer_state_hidden" : ""}`}>
             {boardFooter}
           </div>
         )}

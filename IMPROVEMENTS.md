@@ -253,15 +253,15 @@ GET search forms and the two `useActionState` forms (account creation, password 
 The token goes from `#9a9189` (3.1:1) to `#7a7168` (4.8:1 on white). The blog diagram's caption uses
 the new `--color-muted-on-light` instead of `#8a8175`.
 
-### 56. No focus strategy: no global `:focus-visible`, `outline: none` in the notation and dialogs without focus — [A11y]
+### 56. ~~No focus strategy: no global `:focus-visible`, `outline: none` in the notation and dialogs without focus~~ — RESOLVED (2026-09-21)
 *Mostly resolved (2026-09-09):* global `:focus-visible` in `globals.css` (orange on the dark
 background) and recoloured in `platform.css` for the light one; out with the notation's
 `outline: none`; the promotion picker carries `aria-modal`, takes focus on the first piece and
 closes with Escape.
 
-**What is left:** the viewer's options menu (`game-viewer.comp.tsx`) still neither moves the focus
-when it opens nor returns it when it closes; `MoveContextMenu` already does and is the pattern to
-copy.
+**Resolved (2026-09-21):** the viewer's options menu focuses its first option on open, walks them
+with Up/Down and returns the focus to its button on Escape or on choosing an option (`closeOptions`
+in `game-viewer.comp.tsx`).
 
 ### 57. ~~Mobile menu focusable while closed, dropdown without ARIA and no skip link~~ — RESOLVED (2026-09-09)
 The closed mobile menu carries `visibility: hidden` (with the transition delayed so as not to cut
