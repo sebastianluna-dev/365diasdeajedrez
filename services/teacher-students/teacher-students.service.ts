@@ -137,7 +137,9 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
       where: { userId: studentId, class: { teacherId: teacher.id } },
       select: {
         attended: true,
-        class: { select: { id: true, title: true, scheduledAt: true, status: { select: { code: true, label: true } } } },
+        class: {
+          select: { id: true, title: true, scheduledAt: true, status: { select: { code: true, label: true } } },
+        },
       },
       orderBy: { class: { scheduledAt: "desc" } },
     }),

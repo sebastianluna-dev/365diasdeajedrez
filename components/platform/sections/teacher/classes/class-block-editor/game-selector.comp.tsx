@@ -16,10 +16,7 @@ interface GameSelectorProps {
  */
 export function GameSelector({ groups, value, onChange }: GameSelectorProps) {
   return (
-    <FormField
-      label="Partida"
-      hint={groups.length === 0 ? "No hay partidas disponibles todavía." : undefined}
-    >
+    <FormField label="Partida" hint={groups.length === 0 ? "No hay partidas disponibles todavía." : undefined}>
       <select name="gameId" value={value} onChange={(event) => onChange(event.target.value)} required>
         <option value="">Elige una partida…</option>
         {groups.map((group) => (

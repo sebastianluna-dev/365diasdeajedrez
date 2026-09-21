@@ -4,15 +4,15 @@ description: "One pricing card: name, price with currency and period, the previo
 
 # `PlanCard`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/plans/plan-card/plan-card.comp.tsx` |
-| Story | `plan-card/plan-card.stories.tsx` (`npm run storybook` → site/sections/home/plans/PlanCard: Default, Featured, WithDiscount) |
-| Kind | Server Component |
-| Stylesheet | `plan-card.comp.css` → block `.plan-card` |
-| Used by | [`PlansSection`](/components/site/sections/home/plans/plans-section), [`PlansMobileSection`](/components/site/sections/home/plans/plans-mobile) |
-| Composes | `CircleCheckIcon` from `components/icons/` |
-| Uses | `PackagePlanContent` from `services/home/home.types` |
+|            |                                                                                                                                                 |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/plans/plan-card/plan-card.comp.tsx`                                                                              |
+| Story      | `plan-card/plan-card.stories.tsx` (`npm run storybook` → site/sections/home/plans/PlanCard: Default, Featured, WithDiscount)                    |
+| Kind       | Server Component                                                                                                                                |
+| Stylesheet | `plan-card.comp.css` → block `.plan-card`                                                                                                       |
+| Used by    | [`PlansSection`](/components/site/sections/home/plans/plans-section), [`PlansMobileSection`](/components/site/sections/home/plans/plans-mobile) |
+| Composes   | `CircleCheckIcon` from `components/icons/`                                                                                                      |
+| Uses       | `PackagePlanContent` from `services/home/home.types`                                                                                            |
 
 ## Purpose
 
@@ -20,10 +20,10 @@ The card both layouts share. A featured plan gets the `_featured` modifier and i
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `plan` | `PackagePlanContent` | yes | `name`, `price`, `previousPrice?`, `currency`, `period`, `description`, `features`, `ctaLabel`, `ctaUrl`, `featured`. |
-| `className` | `string` | no | Appended to the block; the mobile wrapper passes `plans-mobile__card`. |
+| Prop        | Type                 | Required | Meaning                                                                                                               |
+| ----------- | -------------------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
+| `plan`      | `PackagePlanContent` | yes      | `name`, `price`, `previousPrice?`, `currency`, `period`, `description`, `features`, `ctaLabel`, `ctaUrl`, `featured`. |
+| `className` | `string`             | no       | Appended to the block; the mobile wrapper passes `plans-mobile__card`.                                                |
 
 ## Behaviour
 
@@ -52,7 +52,7 @@ From `components/site/sections/home/plans/plans-mobile.comp.tsx`:
 ```tsx
 import { PlanCard } from "./plan-card/plan-card.comp";
 
-<PlanCard plan={activePlan} className="plans-mobile__card" />
+<PlanCard plan={activePlan} className="plans-mobile__card" />;
 ```
 
 ## Related

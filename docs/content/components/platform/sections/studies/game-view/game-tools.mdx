@@ -6,14 +6,14 @@ description: "The panel under the board with four tabs: comment, quality (NAGs i
 
 Also exports the `GameToolsTab` type.
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/game-view/game-tools.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `game-tools.comp.css` → block `.game-tools` |
-| Used by | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section) (through the viewer's `boardFooter` slot) |
-| Composes | [`GameReview`](/components/chess/game-viewer/game-review); [`board-export`](/components/chess/game-viewer/board-export) through dynamic `import()` |
-| Uses | `commentTextAt`, `parseEditableGame`, `serializeGame`, `setCommentText`, `setNags` from `lib/chess/pgn-edit`<br />`MOVE_QUALITY_NAGS`, `MOVE_REMARK_NAGS`, `POSITION_EVAL_NAGS`, `nagCodeFor`, `nagCodesOf`, `nagGlyph`, `nodeAtPath`, `parsePgnTree` from `lib/chess/pgn-tree`<br />`sanToSpanish` from `lib/chess/notation`; `plainMovetext` from `lib/chess/plain-movetext` |
+|            |                                                                                                                                                                                                                                                                                                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/studies/game-view/game-tools.comp.tsx`                                                                                                                                                                                                                                                                                                           |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                               |
+| Stylesheet | `game-tools.comp.css` → block `.game-tools`                                                                                                                                                                                                                                                                                                                                    |
+| Used by    | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section) (through the viewer's `boardFooter` slot)                                                                                                                                                                                                                                               |
+| Composes   | [`GameReview`](/components/chess/game-viewer/game-review); [`board-export`](/components/chess/game-viewer/board-export) through dynamic `import()`                                                                                                                                                                                                                             |
+| Uses       | `commentTextAt`, `parseEditableGame`, `serializeGame`, `setCommentText`, `setNags` from `lib/chess/pgn-edit`<br />`MOVE_QUALITY_NAGS`, `MOVE_REMARK_NAGS`, `POSITION_EVAL_NAGS`, `nagCodeFor`, `nagCodesOf`, `nagGlyph`, `nodeAtPath`, `parsePgnTree` from `lib/chess/pgn-tree`<br />`sanToSpanish` from `lib/chess/notation`; `plainMovetext` from `lib/chess/plain-movetext` |
 
 ## Purpose
 
@@ -23,18 +23,18 @@ Comment and NAGs are read from the PGN on every render, not kept in state: what 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `pgn` | `string` | yes | The shared PGN. |
-| `currentPath` | `string` | yes | Dotted path of the move selected in the viewer. |
-| `canEdit` | `boolean` | yes | Course databases are read-only: only the evaluation and share tabs remain. |
-| `saveLabel` | `string` | no | The autosave status text, owned by the section because the viewer writes the same PGN and the notice must be one. |
-| `tab` | `GameToolsTab` | yes | Controlled by the section because the viewer's move menu changes it too. |
-| `onTabChange` | `(tab) => void` | yes | |
-| `focusRequest` | `number` | yes | Counter bumped whenever someone asks to write here; on change the panel scrolls into view and, on the comment tab, the textarea takes focus with the cursor at the end. |
-| `white`, `black` | `string` | yes | Names for the evaluation's accuracy cards. |
-| `onSelectPath` | `(path) => void` | yes | The chart moves the board. |
-| `onPgnChange` | `(pgn) => void` | yes | Receives the edited PGN. |
+| Prop             | Type             | Required | Meaning                                                                                                                                                                 |
+| ---------------- | ---------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pgn`            | `string`         | yes      | The shared PGN.                                                                                                                                                         |
+| `currentPath`    | `string`         | yes      | Dotted path of the move selected in the viewer.                                                                                                                         |
+| `canEdit`        | `boolean`        | yes      | Course databases are read-only: only the evaluation and share tabs remain.                                                                                              |
+| `saveLabel`      | `string`         | no       | The autosave status text, owned by the section because the viewer writes the same PGN and the notice must be one.                                                       |
+| `tab`            | `GameToolsTab`   | yes      | Controlled by the section because the viewer's move menu changes it too.                                                                                                |
+| `onTabChange`    | `(tab) => void`  | yes      |                                                                                                                                                                         |
+| `focusRequest`   | `number`         | yes      | Counter bumped whenever someone asks to write here; on change the panel scrolls into view and, on the comment tab, the textarea takes focus with the cursor at the end. |
+| `white`, `black` | `string`         | yes      | Names for the evaluation's accuracy cards.                                                                                                                              |
+| `onSelectPath`   | `(path) => void` | yes      | The chart moves the board.                                                                                                                                              |
+| `onPgnChange`    | `(pgn) => void`  | yes      | Receives the edited PGN.                                                                                                                                                |
 
 ## Behaviour
 
@@ -75,7 +75,7 @@ import { GameTools, type GameToolsTab } from "./game-tools.comp";
   black={game.black}
   onSelectPath={setCurrentPath}
   onPgnChange={applyPgn}
-/>
+/>;
 ```
 
 ## Related

@@ -4,15 +4,15 @@ description: "Authors, the one catalog with creation and editing from the interf
 
 # `AuthorsAdminSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/authors/authors-admin.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `authors-admin.section.css` → block `.authors-admin` |
-| Used by | `/administracion/autores` |
-| Composes | [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Writes | `createAuthor()`, `updateAuthor()` · `services/staff-courses/staff-courses.actions.ts` |
-| Uses | `STAFF_ERROR_MESSAGES` from `constants/platform/staff-messages.const`; `AuthorAdminRow` from `services/staff-courses/staff-courses.types` |
+|            |                                                                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/authors/authors-admin.section.tsx`                                                                    |
+| Kind       | Server Component                                                                                                                          |
+| Stylesheet | `authors-admin.section.css` → block `.authors-admin`                                                                                      |
+| Used by    | `/administracion/autores`                                                                                                                 |
+| Composes   | [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice)                    |
+| Writes     | `createAuthor()`, `updateAuthor()` · `services/staff-courses/staff-courses.actions.ts`                                                    |
+| Uses       | `STAFF_ERROR_MESSAGES` from `constants/platform/staff-messages.const`; `AuthorAdminRow` from `services/staff-courses/staff-courses.types` |
 
 ## Purpose
 
@@ -20,10 +20,10 @@ Course authors are editorial content, not a restricted domain whose code the log
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `authors` | `AuthorAdminRow[]` | yes | `{ id, name, slug, photo?, bio?, courseCount }[]`. |
-| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+| Prop        | Type               | Required | Meaning                                            |
+| ----------- | ------------------ | -------- | -------------------------------------------------- |
+| `authors`   | `AuthorAdminRow[]` | yes      | `{ id, name, slug, photo?, bio?, courseCount }[]`. |
+| `errorCode` | `string`           | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`.  |
 
 ## Behaviour
 
@@ -50,7 +50,7 @@ From `app/(platform)/administracion/autores/page.tsx`:
 ```tsx
 import { AuthorsAdminSection } from "@/components/platform/sections/staff/authors/authors-admin.section";
 
-<AuthorsAdminSection authors={authors} errorCode={error} />
+<AuthorsAdminSection authors={authors} errorCode={error} />;
 ```
 
 ## Related

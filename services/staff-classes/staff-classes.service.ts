@@ -21,7 +21,9 @@ export async function listAllClasses(filters: StaffClassFilters = {}): Promise<S
       ...(filters.teacherId ? { teacherId: filters.teacherId } : {}),
       ...(filters.statusCode ? { status: { code: filters.statusCode } } : {}),
       ...(filters.from || filters.to
-        ? { scheduledAt: { ...(filters.from ? { gte: filters.from } : {}), ...(filters.to ? { lte: filters.to } : {}) } }
+        ? {
+            scheduledAt: { ...(filters.from ? { gte: filters.from } : {}), ...(filters.to ? { lte: filters.to } : {}) },
+          }
         : {}),
       ...(search ? { title: { contains: search, mode: "insensitive" } } : {}),
     },
@@ -118,7 +120,9 @@ export async function getClassAdminDetail(classId: string): Promise<StaffClassDe
       email: participant.user.email,
       attended: participant.attended,
       paidAtLabel: participant.paidAt ? formatSpanishDate(participant.paidAt) : undefined,
-      amountLabel: participant.amount ? `${participant.amount.toString()} ${participant.currency ?? ""}`.trim() : undefined,
+      amountLabel: participant.amount
+        ? `${participant.amount.toString()} ${participant.currency ?? ""}`.trim()
+        : undefined,
       paymentRef: participant.paymentRef ?? undefined,
     })),
     blocks: mapClassDetail(blocksRow, new Date()).blocks,

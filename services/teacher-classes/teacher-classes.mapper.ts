@@ -84,7 +84,9 @@ function mapBlock(block: TeacherClassDetailRow["blocks"][number]): TeacherClassB
     kind === CLASS_BLOCK_KIND.GAME_REF
       ? (block.game?.pgn ?? null)
       : kind === CLASS_BLOCK_KIND.LESSON_REF
-        ? (block.lesson ? lessonPgnOf(block.lesson) : null)
+        ? block.lesson
+          ? lessonPgnOf(block.lesson)
+          : null
         : null;
 
   const referenceLabel = block.game

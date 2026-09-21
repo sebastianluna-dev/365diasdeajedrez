@@ -4,12 +4,12 @@ description: "An analogue clock face: twelve numbers, three hands driven by a CS
 
 # `ClockDial`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/chess-clock/clock-dial.comp.tsx` |
-| Kind | Server Component (no hooks; rendered inside client trees) |
-| Stylesheet | `clock-dial.comp.css` → blocks `.clock-dial-column`, `.clock-dial`, `.clock-face`, `.clock-hand`, `.clock-flag`, `.clock-readout` |
-| Used by | [`ChessClockDesktop`](/components/site/sections/chess-clock/chess-clock-desktop), [`ChessClockMobile`](/components/site/sections/chess-clock/chess-clock-mobile), [`CtaClock`](/components/site/sections/home/cta/cta-clock) |
+|            |                                                                                                                                                                                                                              |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/chess-clock/clock-dial.comp.tsx`                                                                                                                                                                   |
+| Kind       | Server Component (no hooks; rendered inside client trees)                                                                                                                                                                    |
+| Stylesheet | `clock-dial.comp.css` → blocks `.clock-dial-column`, `.clock-dial`, `.clock-face`, `.clock-hand`, `.clock-flag`, `.clock-readout`                                                                                            |
+| Used by    | [`ChessClockDesktop`](/components/site/sections/chess-clock/chess-clock-desktop), [`ChessClockMobile`](/components/site/sections/chess-clock/chess-clock-mobile), [`CtaClock`](/components/site/sections/home/cta/cta-clock) |
 
 ## Purpose
 
@@ -17,16 +17,16 @@ The dial every clock on the site shares. Hand angles arrive as numbers and becom
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `hands` | `{ hour: number; min: number; sec: number }` | yes | Degrees for each hand. |
-| `active` | `boolean` | yes | The side to move: `.clock-dial_active`, hands `_active`, readout `_active`. |
-| `flagged` | `boolean` | yes | Time ran out: `.clock-dial_fallen`, `.clock-flag_fallen`, `.clock-readout_fallen`. |
-| `lowTime` | `boolean` | yes | Under the threshold: `.clock-flag_alert` (unless already flagged). |
-| `label` | `string` | no | Caption under the dial ("Blancas"). |
-| `time` | `string` | no | Digital readout under the dial. |
-| `onPress` | `() => void` | no | When present the dial is a `<button>`; otherwise a `<div>`. |
-| `compact` | `boolean` | no | The CTA form: no readout, no label, `.clock-dial-column_compact`. |
+| Prop      | Type                                         | Required | Meaning                                                                            |
+| --------- | -------------------------------------------- | -------- | ---------------------------------------------------------------------------------- |
+| `hands`   | `{ hour: number; min: number; sec: number }` | yes      | Degrees for each hand.                                                             |
+| `active`  | `boolean`                                    | yes      | The side to move: `.clock-dial_active`, hands `_active`, readout `_active`.        |
+| `flagged` | `boolean`                                    | yes      | Time ran out: `.clock-dial_fallen`, `.clock-flag_fallen`, `.clock-readout_fallen`. |
+| `lowTime` | `boolean`                                    | yes      | Under the threshold: `.clock-flag_alert` (unless already flagged).                 |
+| `label`   | `string`                                     | no       | Caption under the dial ("Blancas").                                                |
+| `time`    | `string`                                     | no       | Digital readout under the dial.                                                    |
+| `onPress` | `() => void`                                 | no       | When present the dial is a `<button>`; otherwise a `<div>`.                        |
+| `compact` | `boolean`                                    | no       | The CTA form: no readout, no label, `.clock-dial-column_compact`.                  |
 
 ## Behaviour
 
@@ -47,7 +47,7 @@ From `components/site/sections/home/cta/cta-clock.comp.tsx`:
 ```tsx
 import { ClockDial } from "@/components/site/sections/chess-clock/clock-dial.comp";
 
-<ClockDial compact hands={hands} active flagged={false} lowTime={seconds <= 60} />
+<ClockDial compact hands={hands} active flagged={false} lowTime={seconds <= 60} />;
 ```
 
 ## Related

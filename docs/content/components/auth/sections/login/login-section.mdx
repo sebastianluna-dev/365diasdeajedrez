@@ -4,15 +4,15 @@ description: "The login screen: email, password, a hidden return path and the pr
 
 # `LoginSection`
 
-| | |
-| --- | --- |
-| File | `components/auth/sections/login/login.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `login.section.css` → block `.login` |
-| Used by | `/iniciar-sesion` (`app/(auth)/iniciar-sesion/page.tsx`) |
-| Composes | [`LoginSubmit`](/components/auth/sections/login/login-submit) |
-| Writes | `loginAction()` · `services/auth/auth.actions.ts` |
-| Uses | `RETURN_TO_PARAM` from `constants/platform/auth.const` |
+|            |                                                               |
+| ---------- | ------------------------------------------------------------- |
+| File       | `components/auth/sections/login/login.section.tsx`            |
+| Kind       | Server Component                                              |
+| Stylesheet | `login.section.css` → block `.login`                          |
+| Used by    | `/iniciar-sesion` (`app/(auth)/iniciar-sesion/page.tsx`)      |
+| Composes   | [`LoginSubmit`](/components/auth/sections/login/login-submit) |
+| Writes     | `loginAction()` · `services/auth/auth.actions.ts`             |
+| Uses       | `RETURN_TO_PARAM` from `constants/platform/auth.const`        |
 
 ## Purpose
 
@@ -22,10 +22,10 @@ The page decides what the section shows. It reads `?returnTo=` and `?error=` fro
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `returnTo` | `string` | yes | Internal path to return to after logging in; empty means the student's panel. Travels back to the action in a hidden input named `RETURN_TO_PARAM`. |
-| `errorMessage` | `string` | no | Message from the previous attempt, already translated by the page. Rendered with `role="alert"` so a screen reader announces the failure on returning from the submit. |
+| Prop           | Type     | Required | Meaning                                                                                                                                                                |
+| -------------- | -------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `returnTo`     | `string` | yes      | Internal path to return to after logging in; empty means the student's panel. Travels back to the action in a hidden input named `RETURN_TO_PARAM`.                    |
+| `errorMessage` | `string` | no       | Message from the previous attempt, already translated by the page. Rendered with `role="alert"` so a screen reader announces the failure on returning from the submit. |
 
 ## Behaviour
 
@@ -60,7 +60,7 @@ import { LoginSection } from "@/components/auth/sections/login/login.section";
   // The code arrives through the URL: it is only rendered when it is in the map,
   // so nobody can inject text into the page with a crafted link.
   errorMessage={LOGIN_ERROR_MESSAGES[readParam(params, LOGIN_ERROR_PARAM)]}
-/>
+/>;
 ```
 
 ## Related

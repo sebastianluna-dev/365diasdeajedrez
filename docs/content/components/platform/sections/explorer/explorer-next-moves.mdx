@@ -4,13 +4,13 @@ description: "The continuations from the current position, most played first, ea
 
 # `ExplorerNextMoves`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/explorer/explorer-next-moves.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `explorer-next-moves.comp.css` → block `.explorer-next-moves` |
-| Used by | [`GameExplorer`](/components/platform/sections/explorer/game-explorer) |
-| Uses | `sanToSpanish` from `lib/chess/notation`; `ExplorerNextMove` from `services/game-explorer/game-explorer.types` |
+|            |                                                                                                                |
+| ---------- | -------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/explorer/explorer-next-moves.comp.tsx`                                           |
+| Kind       | Client Component                                                                                               |
+| Stylesheet | `explorer-next-moves.comp.css` → block `.explorer-next-moves`                                                  |
+| Used by    | [`GameExplorer`](/components/platform/sections/explorer/game-explorer)                                         |
+| Uses       | `sanToSpanish` from `lib/chess/notation`; `ExplorerNextMove` from `services/game-explorer/game-explorer.types` |
 
 ## Purpose
 
@@ -18,11 +18,11 @@ The "Continuaciones" panel: what was played from this position and how often. Ea
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `moves` | `ExplorerNextMove[]` | yes | `{ uci, san, count, percentage }[]`, ordered by the service. |
-| `onPlay` | `(san: string) => void` | yes | Plays the row's move. |
-| `isSearching` | `boolean` | yes | Chooses "Buscando…" over "Ninguna partida siguió desde aquí." when the list is empty. |
+| Prop          | Type                    | Required | Meaning                                                                               |
+| ------------- | ----------------------- | -------- | ------------------------------------------------------------------------------------- |
+| `moves`       | `ExplorerNextMove[]`    | yes      | `{ uci, san, count, percentage }[]`, ordered by the service.                          |
+| `onPlay`      | `(san: string) => void` | yes      | Plays the row's move.                                                                 |
+| `isSearching` | `boolean`               | yes      | Chooses "Buscando…" over "Ninguna partida siguió desde aquí." when the list is empty. |
 
 ## Behaviour
 
@@ -47,7 +47,7 @@ From `components/platform/sections/explorer/game-explorer.comp.tsx`:
 ```tsx
 import { ExplorerNextMoves } from "./explorer-next-moves.comp";
 
-<ExplorerNextMoves moves={result?.nextMoves ?? []} onPlay={playMove} isSearching={isSearching} />
+<ExplorerNextMoves moves={result?.nextMoves ?? []} onPlay={playMove} isSearching={isSearching} />;
 ```
 
 ## Related

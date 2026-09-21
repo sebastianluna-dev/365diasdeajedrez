@@ -4,15 +4,15 @@ description: "The sticky call to action at the bottom of the home and about page
 
 # `CtaSection`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/cta/cta.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `cta.section.css` → block `.sticky-cta` |
-| Used by | `app/(frontend)/landing-page.tsx` (always, after `<main>`) |
-| Composes | [`CtaClock`](/components/site/sections/home/cta/cta-clock), `WhatsappIcon` from `components/icons/` |
-| Reads | `getCtaData()` · `services/home/home.service.ts` (the `home-cta` Global)<br />`getSiteSettingsData()` · `services/site-settings/site-settings.service.ts` |
-| Uses | `buildWhatsappUrl` from `lib/build-whatsapp-url` |
+|            |                                                                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/cta/cta.section.tsx`                                                                                                       |
+| Kind       | Server Component (async)                                                                                                                                  |
+| Stylesheet | `cta.section.css` → block `.sticky-cta`                                                                                                                   |
+| Used by    | `app/(frontend)/landing-page.tsx` (always, after `<main>`)                                                                                                |
+| Composes   | [`CtaClock`](/components/site/sections/home/cta/cta-clock), `WhatsappIcon` from `components/icons/`                                                       |
+| Reads      | `getCtaData()` · `services/home/home.service.ts` (the `home-cta` Global)<br />`getSiteSettingsData()` · `services/site-settings/site-settings.service.ts` |
+| Uses       | `buildWhatsappUrl` from `lib/build-whatsapp-url`                                                                                                          |
 
 ## Purpose
 

@@ -6,24 +6,24 @@ description: "Three pure helpers that walk a PgnTree's main line: its positions 
 
 Exports `mainlinePositions`, `mainlinePaths` and `mainlineEvaluations`.
 
-| | |
-| --- | --- |
-| File | `components/chess/game-viewer/mainline-positions.ts` |
-| Kind | Module (plain TypeScript, server-safe: no browser APIs) |
-| Stylesheet | none |
-| Used by | [`GameReview`](/components/chess/game-viewer/game-review) |
-| Uses | `ReviewedPosition` from `lib/chess/game-review`<br />`PgnTree`, `MoveEvaluation` from `lib/chess/pgn-tree` |
+|            |                                                                                                            |
+| ---------- | ---------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/mainline-positions.ts`                                                       |
+| Kind       | Module (plain TypeScript, server-safe: no browser APIs)                                                    |
+| Stylesheet | none                                                                                                       |
+| Used by    | [`GameReview`](/components/chess/game-viewer/game-review)                                                  |
+| Uses       | `ReviewedPosition` from `lib/chess/game-review`<br />`PgnTree`, `MoveEvaluation` from `lib/chess/pgn-tree` |
 
 ## Purpose
 
-The bridge between the parsed tree and the review. `reviewGame` in `lib/chess/game-review` wants the main-line positions with their evaluations; the chart wants the paths so a ply can be turned back into a move; and both only make sense when the line is complete. These three walks live next to the viewer because they are about *its* tree shape, not about chess in general.
+The bridge between the parsed tree and the review. `reviewGame` in `lib/chess/game-review` wants the main-line positions with their evaluations; the chart wants the paths so a ply can be turned back into a move; and both only make sense when the line is complete. These three walks live next to the viewer because they are about _its_ tree shape, not about chess in general.
 
 ## API
 
 ### `mainlinePositions`
 
 ```ts
-export function mainlinePositions(tree: PgnTree): ReviewedPosition[]
+export function mainlinePositions(tree: PgnTree): ReviewedPosition[];
 ```
 
 The main line's positions with their evaluation, starting with the **initial position**. A move is judged by what changes between the previous position and its own, so without the first one the first move could not be measured. Walks `tree.children[0]` down the first child each time.
@@ -31,7 +31,7 @@ The main line's positions with their evaluation, starting with the **initial pos
 ### `mainlinePaths`
 
 ```ts
-export function mainlinePaths(tree: PgnTree): string[]
+export function mainlinePaths(tree: PgnTree): string[];
 ```
 
 The dotted paths of that same line, in the same order, beginning with `""` for the start.
@@ -39,7 +39,7 @@ The dotted paths of that same line, in the same order, beginning with `""` for t
 ### `mainlineEvaluations`
 
 ```ts
-export function mainlineEvaluations(tree: PgnTree): MoveEvaluation[] | null
+export function mainlineEvaluations(tree: PgnTree): MoveEvaluation[] | null;
 ```
 
 The evaluations, only if **all** of them are there and the line has at least one move; half a chart would mislead. `null` is what makes `GameReview` offer the "Generar evaluación" button.

@@ -4,15 +4,15 @@ description: "The chapter's game collection, the only place where a PGN is paste
 
 # `ChapterGamesSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/courses/chapter-games.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `chapter-games.section.css` → block `.chapter-games` |
-| Used by | `/administracion/cursos/[courseId]/capitulos/[chapterId]/partidas` |
-| Composes | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Writes | `importChapterGames()`, `deleteChapterGame()` · `services/staff-courses/staff-courses.actions.ts` |
-| Uses | `STAFF_ERROR_MESSAGES`; `staffRoutes`; `ChapterAdminDetail`, `CourseGameRow` types |
+|            |                                                                                                                                                                                                                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/chapter-games.section.tsx`                                                                                                                                                                                                                         |
+| Kind       | Server Component                                                                                                                                                                                                                                                                               |
+| Stylesheet | `chapter-games.section.css` → block `.chapter-games`                                                                                                                                                                                                                                           |
+| Used by    | `/administracion/cursos/[courseId]/capitulos/[chapterId]/partidas`                                                                                                                                                                                                                             |
+| Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes     | `importChapterGames()`, `deleteChapterGame()` · `services/staff-courses/staff-courses.actions.ts`                                                                                                                                                                                              |
+| Uses       | `STAFF_ERROR_MESSAGES`; `staffRoutes`; `ChapterAdminDetail`, `CourseGameRow` types                                                                                                                                                                                                             |
 
 ## Purpose
 
@@ -20,11 +20,11 @@ Course content is PGN, and this is where it enters. Each chapter has a collectio
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `chapter` | `ChapterAdminDetail` | yes | For the head, tabs and bound actions. |
-| `games` | `CourseGameRow[]` | yes | The collection with `lessonCount` per game. |
-| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+| Prop        | Type                 | Required | Meaning                                           |
+| ----------- | -------------------- | -------- | ------------------------------------------------- |
+| `chapter`   | `ChapterAdminDetail` | yes      | For the head, tabs and bound actions.             |
+| `games`     | `CourseGameRow[]`    | yes      | The collection with `lessonCount` per game.       |
+| `errorCode` | `string`             | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
 
 ## Behaviour
 
@@ -50,7 +50,7 @@ From `app/(platform)/administracion/cursos/[courseId]/capitulos/[chapterId]/part
 ```tsx
 import { ChapterGamesSection } from "@/components/platform/sections/staff/courses/chapter-games.section";
 
-<ChapterGamesSection chapter={chapter} games={games} errorCode={error} />
+<ChapterGamesSection chapter={chapter} games={games} errorCode={error} />;
 ```
 
 ## Related

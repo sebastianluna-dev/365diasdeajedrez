@@ -8,168 +8,168 @@ description: "Index of components/platform: the shared primitives and every sect
 
 ## `shared/`
 
-| Page | Kind | What it is |
-| --- | --- | --- |
-| [`PlatformTable`](/components/platform/shared/platform-table) | server | Semantic table for every panel listing; filters travel in the URL. |
-| [`FormField`](/components/platform/shared/form-field) | server | A real label around a native control; `FormFieldset` for groups. |
-| [`PlatformNotice`](/components/platform/shared/platform-notice) | server | The result of an action, from the page's `?error=` message map. |
-| [`EmptyState`](/components/platform/shared/empty-state) | server | Dashed box with title, description and an optional link. |
-| [`ProgressIndicator`](/components/platform/shared/progress-indicator) | server | Progress bar, inline or stacked. |
-| [`LoadingPanel`](/components/platform/shared/loading-panel) | server | What every `loading.tsx` renders. |
-| [`PlatformError`](/components/platform/shared/platform-error) | client | The error boundary view with retry and digest. |
-| [`PriorityFilter`](/components/platform/shared/priority-filter) | server | The essential-lessons switch, a form with a bound action. |
-| [`LocalDateTime`](/components/platform/shared/local-datetime) | client | A UTC instant in the browser's zone, without hydration mismatch. |
-| [`CourseNavigation`](/components/platform/shared/course-navigation) | server | Mis cursos → Curso → Capítulo → Lección. |
-| [`StudiesNavigation`](/components/platform/shared/studies-navigation) | server | Mis estudios → Estudio → Partida. |
-| [`ActivityList`](/components/platform/shared/activity-list) | server | The dashboard's activity facts. |
+| Page                                                                         | Kind   | What it is                                                               |
+| ---------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------ |
+| [`PlatformTable`](/components/platform/shared/platform-table)                | server | Semantic table for every panel listing; filters travel in the URL.       |
+| [`FormField`](/components/platform/shared/form-field)                        | server | A real label around a native control; `FormFieldset` for groups.         |
+| [`PlatformNotice`](/components/platform/shared/platform-notice)              | server | The result of an action, from the page's `?error=` message map.          |
+| [`EmptyState`](/components/platform/shared/empty-state)                      | server | Dashed box with title, description and an optional link.                 |
+| [`ProgressIndicator`](/components/platform/shared/progress-indicator)        | server | Progress bar, inline or stacked.                                         |
+| [`LoadingPanel`](/components/platform/shared/loading-panel)                  | server | What every `loading.tsx` renders.                                        |
+| [`PlatformError`](/components/platform/shared/platform-error)                | client | The error boundary view with retry and digest.                           |
+| [`PriorityFilter`](/components/platform/shared/priority-filter)              | server | The essential-lessons switch, a form with a bound action.                |
+| [`LocalDateTime`](/components/platform/shared/local-datetime)                | client | A UTC instant in the browser's zone, without hydration mismatch.         |
+| [`CourseNavigation`](/components/platform/shared/course-navigation)          | server | Mis cursos → Curso → Capítulo → Lección.                                 |
+| [`StudiesNavigation`](/components/platform/shared/studies-navigation)        | server | Mis estudios → Estudio → Partida.                                        |
+| [`ActivityList`](/components/platform/shared/activity-list)                  | server | The dashboard's activity facts.                                          |
 | [`ClassContentRenderer`](/components/platform/shared/class-content-renderer) | server | A class's blocks by kind, with the single viewer and the static diagram. |
-| [`ImageUpload`](/components/platform/shared/image-upload) | client | Browser-to-Cloudinary upload leaving a URL in a hidden field. |
+| [`ImageUpload`](/components/platform/shared/image-upload)                    | client | Browser-to-Cloudinary upload leaving a URL in a hidden field.            |
 
 ## `sections/shell/`
 
-| Page | Kind | What it is |
-| --- | --- | --- |
+| Page                                                                          | Kind   | What it is                                                                |
+| ----------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------- |
 | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section) | server | Top bar and content area; reads the session to display, never to protect. |
-| [`PlatformNav`](/components/platform/sections/shell/platform-nav) | client | The role's links with the active item by longest prefix. |
+| [`PlatformNav`](/components/platform/sections/shell/platform-nav)             | client | The role's links with the active item by longest prefix.                  |
 
 ## `sections/dashboard/` — `/inicio`
 
-| Page | Kind | What it is |
-| --- | --- | --- |
-| [`ProfileSummarySection`](/components/platform/sections/dashboard/profile-summary/profile-summary-section) | server | Greeting, email, member-since date. |
+| Page                                                                                                             | Kind   | What it is                                    |
+| ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------- |
+| [`ProfileSummarySection`](/components/platform/sections/dashboard/profile-summary/profile-summary-section)       | server | Greeting, email, member-since date.           |
 | [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section) | server | The course in progress and its return lesson. |
-| [`NextClassSection`](/components/platform/sections/dashboard/next-class/next-class-section) | server | The first upcoming class. |
-| [`ActivityStatsSection`](/components/platform/sections/dashboard/activity-stats/activity-stats-section) | server | Fetches the four ranges for the cards. |
-| [`StatsCards`](/components/platform/sections/dashboard/activity-stats/stats-cards) | client | Metric cards with a period toggle. |
-| [`RecentActivitySection`](/components/platform/sections/dashboard/recent-activity/recent-activity-section) | server | The latest activity facts. |
+| [`NextClassSection`](/components/platform/sections/dashboard/next-class/next-class-section)                      | server | The first upcoming class.                     |
+| [`ActivityStatsSection`](/components/platform/sections/dashboard/activity-stats/activity-stats-section)          | server | Fetches the four ranges for the cards.        |
+| [`StatsCards`](/components/platform/sections/dashboard/activity-stats/stats-cards)                               | client | Metric cards with a period toggle.            |
+| [`RecentActivitySection`](/components/platform/sections/dashboard/recent-activity/recent-activity-section)       | server | The latest activity facts.                    |
 
 ## `sections/courses/` — `/cursos`, `/lecciones/[lessonId]`
 
-| Page | Kind | What it is |
-| --- | --- | --- |
-| [`CoursesListSection`](/components/platform/sections/courses/courses-list/courses-list-section) | server | One card per published course. |
-| [`CourseCard`](/components/platform/sections/courses/courses-list/course-card) | server | Cover, name, two progress meters and the resume button; facts in a `<details>` menu. |
-| [`StudyGoalAside`](/components/platform/sections/courses/courses-list/study-goal) | server | Daily streak and minutes against the goal. |
-| [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section) | server | The course page with the chapter list and the priority filter. |
-| [`ChapterList`](/components/platform/sections/courses/course-detail/chapter-list) | server | Whole-row chapter links with progress. |
-| [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section) | server | The chapter page with the trainer toggle and the lesson list. |
-| [`LessonList`](/components/platform/sections/courses/chapter-detail/lesson-list) | server | Lesson rows; green number when done. |
-| [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section) | server | The lesson in the viewer as running text, with the completion form. |
-| [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker) | client | Marks the lesson opened from an effect. |
+| Page                                                                                                  | Kind   | What it is                                                                           |
+| ----------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------ |
+| [`CoursesListSection`](/components/platform/sections/courses/courses-list/courses-list-section)       | server | One card per published course.                                                       |
+| [`CourseCard`](/components/platform/sections/courses/courses-list/course-card)                        | server | Cover, name, two progress meters and the resume button; facts in a `<details>` menu. |
+| [`StudyGoalAside`](/components/platform/sections/courses/courses-list/study-goal)                     | server | Daily streak and minutes against the goal.                                           |
+| [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section)    | server | The course page with the chapter list and the priority filter.                       |
+| [`ChapterList`](/components/platform/sections/courses/course-detail/chapter-list)                     | server | Whole-row chapter links with progress.                                               |
+| [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section) | server | The chapter page with the trainer toggle and the lesson list.                        |
+| [`LessonList`](/components/platform/sections/courses/chapter-detail/lesson-list)                      | server | Lesson rows; green number when done.                                                 |
+| [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section)          | server | The lesson in the viewer as running text, with the completion form.                  |
+| [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker)                   | client | Marks the lesson opened from an effect.                                              |
 
 ## `sections/studies/` — `/estudios`
 
-| Page | Kind | What it is |
-| --- | --- | --- |
-| [`StudiesListSection`](/components/platform/sections/studies/studies-list/studies-list-section) | server | Reads the studies and splits them by ownership. |
-| [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser) | client | Two groups of cards with a kind filter. |
-| [`StudyCard`](/components/platform/sections/studies/studies-list/study-card) | server | One study with its origin. |
-| [`NewStudy`](/components/platform/sections/studies/studies-list/new-study) | client | Creation dialog. |
-| [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) | client | Confirmation dialog. |
-| [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) | server | Header, game table, import and the allowed modals. |
-| [`GameTable`](/components/platform/sections/studies/study-detail/game-table) | client | The games with drag and keyboard reordering. |
-| [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study) | client | Rename, describe, re-type. |
-| [`NewGame`](/components/platform/sections/studies/study-detail/new-game) | client | Blank game, pasted PGN or copies of class games. |
-| [`ShareCollection`](/components/platform/sections/studies/study-detail/share-collection) | server | Who a collection reaches. |
-| [`GameFields`](/components/platform/sections/studies/game-fields) | server | The game's data fields, shared by create and edit. |
-| [`NewGameSection`](/components/platform/sections/studies/new-game/new-game-section) | server | The full-page creation form. |
-| [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section) | client | Read and annotate a game in one place, with autosave. |
-| [`GameTools`](/components/platform/sections/studies/game-view/game-tools) | client | Comment, quality and share tabs under the board. |
-| [`GameAside`](/components/platform/sections/studies/game-view/game-aside) | server | Record, sibling games, delete control. |
-| [`EditGame`](/components/platform/sections/studies/game-view/edit-game) | client | Dialog over `GameFields`. |
-| [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game) | client | Confirmation, stricter when the game is cited in a class. |
-| [`ClassGamesSection`](/components/platform/sections/studies/class-games/class-games-section) | server | Games the student saw in class. |
+| Page                                                                                            | Kind   | What it is                                                |
+| ----------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------- |
+| [`StudiesListSection`](/components/platform/sections/studies/studies-list/studies-list-section) | server | Reads the studies and splits them by ownership.           |
+| [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser)          | client | Two groups of cards with a kind filter.                   |
+| [`StudyCard`](/components/platform/sections/studies/studies-list/study-card)                    | server | One study with its origin.                                |
+| [`NewStudy`](/components/platform/sections/studies/studies-list/new-study)                      | client | Creation dialog.                                          |
+| [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study)                | client | Confirmation dialog.                                      |
+| [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) | server | Header, game table, import and the allowed modals.        |
+| [`GameTable`](/components/platform/sections/studies/study-detail/game-table)                    | client | The games with drag and keyboard reordering.              |
+| [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study)                    | client | Rename, describe, re-type.                                |
+| [`NewGame`](/components/platform/sections/studies/study-detail/new-game)                        | client | Blank game, pasted PGN or copies of class games.          |
+| [`ShareCollection`](/components/platform/sections/studies/study-detail/share-collection)        | server | Who a collection reaches.                                 |
+| [`GameFields`](/components/platform/sections/studies/game-fields)                               | server | The game's data fields, shared by create and edit.        |
+| [`NewGameSection`](/components/platform/sections/studies/new-game/new-game-section)             | server | The full-page creation form.                              |
+| [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section)          | client | Read and annotate a game in one place, with autosave.     |
+| [`GameTools`](/components/platform/sections/studies/game-view/game-tools)                       | client | Comment, quality and share tabs under the board.          |
+| [`GameAside`](/components/platform/sections/studies/game-view/game-aside)                       | server | Record, sibling games, delete control.                    |
+| [`EditGame`](/components/platform/sections/studies/game-view/edit-game)                         | client | Dialog over `GameFields`.                                 |
+| [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game)                     | client | Confirmation, stricter when the game is cited in a class. |
+| [`ClassGamesSection`](/components/platform/sections/studies/class-games/class-games-section)    | server | Games the student saw in class.                           |
 
 ## `sections/classes/` — `/clases`
 
-| Page | Kind | What it is |
-| --- | --- | --- |
-| [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section) | server | Upcoming and past classes. |
-| [`ClassCard`](/components/platform/sections/classes/classes-list/class-card) | server | One class with its local date. |
-| [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section) | server | Header, meeting access, blocks, transcript status. |
-| [`MeetingAccess`](/components/platform/sections/classes/class-detail/meeting-access) | client | The video-call link, revealed only when authorised. |
+| Page                                                                                            | Kind   | What it is                                          |
+| ----------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------- |
+| [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section) | server | Upcoming and past classes.                          |
+| [`ClassCard`](/components/platform/sections/classes/classes-list/class-card)                    | server | One class with its local date.                      |
+| [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section) | server | Header, meeting access, blocks, transcript status.  |
+| [`MeetingAccess`](/components/platform/sections/classes/class-detail/meeting-access)            | client | The video-call link, revealed only when authorised. |
 
 ## `sections/explorer/` — `/explorador`
 
-| Page | Kind | What it is |
-| --- | --- | --- |
+| Page                                                                                  | Kind   | What it is                                 |
+| ------------------------------------------------------------------------------------- | ------ | ------------------------------------------ |
 | [`GameExplorerSection`](/components/platform/sections/explorer/game-explorer-section) | server | Resolves identity and mounts the explorer. |
-| [`GameExplorer`](/components/platform/sections/explorer/game-explorer) | client | Board plus results, cached by FEN. |
-| [`ExplorerMoveList`](/components/platform/sections/explorer/explorer-move-list) | client | The explored line. |
-| [`ExplorerNextMoves`](/components/platform/sections/explorer/explorer-next-moves) | client | Continuations by frequency. |
-| [`ExplorerGames`](/components/platform/sections/explorer/explorer-games) | client | Games that reached the position. |
+| [`GameExplorer`](/components/platform/sections/explorer/game-explorer)                | client | Board plus results, cached by FEN.         |
+| [`ExplorerMoveList`](/components/platform/sections/explorer/explorer-move-list)       | client | The explored line.                         |
+| [`ExplorerNextMoves`](/components/platform/sections/explorer/explorer-next-moves)     | client | Continuations by frequency.                |
+| [`ExplorerGames`](/components/platform/sections/explorer/explorer-games)              | client | Games that reached the position.           |
 
 ## `sections/trainer/` — `/entrenador`
 
-| Page | Kind | What it is |
-| --- | --- | --- |
+| Page                                                                               | Kind   | What it is                                                     |
+| ---------------------------------------------------------------------------------- | ------ | -------------------------------------------------------------- |
 | [`TrainerHomeSection`](/components/platform/sections/trainer/trainer-home-section) | server | Chapters with exercises, the student's and the available ones. |
-| [`TrainerSession`](/components/platform/sections/trainer/trainer-session) | client | Plays the frozen lines on the board and records attempts. |
-| [`SessionSummary`](/components/platform/sections/trainer/session-summary) | server | Results at the end of a session. |
+| [`TrainerSession`](/components/platform/sections/trainer/trainer-session)          | client | Plays the frozen lines on the board and records attempts.      |
+| [`SessionSummary`](/components/platform/sections/trainer/session-summary)          | server | Results at the end of a session.                               |
 
 ## `sections/teacher/` — `/profesor`
 
-| Page | Kind | What it is |
-| --- | --- | --- |
-| [`TeacherDashboardSection`](/components/platform/sections/teacher/dashboard/teacher-dashboard-section) | server | Today, the week, classes still to document. |
-| [`TeacherProfileSection`](/components/platform/sections/teacher/profile/teacher-profile-section) | server | Name, title, bio, photo, time zone. |
-| [`AssignedStudentsSection`](/components/platform/sections/teacher/students/assigned-students-section) | server | Active assignments, searchable. |
-| [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section) | server | A student's progress, read-only. |
-| [`StudentStudyViewSection`](/components/platform/sections/teacher/students/student-study-view-section) | server | A student's study seen by the teacher. |
-| [`StudentGameViewSection`](/components/platform/sections/teacher/students/student-game-view-section) | server | A student's game with "Usar en una clase". |
-| [`TeacherClassesSection`](/components/platform/sections/teacher/classes/teacher-classes-section) | server | The teacher's classes by status. |
-| [`ClassFormSection`](/components/platform/sections/teacher/classes/class-form-section) | server | Create or edit a class's metadata. |
-| [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) | server | Transitions, participants, attendance, block editor, preview. |
-| [`AttendanceForm`](/components/platform/sections/teacher/classes/attendance-form) | server | One checkbox per participant. |
-| [`ClassBlockEditor`](/components/platform/sections/teacher/classes/class-block-editor/class-block-editor) | client | The class content editor. |
-| [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) | client | The fields of one block by kind. |
-| [`GameSelector`](/components/platform/sections/teacher/classes/class-block-editor/game-selector) | client | Referenceable games grouped by owner. |
-| [`LessonReferenceField`](/components/platform/sections/teacher/classes/class-block-editor/lesson-reference-field) | client | A lesson by id, previewed as validation. |
-| [`PositionSelector`](/components/platform/sections/teacher/classes/class-block-editor/position-selector) | client | The teacher's saved diagrams. |
-| [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker) | client | Picks a block's opening position in the viewer. |
+| Page                                                                                                              | Kind   | What it is                                                    |
+| ----------------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------- |
+| [`TeacherDashboardSection`](/components/platform/sections/teacher/dashboard/teacher-dashboard-section)            | server | Today, the week, classes still to document.                   |
+| [`TeacherProfileSection`](/components/platform/sections/teacher/profile/teacher-profile-section)                  | server | Name, title, bio, photo, time zone.                           |
+| [`AssignedStudentsSection`](/components/platform/sections/teacher/students/assigned-students-section)             | server | Active assignments, searchable.                               |
+| [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section)  | server | A student's progress, read-only.                              |
+| [`StudentStudyViewSection`](/components/platform/sections/teacher/students/student-study-view-section)            | server | A student's study seen by the teacher.                        |
+| [`StudentGameViewSection`](/components/platform/sections/teacher/students/student-game-view-section)              | server | A student's game with "Usar en una clase".                    |
+| [`TeacherClassesSection`](/components/platform/sections/teacher/classes/teacher-classes-section)                  | server | The teacher's classes by status.                              |
+| [`ClassFormSection`](/components/platform/sections/teacher/classes/class-form-section)                            | server | Create or edit a class's metadata.                            |
+| [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section)         | server | Transitions, participants, attendance, block editor, preview. |
+| [`AttendanceForm`](/components/platform/sections/teacher/classes/attendance-form)                                 | server | One checkbox per participant.                                 |
+| [`ClassBlockEditor`](/components/platform/sections/teacher/classes/class-block-editor/class-block-editor)         | client | The class content editor.                                     |
+| [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form)                        | client | The fields of one block by kind.                              |
+| [`GameSelector`](/components/platform/sections/teacher/classes/class-block-editor/game-selector)                  | client | Referenceable games grouped by owner.                         |
+| [`LessonReferenceField`](/components/platform/sections/teacher/classes/class-block-editor/lesson-reference-field) | client | A lesson by id, previewed as validation.                      |
+| [`PositionSelector`](/components/platform/sections/teacher/classes/class-block-editor/position-selector)          | client | The teacher's saved diagrams.                                 |
+| [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker)             | client | Picks a block's opening position in the viewer.               |
 
 ## `sections/staff/` — `/administracion`
 
-| Page | Kind | What it is |
-| --- | --- | --- |
-| [`StaffDashboardSection`](/components/platform/sections/staff/dashboard/staff-dashboard-section) | server | Counts and students without a teacher. |
-| [`StudentsTableSection`](/components/platform/sections/staff/students/students-table-section) | server | Every account, searchable. |
-| [`StudentAdminDetailSection`](/components/platform/sections/staff/students/student-admin-detail-section) | server | Account, password reset, assignment panel. |
-| [`CreateAccountForm`](/components/platform/sections/staff/students/create-account-form) | client | Account creation returning a temporary password. |
-| [`ResetPasswordForm`](/components/platform/sections/staff/students/reset-password-form) | client | Password reset returning a temporary password. |
-| [`TempPasswordNotice`](/components/platform/sections/staff/students/temp-password-notice) | client | Shows the temporary password once. |
-| [`TeachersTableSection`](/components/platform/sections/staff/teachers/teachers-table-section) | server | Active and inactive teachers. |
-| [`TeacherFormSection`](/components/platform/sections/staff/teachers/teacher-form-section) | server | Link an account or create one. |
-| [`TeacherAdminDetailSection`](/components/platform/sections/staff/teachers/teacher-admin-detail-section) | server | Record, activation, assignments. |
-| [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel) | server | Student↔teacher assignments from either side. |
-| [`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section) | server | The catalog in every status. |
-| [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) | server | The course in independent cards. |
-| [`CourseGamesSection`](/components/platform/sections/staff/courses/course-games-section) | server | Every game of the course, by chapter. |
-| [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section) | server | Chapter metadata and lesson order. |
-| [`ChapterGamesSection`](/components/platform/sections/staff/courses/chapter-games-section) | server | The chapter's collection; where PGN is pasted. |
-| [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section) | server | Content, metadata, exercises. |
-| [`LessonGamePicker`](/components/platform/sections/staff/courses/lesson-game-picker) | server | Links the lesson to a course game. |
-| [`ExerciseEditor`](/components/platform/sections/staff/courses/exercise-editor) | client | The lesson's exercises as SAN lines. |
-| [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker) | client | Marks two positions on the lesson's PGN. |
-| [`SortableList`](/components/platform/sections/staff/courses/sortable-list) | client | Drag-sortable rows for chapters and lessons. |
-| [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor) | server | Header with breadcrumbs and the two-column layout. |
-| [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel) | server | A card with a header rule. |
-| [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs) | server | Tabs that are pages. |
-| [`AuthorsAdminSection`](/components/platform/sections/staff/authors/authors-admin-section) | server | The one editable catalog. |
-| [`StaffClassesSection`](/components/platform/sections/staff/classes/staff-classes-section) | server | Every class with filters. |
-| [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section) | server | Everything about a class, payments included. |
+| Page                                                                                                     | Kind   | What it is                                         |
+| -------------------------------------------------------------------------------------------------------- | ------ | -------------------------------------------------- |
+| [`StaffDashboardSection`](/components/platform/sections/staff/dashboard/staff-dashboard-section)         | server | Counts and students without a teacher.             |
+| [`StudentsTableSection`](/components/platform/sections/staff/students/students-table-section)            | server | Every account, searchable.                         |
+| [`StudentAdminDetailSection`](/components/platform/sections/staff/students/student-admin-detail-section) | server | Account, password reset, assignment panel.         |
+| [`CreateAccountForm`](/components/platform/sections/staff/students/create-account-form)                  | client | Account creation returning a temporary password.   |
+| [`ResetPasswordForm`](/components/platform/sections/staff/students/reset-password-form)                  | client | Password reset returning a temporary password.     |
+| [`TempPasswordNotice`](/components/platform/sections/staff/students/temp-password-notice)                | client | Shows the temporary password once.                 |
+| [`TeachersTableSection`](/components/platform/sections/staff/teachers/teachers-table-section)            | server | Active and inactive teachers.                      |
+| [`TeacherFormSection`](/components/platform/sections/staff/teachers/teacher-form-section)                | server | Link an account or create one.                     |
+| [`TeacherAdminDetailSection`](/components/platform/sections/staff/teachers/teacher-admin-detail-section) | server | Record, activation, assignments.                   |
+| [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel)                    | server | Student↔teacher assignments from either side.      |
+| [`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section)               | server | The catalog in every status.                       |
+| [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section)               | server | The course in independent cards.                   |
+| [`CourseGamesSection`](/components/platform/sections/staff/courses/course-games-section)                 | server | Every game of the course, by chapter.              |
+| [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section)             | server | Chapter metadata and lesson order.                 |
+| [`ChapterGamesSection`](/components/platform/sections/staff/courses/chapter-games-section)               | server | The chapter's collection; where PGN is pasted.     |
+| [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section)               | server | Content, metadata, exercises.                      |
+| [`LessonGamePicker`](/components/platform/sections/staff/courses/lesson-game-picker)                     | server | Links the lesson to a course game.                 |
+| [`ExerciseEditor`](/components/platform/sections/staff/courses/exercise-editor)                          | client | The lesson's exercises as SAN lines.               |
+| [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker)                 | client | Marks two positions on the lesson's PGN.           |
+| [`SortableList`](/components/platform/sections/staff/courses/sortable-list)                              | client | Drag-sortable rows for chapters and lessons.       |
+| [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor)                            | server | Header with breadcrumbs and the two-column layout. |
+| [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel)                                  | server | A card with a header rule.                         |
+| [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs)                                    | server | Tabs that are pages.                               |
+| [`AuthorsAdminSection`](/components/platform/sections/staff/authors/authors-admin-section)               | server | The one editable catalog.                          |
+| [`StaffClassesSection`](/components/platform/sections/staff/classes/staff-classes-section)               | server | Every class with filters.                          |
+| [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section)      | server | Everything about a class, payments included.       |
 
 ## Choosing a shared piece
 
-| Need | Use |
-| --- | --- |
-| A list of records in a panel | `PlatformTable` (filters through search params). |
-| A form control with a label | `FormField`; groups of checkboxes in `FormFieldset`. |
-| Show the outcome of an action | `PlatformNotice` from the page's message map. |
-| Nothing to show yet | `EmptyState` with a link to the action that creates the first item. |
-| A date or time of a class | `LocalDateTime` with the server-formatted fallback. |
-| A cover or photo | `ImageUpload` inside the form that will save the URL. |
+| Need                                 | Use                                                                                                                                          |
+| ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| A list of records in a panel         | `PlatformTable` (filters through search params).                                                                                             |
+| A form control with a label          | `FormField`; groups of checkboxes in `FormFieldset`.                                                                                         |
+| Show the outcome of an action        | `PlatformNotice` from the page's message map.                                                                                                |
+| Nothing to show yet                  | `EmptyState` with a link to the action that creates the first item.                                                                          |
+| A date or time of a class            | `LocalDateTime` with the server-formatted fallback.                                                                                          |
+| A cover or photo                     | `ImageUpload` inside the form that will save the URL.                                                                                        |
 | A submit button with a pending state | none yet: [`LoginSubmit`](/components/auth/sections/login/login-submit) is the model; `todos.md` T12 asks for a generic `SubmitButton` here. |
-| Anything with a board | see [Chess components](/components/chess#which-one-to-use). |
+| Anything with a board                | see [Chess components](/components/chess#which-one-to-use).                                                                                  |
 
 A piece belongs in `shared/` when a second section of the platform needs it; until then it stays next to the section that uses it.

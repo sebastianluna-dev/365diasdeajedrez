@@ -47,7 +47,11 @@ export async function AssignedStudentsSection({ query }: AssignedStudentsSection
             <PlatformTableCell>{student.nextClassLabel ?? "—"}</PlatformTableCell>
             <PlatformTableCell>
               {student.lastActivityIso ? (
-                <LocalDateTime iso={student.lastActivityIso} fallback={student.lastActivityLabel ?? ""} withTime={false} />
+                <LocalDateTime
+                  iso={student.lastActivityIso}
+                  fallback={student.lastActivityLabel ?? ""}
+                  withTime={false}
+                />
               ) : (
                 "Sin actividad"
               )}

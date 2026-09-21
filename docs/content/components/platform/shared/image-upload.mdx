@@ -4,14 +4,14 @@ description: "Drag or pick an image, upload it from the browser straight to Clou
 
 # `ImageUpload`
 
-| | |
-| --- | --- |
-| File | `components/platform/shared/image-upload.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `image-upload.comp.css` → block `.image-upload` |
-| Used by | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) (the course cover) |
-| Writes | `createUploadSignature()` · `services/media/media.actions.ts` |
-| Uses | `IMAGE_ACCEPT`, `IMAGE_MAX_BYTES`, `isAllowedImageType` from `constants/platform/upload.const`<br />`withCoverCrop` from `lib/cloudinary-url`<br />`isDisplayableImage` from `lib/remote-image`<br />`ImageIcon` from `components/icons/` |
+|            |                                                                                                                                                                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/image-upload.comp.tsx`                                                                                                                                                                                        |
+| Kind       | Client Component                                                                                                                                                                                                                          |
+| Stylesheet | `image-upload.comp.css` → block `.image-upload`                                                                                                                                                                                           |
+| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) (the course cover)                                                                                                                             |
+| Writes     | `createUploadSignature()` · `services/media/media.actions.ts`                                                                                                                                                                             |
+| Uses       | `IMAGE_ACCEPT`, `IMAGE_MAX_BYTES`, `isAllowedImageType` from `constants/platform/upload.const`<br />`withCoverCrop` from `lib/cloudinary-url`<br />`isDisplayableImage` from `lib/remote-image`<br />`ImageIcon` from `components/icons/` |
 
 ## Purpose
 
@@ -21,14 +21,14 @@ The bytes go **from the browser to Cloudinary directly**, with a signature reque
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `name` | `string` | yes | Name of the hidden field that carries the URL. |
-| `form` | `string` | no | Id of the `<form>` the field belongs to, when the component lives outside it. This is what lets the cover sit in its own card and still save with the metadata form. |
-| `defaultValue` | `string` | no | The URL already saved, if any. |
-| `label` | `string` | yes | What it is: "Portada del curso". Used in the placeholder and the `aria-label`. |
-| `aspectRatio` | `string` | no · default `"21:9"` | Ratio of the box and of the Cloudinary crop. |
-| `hint` | `string` | no | Text under the box when there is no error. |
+| Prop           | Type     | Required              | Meaning                                                                                                                                                              |
+| -------------- | -------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`         | `string` | yes                   | Name of the hidden field that carries the URL.                                                                                                                       |
+| `form`         | `string` | no                    | Id of the `<form>` the field belongs to, when the component lives outside it. This is what lets the cover sit in its own card and still save with the metadata form. |
+| `defaultValue` | `string` | no                    | The URL already saved, if any.                                                                                                                                       |
+| `label`        | `string` | yes                   | What it is: "Portada del curso". Used in the placeholder and the `aria-label`.                                                                                       |
+| `aspectRatio`  | `string` | no · default `"21:9"` | Ratio of the box and of the Cloudinary crop.                                                                                                                         |
+| `hint`         | `string` | no                    | Text under the box when there is no error.                                                                                                                           |
 
 ## Behaviour
 
@@ -66,7 +66,7 @@ import { ImageUpload } from "@/components/platform/shared/image-upload.comp";
   label="Portada del curso"
   aspectRatio="21:9"
   hint="JPG, PNG, WebP o AVIF. Se guarda al pulsar «Guardar metadatos»."
-/>
+/>;
 ```
 
 ## Related

@@ -4,14 +4,14 @@ description: "A student's study seen by their teacher: breadcrumb, kind and read
 
 # `StudentStudyViewSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/students/student-study-view.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `student-study-view.section.css` → block `.student-study` |
-| Used by | `/profesor/alumnos/[studentId]/estudios/[studyId]` |
-| Composes | [`PlatformTable`](/components/platform/shared/platform-table) |
-| Uses | `teacherRoutes` from `lib/platform-routes`; `StudyDetail` from `services/studies/studies.types` |
+|            |                                                                                                 |
+| ---------- | ----------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/students/student-study-view.section.tsx`                  |
+| Kind       | Server Component                                                                                |
+| Stylesheet | `student-study-view.section.css` → block `.student-study`                                       |
+| Used by    | `/profesor/alumnos/[studentId]/estudios/[studyId]`                                              |
+| Composes   | [`PlatformTable`](/components/platform/shared/platform-table)                                   |
+| Uses       | `teacherRoutes` from `lib/platform-routes`; `StudyDetail` from `services/studies/studies.types` |
 
 ## Purpose
 
@@ -19,11 +19,11 @@ The same games a student sees in their study, laid out for the teacher, **withou
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `studentId` | `string` | yes | For the breadcrumb link. |
-| `studentName` | `string` | yes | Breadcrumb text. |
-| `study` | `StudyDetail` | yes | Read with the teacher's rights; `games[].href` already points into the teacher's routes. |
+| Prop          | Type          | Required | Meaning                                                                                  |
+| ------------- | ------------- | -------- | ---------------------------------------------------------------------------------------- |
+| `studentId`   | `string`      | yes      | For the breadcrumb link.                                                                 |
+| `studentName` | `string`      | yes      | Breadcrumb text.                                                                         |
+| `study`       | `StudyDetail` | yes      | Read with the teacher's rights; `games[].href` already points into the teacher's routes. |
 
 ## Behaviour
 
@@ -48,7 +48,7 @@ From `app/(platform)/profesor/alumnos/[studentId]/estudios/[studyId]/page.tsx`:
 ```tsx
 import { StudentStudyViewSection } from "@/components/platform/sections/teacher/students/student-study-view.section";
 
-<StudentStudyViewSection studentId={studentId} studentName={student.displayName} study={study} />
+<StudentStudyViewSection studentId={studentId} studentName={student.displayName} study={study} />;
 ```
 
 ## Related

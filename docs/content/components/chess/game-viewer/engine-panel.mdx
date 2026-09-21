@@ -4,14 +4,14 @@ description: "The engine switch and Stockfish's three continuations, one expanda
 
 # `EnginePanel`
 
-| | |
-| --- | --- |
-| File | `components/chess/game-viewer/engine-panel.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `engine-panel.comp.css` → block `.engine-panel` |
-| Used by | [`GameViewer`](/components/chess/game-viewer/game-viewer) |
-| Composes | [`ChessBoard`](/components/chess/chess-board) (the preview) |
-| Uses | `EngineState` from [`useEngine`](/components/chess/game-viewer/use-engine-hook)<br />`engineLineTokens`, `formatEvaluation` from `lib/chess/engine-protocol`<br />`sanToSpanish` from `lib/chess/notation`<br />`uciLineSteps` from `lib/chess/replay`<br />`ChevronIcon` from `components/icons/` |
+|            |                                                                                                                                                                                                                                                                                                    |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/engine-panel.comp.tsx`                                                                                                                                                                                                                                               |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                   |
+| Stylesheet | `engine-panel.comp.css` → block `.engine-panel`                                                                                                                                                                                                                                                    |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer)                                                                                                                                                                                                                                          |
+| Composes   | [`ChessBoard`](/components/chess/chess-board) (the preview)                                                                                                                                                                                                                                        |
+| Uses       | `EngineState` from [`useEngine`](/components/chess/game-viewer/use-engine-hook)<br />`engineLineTokens`, `formatEvaluation` from `lib/chess/engine-protocol`<br />`sanToSpanish` from `lib/chess/notation`<br />`uciLineSteps` from `lib/chess/replay`<br />`ChevronIcon` from `components/icons/` |
 
 ## Purpose
 
@@ -21,14 +21,14 @@ It only renders. The viewer owns the engine through [`useEngine`](/components/ch
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `fen` | `string` | yes | The position on the board; lines are replayed from it. |
-| `enabled` | `boolean` | yes | Whether the engine is on. Off, only the head with the switch renders. |
-| `onToggle` | `() => void` | yes | The switch. |
-| `state` | `EngineState` | yes | `{ lines, info, loading, failed }` from `useEngine`. |
-| `flipBoard` | `boolean` | no · default `false` | The preview is looked at from the same side as the board next to it. |
-| `onExpandedChange` | `(expanded: boolean) => void` | no | Reports whether any line is expanded. The viewer needs it because the height this takes up is given up by the notation, and that accounting belongs to the card, not the engine. |
+| Prop               | Type                          | Required             | Meaning                                                                                                                                                                          |
+| ------------------ | ----------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `fen`              | `string`                      | yes                  | The position on the board; lines are replayed from it.                                                                                                                           |
+| `enabled`          | `boolean`                     | yes                  | Whether the engine is on. Off, only the head with the switch renders.                                                                                                            |
+| `onToggle`         | `() => void`                  | yes                  | The switch.                                                                                                                                                                      |
+| `state`            | `EngineState`                 | yes                  | `{ lines, info, loading, failed }` from `useEngine`.                                                                                                                             |
+| `flipBoard`        | `boolean`                     | no · default `false` | The preview is looked at from the same side as the board next to it.                                                                                                             |
+| `onExpandedChange` | `(expanded: boolean) => void` | no                   | Reports whether any line is expanded. The viewer needs it because the height this takes up is given up by the notation, and that accounting belongs to the card, not the engine. |
 
 ## Behaviour
 
@@ -57,19 +57,21 @@ From `components/chess/game-viewer/game-viewer.comp.tsx`:
 ```tsx
 import { EnginePanel } from "./engine-panel.comp";
 
-{engine && (
-  <EnginePanel
-    fen={fen}
-    enabled={engineOn}
-    onToggle={() => {
-      setEngineOn((on) => !on);
-      setEngineExpanded(false);
-    }}
-    state={engineState}
-    flipBoard={flipBoard}
-    onExpandedChange={setEngineExpanded}
-  />
-)}
+{
+  engine && (
+    <EnginePanel
+      fen={fen}
+      enabled={engineOn}
+      onToggle={() => {
+        setEngineOn((on) => !on);
+        setEngineExpanded(false);
+      }}
+      state={engineState}
+      flipBoard={flipBoard}
+      onExpandedChange={setEngineExpanded}
+    />
+  );
+}
 ```
 
 ## Related

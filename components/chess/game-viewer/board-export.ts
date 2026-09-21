@@ -165,13 +165,7 @@ export async function drawPosition(canvas: HTMLCanvasElement, fen: string, optio
       const isLight = (file + rank) % 2 === 1;
       const isLastMove = highlighted.has(`${FILES[file]}${rank + 1}`);
 
-      ctx.fillStyle = isLastMove
-        ? isLight
-          ? LAST_MOVE_LIGHT
-          : LAST_MOVE_DARK
-        : isLight
-          ? LIGHT_SQUARE
-          : DARK_SQUARE;
+      ctx.fillStyle = isLastMove ? (isLight ? LAST_MOVE_LIGHT : LAST_MOVE_DARK) : isLight ? LIGHT_SQUARE : DARK_SQUARE;
       // Rank 8 goes on top: the canvas axis grows downwards.
       ctx.fillRect(file * cell, (7 - rank) * cell, cell, cell);
     }

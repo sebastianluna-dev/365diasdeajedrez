@@ -4,15 +4,15 @@ description: "The lesson's exercises, described as SAN lines: a list with move, 
 
 # `ExerciseEditor`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/courses/exercise-editor.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `exercise-editor.comp.css` → block `.exercise-editor` |
-| Used by | [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section) |
-| Composes | [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker), [`FormField`](/components/platform/shared/form-field) |
-| Writes | `createExercise()`, `updateExercise()`, `moveExercise()`, `deleteExercise()` · `services/staff-courses/staff-courses.actions.ts` |
-| Uses | `CatalogOption`, `ExerciseAdminRow` from `services/staff-courses/staff-courses.types` |
+|            |                                                                                                                                                 |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/exercise-editor.comp.tsx`                                                                           |
+| Kind       | Client Component                                                                                                                                |
+| Stylesheet | `exercise-editor.comp.css` → block `.exercise-editor`                                                                                           |
+| Used by    | [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section)                                                      |
+| Composes   | [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker), [`FormField`](/components/platform/shared/form-field) |
+| Writes     | `createExercise()`, `updateExercise()`, `moveExercise()`, `deleteExercise()` · `services/staff-courses/staff-courses.actions.ts`                |
+| Uses       | `CatalogOption`, `ExerciseAdminRow` from `services/staff-courses/staff-courses.types`                                                           |
 
 ## Purpose
 
@@ -20,12 +20,12 @@ An exercise is a mode, an optional prompt, the moves played **before** it starts
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `courseId`, `chapterId`, `lessonId` | `string` | yes | Bound into every action. |
-| `exercises` | `ExerciseAdminRow[]` | yes | `{ id, modeCode, modeLabel, promptText?, line, startPly, endPly, isStale }[]`. |
-| `modes` | `CatalogOption[]` | yes | Exercise mode catalog. |
-| `lessonPgn` | `string` | yes | The lesson's PGN, for the board picker. |
+| Prop                                | Type                 | Required | Meaning                                                                        |
+| ----------------------------------- | -------------------- | -------- | ------------------------------------------------------------------------------ |
+| `courseId`, `chapterId`, `lessonId` | `string`             | yes      | Bound into every action.                                                       |
+| `exercises`                         | `ExerciseAdminRow[]` | yes      | `{ id, modeCode, modeLabel, promptText?, line, startPly, endPly, isStale }[]`. |
+| `modes`                             | `CatalogOption[]`    | yes      | Exercise mode catalog.                                                         |
+| `lessonPgn`                         | `string`             | yes      | The lesson's PGN, for the board picker.                                        |
 
 ## Behaviour
 
@@ -62,7 +62,7 @@ import { ExerciseEditor } from "./exercise-editor.comp";
   exercises={lesson.exercises}
   modes={exerciseModes}
   lessonPgn={lesson.pgn}
-/>
+/>;
 ```
 
 ## Related

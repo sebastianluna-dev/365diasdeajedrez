@@ -4,14 +4,14 @@ description: "A select of the teacher's own saved positions (diagrams) for a pos
 
 # `PositionSelector`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/classes/class-block-editor/position-selector.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | none |
-| Used by | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) |
-| Composes | [`FormField`](/components/platform/shared/form-field) |
-| Uses | `PositionOption` from `services/teacher-classes/teacher-classes.types` |
+|            |                                                                                              |
+| ---------- | -------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/class-block-editor/position-selector.comp.tsx` |
+| Kind       | Client Component                                                                             |
+| Stylesheet | none                                                                                         |
+| Used by    | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form)   |
+| Composes   | [`FormField`](/components/platform/shared/form-field)                                        |
+| Uses       | `PositionOption` from `services/teacher-classes/teacher-classes.types`                       |
 
 ## Purpose
 
@@ -19,11 +19,11 @@ Position blocks reference a saved `Position` row owned by the teacher (`owner = 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `positions` | `PositionOption[]` | yes | `{ id, label }[]`. Empty shows a hint that none is saved yet. |
-| `value` | `string` | yes | The `positionId`. |
-| `onChange` | `(positionId: string) => void` | yes | |
+| Prop        | Type                           | Required | Meaning                                                       |
+| ----------- | ------------------------------ | -------- | ------------------------------------------------------------- |
+| `positions` | `PositionOption[]`             | yes      | `{ id, label }[]`. Empty shows a hint that none is saved yet. |
+| `value`     | `string`                       | yes      | The `positionId`.                                             |
+| `onChange`  | `(positionId: string) => void` | yes      |                                                               |
 
 ## Behaviour
 
@@ -40,7 +40,7 @@ From `components/platform/sections/teacher/classes/class-block-editor/block-form
 ```tsx
 import { PositionSelector } from "./position-selector.comp";
 
-<PositionSelector positions={options.positions} value={positionId} onChange={setPositionId} />
+<PositionSelector positions={options.positions} value={positionId} onChange={setPositionId} />;
 ```
 
 ## Related

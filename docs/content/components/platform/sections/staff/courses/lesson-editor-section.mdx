@@ -4,15 +4,15 @@ description: "The lesson in independent cards: the linked course game first, the
 
 # `LessonEditorSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/courses/lesson-editor.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `lesson-editor.section.css` → block `.lesson-editor` |
-| Used by | `/administracion/cursos/[courseId]/capitulos/[chapterId]/lecciones/[lessonId]` |
-| Composes | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffEditorLayout`](/components/platform/sections/staff/courses/staff-editor), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`LessonGamePicker`](/components/platform/sections/staff/courses/lesson-game-picker), [`ExerciseEditor`](/components/platform/sections/staff/courses/exercise-editor), [`FormField`](/components/platform/shared/form-field), [`FormFieldset`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Writes | `updateLesson()`, `deleteLesson()` · `services/staff-courses/staff-courses.actions.ts` |
-| Uses | `BOARD_ORIENTATION`, `CONTENT_ORIENTATIONS` from `constants/platform/shared-codes.const`; `STAFF_ERROR_MESSAGES`; `staffRoutes`; `LessonAdminDetail`, `CatalogOption`, `TopicOption`, `CourseGameRow` types |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/courses/lesson-editor.section.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Stylesheet | `lesson-editor.section.css` → block `.lesson-editor`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Used by    | `/administracion/cursos/[courseId]/capitulos/[chapterId]/lecciones/[lessonId]`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffEditorLayout`](/components/platform/sections/staff/courses/staff-editor), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`LessonGamePicker`](/components/platform/sections/staff/courses/lesson-game-picker), [`ExerciseEditor`](/components/platform/sections/staff/courses/exercise-editor), [`FormField`](/components/platform/shared/form-field), [`FormFieldset`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes     | `updateLesson()`, `deleteLesson()` · `services/staff-courses/staff-courses.actions.ts`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Uses       | `BOARD_ORIENTATION`, `CONTENT_ORIENTATIONS` from `constants/platform/shared-codes.const`; `STAFF_ERROR_MESSAGES`; `staffRoutes`; `LessonAdminDetail`, `CatalogOption`, `TopicOption`, `CourseGameRow` types                                                                                                                                                                                                                                                                                                                                                                                      |
 
 ## Purpose
 
@@ -22,14 +22,14 @@ The "Opciones" controls in the aside (priority, trainable, training colour) are 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `lesson` | `LessonAdminDetail` | yes | `id`, `courseId`, `chapterId`, names, `order`, `pgn`, `pgnUpdatedAtLabel?`, `game?`, `isPriority`, `isTrainable`, `trainingColorCode?`, `orientationCode`, `estimatedDuration?`, `topicIds`, `exercises[]`, `canDelete`. |
-| `exerciseModes` | `CatalogOption[]` | yes | Exercise mode catalog. |
-| `topics` | `TopicOption[]` | yes | Topics for the checkboxes. |
-| `courseGames` | `CourseGameRow[]` | yes | Collection games matching the search, for the picker. |
-| `gameQuery` | `string` | no | What was searched, from `?partida=`. |
-| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+| Prop            | Type                | Required | Meaning                                                                                                                                                                                                                  |
+| --------------- | ------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `lesson`        | `LessonAdminDetail` | yes      | `id`, `courseId`, `chapterId`, names, `order`, `pgn`, `pgnUpdatedAtLabel?`, `game?`, `isPriority`, `isTrainable`, `trainingColorCode?`, `orientationCode`, `estimatedDuration?`, `topicIds`, `exercises[]`, `canDelete`. |
+| `exerciseModes` | `CatalogOption[]`   | yes      | Exercise mode catalog.                                                                                                                                                                                                   |
+| `topics`        | `TopicOption[]`     | yes      | Topics for the checkboxes.                                                                                                                                                                                               |
+| `courseGames`   | `CourseGameRow[]`   | yes      | Collection games matching the search, for the picker.                                                                                                                                                                    |
+| `gameQuery`     | `string`            | no       | What was searched, from `?partida=`.                                                                                                                                                                                     |
+| `errorCode`     | `string`            | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`.                                                                                                                                                                        |
 
 ## Behaviour
 
@@ -63,7 +63,7 @@ import { LessonEditorSection } from "@/components/platform/sections/staff/course
   courseGames={courseGames}
   gameQuery={partida}
   errorCode={error}
-/>
+/>;
 ```
 
 ## Related

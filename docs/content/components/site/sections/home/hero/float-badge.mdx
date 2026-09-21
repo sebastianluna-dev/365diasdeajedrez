@@ -4,13 +4,13 @@ description: "A floating chip on the hero: a chess piece glyph from the chess fo
 
 # `FloatBadge`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/hero/float-badge.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `float-badge.comp.css` → block `.float-badge` |
-| Used by | [`HeroSection`](/components/site/sections/home/hero/hero-section) |
-| Uses | `ChessPieceUnicode` from `constants/chess-pieces.const` |
+|            |                                                                   |
+| ---------- | ----------------------------------------------------------------- |
+| File       | `components/site/sections/home/hero/float-badge.comp.tsx`         |
+| Kind       | Server Component                                                  |
+| Stylesheet | `float-badge.comp.css` → block `.float-badge`                     |
+| Used by    | [`HeroSection`](/components/site/sections/home/hero/hero-section) |
+| Uses       | `ChessPieceUnicode` from `constants/chess-pieces.const`           |
 
 ## Purpose
 
@@ -18,11 +18,11 @@ The small chips that float around the hero portrait naming the study areas. The 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `text` | `string` | yes | The word on the chip. |
-| `piece` | `ChessPieceUnicode` | yes | The piece glyph, injected with `dangerouslySetInnerHTML` because the constant is an HTML entity. |
-| `className` | `string` | no | Appended to the block; the hero passes `float-badge_offset_1..3`. |
+| Prop        | Type                | Required | Meaning                                                                                          |
+| ----------- | ------------------- | -------- | ------------------------------------------------------------------------------------------------ |
+| `text`      | `string`            | yes      | The word on the chip.                                                                            |
+| `piece`     | `ChessPieceUnicode` | yes      | The piece glyph, injected with `dangerouslySetInnerHTML` because the constant is an HTML entity. |
+| `className` | `string`            | no       | Appended to the block; the hero passes `float-badge_offset_1..3`.                                |
 
 ## Behaviour
 
@@ -47,7 +47,7 @@ From `components/site/sections/home/hero/hero.section.tsx`:
 ```tsx
 import { FloatBadge } from "./float-badge.comp";
 
-<FloatBadge text="Cálculo" piece={CHESS_PIECE_UNICODE.BLACK_KNIGHT} className="float-badge_offset_1" />
+<FloatBadge text="Cálculo" piece={CHESS_PIECE_UNICODE.BLACK_KNIGHT} className="float-badge_offset_1" />;
 ```
 
 ## Related

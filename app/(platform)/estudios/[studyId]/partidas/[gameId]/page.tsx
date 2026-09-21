@@ -54,12 +54,7 @@ export default async function GamePage({ params, searchParams }: GamePageProps) 
         }
         newGame={
           canWrite && study ? (
-            <NewGame
-              studyId={study.id}
-              studyName={study.name}
-              results={results}
-              classGames={classGames}
-            />
+            <NewGame studyId={study.id} studyName={study.name} results={results} classGames={classGames} />
           ) : undefined
         }
       />

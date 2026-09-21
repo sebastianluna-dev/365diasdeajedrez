@@ -4,15 +4,15 @@ description: "The teacher's classes as three PlatformTables (today, upcoming, pa
 
 # `TeacherClassesSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/classes/teacher-classes.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `teacher-classes.section.css` → block `.teacher-classes` |
-| Used by | `/profesor/clases` |
-| Composes | [`PlatformTable`](/components/platform/shared/platform-table), [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Reads | `getTeacherClasses(statusCode)` · `services/teacher-classes/teacher-classes.service.ts` |
-| Uses | `CLASS_STATUS`, `ClassStatusCode` from `constants/platform/class-codes.const`; `teacherRoutes` from `lib/platform-routes` |
+|            |                                                                                                                              |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/teacher-classes.section.tsx`                                                   |
+| Kind       | Server Component (async)                                                                                                     |
+| Stylesheet | `teacher-classes.section.css` → block `.teacher-classes`                                                                     |
+| Used by    | `/profesor/clases`                                                                                                           |
+| Composes   | [`PlatformTable`](/components/platform/shared/platform-table), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Reads      | `getTeacherClasses(statusCode)` · `services/teacher-classes/teacher-classes.service.ts`                                      |
+| Uses       | `CLASS_STATUS`, `ClassStatusCode` from `constants/platform/class-codes.const`; `teacherRoutes` from `lib/platform-routes`    |
 
 ## Purpose
 
@@ -20,9 +20,9 @@ description: "The teacher's classes as three PlatformTables (today, upcoming, pa
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `statusCode` | `ClassStatusCode` | no | Filter from `?status=`, already validated by the page. |
+| Prop         | Type              | Required | Meaning                                                |
+| ------------ | ----------------- | -------- | ------------------------------------------------------ |
+| `statusCode` | `ClassStatusCode` | no       | Filter from `?status=`, already validated by the page. |
 
 ## Behaviour
 
@@ -51,7 +51,7 @@ From `app/(platform)/profesor/clases/page.tsx`:
 ```tsx
 import { TeacherClassesSection } from "@/components/platform/sections/teacher/classes/teacher-classes.section";
 
-<TeacherClassesSection statusCode={toStatusCode(status)} />
+<TeacherClassesSection statusCode={toStatusCode(status)} />;
 ```
 
 ## Related

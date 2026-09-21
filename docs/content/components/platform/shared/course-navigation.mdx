@@ -4,13 +4,13 @@ description: "The Mis cursos → Curso → Capítulo → Lección breadcrumb tra
 
 # `CourseNavigation`
 
-| | |
-| --- | --- |
-| File | `components/platform/shared/course-navigation.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `course-navigation.comp.css` → block `.course-navigation` |
-| Used by | `/cursos/[courseId]`, `/cursos/[courseId]/[chapterOrder]`, `/lecciones/[lessonId]` |
-| Uses | `platformRoutes` from `lib/platform-routes` |
+|            |                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/course-navigation.comp.tsx`                            |
+| Kind       | Server Component                                                                   |
+| Stylesheet | `course-navigation.comp.css` → block `.course-navigation`                          |
+| Used by    | `/cursos/[courseId]`, `/cursos/[courseId]/[chapterOrder]`, `/lecciones/[lessonId]` |
+| Uses       | `platformRoutes` from `lib/platform-routes`                                        |
 
 ## Purpose
 
@@ -18,14 +18,14 @@ The contextual trail at the top of the three course screens. It always starts wi
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `courseId` | `string` | yes | For the course link. |
-| `courseName` | `string` | yes | Course crumb text. |
-| `chapterOrder` | `number` | no | The chapter's order number, which is what addresses it in the URL. |
-| `chapterName` | `string` | no | Chapter crumb text; rendered only together with `chapterOrder`. |
-| `lessonName` | `string` | no | Name of the current lesson, never linked. |
-| `current` | `"course" \| "chapter"` | no | Which crumb is the current page. It cannot be deduced from the data alone (the chapter view also receives only the course, and there the course *does* link), so it is stated. The lesson, when present, is always current. |
+| Prop           | Type                    | Required | Meaning                                                                                                                                                                                                                     |
+| -------------- | ----------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `courseId`     | `string`                | yes      | For the course link.                                                                                                                                                                                                        |
+| `courseName`   | `string`                | yes      | Course crumb text.                                                                                                                                                                                                          |
+| `chapterOrder` | `number`                | no       | The chapter's order number, which is what addresses it in the URL.                                                                                                                                                          |
+| `chapterName`  | `string`                | no       | Chapter crumb text; rendered only together with `chapterOrder`.                                                                                                                                                             |
+| `lessonName`   | `string`                | no       | Name of the current lesson, never linked.                                                                                                                                                                                   |
+| `current`      | `"course" \| "chapter"` | no       | Which crumb is the current page. It cannot be deduced from the data alone (the chapter view also receives only the course, and there the course _does_ link), so it is stated. The lesson, when present, is always current. |
 
 ## Behaviour
 
@@ -54,7 +54,7 @@ import { CourseNavigation } from "@/components/platform/shared/course-navigation
   chapterOrder={chapter.order}
   chapterName={chapter.name}
   current="chapter"
-/>
+/>;
 ```
 
 ## Related

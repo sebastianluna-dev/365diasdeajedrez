@@ -4,15 +4,15 @@ description: "Everything about a class for staff, payments included, rendered wi
 
 # `StaffClassDetailSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/classes/staff-class-detail.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `staff-class-detail.section.css` → block `.staff-class` |
-| Used by | `/administracion/clases/[classId]` |
-| Composes | [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice), [`LocalDateTime`](/components/platform/shared/local-datetime), [`EmptyState`](/components/platform/shared/empty-state) |
-| Writes | `setRecordingUrl()`, `cancelClassAsStaff()` · `services/staff-classes/staff-classes.actions.ts` |
-| Uses | `CLASS_STATUS` from `constants/platform/class-codes.const`; `STAFF_ERROR_MESSAGES`; `StaffClassDetail` from `services/staff-classes/staff-classes.types` |
+|            |                                                                                                                                                                                                                                                                                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/classes/staff-class-detail.section.tsx`                                                                                                                                                                                                                                                                                                                 |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                            |
+| Stylesheet | `staff-class-detail.section.css` → block `.staff-class`                                                                                                                                                                                                                                                                                                                                     |
+| Used by    | `/administracion/clases/[classId]`                                                                                                                                                                                                                                                                                                                                                          |
+| Composes   | [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice), [`LocalDateTime`](/components/platform/shared/local-datetime), [`EmptyState`](/components/platform/shared/empty-state) |
+| Writes     | `setRecordingUrl()`, `cancelClassAsStaff()` · `services/staff-classes/staff-classes.actions.ts`                                                                                                                                                                                                                                                                                             |
+| Uses       | `CLASS_STATUS` from `constants/platform/class-codes.const`; `STAFF_ERROR_MESSAGES`; `StaffClassDetail` from `services/staff-classes/staff-classes.types`                                                                                                                                                                                                                                    |
 
 ## Purpose
 
@@ -20,10 +20,10 @@ Staff sees the whole class, including what the student does not (payments) and w
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `classDetail` | `StaffClassDetail` | yes | Facts, `summary?`, `recordingUrl?`, `participants[]` with payment fields, `blocks`, `transcript?`. |
-| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+| Prop          | Type               | Required | Meaning                                                                                            |
+| ------------- | ------------------ | -------- | -------------------------------------------------------------------------------------------------- |
+| `classDetail` | `StaffClassDetail` | yes      | Facts, `summary?`, `recordingUrl?`, `participants[]` with payment fields, `blocks`, `transcript?`. |
+| `errorCode`   | `string`           | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`.                                                  |
 
 ## Behaviour
 
@@ -48,7 +48,7 @@ From `app/(platform)/administracion/clases/[classId]/page.tsx`:
 ```tsx
 import { StaffClassDetailSection } from "@/components/platform/sections/staff/classes/staff-class-detail.section";
 
-<StaffClassDetailSection classDetail={classDetail} errorCode={error} />
+<StaffClassDetailSection classDetail={classDetail} errorCode={error} />;
 ```
 
 ## Related

@@ -4,13 +4,13 @@ description: "The statistics cards with a week / month / year / all-time tab str
 
 # `StatsCards`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/dashboard/activity-stats/stats-cards.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `stats-cards.comp.css` → block `.stats-cards` |
-| Used by | [`ActivityStatsSection`](/components/platform/sections/dashboard/activity-stats/activity-stats-section) |
-| Uses | `DashboardStats`, `StatsRangeKey` from `services/dashboard/dashboard.types` |
+|            |                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/dashboard/activity-stats/stats-cards.comp.tsx`                            |
+| Kind       | Client Component                                                                                        |
+| Stylesheet | `stats-cards.comp.css` → block `.stats-cards`                                                           |
+| Used by    | [`ActivityStatsSection`](/components/platform/sections/dashboard/activity-stats/activity-stats-section) |
+| Uses       | `DashboardStats`, `StatsRangeKey` from `services/dashboard/dashboard.types`                             |
 
 ## Purpose
 
@@ -18,9 +18,9 @@ The metric cards ("Lecciones completadas", "Ejercicios resueltos"…) for a peri
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `stats` | `DashboardStats` | yes | `Record<StatsRangeKey, { totals: { label, count }[]; topics: { label, count }[] }>` for `week`, `month`, `year` and `all`. |
+| Prop    | Type             | Required | Meaning                                                                                                                    |
+| ------- | ---------------- | -------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `stats` | `DashboardStats` | yes      | `Record<StatsRangeKey, { totals: { label, count }[]; topics: { label, count }[] }>` for `week`, `month`, `year` and `all`. |
 
 ## Behaviour
 
@@ -51,7 +51,7 @@ import { StatsCards } from "./stats-cards.comp";
 
 const { stats } = await getUserDashboard();
 // …
-<StatsCards stats={stats} />
+<StatsCards stats={stats} />;
 ```
 
 ## Related

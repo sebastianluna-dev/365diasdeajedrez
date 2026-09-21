@@ -31,9 +31,7 @@ export function ExplorerGames({ games, totalGames, isSearching }: ExplorerGamesP
 
       {games.length === 0 ? (
         <p className="explorer-games__empty">
-          {isSearching
-            ? "Buscando…"
-            : "Ninguna de las partidas que puedes ver ha pasado por esta posición."}
+          {isSearching ? "Buscando…" : "Ninguna de las partidas que puedes ver ha pasado por esta posición."}
         </p>
       ) : (
         <>

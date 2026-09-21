@@ -78,12 +78,13 @@ function isVisible(lesson: { id: string; isPriority: boolean }, state: UserCours
  * staff panel uses, so author and student see the same sequence.
  */
 function allLessons(course: CourseWithContent) {
-  return sortByRole(
-    course.chapters.map((chapter) => ({ ...chapter, roleCode: chapter.role?.code })),
-  ).flatMap((chapter, chapterIndex) =>
-    sortByRole(chapter.lessons.map((lesson) => ({ ...lesson, roleCode: lesson.role?.code }))).map(
-      (lesson) => ({ ...lesson, chapterId: chapter.id, chapterOrder: chapterIndex + 1 }),
-    ),
+  return sortByRole(course.chapters.map((chapter) => ({ ...chapter, roleCode: chapter.role?.code }))).flatMap(
+    (chapter, chapterIndex) =>
+      sortByRole(chapter.lessons.map((lesson) => ({ ...lesson, roleCode: lesson.role?.code }))).map((lesson) => ({
+        ...lesson,
+        chapterId: chapter.id,
+        chapterOrder: chapterIndex + 1,
+      })),
   );
 }
 
@@ -206,9 +207,9 @@ export function mapCourseDetail(course: CourseWithContent, state: UserCourseStat
     ctaLabel: ctaLabelFor(progress),
     onlyPriorityLessons: state.onlyPriorityLessons,
     hiddenLessons: allLessons(course).length - progress.totalLessons,
-    chapters: sortByRole(
-      course.chapters.map((chapter) => ({ ...chapter, roleCode: chapter.role?.code })),
-    ).map((chapter) => mapChapterItem(course, chapter, state)),
+    chapters: sortByRole(course.chapters.map((chapter) => ({ ...chapter, roleCode: chapter.role?.code }))).map(
+      (chapter) => mapChapterItem(course, chapter, state),
+    ),
   };
 }
 

@@ -29,11 +29,7 @@ export interface GameViewer {
  */
 export function buildVisibleDatabasesWhere({ userId }: GameViewer): Prisma.GameDatabaseWhereInput {
   return {
-    OR: [
-      { userId },
-      { course: { progresses: { some: { userId } } } },
-      { shares: { some: { userId } } },
-    ],
+    OR: [{ userId }, { course: { progresses: { some: { userId } } } }, { shares: { some: { userId } } }],
   };
 }
 

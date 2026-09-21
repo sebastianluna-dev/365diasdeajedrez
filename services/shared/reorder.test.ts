@@ -60,13 +60,13 @@ describe("planSwap", () => {
           const updates = planSwap(rows, id, direction);
           const result = applyUpdates(rows, updates);
 
-          expect(result.map((row) => row.order), `lista de ${size}`).toEqual(
-            Array.from({ length: size }, (_, index) => index + 1),
-          );
+          expect(
+            result.map((row) => row.order),
+            `lista de ${size}`,
+          ).toEqual(Array.from({ length: size }, (_, index) => index + 1));
 
           const finalIndex = result.findIndex((row) => row.id === id);
-          const expectedIndex =
-            direction === "up" ? Math.max(0, position - 1) : Math.min(size - 1, position + 1);
+          const expectedIndex = direction === "up" ? Math.max(0, position - 1) : Math.min(size - 1, position + 1);
           expect(finalIndex, `${id} ${direction} en lista de ${size}`).toBe(expectedIndex);
         }
       }

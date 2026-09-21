@@ -4,14 +4,14 @@ description: "The global read view of every class: a GET filter form (teacher, s
 
 # `StaffClassesSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/classes/staff-classes.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `staff-classes.section.css` → block `.staff-classes` |
-| Used by | `/administracion/clases` |
-| Composes | [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Uses | `CLASS_STATUS` from `constants/platform/class-codes.const`; `staffRoutes` from `lib/platform-routes`; `StaffClassSummary`, `StaffClassFilters` from `services/staff-classes/staff-classes.types` |
+|            |                                                                                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/classes/staff-classes.section.tsx`                                                                                                                           |
+| Kind       | Server Component                                                                                                                                                                                 |
+| Stylesheet | `staff-classes.section.css` → block `.staff-classes`                                                                                                                                             |
+| Used by    | `/administracion/clases`                                                                                                                                                                         |
+| Composes   | [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime)              |
+| Uses       | `CLASS_STATUS` from `constants/platform/class-codes.const`; `staffRoutes` from `lib/platform-routes`; `StaffClassSummary`, `StaffClassFilters` from `services/staff-classes/staff-classes.types` |
 
 ## Purpose
 
@@ -19,12 +19,12 @@ Every class of every teacher, for oversight. The page parses the URL into typed 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `classes` | `StaffClassSummary[]` | yes | The filtered rows. |
-| `teachers` | `{ id, displayName }[]` | yes | For the teacher select. |
-| `filters` | `StaffClassFilters` | yes | The parsed filters (accepted for symmetry; the form uses `rawFilters`). |
-| `rawFilters` | `{ teacherId?, status?, from?, to?, q? }` | yes | The URL values, to re-render the form as is. |
+| Prop         | Type                                      | Required | Meaning                                                                 |
+| ------------ | ----------------------------------------- | -------- | ----------------------------------------------------------------------- |
+| `classes`    | `StaffClassSummary[]`                     | yes      | The filtered rows.                                                      |
+| `teachers`   | `{ id, displayName }[]`                   | yes      | For the teacher select.                                                 |
+| `filters`    | `StaffClassFilters`                       | yes      | The parsed filters (accepted for symmetry; the form uses `rawFilters`). |
+| `rawFilters` | `{ teacherId?, status?, from?, to?, q? }` | yes      | The URL values, to re-render the form as is.                            |
 
 ## Behaviour
 
@@ -47,7 +47,7 @@ From `app/(platform)/administracion/clases/page.tsx`:
 ```tsx
 import { StaffClassesSection } from "@/components/platform/sections/staff/classes/staff-classes.section";
 
-<StaffClassesSection classes={classes} teachers={teachers} filters={filters} rawFilters={raw} />
+<StaffClassesSection classes={classes} teachers={teachers} filters={filters} rawFilters={raw} />;
 ```
 
 ## Related

@@ -4,14 +4,14 @@ description: "The responsive grid of mentor cards."
 
 # `MentorList`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/mentors/mentor-list.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `mentor-list.comp.css` → block `.mentor-list` |
-| Used by | [`MentorsSection`](/components/site/sections/home/mentors/mentors-section) |
-| Composes | [`Mentor`](/components/site/sections/home/mentors/mentor) |
-| Uses | `MentorContent` from `services/mentors/mentors.types` |
+|            |                                                                            |
+| ---------- | -------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/mentors/mentor-list.comp.tsx`               |
+| Kind       | Server Component                                                           |
+| Stylesheet | `mentor-list.comp.css` → block `.mentor-list`                              |
+| Used by    | [`MentorsSection`](/components/site/sections/home/mentors/mentors-section) |
+| Composes   | [`Mentor`](/components/site/sections/home/mentors/mentor)                  |
+| Uses       | `MentorContent` from `services/mentors/mentors.types`                      |
 
 ## Purpose
 
@@ -19,9 +19,9 @@ The grid. Separate from the section so the section's file holds only the heading
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `mentors` | `MentorContent[]` | yes | One card per mentor, keyed by `slug`. |
+| Prop      | Type              | Required | Meaning                               |
+| --------- | ----------------- | -------- | ------------------------------------- |
+| `mentors` | `MentorContent[]` | yes      | One card per mentor, keyed by `slug`. |
 
 ## Behaviour
 
@@ -38,7 +38,7 @@ From `components/site/sections/home/mentors/mentors.section.tsx`:
 ```tsx
 import { MentorList } from "./mentor-list.comp";
 
-<MentorList mentors={content.mentors} />
+<MentorList mentors={content.mentors} />;
 ```
 
 ## Related

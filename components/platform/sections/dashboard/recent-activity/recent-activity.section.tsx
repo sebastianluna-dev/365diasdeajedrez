@@ -13,7 +13,10 @@ export async function RecentActivitySection() {
       {recentActivity.length > 0 ? (
         <ActivityList items={recentActivity} />
       ) : (
-        <EmptyState title="Sin actividad todavía" description="Completa lecciones o resuelve ejercicios para ver tu actividad." />
+        <EmptyState
+          title="Sin actividad todavía"
+          description="Completa lecciones o resuelve ejercicios para ver tu actividad."
+        />
       )}
     </section>
   );

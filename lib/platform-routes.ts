@@ -86,8 +86,7 @@ export const staffRoutes = {
   courseDetail: (courseId: string) => `/administracion/cursos/${courseId}`,
   /** The course's games: read-only, they are edited in their chapter. */
   courseGames: (courseId: string) => `/administracion/cursos/${courseId}/partidas`,
-  chapterDetail: (courseId: string, chapterId: string) =>
-    `/administracion/cursos/${courseId}/capitulos/${chapterId}`,
+  chapterDetail: (courseId: string, chapterId: string) => `/administracion/cursos/${courseId}/capitulos/${chapterId}`,
   /** The chapter's collection: here the PGN does get pasted. */
   chapterGames: (courseId: string, chapterId: string) =>
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/partidas`,

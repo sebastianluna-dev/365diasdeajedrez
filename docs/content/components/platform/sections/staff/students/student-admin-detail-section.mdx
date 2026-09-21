@@ -4,15 +4,15 @@ description: "The administrative record of an account: name and email form, crea
 
 # `StudentAdminDetailSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/students/student-admin-detail.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `student-admin-detail.section.css` → block `.student-admin` |
-| Used by | `/administracion/alumnos/[userId]` |
-| Composes | [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel), [`ResetPasswordForm`](/components/platform/sections/staff/students/reset-password-form), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice), [`PlatformTable`](/components/platform/shared/platform-table), [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Writes | `updateStudent()` · `services/staff-students/staff-students.actions.ts` |
-| Uses | `STAFF_ERROR_MESSAGES` from `constants/platform/staff-messages.const`; `StaffStudentDetail` from `services/staff-students/staff-students.types` |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/students/student-admin-detail.section.tsx`                                                                                                                                                                                                                                                                                                                                                       |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Stylesheet | `student-admin-detail.section.css` → block `.student-admin`                                                                                                                                                                                                                                                                                                                                                                          |
+| Used by    | `/administracion/alumnos/[userId]`                                                                                                                                                                                                                                                                                                                                                                                                   |
+| Composes   | [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel), [`ResetPasswordForm`](/components/platform/sections/staff/students/reset-password-form), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice), [`PlatformTable`](/components/platform/shared/platform-table), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Writes     | `updateStudent()` · `services/staff-students/staff-students.actions.ts`                                                                                                                                                                                                                                                                                                                                                              |
+| Uses       | `STAFF_ERROR_MESSAGES` from `constants/platform/staff-messages.const`; `StaffStudentDetail` from `services/staff-students/staff-students.types`                                                                                                                                                                                                                                                                                      |
 
 ## Purpose
 
@@ -20,11 +20,11 @@ Operating an account (name, email, password, teacher assignment, class participa
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `student` | `StaffStudentDetail` | yes | `id`, `displayName`, `email`, `createdAtLabel`, `lastLoginAtLabel?`, `hasPassword`, `passwordUpdatedAtLabel?`, `assignments[]`, `classes[]`. |
-| `teachers` | `{ id, displayName }[]` | yes | Active teachers, for the assignment panel. |
-| `errorCode` | `string` | no | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+| Prop        | Type                    | Required | Meaning                                                                                                                                      |
+| ----------- | ----------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `student`   | `StaffStudentDetail`    | yes      | `id`, `displayName`, `email`, `createdAtLabel`, `lastLoginAtLabel?`, `hasPassword`, `passwordUpdatedAtLabel?`, `assignments[]`, `classes[]`. |
+| `teachers`  | `{ id, displayName }[]` | yes      | Active teachers, for the assignment panel.                                                                                                   |
+| `errorCode` | `string`                | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`.                                                                                            |
 
 ## Behaviour
 
@@ -49,7 +49,7 @@ From `app/(platform)/administracion/alumnos/[userId]/page.tsx`:
 ```tsx
 import { StudentAdminDetailSection } from "@/components/platform/sections/staff/students/student-admin-detail.section";
 
-<StudentAdminDetailSection student={student} teachers={teachers} errorCode={error} />
+<StudentAdminDetailSection student={student} teachers={teachers} errorCode={error} />;
 ```
 
 ## Related

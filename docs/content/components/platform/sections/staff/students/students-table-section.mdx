@@ -4,15 +4,15 @@ description: "Every account in a PlatformTable (name, email, whether it has a pa
 
 # `StudentsTableSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/students/students-table.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `students-table.section.css` → block `.students-table` |
-| Used by | `/administracion/alumnos` |
-| Composes | [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Reads | `listStudents(query)` · `services/staff-students/staff-students.service.ts` |
-| Uses | `staffRoutes` from `lib/platform-routes` |
+|            |                                                                                                                                                                                     |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/students/students-table.section.tsx`                                                                                                            |
+| Kind       | Server Component (async)                                                                                                                                                            |
+| Stylesheet | `students-table.section.css` → block `.students-table`                                                                                                                              |
+| Used by    | `/administracion/alumnos`                                                                                                                                                           |
+| Composes   | [`PlatformTable`](/components/platform/shared/platform-table), [`FormField`](/components/platform/shared/form-field), [`LocalDateTime`](/components/platform/shared/local-datetime) |
+| Reads      | `listStudents(query)` · `services/staff-students/staff-students.service.ts`                                                                                                         |
+| Uses       | `staffRoutes` from `lib/platform-routes`                                                                                                                                            |
 
 ## Purpose
 
@@ -20,9 +20,9 @@ The account list. Beyond identity it surfaces the two operational facts staff ac
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `query` | `string` | no | Search by name or email, from `?q=`. |
+| Prop    | Type     | Required | Meaning                              |
+| ------- | -------- | -------- | ------------------------------------ |
+| `query` | `string` | no       | Search by name or email, from `?q=`. |
 
 ## Behaviour
 
@@ -45,7 +45,7 @@ From `app/(platform)/administracion/alumnos/page.tsx`:
 ```tsx
 import { StudentsTableSection } from "@/components/platform/sections/staff/students/students-table.section";
 
-<StudentsTableSection query={q} />
+<StudentsTableSection query={q} />;
 ```
 
 ## Related

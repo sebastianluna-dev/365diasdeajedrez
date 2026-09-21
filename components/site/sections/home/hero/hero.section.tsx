@@ -51,7 +51,11 @@ export async function HeroSection() {
 
             <div className="hero__badges">
               <FloatBadge text="Cálculo" piece={CHESS_PIECE_UNICODE.BLACK_KNIGHT} className="float-badge_offset_1" />
-              <FloatBadge text="Visualización" piece={CHESS_PIECE_UNICODE.BLACK_QUEEN} className="float-badge_offset_2" />
+              <FloatBadge
+                text="Visualización"
+                piece={CHESS_PIECE_UNICODE.BLACK_QUEEN}
+                className="float-badge_offset_2"
+              />
               <FloatBadge text="Estrategia" piece={CHESS_PIECE_UNICODE.BLACK_BISHOP} className="float-badge_offset_3" />
               <FloatBadge text="Finales" piece={CHESS_PIECE_UNICODE.BLACK_KING} className="float-badge_offset_3" />
               <FloatBadge text="Aperturas" piece={CHESS_PIECE_UNICODE.BLACK_PAWN} className="float-badge_offset_2" />

@@ -131,9 +131,7 @@ export function federationFlag(code: string | null | undefined): string | null {
 
   const REGIONAL_INDICATOR_A = 0x1f1e6;
   const LETTER_A = 65;
-  return String.fromCodePoint(
-    ...[...iso].map((letter) => REGIONAL_INDICATOR_A + letter.charCodeAt(0) - LETTER_A),
-  );
+  return String.fromCodePoint(...[...iso].map((letter) => REGIONAL_INDICATOR_A + letter.charCodeAt(0) - LETTER_A));
 }
 
 /** FIDE titles that are accepted; anything else is stored as is. */

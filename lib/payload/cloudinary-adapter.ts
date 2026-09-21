@@ -89,9 +89,10 @@ export function cloudinaryStorage(options: CloudinaryStorageOptions) {
     // `generateURL` (Cloudinary's own CDN URL) instead of Payload's local,
     // access-controlled `/api/<collection>/file/<name>` route — files are public
     // on Cloudinary anyway, so there's no reason to proxy them through our server.
-    const collectionsWithAdapter = Object.keys(options.collections).reduce<
-      Record<string, CollectionOptions>
-    >((acc, slug) => ({ ...acc, [slug]: { adapter, disablePayloadAccessControl: true } }), {});
+    const collectionsWithAdapter = Object.keys(options.collections).reduce<Record<string, CollectionOptions>>(
+      (acc, slug) => ({ ...acc, [slug]: { adapter, disablePayloadAccessControl: true } }),
+      {},
+    );
 
     return cloudStoragePlugin({
       collections: collectionsWithAdapter,

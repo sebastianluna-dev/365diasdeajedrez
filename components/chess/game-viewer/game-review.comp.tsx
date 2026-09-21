@@ -28,15 +28,7 @@ interface GameReviewProps {
  * PGN, one `[%eval]` per move, so if it is there, it is rendered. That makes
  * it survive a page reload and travel with the game when exported.
  */
-export function GameReview({
-  pgn,
-  canEdit,
-  white,
-  black,
-  currentPath,
-  onSelectPath,
-  onPgnChange,
-}: GameReviewProps) {
+export function GameReview({ pgn, canEdit, white, black, currentPath, onSelectPath, onPgnChange }: GameReviewProps) {
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
   const evaluations = useMemo(() => (tree ? mainlineEvaluations(tree) : null), [tree]);
   const review = useMemo(() => (tree ? reviewGame(mainlinePositions(tree)) : null), [tree]);
@@ -96,8 +88,8 @@ export function GameReview({
       <div className="game-review">
         <span className="game-review__title">Evaluar la partida completa</span>
         <p className="game-review__lead">
-          El módulo analiza cada posición de la línea principal y devuelve la gráfica de ventaja, la precisión de
-          cada jugador y en qué jugadas se decidió.
+          El módulo analiza cada posición de la línea principal y devuelve la gráfica de ventaja, la precisión de cada
+          jugador y en qué jugadas se decidió.
         </p>
 
         <button

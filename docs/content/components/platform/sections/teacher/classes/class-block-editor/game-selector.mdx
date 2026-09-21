@@ -4,14 +4,14 @@ description: "A select of the games the teacher can reference in a class block, 
 
 # `GameSelector`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/classes/class-block-editor/game-selector.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | none (a `FormField` with a native `<select>`) |
-| Used by | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) |
-| Composes | [`FormField`](/components/platform/shared/form-field) |
-| Uses | `ReferenceableGameGroup` from `services/teacher-classes/teacher-classes.types` |
+|            |                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/teacher/classes/class-block-editor/game-selector.comp.tsx`   |
+| Kind       | Client Component                                                                           |
+| Stylesheet | none (a `FormField` with a native `<select>`)                                              |
+| Used by    | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) |
+| Composes   | [`FormField`](/components/platform/shared/form-field)                                      |
+| Uses       | `ReferenceableGameGroup` from `services/teacher-classes/teacher-classes.types`             |
 
 ## Purpose
 
@@ -19,11 +19,11 @@ The games a teacher may cite in a class: their own studies' games and those of t
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `groups` | `ReferenceableGameGroup[]` | yes | `{ ownerLabel, studyName, studyId, isOwn, games: { id, label }[] }[]`. Empty shows a hint. |
-| `value` | `string` | yes | The selected `gameId`. |
-| `onChange` | `(gameId: string) => void` | yes | |
+| Prop       | Type                       | Required | Meaning                                                                                    |
+| ---------- | -------------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `groups`   | `ReferenceableGameGroup[]` | yes      | `{ ownerLabel, studyName, studyId, isOwn, games: { id, label }[] }[]`. Empty shows a hint. |
+| `value`    | `string`                   | yes      | The selected `gameId`.                                                                     |
+| `onChange` | `(gameId: string) => void` | yes      |                                                                                            |
 
 ## Behaviour
 
@@ -40,7 +40,7 @@ From `components/platform/sections/teacher/classes/class-block-editor/block-form
 ```tsx
 import { GameSelector } from "./game-selector.comp";
 
-<GameSelector groups={options.games} value={gameId} onChange={setGameId} />
+<GameSelector groups={options.games} value={gameId} onChange={setGameId} />;
 ```
 
 ## Related

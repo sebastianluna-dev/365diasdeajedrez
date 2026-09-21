@@ -4,15 +4,15 @@ description: "The teacher's profile on the home page: photo with stats, eyebrow,
 
 # `TeacherSection`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/teacher/teacher.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `teacher.section.css` → block `.teacher`; `teacher-game.section.css` → block `.teacher-game` |
-| Used by | `app/(frontend)/landing-page.tsx` (the `teacher` slot) |
-| Composes | [`TeacherStat`](/components/site/sections/home/teacher/teacher-stat), [`EloTable`](/components/chess/elo-table), [`ChessBoardLazy`](/components/chess/chess-board-lazy) |
-| Reads | `getTeacherData()` · `services/home/home.service.ts` (the `home-teacher` Global) |
-| Uses | `CalendarCheck` from `lucide-react`, `next/image` |
+|            |                                                                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/teacher/teacher.section.tsx`                                                                                                             |
+| Kind       | Server Component (async)                                                                                                                                                |
+| Stylesheet | `teacher.section.css` → block `.teacher`; `teacher-game.section.css` → block `.teacher-game`                                                                            |
+| Used by    | `app/(frontend)/landing-page.tsx` (the `teacher` slot)                                                                                                                  |
+| Composes   | [`TeacherStat`](/components/site/sections/home/teacher/teacher-stat), [`EloTable`](/components/chess/elo-table), [`ChessBoardLazy`](/components/chess/chess-board-lazy) |
+| Reads      | `getTeacherData()` · `services/home/home.service.ts` (the `home-teacher` Global)                                                                                        |
+| Uses       | `CalendarCheck` from `lucide-react`, `next/image`                                                                                                                       |
 
 ## Purpose
 
@@ -53,7 +53,9 @@ From `app/(frontend)/landing-page.tsx`:
 ```tsx
 import { TeacherSection } from "@/components/site/sections/home/teacher/teacher.section";
 
-{mentorsSlot === "teacher" && <TeacherSection />}
+{
+  mentorsSlot === "teacher" && <TeacherSection />;
+}
 ```
 
 ## Related

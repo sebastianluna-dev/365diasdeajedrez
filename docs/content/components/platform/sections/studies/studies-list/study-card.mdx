@@ -4,14 +4,14 @@ description: "One study in the list: kind, origin (course or teacher) when it is
 
 # `StudyCard`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/studies-list/study-card.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `study-card.comp.css` → block `.study-card` |
-| Used by | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser) |
-| Composes | [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) |
-| Uses | `StudySummary` from `services/studies/studies.types` |
+|            |                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/study-card.comp.tsx`                |
+| Kind       | Server Component                                                                       |
+| Stylesheet | `study-card.comp.css` → block `.study-card`                                            |
+| Used by    | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser) |
+| Composes   | [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study)       |
+| Uses       | `StudySummary` from `services/studies/studies.types`                                   |
 
 ## Purpose
 
@@ -19,9 +19,9 @@ A study as a card. The tag row states the kind and, for what is not the student'
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `study` | `StudySummary` | yes | `id`, `name`, `href`, `description?`, `kindLabel`, `courseName?`, `sharedByName?`, `gameCount`, `citedGameCount`, `updatedAtLabel`, `permissions: { canEditGames, canDelete, … }`. |
+| Prop    | Type           | Required | Meaning                                                                                                                                                                            |
+| ------- | -------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `study` | `StudySummary` | yes      | `id`, `name`, `href`, `description?`, `kindLabel`, `courseName?`, `sharedByName?`, `gameCount`, `citedGameCount`, `updatedAtLabel`, `permissions: { canEditGames, canDelete, … }`. |
 
 ## Behaviour
 
@@ -47,9 +47,9 @@ From `components/platform/sections/studies/studies-list/studies-browser.comp.tsx
 ```tsx
 import { StudyCard } from "./study-card.comp";
 
-{ownShown.map((study) => (
-  <StudyCard key={study.id} study={study} />
-))}
+{
+  ownShown.map((study) => <StudyCard key={study.id} study={study} />);
+}
 ```
 
 ## Related

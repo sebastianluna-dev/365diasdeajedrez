@@ -6,13 +6,13 @@ description: "The ten move-quality badge SVGs (chess.com's set) as a map of comp
 
 Also exports `chessMoveQualityIconFor`.
 
-| | |
-| --- | --- |
-| File | `components/chess/chess-move-quality-icon.comp.tsx` |
-| Kind | Server-safe (no hooks, no `"use client"`; rendered inside the client board) |
-| Stylesheet | none: the colours are hard-coded in each SVG, as in the source set |
-| Used by | [`ChessBoard`](/components/chess/chess-board) (standalone notation column) |
-| Uses | `MoveQuality` from `lib/chess/types` |
+|            |                                                                             |
+| ---------- | --------------------------------------------------------------------------- |
+| File       | `components/chess/chess-move-quality-icon.comp.tsx`                         |
+| Kind       | Server-safe (no hooks, no `"use client"`; rendered inside the client board) |
+| Stylesheet | none: the colours are hard-coded in each SVG, as in the source set          |
+| Used by    | [`ChessBoard`](/components/chess/chess-board) (standalone notation column)  |
+| Uses       | `MoveQuality` from `lib/chess/types`                                        |
 
 ## Purpose
 
@@ -28,7 +28,7 @@ The badges that mark a move as brilliant, best, a mistake and so on next to the 
 export const ChessMoveQualityIcon: Record<
   "Best" | "Brilliant" | "Great" | "Excellent" | "Good" | "Book" | "Inaccuracy" | "Mistake" | "Blunder" | "Miss",
   (props: { className?: string }) => JSX.Element
->
+>;
 ```
 
 Each variant renders an `<svg aria-hidden="true">`; the surrounding cell carries the meaning.
@@ -36,7 +36,7 @@ Each variant renders an `<svg aria-hidden="true">`; the surrounding cell carries
 ### `chessMoveQualityIconFor`
 
 ```ts
-export function chessMoveQualityIconFor(quality: MoveQuality): (props: { className?: string }) => JSX.Element
+export function chessMoveQualityIconFor(quality: MoveQuality): (props: { className?: string }) => JSX.Element;
 ```
 
 Returns the variant for a quality code. Every `MoveQuality` value has an entry, so the lookup never returns `undefined`.
@@ -45,9 +45,9 @@ Returns the variant for a quality code. Every `MoveQuality` value has an entry, 
 
 Each variant accepts one prop:
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `className` | `string` | no | Forwarded to the `<svg>`; the board uses it to size the badge inside `.chess-board__notation-quality`. |
+| Prop        | Type     | Required | Meaning                                                                                                |
+| ----------- | -------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| `className` | `string` | no       | Forwarded to the `<svg>`; the board uses it to size the badge inside `.chess-board__notation-quality`. |
 
 ## Behaviour
 
@@ -66,11 +66,13 @@ import { chessMoveQualityIconFor } from "@/components/chess/chess-move-quality-i
 
 const WhiteQualityIcon = row.white.quality ? chessMoveQualityIconFor(row.white.quality) : null;
 // …
-{WhiteQualityIcon && (
-  <span className="chess-board__notation-quality">
-    <WhiteQualityIcon />
-  </span>
-)}
+{
+  WhiteQualityIcon && (
+    <span className="chess-board__notation-quality">
+      <WhiteQualityIcon />
+    </span>
+  );
+}
 ```
 
 ## Related

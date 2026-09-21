@@ -4,14 +4,14 @@ description: "Every game of a course at once, read-only and with its chapter, mo
 
 # `CourseGamesSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/courses/course-games.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `course-games.section.css` → block `.course-games` |
-| Used by | `/administracion/cursos/[courseId]/partidas` |
-| Composes | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`EmptyState`](/components/platform/shared/empty-state) |
-| Uses | `staffRoutes` from `lib/platform-routes`; `CourseAdminDetail`, `CourseGameRow` types |
+|            |                                                                                                                                                                                                                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/course-games.section.tsx`                                                                                                                                                                                                                  |
+| Kind       | Server Component                                                                                                                                                                                                                                                                       |
+| Stylesheet | `course-games.section.css` → block `.course-games`                                                                                                                                                                                                                                     |
+| Used by    | `/administracion/cursos/[courseId]/partidas`                                                                                                                                                                                                                                           |
+| Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses       | `staffRoutes` from `lib/platform-routes`; `CourseAdminDetail`, `CourseGameRow` types                                                                                                                                                                                                   |
 
 ## Purpose
 
@@ -19,10 +19,10 @@ The "Partidas" tab of a course: the overview that the split by chapters would ot
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `course` | `CourseAdminDetail` | yes | For the head, badge and tab links. |
-| `games` | `CourseGameRow[]` | yes | `{ id, title, detail?, chapterName?, moveCount, lessonCount }[]`. |
+| Prop     | Type                | Required | Meaning                                                           |
+| -------- | ------------------- | -------- | ----------------------------------------------------------------- |
+| `course` | `CourseAdminDetail` | yes      | For the head, badge and tab links.                                |
+| `games`  | `CourseGameRow[]`   | yes      | `{ id, title, detail?, chapterName?, moveCount, lessonCount }[]`. |
 
 ## Behaviour
 
@@ -47,7 +47,7 @@ From `app/(platform)/administracion/cursos/[courseId]/partidas/page.tsx`:
 ```tsx
 import { CourseGamesSection } from "@/components/platform/sections/staff/courses/course-games.section";
 
-<CourseGamesSection course={course} games={games} />
+<CourseGamesSection course={course} games={games} />;
 ```
 
 ## Related

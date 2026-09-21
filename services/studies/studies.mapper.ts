@@ -104,11 +104,7 @@ export function mapStudySummary(row: StudySummaryRow, viewerId: string | null): 
  *    del curso" repeated in thirteen games does not say which is which;
  * 4. the position, which is at least a stable handle.
  */
-function gameLabel(
-  game: StudyDetailRow["games"][number],
-  index: number,
-  eventCounts: Map<string, number>,
-): string {
+function gameLabel(game: StudyDetailRow["games"][number], index: number, eventCounts: Map<string, number>): string {
   if (game.title) return game.title;
   if (game.round) return `Ronda ${game.round}`;
   if (game.event && eventCounts.get(game.event) === 1) return game.event;
@@ -194,8 +190,7 @@ export function mapGameView(row: GameViewRow, viewerId: string | null): GameView
     // of the section so there are no two versions of the rule.
     canEdit:
       viewerId !== null &&
-      studyPermissionsOf({ kindCode: row.database.kind.code, isOwner: row.database.userId === viewerId })
-        .canEditGames,
+      studyPermissionsOf({ kindCode: row.database.kind.code, isOwner: row.database.userId === viewerId }).canEditGames,
     id: row.id,
     title: row.title ?? undefined,
     resultCode: row.result.code,

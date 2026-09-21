@@ -4,14 +4,14 @@ description: "One class as a whole-card link: title, teacher, local date and tim
 
 # `ClassCard`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/classes/classes-list/class-card.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `class-card.comp.css` → block `.class-card` |
-| Used by | [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section) |
-| Composes | [`LocalDateTime`](/components/platform/shared/local-datetime) |
-| Uses | `CLASS_STATUS` from `constants/platform/class-codes.const`; `ClassSummary` from `services/classes/classes.types` |
+|            |                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/classes/classes-list/class-card.comp.tsx`                                          |
+| Kind       | Server Component                                                                                                 |
+| Stylesheet | `class-card.comp.css` → block `.class-card`                                                                      |
+| Used by    | [`ClassesListSection`](/components/platform/sections/classes/classes-list/classes-list-section)                  |
+| Composes   | [`LocalDateTime`](/components/platform/shared/local-datetime)                                                    |
+| Uses       | `CLASS_STATUS` from `constants/platform/class-codes.const`; `ClassSummary` from `services/classes/classes.types` |
 
 ## Purpose
 
@@ -19,9 +19,9 @@ A class in the list. The whole card is a `<Link>` to the class detail; the date 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `classSummary` | `ClassSummary` | yes | `id`, `href`, `title`, `teacherName`, `scheduledAtIso`, `dateLabel`, `timeLabel`, `durationMin`, `statusCode`, `statusLabel`. |
+| Prop           | Type           | Required | Meaning                                                                                                                       |
+| -------------- | -------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `classSummary` | `ClassSummary` | yes      | `id`, `href`, `title`, `teacherName`, `scheduledAtIso`, `dateLabel`, `timeLabel`, `durationMin`, `statusCode`, `statusLabel`. |
 
 ## Behaviour
 
@@ -48,9 +48,9 @@ From `components/platform/sections/classes/classes-list/classes-list.section.tsx
 ```tsx
 import { ClassCard } from "./class-card.comp";
 
-{upcoming.map((item) => (
-  <ClassCard key={item.id} classSummary={item} />
-))}
+{
+  upcoming.map((item) => <ClassCard key={item.id} classSummary={item} />);
+}
 ```
 
 ## Related

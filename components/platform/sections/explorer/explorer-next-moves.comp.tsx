@@ -23,9 +23,7 @@ export function ExplorerNextMoves({ moves, onPlay, isSearching }: ExplorerNextMo
       <h2 className="explorer-next-moves__title">Continuaciones</h2>
 
       {moves.length === 0 ? (
-        <p className="explorer-next-moves__empty">
-          {isSearching ? "Buscando…" : "Ninguna partida siguió desde aquí."}
-        </p>
+        <p className="explorer-next-moves__empty">{isSearching ? "Buscando…" : "Ninguna partida siguió desde aquí."}</p>
       ) : (
         <ul className="explorer-next-moves__list">
           {moves.map((move) => (
@@ -33,7 +31,11 @@ export function ExplorerNextMoves({ moves, onPlay, isSearching }: ExplorerNextMo
               <button type="button" className="explorer-next-moves__button" onClick={() => onPlay(move.san)}>
                 {/* The bar goes behind the text, as a proportional background: the
                     frequency is read at a glance without depending on the number. */}
-                <span className="explorer-next-moves__bar" style={{ width: `${move.percentage}%` }} aria-hidden="true" />
+                <span
+                  className="explorer-next-moves__bar"
+                  style={{ width: `${move.percentage}%` }}
+                  aria-hidden="true"
+                />
                 <span className="explorer-next-moves__san">{sanToSpanish(move.san)}</span>
                 <span className="explorer-next-moves__count">
                   {move.count} {move.count === 1 ? "partida" : "partidas"}

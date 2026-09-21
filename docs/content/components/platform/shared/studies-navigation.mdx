@@ -4,13 +4,13 @@ description: "The Mis estudios → Estudio → Partida breadcrumb trail; a level
 
 # `StudiesNavigation`
 
-| | |
-| --- | --- |
-| File | `components/platform/shared/studies-navigation.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `studies-navigation.comp.css` → block `.studies-navigation` |
-| Used by | `/estudios/[studyId]` (and the game and new-game pages through their sections) |
-| Uses | `platformRoutes` from `lib/platform-routes` |
+|            |                                                                                |
+| ---------- | ------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/studies-navigation.comp.tsx`                       |
+| Kind       | Server Component                                                               |
+| Stylesheet | `studies-navigation.comp.css` → block `.studies-navigation`                    |
+| Used by    | `/estudios/[studyId]` (and the game and new-game pages through their sections) |
+| Uses       | `platformRoutes` from `lib/platform-routes`                                    |
 
 ## Purpose
 
@@ -18,12 +18,12 @@ The trail of the studies area. Unlike [`CourseNavigation`](/components/platform/
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `studyName` | `string` | no | The study. Without `studyHref` it is the current crumb. |
-| `studyHref` | `string` | no | Link to the study when the page is deeper. |
-| `gameName` | `string` | no | The game. Without `gameHref` it is the current crumb. |
-| `gameHref` | `string` | no | Link to the game (unused today; kept for symmetry). |
+| Prop        | Type     | Required | Meaning                                                 |
+| ----------- | -------- | -------- | ------------------------------------------------------- |
+| `studyName` | `string` | no       | The study. Without `studyHref` it is the current crumb. |
+| `studyHref` | `string` | no       | Link to the study when the page is deeper.              |
+| `gameName`  | `string` | no       | The game. Without `gameHref` it is the current crumb.   |
+| `gameHref`  | `string` | no       | Link to the game (unused today; kept for symmetry).     |
 
 ## Behaviour
 
@@ -46,7 +46,7 @@ From `app/(platform)/estudios/[studyId]/page.tsx`:
 ```tsx
 import { StudiesNavigation } from "@/components/platform/shared/studies-navigation.comp";
 
-<StudiesNavigation studyName={study.name} />
+<StudiesNavigation studyName={study.name} />;
 ```
 
 ## Related

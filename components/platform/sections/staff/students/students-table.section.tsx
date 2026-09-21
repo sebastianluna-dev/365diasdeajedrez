@@ -52,7 +52,11 @@ export async function StudentsTableSection({ query }: StudentsTableSectionProps)
             <PlatformTableCell>{student.activeTeacherName ?? "Sin asignar"}</PlatformTableCell>
             <PlatformTableCell>
               {student.lastLoginAtIso ? (
-                <LocalDateTime iso={student.lastLoginAtIso} fallback={student.lastLoginAtLabel ?? ""} withTime={false} />
+                <LocalDateTime
+                  iso={student.lastLoginAtIso}
+                  fallback={student.lastLoginAtLabel ?? ""}
+                  withTime={false}
+                />
               ) : (
                 "Nunca"
               )}

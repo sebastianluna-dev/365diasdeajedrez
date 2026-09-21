@@ -4,15 +4,15 @@ description: "The class content editor: a list of blocks with move, edit and del
 
 # `ClassBlockEditor`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/classes/class-block-editor/class-block-editor.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `class-block-editor.comp.css` → block `.class-block-editor` |
-| Used by | [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) |
-| Composes | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form), [`FormField`](/components/platform/shared/form-field) |
-| Writes | `addClassBlock()`, `updateClassBlock()`, `moveClassBlock()`, `deleteClassBlock()` · `services/teacher-classes/teacher-classes.actions.ts` |
-| Uses | `CLASS_BLOCK_KIND`, `ClassBlockKindCode` from `constants/platform/class-codes.const`; `TeacherClassBlock` from `services/teacher-classes/teacher-classes.types` |
+|            |                                                                                                                                                                 |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/class-block-editor/class-block-editor.comp.tsx`                                                                   |
+| Kind       | Client Component                                                                                                                                                |
+| Stylesheet | `class-block-editor.comp.css` → block `.class-block-editor`                                                                                                     |
+| Used by    | [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section)                                                       |
+| Composes   | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form), [`FormField`](/components/platform/shared/form-field)               |
+| Writes     | `addClassBlock()`, `updateClassBlock()`, `moveClassBlock()`, `deleteClassBlock()` · `services/teacher-classes/teacher-classes.actions.ts`                       |
+| Uses       | `CLASS_BLOCK_KIND`, `ClassBlockKindCode` from `constants/platform/class-codes.const`; `TeacherClassBlock` from `services/teacher-classes/teacher-classes.types` |
 
 ## Purpose
 
@@ -20,12 +20,12 @@ Where a class's content is composed: an ordered list of blocks (text, video, gam
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `classId` | `string` | yes | Bound into every action. |
-| `blocks` | `TeacherClassBlock[]` | yes | The blocks in order, editor shape (`kind`, `text?`, `videoUrl?`, `gameId?`, `lessonId?`, `positionId?`, `movePath?`, `caption?`, `pgn?`, `referenceLabel?`, `isMovePathBroken`). |
-| `options` | `BlockFormOptions` | yes | `{ games, positions }` the forms can reference. |
-| `initialGameId` | `string` | no | Game preselected when arriving from "Usar en una clase" (`?gameId=`): opens the add form on the game kind with that game filled. |
+| Prop            | Type                  | Required | Meaning                                                                                                                                                                          |
+| --------------- | --------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `classId`       | `string`              | yes      | Bound into every action.                                                                                                                                                         |
+| `blocks`        | `TeacherClassBlock[]` | yes      | The blocks in order, editor shape (`kind`, `text?`, `videoUrl?`, `gameId?`, `lessonId?`, `positionId?`, `movePath?`, `caption?`, `pgn?`, `referenceLabel?`, `isMovePathBroken`). |
+| `options`       | `BlockFormOptions`    | yes      | `{ games, positions }` the forms can reference.                                                                                                                                  |
+| `initialGameId` | `string`              | no       | Game preselected when arriving from "Usar en una clase" (`?gameId=`): opens the add form on the game kind with that game filled.                                                 |
 
 ## Behaviour
 
@@ -60,7 +60,7 @@ import { ClassBlockEditor } from "./class-block-editor/class-block-editor.comp";
   blocks={classDetail.blocks}
   options={blockOptions}
   initialGameId={initialGameId}
-/>
+/>;
 ```
 
 ## Related

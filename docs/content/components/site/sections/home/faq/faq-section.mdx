@@ -4,15 +4,15 @@ description: "Frequently asked questions: the heading and a WhatsApp CTA on the 
 
 # `FaqSection`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/faq/faq.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `faq.section.css` → block `.faq` |
-| Used by | `app/(frontend)/landing-page.tsx` (`sections.faq`) |
-| Composes | [`FaqAccordionItem`](/components/site/sections/home/faq/faq-accordion-item) |
-| Reads | `getFaqData()` · `services/home/home.service.ts` (the `home-faq` Global)<br />`getSiteSettingsData()` · `services/site-settings/site-settings.service.ts` |
-| Uses | `buildWhatsappUrl` from `lib/build-whatsapp-url` |
+|            |                                                                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/faq/faq.section.tsx`                                                                                                       |
+| Kind       | Server Component (async)                                                                                                                                  |
+| Stylesheet | `faq.section.css` → block `.faq`                                                                                                                          |
+| Used by    | `app/(frontend)/landing-page.tsx` (`sections.faq`)                                                                                                        |
+| Composes   | [`FaqAccordionItem`](/components/site/sections/home/faq/faq-accordion-item)                                                                               |
+| Reads      | `getFaqData()` · `services/home/home.service.ts` (the `home-faq` Global)<br />`getSiteSettingsData()` · `services/site-settings/site-settings.service.ts` |
+| Uses       | `buildWhatsappUrl` from `lib/build-whatsapp-url`                                                                                                          |
 
 ## Purpose
 
@@ -45,7 +45,9 @@ From `app/(frontend)/landing-page.tsx`:
 ```tsx
 import { FaqSection } from "@/components/site/sections/home/faq/faq.section";
 
-{sections.faq && <FaqSection />}
+{
+  sections.faq && <FaqSection />;
+}
 ```
 
 ## Related

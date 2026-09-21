@@ -4,14 +4,14 @@ description: "The right column of a game: the study's other games to jump betwee
 
 # `GameAside`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/game-view/game-aside.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `game-aside.comp.css` → block `.game-aside` |
-| Used by | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section) |
-| Composes | [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game) |
-| Uses | `GameView`, `StudyGameItem` from `services/studies/studies.types` |
+|            |                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/game-aside.comp.tsx`                   |
+| Kind       | Server Component                                                                       |
+| Stylesheet | `game-aside.comp.css` → block `.game-aside`                                            |
+| Used by    | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section) |
+| Composes   | [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game)            |
+| Uses       | `GameView`, `StudyGameItem` from `services/studies/studies.types`                      |
 
 ## Purpose
 
@@ -19,12 +19,12 @@ Two cards beside the board. The first lists the study's games so one can jump be
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `game` | `GameView` | yes | The current game. |
-| `siblings` | `StudyGameItem[]` | yes | The study's games, current included; the current one gets `aria-current="page"`. |
-| `newGame` | `ReactNode` | no | The new-game modal, mounted by whoever has its data. Passed as a node so the aside does not carry the results catalog and the class games, which it uses for nothing else. |
-| `editGame` | `ReactNode` | no | The "Datos de la partida" modal, rendered in the record card's head; absent when writing is not allowed. |
+| Prop       | Type              | Required | Meaning                                                                                                                                                                    |
+| ---------- | ----------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `game`     | `GameView`        | yes      | The current game.                                                                                                                                                          |
+| `siblings` | `StudyGameItem[]` | yes      | The study's games, current included; the current one gets `aria-current="page"`.                                                                                           |
+| `newGame`  | `ReactNode`       | no       | The new-game modal, mounted by whoever has its data. Passed as a node so the aside does not carry the results catalog and the class games, which it uses for nothing else. |
+| `editGame` | `ReactNode`       | no       | The "Datos de la partida" modal, rendered in the record card's head; absent when writing is not allowed.                                                                   |
 
 ## Behaviour
 
@@ -53,7 +53,7 @@ From `components/platform/sections/studies/game-view/game-view.section.tsx`:
 ```tsx
 import { GameAside } from "./game-aside.comp";
 
-<GameAside game={game} siblings={siblings} newGame={newGame} editGame={editGame} />
+<GameAside game={game} siblings={siblings} newGame={newGame} editGame={editGame} />;
 ```
 
 ## Related

@@ -38,11 +38,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
 
   return (
     <div className="new-game">
-      <button
-        type="button"
-        className="platform-button new-game__open"
-        onClick={() => dialogRef.current?.showModal()}
-      >
+      <button type="button" className="platform-button new-game__open" onClick={() => dialogRef.current?.showModal()}>
         Nueva partida
       </button>
 
@@ -115,8 +111,8 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
             </label>
 
             <p className="new-game__hint">
-              La partida arranca en esa posición y sin jugadas previas. Cópialo de Lichess, de un motor o de
-              donde lo tengas.
+              La partida arranca en esa posición y sin jugadas previas. Cópialo de Lichess, de un motor o de donde lo
+              tengas.
             </p>
             <Footer onCancel={close} label="Añadir partida" />
           </form>
@@ -127,12 +123,24 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
             <div className="new-game__grid">
               <label className="new-game__field new-game__field_span_all">
                 <span className="new-game__label">Nombre de la partida</span>
-                <input className="new-game__input" type="text" name="title" maxLength={120} placeholder="Ronda 1, Modelo A…" />
+                <input
+                  className="new-game__input"
+                  type="text"
+                  name="title"
+                  maxLength={120}
+                  placeholder="Ronda 1, Modelo A…"
+                />
               </label>
 
               <label className="new-game__field">
                 <span className="new-game__label">Blancas</span>
-                <input className="new-game__input" type="text" name="white" maxLength={120} placeholder="Apellidos, Nombre" />
+                <input
+                  className="new-game__input"
+                  type="text"
+                  name="white"
+                  maxLength={120}
+                  placeholder="Apellidos, Nombre"
+                />
               </label>
               <label className="new-game__field">
                 <span className="new-game__label">Elo de las blancas</span>
@@ -141,7 +149,13 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
 
               <label className="new-game__field">
                 <span className="new-game__label">Negras</span>
-                <input className="new-game__input" type="text" name="black" maxLength={120} placeholder="Apellidos, Nombre" />
+                <input
+                  className="new-game__input"
+                  type="text"
+                  name="black"
+                  maxLength={120}
+                  placeholder="Apellidos, Nombre"
+                />
               </label>
               <label className="new-game__field">
                 <span className="new-game__label">Elo de las negras</span>
@@ -165,9 +179,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
               </label>
             </div>
 
-            <p className="new-game__hint">
-              Puedes dejarlo casi vacío y jugar las jugadas después en el editor.
-            </p>
+            <p className="new-game__hint">Puedes dejarlo casi vacío y jugar las jugadas después en el editor.</p>
             <Footer onCancel={close} label="Añadir partida" />
           </form>
         )}
@@ -184,9 +196,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
                       checked={picked.includes(game.id)}
                       onChange={(event) =>
                         setPicked((current) =>
-                          event.target.checked
-                            ? [...current, game.id]
-                            : current.filter((id) => id !== game.id),
+                          event.target.checked ? [...current, game.id] : current.filter((id) => id !== game.id),
                         )
                       }
                     />
@@ -203,9 +213,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
               ))}
             </ul>
 
-            <p className="new-game__hint">
-              Se copian a tu estudio: editarlas aquí no toca la clase original.
-            </p>
+            <p className="new-game__hint">Se copian a tu estudio: editarlas aquí no toca la clase original.</p>
 
             <Footer
               onCancel={close}

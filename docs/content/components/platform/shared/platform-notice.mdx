@@ -4,12 +4,12 @@ description: "The result of an action as a role=alert paragraph in error, succes
 
 # `PlatformNotice`
 
-| | |
-| --- | --- |
-| File | `components/platform/shared/platform-notice.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `platform-notice.comp.css` → block `.platform-notice` |
-| Used by | every screen that renders an action's outcome (18 importers): the staff editors and forms, the teacher's class and profile screens, the studies' detail, game view and new-game screens, and `/administracion/cursos/nuevo` |
+|            |                                                                                                                                                                                                                             |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-notice.comp.tsx`                                                                                                                                                                       |
+| Kind       | Server Component                                                                                                                                                                                                            |
+| Stylesheet | `platform-notice.comp.css` → block `.platform-notice`                                                                                                                                                                       |
+| Used by    | every screen that renders an action's outcome (18 importers): the staff editors and forms, the teacher's class and profile screens, the studies' detail, game view and new-game screens, and `/administracion/cursos/nuevo` |
 
 ## Purpose
 
@@ -19,10 +19,10 @@ Platform forms are `<form action={serverAction}>` and return failure by **redire
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `message` | `string` | yes | The text, already translated by the page. |
-| `variant` | `"error" \| "success" \| "info"` | no · default `"error"` | Colour and border. |
+| Prop      | Type                             | Required               | Meaning                                   |
+| --------- | -------------------------------- | ---------------------- | ----------------------------------------- |
+| `message` | `string`                         | yes                    | The text, already translated by the page. |
+| `variant` | `"error" \| "success" \| "info"` | no · default `"error"` | Colour and border.                        |
 
 ## Behaviour
 
@@ -45,7 +45,9 @@ From `components/platform/sections/staff/authors/authors-admin.section.tsx`:
 ```tsx
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 
-{errorMessage && <PlatformNotice message={errorMessage} />}
+{
+  errorMessage && <PlatformNotice message={errorMessage} />;
+}
 ```
 
 The page side, from a staff page:

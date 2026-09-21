@@ -4,14 +4,14 @@ description: "The 'Mis cursos' list: one CourseCard per published course, or an 
 
 # `CoursesListSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/courses/courses-list/courses-list.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `courses-list.section.css` → block `.courses-list` |
-| Used by | `/cursos` |
-| Composes | [`CourseCard`](/components/platform/sections/courses/courses-list/course-card), [`EmptyState`](/components/platform/shared/empty-state) |
-| Uses | `CourseSummary` from `services/courses/courses.types` |
+|            |                                                                                                                                         |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/courses-list/courses-list.section.tsx`                                                            |
+| Kind       | Server Component                                                                                                                        |
+| Stylesheet | `courses-list.section.css` → block `.courses-list`                                                                                      |
+| Used by    | `/cursos`                                                                                                                               |
+| Composes   | [`CourseCard`](/components/platform/sections/courses/courses-list/course-card), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses       | `CourseSummary` from `services/courses/courses.types`                                                                                   |
 
 ## Purpose
 
@@ -19,9 +19,9 @@ The main column of `/cursos`. Unlike the dashboard sections it does not fetch: t
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `courses` | `CourseSummary[]` | yes | Published courses with the student's progress, from the page. |
+| Prop      | Type              | Required | Meaning                                                       |
+| --------- | ----------------- | -------- | ------------------------------------------------------------- |
+| `courses` | `CourseSummary[]` | yes      | Published courses with the student's progress, from the page. |
 
 ## Behaviour
 
@@ -41,7 +41,7 @@ import { CoursesListSection } from "@/components/platform/sections/courses/cours
 <div className="courses-page__layout">
   <CoursesListSection courses={courses} />
   <StudyGoalAside goal={goal} />
-</div>
+</div>;
 ```
 
 ## Related

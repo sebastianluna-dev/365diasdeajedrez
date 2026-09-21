@@ -26,7 +26,13 @@ export function SubmitButton({
   const { pending } = useFormStatus();
 
   return (
-    <button type="submit" className={className} disabled={disabled || pending} aria-busy={pending || undefined} {...rest}>
+    <button
+      type="submit"
+      className={className}
+      disabled={disabled || pending}
+      aria-busy={pending || undefined}
+      {...rest}
+    >
       {pending ? pendingLabel : children}
     </button>
   );

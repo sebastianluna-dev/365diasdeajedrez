@@ -49,9 +49,7 @@ export function replayGameDetailed(pgn: string): ReplayResult {
   const game = parsePgn(pgn)[0];
   const pos = game ? startPos(game.headers) : Chess.default();
 
-  const positions: ReplayPosition[] = [
-    { san: "", uci: "", fen: makeFen(pos.toSetup()), check: pos.isCheck() },
-  ];
+  const positions: ReplayPosition[] = [{ san: "", uci: "", fen: makeFen(pos.toSetup()), check: pos.isCheck() }];
   const warnings: string[] = [];
   if (!game) {
     if (pgn.trim().length > 0) warnings.push("No se pudo leer ninguna partida en el PGN.");

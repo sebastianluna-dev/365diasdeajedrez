@@ -60,7 +60,8 @@ export const SiteSettings: GlobalConfig = {
       label: "Mensaje por defecto de WhatsApp",
       required: true,
       admin: {
-        description: "Mensaje precargado al abrir WhatsApp desde el pie de página, el CTA flotante y las preguntas frecuentes.",
+        description:
+          "Mensaje precargado al abrir WhatsApp desde el pie de página, el CTA flotante y las preguntas frecuentes.",
       },
     },
   ],

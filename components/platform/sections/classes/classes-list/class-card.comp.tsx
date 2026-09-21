@@ -12,10 +12,7 @@ export function ClassCard({ classSummary }: ClassCardProps) {
   const isCancelled = classSummary.statusCode === CLASS_STATUS.CANCELLED;
 
   return (
-    <Link
-      href={classSummary.href}
-      className={`platform-card class-card${isCancelled ? " class-card_cancelled" : ""}`}
-    >
+    <Link href={classSummary.href} className={`platform-card class-card${isCancelled ? " class-card_cancelled" : ""}`}>
       <div className="class-card__info">
         <h3 className="class-card__title">{classSummary.title}</h3>
         <p className="class-card__teacher">{classSummary.teacherName}</p>

@@ -4,14 +4,14 @@ description: "The ordered chapter rows of a course, each a whole-row link with i
 
 # `ChapterList`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/courses/course-detail/chapter-list.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `chapter-list.comp.css` → block `.chapter-list` |
-| Used by | [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section) |
-| Composes | [`ProgressIndicator`](/components/platform/shared/progress-indicator) |
-| Uses | `CourseChapterItem` from `services/courses/courses.types` |
+|            |                                                                                                    |
+| ---------- | -------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-detail/chapter-list.comp.tsx`                         |
+| Kind       | Server Component                                                                                   |
+| Stylesheet | `chapter-list.comp.css` → block `.chapter-list`                                                    |
+| Used by    | [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section) |
+| Composes   | [`ProgressIndicator`](/components/platform/shared/progress-indicator)                              |
+| Uses       | `CourseChapterItem` from `services/courses/courses.types`                                          |
 
 ## Purpose
 
@@ -19,9 +19,9 @@ The chapters of a course as an `<ol>`. The **whole row** is the link, not just t
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `chapters` | `CourseChapterItem[]` | yes | `{ id, order, name, description?, href, totalLessons, completedLessons, estimatedDuration? }[]`, already filtered by the priority preference. |
+| Prop       | Type                  | Required | Meaning                                                                                                                                       |
+| ---------- | --------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chapters` | `CourseChapterItem[]` | yes      | `{ id, order, name, description?, href, totalLessons, completedLessons, estimatedDuration? }[]`, already filtered by the priority preference. |
 
 ## Behaviour
 
@@ -46,7 +46,7 @@ From `components/platform/sections/courses/course-detail/course-detail.section.t
 ```tsx
 import { ChapterList } from "./chapter-list.comp";
 
-<ChapterList chapters={course.chapters} />
+<ChapterList chapters={course.chapters} />;
 ```
 
 ## Related

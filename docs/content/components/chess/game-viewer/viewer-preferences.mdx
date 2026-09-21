@@ -6,13 +6,13 @@ description: "The viewer's per-browser preference (sound on or off) as a localSt
 
 Exports `DEFAULT_VIEWER_PREFERENCES`, `subscribeToViewerPreferences`, `getViewerPreferences`, `getServerViewerPreferences`, `setViewerPreferences` and the `ViewerPreferences` type.
 
-| | |
-| --- | --- |
-| File | `components/chess/game-viewer/viewer-preferences.ts` |
-| Kind | Module (plain TypeScript, browser only, `"use client"`) |
-| Stylesheet | none |
-| Used by | [`GameViewer`](/components/chess/game-viewer/game-viewer) |
-| Uses | `window.localStorage` under the key `365-viewer-preferences` |
+|            |                                                              |
+| ---------- | ------------------------------------------------------------ |
+| File       | `components/chess/game-viewer/viewer-preferences.ts`         |
+| Kind       | Module (plain TypeScript, browser only, `"use client"`)      |
+| Stylesheet | none                                                         |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer)    |
+| Uses       | `window.localStorage` under the key `365-viewer-preferences` |
 
 ## Purpose
 
@@ -22,13 +22,13 @@ It is exposed as an **external store** for `useSyncExternalStore` rather than as
 
 ## API
 
-| Export | Meaning |
-| --- | --- |
-| `DEFAULT_VIEWER_PREFERENCES` | `{ sound: true }`. |
+| Export                                   | Meaning                                                                                                     |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `DEFAULT_VIEWER_PREFERENCES`             | `{ sound: true }`.                                                                                          |
 | `subscribeToViewerPreferences(listener)` | Registers a listener; returns the unsubscribe function. The `subscribe` argument of `useSyncExternalStore`. |
-| `getViewerPreferences()` | The current value, read from storage once and then cached. The `getSnapshot` argument. |
-| `getServerViewerPreferences()` | Always the default: on the server there is nowhere to read from. The `getServerSnapshot` argument. |
-| `setViewerPreferences(next)` | Replaces the value, writes it to storage and notifies every listener. |
+| `getViewerPreferences()`                 | The current value, read from storage once and then cached. The `getSnapshot` argument.                      |
+| `getServerViewerPreferences()`           | Always the default: on the server there is nowhere to read from. The `getServerSnapshot` argument.          |
+| `setViewerPreferences(next)`             | Replaces the value, writes it to storage and notifies every listener.                                       |
 
 ## Behaviour
 

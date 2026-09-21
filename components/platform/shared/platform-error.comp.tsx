@@ -10,7 +10,11 @@ interface PlatformErrorProps {
   digest?: string;
 }
 
-export function PlatformError({ retry, message = "Algo salió mal al cargar esta página.", digest }: PlatformErrorProps) {
+export function PlatformError({
+  retry,
+  message = "Algo salió mal al cargar esta página.",
+  digest,
+}: PlatformErrorProps) {
   return (
     <div className="platform-error">
       <p className="platform-error__message">{message}</p>

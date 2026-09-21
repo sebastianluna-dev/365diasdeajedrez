@@ -4,14 +4,14 @@ description: "Renders a class's ordered blocks by kind: text as paragraphs, vide
 
 # `ClassContentRenderer`
 
-| | |
-| --- | --- |
-| File | `components/platform/shared/class-content-renderer.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `class-content-renderer.comp.css` → block `.class-content` |
-| Used by | [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section), [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) (preview), [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section) |
-| Composes | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`StaticDiagram`](/components/chess/static-diagram) |
-| Uses | `ClassBlockView` from `services/classes/classes.types` |
+|            |                                                                                                                                                                                                                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/class-content-renderer.comp.tsx`                                                                                                                                                                                                                                                              |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                          |
+| Stylesheet | `class-content-renderer.comp.css` → block `.class-content`                                                                                                                                                                                                                                                                |
+| Used by    | [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section), [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) (preview), [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section) |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`StaticDiagram`](/components/chess/static-diagram)                                                                                                                                                                                                            |
+| Uses       | `ClassBlockView` from `services/classes/classes.types`                                                                                                                                                                                                                                                                    |
 
 ## Purpose
 
@@ -21,20 +21,20 @@ Chess blocks are **references** to the original material, not copies: a `GAME_RE
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `blocks` | `ClassBlockView[]` | yes | Ordered blocks, each `{ id, kind, caption?, … }` with the kind-specific payload (`text`, `videoUrl`, `game`, `lesson`, `position`). |
+| Prop     | Type               | Required | Meaning                                                                                                                             |
+| -------- | ------------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `blocks` | `ClassBlockView[]` | yes      | Ordered blocks, each `{ id, kind, caption?, … }` with the kind-specific payload (`text`, `videoUrl`, `game`, `lesson`, `position`). |
 
 ## Behaviour
 
-| `kind` | Rendered as |
-| --- | --- |
-| `TEXT` | Paragraphs split on blank lines; a paragraph starting with `## ` becomes an `<h3>`. Simple markdown only, no parser. |
-| `VIDEO` | An external link card (`target="_blank"`, `rel="noreferrer"`) labelled "Video" with the caption or the URL. |
-| `GAME_REF` | `GameViewer` with `title`, `initialPath`, plus "Abrir la partida en Mis estudios" when `game.href` is present (absent for games the viewer cannot access). |
-| `LESSON_REF` | `GameViewer` with the lesson's orientation and `initialPath`, plus "Abrir la lección completa". |
-| `POSITION_REF` | `StaticDiagram` with the caption or the position's title. |
-| `FILE` | A card labelled "Archivo" with the caption; the file itself is not linked yet. |
+| `kind`         | Rendered as                                                                                                                                                |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TEXT`         | Paragraphs split on blank lines; a paragraph starting with `## ` becomes an `<h3>`. Simple markdown only, no parser.                                       |
+| `VIDEO`        | An external link card (`target="_blank"`, `rel="noreferrer"`) labelled "Video" with the caption or the URL.                                                |
+| `GAME_REF`     | `GameViewer` with `title`, `initialPath`, plus "Abrir la partida en Mis estudios" when `game.href` is present (absent for games the viewer cannot access). |
+| `LESSON_REF`   | `GameViewer` with the lesson's orientation and `initialPath`, plus "Abrir la lección completa".                                                            |
+| `POSITION_REF` | `StaticDiagram` with the caption or the position's title.                                                                                                  |
+| `FILE`         | A card labelled "Archivo" with the caption; the file itself is not linked yet.                                                                             |
 
 A caption is rendered under text, game and lesson blocks; video, file and position blocks show it inside their own card.
 
@@ -57,7 +57,7 @@ From `components/platform/sections/classes/class-detail/class-detail.section.tsx
 ```tsx
 import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer.comp";
 
-<ClassContentRenderer blocks={classDetail.blocks} />
+<ClassContentRenderer blocks={classDetail.blocks} />;
 ```
 
 ## Related

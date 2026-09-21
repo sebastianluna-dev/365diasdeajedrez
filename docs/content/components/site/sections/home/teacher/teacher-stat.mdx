@@ -4,12 +4,12 @@ description: "A value with its label, used for the teacher's headline figures ov
 
 # `TeacherStat`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/teacher/teacher-stat.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `teacher-stat.comp.css` → element `.teacher__stat` of `.teacher` |
-| Used by | [`TeacherSection`](/components/site/sections/home/teacher/teacher-section) |
+|            |                                                                            |
+| ---------- | -------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/teacher/teacher-stat.comp.tsx`              |
+| Kind       | Server Component                                                           |
+| Stylesheet | `teacher-stat.comp.css` → element `.teacher__stat` of `.teacher`           |
+| Used by    | [`TeacherSection`](/components/site/sections/home/teacher/teacher-section) |
 
 ## Purpose
 
@@ -17,10 +17,10 @@ One figure of the teacher's record ("10 años enseñando"). The section renders 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `value` | `string` | yes | The big number. |
-| `label` | `string` | yes | The caption under it. |
+| Prop    | Type     | Required | Meaning               |
+| ------- | -------- | -------- | --------------------- |
+| `value` | `string` | yes      | The big number.       |
+| `label` | `string` | yes      | The caption under it. |
 
 ## Behaviour
 
@@ -41,9 +41,9 @@ From `components/site/sections/home/teacher/teacher.section.tsx`:
 ```tsx
 import { TeacherStat } from "./teacher-stat.comp";
 
-{content.stats.map((stat) => (
-  <TeacherStat key={stat.label} value={stat.value} label={stat.label} />
-))}
+{
+  content.stats.map((stat) => <TeacherStat key={stat.label} value={stat.value} label={stat.label} />);
+}
 ```
 
 ## Related

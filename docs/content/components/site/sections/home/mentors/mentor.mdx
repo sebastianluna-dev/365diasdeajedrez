@@ -4,13 +4,13 @@ description: "One mentor card linking to /mentor/[slug]: photo, name with FIDE t
 
 # `Mentor`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/mentors/mentor.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `mentor.comp.css` → block `.mentor-card` |
-| Used by | [`MentorList`](/components/site/sections/home/mentors/mentor-list) |
-| Uses | `MentorContent` from `services/mentors/mentors.types`, `next/image` |
+|            |                                                                     |
+| ---------- | ------------------------------------------------------------------- |
+| File       | `components/site/sections/home/mentors/mentor.comp.tsx`             |
+| Kind       | Server Component                                                    |
+| Stylesheet | `mentor.comp.css` → block `.mentor-card`                            |
+| Used by    | [`MentorList`](/components/site/sections/home/mentors/mentor-list)  |
+| Uses       | `MentorContent` from `services/mentors/mentors.types`, `next/image` |
 
 ## Purpose
 
@@ -18,9 +18,9 @@ The whole card is one link to the mentor's page. It prints the full name, the sh
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `mentor` | `MentorContent` | yes | `slug`, `name`, `lastName`, `photo`, `shortDescription`, `fideInfo` (`shortFideTitle`, `standardElo`, `rapidElo`, `blitzElo`). |
+| Prop     | Type            | Required | Meaning                                                                                                                        |
+| -------- | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `mentor` | `MentorContent` | yes      | `slug`, `name`, `lastName`, `photo`, `shortDescription`, `fideInfo` (`shortFideTitle`, `standardElo`, `rapidElo`, `blitzElo`). |
 
 ## Behaviour
 
@@ -43,9 +43,9 @@ From `components/site/sections/home/mentors/mentor-list.comp.tsx`:
 ```tsx
 import { Mentor } from "./mentor.comp";
 
-{mentors.map((mentor) => (
-  <Mentor key={mentor.slug} mentor={mentor} />
-))}
+{
+  mentors.map((mentor) => <Mentor key={mentor.slug} mentor={mentor} />);
+}
 ```
 
 ## Related

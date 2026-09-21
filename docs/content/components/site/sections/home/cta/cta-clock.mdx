@@ -4,14 +4,14 @@ description: "A 15-minute countdown on the sticky CTA drawn with the chess clock
 
 # `CtaClock`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/cta/cta-clock.comp.tsx` |
-| Kind | Client Component |
+|            |                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------ |
+| File       | `components/site/sections/home/cta/cta-clock.comp.tsx`                                           |
+| Kind       | Client Component                                                                                 |
 | Stylesheet | `cta-clock.comp.css` → elements `.sticky-cta__clock`, `.sticky-cta__clock-time` of `.sticky-cta` |
-| Used by | [`CtaSection`](/components/site/sections/home/cta/cta-section) |
-| Composes | [`ClockDial`](/components/site/sections/chess-clock/clock-dial) |
-| Uses | `useCountdownTimer` from `hooks/use-countdown-timer.hook` |
+| Used by    | [`CtaSection`](/components/site/sections/home/cta/cta-section)                                   |
+| Composes   | [`ClockDial`](/components/site/sections/chess-clock/clock-dial)                                  |
+| Uses       | `useCountdownTimer` from `hooks/use-countdown-timer.hook`                                        |
 
 ## Purpose
 
@@ -42,9 +42,8 @@ From `components/site/sections/home/cta/cta.section.tsx`:
 import { CtaClock } from "./cta-clock.comp";
 
 <div className="sticky-cta__inner">
-  <CtaClock />
-  …
-</div>
+  <CtaClock />…
+</div>;
 ```
 
 ## Related

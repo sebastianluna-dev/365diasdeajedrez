@@ -86,10 +86,7 @@ export async function TeacherDashboardSection() {
             ))}
           </ul>
         ) : (
-          <EmptyState
-            title="Todo al día"
-            description="No hay clases terminadas sin asistencia ni resumen."
-          />
+          <EmptyState title="Todo al día" description="No hay clases terminadas sin asistencia ni resumen." />
         )}
       </section>
 

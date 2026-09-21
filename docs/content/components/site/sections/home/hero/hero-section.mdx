@@ -4,15 +4,15 @@ description: "Opening block of the home page: title, description, the CTA and th
 
 # `HeroSection`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/hero/hero.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `hero.section.css` → block `.hero` |
-| Used by | `app/(frontend)/landing-page.tsx` (`sections.hero`) |
-| Composes | [`FloatBadge`](/components/site/sections/home/hero/float-badge) ×6, [`Orbit`](/components/site/sections/home/hero/orbit) |
-| Reads | `getHeroData()` · `services/home/home.service.ts` (the `home-hero` Global) |
-| Uses | `CHESS_PIECE_UNICODE` from `constants/chess-pieces.const`, `next/image` |
+|            |                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/site/sections/home/hero/hero.section.tsx`                                                                    |
+| Kind       | Server Component (async)                                                                                                 |
+| Stylesheet | `hero.section.css` → block `.hero`                                                                                       |
+| Used by    | `app/(frontend)/landing-page.tsx` (`sections.hero`)                                                                      |
+| Composes   | [`FloatBadge`](/components/site/sections/home/hero/float-badge) ×6, [`Orbit`](/components/site/sections/home/hero/orbit) |
+| Reads      | `getHeroData()` · `services/home/home.service.ts` (the `home-hero` Global)                                               |
+| Uses       | `CHESS_PIECE_UNICODE` from `constants/chess-pieces.const`, `next/image`                                                  |
 
 ## Purpose
 
@@ -47,7 +47,9 @@ From `app/(frontend)/landing-page.tsx`:
 ```tsx
 import { HeroSection } from "@/components/site/sections/home/hero/hero.section";
 
-{sections.hero && <HeroSection />}
+{
+  sections.hero && <HeroSection />;
+}
 ```
 
 ## Related

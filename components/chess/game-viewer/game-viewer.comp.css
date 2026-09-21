@@ -405,10 +405,7 @@
     --viewer-chrome-inline: 422px;
     /* The board's side. The screen height rules, which is what is asked for;
        the width only comes into play when it really does not fit. */
-    --viewer-board-size: min(
-      calc(100vh - var(--viewer-chrome-block)),
-      calc(100vw - var(--viewer-chrome-inline))
-    );
+    --viewer-board-size: min(calc(100vh - var(--viewer-chrome-block)), calc(100vw - var(--viewer-chrome-inline)));
     /* The typography grows with the screen, like the board: if the board's side
        comes from `vh`, the text next to it has to follow the same rule or it
        ends up tiny against a huge board. The `clamp` sets a floor and a ceiling
@@ -485,7 +482,6 @@
     & .game-viewer__panel-badge {
       font-size: clamp(14px, 1.35vh, 17px);
     }
-
 
     /* On a narrow screen there is no width to share out: it stacks in one column
        — board, notation, tools — and the board rules by width again, which is

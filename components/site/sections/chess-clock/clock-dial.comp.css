@@ -47,18 +47,42 @@
     color: #111;
   }
 
-  & .clock-face__number.clock-face__number_position_1 { transform: translate(-50%, -50%) translate(34px, -58.89px); }
-  & .clock-face__number.clock-face__number_position_2 { transform: translate(-50%, -50%) translate(58.89px, -34px); }
-  & .clock-face__number.clock-face__number_position_3 { transform: translate(-50%, -50%) translate(68px, 0px); }
-  & .clock-face__number.clock-face__number_position_4 { transform: translate(-50%, -50%) translate(58.89px, 34px); }
-  & .clock-face__number.clock-face__number_position_5 { transform: translate(-50%, -50%) translate(34px, 58.89px); }
-  & .clock-face__number.clock-face__number_position_6 { transform: translate(-50%, -50%) translate(0px, 68px); }
-  & .clock-face__number.clock-face__number_position_7 { transform: translate(-50%, -50%) translate(-34px, 58.89px); }
-  & .clock-face__number.clock-face__number_position_8 { transform: translate(-50%, -50%) translate(-58.89px, 34px); }
-  & .clock-face__number.clock-face__number_position_9 { transform: translate(-50%, -50%) translate(-68px, 0px); }
-  & .clock-face__number.clock-face__number_position_10 { transform: translate(-50%, -50%) translate(-58.89px, -34px); }
-  & .clock-face__number.clock-face__number_position_11 { transform: translate(-50%, -50%) translate(-34px, -58.89px); }
-  & .clock-face__number.clock-face__number_position_12 { transform: translate(-50%, -50%) translate(0px, -68px); }
+  & .clock-face__number.clock-face__number_position_1 {
+    transform: translate(-50%, -50%) translate(34px, -58.89px);
+  }
+  & .clock-face__number.clock-face__number_position_2 {
+    transform: translate(-50%, -50%) translate(58.89px, -34px);
+  }
+  & .clock-face__number.clock-face__number_position_3 {
+    transform: translate(-50%, -50%) translate(68px, 0px);
+  }
+  & .clock-face__number.clock-face__number_position_4 {
+    transform: translate(-50%, -50%) translate(58.89px, 34px);
+  }
+  & .clock-face__number.clock-face__number_position_5 {
+    transform: translate(-50%, -50%) translate(34px, 58.89px);
+  }
+  & .clock-face__number.clock-face__number_position_6 {
+    transform: translate(-50%, -50%) translate(0px, 68px);
+  }
+  & .clock-face__number.clock-face__number_position_7 {
+    transform: translate(-50%, -50%) translate(-34px, 58.89px);
+  }
+  & .clock-face__number.clock-face__number_position_8 {
+    transform: translate(-50%, -50%) translate(-58.89px, 34px);
+  }
+  & .clock-face__number.clock-face__number_position_9 {
+    transform: translate(-50%, -50%) translate(-68px, 0px);
+  }
+  & .clock-face__number.clock-face__number_position_10 {
+    transform: translate(-50%, -50%) translate(-58.89px, -34px);
+  }
+  & .clock-face__number.clock-face__number_position_11 {
+    transform: translate(-50%, -50%) translate(-34px, -58.89px);
+  }
+  & .clock-face__number.clock-face__number_position_12 {
+    transform: translate(-50%, -50%) translate(0px, -68px);
+  }
 
   & .clock-flag {
     position: absolute;

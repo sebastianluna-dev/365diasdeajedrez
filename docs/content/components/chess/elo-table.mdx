@@ -6,12 +6,12 @@ description: "A label/value grid for ratings and titles (EloTable with its EloTa
 
 Also exports `EloTable.EloItem`, attached as a static property.
 
-| | |
-| --- | --- |
-| File | `components/chess/elo-table.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `elo-table.comp.css` → blocks `.elo-table` and `.elo-item` |
-| Used by | `/mentor/[slug]`, [`TeacherSection`](/components/site/sections/home/teacher/teacher-section) |
+|            |                                                                                              |
+| ---------- | -------------------------------------------------------------------------------------------- |
+| File       | `components/chess/elo-table.comp.tsx`                                                        |
+| Kind       | Server Component                                                                             |
+| Stylesheet | `elo-table.comp.css` → blocks `.elo-table` and `.elo-item`                                   |
+| Used by    | `/mentor/[slug]`, [`TeacherSection`](/components/site/sections/home/teacher/teacher-section) |
 
 ## Purpose
 
@@ -23,18 +23,18 @@ It lives in `chess/` rather than in `site/` because it belongs to the chess doma
 
 ### `EloTable`
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | yes | `EloTable.EloItem` elements. |
-| `columns` | `2 \| 3 \| 4` | no · default `3` | Grid columns; becomes the `_columns_` modifier. |
-| `className` | `string` | no | Extra class for the caller's layout hook (the teacher section passes `teacher__elo-table`). |
+| Prop        | Type          | Required         | Meaning                                                                                     |
+| ----------- | ------------- | ---------------- | ------------------------------------------------------------------------------------------- |
+| `children`  | `ReactNode`   | yes              | `EloTable.EloItem` elements.                                                                |
+| `columns`   | `2 \| 3 \| 4` | no · default `3` | Grid columns; becomes the `_columns_` modifier.                                             |
+| `className` | `string`      | no               | Extra class for the caller's layout hook (the teacher section passes `teacher__elo-table`). |
 
 ### `EloTable.EloItem`
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `label` | `string` | yes | Small text above the value. |
-| `value` | `number \| string` | yes | The rating or title. |
+| Prop    | Type               | Required | Meaning                     |
+| ------- | ------------------ | -------- | --------------------------- |
+| `label` | `string`           | yes      | Small text above the value. |
+| `value` | `number \| string` | yes      | The rating or title.        |
 
 ## Behaviour
 
@@ -61,7 +61,7 @@ import { EloTable } from "@/components/chess/elo-table.comp";
   {content.eloRatings.map((rating) => (
     <EloTable.EloItem key={rating.label} label={rating.label} value={rating.value} />
   ))}
-</EloTable>
+</EloTable>;
 ```
 
 ## Related

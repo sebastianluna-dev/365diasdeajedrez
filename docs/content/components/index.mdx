@@ -20,12 +20,12 @@ components/
     sections/           login/
 ```
 
-| Page | Covers |
-| --- | --- |
-| [Public site](/components/site) | `site/shared` and every section of the home page, the about page, the blog and the chess clock: one page per file. |
-| [Platform](/components/platform) | `platform/shared` and every section of the student, teacher and staff screens: one page per file. |
-| [Auth](/components/auth) | `auth/sections/login`: one page per file. |
-| [Chess](/components/chess) | `chess/`: one page per file for the board, the viewer and its parts, the analysis board, the diagram. The narrative of how they fit together is in [Board & game viewer](/chess/viewer). |
+| Page                             | Covers                                                                                                                                                                                   |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Public site](/components/site)  | `site/shared` and every section of the home page, the about page, the blog and the chess clock: one page per file.                                                                       |
+| [Platform](/components/platform) | `platform/shared` and every section of the student, teacher and staff screens: one page per file.                                                                                        |
+| [Auth](/components/auth)         | `auth/sections/login`: one page per file.                                                                                                                                                |
+| [Chess](/components/chess)       | `chess/`: one page per file for the board, the viewer and its parts, the analysis board, the diagram. The narrative of how they fit together is in [Board & game viewer](/chess/viewer). |
 
 ## Rules
 
@@ -40,15 +40,15 @@ components/
 
 Every component page follows the same template, so the same fact is always in the same place:
 
-| Section | What it holds |
-| --- | --- |
-| Facts table | **File**, **Kind** (Server Component, Client Component, hook, module), **Stylesheet** and its BEM block, **Used by** (pages as routes, components as links), **Composes** (components it renders), **Reads** (services), **Writes** (server actions), **Uses** (library modules). |
-| Purpose | What it does, why it exists in this shape, the design decisions. |
-| Props (or API for hooks and modules) | One row per prop: name, type, required or default, meaning, from the source's own glosses. |
-| Behaviour | Client: state, effects, browser APIs, keyboard, focus, `aria`, what happens without JavaScript. Section: where the data comes from, what the page passes, which action the form posts, how errors come back, what is revalidated. |
-| Markup & styling | The block, its elements, modifiers and states, the tokens and breakpoints it uses, and any other class it renders. |
-| Usage | A snippet copied from a real importer. |
-| Related | The pieces it composes, whoever composes it, the narrative page of the area, the debt entry if there is one. |
+| Section                              | What it holds                                                                                                                                                                                                                                                                     |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Facts table                          | **File**, **Kind** (Server Component, Client Component, hook, module), **Stylesheet** and its BEM block, **Used by** (pages as routes, components as links), **Composes** (components it renders), **Reads** (services), **Writes** (server actions), **Uses** (library modules). |
+| Purpose                              | What it does, why it exists in this shape, the design decisions.                                                                                                                                                                                                                  |
+| Props (or API for hooks and modules) | One row per prop: name, type, required or default, meaning, from the source's own glosses.                                                                                                                                                                                        |
+| Behaviour                            | Client: state, effects, browser APIs, keyboard, focus, `aria`, what happens without JavaScript. Section: where the data comes from, what the page passes, which action the form posts, how errors come back, what is revalidated.                                                 |
+| Markup & styling                     | The block, its elements, modifiers and states, the tokens and breakpoints it uses, and any other class it renders.                                                                                                                                                                |
+| Usage                                | A snippet copied from a real importer.                                                                                                                                                                                                                                            |
+| Related                              | The pieces it composes, whoever composes it, the narrative page of the area, the debt entry if there is one.                                                                                                                                                                      |
 
 A component with a Storybook story adds a **Story** row after **File**; how to write one is in [Storybook](/ui/storybook) (pilot, only `PlanCard` so far).
 
@@ -58,9 +58,9 @@ The pages are written from the code and kept in the same commit as any change to
 
 Twenty-six hand-written SVG components, one per file, each exporting `<Name>Icon({ className })`: an inline `<svg>` with `viewBox`, `fill="currentColor"` or a stroke, and `aria-hidden="true"`. Colour and size come from the parent's CSS; an icon that stands alone needs its text in the button's `aria-label`.
 
-| Used by | Icons |
-| --- | --- |
+| Used by                     | Icons                                                                                                                                                                                                                              |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Board and viewer (`chess/`) | `arrow-left`, `arrow-right`, `arrow-up`, `board-flip`, `check`, `chevron`, `circle-check`, `clipboard`, `flip`, `fullscreen`, `jump-end`, `jump-start`, `menu`, `note`, `pause`, `play`, `search`, `skip`, `sound-off`, `sound-on` |
-| Platform sections | `flame` (daily streak), `heart`, `image` (upload slot), `plus`, `trash`, `whatsapp` |
+| Platform sections           | `flame` (daily streak), `heart`, `image` (upload slot), `plus`, `trash`, `whatsapp`                                                                                                                                                |
 
 The public site uses `lucide-react` in the header, the home teacher section and the mobile clock; platform code uses this folder so the private bundle does not pull the library. `book`, `email` and `share` were deleted on 2026-09-10 as unused.

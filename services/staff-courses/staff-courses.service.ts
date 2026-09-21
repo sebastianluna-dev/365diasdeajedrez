@@ -253,9 +253,7 @@ export async function getChapterAdmin(courseId: string, chapterId: string): Prom
  * The page's tab asks for it, and only needs the number: a course's list is
  * hundreds of rows and each one drags its whole PGN along to count the moves.
  */
-export async function countCollectionGames(
-  scope: { courseId: string } | { chapterId: string },
-): Promise<number> {
+export async function countCollectionGames(scope: { courseId: string } | { chapterId: string }): Promise<number> {
   await requireStaff();
   return getPlatformDb().game.count({ where: { database: scope } });
 }
@@ -374,8 +372,7 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
     trainingColorCode: lesson.trainingColor?.code,
     estimatedDuration: lesson.estimatedDuration ?? undefined,
     orientationCode: lesson.orientation.code as BoardOrientationCode,
-    canDelete:
-      lesson.chapter.course.status.code === COURSE_STATUS.DRAFT && lesson._count.progresses === 0,
+    canDelete: lesson.chapter.course.status.code === COURSE_STATUS.DRAFT && lesson._count.progresses === 0,
     pgn: lessonPgnOf(lesson),
     game: lesson.game
       ? {
@@ -435,12 +432,20 @@ export async function listAuthors(): Promise<AuthorAdminRow[]> {
 
 export async function listCourseTypes(): Promise<CatalogOption[]> {
   await requireStaff();
-  return getPlatformDb().courseType.findMany({ where: { isActive: true }, select: { code: true, label: true }, orderBy: { order: "asc" } });
+  return getPlatformDb().courseType.findMany({
+    where: { isActive: true },
+    select: { code: true, label: true },
+    orderBy: { order: "asc" },
+  });
 }
 
 export async function listLevels(): Promise<CatalogOption[]> {
   await requireStaff();
-  return getPlatformDb().level.findMany({ where: { isActive: true }, select: { code: true, label: true }, orderBy: { order: "asc" } });
+  return getPlatformDb().level.findMany({
+    where: { isActive: true },
+    select: { code: true, label: true },
+    orderBy: { order: "asc" },
+  });
 }
 
 export async function listTopics(): Promise<TopicOption[]> {

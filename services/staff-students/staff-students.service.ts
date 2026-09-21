@@ -2,11 +2,7 @@ import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { staffRoutes } from "@/lib/platform-routes";
-import type {
-  StaffStudentDetail,
-  StaffStudentSummary,
-  StudentAssignmentHistoryItem,
-} from "./staff-students.types";
+import type { StaffStudentDetail, StaffStudentSummary, StudentAssignmentHistoryItem } from "./staff-students.types";
 
 // Administration panel: students. The staff sees EVERY account, but not their
 // private content — neither studies nor games appear here. Operating accounts is

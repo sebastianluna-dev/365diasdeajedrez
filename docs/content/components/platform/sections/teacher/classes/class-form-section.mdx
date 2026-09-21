@@ -4,15 +4,15 @@ description: "A class's metadata form, shared by create and edit: title, descrip
 
 # `ClassFormSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/classes/class-form.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `class-form.section.css` → block `.class-form` |
-| Used by | `/profesor/clases/nuevo`, `/profesor/clases/[classId]/editar` |
-| Composes | [`FormField`](/components/platform/shared/form-field), [`FormFieldset`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Writes | `createClass()`, `updateClassMeta()` · `services/teacher-classes/teacher-classes.actions.ts` |
-| Uses | `TEACHER_ERROR_MESSAGES` from `constants/platform/teacher-messages.const`; `teacherRoutes` from `lib/platform-routes` |
+|            |                                                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/class-form.section.tsx`                                                                                                            |
+| Kind       | Server Component                                                                                                                                                                 |
+| Stylesheet | `class-form.section.css` → block `.class-form`                                                                                                                                   |
+| Used by    | `/profesor/clases/nuevo`, `/profesor/clases/[classId]/editar`                                                                                                                    |
+| Composes   | [`FormField`](/components/platform/shared/form-field), [`FormFieldset`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes     | `createClass()`, `updateClassMeta()` · `services/teacher-classes/teacher-classes.actions.ts`                                                                                     |
+| Uses       | `TEACHER_ERROR_MESSAGES` from `constants/platform/teacher-messages.const`; `teacherRoutes` from `lib/platform-routes`                                                            |
 
 ## Purpose
 
@@ -20,13 +20,13 @@ One form for creating and editing a class: only the action and the defaults chan
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `classDetail` | `TeacherClassDetail` | no | Absent means creation; present means editing that class (its `scheduledAtInput` is the zone-local value for the input). |
-| `students` | `AssignedStudentSummary[]` | yes | Students with an active assignment, for the enrolment checkboxes on create. |
-| `providers` | `{ code, label }[]` | yes | The meeting-provider catalog. |
-| `timeZone` | `string` | yes | The teacher's IANA zone, for the hint and the action's interpretation. |
-| `errorCode` | `string` | no | `?error=` translated with `TEACHER_ERROR_MESSAGES`. |
+| Prop          | Type                       | Required | Meaning                                                                                                                 |
+| ------------- | -------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `classDetail` | `TeacherClassDetail`       | no       | Absent means creation; present means editing that class (its `scheduledAtInput` is the zone-local value for the input). |
+| `students`    | `AssignedStudentSummary[]` | yes      | Students with an active assignment, for the enrolment checkboxes on create.                                             |
+| `providers`   | `{ code, label }[]`        | yes      | The meeting-provider catalog.                                                                                           |
+| `timeZone`    | `string`                   | yes      | The teacher's IANA zone, for the hint and the action's interpretation.                                                  |
+| `errorCode`   | `string`                   | no       | `?error=` translated with `TEACHER_ERROR_MESSAGES`.                                                                     |
 
 ## Behaviour
 
@@ -57,7 +57,7 @@ import { ClassFormSection } from "@/components/platform/sections/teacher/classes
   providers={providers}
   timeZone={safeTimeZone(teacherRow?.timezone)}
   errorCode={error}
-/>
+/>;
 ```
 
 ## Related

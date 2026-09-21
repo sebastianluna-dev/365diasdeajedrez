@@ -64,44 +64,54 @@ Project rules for any new task added here (non-negotiable):
 ## Done
 
 ### T1 — CSS tokens instead of hex values · [CSS] ✅
+
 110 substitutions in 34 files of `components/**` and `app/(frontend)/**`. Only the hex
 values that matched a token exactly were substituted; the rest (`#b4a99d`, `#8a8175`, `#1c1611`,
 `#5c5348`…) were left intact because there is no equivalent token.
 
 ### T2 — `app/sitemap.ts` and `app/robots.ts` · [SEO] ✅
+
 Sitemap with `/`, `/blog`, `/nosotros`, `/reloj-de-ajedrez` and every `/blog/<slug>`; robots blocks
 `/dashboard`, `/classes`, `/studies`, `/courses`, `/trainer`, `/admin` and `/api`. Base URL from
 `NEXT_PUBLIC_SITE_URL` (added to `.env.example`).
 
 ### T3 — `enums/chess-pieces.enum.ts` → `as const` · [Architecture] ✅
+
 Now `constants/chess-pieces.const.ts`; the hero's usages updated and the `enums/` folder deleted.
 
 ### T4 — `landingPage` class · [CSS] ✅
+
 Renamed to `landing-page` in `app/(frontend)/landing-page.tsx`.
 
 ### T5 — `priority` → `preload` in `next/image` · [SEO / Next 16] ✅
+
 Only occurrence: the hero's `<Image>`.
 
 ### T6 — Spanish SAN in the MoveTree · [Chess / UX] ✅
+
 `sanToSpanish()` exported from `lib/chess/notation.ts` (it also translates the promotion piece,
 `e8=Q` → `e8=D`, and respects castling) and used by `move-tree.comp.tsx`.
 
 ### T7 — Creating a study and importing a PGN · [Platform] ✅
+
 `services/studies/studies.actions.ts` with `createStudy` and `importPgnGames`: it validates the kind
 against the catalog, checks that the database is the student's before writing (it never touches
 course databases), parses with `chessops/pgn` dumping headers into columns, and bounds the PGN size
 and the number of games. Plain forms (server actions) in the listing and in the study detail.
 
 ### T8 — Vitest and the first tests · [Quality] ✅
+
 `vitest.config.mts` + `npm test` / `npm run test:watch`. 33 tests in `lib/chess/pgn-tree.test.ts`,
 `lib/chess/notation.test.ts` and `constants/platform/study-codes.test.ts`. One of them documents a
 real gap in the parser (see entry 11b of `IMPROVEMENTS.md`).
 
 ### T9 — README · [Docs] ✅
+
 A Spanish section with the requirements, the setup, the script table, the demo user, the route map
 and the architecture.
 
 ### T10 — `loading.tsx` per section · [UX] ✅
+
 One in each area of `app/(platform)/` reusing `LoadingPanel`.
 
 ---
@@ -112,11 +122,16 @@ They come from the audit noted in `IMPROVEMENTS.md` (entries 35–70). They are 
 bounded changes; the project rules above still hold. On finishing each one, mark the
 `IMPROVEMENTS.md` entry as resolved and run `npm run typecheck`, `npm run lint` and `npm test`.
 
-### T11 — Format the repository with Prettier · [DX] (IMPROVEMENTS #39)
+### T11 — Format the repository with Prettier · [DX] (IMPROVEMENTS #39) ✅ 2026-09-21
+One commit with `npm run format` alone (305 files, docs included) and `npm run format:check` as a CI step.
+
+Original task:
+
 `npm run format` changes 135 files. Do it in a commit of its own, without any other modification,
 and afterwards add `npm run format:check` as a step of `.github/workflows/ci.yml`.
 
 ### T12 — Submit button with a pending state in every form · [UX] (IMPROVEMENTS #53) ✅ 2026-09-21
+
 `components/platform/shared/submit-button.comp.tsx` (`useFormStatus`, `pendingLabel` per verb) in the 55 submit buttons of the write forms; the two `useActionState` forms and the GET search forms keep their own button.
 
 Original task:
@@ -127,6 +142,7 @@ of every write form of `components/platform/sections/**` (about 40). The section
 Components; only the button changes.
 
 ### T13 — `GameTable` on `PlatformTable` · [Frontend / A11y] (IMPROVEMENTS #58) ✅ 2026-09-21
+
 `PlatformTableRow` takes the `<tr>` attributes (drag handlers, a class of its own) and `GameTable` renders through it; its stylesheet keeps only the handle, the mark and the note.
 
 Original task:
@@ -137,6 +153,7 @@ cell and its keyboard handling, and delete the duplicated grid in `game-table.co
 of the same data with the good table: `teacher/students/student-study-view.section.tsx`.
 
 ### T14 — Loose hex values to tokens · [CSS] (IMPROVEMENTS #59) ✅ 2026-09-21
+
 48 substitutions in 25 stylesheets; `#8a8175` only survives as the fallback of `var(--platform-text-muted, …)` in the board and as grey of the public site, where no token matches it.
 
 Original task:
@@ -146,6 +163,7 @@ the platform, `#8a8175` as text → `var(--platform-text-muted)`. Exact matches 
 `rgba(...)`.
 
 ### T15 — Unused exports · [Quality] (IMPROVEMENTS #45) ✅ 2026-09-21
+
 Deleted `getStudentStudies`, `reindexGame`, `formatOptionalDate`, `isNumericId` (and its test), `STAFF_ERROR_PARAM`, `STAFF_ACCOUNT_MESSAGES`, `TEACHER_ERROR_PARAM`; `NUMERIC_ID_DIGITS`, `CLOCK_TIME_CONTROLS`, `STUDENT_KINDS`/`TEACHER_KINDS` and `getStaffContext` are module-private now.
 
 Original task:
@@ -158,12 +176,14 @@ export (`use-chess-clock.hook.ts`), `STUDENT_KINDS`/`TEACHER_KINDS` as exports (
 one with `grep -rw` before deleting.
 
 ### T16 — `noUncheckedIndexedAccess` · [DX] (IMPROVEMENTS #62)
+
 Enable it in `tsconfig.json` and resolve the 172 errors (almost all `array[i]` possibly
 `undefined`): `trainer-session.comp.tsx`, `move-tree.comp.tsx`, `lib/chess/notation.ts`,
 `services/shared/reorder.ts` and several `lib/chess` suites. Without changing behaviour: where the
 index is safe by construction, a check with a `throw` or a `?? defaultValue`.
 
-### T17 — A stylesheet with *mobile-first* media queries · [CSS] ✅ 2026-09-21
+### T17 — A stylesheet with _mobile-first_ media queries · [CSS] ✅ 2026-09-21
+
 `resources.section.css`: the head's grid is the block's value and `@media (max-width: 819px)` puts it back to `display: block`.
 
 Original task:

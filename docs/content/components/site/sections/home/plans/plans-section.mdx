@@ -4,14 +4,14 @@ description: "Pricing on the home page from the home-packages Global: the cards 
 
 # `PlansSection`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/plans/plans.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `plans.section.css` → block `.plans` |
-| Used by | `app/(frontend)/landing-page.tsx` (`sections.plans`) |
-| Composes | [`PlanCard`](/components/site/sections/home/plans/plan-card), [`PlansMobileSection`](/components/site/sections/home/plans/plans-mobile) |
-| Reads | `getPackagesData()` · `services/home/home.service.ts` (the `home-packages` Global) |
+|            |                                                                                                                                         |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/plans/plans.section.tsx`                                                                                 |
+| Kind       | Server Component (async)                                                                                                                |
+| Stylesheet | `plans.section.css` → block `.plans`                                                                                                    |
+| Used by    | `app/(frontend)/landing-page.tsx` (`sections.plans`)                                                                                    |
+| Composes   | [`PlanCard`](/components/site/sections/home/plans/plan-card), [`PlansMobileSection`](/components/site/sections/home/plans/plans-mobile) |
+| Reads      | `getPackagesData()` · `services/home/home.service.ts` (the `home-packages` Global)                                                      |
 
 ## Purpose
 
@@ -43,7 +43,9 @@ From `app/(frontend)/landing-page.tsx`:
 ```tsx
 import { PlansSection } from "@/components/site/sections/home/plans/plans.section";
 
-{sections.plans && <PlansSection />}
+{
+  sections.plans && <PlansSection />;
+}
 ```
 
 ## Related

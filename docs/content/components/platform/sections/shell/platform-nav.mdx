@@ -4,13 +4,13 @@ description: "The top-bar navigation links, grouped by role, with the active ite
 
 # `PlatformNav`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/shell/platform-nav.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `platform-nav.comp.css` → block `.platform-nav` |
-| Used by | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section) |
-| Uses | `activeNavHref`, `PlatformNavGroup` from `constants/platform/nav-items.const`<br />`usePathname` from `next/navigation` |
+|            |                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/shell/platform-nav.comp.tsx`                                                              |
+| Kind       | Client Component                                                                                                        |
+| Stylesheet | `platform-nav.comp.css` → block `.platform-nav`                                                                         |
+| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                                           |
+| Uses       | `activeNavHref`, `PlatformNavGroup` from `constants/platform/nav-items.const`<br />`usePathname` from `next/navigation` |
 
 ## Purpose
 
@@ -18,9 +18,9 @@ Renders the navigation groups the shell composed on the server and marks the cur
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `groups` | `PlatformNavGroup[]` | yes | `{ label?, items: { href, label }[] }[]`, composed by role in the shell. Here they are only rendered. |
+| Prop     | Type                 | Required | Meaning                                                                                               |
+| -------- | -------------------- | -------- | ----------------------------------------------------------------------------------------------------- |
+| `groups` | `PlatformNavGroup[]` | yes      | `{ label?, items: { href, label }[] }[]`, composed by role in the shell. Here they are only rendered. |
 
 ## Behaviour
 
@@ -49,7 +49,7 @@ import { PlatformNav } from "./platform-nav.comp";
 
 const navGroups = buildPlatformNavGroups(roles);
 // …
-<PlatformNav groups={navGroups} />
+<PlatformNav groups={navGroups} />;
 ```
 
 ## Related

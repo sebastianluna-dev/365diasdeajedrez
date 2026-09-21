@@ -4,14 +4,14 @@ description: "The phone clock in two steps: a select screen with the dials and t
 
 # `ChessClockMobile`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/chess-clock/chess-clock-mobile.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `chess-clock-mobile.comp.css` → block `.chess-clock-mobile` |
-| Used by | [`ChessClock`](/components/site/sections/chess-clock/chess-clock) |
-| Composes | [`ClockDial`](/components/site/sections/chess-clock/clock-dial), [`TimeRoller`](/components/site/sections/chess-clock/time-roller) |
-| Uses | `useChessClock` from `hooks/use-chess-clock.hook`, `Settings`, `Home`, `RotateCcw` from `lucide-react` |
+|            |                                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/chess-clock/chess-clock-mobile.comp.tsx`                                                                 |
+| Kind       | Client Component                                                                                                                   |
+| Stylesheet | `chess-clock-mobile.comp.css` → block `.chess-clock-mobile`                                                                        |
+| Used by    | [`ChessClock`](/components/site/sections/chess-clock/chess-clock)                                                                  |
+| Composes   | [`ClockDial`](/components/site/sections/chess-clock/clock-dial), [`TimeRoller`](/components/site/sections/chess-clock/time-roller) |
+| Uses       | `useChessClock` from `hooks/use-chess-clock.hook`, `Settings`, `Home`, `RotateCcw` from `lucide-react`                             |
 
 ## Purpose
 
@@ -19,8 +19,8 @@ On a phone the two players sit across from each other, so the play screen is rot
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
+| Prop      | Type      | Required   | Meaning                                            |
+| --------- | --------- | ---------- | -------------------------------------------------- |
 | `enabled` | `boolean` | no, `true` | Passed to the hook; only the visible variant runs. |
 
 ## Behaviour
@@ -49,7 +49,7 @@ From `components/site/sections/chess-clock/chess-clock.comp.tsx`:
 ```tsx
 import { ChessClockMobile } from "./chess-clock-mobile.comp";
 
-<ChessClockMobile enabled={isMobile} />
+<ChessClockMobile enabled={isMobile} />;
 ```
 
 ## Related

@@ -4,12 +4,12 @@ description: "The mobile clock's digital readout: one slot per character, and wh
 
 # `TimeRoller`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/chess-clock/time-roller.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `time-roller.comp.css` → block `.time-roller` |
-| Used by | [`ChessClockMobile`](/components/site/sections/chess-clock/chess-clock-mobile) |
+|            |                                                                                |
+| ---------- | ------------------------------------------------------------------------------ |
+| File       | `components/site/sections/chess-clock/time-roller.comp.tsx`                    |
+| Kind       | Client Component                                                               |
+| Stylesheet | `time-roller.comp.css` → block `.time-roller`                                  |
+| Used by    | [`ChessClockMobile`](/components/site/sections/chess-clock/chess-clock-mobile) |
 
 ## Purpose
 
@@ -17,11 +17,11 @@ Digits that roll instead of flicking. Each character is a `TimeRollerDigit` that
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `value` | `string` | yes | The formatted time (`mm:ss` or `ss.d`). |
-| `active` | `boolean` | no | `.time-roller_active`. |
-| `flagged` | `boolean` | no | `.time-roller_fallen`, which wins over active. |
+| Prop      | Type      | Required | Meaning                                        |
+| --------- | --------- | -------- | ---------------------------------------------- |
+| `value`   | `string`  | yes      | The formatted time (`mm:ss` or `ss.d`).        |
+| `active`  | `boolean` | no       | `.time-roller_active`.                         |
+| `flagged` | `boolean` | no       | `.time-roller_fallen`, which wins over active. |
 
 ## Behaviour
 
@@ -48,7 +48,7 @@ From `components/site/sections/chess-clock/chess-clock-mobile.comp.tsx`:
 ```tsx
 import { TimeRoller } from "./time-roller.comp";
 
-<TimeRoller value={white.time} active={white.active} flagged={white.flagged} />
+<TimeRoller value={white.time} active={white.active} flagged={white.flagged} />;
 ```
 
 ## Related

@@ -12,11 +12,7 @@ export const metadata: Metadata = { title: "Nueva partida" };
 
 export default async function NewGamePage({ params, searchParams }: NewGamePageProps) {
   const { studyId } = await params;
-  const [study, results, { error }] = await Promise.all([
-    getStudyById(studyId),
-    getGameResultOptions(),
-    searchParams,
-  ]);
+  const [study, results, { error }] = await Promise.all([getStudyById(studyId), getGameResultOptions(), searchParams]);
   // Nothing is written in a course study: it is the course's material, not the student's.
   if (!study || study.isCourseStudy) notFound();
 

@@ -44,18 +44,8 @@ export function ChessClockMobile({ enabled = true }: ChessClockMobileProps) {
             </div>
 
             <div className="chess-clock-mobile__case">
-              <ClockDial
-                hands={white.hands}
-                active={white.active}
-                flagged={white.flagged}
-                lowTime={white.lowTime}
-              />
-              <ClockDial
-                hands={black.hands}
-                active={black.active}
-                flagged={black.flagged}
-                lowTime={black.lowTime}
-              />
+              <ClockDial hands={white.hands} active={white.active} flagged={white.flagged} lowTime={white.lowTime} />
+              <ClockDial hands={black.hands} active={black.active} flagged={black.flagged} lowTime={black.lowTime} />
             </div>
           </div>
 
@@ -98,7 +88,12 @@ export function ChessClockMobile({ enabled = true }: ChessClockMobileProps) {
                 className={`chess-clock-mobile__tap-zone${white.active ? " chess-clock-mobile__tap-zone_active" : ""}`}
               >
                 <div className="chess-clock-mobile__dial-time">
-                  <ClockDial hands={white.hands} active={white.active} flagged={white.flagged} lowTime={white.lowTime} />
+                  <ClockDial
+                    hands={white.hands}
+                    active={white.active}
+                    flagged={white.flagged}
+                    lowTime={white.lowTime}
+                  />
                   <TimeRoller value={white.time} active={white.active} flagged={white.flagged} />
                 </div>
               </button>
@@ -110,7 +105,12 @@ export function ChessClockMobile({ enabled = true }: ChessClockMobileProps) {
                 <Link href="/" aria-label="Inicio" className="chess-clock-mobile__action">
                   <Home size={28} />
                 </Link>
-                <button type="button" onClick={handleConfig} aria-label="Configurar" className="chess-clock-mobile__action">
+                <button
+                  type="button"
+                  onClick={handleConfig}
+                  aria-label="Configurar"
+                  className="chess-clock-mobile__action"
+                >
                   <Settings size={28} />
                 </button>
               </div>
@@ -122,7 +122,12 @@ export function ChessClockMobile({ enabled = true }: ChessClockMobileProps) {
                 className={`chess-clock-mobile__tap-zone${black.active ? " chess-clock-mobile__tap-zone_active" : ""}`}
               >
                 <div className="chess-clock-mobile__dial-time">
-                  <ClockDial hands={black.hands} active={black.active} flagged={black.flagged} lowTime={black.lowTime} />
+                  <ClockDial
+                    hands={black.hands}
+                    active={black.active}
+                    flagged={black.flagged}
+                    lowTime={black.lowTime}
+                  />
                   <TimeRoller value={black.time} active={black.active} flagged={black.flagged} />
                 </div>
               </button>

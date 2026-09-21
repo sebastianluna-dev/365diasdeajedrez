@@ -36,10 +36,7 @@ import {
   POSITION_EVAL_NAGS,
   type NagOption,
 } from "@/lib/chess/pgn-tree";
-import {
-  MoveContextMenu,
-  type MoveContextMenuTarget,
-} from "@/components/chess/game-viewer/move-context-menu.comp";
+import { MoveContextMenu, type MoveContextMenuTarget } from "@/components/chess/game-viewer/move-context-menu.comp";
 import "./analysis-board.comp.css";
 
 // EDITABLE analysis board: moves are played on the board and written into
@@ -83,13 +80,7 @@ function buildInitialGame(defaultPgn: string | undefined, initialFen: string | u
   return parsed ?? emptyGame(initialFen);
 }
 
-export function AnalysisBoard({
-  name,
-  defaultPgn,
-  initialFen,
-  orientation = "white",
-  onAutoSave,
-}: AnalysisBoardProps) {
+export function AnalysisBoard({ name, defaultPgn, initialFen, orientation = "white", onAutoSave }: AnalysisBoardProps) {
   // The mutable game is the source of truth; the serialised PGN is what is
   // rendered and what is sent. It is reserialised after every change instead of
   // keeping two representations that could drift apart.
@@ -332,8 +323,8 @@ export function AnalysisBoard({
             onShapesChange={handleShapes}
           />
           <p className="analysis-board__hint">
-            Mueve sobre el tablero para añadir jugadas. Vuelve atrás y juega otra cosa para abrir una variante.
-            Clic derecho arrastrando dibuja flechas; clic derecho sobre una jugada abre su menú.
+            Mueve sobre el tablero para añadir jugadas. Vuelve atrás y juega otra cosa para abrir una variante. Clic
+            derecho arrastrando dibuja flechas; clic derecho sobre una jugada abre su menú.
           </p>
         </div>
 
@@ -477,29 +468,35 @@ export function AnalysisBoard({
       </div>
 
       <div className="analysis-board__footer">
-        <button type="button" className="platform-button platform-button_variant_secondary" onClick={() => setPasteOpen((open) => !open)}>
+        <button
+          type="button"
+          className="platform-button platform-button_variant_secondary"
+          onClick={() => setPasteOpen((open) => !open)}
+        >
           {pasteOpen ? "Cerrar" : "Pegar un PGN"}
         </button>
-        {onAutoSave ? (
-          saveLabel && (
-            <span
-              className={`analysis-board__save analysis-board__save_state_${saveTone}`}
-              role="status"
-              aria-live="polite"
-            >
-              {saveLabel}
-            </span>
-          )
-        ) : (
-          isDirty && (
-            <>
-              <span className="analysis-board__dirty">Hay cambios sin guardar.</span>
-              <button type="button" className="platform-button platform-button_variant_secondary" onClick={discardChanges}>
-                Descartar cambios
-              </button>
-            </>
-          )
-        )}
+        {onAutoSave
+          ? saveLabel && (
+              <span
+                className={`analysis-board__save analysis-board__save_state_${saveTone}`}
+                role="status"
+                aria-live="polite"
+              >
+                {saveLabel}
+              </span>
+            )
+          : isDirty && (
+              <>
+                <span className="analysis-board__dirty">Hay cambios sin guardar.</span>
+                <button
+                  type="button"
+                  className="platform-button platform-button_variant_secondary"
+                  onClick={discardChanges}
+                >
+                  Descartar cambios
+                </button>
+              </>
+            )}
       </div>
 
       {pasteOpen && (

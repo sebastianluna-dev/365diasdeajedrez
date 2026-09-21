@@ -9,18 +9,8 @@ describe("sortByRole", () => {
   it("la introducción va delante y el cierre al final, pase lo que pase con `order`", () => {
     // The closing with the lowest number and the introduction with the highest: if
     // the order ruled, they would come out the other way round.
-    const sorted = sortByRole([
-      item(1, CONTENT_ROLE.CLOSING),
-      item(5),
-      item(3),
-      item(9, CONTENT_ROLE.INTRO),
-    ]);
-    expect(sorted.map((row) => row.roleCode)).toEqual([
-      CONTENT_ROLE.INTRO,
-      null,
-      null,
-      CONTENT_ROLE.CLOSING,
-    ]);
+    const sorted = sortByRole([item(1, CONTENT_ROLE.CLOSING), item(5), item(3), item(9, CONTENT_ROLE.INTRO)]);
+    expect(sorted.map((row) => row.roleCode)).toEqual([CONTENT_ROLE.INTRO, null, null, CONTENT_ROLE.CLOSING]);
   });
 
   it("entre el contenido normal manda su orden", () => {

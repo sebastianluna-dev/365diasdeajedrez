@@ -4,15 +4,15 @@ description: "The games the student saw in class, as a read-only table whose row
 
 # `ClassGamesSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/class-games/class-games.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `class-games.section.css` → block `.class-games` |
-| Used by | `/estudios/clases` |
-| Composes | [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads | `getClassGames()` · `services/studies/studies.service.ts` |
-| Uses | `platformRoutes` from `lib/platform-routes` |
+|            |                                                                            |
+| ---------- | -------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/class-games/class-games.section.tsx` |
+| Kind       | Server Component (async)                                                   |
+| Stylesheet | `class-games.section.css` → block `.class-games`                           |
+| Used by    | `/estudios/clases`                                                         |
+| Composes   | [`EmptyState`](/components/platform/shared/empty-state)                    |
+| Reads      | `getClassGames()` · `services/studies/studies.service.ts`                  |
+| Uses       | `platformRoutes` from `lib/platform-routes`                                |
 
 ## Purpose
 
@@ -47,7 +47,7 @@ From `app/(platform)/estudios/clases/page.tsx`:
 ```tsx
 import { ClassGamesSection } from "@/components/platform/sections/studies/class-games/class-games.section";
 
-<ClassGamesSection />
+<ClassGamesSection />;
 ```
 
 ## Related

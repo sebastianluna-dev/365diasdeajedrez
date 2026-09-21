@@ -4,15 +4,15 @@ description: "Top navigation of the public site: the logo, the CMS navigation it
 
 # `Header`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/shell/header/header.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `header.section.css` → block `.site-header-nav` (and `.site-header-bar`, `.site-header`, `.site-header-mobile`) |
-| Used by | `/`, `/nosotros`, `/blog`, `/blog/[slug]`, `/mentor/[slug]`, `/reloj-de-ajedrez`, `app/(frontend)/not-found.tsx` |
-| Composes | [`Logo`](/components/site/shared/logo), [`HeaderDropdown`](/components/site/sections/shell/header/header-dropdown), [`HeaderMobileMenu`](/components/site/sections/shell/header/header-mobile-menu) |
-| Reads | `getHeaderData()` · `services/home/home.service.ts` (the `home-header` Global) |
-| Uses | `LOGIN_PATH` from `constants/platform/auth.const`, `ChevronRight` from `lucide-react` |
+|            |                                                                                                                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/shell/header/header.section.tsx`                                                                                                                                          |
+| Kind       | Server Component (async)                                                                                                                                                                            |
+| Stylesheet | `header.section.css` → block `.site-header-nav` (and `.site-header-bar`, `.site-header`, `.site-header-mobile`)                                                                                     |
+| Used by    | `/`, `/nosotros`, `/blog`, `/blog/[slug]`, `/mentor/[slug]`, `/reloj-de-ajedrez`, `app/(frontend)/not-found.tsx`                                                                                    |
+| Composes   | [`Logo`](/components/site/shared/logo), [`HeaderDropdown`](/components/site/sections/shell/header/header-dropdown), [`HeaderMobileMenu`](/components/site/sections/shell/header/header-mobile-menu) |
+| Reads      | `getHeaderData()` · `services/home/home.service.ts` (the `home-header` Global)                                                                                                                      |
+| Uses       | `LOGIN_PATH` from `constants/platform/auth.const`, `ChevronRight` from `lucide-react`                                                                                                               |
 
 ## Purpose
 
@@ -20,8 +20,8 @@ The navigation bar every public page opens with. Its items come from the CMS so 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
+| Prop    | Type                | Required     | Meaning                                                                              |
+| ------- | ------------------- | ------------ | ------------------------------------------------------------------------------------ |
 | `theme` | `"dark" \| "light"` | no, `"dark"` | `"light"` is the blog's variant: red-accent logo and `.site-header-nav_theme_light`. |
 
 ## Behaviour
@@ -51,7 +51,7 @@ From `app/(frontend)/blog/page.tsx`:
 ```tsx
 import { Header } from "@/components/site/sections/shell/header/header.section";
 
-<Header theme="light" />
+<Header theme="light" />;
 ```
 
 ## Related

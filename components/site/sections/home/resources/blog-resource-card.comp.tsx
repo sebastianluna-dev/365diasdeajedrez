@@ -13,13 +13,7 @@ export function BlogResourceCard({ title, text, image, href }: BlogResourceCardP
   return (
     <Link href={href} className="resource-card">
       <div className="resource-card__image-frame">
-        <Image
-          className="resource-card__image"
-          src={image}
-          alt={title}
-          fill
-          sizes="(max-width: 720px) 260px, 300px"
-        />
+        <Image className="resource-card__image" src={image} alt={title} fill sizes="(max-width: 720px) 260px, 300px" />
       </div>
       <div className="resource-card__body">
         <h3 className="resource-card__title">{title}</h3>

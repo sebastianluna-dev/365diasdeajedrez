@@ -19,8 +19,7 @@ export const metadata: Metadata = {
   openGraph: {
     siteName: "365 Días de Ajedrez",
     title: "365 Días de Ajedrez",
-    description:
-      "Un método progresivo para mejorar tu ajedrez con clases guiadas, seguimiento y recursos de estudio.",
+    description: "Un método progresivo para mejorar tu ajedrez con clases guiadas, seguimiento y recursos de estudio.",
     type: "website",
     locale: "es_MX",
   },

@@ -6,14 +6,14 @@ description: "A game's data fields in one place, shared by the create and edit f
 
 Also exports the `GameFieldValues` type.
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/game-fields.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `game-fields.comp.css` → block `.game-fields` |
-| Used by | [`NewGameSection`](/components/platform/sections/studies/new-game/new-game-section), [`EditGame`](/components/platform/sections/studies/game-view/edit-game) |
-| Composes | [`FormField`](/components/platform/shared/form-field) |
-| Uses | `federationOptions`, `FIDE_TITLES`, `FIDE_TITLE_LABELS` from `lib/chess/federations`; `StudyKindOption` from `services/studies/studies.types` |
+|            |                                                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/studies/game-fields.comp.tsx`                                                                                                  |
+| Kind       | Server Component                                                                                                                                             |
+| Stylesheet | `game-fields.comp.css` → block `.game-fields`                                                                                                                |
+| Used by    | [`NewGameSection`](/components/platform/sections/studies/new-game/new-game-section), [`EditGame`](/components/platform/sections/studies/game-view/edit-game) |
+| Composes   | [`FormField`](/components/platform/shared/form-field)                                                                                                        |
+| Uses       | `federationOptions`, `FIDE_TITLES`, `FIDE_TITLE_LABELS` from `lib/chess/federations`; `StudyKindOption` from `services/studies/studies.types`                |
 
 ## Purpose
 
@@ -23,11 +23,11 @@ It lives at the root of `studies/` rather than in a subfolder because two differ
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `values` | `GameFieldValues` | no | Current values for the edit form; absent on creation. `playedAtValue` is short ISO (`yyyy-mm-dd`), what `<input type="date">` expects. |
-| `results` | `StudyKindOption[]` | yes | The results catalog; `ONGOING` is the default. |
-| `titleHint` | `string` | yes | Help text for the name, different on creation and on edit. |
+| Prop        | Type                | Required | Meaning                                                                                                                                |
+| ----------- | ------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `values`    | `GameFieldValues`   | no       | Current values for the edit form; absent on creation. `playedAtValue` is short ISO (`yyyy-mm-dd`), what `<input type="date">` expects. |
+| `results`   | `StudyKindOption[]` | yes      | The results catalog; `ONGOING` is the default.                                                                                         |
+| `titleHint` | `string`            | yes      | Help text for the name, different on creation and on edit.                                                                             |
 
 ## Behaviour
 
@@ -52,10 +52,7 @@ From `components/platform/sections/studies/new-game/new-game.section.tsx`:
 ```tsx
 import { GameFields } from "@/components/platform/sections/studies/game-fields.comp";
 
-<GameFields
-  results={results}
-  titleHint={`Si lo dejas vacío se llamará «Capítulo ${nextNumber}».`}
-/>
+<GameFields results={results} titleHint={`Si lo dejas vacío se llamará «Capítulo ${nextNumber}».`} />;
 ```
 
 ## Related

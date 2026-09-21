@@ -69,7 +69,11 @@ interface ClassMetaInput {
 }
 
 /** Reads and validates the metadata common to creating and editing a class. */
-async function readClassMeta(formData: FormData, teacher: TeacherContext["teacher"], failPath: string): Promise<ClassMetaInput> {
+async function readClassMeta(
+  formData: FormData,
+  teacher: TeacherContext["teacher"],
+  failPath: string,
+): Promise<ClassMetaInput> {
   const title = readText(formData, "title");
   if (title.length === 0) fail(failPath, "title");
 
@@ -253,7 +257,9 @@ export async function markAttendance(classId: string, formData: FormData): Promi
     formData.getAll("attended").filter((value): value is string => typeof value === "string"),
   );
 
-  const changed = classRow.participants.filter((participant) => attendedNow.has(participant.userId) !== participant.attended);
+  const changed = classRow.participants.filter(
+    (participant) => attendedNow.has(participant.userId) !== participant.attended,
+  );
   if (changed.length === 0) {
     revalidatePath(detailPath);
     return;

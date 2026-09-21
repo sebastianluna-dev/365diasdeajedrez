@@ -25,31 +25,31 @@ npm run dev                  # http://localhost:3000
 
 ## Available commands
 
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Development server (Webpack). |
-| `npm run build` | `prisma generate` + production build (the generated client is not in git; Vercel only runs this script). |
-| `npm run start` | Serves the production build. |
-| `npm run lint` | ESLint. |
-| `npm run test` | Vitest, one pass. |
-| `npm run test:watch` | Vitest in watch mode. |
-| `npm run db:generate` | `prisma generate`. |
-| `npm run db:migrate` | `prisma migrate dev` (development). |
-| `npm run db:deploy` | `prisma migrate deploy` (production). |
-| `npm run db:seed` | `prisma db seed`. |
-| `npm run db:studio` | `prisma studio`. |
-| `npm run user:create -- <email> "<Name>"` | Enrols a student (asks for the password without echoing it). |
-| `npm run user:password -- <email>` | Changes their password and closes their sessions. |
-| `npm run user:list` | Lists the accounts, whether they have a password and their open sessions. |
-| `npm run pieces:sync` | Copies the board pieces (chessground) to `public/pieces`; run it whenever chessground is updated. |
-| `npm run typecheck` | `tsc --noEmit`, the same CI runs. |
-| `npm run storybook` | Storybook at `localhost:6006` (pilot: `PlanCard` only; guide in `docs/`, "Storybook"). |
-| `npm run storybook:build` | Static Storybook build in `storybook-static/` (git-ignored). |
-| `npm run test:coverage` | Vitest with coverage (v8) over `lib`, `services`, `constants` and `hooks`. |
+| Command                                   | Description                                                                                                   |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`                             | Development server (Webpack).                                                                                 |
+| `npm run build`                           | `prisma generate` + production build (the generated client is not in git; Vercel only runs this script).      |
+| `npm run start`                           | Serves the production build.                                                                                  |
+| `npm run lint`                            | ESLint.                                                                                                       |
+| `npm run test`                            | Vitest, one pass.                                                                                             |
+| `npm run test:watch`                      | Vitest in watch mode.                                                                                         |
+| `npm run db:generate`                     | `prisma generate`.                                                                                            |
+| `npm run db:migrate`                      | `prisma migrate dev` (development).                                                                           |
+| `npm run db:deploy`                       | `prisma migrate deploy` (production).                                                                         |
+| `npm run db:seed`                         | `prisma db seed`.                                                                                             |
+| `npm run db:studio`                       | `prisma studio`.                                                                                              |
+| `npm run user:create -- <email> "<Name>"` | Enrols a student (asks for the password without echoing it).                                                  |
+| `npm run user:password -- <email>`        | Changes their password and closes their sessions.                                                             |
+| `npm run user:list`                       | Lists the accounts, whether they have a password and their open sessions.                                     |
+| `npm run pieces:sync`                     | Copies the board pieces (chessground) to `public/pieces`; run it whenever chessground is updated.             |
+| `npm run typecheck`                       | `tsc --noEmit`, the same CI runs.                                                                             |
+| `npm run storybook`                       | Storybook at `localhost:6006` (pilot: `PlanCard` only; guide in `docs/`, "Storybook").                        |
+| `npm run storybook:build`                 | Static Storybook build in `storybook-static/` (git-ignored).                                                  |
+| `npm run test:coverage`                   | Vitest with coverage (v8) over `lib`, `services`, `constants` and `hooks`.                                    |
 | `npm run format` / `npm run format:check` | Prettier over the repo (`format:check` fails today: the repo was never formatted, see `IMPROVEMENTS.md` #39). |
-| `npm run positions:index` | Fills in the position index of the games already stored (`-- --all` reindexes every one). |
-| `npm run collections:by-chapter` | One-off data migration: course collections → per-chapter collections. |
-| `npm run stats:rebuild` | Rebuilds `UserStatDaily` from `UserActivity` for every account (or `-- <email>` for one). |
+| `npm run positions:index`                 | Fills in the position index of the games already stored (`-- --all` reindexes every one).                     |
+| `npm run collections:by-chapter`          | One-off data migration: course collections → per-chapter collections.                                         |
+| `npm run stats:rebuild`                   | Rebuilds `UserStatDaily` from `UserActivity` for every account (or `-- <email>` for one).                     |
 
 `.github/workflows/ci.yml` runs `lint`, `typecheck` and `test` on every push to `main` and on every pull request. It does not run `next build`: static generation queries the databases, which CI does not have; the deployment is what validates the build.
 
@@ -68,11 +68,11 @@ They are restored onto an empty or test database with `pg_restore --no-owner --d
 
 The private area (`/inicio`, `/clases`, `/estudios`, `/cursos`, `/lecciones`, `/entrenador`, `/explorador`, `/profesor`, `/administracion`) requires signing in at `/iniciar-sesion`. The seed leaves three test accounts ready with the password `ajedrez365` (or the one in `PLATFORM_DEMO_PASSWORD`); it is only assigned to accounts that do not have a password yet, so a re-seed never reverts a change made by hand:
 
-| Account | Role | What they see beyond the student's view |
-|---|---|---|
-| `alumno.demo@365diasdeajedrez.com` | Student | — |
-| `profesor.demo@365diasdeajedrez.com` | Teacher | `/profesor/*` |
-| `staff.demo@365diasdeajedrez.com` | Administrator/Editor | `/administracion/*` |
+| Account                              | Role                 | What they see beyond the student's view |
+| ------------------------------------ | -------------------- | --------------------------------------- |
+| `alumno.demo@365diasdeajedrez.com`   | Student              | —                                       |
+| `profesor.demo@365diasdeajedrez.com` | Teacher              | `/profesor/*`                           |
+| `staff.demo@365diasdeajedrez.com`    | Administrator/Editor | `/administracion/*`                     |
 
 **There is no public sign-up**: in an academy a student exists because somebody enrols them. The administration team does it from `/administracion/alumnos/nuevo`, which generates a temporary password and shows it once (there is no email service). `npm run user:create` still exists as an alternative route from the command line.
 
@@ -142,7 +142,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 
 - **Route groups**: `(frontend)` (public site), `(payload)` (CMS), `(auth)` (login) and `(platform)` (the authenticated area, with its own `layout`, `loading`, `error` and `platform.css`). Each one has its own root layout.
 - **Every section calls its own service**: page components never query the database directly.
-- **A triad per domain**: `services/<domain>/{<domain>.service.ts, <domain>.mapper.ts, <domain>.types.ts}` (plus `.actions.ts` where there are server actions). The *service* fetches data, the *mapper* translates it into the view type and the *types* are the contract of the UI.
+- **A triad per domain**: `services/<domain>/{<domain>.service.ts, <domain>.mapper.ts, <domain>.types.ts}` (plus `.actions.ts` where there are server actions). The _service_ fetches data, the _mapper_ translates it into the view type and the _types_ are the contract of the UI.
 - **BEM CSS per component**, no Tailwind: every `.css` file nests under its own root selector so that styles do not leak between sections.
 - **Catalogues instead of enums**: the Prisma schema uses no enums; every restricted domain is a catalogue table with a unique, stable `code` (the logic compares `code`, never ids) and the seed loads them idempotently.
 - **PGN is the source of the chess content** (`Lesson.pgn`, `Game.pgn`): there are no per-move tables and no relational trees of moves.

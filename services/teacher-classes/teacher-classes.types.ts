@@ -1,4 +1,9 @@
-import type { ClassBlockKindCode, ClassStatusCode, MeetingProviderCode, TranscriptStatusCode } from "@/constants/platform/class-codes.const";
+import type {
+  ClassBlockKindCode,
+  ClassStatusCode,
+  MeetingProviderCode,
+  TranscriptStatusCode,
+} from "@/constants/platform/class-codes.const";
 
 export interface TeacherClassSummary {
   id: string;

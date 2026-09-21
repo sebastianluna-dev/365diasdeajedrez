@@ -4,12 +4,12 @@ description: "A progress bar with its percentage and an optional detail, inline 
 
 # `ProgressIndicator`
 
-| | |
-| --- | --- |
-| File | `components/platform/shared/progress-indicator.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `progress-indicator.comp.css` → block `.progress-indicator` |
-| Used by | [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section), [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section), [`ChapterList`](/components/platform/sections/courses/course-detail/chapter-list), [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section), [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section) |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/progress-indicator.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Stylesheet | `progress-indicator.comp.css` → block `.progress-indicator`                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Used by    | [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section), [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section), [`ChapterList`](/components/platform/sections/courses/course-detail/chapter-list), [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section), [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section) |
 
 ## Purpose
 
@@ -17,11 +17,11 @@ The one progress bar of the platform, in two layouts: `inline` puts the bar and 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `percent` | `number` | yes | Any number; clamped to 0–100 and rounded before rendering. |
-| `detail` | `string` | no | "3 de 7 lecciones", appended to the label (inline) or placed at the right end (stacked). |
-| `layout` | `"inline" \| "stacked"` | no · default `"inline"` | See above. |
+| Prop      | Type                    | Required                | Meaning                                                                                  |
+| --------- | ----------------------- | ----------------------- | ---------------------------------------------------------------------------------------- |
+| `percent` | `number`                | yes                     | Any number; clamped to 0–100 and rounded before rendering.                               |
+| `detail`  | `string`                | no                      | "3 de 7 lecciones", appended to the label (inline) or placed at the right end (stacked). |
+| `layout`  | `"inline" \| "stacked"` | no · default `"inline"` | See above.                                                                               |
 
 ## Behaviour
 
@@ -50,7 +50,7 @@ import { ProgressIndicator } from "@/components/platform/shared/progress-indicat
   layout="stacked"
   percent={percent}
   detail={`${chapter.completedLessons} de ${chapter.totalLessons} completadas`}
-/>
+/>;
 ```
 
 ## Related

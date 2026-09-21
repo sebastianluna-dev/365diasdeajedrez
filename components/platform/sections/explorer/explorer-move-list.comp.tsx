@@ -44,9 +44,7 @@ export function ExplorerMoveList({ sans, index, onSelect }: ExplorerMoveListProp
       <h2 className="explorer-move-list__title">Jugadas</h2>
 
       {rows.length === 0 ? (
-        <p className="explorer-move-list__hint">
-          Mueve una pieza en el tablero para empezar a explorar.
-        </p>
+        <p className="explorer-move-list__hint">Mueve una pieza en el tablero para empezar a explorar.</p>
       ) : (
         <ol className="explorer-move-list__rows">
           {rows.map((row) => (

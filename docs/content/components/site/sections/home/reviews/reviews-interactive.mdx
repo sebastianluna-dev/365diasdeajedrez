@@ -4,14 +4,14 @@ description: "The testimonials carousel: the stat cards and chats stacked, posit
 
 # `ReviewsInteractive`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/home/reviews/reviews-interactive.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `reviews-interactive.comp.css` → elements of `.reviews` |
-| Used by | [`ReviewsSection`](/components/site/sections/home/reviews/reviews-section) |
-| Composes | [`ReviewStatCard`](/components/site/sections/home/reviews/review-stat-card), [`ReviewChat`](/components/site/sections/home/reviews/review-chat), [`ReviewSlideDot`](/components/site/sections/home/reviews/review-slide-dot) |
-| Uses | `ReviewContent` from `services/home/home.types` |
+|            |                                                                                                                                                                                                                              |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/home/reviews/reviews-interactive.comp.tsx`                                                                                                                                                         |
+| Kind       | Client Component                                                                                                                                                                                                             |
+| Stylesheet | `reviews-interactive.comp.css` → elements of `.reviews`                                                                                                                                                                      |
+| Used by    | [`ReviewsSection`](/components/site/sections/home/reviews/reviews-section)                                                                                                                                                   |
+| Composes   | [`ReviewStatCard`](/components/site/sections/home/reviews/review-stat-card), [`ReviewChat`](/components/site/sections/home/reviews/review-chat), [`ReviewSlideDot`](/components/site/sections/home/reviews/review-slide-dot) |
+| Uses       | `ReviewContent` from `services/home/home.types`                                                                                                                                                                              |
 
 ## Purpose
 
@@ -19,9 +19,9 @@ Owns the active review. Every review's stat card and chat stay mounted in two st
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `reviews` | `ReviewContent[]` | yes | Keyed by `name`. |
+| Prop      | Type              | Required | Meaning          |
+| --------- | ----------------- | -------- | ---------------- |
+| `reviews` | `ReviewContent[]` | yes      | Keyed by `name`. |
 
 ## Behaviour
 
@@ -42,7 +42,7 @@ From `components/site/sections/home/reviews/reviews.section.tsx`:
 ```tsx
 import { ReviewsInteractive } from "./reviews-interactive.comp";
 
-<ReviewsInteractive reviews={content.reviews} />
+<ReviewsInteractive reviews={content.reviews} />;
 ```
 
 ## Related

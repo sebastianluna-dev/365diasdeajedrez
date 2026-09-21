@@ -14,13 +14,13 @@ description: "Vitest setup, what is tested and how, coverage, the GitHub Actions
 
 As of 2026-09-09 there are **47 test files and 381 tests**, all on pure modules:
 
-| Area | Examples |
-| --- | --- |
-| Chess | `pgn-tree`, `pgn-edit`, `replay` (with `__fixtures__/continental-2026.pgn`), `mainline`, `notation`, `notation-blocks`, `movetext-scan`, `plain-movetext`, `position-hash`, `extract-game-positions`, `exercise-derivation`, `engine-protocol`, `game-review`, `legal-moves`, `federations` |
-| Rules | `study-rules`, `game-visibility-rules`, `game-origin`, `class-status-transitions`, `assignment-rules`, `content-order`, `reorder` (permutations), `prisma-errors`, `safe-return-to`, `form-data`, `pgn-import`, `lesson-pgn` |
-| Platform utilities | `password` (scrypt round trip, tampered hash), `temp-password`, `review-schedule`, `study-streak`, `timezone`, `date-ranges`, `numeric-id`, `generate-slug`, `parse-fen-placement`, `format-spanish-date/time`, `cloudinary-url`, `remote-image` |
-| Mappers and listing | `courses.mapper`, `studies.mapper`, `teacher-classes.mapper` (meeting URL visibility), `article-listing`, `nav-items`, `study-codes` |
-| Routing | `proxy.test.ts`: every protected prefix redirects without a cookie, `/` with a cookie goes to `/entrar`, and the literal matcher equals `PROTECTED_PATH_PREFIXES` plus `/` |
+| Area                | Examples                                                                                                                                                                                                                                                                                    |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Chess               | `pgn-tree`, `pgn-edit`, `replay` (with `__fixtures__/continental-2026.pgn`), `mainline`, `notation`, `notation-blocks`, `movetext-scan`, `plain-movetext`, `position-hash`, `extract-game-positions`, `exercise-derivation`, `engine-protocol`, `game-review`, `legal-moves`, `federations` |
+| Rules               | `study-rules`, `game-visibility-rules`, `game-origin`, `class-status-transitions`, `assignment-rules`, `content-order`, `reorder` (permutations), `prisma-errors`, `safe-return-to`, `form-data`, `pgn-import`, `lesson-pgn`                                                                |
+| Platform utilities  | `password` (scrypt round trip, tampered hash), `temp-password`, `review-schedule`, `study-streak`, `timezone`, `date-ranges`, `numeric-id`, `generate-slug`, `parse-fen-placement`, `format-spanish-date/time`, `cloudinary-url`, `remote-image`                                            |
+| Mappers and listing | `courses.mapper`, `studies.mapper`, `teacher-classes.mapper` (meeting URL visibility), `article-listing`, `nav-items`, `study-codes`                                                                                                                                                        |
+| Routing             | `proxy.test.ts`: every protected prefix redirects without a cookie, `/` with a cookie goes to `/entrar`, and the literal matcher equals `PROTECTED_PATH_PREFIXES` plus `/`                                                                                                                  |
 
 Conventions:
 
@@ -47,7 +47,7 @@ npx vitest run lib/chess  # a folder
 
 ```yaml
 - run: npm ci
-- run: npm run db:generate    # needs only a syntactically valid PLATFORM_DATABASE_URL
+- run: npm run db:generate # needs only a syntactically valid PLATFORM_DATABASE_URL
 - run: npm run lint
 - run: npm run typecheck
 - run: npm test

@@ -17,8 +17,8 @@ export function NosotrosHeroSection() {
         </h1>
         <p className="nosotros-hero__text">
           365DiasDeAjedrez nació de años de competencia y de enseñanza. Trabajamos con jugadores que quieren dejar de
-          improvisar: un plan de estudio propio, análisis honesto de cada partida y clases donde siempre se explica
-          el porqué de cada decisión.
+          improvisar: un plan de estudio propio, análisis honesto de cada partida y clases donde siempre se explica el
+          porqué de cada decisión.
         </p>
         <div className="nosotros-hero__stats">
           {stats.map((stat) => (

@@ -6,13 +6,13 @@ description: "Binds lib/chess/pgn-edit to the viewer's state: each operation rep
 
 Also exports the `PgnEditing` type.
 
-| | |
-| --- | --- |
-| File | `components/chess/game-viewer/use-pgn-editing.hook.ts` |
-| Kind | Client hook |
-| Stylesheet | none |
-| Used by | [`GameViewer`](/components/chess/game-viewer/game-viewer) |
-| Uses | `addMove`, `deleteFrom`, `nodeAtPathIn`, `parseEditableGame`, `pathOfNode`, `promoteOneStep`, `promoteToMainLine`, `serializeGame`, `setShapes`, `variationPgn` from `lib/chess/pgn-edit`<br />`parentPathOf` from `lib/chess/pgn-tree` |
+|            |                                                                                                                                                                                                                                         |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/use-pgn-editing.hook.ts`                                                                                                                                                                                  |
+| Kind       | Client hook                                                                                                                                                                                                                             |
+| Stylesheet | none                                                                                                                                                                                                                                    |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer)                                                                                                                                                                               |
+| Uses       | `addMove`, `deleteFrom`, `nodeAtPathIn`, `parseEditableGame`, `pathOfNode`, `promoteOneStep`, `promoteToMainLine`, `serializeGame`, `setShapes`, `variationPgn` from `lib/chess/pgn-edit`<br />`parentPathOf` from `lib/chess/pgn-tree` |
 
 ## Purpose
 
@@ -25,25 +25,25 @@ Each operation reparses the PGN, mutates the chessops `Game` and returns the new
 ### `usePgnEditing`
 
 ```ts
-export function usePgnEditing({ pgn, onPgnChange, onPathChange }: UsePgnEditingOptions): PgnEditing
+export function usePgnEditing({ pgn, onPgnChange, onPathChange }: UsePgnEditingOptions): PgnEditing;
 ```
 
-| Option | Type | Meaning |
-| --- | --- | --- |
-| `pgn` | `string` | The current PGN: every change starts from it, never from a stored copy. |
-| `onPgnChange` | `(pgn: string) => void` | Receives the serialised game after a successful change. |
-| `onPathChange` | `(path: string) => void` | Where to leave the selected move after each change. |
+| Option         | Type                     | Meaning                                                                 |
+| -------------- | ------------------------ | ----------------------------------------------------------------------- |
+| `pgn`          | `string`                 | The current PGN: every change starts from it, never from a stored copy. |
+| `onPgnChange`  | `(pgn: string) => void`  | Receives the serialised game after a successful change.                 |
+| `onPathChange` | `(path: string) => void` | Where to leave the selected move after each change.                     |
 
 ### `PgnEditing`
 
-| Method | Leaves the viewer at |
-| --- | --- |
-| `addMoveAt(path, san)` | The new move. Nothing happens for an illegal SAN. |
-| `updateShapes(path, shapes)` | The same move. |
-| `promoteOneStepAt(path)` | The same move, wherever its reindexed path now is. |
-| `promoteToMainAt(path)` | The same move, wherever it now is. |
-| `deleteAt(path)` | The parent: the move no longer exists. |
-| `copyVariation(path)` | Unchanged; writes the variation's PGN to the clipboard, silently ignoring a permission error (the full PGN is still at hand in the game tools). |
+| Method                       | Leaves the viewer at                                                                                                                            |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `addMoveAt(path, san)`       | The new move. Nothing happens for an illegal SAN.                                                                                               |
+| `updateShapes(path, shapes)` | The same move.                                                                                                                                  |
+| `promoteOneStepAt(path)`     | The same move, wherever its reindexed path now is.                                                                                              |
+| `promoteToMainAt(path)`      | The same move, wherever it now is.                                                                                                              |
+| `deleteAt(path)`             | The parent: the move no longer exists.                                                                                                          |
+| `copyVariation(path)`        | Unchanged; writes the variation's PGN to the clipboard, silently ignoring a permission error (the full PGN is still at hand in the game tools). |
 
 ## Behaviour
 

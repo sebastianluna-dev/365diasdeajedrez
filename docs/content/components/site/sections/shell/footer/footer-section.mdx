@@ -4,15 +4,15 @@ description: "The public site's footer: the logo and a tagline, the academy link
 
 # `Footer`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/shell/footer/footer.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `footer.section.css` → block `.site-footer` |
-| Used by | `/`, `/nosotros`, `/blog`, `/blog/[slug]`, `/mentor/[slug]`, `app/(frontend)/not-found.tsx` |
-| Composes | [`Logo`](/components/site/shared/logo) |
-| Reads | `getSiteSettingsData()` · `services/site-settings/site-settings.service.ts` |
-| Uses | `buildWhatsappUrl` from `lib/build-whatsapp-url` |
+|            |                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------- |
+| File       | `components/site/sections/shell/footer/footer.section.tsx`                                  |
+| Kind       | Server Component (async)                                                                    |
+| Stylesheet | `footer.section.css` → block `.site-footer`                                                 |
+| Used by    | `/`, `/nosotros`, `/blog`, `/blog/[slug]`, `/mentor/[slug]`, `app/(frontend)/not-found.tsx` |
+| Composes   | [`Logo`](/components/site/shared/logo)                                                      |
+| Reads      | `getSiteSettingsData()` · `services/site-settings/site-settings.service.ts`                 |
+| Uses       | `buildWhatsappUrl` from `lib/build-whatsapp-url`                                            |
 
 ## Purpose
 
@@ -20,8 +20,8 @@ The closing block of every public page except the chess clock. Its copy and link
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
+| Prop     | Type                | Required       | Meaning                                                                  |
+| -------- | ------------------- | -------------- | ------------------------------------------------------------------------ |
 | `accent` | `"orange" \| "red"` | no, `"orange"` | Logo accent and `.site-footer_accent_<accent>`; the blog passes `"red"`. |
 
 ## Behaviour
@@ -48,7 +48,7 @@ From `app/(frontend)/blog/[slug]/page.tsx`:
 ```tsx
 import { Footer } from "@/components/site/sections/shell/footer/footer.section";
 
-<Footer accent="red" />
+<Footer accent="red" />;
 ```
 
 ## Related

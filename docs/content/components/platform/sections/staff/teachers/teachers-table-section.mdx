@@ -4,15 +4,15 @@ description: "Active and inactive teachers in a PlatformTable with title, email,
 
 # `TeachersTableSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/staff/teachers/teachers-table.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `teachers-table.section.css` → block `.teachers-table` |
-| Used by | `/administracion/profesores` |
-| Composes | [`PlatformTable`](/components/platform/shared/platform-table) |
-| Reads | `listTeachers()` · `services/staff-teachers/staff-teachers.service.ts` |
-| Uses | `staffRoutes` from `lib/platform-routes` |
+|            |                                                                          |
+| ---------- | ------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/teachers/teachers-table.section.tsx` |
+| Kind       | Server Component (async)                                                 |
+| Stylesheet | `teachers-table.section.css` → block `.teachers-table`                   |
+| Used by    | `/administracion/profesores`                                             |
+| Composes   | [`PlatformTable`](/components/platform/shared/platform-table)            |
+| Reads      | `listTeachers()` · `services/staff-teachers/staff-teachers.service.ts`   |
+| Uses       | `staffRoutes` from `lib/platform-routes`                                 |
 
 ## Purpose
 
@@ -43,7 +43,7 @@ From `app/(platform)/administracion/profesores/page.tsx`:
 ```tsx
 import { TeachersTableSection } from "@/components/platform/sections/staff/teachers/teachers-table.section";
 
-<TeachersTableSection />
+<TeachersTableSection />;
 ```
 
 ## Related

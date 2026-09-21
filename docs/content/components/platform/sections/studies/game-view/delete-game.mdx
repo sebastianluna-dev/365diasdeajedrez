@@ -4,13 +4,13 @@ description: "The confirmation dialog for deleteStudyGame, with a checkbox requi
 
 # `DeleteGame`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/game-view/delete-game.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `delete-game.comp.css` → block `.delete-game` |
-| Used by | [`GameAside`](/components/platform/sections/studies/game-view/game-aside) |
-| Writes | `deleteStudyGame()` · `services/studies/studies.actions.ts` |
+|            |                                                                           |
+| ---------- | ------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/delete-game.comp.tsx`     |
+| Kind       | Client Component                                                          |
+| Stylesheet | `delete-game.comp.css` → block `.delete-game`                             |
+| Used by    | [`GameAside`](/components/platform/sections/studies/game-view/game-aside) |
+| Writes     | `deleteStudyGame()` · `services/studies/studies.actions.ts`               |
 
 ## Purpose
 
@@ -18,14 +18,14 @@ Deleting one game with its variations, comments and arrows. Like [`DeleteStudy`]
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `studyId` | `string` | yes | Bound into the action. |
-| `gameId` | `string` | yes | Bound into the action. |
-| `name` | `string` | yes | For the title. |
-| `classBlockCount` | `number` | yes | Class blocks that cite it. Above zero, the checkbox is required. |
-| `size` | `"regular" \| "compact" \| "inline"` | no · default `"regular"` | `compact` spans the record column's width; `inline` is one more word of the record's foot. |
-| `label` | `string` | no · default `"Borrar partida"` | Trigger text; at the foot "Borrar" is enough. |
+| Prop              | Type                                 | Required                        | Meaning                                                                                    |
+| ----------------- | ------------------------------------ | ------------------------------- | ------------------------------------------------------------------------------------------ |
+| `studyId`         | `string`                             | yes                             | Bound into the action.                                                                     |
+| `gameId`          | `string`                             | yes                             | Bound into the action.                                                                     |
+| `name`            | `string`                             | yes                             | For the title.                                                                             |
+| `classBlockCount` | `number`                             | yes                             | Class blocks that cite it. Above zero, the checkbox is required.                           |
+| `size`            | `"regular" \| "compact" \| "inline"` | no · default `"regular"`        | `compact` spans the record column's width; `inline` is one more word of the record's foot. |
+| `label`           | `string`                             | no · default `"Borrar partida"` | Trigger text; at the foot "Borrar" is enough.                                              |
 
 ## Behaviour
 
@@ -61,7 +61,7 @@ import { DeleteGame } from "./delete-game.comp";
   classBlockCount={game.classBlockCount}
   size="inline"
   label="Borrar"
-/>
+/>;
 ```
 
 ## Related

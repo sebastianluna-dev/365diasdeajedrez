@@ -4,15 +4,15 @@ description: "The position explorer: a playable board whose line is a list of SA
 
 # `GameExplorer`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/explorer/game-explorer.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `game-explorer.comp.css` → block `.game-explorer` |
-| Used by | [`GameExplorerSection`](/components/platform/sections/explorer/game-explorer-section) |
-| Composes | [`ChessBoard`](/components/chess/chess-board), [`ExplorerMoveList`](/components/platform/sections/explorer/explorer-move-list), [`ExplorerNextMoves`](/components/platform/sections/explorer/explorer-next-moves), [`ExplorerGames`](/components/platform/sections/explorer/explorer-games) |
-| Writes | `searchPosition()` · `services/game-explorer/game-explorer.actions.ts` (a read behind a server action) |
-| Uses | `replayGame` from `lib/chess/replay`; `PositionSearchResult` from `services/game-explorer/game-explorer.types`; `FlipIcon` from `components/icons/` |
+|            |                                                                                                                                                                                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/explorer/game-explorer.comp.tsx`                                                                                                                                                                                                                              |
+| Kind       | Client Component                                                                                                                                                                                                                                                                            |
+| Stylesheet | `game-explorer.comp.css` → block `.game-explorer`                                                                                                                                                                                                                                           |
+| Used by    | [`GameExplorerSection`](/components/platform/sections/explorer/game-explorer-section)                                                                                                                                                                                                       |
+| Composes   | [`ChessBoard`](/components/chess/chess-board), [`ExplorerMoveList`](/components/platform/sections/explorer/explorer-move-list), [`ExplorerNextMoves`](/components/platform/sections/explorer/explorer-next-moves), [`ExplorerGames`](/components/platform/sections/explorer/explorer-games) |
+| Writes     | `searchPosition()` · `services/game-explorer/game-explorer.actions.ts` (a read behind a server action)                                                                                                                                                                                      |
+| Uses       | `replayGame` from `lib/chess/replay`; `PositionSearchResult` from `services/game-explorer/game-explorer.types`; `FlipIcon` from `components/icons/`                                                                                                                                         |
 
 ## Purpose
 
@@ -51,7 +51,7 @@ From `components/platform/sections/explorer/game-explorer.section.tsx`:
 ```tsx
 import { GameExplorer } from "./game-explorer.comp";
 
-<GameExplorer />
+<GameExplorer />;
 ```
 
 ## Related

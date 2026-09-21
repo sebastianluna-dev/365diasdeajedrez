@@ -17,7 +17,9 @@ export const articleRichTextConverters: JSXConvertersFunction<DefaultNodeTypes |
   defaultConverters,
 }) => ({
   ...defaultConverters,
-  paragraph: ({ node, nodesToJSX }) => <p className="article-body__paragraph">{nodesToJSX({ nodes: node.children })}</p>,
+  paragraph: ({ node, nodesToJSX }) => (
+    <p className="article-body__paragraph">{nodesToJSX({ nodes: node.children })}</p>
+  ),
   heading: ({ node, nodesToJSX }) => {
     const Tag = node.tag;
     return <Tag className="article-body__heading">{nodesToJSX({ nodes: node.children })}</Tag>;

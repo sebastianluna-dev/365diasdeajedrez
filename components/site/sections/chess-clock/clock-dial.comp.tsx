@@ -53,7 +53,9 @@ export function ClockDial({ label, time, hands, active, flagged, lowTime, onPres
       {!compact && (
         <>
           {time !== undefined && (
-            <div className={`clock-readout${flagged ? " clock-readout_fallen" : active ? " clock-readout_active" : ""}`}>
+            <div
+              className={`clock-readout${flagged ? " clock-readout_fallen" : active ? " clock-readout_active" : ""}`}
+            >
               {time}
             </div>
           )}

@@ -4,16 +4,16 @@ description: "The /entrenador home: the chapters the student added to the Move T
 
 # `TrainerHomeSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/trainer/trainer-home.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `trainer-home.section.css` → block `.trainer-home` |
-| Used by | `/entrenador` (without `?lesson=` or `?chapter=`) |
-| Composes | [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads | `getTrainerData()` · `services/trainer/trainer.service.ts` |
-| Writes | `toggleTrainerChapter()` · `services/trainer/trainer.actions.ts` |
-| Uses | `platformRoutes` from `lib/platform-routes`; `TrainerChapterItem` from `services/trainer/trainer.types` |
+|            |                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/trainer/trainer-home.section.tsx`                                         |
+| Kind       | Server Component (async)                                                                                |
+| Stylesheet | `trainer-home.section.css` → block `.trainer-home`                                                      |
+| Used by    | `/entrenador` (without `?lesson=` or `?chapter=`)                                                       |
+| Composes   | [`EmptyState`](/components/platform/shared/empty-state)                                                 |
+| Reads      | `getTrainerData()` · `services/trainer/trainer.service.ts`                                              |
+| Writes     | `toggleTrainerChapter()` · `services/trainer/trainer.actions.ts`                                        |
+| Uses       | `platformRoutes` from `lib/platform-routes`; `TrainerChapterItem` from `services/trainer/trainer.types` |
 
 ## Purpose
 
@@ -50,7 +50,7 @@ From `app/(platform)/entrenador/page.tsx`:
 ```tsx
 import { TrainerHomeSection } from "@/components/platform/sections/trainer/trainer-home.section";
 
-<TrainerHomeSection />
+<TrainerHomeSection />;
 ```
 
 ## Related

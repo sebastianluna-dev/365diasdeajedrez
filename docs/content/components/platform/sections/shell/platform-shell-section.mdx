@@ -4,16 +4,16 @@ description: "The platform's chassis: top bar with the wordmark, the role's navi
 
 # `PlatformShell`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/shell/platform-shell.section.tsx` |
-| Kind | Server Component (async) |
-| Stylesheet | `platform-shell.section.css` → block `.platform-shell` |
-| Used by | `app/(platform)/layout.tsx` |
-| Composes | [`PlatformNav`](/components/platform/sections/shell/platform-nav) |
-| Reads | `getSessionUser()` · `lib/platform-auth/current-user.ts`<br />`getSessionRoles()` · `lib/platform-auth/roles.ts` |
-| Writes | `logoutAction()` · `services/auth/auth.actions.ts` |
-| Uses | `buildPlatformNavGroups` from `constants/platform/nav-items.const`<br />`homeRouteFor` from `lib/platform-routes` |
+|            |                                                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/shell/platform-shell.section.tsx`                                                   |
+| Kind       | Server Component (async)                                                                                          |
+| Stylesheet | `platform-shell.section.css` → block `.platform-shell`                                                            |
+| Used by    | `app/(platform)/layout.tsx`                                                                                       |
+| Composes   | [`PlatformNav`](/components/platform/sections/shell/platform-nav)                                                 |
+| Reads      | `getSessionUser()` · `lib/platform-auth/current-user.ts`<br />`getSessionRoles()` · `lib/platform-auth/roles.ts`  |
+| Writes     | `logoutAction()` · `services/auth/auth.actions.ts`                                                                |
+| Uses       | `buildPlatformNavGroups` from `constants/platform/nav-items.const`<br />`homeRouteFor` from `lib/platform-routes` |
 
 ## Purpose
 
@@ -23,9 +23,9 @@ It reads the session **only to show** who is logged in and which menu they get. 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `children` | `ReactNode` | yes | The page, rendered inside `<main id="contenido">`. |
+| Prop       | Type        | Required | Meaning                                            |
+| ---------- | ----------- | -------- | -------------------------------------------------- |
+| `children` | `ReactNode` | yes      | The page, rendered inside `<main id="contenido">`. |
 
 ## Behaviour
 
@@ -58,7 +58,7 @@ import { PlatformShell } from "@/components/platform/sections/shell/platform-she
     Saltar al contenido
   </a>
   <PlatformShell>{children}</PlatformShell>
-</body>
+</body>;
 ```
 
 ## Related

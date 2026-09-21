@@ -86,10 +86,7 @@ export function pathOfNode(game: Game<PgnNodeData>, node: ChildNode<PgnNodeData>
 }
 
 /** The parent of a path, and the index the node occupies within it. */
-function locate(
-  game: Game<PgnNodeData>,
-  path: string,
-): { parent: Node<PgnNodeData>; index: number } | null {
+function locate(game: Game<PgnNodeData>, path: string): { parent: Node<PgnNodeData>; index: number } | null {
   if (path.length === 0) return null;
 
   const segments = path.split(".");

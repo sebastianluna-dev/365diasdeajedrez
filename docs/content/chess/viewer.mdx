@@ -10,13 +10,13 @@ There is **one** game viewer in the codebase and every screen that shows a game 
 
 The chessground surface plus, in standalone mode, a move list and toolbar.
 
-| Prop | Meaning |
-| --- | --- |
-| `pgn` | Full PGN or bare SAN movetext; replayed with `replayGame`. Standalone mode renders the notation rows and a toolbar (first/prev/play/next/last, flip). Autoplay steps every 900 ms. |
-| `position` | **Controlled mode**: the parent owns the position and navigation (GameViewer, trainer, explorer). Only the board renders. |
-| `flipBoard`, `annotations` | Orientation and move-quality tags for the notation rows. |
-| `interactive`, `onMove(san, fromFen)` | Lets the user play legal moves (validated by chessops via `legalDests`). Promotion opens an accessible dialog (`aria-modal`, autofocus, Escape cancels). |
-| `editableShapes`, `onShapesChange` | Right-click arrows and circles become the user's editable shapes (analysis board); otherwise shapes are read-only `autoShapes`. |
+| Prop                                  | Meaning                                                                                                                                                                            |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pgn`                                 | Full PGN or bare SAN movetext; replayed with `replayGame`. Standalone mode renders the notation rows and a toolbar (first/prev/play/next/last, flip). Autoplay steps every 900 ms. |
+| `position`                            | **Controlled mode**: the parent owns the position and navigation (GameViewer, trainer, explorer). Only the board renders.                                                          |
+| `flipBoard`, `annotations`            | Orientation and move-quality tags for the notation rows.                                                                                                                           |
+| `interactive`, `onMove(san, fromFen)` | Lets the user play legal moves (validated by chessops via `legalDests`). Promotion opens an accessible dialog (`aria-modal`, autofocus, Escape cancels).                           |
+| `editableShapes`, `onShapesChange`    | Right-click arrows and circles become the user's editable shapes (analysis board); otherwise shapes are read-only `autoShapes`.                                                    |
 
 It imports chessground's base CSS and the cburnett piece sheet; board colours come from `--board-light`/`--board-dark`.
 
@@ -28,15 +28,15 @@ Same props, but the board (chessground, chessops, piece CSS) loads only when the
 
 The full experience around a PGN tree (`parsePgnTree`):
 
-| Prop | Meaning |
-| --- | --- |
-| `pgn`, `orientation`, `initialPath` | The game and where to open it (a `TrainingExercise.path` or `ClassBlock.movePath`). |
-| `title`, `subtitle`, `description`, `badge`, `headerActions`, `footerActions`, `positionActions(fen)`, `skip`, `boardFooter`, `players` | Slots each screen fills (open in book, save, notes, share, player strips by colour). |
-| `moveList` | `"table"` (number · white · black grid, like Lichess; studies) or `"flow"` (running text; lessons). |
-| `controls` | Navigation buttons under the board (lessons) or inside the moves panel (studies). |
-| `engine` | Offers the analysis module (off by default; the worker and the 7 MB WASM load only when switched on). |
-| `onPathChange(path)` | Reports the current node; the class block editor uses it to capture "this position". |
-| editing props | Turn the viewer into an editor: play on the board to add moves/variations, draw arrows, right-click a move for its menu (promote one step / to mainline, comment, NAGs, copy variation, delete). Changes flow through `usePgnEditing` → `lib/chess/pgn-edit` → `onPgnChange`, and the study page autosaves with `autosaveGamePgn`. |
+| Prop                                                                                                                                    | Meaning                                                                                                                                                                                                                                                                                                                            |
+| --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pgn`, `orientation`, `initialPath`                                                                                                     | The game and where to open it (a `TrainingExercise.path` or `ClassBlock.movePath`).                                                                                                                                                                                                                                                |
+| `title`, `subtitle`, `description`, `badge`, `headerActions`, `footerActions`, `positionActions(fen)`, `skip`, `boardFooter`, `players` | Slots each screen fills (open in book, save, notes, share, player strips by colour).                                                                                                                                                                                                                                               |
+| `moveList`                                                                                                                              | `"table"` (number · white · black grid, like Lichess; studies) or `"flow"` (running text; lessons).                                                                                                                                                                                                                                |
+| `controls`                                                                                                                              | Navigation buttons under the board (lessons) or inside the moves panel (studies).                                                                                                                                                                                                                                                  |
+| `engine`                                                                                                                                | Offers the analysis module (off by default; the worker and the 7 MB WASM load only when switched on).                                                                                                                                                                                                                              |
+| `onPathChange(path)`                                                                                                                    | Reports the current node; the class block editor uses it to capture "this position".                                                                                                                                                                                                                                               |
+| editing props                                                                                                                           | Turn the viewer into an editor: play on the board to add moves/variations, draw arrows, right-click a move for its menu (promote one step / to mainline, comment, NAGs, copy variation, delete). Changes flow through `usePgnEditing` → `lib/chess/pgn-edit` → `onPgnChange`, and the study page autosaves with `autosaveGamePgn`. |
 
 Parts:
 
@@ -57,10 +57,10 @@ A position as a CSS grid of 64 squares with the piece SVGs from `public/pieces` 
 
 ## Which one to use
 
-| Need | Component |
-| --- | --- |
-| Show a position, no interaction | `StaticDiagram` |
-| Replay a game far below the fold on a public page | `ChessBoardLazy` with `pgn` |
-| Navigate a game with variations, comments, engine, review | `GameViewer` |
-| Let the user build or annotate a game | `GameViewer` in editing mode (existing game) or `AnalysisBoard` (new game / class block) |
-| Board surface controlled by your own state (trainer, explorer) | `ChessBoard` with `position` (+ `interactive`) |
+| Need                                                           | Component                                                                                |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Show a position, no interaction                                | `StaticDiagram`                                                                          |
+| Replay a game far below the fold on a public page              | `ChessBoardLazy` with `pgn`                                                              |
+| Navigate a game with variations, comments, engine, review      | `GameViewer`                                                                             |
+| Let the user build or annotate a game                          | `GameViewer` in editing mode (existing game) or `AnalysisBoard` (new game / class block) |
+| Board surface controlled by your own state (trainer, explorer) | `ChessBoard` with `position` (+ `interactive`)                                           |

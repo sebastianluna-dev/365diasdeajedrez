@@ -145,11 +145,7 @@ export interface EngineLines {
  * that of the accumulated data it starts from scratch: mixing lines from two
  * positions would leave an impossible suggestion on screen.
  */
-export function mergeEngineLines(
-  current: EngineLines | null,
-  fen: string,
-  info: EngineInfo,
-): EngineLines {
+export function mergeEngineLines(current: EngineLines | null, fen: string, info: EngineInfo): EngineLines {
   const byIndex = current?.fen === fen ? { ...current.byIndex } : {};
   byIndex[info.multipv] = info;
   return { fen, byIndex };

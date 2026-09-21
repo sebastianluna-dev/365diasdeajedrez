@@ -4,14 +4,14 @@ description: "The 'Editar datos' dialog of a study: rename, describe and, when t
 
 # `EditStudy`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/study-detail/edit-study.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `edit-study.comp.css` → block `.edit-study` |
-| Used by | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) |
-| Writes | `updateStudy()` · `services/studies/studies.actions.ts` |
-| Uses | `StudyKindOption` from `services/studies/studies.types` |
+|            |                                                                                                 |
+| ---------- | ----------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/study-detail/edit-study.comp.tsx`                         |
+| Kind       | Client Component                                                                                |
+| Stylesheet | `edit-study.comp.css` → block `.edit-study`                                                     |
+| Used by    | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) |
+| Writes     | `updateStudy()` · `services/studies/studies.actions.ts`                                         |
+| Uses       | `StudyKindOption` from `services/studies/studies.types`                                         |
 
 ## Purpose
 
@@ -19,15 +19,15 @@ Editing a study's own data, in a native `<dialog>` like [`NewStudy`](/components
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `id` | `string` | yes | Bound into the action. |
-| `name` | `string` | yes | Current name (required, max 120). |
-| `description` | `string` | no | Current description (max 500). |
-| `kindCode` | `string` | yes | Current kind; preselected when it is among `kinds`. |
-| `kindLabel` | `string` | yes | The kind's name, to state it when it cannot be changed. |
-| `kinds` | `StudyKindOption[]` | yes | The kinds it can change to (from `study-rules`). |
-| `canChangeKind` | `boolean` | yes | Whether the selector renders. |
+| Prop            | Type                | Required | Meaning                                                 |
+| --------------- | ------------------- | -------- | ------------------------------------------------------- |
+| `id`            | `string`            | yes      | Bound into the action.                                  |
+| `name`          | `string`            | yes      | Current name (required, max 120).                       |
+| `description`   | `string`            | no       | Current description (max 500).                          |
+| `kindCode`      | `string`            | yes      | Current kind; preselected when it is among `kinds`.     |
+| `kindLabel`     | `string`            | yes      | The kind's name, to state it when it cannot be changed. |
+| `kinds`         | `StudyKindOption[]` | yes      | The kinds it can change to (from `study-rules`).        |
+| `canChangeKind` | `boolean`           | yes      | Whether the selector renders.                           |
 
 ## Behaviour
 
@@ -60,7 +60,7 @@ import { EditStudy } from "./edit-study.comp";
   kindLabel={study.kindLabel}
   kinds={kinds}
   canChangeKind={study.permissions.canChangeKind}
-/>
+/>;
 ```
 
 ## Related

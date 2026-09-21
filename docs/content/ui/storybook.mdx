@@ -10,13 +10,13 @@ Storybook renders a component in isolation, with its real stylesheet, fonts and 
 
 ## What is installed
 
-| Piece | Where | What it does |
-| --- | --- | --- |
-| `storybook`, `@storybook/nextjs-vite`, `@storybook/addon-docs` 10.6 | root `package.json` (devDependencies) | The Next.js framework on Vite, with autodocs. Root package, not a sibling like `docs/`: stories live next to the components and must share the app's `react`, `next` and `chessground`. |
-| `.storybook/main.ts` | root | Finds `components/**/*.stories.tsx`; serves `public/` as static files (fonts, engine, sounds, pieces at the same URLs as in Next); aliases `@` → repo root and `server-only` → `lib/testing/server-only.stub.ts`, the same two aliases as `vitest.config.mts`. |
-| `.storybook/preview.tsx` | root | Loads `app/(frontend)/globals.css` and `app/(platform)/platform.css`; adds the **theme toolbar** (`auto`, `site`, `platform`) that toggles `body.platform-theme`, which is exactly how the layouts pick a theme; sets `nextjs.appDirectory` so `next/link` and `next/navigation` work; enables autodocs for every story. |
-| `.storybook/preview.css` | root | `@font-face` for the eight files in `public/fonts` and the four `--font-*` variables the components read. In the app `next/font/local` does this on `<html>`; components never import the font modules, so nothing else is needed. |
-| Scripts | `npm run storybook` (port 6006), `npm run storybook:build` (static build in `storybook-static/`, gitignored and excluded from ESLint, `tsc` and Vitest). |
+| Piece                                                               | Where                                                                                                                                                    | What it does                                                                                                                                                                                                                                                                                                             |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `storybook`, `@storybook/nextjs-vite`, `@storybook/addon-docs` 10.6 | root `package.json` (devDependencies)                                                                                                                    | The Next.js framework on Vite, with autodocs. Root package, not a sibling like `docs/`: stories live next to the components and must share the app's `react`, `next` and `chessground`.                                                                                                                                  |
+| `.storybook/main.ts`                                                | root                                                                                                                                                     | Finds `components/**/*.stories.tsx`; serves `public/` as static files (fonts, engine, sounds, pieces at the same URLs as in Next); aliases `@` → repo root and `server-only` → `lib/testing/server-only.stub.ts`, the same two aliases as `vitest.config.mts`.                                                           |
+| `.storybook/preview.tsx`                                            | root                                                                                                                                                     | Loads `app/(frontend)/globals.css` and `app/(platform)/platform.css`; adds the **theme toolbar** (`auto`, `site`, `platform`) that toggles `body.platform-theme`, which is exactly how the layouts pick a theme; sets `nextjs.appDirectory` so `next/link` and `next/navigation` work; enables autodocs for every story. |
+| `.storybook/preview.css`                                            | root                                                                                                                                                     | `@font-face` for the eight files in `public/fonts` and the four `--font-*` variables the components read. In the app `next/font/local` does this on `<html>`; components never import the font modules, so nothing else is needed.                                                                                       |
+| Scripts                                                             | `npm run storybook` (port 6006), `npm run storybook:build` (static build in `storybook-static/`, gitignored and excluded from ESLint, `tsc` and Vitest). |
 
 Stories and `.storybook/` are **inside** the root typecheck and lint on purpose: a story types against the component's real props, so renaming a prop without updating the story fails `npm run typecheck`.
 
@@ -48,9 +48,9 @@ import { PlanCard } from "./plan-card.comp";
 const meta = {
   title: "site/sections/home/plans/PlanCard",
   args: defaults,
-  argTypes: { /* one entry per control, see step 3 */ },
+  argTypes: {/* one entry per control, see step 3 */},
   render: (args) => <PlanCard plan={toPlan(args)} />,
-  decorators: [ /* see step 4 */ ],
+  decorators: [/* see step 4 */],
 } satisfies Meta<PlanArgs>;
 
 export default meta;

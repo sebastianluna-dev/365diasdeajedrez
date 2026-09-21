@@ -4,14 +4,14 @@ description: "A student's page for their teacher, entirely read-only: facts, cou
 
 # `AssignedStudentDetailSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/students/assigned-student-detail.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `assigned-student-detail.section.css` → block `.assigned-student` |
-| Used by | `/profesor/alumnos/[studentId]` |
-| Composes | [`PlatformTable`](/components/platform/shared/platform-table), [`ProgressIndicator`](/components/platform/shared/progress-indicator), [`LocalDateTime`](/components/platform/shared/local-datetime), [`EmptyState`](/components/platform/shared/empty-state) |
-| Uses | `teacherRoutes` from `lib/platform-routes`; `AssignedStudentDetail`, `StudentSharedClass` from `services/teacher-students/teacher-students.types` |
+|            |                                                                                                                                                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/teacher/students/assigned-student-detail.section.tsx`                                                                                                                                                                          |
+| Kind       | Server Component                                                                                                                                                                                                                                             |
+| Stylesheet | `assigned-student-detail.section.css` → block `.assigned-student`                                                                                                                                                                                            |
+| Used by    | `/profesor/alumnos/[studentId]`                                                                                                                                                                                                                              |
+| Composes   | [`PlatformTable`](/components/platform/shared/platform-table), [`ProgressIndicator`](/components/platform/shared/progress-indicator), [`LocalDateTime`](/components/platform/shared/local-datetime), [`EmptyState`](/components/platform/shared/empty-state) |
+| Uses       | `teacherRoutes` from `lib/platform-routes`; `AssignedStudentDetail`, `StudentSharedClass` from `services/teacher-students/teacher-students.types`                                                                                                            |
 
 ## Purpose
 
@@ -19,9 +19,9 @@ Everything a teacher may know about an assigned student, in cards: assignment fa
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `student` | `AssignedStudentDetail` | yes | `id`, `email`, `assignedAtIso`, `assignedAtLabel`, `note?`, `courses[]` (with `percent`, `statusLabel`, `lastLessonName?`), `upcomingClasses[]`, `pastClasses[]`, `studies[]`, `activity[]`. |
+| Prop      | Type                    | Required | Meaning                                                                                                                                                                                      |
+| --------- | ----------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `student` | `AssignedStudentDetail` | yes      | `id`, `email`, `assignedAtIso`, `assignedAtLabel`, `note?`, `courses[]` (with `percent`, `statusLabel`, `lastLessonName?`), `upcomingClasses[]`, `pastClasses[]`, `studies[]`, `activity[]`. |
 
 ## Behaviour
 
@@ -50,7 +50,7 @@ From `app/(platform)/profesor/alumnos/[studentId]/page.tsx`:
 ```tsx
 import { AssignedStudentDetailSection } from "@/components/platform/sections/teacher/students/assigned-student-detail.section";
 
-<AssignedStudentDetailSection student={student} />
+<AssignedStudentDetailSection student={student} />;
 ```
 
 ## Related

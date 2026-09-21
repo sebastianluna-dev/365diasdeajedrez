@@ -4,13 +4,13 @@ description: "The lesson rows of a chapter: order number (green when completed),
 
 # `LessonList`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/courses/chapter-detail/lesson-list.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `lesson-list.comp.css` → block `.lesson-list` |
-| Used by | [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section) |
-| Uses | `PROGRESS_STATUS` from `constants/platform/shared-codes.const`<br />`ChapterLessonItem` from `services/courses/courses.types` |
+|            |                                                                                                                               |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/chapter-detail/lesson-list.comp.tsx`                                                    |
+| Kind       | Server Component                                                                                                              |
+| Stylesheet | `lesson-list.comp.css` → block `.lesson-list`                                                                                 |
+| Used by    | [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section)                         |
+| Uses       | `PROGRESS_STATUS` from `constants/platform/shared-codes.const`<br />`ChapterLessonItem` from `services/courses/courses.types` |
 
 ## Purpose
 
@@ -18,9 +18,9 @@ The lessons of a chapter as an `<ol>` of whole-row links. A completed lesson is 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `lessons` | `ChapterLessonItem[]` | yes | `{ id, order, name, description?, href, isPriority, estimatedDuration?, statusCode }[]`. |
+| Prop      | Type                  | Required | Meaning                                                                                  |
+| --------- | --------------------- | -------- | ---------------------------------------------------------------------------------------- |
+| `lessons` | `ChapterLessonItem[]` | yes      | `{ id, order, name, description?, href, isPriority, estimatedDuration?, statusCode }[]`. |
 
 ## Behaviour
 
@@ -45,7 +45,7 @@ From `components/platform/sections/courses/chapter-detail/chapter-detail.section
 ```tsx
 import { LessonList } from "./lesson-list.comp";
 
-<LessonList lessons={chapter.lessons} />
+<LessonList lessons={chapter.lessons} />;
 ```
 
 ## Related

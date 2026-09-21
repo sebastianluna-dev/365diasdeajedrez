@@ -45,13 +45,13 @@ Spaced repetition (`lib/training/review-schedule.ts`): intervals `[0, 1, 3, 7, 2
 
 A study is a `GameDatabase`. `getUserStudies()` lists, with `study-rules` permissions already resolved:
 
-| Kind | Who creates it | Notes |
-| --- | --- | --- |
-| `MY_GAMES` "Mis partidas" | The system, at account creation (`services/studies/default-study.ts`) | Exactly one per student; cannot be deleted or re-typed. |
-| `STUDY` | Student or teacher | Free material. |
-| `TOURNAMENT` | Student or teacher | Games from one competition. |
-| `COLLECTION` | Teacher | Shared with students through `StudyShare`; read-only for them. |
-| Course collections | Staff (per chapter) | Visible once the course is started; read-only. |
+| Kind                      | Who creates it                                                        | Notes                                                          |
+| ------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `MY_GAMES` "Mis partidas" | The system, at account creation (`services/studies/default-study.ts`) | Exactly one per student; cannot be deleted or re-typed.        |
+| `STUDY`                   | Student or teacher                                                    | Free material.                                                 |
+| `TOURNAMENT`              | Student or teacher                                                    | Games from one competition.                                    |
+| `COLLECTION`              | Teacher                                                               | Shared with students through `StudyShare`; read-only for them. |
+| Course collections        | Staff (per chapter)                                                   | Visible once the course is started; read-only.                 |
 
 Actions (`studies.actions.ts`): `createStudy`, `updateStudy`, `deleteStudy` (warns about games cited in classes), `importPgnGames` (parses up to 500 games / 2 MB with `services/shared/pgn-import.ts`, maps headers to columns, indexes positions, all in one transaction with a 120 s timeout), `createStudyGame` (from the analysis board or a PGN), `updateGameDetails` (players, Elo, titles, federations, result, date, event, round, ECO), `autosaveGamePgn` (the viewer saves edits in place; returns an `AutosaveResult`), `deleteStudyGame`, `reorderStudyGames` (drag/keyboard; `planFullReorder`), `copyClassGamesToStudy`, `shareStudyWithStudent` / `unshareStudyWithStudent` (teachers).
 

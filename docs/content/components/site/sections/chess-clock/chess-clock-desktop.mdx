@@ -4,14 +4,14 @@ description: "The wide-screen clock: two knobs, two dials with readouts and labe
 
 # `ChessClockDesktop`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/chess-clock/chess-clock-desktop.comp.tsx` |
-| Kind | Client Component |
+|            |                                                                           |
+| ---------- | ------------------------------------------------------------------------- |
+| File       | `components/site/sections/chess-clock/chess-clock-desktop.comp.tsx`       |
+| Kind       | Client Component                                                          |
 | Stylesheet | `chess-clock-desktop.comp.css` → block `.chess-clock` (and `.clock-knob`) |
-| Used by | [`ChessClock`](/components/site/sections/chess-clock/chess-clock) |
-| Composes | [`ClockDial`](/components/site/sections/chess-clock/clock-dial) ×2 |
-| Uses | `useChessClock` from `hooks/use-chess-clock.hook` |
+| Used by    | [`ChessClock`](/components/site/sections/chess-clock/chess-clock)         |
+| Composes   | [`ClockDial`](/components/site/sections/chess-clock/clock-dial) ×2        |
+| Uses       | `useChessClock` from `hooks/use-chess-clock.hook`                         |
 
 ## Purpose
 
@@ -19,8 +19,8 @@ A physical clock drawn on the page: a case with two dials, the two press buttons
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
+| Prop      | Type      | Required   | Meaning                                                                             |
+| --------- | --------- | ---------- | ----------------------------------------------------------------------------------- |
 | `enabled` | `boolean` | no, `true` | Passed to the hook; when `false` the clock does not tick and ignores the space bar. |
 
 ## Behaviour
@@ -48,7 +48,7 @@ From `components/site/sections/chess-clock/chess-clock.comp.tsx`:
 ```tsx
 import { ChessClockDesktop } from "./chess-clock-desktop.comp";
 
-<ChessClockDesktop enabled={!isMobile} />
+<ChessClockDesktop enabled={!isMobile} />;
 ```
 
 ## Related

@@ -4,13 +4,13 @@ description: "A lesson is referenced by typing its id; the viewer underneath loa
 
 # `LessonReferenceField`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/teacher/classes/class-block-editor/lesson-reference-field.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | none |
-| Used by | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) |
-| Composes | [`FormField`](/components/platform/shared/form-field) |
+|            |                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/class-block-editor/lesson-reference-field.comp.tsx` |
+| Kind       | Client Component                                                                                  |
+| Stylesheet | none                                                                                              |
+| Used by    | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form)        |
+| Composes   | [`FormField`](/components/platform/shared/form-field)                                             |
 
 ## Purpose
 
@@ -18,10 +18,10 @@ A class can embed a lesson. There is no lesson picker: the teacher types the les
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `value` | `string` | yes | The `lessonId`. |
-| `onChange` | `(lessonId: string) => void` | yes | Receives the trimmed value. |
+| Prop       | Type                         | Required | Meaning                     |
+| ---------- | ---------------------------- | -------- | --------------------------- |
+| `value`    | `string`                     | yes      | The `lessonId`.             |
+| `onChange` | `(lessonId: string) => void` | yes      | Receives the trimmed value. |
 
 ## Behaviour
 
@@ -38,7 +38,7 @@ From `components/platform/sections/teacher/classes/class-block-editor/block-form
 ```tsx
 import { LessonReferenceField } from "./lesson-reference-field.comp";
 
-<LessonReferenceField value={lessonId} onChange={setLessonId} />
+<LessonReferenceField value={lessonId} onChange={setLessonId} />;
 ```
 
 ## Related

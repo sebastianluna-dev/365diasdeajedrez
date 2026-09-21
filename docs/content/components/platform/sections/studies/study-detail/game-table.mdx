@@ -4,15 +4,15 @@ description: "The games of a study as rows with drag-and-drop and keyboard reord
 
 # `GameTable`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/study-detail/game-table.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `game-table.comp.css` → block `.game-table` |
-| Used by | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) |
-| Writes | `reorderStudyGames()` · `services/studies/studies.actions.ts` |
-| Composes | [`PlatformTable`](/components/platform/shared/platform-table) (`PlatformTableRow`, `PlatformTableCell`) |
-| Uses | `StudyGameItem` from `services/studies/studies.types` |
+|            |                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/study-detail/game-table.comp.tsx`                                 |
+| Kind       | Client Component                                                                                        |
+| Stylesheet | `game-table.comp.css` → block `.game-table`                                                             |
+| Used by    | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section)         |
+| Writes     | `reorderStudyGames()` · `services/studies/studies.actions.ts`                                           |
+| Composes   | [`PlatformTable`](/components/platform/shared/platform-table) (`PlatformTableRow`, `PlatformTableCell`) |
+| Uses       | `StudyGameItem` from `services/studies/studies.types`                                                   |
 
 ## Purpose
 
@@ -22,11 +22,11 @@ It is a real `<table>` through the shared [`PlatformTable`](/components/platform
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `studyId` | `string` | yes | Bound into the reorder action. |
-| `games` | `StudyGameItem[]` | yes | `{ id, label, href, white, black, resultLabel, citedInClass }[]` in the saved order. |
-| `canReorder` | `boolean` | yes | Course databases are read-only: nothing is dragged there and the number is plain text. |
+| Prop         | Type              | Required | Meaning                                                                                |
+| ------------ | ----------------- | -------- | -------------------------------------------------------------------------------------- |
+| `studyId`    | `string`          | yes      | Bound into the reorder action.                                                         |
+| `games`      | `StudyGameItem[]` | yes      | `{ id, label, href, white, black, resultLabel, citedInClass }[]` in the saved order.   |
+| `canReorder` | `boolean`         | yes      | Course databases are read-only: nothing is dragged there and the number is plain text. |
 
 ## Behaviour
 
@@ -55,7 +55,7 @@ From `components/platform/sections/studies/study-detail/study-detail.section.tsx
 ```tsx
 import { GameTable } from "./game-table.comp";
 
-<GameTable studyId={study.id} games={study.games} canReorder={canWrite} />
+<GameTable studyId={study.id} games={study.games} canReorder={canWrite} />;
 ```
 
 ## Related

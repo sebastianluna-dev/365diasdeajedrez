@@ -4,15 +4,15 @@ description: "The game screen of Mis estudios: the PGN in a reducer with an undo
 
 # `GameViewSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/game-view/game-view.section.tsx` |
-| Kind | Client Component |
-| Stylesheet | `game-view.section.css` → block `.game-view` |
-| Used by | `/estudios/[studyId]/partidas/[gameId]` |
-| Composes | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`GameTools`](/components/platform/sections/studies/game-view/game-tools), [`GameAside`](/components/platform/sections/studies/game-view/game-aside), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Writes | `autosaveGamePgn()` · `services/studies/studies.actions.ts` |
-| Uses | `federationFlag` from `lib/chess/federations`; `GameView`, `StudyGameItem` from `services/studies/studies.types` |
+|            |                                                                                                                                                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/game-view.section.tsx`                                                                                                                                                                                                           |
+| Kind       | Client Component                                                                                                                                                                                                                                                                 |
+| Stylesheet | `game-view.section.css` → block `.game-view`                                                                                                                                                                                                                                     |
+| Used by    | `/estudios/[studyId]/partidas/[gameId]`                                                                                                                                                                                                                                          |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`GameTools`](/components/platform/sections/studies/game-view/game-tools), [`GameAside`](/components/platform/sections/studies/game-view/game-aside), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes     | `autosaveGamePgn()` · `services/studies/studies.actions.ts`                                                                                                                                                                                                                      |
+| Uses       | `federationFlag` from `lib/chess/federations`; `GameView`, `StudyGameItem` from `services/studies/studies.types`                                                                                                                                                                 |
 
 ## Purpose
 
@@ -22,13 +22,13 @@ The PGN lives here because two things write it: the [`GameViewer`](/components/c
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `game` | `GameView` | yes | The game with `pgn`, `canEdit`, players (name, Elo, title, country), record fields and `studyId`. |
-| `siblings` | `StudyGameItem[]` | yes | All the study's games, the current one included; they feed the aside. |
-| `newGame` | `ReactNode` | no | The new-game modal, mounted by the page with its data; absent in course databases. |
-| `editGame` | `ReactNode` | no | The "Datos de la partida" modal; absent when writing is not allowed. |
-| `errorCode` | `string` | no | What bounced back from an action (`gameInClasses`: delete without confirming). |
+| Prop        | Type              | Required | Meaning                                                                                           |
+| ----------- | ----------------- | -------- | ------------------------------------------------------------------------------------------------- |
+| `game`      | `GameView`        | yes      | The game with `pgn`, `canEdit`, players (name, Elo, title, country), record fields and `studyId`. |
+| `siblings`  | `StudyGameItem[]` | yes      | All the study's games, the current one included; they feed the aside.                             |
+| `newGame`   | `ReactNode`       | no       | The new-game modal, mounted by the page with its data; absent in course databases.                |
+| `editGame`  | `ReactNode`       | no       | The "Datos de la partida" modal; absent when writing is not allowed.                              |
+| `errorCode` | `string`          | no       | What bounced back from an action (`gameInClasses`: delete without confirming).                    |
 
 ## Behaviour
 
@@ -65,9 +65,15 @@ import { GameViewSection } from "@/components/platform/sections/studies/game-vie
   game={game}
   siblings={siblings}
   errorCode={error}
-  editGame={game.canEdit ? <EditGame studyId={game.studyId} gameId={game.id} results={results} values={game} /> : undefined}
-  newGame={canWrite && study ? <NewGame studyId={study.id} studyName={study.name} results={results} classGames={classGames} /> : undefined}
-/>
+  editGame={
+    game.canEdit ? <EditGame studyId={game.studyId} gameId={game.id} results={results} values={game} /> : undefined
+  }
+  newGame={
+    canWrite && study ? (
+      <NewGame studyId={study.id} studyName={study.name} results={results} classGames={classGames} />
+    ) : undefined
+  }
+/>;
 ```
 
 The page passes `values={game}` whole: `GameView` already contains every field of `GameFieldValues`, and listing them one by one is how the title and the federation got lost once.

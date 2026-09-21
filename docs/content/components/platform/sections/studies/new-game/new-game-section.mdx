@@ -4,15 +4,15 @@ description: "The full-page 'Nueva partida' form: the game's data, an optional P
 
 # `NewGameSection`
 
-| | |
-| --- | --- |
-| File | `components/platform/sections/studies/new-game/new-game.section.tsx` |
-| Kind | Server Component |
-| Stylesheet | `new-game.section.css` → block `.new-game-page` |
-| Used by | `/estudios/[studyId]/partidas/nueva` |
-| Composes | [`GameFields`](/components/platform/sections/studies/game-fields), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Writes | `createStudyGame()` · `services/studies/studies.actions.ts` |
-| Uses | `PGN_MAX_LENGTH` from `constants/platform/content-limits.const`; `platformRoutes` from `lib/platform-routes` |
+|            |                                                                                                                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/new-game/new-game.section.tsx`                                                                                                                      |
+| Kind       | Server Component                                                                                                                                                                          |
+| Stylesheet | `new-game.section.css` → block `.new-game-page`                                                                                                                                           |
+| Used by    | `/estudios/[studyId]/partidas/nueva`                                                                                                                                                      |
+| Composes   | [`GameFields`](/components/platform/sections/studies/game-fields), [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes     | `createStudyGame()` · `services/studies/studies.actions.ts`                                                                                                                               |
+| Uses       | `PGN_MAX_LENGTH` from `constants/platform/content-limits.const`; `platformRoutes` from `lib/platform-routes`                                                                              |
 
 ## Purpose
 
@@ -22,11 +22,11 @@ This is a second door to the same action as the "Crear vacía" tab of [`NewGame`
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `study` | `StudyDetail` | yes | For the breadcrumb, the cancel link and the next chapter number in the title hint. |
-| `results` | `StudyKindOption[]` | yes | The results catalog. |
-| `errorCode` | `string` | no | `?error=`; `fen` is the only code with a message here. |
+| Prop        | Type                | Required | Meaning                                                                            |
+| ----------- | ------------------- | -------- | ---------------------------------------------------------------------------------- |
+| `study`     | `StudyDetail`       | yes      | For the breadcrumb, the cancel link and the next chapter number in the title hint. |
+| `results`   | `StudyKindOption[]` | yes      | The results catalog.                                                               |
+| `errorCode` | `string`            | no       | `?error=`; `fen` is the only code with a message here.                             |
 
 ## Behaviour
 
@@ -51,7 +51,7 @@ From `app/(platform)/estudios/[studyId]/partidas/nueva/page.tsx`:
 ```tsx
 import { NewGameSection } from "@/components/platform/sections/studies/new-game/new-game.section";
 
-<NewGameSection study={study} results={results} errorCode={error} />
+<NewGameSection study={study} results={results} errorCode={error} />;
 ```
 
 ## Related

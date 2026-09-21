@@ -4,12 +4,12 @@ description: "The category links of the blog listing with aria-current on the ac
 
 # `CategoryFilter`
 
-| | |
-| --- | --- |
-| File | `components/site/sections/blog/blog-articles/category-filter.comp.tsx` |
-| Kind | Server Component |
-| Stylesheet | `category-filter.comp.css` → block `.category-filter` |
-| Used by | [`BlogArticles`](/components/site/sections/blog/blog-articles/blog-articles-section) |
+|            |                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------ |
+| File       | `components/site/sections/blog/blog-articles/category-filter.comp.tsx`               |
+| Kind       | Server Component                                                                     |
+| Stylesheet | `category-filter.comp.css` → block `.category-filter`                                |
+| Used by    | [`BlogArticles`](/components/site/sections/blog/blog-articles/blog-articles-section) |
 
 ## Purpose
 
@@ -17,11 +17,11 @@ A `<nav aria-label="Filtrar por categoría">` of links. Choosing a category navi
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `categories` | `string[]` | yes | Including "Todos" first. |
-| `active` | `string` | yes | The current category. |
-| `hrefFor` | `(category: string) => string` | yes | URL of each category, built by the section. |
+| Prop         | Type                           | Required | Meaning                                     |
+| ------------ | ------------------------------ | -------- | ------------------------------------------- |
+| `categories` | `string[]`                     | yes      | Including "Todos" first.                    |
+| `active`     | `string`                       | yes      | The current category.                       |
+| `hrefFor`    | `(category: string) => string` | yes      | URL of each category, built by the section. |
 
 ## Behaviour
 
@@ -50,7 +50,7 @@ import { CategoryFilter } from "./category-filter.comp";
   categories={listing.categories}
   active={listing.category}
   hrefFor={(category) => listingHref({ category, page: 1 })}
-/>
+/>;
 ```
 
 ## Related

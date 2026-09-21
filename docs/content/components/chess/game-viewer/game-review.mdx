@@ -4,14 +4,14 @@ description: "Whole-game evaluation: runs a dedicated Stockfish worker over ever
 
 # `GameReview`
 
-| | |
-| --- | --- |
-| File | `components/chess/game-viewer/game-review.comp.tsx` |
-| Kind | Client Component |
-| Stylesheet | `game-review.comp.css` → block `.game-review` |
-| Used by | [`GameTools`](/components/platform/sections/studies/game-view/game-tools) (the "Evaluación" tab under the board) |
-| Composes | [`GameReviewChart`](/components/chess/game-viewer/game-review-chart), [`useGameReview`](/components/chess/game-viewer/use-game-review-hook), [`mainline-positions`](/components/chess/game-viewer/mainline-positions) |
-| Uses | `reviewGame`, `PlayerReview` from `lib/chess/game-review`<br />`parseEditableGame`, `serializeGame`, `setEvaluation` from `lib/chess/pgn-edit`<br />`parsePgnTree`, `MoveEvaluation` from `lib/chess/pgn-tree` |
+|            |                                                                                                                                                                                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/game-review.comp.tsx`                                                                                                                                                                   |
+| Kind       | Client Component                                                                                                                                                                                                      |
+| Stylesheet | `game-review.comp.css` → block `.game-review`                                                                                                                                                                         |
+| Used by    | [`GameTools`](/components/platform/sections/studies/game-view/game-tools) (the "Evaluación" tab under the board)                                                                                                      |
+| Composes   | [`GameReviewChart`](/components/chess/game-viewer/game-review-chart), [`useGameReview`](/components/chess/game-viewer/use-game-review-hook), [`mainline-positions`](/components/chess/game-viewer/mainline-positions) |
+| Uses       | `reviewGame`, `PlayerReview` from `lib/chess/game-review`<br />`parseEditableGame`, `serializeGame`, `setEvaluation` from `lib/chess/pgn-edit`<br />`parsePgnTree`, `MoveEvaluation` from `lib/chess/pgn-tree`        |
 
 ## Purpose
 
@@ -21,15 +21,15 @@ There is no "already evaluated" state. The evaluation lives **inside the PGN**, 
 
 ## Props
 
-| Prop | Type | Required | Meaning |
-| --- | --- | --- | --- |
-| `pgn` | `string` | yes | The game; evaluations are read from and written into it. |
-| `canEdit` | `boolean` | yes | Without write permission the review still runs and renders, but the PGN is not saved, and the footer says so ("no se guarda: la partida no es tuya"). |
-| `white` | `string` | yes | White's name for the player card. |
-| `black` | `string` | yes | Black's name for the player card. |
-| `currentPath` | `string` | yes | Dotted path of the board's move, for the chart cursor. |
-| `onSelectPath` | `(path: string) => void` | yes | The chart moves the board: clicking or dragging on a ply selects its path. |
-| `onPgnChange` | `(pgn: string) => void` | yes | Receives the PGN with the evaluations written in. |
+| Prop           | Type                     | Required | Meaning                                                                                                                                               |
+| -------------- | ------------------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pgn`          | `string`                 | yes      | The game; evaluations are read from and written into it.                                                                                              |
+| `canEdit`      | `boolean`                | yes      | Without write permission the review still runs and renders, but the PGN is not saved, and the footer says so ("no se guarda: la partida no es tuya"). |
+| `white`        | `string`                 | yes      | White's name for the player card.                                                                                                                     |
+| `black`        | `string`                 | yes      | Black's name for the player card.                                                                                                                     |
+| `currentPath`  | `string`                 | yes      | Dotted path of the board's move, for the chart cursor.                                                                                                |
+| `onSelectPath` | `(path: string) => void` | yes      | The chart moves the board: clicking or dragging on a ply selects its path.                                                                            |
+| `onPgnChange`  | `(pgn: string) => void`  | yes      | Receives the PGN with the evaluations written in.                                                                                                     |
 
 ## Behaviour
 
@@ -70,7 +70,7 @@ import { GameReview } from "@/components/chess/game-viewer/game-review.comp";
   currentPath={currentPath}
   onSelectPath={onSelectPath}
   onPgnChange={onPgnChange}
-/>
+/>;
 ```
 
 ## Related
