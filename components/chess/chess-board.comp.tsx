@@ -9,7 +9,7 @@ import type { Key } from "@lichess-org/chessground/types";
 import "@lichess-org/chessground/assets/chessground.base.css";
 import "@lichess-org/chessground/assets/chessground.cburnett.css";
 import { legalDests } from "@/lib/chess/legal-moves";
-import { buildNotationRows } from "@/lib/chess/notation";
+import { buildNotationRows, startPlyOfFen } from "@/lib/chess/notation";
 import { isPromotionMove, replayGame, sanForMove, turnColor, type PromotionRole } from "@/lib/chess/replay";
 import type { MoveAnnotations } from "@/lib/chess/types";
 import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
@@ -85,11 +85,14 @@ export function ChessBoard({
 }: ChessBoardProps) {
   const positions = useMemo(() => replayGame(pgn ?? ""), [pgn]);
   const total = positions.length - 1;
+  // A game that starts from a FEN is numbered from that position, so a study
+  // that opens at move 44 says "44…" and not "1.".
   const rows = useMemo(
     () =>
       buildNotationRows(
         positions.slice(1).map((position) => position.san),
         annotations,
+        startPlyOfFen(positions[0].fen),
       ),
     [positions, annotations],
   );
@@ -337,7 +340,7 @@ export function ChessBoard({
         <div className="chess-board__notation" style={notationHeight ? { height: notationHeight } : undefined}>
           <div className="chess-board__notation-rows">
             {rows.map((row, index) => {
-              const WhiteQualityIcon = row.white.quality ? chessMoveQualityIconFor(row.white.quality) : null;
+              const WhiteQualityIcon = row.white?.quality ? chessMoveQualityIconFor(row.white.quality) : null;
               const BlackQualityIcon = row.black?.quality ? chessMoveQualityIconFor(row.black.quality) : null;
               return (
                 <div
@@ -345,24 +348,28 @@ export function ChessBoard({
                   className={`chess-board__notation-row${index % 2 === 0 ? " chess-board__notation-row_striped" : ""}`}
                 >
                   <span className="chess-board__notation-number">{row.number}</span>
-                  <button
-                    type="button"
-                    ref={ply === row.white.ply ? activeCellRef : undefined}
-                    onClick={() => setPly(row.white.ply)}
-                    className={`chess-board__notation-cell${ply === row.white.ply ? " chess-board__notation-cell_active" : ""}`}
-                  >
-                    {WhiteQualityIcon && (
-                      <span className="chess-board__notation-quality">
-                        <WhiteQualityIcon />
-                      </span>
-                    )}
-                    {row.white.glyph && (
-                      <span
-                        className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.white.glyph}`}
-                      />
-                    )}
-                    {row.white.label}
-                  </button>
+                  {row.white ? (
+                    <button
+                      type="button"
+                      ref={ply === row.white.ply ? activeCellRef : undefined}
+                      onClick={() => setPly(row.white!.ply)}
+                      className={`chess-board__notation-cell${ply === row.white.ply ? " chess-board__notation-cell_active" : ""}`}
+                    >
+                      {WhiteQualityIcon && (
+                        <span className="chess-board__notation-quality">
+                          <WhiteQualityIcon />
+                        </span>
+                      )}
+                      {row.white.glyph && (
+                        <span
+                          className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.white.glyph}`}
+                        />
+                      )}
+                      {row.white.label}
+                    </button>
+                  ) : (
+                    <span className="chess-board__notation-cell chess-board__notation-cell_empty">…</span>
+                  )}
                   {row.black ? (
                     <button
                       type="button"

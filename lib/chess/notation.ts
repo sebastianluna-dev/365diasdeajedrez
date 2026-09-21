@@ -35,9 +35,21 @@ export interface NotationHalfMove {
 }
 
 export interface NotationRow {
+  /** "12." or, when the row starts with Black's move, "12…". */
   number: string;
-  white: NotationHalfMove;
+  /** Null only in the first row of a line that starts with Black to move. */
+  white: NotationHalfMove | null;
   black: NotationHalfMove | null;
+}
+
+/**
+ * Half-moves already played in the position a FEN describes: what the
+ * numbering has to start counting from. The standard start gives 0.
+ */
+export function startPlyOfFen(fen: string): number {
+  const [, turn, , , , fullmove] = fen.split(" ");
+  const number = Number.parseInt(fullmove ?? "1", 10);
+  return (Number.isFinite(number) && number > 0 ? number - 1 : 0) * 2 + (turn === "b" ? 1 : 0);
 }
 
 function halfMove(san: string, ply: number, quality: MoveQuality | null): NotationHalfMove {
@@ -46,18 +58,30 @@ function halfMove(san: string, ply: number, quality: MoveQuality | null): Notati
 
 /**
  * Groups a flat SAN list into numbered rows for the move-list panel.
- * `annotations` keys are `${moveNumber}${"w" | "b"}`.
+ * `annotations` keys are `${moveNumber}${"w" | "b"}`, with the number as shown.
+ *
+ * `startPly` is how many half-moves the starting position already carries
+ * (`startPlyOfFen`): a line that begins at move 44 with Black to move gets a
+ * first row "44…" with no white half-move. The `ply` of each half-move is still
+ * its index within the list (1-based), which is what steps the board.
  */
-export function buildNotationRows(sans: string[], annotations?: MoveAnnotations): NotationRow[] {
+export function buildNotationRows(sans: string[], annotations?: MoveAnnotations, startPly = 0): NotationRow[] {
   const rows: NotationRow[] = [];
-  for (let n = 0; n < sans.length; n += 2) {
-    const moveNumber = n / 2 + 1;
-    const hasBlack = n + 1 < sans.length;
+  let index = 0;
+  while (index < sans.length) {
+    const played = startPly + index;
+    const moveNumber = Math.floor(played / 2) + 1;
+    const blackFirst = played % 2 === 1;
+    const blackIndex = blackFirst ? index : index + 1;
     rows.push({
-      number: `${moveNumber}.`,
-      white: halfMove(sans[n], n + 1, annotations?.[`${moveNumber}w`] ?? null),
-      black: hasBlack ? halfMove(sans[n + 1], n + 2, annotations?.[`${moveNumber}b`] ?? null) : null,
+      number: `${moveNumber}${blackFirst ? "…" : "."}`,
+      white: blackFirst ? null : halfMove(sans[index], index + 1, annotations?.[`${moveNumber}w`] ?? null),
+      black:
+        blackIndex < sans.length
+          ? halfMove(sans[blackIndex], blackIndex + 1, annotations?.[`${moveNumber}b`] ?? null)
+          : null,
     });
+    index = blackIndex + 1;
   }
   return rows;
 }
