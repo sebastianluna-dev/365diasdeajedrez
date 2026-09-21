@@ -402,15 +402,8 @@ async function ownedStudy(studyId: string, userId: string): Promise<{ id: string
  * analysed: it is played on the board and annotated from the move list.
  */
 export async function createStudyGame(studyId: string, formData: FormData): Promise<void> {
-  // A failure goes back to WHERE it was written. The game is created from two
-  // places — the "new game" page and the study page's dialog — and always sending
-  // to the page would leave whoever used the dialog on another screen wondering
-  // what happened. `origin` is compared against a known value, not used as a URL:
-  // a form field cannot decide where a redirect goes.
-  const back =
-    readText(formData, "origin") === "detail"
-      ? platformRoutes.studyDetail(studyId)
-      : platformRoutes.newStudyGame(studyId);
+  // A failure goes back to the study page, where the dialog that posted it lives.
+  const back = platformRoutes.studyDetail(studyId);
 
   const db = getPlatformDb();
   const user = await getCurrentUser();

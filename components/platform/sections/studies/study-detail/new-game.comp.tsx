@@ -83,9 +83,6 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
             notation starts counting at the number the FEN says. */}
         {tab === "fen" && (
           <form action={createStudyGame.bind(null, studyId)} onSubmit={close} className="new-game__panel">
-            {/* So that a badly written FEN warns HERE and not on another screen. */}
-            <input type="hidden" name="origin" value="detail" />
-
             <label className="new-game__field">
               <span className="new-game__label">FEN</span>
               <input

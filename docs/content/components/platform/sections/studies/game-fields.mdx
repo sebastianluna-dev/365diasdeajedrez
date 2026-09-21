@@ -6,14 +6,14 @@ description: "A game's data fields in one place, shared by the create and edit f
 
 Also exports the `GameFieldValues` type.
 
-|            |                                                                                                                                                              |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/studies/game-fields.comp.tsx`                                                                                                  |
-| Kind       | Server Component                                                                                                                                             |
-| Stylesheet | `game-fields.comp.css` → block `.game-fields`                                                                                                                |
-| Used by    | [`NewGameSection`](/components/platform/sections/studies/new-game/new-game-section), [`EditGame`](/components/platform/sections/studies/game-view/edit-game) |
-| Composes   | [`FormField`](/components/platform/shared/form-field)                                                                                                        |
-| Uses       | `federationOptions`, `FIDE_TITLES`, `FIDE_TITLE_LABELS` from `lib/chess/federations`; `StudyKindOption` from `services/studies/studies.types`                |
+|            |                                                                                                                                               |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-fields.comp.tsx`                                                                                   |
+| Kind       | Server Component                                                                                                                              |
+| Stylesheet | `game-fields.comp.css` → block `.game-fields`                                                                                                 |
+| Used by    | [`EditGame`](/components/platform/sections/studies/game-view/edit-game)                                                                       |
+| Composes   | [`FormField`](/components/platform/shared/form-field)                                                                                         |
+| Uses       | `federationOptions`, `FIDE_TITLES`, `FIDE_TITLE_LABELS` from `lib/chess/federations`; `StudyKindOption` from `services/studies/studies.types` |
 
 ## Purpose
 
@@ -47,12 +47,12 @@ No tokens, no media queries of its own.
 
 ## Usage
 
-From `components/platform/sections/studies/new-game/new-game.section.tsx`:
+From `components/platform/sections/studies/study-detail/new-game.comp.tsx` (the blank tab of the dialog):
 
 ```tsx
 import { GameFields } from "@/components/platform/sections/studies/game-fields.comp";
 
-<GameFields results={results} titleHint={`Si lo dejas vacío se llamará «Capítulo ${nextNumber}».`} />;
+<GameFields results={results} />;
 ```
 
 ## Related
