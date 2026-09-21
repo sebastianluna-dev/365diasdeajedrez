@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import "./platform-table.comp.css";
 
 export interface PlatformTableColumn {
@@ -59,8 +59,21 @@ export function PlatformTable({ columns, children, emptyLabel, minWidth = 640 }:
   );
 }
 
-export function PlatformTableRow({ children }: { children: ReactNode }) {
-  return <tr className="platform-table__row">{children}</tr>;
+interface PlatformTableRowProps extends ComponentPropsWithoutRef<"tr"> {
+  children: ReactNode;
+}
+
+/**
+ * A row. It takes whatever a `<tr>` takes — a class of the caller's own, the
+ * drag handlers of a sortable list — because the table owns the look of the
+ * rows and not what happens to them.
+ */
+export function PlatformTableRow({ children, className, ...rest }: PlatformTableRowProps) {
+  return (
+    <tr className={`platform-table__row${className ? ` ${className}` : ""}`} {...rest}>
+      {children}
+    </tr>
+  );
 }
 
 interface PlatformTableCellProps {
@@ -71,7 +84,10 @@ interface PlatformTableCellProps {
 }
 
 export function PlatformTableCell({ children, align, strong }: PlatformTableCellProps) {
-  const modifiers = [align === "right" ? "platform-table__cell_align_right" : "", strong ? "platform-table__cell_variant_strong" : ""]
+  const modifiers = [
+    align === "right" ? "platform-table__cell_align_right" : "",
+    strong ? "platform-table__cell_variant_strong" : "",
+  ]
     .filter(Boolean)
     .join(" ");
 

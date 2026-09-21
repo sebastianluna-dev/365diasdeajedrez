@@ -270,9 +270,9 @@ the fade). `HeaderDropdown` is now a Client Component with `aria-haspopup`, `ari
 through CSS. The three layouts start with "Saltar al contenido" and each `<main>` carries
 `id="contenido"`.
 
-### 58. `GameTable` reimplements a table with `div`s when `PlatformTable` exists — [Frontend / A11y]
-Still open: mechanical task T13 in `todos.md` (build the rows on `PlatformTable` keeping the
-reordering handle in the first cell and delete the grid in `game-table.comp.css`).
+### 58. ~~`GameTable` reimplements a table with `div`s when `PlatformTable` exists~~ — RESOLVED (2026-09-21)
+`PlatformTableRow` passes the `<tr>` attributes through, so `GameTable` keeps its drag-and-drop and
+keyboard reordering on a semantic `<table>`; the duplicated grid is gone from `game-table.comp.css`.
 
 ### 59. ~~The board colours and several recurring hex values are not tokens~~ — RESOLVED (2026-09-21)
 *Mostly resolved (2026-09-09):* `--board-light`/`--board-dark` in `globals.css`, used by the board

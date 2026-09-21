@@ -37,6 +37,7 @@ The student's `GameTable` in the study detail still draws its rows with `div`s b
 | Prop | Type | Required | Meaning |
 | --- | --- | --- | --- |
 | `children` | `ReactNode` | yes | `PlatformTableCell` elements. |
+| …`<tr>` attributes | `ComponentPropsWithoutRef<"tr">` | no | Passed through to the `<tr>`; a `className` is added after `platform-table__row`. This is how [`GameTable`](/components/platform/sections/studies/study-detail/game-table) hangs its drag handlers and its dragging state on the rows. |
 
 ### `PlatformTableCell`
 
