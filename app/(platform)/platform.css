@@ -163,6 +163,17 @@ body.platform-theme {
   color: var(--platform-text);
 }
 
+/* Disabled covers both "not allowed yet" and "on its way" (`SubmitButton` while
+   the form is pending): same look, no hover reaction. */
+.platform-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.platform-button:disabled:hover {
+  background: var(--platform-accent);
+}
+
 /* The outline goes in `box-shadow` and not in `border` on purpose: that way
    the secondary button measures exactly the same as the primary, which has no border. */
 .platform-button_variant_secondary {

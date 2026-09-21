@@ -12,6 +12,7 @@ import {
 import type { TeacherClassBlock } from "@/services/teacher-classes/teacher-classes.types";
 import { BlockForm, type BlockFormOptions } from "./block-form.comp";
 import "./class-block-editor.comp.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface ClassBlockEditorProps {
   classId: string;
@@ -45,9 +46,7 @@ function blockSummary(block: TeacherClassBlock): string {
  */
 export function ClassBlockEditor({ classId, blocks, options, initialGameId }: ClassBlockEditorProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [newKind, setNewKind] = useState<ClassBlockKindCode | null>(
-    initialGameId ? CLASS_BLOCK_KIND.GAME_REF : null,
-  );
+  const [newKind, setNewKind] = useState<ClassBlockKindCode | null>(initialGameId ? CLASS_BLOCK_KIND.GAME_REF : null);
 
   const gamePrefill: TeacherClassBlock | undefined = initialGameId
     ? {
@@ -105,9 +104,12 @@ export function ClassBlockEditor({ classId, blocks, options, initialGameId }: Cl
 
                 <form action={deleteClassBlock.bind(null, classId)}>
                   <input type="hidden" name="blockId" value={block.id} />
-                  <button type="submit" className="class-block-editor__control class-block-editor__control_variant_danger">
+                  <SubmitButton
+                    className="class-block-editor__control class-block-editor__control_variant_danger"
+                    pendingLabel="Eliminando…"
+                  >
                     Eliminar
-                  </button>
+                  </SubmitButton>
                 </form>
               </div>
             </div>

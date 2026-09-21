@@ -5,6 +5,7 @@ import type { ChapterView } from "@/services/courses/courses.types";
 import { toggleTrainerChapter } from "@/services/trainer/trainer.actions";
 import { LessonList } from "./lesson-list.comp";
 import "./chapter-detail.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface ChapterDetailSectionProps {
   chapter: ChapterView;
@@ -52,9 +53,9 @@ export function ChapterDetailSection({ chapter }: ChapterDetailSectionProps) {
                 as secondary so as not to compete with it. */}
             {chapter.hasExercises && (
               <form action={toggleAction}>
-                <button type="submit" className="platform-button platform-button_variant_secondary">
+                <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Actualizando…">
                   {chapter.inTrainer ? "Quitar del Move Trainer" : "Agregar al Move Trainer"}
-                </button>
+                </SubmitButton>
               </form>
             )}
           </div>

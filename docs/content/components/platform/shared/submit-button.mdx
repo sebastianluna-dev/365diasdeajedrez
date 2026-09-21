@@ -1,0 +1,54 @@
+---
+description: "The submit button of every write form of the platform: disabled and relabelled while the server action runs, through useFormStatus; the only client code most of those forms carry."
+---
+
+# `SubmitButton`
+
+| | |
+| --- | --- |
+| File | `components/platform/shared/submit-button.comp.tsx` |
+| Kind | Client Component |
+| Stylesheet | none (`.platform-button` from `app/(platform)/platform.css` by default, or the class the caller passes) |
+| Used by | Every write form of `components/platform/sections/**` (studies, courses, trainer, the shell's sign-out, the teacher and staff panels) |
+| Uses | `useFormStatus` from `react-dom` |
+
+## Purpose
+
+A submit button that knows whether its form is on its way. The sections that render the forms are Server Components with plain `<form action={serverAction}>`, so this is the one piece that needs JavaScript in them: without it the button still submits, only without the pending text and the disabled state. It is the generalisation of [`LoginSubmit`](/components/auth/sections/login/login-submit) asked for in `todos.md` T12.
+
+## Props
+
+Everything a `<button>` takes except `type`, plus:
+
+| Prop | Type | Required | Meaning |
+| --- | --- | --- | --- |
+| `children` | `ReactNode` | yes | The label at rest. |
+| `pendingLabel` | `ReactNode` | no · default `"Guardando…"` | The label while the form is pending. Pass the verb of the action ("Creando…", "Borrando…", "Publicando…"); a form with several submit buttons that share one label passes the resting label so only the disabled state changes. |
+| `className` | `string` | no · default `"platform-button"` | Passed through; secondary and danger buttons pass the full class list. |
+| `disabled` | `boolean` | no | Combined with the pending state. |
+
+## Behaviour
+
+`useFormStatus().pending` is true from the submit until the action settles, for the nearest `<form>`. While pending the button is `disabled` (no double submit), carries `aria-busy` and shows `pendingLabel`. A form with several of these — the attendance form, the author list — disables them all together, which is the point. No state of its own.
+
+## Markup & styling
+
+Renders `<button type="submit">` with the class it is given. The disabled look (`opacity`, `cursor: not-allowed`, no hover change) is the platform button's, in `platform.css`; custom classes such as `.chapter-games__remove` style their own disabled state or inherit the default cursor.
+
+## Usage
+
+From `components/platform/sections/studies/studies-list/new-study.comp.tsx`:
+
+```tsx
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+
+<form action={createStudy}>
+  …
+  <SubmitButton pendingLabel="Creando…">Crear estudio</SubmitButton>
+</form>
+```
+
+## Related
+
+- [`LoginSubmit`](/components/auth/sections/login/login-submit), the same idea on the login screen, kept in `auth/` because products do not share components.
+- `IMPROVEMENTS.md` #53, resolved by this component.

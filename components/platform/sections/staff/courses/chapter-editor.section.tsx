@@ -16,6 +16,7 @@ import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffTabs } from "./staff-tabs.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./chapter-editor.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface ChapterEditorSectionProps {
   chapter: ChapterAdminDetail;
@@ -100,10 +101,7 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
         }
       >
         <StaffPanel title="Metadatos del capítulo">
-          <form
-            className="chapter-editor__form"
-            action={updateChapter.bind(null, chapter.courseId, chapter.id)}
-          >
+          <form className="chapter-editor__form" action={updateChapter.bind(null, chapter.courseId, chapter.id)}>
             <FormField label="Nombre">
               <input type="text" name="name" defaultValue={chapter.name} maxLength={160} required />
             </FormField>
@@ -117,17 +115,12 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
             </FormField>
 
             <div className="chapter-editor__submit">
-              <button type="submit" className="platform-button">
-                Guardar
-              </button>
+              <SubmitButton>Guardar</SubmitButton>
             </div>
           </form>
         </StaffPanel>
 
-        <StaffPanel
-          title="Lecciones"
-          meta={`${chapter.lessons.length} · ${withPgn} con PGN`}
-        >
+        <StaffPanel title="Lecciones" meta={`${chapter.lessons.length} · ${withPgn} con PGN`}>
           <SortableList
             items={chapter.lessons.map((lesson) => ({
               id: lesson.id,
@@ -149,10 +142,7 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
             emptyLabel="Este capítulo todavía no tiene lecciones."
           />
 
-          <form
-            className="chapter-editor__inline"
-            action={createLesson.bind(null, chapter.courseId, chapter.id)}
-          >
+          <form className="chapter-editor__inline" action={createLesson.bind(null, chapter.courseId, chapter.id)}>
             <input
               type="text"
               name="name"
@@ -162,9 +152,9 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
               placeholder="Nombre de la lección"
               aria-label="Nombre de la lección"
             />
-            <button type="submit" className="platform-button platform-button_variant_secondary">
+            <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Añadiendo…">
               Añadir lección
-            </button>
+            </SubmitButton>
           </form>
 
           {/* Optional and at most one of each; the button goes away once it is created. */}
@@ -174,9 +164,9 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
                 <form action={createLesson.bind(null, chapter.courseId, chapter.id)}>
                   <input type="hidden" name="role" value={CONTENT_ROLE.INTRO} />
                   <input type="hidden" name="name" value="Introducción" />
-                  <button type="submit" className="chapter-editor__role-button">
+                  <SubmitButton className="chapter-editor__role-button" pendingLabel="Añadiendo…">
                     Añadir introducción
-                  </button>
+                  </SubmitButton>
                 </form>
               )}
 
@@ -184,9 +174,9 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
                 <form action={createLesson.bind(null, chapter.courseId, chapter.id)}>
                   <input type="hidden" name="role" value={CONTENT_ROLE.CLOSING} />
                   <input type="hidden" name="name" value="Cierre" />
-                  <button type="submit" className="chapter-editor__role-button">
+                  <SubmitButton className="chapter-editor__role-button" pendingLabel="Añadiendo…">
                     Añadir cierre
-                  </button>
+                  </SubmitButton>
                 </form>
               )}
             </div>

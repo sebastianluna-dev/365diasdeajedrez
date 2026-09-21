@@ -16,6 +16,7 @@ import { LessonReferenceField } from "./lesson-reference-field.comp";
 import { MovePathPicker } from "./move-path-picker.comp";
 import { PositionSelector } from "./position-selector.comp";
 import "./block-form.comp.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 export interface BlockFormOptions {
   games: ReferenceableGameGroup[];
@@ -94,7 +95,10 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
               <p className="block-form__annotate">
                 {/* The game is annotated on its own screen: there the owner plays
                     on the board and comments from the list. */}
-                <Link href={platformRoutes.gameDetail(annotatableStudyId, gameId)} className="platform-button platform-button_variant_secondary">
+                <Link
+                  href={platformRoutes.gameDetail(annotatableStudyId, gameId)}
+                  className="platform-button platform-button_variant_secondary"
+                >
                   Anotar esta partida
                 </Link>
               </p>
@@ -103,9 +107,7 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
         </>
       )}
 
-      {kind === CLASS_BLOCK_KIND.LESSON_REF && (
-        <LessonReferenceField value={lessonId} onChange={setLessonId} />
-      )}
+      {kind === CLASS_BLOCK_KIND.LESSON_REF && <LessonReferenceField value={lessonId} onChange={setLessonId} />}
 
       {kind === CLASS_BLOCK_KIND.POSITION_REF && (
         <PositionSelector positions={options.positions} value={positionId} onChange={setPositionId} />
@@ -134,9 +136,7 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
       </FormField>
 
       <div className="block-form__actions">
-        <button type="submit" className="platform-button">
-          {submitLabel}
-        </button>
+        <SubmitButton>{submitLabel}</SubmitButton>
         {onCancel && (
           <button type="button" className="platform-button platform-button_variant_secondary" onClick={onCancel}>
             Cancelar

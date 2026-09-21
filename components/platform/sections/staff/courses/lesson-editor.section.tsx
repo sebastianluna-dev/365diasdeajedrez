@@ -15,6 +15,7 @@ import { LessonGamePicker } from "./lesson-game-picker.comp";
 import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./lesson-editor.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface LessonEditorSectionProps {
   lesson: LessonAdminDetail;
@@ -82,12 +83,7 @@ export function LessonEditorSection({
                   them and saving here would erase what is there. */}
               <div className="lesson-editor__stack">
                 <label className="lesson-editor__check">
-                  <input
-                    type="checkbox"
-                    name="isPriority"
-                    form={METADATA_FORM_ID}
-                    defaultChecked={lesson.isPriority}
-                  />
+                  <input type="checkbox" name="isPriority" form={METADATA_FORM_ID} defaultChecked={lesson.isPriority} />
                   <span>
                     Lección imprescindible del curso
                     <span className="lesson-editor__check-hint">
@@ -152,9 +148,9 @@ export function LessonEditorSection({
                   action={deleteLesson.bind(null, lesson.courseId, lesson.chapterId)}
                 >
                   <input type="hidden" name="lessonId" value={lesson.id} />
-                  <button type="submit" className="lesson-editor__delete">
+                  <SubmitButton className="lesson-editor__delete" pendingLabel="Eliminando…">
                     Eliminar lección
-                  </button>
+                  </SubmitButton>
                 </form>
               )}
             </StaffPanel>
@@ -199,12 +195,7 @@ export function LessonEditorSection({
               </FormField>
 
               <FormField label="Duración estimada (minutos, opcional)">
-                <input
-                  type="number"
-                  name="estimatedDuration"
-                  min={0}
-                  defaultValue={lesson.estimatedDuration ?? ""}
-                />
+                <input type="number" name="estimatedDuration" min={0} defaultValue={lesson.estimatedDuration ?? ""} />
               </FormField>
             </div>
 
@@ -223,9 +214,7 @@ export function LessonEditorSection({
             </FormFieldset>
 
             <div className="lesson-editor__submit">
-              <button type="submit" className="platform-button">
-                Guardar metadatos
-              </button>
+              <SubmitButton>Guardar metadatos</SubmitButton>
             </div>
           </form>
         </StaffPanel>

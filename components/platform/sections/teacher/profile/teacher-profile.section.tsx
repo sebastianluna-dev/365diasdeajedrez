@@ -5,6 +5,7 @@ import { COMMON_TIMEZONES } from "@/constants/platform/timezones.const";
 import { updateTeacherProfile } from "@/services/teacher/teacher.actions";
 import type { TeacherProfile } from "@/services/teacher/teacher.types";
 import "./teacher-profile.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface TeacherProfileSectionProps {
   profile: TeacherProfile;
@@ -53,9 +54,7 @@ export function TeacherProfileSection({ profile, errorCode }: TeacherProfileSect
         <textarea name="bio" defaultValue={profile.bio ?? ""} maxLength={1000} />
       </FormField>
 
-      <button type="submit" className="platform-button">
-        Guardar cambios
-      </button>
+      <SubmitButton>Guardar cambios</SubmitButton>
     </form>
   );
 }

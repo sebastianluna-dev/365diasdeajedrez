@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import "./sortable-list.comp.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 export interface SortableItem {
   id: string;
@@ -55,14 +56,7 @@ function moved<T>(items: T[], from: number, to: number): T[] {
  * and down arrows it moves the item, which is the only way to reorder with
  * the keyboard — dragging has none.
  */
-export function SortableList({
-  items,
-  onReorder,
-  deleteAction,
-  deleteFieldName,
-  noun,
-  emptyLabel,
-}: SortableListProps) {
+export function SortableList({ items, onReorder, deleteAction, deleteFieldName, noun, emptyLabel }: SortableListProps) {
   const [rows, setRows] = useState(items);
   const [dragging, setDragging] = useState<number | null>(null);
   const [, startTransition] = useTransition();
@@ -173,9 +167,12 @@ export function SortableList({
             {deleteAction && deleteFieldName && row.canDelete && (
               <form action={deleteAction}>
                 <input type="hidden" name={deleteFieldName} value={row.id} />
-                <button type="submit" className="sortable-list__control sortable-list__control_variant_danger">
+                <SubmitButton
+                  className="sortable-list__control sortable-list__control_variant_danger"
+                  pendingLabel="Eliminando…"
+                >
                   Eliminar
-                </button>
+                </SubmitButton>
               </form>
             )}
 

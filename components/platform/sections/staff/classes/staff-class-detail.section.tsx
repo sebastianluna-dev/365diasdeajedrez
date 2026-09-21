@@ -9,6 +9,7 @@ import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const"
 import { cancelClassAsStaff, setRecordingUrl } from "@/services/staff-classes/staff-classes.actions";
 import type { StaffClassDetail } from "@/services/staff-classes/staff-classes.types";
 import "./staff-class-detail.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface StaffClassDetailSectionProps {
   classDetail: StaffClassDetail;
@@ -68,9 +69,7 @@ export function StaffClassDetailSection({ classDetail, errorCode }: StaffClassDe
           <FormField label="Grabación (URL)">
             <input type="url" name="recordingUrl" defaultValue={classDetail.recordingUrl ?? ""} maxLength={500} />
           </FormField>
-          <button type="submit" className="platform-button platform-button_variant_secondary">
-            Guardar grabación
-          </button>
+          <SubmitButton className="platform-button platform-button_variant_secondary">Guardar grabación</SubmitButton>
         </form>
 
         {!isCancelled && (
@@ -78,9 +77,9 @@ export function StaffClassDetailSection({ classDetail, errorCode }: StaffClassDe
             <FormField label="Cancelar la clase — motivo" hint="Queda anotado en el resumen con marca de soporte.">
               <input type="text" name="note" maxLength={300} required />
             </FormField>
-            <button type="submit" className="platform-button platform-button_variant_secondary">
+            <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Cancelando…">
               Cancelar clase
-            </button>
+            </SubmitButton>
           </form>
         )}
       </section>

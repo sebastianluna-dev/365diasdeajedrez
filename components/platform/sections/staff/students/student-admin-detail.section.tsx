@@ -8,6 +8,7 @@ import type { StaffStudentDetail } from "@/services/staff-students/staff-student
 import { AssignmentPanel } from "@/components/platform/sections/staff/assignments/assignment-panel.comp";
 import { ResetPasswordForm } from "./reset-password-form.comp";
 import "./student-admin-detail.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface StudentAdminDetailSectionProps {
   student: StaffStudentDetail;
@@ -39,9 +40,7 @@ export function StudentAdminDetailSection({ student, teachers, errorCode }: Stud
             <input type="email" name="email" defaultValue={student.email} maxLength={254} required />
           </FormField>
 
-          <button type="submit" className="platform-button">
-            Guardar
-          </button>
+          <SubmitButton>Guardar</SubmitButton>
         </form>
 
         <dl className="student-admin__facts">

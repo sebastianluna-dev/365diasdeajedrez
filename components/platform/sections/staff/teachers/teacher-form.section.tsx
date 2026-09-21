@@ -5,6 +5,7 @@ import { COMMON_TIMEZONES } from "@/constants/platform/timezones.const";
 import { createTeacher } from "@/services/staff-teachers/staff-teachers.actions";
 import type { LinkableUser } from "@/services/staff-teachers/staff-teachers.types";
 import "./teacher-form.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface TeacherFormSectionProps {
   linkableUsers: LinkableUser[];
@@ -60,9 +61,7 @@ export function TeacherFormSection({ linkableUsers, errorCode }: TeacherFormSect
           </select>
         </FormField>
 
-        <button type="submit" className="platform-button">
-          Vincular como profesor
-        </button>
+        <SubmitButton pendingLabel="Vinculando…">Vincular como profesor</SubmitButton>
       </form>
 
       <form className="teacher-form__card platform-card" action={createTeacher}>
@@ -102,9 +101,7 @@ export function TeacherFormSection({ linkableUsers, errorCode }: TeacherFormSect
           <textarea name="bio" maxLength={1000} />
         </FormField>
 
-        <button type="submit" className="platform-button">
-          Crear profesor
-        </button>
+        <SubmitButton pendingLabel="Creando…">Crear profesor</SubmitButton>
       </form>
     </div>
   );

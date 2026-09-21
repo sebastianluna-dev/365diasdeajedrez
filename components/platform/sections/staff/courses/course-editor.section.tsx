@@ -20,6 +20,7 @@ import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffTabs } from "./staff-tabs.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./course-editor.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 /** Ties the cover, which lives in the column next door, to the form that saves. */
 const METADATA_FORM_ID = "course-metadata";
@@ -108,10 +109,7 @@ export function CourseEditorSection({
               />
             </StaffPanel>
 
-            <StaffPanel
-              title="Autores"
-              meta={`${course.authors.length}`}
-            >
+            <StaffPanel title="Autores" meta={`${course.authors.length}`}>
               {course.authors.length > 0 ? (
                 <ul className="course-editor__list">
                   {course.authors.map((author, index) => (
@@ -149,12 +147,12 @@ export function CourseEditorSection({
                         <form action={manageCourseAuthors.bind(null, course.id)}>
                           <input type="hidden" name="operation" value="remove" />
                           <input type="hidden" name="authorId" value={author.authorId} />
-                          <button
-                            type="submit"
+                          <SubmitButton
                             className="course-editor__control course-editor__control_variant_danger"
+                            pendingLabel="Quitando…"
                           >
                             Quitar
-                          </button>
+                          </SubmitButton>
                         </form>
                       </div>
                     </li>
@@ -191,9 +189,9 @@ export function CourseEditorSection({
                     </select>
                   </FormField>
 
-                  <button type="submit" className="platform-button platform-button_variant_secondary">
+                  <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Añadiendo…">
                     Añadir
-                  </button>
+                  </SubmitButton>
                 </form>
               )}
             </StaffPanel>
@@ -226,17 +224,20 @@ export function CourseEditorSection({
               <div className="course-editor__actions">
                 {course.statusCode !== COURSE_STATUS.PUBLISHED && (
                   <form action={publishCourse.bind(null, course.id)}>
-                    <button type="submit" className="platform-button" disabled={!course.canPublish}>
+                    <SubmitButton disabled={!course.canPublish} pendingLabel="Publicando…">
                       Publicar
-                    </button>
+                    </SubmitButton>
                   </form>
                 )}
 
                 {course.statusCode !== COURSE_STATUS.ARCHIVED && (
                   <form action={archiveCourse.bind(null, course.id)}>
-                    <button type="submit" className="platform-button platform-button_variant_secondary">
+                    <SubmitButton
+                      className="platform-button platform-button_variant_secondary"
+                      pendingLabel="Archivando…"
+                    >
                       Archivar curso
-                    </button>
+                    </SubmitButton>
                   </form>
                 )}
               </div>
@@ -276,7 +277,6 @@ export function CourseEditorSection({
               </FormField>
             </div>
 
-
             <FormField label="Descripción (opcional)">
               <textarea name="description" defaultValue={course.description ?? ""} maxLength={1000} />
             </FormField>
@@ -296,17 +296,12 @@ export function CourseEditorSection({
             </FormFieldset>
 
             <div className="course-editor__submit">
-              <button type="submit" className="platform-button">
-                Guardar metadatos
-              </button>
+              <SubmitButton>Guardar metadatos</SubmitButton>
             </div>
           </form>
         </StaffPanel>
 
-        <StaffPanel
-          title="Capítulos"
-          meta={`${course.chapters.length} · ${lessonCount} lecciones`}
-        >
+        <StaffPanel title="Capítulos" meta={`${course.chapters.length} · ${lessonCount} lecciones`}>
           {/* Draggable: in a five-chapter course the arrows were enough, but moving
               the fifth to the first place was four round trips to the server. The
               handle also responds to the keyboard arrows, which is the only way to
@@ -339,9 +334,9 @@ export function CourseEditorSection({
               placeholder="Nombre del nuevo capítulo"
               aria-label="Nombre del nuevo capítulo"
             />
-            <button type="submit" className="platform-button platform-button_variant_secondary">
+            <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Añadiendo…">
               Añadir capítulo
-            </button>
+            </SubmitButton>
           </form>
 
           {/* Both are optional and there is at most one of each, so the button
@@ -353,9 +348,9 @@ export function CourseEditorSection({
                 <form action={createChapter.bind(null, course.id)}>
                   <input type="hidden" name="role" value={CONTENT_ROLE.INTRO} />
                   <input type="hidden" name="name" value="Introducción" />
-                  <button type="submit" className="course-editor__role-button">
+                  <SubmitButton className="course-editor__role-button" pendingLabel="Añadiendo…">
                     Añadir introducción
-                  </button>
+                  </SubmitButton>
                 </form>
               )}
 
@@ -363,9 +358,9 @@ export function CourseEditorSection({
                 <form action={createChapter.bind(null, course.id)}>
                   <input type="hidden" name="role" value={CONTENT_ROLE.CLOSING} />
                   <input type="hidden" name="name" value="Cierre" />
-                  <button type="submit" className="course-editor__role-button">
+                  <SubmitButton className="course-editor__role-button" pendingLabel="Añadiendo…">
                     Añadir cierre
-                  </button>
+                  </SubmitButton>
                 </form>
               )}
             </div>
