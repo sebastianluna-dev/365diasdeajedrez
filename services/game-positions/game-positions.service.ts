@@ -66,22 +66,3 @@ export async function indexGamePositions(
 
   return { positionCount: positions.length, warnings };
 }
-
-/**
- * Reindexes an already stored game, reading its PGN from the database. For the
- * backfill script and for when an existing game's PGN is edited.
- */
-export async function reindexGame(
-  db: PrismaClient,
-  gameId: string,
-): Promise<IndexGamePositionsResult | null> {
-  const game = await db.game.findUnique({
-    where: { id: gameId },
-    select: { id: true, databaseId: true, pgn: true },
-  });
-  if (!game) return null;
-
-  return db.$transaction((tx) =>
-    indexGamePositions(tx, { gameId: game.id, databaseId: game.databaseId, pgn: game.pgn }),
-  );
-}

@@ -8,7 +8,7 @@ export interface ClockTimeControl {
   inc: number;
 }
 
-export const CLOCK_TIME_CONTROLS: ClockTimeControl[] = [
+const CLOCK_TIME_CONTROLS: ClockTimeControl[] = [
   { label: "3 + 2", base: 180, inc: 2 },
   { label: "5 + 0", base: 300, inc: 0 },
   { label: "10 + 0", base: 600, inc: 0 },

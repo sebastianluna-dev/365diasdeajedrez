@@ -6,7 +6,7 @@ import { requireTeacher } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { gameViewInclude, studyDetailInclude, studySummaryInclude } from "@/services/studies/studies.mapper";
-import type { GameView, StudyDetail, StudySummary } from "@/services/studies/studies.types";
+import type { GameView, StudyDetail } from "@/services/studies/studies.types";
 import { mapStudentGameView, mapStudentStudyDetail, mapStudentStudySummary } from "./teacher-students.mapper";
 import type {
   AssignedStudentDetail,
@@ -222,17 +222,6 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
     studies: studyRows.map((row) => mapStudentStudySummary(studentId, row)),
     activity,
   };
-}
-
-export async function getStudentStudies(studentId: string): Promise<StudySummary[]> {
-  const { teacher } = await requireTeacher();
-  const rows = await getPlatformDb().gameDatabase.findMany({
-    // The active assignment is chained into the where: without it there are no rows.
-    where: { userId: studentId, user: { studentAssignments: { some: { teacherId: teacher.id, endedAt: null } } } },
-    include: studySummaryInclude,
-    orderBy: [{ isDefault: "desc" }, { updatedAt: "desc" }],
-  });
-  return rows.map((row) => mapStudentStudySummary(studentId, row));
 }
 
 export async function getStudentStudy(studentId: string, studyId: string): Promise<StudyDetail | null> {

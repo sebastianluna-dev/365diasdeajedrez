@@ -41,7 +41,7 @@ export const getTeacherContext = cache(async (): Promise<TeacherContext | null> 
   return { user: { id, email, displayName, createdAt }, teacher: session.teacher };
 });
 
-export const getStaffContext = cache(async (): Promise<StaffContext | null> => {
+const getStaffContext = cache(async (): Promise<StaffContext | null> => {
   const session = await getSessionContext();
   if (!session?.staff) return null;
 

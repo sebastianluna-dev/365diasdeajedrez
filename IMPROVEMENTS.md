@@ -169,16 +169,13 @@ login and the two assignment actions (`assignStudent`, `endAssignment`); `withEr
 `?error=` respecting the existing query in the `fail()` calls of staff and teacher. The third action
 with `returnTo`, `createTeacherPosition`, was orphaned and was deleted (entry 45).
 
-### 45. Exports without a single consumer, three of them server actions — [Quality / Security]
+### 45. ~~Exports without a single consumer, three of them server actions~~ — RESOLVED (2026-09-21)
 *Partially resolved (2026-09-09):* the three write actions without an interface deleted
 (`updateGamePgn`, `refreezeExercise`, `createTeacherPosition`) along with the imports only they used.
 
-**What is left:** the loose unused symbols — `getStudentStudies`, `reindexGame`,
-`formatOptionalDate`, `isNumericId`/`NUMERIC_ID_DIGITS`, `CLOCK_TIME_CONTROLS`,
-`STUDENT_KINDS`/`TEACHER_KINDS`, `STAFF_ERROR_PARAM`, `STAFF_ACCOUNT_MESSAGES`,
-`TEACHER_ERROR_PARAM`, and the superfluous `export` of `getStaffContext` and
-`PLATFORM_UPLOAD_FOLDER` — (a mechanical task, see `todos.md`). `noUnusedLocals` (entry 62) prevents
-the within-file variant.
+**Resolved (2026-09-21):** the loose symbols are gone or module-private (T15 in `todos.md`).
+`noUnusedLocals` (entry 62) prevents the within-file variant; cross-file dead exports still need an
+occasional `grep -rw`, there is no tool wired for it.
 
 ### 46. ~~The trainer serves exercises from unpublished courses~~ — RESOLVED (2026-09-09)
 `services/shared/published-content.ts` defines `publishedCourseWhere`/`publishedChapterWhere`/

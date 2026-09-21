@@ -3,8 +3,6 @@
 // functions. The actions redirect with `?error=<code>` and the page translates
 // the code with this map (the login and studies pattern).
 
-export const TEACHER_ERROR_PARAM = "error";
-
 export const TEACHER_ERROR_MESSAGES: Record<string, string> = {
   invalid: "Revisa los datos: falta algún campo obligatorio o tiene un formato incorrecto.",
   throttled: "Has hecho demasiados cambios seguidos. Espera un momento y vuelve a intentarlo.",

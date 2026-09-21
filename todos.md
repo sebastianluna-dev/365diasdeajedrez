@@ -139,7 +139,10 @@ Substitute in `components/**` and `app/**`: `#b4a99d` → `var(--color-muted-on-
 the platform, `#8a8175` as text → `var(--platform-text-muted)`. Exact matches only; do not touch
 `rgba(...)`.
 
-### T15 — Unused exports · [Quality] (IMPROVEMENTS #45)
+### T15 — Unused exports · [Quality] (IMPROVEMENTS #45) ✅ 2026-09-21
+Deleted `getStudentStudies`, `reindexGame`, `formatOptionalDate`, `isNumericId` (and its test), `STAFF_ERROR_PARAM`, `STAFF_ACCOUNT_MESSAGES`, `TEACHER_ERROR_PARAM`; `NUMERIC_ID_DIGITS`, `CLOCK_TIME_CONTROLS`, `STUDENT_KINDS`/`TEACHER_KINDS` and `getStaffContext` are module-private now.
+
+Original task:
 Delete `getStudentStudies` (`teacher-students.service.ts`), `reindexGame`
 (`game-positions.service.ts`), `formatOptionalDate` (`teacher-students.mapper.ts`), `isNumericId`
 and `NUMERIC_ID_DIGITS` (`lib/numeric-id.ts`, along with its test), `CLOCK_TIME_CONTROLS` as an
