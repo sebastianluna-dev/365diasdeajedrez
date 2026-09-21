@@ -1,6 +1,9 @@
 import { PriorityFilter } from "@/components/platform/shared/priority-filter.comp";
 import Link from "next/link";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { ProgressIndicator } from "@/components/platform/shared/progress-indicator.comp";
+import { studentErrorMessage } from "@/constants/platform/student-messages.const";
+import { platformRoutes } from "@/lib/platform-routes";
 import type { ChapterView } from "@/services/courses/courses.types";
 import { toggleTrainerChapter } from "@/services/trainer/trainer.actions";
 import { LessonList } from "./lesson-list.comp";
@@ -9,10 +12,14 @@ import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface ChapterDetailSectionProps {
   chapter: ChapterView;
+  /** What the trainer toggle or the essential-lessons switch bounced back with. */
+  errorCode?: string;
 }
 
-export function ChapterDetailSection({ chapter }: ChapterDetailSectionProps) {
+export function ChapterDetailSection({ chapter, errorCode }: ChapterDetailSectionProps) {
   const toggleAction = toggleTrainerChapter.bind(null, chapter.id, !chapter.inTrainer);
+  const chapterHref = platformRoutes.chapterDetail(chapter.courseId, chapter.order);
+  const errorMessage = studentErrorMessage(errorCode);
   const percent = chapter.totalLessons === 0 ? 0 : (chapter.completedLessons / chapter.totalLessons) * 100;
 
   return (
@@ -53,13 +60,19 @@ export function ChapterDetailSection({ chapter }: ChapterDetailSectionProps) {
                 as secondary so as not to compete with it. */}
             {chapter.hasExercises && (
               <form action={toggleAction}>
-                <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Actualizando…">
+                <input type="hidden" name="returnTo" value={chapterHref} />
+                <SubmitButton
+                  className="platform-button platform-button_variant_secondary"
+                  pendingLabel="Actualizando…"
+                >
                   {chapter.inTrainer ? "Quitar del Move Trainer" : "Agregar al Move Trainer"}
                 </SubmitButton>
               </form>
             )}
           </div>
         </div>
+
+        {errorMessage && <PlatformNotice message={errorMessage} />}
       </header>
 
       <div className="chapter-detail__lessons-head">
@@ -68,6 +81,7 @@ export function ChapterDetailSection({ chapter }: ChapterDetailSectionProps) {
           courseId={chapter.courseId}
           enabled={chapter.onlyPriorityLessons}
           hiddenLessons={chapter.hiddenLessons}
+          returnTo={chapterHref}
         />
       </div>
 

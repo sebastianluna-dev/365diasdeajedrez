@@ -26,16 +26,18 @@ Everything here requires a session; the pages live in `app/(platform)` and the l
 - `getChapterView(courseId, chapterOrder)` — lessons of a chapter (by `order` number), `hasExercises`, `inTrainer`.
 - `getLessonView(lessonId)` — the lesson: name, description, PGN (`lessonPgnOf`: linked game or own `pgn`), orientation, position inside the chapter, previous/next, trainable flag.
 
-Actions (`courses.actions.ts`): `touchLesson` (marks course/chapter/lesson in progress and updates `lastLessonId`), `completeLesson` (completes lesson, cascades chapter and course completion, records `LESSON_COMPLETED`/`COURSE_COMPLETED` activity with the lesson's topics), `setOnlyPriorityLessons`. All three chain `publishedLessonWhere`/`publishedCourseWhere`.
+Actions (`courses.actions.ts`): `touchLesson` (marks course/chapter/lesson in progress and updates `lastLessonId`), `completeLesson` (completes lesson, cascades chapter and course completion, records `LESSON_COMPLETED`/`COURSE_COMPLETED` activity with the lesson's topics), `setOnlyPriorityLessons` (the form carries `returnTo`, the course or chapter page it sits on). All three chain `publishedLessonWhere`/`publishedCourseWhere`.
+
+**When an action refuses.** The student's forms follow the panels' pattern: a failure a person can produce (a throttle, an empty PGN, a goal outside the list) redirects back with `?error=<code>`, the page reads `searchParams.error` and translates it with `STUDENT_ERROR_MESSAGES` (`constants/platform/student-messages.const.ts`) into a `PlatformNotice`. What only a forged request produces (a foreign study, an unpublished lesson) still comes out silently. `touchLesson` never reports: it fires on open and a lost touch costs nothing.
 
 The lesson page renders `GameViewer` in `moveList="flow"` mode (lessons are read like text), with `LessonTracker` calling `touchLesson` on open and the completion button calling `completeLesson`.
 
 ## Move Trainer — `/entrenador`
 
-- **Home** (`getTrainerData()`): chapters with exercises, split into "my chapters" (`UserTrainerChapter`) and available ones; `toggleTrainerChapter` adds or removes.
+- **Home** (`getTrainerData()`): chapters with exercises, split into "my chapters" (`UserTrainerChapter`) and available ones; `toggleTrainerChapter` adds or removes (its form carries `returnTo`: the trainer's home or the chapter page).
 - **Session** (`getTrainerSession({ lessonId | chapterId | none })`): exercises of a lesson, a chapter, or all chapters added by the student, always filtered by published course. Each `TrainerExercise` carries the frozen `startFen`, `lineSans`, `userColor` (the colour to move in `startFen`; `Lesson.trainingColorId` lets black repertoires start with white's move played), `modeCode` and `isStale`.
 - **Play** (`components/platform/sections/trainer/trainer-session.comp.tsx`, client): the student plays their plies on `ChessBoard`; the opponent replies after 450 ms; SAN comparison ignores `+ # ! ?`; mistakes are counted; a summary closes the session.
-- **Record** (`recordTrainingAttempt` in `trainer.actions.ts`): validates the exercise against the database, clamps `mistakes` (≤ 999) and `durationMs` (≤ 2 h), stores `TrainingAttempt` and `TrainingMistake` rows (hashed positions), updates `UserLessonTraining` with `applyReview()` and records `EXERCISE_PASSED` activity when passed.
+- **Record** (`recordTrainingAttempt` in `trainer.actions.ts`): validates the exercise against the database, clamps `mistakes` (≤ 999) and `durationMs` (≤ 2 h), stores `TrainingAttempt` and `TrainingMistake` rows (hashed positions), updates `UserLessonTraining` with `applyReview()` and records `EXERCISE_PASSED` activity when passed. It returns whether the attempt was stored; the session counts the ones that were not and the summary says so.
 
 Spaced repetition (`lib/training/review-schedule.ts`): intervals `[0, 1, 3, 7, 21, 60]` days; only a **perfect** attempt (no mistakes, no hints) climbs one step; any failure returns to step 0 (due today). `isDueForReview` and `accuracyPercent` are pure and tested.
 
@@ -67,6 +69,7 @@ Shared by students and teachers. The client board sends a FEN to `searchPosition
 
 - `totalGames` (distinct games that reached the position), `nextMoves` (continuations by UCI with counts and percentages), and up to 20 games, newest first, each with its **origin** (`services/shared/game-origin.ts`: student study, course, teacher/editor), whether it was seen in class, and an `href` if the viewer can open it.
 - Visibility comes from `getVisibleGamesWhere()`; teachers additionally see games of actively assigned students. Filters by origin exist; the signature leaves room for player, colour, Elo and date.
+- A search refused by the rate limit comes back with `throttled: true` and empty figures; the explorer shows a notice instead of "0 partidas" and does not cache that answer.
 
 ## Activity and statistics
 

@@ -24,6 +24,7 @@ Neither figure is stored. The streak is counted backwards from the activity log 
 | Prop | Type | Required | Meaning |
 | --- | --- | --- | --- |
 | `goal` | `StudyGoal` | yes | `{ streakDays, minutesToday, goalMinutes, percent }`, from `getStudyGoal()` in the page. |
+| `errorCode` | `string` | no | What `updateDailyGoal` bounced back with in `?error=` (`goal`, `throttled`). Renders a `PlatformNotice` inside the editor and opens the `<details>` so the form is in view. |
 
 ## Behaviour
 

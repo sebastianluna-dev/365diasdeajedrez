@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { NewStudy } from "@/components/platform/sections/studies/studies-list/new-study.comp";
 import { StudiesListSection } from "@/components/platform/sections/studies/studies-list/studies-list.section";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getStudyKinds } from "@/services/studies/studies.service";
 import "./studies-page.css";
@@ -9,12 +11,18 @@ export const metadata: Metadata = {
   title: "Mis estudios",
 };
 
-export default async function StudiesPage() {
+interface StudiesPageProps {
+  /** What `createStudy` bounced back with. */
+  searchParams: Promise<{ error?: string }>;
+}
+
+export default async function StudiesPage({ searchParams }: StudiesPageProps) {
   // Border of the private area, and it has to be the FIRST await: even though
   // `getStudyKinds` now checks whether the caller is a teacher — to offer them
   // "Colección" — resolving a role is not checking a session.
   await getCurrentUser();
-  const kinds = await getStudyKinds();
+  const [kinds, { error }] = await Promise.all([getStudyKinds(), searchParams]);
+  const errorMessage = studentErrorMessage(error);
 
   return (
     <div className="platform-page studies-page">
@@ -28,6 +36,8 @@ export default async function StudiesPage() {
 
         <NewStudy kinds={kinds} />
       </header>
+
+      {errorMessage && <PlatformNotice message={errorMessage} />}
 
       <StudiesListSection />
     </div>

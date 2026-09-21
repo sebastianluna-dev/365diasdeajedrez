@@ -11,9 +11,11 @@ export interface ExerciseResult {
 
 interface SessionSummaryProps {
   results: ExerciseResult[];
+  /** Attempts the server did not store (a throttle, a course unpublished meanwhile). */
+  unsavedCount?: number;
 }
 
-export function SessionSummary({ results }: SessionSummaryProps) {
+export function SessionSummary({ results, unsavedCount = 0 }: SessionSummaryProps) {
   const passedCount = results.filter((result) => result.passed).length;
   const totalMistakes = results.reduce((sum, result) => sum + result.mistakes, 0);
 
@@ -26,12 +28,19 @@ export function SessionSummary({ results }: SessionSummaryProps) {
         {totalMistakes === 1 ? "error" : "errores"} en total
       </p>
 
+      {unsavedCount > 0 && (
+        <p className="session-summary__unsaved" role="status">
+          {unsavedCount === 1
+            ? "Un intento no se guardó en tu historial."
+            : `${unsavedCount} intentos no se guardaron en tu historial.`}{" "}
+          Si entrenas muy deprisa, espera un momento entre sesiones.
+        </p>
+      )}
+
       <ul className="session-summary__list">
         {results.map((result, position) => (
           <li key={`${result.exerciseId}-${position}`} className="session-summary__item">
-            <span
-              className={`session-summary__result session-summary__result_${result.passed ? "passed" : "failed"}`}
-            >
+            <span className={`session-summary__result session-summary__result_${result.passed ? "passed" : "failed"}`}>
               {result.passed ? "✓" : "✗"}
             </span>
             <span className="session-summary__lesson">{result.lessonName}</span>

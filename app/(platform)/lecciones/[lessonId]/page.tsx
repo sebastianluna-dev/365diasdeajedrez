@@ -7,6 +7,7 @@ import "./lesson-page.css";
 
 interface LessonPageProps {
   params: Promise<{ lessonId: string }>;
+  searchParams: Promise<{ error?: string }>;
 }
 
 export async function generateMetadata({ params }: LessonPageProps): Promise<Metadata> {
@@ -15,9 +16,9 @@ export async function generateMetadata({ params }: LessonPageProps): Promise<Met
   return lesson ? { title: lesson.name } : {};
 }
 
-export default async function LessonPage({ params }: LessonPageProps) {
+export default async function LessonPage({ params, searchParams }: LessonPageProps) {
   const { lessonId } = await params;
-  const lesson = await getLessonView(lessonId);
+  const [lesson, { error }] = await Promise.all([getLessonView(lessonId), searchParams]);
   if (!lesson) notFound();
 
   return (
@@ -29,7 +30,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
         chapterName={lesson.chapterName}
         lessonName={lesson.name}
       />
-      <LessonViewSection lesson={lesson} />
+      <LessonViewSection lesson={lesson} errorCode={error} />
     </div>
   );
 }

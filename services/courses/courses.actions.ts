@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { ACTIVITY_TYPE, SUBJECT_TYPE } from "@/constants/platform/activity-codes.const";
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { BOARD_ORIENTATION, PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
@@ -9,6 +10,8 @@ import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { publishedLessonWhere } from "@/services/shared/published-content";
+import { readText } from "@/services/shared/form-data";
+import { safeReturnTo, withErrorParam } from "@/services/shared/safe-return-to";
 import { recordUserActivity } from "@/services/shared/user-activity.service";
 
 // Server actions are reachable by direct POST: the user is ALWAYS resolved in
@@ -114,7 +117,9 @@ export async function touchLesson(lessonId: string): Promise<void> {
 export async function completeLesson(lessonId: string): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!(await allowAction(`${user.id}:complete-lesson`, 60, 60_000))) return;
+  if (!(await allowAction(`${user.id}:complete-lesson`, 60, 60_000))) {
+    redirect(withErrorParam(platformRoutes.lessonDetail(lessonId), "throttled"));
+  }
 
   const lesson = await getLessonContext(lessonId);
   if (!lesson) return;
@@ -213,12 +218,15 @@ export async function completeLesson(lessonId: string): Promise<void> {
  *
  * The value arrives as a bound argument and not through the form on purpose:
  * `readBoolean` works by presence, so a checkbox cannot transmit "false" and
- * switching the filter off would be impossible.
+ * switching the filter off would be impossible. The form only carries
+ * `returnTo`: the switch lives on the course page and on the chapter page, and
+ * a failure has to be reported on the one that was pressed.
  */
-export async function setOnlyPriorityLessons(courseId: string, enabled: boolean): Promise<void> {
+export async function setOnlyPriorityLessons(courseId: string, enabled: boolean, formData: FormData): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!(await allowAction(`${user.id}:course-settings`, 30, 60_000))) return;
+  const returnTo = safeReturnTo(readText(formData, "returnTo"), platformRoutes.courseDetail(courseId));
+  if (!(await allowAction(`${user.id}:course-settings`, 30, 60_000))) redirect(withErrorParam(returnTo, "throttled"));
 
   // Only published courses: a direct POST must not be able to seed settings of
   // draft courses nor of made-up ids.

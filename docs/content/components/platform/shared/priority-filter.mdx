@@ -27,6 +27,7 @@ Since it is a per-course setting, the same switch appears on the course page and
 | `courseId` | `string` | yes | Which course's preference is toggled. |
 | `enabled` | `boolean` | yes | Whether it is on right now; decides the pressed state and the bound value. |
 | `hiddenLessons` | `number` | yes | How many lessons the filter hides. Stated next to the switch when it is on, because an unexplained absence is unsettling. |
+| `returnTo` | `string` | yes | The page the switch sits on (course or chapter). Travels as a hidden `returnTo` field so a throttled action bounces back to it with `?error=throttled`. |
 
 ## Behaviour
 

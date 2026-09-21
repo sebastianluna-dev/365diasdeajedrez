@@ -215,9 +215,15 @@ sweeps of `RateLimit` and `Session`, the replayer's `warnings` when indexing pos
 unreadable password hash. The platform's error boundary shows the `digest` ("Código del error") so
 it can be cross-referenced with the log.
 
-**What is left:** the actions that `return` silently on a throttle or a validation failure
-(`study-goal`, `trainer`, `courses`, `studies`, `game-explorer`) still do not tell the user; it
-would be worth returning a visible state with the panels' `?error=<code>` pattern.
+**(b) Silent actions — RESOLVED (2026-09-21).** The student's actions now report what a person can
+provoke: `updateDailyGoal`, `completeLesson`, `setOnlyPriorityLessons`, `toggleTrainerChapter`,
+`createStudy`, `updateStudy`, `importPgnGames` and `createStudyGame` redirect with `?error=<code>`
+(`throttled`, `invalid`, `goal`, `pgnEmpty`, `pgnTooLong`, `fen`) and the pages translate the code
+with `STUDENT_ERROR_MESSAGES` into a `PlatformNotice`; the two actions that live on two pages carry a
+`returnTo` field (checked by `safeReturnTo`). `recordTrainingAttempt` returns whether it stored the
+attempt and the session summary counts the ones it did not; `searchPosition` returns `throttled: true`
+and the explorer says so instead of showing zero games. What only a forged request produces (a foreign
+study, an unpublished lesson) still comes out silently, on purpose.
 
 ### 51. ~~The Cloudinary upload signature bounds neither format nor size~~ — RESOLVED (2026-09-09)
 `signPlatformUpload` also signs `allowed_formats` (`IMAGE_ALLOWED_FORMATS`, the same four formats as

@@ -30,6 +30,8 @@ export interface ExplorerGame {
 }
 
 export interface PositionSearchResult {
+  /** The search was refused by the rate limit: the figures below are empty, not zero. */
+  throttled?: boolean;
   /** Visible games that went through the position. It can exceed `games`. */
   totalGames: number;
   nextMoves: ExplorerNextMove[];

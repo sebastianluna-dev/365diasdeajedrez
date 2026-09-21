@@ -9,10 +9,15 @@ export const metadata: Metadata = {
   title: "Mis cursos",
 };
 
-export default async function CoursesPage() {
+interface CoursesPageProps {
+  /** What the goal form bounces back with. */
+  searchParams: Promise<{ error?: string }>;
+}
+
+export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   // Border of the private area: both go through getCurrentUser, so this first
   // await acts as the session check as well as fetching the data.
-  const [courses, goal] = await Promise.all([getUserCourses(), getStudyGoal()]);
+  const [courses, goal, { error }] = await Promise.all([getUserCourses(), getStudyGoal(), searchParams]);
 
   // The summary comes out of the same list: no second query is needed to count
   // what is already in memory.
@@ -45,7 +50,7 @@ export default async function CoursesPage() {
 
       <div className="courses-page__layout">
         <CoursesListSection courses={courses} />
-        <StudyGoalAside goal={goal} />
+        <StudyGoalAside goal={goal} errorCode={error} />
       </div>
     </div>
   );

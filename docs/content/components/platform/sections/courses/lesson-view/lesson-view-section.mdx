@@ -25,6 +25,7 @@ Under the viewer, the actions: mark as completed (or the completed state), next 
 | Prop | Type | Required | Meaning |
 | --- | --- | --- | --- |
 | `lesson` | `LessonView` | yes | `id`, `order`, `name`, `description?`, `pgn`, `orientation`, `isPriority`, `statusCode`, `chapterName`, `chapterLessonCount`, `estimatedDuration?`, `chapterHref`, `nextLessonHref?`, `prevLessonHref?`, `trainerHref?`, `exerciseCount`. |
+| `errorCode` | `string` | no | Code from `?error=` (`throttled`, `invalid`…), translated with `STUDENT_ERROR_MESSAGES` into a `PlatformNotice`. |
 
 ## Behaviour
 

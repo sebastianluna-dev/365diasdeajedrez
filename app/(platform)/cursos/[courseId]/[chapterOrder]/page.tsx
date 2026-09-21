@@ -7,6 +7,7 @@ import "./chapter-page.css";
 
 interface ChapterPageProps {
   params: Promise<{ courseId: string; chapterOrder: string }>;
+  searchParams: Promise<{ error?: string }>;
 }
 
 export async function generateMetadata({ params }: ChapterPageProps): Promise<Metadata> {
@@ -15,9 +16,9 @@ export async function generateMetadata({ params }: ChapterPageProps): Promise<Me
   return chapter ? { title: chapter.name } : {};
 }
 
-export default async function ChapterPage({ params }: ChapterPageProps) {
+export default async function ChapterPage({ params, searchParams }: ChapterPageProps) {
   const { courseId, chapterOrder } = await params;
-  const chapter = await getChapterView(courseId, Number(chapterOrder));
+  const [chapter, { error }] = await Promise.all([getChapterView(courseId, Number(chapterOrder)), searchParams]);
   if (!chapter) notFound();
 
   return (
@@ -29,7 +30,7 @@ export default async function ChapterPage({ params }: ChapterPageProps) {
         chapterName={chapter.name}
         current="chapter"
       />
-      <ChapterDetailSection chapter={chapter} />
+      <ChapterDetailSection chapter={chapter} errorCode={error} />
     </div>
   );
 }

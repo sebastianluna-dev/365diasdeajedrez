@@ -35,6 +35,7 @@ export function TrainerSession({ exercises }: TrainerSessionProps) {
   const [mistakes, setMistakes] = useState(0);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [results, setResults] = useState<ExerciseResult[]>([]);
+  const [unsavedCount, setUnsavedCount] = useState(0);
   const [finished, setFinished] = useState(false);
 
   const startedAtRef = useRef(0);
@@ -67,13 +68,19 @@ export function TrainerSession({ exercises }: TrainerSessionProps) {
   };
 
   const finishExercise = (passed: boolean, finalMistakes: number) => {
-    // The attempt is recorded on the server (the action resolves the user).
-    void recordTrainingAttempt({
+    // The attempt is recorded on the server (the action resolves the user). The
+    // session goes on without waiting; what did not get stored is counted for
+    // the summary.
+    recordTrainingAttempt({
       exerciseId: exercise.id,
       resultCode: passed ? ATTEMPT_RESULT.PASSED : ATTEMPT_RESULT.FAILED,
       mistakes: finalMistakes,
       durationMs: Date.now() - startedAtRef.current,
-    });
+    })
+      .then((saved) => {
+        if (!saved) setUnsavedCount((current) => current + 1);
+      })
+      .catch(() => setUnsavedCount((current) => current + 1));
     setResults((current) => [
       ...current,
       { exerciseId: exercise.id, lessonName: exercise.lessonName, passed, mistakes: finalMistakes },
@@ -123,7 +130,7 @@ export function TrainerSession({ exercises }: TrainerSessionProps) {
   };
 
   if (finished) {
-    return <SessionSummary results={results} />;
+    return <SessionSummary results={results} unsavedCount={unsavedCount} />;
   }
 
   return (
@@ -139,7 +146,10 @@ export function TrainerSession({ exercises }: TrainerSessionProps) {
           Juegas con {exercise.userColor === "white" ? "blancas" : "negras"}
         </span>
         {exercise.isStale && (
-          <span className="platform-tag trainer-session__stale" title="La lección se editó después de crear este ejercicio">
+          <span
+            className="platform-tag trainer-session__stale"
+            title="La lección se editó después de crear este ejercicio"
+          >
             Desactualizado
           </span>
         )}
@@ -148,19 +158,12 @@ export function TrainerSession({ exercises }: TrainerSessionProps) {
       {exercise.promptText && <p className="trainer-session__prompt">{exercise.promptText}</p>}
 
       <div className="trainer-session__board">
-        <ChessBoard
-          position={{ fen }}
-          interactive
-          onMove={handleMove}
-          flipBoard={exercise.userColor === "black"}
-        />
+        <ChessBoard position={{ fen }} interactive onMove={handleMove} flipBoard={exercise.userColor === "black"} />
       </div>
 
       <div className="trainer-session__feedback-area" aria-live="polite">
         {feedback && (
-          <p className={`trainer-session__feedback trainer-session__feedback_kind_${feedback.kind}`}>
-            {feedback.text}
-          </p>
+          <p className={`trainer-session__feedback trainer-session__feedback_kind_${feedback.kind}`}>{feedback.text}</p>
         )}
       </div>
 
