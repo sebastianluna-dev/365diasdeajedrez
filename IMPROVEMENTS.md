@@ -414,17 +414,11 @@ applying `npm audit fix`.
 going down to `prisma@6.12.0`, which is a **major backwards** and incompatible with the current
 schema. It affects the development CLI, not the app's runtime. Review on every Prisma 7 update.
 
-### 17. Dev on webpack, build on Turbopack — [DX]
+### 17. ~~Dev on webpack, build on Turbopack~~ — RESOLVED (2026-09-21)
 
-`dev: next dev --webpack` but `build: next build` (Turbopack by default in Next 16).
-
-_Investigated:_ the most likely cause of the flag was Tailwind v4, which **has already been
-removed**, and `next build` with Turbopack works without incident. The script was not changed
-because validating it requires starting `next dev` without another development server active over
-the same `.next/dev`.
-
-**How to approach it:** with the project stopped, remove `--webpack` from `dev`, start it and
-navigate. If it fails, document the real reason next to the flag in `package.json`.
+`--webpack` removed from `dev`: the flag dated from Tailwind v4, which is gone, and the platform,
+the public site and the CMS were navigated on `next dev` with Turbopack without incident (login,
+courses, trainer, studies, explorer).
 
 ### 20. Seed dates relative to the moment of execution — [Data / DX]
 
