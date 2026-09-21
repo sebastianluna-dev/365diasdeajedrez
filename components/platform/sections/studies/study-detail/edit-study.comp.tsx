@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { updateStudy } from "@/services/studies/studies.actions";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import "./edit-study.comp.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface EditStudyProps {
   id: string;
@@ -93,9 +94,7 @@ export function EditStudy({ id, name, description, kindCode, kindLabel, kinds, c
             >
               Cancelar
             </button>
-            <button type="submit" className="platform-button">
-              Guardar
-            </button>
+            <SubmitButton>Guardar</SubmitButton>
           </div>
         </form>
       </dialog>

@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { createStudy } from "@/services/studies/studies.actions";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import "./new-study.comp.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface NewStudyProps {
   /**
@@ -18,11 +19,7 @@ export function NewStudy({ kinds }: NewStudyProps) {
 
   return (
     <div className="new-study">
-      <button
-        type="button"
-        className="platform-button new-study__open"
-        onClick={() => dialogRef.current?.showModal()}
-      >
+      <button type="button" className="platform-button new-study__open" onClick={() => dialogRef.current?.showModal()}>
         Nuevo estudio
       </button>
 
@@ -81,9 +78,7 @@ export function NewStudy({ kinds }: NewStudyProps) {
             >
               Cancelar
             </button>
-            <button type="submit" className="platform-button">
-              Crear estudio
-            </button>
+            <SubmitButton pendingLabel="Creando…">Crear estudio</SubmitButton>
           </div>
         </form>
       </dialog>

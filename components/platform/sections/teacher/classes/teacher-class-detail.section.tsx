@@ -17,6 +17,7 @@ import { AttendanceForm } from "./attendance-form.comp";
 import { ClassBlockEditor } from "./class-block-editor/class-block-editor.comp";
 import type { BlockFormOptions } from "./class-block-editor/block-form.comp";
 import "./teacher-class-detail.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface TeacherClassDetailSectionProps {
   classDetail: TeacherClassDetail;
@@ -55,7 +56,10 @@ export function TeacherClassDetailSection({
       <section className="platform-card">
         <div className="teacher-class__head">
           <h2 className="platform-card__title">Datos de la clase</h2>
-          <Link href={teacherRoutes.classEdit(classDetail.id)} className="platform-button platform-button_variant_secondary">
+          <Link
+            href={teacherRoutes.classEdit(classDetail.id)}
+            className="platform-button platform-button_variant_secondary"
+          >
             Editar
           </Link>
         </div>
@@ -119,9 +123,9 @@ export function TeacherClassDetailSection({
           {nextClassStatuses(classDetail.statusCode).map((status) => (
             <form key={status} action={setClassStatus.bind(null, classDetail.id)}>
               <input type="hidden" name="statusCode" value={status} />
-              <button type="submit" className="platform-button platform-button_variant_secondary">
+              <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Actualizando…">
                 {STATUS_ACTION_LABELS[status]}
-              </button>
+              </SubmitButton>
             </form>
           ))}
         </div>
@@ -153,9 +157,9 @@ export function TeacherClassDetailSection({
                 ))}
               </select>
             </FormField>
-            <button type="submit" className="platform-button platform-button_variant_secondary">
+            <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Inscribiendo…">
               Inscribir
-            </button>
+            </SubmitButton>
           </form>
         )}
       </section>

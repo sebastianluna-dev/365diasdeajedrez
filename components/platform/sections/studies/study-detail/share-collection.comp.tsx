@@ -1,6 +1,7 @@
 import { shareStudyWithStudent, unshareStudyWithStudent } from "@/services/studies/studies.actions";
 import type { StudentOption, StudyShareItem } from "@/services/studies/studies.types";
 import "./share-collection.comp.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface ShareCollectionProps {
   studyId: string;
@@ -32,8 +33,8 @@ export function ShareCollection({ studyId, shares, students }: ShareCollectionPr
       <header className="share-collection__head">
         <h2 className="share-collection__title">Alumnos con esta colección</h2>
         <p className="share-collection__hint">
-          La reciben en «Mis estudios» y sólo pueden leerla: recorrer las jugadas y las variantes y ver
-          tus comentarios. No pueden cambiar nada.
+          La reciben en «Mis estudios» y sólo pueden leerla: recorrer las jugadas y las variantes y ver tus comentarios.
+          No pueden cambiar nada.
         </p>
       </header>
 
@@ -50,9 +51,9 @@ export function ShareCollection({ studyId, shares, students }: ShareCollectionPr
 
               <form action={unshareStudyWithStudent.bind(null, studyId)}>
                 <input type="hidden" name="studentId" value={share.userId} />
-                <button type="submit" className="share-collection__remove">
+                <SubmitButton className="share-collection__remove" pendingLabel="Quitando…">
                   Quitar
-                </button>
+                </SubmitButton>
               </form>
             </li>
           ))}
@@ -74,15 +75,11 @@ export function ShareCollection({ studyId, shares, students }: ShareCollectionPr
             </select>
           </label>
 
-          <button type="submit" className="platform-button">
-            Compartir
-          </button>
+          <SubmitButton pendingLabel="Compartiendo…">Compartir</SubmitButton>
         </form>
       ) : (
         <p className="share-collection__empty">
-          {students.length === 0
-            ? "No tienes alumnos asignados a los que dársela."
-            : "Ya la tienen todos tus alumnos."}
+          {students.length === 0 ? "No tienes alumnos asignados a los que dársela." : "Ya la tienen todos tus alumnos."}
         </p>
       )}
     </section>

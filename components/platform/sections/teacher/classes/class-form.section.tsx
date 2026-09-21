@@ -7,6 +7,7 @@ import { createClass, updateClassMeta } from "@/services/teacher-classes/teacher
 import type { TeacherClassDetail } from "@/services/teacher-classes/teacher-classes.types";
 import type { AssignedStudentSummary } from "@/services/teacher-students/teacher-students.types";
 import "./class-form.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface ClassFormSectionProps {
   /** No class = creation; with a class = editing it. */
@@ -47,12 +48,7 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
 
       <div className="class-form__row">
         <FormField label="Fecha y hora">
-          <input
-            type="datetime-local"
-            name="scheduledAt"
-            defaultValue={classDetail?.scheduledAtInput ?? ""}
-            required
-          />
+          <input type="datetime-local" name="scheduledAt" defaultValue={classDetail?.scheduledAtInput ?? ""} required />
         </FormField>
 
         <FormField label="Duración (minutos)" hint="Entre 15 y 480.">
@@ -123,9 +119,7 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
       )}
 
       <div className="class-form__actions">
-        <button type="submit" className="platform-button">
-          {isEdit ? "Guardar cambios" : "Crear clase"}
-        </button>
+        <SubmitButton>{isEdit ? "Guardar cambios" : "Crear clase"}</SubmitButton>
         <Link
           href={isEdit ? teacherRoutes.classDetail(classDetail.id) : teacherRoutes.classes}
           className="platform-button platform-button_variant_secondary"

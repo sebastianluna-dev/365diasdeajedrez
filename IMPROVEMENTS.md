@@ -235,9 +235,11 @@ the platform. `PREVIEW_SECRET` removed from `.env.example` and from the README: 
 **What is left:** deciding whether `Articles` drafts deserve an `admin.preview` with a preview
 route; today they are only seen inside the admin form.
 
-### 53. Hardly any platform form says that it is being submitted — [UX]
-Still open: it is a mechanical task over 40 forms (T12 in `todos.md`): promote `LoginSubmit` to
-`components/platform/shared/submit-button.comp.tsx` with `useFormStatus` and use it in every write form.
+### 53. ~~Hardly any platform form says that it is being submitted~~ — RESOLVED (2026-09-21)
+`components/platform/shared/submit-button.comp.tsx` (`useFormStatus`, disabled + `aria-busy` + a
+`pendingLabel` per verb) replaces the 55 submit buttons of the write forms under
+`components/platform/sections/**`; `.platform-button:disabled` gained its look in `platform.css`. The
+GET search forms and the two `useActionState` forms (account creation, password reset) keep their own.
 
 ### 54. ~~`StaticDiagram` and the blog's diagram block are the same duplicated component~~ — RESOLVED (2026-09-09)
 `ChessDiagramBlockRenderer` is a one-line adapter over `StaticDiagram`, which gains the

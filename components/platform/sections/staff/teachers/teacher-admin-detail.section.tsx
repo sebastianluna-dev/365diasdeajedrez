@@ -8,6 +8,7 @@ import { setTeacherActive, updateTeacher } from "@/services/staff-teachers/staff
 import type { AssignableStudent, StaffTeacherDetail } from "@/services/staff-teachers/staff-teachers.types";
 import { AssignmentPanel } from "@/components/platform/sections/staff/assignments/assignment-panel.comp";
 import "./teacher-admin-detail.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface TeacherAdminDetailSectionProps {
   teacher: StaffTeacherDetail;
@@ -52,9 +53,7 @@ export function TeacherAdminDetailSection({ teacher, assignable, errorCode }: Te
             <textarea name="bio" defaultValue={teacher.bio ?? ""} maxLength={1000} />
           </FormField>
 
-          <button type="submit" className="platform-button">
-            Guardar perfil
-          </button>
+          <SubmitButton>Guardar perfil</SubmitButton>
         </form>
 
         <p className="teacher-admin__meta">Cuenta de acceso: {teacher.email}</p>
@@ -78,20 +77,15 @@ export function TeacherAdminDetailSection({ teacher, assignable, errorCode }: Te
 
         <form className="teacher-admin__status" action={setTeacherActive.bind(null, teacher.id)}>
           {teacher.isActive ? null : <input type="hidden" name="isActive" value="on" />}
-          <button type="submit" className="platform-button platform-button_variant_secondary">
+          <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Actualizando…">
             {teacher.isActive ? "Desactivar profesor" : "Reactivar profesor"}
-          </button>
+          </SubmitButton>
         </form>
       </section>
 
       <section className="platform-card">
         <h2 className="platform-card__title">Alumnos asignados</h2>
-        <AssignmentPanel
-          mode="byTeacher"
-          teacherId={teacher.id}
-          students={teacher.students}
-          assignable={assignable}
-        />
+        <AssignmentPanel mode="byTeacher" teacherId={teacher.id} students={teacher.students} assignable={assignable} />
       </section>
 
       <section className="platform-card">

@@ -7,6 +7,7 @@ import { homeRouteFor } from "@/lib/platform-routes";
 import { logoutAction } from "@/services/auth/auth.actions";
 import { PlatformNav } from "./platform-nav.comp";
 import "./platform-shell.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface PlatformShellProps {
   children: ReactNode;
@@ -66,9 +67,9 @@ export async function PlatformShell({ children }: PlatformShellProps) {
                       link to the site: the bar only has two rows and losing the
                       logout is not an option. */}
                   <form action={logoutAction}>
-                    <button type="submit" className="platform-shell__user-link">
+                    <SubmitButton className="platform-shell__user-link" pendingLabel="Saliendo…">
                       Salir
-                    </button>
+                    </SubmitButton>
                   </form>
                 </span>
               </div>

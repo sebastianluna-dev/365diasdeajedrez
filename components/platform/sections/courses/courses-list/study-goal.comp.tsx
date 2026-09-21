@@ -3,6 +3,7 @@ import { GOAL_OPTIONS } from "@/constants/platform/study-goal.const";
 import { updateDailyGoal } from "@/services/study-goal/study-goal.actions";
 import type { StudyGoal } from "@/services/study-goal/study-goal.types";
 import "./study-goal.comp.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface StudyGoalAsideProps {
   goal: StudyGoal;
@@ -71,9 +72,7 @@ export function StudyGoalAside({ goal }: StudyGoalAsideProps) {
               </select>
             </label>
 
-            <button type="submit" className="platform-button">
-              Guardar
-            </button>
+            <SubmitButton>Guardar</SubmitButton>
           </form>
         </details>
       </section>

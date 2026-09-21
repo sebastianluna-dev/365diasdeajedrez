@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { deleteStudyGame } from "@/services/studies/studies.actions";
 import "./delete-game.comp.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface DeleteGameProps {
   studyId: string;
@@ -76,8 +77,8 @@ export function DeleteGame({
                 onChange={(event) => setConfirmed(event.target.checked)}
               />
               <span className="delete-game__warning">
-                Esta partida se usa en {classBlockCount} bloque{classBlockCount === 1 ? "" : "s"} de clase.
-                Entiendo que se {classBlockCount === 1 ? "quedará vacío" : "quedarán vacíos"}.
+                Esta partida se usa en {classBlockCount} bloque{classBlockCount === 1 ? "" : "s"} de clase. Entiendo que
+                se {classBlockCount === 1 ? "quedará vacío" : "quedarán vacíos"}.
               </span>
             </label>
           )}
@@ -87,9 +88,13 @@ export function DeleteGame({
             <button type="button" className="delete-game__cancel" onClick={close}>
               Cancelar
             </button>
-            <button type="submit" className="delete-game__submit" disabled={needsConfirmation && !confirmed}>
+            <SubmitButton
+              className="delete-game__submit"
+              disabled={needsConfirmation && !confirmed}
+              pendingLabel="Borrando…"
+            >
               Borrar partida
-            </button>
+            </SubmitButton>
           </div>
         </form>
       </dialog>

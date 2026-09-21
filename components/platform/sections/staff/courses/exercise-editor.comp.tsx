@@ -11,6 +11,7 @@ import {
 import type { CatalogOption, ExerciseAdminRow } from "@/services/staff-courses/staff-courses.types";
 import { ExerciseMovePicker } from "./exercise-move-picker.comp";
 import "./exercise-editor.comp.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface ExerciseEditorProps {
   courseId: string;
@@ -90,9 +91,7 @@ function ExerciseFields({ action, modes, exercise, submitLabel, lessonPgn, onCan
       />
 
       <div className="exercise-editor__actions">
-        <button type="submit" className="platform-button">
-          {submitLabel}
-        </button>
+        <SubmitButton>{submitLabel}</SubmitButton>
         {onCancel && (
           <button type="button" className="platform-button platform-button_variant_secondary" onClick={onCancel}>
             Cancelar
@@ -108,14 +107,7 @@ function ExerciseFields({ action, modes, exercise, submitLabel, lessonPgn, onCan
  * the seed uses) and the server derives the frozen position from there; to
  * avoid typing them, the form brings a board that takes them from the lesson's PGN.
  */
-export function ExerciseEditor({
-  courseId,
-  chapterId,
-  lessonId,
-  exercises,
-  modes,
-  lessonPgn,
-}: ExerciseEditorProps) {
+export function ExerciseEditor({ courseId, chapterId, lessonId, exercises, modes, lessonPgn }: ExerciseEditorProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -127,15 +119,18 @@ export function ExerciseEditor({
             <div className="exercise-editor__row">
               <span className="platform-tag">{exercise.modeLabel}</span>
               <span className="exercise-editor__summary">{exercise.promptText ?? exercise.line}</span>
-              {exercise.isStale && (
-                <span className="platform-tag platform-tag_variant_accent">Desactualizado</span>
-              )}
+              {exercise.isStale && <span className="platform-tag platform-tag_variant_accent">Desactualizado</span>}
 
               <div className="exercise-editor__controls">
                 <form action={moveExercise.bind(null, courseId, chapterId, lessonId)}>
                   <input type="hidden" name="exerciseId" value={exercise.id} />
                   <input type="hidden" name="direction" value="up" />
-                  <button type="submit" className="exercise-editor__control" aria-label="Subir ejercicio" disabled={index === 0}>
+                  <button
+                    type="submit"
+                    className="exercise-editor__control"
+                    aria-label="Subir ejercicio"
+                    disabled={index === 0}
+                  >
                     ↑
                   </button>
                 </form>
@@ -160,9 +155,12 @@ export function ExerciseEditor({
                 </button>
                 <form action={deleteExercise.bind(null, courseId, chapterId, lessonId)}>
                   <input type="hidden" name="exerciseId" value={exercise.id} />
-                  <button type="submit" className="exercise-editor__control exercise-editor__control_variant_danger">
+                  <SubmitButton
+                    className="exercise-editor__control exercise-editor__control_variant_danger"
+                    pendingLabel="Eliminando…"
+                  >
                     Eliminar
-                  </button>
+                  </SubmitButton>
                 </form>
               </div>
             </div>
@@ -201,7 +199,11 @@ export function ExerciseEditor({
           onCancel={() => setIsAdding(false)}
         />
       ) : (
-        <button type="button" className="platform-button platform-button_variant_secondary" onClick={() => setIsAdding(true)}>
+        <button
+          type="button"
+          className="platform-button platform-button_variant_secondary"
+          onClick={() => setIsAdding(true)}
+        >
           Añadir ejercicio
         </button>
       )}

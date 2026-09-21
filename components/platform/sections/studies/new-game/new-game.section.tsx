@@ -7,6 +7,7 @@ import { createStudyGame } from "@/services/studies/studies.actions";
 import type { StudyDetail, StudyKindOption } from "@/services/studies/studies.types";
 import { GameFields } from "@/components/platform/sections/studies/game-fields.comp";
 import "./new-game.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface NewGameSectionProps {
   study: StudyDetail;
@@ -52,10 +53,7 @@ export function NewGameSection({ study, results, errorCode }: NewGameSectionProp
       <form className="new-game-page__form" action={createStudyGame.bind(null, study.id)}>
         <div className="platform-card">
           <h2 className="platform-card__title">Datos de la partida</h2>
-          <GameFields
-            results={results}
-            titleHint={`Si lo dejas vacío se llamará «Capítulo ${nextNumber}».`}
-          />
+          <GameFields results={results} titleHint={`Si lo dejas vacío se llamará «Capítulo ${nextNumber}».`} />
         </div>
 
         <div className="platform-card">
@@ -83,9 +81,7 @@ export function NewGameSection({ study, results, errorCode }: NewGameSectionProp
         </div>
 
         <div className="new-game-page__actions">
-          <button type="submit" className="platform-button">
-            Crear y analizar
-          </button>
+          <SubmitButton pendingLabel="Creando…">Crear y analizar</SubmitButton>
           <Link href={platformRoutes.studyDetail(study.id)} className="platform-button">
             Cancelar
           </Link>

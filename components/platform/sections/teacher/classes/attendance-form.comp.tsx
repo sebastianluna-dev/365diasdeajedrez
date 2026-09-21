@@ -1,6 +1,7 @@
 import { markAttendance, removeParticipant } from "@/services/teacher-classes/teacher-classes.actions";
 import type { TeacherClassParticipant } from "@/services/teacher-classes/teacher-classes.types";
 import "./attendance-form.comp.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface AttendanceFormProps {
   classId: string;
@@ -34,23 +35,21 @@ export function AttendanceForm({ classId, participants }: AttendanceFormProps) {
             {/* Removing only makes sense for someone who left no trace: the server
                 rejects whoever already attended or paid. */}
             {!participant.attended && !participant.hasPayment && (
-              <button
-                type="submit"
+              <SubmitButton
                 formAction={removeParticipant.bind(null, classId)}
                 name="studentId"
                 value={participant.userId}
                 className="attendance-form__remove"
+                pendingLabel="Quitar"
               >
                 Quitar
-              </button>
+              </SubmitButton>
             )}
           </li>
         ))}
       </ul>
 
-      <button type="submit" className="platform-button">
-        Guardar asistencia
-      </button>
+      <SubmitButton>Guardar asistencia</SubmitButton>
     </form>
   );
 }

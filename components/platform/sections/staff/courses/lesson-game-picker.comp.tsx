@@ -3,6 +3,7 @@ import { staffRoutes } from "@/lib/platform-routes";
 import { setLessonGame } from "@/services/staff-courses/staff-courses.actions";
 import type { CourseGameRow } from "@/services/staff-courses/staff-courses.types";
 import "./lesson-game-picker.comp.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface LessonGamePickerProps {
   courseId: string;
@@ -26,14 +27,7 @@ interface LessonGamePickerProps {
  * nor JavaScript: the search stays in the URL and the server returns the
  * already filtered list.
  */
-export function LessonGamePicker({
-  courseId,
-  chapterId,
-  lessonId,
-  game,
-  candidates,
-  query,
-}: LessonGamePickerProps) {
+export function LessonGamePicker({ courseId, chapterId, lessonId, game, candidates, query }: LessonGamePickerProps) {
   const save = setLessonGame.bind(null, courseId, chapterId, lessonId);
 
   if (game) {
@@ -51,15 +45,15 @@ export function LessonGamePicker({
 
           <form action={save}>
             {/* Without `gameId` the action unlinks. */}
-            <button type="submit" className="lesson-game-picker__change">
+            <SubmitButton className="lesson-game-picker__change" pendingLabel="Desvinculando…">
               Desvincular
-            </button>
+            </SubmitButton>
           </form>
         </div>
 
         <p className="lesson-game-picker__note">
-          El contenido de la lección es el de esta partida. Corrígela en la colección del curso y quedan
-          corregidas todas las lecciones que la usan.
+          El contenido de la lección es el de esta partida. Corrígela en la colección del curso y quedan corregidas
+          todas las lecciones que la usan.
         </p>
       </div>
     );
@@ -70,8 +64,8 @@ export function LessonGamePicker({
   if (candidates.length === 0 && !query) {
     return (
       <p className="lesson-game-picker__note">
-        Este curso todavía no tiene partidas en su colección. Añádelas en la ficha del curso —ahí es donde se
-        pega el PGN— y luego vuelve a elegir una aquí.
+        Este curso todavía no tiene partidas en su colección. Añádelas en la ficha del curso —ahí es donde se pega el
+        PGN— y luego vuelve a elegir una aquí.
       </p>
     );
   }
@@ -107,9 +101,9 @@ export function LessonGamePicker({
 
               <form action={save}>
                 <input type="hidden" name="gameId" value={candidate.id} />
-                <button type="submit" className="lesson-game-picker__link">
+                <SubmitButton className="lesson-game-picker__link" pendingLabel="Vinculando…">
                   Vincular
-                </button>
+                </SubmitButton>
               </form>
             </li>
           ))}

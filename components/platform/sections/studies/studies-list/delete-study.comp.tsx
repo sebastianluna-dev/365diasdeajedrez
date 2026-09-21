@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { deleteStudy } from "@/services/studies/studies.actions";
 import "./delete-study.comp.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface DeleteStudyProps {
   id: string;
@@ -34,7 +35,9 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
   const warning =
     citedGameCount > 0
       ? `Entiendo que se borrará todo, y que ${citedGameCount} ${
-          citedGameCount === 1 ? "partida citada en clases dejará ese bloque vacío" : "partidas citadas en clases dejarán esos bloques vacíos"
+          citedGameCount === 1
+            ? "partida citada en clases dejará ese bloque vacío"
+            : "partidas citadas en clases dejarán esos bloques vacíos"
         }.`
       : "Entiendo que se borrará todo y que no se puede deshacer.";
 
@@ -56,11 +59,7 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
           <span className="delete-study__open-label">Borrar «{name}»</span>
         </button>
       ) : (
-        <button
-          type="button"
-          className="delete-study__open-wide"
-          onClick={() => dialogRef.current?.showModal()}
-        >
+        <button type="button" className="delete-study__open-wide" onClick={() => dialogRef.current?.showModal()}>
           Borrar estudio
         </button>
       )}
@@ -98,9 +97,9 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
             <button type="button" className="delete-study__cancel" onClick={close}>
               Cancelar
             </button>
-            <button type="submit" className="delete-study__submit" disabled={blocked}>
+            <SubmitButton className="delete-study__submit" disabled={blocked} pendingLabel="Borrando…">
               Borrar estudio
-            </button>
+            </SubmitButton>
           </div>
         </form>
       </dialog>

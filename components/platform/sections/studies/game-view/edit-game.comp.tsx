@@ -5,6 +5,7 @@ import { GameFields, type GameFieldValues } from "@/components/platform/sections
 import { updateGameDetails } from "@/services/studies/studies.actions";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import "./edit-game.comp.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface EditGameProps {
   studyId: string;
@@ -40,9 +41,7 @@ export function EditGame({ studyId, gameId, values, results, label = "Editar" }:
         >
           <div className="edit-game__head">
             <h2 className="edit-game__title">Datos de la partida</h2>
-            <p className="edit-game__subtitle">
-              Al guardar, estos datos se escriben también en las cabeceras del PGN.
-            </p>
+            <p className="edit-game__subtitle">Al guardar, estos datos se escriben también en las cabeceras del PGN.</p>
           </div>
 
           <div className="edit-game__body">
@@ -64,9 +63,7 @@ export function EditGame({ studyId, gameId, values, results, label = "Editar" }:
             >
               Cancelar
             </button>
-            <button type="submit" className="platform-button">
-              Guardar datos
-            </button>
+            <SubmitButton>Guardar datos</SubmitButton>
           </div>
         </form>
       </dialog>

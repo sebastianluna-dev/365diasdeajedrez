@@ -15,6 +15,7 @@ const meta: MetaRecord = {
   "priority-filter": "PriorityFilter",
   "progress-indicator": "ProgressIndicator",
   "studies-navigation": "StudiesNavigation",
+  "submit-button": "SubmitButton",
 };
 
 export default meta;

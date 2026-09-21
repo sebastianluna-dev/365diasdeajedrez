@@ -6,6 +6,7 @@ import { assignStudent, endAssignment } from "@/services/staff-teachers/staff-te
 import type { StudentAssignmentHistoryItem } from "@/services/staff-students/staff-students.types";
 import type { AssignableStudent, TeacherStudentAssignment } from "@/services/staff-teachers/staff-teachers.types";
 import "./assignment-panel.comp.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface ByStudentProps {
   mode: "byStudent";
@@ -69,17 +70,15 @@ export function AssignmentPanel(props: AssignmentPanelProps) {
             <input type="text" name="note" maxLength={300} />
           </FormField>
 
-          <button type="submit" className="platform-button">
-            {active ? "Reasignar" : "Asignar"}
-          </button>
+          <SubmitButton pendingLabel="Asignando…">{active ? "Reasignar" : "Asignar"}</SubmitButton>
         </form>
 
         {active && (
           <form action={endAssignment.bind(null, active.id)}>
             <input type="hidden" name="returnTo" value={returnTo} />
-            <button type="submit" className="platform-button platform-button_variant_secondary">
+            <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Terminando…">
               Terminar la asignación actual
-            </button>
+            </SubmitButton>
           </form>
         )}
 
@@ -121,9 +120,9 @@ export function AssignmentPanel(props: AssignmentPanelProps) {
 
               <form action={endAssignment.bind(null, assignment.assignmentId)}>
                 <input type="hidden" name="returnTo" value={returnTo} />
-                <button type="submit" className="assignment-panel__end">
+                <SubmitButton className="assignment-panel__end" pendingLabel="Terminando…">
                   Terminar
-                </button>
+                </SubmitButton>
               </form>
             </li>
           ))}
@@ -154,9 +153,7 @@ export function AssignmentPanel(props: AssignmentPanelProps) {
           <input type="text" name="note" maxLength={300} />
         </FormField>
 
-        <button type="submit" className="platform-button">
-          Asignar
-        </button>
+        <SubmitButton pendingLabel="Asignando…">Asignar</SubmitButton>
       </form>
     </div>
   );

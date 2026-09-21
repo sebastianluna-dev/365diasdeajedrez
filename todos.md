@@ -116,7 +116,10 @@ bounded changes; the project rules above still hold. On finishing each one, mark
 `npm run format` changes 135 files. Do it in a commit of its own, without any other modification,
 and afterwards add `npm run format:check` as a step of `.github/workflows/ci.yml`.
 
-### T12 — Submit button with a pending state in every form · [UX] (IMPROVEMENTS #53)
+### T12 — Submit button with a pending state in every form · [UX] (IMPROVEMENTS #53) ✅ 2026-09-21
+`components/platform/shared/submit-button.comp.tsx` (`useFormStatus`, `pendingLabel` per verb) in the 55 submit buttons of the write forms; the two `useActionState` forms and the GET search forms keep their own button.
+
+Original task:
 Create `components/platform/shared/submit-button.comp.tsx` (`"use client"`, `useFormStatus`,
 `disabled={pending}` and an alternate label, e.g. "Guardando…") from
 `components/auth/sections/login/login-submit.comp.tsx`, and use it in the `<button type="submit">`

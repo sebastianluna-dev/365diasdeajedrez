@@ -7,6 +7,7 @@ import { completeLesson } from "@/services/courses/courses.actions";
 import type { LessonView } from "@/services/courses/courses.types";
 import { LessonTracker } from "./lesson-tracker.comp";
 import "./lesson-view.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface LessonViewSectionProps {
   lesson: LessonView;
@@ -61,9 +62,7 @@ export function LessonViewSection({ lesson }: LessonViewSectionProps) {
           </p>
         ) : (
           <form action={completeAction}>
-            <button type="submit" className="platform-button lesson-view__action">
-              Marcar como completada
-            </button>
+            <SubmitButton className="platform-button lesson-view__action">Marcar como completada</SubmitButton>
           </form>
         )}
 

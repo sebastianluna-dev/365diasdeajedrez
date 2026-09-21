@@ -4,6 +4,7 @@ import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const"
 import { createAuthor, updateAuthor } from "@/services/staff-courses/staff-courses.actions";
 import type { AuthorAdminRow } from "@/services/staff-courses/staff-courses.types";
 import "./authors-admin.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface AuthorsAdminSectionProps {
   authors: AuthorAdminRow[];
@@ -43,9 +44,7 @@ export function AuthorsAdminSection({ authors, errorCode }: AuthorsAdminSectionP
           <textarea name="bio" maxLength={1000} />
         </FormField>
 
-        <button type="submit" className="platform-button">
-          Crear autor
-        </button>
+        <SubmitButton pendingLabel="Creando…">Crear autor</SubmitButton>
       </form>
 
       {authors.map((author) => (
@@ -82,9 +81,7 @@ export function AuthorsAdminSection({ authors, errorCode }: AuthorsAdminSectionP
             <textarea name="bio" defaultValue={author.bio ?? ""} maxLength={1000} />
           </FormField>
 
-          <button type="submit" className="platform-button platform-button_variant_secondary">
-            Guardar
-          </button>
+          <SubmitButton className="platform-button platform-button_variant_secondary">Guardar</SubmitButton>
         </form>
       ))}
     </div>

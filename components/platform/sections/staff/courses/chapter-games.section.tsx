@@ -7,6 +7,7 @@ import { StaffEditorHead } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import { StaffTabs } from "./staff-tabs.comp";
 import "./chapter-games.section.css";
+import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface ChapterGamesSectionProps {
   chapter: ChapterAdminDetail;
@@ -74,9 +75,9 @@ export function ChapterGamesSection({ chapter, games, errorCode }: ChapterGamesS
                 {game.lessonCount === 0 && (
                   <form action={deleteChapterGame.bind(null, chapter.courseId, chapter.id)}>
                     <input type="hidden" name="gameId" value={game.id} />
-                    <button type="submit" className="chapter-games__remove">
+                    <SubmitButton className="chapter-games__remove" pendingLabel="Quitando…">
                       Quitar
-                    </button>
+                    </SubmitButton>
                   </form>
                 )}
               </li>
@@ -84,15 +85,12 @@ export function ChapterGamesSection({ chapter, games, errorCode }: ChapterGamesS
           </ul>
         ) : (
           <p className="chapter-games__empty">
-            Este capítulo todavía no tiene partidas. Pega un PGN para empezar: sus lecciones sólo pueden usar
-            partidas de aquí.
+            Este capítulo todavía no tiene partidas. Pega un PGN para empezar: sus lecciones sólo pueden usar partidas
+            de aquí.
           </p>
         )}
 
-        <form
-          className="chapter-games__import"
-          action={importChapterGames.bind(null, chapter.courseId, chapter.id)}
-        >
+        <form className="chapter-games__import" action={importChapterGames.bind(null, chapter.courseId, chapter.id)}>
           <textarea
             name="pgn"
             required
@@ -101,9 +99,9 @@ export function ChapterGamesSection({ chapter, games, errorCode }: ChapterGamesS
             placeholder="Pega aquí un PGN con una o varias partidas"
             aria-label="PGN a importar"
           />
-          <button type="submit" className="platform-button platform-button_variant_secondary">
+          <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Importando…">
             Importar PGN
-          </button>
+          </SubmitButton>
         </form>
       </StaffPanel>
     </div>
