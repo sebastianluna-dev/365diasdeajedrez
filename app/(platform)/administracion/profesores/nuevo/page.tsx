@@ -3,9 +3,12 @@ import { TeacherFormSection } from "@/components/platform/sections/staff/teacher
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { listLinkableUsers } from "@/services/staff-teachers/staff-teachers.service";
 
-export const metadata: Metadata = {
-  title: "Registrar profesor",
-};
+// The title is resolved with the role, like the page itself: without it the
+// response carries not even the panel's name (IMPROVEMENTS #26).
+export async function generateMetadata(): Promise<Metadata> {
+  await requireStaff();
+  return { title: "Registrar profesor" };
+}
 
 interface NewTeacherPageProps {
   searchParams: Promise<{ error?: string }>;

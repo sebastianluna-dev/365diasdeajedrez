@@ -3,9 +3,12 @@ import { AuthorsAdminSection } from "@/components/platform/sections/staff/author
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { listAuthors } from "@/services/staff-courses/staff-courses.service";
 
-export const metadata: Metadata = {
-  title: "Autores",
-};
+// The title is resolved with the role, like the page itself: without it the
+// response carries not even the panel's name (IMPROVEMENTS #26).
+export async function generateMetadata(): Promise<Metadata> {
+  await requireStaff();
+  return { title: "Autores" };
+}
 
 interface StaffAuthorsPageProps {
   searchParams: Promise<{ error?: string }>;

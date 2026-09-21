@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { CoursesAdminSection } from "@/components/platform/sections/staff/courses/courses-admin.section";
 import { requireStaff } from "@/lib/platform-auth/roles";
 
-export const metadata: Metadata = {
-  title: "Cursos",
-};
+// The title is resolved with the role, like the page itself: without it the
+// response carries not even the panel's name (IMPROVEMENTS #26).
+export async function generateMetadata(): Promise<Metadata> {
+  await requireStaff();
+  return { title: "Cursos" };
+}
 
 interface StaffCoursesPageProps {
   /** `q` is the search and `estado` the filter; both live in the URL. */

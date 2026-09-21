@@ -10,9 +10,12 @@ import { createCourse } from "@/services/staff-courses/staff-courses.actions";
 import { listCourseTypes } from "@/services/staff-courses/staff-courses.service";
 import "./new-course-page.css";
 
-export const metadata: Metadata = {
-  title: "Nuevo curso",
-};
+// The title is resolved with the role, like the page itself: without it the
+// response carries not even the panel's name (IMPROVEMENTS #26).
+export async function generateMetadata(): Promise<Metadata> {
+  await requireStaff();
+  return { title: "Nuevo curso" };
+}
 
 interface NewCoursePageProps {
   searchParams: Promise<{ error?: string }>;
