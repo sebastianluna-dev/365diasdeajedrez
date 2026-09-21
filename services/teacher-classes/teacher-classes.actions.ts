@@ -24,7 +24,15 @@ import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { parseDateTimeLocal, safeTimeZone } from "@/lib/timezone";
-import { readClampedInt, readOptionalText, readText, readUrl } from "@/services/shared/form-data";
+import { z } from "zod";
+import {
+  formInt,
+  formOptionalText,
+  formOptionalUrl,
+  formText,
+  parseForm,
+  readIds,
+} from "@/services/shared/form-schema";
 import { getPgnForReference } from "./teacher-classes.service";
 import { planDenseRenumber, planSwap, nextOrder, type MoveDirection } from "@/services/shared/reorder";
 import { recordUserActivity } from "@/services/shared/user-activity.service";
@@ -39,15 +47,51 @@ import { canTransitionClassStatus } from "./class-status-transitions";
 // - Errors come back by redirect with `?error=<code>` (message map in
 //   constants/platform/teacher-messages.const.ts).
 
-const TITLE_MAX_LENGTH = 120;
-const DESCRIPTION_MAX_LENGTH = 500;
-const SUMMARY_MAX_LENGTH = 5000;
-const CAPTION_MAX_LENGTH = 200;
-const BLOCK_TEXT_MAX_LENGTH = 10_000;
-const DURATION_MIN = 15;
-const DURATION_MAX = 480;
 /** The link opens half an hour early by default. */
 const MEETING_VISIBLE_LEAD_MS = 30 * 60 * 1000;
+
+const CLASS_META_SCHEMA = z.object({
+  title: formText(120),
+  description: formOptionalText(500),
+  // `datetime-local` values: the teacher's wall-clock time, converted with THEIR zone below.
+  scheduledAt: formText(40),
+  durationMin: formInt(15, 480),
+  meetingProviderCode: z
+    .string()
+    .trim()
+    .max(32)
+    .optional()
+    .refine((value) => !value || (Object.values(MEETING_PROVIDER) as string[]).includes(value)),
+  meetingUrl: formOptionalUrl(2000),
+  meetingUrlVisibleFrom: z.string().trim().max(40).optional(),
+});
+/** Which `?error=` code names each field of the class form. */
+const CLASS_META_ERROR: Record<string, string> = {
+  title: "title",
+  scheduledAt: "schedule",
+  durationMin: "duration",
+  meetingProviderCode: "meetingProvider",
+  meetingUrl: "meetingUrl",
+  meetingUrlVisibleFrom: "schedule",
+};
+const CLASS_EXTRA_SCHEMA = z.object({ recordingUrl: formOptionalUrl(2000), summary: formOptionalText(5000) });
+const STATUS_SCHEMA = z.object({
+  statusCode: formText(32).refine((value) => (Object.values(CLASS_STATUS) as string[]).includes(value)),
+});
+const STUDENT_SCHEMA = z.object({ studentId: formText(64) });
+const ATTENDANCE_SCHEMA = z.object({ attended: z.array(z.string().trim().max(64)) });
+const BLOCK_COMMON_SCHEMA = z.object({
+  kind: formText(32).refine((value) => (Object.values(CLASS_BLOCK_KIND) as string[]).includes(value)),
+  caption: formOptionalText(200),
+  movePath: formOptionalText(200),
+});
+const BLOCK_TEXT_SCHEMA = z.object({ text: formText(10_000) });
+const BLOCK_VIDEO_SCHEMA = z.object({ videoUrl: formOptionalUrl(2000) });
+const BLOCK_GAME_SCHEMA = z.object({
+  pgn: z.string().trim().max(PGN_MAX_LENGTH).optional(),
+  gameId: z.string().trim().max(64).optional(),
+});
+const MOVE_SCHEMA = z.object({ blockId: formText(64), direction: z.enum(["up", "down"]) });
 
 function fail(path: string, code: string): never {
   redirect(withErrorParam(path, code));
@@ -74,28 +118,19 @@ async function readClassMeta(
   teacher: TeacherContext["teacher"],
   failPath: string,
 ): Promise<ClassMetaInput> {
-  const title = readText(formData, "title");
-  if (title.length === 0) fail(failPath, "title");
+  const parsed = parseForm(CLASS_META_SCHEMA, formData);
+  if (!parsed.ok) fail(failPath, CLASS_META_ERROR[parsed.field] ?? "invalid");
+  const { title, description, durationMin, meetingUrl } = parsed.data;
 
   const timeZone = await teacherTimeZone(teacher.id);
   // The input is `datetime-local`: the teacher's wall-clock time, which is
   // converted to UTC with THEIR zone (or UTC if they have none configured).
-  const scheduledAt = parseDateTimeLocal(readText(formData, "scheduledAt"), timeZone);
+  const scheduledAt = parseDateTimeLocal(parsed.data.scheduledAt, timeZone);
   if (!scheduledAt) fail(failPath, "schedule");
 
-  const durationMin = readClampedInt(formData, "durationMin", DURATION_MIN, DURATION_MAX);
-  if (durationMin === null) fail(failPath, "duration");
+  const providerCode = parsed.data.meetingProviderCode ?? "";
 
-  const providerCode = readText(formData, "meetingProviderCode");
-  if (providerCode.length > 0 && !(Object.values(MEETING_PROVIDER) as string[]).includes(providerCode)) {
-    fail(failPath, "meetingProvider");
-  }
-
-  const rawUrl = readText(formData, "meetingUrl");
-  const meetingUrl = rawUrl.length > 0 ? readUrl(formData, "meetingUrl") : null;
-  if (rawUrl.length > 0 && meetingUrl === null) fail(failPath, "meetingUrl");
-
-  const visibleFromRaw = readText(formData, "meetingUrlVisibleFrom");
+  const visibleFromRaw = parsed.data.meetingUrlVisibleFrom ?? "";
   const meetingUrlVisibleFrom =
     visibleFromRaw.length > 0
       ? parseDateTimeLocal(visibleFromRaw, timeZone)
@@ -103,8 +138,8 @@ async function readClassMeta(
   if (visibleFromRaw.length > 0 && meetingUrlVisibleFrom === null) fail(failPath, "schedule");
 
   return {
-    title: title.slice(0, TITLE_MAX_LENGTH),
-    description: readOptionalText(formData, "description", DESCRIPTION_MAX_LENGTH),
+    title,
+    description,
     scheduledAt,
     durationMin,
     meetingProviderCode: providerCode.length > 0 ? providerCode : null,
@@ -153,6 +188,8 @@ export async function updateClassMeta(classId: string, formData: FormData): Prom
   if (!(await allowAction(`${user.id}:class-update`, 60, 60_000))) fail(editPath, "throttled");
 
   const meta = await readClassMeta(formData, teacher, editPath);
+  const extra = parseForm(CLASS_EXTRA_SCHEMA, formData);
+  if (!extra.ok) fail(editPath, "invalid");
 
   await getPlatformDb().class.update({
     where: { id: classId },
@@ -167,8 +204,8 @@ export async function updateClassMeta(classId: string, formData: FormData): Prom
         : { disconnect: true },
       meetingUrl: meta.meetingUrl,
       meetingUrlVisibleFrom: meta.meetingUrlVisibleFrom,
-      recordingUrl: readUrl(formData, "recordingUrl"),
-      summary: readOptionalText(formData, "summary", SUMMARY_MAX_LENGTH),
+      recordingUrl: extra.data.recordingUrl,
+      summary: extra.data.summary,
     },
   });
 
@@ -184,7 +221,9 @@ export async function setClassStatus(classId: string, formData: FormData): Promi
   const detailPath = teacherRoutes.classDetail(classId);
   if (!(await allowAction(`${user.id}:class-status`, 60, 60_000))) fail(detailPath, "throttled");
 
-  const target = readText(formData, "statusCode") as ClassStatusCode;
+  const status = parseForm(STATUS_SCHEMA, formData);
+  if (!status.ok) fail(detailPath, "status");
+  const target = status.data.statusCode as ClassStatusCode;
   const db = getPlatformDb();
   const current = await db.class.findUniqueOrThrow({
     where: { id: classId },
@@ -207,8 +246,9 @@ export async function addParticipant(classId: string, formData: FormData): Promi
   const detailPath = teacherRoutes.classDetail(classId);
   if (!(await allowAction(`${user.id}:class-participant`, 60, 60_000))) fail(detailPath, "throttled");
 
-  const studentId = readText(formData, "studentId");
-  if (studentId.length === 0) fail(detailPath, "student");
+  const parsed = parseForm(STUDENT_SCHEMA, formData);
+  if (!parsed.ok) fail(detailPath, "student");
+  const { studentId } = parsed.data;
   await assertTeacherHasStudent(teacher.id, studentId);
 
   await getPlatformDb().classParticipant.upsert({
@@ -227,7 +267,7 @@ export async function removeParticipant(classId: string, formData: FormData): Pr
   const detailPath = teacherRoutes.classDetail(classId);
   if (!(await allowAction(`${user.id}:class-participant`, 60, 60_000))) fail(detailPath, "throttled");
 
-  const studentId = readText(formData, "studentId");
+  const { studentId } = readIds(formData, "studentId");
   const db = getPlatformDb();
 
   // Only whoever left no trace can be removed: if they attended or paid, the row
@@ -253,9 +293,8 @@ export async function markAttendance(classId: string, formData: FormData): Promi
     select: { scheduledAt: true, participants: { select: { userId: true, attended: true, joinedAt: true } } },
   });
 
-  const attendedNow = new Set(
-    formData.getAll("attended").filter((value): value is string => typeof value === "string"),
-  );
+  const attendance = parseForm(ATTENDANCE_SCHEMA, formData);
+  const attendedNow = new Set(attendance.ok ? attendance.data.attended : []);
 
   const changed = classRow.participants.filter(
     (participant) => attendedNow.has(participant.userId) !== participant.attended,
@@ -347,6 +386,7 @@ function toUpdateData(fields: BlockFields) {
  */
 async function readBlockFields(
   kind: ClassBlockKindCode,
+  common: BlockCommon,
   formData: FormData,
   teacher: TeacherContext["teacher"],
   teacherUserId: string,
@@ -361,29 +401,30 @@ async function readBlockFields(
     movePath: null,
     pgn: null,
   };
-  const movePath = readOptionalText(formData, "movePath", 200);
+  const movePath = common.movePath;
   const db = getPlatformDb();
 
   switch (kind) {
     case CLASS_BLOCK_KIND.TEXT: {
-      const text = readOptionalText(formData, "text", BLOCK_TEXT_MAX_LENGTH);
-      if (text === null) fail(failPath, "blockText");
-      return { ...empty, text };
+      const parsed = parseForm(BLOCK_TEXT_SCHEMA, formData);
+      if (!parsed.ok) fail(failPath, "blockText");
+      return { ...empty, text: parsed.data.text };
     }
 
     case CLASS_BLOCK_KIND.VIDEO: {
-      const videoUrl = readUrl(formData, "videoUrl");
-      if (videoUrl === null) fail(failPath, "blockVideo");
-      return { ...empty, videoUrl };
+      const parsed = parseForm(BLOCK_VIDEO_SCHEMA, formData);
+      if (!parsed.ok || parsed.data.videoUrl === null) fail(failPath, "blockVideo");
+      return { ...empty, videoUrl: parsed.data.videoUrl };
     }
 
     case CLASS_BLOCK_KIND.GAME_REF: {
       // The game transcribed in the block is the main route and wins over the
       // referenced one, just as when rendering it. If it comes, a student's is not
       // even looked at: the teacher chose to transcribe.
-      const pgn = readText(formData, "pgn");
+      const parsed = parseForm(BLOCK_GAME_SCHEMA, formData);
+      if (!parsed.ok) fail(failPath, parsed.field === "pgn" ? "blockPgnTooLong" : "blockRef");
+      const pgn = parsed.data.pgn ?? "";
       if (pgn.length > 0) {
-        if (pgn.length > PGN_MAX_LENGTH) fail(failPath, "blockPgnTooLong");
         // The board validates on the client for convenience; what decides is this.
         const tree = parsePgnTree(pgn);
         if (tree === null) fail(failPath, "blockPgn");
@@ -391,7 +432,7 @@ async function readBlockFields(
         return { ...empty, pgn, movePath };
       }
 
-      const gameId = readText(formData, "gameId");
+      const gameId = parsed.data.gameId ?? "";
       if (gameId.length === 0) fail(failPath, "blockRef");
       // The assignment is validated HERE, on insertion: an already created block stays
       // valid even if the student is reassigned afterwards (§8.3 of the plan).
@@ -400,7 +441,7 @@ async function readBlockFields(
     }
 
     case CLASS_BLOCK_KIND.LESSON_REF: {
-      const lessonId = readText(formData, "lessonId");
+      const { lessonId } = readIds(formData, "lessonId");
       // Only lessons of PUBLISHED courses: the block offers the student a link to open
       // it, and in a draft that link leads nowhere.
       const lesson = await db.lesson.findFirst({
@@ -412,7 +453,7 @@ async function readBlockFields(
     }
 
     case CLASS_BLOCK_KIND.POSITION_REF: {
-      const positionId = readText(formData, "positionId");
+      const { positionId } = readIds(formData, "positionId");
       const position = await db.position.findFirst({
         where: { id: positionId, userId: teacherUserId, ownerType: { code: OWNER_TYPE.TEACHER } },
         select: { id: true },
@@ -431,10 +472,17 @@ async function readBlockFields(
   }
 }
 
-function readBlockKind(formData: FormData, failPath: string): ClassBlockKindCode {
-  const kind = readText(formData, "kind");
-  if (!(Object.values(CLASS_BLOCK_KIND) as string[]).includes(kind)) fail(failPath, "blockKind");
-  return kind as ClassBlockKindCode;
+interface BlockCommon {
+  kind: ClassBlockKindCode;
+  caption: string | null;
+  movePath: string | null;
+}
+
+/** What every block carries whatever its kind: the kind itself, the caption and the position. */
+function readBlockCommon(formData: FormData, failPath: string): BlockCommon {
+  const parsed = parseForm(BLOCK_COMMON_SCHEMA, formData);
+  if (!parsed.ok) fail(failPath, parsed.field === "kind" ? "blockKind" : "invalid");
+  return { ...parsed.data, kind: parsed.data.kind as ClassBlockKindCode };
 }
 
 export async function addClassBlock(classId: string, formData: FormData): Promise<void> {
@@ -444,8 +492,8 @@ export async function addClassBlock(classId: string, formData: FormData): Promis
   const detailPath = teacherRoutes.classDetail(classId);
   if (!(await allowAction(`${user.id}:class-block`, 120, 60_000))) fail(detailPath, "throttled");
 
-  const kind = readBlockKind(formData, detailPath);
-  const fields = await readBlockFields(kind, formData, teacher, user.id, detailPath);
+  const common = readBlockCommon(formData, detailPath);
+  const fields = await readBlockFields(common.kind, common, formData, teacher, user.id, detailPath);
 
   const db = getPlatformDb();
   const count = await db.classBlock.count({ where: { classId } });
@@ -454,8 +502,8 @@ export async function addClassBlock(classId: string, formData: FormData): Promis
     data: {
       class: { connect: { id: classId } },
       order: nextOrder(count),
-      kind: { connect: { code: kind } },
-      caption: readOptionalText(formData, "caption", CAPTION_MAX_LENGTH),
+      kind: { connect: { code: common.kind } },
+      caption: common.caption,
       ...toCreateData(fields),
     },
   });
@@ -471,8 +519,8 @@ export async function updateClassBlock(classId: string, blockId: string, formDat
   const detailPath = teacherRoutes.classDetail(classId);
   if (!(await allowAction(`${user.id}:class-block`, 120, 60_000))) fail(detailPath, "throttled");
 
-  const kind = readBlockKind(formData, detailPath);
-  const fields = await readBlockFields(kind, formData, teacher, user.id, detailPath);
+  const common = readBlockCommon(formData, detailPath);
+  const fields = await readBlockFields(common.kind, common, formData, teacher, user.id, detailPath);
 
   // The block is looked up with classId in the where: a blockId from another class
   // does not match and the action ends without writing anything.
@@ -483,8 +531,8 @@ export async function updateClassBlock(classId: string, blockId: string, formDat
   await db.classBlock.update({
     where: { id: block.id },
     data: {
-      kind: { connect: { code: kind } },
-      caption: readOptionalText(formData, "caption", CAPTION_MAX_LENGTH),
+      kind: { connect: { code: common.kind } },
+      caption: common.caption,
       ...toUpdateData(fields),
     },
   });
@@ -500,7 +548,7 @@ export async function deleteClassBlock(classId: string, formData: FormData): Pro
   const detailPath = teacherRoutes.classDetail(classId);
   if (!(await allowAction(`${user.id}:class-block`, 120, 60_000))) fail(detailPath, "throttled");
 
-  const blockId = readText(formData, "blockId");
+  const { blockId } = readIds(formData, "blockId");
   const db = getPlatformDb();
 
   await db.$transaction(async (tx) => {
@@ -526,16 +574,16 @@ export async function moveClassBlock(classId: string, formData: FormData): Promi
   const detailPath = teacherRoutes.classDetail(classId);
   if (!(await allowAction(`${user.id}:class-block-move`, 120, 60_000))) fail(detailPath, "throttled");
 
-  const blockId = readText(formData, "blockId");
-  const direction = readText(formData, "direction");
-  if (direction !== "up" && direction !== "down") fail(detailPath, "invalid");
+  const parsed = parseForm(MOVE_SCHEMA, formData);
+  if (!parsed.ok) fail(detailPath, "invalid");
+  const { blockId, direction } = parsed.data;
 
   const db = getPlatformDb();
   await db.$transaction(async (tx) => {
     const blocks = await tx.classBlock.findMany({ where: { classId }, select: { id: true, order: true } });
     // planSwap goes through a temporary out-of-range order: without that, the direct
     // swap would violate the unique index halfway.
-    for (const update of planSwap(blocks, blockId, direction as MoveDirection)) {
+    for (const update of planSwap(blocks, blockId, direction satisfies MoveDirection)) {
       await tx.classBlock.update({ where: { id: update.id }, data: { order: update.order } });
     }
   });

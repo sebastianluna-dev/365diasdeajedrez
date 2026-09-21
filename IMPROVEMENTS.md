@@ -11,7 +11,7 @@ Backlog of the project's technical debt and improvements. Every entry carries an
 
 ## HIGH priority
 
-### 7. Schema validation in server actions — [Security]
+### 7. ~~Schema validation in server actions~~ — RESOLVED (2026-09-21)
 
 _Mostly resolved:_ every write action resolves the user on the server through the DAL (which now
 checks the session for real), bounds its inputs (name lengths, PGN size, cap on imported games,
@@ -26,7 +26,14 @@ The database that already exists was chosen over a Redis so as not to add one mo
 go down on its own. On a database failure it lets the request through, on purpose: without a
 database there is no login to protect. Expired windows are swept from the app, one call in a hundred.
 
-**What is missing:** declarative validation with zod at the entry of every action.
+**(b) Declarative validation — RESOLVED (2026-09-21).** Every action that reads a form now declares
+a zod schema and reads it with `parseForm` (`services/shared/form-schema.ts`): bounded text, http(s)
+URLs, integers in range, checkboxes, catalog codes, the hidden ids (`readIds`) and the `returnTo`
+field. The parser names the first field that failed, so each action keeps answering with the codes
+its page already knows (`title`, `email`, `pgnTooLong`…). One deliberate change: overlong text is
+rejected as `invalid` instead of being truncated in silence (the forms already carry `maxLength`).
+The old `form-data.ts` readers are gone. The two actions that take plain arguments instead of a form
+(`reorderStudyGames`, `autosaveGamePgn`) keep their own explicit checks.
 
 ### 35. ~~`/lecciones` is left out of the protected routes, of the proxy and of `robots.txt`~~ — RESOLVED (2026-09-09)
 

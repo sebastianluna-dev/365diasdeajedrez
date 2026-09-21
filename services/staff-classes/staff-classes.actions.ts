@@ -7,14 +7,16 @@ import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
-import { readText, readUrl } from "@/services/shared/form-data";
+import { z } from "zod";
+import { formOptionalUrl, formText, parseForm } from "@/services/shared/form-schema";
 
 // The staff does NOT own the classes: exactly two support actions and nothing
 // else. Blocks, attendance, metadata and participants belong to the teacher —
 // if any of those appeared here, two roles would be editing the same thing
 // without either being responsible.
 
-const NOTE_MAX_LENGTH = 300;
+const RECORDING_SCHEMA = z.object({ recordingUrl: formOptionalUrl(2000) });
+const CANCEL_SCHEMA = z.object({ note: formText(300) });
 
 function fail(path: string, code: string): never {
   redirect(`${path}?error=${code}`);
@@ -26,9 +28,9 @@ export async function setRecordingUrl(classId: string, formData: FormData): Prom
   const detailPath = staffRoutes.staffClassDetail(classId);
   if (!(await allowAction(`${staff.user.id}:class-recording`, 60, 60_000))) fail(detailPath, "throttled");
 
-  const raw = readText(formData, "recordingUrl");
-  const recordingUrl = raw.length > 0 ? readUrl(formData, "recordingUrl") : null;
-  if (raw.length > 0 && recordingUrl === null) fail(detailPath, "invalid");
+  const parsed = parseForm(RECORDING_SCHEMA, formData);
+  if (!parsed.ok) fail(detailPath, "invalid");
+  const { recordingUrl } = parsed.data;
 
   await getPlatformDb().class.update({ where: { id: classId }, data: { recordingUrl } });
 
@@ -47,8 +49,9 @@ export async function cancelClassAsStaff(classId: string, formData: FormData): P
   const detailPath = staffRoutes.staffClassDetail(classId);
   if (!(await allowAction(`${staff.user.id}:class-cancel`, 60, 60_000))) fail(detailPath, "throttled");
 
-  const note = readText(formData, "note").slice(0, NOTE_MAX_LENGTH);
-  if (note.length === 0) fail(detailPath, "invalid");
+  const parsed = parseForm(CANCEL_SCHEMA, formData);
+  if (!parsed.ok) fail(detailPath, "invalid");
+  const { note } = parsed.data;
 
   const db = getPlatformDb();
   const current = await db.class.findUnique({

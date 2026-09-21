@@ -24,6 +24,8 @@ import { allowAction } from "@/lib/rate-limit";
 import { emptyGame, serializeGame } from "@/lib/chess/pgn-edit";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
+import { z } from "zod";
+import { formOptionalText, formText, formTextIfPresent, parseForm, readIds } from "@/services/shared/form-schema";
 import { parseImportedGames } from "@/services/shared/pgn-import";
 import { withErrorParam } from "@/services/shared/safe-return-to";
 import { canChangeKindTo, canCreateKind, studyPermissionsOf } from "./study-rules";
@@ -35,16 +37,16 @@ import { canChangeKindTo, canCreateKind, studyPermissionsOf } from "./study-rule
 // `?error=<code>` so the page can say so, and the ones only a forged request
 // produces (a foreign study, a kind the viewer may not create) go out silently.
 
-const STUDY_NAME_MAX_LENGTH = 120;
-const STUDY_DESCRIPTION_MAX_LENGTH = 500;
 const UNKNOWN_PLAYER = "Desconocido";
 /** Full dates only: the PGN admits "????.??.??" and "2024.??.??". */
 const FULL_PGN_DATE = /^(\d{4})\.(\d{2})\.(\d{2})$/;
 
-function readText(formData: FormData, field: string): string {
-  const value = formData.get(field);
-  return typeof value === "string" ? value.trim() : "";
-}
+const STUDY_SCHEMA = z.object({
+  name: formText(120),
+  kindCode: z.string().trim().max(32).optional(),
+  description: formOptionalText(500),
+});
+const IMPORT_SCHEMA = z.object({ pgn: z.string().trim().min(1).max(PGN_MAX_LENGTH) });
 
 function isDatabaseKindCode(value: string): value is DatabaseKindCode {
   return (Object.values(DATABASE_KIND) as string[]).includes(value);
@@ -83,11 +85,11 @@ function readDateHeader(headers: Map<string, string>): Date | null {
  * action is reachable by direct POST with whatever code.
  */
 export async function createStudy(formData: FormData): Promise<void> {
-  const name = readText(formData, "name");
-  const kindCode = readText(formData, "kindCode");
-  if (name.length === 0 || !isDatabaseKindCode(kindCode)) redirect(withErrorParam(platformRoutes.studies, "invalid"));
+  const form = parseForm(STUDY_SCHEMA, formData);
+  const kindCode = form.ok ? (form.data.kindCode ?? "") : "";
+  if (!form.ok || !isDatabaseKindCode(kindCode)) redirect(withErrorParam(platformRoutes.studies, "invalid"));
 
-  const description = readText(formData, "description");
+  const { name, description } = form.data;
   const db = getPlatformDb();
   const user = await getCurrentUser();
   const teacher = await getTeacherContext();
@@ -100,8 +102,8 @@ export async function createStudy(formData: FormData): Promise<void> {
       ownerType: { connect: { code: OWNER_TYPE.USER } },
       user: { connect: { id: user.id } },
       kind: { connect: { code: kindCode } },
-      name: name.slice(0, STUDY_NAME_MAX_LENGTH),
-      description: description.length > 0 ? description.slice(0, STUDY_DESCRIPTION_MAX_LENGTH) : null,
+      name,
+      description,
       isDefault: false,
     },
   });
@@ -229,11 +231,11 @@ export async function reorderStudyGames(studyId: string, orderedIds: string[]): 
  * rest is saved instead of throwing away the whole form.
  */
 export async function updateStudy(studyId: string, formData: FormData): Promise<void> {
-  const name = readText(formData, "name");
-  const kindCode = readText(formData, "kindCode");
-  if (name.length === 0) redirect(withErrorParam(platformRoutes.studyDetail(studyId), "invalid"));
+  const form = parseForm(STUDY_SCHEMA, formData);
+  if (!form.ok) redirect(withErrorParam(platformRoutes.studyDetail(studyId), "invalid"));
+  const { name, description } = form.data;
+  const kindCode = form.data.kindCode ?? "";
 
-  const description = readText(formData, "description");
   const db = getPlatformDb();
   const user = await getCurrentUser();
   if (!(await allowAction(`${user.id}:update-study`, 30, 60_000))) {
@@ -253,8 +255,8 @@ export async function updateStudy(studyId: string, formData: FormData): Promise<
   await db.gameDatabase.update({
     where: { id: study.id },
     data: {
-      name: name.slice(0, STUDY_NAME_MAX_LENGTH),
-      description: description.length > 0 ? description.slice(0, STUDY_DESCRIPTION_MAX_LENGTH) : null,
+      name,
+      description,
       ...(nextKind ? { kind: { connect: { code: nextKind } } } : {}),
     },
   });
@@ -270,9 +272,9 @@ export async function updateStudy(studyId: string, formData: FormData): Promise<
  */
 export async function importPgnGames(studyId: string, formData: FormData): Promise<void> {
   const back = platformRoutes.studyDetail(studyId);
-  const pgnText = readText(formData, "pgn");
-  if (pgnText.length === 0) redirect(withErrorParam(back, "pgnEmpty"));
-  if (pgnText.length > PGN_MAX_LENGTH) redirect(withErrorParam(back, "pgnTooLong"));
+  const form = parseForm(IMPORT_SCHEMA, formData);
+  if (!form.ok) redirect(withErrorParam(back, form.code === "too_big" ? "pgnTooLong" : "pgnEmpty"));
+  const pgnText = form.data.pgn;
 
   const db = getPlatformDb();
   const user = await getCurrentUser();
@@ -345,28 +347,54 @@ const ELO_MAX = 4000;
 /** The form uses <input type="date">, which sends ISO. */
 const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
 
-function readOptionalField(formData: FormData, field: string): string | null {
-  const value = readText(formData, field);
-  return value.length > 0 ? value.slice(0, GAME_FIELD_MAX_LENGTH) : null;
-}
+/** An Elo, or null when it is empty or not credible: a typo is discarded, not stored. */
+const eloField = z
+  .string()
+  .trim()
+  .optional()
+  .transform((value) => {
+    if (!value || !/^\d+$/.test(value)) return null;
+    const elo = Number.parseInt(value, 10);
+    return elo >= ELO_MIN && elo <= ELO_MAX ? elo : null;
+  });
 
-function readElo(formData: FormData, field: string): number | null {
-  const value = readText(formData, field);
-  if (!/^\d+$/.test(value)) return null;
-  const elo = Number.parseInt(value, 10);
-  return elo >= ELO_MIN && elo <= ELO_MAX ? elo : null;
-}
+/** Date from the form (ISO), or null. An impossible date is discarded, not corrected. */
+const isoDateField = z
+  .string()
+  .trim()
+  .optional()
+  .transform((value) => {
+    const match = ISO_DATE.exec(value ?? "");
+    if (!match) return null;
+    const [, year, month, day] = match;
+    const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
+    const isRealDate = date.getUTCMonth() === Number(month) - 1 && date.getUTCDate() === Number(day);
+    return isRealDate ? date : null;
+  });
 
-/** Date from the form (ISO). An impossible date is discarded, not corrected. */
-function readIsoDate(formData: FormData, field: string): Date | null {
-  const match = ISO_DATE.exec(readText(formData, field));
-  if (!match) return null;
-
-  const [, year, month, day] = match;
-  const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
-  const isRealDate = date.getUTCMonth() === Number(month) - 1 && date.getUTCDate() === Number(day);
-  return isRealDate ? date : null;
-}
+/** The fields of a game's record. Free text is bounded; the numbers and the date are lenient. */
+const GAME_FIELDS_SCHEMA = z.object({
+  title: formOptionalText(GAME_FIELD_MAX_LENGTH),
+  white: formOptionalText(GAME_FIELD_MAX_LENGTH),
+  black: formOptionalText(GAME_FIELD_MAX_LENGTH),
+  whiteElo: eloField,
+  blackElo: eloField,
+  // Absent ≠ empty for these four: a form that does not carry them must not erase them.
+  whiteTitle: formTextIfPresent(GAME_FIELD_MAX_LENGTH),
+  blackTitle: formTextIfPresent(GAME_FIELD_MAX_LENGTH),
+  whiteCountry: formTextIfPresent(GAME_FIELD_MAX_LENGTH),
+  blackCountry: formTextIfPresent(GAME_FIELD_MAX_LENGTH),
+  resultCode: z.string().trim().max(32).optional(),
+  playedAt: isoDateField,
+  event: formOptionalText(GAME_FIELD_MAX_LENGTH),
+  site: formOptionalText(GAME_FIELD_MAX_LENGTH),
+  round: formOptionalText(GAME_FIELD_MAX_LENGTH),
+  eco: formOptionalText(GAME_FIELD_MAX_LENGTH),
+});
+const NEW_GAME_SCHEMA = GAME_FIELDS_SCHEMA.extend({
+  pgn: z.string().trim().max(PGN_MAX_LENGTH).optional(),
+  initialFen: formOptionalText(GAME_FIELD_MAX_LENGTH),
+});
 
 /**
  * Does the FEN describe a position that can exist on a board?
@@ -412,8 +440,10 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
   const study = await ownedStudy(studyId, user.id);
   if (!study) return;
 
-  const pgnText = readText(formData, "pgn");
-  if (pgnText.length > PGN_MAX_LENGTH) redirect(withErrorParam(back, "pgnTooLong"));
+  const form = parseForm(NEW_GAME_SCHEMA, formData);
+  if (!form.ok) redirect(withErrorParam(back, form.field === "pgn" ? "pgnTooLong" : "invalid"));
+  const fields = form.data;
+  const pgnText = fields.pgn ?? "";
 
   // The pasted PGN is a SOURCE of data, not an order: if it is not understood, it
   // is discarded and the game is created blank instead of losing what was typed.
@@ -427,14 +457,14 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
   }
   const headers = parsed?.headers ?? new Map<string, string>();
 
-  const initialFen = readOptionalField(formData, "initialFen") ?? readHeader(headers, "FEN");
+  const initialFen = fields.initialFen ?? readHeader(headers, "FEN");
   // A bad FEN is reported: it is the only thing the person may have written wrong
   // without noticing, because the rest of the fields are free text.
   if (initialFen !== null && !isLegalFen(initialFen)) redirect(withErrorParam(back, "fen"));
 
   const pgn = parsed ? makePgn(parsed) : serializeGame(emptyGame(initialFen ?? undefined));
 
-  const resultCode = readText(formData, "resultCode");
+  const resultCode = fields.resultCode ?? "";
   const result = isGameResultCode(resultCode)
     ? resultCode
     : (GAME_RESULT_BY_PGN_TOKEN[readHeader(headers, "Result") ?? ""] ?? GAME_RESULT.ONGOING);
@@ -443,7 +473,7 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
   // does not claim to be an exact counter — two simultaneous creations could
   // repeat "Capítulo 3" — and that is fine: it is a label that can be changed,
   // not a key.
-  const explicitTitle = readOptionalField(formData, "title");
+  const explicitTitle = fields.title;
   const title = explicitTitle ?? `Capítulo ${(await db.game.count({ where: { databaseId: studyId } })) + 1}`;
 
   const created = await db.$transaction(async (tx) => {
@@ -452,20 +482,20 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
         database: { connect: { id: studyId } },
         order: await nextGameOrder(tx, studyId),
         title,
-        white: readOptionalField(formData, "white") ?? readHeader(headers, "White") ?? UNKNOWN_PLAYER,
-        black: readOptionalField(formData, "black") ?? readHeader(headers, "Black") ?? UNKNOWN_PLAYER,
-        whiteElo: readElo(formData, "whiteElo") ?? readEloHeader(headers, "WhiteElo"),
-        blackElo: readElo(formData, "blackElo") ?? readEloHeader(headers, "BlackElo"),
-        whiteTitle: readOptionalField(formData, "whiteTitle") ?? readHeader(headers, "WhiteTitle"),
-        blackTitle: readOptionalField(formData, "blackTitle") ?? readHeader(headers, "BlackTitle"),
-        whiteCountry: readOptionalField(formData, "whiteCountry") ?? readHeader(headers, "WhiteTeam"),
-        blackCountry: readOptionalField(formData, "blackCountry") ?? readHeader(headers, "BlackTeam"),
+        white: fields.white ?? readHeader(headers, "White") ?? UNKNOWN_PLAYER,
+        black: fields.black ?? readHeader(headers, "Black") ?? UNKNOWN_PLAYER,
+        whiteElo: fields.whiteElo ?? readEloHeader(headers, "WhiteElo"),
+        blackElo: fields.blackElo ?? readEloHeader(headers, "BlackElo"),
+        whiteTitle: fields.whiteTitle ?? readHeader(headers, "WhiteTitle"),
+        blackTitle: fields.blackTitle ?? readHeader(headers, "BlackTitle"),
+        whiteCountry: fields.whiteCountry ?? readHeader(headers, "WhiteTeam"),
+        blackCountry: fields.blackCountry ?? readHeader(headers, "BlackTeam"),
         result: { connect: { code: result } },
-        playedAt: readIsoDate(formData, "playedAt") ?? readDateHeader(headers),
-        event: readOptionalField(formData, "event") ?? readHeader(headers, "Event"),
-        site: readOptionalField(formData, "site") ?? readHeader(headers, "Site"),
-        round: readOptionalField(formData, "round") ?? readHeader(headers, "Round"),
-        eco: readOptionalField(formData, "eco") ?? readHeader(headers, "ECO"),
+        playedAt: fields.playedAt ?? readDateHeader(headers),
+        event: fields.event ?? readHeader(headers, "Event"),
+        site: fields.site ?? readHeader(headers, "Site"),
+        round: fields.round ?? readHeader(headers, "Round"),
+        eco: fields.eco ?? readHeader(headers, "ECO"),
         initialFen,
         pgn,
         source: { connect: { code: GAME_SOURCE.MANUAL } },
@@ -482,19 +512,11 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
   redirect(platformRoutes.gameDetail(studyId, created.id));
 }
 
-/**
- * Reads a field ONLY if the form brings it.
- *
- * `readOptionalField` returns null both when the field arrives empty and when it
- * does not arrive, and for a form that rewrites the whole record that is not the
- * same: empty means "delete it", absent means "do not touch it". Without this
- * distinction, a form missing a field erases that data on save — which is
- * exactly how a game's federation and title were lost when they were added to
- * the action before the form.
- */
-function readFieldIfPresent(formData: FormData, field: string): string | null | undefined {
-  return formData.has(field) ? readOptionalField(formData, field) : undefined;
-}
+// Four of the record's fields keep "absent" apart from "empty" (`formTextIfPresent`):
+// empty means "delete it", absent means "do not touch it". Without that
+// distinction, a form missing a field erases that data on save — which is
+// exactly how a game's federation and title were lost when they were added to
+// the action before the form.
 
 /** PGN header: the value is written, it is removed when null, it is left when undefined. */
 function setHeader(headers: Map<string, string>, key: string, value: string | null | undefined): void {
@@ -530,21 +552,14 @@ export async function updateGameDetails(studyId: string, gameId: string, formDat
   });
   if (!game) return;
 
-  const resultCode = readText(formData, "resultCode");
+  const form = parseForm(GAME_FIELDS_SCHEMA, formData);
+  if (!form.ok) redirect(withErrorParam(platformRoutes.gameDetail(studyId, gameId), "invalid"));
+  const { whiteElo, blackElo, playedAt, event, site, round, eco, whiteTitle, blackTitle, whiteCountry, blackCountry } =
+    form.data;
+  const resultCode = form.data.resultCode ?? "";
   const result = isGameResultCode(resultCode) ? resultCode : GAME_RESULT.ONGOING;
-  const white = readOptionalField(formData, "white") ?? UNKNOWN_PLAYER;
-  const black = readOptionalField(formData, "black") ?? UNKNOWN_PLAYER;
-  const whiteElo = readElo(formData, "whiteElo");
-  const blackElo = readElo(formData, "blackElo");
-  const playedAt = readIsoDate(formData, "playedAt");
-  const event = readOptionalField(formData, "event");
-  const site = readOptionalField(formData, "site");
-  const round = readOptionalField(formData, "round");
-  const eco = readOptionalField(formData, "eco");
-  const whiteTitle = readFieldIfPresent(formData, "whiteTitle");
-  const blackTitle = readFieldIfPresent(formData, "blackTitle");
-  const whiteCountry = readFieldIfPresent(formData, "whiteCountry");
-  const blackCountry = readFieldIfPresent(formData, "blackCountry");
+  const white = form.data.white ?? UNKNOWN_PLAYER;
+  const black = form.data.black ?? UNKNOWN_PLAYER;
 
   // The result's token lives in the catalog's label ("1-0", "*"…), which is
   // exactly what the PGN expects in its Result header.
@@ -575,7 +590,7 @@ export async function updateGameDetails(studyId: string, gameId: string, formDat
   await db.game.update({
     where: { id: game.id },
     data: {
-      title: readOptionalField(formData, "title"),
+      title: form.data.title,
       white,
       black,
       whiteElo,
@@ -658,7 +673,7 @@ export async function deleteStudyGame(studyId: string, gameId: string, formData:
   });
   if (!game) return;
 
-  if (game._count.classBlocks > 0 && readText(formData, "confirmClassBlocks") !== "yes") {
+  if (game._count.classBlocks > 0 && readIds(formData, "confirmClassBlocks").confirmClassBlocks !== "yes") {
     redirect(`${gamePath}?error=gameInClasses`);
   }
 
@@ -700,7 +715,7 @@ export async function deleteStudy(studyId: string, formData: FormData): Promise<
 
   const citedGames = await db.classBlock.count({ where: { game: { databaseId: studyId } } });
 
-  if ((study._count.games > 0 || citedGames > 0) && readText(formData, "confirmDelete") !== "yes") {
+  if ((study._count.games > 0 || citedGames > 0) && readIds(formData, "confirmDelete").confirmDelete !== "yes") {
     redirect(`${studyPath}?error=confirmStudyDelete`);
   }
 
@@ -741,7 +756,7 @@ async function ownedCollection(studyId: string): Promise<{ study: { id: string }
 
 /** Shares a collection with a student of the teacher's. */
 export async function shareStudyWithStudent(studyId: string, formData: FormData): Promise<void> {
-  const studentId = readText(formData, "studentId");
+  const { studentId } = readIds(formData, "studentId");
   if (studentId.length === 0) return;
 
   const owned = await ownedCollection(studyId);
@@ -773,7 +788,7 @@ export async function shareStudyWithStudent(studyId: string, formData: FormData)
  * whole in the teacher's database, the student simply stops seeing it.
  */
 export async function unshareStudyWithStudent(studyId: string, formData: FormData): Promise<void> {
-  const studentId = readText(formData, "studentId");
+  const { studentId } = readIds(formData, "studentId");
   if (studentId.length === 0) return;
 
   const owned = await ownedCollection(studyId);

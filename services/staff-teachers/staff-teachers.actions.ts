@@ -9,7 +9,16 @@ import { generateTempPassword } from "@/lib/platform-auth/temp-password";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { staffRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
-import { readBoolean, readOptionalText, readText, readUrl } from "@/services/shared/form-data";
+import { z } from "zod";
+import {
+  formCheckbox,
+  formEmail,
+  formOptionalText,
+  formOptionalUrl,
+  formReturnTo,
+  formText,
+  parseForm,
+} from "@/services/shared/form-schema";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 import { safeReturnTo, withErrorParam } from "@/services/shared/safe-return-to";
 import { createDefaultStudy } from "@/services/studies/default-study";
@@ -18,12 +27,34 @@ import { planAssignment } from "./assignment-rules";
 // Teachers and assignments. Nothing is deleted here: a teacher is deactivated
 // and an assignment is closed. The history of who took whom is part of the data.
 
-const DISPLAY_NAME_MAX_LENGTH = 120;
-const TITLE_MAX_LENGTH = 120;
-const BIO_MAX_LENGTH = 1000;
-const NOTE_MAX_LENGTH = 300;
-const EMAIL_MAX_LENGTH = 254;
-const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const TEACHER_FIELDS = {
+  displayName: formText(120),
+  title: formOptionalText(120),
+  bio: formOptionalText(1000),
+  timezone: z.string().trim().max(64).optional(),
+};
+const CREATE_SCHEMA = z.object({
+  ...TEACHER_FIELDS,
+  /** An existing account to link; when it comes, the email and password are not read. */
+  userId: formOptionalText(64),
+  email: z.string().trim().toLowerCase().max(254).optional(),
+  password: z.string().trim().max(200).optional(),
+});
+const UPDATE_SCHEMA = z.object({ ...TEACHER_FIELDS, photo: formOptionalUrl(500) });
+const ACTIVE_SCHEMA = z.object({ isActive: formCheckbox() });
+const ASSIGN_SCHEMA = z.object({
+  studentId: formText(64),
+  teacherId: formText(64),
+  note: formOptionalText(300),
+});
+const RETURN_TO_SCHEMA = z.object({ returnTo: formReturnTo() });
+const EMAIL_SCHEMA = z.object({ email: formEmail() });
+
+/** The `returnTo` hidden field, still to be checked by `safeReturnTo`. */
+function readReturnTo(formData: FormData): string {
+  const parsed = parseForm(RETURN_TO_SCHEMA, formData);
+  return parsed.ok ? parsed.data.returnTo : "";
+}
 
 /** Partial index that imposes "one active teacher per student" (manual SQL). */
 const ONE_ACTIVE_INDEX = "teacher_student_one_active";
@@ -43,16 +74,13 @@ export async function createTeacher(formData: FormData): Promise<void> {
   const staff = await requireStaff();
   if (!(await allowAction(`${staff.user.id}:teacher-create`, 20, 3_600_000))) fail(staffRoutes.newTeacher, "throttled");
 
-  const displayName = readText(formData, "displayName").slice(0, DISPLAY_NAME_MAX_LENGTH);
-  if (displayName.length === 0) fail(staffRoutes.newTeacher, "displayName");
-
-  const title = readOptionalText(formData, "title", TITLE_MAX_LENGTH);
-  const bio = readOptionalText(formData, "bio", BIO_MAX_LENGTH);
-  const timezone = readText(formData, "timezone");
+  const parsed = parseForm(CREATE_SCHEMA, formData);
+  if (!parsed.ok) fail(staffRoutes.newTeacher, parsed.field === "displayName" ? "displayName" : "invalid");
+  const { displayName, title, bio, userId: existingUserId } = parsed.data;
+  const timezone = parsed.data.timezone ?? "";
   const db = getPlatformDb();
 
-  const existingUserId = readText(formData, "userId");
-  if (existingUserId.length > 0) {
+  if (existingUserId) {
     const user = await db.user.findUnique({
       where: { id: existingUserId },
       select: { id: true, teacher: { select: { id: true } } },
@@ -75,10 +103,12 @@ export async function createTeacher(formData: FormData): Promise<void> {
     redirect(staffRoutes.teacherDetail(created.id));
   }
 
-  const email = readText(formData, "email").toLowerCase().slice(0, EMAIL_MAX_LENGTH);
-  if (!EMAIL_SHAPE.test(email)) fail(staffRoutes.newTeacher, "email");
+  // The email is only demanded here, once it is known that no account is being linked.
+  const account = parseForm(EMAIL_SCHEMA, formData);
+  if (!account.ok) fail(staffRoutes.newTeacher, "email");
+  const { email } = account.data;
 
-  const typedPassword = readText(formData, "password");
+  const typedPassword = parsed.data.password ?? "";
   if (typedPassword.length > 0 && passwordProblem(typedPassword) !== null) fail(staffRoutes.newTeacher, "invalid");
   const password = typedPassword.length > 0 ? typedPassword : generateTempPassword();
 
@@ -121,22 +151,18 @@ export async function updateTeacher(teacherId: string, formData: FormData): Prom
   const detailPath = staffRoutes.teacherDetail(teacherId);
   if (!(await allowAction(`${staff.user.id}:teacher-update`, 60, 60_000))) fail(detailPath, "throttled");
 
-  const displayName = readText(formData, "displayName").slice(0, DISPLAY_NAME_MAX_LENGTH);
-  if (displayName.length === 0) fail(detailPath, "displayName");
-
-  const timezone = readText(formData, "timezone");
-  const photoRaw = readText(formData, "photo");
-  const photo = photoRaw.length > 0 ? readUrl(formData, "photo") : null;
-  if (photoRaw.length > 0 && photo === null) fail(detailPath, "invalid");
+  const parsed = parseForm(UPDATE_SCHEMA, formData);
+  if (!parsed.ok) fail(detailPath, parsed.field === "displayName" ? "displayName" : "invalid");
+  const { displayName, title, bio, photo, timezone } = parsed.data;
 
   await getPlatformDb().teacher.update({
     where: { id: teacherId },
     data: {
       displayName,
-      title: readOptionalText(formData, "title", TITLE_MAX_LENGTH),
-      bio: readOptionalText(formData, "bio", BIO_MAX_LENGTH),
+      title,
+      bio,
       photo,
-      timezone: isCommonTimezone(timezone) ? timezone : null,
+      timezone: timezone && isCommonTimezone(timezone) ? timezone : null,
     },
   });
 
@@ -154,9 +180,12 @@ export async function setTeacherActive(teacherId: string, formData: FormData): P
   const detailPath = staffRoutes.teacherDetail(teacherId);
   if (!(await allowAction(`${staff.user.id}:teacher-active`, 60, 60_000))) fail(detailPath, "throttled");
 
+  const parsed = parseForm(ACTIVE_SCHEMA, formData);
+  if (!parsed.ok) fail(detailPath, "invalid");
+
   await getPlatformDb().teacher.update({
     where: { id: teacherId },
-    data: { isActive: readBoolean(formData, "isActive") },
+    data: { isActive: parsed.data.isActive },
   });
 
   revalidatePath(detailPath);
@@ -166,11 +195,20 @@ export async function setTeacherActive(teacherId: string, formData: FormData): P
 export async function assignStudent(formData: FormData): Promise<void> {
   const staff = await requireStaff();
 
-  const studentId = readText(formData, "studentId");
-  const teacherId = readText(formData, "teacherId");
   // `returnTo` comes from a hidden field, that is, from the client: internal
   // paths only, or `redirect()` would serve to send the staff to another domain.
-  const returnTo = safeReturnTo(readText(formData, "returnTo"), staffRoutes.studentDetail(studentId));
+  // It is read first because every failure below goes back to it.
+  const parsed = parseForm(ASSIGN_SCHEMA, formData);
+  const returnTo = safeReturnTo(
+    readReturnTo(formData),
+    staffRoutes.studentDetail(parsed.ok ? parsed.data.studentId : ""),
+  );
+  if (!parsed.ok)
+    fail(
+      returnTo,
+      parsed.field === "teacherId" ? "teacherMissing" : parsed.field === "studentId" ? "studentMissing" : "invalid",
+    );
+  const { studentId, teacherId, note } = parsed.data;
 
   if (!(await allowAction(`${staff.user.id}:assign-student`, 60, 60_000))) fail(returnTo, "throttled");
 
@@ -182,8 +220,6 @@ export async function assignStudent(formData: FormData): Promise<void> {
   if (!teacher) fail(returnTo, "teacherMissing");
   if (!teacher.isActive) fail(returnTo, "teacherInactive");
   if (!student) fail(returnTo, "studentMissing");
-
-  const note = readOptionalText(formData, "note", NOTE_MAX_LENGTH);
 
   try {
     await db.$transaction(async (tx) => {
@@ -220,7 +256,7 @@ export async function assignStudent(formData: FormData): Promise<void> {
 /** Ends an assignment. It never deletes the row: it is history. */
 export async function endAssignment(assignmentId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
-  const returnTo = safeReturnTo(readText(formData, "returnTo"), staffRoutes.teachers);
+  const returnTo = safeReturnTo(readReturnTo(formData), staffRoutes.teachers);
   if (!(await allowAction(`${staff.user.id}:end-assignment`, 60, 60_000))) fail(returnTo, "throttled");
 
   const db = getPlatformDb();
