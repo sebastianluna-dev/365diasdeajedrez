@@ -16,6 +16,7 @@
     "db:studio": "prisma studio",
     "positions:index": "tsx scripts/index-game-positions.ts",
     "collections:by-chapter": "tsx scripts/migrate-chapter-collections.ts",
+    "stats:rebuild": "tsx scripts/rebuild-daily-stats.ts",
     "user:create": "tsx scripts/platform-user.ts create",
     "user:password": "tsx scripts/platform-user.ts password",
     "user:list": "tsx scripts/platform-user.ts list",
