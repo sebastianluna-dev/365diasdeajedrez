@@ -54,6 +54,10 @@ One-off data migration from course-level collections to **chapter** collections 
 
 Rebuilds `UserStatDaily` from `UserActivity` through `services/shared/daily-stats.ts` (the same function the seed uses), for every account or for one (`-- <email>`). The aggregate is derived, so this is the answer whenever the bucketing changes — on 2026-09-21 the day moved from UTC to the study day, `America/Mexico_City` — or the two tables are suspected to have drifted apart. Each account is rebuilt in one transaction.
 
+## `scripts/make-board-sounds.ts` — `npm run sounds:make`
+
+Writes `public/sounds/move.wav` and `capture.wav` from a seeded noise generator and a one-pole low-pass filter: no third-party audio in the repository. Change the specs in the script and run it again; the output is byte-for-byte reproducible.
+
 ## `scripts/sync-pieces.ts` — `npm run pieces:sync`
 
 Regenerates `public/pieces/*.svg` from chessground's cburnett CSS (adds `viewBox`). Run after upgrading `@lichess-org/chessground`.
