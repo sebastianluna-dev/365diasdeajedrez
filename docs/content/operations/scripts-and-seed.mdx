@@ -40,7 +40,7 @@ npm run user:password -- alumno@correo.com                      # new password +
 npm run user:list                                               # accounts, has-password, open sessions
 ```
 
-Passwords are never accepted as arguments (they would end up in the shell history); use `PLATFORM_USER_PASSWORD` for non-interactive runs. Validation uses the same `passwordProblem()` and `hashPassword()` as the app.
+Passwords are never accepted as arguments (they would end up in the shell history); use `PLATFORM_USER_PASSWORD` for non-interactive runs. Validation uses the same `passwordProblem()` and `hashPassword()` as the app, and `user:create` enrols the student the way the staff panel does: the account and its "Mis partidas" study go in one transaction (`createDefaultStudy`).
 
 ## `scripts/index-game-positions.ts` — `npm run positions:index`
 

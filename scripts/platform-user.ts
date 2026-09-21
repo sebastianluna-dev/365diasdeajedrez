@@ -1,8 +1,9 @@
 // Creating and maintaining student accounts from the terminal.
 //
 // There is no public sign-up on purpose: in an academy the student exists
-// because they are enrolled. Until the teacher panel exists (IMPROVEMENTS #15), this
-// is the official route.
+// because they are enrolled. The administration panel (/administracion/alumnos/nuevo)
+// is the usual route; this is the same enrolment from the terminal, "Mis partidas"
+// included.
 //
 //   npm run user:create   -- alumno@correo.com "Nombre Apellido"
 //   npm run user:password -- alumno@correo.com
@@ -21,6 +22,7 @@ import { Writable } from "node:stream";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../lib/platform-db/generated/client";
 import { hashPassword, passwordProblem } from "../lib/platform-auth/password";
+import { createDefaultStudy } from "../services/studies/default-study";
 
 const connectionString = process.env.PLATFORM_DATABASE_URL;
 if (!connectionString) throw new Error("Falta PLATFORM_DATABASE_URL en el entorno (ver .env.example).");
@@ -84,8 +86,15 @@ async function createUser(rawEmail: string | undefined, displayName: string | un
   if (existing) fail(`Ya existe una cuenta con ${email}. Usa \`npm run user:password\` para cambiar su contraseña.`);
 
   const password = await readValidPassword();
-  const user = await db.user.create({
-    data: { email, displayName: name, passwordHash: await hashPassword(password), passwordUpdatedAt: new Date() },
+  const passwordHash = await hashPassword(password);
+  // The account and its "Mis partidas" go in together or neither does, exactly as
+  // the administration panel does it (services/staff-students).
+  const user = await db.$transaction(async (tx) => {
+    const created = await tx.user.create({
+      data: { email, displayName: name, passwordHash, passwordUpdatedAt: new Date() },
+    });
+    await createDefaultStudy(tx, created.id);
+    return created;
   });
 
   console.log(`✔ Alumno creado: ${user.displayName} <${user.email}>`);
