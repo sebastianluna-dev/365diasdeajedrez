@@ -10,12 +10,12 @@
 
 export type MoveSoundKind = "move" | "capture";
 
-// Only two, taken from lichess's "standard" set. There, check does NOT
-// sound (its Check.mp3 is a link to Silence.mp3), so giving it a sound of
-// its own would be making up the set.
+// Only two, synthesised by scripts/make-board-sounds.ts (ours, no licence to
+// carry). Check does not sound: it is a state of the position, not a gesture
+// on the board, and the two sounds are gestures.
 const SOURCES: Record<MoveSoundKind, string> = {
-  move: "/sounds/move.mp3",
-  capture: "/sounds/capture.mp3",
+  move: "/sounds/move.wav",
+  capture: "/sounds/capture.wav",
 };
 
 const cache = new Map<MoveSoundKind, HTMLAudioElement>();

@@ -40,7 +40,7 @@ The **cburnett** set (Colin M. L. Burnett, CC BY-SA 3.0) that chessground draws,
 
 ## Sounds — `public/sounds/`
 
-`move.mp3` and `capture.mp3` from lichess' _standard_ sound set. There is deliberately no check sound: in that set `Check.mp3` is a link to silence, so inventing one would misrepresent the set. Played by `components/chess/game-viewer/move-sound.ts`, loaded lazily, toggled by the viewer preference. Attribution/licence text for the sounds is still an open backlog item (`IMPROVEMENTS.md` #34).
+`move.wav` and `capture.wav`, synthesised by `scripts/make-board-sounds.ts` (`npm run sounds:make`): a short filtered noise burst with a faint tone for a move, a lower and longer one for a capture, from a seeded generator so the bytes are reproducible. They replaced lichess' _standard_ sounds, which lila's `COPYING.md` lists among its non-free exceptions. There is deliberately no check sound: a check is a state of the position, not a gesture on the board. Played by `components/chess/game-viewer/move-sound.ts`, loaded lazily, toggled by the viewer preference.
 
 ## Fonts — `public/fonts/`
 
