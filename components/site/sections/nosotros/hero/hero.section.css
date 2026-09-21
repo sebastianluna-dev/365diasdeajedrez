@@ -52,7 +52,7 @@
   & .nosotros-hero__text {
     font-size: 19px;
     line-height: 1.6;
-    color: #b4a99d;
+    color: var(--color-muted-on-dark);
     margin: 0 auto;
     max-width: 62ch;
   }
@@ -74,7 +74,7 @@
 
   & .nosotros-hero__stat-label {
     font-size: 14px;
-    color: #b4a99d;
+    color: var(--color-muted-on-dark);
     margin-top: 8px;
   }
 

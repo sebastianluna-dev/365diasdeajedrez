@@ -54,7 +54,7 @@
   & .hero__text {
     font-size: 20px;
     line-height: 1.55;
-    color: #b4a99d;
+    color: var(--color-muted-on-dark);
     margin: 0;
     max-width: 40ch;
   }

@@ -65,7 +65,7 @@
   & .reviews__chat-time {
     font-size: 15px;
     /* #9c968d gave 2.9:1 on white; this is the light theme's muted tone (6.9:1). */
-    color: #5c5348;
+    color: var(--color-muted-on-light);
   }
 
   & .reviews__chat-message {

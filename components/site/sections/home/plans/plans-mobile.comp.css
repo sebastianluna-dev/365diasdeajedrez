@@ -16,7 +16,7 @@
     border-radius: 10px;
     border: none;
     background: transparent;
-    color: #5c5348;
+    color: var(--color-muted-on-light);
     font-weight: 600;
     font-size: 14.5px;
     cursor: pointer;

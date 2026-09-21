@@ -27,7 +27,7 @@
   & .nosotros-values__text {
     font-size: 17px;
     line-height: 1.6;
-    color: #b4a99d;
+    color: var(--color-muted-on-dark);
     margin: 0 auto;
     max-width: 56ch;
   }
@@ -88,7 +88,7 @@
   & .nosotros-values__card-text {
     font-size: 14.5px;
     line-height: 1.6;
-    color: #b4a99d;
+    color: var(--color-muted-on-dark);
     margin: 0;
     position: relative;
   }

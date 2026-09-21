@@ -28,7 +28,7 @@
   & .sticky-cta__subtitle {
     margin: 2px 0 0;
     font-size: 14px;
-    color: #b4a99d;
+    color: var(--color-muted-on-dark);
   }
 
   & .sticky-cta__actions {
@@ -55,7 +55,7 @@
     background: var(--color-primary);
     color: var(--color-dark) !important;
     border-color: transparent;
-    box-shadow: 0 4px 0 #b8611f;
+    box-shadow: 0 4px 0 var(--color-primary-deep);
   }
 
   @media (max-width: 1024px) {

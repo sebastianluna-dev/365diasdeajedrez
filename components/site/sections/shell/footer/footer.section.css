@@ -36,7 +36,7 @@
   & .site-footer__description {
     font-size: 14px;
     line-height: 1.6;
-    color: #b4a99d;
+    color: var(--color-muted-on-dark);
     margin: 14px 0 0;
     max-width: 36ch;
   }
@@ -50,7 +50,7 @@
 
   & .site-footer__link,
   & .site-footer__text {
-    color: #b4a99d;
+    color: var(--color-muted-on-dark);
   }
 
   & .site-footer__link:hover {
@@ -64,7 +64,7 @@
     justify-content: space-between;
     font-size: 14px;
     /* The same muted tone as the links above: #6b6259 gave 3.3:1 on the background. */
-    color: #b4a99d;
+    color: var(--color-muted-on-dark);
   }
 
   @media (max-width: 1023px) {

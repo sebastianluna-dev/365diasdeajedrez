@@ -23,7 +23,7 @@
   & .blog-articles__intro {
     font-size: 17px;
     line-height: 1.65;
-    color: #5c5348;
+    color: var(--color-muted-on-light);
     margin: 0 0 34px;
     max-width: 64ch;
   }

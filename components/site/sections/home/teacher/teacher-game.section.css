@@ -25,7 +25,7 @@
   & .teacher-game__text {
     font-size: 16.5px;
     line-height: 1.65;
-    color: #b4a99d;
+    color: var(--color-muted-on-dark);
     margin: 0 0 14px;
   }
 
