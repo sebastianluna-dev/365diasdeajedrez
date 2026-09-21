@@ -10,7 +10,8 @@ import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { publishedChapterWhere, publishedLessonWhere } from "@/services/shared/published-content";
 import { recordUserActivity } from "@/services/shared/user-activity.service";
-import { readText } from "@/services/shared/form-data";
+import { z } from "zod";
+import { formReturnTo, parseForm } from "@/services/shared/form-schema";
 import { safeReturnTo, withErrorParam } from "@/services/shared/safe-return-to";
 
 const MAX_MISTAKES = 999;
@@ -24,6 +25,8 @@ function clamp(value: number, min: number, max: number): number {
 
 // Server actions are reachable by direct POST: the user is resolved in here and
 // the client's inputs are validated against the database.
+
+const RETURN_TO_SCHEMA = z.object({ returnTo: formReturnTo() });
 
 export interface RecordAttemptInput {
   exerciseId: string;
@@ -89,7 +92,8 @@ export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<
 export async function toggleTrainerChapter(chapterId: string, add: boolean, formData: FormData): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  const returnTo = safeReturnTo(readText(formData, "returnTo"), platformRoutes.trainer);
+  const destination = parseForm(RETURN_TO_SCHEMA, formData);
+  const returnTo = safeReturnTo(destination.ok ? destination.data.returnTo : "", platformRoutes.trainer);
 
   if (!(await allowAction(`${user.id}:toggle-trainer-chapter`, 60, 60_000)))
     redirect(withErrorParam(returnTo, "throttled"));

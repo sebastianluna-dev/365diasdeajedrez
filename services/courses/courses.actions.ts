@@ -10,12 +10,21 @@ import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { publishedLessonWhere } from "@/services/shared/published-content";
-import { readText } from "@/services/shared/form-data";
+import { z } from "zod";
+import { formReturnTo, parseForm } from "@/services/shared/form-schema";
 import { safeReturnTo, withErrorParam } from "@/services/shared/safe-return-to";
 import { recordUserActivity } from "@/services/shared/user-activity.service";
 
 // Server actions are reachable by direct POST: the user is ALWAYS resolved in
 // here (DAL) and never arrives from the client.
+
+const RETURN_TO_SCHEMA = z.object({ returnTo: formReturnTo() });
+
+/** The page the form sits on, still to be checked by `safeReturnTo`. */
+function readReturnTo(formData: FormData): string {
+  const parsed = parseForm(RETURN_TO_SCHEMA, formData);
+  return parsed.ok ? parsed.data.returnTo : "";
+}
 
 // Only lessons of published courses: the id comes from the client and without
 // this filter a direct POST would seed progress over a draft course.
@@ -225,7 +234,7 @@ export async function completeLesson(lessonId: string): Promise<void> {
 export async function setOnlyPriorityLessons(courseId: string, enabled: boolean, formData: FormData): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  const returnTo = safeReturnTo(readText(formData, "returnTo"), platformRoutes.courseDetail(courseId));
+  const returnTo = safeReturnTo(readReturnTo(formData), platformRoutes.courseDetail(courseId));
   if (!(await allowAction(`${user.id}:course-settings`, 30, 60_000))) redirect(withErrorParam(returnTo, "throttled"));
 
   // Only published courses: a direct POST must not be able to seed settings of

@@ -8,6 +8,8 @@ import { createSession, destroyCurrentSession } from "@/lib/platform-auth/sessio
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { homeRouteFor } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
+import { z } from "zod";
+import { formEmail, formReturnTo, parseForm } from "@/services/shared/form-schema";
 import { safeReturnTo } from "@/services/shared/safe-return-to";
 
 // Plain server action (no useActionState) so the login works without JavaScript
@@ -15,12 +17,11 @@ import { safeReturnTo } from "@/services/shared/safe-return-to";
 // outside. The error travels back in the query, with the POST → redirect → GET
 // pattern.
 
-const EMAIL_MAX_LENGTH = 254;
-
-function readText(formData: FormData, field: string): string {
-  const value = formData.get(field);
-  return typeof value === "string" ? value.trim() : "";
-}
+const RETURN_TO_SCHEMA = z.object({ [RETURN_TO_PARAM]: formReturnTo() });
+const CREDENTIALS_SCHEMA = z.object({
+  email: formEmail(),
+  password: z.string().trim().min(1).max(PASSWORD_MAX_LENGTH),
+});
 
 /** Returns to the form keeping the pending destination and the reason for the failure. */
 function backToLogin(errorCode: string, returnTo: string): never {
@@ -30,13 +31,14 @@ function backToLogin(errorCode: string, returnTo: string): never {
 }
 
 export async function loginAction(formData: FormData): Promise<void> {
-  const email = readText(formData, "email").toLowerCase().slice(0, EMAIL_MAX_LENGTH);
-  const password = readText(formData, "password");
-  const rawReturnTo = readText(formData, RETURN_TO_PARAM);
+  // The destination is read first and on its own: it has to travel back with any
+  // failure, and a destination cannot fail (it is checked by `safeReturnTo` at the end).
+  const destination = parseForm(RETURN_TO_SCHEMA, formData);
+  const rawReturnTo = destination.ok ? destination.data[RETURN_TO_PARAM] : "";
 
-  if (email.length === 0 || password.length === 0 || password.length > PASSWORD_MAX_LENGTH) {
-    backToLogin("credentials", rawReturnTo);
-  }
+  const credentials = parseForm(CREDENTIALS_SCHEMA, formData);
+  if (!credentials.ok) backToLogin("credentials", rawReturnTo);
+  const { email, password } = credentials.data;
 
   // Two ceilings: per account (it slows an attack on one particular student) and
   // per origin (it slows a sweep of many accounts from the same machine).

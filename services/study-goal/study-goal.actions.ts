@@ -7,7 +7,8 @@ import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
-import { readText } from "@/services/shared/form-data";
+import { z } from "zod";
+import { formInt, parseForm } from "@/services/shared/form-schema";
 import { withErrorParam } from "@/services/shared/safe-return-to";
 
 /**
@@ -18,9 +19,12 @@ import { withErrorParam } from "@/services/shared/safe-return-to";
  * "100000" would leave a bar that cannot be filled or that fills itself. A value
  * that is not in the list comes out without writing, and the page says so.
  */
+const GOAL_SCHEMA = z.object({ goalMinutes: formInt(1, 100_000).refine(isGoalOption) });
+
 export async function updateDailyGoal(formData: FormData): Promise<void> {
-  const minutes = Number.parseInt(readText(formData, "goalMinutes"), 10);
-  if (!Number.isInteger(minutes) || !isGoalOption(minutes)) redirect(withErrorParam(platformRoutes.courses, "goal"));
+  const parsed = parseForm(GOAL_SCHEMA, formData);
+  if (!parsed.ok) redirect(withErrorParam(platformRoutes.courses, "goal"));
+  const minutes = parsed.data.goalMinutes;
 
   const user = await getCurrentUser();
   if (!(await allowAction(`${user.id}:daily-goal`, 20, 60_000)))

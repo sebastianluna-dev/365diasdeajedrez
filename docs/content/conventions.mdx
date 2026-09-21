@@ -42,7 +42,7 @@ These rules are enforced by review, tests (`proxy.test.ts`, `nav-items.test.ts`)
 ## Server actions
 
 - `"use server"` modules export **async functions only**; messages and constants live in `constants/platform/*-messages.const.ts`.
-- Read form fields with `services/shared/form-data.ts` (`readText`, `readOptionalText`, `readUrl`, `readClampedInt`, `readBoolean`); bound every input.
+- Read form fields through a zod schema with `parseForm` from `services/shared/form-schema.ts` (`formText`, `formOptionalText`, `formOptionalUrl`, `formInt`, `formLenientInt`, `formCheckbox`, `formEmail`, `formTextIfPresent`, `formReturnTo`, `readIds` for the hidden ids); the schema is the action's contract, bounds every input and names the field that failed so the action answers with the code its page knows.
 - Resolve the user first, then rate-limit with `allowAction(key, limit, windowMs)` (`lib/rate-limit.ts`), then validate, then write, then `revalidatePath`.
 - Errors travel back as a redirect to the page with `?error=<code>` (`withErrorParam`), and the page translates the code with the message map. The only exceptions return state through `useActionState`: account creation and password reset, because a temporary password must never sit in a URL.
 

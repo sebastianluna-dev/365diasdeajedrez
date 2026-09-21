@@ -13,7 +13,16 @@ import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
-import { readBoolean, readClampedInt, readOptionalText, readText, readUrl } from "@/services/shared/form-data";
+import { z } from "zod";
+import {
+  formCheckbox,
+  formLenientInt,
+  formOptionalText,
+  formOptionalUrl,
+  formText,
+  parseForm,
+  readIds,
+} from "@/services/shared/form-schema";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_SOURCE } from "@/constants/platform/study-codes.const";
@@ -48,9 +57,59 @@ function isCode(value: string, catalog: Record<string, string>): boolean {
 }
 
 /** SAN moves separated by spaces, as in `prisma/seed-data.ts`. */
-function readSans(formData: FormData, field: string): string[] {
-  return readText(formData, field).split(/\s+/).filter(Boolean);
+function formSans() {
+  return z
+    .string()
+    .trim()
+    .max(20_000)
+    .optional()
+    .transform((value) => (value ?? "").split(/\s+/).filter(Boolean));
 }
+
+const slugField = z.string().trim().toLowerCase().max(SLUG_MAX_LENGTH).regex(SLUG_SHAPE);
+const COURSE_SCHEMA = z.object({
+  name: formText(NAME_MAX_LENGTH),
+  slug: slugField,
+  typeCode: formText(32).refine((value) => isCode(value, COURSE_TYPE)),
+});
+const COURSE_UPDATE_SCHEMA = COURSE_SCHEMA.extend({
+  description: formOptionalText(DESCRIPTION_MAX_LENGTH),
+  cover: formOptionalUrl(2000),
+  levelCodes: z.array(z.string().trim().max(64)),
+});
+const PGN_SCHEMA = z.object({ pgn: z.string().trim().min(1).max(PGN_MAX_LENGTH) });
+const NAMED_SCHEMA = z.object({ name: formText(NAME_MAX_LENGTH), role: z.string().trim().max(32).optional() });
+const CHAPTER_UPDATE_SCHEMA = z.object({
+  name: formText(NAME_MAX_LENGTH),
+  description: formOptionalText(DESCRIPTION_MAX_LENGTH),
+  estimatedDuration: formLenientInt(0, DURATION_MAX),
+});
+const LESSON_UPDATE_SCHEMA = z.object({
+  name: formText(NAME_MAX_LENGTH),
+  orientationCode: formText(16).refine((value) => (CONTENT_ORIENTATIONS as readonly string[]).includes(value)),
+  topicIds: z.array(z.string().trim()),
+  isTrainable: formCheckbox(),
+  // Empty = "whoever moves first". Anything else that is not from the content
+  // catalog is treated the same, so as not to store a made-up side.
+  trainingColorCode: z.string().trim().max(16).optional(),
+  description: formOptionalText(DESCRIPTION_MAX_LENGTH),
+  isPriority: formCheckbox(),
+  estimatedDuration: formLenientInt(0, DURATION_MAX),
+});
+const EXERCISE_SCHEMA = z.object({
+  modeCode: formText(32).refine((value) => isCode(value, EXERCISE_MODE)),
+  lineSans: formSans().refine((sans) => sans.length > 0),
+  // Previous moves up to the starting point; empty = from the lesson's initial
+  // position. Same space-separated SAN format as the seed.
+  afterSans: formSans(),
+  promptText: formOptionalText(PROMPT_MAX_LENGTH),
+});
+const AUTHOR_SCHEMA = z.object({
+  name: formText(NAME_MAX_LENGTH),
+  slug: slugField,
+  photo: formOptionalUrl(2000),
+  bio: formOptionalText(DESCRIPTION_MAX_LENGTH),
+});
 
 // --- Courses --------------------------------------------------------------
 
@@ -58,12 +117,9 @@ export async function createCourse(formData: FormData): Promise<void> {
   const staff = await requireStaff();
   if (!(await allowAction(`${staff.user.id}:course-create`, 20, 3_600_000))) fail(staffRoutes.newCourse, "throttled");
 
-  const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
-  const slug = readText(formData, "slug").toLowerCase().slice(0, SLUG_MAX_LENGTH);
-  const typeCode = readText(formData, "typeCode");
-  if (name.length === 0 || !SLUG_SHAPE.test(slug) || !isCode(typeCode, COURSE_TYPE)) {
-    fail(staffRoutes.newCourse, "invalid");
-  }
+  const parsed = parseForm(COURSE_SCHEMA, formData);
+  if (!parsed.ok) fail(staffRoutes.newCourse, "invalid");
+  const { name, slug, typeCode } = parsed.data;
 
   let courseId: string;
   try {
@@ -96,16 +152,9 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
   const detailPath = staffRoutes.courseDetail(courseId);
   if (!(await allowAction(`${staff.user.id}:course-update`, 60, 60_000))) fail(detailPath, "throttled");
 
-  const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
-  const slug = readText(formData, "slug").toLowerCase().slice(0, SLUG_MAX_LENGTH);
-  const typeCode = readText(formData, "typeCode");
-  if (name.length === 0 || !SLUG_SHAPE.test(slug) || !isCode(typeCode, COURSE_TYPE)) fail(detailPath, "invalid");
-
-  const coverRaw = readText(formData, "cover");
-  const cover = coverRaw.length > 0 ? readUrl(formData, "cover") : null;
-  if (coverRaw.length > 0 && cover === null) fail(detailPath, "invalid");
-
-  const levelCodes = formData.getAll("levelCodes").filter((value): value is string => typeof value === "string");
+  const parsed = parseForm(COURSE_UPDATE_SCHEMA, formData);
+  if (!parsed.ok) fail(detailPath, "invalid");
+  const { name, slug, typeCode, description, cover, levelCodes } = parsed.data;
   const db = getPlatformDb();
 
   try {
@@ -115,7 +164,7 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
         data: {
           name,
           slug,
-          description: readOptionalText(formData, "description", DESCRIPTION_MAX_LENGTH),
+          description,
           cover,
           type: { connect: { code: typeCode } },
         },
@@ -246,10 +295,10 @@ export async function importChapterGames(courseId: string, chapterId: string, fo
   const chapterPath = staffRoutes.chapterGames(courseId, chapterId);
   if (!(await allowAction(`${staff.user.id}:chapter-games-import`, 20, 60_000))) fail(chapterPath, "throttled");
 
-  const pgnText = readText(formData, "pgn");
-  if (pgnText.length === 0 || pgnText.length > PGN_MAX_LENGTH) fail(chapterPath, "pgnTooLong");
+  const parsed = parseForm(PGN_SCHEMA, formData);
+  if (!parsed.ok) fail(chapterPath, "pgnTooLong");
 
-  const games = parseImportedGames(pgnText);
+  const games = parseImportedGames(parsed.data.pgn);
   if (games.length === 0) fail(chapterPath, "pgn");
 
   const db = getPlatformDb();
@@ -317,7 +366,7 @@ export async function deleteChapterGame(courseId: string, chapterId: string, for
   const chapterPath = staffRoutes.chapterGames(courseId, chapterId);
   if (!(await allowAction(`${staff.user.id}:chapter-games-delete`, 60, 60_000))) fail(chapterPath, "throttled");
 
-  const gameId = readText(formData, "gameId");
+  const { gameId } = readIds(formData, "gameId");
   const db = getPlatformDb();
 
   const game = await db.game.findFirst({
@@ -342,14 +391,15 @@ export async function createChapter(courseId: string, formData: FormData): Promi
   const detailPath = staffRoutes.courseDetail(courseId);
   if (!(await allowAction(`${staff.user.id}:chapter-create`, 60, 60_000))) fail(detailPath, "throttled");
 
-  const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
-  if (name.length === 0) fail(detailPath, "invalid");
+  const parsed = parseForm(NAMED_SCHEMA, formData);
+  if (!parsed.ok) fail(detailPath, "invalid");
+  const { name } = parsed.data;
 
   // Optional role: without it, it is a normal chapter, which is what almost all of
   // them are. The place the introduction and the closing take does not come from
   // `order` but from their role (see services/shared/content-order), so here they
   // are numbered at the end like any other.
-  const roleCode = readText(formData, "role");
+  const roleCode = parsed.data.role ?? "";
   const role = isContentRoleCode(roleCode) ? roleCode : null;
 
   const db = getPlatformDb();
@@ -379,16 +429,12 @@ export async function updateChapter(courseId: string, chapterId: string, formDat
   const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
   if (!(await allowAction(`${staff.user.id}:chapter-update`, 60, 60_000))) fail(chapterPath, "throttled");
 
-  const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
-  if (name.length === 0) fail(chapterPath, "invalid");
+  const parsed = parseForm(CHAPTER_UPDATE_SCHEMA, formData);
+  if (!parsed.ok) fail(chapterPath, "invalid");
 
   const updated = await getPlatformDb().chapter.updateMany({
     where: { id: chapterId, courseId },
-    data: {
-      name,
-      description: readOptionalText(formData, "description", DESCRIPTION_MAX_LENGTH),
-      estimatedDuration: readClampedInt(formData, "estimatedDuration", 0, DURATION_MAX),
-    },
+    data: parsed.data,
   });
   if (updated.count === 0) fail(chapterPath, "courseMissing");
 
@@ -465,7 +511,7 @@ export async function deleteChapter(courseId: string, formData: FormData): Promi
   const detailPath = staffRoutes.courseDetail(courseId);
   if (!(await allowAction(`${staff.user.id}:chapter-delete`, 60, 60_000))) fail(detailPath, "throttled");
 
-  const chapterId = readText(formData, "chapterId");
+  const { chapterId } = readIds(formData, "chapterId");
   const db = getPlatformDb();
 
   const chapter = await db.chapter.findFirst({
@@ -499,14 +545,15 @@ export async function createLesson(courseId: string, chapterId: string, formData
   const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
   if (!(await allowAction(`${staff.user.id}:lesson-create`, 60, 60_000))) fail(chapterPath, "throttled");
 
-  const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
-  if (name.length === 0) fail(chapterPath, "invalid");
+  const parsed = parseForm(NAMED_SCHEMA, formData);
+  if (!parsed.ok) fail(chapterPath, "invalid");
+  const { name } = parsed.data;
 
   const db = getPlatformDb();
   const chapter = await db.chapter.findFirst({ where: { id: chapterId, courseId }, select: { id: true } });
   if (!chapter) fail(chapterPath, "courseMissing");
 
-  const roleCode = readText(formData, "role");
+  const roleCode = parsed.data.role ?? "";
   const role = isContentRoleCode(roleCode) ? roleCode : null;
 
   const count = await db.lesson.count({ where: { chapterId } });
@@ -536,23 +583,15 @@ export async function updateLesson(
   const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
   if (!(await allowAction(`${staff.user.id}:lesson-update`, 60, 60_000))) fail(lessonPath, "throttled");
 
-  const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
-  const orientationCode = readText(formData, "orientationCode");
+  const parsed = parseForm(LESSON_UPDATE_SCHEMA, formData);
+  if (!parsed.ok) fail(lessonPath, "invalid");
+  const { name, orientationCode, isTrainable, description, isPriority, estimatedDuration } = parsed.data;
 
-  if (name.length === 0 || !(CONTENT_ORIENTATIONS as readonly string[]).includes(orientationCode)) {
-    fail(lessonPath, "invalid");
-  }
-
-  const topicIds = formData
-    .getAll("topicIds")
-    .filter((value): value is string => typeof value === "string")
+  const topicIds = parsed.data.topicIds
     .map((value) => Number.parseInt(value, 10))
     .filter((value) => Number.isInteger(value));
 
-  const isTrainable = readBoolean(formData, "isTrainable");
-  // Empty = "whoever moves first". Anything else that is not from the content
-  // catalog is treated the same, so as not to store a made-up side.
-  const trainingColorInput = readText(formData, "trainingColorCode");
+  const trainingColorInput = parsed.data.trainingColorCode ?? "";
   const trainingColor = (CONTENT_ORIENTATIONS as readonly string[]).includes(trainingColorInput)
     ? (trainingColorInput as "WHITE" | "BLACK")
     : null;
@@ -573,9 +612,9 @@ export async function updateLesson(
         where: { id: lesson.id },
         data: {
           name,
-          description: readOptionalText(formData, "description", DESCRIPTION_MAX_LENGTH),
-          isPriority: readBoolean(formData, "isPriority"),
-          estimatedDuration: readClampedInt(formData, "estimatedDuration", 0, DURATION_MAX),
+          description,
+          isPriority,
+          estimatedDuration,
           orientation: { connect: { code: orientationCode } },
           isTrainable,
           trainingColor: trainingColor ? { connect: { code: trainingColor } } : { disconnect: true },
@@ -635,7 +674,7 @@ export async function setLessonGame(
   const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
   if (!(await allowAction(`${staff.user.id}:lesson-game`, 60, 60_000))) fail(lessonPath, "throttled");
 
-  const gameId = readText(formData, "gameId");
+  const { gameId } = readIds(formData, "gameId");
   const db = getPlatformDb();
 
   const lesson = await db.lesson.findFirst({
@@ -689,7 +728,7 @@ export async function deleteLesson(courseId: string, chapterId: string, formData
   const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
   if (!(await allowAction(`${staff.user.id}:lesson-delete`, 60, 60_000))) fail(chapterPath, "throttled");
 
-  const lessonId = readText(formData, "lessonId");
+  const { lessonId } = readIds(formData, "lessonId");
   const db = getPlatformDb();
 
   const lesson = await db.lesson.findFirst({
@@ -723,20 +762,9 @@ interface ExerciseInput {
 }
 
 function readExerciseInput(formData: FormData, failPath: string): ExerciseInput {
-  const modeCode = readText(formData, "modeCode");
-  if (!isCode(modeCode, EXERCISE_MODE)) fail(failPath, "invalid");
-
-  const lineSans = readSans(formData, "lineSans");
-  if (lineSans.length === 0) fail(failPath, "sans");
-
-  return {
-    modeCode,
-    promptText: readOptionalText(formData, "promptText", PROMPT_MAX_LENGTH),
-    // Previous moves up to the starting point; empty = from the lesson's initial
-    // position. Same space-separated SAN format as the seed.
-    afterSans: readSans(formData, "afterSans"),
-    lineSans,
-  };
+  const parsed = parseForm(EXERCISE_SCHEMA, formData);
+  if (!parsed.ok) fail(failPath, parsed.field === "lineSans" ? "sans" : "invalid");
+  return parsed.data;
 }
 
 /**
@@ -841,7 +869,7 @@ export async function deleteExercise(
   const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
   if (!(await allowAction(`${staff.user.id}:exercise-delete`, 60, 60_000))) fail(lessonPath, "throttled");
 
-  const exerciseId = readText(formData, "exerciseId");
+  const { exerciseId } = readIds(formData, "exerciseId");
   const db = getPlatformDb();
 
   await db.$transaction(async (tx) => {
@@ -867,8 +895,7 @@ export async function moveExercise(
   const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
   if (!(await allowAction(`${staff.user.id}:exercise-move`, 120, 60_000))) fail(lessonPath, "throttled");
 
-  const exerciseId = readText(formData, "exerciseId");
-  const direction = readText(formData, "direction");
+  const { exerciseId, direction } = readIds(formData, "exerciseId", "direction");
   if (direction !== "up" && direction !== "down") fail(lessonPath, "order");
 
   const db = getPlatformDb();
@@ -890,17 +917,13 @@ export async function createAuthor(formData: FormData): Promise<void> {
   const staff = await requireStaff();
   if (!(await allowAction(`${staff.user.id}:author-create`, 20, 3_600_000))) fail(staffRoutes.authors, "throttled");
 
-  const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
-  const slug = readText(formData, "slug").toLowerCase().slice(0, SLUG_MAX_LENGTH);
-  if (name.length === 0 || !SLUG_SHAPE.test(slug)) fail(staffRoutes.authors, "invalid");
-
-  const photoRaw = readText(formData, "photo");
-  const photo = photoRaw.length > 0 ? readUrl(formData, "photo") : null;
-  if (photoRaw.length > 0 && photo === null) fail(staffRoutes.authors, "invalid");
+  const parsed = parseForm(AUTHOR_SCHEMA, formData);
+  if (!parsed.ok) fail(staffRoutes.authors, "invalid");
+  const { name, slug, photo, bio } = parsed.data;
 
   try {
     await getPlatformDb().author.create({
-      data: { name, slug, bio: readOptionalText(formData, "bio", DESCRIPTION_MAX_LENGTH), photo },
+      data: { name, slug, bio, photo },
     });
   } catch (error) {
     if (isUniqueConstraintError(error, "Author_slug_key", "slug")) fail(staffRoutes.authors, "courseSlug");
@@ -914,18 +937,14 @@ export async function updateAuthor(authorId: string, formData: FormData): Promis
   const staff = await requireStaff();
   if (!(await allowAction(`${staff.user.id}:author-update`, 60, 60_000))) fail(staffRoutes.authors, "throttled");
 
-  const name = readText(formData, "name").slice(0, NAME_MAX_LENGTH);
-  const slug = readText(formData, "slug").toLowerCase().slice(0, SLUG_MAX_LENGTH);
-  if (name.length === 0 || !SLUG_SHAPE.test(slug)) fail(staffRoutes.authors, "invalid");
-
-  const photoRaw = readText(formData, "photo");
-  const photo = photoRaw.length > 0 ? readUrl(formData, "photo") : null;
-  if (photoRaw.length > 0 && photo === null) fail(staffRoutes.authors, "invalid");
+  const parsed = parseForm(AUTHOR_SCHEMA, formData);
+  if (!parsed.ok) fail(staffRoutes.authors, "invalid");
+  const { name, slug, photo, bio } = parsed.data;
 
   try {
     await getPlatformDb().author.update({
       where: { id: authorId },
-      data: { name, slug, bio: readOptionalText(formData, "bio", DESCRIPTION_MAX_LENGTH), photo },
+      data: { name, slug, bio, photo },
     });
   } catch (error) {
     if (isUniqueConstraintError(error, "Author_slug_key", "slug")) fail(staffRoutes.authors, "courseSlug");
@@ -941,12 +960,10 @@ export async function manageCourseAuthors(courseId: string, formData: FormData):
   const detailPath = staffRoutes.courseDetail(courseId);
   if (!(await allowAction(`${staff.user.id}:course-authors`, 60, 60_000))) fail(detailPath, "throttled");
 
-  const operation = readText(formData, "operation");
-  const authorId = readText(formData, "authorId");
+  const { operation, authorId, roleCode } = readIds(formData, "operation", "authorId", "roleCode");
   const db = getPlatformDb();
 
   if (operation === "add") {
-    const roleCode = readText(formData, "roleCode");
     if (!isCode(roleCode, AUTHOR_ROLE)) fail(detailPath, "invalid");
 
     const author = await db.author.findUnique({ where: { id: authorId }, select: { id: true } });

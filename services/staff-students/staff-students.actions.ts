@@ -9,7 +9,8 @@ import { generateTempPassword } from "@/lib/platform-auth/temp-password";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { staffRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
-import { readText } from "@/services/shared/form-data";
+import { z } from "zod";
+import { formEmail, formText, parseForm } from "@/services/shared/form-schema";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 import { createDefaultStudy } from "@/services/studies/default-study";
 import type { AccountActionState } from "./staff-students.types";
@@ -29,18 +30,23 @@ import type { AccountActionState } from "./staff-students.types";
 // The temporary password is not stored, nor written to the log, nor shown again
 // after navigating: it only travels in this call's response.
 
-const DISPLAY_NAME_MAX_LENGTH = 120;
-const EMAIL_MAX_LENGTH = 254;
-const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const ACCOUNT_SCHEMA = z.object({
+  displayName: formText(120),
+  email: formEmail(),
+  password: z.string().trim().max(200).optional(),
+});
+const RESET_SCHEMA = z.object({ userId: formText(64), password: z.string().trim().max(200).optional() });
+const UPDATE_SCHEMA = z.object({ displayName: formText(120), email: formEmail() });
 
-function normalizeEmail(formData: FormData): string {
-  return readText(formData, "email").toLowerCase().slice(0, EMAIL_MAX_LENGTH);
-}
+const FIELD_MESSAGES: Record<string, string> = {
+  displayName: "El nombre para mostrar es obligatorio.",
+  email: "Ese email no tiene un formato válido.",
+  password: "La contraseña es demasiado larga.",
+};
 
 /** Password typed by the staff, the generated one, or the problem that invalidates it. */
-function resolvePassword(formData: FormData): { password: string; generated: boolean } | { problem: string } {
-  const typed = readText(formData, "password");
-  if (typed.length === 0) return { password: generateTempPassword(), generated: true };
+function resolvePassword(typed: string | undefined): { password: string; generated: boolean } | { problem: string } {
+  if (!typed || typed.length === 0) return { password: generateTempPassword(), generated: true };
 
   const problem = passwordProblem(typed);
   return problem ? { problem } : { password: typed, generated: false };
@@ -55,13 +61,12 @@ export async function createStudentAccount(
     return { status: "error", message: "Demasiadas altas seguidas. Espera un minuto." };
   }
 
-  const displayName = readText(formData, "displayName").slice(0, DISPLAY_NAME_MAX_LENGTH);
-  if (displayName.length === 0) return { status: "error", message: "El nombre para mostrar es obligatorio." };
+  const parsed = parseForm(ACCOUNT_SCHEMA, formData);
+  if (!parsed.ok)
+    return { status: "error", message: FIELD_MESSAGES[parsed.field] ?? "Revisa los datos del formulario." };
+  const { displayName, email } = parsed.data;
 
-  const email = normalizeEmail(formData);
-  if (!EMAIL_SHAPE.test(email)) return { status: "error", message: "Ese email no tiene un formato válido." };
-
-  const resolved = resolvePassword(formData);
+  const resolved = resolvePassword(parsed.data.password);
   if ("problem" in resolved) return { status: "error", message: resolved.problem };
 
   try {
@@ -107,8 +112,10 @@ export async function resetStudentPassword(
     return { status: "error", message: "Demasiados reinicios seguidos. Espera un minuto." };
   }
 
-  const userId = readText(formData, "userId");
-  const resolved = resolvePassword(formData);
+  const parsed = parseForm(RESET_SCHEMA, formData);
+  if (!parsed.ok) return { status: "error", message: FIELD_MESSAGES[parsed.field] ?? "Esa cuenta no existe." };
+  const { userId } = parsed.data;
+  const resolved = resolvePassword(parsed.data.password);
   if ("problem" in resolved) return { status: "error", message: resolved.problem };
 
   const db = getPlatformDb();
@@ -141,11 +148,9 @@ export async function updateStudent(userId: string, formData: FormData): Promise
 
   if (!(await allowAction(`${staff.user.id}:account-update`, 60, 60_000))) redirect(`${detailPath}?error=throttled`);
 
-  const displayName = readText(formData, "displayName").slice(0, DISPLAY_NAME_MAX_LENGTH);
-  if (displayName.length === 0) redirect(`${detailPath}?error=displayName`);
-
-  const email = normalizeEmail(formData);
-  if (!EMAIL_SHAPE.test(email)) redirect(`${detailPath}?error=email`);
+  const parsed = parseForm(UPDATE_SCHEMA, formData);
+  if (!parsed.ok) redirect(`${detailPath}?error=${parsed.field === "email" ? "email" : "displayName"}`);
+  const { displayName, email } = parsed.data;
 
   try {
     await getPlatformDb().user.update({ where: { id: userId }, data: { displayName, email } });
