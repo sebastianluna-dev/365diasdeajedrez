@@ -7,6 +7,8 @@ interface PriorityFilterProps {
   enabled: boolean;
   /** How many lessons it hides. It is stated: an unexplained absence is unsettling. */
   hiddenLessons: number;
+  /** The page the switch sits on, where a failure is reported. */
+  returnTo: string;
 }
 
 /**
@@ -20,12 +22,10 @@ interface PriorityFilterProps {
  * It is a PER-COURSE setting, so the same switch appears on the course page
  * and on the chapter page: those are the two places where it shows.
  */
-export function PriorityFilter({ courseId, enabled, hiddenLessons }: PriorityFilterProps) {
+export function PriorityFilter({ courseId, enabled, hiddenLessons, returnTo }: PriorityFilterProps) {
   return (
-    <form
-      className="priority-filter"
-      action={setOnlyPriorityLessons.bind(null, courseId, !enabled)}
-    >
+    <form className="priority-filter" action={setOnlyPriorityLessons.bind(null, courseId, !enabled)}>
+      <input type="hidden" name="returnTo" value={returnTo} />
       <button
         type="submit"
         aria-pressed={enabled}

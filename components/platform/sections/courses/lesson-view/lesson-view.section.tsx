@@ -2,7 +2,9 @@ import Link from "next/link";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
+import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { completeLesson } from "@/services/courses/courses.actions";
 import type { LessonView } from "@/services/courses/courses.types";
 import { LessonTracker } from "./lesson-tracker.comp";
@@ -11,10 +13,13 @@ import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface LessonViewSectionProps {
   lesson: LessonView;
+  /** What `completeLesson` bounced back with, in `?error=`. */
+  errorCode?: string;
 }
 
-export function LessonViewSection({ lesson }: LessonViewSectionProps) {
+export function LessonViewSection({ lesson, errorCode }: LessonViewSectionProps) {
   const completeAction = completeLesson.bind(null, lesson.id);
+  const errorMessage = studentErrorMessage(errorCode);
   const isCompleted = lesson.statusCode === PROGRESS_STATUS.COMPLETED;
 
   const subtitle = [
@@ -53,6 +58,8 @@ export function LessonViewSection({ lesson }: LessonViewSectionProps) {
           )
         }
       />
+
+      {errorMessage && <PlatformNotice message={errorMessage} />}
 
       <div className="lesson-view__actions">
         {isCompleted ? (

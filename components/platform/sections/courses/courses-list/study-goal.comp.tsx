@@ -1,4 +1,6 @@
 import { FlameIcon } from "@/components/icons/flame-icon.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { GOAL_OPTIONS } from "@/constants/platform/study-goal.const";
 import { updateDailyGoal } from "@/services/study-goal/study-goal.actions";
 import type { StudyGoal } from "@/services/study-goal/study-goal.types";
@@ -7,6 +9,8 @@ import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface StudyGoalAsideProps {
   goal: StudyGoal;
+  /** What `updateDailyGoal` bounced back with, in `?error=`. */
+  errorCode?: string;
 }
 
 /**
@@ -18,7 +22,9 @@ interface StudyGoalAsideProps {
  * finished today. The only thing stored is the goal, because it is a
  * decision and not a computation.
  */
-export function StudyGoalAside({ goal }: StudyGoalAsideProps) {
+export function StudyGoalAside({ goal, errorCode }: StudyGoalAsideProps) {
+  const errorMessage = studentErrorMessage(errorCode);
+
   return (
     <aside className="study-goal">
       <section className="study-goal__card">
@@ -57,10 +63,11 @@ export function StudyGoalAside({ goal }: StudyGoalAsideProps) {
 
         {/* `<details>` instead of a modal: changing the goal is choosing from a
             short list, and this way the form needs no JavaScript of its own. */}
-        <details className="study-goal__editor">
+        <details className="study-goal__editor" open={errorMessage !== undefined}>
           <summary className="study-goal__editor-button">Cambiar objetivo</summary>
 
           <form action={updateDailyGoal} className="study-goal__form">
+            {errorMessage && <PlatformNotice message={errorMessage} />}
             <label className="study-goal__field">
               <span className="study-goal__field-label">Minutos al día</span>
               <select className="study-goal__select" name="goalMinutes" defaultValue={goal.goalMinutes}>

@@ -56,7 +56,9 @@ export function GameExplorer() {
 
     searchPosition(fen)
       .then((next) => {
-        cacheRef.current.set(fen, next);
+        // A refused search is not a fact about the position: it is not cached,
+        // so coming back to it asks again.
+        if (!next.throttled) cacheRef.current.set(fen, next);
         if (cancelled) return;
         setResult(next);
         setIsSearching(false);
@@ -167,14 +169,14 @@ export function GameExplorer() {
           <p className="game-explorer__error" role="status">
             No se pudo consultar esta posición. Mueve otra vez o recarga la página.
           </p>
+        ) : result?.throttled ? (
+          <p className="game-explorer__error" role="status">
+            Demasiadas consultas seguidas. Espera un momento y vuelve a mover.
+          </p>
         ) : (
           <>
             <ExplorerNextMoves moves={result?.nextMoves ?? []} onPlay={playMove} isSearching={isSearching} />
-            <ExplorerGames
-              games={result?.games ?? []}
-              totalGames={result?.totalGames ?? 0}
-              isSearching={isSearching}
-            />
+            <ExplorerGames games={result?.games ?? []} totalGames={result?.totalGames ?? 0} isSearching={isSearching} />
           </>
         )}
       </div>

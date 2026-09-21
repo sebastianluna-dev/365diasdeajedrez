@@ -25,11 +25,15 @@ import { emptyGame, serializeGame } from "@/lib/chess/pgn-edit";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
 import { parseImportedGames } from "@/services/shared/pgn-import";
+import { withErrorParam } from "@/services/shared/safe-return-to";
 import { canChangeKindTo, canCreateKind, studyPermissionsOf } from "./study-rules";
 
 // Server actions are reachable by direct POST: the user is ALWAYS resolved in
 // here (DAL) and the ownership of the database is checked against the database
-// before writing. Empty or rubbish inputs come out without throwing.
+// before writing. Empty or rubbish inputs come out without throwing; the ones a
+// person can produce from the interface (a throttle, an empty PGN) go back with
+// `?error=<code>` so the page can say so, and the ones only a forged request
+// produces (a foreign study, a kind the viewer may not create) go out silently.
 
 const STUDY_NAME_MAX_LENGTH = 120;
 const STUDY_DESCRIPTION_MAX_LENGTH = 500;
@@ -81,14 +85,15 @@ function readDateHeader(headers: Map<string, string>): Date | null {
 export async function createStudy(formData: FormData): Promise<void> {
   const name = readText(formData, "name");
   const kindCode = readText(formData, "kindCode");
-  if (name.length === 0 || !isDatabaseKindCode(kindCode)) return;
+  if (name.length === 0 || !isDatabaseKindCode(kindCode)) redirect(withErrorParam(platformRoutes.studies, "invalid"));
 
   const description = readText(formData, "description");
   const db = getPlatformDb();
   const user = await getCurrentUser();
   const teacher = await getTeacherContext();
   if (!canCreateKind(kindCode, teacher !== null)) return;
-  if (!(await allowAction(`${user.id}:create-study`, 20, 60_000))) return;
+  if (!(await allowAction(`${user.id}:create-study`, 20, 60_000)))
+    redirect(withErrorParam(platformRoutes.studies, "throttled"));
 
   await db.gameDatabase.create({
     data: {
@@ -207,11 +212,7 @@ export async function reorderStudyGames(studyId: string, orderedIds: string[]): 
   if (received.size !== actual.size) return;
   for (const id of received) if (!actual.has(id)) return;
 
-  await db.$transaction(
-    orderedIds.map((id, index) =>
-      db.game.update({ where: { id }, data: { order: index + 1 } }),
-    ),
-  );
+  await db.$transaction(orderedIds.map((id, index) => db.game.update({ where: { id }, data: { order: index + 1 } })));
 
   revalidatePath(platformRoutes.studyDetail(studyId));
 }
@@ -230,12 +231,14 @@ export async function reorderStudyGames(studyId: string, orderedIds: string[]): 
 export async function updateStudy(studyId: string, formData: FormData): Promise<void> {
   const name = readText(formData, "name");
   const kindCode = readText(formData, "kindCode");
-  if (name.length === 0) return;
+  if (name.length === 0) redirect(withErrorParam(platformRoutes.studyDetail(studyId), "invalid"));
 
   const description = readText(formData, "description");
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!(await allowAction(`${user.id}:update-study`, 30, 60_000))) return;
+  if (!(await allowAction(`${user.id}:update-study`, 30, 60_000))) {
+    redirect(withErrorParam(platformRoutes.studyDetail(studyId), "throttled"));
+  }
 
   const study = await db.gameDatabase.findFirst({
     where: { id: studyId, userId: user.id },
@@ -266,12 +269,14 @@ export async function updateStudy(studyId: string, formData: FormData): Promise<
  * individual PGN reserialised. It never writes into course databases.
  */
 export async function importPgnGames(studyId: string, formData: FormData): Promise<void> {
+  const back = platformRoutes.studyDetail(studyId);
   const pgnText = readText(formData, "pgn");
-  if (pgnText.length === 0 || pgnText.length > PGN_MAX_LENGTH) return;
+  if (pgnText.length === 0) redirect(withErrorParam(back, "pgnEmpty"));
+  if (pgnText.length > PGN_MAX_LENGTH) redirect(withErrorParam(back, "pgnTooLong"));
 
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!(await allowAction(`${user.id}:import-pgn`, 10, 60_000))) return;
+  if (!(await allowAction(`${user.id}:import-pgn`, 10, 60_000))) redirect(withErrorParam(back, "throttled"));
 
   const study = await db.gameDatabase.findFirst({ where: { id: studyId, userId: user.id }, select: { id: true } });
   if (!study) return;
@@ -308,7 +313,7 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
     isOwnGame: false,
   }));
 
-  if (games.length === 0) return;
+  if (games.length === 0) redirect(withErrorParam(back, "pgnEmpty"));
 
   // createMany does not admit connect by code, so the transaction chains one
   // create per game (atomic: either they all go in or none does).
@@ -397,15 +402,25 @@ async function ownedStudy(studyId: string, userId: string): Promise<{ id: string
  * analysed: it is played on the board and annotated from the move list.
  */
 export async function createStudyGame(studyId: string, formData: FormData): Promise<void> {
+  // A failure goes back to WHERE it was written. The game is created from two
+  // places — the "new game" page and the study page's dialog — and always sending
+  // to the page would leave whoever used the dialog on another screen wondering
+  // what happened. `origin` is compared against a known value, not used as a URL:
+  // a form field cannot decide where a redirect goes.
+  const back =
+    readText(formData, "origin") === "detail"
+      ? platformRoutes.studyDetail(studyId)
+      : platformRoutes.newStudyGame(studyId);
+
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!(await allowAction(`${user.id}:create-game`, 30, 60_000))) return;
+  if (!(await allowAction(`${user.id}:create-game`, 30, 60_000))) redirect(withErrorParam(back, "throttled"));
 
   const study = await ownedStudy(studyId, user.id);
   if (!study) return;
 
   const pgnText = readText(formData, "pgn");
-  if (pgnText.length > PGN_MAX_LENGTH) return;
+  if (pgnText.length > PGN_MAX_LENGTH) redirect(withErrorParam(back, "pgnTooLong"));
 
   // The pasted PGN is a SOURCE of data, not an order: if it is not understood, it
   // is discarded and the game is created blank instead of losing what was typed.
@@ -422,19 +437,7 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
   const initialFen = readOptionalField(formData, "initialFen") ?? readHeader(headers, "FEN");
   // A bad FEN is reported: it is the only thing the person may have written wrong
   // without noticing, because the rest of the fields are free text.
-  //
-  // The warning goes back to WHERE it was written. The game is created from two
-  // places — the "new game" page and the study page's dialog — and always sending
-  // to the page would leave whoever used the dialog on another screen wondering
-  // what happened. `origin` is compared against a known value, not used as a URL:
-  // a form field cannot decide where a redirect goes.
-  if (initialFen !== null && !isLegalFen(initialFen)) {
-    const back =
-      readText(formData, "origin") === "detail"
-        ? platformRoutes.studyDetail(studyId)
-        : platformRoutes.newStudyGame(studyId);
-    redirect(`${back}?error=fen`);
-  }
+  if (initialFen !== null && !isLegalFen(initialFen)) redirect(withErrorParam(back, "fen"));
 
   const pgn = parsed ? makePgn(parsed) : serializeGame(emptyGame(initialFen ?? undefined));
 
@@ -732,9 +735,7 @@ export async function deleteStudy(studyId: string, formData: FormData): Promise<
 //     rest of the teacher panel.
 
 /** The collection of an active teacher, or null if either of the two fails. */
-async function ownedCollection(
-  studyId: string,
-): Promise<{ study: { id: string }; teacherId: string } | null> {
+async function ownedCollection(studyId: string): Promise<{ study: { id: string }; teacherId: string } | null> {
   const teacher = await getTeacherContext();
   if (!teacher) return null;
 

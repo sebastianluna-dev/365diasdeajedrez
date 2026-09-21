@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { ACTIVITY_TYPE, SUBJECT_TYPE } from "@/constants/platform/activity-codes.const";
 import { ATTEMPT_CONTEXT, ATTEMPT_RESULT, type AttemptResultCode } from "@/constants/platform/training-codes.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
@@ -9,6 +10,8 @@ import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { publishedChapterWhere, publishedLessonWhere } from "@/services/shared/published-content";
 import { recordUserActivity } from "@/services/shared/user-activity.service";
+import { readText } from "@/services/shared/form-data";
+import { safeReturnTo, withErrorParam } from "@/services/shared/safe-return-to";
 
 const MAX_MISTAKES = 999;
 /** Two hours: above that the figure is not credible. */
@@ -29,12 +32,17 @@ export interface RecordAttemptInput {
   durationMs: number;
 }
 
-export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<void> {
+/**
+ * Stores an attempt. Returns whether it was stored: the session counts the ones
+ * that were not (a throttle, an exercise that is no longer published) and says
+ * so in its summary, instead of the student believing they were kept.
+ */
+export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<boolean> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
 
-  if (input.resultCode !== ATTEMPT_RESULT.PASSED && input.resultCode !== ATTEMPT_RESULT.FAILED) return;
-  if (!(await allowAction(`${user.id}:training-attempt`, 120, 60_000))) return;
+  if (input.resultCode !== ATTEMPT_RESULT.PASSED && input.resultCode !== ATTEMPT_RESULT.FAILED) return false;
+  if (!(await allowAction(`${user.id}:training-attempt`, 120, 60_000))) return false;
 
   // Only exercises of published courses: an id from a draft course must not be
   // able to seed attempts or activity.
@@ -42,7 +50,7 @@ export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<
     where: { id: input.exerciseId, lesson: publishedLessonWhere },
     select: { id: true, lesson: { select: { lessonTopics: { select: { topicId: true }, take: 1 } } } },
   });
-  if (!exercise) return;
+  if (!exercise) return false;
 
   const now = new Date();
   await db.trainingAttempt.create({
@@ -70,14 +78,21 @@ export async function recordTrainingAttempt(input: RecordAttemptInput): Promise<
   }
 
   revalidatePath(platformRoutes.dashboard);
+  return true;
 }
 
-/** Adds or removes a chapter from the user's Move Trainer. */
-export async function toggleTrainerChapter(chapterId: string, add: boolean): Promise<void> {
+/**
+ * Adds or removes a chapter from the user's Move Trainer. The form carries
+ * `returnTo` because the button lives on the trainer's home and on the chapter
+ * page, and a failure is reported on the one that was pressed.
+ */
+export async function toggleTrainerChapter(chapterId: string, add: boolean, formData: FormData): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
+  const returnTo = safeReturnTo(readText(formData, "returnTo"), platformRoutes.trainer);
 
-  if (!(await allowAction(`${user.id}:toggle-trainer-chapter`, 60, 60_000))) return;
+  if (!(await allowAction(`${user.id}:toggle-trainer-chapter`, 60, 60_000)))
+    redirect(withErrorParam(returnTo, "throttled"));
 
   const chapter = await db.chapter.findFirst({
     where: { id: chapterId, ...publishedChapterWhere },

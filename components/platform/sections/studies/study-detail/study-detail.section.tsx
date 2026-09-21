@@ -1,3 +1,4 @@
+import { STUDENT_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
 import { EmptyState } from "@/components/platform/shared/empty-state.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { DeleteStudy } from "@/components/platform/sections/studies/studies-list/delete-study.comp";
@@ -23,6 +24,7 @@ interface StudyDetailSectionProps {
 }
 
 const ERROR_MESSAGES: Record<string, string> = {
+  ...STUDENT_ERROR_MESSAGES,
   confirmStudyDelete: "Este estudio tiene contenido. Marca la casilla para confirmar que quieres borrarlo.",
   fen: "Esa posición de partida no es válida. Revisa el FEN.",
 };
@@ -49,9 +51,7 @@ export function StudyDetailSection({
           <div className="study-detail__tags">
             <span className="study-detail__kind">{study.kindLabel}</span>
             {study.courseName && <span className="study-detail__origin">{study.courseName}</span>}
-            {study.sharedByName && (
-              <span className="study-detail__origin">Te la compartió {study.sharedByName}</span>
-            )}
+            {study.sharedByName && <span className="study-detail__origin">Te la compartió {study.sharedByName}</span>}
             {!canWrite && <span className="study-detail__readonly">Sólo lectura</span>}
           </div>
 
@@ -88,12 +88,7 @@ export function StudyDetailSection({
               kinds={kinds}
               canChangeKind={study.permissions.canChangeKind}
             />
-            <NewGame
-              studyId={study.id}
-              studyName={study.name}
-              results={results}
-              classGames={classGames}
-            />
+            <NewGame studyId={study.id} studyName={study.name} results={results} classGames={classGames} />
           </div>
         )}
       </header>
@@ -108,9 +103,7 @@ export function StudyDetailSection({
         <EmptyState
           title="Sin partidas todavía"
           description={
-            canWrite
-              ? "Este estudio no tiene partidas. Crea una para empezar."
-              : "Todavía no tiene partidas."
+            canWrite ? "Este estudio no tiene partidas. Crea una para empezar." : "Todavía no tiene partidas."
           }
         />
       )}

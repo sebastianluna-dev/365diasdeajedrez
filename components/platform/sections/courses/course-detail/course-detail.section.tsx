@@ -1,20 +1,26 @@
 import { PriorityFilter } from "@/components/platform/shared/priority-filter.comp";
 import Image from "next/image";
 import Link from "next/link";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { ProgressIndicator } from "@/components/platform/shared/progress-indicator.comp";
+import { studentErrorMessage } from "@/constants/platform/student-messages.const";
+import { platformRoutes } from "@/lib/platform-routes";
 import type { CourseDetail } from "@/services/courses/courses.types";
 import { ChapterList } from "./chapter-list.comp";
 import "./course-detail.section.css";
 
 interface CourseDetailSectionProps {
   course: CourseDetail;
+  /** What the essential-lessons switch bounced back with, in `?error=`. */
+  errorCode?: string;
 }
 
 /** The cover takes a fixed 470px column, and the full width when stacked. */
 const COVER_SIZES = "(max-width: 980px) 100vw, 470px";
 
-export function CourseDetailSection({ course }: CourseDetailSectionProps) {
+export function CourseDetailSection({ course, errorCode }: CourseDetailSectionProps) {
   const chapterCount = course.chapters.length;
+  const errorMessage = studentErrorMessage(errorCode);
   const { totalLessons } = course.progress;
 
   return (
@@ -59,7 +65,6 @@ export function CourseDetailSection({ course }: CourseDetailSectionProps) {
               {course.ctaLabel} curso
             </Link>
           </div>
-
         </div>
 
         {/* The cover and, hanging from it, the filter: it rests on the foot of the
@@ -69,27 +74,22 @@ export function CourseDetailSection({ course }: CourseDetailSectionProps) {
               the tab order so the same link is not announced twice. */}
           <Link href={course.continueHref} className="course-detail__cover" tabIndex={-1} aria-hidden="true">
             {course.cover && (
-              <Image
-                src={course.cover}
-                alt=""
-                fill
-                sizes={COVER_SIZES}
-                className="course-detail__cover-image"
-              />
+              <Image src={course.cover} alt="" fill sizes={COVER_SIZES} className="course-detail__cover-image" />
             )}
           </Link>
 
           <div className="course-detail__filter">
+            {errorMessage && <PlatformNotice message={errorMessage} />}
             <PriorityFilter
               courseId={course.id}
               enabled={course.onlyPriorityLessons}
               hiddenLessons={course.hiddenLessons}
+              returnTo={platformRoutes.courseDetail(course.id)}
             />
 
             {course.onlyPriorityLessons && totalLessons === 0 && (
               <p className="course-detail__warning">
-                Ninguna lección de este curso está marcada como imprescindible. Quita el filtro para verlas
-                todas.
+                Ninguna lección de este curso está marcada como imprescindible. Quita el filtro para verlas todas.
               </p>
             )}
           </div>

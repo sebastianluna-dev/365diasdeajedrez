@@ -28,6 +28,7 @@ function ChapterRow({ chapter }: { chapter: TrainerChapterItem }) {
           </Link>
         )}
         <form action={toggleAction}>
+          <input type="hidden" name="returnTo" value={platformRoutes.trainer} />
           <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Actualizando…">
             {chapter.inTrainer ? "Quitar" : "Agregar"}
           </SubmitButton>

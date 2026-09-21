@@ -18,16 +18,13 @@ const EMPTY_RESULT: PositionSearchResult = { totalGames: 0, nextMoves: [], games
 /** A valid FEN does not reach 90 characters; more is rubbish or an abuse attempt. */
 const FEN_MAX_LENGTH = 120;
 
-export async function searchPosition(
-  fen: string,
-  filters: PositionSearchFilters = {},
-): Promise<PositionSearchResult> {
+export async function searchPosition(fen: string, filters: PositionSearchFilters = {}): Promise<PositionSearchResult> {
   if (typeof fen !== "string" || fen.length === 0 || fen.length > FEN_MAX_LENGTH) return EMPTY_RESULT;
 
   const user = await getCurrentUser();
   // Generous on purpose: a search per move is the board's normal use, and
   // whoever navigates quickly through a long game must not run into the cap.
-  if (!(await allowAction(`${user.id}:search-position`, 240, 60_000))) return EMPTY_RESULT;
+  if (!(await allowAction(`${user.id}:search-position`, 240, 60_000))) return { ...EMPTY_RESULT, throttled: true };
 
   return searchGamesByPosition(fen, filters);
 }

@@ -23,6 +23,7 @@ What replaces the board when the last exercise is done: how many were passed, ho
 | Prop | Type | Required | Meaning |
 | --- | --- | --- | --- |
 | `results` | `ExerciseResult[]` | yes | `{ exerciseId, lessonName, passed, mistakes }[]` in session order. |
+| `unsavedCount` | `number` | no · default `0` | Attempts `recordTrainingAttempt` did not store (a throttle, an exercise unpublished meanwhile). Above zero a `role="status"` line says so under the totals. |
 
 ## Behaviour
 

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { TrainerHomeSection } from "@/components/platform/sections/trainer/trainer-home.section";
 import { TrainerSession } from "@/components/platform/sections/trainer/trainer-session.comp";
 import { platformRoutes } from "@/lib/platform-routes";
@@ -11,11 +13,12 @@ export const metadata: Metadata = {
 };
 
 interface TrainerPageProps {
-  searchParams: Promise<{ lesson?: string; chapter?: string; session?: string }>;
+  searchParams: Promise<{ lesson?: string; chapter?: string; session?: string; error?: string }>;
 }
 
 export default async function TrainerPage({ searchParams }: TrainerPageProps) {
-  const { lesson, chapter, session } = await searchParams;
+  const { lesson, chapter, session, error } = await searchParams;
+  const errorMessage = studentErrorMessage(error);
   const wantsSession = Boolean(lesson || chapter || session === "all");
 
   if (wantsSession) {
@@ -49,6 +52,8 @@ export default async function TrainerPage({ searchParams }: TrainerPageProps) {
           Entrena las líneas de tus cursos: carga una posición, juega la jugada correcta y avanza.
         </p>
       </header>
+
+      {errorMessage && <PlatformNotice message={errorMessage} />}
 
       <TrainerHomeSection />
     </div>

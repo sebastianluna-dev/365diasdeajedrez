@@ -23,6 +23,7 @@ One chapter: "Capítulo n", name, description, lesson count and estimated time, 
 | Prop | Type | Required | Meaning |
 | --- | --- | --- | --- |
 | `chapter` | `ChapterView` | yes | `id`, `courseId`, `order`, `name`, `description?`, `totalLessons`, `completedLessons`, `estimatedDuration?`, `continueHref`, `ctaLabel`, `hasExercises`, `inTrainer`, `lessons`, `onlyPriorityLessons`, `hiddenLessons`. |
+| `errorCode` | `string` | no | Code from `?error=` (`throttled`, `invalid`…), translated with `STUDENT_ERROR_MESSAGES` into a `PlatformNotice`. |
 
 ## Behaviour
 

@@ -1,3 +1,4 @@
+import { STUDENT_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
 import Link from "next/link";
 import { FormField } from "@/components/platform/shared/form-field.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
@@ -16,6 +17,7 @@ interface NewGameSectionProps {
 }
 
 const ERROR_MESSAGES: Record<string, string> = {
+  ...STUDENT_ERROR_MESSAGES,
   fen: "Esa posición de partida no es válida. Revisa el FEN o déjalo vacío.",
 };
 
