@@ -66,8 +66,13 @@ export function StudyGoalAside({ goal, errorCode }: StudyGoalAsideProps) {
         <details className="study-goal__editor" open={errorMessage !== undefined}>
           <summary className="study-goal__editor-button">Cambiar objetivo</summary>
 
+          {errorMessage && (
+            <div className="study-goal__notice">
+              <PlatformNotice message={errorMessage} />
+            </div>
+          )}
+
           <form action={updateDailyGoal} className="study-goal__form">
-            {errorMessage && <PlatformNotice message={errorMessage} />}
             <label className="study-goal__field">
               <span className="study-goal__field-label">Minutos al día</span>
               <select className="study-goal__select" name="goalMinutes" defaultValue={goal.goalMinutes}>
