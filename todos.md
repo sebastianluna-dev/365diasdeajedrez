@@ -126,7 +126,10 @@ Create `components/platform/shared/submit-button.comp.tsx` (`"use client"`, `use
 of every write form of `components/platform/sections/**` (about 40). The sections stay Server
 Components; only the button changes.
 
-### T13 — `GameTable` on `PlatformTable` · [Frontend / A11y] (IMPROVEMENTS #58)
+### T13 — `GameTable` on `PlatformTable` · [Frontend / A11y] (IMPROVEMENTS #58) ✅ 2026-09-21
+`PlatformTableRow` takes the `<tr>` attributes (drag handlers, a class of its own) and `GameTable` renders through it; its stylesheet keeps only the handle, the mark and the note.
+
+Original task:
 `components/platform/sections/studies/study-detail/game-table.comp.tsx` renders the table with
 `div`s; build the header and the rows with `PlatformTable`/`PlatformTableRow`/`PlatformTableCell`
 (`components/platform/shared/platform-table.comp.tsx`) keeping the reordering handle `<button>` in the first

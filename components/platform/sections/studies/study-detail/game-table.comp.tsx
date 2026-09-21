@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useTransition } from "react";
+import { PlatformTable, PlatformTableCell, PlatformTableRow } from "@/components/platform/shared/platform-table.comp";
 import { reorderStudyGames } from "@/services/studies/studies.actions";
 import type { StudyGameItem } from "@/services/studies/studies.types";
 import "./game-table.comp.css";
@@ -12,6 +13,8 @@ interface GameTableProps {
   /** Course databases are read-only: nothing is dragged there. */
   canReorder: boolean;
 }
+
+const COLUMNS = ["#", "Nombre", "Blancas", "Negras", { label: "Resultado", align: "right" }] as const;
 
 /** Returns the list with the item at `from` placed at `to`. */
 function moved<T>(items: T[], from: number, to: number): T[] {
@@ -54,17 +57,9 @@ export function GameTable({ studyId, games, canReorder }: GameTableProps) {
 
   return (
     <div className="game-table">
-      <div className="game-table__card">
-        <div className="game-table__head">
-          <span>#</span>
-          <span>Nombre</span>
-          <span>Blancas</span>
-          <span>Negras</span>
-          <span className="game-table__result-head">Resultado</span>
-        </div>
-
+      <PlatformTable columns={COLUMNS} emptyLabel="Este estudio todavía no tiene partidas." minWidth={560}>
         {items.map((game, index) => (
-          <div
+          <PlatformTableRow
             key={game.id}
             className={`game-table__row${dragging === index ? " game-table__row_state_dragging" : ""}`}
             draggable={canReorder}
@@ -82,49 +77,55 @@ export function GameTable({ studyId, games, canReorder }: GameTableProps) {
               setDragging(null);
             }}
           >
-            {canReorder ? (
-              <button
-                type="button"
-                className="game-table__handle"
-                aria-label={`Mover «${game.label}». Usa las flechas arriba y abajo para cambiarla de sitio.`}
-                onKeyDown={(event) => {
-                  if (event.key === "ArrowUp") {
-                    event.preventDefault();
-                    move(index, index - 1);
-                  } else if (event.key === "ArrowDown") {
-                    event.preventDefault();
-                    move(index, index + 1);
-                  }
-                }}
-              >
-                <span className="game-table__number" aria-hidden="true">
-                  {index + 1}
-                </span>
-                <span className="game-table__grip" aria-hidden="true">
-                  ⠿
-                </span>
-              </button>
-            ) : (
-              <span className="game-table__number">{index + 1}</span>
-            )}
-
-            <span className="game-table__name">
-              <Link href={game.href} className="game-table__link">
-                {game.label}
-              </Link>
-              {game.citedInClass && (
-                <span className="game-table__cited" title="Citada en una clase">
-                  En clase
-                </span>
+            <PlatformTableCell>
+              {canReorder ? (
+                <button
+                  type="button"
+                  className="game-table__handle"
+                  aria-label={`Mover «${game.label}». Usa las flechas arriba y abajo para cambiarla de sitio.`}
+                  onKeyDown={(event) => {
+                    if (event.key === "ArrowUp") {
+                      event.preventDefault();
+                      move(index, index - 1);
+                    } else if (event.key === "ArrowDown") {
+                      event.preventDefault();
+                      move(index, index + 1);
+                    }
+                  }}
+                >
+                  <span className="game-table__number" aria-hidden="true">
+                    {index + 1}
+                  </span>
+                  <span className="game-table__grip" aria-hidden="true">
+                    ⠿
+                  </span>
+                </button>
+              ) : (
+                <span className="game-table__number">{index + 1}</span>
               )}
-            </span>
+            </PlatformTableCell>
 
-            <span className="game-table__player">{game.white}</span>
-            <span className="game-table__player">{game.black}</span>
-            <span className="game-table__result">{game.resultLabel}</span>
-          </div>
+            <PlatformTableCell strong>
+              <span className="game-table__name">
+                <Link href={game.href} className="game-table__link">
+                  {game.label}
+                </Link>
+                {game.citedInClass && (
+                  <span className="game-table__cited" title="Citada en una clase">
+                    En clase
+                  </span>
+                )}
+              </span>
+            </PlatformTableCell>
+
+            <PlatformTableCell>{game.white}</PlatformTableCell>
+            <PlatformTableCell>{game.black}</PlatformTableCell>
+            <PlatformTableCell align="right">
+              <span className="game-table__result">{game.resultLabel}</span>
+            </PlatformTableCell>
+          </PlatformTableRow>
         ))}
-      </div>
+      </PlatformTable>
 
       <p className="game-table__note">
         Abre una partida para analizarla.

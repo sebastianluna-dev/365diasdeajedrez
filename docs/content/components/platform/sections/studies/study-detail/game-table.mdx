@@ -11,13 +11,14 @@ description: "The games of a study as rows with drag-and-drop and keyboard reord
 | Stylesheet | `game-table.comp.css` → block `.game-table` |
 | Used by | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) |
 | Writes | `reorderStudyGames()` · `services/studies/studies.actions.ts` |
+| Composes | [`PlatformTable`](/components/platform/shared/platform-table) (`PlatformTableRow`, `PlatformTableCell`) |
 | Uses | `StudyGameItem` from `services/studies/studies.types` |
 
 ## Purpose
 
 The list of a study's games: number, name (linked to the game view), white, black, result. In a writable study the rows can be reordered by dragging them by their number or, for keyboard users, with the arrow keys on that same handle; the order is what the study's "chapters" mean.
 
-It is still drawn with `div`s rather than the shared [`PlatformTable`](/components/platform/shared/platform-table) because that component has no reordering; rebuilding this on it is `todos.md` T13.
+It is a real `<table>` through the shared [`PlatformTable`](/components/platform/shared/platform-table): the rows are `PlatformTableRow` elements carrying the drag handlers and the dragging class, so the look of a listing is defined once and this file only adds what a study's row needs (the handle, the "En clase" mark).
 
 ## Props
 
@@ -37,15 +38,15 @@ It is still drawn with `div`s rather than the shared [`PlatformTable`](/componen
 
 ## Markup & styling
 
-Block `.game-table` (168 lines).
+Block `.game-table` (about 90 lines); the table, header and cells are `.platform-table__*`.
 
-**Elements:** `.game-table__card`, `.game-table__head`, `.game-table__result-head`, `.game-table__row`, `.game-table__handle`, `.game-table__number`, `.game-table__grip`, `.game-table__name`, `.game-table__link`, `.game-table__cited`, `.game-table__player`, `.game-table__result`, `.game-table__note`
+**Elements:** `.game-table__row` (mixed onto `.platform-table__row`), `.game-table__handle`, `.game-table__number`, `.game-table__grip`, `.game-table__name`, `.game-table__link`, `.game-table__cited`, `.game-table__result`, `.game-table__note`
 
 **Modifiers and states:** `.game-table__row_state_dragging`
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-text`, `--platform-text-faint`, `--platform-text-subtle`
 
-**Breakpoints:** `(max-width: 820px)` hides the player columns.
+No media queries of its own: under `minWidth` (560 px) the shared wrapper scrolls horizontally.
 
 ## Usage
 
