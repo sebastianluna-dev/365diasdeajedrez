@@ -1,4 +1,6 @@
-import "server-only";
+// No "server-only" here: scripts/platform-user.ts enrols from the terminal and
+// tsx cannot resolve that marker (like lib/logger.ts). Nothing imports this from a
+// Client Component; the Prisma types would not compile there anyway.
 import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
