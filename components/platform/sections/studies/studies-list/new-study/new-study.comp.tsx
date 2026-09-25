@@ -27,7 +27,9 @@ export function NewStudy({ kinds }: NewStudyProps) {
 
   return (
     <div className="new-study">
-      <button type="button" className="platform-button new-study__open" onClick={open}>
+      {/* Not the orange platform button: a quiet pill, with the sign drawn by
+          the stylesheet, because the page's title is what leads here. */}
+      <button type="button" className="new-study__open" onClick={open}>
         Nuevo estudio
       </button>
 
