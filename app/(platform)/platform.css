@@ -93,6 +93,17 @@ body.platform-theme {
   font-family: var(--platform-font);
 }
 
+/* Radix's Select locks the page while its list is open (react-remove-scroll):
+   it sets `overflow: hidden` on the body and pads the gap the scrollbar left,
+   so the bar vanishes on open and comes back on close, and the page jumps
+   with it. The lock's own stylesheet is injected after this one with
+   `!important`, so this rule wins by specificity instead. Wheel and touch are
+   still stopped by the lock's listeners; only the bar stays where it was. */
+html body.platform-theme[data-scroll-locked] {
+  overflow: visible !important;
+  margin-right: 0 !important;
+}
+
 .platform-theme ::selection {
   background: rgba(255, 145, 67, 0.3);
 }
