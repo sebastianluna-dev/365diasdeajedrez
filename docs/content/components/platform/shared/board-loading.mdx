@@ -23,15 +23,15 @@ The loading look of the studies area: the list at `/estudios` and, under it, the
 
 ## Behaviour
 
-None. The root carries `role="status"` and `aria-live="polite"`; the figure is `aria-hidden`. Under `prefers-reduced-motion: reduce` the knight and the shadow stand still.
+None. The root carries `role="status"` and `aria-live="polite"`; the figure is `aria-hidden`. Under `prefers-reduced-motion: reduce` nothing moves. Its exit cannot be animated, because the App Router unmounts the fallback the moment the page is ready: the page's own fade-in (`.platform-page`, in `platform.css`) is what softens that side of the swap.
 
 ## Markup & styling
 
-Block `.board-loading` (82 lines).
+Block `.board-loading` (99 lines).
 
 **Elements:** `.board-loading__figure`, `.board-loading__knight` (the ♞ glyph, in the platform font), `.board-loading__shadow`, `.board-loading__label`
 
-**Keyframes:** `board-loading-hop` (up 12 px with an 8° tilt at 30 %, back at 60 %), `board-loading-shadow` (narrows to 60 % and fades while the knight is up); 1.3 s, ease-in-out, both at the top level because `@keyframes` cannot be nested.
+**Keyframes:** `board-loading-in` (a 200 ms fade after a 120 ms delay: a page that arrives at once never shows it, one that takes longer sees it appear instead of flash), `board-loading-hop` (up 12 px with an 8° tilt at 30 %, back at 60 %), `board-loading-shadow` (narrows to 60 % and fades while the knight is up); 1.3 s, ease-in-out, both at the top level because `@keyframes` cannot be nested.
 
 **Tokens:** `--platform-text`, `--platform-text-muted`
 
