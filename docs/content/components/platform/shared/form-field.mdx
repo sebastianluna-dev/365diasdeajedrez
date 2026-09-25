@@ -15,6 +15,8 @@ Also exports `FormFieldset`.
 
 ## Purpose
 
+> **Being replaced.** New forms use [`PlatformForm`](/components/platform/shared/platform-form) and [`PlatformSelect`](/components/platform/shared/platform-select), on Radix Primitives; the forms below are migrated as they are touched (`TODOS.md`). This wrapper stays until the last one moves.
+
 One field, one look. `FormField` wraps a native control in a real `<label>` (never a placeholder acting as a label), adds an optional hint and an optional error, and defines once how an input, select or textarea looks in the platform. `FormFieldset` does the same with `<fieldset>`/`<legend>` for groups of checkboxes or radios, where a single label does not apply.
 
 It is stateless on purpose. Platform forms are `<form action={serverAction}>`; validation happens in the action and the failure comes back through the page's `?error=` handling. There is no client validation to wire here.

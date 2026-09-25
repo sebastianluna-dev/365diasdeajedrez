@@ -1,0 +1,64 @@
+.platform-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  & .platform-form__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  & .platform-form__label {
+    font-size: 14.5px;
+    color: var(--platform-text-muted);
+  }
+
+  /* The native controls are direct children of the field: Radix's `Control`
+     renders the element it is given, with no wrapper of its own. A select is
+     `PlatformSelect`, which brings its own look. */
+  & .platform-form__field > input,
+  & .platform-form__field > textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 9px 12px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 15.5px;
+  }
+
+  & .platform-form__field > textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.5;
+  }
+
+  & .platform-form__field > input:focus,
+  & .platform-form__field > textarea:focus {
+    outline: 2px solid var(--platform-accent-soft);
+    border-color: var(--platform-accent);
+  }
+
+  /* The primitive marks the field when the browser rejected the control on
+     submit (or the server did): the control turns red with it. */
+  & .platform-form__field[data-invalid] > input,
+  & .platform-form__field[data-invalid] > textarea,
+  & .platform-form__field[data-invalid] .platform-select__trigger {
+    border-color: var(--platform-danger);
+  }
+
+  & .platform-form__hint {
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  & .platform-form__message {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--platform-danger);
+  }
+}

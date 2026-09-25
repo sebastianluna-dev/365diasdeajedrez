@@ -1,0 +1,72 @@
+---
+description: "The platform's select on Radix's Select primitive: a trigger that looks like the inputs and a list drawn with the platform's tokens, keyboard-navigable, submitting through a hidden native select, and rendered next to the trigger so it works inside a modal <dialog>."
+---
+
+# `PlatformSelect`
+
+Also exports the type `PlatformSelectOption`.
+
+|            |                                                                            |
+| ---------- | -------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-select/platform-select.comp.tsx`      |
+| Kind       | Client Component                                                           |
+| Stylesheet | `platform-select.comp.css` → block `.platform-select`                      |
+| Story      | `platform-select.stories.tsx` (`platform/shared/PlatformSelect`)           |
+| Used by    | [`NewStudy`](/components/platform/sections/studies/studies-list/new-study) |
+| Uses       | `Select` from `radix-ui`; `CheckIcon`, `ChevronIcon`                       |
+
+## Purpose
+
+A native `<select>` cannot be drawn: its list is the browser's. This one is Radix's `Select` primitive, so the trigger looks like the platform's inputs and the list uses the platform's surface, border and accent, with keyboard navigation and typeahead for free. Inside a form it behaves like a native select: the primitive keeps a hidden `<select name>` in sync with the choice, so `FormData` carries it.
+
+## Props
+
+| Prop            | Type                      | Required | Meaning                                                                                      |
+| --------------- | ------------------------- | -------- | -------------------------------------------------------------------------------------------- |
+| `options`       | `PlatformSelectOption[]`  | yes      | `{ value, label }` per choice, in order.                                                     |
+| `name`          | `string`                  | no       | Name of the hidden native select. Given by `PlatformFormField` when inside one.              |
+| `value`         | `string`                  | no       | Controlled value.                                                                            |
+| `defaultValue`  | `string`                  | no       | Initial choice. Without it the trigger shows `placeholder`.                                  |
+| `onValueChange` | `(value: string) => void` | no       | Called with the new value.                                                                   |
+| `placeholder`   | `string`                  | no       | Trigger text while nothing is chosen, in the muted colour.                                   |
+| `required`      | `boolean`                 | no       | Passed to the hidden select. Pair it with `defaultValue` (see `PlatformForm`).               |
+| `disabled`      | `boolean`                 | no       |                                                                                              |
+| …rest           | `<button>` attributes     | no       | `id`, `aria-*`, `className`, `ref`… go to the trigger button, which is what a label targets. |
+
+## Behaviour
+
+- The list is **not portalled**: it renders next to the trigger, positioned against the viewport (`position="popper"`, fixed strategy). A portal to `<body>` would be inert under a modal `<dialog>`'s top layer, and the platform's dialogs are native.
+- `--radix-select-trigger-width` and `--radix-select-content-available-height` are set by the primitive from the trigger's box; the stylesheet gives the list the trigger's width and caps its height to the viewport.
+- The chosen item carries the check; the highlighted one the accent wash. The chevron points down at rest and up while open.
+
+## Markup & styling
+
+Block `.platform-select`, a wrapper `<div>` so the trigger and the list share one root, as the CSS convention asks.
+
+**Elements:** `.platform-select__trigger`, `.platform-select__icon`, `.platform-select__chevron`, `.platform-select__content`, `.platform-select__viewport`, `.platform-select__item`, `.platform-select__indicator`, `.platform-select__check`
+
+**States (data attributes set by the primitive):** `[data-placeholder]`, `[data-disabled]`, `[data-state="open"]` on the trigger; `[data-highlighted]`, `[data-state="checked"]`, `[data-disabled]` on an item.
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/studies/studies-list/new-study.comp.tsx`:
+
+```tsx
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+
+<PlatformFormField name="kindCode" label="Tipo">
+  <PlatformSelect
+    options={kinds.map((kind) => ({ value: kind.code, label: kind.label }))}
+    defaultValue={kinds[0]?.code}
+    required
+  />
+</PlatformFormField>;
+```
+
+## Related
+
+- [`PlatformForm`](/components/platform/shared/platform-form), which labels it and carries its messages.
