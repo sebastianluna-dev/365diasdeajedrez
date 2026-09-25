@@ -16,7 +16,7 @@ Exports `playMoveSound` and the `MoveSoundKind` type.
 
 ## Purpose
 
-Board sounds. There are only two, move and capture, synthesised by `scripts/make-board-sounds.ts` (`npm run sounds:make`) so the repository carries no third-party audio; check does **not** sound because it is a state of the position, not a gesture on the board.
+Board sounds. There are only two, move and capture, synthesised by `scripts/make-board-sounds.ts` (`npm run sounds:make`, a strike over a bank of resonators tuned to sound like wood) so the repository carries no third-party audio; check does **not** sound because it is a state of the position, not a gesture on the board.
 
 The files load lazily and only when a sound is first needed: a page can hold several viewers that may never sound, and there is no point requesting the audio in every one of them.
 
