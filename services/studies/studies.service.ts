@@ -45,25 +45,32 @@ const CLASS_GAMES_ID = "class-games";
 export async function getUserStudies(): Promise<StudySummary[]> {
   const db = getPlatformDb();
   const [where, user] = await Promise.all([getVisibleStudiesWhere(), getCurrentUser()]);
-  const rows = await db.gameDatabase.findMany({
-    where,
-    // "Mis partidas" first: it is the only one that is always there and where what
-    // is recorded in a hurry ends up.
-    orderBy: [{ isDefault: "desc" }, { updatedAt: "desc" }],
-    include: studySummaryInclude,
-  });
 
-  // The totals, in one query for every study: the include's own count is taken
-  // by the cited games (a relation is counted once per include).
-  const totals = await db.game.groupBy({
-    by: ["databaseId"],
-    where: { databaseId: { in: rows.map((row) => row.id) } },
-    _count: { _all: true },
-  });
+  // The three reads are independent, so they travel together: the totals are
+  // scoped by the same visibility `where` instead of by the ids of the first
+  // query, and the class games only need the viewer.
+  const [rows, totals, classGames] = await Promise.all([
+    db.gameDatabase.findMany({
+      where,
+      // "Mis partidas" first: it is the only one that is always there and where what
+      // is recorded in a hurry ends up.
+      orderBy: [{ isDefault: "desc" }, { updatedAt: "desc" }],
+      include: studySummaryInclude,
+      // One round trip for the five included relations instead of six.
+      relationLoadStrategy: "join",
+    }),
+    // The totals, in one query for every study: the include's own count is taken
+    // by the cited games (a relation is counted once per include).
+    db.game.groupBy({
+      by: ["databaseId"],
+      where: { database: where },
+      _count: { _all: true },
+    }),
+    getClassGamesSummary(),
+  ]);
   const totalOf = new Map(totals.map((total) => [total.databaseId, total._count._all]));
 
   const studies = rows.map((row) => mapStudySummary(row, user.id, totalOf.get(row.id) ?? 0));
-  const classGames = await getClassGamesSummary();
   // At the end of the list and only if there is something: an empty "class games"
   // card would be noise for whoever has not been to one yet.
   return classGames ? [...studies, classGames] : studies;
@@ -123,6 +130,7 @@ export async function getStudyById(studyId: string, requestedPage = 1): Promise<
         ...studyDetailInclude,
         games: { ...studyDetailInclude.games, skip: (page - 1) * STUDY_GAMES_PAGE_SIZE, take: STUDY_GAMES_PAGE_SIZE },
       },
+      relationLoadStrategy: "join",
     }),
     db.game.count({ where: { database: studyWhere, classBlocks: { some: {} } } }),
     db.game.groupBy({
@@ -184,6 +192,7 @@ export async function getGameById(studyId: string, gameId: string): Promise<Game
   const row = await db.game.findFirst({
     where: { id: gameId, databaseId: studyId, database: where },
     include: gameViewInclude,
+    relationLoadStrategy: "join",
   });
   return row ? mapGameView(row, user.id) : null;
 }
@@ -207,6 +216,7 @@ const getClassGameItems = cache(async (): Promise<ClassGameItem[]> => {
       class: { participants: { some: { userId: user.id } } },
     },
     orderBy: [{ class: { scheduledAt: "desc" } }, { order: "asc" }],
+    relationLoadStrategy: "join",
     select: {
       classId: true,
       class: { select: { title: true, scheduledAt: true } },

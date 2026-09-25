@@ -86,6 +86,10 @@ export async function readSessionUser(): Promise<SessionUser | null> {
   const db = getPlatformDb();
   const session = await db.session.findUnique({
     where: { tokenHash: hashToken(token) },
+    // One round trip: with the default strategy Prisma reads each nested
+    // relation (user, teacher, staff) in a query of its own, and against a
+    // remote database that is four trips on every authenticated request.
+    relationLoadStrategy: "join",
     select: {
       id: true,
       expiresAt: true,
@@ -97,7 +101,8 @@ export async function readSessionUser(): Promise<SessionUser | null> {
           displayName: true,
           createdAt: true,
           // Roles by row existence. They go in the nested select so that this path —
-          // which every authenticated request goes through — keeps costing a single query.
+          // which every authenticated request goes through — keeps costing a single
+          // query, which the join strategy above is what makes true.
           teacher: { select: { id: true, displayName: true, isActive: true } },
           staff: { select: { id: true } },
         },

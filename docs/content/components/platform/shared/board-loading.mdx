@@ -4,16 +4,16 @@ description: "The knight that hops over its shadow while a study's game streams,
 
 # `BoardLoading`
 
-|            |                                                     |
-| ---------- | --------------------------------------------------- |
-| File       | `components/platform/shared/board-loading.comp.tsx` |
-| Kind       | Server Component                                    |
-| Stylesheet | `board-loading.comp.css` → block `.board-loading`   |
-| Used by    | `app/(platform)/estudios/[studyId]/loading.tsx`     |
+|            |                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/board-loading.comp.tsx`                                    |
+| Kind       | Server Component                                                                       |
+| Stylesheet | `board-loading.comp.css` → block `.board-loading`                                      |
+| Used by    | `app/(platform)/estudios/loading.tsx`, `app/(platform)/estudios/[studyId]/loading.tsx` |
 
 ## Purpose
 
-Opening a study is opening its first game (`/estudios/[studyId]` redirects there), so what the App Router waits for under that segment is always a board. Instead of the generic spinner of [`LoadingPanel`](/components/platform/shared/loading-panel), the boundary shows a knight hopping over its shadow and "Preparando el tablero…". The same fallback covers moving between games of a study through the aside, since the boundary sits on the `[studyId]` segment.
+The loading look of the studies area: the list at `/estudios` and, under it, the study's segment, where opening a study is opening its first game (`/estudios/[studyId]` redirects there). Instead of the generic spinner of [`LoadingPanel`](/components/platform/shared/loading-panel), both boundaries show a knight hopping over its shadow and "Preparando el tablero…". The same fallback covers moving between games of a study through the aside, since the boundary sits on the `[studyId]` segment.
 
 ## Props
 

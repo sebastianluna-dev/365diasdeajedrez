@@ -1,5 +1,5 @@
 ---
-description: "The first await of /estudios: reads the student's studies and splits them by ownership (editable versus received) before handing them to the browser."
+description: "Splits the student's studies by ownership (editable versus received) before handing them to the browser; the page reads them, alongside the kinds, so both travel at once."
 ---
 
 # `StudiesListSection`
@@ -7,23 +7,25 @@ description: "The first await of /estudios: reads the student's studies and spli
 |            |                                                                                                                                                 |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
 | File       | `components/platform/sections/studies/studies-list/studies-list.section.tsx`                                                                    |
-| Kind       | Server Component (async)                                                                                                                        |
+| Kind       | Server Component                                                                                                                                |
 | Stylesheet | none: the browser and the cards paint everything                                                                                                |
 | Used by    | `/estudios`                                                                                                                                     |
 | Composes   | [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser), [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads      | `getUserStudies()` · `services/studies/studies.service.ts`                                                                                      |
+| Uses       | `StudySummary` from `services/studies/studies.types`                                                                                            |
 
 ## Purpose
 
-The entry point of "Mis estudios". It is the page's first await, so the service resolves the identity in the DAL before anything renders, and it decides the one split the browser does not: **ownership**. What the student can edit ("Mis partidas", their tournaments, their studies) goes to `own`; what reaches them ready-made and read-only (the databases of the courses they started, the collections a teacher handed them, the games from their classes) goes to `received`. The split is by permission, not by kind, so a future kind lands in the right group by itself.
+The body of "Mis estudios". The page resolves the identity in the DAL first and then reads the studies and the kinds together, so the list does not wait for the dialog's data nor the other way round; this section decides the one split the browser does not: **ownership**. What the student can edit ("Mis partidas", their tournaments, their studies) goes to `own`; what reaches them ready-made and read-only (the databases of the courses they started, the collections a teacher handed them, the games from their classes) goes to `received`. The split is by permission, not by kind, so a future kind lands in the right group by itself.
 
 ## Props
 
-This component takes no props.
+| Prop      | Type             | Required | Meaning                                                                  |
+| --------- | ---------------- | -------- | ------------------------------------------------------------------------ |
+| `studies` | `StudySummary[]` | yes      | `getUserStudies()`, read by the page in parallel with `getStudyKinds()`. |
 
 ## Behaviour
 
-Awaits `getUserStudies()`. No studies at all renders an [`EmptyState`](/components/platform/shared/empty-state) ("Todavía no tienes estudios"); otherwise the list is partitioned on `permissions.canEditGames` and passed to the client browser. The "Nuevo estudio" button is not here: the page mounts [`NewStudy`](/components/platform/sections/studies/studies-list/new-study) in its header with the kinds the viewer may create.
+No studies at all renders an [`EmptyState`](/components/platform/shared/empty-state) ("Todavía no tienes estudios"); otherwise the list is partitioned on `permissions.canEditGames` and passed to the client browser. The "Nuevo estudio" button is not here: the page mounts [`NewStudy`](/components/platform/sections/studies/studies-list/new-study) in its header with the kinds the viewer may create.
 
 ## Markup & styling
 

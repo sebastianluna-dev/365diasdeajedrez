@@ -4,16 +4,16 @@ description: "The spinner and label every loading.tsx under app/(platform) rende
 
 # `LoadingPanel`
 
-|            |                                                                                                                                                      |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/loading-panel.comp.tsx`                                                                                                  |
-| Kind       | Server Component                                                                                                                                     |
-| Stylesheet | `loading-panel.comp.css` → block `.loading-panel`                                                                                                    |
-| Used by    | `loading.tsx` of `/` (the platform root), `/inicio`, `/cursos`, `/clases`, `/estudios`, `/explorador`, `/entrenador`, `/profesor`, `/administracion` |
+|            |                                                                                                                                         |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/loading-panel.comp.tsx`                                                                                     |
+| Kind       | Server Component                                                                                                                        |
+| Stylesheet | `loading-panel.comp.css` → block `.loading-panel`                                                                                       |
+| Used by    | `loading.tsx` of `/` (the platform root), `/inicio`, `/cursos`, `/clases`, `/explorador`, `/entrenador`, `/profesor`, `/administracion` |
 
 ## Purpose
 
-What the App Router shows in a segment while its Server Components await data. Every `loading.tsx` under `app/(platform)` returns this, so the platform has one loading look and the files are one line each. The one exception is the study's segment, `/estudios/[studyId]`, whose boundary renders [`BoardLoading`](/components/platform/shared/board-loading): what is waited for there is a board.
+What the App Router shows in a segment while its Server Components await data. Every `loading.tsx` under `app/(platform)` returns this, so the platform has one loading look and the files are one line each. The exception is the studies area: `/estudios` and the study's segment under it, `/estudios/[studyId]`, render [`BoardLoading`](/components/platform/shared/board-loading) instead.
 
 ## Props
 

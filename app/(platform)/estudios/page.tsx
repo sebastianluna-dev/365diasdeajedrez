@@ -4,7 +4,7 @@ import { StudiesListSection } from "@/components/platform/sections/studies/studi
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
-import { getStudyKinds } from "@/services/studies/studies.service";
+import { getStudyKinds, getUserStudies } from "@/services/studies/studies.service";
 import "./studies-page.css";
 
 export const metadata: Metadata = {
@@ -21,7 +21,9 @@ export default async function StudiesPage({ searchParams }: StudiesPageProps) {
   // `getStudyKinds` now checks whether the caller is a teacher — to offer them
   // "Colección" — resolving a role is not checking a session.
   await getCurrentUser();
-  const [kinds, { error }] = await Promise.all([getStudyKinds(), searchParams]);
+  // The kinds for the dialog and the studies for the list do not depend on
+  // each other: read together, the page waits for the slower one, not for both.
+  const [kinds, studies, { error }] = await Promise.all([getStudyKinds(), getUserStudies(), searchParams]);
   const errorMessage = studentErrorMessage(error);
 
   return (
@@ -39,7 +41,7 @@ export default async function StudiesPage({ searchParams }: StudiesPageProps) {
 
       {errorMessage && <PlatformNotice message={errorMessage} />}
 
-      <StudiesListSection />
+      <StudiesListSection studies={studies} />
     </div>
   );
 }

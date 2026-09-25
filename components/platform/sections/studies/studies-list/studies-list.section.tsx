@@ -1,10 +1,13 @@
 import { EmptyState } from "@/components/platform/shared/empty-state.comp";
-import { getUserStudies } from "@/services/studies/studies.service";
+import type { StudySummary } from "@/services/studies/studies.types";
 import { StudiesBrowser } from "./studies-browser.comp";
 
-export async function StudiesListSection() {
-  const studies = await getUserStudies();
+interface StudiesListSectionProps {
+  /** `getUserStudies()`, read by the page alongside the kinds so both travel at once. */
+  studies: StudySummary[];
+}
 
+export function StudiesListSection({ studies }: StudiesListSectionProps) {
   if (studies.length === 0) {
     return (
       <EmptyState
