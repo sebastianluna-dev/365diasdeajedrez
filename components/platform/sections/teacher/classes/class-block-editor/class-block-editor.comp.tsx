@@ -13,6 +13,7 @@ import type { TeacherClassBlock } from "@/services/teacher-classes/teacher-class
 import { BlockForm, type BlockFormOptions } from "./block-form.comp";
 import "./class-block-editor.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface ClassBlockEditorProps {
   classId: string;
@@ -136,17 +137,13 @@ export function ClassBlockEditor({ classId, blocks, options, initialGameId }: Cl
 
       <div className="class-block-editor__add">
         <FormField label="Añadir un bloque">
-          <select
+          <PlatformSelect
             value={newKind ?? ""}
-            onChange={(event) => setNewKind((event.target.value || null) as ClassBlockKindCode | null)}
-          >
-            <option value="">Elige un tipo…</option>
-            {Object.values(CLASS_BLOCK_KIND).map((kind) => (
-              <option key={kind} value={kind}>
-                {KIND_LABELS[kind]}
-              </option>
-            ))}
-          </select>
+            onValueChange={(kind) => setNewKind((kind || null) as ClassBlockKindCode | null)}
+            placeholder="Elige un tipo…"
+            options={Object.values(CLASS_BLOCK_KIND).map((kind) => ({ value: kind, label: KIND_LABELS[kind] ?? kind }))}
+            size="compact"
+          />
         </FormField>
 
         {newKind && (

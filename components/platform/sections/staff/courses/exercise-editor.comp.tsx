@@ -12,6 +12,7 @@ import type { CatalogOption, ExerciseAdminRow } from "@/services/staff-courses/s
 import { ExerciseMovePicker } from "./exercise-move-picker.comp";
 import "./exercise-editor.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface ExerciseEditorProps {
   courseId: string;
@@ -41,13 +42,12 @@ function ExerciseFields({ action, modes, exercise, submitLabel, lessonPgn, onCan
   return (
     <form className="exercise-editor__form" action={action}>
       <FormField label="Modo">
-        <select name="modeCode" defaultValue={exercise?.modeCode ?? modes[0]?.code}>
-          {modes.map((mode) => (
-            <option key={mode.code} value={mode.code}>
-              {mode.label}
-            </option>
-          ))}
-        </select>
+        <PlatformSelect
+          name="modeCode"
+          defaultValue={exercise?.modeCode ?? modes[0]?.code}
+          options={modes.map((mode) => ({ value: mode.code, label: mode.label }))}
+          size="compact"
+        />
       </FormField>
 
       <FormField label="Enunciado (opcional)">

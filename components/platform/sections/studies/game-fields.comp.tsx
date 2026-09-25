@@ -2,6 +2,7 @@ import { FormField } from "@/components/platform/shared/form-field.comp";
 import { federationOptions, FIDE_TITLE_LABELS, FIDE_TITLES } from "@/lib/chess/federations";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import "./game-fields.comp.css";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 // A game's data, in one place.
 //
@@ -54,15 +55,16 @@ function CodeSelect({
   const isKnown = current.length === 0 || options.some((option) => option.code === current);
 
   return (
-    <select name={name} defaultValue={current}>
-      <option value="">{emptyLabel}</option>
-      {!isKnown && <option value={current}>{current} (del PGN)</option>}
-      {options.map((option) => (
-        <option key={option.code} value={option.code}>
-          {option.label}
-        </option>
-      ))}
-    </select>
+    <PlatformSelect
+      name={name}
+      defaultValue={current}
+      emptyOption={emptyLabel}
+      options={[
+        ...(isKnown ? [] : [{ value: current, label: `${current} (del PGN)` }]),
+        ...options.map((option) => ({ value: option.code, label: option.label })),
+      ]}
+      size="compact"
+    />
   );
 }
 
@@ -130,13 +132,12 @@ export function GameFields({ values, results, titleHint }: GameFieldsProps) {
 
       <div className="game-fields__row">
         <FormField label="Resultado">
-          <select name="resultCode" defaultValue={values?.resultCode ?? "ONGOING"}>
-            {results.map((result) => (
-              <option key={result.code} value={result.code}>
-                {result.label}
-              </option>
-            ))}
-          </select>
+          <PlatformSelect
+            name="resultCode"
+            defaultValue={values?.resultCode ?? "ONGOING"}
+            options={results.map((result) => ({ value: result.code, label: result.label }))}
+            size="compact"
+          />
         </FormField>
         <FormField label="Fecha">
           <input type="date" name="playedAt" defaultValue={values?.playedAtValue ?? ""} />

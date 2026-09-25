@@ -16,6 +16,7 @@ import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./lesson-editor.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface LessonEditorSectionProps {
   lesson: LessonAdminDetail;
@@ -108,15 +109,17 @@ export function LessonEditorSection({
                 </label>
 
                 <FormField label="Bando que entrena el alumno">
-                  <select
+                  <PlatformSelect
                     name="trainingColorCode"
                     form={METADATA_FORM_ID}
                     defaultValue={lesson.trainingColorCode ?? ""}
-                  >
-                    <option value="">El que mueva primero</option>
-                    <option value={BOARD_ORIENTATION.WHITE}>Blancas</option>
-                    <option value={BOARD_ORIENTATION.BLACK}>Negras</option>
-                  </select>
+                    emptyOption="El que mueva primero"
+                    options={[
+                      { value: BOARD_ORIENTATION.WHITE, label: "Blancas" },
+                      { value: BOARD_ORIENTATION.BLACK, label: "Negras" },
+                    ]}
+                    size="compact"
+                  />
                 </FormField>
 
                 <p className="lesson-editor__note">Se guardan con «Guardar metadatos».</p>
@@ -185,13 +188,15 @@ export function LessonEditorSection({
                 [FEN] header of the linked game, which is the only source of its content. */}
             <div className="lesson-editor__pair">
               <FormField label="Orientación del tablero">
-                <select name="orientationCode" defaultValue={lesson.orientationCode}>
-                  {CONTENT_ORIENTATIONS.map((code) => (
-                    <option key={code} value={code}>
-                      {ORIENTATION_LABELS[code] ?? code}
-                    </option>
-                  ))}
-                </select>
+                <PlatformSelect
+                  name="orientationCode"
+                  defaultValue={lesson.orientationCode}
+                  options={CONTENT_ORIENTATIONS.map((code) => ({
+                    value: code,
+                    label: ORIENTATION_LABELS[code] ?? code,
+                  }))}
+                  size="compact"
+                />
               </FormField>
 
               <FormField label="Duración estimada (minutos, opcional)">

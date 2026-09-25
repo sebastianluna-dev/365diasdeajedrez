@@ -32,7 +32,7 @@ It lives at the root of `studies/` rather than in a subfolder because two differ
 ## Behaviour
 
 - Plain inputs with `defaultValue`; no state.
-- `CodeSelect` handles the title and federation dropdowns: a PGN may bring a title or a federation that is not in our lists (headers are written by whoever wants), so a stored value outside the options is added as one more option labelled "(del PGN)". Without that, opening the form and saving without touching anything would silently replace the value.
+- `CodeSelect` handles the title and federation dropdowns, each a [`PlatformSelect`](/components/platform/shared/platform-select) with the `emptyOption` ("Sin título", "Sin federación"): a PGN may bring a title or a federation that is not in our lists (headers are written by whoever wants), so a stored value outside the options is added as one more option, "X (del PGN)", and saving without touching it keeps it. The result is a `PlatformSelect` over `results`.
 - Elo inputs are `type="number"` between 100 and 4000.
 
 ## Markup & styling

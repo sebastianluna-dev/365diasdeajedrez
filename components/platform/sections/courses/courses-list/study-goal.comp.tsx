@@ -6,6 +6,7 @@ import { updateDailyGoal } from "@/services/study-goal/study-goal.actions";
 import type { StudyGoal } from "@/services/study-goal/study-goal.types";
 import "./study-goal.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface StudyGoalAsideProps {
   goal: StudyGoal;
@@ -75,13 +76,12 @@ export function StudyGoalAside({ goal, errorCode }: StudyGoalAsideProps) {
           <form action={updateDailyGoal} className="study-goal__form">
             <label className="study-goal__field">
               <span className="study-goal__field-label">Minutos al día</span>
-              <select className="study-goal__select" name="goalMinutes" defaultValue={goal.goalMinutes}>
-                {GOAL_OPTIONS.map((minutes) => (
-                  <option key={minutes} value={minutes}>
-                    {minutes} minutos
-                  </option>
-                ))}
-              </select>
+              <PlatformSelect
+                name="goalMinutes"
+                defaultValue={String(goal.goalMinutes)}
+                options={GOAL_OPTIONS.map((minutes) => ({ value: String(minutes), label: `${minutes} minutos` }))}
+                size="compact"
+              />
             </label>
 
             <SubmitButton>Guardar</SubmitButton>

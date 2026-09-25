@@ -9,6 +9,7 @@ import { staffRoutes } from "@/lib/platform-routes";
 import { createCourse } from "@/services/staff-courses/staff-courses.actions";
 import { listCourseTypes } from "@/services/staff-courses/staff-courses.service";
 import "./new-course-page.css";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 // The title is resolved with the role, like the page itself: without it the
 // response carries not even the panel's name (IMPROVEMENTS #26).
@@ -48,13 +49,12 @@ export default async function NewCoursePage({ searchParams }: NewCoursePageProps
             </FormField>
 
             <FormField label="Tipo">
-              <select name="typeCode" defaultValue={types[0]?.code}>
-                {types.map((type) => (
-                  <option key={type.code} value={type.code}>
-                    {type.label}
-                  </option>
-                ))}
-              </select>
+              <PlatformSelect
+                name="typeCode"
+                defaultValue={types[0]?.code}
+                options={types.map((type) => ({ value: type.code, label: type.label }))}
+                size="compact"
+              />
             </FormField>
 
             <div className="new-course-page__submit">

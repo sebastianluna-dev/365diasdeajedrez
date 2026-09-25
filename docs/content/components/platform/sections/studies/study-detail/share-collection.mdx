@@ -32,13 +32,13 @@ A share is a row that exists or does not, so there is no intermediate state wort
 
 - `candidates` are the students not yet in `shares`. Sharing with someone who already has it would be a no-op (the action is idempotent), but offering it would look like it can be given twice.
 - Each share row has a `<form action={unshareStudyWithStudent.bind(null, studyId)}>` with a hidden `studentId` and a "Quitar" button.
-- The share form is a `<select name="studentId">` over the candidates plus "Compartir". With no candidates the message distinguishes "no assigned students" from "everyone already has it".
+- The share form is a [`PlatformSelect`](/components/platform/shared/platform-select) named `studentId` over the candidates plus "Compartir". With no candidates the message distinguishes "no assigned students" from "everyone already has it".
 
 ## Markup & styling
 
 Block `.share-collection` (184 lines).
 
-**Elements:** `.share-collection__head`, `.share-collection__title`, `.share-collection__hint`, `.share-collection__list`, `.share-collection__item`, `.share-collection__student`, `.share-collection__name`, `.share-collection__email`, `.share-collection__date`, `.share-collection__remove`, `.share-collection__empty`, `.share-collection__form`, `.share-collection__field`, `.share-collection__label`, `.share-collection__select`
+**Elements:** `.share-collection__head`, `.share-collection__title`, `.share-collection__hint`, `.share-collection__list`, `.share-collection__item`, `.share-collection__student`, `.share-collection__name`, `.share-collection__email`, `.share-collection__date`, `.share-collection__remove`, `.share-collection__empty`, `.share-collection__form`, `.share-collection__field`, `.share-collection__label`
 
 **Modifiers:** `.share-collection_layout_panel`, `.share-collection_layout_compact`
 

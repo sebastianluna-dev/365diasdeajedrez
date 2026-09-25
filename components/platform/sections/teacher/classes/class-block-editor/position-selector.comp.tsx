@@ -2,6 +2,7 @@
 
 import { FormField } from "@/components/platform/shared/form-field.comp";
 import type { PositionOption } from "@/services/teacher-classes/teacher-classes.types";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface PositionSelectorProps {
   positions: PositionOption[];
@@ -16,14 +17,15 @@ export function PositionSelector({ positions, value, onChange }: PositionSelecto
       label="Posición guardada"
       hint={positions.length === 0 ? "Todavía no has guardado ninguna posición." : undefined}
     >
-      <select name="positionId" value={value} onChange={(event) => onChange(event.target.value)} required>
-        <option value="">Elige una posición…</option>
-        {positions.map((position) => (
-          <option key={position.id} value={position.id}>
-            {position.label}
-          </option>
-        ))}
-      </select>
+      <PlatformSelect
+        name="positionId"
+        value={value}
+        onValueChange={onChange}
+        required
+        placeholder="Elige una posición…"
+        options={positions.map((position) => ({ value: position.id, label: position.label }))}
+        size="compact"
+      />
     </FormField>
   );
 }

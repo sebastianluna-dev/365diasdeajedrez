@@ -3,12 +3,13 @@ import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp"
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { PlatformTable, PlatformTableCell, PlatformTableRow } from "@/components/platform/shared/platform-table.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
-import { COMMON_TIMEZONES } from "@/constants/platform/timezones.const";
+import { TIMEZONE_OPTIONS } from "@/constants/platform/timezones.const";
 import { setTeacherActive, updateTeacher } from "@/services/staff-teachers/staff-teachers.actions";
 import type { AssignableStudent, StaffTeacherDetail } from "@/services/staff-teachers/staff-teachers.types";
 import { AssignmentPanel } from "@/components/platform/sections/staff/assignments/assignment-panel.comp";
 import "./teacher-admin-detail.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface TeacherAdminDetailSectionProps {
   teacher: StaffTeacherDetail;
@@ -36,13 +37,12 @@ export function TeacherAdminDetailSection({ teacher, assignable, errorCode }: Te
           </FormField>
 
           <FormField label="Zona horaria">
-            <select name="timezone" defaultValue={teacher.timezone ?? "UTC"}>
-              {COMMON_TIMEZONES.map((timezone) => (
-                <option key={timezone} value={timezone}>
-                  {timezone.replace(/_/g, " ")}
-                </option>
-              ))}
-            </select>
+            <PlatformSelect
+              name="timezone"
+              options={TIMEZONE_OPTIONS}
+              defaultValue={teacher.timezone ?? "UTC"}
+              size="compact"
+            />
           </FormField>
 
           <FormField label="Foto (URL, opcional)">

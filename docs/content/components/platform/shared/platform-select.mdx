@@ -6,14 +6,14 @@ description: "The platform's select on Radix's Select primitive: a trigger that 
 
 Also exports the type `PlatformSelectOption`.
 
-|            |                                                                                                       |
-| ---------- | ----------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/platform-select/platform-select.comp.tsx`                                 |
-| Kind       | Client Component                                                                                      |
-| Stylesheet | `platform-select.comp.css` → block `.platform-select`                                                 |
-| Story      | `platform-select.stories.tsx` (`platform/shared/PlatformSelect`)                                      |
-| Used by    | no form yet: `NewStudy` moved its kind to cards; it waits for the forms with selects (`TODOS.md` T17) |
-| Uses       | `Select` from `radix-ui`; `CheckIcon`, `ChevronIcon`                                                  |
+|            |                                                                                                                                                                                                           |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-select/platform-select.comp.tsx`                                                                                                                                     |
+| Kind       | Client Component                                                                                                                                                                                          |
+| Stylesheet | `platform-select.comp.css` → block `.platform-select`                                                                                                                                                     |
+| Story      | `platform-select.stories.tsx` (`platform/shared/PlatformSelect`)                                                                                                                                          |
+| Used by    | Every dropdown of the platform (27 in 19 files): the game fields, the study and collection dialogs, the study goal, the staff and teacher forms, the class block editor's selectors and the class filters |
+| Uses       | `Select` from `radix-ui`; `CheckIcon`, `ChevronIcon`                                                                                                                                                      |
 
 ## Purpose
 
@@ -21,30 +21,36 @@ A native `<select>` cannot be drawn: its list is the browser's. This one is Radi
 
 ## Props
 
-| Prop            | Type                      | Required | Meaning                                                                                      |
-| --------------- | ------------------------- | -------- | -------------------------------------------------------------------------------------------- |
-| `options`       | `PlatformSelectOption[]`  | yes      | `{ value, label }` per choice, in order.                                                     |
-| `name`          | `string`                  | no       | Name of the hidden native select. Given by `PlatformFormField` when inside one.              |
-| `value`         | `string`                  | no       | Controlled value.                                                                            |
-| `defaultValue`  | `string`                  | no       | Initial choice. Without it the trigger shows `placeholder`.                                  |
-| `onValueChange` | `(value: string) => void` | no       | Called with the new value.                                                                   |
-| `placeholder`   | `string`                  | no       | Trigger text while nothing is chosen, in the muted colour.                                   |
-| `required`      | `boolean`                 | no       | Passed to the hidden select. Pair it with `defaultValue` (see `PlatformForm`).               |
-| `disabled`      | `boolean`                 | no       |                                                                                              |
-| …rest           | `<button>` attributes     | no       | `id`, `aria-*`, `className`, `ref`… go to the trigger button, which is what a label targets. |
+| Prop            | Type                      | Required                 | Meaning                                                                                                                                                                  |
+| --------------- | ------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `options`       | `PlatformSelectOption[]`  | no                       | `{ value, label, disabled? }` per choice, in order. Either this or `groups`, or both (these first).                                                                      |
+| `groups`        | `PlatformSelectGroup[]`   | no                       | `{ label, options }` runs under a heading, what `<optgroup>` is to a native select.                                                                                      |
+| `emptyOption`   | `string`                  | no                       | A choice that means "none" and submits `""`, like `<option value="">`: it heads the list and is what the trigger shows while nothing else is chosen, in the text colour. |
+| `name`          | `string`                  | no                       | Name of the hidden native select. Given by `PlatformFormField` when inside one.                                                                                          |
+| `form`          | `string`                  | no                       | The `<form>` the hidden select belongs to, when it is not an ancestor.                                                                                                   |
+| `value`         | `string`                  | no                       | Controlled value; `""` means nothing chosen.                                                                                                                             |
+| `defaultValue`  | `string`                  | no                       | Initial choice. Without it the trigger shows `placeholder`.                                                                                                              |
+| `onValueChange` | `(value: string) => void` | no                       | Called with the new value, `""` for the empty option.                                                                                                                    |
+| `placeholder`   | `string`                  | no                       | Trigger text while nothing is chosen, in the muted colour.                                                                                                               |
+| `required`      | `boolean`                 | no                       | Passed to the hidden select. Pair it with `defaultValue` (see `PlatformForm`).                                                                                           |
+| `disabled`      | `boolean`                 | no                       |                                                                                                                                                                          |
+| `size`          | `"regular" \| "compact"`  | no · default `"regular"` | `regular` matches `PlatformForm`'s inputs; `compact` the ones of `FormField` and the small forms. A select next to an input has to be its height.                        |
+| …rest           | `<button>` attributes     | no                       | `id`, `aria-*`, `className`, `ref`… go to the trigger button, which is what a label targets.                                                                             |
 
 ## Behaviour
 
 - The list is **not portalled**: it renders next to the trigger, positioned against the viewport (`position="popper"`, fixed strategy). A portal to `<body>` would be inert under a modal `<dialog>`'s top layer, and the platform's dialogs are native.
 - `--radix-select-trigger-width` and `--radix-select-content-available-height` are set by the primitive from the trigger's box; the stylesheet gives the list the trigger's width and caps its height to the viewport.
 - The chosen item carries the check; the highlighted one the accent wash. The chevron points down at rest and up while open.
+- **The empty option.** The primitive forbids an item whose value is `""`, so `emptyOption` is an item with a private value that the component maps back to `""` before anyone sees it (`onValueChange`, the hidden select, which the primitive gives an empty `<option>` when nothing is chosen). The value is held in the component even when uncontrolled, for that mapping; its check is drawn by hand because the primitive only marks the item whose value is current.
+- `required` with a `placeholder` and no `defaultValue` works like a native required select: the hidden select is `required`, the browser blocks the submit and reports it on the hidden control, which sits at the trigger's position.
 - The list unfolds from the trigger's edge (`--radix-select-content-transform-origin`, 160 ms) and folds back (120 ms). The exit is possible because the primitive keeps the content mounted while an animation on `[data-state="closed"]` runs. `prefers-reduced-motion` removes both.
 
 ## Markup & styling
 
 Block `.platform-select`, a wrapper `<div>` so the trigger and the list share one root, as the CSS convention asks.
 
-**Elements:** `.platform-select__trigger`, `.platform-select__icon`, `.platform-select__chevron`, `.platform-select__content`, `.platform-select__viewport`, `.platform-select__item`, `.platform-select__indicator`, `.platform-select__check`
+**Elements:** `.platform-select__trigger` (`_size_regular`, `_size_compact`, `_empty_named` when there is an `emptyOption`), `.platform-select__icon`, `.platform-select__chevron`, `.platform-select__content`, `.platform-select__viewport`, `.platform-select__group`, `.platform-select__group-label`, `.platform-select__item`, `.platform-select__indicator`, `.platform-select__check`
 
 **States (data attributes set by the primitive):** `[data-placeholder]`, `[data-disabled]`, `[data-state="open"]` on the trigger; `[data-state="open"]`/`[data-state="closed"]` on the content, which drive its animations; `[data-highlighted]`, `[data-state="checked"]`, `[data-disabled]` on an item.
 

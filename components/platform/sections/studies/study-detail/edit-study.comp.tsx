@@ -5,6 +5,7 @@ import { updateStudy } from "@/services/studies/studies.actions";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import "./edit-study.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface EditStudyProps {
   id: string;
@@ -91,13 +92,12 @@ export function EditStudy({
           {canChangeKind && (
             <label className="edit-study__field">
               <span className="edit-study__label">Tipo</span>
-              <select className="edit-study__select" name="kindCode" defaultValue={selected}>
-                {kinds.map((kind) => (
-                  <option key={kind.code} value={kind.code}>
-                    {kind.label}
-                  </option>
-                ))}
-              </select>
+              <PlatformSelect
+                name="kindCode"
+                defaultValue={selected}
+                options={kinds.map((kind) => ({ value: kind.code, label: kind.label }))}
+                size="compact"
+              />
             </label>
           )}
 

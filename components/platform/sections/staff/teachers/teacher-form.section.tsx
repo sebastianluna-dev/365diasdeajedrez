@@ -1,11 +1,12 @@
 import { FormField } from "@/components/platform/shared/form-field.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
-import { COMMON_TIMEZONES } from "@/constants/platform/timezones.const";
+import { TIMEZONE_OPTIONS } from "@/constants/platform/timezones.const";
 import { createTeacher } from "@/services/staff-teachers/staff-teachers.actions";
 import type { LinkableUser } from "@/services/staff-teachers/staff-teachers.types";
 import "./teacher-form.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface TeacherFormSectionProps {
   linkableUsers: LinkableUser[];
@@ -31,16 +32,13 @@ export function TeacherFormSection({ linkableUsers, errorCode }: TeacherFormSect
         </p>
 
         <FormField label="Cuenta">
-          <select name="userId" required defaultValue="">
-            <option value="" disabled>
-              Elige una cuenta…
-            </option>
-            {linkableUsers.map((user) => (
-              <option key={user.id} value={user.id}>
-                {user.displayName} — {user.email}
-              </option>
-            ))}
-          </select>
+          <PlatformSelect
+            name="userId"
+            required
+            placeholder="Elige una cuenta…"
+            options={linkableUsers.map((user) => ({ value: user.id, label: `${user.displayName} — ${user.email}` }))}
+            size="compact"
+          />
         </FormField>
 
         <FormField label="Nombre para mostrar" hint="Cómo lo verán sus alumnos.">
@@ -52,13 +50,12 @@ export function TeacherFormSection({ linkableUsers, errorCode }: TeacherFormSect
         </FormField>
 
         <FormField label="Zona horaria">
-          <select name="timezone" defaultValue="America/Mexico_City">
-            {COMMON_TIMEZONES.map((timezone) => (
-              <option key={timezone} value={timezone}>
-                {timezone.replace(/_/g, " ")}
-              </option>
-            ))}
-          </select>
+          <PlatformSelect
+            name="timezone"
+            options={TIMEZONE_OPTIONS}
+            defaultValue="America/Mexico_City"
+            size="compact"
+          />
         </FormField>
 
         <SubmitButton pendingLabel="Vinculando…">Vincular como profesor</SubmitButton>
@@ -88,13 +85,12 @@ export function TeacherFormSection({ linkableUsers, errorCode }: TeacherFormSect
         </FormField>
 
         <FormField label="Zona horaria">
-          <select name="timezone" defaultValue="America/Mexico_City">
-            {COMMON_TIMEZONES.map((timezone) => (
-              <option key={timezone} value={timezone}>
-                {timezone.replace(/_/g, " ")}
-              </option>
-            ))}
-          </select>
+          <PlatformSelect
+            name="timezone"
+            options={TIMEZONE_OPTIONS}
+            defaultValue="America/Mexico_City"
+            size="compact"
+          />
         </FormField>
 
         <FormField label="Biografía (opcional)">

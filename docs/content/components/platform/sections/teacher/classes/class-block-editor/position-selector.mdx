@@ -1,5 +1,5 @@
 ---
-description: "A select of the teacher's own saved positions (diagrams) for a position block."
+description: "A PlatformSelect of the teacher's own saved positions (diagrams) for a position block."
 ---
 
 # `PositionSelector`
@@ -15,7 +15,7 @@ description: "A select of the teacher's own saved positions (diagrams) for a pos
 
 ## Purpose
 
-Position blocks reference a saved `Position` row owned by the teacher (`owner = TEACHER`), rendered to the student as a [`StaticDiagram`](/components/chess/static-diagram). This is the dropdown over those positions.
+Position blocks reference a saved `Position` row owned by the teacher (`owner = TEACHER`), rendered to the student as a [`StaticDiagram`](/components/chess/static-diagram). This is the [`PlatformSelect`](/components/platform/shared/platform-select) over those positions.
 
 ## Props
 
@@ -27,7 +27,7 @@ Position blocks reference a saved `Position` row owned by the teacher (`owner = 
 
 ## Behaviour
 
-A controlled `<select name="positionId" required>` with an empty placeholder option.
+A controlled, required `PlatformSelect` named `positionId` with the placeholder "Elige una posición…".
 
 ## Markup & styling
 
