@@ -1,6 +1,7 @@
 .platform-shell {
   min-height: 100vh;
-  background: var(--platform-bg);
+  /* One white from the bar down: the bar is told apart by its hairline shadow. */
+  background: var(--platform-surface);
 
   & .platform-shell__bar {
     background: var(--platform-surface);

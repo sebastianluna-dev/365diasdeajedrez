@@ -88,7 +88,9 @@
    without this the scroll bounce shows black under the content, and the
    login page, which has no shell, would be left half-themed. */
 body.platform-theme {
-  background: var(--platform-bg);
+  /* The page is the same white as the bar: `--platform-bg` stays the warm
+     tone of the soft fills (hovers, insets, sunken slots), not the canvas. */
+  background: var(--platform-surface);
   color: var(--platform-text);
   font-family: var(--platform-font);
 }
