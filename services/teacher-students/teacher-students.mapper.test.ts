@@ -23,7 +23,7 @@ describe("the teacher's read-only view of a student's studies", () => {
       ...dates,
     } as unknown as StudySummaryRow;
 
-    const summary = mapStudentStudySummary("alumna", row);
+    const summary = mapStudentStudySummary("alumna", row, 2);
     expect(summary.href).toBe(teacherRoutes.studentStudy("alumna", "s1"));
     expect(summary.permissions.canEditGames).toBe(false);
   });

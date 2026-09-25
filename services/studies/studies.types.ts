@@ -9,6 +9,10 @@ export interface StudySummary {
   kindCode: string;
   gameCount: number;
   updatedAtLabel: string;
+  /** How long ago it was last touched: "hace 3 meses". */
+  updatedAgoLabel: string;
+  /** The first games, as the card lists them: a title, or "Blancas – Negras". At most four. */
+  previewGames: string[];
   /** Name of the course when the database belongs to a course (read-only). */
   courseName?: string;
   isCourseStudy: boolean;
@@ -81,6 +85,8 @@ export interface ClassGameItem {
   playedAtLabel?: string;
   className: string;
   classDateLabel: string;
+  /** The same date as a distance: "hace 3 meses". */
+  classDateAgoLabel: string;
   href: string;
 }
 

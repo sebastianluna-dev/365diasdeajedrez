@@ -1,8 +1,12 @@
+import { formatRelativeSpanish } from "@/lib/format-relative-spanish";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { platformRoutes } from "@/lib/platform-routes";
 import { studyPermissionsOf } from "./study-rules";
 import type { GameView, StudyDetail, StudyGameItem, StudyShareItem, StudySummary } from "./studies.types";
+
+/** Games a card lists, like lichess's study cards do with their chapters. */
+export const STUDY_PREVIEW_SIZE = 4;
 
 export const studySummaryInclude = {
   kind: true,
@@ -11,12 +15,18 @@ export const studySummaryInclude = {
   // because the student only gets ONE row — theirs — and the owner needs none
   // here: the list of who it was shared with belongs to the detail page.
   shares: { take: 1, select: { teacher: { select: { displayName: true } } } },
-  _count: { select: { games: true } },
-  // Only those cited in some class, so a warning can be given before deleting:
-  // those blocks would be left without a game. The ids are brought instead of
-  // counting them separately because there are few and it avoids a second query
-  // per study.
-  games: { where: { classBlocks: { some: {} } }, select: { id: true } },
+  // Only the games cited in some class, so a warning can be given before
+  // deleting: those blocks would be left without a game. The total is NOT here:
+  // a relation is counted once per include, and this slot is the cited ones;
+  // the service brings the totals in one query and hands them to the mapper.
+  _count: { select: { games: { where: { classBlocks: { some: {} } } } } },
+  // The first games, for the card to list what is inside. The same order as the
+  // study page, so the card and the page agree on what comes first.
+  games: {
+    take: STUDY_PREVIEW_SIZE,
+    orderBy: [{ order: "asc" }, { playedAt: "desc" }, { createdAt: "asc" }],
+    select: { title: true, white: true, black: true },
+  },
 } satisfies Prisma.GameDatabaseInclude;
 
 export type StudySummaryRow = Prisma.GameDatabaseGetPayload<{ include: typeof studySummaryInclude }>;
@@ -74,7 +84,16 @@ export type GameViewRow = Prisma.GameGetPayload<{ include: typeof gameViewInclud
  *   thing that separates a collection that is SHARED from one that is RECEIVED,
  *   so without this what to offer them cannot be decided.
  */
-export function mapStudySummary(row: StudySummaryRow, viewerId: string | null): StudySummary {
+/**
+ * `gameCount` is the study's total, counted by the service: the row's own count
+ * is the cited games only (see `studySummaryInclude`). `now` exists for tests.
+ */
+export function mapStudySummary(
+  row: StudySummaryRow,
+  viewerId: string | null,
+  gameCount: number,
+  now: Date = new Date(),
+): StudySummary {
   const isOwner = row.userId === viewerId;
 
   return {
@@ -83,13 +102,15 @@ export function mapStudySummary(row: StudySummaryRow, viewerId: string | null): 
     description: row.description ?? undefined,
     kindLabel: row.kind.label,
     kindCode: row.kind.code,
-    gameCount: row._count.games,
+    gameCount,
     updatedAtLabel: formatSpanishDate(row.updatedAt),
+    updatedAgoLabel: formatRelativeSpanish(row.updatedAt, now),
+    previewGames: row.games.map((game) => game.title || `${game.white} – ${game.black}`),
     courseName: row.course?.name,
     isCourseStudy: row.courseId !== null,
     sharedByName: isOwner ? undefined : (row.shares[0]?.teacher?.displayName ?? undefined),
     permissions: studyPermissionsOf({ kindCode: row.kind.code, isOwner }),
-    citedGameCount: row.games.length,
+    citedGameCount: row._count.games,
     href: platformRoutes.studyDetail(row.id),
   };
 }
