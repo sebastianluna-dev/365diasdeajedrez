@@ -1,18 +1,11 @@
 .game-view {
-  display: grid;
-  /* The aside measures its own; the viewer keeps the rest and splits it inside
-     between board and notation. */
-  grid-template-columns: 280px minmax(0, 1fr);
-  gap: 20px;
-  align-items: start;
-
-  & .game-view__board {
-    min-width: 0;
-  }
+  /* The board's column; the page's layout gives it the room next to the
+     aside, and the viewer splits it inside between board and notation. */
+  min-width: 0;
 
   /* What bounces back from a server action, above the board: it is the answer
      to something just pressed and has to be seen without looking for it. */
-  & .game-view__board .platform-notice {
+  & .platform-notice {
     margin-bottom: 14px;
   }
 

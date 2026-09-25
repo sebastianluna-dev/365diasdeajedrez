@@ -1,65 +1,35 @@
-"use client";
-
 import Link from "next/link";
-import { type ReactNode, useEffect, useRef, useState, useTransition } from "react";
-import { reorderStudyGames } from "@/services/studies/studies.actions";
-import type { GameView, StudyGameItem } from "@/services/studies/studies.types";
+import { DeleteStudy } from "@/components/platform/sections/studies/studies-list/delete-study.comp";
+import { EditStudy } from "@/components/platform/sections/studies/study-detail/edit-study.comp";
+import { NewGame } from "@/components/platform/sections/studies/study-detail/new-game.comp";
+import { ShareCollection } from "@/components/platform/sections/studies/study-detail/share-collection.comp";
+import type {
+  ClassGameItem,
+  GameView,
+  StudentOption,
+  StudyDetail,
+  StudyKindOption,
+} from "@/services/studies/studies.types";
+import { canShareStudy } from "@/services/studies/study-rules";
 import { DeleteGame } from "./delete-game.comp";
+import { EditGame } from "./edit-game.comp";
+import { GameList } from "./game-list.comp";
 import "./game-aside.comp.css";
-
-/** Where the list stands when the study spans more than one page of games. */
-export interface GameAsidePages {
-  page: number;
-  pageCount: number;
-  previousHref?: string;
-  nextHref?: string;
-}
 
 interface GameAsideProps {
   game: GameView;
-  /** The other games of the study, to jump between them without going back. */
-  siblings: StudyGameItem[];
-  /** The study's name, heading the list: the study has no page of its own. */
-  studyName: string;
-  /** The study's total, which is not the page's length when there are pages. */
-  gameCount: number;
-  /**
-   * "Editar datos" and "Borrar" of the study, for its owner. They arrive as a
-   * node, like the modals, so the aside does not carry the kinds catalog.
-   */
-  studyTools?: ReactNode;
-  /**
-   * Whether the list can be dragged into a new order: the owner, with the
-   * whole study in hand (one page). Reordering a page would leave the games
-   * of the other pages with the old order mixed among the new one.
-   */
-  canReorder?: boolean;
-  /** Present when the study spans more than one page of games. */
-  pages?: GameAsidePages;
-  /**
-   * The new-game modal, mounted by whoever has its data. It arrives as a node
-   * and not as props so as not to drag the results catalog and the class games
-   * all the way here, which the aside uses for nothing else.
-   */
-  newGame?: ReactNode;
-  /** "Datos de la partida" modal; absent when writing is not allowed. */
-  editGame?: ReactNode;
-  /** The sharing card of a collection, for its owner. */
-  share?: ReactNode;
-}
-
-/** The second line of each game: who played it. */
-function gameMeta(game: StudyGameItem): string {
-  return `${game.white} — ${game.black}`;
-}
-
-/** Returns the list with the item at `from` placed at `to`. */
-function moved<T>(items: T[], from: number, to: number): T[] {
-  const next = [...items];
-  const [item] = next.splice(from, 1);
-  if (item === undefined) return items;
-  next.splice(to, 0, item);
-  return next;
+  /** The study the game belongs to, with the page of games around it. */
+  study: StudyDetail;
+  /** Results from the catalog, for the game modals. Empty when nobody here can write. */
+  results: StudyKindOption[];
+  /** Games seen in class that can be copied. Empty = that tab of "Nueva partida" does not appear. */
+  classGames: ClassGameItem[];
+  /** Kinds the study can change to. Empty when it is not the viewer's. */
+  kinds: StudyKindOption[];
+  /** Students to hand a collection to. Empty unless the viewer owns a collection. */
+  students: StudentOption[];
+  /** The URL of the current game listing another page of the study's games. */
+  pageHref: (page: number) => string;
 }
 
 /**
@@ -78,56 +48,25 @@ function metaCells(game: GameView): { key: string; value: string }[] {
   ];
 }
 
-export function GameAside({
-  game,
-  siblings,
-  studyName,
-  gameCount,
-  studyTools,
-  canReorder = false,
-  pages,
-  newGame,
-  editGame,
-  share,
-}: GameAsideProps) {
+/**
+ * The column beside a game. A study has no page of its own — its URL
+ * redirects to the first game — so this is where the study lives: its name,
+ * its owner's actions, its games to jump between and, for a collection's
+ * owner, who it is shared with. Under it, the game's record.
+ *
+ * It receives data and decides for itself what to show, with the same
+ * permission table the server actions apply (`services/studies/study-rules`):
+ * the page only loads and hands over. It is a Server Component: the modals
+ * it mounts are Client Components with their own state, and the list, the
+ * one piece here with state, is `GameList`.
+ */
+export function GameAside({ game, study, results, classGames, kinds, students, pageHref }: GameAsideProps) {
+  const canWrite = study.permissions.canEditGames;
+  const canShare = canShareStudy(study);
+  // Reordering needs the whole list in hand: with more than one page the
+  // order is read-only.
+  const canReorder = canWrite && study.pageCount === 1;
   const cells = metaCells(game);
-
-  // The order lives here while it is being dragged; the server gets the whole
-  // list once the row is dropped. When the server revalidates, new games arrive
-  // through props and the state is adjusted during render — not in an effect —
-  // so as not to paint once with the old list before correcting it.
-  const [items, setItems] = useState(siblings);
-  const [baseline, setBaseline] = useState(siblings);
-  if (siblings !== baseline) {
-    setBaseline(siblings);
-    setItems(siblings);
-  }
-  const [dragging, setDragging] = useState<number | null>(null);
-  const [, startTransition] = useTransition();
-
-  // The list is five rows tall and scrolls on its own, so the current game
-  // is brought into its middle on arrival: deep in an eighty-game study it
-  // would otherwise sit below the fold of the list. Only the list moves,
-  // never the page, which is why this is arithmetic and not scrollIntoView.
-  const listRef = useRef<HTMLUListElement>(null);
-  useEffect(() => {
-    const list = listRef.current;
-    const active = list?.querySelector<HTMLElement>(".game-aside__item_state_active");
-    if (!list || !active) return;
-    list.scrollTop = active.offsetTop - (list.clientHeight - active.offsetHeight) / 2;
-  }, [game.id]);
-
-  const move = (from: number, to: number) => {
-    if (to < 0 || to >= items.length || from === to) return;
-    const next = moved(items, from, to);
-    setItems(next);
-    startTransition(() => {
-      void reorderStudyGames(
-        game.studyId,
-        next.map((item) => item.id),
-      );
-    });
-  };
 
   return (
     <aside className="game-aside">
@@ -136,100 +75,50 @@ export function GameAside({
             where it is named and, for its owner, edited or deleted. */}
         <div className="game-aside__study">
           <div className="game-aside__card-head">
-            <h2 className="game-aside__study-name">{studyName}</h2>
-            <span className="game-aside__count">{gameCount}</span>
+            <h2 className="game-aside__study-name">{study.name}</h2>
+            <span className="game-aside__count">{study.gameCount}</span>
           </div>
-          {studyTools && <div className="game-aside__study-tools">{studyTools}</div>}
+          {canWrite && (
+            <div className="game-aside__study-tools">
+              <EditStudy
+                id={study.id}
+                name={study.name}
+                description={study.description}
+                kindCode={study.kindCode}
+                kindLabel={study.kindLabel}
+                kinds={kinds}
+                canChangeKind={study.permissions.canChangeKind}
+                size="inline"
+              />
+              {study.permissions.canDelete && (
+                <DeleteStudy
+                  id={study.id}
+                  name={study.name}
+                  gameCount={study.gameCount}
+                  citedGameCount={study.citedGameCount}
+                  trigger="inline"
+                />
+              )}
+            </div>
+          )}
         </div>
 
-        <ul className="game-aside__list" ref={listRef}>
-          {items.map((sibling, index) => {
-            const meta = gameMeta(sibling);
+        <GameList studyId={study.id} siblings={study.games} currentId={game.id} canReorder={canReorder} />
 
-            return (
-              <li
-                key={sibling.id}
-                className={`game-aside__row${dragging === index ? " game-aside__row_state_dragging" : ""}`}
-                draggable={canReorder || undefined}
-                onDragStart={(event) => {
-                  if (!canReorder) return;
-                  // The row is what moves, not the link's URL the browser would drag by default.
-                  event.dataTransfer.effectAllowed = "move";
-                  event.dataTransfer.setData("text/plain", sibling.id);
-                  setDragging(index);
-                }}
-                onDragEnd={() => setDragging(null)}
-                onDragOver={(event) => {
-                  if (!canReorder || dragging === null || dragging === index) return;
-                  // Without this the browser does not consider the row a valid drop target.
-                  event.preventDefault();
-                }}
-                onDrop={(event) => {
-                  if (!canReorder || dragging === null) return;
-                  event.preventDefault();
-                  move(dragging, index);
-                  setDragging(null);
-                }}
-              >
-                {/* The grip is a <button> and not a decoration because dragging
-                    alone leaves out whoever navigates with the keyboard: with
-                    the arrows the row moves just the same. */}
-                {canReorder && (
-                  <button
-                    type="button"
-                    className="game-aside__handle"
-                    aria-label={`Mover «${sibling.title ?? sibling.label}». Usa las flechas arriba y abajo para cambiarla de sitio.`}
-                    onKeyDown={(event) => {
-                      if (event.key === "ArrowUp") {
-                        event.preventDefault();
-                        move(index, index - 1);
-                      } else if (event.key === "ArrowDown") {
-                        event.preventDefault();
-                        move(index, index + 1);
-                      }
-                    }}
-                  >
-                    <span aria-hidden="true">⠿</span>
-                  </button>
-                )}
-
-                <Link
-                  href={sibling.href}
-                  aria-current={sibling.id === game.id ? "page" : undefined}
-                  className={`game-aside__item${sibling.id === game.id ? " game-aside__item_state_active" : ""}`}
-                >
-                  <span className="game-aside__item-main">
-                    {/* The name the student gave it heads the row; without it,
-                      `label` already falls back to the round, the event or its position
-                      within the study. */}
-                    <span className="game-aside__item-name">{sibling.title ?? sibling.label}</span>
-                    {/* Long names are cut so as not to misalign the row, so the
-                      full one is shown on hover. */}
-                    <span className="game-aside__item-meta" title={meta}>
-                      {meta}
-                    </span>
-                  </span>
-                  <span className="game-aside__item-result">{sibling.resultLabel}</span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-
-        {pages && (
+        {study.pageCount > 1 && (
           <nav className="game-aside__pages" aria-label="Páginas de partidas">
-            {pages.previousHref ? (
-              <Link href={pages.previousHref} className="game-aside__page-link">
+            {study.page > 1 ? (
+              <Link href={pageHref(study.page - 1)} className="game-aside__page-link">
                 ← Anteriores
               </Link>
             ) : (
               <span className="game-aside__page-link game-aside__page-link_state_disabled">← Anteriores</span>
             )}
             <span className="game-aside__page-status">
-              Página {pages.page} de {pages.pageCount}
+              Página {study.page} de {study.pageCount}
             </span>
-            {pages.nextHref ? (
-              <Link href={pages.nextHref} className="game-aside__page-link">
+            {study.page < study.pageCount ? (
+              <Link href={pageHref(study.page + 1)} className="game-aside__page-link">
                 Siguientes →
               </Link>
             ) : (
@@ -238,7 +127,11 @@ export function GameAside({
           </nav>
         )}
 
-        {newGame && <div className="game-aside__new">{newGame}</div>}
+        {canWrite && (
+          <div className="game-aside__new">
+            <NewGame studyId={study.id} studyName={study.name} results={results} classGames={classGames} />
+          </div>
+        )}
       </section>
 
       {/* The record reads top to bottom: where it was played, when and how it
@@ -247,7 +140,13 @@ export function GameAside({
         <div className="game-aside__meta-head">
           <div className="game-aside__card-head">
             <p className="game-aside__label">Datos de la partida</p>
-            {editGame}
+            {game.canEdit && (
+              /* The whole record, without going field by field: `GameView` already
+                 contains every field of `GameFieldValues`, and listing them here is
+                 how the title and the federation got lost once — the form asked for
+                 them and this list did not pass them, so saving erased them. */
+              <EditGame studyId={game.studyId} gameId={game.id} results={results} values={game} />
+            )}
           </div>
 
           {game.event && <p className="game-aside__event">{game.event}</p>}
@@ -281,7 +180,7 @@ export function GameAside({
       </section>
 
       {/* Who a collection reaches: a card of its own, for the owner only. */}
-      {share}
+      {canShare && <ShareCollection studyId={study.id} shares={study.shares} students={students} layout="compact" />}
     </aside>
   );
 }

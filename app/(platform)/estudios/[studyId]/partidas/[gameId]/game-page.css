@@ -2,4 +2,18 @@
   /* The breadcrumbs right under the bar, as in the other study views. */
   margin-top: -18px;
   gap: 14px;
+
+  /* The aside measures its own; the board keeps the rest. */
+  & .game-page__layout {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+
+  @media (max-width: 1180px) {
+    & .game-page__layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
 }
