@@ -1,0 +1,72 @@
+---
+description: 'The platform''s date picker: a trigger that looks like the inputs and, on Radix''s Popover, a month calendar of our own with keyboard navigation, ''Hoy'' and ''Borrar''; it submits like <input type="date"> through a hidden native input.'
+---
+
+# `PlatformDatePicker`
+
+|            |                                                                                                                                                                                                       |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-date-picker/platform-date-picker.comp.tsx`                                                                                                                       |
+| Kind       | Client Component                                                                                                                                                                                      |
+| Stylesheet | `platform-date-picker.comp.css` → block `.platform-date-picker`                                                                                                                                       |
+| Story      | `platform-date-picker.stories.tsx` (`platform/shared/PlatformDatePicker`)                                                                                                                             |
+| Used by    | [`GameFields`](/components/platform/sections/studies/game-fields) (the date played), [`NewGame`](/components/platform/sections/studies/study-detail/new-game), the staff class filters (`from`, `to`) |
+| Uses       | `Popover` from `radix-ui`; `CalendarIcon`, `ChevronIcon`; `formatSpanishDate`, `MONTHS_ES` from `lib/format-spanish-date`                                                                             |
+
+## Purpose
+
+Radix Primitives has no date primitive, so the calendar is ours and only the popup is Radix's `Popover`: the trigger looks like the platform's inputs and shows the date as "25 de septiembre, 2026" (or the placeholder, muted), and the calendar is a month grid drawn with the platform's tokens. It replaces every `<input type="date">` of the platform; the two `datetime-local` fields of the class form (date and time together) stay native, because a date picker does not cover the time.
+
+## Props
+
+| Prop            | Type                      | Required                 | Meaning                                                                                                        |
+| --------------- | ------------------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `name`          | `string`                  | no                       | Name of the hidden native date input. Given by `PlatformFormField` when inside one.                            |
+| `form`          | `string`                  | no                       | The `<form>` that input belongs to, when it is not an ancestor.                                                |
+| `value`         | `string`                  | no                       | Controlled value, `yyyy-mm-dd`; `""` means no date.                                                            |
+| `defaultValue`  | `string`                  | no                       | Initial date, `yyyy-mm-dd`.                                                                                    |
+| `onValueChange` | `(value: string) => void` | no                       | Called with the new value, `""` when cleared.                                                                  |
+| `placeholder`   | `string`                  | no · `"Elige una fecha"` | Trigger text while no date is chosen.                                                                          |
+| `required`      | `boolean`                 | no                       | On the hidden input: the browser blocks an empty submit. "Borrar" is not offered.                              |
+| `disabled`      | `boolean`                 | no                       |                                                                                                                |
+| `min`, `max`    | `string`                  | no                       | Earliest and latest choosable days, `yyyy-mm-dd`: the others are disabled, and the hidden input enforces them. |
+| `size`          | `"regular" \| "compact"`  | no · default `"regular"` | `regular` matches `PlatformForm`'s inputs; `compact` the ones of `FormField`.                                  |
+| …rest           | `<button>` attributes     | no                       | `id`, `aria-*`, `className`, `ref`… go to the trigger button, which is what a label targets.                   |
+
+## Behaviour
+
+- **Submission.** A visually hidden native `<input type="date">` carries the value, `required`, `min` and `max`, so a form reads it exactly as it read the native input, and the validation bubble anchors to it, at the trigger. The value is held in the component even when uncontrolled, so the trigger, the grid and the input agree.
+- **The grid.** `role="grid"` of `gridcell`s, Monday first, six weeks with the neighbouring months' days muted but choosable. Opening lands on the chosen day, or on today, and focuses it. Arrows move the focus a day or a week, Home and End go to the week's Monday and Sunday, PageUp and PageDown change the month (a year with Shift); moving into another month turns the page. Enter or a click chooses and closes. Today carries `aria-current="date"` and an underline; the chosen day is the filled square.
+- **"Hoy" and "Borrar"** under the grid; the second only when a date is chosen and the field is not required.
+- The calendar is **not portalled**, like the select's list, so it works inside a modal `<dialog>`; the popover is not modal, so the page keeps scrolling and its scrollbar. It unfolds from the trigger and folds back on `data-state`, off under `prefers-reduced-motion`.
+
+## Markup & styling
+
+Block `.platform-date-picker`, a wrapper `<div>` so the trigger, the hidden input and the calendar share one root.
+
+**Elements:** `.platform-date-picker__trigger` (`_size_regular`, `_size_compact`), `.platform-date-picker__icon`, `.platform-date-picker__value`, `.platform-date-picker__content`, `.platform-date-picker__head`, `.platform-date-picker__caption`, `.platform-date-picker__nav`, `.platform-date-picker__nav-icon` (`_direction_back`), `.platform-date-picker__grid`, `.platform-date-picker__week`, `.platform-date-picker__weekday`, `.platform-date-picker__cell`, `.platform-date-picker__day` (`_outside`, `_selected`), `.platform-date-picker__foot`, `.platform-date-picker__action`
+
+**States:** `[data-placeholder]` on the trigger; `[data-state="open"]`/`[data-state="closed"]` on the content, which drive its animations; `[aria-current="date"]` on today's button; `[aria-selected]` on the chosen cell.
+
+**Keyframes:** `platform-date-picker-in`, `platform-date-picker-out`, at the top level because `@keyframes` cannot be nested.
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-bg`, `--platform-border`, `--platform-shadow-card`, `--platform-surface`, `--platform-surface-soft`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+
+**Breakpoints:** `(prefers-reduced-motion: reduce)` removes the animations.
+
+## Usage
+
+From `components/platform/sections/studies/game-fields.comp.tsx`:
+
+```tsx
+import { PlatformDatePicker } from "@/components/platform/shared/platform-date-picker/platform-date-picker.comp";
+
+<FormField label="Fecha">
+  <PlatformDatePicker name="playedAt" defaultValue={values?.playedAtValue ?? ""} size="compact" />
+</FormField>;
+```
+
+## Related
+
+- [`PlatformSelect`](/components/platform/shared/platform-select), the same idea for a list of choices.
+- [`PlatformForm`](/components/platform/shared/platform-form) and [`FormField`](/components/platform/shared/form-field), the fields it goes in.

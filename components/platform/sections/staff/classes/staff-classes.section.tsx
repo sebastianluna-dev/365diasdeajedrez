@@ -7,6 +7,7 @@ import { staffRoutes } from "@/lib/platform-routes";
 import type { StaffClassFilters, StaffClassSummary } from "@/services/staff-classes/staff-classes.types";
 import "./staff-classes.section.css";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+import { PlatformDatePicker } from "@/components/platform/shared/platform-date-picker/platform-date-picker.comp";
 
 interface StaffClassesSectionProps {
   classes: StaffClassSummary[];
@@ -49,11 +50,11 @@ export function StaffClassesSection({ classes, teachers, rawFilters }: StaffClas
         </FormField>
 
         <FormField label="Desde">
-          <input type="date" name="from" defaultValue={rawFilters.from ?? ""} />
+          <PlatformDatePicker name="from" defaultValue={rawFilters.from ?? ""} size="compact" />
         </FormField>
 
         <FormField label="Hasta">
-          <input type="date" name="to" defaultValue={rawFilters.to ?? ""} />
+          <PlatformDatePicker name="to" defaultValue={rawFilters.to ?? ""} size="compact" />
         </FormField>
 
         <FormField label="Título">

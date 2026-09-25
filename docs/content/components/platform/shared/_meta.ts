@@ -11,6 +11,7 @@ const meta: MetaRecord = {
   "loading-panel": "LoadingPanel",
   "local-datetime": "LocalDateTime",
   "platform-choice-cards": "PlatformChoiceCards",
+  "platform-date-picker": "PlatformDatePicker",
   "platform-error": "PlatformError",
   "platform-form": "PlatformForm",
   "platform-notice": "PlatformNotice",

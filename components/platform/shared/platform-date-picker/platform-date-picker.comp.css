@@ -1,0 +1,257 @@
+.platform-date-picker {
+  min-width: 0;
+  /* The hidden native input is positioned against this box, so the browser's
+     validation bubble comes up at the trigger. */
+  position: relative;
+
+  /* The trigger looks like the platform's inputs, so a form reads as one. */
+  & .platform-date-picker__trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 15px;
+    border: 1px solid var(--platform-border);
+    border-radius: 12px;
+    background: var(--platform-surface-soft);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 16px;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  /* The size of FormField's inputs, for the forms that still use it. */
+  & .platform-date-picker__trigger.platform-date-picker__trigger_size_compact {
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: var(--platform-surface);
+    font-size: 15.5px;
+  }
+
+  & .platform-date-picker__trigger:focus-visible {
+    outline: 2px solid var(--platform-accent-soft);
+    border-color: var(--platform-accent);
+  }
+
+  & .platform-date-picker__trigger[data-placeholder] {
+    color: var(--platform-text-muted);
+  }
+
+  & .platform-date-picker__trigger:disabled {
+    color: var(--platform-text-faint);
+    cursor: default;
+  }
+
+  & .platform-date-picker__icon {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .platform-date-picker__value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Positioned by the primitive against the viewport, so it escapes any
+     scrolling ancestor, a modal dialog included. */
+  & .platform-date-picker__content {
+    z-index: 40;
+    width: 296px;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid var(--platform-border);
+    border-radius: 12px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+    transform-origin: var(--radix-popover-content-transform-origin);
+  }
+
+  /* The calendar unfolds from the trigger and folds back, like every popup. */
+  & .platform-date-picker__content[data-state="open"] {
+    animation: platform-date-picker-in 160ms ease-out;
+  }
+
+  & .platform-date-picker__content[data-state="closed"] {
+    animation: platform-date-picker-out 120ms ease-in forwards;
+  }
+
+  & .platform-date-picker__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  & .platform-date-picker__caption {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-transform: capitalize;
+  }
+
+  & .platform-date-picker__nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    cursor: pointer;
+  }
+
+  & .platform-date-picker__nav:hover {
+    background: var(--platform-bg);
+    color: var(--platform-text);
+  }
+
+  & .platform-date-picker__nav:focus-visible {
+    outline: 2px solid var(--platform-accent-soft);
+  }
+
+  & .platform-date-picker__nav-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  & .platform-date-picker__nav-icon_direction_back {
+    transform: rotate(180deg);
+  }
+
+  & .platform-date-picker__week {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 2px;
+  }
+
+  & .platform-date-picker__weekday {
+    padding: 4px 0 6px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--platform-text-subtle);
+    text-align: center;
+  }
+
+  & .platform-date-picker__weekday abbr {
+    text-decoration: none;
+  }
+
+  & .platform-date-picker__cell {
+    display: flex;
+  }
+
+  & .platform-date-picker__day {
+    width: 100%;
+    height: 36px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+  }
+
+  & .platform-date-picker__day:hover:not(:disabled) {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
+
+  & .platform-date-picker__day:focus-visible {
+    outline: 2px solid var(--platform-accent);
+    outline-offset: -2px;
+  }
+
+  /* Today is underlined by a dot; the chosen day is the filled square. */
+  & .platform-date-picker__day[aria-current="date"] {
+    font-weight: 700;
+    box-shadow: inset 0 -3px 0 var(--platform-accent);
+  }
+
+  & .platform-date-picker__day.platform-date-picker__day_selected {
+    background: var(--platform-accent);
+    color: var(--platform-surface);
+    font-weight: 700;
+    box-shadow: none;
+  }
+
+  & .platform-date-picker__day.platform-date-picker__day_outside {
+    color: var(--platform-text-faint);
+  }
+
+  & .platform-date-picker__day:disabled {
+    color: var(--platform-text-faint);
+    cursor: default;
+  }
+
+  & .platform-date-picker__foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+    box-shadow: 0 -1px 0 var(--platform-border);
+  }
+
+  & .platform-date-picker__action {
+    padding: 6px 10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-accent-ink);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  & .platform-date-picker__action:hover:not(:disabled) {
+    background: var(--platform-accent-wash);
+  }
+
+  & .platform-date-picker__action:disabled {
+    color: var(--platform-text-faint);
+    cursor: default;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .platform-date-picker__content[data-state="open"],
+    & .platform-date-picker__content[data-state="closed"] {
+      animation: none;
+    }
+  }
+}
+
+/* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */
+@keyframes platform-date-picker-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes platform-date-picker-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+}
