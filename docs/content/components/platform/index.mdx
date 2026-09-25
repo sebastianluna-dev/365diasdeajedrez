@@ -8,23 +8,27 @@ description: "Index of components/platform: the shared primitives and every sect
 
 ## `shared/`
 
-| Page                                                                         | Kind   | What it is                                                               |
-| ---------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------ |
-| [`PlatformTable`](/components/platform/shared/platform-table)                | server | Semantic table for every panel listing; filters travel in the URL.       |
-| [`FormField`](/components/platform/shared/form-field)                        | server | A real label around a native control; `FormFieldset` for groups.         |
-| [`PlatformNotice`](/components/platform/shared/platform-notice)              | server | The result of an action, from the page's `?error=` message map.          |
-| [`EmptyState`](/components/platform/shared/empty-state)                      | server | Dashed box with title, description and an optional link.                 |
-| [`ProgressIndicator`](/components/platform/shared/progress-indicator)        | server | Progress bar, inline or stacked.                                         |
-| [`LoadingPanel`](/components/platform/shared/loading-panel)                  | server | What every `loading.tsx` renders, but the study's.                       |
-| [`BoardLoading`](/components/platform/shared/board-loading)                  | server | The knight that hops while a study's game streams.                       |
-| [`PlatformError`](/components/platform/shared/platform-error)                | client | The error boundary view with retry and digest.                           |
-| [`PriorityFilter`](/components/platform/shared/priority-filter)              | server | The essential-lessons switch, a form with a bound action.                |
-| [`LocalDateTime`](/components/platform/shared/local-datetime)                | client | A UTC instant in the browser's zone, without hydration mismatch.         |
-| [`CourseNavigation`](/components/platform/shared/course-navigation)          | server | Mis cursos → Curso → Capítulo → Lección.                                 |
-| [`StudiesNavigation`](/components/platform/shared/studies-navigation)        | server | Mis estudios → Estudio, on the empty study page.                         |
-| [`ActivityList`](/components/platform/shared/activity-list)                  | server | The dashboard's activity facts.                                          |
-| [`ClassContentRenderer`](/components/platform/shared/class-content-renderer) | server | A class's blocks by kind, with the single viewer and the static diagram. |
-| [`ImageUpload`](/components/platform/shared/image-upload)                    | client | Browser-to-Cloudinary upload leaving a URL in a hidden field.            |
+| Page                                                                         | Kind   | What it is                                                                                               |
+| ---------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------------- |
+| [`PlatformTable`](/components/platform/shared/platform-table)                | server | Semantic table for every panel listing; filters travel in the URL.                                       |
+| [`FormField`](/components/platform/shared/form-field)                        | server | A real label around a native control; `FormFieldset` for groups.                                         |
+| [`PlatformForm`](/components/platform/shared/platform-form)                  | client | `PlatformForm`, `PlatformFormField`, `PlatformFormGroup` on Radix's Form: fields with validity messages. |
+| [`PlatformSelect`](/components/platform/shared/platform-select)              | client | Every dropdown of the platform, on Radix's Select; groups, an empty option, two sizes.                   |
+| [`PlatformDatePicker`](/components/platform/shared/platform-date-picker)     | client | A month calendar on Radix's Popover; submits like a date input.                                          |
+| [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards)   | client | A radio group drawn as cards, on Radix's RadioGroup.                                                     |
+| [`PlatformNotice`](/components/platform/shared/platform-notice)              | server | The result of an action, from the page's `?error=` message map.                                          |
+| [`EmptyState`](/components/platform/shared/empty-state)                      | server | Dashed box with title, description and an optional link.                                                 |
+| [`ProgressIndicator`](/components/platform/shared/progress-indicator)        | server | Progress bar, inline or stacked.                                                                         |
+| [`LoadingPanel`](/components/platform/shared/loading-panel)                  | server | What every `loading.tsx` renders, but the study's.                                                       |
+| [`BoardLoading`](/components/platform/shared/board-loading)                  | server | The knight that hops while a study's game streams.                                                       |
+| [`PlatformError`](/components/platform/shared/platform-error)                | client | The error boundary view with retry and digest.                                                           |
+| [`PriorityFilter`](/components/platform/shared/priority-filter)              | server | The essential-lessons switch, a form with a bound action.                                                |
+| [`LocalDateTime`](/components/platform/shared/local-datetime)                | client | A UTC instant in the browser's zone, without hydration mismatch.                                         |
+| [`CourseNavigation`](/components/platform/shared/course-navigation)          | server | Mis cursos → Curso → Capítulo → Lección.                                                                 |
+| [`StudiesNavigation`](/components/platform/shared/studies-navigation)        | server | Mis estudios → Estudio, on the empty study page.                                                         |
+| [`ActivityList`](/components/platform/shared/activity-list)                  | server | The dashboard's activity facts.                                                                          |
+| [`ClassContentRenderer`](/components/platform/shared/class-content-renderer) | server | A class's blocks by kind, with the single viewer and the static diagram.                                 |
+| [`ImageUpload`](/components/platform/shared/image-upload)                    | client | Browser-to-Cloudinary upload leaving a URL in a hidden field.                                            |
 
 ## `sections/shell/`
 
