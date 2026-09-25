@@ -75,10 +75,6 @@
     border-radius: inherit;
   }
 
-  &:hover .study-card__name {
-    color: var(--platform-accent-ink);
-  }
-
   /* Above the stretched link, so the cross is what gets pressed. */
   & .study-card__actions {
     position: relative;
@@ -103,11 +99,6 @@
     margin: 0;
     font-size: 14.5px;
     color: var(--platform-text-subtle);
-  }
-
-  & .study-card__kind {
-    font-weight: 600;
-    color: var(--platform-accent-ink);
   }
 
   /* Which course or teacher it comes from, when it is not yours. */
