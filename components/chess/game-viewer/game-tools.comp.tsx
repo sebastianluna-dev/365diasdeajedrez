@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { commentTextAt, parseEditableGame, serializeGame, setCommentText, setNags } from "@/lib/chess/pgn-edit";
 import {
   MOVE_QUALITY_NAGS,
@@ -19,6 +19,27 @@ import { plainMovetext } from "@/lib/chess/plain-movetext";
 import "./game-tools.comp.css";
 
 export type GameToolsTab = "comment" | "quality" | "review" | "share";
+
+/**
+ * Which tab is open and when to take the focus to it. It is the panel's
+ * state, but it lives in whoever mounts the panel — the viewer — because the
+ * move menu changes it too: "Comentar este movimiento" opens nothing of its
+ * own, it goes down to this panel, which is where one always writes.
+ *
+ * `focusRequest` is a counter and not a boolean so two consecutive requests
+ * on the SAME tab, which in a boolean would be indistinguishable, both land.
+ */
+export function useToolsTab(canEdit: boolean) {
+  const [tab, setTab] = useState<GameToolsTab>(canEdit ? "comment" : "share");
+  const [focusRequest, setFocusRequest] = useState(0);
+
+  const requestEdit = useCallback((mode: "comment" | "annotate") => {
+    setTab(mode === "comment" ? "comment" : "quality");
+    setFocusRequest((count) => count + 1);
+  }, []);
+
+  return { tab, setTab, focusRequest, requestEdit };
+}
 
 /**
  * The three groups, split into two columns: on the left what qualifies THE
@@ -44,13 +65,14 @@ interface GameToolsProps {
   /** Course databases are read-only: there only sharing remains. */
   canEdit: boolean;
   /**
-   * How the autosave is going, which the section handles: here and in the
-   * viewer the SAME PGN is written, so the notice has to be a single one.
+   * How the autosave is going, which whoever mounts the viewer handles: here
+   * and on the board the SAME PGN is written, so the notice has to be a single one.
    */
   saveLabel?: string;
   /**
-   * The tab is controlled by the section because the move menu, which is in the
-   * viewer, changes it too: "Comentar este movimiento" opens THIS panel.
+   * The tab is controlled by the viewer (`useToolsTab`) because the move
+   * menu, which is the viewer's, changes it too: "Comentar este movimiento"
+   * opens THIS panel.
    */
   tab: GameToolsTab;
   onTabChange: (tab: GameToolsTab) => void;
@@ -134,7 +156,7 @@ export function GameTools({
     return nags.includes(code) ? others : [...others, code];
   };
 
-  /** Applies a change to the PGN; saving it is the section's job. */
+  /** Applies a change to the PGN; saving it is the job of whoever mounts the viewer. */
   const apply = (mutate: (game: NonNullable<ReturnType<typeof parseEditableGame>>) => boolean) => {
     const game = parseEditableGame(pgn);
     if (!game || !mutate(game)) return;

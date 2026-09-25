@@ -1,0 +1,47 @@
+---
+description: "The line above or below the board that names a player: colour chip, federation and its flag, title, name and Elo; drawn by the viewer from PlayerInfo data, by colour."
+---
+
+# `PlayerStrip`
+
+Also exports the `PlayerInfo` type.
+
+|            |                                                                       |
+| ---------- | --------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/player-strip.comp.tsx`                  |
+| Kind       | Client Component (rendered inside the viewer)                         |
+| Stylesheet | `player-strip.comp.css` → elements `.player-strip__*`                 |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`players`) |
+| Uses       | `federationFlag` from `lib/chess/federations`                         |
+
+## Purpose
+
+The viewer receives who plays as data — `players: { white: PlayerInfo; black: PlayerInfo }` — and draws the strips itself, because only it knows which side is on top once the board is flipped. This is the strip: a fragment of pieces the viewer's `.game-viewer__player` lays out in a row.
+
+## Props
+
+| Prop      | Type                 | Required | Meaning                                                                      |
+| --------- | -------------------- | -------- | ---------------------------------------------------------------------------- |
+| `name`    | `string`             | yes      |                                                                              |
+| `elo`     | `number`             | no       |                                                                              |
+| `title`   | `string`             | no       | FIDE title.                                                                  |
+| `country` | `string`             | no       | Federation code; the flag is derived with `federationFlag`, none if unknown. |
+| `side`    | `"white" \| "black"` | yes      | Which chip to paint.                                                         |
+
+## Markup & styling
+
+No root of its own: the pieces sit directly in the viewer's `.game-viewer__player`, which lays them out and sets the size. Everything is in `em` for that reason: in full screen the viewer grows with the screen, and only the proportion between the name, the Elo and what accompanies them is kept.
+
+**Elements:** `.player-strip__chip` (`_side_white`, `_side_black`), `.player-strip__country`, `.player-strip__flag`, `.player-strip__title`, `.player-strip__name`, `.player-strip__elo`
+
+**Tokens:** `--platform-accent-ink`, `--platform-border-strong`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+## Usage
+
+From `components/chess/game-viewer/game-viewer.comp.tsx`:
+
+```tsx
+{
+  flipBoard ? <PlayerStrip {...players.white} side="white" /> : <PlayerStrip {...players.black} side="black" />;
+}
+```

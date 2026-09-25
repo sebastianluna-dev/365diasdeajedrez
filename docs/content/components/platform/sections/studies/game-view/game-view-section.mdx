@@ -1,24 +1,23 @@
 ---
-description: "The board column of a Mis estudios game: the PGN in a reducer with an undo stack, autosave through autosaveGamePgn, a close-tab warning, and the viewer and tools wired to one shared PGN; the study beside it is GameAside's business."
+description: "The board column of a Mis estudios game: two hooks — the PGN's history with undo, and the autosave with its label — and the viewer, which draws the players and the tools from data."
 ---
 
 # `GameViewSection`
 
-|            |                                                                                                                                                                                                       |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/game-view/game-view.section.tsx`                                                                                                                                |
-| Kind       | Client Component                                                                                                                                                                                      |
-| Stylesheet | `game-view.section.css` → block `.game-view`                                                                                                                                                          |
-| Used by    | `/estudios/[studyId]/partidas/[gameId]`, beside [`GameAside`](/components/platform/sections/studies/game-view/game-aside)                                                                             |
-| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`GameTools`](/components/platform/sections/studies/game-view/game-tools), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Writes     | `autosaveGamePgn()` · `services/studies/studies.actions.ts`                                                                                                                                           |
-| Uses       | `federationFlag` from `lib/chess/federations`; `GameView` from `services/studies/studies.types`                                                                                                       |
+|            |                                                                                                                                                                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/game-view.section.tsx`                                                                                                                                                                 |
+| Kind       | Client Component                                                                                                                                                                                                                       |
+| Stylesheet | `game-view.section.css` → block `.game-view`                                                                                                                                                                                           |
+| Used by    | `/estudios/[studyId]/partidas/[gameId]`, beside [`GameAside`](/components/platform/sections/studies/game-view/game-aside)                                                                                                              |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer) (with `players` and `tools`), [`PlatformNotice`](/components/platform/shared/platform-notice)                                                                                |
+| Uses       | [`usePgnHistory`](/components/platform/sections/studies/game-view/use-pgn-history-hook), [`useGameAutosave`](/components/platform/sections/studies/game-view/use-game-autosave-hook); `GameView` from `services/studies/studies.types` |
 
 ## Purpose
 
-Where a game is read **and** annotated, in the same place. There is no separate editing screen: whoever owns the game plays on the board to add moves and uses the list's right click to comment, annotate, promote or delete them, and all of it saves by itself.
+Where a game is read **and** annotated, in the same place. There is no separate editing screen: whoever owns the game plays on the board to add moves and uses the list's right click to comment, annotate, promote or delete them; all of that saves by itself.
 
-The PGN lives here because two things write it: the [`GameViewer`](/components/chess/game-viewer/game-viewer) (moves, arrows, structure) and the [`GameTools`](/components/platform/sections/studies/game-view/game-tools) panel under the board (comment, NAGs, review). If each kept its own copy, commenting a move would not show in the list until reload.
+The section only wires the two things the viewer cannot own: the PGN's history, because two things write the PGN (the viewer and the tools under the board) and a third reads it (the autosave), and the autosave itself, which is a server action. Everything else — the strips, the tools panel with its tab and focus, the path, the engine — is the viewer's, fed with data.
 
 ## Props
 
@@ -29,27 +28,17 @@ The PGN lives here because two things write it: the [`GameViewer`](/components/c
 
 ## Behaviour
 
-- **PGN and history in one reducer.** `pgnReducer` holds `{ pgn, past }`; an `edit` pushes the previous PGN (ignoring no-op edits, which would spend an undo step that undoes nothing) and keeps the last 50; `undo` pops. Storing whole PGNs is a few kilobytes each and cannot drift, unlike a log of inverse operations. Ctrl+Z / ⌘Z undoes when `canEdit`, except while typing in a field, where the field's own undo rules.
-- **Controlled path.** `currentPath` goes back and forth with the viewer so the evaluation chart can move the board.
-- **Tools tab and focus.** `toolsTab` starts at "comment" for editors and "share" otherwise; the viewer's `onRequestEdit` switches the tab and bumps `focusRequest`, a counter rather than a boolean so two requests on the same tab are distinguishable.
-- **Autosave.** With `canEdit`, 1.2 s after the last change the latest PGN goes to `autosaveGamePgn(studyId, gameId, pgn)`; a change during the wait restarts the timer. `lastSaved` is what the server confirmed; "unsaved" is derived by comparison. The label shown in the tools bar prioritises error, then saving, then unsaved, then saved.
-- **Leaving.** A `beforeunload` handler warns when `pgn !== lastSaved`.
-- **Players.** The internal `Player` renders the strips: colour chip, federation code with its flag from `federationFlag` (nothing painted for unknown codes), title, name, Elo. Passed by colour because the viewer can flip.
-- The viewer is mounted with `controls="panel"` (in studies the game is traversed from the list), `engine`, no header (the players are already in the strips and the aside; a header stole height from the moves).
+- **`usePgnHistory(game.pgn, { undo: game.canEdit })`** gives the PGN the viewer renders, `applyPgn` for whatever the viewer or the tools write, and the ⌘Z / Ctrl+Z undo (off for a game one cannot edit).
+- **`useGameAutosave({ studyId, gameId, pgn, enabled: game.canEdit })`** saves 1.2 s after the last change and gives `saveLabel`, which goes to the viewer's `tools` so the panel says "sin guardar", "guardando…", "guardado" or "no se pudo guardar".
+- The viewer is mounted with `controls="panel"` (in studies the game is traversed from the list), `engine`, no header (the players are already in the strips and the aside; a header stole height from the moves), `players` as data (name, Elo, title, federation per colour) and `tools={{ saveLabel }}`.
 
 ## Markup & styling
 
-Block `.game-view` (78 lines): the board column and the player strips. The two-column grid beside the aside is the page's, `.game-page__layout` in `game-page.css`.
-
-**Elements:** `.game-view__chip`, `.game-view__player-country`, `.game-view__player-flag`, `.game-view__player-title`, `.game-view__player-name`, `.game-view__player-elo`
-
-**Modifiers and states:** `.game-view__chip_side_white`, `.game-view__chip_side_black`
+Block `.game-view` (11 lines): the board column (`min-width: 0`) and the margin under the notice. The two-column grid beside the aside is the page's, `.game-page__layout` in `game-page.css`; the strips are [`PlayerStrip`](/components/chess/game-viewer/player-strip)'s.
 
 **Other selectors it styles:** `.platform-notice` (margin inside the column).
 
-**Tokens:** `--platform-accent-ink`, `--platform-border-strong`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
-
-**Breakpoints:** none of its own; the page's `(max-width: 1180px)` stacks the aside under the board.
+No media queries of its own.
 
 ## Usage
 
@@ -73,9 +62,7 @@ import { GameViewSection } from "@/components/platform/sections/studies/game-vie
 </div>;
 ```
 
-The page loads the game (its first await, the session border), the study on the page of games the current one falls on (`getStudyPageOfGame`, or `?pagina=`) and the catalogs, and hands them over: what each column shows is decided inside it.
-
 ## Related
 
-- [Board & game viewer](/chess/viewer) for the editing model; [`usePgnEditing`](/components/chess/game-viewer/use-pgn-editing-hook).
-- The teacher's read-only counterpart: [`StudentGameViewSection`](/components/platform/sections/teacher/students/student-game-view-section).
+- [`GameAside`](/components/platform/sections/studies/game-view/game-aside), the study beside this column.
+- [`GameViewer`](/components/chess/game-viewer/game-viewer) and [`GameTools`](/components/chess/game-viewer/game-tools), which the viewer mounts with `tools`.

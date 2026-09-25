@@ -6,7 +6,8 @@ const meta: MetaRecord = {
   "edit-game": "EditGame",
   "game-aside": "GameAside",
   "game-list": "GameList",
-  "game-tools": "GameTools",
+  "use-pgn-history-hook": "usePgnHistory",
+  "use-game-autosave-hook": "useGameAutosave",
 };
 
 export default meta;

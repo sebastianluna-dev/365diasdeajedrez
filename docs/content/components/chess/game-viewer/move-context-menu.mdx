@@ -18,7 +18,7 @@ Also exports the `MoveContextMenuTarget` type.
 
 What opens when a move is right-clicked in an editable list. It is kept apart from [`MoveTree`](/components/chess/game-viewer/move-tree) and [`MoveTable`](/components/chess/game-viewer/move-table) so the student's read-only viewer carries none of this: the lists only report that a right click happened, and the component that mounts them decides whether a menu exists and what it can do.
 
-The menu is a list of actions with callbacks. Three of them (comment, annotate, copy) are optional: a host with nowhere to write simply does not pass them and those items are not rendered. This is how the viewer hides "Comentar" and "Anotar" in fullscreen and when no `onRequestEdit` was given.
+The menu is a list of actions with callbacks. Three of them (comment, annotate, copy) are optional: a host with nowhere to write simply does not pass them and those items are not rendered. This is how the viewer hides "Comentar" and "Anotar" in fullscreen and when it was given no `tools` to lead to.
 
 ## Props
 
@@ -76,8 +76,8 @@ import { MoveContextMenu, type MoveContextMenuTarget } from "./move-context-menu
         editing.promoteToMainAt(menu.path);
         setMenu(null);
       }}
-      onComment={onRequestEdit && !isFullscreen ? () => requestEdit("comment") : undefined}
-      onAnnotate={onRequestEdit && !isFullscreen ? () => requestEdit("annotate") : undefined}
+      onComment={offersEdit ? () => requestEdit("comment") : undefined}
+      onAnnotate={offersEdit ? () => requestEdit("annotate") : undefined}
       onCopyVariation={() => editing.copyVariation(menu.path)}
       onDelete={() => {
         editing.deleteAt(menu.path);

@@ -77,7 +77,8 @@ description: "Index of components/platform: the shared primitives and every sect
 | [`ShareCollection`](/components/platform/sections/studies/study-detail/share-collection)        | server | Who a collection reaches.                                                       |
 | [`GameFields`](/components/platform/sections/studies/game-fields)                               | server | The game's data fields, shared by create and edit.                              |
 | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section)          | client | The board column: read and annotate a game in one place, with autosave.         |
-| [`GameTools`](/components/platform/sections/studies/game-view/game-tools)                       | client | Comment, quality and share tabs under the board.                                |
+| [`usePgnHistory`](/components/platform/sections/studies/game-view/use-pgn-history-hook)         | hook   | The PGN with fifty steps of undo and the ⌘Z shortcut.                           |
+| [`useGameAutosave`](/components/platform/sections/studies/game-view/use-game-autosave-hook)     | hook   | Saves 1.2 s after the last change and says how it went.                         |
 | [`GameAside`](/components/platform/sections/studies/game-view/game-aside)                       | server | The study beside the board; decides what it shows from the study's permissions. |
 | [`GameList`](/components/platform/sections/studies/game-view/game-list)                         | client | The reorderable, five-row game list.                                            |
 | [`EditGame`](/components/platform/sections/studies/game-view/edit-game)                         | client | Dialog over `GameFields`.                                                       |
