@@ -43,7 +43,7 @@ export function NewStudy({ kinds }: NewStudyProps) {
           </PlatformFormField>
 
           <PlatformFormField name="description" label="Descripción (opcional)">
-            <input type="text" maxLength={500} placeholder="Para qué te sirve este estudio" />
+            <textarea maxLength={500} rows={3} placeholder="Para qué te sirve este estudio" />
           </PlatformFormField>
 
           <PlatformFormField name="kindCode" label="Tipo">
