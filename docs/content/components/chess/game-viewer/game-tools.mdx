@@ -4,20 +4,20 @@ description: "The panel under the board with four tabs: comment, quality (NAGs i
 
 # `GameTools`
 
-Also exports the `GameToolsTab` type.
+Also exports `useToolsTab` and the `GameToolsTab` type.
 
 |            |                                                                                                                                                                                                                                                                                                                                                                                |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/studies/game-view/game-tools.comp.tsx`                                                                                                                                                                                                                                                                                                           |
+| File       | `components/chess/game-viewer/game-tools.comp.tsx`                                                                                                                                                                                                                                                                                                                             |
 | Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                               |
 | Stylesheet | `game-tools.comp.css` → block `.game-tools`                                                                                                                                                                                                                                                                                                                                    |
-| Used by    | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section) (through the viewer's `boardFooter` slot)                                                                                                                                                                                                                                               |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer), under the board, when it is given `tools`                                                                                                                                                                                                                                                                           |
 | Composes   | [`GameReview`](/components/chess/game-viewer/game-review); [`board-export`](/components/chess/game-viewer/board-export) through dynamic `import()`                                                                                                                                                                                                                             |
 | Uses       | `commentTextAt`, `parseEditableGame`, `serializeGame`, `setCommentText`, `setNags` from `lib/chess/pgn-edit`<br />`MOVE_QUALITY_NAGS`, `MOVE_REMARK_NAGS`, `POSITION_EVAL_NAGS`, `nagCodeFor`, `nagCodesOf`, `nagGlyph`, `nodeAtPath`, `parsePgnTree` from `lib/chess/pgn-tree`<br />`sanToSpanish` from `lib/chess/notation`; `plainMovetext` from `lib/chess/plain-movetext` |
 
 ## Purpose
 
-Everything one does to the **current move** that is not playing on the board: write its comment, mark its quality, evaluate the whole game, and get it out (FEN, full PGN, bare main line, PNG, GIF). It sits under the board as the viewer's `boardFooter`, so it is hidden in fullscreen.
+Everything one does to the **current move** that is not playing on the board: write its comment, mark its quality, evaluate the whole game, and get it out (FEN, full PGN, bare main line, PNG, GIF). The viewer mounts it under the board when given `tools`, and hides it in fullscreen.
 
 Comment and NAGs are read from the PGN on every render, not kept in state: what is seen is always what is saved and there are no two truths to sync. Editing them goes through `lib/chess/pgn-edit` and up through `onPgnChange`; saving is the section's job.
 
@@ -28,8 +28,8 @@ Comment and NAGs are read from the PGN on every render, not kept in state: what 
 | `pgn`            | `string`         | yes      | The shared PGN.                                                                                                                                                         |
 | `currentPath`    | `string`         | yes      | Dotted path of the move selected in the viewer.                                                                                                                         |
 | `canEdit`        | `boolean`        | yes      | Course databases are read-only: only the evaluation and share tabs remain.                                                                                              |
-| `saveLabel`      | `string`         | no       | The autosave status text, owned by the section because the viewer writes the same PGN and the notice must be one.                                                       |
-| `tab`            | `GameToolsTab`   | yes      | Controlled by the section because the viewer's move menu changes it too.                                                                                                |
+| `saveLabel`      | `string`         | no       | The autosave status text, from whoever mounts the viewer (`tools.saveLabel`): the board writes the same PGN and the notice must be one.                                 |
+| `tab`            | `GameToolsTab`   | yes      | Controlled by the viewer through `useToolsTab`, because its move menu changes it too.                                                                                   |
 | `onTabChange`    | `(tab) => void`  | yes      |                                                                                                                                                                         |
 | `focusRequest`   | `number`         | yes      | Counter bumped whenever someone asks to write here; on change the panel scrolls into view and, on the comment tab, the textarea takes focus with the cursor at the end. |
 | `white`, `black` | `string`         | yes      | Names for the evaluation's accuracy cards.                                                                                                                              |
@@ -58,25 +58,24 @@ No media queries; it is as wide as the board column.
 
 ## Usage
 
-From `components/platform/sections/studies/game-view/game-view.section.tsx`:
+From `components/chess/game-viewer/game-viewer.comp.tsx`, which mounts it when given `tools`:
 
 ```tsx
-import { GameTools, type GameToolsTab } from "./game-tools.comp";
-
-<GameTools
-  pgn={pgn}
-  currentPath={currentPath}
-  canEdit={game.canEdit}
-  saveLabel={saveLabel}
-  tab={toolsTab}
-  onTabChange={setToolsTab}
-  focusRequest={focusRequest}
-  white={game.white}
-  black={game.black}
-  onSelectPath={setCurrentPath}
-  onPgnChange={applyPgn}
-/>;
+const toolsTab = useToolsTab(isEditing);
+…
+{tools && (
+  <div className="game-viewer__board-footer">
+    <GameTools pgn={pgn} currentPath={currentPath} canEdit={isEditing} saveLabel={tools.saveLabel}
+               tab={toolsTab.tab} onTabChange={toolsTab.setTab} focusRequest={toolsTab.focusRequest}
+               white={players?.white.name ?? "Blancas"} black={players?.black.name ?? "Negras"}
+               onSelectPath={setCurrentPath} onPgnChange={publishPgn} />
+  </div>
+)}
 ```
+
+## `useToolsTab`
+
+`useToolsTab(canEdit) → { tab, setTab, focusRequest, requestEdit(mode) }`: the panel's state, held by the viewer because the move menu changes it too. The tab starts at "comment" for an editor and "share" otherwise; `requestEdit("comment" | "annotate")` switches to "comment" or "quality" and bumps `focusRequest`, a counter and not a boolean so two consecutive requests on the same tab both land.
 
 ## Related
 

@@ -11,7 +11,7 @@ Exports `drawPosition`, `downloadPositionImage` and `downloadGameGif`.
 | File       | `components/chess/game-viewer/board-export.ts`                                                                                                                                                                             |
 | Kind       | Module (plain TypeScript, browser only, `"use client"`)                                                                                                                                                                    |
 | Stylesheet | none                                                                                                                                                                                                                       |
-| Used by    | [`GameTools`](/components/platform/sections/studies/game-view/game-tools), through a dynamic `import()` in the share tab                                                                                                   |
+| Used by    | [`GameTools`](/components/chess/game-viewer/game-tools), through a dynamic `import()` in the share tab                                                                                                                     |
 | Uses       | `gifenc` (`GIFEncoder`, `quantize`, `applyPalette`)<br />`parseFen` from `chessops/fen`<br />`replayGame` from `lib/chess/replay`<br />`BOARD_LIGHT_SQUARE`, `BOARD_DARK_SQUARE` from `constants/chess-board-colors.const` |
 
 ## Purpose
@@ -75,7 +75,7 @@ Nothing rendered.
 
 ## Usage
 
-From `components/platform/sections/studies/game-view/game-tools.comp.tsx` (share tab):
+From `components/chess/game-viewer/game-tools.comp.tsx` (share tab):
 
 ```tsx
 const { downloadPositionImage } = await import("@/components/chess/game-viewer/board-export");

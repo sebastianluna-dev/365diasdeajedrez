@@ -1,0 +1,33 @@
+---
+description: "The game's PGN with an undo stack of fifty steps and the ⌘Z / Ctrl+Z shortcut; a reducer so the history and the PGN never disagree."
+---
+
+# `usePgnHistory`
+
+Exports `usePgnHistory`, `pgnReducer`, `HISTORY_LIMIT` and the `PgnHistory`/`PgnAction` types.
+
+|         |                                                                                        |
+| ------- | -------------------------------------------------------------------------------------- |
+| File    | `components/platform/sections/studies/game-view/use-pgn-history.hook.ts`               |
+| Kind    | Hook (client)                                                                          |
+| Used by | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section) |
+| Tests   | `use-pgn-history.hook.test.ts`, on the reducer                                         |
+
+## Signature
+
+```ts
+function usePgnHistory(
+  initialPgn: string,
+  options: { undo: boolean },
+): { pgn: string; applyPgn: (pgn: string) => void; undo: () => void };
+```
+
+## Behaviour
+
+- `pgnReducer` holds `{ pgn, past }`: an `edit` pushes the previous PGN and keeps the last `HISTORY_LIMIT` (50); `undo` pops, and with nothing to pop returns the same state. Storing whole PGNs — a game is a few kilobytes — is infinitely simpler than a log of inverse operations and cannot drift out of sync.
+- An `edit` with the same PGN is ignored: it would spend an undo step that undoes nothing, and the first Ctrl+Z would seem not to work.
+- With `undo` on, ⌘Z (Ctrl+Z) undoes the last change, except while typing in a textarea, an input or a contentEditable, where the field's own undo rules.
+
+## Related
+
+- [`useGameAutosave`](/components/platform/sections/studies/game-view/use-game-autosave-hook), which reads the PGN this hook holds.

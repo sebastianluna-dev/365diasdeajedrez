@@ -16,7 +16,7 @@ Also exports the `PgnEditing` type.
 
 ## Purpose
 
-Editing the game **from the viewer**: adding moves, drawing arrows, promoting a variation, copying a line and deleting from a move on. The comment and the quality signs are not here: they are written in the panel under the board, and the move menu only leads to it (see the viewer's `onRequestEdit`).
+Editing the game **from the viewer**: adding moves, drawing arrows, promoting a variation, copying a line and deleting from a move on. The comment and the quality signs are not here: they are written in the panel under the board, and the move menu only leads to it (see `useToolsTab` in [`GameTools`](/components/chess/game-viewer/game-tools)).
 
 Each operation reparses the PGN, mutates the chessops `Game` and returns the new PGN upwards. It reparses more than strictly needed, but that leaves **one** source of truth (the PGN the viewer renders) instead of a parallel mutable game that could drift out of sync with it, and a game fits easily within that budget. The [`AnalysisBoard`](/components/chess/analysis-board/analysis-board) made the other choice (a long-lived game in a ref) because it owns its PGN; the viewer does not.
 

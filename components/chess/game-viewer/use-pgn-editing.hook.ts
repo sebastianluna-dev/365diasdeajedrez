@@ -39,7 +39,7 @@ export interface PgnEditing {
  * copying a line and deleting.
  *
  * The comment and the signs are NOT here: they are written in the panel
- * under the board, and the move menu only leads to it (see `onRequestEdit`).
+ * under the board, and the move menu only leads to it (see `useToolsTab` in game-tools.comp.tsx).
  *
  * Each operation reparses the PGN, mutates the chessops game and returns the
  * new PGN upwards. It is reparsing more than needed, yes, but it leaves ONE

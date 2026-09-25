@@ -27,6 +27,8 @@ import { EnginePanel } from "./engine-panel.comp";
 import { useEngine } from "./use-engine.hook";
 import { evaluationBarFill } from "@/lib/chess/engine-protocol";
 import { MoveContextMenu, type MoveContextMenuTarget } from "./move-context-menu.comp";
+import { GameTools, useToolsTab } from "./game-tools.comp";
+import { type PlayerInfo, PlayerStrip } from "./player-strip.comp";
 import { useLingering } from "./use-lingering.hook";
 import { MoveTable } from "./move-table.comp";
 import { MoveTree } from "./move-tree.comp";
@@ -54,12 +56,6 @@ interface GameViewerProps {
   description?: string;
   /** Badge to the right of the title ("Prioridad"). */
   badge?: string;
-  /**
-   * Extra buttons in the panel header (open in the book, save…). They go here
-   * and not inside because they depend on each screen; the viewer only
-   * reserves the place the design gives them.
-   */
-  headerActions?: ReactNode;
   /** Button that closes the bottom bar, right-aligned (the notes). */
   footerActions?: ReactNode;
   /** Bottom-bar action that works on the current position. */
@@ -67,11 +63,12 @@ interface GameViewerProps {
   /** "Skip" button under the board. Without a destination it is not rendered. */
   skip?: ReactNode;
   /**
-   * Player strips around the board. Given by colour, not by position, because
-   * the viewer can be flipped: who is on top depends on the orientation and
-   * only the viewer knows it.
+   * Who plays, for the strips around the board. Given by colour, not by
+   * position, because the viewer can be flipped: who is on top depends on the
+   * orientation and only the viewer knows it. The viewer draws the strips
+   * itself (`PlayerStrip`).
    */
-  players?: { white: ReactNode; black: ReactNode };
+  players?: { white: PlayerInfo; black: PlayerInfo };
   /**
    * `table` (default): a no. · white · black grid, like Lichess.
    * `flow`: the usual running text, which is how lessons are read —
@@ -83,8 +80,13 @@ interface GameViewerProps {
    * the moves panel in Mis estudios, which is where the game is traversed.
    */
   controls?: "board" | "panel";
-  /** Content under the board: comment, quality and share. */
-  boardFooter?: ReactNode;
+  /**
+   * The tools under the board — comment, quality, whole-game evaluation,
+   * share and export (`GameTools`) — for the screens where the game is
+   * annotated. `saveLabel` says how the autosave, which whoever mounts the
+   * viewer runs on the PGN it receives, is going. Hidden in full screen.
+   */
+  tools?: { saveLabel?: string };
   /**
    * Offers the analysis engine. Off by default: it is 7 MB of WebAssembly that
    * are only downloaded when someone switches it on, and not even that until then.
@@ -108,13 +110,6 @@ interface GameViewerProps {
    */
   editable?: boolean;
   onPgnChange?: (pgn: string) => void;
-  /**
-   * "Comment" and "Annotate" from the move menu. The viewer opens NOTHING: it
-   * only selects the move and notifies, because the place where one writes
-   * is outside it — the panel under the board — and whoever mounts it owns that.
-   * Without this prop, those two options are not rendered in the menu.
-   */
-  onRequestEdit?: (mode: "comment" | "annotate", path: string) => void;
   /**
    * Which move to show, when whoever mounts the viewer wants to decide — the
    * evaluation chart takes the board to the move being pointed at.
@@ -150,19 +145,17 @@ export function GameViewer({
   subtitle,
   description,
   badge,
-  headerActions,
   footerActions,
   positionActions,
   skip,
   players,
   moveList = "table",
   controls = "board",
-  boardFooter,
+  tools,
   engine = false,
   onPathChange,
   editable = false,
   onPgnChange,
-  onRequestEdit,
   path,
 }: GameViewerProps) {
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
@@ -268,6 +261,11 @@ export function GameViewer({
   });
   const publishPgn = useCallback((next: string) => onPgnChangeRef.current?.(next), []);
   const editing = usePgnEditing({ pgn, onPgnChange: publishPgn, onPathChange: setCurrentPath });
+
+  // The tools' tab lives here and not in the panel because the move menu,
+  // which is the viewer's, changes it too: "Comentar este movimiento" opens
+  // that panel. Mounted always (a hook cannot be conditional); read only with `tools`.
+  const toolsTab = useToolsTab(isEditing);
 
   // Holding "back" or "forward" keeps traversing the game: a wait before
   // starting, so an ordinary click does not trigger the repeat, and from
@@ -435,11 +433,16 @@ export function GameViewer({
     });
   };
 
+  // "Comentar" and "Anotar" from the move menu go down to the tools under the
+  // board, which is where one writes; the move is already selected by the click.
   const requestEdit = (mode: "comment" | "annotate") => {
     if (!menu) return;
-    onRequestEdit?.(mode, menu.path);
+    toolsTab.requestEdit(mode);
     setMenu(null);
   };
+  // In full screen the tools are not rendered: there the game is read, and
+  // commenting and annotating are done on the normal screen.
+  const offersEdit = Boolean(tools) && !isFullscreen;
 
   const nav = (
     <div className="game-viewer__nav">
@@ -561,7 +564,7 @@ export function GameViewer({
       {skip && <div className="game-viewer__skip">{skip}</div>}
     </div>
   );
-  const hasHead = Boolean(title || subtitle || description || badge || headerActions);
+  const hasHead = Boolean(title || subtitle || description || badge);
 
   return (
     <div
@@ -585,7 +588,11 @@ export function GameViewer({
         <div className="game-viewer__board-card">
           {players && (
             <div className="game-viewer__player game-viewer__player_side_top">
-              {flipBoard ? players.white : players.black}
+              {flipBoard ? (
+                <PlayerStrip {...players.white} side="white" />
+              ) : (
+                <PlayerStrip {...players.black} side="black" />
+              )}
             </div>
           )}
 
@@ -629,19 +636,35 @@ export function GameViewer({
 
           {players && (
             <div className="game-viewer__player game-viewer__player_side_bottom">
-              {flipBoard ? players.black : players.white}
+              {flipBoard ? (
+                <PlayerStrip {...players.black} side="black" />
+              ) : (
+                <PlayerStrip {...players.white} side="white" />
+              )}
             </div>
           )}
 
           {controls === "board" && nav}
         </div>
 
-        {/* In full screen the footer is not rendered: there the game is read, and
+        {/* In full screen the tools are not rendered: there the game is read, and
             commenting and annotating are done on the normal screen — that is why
             the move menu does not offer those two options either. */}
-        {boardFooter && (
+        {tools && (
           <div className={`game-viewer__board-footer${isFullscreen ? " game-viewer__board-footer_state_hidden" : ""}`}>
-            {boardFooter}
+            <GameTools
+              pgn={pgn}
+              currentPath={currentPath}
+              canEdit={isEditing}
+              saveLabel={tools.saveLabel}
+              tab={toolsTab.tab}
+              onTabChange={toolsTab.setTab}
+              focusRequest={toolsTab.focusRequest}
+              white={players?.white.name ?? "Blancas"}
+              black={players?.black.name ?? "Negras"}
+              onSelectPath={setCurrentPath}
+              onPgnChange={publishPgn}
+            />
           </div>
         )}
 
@@ -661,7 +684,6 @@ export function GameViewer({
                   {description && <p className="game-viewer__panel-description">{description}</p>}
                 </div>
                 {badge && <span className="game-viewer__panel-badge">{badge}</span>}
-                {headerActions}
               </div>
             )}
 
@@ -724,8 +746,8 @@ export function GameViewer({
             if (menu) editing.promoteToMainAt(menu.path);
             setMenu(null);
           }}
-          onComment={onRequestEdit && !isFullscreen ? () => requestEdit("comment") : undefined}
-          onAnnotate={onRequestEdit && !isFullscreen ? () => requestEdit("annotate") : undefined}
+          onComment={offersEdit ? () => requestEdit("comment") : undefined}
+          onAnnotate={offersEdit ? () => requestEdit("annotate") : undefined}
           onCopyVariation={() => (menu ? editing.copyVariation(menu.path) : undefined)}
           onDelete={() => {
             if (menu) editing.deleteAt(menu.path);

@@ -9,7 +9,7 @@ description: "Whole-game evaluation: runs a dedicated Stockfish worker over ever
 | File       | `components/chess/game-viewer/game-review.comp.tsx`                                                                                                                                                                   |
 | Kind       | Client Component                                                                                                                                                                                                      |
 | Stylesheet | `game-review.comp.css` → block `.game-review`                                                                                                                                                                         |
-| Used by    | [`GameTools`](/components/platform/sections/studies/game-view/game-tools) (the "Evaluación" tab under the board)                                                                                                      |
+| Used by    | [`GameTools`](/components/chess/game-viewer/game-tools) (the "Evaluación" tab under the board)                                                                                                                        |
 | Composes   | [`GameReviewChart`](/components/chess/game-viewer/game-review-chart), [`useGameReview`](/components/chess/game-viewer/use-game-review-hook), [`mainline-positions`](/components/chess/game-viewer/mainline-positions) |
 | Uses       | `reviewGame`, `PlayerReview` from `lib/chess/game-review`<br />`parseEditableGame`, `serializeGame`, `setEvaluation` from `lib/chess/pgn-edit`<br />`parsePgnTree`, `MoveEvaluation` from `lib/chess/pgn-tree`        |
 
@@ -57,7 +57,7 @@ Block `.game-review` (271 lines).
 
 ## Usage
 
-From `components/platform/sections/studies/game-view/game-tools.comp.tsx`:
+From `components/chess/game-viewer/game-tools.comp.tsx`:
 
 ```tsx
 import { GameReview } from "@/components/chess/game-viewer/game-review.comp";

@@ -35,6 +35,8 @@ description: "Index of components/chess: the board, the lazy board, the static d
 | [`GameReviewChart`](/components/chess/game-viewer/game-review-chart)     | client | The win-probability curve as a scrubbable SVG with phase labels.                                                        |
 | [`useEngine`](/components/chess/game-viewer/use-engine-hook)             | hook   | The live-analysis worker and its UCI state machine.                                                                     |
 | [`useGameReview`](/components/chess/game-viewer/use-game-review-hook)    | hook   | The second worker that evaluates every main-line position in series.                                                    |
+| [`GameTools`](/components/chess/game-viewer/game-tools)                  | client | Comment, quality, evaluation and share under the board; `useToolsTab` holds its tab.                                    |
+| [`PlayerStrip`](/components/chess/game-viewer/player-strip)              | client | The strip above or below the board, drawn from `PlayerInfo`.                                                            |
 | [`usePgnEditing`](/components/chess/game-viewer/use-pgn-editing-hook)    | hook   | Binds `lib/chess/pgn-edit` to the viewer's state.                                                                       |
 | [`board-export`](/components/chess/game-viewer/board-export)             | module | PNG of a position and GIF of the main line, painted on a canvas with the board's own pieces.                            |
 | [`move-sound`](/components/chess/game-viewer/move-sound)                 | module | The two board sounds, loaded lazily.                                                                                    |
