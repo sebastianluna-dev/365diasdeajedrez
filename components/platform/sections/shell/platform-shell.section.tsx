@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { LOGO_LABEL, LogoWordmarkIcon } from "@/components/icons/logo-wordmark-icon.comp";
 import { buildPlatformNavGroups } from "@/constants/platform/nav-items.const";
 import { getSessionUser } from "@/lib/platform-auth/current-user";
 import { getSessionRoles } from "@/lib/platform-auth/roles";
@@ -47,8 +48,16 @@ export async function PlatformShell({ children }: PlatformShellProps) {
     <div className="platform-shell">
       <header className="platform-shell__bar">
         <div className="platform-shell__bar-inner">
-          <Link href={homeHref} className="platform-shell__logo">
-            365 Días<span className="platform-shell__logo-accent"> de Ajedrez</span>
+          {/* The same wordmark the public site draws, painted with the
+              platform's tokens: the SVG is aria-hidden, so the link carries
+              the brand's name. */}
+          <Link href={homeHref} className="platform-shell__logo" aria-label={LOGO_LABEL}>
+            <LogoWordmarkIcon
+              className="platform-shell__logo-image"
+              accentClassName="platform-shell__logo-accent"
+              wordClassName="platform-shell__logo-word"
+              marksClassName="platform-shell__logo-marks"
+            />
           </Link>
 
           <PlatformNav groups={navGroups} />

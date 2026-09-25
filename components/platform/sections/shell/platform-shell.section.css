@@ -21,17 +21,31 @@
     gap: 40px;
   }
 
+  /* The wordmark at the height the public site draws it on desktop. The
+     word and the marks follow `color` through `fill: currentColor`; the "365"
+     is the brand orange, as on the home page: the glyphs are heavy enough to
+     carry the fill colour on the light surface. */
   & .platform-shell__logo {
     flex: none;
-    font-family: var(--platform-font);
-    font-size: 19px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+    display: inline-flex;
     color: var(--platform-text);
   }
 
+  /* `display: block` removes the line box under an inline SVG, so the link
+     measures exactly the drawing. */
+  & .platform-shell__logo-image {
+    display: block;
+    width: auto;
+    height: 20px;
+  }
+
+  & .platform-shell__logo-word,
+  & .platform-shell__logo-marks {
+    fill: currentColor;
+  }
+
   & .platform-shell__logo-accent {
-    color: var(--platform-accent-ink);
+    fill: var(--platform-accent);
   }
 
   & .platform-shell__user {

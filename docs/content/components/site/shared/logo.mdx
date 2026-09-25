@@ -15,7 +15,7 @@ description: "The wordmark as a link to the home page: an inline SVG whose '365'
 
 The one place the wordmark is drawn. The header and the footer render it on different backgrounds and with different accents (orange on the home page, red on the blog), so the variation is expressed as two BEM modifiers rather than two components.
 
-The drawing is the brand SVG (`viewBox="0 0 703 72"`) inlined in the component instead of an exported file: inline paths can be recoloured from CSS, while an `<img>` or a `next/image` would need one exported file per theme/accent combination. It is the same wordmark on every screen size — only the height changes.
+The drawing is the brand SVG (`viewBox="0 0 703 72"`), inlined as the shared [`LogoWordmarkIcon`](#logowordmarkicon) instead of an exported file: inline paths can be recoloured from CSS, while an `<img>` or a `next/image` would need one exported file per theme/accent combination. It is the same wordmark on every screen size — only the height changes.
 
 ## Props
 
@@ -26,13 +26,13 @@ The drawing is the brand SVG (`viewBox="0 0 703 72"`) inlined in the component i
 
 ## Behaviour
 
-None. A `next/link` to `/`. The SVG is `aria-hidden`, so the link's accessible name is the `aria-label` — "365 Días de Ajedrez".
+None. A `next/link` to `/`. The SVG is `aria-hidden`, so the link's accessible name is the `aria-label`, `LOGO_LABEL` ("365 Días de Ajedrez") from the icon's file.
 
 ## Markup & styling
 
-Block `.logo` (58 lines).
+Block `.logo` (64 lines).
 
-**Elements:** `.logo__image` (the `<svg>`), `.logo__accent` (the "365"), `.logo__word` ("DíasDeAjedrez"), `.logo__marks` (the two squares; on their own as `components/icons/logo-mark-icon.comp.tsx` for the platform's study cards)
+**Elements:** `.logo__image` (the `<svg>`), `.logo__accent` (the "365"), `.logo__word` ("DíasDeAjedrez"), `.logo__marks` (the two squares; on their own as `components/icons/logo-mark-icon.comp.tsx` for the platform's study cards). The icon takes the four class names as props, one per group.
 
 **Modifiers:** `.logo_theme_light`, `.logo_theme_dark`, `.logo_accent_orange`, `.logo_accent_red`
 
@@ -54,6 +54,13 @@ import { Logo } from "@/components/site/shared/logo.comp";
 }
 ```
 
+## `LogoWordmarkIcon`
+
+`components/icons/logo-wordmark-icon.comp.tsx`. The wordmark's `<svg>` on its own, `aria-hidden`, with its three groups ("365", the word, the two squares) each classed by a prop — `className` for the `<svg>`, `accentClassName`, `wordClassName` and `marksClassName` — so every user paints it from its own BEM block: `fill: currentColor` on the word and the marks, the accent colour on the "365". It paints nothing by itself. The file also exports `LOGO_LABEL`, the accessible name every link that wraps it uses.
+
+Its two users are this `Logo` (public site, `--color-*` tokens) and the platform's [`PlatformShell`](/components/platform/sections/shell/platform-shell-section) bar (`--platform-*` tokens, `.platform-shell__logo-*`). The two squares are also available alone as `LogoMarkIcon` (`logo-mark-icon.comp.tsx`) for the platform's study cards.
+
 ## Related
 
 - [`Header`](/components/site/sections/shell/header/header-section) and [`Footer`](/components/site/sections/shell/footer/footer-section) pick the variant from their own `theme` and `accent` props.
+- [`PlatformShell`](/components/platform/sections/shell/platform-shell-section) draws the same wordmark in the platform's bar.
