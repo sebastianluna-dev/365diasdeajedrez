@@ -23,7 +23,7 @@
 # misc
 .DS_Store
 *.pem
-# kits de diseño y otros paquetes: fuera del repositorio
+# design kits and other bundles: out of the repository
 *.zip
 
 # debug
@@ -43,20 +43,20 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# prisma (cliente generado de la plataforma)
+# prisma (the platform's generated client)
 /lib/platform-db/generated/
 
-# sitio de documentación (docs/): otra app Next con su propio node_modules
+# documentation site (docs/): another Next app with its own node_modules
 /docs/node_modules/
 /docs/.next/
 /docs/out/
 /docs/public/_pagefind/
 
-# storybook (build estática de `npm run storybook:build`)
+# storybook (static build of `npm run storybook:build`)
 /storybook-static/
 *storybook.log
 
-# notas de trabajo: sólo en la copia local, nunca en el remoto
+# working notes: only in the local copy, never on the remote
 IMPROVEMENTS.md
 TODOS.md
 WARNINGS.md
