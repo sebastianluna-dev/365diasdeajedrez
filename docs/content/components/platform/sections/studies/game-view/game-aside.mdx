@@ -35,6 +35,7 @@ A study has no page of its own — its URL redirects to the first game — so th
 
 ## Behaviour
 
+- **Five rows tall.** The list caps its height at five games (`calc(5 * 58px + 4 * 2px + 16px)`) and scrolls the rest on its own, so a long study does not push the record off the screen. On arrival, and whenever the game changes, an effect scrolls the current row into the middle of the list by arithmetic on its offset, so only the list moves and never the page.
 - Sibling rows show the student's title or the mapper's `label` fallback (round, event or position in the study), the players as a second line with a `title` tooltip because long names are cut, and the result.
 - **Reordering.** The list is local state while a row is dragged; on drop, or on an arrow key on the row's grip, the whole order goes to `reorderStudyGames(studyId, ids)` in a transition. New `siblings` from the server replace the state during render, not in an effect, so the old list is never painted first. The grip is a `<button>` with an `aria-label` so keyboard users move rows too; it only shows on hover or focus. `dragstart` sets its own data so the browser drags the row and not the link's URL.
 - **Pages.** With `pages`, a "← Anteriores · Página n de m · Siguientes →" nav sits between the list and "Nueva partida"; the links carry `?pagina=` on the current game's URL.
@@ -43,7 +44,7 @@ A study has no page of its own — its URL redirects to the first game — so th
 
 ## Markup & styling
 
-Block `.game-aside` (344 lines).
+Block `.game-aside` (353 lines).
 
 **Elements:** `.game-aside__card`, `.game-aside__study`, `.game-aside__study-name`, `.game-aside__study-tools`, `.game-aside__card-head`, `.game-aside__label`, `.game-aside__count`, `.game-aside__list`, `.game-aside__row`, `.game-aside__handle`, `.game-aside__item`, `.game-aside__item-main`, `.game-aside__item-name`, `.game-aside__item-meta`, `.game-aside__item-result`, `.game-aside__pages`, `.game-aside__page-link`, `.game-aside__page-status`, `.game-aside__new`, `.game-aside__meta-head`, `.game-aside__edit`, `.game-aside__event`, `.game-aside__site`, `.game-aside__meta`, `.game-aside__meta-cell`, `.game-aside__meta-key`, `.game-aside__meta-value`, `.game-aside__meta-foot`, `.game-aside__source`
 

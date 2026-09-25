@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { type ReactNode, useState, useTransition } from "react";
+import { type ReactNode, useEffect, useRef, useState, useTransition } from "react";
 import { reorderStudyGames } from "@/services/studies/studies.actions";
 import type { GameView, StudyGameItem } from "@/services/studies/studies.types";
 import { DeleteGame } from "./delete-game.comp";
@@ -105,6 +105,18 @@ export function GameAside({
   const [dragging, setDragging] = useState<number | null>(null);
   const [, startTransition] = useTransition();
 
+  // The list is five rows tall and scrolls on its own, so the current game
+  // is brought into its middle on arrival: deep in an eighty-game study it
+  // would otherwise sit below the fold of the list. Only the list moves,
+  // never the page, which is why this is arithmetic and not scrollIntoView.
+  const listRef = useRef<HTMLUListElement>(null);
+  useEffect(() => {
+    const list = listRef.current;
+    const active = list?.querySelector<HTMLElement>(".game-aside__item_state_active");
+    if (!list || !active) return;
+    list.scrollTop = active.offsetTop - (list.clientHeight - active.offsetHeight) / 2;
+  }, [game.id]);
+
   const move = (from: number, to: number) => {
     if (to < 0 || to >= items.length || from === to) return;
     const next = moved(items, from, to);
@@ -130,7 +142,7 @@ export function GameAside({
           {studyTools && <div className="game-aside__study-tools">{studyTools}</div>}
         </div>
 
-        <ul className="game-aside__list">
+        <ul className="game-aside__list" ref={listRef}>
           {items.map((sibling, index) => {
             const meta = gameMeta(sibling);
 
