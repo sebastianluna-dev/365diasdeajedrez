@@ -1,21 +1,24 @@
 ---
-description: "The 'Nuevo estudio' button and its native <dialog> form (name, description, kind) on PlatformForm and PlatformSelect, posting createStudy; the dialog closes on submit after browser validation."
+description: "The 'Nuevo estudio' button and its native <dialog>, whose form (NewStudyForm: head with the study's mark, name, description, kind as cards, footer band) posts createStudy; the dialog closes on submit after browser validation."
 ---
 
 # `NewStudy`
 
-|            |                                                                                                                                                                                                                                                    |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/studies-list/new-study.comp.tsx`                                                                                                                                                                             |
-| Kind       | Client Component                                                                                                                                                                                                                                   |
-| Stylesheet | `new-study.comp.css` → block `.new-study`                                                                                                                                                                                                          |
-| Used by    | `/estudios` (page header)                                                                                                                                                                                                                          |
-| Writes     | `createStudy()` · `services/studies/studies.actions.ts`                                                                                                                                                                                            |
-| Uses       | `StudyKindOption` from `services/studies/studies.types`; [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`SubmitButton`](/components/platform/shared/submit-button) |
+Also `NewStudyForm`, in its own file.
+
+|            |                                                                                                                                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/new-study/new-study.comp.tsx` (button and dialog) and `new-study-form.comp.tsx` (the form)                                                                                                                 |
+| Kind       | Client Component                                                                                                                                                                                                                                              |
+| Stylesheet | `new-study.comp.css` → block `.new-study`                                                                                                                                                                                                                     |
+| Story      | `new-study.stories.tsx` (`platform/sections/studies/NewStudy`): the form without the dialog, with a stub action                                                                                                                                               |
+| Used by    | `/estudios` (page header)                                                                                                                                                                                                                                     |
+| Writes     | `createStudy()` · `services/studies/studies.actions.ts`                                                                                                                                                                                                       |
+| Uses       | `StudyKindOption` from `services/studies/studies.types`; [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), [`SubmitButton`](/components/platform/shared/submit-button) |
 
 ## Purpose
 
-Creating a study is three fields, so it lives in a modal on the list page rather than on a page of its own. The modal is a **native `<dialog>`**: it brings focus trapping, closing with Escape and the backdrop without writing any of that by hand. The only client code is the `showModal()`/`close()` calls.
+Creating a study is three fields, so it lives in a modal on the list page rather than on a page of its own. The modal is a **native `<dialog>`**: it brings focus trapping, closing with Escape and the backdrop without writing any of that by hand. `NewStudy` is the button and the dialog; `NewStudyForm` is the form, split off so the story can mount it with a stub in place of the server action.
 
 ## Props
 
@@ -25,20 +28,23 @@ Creating a study is three fields, so it lives in a modal on the list page rather
 
 ## Behaviour
 
-- The form is a `PlatformForm` with `action={createStudy}` and three `PlatformFormField`s: `name` (required, max 120, autofocus, with its own `valueMissing` text), `description` (a textarea, max 500) and `kindCode`, a `PlatformSelect` over `kinds` with the first one chosen. It was the first form moved to the Radix pieces.
+- The form is a `PlatformForm` with `action={createStudy}` and `autoComplete="off"`: a head (dark tile with the white knight, title, subtitle, close button), `name` (required, max 120, autofocus, controlled so the submit can watch it, with its own `valueMissing` text), `description` (a textarea, max 500, marked "Opcional") and `kindCode`, a `PlatformChoiceCards` inside a `PlatformFormGroup` over `kinds` with the first one chosen. Each card's description and piece come from `constants/platform/study-kind-cards.const.ts`; a kind missing there renders with its label alone. A footer band carries "Podrás cambiarlo todo después." and the buttons.
+- **Crear estudio** stays disabled until the name has a character that is not a space. It was the first form moved to the Radix pieces.
+- Every opening remounts the form (`key` bumped in `NewStudy`), so it never opens with what was typed the last time.
 - `onSubmit` closes the dialog. The browser validates `required` before the submit event fires (the form primitive only replaces the bubble with the field's message), so the dialog does not close with the form half filled.
-- The select's list renders inside the dialog, not portalled, which is what keeps it usable under the dialog's top layer.
 - The action creates the study and redirects to it; the dialog is unmounted with the page.
 
 ## Markup & styling
 
-Block `.new-study` (28 lines): only the dialog's width, the form's padding, the title and the actions row. The fields and the controls' look come from `.platform-form` and `.platform-select`.
+Block `.new-study`: the dialog's width and rounding, the head, the body's spacing, the pieces on the cards and the footer band. The fields' and controls' look come from `.platform-form` and `.platform-choice-cards`.
 
-**Elements:** `.new-study__open`, `.new-study__dialog`, `.new-study__form`, `.new-study__title`, `.new-study__actions`
+**Elements:** `.new-study__open`, `.new-study__dialog`, `.new-study__form`, `.new-study__head`, `.new-study__tile`, `.new-study__heading`, `.new-study__title`, `.new-study__subtitle`, `.new-study__close`, `.new-study__close-icon`, `.new-study__body`, `.new-study__piece`, `.new-study__foot`, `.new-study__note`, `.new-study__actions`
 
-**Other classes it renders:** `.platform-dialog` (the shared dialog frame in `platform.css`), `.platform-button`, `.platform-button_variant_secondary`, `.platform-form`, `.platform-select`.
+**Modifiers:** `.new-study__piece_name_rook`, `_king`, `_pawn` (the SVG from `public/pieces` each card draws).
 
-**Tokens:** none of its own.
+**Other classes it renders:** `.platform-dialog` (the shared dialog frame in `platform.css`), `.platform-button`, `.platform-button_variant_secondary`, `.platform-form`, `.platform-choice-cards`.
+
+**Tokens:** `--platform-bg`, `--platform-border`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
 No media queries; the shared dialog frame handles narrow screens.
 
@@ -47,7 +53,7 @@ No media queries; the shared dialog frame handles narrow screens.
 From `app/(platform)/estudios/page.tsx`:
 
 ```tsx
-import { NewStudy } from "@/components/platform/sections/studies/studies-list/new-study.comp";
+import { NewStudy } from "@/components/platform/sections/studies/studies-list/new-study/new-study.comp";
 
 <NewStudy kinds={kinds} />;
 ```

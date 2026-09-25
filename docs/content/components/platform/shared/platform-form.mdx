@@ -4,7 +4,7 @@ description: "The platform's form on Radix's Form primitive: PlatformForm is a p
 
 # `PlatformForm`
 
-Also exports `PlatformFormField` and the types `PlatformFormMatcher` and `PlatformFormMessages`.
+Also exports `PlatformFormField`, `PlatformFormGroup` and the types `PlatformFormMatcher` and `PlatformFormMessages`.
 
 |            |                                                                                              |
 | ---------- | -------------------------------------------------------------------------------------------- |
@@ -31,14 +31,25 @@ Everything `<form>` takes. `className` is added to `.platform-form`.
 
 ### `PlatformFormField`
 
-| Prop          | Type                   | Required | Meaning                                                                                                                                |
-| ------------- | ---------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`        | `string`               | yes      | The field's name in the submitted `FormData`. Given to the control; the control must not set its own.                                  |
-| `label`       | `string`               | yes      | The label text. It targets the control through the `id` the field gives it.                                                            |
-| `children`    | `ReactElement`         | yes      | The control: a native `input`/`textarea`, or a [`PlatformSelect`](/components/platform/shared/platform-select).                        |
-| `hint`        | `string`               | no       | Small help text under the control.                                                                                                     |
-| `messages`    | `PlatformFormMessages` | no       | Text per validity state (`valueMissing`, `tooLong`, `typeMismatch`…), merged over Spanish defaults. Only the matching one renders.     |
-| `serverError` | `string`               | no       | A failure the server reported for this field: rendered as its message and the field marked invalid until the user changes the control. |
+| Prop            | Type                   | Required | Meaning                                                                                                                                |
+| --------------- | ---------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`          | `string`               | yes      | The field's name in the submitted `FormData`. Given to the control; the control must not set its own.                                  |
+| `label`         | `string`               | yes      | The label text. It targets the control through the `id` the field gives it.                                                            |
+| `children`      | `ReactElement`         | yes      | The control: a native `input`/`textarea`, or a [`PlatformSelect`](/components/platform/shared/platform-select).                        |
+| `hint`          | `string`               | no       | Small help text under the control.                                                                                                     |
+| `optionalLabel` | `string`               | no       | A word at the label's right end (\"Opcional\") for a field that may be left empty.                                                     |
+| `messages`      | `PlatformFormMessages` | no       | Text per validity state (`valueMissing`, `tooLong`, `typeMismatch`…), merged over Spanish defaults. Only the matching one renders.     |
+| `serverError`   | `string`               | no       | A failure the server reported for this field: rendered as its message and the field marked invalid until the user changes the control. |
+
+### `PlatformFormGroup`
+
+For a field whose control is a group, not one element: a `<label>` cannot name a radio group, so the label is plain text and the control is pointed at it with `aria-labelledby` (the child is cloned with that prop). Same look as a field; no validity messages, because a group with a default is never invalid.
+
+| Prop       | Type           | Required | Meaning                                                                                                             |
+| ---------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| `label`    | `string`       | yes      | The group's name.                                                                                                   |
+| `children` | `ReactElement` | yes      | The group control: [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), a set of checkboxes… |
+| `hint`     | `string`       | no       | Help text under the group.                                                                                          |
 
 ## Behaviour
 
@@ -70,14 +81,18 @@ import { PlatformSelect } from "@/components/platform/shared/platform-select/pla
   <PlatformFormField name="name" label="Nombre" messages={{ valueMissing: "Ponle un nombre al estudio." }}>
     <input type="text" maxLength={120} required autoFocus />
   </PlatformFormField>
-  <PlatformFormField name="kindCode" label="Tipo">
-    <PlatformSelect options={options} defaultValue={options[0]?.value} required />
+  <PlatformFormField name="description" label="Descripción" optionalLabel="Opcional">
+    <textarea maxLength={500} rows={3} />
   </PlatformFormField>
+  <PlatformFormGroup label="Tipo">
+    <PlatformChoiceCards name="kindCode" defaultValue={kinds[0]?.code} required options={options} />
+  </PlatformFormGroup>
 </PlatformForm>;
 ```
 
 ## Related
 
+- [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), the group control of `PlatformFormGroup`.
 - [`PlatformSelect`](/components/platform/shared/platform-select), the select that goes inside a field.
 - [`FormField`](/components/platform/shared/form-field), the native wrapper the rest of the forms still use.
 - [`SubmitButton`](/components/platform/shared/submit-button) stays the submit: it reads the form status, whichever form.

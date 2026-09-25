@@ -1,6 +1,6 @@
 "use client";
 
-import type { ComponentProps, ReactElement } from "react";
+import { cloneElement, useId, type ComponentProps, type ReactElement } from "react";
 import { Form } from "radix-ui";
 import "./platform-form.comp.css";
 
@@ -54,6 +54,8 @@ interface PlatformFormFieldProps {
   children: ReactElement;
   /** Small help text under the control. */
   hint?: string;
+  /** A word at the label's right end, "Opcional" as a rule, for what may be left empty. */
+  optionalLabel?: string;
   /** Text per validity state; merged over the Spanish defaults. */
   messages?: PlatformFormMessages;
   /** A failure the server reported for this field, shown as its message. */
@@ -65,12 +67,23 @@ interface PlatformFormFieldProps {
  * validity. Invalid state is a `data-invalid` attribute on the field, which
  * the stylesheet reads; nothing is tracked by hand.
  */
-export function PlatformFormField({ name, label, children, hint, messages, serverError }: PlatformFormFieldProps) {
+export function PlatformFormField({
+  name,
+  label,
+  children,
+  hint,
+  optionalLabel,
+  messages,
+  serverError,
+}: PlatformFormFieldProps) {
   const allMessages = { ...DEFAULT_MESSAGES, ...messages };
 
   return (
     <Form.Field name={name} className="platform-form__field" serverInvalid={Boolean(serverError)}>
-      <Form.Label className="platform-form__label">{label}</Form.Label>
+      <div className="platform-form__label-row">
+        <Form.Label className="platform-form__label">{label}</Form.Label>
+        {optionalLabel && <span className="platform-form__optional">{optionalLabel}</span>}
+      </div>
       <Form.Control asChild>{children}</Form.Control>
       {hint && <span className="platform-form__hint">{hint}</span>}
       {(Object.entries(allMessages) as [PlatformFormMatcher, string][]).map(([match, text]) => (
@@ -84,5 +97,34 @@ export function PlatformFormField({ name, label, children, hint, messages, serve
         </Form.Message>
       )}
     </Form.Field>
+  );
+}
+
+interface PlatformFormGroupProps {
+  label: string;
+  /** The group control (`PlatformChoiceCards`, a set of checkboxes…): it is told which element names it. */
+  children: ReactElement<{ "aria-labelledby"?: string }>;
+  hint?: string;
+}
+
+/**
+ * A field whose control is a group, not one element: a `<label>` cannot name
+ * a radio group, so the label is plain text and the control is pointed at it
+ * with `aria-labelledby`. Same look as a field; no validity messages, because
+ * a group with a default is never invalid.
+ */
+export function PlatformFormGroup({ label, children, hint }: PlatformFormGroupProps) {
+  const labelId = useId();
+
+  return (
+    <div role="group" aria-labelledby={labelId} className="platform-form__field">
+      <div className="platform-form__label-row">
+        <span id={labelId} className="platform-form__label">
+          {label}
+        </span>
+      </div>
+      {cloneElement(children, { "aria-labelledby": labelId })}
+      {hint && <span className="platform-form__hint">{hint}</span>}
+    </div>
   );
 }

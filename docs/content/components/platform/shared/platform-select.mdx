@@ -6,14 +6,14 @@ description: "The platform's select on Radix's Select primitive: a trigger that 
 
 Also exports the type `PlatformSelectOption`.
 
-|            |                                                                            |
-| ---------- | -------------------------------------------------------------------------- |
-| File       | `components/platform/shared/platform-select/platform-select.comp.tsx`      |
-| Kind       | Client Component                                                           |
-| Stylesheet | `platform-select.comp.css` → block `.platform-select`                      |
-| Story      | `platform-select.stories.tsx` (`platform/shared/PlatformSelect`)           |
-| Used by    | [`NewStudy`](/components/platform/sections/studies/studies-list/new-study) |
-| Uses       | `Select` from `radix-ui`; `CheckIcon`, `ChevronIcon`                       |
+|            |                                                                                                       |
+| ---------- | ----------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-select/platform-select.comp.tsx`                                 |
+| Kind       | Client Component                                                                                      |
+| Stylesheet | `platform-select.comp.css` → block `.platform-select`                                                 |
+| Story      | `platform-select.stories.tsx` (`platform/shared/PlatformSelect`)                                      |
+| Used by    | no form yet: `NewStudy` moved its kind to cards; it waits for the forms with selects (`TODOS.md` T17) |
+| Uses       | `Select` from `radix-ui`; `CheckIcon`, `ChevronIcon`                                                  |
 
 ## Purpose
 
@@ -53,15 +53,15 @@ No media queries.
 
 ## Usage
 
-From `components/platform/sections/studies/studies-list/new-study.comp.tsx`:
+Inside a field:
 
 ```tsx
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
-<PlatformFormField name="kindCode" label="Tipo">
+<PlatformFormField name="resultCode" label="Resultado">
   <PlatformSelect
-    options={kinds.map((kind) => ({ value: kind.code, label: kind.label }))}
-    defaultValue={kinds[0]?.code}
+    options={results.map((result) => ({ value: result.code, label: result.label }))}
+    defaultValue={results[0]?.code}
     required
   />
 </PlatformFormField>;

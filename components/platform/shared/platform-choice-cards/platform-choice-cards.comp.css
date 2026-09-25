@@ -1,0 +1,63 @@
+.platform-choice-cards {
+  display: grid;
+  /* As many cards per row as fit at a readable width; one column on a phone. */
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+
+  /* The whole card is the radio: a button with `role="radio"`. */
+  & .platform-choice-cards__card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    min-width: 0;
+    padding: 16px 18px;
+    border: 1px solid var(--platform-border);
+    border-radius: 12px;
+    background: var(--platform-surface-soft);
+    color: var(--platform-text);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  & .platform-choice-cards__card:hover {
+    border-color: var(--platform-border-strong);
+  }
+
+  & .platform-choice-cards__card:focus-visible {
+    outline: 2px solid var(--platform-accent-soft);
+    border-color: var(--platform-accent);
+  }
+
+  /* The chosen one: accent border and wash, and its description in the accent ink. */
+  & .platform-choice-cards__card[data-state="checked"] {
+    border-color: var(--platform-accent);
+    background: var(--platform-accent-wash);
+  }
+
+  & .platform-choice-cards__card[data-state="checked"] .platform-choice-cards__description {
+    color: var(--platform-accent-ink);
+  }
+
+  & .platform-choice-cards__card[data-disabled] {
+    color: var(--platform-text-faint);
+    cursor: default;
+  }
+
+  & .platform-choice-cards__icon {
+    display: flex;
+    margin-bottom: 4px;
+  }
+
+  & .platform-choice-cards__label {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  & .platform-choice-cards__description {
+    font-size: 14.5px;
+    line-height: 1.4;
+    color: var(--platform-text-muted);
+  }
+}

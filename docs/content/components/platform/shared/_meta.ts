@@ -9,6 +9,7 @@ const meta: MetaRecord = {
   "image-upload": "ImageUpload",
   "loading-panel": "LoadingPanel",
   "local-datetime": "LocalDateTime",
+  "platform-choice-cards": "PlatformChoiceCards",
   "platform-error": "PlatformError",
   "platform-form": "PlatformForm",
   "platform-notice": "PlatformNotice",
