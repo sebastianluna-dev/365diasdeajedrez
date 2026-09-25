@@ -25,7 +25,7 @@ Creating a study is three fields, so it lives in a modal on the list page rather
 
 ## Behaviour
 
-- The form is a `PlatformForm` with `action={createStudy}` and three `PlatformFormField`s: `name` (required, max 120, autofocus, with its own `valueMissing` text), `description` (max 500) and `kindCode`, a `PlatformSelect` over `kinds` with the first one chosen. It was the first form moved to the Radix pieces.
+- The form is a `PlatformForm` with `action={createStudy}` and three `PlatformFormField`s: `name` (required, max 120, autofocus, with its own `valueMissing` text), `description` (a textarea, max 500) and `kindCode`, a `PlatformSelect` over `kinds` with the first one chosen. It was the first form moved to the Radix pieces.
 - `onSubmit` closes the dialog. The browser validates `required` before the submit event fires (the form primitive only replaces the bubble with the field's message), so the dialog does not close with the form half filled.
 - The select's list renders inside the dialog, not portalled, which is what keeps it usable under the dialog's top layer.
 - The action creates the study and redirects to it; the dialog is unmounted with the page.
