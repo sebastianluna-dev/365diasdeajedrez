@@ -1,17 +1,17 @@
 ---
-description: "The 'Nuevo estudio' button and its native <dialog> form (name, description, kind) posting createStudy; the dialog closes on submit after browser validation."
+description: "The 'Nuevo estudio' button and its native <dialog> form (name, description, kind) on PlatformForm and PlatformSelect, posting createStudy; the dialog closes on submit after browser validation."
 ---
 
 # `NewStudy`
 
-|            |                                                                        |
-| ---------- | ---------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/studies-list/new-study.comp.tsx` |
-| Kind       | Client Component                                                       |
-| Stylesheet | `new-study.comp.css` → block `.new-study`                              |
-| Used by    | `/estudios` (page header)                                              |
-| Writes     | `createStudy()` · `services/studies/studies.actions.ts`                |
-| Uses       | `StudyKindOption` from `services/studies/studies.types`                |
+|            |                                                                                                                                                                                                                                                    |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/new-study.comp.tsx`                                                                                                                                                                             |
+| Kind       | Client Component                                                                                                                                                                                                                                   |
+| Stylesheet | `new-study.comp.css` → block `.new-study`                                                                                                                                                                                                          |
+| Used by    | `/estudios` (page header)                                                                                                                                                                                                                          |
+| Writes     | `createStudy()` · `services/studies/studies.actions.ts`                                                                                                                                                                                            |
+| Uses       | `StudyKindOption` from `services/studies/studies.types`; [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`SubmitButton`](/components/platform/shared/submit-button) |
 
 ## Purpose
 
@@ -25,19 +25,20 @@ Creating a study is three fields, so it lives in a modal on the list page rather
 
 ## Behaviour
 
-- The form is `<form action={createStudy}>` with `name` (required, max 120, autofocus), `description` (max 500) and `kindCode` (select over `kinds`, first selected).
-- `onSubmit` closes the dialog. The browser validates `required` before the submit event fires, so the dialog does not close with the form half filled.
+- The form is a `PlatformForm` with `action={createStudy}` and three `PlatformFormField`s: `name` (required, max 120, autofocus, with its own `valueMissing` text), `description` (max 500) and `kindCode`, a `PlatformSelect` over `kinds` with the first one chosen. It was the first form moved to the Radix pieces.
+- `onSubmit` closes the dialog. The browser validates `required` before the submit event fires (the form primitive only replaces the bubble with the field's message), so the dialog does not close with the form half filled.
+- The select's list renders inside the dialog, not portalled, which is what keeps it usable under the dialog's top layer.
 - The action creates the study and redirects to it; the dialog is unmounted with the page.
 
 ## Markup & styling
 
-Block `.new-study` (60 lines).
+Block `.new-study` (28 lines): only the dialog's width, the form's padding, the title and the actions row. The fields and the controls' look come from `.platform-form` and `.platform-select`.
 
-**Elements:** `.new-study__open`, `.new-study__dialog`, `.new-study__form`, `.new-study__title`, `.new-study__field`, `.new-study__label`, `.new-study__input`, `.new-study__select`, `.new-study__actions`
+**Elements:** `.new-study__open`, `.new-study__dialog`, `.new-study__form`, `.new-study__title`, `.new-study__actions`
 
-**Other classes it renders:** `.platform-dialog` (the shared dialog frame in `platform.css`), `.platform-button`, `.platform-button_variant_secondary`.
+**Other classes it renders:** `.platform-dialog` (the shared dialog frame in `platform.css`), `.platform-button`, `.platform-button_variant_secondary`, `.platform-form`, `.platform-select`.
 
-**Tokens:** `--platform-accent`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+**Tokens:** none of its own.
 
 No media queries; the shared dialog frame handles narrow screens.
 

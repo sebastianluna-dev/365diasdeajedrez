@@ -1,0 +1,83 @@
+---
+description: "The platform's form on Radix's Form primitive: PlatformForm is a plain <form> that still posts to a server action, and PlatformFormField is label, control and the messages that answer the control's validity, with the native bubble replaced by the field's own text."
+---
+
+# `PlatformForm`
+
+Also exports `PlatformFormField` and the types `PlatformFormMatcher` and `PlatformFormMessages`.
+
+|            |                                                                                              |
+| ---------- | -------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-form/platform-form.comp.tsx`                            |
+| Kind       | Client Component (`"use client"`: the primitive keeps the validity of each field in context) |
+| Stylesheet | `platform-form.comp.css` → block `.platform-form`                                            |
+| Story      | `platform-form.stories.tsx` (`platform/shared/PlatformForm`)                                 |
+| Used by    | [`NewStudy`](/components/platform/sections/studies/studies-list/new-study)                   |
+| Uses       | `Form` from `radix-ui`                                                                       |
+
+## Purpose
+
+The form controls of the platform are built on [Radix Primitives](https://www.radix-ui.com/primitives): unstyled, accessible pieces the project draws with its own BEM stylesheets and `--platform-*` tokens. This is the form itself. `PlatformForm` renders Radix's `Form.Root`, which is a `<form>` for every purpose — `action={serverAction}` posts exactly as before — with one change of behaviour: when the browser finds a field invalid on submit, the primitive swallows the native bubble and the field shows its own message. The browser still blocks the submit, so an `onSubmit` handler only ever runs with a valid form.
+
+`PlatformFormField` is one field: the label, the control and the messages. The control is passed as a single element and receives `id` and `name` from the field (Radix's `Form.Control asChild`), so the label reaches it and the submitted `FormData` carries it under the field's name.
+
+Every other write form of the platform still uses [`FormField`](/components/platform/shared/form-field); they are migrated as they are touched.
+
+## Props
+
+### `PlatformForm`
+
+Everything `<form>` takes. `className` is added to `.platform-form`.
+
+### `PlatformFormField`
+
+| Prop          | Type                   | Required | Meaning                                                                                                                                |
+| ------------- | ---------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`        | `string`               | yes      | The field's name in the submitted `FormData`. Given to the control; the control must not set its own.                                  |
+| `label`       | `string`               | yes      | The label text. It targets the control through the `id` the field gives it.                                                            |
+| `children`    | `ReactElement`         | yes      | The control: a native `input`/`textarea`, or a [`PlatformSelect`](/components/platform/shared/platform-select).                        |
+| `hint`        | `string`               | no       | Small help text under the control.                                                                                                     |
+| `messages`    | `PlatformFormMessages` | no       | Text per validity state (`valueMissing`, `tooLong`, `typeMismatch`…), merged over Spanish defaults. Only the matching one renders.     |
+| `serverError` | `string`               | no       | A failure the server reported for this field: rendered as its message and the field marked invalid until the user changes the control. |
+
+## Behaviour
+
+- Validation is the browser's (`required`, `maxLength`, `type`, `pattern`). The primitive listens to the `invalid` event, prevents the bubble, focuses the first invalid control and marks its field with `data-invalid`; the matching `Form.Message` renders. Changing the control clears it.
+- `serverError` uses `serverInvalid` on the field: the message shows at once, the control gets `aria-invalid`, and the first server-invalid control is focused.
+- A `PlatformSelect` inside a field submits through the hidden native select the primitive keeps. Give it a `defaultValue` when it is `required`: the hidden select is not a Radix control, so an empty required select would block the submit without a message.
+
+## Markup & styling
+
+Block `.platform-form`, the root being the `<form>`. Native controls are styled as direct children of the field (`.platform-form__field > input`), because Radix's `Control` renders the given element with no wrapper; a select brings its own look from `.platform-select`.
+
+**Elements:** `.platform-form__field`, `.platform-form__label`, `.platform-form__hint`, `.platform-form__message`
+
+**States:** `.platform-form__field[data-invalid]` turns the control's border red.
+
+**Tokens:** `--platform-accent`, `--platform-accent-soft`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/studies/studies-list/new-study.comp.tsx`:
+
+```tsx
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+
+<PlatformForm action={createStudy} onSubmit={() => dialogRef.current?.close()}>
+  <PlatformFormField name="name" label="Nombre" messages={{ valueMissing: "Ponle un nombre al estudio." }}>
+    <input type="text" maxLength={120} required autoFocus />
+  </PlatformFormField>
+  <PlatformFormField name="kindCode" label="Tipo">
+    <PlatformSelect options={options} defaultValue={options[0]?.value} required />
+  </PlatformFormField>
+</PlatformForm>;
+```
+
+## Related
+
+- [`PlatformSelect`](/components/platform/shared/platform-select), the select that goes inside a field.
+- [`FormField`](/components/platform/shared/form-field), the native wrapper the rest of the forms still use.
+- [`SubmitButton`](/components/platform/shared/submit-button) stays the submit: it reads the form status, whichever form.

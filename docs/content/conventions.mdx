@@ -15,6 +15,7 @@ These rules are enforced by review, tests (`proxy.test.ts`, `nav-items.test.ts`)
 
 ## Components
 
+- **Platform form controls are built on [Radix Primitives](https://www.radix-ui.com/primitives)** (the `radix-ui` package: unstyled, drawn with the project's BEM and tokens; never Radix Themes) through the shared pieces `PlatformForm`/`PlatformFormField` and `PlatformSelect` in `components/platform/shared/`. A new form uses them; forms still on `FormField` with native controls are migrated as they are touched. Dialogs stay native `<dialog>`, which is why the select's list is not portalled.
 - **Server Components by default.** `"use client"` goes only on the leaf that owns state or browser APIs (the game viewer, the board, the header dropdown, the upload widget…).
 - Images always go through `next/image`; never a raw `<img>`. Remote images are limited to `res.cloudinary.com` (`next.config.ts`), and `lib/remote-image.ts` guards user-typed URLs before they reach `next/image`.
 - Copy shown to users is **Spanish**, including URLs (`/estudios`, `/profesor/alumnos`). Dynamic segment names (`[courseId]`) stay in English because they are code identifiers and never appear in the address bar.
