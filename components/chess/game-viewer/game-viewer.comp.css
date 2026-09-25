@@ -201,15 +201,25 @@
     flex-direction: column;
     gap: 14px;
     min-width: 0;
+    /* The column's height is the board's, NEVER the notation's. An `auto` row
+       measures the tallest of its items, and this one — head, engine, the
+       whole move list — is taller than the board as soon as the game is long:
+       the row grew, the board dangled at the top and the list never scrolled.
+       `height: 0` takes the column out of the row's sizing, so the board alone
+       sets it; `min-height: 100%` then hands the column that whole row. That is
+       the cap the panel's comment below relies on. */
+    height: 0;
+    min-height: 100%;
   }
 
   /* The only box left in the viewer: the board sits loose and this sets it
      apart from it, which is what gives it meaning.
 
-     It fills its column, which measures what the board does: the card goes
-     down to it even when the game has two moves, leaving the button bar its
-     strip below. Before, it measured whatever the notation did and came up
-     short and dangling.
+     It fills its column, which measures what the board does (see the column's
+     `height: 0` above): the card goes down to it even when the game has two
+     moves, leaving the button bar its strip below, and stops there when the
+     game has eighty. Before, it measured whatever the notation did and came up
+     short and dangling, or ran far below the board.
 
      That also yields, for free, what used to be computed by hand: since the
      card's height is set by the grid and not by its content, switching on the
@@ -462,7 +472,12 @@
       grid-column: 2;
       grid-row: 1;
       min-width: 0;
-      /* Without this the notation would push the row instead of scrolling inside. */
+      /* Here the row is `1fr` of a fixed height, so the column stretches on its
+         own: the normal mode's `height: 0` is undone (with `min-height: 0` it
+         would collapse the column to nothing, and in the stacked layout below
+         the `auto` row would measure that zero). Without `min-height: 0` the
+         notation would push the row instead of scrolling inside. */
+      height: auto;
       min-height: 0;
     }
 
