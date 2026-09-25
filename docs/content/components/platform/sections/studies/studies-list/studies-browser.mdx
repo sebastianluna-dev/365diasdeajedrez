@@ -28,13 +28,16 @@ The body of "Mis estudios": a row of filter chips, a count, and the studies in t
 
 - `active` starts at "Todos". Chips are buttons with `aria-pressed`.
 - Each group renders only when it has matches; when neither does, an [`EmptyState`](/components/platform/shared/empty-state) names the filter ("Ningún estudio de tipo «…»").
+- **Entrance.** The two groups are keyed by the active filter, so changing it remounts them and every card plays its entrance again: a 260 ms fade with a short rise, staggered 35 ms per card through the `--studies-browser-index` custom property the component sets (the received group's indexes follow the own group's). Off under `prefers-reduced-motion`.
 - Nothing is fetched or written here.
 
 ## Markup & styling
 
 Block `.studies-browser` (63 lines).
 
-**Elements:** `.studies-browser__filters`, `.studies-browser__chip`, `.studies-browser__group`, `.studies-browser__group-title`, `.studies-browser__grid`
+**Elements:** `.studies-browser__filters`, `.studies-browser__chip`, `.studies-browser__group`, `.studies-browser__group-title`, `.studies-browser__grid`, `.studies-browser__item` (the animated wrapper of each card)
+
+**Keyframes:** `studies-browser-item-in`, at the top level because `@keyframes` cannot be nested.
 
 **Modifiers and states:** `.studies-browser__chip_state_active`
 
@@ -42,7 +45,7 @@ Block `.studies-browser` (63 lines).
 
 The chips keep one weight (600, the dashboard's period chips' one) in both states: the active one is told by its colour and its border, not by going bold, which widened it and shifted the row. Their resting grey is `--platform-text-subtle`, the lighter one, because the muted one read too dark at that weight.
 
-**Breakpoints:** `(max-width: 900px)` drops the grid to one column.
+**Breakpoints:** `(max-width: 900px)` drops the grid to one column; `(prefers-reduced-motion: reduce)` removes the entrance.
 
 ## Usage
 

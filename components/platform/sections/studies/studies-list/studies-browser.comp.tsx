@@ -1,12 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { type CSSProperties, useMemo, useState } from "react";
 import { EmptyState } from "@/components/platform/shared/empty-state.comp";
 import type { StudySummary } from "@/services/studies/studies.types";
 import { StudyCard } from "./study-card.comp";
 import "./studies-browser.comp.css";
 
 const ALL = "Todos";
+
+/** The card's place in the entrance: the stylesheet turns it into its delay. */
+type ItemStyle = CSSProperties & { "--studies-browser-index": number };
+
+const itemStyle = (index: number): ItemStyle => ({ "--studies-browser-index": index });
 
 interface StudiesBrowserProps {
   /** Those that are theirs: "Mis partidas", their tournaments and their studies. */
@@ -57,23 +62,35 @@ export function StudiesBrowser({ own, received }: StudiesBrowserProps) {
         />
       )}
 
+      {/* The groups are keyed by the active filter, so changing it remounts
+          them and the cards play their entrance again, one after another
+          (`--studies-browser-index` sets each one's delay). */}
       {ownShown.length > 0 && (
-        <section className="studies-browser__group">
+        <section key={`own-${active}`} className="studies-browser__group">
           <h2 className="studies-browser__group-title">Tus estudios</h2>
           <div className="studies-browser__grid">
-            {ownShown.map((study) => (
-              <StudyCard key={study.id} study={study} />
+            {ownShown.map((study, index) => (
+              <div key={study.id} className="studies-browser__item" style={itemStyle(index)}>
+                <StudyCard study={study} />
+              </div>
             ))}
           </div>
         </section>
       )}
 
       {receivedShown.length > 0 && (
-        <section className="studies-browser__group">
+        <section key={`received-${active}`} className="studies-browser__group">
           <h2 className="studies-browser__group-title">Material que has recibido</h2>
           <div className="studies-browser__grid">
-            {receivedShown.map((study) => (
-              <StudyCard key={study.id} study={study} />
+            {receivedShown.map((study, index) => (
+              <div
+                key={study.id}
+                className="studies-browser__item"
+                // The received group follows the own one, so its cards start after it.
+                style={itemStyle(ownShown.length + index)}
+              >
+                <StudyCard study={study} />
+              </div>
             ))}
           </div>
         </section>
