@@ -21,11 +21,11 @@
   --platform-surface-neutral: #f2efea;
   /* Warm white for fields and footers inside a white card. */
   --platform-surface-soft: #fcfbf9;
-  /* The only greys with no warmth in them, at the sunken surface's lightness:
-     for a quiet pill that must not read as tinted next to the orange. The
-     strong one is its hover. */
-  --platform-grey: #e8e8e8;
-  --platform-grey-strong: #dcdcdc;
+  /* The only greys with no warmth in them, barely off the white: for a quiet
+     pill that must not read as tinted next to the orange. The strong one is
+     its hover. */
+  --platform-grey: #f4f4f4;
+  --platform-grey-strong: #e8e8e8;
 
   /* Two line weights: the thin one separates zones, the strong one outlines controls. */
   --platform-border: #eae4dc;
