@@ -5,7 +5,7 @@ const iso = (date: Date | null) => date?.toISOString().slice(0, 10) ?? null;
 
 describe("statsDay", () => {
   it("es el día de estudio (México), guardado como esa fecha a medianoche UTC", () => {
-    // 21:00 del 9 de septiembre en México es ya el 10 en UTC.
+    // 21:00 on 9 September in Mexico is already the 10th in UTC.
     expect(statsDay(new Date("2026-09-10T03:00:00Z")).toISOString()).toBe("2026-09-09T00:00:00.000Z");
     expect(statsDay(new Date("2026-09-09T15:00:00Z")).toISOString()).toBe("2026-09-09T00:00:00.000Z");
   });
@@ -23,7 +23,7 @@ describe("rangeStart", () => {
   });
 
   it("la tarde del domingo en México sigue siendo la semana que acaba", () => {
-    // 22:00 del domingo 13 en México; en UTC ya es lunes 14.
+    // 22:00 on Sunday the 13th in Mexico; in UTC it is already Monday the 14th.
     expect(iso(rangeStart("week", new Date("2026-09-14T04:00:00Z")))).toBe("2026-09-07");
   });
 
