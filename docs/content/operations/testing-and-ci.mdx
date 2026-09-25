@@ -25,7 +25,7 @@ As of 2026-09-21 there are **53 test files and 418 tests**, all on pure modules:
 Conventions:
 
 - Tests are deterministic: dates come in as parameters or are built with local constructors; nothing reads the clock.
-- Anything that needs Prisma or a request is not unit-tested; instead the logic is extracted into a pure module (`*-rules.ts`, `*-transitions.ts`, `reorder.ts`) and that module is tested. Manual verification of panels is recorded in `todos.md`.
+- Anything that needs Prisma or a request is not unit-tested; instead the logic is extracted into a pure module (`*-rules.ts`, `*-transitions.ts`, `reorder.ts`) and that module is tested. Manual verification of panels is recorded in `TODOS.md`.
 - Component tests (`.test.tsx`) are possible with the current config but none exist yet.
 
 ```bash
@@ -39,7 +39,7 @@ npx vitest run lib/chess  # a folder
 
 - `npm run typecheck` — `next typegen && tsc --noEmit` (the route types in `.next/types` are generated first, which is what a fresh CI checkout lacks), strict, `noUnusedLocals`, `noUncheckedIndexedAccess`, target ES2022. `docs/` is excluded (it has its own `tsconfig.json`).
 - `npm run lint` — ESLint 9 flat config with `eslint-config-next` (core web vitals + TypeScript); ignores `.next`, `public` (design-kit scripts), the generated Prisma client, `coverage` and `docs`.
-- `npm run format:check` — Prettier 3, `printWidth: 120`. The repository has never been formatted, so this currently fails; `todos.md` T11 asks for a single formatting commit, after which the check should be added to CI.
+- `npm run format:check` — Prettier 3, `printWidth: 120`. The repository has never been formatted, so this currently fails; `TODOS.md` T11 asks for a single formatting commit, after which the check should be added to CI.
 
 ## Continuous integration
 

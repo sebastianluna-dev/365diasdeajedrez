@@ -1,8 +1,10 @@
 ---
-description: "How technical debt is tracked in IMPROVEMENTS.md and todos.md, and a snapshot of what is open."
+description: "How technical debt is tracked in IMPROVEMENTS.md and TODOS.md, and a snapshot of what is open."
 ---
 
 # Backlog (IMPROVEMENTS & todos)
+
+> Since 2026-09-24 `IMPROVEMENTS.md`, `TODOS.md` and `WARNINGS.md` live only in the local copy of the repository: they are gitignored and never pushed. The numbers below refer to entries in those local files.
 
 Two files in the repository root hold the backlog, and both are the source of truth. This page explains how they work and summarises what was open on 2026-09-21.
 
@@ -25,7 +27,7 @@ Prioritised technical debt and improvements. Every entry has a number, an **area
 - #48 — Study detail renders every game without pagination (the PGN is no longer loaded).
 - #52 — Payload draft preview is not wired.
 - #61 — Tests: some mappers and the timer hooks are untested (they need jsdom).
-- #62 — `noUncheckedIndexedAccess` is off (`todos.md` T16, ~176 errors to fix).
+- #62 — `noUncheckedIndexedAccess` is off (`TODOS.md` T16, ~176 errors to fix).
 - #63 — Restore drill never rehearsed.
 
 **Low**
@@ -34,7 +36,7 @@ Prioritised technical debt and improvements. Every entry has a number, an **area
 
 **Pending in production after the 2026-09-21 batch:** `npm run db:deploy` (migration `20260909120000_composite_indexes`) and, once deployed, `npm run stats:rebuild` (the daily buckets moved to the study day).
 
-## `todos.md`
+## `TODOS.md`
 
 Concrete, mechanical tasks with a full specification, meant to be executed without further design (by a junior developer or a cheaper model). Each task names the files, the expected change and the checks to run. Finished tasks stay in the file with what actually changed.
 

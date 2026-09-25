@@ -55,3 +55,8 @@ next-env.d.ts
 # storybook (build estática de `npm run storybook:build`)
 /storybook-static/
 *storybook.log
+
+# notas de trabajo: sólo en la copia local, nunca en el remoto
+IMPROVEMENTS.md
+TODOS.md
+WARNINGS.md
