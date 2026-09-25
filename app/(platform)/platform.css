@@ -115,6 +115,29 @@ html body.platform-theme[data-scroll-locked] {
   display: flex;
   flex-direction: column;
   gap: 28px;
+  /* The page takes the place of the segment's loading fallback in one frame:
+     a short fade and rise on mount keeps the swap from being a cut. It runs
+     on every mount, so it plays again when a soft navigation remounts the
+     page, which is also when the fallback shows. */
+  animation: platform-page-in 220ms ease-out both;
+}
+
+/* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */
+@keyframes platform-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .platform-page {
+    animation: none;
+  }
 }
 
 .platform-page__head {
