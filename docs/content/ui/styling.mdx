@@ -186,6 +186,7 @@ These are the only classes defined outside a component file, and they are meant 
 - **Focus.** `:focus-visible { outline: 2px solid var(--color-primary) }` on the public site; `.platform-theme :focus-visible` switches to `--platform-accent-ink` because the plain orange does not contrast on light. Never write `outline: none` without a replacement.
 - **Hover transitions.** Links, buttons, form controls, rows, articles and menu items animate `background-color`, `border-color`, `box-shadow`, `color` and `opacity` over `--transition-hover` (150 ms). The property list is explicit (`all` would animate layout changes). Under `prefers-reduced-motion: reduce` the transition is removed.
 - **Selection.** `::selection` on the platform is a 30 % orange.
+- **Scrollbar gutter.** `html { scrollbar-gutter: stable }` reserves the scrollbar's room whether or not the page scrolls, so a short page (a segment's loading fallback) and the long one that replaces it keep the same width and nothing centred with `margin: auto` — the platform's bar, the content — jumps sideways when the bar appears. Global because the public site centres the same way. With overlay scrollbars (macOS by default) the gutter is 0 and nothing changes; Safari ignores the property.
 
 ## Adding a stylesheet
 

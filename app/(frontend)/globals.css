@@ -64,6 +64,12 @@
 html {
   height: 100%;
   scroll-behavior: smooth;
+  /* The scrollbar's room is reserved whether or not the page scrolls: a short
+     page (a segment's loading fallback) and the long one that replaces it
+     keep the same width, so nothing centred with `margin: auto` — the
+     platform's bar, the content — jumps sideways when the bar appears. With
+     overlay scrollbars (macOS by default) the gutter is 0 and nothing changes. */
+  scrollbar-gutter: stable;
   line-height: 1.5;
   -webkit-text-size-adjust: 100%;
   tab-size: 4;
