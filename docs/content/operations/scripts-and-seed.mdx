@@ -56,7 +56,7 @@ Rebuilds `UserStatDaily` from `UserActivity` through `services/shared/daily-stat
 
 ## `scripts/make-board-sounds.ts` — `npm run sounds:make`
 
-Writes `public/sounds/move.wav` and `capture.wav` from a seeded noise generator and a one-pole low-pass filter: no third-party audio in the repository. Change the specs in the script and run it again; the output is byte-for-byte reproducible.
+Writes `public/sounds/move.wav` and `capture.wav` by modal synthesis: a seeded noise burst through a two-pole low-pass (the strike) rings a bank of two-pole resonators (the wood), each with its frequency, level and decay in the script's `SPECS`. No third-party audio in the repository. Change the specs and run it again; the output is byte-for-byte reproducible. The values were tuned against measurements of lichess' standard recordings, never their samples; [Stockfish, pieces & sounds](/chess/engine-and-assets) says which.
 
 ## `scripts/sync-pieces.ts` — `npm run pieces:sync`
 

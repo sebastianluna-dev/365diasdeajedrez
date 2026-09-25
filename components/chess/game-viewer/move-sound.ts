@@ -11,7 +11,7 @@
 export type MoveSoundKind = "move" | "capture";
 
 // Only two, synthesised by scripts/make-board-sounds.ts (ours, no licence to
-// carry). Check does not sound: it is a state of the position, not a gesture
+// carry: a strike over a bank of resonators, tuned to sound like wood). Check does not sound: it is a state of the position, not a gesture
 // on the board, and the two sounds are gestures.
 const SOURCES: Record<MoveSoundKind, string> = {
   move: "/sounds/move.wav",
