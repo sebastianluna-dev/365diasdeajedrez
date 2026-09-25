@@ -145,6 +145,11 @@
     color: var(--platform-text);
   }
 
+  /* Five games tall, the rest behind a scroll of its own: a study of eighty
+     games would push the game's record off the screen. Rows measure 58px
+     with 2px between them, plus the list's padding. `position: relative` is
+     for the script that scrolls the current game into view: it reads the
+     row's offset against the list. */
   & .game-aside__list {
     list-style: none;
     margin: 0;
@@ -152,6 +157,10 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
+    position: relative;
+    max-height: calc(5 * 58px + 4 * 2px + 16px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   & .game-aside__row {
