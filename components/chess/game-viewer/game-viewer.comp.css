@@ -85,6 +85,15 @@
     & .game-viewer__evaluation-fill {
       transition: none;
     }
+
+    & .game-viewer__options-menu {
+      animation: none;
+    }
+
+    & .game-viewer__options-menu.game-viewer__options-menu_state_closing {
+      animation: none;
+      opacity: 0;
+    }
   }
 
   & .game-viewer__board {
@@ -359,6 +368,15 @@
     border-radius: 10px;
     background: var(--platform-surface);
     box-shadow: var(--platform-shadow-card);
+    /* It unfolds upwards from the button and folds back into it. */
+    transform-origin: bottom right;
+    animation: game-viewer-menu-in 160ms ease-out;
+  }
+
+  /* Closing: kept mounted while this runs (`useLingering`), unpressable. */
+  & .game-viewer__options-menu.game-viewer__options-menu_state_closing {
+    animation: game-viewer-menu-out 120ms ease-in forwards;
+    pointer-events: none;
   }
 
   & .game-viewer__options-item {
@@ -536,4 +554,27 @@
   background: var(--platform-danger-soft);
   color: var(--platform-danger);
   font-size: 15.5px;
+}
+
+/* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */
+@keyframes game-viewer-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes game-viewer-menu-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(4px) scale(0.96);
+  }
 }

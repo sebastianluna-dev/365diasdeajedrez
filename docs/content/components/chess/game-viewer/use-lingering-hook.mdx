@@ -1,0 +1,52 @@
+---
+description: "Keeps a closed popup's value for 120 ms so the host renders it once more with a closing modifier and its exit animation plays; reopening during the exit cancels it."
+---
+
+# `useLingering`
+
+Exports `useLingering` and `POPUP_EXIT_MS`.
+
+|            |                                                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/chess/game-viewer/use-lingering.hook.ts`                                                                                                         |
+| Kind       | Hook (client)                                                                                                                                                |
+| Stylesheet | none                                                                                                                                                         |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer), for its options menu and for [`MoveContextMenu`](/components/chess/game-viewer/move-context-menu) |
+
+## Purpose
+
+A popup that is rendered conditionally (`open && <Menu />`) disappears the instant its state turns false, so no exit animation can play. A native `<dialog>` does not have this problem (`.platform-dialog` transitions `display` with `allow-discrete`), and a Radix list neither (the primitive waits for the `data-state="closed"` animation). For a plain conditional render, this hook is the missing piece: it hands the host what to render, which is the popup's value while open, the **last** value with `closing` set for `POPUP_EXIT_MS` (120 ms, matching the stylesheets) once closed, and `null` after that.
+
+## Signature
+
+```ts
+function useLingering<T>(value: T | null, exitMs?: number): { value: T | null; closing: boolean };
+```
+
+`value` is whatever the host builds the popup from (the context menu's target, or `true` for a menu with no data); `null` means closed.
+
+## Behaviour
+
+- Opening replaces the shown value during render, not in an effect, so no frame paints the previous state.
+- `closing` is derived, not stored: it is exactly "closed by the host, still shown here". While it is true an effect holds a timer that drops the shown value; reopening cancels it.
+- Under `prefers-reduced-motion` the stylesheets show nothing during those milliseconds, which reads as an immediate close.
+- The host's handlers keep reading its own state (`menu`), not the lingering value: an action fired during the exit must not act on a menu that is already closed.
+
+## Usage
+
+From `components/chess/game-viewer/game-viewer.comp.tsx`:
+
+```tsx
+const lingeringMenu = useLingering(menu);
+
+{
+  lingeringMenu.value && (
+    <MoveContextMenu target={lingeringMenu.value} closing={lingeringMenu.closing} onClose={() => setMenu(null)} />
+  );
+}
+```
+
+## Related
+
+- [`MoveContextMenu`](/components/chess/game-viewer/move-context-menu), which turns `closing` into `.move-context-menu_state_closing`.
+- [Styling](/ui/styling) for `.platform-dialog`, the dialogs' own entry and exit.

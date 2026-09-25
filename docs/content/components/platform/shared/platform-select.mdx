@@ -38,6 +38,7 @@ A native `<select>` cannot be drawn: its list is the browser's. This one is Radi
 - The list is **not portalled**: it renders next to the trigger, positioned against the viewport (`position="popper"`, fixed strategy). A portal to `<body>` would be inert under a modal `<dialog>`'s top layer, and the platform's dialogs are native.
 - `--radix-select-trigger-width` and `--radix-select-content-available-height` are set by the primitive from the trigger's box; the stylesheet gives the list the trigger's width and caps its height to the viewport.
 - The chosen item carries the check; the highlighted one the accent wash. The chevron points down at rest and up while open.
+- The list unfolds from the trigger's edge (`--radix-select-content-transform-origin`, 160 ms) and folds back (120 ms). The exit is possible because the primitive keeps the content mounted while an animation on `[data-state="closed"]` runs. `prefers-reduced-motion` removes both.
 
 ## Markup & styling
 
@@ -45,11 +46,13 @@ Block `.platform-select`, a wrapper `<div>` so the trigger and the list share on
 
 **Elements:** `.platform-select__trigger`, `.platform-select__icon`, `.platform-select__chevron`, `.platform-select__content`, `.platform-select__viewport`, `.platform-select__item`, `.platform-select__indicator`, `.platform-select__check`
 
-**States (data attributes set by the primitive):** `[data-placeholder]`, `[data-disabled]`, `[data-state="open"]` on the trigger; `[data-highlighted]`, `[data-state="checked"]`, `[data-disabled]` on an item.
+**States (data attributes set by the primitive):** `[data-placeholder]`, `[data-disabled]`, `[data-state="open"]` on the trigger; `[data-state="open"]`/`[data-state="closed"]` on the content, which drive its animations; `[data-highlighted]`, `[data-state="checked"]`, `[data-disabled]` on an item.
+
+**Keyframes:** `platform-select-in`, `platform-select-out`, at the top level because `@keyframes` cannot be nested.
 
 **Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
 
-No media queries.
+**Breakpoints:** `(prefers-reduced-motion: reduce)` removes the animations.
 
 ## Usage
 
