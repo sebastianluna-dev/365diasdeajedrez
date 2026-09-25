@@ -30,12 +30,6 @@
     font-weight: 700;
   }
 
-  & .studies-browser__count {
-    margin-left: auto;
-    font-size: 14px;
-    color: var(--platform-text-subtle);
-  }
-
   & .studies-browser__group {
     display: flex;
     flex-direction: column;
