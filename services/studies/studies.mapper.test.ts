@@ -141,14 +141,20 @@ describe("mapStudySummary", () => {
   it("lista las primeras partidas por su título o por sus jugadores", () => {
     const row = summary({
       games: [
-        { title: "La Inmortal", white: "Anderssen", black: "Kieseritzky" },
-        { title: null, white: "Luna, Sebastián", black: "Cervantes, Andrea" },
+        { id: "g1", title: "La Inmortal", white: "Anderssen", black: "Kieseritzky" },
+        { id: "g2", title: null, white: "Luna, Sebastián", black: "Cervantes, Andrea" },
       ],
     });
     expect(mapStudySummary(row, "owner", 12).previewGames).toEqual([
       "La Inmortal",
       "Luna, Sebastián – Cervantes, Andrea",
     ]);
+  });
+
+  it("enlaza a la primera partida, y al estudio sólo cuando no tiene ninguna", () => {
+    const withGames = summary({ games: [{ id: "g1", title: null, white: "A", black: "B" }] });
+    expect(mapStudySummary(withGames, "owner", 1).href).toBe("/estudios/study-1/partidas/g1");
+    expect(mapStudySummary(summary(), "owner", 0).href).toBe("/estudios/study-1");
   });
 
   it("el total viene del servicio y las citadas de la propia fila", () => {

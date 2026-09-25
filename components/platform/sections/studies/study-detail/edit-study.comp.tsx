@@ -21,16 +21,34 @@ interface EditStudyProps {
    * who received it looking at something that is no longer a collection.
    */
   canChangeKind: boolean;
+  /**
+   * `regular` is the boxed button of the empty study page; `inline` is one more
+   * word in the aside's row of study actions, next to "Compartir" and "Borrar".
+   */
+  size?: "regular" | "inline";
 }
 
-export function EditStudy({ id, name, description, kindCode, kindLabel, kinds, canChangeKind }: EditStudyProps) {
+export function EditStudy({
+  id,
+  name,
+  description,
+  kindCode,
+  kindLabel,
+  kinds,
+  canChangeKind,
+  size = "regular",
+}: EditStudyProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   const selected = kinds.some((kind) => kind.code === kindCode) ? kindCode : kinds[0]?.code;
 
   return (
     <div className="edit-study">
-      <button type="button" className="edit-study__open" onClick={() => dialogRef.current?.showModal()}>
+      <button
+        type="button"
+        className={`edit-study__open edit-study__open_size_${size}`}
+        onClick={() => dialogRef.current?.showModal()}
+      >
         Editar datos
       </button>
 

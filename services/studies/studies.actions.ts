@@ -28,6 +28,7 @@ import { z } from "zod";
 import { formOptionalText, formText, formTextIfPresent, parseForm, readIds } from "@/services/shared/form-schema";
 import { parseImportedGames } from "@/services/shared/pgn-import";
 import { withErrorParam } from "@/services/shared/safe-return-to";
+import { studyDetailInclude } from "./studies.mapper";
 import { canChangeKindTo, canCreateKind, studyPermissionsOf } from "./study-rules";
 
 // Server actions are reachable by direct POST: the user is ALWAYS resolved in
@@ -682,7 +683,14 @@ export async function deleteStudyGame(studyId: string, gameId: string, formData:
 
   revalidatePath(platformRoutes.studies);
   revalidatePath(platformRoutes.studyDetail(studyId));
-  redirect(platformRoutes.studyDetail(studyId));
+  // On to the first game that is left, looked up here so as not to bounce
+  // through the study's URL; with none left, the study's empty page.
+  const next = await db.game.findFirst({
+    where: { databaseId: studyId },
+    orderBy: studyDetailInclude.games.orderBy,
+    select: { id: true },
+  });
+  redirect(next ? platformRoutes.gameDetail(studyId, next.id) : platformRoutes.studyDetail(studyId));
 }
 
 /**

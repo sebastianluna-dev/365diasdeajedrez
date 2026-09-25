@@ -1,13 +1,41 @@
+"use client";
+
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { type ReactNode, useState, useTransition } from "react";
+import { reorderStudyGames } from "@/services/studies/studies.actions";
 import type { GameView, StudyGameItem } from "@/services/studies/studies.types";
 import { DeleteGame } from "./delete-game.comp";
 import "./game-aside.comp.css";
+
+/** Where the list stands when the study spans more than one page of games. */
+export interface GameAsidePages {
+  page: number;
+  pageCount: number;
+  previousHref?: string;
+  nextHref?: string;
+}
 
 interface GameAsideProps {
   game: GameView;
   /** The other games of the study, to jump between them without going back. */
   siblings: StudyGameItem[];
+  /** The study's name, heading the list: the study has no page of its own. */
+  studyName: string;
+  /** The study's total, which is not the page's length when there are pages. */
+  gameCount: number;
+  /**
+   * "Editar datos" and "Borrar" of the study, for its owner. They arrive as a
+   * node, like the modals, so the aside does not carry the kinds catalog.
+   */
+  studyTools?: ReactNode;
+  /**
+   * Whether the list can be dragged into a new order: the owner, with the
+   * whole study in hand (one page). Reordering a page would leave the games
+   * of the other pages with the old order mixed among the new one.
+   */
+  canReorder?: boolean;
+  /** Present when the study spans more than one page of games. */
+  pages?: GameAsidePages;
   /**
    * The new-game modal, mounted by whoever has its data. It arrives as a node
    * and not as props so as not to drag the results catalog and the class games
@@ -16,11 +44,22 @@ interface GameAsideProps {
   newGame?: ReactNode;
   /** "Datos de la partida" modal; absent when writing is not allowed. */
   editGame?: ReactNode;
+  /** The sharing card of a collection, for its owner. */
+  share?: ReactNode;
 }
 
 /** The second line of each game: who played it. */
 function gameMeta(game: StudyGameItem): string {
   return `${game.white} — ${game.black}`;
+}
+
+/** Returns the list with the item at `from` placed at `to`. */
+function moved<T>(items: T[], from: number, to: number): T[] {
+  const next = [...items];
+  const [item] = next.splice(from, 1);
+  if (item === undefined) return items;
+  next.splice(to, 0, item);
+  return next;
 }
 
 /**
@@ -39,23 +78,109 @@ function metaCells(game: GameView): { key: string; value: string }[] {
   ];
 }
 
-export function GameAside({ game, siblings, newGame, editGame }: GameAsideProps) {
+export function GameAside({
+  game,
+  siblings,
+  studyName,
+  gameCount,
+  studyTools,
+  canReorder = false,
+  pages,
+  newGame,
+  editGame,
+  share,
+}: GameAsideProps) {
   const cells = metaCells(game);
+
+  // The order lives here while it is being dragged; the server gets the whole
+  // list once the row is dropped. When the server revalidates, new games arrive
+  // through props and the state is adjusted during render — not in an effect —
+  // so as not to paint once with the old list before correcting it.
+  const [items, setItems] = useState(siblings);
+  const [baseline, setBaseline] = useState(siblings);
+  if (siblings !== baseline) {
+    setBaseline(siblings);
+    setItems(siblings);
+  }
+  const [dragging, setDragging] = useState<number | null>(null);
+  const [, startTransition] = useTransition();
+
+  const move = (from: number, to: number) => {
+    if (to < 0 || to >= items.length || from === to) return;
+    const next = moved(items, from, to);
+    setItems(next);
+    startTransition(() => {
+      void reorderStudyGames(
+        game.studyId,
+        next.map((item) => item.id),
+      );
+    });
+  };
 
   return (
     <aside className="game-aside">
       <section className="game-aside__card game-aside__card_variant_list">
-        <div className="game-aside__card-head">
-          <p className="game-aside__label">Partidas del estudio</p>
-          <span className="game-aside__count">{siblings.length}</span>
+        {/* The study heads its list: it has no page of its own, so this is
+            where it is named and, for its owner, edited or deleted. */}
+        <div className="game-aside__study">
+          <div className="game-aside__card-head">
+            <h2 className="game-aside__study-name">{studyName}</h2>
+            <span className="game-aside__count">{gameCount}</span>
+          </div>
+          {studyTools && <div className="game-aside__study-tools">{studyTools}</div>}
         </div>
 
         <ul className="game-aside__list">
-          {siblings.map((sibling) => {
+          {items.map((sibling, index) => {
             const meta = gameMeta(sibling);
 
             return (
-              <li key={sibling.id}>
+              <li
+                key={sibling.id}
+                className={`game-aside__row${dragging === index ? " game-aside__row_state_dragging" : ""}`}
+                draggable={canReorder || undefined}
+                onDragStart={(event) => {
+                  if (!canReorder) return;
+                  // The row is what moves, not the link's URL the browser would drag by default.
+                  event.dataTransfer.effectAllowed = "move";
+                  event.dataTransfer.setData("text/plain", sibling.id);
+                  setDragging(index);
+                }}
+                onDragEnd={() => setDragging(null)}
+                onDragOver={(event) => {
+                  if (!canReorder || dragging === null || dragging === index) return;
+                  // Without this the browser does not consider the row a valid drop target.
+                  event.preventDefault();
+                }}
+                onDrop={(event) => {
+                  if (!canReorder || dragging === null) return;
+                  event.preventDefault();
+                  move(dragging, index);
+                  setDragging(null);
+                }}
+              >
+                {/* The grip is a <button> and not a decoration because dragging
+                    alone leaves out whoever navigates with the keyboard: with
+                    the arrows the row moves just the same. */}
+                {canReorder && (
+                  <button
+                    type="button"
+                    className="game-aside__handle"
+                    aria-label={`Mover «${sibling.title ?? sibling.label}». Usa las flechas arriba y abajo para cambiarla de sitio.`}
+                    onKeyDown={(event) => {
+                      if (event.key === "ArrowUp") {
+                        event.preventDefault();
+                        move(index, index - 1);
+                      } else if (event.key === "ArrowDown") {
+                        event.preventDefault();
+                        move(index, index + 1);
+                      }
+                    }}
+                  >
+                    <span aria-hidden="true">⠿</span>
+                  </button>
+                )}
+
                 <Link
                   href={sibling.href}
                   aria-current={sibling.id === game.id ? "page" : undefined}
@@ -78,6 +203,28 @@ export function GameAside({ game, siblings, newGame, editGame }: GameAsideProps)
             );
           })}
         </ul>
+
+        {pages && (
+          <nav className="game-aside__pages" aria-label="Páginas de partidas">
+            {pages.previousHref ? (
+              <Link href={pages.previousHref} className="game-aside__page-link">
+                ← Anteriores
+              </Link>
+            ) : (
+              <span className="game-aside__page-link game-aside__page-link_state_disabled">← Anteriores</span>
+            )}
+            <span className="game-aside__page-status">
+              Página {pages.page} de {pages.pageCount}
+            </span>
+            {pages.nextHref ? (
+              <Link href={pages.nextHref} className="game-aside__page-link">
+                Siguientes →
+              </Link>
+            ) : (
+              <span className="game-aside__page-link game-aside__page-link_state_disabled">Siguientes →</span>
+            )}
+          </nav>
+        )}
 
         {newGame && <div className="game-aside__new">{newGame}</div>}
       </section>
@@ -120,6 +267,9 @@ export function GameAside({ game, siblings, newGame, editGame }: GameAsideProps)
           )}
         </div>
       </section>
+
+      {/* Who a collection reaches: a card of its own, for the owner only. */}
+      {share}
     </aside>
   );
 }

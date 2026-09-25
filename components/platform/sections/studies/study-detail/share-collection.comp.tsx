@@ -9,6 +9,12 @@ interface ShareCollectionProps {
   shares: StudyShareItem[];
   /** Students with an active assignment to the teacher who hands it out. */
   students: StudentOption[];
+  /**
+   * `panel` is the wide box of the empty study page; `compact` is a card of
+   * the game page's aside, where each student takes two lines and the form
+   * stacks, because there is no width for a row.
+   */
+  layout?: "panel" | "compact";
 }
 
 /**
@@ -22,14 +28,14 @@ interface ShareCollectionProps {
  * share is a row that exists or does not, so there is no intermediate state
  * that deserves a client component.
  */
-export function ShareCollection({ studyId, shares, students }: ShareCollectionProps) {
+export function ShareCollection({ studyId, shares, students, layout = "panel" }: ShareCollectionProps) {
   const sharedIds = new Set(shares.map((share) => share.userId));
   // Handing it to someone who already has it does nothing (the action is
   // idempotent), but offering it confuses: it looks like it can be given twice.
   const candidates = students.filter((student) => !sharedIds.has(student.id));
 
   return (
-    <section className="share-collection">
+    <section className={`share-collection share-collection_layout_${layout}`}>
       <header className="share-collection__head">
         <h2 className="share-collection__title">Alumnos con esta colección</h2>
         <p className="share-collection__hint">

@@ -4,14 +4,14 @@ description: "The 'Nueva partida' dialog with four ways in: paste a PGN, start f
 
 # `NewGame`
 
-|            |                                                                                                                                                                            |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/study-detail/new-game.comp.tsx`                                                                                                      |
-| Kind       | Client Component                                                                                                                                                           |
-| Stylesheet | `new-game.comp.css` → block `.new-game`                                                                                                                                    |
-| Used by    | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section), `/estudios/[studyId]/partidas/[gameId]` (passed into the aside as a node) |
-| Writes     | `importPgnGames()`, `createStudyGame()`, `copyClassGamesToStudy()` · `services/studies/studies.actions.ts`                                                                 |
-| Uses       | `StudyKindOption`, `ClassGameItem` from `services/studies/studies.types`                                                                                                   |
+|            |                                                                                                                                                                                              |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/study-detail/new-game.comp.tsx`                                                                                                                        |
+| Kind       | Client Component                                                                                                                                                                             |
+| Stylesheet | `new-game.comp.css` → block `.new-game`                                                                                                                                                      |
+| Used by    | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (the empty study), `/estudios/[studyId]/partidas/[gameId]` (passed into the aside as a node) |
+| Writes     | `importPgnGames()`, `createStudyGame()`, `copyClassGamesToStudy()` · `services/studies/studies.actions.ts`                                                                                   |
+| Uses       | `StudyKindOption`, `ClassGameItem` from `services/studies/studies.types`                                                                                                                     |
 
 ## Purpose
 
@@ -36,7 +36,7 @@ Adding a game to a study, from wherever the student has it. Four tabs, each a fo
 ## Behaviour
 
 - Native `<dialog>`; `tab` and the `picked` ids are local state, reset on close.
-- The FEN form carries a hidden `origin="detail"` so a badly written FEN bounces back **here** (`?error=fen` on the study page) and not to another screen.
+- The FEN form carries a hidden `origin="detail"` so a badly written FEN bounces back **here** (`?error=fen` on the study's URL, which forwards it to the first game or renders the empty study) and not to another screen.
 - The class tab is not a form: the footer button is `type="button"` and calls the action inside a transition with the picked ids, then closes.
 - The internal `Footer` renders the note, cancel and the confirm button; with `onConfirm` it becomes a plain button so it does not submit an enclosing form.
 - Tabs use `role="tablist"`/`role="tab"` with `aria-selected`.

@@ -15,6 +15,20 @@
     background: var(--platform-bg);
   }
 
+  /* In the aside it is not a box: one of the words in the study's row of
+     actions, like "Borrar" at the foot of the record. */
+  & .edit-study__open.edit-study__open_size_inline {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  & .edit-study__open.edit-study__open_size_inline:hover {
+    color: var(--platform-accent-ink);
+  }
+
   & .edit-study__dialog {
     width: min(460px, calc(100vw - 32px));
   }

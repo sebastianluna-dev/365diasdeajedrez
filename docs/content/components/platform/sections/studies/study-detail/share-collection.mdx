@@ -4,14 +4,14 @@ description: "The owner's panel of a collection: who already has it, with a 'Qui
 
 # `ShareCollection`
 
-|            |                                                                                                                                          |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/study-detail/share-collection.comp.tsx`                                                            |
-| Kind       | Server Component                                                                                                                         |
-| Stylesheet | `share-collection.comp.css` → block `.share-collection`                                                                                  |
-| Used by    | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (only when the viewer owns a collection) |
-| Writes     | `shareStudyWithStudent()`, `unshareStudyWithStudent()` · `services/studies/studies.actions.ts`                                           |
-| Uses       | `StudyShareItem`, `StudentOption` from `services/studies/studies.types`                                                                  |
+|            |                                                                                                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/study-detail/share-collection.comp.tsx`                                                                                                                                                    |
+| Kind       | Server Component                                                                                                                                                                                                                 |
+| Stylesheet | `share-collection.comp.css` → block `.share-collection`                                                                                                                                                                          |
+| Used by    | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (panel) and `/estudios/[studyId]/partidas/[gameId]` (compact, as the aside's third card); only when the viewer owns a collection |
+| Writes     | `shareStudyWithStudent()`, `unshareStudyWithStudent()` · `services/studies/studies.actions.ts`                                                                                                                                   |
+| Uses       | `StudyShareItem`, `StudentOption` from `services/studies/studies.types`                                                                                                                                                          |
 
 ## Purpose
 
@@ -21,11 +21,12 @@ A share is a row that exists or does not, so there is no intermediate state wort
 
 ## Props
 
-| Prop       | Type               | Required | Meaning                                                              |
-| ---------- | ------------------ | -------- | -------------------------------------------------------------------- |
-| `studyId`  | `string`           | yes      | Bound into both actions.                                             |
-| `shares`   | `StudyShareItem[]` | yes      | Who already has it: `{ userId, displayName, email, sharedAtLabel }`. |
-| `students` | `StudentOption[]`  | yes      | Students with an active assignment to the teacher.                   |
+| Prop       | Type                   | Required               | Meaning                                                                                                                                                    |
+| ---------- | ---------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `studyId`  | `string`               | yes                    | Bound into both actions.                                                                                                                                   |
+| `shares`   | `StudyShareItem[]`     | yes                    | Who already has it: `{ userId, displayName, email, sharedAtLabel }`.                                                                                       |
+| `students` | `StudentOption[]`      | yes                    | Students with an active assignment to the teacher.                                                                                                         |
+| `layout`   | `"panel" \| "compact"` | no · default `"panel"` | `panel` is the wide box of the empty study page; `compact` the aside's card: no border, the card's shadow, each student on two lines and the form stacked. |
 
 ## Behaviour
 
@@ -35,11 +36,11 @@ A share is a row that exists or does not, so there is no intermediate state wort
 
 ## Markup & styling
 
-Block `.share-collection` (140 lines).
+Block `.share-collection` (184 lines).
 
 **Elements:** `.share-collection__head`, `.share-collection__title`, `.share-collection__hint`, `.share-collection__list`, `.share-collection__item`, `.share-collection__student`, `.share-collection__name`, `.share-collection__email`, `.share-collection__date`, `.share-collection__remove`, `.share-collection__empty`, `.share-collection__form`, `.share-collection__field`, `.share-collection__label`, `.share-collection__select`
 
-No modifiers.
+**Modifiers:** `.share-collection_layout_panel`, `.share-collection_layout_compact`
 
 **Other classes it renders:** `.platform-button`.
 

@@ -140,6 +140,25 @@ export async function getStudyById(studyId: string, requestedPage = 1): Promise<
 }
 
 /**
+ * The page of `getStudyById` the game falls on, so the game page's aside can
+ * list the games around the current one and not always the first hundred. It
+ * walks the ids in the study's order — a few hundred at most, no PGN — and
+ * answers 1 for a game it cannot find, which the caller has already turned
+ * into a 404 anyway.
+ */
+export async function getStudyPageOfGame(studyId: string, gameId: string): Promise<number> {
+  const db = getPlatformDb();
+  const where = await getVisibleStudiesWhere();
+  const ids = await db.game.findMany({
+    where: { database: { AND: [{ id: studyId }, where] } },
+    orderBy: studyDetailInclude.games.orderBy,
+    select: { id: true },
+  });
+  const index = ids.findIndex((game) => game.id === gameId);
+  return index < 0 ? 1 : Math.floor(index / STUDY_GAMES_PAGE_SIZE) + 1;
+}
+
+/**
  * Students this teacher can share a collection with: those with an ACTIVE
  * assignment to them, the same criterion as the rest of their panel.
  *
