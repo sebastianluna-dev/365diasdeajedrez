@@ -10,12 +10,13 @@
 
 export type MoveSoundKind = "move" | "capture";
 
-// Only two, synthesised by scripts/make-board-sounds.ts (ours, no licence to
-// carry: a strike over a bank of resonators, tuned to sound like wood). Check does not sound: it is a state of the position, not a gesture
-// on the board, and the two sounds are gestures.
+// Only two, lichess's "standard" Move and Capture (their licence status is
+// recorded in the local WARNINGS.md; `npm run sounds:make` is the way out).
+// Check does not sound: it is a state of the position, not a gesture on the
+// board, and the two sounds are gestures.
 const SOURCES: Record<MoveSoundKind, string> = {
-  move: "/sounds/move.wav",
-  capture: "/sounds/capture.wav",
+  move: "/sounds/move.mp3",
+  capture: "/sounds/capture.mp3",
 };
 
 const cache = new Map<MoveSoundKind, HTMLAudioElement>();
