@@ -38,7 +38,9 @@ Block `.studies-browser` (63 lines).
 
 **Modifiers and states:** `.studies-browser__chip_state_active`
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-subtle`
+
+The chips keep one weight (600, the dashboard's period chips' one) in both states: the active one is told by its colour and its border, not by going bold, which widened it and shifted the row. Their resting grey is `--platform-text-subtle`, the lighter one, because the muted one read too dark at that weight.
 
 **Breakpoints:** `(max-width: 900px)` drops the grid to one column.
 

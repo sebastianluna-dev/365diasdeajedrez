@@ -15,10 +15,14 @@
     border: 1px solid var(--platform-border);
     border-radius: 1000px;
     background: var(--platform-surface);
-    color: var(--platform-text-muted);
+    /* The lighter grey: with the heavier weight the muted one read too dark. */
+    color: var(--platform-text-subtle);
     font-family: inherit;
     font-size: 14px;
-    font-weight: 500;
+    /* One weight in both states, the dashboard's period chips' one: the
+       active chip is told by its colour and its border, not by going bold,
+       which widened it and shifted the row. */
+    font-weight: 600;
     cursor: pointer;
     white-space: nowrap;
   }
@@ -27,7 +31,6 @@
     border-color: var(--platform-accent);
     background: var(--platform-accent-wash);
     color: var(--platform-accent-ink);
-    font-weight: 700;
   }
 
   & .studies-browser__group {
