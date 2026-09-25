@@ -30,6 +30,7 @@ Creating a study is three fields, so it lives in a modal on the list page rather
 
 - The form is a `PlatformForm` with `action={createStudy}` and `autoComplete="off"`: a head (dark tile with the white knight, title, subtitle, close button), `name` (required, max 120, autofocus, controlled so the submit can watch it, with its own `valueMissing` text), `description` (a textarea, max 500, marked "Opcional") and `kindCode`, a `PlatformChoiceCards` inside a `PlatformFormGroup` over `kinds` with the first one chosen. Each card's description and piece come from `constants/platform/study-kind-cards.const.ts`; a kind missing there renders with its label alone. A footer band carries "Podrás cambiarlo todo después." and the buttons.
 - **Crear estudio** stays disabled until the name has a character that is not a space. It was the first form moved to the Radix pieces.
+- The dialog fades in with a short rise and fades out the same way, in CSS alone: `@starting-style` gives the entry its starting values and `transition-behavior: allow-discrete` on `display` and `overlay` keeps it visible, and in the top layer, until the exit is over. Its rest state carries no transform, so nothing inside is ever positioned against the dialog instead of the viewport. Browsers without `overlay` (Firefox) cut the exit short but lose nothing else.
 - Every opening remounts the form (`key` bumped in `NewStudy`), so it never opens with what was typed the last time.
 - `onSubmit` closes the dialog. The browser validates `required` before the submit event fires (the form primitive only replaces the bubble with the field's message), so the dialog does not close with the form half filled.
 - The action creates the study and redirects to it; the dialog is unmounted with the page.
@@ -46,7 +47,7 @@ Block `.new-study`: the dialog's width and rounding, the head, the body's spacin
 
 **Tokens:** `--platform-bg`, `--platform-border`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
-No media queries; the shared dialog frame handles narrow screens.
+**Breakpoints:** `(prefers-reduced-motion: reduce)` removes the transitions. The shared dialog frame handles narrow screens.
 
 ## Usage
 
