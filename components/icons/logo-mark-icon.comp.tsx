@@ -3,8 +3,8 @@ interface LogoMarkIconProps {
 }
 
 /**
- * The two squares that close the wordmark (`components/site/shared/logo.comp.tsx`,
- * `.logo__marks`): the top-left and bottom-right of a 2×2 board, in the same
+ * The two squares that close the wordmark (`logo-wordmark-icon.comp.tsx`, its
+ * marks group): the top-left and bottom-right of a 2×2 board, in the same
  * proportion, on their own so the platform can use the brand's mark without
  * the word.
  */

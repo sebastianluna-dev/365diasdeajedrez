@@ -4,16 +4,16 @@ description: "The platform's chassis: top bar with the wordmark, the role's navi
 
 # `PlatformShell`
 
-|            |                                                                                                                   |
-| ---------- | ----------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/shell/platform-shell.section.tsx`                                                   |
-| Kind       | Server Component (async)                                                                                          |
-| Stylesheet | `platform-shell.section.css` → block `.platform-shell`                                                            |
-| Used by    | `app/(platform)/layout.tsx`                                                                                       |
-| Composes   | [`PlatformNav`](/components/platform/sections/shell/platform-nav)                                                 |
-| Reads      | `getSessionUser()` · `lib/platform-auth/current-user.ts`<br />`getSessionRoles()` · `lib/platform-auth/roles.ts`  |
-| Writes     | `logoutAction()` · `services/auth/auth.actions.ts`                                                                |
-| Uses       | `buildPlatformNavGroups` from `constants/platform/nav-items.const`<br />`homeRouteFor` from `lib/platform-routes` |
+|            |                                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/shell/platform-shell.section.tsx`                                                                            |
+| Kind       | Server Component (async)                                                                                                                   |
+| Stylesheet | `platform-shell.section.css` → block `.platform-shell`                                                                                     |
+| Used by    | `app/(platform)/layout.tsx`                                                                                                                |
+| Composes   | [`PlatformNav`](/components/platform/sections/shell/platform-nav)<br />`LogoWordmarkIcon` · `components/icons/logo-wordmark-icon.comp.tsx` |
+| Reads      | `getSessionUser()` · `lib/platform-auth/current-user.ts`<br />`getSessionRoles()` · `lib/platform-auth/roles.ts`                           |
+| Writes     | `logoutAction()` · `services/auth/auth.actions.ts`                                                                                         |
+| Uses       | `buildPlatformNavGroups` from `constants/platform/nav-items.const`<br />`homeRouteFor` from `lib/platform-routes`                          |
 
 ## Purpose
 
@@ -30,19 +30,19 @@ It reads the session **only to show** who is logged in and which menu they get. 
 ## Behaviour
 
 - `getSessionUser()` and `getSessionRoles()` run in parallel. `buildPlatformNavGroups(roles)` returns exactly one group: staff, teacher or student; the menu is exclusive by role.
-- The wordmark links to `homeRouteFor(roles)`, the role's home rather than the student dashboard, because with the exclusive menu that page is no longer in a teacher's or staff's menu.
+- The wordmark is the same inline SVG the public site draws ([`LogoWordmarkIcon`](/components/site/shared/logo#logowordmarkicon)), `aria-hidden` inside a link whose accessible name is `LOGO_LABEL`. It links to `homeRouteFor(roles)`, the role's home rather than the student dashboard, because with the exclusive menu that page is no longer in a teacher's or staff's menu.
 - The user block shows the display name, a link to the public site and "Salir", which is a `<form action={logoutAction}>` with a submit button so it works without JavaScript and shares the line with the site link. The avatar shows the initials of the first two words of the name (`initialsOf`), `aria-hidden`.
 - `<main id="contenido">` is the target of the layout's skip link.
 
 ## Markup & styling
 
-Block `.platform-shell` (138 lines).
+Block `.platform-shell` (153 lines).
 
-**Elements:** `.platform-shell__bar`, `.platform-shell__bar-inner`, `.platform-shell__logo`, `.platform-shell__logo-accent`, `.platform-shell__user`, `.platform-shell__user-text`, `.platform-shell__user-name`, `.platform-shell__user-links`, `.platform-shell__user-link`, `.platform-shell__avatar`, `.platform-shell__content`
+**Elements:** `.platform-shell__bar`, `.platform-shell__bar-inner`, `.platform-shell__logo` (the link), `.platform-shell__logo-image` (the `<svg>`, 20 px tall like the site's on desktop), `.platform-shell__logo-accent` (the "365", `--platform-accent`), `.platform-shell__logo-word` and `.platform-shell__logo-marks` (`fill: currentColor`, the link's `--platform-text`), `.platform-shell__user`, `.platform-shell__user-text`, `.platform-shell__user-name`, `.platform-shell__user-links`, `.platform-shell__user-link`, `.platform-shell__avatar`, `.platform-shell__content`
 
 No modifiers.
 
-**Tokens:** `--platform-accent-ink`, `--platform-bg`, `--platform-border`, `--platform-font`, `--platform-shadow-bar`, `--platform-surface`, `--platform-text`, `--platform-text-subtle`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-bg`, `--platform-border`, `--platform-font`, `--platform-shadow-bar`, `--platform-surface`, `--platform-text`, `--platform-text-subtle`
 
 **Breakpoints:** `(max-width: 1080px)` lets the navigation wrap under the wordmark; `(max-width: 640px)` hides the user text and keeps the avatar and "Salir".
 
@@ -65,4 +65,4 @@ import { PlatformShell } from "@/components/platform/sections/shell/platform-she
 
 - [`PlatformNav`](/components/platform/sections/shell/platform-nav) renders the groups and marks the active item.
 - [Authentication & roles](/platform/authentication) for `getSessionUser` versus `getCurrentUser` and why the layout does not gate.
-- The public site's shell: [`Header`](/components/site/sections/shell/header/header-section) and [`Footer`](/components/site/sections/shell/footer/footer-section).
+- The public site's shell: [`Header`](/components/site/sections/shell/header/header-section) and [`Footer`](/components/site/sections/shell/footer/footer-section), and its [`Logo`](/components/site/shared/logo), which draws the same wordmark.
