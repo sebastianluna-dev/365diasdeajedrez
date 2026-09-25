@@ -6,7 +6,7 @@ description: "The Prisma 7 schema of the platform: catalogs, courses and lessons
 
 `prisma/schema.prisma` describes the platform database. Prisma 7 setup:
 
-- generator `prisma-client` with `output = "../lib/platform-db/generated"` (git-ignored; `npm run db:generate`);
+- generator `prisma-client` with `output = "../lib/platform-db/generated"` (git-ignored; `npm run db:generate`) and `previewFeatures = ["relationJoins"]`, so reads can ask for `relationLoadStrategy: "join"` (see [Data access](/architecture/data-access));
 - no `url` in the datasource: the CLI reads it from `prisma.config.ts` (`schema`, `migrations.path`, `migrations.seed = "tsx prisma/seed.ts"`, `datasource.url = PLATFORM_DATABASE_URL`), the runtime from `@prisma/adapter-pg` in `lib/platform-db/get-platform-db.ts`;
 - `prisma.config.ts` loads `.env.local` and then `.env`.
 

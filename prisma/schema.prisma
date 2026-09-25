@@ -25,8 +25,12 @@
 // used.
 
 generator client {
-  provider = "prisma-client"
-  output   = "../lib/platform-db/generated"
+  provider        = "prisma-client"
+  output          = "../lib/platform-db/generated"
+  // `relationLoadStrategy: "join"`: one SQL query per read instead of one per
+  // included relation, which matters against a remote database (see docs/
+  // architecture/data-access).
+  previewFeatures = ["relationJoins"]
 }
 
 datasource db {
