@@ -9,6 +9,25 @@
   border-radius: 10px;
   background: var(--platform-surface);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  /* It opens from the corner the click landed on and folds back into it. */
+  transform-origin: top left;
+  animation: move-context-menu-in 160ms ease-out;
+
+  /* Closing: the host keeps it mounted while this runs (`useLingering`), and
+     nothing in it can be pressed any more. */
+  &.move-context-menu_state_closing {
+    animation: move-context-menu-out 120ms ease-in forwards;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+
+    &.move-context-menu_state_closing {
+      animation: none;
+      opacity: 0;
+    }
+  }
 
   /* The move, to know which one is being acted on: the menu covers the list
      right where the click happened. */
@@ -83,5 +102,28 @@
   & .move-context-menu__item.move-context-menu__item_variant_danger:hover:not(:disabled) {
     background: var(--platform-danger);
     color: var(--platform-surface);
+  }
+}
+
+/* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */
+@keyframes move-context-menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes move-context-menu-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
   }
 }

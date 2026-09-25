@@ -64,6 +64,26 @@
     border-radius: 12px;
     background: var(--platform-surface);
     box-shadow: var(--platform-shadow-card);
+    /* Grows out of the trigger's edge, whichever side the primitive put it on. */
+    transform-origin: var(--radix-select-content-transform-origin);
+  }
+
+  /* The list unfolds from the trigger and folds back. The primitive keeps the
+     element mounted while a `data-state="closed"` animation runs, which is
+     what makes an exit possible on something that is otherwise unmounted at once. */
+  & .platform-select__content[data-state="open"] {
+    animation: platform-select-in 160ms ease-out;
+  }
+
+  & .platform-select__content[data-state="closed"] {
+    animation: platform-select-out 120ms ease-in forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .platform-select__content[data-state="open"],
+    & .platform-select__content[data-state="closed"] {
+      animation: none;
+    }
   }
 
   & .platform-select__viewport {
@@ -109,5 +129,28 @@
   & .platform-select__check {
     width: 16px;
     height: 16px;
+  }
+}
+
+/* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */
+@keyframes platform-select-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes platform-select-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
   }
 }

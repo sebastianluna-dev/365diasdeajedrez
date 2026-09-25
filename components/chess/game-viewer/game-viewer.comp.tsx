@@ -27,6 +27,7 @@ import { EnginePanel } from "./engine-panel.comp";
 import { useEngine } from "./use-engine.hook";
 import { evaluationBarFill } from "@/lib/chess/engine-protocol";
 import { MoveContextMenu, type MoveContextMenuTarget } from "./move-context-menu.comp";
+import { useLingering } from "./use-lingering.hook";
 import { MoveTable } from "./move-table.comp";
 import { MoveTree } from "./move-tree.comp";
 import { playMoveSound } from "./move-sound";
@@ -191,6 +192,9 @@ export function GameViewer({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [menu, setMenu] = useState<MoveContextMenuTarget | null>(null);
   const [optionsOpen, setOptionsOpen] = useState(false);
+  // Both menus stay mounted for a moment after closing so their exit can play.
+  const lingeringMenu = useLingering(menu);
+  const lingeringOptions = useLingering(optionsOpen ? true : null);
   // Whether the engine has an expanded line. It lives here because what it
   // decides is how much height the notation gives up, and the card answers for that.
   const [engineExpanded, setEngineExpanded] = useState(false);
@@ -512,8 +516,12 @@ export function GameViewer({
           <MenuIcon className="game-viewer__nav-icon" />
         </button>
 
-        {optionsOpen && (
-          <div className="game-viewer__options-menu" role="menu" onKeyDown={handleOptionsKeyDown}>
+        {lingeringOptions.value && (
+          <div
+            className={`game-viewer__options-menu${lingeringOptions.closing ? " game-viewer__options-menu_state_closing" : ""}`}
+            role="menu"
+            onKeyDown={handleOptionsKeyDown}
+          >
             <button
               type="button"
               // `menuitemcheckbox` and not `menuitem`: it is a toggle and the
@@ -704,22 +712,23 @@ export function GameViewer({
         </div>
       </div>
 
-      {menu && (
+      {lingeringMenu.value && (
         <MoveContextMenu
-          target={menu}
+          target={lingeringMenu.value}
+          closing={lingeringMenu.closing}
           onPromoteOneStep={() => {
-            editing.promoteOneStepAt(menu.path);
+            if (menu) editing.promoteOneStepAt(menu.path);
             setMenu(null);
           }}
           onPromoteToMainLine={() => {
-            editing.promoteToMainAt(menu.path);
+            if (menu) editing.promoteToMainAt(menu.path);
             setMenu(null);
           }}
           onComment={onRequestEdit && !isFullscreen ? () => requestEdit("comment") : undefined}
           onAnnotate={onRequestEdit && !isFullscreen ? () => requestEdit("annotate") : undefined}
-          onCopyVariation={() => editing.copyVariation(menu.path)}
+          onCopyVariation={() => (menu ? editing.copyVariation(menu.path) : undefined)}
           onDelete={() => {
-            editing.deleteAt(menu.path);
+            if (menu) editing.deleteAt(menu.path);
             setMenu(null);
           }}
           onClose={() => setMenu(null)}

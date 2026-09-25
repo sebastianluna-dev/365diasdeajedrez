@@ -218,10 +218,56 @@ body.platform-theme {
   /* A tall modal scrolls inside instead of running off the screen. */
   max-height: calc(100dvh - 40px);
   overflow: auto;
+
+  /* Every dialog comes in with a fade and a short rise and goes out the same
+     way, in CSS alone: `@starting-style` gives the entry the values it starts
+     from (a dialog that was `display: none` has no previous state to
+     transition from), and `allow-discrete` on `display` and `overlay` keeps
+     it visible, and in the top layer, until the exit is over. The rest state,
+     unlike the two ends, carries no transform, so nothing inside it is
+     positioned against the dialog instead of the viewport. Browsers without
+     `overlay` (Firefox) cut the exit short but lose nothing else. */
+  opacity: 0;
+  transform: translateY(14px) scale(0.98);
+  transition:
+    opacity 160ms ease-out,
+    transform 200ms ease-out,
+    overlay 200ms allow-discrete,
+    display 200ms allow-discrete;
 }
 
+.platform-dialog[open] {
+  opacity: 1;
+  transform: none;
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+}
+
+/* The backdrop fades with the dialog. */
 .platform-dialog::backdrop {
+  background: transparent;
+  transition:
+    background 200ms ease-out,
+    overlay 200ms allow-discrete,
+    display 200ms allow-discrete;
+}
+
+.platform-dialog[open]::backdrop {
   background: rgba(22, 17, 13, 0.35);
+
+  @starting-style {
+    background: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .platform-dialog,
+  .platform-dialog::backdrop {
+    transition: none;
+  }
 }
 
 .platform-tag {

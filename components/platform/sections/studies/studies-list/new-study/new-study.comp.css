@@ -1,60 +1,11 @@
 .new-study {
   flex: none;
 
-  /* The size and the rounding: the centring, the backdrop and the surface are
-     set by `.platform-dialog`.
-
-     It comes in and goes out with a fade and a short rise. Both are plain
-     transitions on a native dialog: `@starting-style` gives the values the
-     entry starts from (a dialog that was `display: none` has no previous
-     state to transition from), and `allow-discrete` on `display` and
-     `overlay` keeps it visible, and in the top layer, until the exit is over.
-     The rest state, unlike the two ends, carries no transform, so nothing
-     inside it is positioned against the dialog instead of the viewport. */
+  /* The size and the rounding: the centring, the backdrop, the surface and
+     the entry and exit motion are set by `.platform-dialog`. */
   & .new-study__dialog {
     width: min(600px, calc(100vw - 32px));
     border-radius: 18px;
-    opacity: 0;
-    transform: translateY(14px) scale(0.98);
-    transition:
-      opacity 160ms ease-out,
-      transform 200ms ease-out,
-      overlay 200ms allow-discrete,
-      display 200ms allow-discrete;
-  }
-
-  & .new-study__dialog[open] {
-    opacity: 1;
-    transform: none;
-
-    @starting-style {
-      opacity: 0;
-      transform: translateY(14px) scale(0.98);
-    }
-  }
-
-  /* The backdrop fades with it; its colour is `.platform-dialog`'s. */
-  & .new-study__dialog::backdrop {
-    background: transparent;
-    transition:
-      background 200ms ease-out,
-      overlay 200ms allow-discrete,
-      display 200ms allow-discrete;
-  }
-
-  & .new-study__dialog[open]::backdrop {
-    background: rgba(22, 17, 13, 0.35);
-
-    @starting-style {
-      background: transparent;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    & .new-study__dialog,
-    & .new-study__dialog::backdrop {
-      transition: none;
-    }
   }
 
   /* The form is the dialog's whole content: head, body and footer band stack

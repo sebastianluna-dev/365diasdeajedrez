@@ -33,6 +33,8 @@ interface MoveContextMenuProps {
   onAnnotate?: () => void;
   onCopyVariation?: () => void | Promise<void>;
   onClose: () => void;
+  /** The host has closed it and keeps it mounted while the exit plays. */
+  closing?: boolean;
 }
 
 /** What the menu shows while the copied notice lasts. */
@@ -82,6 +84,7 @@ export function MoveContextMenu({
   onAnnotate,
   onCopyVariation,
   onClose,
+  closing = false,
 }: MoveContextMenuProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [copied, setCopied] = useState(false);
@@ -89,10 +92,12 @@ export function MoveContextMenu({
 
   // Repositioned AFTER measuring itself: the right click can land a hand's
   // width from the edge, and a menu that runs off the window can be neither read nor clicked.
+  // `offsetWidth`/`offsetHeight` and not the bounding rect: the entry animation
+  // starts scaled down, and the rect would measure that first frame.
   useLayoutEffect(() => {
     const menu = rootRef.current;
     if (!menu) return;
-    const { width, height } = menu.getBoundingClientRect();
+    const { offsetWidth: width, offsetHeight: height } = menu;
     setPosition({
       x: Math.max(EDGE_GAP, Math.min(target.x, window.innerWidth - width - EDGE_GAP)),
       y: Math.max(EDGE_GAP, Math.min(target.y, window.innerHeight - height - EDGE_GAP)),
@@ -129,7 +134,7 @@ export function MoveContextMenu({
 
   return (
     <div
-      className="move-context-menu"
+      className={`move-context-menu${closing ? " move-context-menu_state_closing" : ""}`}
       ref={rootRef}
       role="menu"
       aria-label={`Opciones de ${target.label}`}

@@ -11,6 +11,7 @@ const meta: MetaRecord = {
   "use-engine-hook": "useEngine",
   "use-game-review-hook": "useGameReview",
   "use-pgn-editing-hook": "usePgnEditing",
+  "use-lingering-hook": "useLingering",
   "board-export": "board-export",
   "move-sound": "move-sound",
   "viewer-preferences": "viewer-preferences",
