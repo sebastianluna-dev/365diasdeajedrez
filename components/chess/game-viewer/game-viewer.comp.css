@@ -60,6 +60,9 @@
     bottom: 0;
     left: calc(100% + 4px);
     width: 14px;
+    /* Outlined like the viewer's other boxes: the white half of the bar
+       would otherwise melt into the white page. */
+    border: 1px solid var(--platform-border);
     border-radius: 7px;
     overflow: hidden;
     background: var(--platform-text);
