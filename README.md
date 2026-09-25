@@ -50,7 +50,7 @@ npm run dev                  # http://localhost:3000
 | `npm run positions:index`                 | Fills in the position index of the games already stored (`-- --all` reindexes every one).                     |
 | `npm run collections:by-chapter`          | One-off data migration: course collections → per-chapter collections.                                         |
 | `npm run stats:rebuild`                   | Rebuilds `UserStatDaily` from `UserActivity` for every account (or `-- <email>` for one).                     |
-| `npm run sounds:make`                     | Regenerates the two board sounds in `public/sounds` (modal synthesis, deterministic).                         |
+| `npm run sounds:make`                     | Writes two synthesised board sounds (`.wav`) as the way out of lichess's `.mp3`, which are what plays today.  |
 
 `.github/workflows/ci.yml` runs `lint`, `typecheck` and `test` on every push to `main` and on every pull request. It does not run `next build`: static generation queries the databases, which CI does not have; the deployment is what validates the build.
 
@@ -170,7 +170,8 @@ It covers architecture, routes, data access, the public site and the CMS, authen
 
 ## Backlog
 
-- `IMPROVEMENTS.md` — pending improvements, prioritised (security, architecture, CSS, UX).
-- `todos.md` — concrete tasks in the queue.
+- `IMPROVEMENTS.md` — pending improvements, prioritised (security, architecture, CSS, UX). Local only: gitignored, not in the remote.
+- `TODOS.md` — concrete tasks in the queue. Local only, like the one above.
+- `WARNINGS.md` — risks taken on knowingly, with the way out of each. Local only, like the two above.
 
 Both are in English, like the code comments and this README, which stays the quick reference to the repository.

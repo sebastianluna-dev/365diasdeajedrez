@@ -26,7 +26,7 @@ These rules are enforced by review, tests (`proxy.test.ts`, `nav-items.test.ts`)
 - **Strict BEM, Yandex flavour:** `block__element`, modifier `_key_value` (`platform-table__head_align_right`), boolean modifier `_open`.
 - **One CSS file per component**, imported by that component, and **every rule nested under the root selector** with native CSS nesting (`&`). Media queries go inside the block. Nothing global except `globals.css`, `platform.css` and the intentional `.blog-button` helpers.
 - **Desktop-first** media queries (`max-width`).
-- Colours and spacing come from tokens: `--color-*` in `app/(frontend)/globals.css` (public site, plus board colours `--board-light`/`--board-dark`) and `--platform-*` in `app/(platform)/platform.css` (private area). Hex values are the exception, and the remaining ones are tracked in `todos.md`.
+- Colours and spacing come from tokens: `--color-*` in `app/(frontend)/globals.css` (public site, plus board colours `--board-light`/`--board-dark`) and `--platform-*` in `app/(platform)/platform.css` (private area). Hex values are the exception, and the remaining ones are tracked in `TODOS.md`.
 - No Tailwind (it was removed), no CSS-in-JS, no CSS Modules.
 - The full token list, the helper classes and worked examples are in [Styling & design tokens](/ui/styling).
 
@@ -54,7 +54,7 @@ These rules are enforced by review, tests (`proxy.test.ts`, `nav-items.test.ts`)
 
 ## Documentation and debt
 
-- Debt you find but do not fix goes to `IMPROVEMENTS.md` with area, priority (low · medium · high · extreme) and how to approach it. Mechanical, well-specified tasks go to `todos.md`. Both files are in English.
+- Debt you find but do not fix goes to `IMPROVEMENTS.md` with area, priority (low · medium · high · extreme) and how to approach it. Mechanical, well-specified tasks go to `TODOS.md`. Risks the project accepts knowingly go to `WARNINGS.md` with what, why and the way out. The three are in English and **local only**: gitignored, never in the remote, so a fresh clone does not have them.
 - **Every important change is documented in the same commit**, not afterwards: behaviour, a convention, a route, the data model, a script, an environment variable, or a decision worth recording. Edit the page of this site that covers the area you touched, and rebuild it (`cd docs && npm run build`) when its pages changed.
 - `README.md` stays the Spanish quick reference; this site is the long-form English documentation.
 - Before touching framework APIs, read `node_modules/next/dist/docs/`: Next 16 renamed middleware to `proxy.ts`, made `params`/`searchParams` promises, changed caching APIs and more.

@@ -69,7 +69,7 @@ The lesson's PGN changed after the exercise was frozen (`pgnUpdatedAt` is later 
 Vitest aliases `server-only` to `lib/testing/server-only.stub.ts` (`vitest.config.mts`). If a new test config or a `tsx` script imports a module that has `import "server-only"`, it will throw outside Next: scripts must use the modules that deliberately avoid it (`password.ts`, `logger.ts`, `position-hash.ts`, the catalog constants, `game-positions.service.ts` with the client as a parameter).
 
 **`npm run format:check` fails.**
-Expected: the repository has never been formatted with Prettier. `todos.md` T11 asks for a single formatting commit, after which the check joins CI.
+Expected: the repository has never been formatted with Prettier. `TODOS.md` T11 asks for a single formatting commit, after which the check joins CI.
 
 **Lint complains about files in `docs/`, `coverage/` or the generated Prisma client.**
 Those folders are ignored in `eslint.config.mjs`, `tsconfig.json` and `vitest.config.mts`; if you see errors there, a config edit dropped an ignore.
