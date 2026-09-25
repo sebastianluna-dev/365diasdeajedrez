@@ -21,12 +21,12 @@ A share is a row that exists or does not, so there is no intermediate state wort
 
 ## Props
 
-| Prop       | Type                   | Required               | Meaning                                                                                                                                                    |
-| ---------- | ---------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `studyId`  | `string`               | yes                    | Bound into both actions.                                                                                                                                   |
-| `shares`   | `StudyShareItem[]`     | yes                    | Who already has it: `{ userId, displayName, email, sharedAtLabel }`.                                                                                       |
-| `students` | `StudentOption[]`      | yes                    | Students with an active assignment to the teacher.                                                                                                         |
-| `layout`   | `"panel" \| "compact"` | no · default `"panel"` | `panel` is the wide box of the empty study page; `compact` the aside's card: no border, the card's shadow, each student on two lines and the form stacked. |
+| Prop       | Type                   | Required               | Meaning                                                                                                                                                                         |
+| ---------- | ---------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `studyId`  | `string`               | yes                    | Bound into both actions.                                                                                                                                                        |
+| `shares`   | `StudyShareItem[]`     | yes                    | Who already has it: `{ userId, displayName, email, sharedAtLabel }`.                                                                                                            |
+| `students` | `StudentOption[]`      | yes                    | Students with an active assignment to the teacher.                                                                                                                              |
+| `layout`   | `"panel" \| "compact"` | no · default `"panel"` | `panel` is the wide box of the empty study page; `compact` the aside's card: the thin border over a light shadow, 10 px radius, each student on two lines and the form stacked. |
 
 ## Behaviour
 

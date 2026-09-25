@@ -63,6 +63,8 @@ The viewer never saves and never fetches. It receives a PGN, reports the current
 
 ## Markup & styling
 
+Every white box of the viewer — the notation panel, the tools card under the board and the two player strips — is outlined by `1px solid var(--platform-border)` on top of its shadow: on the white page the shadow alone did not hold the edge. The strip's edge that tucks under the board is hidden by it.
+
 Block `.game-viewer` (539 lines), the largest sheet in `components/`.
 
 **Elements:** `.game-viewer__layout`, `.game-viewer__board-card`, `.game-viewer__board-row`, `.game-viewer__board`, `.game-viewer__evaluation`, `.game-viewer__evaluation-fill`, `.game-viewer__player`, `.game-viewer__board-footer`, `.game-viewer__panel-column`, `.game-viewer__panel`, `.game-viewer__panel-head`, `.game-viewer__panel-heading`, `.game-viewer__panel-title`, `.game-viewer__panel-subtitle`, `.game-viewer__panel-description`, `.game-viewer__panel-badge`, `.game-viewer__moves`, `.game-viewer__toolbar`, `.game-viewer__toolbar-end`, `.game-viewer__panel-nav`, `.game-viewer__nav`, `.game-viewer__nav-button`, `.game-viewer__nav-icon`, `.game-viewer__options`, `.game-viewer__options-menu`, `.game-viewer__options-item`, `.game-viewer__options-icon`, `.game-viewer__skip`, `.game-viewer__tool`, `.game-viewer__tool-icon`, `.game-viewer__warnings`, `.game-viewer__warning`

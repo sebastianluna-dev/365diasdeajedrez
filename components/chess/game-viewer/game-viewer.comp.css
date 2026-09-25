@@ -110,6 +110,8 @@
     gap: 11px;
     padding: 9px 12px;
     background: var(--platform-surface);
+    /* The edge that tucks under the board is hidden by it; the other three show. */
+    border: 1px solid var(--platform-border);
     /* What is inside (name, Elo, title, federation) goes in `em` relative to
        this, so enlarging the strip enlarges all of them at once. */
     font-size: var(--viewer-player-font-size, 15px);
@@ -187,6 +189,7 @@
   & .game-viewer__board-footer {
     grid-column: 1;
     background: var(--platform-surface);
+    border: 1px solid var(--platform-border);
     border-radius: 10px;
     box-shadow: var(--platform-shadow-card);
     overflow: hidden;
@@ -237,6 +240,9 @@
     flex: 1;
     min-height: 0;
     background: var(--platform-surface);
+    /* Every white box of the viewer is outlined by the thin grey, on top of
+       its shadow: on the white page the shadow alone did not hold its edge. */
+    border: 1px solid var(--platform-border);
     border-radius: 10px;
     box-shadow: var(--platform-shadow-card);
     display: flex;
