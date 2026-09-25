@@ -5,6 +5,7 @@ import { copyClassGamesToStudy, createStudyGame, importPgnGames } from "@/servic
 import type { ClassGameItem, StudyKindOption } from "@/services/studies/studies.types";
 import "./new-game.comp.css";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+import { PlatformDatePicker } from "@/components/platform/shared/platform-date-picker/platform-date-picker.comp";
 
 type Tab = "pgn" | "fen" | "blank" | "class";
 
@@ -171,7 +172,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
               </label>
               <label className="new-game__field">
                 <span className="new-game__label">Fecha</span>
-                <input className="new-game__input" type="date" name="playedAt" />
+                <PlatformDatePicker name="playedAt" size="compact" />
               </label>
             </div>
 

@@ -3,6 +3,7 @@ import { federationOptions, FIDE_TITLE_LABELS, FIDE_TITLES } from "@/lib/chess/f
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import "./game-fields.comp.css";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+import { PlatformDatePicker } from "@/components/platform/shared/platform-date-picker/platform-date-picker.comp";
 
 // A game's data, in one place.
 //
@@ -20,7 +21,7 @@ export interface GameFieldValues {
   whiteElo?: number;
   blackElo?: number;
   resultCode?: string;
-  /** Short ISO (yyyy-mm-dd), which is what <input type="date"> expects. */
+  /** Short ISO (yyyy-mm-dd), which is what the date picker expects. */
   playedAtValue?: string;
   event?: string;
   site?: string;
@@ -140,7 +141,7 @@ export function GameFields({ values, results, titleHint }: GameFieldsProps) {
           />
         </FormField>
         <FormField label="Fecha">
-          <input type="date" name="playedAt" defaultValue={values?.playedAtValue ?? ""} />
+          <PlatformDatePicker name="playedAt" defaultValue={values?.playedAtValue ?? ""} size="compact" />
         </FormField>
       </div>
 

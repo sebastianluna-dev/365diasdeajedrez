@@ -1,4 +1,5 @@
-const MONTHS_ES = [
+/** Month names, lower case as Spanish writes them in a date. */
+export const MONTHS_ES = [
   "enero",
   "febrero",
   "marzo",
