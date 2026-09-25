@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoMarkIcon } from "@/components/icons/logo-mark-icon.comp";
 import type { StudySummary } from "@/services/studies/studies.types";
 import { DeleteStudy } from "./delete-study.comp";
 import "./study-card.comp.css";
@@ -16,7 +17,10 @@ interface StudyCardProps {
 export function StudyCard({ study }: StudyCardProps) {
   return (
     <article className="study-card">
-      <span className="study-card__tile" aria-hidden="true" />
+      {/* The brand's mark, the two squares of the wordmark, as the study's tile. */}
+      <span className="study-card__tile" aria-hidden="true">
+        <LogoMarkIcon className="study-card__mark" />
+      </span>
 
       <div className="study-card__body">
         <div className="study-card__head">
