@@ -2,41 +2,39 @@ import "server-only";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/client";
 
-// Singleton against the platform database (separate from Payload's), the same
-// pattern as lib/payload/get-payload.ts. The guard on globalThis avoids
+// Singletons against the platform database (separate from Payload's), the
+// same pattern as lib/payload/get-payload.ts. The guard on globalThis avoids
 // exhausting connections with `next dev`'s hot reload.
-const globalStore = globalThis as unknown as { platformDb?: PrismaClient };
+//
+// One client PER GENERATED CLASS, not one in total. The bundler can evaluate
+// the generated client in more than one chunk (the render chunk and the one
+// of route handlers and server actions, for instance), and each evaluation
+// yields a different `PrismaClient` class. A single slot that replaced the
+// stored client whenever the class differed closed the pool the other chunk
+// was querying on, with every request ping-ponging between the two:
+// "Cannot use a pool after calling end on the pool" on every platform page.
+//
+// Keying by class also keeps what the replacement was for: after `prisma
+// generate` the module is evaluated again, the class is a new object, and a
+// fresh client is built from the new schema instead of the stored one
+// answering "Unknown field" until the server was restarted by hand. The
+// client of the previous schema stays in the map until then; that is one idle
+// pool per regeneration, and only in development.
+type PrismaClientClass = typeof PrismaClient;
 
-/**
- * Whether the stored client was generated from ANOTHER schema.
- *
- * The `globalThis` guard survives hot reload, which is what it is for, but it
- * also survived `prisma generate`: after changing the schema the instance was
- * still the previous one and any new field gave "Unknown field", with the only
- * cure being restarting the server by hand.
- *
- * It is detected by comparing the CLASS: when the generated client changes, its
- * module is evaluated again and `PrismaClient` is a different object from the
- * one that built the stored instance. A hot reload that does not touch the
- * client does not change that identity, so the connection keeps being reused as before.
- */
-function isStale(client: PrismaClient): boolean {
-  return client.constructor !== PrismaClient;
-}
+const globalStore = globalThis as unknown as { platformDbByClass?: Map<PrismaClientClass, PrismaClient> };
 
 export function getPlatformDb(): PrismaClient {
-  if (globalStore.platformDb && isStale(globalStore.platformDb)) {
-    // The old one is closed so as not to leave the connection hanging in the pool.
-    void globalStore.platformDb.$disconnect();
-    globalStore.platformDb = undefined;
-  }
+  globalStore.platformDbByClass ??= new Map();
 
-  if (!globalStore.platformDb) {
+  let client = globalStore.platformDbByClass.get(PrismaClient);
+  if (!client) {
     const connectionString = process.env.PLATFORM_DATABASE_URL;
     if (!connectionString) {
       throw new Error("Falta PLATFORM_DATABASE_URL en el entorno (ver .env.example).");
     }
-    globalStore.platformDb = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+    client = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+    globalStore.platformDbByClass.set(PrismaClient, client);
   }
-  return globalStore.platformDb;
+  return client;
 }

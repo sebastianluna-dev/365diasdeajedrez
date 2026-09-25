@@ -18,7 +18,10 @@ The driver announces a semantics change for `require` in pg v9. Use `sslmode=ver
 The seed refuses to write the demo accounts (which include a staff account) with the repository password into a database that is not on `localhost`, or when `NODE_ENV=production`. Either set your own `PLATFORM_DEMO_PASSWORD` or, for a throwaway test database only, `ALLOW_DEMO_SEED=1`. Never set the latter in production.
 
 **Prisma says `Unknown field` after a schema change.**
-Run `npm run db:generate`. The singleton on `globalThis` used to keep the old client alive across `prisma generate`; it now detects a client generated from a different schema by comparing the class identity and replaces it, so restarting `next dev` is no longer needed. If the error persists, the generate did not run.
+Run `npm run db:generate`. The store on `globalThis` used to keep the old client alive across `prisma generate`; it now keeps one client per generated `PrismaClient` class, and the regenerated module brings a new class, so restarting `next dev` is no longer needed. If the error persists, the generate did not run.
+
+**`Cannot use a pool after calling end on the pool` on every platform page.**
+An earlier version of `lib/platform-db/get-platform-db.ts` kept a single client and replaced it whenever the generated class differed, which happens between chunks of the same build (render versus route handlers and server actions), not only after `prisma generate`: each request closed the pool the other chunk was using. The store is keyed by class now; if it comes back, check that nothing else calls `$disconnect()` on the shared client.
 
 **`relation "…" does not exist` on the CMS side.**
 Payload has no committed migrations; its tables are created and altered by Drizzle push while `next dev` runs against `DATABASE_URI`. Start the dev server once against that database before building or seeding content. To move to explicit migrations, use `payload migrate:create`.
