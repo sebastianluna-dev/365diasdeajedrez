@@ -94,6 +94,15 @@ export function studyPermissionsOf({ kindCode, isOwner }: StudyRuleInput): Study
 }
 
 /**
+ * Whether the sharing panel belongs to whoever is looking: the OWNER of a
+ * collection. Whoever receives it fails on `canDelete`, and any other kind
+ * on the code. One place for the two screens that show the panel.
+ */
+export function canShareStudy(study: { kindCode: string; permissions: Pick<StudyPermissions, "canDelete"> }): boolean {
+  return study.kindCode === DATABASE_KIND.COLLECTION && study.permissions.canDelete;
+}
+
+/**
  * Whether a study can move to `nextKind`. Both the STARTING kind and the
  * DESTINATION one are checked: a tournament can become a study, but neither of
  * the two can become a collection — that is shared by a teacher — nor

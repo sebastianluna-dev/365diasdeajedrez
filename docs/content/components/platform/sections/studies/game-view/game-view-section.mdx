@@ -1,18 +1,18 @@
 ---
-description: "The game screen of Mis estudios: the PGN in a reducer with an undo stack, autosave through autosaveGamePgn, a close-tab warning, and the viewer, tools and aside wired to one shared PGN."
+description: "The board column of a Mis estudios game: the PGN in a reducer with an undo stack, autosave through autosaveGamePgn, a close-tab warning, and the viewer and tools wired to one shared PGN; the study beside it is GameAside's business."
 ---
 
 # `GameViewSection`
 
-|            |                                                                                                                                                                                                                                                                                  |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/game-view/game-view.section.tsx`                                                                                                                                                                                                           |
-| Kind       | Client Component                                                                                                                                                                                                                                                                 |
-| Stylesheet | `game-view.section.css` → block `.game-view`                                                                                                                                                                                                                                     |
-| Used by    | `/estudios/[studyId]/partidas/[gameId]`                                                                                                                                                                                                                                          |
-| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`GameTools`](/components/platform/sections/studies/game-view/game-tools), [`GameAside`](/components/platform/sections/studies/game-view/game-aside), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Writes     | `autosaveGamePgn()` · `services/studies/studies.actions.ts`                                                                                                                                                                                                                      |
-| Uses       | `federationFlag` from `lib/chess/federations`; `GameView`, `StudyGameItem` from `services/studies/studies.types`                                                                                                                                                                 |
+|            |                                                                                                                                                                                                       |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/game-view.section.tsx`                                                                                                                                |
+| Kind       | Client Component                                                                                                                                                                                      |
+| Stylesheet | `game-view.section.css` → block `.game-view`                                                                                                                                                          |
+| Used by    | `/estudios/[studyId]/partidas/[gameId]`, beside [`GameAside`](/components/platform/sections/studies/game-view/game-aside)                                                                             |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`GameTools`](/components/platform/sections/studies/game-view/game-tools), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes     | `autosaveGamePgn()` · `services/studies/studies.actions.ts`                                                                                                                                           |
+| Uses       | `federationFlag` from `lib/chess/federations`; `GameView` from `services/studies/studies.types`                                                                                                       |
 
 ## Purpose
 
@@ -22,19 +22,10 @@ The PGN lives here because two things write it: the [`GameViewer`](/components/c
 
 ## Props
 
-| Prop         | Type              | Required | Meaning                                                                                                                                                                                                     |
-| ------------ | ----------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `game`       | `GameView`        | yes      | The game with `pgn`, `canEdit`, players (name, Elo, title, country), record fields and `studyId`.                                                                                                           |
-| `siblings`   | `StudyGameItem[]` | yes      | One page of the study's games around the current one; they feed the aside.                                                                                                                                  |
-| `studyName`  | `string`          | yes      | The study's name, heading the aside.                                                                                                                                                                        |
-| `gameCount`  | `number`          | yes      | The study's total, next to the name.                                                                                                                                                                        |
-| `studyTools` | `ReactNode`       | no       | "Editar datos" and "Borrar" of the study, for its owner.                                                                                                                                                    |
-| `canReorder` | `boolean`         | no       | Whether the aside's list can be dragged into a new order.                                                                                                                                                   |
-| `pages`      | `GameAsidePages`  | no       | Where the aside's list stands when the study spans several pages.                                                                                                                                           |
-| `newGame`    | `ReactNode`       | no       | The new-game modal, mounted by the page with its data; absent when writing is not allowed.                                                                                                                  |
-| `editGame`   | `ReactNode`       | no       | The "Datos de la partida" modal; absent when writing is not allowed.                                                                                                                                        |
-| `share`      | `ReactNode`       | no       | The sharing card of a collection, for its owner.                                                                                                                                                            |
-| `errorCode`  | `string`          | no       | What bounced back from an action, translated by `STUDY_ERROR_MESSAGES`: the game's (`gameInClasses`) and the study's (`confirmStudyDelete`, `fen`, the common codes), whose forms are mounted in the aside. |
+| Prop        | Type       | Required | Meaning                                                                                                                                                                                              |
+| ----------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `game`      | `GameView` | yes      | The game with `pgn`, `canEdit`, players (name, Elo, title, country), record fields and `studyId`.                                                                                                    |
+| `errorCode` | `string`   | no       | What bounced back from an action, translated by `STUDY_ERROR_MESSAGES`: the game's (`gameInClasses`) and the study's (`confirmStudyDelete`, `fen`, the common codes), whose forms live in the aside. |
 
 ## Behaviour
 
@@ -48,9 +39,9 @@ The PGN lives here because two things write it: the [`GameViewer`](/components/c
 
 ## Markup & styling
 
-Block `.game-view` (81 lines): the aside plus board column layout and the player strips.
+Block `.game-view` (78 lines): the board column and the player strips. The two-column grid beside the aside is the page's, `.game-page__layout` in `game-page.css`.
 
-**Elements:** `.game-view__board`, `.game-view__chip`, `.game-view__player-country`, `.game-view__player-flag`, `.game-view__player-title`, `.game-view__player-name`, `.game-view__player-elo`
+**Elements:** `.game-view__chip`, `.game-view__player-country`, `.game-view__player-flag`, `.game-view__player-title`, `.game-view__player-name`, `.game-view__player-elo`
 
 **Modifiers and states:** `.game-view__chip_side_white`, `.game-view__chip_side_black`
 
@@ -58,43 +49,31 @@ Block `.game-view` (81 lines): the aside plus board column layout and the player
 
 **Tokens:** `--platform-accent-ink`, `--platform-border-strong`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
-**Breakpoints:** `(max-width: 1180px)` moves the aside under the board.
+**Breakpoints:** none of its own; the page's `(max-width: 1180px)` stacks the aside under the board.
 
 ## Usage
 
 From `app/(platform)/estudios/[studyId]/partidas/[gameId]/page.tsx`:
 
 ```tsx
+import { GameAside } from "@/components/platform/sections/studies/game-view/game-aside.comp";
 import { GameViewSection } from "@/components/platform/sections/studies/game-view/game-view.section";
 
-<GameViewSection
-  game={game}
-  siblings={study.games}
-  studyName={study.name}
-  gameCount={study.gameCount}
-  errorCode={error}
-  canReorder={canWrite && study.pageCount === 1}
-  pages={study.pageCount > 1 ? { page: study.page, pageCount: study.pageCount, previousHref, nextHref } : undefined}
-  studyTools={canWrite ? <>{/* EditStudy size="inline", DeleteStudy trigger="inline" */}</> : undefined}
-  editGame={
-    game.canEdit ? <EditGame studyId={game.studyId} gameId={game.id} results={results} values={game} /> : undefined
-  }
-  newGame={
-    canWrite ? (
-      <NewGame studyId={study.id} studyName={study.name} results={results} classGames={classGames} />
-    ) : undefined
-  }
-  share={
-    canShare ? (
-      <ShareCollection studyId={study.id} shares={study.shares} students={students} layout="compact" />
-    ) : undefined
-  }
-/>;
+<div className="game-page__layout">
+  <GameAside
+    game={game}
+    study={study}
+    results={results}
+    classGames={classGames}
+    kinds={kinds}
+    students={students}
+    pageHref={pageHref}
+  />
+  <GameViewSection game={game} errorCode={error} />
+</div>;
 ```
 
-The page lists the page of games the current one falls on (`getStudyPageOfGame`), or the one `?pagina=` asks for; `canWrite` is `permissions.canEditGames` and `canShare` the owner of a collection, the same tests the empty study page applies.
-
-The page passes `values={game}` whole: `GameView` already contains every field of `GameFieldValues`, and listing them one by one is how the title and the federation got lost once.
+The page loads the game (its first await, the session border), the study on the page of games the current one falls on (`getStudyPageOfGame`, or `?pagina=`) and the catalogs, and hands them over: what each column shows is decided inside it.
 
 ## Related
 

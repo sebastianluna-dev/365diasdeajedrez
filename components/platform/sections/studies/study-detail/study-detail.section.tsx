@@ -2,8 +2,8 @@ import { STUDY_ERROR_MESSAGES } from "@/constants/platform/student-messages.cons
 import { EmptyState } from "@/components/platform/shared/empty-state.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { DeleteStudy } from "@/components/platform/sections/studies/studies-list/delete-study.comp";
-import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
 import type { ClassGameItem, StudentOption, StudyDetail, StudyKindOption } from "@/services/studies/studies.types";
+import { canShareStudy } from "@/services/studies/study-rules";
 import { EditStudy } from "./edit-study.comp";
 import { NewGame } from "./new-game.comp";
 import { ShareCollection } from "./share-collection.comp";
@@ -41,7 +41,7 @@ export function StudyDetailSection({
   const canWrite = study.permissions.canEditGames;
   // The sharing panel belongs to the OWNER of a collection; whoever receives
   // it gets `shares` empty and does not pass this filter either.
-  const canShare = study.kindCode === DATABASE_KIND.COLLECTION && study.permissions.canDelete;
+  const canShare = canShareStudy(study);
 
   return (
     <section className="study-detail">

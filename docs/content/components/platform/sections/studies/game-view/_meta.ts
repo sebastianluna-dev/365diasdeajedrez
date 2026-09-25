@@ -5,6 +5,7 @@ const meta: MetaRecord = {
   "delete-game": "DeleteGame",
   "edit-game": "EditGame",
   "game-aside": "GameAside",
+  "game-list": "GameList",
   "game-tools": "GameTools",
 };
 

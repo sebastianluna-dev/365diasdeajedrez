@@ -1,0 +1,59 @@
+---
+description: "The study's games in the aside: five rows tall with a scroll of its own, the current one centred on arrival, and for the owner draggable or movable with the keyboard into a new order through reorderStudyGames."
+---
+
+# `GameList`
+
+|            |                                                                           |
+| ---------- | ------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/game-list.comp.tsx`       |
+| Kind       | Client Component                                                          |
+| Stylesheet | `game-list.comp.css` → block `.game-list`                                 |
+| Used by    | [`GameAside`](/components/platform/sections/studies/game-view/game-aside) |
+| Writes     | `reorderStudyGames()` · `services/studies/studies.actions.ts`             |
+| Uses       | `StudyGameItem` from `services/studies/studies.types`                     |
+
+## Purpose
+
+The study's games, to jump between them without going back, and for the owner to reorder by dragging a row or moving it with the keyboard. It is the only piece of the aside with state, which is why it is the only one that is a Client Component: the aside around it stays on the server.
+
+## Props
+
+| Prop         | Type              | Required | Meaning                                                                                                |
+| ------------ | ----------------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| `studyId`    | `string`          | yes      | Bound into `reorderStudyGames`.                                                                        |
+| `siblings`   | `StudyGameItem[]` | yes      | One page of the study's games, current included.                                                       |
+| `currentId`  | `string`          | yes      | The current game: its row gets `aria-current="page"` and the active state, and is centred in the list. |
+| `canReorder` | `boolean`         | yes      | Whether rows can be dragged: the owner, with the whole study in hand (one page). The aside decides it. |
+
+## Behaviour
+
+- Rows show the student's title or the mapper's `label` fallback (round, event or position in the study), the players as a second line with a `title` tooltip because long names are cut, and the result.
+- **Reordering.** The list is local state while a row is dragged; on drop, or on an arrow key on the row's grip, the whole order goes to `reorderStudyGames(studyId, ids)` in a transition. New `siblings` from the server replace the state during render, not in an effect, so the old list is never painted first. The grip is a `<button>` with an `aria-label` so keyboard users move rows too; it only shows on hover or focus. `dragstart` sets its own data so the browser drags the row and not the link's URL.
+- **Five rows tall.** The block caps its height at five games (`calc(5 * 58px + 4 * 2px + 16px)`) and scrolls the rest on its own, so a long study does not push the record off the screen. On arrival, and whenever `currentId` changes, an effect scrolls the current row into the middle of the list by arithmetic on its offset, so only the list moves and never the page.
+
+## Markup & styling
+
+Block `.game-list` (120 lines), the `<ul>` itself.
+
+**Elements:** `.game-list__row`, `.game-list__handle`, `.game-list__item`, `.game-list__item-main`, `.game-list__item-name`, `.game-list__item-meta`, `.game-list__item-result`
+
+**Modifiers and states:** `.game-list__row_state_dragging`, `.game-list__item_state_active`
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/studies/game-view/game-aside.comp.tsx`:
+
+```tsx
+import { GameList } from "./game-list.comp";
+
+<GameList studyId={study.id} siblings={study.games} currentId={game.id} canReorder={canReorder} />;
+```
+
+## Related
+
+- [`GameAside`](/components/platform/sections/studies/game-view/game-aside), which decides `canReorder` and draws the pages nav under the list.

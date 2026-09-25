@@ -1,83 +1,82 @@
 ---
-description: "The column beside a game: the study (its name, its owner's actions, its games to jump between, draggable into a new order, in pages), the record (event, site, four facts always rendered, the source and the delete control), and a collection's sharing card."
+description: "The column beside a game, a Server Component that receives the study and the game and decides what it shows: the study's name and its owner's actions, the reorderable game list, the pages, the record with its edit and delete controls, and a collection's sharing card."
 ---
 
 # `GameAside`
 
-|            |                                                                                        |
-| ---------- | -------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/game-view/game-aside.comp.tsx`                   |
-| Kind       | Client Component                                                                       |
-| Stylesheet | `game-aside.comp.css` → block `.game-aside`                                            |
-| Used by    | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section) |
-| Composes   | [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game)            |
-| Writes     | `reorderStudyGames()` · `services/studies/studies.actions.ts`                          |
-| Uses       | `GameView`, `StudyGameItem` from `services/studies/studies.types`                      |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/game-aside.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| Stylesheet | `game-aside.comp.css` → block `.game-aside`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Used by    | `/estudios/[studyId]/partidas/[gameId]`, beside [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section)                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Composes   | [`GameList`](/components/platform/sections/studies/game-view/game-list), [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study), [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study), [`NewGame`](/components/platform/sections/studies/study-detail/new-game), [`EditGame`](/components/platform/sections/studies/game-view/edit-game), [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game), [`ShareCollection`](/components/platform/sections/studies/study-detail/share-collection) |
+| Uses       | `canShareStudy` from `services/studies/study-rules`; `GameView`, `StudyDetail`, `StudyKindOption`, `ClassGameItem`, `StudentOption` from `services/studies/studies.types`                                                                                                                                                                                                                                                                                                                                                                                         |
 
 ## Purpose
 
-A study has no page of its own — its URL redirects to the first game — so this column is where the study lives. The first card is the study: its name and its total head it, its owner's "Editar datos" and "Borrar" sit under them, and its games follow, to jump between them without going back; the owner drags a row (or moves it with the keyboard) to reorder, and "Nueva partida" closes the card. The second card is the game's record, read top to bottom: where it was played, when and how it ended, and at the foot where the game came from and, for the owner, the delete control. The moves are edited on the board itself, so nothing else is left here. A collection's owner gets a third card, the sharing panel.
+A study has no page of its own — its URL redirects to the first game — so this column is where the study lives. It receives **data**, never components, and decides for itself what to show with the same permission table the server actions apply (`services/studies/study-rules`): the page only loads and hands over. It is a Server Component; the modals it mounts are Client Components with their own state, and the one piece here with state, the list, is [`GameList`](/components/platform/sections/studies/game-view/game-list).
+
+The first card is the study: its name and its total head it, its owner's "Editar datos" and "Borrar" sit under them, the games follow, then the pages nav when the study spans several, and "Nueva partida" closes the card. The second card is the game's record, read top to bottom: where it was played, when and how it ended, and at the foot where the game came from and, for the owner, the delete control. A collection's owner gets a third card, the sharing panel.
 
 ## Props
 
-| Prop         | Type              | Required | Meaning                                                                                                                                                                                                 |
-| ------------ | ----------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `game`       | `GameView`        | yes      | The current game.                                                                                                                                                                                       |
-| `siblings`   | `StudyGameItem[]` | yes      | One page of the study's games, current included; the current one gets `aria-current="page"`.                                                                                                            |
-| `studyName`  | `string`          | yes      | Heads the list card.                                                                                                                                                                                    |
-| `gameCount`  | `number`          | yes      | The study's total, which is not `siblings.length` when there are pages.                                                                                                                                 |
-| `studyTools` | `ReactNode`       | no       | [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study) and [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) in their inline sizes, for the owner. |
-| `canReorder` | `boolean`         | no       | Whether rows can be dragged: the owner, with the whole study in hand (one page). Reordering one page would mix the old order of the others with the new one.                                            |
-| `pages`      | `GameAsidePages`  | no       | `{ page, pageCount, previousHref?, nextHref? }`, present when the study spans more than one page.                                                                                                       |
-| `newGame`    | `ReactNode`       | no       | The new-game modal, mounted by whoever has its data. Passed as a node so the aside does not carry the results catalog and the class games, which it uses for nothing else.                              |
-| `editGame`   | `ReactNode`       | no       | The "Datos de la partida" modal, rendered in the record card's head; absent when writing is not allowed.                                                                                                |
-| `share`      | `ReactNode`       | no       | [`ShareCollection`](/components/platform/sections/studies/study-detail/share-collection) in its compact layout, for a collection's owner.                                                               |
+| Prop         | Type                       | Required | Meaning                                                                                                  |
+| ------------ | -------------------------- | -------- | -------------------------------------------------------------------------------------------------------- |
+| `game`       | `GameView`                 | yes      | The current game.                                                                                        |
+| `study`      | `StudyDetail`              | yes      | The study, with the page of `games` around the current one, `permissions`, `page`/`pageCount`, `shares`. |
+| `results`    | `StudyKindOption[]`        | yes      | The results catalog, for the game modals. Empty when nobody here can write.                              |
+| `classGames` | `ClassGameItem[]`          | yes      | Games seen in class that can be copied; empty hides that tab of `NewGame`.                               |
+| `kinds`      | `StudyKindOption[]`        | yes      | Kinds the study can change to; empty when it is not the viewer's.                                        |
+| `students`   | `StudentOption[]`          | yes      | Students to hand a collection to; empty unless the viewer owns a collection.                             |
+| `pageHref`   | `(page: number) => string` | yes      | The current game's URL listing another page of the study's games (`?pagina=`).                           |
 
 ## Behaviour
 
-- **Five rows tall.** The list caps its height at five games (`calc(5 * 58px + 4 * 2px + 16px)`) and scrolls the rest on its own, so a long study does not push the record off the screen. On arrival, and whenever the game changes, an effect scrolls the current row into the middle of the list by arithmetic on its offset, so only the list moves and never the page.
-- Sibling rows show the student's title or the mapper's `label` fallback (round, event or position in the study), the players as a second line with a `title` tooltip because long names are cut, and the result.
-- **Reordering.** The list is local state while a row is dragged; on drop, or on an arrow key on the row's grip, the whole order goes to `reorderStudyGames(studyId, ids)` in a transition. New `siblings` from the server replace the state during render, not in an effect, so the old list is never painted first. The grip is a `<button>` with an `aria-label` so keyboard users move rows too; it only shows on hover or focus. `dragstart` sets its own data so the browser drags the row and not the link's URL.
-- **Pages.** With `pages`, a "← Anteriores · Página n de m · Siguientes →" nav sits between the list and "Nueva partida"; the links carry `?pagina=` on the current game's URL.
+- `canWrite = study.permissions.canEditGames` gates "Editar datos", "Nueva partida" and the reordering; inside it `canDelete` gates "Borrar" ("Mis partidas" is editable but not deletable). `canShare` is `canShareStudy(study)`: the owner of a collection. `canReorder = canWrite && study.pageCount === 1`, because reordering one page would mix the old order of the others with the new one.
+- **Pages.** With `study.pageCount > 1`, a "← Anteriores · Página n de m · Siguientes →" nav sits between the list and "Nueva partida"; the links come from `pageHref`.
 - `metaCells` always yields **four** cells (Fecha, Ronda, ECO, Resultado) with a dash where there is no value: in a two-by-two grid, hiding one cell displaces the other three, and an incomplete record reads worse than one with declared gaps.
-- With `game.canEdit`, [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game) renders at the foot in its `inline` size with the label "Borrar".
+- With `game.canEdit`, [`EditGame`](/components/platform/sections/studies/game-view/edit-game) sits in the record's head with `values={game}` whole (`GameView` already contains every field of `GameFieldValues`; listing them one by one is how the title and the federation got lost once) and [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game) at the foot in its `inline` size.
 
 ## Markup & styling
 
-Block `.game-aside` (353 lines).
+Block `.game-aside` (233 lines).
 
-**Elements:** `.game-aside__card`, `.game-aside__study`, `.game-aside__study-name`, `.game-aside__study-tools`, `.game-aside__card-head`, `.game-aside__label`, `.game-aside__count`, `.game-aside__list`, `.game-aside__row`, `.game-aside__handle`, `.game-aside__item`, `.game-aside__item-main`, `.game-aside__item-name`, `.game-aside__item-meta`, `.game-aside__item-result`, `.game-aside__pages`, `.game-aside__page-link`, `.game-aside__page-status`, `.game-aside__new`, `.game-aside__meta-head`, `.game-aside__edit`, `.game-aside__event`, `.game-aside__site`, `.game-aside__meta`, `.game-aside__meta-cell`, `.game-aside__meta-key`, `.game-aside__meta-value`, `.game-aside__meta-foot`, `.game-aside__source`
+**Elements:** `.game-aside__card`, `.game-aside__study`, `.game-aside__study-name`, `.game-aside__study-tools`, `.game-aside__card-head`, `.game-aside__label`, `.game-aside__count`, `.game-aside__pages`, `.game-aside__page-link`, `.game-aside__page-status`, `.game-aside__new`, `.game-aside__meta-head`, `.game-aside__edit`, `.game-aside__event`, `.game-aside__site`, `.game-aside__meta`, `.game-aside__meta-cell`, `.game-aside__meta-key`, `.game-aside__meta-value`, `.game-aside__meta-foot`, `.game-aside__source`
 
-**Modifiers and states:** `.game-aside__card_variant_list`, `.game-aside__card_variant_meta`, `.game-aside__row_state_dragging`, `.game-aside__item_state_active`, `.game-aside__page-link_state_disabled`
+**Modifiers and states:** `.game-aside__card_variant_list`, `.game-aside__card_variant_meta`, `.game-aside__page-link_state_disabled`
 
 **Other selectors it styles:** `.platform-button` inside the new-game slot.
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-subtle`
 
 **Breakpoints:** `(max-width: 1180px)` lays the cards side by side under the board.
 
 ## Usage
 
-From `components/platform/sections/studies/game-view/game-view.section.tsx`:
+From `app/(platform)/estudios/[studyId]/partidas/[gameId]/page.tsx`:
 
 ```tsx
-import { GameAside } from "./game-aside.comp";
+import { GameAside } from "@/components/platform/sections/studies/game-view/game-aside.comp";
 
-<GameAside
-  game={game}
-  siblings={siblings}
-  studyName={studyName}
-  gameCount={gameCount}
-  studyTools={studyTools}
-  canReorder={canReorder}
-  pages={pages}
-  newGame={newGame}
-  editGame={editGame}
-  share={share}
-/>;
+<div className="game-page__layout">
+  <GameAside
+    game={game}
+    study={study}
+    results={results}
+    classGames={classGames}
+    kinds={kinds}
+    students={students}
+    pageHref={pageHref}
+  />
+  <GameViewSection game={game} errorCode={error} />
+</div>;
 ```
+
+The page loads the catalogs only when they can be used (`canEditGames`, `game.canEdit`, `canShareStudy`) and passes empty lists otherwise.
 
 ## Related
 
-- [`EditGame`](/components/platform/sections/studies/game-view/edit-game), [`NewGame`](/components/platform/sections/studies/study-detail/new-game), [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game).
+- [`GameList`](/components/platform/sections/studies/game-view/game-list), the reorderable list, the aside's one Client Component.
+- [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section), the board column beside it.
 - [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section), the study's page when it has no game to show.

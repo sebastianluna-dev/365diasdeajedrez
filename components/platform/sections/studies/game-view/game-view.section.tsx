@@ -1,39 +1,21 @@
 "use client";
 
-import { type ReactNode, useCallback, useEffect, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { STUDY_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
 import { federationFlag } from "@/lib/chess/federations";
 import { autosaveGamePgn } from "@/services/studies/studies.actions";
-import type { GameView, StudyGameItem } from "@/services/studies/studies.types";
-import { GameAside, type GameAsidePages } from "./game-aside.comp";
+import type { GameView } from "@/services/studies/studies.types";
 import { GameTools, type GameToolsTab } from "./game-tools.comp";
 import "./game-view.section.css";
 
 interface GameViewSectionProps {
   game: GameView;
-  /** The study's games around the current one (one page): they feed the aside. */
-  siblings: StudyGameItem[];
-  /** The study's name and total, which head the aside. */
-  studyName: string;
-  gameCount: number;
-  /** "Editar datos" and "Borrar" of the study; absent when it is not the viewer's. */
-  studyTools?: ReactNode;
-  /** Whether the aside's list can be dragged into a new order. */
-  canReorder?: boolean;
-  /** Where the aside's list stands when the study spans several pages. */
-  pages?: GameAsidePages;
-  /** New-game modal; absent when writing is not allowed. */
-  newGame?: ReactNode;
-  /** Game data modal; absent when writing is not allowed. */
-  editGame?: ReactNode;
-  /** The sharing card of a collection, for its owner. */
-  share?: ReactNode;
   /**
    * What bounced back from a server action: the game's (delete without
-   * confirming) and the study's, whose forms are mounted in the aside now
-   * that the study has no page of its own.
+   * confirming) and the study's, whose forms live in the aside beside this
+   * column; the notice goes above the board, where the answer is looked for.
    */
   errorCode?: string;
 }
@@ -107,26 +89,15 @@ function Player({ name, elo, title, country, side }: PlayerProps) {
 }
 
 /**
- * The screen of a Mis estudios game: it is read and annotated in the SAME
- * place.
+ * The board column of a Mis estudios game: it is read and annotated in the
+ * SAME place. The study around it — its games, its actions — is the aside's
+ * business (`GameAside`), which the page lays out beside this.
  *
  * There is no separate editing screen. Whoever owns the game plays on the
  * board to add moves and uses the list's right click to comment, annotate,
  * promote or delete them; all of that saves by itself.
  */
-export function GameViewSection({
-  game,
-  siblings,
-  studyName,
-  gameCount,
-  studyTools,
-  canReorder,
-  pages,
-  newGame,
-  editGame,
-  share,
-  errorCode,
-}: GameViewSectionProps) {
+export function GameViewSection({ game, errorCode }: GameViewSectionProps) {
   // The PGN lives here because it is shared by the viewer — which reads and
   // edits it — and the tools panel — which also writes it. If each kept its
   // own, commenting a move would not show in the list until reload.
@@ -220,79 +191,64 @@ export function GameViewSection({
 
   return (
     <section className="game-view">
-      <GameAside
-        game={game}
-        siblings={siblings}
-        studyName={studyName}
-        gameCount={gameCount}
-        studyTools={studyTools}
-        canReorder={canReorder}
-        pages={pages}
-        newGame={newGame}
-        editGame={editGame}
-        share={share}
-      />
+      {errorCode && <PlatformNotice message={STUDY_ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
 
-      <div className="game-view__board">
-        {errorCode && <PlatformNotice message={STUDY_ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
-
-        <GameViewer
-          pgn={pgn}
-          // No header in the panel: the players are already in the board strips
-          // and in the aside's record, and repeating them here stole height from
-          // the moves, which is what one comes to look at.
-          // In Mis estudios the game is traversed: the controls go next to the
-          // moves, not under the board.
-          controls="panel"
-          engine
-          editable={game.canEdit}
-          onPgnChange={applyPgn}
-          // The path goes back and forth: the viewer reports the move and the section
-          // feeds it back, which is what lets the evaluation chart take the board to
-          // the move being pointed at.
-          path={currentPath}
-          onPathChange={setCurrentPath}
-          onRequestEdit={(mode) => {
-            setToolsTab(mode === "comment" ? "comment" : "quality");
-            setFocusRequest((count) => count + 1);
-          }}
-          players={{
-            white: (
-              <Player
-                name={game.white}
-                elo={game.whiteElo}
-                title={game.whiteTitle}
-                country={game.whiteCountry}
-                side="white"
-              />
-            ),
-            black: (
-              <Player
-                name={game.black}
-                elo={game.blackElo}
-                title={game.blackTitle}
-                country={game.blackCountry}
-                side="black"
-              />
-            ),
-          }}
-          boardFooter={
-            <GameTools
-              pgn={pgn}
-              currentPath={currentPath}
-              canEdit={game.canEdit}
-              saveLabel={saveLabel}
-              tab={toolsTab}
-              onTabChange={setToolsTab}
-              focusRequest={focusRequest}
-              white={game.white}
-              black={game.black}
-              onSelectPath={setCurrentPath}
-              onPgnChange={applyPgn}
+      <GameViewer
+        pgn={pgn}
+        // No header in the panel: the players are already in the board strips
+        // and in the aside's record, and repeating them here stole height from
+        // the moves, which is what one comes to look at.
+        // In Mis estudios the game is traversed: the controls go next to the
+        // moves, not under the board.
+        controls="panel"
+        engine
+        editable={game.canEdit}
+        onPgnChange={applyPgn}
+        // The path goes back and forth: the viewer reports the move and the section
+        // feeds it back, which is what lets the evaluation chart take the board to
+        // the move being pointed at.
+        path={currentPath}
+        onPathChange={setCurrentPath}
+        onRequestEdit={(mode) => {
+          setToolsTab(mode === "comment" ? "comment" : "quality");
+          setFocusRequest((count) => count + 1);
+        }}
+        players={{
+          white: (
+            <Player
+              name={game.white}
+              elo={game.whiteElo}
+              title={game.whiteTitle}
+              country={game.whiteCountry}
+              side="white"
             />
-          }
-        />
-      </div>
+          ),
+          black: (
+            <Player
+              name={game.black}
+              elo={game.blackElo}
+              title={game.blackTitle}
+              country={game.blackCountry}
+              side="black"
+            />
+          ),
+        }}
+        boardFooter={
+          <GameTools
+            pgn={pgn}
+            currentPath={currentPath}
+            canEdit={game.canEdit}
+            saveLabel={saveLabel}
+            tab={toolsTab}
+            onTabChange={setToolsTab}
+            focusRequest={focusRequest}
+            white={game.white}
+            black={game.black}
+            onSelectPath={setCurrentPath}
+            onPgnChange={applyPgn}
+          />
+        }
+      />
     </section>
   );
 }

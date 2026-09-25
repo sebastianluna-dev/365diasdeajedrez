@@ -11,7 +11,7 @@ description: "The study without games: header with kind, origin and read-only ma
 | Stylesheet | `study-detail.section.css` → block `.study-detail`                                                                                                                                                                                                                                                                                                                                                                                                           |
 | Used by    | `/estudios/[studyId]`, only for a study with no games                                                                                                                                                                                                                                                                                                                                                                                                        |
 | Composes   | [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study), [`NewGame`](/components/platform/sections/studies/study-detail/new-game), [`ShareCollection`](/components/platform/sections/studies/study-detail/share-collection), [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study), [`PlatformNotice`](/components/platform/shared/platform-notice), [`EmptyState`](/components/platform/shared/empty-state) |
-| Uses       | `STUDY_ERROR_MESSAGES` from `constants/platform/student-messages.const`; `DATABASE_KIND` from `constants/platform/study-codes.const`; `StudyDetail`, `StudyKindOption`, `ClassGameItem`, `StudentOption` from `services/studies/studies.types`                                                                                                                                                                                                               |
+| Uses       | `STUDY_ERROR_MESSAGES` from `constants/platform/student-messages.const`; `canShareStudy` from `services/studies/study-rules`; `StudyDetail`, `StudyKindOption`, `ClassGameItem`, `StudentOption` from `services/studies/studies.types`                                                                                                                                                                                                                       |
 
 ## Purpose
 
@@ -31,7 +31,7 @@ A study is read on its game page: `/estudios/[studyId]` redirects to the first g
 ## Behaviour
 
 - `canWrite = permissions.canEditGames` gates the whole action bar; inside it `canDelete` gates the delete button ("Mis partidas" is editable but not deletable).
-- `canShare` is true only for a **collection** (`DATABASE_KIND.COLLECTION`) the viewer can delete, which means its owner; whoever receives one gets `shares` empty and fails this test too.
+- `canShare` is `canShareStudy(study)`: a **collection** the viewer can delete, which means its owner; whoever receives one gets `shares` empty and fails this test too. The game aside applies the same helper.
 - Tags: kind, course name or "Te la compartió …", and "Sólo lectura" when not writable.
 - The empty state has different copy for writable and read-only studies.
 - Errors render through [`PlatformNotice`](/components/platform/shared/platform-notice) with a fallback message for unknown codes.

@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
-import { canChangeKindTo, canCreateKind, creatableKinds, studyPermissionsOf } from "@/services/studies/study-rules";
+import {
+  canChangeKindTo,
+  canCreateKind,
+  canShareStudy,
+  creatableKinds,
+  studyPermissionsOf,
+} from "@/services/studies/study-rules";
 
 const OWNED = { isOwner: true };
 const RECEIVED = { isOwner: false };
@@ -82,5 +88,16 @@ describe("torneo y estudio", () => {
 
   it("el estudio de un alumno es intocable para quien lo mira de fuera", () => {
     expect(studyPermissionsOf({ kindCode: DATABASE_KIND.STUDY, ...RECEIVED }).canEditGames).toBe(false);
+  });
+});
+
+describe("compartir", () => {
+  it("el panel de compartir es del dueño de una colección, y de nadie más", () => {
+    const owned = studyPermissionsOf({ kindCode: DATABASE_KIND.COLLECTION, ...OWNED });
+    const received = studyPermissionsOf({ kindCode: DATABASE_KIND.COLLECTION, ...RECEIVED });
+    expect(canShareStudy({ kindCode: DATABASE_KIND.COLLECTION, permissions: owned })).toBe(true);
+    expect(canShareStudy({ kindCode: DATABASE_KIND.COLLECTION, permissions: received })).toBe(false);
+    const study = studyPermissionsOf({ kindCode: DATABASE_KIND.STUDY, ...OWNED });
+    expect(canShareStudy({ kindCode: DATABASE_KIND.STUDY, permissions: study })).toBe(false);
   });
 });
