@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
-import { mapStudyDetail, STUDY_GAMES_PAGE_SIZE, type StudyDetailRow } from "./studies.mapper";
+import {
+  mapStudyDetail,
+  mapStudySummary,
+  STUDY_GAMES_PAGE_SIZE,
+  type StudyDetailRow,
+  type StudySummaryRow,
+} from "./studies.mapper";
 
 // Minimal fixture with the shape `studyDetailInclude` returns. It is built by
 // hand and the type is asserted: what is tested is the mapping, not Prisma.
@@ -108,5 +114,52 @@ describe("mapStudyDetail con paginación", () => {
       `Partida ${STUDY_GAMES_PAGE_SIZE * 2 + 1}`,
       `Partida ${STUDY_GAMES_PAGE_SIZE * 2 + 2}`,
     ]);
+  });
+});
+
+function summary(overrides: Partial<StudySummaryRow> = {}): StudySummaryRow {
+  return {
+    id: "study-1",
+    userId: "owner",
+    name: "Mi estudio",
+    description: null,
+    kind: { id: 1, code: DATABASE_KIND.STUDY, label: "Estudio", order: 0 },
+    kindId: 1,
+    courseId: null,
+    course: null,
+    isDefault: false,
+    createdAt: new Date(2026, 0, 1),
+    updatedAt: new Date(2026, 5, 1),
+    shares: [],
+    _count: { games: 0 },
+    games: [],
+    ...overrides,
+  } as unknown as StudySummaryRow;
+}
+
+describe("mapStudySummary", () => {
+  it("lista las primeras partidas por su título o por sus jugadores", () => {
+    const row = summary({
+      games: [
+        { title: "La Inmortal", white: "Anderssen", black: "Kieseritzky" },
+        { title: null, white: "Luna, Sebastián", black: "Cervantes, Andrea" },
+      ],
+    });
+    expect(mapStudySummary(row, "owner", 12).previewGames).toEqual([
+      "La Inmortal",
+      "Luna, Sebastián – Cervantes, Andrea",
+    ]);
+  });
+
+  it("el total viene del servicio y las citadas de la propia fila", () => {
+    const view = mapStudySummary(summary({ _count: { games: 3 } }), "owner", 40);
+    expect(view.gameCount).toBe(40);
+    expect(view.citedGameCount).toBe(3);
+  });
+
+  it("dice hace cuánto se tocó, además de la fecha", () => {
+    const view = mapStudySummary(summary(), "owner", 0, new Date(2026, 8, 24));
+    expect(view.updatedAtLabel).toBe("1 de junio, 2026");
+    expect(view.updatedAgoLabel).toBe("hace 3 meses");
   });
 });

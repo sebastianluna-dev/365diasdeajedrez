@@ -1,11 +1,14 @@
 .study-card {
+  /* The name's pseudo-element is stretched over this box: the whole card is
+     the link. Anything else that must be pressed sits above it. */
+  position: relative;
   display: flex;
-  flex-direction: column;
-  gap: 9px;
-  padding: 26px;
+  gap: 18px;
+  padding: 22px 24px;
   background: var(--platform-surface);
-  border-radius: 10px;
+  border-radius: 12px;
   box-shadow: 0 1px 2px rgba(22, 17, 13, 0.05);
+  transition: box-shadow 140ms ease-out;
 
   &:hover {
     box-shadow:
@@ -13,77 +16,153 @@
       0 10px 24px rgba(22, 17, 13, 0.07);
   }
 
-  & .study-card__tags {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  /* The keyboard focus of the stretched link is shown on the card, which is
+     what it covers. */
+  &:has(.study-card__name:focus-visible) {
+    outline: 2px solid var(--platform-accent);
+    outline-offset: 2px;
   }
 
-  & .study-card__kind,
-  & .study-card__origin {
-    padding: 5px 11px;
-    border-radius: 1000px;
-    font-size: 14px;
-    white-space: nowrap;
+  /* The study's mark: a 2×2 board in the house colours, like the favicon. The
+     quadrants go clockwise from the top right. */
+  & .study-card__tile {
+    flex: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 11px;
+    background: conic-gradient(
+      var(--platform-accent) 25%,
+      var(--platform-text) 0 50%,
+      var(--platform-accent) 0 75%,
+      var(--platform-text) 0
+    );
   }
 
-  & .study-card__kind {
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
-    font-weight: 700;
-  }
-
-  /* Which course it comes from, when it is not yours. */
-  & .study-card__origin {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text-muted);
-    font-weight: 500;
+  & .study-card__body {
+    flex: 1;
     min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  & .study-card__head {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  & .study-card__name {
+    flex: 1;
+    min-width: 0;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+    color: var(--platform-text);
+    text-decoration: none;
+  }
+
+  & .study-card__name::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  &:hover .study-card__name {
+    color: var(--platform-accent-ink);
+  }
+
+  /* Above the stretched link, so the cross is what gets pressed. */
+  & .study-card__actions {
+    position: relative;
+    z-index: 1;
+    flex: none;
   }
 
   & .study-card__readonly {
     flex: none;
-    margin-left: auto;
-    font-size: 14px;
+    padding: 3px 9px;
+    border-radius: 1000px;
+    background: var(--platform-surface-neutral);
+    font-size: 13px;
     color: var(--platform-text-subtle);
   }
 
-  & .study-card__name {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.015em;
-    color: var(--platform-text);
+  & .study-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--platform-text-subtle);
   }
 
-  & .study-card__name:hover {
+  & .study-card__kind {
+    font-weight: 600;
     color: var(--platform-accent-ink);
+  }
+
+  /* Which course or teacher it comes from, when it is not yours. */
+  & .study-card__origin {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .study-card__dot {
+    color: var(--platform-text-faint);
   }
 
   & .study-card__description {
     margin: 0;
-    font-size: 16px;
+    font-size: 15px;
     line-height: 1.45;
     color: var(--platform-text-muted);
     text-wrap: pretty;
   }
 
-  & .study-card__meta {
+  /* The first games, one per line with a hollow bullet, like the chapters on
+     a lichess study card. */
+  & .study-card__games {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .study-card__game {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 2px 0 0;
-    font-size: 14px;
-    color: var(--platform-text-subtle);
-  }
-
-  & .study-card__count {
-    font-weight: 600;
+    min-width: 0;
+    font-size: 15px;
     color: var(--platform-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  & .study-card__dot {
-    color: var(--platform-text-faint);
+  & .study-card__game::before {
+    content: "";
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border: 1.5px solid var(--platform-text-faint);
+    border-radius: 50%;
+  }
+
+  & .study-card__game_more {
+    color: var(--platform-text-subtle);
+    font-size: 14px;
+  }
+
+  & .study-card__game_more::before {
+    border-color: transparent;
   }
 }

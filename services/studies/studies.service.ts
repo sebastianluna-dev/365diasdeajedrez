@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
 import { getTeacherContext } from "@/lib/platform-auth/roles";
+import { formatRelativeSpanish } from "@/lib/format-relative-spanish";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
@@ -13,6 +14,7 @@ import {
   mapStudySummary,
   STUDY_GAMES_PAGE_SIZE,
   studyDetailInclude,
+  STUDY_PREVIEW_SIZE,
   studySummaryInclude,
 } from "./studies.mapper";
 import { creatableKinds, studyPermissionsOf } from "./study-rules";
@@ -51,7 +53,16 @@ export async function getUserStudies(): Promise<StudySummary[]> {
     include: studySummaryInclude,
   });
 
-  const studies = rows.map((row) => mapStudySummary(row, user.id));
+  // The totals, in one query for every study: the include's own count is taken
+  // by the cited games (a relation is counted once per include).
+  const totals = await db.game.groupBy({
+    by: ["databaseId"],
+    where: { databaseId: { in: rows.map((row) => row.id) } },
+    _count: { _all: true },
+  });
+  const totalOf = new Map(totals.map((total) => [total.databaseId, total._count._all]));
+
+  const studies = rows.map((row) => mapStudySummary(row, user.id, totalOf.get(row.id) ?? 0));
   const classGames = await getClassGamesSummary();
   // At the end of the list and only if there is something: an empty "class games"
   // card would be noise for whoever has not been to one yet.
@@ -209,6 +220,7 @@ const getClassGameItems = cache(async (): Promise<ClassGameItem[]> => {
       playedAtLabel: block.game.playedAt ? formatSpanishDate(block.game.playedAt) : undefined,
       className: block.class.title,
       classDateLabel: formatSpanishDate(block.class.scheduledAt),
+      classDateAgoLabel: formatRelativeSpanish(block.class.scheduledAt),
       href: platformRoutes.classDetail(block.classId),
     });
   }
@@ -229,6 +241,8 @@ async function getClassGamesSummary(): Promise<StudySummary | null> {
     kindCode: DATABASE_KIND.COLLECTION,
     gameCount: items.length,
     updatedAtLabel: latest.classDateLabel,
+    updatedAgoLabel: latest.classDateAgoLabel,
+    previewGames: items.slice(0, STUDY_PREVIEW_SIZE).map((item) => `${item.white} – ${item.black}`),
     isCourseStudy: false,
     // It is not a database: there is nothing to edit or delete.
     permissions: studyPermissionsOf({ kindCode: DATABASE_KIND.COLLECTION, isOwner: false }),

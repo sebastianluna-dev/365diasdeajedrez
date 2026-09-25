@@ -19,8 +19,9 @@ import type { GameView, StudyDetail, StudySummary } from "@/services/studies/stu
 // The server would reject it all the same, but this way the buttons are not
 // offered either.
 
-export function mapStudentStudySummary(studentId: string, row: StudySummaryRow): StudySummary {
-  return { ...mapStudySummary(row, null), href: teacherRoutes.studentStudy(studentId, row.id) };
+/** `gameCount` is the study's total, counted by the service (see `studySummaryInclude`). */
+export function mapStudentStudySummary(studentId: string, row: StudySummaryRow, gameCount: number): StudySummary {
+  return { ...mapStudySummary(row, null, gameCount), href: teacherRoutes.studentStudy(studentId, row.id) };
 }
 
 export function mapStudentStudyDetail(studentId: string, row: StudyDetailRow): StudyDetail {

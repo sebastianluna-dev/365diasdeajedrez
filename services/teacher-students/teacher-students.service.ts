@@ -117,7 +117,7 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
   if (!assignment) return null;
 
   const now = new Date();
-  const [student, courseRows, classRows, studyRows, activityRows, completedLessons] = await Promise.all([
+  const [student, courseRows, classRows, studyRows, activityRows, completedLessons, studyTotals] = await Promise.all([
     db.user.findUnique({ where: { id: studentId }, select: { id: true, displayName: true, email: true } }),
     db.courseProgress.findMany({
       where: { userId: studentId },
@@ -165,6 +165,13 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
       where: { userId: studentId, status: { code: PROGRESS_STATUS.COMPLETED } },
       select: { lesson: { select: { chapter: { select: { courseId: true } } } } },
     }),
+    // The studies' totals: the include's own count is the cited games (see
+    // `studySummaryInclude`), so the total comes in one query for all of them.
+    db.game.groupBy({
+      by: ["databaseId"],
+      where: { database: { userId: studentId } },
+      _count: { _all: true },
+    }),
   ]);
 
   if (!student) return null;
@@ -208,6 +215,8 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
     occurredAtLabel: formatSpanishDate(row.occurredAt),
   }));
 
+  const totalOf = new Map(studyTotals.map((total) => [total.databaseId, total._count._all]));
+
   return {
     id: student.id,
     displayName: student.displayName,
@@ -221,7 +230,7 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
       .reverse()
       .map(mapSharedClass),
     pastClasses: classRows.filter((row) => row.class.scheduledAt < now).map(mapSharedClass),
-    studies: studyRows.map((row) => mapStudentStudySummary(studentId, row)),
+    studies: studyRows.map((row) => mapStudentStudySummary(studentId, row, totalOf.get(row.id) ?? 0)),
     activity,
   };
 }

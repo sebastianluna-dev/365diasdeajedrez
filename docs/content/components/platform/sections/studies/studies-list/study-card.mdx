@@ -1,5 +1,5 @@
 ---
-description: "One study in the list: kind, origin (course or teacher) when it is not the student's, the delete cross or a read-only mark, name, description, game count and last update."
+description: "One study in the list, in the manner of a lichess study card: a 2×2 tile, the name, a byline (kind, game count, origin, how long ago), the description and the first four games; the whole card is the link, and the delete cross still works above it."
 ---
 
 # `StudyCard`
@@ -15,28 +15,30 @@ description: "One study in the list: kind, origin (course or teacher) when it is
 
 ## Purpose
 
-A study as a card. The tag row states the kind and, for what is not the student's, **where it comes from**: the course that brings it or the teacher who handed it out. Without that, two read-only collections would be indistinguishable in the list. The name links to the study page.
+A study as a card, in the manner of a lichess study card: a 2×2 tile in the house colours, the name, one byline and the first games inside. The byline states the kind, the size, **where it comes from** for what is not the student's (the course that brings it or the teacher who handed it out; without that, two read-only collections would be indistinguishable) and how long ago it was touched ("hace 3 meses", the exact date in the tooltip). Under it, up to four games as the study page names them (a title, or "Blancas – Negras") and "y n más".
+
+**The whole card is the link.** The name is the only `<a>`; its `::after` is stretched over the card (`position: absolute; inset: 0`), so a click anywhere goes to the study while the markup keeps one link with the study's name. The delete cross sits in `.study-card__actions`, raised above it with `z-index`, so it is still what gets pressed. Keyboard focus on the link outlines the card (`:has(:focus-visible)`).
 
 ## Props
 
-| Prop    | Type           | Required | Meaning                                                                                                                                                                            |
-| ------- | -------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `study` | `StudySummary` | yes      | `id`, `name`, `href`, `description?`, `kindLabel`, `courseName?`, `sharedByName?`, `gameCount`, `citedGameCount`, `updatedAtLabel`, `permissions: { canEditGames, canDelete, … }`. |
+| Prop    | Type           | Required | Meaning                                                                                                                                                                                                               |
+| ------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `study` | `StudySummary` | yes      | `id`, `name`, `href`, `description?`, `kindLabel`, `courseName?`, `sharedByName?`, `gameCount`, `citedGameCount`, `updatedAtLabel`, `updatedAgoLabel`, `previewGames`, `permissions: { canEditGames, canDelete, … }`. |
 
 ## Behaviour
 
 - `permissions.canDelete` renders the [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) cross with the counts it needs for its warning; otherwise, a read-only study shows the "Sólo lectura" mark. An editable study that cannot be deleted ("Mis partidas") shows neither.
-- Game count and "Actualizado el …" come formatted from the mapper.
+- Game count, the two date labels and `previewGames` come from the mapper: the preview is the study's first four games in the study page's order (`studySummaryInclude`, `take: 4`), and the total is counted by the service in one grouped query, because the include's own relation count is taken by the cited games.
 
 ## Markup & styling
 
-Block `.study-card` (90 lines).
+Block `.study-card`.
 
-**Elements:** `.study-card__tags`, `.study-card__kind`, `.study-card__origin`, `.study-card__readonly`, `.study-card__name`, `.study-card__description`, `.study-card__meta`, `.study-card__count`, `.study-card__dot`
+**Elements:** `.study-card__tile`, `.study-card__body`, `.study-card__head`, `.study-card__name`, `.study-card__actions`, `.study-card__readonly`, `.study-card__meta`, `.study-card__kind`, `.study-card__origin`, `.study-card__dot`, `.study-card__description`, `.study-card__games`, `.study-card__game`
 
-No modifiers.
+**Modifiers:** `.study-card__game_more` (the "y n más" row, without bullet).
 
-**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
 
 No media queries.
 
