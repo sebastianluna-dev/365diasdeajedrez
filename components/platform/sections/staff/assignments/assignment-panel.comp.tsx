@@ -7,6 +7,7 @@ import type { StudentAssignmentHistoryItem } from "@/services/staff-students/sta
 import type { AssignableStudent, TeacherStudentAssignment } from "@/services/staff-teachers/staff-teachers.types";
 import "./assignment-panel.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface ByStudentProps {
   mode: "byStudent";
@@ -54,16 +55,13 @@ export function AssignmentPanel(props: AssignmentPanelProps) {
           <input type="hidden" name="returnTo" value={returnTo} />
 
           <FormField label={active ? "Reasignar a" : "Asignar a"}>
-            <select name="teacherId" required defaultValue="">
-              <option value="" disabled>
-                Elige un profesor…
-              </option>
-              {props.teachers.map((teacher) => (
-                <option key={teacher.id} value={teacher.id}>
-                  {teacher.displayName}
-                </option>
-              ))}
-            </select>
+            <PlatformSelect
+              name="teacherId"
+              required
+              placeholder="Elige un profesor…"
+              options={props.teachers.map((teacher) => ({ value: teacher.id, label: teacher.displayName }))}
+              size="compact"
+            />
           </FormField>
 
           <FormField label="Nota (opcional)">
@@ -136,17 +134,16 @@ export function AssignmentPanel(props: AssignmentPanelProps) {
         <input type="hidden" name="returnTo" value={returnTo} />
 
         <FormField label="Agregar alumno" hint="Si el alumno ya tiene profesor, asignarlo aquí lo reasigna.">
-          <select name="studentId" required defaultValue="">
-            <option value="" disabled>
-              Elige un alumno…
-            </option>
-            {props.assignable.map((student) => (
-              <option key={student.id} value={student.id}>
-                {student.displayName}
-                {student.currentTeacherName ? ` — ahora con ${student.currentTeacherName}` : ""}
-              </option>
-            ))}
-          </select>
+          <PlatformSelect
+            name="studentId"
+            required
+            placeholder="Elige un alumno…"
+            options={props.assignable.map((student) => ({
+              value: student.id,
+              label: `${student.displayName}${student.currentTeacherName ? ` — ahora con ${student.currentTeacherName}` : ""}`,
+            }))}
+            size="compact"
+          />
         </FormField>
 
         <FormField label="Nota (opcional)">

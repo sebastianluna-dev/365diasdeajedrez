@@ -1,21 +1,21 @@
 ---
-description: "A select of the games the teacher can reference in a class block, grouped by owner and study, carrying ids and labels only."
+description: "A PlatformSelect of the games the teacher can reference in a class block, grouped by owner and study, carrying ids and labels only."
 ---
 
 # `GameSelector`
 
-|            |                                                                                            |
-| ---------- | ------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/teacher/classes/class-block-editor/game-selector.comp.tsx`   |
-| Kind       | Client Component                                                                           |
-| Stylesheet | none (a `FormField` with a native `<select>`)                                              |
-| Used by    | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) |
-| Composes   | [`FormField`](/components/platform/shared/form-field)                                      |
-| Uses       | `ReferenceableGameGroup` from `services/teacher-classes/teacher-classes.types`             |
+|            |                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/class-block-editor/game-selector.comp.tsx`    |
+| Kind       | Client Component                                                                            |
+| Stylesheet | none (a `FormField` with a [`PlatformSelect`](/components/platform/shared/platform-select)) |
+| Used by    | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form)  |
+| Composes   | [`FormField`](/components/platform/shared/form-field)                                       |
+| Uses       | `ReferenceableGameGroup` from `services/teacher-classes/teacher-classes.types`              |
 
 ## Purpose
 
-The games a teacher may cite in a class: their own studies' games and those of their active students, grouped as `<optgroup>`s labelled "owner · study". Only ids and labels travel; PGNs are requested one at a time by the [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker) when a preview is needed, so the page does not carry every game's moves.
+The games a teacher may cite in a class: their own studies' games and those of their active students, grouped with `groups` (headed runs, what `<optgroup>` is to a native select) labelled "owner · study". Only ids and labels travel; PGNs are requested one at a time by the [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker) when a preview is needed, so the page does not carry every game's moves.
 
 ## Props
 
@@ -27,7 +27,7 @@ The games a teacher may cite in a class: their own studies' games and those of t
 
 ## Behaviour
 
-A controlled `<select name="gameId" required>` with an empty placeholder option. Client only because the parent needs the value to decide whether to show the move-path picker.
+A controlled, required `PlatformSelect` named `gameId` with the placeholder "Elige una partida…" (`value`/`onValueChange`). Client only because the parent needs the value to decide whether to show the move-path picker.
 
 ## Markup & styling
 

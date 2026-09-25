@@ -18,6 +18,7 @@ import { ClassBlockEditor } from "./class-block-editor/class-block-editor.comp";
 import type { BlockFormOptions } from "./class-block-editor/block-form.comp";
 import "./teacher-class-detail.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface TeacherClassDetailSectionProps {
   classDetail: TeacherClassDetail;
@@ -146,16 +147,13 @@ export function TeacherClassDetailSection({
         {enrollable.length > 0 && (
           <form className="teacher-class__enroll" action={addParticipant.bind(null, classDetail.id)}>
             <FormField label="Inscribir a un alumno">
-              <select name="studentId" required defaultValue="">
-                <option value="" disabled>
-                  Elige un alumno…
-                </option>
-                {enrollable.map((student) => (
-                  <option key={student.id} value={student.id}>
-                    {student.displayName}
-                  </option>
-                ))}
-              </select>
+              <PlatformSelect
+                name="studentId"
+                required
+                placeholder="Elige un alumno…"
+                options={enrollable.map((student) => ({ value: student.id, label: student.displayName }))}
+                size="compact"
+              />
             </FormField>
             <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Inscribiendo…">
               Inscribir

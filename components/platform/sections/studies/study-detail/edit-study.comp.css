@@ -58,21 +58,20 @@
     color: var(--platform-text-muted);
   }
 
-  & .edit-study__input,
-  & .edit-study__select {
+  /* The same metrics as the compact select next to them. */
+  & .edit-study__input {
     width: 100%;
     box-sizing: border-box;
-    padding: 10px 13px;
+    padding: 9px 12px;
     border: 1px solid var(--platform-border);
     border-radius: 10px;
     background: var(--platform-surface);
     color: var(--platform-text);
     font-family: inherit;
-    font-size: 16px;
+    font-size: 15.5px;
   }
 
-  & .edit-study__input:focus,
-  & .edit-study__select:focus {
+  & .edit-study__input:focus {
     outline: none;
     border-color: var(--platform-accent);
   }

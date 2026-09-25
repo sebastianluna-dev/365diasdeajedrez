@@ -21,7 +21,6 @@
   & .platform-field__control input[type="search"],
   & .platform-field__control input[type="date"],
   & .platform-field__control input[type="datetime-local"],
-  & .platform-field__control select,
   & .platform-field__control textarea {
     width: 100%;
     padding: 9px 12px;
@@ -40,7 +39,6 @@
   }
 
   & .platform-field__control input:focus,
-  & .platform-field__control select:focus,
   & .platform-field__control textarea:focus {
     outline: 2px solid var(--platform-accent-soft);
     border-color: var(--platform-accent);

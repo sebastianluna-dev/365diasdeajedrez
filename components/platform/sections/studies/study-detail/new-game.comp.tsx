@@ -4,6 +4,7 @@ import { useRef, useState, useTransition } from "react";
 import { copyClassGamesToStudy, createStudyGame, importPgnGames } from "@/services/studies/studies.actions";
 import type { ClassGameItem, StudyKindOption } from "@/services/studies/studies.types";
 import "./new-game.comp.css";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 type Tab = "pgn" | "fen" | "blank" | "class";
 
@@ -161,14 +162,12 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
 
               <label className="new-game__field">
                 <span className="new-game__label">Resultado</span>
-                <select className="new-game__input" name="resultCode" defaultValue="">
-                  <option value="">Sin terminar</option>
-                  {results.map((result) => (
-                    <option key={result.code} value={result.code}>
-                      {result.label}
-                    </option>
-                  ))}
-                </select>
+                <PlatformSelect
+                  name="resultCode"
+                  emptyOption="Sin terminar"
+                  options={results.map((result) => ({ value: result.code, label: result.label }))}
+                  size="compact"
+                />
               </label>
               <label className="new-game__field">
                 <span className="new-game__label">Fecha</span>

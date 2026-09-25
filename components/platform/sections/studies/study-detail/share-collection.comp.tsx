@@ -2,6 +2,7 @@ import { shareStudyWithStudent, unshareStudyWithStudent } from "@/services/studi
 import type { StudentOption, StudyShareItem } from "@/services/studies/studies.types";
 import "./share-collection.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface ShareCollectionProps {
   studyId: string;
@@ -72,13 +73,15 @@ export function ShareCollection({ studyId, shares, students, layout = "panel" }:
         <form action={shareStudyWithStudent.bind(null, studyId)} className="share-collection__form">
           <label className="share-collection__field">
             <span className="share-collection__label">Dársela a</span>
-            <select className="share-collection__select" name="studentId" defaultValue={candidates[0]?.id}>
-              {candidates.map((student) => (
-                <option key={student.id} value={student.id}>
-                  {student.displayName} · {student.email}
-                </option>
-              ))}
-            </select>
+            <PlatformSelect
+              name="studentId"
+              defaultValue={candidates[0]?.id}
+              options={candidates.map((student) => ({
+                value: student.id,
+                label: `${student.displayName} · ${student.email}`,
+              }))}
+              size="compact"
+            />
           </label>
 
           <SubmitButton pendingLabel="Compartiendo…">Compartir</SubmitButton>

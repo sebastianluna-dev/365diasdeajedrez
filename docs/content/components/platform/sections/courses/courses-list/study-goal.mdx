@@ -29,14 +29,14 @@ Neither figure is stored. The streak is counted backwards from the activity log 
 ## Behaviour
 
 - The streak note adapts its wording: "Estudia hoy para empezar una racha." at zero, otherwise "n días seguidos estudiando."
-- "Cambiar objetivo" is a `<details>` rather than a modal: choosing from a short list needs no JavaScript. Inside, a `<form action={updateDailyGoal}>` with a `<select name="goalMinutes">` over `GOAL_OPTIONS` and a save button. The action validates the value against the same list and revalidates `/cursos`.
+- "Cambiar objetivo" is a `<details>` rather than a modal: choosing from a short list needs no JavaScript. Inside, a `<form action={updateDailyGoal}>` with a [`PlatformSelect`](/components/platform/shared/platform-select) named `goalMinutes` over `GOAL_OPTIONS` and a save button. The action validates the value against the same list and revalidates `/cursos`.
 - The bar's width is `goal.percent` inline; the service clamps it.
 
 ## Markup & styling
 
 Block `.study-goal` (188 lines).
 
-**Elements:** `.study-goal__card`, `.study-goal__title`, `.study-goal__streak`, `.study-goal__flame`, `.study-goal__streak-value`, `.study-goal__streak-note`, `.study-goal__amount`, `.study-goal__amount-value`, `.study-goal__amount-total`, `.study-goal__legend`, `.study-goal__legend-label`, `.study-goal__legend-percent`, `.study-goal__track`, `.study-goal__fill`, `.study-goal__hint`, `.study-goal__editor`, `.study-goal__editor-button`, `.study-goal__notice`, `.study-goal__form`, `.study-goal__field`, `.study-goal__field-label`, `.study-goal__select`
+**Elements:** `.study-goal__card`, `.study-goal__title`, `.study-goal__streak`, `.study-goal__flame`, `.study-goal__streak-value`, `.study-goal__streak-note`, `.study-goal__amount`, `.study-goal__amount-value`, `.study-goal__amount-total`, `.study-goal__legend`, `.study-goal__legend-label`, `.study-goal__legend-percent`, `.study-goal__track`, `.study-goal__fill`, `.study-goal__hint`, `.study-goal__editor`, `.study-goal__editor-button`, `.study-goal__notice`, `.study-goal__form`, `.study-goal__field`, `.study-goal__field-label`
 
 No modifiers.
 

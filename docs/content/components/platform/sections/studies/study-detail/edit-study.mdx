@@ -27,7 +27,7 @@ Editing a study's own data, in a native `<dialog>` like [`NewStudy`](/components
 | `kindCode`      | `string`                | yes                      | Current kind; preselected when it is among `kinds`.                                                                |
 | `kindLabel`     | `string`                | yes                      | The kind's name, to state it when it cannot be changed.                                                            |
 | `kinds`         | `StudyKindOption[]`     | yes                      | The kinds it can change to (from `study-rules`).                                                                   |
-| `canChangeKind` | `boolean`               | yes                      | Whether the selector renders.                                                                                      |
+| `canChangeKind` | `boolean`               | yes                      | Whether the kind's `PlatformSelect` renders.                                                                       |
 | `size`          | `"regular" \| "inline"` | no · default `"regular"` | `regular` is the boxed button of the empty study page; `inline` one more word in the aside's row of study actions. |
 
 ## Behaviour
@@ -38,7 +38,7 @@ Editing a study's own data, in a native `<dialog>` like [`NewStudy`](/components
 
 Block `.edit-study` (92 lines).
 
-**Elements:** `.edit-study__open` (`_size_regular`, `_size_inline`), `.edit-study__dialog`, `.edit-study__form`, `.edit-study__title`, `.edit-study__field`, `.edit-study__label`, `.edit-study__input`, `.edit-study__select`, `.edit-study__actions`, `.edit-study__note`
+**Elements:** `.edit-study__open` (`_size_regular`, `_size_inline`), `.edit-study__dialog`, `.edit-study__form`, `.edit-study__title`, `.edit-study__field`, `.edit-study__label`, `.edit-study__input`, `.edit-study__actions`, `.edit-study__note`
 
 **Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_secondary`.
 

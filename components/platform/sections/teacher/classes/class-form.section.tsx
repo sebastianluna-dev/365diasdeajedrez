@@ -8,6 +8,7 @@ import type { TeacherClassDetail } from "@/services/teacher-classes/teacher-clas
 import type { AssignedStudentSummary } from "@/services/teacher-students/teacher-students.types";
 import "./class-form.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface ClassFormSectionProps {
   /** No class = creation; with a class = editing it. */
@@ -66,14 +67,13 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
 
       <div className="class-form__row">
         <FormField label="Plataforma de reunión (opcional)">
-          <select name="meetingProviderCode" defaultValue={classDetail?.meetingProviderCode ?? ""}>
-            <option value="">Sin plataforma</option>
-            {providers.map((provider) => (
-              <option key={provider.code} value={provider.code}>
-                {provider.label}
-              </option>
-            ))}
-          </select>
+          <PlatformSelect
+            name="meetingProviderCode"
+            defaultValue={classDetail?.meetingProviderCode ?? ""}
+            emptyOption="Sin plataforma"
+            options={providers.map((provider) => ({ value: provider.code, label: provider.label }))}
+            size="compact"
+          />
         </FormField>
 
         <FormField label="Enlace de la reunión (opcional)">

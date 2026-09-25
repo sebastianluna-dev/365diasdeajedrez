@@ -6,6 +6,7 @@ import { CLASS_STATUS } from "@/constants/platform/class-codes.const";
 import { staffRoutes } from "@/lib/platform-routes";
 import type { StaffClassFilters, StaffClassSummary } from "@/services/staff-classes/staff-classes.types";
 import "./staff-classes.section.css";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface StaffClassesSectionProps {
   classes: StaffClassSummary[];
@@ -28,25 +29,23 @@ export function StaffClassesSection({ classes, teachers, rawFilters }: StaffClas
     <div className="staff-classes">
       <form className="staff-classes__filters" action={staffRoutes.classes}>
         <FormField label="Profesor">
-          <select name="teacherId" defaultValue={rawFilters.teacherId ?? ""}>
-            <option value="">Todos</option>
-            {teachers.map((teacher) => (
-              <option key={teacher.id} value={teacher.id}>
-                {teacher.displayName}
-              </option>
-            ))}
-          </select>
+          <PlatformSelect
+            name="teacherId"
+            defaultValue={rawFilters.teacherId ?? ""}
+            emptyOption="Todos"
+            options={teachers.map((teacher) => ({ value: teacher.id, label: teacher.displayName }))}
+            size="compact"
+          />
         </FormField>
 
         <FormField label="Estado">
-          <select name="status" defaultValue={rawFilters.status ?? ""}>
-            <option value="">Todos</option>
-            {Object.values(CLASS_STATUS).map((code) => (
-              <option key={code} value={code}>
-                {STATUS_LABELS[code]}
-              </option>
-            ))}
-          </select>
+          <PlatformSelect
+            name="status"
+            defaultValue={rawFilters.status ?? ""}
+            emptyOption="Todos"
+            options={Object.values(CLASS_STATUS).map((code) => ({ value: code, label: STATUS_LABELS[code] ?? code }))}
+            size="compact"
+          />
         </FormField>
 
         <FormField label="Desde">

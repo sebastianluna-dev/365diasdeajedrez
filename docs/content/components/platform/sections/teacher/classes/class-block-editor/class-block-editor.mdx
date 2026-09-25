@@ -32,7 +32,7 @@ Where a class's content is composed: an ordered list of blocks (text, video, gam
 - Each row: a kind tag, a summary (`blockSummary`: text excerpt, video URL, or the reference label), and controls: up and down (`<form action={moveClassBlock…}>` with hidden `blockId` and `direction`, disabled at the ends), "Editar" (toggles `editingId`), "Eliminar" (a form).
 - A block whose saved `movePath` no longer exists in the referenced content shows a `role="alert"` warning until it is edited.
 - Editing renders [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) inline with `updateClassBlock.bind(null, classId, block.id)`.
-- "Añadir un bloque" is a `<select>` over the kinds; choosing one mounts a `BlockForm` keyed by kind with `addClassBlock.bind(null, classId)`. With `initialGameId`, a synthetic `gamePrefill` block seeds it.
+- "Añadir un bloque" is a controlled [`PlatformSelect`](/components/platform/shared/platform-select) over the kinds with the placeholder "Elige un tipo…"; choosing one mounts a `BlockForm` keyed by kind with `addClassBlock.bind(null, classId)`. With `initialGameId`, a synthetic `gamePrefill` block seeds it.
 
 ## Markup & styling
 

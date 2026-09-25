@@ -35,7 +35,7 @@ The teacher always sees the meeting link, because they set it; the student sees 
 ## Behaviour
 
 - **Status transitions** come from `nextClassStatuses(statusCode)`, a pure function; each valid next status is a one-button `<form action={setClassStatus.bind(null, id)}>` with a hidden `statusCode`, labelled from `STATUS_ACTION_LABELS`. The action checks the transition again on the server.
-- **Enrolment:** a `<select name="studentId">` over `enrollable` posting `addParticipant`; rendered only when someone can still be enrolled.
+- **Enrolment:** a required [`PlatformSelect`](/components/platform/shared/platform-select) named `studentId` over `enrollable`, with the placeholder "Elige un alumno…", posting `addParticipant`; rendered only when someone can still be enrolled.
 - The facts list shows when, status, meeting (linked for the teacher), link visibility instant, and recording.
 - Transcript card: status label and whether text exists.
 - Preview card falls back to an [`EmptyState`](/components/platform/shared/empty-state) when there are no blocks.

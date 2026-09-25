@@ -32,3 +32,9 @@ export function isCommonTimezone(value: string): value is CommonTimezone {
  * zone. When the student gets a zone of their own, this becomes their default.
  */
 export const STUDY_DAY_TIMEZONE = "America/Mexico_City";
+
+/** The same zones as select options, the underscores read as spaces. */
+export const TIMEZONE_OPTIONS = COMMON_TIMEZONES.map((timezone) => ({
+  value: timezone,
+  label: timezone.replace(/_/g, " "),
+}));

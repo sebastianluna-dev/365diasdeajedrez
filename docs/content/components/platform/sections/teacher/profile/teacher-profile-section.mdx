@@ -12,7 +12,7 @@ description: "The teacher's public profile form: display name, title, IANA time 
 | Used by    | `/profesor/perfil`                                                                                                                                                                              |
 | Composes   | [`FormField`](/components/platform/shared/form-field), [`PlatformNotice`](/components/platform/shared/platform-notice)                                                                          |
 | Writes     | `updateTeacherProfile()` · `services/teacher/teacher.actions.ts`                                                                                                                                |
-| Uses       | `TEACHER_ERROR_MESSAGES` from `constants/platform/teacher-messages.const`; `COMMON_TIMEZONES` from `constants/platform/timezones.const`; `TeacherProfile` from `services/teacher/teacher.types` |
+| Uses       | `TEACHER_ERROR_MESSAGES` from `constants/platform/teacher-messages.const`; `TIMEZONE_OPTIONS` from `constants/platform/timezones.const`; `TeacherProfile` from `services/teacher/teacher.types` |
 
 ## Purpose
 
@@ -27,7 +27,7 @@ What students see of their teacher in the classes they attend, plus the one sett
 
 ## Behaviour
 
-The whole card is a `<form action={updateTeacherProfile}>`: name (required), title, time zone (`<select>` over `COMMON_TIMEZONES`, underscores shown as spaces), photo as a URL (moving it to [`ImageUpload`](/components/platform/shared/image-upload) is an open improvement) and a bio textarea. The action validates, saves and revalidates `/profesor/perfil`.
+The whole card is a `<form action={updateTeacherProfile}>`: name (required), title, time zone (a [`PlatformSelect`](/components/platform/shared/platform-select) over `TIMEZONE_OPTIONS`, underscores shown as spaces), photo as a URL (moving it to [`ImageUpload`](/components/platform/shared/image-upload) is an open improvement) and a bio textarea. The action validates, saves and revalidates `/profesor/perfil`.
 
 ## Markup & styling
 

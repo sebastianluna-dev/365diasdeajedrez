@@ -128,17 +128,6 @@
     color: var(--platform-text-muted);
   }
 
-  & .share-collection__select {
-    width: 100%;
-    padding: 9px 12px;
-    border: 1px solid var(--platform-border);
-    border-radius: 10px;
-    background: var(--platform-bg);
-    color: var(--platform-text);
-    font-family: inherit;
-    font-size: 15px;
-  }
-
   /* In the aside: the card's own padding and shadow instead of the panel's
      border, the student on two lines with the date under the name, and the
      form stacked, because a 280px column has no room for a row. */

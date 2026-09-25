@@ -21,6 +21,7 @@ import { StaffTabs } from "./staff-tabs.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./course-editor.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 /** Ties the cover, which lives in the column next door, to the form that saves. */
 const METADATA_FORM_ID = "course-metadata";
@@ -167,26 +168,22 @@ export function CourseEditorSection({
                   <input type="hidden" name="operation" value="add" />
 
                   <FormField label="Añadir autor">
-                    <select name="authorId" required defaultValue="">
-                      <option value="" disabled>
-                        Elige un autor…
-                      </option>
-                      {availableAuthors.map((author) => (
-                        <option key={author.id} value={author.id}>
-                          {author.name}
-                        </option>
-                      ))}
-                    </select>
+                    <PlatformSelect
+                      name="authorId"
+                      required
+                      placeholder="Elige un autor…"
+                      options={availableAuthors.map((author) => ({ value: author.id, label: author.name }))}
+                      size="compact"
+                    />
                   </FormField>
 
                   <FormField label="Rol">
-                    <select name="roleCode" defaultValue={authorRoles[0]?.code}>
-                      {authorRoles.map((role) => (
-                        <option key={role.code} value={role.code}>
-                          {role.label}
-                        </option>
-                      ))}
-                    </select>
+                    <PlatformSelect
+                      name="roleCode"
+                      defaultValue={authorRoles[0]?.code}
+                      options={authorRoles.map((role) => ({ value: role.code, label: role.label }))}
+                      size="compact"
+                    />
                   </FormField>
 
                   <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Añadiendo…">
@@ -267,13 +264,12 @@ export function CourseEditorSection({
               </FormField>
 
               <FormField label="Tipo">
-                <select name="typeCode" defaultValue={course.typeCode}>
-                  {types.map((type) => (
-                    <option key={type.code} value={type.code}>
-                      {type.label}
-                    </option>
-                  ))}
-                </select>
+                <PlatformSelect
+                  name="typeCode"
+                  defaultValue={course.typeCode}
+                  options={types.map((type) => ({ value: type.code, label: type.label }))}
+                  size="compact"
+                />
               </FormField>
             </div>
 

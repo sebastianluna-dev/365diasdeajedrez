@@ -29,6 +29,20 @@
     color: var(--platform-text-muted);
   }
 
+  /* With a named empty option ("Sin terminar", "Todos") the placeholder IS a
+     choice, and reads in the text colour like any other. */
+  & .platform-select__trigger.platform-select__trigger_empty_named[data-placeholder] {
+    color: var(--platform-text);
+  }
+
+  /* The size of FormField's inputs, for the forms that still use it. */
+  & .platform-select__trigger.platform-select__trigger_size_compact {
+    padding: 9px 12px;
+    border-radius: 10px;
+    background: var(--platform-surface);
+    font-size: 15.5px;
+  }
+
   & .platform-select__trigger[data-disabled] {
     color: var(--platform-text-faint);
     cursor: default;
@@ -105,6 +119,20 @@
     user-select: none;
     /* The primitive moves the highlight itself; the ring would only double it. */
     outline: none;
+  }
+
+  /* A group's heading: small, muted, set apart from the items under it. */
+  & .platform-select__group-label {
+    padding: 8px 10px 4px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--platform-text-subtle);
+  }
+
+  & .platform-select__group + .platform-select__group {
+    margin-top: 4px;
   }
 
   & .platform-select__item[data-highlighted] {

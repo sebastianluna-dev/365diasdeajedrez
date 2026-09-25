@@ -1,11 +1,12 @@
 import { FormField } from "@/components/platform/shared/form-field.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { TEACHER_ERROR_MESSAGES } from "@/constants/platform/teacher-messages.const";
-import { COMMON_TIMEZONES } from "@/constants/platform/timezones.const";
+import { TIMEZONE_OPTIONS } from "@/constants/platform/timezones.const";
 import { updateTeacherProfile } from "@/services/teacher/teacher.actions";
 import type { TeacherProfile } from "@/services/teacher/teacher.types";
 import "./teacher-profile.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface TeacherProfileSectionProps {
   profile: TeacherProfile;
@@ -36,13 +37,12 @@ export function TeacherProfileSection({ profile, errorCode }: TeacherProfileSect
         </FormField>
 
         <FormField label="Zona horaria" hint="Se usa para programar tus clases en tu hora local.">
-          <select name="timezone" defaultValue={profile.timezone ?? "UTC"}>
-            {COMMON_TIMEZONES.map((timezone) => (
-              <option key={timezone} value={timezone}>
-                {timezone.replace(/_/g, " ")}
-              </option>
-            ))}
-          </select>
+          <PlatformSelect
+            name="timezone"
+            options={TIMEZONE_OPTIONS}
+            defaultValue={profile.timezone ?? "UTC"}
+            size="compact"
+          />
         </FormField>
 
         <FormField label="Foto (URL, opcional)" hint="Enlace a una imagen ya publicada.">

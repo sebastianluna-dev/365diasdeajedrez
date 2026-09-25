@@ -1,5 +1,5 @@
 ---
-description: "The platform form field: a real <label> around a native control, with hint and server-side error, defining the input, select and textarea look once for the whole authenticated area; FormFieldset does the same for groups."
+description: "The platform form field: a real <label> around a control, with hint and server-side error, defining the input and textarea look once for the whole authenticated area; selects are PlatformSelect; FormFieldset does the same for groups."
 ---
 
 # `FormField`
@@ -17,7 +17,7 @@ Also exports `FormFieldset`.
 
 > **Being replaced.** New forms use [`PlatformForm`](/components/platform/shared/platform-form) and [`PlatformSelect`](/components/platform/shared/platform-select), on Radix Primitives; the forms below are migrated as they are touched (`TODOS.md`). This wrapper stays until the last one moves.
 
-One field, one look. `FormField` wraps a native control in a real `<label>` (never a placeholder acting as a label), adds an optional hint and an optional error, and defines once how an input, select or textarea looks in the platform. `FormFieldset` does the same with `<fieldset>`/`<legend>` for groups of checkboxes or radios, where a single label does not apply.
+One field, one look. `FormField` wraps a native control in a real `<label>` (never a placeholder acting as a label), adds an optional hint and an optional error, and defines once how an input or textarea looks in the platform. `FormFieldset` does the same with `<fieldset>`/`<legend>` for groups of checkboxes or radios, where a single label does not apply.
 
 It is stateless on purpose. Platform forms are `<form action={serverAction}>`; validation happens in the action and the failure comes back through the page's `?error=` handling. There is no client validation to wire here.
 
@@ -25,12 +25,12 @@ It is stateless on purpose. Platform forms are `<form action={serverAction}>`; v
 
 ### `FormField`
 
-| Prop       | Type        | Required | Meaning                                                                                       |
-| ---------- | ----------- | -------- | --------------------------------------------------------------------------------------------- |
-| `label`    | `string`    | yes      | The label text. Clicking it focuses the control, because the control is inside the `<label>`. |
-| `children` | `ReactNode` | yes      | The native control: input, select or textarea.                                                |
-| `hint`     | `string`    | no       | Small help text under the control.                                                            |
-| `error`    | `string`    | no       | Field-level error, rendered with `role="alert"`.                                              |
+| Prop       | Type        | Required | Meaning                                                                                                                              |
+| ---------- | ----------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `label`    | `string`    | yes      | The label text. Clicking it focuses the control, because the control is inside the `<label>`.                                        |
+| `children` | `ReactNode` | yes      | The control: a native input or textarea, or a [`PlatformSelect`](/components/platform/shared/platform-select) with `size="compact"`. |
+| `hint`     | `string`    | no       | Small help text under the control.                                                                                                   |
+| `error`    | `string`    | no       | Field-level error, rendered with `role="alert"`.                                                                                     |
 
 ### `FormFieldset`
 
@@ -46,7 +46,7 @@ None. The control keeps its own attributes (`name`, `required`, `maxLength`, `de
 
 ## Markup & styling
 
-Block `.platform-field` (82 lines). The root is the `<label>` (or the `<fieldset>` with the group modifier); the control's look is defined through descendant selectors on `input`, `select` and `textarea` inside `.platform-field__control`, which is why no form in the platform styles its own inputs.
+Block `.platform-field` (82 lines). The root is the `<label>` (or the `<fieldset>` with the group modifier); the control's look is defined through descendant selectors on `input` and `textarea` inside `.platform-field__control`, which is why no form in the platform styles its own inputs.
 
 **Elements:** `.platform-field__label`, `.platform-field__control`, `.platform-field__hint`, `.platform-field__error`
 
