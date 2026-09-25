@@ -23,7 +23,7 @@ The loading look of the studies area: the list at `/estudios` and, under it, the
 
 ## Behaviour
 
-None. The root carries `role="status"` and `aria-live="polite"`; the figure is `aria-hidden`. Under `prefers-reduced-motion: reduce` nothing moves. Its exit cannot be animated, because the App Router unmounts the fallback the moment the page is ready: the page's own fade-in (`.platform-page`, in `platform.css`) is what softens that side of the swap.
+None. The root carries `role="status"` and `aria-live="polite"`; the figure is `aria-hidden`. Under `prefers-reduced-motion: reduce` nothing moves. Its exit cannot be animated, because the App Router unmounts the fallback the moment the page is ready: the page's own fade-in (`.platform-page`, in `platform.css`) is what softens that side of the swap. The swap does not move the header either: `globals.css` reserves the scrollbar's room (`scrollbar-gutter: stable`), so the bar appearing with the longer page changes no width.
 
 ## Markup & styling
 
