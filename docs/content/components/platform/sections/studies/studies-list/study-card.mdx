@@ -1,5 +1,5 @@
 ---
-description: "One study in the list, in the manner of a lichess study card: a 2×2 tile, the name, a byline (kind, game count, origin, how long ago), the description and the first four games; the whole card is the link, and the delete cross still works above it."
+description: "One study in the list, in the manner of a lichess study card: a 2×2 tile with an orange border, the name, a byline (kind, game count, origin, how long ago), the description and the first four games; the whole card is the link, and the delete cross still works above it."
 ---
 
 # `StudyCard`
@@ -15,7 +15,7 @@ description: "One study in the list, in the manner of a lichess study card: a 2�
 
 ## Purpose
 
-A study as a card, in the manner of a lichess study card: a 2×2 tile in the house colours, the name, one byline and the first games inside. The byline states the kind, the size, **where it comes from** for what is not the student's (the course that brings it or the teacher who handed it out; without that, two read-only collections would be indistinguishable) and how long ago it was touched ("hace 3 meses", the exact date in the tooltip). Under it, up to four games as the study page names them (a title, or "Blancas – Negras") and "y n más".
+A study as a card, in the manner of a lichess study card: a 2×2 tile (orange squares on the card's surface, inside an orange border), the name, one byline and the first games inside. The byline states the kind, the size, **where it comes from** for what is not the student's (the course that brings it or the teacher who handed it out; without that, two read-only collections would be indistinguishable) and how long ago it was touched ("hace 3 meses", the exact date in the tooltip). Under it, up to four games as the study page names them (a title, or "Blancas – Negras") and "y n más".
 
 **The whole card is the link.** The name is the only `<a>`; its `::after` is stretched over the card (`position: absolute; inset: 0`), so a click anywhere goes to the study while the markup keeps one link with the study's name. The delete cross sits in `.study-card__actions`, raised above it with `z-index`, so it is still what gets pressed. Keyboard focus on the link outlines the card (`:has(:focus-visible)`).
 

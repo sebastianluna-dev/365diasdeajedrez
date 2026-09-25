@@ -23,19 +23,24 @@
     outline-offset: 2px;
   }
 
-  /* The study's mark: a 2×2 board in the house colours, like the favicon. The
-     quadrants go clockwise from the top right. */
+  /* The study's mark: a 2×2 board, orange squares on the card's own surface,
+     inside an orange border. The quadrants go clockwise from the top right. */
   & .study-card__tile {
     flex: none;
+    box-sizing: border-box;
     width: 46px;
     height: 46px;
+    border: 2px solid var(--platform-accent);
     border-radius: 11px;
     background: conic-gradient(
       var(--platform-accent) 25%,
-      var(--platform-text) 0 50%,
+      var(--platform-surface) 0 50%,
       var(--platform-accent) 0 75%,
-      var(--platform-text) 0
+      var(--platform-surface) 0
     );
+    /* The board stops at the padding edge, so the corners the border rounds
+       off do not show a sliver of square outside it. */
+    background-clip: padding-box;
   }
 
   & .study-card__body {
