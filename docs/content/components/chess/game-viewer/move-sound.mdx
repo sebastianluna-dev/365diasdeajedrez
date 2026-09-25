@@ -12,11 +12,11 @@ Exports `playMoveSound` and the `MoveSoundKind` type.
 | Kind       | Module (plain TypeScript, browser only, `"use client"`)   |
 | Stylesheet | none                                                      |
 | Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) |
-| Uses       | `public/sounds/move.wav`, `public/sounds/capture.wav`     |
+| Uses       | `public/sounds/move.mp3`, `public/sounds/capture.mp3`     |
 
 ## Purpose
 
-Board sounds. There are only two, move and capture, synthesised by `scripts/make-board-sounds.ts` (`npm run sounds:make`, a strike over a bank of resonators tuned to sound like wood) so the repository carries no third-party audio; check does **not** sound because it is a state of the position, not a gesture on the board.
+Board sounds. There are only two, move and capture: lichess's _standard_ set, whose licence status is recorded in the local `WARNINGS.md` (`npm run sounds:make` synthesises a replacement if they ever have to go); check does **not** sound because it is a state of the position, not a gesture on the board.
 
 The files load lazily and only when a sound is first needed: a page can hold several viewers that may never sound, and there is no point requesting the audio in every one of them.
 

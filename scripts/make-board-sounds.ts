@@ -2,9 +2,11 @@
 //
 //   npm run sounds:make
 //
-// They used to be lichess's "standard" move and capture, which lila's
-// COPYING.md lists among its non-free exceptions, so they could not stay in a
-// repository of ours. These are ours, and they are made to sound like that
+// NOT what the viewer plays today: public/sounds holds lichess's "standard"
+// move and capture (.mp3), which lila's COPYING.md lists among its non-free
+// exceptions — the local WARNINGS.md has the decision. This script is the way
+// out if they ever have to go: point move-sound.ts at the .wav files it
+// writes. These are ours, and they are made to sound like that
 // kind of thing — a piece set down on a wooden board, a harder knock for a
 // capture — by modal synthesis: a short burst of filtered noise (the strike)
 // over a bank of two-pole resonators (the wood ringing), one per measured
