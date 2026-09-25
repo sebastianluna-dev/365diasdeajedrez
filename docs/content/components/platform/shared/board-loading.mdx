@@ -1,0 +1,54 @@
+---
+description: "The knight that hops over its shadow while a study's game streams, with one line under it; the loading boundary of /estudios/[studyId] and everything below it."
+---
+
+# `BoardLoading`
+
+|            |                                                     |
+| ---------- | --------------------------------------------------- |
+| File       | `components/platform/shared/board-loading.comp.tsx` |
+| Kind       | Server Component                                    |
+| Stylesheet | `board-loading.comp.css` → block `.board-loading`   |
+| Used by    | `app/(platform)/estudios/[studyId]/loading.tsx`     |
+
+## Purpose
+
+Opening a study is opening its first game (`/estudios/[studyId]` redirects there), so what the App Router waits for under that segment is always a board. Instead of the generic spinner of [`LoadingPanel`](/components/platform/shared/loading-panel), the boundary shows a knight hopping over its shadow and "Preparando el tablero…". The same fallback covers moving between games of a study through the aside, since the boundary sits on the `[studyId]` segment.
+
+## Props
+
+| Prop    | Type     | Required                                | Meaning           |
+| ------- | -------- | --------------------------------------- | ----------------- |
+| `label` | `string` | no · default `"Preparando el tablero…"` | The visible text. |
+
+## Behaviour
+
+None. The root carries `role="status"` and `aria-live="polite"`; the figure is `aria-hidden`. Under `prefers-reduced-motion: reduce` the knight and the shadow stand still.
+
+## Markup & styling
+
+Block `.board-loading` (82 lines).
+
+**Elements:** `.board-loading__figure`, `.board-loading__knight` (the ♞ glyph, in the platform font), `.board-loading__shadow`, `.board-loading__label`
+
+**Keyframes:** `board-loading-hop` (up 12 px with an 8° tilt at 30 %, back at 60 %), `board-loading-shadow` (narrows to 60 % and fades while the knight is up); 1.3 s, ease-in-out, both at the top level because `@keyframes` cannot be nested.
+
+**Tokens:** `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** the block fills the height the 70 px bar and the content padding leave, so the figure sits where the board will; `(max-width: 1080px)` drops that to `60vh` once the bar wraps.
+
+## Usage
+
+From `app/(platform)/estudios/[studyId]/loading.tsx`:
+
+```tsx
+import { BoardLoading } from "@/components/platform/shared/board-loading.comp";
+
+export default function StudyLoading() {
+  return <BoardLoading />;
+}
+```
+
+## Related
+
+- [`LoadingPanel`](/components/platform/shared/loading-panel), the spinner every other `loading.tsx` renders.

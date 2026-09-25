@@ -2,6 +2,7 @@ import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
   "activity-list": "ActivityList",
+  "board-loading": "BoardLoading",
   "class-content-renderer": "ClassContentRenderer",
   "course-navigation": "CourseNavigation",
   "empty-state": "EmptyState",

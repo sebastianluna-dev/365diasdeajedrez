@@ -1,0 +1,82 @@
+.board-loading {
+  /* Centred in the height the bar leaves, so the knight sits where the board
+     is about to appear and not at the top of an empty page. */
+  min-height: calc(100vh - 70px - 134px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  & .board-loading__figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  & .board-loading__knight {
+    font-size: 44px;
+    line-height: 1;
+    color: var(--platform-text);
+    animation: board-loading-hop 1.3s ease-in-out infinite;
+  }
+
+  /* The shadow shrinks and fades while the knight is in the air. */
+  & .board-loading__shadow {
+    width: 34px;
+    height: 7px;
+    margin-top: 4px;
+    border-radius: 50%;
+    background: var(--platform-text);
+    opacity: 0.22;
+    animation: board-loading-shadow 1.3s ease-in-out infinite;
+  }
+
+  & .board-loading__label {
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .board-loading__knight,
+    & .board-loading__shadow {
+      animation: none;
+    }
+  }
+
+  @media (max-width: 1080px) {
+    min-height: 60vh;
+  }
+}
+
+/* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */
+@keyframes board-loading-hop {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  30% {
+    transform: translateY(-12px) rotate(-8deg);
+  }
+  60%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+@keyframes board-loading-shadow {
+  0% {
+    transform: scaleX(1);
+    opacity: 0.22;
+  }
+  30% {
+    transform: scaleX(0.6);
+    opacity: 0.1;
+  }
+  60%,
+  100% {
+    transform: scaleX(1);
+    opacity: 0.22;
+  }
+}
