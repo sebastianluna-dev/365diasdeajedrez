@@ -9,13 +9,13 @@
     gap: 10px;
     width: 100%;
     box-sizing: border-box;
-    padding: 9px 12px;
+    padding: 13px 15px;
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
-    background: var(--platform-surface);
+    border-radius: 12px;
+    background: var(--platform-surface-soft);
     color: var(--platform-text);
     font-family: inherit;
-    font-size: 15.5px;
+    font-size: 16px;
     text-align: left;
     cursor: pointer;
   }
@@ -61,7 +61,7 @@
     box-sizing: border-box;
     padding: 4px;
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 12px;
     background: var(--platform-surface);
     box-shadow: var(--platform-shadow-card);
   }

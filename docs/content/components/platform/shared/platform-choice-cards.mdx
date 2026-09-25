@@ -1,0 +1,75 @@
+---
+description: "One choice among a few, each drawn as a card, on Radix's RadioGroup primitive: the whole card is the radio, the arrows move the choice, and inside a form it submits through the hidden native radio the primitive keeps."
+---
+
+# `PlatformChoiceCards`
+
+Also exports the type `PlatformChoiceCardOption`.
+
+|            |                                                                                   |
+| ---------- | --------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-choice-cards/platform-choice-cards.comp.tsx` |
+| Kind       | Client Component                                                                  |
+| Stylesheet | `platform-choice-cards.comp.css` → block `.platform-choice-cards`                 |
+| Story      | `platform-choice-cards.stories.tsx` (`platform/shared/PlatformChoiceCards`)       |
+| Used by    | [`NewStudy`](/components/platform/sections/studies/studies-list/new-study)        |
+| Uses       | `RadioGroup` from `radix-ui`                                                      |
+
+## Purpose
+
+When a choice has two to four options and each deserves a line of explanation, a dropdown hides what a row of cards shows. This is that row: a radio group on Radix's `RadioGroup` primitive where every card is a radio button (`role="radio"`), so it is a single tab stop, the arrow keys move the choice, and inside a form the value travels through the hidden native radio the primitive keeps in sync.
+
+## Props
+
+| Prop              | Type                         | Required | Meaning                                                                             |
+| ----------------- | ---------------------------- | -------- | ----------------------------------------------------------------------------------- |
+| `options`         | `PlatformChoiceCardOption[]` | yes      | `{ value, label, description?, icon? }` per card, in order. The icon is decorative. |
+| `name`            | `string`                     | no       | Name of the hidden native radio.                                                    |
+| `value`           | `string`                     | no       | Controlled value.                                                                   |
+| `defaultValue`    | `string`                     | no       | Initial choice. Give one whenever the group is `required`.                          |
+| `onValueChange`   | `(value: string) => void`    | no       | Called with the new value.                                                          |
+| `required`        | `boolean`                    | no       |                                                                                     |
+| `disabled`        | `boolean`                    | no       |                                                                                     |
+| `aria-labelledby` | `string`                     | no       | Id of the element that names the group. `PlatformFormGroup` sets it.                |
+| `aria-label`      | `string`                     | no       | A name when there is no visible label.                                              |
+
+## Behaviour
+
+- The chosen card carries `data-state="checked"` from the primitive; the stylesheet gives it the accent border and wash and paints its description in the accent ink.
+- Clicking anywhere on a card chooses it. Space chooses the focused one; Up/Down/Left/Right move the choice and wrap around.
+
+## Markup & styling
+
+Block `.platform-choice-cards`, a grid of `repeat(auto-fit, minmax(150px, 1fr))`: as many cards per row as fit, one column on a phone.
+
+**Elements:** `.platform-choice-cards__card`, `.platform-choice-cards__icon`, `.platform-choice-cards__label`, `.platform-choice-cards__description`
+
+**States (data attributes set by the primitive):** `[data-state="checked"]`, `[data-disabled]` on a card.
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-border`, `--platform-border-strong`, `--platform-surface-soft`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`
+
+No media queries: the grid reflows on its own.
+
+## Usage
+
+From `components/platform/sections/studies/studies-list/new-study/new-study-form.comp.tsx`:
+
+```tsx
+<PlatformFormGroup label="Tipo">
+  <PlatformChoiceCards
+    name="kindCode"
+    defaultValue={kinds[0]?.code}
+    required
+    options={kinds.map((kind) => ({
+      value: kind.code,
+      label: kind.label,
+      description: STUDY_KIND_CARDS[kind.code]?.description,
+    }))}
+  />
+</PlatformFormGroup>
+```
+
+## Related
+
+- [`PlatformForm`](/components/platform/shared/platform-form): `PlatformFormGroup` is the field that names a group.
+- [`PlatformSelect`](/components/platform/shared/platform-select), for a choice with more options than fit as cards.

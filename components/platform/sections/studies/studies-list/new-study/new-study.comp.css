@@ -1,0 +1,128 @@
+.new-study {
+  flex: none;
+
+  /* Only the size and the rounding: the centring, the backdrop and the surface
+     are set by `.platform-dialog`. */
+  & .new-study__dialog {
+    width: min(600px, calc(100vw - 32px));
+    border-radius: 18px;
+  }
+
+  /* The form is the dialog's whole content: head, body and footer band stack
+     with no gap of their own; each sets its padding. */
+  & .new-study__form {
+    gap: 0;
+  }
+
+  & .new-study__head {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 28px 28px 0;
+  }
+
+  /* A dark tile with a white knight: the study's mark. */
+  & .new-study__tile {
+    flex: none;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: var(--platform-text) url("/pieces/w-knight.svg") center / 30px no-repeat;
+  }
+
+  & .new-study__heading {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & .new-study__title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  & .new-study__subtitle {
+    margin: 4px 0 0;
+    font-size: 16px;
+    color: var(--platform-text-muted);
+  }
+
+  & .new-study__close {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin: -6px -6px 0 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--platform-text-subtle);
+    cursor: pointer;
+  }
+
+  & .new-study__close:hover {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
+  }
+
+  & .new-study__close-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  & .new-study__body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 26px 28px 28px;
+  }
+
+  /* The piece on a kind's card, from the same set the board draws. */
+  & .new-study__piece {
+    display: block;
+    width: 22px;
+    height: 22px;
+    background: center / contain no-repeat;
+  }
+
+  & .new-study__piece_name_rook {
+    background-image: url("/pieces/b-rook.svg");
+  }
+
+  & .new-study__piece_name_king {
+    background-image: url("/pieces/b-king.svg");
+  }
+
+  & .new-study__piece_name_pawn {
+    background-image: url("/pieces/b-pawn.svg");
+  }
+
+  /* The band at the bottom: sunk a shade, with the note on one side and the
+     buttons on the other. */
+  & .new-study__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 18px 28px;
+    border-top: 1px solid var(--platform-border);
+    background: var(--platform-bg);
+  }
+
+  & .new-study__note {
+    margin: 0;
+    font-size: 15px;
+    color: var(--platform-text-muted);
+  }
+
+  & .new-study__actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+  }
+}
