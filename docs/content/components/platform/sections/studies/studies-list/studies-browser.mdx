@@ -26,7 +26,7 @@ The body of "Mis estudios": a row of filter chips, a count, and the studies in t
 
 ## Behaviour
 
-- `active` starts at "Todos". Chips are buttons with `aria-pressed`; the count reads "n de m estudios" for the current filter.
+- `active` starts at "Todos". Chips are buttons with `aria-pressed`.
 - Each group renders only when it has matches; when neither does, an [`EmptyState`](/components/platform/shared/empty-state) names the filter ("Ningún estudio de tipo «…»").
 - Nothing is fetched or written here.
 
@@ -34,7 +34,7 @@ The body of "Mis estudios": a row of filter chips, a count, and the studies in t
 
 Block `.studies-browser` (63 lines).
 
-**Elements:** `.studies-browser__filters`, `.studies-browser__chip`, `.studies-browser__count`, `.studies-browser__group`, `.studies-browser__group-title`, `.studies-browser__grid`
+**Elements:** `.studies-browser__filters`, `.studies-browser__chip`, `.studies-browser__group`, `.studies-browser__group-title`, `.studies-browser__grid`
 
 **Modifiers and states:** `.studies-browser__chip_state_active`
 

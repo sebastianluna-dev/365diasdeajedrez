@@ -48,10 +48,6 @@ export function StudiesBrowser({ own, received }: StudiesBrowserProps) {
             {option}
           </button>
         ))}
-
-        <span className="studies-browser__count">
-          {total} de {own.length + received.length} estudios
-        </span>
       </div>
 
       {total === 0 && (
