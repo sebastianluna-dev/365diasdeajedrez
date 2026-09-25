@@ -20,8 +20,8 @@
 
   & .lesson-list__item:hover {
     box-shadow:
-      0 1px 2px rgba(22, 17, 13, 0.06),
-      0 12px 30px rgba(22, 17, 13, 0.1);
+      0 1px 2px rgba(0, 0, 0, 0.06),
+      0 12px 30px rgba(0, 0, 0, 0.1);
     color: var(--platform-text);
   }
 

@@ -1,8 +1,7 @@
 .new-study {
   flex: none;
 
-  /* The trigger: a pill on the neutral grey — no warmth, so it does not read
-     as tinted next to the orange — with the sign in front, quieter than the
+  /* The trigger: a quiet pill with the sign in front, quieter than the
      orange button because it is the page's one action and sits by the
      title. It darkens a step on hover. */
   & .new-study__open {
@@ -12,7 +11,7 @@
     padding: 14px 24px;
     border: 0;
     border-radius: 14px;
-    background: var(--platform-grey);
+    background: var(--platform-bg);
     color: var(--platform-text);
     font-family: inherit;
     font-size: 16px;
@@ -28,7 +27,7 @@
   }
 
   & .new-study__open:hover {
-    background: var(--platform-grey-strong);
+    background: var(--platform-surface-sunken);
   }
 
   & .new-study__open:focus-visible {
