@@ -10,6 +10,19 @@ export const STUDENT_ERROR_MESSAGES: Record<string, string> = {
   pgnTooLong: "El PGN es demasiado largo. Divídelo en varias importaciones.",
 };
 
+/**
+ * What the study screens can bounce with, on top of the common codes: the
+ * game page and the empty study page show the same notices, because the
+ * forms that raise them (new game, delete study) are mounted on both.
+ */
+export const STUDY_ERROR_MESSAGES: Record<string, string> = {
+  ...STUDENT_ERROR_MESSAGES,
+  confirmStudyDelete: "Este estudio tiene contenido. Marca la casilla para confirmar que quieres borrarlo.",
+  fen: "Esa posición de partida no es válida. Revisa el FEN.",
+  gameInClasses:
+    "Esta partida está usada en el contenido de alguna clase. Si la borras, esos bloques se quedarán vacíos. Marca la casilla para confirmarlo.",
+};
+
 /** The text for a code, or the generic one when the code is unknown. */
 export function studentErrorMessage(code: string | undefined): string | undefined {
   if (!code) return undefined;

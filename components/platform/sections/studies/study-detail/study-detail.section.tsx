@@ -1,13 +1,10 @@
-import { STUDENT_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
-import Link from "next/link";
+import { STUDY_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
 import { EmptyState } from "@/components/platform/shared/empty-state.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { DeleteStudy } from "@/components/platform/sections/studies/studies-list/delete-study.comp";
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
-import { platformRoutes } from "@/lib/platform-routes";
 import type { ClassGameItem, StudentOption, StudyDetail, StudyKindOption } from "@/services/studies/studies.types";
 import { EditStudy } from "./edit-study.comp";
-import { GameTable } from "./game-table.comp";
 import { NewGame } from "./new-game.comp";
 import { ShareCollection } from "./share-collection.comp";
 import "./study-detail.section.css";
@@ -25,12 +22,12 @@ interface StudyDetailSectionProps {
   errorCode?: string;
 }
 
-const ERROR_MESSAGES: Record<string, string> = {
-  ...STUDENT_ERROR_MESSAGES,
-  confirmStudyDelete: "Este estudio tiene contenido. Marca la casilla para confirmar que quieres borrarlo.",
-  fen: "Esa posición de partida no es válida. Revisa el FEN.",
-};
-
+/**
+ * The study WITHOUT games. A study is read on its game page — the study's own
+ * URL redirects to the first game — so this section only ever renders when
+ * there is no game to go to: the header that names it, the actions that let
+ * its owner fill it, and the empty state.
+ */
 export function StudyDetailSection({
   study,
   kinds,
@@ -95,52 +92,14 @@ export function StudyDetailSection({
         )}
       </header>
 
-      {errorCode && <PlatformNotice message={ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
+      {errorCode && <PlatformNotice message={STUDY_ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
 
       {canShare && <ShareCollection studyId={study.id} shares={study.shares} students={students} />}
 
-      {study.games.length > 0 ? (
-        <>
-          {/* Reordering needs the whole list in hand: with more than one page the
-              order is read-only, and it is said so instead of failing quietly. */}
-          <GameTable studyId={study.id} games={study.games} canReorder={canWrite && study.pageCount === 1} />
-          {study.pageCount > 1 && (
-            <nav className="study-detail__pages" aria-label="Páginas de partidas">
-              {study.page > 1 ? (
-                <Link
-                  href={`${platformRoutes.studyDetail(study.id)}?pagina=${study.page - 1}`}
-                  className="study-detail__page-link"
-                >
-                  ← Anteriores
-                </Link>
-              ) : (
-                <span className="study-detail__page-link study-detail__page-link_state_disabled">← Anteriores</span>
-              )}
-              <span className="study-detail__page-status">
-                Página {study.page} de {study.pageCount}
-                {canWrite && " · el orden se edita en estudios de una sola página"}
-              </span>
-              {study.page < study.pageCount ? (
-                <Link
-                  href={`${platformRoutes.studyDetail(study.id)}?pagina=${study.page + 1}`}
-                  className="study-detail__page-link"
-                >
-                  Siguientes →
-                </Link>
-              ) : (
-                <span className="study-detail__page-link study-detail__page-link_state_disabled">Siguientes →</span>
-              )}
-            </nav>
-          )}
-        </>
-      ) : (
-        <EmptyState
-          title="Sin partidas todavía"
-          description={
-            canWrite ? "Este estudio no tiene partidas. Crea una para empezar." : "Todavía no tiene partidas."
-          }
-        />
-      )}
+      <EmptyState
+        title="Sin partidas todavía"
+        description={canWrite ? "Este estudio no tiene partidas. Crea una para empezar." : "Todavía no tiene partidas."}
+      />
     </section>
   );
 }

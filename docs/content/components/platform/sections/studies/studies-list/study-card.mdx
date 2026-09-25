@@ -17,7 +17,7 @@ description: "One study in the list, in the manner of a lichess study card: a ti
 
 A study as a card, in the manner of a lichess study card: a tile with the site's logo mark (`LogoMarkIcon`, the wordmark's two squares) in orange on the card's surface, inside an orange border, the name, one byline and the first games inside. The byline states the kind, the size, **where it comes from** for what is not the student's (the course that brings it or the teacher who handed it out; without that, two read-only collections would be indistinguishable) and how long ago it was touched ("hace 3 meses", the exact date in the tooltip). Under it, up to four games as the study page names them (a title, or "Blancas – Negras") and "y n más".
 
-**The whole card is the link.** The name is the only `<a>`; its `::after` is stretched over the card (`position: absolute; inset: 0`), so a click anywhere goes to the study while the markup keeps one link with the study's name. The delete cross sits in `.study-card__actions`, raised above it with `z-index`, so it is still what gets pressed. Keyboard focus on the link outlines the card (`:has(:focus-visible)`).
+**The whole card is the link.** The name is the only `<a>`; its `::after` is stretched over the card (`position: absolute; inset: 0`), so a click anywhere goes to the study's first game (`href`; the study's empty page when it has none) while the markup keeps one link with the study's name. The delete cross sits in `.study-card__actions`, raised above it with `z-index`, so it is still what gets pressed. Keyboard focus on the link outlines the card (`:has(:focus-visible)`).
 
 ## Props
 
@@ -28,7 +28,7 @@ A study as a card, in the manner of a lichess study card: a tile with the site's
 ## Behaviour
 
 - `permissions.canDelete` renders the [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) cross with the counts it needs for its warning; otherwise, a read-only study shows the "Sólo lectura" mark. An editable study that cannot be deleted ("Mis partidas") shows neither.
-- Game count, the two date labels and `previewGames` come from the mapper: the preview is the study's first four games in the study page's order (`studySummaryInclude`, `take: 4`), and the total is counted by the service in one grouped query, because the include's own relation count is taken by the cited games.
+- Game count, the two date labels and `previewGames` come from the mapper: the preview is the study's first four games in the aside's order (`studySummaryInclude`, `take: 4`), and the total is counted by the service in one grouped query, because the include's own relation count is taken by the cited games.
 
 ## Markup & styling
 

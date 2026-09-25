@@ -41,6 +41,23 @@
     color: var(--platform-danger);
   }
 
+  /* In the aside it is the last word of the study's row of actions, and only
+     turns red when you go for it, like the game's "Borrar" at the record's foot. */
+  & .delete-study__open-inline {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  & .delete-study__open-inline:hover {
+    color: var(--platform-danger);
+  }
+
   /* The cross is decorative; the real name is read by the screen reader, which
      otherwise would announce "✕" and nothing else. */
   & .delete-study__open-label {

@@ -138,4 +138,47 @@
     font-family: inherit;
     font-size: 15px;
   }
+
+  /* In the aside: the card's own padding and shadow instead of the panel's
+     border, the student on two lines with the date under the name, and the
+     form stacked, because a 280px column has no room for a row. */
+  &.share-collection_layout_compact {
+    gap: 14px;
+    padding: 16px;
+    border: 0;
+    box-shadow: 0 1px 2px rgba(22, 17, 13, 0.05);
+
+    & .share-collection__title {
+      font-size: 14px;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--platform-text-subtle);
+    }
+
+    & .share-collection__item {
+      flex-wrap: wrap;
+      gap: 6px 10px;
+    }
+
+    & .share-collection__student {
+      flex: 1 1 100%;
+    }
+
+    & .share-collection__date {
+      margin-left: 0;
+    }
+
+    & .share-collection__remove {
+      margin-left: auto;
+    }
+
+    & .share-collection__form {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    & .share-collection__field {
+      flex: none;
+    }
+  }
 }

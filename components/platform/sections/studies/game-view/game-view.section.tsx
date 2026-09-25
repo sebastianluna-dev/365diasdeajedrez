@@ -3,29 +3,40 @@
 import { type ReactNode, useCallback, useEffect, useReducer, useState } from "react";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { STUDY_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
 import { federationFlag } from "@/lib/chess/federations";
 import { autosaveGamePgn } from "@/services/studies/studies.actions";
 import type { GameView, StudyGameItem } from "@/services/studies/studies.types";
-import { GameAside } from "./game-aside.comp";
+import { GameAside, type GameAsidePages } from "./game-aside.comp";
 import { GameTools, type GameToolsTab } from "./game-tools.comp";
 import "./game-view.section.css";
 
 interface GameViewSectionProps {
   game: GameView;
-  /** All of the study's games, the current one included: they feed the aside. */
+  /** The study's games around the current one (one page): they feed the aside. */
   siblings: StudyGameItem[];
-  /** New-game modal; absent in course databases. */
+  /** The study's name and total, which head the aside. */
+  studyName: string;
+  gameCount: number;
+  /** "Editar datos" and "Borrar" of the study; absent when it is not the viewer's. */
+  studyTools?: ReactNode;
+  /** Whether the aside's list can be dragged into a new order. */
+  canReorder?: boolean;
+  /** Where the aside's list stands when the study spans several pages. */
+  pages?: GameAsidePages;
+  /** New-game modal; absent when writing is not allowed. */
   newGame?: ReactNode;
-  /** Game data modal; absent in course databases. */
+  /** Game data modal; absent when writing is not allowed. */
   editGame?: ReactNode;
-  /** What bounced back from a server action (delete without confirming). */
+  /** The sharing card of a collection, for its owner. */
+  share?: ReactNode;
+  /**
+   * What bounced back from a server action: the game's (delete without
+   * confirming) and the study's, whose forms are mounted in the aside now
+   * that the study has no page of its own.
+   */
   errorCode?: string;
 }
-
-const ERROR_MESSAGES: Record<string, string> = {
-  gameInClasses:
-    "Esta partida está usada en el contenido de alguna clase. Si la borras, esos bloques se quedarán vacíos. Marca la casilla para confirmarlo.",
-};
 
 /** Wait after the last change before saving. */
 const AUTOSAVE_DELAY_MS = 1200;
@@ -103,7 +114,19 @@ function Player({ name, elo, title, country, side }: PlayerProps) {
  * board to add moves and uses the list's right click to comment, annotate,
  * promote or delete them; all of that saves by itself.
  */
-export function GameViewSection({ game, siblings, newGame, editGame, errorCode }: GameViewSectionProps) {
+export function GameViewSection({
+  game,
+  siblings,
+  studyName,
+  gameCount,
+  studyTools,
+  canReorder,
+  pages,
+  newGame,
+  editGame,
+  share,
+  errorCode,
+}: GameViewSectionProps) {
   // The PGN lives here because it is shared by the viewer — which reads and
   // edits it — and the tools panel — which also writes it. If each kept its
   // own, commenting a move would not show in the list until reload.
@@ -197,10 +220,21 @@ export function GameViewSection({ game, siblings, newGame, editGame, errorCode }
 
   return (
     <section className="game-view">
-      <GameAside game={game} siblings={siblings} newGame={newGame} editGame={editGame} />
+      <GameAside
+        game={game}
+        siblings={siblings}
+        studyName={studyName}
+        gameCount={gameCount}
+        studyTools={studyTools}
+        canReorder={canReorder}
+        pages={pages}
+        newGame={newGame}
+        editGame={editGame}
+        share={share}
+      />
 
       <div className="game-view__board">
-        {errorCode && <PlatformNotice message={ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
+        {errorCode && <PlatformNotice message={STUDY_ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
 
         <GameViewer
           pgn={pgn}

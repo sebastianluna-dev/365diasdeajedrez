@@ -4,17 +4,17 @@ description: "The Mis estudios → Estudio → Partida breadcrumb trail; a level
 
 # `StudiesNavigation`
 
-|            |                                                                                |
-| ---------- | ------------------------------------------------------------------------------ |
-| File       | `components/platform/shared/studies-navigation.comp.tsx`                       |
-| Kind       | Server Component                                                               |
-| Stylesheet | `studies-navigation.comp.css` → block `.studies-navigation`                    |
-| Used by    | `/estudios/[studyId]` (and the game and new-game pages through their sections) |
-| Uses       | `platformRoutes` from `lib/platform-routes`                                    |
+|            |                                                                                              |
+| ---------- | -------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/studies-navigation.comp.tsx`                                     |
+| Kind       | Server Component                                                                             |
+| Stylesheet | `studies-navigation.comp.css` → block `.studies-navigation`                                  |
+| Used by    | `/estudios/[studyId]`, the empty study page (a study with games redirects to its first game) |
+| Uses       | `platformRoutes` from `lib/platform-routes`                                                  |
 
 ## Purpose
 
-The trail of the studies area. Unlike [`CourseNavigation`](/components/platform/shared/course-navigation) it does not need a `current` prop: a level given **with** an href is a link, a level given without one is the current page. That works here because the study page passes only the study name, and the game page passes the study with its href and the game without.
+The trail of the studies area. Unlike [`CourseNavigation`](/components/platform/shared/course-navigation) it does not need a `current` prop: a level given **with** an href is a link, a level given without one is the current page. That works here because the empty study page passes only the study name; the game page draws no trail, the study heads its aside instead.
 
 ## Props
 

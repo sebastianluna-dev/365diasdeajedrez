@@ -21,11 +21,12 @@ export const studySummaryInclude = {
   // the service brings the totals in one query and hands them to the mapper.
   _count: { select: { games: { where: { classBlocks: { some: {} } } } } },
   // The first games, for the card to list what is inside. The same order as the
-  // study page, so the card and the page agree on what comes first.
+  // game page's aside, so the card and the aside agree on what comes first; the
+  // first one's id is where the card links to.
   games: {
     take: STUDY_PREVIEW_SIZE,
     orderBy: [{ order: "asc" }, { playedAt: "desc" }, { createdAt: "asc" }],
-    select: { title: true, white: true, black: true },
+    select: { id: true, title: true, white: true, black: true },
   },
 } satisfies Prisma.GameDatabaseInclude;
 
@@ -111,7 +112,10 @@ export function mapStudySummary(
     sharedByName: isOwner ? undefined : (row.shares[0]?.teacher?.displayName ?? undefined),
     permissions: studyPermissionsOf({ kindCode: row.kind.code, isOwner }),
     citedGameCount: row._count.games,
-    href: platformRoutes.studyDetail(row.id),
+    // Straight to the first game: a study is read on its game page, and the
+    // study's own URL only redirects there. Without games there is nothing to
+    // redirect to, so the card opens the study's empty page.
+    href: row.games[0] ? platformRoutes.gameDetail(row.id, row.games[0].id) : platformRoutes.studyDetail(row.id),
   };
 }
 

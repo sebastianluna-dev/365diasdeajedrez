@@ -21,9 +21,28 @@
     overflow: hidden;
   }
 
-  & .game-aside__card_variant_list .game-aside__card-head {
+  /* The study heads the list card: its name and the count, and under them,
+     for its owner, the row of study actions; the rule under it opens the list. */
+  & .game-aside__study {
     padding: 16px;
     box-shadow: 0 1px 0 var(--platform-border);
+  }
+
+  & .game-aside__study-name {
+    margin: 0 auto 0 0;
+    min-width: 0;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  & .game-aside__study-tools {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 8px;
   }
 
   /* How many games there are, next to the title: the listing may be cut by the
@@ -135,7 +154,48 @@
     gap: 2px;
   }
 
+  & .game-aside__row {
+    display: flex;
+    align-items: center;
+  }
+
+  & .game-aside__row_state_dragging {
+    opacity: 0.45;
+  }
+
+  /* The grip shows through on hover or focus: always visible it would add
+     noise to every row for an action that is rarely used. */
+  & .game-aside__handle {
+    flex: none;
+    width: 20px;
+    padding: 4px 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--platform-text-faint);
+    font-size: 14px;
+    line-height: 1;
+    cursor: grab;
+    opacity: 0;
+  }
+
+  & .game-aside__handle:active {
+    cursor: grabbing;
+  }
+
+  & .game-aside__row:hover .game-aside__handle,
+  & .game-aside__handle:focus-visible {
+    opacity: 1;
+  }
+
+  & .game-aside__handle:focus-visible {
+    outline: 2px solid var(--platform-accent);
+    outline-offset: 2px;
+  }
+
   & .game-aside__item {
+    flex: 1 1 auto;
+    min-width: 0;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -195,6 +255,29 @@
   & .game-aside__item_state_active .game-aside__item-meta,
   & .game-aside__item_state_active .game-aside__item-result {
     color: var(--platform-accent-ink);
+  }
+
+  /* Where the list stands within a study of several pages, above the
+     new-game action. */
+  & .game-aside__pages {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 16px;
+    box-shadow: 0 -1px 0 var(--platform-border);
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .game-aside__page-link {
+    color: var(--platform-accent-ink);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  & .game-aside__page-link.game-aside__page-link_state_disabled {
+    color: var(--platform-text-faint);
   }
 
   /* At the foot of the card, as a written action and not as a box: in the

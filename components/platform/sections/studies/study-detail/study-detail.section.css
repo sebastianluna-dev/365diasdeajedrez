@@ -101,28 +101,4 @@
       flex-wrap: wrap;
     }
   }
-
-  & .study-detail__pages {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 14px;
-    font-size: 14.5px;
-    color: var(--platform-text-subtle);
-  }
-
-  & .study-detail__page-link {
-    color: var(--platform-accent-ink);
-    font-weight: 600;
-    white-space: nowrap;
-  }
-
-  & .study-detail__page-link.study-detail__page-link_state_disabled {
-    color: var(--platform-text-faint);
-  }
-
-  & .study-detail__page-status {
-    text-align: center;
-  }
 }

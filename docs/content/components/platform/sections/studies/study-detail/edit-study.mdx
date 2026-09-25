@@ -4,14 +4,14 @@ description: "The 'Editar datos' dialog of a study: rename, describe and, when t
 
 # `EditStudy`
 
-|            |                                                                                                 |
-| ---------- | ----------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/study-detail/edit-study.comp.tsx`                         |
-| Kind       | Client Component                                                                                |
-| Stylesheet | `edit-study.comp.css` → block `.edit-study`                                                     |
-| Used by    | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) |
-| Writes     | `updateStudy()` · `services/studies/studies.actions.ts`                                         |
-| Uses       | `StudyKindOption` from `services/studies/studies.types`                                         |
+|            |                                                                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/study-detail/edit-study.comp.tsx`                                                                                                               |
+| Kind       | Client Component                                                                                                                                                                      |
+| Stylesheet | `edit-study.comp.css` → block `.edit-study`                                                                                                                                           |
+| Used by    | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (boxed), `/estudios/[studyId]/partidas/[gameId]` (inline, in the aside's study tools) |
+| Writes     | `updateStudy()` · `services/studies/studies.actions.ts`                                                                                                                               |
+| Uses       | `StudyKindOption` from `services/studies/studies.types`                                                                                                                               |
 
 ## Purpose
 
@@ -19,15 +19,16 @@ Editing a study's own data, in a native `<dialog>` like [`NewStudy`](/components
 
 ## Props
 
-| Prop            | Type                | Required | Meaning                                                 |
-| --------------- | ------------------- | -------- | ------------------------------------------------------- |
-| `id`            | `string`            | yes      | Bound into the action.                                  |
-| `name`          | `string`            | yes      | Current name (required, max 120).                       |
-| `description`   | `string`            | no       | Current description (max 500).                          |
-| `kindCode`      | `string`            | yes      | Current kind; preselected when it is among `kinds`.     |
-| `kindLabel`     | `string`            | yes      | The kind's name, to state it when it cannot be changed. |
-| `kinds`         | `StudyKindOption[]` | yes      | The kinds it can change to (from `study-rules`).        |
-| `canChangeKind` | `boolean`           | yes      | Whether the selector renders.                           |
+| Prop            | Type                    | Required                 | Meaning                                                                                                            |
+| --------------- | ----------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `id`            | `string`                | yes                      | Bound into the action.                                                                                             |
+| `name`          | `string`                | yes                      | Current name (required, max 120).                                                                                  |
+| `description`   | `string`                | no                       | Current description (max 500).                                                                                     |
+| `kindCode`      | `string`                | yes                      | Current kind; preselected when it is among `kinds`.                                                                |
+| `kindLabel`     | `string`                | yes                      | The kind's name, to state it when it cannot be changed.                                                            |
+| `kinds`         | `StudyKindOption[]`     | yes                      | The kinds it can change to (from `study-rules`).                                                                   |
+| `canChangeKind` | `boolean`               | yes                      | Whether the selector renders.                                                                                      |
+| `size`          | `"regular" \| "inline"` | no · default `"regular"` | `regular` is the boxed button of the empty study page; `inline` one more word in the aside's row of study actions. |
 
 ## Behaviour
 
@@ -35,13 +36,13 @@ Editing a study's own data, in a native `<dialog>` like [`NewStudy`](/components
 
 ## Markup & styling
 
-Block `.edit-study` (79 lines).
+Block `.edit-study` (92 lines).
 
-**Elements:** `.edit-study__open`, `.edit-study__dialog`, `.edit-study__form`, `.edit-study__title`, `.edit-study__field`, `.edit-study__label`, `.edit-study__input`, `.edit-study__select`, `.edit-study__actions`, `.edit-study__note`
+**Elements:** `.edit-study__open` (`_size_regular`, `_size_inline`), `.edit-study__dialog`, `.edit-study__form`, `.edit-study__title`, `.edit-study__field`, `.edit-study__label`, `.edit-study__input`, `.edit-study__select`, `.edit-study__actions`, `.edit-study__note`
 
 **Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_secondary`.
 
-**Tokens:** `--platform-accent`, `--platform-bg`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-bg`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
 No media queries.
 

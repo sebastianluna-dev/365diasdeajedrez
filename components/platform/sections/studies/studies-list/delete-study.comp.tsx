@@ -11,10 +11,11 @@ interface DeleteStudyProps {
   gameCount: number;
   citedGameCount: number;
   /**
-   * `icon` is the card's cross; `button` the text button of the study page.
+   * `icon` is the card's cross; `button` the boxed text button of the empty
+   * study page; `inline` one more word in the aside's row of study actions.
    * The trigger changes, not the dialog.
    */
-  trigger?: "icon" | "button";
+  trigger?: "icon" | "button" | "inline";
 }
 
 export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "icon" }: DeleteStudyProps) {
@@ -58,9 +59,13 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
           <span aria-hidden="true">✕</span>
           <span className="delete-study__open-label">Borrar «{name}»</span>
         </button>
-      ) : (
+      ) : trigger === "button" ? (
         <button type="button" className="delete-study__open-wide" onClick={() => dialogRef.current?.showModal()}>
           Borrar estudio
+        </button>
+      ) : (
+        <button type="button" className="delete-study__open-inline" onClick={() => dialogRef.current?.showModal()}>
+          Borrar
         </button>
       )}
 

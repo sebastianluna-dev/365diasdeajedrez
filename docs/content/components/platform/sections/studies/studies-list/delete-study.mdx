@@ -1,16 +1,16 @@
 ---
-description: "The confirmation dialog for deleteStudy: a cross on the card or a text button on the study page, with a checkbox that is required exactly when the server requires it."
+description: "The confirmation dialog for deleteStudy: a cross on the card, a text button on the empty study page or a word in the game aside, with a checkbox that is required exactly when the server requires it."
 ---
 
 # `DeleteStudy`
 
-|            |                                                                                                                                                                                                               |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/studies-list/delete-study.comp.tsx`                                                                                                                                     |
-| Kind       | Client Component                                                                                                                                                                                              |
-| Stylesheet | `delete-study.comp.css` → block `.delete-study`                                                                                                                                                               |
-| Used by    | [`StudyCard`](/components/platform/sections/studies/studies-list/study-card) (icon trigger), [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (button trigger) |
-| Writes     | `deleteStudy()` · `services/studies/studies.actions.ts`                                                                                                                                                       |
+|            |                                                                                                                                                                                                                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/studies-list/delete-study.comp.tsx`                                                                                                                                                                                                                           |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                    |
+| Stylesheet | `delete-study.comp.css` → block `.delete-study`                                                                                                                                                                                                                                                     |
+| Used by    | [`StudyCard`](/components/platform/sections/studies/studies-list/study-card) (icon trigger), [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (button trigger), `/estudios/[studyId]/partidas/[gameId]` (inline trigger, in the aside's study tools) |
+| Writes     | `deleteStudy()` · `services/studies/studies.actions.ts`                                                                                                                                                                                                                                             |
 
 ## Purpose
 
@@ -18,13 +18,13 @@ Deleting a study deletes its games, and with them variations, comments and arrow
 
 ## Props
 
-| Prop             | Type                 | Required              | Meaning                                                                                                      |
-| ---------------- | -------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `id`             | `string`             | yes                   | Study to delete; bound into the action.                                                                      |
-| `name`           | `string`             | yes                   | For the title ("¿Borrar «…»?") and the trigger's tooltip.                                                    |
-| `gameCount`      | `number`             | yes                   | Drives the description.                                                                                      |
-| `citedGameCount` | `number`             | yes                   | Games cited in class blocks; drives the warning text.                                                        |
-| `trigger`        | `"icon" \| "button"` | no · default `"icon"` | `icon` is the card's cross; `button` the text button of the study page. The trigger changes, not the dialog. |
+| Prop             | Type                             | Required              | Meaning                                                                                                                                                                              |
+| ---------------- | -------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`             | `string`                         | yes                   | Study to delete; bound into the action.                                                                                                                                              |
+| `name`           | `string`                         | yes                   | For the title ("¿Borrar «…»?") and the trigger's tooltip.                                                                                                                            |
+| `gameCount`      | `number`                         | yes                   | Drives the description.                                                                                                                                                              |
+| `citedGameCount` | `number`                         | yes                   | Games cited in class blocks; drives the warning text.                                                                                                                                |
+| `trigger`        | `"icon" \| "button" \| "inline"` | no · default `"icon"` | `icon` is the card's cross; `button` the boxed text button of the empty study page; `inline` one more word in the aside's row of study actions. The trigger changes, not the dialog. |
 
 ## Behaviour
 
@@ -35,9 +35,9 @@ Deleting a study deletes its games, and with them variations, comments and arrow
 
 ## Markup & styling
 
-Block `.delete-study` (182 lines).
+Block `.delete-study` (202 lines).
 
-**Elements:** `.delete-study__open`, `.delete-study__open-label` (visually hidden text of the cross), `.delete-study__open-wide`, `.delete-study__dialog`, `.delete-study__form`, `.delete-study__head`, `.delete-study__icon`, `.delete-study__heading`, `.delete-study__title`, `.delete-study__description`, `.delete-study__confirm`, `.delete-study__checkbox`, `.delete-study__warning`, `.delete-study__actions`, `.delete-study__note`, `.delete-study__cancel`, `.delete-study__submit`
+**Elements:** `.delete-study__open`, `.delete-study__open-label` (visually hidden text of the cross), `.delete-study__open-wide`, `.delete-study__open-inline`, `.delete-study__dialog`, `.delete-study__form`, `.delete-study__head`, `.delete-study__icon`, `.delete-study__heading`, `.delete-study__title`, `.delete-study__description`, `.delete-study__confirm`, `.delete-study__checkbox`, `.delete-study__warning`, `.delete-study__actions`, `.delete-study__note`, `.delete-study__cancel`, `.delete-study__submit`
 
 **Other classes it renders:** `.platform-dialog`.
 
