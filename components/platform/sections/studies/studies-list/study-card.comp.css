@@ -97,7 +97,17 @@
     border-radius: 1000px;
     background: var(--platform-surface-neutral);
     font-size: 13px;
-    color: var(--platform-text-subtle);
+    /* The muted grey and not the subtle one: at 13px the subtle one fell
+       under AA on the pill, and the muted one passes on both of its fills. */
+    color: var(--platform-text-muted);
+    transition: background-color 140ms ease-out;
+  }
+
+  /* On the hovered card the grey pill vanished against the orange wash: it
+     takes the soft orange fill. The text stays the muted grey, because the
+     accent ink measured 3.75:1 on that fill, under AA for text this small. */
+  &:hover .study-card__readonly {
+    background: var(--platform-accent-soft);
   }
 
   & .study-card__meta {
@@ -108,6 +118,12 @@
     margin: 0;
     font-size: 14.5px;
     color: var(--platform-text-subtle);
+    transition: color 140ms ease-out;
+  }
+
+  /* A step darker on the tint, where the subtle grey fell just under AA. */
+  &:hover .study-card__meta {
+    color: var(--platform-text-muted);
   }
 
   /* Which course or teacher it comes from, when it is not yours. */
