@@ -270,8 +270,8 @@ export function CourseEditorSection({
               <textarea name="description" defaultValue={course.description ?? ""} maxLength={1000} />
             </FormField>
 
-            {/* What the course teaches, as cards: several at once, and the
-                action refuses to save none. */}
+            {/* What the course teaches, as cards with the name alone: several at
+                once, and the action refuses to save none. */}
             <FormFieldset legend="Contenido (selecciona al menos uno)" frame="none">
               <PlatformCheckCards
                 name="contentTypeCodes"
@@ -280,14 +280,12 @@ export function CourseEditorSection({
                 options={contentTypes.map((type) => ({
                   value: type.code,
                   label: type.label,
-                  description: type.description,
                 }))}
               />
             </FormFieldset>
 
             {/* Who the course is aimed at, as cards in order of difficulty, each
-                with its orientative Elo range between the name and what it covers.
-                Several at once, or none. A retired level is still offered,
+                with its name and its orientative Elo range. Several at once, or none. A retired level is still offered,
                 marked: the set is saved whole, and leaving it out would take
                 it from the course. */}
             <FormFieldset legend="Niveles" frame="none">
@@ -300,7 +298,6 @@ export function CourseEditorSection({
                     value: level.slug,
                     label: level.isActive ? level.name : `${level.name} (retirado)`,
                     meta: shortEloRange(level.eloRange),
-                    description: level.description,
                   }))}
                 />
               ) : (

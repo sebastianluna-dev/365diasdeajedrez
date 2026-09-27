@@ -22,7 +22,6 @@ export interface LevelAdminRow {
 export interface LevelOption {
   slug: string;
   name: string;
-  description: string;
   eloRange: string;
   isActive: boolean;
 }

@@ -54,7 +54,6 @@ describe("mapLevelOption", () => {
       mapLevelOption({
         slug: "iniciacion",
         name: "Iniciación",
-        description: "Reglas y principios básicos.",
         eloMin: 0,
         eloMax: 799,
         isActive: true,
@@ -62,7 +61,6 @@ describe("mapLevelOption", () => {
     ).toEqual({
       slug: "iniciacion",
       name: "Iniciación",
-      description: "Reglas y principios básicos.",
       eloRange: "Menos de 800",
       isActive: true,
     });

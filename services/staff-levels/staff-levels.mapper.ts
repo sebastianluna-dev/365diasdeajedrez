@@ -44,7 +44,6 @@ export function mapLevelAdmin(row: LevelAdminRowData): LevelAdminRow {
 export const levelOptionSelect = {
   slug: true,
   name: true,
-  description: true,
   eloMin: true,
   eloMax: true,
   isActive: true,
@@ -56,7 +55,6 @@ export function mapLevelOption(row: LevelOptionData): LevelOption {
   return {
     slug: row.slug,
     name: row.name,
-    description: row.description,
     eloRange: formatEloRange(row),
     isActive: row.isActive,
   };
