@@ -14,6 +14,7 @@ const meta: MetaRecord = {
   "platform-date-picker": "PlatformDatePicker",
   "platform-error": "PlatformError",
   "platform-form": "PlatformForm",
+  "platform-info-tip": "PlatformInfoTip",
   "platform-notice": "PlatformNotice",
   "platform-select": "PlatformSelect",
   "platform-table": "PlatformTable",

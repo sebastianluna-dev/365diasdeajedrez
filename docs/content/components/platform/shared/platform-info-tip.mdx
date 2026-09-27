@@ -1,0 +1,67 @@
+---
+description: "A clarification folded into an 'i': a small round button that shows its text on hover, on keyboard focus and on press, on Radix's Tooltip primitive."
+---
+
+# `PlatformInfoTip`
+
+|            |                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-info-tip/platform-info-tip.comp.tsx`                                                        |
+| Kind       | Client Component                                                                                                                 |
+| Stylesheet | `platform-info-tip.comp.css` → blocks `.platform-info-tip` (the button) and `.platform-info-tip__content` (the tip, its sibling) |
+| Used by    | [`CourseNameFields`](/components/platform/sections/staff/courses/course-name-fields)                                             |
+| Uses       | `Tooltip` from `radix-ui`; `InfoIcon` from `components/icons/`                                                                   |
+| Stories    | `platform-info-tip.stories.tsx`                                                                                                  |
+
+## Purpose
+
+For what helps the first time and is noise every time after: how a field behaves, what a figure means. The text leaves the page and waits behind an "i". What the person **needs** in order to fill a field in (a required format they cannot guess, a limit) stays a visible hint: a tip is never the only place a rule is said.
+
+## Props
+
+| Prop    | Type                                     | Required | Meaning                                                                                   |
+| ------- | ---------------------------------------- | -------- | ----------------------------------------------------------------------------------------- |
+| `text`  | `string`                                 | yes      | What the tip says: plain text, a sentence or two.                                         |
+| `label` | `string`                                 | yes      | The button's accessible name, which says what the tip is about («Sobre el slug»).         |
+| `side`  | `"top" \| "right" \| "bottom" \| "left"` | no       | The side it opens on when there is room. `top` by default; the primitive flips it if not. |
+
+## Behaviour
+
+- **Opens** on hover (after 120 ms), on keyboard focus and on press. The press is ours: a touch screen has no hover, and the primitive on its own _closes_ on press, so the button's `onPointerDown` and `onClick` call `preventDefault` and the click sets it open.
+- **Closes** when the pointer leaves, on blur and with Escape.
+- While open, the primitive ties the text to the button with `aria-describedby` and gives it `role="tooltip"`; the button is a real `<button type="button">`, so it never submits the form it sits in.
+- **Not portalled**, like [`PlatformSelect`](/components/platform/shared/platform-select)'s list: a portal to `<body>` would be inert under a modal `<dialog>`.
+- It places nothing: whoever uses it puts the button where it goes (inside an input, next to a heading).
+
+## Markup & styling
+
+Two blocks, because the primitive renders the tip as the button's sibling and not inside it: `.platform-info-tip`, a 28px round button in the subtle grey with `cursor: help`, and `.platform-info-tip__content`, the dark tip (`--platform-text` as background, `--platform-surface` as text), at most 300px wide.
+
+**Elements:** `.platform-info-tip__icon`, `.platform-info-tip__content`, `.platform-info-tip__arrow`
+
+**States (data attributes set by the primitive):** `[data-state="delayed-open"]`, `[data-state="instant-open"]`, `[data-state="closed"]` on the button and on the tip.
+
+**Animation:** `platform-info-tip-in` (160 ms) and `platform-info-tip-out` (120 ms), both off under `prefers-reduced-motion`.
+
+**Tokens:** `--platform-accent`, `--platform-shadow-card`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/staff/courses/course-name-fields.comp.tsx`, inside the slug's input:
+
+```tsx
+import { PlatformInfoTip } from "@/components/platform/shared/platform-info-tip/platform-info-tip.comp";
+
+<span className="platform-field__control course-name-fields__slug">
+  <input id={slugId} type="text" name="slug" defaultValue={slug} required />
+  <PlatformInfoTip label="Sobre el slug" text={SLUG_INFO} />
+</span>;
+```
+
+The field that holds it must not be a `<label>` around everything, as [`FormField`](/components/platform/shared/form-field) is: the button's name would end up in the input's. Give the input an `id` and the label an `htmlFor`.
+
+## Related
+
+- [`FormField`](/components/platform/shared/form-field) and [`PlatformFormField`](/components/platform/shared/platform-form) for the visible `hint`.

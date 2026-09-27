@@ -1,0 +1,100 @@
+/* The root is the button; the tip is rendered by the primitive as its
+   sibling, so it is a block of its own under the same name. */
+.platform-info-tip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--platform-text-subtle);
+  cursor: help;
+  transition:
+    background-color 140ms ease-out,
+    color 140ms ease-out;
+
+  &:hover,
+  &[data-state="delayed-open"],
+  &[data-state="instant-open"] {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--platform-accent);
+    outline-offset: 1px;
+  }
+
+  & .platform-info-tip__icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+.platform-info-tip__content {
+  z-index: 40;
+  box-sizing: border-box;
+  max-width: min(300px, var(--radix-tooltip-content-available-width));
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--platform-text);
+  color: var(--platform-surface);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+  text-wrap: pretty;
+  box-shadow: var(--platform-shadow-card);
+  /* Grows out of the button, whichever side the primitive put it on. */
+  transform-origin: var(--radix-tooltip-content-transform-origin);
+
+  &[data-state="delayed-open"],
+  &[data-state="instant-open"] {
+    animation: platform-info-tip-in 160ms ease-out;
+  }
+
+  &[data-state="closed"] {
+    animation: platform-info-tip-out 120ms ease-in forwards;
+  }
+
+  & .platform-info-tip__arrow {
+    fill: var(--platform-text);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &[data-state="delayed-open"],
+    &[data-state="instant-open"],
+    &[data-state="closed"] {
+      animation: none;
+    }
+  }
+}
+
+/* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */
+@keyframes platform-info-tip-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes platform-info-tip-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
