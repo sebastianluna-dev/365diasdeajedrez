@@ -76,4 +76,16 @@
     font-size: 15.5px;
     color: var(--platform-text);
   }
+
+  /* The group's controls draw their own boxes: no second frame around them. */
+  &.platform-field_frame_none {
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  /* Without a border to sit on, the legend has no side gap to keep. */
+  &.platform-field_frame_none .platform-field__label {
+    padding: 0;
+  }
 }

@@ -43,7 +43,7 @@ export function EntitiesAdminSection({ entities, kinds, errorCode }: EntitiesAdm
           </FormField>
         </div>
 
-        <FormFieldset legend="Tipo de entidad" hint="Al menos uno; puede ser varios a la vez.">
+        <FormFieldset legend="Tipo de entidad" hint="Al menos uno; puede ser varios a la vez." frame="none">
           <PlatformCheckCards name="kindCodes" aria-label="Tipo de entidad" options={kindOptions} />
         </FormFieldset>
 
@@ -77,7 +77,7 @@ export function EntitiesAdminSection({ entities, kinds, errorCode }: EntitiesAdm
             </FormField>
           </div>
 
-          <FormFieldset legend="Tipo de entidad">
+          <FormFieldset legend="Tipo de entidad" frame="none">
             <PlatformCheckCards
               name="kindCodes"
               aria-label="Tipo de entidad"
