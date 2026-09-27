@@ -62,7 +62,8 @@ export async function CoursesAdminSection({ query, status }: CoursesAdminSection
               {status && <input type="hidden" name="estado" value={status} />}
             </form>
 
-            <Link href={staffRoutes.newCourse} className="platform-button">
+            {/* The quiet grey button: the catalog has no orange in it. */}
+            <Link href={staffRoutes.newCourse} className="platform-button platform-button_variant_quiet">
               Nuevo curso
             </Link>
           </>

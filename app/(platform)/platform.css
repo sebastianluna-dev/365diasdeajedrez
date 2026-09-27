@@ -227,6 +227,23 @@ html body.platform-theme[data-scroll-locked] {
   color: var(--platform-text);
 }
 
+/* The quiet button: a light grey fill that darkens a step on hover, for a
+   screen whose one action should not shout in orange next to the title (the
+   staff catalogs). Same box as the primary, only the colours change. */
+.platform-button_variant_quiet {
+  background: var(--platform-bg);
+  color: var(--platform-text);
+}
+
+.platform-button_variant_quiet:hover {
+  background: var(--platform-surface-sunken);
+  color: var(--platform-text);
+}
+
+.platform-button_variant_quiet:disabled:hover {
+  background: var(--platform-bg);
+}
+
 .platform-button_variant_danger {
   padding: 12px 20px;
   background: var(--platform-surface);

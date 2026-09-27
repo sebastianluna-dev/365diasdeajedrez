@@ -49,30 +49,34 @@
     flex-wrap: wrap;
   }
 
+  /* The status filters are the same chips as the kind filters of "Mis
+     estudios" (`.studies-browser__chip`): outlined pills in the subtle grey,
+     one weight in both states, and the active one told by the orange border
+     and the faint wash. They are links here, not buttons, so no hover: the
+     chip that is on is the only one that stands out. */
   & .courses-admin__filters {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     flex-wrap: wrap;
   }
 
   & .courses-admin__filter {
     padding: 8px 15px;
+    border: 1px solid var(--platform-border);
     border-radius: 1000px;
-    color: var(--platform-text-muted);
+    background: var(--platform-surface);
+    color: var(--platform-text-subtle);
     font-size: 14px;
     font-weight: 600;
+    white-space: nowrap;
     transition: 150ms;
-    transition-property: background-color, color;
-  }
-
-  & .courses-admin__filter:hover {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text);
+    transition-property: background-color, border-color, color;
   }
 
   & .courses-admin__filter_state_active {
-    background: var(--platform-accent-soft);
+    border-color: var(--platform-accent);
+    background: var(--platform-accent-wash);
     color: var(--platform-accent-ink);
   }
 
@@ -97,10 +101,13 @@
     background: var(--platform-border-strong);
   }
 
+  /* Outlined by the thin grey over a light shadow, like the study cards: on
+     the white page the card shadow alone did not hold the table's edge. */
   & .courses-admin__table {
     background: var(--platform-surface);
+    border: 1px solid var(--platform-border);
     border-radius: 10px;
-    box-shadow: var(--platform-shadow-card);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     overflow: hidden;
   }
 
