@@ -24,6 +24,7 @@ import { PlatformCheckCards } from "@/components/platform/shared/platform-check-
 import { shortEloRange } from "@/services/courses/level-rules";
 import type { LevelOption } from "@/services/staff-levels/staff-levels.types";
 import type { SourceEntityOption } from "@/services/staff-sources/staff-sources.types";
+import { CourseNameFields } from "./course-name-fields.comp";
 import { CourseSources } from "./course-sources/course-sources.comp";
 import { SortableList } from "./sortable-list.comp";
 import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
@@ -262,20 +263,8 @@ export function CourseEditorSection({
       >
         <StaffPanel title="Metadatos">
           <form id={METADATA_FORM_ID} className="course-editor__form" action={updateCourse.bind(null, course.id)}>
-            <FormField label="Nombre">
-              <input type="text" name="name" defaultValue={course.name} maxLength={160} required />
-            </FormField>
-
-            <FormField label="Identificador (slug)" hint="Minúsculas, números y guiones. Aparece en la URL del curso.">
-              <input
-                type="text"
-                name="slug"
-                defaultValue={course.slug}
-                maxLength={160}
-                pattern="[a-z0-9]+(-[a-z0-9]+)*"
-                required
-              />
-            </FormField>
+            {/* The only piece of the form with state: the slug follows the name. */}
+            <CourseNameFields name={course.name} slug={course.slug} />
 
             <FormField label="Descripción (opcional)">
               <textarea name="description" defaultValue={course.description ?? ""} maxLength={1000} />

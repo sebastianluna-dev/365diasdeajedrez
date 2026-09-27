@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { generateSlug } from "./generate-slug";
+import { generateSlug, slugAfterRename } from "./generate-slug";
 
 describe("generateSlug", () => {
   it("quita tildes y signos, y separa con un solo guion", () => {
@@ -10,5 +10,27 @@ describe("generateSlug", () => {
 
   it("devuelve vacío si no queda nada utilizable", () => {
     expect(generateSlug("¡¿?!")).toBe("");
+  });
+});
+
+describe("slugAfterRename", () => {
+  it("al cambiar el nombre, el slug pasa a ser el del nombre nuevo", () => {
+    expect(slugAfterRename("Finales de torre", "Finales de torre esenciales", "finales-de-torre")).toBe(
+      "finales-de-torre-esenciales",
+    );
+  });
+
+  it("pisa también un slug escrito a mano: manda el nombre nuevo", () => {
+    expect(slugAfterRename("Finales de torre", "Finales de dama", "mi-slug-propio")).toBe("finales-de-dama");
+  });
+
+  it("si el nombre no cambió, el slug se queda como estaba", () => {
+    expect(slugAfterRename("Finales de torre", "Finales de torre", "mi-slug-propio")).toBe("mi-slug-propio");
+    expect(slugAfterRename("Finales de torre", "  Finales de torre ", "mi-slug-propio")).toBe("mi-slug-propio");
+  });
+
+  it("un nombre del que no sale ningún slug no vacía el campo", () => {
+    expect(slugAfterRename("Finales de torre", "¡¿?!", "finales-de-torre")).toBe("finales-de-torre");
+    expect(slugAfterRename("Finales de torre", "", "finales-de-torre")).toBe("finales-de-torre");
   });
 });
