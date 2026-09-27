@@ -21,16 +21,17 @@ It is a sibling of `PlatformChoiceCards` and not a mode of it: a radio group is 
 
 ## Props
 
-| Prop              | Type                         | Required | Meaning                                                                                                                                                                      |
-| ----------------- | ---------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `options`         | `PlatformChoiceCardOption[]` | yes      | `{ value, label, meta?, description?, icon? }` per card, in order. `meta` is a short fact between the label and the description (a range, a figure). The icon is decorative. |
-| `name`            | `string`                     | no       | Name of the hidden native checkboxes, one per chosen card.                                                                                                                   |
-| `value`           | `string[]`                   | no       | Controlled set.                                                                                                                                                              |
-| `defaultValue`    | `string[]`                   | no       | Initial set.                                                                                                                                                                 |
-| `onValueChange`   | `(values: string[]) => void` | no       | Called with the whole new set.                                                                                                                                               |
-| `disabled`        | `boolean`                    | no       |                                                                                                                                                                              |
-| `aria-labelledby` | `string`                     | no       | Id of the element that names the group. `PlatformFormGroup` sets it.                                                                                                         |
-| `aria-label`      | `string`                     | no       | A name when there is no visible label.                                                                                                                                       |
+| Prop              | Type                         | Required | Meaning                                                                                                                                                                                                               |
+| ----------------- | ---------------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `options`         | `PlatformChoiceCardOption[]` | yes      | `{ value, label, meta?, description?, icon? }` per card, in order. `meta` is a short fact between the label and the description (a range, a figure). The icon is decorative.                                          |
+| `name`            | `string`                     | no       | Name of the hidden native checkboxes, one per chosen card.                                                                                                                                                            |
+| `value`           | `string[]`                   | no       | Controlled set.                                                                                                                                                                                                       |
+| `defaultValue`    | `string[]`                   | no       | Initial set.                                                                                                                                                                                                          |
+| `onValueChange`   | `(values: string[]) => void` | no       | Called with the whole new set.                                                                                                                                                                                        |
+| `layout`          | `"stacked" \| "line"`        | no       | `stacked` (default): label, meta and description piled up, as many columns as fit. `line`: two columns and each card's text on a single line, the meta beside the label; for options that are a name and little else. |
+| `disabled`        | `boolean`                    | no       |                                                                                                                                                                                                                       |
+| `aria-labelledby` | `string`                     | no       | Id of the element that names the group. `PlatformFormGroup` sets it.                                                                                                                                                  |
+| `aria-label`      | `string`                     | no       | A name when there is no visible label.                                                                                                                                                                                |
 
 ## Behaviour
 
@@ -45,11 +46,13 @@ Block `.platform-check-cards`, a grid of `repeat(auto-fit, minmax(170px, 1fr))` 
 
 **Elements:** `.platform-check-cards__card`, `.platform-check-cards__mark`, `.platform-check-cards__mark-icon`, `.platform-check-cards__icon`, `.platform-check-cards__label`, `.platform-check-cards__meta`, `.platform-check-cards__description`
 
+**Modifiers and states:** `.platform-check-cards_layout_line` on the block: `repeat(2, minmax(0, 1fr))`, the card as a row aligned on the baseline, the mark centred vertically, `white-space: nowrap` with an ellipsis on the label, and one column under 620px.
+
 **States (data attributes set by the primitive):** `[data-state="checked"]`, `[data-disabled]` on a card.
 
 **Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-surface-soft`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`
 
-**Breakpoints:** none; the grid reflows on its own. Transitions are off under `prefers-reduced-motion`.
+**Breakpoints:** none in the default layout, where the grid reflows on its own; `(max-width: 620px)` takes the `line` layout from two columns to one. Transitions are off under `prefers-reduced-motion`.
 
 ## Usage
 

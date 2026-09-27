@@ -38,6 +38,11 @@ Reference page: [Components › PlatformCheckCards](/components/platform/shared/
   argTypes: {
     options: { control: "object", description: "Value, label and one-line description per card." },
     defaultValue: { control: "object", description: "Initial set of chosen values." },
+    layout: {
+      control: "inline-radio",
+      options: ["stacked", "line"],
+      description: "`line`: two columns and each card's text on a single line.",
+    },
     disabled: { control: "boolean" },
   },
   decorators: [
@@ -58,6 +63,21 @@ export const Default: Story = {};
 /** Nothing chosen yet: every mark is an empty ring. */
 export const Empty: Story = {
   args: { defaultValue: [] },
+};
+
+/** Two columns, one line per card: the level's name with its range beside it. */
+export const Line: Story = {
+  args: {
+    layout: "line",
+    options: [
+      { value: "iniciacion", label: "Iniciación", meta: "Elo menos de 800" },
+      { value: "principiante", label: "Principiante", meta: "Elo 800–1199" },
+      { value: "intermedio", label: "Intermedio", meta: "Elo 1200–1599" },
+      { value: "avanzado", label: "Avanzado", meta: "Elo 1600–1999" },
+    ],
+    defaultValue: ["intermedio"],
+    "aria-label": "Niveles",
+  },
 };
 
 /** Labels alone, without descriptions. */

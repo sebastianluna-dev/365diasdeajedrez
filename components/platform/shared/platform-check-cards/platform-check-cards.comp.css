@@ -115,6 +115,51 @@
     color: var(--platform-text-muted);
   }
 
+  /* One line per card, in two columns: for options that are a name and
+     little else. The meta sits beside the label, on its baseline, and nothing
+     wraps: a text that does not fit is cut with an ellipsis. */
+  &.platform-check-cards_layout_line {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  &.platform-check-cards_layout_line .platform-check-cards__card {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 10px;
+    padding: 14px 44px 14px 18px;
+  }
+
+  /* With a single line the corner is the middle of the card. */
+  &.platform-check-cards_layout_line .platform-check-cards__mark {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &.platform-check-cards_layout_line .platform-check-cards__icon {
+    align-self: center;
+    margin-bottom: 0;
+  }
+
+  &.platform-check-cards_layout_line .platform-check-cards__label,
+  &.platform-check-cards_layout_line .platform-check-cards__description {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* The meta is the short one: it keeps its width and the label gives way. */
+  &.platform-check-cards_layout_line .platform-check-cards__meta {
+    flex: none;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 620px) {
+    &.platform-check-cards_layout_line {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     & .platform-check-cards__card,
     & .platform-check-cards__mark {

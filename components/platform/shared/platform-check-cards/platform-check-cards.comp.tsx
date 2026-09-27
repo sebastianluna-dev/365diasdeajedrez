@@ -15,6 +15,12 @@ interface PlatformCheckCardsProps {
   defaultValue?: string[];
   /** Called with the whole new set, in the order the cards were chosen. */
   onValueChange?: (values: string[]) => void;
+  /**
+   * `stacked` (default) piles label, meta and description in as many columns
+   * as fit. `line` is for options that are a name and little else: two
+   * columns, and each card's text on a single line, the meta beside the label.
+   */
+  layout?: "stacked" | "line";
   disabled?: boolean;
   /** Id of the element that names the group, usually a `PlatformFormGroup` label. */
   "aria-labelledby"?: string;
@@ -38,6 +44,7 @@ export function PlatformCheckCards({
   value,
   defaultValue,
   onValueChange,
+  layout = "stacked",
   disabled,
   ...labelling
 }: PlatformCheckCardsProps) {
@@ -52,7 +59,11 @@ export function PlatformCheckCards({
   };
 
   return (
-    <div role="group" className="platform-check-cards" {...labelling}>
+    <div
+      role="group"
+      className={layout === "line" ? "platform-check-cards platform-check-cards_layout_line" : "platform-check-cards"}
+      {...labelling}
+    >
       {options.map((option) => (
         <Checkbox.Root
           key={option.value}

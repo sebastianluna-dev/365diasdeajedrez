@@ -270,13 +270,14 @@ export function CourseEditorSection({
               <textarea name="description" defaultValue={course.description ?? ""} maxLength={1000} />
             </FormField>
 
-            {/* What the course teaches, as cards with the name alone: several at
-                once, and the action refuses to save none. */}
+            {/* What the course teaches, as one-line cards in two columns, with
+                the name alone: several at once, and the action refuses to save none. */}
             <FormFieldset legend="Contenido (selecciona al menos uno)" frame="none">
               <PlatformCheckCards
                 name="contentTypeCodes"
                 defaultValue={course.contentTypeCodes}
                 aria-label="Tipos de contenido"
+                layout="line"
                 options={contentTypes.map((type) => ({
                   value: type.code,
                   label: type.label,
@@ -284,8 +285,9 @@ export function CourseEditorSection({
               />
             </FormFieldset>
 
-            {/* Who the course is aimed at, as cards in order of difficulty, each
-                with its name and its orientative Elo range. Several at once, or none. A retired level is still offered,
+            {/* Who the course is aimed at, as one-line cards in order of
+                difficulty, each with its name and its orientative Elo range
+                beside it. Several at once, or none. A retired level is still offered,
                 marked: the set is saved whole, and leaving it out would take
                 it from the course. */}
             <FormFieldset legend="Niveles" frame="none">
@@ -294,6 +296,7 @@ export function CourseEditorSection({
                   name="levelSlugs"
                   defaultValue={course.levelSlugs}
                   aria-label="Niveles a los que va dirigido"
+                  layout="line"
                   options={levels.map((level) => ({
                     value: level.slug,
                     label: level.isActive ? level.name : `${level.name} (retirado)`,
