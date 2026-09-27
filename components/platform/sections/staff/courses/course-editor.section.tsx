@@ -299,8 +299,10 @@ export function CourseEditorSection({
                   layout="line"
                   options={levels.map((level) => ({
                     value: level.slug,
-                    label: level.isActive ? level.name : `${level.name} (retirado)`,
-                    meta: shortEloRange(level.eloRange),
+                    // The range goes in parentheses, so a retired level says so
+                    // with a comma: two pairs in a row would read as one aside.
+                    label: level.isActive ? level.name : `${level.name}, retirado`,
+                    meta: `(${shortEloRange(level.eloRange)})`,
                   }))}
                 />
               ) : (

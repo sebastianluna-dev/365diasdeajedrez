@@ -125,7 +125,8 @@
   &.platform-check-cards_layout_line .platform-check-cards__card {
     flex-direction: row;
     align-items: baseline;
-    gap: 10px;
+    /* About a word space: the meta reads as the rest of the label's phrase. */
+    gap: 6px;
     padding: 14px 44px 14px 18px;
   }
 
@@ -138,6 +139,21 @@
   &.platform-check-cards_layout_line .platform-check-cards__icon {
     align-self: center;
     margin-bottom: 0;
+  }
+
+  /* A list of plain names reads better without the weight of a heading:
+     the label is regular, and the meta is told apart by its colour. */
+  &.platform-check-cards_layout_line .platform-check-cards__label {
+    font-weight: 400;
+  }
+
+  &.platform-check-cards_layout_line .platform-check-cards__meta {
+    font-weight: 400;
+    color: var(--platform-text-muted);
+  }
+
+  &.platform-check-cards_layout_line .platform-check-cards__card[data-state="checked"] .platform-check-cards__meta {
+    color: var(--platform-accent-ink);
   }
 
   &.platform-check-cards_layout_line .platform-check-cards__label,
