@@ -9,6 +9,7 @@ import type {
   CourseChapterItem,
   CourseContentTypeItem,
   CourseDetail,
+  CourseSourceItem,
   CourseProgressSummary,
   CourseSummary,
   LessonView,
@@ -42,6 +43,42 @@ export const courseContentInclude = {
 } satisfies Prisma.CourseInclude;
 
 export type CourseWithContent = Prisma.CourseGetPayload<{ include: typeof courseContentInclude }>;
+
+// The course page also cites where the material comes from; the list does
+// not, so the sources only join on the single-course read.
+export const courseDetailInclude = {
+  ...courseContentInclude,
+  sources: {
+    select: {
+      id: true,
+      originalTitle: true,
+      authors: true,
+      url: true,
+      publicationYear: true,
+      edition: true,
+      specificReference: true,
+      sourceType: { select: { label: true } },
+      entity: { select: { name: true } },
+    },
+    orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+  },
+} satisfies Prisma.CourseInclude;
+
+export type CourseWithDetail = Prisma.CourseGetPayload<{ include: typeof courseDetailInclude }>;
+
+export function mapCourseSources(sources: CourseWithDetail["sources"]): CourseSourceItem[] {
+  return sources.map((source) => ({
+    id: source.id,
+    typeLabel: source.sourceType.label,
+    originalTitle: source.originalTitle ?? undefined,
+    authors: source.authors ?? undefined,
+    entityName: source.entity?.name,
+    url: source.url ?? undefined,
+    publicationYear: source.publicationYear ?? undefined,
+    edition: source.edition ?? undefined,
+    specificReference: source.specificReference ?? undefined,
+  }));
+}
 
 export interface UserCourseState {
   /** statusCode of LessonProgress by lessonId. */
@@ -199,7 +236,7 @@ function mapChapterItem(
   };
 }
 
-export function mapCourseDetail(course: CourseWithContent, state: UserCourseState): CourseDetail {
+export function mapCourseDetail(course: CourseWithDetail, state: UserCourseState): CourseDetail {
   const progress = mapCourseProgress(course, state);
   return {
     id: course.id,
@@ -220,6 +257,7 @@ export function mapCourseDetail(course: CourseWithContent, state: UserCourseStat
     chapters: sortByRole(course.chapters.map((chapter) => ({ ...chapter, roleCode: chapter.role?.code }))).map(
       (chapter) => mapChapterItem(course, chapter, state),
     ),
+    sources: mapCourseSources(course.sources),
   };
 }
 

@@ -166,6 +166,51 @@
     color: var(--platform-text-subtle);
   }
 
+  /* «Procedencia», under the chapters: a quiet list, one line per source,
+     with the kind of resource in bold and the rest separated by dots. */
+  & .course-detail__sources {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 8px;
+  }
+
+  & .course-detail__sources-title {
+    margin: 0;
+    font-family: var(--platform-font);
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--platform-text);
+  }
+
+  & .course-detail__source-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .course-detail__source {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .course-detail__source-type {
+    font-weight: 600;
+    color: var(--platform-text);
+  }
+
+  & .course-detail__source-link {
+    color: var(--platform-accent-ink);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
   /* The cover no longer fits next to the text: it moves up, full width. */
   @media (max-width: 980px) {
     & .course-detail__hero {

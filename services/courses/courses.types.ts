@@ -63,6 +63,19 @@ export interface CourseAuthorItem {
   roleLabel: string;
 }
 
+/** One source of the course's material, as the course page cites it. The staff's notes never come here. */
+export interface CourseSourceItem {
+  id: string;
+  typeLabel: string;
+  originalTitle?: string;
+  authors?: string;
+  entityName?: string;
+  url?: string;
+  publicationYear?: number;
+  edition?: string;
+  specificReference?: string;
+}
+
 export interface CourseDetail {
   id: string;
   name: string;
@@ -80,6 +93,8 @@ export interface CourseDetail {
   /** How many that filter hides, so it can be said instead of kept quiet. */
   hiddenLessons: number;
   chapters: CourseChapterItem[];
+  /** «Procedencia»: where the material comes from, in the staff's order; empty when none was recorded. */
+  sources: CourseSourceItem[];
 }
 
 export interface ChapterLessonItem {

@@ -1,4 +1,5 @@
 import type { AuthorRoleCode, CourseStatusCode } from "@/constants/platform/course-codes.const";
+import type { CourseSourceAdmin } from "@/services/staff-sources/staff-sources.types";
 import type { BoardOrientationCode } from "@/constants/platform/shared-codes.const";
 import type { ExerciseModeCode } from "@/constants/platform/training-codes.const";
 
@@ -70,6 +71,8 @@ export interface CourseAdminDetail {
   levelCodes: string[];
   authors: CourseAuthorRow[];
   chapters: ChapterAdminRow[];
+  /** «Procedencia del recurso»: where its material comes from, in order. */
+  sources: CourseSourceAdmin[];
   /** It meets the minimum requirements to be published (§22.3 of the plan). */
   canPublish: boolean;
 }

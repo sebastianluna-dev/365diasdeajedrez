@@ -7,6 +7,7 @@ import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { staffRoutes } from "@/lib/platform-routes";
 import { sortByRole } from "@/services/shared/content-order";
+import { courseSourceAdminSelect, mapCourseSourceAdmin } from "@/services/staff-sources/staff-sources.mapper";
 import { lessonHasContent, lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import { isExerciseStale } from "@/services/trainer/trainer.mapper";
 import type {
@@ -135,6 +136,7 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
         },
         orderBy: { order: "asc" },
       },
+      sources: { select: courseSourceAdminSelect, orderBy: [{ order: "asc" }, { createdAt: "asc" }] },
     },
   });
 
@@ -175,6 +177,7 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
         href: staffRoutes.chapterDetail(course.id, chapter.id),
       })),
     ),
+    sources: course.sources.map(mapCourseSourceAdmin),
     canPublish,
   };
 }

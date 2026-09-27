@@ -5,6 +5,7 @@ const meta: MetaRecord = {
   "chapter-games-section": "ChapterGamesSection",
   "course-editor-section": "CourseEditorSection",
   "course-games-section": "CourseGamesSection",
+  "course-sources": "CourseSources",
   "courses-admin-section": "CoursesAdminSection",
   "lesson-editor-section": "LessonEditorSection",
   "exercise-editor": "ExerciseEditor",

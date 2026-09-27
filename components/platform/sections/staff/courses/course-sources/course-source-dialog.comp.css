@@ -1,0 +1,141 @@
+.course-source-dialog {
+  flex: none;
+
+  /* On a row, the trigger is a word next to «Quitar», not a boxed button. */
+  & .course-source-dialog__open_kind_edit {
+    padding: 6px 11px;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 150ms;
+  }
+
+  & .course-source-dialog__open_kind_edit:hover {
+    background: var(--platform-bg);
+  }
+
+  /* The size and the rounding: the centring, the backdrop, the surface and
+     the entry and exit motion are set by `.platform-dialog`. */
+  & .course-source-dialog__dialog {
+    width: min(640px, calc(100vw - 32px));
+    border-radius: 18px;
+  }
+
+  /* The form is the dialog's whole content: head, body and footer band stack
+     with no gap of their own; each sets its padding. */
+  & .course-source-dialog__form {
+    gap: 0;
+  }
+
+  & .course-source-dialog__head {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 28px 28px 0;
+  }
+
+  & .course-source-dialog__heading {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & .course-source-dialog__title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
+  & .course-source-dialog__subtitle {
+    margin: 4px 0 0;
+    font-size: 16px;
+    color: var(--platform-text-muted);
+  }
+
+  & .course-source-dialog__close {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin: -6px -6px 0 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--platform-text-subtle);
+    cursor: pointer;
+  }
+
+  & .course-source-dialog__close:hover {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
+  }
+
+  & .course-source-dialog__close-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  & .course-source-dialog__body {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 24px 28px 28px;
+  }
+
+  /* Hangs right under the entity select: the way to register one that is missing. */
+  & .course-source-dialog__entity-note {
+    margin: -10px 0 0;
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-source-dialog__entity-note a {
+    color: var(--platform-accent-ink);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* Year and edition are short: they share a row. */
+  & .course-source-dialog__pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+
+    @media (max-width: 560px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  /* The band at the bottom: sunk a shade, with the note on one side and the
+     buttons on the other. */
+  & .course-source-dialog__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 18px 28px;
+    border-top: 1px solid var(--platform-border);
+    background: var(--platform-bg);
+  }
+
+  & .course-source-dialog__note {
+    margin: 0;
+    font-size: 15px;
+    color: var(--platform-text-muted);
+  }
+
+  & .course-source-dialog__actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+  }
+}

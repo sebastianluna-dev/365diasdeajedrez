@@ -9,6 +9,7 @@ import {
   listContentTypes,
   listLevels,
 } from "@/services/staff-courses/staff-courses.service";
+import { listSourceEntityOptions, listSourceTypes } from "@/services/staff-sources/staff-sources.service";
 
 interface StaffCoursePageProps {
   params: Promise<{ courseId: string }>;
@@ -27,11 +28,13 @@ export default async function StaffCoursePage({ params, searchParams }: StaffCou
   const course = await getCourseAdminDetail(courseId);
   if (!course) notFound();
 
-  const [contentTypes, levels, authors, authorRoles, gameCount, { error }] = await Promise.all([
+  const [contentTypes, levels, authors, authorRoles, sourceTypes, entities, gameCount, { error }] = await Promise.all([
     listContentTypes(),
     listLevels(),
     listAuthors(),
     listAuthorRoles(),
+    listSourceTypes(),
+    listSourceEntityOptions(),
     countCollectionGames({ courseId }),
     searchParams,
   ]);
@@ -46,6 +49,8 @@ export default async function StaffCoursePage({ params, searchParams }: StaffCou
         levels={levels}
         authors={authors}
         authorRoles={authorRoles}
+        sourceTypes={sourceTypes}
+        entities={entities}
         gameCount={gameCount}
         errorCode={error}
       />

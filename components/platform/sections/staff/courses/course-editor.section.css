@@ -38,8 +38,6 @@
     gap: 16px;
   }
 
-  /* Two short fields share a row: the identifier and the type fit easily and
-     on two lines they would separate the name from the description. */
   & .course-editor__submit {
     display: flex;
     justify-content: flex-end;

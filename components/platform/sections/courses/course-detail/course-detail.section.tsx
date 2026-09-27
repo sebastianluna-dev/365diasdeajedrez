@@ -117,6 +117,47 @@ export function CourseDetailSection({ course, errorCode }: CourseDetailSectionPr
 
         <ChapterList chapters={course.chapters} />
       </div>
+
+      {/* Where the material comes from, when the staff recorded it: one line
+          per source, the entity linked to the resource when there is a URL.
+          The staff's notes never reach here. */}
+      {course.sources.length > 0 && (
+        <section className="course-detail__sources" aria-labelledby="course-detail-sources-title">
+          <h2 id="course-detail-sources-title" className="course-detail__sources-title">
+            Procedencia
+          </h2>
+          <ul className="course-detail__source-list">
+            {course.sources.map((source) => {
+              const edition = [source.publicationYear, source.edition].filter(Boolean).join(", ");
+              const entity = source.url ? (
+                <a href={source.url} target="_blank" rel="noreferrer" className="course-detail__source-link">
+                  {source.entityName ?? source.originalTitle ?? "Ver recurso"}
+                </a>
+              ) : (
+                source.entityName
+              );
+              const facts = [
+                source.originalTitle && <em key="title">{source.originalTitle}</em>,
+                source.authors,
+                entity && <span key="entity">{entity}</span>,
+                edition || undefined,
+                source.specificReference,
+              ].filter(Boolean);
+              return (
+                <li key={source.id} className="course-detail__source">
+                  <span className="course-detail__source-type">{source.typeLabel}</span>
+                  {facts.map((fact, index) => (
+                    <span key={index}>
+                      <span className="course-detail__dot"> · </span>
+                      {fact}
+                    </span>
+                  ))}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
     </section>
   );
 }

@@ -6,6 +6,7 @@ import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import {
   courseContentInclude,
+  courseDetailInclude,
   mapChapterView,
   mapCourseDetail,
   mapCourseSummary,
@@ -25,12 +26,13 @@ const getPublishedCourses = cache(async () => {
 });
 
 // Targeted query for the single-course views (detail, chapter and lesson):
-// cache() deduplicates by slug within the same request.
+// cache() deduplicates by slug within the same request. The detail include is
+// a superset of the content one, so the chapter and lesson mappers take it too.
 const getPublishedCourse = cache(async (courseId: string) => {
   const db = getPlatformDb();
   return db.course.findFirst({
     where: { id: courseId, status: { code: COURSE_STATUS.PUBLISHED } },
-    include: courseContentInclude,
+    include: courseDetailInclude,
   });
 });
 

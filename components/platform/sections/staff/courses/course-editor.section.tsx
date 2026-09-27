@@ -21,6 +21,8 @@ import type {
   CourseAdminDetail,
 } from "@/services/staff-courses/staff-courses.types";
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
+import type { SourceEntityOption } from "@/services/staff-sources/staff-sources.types";
+import { CourseSources } from "./course-sources/course-sources.comp";
 import { SortableList } from "./sortable-list.comp";
 import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffTabs } from "./staff-tabs.comp";
@@ -39,6 +41,10 @@ interface CourseEditorSectionProps {
   levels: CatalogOption[];
   authors: AuthorAdminRow[];
   authorRoles: CatalogOption[];
+  /** The kinds of resource a source can be, for «Procedencia del recurso». */
+  sourceTypes: CatalogOption[];
+  /** The entities a source can cite, from /administracion/entidades. */
+  entities: SourceEntityOption[];
   /** How many games the course has; the list lives in its own tab. */
   gameCount: number;
   errorCode?: string;
@@ -58,6 +64,8 @@ export function CourseEditorSection({
   levels,
   authors,
   authorRoles,
+  sourceTypes,
+  entities,
   gameCount,
   errorCode,
 }: CourseEditorSectionProps) {
@@ -370,6 +378,8 @@ export function CourseEditorSection({
             </div>
           )}
         </StaffPanel>
+
+        <CourseSources courseId={course.id} sources={course.sources} sourceTypes={sourceTypes} entities={entities} />
       </StaffEditorLayout>
     </div>
   );

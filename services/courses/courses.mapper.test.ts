@@ -4,6 +4,7 @@ import { PROGRESS_STATUS, type ProgressStatusCode } from "@/constants/platform/s
 import {
   mapChapterView,
   mapCourseProgress,
+  mapCourseSources,
   mapLessonView,
   type CourseWithContent,
   type LessonRowForView,
@@ -195,5 +196,60 @@ describe("anterior y siguiente desde una lección escondida", () => {
     const view = mapLessonView(COURSE, lessonRow("l3", "cap-1", 3), state());
     expect(view?.prevLessonHref).toContain("l2");
     expect(view?.nextLessonHref).toContain("l4");
+  });
+});
+
+describe("mapCourseSources", () => {
+  it("cita cada fuente con su tipo, sin nulos y sin las notas del staff", () => {
+    const sources = mapCourseSources([
+      {
+        id: "s1",
+        originalTitle: "Piense como un gran maestro",
+        authors: "Alexander Kotov",
+        url: null,
+        publicationYear: 1971,
+        edition: "2.ª ed.",
+        specificReference: null,
+        sourceType: { label: "Libro" },
+        entity: { name: "Batsford" },
+      },
+      {
+        id: "s2",
+        originalTitle: null,
+        authors: null,
+        url: null,
+        publicationYear: null,
+        edition: null,
+        specificReference: null,
+        sourceType: { label: "Material de elaboración propia" },
+        entity: null,
+      },
+    ]);
+
+    expect(sources).toEqual([
+      {
+        id: "s1",
+        typeLabel: "Libro",
+        originalTitle: "Piense como un gran maestro",
+        authors: "Alexander Kotov",
+        entityName: "Batsford",
+        url: undefined,
+        publicationYear: 1971,
+        edition: "2.ª ed.",
+        specificReference: undefined,
+      },
+      {
+        id: "s2",
+        typeLabel: "Material de elaboración propia",
+        originalTitle: undefined,
+        authors: undefined,
+        entityName: undefined,
+        url: undefined,
+        publicationYear: undefined,
+        edition: undefined,
+        specificReference: undefined,
+      },
+    ]);
+    expect(sources[0]).not.toHaveProperty("notes");
   });
 });
