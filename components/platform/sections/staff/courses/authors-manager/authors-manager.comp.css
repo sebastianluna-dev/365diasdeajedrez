@@ -1,0 +1,208 @@
+.authors-manager {
+  flex: none;
+
+  /* The size and the rounding: the centring, the backdrop, the surface and
+     the entry and exit motion are set by `.platform-dialog`. */
+  & .authors-manager__dialog {
+    width: min(560px, calc(100vw - 32px));
+    border-radius: 18px;
+  }
+
+  & .authors-manager__head {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 28px 28px 0;
+  }
+
+  & .authors-manager__heading {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & .authors-manager__title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--platform-text);
+  }
+
+  & .authors-manager__subtitle {
+    margin: 4px 0 0;
+    font-size: 16px;
+    color: var(--platform-text-muted);
+  }
+
+  & .authors-manager__close {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin: -6px -6px 0 0;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--platform-text-subtle);
+    cursor: pointer;
+  }
+
+  & .authors-manager__close:hover {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
+  }
+
+  & .authors-manager__close-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* The form is the rest of the dialog: body and footer band stack with no
+     gap of their own; each sets its padding. */
+  & .authors-manager__form {
+    gap: 0;
+  }
+
+  & .authors-manager__body {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 22px 28px 28px;
+  }
+
+  /* A long list scrolls inside the dialog instead of pushing the footer out. */
+  & .authors-manager__list {
+    max-height: min(420px, 50vh);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-y: auto;
+  }
+
+  & .authors-manager__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  & .authors-manager__row + .authors-manager__row {
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .authors-manager__row-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  & .authors-manager__row-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--platform-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .authors-manager__row-meta {
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .authors-manager__edit {
+    flex: none;
+    padding: 6px 11px;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 150ms;
+  }
+
+  & .authors-manager__edit:hover {
+    background: var(--platform-bg);
+  }
+
+  & .authors-manager__empty {
+    margin: 0;
+    font-size: 15px;
+    color: var(--platform-text-subtle);
+  }
+
+  /* The way back to the list: a quiet word with its arrow, above the form. */
+  & .authors-manager__back {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: -4px 0 -6px;
+    padding: 4px 8px 4px 4px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-subtle);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  & .authors-manager__back:hover {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
+  }
+
+  & .authors-manager__back-icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  & .authors-manager__form-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--platform-text);
+  }
+
+  /* The band at the bottom: sunk a shade, with the note on one side and the
+     buttons on the other. */
+  & .authors-manager__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    padding: 18px 28px;
+    border-top: 1px solid var(--platform-border);
+    background: var(--platform-bg);
+  }
+
+  & .authors-manager__note {
+    margin: 0;
+    font-size: 15px;
+    color: var(--platform-text-muted);
+  }
+
+  & .authors-manager__actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .authors-manager__edit {
+      transition: none;
+    }
+  }
+}

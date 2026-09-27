@@ -1,6 +1,7 @@
 import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
+  "authors-manager": "AuthorsManager",
   "chapter-editor-section": "ChapterEditorSection",
   "chapter-games-section": "ChapterGamesSection",
   "course-editor-section": "CourseEditorSection",

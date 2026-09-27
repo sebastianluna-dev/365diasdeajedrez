@@ -8,7 +8,8 @@ import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { staffRoutes } from "@/lib/platform-routes";
 import { isDisplayableImage } from "@/lib/remote-image";
-import { listContentTypes, listCoursesAdmin } from "@/services/staff-courses/staff-courses.service";
+import { listAuthors, listContentTypes, listCoursesAdmin } from "@/services/staff-courses/staff-courses.service";
+import { AuthorsManager } from "./authors-manager/authors-manager.comp";
 import { NewCourse } from "./new-course/new-course.comp";
 import { StaffEditorHead } from "./staff-editor.comp";
 import "./courses-admin.section.css";
@@ -17,7 +18,7 @@ interface CoursesAdminSectionProps {
   /** What is searched and the status filtered by; both come from the URL. */
   query?: string;
   status?: string;
-  /** What `createCourse` bounced back with, from `?error=`: its dialog lives here. */
+  /** What `createCourse` or the authors' dialog bounced back with, from `?error=`: both live here. */
   errorCode?: string;
 }
 
@@ -41,11 +42,13 @@ function filterHref(status: string | undefined, query: string | undefined): stri
 }
 
 export async function CoursesAdminSection({ query, status, errorCode }: CoursesAdminSectionProps) {
-  // The content types feed the "Nuevo curso" dialog and do not depend on the
-  // listing: read together, the page waits for the slower one, not for both.
-  const [{ courses, chapterCount, lessonCount }, contentTypes] = await Promise.all([
+  // The content types feed the "Nuevo curso" dialog and the authors theirs;
+  // neither depends on the listing: read together, the page waits for the
+  // slowest one, not for the three.
+  const [{ courses, chapterCount, lessonCount }, contentTypes, authors] = await Promise.all([
     listCoursesAdmin({ query, status }),
     listContentTypes(),
+    listAuthors(),
   ]);
   const isFiltered = Boolean(query) || Boolean(status);
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
@@ -72,6 +75,9 @@ export async function CoursesAdminSection({ query, status, errorCode }: CoursesA
               {/* The active status travels with the search so it is not lost when searching. */}
               {status && <input type="hidden" name="estado" value={status} />}
             </form>
+
+            {/* The authors have no page of their own: they are managed from here. */}
+            <AuthorsManager authors={authors} returnTo={staffRoutes.courses} />
 
             <NewCourse contentTypes={contentTypes} />
           </>

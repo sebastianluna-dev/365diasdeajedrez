@@ -24,6 +24,7 @@ import { PlatformCheckCards } from "@/components/platform/shared/platform-check-
 import { shortEloRange } from "@/services/courses/level-rules";
 import type { LevelOption } from "@/services/staff-levels/staff-levels.types";
 import type { SourceEntityOption } from "@/services/staff-sources/staff-sources.types";
+import { AuthorsManager } from "./authors-manager/authors-manager.comp";
 import { CourseNameFields } from "./course-name-fields.comp";
 import { CourseSources } from "./course-sources/course-sources.comp";
 import { SortableList } from "./sortable-list.comp";
@@ -129,7 +130,15 @@ export function CourseEditorSection({
               />
             </StaffPanel>
 
-            <StaffPanel title="Autores" meta={`${course.authors.length}`}>
+            {/* The card's action opens the dialog where authors are created and
+                edited: the one missing from the select below is a press away. */}
+            <StaffPanel
+              title="Autores"
+              meta={`${course.authors.length}`}
+              action={
+                <AuthorsManager authors={authors} returnTo={staffRoutes.courseDetail(course.id)} label="Gestionar" />
+              }
+            >
               {course.authors.length > 0 ? (
                 <ul className="course-editor__list">
                   {course.authors.map((author, index) => (

@@ -16,7 +16,7 @@ description: "Source entities (platforms, publishers, providers), editorial cont
 
 ## Purpose
 
-The platforms, publishers and providers a course's «Procedencia del recurso» cites (Chessable, ChessBase, Quality Chess…). Like [authors](/components/platform/sections/staff/authors/authors-admin-section), they are editorial content and not a restricted domain whose code the logic compares, so staff creates and edits them here and reuses them from the source form; the kinds they can be (`SourceEntityKind`) stay seed. Each entity is its own inline form, so saving one never touches another. Nothing is deleted: a source keeps pointing at what it cited.
+The platforms, publishers and providers a course's «Procedencia del recurso» cites (Chessable, ChessBase, Quality Chess…). Like [authors](/components/platform/sections/staff/courses/authors-manager), they are editorial content and not a restricted domain whose code the logic compares, so staff creates and edits them here and reuses them from the source form; the kinds they can be (`SourceEntityKind`) stay seed. Each entity is its own inline form, so saving one never touches another. Nothing is deleted: a source keeps pointing at what it cited.
 
 ## Props
 
@@ -33,7 +33,7 @@ The platforms, publishers and providers a course's «Procedencia del recurso» c
 
 ## Markup & styling
 
-Block `.entities-admin`, the twin of `.authors-admin` with a two-column field row (name and website) instead of three.
+Block `.entities-admin`, with a two-column field row (name and website).
 
 **Elements:** `.entities-admin__create`, `.entities-admin__fields`, `.entities-admin__row`, `.entities-admin__row-title`, `.entities-admin__row-meta`
 
@@ -58,5 +58,5 @@ import { EntitiesAdminSection } from "@/components/platform/sections/staff/entit
 ## Related
 
 - Entities are cited from a course's «Procedencia del recurso» in [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section).
-- [`AuthorsAdminSection`](/components/platform/sections/staff/authors/authors-admin-section), the same pattern for authors.
+- [`AuthorsManager`](/components/platform/sections/staff/courses/authors-manager): authors are editorial content too, managed in a dialog of the courses' pages.
 - The models in [Data model](/platform/data-model) and the actions in [Teacher & staff panels](/platform/teacher-and-staff).

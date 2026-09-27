@@ -1,0 +1,85 @@
+---
+description: "The «Autores» button and its dialog, where the authors who sign the courses are created and edited: a list and the form of one author, posting createAuthor and updateAuthor. Authors have no page of their own."
+---
+
+# `AuthorsManager`
+
+Also documents `AuthorForm`, the form the dialog shows.
+
+|            |                                                                                                                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/authors-manager/authors-manager.comp.tsx`, `author-form.comp.tsx`                                                                                                    |
+| Kind       | Client Components                                                                                                                                                                                                |
+| Stylesheet | `authors-manager.comp.css` → block `.authors-manager`                                                                                                                                                            |
+| Used by    | [`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section) (header), [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) («Autores» card) |
+| Composes   | [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`SubmitButton`](/components/platform/shared/submit-button)                                                                    |
+| Writes     | `createAuthor()`, `updateAuthor()` · `services/staff-courses/staff-courses.actions.ts`                                                                                                                           |
+| Uses       | `AuthorAdminRow` from `services/staff-courses/staff-courses.types`; `generateSlug` from `lib/generate-slug`; `CloseIcon`, `ArrowLeftIcon`                                                                        |
+
+## Purpose
+
+Authors only matter next to the courses they sign, so they are managed from the courses' pages and not from a page of their own: `/administracion/autores` and its menu entry are gone (2026-09-27). The same button sits in the catalog's header and in the «Autores» card of a course, where the author missing from the select is a press away.
+
+An author is editorial content, not a restricted domain whose code the logic compares, which is why it is edited from the interface. Nothing is deleted: an author is taken out of each course.
+
+## Props
+
+### `AuthorsManager`
+
+| Prop       | Type               | Required | Meaning                                                                                                       |
+| ---------- | ------------------ | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `authors`  | `AuthorAdminRow[]` | yes      | `{ id, name, slug, bio?, photo?, courseCount }[]` from `listAuthors()`, by name.                              |
+| `returnTo` | `string`           | yes      | The page it sits on (`staffRoutes.courses`, `staffRoutes.courseDetail(id)`): where a failed save is reported. |
+| `label`    | `string`           | no       | What the button says. «Autores» by default; «Gestionar» in the card whose title already says it.              |
+
+### `AuthorForm`
+
+| Prop       | Type                                            | Required | Meaning                                                            |
+| ---------- | ----------------------------------------------- | -------- | ------------------------------------------------------------------ |
+| `author`   | `AuthorAdminRow`                                | no       | The author being edited. Absent, the form creates a new one.       |
+| `returnTo` | `string`                                        | yes      | Sent as a hidden field.                                            |
+| `action`   | `(formData: FormData) => void \| Promise<void>` | yes      | The server action, or a stub in Storybook.                         |
+| `onBack`   | `() => void`                                    | yes      | Back to the list without saving («Todos los autores», «Cancelar»). |
+| `onSubmit` | `() => void`                                    | no       | Runs when the browser lets the submit through.                     |
+
+## Behaviour
+
+- **One native `<dialog>`, two views.** It always opens on the **list** (name, how many courses, «Editar» per author, «Nuevo autor» in the footer band). «Editar» and «Nuevo autor» swap the list for the **form** inside the same dialog; «Todos los autores» and «Cancelar» go back.
+- **Fields:** `name` (required, 160), `slug` (required, lowercase words joined by hyphens), `photo` (optional `http(s)` URL), `bio` (optional, 1000). On a new author the slug writes itself from the name when the name loses focus, while it is the form's and not the user's; an existing author's slug is only changed by hand.
+- **Saving closes the dialog**, like the other dialogs of the panel. The action revalidates `/administracion/cursos` and what hangs from it, so the list and the course's author select come back refreshed; `updateAuthor` also revalidates the student's courses, which show the name.
+- **A failure is reported on the page the dialog was opened on**: the form carries `returnTo`, the action passes it through `safeReturnTo` and answers `?error=` there (`authorSlug` «Ya existe un autor con ese slug.», `authorMissing`, `invalid`, `throttled`), which the page renders as a [`PlatformNotice`](/components/platform/shared/platform-notice).
+- The form is remounted per author (`key`), because its fields are uncontrolled.
+- A long list scrolls inside the dialog (`max-height: min(420px, 50vh)`).
+
+## Markup & styling
+
+Block `.authors-manager`. The dialog is `.platform-dialog`, which sets the centring, the backdrop and the entry and exit motion; the block sets its width (560px) and rounding.
+
+**Elements:** `.authors-manager__dialog`, `.authors-manager__head`, `.authors-manager__heading`, `.authors-manager__title`, `.authors-manager__subtitle`, `.authors-manager__close`, `.authors-manager__close-icon`, `.authors-manager__body`, `.authors-manager__list`, `.authors-manager__row`, `.authors-manager__row-text`, `.authors-manager__row-name`, `.authors-manager__row-meta`, `.authors-manager__edit`, `.authors-manager__empty`, `.authors-manager__form`, `.authors-manager__back`, `.authors-manager__back-icon`, `.authors-manager__form-title`, `.authors-manager__foot`, `.authors-manager__note`, `.authors-manager__actions`
+
+**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_quiet`, `.platform-button_variant_secondary`, `.platform-form`.
+
+**Tokens:** `--platform-bg`, `--platform-border`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+No media queries: the dialog's width follows the viewport.
+
+## Usage
+
+From `components/platform/sections/staff/courses/courses-admin.section.tsx`:
+
+```tsx
+import { AuthorsManager } from "./authors-manager/authors-manager.comp";
+
+<AuthorsManager authors={authors} returnTo={staffRoutes.courses} />;
+```
+
+From `components/platform/sections/staff/courses/course-editor.section.tsx`, as the action of the «Autores» card:
+
+```tsx
+<AuthorsManager authors={authors} returnTo={staffRoutes.courseDetail(course.id)} label="Gestionar" />
+```
+
+## Related
+
+- [`NewCourse`](/components/platform/sections/staff/courses/new-course) and [`CourseSources`](/components/platform/sections/staff/courses/course-sources), the other dialogs of the courses panel.
+- The authors of one course (role, order) are still the «Autores» card of [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section), with `manageCourseAuthors`.

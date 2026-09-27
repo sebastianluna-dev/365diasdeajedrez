@@ -26,12 +26,14 @@ import {
   formLenientInt,
   formOptionalText,
   formOptionalUrl,
+  formReturnTo,
   formSlugList,
   formText,
   parseForm,
   readIds,
 } from "@/services/shared/form-schema";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
+import { safeReturnTo, withErrorParam } from "@/services/shared/safe-return-to";
 import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_SOURCE } from "@/constants/platform/study-codes.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
@@ -933,15 +935,33 @@ export async function moveExercise(
 }
 
 // --- Authors --------------------------------------------------------------
-// Author is the ONLY catalog with CRUD: it is editorial content, not a
-// restricted domain whose code the logic compares.
+// Author is editorial content, not a restricted domain whose code the logic
+// compares, so it is created and edited from the interface: in the «Autores»
+// dialog of the courses catalog and of the course editor. It has no page of
+// its own, so a failure goes back to the page the dialog was opened on, which
+// the form names in `returnTo`.
+
+const RETURN_TO_SCHEMA = z.object({ returnTo: formReturnTo() });
+
+/** Where an author form answers: the page it was sent from, or the catalog. */
+function authorReturnPath(formData: FormData): string {
+  const parsed = parseForm(RETURN_TO_SCHEMA, formData);
+  return safeReturnTo(parsed.ok ? parsed.data.returnTo : "", staffRoutes.courses);
+}
+
+/** Every page that lists authors: the catalog and the editors under it. */
+function revalidateAuthorPaths() {
+  revalidatePath(staffRoutes.courses, "layout");
+}
 
 export async function createAuthor(formData: FormData): Promise<void> {
   const staff = await requireStaff();
-  if (!(await allowAction(`${staff.user.id}:author-create`, 20, 3_600_000))) fail(staffRoutes.authors, "throttled");
+  const path = authorReturnPath(formData);
+  if (!(await allowAction(`${staff.user.id}:author-create`, 20, 3_600_000)))
+    redirect(withErrorParam(path, "throttled"));
 
   const parsed = parseForm(AUTHOR_SCHEMA, formData);
-  if (!parsed.ok) fail(staffRoutes.authors, "invalid");
+  if (!parsed.ok) redirect(withErrorParam(path, "invalid"));
   const { name, slug, photo, bio } = parsed.data;
 
   try {
@@ -949,32 +969,39 @@ export async function createAuthor(formData: FormData): Promise<void> {
       data: { name, slug, bio, photo },
     });
   } catch (error) {
-    if (isUniqueConstraintError(error, "Author_slug_key", "slug")) fail(staffRoutes.authors, "courseSlug");
+    if (isUniqueConstraintError(error, "Author_slug_key", "slug")) redirect(withErrorParam(path, "authorSlug"));
     throw error;
   }
 
-  revalidatePath(staffRoutes.authors);
+  revalidateAuthorPaths();
 }
 
 export async function updateAuthor(authorId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
-  if (!(await allowAction(`${staff.user.id}:author-update`, 60, 60_000))) fail(staffRoutes.authors, "throttled");
+  const path = authorReturnPath(formData);
+  if (!(await allowAction(`${staff.user.id}:author-update`, 60, 60_000))) redirect(withErrorParam(path, "throttled"));
 
   const parsed = parseForm(AUTHOR_SCHEMA, formData);
-  if (!parsed.ok) fail(staffRoutes.authors, "invalid");
+  if (!parsed.ok) redirect(withErrorParam(path, "invalid"));
   const { name, slug, photo, bio } = parsed.data;
+  const db = getPlatformDb();
+
+  const existing = await db.author.findUnique({ where: { id: authorId }, select: { id: true } });
+  if (!existing) redirect(withErrorParam(path, "authorMissing"));
 
   try {
-    await getPlatformDb().author.update({
+    await db.author.update({
       where: { id: authorId },
       data: { name, slug, bio, photo },
     });
   } catch (error) {
-    if (isUniqueConstraintError(error, "Author_slug_key", "slug")) fail(staffRoutes.authors, "courseSlug");
+    if (isUniqueConstraintError(error, "Author_slug_key", "slug")) redirect(withErrorParam(path, "authorSlug"));
     throw error;
   }
 
-  revalidatePath(staffRoutes.authors);
+  revalidateAuthorPaths();
+  // The students read the author's name on the course page and its card.
+  revalidatePath(platformRoutes.courses, "layout");
 }
 
 /** Adds, removes or reorders a course's authors according to the requested operation. */
