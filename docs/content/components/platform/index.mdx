@@ -52,7 +52,8 @@ description: "Index of components/platform: the shared primitives and every sect
 
 | Page                                                                                                  | Kind   | What it is                                                                           |
 | ----------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------ |
-| [`CoursesListSection`](/components/platform/sections/courses/courses-list/courses-list-section)       | server | One card per published course.                                                       |
+| [`CoursesListSection`](/components/platform/sections/courses/courses-list/courses-list-section)       | server | The level filter and one card per published course.                                  |
+| [`LevelFilter`](/components/platform/sections/courses/courses-list/level-filter)                      | server | A chip per level with its orientative Elo range; the level goes in the URL.          |
 | [`CourseCard`](/components/platform/sections/courses/courses-list/course-card)                        | server | Cover, name, two progress meters and the resume button; facts in a `<details>` menu. |
 | [`StudyGoalAside`](/components/platform/sections/courses/courses-list/study-goal)                     | server | Daily streak and minutes against the goal.                                           |
 | [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section)    | server | The course page with the chapter list and the priority filter.                       |
@@ -159,6 +160,8 @@ description: "Index of components/platform: the shared primitives and every sect
 | [`SortableList`](/components/platform/sections/staff/courses/sortable-list)                              | client | Drag-sortable rows for chapters and lessons.       |
 | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor)                            | server | Header with breadcrumbs and the two-column layout. |
 | [`EntitiesAdminSection`](/components/platform/sections/staff/entities/entities-admin-section)            | server | Source entities: create and inline edit.           |
+| [`LevelsAdminSection`](/components/platform/sections/staff/levels/levels-admin-section)                  | server | The levels and their orientative Elo ranges.       |
+| [`LevelForm`](/components/platform/sections/staff/levels/level-form)                                     | client | Creates or edits one level.                        |
 | [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel)                                  | server | A card with a header rule.                         |
 | [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs)                                    | server | Tabs that are pages.                               |
 | [`AuthorsAdminSection`](/components/platform/sections/staff/authors/authors-admin-section)               | server | The one editable catalog.                          |

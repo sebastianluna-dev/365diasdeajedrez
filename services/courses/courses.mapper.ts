@@ -3,12 +3,14 @@ import type { Prisma } from "@/lib/platform-db/generated/client";
 import { platformRoutes } from "@/lib/platform-routes";
 import { sortByRole } from "@/services/shared/content-order";
 import { lessonPgnOf } from "@/services/shared/lesson-pgn";
+import { formatEloRange } from "./level-rules";
 import type {
   ChapterLessonItem,
   ChapterView,
   CourseChapterItem,
   CourseContentTypeItem,
   CourseDetail,
+  CourseLevelItem,
   CourseSourceItem,
   CourseProgressSummary,
   CourseSummary,
@@ -19,7 +21,13 @@ import type {
 // needs and the service only queries it.
 export const courseContentInclude = {
   courseContentTypes: { include: { contentType: true }, orderBy: { contentType: { order: "asc" } } },
-  courseLevels: { include: { level: true }, orderBy: { level: { order: "asc" } } },
+  // Only the levels in use: a retired one keeps its row but the student does
+  // not see it. By difficulty, and by range when two share a position.
+  courseLevels: {
+    where: { level: { isActive: true } },
+    include: { level: true },
+    orderBy: [{ level: { order: "asc" } }, { level: { eloMin: "asc" } }],
+  },
   courseAuthors: { include: { author: true, role: true }, orderBy: { order: "asc" } },
   chapters: {
     orderBy: { order: "asc" },
@@ -189,6 +197,22 @@ function mapContentTypes(course: CourseWithContent): CourseContentTypeItem[] {
   }));
 }
 
+/** A level row as the student reads it, with its range already worded. */
+export function mapCourseLevel(level: {
+  slug: string;
+  name: string;
+  description: string;
+  eloMin: number;
+  eloMax: number | null;
+}): CourseLevelItem {
+  return {
+    slug: level.slug,
+    name: level.name,
+    description: level.description,
+    eloRange: formatEloRange(level),
+  };
+}
+
 function ctaLabelFor(progress: CourseProgressSummary): CourseSummary["ctaLabel"] {
   if (progress.totalLessons > 0 && progress.completedLessons === progress.totalLessons) return "Revisar";
   if (progress.completedLessons > 0 || progress.statusCode === PROGRESS_STATUS.IN_PROGRESS) return "Continuar";
@@ -204,7 +228,7 @@ export function mapCourseSummary(course: CourseWithContent, state: UserCourseSta
     description: course.description ?? undefined,
     cover: course.cover ?? undefined,
     contentTypes: mapContentTypes(course),
-    levelLabels: course.courseLevels.map((courseLevel) => courseLevel.level.label),
+    levels: course.courseLevels.map((courseLevel) => mapCourseLevel(courseLevel.level)),
     authorNames: course.courseAuthors.map((courseAuthor) => courseAuthor.author.name),
     progress,
     continueHref: continueTarget(course, state),
@@ -244,7 +268,8 @@ export function mapCourseDetail(course: CourseWithDetail, state: UserCourseState
     description: course.description ?? undefined,
     cover: course.cover ?? undefined,
     contentTypes: mapContentTypes(course),
-    levelLabels: course.courseLevels.map((courseLevel) => courseLevel.level.label),
+    levels: course.courseLevels.map((courseLevel) => mapCourseLevel(courseLevel.level)),
+    priorKnowledge: course.priorKnowledge ?? undefined,
     authors: course.courseAuthors.map((courseAuthor) => ({
       name: courseAuthor.author.name,
       roleLabel: courseAuthor.role.label,

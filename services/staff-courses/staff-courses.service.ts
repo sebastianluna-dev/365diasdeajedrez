@@ -115,7 +115,8 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
         select: { contentType: { select: { code: true } } },
         orderBy: { contentType: { order: "asc" } },
       },
-      courseLevels: { select: { level: { select: { code: true } } } },
+      priorKnowledge: true,
+      courseLevels: { select: { level: { select: { slug: true } } }, orderBy: { level: { order: "asc" } } },
       courseAuthors: {
         select: {
           authorId: true,
@@ -156,7 +157,8 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
     statusLabel: course.status.label,
     publishedAtLabel: course.publishedAt ? formatSpanishDate(course.publishedAt) : undefined,
     contentTypeCodes: course.courseContentTypes.map((row) => row.contentType.code),
-    levelCodes: course.courseLevels.map((courseLevel) => courseLevel.level.code),
+    levelSlugs: course.courseLevels.map((courseLevel) => courseLevel.level.slug),
+    priorKnowledge: course.priorKnowledge ?? undefined,
     authors: course.courseAuthors.map((author) => ({
       authorId: author.authorId,
       authorName: author.author.name,
@@ -433,22 +435,14 @@ export async function listAuthors(): Promise<AuthorAdminRow[]> {
 }
 
 // Catalogs: they are READ to populate selectors, never edited from the interface
-// (their codes are stable and the logic compares them by code).
+// (their codes are stable and the logic compares them by code). The levels are
+// the exception and live in services/staff-levels/.
 
 export async function listContentTypes(): Promise<ContentTypeOption[]> {
   await requireStaff();
   return getPlatformDb().contentType.findMany({
     where: { isActive: true },
     select: { code: true, label: true, shortLabel: true, description: true },
-    orderBy: { order: "asc" },
-  });
-}
-
-export async function listLevels(): Promise<CatalogOption[]> {
-  await requireStaff();
-  return getPlatformDb().level.findMany({
-    where: { isActive: true },
-    select: { code: true, label: true },
     orderBy: { order: "asc" },
   });
 }

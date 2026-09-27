@@ -166,6 +166,104 @@
     color: var(--platform-text-subtle);
   }
 
+  /* A level tag of the hero is a link to the block that explains it; it keeps
+     the look of a tag and only says it can be followed on hover. */
+  & .course-detail__level-tag {
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .course-detail__level-tag:hover {
+    color: var(--platform-text);
+  }
+
+  /* «A quién va dirigido», under the chapters: quiet, like «Procedencia». The
+     anchor leaves room above so the title does not land under the top bar. */
+  & .course-detail__audience {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 8px;
+    scroll-margin-top: 90px;
+  }
+
+  & .course-detail__audience-title {
+    margin: 0;
+    font-family: var(--platform-font);
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--platform-text);
+  }
+
+  & .course-detail__levels {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .course-detail__level {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 14px 16px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-surface);
+  }
+
+  & .course-detail__level-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .course-detail__level-range {
+    font-size: 14px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--platform-accent-ink);
+  }
+
+  & .course-detail__level-description {
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .course-detail__audience-note {
+    margin: 0;
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-detail__prior {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  & .course-detail__prior-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .course-detail__prior-text {
+    margin: 0;
+    max-width: 72ch;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--platform-text-muted);
+    /* The staff writes it in a textarea: its line breaks are kept. */
+    white-space: pre-line;
+    text-wrap: pretty;
+  }
+
   /* «Procedencia», under the chapters: a quiet list, one line per source,
      with the kind of resource in bold and the rest separated by dots. */
   & .course-detail__sources {

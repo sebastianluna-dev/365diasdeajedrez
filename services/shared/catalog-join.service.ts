@@ -17,7 +17,7 @@ export interface JoinWriter {
 }
 
 export interface CatalogReader {
-  findMany(args: unknown): Promise<{ id: number; code: string }[]>;
+  findMany(args: unknown): Promise<{ id: number }[]>;
 }
 
 export interface SyncCatalogJoinInput {
@@ -27,19 +27,22 @@ export interface SyncCatalogJoinInput {
   catalogColumn: string;
   /** The complete new set, as catalog codes. Duplicates collapse; unknown codes are skipped. */
   codes: string[];
+  /**
+   * The catalog's column the codes are matched against. `code` for the fixed
+   * catalogs; `slug` for the ones the staff edits (`Level`).
+   */
+  catalogKey?: "code" | "slug";
 }
 
 /** Rewrites the join rows of `parent` to exactly `codes`. Returns how many rows were written. */
 export async function syncCatalogJoin(
   join: JoinWriter,
   catalog: CatalogReader,
-  { parent, catalogColumn, codes }: SyncCatalogJoinInput,
+  { parent, catalogColumn, codes, catalogKey = "code" }: SyncCatalogJoinInput,
 ): Promise<number> {
   const wanted = [...new Set(codes)];
   const rows =
-    wanted.length > 0
-      ? await catalog.findMany({ where: { code: { in: wanted } }, select: { id: true, code: true } })
-      : [];
+    wanted.length > 0 ? await catalog.findMany({ where: { [catalogKey]: { in: wanted } }, select: { id: true } }) : [];
 
   await join.deleteMany({ where: parent });
   if (rows.length > 0) {

@@ -8,6 +8,7 @@ const meta: MetaRecord = {
   courses: "courses/",
   authors: "authors/",
   entities: "entities/",
+  levels: "levels/",
   classes: "classes/",
 };
 

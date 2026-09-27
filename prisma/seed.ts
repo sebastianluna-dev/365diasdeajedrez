@@ -1,4 +1,5 @@
-// Idempotent seed of the platform: catalogs by upsert(code), domain rows by
+// Idempotent seed of the platform: catalogs by upsert(code) — the levels, which
+// the staff edits, by slug and only when missing —, domain rows by
 // upsert(fixed id) or natural key. Running it several times never duplicates.
 // It runs with `npm run db:seed` (prisma db seed → tsx, outside Next, which is
 // why it does not reuse lib/platform-db/get-platform-db.ts, which is server-only).
@@ -29,6 +30,7 @@ import {
   STUDY_SHARES,
   GAMES,
   IDS,
+  LEVEL_VALUES,
   STAFF,
   TEACHER,
   TEACHER_STUDENT,
@@ -150,6 +152,25 @@ async function seedCatalogRows(delegate: RichCatalogDelegate, rows: RichCatalogR
   return byCode;
 }
 
+/**
+ * The levels are a catalog the staff EDITS, so they are seeded by slug and
+ * only when missing: `update` is empty on purpose, or every run would undo the
+ * names and ranges written at /administracion/niveles.
+ */
+async function seedLevels() {
+  const bySlug = new Map<string, number>();
+  for (const [index, level] of LEVEL_VALUES.entries()) {
+    const row = await db.level.upsert({
+      where: { slug: level.slug },
+      update: {},
+      create: { ...level, order: index + 1 },
+      select: { id: true },
+    });
+    bySlug.set(level.slug, row.id);
+  }
+  return bySlug;
+}
+
 function idOf(map: Map<string, number>, code: string): number {
   const id = map.get(code);
   if (id === undefined) throw new Error(`Code de catálogo no sembrado: ${code}`);
@@ -165,7 +186,7 @@ async function main() {
   const authorRole = await seedCatalog(db.authorRole, CATALOG_VALUES.authorRole);
   await seedCatalog(db.sourceType, CATALOG_VALUES.sourceType);
   await seedCatalog(db.sourceEntityKind, CATALOG_VALUES.sourceEntityKind);
-  const level = await seedCatalog(db.level, CATALOG_VALUES.level);
+  const level = await seedLevels();
   const boardOrientation = await seedCatalog(db.boardOrientation, CATALOG_VALUES.boardOrientation);
   const exerciseMode = await seedCatalog(db.exerciseMode, CATALOG_VALUES.exerciseMode);
   const progressStatus = await seedCatalog(db.progressStatus, CATALOG_VALUES.progressStatus);
@@ -252,6 +273,7 @@ async function main() {
       name: course.name,
       slug: course.slug,
       description: course.description,
+      priorKnowledge: course.priorKnowledge ?? null,
       statusId: idOf(courseStatus, course.status),
       publishedAt: new Date(now.getTime() - 30 * DAY_MS),
     };
@@ -288,11 +310,11 @@ async function main() {
       },
     });
 
-    for (const levelCode of course.levels) {
+    for (const levelSlug of course.levels) {
       await db.courseLevel.upsert({
-        where: { courseId_levelId: { courseId: course.id, levelId: idOf(level, levelCode) } },
+        where: { courseId_levelId: { courseId: course.id, levelId: idOf(level, levelSlug) } },
         update: {},
-        create: { courseId: course.id, levelId: idOf(level, levelCode) },
+        create: { courseId: course.id, levelId: idOf(level, levelSlug) },
       });
     }
 

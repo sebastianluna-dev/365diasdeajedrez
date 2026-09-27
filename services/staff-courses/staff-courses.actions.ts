@@ -7,7 +7,6 @@ import {
   AUTHOR_ROLE,
   CONTENT_TYPE_CODES,
   COURSE_STATUS,
-  LEVEL,
   isContentRoleCode,
 } from "@/constants/platform/course-codes.const";
 import { syncCatalogJoin } from "@/services/shared/catalog-join.service";
@@ -27,6 +26,7 @@ import {
   formLenientInt,
   formOptionalText,
   formOptionalUrl,
+  formSlugList,
   formText,
   parseForm,
   readIds,
@@ -83,8 +83,11 @@ const COURSE_SCHEMA = z.object({
 });
 const COURSE_UPDATE_SCHEMA = COURSE_SCHEMA.extend({
   description: formOptionalText(DESCRIPTION_MAX_LENGTH),
+  priorKnowledge: formOptionalText(DESCRIPTION_MAX_LENGTH),
   cover: formOptionalUrl(2000),
-  levelCodes: formCodeList(Object.values(LEVEL)),
+  // The levels are rows the staff edits, so there is no list of codes to check
+  // against: the write skips the slugs the catalog does not have.
+  levelSlugs: formSlugList(),
 });
 
 /** The failure code a bad course form answers with: the one field with words of its own, or the generic one. */
@@ -172,14 +175,14 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
 
   const parsed = parseForm(COURSE_UPDATE_SCHEMA, formData);
   if (!parsed.ok) fail(detailPath, courseFormError(parsed.field));
-  const { name, slug, contentTypeCodes, description, cover, levelCodes } = parsed.data;
+  const { name, slug, contentTypeCodes, description, priorKnowledge, cover, levelSlugs } = parsed.data;
   const db = getPlatformDb();
 
   try {
     await db.$transaction(async (tx) => {
       await tx.course.update({
         where: { id: courseId },
-        data: { name, slug, description, cover },
+        data: { name, slug, description, priorKnowledge, cover },
       });
 
       // Content types and levels are checkbox groups: each whole set is replaced
@@ -192,7 +195,8 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
       await syncCatalogJoin(tx.courseLevel, tx.level, {
         parent: { courseId },
         catalogColumn: "levelId",
-        codes: levelCodes,
+        catalogKey: "slug",
+        codes: levelSlugs,
       });
     });
   } catch (error) {
@@ -202,6 +206,9 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
 
   revalidatePath(detailPath);
   revalidatePath(staffRoutes.courses);
+  // Levels and prior knowledge are read on the student's side too.
+  revalidatePath(platformRoutes.courses);
+  revalidatePath(platformRoutes.courseDetail(courseId));
 }
 
 export async function publishCourse(courseId: string): Promise<void> {

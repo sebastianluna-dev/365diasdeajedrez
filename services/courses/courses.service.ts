@@ -9,11 +9,12 @@ import {
   courseDetailInclude,
   mapChapterView,
   mapCourseDetail,
+  mapCourseLevel,
   mapCourseSummary,
   mapLessonView,
   type UserCourseState,
 } from "./courses.mapper";
-import type { ChapterView, CourseDetail, CourseSummary, LessonView } from "./courses.types";
+import type { ChapterView, CourseDetail, CourseLevelItem, CourseSummary, LessonView } from "./courses.types";
 
 // Full listing: only the "Mis cursos" page uses it, and it needs them all.
 const getPublishedCourses = cache(async () => {
@@ -122,6 +123,25 @@ const EMPTY_STATE: UserCourseState = { lessonStatus: new Map(), onlyPriorityLess
 export async function getUserCourses(): Promise<CourseSummary[]> {
   const [courses, progress] = await Promise.all([getPublishedCourses(), getUserProgressState()]);
   return courses.map((course) => mapCourseSummary(course, progress.get(course.id) ?? EMPTY_STATE));
+}
+
+/**
+ * The levels "Mis cursos" can be filtered by: the ones in use, the easiest
+ * first. They are read whole and not only the ones some course has, so the
+ * filter reads the same every day; a level without courses says so when chosen.
+ *
+ * Nothing here looks at the student's rating: the levels guide whoever
+ * chooses, they do not decide what anybody may open.
+ */
+export async function listCourseLevels(): Promise<CourseLevelItem[]> {
+  // Session border, like every read of the private area.
+  await getCurrentUser();
+  const levels = await getPlatformDb().level.findMany({
+    where: { isActive: true },
+    select: { slug: true, name: true, description: true, eloMin: true, eloMax: true },
+    orderBy: [{ order: "asc" }, { eloMin: "asc" }, { name: "asc" }],
+  });
+  return levels.map(mapCourseLevel);
 }
 
 /**

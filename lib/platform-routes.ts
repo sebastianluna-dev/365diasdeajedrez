@@ -25,6 +25,8 @@ export const platformRoutes = {
    */
   gameDetail: (studyId: string, gameId: string) => `/estudios/${studyId}/partidas/${gameId}`,
   courses: "/cursos",
+  /** "Mis cursos" narrowed to the ones aimed at a level, by the level's slug. */
+  coursesOfLevel: (levelSlug: string) => `/cursos?nivel=${encodeURIComponent(levelSlug)}`,
   /**
    * The STUDENT's routes go by an 8-digit numeric identifier. The staff panel
    * keeps its own: they are two areas with different identifiers on purpose.
@@ -93,6 +95,8 @@ export const staffRoutes = {
   authors: "/administracion/autores",
   /** The platforms, publishers and providers the courses cite as the origin of their material. */
   entities: "/administracion/entidades",
+  /** The levels a course is aimed at, with their orientative Elo ranges. */
+  levels: "/administracion/niveles",
   classes: "/administracion/clases",
   staffClassDetail: (classId: string) => `/administracion/clases/${classId}`,
 } as const;

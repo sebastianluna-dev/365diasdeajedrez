@@ -69,21 +69,24 @@ import { FormField } from "@/components/platform/shared/form-field.comp";
 </FormField>;
 ```
 
-A group, from `components/platform/sections/staff/courses/course-editor.section.tsx` (the same editor's «Contenido» fieldset wraps a [`PlatformCheckCards`](/components/platform/shared/platform-check-cards) instead of native boxes, with `frame="none"` so the cards are not framed twice):
+A group of native checkboxes, from `components/platform/sections/staff/courses/lesson-editor.section.tsx`:
 
 ```tsx
-<FormFieldset legend="Niveles">
-  {levels.map((level) => (
-    <label key={level.code}>
-      <input
-        type="checkbox"
-        name="levelCodes"
-        value={level.code}
-        defaultChecked={course.levelCodes.includes(level.code)}
-      />
-      {level.label}
+<FormFieldset legend="Temas">
+  {topics.map((topic) => (
+    <label key={topic.id}>
+      <input type="checkbox" name="topicIds" value={topic.id} defaultChecked={lesson.topicIds.includes(topic.id)} />
+      {topic.label}
     </label>
   ))}
+</FormFieldset>
+```
+
+A group of cards, from `components/platform/sections/staff/courses/course-editor.section.tsx`, with `frame="none"` so the cards are not framed twice:
+
+```tsx
+<FormFieldset legend="Contenido" hint="Al menos uno." frame="none">
+  <PlatformCheckCards name="contentTypeCodes" defaultValue={course.contentTypeCodes} options={options} />
 </FormFieldset>
 ```
 

@@ -10,7 +10,7 @@ import {
   MEETING_PROVIDER,
   TRANSCRIPT_STATUS,
 } from "../constants/platform/class-codes.const";
-import { AUTHOR_ROLE, CONTENT_TYPE, COURSE_STATUS, LEVEL } from "../constants/platform/course-codes.const";
+import { AUTHOR_ROLE, CONTENT_TYPE, COURSE_STATUS, DEFAULT_LEVEL } from "../constants/platform/course-codes.const";
 import { BOARD_ORIENTATION, OWNER_TYPE, PROGRESS_STATUS, TOPIC } from "../constants/platform/shared-codes.const";
 import { SOURCE_ENTITY_KIND, SOURCE_TYPE } from "../constants/platform/source-codes.const";
 import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "../constants/platform/study-codes.const";
@@ -88,6 +88,66 @@ export const CONTENT_TYPE_VALUES = [
   },
 ];
 
+/**
+ * The levels the platform ships with, the easiest first. They are the same
+ * rows the migration creates: the staff edits the catalog afterwards, so the
+ * seed only adds the ones that are missing and never rewrites one that exists.
+ *
+ * Inclusive Elo ranges, `eloMax` null = no upper bound. They are an internal,
+ * orientative classification; «Maestro» names the difficulty, not a title.
+ */
+export const LEVEL_VALUES: {
+  slug: string;
+  name: string;
+  description: string;
+  eloMin: number;
+  eloMax: number | null;
+}[] = [
+  {
+    slug: DEFAULT_LEVEL.INITIATION,
+    name: "Iniciación",
+    description: "Reglas, movimiento de las piezas, jaque, mate y principios básicos.",
+    eloMin: 0,
+    eloMax: 799,
+  },
+  {
+    slug: DEFAULT_LEVEL.BEGINNER,
+    name: "Principiante",
+    description: "Tácticas elementales, principios de apertura y finales básicos.",
+    eloMin: 800,
+    eloMax: 1199,
+  },
+  {
+    slug: DEFAULT_LEVEL.INTERMEDIATE,
+    name: "Intermedio",
+    description: "Cálculo, evaluación de posiciones, planificación y estructuras de peones.",
+    eloMin: 1200,
+    eloMax: 1599,
+  },
+  {
+    slug: DEFAULT_LEVEL.ADVANCED,
+    name: "Avanzado",
+    description: "Cálculo complejo, estrategia, repertorio, finales y preparación competitiva.",
+    eloMin: 1600,
+    eloMax: 1999,
+  },
+  {
+    slug: DEFAULT_LEVEL.EXPERT,
+    name: "Experto",
+    description: "Análisis profundo, técnica avanzada y perfeccionamiento del juego competitivo.",
+    eloMin: 2000,
+    eloMax: 2199,
+  },
+  {
+    slug: DEFAULT_LEVEL.MASTER,
+    name: "Maestro",
+    description:
+      "Preparación especializada, decisiones posicionales sutiles, cálculo exigente y análisis de alto nivel.",
+    eloMin: 2200,
+    eloMax: null,
+  },
+];
+
 export const CATALOG_VALUES = {
   courseStatus: [
     [COURSE_STATUS.DRAFT, "Borrador"],
@@ -119,12 +179,6 @@ export const CATALOG_VALUES = {
     [SOURCE_ENTITY_KIND.PUBLISHER, "Editorial"],
     [SOURCE_ENTITY_KIND.CONTENT_PROVIDER, "Proveedor de contenido"],
     [SOURCE_ENTITY_KIND.OTHER, "Otro"],
-  ],
-  level: [
-    [LEVEL.BEGINNER, "Principiante"],
-    [LEVEL.INTERMEDIATE, "Intermedio"],
-    [LEVEL.ADVANCED, "Avanzado"],
-    [LEVEL.EXPERT, "Experto"],
   ],
   boardOrientation: [
     [BOARD_ORIENTATION.WHITE, "Blancas"],
@@ -383,7 +437,10 @@ export interface SeedCourse {
   /** Codes of ContentType, at least one: what the course teaches. */
   contentTypes: string[];
   status: string;
+  /** Slugs of Level: who the course is aimed at. */
   levels: string[];
+  /** What the student should already know; optional. */
+  priorKnowledge?: string;
   chapters: SeedChapter[];
 }
 
@@ -396,7 +453,9 @@ export const COURSES: SeedCourse[] = [
       "La respuesta más combativa contra 1.e4: ideas, estructuras y la Variante Najdorf explicadas desde cero.",
     contentTypes: [CONTENT_TYPE.OPENINGS],
     status: COURSE_STATUS.PUBLISHED,
-    levels: [LEVEL.BEGINNER, LEVEL.INTERMEDIATE],
+    levels: [DEFAULT_LEVEL.BEGINNER, DEFAULT_LEVEL.INTERMEDIATE],
+    priorKnowledge:
+      "Saber mover las piezas, anotar jugadas y conocer los principios básicos de apertura: desarrollo, centro y enroque.",
     chapters: [
       {
         id: IDS.chSicilianBasics,
@@ -520,7 +579,7 @@ export const COURSES: SeedCourse[] = [
     description: "Lucena y Philidor: las dos posiciones que todo jugador debe dominar antes que cualquier otra.",
     contentTypes: [CONTENT_TYPE.ENDGAMES],
     status: COURSE_STATUS.PUBLISHED,
-    levels: [LEVEL.INTERMEDIATE],
+    levels: [DEFAULT_LEVEL.INTERMEDIATE],
     chapters: [
       {
         id: IDS.chRookFundamentals,

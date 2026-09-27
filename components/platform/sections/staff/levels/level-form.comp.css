@@ -1,0 +1,56 @@
+.level-form {
+  width: 100%;
+
+  & .level-form__row {
+    display: grid;
+    gap: 14px;
+    /* `start` so a field with a longer hint does not stretch its neighbours. */
+    align-items: start;
+  }
+
+  & .level-form__row_columns_two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  & .level-form__row_columns_three {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  & .platform-form__field > textarea {
+    min-height: 84px;
+  }
+
+  & .level-form__check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 15px;
+    color: var(--platform-text);
+    cursor: pointer;
+  }
+
+  & .level-form__check input {
+    margin-top: 2px;
+    flex: none;
+  }
+
+  & .level-form__check-hint {
+    display: block;
+    margin-top: 3px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
+  & .level-form__submit {
+    display: flex;
+  }
+
+  @media (max-width: 860px) {
+    & .level-form__row_columns_two,
+    & .level-form__row_columns_three {
+      grid-template-columns: 1fr;
+    }
+  }
+}

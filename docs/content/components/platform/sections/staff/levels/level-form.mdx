@@ -1,0 +1,68 @@
+---
+description: "The form of one course level, for creating or editing it: name, slug, description, position and the inclusive Elo range, on PlatformForm, posting createLevel or updateLevel."
+---
+
+# `LevelForm`
+
+|            |                                                                                                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/levels/level-form.comp.tsx`                                                                                                   |
+| Kind       | Client Component                                                                                                                                                  |
+| Stylesheet | `level-form.comp.css` → block `.level-form`                                                                                                                       |
+| Used by    | [`LevelsAdminSection`](/components/platform/sections/staff/levels/levels-admin-section)                                                                           |
+| Composes   | [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`SubmitButton`](/components/platform/shared/submit-button)                     |
+| Writes     | `createLevel()`, `updateLevel()` · `services/staff-levels/staff-levels.actions.ts`                                                                                |
+| Uses       | `ELO_MAX` from `constants/platform/course-levels.const`; `generateSlug` from `lib/generate-slug`; `LevelAdminRow` from `services/staff-levels/staff-levels.types` |
+
+## Purpose
+
+One form for the two things done to a level. It receives the level, not a mode: with `level` it edits that row, without it it creates one. It is the client leaf of the page because of two small pieces of state, the floor of the maximum and the slug that writes itself.
+
+## Props
+
+| Prop    | Type            | Required | Meaning                                                 |
+| ------- | --------------- | -------- | ------------------------------------------------------- |
+| `level` | `LevelAdminRow` | no       | The level being edited. Absent, the form creates a new. |
+
+## Behaviour
+
+- **Fields:** `name` (required, 80), `slug` (required, `[a-z0-9]+(-[a-z0-9]+)*`; it is what `/cursos?nivel=` carries), `eloMin` (required, 0–4000), `eloMax` (optional, 0–4000), `order` (0–999; optional on a new level, where empty means "after the others") and `description` (required, 500). On an existing level, the checkbox `isActive` («En uso»).
+- **Inclusive range, open top.** An empty `eloMax` is "no upper bound" («2200 o más») and is stored as `null`, never as a zero. «Iniciación» is `0`–`799`.
+- **The browser refuses an upside-down range:** the `min` of `eloMax` follows what is typed in `eloMin` (the only state besides the slug's). The action checks the same (`isValidEloRange`) and answers `?error=levelElo`, and the database has the check `level_elo_range` behind both.
+- **The slug writes itself** from the name on a new level, when the name loses focus, while the slug is the form's and not the user's; once typed by hand it is left alone, and emptied it follows the name again.
+- **Uncontrolled fields:** the form empties by itself once the action is done; `onReset` puts the two refs and the floor back.
+
+## Markup & styling
+
+Block `.level-form`, inside `.platform-form`.
+
+**Elements:** `.level-form__row`, `.level-form__check`, `.level-form__check-hint`, `.level-form__submit`
+
+**Modifiers and states:** `.level-form__row_columns_two`, `.level-form__row_columns_three`
+
+**Other selectors it styles:** `.platform-form__field > textarea` (a shorter textarea).
+
+**Other classes it renders:** `.platform-form`, `.platform-form__field`, `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-text`, `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 860px)` stacks the fields.
+
+## Usage
+
+From `components/platform/sections/staff/levels/levels-admin.section.tsx`:
+
+```tsx
+import { LevelForm } from "./level-form.comp";
+
+{
+  levels.map((level) => <LevelForm key={level.id} level={level} />);
+}
+
+<LevelForm />;
+```
+
+## Related
+
+- [`NewCourseForm`](/components/platform/sections/staff/courses/new-course), where the slug writes itself the same way.
+- The rules of the range in `services/courses/level-rules.ts`.

@@ -29,6 +29,18 @@ export interface CourseContentTypeItem {
   description: string;
 }
 
+/**
+ * Who a course is aimed at: a level of the catalog the staff edits, with its
+ * orientative Elo range already worded ("800–1199", "2200 o más"). It guides;
+ * nothing is ever restricted by it.
+ */
+export interface CourseLevelItem {
+  slug: string;
+  name: string;
+  description: string;
+  eloRange: string;
+}
+
 export interface CourseSummary {
   id: string;
   name: string;
@@ -38,7 +50,8 @@ export interface CourseSummary {
   cover?: string;
   /** What it teaches, in catalog order; the card shows the short names. */
   contentTypes: CourseContentTypeItem[];
-  levelLabels: string[];
+  /** Who it is aimed at, the easiest level first; the list is filtered by their slug. */
+  levels: CourseLevelItem[];
   authorNames: string[];
   progress: CourseProgressSummary;
   /** Lesson the CTA opens according to the student's state. */
@@ -83,7 +96,10 @@ export interface CourseDetail {
   cover?: string;
   /** What it teaches, in catalog order; the page shows the long names with their descriptions. */
   contentTypes: CourseContentTypeItem[];
-  levelLabels: string[];
+  /** Who it is aimed at, the easiest level first, each with its orientative Elo range. */
+  levels: CourseLevelItem[];
+  /** «Conocimientos previos»: what the student should already know, as the staff wrote it. */
+  priorKnowledge?: string;
   authors: CourseAuthorItem[];
   progress: CourseProgressSummary;
   continueHref: string;

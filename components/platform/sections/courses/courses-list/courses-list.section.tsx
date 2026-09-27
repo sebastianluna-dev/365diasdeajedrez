@@ -1,14 +1,26 @@
 import { EmptyState } from "@/components/platform/shared/empty-state.comp";
-import type { CourseSummary } from "@/services/courses/courses.types";
+import { platformRoutes } from "@/lib/platform-routes";
+import type { CourseLevelItem, CourseSummary } from "@/services/courses/courses.types";
+import { coursesOfLevel, resolveLevelFilter } from "@/services/courses/level-rules";
 import { CourseCard } from "./course-card.comp";
+import { LevelFilter } from "./level-filter.comp";
 import "./courses-list.section.css";
 
 interface CoursesListSectionProps {
-  /** The page fetches them: the header summary comes from the same list. */
+  /** Every course, unfiltered: the page's header summary comes from the same list. */
   courses: CourseSummary[];
+  /** The levels the list can be narrowed to, the easiest first. */
+  levels: CourseLevelItem[];
+  /** What `?nivel=` brought. One the catalog does not have is ignored. */
+  levelSlug?: string;
 }
 
-export function CoursesListSection({ courses }: CoursesListSectionProps) {
+/**
+ * The courses of "Mis cursos", with the level filter on top. The filter only
+ * narrows what is listed: a course of another level is still one click away
+ * under "Todos", and nothing is closed to anybody by their rating.
+ */
+export function CoursesListSection({ courses, levels, levelSlug }: CoursesListSectionProps) {
   if (courses.length === 0) {
     return (
       <EmptyState
@@ -18,11 +30,23 @@ export function CoursesListSection({ courses }: CoursesListSectionProps) {
     );
   }
 
+  const level = resolveLevelFilter(levels, levelSlug);
+  const visible = coursesOfLevel(courses, level?.slug);
+
   return (
     <div className="courses-list">
-      {courses.map((course) => (
-        <CourseCard key={course.id} course={course} />
-      ))}
+      {levels.length > 0 && <LevelFilter levels={levels} current={level?.slug} />}
+
+      {level && visible.length === 0 ? (
+        <EmptyState
+          title={`Todavía no hay cursos de nivel ${level.name}`}
+          description="Prueba con otro nivel o vuelve a verlos todos."
+          actionLabel="Ver todos los cursos"
+          actionHref={platformRoutes.courses}
+        />
+      ) : (
+        visible.map((course) => <CourseCard key={course.id} course={course} />)
+      )}
     </div>
   );
 }

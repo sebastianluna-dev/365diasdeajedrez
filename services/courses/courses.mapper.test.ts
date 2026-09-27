@@ -3,10 +3,14 @@ import { describe, expect, it } from "vitest";
 import { PROGRESS_STATUS, type ProgressStatusCode } from "@/constants/platform/shared-codes.const";
 import {
   mapChapterView,
+  mapCourseDetail,
+  mapCourseLevel,
   mapCourseProgress,
   mapCourseSources,
+  mapCourseSummary,
   mapLessonView,
   type CourseWithContent,
+  type CourseWithDetail,
   type LessonRowForView,
   type UserCourseState,
 } from "./courses.mapper";
@@ -251,5 +255,50 @@ describe("mapCourseSources", () => {
       },
     ]);
     expect(sources[0]).not.toHaveProperty("notes");
+  });
+});
+
+describe("los niveles del curso", () => {
+  const level = (slug: string, name: string, eloMin: number, eloMax: number | null) => ({
+    level: { id: 1, slug, name, description: `Qué se trabaja en ${name}.`, order: 1, eloMin, eloMax, isActive: true },
+  });
+  const WITH_LEVELS = {
+    ...COURSE,
+    priorKnowledge: "Saber dar los mates básicos.",
+    courseLevels: [level("iniciacion", "Iniciación", 0, 799), level("maestro", "Maestro", 2200, null)],
+    sources: [],
+  } as unknown as CourseWithDetail;
+
+  it("redacta el rango de cada nivel, con el máximo abierto como «o más»", () => {
+    expect(mapCourseLevel(level("experto", "Experto", 2000, 2199).level)).toEqual({
+      slug: "experto",
+      name: "Experto",
+      description: "Qué se trabaja en Experto.",
+      eloRange: "2000–2199",
+    });
+    expect(mapCourseLevel(level("maestro", "Maestro", 2200, null).level).eloRange).toBe("2200 o más");
+  });
+
+  it("la tarjeta y la ficha llevan los niveles en el orden en que llegan", () => {
+    const summary = mapCourseSummary(WITH_LEVELS, state());
+    const detail = mapCourseDetail(WITH_LEVELS, state());
+
+    expect(summary.levels.map((item) => item.slug)).toEqual(["iniciacion", "maestro"]);
+    expect(detail.levels.map((item) => `${item.name}: ${item.eloRange}`)).toEqual([
+      "Iniciación: Menos de 800",
+      "Maestro: 2200 o más",
+    ]);
+  });
+
+  it("los conocimientos previos son opcionales: sin ellos, la ficha no los trae", () => {
+    expect(mapCourseDetail(WITH_LEVELS, state()).priorKnowledge).toBe("Saber dar los mates básicos.");
+
+    const without = { ...WITH_LEVELS, priorKnowledge: null } as unknown as CourseWithDetail;
+    expect(mapCourseDetail(without, state()).priorKnowledge).toBeUndefined();
+  });
+
+  it("un curso sin niveles no tiene ninguno, y sigue siendo un curso", () => {
+    const bare = { ...COURSE, sources: [] } as unknown as CourseWithDetail;
+    expect(mapCourseDetail(bare, state()).levels).toEqual([]);
   });
 });

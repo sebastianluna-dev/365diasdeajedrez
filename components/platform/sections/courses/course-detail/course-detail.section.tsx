@@ -3,9 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { ProgressIndicator } from "@/components/platform/shared/progress-indicator.comp";
+import { ELO_DISCLAIMER } from "@/constants/platform/course-levels.const";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { platformRoutes } from "@/lib/platform-routes";
 import type { CourseDetail } from "@/services/courses/courses.types";
+import { labelEloRange } from "@/services/courses/level-rules";
 import { ChapterList } from "./chapter-list.comp";
 import "./course-detail.section.css";
 
@@ -15,6 +17,9 @@ interface CourseDetailSectionProps {
   errorCode?: string;
 }
 
+/** The block the level tags of the hero lead to. */
+const AUDIENCE_ID = "course-detail-audience";
+
 /** The cover takes a fixed 470px column, and the full width when stacked. */
 const COVER_SIZES = "(max-width: 980px) 100vw, 470px";
 
@@ -22,6 +27,7 @@ export function CourseDetailSection({ course, errorCode }: CourseDetailSectionPr
   const chapterCount = course.chapters.length;
   const errorMessage = studentErrorMessage(errorCode);
   const { totalLessons } = course.progress;
+  const hasAudience = course.levels.length > 0 || Boolean(course.priorKnowledge);
 
   return (
     <section className="course-detail">
@@ -38,10 +44,17 @@ export function CourseDetailSection({ course, errorCode }: CourseDetailSectionPr
                 {contentType.label}
               </span>
             ))}
-            {course.levelLabels.map((level) => (
-              <span key={level} className="platform-tag">
-                {level}
-              </span>
+            {/* Who it is aimed at, with the orientative range; the tag leads to
+                the block that explains it, further down. */}
+            {course.levels.map((level) => (
+              <a
+                key={level.slug}
+                href={`#${AUDIENCE_ID}`}
+                className="platform-tag course-detail__level-tag"
+                title={level.description}
+              >
+                {level.name} · {level.eloRange}
+              </a>
             ))}
           </div>
 
@@ -117,6 +130,40 @@ export function CourseDetailSection({ course, errorCode }: CourseDetailSectionPr
 
         <ChapterList chapters={course.chapters} />
       </div>
+
+      {/* Who the course is aimed at: its levels in order of difficulty, each
+          with its orientative Elo range, and what is worth knowing beforehand.
+          It informs whoever is choosing; it closes the course to nobody. */}
+      {hasAudience && (
+        <section id={AUDIENCE_ID} className="course-detail__audience" aria-labelledby="course-detail-audience-title">
+          <h2 id="course-detail-audience-title" className="course-detail__audience-title">
+            A quién va dirigido
+          </h2>
+
+          {course.levels.length > 0 && (
+            <>
+              <ul className="course-detail__levels">
+                {course.levels.map((level) => (
+                  <li key={level.slug} className="course-detail__level">
+                    <span className="course-detail__level-name">{level.name}</span>
+                    <span className="course-detail__level-range">{labelEloRange(level.eloRange)}</span>
+                    <span className="course-detail__level-description">{level.description}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <p className="course-detail__audience-note">{ELO_DISCLAIMER}.</p>
+            </>
+          )}
+
+          {course.priorKnowledge && (
+            <div className="course-detail__prior">
+              <h3 className="course-detail__prior-title">Conocimientos previos recomendados</h3>
+              <p className="course-detail__prior-text">{course.priorKnowledge}</p>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* Where the material comes from, when the staff recorded it: one line
           per source, the entity linked to the resource when there is a URL.

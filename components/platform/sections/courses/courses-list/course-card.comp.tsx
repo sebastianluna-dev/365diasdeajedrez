@@ -90,8 +90,11 @@ export function CourseCard({ course }: CourseCardProps) {
           <div className="course-card__menu-panel">
             {course.description && <p className="course-card__menu-text">{course.description}</p>}
 
-            {course.levelLabels.length > 0 && (
-              <p className="course-card__menu-meta">{course.levelLabels.join(" · ")}</p>
+            {/* Who it is aimed at, each level with its orientative Elo range. */}
+            {course.levels.length > 0 && (
+              <p className="course-card__menu-meta">
+                {course.levels.map((level) => `${level.name} (${level.eloRange})`).join(" · ")}
+              </p>
             )}
 
             {course.authorNames.length > 0 && (

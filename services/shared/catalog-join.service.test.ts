@@ -16,11 +16,17 @@ interface CreateArgs {
   data: Record<string, string | number>[];
 }
 interface FindArgs {
-  where: { code: { in: string[] } };
+  where: Record<string, { in: string[] }>;
 }
 
+// The catalog the staff edits is matched by slug, not by code.
+const LEVELS = [
+  { id: 7, slug: "principiante" },
+  { id: 8, slug: "intermedio" },
+];
+
 function fakes() {
-  const calls: { deleted?: unknown; created?: unknown; lookedUp?: string[] } = {};
+  const calls: { deleted?: unknown; created?: unknown; lookedUp?: string[]; lookedUpBy?: string } = {};
   const join: JoinWriter = {
     async deleteMany(args) {
       calls.deleted = (args as DeleteArgs).where;
@@ -31,9 +37,13 @@ function fakes() {
   };
   const catalog: CatalogReader = {
     async findMany(args) {
-      const wanted = (args as FindArgs).where.code.in;
+      const where = (args as FindArgs).where;
+      calls.lookedUpBy = Object.keys(where)[0];
+      const wanted = where.code?.in ?? where.slug?.in ?? [];
       calls.lookedUp = wanted;
-      return CATALOG.filter((row) => wanted.includes(row.code));
+      return where.slug
+        ? LEVELS.filter((row) => wanted.includes(row.slug))
+        : CATALOG.filter((row) => wanted.includes(row.code));
     },
   };
   return { join, catalog, calls };
@@ -67,6 +77,34 @@ describe("syncCatalogJoin", () => {
     expect(written).toBe(1);
     expect(calls.lookedUp).toEqual(["ENDGAMES", "NOPE"]);
     expect(calls.created).toEqual([{ courseId: "c1", contentTypeId: 3 }]);
+  });
+
+  it("busca por slug cuando el catálogo es de los que edita el staff", async () => {
+    const { join, catalog, calls } = fakes();
+    const written = await syncCatalogJoin(join, catalog, {
+      parent: { courseId: "c1" },
+      catalogColumn: "levelId",
+      catalogKey: "slug",
+      codes: ["intermedio", "principiante", "inventado"],
+    });
+
+    expect(written).toBe(2);
+    expect(calls.lookedUpBy).toBe("slug");
+    expect(calls.created).toEqual([
+      { courseId: "c1", levelId: 7 },
+      { courseId: "c1", levelId: 8 },
+    ]);
+  });
+
+  it("sin `catalogKey` busca por code", async () => {
+    const { join, catalog, calls } = fakes();
+    await syncCatalogJoin(join, catalog, {
+      parent: { courseId: "c1" },
+      catalogColumn: "contentTypeId",
+      codes: ["TACTICS"],
+    });
+
+    expect(calls.lookedUpBy).toBe("code");
   });
 
   it("con la lista vacía sólo borra, sin consultar el catálogo", async () => {

@@ -34,14 +34,20 @@ export const AUTHOR_ROLE = {
 
 export type AuthorRoleCode = (typeof AUTHOR_ROLE)[keyof typeof AUTHOR_ROLE];
 
-export const LEVEL = {
-  BEGINNER: "BEGINNER",
-  INTERMEDIATE: "INTERMEDIATE",
-  ADVANCED: "ADVANCED",
-  EXPERT: "EXPERT",
+/**
+ * Slugs of the levels the platform ships with. The catalog is edited by staff
+ * at /administracion/niveles — names, ranges and slugs included —, so the
+ * application never compares against these: they only name the rows the
+ * migration creates and the seed assigns to its demo courses.
+ */
+export const DEFAULT_LEVEL = {
+  INITIATION: "iniciacion",
+  BEGINNER: "principiante",
+  INTERMEDIATE: "intermedio",
+  ADVANCED: "avanzado",
+  EXPERT: "experto",
+  MASTER: "maestro",
 } as const;
-
-export type LevelCode = (typeof LEVEL)[keyof typeof LEVEL];
 
 /**
  * Role of a chapter within the course, or of a lesson within the chapter.

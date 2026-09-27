@@ -7,8 +7,8 @@ import {
   listAuthors,
   countCollectionGames,
   listContentTypes,
-  listLevels,
 } from "@/services/staff-courses/staff-courses.service";
+import { listLevelOptions } from "@/services/staff-levels/staff-levels.service";
 import { listSourceEntityOptions, listSourceTypes } from "@/services/staff-sources/staff-sources.service";
 
 interface StaffCoursePageProps {
@@ -30,7 +30,7 @@ export default async function StaffCoursePage({ params, searchParams }: StaffCou
 
   const [contentTypes, levels, authors, authorRoles, sourceTypes, entities, gameCount, { error }] = await Promise.all([
     listContentTypes(),
-    listLevels(),
+    listLevelOptions(),
     listAuthors(),
     listAuthorRoles(),
     listSourceTypes(),

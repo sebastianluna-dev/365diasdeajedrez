@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { CoursesListSection } from "@/components/platform/sections/courses/courses-list/courses-list.section";
 import { StudyGoalAside } from "@/components/platform/sections/courses/courses-list/study-goal.comp";
-import { getUserCourses } from "@/services/courses/courses.service";
+import { getUserCourses, listCourseLevels } from "@/services/courses/courses.service";
 import { getStudyGoal } from "@/services/study-goal/study-goal.service";
 import "./courses-page.css";
 
@@ -10,17 +10,26 @@ export const metadata: Metadata = {
 };
 
 interface CoursesPageProps {
-  /** What the goal form bounces back with. */
-  searchParams: Promise<{ error?: string }>;
+  /**
+   * `error` is what the goal form bounces back with; `nivel`, the slug of the
+   * level the list is narrowed to.
+   */
+  searchParams: Promise<{ error?: string; nivel?: string }>;
 }
 
 export default async function CoursesPage({ searchParams }: CoursesPageProps) {
   // Border of the private area: both go through getCurrentUser, so this first
   // await acts as the session check as well as fetching the data.
-  const [courses, goal, { error }] = await Promise.all([getUserCourses(), getStudyGoal(), searchParams]);
+  const [courses, levels, goal, { error, nivel }] = await Promise.all([
+    getUserCourses(),
+    listCourseLevels(),
+    getStudyGoal(),
+    searchParams,
+  ]);
 
   // The summary comes out of the same list: no second query is needed to count
-  // what is already in memory.
+  // what is already in memory. It is of ALL the courses, whatever the level
+  // filter says: what the student has done does not shrink by looking at less.
   const doneLessons = courses.reduce((total, course) => total + course.progress.completedLessons, 0);
 
   return (
@@ -49,7 +58,7 @@ export default async function CoursesPage({ searchParams }: CoursesPageProps) {
       </header>
 
       <div className="courses-page__layout">
-        <CoursesListSection courses={courses} />
+        <CoursesListSection courses={courses} levels={levels} levelSlug={nivel} />
         <StudyGoalAside goal={goal} errorCode={error} />
       </div>
     </div>

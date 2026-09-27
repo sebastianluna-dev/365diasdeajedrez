@@ -117,7 +117,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/inicio`
 - `/clases`, `/clases/[classId]`
 - `/estudios`, `/estudios/clases` (games seen in class), `/estudios/[studyId]` (redirects to the study's first game; a study without games renders its empty page), `/estudios/[studyId]/partidas/[gameId]`
-- `/cursos`, `/cursos/[courseId]`, `/cursos/[courseId]/[chapterOrder]`
+- `/cursos` (`?nivel=<slug>` narrows the list to a level), `/cursos/[courseId]`, `/cursos/[courseId]/[chapterOrder]`
 - `/lecciones/[lessonId]` (the lesson hangs off the root: its identifier already locates it)
 - `/entrenador`
 - `/explorador` (search for games by position; student and teacher share it)
@@ -138,6 +138,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/administracion/cursos` (creating a course is a dialog on this page), `/administracion/cursos/[courseId]`, `…/partidas`, `…/capitulos/[chapterId]`, `…/capitulos/[chapterId]/partidas`, `…/capitulos/[chapterId]/lecciones/[lessonId]`
 - `/administracion/autores`
 - `/administracion/entidades` (the platforms, publishers and providers the courses cite as the origin of their material)
+- `/administracion/niveles` (the levels a course is aimed at, with their orientative Elo ranges)
 - `/administracion/clases`, `/administracion/clases/[classId]` (global read; only support recording and cancellation)
 
 ## Architecture in brief

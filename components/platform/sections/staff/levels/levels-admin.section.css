@@ -1,0 +1,121 @@
+.levels-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  & .levels-admin__summary {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  & .levels-admin__summary .platform-card__title {
+    margin: 0;
+  }
+
+  /* The catalog at a glance, as the student reads it: the forms below are for
+     changing it, this is for checking that the ranges meet end to end. */
+  & .levels-admin__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    color: var(--platform-text-muted);
+  }
+
+  & .levels-admin__table th,
+  & .levels-admin__table td {
+    padding: 10px 14px 10px 0;
+    border-bottom: 1px solid var(--platform-border);
+    text-align: left;
+    vertical-align: top;
+    line-height: 1.45;
+  }
+
+  & .levels-admin__table thead th {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--platform-text-subtle);
+  }
+
+  & .levels-admin__table tbody th {
+    font-weight: 700;
+    color: var(--platform-text);
+    white-space: nowrap;
+  }
+
+  & .levels-admin__range {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--platform-text);
+  }
+
+  & .levels-admin__table .levels-admin__number {
+    padding-right: 0;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .levels-admin__line_state_retired th,
+  & .levels-admin__line_state_retired td {
+    color: var(--platform-text-subtle);
+  }
+
+  & .levels-admin__retired {
+    margin-left: 8px;
+    padding: 3px 9px;
+    font-size: 13px;
+  }
+
+  & .levels-admin__note,
+  & .levels-admin__empty {
+    margin: 0;
+    max-width: 92ch;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .levels-admin__level {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  & .levels-admin__level .platform-card__title {
+    margin: 0;
+  }
+
+  & .levels-admin__level-title {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .levels-admin__level-meta {
+    font-size: 14.5px;
+    font-weight: 400;
+    color: var(--platform-text-muted);
+  }
+
+  & .levels-admin__level-title .levels-admin__retired {
+    margin-left: 0;
+  }
+
+  /* When cramped the table scrolls sideways instead of squeezing the descriptions. */
+  @media (max-width: 720px) {
+    & .levels-admin__summary {
+      overflow-x: auto;
+    }
+
+    & .levels-admin__table {
+      min-width: 620px;
+    }
+  }
+}

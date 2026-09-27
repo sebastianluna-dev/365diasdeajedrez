@@ -3,6 +3,7 @@ import { FormField, FormFieldset } from "@/components/platform/shared/form-field
 import { ImageUpload } from "@/components/platform/shared/image-upload.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { CONTENT_ROLE, COURSE_STATUS } from "@/constants/platform/course-codes.const";
+import { ELO_DISCLAIMER } from "@/constants/platform/course-levels.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
 import {
@@ -21,6 +22,8 @@ import type {
   CourseAdminDetail,
 } from "@/services/staff-courses/staff-courses.types";
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
+import { shortEloRange } from "@/services/courses/level-rules";
+import type { LevelOption } from "@/services/staff-levels/staff-levels.types";
 import type { SourceEntityOption } from "@/services/staff-sources/staff-sources.types";
 import { CourseSources } from "./course-sources/course-sources.comp";
 import { SortableList } from "./sortable-list.comp";
@@ -38,7 +41,8 @@ interface CourseEditorSectionProps {
   course: CourseAdminDetail;
   /** The catalog of what a course can teach; the course keeps at least one. */
   contentTypes: ContentTypeOption[];
-  levels: CatalogOption[];
+  /** Who a course can be aimed at, the easiest first, from /administracion/niveles. */
+  levels: LevelOption[];
   authors: AuthorAdminRow[];
   authorRoles: CatalogOption[];
   /** The kinds of resource a source can be, for «Procedencia del recurso». */
@@ -293,19 +297,37 @@ export function CourseEditorSection({
               />
             </FormFieldset>
 
-            <FormFieldset legend="Niveles">
-              {levels.map((level) => (
-                <label key={level.code}>
-                  <input
-                    type="checkbox"
-                    name="levelCodes"
-                    value={level.code}
-                    defaultChecked={course.levelCodes.includes(level.code)}
-                  />
-                  {level.label}
-                </label>
-              ))}
+            {/* Who the course is aimed at, as cards in order of difficulty, each
+                with its orientative Elo range between the name and what it covers.
+                Several at once, or none. A retired level is still offered,
+                marked: the set is saved whole, and leaving it out would take
+                it from the course. */}
+            <FormFieldset legend="Niveles" hint={`${ELO_DISCLAIMER}.`} frame="none">
+              {levels.length > 0 ? (
+                <PlatformCheckCards
+                  name="levelSlugs"
+                  defaultValue={course.levelSlugs}
+                  aria-label="Niveles a los que va dirigido"
+                  options={levels.map((level) => ({
+                    value: level.slug,
+                    label: level.isActive ? level.name : `${level.name} (retirado)`,
+                    meta: shortEloRange(level.eloRange),
+                    description: level.description,
+                  }))}
+                />
+              ) : (
+                <p className="course-editor__empty">
+                  Todavía no hay niveles. Créalos en <Link href={staffRoutes.levels}>Niveles</Link>.
+                </p>
+              )}
             </FormFieldset>
+
+            <FormField
+              label="Conocimientos previos recomendados (opcional)"
+              hint="Qué conviene saber antes de empezar. Se lee en la ficha del curso, junto a los niveles."
+            >
+              <textarea name="priorKnowledge" defaultValue={course.priorKnowledge ?? ""} maxLength={1000} />
+            </FormField>
 
             <div className="course-editor__submit">
               <SubmitButton>Guardar metadatos</SubmitButton>

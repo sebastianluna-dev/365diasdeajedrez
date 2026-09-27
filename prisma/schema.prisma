@@ -113,12 +113,30 @@ model ContentRole {
   lessons  Lesson[]
 }
 
+/// Who a course is aimed at: "Principiante", "Avanzado"… with an orientative
+/// Elo range. Unlike the catalogs above it is EDITED by staff at
+/// /administracion/niveles, so it is identified by a `slug` and not by a
+/// `code` the logic could compare against. Apart from the content types (what
+/// the course teaches) and from the sources (where its material comes from).
+///
+/// The range is inclusive on both ends and an internal, orientative
+/// classification: no access is ever decided by it, and a student's missing
+/// rating is never stored as a zero. `eloMax` null = no upper bound. The
+/// migration adds the check `level_elo_range` (eloMin >= 0, eloMax >= eloMin),
+/// which Prisma cannot express.
+///
+/// Never deleted from the interface: a level is retired with `isActive`, and
+/// the courses that had it keep their row in `CourseLevel`.
 model Level {
-  id       Int     @id @default(autoincrement())
-  code     String  @unique
-  label    String
-  order    Int     @default(0)
-  isActive Boolean @default(true)
+  id          Int     @id @default(autoincrement())
+  slug        String  @unique
+  name        String
+  description String
+  /// Position by difficulty, the easiest first.
+  order       Int     @default(0)
+  eloMin      Int
+  eloMax      Int?
+  isActive    Boolean @default(true)
 
   courseLevels CourseLevel[]
 }
@@ -308,15 +326,17 @@ model Topic {
 model Course {
   /// 8-digit numeric: it goes in the student's URL (`/cursos/00020212`).
   /// The application sets it (lib/numeric-id.ts), not Prisma.
-  id          String    @id
-  name        String
-  slug        String    @unique
-  description String?
-  cover       String?
-  statusId    Int
-  publishedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id             String    @id
+  name           String
+  slug           String    @unique
+  description    String?
+  /// What the student should already know before starting, as free text.
+  priorKnowledge String?
+  cover          String?
+  statusId       Int
+  publishedAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   status CourseStatus @relation(fields: [statusId], references: [id])
 

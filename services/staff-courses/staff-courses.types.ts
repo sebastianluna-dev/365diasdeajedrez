@@ -68,7 +68,10 @@ export interface CourseAdminDetail {
   publishedAtLabel?: string;
   /** Codes of ContentType, at least one. */
   contentTypeCodes: string[];
-  levelCodes: string[];
+  /** Slugs of the levels it is aimed at, retired ones included; none is a valid set. */
+  levelSlugs: string[];
+  /** «Conocimientos previos»: what the student should already know. */
+  priorKnowledge?: string;
   authors: CourseAuthorRow[];
   chapters: ChapterAdminRow[];
   /** «Procedencia del recurso»: where its material comes from, in order. */
