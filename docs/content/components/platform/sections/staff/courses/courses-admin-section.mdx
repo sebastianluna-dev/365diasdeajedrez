@@ -4,15 +4,15 @@ description: "The course catalog in every status, with a GET search, status filt
 
 # `CoursesAdminSection`
 
-|            |                                                                                                                                                                                               |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/courses-admin.section.tsx`                                                                                                                        |
-| Kind       | Server Component (async)                                                                                                                                                                      |
-| Stylesheet | `courses-admin.section.css` → block `.courses-admin`                                                                                                                                          |
-| Used by    | `/administracion/cursos`                                                                                                                                                                      |
-| Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`EmptyState`](/components/platform/shared/empty-state)                                                        |
-| Reads      | `listCoursesAdmin({ query, status })` · `services/staff-courses/staff-courses.service.ts`                                                                                                     |
-| Uses       | `COURSE_STATUS` from `constants/platform/course-codes.const`; `staffRoutes`; `isDisplayableImage` from `lib/remote-image`; `ChevronIcon`, `SearchIcon` from `components/icons/`; `next/image` |
+|            |                                                                                                                                                                                                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/courses/courses-admin.section.tsx`                                                                                                                                                                                                         |
+| Kind       | Server Component (async)                                                                                                                                                                                                                                                       |
+| Stylesheet | `courses-admin.section.css` → block `.courses-admin`                                                                                                                                                                                                                           |
+| Used by    | `/administracion/cursos`                                                                                                                                                                                                                                                       |
+| Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`NewCourse`](/components/platform/sections/staff/courses/new-course), [`PlatformNotice`](/components/platform/shared/platform-notice), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads      | `listCoursesAdmin({ query, status })`, `listCourseTypes()` · `services/staff-courses/staff-courses.service.ts`                                                                                                                                                                 |
+| Uses       | `COURSE_STATUS` from `constants/platform/course-codes.const`; `STAFF_ERROR_MESSAGES` from `constants/platform/staff-messages.const`; `staffRoutes`; `isDisplayableImage` from `lib/remote-image`; `ChevronIcon`, `SearchIcon` from `components/icons/`; `next/image`           |
 
 ## Purpose
 
@@ -20,15 +20,16 @@ The entry to course authoring. Courses are born in draft and are only visible in
 
 ## Props
 
-| Prop     | Type     | Required | Meaning                                     |
-| -------- | -------- | -------- | ------------------------------------------- |
-| `query`  | `string` | no       | Text search over name and slug, from `?q=`. |
-| `status` | `string` | no       | Status filter, from `?estado=`.             |
+| Prop        | Type     | Required | Meaning                                                                                    |
+| ----------- | -------- | -------- | ------------------------------------------------------------------------------------------ |
+| `query`     | `string` | no       | Text search over name and slug, from `?q=`.                                                |
+| `status`    | `string` | no       | Status filter, from `?estado=`.                                                            |
+| `errorCode` | `string` | no       | What `createCourse` bounced back with, from `?error=`; shown as a notice under the header. |
 
 ## Behaviour
 
 - `filterHref` builds the four filter links (Todos, Publicados, Borradores, Archivados) preserving the query; the active one gets `aria-current`. They are drawn as the same chips as the kind filters of [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser): outlined pills in the subtle grey, one weight in both states, the active one with the orange border and the faint wash.
-- "Nuevo curso" is the quiet grey `platform-button_variant_quiet`: the catalog has no orange button in it.
+- "Nuevo curso" is [`NewCourse`](/components/platform/sections/staff/courses/new-course): a quiet grey button that opens the creation dialog on this page. The section reads the course types for it alongside the listing. A failure the action reports comes back as `?error=` and is rendered as a `PlatformNotice` under the header.
 - The table is outlined by the thin grey border over a light shadow, like the study cards, so its edge holds on the white page.
 - Totals line: courses, chapters, lessons over the filtered set.
 - Rows show a 44 px cover frame (painted even without a cover; `isDisplayableImage` guards the URL), name and slug, type, a status pill with a per-status modifier, chapter and lesson counts, publish date, and a chevron.
@@ -42,8 +43,6 @@ Block `.courses-admin` (267 lines).
 
 **Modifiers and states:** `.courses-admin__filter_state_active`, `.courses-admin__status_state_{draft,published,archived}`
 
-**Other classes it renders:** `.platform-button`, `.platform-button_variant_quiet` (the "Nuevo curso" link).
-
 **Tokens:** own `--courses-admin-columns` (the grid template shared by head and rows); `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-success-ink`, `--platform-success-soft`, `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-sunken`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
 
 **Breakpoints:** `(max-width: 1000px)` drops columns; `(max-width: 620px)` stacks the bar.
@@ -55,10 +54,11 @@ From `app/(platform)/administracion/cursos/page.tsx`:
 ```tsx
 import { CoursesAdminSection } from "@/components/platform/sections/staff/courses/courses-admin.section";
 
-<CoursesAdminSection query={q} status={estado} />;
+<CoursesAdminSection query={q} status={estado} errorCode={error} />;
 ```
 
 ## Related
 
+- [`NewCourse`](/components/platform/sections/staff/courses/new-course), the creation dialog in the header.
 - [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section), where a row leads.
 - Course statuses in [Data model](/platform/data-model).

@@ -81,7 +81,6 @@ export const staffRoutes = {
   newTeacher: "/administracion/profesores/nuevo",
   teacherDetail: (teacherId: string) => `/administracion/profesores/${teacherId}`,
   courses: "/administracion/cursos",
-  newCourse: "/administracion/cursos/nuevo",
   courseDetail: (courseId: string) => `/administracion/cursos/${courseId}`,
   /** The course's games: read-only, they are edited in their chapter. */
   courseGames: (courseId: string) => `/administracion/cursos/${courseId}/partidas`,

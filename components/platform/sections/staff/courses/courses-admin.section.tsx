@@ -1,12 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
 import { SearchIcon } from "@/components/icons/search-icon.comp";
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
+import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { staffRoutes } from "@/lib/platform-routes";
 import { isDisplayableImage } from "@/lib/remote-image";
-import { listCoursesAdmin } from "@/services/staff-courses/staff-courses.service";
+import { listCoursesAdmin, listCourseTypes } from "@/services/staff-courses/staff-courses.service";
+import { NewCourse } from "./new-course/new-course.comp";
 import { StaffEditorHead } from "./staff-editor.comp";
 import "./courses-admin.section.css";
 
@@ -14,6 +17,8 @@ interface CoursesAdminSectionProps {
   /** What is searched and the status filtered by; both come from the URL. */
   query?: string;
   status?: string;
+  /** What `createCourse` bounced back with, from `?error=`: its dialog lives here. */
+  errorCode?: string;
 }
 
 /** The status filters, with "Todos" first. Empty `status` = all. */
@@ -35,9 +40,15 @@ function filterHref(status: string | undefined, query: string | undefined): stri
   return search ? `${staffRoutes.courses}?${search}` : staffRoutes.courses;
 }
 
-export async function CoursesAdminSection({ query, status }: CoursesAdminSectionProps) {
-  const { courses, chapterCount, lessonCount } = await listCoursesAdmin({ query, status });
+export async function CoursesAdminSection({ query, status, errorCode }: CoursesAdminSectionProps) {
+  // The types feed the "Nuevo curso" dialog and do not depend on the listing:
+  // read together, the page waits for the slower one, not for both.
+  const [{ courses, chapterCount, lessonCount }, types] = await Promise.all([
+    listCoursesAdmin({ query, status }),
+    listCourseTypes(),
+  ]);
   const isFiltered = Boolean(query) || Boolean(status);
+  const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
 
   return (
     <div className="courses-admin">
@@ -62,13 +73,12 @@ export async function CoursesAdminSection({ query, status }: CoursesAdminSection
               {status && <input type="hidden" name="estado" value={status} />}
             </form>
 
-            {/* The quiet grey button: the catalog has no orange in it. */}
-            <Link href={staffRoutes.newCourse} className="platform-button platform-button_variant_quiet">
-              Nuevo curso
-            </Link>
+            <NewCourse types={types} />
           </>
         }
       />
+
+      {errorMessage && <PlatformNotice message={errorMessage} />}
 
       <div className="courses-admin__bar">
         <div className="courses-admin__filters">

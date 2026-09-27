@@ -10,19 +10,22 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 interface StaffCoursesPageProps {
-  /** `q` is the search and `estado` the filter; both live in the URL. */
-  searchParams: Promise<{ q?: string; estado?: string }>;
+  /**
+   * `q` is the search and `estado` the filter; both live in the URL. `error`
+   * is what `createCourse` bounced back with: its dialog lives on this page.
+   */
+  searchParams: Promise<{ q?: string; estado?: string; error?: string }>;
 }
 
 export default async function StaffCoursesPage({ searchParams }: StaffCoursesPageProps) {
   await requireStaff();
-  const { q, estado } = await searchParams;
+  const { q, estado, error } = await searchParams;
 
   // The header goes INSIDE the section: it carries the search box, and that
   // needs to know what is being filtered.
   return (
     <div className="platform-page staff-courses-page">
-      <CoursesAdminSection query={q} status={estado} />
+      <CoursesAdminSection query={q} status={estado} errorCode={error} />
     </div>
   );
 }

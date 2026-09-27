@@ -113,12 +113,14 @@ const AUTHOR_SCHEMA = z.object({
 
 // --- Courses --------------------------------------------------------------
 
+// A failure goes back to the catalog, where the "Nuevo curso" dialog lives:
+// there is no page of its own for creating a course.
 export async function createCourse(formData: FormData): Promise<void> {
   const staff = await requireStaff();
-  if (!(await allowAction(`${staff.user.id}:course-create`, 20, 3_600_000))) fail(staffRoutes.newCourse, "throttled");
+  if (!(await allowAction(`${staff.user.id}:course-create`, 20, 3_600_000))) fail(staffRoutes.courses, "throttled");
 
   const parsed = parseForm(COURSE_SCHEMA, formData);
-  if (!parsed.ok) fail(staffRoutes.newCourse, "invalid");
+  if (!parsed.ok) fail(staffRoutes.courses, "invalid");
   const { name, slug, typeCode } = parsed.data;
 
   let courseId: string;
@@ -139,7 +141,7 @@ export async function createCourse(formData: FormData): Promise<void> {
     });
     courseId = created.id;
   } catch (error) {
-    if (isUniqueConstraintError(error, "Course_slug_key", "slug")) fail(staffRoutes.newCourse, "courseSlug");
+    if (isUniqueConstraintError(error, "Course_slug_key", "slug")) fail(staffRoutes.courses, "courseSlug");
     throw error;
   }
 

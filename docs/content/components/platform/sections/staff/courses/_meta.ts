@@ -10,6 +10,7 @@ const meta: MetaRecord = {
   "exercise-editor": "ExerciseEditor",
   "exercise-move-picker": "ExerciseMovePicker",
   "lesson-game-picker": "LessonGamePicker",
+  "new-course": "NewCourse",
   "sortable-list": "SortableList",
   "staff-editor": "StaffEditorHead",
   "staff-panel": "StaffPanel",
