@@ -60,7 +60,7 @@ export function LevelsAdminSection({ levels, errorCode }: LevelsAdminSectionProp
         )}
 
         <p className="levels-admin__note">{LEVEL_CATALOG_NOTE}</p>
-        <p className="levels-admin__note">Junto a los rangos, la plataforma siempre dice: «{ELO_DISCLAIMER}».</p>
+        <p className="levels-admin__note">Junto a los rangos, el alumno siempre lee: «{ELO_DISCLAIMER}».</p>
       </section>
 
       {levels.map((level) => (

@@ -240,30 +240,6 @@
     color: var(--platform-text-subtle);
   }
 
-  & .course-detail__prior {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  & .course-detail__prior-title {
-    margin: 0;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--platform-text);
-  }
-
-  & .course-detail__prior-text {
-    margin: 0;
-    max-width: 72ch;
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--platform-text-muted);
-    /* The staff writes it in a textarea: its line breaks are kept. */
-    white-space: pre-line;
-    text-wrap: pretty;
-  }
-
   /* «Procedencia», under the chapters: a quiet list, one line per source,
      with the kind of resource in bold and the rest separated by dots. */
   & .course-detail__sources {

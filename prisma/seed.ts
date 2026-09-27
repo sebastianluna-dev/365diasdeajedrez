@@ -273,7 +273,6 @@ async function main() {
       name: course.name,
       slug: course.slug,
       description: course.description,
-      priorKnowledge: course.priorKnowledge ?? null,
       statusId: idOf(courseStatus, course.status),
       publishedAt: new Date(now.getTime() - 30 * DAY_MS),
     };

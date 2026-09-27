@@ -27,7 +27,6 @@ export function CourseDetailSection({ course, errorCode }: CourseDetailSectionPr
   const chapterCount = course.chapters.length;
   const errorMessage = studentErrorMessage(errorCode);
   const { totalLessons } = course.progress;
-  const hasAudience = course.levels.length > 0 || Boolean(course.priorKnowledge);
 
   return (
     <section className="course-detail">
@@ -132,36 +131,25 @@ export function CourseDetailSection({ course, errorCode }: CourseDetailSectionPr
       </div>
 
       {/* Who the course is aimed at: its levels in order of difficulty, each
-          with its orientative Elo range, and what is worth knowing beforehand.
-          It informs whoever is choosing; it closes the course to nobody. */}
-      {hasAudience && (
+          with its orientative Elo range. It informs whoever is choosing; it
+          closes the course to nobody. */}
+      {course.levels.length > 0 && (
         <section id={AUDIENCE_ID} className="course-detail__audience" aria-labelledby="course-detail-audience-title">
           <h2 id="course-detail-audience-title" className="course-detail__audience-title">
             A quién va dirigido
           </h2>
 
-          {course.levels.length > 0 && (
-            <>
-              <ul className="course-detail__levels">
-                {course.levels.map((level) => (
-                  <li key={level.slug} className="course-detail__level">
-                    <span className="course-detail__level-name">{level.name}</span>
-                    <span className="course-detail__level-range">{labelEloRange(level.eloRange)}</span>
-                    <span className="course-detail__level-description">{level.description}</span>
-                  </li>
-                ))}
-              </ul>
+          <ul className="course-detail__levels">
+            {course.levels.map((level) => (
+              <li key={level.slug} className="course-detail__level">
+                <span className="course-detail__level-name">{level.name}</span>
+                <span className="course-detail__level-range">{labelEloRange(level.eloRange)}</span>
+                <span className="course-detail__level-description">{level.description}</span>
+              </li>
+            ))}
+          </ul>
 
-              <p className="course-detail__audience-note">{ELO_DISCLAIMER}.</p>
-            </>
-          )}
-
-          {course.priorKnowledge && (
-            <div className="course-detail__prior">
-              <h3 className="course-detail__prior-title">Conocimientos previos recomendados</h3>
-              <p className="course-detail__prior-text">{course.priorKnowledge}</p>
-            </div>
-          )}
+          <p className="course-detail__audience-note">{ELO_DISCLAIMER}.</p>
         </section>
       )}
 

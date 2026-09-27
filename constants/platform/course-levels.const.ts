@@ -2,7 +2,7 @@
 // staff panel. The levels themselves are rows the staff edits, not constants.
 
 /** Said wherever an Elo range is shown: the range guides, it does not decide. */
-export const ELO_DISCLAIMER = "El Elo es orientativo; revisa los conocimientos previos recomendados";
+export const ELO_DISCLAIMER = "El Elo es orientativo";
 
 /**
  * What the ranges are, for whoever edits them: an internal classification, not

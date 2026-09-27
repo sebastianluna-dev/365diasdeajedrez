@@ -439,8 +439,6 @@ export interface SeedCourse {
   status: string;
   /** Slugs of Level: who the course is aimed at. */
   levels: string[];
-  /** What the student should already know; optional. */
-  priorKnowledge?: string;
   chapters: SeedChapter[];
 }
 
@@ -454,8 +452,6 @@ export const COURSES: SeedCourse[] = [
     contentTypes: [CONTENT_TYPE.OPENINGS],
     status: COURSE_STATUS.PUBLISHED,
     levels: [DEFAULT_LEVEL.BEGINNER, DEFAULT_LEVEL.INTERMEDIATE],
-    priorKnowledge:
-      "Saber mover las piezas, anotar jugadas y conocer los principios básicos de apertura: desarrollo, centro y enroque.",
     chapters: [
       {
         id: IDS.chSicilianBasics,

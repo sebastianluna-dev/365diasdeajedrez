@@ -330,7 +330,9 @@ model Course {
   name           String
   slug           String    @unique
   description    String?
-  /// What the student should already know before starting, as free text.
+  /// Reserved: "conocimientos previos" was taken out of the course editor the
+  /// day it shipped. Nothing reads nor writes it; the column stays so that
+  /// removing the field did not take a destructive migration.
   priorKnowledge String?
   cover          String?
   statusId       Int

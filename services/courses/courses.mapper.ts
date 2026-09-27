@@ -269,7 +269,6 @@ export function mapCourseDetail(course: CourseWithDetail, state: UserCourseState
     cover: course.cover ?? undefined,
     contentTypes: mapContentTypes(course),
     levels: course.courseLevels.map((courseLevel) => mapCourseLevel(courseLevel.level)),
-    priorKnowledge: course.priorKnowledge ?? undefined,
     authors: course.courseAuthors.map((courseAuthor) => ({
       name: courseAuthor.author.name,
       roleLabel: courseAuthor.role.label,

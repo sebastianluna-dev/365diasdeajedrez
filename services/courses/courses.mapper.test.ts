@@ -264,7 +264,6 @@ describe("los niveles del curso", () => {
   });
   const WITH_LEVELS = {
     ...COURSE,
-    priorKnowledge: "Saber dar los mates básicos.",
     courseLevels: [level("iniciacion", "Iniciación", 0, 799), level("maestro", "Maestro", 2200, null)],
     sources: [],
   } as unknown as CourseWithDetail;
@@ -288,13 +287,6 @@ describe("los niveles del curso", () => {
       "Iniciación: Menos de 800",
       "Maestro: 2200 o más",
     ]);
-  });
-
-  it("los conocimientos previos son opcionales: sin ellos, la ficha no los trae", () => {
-    expect(mapCourseDetail(WITH_LEVELS, state()).priorKnowledge).toBe("Saber dar los mates básicos.");
-
-    const without = { ...WITH_LEVELS, priorKnowledge: null } as unknown as CourseWithDetail;
-    expect(mapCourseDetail(without, state()).priorKnowledge).toBeUndefined();
   });
 
   it("un curso sin niveles no tiene ninguno, y sigue siendo un curso", () => {

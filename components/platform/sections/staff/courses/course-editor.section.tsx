@@ -3,7 +3,6 @@ import { FormField, FormFieldset } from "@/components/platform/shared/form-field
 import { ImageUpload } from "@/components/platform/shared/image-upload.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { CONTENT_ROLE, COURSE_STATUS } from "@/constants/platform/course-codes.const";
-import { ELO_DISCLAIMER } from "@/constants/platform/course-levels.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
 import {
@@ -302,7 +301,7 @@ export function CourseEditorSection({
                 Several at once, or none. A retired level is still offered,
                 marked: the set is saved whole, and leaving it out would take
                 it from the course. */}
-            <FormFieldset legend="Niveles" hint={`${ELO_DISCLAIMER}.`} frame="none">
+            <FormFieldset legend="Niveles" frame="none">
               {levels.length > 0 ? (
                 <PlatformCheckCards
                   name="levelSlugs"
@@ -321,13 +320,6 @@ export function CourseEditorSection({
                 </p>
               )}
             </FormFieldset>
-
-            <FormField
-              label="Conocimientos previos recomendados (opcional)"
-              hint="Qué conviene saber antes de empezar. Se lee en la ficha del curso, junto a los niveles."
-            >
-              <textarea name="priorKnowledge" defaultValue={course.priorKnowledge ?? ""} maxLength={1000} />
-            </FormField>
 
             <div className="course-editor__submit">
               <SubmitButton>Guardar metadatos</SubmitButton>

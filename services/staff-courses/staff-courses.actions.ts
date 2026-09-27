@@ -83,7 +83,6 @@ const COURSE_SCHEMA = z.object({
 });
 const COURSE_UPDATE_SCHEMA = COURSE_SCHEMA.extend({
   description: formOptionalText(DESCRIPTION_MAX_LENGTH),
-  priorKnowledge: formOptionalText(DESCRIPTION_MAX_LENGTH),
   cover: formOptionalUrl(2000),
   // The levels are rows the staff edits, so there is no list of codes to check
   // against: the write skips the slugs the catalog does not have.
@@ -175,14 +174,14 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
 
   const parsed = parseForm(COURSE_UPDATE_SCHEMA, formData);
   if (!parsed.ok) fail(detailPath, courseFormError(parsed.field));
-  const { name, slug, contentTypeCodes, description, priorKnowledge, cover, levelSlugs } = parsed.data;
+  const { name, slug, contentTypeCodes, description, cover, levelSlugs } = parsed.data;
   const db = getPlatformDb();
 
   try {
     await db.$transaction(async (tx) => {
       await tx.course.update({
         where: { id: courseId },
-        data: { name, slug, description, priorKnowledge, cover },
+        data: { name, slug, description, cover },
       });
 
       // Content types and levels are checkbox groups: each whole set is replaced
@@ -206,7 +205,7 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
 
   revalidatePath(detailPath);
   revalidatePath(staffRoutes.courses);
-  // Levels and prior knowledge are read on the student's side too.
+  // The levels are read on the student's side too.
   revalidatePath(platformRoutes.courses);
   revalidatePath(platformRoutes.courseDetail(courseId));
 }

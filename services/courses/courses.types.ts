@@ -98,8 +98,6 @@ export interface CourseDetail {
   contentTypes: CourseContentTypeItem[];
   /** Who it is aimed at, the easiest level first, each with its orientative Elo range. */
   levels: CourseLevelItem[];
-  /** «Conocimientos previos»: what the student should already know, as the staff wrote it. */
-  priorKnowledge?: string;
   authors: CourseAuthorItem[];
   progress: CourseProgressSummary;
   continueHref: string;

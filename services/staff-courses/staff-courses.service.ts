@@ -115,7 +115,6 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
         select: { contentType: { select: { code: true } } },
         orderBy: { contentType: { order: "asc" } },
       },
-      priorKnowledge: true,
       courseLevels: { select: { level: { select: { slug: true } } }, orderBy: { level: { order: "asc" } } },
       courseAuthors: {
         select: {
@@ -158,7 +157,6 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
     publishedAtLabel: course.publishedAt ? formatSpanishDate(course.publishedAt) : undefined,
     contentTypeCodes: course.courseContentTypes.map((row) => row.contentType.code),
     levelSlugs: course.courseLevels.map((courseLevel) => courseLevel.level.slug),
-    priorKnowledge: course.priorKnowledge ?? undefined,
     authors: course.courseAuthors.map((author) => ({
       authorId: author.authorId,
       authorName: author.author.name,
