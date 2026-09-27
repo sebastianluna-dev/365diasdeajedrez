@@ -12,7 +12,7 @@ Idempotent seed of the platform database: catalogs by `upsert(code)`, domain row
 
 What it creates (data in `prisma/seed-data.ts`):
 
-- every catalog value and the topic tree;
+- every catalog value (`seedCatalog` for `[code, label]` pairs; `seedCatalogRows` for a catalog with more columns, like `ContentType` with its `shortLabel` and `description`) and the topic tree;
 - three demo accounts (student, teacher with an active `Teacher` row, staff) — the password is only set when the account has none;
 - an author, a course with chapters, lessons (PGN or linked games), topics and exercises derived with the same `deriveExerciseData` the staff panel uses;
 - studies and games for the demo student (positions indexed with `indexGamePositions`), shared collections;

@@ -1,4 +1,4 @@
-import type { AuthorRoleCode, CourseStatusCode, CourseTypeCode } from "@/constants/platform/course-codes.const";
+import type { AuthorRoleCode, CourseStatusCode } from "@/constants/platform/course-codes.const";
 import type { BoardOrientationCode } from "@/constants/platform/shared-codes.const";
 import type { ExerciseModeCode } from "@/constants/platform/training-codes.const";
 
@@ -10,7 +10,8 @@ export interface CourseAdminSummary {
   cover?: string;
   statusCode: CourseStatusCode;
   statusLabel: string;
-  typeLabel: string;
+  /** Short names of what it teaches, in catalog order: "Aperturas", "Cálculo"… */
+  contentTypeLabels: string[];
   chapterCount: number;
   lessonCount: number;
   publishedAtLabel?: string;
@@ -61,10 +62,11 @@ export interface CourseAdminDetail {
   slug: string;
   description?: string;
   cover?: string;
-  typeCode: CourseTypeCode;
   statusCode: CourseStatusCode;
   statusLabel: string;
   publishedAtLabel?: string;
+  /** Codes of ContentType, at least one. */
+  contentTypeCodes: string[];
   levelCodes: string[];
   authors: CourseAuthorRow[];
   chapters: ChapterAdminRow[];
@@ -161,6 +163,12 @@ export interface CourseGameRow {
 export interface CatalogOption {
   code: string;
   label: string;
+}
+
+/** A content type as the forms draw it: the long name on the card, the short one on tags. */
+export interface ContentTypeOption extends CatalogOption {
+  shortLabel: string;
+  description: string;
 }
 
 export interface TopicOption {

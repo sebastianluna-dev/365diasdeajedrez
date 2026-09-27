@@ -21,7 +21,7 @@ Everything here requires a session; the pages live in `app/(platform)` and the l
 
 `services/courses/courses.service.ts`:
 
-- `getUserCourses()` — published courses with progress (`completedLessons/totalLessons` **and** minutes), authors, levels and a CTA (`Comenzar` / `Continuar` / `Revisar`) pointing at the next lesson.
+- `getUserCourses()` — published courses with progress (`completedLessons/totalLessons` **and** minutes), content types (`{ code, label, shortLabel, description }`, in catalog order: the card shows the short names as tags, the course page the long ones with the description on hover), authors, levels and a CTA (`Comenzar` / `Continuar` / `Revisar`) pointing at the next lesson.
 - `getCourseById()` — chapters ordered by role (intro, content, closing — `services/shared/content-order.ts`) with per-chapter progress; honours `onlyPriorityLessons` and reports how many lessons the filter hides.
 - `getChapterView(courseId, chapterOrder)` — lessons of a chapter (by `order` number), `hasExercises`, `inTrainer`.
 - `getLessonView(lessonId)` — the lesson: name, description, PGN (`lessonPgnOf`: linked game or own `pgn`), orientation, position inside the chapter, previous/next, trainable flag.

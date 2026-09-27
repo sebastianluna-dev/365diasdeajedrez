@@ -139,6 +139,29 @@ export function formCode<const T extends readonly [string, ...string[]]>(codes: 
   return z.enum(codes);
 }
 
+/** Whether `value` is one of the catalog's codes, for a refine over free text. */
+export function isCatalogCode(value: string, codes: readonly string[]): boolean {
+  return codes.includes(value);
+}
+
+/**
+ * Every value of a checkbox group, each one of the given codes, at least
+ * `min` of them. It stays a bare array schema on purpose: `parseForm` only
+ * reads a field with `getAll` when its schema IS an array, and a `transform`
+ * on top would hide that. Duplicates are the caller's to collapse.
+ */
+export function formCodeList(codes: readonly string[], min = 0) {
+  return z
+    .array(
+      z
+        .string()
+        .trim()
+        .max(64)
+        .refine((value) => isCatalogCode(value, codes)),
+    )
+    .min(min);
+}
+
 type FieldSchema = z.ZodType;
 
 /** Whether the field takes every value of the name (`getAll`) or only the first. */

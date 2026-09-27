@@ -3,10 +3,25 @@ import { userEvent, within } from "storybook/test";
 import { NewCourseForm } from "./new-course-form.comp";
 import "./new-course.comp.css";
 
-const TYPES = [
-  { code: "OPENING", label: "Apertura" },
-  { code: "STRATEGY", label: "Estrategia" },
-  { code: "ENDGAME", label: "Finales" },
+const CONTENT_TYPES = [
+  {
+    code: "OPENINGS",
+    label: "Aperturas",
+    shortLabel: "Aperturas",
+    description: "Principios, repertorio, variantes y planes típicos al comenzar la partida.",
+  },
+  {
+    code: "STRATEGY",
+    label: "Estrategia y juego posicional",
+    shortLabel: "Estrategia",
+    description: "Evaluar posiciones y construir planes.",
+  },
+  {
+    code: "ENDGAMES",
+    label: "Finales",
+    shortLabel: "Finales",
+    description: "Técnica y posiciones teóricas con pocas piezas.",
+  },
 ];
 
 const meta = {
@@ -18,9 +33,10 @@ const meta = {
         component: `
 The "Nuevo curso" dialog's form, mounted here without the \`<dialog>\` and
 with a stub in place of \`createCourse\`. Head, the three fields the course is
-born with (name, slug, type as \`PlatformSelect\`) on \`PlatformForm\` and the
-footer band; the slug writes itself from the name when the name loses focus,
-and the submit stays off until it has a name and a slug.
+born with (name, slug, content types as \`PlatformCheckCards\`) on
+\`PlatformForm\` and the footer band; the slug writes itself from the name when
+the name loses focus, and the submit stays off until it has a name, a slug and
+at least one content type.
 
 Source: \`components/platform/sections/staff/courses/new-course/\`.
 Reference page: [Components › NewCourse](/components/platform/sections/staff/courses/new-course) in the docs site.
@@ -29,12 +45,12 @@ Reference page: [Components › NewCourse](/components/platform/sections/staff/c
     },
   },
   args: {
-    types: TYPES,
+    contentTypes: CONTENT_TYPES,
     action: () => undefined,
     onClose: () => undefined,
   },
   argTypes: {
-    types: { control: "object", description: "The course types on offer, from the catalog." },
+    contentTypes: { control: "object", description: "The content types on offer, from the catalog." },
     action: { table: { disable: true } },
     onClose: { table: { disable: true } },
     onSubmit: { table: { disable: true } },
@@ -56,15 +72,16 @@ Reference page: [Components › NewCourse](/components/platform/sections/staff/c
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** As it opens: the first type chosen, the submit off until name and slug are typed. */
+/** As it opens: nothing chosen, the submit off until name, slug and a content type are there. */
 export const Empty: Story = {};
 
-/** A name typed and the field left: the slug writes itself and the submit is on. */
+/** A name typed and the field left, a card chosen: the slug writes itself and the submit is on. */
 export const Filled: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.type(canvas.getByLabelText("Nombre"), "Fundamentos de la Defensa Siciliana");
     await userEvent.tab();
+    await userEvent.click(canvas.getByRole("checkbox", { name: /Aperturas/ }));
   },
 };
 

@@ -1,0 +1,72 @@
+---
+description: "Several choices among a few, each drawn as a card, on Radix's Checkbox primitive: the whole card is the box, Space toggles it, and inside a form every chosen card submits through its hidden native checkbox."
+---
+
+# `PlatformCheckCards`
+
+|            |                                                                                                                                                                              |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-check-cards/platform-check-cards.comp.tsx`                                                                                              |
+| Kind       | Client Component                                                                                                                                                             |
+| Stylesheet | `platform-check-cards.comp.css` → block `.platform-check-cards`                                                                                                              |
+| Story      | `platform-check-cards.stories.tsx` (`platform/shared/PlatformCheckCards`)                                                                                                    |
+| Used by    | [`NewCourse`](/components/platform/sections/staff/courses/new-course), [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section)            |
+| Uses       | `Checkbox` from `radix-ui`; `PlatformChoiceCardOption` from [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards); `CheckIcon` from `components/icons/` |
+
+## Purpose
+
+The twin of `PlatformChoiceCards` for a set instead of one: when a course teaches two or three things out of eight and each deserves a line of explanation, a row of cards shows what a list of checkboxes hides. Every card is a checkbox (`role="checkbox"`) on Radix's `Checkbox` primitive, so each one is a tab stop, Space toggles it, and inside a form every chosen card submits through the hidden native checkbox the primitive keeps in sync: `formData.getAll(name)` reads the set, which is what `parseForm` does for an array field (`formCodeList`).
+
+It is a sibling of `PlatformChoiceCards` and not a mode of it: a radio group is one tab stop with one value and can be `required`; a checkbox group is many of each, and "at least one" is the form's rule, not the browser's.
+
+## Props
+
+| Prop              | Type                         | Required | Meaning                                                                             |
+| ----------------- | ---------------------------- | -------- | ----------------------------------------------------------------------------------- |
+| `options`         | `PlatformChoiceCardOption[]` | yes      | `{ value, label, description?, icon? }` per card, in order. The icon is decorative. |
+| `name`            | `string`                     | no       | Name of the hidden native checkboxes, one per chosen card.                          |
+| `value`           | `string[]`                   | no       | Controlled set.                                                                     |
+| `defaultValue`    | `string[]`                   | no       | Initial set.                                                                        |
+| `onValueChange`   | `(values: string[]) => void` | no       | Called with the whole new set.                                                      |
+| `disabled`        | `boolean`                    | no       |                                                                                     |
+| `aria-labelledby` | `string`                     | no       | Id of the element that names the group. `PlatformFormGroup` sets it.                |
+| `aria-label`      | `string`                     | no       | A name when there is no visible label.                                              |
+
+## Behaviour
+
+- A chosen card carries `data-state="checked"` from the primitive; the stylesheet gives it the accent border and wash, paints its description in the accent ink and fills the mark in its corner.
+- The mark (`Checkbox.Indicator` with `forceMount`) is always in the DOM: an empty ring when off, the accent disc with the tick when on, so nothing shifts on toggle.
+- Clicking anywhere on a card toggles it; Space toggles the focused one; Tab moves between cards.
+- Uncontrolled by default (`defaultValue`); with `value` the parent owns the set, which the «Nuevo curso» form uses to keep its submit off until one card is chosen.
+
+## Markup & styling
+
+Block `.platform-check-cards`, a grid of `repeat(auto-fit, minmax(170px, 1fr))` at `width: 100%` (so it fills a `FormFieldset`'s flex row): as many cards per row as fit, one column on a phone.
+
+**Elements:** `.platform-check-cards__card`, `.platform-check-cards__mark`, `.platform-check-cards__mark-icon`, `.platform-check-cards__icon`, `.platform-check-cards__label`, `.platform-check-cards__description`
+
+**States (data attributes set by the primitive):** `[data-state="checked"]`, `[data-disabled]` on a card.
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-surface-soft`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`
+
+**Breakpoints:** none; the grid reflows on its own. Transitions are off under `prefers-reduced-motion`.
+
+## Usage
+
+From `components/platform/sections/staff/courses/new-course/new-course-form.comp.tsx`:
+
+```tsx
+<PlatformFormGroup label="Contenido" hint="Elige al menos uno.">
+  <PlatformCheckCards
+    name="contentTypeCodes"
+    value={contentTypeCodes}
+    onValueChange={setContentTypeCodes}
+    options={contentTypes.map((type) => ({ value: type.code, label: type.label, description: type.description }))}
+  />
+</PlatformFormGroup>
+```
+
+## Related
+
+- [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), the same card for one choice.
+- [`PlatformForm`](/components/platform/shared/platform-form): `PlatformFormGroup` is the field that names a group; [`FormFieldset`](/components/platform/shared/form-field) does the same in the staff editors.

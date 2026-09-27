@@ -40,16 +40,6 @@
 
   /* Two short fields share a row: the identifier and the type fit easily and
      on two lines they would separate the name from the description. */
-  & .course-editor__pair {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-
-    @media (max-width: 720px) {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
-
   & .course-editor__submit {
     display: flex;
     justify-content: flex-end;

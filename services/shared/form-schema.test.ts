@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   formCheckbox,
   formCode,
+  formCodeList,
   formEmail,
   formInt,
   formOptionalText,
@@ -82,6 +83,22 @@ describe("parseForm", () => {
       ok: false,
       field: "bio",
     });
+  });
+});
+
+describe("formCodeList", () => {
+  const schema = z.object({ codes: formCodeList(["OPENINGS", "TACTICS"], 1) });
+
+  it("lee todos los valores del grupo y exige el mínimo", () => {
+    expect(parseForm(schema, form({ codes: ["TACTICS", "OPENINGS"] }))).toEqual({
+      ok: true,
+      data: { codes: ["TACTICS", "OPENINGS"] },
+    });
+    expect(parseForm(schema, form({}))).toMatchObject({ ok: false, field: "codes", code: "too_small" });
+  });
+
+  it("rechaza un código que no es del catálogo", () => {
+    expect(parseForm(schema, form({ codes: ["OPENINGS", "NOPE"] }))).toMatchObject({ ok: false, field: "codes" });
   });
 });
 

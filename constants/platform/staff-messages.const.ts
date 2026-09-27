@@ -19,6 +19,7 @@ export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   assignmentMissing: "Esa asignación ya no está activa.",
   userTaken: "Esa cuenta ya tiene ficha de profesor.",
   courseSlug: "Ese identificador (slug) ya está en uso.",
+  contentTypeRequired: "Elige al menos un tipo de contenido.",
   courseMissing: "Ese curso no existe.",
   publishRequirements: "Para publicar, el curso necesita al menos un capítulo con una lección con PGN.",
   deleteBlocked: "No se puede borrar: el curso no está en borrador o ya hay alumnos con progreso.",

@@ -19,10 +19,10 @@ Everything about one course on one screen: the hero with the facts the card fold
 
 ## Props
 
-| Prop        | Type           | Required | Meaning                                                                                                                                                                                                                                        |
-| ----------- | -------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `course`    | `CourseDetail` | yes      | `id`, `name`, `description?`, `cover?`, `typeLabel`, `levelLabels`, `authors: { name, roleLabel }[]`, `progress`, `continueHref`, `ctaLabel`, `chapters`, `onlyPriorityLessons`, `hiddenLessons`. Already filtered by the priority preference. |
-| `errorCode` | `string`       | no       | Code from `?error=` (`throttled`, `invalid`…), translated with `STUDENT_ERROR_MESSAGES` into a `PlatformNotice`.                                                                                                                               |
+| Prop        | Type           | Required | Meaning                                                                                                                                                                                                                                                                                                                                                                     |
+| ----------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `course`    | `CourseDetail` | yes      | `id`, `name`, `description?`, `cover?`, `contentTypes` (`{ code, label, shortLabel, description }[]`; one accent tag per item with the long name and the description as `title`), `levelLabels`, `authors: { name, roleLabel }[]`, `progress`, `continueHref`, `ctaLabel`, `chapters`, `onlyPriorityLessons`, `hiddenLessons`. Already filtered by the priority preference. |
+| `errorCode` | `string`       | no       | Code from `?error=` (`throttled`, `invalid`…), translated with `STUDENT_ERROR_MESSAGES` into a `PlatformNotice`.                                                                                                                                                                                                                                                            |
 
 ## Behaviour
 

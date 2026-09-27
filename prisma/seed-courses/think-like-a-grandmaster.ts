@@ -19,7 +19,7 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { Chess } from "chessops/chess";
 import { parseFen } from "chessops/fen";
-import { COURSE_STATUS, COURSE_TYPE, LEVEL } from "../../constants/platform/course-codes.const";
+import { CONTENT_TYPE, COURSE_STATUS, LEVEL } from "../../constants/platform/course-codes.const";
 import { BOARD_ORIENTATION, OWNER_TYPE, TOPIC } from "../../constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "../../constants/platform/study-codes.const";
 import type { SeedChapter, SeedCourse, SeedLesson } from "../seed-data";
@@ -277,7 +277,7 @@ function loadCourse(): SeedCourse {
     slug: data.course.slug,
     description:
       "El método de trabajo de Alexander Kotov, capítulo a capítulo: cómo se calcula una variante, cómo se juzga una posición, cómo se traza un plan y qué cambia en el final. Los 162 diagramas del libro, uno por lección.",
-    type: COURSE_TYPE.STRATEGY,
+    contentTypes: [CONTENT_TYPE.STRATEGY],
     status: COURSE_STATUS.PUBLISHED,
     levels: [LEVEL.INTERMEDIATE, LEVEL.ADVANCED],
     chapters: data.course.chapters.map(toSeedChapter),

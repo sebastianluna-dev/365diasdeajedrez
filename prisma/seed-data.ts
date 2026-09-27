@@ -10,7 +10,7 @@ import {
   MEETING_PROVIDER,
   TRANSCRIPT_STATUS,
 } from "../constants/platform/class-codes.const";
-import { AUTHOR_ROLE, COURSE_STATUS, COURSE_TYPE, LEVEL } from "../constants/platform/course-codes.const";
+import { AUTHOR_ROLE, CONTENT_TYPE, COURSE_STATUS, LEVEL } from "../constants/platform/course-codes.const";
 import { BOARD_ORIENTATION, OWNER_TYPE, PROGRESS_STATUS, TOPIC } from "../constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "../constants/platform/study-codes.const";
 import { ATTEMPT_CONTEXT, ATTEMPT_RESULT, EXERCISE_MODE } from "../constants/platform/training-codes.const";
@@ -27,13 +27,67 @@ import {
 // Catalogs: [code, label] (order = index)
 // ---------------------------------------------------------------------------
 
+/**
+ * The content types carry more than a label — a short name for tags and a
+ * description for the cards — so they are rows, not `[code, label]` pairs.
+ */
+export const CONTENT_TYPE_VALUES = [
+  {
+    code: CONTENT_TYPE.OPENINGS,
+    label: "Aperturas",
+    shortLabel: "Aperturas",
+    description: "Principios, repertorio, variantes y planes típicos al comenzar la partida.",
+  },
+  {
+    code: CONTENT_TYPE.TACTICS,
+    label: "Táctica",
+    shortLabel: "Táctica",
+    description:
+      "Patrones concretos: dobles ataques, clavadas, desviaciones, ataques descubiertos y combinaciones de mate.",
+  },
+  {
+    code: CONTENT_TYPE.CALCULATION,
+    label: "Cálculo y visualización",
+    shortLabel: "Cálculo",
+    description: "Encontrar jugadas candidatas, calcular respuestas y visualizar posiciones sin mover las piezas.",
+  },
+  {
+    code: CONTENT_TYPE.STRATEGY,
+    label: "Estrategia y juego posicional",
+    shortLabel: "Estrategia",
+    description:
+      "Evaluar posiciones y construir planes: actividad de piezas, casillas débiles, espacio, profilaxis e intercambios.",
+  },
+  {
+    code: CONTENT_TYPE.PAWN_STRUCTURES,
+    label: "Estructuras de peones",
+    shortLabel: "Estructuras",
+    description: "Cadenas, peones aislados o colgantes, mayorías, rupturas y los planes asociados a cada estructura.",
+  },
+  {
+    code: CONTENT_TYPE.ENDGAMES,
+    label: "Finales",
+    shortLabel: "Finales",
+    description:
+      "Técnica y posiciones teóricas con pocas piezas: oposición, peones pasados, finales de torres y piezas menores.",
+  },
+  {
+    code: CONTENT_TYPE.GAME_ANALYSIS,
+    label: "Análisis de partidas",
+    shortLabel: "Análisis",
+    description:
+      "Revisar tus decisiones y estudiar partidas modelo para identificar errores y comprender cómo se conectan las demás áreas.",
+  },
+  {
+    code: CONTENT_TYPE.PREPARATION,
+    label: "Preparación práctica y psicológica",
+    shortLabel: "Preparación",
+    description:
+      "Gestión del tiempo, toma de decisiones, concentración, manejo de errores y preparación para competir.",
+  },
+];
+
 export const CATALOG_VALUES = {
-  courseType: [
-    [COURSE_TYPE.OPENING, "Apertura"],
-    [COURSE_TYPE.ENDGAME, "Finales"],
-    [COURSE_TYPE.STRATEGY, "Estrategia"],
-    [COURSE_TYPE.TACTICS, "Táctica"],
-  ],
   courseStatus: [
     [COURSE_STATUS.DRAFT, "Borrador"],
     [COURSE_STATUS.PUBLISHED, "Publicado"],
@@ -303,7 +357,8 @@ export interface SeedCourse {
   name: string;
   slug: string;
   description: string;
-  type: string;
+  /** Codes of ContentType, at least one: what the course teaches. */
+  contentTypes: string[];
   status: string;
   levels: string[];
   chapters: SeedChapter[];
@@ -316,7 +371,7 @@ export const COURSES: SeedCourse[] = [
     slug: "fundamentos-defensa-siciliana",
     description:
       "La respuesta más combativa contra 1.e4: ideas, estructuras y la Variante Najdorf explicadas desde cero.",
-    type: COURSE_TYPE.OPENING,
+    contentTypes: [CONTENT_TYPE.OPENINGS],
     status: COURSE_STATUS.PUBLISHED,
     levels: [LEVEL.BEGINNER, LEVEL.INTERMEDIATE],
     chapters: [
@@ -440,7 +495,7 @@ export const COURSES: SeedCourse[] = [
     name: "Finales de torre esenciales",
     slug: "finales-de-torre-esenciales",
     description: "Lucena y Philidor: las dos posiciones que todo jugador debe dominar antes que cualquier otra.",
-    type: COURSE_TYPE.ENDGAME,
+    contentTypes: [CONTENT_TYPE.ENDGAMES],
     status: COURSE_STATUS.PUBLISHED,
     levels: [LEVEL.INTERMEDIATE],
     chapters: [

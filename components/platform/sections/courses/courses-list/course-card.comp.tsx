@@ -57,7 +57,12 @@ export function CourseCard({ course }: CourseCardProps) {
               {course.name}
             </Link>
           </h2>
-          <span className="platform-tag platform-tag_variant_accent">{course.typeLabel}</span>
+          {/* What it teaches, by the short names; the long one is a hover away. */}
+          {course.contentTypes.map((contentType) => (
+            <span key={contentType.code} className="platform-tag platform-tag_variant_accent" title={contentType.label}>
+              {contentType.shortLabel}
+            </span>
+          ))}
         </div>
 
         <div className="course-card__meters">

@@ -7,6 +7,7 @@ import type {
   ChapterLessonItem,
   ChapterView,
   CourseChapterItem,
+  CourseContentTypeItem,
   CourseDetail,
   CourseProgressSummary,
   CourseSummary,
@@ -16,7 +17,7 @@ import type {
 // Includes shared between service and mapper: the mapper owns the shape it
 // needs and the service only queries it.
 export const courseContentInclude = {
-  type: true,
+  courseContentTypes: { include: { contentType: true }, orderBy: { contentType: { order: "asc" } } },
   courseLevels: { include: { level: true }, orderBy: { level: { order: "asc" } } },
   courseAuthors: { include: { author: true, role: true }, orderBy: { order: "asc" } },
   chapters: {
@@ -142,6 +143,15 @@ function continueTarget(course: CourseWithContent, state: UserCourseState) {
  * `CourseProgress` is still in progress — and it is still in progress on
  * purpose: the filter is a lens, not a change in what the course is.
  */
+function mapContentTypes(course: CourseWithContent): CourseContentTypeItem[] {
+  return course.courseContentTypes.map(({ contentType }) => ({
+    code: contentType.code,
+    label: contentType.label,
+    shortLabel: contentType.shortLabel,
+    description: contentType.description,
+  }));
+}
+
 function ctaLabelFor(progress: CourseProgressSummary): CourseSummary["ctaLabel"] {
   if (progress.totalLessons > 0 && progress.completedLessons === progress.totalLessons) return "Revisar";
   if (progress.completedLessons > 0 || progress.statusCode === PROGRESS_STATUS.IN_PROGRESS) return "Continuar";
@@ -156,7 +166,7 @@ export function mapCourseSummary(course: CourseWithContent, state: UserCourseSta
     slug: course.slug,
     description: course.description ?? undefined,
     cover: course.cover ?? undefined,
-    typeLabel: course.type.label,
+    contentTypes: mapContentTypes(course),
     levelLabels: course.courseLevels.map((courseLevel) => courseLevel.level.label),
     authorNames: course.courseAuthors.map((courseAuthor) => courseAuthor.author.name),
     progress,
@@ -196,7 +206,7 @@ export function mapCourseDetail(course: CourseWithContent, state: UserCourseStat
     name: course.name,
     description: course.description ?? undefined,
     cover: course.cover ?? undefined,
-    typeLabel: course.type.label,
+    contentTypes: mapContentTypes(course),
     levelLabels: course.courseLevels.map((courseLevel) => courseLevel.level.label),
     authors: course.courseAuthors.map((courseAuthor) => ({
       name: courseAuthor.author.name,

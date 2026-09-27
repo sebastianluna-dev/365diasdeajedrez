@@ -1,7 +1,7 @@
 .courses-admin {
   /* The seven columns are declared ONCE and shared by the header and the rows:
      if they diverge, the header stops lining up with what it labels. */
-  --courses-admin-columns: minmax(0, 2.6fr) 0.9fr 0.9fr 0.8fr 0.8fr 0.9fr 24px;
+  --courses-admin-columns: minmax(0, 2.4fr) minmax(0, 1.5fr) 0.9fr 0.8fr 0.8fr 0.9fr 24px;
 
   display: flex;
   flex-direction: column;
@@ -209,6 +209,20 @@
   & .courses-admin__number {
     text-align: right;
     font-variant-numeric: tabular-nums;
+  }
+
+  /* The content types, as a wrapping run of small tags: a course with three
+     of them takes two lines in its cell instead of being cut. */
+  & .courses-admin__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  & .courses-admin__tags .platform-tag {
+    padding: 3px 9px;
+    font-size: 13px;
   }
 
   /* The three statuses are told apart by colour and not only by the word: in

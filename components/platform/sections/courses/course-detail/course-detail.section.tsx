@@ -28,7 +28,16 @@ export function CourseDetailSection({ course, errorCode }: CourseDetailSectionPr
       <div className="course-detail__hero">
         <div className="course-detail__intro">
           <div className="course-detail__tags">
-            <span className="platform-tag platform-tag_variant_accent">{course.typeLabel}</span>
+            {/* What it teaches, by the long names, each with what it covers on hover. */}
+            {course.contentTypes.map((contentType) => (
+              <span
+                key={contentType.code}
+                className="platform-tag platform-tag_variant_accent"
+                title={contentType.description}
+              >
+                {contentType.label}
+              </span>
+            ))}
             {course.levelLabels.map((level) => (
               <span key={level} className="platform-tag">
                 {level}

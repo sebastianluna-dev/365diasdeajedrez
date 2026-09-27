@@ -2,13 +2,13 @@
 
 import { useRef, useState } from "react";
 import { createCourse } from "@/services/staff-courses/staff-courses.actions";
-import type { CatalogOption } from "@/services/staff-courses/staff-courses.types";
+import type { ContentTypeOption } from "@/services/staff-courses/staff-courses.types";
 import "./new-course.comp.css";
 import { NewCourseForm } from "./new-course-form.comp";
 
 interface NewCourseProps {
-  /** The course types on offer, from the catalog; the first one is chosen. */
-  types: CatalogOption[];
+  /** The content types on offer, from the catalog; the course needs at least one. */
+  contentTypes: ContentTypeOption[];
 }
 
 /**
@@ -16,7 +16,7 @@ interface NewCourseProps {
  * Creating a course is three fields, so it lives in a modal on the list page
  * and not on a page of its own, like "Nuevo estudio" on the studies list.
  */
-export function NewCourse({ types }: NewCourseProps) {
+export function NewCourse({ contentTypes }: NewCourseProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   // Bumped on every opening: the form is remounted, so it never opens with
   // what was typed the last time.
@@ -39,12 +39,13 @@ export function NewCourse({ types }: NewCourseProps) {
       <dialog ref={dialogRef} className="platform-dialog new-course__dialog">
         <NewCourseForm
           key={opening}
-          types={types}
+          contentTypes={contentTypes}
           action={createCourse}
           onClose={() => dialogRef.current?.close()}
           // The browser validates `required` and `pattern` before the submit
           // event fires (the form primitive only replaces its bubble with the
-          // field's message), so the dialog does not close with a bad form.
+          // field's message), and the form keeps its submit off until a content
+          // type is chosen, so the dialog does not close with a bad form.
           onSubmit={() => dialogRef.current?.close()}
         />
       </dialog>

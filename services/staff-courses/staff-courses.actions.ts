@@ -3,7 +3,14 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { PGN_IMPORT_TRANSACTION, PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
-import { AUTHOR_ROLE, COURSE_STATUS, COURSE_TYPE, isContentRoleCode } from "@/constants/platform/course-codes.const";
+import {
+  AUTHOR_ROLE,
+  CONTENT_TYPE_CODES,
+  COURSE_STATUS,
+  LEVEL,
+  isContentRoleCode,
+} from "@/constants/platform/course-codes.const";
+import { syncCatalogJoin } from "@/services/shared/catalog-join.service";
 import { CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
 import { EXERCISE_MODE } from "@/constants/platform/training-codes.const";
 import { deriveExerciseData } from "@/lib/chess/exercise-derivation";
@@ -16,6 +23,7 @@ import { allowAction } from "@/lib/rate-limit";
 import { z } from "zod";
 import {
   formCheckbox,
+  formCodeList,
   formLenientInt,
   formOptionalText,
   formOptionalUrl,
@@ -70,13 +78,19 @@ const slugField = z.string().trim().toLowerCase().max(SLUG_MAX_LENGTH).regex(SLU
 const COURSE_SCHEMA = z.object({
   name: formText(NAME_MAX_LENGTH),
   slug: slugField,
-  typeCode: formText(32).refine((value) => isCode(value, COURSE_TYPE)),
+  // At least one: a course that teaches nothing has no place in the catalog.
+  contentTypeCodes: formCodeList(CONTENT_TYPE_CODES, 1),
 });
 const COURSE_UPDATE_SCHEMA = COURSE_SCHEMA.extend({
   description: formOptionalText(DESCRIPTION_MAX_LENGTH),
   cover: formOptionalUrl(2000),
-  levelCodes: z.array(z.string().trim().max(64)),
+  levelCodes: formCodeList(Object.values(LEVEL)),
 });
+
+/** The failure code a bad course form answers with: the one field with words of its own, or the generic one. */
+function courseFormError(field: string): string {
+  return field === "contentTypeCodes" ? "contentTypeRequired" : "invalid";
+}
 const PGN_SCHEMA = z.object({ pgn: z.string().trim().min(1).max(PGN_MAX_LENGTH) });
 const NAMED_SCHEMA = z.object({ name: formText(NAME_MAX_LENGTH), role: z.string().trim().max(32).optional() });
 const CHAPTER_UPDATE_SCHEMA = z.object({
@@ -120,8 +134,8 @@ export async function createCourse(formData: FormData): Promise<void> {
   if (!(await allowAction(`${staff.user.id}:course-create`, 20, 3_600_000))) fail(staffRoutes.courses, "throttled");
 
   const parsed = parseForm(COURSE_SCHEMA, formData);
-  if (!parsed.ok) fail(staffRoutes.courses, "invalid");
-  const { name, slug, typeCode } = parsed.data;
+  if (!parsed.ok) fail(staffRoutes.courses, courseFormError(parsed.field));
+  const { name, slug, contentTypeCodes } = parsed.data;
 
   let courseId: string;
   try {
@@ -134,8 +148,10 @@ export async function createCourse(formData: FormData): Promise<void> {
         id: numericId(),
         name,
         slug,
-        type: { connect: { code: typeCode } },
         status: { connect: { code: COURSE_STATUS.DRAFT } },
+        courseContentTypes: {
+          create: [...new Set(contentTypeCodes)].map((code) => ({ contentType: { connect: { code } } })),
+        },
       },
       select: { id: true },
     });
@@ -155,30 +171,29 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
   if (!(await allowAction(`${staff.user.id}:course-update`, 60, 60_000))) fail(detailPath, "throttled");
 
   const parsed = parseForm(COURSE_UPDATE_SCHEMA, formData);
-  if (!parsed.ok) fail(detailPath, "invalid");
-  const { name, slug, typeCode, description, cover, levelCodes } = parsed.data;
+  if (!parsed.ok) fail(detailPath, courseFormError(parsed.field));
+  const { name, slug, contentTypeCodes, description, cover, levelCodes } = parsed.data;
   const db = getPlatformDb();
 
   try {
     await db.$transaction(async (tx) => {
       await tx.course.update({
         where: { id: courseId },
-        data: {
-          name,
-          slug,
-          description,
-          cover,
-          type: { connect: { code: typeCode } },
-        },
+        data: { name, slug, description, cover },
       });
 
-      // The levels are a list of checkboxes: the whole set is replaced in the same
-      // transaction so as not to leave a halfway state.
-      await tx.courseLevel.deleteMany({ where: { courseId } });
-      for (const code of levelCodes) {
-        const level = await tx.level.findUnique({ where: { code }, select: { id: true } });
-        if (level) await tx.courseLevel.create({ data: { courseId, levelId: level.id } });
-      }
+      // Content types and levels are checkbox groups: each whole set is replaced
+      // in the same transaction so as not to leave a halfway state.
+      await syncCatalogJoin(tx.courseContentType, tx.contentType, {
+        parent: { courseId },
+        catalogColumn: "contentTypeId",
+        codes: contentTypeCodes,
+      });
+      await syncCatalogJoin(tx.courseLevel, tx.level, {
+        parent: { courseId },
+        catalogColumn: "levelId",
+        codes: levelCodes,
+      });
     });
   } catch (error) {
     if (isUniqueConstraintError(error, "Course_slug_key", "slug")) fail(detailPath, "courseSlug");

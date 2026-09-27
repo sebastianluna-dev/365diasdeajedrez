@@ -1,5 +1,5 @@
 ---
-description: "A course in 'Mis cursos': cover, name, type tag, the two progress meters (lessons and minutes), the resume button, and a <details> menu with description, levels and authors."
+description: "A course in 'Mis cursos': cover, name, a content-type tag per thing it teaches, the two progress meters (lessons and minutes), the resume button, and a <details> menu with description, levels and authors."
 ---
 
 # `CourseCard`
@@ -20,9 +20,9 @@ The two meters are the card's own (`Meter`), not the shared [`ProgressIndicator`
 
 ## Props
 
-| Prop     | Type            | Required | Meaning                                                                                                                                                                                                                        |
-| -------- | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `course` | `CourseSummary` | yes      | `id`, `name`, `href`, `continueHref`, `ctaLabel` ("Empezar"/"Continuar"), `cover?`, `typeLabel`, `description?`, `levelLabels`, `authorNames`, `progress: { completedLessons, totalLessons, completedMinutes, totalMinutes }`. |
+| Prop     | Type            | Required | Meaning                                                                                                                                                                                                                                                                                                                                                                  |
+| -------- | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `course` | `CourseSummary` | yes      | `id`, `name`, `href`, `continueHref`, `ctaLabel` ("Empezar"/"Continuar"), `cover?`, `contentTypes` (`{ code, label, shortLabel, description }[]`; the card shows one accent tag per item with the short name and the long one as `title`), `description?`, `levelLabels`, `authorNames`, `progress: { completedLessons, totalLessons, completedMinutes, totalMinutes }`. |
 
 ## Behaviour
 

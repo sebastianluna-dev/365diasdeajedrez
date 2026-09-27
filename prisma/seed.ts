@@ -21,6 +21,7 @@ import {
   buildClasses,
   buildProgress,
   CATALOG_VALUES,
+  CONTENT_TYPE_VALUES,
   CLASS_BLOCKS,
   CLASS_TRANSCRIPT,
   COURSES,
@@ -124,6 +125,31 @@ async function seedCatalog(delegate: CatalogDelegate, values: [code: string, lab
   return byCode;
 }
 
+/** A catalog whose rows carry more than a label: every extra column is upserted too. */
+interface RichCatalogRow {
+  code: string;
+  label: string;
+  [column: string]: string;
+}
+
+/** `unknown` args: Prisma's generated `upsert` is generic and does not fit a loose record. */
+interface RichCatalogDelegate {
+  upsert(args: unknown): Promise<CatalogRow>;
+}
+
+async function seedCatalogRows(delegate: RichCatalogDelegate, rows: RichCatalogRow[]) {
+  const byCode = new Map<string, number>();
+  for (const [index, { code, ...columns }] of rows.entries()) {
+    const row = await delegate.upsert({
+      where: { code },
+      update: { ...columns, order: index },
+      create: { code, ...columns, order: index },
+    });
+    byCode.set(code, row.id);
+  }
+  return byCode;
+}
+
 function idOf(map: Map<string, number>, code: string): number {
   const id = map.get(code);
   if (id === undefined) throw new Error(`Code de catálogo no sembrado: ${code}`);
@@ -134,7 +160,7 @@ async function main() {
   const now = seedReferenceDate();
 
   // --- Catalogs ------------------------------------------------------------
-  const courseType = await seedCatalog(db.courseType, CATALOG_VALUES.courseType);
+  const contentType = await seedCatalogRows(db.contentType, CONTENT_TYPE_VALUES);
   const courseStatus = await seedCatalog(db.courseStatus, CATALOG_VALUES.courseStatus);
   const authorRole = await seedCatalog(db.authorRole, CATALOG_VALUES.authorRole);
   const level = await seedCatalog(db.level, CATALOG_VALUES.level);
@@ -224,7 +250,6 @@ async function main() {
       name: course.name,
       slug: course.slug,
       description: course.description,
-      typeId: idOf(courseType, course.type),
       statusId: idOf(courseStatus, course.status),
       publishedAt: new Date(now.getTime() - 30 * DAY_MS),
     };
@@ -266,6 +291,15 @@ async function main() {
         where: { courseId_levelId: { courseId: course.id, levelId: idOf(level, levelCode) } },
         update: {},
         create: { courseId: course.id, levelId: idOf(level, levelCode) },
+      });
+    }
+
+    for (const contentTypeCode of course.contentTypes) {
+      const contentTypeId = idOf(contentType, contentTypeCode);
+      await db.courseContentType.upsert({
+        where: { courseId_contentTypeId: { courseId: course.id, contentTypeId } },
+        update: {},
+        create: { courseId: course.id, contentTypeId },
       });
     }
 

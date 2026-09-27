@@ -6,7 +6,7 @@ import {
   listAuthorRoles,
   listAuthors,
   countCollectionGames,
-  listCourseTypes,
+  listContentTypes,
   listLevels,
 } from "@/services/staff-courses/staff-courses.service";
 
@@ -27,8 +27,8 @@ export default async function StaffCoursePage({ params, searchParams }: StaffCou
   const course = await getCourseAdminDetail(courseId);
   if (!course) notFound();
 
-  const [types, levels, authors, authorRoles, gameCount, { error }] = await Promise.all([
-    listCourseTypes(),
+  const [contentTypes, levels, authors, authorRoles, gameCount, { error }] = await Promise.all([
+    listContentTypes(),
     listLevels(),
     listAuthors(),
     listAuthorRoles(),
@@ -42,7 +42,7 @@ export default async function StaffCoursePage({ params, searchParams }: StaffCou
     <div className="platform-page staff-course-page">
       <CourseEditorSection
         course={course}
-        types={types}
+        contentTypes={contentTypes}
         levels={levels}
         authors={authors}
         authorRoles={authorRoles}

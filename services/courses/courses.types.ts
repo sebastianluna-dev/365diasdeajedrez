@@ -21,6 +21,14 @@ export interface CourseProgressSummary {
   minutesPercent: number;
 }
 
+/** One of the things a course teaches: "Estrategia y juego posicional", "Estrategia" on a tag, and what it covers. */
+export interface CourseContentTypeItem {
+  code: string;
+  label: string;
+  shortLabel: string;
+  description: string;
+}
+
 export interface CourseSummary {
   id: string;
   name: string;
@@ -28,7 +36,8 @@ export interface CourseSummary {
   description?: string;
   /** URL of the cover (Cloudinary). The staff fills it in; today none has one. */
   cover?: string;
-  typeLabel: string;
+  /** What it teaches, in catalog order; the card shows the short names. */
+  contentTypes: CourseContentTypeItem[];
   levelLabels: string[];
   authorNames: string[];
   progress: CourseProgressSummary;
@@ -59,7 +68,8 @@ export interface CourseDetail {
   name: string;
   description?: string;
   cover?: string;
-  typeLabel: string;
+  /** What it teaches, in catalog order; the page shows the long names with their descriptions. */
+  contentTypes: CourseContentTypeItem[];
   levelLabels: string[];
   authors: CourseAuthorItem[];
   progress: CourseProgressSummary;

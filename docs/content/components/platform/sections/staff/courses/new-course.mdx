@@ -1,20 +1,20 @@
 ---
-description: "The 'Nuevo curso' button of the staff catalog and its native <dialog>, whose form (NewCourseForm: name, slug, type) posts createCourse; the dialog closes on submit after browser validation."
+description: "The 'Nuevo curso' button of the staff catalog and its native <dialog>, whose form (NewCourseForm: name, slug, content types as cards) posts createCourse; the dialog closes on submit after browser validation."
 ---
 
 # `NewCourse`
 
 Also `NewCourseForm`, in its own file.
 
-|            |                                                                                                                                                                                                                                                                                                       |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/new-course/new-course.comp.tsx` (button and dialog) and `new-course-form.comp.tsx` (the form)                                                                                                                                                             |
-| Kind       | Client Component                                                                                                                                                                                                                                                                                      |
-| Stylesheet | `new-course.comp.css` → block `.new-course`                                                                                                                                                                                                                                                           |
-| Story      | `new-course.stories.tsx` (`platform/sections/staff/courses/NewCourse`): the form without the dialog, with a stub action                                                                                                                                                                               |
-| Used by    | [`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section) (the header's actions)                                                                                                                                                                                     |
-| Writes     | `createCourse()` · `services/staff-courses/staff-courses.actions.ts`                                                                                                                                                                                                                                  |
-| Uses       | `CatalogOption` from `services/staff-courses/staff-courses.types`; `generateSlug` from `lib/generate-slug`; [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`SubmitButton`](/components/platform/shared/submit-button) |
+|            |                                                                                                                                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/courses/new-course/new-course.comp.tsx` (button and dialog) and `new-course-form.comp.tsx` (the form)                                                                                                                                                                          |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                   |
+| Stylesheet | `new-course.comp.css` → block `.new-course`                                                                                                                                                                                                                                                                        |
+| Story      | `new-course.stories.tsx` (`platform/sections/staff/courses/NewCourse`): the form without the dialog, with a stub action                                                                                                                                                                                            |
+| Used by    | [`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section) (the header's actions)                                                                                                                                                                                                  |
+| Writes     | `createCourse()` · `services/staff-courses/staff-courses.actions.ts`                                                                                                                                                                                                                                               |
+| Uses       | `ContentTypeOption` from `services/staff-courses/staff-courses.types`; `generateSlug` from `lib/generate-slug`; [`PlatformForm`](/components/platform/shared/platform-form), [`PlatformCheckCards`](/components/platform/shared/platform-check-cards), [`SubmitButton`](/components/platform/shared/submit-button) |
 
 ## Purpose
 
@@ -22,16 +22,16 @@ Creating a course is three fields, so it lives in a modal on the catalog page ra
 
 ## Props
 
-| Prop    | Type              | Required | Meaning                                                                       |
-| ------- | ----------------- | -------- | ----------------------------------------------------------------------------- |
-| `types` | `CatalogOption[]` | yes      | The course types on offer, from `listCourseTypes()`; the first one is chosen. |
+| Prop           | Type                  | Required | Meaning                                                                                        |
+| -------------- | --------------------- | -------- | ---------------------------------------------------------------------------------------------- |
+| `contentTypes` | `ContentTypeOption[]` | yes      | The content types on offer, from `listContentTypes()`, drawn as cards with their descriptions. |
 
 ## Behaviour
 
 - **The trigger** is the quiet grey `platform-button_variant_quiet`, like the rest of the catalog, which has no orange button in it.
-- The form is a `PlatformForm` with `action={createCourse}` and `autoComplete="off"`: a head (dark tile with the white rook, title, the "sólo lo imprescindible" subtitle, close button), `name` (required, max 160, autofocus, controlled so the submit can watch it), `slug` (required, max 160, `pattern` of lowercase words joined by single hyphens, with its own `patternMismatch` text, controlled too) and `typeCode`, a `PlatformSelect` over `types` with the first one chosen. A footer band says the course is born in draft and carries the buttons.
+- The form is a `PlatformForm` with `action={createCourse}` and `autoComplete="off"`: a head (dark tile with the white rook, title, the "sólo lo imprescindible" subtitle, close button), `name` (required, max 160, autofocus, controlled so the submit can watch it), `slug` (required, max 160, `pattern` of lowercase words joined by single hyphens, with its own `patternMismatch` text, controlled too) and `contentTypeCodes`, a `PlatformCheckCards` over `contentTypes` inside a `PlatformFormGroup` («Contenido», hint «Elige al menos uno.»), nothing chosen at first. A footer band says the course is born in draft and carries the buttons.
 - **The slug writes itself.** When the name loses focus, the slug takes `generateSlug(name)` (the same helper the CMS uses: lowercase, accents stripped, words joined by single hyphens), as long as the slug is still the form's and not the user's. Once they type a slug of their own it is left alone whatever the name does; clearing it hands it back to the name. The field's hint says so.
-- **Crear curso** stays disabled until both the name and the slug have a character that is not a space.
+- **Crear curso** stays disabled until the name and the slug have a character that is not a space and at least one content type is chosen: the browser cannot demand "one of these boxes", so the form does, and the action's `formCodeList(…, 1)` does it again on the server (`contentTypeRequired`).
 - The dialog fades in with a short rise and fades out the same way: that motion belongs to `.platform-dialog`, the shared frame every dialog of the platform carries, so this stylesheet only sets the width and the rounding.
 - Every opening remounts the form (`key` bumped in `NewCourse`), so it never opens with what was typed the last time.
 - `onSubmit` closes the dialog. The browser validates `required` and `pattern` before the submit event fires (the form primitive only replaces the bubble with the field's message), so the dialog does not close with a bad form.
@@ -39,11 +39,11 @@ Creating a course is three fields, so it lives in a modal on the catalog page ra
 
 ## Markup & styling
 
-Block `.new-course`: the dialog's width and rounding, the head, the body's spacing and the footer band. The fields' and controls' look come from `.platform-form` and `.platform-select`.
+Block `.new-course`: the dialog's width (720 px, wider than the study dialog so the eight cards sit in three columns) and rounding, the head, the body's spacing and the footer band. The fields' and controls' look come from `.platform-form` and `.platform-check-cards`.
 
 **Elements:** `.new-course__dialog`, `.new-course__form`, `.new-course__head`, `.new-course__tile`, `.new-course__heading`, `.new-course__title`, `.new-course__subtitle`, `.new-course__close`, `.new-course__close-icon`, `.new-course__body`, `.new-course__foot`, `.new-course__note`, `.new-course__actions`
 
-**Other classes it renders:** `.platform-dialog` (the shared dialog frame in `platform.css`), `.platform-button`, `.platform-button_variant_quiet` (the trigger) and `.platform-button_variant_secondary` (inside the dialog), `.platform-form`, `.platform-select`.
+**Other classes it renders:** `.platform-dialog` (the shared dialog frame in `platform.css`), `.platform-button`, `.platform-button_variant_quiet` (the trigger) and `.platform-button_variant_secondary` (inside the dialog), `.platform-form`, `.platform-check-cards`.
 
 **Tokens:** `--platform-bg`, `--platform-border`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 

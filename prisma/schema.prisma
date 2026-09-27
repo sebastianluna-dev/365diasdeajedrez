@@ -41,14 +41,20 @@ datasource db {
 // Catalogs (they replace enums; upserted by code in the seed)
 // ---------------------------------------------------------------------------
 
-model CourseType {
-  id       Int     @id @default(autoincrement())
-  code     String  @unique
-  label    String
-  order    Int     @default(0)
-  isActive Boolean @default(true)
+/// What a course teaches. A course has SEVERAL (`CourseContentType`) and never
+/// none: the minimum of one is the staff action's rule, the database cannot
+/// hold it. `label` is the long name ("Estrategia y juego posicional") for the
+/// course page; `shortLabel` ("Estrategia") is for tags and table cells.
+model ContentType {
+  id          Int     @id @default(autoincrement())
+  code        String  @unique
+  label       String
+  shortLabel  String
+  description String
+  order       Int     @default(0)
+  isActive    Boolean @default(true)
 
-  courses Course[]
+  courseContentTypes CourseContentType[]
 }
 
 model CourseStatus {
@@ -283,22 +289,21 @@ model Course {
   slug        String    @unique
   description String?
   cover       String?
-  typeId      Int
   statusId    Int
   publishedAt DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  type   CourseType   @relation(fields: [typeId], references: [id])
   status CourseStatus @relation(fields: [statusId], references: [id])
 
-  chapters      Chapter[]
-  courseAuthors CourseAuthor[]
-  courseLevels  CourseLevel[]
-  progresses    CourseProgress[]
-  settings      UserCourseSettings[]
-  gameDatabases GameDatabase[]
-  positions     Position[]
+  chapters           Chapter[]
+  courseAuthors      CourseAuthor[]
+  courseLevels       CourseLevel[]
+  courseContentTypes CourseContentType[]
+  progresses         CourseProgress[]
+  settings           UserCourseSettings[]
+  gameDatabases      GameDatabase[]
+  positions          Position[]
 }
 
 model Author {
@@ -332,6 +337,16 @@ model CourseLevel {
   level  Level  @relation(fields: [levelId], references: [id])
 
   @@id([courseId, levelId])
+}
+
+model CourseContentType {
+  courseId      String
+  contentTypeId Int
+
+  course      Course      @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  contentType ContentType @relation(fields: [contentTypeId], references: [id])
+
+  @@id([courseId, contentTypeId])
 }
 
 model Chapter {

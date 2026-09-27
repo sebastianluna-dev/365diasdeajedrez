@@ -1,5 +1,5 @@
 ---
-description: "The course catalog in every status, with a GET search, status filter links, totals, and whole-row links with cover thumbnail, slug, type, status, counts and publish date."
+description: "The course catalog in every status, with a GET search, status filter links, totals, and whole-row links with cover thumbnail, slug, content types, status, counts and publish date."
 ---
 
 # `CoursesAdminSection`
@@ -11,7 +11,7 @@ description: "The course catalog in every status, with a GET search, status filt
 | Stylesheet | `courses-admin.section.css` → block `.courses-admin`                                                                                                                                                                                                                           |
 | Used by    | `/administracion/cursos`                                                                                                                                                                                                                                                       |
 | Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`NewCourse`](/components/platform/sections/staff/courses/new-course), [`PlatformNotice`](/components/platform/shared/platform-notice), [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads      | `listCoursesAdmin({ query, status })`, `listCourseTypes()` · `services/staff-courses/staff-courses.service.ts`                                                                                                                                                                 |
+| Reads      | `listCoursesAdmin({ query, status })`, `listContentTypes()` · `services/staff-courses/staff-courses.service.ts`                                                                                                                                                                |
 | Uses       | `COURSE_STATUS` from `constants/platform/course-codes.const`; `STAFF_ERROR_MESSAGES` from `constants/platform/staff-messages.const`; `staffRoutes`; `isDisplayableImage` from `lib/remote-image`; `ChevronIcon`, `SearchIcon` from `components/icons/`; `next/image`           |
 
 ## Purpose
@@ -32,14 +32,16 @@ The entry to course authoring. Courses are born in draft and are only visible in
 - "Nuevo curso" is [`NewCourse`](/components/platform/sections/staff/courses/new-course): a quiet grey button that opens the creation dialog on this page. The section reads the course types for it alongside the listing. A failure the action reports comes back as `?error=` and is rendered as a `PlatformNotice` under the header.
 - The table is outlined by the thin grey border over a light shadow, like the study cards, so its edge holds on the white page.
 - Totals line: courses, chapters, lessons over the filtered set.
-- Rows show a 44 px cover frame (painted even without a cover; `isDisplayableImage` guards the URL), name and slug, type, a status pill with a per-status modifier, chapter and lesson counts, publish date, and a chevron.
+- Rows show a 44 px cover frame (painted even without a cover; `isDisplayableImage` guards the URL), name and slug, the content types as a wrapping run of small `.platform-tag` by their short names («Contenido» column), a status pill with a per-status modifier, chapter and lesson counts, publish date, and a chevron.
 - Empty copy distinguishes "nothing matches" from "no courses yet".
 
 ## Markup & styling
 
 Block `.courses-admin` (267 lines).
 
-**Elements:** `.courses-admin__search`, `.courses-admin__search-icon`, `.courses-admin__search-input`, `.courses-admin__bar`, `.courses-admin__filters`, `.courses-admin__filter`, `.courses-admin__totals`, `.courses-admin__dot`, `.courses-admin__table`, `.courses-admin__head`, `.courses-admin__rows`, `.courses-admin__row`, `.courses-admin__course`, `.courses-admin__cover`, `.courses-admin__cover-image`, `.courses-admin__names`, `.courses-admin__name`, `.courses-admin__slug`, `.courses-admin__cell`, `.courses-admin__number`, `.courses-admin__status`, `.courses-admin__chevron`
+**Elements:** `.courses-admin__search`, `.courses-admin__search-icon`, `.courses-admin__search-input`, `.courses-admin__bar`, `.courses-admin__filters`, `.courses-admin__filter`, `.courses-admin__totals`, `.courses-admin__dot`, `.courses-admin__table`, `.courses-admin__head`, `.courses-admin__rows`, `.courses-admin__row`, `.courses-admin__course`, `.courses-admin__cover`, `.courses-admin__cover-image`, `.courses-admin__names`, `.courses-admin__name`, `.courses-admin__slug`, `.courses-admin__cell`, `.courses-admin__tags`, `.courses-admin__number`, `.courses-admin__status`, `.courses-admin__chevron`
+
+**Other classes it renders:** `.platform-tag` (the content types).
 
 **Modifiers and states:** `.courses-admin__filter_state_active`, `.courses-admin__status_state_{draft,published,archived}`
 

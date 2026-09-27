@@ -1,0 +1,111 @@
+/* The twin of `.platform-choice-cards`: the same card, drawn for a checkbox
+   group. The rules are repeated rather than shared because the two blocks
+   change on their own (the mark in the corner only exists here). */
+.platform-check-cards {
+  display: grid;
+  /* As many cards per row as fit at a readable width; one column on a phone. */
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  /* Fills a fieldset's flex row too: a grid inside a flex container would shrink. */
+  width: 100%;
+
+  /* The whole card is the checkbox: a button with `role="checkbox"`. */
+  & .platform-check-cards__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    min-width: 0;
+    padding: 16px 40px 16px 18px;
+    border: 1px solid var(--platform-border);
+    border-radius: 12px;
+    background: var(--platform-surface-soft);
+    color: var(--platform-text);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition:
+      background-color 140ms ease-out,
+      border-color 140ms ease-out;
+  }
+
+  & .platform-check-cards__card:hover {
+    border-color: var(--platform-border-strong);
+  }
+
+  & .platform-check-cards__card:focus-visible {
+    outline: 2px solid var(--platform-accent-soft);
+    border-color: var(--platform-accent);
+  }
+
+  /* A chosen one: accent border and wash, and its description in the accent ink. */
+  & .platform-check-cards__card[data-state="checked"] {
+    border-color: var(--platform-accent);
+    background: var(--platform-accent-wash);
+  }
+
+  & .platform-check-cards__card[data-state="checked"] .platform-check-cards__description {
+    color: var(--platform-accent-ink);
+  }
+
+  & .platform-check-cards__card[data-disabled] {
+    color: var(--platform-text-faint);
+    cursor: default;
+  }
+
+  /* The mark in the corner: an empty ring on a card that is off, the accent
+     disc with the tick on one that is on. Always mounted, so nothing shifts. */
+  & .platform-check-cards__mark {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid var(--platform-border-strong);
+    border-radius: 50%;
+    background: var(--platform-surface);
+    color: transparent;
+    transition:
+      background-color 140ms ease-out,
+      border-color 140ms ease-out,
+      color 140ms ease-out;
+  }
+
+  & .platform-check-cards__card[data-state="checked"] .platform-check-cards__mark {
+    border-color: var(--platform-accent);
+    background: var(--platform-accent);
+    color: var(--platform-text);
+  }
+
+  & .platform-check-cards__mark-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  & .platform-check-cards__icon {
+    display: flex;
+    margin-bottom: 4px;
+  }
+
+  & .platform-check-cards__label {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  & .platform-check-cards__description {
+    font-size: 14.5px;
+    line-height: 1.4;
+    color: var(--platform-text-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .platform-check-cards__card,
+    & .platform-check-cards__mark {
+      transition: none;
+    }
+  }
+}

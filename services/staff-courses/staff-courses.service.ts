@@ -1,9 +1,4 @@
-import {
-  COURSE_STATUS,
-  type AuthorRoleCode,
-  type CourseStatusCode,
-  type CourseTypeCode,
-} from "@/constants/platform/course-codes.const";
+import { COURSE_STATUS, type AuthorRoleCode, type CourseStatusCode } from "@/constants/platform/course-codes.const";
 import type { BoardOrientationCode } from "@/constants/platform/shared-codes.const";
 import type { ExerciseModeCode } from "@/constants/platform/training-codes.const";
 import { extractMainline } from "@/lib/chess/mainline";
@@ -18,6 +13,7 @@ import type {
   AuthorAdminRow,
   CatalogOption,
   ChapterAdminDetail,
+  ContentTypeOption,
   CourseAdminDetail,
   CourseAdminFilter,
   CourseAdminList,
@@ -71,7 +67,10 @@ export async function listCoursesAdmin(filter: CourseAdminFilter = {}): Promise<
       cover: true,
       publishedAt: true,
       status: { select: { code: true, label: true } },
-      type: { select: { label: true } },
+      courseContentTypes: {
+        select: { contentType: { select: { shortLabel: true } } },
+        orderBy: { contentType: { order: "asc" } },
+      },
       chapters: { select: { _count: { select: { lessons: true } } } },
     },
     orderBy: [{ status: { order: "asc" } }, { name: "asc" }],
@@ -84,7 +83,7 @@ export async function listCoursesAdmin(filter: CourseAdminFilter = {}): Promise<
     cover: course.cover ?? undefined,
     statusCode: course.status.code as CourseStatusCode,
     statusLabel: course.status.label,
-    typeLabel: course.type.label,
+    contentTypeLabels: course.courseContentTypes.map((row) => row.contentType.shortLabel),
     chapterCount: course.chapters.length,
     lessonCount: course.chapters.reduce((total, chapter) => total + chapter._count.lessons, 0),
     publishedAtLabel: course.publishedAt ? formatSpanishDate(course.publishedAt) : undefined,
@@ -110,8 +109,11 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
       description: true,
       cover: true,
       publishedAt: true,
-      type: { select: { code: true } },
       status: { select: { code: true, label: true } },
+      courseContentTypes: {
+        select: { contentType: { select: { code: true } } },
+        orderBy: { contentType: { order: "asc" } },
+      },
       courseLevels: { select: { level: { select: { code: true } } } },
       courseAuthors: {
         select: {
@@ -148,10 +150,10 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
     slug: course.slug,
     description: course.description ?? undefined,
     cover: course.cover ?? undefined,
-    typeCode: course.type.code as CourseTypeCode,
     statusCode: course.status.code as CourseStatusCode,
     statusLabel: course.status.label,
     publishedAtLabel: course.publishedAt ? formatSpanishDate(course.publishedAt) : undefined,
+    contentTypeCodes: course.courseContentTypes.map((row) => row.contentType.code),
     levelCodes: course.courseLevels.map((courseLevel) => courseLevel.level.code),
     authors: course.courseAuthors.map((author) => ({
       authorId: author.authorId,
@@ -430,11 +432,11 @@ export async function listAuthors(): Promise<AuthorAdminRow[]> {
 // Catalogs: they are READ to populate selectors, never edited from the interface
 // (their codes are stable and the logic compares them by code).
 
-export async function listCourseTypes(): Promise<CatalogOption[]> {
+export async function listContentTypes(): Promise<ContentTypeOption[]> {
   await requireStaff();
-  return getPlatformDb().courseType.findMany({
+  return getPlatformDb().contentType.findMany({
     where: { isActive: true },
-    select: { code: true, label: true },
+    select: { code: true, label: true, shortLabel: true, description: true },
     orderBy: { order: "asc" },
   });
 }

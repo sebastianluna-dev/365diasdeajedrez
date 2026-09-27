@@ -8,7 +8,7 @@ import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { staffRoutes } from "@/lib/platform-routes";
 import { isDisplayableImage } from "@/lib/remote-image";
-import { listCoursesAdmin, listCourseTypes } from "@/services/staff-courses/staff-courses.service";
+import { listContentTypes, listCoursesAdmin } from "@/services/staff-courses/staff-courses.service";
 import { NewCourse } from "./new-course/new-course.comp";
 import { StaffEditorHead } from "./staff-editor.comp";
 import "./courses-admin.section.css";
@@ -41,11 +41,11 @@ function filterHref(status: string | undefined, query: string | undefined): stri
 }
 
 export async function CoursesAdminSection({ query, status, errorCode }: CoursesAdminSectionProps) {
-  // The types feed the "Nuevo curso" dialog and do not depend on the listing:
-  // read together, the page waits for the slower one, not for both.
-  const [{ courses, chapterCount, lessonCount }, types] = await Promise.all([
+  // The content types feed the "Nuevo curso" dialog and do not depend on the
+  // listing: read together, the page waits for the slower one, not for both.
+  const [{ courses, chapterCount, lessonCount }, contentTypes] = await Promise.all([
     listCoursesAdmin({ query, status }),
-    listCourseTypes(),
+    listContentTypes(),
   ]);
   const isFiltered = Boolean(query) || Boolean(status);
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
@@ -73,7 +73,7 @@ export async function CoursesAdminSection({ query, status, errorCode }: CoursesA
               {status && <input type="hidden" name="estado" value={status} />}
             </form>
 
-            <NewCourse types={types} />
+            <NewCourse contentTypes={contentTypes} />
           </>
         }
       />
@@ -119,7 +119,7 @@ export async function CoursesAdminSection({ query, status, errorCode }: CoursesA
         <div className="courses-admin__table">
           <div className="courses-admin__head" aria-hidden="true">
             <span>Curso</span>
-            <span>Tipo</span>
+            <span>Contenido</span>
             <span>Estado</span>
             <span className="courses-admin__number">Capítulos</span>
             <span className="courses-admin__number">Lecciones</span>
@@ -151,7 +151,14 @@ export async function CoursesAdminSection({ query, status, errorCode }: CoursesA
                     </span>
                   </span>
 
-                  <span className="courses-admin__cell">{course.typeLabel}</span>
+                  {/* What it teaches, by its short names: "Aperturas", "Cálculo"… */}
+                  <span className="courses-admin__tags">
+                    {course.contentTypeLabels.map((label) => (
+                      <span key={label} className="platform-tag">
+                        {label}
+                      </span>
+                    ))}
+                  </span>
 
                   <span className="courses-admin__cell">
                     <span

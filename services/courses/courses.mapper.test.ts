@@ -46,7 +46,7 @@ const COURSE = {
   name: "Curso de prueba",
   description: null,
   cover: null,
-  type: { label: "Estrategia" },
+  courseContentTypes: [],
   courseLevels: [],
   courseAuthors: [],
   chapters: [

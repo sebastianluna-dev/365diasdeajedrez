@@ -3,8 +3,10 @@
 
   /* The size and the rounding: the centring, the backdrop, the surface and
      the entry and exit motion are set by `.platform-dialog`. */
+  /* Wider than the study dialog: the eight content-type cards want three
+     columns to keep the list short. */
   & .new-course__dialog {
-    width: min(600px, calc(100vw - 32px));
+    width: min(720px, calc(100vw - 32px));
     border-radius: 18px;
   }
 

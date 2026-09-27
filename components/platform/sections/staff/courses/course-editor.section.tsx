@@ -14,7 +14,13 @@ import {
   reorderChapters,
   updateCourse,
 } from "@/services/staff-courses/staff-courses.actions";
-import type { AuthorAdminRow, CatalogOption, CourseAdminDetail } from "@/services/staff-courses/staff-courses.types";
+import type {
+  AuthorAdminRow,
+  CatalogOption,
+  ContentTypeOption,
+  CourseAdminDetail,
+} from "@/services/staff-courses/staff-courses.types";
+import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
 import { SortableList } from "./sortable-list.comp";
 import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffTabs } from "./staff-tabs.comp";
@@ -28,7 +34,8 @@ const METADATA_FORM_ID = "course-metadata";
 
 interface CourseEditorSectionProps {
   course: CourseAdminDetail;
-  types: CatalogOption[];
+  /** The catalog of what a course can teach; the course keeps at least one. */
+  contentTypes: ContentTypeOption[];
   levels: CatalogOption[];
   authors: AuthorAdminRow[];
   authorRoles: CatalogOption[];
@@ -47,7 +54,7 @@ interface CourseEditorSectionProps {
  */
 export function CourseEditorSection({
   course,
-  types,
+  contentTypes,
   levels,
   authors,
   authorRoles,
@@ -248,34 +255,35 @@ export function CourseEditorSection({
               <input type="text" name="name" defaultValue={course.name} maxLength={160} required />
             </FormField>
 
-            <div className="course-editor__pair">
-              <FormField
-                label="Identificador (slug)"
-                hint="Minúsculas, números y guiones. Aparece en la URL del curso."
-              >
-                <input
-                  type="text"
-                  name="slug"
-                  defaultValue={course.slug}
-                  maxLength={160}
-                  pattern="[a-z0-9]+(-[a-z0-9]+)*"
-                  required
-                />
-              </FormField>
-
-              <FormField label="Tipo">
-                <PlatformSelect
-                  name="typeCode"
-                  defaultValue={course.typeCode}
-                  options={types.map((type) => ({ value: type.code, label: type.label }))}
-                  size="compact"
-                />
-              </FormField>
-            </div>
+            <FormField label="Identificador (slug)" hint="Minúsculas, números y guiones. Aparece en la URL del curso.">
+              <input
+                type="text"
+                name="slug"
+                defaultValue={course.slug}
+                maxLength={160}
+                pattern="[a-z0-9]+(-[a-z0-9]+)*"
+                required
+              />
+            </FormField>
 
             <FormField label="Descripción (opcional)">
               <textarea name="description" defaultValue={course.description ?? ""} maxLength={1000} />
             </FormField>
+
+            {/* What the course teaches, as cards: several at once, and the
+                action refuses to save none. */}
+            <FormFieldset legend="Contenido" hint="Al menos uno.">
+              <PlatformCheckCards
+                name="contentTypeCodes"
+                defaultValue={course.contentTypeCodes}
+                aria-label="Tipos de contenido"
+                options={contentTypes.map((type) => ({
+                  value: type.code,
+                  label: type.label,
+                  description: type.description,
+                }))}
+              />
+            </FormFieldset>
 
             <FormFieldset legend="Niveles">
               {levels.map((level) => (

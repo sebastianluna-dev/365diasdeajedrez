@@ -2,17 +2,21 @@
 
 import { useState } from "react";
 import { CloseIcon } from "@/components/icons/close-icon.comp";
-import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
-import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
+import {
+  PlatformForm,
+  PlatformFormField,
+  PlatformFormGroup,
+} from "@/components/platform/shared/platform-form/platform-form.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 import { generateSlug } from "@/lib/generate-slug";
-import type { CatalogOption } from "@/services/staff-courses/staff-courses.types";
+import type { ContentTypeOption } from "@/services/staff-courses/staff-courses.types";
 
 /** What `createCourse` accepts as a slug: lowercase words joined by single hyphens. */
 const SLUG_PATTERN = "[a-z0-9]+(-[a-z0-9]+)*";
 
 interface NewCourseFormProps {
-  types: CatalogOption[];
+  contentTypes: ContentTypeOption[];
   /** Where the form posts: the server action, or a stub in Storybook. */
   action: (formData: FormData) => void | Promise<void>;
   onClose: () => void;
@@ -24,17 +28,19 @@ interface NewCourseFormProps {
  * The creation form itself, with no dialog and no server action of its own:
  * `NewCourse` mounts it inside its `<dialog>` with `createCourse`, and the
  * story mounts it with a stub. Head, the three fields the course is born with
- * and a footer band; the submit stays off until it has a name and a slug.
+ * and a footer band; the submit stays off until it has a name, a slug and at
+ * least one content type, which the browser cannot demand of a checkbox group.
  *
  * The slug writes itself from the name when the name loses focus, as long as
  * the slug is still the form's and not the user's: once they type one of their
  * own it is left alone, and clearing it hands it back to the name.
  */
-export function NewCourseForm({ types, action, onClose, onSubmit }: NewCourseFormProps) {
+export function NewCourseForm({ contentTypes, action, onClose, onSubmit }: NewCourseFormProps) {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [isSlugOwn, setIsSlugOwn] = useState(false);
-  const isReady = name.trim() !== "" && slug.trim() !== "";
+  const [contentTypeCodes, setContentTypeCodes] = useState<string[]>([]);
+  const isReady = name.trim() !== "" && slug.trim() !== "" && contentTypeCodes.length > 0;
 
   const suggestSlug = () => {
     if (!isSlugOwn) setSlug(generateSlug(name));
@@ -91,13 +97,18 @@ export function NewCourseForm({ types, action, onClose, onSubmit }: NewCourseFor
           />
         </PlatformFormField>
 
-        <PlatformFormField name="typeCode" label="Tipo">
-          <PlatformSelect
-            defaultValue={types[0]?.code}
-            options={types.map((type) => ({ value: type.code, label: type.label }))}
-            required
+        <PlatformFormGroup label="Contenido" hint="Elige al menos uno.">
+          <PlatformCheckCards
+            name="contentTypeCodes"
+            value={contentTypeCodes}
+            onValueChange={setContentTypeCodes}
+            options={contentTypes.map((type) => ({
+              value: type.code,
+              label: type.label,
+              description: type.description,
+            }))}
           />
-        </PlatformFormField>
+        </PlatformFormGroup>
       </div>
 
       <footer className="new-course__foot">

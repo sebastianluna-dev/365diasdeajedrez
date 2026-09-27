@@ -1,13 +1,23 @@
 // Stable codes of the content catalogs (courses, chapters, lessons).
 
-export const COURSE_TYPE = {
-  OPENING: "OPENING",
-  ENDGAME: "ENDGAME",
-  STRATEGY: "STRATEGY",
+/**
+ * What a course teaches. A course has several of these and never none; the
+ * labels, short labels and descriptions live in the seed.
+ */
+export const CONTENT_TYPE = {
+  OPENINGS: "OPENINGS",
   TACTICS: "TACTICS",
+  CALCULATION: "CALCULATION",
+  STRATEGY: "STRATEGY",
+  PAWN_STRUCTURES: "PAWN_STRUCTURES",
+  ENDGAMES: "ENDGAMES",
+  GAME_ANALYSIS: "GAME_ANALYSIS",
+  PREPARATION: "PREPARATION",
 } as const;
 
-export type CourseTypeCode = (typeof COURSE_TYPE)[keyof typeof COURSE_TYPE];
+export type ContentTypeCode = (typeof CONTENT_TYPE)[keyof typeof CONTENT_TYPE];
+
+export const CONTENT_TYPE_CODES: readonly ContentTypeCode[] = Object.values(CONTENT_TYPE);
 
 export const COURSE_STATUS = {
   DRAFT: "DRAFT",
