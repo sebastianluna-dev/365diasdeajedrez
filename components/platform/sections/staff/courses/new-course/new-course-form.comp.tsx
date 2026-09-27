@@ -97,7 +97,7 @@ export function NewCourseForm({ contentTypes, action, onClose, onSubmit }: NewCo
           />
         </PlatformFormField>
 
-        <PlatformFormGroup label="Contenido" hint="Elige al menos uno.">
+        <PlatformFormGroup label="Contenido (selecciona al menos uno)">
           <PlatformCheckCards
             name="contentTypeCodes"
             value={contentTypeCodes}
