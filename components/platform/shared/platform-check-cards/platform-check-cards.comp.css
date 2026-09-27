@@ -96,6 +96,19 @@
     font-weight: 700;
   }
 
+  /* The option's fact: in the text colour and aligned figures, so a column
+     of ranges reads down the cards. */
+  & .platform-check-cards__meta {
+    font-size: 14.5px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--platform-text);
+  }
+
+  & .platform-check-cards__card[data-state="checked"] .platform-check-cards__meta {
+    color: var(--platform-accent-ink);
+  }
+
   & .platform-check-cards__description {
     font-size: 14.5px;
     line-height: 1.4;

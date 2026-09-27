@@ -7,6 +7,8 @@ import "./platform-choice-cards.comp.css";
 export interface PlatformChoiceCardOption {
   value: string;
   label: string;
+  /** A short fact of the option, between the label and the description: a range, a figure. */
+  meta?: string;
   /** One line under the label. */
   description?: string;
   /** Drawn above the label; decorative, the label carries the meaning. */
@@ -45,6 +47,7 @@ export function PlatformChoiceCards({ options, ...rootProps }: PlatformChoiceCar
             </span>
           )}
           <span className="platform-choice-cards__label">{option.label}</span>
+          {option.meta && <span className="platform-choice-cards__meta">{option.meta}</span>}
           {option.description && <span className="platform-choice-cards__description">{option.description}</span>}
         </RadioGroup.Item>
       ))}

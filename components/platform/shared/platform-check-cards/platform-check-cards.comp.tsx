@@ -72,6 +72,7 @@ export function PlatformCheckCards({
             </span>
           )}
           <span className="platform-check-cards__label">{option.label}</span>
+          {option.meta && <span className="platform-check-cards__meta">{option.meta}</span>}
           {option.description && <span className="platform-check-cards__description">{option.description}</span>}
         </Checkbox.Root>
       ))}
