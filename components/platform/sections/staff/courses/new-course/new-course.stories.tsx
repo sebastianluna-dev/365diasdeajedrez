@@ -19,7 +19,8 @@ const meta = {
 The "Nuevo curso" dialog's form, mounted here without the \`<dialog>\` and
 with a stub in place of \`createCourse\`. Head, the three fields the course is
 born with (name, slug, type as \`PlatformSelect\`) on \`PlatformForm\` and the
-footer band; the submit stays off until it has a name and a slug.
+footer band; the slug writes itself from the name when the name loses focus,
+and the submit stays off until it has a name and a slug.
 
 Source: \`components/platform/sections/staff/courses/new-course/\`.
 Reference page: [Components › NewCourse](/components/platform/sections/staff/courses/new-course) in the docs site.
@@ -58,12 +59,22 @@ type Story = StoryObj<typeof meta>;
 /** As it opens: the first type chosen, the submit off until name and slug are typed. */
 export const Empty: Story = {};
 
-/** Name and slug typed: the submit is on. */
+/** A name typed and the field left: the slug writes itself and the submit is on. */
 export const Filled: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.type(canvas.getByLabelText("Nombre"), "Finales de torre esenciales");
-    await userEvent.type(canvas.getByLabelText("Identificador (slug)"), "finales-de-torre-esenciales");
+    await userEvent.type(canvas.getByLabelText("Nombre"), "Fundamentos de la Defensa Siciliana");
+    await userEvent.tab();
+  },
+};
+
+/** A slug typed by hand is left alone when the name changes afterwards. */
+export const OwnSlug: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.type(canvas.getByLabelText("Identificador (slug)"), "siciliana-basica");
+    await userEvent.type(canvas.getByLabelText("Nombre"), "Fundamentos de la Defensa Siciliana");
+    await userEvent.tab();
   },
 };
 

@@ -5,6 +5,7 @@ import { CloseIcon } from "@/components/icons/close-icon.comp";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { generateSlug } from "@/lib/generate-slug";
 import type { CatalogOption } from "@/services/staff-courses/staff-courses.types";
 
 /** What `createCourse` accepts as a slug: lowercase words joined by single hyphens. */
@@ -24,11 +25,20 @@ interface NewCourseFormProps {
  * `NewCourse` mounts it inside its `<dialog>` with `createCourse`, and the
  * story mounts it with a stub. Head, the three fields the course is born with
  * and a footer band; the submit stays off until it has a name and a slug.
+ *
+ * The slug writes itself from the name when the name loses focus, as long as
+ * the slug is still the form's and not the user's: once they type one of their
+ * own it is left alone, and clearing it hands it back to the name.
  */
 export function NewCourseForm({ types, action, onClose, onSubmit }: NewCourseFormProps) {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
+  const [isSlugOwn, setIsSlugOwn] = useState(false);
   const isReady = name.trim() !== "" && slug.trim() !== "";
+
+  const suggestSlug = () => {
+    if (!isSlugOwn) setSlug(generateSlug(name));
+  };
 
   return (
     <PlatformForm action={action} className="new-course__form" onSubmit={onSubmit} autoComplete="off">
@@ -53,13 +63,14 @@ export function NewCourseForm({ types, action, onClose, onSubmit }: NewCourseFor
             placeholder="Finales de torre esenciales"
             value={name}
             onChange={(event) => setName(event.target.value)}
+            onBlur={suggestSlug}
           />
         </PlatformFormField>
 
         <PlatformFormField
           name="slug"
           label="Identificador (slug)"
-          hint="Minúsculas, números y guiones. Aparece en la URL."
+          hint="Se escribe solo a partir del nombre; puedes cambiarlo. Minúsculas, números y guiones: aparece en la URL."
           messages={{
             valueMissing: "El curso necesita un identificador.",
             patternMismatch: "Sólo minúsculas, números y guiones, sin espacios.",
@@ -72,7 +83,11 @@ export function NewCourseForm({ types, action, onClose, onSubmit }: NewCourseFor
             required
             placeholder="finales-de-torre-esenciales"
             value={slug}
-            onChange={(event) => setSlug(event.target.value)}
+            onChange={(event) => {
+              setSlug(event.target.value);
+              // Typed by hand it is theirs; emptied, it goes back to following the name.
+              setIsSlugOwn(event.target.value !== "");
+            }}
           />
         </PlatformFormField>
 
