@@ -91,6 +91,8 @@ export const staffRoutes = {
   lessonDetail: (courseId: string, chapterId: string, lessonId: string) =>
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/lecciones/${lessonId}`,
   authors: "/administracion/autores",
+  /** The platforms, publishers and providers the courses cite as the origin of their material. */
+  entities: "/administracion/entidades",
   classes: "/administracion/clases",
   staffClassDetail: (classId: string) => `/administracion/clases/${classId}`,
 } as const;

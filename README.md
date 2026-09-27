@@ -137,6 +137,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/administracion/profesores`, `/administracion/profesores/nuevo`, `/administracion/profesores/[teacherId]`
 - `/administracion/cursos` (creating a course is a dialog on this page), `/administracion/cursos/[courseId]`, `…/partidas`, `…/capitulos/[chapterId]`, `…/capitulos/[chapterId]/partidas`, `…/capitulos/[chapterId]/lecciones/[lessonId]`
 - `/administracion/autores`
+- `/administracion/entidades` (the platforms, publishers and providers the courses cite as the origin of their material)
 - `/administracion/clases`, `/administracion/clases/[classId]` (global read; only support recording and cancellation)
 
 ## Architecture in brief

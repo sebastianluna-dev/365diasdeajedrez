@@ -163,6 +163,8 @@ async function main() {
   const contentType = await seedCatalogRows(db.contentType, CONTENT_TYPE_VALUES);
   const courseStatus = await seedCatalog(db.courseStatus, CATALOG_VALUES.courseStatus);
   const authorRole = await seedCatalog(db.authorRole, CATALOG_VALUES.authorRole);
+  await seedCatalog(db.sourceType, CATALOG_VALUES.sourceType);
+  await seedCatalog(db.sourceEntityKind, CATALOG_VALUES.sourceEntityKind);
   const level = await seedCatalog(db.level, CATALOG_VALUES.level);
   const boardOrientation = await seedCatalog(db.boardOrientation, CATALOG_VALUES.boardOrientation);
   const exerciseMode = await seedCatalog(db.exerciseMode, CATALOG_VALUES.exerciseMode);

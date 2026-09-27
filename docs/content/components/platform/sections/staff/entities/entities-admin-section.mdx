@@ -1,0 +1,62 @@
+---
+description: "Source entities (platforms, publishers, providers), editorial content edited from the interface: a create form and one inline form per entity posting createSourceEntity and updateSourceEntity, with the kinds as check cards."
+---
+
+# `EntitiesAdminSection`
+
+|            |                                                                                                                                                                                                                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/entities/entities-admin.section.tsx`                                                                                                                                                                                                                                                |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                        |
+| Stylesheet | `entities-admin.section.css` → block `.entities-admin`                                                                                                                                                                                                                                                                  |
+| Used by    | `/administracion/entidades`                                                                                                                                                                                                                                                                                             |
+| Composes   | [`FormField`](/components/platform/shared/form-field), [`FormFieldset`](/components/platform/shared/form-field), [`PlatformCheckCards`](/components/platform/shared/platform-check-cards), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Writes     | `createSourceEntity()`, `updateSourceEntity()` · `services/staff-sources/staff-sources.actions.ts`                                                                                                                                                                                                                      |
+| Uses       | `STAFF_ERROR_MESSAGES` from `constants/platform/staff-messages.const`; `SourceEntityAdminRow` from `services/staff-sources/staff-sources.types`; `CatalogOption` from `services/staff-courses/staff-courses.types`                                                                                                      |
+
+## Purpose
+
+The platforms, publishers and providers a course's «Procedencia del recurso» cites (Chessable, ChessBase, Quality Chess…). Like [authors](/components/platform/sections/staff/authors/authors-admin-section), they are editorial content and not a restricted domain whose code the logic compares, so staff creates and edits them here and reuses them from the source form; the kinds they can be (`SourceEntityKind`) stay seed. Each entity is its own inline form, so saving one never touches another. Nothing is deleted: a source keeps pointing at what it cited.
+
+## Props
+
+| Prop        | Type                     | Required | Meaning                                                                       |
+| ----------- | ------------------------ | -------- | ----------------------------------------------------------------------------- |
+| `entities`  | `SourceEntityAdminRow[]` | yes      | `{ id, name, website?, description?, kindCodes, kindLabels, sourceCount }[]`. |
+| `kinds`     | `CatalogOption[]`        | yes      | The kinds on offer, from `listSourceEntityKinds()`.                           |
+| `errorCode` | `string`                 | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`.                             |
+
+## Behaviour
+
+- Fields on both forms: name (required; the hint says it cannot repeat, and the action answers «Ya existe una entidad con ese nombre.» when the case-insensitive index `source_entity_name_ci` refuses it), website (an `<input type="url">`, optional), the kinds as a [`PlatformCheckCards`](/components/platform/shared/platform-check-cards) inside a `FormFieldset` («Tipo de entidad», several at once; saving none answers «Elige al menos un tipo de entidad.»), description (optional).
+- The row title shows how many course sources cite the entity.
+
+## Markup & styling
+
+Block `.entities-admin`, the twin of `.authors-admin` with a two-column field row (name and website) instead of three.
+
+**Elements:** `.entities-admin__create`, `.entities-admin__fields`, `.entities-admin__row`, `.entities-admin__row-title`, `.entities-admin__row-meta`
+
+**Other selectors it styles:** `.platform-field`.
+
+**Other classes it renders:** `.platform-card`, `.platform-card__title`, `.platform-button`, `.platform-button_variant_secondary`, `.platform-check-cards`.
+
+**Tokens:** `--platform-text`, `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 860px)` collapses the two-field row.
+
+## Usage
+
+From `app/(platform)/administracion/entidades/page.tsx`:
+
+```tsx
+import { EntitiesAdminSection } from "@/components/platform/sections/staff/entities/entities-admin.section";
+
+<EntitiesAdminSection entities={entities} kinds={kinds} errorCode={error} />;
+```
+
+## Related
+
+- Entities are cited from a course's «Procedencia del recurso» in [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section).
+- [`AuthorsAdminSection`](/components/platform/sections/staff/authors/authors-admin-section), the same pattern for authors.
+- The models in [Data model](/platform/data-model) and the actions in [Teacher & staff panels](/platform/teacher-and-staff).

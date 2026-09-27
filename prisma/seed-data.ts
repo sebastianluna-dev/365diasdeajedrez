@@ -12,6 +12,7 @@ import {
 } from "../constants/platform/class-codes.const";
 import { AUTHOR_ROLE, CONTENT_TYPE, COURSE_STATUS, LEVEL } from "../constants/platform/course-codes.const";
 import { BOARD_ORIENTATION, OWNER_TYPE, PROGRESS_STATUS, TOPIC } from "../constants/platform/shared-codes.const";
+import { SOURCE_ENTITY_KIND, SOURCE_TYPE } from "../constants/platform/source-codes.const";
 import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "../constants/platform/study-codes.const";
 import { ATTEMPT_CONTEXT, ATTEMPT_RESULT, EXERCISE_MODE } from "../constants/platform/training-codes.const";
 
@@ -96,6 +97,28 @@ export const CATALOG_VALUES = {
   authorRole: [
     [AUTHOR_ROLE.CONTENT_AUTHOR, "Autor del contenido"],
     [AUTHOR_ROLE.DIGITAL_ADAPTATION, "Adaptación digital"],
+  ],
+  // "Procedencia del recurso": only the catalogs are seeded. The entities and
+  // the sources of a course are typed by staff; no demo course cites one.
+  sourceType: [
+    [SOURCE_TYPE.BOOK, "Libro"],
+    [SOURCE_TYPE.DIGITAL_COURSE, "Curso digital"],
+    [SOURCE_TYPE.IN_PERSON_COURSE, "Curso presencial o taller"],
+    [SOURCE_TYPE.VIDEO, "Vídeo o serie de vídeos"],
+    [SOURCE_TYPE.ARTICLE, "Artículo o publicación de blog"],
+    [SOURCE_TYPE.MAGAZINE, "Revista o boletín"],
+    [SOURCE_TYPE.GAME_DATABASE, "Base de datos de partidas"],
+    [SOURCE_TYPE.INTERACTIVE_STUDY, "Estudio interactivo"],
+    [SOURCE_TYPE.COACH_MATERIAL, "Clase o material de un entrenador"],
+    [SOURCE_TYPE.OWN_MATERIAL, "Material de elaboración propia"],
+    [SOURCE_TYPE.COMPILATION, "Recopilación de varias fuentes"],
+    [SOURCE_TYPE.OTHER, "Otro"],
+  ],
+  sourceEntityKind: [
+    [SOURCE_ENTITY_KIND.DIGITAL_PLATFORM, "Plataforma digital"],
+    [SOURCE_ENTITY_KIND.PUBLISHER, "Editorial"],
+    [SOURCE_ENTITY_KIND.CONTENT_PROVIDER, "Proveedor de contenido"],
+    [SOURCE_ENTITY_KIND.OTHER, "Otro"],
   ],
   level: [
     [LEVEL.BEGINNER, "Principiante"],

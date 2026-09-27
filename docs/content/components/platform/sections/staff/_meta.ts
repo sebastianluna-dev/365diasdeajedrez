@@ -7,6 +7,7 @@ const meta: MetaRecord = {
   assignments: "assignments/",
   courses: "courses/",
   authors: "authors/",
+  entities: "entities/",
   classes: "classes/",
 };
 

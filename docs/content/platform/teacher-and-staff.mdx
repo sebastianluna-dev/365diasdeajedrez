@@ -53,6 +53,10 @@ Both panels are ordinary platform pages with a stricter border: `requireTeacher(
 - Authors: `createAuthor`, `updateAuthor`, `manageCourseAuthors` (role per author, ordered).
 - Catalog readers for forms: `listContentTypes` (with `shortLabel` and `description`), `listLevels`, `listTopics`, `listExerciseModes`, `listAuthorRoles`. Checkbox groups over a catalog (content types, levels) are written with `syncCatalogJoin` (`services/shared/catalog-join.service.ts`), which replaces the whole join set inside the caller's transaction.
 
+### Source entities — `/administracion/entidades`
+
+`services/staff-sources/`: the platforms, publishers and providers the courses cite as the origin of their material («Procedencia del recurso»). Like authors, editorial content edited from the interface and never deleted: `createSourceEntity` (name, unique ignoring case through the hand-written index `source_entity_name_ci`, answered with `entityTaken`; at least one kind from `SourceEntityKind`, `entityKindRequired` otherwise; website; description) and `updateSourceEntity` (same fields; the kinds are replaced whole with `syncCatalogJoin`). Catalog readers: `listSourceTypes`, `listSourceEntityKinds`, `listSourceEntities` (with kinds and how many sources cite each), `listSourceEntityOptions` (id and name, for the source form's select). `source-rules.ts` decides what the entity field is called for a kind of resource: «Editorial» for a book, «Plataforma o proveedor» for a digital course, «Entidad de origen» otherwise.
+
 ### Classes (support) — `/administracion/clases`
 
 `services/staff-classes/`: global read view with filters (teacher, status, date range, text), payment data included, but exactly **two** actions: `setRecordingUrl` and `cancelClassAsStaff`. Blocks, attendance, participants and metadata belong to the teacher so that no two roles edit the same thing.

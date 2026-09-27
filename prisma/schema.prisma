@@ -20,6 +20,8 @@
 //   not duplicate rows.
 // - TeacherStudent: partial unique index teacher_student_one_active over
 //   studentId WHERE endedAt IS NULL (one active teacher per student).
+// - SourceEntity: unique index source_entity_name_ci over lower(name), so two
+//   entities cannot differ only by case ("Chessable" / "chessable").
 // Rules validated in the services layer (impossible in a CHECK without
 // crossing tables): ownerType↔populated column coherence, ClassBlock.kind↔field
 // used.
@@ -73,6 +75,28 @@ model AuthorRole {
   order Int    @default(0)
 
   courseAuthors CourseAuthor[]
+}
+
+/// Kind of resource a course's material comes from: a book, a digital course,
+/// a video series… (constants/platform/source-codes.const.ts).
+model SourceType {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  courseSources CourseSource[]
+}
+
+/// What a source entity is — digital platform, publisher, content provider —;
+/// one entity may be several at once (`SourceEntityKindLink`).
+model SourceEntityKind {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  entityLinks SourceEntityKindLink[]
 }
 
 /// Role of a chapter or of a lesson within what contains it: to open or to
@@ -300,6 +324,7 @@ model Course {
   courseAuthors      CourseAuthor[]
   courseLevels       CourseLevel[]
   courseContentTypes CourseContentType[]
+  sources            CourseSource[]
   progresses         CourseProgress[]
   settings           UserCourseSettings[]
   gameDatabases      GameDatabase[]
@@ -347,6 +372,67 @@ model CourseContentType {
   contentType ContentType @relation(fields: [contentTypeId], references: [id])
 
   @@id([courseId, contentTypeId])
+}
+
+/// A platform, publisher or provider the courses cite as the origin of their
+/// material (Chessable, Quality Chess…). Editorial content edited by staff at
+/// /administracion/entidades, like `Author`; never deleted from the interface.
+/// Unique by name ignoring case: index `source_entity_name_ci`, written by
+/// hand in the migration.
+model SourceEntity {
+  id          String   @id @default(uuid())
+  name        String
+  website     String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  kinds   SourceEntityKindLink[]
+  sources CourseSource[]
+}
+
+model SourceEntityKindLink {
+  entityId String
+  kindId   Int
+
+  entity SourceEntity     @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  kind   SourceEntityKind @relation(fields: [kindId], references: [id])
+
+  @@id([entityId, kindId])
+}
+
+/// Where a course's material comes from ("Procedencia del recurso"). Several
+/// per course, one resource each; only the type is required, so material of
+/// the academy's own making needs no title, entity nor URL. A compilation is
+/// simply several rows.
+model CourseSource {
+  id           String @id @default(uuid())
+  courseId     String
+  sourceTypeId Int
+  /// Insertion order; gaps after a deletion are fine, the list only has to be stable.
+  order        Int
+
+  originalTitle     String?
+  /// Authors of the RESOURCE as free text, several separated by commas. Not
+  /// the platform's `Author`: who wrote the book is not who signs the course.
+  authors           String?
+  entityId          String?
+  url               String?
+  publicationYear   Int?
+  edition           String?
+  /// Chapters, pages or lessons of the resource the course draws on.
+  specificReference String?
+  /// Staff only: the student never sees it.
+  notes             String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  course     Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  sourceType SourceType    @relation(fields: [sourceTypeId], references: [id])
+  entity     SourceEntity? @relation(fields: [entityId], references: [id], onDelete: SetNull)
+
+  @@index([courseId, order])
+  @@index([entityId])
 }
 
 model Chapter {

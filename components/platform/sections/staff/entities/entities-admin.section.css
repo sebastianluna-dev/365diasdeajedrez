@@ -1,0 +1,45 @@
+.entities-admin {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+
+  & .entities-admin__create,
+  & .entities-admin__row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+
+    & .platform-field {
+      width: 100%;
+    }
+  }
+
+  /* Name and website side by side; the kinds and the description take the row. */
+  & .entities-admin__fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+
+    @media (max-width: 860px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  & .entities-admin__row-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .entities-admin__row-meta {
+    font-size: 14.5px;
+    font-weight: 400;
+    color: var(--platform-text-muted);
+  }
+}
