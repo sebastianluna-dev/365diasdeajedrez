@@ -5,11 +5,11 @@ interface BoardLoadingProps {
 }
 
 /**
- * What a study's segment shows while its game streams: a knight that hops
- * over its shadow, and one line. It replaces the generic spinner of
- * `LoadingPanel` where what is being waited for is a board.
+ * What every `loading.tsx` of the platform shows while a segment streams: a
+ * knight that hops over its shadow, and one line. The line is generic by
+ * default; the study's segment, where what is waited for is a board, says so.
  */
-export function BoardLoading({ label = "Preparando el tablero…" }: BoardLoadingProps) {
+export function BoardLoading({ label = "Cargando…" }: BoardLoadingProps) {
   return (
     <div className="board-loading" role="status" aria-live="polite">
       <span className="board-loading__figure" aria-hidden="true">

@@ -1,5 +1,5 @@
-import { LoadingPanel } from "@/components/platform/shared/loading-panel.comp";
+import { BoardLoading } from "@/components/platform/shared/board-loading.comp";
 
 export default function TeacherLoading() {
-  return <LoadingPanel />;
+  return <BoardLoading />;
 }

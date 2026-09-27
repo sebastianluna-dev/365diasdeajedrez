@@ -8,7 +8,6 @@ const meta: MetaRecord = {
   "empty-state": "EmptyState",
   "form-field": "FormField",
   "image-upload": "ImageUpload",
-  "loading-panel": "LoadingPanel",
   "local-datetime": "LocalDateTime",
   "platform-choice-cards": "PlatformChoiceCards",
   "platform-date-picker": "PlatformDatePicker",
