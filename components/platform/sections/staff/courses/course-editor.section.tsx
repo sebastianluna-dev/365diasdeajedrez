@@ -125,6 +125,15 @@ export function CourseEditorSection({
 
             <CourseAuthors courseId={course.id} authors={course.authors} allAuthors={authors} roles={authorRoles} />
 
+            {/* In the narrow column, with what is glanced at: it is recorded
+                once and read many times. */}
+            <CourseSources
+              courseId={course.id}
+              sources={course.sources}
+              sourceTypes={sourceTypes}
+              entities={entities}
+            />
+
             <StaffPanel title="Estado">
               <dl className="course-editor__facts">
                 <div className="course-editor__fact">
@@ -232,8 +241,6 @@ export function CourseEditorSection({
         </StaffPanel>
 
         <CourseSyllabus courseId={course.id} chapters={course.chapters} isDraft={isDraft} />
-
-        <CourseSources courseId={course.id} sources={course.sources} sourceTypes={sourceTypes} entities={entities} />
       </StaffEditorLayout>
     </div>
   );

@@ -1,6 +1,4 @@
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 import type { CatalogOption } from "@/services/staff-courses/staff-courses.types";
-import { deleteCourseSource } from "@/services/staff-sources/staff-sources.actions";
 import type { CourseSourceAdmin, SourceEntityOption } from "@/services/staff-sources/staff-sources.types";
 import { StaffPanel } from "../staff-panel.comp";
 import { CourseSourceDialog } from "./course-source-dialog.comp";
@@ -15,25 +13,32 @@ interface CourseSourcesProps {
   entities: SourceEntityOption[];
 }
 
-/** "1971, 2.ª ed." — the year and the edition on one breath, or whichever there is. */
-function editionLabel(source: CourseSourceAdmin): string | undefined {
-  const parts = [source.publicationYear?.toString(), source.edition].filter(Boolean);
-  return parts.length > 0 ? parts.join(", ") : undefined;
+/**
+ * The grey line under the title: who, what kind of resource and the year,
+ * "Garry Kasparov · Libro · 2003". Who is the authors, or the entity when no
+ * author was recorded. The kind is left out when it already is the title.
+ */
+function sourceFacts(source: CourseSourceAdmin): string {
+  const kind = source.originalTitle ? source.sourceTypeLabel : undefined;
+  return [source.authors ?? source.entityName, kind, source.publicationYear?.toString()].filter(Boolean).join(" · ");
 }
 
 /**
- * «Procedencia del recurso»: the panel of the course editor that lists where
- * the material comes from, one row per source, with the dialog that adds one
- * in the header and, on each row, the dialog that edits it and the form that
- * removes it. Only the type is required, so a row may be just "Material de
- * elaboración propia".
+ * «Procedencia del recurso»: the card of the course editor's narrow column
+ * that lists where the material comes from, one row per source. Two lines a
+ * row: the title, which wraps as much as it needs, and the facts in grey
+ * under it; nothing is cut, the row grows with its title.
+ *
+ * The header adds a source and «Editar» opens the dialog of one, where it is
+ * also removed; the rest of what a source records (edition, reference,
+ * notes) is read there. Only the type is required, so a row may be just
+ * "Material de elaboración propia".
  */
 export function CourseSources({ courseId, sources, sourceTypes, entities }: CourseSourcesProps) {
   return (
     <StaffPanel
       title="Procedencia del recurso"
       meta={`${sources.length}`}
-      description="De dónde procede el material del curso: un libro, un curso digital, un vídeo… Una recopilación se registra fuente a fuente. Sólo el tipo es obligatorio."
       action={<CourseSourceDialog courseId={courseId} sourceTypes={sourceTypes} entities={entities} />}
     >
       <div className="course-sources">
@@ -42,40 +47,27 @@ export function CourseSources({ courseId, sources, sourceTypes, entities }: Cour
         ) : (
           <ul className="course-sources__list">
             {sources.map((source) => {
-              const facts = [source.authors, source.entityName, editionLabel(source), source.specificReference].filter(
-                Boolean,
-              );
+              const title = source.originalTitle ?? source.sourceTypeLabel;
+              const facts = sourceFacts(source);
               return (
                 <li key={source.id} className="course-sources__row">
                   <div className="course-sources__text">
-                    <span className="course-sources__type">{source.sourceTypeLabel}</span>
-                    <span className="course-sources__title">
-                      {source.url ? (
-                        <a href={source.url} target="_blank" rel="noreferrer" className="course-sources__link">
-                          {source.originalTitle ?? source.url}
-                        </a>
-                      ) : (
-                        (source.originalTitle ?? "Sin título")
-                      )}
-                    </span>
-                    {facts.length > 0 && <span className="course-sources__meta">{facts.join(" · ")}</span>}
-                    {source.notes && <span className="course-sources__notes">{source.notes}</span>}
+                    {source.url ? (
+                      <a href={source.url} target="_blank" rel="noreferrer" className="course-sources__title">
+                        {title}
+                      </a>
+                    ) : (
+                      <span className="course-sources__title">{title}</span>
+                    )}
+                    {facts && <span className="course-sources__meta">{facts}</span>}
                   </div>
 
-                  <div className="course-sources__controls">
-                    <CourseSourceDialog
-                      courseId={courseId}
-                      source={source}
-                      sourceTypes={sourceTypes}
-                      entities={entities}
-                    />
-                    <form action={deleteCourseSource.bind(null, courseId)}>
-                      <input type="hidden" name="sourceId" value={source.id} />
-                      <SubmitButton className="course-sources__remove" pendingLabel="Quitando…">
-                        Quitar
-                      </SubmitButton>
-                    </form>
-                  </div>
+                  <CourseSourceDialog
+                    courseId={courseId}
+                    source={source}
+                    sourceTypes={sourceTypes}
+                    entities={entities}
+                  />
                 </li>
               );
             })}

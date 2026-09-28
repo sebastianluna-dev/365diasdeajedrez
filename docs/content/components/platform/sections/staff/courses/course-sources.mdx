@@ -1,5 +1,5 @@
 ---
-description: "The «Procedencia del recurso» panel of the course editor: one row per source with edit and remove, the add/edit dialog (CourseSourceDialog) and its form (CourseSourceForm), whose entity field is named by the kind of resource."
+description: "The «Procedencia del recurso» card of the course editor's narrow column: one row per source in two lines (title, and author, kind and year under it), the add/edit dialog, where a source is also removed, (CourseSourceDialog) and its form (CourseSourceForm), whose entity field is named by the kind of resource."
 ---
 
 # `CourseSources`
@@ -19,7 +19,7 @@ Also `CourseSourceDialog` and `CourseSourceForm`, each in its own file.
 
 ## Purpose
 
-Where a course's material comes from: a book, a digital course, a video series, the academy's own work… Several sources per course, one row each, so a compilation is registered source by source. Only the kind of resource is required: material of the academy's own making needs no title, entity nor URL. The panel lists them; the dialog adds or edits one; a small form on each row removes it. It is the staff twin of the student's «Procedencia» block on the course page.
+Where a course's material comes from: a book, a digital course, a video series, the academy's own work… Several sources per course, one row each, so a compilation is registered source by source. Only the kind of resource is required: material of the academy's own making needs no title, entity nor URL. The card lists them, in the narrow column of the editor with what is glanced at; the dialog adds, edits or removes one. It is the staff twin of the student's «Procedencia» block on the course page.
 
 ## Props
 
@@ -34,33 +34,34 @@ Where a course's material comes from: a book, a digital course, a video series, 
 
 ### `CourseSourceDialog`
 
-Same `courseId`, `sourceTypes` and `entities`, plus `source?: CourseSourceAdmin`: with it the trigger is «Editar» on the row and the form carries the source; without it the trigger is the quiet «Añadir fuente» button in the panel's header.
+Same `courseId`, `sourceTypes` and `entities`, plus `source?: CourseSourceAdmin`: with it the trigger is «Editar» on the row, a quiet word, and the form carries the source; without it the trigger is «Añadir fuente» in the card's header, the soft orange button.
 
 ### `CourseSourceForm`
 
-`source?`, `sourceTypes`, `entities`, `action` (the bound server action, or a stub), `onClose`, `onSubmit?`.
+`source?`, `sourceTypes`, `entities`, `action` (the bound server action, or a stub), `deleteAction?` (removes the source being edited), `onClose`, `onSubmit?`.
 
 ## Behaviour
 
-- **The row** shows the kind of resource as a caption, the title (linked to the URL when there is one, «Sin título» when there is none), then authors, entity, year and edition, and the specific reference joined by dots, and the staff's notes in italics.
+- **The row** is two lines: the title, which wraps as many lines as it needs (a link to the URL when there is one; the kind of resource when there is no title), and under it, in grey, who, the kind and the year joined by dots («Garry Kasparov · Libro · 2003»). Who is the authors, or the entity when no author was recorded. Nothing is cut: the row grows with its title. Edition, specific reference and notes are read in the dialog.
+- **The header** wraps in the narrow column: «Procedencia del recurso» takes two lines next to its count and «Añadir fuente».
 - **The form**: `sourceTypeCode` (a `PlatformSelect`, required, the first kind chosen when adding), `originalTitle`, `authors` (free text, several separated by commas; the hint says it is who signs the resource, not the course), the entity (a `PlatformSelect` with `emptyOption` «Ninguna» over `entities`, and under it a link to `/administracion/entidades` that opens in a new tab, since the select only refreshes with the page), `url` (an `<input type="url">`, so the browser refuses anything that is not http(s) before the submit), `publicationYear` and `edition` on one row, `specificReference` and `notes` (labelled «Sólo para el equipo»).
 - **The entity field's label follows the kind of resource** through `entityFieldLabel`: «Editorial» for a book, «Plataforma o proveedor» for a digital course, «Entidad de origen» otherwise. The type select is controlled for that alone.
 - Every opening remounts the form (`key` bumped in the dialog), so an abandoned edit never shows up the next time. `onSubmit` closes the dialog; the browser has validated the fields by then.
-- A hidden `sourceId` tells `saveCourseSource` to rewrite that row instead of creating one; the action scopes it to the course, answers `sourceMissing` if it is gone, `entityMissing` if the entity is, and `?error=` lands on the course editor's notice. «Quitar» posts `deleteCourseSource` with the same hidden field.
+- A hidden `sourceId` tells `saveCourseSource` to rewrite that row instead of creating one; the action scopes it to the course, answers `sourceMissing` if it is gone, `entityMissing` if the entity is, and `?error=` lands on the course editor's notice. «Quitar fuente», in the footer band of the dialog when editing, is a submit button of the same form with `formAction={deleteAction}` and `formNoValidate`: it posts `deleteCourseSource` with the same hidden field.
 
 ## Markup & styling
 
-Block `.course-sources` is the panel's content: the list, a row with its text column and its controls. Block `.course-source-dialog`: the two triggers, the dialog's width (640 px) and rounding, head, body, the entity note, the year/edition pair and the footer band. The fields' look comes from `.platform-form` and `.platform-select`; the dialog's motion from `.platform-dialog`.
+Block `.course-sources` is the card's content: the list, whose rules reach the card's edges through the panel's `--staff-panel-gutter`, and a row with its text column and its trigger. Block `.course-source-dialog`: the two triggers, the dialog's width (640 px) and rounding, head, body, the entity note, the year/edition pair and the footer band. The fields' look comes from `.platform-form` and `.platform-select`; the dialog's motion from `.platform-dialog`.
 
-**Elements:** `.course-sources__empty`, `.course-sources__list`, `.course-sources__row`, `.course-sources__text`, `.course-sources__type`, `.course-sources__title`, `.course-sources__link`, `.course-sources__meta`, `.course-sources__notes`, `.course-sources__controls`, `.course-sources__remove`; `.course-source-dialog__open`, `.course-source-dialog__dialog`, `.course-source-dialog__form`, `.course-source-dialog__head`, `.course-source-dialog__heading`, `.course-source-dialog__title`, `.course-source-dialog__subtitle`, `.course-source-dialog__close`, `.course-source-dialog__close-icon`, `.course-source-dialog__body`, `.course-source-dialog__entity-note`, `.course-source-dialog__pair`, `.course-source-dialog__foot`, `.course-source-dialog__note`, `.course-source-dialog__actions`
+**Elements:** `.course-sources__empty`, `.course-sources__list`, `.course-sources__row`, `.course-sources__text`, `.course-sources__title`, `.course-sources__meta`; `.course-source-dialog__open`, `.course-source-dialog__dialog`, `.course-source-dialog__form`, `.course-source-dialog__head`, `.course-source-dialog__heading`, `.course-source-dialog__title`, `.course-source-dialog__subtitle`, `.course-source-dialog__close`, `.course-source-dialog__close-icon`, `.course-source-dialog__body`, `.course-source-dialog__entity-note`, `.course-source-dialog__pair`, `.course-source-dialog__foot`, `.course-source-dialog__note`, `.course-source-dialog__actions`
 
-**Modifiers:** `.course-source-dialog__open_kind_edit` (the row's trigger, a bordered word instead of the quiet button).
+**Modifiers:** `.course-source-dialog__open_kind_add` (the header's trigger, the soft orange button), `.course-source-dialog__open_kind_edit` (the row's, a quiet word). The dialog also has `.course-source-dialog__remove`.
 
-**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_quiet`, `.platform-button_variant_secondary`, `.platform-form`, `.platform-select`.
+**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_secondary`, `.platform-form`, `.platform-select`.
 
-**Tokens:** `--platform-accent-ink`, `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
-**Breakpoints:** `(max-width: 620px)` stacks a row's controls under its text; `(max-width: 560px)` stacks year and edition.
+**Breakpoints:** `(max-width: 560px)` stacks year and edition in the dialog.
 
 ## Usage
 

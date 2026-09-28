@@ -17,6 +17,8 @@ interface CourseSourceFormProps {
   entities: SourceEntityOption[];
   /** Where the form posts: the server action bound to the course, or a stub in Storybook. */
   action: (formData: FormData) => void | Promise<void>;
+  /** Removes the source being edited; it reads the same hidden `sourceId`. */
+  deleteAction?: (formData: FormData) => void | Promise<void>;
   onClose: () => void;
   /** Runs when the browser lets the submit through, i.e. with a valid form. */
   onSubmit?: () => void;
@@ -29,7 +31,15 @@ interface CourseSourceFormProps {
  * «Editorial» for a book, «Plataforma o proveedor» for a digital course — and
  * offers the entities the staff registered, with a link to register another.
  */
-export function CourseSourceForm({ source, sourceTypes, entities, action, onClose, onSubmit }: CourseSourceFormProps) {
+export function CourseSourceForm({
+  source,
+  sourceTypes,
+  entities,
+  action,
+  deleteAction,
+  onClose,
+  onSubmit,
+}: CourseSourceFormProps) {
   const [sourceTypeCode, setSourceTypeCode] = useState(source?.sourceTypeCode ?? sourceTypes[0]?.code ?? "");
   const isEdit = source !== undefined;
 
@@ -127,7 +137,21 @@ export function CourseSourceForm({ source, sourceTypes, entities, action, onClos
       </div>
 
       <footer className="course-source-dialog__foot">
-        <p className="course-source-dialog__note">Sólo el tipo es obligatorio.</p>
+        {isEdit && deleteAction ? (
+          // The same form, another destination: `formAction` sends it to the
+          // delete, and `formNoValidate` lets it through whatever the fields hold.
+          <button
+            type="submit"
+            formAction={deleteAction}
+            formNoValidate
+            className="course-source-dialog__remove"
+            onClick={onSubmit}
+          >
+            Quitar fuente
+          </button>
+        ) : (
+          <p className="course-source-dialog__note">Sólo el tipo es obligatorio.</p>
+        )}
         <div className="course-source-dialog__actions">
           <button type="button" className="platform-button platform-button_variant_secondary" onClick={onClose}>
             Cancelar

@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import type { CatalogOption } from "@/services/staff-courses/staff-courses.types";
-import { saveCourseSource } from "@/services/staff-sources/staff-sources.actions";
+import { deleteCourseSource, saveCourseSource } from "@/services/staff-sources/staff-sources.actions";
 import type { CourseSourceAdmin, SourceEntityOption } from "@/services/staff-sources/staff-sources.types";
 import "./course-source-dialog.comp.css";
 import { CourseSourceForm } from "./course-source-form.comp";
@@ -17,9 +17,9 @@ interface CourseSourceDialogProps {
 
 /**
  * The button and the native `<dialog>` that add or edit one source of the
- * course: «Añadir fuente» in the panel's header, «Editar» on each row. The
- * form is remounted on every opening, so an abandoned edit never shows up
- * the next time.
+ * course: «Añadir fuente» in the panel's header, «Editar» on each row, where
+ * the source is also removed. The form is remounted on every opening, so an
+ * abandoned edit never shows up the next time.
  */
 export function CourseSourceDialog({ courseId, source, sourceTypes, entities }: CourseSourceDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -35,11 +35,8 @@ export function CourseSourceDialog({ courseId, source, sourceTypes, entities }: 
     <div className="course-source-dialog">
       <button
         type="button"
-        className={
-          isEdit
-            ? "course-source-dialog__open course-source-dialog__open_kind_edit"
-            : "platform-button platform-button_variant_quiet course-source-dialog__open"
-        }
+        className={`course-source-dialog__open course-source-dialog__open_kind_${isEdit ? "edit" : "add"}`}
+        aria-label={isEdit ? `Editar la fuente «${source.originalTitle ?? source.sourceTypeLabel}»` : undefined}
         onClick={open}
       >
         {isEdit ? "Editar" : "Añadir fuente"}
@@ -52,6 +49,7 @@ export function CourseSourceDialog({ courseId, source, sourceTypes, entities }: 
           sourceTypes={sourceTypes}
           entities={entities}
           action={saveCourseSource.bind(null, courseId)}
+          deleteAction={deleteCourseSource.bind(null, courseId)}
           onClose={() => dialogRef.current?.close()}
           // The browser validates the fields before the submit event fires,
           // so the dialog does not close with a bad URL in it.

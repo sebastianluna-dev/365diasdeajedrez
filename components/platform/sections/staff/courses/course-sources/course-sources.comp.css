@@ -3,14 +3,15 @@
 
   & .course-sources__empty {
     margin: 0;
-    font-size: 15px;
+    font-size: 14.5px;
+    line-height: 1.45;
     color: var(--platform-text-subtle);
   }
 
+  /* The rules between sources reach the card's edges, like the one under its
+     header: the gutter is the panel's, which this block sits in. */
   & .course-sources__list {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
+    margin: -18px calc(var(--staff-panel-gutter, 22px) * -1) -22px;
     padding: 0;
     list-style: none;
   }
@@ -19,8 +20,8 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 16px;
-    padding: 12px 0;
+    gap: 12px;
+    padding: 16px var(--staff-panel-gutter, 22px);
   }
 
   & .course-sources__row + .course-sources__row {
@@ -30,75 +31,32 @@
   & .course-sources__text {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    align-items: flex-start;
+    gap: 5px;
     min-width: 0;
   }
 
-  /* The kind of resource, as a small caption over the title. */
-  & .course-sources__type {
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--platform-text-subtle);
-  }
-
+  /* The title takes the lines it needs: nothing is cut, the row grows. */
   & .course-sources__title {
-    font-size: 15.5px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
     color: var(--platform-text);
+    overflow-wrap: anywhere;
     text-wrap: pretty;
   }
 
-  & .course-sources__link {
-    color: var(--platform-accent-ink);
+  /* A title with a URL is a link, and says so only when it is pointed at. */
+  & a.course-sources__title:hover {
     text-decoration: underline;
-    text-underline-offset: 2px;
+    text-underline-offset: 3px;
   }
 
   & .course-sources__meta {
-    font-size: 14px;
-    color: var(--platform-text-muted);
-    text-wrap: pretty;
-  }
-
-  /* Staff-only notes, told apart by the italics. */
-  & .course-sources__notes {
-    font-size: 14px;
-    font-style: italic;
+    font-size: 14.5px;
+    line-height: 1.4;
     color: var(--platform-text-subtle);
+    overflow-wrap: anywhere;
     text-wrap: pretty;
-  }
-
-  & .course-sources__controls {
-    flex: none;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  & .course-sources__remove {
-    padding: 6px 11px;
-    border: 1px solid var(--platform-border);
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-muted);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 150ms;
-    transition-property: border-color, color;
-  }
-
-  & .course-sources__remove:hover {
-    border-color: var(--platform-danger);
-    color: var(--platform-danger);
-  }
-
-  @media (max-width: 620px) {
-    & .course-sources__row {
-      flex-direction: column;
-    }
   }
 }
