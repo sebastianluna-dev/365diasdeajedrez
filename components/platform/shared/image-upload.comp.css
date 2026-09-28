@@ -111,26 +111,21 @@
     color: var(--platform-danger);
   }
 
-  & .image-upload__hint,
-  & .image-upload__error {
+  /* Only what has just happened. There is no line here the rest of the time:
+     the formats and the size live in the card's "i". */
+  & .image-upload__note {
     margin: 0;
     font-size: 14px;
+    font-weight: 600;
     line-height: 1.5;
     text-wrap: pretty;
   }
 
-  & .image-upload__hint {
-    color: var(--platform-text-subtle);
-  }
-
-  /* «Imagen guardada.»: in the colour of what went well, so it is not taken
-     for the hint that was there a moment ago. */
-  & .image-upload__hint_state_saved {
-    font-weight: 600;
+  & .image-upload__note_state_saved {
     color: var(--platform-success-ink);
   }
 
-  & .image-upload__error {
+  & .image-upload__note_state_error {
     color: var(--platform-danger);
   }
 

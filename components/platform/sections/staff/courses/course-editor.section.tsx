@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { FormField, FormFieldset } from "@/components/platform/shared/form-field.comp";
 import { ImageUpload } from "@/components/platform/shared/image-upload.comp";
+import { PlatformInfoTip } from "@/components/platform/shared/platform-info-tip/platform-info-tip.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
+import { IMAGE_LIMITS_TEXT } from "@/constants/platform/upload.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
 import { updateCourse, updateCourseCover } from "@/services/staff-courses/staff-courses.actions";
@@ -104,7 +106,18 @@ export function CourseEditorSection({
       <StaffEditorLayout
         aside={
           <>
-            <StaffPanel title="Portada">
+            {/* What the cover admits goes in the header's "i": it is read once
+                and under the box it was a line of small print for ever. */}
+            <StaffPanel
+              title="Portada"
+              action={
+                <PlatformInfoTip
+                  label="Sobre la portada"
+                  text={`${IMAGE_LIMITS_TEXT} Se recorta a 21:9 y se guarda al subirla.`}
+                  side="bottom"
+                />
+              }
+            >
               {/* The cover saves itself: uploading it stores it, and so does
                   taking it away. It is not a field of the metadata form. */}
               <ImageUpload
@@ -112,7 +125,6 @@ export function CourseEditorSection({
                 defaultValue={course.cover ?? undefined}
                 label="Portada del curso"
                 aspectRatio="21:9"
-                hint="JPG, PNG, WebP o AVIF. Se guarda al subirla."
               />
             </StaffPanel>
 

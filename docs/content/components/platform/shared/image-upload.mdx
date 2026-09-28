@@ -11,11 +11,13 @@ description: "Drag or pick an image, upload it from the browser straight to Clou
 | Stylesheet | `image-upload.comp.css` → block `.image-upload`                                                                                                                                                                                                                                                                                                                                                                                                           |
 | Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) (the course cover)                                                                                                                                                                                                                                                                                                                                             |
 | Writes     | `createUploadSignature()` · `services/media/media.actions.ts`; the `action` it is given (`updateCourseCover()` for a course)                                                                                                                                                                                                                                                                                                                                                                                             |
-| Uses       | `useImageUpload` from `components/platform/shared/use-image-upload.hook` (the upload itself: type and size check, signature, the request to Cloudinary, the crop in the URL and, given a `save`, storing it; the author's photo in [`AuthorsManager`](/components/platform/sections/staff/courses/authors-manager) uses it too)<br />`IMAGE_ACCEPT` from `constants/platform/upload.const`<br />`isDisplayableImage` from `lib/remote-image`<br />`ImageIcon` from `components/icons/` |
+| Uses       | `useImageUpload` from `components/platform/shared/use-image-upload.hook` (the upload itself: type and size check, signature, the request to Cloudinary, the crop in the URL and, given a `save`, storing it; the author's photo in [`AuthorsManager`](/components/platform/sections/staff/courses/authors-manager) uses it too)<br />`IMAGE_ACCEPT` from `constants/platform/upload.const`<br />`isDisplayableImage` from `lib/remote-image`<br />`IMAGE_LIMITS_TEXT`, `IMAGE_MAX_MB` from `constants/platform/upload.const` (the limits worded once, for the tip and for the errors)<br />`ImageIcon` from `components/icons/` |
 
 ## Purpose
 
-Uploads an image and stores it. Everything happens in this box: the file is dragged or chosen, the result is seen, changed or removed, and each of those is saved by itself. The URL is neither shown nor asked for (whoever manages a course has no reason to know what Cloudinary is).
+Uploads an image and stores it. Everything happens in this box: the file is dragged or chosen, the result is seen, changed or removed, and each of those is saved by itself.
+
+**Under the box there is nothing at rest**: only what has just happened, «Imagen guardada.» or the error. What the formats and the size are is said by the "i" of the card that holds it ([`PlatformInfoTip`](/components/platform/shared/platform-info-tip)) — it helps the first time and is small print every time after — and, where it matters, by the errors themselves, which name the four formats and the MB. The URL is neither shown nor asked for (whoever manages a course has no reason to know what Cloudinary is).
 
 **Uploading is saving.** Until 2026-09-28 the URL travelled in a hidden field of the course's metadata form, which is in another column: an image uploaded without pressing «Guardar metadatos» reached Cloudinary and never the database, and was gone on the next visit without a word. The component now calls the `action` it is given the moment the upload ends.
 
@@ -29,12 +31,11 @@ The bytes go **from the browser to Cloudinary directly**, with a signature reque
 | `defaultValue` | `string` | no                    | The URL already saved, if any.                                                                                                                                       |
 | `label`        | `string` | yes                   | What it is: "Portada del curso". Used in the placeholder and the `aria-label`.                                                                                       |
 | `aspectRatio`  | `string` | no · default `"21:9"` | Ratio of the box and of the Cloudinary crop.                                                                                                                         |
-| `hint`         | `string` | no                    | Text under the box when there is no error.                                                                                                                           |
 
 ## Behaviour
 
 - **State:** `url` (what is shown), `status` (`idle`, `uploading`, `saving`, `saved`, or `error` with a message) and `dragging`.
-- **Saving:** once Cloudinary answers, the image is shown and `action(url)` is called; the button reads «Guardando…» and, when it is stored, the hint under the box becomes «Imagen guardada.» in the success ink. What is shown is what is stored: if the action answers `ok: false` or throws, the image goes back to the one there was and the error says the upload worked and the save did not.
+- **Saving:** once Cloudinary answers, the image is shown and `action(url)` is called; the button reads «Guardando…» and, when it is stored, a note appears under the box: «Imagen guardada.» in the success ink. What is shown is what is stored: if the action answers `ok: false` or throws, the image goes back to the one there was and the error says the upload worked and the save did not.
 - **Validation** runs in the browser first, against `upload.const` (jpg/png/webp/avif, 5 MB), to say so instantly; Cloudinary is the real authority because `allowed_formats` is part of the signed payload and cannot be altered client-side.
 - **Upload:** `createUploadSignature()` returns cloud name, API key, timestamp, folder, allowed formats and the signature; a `FormData` POST to `api.cloudinary.com/v1_1/<cloud>/image/upload` follows. A non-OK response or a body without `secure_url` becomes the error state.
 - **Empty box:** a `<button>` (so the keyboard can open the file picker) that also accepts drops; `dragover` toggles the `_state_over` modifier.
@@ -44,11 +45,11 @@ The bytes go **from the browser to Cloudinary directly**, with a signature reque
 
 ## Markup & styling
 
-Block `.image-upload` (141 lines). The button that picks a file is the platform's shared soft one (`.platform-button_variant_soft platform-button_size_compact`), so it matches every other action of the staff's courses.
+Block `.image-upload` (138 lines). The button that picks a file is the platform's shared soft one (`.platform-button_variant_soft platform-button_size_compact`), so it matches every other action of the staff's courses.
 
-**Elements:** `.image-upload__file` (visually hidden input), `.image-upload__drop`, `.image-upload__image`, `.image-upload__placeholder`, `.image-upload__placeholder-icon`, `.image-upload__placeholder-title`, `.image-upload__placeholder-hint`, `.image-upload__actions`, `.image-upload__remove`, `.image-upload__hint`, `.image-upload__error`
+**Elements:** `.image-upload__file` (visually hidden input), `.image-upload__drop`, `.image-upload__image`, `.image-upload__placeholder`, `.image-upload__placeholder-icon`, `.image-upload__placeholder-title`, `.image-upload__placeholder-hint`, `.image-upload__actions`, `.image-upload__remove`, `.image-upload__note`
 
-**Modifiers and states:** `.image-upload__drop_state_over`, `.image-upload__drop_state_filled`, `.image-upload__hint_state_saved`. Only the EMPTY slot lights its rule on hover: with an image the box is a photo, not something to press, so `:hover` skips `_state_filled`.
+**Modifiers and states:** `.image-upload__drop_state_over`, `.image-upload__drop_state_filled`, `.image-upload__note_state_saved`, `.image-upload__note_state_error`. Only the EMPTY slot lights its rule on hover: with an image the box is a photo, not something to press, so `:hover` skips `_state_filled`.
 
 **Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-danger`, `--platform-surface`, `--platform-surface-sunken`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
@@ -61,13 +62,17 @@ From `components/platform/sections/staff/courses/course-editor.section.tsx`:
 ```tsx
 import { ImageUpload } from "@/components/platform/shared/image-upload.comp";
 
-<ImageUpload
-  action={updateCourseCover.bind(null, course.id)}
-  defaultValue={course.cover ?? undefined}
-  label="Portada del curso"
-  aspectRatio="21:9"
-  hint="JPG, PNG, WebP o AVIF. Se guarda al subirla."
-/>;
+<StaffPanel
+  title="Portada"
+  action={<PlatformInfoTip label="Sobre la portada" text={`${IMAGE_LIMITS_TEXT} Se recorta a 21:9…`} side="bottom" />}
+>
+  <ImageUpload
+    action={updateCourseCover.bind(null, course.id)}
+    defaultValue={course.cover ?? undefined}
+    label="Portada del curso"
+    aspectRatio="21:9"
+  />
+</StaffPanel>;
 ```
 
 ## Related

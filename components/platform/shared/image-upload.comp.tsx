@@ -22,7 +22,6 @@ interface ImageUploadProps {
   label: string;
   /** Ratio of the box and of the crop: "21:9". */
   aspectRatio?: string;
-  hint?: string;
 }
 
 /**
@@ -43,8 +42,13 @@ interface ImageUploadProps {
  * On upload it is normalised to the target ratio with a crop in the URL
  * itself (see lib/cloudinary-url), which is what fixes a square photo. An
  * image already exported in that ratio stays as it is.
+ *
+ * Under the box goes only what has just happened — the image is stored, or it
+ * could not be — and nothing while nothing has. What the formats and the size
+ * are is said by the "i" of the card that holds it (`PlatformInfoTip`): it
+ * helps the first time and is noise every time after.
  */
-export function ImageUpload({ action, defaultValue, label, aspectRatio = "21:9", hint }: ImageUploadProps) {
+export function ImageUpload({ action, defaultValue, label, aspectRatio = "21:9" }: ImageUploadProps) {
   const { url, status, isUploading, upload, clear } = useImageUpload({
     initialUrl: defaultValue,
     aspectRatio,
@@ -148,17 +152,17 @@ export function ImageUpload({ action, defaultValue, label, aspectRatio = "21:9",
         )}
       </div>
 
-      {status.kind === "error" ? (
-        <p className="image-upload__error" role="alert">
+      {status.kind === "error" && (
+        <p className="image-upload__note image-upload__note_state_error" role="alert">
           {status.message}
         </p>
-      ) : status.kind === "saved" ? (
-        // What was just done, said once it is true: the image is stored.
-        <p className="image-upload__hint image-upload__hint_state_saved" role="status">
+      )}
+
+      {/* What was just done, said once it is true: the image is stored. */}
+      {status.kind === "saved" && (
+        <p className="image-upload__note image-upload__note_state_saved" role="status">
           {hasImage ? "Imagen guardada." : "Imagen quitada."}
         </p>
-      ) : (
-        <p className="image-upload__hint">{hint}</p>
       )}
     </div>
   );

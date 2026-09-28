@@ -21,6 +21,18 @@ export const IMAGE_ALLOWED_FORMATS = "jpg,png,webp,avif";
 /** For the file picker's `accept`. */
 export const IMAGE_ACCEPT = IMAGE_MIME_TYPES.join(",");
 
+/** The figure the person is told, not the bytes. */
+export const IMAGE_MAX_MB = Math.round(IMAGE_MAX_BYTES / (1024 * 1024));
+
+/**
+ * The limits as whoever uploads an image reads them, so no screen words them
+ * on its own and they cannot drift from what is checked here.
+ *
+ * The four formats are `IMAGE_MIME_TYPES`', written out instead of derived
+ * from them: "WebP" is a spelling, not something a `toUpperCase` gets right.
+ */
+export const IMAGE_LIMITS_TEXT = `JPG, PNG, WebP o AVIF, hasta ${IMAGE_MAX_MB} MB.`;
+
 export function isAllowedImageType(type: string): boolean {
   return (IMAGE_MIME_TYPES as readonly string[]).includes(type);
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IMAGE_MAX_BYTES, isAllowedImageType } from "@/constants/platform/upload.const";
+import { IMAGE_MAX_BYTES, IMAGE_MAX_MB, isAllowedImageType } from "@/constants/platform/upload.const";
 import { withCoverCrop } from "@/lib/cloudinary-url";
 import { createUploadSignature } from "@/services/media/media.actions";
 import type { ImageSaveResult } from "@/services/media/media.types";
@@ -12,8 +12,6 @@ export type ImageUploadStatus =
   | { kind: "saving" }
   | { kind: "saved" }
   | { kind: "error"; message: string };
-
-const MAX_MB = Math.round(IMAGE_MAX_BYTES / (1024 * 1024));
 
 interface UseImageUploadOptions {
   /** The image already saved, if any. */
@@ -82,7 +80,7 @@ export function useImageUpload({ initialUrl, aspectRatio, save }: UseImageUpload
       return;
     }
     if (file.size > IMAGE_MAX_BYTES) {
-      setStatus({ kind: "error", message: `La imagen pesa más de ${MAX_MB} MB. Expórtala más ligera.` });
+      setStatus({ kind: "error", message: `La imagen pesa más de ${IMAGE_MAX_MB} MB. Expórtala más ligera.` });
       return;
     }
 
