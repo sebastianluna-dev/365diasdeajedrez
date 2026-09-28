@@ -35,10 +35,11 @@ export const AUTHOR_ROLE = {
 export type AuthorRoleCode = (typeof AUTHOR_ROLE)[keyof typeof AUTHOR_ROLE];
 
 /**
- * Slugs of the levels the platform ships with. The catalog is edited by staff
- * at /administracion/niveles — names, ranges and slugs included —, so the
- * application never compares against these: they only name the rows the
- * migration creates and the seed assigns to its demo courses.
+ * Slugs of the levels the platform ships with: the six rows of the `Level`
+ * catalog, which the migration creates and the seed keeps. The catalog is not
+ * edited from the interface. It goes by slug and not by code because the slug
+ * is what the course list is filtered by (`/cursos?nivel=intermedio`); the
+ * application never decides anything by comparing against these.
  */
 export const DEFAULT_LEVEL = {
   INITIATION: "iniciacion",

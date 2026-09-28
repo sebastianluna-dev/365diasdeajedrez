@@ -11,10 +11,10 @@ import type {
   CatalogOption,
   ContentTypeOption,
   CourseAdminDetail,
+  LevelOption,
 } from "@/services/staff-courses/staff-courses.types";
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
 import { shortEloRange } from "@/services/courses/level-rules";
-import type { LevelOption } from "@/services/staff-levels/staff-levels.types";
 import { CourseAuthors } from "./course-authors/course-authors.comp";
 import { CourseNameFields } from "./course-name-fields.comp";
 import { CourseSources } from "./course-sources/course-sources.comp";
@@ -33,7 +33,7 @@ interface CourseEditorSectionProps {
   course: CourseAdminDetail;
   /** The catalog of what a course can teach; the course keeps at least one. */
   contentTypes: ContentTypeOption[];
-  /** Who a course can be aimed at, the easiest first, from /administracion/niveles. */
+  /** Who a course can be aimed at, the easiest first: the fixed catalog of levels. */
   levels: LevelOption[];
   authors: AuthorAdminRow[];
   authorRoles: CatalogOption[];
@@ -200,29 +200,19 @@ export function CourseEditorSection({
 
             {/* Who the course is aimed at, as one-line cards in order of
                 difficulty, each with its name and its orientative Elo range
-                beside it. Several at once, or none. A retired level is still offered,
-                marked: the set is saved whole, and leaving it out would take
-                it from the course. */}
+                beside it. Several at once, or none. */}
             <FormFieldset legend="Niveles" frame="none">
-              {levels.length > 0 ? (
-                <PlatformCheckCards
-                  name="levelSlugs"
-                  defaultValue={course.levelSlugs}
-                  aria-label="Niveles a los que va dirigido"
-                  layout="line"
-                  options={levels.map((level) => ({
-                    value: level.slug,
-                    // The range goes in parentheses, so a retired level says so
-                    // with a comma: two pairs in a row would read as one aside.
-                    label: level.isActive ? level.name : `${level.name}, retirado`,
-                    meta: `(${shortEloRange(level.eloRange)})`,
-                  }))}
-                />
-              ) : (
-                <p className="course-editor__empty">
-                  Todavía no hay niveles. Créalos en <Link href={staffRoutes.levels}>Niveles</Link>.
-                </p>
-              )}
+              <PlatformCheckCards
+                name="levelSlugs"
+                defaultValue={course.levelSlugs}
+                aria-label="Niveles a los que va dirigido"
+                layout="line"
+                options={levels.map((level) => ({
+                  value: level.slug,
+                  label: level.name,
+                  meta: `(${shortEloRange(level.eloRange)})`,
+                }))}
+              />
             </FormFieldset>
 
             <div className="course-editor__submit">

@@ -75,7 +75,7 @@ export interface CourseAdminDetail {
   publishedAtLabel?: string;
   /** Codes of ContentType, at least one. */
   contentTypeCodes: string[];
-  /** Slugs of the levels it is aimed at, retired ones included; none is a valid set. */
+  /** Slugs of the levels it is aimed at; none is a valid set. */
   levelSlugs: string[];
   authors: CourseAuthorRow[];
   chapters: ChapterAdminRow[];
@@ -180,6 +180,14 @@ export interface CatalogOption {
 export interface ContentTypeOption extends CatalogOption {
   shortLabel: string;
   description: string;
+}
+
+/** A level as the course editor offers it, with its orientative Elo range already worded. */
+export interface LevelOption {
+  slug: string;
+  name: string;
+  /** "Menos de 800", "800–1199", "2200 o más". */
+  eloRange: string;
 }
 
 export interface TopicOption {

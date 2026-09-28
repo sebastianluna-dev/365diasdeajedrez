@@ -21,8 +21,8 @@ import type {
 // needs and the service only queries it.
 export const courseContentInclude = {
   courseContentTypes: { include: { contentType: true }, orderBy: { contentType: { order: "asc" } } },
-  // Only the levels in use: a retired one keeps its row but the student does
-  // not see it. By difficulty, and by range when two share a position.
+  // Only the levels in use: one switched off (`isActive`) keeps its row but
+  // the student does not see it. By difficulty, and by range when two share a position.
   courseLevels: {
     where: { level: { isActive: true } },
     include: { level: true },

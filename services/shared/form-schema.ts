@@ -115,31 +115,9 @@ export function formLenientInt(min: number, max: number) {
 }
 
 /**
- * An integer within [min, max], or null when the field is empty. Unlike
- * `formLenientInt`, text that is not such a number is a FAILURE and not an
- * absence: for the columns where null means something ("no upper bound"), a
- * typo must not be stored as that meaning.
- */
-export function formOptionalInt(min: number, max: number) {
-  return z
-    .string()
-    .trim()
-    .optional()
-    .transform((value, context) => {
-      if (!value) return null;
-      if (/^-?\d+$/.test(value)) {
-        const parsed = Number.parseInt(value, 10);
-        if (parsed >= min && parsed <= max) return parsed;
-      }
-      context.addIssue({ code: "custom", message: `Se esperaba un entero entre ${min} y ${max}.` });
-      return z.NEVER;
-    });
-}
-
-/**
- * Every value of a checkbox group whose options are rows the staff edits, so
- * there is no fixed list of codes to check against: bounded text, at most
- * `maxItems` of them, and the write skips the ones the catalog does not have.
+ * Every value of a checkbox group whose options are identified by slug and
+ * not by a code the constants list: bounded text, at most `maxItems` of them,
+ * and the write skips the ones the catalog does not have.
  * A bare array schema, like `formCodeList`, so `parseForm` reads it with `getAll`.
  */
 export function formSlugList(maxItems = 50) {

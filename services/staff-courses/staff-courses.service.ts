@@ -6,6 +6,7 @@ import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { staffRoutes } from "@/lib/platform-routes";
+import { formatEloRange } from "@/services/courses/level-rules";
 import { sortByRole } from "@/services/shared/content-order";
 import { courseSourceAdminSelect, mapCourseSourceAdmin } from "@/services/staff-sources/staff-sources.mapper";
 import { lessonHasContent, lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
@@ -20,6 +21,7 @@ import type {
   CourseAdminList,
   CourseGameRow,
   LessonAdminDetail,
+  LevelOption,
   TopicOption,
 } from "./staff-courses.types";
 
@@ -446,8 +448,7 @@ export async function listAuthors(): Promise<AuthorAdminRow[]> {
 }
 
 // Catalogs: they are READ to populate selectors, never edited from the interface
-// (their codes are stable and the logic compares them by code). The levels are
-// the exception and live in services/staff-levels/.
+// (their codes are stable and the logic compares them by code).
 
 export async function listContentTypes(): Promise<ContentTypeOption[]> {
   await requireStaff();
@@ -456,6 +457,17 @@ export async function listContentTypes(): Promise<ContentTypeOption[]> {
     select: { code: true, label: true, shortLabel: true, description: true },
     orderBy: { order: "asc" },
   });
+}
+
+/** The levels a course can be aimed at, the easiest first. They go by slug, not by code. */
+export async function listLevels(): Promise<LevelOption[]> {
+  await requireStaff();
+  const levels = await getPlatformDb().level.findMany({
+    where: { isActive: true },
+    select: { slug: true, name: true, eloMin: true, eloMax: true },
+    orderBy: [{ order: "asc" }, { eloMin: "asc" }],
+  });
+  return levels.map((level) => ({ slug: level.slug, name: level.name, eloRange: formatEloRange(level) }));
 }
 
 export async function listCourseStatuses(): Promise<CatalogOption[]> {

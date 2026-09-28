@@ -19,7 +19,7 @@ interface FindArgs {
   where: Record<string, { in: string[] }>;
 }
 
-// The catalog the staff edits is matched by slug, not by code.
+// The levels are matched by slug, not by code.
 const LEVELS = [
   { id: 7, slug: "principiante" },
   { id: 8, slug: "intermedio" },
@@ -79,7 +79,7 @@ describe("syncCatalogJoin", () => {
     expect(calls.created).toEqual([{ courseId: "c1", contentTypeId: 3 }]);
   });
 
-  it("busca por slug cuando el catálogo es de los que edita el staff", async () => {
+  it("busca por slug cuando el catálogo se identifica así", async () => {
     const { join, catalog, calls } = fakes();
     const written = await syncCatalogJoin(join, catalog, {
       parent: { courseId: "c1" },

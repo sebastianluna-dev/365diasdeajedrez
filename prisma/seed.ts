@@ -1,6 +1,5 @@
-// Idempotent seed of the platform: catalogs by upsert(code) — the levels, which
-// the staff edits, by slug and only when missing —, domain rows by
-// upsert(fixed id) or natural key. Running it several times never duplicates.
+// Idempotent seed of the platform: catalogs by upsert(code) — the levels by
+// slug —, domain rows by upsert(fixed id) or natural key. Running it several times never duplicates.
 // It runs with `npm run db:seed` (prisma db seed → tsx, outside Next, which is
 // why it does not reuse lib/platform-db/get-platform-db.ts, which is server-only).
 
@@ -153,20 +152,20 @@ async function seedCatalogRows(delegate: RichCatalogDelegate, rows: RichCatalogR
 }
 
 /**
- * The levels are a catalog the staff EDITS, so they are seeded by slug and
- * only when missing: `update` is empty on purpose, or every run would undo the
- * names and ranges written at /administracion/niveles.
+ * The levels go by slug and carry a description and an Elo range, so they are
+ * rows of their own and not `[code, label]` pairs. Nobody edits them from the
+ * interface: what is written here is what they are.
  */
 async function seedLevels() {
   const bySlug = new Map<string, number>();
-  for (const [index, level] of LEVEL_VALUES.entries()) {
+  for (const [index, { slug, ...columns }] of LEVEL_VALUES.entries()) {
     const row = await db.level.upsert({
-      where: { slug: level.slug },
-      update: {},
-      create: { ...level, order: index + 1 },
+      where: { slug },
+      update: { ...columns, order: index + 1 },
+      create: { slug, ...columns, order: index + 1 },
       select: { id: true },
     });
-    bySlug.set(level.slug, row.id);
+    bySlug.set(slug, row.id);
   }
   return bySlug;
 }

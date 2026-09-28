@@ -92,8 +92,6 @@ export const staffRoutes = {
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/partidas`,
   lessonDetail: (courseId: string, chapterId: string, lessonId: string) =>
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/lecciones/${lessonId}`,
-  /** The levels a course is aimed at, with their orientative Elo ranges. */
-  levels: "/administracion/niveles",
   classes: "/administracion/clases",
   staffClassDetail: (classId: string) => `/administracion/clases/${classId}`,
 } as const;

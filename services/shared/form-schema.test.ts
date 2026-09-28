@@ -6,7 +6,6 @@ import {
   formCodeList,
   formEmail,
   formInt,
-  formOptionalInt,
   formOptionalText,
   formOptionalUrl,
   formSlugList,
@@ -122,24 +121,6 @@ describe("formEmail", () => {
       data: { email: "ana@ejemplo.com" },
     });
     expect(parseForm(schema, form({ email: "sin arroba" }))).toMatchObject({ ok: false, field: "email" });
-  });
-});
-
-describe("formOptionalInt", () => {
-  const schema = z.object({ eloMax: formOptionalInt(0, 4000) });
-
-  it("vacío o ausente es null, y un entero dentro del rango es ese número", () => {
-    expect(parseForm(schema, form({}))).toEqual({ ok: true, data: { eloMax: null } });
-    expect(parseForm(schema, form({ eloMax: "  " }))).toEqual({ ok: true, data: { eloMax: null } });
-    expect(parseForm(schema, form({ eloMax: " 2199 " }))).toEqual({ ok: true, data: { eloMax: 2199 } });
-    expect(parseForm(schema, form({ eloMax: "0" }))).toEqual({ ok: true, data: { eloMax: 0 } });
-  });
-
-  it("lo que no es un entero del rango falla en vez de leerse como vacío", () => {
-    expect(parseForm(schema, form({ eloMax: "21a9" }))).toMatchObject({ ok: false, field: "eloMax" });
-    expect(parseForm(schema, form({ eloMax: "1199.5" }))).toMatchObject({ ok: false, field: "eloMax" });
-    expect(parseForm(schema, form({ eloMax: "-1" }))).toMatchObject({ ok: false, field: "eloMax" });
-    expect(parseForm(schema, form({ eloMax: "4001" }))).toMatchObject({ ok: false, field: "eloMax" });
   });
 });
 

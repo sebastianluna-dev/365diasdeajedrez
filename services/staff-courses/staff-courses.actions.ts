@@ -86,8 +86,8 @@ const COURSE_SCHEMA = z.object({
 const COURSE_UPDATE_SCHEMA = COURSE_SCHEMA.extend({
   description: formOptionalText(DESCRIPTION_MAX_LENGTH),
   cover: formOptionalUrl(2000),
-  // The levels are rows the staff edits, so there is no list of codes to check
-  // against: the write skips the slugs the catalog does not have.
+  // The levels go by slug and there is no list of them in the constants to
+  // check against: the write skips the slugs the catalog does not have.
   levelSlugs: formSlugList(),
 });
 

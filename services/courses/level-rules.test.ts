@@ -1,12 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  coursesOfLevel,
-  formatEloRange,
-  isValidEloRange,
-  labelEloRange,
-  resolveLevelFilter,
-  shortEloRange,
-} from "./level-rules";
+import { coursesOfLevel, formatEloRange, labelEloRange, resolveLevelFilter, shortEloRange } from "./level-rules";
 
 describe("formatEloRange", () => {
   it("dice el rango cerrado con sus dos extremos", () => {
@@ -40,22 +33,6 @@ describe("shortEloRange", () => {
   it("lo dice en lo que cabe en una tarjeta", () => {
     expect(shortEloRange("800–1199")).toBe("Elo 800–1199");
     expect(shortEloRange("Menos de 800")).toBe("Elo menos de 800");
-  });
-});
-
-describe("isValidEloRange", () => {
-  it("acepta los límites inclusivos y el máximo abierto", () => {
-    expect(isValidEloRange({ eloMin: 0, eloMax: 799 }, 4000)).toBe(true);
-    expect(isValidEloRange({ eloMin: 2200, eloMax: null }, 4000)).toBe(true);
-    expect(isValidEloRange({ eloMin: 1500, eloMax: 1500 }, 4000)).toBe(true);
-  });
-
-  it("rechaza el rango invertido, el negativo y el que se sale del límite", () => {
-    expect(isValidEloRange({ eloMin: 1200, eloMax: 1199 }, 4000)).toBe(false);
-    expect(isValidEloRange({ eloMin: -1, eloMax: 100 }, 4000)).toBe(false);
-    expect(isValidEloRange({ eloMin: 100, eloMax: 4001 }, 4000)).toBe(false);
-    expect(isValidEloRange({ eloMin: 4001 }, 4000)).toBe(false);
-    expect(isValidEloRange({ eloMin: 10.5, eloMax: 20 }, 4000)).toBe(false);
   });
 });
 

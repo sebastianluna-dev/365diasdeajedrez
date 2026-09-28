@@ -28,8 +28,8 @@ export interface SyncCatalogJoinInput {
   /** The complete new set, as catalog codes. Duplicates collapse; unknown codes are skipped. */
   codes: string[];
   /**
-   * The catalog's column the codes are matched against. `code` for the fixed
-   * catalogs; `slug` for the ones the staff edits (`Level`).
+   * The catalog's column the codes are matched against. `code` for almost
+   * every catalog; `slug` for `Level`, which goes by the slug its filter uses.
    */
   catalogKey?: "code" | "slug";
 }

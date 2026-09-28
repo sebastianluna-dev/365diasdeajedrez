@@ -89,9 +89,8 @@ export const CONTENT_TYPE_VALUES = [
 ];
 
 /**
- * The levels the platform ships with, the easiest first. They are the same
- * rows the migration creates: the staff edits the catalog afterwards, so the
- * seed only adds the ones that are missing and never rewrites one that exists.
+ * The levels the platform ships with, the easiest first: the same rows the
+ * migration creates. The catalog is not edited from the interface.
  *
  * Inclusive Elo ranges, `eloMax` null = no upper bound. They are an internal,
  * orientative classification; «Maestro» names the difficulty, not a title.

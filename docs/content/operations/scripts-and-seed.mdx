@@ -8,7 +8,7 @@ All scripts run with `tsx` outside Next, load `.env.local` then `.env`, and buil
 
 ## `prisma/seed.ts` — `npm run db:seed`
 
-Idempotent seed of the platform database: catalogs by `upsert(code)` (the levels, which staff edits, by `slug` and only when missing: `seedLevels` never rewrites a level that exists), domain rows by fixed ids or natural keys, so running it twice never duplicates.
+Idempotent seed of the platform database: catalogs by `upsert(code)` (the levels by `slug`, with `seedLevels`, because their rows carry a description and an Elo range), domain rows by fixed ids or natural keys, so running it twice never duplicates.
 
 What it creates (data in `prisma/seed-data.ts`):
 

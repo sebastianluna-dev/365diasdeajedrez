@@ -114,10 +114,12 @@ model ContentRole {
 }
 
 /// Who a course is aimed at: "Principiante", "Avanzado"… with an orientative
-/// Elo range. Unlike the catalogs above it is EDITED by staff at
-/// /administracion/niveles, so it is identified by a `slug` and not by a
-/// `code` the logic could compare against. Apart from the content types (what
-/// the course teaches) and from the sources (where its material comes from).
+/// Elo range. A fixed catalog, like the others: six rows that ship with the
+/// platform and are not edited from the interface (there was a page for it,
+/// /administracion/niveles, for a day). It goes by `slug` and not by `code`
+/// because the slug is what the course list is filtered by. Apart from the
+/// content types (what the course teaches) and from the sources (where its
+/// material comes from).
 ///
 /// The range is inclusive on both ends and an internal, orientative
 /// classification: no access is ever decided by it, and a student's missing
@@ -125,8 +127,8 @@ model ContentRole {
 /// migration adds the check `level_elo_range` (eloMin >= 0, eloMax >= eloMin),
 /// which Prisma cannot express.
 ///
-/// Never deleted from the interface: a level is retired with `isActive`, and
-/// the courses that had it keep their row in `CourseLevel`.
+/// `isActive` false hides a level from the student and from the course
+/// editor; the courses that had it keep their row in `CourseLevel`.
 model Level {
   id          Int     @id @default(autoincrement())
   slug        String  @unique

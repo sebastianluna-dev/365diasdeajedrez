@@ -51,7 +51,6 @@ export const STAFF_NAV_ITEMS: PlatformNavItem[] = [
   { label: "Alumnos", href: staffRoutes.students },
   { label: "Profesores", href: staffRoutes.teachers },
   { label: "Cursos", href: staffRoutes.courses },
-  { label: "Niveles", href: staffRoutes.levels },
   { label: "Clases", href: staffRoutes.classes },
 ];
 

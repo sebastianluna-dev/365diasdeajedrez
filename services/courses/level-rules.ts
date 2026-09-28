@@ -33,13 +33,6 @@ export function shortEloRange(eloRange: string): string {
   return `Elo ${eloRange.charAt(0).toLowerCase()}${eloRange.slice(1)}`;
 }
 
-/** Whether the range can be stored: whole numbers, not negative, and not upside down. */
-export function isValidEloRange({ eloMin, eloMax }: EloRange, limit: number): boolean {
-  if (!Number.isInteger(eloMin) || eloMin < 0 || eloMin > limit) return false;
-  if (eloMax === null || eloMax === undefined) return true;
-  return Number.isInteger(eloMax) && eloMax >= eloMin && eloMax <= limit;
-}
-
 /**
  * The level the list is filtered by, or undefined when the URL names none the
  * catalog has: a hand-typed `?nivel=` should not look like an empty list.

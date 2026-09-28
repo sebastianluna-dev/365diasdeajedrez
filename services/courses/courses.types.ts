@@ -30,7 +30,7 @@ export interface CourseContentTypeItem {
 }
 
 /**
- * Who a course is aimed at: a level of the catalog the staff edits, with its
+ * Who a course is aimed at: a level of the fixed catalog, with its
  * orientative Elo range already worded ("800–1199", "2200 o más"). It guides;
  * nothing is ever restricted by it.
  */

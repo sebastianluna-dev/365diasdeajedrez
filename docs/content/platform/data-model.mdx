@@ -13,7 +13,7 @@ description: "The Prisma 7 schema of the platform: catalogs, courses and lessons
 ## Design decisions
 
 - **PGN is the content.** `Lesson.pgn`, `Game.pgn` and `ClassBlock.pgn` hold the chess material; there are no per-move tables. Positions, lines and diagrams are derived by `lib/chess` at read or index time.
-- **Catalogs instead of enums.** Every restricted domain is a table with `id`, `code` (unique, stable), `label` (Spanish), `order` and sometimes `isActive`. Business logic compares `code`; the seed upserts them; TypeScript mirrors them in `constants/platform/*-codes.const.ts`. A catalog the **staff edits** (`Level`) is identified by a `slug` instead: no logic compares against its rows, so there is no code to keep stable.
+- **Catalogs instead of enums.** Every restricted domain is a table with `id`, `code` (unique, stable), `label` (Spanish), `order` and sometimes `isActive`. Business logic compares `code`; the seed upserts them; TypeScript mirrors them in `constants/platform/*-codes.const.ts`. `Level` is identified by a `slug` instead, which is what the course list is filtered by; no logic compares against its rows.
 - **Composite primary keys** for progress and join tables.
 - **Roles by row existence** (`Teacher`, `Staff`).
 - Constraints Prisma cannot express are written by hand in the migrations (below).
@@ -22,19 +22,19 @@ description: "The Prisma 7 schema of the platform: catalogs, courses and lessons
 
 `ContentType` (OPENINGS, TACTICS, CALCULATION, STRATEGY, PAWN_STRUCTURES, ENDGAMES, GAME_ANALYSIS, PREPARATION; besides `label` each row has a `shortLabel` for tags and a `description`, so the seed writes them with `seedCatalogRows`) · `CourseStatus` (DRAFT, PUBLISHED, ARCHIVED) · `AuthorRole` (CONTENT_AUTHOR, DIGITAL_ADAPTATION) · `SourceType` (BOOK, DIGITAL_COURSE, IN_PERSON_COURSE, VIDEO, ARTICLE, MAGAZINE, GAME_DATABASE, INTERACTIVE_STUDY, COACH_MATERIAL, OWN_MATERIAL, COMPILATION, OTHER — the kind of resource a course's material comes from) · `ContentRole` (INTRO, CLOSING) · `BoardOrientation` (WHITE, BLACK, AUTO — AUTO only for user settings) · `ExerciseMode` (REPRODUCE_LINE, FIND_MOVE) · `ProgressStatus` (NOT_STARTED, IN_PROGRESS, COMPLETED) · `AttemptResult` (PASSED, FAILED) · `AttemptContext` (LESSON, CHAPTER_QUIZ, TRAINER) · `OwnerType` (USER, COURSE, TEACHER) · `DatabaseKind` (MY_GAMES, TOURNAMENT, STUDY, COLLECTION) · `GameSource` (MANUAL, PGN_IMPORT, PLATFORM_GAME) · `GameResult` (WHITE_WINS, BLACK_WINS, DRAW, ONGOING; the label is the PGN token) · `ClassStatus` (SCHEDULED, LIVE, COMPLETED, CANCELLED) · `MeetingProvider` (ZOOM, MEET, OTHER) · `ClassBlockKind` (TEXT, VIDEO, GAME_REF, LESSON_REF, POSITION_REF, FILE) · `TranscriptStatus` (PENDING, READY, FAILED) · `ActivityType`, `SubjectType`, `StatMetric` (see Activity) · `Topic` (hierarchical via `parentId`: TACTICS, OPENING_LINE, PAWN_STRUCTURE, ENDGAME, STRATEGY…).
 
-### `Level`: the editable catalog
+### `Level`: the catalog that goes by slug
 
-Who a course is aimed at. It is the one catalog edited from the interface (`/administracion/niveles`), so it has no `code`:
+Who a course is aimed at. A fixed catalog like the others: six rows that the migration creates and the seed keeps, not edited from the interface (a page for it, `/administracion/niveles`, existed for a day and was taken out on 2026-09-27). Its rows carry more than a label:
 
-| Field         | Meaning                                                                                                                    |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `slug`        | Unique; what `/cursos?nivel=` and the course form carry.                                                                   |
-| `name`        | «Iniciación», «Principiante», «Intermedio», «Avanzado», «Experto», «Maestro».                                              |
-| `description` | What is worked on at that level.                                                                                           |
-| `order`       | Position by difficulty, the easiest first. Ties are broken by `eloMin` and by name.                                        |
-| `eloMin`      | Inclusive lower end, never negative. «Iniciación» is `0`.                                                                  |
-| `eloMax`      | Inclusive upper end; `null` = no upper bound («Maestro»: `2200`, `null`).                                                  |
-| `isActive`    | A retired level is not shown to students nor offered by the filter; its `CourseLevel` rows stay. A level is never deleted. |
+| Field         | Meaning                                                                                                                                               |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `slug`        | Unique; what `/cursos?nivel=` and the course form carry.                                                                                              |
+| `name`        | «Iniciación», «Principiante», «Intermedio», «Avanzado», «Experto», «Maestro».                                                                         |
+| `description` | What is worked on at that level.                                                                                                                      |
+| `order`       | Position by difficulty, the easiest first. Ties are broken by `eloMin` and by name.                                                                   |
+| `eloMin`      | Inclusive lower end, never negative. «Iniciación» is `0`.                                                                                             |
+| `eloMax`      | Inclusive upper end; `null` = no upper bound («Maestro»: `2200`, `null`).                                                                             |
+| `isActive`    | `false` hides a level from the student, from the filter and from the course editor; its `CourseLevel` rows stay. Nothing in the interface changes it. |
 
 The platform ships with 0–799, 800–1199, 1200–1599, 1600–1999, 2000–2199 and 2200+. Three decisions are part of the model:
 

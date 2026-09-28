@@ -33,7 +33,7 @@ The one piece of the course's metadata form that needs state, split out so the r
 - The slug field is drawn with the classes of `.platform-field` but is not a `FormField`: there the whole field is a `<label>`, and the button inside it would end up in the input's name. Label and input are tied with `htmlFor`/`id` (`useId`).
 - The slug stays editable; what is typed there holds until the next rename.
 - Nothing is saved until «Guardar metadatos»: a slug already taken is answered by `updateCourse` with «Ese identificador (slug) ya está en uso.».
-- Unlike [`NewCourseForm`](/components/platform/sections/staff/courses/new-course) and [`LevelForm`](/components/platform/sections/staff/levels/level-form), where a slug typed by hand is left alone, here the name always rules: the rule is `slugAfterRename(previousName, nextName, currentSlug)` in `lib/generate-slug.ts`, tested there.
+- Unlike [`NewCourseForm`](/components/platform/sections/staff/courses/new-course), where a slug typed by hand is left alone, here the name always rules: the rule is `slugAfterRename(previousName, nextName, currentSlug)` in `lib/generate-slug.ts`, tested there.
 - Both inputs are uncontrolled (`defaultValue`), like the rest of the form; the only thing kept is a ref with the name the field had when it took focus.
 
 ## Markup & styling
