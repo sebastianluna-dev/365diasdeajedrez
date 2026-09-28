@@ -1,5 +1,5 @@
 ---
-description: "The student's class page: breadcrumb, header with teacher and local time, meeting access while upcoming, the recording link, the summary, the ordered blocks and the transcript status."
+description: "The student's class page: header with teacher and local time, meeting access while upcoming, the recording link, the summary, the ordered blocks and the transcript status."
 ---
 
 # `ClassDetailSection`
@@ -29,13 +29,13 @@ Everything a student gets from one class: how to join it while it is upcoming, t
 - The recording is an external link button when `recordingUrl` exists.
 - Blocks go to [`ClassContentRenderer`](/components/platform/shared/class-content-renderer); an empty list shows an empty state whose copy depends on whether the class is still to come.
 - The transcript card shows the text when `statusCode === TRANSCRIPT_STATUS.READY`, otherwise "Estado de la transcripción: …".
-- The breadcrumb is local (Mis clases / title), not a shared component, because the classes area has only one level.
+- There is no trail above the header: the way back to the list is «Mis clases» in the menu.
 
 ## Markup & styling
 
 Block `.class-detail` (72 lines).
 
-**Elements:** `.class-detail__breadcrumb`, `.class-detail__breadcrumb-link`, `.class-detail__breadcrumb-separator`, `.class-detail__breadcrumb-current`, `.class-detail__head`, `.class-detail__meta`, `.class-detail__summary`, `.class-detail__summary-text`, `.class-detail__content`, `.class-detail__content-title`, `.class-detail__transcript`, `.class-detail__transcript-text`, `.class-detail__transcript-status`
+**Elements:** `.class-detail__head`, `.class-detail__meta`, `.class-detail__summary`, `.class-detail__summary-text`, `.class-detail__content`, `.class-detail__content-title`, `.class-detail__transcript`, `.class-detail__transcript-text`, `.class-detail__transcript-status`
 
 No modifiers.
 

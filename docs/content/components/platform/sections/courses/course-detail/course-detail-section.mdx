@@ -55,11 +55,9 @@ From `app/(platform)/cursos/[courseId]/page.tsx`:
 ```tsx
 import { CourseDetailSection } from "@/components/platform/sections/courses/course-detail/course-detail.section";
 
-<CourseNavigation courseId={course.id} courseName={course.name} current="course" />
-<CourseDetailSection course={course} />
+<CourseDetailSection course={course} />;
 ```
 
 ## Related
 
 - [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section), the next level down.
-- [`CourseNavigation`](/components/platform/shared/course-navigation) is rendered by the page above this section.

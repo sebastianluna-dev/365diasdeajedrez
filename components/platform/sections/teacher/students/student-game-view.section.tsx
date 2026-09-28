@@ -6,7 +6,7 @@ import type { TeacherClassSummary } from "@/services/teacher-classes/teacher-cla
 import "./student-game-view.section.css";
 
 interface StudentGameViewSectionProps {
-  studentId: string;
+  /** Whose game it is: the subtitle says so, since nothing else on the screen does. */
   studentName: string;
   game: GameView;
   /** The teacher's scheduled classes: destinations of "Usar en una clase". */
@@ -19,28 +19,9 @@ interface StudentGameViewSectionProps {
  * teacher's own classes with the game preselected, and it is there that the
  * server re-checks that the assignment is still active before inserting the block.
  */
-export function StudentGameViewSection({
-  studentId,
-  studentName,
-  game,
-  scheduledClasses,
-}: StudentGameViewSectionProps) {
+export function StudentGameViewSection({ studentName, game, scheduledClasses }: StudentGameViewSectionProps) {
   return (
     <section className="student-game">
-      <nav className="student-game__breadcrumb" aria-label="Ruta del alumno">
-        <Link href={teacherRoutes.students} className="student-game__breadcrumb-link">
-          Mis alumnos
-        </Link>
-        <span className="student-game__breadcrumb-separator">/</span>
-        <Link href={teacherRoutes.studentDetail(studentId)} className="student-game__breadcrumb-link">
-          {studentName}
-        </Link>
-        <span className="student-game__breadcrumb-separator">/</span>
-        <Link href={game.studyHref} className="student-game__breadcrumb-link">
-          {game.studyName}
-        </Link>
-      </nav>
-
       <header className="student-game__head">
         <h1 className="platform-page__title">
           {game.white}
@@ -48,7 +29,9 @@ export function StudentGameViewSection({
           {game.blackElo ? ` (${game.blackElo})` : ""}
         </h1>
         <p className="platform-page__subtitle">
-          {[game.event, game.site, game.playedAtLabel, game.eco, game.resultLabel].filter(Boolean).join(" · ")}
+          {[`Partida de ${studentName}`, game.event, game.site, game.playedAtLabel, game.eco, game.resultLabel]
+            .filter(Boolean)
+            .join(" · ")}
         </p>
       </header>
 

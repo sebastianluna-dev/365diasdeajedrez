@@ -21,20 +21,19 @@ The teacher reads a student's game and, if it is worth discussing, takes it to c
 
 | Prop               | Type                    | Required | Meaning                                                                               |
 | ------------------ | ----------------------- | -------- | ------------------------------------------------------------------------------------- |
-| `studentId`        | `string`                | yes      | Breadcrumb link.                                                                      |
-| `studentName`      | `string`                | yes      | Breadcrumb text.                                                                      |
+| `studentName`      | `string`                | yes      | Whose game it is: the subtitle opens with «Partida de …».                             |
 | `game`             | `GameView`              | yes      | The game with `pgn`, players, record fields, `studyHref`, `studyName`, `sourceLabel`. |
 | `scheduledClasses` | `TeacherClassSummary[]` | yes      | Destinations of "Usar en una clase". Empty shows a hint with a link to create one.    |
 
 ## Behaviour
 
-None beyond rendering: breadcrumb (Mis alumnos / student / study), a title with both players and Elos, a subtitle joining event, site, date, ECO and result, the viewer with defaults (read-only, table list, no engine), the "Usar en una clase" card and the source line.
+None beyond rendering: a title with both players and Elos, a subtitle that says whose game it is («Partida de …») and joins event, site, date, ECO and result, the viewer with defaults (read-only, table list, no engine), the "Usar en una clase" card and the source line.
 
 ## Markup & styling
 
 Block `.student-game` (58 lines).
 
-**Elements:** `.student-game__breadcrumb`, `.student-game__breadcrumb-link`, `.student-game__breadcrumb-separator`, `.student-game__head`, `.student-game__use`, `.student-game__use-hint`, `.student-game__use-list`, `.student-game__source`
+**Elements:** `.student-game__head`, `.student-game__use`, `.student-game__use-hint`, `.student-game__use-list`, `.student-game__source`
 
 No modifiers.
 
@@ -51,12 +50,7 @@ From `app/(platform)/profesor/alumnos/[studentId]/estudios/[studyId]/partidas/[g
 ```tsx
 import { StudentGameViewSection } from "@/components/platform/sections/teacher/students/student-game-view.section";
 
-<StudentGameViewSection
-  studentId={studentId}
-  studentName={student.displayName}
-  game={game}
-  scheduledClasses={scheduledClasses}
-/>;
+<StudentGameViewSection studentName={student.displayName} game={game} scheduledClasses={scheduledClasses} />;
 ```
 
 ## Related

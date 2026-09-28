@@ -1,5 +1,5 @@
 ---
-description: "A student's study seen by their teacher: breadcrumb, kind and read-only tags, and the game table with links kept inside /profesor/alumnos; no write control and no studies action imported."
+description: "A student's study seen by their teacher: kind and read-only tags, and the game table with links kept inside /profesor/alumnos; no write control and no studies action imported."
 ---
 
 # `StudentStudyViewSection`
@@ -19,21 +19,19 @@ The same games a student sees in their study, laid out for the teacher, **withou
 
 ## Props
 
-| Prop          | Type          | Required | Meaning                                                                                  |
-| ------------- | ------------- | -------- | ---------------------------------------------------------------------------------------- |
-| `studentId`   | `string`      | yes      | For the breadcrumb link.                                                                 |
-| `studentName` | `string`      | yes      | Breadcrumb text.                                                                         |
-| `study`       | `StudyDetail` | yes      | Read with the teacher's rights; `games[].href` already points into the teacher's routes. |
+| Prop    | Type          | Required | Meaning                                                                                  |
+| ------- | ------------- | -------- | ---------------------------------------------------------------------------------------- |
+| `study` | `StudyDetail` | yes      | Read with the teacher's rights; `games[].href` already points into the teacher's routes. |
 
 ## Behaviour
 
-None. The breadcrumb is a plain paragraph (Mis alumnos › student), then kind and "Sólo lectura" tags, the description, and a [`PlatformTable`](/components/platform/shared/platform-table) with white (linked), black, result, ECO, event and date.
+None: kind and "Sólo lectura" tags, the description, and a [`PlatformTable`](/components/platform/shared/platform-table) with white (linked), black, result, ECO, event and date.
 
 ## Markup & styling
 
 Block `.student-study` (32 lines).
 
-**Elements:** `.student-study__breadcrumb`, `.student-study__meta`, `.student-study__description`
+**Elements:** `.student-study__meta`, `.student-study__description`
 
 **Other classes it renders:** `.platform-tag`.
 
@@ -48,7 +46,7 @@ From `app/(platform)/profesor/alumnos/[studentId]/estudios/[studyId]/page.tsx`:
 ```tsx
 import { StudentStudyViewSection } from "@/components/platform/sections/teacher/students/student-study-view.section";
 
-<StudentStudyViewSection studentId={studentId} studentName={student.displayName} study={study} />;
+<StudentStudyViewSection study={study} />;
 ```
 
 ## Related

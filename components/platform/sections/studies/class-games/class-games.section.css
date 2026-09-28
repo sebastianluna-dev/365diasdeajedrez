@@ -3,26 +3,6 @@
   flex-direction: column;
   gap: 24px;
 
-  & .class-games__breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14.5px;
-    color: var(--platform-text-muted);
-  }
-
-  & .class-games__breadcrumb-link {
-    color: var(--platform-text-muted);
-  }
-
-  & .class-games__breadcrumb-link:hover {
-    color: var(--platform-accent-ink);
-  }
-
-  & .class-games__breadcrumb-current {
-    color: var(--platform-text);
-  }
-
   & .class-games__tags {
     display: flex;
     flex-wrap: wrap;

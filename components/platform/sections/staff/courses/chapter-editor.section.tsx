@@ -36,10 +36,6 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
   return (
     <div className="chapter-editor">
       <StaffEditorHead
-        crumbs={[
-          { label: "Cursos", href: staffRoutes.courses },
-          { label: chapter.courseName, href: staffRoutes.courseDetail(chapter.courseId) },
-        ]}
         title={chapter.name}
         meta={
           <>

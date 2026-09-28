@@ -1,5 +1,7 @@
 .game-page {
-  /* The breadcrumbs right under the bar, as in the other study views. */
+  /* A workspace, not a page that opens with a big title: it starts right
+     under the bar, and the board gets the height. The shell reserves 44px
+     there; the difference is recovered here instead of touching its padding. */
   margin-top: -18px;
   gap: 14px;
 

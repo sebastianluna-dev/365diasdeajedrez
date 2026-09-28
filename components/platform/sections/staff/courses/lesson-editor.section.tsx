@@ -2,7 +2,6 @@ import { FormField, FormFieldset } from "@/components/platform/shared/form-field
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { BOARD_ORIENTATION, CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
-import { staffRoutes } from "@/lib/platform-routes";
 import { deleteLesson, updateLesson } from "@/services/staff-courses/staff-courses.actions";
 import type {
   CatalogOption,
@@ -56,11 +55,6 @@ export function LessonEditorSection({
   return (
     <div className="lesson-editor">
       <StaffEditorHead
-        crumbs={[
-          { label: "Cursos", href: staffRoutes.courses },
-          { label: lesson.courseName, href: staffRoutes.courseDetail(lesson.courseId) },
-          { label: lesson.chapterName, href: staffRoutes.chapterDetail(lesson.courseId, lesson.chapterId) },
-        ]}
         title={lesson.name}
         meta={
           <>

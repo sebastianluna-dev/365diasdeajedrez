@@ -81,7 +81,6 @@ export function CourseEditorSection({
   return (
     <div className="course-editor">
       <StaffEditorHead
-        crumbs={[{ label: "Cursos", href: staffRoutes.courses }]}
         title={course.name}
         badge={
           <span className={`course-editor__status course-editor__status_state_${course.statusCode.toLowerCase()}`}>

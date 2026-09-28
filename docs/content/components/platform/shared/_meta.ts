@@ -4,7 +4,6 @@ const meta: MetaRecord = {
   "activity-list": "ActivityList",
   "board-loading": "BoardLoading",
   "class-content-renderer": "ClassContentRenderer",
-  "course-navigation": "CourseNavigation",
   "empty-state": "EmptyState",
   "form-field": "FormField",
   "image-upload": "ImageUpload",
@@ -20,7 +19,6 @@ const meta: MetaRecord = {
   "platform-table": "PlatformTable",
   "priority-filter": "PriorityFilter",
   "progress-indicator": "ProgressIndicator",
-  "studies-navigation": "StudiesNavigation",
   "submit-button": "SubmitButton",
 };
 

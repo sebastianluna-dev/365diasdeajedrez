@@ -33,7 +33,7 @@ export default async function StaffLessonPage({ params, searchParams }: StaffLes
     listCollectionGames({ chapterId }, partida),
   ]);
 
-  // The header goes inside the section: it carries the breadcrumbs up to the chapter.
+  // The header goes inside the section: it carries the lesson's name and facts.
   return (
     <div className="platform-page staff-lesson-page">
       <LessonEditorSection

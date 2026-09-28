@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CourseNavigation } from "@/components/platform/shared/course-navigation.comp";
 import { LessonViewSection } from "@/components/platform/sections/courses/lesson-view/lesson-view.section";
 import { getLessonView } from "@/services/courses/courses.service";
 import "./lesson-page.css";
@@ -23,13 +22,6 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
 
   return (
     <div className="platform-page lesson-page">
-      <CourseNavigation
-        courseId={lesson.courseId}
-        courseName={lesson.courseName}
-        chapterOrder={lesson.chapterOrder}
-        chapterName={lesson.chapterName}
-        lessonName={lesson.name}
-      />
       <LessonViewSection lesson={lesson} errorCode={error} />
     </div>
   );

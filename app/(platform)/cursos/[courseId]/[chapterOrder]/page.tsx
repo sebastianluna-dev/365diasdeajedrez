@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CourseNavigation } from "@/components/platform/shared/course-navigation.comp";
 import { ChapterDetailSection } from "@/components/platform/sections/courses/chapter-detail/chapter-detail.section";
 import { getChapterView } from "@/services/courses/courses.service";
 import "./chapter-page.css";
@@ -23,13 +22,6 @@ export default async function ChapterPage({ params, searchParams }: ChapterPageP
 
   return (
     <div className="platform-page chapter-page">
-      <CourseNavigation
-        courseId={chapter.courseId}
-        courseName={chapter.courseName}
-        chapterOrder={chapter.order}
-        chapterName={chapter.name}
-        current="chapter"
-      />
       <ChapterDetailSection chapter={chapter} errorCode={error} />
     </div>
   );

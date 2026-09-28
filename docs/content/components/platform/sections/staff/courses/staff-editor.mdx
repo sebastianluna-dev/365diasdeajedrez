@@ -1,10 +1,10 @@
 ---
-description: "The header of the staff course screens (breadcrumbs, title, badge, facts, actions) and the two-column layout whose narrow aside is sized in pixels."
+description: "The header of the staff course screens (title, badge, facts, actions) and the two-column layout whose narrow aside is sized in pixels."
 ---
 
 # `StaffEditorHead`
 
-Also exports `StaffEditorLayout` and the `Crumb` type.
+Also exports `StaffEditorLayout`.
 
 |            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -15,7 +15,7 @@ Also exports `StaffEditorLayout` and the `Crumb` type.
 
 ## Purpose
 
-The course → chapter → lesson trail has four levels. Without a breadcrumb on every screen, the only way to go up one step is the browser's back button, so the header lives in one component rather than in each page. Without crumbs a screen is top-level and its title weighs the same as "Alumnos"; with crumbs it hangs from something and goes down one step, so the hierarchy is seen without reading the trail.
+The header of the course screens lives in one component rather than in each page, so the four of them (catalog, course, chapter, lesson) name themselves the same way. It carries no trail above the title: the platform has none (2026-09-27). What says where one is is the size of the title: `level="root"` for a screen of the menu, whose title weighs the same as "Alumnos", and `nested` (the default) for what hangs from one, a step down.
 
 `StaffEditorLayout` is the two-column frame: the work on the left and, on the right, what is glanced at. The narrow column is in pixels and not fractions so it does not stretch on wide screens, where a four-figure list at half the screen looks empty.
 
@@ -23,14 +23,14 @@ The course → chapter → lesson trail has four levels. Without a breadcrumb on
 
 ### `StaffEditorHead`
 
-| Prop          | Type        | Required | Meaning                                                                                                      |
-| ------------- | ----------- | -------- | ------------------------------------------------------------------------------------------------------------ |
-| `crumbs`      | `Crumb[]`   | no       | `{ label, href }[]` up to here, **without** the current place, which is `title`. Absent means a root screen. |
-| `title`       | `string`    | yes      | The `<h1>`, and the last crumb.                                                                              |
-| `badge`       | `ReactNode` | no       | Beside the title, on its row: a course's status pill, for instance.                                          |
-| `meta`        | `ReactNode` | no       | Short facts under the title.                                                                                 |
-| `actions`     | `ReactNode` | no       | Top right: search, "Nuevo curso", "Ver en la plataforma".                                                    |
-| `description` | `string`    | no       | One sentence under the title.                                                                                |
+| Prop          | Type                 | Required | Meaning                                                                                                            |
+| ------------- | -------------------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| `title`       | `string`             | yes      | The `<h1>`.                                                                                                        |
+| `level`       | `"root" \| "nested"` | no       | `root`: a screen of the menu (the catalog), with the big title. `nested` (default): a course, a chapter, a lesson. |
+| `badge`       | `ReactNode`          | no       | Beside the title, on its row: a course's status pill, for instance.                                                |
+| `meta`        | `ReactNode`          | no       | Short facts under the title.                                                                                       |
+| `actions`     | `ReactNode`          | no       | Top right: search, "Nuevo curso", "Ver en la plataforma".                                                          |
+| `description` | `string`             | no       | One sentence under the title.                                                                                      |
 
 ### `StaffEditorLayout`
 
@@ -41,17 +41,17 @@ The course → chapter → lesson trail has four levels. Without a breadcrumb on
 
 ## Behaviour
 
-None. The crumbs are a `<nav aria-label="Ruta">` with the current title as a non-link span.
+None.
 
 ## Markup & styling
 
 Two blocks in one sheet (133 lines).
 
-**Elements:** `.staff-editor-head__crumbs`, `.staff-editor-head__crumb`, `.staff-editor-head__crumb-link`, `.staff-editor-head__separator`, `.staff-editor-head__current`, `.staff-editor-head__bar`, `.staff-editor-head__heading`, `.staff-editor-head__title-row`, `.staff-editor-head__title`, `.staff-editor-head__description`, `.staff-editor-head__meta`, `.staff-editor-head__actions`; `.staff-editor__main`, `.staff-editor__aside`
+**Elements:** `.staff-editor-head__bar`, `.staff-editor-head__heading`, `.staff-editor-head__title-row`, `.staff-editor-head__title`, `.staff-editor-head__description`, `.staff-editor-head__meta`, `.staff-editor-head__actions`; `.staff-editor__main`, `.staff-editor__aside`
 
 **Modifiers and states:** `.staff-editor-head_level_root`, `.staff-editor_layout_single`
 
-**Tokens:** `--platform-accent-ink`, `--platform-font`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-font`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
 **Breakpoints:** `(max-width: 1080px)` stacks the aside under the main column; `(max-width: 760px)` stacks the actions under the heading.
 
@@ -63,10 +63,6 @@ From `components/platform/sections/staff/courses/chapter-editor.section.tsx`:
 import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 
 <StaffEditorHead
-  crumbs={[
-    { label: "Cursos", href: staffRoutes.courses },
-    { label: chapter.courseName, href: staffRoutes.courseDetail(chapter.courseId) },
-  ]}
   title={chapter.name}
   meta={
     <>

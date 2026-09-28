@@ -1,6 +1,4 @@
 .chapter-page {
-  /* The breadcrumbs sit right under the bar, as on the course page. */
-  margin-top: -18px;
   gap: 22px;
   /* Narrower column than the rest of the platform (1040 versus 1320): this
      page is a list read top to bottom, and at full width the rows would have

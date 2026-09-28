@@ -1,8 +1,3 @@
 .course-page {
-  /* The breadcrumbs sit right under the bar (26px in the design), not at the
-     height of a page that opens with a big title, which is what the shell
-     reserves 44px for. The 18px difference is recovered here instead of
-     touching the shell's padding, which serves every other screen. */
-  margin-top: -18px;
   gap: 22px;
 }

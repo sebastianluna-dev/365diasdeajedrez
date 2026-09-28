@@ -39,8 +39,8 @@ export default async function StaffCoursePage({ params, searchParams }: StaffCou
     searchParams,
   ]);
 
-  // The header goes INSIDE the section: it carries the breadcrumbs and the
-  // status, which are data of the course and not of the page.
+  // The header goes INSIDE the section: it carries the name and the status,
+  // which are data of the course and not of the page.
   return (
     <div className="platform-page staff-course-page">
       <CourseEditorSection

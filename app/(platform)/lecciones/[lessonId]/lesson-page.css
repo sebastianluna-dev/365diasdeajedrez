@@ -1,5 +1,8 @@
 .lesson-page {
-  /* The breadcrumbs sit right under the bar, as in course and chapter. */
-  margin-top: -20px;
+  /* A workspace, not a page that opens with a big title: it starts right
+     under the bar, like the game view, and the board gets the height. The
+     shell reserves 44px there; the difference is recovered here instead of
+     touching its padding, which serves every other screen. */
+  margin-top: -18px;
   gap: 18px;
 }

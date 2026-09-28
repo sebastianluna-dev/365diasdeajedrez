@@ -26,14 +26,7 @@ export function ChapterGamesSection({ chapter, games, errorCode }: ChapterGamesS
 
   return (
     <div className="chapter-games">
-      <StaffEditorHead
-        crumbs={[
-          { label: "Cursos", href: staffRoutes.courses },
-          { label: chapter.courseName, href: staffRoutes.courseDetail(chapter.courseId) },
-        ]}
-        title={chapter.name}
-        meta={<span>Capítulo {chapter.order}</span>}
-      />
+      <StaffEditorHead title={chapter.name} meta={<span>Capítulo {chapter.order}</span>} />
 
       <StaffTabs
         current={staffRoutes.chapterGames(chapter.courseId, chapter.id)}

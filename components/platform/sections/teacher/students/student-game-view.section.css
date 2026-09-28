@@ -3,27 +3,6 @@
   flex-direction: column;
   gap: 18px;
 
-  & .student-game__breadcrumb {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    font-size: 15px;
-    color: var(--platform-text-muted);
-  }
-
-  & .student-game__breadcrumb-link {
-    color: var(--platform-text-muted);
-  }
-
-  & .student-game__breadcrumb-link:hover {
-    color: var(--platform-accent-ink);
-  }
-
-  & .student-game__breadcrumb-separator {
-    color: var(--platform-border);
-  }
-
   & .student-game__head {
     display: flex;
     flex-direction: column;

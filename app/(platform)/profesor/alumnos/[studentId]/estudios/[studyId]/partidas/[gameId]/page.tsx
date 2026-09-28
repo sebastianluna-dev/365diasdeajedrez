@@ -26,12 +26,7 @@ export default async function StudentGamePage({ params }: StudentGamePageProps) 
 
   return (
     <div className="platform-page teacher-student-game-page">
-      <StudentGameViewSection
-        studentId={studentId}
-        studentName={student.displayName}
-        game={game}
-        scheduledClasses={scheduledClasses}
-      />
+      <StudentGameViewSection studentName={student.displayName} game={game} scheduledClasses={scheduledClasses} />
     </div>
   );
 }

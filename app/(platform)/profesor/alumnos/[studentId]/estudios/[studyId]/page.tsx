@@ -28,7 +28,7 @@ export default async function StudentStudyPage({ params }: StudentStudyPageProps
         <p className="platform-page__subtitle">Estudio de {student.displayName}</p>
       </header>
 
-      <StudentStudyViewSection studentId={studentId} studentName={student.displayName} study={study} />
+      <StudentStudyViewSection study={study} />
     </div>
   );
 }

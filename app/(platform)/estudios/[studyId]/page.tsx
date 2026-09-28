@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import { StudiesNavigation } from "@/components/platform/shared/studies-navigation.comp";
 import { StudyDetailSection } from "@/components/platform/sections/studies/study-detail/study-detail.section";
 import { platformRoutes } from "@/lib/platform-routes";
 import {
@@ -52,7 +51,6 @@ export default async function StudyPage({ params, searchParams }: StudyPageProps
 
   return (
     <div className="platform-page study-page">
-      <StudiesNavigation studyName={study.name} />
       <StudyDetailSection
         study={study}
         kinds={kinds}

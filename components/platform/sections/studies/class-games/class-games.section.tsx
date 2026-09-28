@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { EmptyState } from "@/components/platform/shared/empty-state.comp";
-import { platformRoutes } from "@/lib/platform-routes";
 import { getClassGames } from "@/services/studies/studies.service";
 import "./class-games.section.css";
 
@@ -16,14 +15,6 @@ export async function ClassGamesSection() {
 
   return (
     <section className="class-games">
-      <nav className="class-games__breadcrumb" aria-label="Ruta de estudios">
-        <Link href={platformRoutes.studies} className="class-games__breadcrumb-link">
-          Mis estudios
-        </Link>
-        <span className="class-games__breadcrumb-separator">/</span>
-        <span className="class-games__breadcrumb-current">Partidas de mis clases</span>
-      </nav>
-
       <header className="platform-page__head">
         <div className="class-games__tags">
           <span className="platform-tag platform-tag_variant_accent">Colección</span>

@@ -3,38 +3,6 @@
   flex-direction: column;
   gap: 14px;
 
-  & .staff-editor-head__crumbs {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    font-size: 14px;
-  }
-
-  & .staff-editor-head__crumb {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  & .staff-editor-head__crumb-link {
-    color: var(--platform-text-muted);
-    transition: color 150ms;
-  }
-
-  & .staff-editor-head__crumb-link:hover {
-    color: var(--platform-accent-ink);
-  }
-
-  & .staff-editor-head__separator {
-    color: var(--platform-text-faint);
-  }
-
-  & .staff-editor-head__current {
-    color: var(--platform-text);
-    font-weight: 600;
-  }
-
   & .staff-editor-head__bar {
     display: flex;
     align-items: flex-end;

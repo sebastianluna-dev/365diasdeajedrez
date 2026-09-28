@@ -24,7 +24,6 @@ export function CourseGamesSection({ course, games }: CourseGamesSectionProps) {
   return (
     <div className="course-games">
       <StaffEditorHead
-        crumbs={[{ label: "Cursos", href: staffRoutes.courses }]}
         title={course.name}
         badge={
           <span className={`course-games__status course-games__status_state_${course.statusCode.toLowerCase()}`}>

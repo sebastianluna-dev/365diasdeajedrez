@@ -57,6 +57,7 @@ export async function CoursesAdminSection({ query, status, errorCode }: CoursesA
     <div className="courses-admin">
       <StaffEditorHead
         title="Cursos"
+        level="root"
         description="Los cursos nacen en borrador y sólo se ven en la plataforma al publicarlos."
         actions={
           <>
