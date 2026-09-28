@@ -6,17 +6,16 @@ import { ImageIcon } from "@/components/icons/image-icon.comp";
 import { IMAGE_ACCEPT } from "@/constants/platform/upload.const";
 import { isDisplayableImage } from "@/lib/remote-image";
 import "./image-upload.comp.css";
+import type { ImageSaveResult } from "@/services/media/media.types";
 import { useImageUpload } from "./use-image-upload.hook";
 
 interface ImageUploadProps {
-  /** Name of the field that travels in the form, with the URL as its value. */
-  name: string;
   /**
-   * Id of the `<form>` the field belongs to, when the component lives outside
-   * it. It is what lets the cover be managed in its own card and saved with
-   * the rest of the metadata.
+   * The server action that stores the image, already bound to what it
+   * belongs to. It is called with the new URL the moment the upload ends, and
+   * with `""` when the image is taken away.
    */
-  form?: string;
+  action: (url: string) => Promise<ImageSaveResult>;
   /** The image it already has saved, if any. */
   defaultValue?: string;
   /** What it is and in which ratio: "Portada del curso". */
@@ -27,12 +26,14 @@ interface ImageUploadProps {
 }
 
 /**
- * Uploads an image to Cloudinary and leaves its URL in the form that saves it.
+ * Uploads an image to Cloudinary and stores it.
  *
  * EVERYTHING happens here: the file is dragged or chosen, the result is seen
- * and removed. The URL is neither shown nor asked for — whoever manages a
- * course has no reason to know what Cloudinary is —; it travels in a hidden
- * field and is saved when the form is saved, like the rest of the fields.
+ * and removed, and each of those is saved by itself. Uploading IS saving:
+ * until 2026-09-28 the URL travelled in a hidden field of the metadata form,
+ * in another column, and an image uploaded without pressing that form's
+ * button was lost without a word. The URL is neither shown nor asked for —
+ * whoever manages a course has no reason to know what Cloudinary is.
  *
  * The file goes from the browser to Cloudinary DIRECTLY, with a signature
  * requested from the server: neither the credentials come down to the
@@ -43,13 +44,19 @@ interface ImageUploadProps {
  * itself (see lib/cloudinary-url), which is what fixes a square photo. An
  * image already exported in that ratio stays as it is.
  */
-export function ImageUpload({ name, form, defaultValue, label, aspectRatio = "21:9", hint }: ImageUploadProps) {
-  const { url, status, isUploading, upload, clear } = useImageUpload({ initialUrl: defaultValue, aspectRatio });
+export function ImageUpload({ action, defaultValue, label, aspectRatio = "21:9", hint }: ImageUploadProps) {
+  const { url, status, isUploading, upload, clear } = useImageUpload({
+    initialUrl: defaultValue,
+    aspectRatio,
+    save: action,
+  });
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const hasImage = isDisplayableImage(url);
   const boxRatio = aspectRatio.replace(":", " / ");
+
+  const busyLabel = status.kind === "uploading" ? "Subiendo…" : status.kind === "saving" ? "Guardando…" : undefined;
 
   const pick = (file: File | undefined) => {
     if (file) void upload(file);
@@ -57,9 +64,6 @@ export function ImageUpload({ name, form, defaultValue, label, aspectRatio = "21
 
   return (
     <div className="image-upload">
-      {/* The only thing the form sees. */}
-      <input type="hidden" name={name} value={url} form={form} />
-
       <input
         ref={inputRef}
         type="file"
@@ -119,7 +123,7 @@ export function ImageUpload({ name, form, defaultValue, label, aspectRatio = "21
               {label} · {aspectRatio}
             </span>
             <span className="image-upload__placeholder-hint">
-              {isUploading ? "Subiendo…" : "Arrastra la imagen o pulsa para elegirla"}
+              {busyLabel ?? "Arrastra la imagen o pulsa para elegirla"}
             </span>
           </span>
         </button>
@@ -134,11 +138,11 @@ export function ImageUpload({ name, form, defaultValue, label, aspectRatio = "21
           disabled={isUploading}
           onClick={() => inputRef.current?.click()}
         >
-          {isUploading ? "Subiendo…" : hasImage ? "Cambiar imagen" : "Subir imagen"}
+          {busyLabel ?? (hasImage ? "Cambiar imagen" : "Subir imagen")}
         </button>
 
         {url && (
-          <button type="button" className="image-upload__remove" onClick={clear}>
+          <button type="button" className="image-upload__remove" disabled={isUploading} onClick={() => void clear()}>
             Quitar
           </button>
         )}
@@ -147,6 +151,11 @@ export function ImageUpload({ name, form, defaultValue, label, aspectRatio = "21
       {status.kind === "error" ? (
         <p className="image-upload__error" role="alert">
           {status.message}
+        </p>
+      ) : status.kind === "saved" ? (
+        // What was just done, said once it is true: the image is stored.
+        <p className="image-upload__hint image-upload__hint_state_saved" role="status">
+          {hasImage ? "Imagen guardada." : "Imagen quitada."}
         </p>
       ) : (
         <p className="image-upload__hint">{hint}</p>

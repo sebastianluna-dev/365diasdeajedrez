@@ -123,7 +123,19 @@
     color: var(--platform-text-subtle);
   }
 
+  /* «Imagen guardada.»: in the colour of what went well, so it is not taken
+     for the hint that was there a moment ago. */
+  & .image-upload__hint_state_saved {
+    font-weight: 600;
+    color: var(--platform-success-ink);
+  }
+
   & .image-upload__error {
     color: var(--platform-danger);
+  }
+
+  & .image-upload__remove:disabled {
+    opacity: 0.55;
+    cursor: default;
   }
 }

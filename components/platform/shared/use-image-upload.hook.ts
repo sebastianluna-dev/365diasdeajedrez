@@ -4,8 +4,14 @@ import { useState } from "react";
 import { IMAGE_MAX_BYTES, isAllowedImageType } from "@/constants/platform/upload.const";
 import { withCoverCrop } from "@/lib/cloudinary-url";
 import { createUploadSignature } from "@/services/media/media.actions";
+import type { ImageSaveResult } from "@/services/media/media.types";
 
-export type ImageUploadStatus = { kind: "idle" } | { kind: "uploading" } | { kind: "error"; message: string };
+export type ImageUploadStatus =
+  | { kind: "idle" }
+  | { kind: "uploading" }
+  | { kind: "saving" }
+  | { kind: "saved" }
+  | { kind: "error"; message: string };
 
 const MAX_MB = Math.round(IMAGE_MAX_BYTES / (1024 * 1024));
 
@@ -14,6 +20,12 @@ interface UseImageUploadOptions {
   initialUrl?: string;
   /** Ratio the uploaded image is cropped to: "21:9", "1:1". */
   aspectRatio: string;
+  /**
+   * Stores the image the moment it changes: a server action, given the new
+   * URL, or `""` when the image is taken away. Without it the URL only lives
+   * here, and it is whoever mounts the hook who sends it in a form.
+   */
+  save?: (url: string) => Promise<ImageSaveResult>;
 }
 
 /**
@@ -28,10 +40,39 @@ interface UseImageUploadOptions {
  * On upload it is normalised to the target ratio with a crop in the URL
  * itself (see lib/cloudinary-url), which is what fixes a photo of another
  * shape. An image already exported in that ratio stays as it is.
+ *
+ * With `save`, uploading IS saving: the image is stored as soon as it is up,
+ * and taking it away is stored too. What is shown is what is stored: if the
+ * save fails, the image goes back to the one there was.
  */
-export function useImageUpload({ initialUrl, aspectRatio }: UseImageUploadOptions) {
+export function useImageUpload({ initialUrl, aspectRatio, save }: UseImageUploadOptions) {
   const [url, setUrl] = useState(initialUrl ?? "");
   const [status, setStatus] = useState<ImageUploadStatus>({ kind: "idle" });
+
+  /** Shows the image and, when there is somewhere to store it, stores it. */
+  const commit = async (next: string, failure: string) => {
+    if (!save) {
+      setUrl(next);
+      setStatus({ kind: "idle" });
+      return;
+    }
+
+    const previous = url;
+    // Shown at once, while it is being stored: the upload already took its time.
+    setUrl(next);
+    setStatus({ kind: "saving" });
+    try {
+      const result = await save(next);
+      if (result.ok) {
+        setStatus({ kind: "saved" });
+        return;
+      }
+    } catch {
+      // Falls through to the failure below: a network error is a failed save too.
+    }
+    setUrl(previous);
+    setStatus({ kind: "error", message: failure });
+  };
 
   const upload = async (file: File) => {
     // Checked here to say so instantly; the real authority is Cloudinary,
@@ -73,18 +114,24 @@ export function useImageUpload({ initialUrl, aspectRatio }: UseImageUploadOption
 
       // Cropped from the start to the ratio it will be seen in: that way what
       // is shown here is exactly what will be seen everywhere else.
-      setUrl(withCoverCrop(uploaded.secure_url, "auto", aspectRatio));
-      setStatus({ kind: "idle" });
+      await commit(
+        withCoverCrop(uploaded.secure_url, "auto", aspectRatio),
+        "La imagen se subió, pero no se pudo guardar. Vuelve a subirla.",
+      );
     } catch {
       setStatus({ kind: "error", message: "La subida falló. Inténtalo otra vez." });
     }
   };
 
   /** Takes the image away; what was uploaded stays in Cloudinary, unused. */
-  const clear = () => {
-    setUrl("");
-    setStatus({ kind: "idle" });
-  };
+  const clear = () => commit("", "No se pudo quitar la imagen. Inténtalo otra vez.");
 
-  return { url, status, isUploading: status.kind === "uploading", upload, clear };
+  return {
+    url,
+    status,
+    /** Busy with the file or with storing it: nothing else should be started meanwhile. */
+    isUploading: status.kind === "uploading" || status.kind === "saving",
+    upload,
+    clear,
+  };
 }

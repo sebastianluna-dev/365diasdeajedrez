@@ -15,6 +15,7 @@ import { EXERCISE_MODE } from "@/constants/platform/training-codes.const";
 import { deriveExerciseData } from "@/lib/chess/exercise-derivation";
 import { syncLessonTrainingExercise } from "@/services/shared/lesson-training.service";
 import { numericId } from "@/lib/numeric-id";
+import { isDisplayableImage } from "@/lib/remote-image";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
@@ -34,6 +35,7 @@ import {
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
 import { authorSlugFor } from "./author-rules";
 import type { AuthorFormState } from "./staff-courses.types";
+import type { ImageSaveResult } from "@/services/media/media.types";
 import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_SOURCE } from "@/constants/platform/study-codes.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
@@ -93,7 +95,6 @@ const COURSE_SCHEMA = z.object({
 });
 const COURSE_UPDATE_SCHEMA = COURSE_SCHEMA.extend({
   description: formOptionalText(DESCRIPTION_MAX_LENGTH),
-  cover: formOptionalUrl(2000),
   // The levels go by slug and there is no list of them in the constants to
   // check against: the write skips the slugs the catalog does not have.
   levelSlugs: formSlugList(),
@@ -178,14 +179,16 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
 
   const parsed = parseForm(COURSE_UPDATE_SCHEMA, formData);
   if (!parsed.ok) fail(detailPath, courseFormError(parsed.field));
-  const { name, slug, contentTypeCodes, description, cover, levelSlugs } = parsed.data;
+  const { name, slug, contentTypeCodes, description, levelSlugs } = parsed.data;
   const db = getPlatformDb();
 
   try {
     await db.$transaction(async (tx) => {
       await tx.course.update({
         where: { id: courseId },
-        data: { name, slug, description, cover },
+        // The cover is not here: it saves itself when it is uploaded
+        // (`updateCourseCover`). A form that does not carry it must not erase it.
+        data: { name, slug, description },
       });
 
       // Content types and levels are checkbox groups: each whole set is replaced
@@ -212,6 +215,40 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
   // The levels are read on the student's side too.
   revalidatePath(platformRoutes.courses);
   revalidatePath(platformRoutes.courseDetail(courseId));
+}
+
+const COVER_MAX_LENGTH = 2000;
+
+/**
+ * Stores the course's cover, or takes it away when the URL is empty. It is
+ * what `ImageUpload` calls the moment an upload ends, so it answers instead of
+ * redirecting: the card stays where it is and says how it went.
+ *
+ * Only an image `next/image` can render is accepted (`isDisplayableImage`):
+ * one from another host does not degrade, it answers 400 and takes down every
+ * page that shows the cover, the students' catalog included.
+ */
+export async function updateCourseCover(courseId: string, url: string): Promise<ImageSaveResult> {
+  const staff = await requireStaff();
+  if (!(await allowAction(`${staff.user.id}:course-cover`, 30, 60_000))) return { ok: false };
+
+  const cover = url.trim();
+  if (cover.length > COVER_MAX_LENGTH) return { ok: false };
+  if (cover.length > 0 && !isDisplayableImage(cover)) return { ok: false };
+
+  const db = getPlatformDb();
+  const { count } = await db.course.updateMany({
+    where: { id: courseId },
+    data: { cover: cover.length > 0 ? cover : null },
+  });
+  if (count === 0) return { ok: false };
+
+  revalidatePath(staffRoutes.courseDetail(courseId));
+  revalidatePath(staffRoutes.courses);
+  // The cover is what the student sees of a course before opening it.
+  revalidatePath(platformRoutes.courses);
+  revalidatePath(platformRoutes.courseDetail(courseId));
+  return { ok: true };
 }
 
 export async function publishCourse(courseId: string): Promise<void> {

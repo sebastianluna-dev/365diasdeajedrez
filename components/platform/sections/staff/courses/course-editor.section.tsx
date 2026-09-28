@@ -5,7 +5,7 @@ import { PlatformNotice } from "@/components/platform/shared/platform-notice.com
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
-import { updateCourse } from "@/services/staff-courses/staff-courses.actions";
+import { updateCourse, updateCourseCover } from "@/services/staff-courses/staff-courses.actions";
 import type {
   AuthorAdminRow,
   CatalogOption,
@@ -25,9 +25,6 @@ import { StaffTabs } from "./staff-tabs.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./course-editor.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
-
-/** Ties the cover, which lives in the column next door, to the form that saves. */
-const METADATA_FORM_ID = "course-metadata";
 
 interface CourseEditorSectionProps {
   course: CourseAdminDetail;
@@ -108,15 +105,14 @@ export function CourseEditorSection({
         aside={
           <>
             <StaffPanel title="Portada">
-              {/* Outside the metadata <form>, tied to it through `form`: the cover
-                  is managed entirely here and saved with the rest. */}
+              {/* The cover saves itself: uploading it stores it, and so does
+                  taking it away. It is not a field of the metadata form. */}
               <ImageUpload
-                name="cover"
-                form={METADATA_FORM_ID}
+                action={updateCourseCover.bind(null, course.id)}
                 defaultValue={course.cover ?? undefined}
                 label="Portada del curso"
                 aspectRatio="21:9"
-                hint="JPG, PNG, WebP o AVIF. Se guarda al pulsar «Guardar metadatos»."
+                hint="JPG, PNG, WebP o AVIF. Se guarda al subirla."
               />
             </StaffPanel>
 
@@ -129,7 +125,7 @@ export function CourseEditorSection({
         }
       >
         <StaffPanel title="Metadatos">
-          <form id={METADATA_FORM_ID} className="course-editor__form" action={updateCourse.bind(null, course.id)}>
+          <form className="course-editor__form" action={updateCourse.bind(null, course.id)}>
             {/* The only piece of the form with state: the slug follows the name. */}
             <CourseNameFields name={course.name} slug={course.slug} />
 
