@@ -14,7 +14,16 @@
 // chapter titles misspell several players and attribute game 48 to the wrong
 // Byrne. `GAMES` below is the correction table, one entry per chapter, and the
 // seed refuses to run if the PGN stops matching it. The moves and the
-// commentary are NOT touched: the PGN travels verbatim into each lesson.
+// commentary are NOT touched: they travel verbatim into each lesson.
+//
+// WHAT IS REWRITTEN IS THE GAME'S RECORD. The study exports no `White`, no
+// `Black` and no result, its `Date` is the day the chapter was uploaded and
+// its `Event` is the chapter's title. The platform reads a game's players,
+// result and date off those headers when it files the lesson's PGN as a game
+// of its chapter (`npm run collections:by-chapter`), so as exported every game
+// would be «Desconocido – Desconocido», still in play, in 2024. `recordOf`
+// writes those five headers from the table; the study's own (`ChapterName`,
+// `ChapterURL`, `Annotator`…) stay where they were.
 //
 // ON THE SOURCES. The games and their results are facts and are cited freely.
 // The commentary is Fischer's, in Antonio Gude's Spanish translation for La
@@ -64,7 +73,19 @@ interface GameEntry {
    * the study is demonstrably wrong, so every correction can be reviewed.
    */
   correction?: string;
+  /**
+   * The tournament, for the games whose source says it: the five of the
+   * course's record of the book, and the one chapter where the study itself
+   * does. The rest stay without one rather than take it from memory.
+   */
+  event?: string;
+  /** The full date, where the study gives the day; otherwise only `year` is known. */
+  date?: string;
+  /** The reference games' result, as their closing note states it. */
+  result?: ResultToken;
 }
+
+type ResultToken = "1-0" | "0-1" | "1/2-1/2";
 
 /**
  * One entry per chapter of the study, in its order. The title is rebuilt from
@@ -109,8 +130,8 @@ const GAMES: GameEntry[] = [
   { chapterName: "14. Paul Keres - Robert James Fischer 1959", number: 14, white: "Paul Keres", black: "Robert James Fischer", year: 1959 },
   { chapterName: "15. Vasili Smyslov - Robert James Fischer 1959", number: 15, white: "Vasili Smyslov", black: "Robert James Fischer", year: 1959 },
   { chapterName: "16. Robert James Fischer - Tigran Petrosian 1959", number: 16, white: "Robert James Fischer", black: "Tigran Petrosian", year: 1959 },
-  { chapterName: "17. Robert James Fischer - Mikhail Tal 1959", number: 17, white: "Robert James Fischer", black: "Mikhail Tal", year: 1959 },
-  { chapterName: "18. Boris Spassky - Robert James Fischer 1960", number: 18, white: "Boris Spassky", black: "Robert James Fischer", year: 1960 },
+  { chapterName: "17. Robert James Fischer - Mikhail Tal 1959", number: 17, white: "Robert James Fischer", black: "Mikhail Tal", year: 1959, event: "Torneo de Candidatos" },
+  { chapterName: "18. Boris Spassky - Robert James Fischer 1960", number: 18, white: "Boris Spassky", black: "Robert James Fischer", year: 1960, event: "Mar del Plata" },
   {
     chapterName: "19. Arinbjon Gudmundsson - Robert James Fischer 1960",
     number: 19,
@@ -150,9 +171,18 @@ const GAMES: GameEntry[] = [
     year: 1962,
     correction: "El estudio escribe «Robert Korchnoi», contagiado del nombre de Fischer; el gran maestro es Viktor Korchnoi.",
   },
-  { chapterName: "37. Paul Keres - Robert James Fisher 1962", number: 37, white: "Paul Keres", black: "Robert James Fischer", year: 1962 },
+  {
+    chapterName: "37. Paul Keres - Robert James Fisher 1962",
+    number: 37,
+    white: "Paul Keres",
+    black: "Robert James Fischer",
+    year: 1962,
+    // The one chapter the study gave a record of its own, «Cantidatos» included.
+    event: "Torneo de Candidatos, Curaçao",
+    date: "1962.04.07",
+  },
   { chapterName: "38 Robert James Fischer - Paul Keres 1962", number: 38, white: "Robert James Fischer", black: "Paul Keres", year: 1962 },
-  { chapterName: "39. Mikhail Botvinnik - Robert James Fischer 1962", number: 39, white: "Mikhail Botvinnik", black: "Robert James Fischer", year: 1962 },
+  { chapterName: "39. Mikhail Botvinnik - Robert James Fischer 1962", number: 39, white: "Mikhail Botvinnik", black: "Robert James Fischer", year: 1962, event: "Olimpiada de Varna" },
   { chapterName: "40. Robert James Fischer - Miguel Najdorf 1962", number: 40, white: "Robert James Fischer", black: "Miguel Najdorf", year: 1962 },
   { chapterName: "41. Robert James Fischer - Karl Robatsch 1962", number: 41, white: "Robert James Fischer", black: "Karl Robatsch", year: 1962 },
   { chapterName: "42. Wolfgang Unzicker - Robert James Fischer 1962", number: 42, white: "Wolfgang Unzicker", black: "Robert James Fischer", year: 1962 },
@@ -174,6 +204,7 @@ const GAMES: GameEntry[] = [
     white: "Robert Byrne",
     black: "Robert James Fischer",
     year: 1963,
+    event: "Campeonato de Estados Unidos 1963/64",
     correction:
       "El estudio la atribuye a Donald Byrne. Es de su hermano Robert, en el Campeonato de Estados Unidos 1963/64: el propio comentario de la partida cita a «Byrne» en ese torneo, y la partida con Donald Byrne (1956) no está en el libro.",
   },
@@ -198,12 +229,12 @@ const GAMES: GameEntry[] = [
     year: 1966,
     correction: "«Bednarsky» es una errata del estudio: el polaco se llama Jacek Bednarski.",
   },
-  { chapterName: "55 bis 1: García Fischer 1966", number: null, white: "García", black: "Fischer", year: 1966 },
-  { chapterName: "55 bis 2: Ciocaltea-Gheorghiu 1967", number: null, white: "Ciocaltea", black: "Gheorghiu", year: 1967 },
-  { chapterName: "55 bis 3 R.Byrne-Fischer 1967", number: null, white: "Robert Byrne", black: "Fischer", year: 1967 },
+  { chapterName: "55 bis 1: García Fischer 1966", number: null, white: "García", black: "Fischer", year: 1966, result: "0-1" },
+  { chapterName: "55 bis 2: Ciocaltea-Gheorghiu 1967", number: null, white: "Ciocaltea", black: "Gheorghiu", year: 1967, result: "0-1" },
+  { chapterName: "55 bis 3 R.Byrne-Fischer 1967", number: null, white: "Robert Byrne", black: "Fischer", year: 1967, result: "0-1" },
   { chapterName: "56. Robert James Fischer - Svetozar Gligoric 1966", number: 56, white: "Robert James Fischer", black: "Svetozar Gligoric", year: 1966 },
   { chapterName: "57. Bent Larsen - Robert James Fischer 1967", number: 57, white: "Bent Larsen", black: "Robert James Fischer", year: 1967 },
-  { chapterName: "58. Robert James Fischer - Efim Geller 1967", number: 58, white: "Robert James Fischer", black: "Efim Geller", year: 1967 },
+  { chapterName: "58. Robert James Fischer - Efim Geller 1967", number: 58, white: "Robert James Fischer", black: "Efim Geller", year: 1967, event: "Skopie" },
 ];
 
 /**
@@ -213,6 +244,31 @@ const GAMES: GameEntry[] = [
  */
 const PRIORITY_GAMES = new Set([17, 18, 39, 48, 58]);
 
+/**
+ * How each of the book's games ended, which the study does not record: every
+ * one of its `Result` headers is `*`.
+ *
+ * Fischer's closing note says it in all but four («Las negras abandonaron»,
+ * «Se acordaron tablas»…). Of those four, 39 is a draw by the course's record
+ * of the book; 19, 26 and 42 end on a winning position without the word, and
+ * are wins by count: the book has 9 draws and 3 losses, and the nine and the
+ * three listed here are all of them, so no other game can be either.
+ */
+const DRAWS = new Set([3, 9, 12, 16, 23, 28, 30, 37, 39]);
+const LOSSES = new Set([17, 18, 58]);
+
+function resultOf(entry: GameEntry): ResultToken {
+  if (entry.number === null) {
+    if (!entry.result) fail(`la partida de referencia «${entry.chapterName}» no tiene resultado`);
+    return entry.result;
+  }
+  if (DRAWS.has(entry.number)) return "1/2-1/2";
+
+  const fischerIsWhite = entry.white.includes("Fischer");
+  const fischerWon = !LOSSES.has(entry.number);
+  return fischerIsWhite === fischerWon ? "1-0" : "0-1";
+}
+
 // ---------------------------------------------------------------------------
 // The PGN
 // ---------------------------------------------------------------------------
@@ -221,7 +277,7 @@ interface RawChapter {
   chapterName: string;
   eco: string;
   /** Headers and moves, exactly as the study exports them. */
-  pgn: string;
+  block: string;
 }
 
 function tagOf(block: string, name: string): string | null {
@@ -243,7 +299,7 @@ function readChapters(): RawChapter[] {
       const eco = tagOf(block, "ECO");
       if (!chapterName) fail("un capítulo del PGN no trae ChapterName");
       if (!eco) fail(`el capítulo «${chapterName}» no trae ECO`);
-      return { chapterName, eco, pgn: block.trim() };
+      return { chapterName, eco, block: block.trim() };
     });
 }
 
@@ -345,6 +401,41 @@ function descriptionOf(entry: GameEntry, raw: RawChapter): string {
   return `${players}, ${entry.year}. ECO ${raw.eco}. Partida ${entry.number} del libro, con los comentarios de Fischer.`;
 }
 
+/**
+ * Writes a header: in its place if the study has it, and if not right above
+ * `Result`, which every chapter has and is where the players go in a PGN.
+ */
+function withHeader(pgn: string, name: string, value: string): string {
+  const line = `[${name} "${value}"]`;
+  const existing = new RegExp(`^\\[${name} "[^"]*"\\]$`, "m");
+  if (existing.test(pgn)) return pgn.replace(existing, line);
+  if (!/^\[Result "/m.test(pgn)) fail(`un capítulo del PGN no trae Result`);
+  return pgn.replace(/^\[Result "/m, `${line}\n[Result "`);
+}
+
+/**
+ * The lesson's PGN: the study's, with the game's record written from the
+ * table. `?` is how a PGN says "not known", and the platform reads it as
+ * that: an unknown day gives no date, never the first of January.
+ */
+function recordOf(entry: GameEntry, raw: RawChapter): string {
+  const result = resultOf(entry);
+  const record: [string, string][] = [
+    ["Event", entry.event ?? "?"],
+    ["Date", entry.date ?? `${entry.year}.??.??`],
+    ["White", entry.white],
+    ["Black", entry.black],
+    ["Result", result],
+  ];
+
+  let pgn = raw.block;
+  for (const [name, value] of record) pgn = withHeader(pgn, name, value);
+
+  // The mark that closes the moves says the result too, and has to say the same.
+  if (!pgn.endsWith(" *")) fail(`«${raw.chapterName}» no termina en el marcador «*» del estudio`);
+  return `${pgn.slice(0, -1)}${result}`;
+}
+
 function toSeedLesson(entry: GameEntry, raw: RawChapter, order: number, referenceIndex: number): SeedLesson {
   return {
     // The id goes in the URL, so it stays short and readable. A game keeps its
@@ -358,7 +449,7 @@ function toSeedLesson(entry: GameEntry, raw: RawChapter, order: number, referenc
     // The board is set from Fischer's side: the notes are his, and reading them
     // from the other side of the board is reading them backwards.
     orientation: entry.black.includes("Fischer") ? BOARD_ORIENTATION.BLACK : BOARD_ORIENTATION.WHITE,
-    pgn: raw.pgn,
+    pgn: recordOf(entry, raw),
     topics: LESSON_TOPICS,
     // A whole game has no single forced line to train: the exercises will come
     // when the critical positions of each game are chosen one by one.

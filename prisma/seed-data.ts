@@ -673,8 +673,9 @@ export const COURSES: SeedCourse[] = [
     ],
   },
   THINK_LIKE_A_GRANDMASTER,
-  // No game collection of its own: here every lesson already IS a whole game,
-  // so a «Partidas» tab would list the same sixty twice.
+  // No collection of illustrative games like Kotov's: here every lesson already
+  // IS a whole game. They reach the «Partidas» tab when
+  // `npm run collections:by-chapter` files each lesson as a game of its chapter.
   MY_60_MEMORABLE_GAMES,
 ];
 
