@@ -14,7 +14,7 @@ import {
   type UserCourseState,
 } from "./courses.mapper";
 
-// The "only essential lessons" filter lives entirely here: the action merely
+// The "only priority" filter lives entirely here: the action merely
 // stores a row. That is why it is tested in the mapper, without a database.
 //
 // Test course: two chapters of three lessons. Priority ones are 1 and 4.
@@ -32,6 +32,7 @@ function chapter(id: string, order: number, lessons: LessonSpec[]) {
     order,
     name: `Capítulo ${order}`,
     description: null,
+    isPriority: false,
     estimatedDuration: null,
     lessons: lessons.map((lesson) => ({
       id: lesson.id,
@@ -145,6 +146,74 @@ describe("con el filtro encendido", () => {
   });
 });
 
+describe("un capítulo de prioridad", () => {
+  // The second chapter is priority whole; of the first, only its lesson 1.
+  const WITH_PRIORITY_CHAPTER = {
+    ...COURSE,
+    chapters: [
+      chapter("cap-1", 1, [
+        { id: "l1", order: 1, priority: true },
+        { id: "l2", order: 2 },
+      ]),
+      {
+        ...chapter("cap-2", 2, [
+          { id: "l3", order: 1 },
+          { id: "l4", order: 2 },
+        ]),
+        isPriority: true,
+      },
+    ],
+  } as unknown as CourseWithDetail;
+  const filtered = state({ onlyPriorityLessons: true });
+
+  it("lo dice en su tarjeta y en su página, y los demás no", () => {
+    const [first, second] = mapCourseDetail(WITH_PRIORITY_CHAPTER, state()).chapters;
+    expect(first?.isPriority).toBe(false);
+    expect(second?.isPriority).toBe(true);
+    expect(mapChapterView(WITH_PRIORITY_CHAPTER, "cap-2", state())?.isPriority).toBe(true);
+  });
+
+  it("con el filtro encendido entra entero, aunque ninguna de sus lecciones esté marcada", () => {
+    const view = mapChapterView(WITH_PRIORITY_CHAPTER, "cap-2", filtered);
+    expect(view?.lessons.map((lesson) => lesson.id)).toEqual(["l3", "l4"]);
+    expect(view?.hiddenLessons).toBe(0);
+    // The lesson's own tag is still the lesson's own mark.
+    expect(view?.lessons.map((lesson) => lesson.isPriority)).toEqual([false, false]);
+  });
+
+  it("y sus lecciones cuentan en el progreso del curso", () => {
+    const progress = mapCourseProgress(WITH_PRIORITY_CHAPTER, filtered);
+    expect(progress.totalLessons).toBe(3);
+    expect(mapCourseDetail(WITH_PRIORITY_CHAPTER, filtered).hiddenLessons).toBe(1);
+  });
+
+  it("la siguiente por aprender pasa por ellas", () => {
+    const detail = mapCourseDetail(
+      WITH_PRIORITY_CHAPTER,
+      state({ onlyPriorityLessons: true, lessonStatus: completed("l1") }),
+    );
+    expect(detail.learnHref).toContain("l3");
+  });
+});
+
+describe("un curso completo", () => {
+  it("es el que tiene aprendidas todas las lecciones que se ven", () => {
+    const all = completed("l1", "l2", "l3", "l4", "l5", "l6");
+    expect(mapCourseSummary(COURSE, state({ lessonStatus: all })).isCompleted).toBe(true);
+    expect(mapCourseDetail(COURSE, state({ lessonStatus: completed("l1") })).isCompleted).toBe(false);
+  });
+
+  it("con el filtro encendido, el que tiene aprendidas las de prioridad", () => {
+    const summary = mapCourseSummary(COURSE, state({ onlyPriorityLessons: true, lessonStatus: completed("l1", "l4") }));
+    expect(summary.isCompleted).toBe(true);
+  });
+
+  it("uno sin lecciones no lo está", () => {
+    const empty = { ...COURSE, chapters: [] } as unknown as CourseWithDetail;
+    expect(mapCourseDetail(empty, state()).isCompleted).toBe(false);
+  });
+});
+
 describe("por dónde sigue el curso", () => {
   it("si donde se quedó queda escondido, va a la primera visible sin terminar", () => {
     const view = mapChapterView(COURSE, "cap-1", state({ onlyPriorityLessons: true, lastLessonId: "l2" }));
@@ -167,7 +236,7 @@ describe("por dónde sigue el curso", () => {
     expect(view?.lessons).toEqual([]);
     // Nothing in view, nothing to learn: the button is not drawn.
     expect(view?.course.learnHref).toBeUndefined();
-    expect(view?.percent).toBe(0);
+    expect(view?.isCompleted).toBe(false);
   });
 });
 
@@ -259,9 +328,20 @@ describe("los capítulos del curso", () => {
     expect(second?.durationMin).toBe(90);
   });
 
-  it("cuentan TODAS sus lecciones para la ficha, y las que se ven para la barra", () => {
+  it("cuentan TODAS sus lecciones para la ficha, y las que se ven para su progreso", () => {
     const [first] = mapCourseDetail(WITH_NAMES, state({ onlyPriorityLessons: true })).chapters;
-    expect(first).toMatchObject({ lessonCount: 2, priorityLessons: 1, totalLessons: 1 });
+    expect(first).toMatchObject({ lessonCount: 2, totalLessons: 1 });
+  });
+
+  it("están completos cuando todas las lecciones que se ven están aprendidas", () => {
+    const [first, second] = mapCourseDetail(WITH_NAMES, state({ lessonStatus: completed("l1", "l3") })).chapters;
+    expect(first).toMatchObject({ completedLessons: 1, totalLessons: 2, isCompleted: false });
+    expect(second).toMatchObject({ completedLessons: 1, totalLessons: 1, isCompleted: true });
+  });
+
+  it("uno sin lecciones a la vista no está completo: no hay nada aprendido", () => {
+    const [, second] = mapCourseDetail(WITH_NAMES, state({ onlyPriorityLessons: true })).chapters;
+    expect(second).toMatchObject({ totalLessons: 0, isCompleted: false });
   });
 
   it("el curso suma todas sus lecciones y minutos, diga lo que diga el filtro", () => {
@@ -272,10 +352,10 @@ describe("los capítulos del curso", () => {
   it("el capítulo sabe cuál va antes y cuál después", () => {
     expect(mapChapterView(WITH_NAMES, "cap-1", state())).toMatchObject({
       previous: undefined,
-      next: { order: 2, href: "/cursos/10000009/2" },
+      next: { name: "El final", href: "/cursos/10000009/2" },
     });
     expect(mapChapterView(WITH_NAMES, "cap-2", state())).toMatchObject({
-      previous: { order: 1, href: "/cursos/10000009/1" },
+      previous: { name: "Los años de aprendizaje (1957–1959)", href: "/cursos/10000009/1" },
       next: undefined,
     });
   });

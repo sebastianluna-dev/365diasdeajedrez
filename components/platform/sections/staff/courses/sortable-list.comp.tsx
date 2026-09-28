@@ -11,7 +11,7 @@ export interface SortableItem {
   /** Line below: "12 lecciones", "Con PGN · 2 ejercicios". */
   meta: string;
   href: string;
-  /** Badge next to the name, like "Prioritaria". */
+  /** Badge next to the name, like "Prioridad". */
   badge?: string;
   /**
    * "Introducción" or "Cierre". Whoever has it takes a FIXED place — at the

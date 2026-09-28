@@ -97,7 +97,7 @@ export interface UserCourseState {
    */
   courseStatus?: ProgressStatusCode;
   lastLessonId?: string;
-  /** The student asked to see only this course's essential lessons. */
+  /** The student asked to see only what the staff marked as priority in this course. */
   onlyPriorityLessons: boolean;
   /** Orientation the student fixed; `AUTO` or absent = the lesson's rules. */
   boardOrientationCode?: string;
@@ -128,9 +128,17 @@ function isAdded(state: UserCourseState): boolean {
  * enabling it would hide already completed lessons and the done counter would
  * GO DOWN. With it, the percentage never goes backwards and "I already did it"
  * never becomes "where is it?".
+ *
+ * A lesson is priority by its own mark or by its chapter's: a chapter the
+ * staff marked is priority whole, and would otherwise open onto an empty list.
  */
-function isVisible(lesson: { id: string; isPriority: boolean }, state: UserCourseState): boolean {
-  return !state.onlyPriorityLessons || lesson.isPriority || state.lessonStatus.has(lesson.id);
+function isVisible(
+  lesson: { id: string; isPriority: boolean },
+  chapter: { isPriority: boolean },
+  state: UserCourseState,
+): boolean {
+  if (!state.onlyPriorityLessons) return true;
+  return lesson.isPriority || chapter.isPriority || state.lessonStatus.has(lesson.id);
 }
 
 /**
@@ -147,13 +155,14 @@ function allLessons(course: CourseWithContent) {
         ...lesson,
         chapterId: chapter.id,
         chapterOrder: chapterIndex + 1,
+        chapterIsPriority: chapter.isPriority,
       })),
   );
 }
 
 /** The ones the student sees, which are what is counted and navigated over. */
 function flattenLessons(course: CourseWithContent, state: UserCourseState) {
-  return allLessons(course).filter((lesson) => isVisible(lesson, state));
+  return allLessons(course).filter((lesson) => isVisible(lesson, { isPriority: lesson.chapterIsPriority }, state));
 }
 
 export function mapCourseProgress(course: CourseWithContent, state: UserCourseState): CourseProgressSummary {
@@ -247,8 +256,13 @@ export function mapCourseLevel(level: {
   };
 }
 
+/** Every lesson in view is learned, and there is at least one. */
+function isCompleted(progress: CourseProgressSummary): boolean {
+  return progress.totalLessons > 0 && progress.completedLessons === progress.totalLessons;
+}
+
 function ctaLabelFor(progress: CourseProgressSummary): CourseCta {
-  if (progress.totalLessons > 0 && progress.completedLessons === progress.totalLessons) return "Repasar";
+  if (isCompleted(progress)) return "Repasar";
   if (progress.completedLessons > 0 || progress.statusCode === PROGRESS_STATUS.IN_PROGRESS) return "Continuar";
   return "Empezar";
 }
@@ -276,6 +290,7 @@ export function mapCourseSummary(course: CourseWithContent, state: UserCourseSta
     authorNames: course.courseAuthors.map((courseAuthor) => courseAuthor.author.name),
     isAdded: isAdded(state),
     progress,
+    isCompleted: isCompleted(progress),
     continueHref: continueTarget(course, state),
     ctaLabel: ctaLabelFor(progress),
     href: platformRoutes.courseDetail(course.id),
@@ -288,9 +303,9 @@ function mapChapterItem(
   chapter: CourseWithContent["chapters"][number],
   state: UserCourseState,
 ): CourseChapterItem {
-  // Over the visible ones: the chapter's bar has to match the list that opens
-  // when it is pressed.
-  const lessons = chapter.lessons.filter((lesson) => isVisible(lesson, state));
+  // Over the visible ones: the chapter's count has to match the list that
+  // opens when it is pressed.
+  const lessons = chapter.lessons.filter((lesson) => isVisible(lesson, chapter, state));
   const completedLessons = lessons.filter(
     (lesson) => state.lessonStatus.get(lesson.id) === PROGRESS_STATUS.COMPLETED,
   ).length;
@@ -304,11 +319,11 @@ function mapChapterItem(
     name: chapter.name,
     description: chapter.description ?? undefined,
     durationMin: durationMin > 0 ? durationMin : undefined,
+    isPriority: chapter.isPriority,
     lessonCount: chapter.lessons.length,
-    priorityLessons: chapter.lessons.filter((lesson) => lesson.isPriority).length,
     totalLessons: lessons.length,
     completedLessons,
-    percent: percentOf(completedLessons, lessons.length),
+    isCompleted: lessons.length > 0 && completedLessons === lessons.length,
     href: platformRoutes.chapterDetail(course.id, chapter.order),
   };
 }
@@ -341,6 +356,7 @@ export function mapCourseDetail(
     })),
     isAdded: isAdded(state),
     progress,
+    isCompleted: isCompleted(progress),
     ctaLabel: ctaLabelFor(progress),
     learnHref: next ? platformRoutes.lessonDetail(next.id) : undefined,
     reviewCount,
@@ -382,7 +398,7 @@ export function mapChapterView(
   const lessons: ChapterLessonItem[] = sortByRole(
     chapter.lessons.map((lesson) => ({ ...lesson, roleCode: lesson.role?.code })),
   )
-    .filter((lesson) => isVisible(lesson, state))
+    .filter((lesson) => isVisible(lesson, chapter, state))
     .map((lesson) => ({
       id: lesson.id,
       order: lesson.order,
@@ -403,7 +419,7 @@ export function mapChapterView(
   // order the chapters are read: the introduction first, the closing last.
   const position = detail.chapters.findIndex((candidate) => candidate.id === chapter.id);
   const linkTo = (neighbour: CourseDetail["chapters"][number] | undefined): ChapterLink | undefined =>
-    neighbour ? { order: neighbour.order, href: neighbour.href } : undefined;
+    neighbour ? { name: neighbour.name, href: neighbour.href } : undefined;
 
   return {
     course: detail,
@@ -411,9 +427,10 @@ export function mapChapterView(
     order: chapter.order,
     name: chapter.name,
     description: chapter.description ?? undefined,
+    isPriority: chapter.isPriority,
     completedLessons,
     totalLessons: lessons.length,
-    percent: percentOf(completedLessons, lessons.length),
+    isCompleted: lessons.length > 0 && completedLessons === lessons.length,
     hiddenLessons,
     lessons,
     previous: position > 0 ? linkTo(detail.chapters[position - 1]) : undefined,

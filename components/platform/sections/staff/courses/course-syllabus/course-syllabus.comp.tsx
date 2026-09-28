@@ -58,7 +58,10 @@ export function CourseSyllabus({ courseId, chapters, isDraft }: CourseSyllabusPr
         <Link href={chapter.href} className="course-syllabus__name">
           {chapter.name}
         </Link>
-        <span className="course-syllabus__facts">{chapterFacts(chapter)}</span>
+        <span className="course-syllabus__facts">
+          {chapterFacts(chapter)}
+          {chapter.isPriority && <span className="course-syllabus__priority"> · Prioridad</span>}
+        </span>
       </span>
 
       <span className="course-syllabus__actions">

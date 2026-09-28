@@ -3,7 +3,7 @@ import "./learn-mode.comp.css";
 
 interface LearnModeProps {
   courseId: string;
-  /** The student asked to see only the essential lessons of this course. */
+  /** The student asked to see only what the staff marked as priority in this course. */
   onlyPriority: boolean;
   /** How many lessons that hides. It is stated: an unexplained absence is unsettling. */
   hiddenLessons: number;
@@ -12,8 +12,8 @@ interface LearnModeProps {
 }
 
 /**
- * What of the course is learned: everything, or only the lessons the staff
- * marked as essential. Two buttons, one pressed.
+ * What of the course is learned: everything, or only what the staff marked
+ * as priority — a lesson, or a whole chapter. Two buttons, one pressed.
  *
  * Each is a `<form action>` with its value bound, and not one form with two
  * radios: a preference is saved and the page is drawn again, so there is no
@@ -42,7 +42,7 @@ export function LearnMode({ courseId, onlyPriority, hiddenLessons, returnTo }: L
 
       <div className="learn-mode__options" role="group" aria-labelledby="learn-mode-label">
         {option("Todo", false)}
-        {option("Imprescindibles", true)}
+        {option("Prioridad", true)}
       </div>
 
       {onlyPriority && hiddenLessons > 0 && (

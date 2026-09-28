@@ -151,9 +151,23 @@
   }
 
   & .course-card__percent {
+    display: flex;
+    align-items: center;
+    gap: 7px;
     font-size: 18px;
     font-weight: 800;
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Only a finished course has it, next to its 100 %. */
+  & .course-card__done {
+    display: flex;
+    color: var(--platform-success-ink);
+  }
+
+  & .course-card__done-icon {
+    width: 18px;
+    height: 18px;
   }
 
   & .course-card__ratio {

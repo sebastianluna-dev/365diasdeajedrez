@@ -53,6 +53,8 @@ export interface ChapterAdminRow {
   id: string;
   name: string;
   order: number;
+  /** The staff marked the whole chapter as priority. */
+  isPriority: boolean;
   lessonCount: number;
   /**
    * Estimated minutes: the chapter's own figure, or the sum of its lessons'
@@ -108,6 +110,8 @@ export interface ChapterAdminDetail {
   name: string;
   description?: string;
   order: number;
+  /** The whole chapter is priority: every lesson of it passes the student's filter. */
+  isPriority: boolean;
   estimatedDuration?: number;
   lessons: LessonAdminRow[];
 }

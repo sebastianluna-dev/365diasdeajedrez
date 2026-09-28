@@ -67,6 +67,8 @@ export interface CourseSummary {
    */
   isAdded: boolean;
   progress: CourseProgressSummary;
+  /** Every lesson the student sees is learned: the course gets its check. */
+  isCompleted: boolean;
   /** Lesson the dashboard's button opens according to the student's state. */
   continueHref: string;
   ctaLabel: CourseCta;
@@ -84,15 +86,15 @@ export interface CourseChapterItem {
   description?: string;
   /** Minutes: the chapter's own figure, or what its lessons add up to. */
   durationMin?: number;
+  /** The staff marked the chapter as priority: the card's «Prioridad». */
+  isPriority: boolean;
   /** EVERY lesson of the chapter, whatever the filter says: what the information page counts. */
   lessonCount: number;
-  /** How many of them the staff marked as essential. */
-  priorityLessons: number;
   /** The ones the student sees, which with the filter on are not all. */
   totalLessons: number;
   completedLessons: number;
-  /** Whole percentage 0–100 over the ones the student sees. */
-  percent: number;
+  /** Every lesson the student sees is learned: the chapter gets its check. */
+  isCompleted: boolean;
   href: string;
 }
 
@@ -132,6 +134,8 @@ export interface CourseDetail {
   /** The student added it to their courses; see `CourseSummary.isAdded`. */
   isAdded: boolean;
   progress: CourseProgressSummary;
+  /** Every lesson the student sees is learned: the course gets its check. */
+  isCompleted: boolean;
   ctaLabel: CourseCta;
   /**
    * The next lesson to learn: where they left off if it is unfinished, the
@@ -142,7 +146,7 @@ export interface CourseDetail {
   /** Exercises of the lessons already learned: what «Repasar» trains. */
   reviewCount: number;
   reviewHref: string;
-  /** The student asked to see only the essential ones of this course. */
+  /** The student asked to see only what the staff marked as priority in this course. */
   onlyPriorityLessons: boolean;
   /** How many that filter hides, so it can be said instead of kept quiet. */
   hiddenLessons: number;
@@ -176,7 +180,7 @@ export interface ChapterLessonItem {
 
 /** A neighbour chapter, to go to it from the foot of the list. */
 export interface ChapterLink {
-  order: number;
+  name: string;
   href: string;
 }
 
@@ -187,11 +191,13 @@ export interface ChapterView {
   order: number;
   name: string;
   description?: string;
+  /** The staff marked the chapter as priority. */
+  isPriority: boolean;
   completedLessons: number;
   /** Of the VISIBLE ones; with the filter on it is not the chapter's total. */
   totalLessons: number;
-  /** Whole percentage 0–100 over the visible ones. */
-  percent: number;
+  /** Every visible lesson is learned, and there is at least one. */
+  isCompleted: boolean;
   /** How many the filter hides. It is stated, so the absence does not unsettle. */
   hiddenLessons: number;
   lessons: ChapterLessonItem[];

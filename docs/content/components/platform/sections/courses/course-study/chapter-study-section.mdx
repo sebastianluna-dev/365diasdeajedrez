@@ -20,30 +20,32 @@ The lessons of one chapter. Each card shows **how the lesson opens** — «1.e4 
 
 ## Props
 
-| Prop        | Type          | Required | Meaning                                                                                                              |
-| ----------- | ------------- | -------- | -------------------------------------------------------------------------------------------------------------------- |
-| `chapter`   | `ChapterView` | yes      | `course` (the `CourseDetail` around it), `order`, `name`, `description?`, progress, `lessons`, `previous?`, `next?`. |
-| `errorCode` | `string`      | no       | Passed on to the frame.                                                                                              |
+| Prop        | Type          | Required | Meaning                                                                                                                                                                    |
+| ----------- | ------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chapter`   | `ChapterView` | yes      | `course` (the `CourseDetail` around it), `order`, `name`, `description?`, `isPriority`, `completedLessons`/`totalLessons`, `isCompleted`, `lessons`, `previous?`, `next?`. |
+| `errorCode` | `string`      | no       | Passed on to the frame.                                                                                                                                                    |
 
 ## Behaviour
 
+- **The summary** is the chapter's name — not numbered —, the «Prioridad» tag when the staff marked the chapter, its description, and its progress as a count («9/17 lecciones») with a green check once every lesson in view is learned. No percentage and no bar: the bar is the course's.
 - **State of a lesson**, in one word: «Aprendida», «Siguiente», «Empezada» or «Pendiente». «Siguiente» is one alone in the whole course — the one the header's «Aprender» opens (`lesson.isNext`) — and wins over «Empezada». Its card is tinted and its button is the filled «Aprender»; the rest read «Ver» (or «Ver ✓» once learned).
 - The number of a lesson is its **real** one, with the filter on too: 01, 04, 07. Renumbering would hide that lessons are missing.
-- With only the essential lessons asked for and none in the chapter, the list says so and how many «Todo» would show.
-- At the foot, the neighbour chapters: «← Capítulo 1» and «Capítulo 3 →».
+- A lesson's «Prioridad» tag is the lesson's own mark, also inside a priority chapter.
+- With only the priority ones asked for and none in the chapter, the list says so and how many «Todo» would show.
+- At the foot, the neighbour chapters, each by its name and cut short when it does not fit: «← Los años de aprendizaje (1957–1959)».
 - The previews are read by the service for this chapter alone (`movesPreview` over `lessonPgnOf`): the course is loaded without the PGN of its lessons, which is most of its weight.
 
 The previous chapter page had an «Agregar al Move Trainer» button. It is no longer here; the chapter is still added from the trainer's home.
 
 ## Markup & styling
 
-Block `.chapter-study` (283 lines). The lessons are one column of cards: a header band with the number, the name and the minutes, and under it the opening with the tags and the button.
+Block `.chapter-study` (292 lines). The lessons are one column of cards: a header band with the number, the name and the minutes, and under it the opening with the tags and the button.
 
-**Elements:** `.chapter-study__summary`, `.chapter-study__about`, `.chapter-study__eyebrow`, `.chapter-study__description`, `.chapter-study__progress`, `.chapter-study__figures`, `.chapter-study__percent`, `.chapter-study__ratio`, `.chapter-study__track`, `.chapter-study__fill`, `.chapter-study__empty`, `.chapter-study__lessons`, `.chapter-study__lesson`, `.chapter-study__lesson-head`, `.chapter-study__number`, `.chapter-study__name`, `.chapter-study__done`, `.chapter-study__minutes`, `.chapter-study__lesson-body`, `.chapter-study__lesson-text`, `.chapter-study__opening`, `.chapter-study__tags`, `.chapter-study__tag`, `.chapter-study__open`, `.chapter-study__neighbours`, `.chapter-study__neighbour`
+**Elements:** `.chapter-study__summary`, `.chapter-study__about`, `.chapter-study__heading`, `.chapter-study__title`, `.chapter-study__description`, `.chapter-study__progress`, `.chapter-study__complete`, `.chapter-study__complete-icon`, `.chapter-study__ratio`, `.chapter-study__ratio-value`, `.chapter-study__empty`, `.chapter-study__lessons`, `.chapter-study__lesson`, `.chapter-study__lesson-head`, `.chapter-study__number`, `.chapter-study__name`, `.chapter-study__done`, `.chapter-study__minutes`, `.chapter-study__lesson-body`, `.chapter-study__lesson-text`, `.chapter-study__opening`, `.chapter-study__tags`, `.chapter-study__tag`, `.chapter-study__open`, `.chapter-study__neighbours`, `.chapter-study__neighbour`, `.chapter-study__neighbour-name`
 
 **Modifiers and states:** `.chapter-study__lesson_state_next`, `.chapter-study__opening_kind_moves`, `.chapter-study__tag_tone_accent`, `.chapter-study__open_emphasis_strong`
 
-**Tokens:** `--platform-accent`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-border`, `--platform-border-strong`, `--platform-success-ink`, `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-soft`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+**Tokens:** `--platform-accent`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-border`, `--platform-border-strong`, `--platform-success-ink`, `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-soft`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
 No breakpoints of its own; the hover transition is off under `prefers-reduced-motion`.
 

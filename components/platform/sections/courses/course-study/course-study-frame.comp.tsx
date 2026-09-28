@@ -1,8 +1,11 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
+import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
+import { platformRoutes } from "@/lib/platform-routes";
 import type { CourseDetail } from "@/services/courses/courses.types";
 import { LearnMode } from "./learn-mode.comp";
 import { ResetProgress } from "./reset-progress.comp";
@@ -14,7 +17,7 @@ interface CourseStudyFrameProps {
    * The chapter the page is of, to say so under the course's name. Absent on
    * the course's own page, which is the list of its chapters.
    */
-  chapter?: { order: number; name: string };
+  chapter?: { name: string };
   /** The page being drawn, where a failed setting is reported. */
   returnTo: string;
   /** What a setting of the course bounced back with, in `?error=`. */
@@ -27,8 +30,9 @@ interface CourseStudyFrameProps {
 const COVER_SIZES = "(max-width: 620px) 100vw, 280px";
 
 /**
- * What is around every page of a course being studied: above, the course
- * with its two buttons — «Aprender», the next lesson, and «Repasar», the
+ * What is around every page of a course being studied: on top, the way back
+ * one step — from the chapters to «Mis cursos», from a chapter to the
+ * chapters —; under it, the course with its two buttons — «Aprender», the next lesson, and «Repasar», the
  * exercises of what was already learned —; on the right, the student's
  * progress, the course's options and its one setting. The page puts its
  * column in the middle.
@@ -43,6 +47,11 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
 
   return (
     <div className="course-study-frame">
+      <Link href={chapter ? course.studyHref : platformRoutes.courses} className="course-study-frame__back">
+        <ArrowLeftIcon className="course-study-frame__back-icon" />
+        {chapter ? "Capítulos" : "Mis cursos"}
+      </Link>
+
       <header className="course-study-frame__head">
         <div className="course-study-frame__cover">
           {course.cover && (
@@ -53,19 +62,7 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
         <div className="course-study-frame__heading">
           <h1 className="course-study-frame__name">{course.name}</h1>
 
-          {chapter ? (
-            <p className="course-study-frame__place">
-              <Link href={course.studyHref} className="course-study-frame__place-link">
-                Capítulos
-              </Link>
-              <span aria-hidden="true">›</span>
-              <span className="course-study-frame__place-here">
-                {chapter.order}. {chapter.name}
-              </span>
-            </p>
-          ) : (
-            <p className="course-study-frame__place course-study-frame__place_kind_home">Capítulos</p>
-          )}
+          <p className="course-study-frame__place">{chapter ? chapter.name : "Capítulos"}</p>
         </div>
 
         {(course.learnHref || course.reviewCount > 0) && (
@@ -103,7 +100,14 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
                 {progress.completedLessons}/{progress.totalLessons}
               </span>
             </p>
-            <p className="course-study-frame__percent">{progress.percent}%</p>
+            <p className="course-study-frame__percent">
+              {progress.percent}%
+              {course.isCompleted && (
+                <span className="course-study-frame__done" role="img" aria-label="Curso completo">
+                  <CircleCheckIcon className="course-study-frame__done-icon" />
+                </span>
+              )}
+            </p>
             <div className="course-study-frame__track">
               <div className="course-study-frame__fill" style={{ width: `${progress.percent}%` }} />
             </div>

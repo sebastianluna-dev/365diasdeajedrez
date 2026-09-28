@@ -9,6 +9,31 @@
     gap: 16px;
   }
 
+  /* The checkbox on top and its explanation under the text, as in the
+     lesson's: a setting with consequences, told by its short sentence. */
+  & .chapter-editor__check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 15px;
+    color: var(--platform-text);
+    cursor: pointer;
+  }
+
+  & .chapter-editor__check input {
+    margin-top: 2px;
+    flex: none;
+  }
+
+  & .chapter-editor__check-hint {
+    display: block;
+    margin-top: 3px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
   & .chapter-editor__submit {
     display: flex;
     justify-content: flex-end;

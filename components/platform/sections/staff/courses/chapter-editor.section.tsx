@@ -43,6 +43,7 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
             <span>
               {chapter.lessons.length} {chapter.lessons.length === 1 ? "lección" : "lecciones"}
             </span>
+            {chapter.isPriority && <span className="platform-tag platform-tag_variant_accent">Prioridad</span>}
           </>
         }
       />
@@ -110,6 +111,17 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
               <input type="number" name="estimatedDuration" min={0} defaultValue={chapter.estimatedDuration ?? ""} />
             </FormField>
 
+            <label className="chapter-editor__check">
+              <input type="checkbox" name="isPriority" defaultChecked={chapter.isPriority} />
+              <span>
+                Capítulo de prioridad
+                <span className="chapter-editor__check-hint">
+                  Entra entero en el recorrido corto de quien estudia con poco tiempo: todas sus lecciones, estén
+                  marcadas o no.
+                </span>
+              </span>
+            </label>
+
             <div className="chapter-editor__submit">
               <SubmitButton className="platform-button platform-button_variant_soft">Guardar</SubmitButton>
             </div>
@@ -126,7 +138,7 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
               }`,
               href: lesson.href,
               roleLabel: lesson.roleLabel,
-              badge: lesson.isPriority ? "Prioritaria" : undefined,
+              badge: lesson.isPriority ? "Prioridad" : undefined,
               // Delete only where the server would allow it: draft course and no
               // progress from any student.
               canDelete: isDraft && lesson.progressCount === 0,

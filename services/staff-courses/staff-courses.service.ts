@@ -142,6 +142,7 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
           id: true,
           name: true,
           order: true,
+          isPriority: true,
           estimatedDuration: true,
           role: { select: { code: true, label: true } },
           _count: { select: { lessons: true, progresses: true } },
@@ -185,6 +186,7 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
         id: chapter.id,
         name: chapter.name,
         order: chapter.order,
+        isPriority: chapter.isPriority,
         lessonCount: chapter._count.lessons,
         durationMin: chapterDuration(chapter),
         progressCount: chapter._count.progresses,
@@ -207,6 +209,7 @@ export async function getChapterAdmin(courseId: string, chapterId: string): Prom
       name: true,
       description: true,
       order: true,
+      isPriority: true,
       estimatedDuration: true,
       course: { select: { name: true, status: { select: { code: true } } } },
       lessons: {
@@ -234,6 +237,7 @@ export async function getChapterAdmin(courseId: string, chapterId: string): Prom
     name: chapter.name,
     description: chapter.description ?? undefined,
     order: chapter.order,
+    isPriority: chapter.isPriority,
     estimatedDuration: chapter.estimatedDuration ?? undefined,
     lessons: sortByRole(
       chapter.lessons.map((lesson) => ({

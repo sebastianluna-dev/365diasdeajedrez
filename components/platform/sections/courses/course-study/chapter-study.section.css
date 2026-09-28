@@ -25,13 +25,20 @@
     gap: 6px;
   }
 
-  & .chapter-study__eyebrow {
+  & .chapter-study__heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  & .chapter-study__title {
     margin: 0;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--platform-accent-ink);
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
   }
 
   & .chapter-study__description {
@@ -43,42 +50,34 @@
   }
 
   & .chapter-study__progress {
-    flex: 0 1 240px;
+    flex: none;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 8px;
-  }
-
-  & .chapter-study__figures {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
     margin: 0;
   }
 
-  & .chapter-study__percent {
-    font-size: 22px;
-    font-weight: 800;
-    font-variant-numeric: tabular-nums;
+  & .chapter-study__complete {
+    flex: none;
+    display: flex;
+    color: var(--platform-success-ink);
+  }
+
+  & .chapter-study__complete-icon {
+    width: 22px;
+    height: 22px;
   }
 
   & .chapter-study__ratio {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--platform-text-subtle);
+  }
+
+  & .chapter-study__ratio-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--platform-text);
     font-variant-numeric: tabular-nums;
-  }
-
-  & .chapter-study__track {
-    height: 10px;
-    overflow: hidden;
-    border-radius: 1000px;
-    background: var(--platform-track);
-  }
-
-  & .chapter-study__fill {
-    height: 100%;
-    border-radius: 1000px;
-    background: var(--platform-accent);
   }
 
   & .chapter-study__empty {
@@ -257,9 +256,12 @@
     gap: 12px;
   }
 
+  /* Named after the chapter it leads to, cut short when it does not fit. */
   & .chapter-study__neighbour {
+    min-width: 0;
     display: flex;
     align-items: center;
+    gap: 8px;
     height: 40px;
     padding: 0 16px;
     border: 1px solid var(--platform-border-strong);
@@ -268,6 +270,13 @@
     color: var(--platform-text);
     font-size: 13.5px;
     font-weight: 700;
+  }
+
+  & .chapter-study__neighbour-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   & .chapter-study__neighbour:hover {

@@ -60,7 +60,7 @@ export function LessonEditorSection({
           <>
             <span>Lección {lesson.order}</span>
             <span>{lesson.pgn ? "Con contenido" : "Sin contenido"}</span>
-            {lesson.isPriority && <span className="platform-tag platform-tag_variant_accent">Prioritaria</span>}
+            {lesson.isPriority && <span className="platform-tag platform-tag_variant_accent">Prioridad</span>}
           </>
         }
       />
@@ -80,7 +80,7 @@ export function LessonEditorSection({
                 <label className="lesson-editor__check">
                   <input type="checkbox" name="isPriority" form={METADATA_FORM_ID} defaultChecked={lesson.isPriority} />
                   <span>
-                    Lección imprescindible del curso
+                    Lección de prioridad
                     <span className="lesson-editor__check-hint">
                       Entra en el recorrido corto de quien estudia con poco tiempo.
                     </span>

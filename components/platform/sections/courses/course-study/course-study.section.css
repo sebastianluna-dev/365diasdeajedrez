@@ -10,14 +10,14 @@
     display: flex;
   }
 
-  /* Tall on purpose: the name on top, the progress at the foot, and air in
-     between, so a row of chapters reads as a row of doors. */
+  /* The name on top and the progress at the foot, with air in between, so a
+     row of chapters reads as a row of doors. */
   & .course-study__chapter {
     flex: 1;
-    min-height: 250px;
+    min-height: 190px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 18px;
     padding: 22px;
     border: 1px solid var(--platform-border);
     border-radius: 16px;
@@ -33,14 +33,6 @@
     color: var(--platform-text);
   }
 
-  & .course-study__eyebrow {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--platform-accent-ink);
-  }
-
   & .course-study__title {
     font-size: 18px;
     font-weight: 800;
@@ -49,12 +41,12 @@
     text-wrap: balance;
   }
 
-  /* Pushed to the foot with the progress, whatever the title's height. */
-  & .course-study__tags {
+  /* At the foot whatever the title's height, so the counts of a row line up. */
+  & .course-study__foot {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
     margin-top: auto;
   }
 
@@ -72,54 +64,32 @@
 
   & .course-study__progress {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 8px;
-    padding-top: 12px;
-    border-top: 1px solid var(--platform-border);
   }
 
-  /* A chapter without essential lessons has no tags to push the foot down. */
-  & .course-study__title + .course-study__progress {
-    margin-top: auto;
-  }
-
-  & .course-study__figures {
+  /* Only a finished chapter has it: its absence is what "not yet" looks like. */
+  & .course-study__done {
+    flex: none;
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 10px;
+    color: var(--platform-success-ink);
   }
 
-  & .course-study__percent {
-    font-size: 22px;
-    font-weight: 800;
-    font-variant-numeric: tabular-nums;
+  & .course-study__done-icon {
+    width: 20px;
+    height: 20px;
   }
 
   & .course-study__ratio {
-    font-size: 13px;
+    font-size: 14px;
     color: var(--platform-text-subtle);
   }
 
   & .course-study__ratio-value {
+    font-size: 16px;
     font-weight: 800;
     color: var(--platform-text);
     font-variant-numeric: tabular-nums;
-  }
-
-  & .course-study__track {
-    display: block;
-    height: 10px;
-    overflow: hidden;
-    border-radius: 1000px;
-    background: var(--platform-track);
-  }
-
-  & .course-study__fill {
-    display: block;
-    height: 100%;
-    border-radius: 1000px;
-    background: var(--platform-accent);
   }
 
   @media (max-width: 620px) {

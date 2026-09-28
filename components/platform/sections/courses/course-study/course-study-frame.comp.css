@@ -3,6 +3,34 @@
   flex-direction: column;
   gap: 24px;
 
+  /* --- The way back, one step up ------------------------------------------ */
+
+  & .course-study-frame__back {
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 38px;
+    padding: 0 14px 0 10px;
+    border: 1px solid var(--platform-border-strong);
+    border-radius: 11px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-size: 14px;
+    font-weight: 700;
+    transition: background-color 150ms;
+  }
+
+  & .course-study-frame__back:hover {
+    background: var(--platform-surface-soft);
+    color: var(--platform-text);
+  }
+
+  & .course-study-frame__back-icon {
+    width: 18px;
+    height: 18px;
+  }
+
   /* --- The course, above -------------------------------------------------- */
 
   & .course-study-frame__head {
@@ -46,30 +74,11 @@
 
   /* Where one is in the course: its chapters, or one of them. */
   & .course-study-frame__place {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
     margin: 0;
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 600;
     color: var(--platform-text-subtle);
-  }
-
-  & .course-study-frame__place_kind_home {
-    font-size: 17px;
-  }
-
-  & .course-study-frame__place-link {
-    color: var(--platform-accent-ink);
-  }
-
-  & .course-study-frame__place-link:hover {
-    color: var(--platform-accent-hover);
-  }
-
-  & .course-study-frame__place-here {
-    color: var(--platform-text);
+    text-wrap: balance;
   }
 
   & .course-study-frame__actions {
@@ -193,12 +202,26 @@
   }
 
   & .course-study-frame__percent {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin: 0;
     font-size: 34px;
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Only a finished course has it, next to its 100 %. */
+  & .course-study-frame__done {
+    display: flex;
+    color: var(--platform-success-ink);
+  }
+
+  & .course-study-frame__done-icon {
+    width: 26px;
+    height: 26px;
   }
 
   & .course-study-frame__track {
@@ -251,6 +274,12 @@
 
     & .course-study-frame__actions {
       flex: 1 1 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .course-study-frame__back {
+      transition: none;
     }
   }
 }

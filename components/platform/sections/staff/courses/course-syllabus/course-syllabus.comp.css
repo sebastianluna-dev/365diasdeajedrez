@@ -128,6 +128,12 @@
     color: var(--platform-text-subtle);
   }
 
+  /* The staff's mark on the chapter, at the end of its facts. */
+  & .course-syllabus__priority {
+    font-weight: 700;
+    color: var(--platform-accent-ink);
+  }
+
   & .course-syllabus__actions {
     flex: none;
     display: flex;

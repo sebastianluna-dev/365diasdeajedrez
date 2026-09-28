@@ -119,6 +119,7 @@ const NAMED_SCHEMA = z.object({ name: formText(NAME_MAX_LENGTH), role: z.string(
 const CHAPTER_UPDATE_SCHEMA = z.object({
   name: formText(NAME_MAX_LENGTH),
   description: formOptionalText(DESCRIPTION_MAX_LENGTH),
+  isPriority: formCheckbox(),
   estimatedDuration: formLenientInt(0, DURATION_MAX),
 });
 const LESSON_UPDATE_SCHEMA = z.object({

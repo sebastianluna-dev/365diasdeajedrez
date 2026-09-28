@@ -468,6 +468,9 @@ model Chapter {
   name              String
   description       String?
   order             Int
+  /// The staff marked the whole chapter as priority: its card says so, and
+  /// every lesson of it passes the student's «Prioridad» filter.
+  isPriority        Boolean @default(false)
   /// Introduction or closing of the course; null in normal chapters, which are
   /// the majority. At most one of each per course (partial unique index).
   roleId            Int?

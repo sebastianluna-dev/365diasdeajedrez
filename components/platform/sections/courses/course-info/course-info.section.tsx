@@ -127,8 +127,8 @@ export function CourseInfoSection({ course, levels, errorCode }: CourseInfoSecti
             {course.chapters.map((chapter) => (
               <li key={chapter.id} className="course-info__chapter">
                 <div className="course-info__chapter-head">
-                  <span className="course-info__chapter-number">Capítulo {chapter.order}</span>
                   <h3 className="course-info__chapter-title">{chapter.name}</h3>
+                  {chapter.isPriority && <span className="course-info__chapter-tag">Prioridad</span>}
                 </div>
 
                 {chapter.description && <p className="course-info__chapter-text">{chapter.description}</p>}

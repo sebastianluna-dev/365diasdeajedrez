@@ -1,5 +1,5 @@
 ---
-description: "What of the course is learned: everything, or only the lessons the staff marked as essential. Two buttons, one pressed, each a form with its value bound."
+description: "What of the course is learned: everything, or only what the staff marked as priority. Two buttons, one pressed, each a form with its value bound."
 ---
 
 # `LearnMode`
@@ -14,7 +14,7 @@ description: "What of the course is learned: everything, or only the lessons the
 
 ## Purpose
 
-The course's one setting, «Aprender»: «Todo» or «Imprescindibles». It replaces `PriorityFilter`, the switch the old course and chapter pages had; the rule it sets (`UserCourseSettings.onlyPriorityLessons`) is the same.
+The course's one setting, «Aprender»: «Todo» or «Prioridad». With «Prioridad» on, what stays in view is every lesson marked as priority, every lesson of a chapter marked as priority, and any lesson the student already touched. It replaces `PriorityFilter`, the switch the old course and chapter pages had; the rule it sets (`UserCourseSettings.onlyPriorityLessons`) is the same.
 
 It is a **lens**: it writes the settings row and not a single progress row, so switching it is free and reversible. It is per course, which is why it shows on every page of the course.
 
@@ -23,7 +23,7 @@ It is a **lens**: it writes the settings row and not a single progress row, so s
 | Prop            | Type      | Required | Meaning                                                    |
 | --------------- | --------- | -------- | ---------------------------------------------------------- |
 | `courseId`      | `string`  | yes      | The course the setting is of.                              |
-| `onlyPriority`  | `boolean` | yes      | The student asked to see only the essential lessons.       |
+| `onlyPriority`  | `boolean` | yes      | The student asked to see only what is marked as priority.  |
 | `hiddenLessons` | `number`  | yes      | How many lessons that hides.                               |
 | `returnTo`      | `string`  | yes      | The page the control sits on, where a failure is reported. |
 

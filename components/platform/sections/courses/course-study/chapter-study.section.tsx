@@ -1,6 +1,6 @@
 import Link from "next/link";
+import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
-import { countLessons } from "@/services/courses/course-rules";
 import type { ChapterLessonItem, ChapterView } from "@/services/courses/courses.types";
 import { CourseStudyFrame } from "./course-study-frame.comp";
 import "./chapter-study.section.css";
@@ -37,34 +37,42 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
   return (
     <CourseStudyFrame
       course={course}
-      chapter={{ order: chapter.order, name: chapter.name }}
+      chapter={{ name: chapter.name }}
       returnTo={course.chapters.find((item) => item.id === chapter.id)?.href ?? course.studyHref}
       errorCode={errorCode}
     >
       <div className="chapter-study">
         <header className="chapter-study__summary">
           <div className="chapter-study__about">
-            <p className="chapter-study__eyebrow">Capítulo {chapter.order}</p>
+            <div className="chapter-study__heading">
+              <h2 className="chapter-study__title">{chapter.name}</h2>
+              {chapter.isPriority && (
+                <span className="chapter-study__tag chapter-study__tag_tone_accent">Prioridad</span>
+              )}
+            </div>
             {chapter.description && <p className="chapter-study__description">{chapter.description}</p>}
           </div>
 
-          <div className="chapter-study__progress">
-            <p className="chapter-study__figures">
-              <span className="chapter-study__percent">{chapter.percent}%</span>
-              <span className="chapter-study__ratio">
-                {chapter.completedLessons}/{countLessons(chapter.totalLessons)}
+          {/* A count and, once whole, a check: the bar is the course's. */}
+          <p className="chapter-study__progress">
+            {chapter.isCompleted && (
+              <span className="chapter-study__complete" role="img" aria-label="Capítulo completo">
+                <CircleCheckIcon className="chapter-study__complete-icon" />
               </span>
-            </p>
-            <div className="chapter-study__track">
-              <div className="chapter-study__fill" style={{ width: `${chapter.percent}%` }} />
-            </div>
-          </div>
+            )}
+            <span className="chapter-study__ratio">
+              <span className="chapter-study__ratio-value">
+                {chapter.completedLessons}/{chapter.totalLessons}
+              </span>{" "}
+              {chapter.totalLessons === 1 ? "lección" : "lecciones"}
+            </span>
+          </p>
         </header>
 
         {chapter.lessons.length === 0 ? (
           <p className="chapter-study__empty">
             {course.onlyPriorityLessons
-              ? `Este capítulo no tiene ninguna lección marcada como imprescindible. Elige «Todo» para ver las ${chapter.hiddenLessons} que tiene.`
+              ? `Este capítulo no tiene ninguna lección marcada como prioridad. Elige «Todo» para ver las ${chapter.hiddenLessons} que tiene.`
               : "Este capítulo todavía no tiene lecciones."}
           </p>
         ) : (
@@ -80,9 +88,9 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
                 >
                   <div className="chapter-study__lesson-head">
                     <span className="chapter-study__number">{String(lesson.order).padStart(2, "0")}</span>
-                    <h2 className="chapter-study__name" title={lesson.name}>
+                    <h3 className="chapter-study__name" title={lesson.name}>
                       {lesson.name}
-                    </h2>
+                    </h3>
                     {isDone && (
                       <span className="chapter-study__done" role="img" aria-label="Aprendida">
                         ✓
@@ -104,7 +112,7 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
                       )}
                       <p className="chapter-study__tags">
                         {lesson.isPriority && (
-                          <span className="chapter-study__tag chapter-study__tag_tone_accent">Imprescindible</span>
+                          <span className="chapter-study__tag chapter-study__tag_tone_accent">Prioridad</span>
                         )}
                         <span className="chapter-study__tag">{statusOf(lesson)}</span>
                       </p>
@@ -128,14 +136,16 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
           <nav className="chapter-study__neighbours" aria-label="Capítulos vecinos">
             {chapter.previous ? (
               <Link href={chapter.previous.href} className="chapter-study__neighbour">
-                ← Capítulo {chapter.previous.order}
+                <span aria-hidden="true">←</span>
+                <span className="chapter-study__neighbour-name">{chapter.previous.name}</span>
               </Link>
             ) : (
               <span />
             )}
             {chapter.next && (
               <Link href={chapter.next.href} className="chapter-study__neighbour">
-                Capítulo {chapter.next.order} →
+                <span className="chapter-study__neighbour-name">{chapter.next.name}</span>
+                <span aria-hidden="true">→</span>
               </Link>
             )}
           </nav>
