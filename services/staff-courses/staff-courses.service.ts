@@ -458,6 +458,11 @@ export async function listContentTypes(): Promise<ContentTypeOption[]> {
   });
 }
 
+export async function listCourseStatuses(): Promise<CatalogOption[]> {
+  await requireStaff();
+  return getPlatformDb().courseStatus.findMany({ select: { code: true, label: true }, orderBy: { order: "asc" } });
+}
+
 export async function listTopics(): Promise<TopicOption[]> {
   await requireStaff();
   return getPlatformDb().topic.findMany({ select: { id: true, code: true, label: true }, orderBy: { order: "asc" } });

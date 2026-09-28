@@ -19,6 +19,7 @@ import type { SourceEntityOption } from "@/services/staff-sources/staff-sources.
 import { CourseAuthors } from "./course-authors/course-authors.comp";
 import { CourseNameFields } from "./course-name-fields.comp";
 import { CourseSources } from "./course-sources/course-sources.comp";
+import { CourseStatusMenu } from "./course-status/course-status-menu.comp";
 import { CourseSyllabus } from "./course-syllabus/course-syllabus.comp";
 import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffTabs } from "./staff-tabs.comp";
@@ -37,6 +38,8 @@ interface CourseEditorSectionProps {
   levels: LevelOption[];
   authors: AuthorAdminRow[];
   authorRoles: CatalogOption[];
+  /** The statuses a course can have, for the pill next to the title. */
+  statuses: CatalogOption[];
   /** The kinds of resource a source can be, for «Procedencia del recurso». */
   sourceTypes: CatalogOption[];
   /** The entities a source can cite, from /administracion/entidades. */
@@ -60,6 +63,7 @@ export function CourseEditorSection({
   levels,
   authors,
   authorRoles,
+  statuses,
   sourceTypes,
   entities,
   gameCount,
@@ -74,9 +78,12 @@ export function CourseEditorSection({
       <StaffEditorHead
         title={course.name}
         badge={
-          <span className={`course-editor__status course-editor__status_state_${course.statusCode.toLowerCase()}`}>
-            {course.statusLabel}
-          </span>
+          <CourseStatusMenu
+            courseId={course.id}
+            statusCode={course.statusCode}
+            statuses={statuses}
+            canPublish={course.canPublish}
+          />
         }
         actions={
           course.statusCode === COURSE_STATUS.PUBLISHED && (
