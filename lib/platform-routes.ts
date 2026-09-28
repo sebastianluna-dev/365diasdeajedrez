@@ -90,6 +90,9 @@ export const staffRoutes = {
   /** The chapter's collection: here the PGN does get pasted. */
   chapterGames: (courseId: string, chapterId: string) =>
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/partidas`,
+  /** One game of the collection, on the board: where it is read and edited. */
+  chapterGame: (courseId: string, chapterId: string, gameId: string) =>
+    `/administracion/cursos/${courseId}/capitulos/${chapterId}/partidas/${gameId}`,
   lessonDetail: (courseId: string, chapterId: string, lessonId: string) =>
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/lecciones/${lessonId}`,
   classes: "/administracion/clases",

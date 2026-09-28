@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { staffRoutes } from "@/lib/platform-routes";
@@ -20,6 +21,7 @@ interface ChapterGamesSectionProps {
  *
  * It is the ONLY place where a PGN is pasted. The chapter's lessons choose
  * from this list, and fixing a game fixes at once every lesson that uses it.
+ * Each game opens on the board, where it is read and edited.
  */
 export function ChapterGamesSection({ chapter, games, errorCode }: ChapterGamesSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
@@ -45,14 +47,16 @@ export function ChapterGamesSection({ chapter, games, errorCode }: ChapterGamesS
       <StaffPanel
         title="Colección de partidas"
         meta={`${games.length}`}
-        description="Las lecciones de este capítulo eligen de aquí, y corregir una partida arregla todas las lecciones que la usan. Es el único sitio donde se pega un PGN."
+        description="Las lecciones de este capítulo eligen de aquí, y corregir una partida arregla todas las lecciones que la usan. Ábrela para verla en el tablero y editarla; aquí es donde se pega un PGN nuevo."
       >
         {games.length > 0 ? (
           <ul className="chapter-games__list">
             {games.map((game) => (
               <li key={game.id} className="chapter-games__row">
                 <span className="chapter-games__text">
-                  <span className="chapter-games__title">{game.title}</span>
+                  <Link href={game.href} className="chapter-games__title">
+                    {game.title}
+                  </Link>
                   <span className="chapter-games__meta">
                     {game.detail}
                     {game.detail && " · "}
@@ -65,6 +69,13 @@ export function ChapterGamesSection({ chapter, games, errorCode }: ChapterGamesS
                 {/* Removal is only offered for the one no lesson uses: the foreign key
                     is SET NULL, so deleting it would not fail, it would empty them
                     silently. */}
+                <Link
+                  href={game.href}
+                  className="chapter-games__open"
+                  aria-label={`Abrir «${game.title}» en el tablero`}
+                >
+                  Abrir
+                </Link>
                 {game.lessonCount === 0 && (
                   <form action={deleteChapterGame.bind(null, chapter.courseId, chapter.id)}>
                     <input type="hidden" name="gameId" value={game.id} />

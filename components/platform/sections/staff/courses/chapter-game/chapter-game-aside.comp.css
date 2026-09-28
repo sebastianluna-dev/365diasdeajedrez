@@ -1,0 +1,192 @@
+.chapter-game-aside {
+  /* A normal column that scrolls with the page: stuck to the top it would be
+     left floating next to the board and steal the eye from the game. */
+  display: block;
+
+  & .chapter-game-aside__card {
+    overflow: hidden;
+    background: var(--platform-surface);
+    /* Outlined by the thin grey, like every white box around a board. */
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  /* The gap between cards is set by the margin, not by a `gap`: the column is
+     not a flex container until it moves to the top. */
+  & .chapter-game-aside__card + .chapter-game-aside__card {
+    margin-top: 20px;
+  }
+
+  & .chapter-game-aside__card_variant_lessons {
+    padding: 16px;
+  }
+
+  /* The chapter heads the list card; the rule under it opens the list. */
+  & .chapter-game-aside__head {
+    padding: 16px;
+    box-shadow: 0 1px 0 var(--platform-border);
+  }
+
+  & .chapter-game-aside__head-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  & .chapter-game-aside__chapter {
+    margin: 0 auto 0 0;
+    min-width: 0;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  /* How many games there are, next to the name: the list may be cut by its
+     height and the number does not lie. */
+  & .chapter-game-aside__count {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--platform-text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .chapter-game-aside__course {
+    margin: 4px 0 0;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
+  & .chapter-game-aside__back {
+    display: inline-block;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--platform-accent-ink);
+  }
+
+  & .chapter-game-aside__back:hover {
+    color: var(--platform-accent-hover);
+  }
+
+  & .chapter-game-aside__record-head {
+    padding: 16px;
+  }
+
+  & .chapter-game-aside__label {
+    /* Pushes what shares its row — the edit button — to the end. */
+    margin: 0 auto 0 0;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--platform-text-subtle);
+  }
+
+  & .chapter-game-aside__event {
+    margin: 10px 0 0;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  & .chapter-game-aside__site {
+    margin: 6px 0 0;
+    font-size: 14px;
+    line-height: 1.4;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
+  /* Two by two, with the grid lines drawn by the gaps themselves: the
+     background shows through them and there is no need to set a border per
+     cell nor to work out which one carries it and which does not. */
+  & .chapter-game-aside__meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin: 0;
+    background: var(--platform-border);
+    box-shadow: 0 -1px 0 var(--platform-border);
+  }
+
+  & .chapter-game-aside__meta-cell {
+    padding: 12px 16px;
+    background: var(--platform-surface);
+  }
+
+  & .chapter-game-aside__meta-key {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--platform-text-subtle);
+  }
+
+  & .chapter-game-aside__meta-value {
+    margin: 5px 0 0;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  & .chapter-game-aside__foot {
+    padding: 12px 16px;
+    box-shadow: 0 -1px 0 var(--platform-border);
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .chapter-game-aside__lessons {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  & .chapter-game-aside__lesson {
+    font-size: 14.5px;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--platform-accent-ink);
+    text-wrap: pretty;
+  }
+
+  & .chapter-game-aside__lesson:hover {
+    color: var(--platform-accent-hover);
+  }
+
+  & .chapter-game-aside__note {
+    margin: 10px 0 0;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
+  /* Without width for two columns the aside moves to the top, and its cards
+     share the width instead of stacking lengthwise. */
+  @media (max-width: 1180px) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 20px;
+
+    & .chapter-game-aside__card {
+      flex: 1 1 280px;
+    }
+
+    & .chapter-game-aside__card + .chapter-game-aside__card {
+      margin-top: 0;
+    }
+  }
+}

@@ -126,6 +126,29 @@
     margin-left: auto;
     flex: none;
   }
+
+  /* The name is the way to the board, where the game is read and edited. */
+  & a.lesson-game-picker__title:hover {
+    color: var(--platform-accent-ink);
+  }
+
+  /* «Editar partida» takes the right edge, and «Desvincular» follows it
+     instead of claiming the edge too. */
+  & .lesson-game-picker__open {
+    margin-left: auto;
+    flex: none;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--platform-accent-ink);
+  }
+
+  & .lesson-game-picker__open:hover {
+    color: var(--platform-accent-hover);
+  }
+
+  & .lesson-game-picker__open + form {
+    margin-left: 0;
+  }
 }
 
 .lesson-game-picker__note {

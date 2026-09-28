@@ -1,11 +1,13 @@
 "use client";
 
+import { useCallback } from "react";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { STUDY_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
 import type { GameView } from "@/services/studies/studies.types";
-import { useGameAutosave } from "./use-game-autosave.hook";
-import { usePgnHistory } from "./use-pgn-history.hook";
+import { useGameAutosave } from "@/components/platform/shared/use-game-autosave.hook";
+import { usePgnHistory } from "@/components/platform/shared/use-pgn-history.hook";
+import { autosaveGamePgn } from "@/services/studies/studies.actions";
 import "./game-view.section.css";
 
 interface GameViewSectionProps {
@@ -31,7 +33,8 @@ interface GameViewSectionProps {
  */
 export function GameViewSection({ game, errorCode }: GameViewSectionProps) {
   const { pgn, applyPgn } = usePgnHistory(game.pgn, { undo: game.canEdit });
-  const { saveLabel } = useGameAutosave({ studyId: game.studyId, gameId: game.id, pgn, enabled: game.canEdit });
+  const save = useCallback((next: string) => autosaveGamePgn(game.studyId, game.id, next), [game.studyId, game.id]);
+  const { saveLabel } = useGameAutosave({ pgn, enabled: game.canEdit, save });
 
   return (
     <section className="game-view">

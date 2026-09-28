@@ -4,6 +4,7 @@ const meta: MetaRecord = {
   "authors-manager": "AuthorsManager",
   "chapter-editor-section": "ChapterEditorSection",
   "chapter-games-section": "ChapterGamesSection",
+  "chapter-game-section": "ChapterGameSection",
   "course-authors": "CourseAuthors",
   "course-editor-section": "CourseEditorSection",
   "course-games-section": "CourseGamesSection",

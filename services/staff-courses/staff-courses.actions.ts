@@ -39,6 +39,14 @@ import { DATABASE_KIND, GAME_SOURCE } from "@/constants/platform/study-codes.con
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
 import { lessonHasContent, lessonPgnOf, lessonPgnSelect, lessonStartFenOf } from "@/services/shared/lesson-pgn";
+import { parsePgnTree } from "@/lib/chess/pgn-tree";
+import {
+  GAME_FIELDS_SCHEMA,
+  resultCodeOf,
+  sameMoves,
+  writeGameRecord,
+  type AutosaveResult,
+} from "@/services/shared/game-record";
 import { parseImportedGames } from "@/services/shared/pgn-import";
 import { nextOrder, planDenseRenumber, planFullReorder, planSwap, type MoveDirection } from "@/services/shared/reorder";
 
@@ -401,6 +409,131 @@ export async function deleteChapterGame(courseId: string, chapterId: string, for
   revalidatePath(staffRoutes.chapterDetail(courseId, chapterId));
   revalidatePath(staffRoutes.courseDetail(courseId));
   revalidatePath(staffRoutes.courseGames(courseId));
+}
+
+/** The lessons a game's change reaches, with what their derived exercise needs. */
+const gameLessonSelect = {
+  id: true,
+  isTrainable: true,
+  trainingColor: { select: { code: true } },
+} as const;
+
+/**
+ * Saves the PGN of a game of the chapter as it is annotated on the board,
+ * reporting what happened: the autosave cannot fail silently.
+ *
+ * A game of a course is NOT a private analysis: it is the content of every
+ * lesson that uses it. So when the MOVES change — not a comment, not an
+ * arrow (`sameMoves`) — each of those lessons is stamped (`pgnUpdatedAt`,
+ * which is what marks as stale the exercises frozen against the previous
+ * moves) and its derived exercise is remade, all in the same transaction as
+ * the game. If a trainable lesson were left without a line to train, nothing
+ * is saved: it is the same halfway state `updateLesson` refuses.
+ */
+export async function autosaveChapterGamePgn(
+  courseId: string,
+  chapterId: string,
+  gameId: string,
+  pgn: string,
+): Promise<AutosaveResult> {
+  if (pgn.length === 0 || pgn.length > PGN_MAX_LENGTH) return { ok: false, reason: "invalid" };
+
+  const staff = await requireStaff();
+  if (!(await allowAction(`${staff.user.id}:chapter-game-autosave`, 240, 60_000))) {
+    return { ok: false, reason: "throttled" };
+  }
+  if (parsePgnTree(pgn) === null) return { ok: false, reason: "invalid" };
+
+  const db = getPlatformDb();
+  // Through the three ids of the URL: a game of another chapter, of another
+  // course or of a student's study is not this screen's to write.
+  const game = await db.game.findFirst({
+    where: { id: gameId, database: { chapterId, courseId } },
+    select: { id: true, pgn: true, databaseId: true, lessons: { select: gameLessonSelect } },
+  });
+  if (!game) return { ok: false, reason: "denied" };
+
+  const movesChanged = !sameMoves(game.pgn, pgn);
+
+  try {
+    await db.$transaction(async (tx) => {
+      await tx.game.update({ where: { id: game.id }, data: { pgn } });
+      await indexGamePositions(tx, { gameId: game.id, databaseId: game.databaseId, pgn });
+      if (!movesChanged) return;
+
+      for (const lesson of game.lessons) {
+        await tx.lesson.update({ where: { id: lesson.id }, data: { pgnUpdatedAt: new Date() } });
+        const sync = await syncLessonTrainingExercise(tx, {
+          lessonId: lesson.id,
+          pgn,
+          isTrainable: lesson.isTrainable,
+          trainingColor: (lesson.trainingColor?.code as "WHITE" | "BLACK" | undefined) ?? null,
+        });
+        if (lesson.isTrainable && !sync.ok) throw new TrainingSyncError(sync.reason);
+      }
+    }, PGN_IMPORT_TRANSACTION);
+  } catch (error) {
+    if (error instanceof TrainingSyncError) return { ok: false, reason: "training" };
+    throw error;
+  }
+
+  // Not the game's own page: it is the one being edited, and revalidating it on
+  // every autosave would reload it under the feet of whoever is writing. The
+  // lists do show the number of moves, and the lessons show the game itself.
+  revalidatePath(staffRoutes.chapterGames(courseId, chapterId));
+  revalidatePath(staffRoutes.courseGames(courseId));
+  for (const lesson of game.lessons) {
+    revalidatePath(staffRoutes.lessonDetail(courseId, chapterId, lesson.id));
+    revalidatePath(platformRoutes.lessonDetail(lesson.id));
+  }
+  return { ok: true };
+}
+
+/**
+ * Edits the record of a game of the chapter: players, Elos, event, date,
+ * result… and its name in the collection. The same fields, and the same
+ * writing of the PGN's headers, as the student's studies (`writeGameRecord`).
+ *
+ * The moves are not touched, so no lesson is stamped.
+ */
+export async function updateChapterGameDetails(
+  courseId: string,
+  chapterId: string,
+  gameId: string,
+  formData: FormData,
+): Promise<void> {
+  const staff = await requireStaff();
+  const gamePath = staffRoutes.chapterGame(courseId, chapterId, gameId);
+  if (!(await allowAction(`${staff.user.id}:chapter-game-details`, 60, 60_000))) fail(gamePath, "throttled");
+
+  const db = getPlatformDb();
+  const game = await db.game.findFirst({
+    where: { id: gameId, database: { chapterId, courseId } },
+    select: { id: true, pgn: true, lessons: { select: { id: true } } },
+  });
+  if (!game) fail(staffRoutes.chapterGames(courseId, chapterId), "gameMissing");
+
+  const form = parseForm(GAME_FIELDS_SCHEMA, formData);
+  if (!form.ok) fail(gamePath, "invalid");
+  const result = resultCodeOf(form.data);
+
+  // The result's token lives in the catalog's label ("1-0", "*"…), which is
+  // exactly what the PGN expects in its Result header.
+  const resultRow = await db.gameResult.findUnique({ where: { code: result }, select: { label: true } });
+  const { columns } = writeGameRecord(form.data, game.pgn, resultRow?.label ?? "*");
+
+  await db.game.update({
+    where: { id: game.id },
+    data: { ...columns, result: { connect: { code: result } } },
+  });
+
+  revalidatePath(gamePath);
+  revalidatePath(staffRoutes.chapterGames(courseId, chapterId));
+  revalidatePath(staffRoutes.courseGames(courseId));
+  for (const lesson of game.lessons) {
+    revalidatePath(staffRoutes.lessonDetail(courseId, chapterId, lesson.id));
+    revalidatePath(platformRoutes.lessonDetail(lesson.id));
+  }
 }
 
 // --- Chapters -------------------------------------------------------------

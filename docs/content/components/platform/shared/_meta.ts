@@ -4,8 +4,10 @@ const meta: MetaRecord = {
   "activity-list": "ActivityList",
   "board-loading": "BoardLoading",
   "class-content-renderer": "ClassContentRenderer",
+  "edit-game": "EditGame",
   "empty-state": "EmptyState",
   "form-field": "FormField",
+  "game-fields": "GameFields",
   "image-upload": "ImageUpload",
   "local-datetime": "LocalDateTime",
   "platform-check-cards": "PlatformCheckCards",
@@ -20,6 +22,8 @@ const meta: MetaRecord = {
   "priority-filter": "PriorityFilter",
   "progress-indicator": "ProgressIndicator",
   "submit-button": "SubmitButton",
+  "use-game-autosave-hook": "useGameAutosave",
+  "use-pgn-history-hook": "usePgnHistory",
 };
 
 export default meta;

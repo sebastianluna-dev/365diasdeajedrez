@@ -8,9 +8,9 @@ Exports `usePgnHistory`, `pgnReducer`, `HISTORY_LIMIT` and the `PgnHistory`/`Pgn
 
 |         |                                                                                        |
 | ------- | -------------------------------------------------------------------------------------- |
-| File    | `components/platform/sections/studies/game-view/use-pgn-history.hook.ts`               |
+| File    | `components/platform/shared/use-pgn-history.hook.ts`               |
 | Kind    | Hook (client)                                                                          |
-| Used by | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section) |
+| Used by | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section), [`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section) (its board) |
 | Tests   | `use-pgn-history.hook.test.ts`, on the reducer                                         |
 
 ## Signature
@@ -30,4 +30,4 @@ function usePgnHistory(
 
 ## Related
 
-- [`useGameAutosave`](/components/platform/sections/studies/game-view/use-game-autosave-hook), which reads the PGN this hook holds.
+- [`useGameAutosave`](/components/platform/shared/use-game-autosave-hook), which reads the PGN this hook holds.

@@ -1,15 +1,15 @@
 import { FormField } from "@/components/platform/shared/form-field.comp";
 import { federationOptions, FIDE_TITLE_LABELS, FIDE_TITLES } from "@/lib/chess/federations";
-import type { StudyKindOption } from "@/services/studies/studies.types";
 import "./game-fields.comp.css";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { PlatformDatePicker } from "@/components/platform/shared/platform-date-picker/platform-date-picker.comp";
 
 // A game's data, in one place.
 //
-// Both forms — create and edit — use them and have to offer exactly the
-// same fields: if something could be filled in on creation that cannot be
-// corrected later, the data would be trapped.
+// Every form that writes a game's record uses them — the student's studies
+// and the staff's chapter collections — and they all have to offer exactly the
+// same fields: if something could be filled in on one that cannot be corrected
+// on another, the data would be trapped.
 //
 // ALL are optional, also on creation: when analysis starts one does not yet
 // know which game it is going to be.
@@ -73,7 +73,8 @@ const TITLE_OPTIONS = FIDE_TITLES.map((code) => ({ code, label: `${code} · ${FI
 
 interface GameFieldsProps {
   values?: GameFieldValues;
-  results: StudyKindOption[];
+  /** Results from the catalog; the label IS the PGN token ("1-0", "*"…). */
+  results: { code: string; label: string }[];
   /** Help text for the name, different on creation and on edit. */
   titleHint: string;
 }

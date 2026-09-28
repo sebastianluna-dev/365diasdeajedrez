@@ -159,6 +159,8 @@ export interface LessonAdminDetail {
 /** A game of a chapter's collection, to link it to a lesson. */
 export interface CourseGameRow {
   id: string;
+  /** The game on the board, where it is read and edited. */
+  href: string;
   /** Which chapter the collection belongs to. It is only filled in the course view. */
   chapterName?: string;
   /** "Kotov — Plater". */
@@ -169,6 +171,62 @@ export interface CourseGameRow {
   moveCount: number;
   /** How many lessons use it; deleting it would leave them without content. */
   lessonCount: number;
+}
+
+/** A game of the chapter in the list beside the board, to jump between them. */
+export interface ChapterGameSibling {
+  id: string;
+  /** Its name, or the pairing when it has none. */
+  label: string;
+  /** "Fischer — Sherwin"; absent when the label already is the pairing. */
+  players?: string;
+  /** The PGN token: "1-0", "½-½", "*"… */
+  resultLabel: string;
+  href: string;
+}
+
+/**
+ * A game of a chapter's collection, open on the board. The record's fields
+ * carry the names of `GameFieldValues` on purpose, so the whole object fills
+ * the record's form without listing them one by one.
+ */
+export interface ChapterGameDetail {
+  id: string;
+  courseId: string;
+  courseName: string;
+  chapterId: string;
+  chapterName: string;
+  chapterOrder: number;
+  /** How it is told apart in the collection. Absent = it is identified by the pairing. */
+  title?: string;
+  white: string;
+  black: string;
+  whiteElo?: number;
+  blackElo?: number;
+  whiteTitle?: string;
+  blackTitle?: string;
+  whiteCountry?: string;
+  blackCountry?: string;
+  resultCode: string;
+  resultLabel: string;
+  /** Short ISO (yyyy-mm-dd) for the date picker. */
+  playedAtValue?: string;
+  playedAtLabel?: string;
+  event?: string;
+  site?: string;
+  round?: string;
+  eco?: string;
+  sourceLabel: string;
+  pgn: string;
+  /**
+   * The side the board is set from: the one its first lesson shows the
+   * student. Absent when no lesson uses it or the lesson leaves it to the turn.
+   */
+  orientation?: "white" | "black";
+  /** The lessons that show this game: what is written here, their students read. */
+  lessons: { id: string; name: string; href: string }[];
+  /** The chapter's games in their order, this one included. */
+  siblings: ChapterGameSibling[];
 }
 
 export interface CatalogOption {

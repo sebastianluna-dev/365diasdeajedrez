@@ -15,6 +15,7 @@ import type {
   AuthorAdminRow,
   CatalogOption,
   ChapterAdminDetail,
+  ChapterGameDetail,
   ContentTypeOption,
   CourseAdminDetail,
   CourseAdminFilter,
@@ -306,7 +307,7 @@ export async function listCollectionGames(
       event: true,
       eco: true,
       playedAt: true,
-      database: { select: { chapter: { select: { name: true, order: true } } } },
+      database: { select: { courseId: true, chapter: { select: { id: true, name: true, order: true } } } },
       // Moves = indexed positions minus the initial one (GamePosition stores one row
       // per ply, 0 included): that way there is no need to read and replay the whole
       // collection's PGN to render a number.
@@ -319,12 +320,134 @@ export async function listCollectionGames(
 
   return games.map((game) => ({
     id: game.id,
+    // A game of a course always hangs from a chapter; without one there is no
+    // board to take it to, and the row stays without a link.
+    href: game.database.chapter
+      ? staffRoutes.chapterGame(game.database.courseId ?? "", game.database.chapter.id, game.id)
+      : "",
     chapterName: game.database.chapter?.name,
     title: game.title ?? `${game.white} — ${game.black}`,
     detail: [game.event, game.playedAt?.getUTCFullYear(), game.eco].filter(Boolean).join(" · "),
     moveCount: Math.max(0, game._count.positions - 1),
     lessonCount: game._count.lessons,
   }));
+}
+
+/** "Fischer — Sherwin": how a game is named when it has no name of its own. */
+function pairingOf(game: { white: string; black: string }): string {
+  return `${game.white} — ${game.black}`;
+}
+
+/**
+ * A game of the chapter's collection with everything its screen needs: the
+ * PGN and the record to edit, the lessons that show it and the chapter's
+ * other games.
+ *
+ * The three ids come from the URL, so the game is asked for THROUGH them: one
+ * of another chapter, of another course or of a student's study answers null
+ * like one that does not exist.
+ */
+export async function getChapterGame(
+  courseId: string,
+  chapterId: string,
+  gameId: string,
+): Promise<ChapterGameDetail | null> {
+  await requireStaff();
+
+  const db = getPlatformDb();
+  const game = await db.game.findFirst({
+    where: { id: gameId, database: { chapterId, courseId } },
+    select: {
+      id: true,
+      databaseId: true,
+      title: true,
+      white: true,
+      black: true,
+      whiteElo: true,
+      blackElo: true,
+      whiteTitle: true,
+      blackTitle: true,
+      whiteCountry: true,
+      blackCountry: true,
+      playedAt: true,
+      event: true,
+      site: true,
+      round: true,
+      eco: true,
+      pgn: true,
+      result: { select: { code: true, label: true } },
+      source: { select: { label: true } },
+      lessons: {
+        select: { id: true, name: true, orientation: { select: { code: true } } },
+        orderBy: { order: "asc" },
+      },
+      database: {
+        select: {
+          chapter: { select: { name: true, order: true, course: { select: { name: true } } } },
+        },
+      },
+    },
+  });
+  if (!game?.database.chapter) return null;
+  const { chapter } = game.database;
+
+  // The staff edits what the student reads, so it is set the way the student
+  // sees it: from the side of the first lesson that says one.
+  const orientations: Record<string, "white" | "black"> = { WHITE: "white", BLACK: "black" };
+  const orientation = game.lessons.map((lesson) => orientations[lesson.orientation.code]).find(Boolean);
+
+  const siblings = await db.game.findMany({
+    where: { databaseId: game.databaseId },
+    select: { id: true, title: true, white: true, black: true, result: { select: { label: true } } },
+    orderBy: { order: "asc" },
+  });
+
+  return {
+    id: game.id,
+    courseId,
+    courseName: chapter.course.name,
+    chapterId,
+    chapterName: chapter.name,
+    chapterOrder: chapter.order,
+    title: game.title ?? undefined,
+    white: game.white,
+    black: game.black,
+    whiteElo: game.whiteElo ?? undefined,
+    blackElo: game.blackElo ?? undefined,
+    whiteTitle: game.whiteTitle ?? undefined,
+    blackTitle: game.blackTitle ?? undefined,
+    whiteCountry: game.whiteCountry ?? undefined,
+    blackCountry: game.blackCountry ?? undefined,
+    resultCode: game.result.code,
+    resultLabel: game.result.label,
+    playedAtValue: game.playedAt ? game.playedAt.toISOString().slice(0, 10) : undefined,
+    playedAtLabel: game.playedAt ? formatSpanishDate(game.playedAt) : undefined,
+    event: game.event ?? undefined,
+    site: game.site ?? undefined,
+    round: game.round ?? undefined,
+    eco: game.eco ?? undefined,
+    sourceLabel: game.source.label,
+    pgn: game.pgn,
+    orientation,
+    lessons: game.lessons.map((lesson) => ({
+      id: lesson.id,
+      name: lesson.name,
+      href: staffRoutes.lessonDetail(courseId, chapterId, lesson.id),
+    })),
+    siblings: siblings.map((sibling) => ({
+      id: sibling.id,
+      label: sibling.title ?? pairingOf(sibling),
+      players: sibling.title ? pairingOf(sibling) : undefined,
+      resultLabel: sibling.result.label,
+      href: staffRoutes.chapterGame(courseId, chapterId, sibling.id),
+    })),
+  };
+}
+
+/** Results from the catalog, for the record's form. The label IS the PGN token ("1-0", "*"…). */
+export async function listGameResults(): Promise<CatalogOption[]> {
+  await requireStaff();
+  return getPlatformDb().gameResult.findMany({ orderBy: { order: "asc" }, select: { code: true, label: true } });
 }
 
 export async function getLessonAdmin(chapterId: string, lessonId: string): Promise<LessonAdminDetail | null> {
@@ -395,6 +518,7 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
     game: lesson.game
       ? {
           id: lesson.game.id,
+          href: staffRoutes.chapterGame(lesson.chapter.courseId, lesson.chapterId, lesson.game.id),
           title: lesson.game.title ?? `${lesson.game.white} — ${lesson.game.black}`,
           detail: [lesson.game.event, lesson.game.playedAt?.getUTCFullYear(), lesson.game.eco]
             .filter(Boolean)

@@ -34,6 +34,7 @@ export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   pgnTooLong: "El PGN es demasiado grande.",
   roleTaken: "Este curso ya tiene ese capítulo. Sólo puede haber una introducción y un cierre.",
   gameInUse: "Esa partida la usan una o varias lecciones. Desvincúlala de ellas antes de quitarla de la colección.",
+  gameMissing: "Esa partida ya no está en la colección de este capítulo.",
   sans: "Alguna jugada de la secuencia no es legal en esta posición.",
   fen: "La posición FEN no es válida.",
   order: "No se pudo reordenar. Recarga la página y vuelve a intentarlo.",

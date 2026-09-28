@@ -1,5 +1,5 @@
 ---
-description: "The chapter's game collection, the only place where a PGN is pasted: the list with removal for games no lesson uses, and the import form."
+description: "The chapter's game collection, the only place where a PGN is pasted: the list, each game opening on the board, with removal for games no lesson uses, and the import form."
 ---
 
 # `ChapterGamesSection`
@@ -16,7 +16,7 @@ description: "The chapter's game collection, the only place where a PGN is paste
 
 ## Purpose
 
-Course content is PGN, and this is where it enters. Each chapter has a collection; its lessons choose their game from it, so fixing a game here fixes every lesson that uses it at once. It is the **only** place in the staff panel where a PGN is pasted.
+Course content is PGN, and this is where it enters. Each chapter has a collection; its lessons choose their game from it, so fixing a game here fixes every lesson that uses it at once. It is the **only** place in the staff panel where a PGN is pasted. A game already in the collection is not pasted again to correct it: it opens on the board ([`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section)), where it is read and edited.
 
 ## Props
 
@@ -28,14 +28,14 @@ Course content is PGN, and this is where it enters. Each chapter has a collectio
 
 ## Behaviour
 
-- Rows show title, detail, move count and how many lessons use the game. "Quitar" is offered only when `lessonCount === 0`: the foreign key is `SET NULL`, so deleting a used game would not fail, it would empty those lessons silently.
+- Rows show title, detail, move count and how many lessons use the game. The title and «Abrir», at the right edge, lead to the game on the board (`game.href`). "Quitar" is offered only when `lessonCount === 0`: the foreign key is `SET NULL`, so deleting a used game would not fail, it would empty those lessons silently.
 - The import form is a textarea posting `importChapterGames`; a PGN with several games creates all of them.
 
 ## Markup & styling
 
 Block `.chapter-games` (107 lines).
 
-**Elements:** `.chapter-games__list`, `.chapter-games__row`, `.chapter-games__text`, `.chapter-games__title`, `.chapter-games__meta`, `.chapter-games__remove`, `.chapter-games__empty`, `.chapter-games__import`, `.chapter-games__import-input`
+**Elements:** `.chapter-games__list`, `.chapter-games__row`, `.chapter-games__text`, `.chapter-games__title`, `.chapter-games__meta`, `.chapter-games__open`, `.chapter-games__remove`, `.chapter-games__empty`, `.chapter-games__import`, `.chapter-games__import-input`
 
 No modifiers.
 

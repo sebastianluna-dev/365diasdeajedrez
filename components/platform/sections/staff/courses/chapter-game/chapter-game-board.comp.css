@@ -1,0 +1,11 @@
+.chapter-game-board {
+  /* The board's column; the section's layout gives it the room next to the
+     aside, and the viewer splits it inside between board and notation. */
+  min-width: 0;
+
+  /* Why a save was refused, above the board: it answers what was just done
+     and has to be seen without looking for it. */
+  & .platform-notice {
+    margin-bottom: 14px;
+  }
+}

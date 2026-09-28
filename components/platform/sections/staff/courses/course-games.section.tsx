@@ -13,12 +13,11 @@ interface CourseGamesSectionProps {
 }
 
 /**
- * Every game of the course, at once and READ-ONLY.
- *
- * They are added and removed from the chapter they belong to — a game
- * without a chapter would have no collection to go to — so here they are
- * only looked at, with a jump to their chapter. It is the overview that the
- * split by chapters would take away if it did not exist.
+ * Every game of the course, at once. The list itself is read-only: games
+ * are added and removed from the chapter they belong to — a game without a
+ * chapter would have no collection to go to —, and each one opens on the
+ * board of its chapter, where it is read and edited. It is the overview that
+ * the split by chapters would take away if it did not exist.
  */
 export function CourseGamesSection({ course, games }: CourseGamesSectionProps) {
   return (
@@ -43,7 +42,7 @@ export function CourseGamesSection({ course, games }: CourseGamesSectionProps) {
       <StaffPanel
         title="Partidas del curso"
         meta={`${games.length}`}
-        description="Todas las de sus capítulos. Se añaden y se quitan desde el capítulo al que pertenecen; aquí sólo se consultan."
+        description="Todas las de sus capítulos. Cada una se abre en el tablero para verla y editarla; se añaden y se quitan desde el capítulo al que pertenecen."
       >
         {games.length > 0 ? (
           <div className="course-games__table">
@@ -58,7 +57,13 @@ export function CourseGamesSection({ course, games }: CourseGamesSectionProps) {
               {games.map((game) => (
                 <li key={game.id} className="course-games__row">
                   <span className="course-games__text">
-                    <span className="course-games__title">{game.title}</span>
+                    {game.href ? (
+                      <Link href={game.href} className="course-games__title">
+                        {game.title}
+                      </Link>
+                    ) : (
+                      <span className="course-games__title">{game.title}</span>
+                    )}
                     {game.detail && <span className="course-games__detail">{game.detail}</span>}
                   </span>
 

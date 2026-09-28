@@ -12,7 +12,6 @@ import {
   GAME_RESULT_BY_PGN_TOKEN,
   GAME_SOURCE,
   type DatabaseKindCode,
-  type GameResultCode,
 } from "@/constants/platform/study-codes.const";
 import { PGN_IMPORT_TRANSACTION, PGN_MAX_GAMES, PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
@@ -25,7 +24,16 @@ import { emptyGame, serializeGame } from "@/lib/chess/pgn-edit";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
 import { z } from "zod";
-import { formOptionalText, formText, formTextIfPresent, parseForm, readIds } from "@/services/shared/form-schema";
+import { formOptionalText, formText, parseForm, readIds } from "@/services/shared/form-schema";
+import {
+  GAME_FIELD_MAX_LENGTH,
+  GAME_FIELDS_SCHEMA,
+  isGameResultCode,
+  resultCodeOf,
+  UNKNOWN_PLAYER,
+  writeGameRecord,
+  type AutosaveResult,
+} from "@/services/shared/game-record";
 import { parseImportedGames } from "@/services/shared/pgn-import";
 import { withErrorParam } from "@/services/shared/safe-return-to";
 import { studyDetailInclude } from "./studies.mapper";
@@ -38,7 +46,6 @@ import { canChangeKindTo, canCreateKind, studyPermissionsOf } from "./study-rule
 // `?error=<code>` so the page can say so, and the ones only a forged request
 // produces (a foreign study, a kind the viewer may not create) go out silently.
 
-const UNKNOWN_PLAYER = "Desconocido";
 /** Full dates only: the PGN admits "????.??.??" and "2024.??.??". */
 const FULL_PGN_DATE = /^(\d{4})\.(\d{2})\.(\d{2})$/;
 
@@ -341,57 +348,6 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
 // empty and building it on the board. The whole form is optional, because when
 // analysis starts one does not yet know which game it is going to be.
 
-const GAME_FIELD_MAX_LENGTH = 120;
-/** Elo range that is accepted; outside it, it is a typo, not data. */
-const ELO_MIN = 100;
-const ELO_MAX = 4000;
-/** The form uses <input type="date">, which sends ISO. */
-const ISO_DATE = /^(\d{4})-(\d{2})-(\d{2})$/;
-
-/** An Elo, or null when it is empty or not credible: a typo is discarded, not stored. */
-const eloField = z
-  .string()
-  .trim()
-  .optional()
-  .transform((value) => {
-    if (!value || !/^\d+$/.test(value)) return null;
-    const elo = Number.parseInt(value, 10);
-    return elo >= ELO_MIN && elo <= ELO_MAX ? elo : null;
-  });
-
-/** Date from the form (ISO), or null. An impossible date is discarded, not corrected. */
-const isoDateField = z
-  .string()
-  .trim()
-  .optional()
-  .transform((value) => {
-    const match = ISO_DATE.exec(value ?? "");
-    if (!match) return null;
-    const [, year, month, day] = match;
-    const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
-    const isRealDate = date.getUTCMonth() === Number(month) - 1 && date.getUTCDate() === Number(day);
-    return isRealDate ? date : null;
-  });
-
-/** The fields of a game's record. Free text is bounded; the numbers and the date are lenient. */
-const GAME_FIELDS_SCHEMA = z.object({
-  title: formOptionalText(GAME_FIELD_MAX_LENGTH),
-  white: formOptionalText(GAME_FIELD_MAX_LENGTH),
-  black: formOptionalText(GAME_FIELD_MAX_LENGTH),
-  whiteElo: eloField,
-  blackElo: eloField,
-  // Absent ≠ empty for these four: a form that does not carry them must not erase them.
-  whiteTitle: formTextIfPresent(GAME_FIELD_MAX_LENGTH),
-  blackTitle: formTextIfPresent(GAME_FIELD_MAX_LENGTH),
-  whiteCountry: formTextIfPresent(GAME_FIELD_MAX_LENGTH),
-  blackCountry: formTextIfPresent(GAME_FIELD_MAX_LENGTH),
-  resultCode: z.string().trim().max(32).optional(),
-  playedAt: isoDateField,
-  event: formOptionalText(GAME_FIELD_MAX_LENGTH),
-  site: formOptionalText(GAME_FIELD_MAX_LENGTH),
-  round: formOptionalText(GAME_FIELD_MAX_LENGTH),
-  eco: formOptionalText(GAME_FIELD_MAX_LENGTH),
-});
 const NEW_GAME_SCHEMA = GAME_FIELDS_SCHEMA.extend({
   pgn: z.string().trim().max(PGN_MAX_LENGTH).optional(),
   initialFen: formOptionalText(GAME_FIELD_MAX_LENGTH),
@@ -406,10 +362,6 @@ const NEW_GAME_SCHEMA = GAME_FIELDS_SCHEMA.extend({
 function isLegalFen(fen: string): boolean {
   const setup = parseFen(fen);
   return setup.isOk && Chess.fromSetup(setup.value).isOk;
-}
-
-function isGameResultCode(value: string): value is GameResultCode {
-  return (Object.values(GAME_RESULT) as string[]).includes(value);
 }
 
 /** The study, only if it is the user's. The course ones have a null `userId`. */
@@ -519,21 +471,6 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
 // exactly how a game's federation and title were lost when they were added to
 // the action before the form.
 
-/** PGN header: the value is written, it is removed when null, it is left when undefined. */
-function setHeader(headers: Map<string, string>, key: string, value: string | null | undefined): void {
-  if (value === undefined) return;
-  if (value === null || value.length === 0) headers.delete(key);
-  else headers.set(key, value);
-}
-
-/** Date in the PGN's format ("2024.03.17"). */
-function pgnDate(date: Date | null): string | null {
-  if (!date) return null;
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(date.getUTCDate()).padStart(2, "0");
-  return `${date.getUTCFullYear()}.${month}.${day}`;
-}
-
 /**
  * Edits the game's record: players, Elos, event, date, result…
  *
@@ -555,69 +492,20 @@ export async function updateGameDetails(studyId: string, gameId: string, formDat
 
   const form = parseForm(GAME_FIELDS_SCHEMA, formData);
   if (!form.ok) redirect(withErrorParam(platformRoutes.gameDetail(studyId, gameId), "invalid"));
-  const { whiteElo, blackElo, playedAt, event, site, round, eco, whiteTitle, blackTitle, whiteCountry, blackCountry } =
-    form.data;
-  const resultCode = form.data.resultCode ?? "";
-  const result = isGameResultCode(resultCode) ? resultCode : GAME_RESULT.ONGOING;
-  const white = form.data.white ?? UNKNOWN_PLAYER;
-  const black = form.data.black ?? UNKNOWN_PLAYER;
+  const result = resultCodeOf(form.data);
 
   // The result's token lives in the catalog's label ("1-0", "*"…), which is
   // exactly what the PGN expects in its Result header.
   const resultRow = await db.gameResult.findUnique({ where: { code: result }, select: { label: true } });
-
-  let pgn = game.pgn;
-  const parsed = parsePgnTree(pgn) === null ? null : parsePgn(pgn)[0];
-  if (parsed) {
-    setHeader(parsed.headers, "White", white);
-    setHeader(parsed.headers, "Black", black);
-    setHeader(parsed.headers, "WhiteElo", whiteElo === null ? null : String(whiteElo));
-    setHeader(parsed.headers, "BlackElo", blackElo === null ? null : String(blackElo));
-    setHeader(parsed.headers, "Event", event);
-    setHeader(parsed.headers, "Site", site);
-    setHeader(parsed.headers, "Round", round);
-    setHeader(parsed.headers, "ECO", eco);
-    setHeader(parsed.headers, "Date", pgnDate(playedAt));
-    setHeader(parsed.headers, "Result", resultRow?.label ?? "*");
-    setHeader(parsed.headers, "WhiteTitle", whiteTitle);
-    setHeader(parsed.headers, "BlackTitle", blackTitle);
-    // The federation travels in `WhiteTeam`/`BlackTeam`, which is the header the
-    // broadcasts use: the standard PGN does not have one for the country.
-    setHeader(parsed.headers, "WhiteTeam", whiteCountry);
-    setHeader(parsed.headers, "BlackTeam", blackCountry);
-    pgn = makePgn(parsed);
-  }
+  const { columns } = writeGameRecord(form.data, game.pgn, resultRow?.label ?? "*");
 
   await db.game.update({
     where: { id: game.id },
-    data: {
-      title: form.data.title,
-      white,
-      black,
-      whiteElo,
-      blackElo,
-      whiteTitle,
-      blackTitle,
-      whiteCountry,
-      blackCountry,
-      result: { connect: { code: result } },
-      playedAt,
-      event,
-      site,
-      round,
-      eco,
-      pgn,
-    },
+    data: { ...columns, result: { connect: { code: result } } },
   });
 
   revalidatePath(platformRoutes.studyDetail(studyId));
   revalidatePath(platformRoutes.gameDetail(studyId, gameId));
-}
-
-export interface AutosaveResult {
-  ok: boolean;
-  /** Why it was not saved, so it can be said on screen. */
-  reason?: "invalid" | "denied" | "throttled";
 }
 
 /**

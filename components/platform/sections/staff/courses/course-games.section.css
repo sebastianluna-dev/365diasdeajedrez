@@ -85,6 +85,11 @@
     white-space: nowrap;
   }
 
+  /* The name is the way to the board, where the game is read and edited. */
+  & a.course-games__title:hover {
+    color: var(--platform-accent-ink);
+  }
+
   & .course-games__detail {
     font-size: 14px;
     color: var(--platform-text-subtle);

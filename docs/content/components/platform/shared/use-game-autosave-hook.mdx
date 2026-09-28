@@ -1,5 +1,5 @@
 ---
-description: "Saves the game's PGN by itself 1.2 s after the last change through autosaveGamePgn, warns before leaving with something unsaved, and says how it went in one label."
+description: "Saves the game's PGN by itself 1.2 s after the last change through the action it is given, warns before leaving with something unsaved, and says how it went in one label."
 ---
 
 # `useGameAutosave`
@@ -8,31 +8,31 @@ Exports `useGameAutosave`, `saveLabelOf`, `AUTOSAVE_DELAY_MS` and the `SaveState
 
 |         |                                                                                          |
 | ------- | ---------------------------------------------------------------------------------------- |
-| File    | `components/platform/sections/studies/game-view/use-game-autosave.hook.ts`               |
+| File    | `components/platform/shared/use-game-autosave.hook.ts`               |
 | Kind    | Hook (client)                                                                            |
-| Used by | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section)   |
-| Writes  | `autosaveGamePgn()` · `services/studies/studies.actions.ts` (replaceable through `save`) |
+| Used by | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section), [`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section) (its board) |
+| Writes  | Whatever `save` it is given: `autosaveGamePgn()` for a study, `autosaveChapterGamePgn()` for a chapter's collection |
 | Tests   | `use-game-autosave.hook.test.ts`, on `saveLabelOf`                                       |
 
 ## Signature
 
 ```ts
 function useGameAutosave(options: {
-  studyId: string;
-  gameId: string;
   pgn: string;
   enabled: boolean;
-  save?: (studyId: string, gameId: string, pgn: string) => Promise<AutosaveResult>;
-}): { saveLabel: string | undefined };
+  save: (pgn: string) => Promise<AutosaveResult>;
+}): { saveLabel: string | undefined; failure: AutosaveResult["reason"] | undefined };
 ```
 
 ## Behaviour
 
 - With `enabled`, `AUTOSAVE_DELAY_MS` (1.2 s) after the last change the latest PGN goes to `save`; a change during the wait restarts the timer, so intermediate versions are never sent. `lastSaved` is what the server confirmed; "unsaved" is derived by comparing it with the current PGN, not one more state to maintain.
+- **`save` has to be the same function between renders** (`useCallback`): it is a dependency of the wait, and a new one on every render would restart it and nothing would ever be sent.
+- `failure` is why the last save was refused (`AutosaveResult.reason`: `invalid`, `denied`, `throttled`, `training`), while it stays refused. The label only says that it was; the screen that can explain it — the staff's, where `training` means a trainable lesson would be left without a line — reads this.
 - A `beforeunload` handler warns when the PGN differs from `lastSaved`: no request can be awaited there, so the only honest thing is to ask.
 - `saveLabelOf({ enabled, saveState, dirty })` is the pure derivation: `undefined` when disabled or when there is nothing to say, "no se pudo guardar" whenever the last write failed (the error wins even if something was written again), "guardando…" while sending, "sin guardar" with a pending change, "guardado" otherwise.
 
 ## Related
 
-- [`usePgnHistory`](/components/platform/sections/studies/game-view/use-pgn-history-hook), which holds the PGN this hook saves.
+- [`usePgnHistory`](/components/platform/shared/use-pgn-history-hook), which holds the PGN this hook saves.
 - [`GameTools`](/components/chess/game-viewer/game-tools) shows the label, through the viewer's `tools` prop.

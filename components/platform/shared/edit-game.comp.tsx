@@ -1,18 +1,22 @@
 "use client";
 
 import { useRef } from "react";
-import { GameFields, type GameFieldValues } from "@/components/platform/sections/studies/game-fields.comp";
-import { updateGameDetails } from "@/services/studies/studies.actions";
-import type { StudyKindOption } from "@/services/studies/studies.types";
+import { GameFields, type GameFieldValues } from "./game-fields.comp";
 import "./edit-game.comp.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "./submit-button.comp";
 
 interface EditGameProps {
-  studyId: string;
-  gameId: string;
+  /**
+   * The server action that saves the record, already bound to its game. Each
+   * screen brings its own, because each has its own border: the student's
+   * checks the study is theirs, the staff's that they are staff.
+   */
+  action: (formData: FormData) => Promise<void>;
   values: GameFieldValues;
   /** Results catalog; its label IS the PGN token. */
-  results: StudyKindOption[];
+  results: { code: string; label: string }[];
+  /** What the name is for on this screen, under its field. */
+  titleHint: string;
   /**
    * Trigger text. In the aside there is little room and "Editar" is enough; in
    * the editor bar it shares a row with three other buttons and needs to say what it is for.
@@ -20,7 +24,12 @@ interface EditGameProps {
   label?: string;
 }
 
-export function EditGame({ studyId, gameId, values, results, label = "Editar" }: EditGameProps) {
+/**
+ * «Editar»: the button and the dialog with a game's record. It saves through
+ * the action it is given and closes; the moves are not edited here but on the
+ * board.
+ */
+export function EditGame({ action, values, results, titleHint, label = "Editar" }: EditGameProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   return (
@@ -35,7 +44,7 @@ export function EditGame({ studyId, gameId, values, results, label = "Editar" }:
 
       <dialog ref={dialogRef} className="platform-dialog edit-game__dialog">
         <form
-          action={updateGameDetails.bind(null, studyId, gameId)}
+          action={action}
           className="edit-game__form"
           onSubmit={() => dialogRef.current?.close()}
         >
@@ -47,11 +56,7 @@ export function EditGame({ studyId, gameId, values, results, label = "Editar" }:
           <div className="edit-game__body">
             {/* The same fields as the create form: if one were missing here, the
                 value set on creation would be trapped. */}
-            <GameFields
-              values={values}
-              results={results}
-              titleHint="Cómo identificas esta partida dentro del estudio. Si lo dejas vacío se usan los dos jugadores."
-            />
+            <GameFields values={values} results={results} titleHint={titleHint} />
           </div>
 
           <div className="edit-game__actions">

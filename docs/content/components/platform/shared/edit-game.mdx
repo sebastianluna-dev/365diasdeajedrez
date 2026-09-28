@@ -1,0 +1,67 @@
+---
+description: "The 'Datos de la partida' dialog over GameFields. It posts to the action it is given, so the student's studies and the staff's chapter collections share it."
+---
+
+# `EditGame`
+
+|            |                                                                                          |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/edit-game.comp.tsx`                      |
+| Kind       | Client Component                                                                         |
+| Stylesheet | `edit-game.comp.css` → block `.edit-game`                                                |
+| Used by    | [`GameAside`](/components/platform/sections/studies/game-view/game-aside) (the student's studies), [`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section) (the staff's chapter collections) |
+| Composes   | [`GameFields`](/components/platform/shared/game-fields)                        |
+| Writes     | Whatever `action` it is given: `updateGameDetails()` for a study, `updateChapterGameDetails()` for a chapter's collection |
+
+## Purpose
+
+Editing a game's data without leaving the board: a native `<dialog>` with the same [`GameFields`](/components/platform/shared/game-fields) as the create form, so nothing set on creation is trapped. Saving writes the fields to the database and to the PGN headers, so an exported game carries them (`writeGameRecord` in `services/shared/game-record`, the same for both screens).
+
+It lives in `shared/` since 2026-09-28, when the staff panel got its own game screen: two products mount it, each with its own action, because each has its own border — the student's checks the study is theirs, the staff's that they are staff.
+
+## Props
+
+| Prop      | Type                | Required                | Meaning                                                                                      |
+| --------- | ------------------- | ----------------------- | -------------------------------------------------------------------------------------------- |
+| `action`  | `(formData: FormData) => Promise<void>` | yes        | The server action that saves the record, already bound to its game.                          |
+| `values`  | `GameFieldValues`   | yes                     | Current values. The whole game is passed (`GameView`, `ChapterGameDetail`), which is a superset. |
+| `results` | `{ code, label }[]` | yes                     | The results catalog; its label is the PGN token.                                             |
+| `titleHint` | `string`          | yes                     | What the name is for on this screen, under its field.                                        |
+| `label`   | `string`            | no · default `"Editar"` | Trigger text. In the aside "Editar" is enough; a longer label gets the `_size_wide` trigger. |
+
+## Behaviour
+
+`<form action={action}>` closing the dialog on submit. No state beyond the dialog ref.
+
+## Markup & styling
+
+Block `.edit-game` (75 lines).
+
+**Elements:** `.edit-game__open`, `.edit-game__dialog`, `.edit-game__form`, `.edit-game__head`, `.edit-game__title`, `.edit-game__subtitle`, `.edit-game__body`, `.edit-game__actions`, `.edit-game__note`
+
+**Modifiers and states:** `.edit-game__open_size_wide`
+
+**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_secondary`.
+
+**Tokens:** `--platform-bg`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+
+**Breakpoints:** `(max-width: 560px)` stacks the action row.
+
+## Usage
+
+From `GameAside`:
+
+```tsx
+import { EditGame } from "@/components/platform/shared/edit-game.comp";
+
+<EditGame
+  action={updateGameDetails.bind(null, game.studyId, game.id)}
+  results={results}
+  values={game}
+  titleHint="Cómo identificas esta partida dentro del estudio. Si lo dejas vacío se usan los dos jugadores."
+/>;
+```
+
+## Related
+
+- [`GameAside`](/components/platform/sections/studies/game-view/game-aside) renders it in the record card's head.

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { SearchIcon } from "@/components/icons/search-icon.comp";
 import { staffRoutes } from "@/lib/platform-routes";
 import { setLessonGame } from "@/services/staff-courses/staff-courses.actions";
@@ -35,13 +36,19 @@ export function LessonGamePicker({ courseId, chapterId, lessonId, game, candidat
       <div className="lesson-game-picker">
         <div className="lesson-game-picker__current">
           <span className="lesson-game-picker__text">
-            <span className="lesson-game-picker__title">{game.title}</span>
+            <Link href={game.href} className="lesson-game-picker__title">
+              {game.title}
+            </Link>
             <span className="lesson-game-picker__detail">
               {game.detail}
               {game.detail && " · "}
               {game.moveCount} jugadas
             </span>
           </span>
+
+          <Link href={game.href} className="lesson-game-picker__open">
+            Editar partida
+          </Link>
 
           <form action={save}>
             {/* Without `gameId` the action unlinks. */}
@@ -52,7 +59,7 @@ export function LessonGamePicker({ courseId, chapterId, lessonId, game, candidat
         </div>
 
         <p className="lesson-game-picker__note">
-          El contenido de la lección es el de esta partida. Corrígela en la colección del curso y quedan corregidas
+          El contenido de la lección es el de esta partida. Ábrela para editarla en el tablero: quedan corregidas
           todas las lecciones que la usan.
         </p>
       </div>

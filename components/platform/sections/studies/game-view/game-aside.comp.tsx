@@ -11,8 +11,9 @@ import type {
   StudyKindOption,
 } from "@/services/studies/studies.types";
 import { canShareStudy } from "@/services/studies/study-rules";
+import { EditGame } from "@/components/platform/shared/edit-game.comp";
+import { updateGameDetails } from "@/services/studies/studies.actions";
 import { DeleteGame } from "./delete-game.comp";
-import { EditGame } from "./edit-game.comp";
 import { GameList } from "./game-list.comp";
 import "./game-aside.comp.css";
 
@@ -145,7 +146,12 @@ export function GameAside({ game, study, results, classGames, kinds, students, p
                  contains every field of `GameFieldValues`, and listing them here is
                  how the title and the federation got lost once — the form asked for
                  them and this list did not pass them, so saving erased them. */
-              <EditGame studyId={game.studyId} gameId={game.id} results={results} values={game} />
+              <EditGame
+                action={updateGameDetails.bind(null, game.studyId, game.id)}
+                results={results}
+                values={game}
+                titleHint="Cómo identificas esta partida dentro del estudio. Si lo dejas vacío se usan los dos jugadores."
+              />
             )}
           </div>
 

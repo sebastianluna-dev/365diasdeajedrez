@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { autosaveGamePgn, type AutosaveResult } from "@/services/studies/studies.actions";
+import type { AutosaveResult } from "@/services/shared/game-record";
 
 /** Wait after the last change before saving. */
 export const AUTOSAVE_DELAY_MS = 1200;
@@ -26,13 +26,15 @@ export function saveLabelOf({ enabled, saveState, dirty }: SaveLabelInput): stri
 }
 
 interface GameAutosaveOptions {
-  studyId: string;
-  gameId: string;
   pgn: string;
   /** Off for a game one cannot edit: nothing is ever sent. */
   enabled: boolean;
-  /** The server action, replaceable in tests. */
-  save?: (studyId: string, gameId: string, pgn: string) => Promise<AutosaveResult>;
+  /**
+   * The server action that saves, already bound to its game. It has to be the
+   * SAME function between renders (`useCallback`, or `bind` in a `useMemo`):
+   * a new one every time would restart the wait and nothing would ever be sent.
+   */
+  save: (pgn: string) => Promise<AutosaveResult>;
 }
 
 /**
@@ -40,9 +42,10 @@ interface GameAutosaveOptions {
  * went. "There are unsaved changes" is DERIVED by comparing the PGN with the
  * last one the server confirmed, instead of being one more state to maintain.
  */
-export function useGameAutosave({ studyId, gameId, pgn, enabled, save = autosaveGamePgn }: GameAutosaveOptions) {
+export function useGameAutosave({ pgn, enabled, save }: GameAutosaveOptions) {
   const [lastSaved, setLastSaved] = useState(pgn);
   const [saveState, setSaveState] = useState<SaveState>("idle");
+  const [failure, setFailure] = useState<AutosaveResult["reason"]>();
 
   // Wait until work stops and save the LATEST: if something else changes
   // during the wait, the timer restarts and the intermediate version is never sent.
@@ -52,20 +55,23 @@ export function useGameAutosave({ studyId, gameId, pgn, enabled, save = autosave
     const timer = setTimeout(async () => {
       setSaveState("saving");
       try {
-        const result = await save(studyId, gameId, pgn);
+        const result = await save(pgn);
         if (result.ok) {
           setLastSaved(pgn);
           setSaveState("saved");
+          setFailure(undefined);
         } else {
           setSaveState("error");
+          setFailure(result.reason);
         }
       } catch {
         setSaveState("error");
+        setFailure(undefined);
       }
     }, AUTOSAVE_DELAY_MS);
 
     return () => clearTimeout(timer);
-  }, [pgn, lastSaved, enabled, studyId, gameId, save]);
+  }, [pgn, lastSaved, enabled, save]);
 
   // Warns when the tab is closed with something still unsaved. No request can
   // be awaited here, so the only honest thing to do is ask.
@@ -78,5 +84,9 @@ export function useGameAutosave({ studyId, gameId, pgn, enabled, save = autosave
     return () => window.removeEventListener("beforeunload", handler);
   }, [enabled, pgn, lastSaved]);
 
-  return { saveLabel: saveLabelOf({ enabled, saveState, dirty: pgn !== lastSaved }) };
+  return {
+    saveLabel: saveLabelOf({ enabled, saveState, dirty: pgn !== lastSaved }),
+    /** Why the last save was refused, while it stays refused; the label only says that it was. */
+    failure: saveState === "error" ? failure : undefined,
+  };
 }
