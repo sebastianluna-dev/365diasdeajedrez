@@ -106,7 +106,7 @@
     width: 100%;
     padding: 12px 14px;
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-bg);
     color: var(--platform-text);
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;

@@ -4,7 +4,7 @@
   gap: 18px;
   padding: 22px 24px;
   border: 1px solid var(--platform-border);
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--platform-surface);
 
   & .share-collection__head {
@@ -136,7 +136,7 @@
     padding: 16px;
     /* The panel's own border stays: it is the aside's third card and reads
        like the other two, outlined by the thin grey over a light shadow. */
-    border-radius: 10px;
+    border-radius: 8px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 
     & .share-collection__title {

@@ -20,7 +20,7 @@
     gap: 18px;
     padding: 22px;
     border: 1px solid var(--platform-border);
-    border-radius: 16px;
+    border-radius: 8px;
     background: var(--platform-surface);
     color: var(--platform-text);
     transition: 150ms;
@@ -55,7 +55,7 @@
     align-items: center;
     height: 24px;
     padding: 0 9px;
-    border-radius: 6px;
+    border-radius: 8px;
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
     font-size: 12px;

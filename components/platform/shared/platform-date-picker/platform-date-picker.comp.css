@@ -13,7 +13,7 @@
     box-sizing: border-box;
     padding: 13px 15px;
     border: 1px solid var(--platform-border);
-    border-radius: 12px;
+    border-radius: 8px;
     background: var(--platform-surface-soft);
     color: var(--platform-text);
     font-family: inherit;
@@ -25,7 +25,7 @@
   /* The size of FormField's inputs, for the forms that still use it. */
   & .platform-date-picker__trigger.platform-date-picker__trigger_size_compact {
     padding: 9px 12px;
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-surface);
     font-size: 15.5px;
   }
@@ -66,7 +66,7 @@
     box-sizing: border-box;
     padding: 12px;
     border: 1px solid var(--platform-border);
-    border-radius: 12px;
+    border-radius: 8px;
     background: var(--platform-surface);
     box-shadow: var(--platform-shadow-card);
     transform-origin: var(--radix-popover-content-transform-origin);

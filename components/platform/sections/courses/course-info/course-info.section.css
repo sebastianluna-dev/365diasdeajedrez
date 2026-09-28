@@ -14,7 +14,7 @@
     position: relative;
     aspect-ratio: 21 / 9;
     overflow: hidden;
-    border-radius: 22px;
+    border-radius: 8px;
     background: var(--platform-ink);
   }
 
@@ -48,7 +48,7 @@
     /* It climbs onto the cover, and is inset from its edges. */
     margin: -64px 36px 0;
     padding: 26px 30px;
-    border-radius: 18px;
+    border-radius: 8px;
     background: var(--platform-surface);
     box-shadow:
       0 2px 4px rgba(22, 17, 13, 0.05),
@@ -168,7 +168,7 @@
     height: 50px;
     padding: 0 20px;
     border: 0;
-    border-radius: 12px;
+    border-radius: 8px;
     background: var(--platform-accent);
     color: var(--platform-text);
     font-family: inherit;
@@ -231,7 +231,7 @@
     flex-direction: column;
     overflow: hidden;
     border: 1px solid var(--platform-border);
-    border-radius: 18px;
+    border-radius: 8px;
     background: var(--platform-surface);
     box-shadow: 0 1px 3px rgba(22, 17, 13, 0.06);
   }
@@ -251,7 +251,7 @@
     align-items: center;
     height: 24px;
     padding: 0 9px;
-    border-radius: 6px;
+    border-radius: 8px;
     background: color-mix(in srgb, var(--platform-accent-on-ink) 18%, transparent);
     color: var(--platform-accent-on-ink);
     font-size: 12px;
@@ -349,7 +349,7 @@
 
   @media (max-width: 620px) {
     & .course-info__cover {
-      border-radius: 16px;
+      border-radius: 8px;
     }
 
     & .course-info__card {

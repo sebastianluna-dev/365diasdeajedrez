@@ -186,7 +186,7 @@ html body.platform-theme[data-scroll-locked] {
 
 .platform-card {
   background: var(--platform-surface);
-  border-radius: 10px;
+  border-radius: 8px;
   box-shadow: var(--platform-shadow-card);
   padding: 22px 24px 24px;
 }
@@ -205,7 +205,7 @@ html body.platform-theme[data-scroll-locked] {
   gap: 8px;
   padding: 12px 22px;
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--platform-accent);
   color: var(--platform-text);
   font-size: 15.5px;
@@ -329,7 +329,7 @@ html body.platform-theme[data-scroll-locked] {
   margin: auto;
   padding: 0;
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--platform-surface);
   color: var(--platform-text);
   box-shadow: var(--platform-shadow-card);

@@ -2,7 +2,7 @@
   & .edit-study__open {
     padding: 11px 17px;
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-surface);
     color: var(--platform-text);
     font-family: inherit;
@@ -64,7 +64,7 @@
     box-sizing: border-box;
     padding: 9px 12px;
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-surface);
     color: var(--platform-text);
     font-family: inherit;

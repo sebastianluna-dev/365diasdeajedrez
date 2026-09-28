@@ -5,7 +5,7 @@
      the entry and exit motion are set by `.platform-dialog`. */
   & .authors-manager__dialog {
     width: min(560px, calc(100vw - 32px));
-    border-radius: 18px;
+    border-radius: 8px;
   }
 
   & .authors-manager__head {
@@ -44,7 +44,7 @@
     height: 36px;
     margin: -6px -6px 0 0;
     border: 0;
-    border-radius: 10px;
+    border-radius: 8px;
     background: transparent;
     color: var(--platform-text-subtle);
     cursor: pointer;

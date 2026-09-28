@@ -9,7 +9,7 @@
     margin: 0 0 16px;
     padding: 10px 12px;
     border: 1px solid var(--platform-danger-border);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-danger-soft);
     color: var(--platform-danger);
     font-size: 14.5px;

@@ -31,7 +31,7 @@
   & .level-scale__bar {
     height: 8px;
     margin-bottom: 6px;
-    border-radius: 3px;
+    border-radius: 8px;
     background: var(--platform-track);
   }
 

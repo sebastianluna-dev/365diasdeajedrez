@@ -13,7 +13,7 @@
     gap: 20px;
     padding: 20px 22px;
     border: 1px solid var(--platform-border);
-    border-radius: 16px;
+    border-radius: 8px;
     background: var(--platform-surface);
   }
 
@@ -84,7 +84,7 @@
     margin: 0;
     padding: 20px 22px;
     border: 1px dashed var(--platform-border-strong);
-    border-radius: 16px;
+    border-radius: 8px;
     font-size: 15px;
     line-height: 1.5;
     color: var(--platform-text-muted);
@@ -105,7 +105,7 @@
   & .chapter-study__lesson {
     overflow: hidden;
     border: 1px solid var(--platform-border);
-    border-radius: 16px;
+    border-radius: 8px;
     background: var(--platform-surface);
   }
 
@@ -204,7 +204,7 @@
     align-items: center;
     height: 24px;
     padding: 0 9px;
-    border-radius: 6px;
+    border-radius: 8px;
     background: var(--platform-surface-neutral);
     color: var(--platform-text-muted);
     font-size: 12px;
@@ -223,7 +223,7 @@
     height: 42px;
     padding: 0 18px;
     border: 1px solid var(--platform-border-strong);
-    border-radius: 11px;
+    border-radius: 8px;
     background: var(--platform-surface);
     color: var(--platform-text);
     font-size: 14.5px;
@@ -265,7 +265,7 @@
     height: 40px;
     padding: 0 16px;
     border: 1px solid var(--platform-border-strong);
-    border-radius: 11px;
+    border-radius: 8px;
     background: var(--platform-surface);
     color: var(--platform-text);
     font-size: 13.5px;

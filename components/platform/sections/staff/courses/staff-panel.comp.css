@@ -6,7 +6,7 @@
   /* Outlined by the thin grey over the shadow: on the light page the shadow
      alone did not hold the card's edge. */
   border: 1px solid var(--platform-border);
-  border-radius: 10px;
+  border-radius: 8px;
   box-shadow: var(--platform-shadow-card);
 
   & .staff-panel__head {

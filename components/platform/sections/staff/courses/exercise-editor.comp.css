@@ -20,7 +20,7 @@
     gap: 8px;
     padding: 12px 14px;
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 8px;
   }
 
   & .exercise-editor__row {
@@ -92,7 +92,7 @@
     width: 100%;
     padding: 14px;
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-surface);
   }
 

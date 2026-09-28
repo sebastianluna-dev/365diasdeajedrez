@@ -43,7 +43,7 @@
   box-sizing: border-box;
   max-width: min(300px, var(--radix-tooltip-content-available-width));
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--platform-text);
   color: var(--platform-surface);
   font-size: 14px;

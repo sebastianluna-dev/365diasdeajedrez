@@ -13,7 +13,7 @@
     height: 38px;
     padding: 0 14px 0 10px;
     border: 1px solid var(--platform-border-strong);
-    border-radius: 11px;
+    border-radius: 8px;
     background: var(--platform-surface);
     color: var(--platform-text);
     font-size: 14px;
@@ -46,7 +46,7 @@
     width: 280px;
     aspect-ratio: 21 / 9;
     overflow: hidden;
-    border-radius: 14px;
+    border-radius: 8px;
     background: var(--platform-ink);
     box-shadow: 0 1px 3px rgba(22, 17, 13, 0.1);
   }
@@ -96,7 +96,7 @@
     justify-content: center;
     gap: 10px;
     height: 50px;
-    border-radius: 12px;
+    border-radius: 8px;
     font-size: 16px;
     font-weight: 800;
   }
@@ -167,7 +167,7 @@
     flex-direction: column;
     overflow: hidden;
     border: 1px solid var(--platform-border);
-    border-radius: 16px;
+    border-radius: 8px;
     background: var(--platform-surface);
   }
 

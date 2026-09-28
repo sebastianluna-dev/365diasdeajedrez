@@ -20,7 +20,7 @@
      the entry and exit motion are set by `.platform-dialog`. */
   & .reset-progress__dialog {
     width: min(480px, calc(100vw - 32px));
-    border-radius: 18px;
+    border-radius: 8px;
   }
 
   & .reset-progress__form {
@@ -51,7 +51,7 @@
     gap: 10px;
     padding: 12px 14px;
     border: 1px solid var(--platform-border-strong);
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 15px;
     font-weight: 600;
     line-height: 1.4;

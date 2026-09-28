@@ -16,7 +16,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 3px;
     padding: 3px;
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-surface-neutral);
   }
 

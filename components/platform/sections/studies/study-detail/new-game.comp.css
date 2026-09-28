@@ -1,7 +1,7 @@
 .new-game {
   & .new-game__open {
     padding: 11px 20px;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 15px;
   }
 
@@ -36,7 +36,7 @@
   & .new-game__tab {
     padding: 10px 14px;
     border: 0;
-    border-radius: 10px 10px 0 0;
+    border-radius: 8px 8px 0 0;
     background: transparent;
     color: var(--platform-text-muted);
     font-family: inherit;
@@ -70,7 +70,7 @@
     resize: vertical;
     padding: 14px 16px;
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-surface);
     color: var(--platform-text);
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -112,7 +112,7 @@
     box-sizing: border-box;
     padding: 9px 12px;
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-surface);
     color: var(--platform-text);
     font-family: inherit;
@@ -143,7 +143,7 @@
     gap: 14px;
     padding: 14px 16px;
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
   }
 

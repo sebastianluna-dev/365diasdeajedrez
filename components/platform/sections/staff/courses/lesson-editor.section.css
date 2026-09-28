@@ -88,7 +88,7 @@
     width: 100%;
     padding: 10px 16px;
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 8px;
     background: transparent;
     color: var(--platform-text-muted);
     font-family: inherit;

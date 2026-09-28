@@ -24,7 +24,7 @@
      the entry and exit motion are set by `.platform-dialog`. */
   & .course-source-dialog__dialog {
     width: min(640px, calc(100vw - 32px));
-    border-radius: 18px;
+    border-radius: 8px;
   }
 
   /* The form is the dialog's whole content: head, body and footer band stack
@@ -68,7 +68,7 @@
     height: 36px;
     margin: -6px -6px 0 0;
     border: 0;
-    border-radius: 10px;
+    border-radius: 8px;
     background: transparent;
     color: var(--platform-text-subtle);
     cursor: pointer;

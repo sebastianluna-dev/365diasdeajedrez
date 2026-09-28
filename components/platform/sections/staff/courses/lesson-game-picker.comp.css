@@ -11,7 +11,7 @@
     gap: 14px;
     padding: 14px 16px;
     border: 1px solid var(--platform-accent);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-accent-soft);
   }
 
@@ -34,7 +34,7 @@
     width: 100%;
     padding: 12px 14px 12px 37px;
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-bg);
     color: var(--platform-text);
     font-family: inherit;

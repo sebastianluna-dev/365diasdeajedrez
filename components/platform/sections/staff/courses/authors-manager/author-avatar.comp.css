@@ -28,11 +28,11 @@
   }
 
   &.author-avatar_shape_tile {
-    border-radius: 12px;
+    border-radius: 8px;
   }
 
   &.author-avatar_shape_tile.author-avatar_size_small {
-    border-radius: 10px;
+    border-radius: 8px;
   }
 
   &.author-avatar_shape_circle {

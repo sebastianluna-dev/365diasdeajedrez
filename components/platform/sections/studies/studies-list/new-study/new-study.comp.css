@@ -10,7 +10,7 @@
     gap: 8px;
     padding: 14px 24px;
     border: 0;
-    border-radius: 14px;
+    border-radius: 8px;
     background: var(--platform-bg);
     color: var(--platform-text);
     font-family: inherit;
@@ -38,7 +38,7 @@
      the entry and exit motion are set by `.platform-dialog`. */
   & .new-study__dialog {
     width: min(600px, calc(100vw - 32px));
-    border-radius: 18px;
+    border-radius: 8px;
   }
 
   /* The form is the dialog's whole content: head, body and footer band stack
@@ -59,7 +59,7 @@
     flex: none;
     width: 56px;
     height: 56px;
-    border-radius: 14px;
+    border-radius: 8px;
     background: var(--platform-text) url("/pieces/w-knight.svg") center / 30px no-repeat;
   }
 
@@ -91,7 +91,7 @@
     height: 36px;
     margin: -6px -6px 0 0;
     border: 0;
-    border-radius: 10px;
+    border-radius: 8px;
     background: transparent;
     color: var(--platform-text-subtle);
     cursor: pointer;
