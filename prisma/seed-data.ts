@@ -12,7 +12,7 @@ import {
 } from "../constants/platform/class-codes.const";
 import { AUTHOR_ROLE, CONTENT_TYPE, COURSE_STATUS, DEFAULT_LEVEL } from "../constants/platform/course-codes.const";
 import { BOARD_ORIENTATION, OWNER_TYPE, PROGRESS_STATUS, TOPIC } from "../constants/platform/shared-codes.const";
-import { SOURCE_ENTITY_KIND, SOURCE_TYPE } from "../constants/platform/source-codes.const";
+import { SOURCE_TYPE } from "../constants/platform/source-codes.const";
 import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "../constants/platform/study-codes.const";
 import { ATTEMPT_CONTEXT, ATTEMPT_RESULT, EXERCISE_MODE } from "../constants/platform/training-codes.const";
 
@@ -158,8 +158,8 @@ export const CATALOG_VALUES = {
     [AUTHOR_ROLE.CONTENT_AUTHOR, "Autor del contenido"],
     [AUTHOR_ROLE.DIGITAL_ADAPTATION, "Adaptación digital"],
   ],
-  // "Procedencia del recurso": only the catalogs are seeded. The entities and
-  // the sources of a course are typed by staff; no demo course cites one.
+  // "Procedencia del recurso": only the catalog is seeded. The sources of a
+  // course are typed by staff; no demo course has one.
   sourceType: [
     [SOURCE_TYPE.BOOK, "Libro"],
     [SOURCE_TYPE.DIGITAL_COURSE, "Curso digital"],
@@ -173,12 +173,6 @@ export const CATALOG_VALUES = {
     [SOURCE_TYPE.OWN_MATERIAL, "Material de elaboración propia"],
     [SOURCE_TYPE.COMPILATION, "Recopilación de varias fuentes"],
     [SOURCE_TYPE.OTHER, "Otro"],
-  ],
-  sourceEntityKind: [
-    [SOURCE_ENTITY_KIND.DIGITAL_PLATFORM, "Plataforma digital"],
-    [SOURCE_ENTITY_KIND.PUBLISHER, "Editorial"],
-    [SOURCE_ENTITY_KIND.CONTENT_PROVIDER, "Proveedor de contenido"],
-    [SOURCE_ENTITY_KIND.OTHER, "Otro"],
   ],
   boardOrientation: [
     [BOARD_ORIENTATION.WHITE, "Blancas"],

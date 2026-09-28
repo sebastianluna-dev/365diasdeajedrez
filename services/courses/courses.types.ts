@@ -82,7 +82,6 @@ export interface CourseSourceItem {
   typeLabel: string;
   originalTitle?: string;
   authors?: string;
-  entityName?: string;
   url?: string;
   publicationYear?: number;
   edition?: string;

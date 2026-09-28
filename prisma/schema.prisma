@@ -20,8 +20,8 @@
 //   not duplicate rows.
 // - TeacherStudent: partial unique index teacher_student_one_active over
 //   studentId WHERE endedAt IS NULL (one active teacher per student).
-// - SourceEntity: unique index source_entity_name_ci over lower(name), so two
-//   entities cannot differ only by case ("Chessable" / "chessable").
+// - SourceEntity (unused, see the model): unique index source_entity_name_ci
+//   over lower(name).
 // Rules validated in the services layer (impossible in a CHECK without
 // crossing tables): ownerType↔populated column coherence, ClassBlock.kind↔field
 // used.
@@ -88,8 +88,8 @@ model SourceType {
   courseSources CourseSource[]
 }
 
-/// What a source entity is — digital platform, publisher, content provider —;
-/// one entity may be several at once (`SourceEntityKindLink`).
+/// UNUSED since 2026-09-27, like `SourceEntity`: what a source entity was.
+/// Nothing reads, writes nor seeds it.
 model SourceEntityKind {
   id    Int    @id @default(autoincrement())
   code  String @unique
@@ -396,11 +396,13 @@ model CourseContentType {
   @@id([courseId, contentTypeId])
 }
 
-/// A platform, publisher or provider the courses cite as the origin of their
-/// material (Chessable, Quality Chess…). Editorial content edited by staff at
-/// /administracion/entidades, like `Author`; never deleted from the interface.
-/// Unique by name ignoring case: index `source_entity_name_ci`, written by
-/// hand in the migration.
+/// UNUSED since 2026-09-27. It was the platform, publisher or provider a
+/// course's source cited, edited at /administracion/entidades; the page, the
+/// field of the source form and everything that read them were taken out.
+/// The three tables (`SourceEntity`, `SourceEntityKind`,
+/// `SourceEntityKindLink`) and `CourseSource.entityId` stay in the database,
+/// empty, so that removing the feature did not take a destructive migration;
+/// dropping them is one, whenever it is wanted.
 model SourceEntity {
   id          String   @id @default(uuid())
   name        String
@@ -425,8 +427,8 @@ model SourceEntityKindLink {
 
 /// Where a course's material comes from ("Procedencia del recurso"). Several
 /// per course, one resource each; only the type is required, so material of
-/// the academy's own making needs no title, entity nor URL. A compilation is
-/// simply several rows.
+/// the academy's own making needs no title nor URL. A compilation is simply
+/// several rows.
 model CourseSource {
   id           String @id @default(uuid())
   courseId     String
@@ -438,6 +440,7 @@ model CourseSource {
   /// Authors of the RESOURCE as free text, several separated by commas. Not
   /// the platform's `Author`: who wrote the book is not who signs the course.
   authors           String?
+  /// Unused, see `SourceEntity`.
   entityId          String?
   url               String?
   publicationYear   Int?

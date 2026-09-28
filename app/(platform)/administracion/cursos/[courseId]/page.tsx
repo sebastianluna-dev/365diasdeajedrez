@@ -10,7 +10,7 @@ import {
   listCourseStatuses,
 } from "@/services/staff-courses/staff-courses.service";
 import { listLevelOptions } from "@/services/staff-levels/staff-levels.service";
-import { listSourceEntityOptions, listSourceTypes } from "@/services/staff-sources/staff-sources.service";
+import { listSourceTypes } from "@/services/staff-sources/staff-sources.service";
 
 interface StaffCoursePageProps {
   params: Promise<{ courseId: string }>;
@@ -29,18 +29,16 @@ export default async function StaffCoursePage({ params, searchParams }: StaffCou
   const course = await getCourseAdminDetail(courseId);
   if (!course) notFound();
 
-  const [contentTypes, levels, authors, authorRoles, statuses, sourceTypes, entities, gameCount, { error }] =
-    await Promise.all([
-      listContentTypes(),
-      listLevelOptions(),
-      listAuthors(),
-      listAuthorRoles(),
-      listCourseStatuses(),
-      listSourceTypes(),
-      listSourceEntityOptions(),
-      countCollectionGames({ courseId }),
-      searchParams,
-    ]);
+  const [contentTypes, levels, authors, authorRoles, statuses, sourceTypes, gameCount, { error }] = await Promise.all([
+    listContentTypes(),
+    listLevelOptions(),
+    listAuthors(),
+    listAuthorRoles(),
+    listCourseStatuses(),
+    listSourceTypes(),
+    countCollectionGames({ courseId }),
+    searchParams,
+  ]);
 
   // The header goes INSIDE the section: it carries the name and the status,
   // which are data of the course and not of the page.
@@ -54,7 +52,6 @@ export default async function StaffCoursePage({ params, searchParams }: StaffCou
         authorRoles={authorRoles}
         statuses={statuses}
         sourceTypes={sourceTypes}
-        entities={entities}
         gameCount={gameCount}
         errorCode={error}
       />

@@ -1,20 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import { CloseIcon } from "@/components/icons/close-icon.comp";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
-import { staffRoutes } from "@/lib/platform-routes";
 import type { CatalogOption } from "@/services/staff-courses/staff-courses.types";
-import { entityFieldLabel } from "@/services/staff-sources/source-rules";
-import type { CourseSourceAdmin, SourceEntityOption } from "@/services/staff-sources/staff-sources.types";
+import type { CourseSourceAdmin } from "@/services/staff-sources/staff-sources.types";
 
 interface CourseSourceFormProps {
   /** The source being edited; absent when adding one. */
   source?: CourseSourceAdmin;
   sourceTypes: CatalogOption[];
-  entities: SourceEntityOption[];
   /** Where the form posts: the server action bound to the course, or a stub in Storybook. */
   action: (formData: FormData) => void | Promise<void>;
   /** Removes the source being edited; it reads the same hidden `sourceId`. */
@@ -27,20 +23,16 @@ interface CourseSourceFormProps {
 /**
  * The fields of one source, with no dialog and no action of its own:
  * `CourseSourceDialog` mounts it with `saveCourseSource`, the story with a
- * stub. Only the type is required. The entity field is named by the type —
- * «Editorial» for a book, «Plataforma o proveedor» for a digital course — and
- * offers the entities the staff registered, with a link to register another.
+ * stub. Only the type is required.
  */
 export function CourseSourceForm({
   source,
   sourceTypes,
-  entities,
   action,
   deleteAction,
   onClose,
   onSubmit,
 }: CourseSourceFormProps) {
-  const [sourceTypeCode, setSourceTypeCode] = useState(source?.sourceTypeCode ?? sourceTypes[0]?.code ?? "");
   const isEdit = source !== undefined;
 
   return (
@@ -61,8 +53,8 @@ export function CourseSourceForm({
       <div className="course-source-dialog__body">
         <PlatformFormField name="sourceTypeCode" label="Tipo de fuente">
           <PlatformSelect
-            value={sourceTypeCode}
-            onValueChange={setSourceTypeCode}
+            // The first kind is chosen when adding: the field is required.
+            defaultValue={source?.sourceTypeCode ?? sourceTypes[0]?.code ?? ""}
             options={sourceTypes.map((type) => ({ value: type.code, label: type.label }))}
             required
           />
@@ -80,21 +72,6 @@ export function CourseSourceForm({
         >
           <input type="text" maxLength={300} defaultValue={source?.authors ?? ""} placeholder="Aron Nimzowitsch" />
         </PlatformFormField>
-
-        <PlatformFormField name="entityId" label={entityFieldLabel(sourceTypeCode)} optionalLabel="Opcional">
-          <PlatformSelect
-            defaultValue={source?.entityId ?? ""}
-            emptyOption="Ninguna"
-            options={entities.map((entity) => ({ value: entity.id, label: entity.name }))}
-          />
-        </PlatformFormField>
-        <p className="course-source-dialog__entity-note">
-          ¿Falta una?{" "}
-          <a href={staffRoutes.entities} target="_blank" rel="noreferrer">
-            Crea la entidad
-          </a>{" "}
-          y recarga la ficha para verla aquí.
-        </p>
 
         <PlatformFormField
           name="url"

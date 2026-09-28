@@ -107,19 +107,6 @@
     padding: 24px 28px 28px;
   }
 
-  /* Hangs right under the entity select: the way to register one that is missing. */
-  & .course-source-dialog__entity-note {
-    margin: -10px 0 0;
-    font-size: 14px;
-    color: var(--platform-text-subtle);
-  }
-
-  & .course-source-dialog__entity-note a {
-    color: var(--platform-accent-ink);
-    text-decoration: underline;
-    text-underline-offset: 2px;
-  }
-
   /* Year and edition are short: they share a row. */
   & .course-source-dialog__pair {
     display: grid;

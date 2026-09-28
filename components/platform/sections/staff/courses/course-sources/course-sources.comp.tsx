@@ -1,5 +1,5 @@
 import type { CatalogOption } from "@/services/staff-courses/staff-courses.types";
-import type { CourseSourceAdmin, SourceEntityOption } from "@/services/staff-sources/staff-sources.types";
+import type { CourseSourceAdmin } from "@/services/staff-sources/staff-sources.types";
 import { StaffPanel } from "../staff-panel.comp";
 import { CourseSourceDialog } from "./course-source-dialog.comp";
 import "./course-sources.comp.css";
@@ -9,18 +9,16 @@ interface CourseSourcesProps {
   sources: CourseSourceAdmin[];
   /** The kinds of resource, from the catalog. */
   sourceTypes: CatalogOption[];
-  /** The entities a source can cite, from /administracion/entidades. */
-  entities: SourceEntityOption[];
 }
 
 /**
  * The grey line under the title: who, what kind of resource and the year,
- * "Garry Kasparov · Libro · 2003". Who is the authors, or the entity when no
- * author was recorded. The kind is left out when it already is the title.
+ * "Garry Kasparov · Libro · 2003". The kind is left out when it already is
+ * the title.
  */
 function sourceFacts(source: CourseSourceAdmin): string {
   const kind = source.originalTitle ? source.sourceTypeLabel : undefined;
-  return [source.authors ?? source.entityName, kind, source.publicationYear?.toString()].filter(Boolean).join(" · ");
+  return [source.authors, kind, source.publicationYear?.toString()].filter(Boolean).join(" · ");
 }
 
 /**
@@ -34,12 +32,12 @@ function sourceFacts(source: CourseSourceAdmin): string {
  * notes) is read there. Only the type is required, so a row may be just
  * "Material de elaboración propia".
  */
-export function CourseSources({ courseId, sources, sourceTypes, entities }: CourseSourcesProps) {
+export function CourseSources({ courseId, sources, sourceTypes }: CourseSourcesProps) {
   return (
     <StaffPanel
       title="Procedencia del recurso"
       meta={`${sources.length}`}
-      action={<CourseSourceDialog courseId={courseId} sourceTypes={sourceTypes} entities={entities} />}
+      action={<CourseSourceDialog courseId={courseId} sourceTypes={sourceTypes} />}
     >
       <div className="course-sources">
         {sources.length === 0 ? (
@@ -62,12 +60,7 @@ export function CourseSources({ courseId, sources, sourceTypes, entities }: Cour
                     {facts && <span className="course-sources__meta">{facts}</span>}
                   </div>
 
-                  <CourseSourceDialog
-                    courseId={courseId}
-                    source={source}
-                    sourceTypes={sourceTypes}
-                    entities={entities}
-                  />
+                  <CourseSourceDialog courseId={courseId} source={source} sourceTypes={sourceTypes} />
                 </li>
               );
             })}

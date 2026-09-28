@@ -215,7 +215,6 @@ describe("mapCourseSources", () => {
         edition: "2.ª ed.",
         specificReference: null,
         sourceType: { label: "Libro" },
-        entity: { name: "Batsford" },
       },
       {
         id: "s2",
@@ -226,7 +225,6 @@ describe("mapCourseSources", () => {
         edition: null,
         specificReference: null,
         sourceType: { label: "Material de elaboración propia" },
-        entity: null,
       },
     ]);
 
@@ -236,7 +234,6 @@ describe("mapCourseSources", () => {
         typeLabel: "Libro",
         originalTitle: "Piense como un gran maestro",
         authors: "Alexander Kotov",
-        entityName: "Batsford",
         url: undefined,
         publicationYear: 1971,
         edition: "2.ª ed.",
@@ -247,7 +244,6 @@ describe("mapCourseSources", () => {
         typeLabel: "Material de elaboración propia",
         originalTitle: undefined,
         authors: undefined,
-        entityName: undefined,
         url: undefined,
         publicationYear: undefined,
         edition: undefined,

@@ -15,7 +15,6 @@ import type {
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
 import { shortEloRange } from "@/services/courses/level-rules";
 import type { LevelOption } from "@/services/staff-levels/staff-levels.types";
-import type { SourceEntityOption } from "@/services/staff-sources/staff-sources.types";
 import { CourseAuthors } from "./course-authors/course-authors.comp";
 import { CourseNameFields } from "./course-name-fields.comp";
 import { CourseSources } from "./course-sources/course-sources.comp";
@@ -42,8 +41,6 @@ interface CourseEditorSectionProps {
   statuses: CatalogOption[];
   /** The kinds of resource a source can be, for «Procedencia del recurso». */
   sourceTypes: CatalogOption[];
-  /** The entities a source can cite, from /administracion/entidades. */
-  entities: SourceEntityOption[];
   /** How many games the course has; the list lives in its own tab. */
   gameCount: number;
   errorCode?: string;
@@ -65,7 +62,6 @@ export function CourseEditorSection({
   authorRoles,
   statuses,
   sourceTypes,
-  entities,
   gameCount,
   errorCode,
 }: CourseEditorSectionProps) {
@@ -127,12 +123,7 @@ export function CourseEditorSection({
 
             {/* In the narrow column, with what is glanced at: it is recorded
                 once and read many times. */}
-            <CourseSources
-              courseId={course.id}
-              sources={course.sources}
-              sourceTypes={sourceTypes}
-              entities={entities}
-            />
+            <CourseSources courseId={course.id} sources={course.sources} sourceTypes={sourceTypes} />
 
             <StaffPanel title="Estado">
               <dl className="course-editor__facts">

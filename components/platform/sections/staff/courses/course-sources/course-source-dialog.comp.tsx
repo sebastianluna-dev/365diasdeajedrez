@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import type { CatalogOption } from "@/services/staff-courses/staff-courses.types";
 import { deleteCourseSource, saveCourseSource } from "@/services/staff-sources/staff-sources.actions";
-import type { CourseSourceAdmin, SourceEntityOption } from "@/services/staff-sources/staff-sources.types";
+import type { CourseSourceAdmin } from "@/services/staff-sources/staff-sources.types";
 import "./course-source-dialog.comp.css";
 import { CourseSourceForm } from "./course-source-form.comp";
 
@@ -12,7 +12,6 @@ interface CourseSourceDialogProps {
   /** The source to edit; without it the dialog adds a new one. */
   source?: CourseSourceAdmin;
   sourceTypes: CatalogOption[];
-  entities: SourceEntityOption[];
 }
 
 /**
@@ -21,7 +20,7 @@ interface CourseSourceDialogProps {
  * the source is also removed. The form is remounted on every opening, so an
  * abandoned edit never shows up the next time.
  */
-export function CourseSourceDialog({ courseId, source, sourceTypes, entities }: CourseSourceDialogProps) {
+export function CourseSourceDialog({ courseId, source, sourceTypes }: CourseSourceDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [opening, setOpening] = useState(0);
   const isEdit = source !== undefined;
@@ -47,7 +46,6 @@ export function CourseSourceDialog({ courseId, source, sourceTypes, entities }: 
           key={opening}
           source={source}
           sourceTypes={sourceTypes}
-          entities={entities}
           action={saveCourseSource.bind(null, courseId)}
           deleteAction={deleteCourseSource.bind(null, courseId)}
           onClose={() => dialogRef.current?.close()}

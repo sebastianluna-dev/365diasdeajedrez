@@ -10,11 +10,6 @@ const SOURCE_TYPES = [
   { code: "OWN_MATERIAL", label: "Material de elaboración propia" },
 ];
 
-const ENTITIES = [
-  { id: "e1", name: "Chessable" },
-  { id: "e2", name: "Quality Chess" },
-];
-
 const meta = {
   title: "platform/sections/staff/courses/CourseSourceForm",
   component: CourseSourceForm,
@@ -24,9 +19,7 @@ const meta = {
         component: `
 The fields of one source of a course's «Procedencia del recurso», mounted here
 without the \`<dialog>\` and with a stub in place of \`saveCourseSource\`. Only the
-type is required; the entity field is named by the type («Editorial» for a
-book, «Plataforma o proveedor» for a digital course, «Entidad de origen»
-otherwise).
+type is required.
 
 Source: \`components/platform/sections/staff/courses/course-sources/\`.
 Reference page: [Components › CourseSources](/components/platform/sections/staff/courses/course-sources) in the docs site.
@@ -36,13 +29,11 @@ Reference page: [Components › CourseSources](/components/platform/sections/sta
   },
   args: {
     sourceTypes: SOURCE_TYPES,
-    entities: ENTITIES,
     action: () => undefined,
     onClose: () => undefined,
   },
   argTypes: {
     sourceTypes: { control: "object", description: "The kinds of resource, from the catalog." },
-    entities: { control: "object", description: "The entities a source can cite." },
     source: { control: "object", description: "The source being edited; absent when adding one." },
     action: { table: { disable: true } },
     onClose: { table: { disable: true } },
@@ -68,7 +59,7 @@ Reference page: [Components › CourseSources](/components/platform/sections/sta
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Adding: the first type chosen, every other field empty, the entity field says «Editorial». */
+/** Adding: the first type chosen, every other field empty. */
 export const Adding: Story = {};
 
 /** Editing a book: the fields carry the source. */
@@ -81,15 +72,13 @@ export const Editing: Story = {
       sourceTypeLabel: "Libro",
       originalTitle: "Mi sistema",
       authors: "Aron Nimzowitsch",
-      entityId: "e2",
-      entityName: "Quality Chess",
       publicationYear: 1925,
       specificReference: "Capítulos 3 a 5",
     },
   },
 };
 
-/** Switching to a digital course renames the entity field to «Plataforma o proveedor». */
+/** Another kind of resource chosen in the select. */
 export const DigitalCourse: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

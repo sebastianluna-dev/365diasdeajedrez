@@ -92,8 +92,6 @@ export const staffRoutes = {
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/partidas`,
   lessonDetail: (courseId: string, chapterId: string, lessonId: string) =>
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/lecciones/${lessonId}`,
-  /** The platforms, publishers and providers the courses cite as the origin of their material. */
-  entities: "/administracion/entidades",
   /** The levels a course is aimed at, with their orientative Elo ranges. */
   levels: "/administracion/niveles",
   classes: "/administracion/clases",

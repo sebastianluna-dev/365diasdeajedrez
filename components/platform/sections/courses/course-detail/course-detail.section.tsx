@@ -154,7 +154,7 @@ export function CourseDetailSection({ course, errorCode }: CourseDetailSectionPr
       )}
 
       {/* Where the material comes from, when the staff recorded it: one line
-          per source, the entity linked to the resource when there is a URL.
+          per source, the title linked to the resource when there is a URL.
           The staff's notes never reach here. */}
       {course.sources.length > 0 && (
         <section className="course-detail__sources" aria-labelledby="course-detail-sources-title">
@@ -164,17 +164,22 @@ export function CourseDetailSection({ course, errorCode }: CourseDetailSectionPr
           <ul className="course-detail__source-list">
             {course.sources.map((source) => {
               const edition = [source.publicationYear, source.edition].filter(Boolean).join(", ");
-              const entity = source.url ? (
-                <a href={source.url} target="_blank" rel="noreferrer" className="course-detail__source-link">
-                  {source.entityName ?? source.originalTitle ?? "Ver recurso"}
-                </a>
-              ) : (
-                source.entityName
-              );
+              const title = source.originalTitle && <em>{source.originalTitle}</em>;
               const facts = [
-                source.originalTitle && <em key="title">{source.originalTitle}</em>,
+                source.url ? (
+                  <a
+                    key="title"
+                    href={source.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="course-detail__source-link"
+                  >
+                    {title || "Ver recurso"}
+                  </a>
+                ) : (
+                  title && <span key="title">{title}</span>
+                ),
                 source.authors,
-                entity && <span key="entity">{entity}</span>,
                 edition || undefined,
                 source.specificReference,
               ].filter(Boolean);
