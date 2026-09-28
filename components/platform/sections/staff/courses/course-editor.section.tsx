@@ -86,7 +86,7 @@ export function CourseEditorSection({
           course.statusCode === COURSE_STATUS.PUBLISHED && (
             <Link
               href={platformRoutes.courseDetail(course.id)}
-              className="platform-button platform-button_variant_secondary"
+              className="platform-button platform-button_variant_soft"
             >
               Ver en la plataforma
             </Link>
@@ -170,7 +170,7 @@ export function CourseEditorSection({
             </FormFieldset>
 
             <div className="course-editor__submit">
-              <SubmitButton>Guardar metadatos</SubmitButton>
+              <SubmitButton className="platform-button platform-button_variant_soft">Guardar metadatos</SubmitButton>
             </div>
           </form>
         </StaffPanel>

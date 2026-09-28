@@ -30,7 +30,7 @@ An author is editorial content, not a restricted domain whose code the logic com
 | --------- | --------------------- | -------- | ------------------------------------------------------------------------------------------------ |
 | `authors` | `AuthorAdminRow[]`    | yes      | `{ id, name, slug, bio?, photo?, courseCount }[]` from `listAuthors()`, by name.                 |
 | `label`   | `string`              | no       | What the button says. «Autores» by default; «Gestionar» in the card whose title already says it. |
-| `tone`    | `"quiet" \| "accent"` | no       | `quiet`: the catalog's grey button. `accent`: the soft orange one of a card's header.            |
+| `size`    | `"regular" \| "compact"` | no       | `compact` shrinks the trigger for a card's header; the catalog's is the regular size. Both are the soft orange button. |
 
 ### `AuthorForm`
 
@@ -70,15 +70,15 @@ An author is editorial content, not a restricted domain whose code the logic com
 
 ## Markup & styling
 
-Block `.authors-manager`. The dialog is `.platform-dialog`, which sets the centring, the backdrop and the entry and exit motion; the block sets its width (560px) and rounding. The actions of the dialog are the ink button (`.platform-button_variant_ink`): the page under it already has its own.
+Block `.authors-manager`. The dialog is `.platform-dialog`, which sets the centring, the backdrop and the entry and exit motion; the block sets its width (560px) and rounding. Every button it renders — the trigger, a row’s «Editar», «Nuevo autor» — is the shared soft one (`.platform-button_variant_soft`), the rows’ and the trigger’s in the compact size.
 
-**Elements:** `.authors-manager__open`, `.authors-manager__dialog`, `.authors-manager__head`, `.authors-manager__heading`, `.authors-manager__title`, `.authors-manager__subtitle`, `.authors-manager__close`, `.authors-manager__close-icon`, `.authors-manager__body`, `.authors-manager__list`, `.authors-manager__row`, `.authors-manager__row-text`, `.authors-manager__row-name`, `.authors-manager__row-meta`, `.authors-manager__edit`, `.authors-manager__empty`, `.authors-manager__form`, `.authors-manager__photo`, `.authors-manager__photo-file`, `.authors-manager__photo-text`, `.authors-manager__photo-actions`, `.authors-manager__photo-button`, `.authors-manager__photo-remove`, `.authors-manager__foot`, `.authors-manager__note`, `.authors-manager__actions`
+**Elements:** `.authors-manager__dialog`, `.authors-manager__head`, `.authors-manager__heading`, `.authors-manager__title`, `.authors-manager__subtitle`, `.authors-manager__close`, `.authors-manager__close-icon`, `.authors-manager__body`, `.authors-manager__list`, `.authors-manager__row`, `.authors-manager__row-text`, `.authors-manager__row-name`, `.authors-manager__row-meta`, `.authors-manager__edit`, `.authors-manager__empty`, `.authors-manager__form`, `.authors-manager__photo`, `.authors-manager__photo-file`, `.authors-manager__photo-text`, `.authors-manager__photo-actions`, `.authors-manager__photo-remove`, `.authors-manager__foot`, `.authors-manager__note`, `.authors-manager__actions`
 
-**Modifiers and states:** `.authors-manager__open_tone_accent`, `.authors-manager__photo-text_tone_error`
+**Modifiers and states:** `.authors-manager__photo-text_tone_error`
 
 **Other selectors it styles:** `.platform-form__field > textarea` (a shorter textarea).
 
-**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_quiet`, `.platform-button_variant_secondary`, `.platform-button_variant_ink`, `.platform-form`.
+**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_soft`, `.platform-button_size_compact`, `.platform-button_variant_secondary` (only «Cancelar»), `.platform-form`.
 
 Block `.author-avatar`: **modifiers** `.author-avatar_size_{small,medium,large}`, `.author-avatar_shape_{tile,circle}`, `.author-avatar_tone_{ink,soft}`, `.author-avatar_kind_photo`; **element** `.author-avatar__image`.
 
@@ -99,7 +99,7 @@ import { AuthorsManager } from "./authors-manager/authors-manager.comp";
 From `components/platform/sections/staff/courses/course-authors/course-authors.comp.tsx`, as the action of the «Autores» card:
 
 ```tsx
-<AuthorsManager authors={allAuthors} label="Gestionar" tone="accent" />
+<AuthorsManager authors={allAuthors} label="Gestionar" size="compact" />
 ```
 
 ## Related

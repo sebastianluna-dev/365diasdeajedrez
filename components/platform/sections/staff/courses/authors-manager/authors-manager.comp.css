@@ -1,28 +1,6 @@
 .authors-manager {
   flex: none;
 
-  /* The trigger of a card's header: the soft orange word, a size under the
-     page's buttons. The catalog's is the shared quiet button. */
-  & .authors-manager__open {
-    padding: 9px 16px;
-    border: 0;
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 150ms;
-  }
-
-  & .authors-manager__open_tone_accent {
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
-  }
-
-  & .authors-manager__open_tone_accent:hover {
-    background: var(--platform-accent-wash);
-  }
-
   /* The size and the rounding: the centring, the backdrop, the surface and
      the entry and exit motion are set by `.platform-dialog`. */
   & .authors-manager__dialog {
@@ -144,7 +122,6 @@
 
   & .authors-manager__edit {
     flex: none;
-    padding: 10px 18px;
   }
 
   & .authors-manager__empty {
@@ -189,11 +166,6 @@
     display: flex;
     align-items: center;
     gap: 6px;
-  }
-
-  & .authors-manager__photo-button {
-    padding: 10px 16px;
-    font-size: 15px;
   }
 
   & .authors-manager__photo-remove {
@@ -247,9 +219,4 @@
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    & .authors-manager__open {
-      transition: none;
-    }
-  }
 }

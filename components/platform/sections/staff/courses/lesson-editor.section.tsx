@@ -213,7 +213,7 @@ export function LessonEditorSection({
             </FormFieldset>
 
             <div className="lesson-editor__submit">
-              <SubmitButton>Guardar metadatos</SubmitButton>
+              <SubmitButton className="platform-button platform-button_variant_soft">Guardar metadatos</SubmitButton>
             </div>
           </form>
         </StaffPanel>

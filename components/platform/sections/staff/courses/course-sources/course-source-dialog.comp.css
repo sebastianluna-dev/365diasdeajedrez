@@ -1,38 +1,22 @@
 .course-source-dialog {
   flex: none;
 
-  & .course-source-dialog__open {
-    border: 0;
-    font-family: inherit;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 150ms;
-    transition-property: background-color, color;
-  }
-
-  /* In the card's header: the soft orange word, a size under the page's buttons. */
-  & .course-source-dialog__open_kind_add {
-    padding: 9px 14px;
-    border-radius: 10px;
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
-    font-size: 15px;
-    white-space: nowrap;
-  }
-
-  & .course-source-dialog__open_kind_add:hover {
-    background: var(--platform-accent-wash);
-  }
-
-  /* On a row: a quiet word at the height of the title's first line. */
-  & .course-source-dialog__open_kind_edit {
+  /* «Añadir fuente», in the card's header, is the shared soft button. This one
+     is the «Editar» of a row: a quiet word at the height of the title's first
+     line, which next to every row would be a wall of orange as a button. */
+  & .course-source-dialog__edit {
     padding: 2px 0;
+    border: 0;
     background: transparent;
     color: var(--platform-text-subtle);
+    font-family: inherit;
     font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 150ms;
   }
 
-  & .course-source-dialog__open_kind_edit:hover {
+  & .course-source-dialog__edit:hover {
     color: var(--platform-accent-ink);
   }
 

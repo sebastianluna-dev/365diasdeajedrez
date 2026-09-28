@@ -12,8 +12,8 @@ interface AuthorsManagerProps {
   authors: AuthorAdminRow[];
   /** What the button says. «Autores» by default; another word where a heading already says it. */
   label?: string;
-  /** `quiet` is the catalog's grey button; `accent`, the soft orange one of a card's header. */
-  tone?: "quiet" | "accent";
+  /** The smaller box of a card's header, where it shares the line with the title. */
+  size?: "regular" | "compact";
 }
 
 /** What the dialog shows: the list, or the form of one author (`authorId` absent = a new one). */
@@ -30,7 +30,7 @@ type View = { kind: "list" } | { kind: "form"; authorId?: string };
  * goes back to the list, which comes refreshed; the dialog is closed by its
  * cross or with Escape. Authors are never deleted.
  */
-export function AuthorsManager({ authors, label = "Autores", tone = "quiet" }: AuthorsManagerProps) {
+export function AuthorsManager({ authors, label = "Autores", size = "regular" }: AuthorsManagerProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [view, setView] = useState<View>({ kind: "list" });
   // Bumped on every opening of the form: it is remounted, so it never opens
@@ -56,11 +56,7 @@ export function AuthorsManager({ authors, label = "Autores", tone = "quiet" }: A
     <div className="authors-manager">
       <button
         type="button"
-        className={
-          tone === "accent"
-            ? "authors-manager__open authors-manager__open_tone_accent"
-            : "platform-button platform-button_variant_quiet"
-        }
+        className={`platform-button platform-button_variant_soft${size === "compact" ? " platform-button_size_compact" : ""}`}
         onClick={open}
       >
         {label}
@@ -106,7 +102,7 @@ export function AuthorsManager({ authors, label = "Autores", tone = "quiet" }: A
                       </span>
                       <button
                         type="button"
-                        className="platform-button platform-button_variant_secondary authors-manager__edit"
+                        className="platform-button platform-button_variant_soft platform-button_size_compact authors-manager__edit"
                         onClick={() => showForm(author.id)}
                         aria-label={`Editar a ${author.name}`}
                       >
@@ -125,7 +121,7 @@ export function AuthorsManager({ authors, label = "Autores", tone = "quiet" }: A
               <div className="authors-manager__actions">
                 <button
                   type="button"
-                  className="platform-button platform-button_variant_ink"
+                  className="platform-button platform-button_variant_soft"
                   onClick={() => showForm()}
                 >
                   Nuevo autor

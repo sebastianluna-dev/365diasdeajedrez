@@ -133,7 +133,9 @@ export function CourseSourceForm({
           <button type="button" className="platform-button platform-button_variant_secondary" onClick={onClose}>
             Cancelar
           </button>
-          <SubmitButton pendingLabel="Guardando…">{isEdit ? "Guardar fuente" : "Añadir fuente"}</SubmitButton>
+          <SubmitButton className="platform-button platform-button_variant_soft" pendingLabel="Guardando…">
+            {isEdit ? "Guardar fuente" : "Añadir fuente"}
+          </SubmitButton>
         </div>
       </footer>
     </PlatformForm>

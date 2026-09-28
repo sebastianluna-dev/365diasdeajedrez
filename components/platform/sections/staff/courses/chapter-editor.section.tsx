@@ -88,7 +88,7 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
             <StaffPanel title="Acciones">
               <Link
                 href={staffRoutes.courseDetail(chapter.courseId)}
-                className="platform-button platform-button_variant_secondary chapter-editor__wide"
+                className="platform-button platform-button_variant_soft chapter-editor__wide"
               >
                 Volver al curso
               </Link>
@@ -111,7 +111,7 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
             </FormField>
 
             <div className="chapter-editor__submit">
-              <SubmitButton>Guardar</SubmitButton>
+              <SubmitButton className="platform-button platform-button_variant_soft">Guardar</SubmitButton>
             </div>
           </form>
         </StaffPanel>
@@ -148,7 +148,7 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
               placeholder="Nombre de la lección"
               aria-label="Nombre de la lección"
             />
-            <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Añadiendo…">
+            <SubmitButton className="platform-button platform-button_variant_soft" pendingLabel="Añadiendo…">
               Añadir lección
             </SubmitButton>
           </form>

@@ -29,8 +29,7 @@ export function NewCourse({ contentTypes }: NewCourseProps) {
 
   return (
     <div className="new-course">
-      {/* The quiet grey button: the catalog has no orange in it. */}
-      <button type="button" className="platform-button platform-button_variant_quiet" onClick={open}>
+      <button type="button" className="platform-button platform-button_variant_soft" onClick={open}>
         Nuevo curso
       </button>
 

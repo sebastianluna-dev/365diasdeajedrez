@@ -52,7 +52,7 @@ export function CourseAuthors({ courseId, authors, allAuthors, roles }: CourseAu
   };
 
   return (
-    <StaffPanel title="Autores" action={<AuthorsManager authors={allAuthors} label="Gestionar" tone="accent" />}>
+    <StaffPanel title="Autores" action={<AuthorsManager authors={allAuthors} label="Gestionar" size="compact" />}>
       <div className="course-authors">
         {authors.length > 0 ? (
           <ul className="course-authors__list">

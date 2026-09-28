@@ -28,7 +28,7 @@ Creating a course is three fields, so it lives in a modal on the catalog page ra
 
 ## Behaviour
 
-- **The trigger** is the quiet grey `platform-button_variant_quiet`, like the rest of the catalog, which has no orange button in it.
+- **The trigger** is the shared soft button (`platform-button_variant_soft`), the same one every action of the staff's courses uses.
 - The form is a `PlatformForm` with `action={createCourse}` and `autoComplete="off"`: a head (dark tile with the white rook, title, the "sólo lo imprescindible" subtitle, close button), `name` (required, max 160, autofocus, controlled so the submit can watch it), `slug` (required, max 160, `pattern` of lowercase words joined by single hyphens, with its own `patternMismatch` text, controlled too) and `contentTypeCodes`, a `PlatformCheckCards` over `contentTypes` inside a `PlatformFormGroup` whose label carries the rule («Contenido (selecciona al menos uno)»), nothing chosen at first. A footer band says the course is born in draft and carries the buttons.
 - **The slug writes itself.** When the name loses focus, the slug takes `generateSlug(name)` (the same helper the CMS uses: lowercase, accents stripped, words joined by single hyphens), as long as the slug is still the form's and not the user's. Once they type a slug of their own it is left alone whatever the name does; clearing it hands it back to the name. The field's hint says so.
 - **Crear curso** stays disabled until the name and the slug have a character that is not a space and at least one content type is chosen: the browser cannot demand "one of these boxes", so the form does, and the action's `formCodeList(…, 1)` does it again on the server (`contentTypeRequired`).
@@ -43,7 +43,7 @@ Block `.new-course`: the dialog's width (720 px, wider than the study dialog so 
 
 **Elements:** `.new-course__dialog`, `.new-course__form`, `.new-course__head`, `.new-course__tile`, `.new-course__heading`, `.new-course__title`, `.new-course__subtitle`, `.new-course__close`, `.new-course__close-icon`, `.new-course__body`, `.new-course__foot`, `.new-course__note`, `.new-course__actions`
 
-**Other classes it renders:** `.platform-dialog` (the shared dialog frame in `platform.css`), `.platform-button`, `.platform-button_variant_quiet` (the trigger) and `.platform-button_variant_secondary` (inside the dialog), `.platform-form`, `.platform-check-cards`.
+**Other classes it renders:** `.platform-dialog` (the shared dialog frame in `platform.css`), `.platform-button`, `.platform-button_variant_soft` (the trigger and «Crear curso») and `.platform-button_variant_secondary` («Cancelar»), `.platform-form`, `.platform-check-cards`.
 
 **Tokens:** `--platform-bg`, `--platform-border`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 

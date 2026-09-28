@@ -49,13 +49,13 @@ Same `courseId` and `sourceTypes`, plus `source?: CourseSourceAdmin`: with it th
 
 ## Markup & styling
 
-Block `.course-sources` is the card's content: the list, whose rules reach the card's edges through the panel's `--staff-panel-gutter`, and a row with its text column and its trigger. Block `.course-source-dialog`: the two triggers, the dialog's width (640 px) and rounding, head, body, the year/edition pair and the footer band. The fields' look comes from `.platform-form` and `.platform-select`; the dialog's motion from `.platform-dialog`.
+Block `.course-sources` is the card's content: the list, whose rules reach the card's edges through the panel's `--staff-panel-gutter`, and a row with its text column and its trigger. Block `.course-source-dialog`: a row's «Editar», the dialog's width (640 px) and rounding, head, body, the year/edition pair and the footer band. The fields' look comes from `.platform-form` and `.platform-select`; the dialog's motion from `.platform-dialog`.
 
-**Elements:** `.course-sources__empty`, `.course-sources__list`, `.course-sources__row`, `.course-sources__text`, `.course-sources__title`, `.course-sources__meta`; `.course-source-dialog__open`, `.course-source-dialog__dialog`, `.course-source-dialog__form`, `.course-source-dialog__head`, `.course-source-dialog__heading`, `.course-source-dialog__title`, `.course-source-dialog__subtitle`, `.course-source-dialog__close`, `.course-source-dialog__close-icon`, `.course-source-dialog__body`, `.course-source-dialog__pair`, `.course-source-dialog__foot`, `.course-source-dialog__note`, `.course-source-dialog__actions`
+**Elements:** `.course-sources__empty`, `.course-sources__list`, `.course-sources__row`, `.course-sources__text`, `.course-sources__title`, `.course-sources__meta`; `.course-source-dialog__edit`, `.course-source-dialog__dialog`, `.course-source-dialog__form`, `.course-source-dialog__head`, `.course-source-dialog__heading`, `.course-source-dialog__title`, `.course-source-dialog__subtitle`, `.course-source-dialog__close`, `.course-source-dialog__close-icon`, `.course-source-dialog__body`, `.course-source-dialog__pair`, `.course-source-dialog__foot`, `.course-source-dialog__note`, `.course-source-dialog__actions`
 
-**Modifiers:** `.course-source-dialog__open_kind_add` (the header's trigger, the soft orange button), `.course-source-dialog__open_kind_edit` (the row's, a quiet word). The dialog also has `.course-source-dialog__remove`.
+**Modifiers:** none. «Añadir fuente», in the header, is the shared soft button in its compact size (`.platform-button_variant_soft platform-button_size_compact`); a row's «Editar» is `.course-source-dialog__edit`, a quiet word, because one orange button per row would be a wall of orange. The dialog also has `.course-source-dialog__remove`.
 
-**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_secondary`, `.platform-form`, `.platform-select`.
+**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_soft`, `.platform-button_size_compact`, `.platform-button_variant_secondary` («Cancelar»), `.platform-form`, `.platform-select`.
 
 **Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 

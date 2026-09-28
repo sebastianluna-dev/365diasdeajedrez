@@ -29,7 +29,9 @@
     transition-property: border-color, background-color, color;
   }
 
-  & .image-upload__drop:hover:not(:disabled) {
+  /* Only the empty slot lights up: with an image it is a photo, and lighting
+     its rule made it look like something was about to happen on the image. */
+  & .image-upload__drop:hover:not(:disabled, .image-upload__drop_state_filled) {
     border-color: var(--platform-accent);
     color: var(--platform-accent-ink);
   }
@@ -90,41 +92,7 @@
     flex-wrap: wrap;
   }
 
-  & .image-upload__action {
-    padding: 9px 16px;
-    border: 1px solid var(--platform-border-strong);
-    border-radius: 10px;
-    background: var(--platform-surface);
-    color: var(--platform-text);
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 150ms;
-    transition-property: background-color, border-color, color;
-  }
-
-  & .image-upload__action:hover:not(:disabled) {
-    border-color: var(--platform-text);
-  }
-
-  & .image-upload__action:disabled {
-    opacity: 0.55;
-    cursor: default;
-  }
-
-  /* The main action, in the soft orange: it is what one comes here to do. */
-  & .image-upload__action_variant_primary {
-    border-color: transparent;
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
-  }
-
-  & .image-upload__action_variant_primary:hover:not(:disabled) {
-    border-color: var(--platform-accent);
-  }
-
-  /* Remove does not compete with the other two: no box until you get close. */
+  /* Remove does not compete with the one that uploads: no box until you get close. */
   & .image-upload__remove {
     margin-left: auto;
     padding: 9px 12px;

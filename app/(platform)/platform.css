@@ -244,6 +244,25 @@ html body.platform-theme[data-scroll-locked] {
   background: var(--platform-bg);
 }
 
+/* The soft button: the orange wash with the legible orange on top, and a step
+   LIGHTER on hover instead of darker. It is what the staff's courses use for
+   every action that does something — «Gestionar», «Nuevo curso», «Guardar
+   metadatos» —, so that a screen with an action in each card does not show
+   four different buttons. Same box as the primary, only the colours change. */
+.platform-button_variant_soft {
+  background: var(--platform-accent-soft);
+  color: var(--platform-accent-ink);
+}
+
+.platform-button_variant_soft:hover {
+  background: var(--platform-accent-wash);
+  color: var(--platform-accent-ink);
+}
+
+.platform-button_variant_soft:disabled:hover {
+  background: var(--platform-accent-soft);
+}
+
 /* The ink button: the dark one, for the action of a dialog whose page already
    has its orange one. Same box as the primary, only the colours change. */
 .platform-button_variant_ink {
@@ -270,6 +289,16 @@ html body.platform-theme[data-scroll-locked] {
 .platform-button_variant_danger:hover {
   background: var(--platform-danger);
   color: var(--platform-surface);
+}
+
+/* A smaller box for the same button, for a card's header, where it shares the
+   line with the title and must not stand taller than it. It changes the size
+   alone, and comes after every variant so that it also shrinks the two that
+   set their own padding. */
+.platform-button_size_compact {
+  padding: 9px 15px;
+  font-size: 15px;
+  white-space: nowrap;
 }
 
 /* Modal dialog. The native `<dialog>` already brings focus trapping, closing
