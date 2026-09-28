@@ -14,7 +14,7 @@ What it creates (data in `prisma/seed-data.ts`):
 
 - every catalog value (`seedCatalog` for `[code, label]` pairs; `seedCatalogRows` for a catalog with more columns, like `ContentType` with its `shortLabel` and `description`) and the topic tree;
 - three demo accounts (student, teacher with an active `Teacher` row, staff) — the password is only set when the account has none;
-- an author, a course with chapters, lessons (PGN or linked games), topics and exercises derived with the same `deriveExerciseData` the staff panel uses;
+- an author, the courses with chapters, lessons (PGN or linked games), topics and exercises derived with the same `deriveExerciseData` the staff panel uses; the role the author signs each course with (`SeedCourse.authorRole`, «Autor del contenido» by default) and its «Procedencia del recurso» (`SeedCourse.sources`);
 - studies and games for the demo student (positions indexed with `indexGamePositions`), shared collections;
 - classes with participants, blocks and a transcript, a teacher–student assignment;
 - activities and the rebuilt `UserStatDaily` aggregates.
@@ -39,6 +39,27 @@ The seed is not transactional and is meant to be run again on a database the app
 **It replaces what it describes.** For every course in `COURSES`, the chapters, lessons and sources that are not in the data are deleted before the rest is written. A chapter added to a seeded course from the staff panel — an introduction, a closing — is gone after the next seed. Courses created from the panel are never touched.
 
 **It adopts the collections the app created.** Two kinds of `GameDatabase` are also created by the app under ids of its own, and each is unique by something that is not the id: a chapter's collection (`@@unique([chapterId])`, created by `collections:by-chapter`) and a user's default study (`game_database_one_default_per_user`, created with the account by `createDefaultStudy`). Inserting the seed's row next to them would break the index, so the seed looks the existing row up, writes onto it and translates its own id into the real one for the shares, the games and the position index that point at it. Until 2026-09-28 it did not, and a second seed stopped at the first of those rows with `P2002`.
+
+### Courses that come from a book
+
+A course whose content is somebody else's book lives in its own module under `prisma/seed-courses/`, with its data file in `prisma/seed-courses/data/`. The module does not write the content: it validates the file and translates it into a `SeedCourse`. To change the content the file is replaced.
+
+| Module                        | Data file                                      | What it is                                                                                                                                                                       |
+| ----------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `think-like-a-grandmaster.ts` | `think-like-a-grandmaster.import.json`         | Kotov's _Piense como un gran maestro_: 162 diagrams over the book's 5 chapters, one position per lesson, plus a collection of 13 illustrative games.                             |
+| `my-60-memorable-games.ts`    | `my-60-memorable-games.pgn` (a Lichess export) | Fischer's _Mis 60 memorables partidas_: one whole annotated game per lesson, in three chapters by stage (1957–1959, 1960–1962, 1963–1967). No collection: the lessons ARE the games. |
+
+`my-60-memorable-games.ts` in detail:
+
+- **The file is the export of the study** `https://lichess.org/study/Wq1xlajv`, verbatim. It carries **58 of the book's 60 games** — 59 and 60 are missing — and three reference games that the notes to game 55 cite. The course says so: the reference games are named «Partida de referencia N» and are not counted among the sixty.
+- **`GAMES` is a correction table**, one entry per chapter of the study in its order, keyed by the study's `ChapterName`. The study is an amateur transcription: it misspells several players and attributes game 48 to Donald Byrne when it is Robert's. The lesson's title is rebuilt from the table and never read off the study's; every entry that departs from the study says why in `correction`. **The PGN itself is not touched**, typos included.
+- **The seed refuses a file that does not match the table** (count, order, `ChapterName`, a repeated or out-of-range game number), so replacing the export cannot silently reorder the games or bring a title nobody reviewed.
+- **Lesson ids** are `f10000004g<number>` for the book's games and `f10000004r<n>` for the reference ones: a game keeps its id whatever its place in the chapter.
+- The board is set from **Fischer's side**, the five games the book is known for (17, 18, 39, 48, 58) are `isPriority`, and the academy signs the course as «Adaptación digital».
+- **Three sources**, because they are three things: the original work (_My 60 Memorable Games_, Simon & Schuster, 1969), the Spanish edition the commentary is translated in (La Casa del Ajedrez, ISBN 9788412510034) and the study. The Spanish edition has **no year**: Casa del Libro gives 2023 and Open Library 2022 for the same ISBN, so `publicationYear` is null and the disagreement is written in the notes.
+- `my-60-memorable-games.test.ts` holds all of the above, and that every one of the 61 games is read whole by `parsePgnTree` with no warning, which is what an illegal move in the transcription would raise.
+
+The commentary of both courses is third-party text still in copyright: fine for the academy's internal use, not for publishing without a licence. `WARNINGS.md` has the entry.
 
 ## `scripts/platform-user.ts` — `npm run user:*`
 

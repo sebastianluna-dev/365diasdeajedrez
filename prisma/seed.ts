@@ -183,7 +183,7 @@ async function main() {
   const contentType = await seedCatalogRows(db.contentType, CONTENT_TYPE_VALUES);
   const courseStatus = await seedCatalog(db.courseStatus, CATALOG_VALUES.courseStatus);
   const authorRole = await seedCatalog(db.authorRole, CATALOG_VALUES.authorRole);
-  await seedCatalog(db.sourceType, CATALOG_VALUES.sourceType);
+  const sourceType = await seedCatalog(db.sourceType, CATALOG_VALUES.sourceType);
   const level = await seedLevels();
   const boardOrientation = await seedCatalog(db.boardOrientation, CATALOG_VALUES.boardOrientation);
   const exerciseMode = await seedCatalog(db.exerciseMode, CATALOG_VALUES.exerciseMode);
@@ -296,15 +296,11 @@ async function main() {
       where: { courseId: course.id, id: { notIn: seededChapterIds } },
     });
 
+    const authorRoleId = idOf(authorRole, course.authorRole ?? AUTHOR_ROLE.CONTENT_AUTHOR);
     await db.courseAuthor.upsert({
       where: { courseId_authorId: { courseId: course.id, authorId: AUTHOR.id } },
-      update: { roleId: idOf(authorRole, AUTHOR_ROLE.CONTENT_AUTHOR), order: 0 },
-      create: {
-        courseId: course.id,
-        authorId: AUTHOR.id,
-        roleId: idOf(authorRole, AUTHOR_ROLE.CONTENT_AUTHOR),
-        order: 0,
-      },
+      update: { roleId: authorRoleId, order: 0 },
+      create: { courseId: course.id, authorId: AUTHOR.id, roleId: authorRoleId, order: 0 },
     });
 
     for (const levelSlug of course.levels) {
@@ -321,6 +317,35 @@ async function main() {
         where: { courseId_contentTypeId: { courseId: course.id, contentTypeId } },
         update: {},
         create: { courseId: course.id, contentTypeId },
+      });
+    }
+
+    // «Procedencia del recurso». Like the syllabus, the seeded rows replace
+    // this course's whole list: a source withdrawn from the data disappears.
+    // The deletion is limited to the ids the seed owns, so a source the panel
+    // added to a course the seed does not describe is never touched.
+    const sources = course.sources ?? [];
+    await db.courseSource.deleteMany({
+      where: { courseId: course.id, id: { notIn: sources.map((source) => source.id) } },
+    });
+
+    for (const source of sources) {
+      const sourceData = {
+        courseId: course.id,
+        sourceTypeId: idOf(sourceType, source.sourceType),
+        order: source.order,
+        originalTitle: source.originalTitle,
+        authors: source.authors,
+        url: source.url ?? null,
+        publicationYear: source.publicationYear,
+        edition: source.edition,
+        specificReference: source.specificReference,
+        notes: source.notes,
+      };
+      await db.courseSource.upsert({
+        where: { id: source.id },
+        update: sourceData,
+        create: { id: source.id, ...sourceData },
       });
     }
 

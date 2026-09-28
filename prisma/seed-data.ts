@@ -18,6 +18,7 @@ import { ATTEMPT_CONTEXT, ATTEMPT_RESULT, EXERCISE_MODE } from "../constants/pla
 
 import { DEMO_STAFF_EMAIL, DEMO_TEACHER_EMAIL, DEMO_USER_EMAIL } from "../constants/platform/demo-user.const";
 import { mainlinePath } from "../lib/chess/exercise-derivation";
+import { MY_60_MEMORABLE_GAMES } from "./seed-courses/my-60-memorable-games";
 import {
   THINK_LIKE_A_GRANDMASTER,
   THINK_LIKE_A_GRANDMASTER_DATABASE,
@@ -157,8 +158,8 @@ export const CATALOG_VALUES = {
     [AUTHOR_ROLE.CONTENT_AUTHOR, "Autor del contenido"],
     [AUTHOR_ROLE.DIGITAL_ADAPTATION, "Adaptación digital"],
   ],
-  // "Procedencia del recurso": only the catalog is seeded. The sources of a
-  // course are typed by staff; no demo course has one.
+  // "Procedencia del recurso": the catalog, and the sources of the courses
+  // that come from a resource (`SeedCourse.sources`). The rest are typed by staff.
   sourceType: [
     [SOURCE_TYPE.BOOK, "Libro"],
     [SOURCE_TYPE.DIGITAL_COURSE, "Curso digital"],
@@ -422,6 +423,28 @@ export interface SeedChapter {
   lessons: SeedLesson[];
 }
 
+/**
+ * A row of «Procedencia del recurso»: where the course's material comes from.
+ * The same shape the staff panel writes, so a seeded source and one added by
+ * hand are the same thing.
+ */
+export interface SeedCourseSource {
+  id: string;
+  order: number;
+  /** Code of SourceType: what kind of resource it is. */
+  sourceType: string;
+  originalTitle: string;
+  /** Who signs the RESOURCE, free text; not the platform's `Author`. */
+  authors: string;
+  url?: string;
+  /** Left null when the year is disputed: an invented one would read as a fact. */
+  publicationYear: number | null;
+  edition: string | null;
+  specificReference: string;
+  /** Staff only: the student never sees it. */
+  notes: string;
+}
+
 export interface SeedCourse {
   id: string;
   name: string;
@@ -432,6 +455,14 @@ export interface SeedCourse {
   status: string;
   /** Slugs of Level: who the course is aimed at. */
   levels: string[];
+  /**
+   * Code of AuthorRole the academy's author signs the course with. «Autor del
+   * contenido» when absent; «Adaptación digital» for a course that puts
+   * someone else's book on the board.
+   */
+  authorRole?: string;
+  /** Where its material comes from; a course of its own making has none. */
+  sources?: SeedCourseSource[];
   chapters: SeedChapter[];
 }
 
@@ -642,6 +673,9 @@ export const COURSES: SeedCourse[] = [
     ],
   },
   THINK_LIKE_A_GRANDMASTER,
+  // No game collection of its own: here every lesson already IS a whole game,
+  // so a «Partidas» tab would list the same sixty twice.
+  MY_60_MEMORABLE_GAMES,
 ];
 
 // ---------------------------------------------------------------------------
