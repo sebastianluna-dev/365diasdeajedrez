@@ -79,12 +79,8 @@ export interface CourseSummary {
 export interface CourseChapterItem {
   id: string;
   order: number;
-  /** The whole name, as the staff wrote it. */
+  /** As the staff wrote it, whole: "Los años de aprendizaje (1957–1959)". */
   name: string;
-  /** The name without its closing note: "Los años de aprendizaje". */
-  title: string;
-  /** The note the name closes with, when it has one: "1957–1959". */
-  tag?: string;
   description?: string;
   /** Minutes: the chapter's own figure, or what its lessons add up to. */
   durationMin?: number;
@@ -190,9 +186,6 @@ export interface ChapterView {
   id: string;
   order: number;
   name: string;
-  /** The name without its closing note, and the note: see `CourseChapterItem`. */
-  title: string;
-  tag?: string;
   description?: string;
   completedLessons: number;
   /** Of the VISIBLE ones; with the filter on it is not the chapter's total. */

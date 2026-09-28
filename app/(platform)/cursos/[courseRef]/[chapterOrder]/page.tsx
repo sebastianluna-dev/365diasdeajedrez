@@ -20,7 +20,7 @@ async function chapterOf(courseRef: string, chapterOrder: string) {
 export async function generateMetadata({ params }: ChapterPageProps): Promise<Metadata> {
   const { courseRef, chapterOrder } = await params;
   const chapter = await chapterOf(courseRef, chapterOrder);
-  return chapter ? { title: `${chapter.title} · ${chapter.course.name}` } : {};
+  return chapter ? { title: `${chapter.name} ·${chapter.course.name}` } : {};
 }
 
 export default async function ChapterPage({ params, searchParams }: ChapterPageProps) {

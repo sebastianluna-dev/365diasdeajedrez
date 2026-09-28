@@ -37,17 +37,14 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
   return (
     <CourseStudyFrame
       course={course}
-      chapter={{ order: chapter.order, title: chapter.title }}
+      chapter={{ order: chapter.order, name: chapter.name }}
       returnTo={course.chapters.find((item) => item.id === chapter.id)?.href ?? course.studyHref}
       errorCode={errorCode}
     >
       <div className="chapter-study">
         <header className="chapter-study__summary">
           <div className="chapter-study__about">
-            <p className="chapter-study__eyebrow">
-              Capítulo {chapter.order}
-              {chapter.tag && ` · ${chapter.tag}`}
-            </p>
+            <p className="chapter-study__eyebrow">Capítulo {chapter.order}</p>
             {chapter.description && <p className="chapter-study__description">{chapter.description}</p>}
           </div>
 

@@ -14,7 +14,7 @@ interface CourseStudyFrameProps {
    * The chapter the page is of, to say so under the course's name. Absent on
    * the course's own page, which is the list of its chapters.
    */
-  chapter?: { order: number; title: string };
+  chapter?: { order: number; name: string };
   /** The page being drawn, where a failed setting is reported. */
   returnTo: string;
   /** What a setting of the course bounced back with, in `?error=`. */
@@ -60,7 +60,7 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
               </Link>
               <span aria-hidden="true">›</span>
               <span className="course-study-frame__place-here">
-                {chapter.order}. {chapter.title}
+                {chapter.order}. {chapter.name}
               </span>
             </p>
           ) : (

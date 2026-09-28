@@ -31,11 +31,8 @@ export function CourseStudySection({ course, errorCode }: CourseStudySectionProp
           {course.chapters.map((chapter) => (
             <li key={chapter.id} className="course-study__item">
               <Link href={chapter.href} className="course-study__chapter">
-                <span className="course-study__eyebrow">
-                  Capítulo {chapter.order}
-                  {chapter.tag && ` · ${chapter.tag}`}
-                </span>
-                <span className="course-study__title">{chapter.title}</span>
+                <span className="course-study__eyebrow">Capítulo {chapter.order}</span>
+                <span className="course-study__title">{chapter.name}</span>
 
                 {chapter.priorityLessons > 0 && (
                   <span className="course-study__tags">

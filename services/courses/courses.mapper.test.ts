@@ -247,11 +247,10 @@ describe("los capítulos del curso", () => {
     ],
   } as unknown as CourseWithDetail;
 
-  it("separan el nombre de la nota con que cierra", () => {
+  it("llevan su nombre entero, con los años que lo cierran", () => {
     const [first, second] = mapCourseDetail(WITH_NAMES, state()).chapters;
-    expect(first).toMatchObject({ title: "Los años de aprendizaje", tag: "1957–1959" });
-    expect(second).toMatchObject({ title: "El final" });
-    expect(second?.tag).toBeUndefined();
+    expect(first?.name).toBe("Los años de aprendizaje (1957–1959)");
+    expect(second?.name).toBe("El final");
   });
 
   it("duran lo que dice su cifra y, sin ella, lo que suman sus lecciones", () => {

@@ -128,14 +128,10 @@ export function CourseInfoSection({ course, levels, errorCode }: CourseInfoSecti
               <li key={chapter.id} className="course-info__chapter">
                 <div className="course-info__chapter-head">
                   <span className="course-info__chapter-number">Capítulo {chapter.order}</span>
-                  {/* Its date when it has one; its name when the name is all there is. */}
-                  <span className="course-info__chapter-tag">{chapter.tag ?? chapter.title}</span>
+                  <h3 className="course-info__chapter-title">{chapter.name}</h3>
                 </div>
 
-                <div className="course-info__chapter-body">
-                  {chapter.tag && <h3 className="course-info__chapter-title">{chapter.title}</h3>}
-                  {chapter.description && <p className="course-info__chapter-text">{chapter.description}</p>}
-                </div>
+                {chapter.description && <p className="course-info__chapter-text">{chapter.description}</p>}
 
                 <p className="course-info__chapter-foot">
                   {countLessons(chapter.lessonCount)}

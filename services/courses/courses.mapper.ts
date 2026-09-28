@@ -3,7 +3,6 @@ import type { Prisma } from "@/lib/platform-db/generated/client";
 import { platformRoutes } from "@/lib/platform-routes";
 import { sortByRole } from "@/services/shared/content-order";
 import { lessonPgnOf } from "@/services/shared/lesson-pgn";
-import { splitChapterName } from "./course-rules";
 import { formatEloRange } from "./level-rules";
 import type {
   ChapterLessonItem,
@@ -303,7 +302,6 @@ function mapChapterItem(
     id: chapter.id,
     order: chapter.order,
     name: chapter.name,
-    ...splitChapterName(chapter.name),
     description: chapter.description ?? undefined,
     durationMin: durationMin > 0 ? durationMin : undefined,
     lessonCount: chapter.lessons.length,
@@ -412,7 +410,6 @@ export function mapChapterView(
     id: chapter.id,
     order: chapter.order,
     name: chapter.name,
-    ...splitChapterName(chapter.name),
     description: chapter.description ?? undefined,
     completedLessons,
     totalLessons: lessons.length,

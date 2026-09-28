@@ -24,29 +24,6 @@ export function isReservedCourseSlug(slug: string): boolean {
   return RESERVED_SLUGS.includes(slug) || isCourseId(slug);
 }
 
-export interface ChapterNameParts {
-  /** The name without what it carried in parentheses: "Los años de aprendizaje". */
-  title: string;
-  /** What the closing parentheses said: "1957–1959". Absent when there were none. */
-  tag?: string;
-}
-
-/**
- * A chapter's name and the note it closes with, apart.
- *
- * A chapter is often named "Los años de aprendizaje (1957–1959)": the
- * parentheses are its place in time or in the book, and the pages draw it on
- * its own, big, next to the chapter's number. Only a note at the END counts,
- * and only when something is left in front of it to be the title.
- */
-export function splitChapterName(name: string): ChapterNameParts {
-  const match = /^(.*\S)\s*\(([^()]+)\)\s*$/.exec(name.trim());
-  const title = match?.[1]?.trim();
-  const tag = match?.[2]?.trim();
-  if (!title || !tag) return { title: name.trim() };
-  return { title, tag };
-}
-
 /**
  * Minutes as a length of study is said: "45 min", "20 h", "1 h 30 min".
  * From an hour on the minutes that do not make a quarter are dropped: the

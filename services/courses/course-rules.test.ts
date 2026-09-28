@@ -1,12 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  countChapters,
-  countLessons,
-  formatDuration,
-  isCourseId,
-  isReservedCourseSlug,
-  splitChapterName,
-} from "./course-rules";
+import { countChapters, countLessons, formatDuration, isCourseId, isReservedCourseSlug } from "./course-rules";
 
 describe("isCourseId", () => {
   it("tells the id of a course from its slug", () => {
@@ -35,27 +28,6 @@ describe("isReservedCourseSlug", () => {
     expect(isReservedCourseSlug("explorar-aperturas")).toBe(false);
     expect(isReservedCourseSlug("2026")).toBe(false);
     expect(isReservedCourseSlug("finales-de-torre-esenciales")).toBe(false);
-  });
-});
-
-describe("splitChapterName", () => {
-  it("takes apart the name and the note it closes with", () => {
-    expect(splitChapterName("Los años de aprendizaje (1957–1959)")).toEqual({
-      title: "Los años de aprendizaje",
-      tag: "1957–1959",
-    });
-  });
-
-  it("leaves whole a name without a note", () => {
-    expect(splitChapterName("Análisis de variantes")).toEqual({ title: "Análisis de variantes" });
-  });
-
-  it("only counts a note at the end", () => {
-    expect(splitChapterName("El final (de torres) explicado")).toEqual({ title: "El final (de torres) explicado" });
-  });
-
-  it("does not leave a chapter without a title when the name is all note", () => {
-    expect(splitChapterName("(1957–1959)")).toEqual({ title: "(1957–1959)" });
   });
 });
 
