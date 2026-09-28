@@ -2,9 +2,11 @@
 // `.actions.ts` modules because a "use server" file can only export async
 // functions.
 //
-// Account creation and password resets are the ONLY exception to this pattern
-// (they use `useActionState`, see §14.2 of the plan): a password cannot travel
-// in a query param.
+// Two exceptions use `useActionState` instead of this pattern: account
+// creation and password resets (see §14.2 of the plan), because a password
+// cannot travel in a query param, and the «Autores» dialog, which stays open
+// over the page and has to get the outcome back itself. They take their
+// messages from here all the same.
 
 export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   invalid: "Revisa los datos: falta algún campo obligatorio o tiene un formato incorrecto.",
@@ -19,7 +21,9 @@ export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   assignmentMissing: "Esa asignación ya no está activa.",
   userTaken: "Esa cuenta ya tiene ficha de profesor.",
   courseSlug: "Ese identificador (slug) ya está en uso.",
-  authorSlug: "Ya existe un autor con ese slug.",
+  authorSlug: "Otro autor acaba de tomar ese slug. Vuelve a guardar.",
+  authorName: "El nombre del autor necesita al menos una letra o un número.",
+  authorPhoto: "La foto tiene que ser una dirección web (https://…).",
   authorMissing: "Ese autor no existe. Recarga la página y vuelve a intentarlo.",
   contentTypeRequired: "Elige al menos un tipo de contenido.",
   entityTaken: "Ya existe una entidad con ese nombre.",

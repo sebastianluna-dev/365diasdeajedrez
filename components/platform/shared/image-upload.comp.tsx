@@ -3,11 +3,10 @@
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { ImageIcon } from "@/components/icons/image-icon.comp";
-import { IMAGE_ACCEPT, IMAGE_MAX_BYTES, isAllowedImageType } from "@/constants/platform/upload.const";
-import { withCoverCrop } from "@/lib/cloudinary-url";
+import { IMAGE_ACCEPT } from "@/constants/platform/upload.const";
 import { isDisplayableImage } from "@/lib/remote-image";
-import { createUploadSignature } from "@/services/media/media.actions";
 import "./image-upload.comp.css";
+import { useImageUpload } from "./use-image-upload.hook";
 
 interface ImageUploadProps {
   /** Name of the field that travels in the form, with the URL as its value. */
@@ -27,10 +26,6 @@ interface ImageUploadProps {
   hint?: string;
 }
 
-type Status = { kind: "idle" } | { kind: "uploading" } | { kind: "error"; message: string };
-
-const MAX_MB = Math.round(IMAGE_MAX_BYTES / (1024 * 1024));
-
 /**
  * Uploads an image to Cloudinary and leaves its URL in the form that saves it.
  *
@@ -49,61 +44,12 @@ const MAX_MB = Math.round(IMAGE_MAX_BYTES / (1024 * 1024));
  * image already exported in that ratio stays as it is.
  */
 export function ImageUpload({ name, form, defaultValue, label, aspectRatio = "21:9", hint }: ImageUploadProps) {
-  const [url, setUrl] = useState(defaultValue ?? "");
-  const [status, setStatus] = useState<Status>({ kind: "idle" });
+  const { url, status, isUploading, upload, clear } = useImageUpload({ initialUrl: defaultValue, aspectRatio });
   const [dragging, setDragging] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const isUploading = status.kind === "uploading";
   const hasImage = isDisplayableImage(url);
   const boxRatio = aspectRatio.replace(":", " / ");
-
-  const upload = async (file: File) => {
-    // Checked here to say so instantly; the real authority is Cloudinary,
-    // which rejects whatever does not match the signature.
-    if (!isAllowedImageType(file.type)) {
-      setStatus({ kind: "error", message: "Tiene que ser una imagen JPG, PNG, WebP o AVIF." });
-      return;
-    }
-    if (file.size > IMAGE_MAX_BYTES) {
-      setStatus({ kind: "error", message: `La imagen pesa más de ${MAX_MB} MB. Expórtala más ligera.` });
-      return;
-    }
-
-    setStatus({ kind: "uploading" });
-    const signature = await createUploadSignature();
-    if (!signature) {
-      setStatus({ kind: "error", message: "No se pudo preparar la subida. Vuelve a intentarlo." });
-      return;
-    }
-
-    const body = new FormData();
-    body.append("file", file);
-    body.append("api_key", signature.apiKey);
-    body.append("timestamp", String(signature.timestamp));
-    body.append("folder", signature.folder);
-    // It is signed: changing it here would invalidate the signature, which is the point.
-    body.append("allowed_formats", signature.allowedFormats);
-    body.append("signature", signature.signature);
-
-    try {
-      const response = await fetch(`https://api.cloudinary.com/v1_1/${signature.cloudName}/image/upload`, {
-        method: "POST",
-        body,
-      });
-      if (!response.ok) throw new Error(String(response.status));
-
-      const uploaded: { secure_url?: string } = await response.json();
-      if (!uploaded.secure_url) throw new Error("sin URL");
-
-      // Cropped from the start to the ratio it will be seen in: that way what
-      // is shown here is exactly what the student will see.
-      setUrl(withCoverCrop(uploaded.secure_url, "auto", aspectRatio));
-      setStatus({ kind: "idle" });
-    } catch {
-      setStatus({ kind: "error", message: "La subida falló. Inténtalo otra vez." });
-    }
-  };
 
   const pick = (file: File | undefined) => {
     if (file) void upload(file);
@@ -192,14 +138,7 @@ export function ImageUpload({ name, form, defaultValue, label, aspectRatio = "21
         </button>
 
         {url && (
-          <button
-            type="button"
-            className="image-upload__remove"
-            onClick={() => {
-              setUrl("");
-              setStatus({ kind: "idle" });
-            }}
-          >
+          <button type="button" className="image-upload__remove" onClick={clear}>
             Quitar
           </button>
         )}

@@ -1,0 +1,195 @@
+.course-authors {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  /* The rules between authors reach the card's edges, like the one under its
+     header: the gutter is the panel's, which this block sits in. */
+  & .course-authors__list {
+    margin: -18px calc(var(--staff-panel-gutter, 22px) * -1) 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .course-authors__row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px var(--staff-panel-gutter, 22px);
+    border-bottom: 1px solid var(--platform-border);
+  }
+
+  & .course-authors__text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+  }
+
+  & .course-authors__name {
+    max-width: 100%;
+    font-size: 16.5px;
+    font-weight: 700;
+    color: var(--platform-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* The role is a select drawn as the line of text it replaces: no box, the
+     muted grey, and a chevron that says it can be changed. */
+  & .course-authors__text .platform-select {
+    max-width: 100%;
+  }
+
+  & .course-authors__text .platform-select__trigger.course-authors__role {
+    width: auto;
+    max-width: 100%;
+    min-height: 0;
+    gap: 4px;
+    padding: 2px 4px 2px 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--platform-text-subtle);
+    font-size: 14.5px;
+  }
+
+  & .course-authors__text .platform-select__trigger.course-authors__role:hover {
+    color: var(--platform-text);
+  }
+
+  & .course-authors__text .platform-select__trigger.course-authors__role .platform-select__chevron {
+    width: 11px;
+    height: 11px;
+  }
+
+  /* The list is as wide as its longest role, not as the word that opens it. */
+  & .course-authors__text .platform-select__content {
+    width: max-content;
+    min-width: 200px;
+  }
+
+  & .course-authors__remove-form {
+    flex: none;
+  }
+
+  & .course-authors__remove {
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-subtle);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 150ms;
+  }
+
+  & .course-authors__remove:hover:not(:disabled) {
+    color: var(--platform-danger);
+  }
+
+  & .course-authors__remove:disabled {
+    cursor: default;
+  }
+
+  & .course-authors__empty,
+  & .course-authors__none {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.45;
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-authors__search {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  & .course-authors__input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid var(--platform-border);
+    border-radius: 10px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 15.5px;
+    transition: 150ms;
+    transition-property: border-color, box-shadow;
+  }
+
+  & .course-authors__input::placeholder {
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-authors__input:focus {
+    outline: none;
+    border-color: var(--platform-accent);
+    box-shadow: 0 0 0 3px var(--platform-accent-soft);
+  }
+
+  & .course-authors__suggestions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* The whole row is the button: avatar, name and what pressing it does. */
+  & .course-authors__suggestion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 9px 14px 9px 10px;
+    border: 0;
+    border-radius: 10px;
+    background: transparent;
+    color: var(--platform-text);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 150ms;
+  }
+
+  /* The first one is what Enter adds, so it is the one that is lit. */
+  & .course-authors__suggestion_state_first,
+  & .course-authors__suggestion:hover,
+  & .course-authors__suggestion:focus-visible {
+    background: var(--platform-accent-wash);
+  }
+
+  & .course-authors__suggestion-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 16px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .course-authors__suggestion-action {
+    flex: none;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: var(--platform-accent-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .course-authors__remove,
+    & .course-authors__input,
+    & .course-authors__suggestion {
+      transition: none;
+    }
+  }
+}

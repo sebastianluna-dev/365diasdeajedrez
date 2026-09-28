@@ -26,14 +26,14 @@ import {
   formLenientInt,
   formOptionalText,
   formOptionalUrl,
-  formReturnTo,
   formSlugList,
   formText,
   parseForm,
   readIds,
 } from "@/services/shared/form-schema";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
-import { safeReturnTo, withErrorParam } from "@/services/shared/safe-return-to";
+import { authorSlugFor } from "./author-rules";
+import type { AuthorFormState } from "./staff-courses.types";
 import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_SOURCE } from "@/constants/platform/study-codes.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
@@ -121,12 +121,6 @@ const EXERCISE_SCHEMA = z.object({
   // position. Same space-separated SAN format as the seed.
   afterSans: formSans(),
   promptText: formOptionalText(PROMPT_MAX_LENGTH),
-});
-const AUTHOR_SCHEMA = z.object({
-  name: formText(NAME_MAX_LENGTH),
-  slug: slugField,
-  photo: formOptionalUrl(2000),
-  bio: formOptionalText(DESCRIPTION_MAX_LENGTH),
 });
 
 // --- Courses --------------------------------------------------------------
@@ -937,74 +931,104 @@ export async function moveExercise(
 // --- Authors --------------------------------------------------------------
 // Author is editorial content, not a restricted domain whose code the logic
 // compares, so it is created and edited from the interface: in the «Autores»
-// dialog of the courses catalog and of the course editor. It has no page of
-// its own, so a failure goes back to the page the dialog was opened on, which
-// the form names in `returnTo`.
+// dialog of the courses catalog and of the course editor.
+//
+// These two RETURN their outcome (`useActionState`) instead of redirecting
+// with `?error=`: the dialog stays open over the page, and an error rendered
+// by the page would be read by nobody. The slug is never typed: it is the
+// name's (`authorSlugFor`), with a number behind when another author has it.
 
-const RETURN_TO_SCHEMA = z.object({ returnTo: formReturnTo() });
+const AUTHOR_SCHEMA = z.object({
+  name: formText(NAME_MAX_LENGTH),
+  photo: formOptionalUrl(2000),
+  bio: formOptionalText(DESCRIPTION_MAX_LENGTH),
+});
 
-/** Where an author form answers: the page it was sent from, or the catalog. */
-function authorReturnPath(formData: FormData): string {
-  const parsed = parseForm(RETURN_TO_SCHEMA, formData);
-  return safeReturnTo(parsed.ok ? parsed.data.returnTo : "", staffRoutes.courses);
+function authorFailure(errorCode: string): AuthorFormState {
+  return { status: "error", errorCode };
 }
 
-/** Every page that lists authors: the catalog and the editors under it. */
+/** The failure code a bad author form answers with. */
+function authorFormError(field: string): string {
+  if (field === "name") return "authorName";
+  if (field === "photo") return "authorPhoto";
+  return "invalid";
+}
+
+/** Every page that lists authors: the catalog and the editors under it, and the student's courses. */
 function revalidateAuthorPaths() {
   revalidatePath(staffRoutes.courses, "layout");
-}
-
-export async function createAuthor(formData: FormData): Promise<void> {
-  const staff = await requireStaff();
-  const path = authorReturnPath(formData);
-  if (!(await allowAction(`${staff.user.id}:author-create`, 20, 3_600_000)))
-    redirect(withErrorParam(path, "throttled"));
-
-  const parsed = parseForm(AUTHOR_SCHEMA, formData);
-  if (!parsed.ok) redirect(withErrorParam(path, "invalid"));
-  const { name, slug, photo, bio } = parsed.data;
-
-  try {
-    await getPlatformDb().author.create({
-      data: { name, slug, bio, photo },
-    });
-  } catch (error) {
-    if (isUniqueConstraintError(error, "Author_slug_key", "slug")) redirect(withErrorParam(path, "authorSlug"));
-    throw error;
-  }
-
-  revalidateAuthorPaths();
-}
-
-export async function updateAuthor(authorId: string, formData: FormData): Promise<void> {
-  const staff = await requireStaff();
-  const path = authorReturnPath(formData);
-  if (!(await allowAction(`${staff.user.id}:author-update`, 60, 60_000))) redirect(withErrorParam(path, "throttled"));
-
-  const parsed = parseForm(AUTHOR_SCHEMA, formData);
-  if (!parsed.ok) redirect(withErrorParam(path, "invalid"));
-  const { name, slug, photo, bio } = parsed.data;
-  const db = getPlatformDb();
-
-  const existing = await db.author.findUnique({ where: { id: authorId }, select: { id: true } });
-  if (!existing) redirect(withErrorParam(path, "authorMissing"));
-
-  try {
-    await db.author.update({
-      where: { id: authorId },
-      data: { name, slug, bio, photo },
-    });
-  } catch (error) {
-    if (isUniqueConstraintError(error, "Author_slug_key", "slug")) redirect(withErrorParam(path, "authorSlug"));
-    throw error;
-  }
-
-  revalidateAuthorPaths();
-  // The students read the author's name on the course page and its card.
   revalidatePath(platformRoutes.courses, "layout");
 }
 
-/** Adds, removes or reorders a course's authors according to the requested operation. */
+/** The slugs an author's new slug must not repeat: everybody's but their own. */
+async function authorSlugsTaken(exceptAuthorId?: string): Promise<string[]> {
+  const rows = await getPlatformDb().author.findMany({
+    where: exceptAuthorId ? { id: { not: exceptAuthorId } } : {},
+    select: { slug: true },
+  });
+  return rows.map((row) => row.slug);
+}
+
+export async function createAuthor(_previous: AuthorFormState, formData: FormData): Promise<AuthorFormState> {
+  const staff = await requireStaff();
+  if (!(await allowAction(`${staff.user.id}:author-create`, 20, 3_600_000))) return authorFailure("throttled");
+
+  const parsed = parseForm(AUTHOR_SCHEMA, formData);
+  if (!parsed.ok) return authorFailure(authorFormError(parsed.field));
+  const { name, photo, bio } = parsed.data;
+
+  const slug = authorSlugFor(name, await authorSlugsTaken());
+  if (!slug) return authorFailure("authorName");
+
+  try {
+    await getPlatformDb().author.create({ data: { name, slug, bio, photo }, select: { id: true } });
+  } catch (error) {
+    // Two saves at once landed on the same slug: asking again solves it.
+    if (isUniqueConstraintError(error, "Author_slug_key", "slug")) return authorFailure("authorSlug");
+    throw error;
+  }
+
+  revalidateAuthorPaths();
+  return { status: "saved", savedAt: Date.now() };
+}
+
+export async function updateAuthor(
+  authorId: string,
+  _previous: AuthorFormState,
+  formData: FormData,
+): Promise<AuthorFormState> {
+  const staff = await requireStaff();
+  if (!(await allowAction(`${staff.user.id}:author-update`, 60, 60_000))) return authorFailure("throttled");
+
+  const parsed = parseForm(AUTHOR_SCHEMA, formData);
+  if (!parsed.ok) return authorFailure(authorFormError(parsed.field));
+  const { name, photo, bio } = parsed.data;
+  const db = getPlatformDb();
+
+  const existing = await db.author.findUnique({ where: { id: authorId }, select: { name: true, slug: true } });
+  if (!existing) return authorFailure("authorMissing");
+
+  // The slug follows the name; an author who keeps their name keeps their slug.
+  const slug = name === existing.name ? existing.slug : authorSlugFor(name, await authorSlugsTaken(authorId));
+  if (!slug) return authorFailure("authorName");
+
+  try {
+    await db.author.update({ where: { id: authorId }, data: { name, slug, bio, photo }, select: { id: true } });
+  } catch (error) {
+    if (isUniqueConstraintError(error, "Author_slug_key", "slug")) return authorFailure("authorSlug");
+    throw error;
+  }
+
+  revalidateAuthorPaths();
+  return { status: "saved", savedAt: Date.now() };
+}
+
+/**
+ * Adds an author to the course, takes one out or changes the role of one,
+ * according to the requested operation. The order is the one they were added
+ * in: the card has no arrows.
+ */
 export async function manageCourseAuthors(courseId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.courseDetail(courseId);
@@ -1017,9 +1041,9 @@ export async function manageCourseAuthors(courseId: string, formData: FormData):
     if (!isCode(roleCode, AUTHOR_ROLE)) fail(detailPath, "invalid");
 
     const author = await db.author.findUnique({ where: { id: authorId }, select: { id: true } });
-    if (!author) fail(detailPath, "invalid");
+    if (!author) fail(detailPath, "authorMissing");
 
-    const count = await db.courseAuthor.count({ where: { courseId } });
+    const last = await db.courseAuthor.aggregate({ where: { courseId }, _max: { order: true } });
     await db.courseAuthor.upsert({
       where: { courseId_authorId: { courseId, authorId: author.id } },
       update: { role: { connect: { code: roleCode } } },
@@ -1027,31 +1051,26 @@ export async function manageCourseAuthors(courseId: string, formData: FormData):
         course: { connect: { id: courseId } },
         author: { connect: { id: author.id } },
         role: { connect: { code: roleCode } },
-        order: nextOrder(count) - 1,
+        // After the last one, whatever gaps the removed ones left.
+        order: (last._max.order ?? -1) + 1,
       },
     });
+  } else if (operation === "role") {
+    if (!isCode(roleCode, AUTHOR_ROLE)) fail(detailPath, "invalid");
+
+    const role = await db.authorRole.findUnique({ where: { code: roleCode }, select: { id: true } });
+    if (!role) fail(detailPath, "invalid");
+    // Scoped to the course: an author who is not in it changes nothing.
+    const { count } = await db.courseAuthor.updateMany({ where: { courseId, authorId }, data: { roleId: role.id } });
+    if (count === 0) fail(detailPath, "authorMissing");
   } else if (operation === "remove") {
     await db.courseAuthor.deleteMany({ where: { courseId, authorId } });
-  } else if (operation === "up" || operation === "down") {
-    // CourseAuthor has no id of its own (composite PK): the authorId is used as the
-    // identity for the reordering plan.
-    await db.$transaction(async (tx) => {
-      const rows = await tx.courseAuthor.findMany({ where: { courseId }, select: { authorId: true, order: true } });
-      const plan = planSwap(
-        rows.map((row) => ({ id: row.authorId, order: row.order })),
-        authorId,
-        operation as MoveDirection,
-      );
-      for (const update of plan) {
-        await tx.courseAuthor.update({
-          where: { courseId_authorId: { courseId, authorId: update.id } },
-          data: { order: update.order },
-        });
-      }
-    });
   } else {
     fail(detailPath, "invalid");
   }
 
   revalidatePath(detailPath);
+  // The student reads who signs the course.
+  revalidatePath(platformRoutes.courseDetail(courseId));
+  revalidatePath(platformRoutes.courses);
 }

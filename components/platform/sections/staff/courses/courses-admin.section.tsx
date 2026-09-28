@@ -18,7 +18,7 @@ interface CoursesAdminSectionProps {
   /** What is searched and the status filtered by; both come from the URL. */
   query?: string;
   status?: string;
-  /** What `createCourse` or the authors' dialog bounced back with, from `?error=`: both live here. */
+  /** What `createCourse` bounced back with, from `?error=`: its dialog lives here. */
   errorCode?: string;
 }
 
@@ -77,7 +77,7 @@ export async function CoursesAdminSection({ query, status, errorCode }: CoursesA
             </form>
 
             {/* The authors have no page of their own: they are managed from here. */}
-            <AuthorsManager authors={authors} returnTo={staffRoutes.courses} />
+            <AuthorsManager authors={authors} />
 
             <NewCourse contentTypes={contentTypes} />
           </>

@@ -120,7 +120,7 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
         select: {
           authorId: true,
           order: true,
-          author: { select: { name: true } },
+          author: { select: { name: true, photo: true } },
           role: { select: { code: true, label: true } },
         },
         orderBy: { order: "asc" },
@@ -160,6 +160,7 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
     authors: course.courseAuthors.map((author) => ({
       authorId: author.authorId,
       authorName: author.author.name,
+      authorPhoto: author.author.photo ?? undefined,
       roleCode: author.role.code as AuthorRoleCode,
       roleLabel: author.role.label,
       order: author.order,

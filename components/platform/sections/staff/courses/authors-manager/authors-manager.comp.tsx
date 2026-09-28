@@ -1,23 +1,23 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { CloseIcon } from "@/components/icons/close-icon.comp";
-import { createAuthor, updateAuthor } from "@/services/staff-courses/staff-courses.actions";
 import type { AuthorAdminRow } from "@/services/staff-courses/staff-courses.types";
-import "./authors-manager.comp.css";
+import { AuthorAvatar } from "./author-avatar.comp";
 import { AuthorForm } from "./author-form.comp";
+import "./authors-manager.comp.css";
 
 interface AuthorsManagerProps {
   /** Every author, by name. */
   authors: AuthorAdminRow[];
-  /** The page this sits on: where a failed save is reported. */
-  returnTo: string;
   /** What the button says. «Autores» by default; another word where a heading already says it. */
   label?: string;
+  /** `quiet` is the catalog's grey button; `accent`, the soft orange one of a card's header. */
+  tone?: "quiet" | "accent";
 }
 
-/** What the dialog shows: the list, or the form of one author (none = a new one). */
-type View = { kind: "list" } | { kind: "form"; author?: AuthorAdminRow };
+/** What the dialog shows: the list, or the form of one author (`authorId` absent = a new one). */
+type View = { kind: "list" } | { kind: "form"; authorId?: string };
 
 /**
  * «Autores»: the button and the dialog where the authors who sign the
@@ -25,25 +25,44 @@ type View = { kind: "list" } | { kind: "form"; author?: AuthorAdminRow };
  * only matter next to the courses, so they are managed from the catalog and
  * from a course's «Autores» card.
  *
- * One dialog, two views: the list, and the form of the author chosen in it
- * (or of a new one). Saving closes the dialog, like the other dialogs of the
- * panel, so what the action answers — the refreshed list, or the failure in
- * `?error=` — is seen on the page. Authors are never deleted.
+ * One dialog, two views: the list — photo or initials, how many courses, the
+ * slug — and the form of the author chosen in it, or of a new one. Saving
+ * goes back to the list, which comes refreshed; the dialog is closed by its
+ * cross or with Escape. Authors are never deleted.
  */
-export function AuthorsManager({ authors, returnTo, label = "Autores" }: AuthorsManagerProps) {
+export function AuthorsManager({ authors, label = "Autores", tone = "quiet" }: AuthorsManagerProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [view, setView] = useState<View>({ kind: "list" });
+  // Bumped on every opening of the form: it is remounted, so it never opens
+  // with what was typed the last time nor with the last outcome.
+  const [opening, setOpening] = useState(0);
 
+  const showList = useCallback(() => setView({ kind: "list" }), []);
+  const showForm = (authorId?: string) => {
+    setOpening((count) => count + 1);
+    setView({ kind: "form", authorId });
+  };
   const open = () => {
     // It always opens on the list, whatever was left the last time.
-    setView({ kind: "list" });
+    showList();
     dialogRef.current?.showModal();
   };
-  const close = () => dialogRef.current?.close();
+
+  // Looked up on every render: after saving, the list brings the new values.
+  const editing = view.kind === "form" ? authors.find((author) => author.id === view.authorId) : undefined;
+  const title = view.kind === "list" ? "Autores" : view.authorId ? "Editar autor" : "Nuevo autor";
 
   return (
     <div className="authors-manager">
-      <button type="button" className="platform-button platform-button_variant_quiet" onClick={open}>
+      <button
+        type="button"
+        className={
+          tone === "accent"
+            ? "authors-manager__open authors-manager__open_tone_accent"
+            : "platform-button platform-button_variant_quiet"
+        }
+        onClick={open}
+      >
         {label}
       </button>
 
@@ -57,11 +76,16 @@ export function AuthorsManager({ authors, returnTo, label = "Autores" }: Authors
         <header className="authors-manager__head">
           <div className="authors-manager__heading">
             <h2 id="authors-manager-title" className="authors-manager__title">
-              Autores
+              {title}
             </h2>
-            <p className="authors-manager__subtitle">Quiénes firman los cursos.</p>
+            {view.kind === "list" && <p className="authors-manager__subtitle">Quiénes firman los cursos.</p>}
           </div>
-          <button type="button" className="authors-manager__close" onClick={close} aria-label="Cerrar">
+          <button
+            type="button"
+            className="authors-manager__close"
+            onClick={() => dialogRef.current?.close()}
+            aria-label="Cerrar"
+          >
             <CloseIcon className="authors-manager__close-icon" />
           </button>
         </header>
@@ -73,16 +97,17 @@ export function AuthorsManager({ authors, returnTo, label = "Autores" }: Authors
                 <ul className="authors-manager__list">
                   {authors.map((author) => (
                     <li key={author.id} className="authors-manager__row">
+                      <AuthorAvatar name={author.name} photo={author.photo} size="large" />
                       <span className="authors-manager__row-text">
                         <span className="authors-manager__row-name">{author.name}</span>
                         <span className="authors-manager__row-meta">
-                          {author.courseCount} curso{author.courseCount === 1 ? "" : "s"}
+                          {author.courseCount} curso{author.courseCount === 1 ? "" : "s"} · {author.slug}
                         </span>
                       </span>
                       <button
                         type="button"
-                        className="authors-manager__edit"
-                        onClick={() => setView({ kind: "form", author })}
+                        className="platform-button platform-button_variant_secondary authors-manager__edit"
+                        onClick={() => showForm(author.id)}
                         aria-label={`Editar a ${author.name}`}
                       >
                         Editar
@@ -98,25 +123,18 @@ export function AuthorsManager({ authors, returnTo, label = "Autores" }: Authors
             <footer className="authors-manager__foot">
               <p className="authors-manager__note">Un autor no se borra: se quita de cada curso.</p>
               <div className="authors-manager__actions">
-                <button type="button" className="platform-button" onClick={() => setView({ kind: "form" })}>
+                <button
+                  type="button"
+                  className="platform-button platform-button_variant_ink"
+                  onClick={() => showForm()}
+                >
                   Nuevo autor
                 </button>
               </div>
             </footer>
           </>
         ) : (
-          <AuthorForm
-            // Remounted per author: the fields are uncontrolled and would keep
-            // what the previous one left.
-            key={view.author?.id ?? "new"}
-            author={view.author}
-            returnTo={returnTo}
-            action={view.author ? updateAuthor.bind(null, view.author.id) : createAuthor}
-            onBack={() => setView({ kind: "list" })}
-            // The browser validates the fields before the submit event fires,
-            // so the dialog does not close with a bad form in it.
-            onSubmit={close}
-          />
+          <AuthorForm key={opening} author={editing} authors={authors} onSaved={showList} onCancel={showList} />
         )}
       </dialog>
     </div>

@@ -38,6 +38,8 @@ export interface CourseAdminList {
 export interface CourseAuthorRow {
   authorId: string;
   authorName: string;
+  /** URL of the author's photo; without one the card draws the initials. */
+  authorPhoto?: string;
   roleCode: AuthorRoleCode;
   roleLabel: string;
   order: number;
@@ -180,6 +182,22 @@ export interface TopicOption {
   code: string;
   label: string;
 }
+
+/**
+ * What saving an author answers the «Autores» dialog with. The dialog stays
+ * open over the page, so the outcome has to come back to the form and not to
+ * a `?error=` the page would render underneath it. It lives here and not next
+ * to the actions because a "use server" module can only export async functions.
+ */
+export interface AuthorFormState {
+  status: "idle" | "saved" | "error";
+  /** Code of `STAFF_ERROR_MESSAGES`, when it failed. */
+  errorCode?: string;
+  /** Distinguishes one save from the next: two in a row are two states. */
+  savedAt?: number;
+}
+
+export const AUTHOR_INITIAL_STATE: AuthorFormState = { status: "idle" };
 
 export interface AuthorAdminRow {
   id: string;

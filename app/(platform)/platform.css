@@ -244,6 +244,22 @@ html body.platform-theme[data-scroll-locked] {
   background: var(--platform-bg);
 }
 
+/* The ink button: the dark one, for the action of a dialog whose page already
+   has its orange one. Same box as the primary, only the colours change. */
+.platform-button_variant_ink {
+  background: var(--platform-text);
+  color: var(--platform-surface);
+}
+
+.platform-button_variant_ink:hover {
+  background: color-mix(in srgb, var(--platform-text) 84%, var(--platform-surface));
+  color: var(--platform-surface);
+}
+
+.platform-button_variant_ink:disabled:hover {
+  background: var(--platform-text);
+}
+
 .platform-button_variant_danger {
   padding: 12px 20px;
   background: var(--platform-surface);

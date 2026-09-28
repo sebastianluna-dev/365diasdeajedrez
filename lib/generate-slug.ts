@@ -19,3 +19,15 @@ export function slugAfterRename(previousName: string, nextName: string, currentS
   if (nextName.trim() === previousName.trim()) return currentSlug;
   return generateSlug(nextName) || currentSlug;
 }
+
+/**
+ * `base`, or `base-2`, `base-3`… the first one nobody has. For the slugs the
+ * forms generate by themselves, where two records may share a name.
+ */
+export function uniqueSlug(base: string, taken: Iterable<string>): string {
+  const used = new Set(taken);
+  if (!used.has(base)) return base;
+  let suffix = 2;
+  while (used.has(`${base}-${suffix}`)) suffix += 1;
+  return `${base}-${suffix}`;
+}

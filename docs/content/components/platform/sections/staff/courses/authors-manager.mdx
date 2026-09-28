@@ -1,24 +1,24 @@
 ---
-description: "The «Autores» button and its dialog, where the authors who sign the courses are created and edited: a list and the form of one author, posting createAuthor and updateAuthor. Authors have no page of their own."
+description: "The «Autores» button and its dialog, where the authors who sign the courses are created and edited: a list with avatars and the form of one author, whose slug generates itself. Authors have no page of their own."
 ---
 
 # `AuthorsManager`
 
-Also documents `AuthorForm`, the form the dialog shows.
+Also documents the pieces it is made of: `AuthorForm`, `AuthorPhotoField` and `AuthorAvatar`.
 
-|            |                                                                                                                                                                                                                  |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/authors-manager/authors-manager.comp.tsx`, `author-form.comp.tsx`                                                                                                    |
-| Kind       | Client Components                                                                                                                                                                                                |
-| Stylesheet | `authors-manager.comp.css` → block `.authors-manager`                                                                                                                                                            |
-| Used by    | [`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section) (header), [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) («Autores» card) |
-| Composes   | [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`SubmitButton`](/components/platform/shared/submit-button)                                                                    |
-| Writes     | `createAuthor()`, `updateAuthor()` · `services/staff-courses/staff-courses.actions.ts`                                                                                                                           |
-| Uses       | `AuthorAdminRow` from `services/staff-courses/staff-courses.types`; `generateSlug` from `lib/generate-slug`; `CloseIcon`, `ArrowLeftIcon`                                                                        |
+|            |                                                                                                                                                                                                                                  |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/platform/sections/staff/courses/authors-manager/`: `authors-manager.comp.tsx`, `author-form.comp.tsx`, `author-photo-field.comp.tsx`, `author-avatar.comp.tsx`                                                       |
+| Kind       | Client Components (`AuthorAvatar` has no state and is drawn by server and client alike)                                                                                                                                          |
+| Stylesheet | `authors-manager.comp.css` → block `.authors-manager`; `author-avatar.comp.css` → block `.author-avatar`                                                                                                                         |
+| Used by    | [`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section) (header), [`CourseAuthors`](/components/platform/sections/staff/courses/course-authors) («Autores» card of a course)                  |
+| Composes   | [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button)                   |
+| Writes     | `createAuthor()`, `updateAuthor()` · `services/staff-courses/staff-courses.actions.ts`                                                                                                                                           |
+| Uses       | `AuthorAdminRow`, `AUTHOR_INITIAL_STATE` from `services/staff-courses/staff-courses.types`; `authorInitials`, `authorTone`, `authorSlugFor` from `services/staff-courses/author-rules`; `useImageUpload`; `STAFF_ERROR_MESSAGES` |
 
 ## Purpose
 
-Authors only matter next to the courses they sign, so they are managed from the courses' pages and not from a page of their own: `/administracion/autores` and its menu entry are gone (2026-09-27). The same button sits in the catalog's header and in the «Autores» card of a course, where the author missing from the select is a press away.
+Authors only matter next to the courses they sign, so they are managed from the courses' pages and not from a page of their own: `/administracion/autores` and its menu entry are gone (2026-09-27). The same dialog opens from the catalog's header («Autores») and from the «Autores» card of a course («Gestionar»), where the author the search does not find is a press away.
 
 An author is editorial content, not a restricted domain whose code the logic compares, which is why it is edited from the interface. Nothing is deleted: an author is taken out of each course.
 
@@ -26,42 +26,65 @@ An author is editorial content, not a restricted domain whose code the logic com
 
 ### `AuthorsManager`
 
-| Prop       | Type               | Required | Meaning                                                                                                       |
-| ---------- | ------------------ | -------- | ------------------------------------------------------------------------------------------------------------- |
-| `authors`  | `AuthorAdminRow[]` | yes      | `{ id, name, slug, bio?, photo?, courseCount }[]` from `listAuthors()`, by name.                              |
-| `returnTo` | `string`           | yes      | The page it sits on (`staffRoutes.courses`, `staffRoutes.courseDetail(id)`): where a failed save is reported. |
-| `label`    | `string`           | no       | What the button says. «Autores» by default; «Gestionar» in the card whose title already says it.              |
+| Prop      | Type                  | Required | Meaning                                                                                          |
+| --------- | --------------------- | -------- | ------------------------------------------------------------------------------------------------ |
+| `authors` | `AuthorAdminRow[]`    | yes      | `{ id, name, slug, bio?, photo?, courseCount }[]` from `listAuthors()`, by name.                 |
+| `label`   | `string`              | no       | What the button says. «Autores» by default; «Gestionar» in the card whose title already says it. |
+| `tone`    | `"quiet" \| "accent"` | no       | `quiet`: the catalog's grey button. `accent`: the soft orange one of a card's header.            |
 
 ### `AuthorForm`
 
-| Prop       | Type                                            | Required | Meaning                                                            |
-| ---------- | ----------------------------------------------- | -------- | ------------------------------------------------------------------ |
-| `author`   | `AuthorAdminRow`                                | no       | The author being edited. Absent, the form creates a new one.       |
-| `returnTo` | `string`                                        | yes      | Sent as a hidden field.                                            |
-| `action`   | `(formData: FormData) => void \| Promise<void>` | yes      | The server action, or a stub in Storybook.                         |
-| `onBack`   | `() => void`                                    | yes      | Back to the list without saving («Todos los autores», «Cancelar»). |
-| `onSubmit` | `() => void`                                    | no       | Runs when the browser lets the submit through.                     |
+| Prop       | Type               | Required | Meaning                                                      |
+| ---------- | ------------------ | -------- | ------------------------------------------------------------ |
+| `author`   | `AuthorAdminRow`   | no       | The author being edited. Absent, the form creates a new one. |
+| `authors`  | `AuthorAdminRow[]` | yes      | Every author: the slug shown must not be one of theirs.      |
+| `onSaved`  | `() => void`       | yes      | The author was saved: back to the list.                      |
+| `onCancel` | `() => void`       | yes      | Back to the list without saving.                             |
+
+### `AuthorPhotoField`
+
+| Prop           | Type     | Required | Meaning                                                                    |
+| -------------- | -------- | -------- | -------------------------------------------------------------------------- |
+| `authorName`   | `string` | yes      | The name as it is being typed: the initials shown while there is no photo. |
+| `defaultValue` | `string` | no       | The photo the author already has.                                          |
+
+### `AuthorAvatar`
+
+| Prop    | Type                             | Required | Meaning                                                             |
+| ------- | -------------------------------- | -------- | ------------------------------------------------------------------- |
+| `name`  | `string`                         | yes      | The initials and the tone of the tile come from it.                 |
+| `photo` | `string`                         | no       | Drawn when `isDisplayableImage` accepts it; the initials otherwise. |
+| `size`  | `"small" \| "medium" \| "large"` | no       | 36, 46 (default) or 56px.                                           |
+| `shape` | `"tile" \| "circle"`             | no       | A rounded tile in the lists; a circle next to a course's author.    |
 
 ## Behaviour
 
-- **One native `<dialog>`, two views.** It always opens on the **list** (name, how many courses, «Editar» per author, «Nuevo autor» in the footer band). «Editar» and «Nuevo autor» swap the list for the **form** inside the same dialog; «Todos los autores» and «Cancelar» go back.
-- **Fields:** `name` (required, 160), `slug` (required, lowercase words joined by hyphens), `photo` (optional `http(s)` URL), `bio` (optional, 1000). On a new author the slug writes itself from the name when the name loses focus, while it is the form's and not the user's; an existing author's slug is only changed by hand.
-- **Saving closes the dialog**, like the other dialogs of the panel. The action revalidates `/administracion/cursos` and what hangs from it, so the list and the course's author select come back refreshed; `updateAuthor` also revalidates the student's courses, which show the name.
-- **A failure is reported on the page the dialog was opened on**: the form carries `returnTo`, the action passes it through `safeReturnTo` and answers `?error=` there (`authorSlug` «Ya existe un autor con ese slug.», `authorMissing`, `invalid`, `throttled`), which the page renders as a [`PlatformNotice`](/components/platform/shared/platform-notice).
-- The form is remounted per author (`key`), because its fields are uncontrolled.
+- **One native `<dialog>`, two views.** It always opens on the **list**: avatar, name, «2 cursos · equipo-365» and «Editar» per author, with «Nuevo autor» in the footer band. «Editar» and «Nuevo autor» swap the list for the **form** inside the same dialog, and the title follows («Autores», «Editar autor», «Nuevo autor»).
+- **Saving goes back to the list**, which comes refreshed; «Cancelar» does too, without saving. The dialog is closed by its cross or with Escape.
+- **The slug is not a field.** It is the name's: the line under the name says which one it will be as the name is typed («Slug: equipo-365 (se genera solo)»), with a number behind when another author has it («equipo-365-2»). It is `authorSlugFor`, the same rule the action applies, which is the one that decides. An author who keeps their name keeps their slug.
+- **The photo is secondary**: a row with how the author looks now (the photo, or the initials that stand in for it), a line of text and «Añadir foto» / «Cambiar foto» / «Quitar». It uploads to Cloudinary with `useImageUpload`, cropped to a square, and travels in a hidden `photo` field.
+- **The outcome comes back to the form** (`useActionState`), not to a `?error=`: the dialog stays open over the page, and an error the page rendered would be read by nobody. A failure shows as a [`PlatformNotice`](/components/platform/shared/platform-notice) above the fields (`authorName` for a name with no letter nor number, `authorPhoto`, `authorSlug`, `authorMissing`, `throttled`), with the messages of `STAFF_ERROR_MESSAGES`. It is the third form of the platform on `useActionState`, with account creation and password reset.
+- The form is remounted on every opening (`key`), so it never opens with what was typed the last time nor with the last outcome.
+- **The avatar** is decorative (`aria-hidden`): the name is always written next to it. Without a photo it draws `authorInitials(name)` («Equipo 365» → «E3») on one of two tiles, ink or soft, which `authorTone(name)` picks from the name: the same author looks the same everywhere, and a list without photos is not a column of identical tiles.
 - A long list scrolls inside the dialog (`max-height: min(420px, 50vh)`).
 
 ## Markup & styling
 
-Block `.authors-manager`. The dialog is `.platform-dialog`, which sets the centring, the backdrop and the entry and exit motion; the block sets its width (560px) and rounding.
+Block `.authors-manager`. The dialog is `.platform-dialog`, which sets the centring, the backdrop and the entry and exit motion; the block sets its width (560px) and rounding. The actions of the dialog are the ink button (`.platform-button_variant_ink`): the page under it already has its own.
 
-**Elements:** `.authors-manager__dialog`, `.authors-manager__head`, `.authors-manager__heading`, `.authors-manager__title`, `.authors-manager__subtitle`, `.authors-manager__close`, `.authors-manager__close-icon`, `.authors-manager__body`, `.authors-manager__list`, `.authors-manager__row`, `.authors-manager__row-text`, `.authors-manager__row-name`, `.authors-manager__row-meta`, `.authors-manager__edit`, `.authors-manager__empty`, `.authors-manager__form`, `.authors-manager__back`, `.authors-manager__back-icon`, `.authors-manager__form-title`, `.authors-manager__foot`, `.authors-manager__note`, `.authors-manager__actions`
+**Elements:** `.authors-manager__open`, `.authors-manager__dialog`, `.authors-manager__head`, `.authors-manager__heading`, `.authors-manager__title`, `.authors-manager__subtitle`, `.authors-manager__close`, `.authors-manager__close-icon`, `.authors-manager__body`, `.authors-manager__list`, `.authors-manager__row`, `.authors-manager__row-text`, `.authors-manager__row-name`, `.authors-manager__row-meta`, `.authors-manager__edit`, `.authors-manager__empty`, `.authors-manager__form`, `.authors-manager__photo`, `.authors-manager__photo-file`, `.authors-manager__photo-text`, `.authors-manager__photo-actions`, `.authors-manager__photo-button`, `.authors-manager__photo-remove`, `.authors-manager__foot`, `.authors-manager__note`, `.authors-manager__actions`
 
-**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_quiet`, `.platform-button_variant_secondary`, `.platform-form`.
+**Modifiers and states:** `.authors-manager__open_tone_accent`, `.authors-manager__photo-text_tone_error`
 
-**Tokens:** `--platform-bg`, `--platform-border`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+**Other selectors it styles:** `.platform-form__field > textarea` (a shorter textarea).
 
-No media queries: the dialog's width follows the viewport.
+**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_quiet`, `.platform-button_variant_secondary`, `.platform-button_variant_ink`, `.platform-form`.
+
+Block `.author-avatar`: **modifiers** `.author-avatar_size_{small,medium,large}`, `.author-avatar_shape_{tile,circle}`, `.author-avatar_tone_{ink,soft}`, `.author-avatar_kind_photo`; **element** `.author-avatar__image`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-sunken`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 520px)` lets the photo row wrap.
 
 ## Usage
 
@@ -70,16 +93,17 @@ From `components/platform/sections/staff/courses/courses-admin.section.tsx`:
 ```tsx
 import { AuthorsManager } from "./authors-manager/authors-manager.comp";
 
-<AuthorsManager authors={authors} returnTo={staffRoutes.courses} />;
+<AuthorsManager authors={authors} />;
 ```
 
-From `components/platform/sections/staff/courses/course-editor.section.tsx`, as the action of the «Autores» card:
+From `components/platform/sections/staff/courses/course-authors/course-authors.comp.tsx`, as the action of the «Autores» card:
 
 ```tsx
-<AuthorsManager authors={authors} returnTo={staffRoutes.courseDetail(course.id)} label="Gestionar" />
+<AuthorsManager authors={allAuthors} label="Gestionar" tone="accent" />
 ```
 
 ## Related
 
+- [`CourseAuthors`](/components/platform/sections/staff/courses/course-authors), the authors of one course.
 - [`NewCourse`](/components/platform/sections/staff/courses/new-course) and [`CourseSources`](/components/platform/sections/staff/courses/course-sources), the other dialogs of the courses panel.
-- The authors of one course (role, order) are still the «Autores» card of [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section), with `manageCourseAuthors`.
+- [`ImageUpload`](/components/platform/shared/image-upload), which uploads with the same hook.

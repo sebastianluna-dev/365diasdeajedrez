@@ -9,7 +9,6 @@ import {
   archiveCourse,
   createChapter,
   deleteChapter,
-  manageCourseAuthors,
   publishCourse,
   reorderChapters,
   updateCourse,
@@ -24,7 +23,7 @@ import { PlatformCheckCards } from "@/components/platform/shared/platform-check-
 import { shortEloRange } from "@/services/courses/level-rules";
 import type { LevelOption } from "@/services/staff-levels/staff-levels.types";
 import type { SourceEntityOption } from "@/services/staff-sources/staff-sources.types";
-import { AuthorsManager } from "./authors-manager/authors-manager.comp";
+import { CourseAuthors } from "./course-authors/course-authors.comp";
 import { CourseNameFields } from "./course-name-fields.comp";
 import { CourseSources } from "./course-sources/course-sources.comp";
 import { SortableList } from "./sortable-list.comp";
@@ -33,7 +32,6 @@ import { StaffTabs } from "./staff-tabs.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./course-editor.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
-import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 /** Ties the cover, which lives in the column next door, to the form that saves. */
 const METADATA_FORM_ID = "course-metadata";
@@ -75,8 +73,6 @@ export function CourseEditorSection({
   errorCode,
 }: CourseEditorSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
-  const usedAuthorIds = new Set(course.authors.map((author) => author.authorId));
-  const availableAuthors = authors.filter((author) => !usedAuthorIds.has(author.id));
   const isDraft = course.statusCode === COURSE_STATUS.DRAFT;
   const lessonCount = course.chapters.reduce((total, chapter) => total + chapter.lessonCount, 0);
   const hasIntro = course.chapters.some((chapter) => chapter.roleCode === CONTENT_ROLE.INTRO);
@@ -130,96 +126,7 @@ export function CourseEditorSection({
               />
             </StaffPanel>
 
-            {/* The card's action opens the dialog where authors are created and
-                edited: the one missing from the select below is a press away. */}
-            <StaffPanel
-              title="Autores"
-              meta={`${course.authors.length}`}
-              action={
-                <AuthorsManager authors={authors} returnTo={staffRoutes.courseDetail(course.id)} label="Gestionar" />
-              }
-            >
-              {course.authors.length > 0 ? (
-                <ul className="course-editor__list">
-                  {course.authors.map((author, index) => (
-                    <li key={author.authorId} className="course-editor__row">
-                      <span className="course-editor__row-text">
-                        <span className="course-editor__row-title">{author.authorName}</span>
-                        <span className="course-editor__row-meta">{author.roleLabel}</span>
-                      </span>
-
-                      <div className="course-editor__controls">
-                        <form action={manageCourseAuthors.bind(null, course.id)}>
-                          <input type="hidden" name="operation" value="up" />
-                          <input type="hidden" name="authorId" value={author.authorId} />
-                          <button
-                            type="submit"
-                            className="course-editor__control"
-                            aria-label="Subir autor"
-                            disabled={index === 0}
-                          >
-                            ↑
-                          </button>
-                        </form>
-                        <form action={manageCourseAuthors.bind(null, course.id)}>
-                          <input type="hidden" name="operation" value="down" />
-                          <input type="hidden" name="authorId" value={author.authorId} />
-                          <button
-                            type="submit"
-                            className="course-editor__control"
-                            aria-label="Bajar autor"
-                            disabled={index === course.authors.length - 1}
-                          >
-                            ↓
-                          </button>
-                        </form>
-                        <form action={manageCourseAuthors.bind(null, course.id)}>
-                          <input type="hidden" name="operation" value="remove" />
-                          <input type="hidden" name="authorId" value={author.authorId} />
-                          <SubmitButton
-                            className="course-editor__control course-editor__control_variant_danger"
-                            pendingLabel="Quitando…"
-                          >
-                            Quitar
-                          </SubmitButton>
-                        </form>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="course-editor__empty">Este curso todavía no tiene autores.</p>
-              )}
-
-              {availableAuthors.length > 0 && (
-                <form className="course-editor__stack" action={manageCourseAuthors.bind(null, course.id)}>
-                  <input type="hidden" name="operation" value="add" />
-
-                  <FormField label="Añadir autor">
-                    <PlatformSelect
-                      name="authorId"
-                      required
-                      placeholder="Elige un autor…"
-                      options={availableAuthors.map((author) => ({ value: author.id, label: author.name }))}
-                      size="compact"
-                    />
-                  </FormField>
-
-                  <FormField label="Rol">
-                    <PlatformSelect
-                      name="roleCode"
-                      defaultValue={authorRoles[0]?.code}
-                      options={authorRoles.map((role) => ({ value: role.code, label: role.label }))}
-                      size="compact"
-                    />
-                  </FormField>
-
-                  <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Añadiendo…">
-                    Añadir
-                  </SubmitButton>
-                </form>
-              )}
-            </StaffPanel>
+            <CourseAuthors courseId={course.id} authors={course.authors} allAuthors={authors} roles={authorRoles} />
 
             <StaffPanel title="Estado">
               <dl className="course-editor__facts">

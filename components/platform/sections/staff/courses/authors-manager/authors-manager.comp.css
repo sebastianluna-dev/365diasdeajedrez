@@ -1,6 +1,28 @@
 .authors-manager {
   flex: none;
 
+  /* The trigger of a card's header: the soft orange word, a size under the
+     page's buttons. The catalog's is the shared quiet button. */
+  & .authors-manager__open {
+    padding: 9px 16px;
+    border: 0;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 150ms;
+  }
+
+  & .authors-manager__open_tone_accent {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
+
+  & .authors-manager__open_tone_accent:hover {
+    background: var(--platform-accent-wash);
+  }
+
   /* The size and the rounding: the centring, the backdrop, the surface and
      the entry and exit motion are set by `.platform-dialog`. */
   & .authors-manager__dialog {
@@ -70,11 +92,18 @@
     display: flex;
     flex-direction: column;
     gap: 18px;
-    padding: 22px 28px 28px;
+    padding: 22px 28px 26px;
+  }
+
+  & .authors-manager__form .platform-form__field > textarea {
+    min-height: 92px;
   }
 
   /* A long list scrolls inside the dialog instead of pushing the footer out. */
   & .authors-manager__list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
     max-height: min(420px, 50vh);
     margin: 0;
     padding: 0;
@@ -85,12 +114,7 @@
   & .authors-manager__row {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 0;
-  }
-
-  & .authors-manager__row + .authors-manager__row {
-    border-top: 1px solid var(--platform-border);
+    gap: 16px;
   }
 
   & .authors-manager__row-text {
@@ -102,8 +126,8 @@
   }
 
   & .authors-manager__row-name {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 17px;
+    font-weight: 700;
     color: var(--platform-text);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -111,26 +135,16 @@
   }
 
   & .authors-manager__row-meta {
-    font-size: 14px;
+    font-size: 14.5px;
     color: var(--platform-text-subtle);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   & .authors-manager__edit {
     flex: none;
-    padding: 6px 11px;
-    border: 1px solid var(--platform-border);
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 150ms;
-  }
-
-  & .authors-manager__edit:hover {
-    background: var(--platform-bg);
+    padding: 10px 18px;
   }
 
   & .authors-manager__empty {
@@ -139,39 +153,62 @@
     color: var(--platform-text-subtle);
   }
 
-  /* The way back to the list: a quiet word with its arrow, above the form. */
-  & .authors-manager__back {
-    align-self: flex-start;
-    display: inline-flex;
+  /* The photo is secondary: one row under the fields, with how the author
+     looks now, a line of text and the button. */
+  & .authors-manager__photo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  & .authors-manager__photo-file {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  & .authors-manager__photo-text {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.45;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
+  & .authors-manager__photo-text_tone_error {
+    font-weight: 600;
+    color: var(--platform-danger);
+  }
+
+  & .authors-manager__photo-actions {
+    flex: none;
+    display: flex;
     align-items: center;
     gap: 6px;
-    margin: -4px 0 -6px;
-    padding: 4px 8px 4px 4px;
+  }
+
+  & .authors-manager__photo-button {
+    padding: 10px 16px;
+    font-size: 15px;
+  }
+
+  & .authors-manager__photo-remove {
+    padding: 8px 10px;
     border: 0;
     border-radius: 8px;
     background: transparent;
     color: var(--platform-text-subtle);
     font-family: inherit;
-    font-size: 14px;
+    font-size: 14.5px;
     font-weight: 600;
     cursor: pointer;
   }
 
-  & .authors-manager__back:hover {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text);
-  }
-
-  & .authors-manager__back-icon {
-    width: 15px;
-    height: 15px;
-  }
-
-  & .authors-manager__form-title {
-    margin: 0;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+  & .authors-manager__photo-remove:hover {
     color: var(--platform-text);
   }
 
@@ -200,8 +237,18 @@
     margin-left: auto;
   }
 
+  @media (max-width: 520px) {
+    & .authors-manager__photo {
+      flex-wrap: wrap;
+    }
+
+    & .authors-manager__photo-text {
+      flex-basis: calc(100% - 70px);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    & .authors-manager__edit {
+    & .authors-manager__open {
       transition: none;
     }
   }

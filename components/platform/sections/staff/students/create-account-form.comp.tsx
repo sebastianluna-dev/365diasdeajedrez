@@ -11,15 +11,17 @@ import "./create-account-form.comp.css";
 /**
  * Account creation with a temporary password.
  *
- * The ONLY form of the platform (together with the password reset) that uses
- * `useActionState` instead of the `<form action={serverAction}>` + redirect
- * with `?error=` pattern: the action has to RETURN the generated password to
+ * One of the three forms of the platform (with the password reset and the
+ * author form of the «Autores» dialog) that use `useActionState` instead of
+ * the `<form action={serverAction}>` + redirect with `?error=` pattern: the
+ * action has to RETURN the generated password to
  * show it once, and a password in the URL would end up in the history, the
  * Referer and the logs.
  *
  * Known and accepted consequence: this form NEEDS JavaScript (without it the
  * `$ACTION_ID` is not emitted and the submit does not reach the server). It is
- * an internal panel, so it is assumed; it is not extended to any other form.
+ * an internal panel, so it is assumed; it is not extended to a form that can
+ * do with the redirect.
  */
 export function CreateAccountForm() {
   const [state, formAction, isPending] = useActionState(createStudentAccount, ACCOUNT_INITIAL_STATE);

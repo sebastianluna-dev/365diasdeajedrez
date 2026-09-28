@@ -1,121 +1,94 @@
 "use client";
 
-import { useRef } from "react";
-import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
+import { useActionState, useEffect, useState } from "react";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
-import { generateSlug } from "@/lib/generate-slug";
-import type { AuthorAdminRow } from "@/services/staff-courses/staff-courses.types";
-
-/** What the actions accept as a slug: lowercase words joined by single hyphens. */
-const SLUG_PATTERN = "[a-z0-9]+(-[a-z0-9]+)*";
+import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
+import { authorSlugFor } from "@/services/staff-courses/author-rules";
+import { createAuthor, updateAuthor } from "@/services/staff-courses/staff-courses.actions";
+import { AUTHOR_INITIAL_STATE, type AuthorAdminRow } from "@/services/staff-courses/staff-courses.types";
+import { AuthorPhotoField } from "./author-photo-field.comp";
 
 interface AuthorFormProps {
   /** The author being edited; absent, the form creates a new one. */
   author?: AuthorAdminRow;
-  /** The page the dialog was opened on, where a failure is reported. */
-  returnTo: string;
-  /** Where the form posts: the server action, or a stub in Storybook. */
-  action: (formData: FormData) => void | Promise<void>;
-  /** Back to the list of authors, without saving. */
-  onBack: () => void;
-  /** Runs when the browser lets the submit through, i.e. with a valid form. */
-  onSubmit?: () => void;
+  /** Every author: the slug shown must not be one of theirs. */
+  authors: AuthorAdminRow[];
+  /** The author was saved: back to the list, which comes refreshed. */
+  onSaved: () => void;
+  /** Back to the list without saving. */
+  onCancel: () => void;
 }
 
 /**
  * The form of one author inside the «Autores» dialog, for creating or for
- * editing: name, slug, photo and biography. It has no dialog and no server
- * action of its own: `AuthorsManager` mounts it with `createAuthor` or
- * `updateAuthor`, and the story with a stub.
+ * editing: the name, the biography and the photo, in that order of weight.
  *
- * On a new author the slug writes itself from the name when the name loses
- * focus, while the slug is the form's and not the user's. An existing
- * author's slug is only changed by hand.
+ * The slug is not a field: it is the name's, and the line under the name says
+ * which one it will be as the name is typed (`authorSlugFor`, the same rule
+ * the action applies, which is the one that decides). An author who keeps
+ * their name keeps their slug.
+ *
+ * It is one of the few forms on `useActionState`: the dialog stays open over
+ * the page, so the outcome comes back here — the error above the fields, the
+ * success as the way back to the list — instead of to a `?error=` that the
+ * page would render underneath.
  */
-export function AuthorForm({ author, returnTo, action, onBack, onSubmit }: AuthorFormProps) {
+export function AuthorForm({ author, authors, onSaved, onCancel }: AuthorFormProps) {
   const isNew = author === undefined;
-  const slugRef = useRef<HTMLInputElement>(null);
-  const isSlugOwn = useRef(false);
+  const [state, formAction] = useActionState(
+    isNew ? createAuthor : updateAuthor.bind(null, author.id),
+    AUTHOR_INITIAL_STATE,
+  );
+  const [name, setName] = useState(author?.name ?? "");
 
-  const suggestSlug = (name: string) => {
-    if (!isNew || isSlugOwn.current || !slugRef.current) return;
-    slugRef.current.value = generateSlug(name);
-  };
+  useEffect(() => {
+    if (state.status === "saved") onSaved();
+  }, [state, onSaved]);
+
+  const takenByOthers = authors.filter((other) => other.id !== author?.id).map((other) => other.slug);
+  const slug = !isNew && name.trim() === author.name ? author.slug : authorSlugFor(name, takenByOthers);
+  const errorMessage =
+    state.status === "error"
+      ? (STAFF_ERROR_MESSAGES[state.errorCode ?? ""] ?? STAFF_ERROR_MESSAGES.invalid)
+      : undefined;
 
   return (
-    <PlatformForm action={action} className="authors-manager__form" onSubmit={onSubmit} autoComplete="off">
-      <input type="hidden" name="returnTo" value={returnTo} />
-
+    <PlatformForm action={formAction} className="authors-manager__form" autoComplete="off">
       <div className="authors-manager__body">
-        <button type="button" className="authors-manager__back" onClick={onBack}>
-          <ArrowLeftIcon className="authors-manager__back-icon" />
-          Todos los autores
-        </button>
+        {errorMessage && <PlatformNotice message={errorMessage} />}
 
-        <h3 className="authors-manager__form-title">{isNew ? "Nuevo autor" : author.name}</h3>
-
-        <PlatformFormField name="name" label="Nombre" messages={{ valueMissing: "Ponle un nombre al autor." }}>
+        <PlatformFormField
+          name="name"
+          label="Nombre"
+          hint={slug ? `Slug: ${slug} (se genera solo)` : "El slug se genera solo a partir del nombre."}
+          messages={{ valueMissing: "Ponle un nombre al autor." }}
+        >
           <input
             type="text"
             maxLength={160}
             required
             autoFocus
-            defaultValue={author?.name}
+            value={name}
+            onChange={(event) => setName(event.target.value)}
             placeholder={isNew ? "Alexander Kotov" : undefined}
-            onBlur={(event) => suggestSlug(event.target.value)}
           />
-        </PlatformFormField>
-
-        <PlatformFormField
-          name="slug"
-          label="Slug"
-          hint={
-            isNew
-              ? "Se escribe solo a partir del nombre; puedes cambiarlo. Minúsculas, números y guiones."
-              : "Minúsculas, números y guiones."
-          }
-          messages={{
-            valueMissing: "El autor necesita un slug.",
-            patternMismatch: "Sólo minúsculas, números y guiones, sin espacios.",
-          }}
-        >
-          <input
-            ref={slugRef}
-            type="text"
-            maxLength={160}
-            pattern={SLUG_PATTERN}
-            required
-            defaultValue={author?.slug}
-            placeholder={isNew ? "alexander-kotov" : undefined}
-            onChange={(event) => {
-              // Typed by hand it is theirs; emptied, it goes back to following the name.
-              isSlugOwn.current = event.target.value !== "";
-            }}
-          />
-        </PlatformFormField>
-
-        <PlatformFormField
-          name="photo"
-          label="Foto"
-          optionalLabel="Opcional"
-          hint="La dirección (URL) de la imagen."
-          messages={{ typeMismatch: "Tiene que ser una dirección web: https://…" }}
-        >
-          <input type="url" maxLength={500} defaultValue={author?.photo} placeholder="https://" />
         </PlatformFormField>
 
         <PlatformFormField name="bio" label="Biografía" optionalLabel="Opcional">
           <textarea maxLength={1000} defaultValue={author?.bio} />
         </PlatformFormField>
+
+        <AuthorPhotoField authorName={name} defaultValue={author?.photo} />
       </div>
 
       <footer className="authors-manager__foot">
         <div className="authors-manager__actions">
-          <button type="button" className="platform-button platform-button_variant_secondary" onClick={onBack}>
+          <button type="button" className="platform-button platform-button_variant_secondary" onClick={onCancel}>
             Cancelar
           </button>
-          <SubmitButton pendingLabel={isNew ? "Creando…" : "Guardando…"}>
+          <SubmitButton className="platform-button platform-button_variant_ink" pendingLabel="Guardando…">
             {isNew ? "Crear autor" : "Guardar"}
           </SubmitButton>
         </div>

@@ -1,0 +1,60 @@
+.author-avatar {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1;
+
+  &.author-avatar_size_small {
+    width: 36px;
+    height: 36px;
+    font-size: 13.5px;
+  }
+
+  &.author-avatar_size_medium {
+    width: 46px;
+    height: 46px;
+    font-size: 15.5px;
+  }
+
+  &.author-avatar_size_large {
+    width: 56px;
+    height: 56px;
+    font-size: 18px;
+  }
+
+  &.author-avatar_shape_tile {
+    border-radius: 12px;
+  }
+
+  &.author-avatar_shape_tile.author-avatar_size_small {
+    border-radius: 10px;
+  }
+
+  &.author-avatar_shape_circle {
+    border-radius: 50%;
+  }
+
+  /* The two tiles the initials sit on; which one is the name's doing. */
+  &.author-avatar_tone_ink {
+    background: var(--platform-text);
+    color: var(--platform-surface);
+  }
+
+  &.author-avatar_tone_soft {
+    background: var(--platform-surface-sunken);
+    color: var(--platform-text-muted);
+  }
+
+  &.author-avatar_kind_photo {
+    background: var(--platform-surface-sunken);
+  }
+
+  & .author-avatar__image {
+    object-fit: cover;
+  }
+}

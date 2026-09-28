@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { generateSlug, slugAfterRename } from "./generate-slug";
+import { generateSlug, slugAfterRename, uniqueSlug } from "./generate-slug";
 
 describe("generateSlug", () => {
   it("quita tildes y signos, y separa con un solo guion", () => {
@@ -32,5 +32,17 @@ describe("slugAfterRename", () => {
   it("un nombre del que no sale ningún slug no vacía el campo", () => {
     expect(slugAfterRename("Finales de torre", "¡¿?!", "finales-de-torre")).toBe("finales-de-torre");
     expect(slugAfterRename("Finales de torre", "", "finales-de-torre")).toBe("finales-de-torre");
+  });
+});
+
+describe("uniqueSlug", () => {
+  it("deja el slug como está si nadie lo tiene", () => {
+    expect(uniqueSlug("maria-gm", [])).toBe("maria-gm");
+    expect(uniqueSlug("maria-gm", ["maria", "maria-gm-2"])).toBe("maria-gm");
+  });
+
+  it("busca el primer número libre", () => {
+    expect(uniqueSlug("maria-gm", ["maria-gm"])).toBe("maria-gm-2");
+    expect(uniqueSlug("maria-gm", ["maria-gm", "maria-gm-2", "maria-gm-4"])).toBe("maria-gm-3");
   });
 });

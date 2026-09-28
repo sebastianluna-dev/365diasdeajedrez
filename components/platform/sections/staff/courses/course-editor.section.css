@@ -31,8 +31,7 @@
 
   /* --- Forms ------------------------------------------------------------- */
 
-  & .course-editor__form,
-  & .course-editor__stack {
+  & .course-editor__form {
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -75,89 +74,6 @@
     outline: none;
     border-color: var(--platform-accent);
     box-shadow: 0 0 0 3px var(--platform-accent-soft);
-  }
-
-  /* --- Authors list -------------------------------------------------------
-     The chapters are no longer here: they are a SortableList (sortable-list.comp). */
-
-  & .course-editor__list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  & .course-editor__row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 0;
-    transition: background-color 150ms;
-  }
-
-  & .course-editor__row + .course-editor__row {
-    border-top: 1px solid var(--platform-border);
-  }
-
-  & .course-editor__row-text {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  & .course-editor__row-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--platform-text);
-  }
-
-  & .course-editor__row-meta {
-    font-size: 14px;
-    color: var(--platform-text-subtle);
-  }
-
-  /* The controls go to the right edge and do not get squeezed: they are the
-     same three in every row and have to land in the same column. */
-  & .course-editor__controls {
-    margin-left: auto;
-    flex: none;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  & .course-editor__control {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 30px;
-    height: 30px;
-    padding: 0 10px;
-    border: 1px solid var(--platform-border);
-    border-radius: 1000px;
-    background: var(--platform-surface);
-    color: var(--platform-text-muted);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 150ms;
-    transition-property: background-color, border-color, color;
-  }
-
-  & .course-editor__control:hover:not(:disabled) {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text);
-  }
-
-  & .course-editor__control:disabled {
-    opacity: 0.4;
-    cursor: default;
-  }
-
-  & .course-editor__control_variant_danger:hover {
-    border-color: var(--platform-danger);
-    color: var(--platform-danger);
   }
 
   & .course-editor__empty {
