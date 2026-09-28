@@ -63,7 +63,7 @@
     /* Outlined like the viewer's other boxes: the white half of the bar
        would otherwise melt into the white page. */
     border: 1px solid var(--platform-border);
-    border-radius: 7px;
+    border-radius: 8px;
     overflow: hidden;
     background: var(--platform-text);
     display: flex;
@@ -121,12 +121,12 @@
   }
 
   & .game-viewer__player_side_top {
-    border-radius: 10px 10px 0 0;
+    border-radius: 8px 8px 0 0;
     margin-bottom: -14px;
   }
 
   & .game-viewer__player_side_bottom {
-    border-radius: 0 0 10px 10px;
+    border-radius: 0 0 8px 8px;
     margin-top: -14px;
   }
 
@@ -145,7 +145,7 @@
     align-items: center;
     justify-content: center;
     border: 0;
-    border-radius: 10px;
+    border-radius: 8px;
     background: transparent;
     color: var(--platform-text-muted);
     cursor: pointer;
@@ -193,7 +193,7 @@
     grid-column: 1;
     background: var(--platform-surface);
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 8px;
     box-shadow: var(--platform-shadow-card);
     overflow: hidden;
   }
@@ -246,7 +246,7 @@
     /* Every white box of the viewer is outlined by the thin grey, on top of
        its shadow: on the white page the shadow alone did not hold its edge. */
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 8px;
     box-shadow: var(--platform-shadow-card);
     display: flex;
     flex-direction: column;
@@ -333,7 +333,7 @@
     align-items: center;
     justify-content: center;
     border: 0;
-    border-radius: 10px;
+    border-radius: 8px;
     background: transparent;
     color: var(--platform-text-subtle);
     cursor: pointer;
@@ -374,7 +374,7 @@
     min-width: 230px;
     padding: 4px;
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-surface);
     box-shadow: var(--platform-shadow-card);
     /* It unfolds upwards from the button and folds back into it. */
@@ -394,7 +394,7 @@
     gap: 10px;
     padding: 9px 10px;
     border: 0;
-    border-radius: 7px;
+    border-radius: 8px;
     background: transparent;
     font-family: inherit;
     font-size: 14.5px;
@@ -419,7 +419,7 @@
     margin: 0 0 12px;
     padding: 10px 14px;
     list-style: none;
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-danger-soft);
     color: var(--platform-danger);
     font-size: 14.5px;
@@ -559,7 +559,7 @@
 .game-viewer.game-viewer_state_error {
   margin: 0;
   padding: 14px 16px;
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--platform-danger-soft);
   color: var(--platform-danger);
   font-size: 15.5px;

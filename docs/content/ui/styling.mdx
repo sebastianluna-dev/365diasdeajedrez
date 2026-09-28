@@ -174,7 +174,7 @@ In the platform a corner is rounded in one of two ways: **`8px`, or all the way*
 | `50%`          | All the way, for a circle: an avatar, a dot, a round button.                              |
 | `0`, `inherit` | No radius of its own: a side left square (`8px 8px 0 0`), a corner taken from the parent. |
 
-The rule covers `app/(platform)`, `app/(auth)`, `components/platform` and `components/auth`. `components/platform/border-radius.test.ts` reads every stylesheet under them and fails on a value that is none of the above, so `npm test` is what catches a `10px`. The public site is not under it: its radii are its own.
+The rule covers `app/(platform)`, `app/(auth)`, `components/platform`, `components/auth` and `components/chess` — the chess pieces are shared with the public site, but they are drawn with the platform's tokens and are what a lesson is made of. `components/platform/border-radius.test.ts` reads every stylesheet under them and fails on a value that is none of the above, so `npm test` is what catches a `10px`. The rest of the public site is not under it: its radii are its own.
 
 ## Global helpers
 

@@ -147,13 +147,13 @@
     width: 8px;
     border-left: 1px solid var(--platform-border-strong);
     border-bottom: 1px solid var(--platform-border-strong);
-    border-bottom-left-radius: 4px;
+    border-bottom-left-radius: 8px;
   }
 
   & .move-table__inline {
     padding: 1px 3px;
     border: 0;
-    border-radius: 5px;
+    border-radius: 8px;
     background: transparent;
     color: inherit;
     font-family: inherit;

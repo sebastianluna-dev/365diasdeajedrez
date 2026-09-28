@@ -10,8 +10,12 @@ import { describe, expect, it } from "vitest";
 
 const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 
-/** Where the platform's stylesheets live: its pages, its components and the access pages. */
-const PLATFORM_STYLES = ["app/(platform)", "app/(auth)", "components/platform", "components/auth"];
+/**
+ * Where the platform's stylesheets live: its pages, its components and the
+ * access pages. The chess pieces are everybody's, but they are drawn with the
+ * platform's tokens and are what a lesson is made of, so they follow its rule.
+ */
+const PLATFORM_STYLES = ["app/(platform)", "app/(auth)", "components/platform", "components/auth", "components/chess"];
 
 /**
  * What a corner can be: 8px; all the way (`1000px`, or `50%` for a circle);

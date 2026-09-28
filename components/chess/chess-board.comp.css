@@ -11,7 +11,7 @@
 .chess-board {
   width: 100%;
   max-width: 800px;
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
   background: var(--platform-surface, #2b2723);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
@@ -52,7 +52,7 @@
     align-items: center;
     gap: 8px;
     padding: 12px;
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-surface, #2b2723);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
     flex-wrap: wrap;
@@ -63,7 +63,7 @@
     width: 52px;
     height: 52px;
     border: 1px solid var(--platform-border, rgba(245, 240, 232, 0.14));
-    border-radius: 10px;
+    border-radius: 8px;
     background-color: var(--platform-surface-neutral, rgba(255, 255, 255, 0.06));
     background-size: 78%;
     background-position: center;
@@ -104,7 +104,7 @@
   & .chess-board__promotion-cancel {
     padding: 8px 14px;
     border: 1px solid var(--platform-border-strong, rgba(245, 240, 232, 0.2));
-    border-radius: 10px;
+    border-radius: 8px;
     background: transparent;
     color: var(--platform-text, var(--foreground));
     font-family: inherit;

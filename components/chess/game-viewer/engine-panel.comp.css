@@ -156,7 +156,7 @@
   }
 
   & .engine-panel__move {
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
   }
 
@@ -173,7 +173,7 @@
     height: 22px;
     padding: 0;
     border: 0;
-    border-radius: 6px;
+    border-radius: 8px;
     background: transparent;
     color: var(--platform-text-subtle);
     cursor: pointer;
@@ -209,7 +209,7 @@
     right: 0;
     width: 240px;
     padding: 4px;
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-surface);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
     pointer-events: none;

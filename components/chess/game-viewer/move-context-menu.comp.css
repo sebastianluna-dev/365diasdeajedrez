@@ -6,7 +6,7 @@
   min-width: 250px;
   padding: 4px;
   border: 1px solid var(--platform-border);
-  border-radius: 10px;
+  border-radius: 8px;
   background: var(--platform-surface);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
   /* It opens from the corner the click landed on and folds back into it. */
@@ -47,7 +47,7 @@
     gap: 12px;
     padding: 9px 12px;
     border: 0;
-    border-radius: 6px;
+    border-radius: 8px;
     background: transparent;
     font-family: inherit;
     font-size: 15px;

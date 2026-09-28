@@ -40,7 +40,7 @@
     overflow-y: auto;
     padding: 10px 12px;
     border: 1px solid var(--platform-border);
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--platform-surface);
   }
 
@@ -54,7 +54,7 @@
     margin: 0;
     padding: 8px 12px 8px 28px;
     border-left: 3px solid var(--platform-danger);
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 14.5px;
     color: var(--platform-text-muted);
   }
@@ -150,7 +150,7 @@
     min-width: 40px;
     padding: 6px 8px;
     border: 1px solid var(--platform-border);
-    border-radius: 6px;
+    border-radius: 8px;
     background: transparent;
     font-family: inherit;
     font-size: 15.5px;

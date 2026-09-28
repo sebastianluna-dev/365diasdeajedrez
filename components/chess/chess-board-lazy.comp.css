@@ -6,7 +6,7 @@
 .chess-board-lazy {
   width: 100%;
   max-width: 800px;
-  border-radius: 10px;
+  border-radius: 8px;
   overflow: hidden;
   background: var(--platform-surface, #2b2723);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
