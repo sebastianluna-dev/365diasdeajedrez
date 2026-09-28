@@ -52,10 +52,28 @@
 
   --platform-track: #ececec;
 
+  /* The dark of a chapter's header, and what is written on it: the text black
+     as a fill, a cream that is not the page's white and the orange a tone up,
+     which is the one that reads on black. */
+  --platform-ink: #16110d;
+  --platform-on-ink: #f4eee4;
+  --platform-accent-on-ink: #ffb27a;
+
+  /* The six course levels, the easiest the lightest: one orange that darkens
+     with the difficulty, so a row of dots reads as a scale without a legend. */
+  --platform-level-1: #fcd9b8;
+  --platform-level-2: #fdba82;
+  --platform-level-3: #ff9143;
+  --platform-level-4: #e0691e;
+  --platform-level-5: #b04e12;
+  --platform-level-6: #6e2e08;
+
   /* Typography. The whole platform uses SF Pro Display — display and text —;
      Gramatika and Suisse Intl stay on the public site. A single token so that
      no file of the private area names a specific font. */
   --platform-font: var(--font-sf-pro), -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  /* The one serif: the figure a chapter is dated with on the course pages. */
+  --platform-font-serif: Georgia, "Times New Roman", serif;
 
   /* Semantic colours. The success pair comes from the chapter design
      (#E7F0EA / #2F6B51); the error and warning ones are derived with the same

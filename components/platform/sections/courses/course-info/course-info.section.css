@@ -1,0 +1,367 @@
+.course-info {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+
+  /* --- Hero: the cover, and the course's card resting on its foot ---------- */
+
+  & .course-info__hero {
+    display: flex;
+    flex-direction: column;
+  }
+
+  & .course-info__cover {
+    position: relative;
+    aspect-ratio: 21 / 9;
+    overflow: hidden;
+    border-radius: 22px;
+    background: var(--platform-ink);
+  }
+
+  & .course-info__cover-image {
+    object-fit: cover;
+  }
+
+  /* Without a picture the cover is the name, in the serif of the chapters. */
+  & .course-info__cover_kind_blank {
+    display: flex;
+    align-items: center;
+    aspect-ratio: 21 / 6;
+    padding: 0 8%;
+  }
+
+  & .course-info__cover-name {
+    font-family: var(--platform-font-serif);
+    font-size: clamp(32px, 5vw, 64px);
+    line-height: 1.05;
+    color: var(--platform-on-ink);
+    text-wrap: balance;
+  }
+
+  & .course-info__card {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 36px;
+    row-gap: 22px;
+    /* It climbs onto the cover, and is inset from its edges. */
+    margin: -64px 36px 0;
+    padding: 26px 30px;
+    border-radius: 18px;
+    background: var(--platform-surface);
+    box-shadow:
+      0 2px 4px rgba(22, 17, 13, 0.05),
+      0 14px 36px rgba(22, 17, 13, 0.12);
+  }
+
+  & .course-info__about {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+
+  & .course-info__contents {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .course-info__content {
+    display: inline-flex;
+    align-items: center;
+    height: 30px;
+    padding: 0 14px;
+    border: 1px solid var(--platform-border-strong);
+    border-radius: 1000px;
+    font-size: 13.5px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* The cover already says it, drawn: the heading is for whoever does not see
+     the picture. The cover without one shows the name itself. */
+  & .course-info__name {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  & .course-info__description {
+    max-width: 620px;
+    margin: 0;
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .course-info__scale {
+    padding-top: 4px;
+  }
+
+  & .course-info__authors {
+    margin: 0;
+    font-size: 13px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-info__side {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 300px;
+    padding-left: 32px;
+    border-left: 1px solid var(--platform-border);
+  }
+
+  /* As many columns as figures: a course without minutes has two. */
+  & .course-info__stats {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: 8px;
+    margin: 0;
+  }
+
+  & .course-info__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  /* The <dd> goes first — the figure rules — and the <dt> under it is its
+     label, so `dd` loses the indent it comes with. */
+  & .course-info__stat-value {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  & .course-info__stat-label {
+    font-size: 12.5px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-info__add {
+    display: flex;
+  }
+
+  /* A link when the course is added and the button of a form when it is
+     not: the width is set, and not flexed, so it measures the same in the
+     side column — a flex COLUMN, where `flex: 1` would take its height. */
+  & .course-info__cta {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    padding: 0 20px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--platform-accent);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 15.5px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  & .course-info__cta:hover {
+    background: var(--platform-accent-hover);
+    color: var(--platform-text);
+  }
+
+  & .course-info__cta:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  /* --- Chapters ------------------------------------------------------------- */
+
+  & .course-info__chapters {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  & .course-info__section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  & .course-info__section-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  & .course-info__section-note {
+    margin: 0;
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-info__chapter-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Cards that are read and not pressed: the chapters open from the course
+     to study, which this page leads to. */
+  & .course-info__chapter {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--platform-border);
+    border-radius: 18px;
+    background: var(--platform-surface);
+    box-shadow: 0 1px 3px rgba(22, 17, 13, 0.06);
+  }
+
+  & .course-info__chapter-head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 22px 24px;
+    background: var(--platform-ink);
+  }
+
+  & .course-info__chapter-number {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--platform-accent-on-ink);
+  }
+
+  & .course-info__chapter-tag {
+    font-family: var(--platform-font-serif);
+    font-size: 36px;
+    line-height: 1.1;
+    color: var(--platform-on-ink);
+    text-wrap: balance;
+  }
+
+  & .course-info__chapter-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 22px 24px;
+  }
+
+  & .course-info__chapter-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  & .course-info__chapter-text {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .course-info__chapter-foot {
+    margin: 0;
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--platform-border);
+    font-size: 13px;
+    color: var(--platform-text-subtle);
+  }
+
+  /* --- Sources -------------------------------------------------------------- */
+
+  & .course-info__sources {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  & .course-info__sources-title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  & .course-info__source-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .course-info__source-type {
+    color: var(--platform-text);
+  }
+
+  & .course-info__source-link {
+    color: var(--platform-accent-ink);
+    text-decoration: underline;
+  }
+
+  & .course-info__source-link:hover {
+    color: var(--platform-accent-hover);
+  }
+
+  /* The card leaves the side column under what the course is about before
+     the text next to it gets squeezed. */
+  @media (max-width: 980px) {
+    gap: 48px;
+
+    & .course-info__card {
+      grid-template-columns: minmax(0, 1fr);
+      margin: -40px 20px 0;
+    }
+
+    & .course-info__side {
+      width: auto;
+      padding: 20px 0 0;
+      border-top: 1px solid var(--platform-border);
+      border-left: 0;
+    }
+  }
+
+  @media (max-width: 620px) {
+    & .course-info__cover {
+      border-radius: 16px;
+    }
+
+    & .course-info__card {
+      margin: -24px 10px 0;
+      padding: 20px;
+    }
+
+    & .course-info__chapter-tag {
+      font-size: 30px;
+    }
+  }
+}

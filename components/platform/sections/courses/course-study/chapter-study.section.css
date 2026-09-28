@@ -1,0 +1,283 @@
+.chapter-study {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  /* --- What the chapter is, and how much of it is learned ----------------- */
+
+  & .chapter-study__summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 22px;
+    border: 1px solid var(--platform-border);
+    border-radius: 16px;
+    background: var(--platform-surface);
+  }
+
+  & .chapter-study__about {
+    flex: 1 1 300px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  & .chapter-study__eyebrow {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--platform-accent-ink);
+  }
+
+  & .chapter-study__description {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .chapter-study__progress {
+    flex: 0 1 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  & .chapter-study__figures {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 0;
+  }
+
+  & .chapter-study__percent {
+    font-size: 22px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .chapter-study__ratio {
+    font-size: 13px;
+    color: var(--platform-text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .chapter-study__track {
+    height: 10px;
+    overflow: hidden;
+    border-radius: 1000px;
+    background: var(--platform-track);
+  }
+
+  & .chapter-study__fill {
+    height: 100%;
+    border-radius: 1000px;
+    background: var(--platform-accent);
+  }
+
+  & .chapter-study__empty {
+    margin: 0;
+    padding: 20px 22px;
+    border: 1px dashed var(--platform-border-strong);
+    border-radius: 16px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  /* --- The lessons ---------------------------------------------------------- */
+
+  & .chapter-study__lessons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .chapter-study__lesson {
+    overflow: hidden;
+    border: 1px solid var(--platform-border);
+    border-radius: 16px;
+    background: var(--platform-surface);
+  }
+
+  /* The band the lesson is named on: a wash, and the orange of the buttons'
+     rest for the one that comes next. */
+  & .chapter-study__lesson-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 22px;
+    background: var(--platform-accent-wash);
+  }
+
+  & .chapter-study__lesson_state_next .chapter-study__lesson-head {
+    background: var(--platform-accent-soft);
+  }
+
+  & .chapter-study__number {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--platform-accent-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .chapter-study__name {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    font-size: 17px;
+    font-weight: 800;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .chapter-study__done {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 1000px;
+    background: var(--platform-success-ink);
+    color: var(--platform-surface);
+    font-size: 12px;
+    font-weight: 900;
+  }
+
+  & .chapter-study__minutes {
+    flex: none;
+    font-size: 12.5px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .chapter-study__lesson-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 16px 22px 18px;
+  }
+
+  & .chapter-study__lesson-text {
+    flex: 1 1 360px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  & .chapter-study__opening {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  /* Moves are figures: heavier, and aligned, so they read as notation. */
+  & .chapter-study__opening_kind_moves {
+    font-weight: 600;
+    color: var(--platform-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .chapter-study__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+  }
+
+  & .chapter-study__tag {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 9px;
+    border-radius: 6px;
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text-muted);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  & .chapter-study__tag_tone_accent {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+  }
+
+  & .chapter-study__open {
+    flex: none;
+    display: flex;
+    align-items: center;
+    height: 42px;
+    padding: 0 18px;
+    border: 1px solid var(--platform-border-strong);
+    border-radius: 11px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-size: 14.5px;
+    font-weight: 700;
+    transition: background-color 150ms;
+  }
+
+  & .chapter-study__open:hover {
+    background: var(--platform-surface-soft);
+    color: var(--platform-text);
+  }
+
+  /* The next lesson's is the one filled button of the list. */
+  & .chapter-study__open_emphasis_strong {
+    padding: 0 20px;
+    border-color: transparent;
+    background: var(--platform-accent);
+    font-weight: 800;
+  }
+
+  & .chapter-study__open_emphasis_strong:hover {
+    background: var(--platform-accent-hover);
+  }
+
+  /* --- The chapters on either side ------------------------------------------ */
+
+  & .chapter-study__neighbours {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  & .chapter-study__neighbour {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 16px;
+    border: 1px solid var(--platform-border-strong);
+    border-radius: 11px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+
+  & .chapter-study__neighbour:hover {
+    background: var(--platform-surface-soft);
+    color: var(--platform-text);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .chapter-study__open {
+      transition: none;
+    }
+  }
+}

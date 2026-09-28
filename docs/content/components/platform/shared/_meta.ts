@@ -19,7 +19,6 @@ const meta: MetaRecord = {
   "platform-notice": "PlatformNotice",
   "platform-select": "PlatformSelect",
   "platform-table": "PlatformTable",
-  "priority-filter": "PriorityFilter",
   "progress-indicator": "ProgressIndicator",
   "submit-button": "SubmitButton",
   "use-game-autosave-hook": "useGameAutosave",

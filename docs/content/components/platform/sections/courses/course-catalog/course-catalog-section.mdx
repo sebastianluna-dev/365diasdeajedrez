@@ -1,0 +1,57 @@
+---
+description: "'Explorar cursos': every published course as a card, with the level filter; the ones the student already added show their progress."
+---
+
+# `CourseCatalogSection`
+
+|            |                                                                                                                                                                                                                |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-catalog/course-catalog.section.tsx`                                                                                                                               |
+| Kind       | Server Component                                                                                                                                                                                               |
+| Stylesheet | `course-catalog.section.css` → block `.course-catalog`                                                                                                                                                         |
+| Used by    | `/cursos/explorar`                                                                                                                                                                                             |
+| Composes   | [`CourseCard`](/components/platform/sections/courses/course-card), [`LevelFilter`](/components/platform/sections/courses/course-catalog/level-filter), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads      | `getCourseCatalog()`, `listCourseLevels()` · `services/courses/courses.service.ts`                                                                                                                             |
+| Uses       | `resolveLevelFilter`, `coursesOfLevel` from `services/courses/level-rules`; `platformRoutes`                                                                                                                   |
+
+## Purpose
+
+Where a course to add is found. It lists **every** published course, the ones already added too — marked by their progress — so a course does not vanish from where it was found the day it is added.
+
+## Props
+
+| Prop        | Type                | Required | Meaning                                                              |
+| ----------- | ------------------- | -------- | -------------------------------------------------------------------- |
+| `courses`   | `CourseSummary[]`   | yes      | Every published course.                                              |
+| `levels`    | `CourseLevelItem[]` | yes      | The levels the list can be narrowed to, the easiest first.           |
+| `levelSlug` | `string`            | no       | What `?nivel=` brought. A slug the catalog does not have is ignored. |
+
+## Behaviour
+
+- The summary counts what is **listed**: «4 cursos publicados» with no filter, «2 de 4 cursos · nivel Avanzado» with one.
+- A level without courses shows an `EmptyState` with a way back to «Todos»; a catalog without courses, one that says so, and no filter.
+- The filter only narrows the list. No course is closed to anybody by their rating, and the student has none stored.
+
+## Markup & styling
+
+Block `.course-catalog` (37 lines).
+
+**Elements:** `.course-catalog__head`, `.course-catalog__title`, `.course-catalog__summary`, `.course-catalog__list`
+
+**Tokens:** `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 760px)` one column.
+
+## Usage
+
+From `app/(platform)/cursos/explorar/page.tsx`:
+
+```tsx
+const [courses, levels, { nivel }] = await Promise.all([getCourseCatalog(), listCourseLevels(), searchParams]);
+
+<CourseCatalogSection courses={courses} levels={levels} levelSlug={nivel} />;
+```
+
+## Related
+
+- `explorar` is a reserved course slug (`isReservedCourseSlug`), so no course can take this URL.

@@ -1,0 +1,95 @@
+.my-courses {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  & .my-courses__head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  & .my-courses__title {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  & .my-courses__summary {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--platform-text-subtle);
+  }
+
+  /* As many cards per row as fit at 360px, all of a row the same height. */
+  & .my-courses__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 20px;
+  }
+
+  /* A slot for the next course, drawn like one: dashed, empty, and lit only
+     when it is about to be pressed. */
+  & .my-courses__explore {
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 24px;
+    border: 1.5px dashed var(--platform-border-strong);
+    border-radius: 16px;
+    color: var(--platform-text-subtle);
+    text-align: center;
+    transition: 150ms;
+    transition-property: border-color, color;
+  }
+
+  & .my-courses__explore:hover {
+    border-color: var(--platform-accent-ink);
+    color: var(--platform-accent-ink);
+  }
+
+  & .my-courses__explore-mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 1000px;
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  & .my-courses__explore-label {
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  & .my-courses__explore-hint {
+    max-width: 30ch;
+    font-size: 14px;
+    line-height: 1.45;
+    text-wrap: balance;
+  }
+
+  @media (max-width: 760px) {
+    & .my-courses__list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    & .my-courses__explore {
+      min-height: 160px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .my-courses__explore {
+      transition: none;
+    }
+  }
+}

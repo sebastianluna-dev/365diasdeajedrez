@@ -9,11 +9,13 @@ description: "A progress bar with its percentage and an optional detail, inline 
 | File       | `components/platform/shared/progress-indicator.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | Stylesheet | `progress-indicator.comp.css` → block `.progress-indicator`                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| Used by    | [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section), [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section), [`ChapterList`](/components/platform/sections/courses/course-detail/chapter-list), [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section), [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section) |
+| Used by    | [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section), [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section) |
 
 ## Purpose
 
-The one progress bar of the platform, in two layouts: `inline` puts the bar and its label on one line (the dashboard card), `stacked` puts the percentage and the detail at the two ends with the bar underneath (course and chapter headers, chapter rows). The course card in "Mis cursos" draws its own two meters because it shows progress in two units at once; everything else uses this.
+The shared progress bar, in two layouts: `inline` puts the bar and its label on one line (the dashboard card), `stacked` puts the percentage and the detail at the two ends with the bar underneath.
+
+The student's course pages do **not** use it: the course card, the study frame and the chapter cards draw their own bar, because their design sets a large figure and a ratio around it that neither layout has. That is four bars drawn apart; folding them into a third layout of this component is recorded as debt in `IMPROVEMENTS.md`.
 
 ## Props
 
@@ -41,19 +43,13 @@ The course and chapter detail sheets restyle `.progress-indicator__legend`, `__p
 
 ## Usage
 
-From `components/platform/sections/courses/chapter-detail/chapter-detail.section.tsx`:
-
 ```tsx
 import { ProgressIndicator } from "@/components/platform/shared/progress-indicator.comp";
 
-<ProgressIndicator
-  layout="stacked"
-  percent={percent}
-  detail={`${chapter.completedLessons} de ${chapter.totalLessons} completadas`}
-/>;
+<ProgressIndicator layout="stacked" percent={percent} detail={`${completed} de ${total} completadas`} />;
 ```
 
 ## Related
 
-- [`CourseCard`](/components/platform/sections/courses/courses-list/course-card) and its own `Meter`.
-- [`StudyGoalAside`](/components/platform/sections/courses/courses-list/study-goal) draws the daily-goal bar separately for the same reason (two figures around one bar).
+- [`CourseCard`](/components/platform/sections/courses/course-card) and [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame) draw their own bars.
+- [`StudyGoalSection`](/components/platform/sections/dashboard/study-goal/study-goal-section) draws the daily-goal bar separately too (two figures around one bar).

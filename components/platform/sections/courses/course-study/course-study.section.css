@@ -1,0 +1,136 @@
+.course-study {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & .course-study__item {
+    display: flex;
+  }
+
+  /* Tall on purpose: the name on top, the progress at the foot, and air in
+     between, so a row of chapters reads as a row of doors. */
+  & .course-study__chapter {
+    flex: 1;
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 22px;
+    border: 1px solid var(--platform-border);
+    border-radius: 16px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    transition: 150ms;
+    transition-property: border-color, box-shadow;
+  }
+
+  & .course-study__chapter:hover {
+    border-color: var(--platform-border-strong);
+    box-shadow: 0 8px 24px rgba(22, 17, 13, 0.08);
+    color: var(--platform-text);
+  }
+
+  & .course-study__eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--platform-accent-ink);
+  }
+
+  & .course-study__title {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  /* Pushed to the foot with the progress, whatever the title's height. */
+  & .course-study__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto;
+  }
+
+  & .course-study__tag {
+    display: inline-flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 9px;
+    border-radius: 6px;
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  & .course-study__progress {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--platform-border);
+  }
+
+  /* A chapter without essential lessons has no tags to push the foot down. */
+  & .course-study__title + .course-study__progress {
+    margin-top: auto;
+  }
+
+  & .course-study__figures {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  & .course-study__percent {
+    font-size: 22px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .course-study__ratio {
+    font-size: 13px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-study__ratio-value {
+    font-weight: 800;
+    color: var(--platform-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .course-study__track {
+    display: block;
+    height: 10px;
+    overflow: hidden;
+    border-radius: 1000px;
+    background: var(--platform-track);
+  }
+
+  & .course-study__fill {
+    display: block;
+    height: 100%;
+    border-radius: 1000px;
+    background: var(--platform-accent);
+  }
+
+  @media (max-width: 620px) {
+    & .course-study__chapter {
+      min-height: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .course-study__chapter {
+      transition: none;
+    }
+  }
+}

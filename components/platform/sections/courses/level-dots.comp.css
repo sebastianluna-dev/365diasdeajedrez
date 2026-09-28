@@ -1,0 +1,110 @@
+.level-dots {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+  gap: 4px;
+  /* Room around the dots, so the pointer does not have to aim at nine pixels. */
+  padding: 6px 2px;
+  border-radius: 6px;
+  cursor: help;
+
+  & .level-dots__dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 1000px;
+    background: var(--platform-surface-sunken);
+  }
+
+  & .level-dots__dot_level_1 {
+    background: var(--platform-level-1);
+  }
+
+  & .level-dots__dot_level_2 {
+    background: var(--platform-level-2);
+  }
+
+  & .level-dots__dot_level_3 {
+    background: var(--platform-level-3);
+  }
+
+  & .level-dots__dot_level_4 {
+    background: var(--platform-level-4);
+  }
+
+  & .level-dots__dot_level_5 {
+    background: var(--platform-level-5);
+  }
+
+  & .level-dots__dot_level_6 {
+    background: var(--platform-level-6);
+  }
+
+  /* Always in the DOM and hidden: that is what lets it go out animated, and
+     come in, without a line of JavaScript. `visibility` waits for the fade to
+     end before hiding it, so it is not read nor clicked while it is gone. */
+  & .level-dots__tip {
+    position: absolute;
+    right: -6px;
+    bottom: calc(100% + 8px);
+    z-index: 5;
+    width: 260px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: var(--platform-ink);
+    color: var(--platform-on-ink);
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.45;
+    text-align: left;
+    box-shadow: 0 6px 18px rgba(22, 17, 13, 0.25);
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(4px);
+    transition:
+      opacity 120ms ease-in,
+      transform 120ms ease-in,
+      visibility 0s linear 120ms;
+  }
+
+  /* The arrow, a square turned on its corner under the tip's right end. */
+  & .level-dots__tip::after {
+    content: "";
+    position: absolute;
+    right: 14px;
+    bottom: -5px;
+    width: 10px;
+    height: 10px;
+    background: var(--platform-ink);
+    transform: rotate(45deg);
+  }
+
+  &:hover .level-dots__tip,
+  &:focus-visible .level-dots__tip {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity 160ms ease-out,
+      transform 160ms ease-out,
+      visibility 0s;
+  }
+
+  & .level-dots__tip-levels,
+  & .level-dots__tip-elo {
+    display: block;
+  }
+
+  & .level-dots__tip-elo {
+    opacity: 0.72;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .level-dots__tip,
+    &:hover .level-dots__tip,
+    &:focus-visible .level-dots__tip {
+      transform: none;
+      transition: none;
+    }
+  }
+}

@@ -1,0 +1,56 @@
+---
+description: "The level filter of the course catalog: a chip per level in order of difficulty, each with its orientative Elo range, as links that put the level in the URL."
+---
+
+# `LevelFilter`
+
+|            |                                                                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-catalog/level-filter.comp.tsx`                                                               |
+| Kind       | Server Component                                                                                                                          |
+| Stylesheet | `level-filter.comp.css` → block `.level-filter`                                                                                           |
+| Used by    | [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section)                                     |
+| Uses       | `ELO_DISCLAIMER` from `constants/platform/course-levels.const`; `platformRoutes`; `CourseLevelItem` from `services/courses/courses.types` |
+
+## Purpose
+
+Narrows «Explorar cursos» to the courses aimed at a level. It only narrows what is listed: every course stays open to every student, whatever their rating, and «Todos» is always one click away.
+
+## Props
+
+| Prop      | Type                | Required | Meaning                                                                                          |
+| --------- | ------------------- | -------- | ------------------------------------------------------------------------------------------------ |
+| `levels`  | `CourseLevelItem[]` | yes      | `{ slug, name, description, eloRange, eloMin, eloMax }[]`: the levels in use, the easiest first. |
+| `current` | `string`            | no       | Slug of the level the list is narrowed to. Absent, «Todos» is the active chip.                   |
+
+## Behaviour
+
+- «Todos» links to `/cursos/explorar` (`platformRoutes.courseCatalog`); each level to `platformRoutes.coursesOfLevel(slug)` (`/cursos/explorar?nivel=intermedio`). Links and not buttons: the filter can be shared, the back button undoes it and nothing is hydrated.
+- The active chip carries `aria-current="page"`. Each chip shows the name and the range («Intermedio 1200–1599»), with the level's description as `title`.
+- Under the chips, the sentence that goes with every range: «El Elo es orientativo».
+
+## Markup & styling
+
+Block `.level-filter` (64 lines). The chips are the ones of the kind filters of «Mis estudios» and of the staff's course catalog.
+
+**Elements:** `.level-filter__list`, `.level-filter__chip`, `.level-filter__range`, `.level-filter__note`
+
+**Modifiers and states:** `.level-filter__chip_state_active`
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-text-subtle`
+
+No media queries: the chips wrap. The transition is off under `prefers-reduced-motion`.
+
+## Usage
+
+From `components/platform/sections/courses/course-catalog/course-catalog.section.tsx`:
+
+```tsx
+import { LevelFilter } from "./level-filter.comp";
+
+<LevelFilter levels={levels} current={level?.slug} />;
+```
+
+## Related
+
+- `resolveLevelFilter` and `coursesOfLevel` in `services/courses/level-rules.ts` decide what the list shows.

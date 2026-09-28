@@ -1,0 +1,57 @@
+---
+description: "What of the course is learned: everything, or only the lessons the staff marked as essential. Two buttons, one pressed, each a form with its value bound."
+---
+
+# `LearnMode`
+
+|            |                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-study/learn-mode.comp.tsx`                     |
+| Kind       | Server Component                                                                            |
+| Stylesheet | `learn-mode.comp.css` → block `.learn-mode`                                                 |
+| Used by    | [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame) |
+| Writes     | `setOnlyPriorityLessons()` · `services/courses/courses.actions.ts`                          |
+
+## Purpose
+
+The course's one setting, «Aprender»: «Todo» or «Imprescindibles». It replaces `PriorityFilter`, the switch the old course and chapter pages had; the rule it sets (`UserCourseSettings.onlyPriorityLessons`) is the same.
+
+It is a **lens**: it writes the settings row and not a single progress row, so switching it is free and reversible. It is per course, which is why it shows on every page of the course.
+
+## Props
+
+| Prop            | Type      | Required | Meaning                                                    |
+| --------------- | --------- | -------- | ---------------------------------------------------------- |
+| `courseId`      | `string`  | yes      | The course the setting is of.                              |
+| `onlyPriority`  | `boolean` | yes      | The student asked to see only the essential lessons.       |
+| `hiddenLessons` | `number`  | yes      | How many lessons that hides.                               |
+| `returnTo`      | `string`  | yes      | The page the control sits on, where a failure is reported. |
+
+## Behaviour
+
+- Each option is a `<form action={setOnlyPriorityLessons.bind(null, courseId, value)}>` with a hidden `returnTo`, and not one form with two radios: a preference is saved and the page is drawn again, so there is no state to keep and nothing to hydrate. The value is bound because a checkbox cannot transmit "false".
+- The pressed one carries `aria-pressed="true"`; the two are a `role="group"` labelled by «Aprender».
+- With the filter on, a note says what it hides: «56 lecciones ocultas. Las que ya empezaste siguen a la vista.»
+
+## Markup & styling
+
+Block `.learn-mode` (65 lines): a sunken track with two halves, the pressed one raised.
+
+**Elements:** `.learn-mode__label`, `.learn-mode__options`, `.learn-mode__form`, `.learn-mode__option`, `.learn-mode__note`
+
+**Modifiers and states:** `.learn-mode__option_state_on`
+
+**Tokens:** `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-sunken`, `--platform-text`, `--platform-text-subtle`
+
+The transition is off under `prefers-reduced-motion`.
+
+## Usage
+
+```tsx
+<LearnMode
+  courseId={course.id}
+  onlyPriority={course.onlyPriorityLessons}
+  hiddenLessons={course.hiddenLessons}
+  returnTo={returnTo}
+/>
+```

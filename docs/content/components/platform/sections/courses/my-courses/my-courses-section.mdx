@@ -1,0 +1,57 @@
+---
+description: "'Mis cursos': the courses the student added, each as a card that leads to the course to study, and after them the card that leads to the catalog."
+---
+
+# `MyCoursesSection`
+
+|            |                                                                                  |
+| ---------- | -------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/my-courses/my-courses.section.tsx`         |
+| Kind       | Server Component                                                                 |
+| Stylesheet | `my-courses.section.css` → block `.my-courses`                                   |
+| Used by    | `/cursos`                                                                        |
+| Composes   | [`CourseCard`](/components/platform/sections/courses/course-card)                |
+| Reads      | `getUserCourses()`, `listCourseLevels()` · `services/courses/courses.service.ts` |
+| Uses       | `platformRoutes.courseCatalog`; `CourseSummary`, `CourseLevelItem`               |
+
+## Purpose
+
+The list of the student's courses and nothing else. Until this page was redesigned it listed every published course with a level filter and the daily goal beside it; now a course is **added** before it is studied, the catalog is a page of its own ([`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section)) and the day is looked at on the dashboard ([`StudyGoalSection`](/components/platform/sections/dashboard/study-goal/study-goal-section)).
+
+## Props
+
+| Prop      | Type                | Required | Meaning                                                |
+| --------- | ------------------- | -------- | ------------------------------------------------------ |
+| `courses` | `CourseSummary[]`   | yes      | The courses the student added, by name.                |
+| `levels`  | `CourseLevelItem[]` | yes      | Every level of the catalog, for the dots of each card. |
+
+## Behaviour
+
+- The header says how many there are and how many are being studied — «4 cursos · 3 en curso» —, the latter being the ones whose button says «Continuar». With none: «Todavía no has agregado ninguno».
+- After the cards, always, the dashed card «Explorar cursos», a link to `/cursos/explorar`. The page is therefore never empty and needs no `EmptyState`: with no course added that card is the only thing in the list and carries a hint, «Elige uno del catálogo y agrégalo para empezar.»
+
+## Markup & styling
+
+Block `.my-courses` (95 lines). The list is a grid the cards fill, three columns in a full-width page (`repeat(auto-fill, minmax(360px, 1fr))`).
+
+**Elements:** `.my-courses__head`, `.my-courses__title`, `.my-courses__summary`, `.my-courses__list`, `.my-courses__explore`, `.my-courses__explore-mark`, `.my-courses__explore-label`, `.my-courses__explore-hint`
+
+**Modifiers and states:** none
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border-strong`, `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 760px)` one column. The hover transition is off under `prefers-reduced-motion`.
+
+## Usage
+
+From `app/(platform)/cursos/page.tsx`:
+
+```tsx
+const [courses, levels] = await Promise.all([getUserCourses(), listCourseLevels()]);
+
+<MyCoursesSection courses={courses} levels={levels} />;
+```
+
+## Related
+
+- [Student features › Courses](/platform/student) for what "added" means.

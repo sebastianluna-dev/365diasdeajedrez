@@ -1,0 +1,37 @@
+.course-catalog {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+
+  & .course-catalog__head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  & .course-catalog__title {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  & .course-catalog__summary {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--platform-text-subtle);
+  }
+
+  /* The same grid as "Mis cursos": a course is the same card in both. */
+  & .course-catalog__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 20px;
+  }
+
+  @media (max-width: 760px) {
+    & .course-catalog__list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}

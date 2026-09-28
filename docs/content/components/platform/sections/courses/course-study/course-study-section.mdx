@@ -1,0 +1,52 @@
+---
+description: "The course to study: its chapters as cards, each with how much of it the student has learned, inside the frame every page of the course shares."
+---
+
+# `CourseStudySection`
+
+|            |                                                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-study/course-study.section.tsx`                                                                         |
+| Kind       | Server Component                                                                                                                                     |
+| Stylesheet | `course-study.section.css` → block `.course-study`                                                                                                   |
+| Used by    | `/cursos/[courseRef]` when the segment is an **id**                                                                                                  |
+| Composes   | [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame), [`EmptyState`](/components/platform/shared/empty-state) |
+| Reads      | `resolveCourseReference()` → `getCourseStudy(courseId)` · `services/courses/courses.service.ts`                                                      |
+
+## Purpose
+
+`/cursos/10000004`: the course once it is the student's. Whoever opens it without having added the course is redirected by the page to its information page, which is where it is added.
+
+## Props
+
+| Prop        | Type           | Required | Meaning                                                          |
+| ----------- | -------------- | -------- | ---------------------------------------------------------------- |
+| `course`    | `CourseDetail` | yes      | The course with its chapters and the student's progress in each. |
+| `errorCode` | `string`       | no       | Passed on to the frame.                                          |
+
+## Behaviour
+
+- One card per chapter, the whole card a link to it (`/cursos/<id>/<order>`): «Capítulo 1 · 1957–1959» (the number and the note its name closes with), the title, a tag with how many lessons the staff marked as essential («2 imprescindibles») and the progress.
+- A chapter's figures are of the lessons the student **sees**: with only the essential ones asked for, the bar is over those, which is the list that opens when the card is pressed. The tag counts the chapter's essential lessons whatever the filter says.
+- A course without chapters shows an `EmptyState`.
+
+## Markup & styling
+
+Block `.course-study` (136 lines): a grid of cards of at least 240px (`repeat(auto-fill, minmax(240px, 1fr))`).
+
+**Elements:** `.course-study__item`, `.course-study__chapter`, `.course-study__eyebrow`, `.course-study__title`, `.course-study__tags`, `.course-study__tag`, `.course-study__progress`, `.course-study__figures`, `.course-study__percent`, `.course-study__ratio`, `.course-study__ratio-value`, `.course-study__track`, `.course-study__fill`
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-text`, `--platform-text-subtle`, `--platform-track`
+
+**Breakpoints:** `(max-width: 620px)` one column. The hover transition is off under `prefers-reduced-motion`.
+
+## Usage
+
+From `app/(platform)/cursos/[courseRef]/page.tsx`:
+
+```tsx
+if (found.kind === "study") {
+  if (!course.isAdded) redirect(course.infoHref);
+  return <CourseStudySection course={course} errorCode={error} />;
+}
+```

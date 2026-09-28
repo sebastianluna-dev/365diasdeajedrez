@@ -1,9 +1,0 @@
-.chapter-page {
-  gap: 22px;
-  /* Narrower column than the rest of the platform (1040 versus 1320): this
-     page is a list read top to bottom, and at full width the rows would have
-     a desert between the title and the status. */
-  max-width: 1040px;
-  width: 100%;
-  margin-inline: auto;
-}

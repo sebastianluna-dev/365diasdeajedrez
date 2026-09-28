@@ -1,5 +1,14 @@
 import { describe, expect, it } from "vitest";
-import { coursesOfLevel, formatEloRange, labelEloRange, resolveLevelFilter, shortEloRange } from "./level-rules";
+import {
+  audienceRange,
+  compactEloRange,
+  coursesOfLevel,
+  formatEloRange,
+  joinNames,
+  labelEloRange,
+  resolveLevelFilter,
+  shortEloRange,
+} from "./level-rules";
 
 describe("formatEloRange", () => {
   it("dice el rango cerrado con sus dos extremos", () => {
@@ -63,5 +72,55 @@ describe("coursesOfLevel", () => {
 
   it("sin nivel los devuelve todos, también los que no tienen ninguno", () => {
     expect(coursesOfLevel(COURSES, undefined)).toHaveLength(3);
+  });
+});
+
+describe("compactEloRange", () => {
+  it("says a range in the width of a tick", () => {
+    expect(compactEloRange({ eloMin: 0, eloMax: 799 })).toBe("< 800");
+    expect(compactEloRange({ eloMin: 1200, eloMax: 1599 })).toBe("1200–1599");
+    expect(compactEloRange({ eloMin: 2200, eloMax: null })).toBe("2200+");
+  });
+});
+
+describe("audienceRange", () => {
+  it("goes from the floor of the easiest level to the ceiling of the hardest", () => {
+    expect(
+      audienceRange([
+        { eloMin: 1200, eloMax: 1599 },
+        { eloMin: 1600, eloMax: 1999 },
+      ]),
+    ).toEqual({ eloMin: 1200, eloMax: 1999 });
+  });
+
+  it("has no ceiling when one of its levels has none", () => {
+    expect(
+      audienceRange([
+        { eloMin: 2000, eloMax: 2199 },
+        { eloMin: 2200, eloMax: null },
+      ]),
+    ).toEqual({ eloMin: 2000, eloMax: null });
+  });
+
+  it("does not depend on the order the levels arrive in", () => {
+    expect(
+      audienceRange([
+        { eloMin: 1600, eloMax: 1999 },
+        { eloMin: 800, eloMax: 1199 },
+      ]),
+    ).toEqual({ eloMin: 800, eloMax: 1999 });
+  });
+
+  it("answers nothing for a course without levels", () => {
+    expect(audienceRange([])).toBeUndefined();
+  });
+});
+
+describe("joinNames", () => {
+  it("joins the last one with «y»", () => {
+    expect(joinNames(["intermedio"])).toBe("intermedio");
+    expect(joinNames(["intermedio", "avanzado"])).toBe("intermedio y avanzado");
+    expect(joinNames(["principiante", "intermedio", "avanzado"])).toBe("principiante, intermedio y avanzado");
+    expect(joinNames([])).toBe("");
   });
 });

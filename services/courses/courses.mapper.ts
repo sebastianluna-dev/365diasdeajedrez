@@ -3,12 +3,15 @@ import type { Prisma } from "@/lib/platform-db/generated/client";
 import { platformRoutes } from "@/lib/platform-routes";
 import { sortByRole } from "@/services/shared/content-order";
 import { lessonPgnOf } from "@/services/shared/lesson-pgn";
+import { splitChapterName } from "./course-rules";
 import { formatEloRange } from "./level-rules";
 import type {
   ChapterLessonItem,
+  ChapterLink,
   ChapterView,
   CourseChapterItem,
   CourseContentTypeItem,
+  CourseCta,
   CourseDetail,
   CourseLevelItem,
   CourseSourceItem,
@@ -89,6 +92,10 @@ export function mapCourseSources(sources: CourseWithDetail["sources"]): CourseSo
 export interface UserCourseState {
   /** statusCode of LessonProgress by lessonId. */
   lessonStatus: Map<string, ProgressStatusCode>;
+  /**
+   * Absent = the student has no `CourseProgress` row for this course, which
+   * is what "has not added it" means: see `isAdded`.
+   */
   courseStatus?: ProgressStatusCode;
   lastLessonId?: string;
   /** The student asked to see only this course's essential lessons. */
@@ -99,6 +106,19 @@ export interface UserCourseState {
 
 function asStatus(code: string | undefined): ProgressStatusCode {
   return (code as ProgressStatusCode | undefined) ?? PROGRESS_STATUS.NOT_STARTED;
+}
+
+/**
+ * Whether the course is one of the student's.
+ *
+ * There is no table of enrolments: a course is theirs from the moment it has
+ * a progress row, which is written by the button of the information page
+ * (`addCourse`, not started) and by opening any of its lessons
+ * (`touchLesson`, in progress). Reading it off the same row is what keeps
+ * "I have progress in it" and "it is in my courses" from ever disagreeing.
+ */
+function isAdded(state: UserCourseState): boolean {
+  return state.courseStatus !== undefined;
 }
 
 /**
@@ -144,8 +164,6 @@ export function mapCourseProgress(course: CourseWithContent, state: UserCourseSt
   ).length;
   const totalLessons = lessons.length;
 
-  const minutesOf = (list: typeof lessons) =>
-    list.reduce((total, lesson) => total + (lesson.estimatedDuration ?? 0), 0);
   const completedMinutes = minutesOf(
     lessons.filter((lesson) => state.lessonStatus.get(lesson.id) === PROGRESS_STATUS.COMPLETED),
   );
@@ -155,10 +173,10 @@ export function mapCourseProgress(course: CourseWithContent, state: UserCourseSt
     statusCode: asStatus(state.courseStatus),
     completedLessons,
     totalLessons,
-    percent: totalLessons === 0 ? 0 : Math.round((completedLessons / totalLessons) * 100),
+    percent: percentOf(completedLessons, totalLessons),
     completedMinutes,
     totalMinutes,
-    minutesPercent: totalMinutes === 0 ? 0 : Math.round((completedMinutes / totalMinutes) * 100),
+    minutesPercent: percentOf(completedMinutes, totalMinutes),
   };
 }
 
@@ -175,6 +193,23 @@ function continueTarget(course: CourseWithContent, state: UserCourseState) {
   const pending = lessons.find((lesson) => state.lessonStatus.get(lesson.id) !== PROGRESS_STATUS.COMPLETED);
   const target = last ?? pending ?? lessons[0];
   return target ? platformRoutes.lessonDetail(target.id) : platformRoutes.courseDetail(course.id);
+}
+
+/**
+ * The next lesson to LEARN, which is not always where the course carries on.
+ *
+ * `continueTarget` goes back to where they left off even if that lesson is
+ * done, because a dashboard's «Continuar» takes them back to their place.
+ * «Aprender» promises something new: the lesson they left unfinished, and
+ * otherwise the first unfinished one in the order the course is read. When
+ * every lesson in view is done there is nothing left to learn, and it says so
+ * by answering nothing.
+ */
+function nextLesson(course: CourseWithContent, state: UserCourseState) {
+  const lessons = flattenLessons(course, state);
+  const isPending = (lesson: { id: string }) => state.lessonStatus.get(lesson.id) !== PROGRESS_STATUS.COMPLETED;
+  const last = lessons.find((lesson) => lesson.id === state.lastLessonId);
+  return last && isPending(last) ? last : lessons.find(isPending);
 }
 
 /**
@@ -208,13 +243,25 @@ export function mapCourseLevel(level: {
     name: level.name,
     description: level.description,
     eloRange: formatEloRange(level),
+    eloMin: level.eloMin,
+    eloMax: level.eloMax,
   };
 }
 
-function ctaLabelFor(progress: CourseProgressSummary): CourseSummary["ctaLabel"] {
-  if (progress.totalLessons > 0 && progress.completedLessons === progress.totalLessons) return "Revisar";
+function ctaLabelFor(progress: CourseProgressSummary): CourseCta {
+  if (progress.totalLessons > 0 && progress.completedLessons === progress.totalLessons) return "Repasar";
   if (progress.completedLessons > 0 || progress.statusCode === PROGRESS_STATUS.IN_PROGRESS) return "Continuar";
-  return "Comenzar";
+  return "Empezar";
+}
+
+/** Whole percentage 0–100; zero of zero is zero, never NaN. */
+function percentOf(done: number, total: number): number {
+  return total === 0 ? 0 : Math.round((done / total) * 100);
+}
+
+/** The minutes of a list of lessons; the ones without a figure count as zero. */
+function minutesOf(lessons: readonly { estimatedDuration: number | null }[]): number {
+  return lessons.reduce((total, lesson) => total + (lesson.estimatedDuration ?? 0), 0);
 }
 
 export function mapCourseSummary(course: CourseWithContent, state: UserCourseState): CourseSummary {
@@ -228,10 +275,12 @@ export function mapCourseSummary(course: CourseWithContent, state: UserCourseSta
     contentTypes: mapContentTypes(course),
     levels: course.courseLevels.map((courseLevel) => mapCourseLevel(courseLevel.level)),
     authorNames: course.courseAuthors.map((courseAuthor) => courseAuthor.author.name),
+    isAdded: isAdded(state),
     progress,
     continueHref: continueTarget(course, state),
     ctaLabel: ctaLabelFor(progress),
     href: platformRoutes.courseDetail(course.id),
+    infoHref: platformRoutes.courseInfo(course.slug),
   };
 }
 
@@ -246,22 +295,43 @@ function mapChapterItem(
   const completedLessons = lessons.filter(
     (lesson) => state.lessonStatus.get(lesson.id) === PROGRESS_STATUS.COMPLETED,
   ).length;
+  // Its own figure rules; without one, what its lessons add up to; and when
+  // nothing says anything there is no duration, instead of a zero that reads
+  // as "it takes no time".
+  const durationMin = chapter.estimatedDuration || minutesOf(chapter.lessons);
   return {
     id: chapter.id,
     order: chapter.order,
     name: chapter.name,
+    ...splitChapterName(chapter.name),
     description: chapter.description ?? undefined,
-    estimatedDuration: chapter.estimatedDuration ?? undefined,
+    durationMin: durationMin > 0 ? durationMin : undefined,
+    lessonCount: chapter.lessons.length,
+    priorityLessons: chapter.lessons.filter((lesson) => lesson.isPriority).length,
     totalLessons: lessons.length,
     completedLessons,
+    percent: percentOf(completedLessons, lessons.length),
     href: platformRoutes.chapterDetail(course.id, chapter.order),
   };
 }
 
-export function mapCourseDetail(course: CourseWithDetail, state: UserCourseState): CourseDetail {
+/** What the course's pages need that is not in the course nor in the student's progress. */
+export interface CourseExtras {
+  /** Exercises of the lessons the student already learned in this course. */
+  reviewCount?: number;
+}
+
+export function mapCourseDetail(
+  course: CourseWithDetail,
+  state: UserCourseState,
+  { reviewCount = 0 }: CourseExtras = {},
+): CourseDetail {
   const progress = mapCourseProgress(course, state);
+  const every = allLessons(course);
+  const next = nextLesson(course, state);
   return {
     id: course.id,
+    slug: course.slug,
     name: course.name,
     description: course.description ?? undefined,
     cover: course.cover ?? undefined,
@@ -271,11 +341,18 @@ export function mapCourseDetail(course: CourseWithDetail, state: UserCourseState
       name: courseAuthor.author.name,
       roleLabel: courseAuthor.role.label,
     })),
+    isAdded: isAdded(state),
     progress,
-    continueHref: continueTarget(course, state),
     ctaLabel: ctaLabelFor(progress),
+    learnHref: next ? platformRoutes.lessonDetail(next.id) : undefined,
+    reviewCount,
+    reviewHref: platformRoutes.courseReview(course.id),
     onlyPriorityLessons: state.onlyPriorityLessons,
-    hiddenLessons: allLessons(course).length - progress.totalLessons,
+    hiddenLessons: every.length - progress.totalLessons,
+    lessonCount: every.length,
+    totalMinutes: minutesOf(every),
+    infoHref: platformRoutes.courseInfo(course.slug),
+    studyHref: platformRoutes.courseDetail(course.id),
     chapters: sortByRole(course.chapters.map((chapter) => ({ ...chapter, roleCode: chapter.role?.code }))).map(
       (chapter) => mapChapterItem(course, chapter, state),
     ),
@@ -283,14 +360,23 @@ export function mapCourseDetail(course: CourseWithDetail, state: UserCourseState
   };
 }
 
+/** What the chapter's page needs besides the course's. */
+export interface ChapterExtras extends CourseExtras {
+  /** How each lesson opens, by lesson id: see `movesPreview`. */
+  previews?: ReadonlyMap<string, string>;
+}
+
 export function mapChapterView(
-  course: CourseWithContent,
+  course: CourseWithDetail,
   chapterId: string,
   state: UserCourseState,
-  options: { hasExercises: boolean; inTrainer: boolean },
+  { previews, ...courseExtras }: ChapterExtras = {},
 ): ChapterView | null {
   const chapter = course.chapters.find((candidate) => candidate.id === chapterId);
   if (!chapter) return null;
+
+  const detail = mapCourseDetail(course, state, courseExtras);
+  const nextId = nextLesson(course, state)?.id;
 
   // The number rendered is still the REAL one (1, 4, 7 with the filter on):
   // renumbering would hide that lessons are missing and would break each one's
@@ -307,36 +393,34 @@ export function mapChapterView(
       isPriority: lesson.isPriority,
       estimatedDuration: lesson.estimatedDuration ?? undefined,
       statusCode: asStatus(state.lessonStatus.get(lesson.id)),
+      isNext: lesson.id === nextId,
+      preview: previews?.get(lesson.id),
       href: platformRoutes.lessonDetail(lesson.id),
     }));
 
   const hiddenLessons = chapter.lessons.length - lessons.length;
   const completedLessons = lessons.filter((lesson) => lesson.statusCode === PROGRESS_STATUS.COMPLETED).length;
 
-  // The chapter's button opens where they left off: the first uncompleted one.
-  // If they are all done, the first, which is what comes next for review.
-  const target = lessons.find((lesson) => lesson.statusCode !== PROGRESS_STATUS.COMPLETED) ?? lessons[0];
-  const allDone = lessons.length > 0 && completedLessons === lessons.length;
-  const untouched = lessons.every((lesson) => lesson.statusCode === PROGRESS_STATUS.NOT_STARTED);
+  // The neighbours come from the course's own list, which is already in the
+  // order the chapters are read: the introduction first, the closing last.
+  const position = detail.chapters.findIndex((candidate) => candidate.id === chapter.id);
+  const linkTo = (neighbour: CourseDetail["chapters"][number] | undefined): ChapterLink | undefined =>
+    neighbour ? { order: neighbour.order, href: neighbour.href } : undefined;
 
   return {
-    courseId: course.id,
-    courseName: course.name,
-    courseHref: platformRoutes.courseDetail(course.id),
+    course: detail,
     id: chapter.id,
     order: chapter.order,
     name: chapter.name,
+    ...splitChapterName(chapter.name),
     description: chapter.description ?? undefined,
-    estimatedDuration: chapter.estimatedDuration ?? undefined,
     completedLessons,
     totalLessons: lessons.length,
+    percent: percentOf(completedLessons, lessons.length),
     hiddenLessons,
-    onlyPriorityLessons: state.onlyPriorityLessons,
     lessons,
-    continueHref: target ? target.href : platformRoutes.courseDetail(course.id),
-    ctaLabel: allDone ? "Revisar" : untouched ? "Comenzar" : "Continuar",
-    hasExercises: options.hasExercises,
-    inTrainer: options.inTrainer,
+    previous: position > 0 ? linkTo(detail.chapters[position - 1]) : undefined,
+    next: position >= 0 ? linkTo(detail.chapters[position + 1]) : undefined,
   };
 }
 

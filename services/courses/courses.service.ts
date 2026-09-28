@@ -3,7 +3,9 @@ import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { PROGRESS_STATUS, type ProgressStatusCode } from "@/constants/platform/shared-codes.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
-import { lessonPgnSelect } from "@/services/shared/lesson-pgn";
+import { movesPreview } from "@/lib/chess/moves-preview";
+import { lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
+import { isCourseId } from "./course-rules";
 import {
   courseContentInclude,
   courseDetailInclude,
@@ -16,7 +18,8 @@ import {
 } from "./courses.mapper";
 import type { ChapterView, CourseDetail, CourseLevelItem, CourseSummary, LessonView } from "./courses.types";
 
-// Full listing: only the "Mis cursos" page uses it, and it needs them all.
+// Full listing: "Mis cursos" and the catalog use it, and both need them all —
+// the first keeps the ones the student added, which is known once it is read.
 const getPublishedCourses = cache(async () => {
   const db = getPlatformDb();
   return db.course.findMany({
@@ -33,6 +36,15 @@ const getPublishedCourse = cache(async (courseId: string) => {
   const db = getPlatformDb();
   return db.course.findFirst({
     where: { id: courseId, status: { code: COURSE_STATUS.PUBLISHED } },
+    include: courseDetailInclude,
+  });
+});
+
+/** The same course by its slug, which is how its information page is addressed. */
+const getPublishedCourseBySlug = cache(async (slug: string) => {
+  const db = getPlatformDb();
+  return db.course.findFirst({
+    where: { slug, status: { code: COURSE_STATUS.PUBLISHED } },
     include: courseDetailInclude,
   });
 });
@@ -120,13 +132,23 @@ const getUserProgressState = cache(async (): Promise<Map<string, UserCourseState
 
 const EMPTY_STATE: UserCourseState = { lessonStatus: new Map(), onlyPriorityLessons: false };
 
-export async function getUserCourses(): Promise<CourseSummary[]> {
+/**
+ * Every published course, each with what the student has in it: the catalog
+ * where the ones to add are found. The ones already added come too, marked,
+ * so a course does not vanish from where it was found the day it is added.
+ */
+export async function getCourseCatalog(): Promise<CourseSummary[]> {
   const [courses, progress] = await Promise.all([getPublishedCourses(), getUserProgressState()]);
   return courses.map((course) => mapCourseSummary(course, progress.get(course.id) ?? EMPTY_STATE));
 }
 
+/** "Mis cursos": of the catalog, the ones the student added. */
+export async function getUserCourses(): Promise<CourseSummary[]> {
+  return (await getCourseCatalog()).filter((course) => course.isAdded);
+}
+
 /**
- * The levels "Mis cursos" can be filtered by: the ones in use, the easiest
+ * The levels the catalog can be filtered by: the ones in use, the easiest
  * first. They are read whole and not only the ones some course has, so the
  * filter reads the same every day; a level without courses says so when chosen.
  *
@@ -173,18 +195,68 @@ export async function getContinueStudyingCourse(): Promise<(CourseSummary & { la
   return { ...mapCourseSummary(course, progress), lastLessonName: row.lastLesson?.name };
 }
 
-export async function getCourseById(courseId: string): Promise<CourseDetail | null> {
-  const [course, progress] = await Promise.all([getPublishedCourse(courseId), getCourseProgressState(courseId)]);
+/**
+ * What «Repasar» trains: the exercises of the lessons of the course the
+ * student has already LEARNED. It counts what CAN be reviewed, not what is
+ * due: the trainer's review schedule (`UserLessonTraining`) is not looked at
+ * here, so the figure does not go down after a session.
+ */
+const getReviewCount = cache(async (courseId: string): Promise<number> => {
+  const user = await getCurrentUser();
+  return getPlatformDb().trainingExercise.count({
+    where: {
+      lesson: {
+        chapter: { courseId },
+        progresses: { some: { userId: user.id, status: { code: PROGRESS_STATUS.COMPLETED } } },
+      },
+    },
+  });
+});
+
+/**
+ * A course's information page, by its slug. It is read by whoever has not
+ * added the course — that is what it is for — so nothing here depends on
+ * having progress in it.
+ */
+export async function getCourseInfo(slug: string): Promise<CourseDetail | null> {
+  const course = await getPublishedCourseBySlug(slug);
   if (!course) return null;
-  return mapCourseDetail(course, progress);
+  return mapCourseDetail(course, await getCourseProgressState(course.id));
+}
+
+/** The course to study, by its id: its chapters with the student's progress in each. */
+export async function getCourseStudy(courseId: string): Promise<CourseDetail | null> {
+  const [course, progress, reviewCount] = await Promise.all([
+    getPublishedCourse(courseId),
+    getCourseProgressState(courseId),
+    getReviewCount(courseId),
+  ]);
+  if (!course) return null;
+  return mapCourseDetail(course, progress, { reviewCount });
+}
+
+/**
+ * Where `/cursos/<reference>` leads. The segment is an id or a slug and its
+ * shape says which, but a slug may happen to be eight digits of a course
+ * created before that was refused: an id nobody has is tried again as a slug.
+ */
+export async function resolveCourseReference(
+  reference: string,
+): Promise<{ kind: "study"; course: CourseDetail } | { kind: "info"; course: CourseDetail } | null> {
+  if (isCourseId(reference)) {
+    const course = await getCourseStudy(reference);
+    if (course) return { kind: "study", course };
+  }
+  const course = await getCourseInfo(reference);
+  return course ? { kind: "info", course } : null;
 }
 
 export async function getChapterView(courseId: string, chapterOrder: number): Promise<ChapterView | null> {
   const db = getPlatformDb();
-  const [course, progress, user] = await Promise.all([
+  const [course, progress, reviewCount] = await Promise.all([
     getPublishedCourse(courseId),
     getCourseProgressState(courseId),
-    getCurrentUser(),
+    getReviewCount(courseId),
   ]);
   if (!course) return null;
 
@@ -193,15 +265,17 @@ export async function getChapterView(courseId: string, chapterOrder: number): Pr
   const chapterId = course.chapters.find((chapter) => chapter.order === chapterOrder)?.id;
   if (!chapterId) return null;
 
-  const [exerciseCount, trainerRow] = await Promise.all([
-    db.trainingExercise.count({ where: { lesson: { chapterId } } }),
-    db.userTrainerChapter.findUnique({ where: { userId_chapterId: { userId: user.id, chapterId } } }),
-  ]);
+  // The course is loaded WITHOUT the PGN of its lessons, which is most of its
+  // weight; the list shows how each lesson opens, so those of this chapter
+  // alone are read here.
+  const contents = await db.lesson.findMany({ where: { chapterId }, select: { id: true, ...lessonPgnSelect } });
+  const previews = new Map<string, string>();
+  for (const lesson of contents) {
+    const preview = movesPreview(lessonPgnOf(lesson));
+    if (preview) previews.set(lesson.id, preview);
+  }
 
-  return mapChapterView(course, chapterId, progress, {
-    hasExercises: exerciseCount > 0,
-    inTrainer: trainerRow !== null,
-  });
+  return mapChapterView(course, chapterId, progress, { previews, reviewCount });
 }
 
 /**

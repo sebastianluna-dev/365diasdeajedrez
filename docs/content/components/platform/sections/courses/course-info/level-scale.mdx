@@ -1,0 +1,57 @@
+---
+description: "Who the course is for, on the scale of the catalog's levels: the ones it is aimed at lit, the rest greyed, and above it the whole Elo range in one figure."
+---
+
+# `LevelScale`
+
+|            |                                                                                                             |
+| ---------- | ----------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-info/level-scale.comp.tsx`                                     |
+| Kind       | Server Component                                                                                            |
+| Stylesheet | `level-scale.comp.css` → block `.level-scale`                                                               |
+| Used by    | [`CourseInfoSection`](/components/platform/sections/courses/course-info/course-info-section)                |
+| Uses       | `CourseLevelItem`; `audienceRange`, `compactEloRange`, `formatEloRange` from `services/courses/level-rules` |
+
+## Purpose
+
+The information page places the course **among all the levels** instead of only naming its own: six segments, the easiest first, with the course's lit. Above, the span in one sentence: «Para jugadores con Elo 1200–1999».
+
+The range guides whoever is choosing. It closes the course to nobody.
+
+## Props
+
+| Prop     | Type                | Required | Meaning                                                          |
+| -------- | ------------------- | -------- | ---------------------------------------------------------------- |
+| `scale`  | `CourseLevelItem[]` | yes      | Every level of the catalog, the easiest first: one segment each. |
+| `levels` | `CourseLevelItem[]` | yes      | The levels the course is aimed at: the segments that are lit.    |
+
+## Behaviour
+
+- Renders nothing when the catalog is empty or the course has no level.
+- Each segment shows the level's name and its range in the compact wording (`compactEloRange`: «< 800», «1200–1599», «2200+»), with the level's description as `title`.
+- The columns are as many as the catalog has levels, set inline (`grid-template-columns: repeat(n, …)`): it is a figure of the data, not of the design.
+- What the colour says is also written for whoever does not see it: a lit segment ends with a visually hidden «: nivel del curso».
+
+## Markup & styling
+
+Block `.level-scale` (84 lines).
+
+**Elements:** `.level-scale__headline`, `.level-scale__levels`, `.level-scale__level`, `.level-scale__bar`, `.level-scale__name`, `.level-scale__range`, `.level-scale__sr`
+
+**Modifiers and states:** `.level-scale__level_state_lit`
+
+**Tokens:** `--platform-accent`, `--platform-text`, `--platform-text-subtle`, `--platform-track`
+
+**Breakpoints:** `(max-width: 620px)` hides the ranges and lets the names truncate; the headline still says the range.
+
+## Usage
+
+```tsx
+<div className="course-info__scale">
+  <LevelScale scale={levels} levels={course.levels} />
+</div>
+```
+
+## Related
+
+- [`LevelDots`](/components/platform/sections/courses/level-dots), the same fact in the width of a word.

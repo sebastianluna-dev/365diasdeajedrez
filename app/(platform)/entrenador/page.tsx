@@ -13,16 +13,17 @@ export const metadata: Metadata = {
 };
 
 interface TrainerPageProps {
-  searchParams: Promise<{ lesson?: string; chapter?: string; session?: string; error?: string }>;
+  /** `course`: what a course's «Repasar» asks for, the exercises of its lessons already learned. */
+  searchParams: Promise<{ lesson?: string; chapter?: string; course?: string; session?: string; error?: string }>;
 }
 
 export default async function TrainerPage({ searchParams }: TrainerPageProps) {
-  const { lesson, chapter, session, error } = await searchParams;
+  const { lesson, chapter, course, session, error } = await searchParams;
   const errorMessage = studentErrorMessage(error);
-  const wantsSession = Boolean(lesson || chapter || session === "all");
+  const wantsSession = Boolean(lesson || chapter || course || session === "all");
 
   if (wantsSession) {
-    const exercises = await getTrainerSession({ lessonId: lesson, chapterId: chapter });
+    const exercises = await getTrainerSession({ lessonId: lesson, chapterId: chapter, courseId: course });
 
     return (
       <div className="platform-page trainer-page">

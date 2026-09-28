@@ -23,14 +23,15 @@ const GOAL_SCHEMA = z.object({ goalMinutes: formInt(1, 100_000).refine(isGoalOpt
 
 export async function updateDailyGoal(formData: FormData): Promise<void> {
   const parsed = parseForm(GOAL_SCHEMA, formData);
-  if (!parsed.ok) redirect(withErrorParam(platformRoutes.courses, "goal"));
+  // The goal lives on the dashboard, next to the streak: a failure goes back there.
+  if (!parsed.ok) redirect(withErrorParam(platformRoutes.dashboard, "goal"));
   const minutes = parsed.data.goalMinutes;
 
   const user = await getCurrentUser();
   if (!(await allowAction(`${user.id}:daily-goal`, 20, 60_000)))
-    redirect(withErrorParam(platformRoutes.courses, "throttled"));
+    redirect(withErrorParam(platformRoutes.dashboard, "throttled"));
 
   await getPlatformDb().user.update({ where: { id: user.id }, data: { dailyGoalMinutes: minutes } });
 
-  revalidatePath(platformRoutes.courses);
+  revalidatePath(platformRoutes.dashboard);
 }

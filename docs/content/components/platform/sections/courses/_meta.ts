@@ -1,9 +1,12 @@
 import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
-  "chapter-detail": "chapter-detail",
-  "course-detail": "course-detail",
-  "courses-list": "courses-list",
+  "my-courses": "my-courses",
+  "course-catalog": "course-catalog",
+  "course-info": "course-info",
+  "course-study": "course-study",
+  "course-card": "CourseCard",
+  "level-dots": "LevelDots",
   "lesson-view": "lesson-view",
 };
 

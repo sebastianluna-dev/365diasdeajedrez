@@ -84,7 +84,9 @@ export function CourseEditorSection({
         actions={
           course.statusCode === COURSE_STATUS.PUBLISHED && (
             <Link
-              href={platformRoutes.courseDetail(course.id)}
+              // The information page, by the slug: it is what a student sees
+              // of the course before adding it, and it needs nothing added.
+              href={platformRoutes.courseInfo(course.slug)}
               className="platform-button platform-button_variant_soft"
             >
               Ver en la plataforma

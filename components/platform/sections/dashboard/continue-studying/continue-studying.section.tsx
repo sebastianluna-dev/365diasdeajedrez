@@ -27,7 +27,7 @@ export async function ContinueStudyingSection() {
       ) : (
         <EmptyState
           title="No tienes ningún curso en progreso"
-          description="Empieza un curso para verlo aquí."
+          description="Empieza uno de tus cursos, o agrega uno del catálogo, para verlo aquí."
           actionLabel="Ver mis cursos"
           actionHref={platformRoutes.courses}
         />

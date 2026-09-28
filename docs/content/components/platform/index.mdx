@@ -27,7 +27,6 @@ description: "Index of components/platform: the shared primitives and every sect
 | [`ProgressIndicator`](/components/platform/shared/progress-indicator)        | server | Progress bar, inline or stacked.                                                                         |
 | [`BoardLoading`](/components/platform/shared/board-loading)                  | server | The knight that hops while a segment streams; what every `loading.tsx` renders.                          |
 | [`PlatformError`](/components/platform/shared/platform-error)                | client | The error boundary view with retry and digest.                                                           |
-| [`PriorityFilter`](/components/platform/shared/priority-filter)              | server | The essential-lessons switch, a form with a bound action.                                                |
 | [`LocalDateTime`](/components/platform/shared/local-datetime)                | client | A UTC instant in the browser's zone, without hydration mismatch.                                         |
 | [`ActivityList`](/components/platform/shared/activity-list)                  | server | The dashboard's activity facts.                                                                          |
 | [`ClassContentRenderer`](/components/platform/shared/class-content-renderer) | server | A class's blocks by kind, with the single viewer and the static diagram.                                 |
@@ -47,24 +46,29 @@ description: "Index of components/platform: the shared primitives and every sect
 | [`ProfileSummarySection`](/components/platform/sections/dashboard/profile-summary/profile-summary-section)       | server | Greeting, email, member-since date.           |
 | [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section) | server | The course in progress and its return lesson. |
 | [`NextClassSection`](/components/platform/sections/dashboard/next-class/next-class-section)                      | server | The first upcoming class.                     |
+| [`StudyGoalSection`](/components/platform/sections/dashboard/study-goal/study-goal-section)                      | server | Daily streak and minutes against the goal.    |
 | [`ActivityStatsSection`](/components/platform/sections/dashboard/activity-stats/activity-stats-section)          | server | Fetches the four ranges for the cards.        |
 | [`StatsCards`](/components/platform/sections/dashboard/activity-stats/stats-cards)                               | client | Metric cards with a period toggle.            |
 | [`RecentActivitySection`](/components/platform/sections/dashboard/recent-activity/recent-activity-section)       | server | The latest activity facts.                    |
 
-## `sections/courses/` — `/cursos`, `/lecciones/[lessonId]`
+## `sections/courses/` — `/cursos`, `/cursos/explorar`, `/cursos/[courseRef]`, `/lecciones/[lessonId]`
 
-| Page                                                                                                  | Kind   | What it is                                                                           |
-| ----------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------ |
-| [`CoursesListSection`](/components/platform/sections/courses/courses-list/courses-list-section)       | server | The level filter and one card per published course.                                  |
-| [`LevelFilter`](/components/platform/sections/courses/courses-list/level-filter)                      | server | A chip per level with its orientative Elo range; the level goes in the URL.          |
-| [`CourseCard`](/components/platform/sections/courses/courses-list/course-card)                        | server | Cover, name, two progress meters and the resume button; facts in a `<details>` menu. |
-| [`StudyGoalAside`](/components/platform/sections/courses/courses-list/study-goal)                     | server | Daily streak and minutes against the goal.                                           |
-| [`CourseDetailSection`](/components/platform/sections/courses/course-detail/course-detail-section)    | server | The course page with the chapter list and the priority filter.                       |
-| [`ChapterList`](/components/platform/sections/courses/course-detail/chapter-list)                     | server | Whole-row chapter links with progress.                                               |
-| [`ChapterDetailSection`](/components/platform/sections/courses/chapter-detail/chapter-detail-section) | server | The chapter page with the trainer toggle and the lesson list.                        |
-| [`LessonList`](/components/platform/sections/courses/chapter-detail/lesson-list)                      | server | Lesson rows; green number when done.                                                 |
-| [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section)          | server | The lesson in the viewer as running text, with the completion form.                  |
-| [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker)                   | client | Marks the lesson opened from an effect.                                              |
+| Page                                                                                                  | Kind   | What it is                                                                               |
+| ----------------------------------------------------------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------- |
+| [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section)             | server | «Mis cursos»: the courses the student added and the card that leads to the catalog.      |
+| [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section) | server | «Explorar cursos»: every published course, with the level filter.                        |
+| [`LevelFilter`](/components/platform/sections/courses/course-catalog/level-filter)                    | server | A chip per level with its orientative Elo range; the level goes in the URL.              |
+| [`CourseCard`](/components/platform/sections/courses/course-card)                                     | server | A course as a card: progress if it is added, its length and «Ver curso» if it is not.    |
+| [`LevelDots`](/components/platform/sections/courses/level-dots)                                       | server | One dot per level, lit the course's, with a CSS-only tip.                                |
+| [`CourseInfoSection`](/components/platform/sections/courses/course-info/course-info-section)          | server | What a course is, by its slug, and the button that adds it.                              |
+| [`LevelScale`](/components/platform/sections/courses/course-info/level-scale)                         | server | The course placed on the scale of the six levels.                                        |
+| [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame)           | server | The layout of a course being studied: «Aprender», «Repasar», progress, options, setting. |
+| [`CourseStudySection`](/components/platform/sections/courses/course-study/course-study-section)       | server | The course by its id: its chapters as cards with progress.                               |
+| [`ChapterStudySection`](/components/platform/sections/courses/course-study/chapter-study-section)     | server | A chapter's lessons as cards, each with its first moves.                                 |
+| [`LearnMode`](/components/platform/sections/courses/course-study/learn-mode)                          | server | «Todo» or «Imprescindibles»: two forms with a bound value.                               |
+| [`ResetProgress`](/components/platform/sections/courses/course-study/reset-progress)                  | client | «Borrar mi progreso» and the dialog that asks first.                                     |
+| [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section)          | server | The lesson in the viewer as running text, with the completion form.                      |
+| [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker)                   | client | Marks the lesson opened from an effect.                                                  |
 
 ## `sections/studies/` — `/estudios`
 
@@ -135,39 +139,39 @@ description: "Index of components/platform: the shared primitives and every sect
 
 ## `sections/staff/` — `/administracion`
 
-| Page                                                                                                     | Kind   | What it is                                                        |
-| -------------------------------------------------------------------------------------------------------- | ------ | ----------------------------------------------------------------- |
-| [`StaffDashboardSection`](/components/platform/sections/staff/dashboard/staff-dashboard-section)         | server | Counts and students without a teacher.                            |
-| [`StudentsTableSection`](/components/platform/sections/staff/students/students-table-section)            | server | Every account, searchable.                                        |
-| [`StudentAdminDetailSection`](/components/platform/sections/staff/students/student-admin-detail-section) | server | Account, password reset, assignment panel.                        |
-| [`CreateAccountForm`](/components/platform/sections/staff/students/create-account-form)                  | client | Account creation returning a temporary password.                  |
-| [`ResetPasswordForm`](/components/platform/sections/staff/students/reset-password-form)                  | client | Password reset returning a temporary password.                    |
-| [`TempPasswordNotice`](/components/platform/sections/staff/students/temp-password-notice)                | client | Shows the temporary password once.                                |
-| [`TeachersTableSection`](/components/platform/sections/staff/teachers/teachers-table-section)            | server | Active and inactive teachers.                                     |
-| [`TeacherFormSection`](/components/platform/sections/staff/teachers/teacher-form-section)                | server | Link an account or create one.                                    |
-| [`TeacherAdminDetailSection`](/components/platform/sections/staff/teachers/teacher-admin-detail-section) | server | Record, activation, assignments.                                  |
-| [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel)                    | server | Student↔teacher assignments from either side.                     |
-| [`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section)               | server | The catalog in every status.                                      |
-| [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section)               | server | The course in independent cards.                                  |
-| [`CourseAuthors`](/components/platform/sections/staff/courses/course-authors)                            | client | The authors of a course: search to add, role in the row.          |
-| [`CourseStatusMenu`](/components/platform/sections/staff/courses/course-status-menu)                     | client | The course's status as a pill that changes it.                    |
-| [`CourseSyllabus`](/components/platform/sections/staff/courses/course-syllabus)                          | client | «Temario»: the chapters as a path, with introduction and closing. |
-| [`CourseNameFields`](/components/platform/sections/staff/courses/course-name-fields)                     | client | Name and slug; the slug follows the name.                         |
-| [`CourseGamesSection`](/components/platform/sections/staff/courses/course-games-section)                 | server | Every game of the course, by chapter.                             |
-| [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section)             | server | Chapter metadata and lesson order.                                |
-| [`ChapterGamesSection`](/components/platform/sections/staff/courses/chapter-games-section)               | server | The chapter's collection; where PGN is pasted.                    |
+| Page                                                                                                     | Kind   | What it is                                                          |
+| -------------------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------- |
+| [`StaffDashboardSection`](/components/platform/sections/staff/dashboard/staff-dashboard-section)         | server | Counts and students without a teacher.                              |
+| [`StudentsTableSection`](/components/platform/sections/staff/students/students-table-section)            | server | Every account, searchable.                                          |
+| [`StudentAdminDetailSection`](/components/platform/sections/staff/students/student-admin-detail-section) | server | Account, password reset, assignment panel.                          |
+| [`CreateAccountForm`](/components/platform/sections/staff/students/create-account-form)                  | client | Account creation returning a temporary password.                    |
+| [`ResetPasswordForm`](/components/platform/sections/staff/students/reset-password-form)                  | client | Password reset returning a temporary password.                      |
+| [`TempPasswordNotice`](/components/platform/sections/staff/students/temp-password-notice)                | client | Shows the temporary password once.                                  |
+| [`TeachersTableSection`](/components/platform/sections/staff/teachers/teachers-table-section)            | server | Active and inactive teachers.                                       |
+| [`TeacherFormSection`](/components/platform/sections/staff/teachers/teacher-form-section)                | server | Link an account or create one.                                      |
+| [`TeacherAdminDetailSection`](/components/platform/sections/staff/teachers/teacher-admin-detail-section) | server | Record, activation, assignments.                                    |
+| [`AssignmentPanel`](/components/platform/sections/staff/assignments/assignment-panel)                    | server | Student↔teacher assignments from either side.                       |
+| [`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section)               | server | The catalog in every status.                                        |
+| [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section)               | server | The course in independent cards.                                    |
+| [`CourseAuthors`](/components/platform/sections/staff/courses/course-authors)                            | client | The authors of a course: search to add, role in the row.            |
+| [`CourseStatusMenu`](/components/platform/sections/staff/courses/course-status-menu)                     | client | The course's status as a pill that changes it.                      |
+| [`CourseSyllabus`](/components/platform/sections/staff/courses/course-syllabus)                          | client | «Temario»: the chapters as a path, with introduction and closing.   |
+| [`CourseNameFields`](/components/platform/sections/staff/courses/course-name-fields)                     | client | Name and slug; the slug follows the name.                           |
+| [`CourseGamesSection`](/components/platform/sections/staff/courses/course-games-section)                 | server | Every game of the course, by chapter.                               |
+| [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section)             | server | Chapter metadata and lesson order.                                  |
+| [`ChapterGamesSection`](/components/platform/sections/staff/courses/chapter-games-section)               | server | The chapter's collection; where PGN is pasted.                      |
 | [`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section)                 | server | One game on the board: the studies' viewer and autosave, for staff. |
-| [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section)               | server | Content, metadata, exercises.                                     |
-| [`LessonGamePicker`](/components/platform/sections/staff/courses/lesson-game-picker)                     | server | Links the lesson to a course game.                                |
-| [`ExerciseEditor`](/components/platform/sections/staff/courses/exercise-editor)                          | client | The lesson's exercises as SAN lines.                              |
-| [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker)                 | client | Marks two positions on the lesson's PGN.                          |
-| [`SortableList`](/components/platform/sections/staff/courses/sortable-list)                              | client | Drag-sortable rows for the lessons of a chapter.                  |
-| [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor)                            | server | Header (title, facts, actions) and the two-column layout.         |
-| [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel)                                  | server | A card with a header rule.                                        |
-| [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs)                                    | server | Tabs that are pages.                                              |
-| [`AuthorsManager`](/components/platform/sections/staff/courses/authors-manager)                          | client | «Autores»: the dialog where authors are created and edited.       |
-| [`StaffClassesSection`](/components/platform/sections/staff/classes/staff-classes-section)               | server | Every class with filters.                                         |
-| [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section)      | server | Everything about a class, payments included.                      |
+| [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section)               | server | Content, metadata, exercises.                                       |
+| [`LessonGamePicker`](/components/platform/sections/staff/courses/lesson-game-picker)                     | server | Links the lesson to a course game.                                  |
+| [`ExerciseEditor`](/components/platform/sections/staff/courses/exercise-editor)                          | client | The lesson's exercises as SAN lines.                                |
+| [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker)                 | client | Marks two positions on the lesson's PGN.                            |
+| [`SortableList`](/components/platform/sections/staff/courses/sortable-list)                              | client | Drag-sortable rows for the lessons of a chapter.                    |
+| [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor)                            | server | Header (title, facts, actions) and the two-column layout.           |
+| [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel)                                  | server | A card with a header rule.                                          |
+| [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs)                                    | server | Tabs that are pages.                                                |
+| [`AuthorsManager`](/components/platform/sections/staff/courses/authors-manager)                          | client | «Autores»: the dialog where authors are created and edited.         |
+| [`StaffClassesSection`](/components/platform/sections/staff/classes/staff-classes-section)               | server | Every class with filters.                                           |
+| [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section)      | server | Everything about a class, payments included.                        |
 
 ## Choosing a shared piece
 

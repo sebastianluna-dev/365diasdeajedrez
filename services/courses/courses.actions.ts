@@ -218,6 +218,103 @@ export async function completeLesson(lessonId: string): Promise<void> {
 }
 
 /**
+ * Adds a course to the student's: it writes the progress row that says so,
+ * not started, and takes them to the course to study.
+ *
+ * There is no table of enrolments, and there does not need to be: a course is
+ * the student's from the moment it has a progress row (see `isAdded` in the
+ * mapper). Idempotent: pressing it on a course already added changes nothing
+ * and still leads to it.
+ */
+export async function addCourse(courseId: string): Promise<void> {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+
+  // Only published courses: the id is bound on the server, but the action is
+  // reachable by direct POST with whatever id.
+  const course = await db.course.findFirst({
+    where: { id: courseId, status: { code: COURSE_STATUS.PUBLISHED } },
+    select: { id: true, slug: true },
+  });
+  if (!course) return;
+
+  if (!(await allowAction(`${user.id}:add-course`, 30, 60_000))) {
+    redirect(withErrorParam(platformRoutes.courseInfo(course.slug), "throttled"));
+  }
+
+  await db.courseProgress.upsert({
+    where: { userId_courseId: { userId: user.id, courseId } },
+    update: {},
+    create: {
+      user: { connect: { id: user.id } },
+      course: { connect: { id: courseId } },
+      status: { connect: { code: PROGRESS_STATUS.NOT_STARTED } },
+    },
+  });
+
+  revalidatePath(platformRoutes.courses);
+  revalidatePath(platformRoutes.courseCatalog);
+  revalidatePath(platformRoutes.courseInfo(course.slug));
+  revalidatePath(platformRoutes.courseDetail(courseId));
+  redirect(platformRoutes.courseDetail(courseId));
+}
+
+const RESET_SCHEMA = z.object({ confirm: z.literal("on") });
+
+/**
+ * Erases the student's progress in a course: every lesson and every chapter
+ * goes back to not started, and so does the course, which STAYS among theirs.
+ *
+ * What is erased is where they are, not what they did: the history of
+ * activity, the streak and the trainer's attempts are the record of days that
+ * happened, and unlearning a course does not make them not have happened.
+ * Their settings of the course stay as well; they are preferences.
+ *
+ * It asks for an explicit confirmation in the form, because it cannot be
+ * undone and the action is reachable by direct POST.
+ */
+export async function resetCourseProgress(courseId: string, formData: FormData): Promise<void> {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  const studyPath = platformRoutes.courseDetail(courseId);
+
+  if (!parseForm(RESET_SCHEMA, formData).ok) redirect(withErrorParam(studyPath, "confirm"));
+  if (!(await allowAction(`${user.id}:reset-course`, 10, 60_000))) redirect(withErrorParam(studyPath, "throttled"));
+
+  const course = await db.course.findFirst({
+    where: { id: courseId, status: { code: COURSE_STATUS.PUBLISHED } },
+    select: { id: true, slug: true, chapters: { select: { order: true } } },
+  });
+  if (!course) return;
+
+  await db.$transaction(async (tx) => {
+    await tx.lessonProgress.deleteMany({ where: { userId: user.id, lesson: { chapter: { courseId } } } });
+    await tx.chapterProgress.deleteMany({ where: { userId: user.id, chapter: { courseId } } });
+    // `updateMany`, which does nothing to a course that was never added: the
+    // reset must not be a way of adding it.
+    const notStarted = await tx.progressStatus.findUniqueOrThrow({
+      where: { code: PROGRESS_STATUS.NOT_STARTED },
+      select: { id: true },
+    });
+    await tx.courseProgress.updateMany({
+      where: { userId: user.id, courseId },
+      data: { statusId: notStarted.id, startedAt: null, completedAt: null, lastLessonId: null },
+    });
+  });
+
+  revalidatePath(platformRoutes.dashboard);
+  revalidatePath(platformRoutes.courses);
+  revalidatePath(platformRoutes.courseCatalog);
+  revalidatePath(platformRoutes.courseInfo(course.slug));
+  revalidatePath(studyPath);
+  for (const chapter of course.chapters) {
+    revalidatePath(platformRoutes.chapterDetail(courseId, chapter.order));
+  }
+  revalidatePath("/lecciones/[lessonId]", "page");
+  redirect(studyPath);
+}
+
+/**
  * Switches a course's essential-lessons filter on or off.
  *
  * It is a LENS, not a change in what the course is: it writes exactly one row

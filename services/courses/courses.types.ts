@@ -39,7 +39,14 @@ export interface CourseLevelItem {
   name: string;
   description: string;
   eloRange: string;
+  /** The range's two ends, for what is computed over them: a scale, a span. */
+  eloMin: number;
+  /** Null when the level has no ceiling. */
+  eloMax: number | null;
 }
+
+/** What the button of a course says, by where the student is in it. */
+export type CourseCta = "Empezar" | "Continuar" | "Repasar";
 
 export interface CourseSummary {
   id: string;
@@ -53,21 +60,43 @@ export interface CourseSummary {
   /** Who it is aimed at, the easiest level first; the list is filtered by their slug. */
   levels: CourseLevelItem[];
   authorNames: string[];
+  /**
+   * The student added it to their courses. It is the same as having a
+   * `CourseProgress` row: a course is added by pressing the button of its
+   * information page or by opening one of its lessons.
+   */
+  isAdded: boolean;
   progress: CourseProgressSummary;
-  /** Lesson the CTA opens according to the student's state. */
+  /** Lesson the dashboard's button opens according to the student's state. */
   continueHref: string;
-  ctaLabel: "Comenzar" | "Continuar" | "Revisar";
+  ctaLabel: CourseCta;
+  /** The course to study: its chapters, with the student's progress. */
   href: string;
+  /** What the course is, for whoever has not added it. */
+  infoHref: string;
 }
 
 export interface CourseChapterItem {
   id: string;
   order: number;
+  /** The whole name, as the staff wrote it. */
   name: string;
+  /** The name without its closing note: "Los años de aprendizaje". */
+  title: string;
+  /** The note the name closes with, when it has one: "1957–1959". */
+  tag?: string;
   description?: string;
-  estimatedDuration?: number;
+  /** Minutes: the chapter's own figure, or what its lessons add up to. */
+  durationMin?: number;
+  /** EVERY lesson of the chapter, whatever the filter says: what the information page counts. */
+  lessonCount: number;
+  /** How many of them the staff marked as essential. */
+  priorityLessons: number;
+  /** The ones the student sees, which with the filter on are not all. */
   totalLessons: number;
   completedLessons: number;
+  /** Whole percentage 0–100 over the ones the student sees. */
+  percent: number;
   href: string;
 }
 
@@ -88,8 +117,14 @@ export interface CourseSourceItem {
   specificReference?: string;
 }
 
+/**
+ * A course whole: what its information page says of it and what its study
+ * pages need around the chapters. One shape for both, because they are the
+ * same course seen before and after adding it.
+ */
 export interface CourseDetail {
   id: string;
+  slug: string;
   name: string;
   description?: string;
   cover?: string;
@@ -98,13 +133,28 @@ export interface CourseDetail {
   /** Who it is aimed at, the easiest level first, each with its orientative Elo range. */
   levels: CourseLevelItem[];
   authors: CourseAuthorItem[];
+  /** The student added it to their courses; see `CourseSummary.isAdded`. */
+  isAdded: boolean;
   progress: CourseProgressSummary;
-  continueHref: string;
-  ctaLabel: "Comenzar" | "Continuar" | "Revisar";
+  ctaLabel: CourseCta;
+  /**
+   * The next lesson to learn: where they left off if it is unfinished, the
+   * first unfinished one otherwise. Absent when every lesson in view is done,
+   * or none is in view.
+   */
+  learnHref?: string;
+  /** Exercises of the lessons already learned: what «Repasar» trains. */
+  reviewCount: number;
+  reviewHref: string;
   /** The student asked to see only the essential ones of this course. */
   onlyPriorityLessons: boolean;
   /** How many that filter hides, so it can be said instead of kept quiet. */
   hiddenLessons: number;
+  /** EVERY lesson of the course and their minutes, whatever the filter says. */
+  lessonCount: number;
+  totalMinutes: number;
+  infoHref: string;
+  studyHref: string;
   chapters: CourseChapterItem[];
   /** «Procedencia»: where the material comes from, in the staff's order; empty when none was recorded. */
   sources: CourseSourceItem[];
@@ -118,32 +168,42 @@ export interface ChapterLessonItem {
   isPriority: boolean;
   estimatedDuration?: number;
   statusCode: ProgressStatusCode;
+  /** It is the course's next lesson to learn: the one «Aprender» opens. */
+  isNext: boolean;
+  /**
+   * How the lesson opens: its first moves, "1.e4 c5 2.Cf3 …". Absent for a
+   * lesson without moves, which is a diagram and is told by its description.
+   */
+  preview?: string;
+  href: string;
+}
+
+/** A neighbour chapter, to go to it from the foot of the list. */
+export interface ChapterLink {
+  order: number;
   href: string;
 }
 
 export interface ChapterView {
-  courseId: string;
-  courseName: string;
-  courseHref: string;
+  /** The course around the chapter: its name, its progress, its buttons. */
+  course: CourseDetail;
   id: string;
   order: number;
   name: string;
+  /** The name without its closing note, and the note: see `CourseChapterItem`. */
+  title: string;
+  tag?: string;
   description?: string;
-  estimatedDuration?: number;
   completedLessons: number;
   /** Of the VISIBLE ones; with the filter on it is not the chapter's total. */
   totalLessons: number;
+  /** Whole percentage 0–100 over the visible ones. */
+  percent: number;
   /** How many the filter hides. It is stated, so the absence does not unsettle. */
   hiddenLessons: number;
-  onlyPriorityLessons: boolean;
   lessons: ChapterLessonItem[];
-  /** First uncompleted lesson of the chapter; the first one if they are all done. */
-  continueHref: string;
-  ctaLabel: CourseSummary["ctaLabel"];
-  /** true if some lesson of the chapter has trainable exercises. */
-  hasExercises: boolean;
-  /** true if the user has already added it to the Move Trainer. */
-  inTrainer: boolean;
+  previous?: ChapterLink;
+  next?: ChapterLink;
 }
 
 export interface LessonView {

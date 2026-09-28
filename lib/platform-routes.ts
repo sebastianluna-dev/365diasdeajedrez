@@ -24,9 +24,21 @@ export const platformRoutes = {
    * route to maintain in parallel.
    */
   gameDetail: (studyId: string, gameId: string) => `/estudios/${studyId}/partidas/${gameId}`,
+  /** "Mis cursos": the ones the student added. */
   courses: "/cursos",
-  /** "Mis cursos" narrowed to the ones aimed at a level, by the level's slug. */
-  coursesOfLevel: (levelSlug: string) => `/cursos?nivel=${encodeURIComponent(levelSlug)}`,
+  /**
+   * Every published course, to find the ones to add. Fixed segment, so it
+   * wins over `/cursos/[courseRef]`; no course can take "explorar" as its slug
+   * (`isReservedCourseSlug`).
+   */
+  courseCatalog: "/cursos/explorar",
+  /** The catalog narrowed to the courses aimed at a level, by the level's slug. */
+  coursesOfLevel: (levelSlug: string) => `/cursos/explorar?nivel=${encodeURIComponent(levelSlug)}`,
+  /**
+   * What a course is, for whoever has not added it yet: addressed by its SLUG,
+   * which is the one of the two that can be read and shared.
+   */
+  courseInfo: (slug: string) => `/cursos/${slug}`,
   /**
    * The STUDENT's routes go by an 8-digit numeric identifier. The staff panel
    * keeps its own: they are two areas with different identifiers on purpose.
@@ -39,10 +51,16 @@ export const platformRoutes = {
    * already locates it, and nesting it forced dragging course and chapter into
    * every link.
    */
+  /**
+   * The course to STUDY, by its id. It shares its segment with `courseInfo`:
+   * eight digits are an id and anything else a slug (`isCourseId`).
+   */
   courseDetail: (courseId: string) => `/cursos/${courseId}`,
   chapterDetail: (courseId: string, chapterOrder: number) => `/cursos/${courseId}/${chapterOrder}`,
   lessonDetail: (lessonId: string) => `/lecciones/${lessonId}`,
   trainer: "/entrenador",
+  /** The Move Trainer over what the student already learned of a course. */
+  courseReview: (courseId: string) => `/entrenador?course=${courseId}`,
   /** Game search by position; shared by student and teacher. */
   explorer: "/explorador",
 } as const;

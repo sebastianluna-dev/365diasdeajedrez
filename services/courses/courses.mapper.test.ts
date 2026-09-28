@@ -9,7 +9,6 @@ import {
   mapCourseSources,
   mapCourseSummary,
   mapLessonView,
-  type CourseWithContent,
   type CourseWithDetail,
   type LessonRowForView,
   type UserCourseState,
@@ -47,13 +46,15 @@ function chapter(id: string, order: number, lessons: LessonSpec[]) {
 }
 
 const COURSE = {
-  id: "curso-1",
+  id: "10000009",
+  slug: "curso-de-prueba",
   name: "Curso de prueba",
   description: null,
   cover: null,
   courseContentTypes: [],
   courseLevels: [],
   courseAuthors: [],
+  sources: [],
   chapters: [
     chapter("cap-1", 1, [
       { id: "l1", order: 1, priority: true },
@@ -66,7 +67,7 @@ const COURSE = {
       { id: "l6", order: 3 },
     ]),
   ],
-} as unknown as CourseWithContent;
+} as unknown as CourseWithDetail;
 
 function state(overrides: Partial<UserCourseState> = {}): UserCourseState {
   return { lessonStatus: new Map(), onlyPriorityLessons: false, ...overrides };
@@ -99,7 +100,7 @@ describe("con el filtro apagado, todo como siempre", () => {
   });
 
   it("la lista del capítulo las trae todas", () => {
-    const view = mapChapterView(COURSE, "cap-1", state(), { hasExercises: false, inTrainer: false });
+    const view = mapChapterView(COURSE, "cap-1", state());
     expect(view?.lessons.map((lesson) => lesson.id)).toEqual(["l1", "l2", "l3"]);
     expect(view?.hiddenLessons).toBe(0);
   });
@@ -109,25 +110,19 @@ describe("con el filtro encendido", () => {
   const filtered = state({ onlyPriorityLessons: true });
 
   it("deja las prioritarias", () => {
-    const view = mapChapterView(COURSE, "cap-1", filtered, { hasExercises: false, inTrainer: false });
+    const view = mapChapterView(COURSE, "cap-1", filtered);
     expect(view?.lessons.map((lesson) => lesson.id)).toEqual(["l1"]);
     expect(view?.hiddenLessons).toBe(2);
   });
 
   it("y también las que el alumno ya tocó, aunque no sean prioritarias", () => {
     // It is half of the rule that avoids the filter's worst effect.
-    const view = mapChapterView(COURSE, "cap-1", state({ onlyPriorityLessons: true, lessonStatus: completed("l3") }), {
-      hasExercises: false,
-      inTrainer: false,
-    });
+    const view = mapChapterView(COURSE, "cap-1", state({ onlyPriorityLessons: true, lessonStatus: completed("l3") }));
     expect(view?.lessons.map((lesson) => lesson.id)).toEqual(["l1", "l3"]);
   });
 
   it("el número de orden que se enseña es el REAL, sin renumerar", () => {
-    const view = mapChapterView(COURSE, "cap-2", state({ onlyPriorityLessons: true, lessonStatus: completed("l6") }), {
-      hasExercises: false,
-      inTrainer: false,
-    });
+    const view = mapChapterView(COURSE, "cap-2", state({ onlyPriorityLessons: true, lessonStatus: completed("l6") }));
     expect(view?.lessons.map((lesson) => lesson.order)).toEqual([1, 3]);
   });
 
@@ -152,30 +147,147 @@ describe("con el filtro encendido", () => {
 
 describe("por dónde sigue el curso", () => {
   it("si donde se quedó queda escondido, va a la primera visible sin terminar", () => {
-    const view = mapChapterView(COURSE, "cap-1", state({ onlyPriorityLessons: true, lastLessonId: "l2" }), {
-      hasExercises: false,
-      inTrainer: false,
-    });
-    expect(view?.continueHref).toContain("l1");
+    const view = mapChapterView(COURSE, "cap-1", state({ onlyPriorityLessons: true, lastLessonId: "l2" }));
+    expect(view?.course.learnHref).toContain("l1");
+    expect(view?.lessons.find((lesson) => lesson.isNext)?.id).toBe("l1");
   });
 
   it("sin ninguna visible, a la ficha del curso y sin NaN", () => {
     const sinPrioritarias = {
       ...COURSE,
       chapters: [chapter("cap-3", 1, [{ id: "l7", order: 1 }])],
-    } as unknown as CourseWithContent;
+    } as unknown as CourseWithDetail;
 
     const progress = mapCourseProgress(sinPrioritarias, state({ onlyPriorityLessons: true }));
     expect(progress.totalLessons).toBe(0);
     expect(progress.percent).toBe(0);
     expect(progress.minutesPercent).toBe(0);
 
-    const view = mapChapterView(sinPrioritarias, "cap-3", state({ onlyPriorityLessons: true }), {
-      hasExercises: false,
-      inTrainer: false,
-    });
+    const view = mapChapterView(sinPrioritarias, "cap-3", state({ onlyPriorityLessons: true }));
     expect(view?.lessons).toEqual([]);
-    expect(view?.continueHref).toContain("curso-1");
+    // Nothing in view, nothing to learn: the button is not drawn.
+    expect(view?.course.learnHref).toBeUndefined();
+    expect(view?.percent).toBe(0);
+  });
+});
+
+describe("la siguiente lección por aprender", () => {
+  it("es la primera sin terminar, en el orden en que se lee el curso", () => {
+    const detail = mapCourseDetail(COURSE, state({ lessonStatus: completed("l1", "l2") }));
+    expect(detail.learnHref).toContain("l3");
+  });
+
+  it("es donde se quedó, si la dejó a medias", () => {
+    const status = new Map<string, ProgressStatusCode>([
+      ["l1", PROGRESS_STATUS.COMPLETED],
+      ["l5", PROGRESS_STATUS.IN_PROGRESS],
+    ]);
+    const detail = mapCourseDetail(COURSE, state({ lessonStatus: status, lastLessonId: "l5" }));
+    expect(detail.learnHref).toContain("l5");
+  });
+
+  it("NO es donde se quedó si ya la terminó: «Aprender» promete algo nuevo", () => {
+    const detail = mapCourseDetail(COURSE, state({ lessonStatus: completed("l1", "l2"), lastLessonId: "l2" }));
+    expect(detail.learnHref).toContain("l3");
+  });
+
+  it("no hay ninguna cuando todas están aprendidas", () => {
+    const all = completed("l1", "l2", "l3", "l4", "l5", "l6");
+    const detail = mapCourseDetail(COURSE, state({ lessonStatus: all }));
+    expect(detail.learnHref).toBeUndefined();
+    expect(detail.ctaLabel).toBe("Repasar");
+  });
+
+  it("es una sola en todo el curso, y la lista del capítulo la marca", () => {
+    const status = state({ lessonStatus: completed("l1", "l2", "l3") });
+    const first = mapChapterView(COURSE, "cap-1", status);
+    const second = mapChapterView(COURSE, "cap-2", status);
+
+    expect(first?.lessons.filter((lesson) => lesson.isNext)).toEqual([]);
+    expect(second?.lessons.filter((lesson) => lesson.isNext).map((lesson) => lesson.id)).toEqual(["l4"]);
+  });
+});
+
+describe("un curso agregado", () => {
+  it("es el que tiene fila de progreso, aunque no haya empezado", () => {
+    expect(mapCourseSummary(COURSE, state()).isAdded).toBe(false);
+    expect(mapCourseSummary(COURSE, state({ courseStatus: PROGRESS_STATUS.NOT_STARTED })).isAdded).toBe(true);
+    expect(mapCourseDetail(COURSE, state({ courseStatus: PROGRESS_STATUS.IN_PROGRESS })).isAdded).toBe(true);
+  });
+
+  it("dice «Empezar» recién agregado, «Continuar» con algo hecho y «Repasar» terminado", () => {
+    const added = { courseStatus: PROGRESS_STATUS.NOT_STARTED };
+    expect(mapCourseSummary(COURSE, state(added)).ctaLabel).toBe("Empezar");
+    expect(mapCourseSummary(COURSE, state({ ...added, lessonStatus: completed("l1") })).ctaLabel).toBe("Continuar");
+    expect(
+      mapCourseSummary(COURSE, state({ ...added, lessonStatus: completed("l1", "l2", "l3", "l4", "l5", "l6") }))
+        .ctaLabel,
+    ).toBe("Repasar");
+  });
+
+  it("se estudia por su id y se lee por su slug", () => {
+    const summary = mapCourseSummary(COURSE, state());
+    expect(summary.href).toBe("/cursos/10000009");
+    expect(summary.infoHref).toBe("/cursos/curso-de-prueba");
+  });
+});
+
+describe("los capítulos del curso", () => {
+  const WITH_NAMES = {
+    ...COURSE,
+    chapters: [
+      {
+        ...chapter("cap-1", 1, [
+          { id: "l1", order: 1, priority: true, minutes: 20 },
+          { id: "l2", order: 2, minutes: 20 },
+        ]),
+        name: "Los años de aprendizaje (1957–1959)",
+      },
+      { ...chapter("cap-2", 2, [{ id: "l3", order: 1, minutes: 15 }]), name: "El final", estimatedDuration: 90 },
+    ],
+  } as unknown as CourseWithDetail;
+
+  it("separan el nombre de la nota con que cierra", () => {
+    const [first, second] = mapCourseDetail(WITH_NAMES, state()).chapters;
+    expect(first).toMatchObject({ title: "Los años de aprendizaje", tag: "1957–1959" });
+    expect(second).toMatchObject({ title: "El final" });
+    expect(second?.tag).toBeUndefined();
+  });
+
+  it("duran lo que dice su cifra y, sin ella, lo que suman sus lecciones", () => {
+    const [first, second] = mapCourseDetail(WITH_NAMES, state()).chapters;
+    expect(first?.durationMin).toBe(40);
+    expect(second?.durationMin).toBe(90);
+  });
+
+  it("cuentan TODAS sus lecciones para la ficha, y las que se ven para la barra", () => {
+    const [first] = mapCourseDetail(WITH_NAMES, state({ onlyPriorityLessons: true })).chapters;
+    expect(first).toMatchObject({ lessonCount: 2, priorityLessons: 1, totalLessons: 1 });
+  });
+
+  it("el curso suma todas sus lecciones y minutos, diga lo que diga el filtro", () => {
+    const detail = mapCourseDetail(WITH_NAMES, state({ onlyPriorityLessons: true }));
+    expect(detail).toMatchObject({ lessonCount: 3, totalMinutes: 55, hiddenLessons: 2 });
+  });
+
+  it("el capítulo sabe cuál va antes y cuál después", () => {
+    expect(mapChapterView(WITH_NAMES, "cap-1", state())).toMatchObject({
+      previous: undefined,
+      next: { order: 2, href: "/cursos/10000009/2" },
+    });
+    expect(mapChapterView(WITH_NAMES, "cap-2", state())).toMatchObject({
+      previous: { order: 1, href: "/cursos/10000009/1" },
+      next: undefined,
+    });
+  });
+
+  it("cada lección trae cómo se abre, y la que no tiene jugadas no trae nada", () => {
+    const previews = new Map([["l1", "1.e4 c5 2.Cf3 …"]]);
+    const view = mapChapterView(WITH_NAMES, "cap-1", state(), { previews, reviewCount: 3 });
+
+    expect(view?.lessons.map((lesson) => lesson.preview)).toEqual(["1.e4 c5 2.Cf3 …", undefined]);
+    expect(view?.course.reviewCount).toBe(3);
+    expect(view?.course.reviewHref).toBe("/entrenador?course=10000009");
   });
 });
 
@@ -270,6 +382,8 @@ describe("los niveles del curso", () => {
       name: "Experto",
       description: "Qué se trabaja en Experto.",
       eloRange: "2000–2199",
+      eloMin: 2000,
+      eloMax: 2199,
     });
     expect(mapCourseLevel(level("maestro", "Maestro", 2200, null).level).eloRange).toBe("2200 o más");
   });

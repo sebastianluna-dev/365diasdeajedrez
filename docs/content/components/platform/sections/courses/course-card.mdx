@@ -1,0 +1,68 @@
+---
+description: "A course as a card, for 'Mis cursos' and the catalog: cover, name with the dots of its levels, what it teaches and who signs it, and at the foot the student's progress or, for a course not added, how long it is."
+---
+
+# `CourseCard`
+
+|            |                                                                                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/courses/course-card.comp.tsx`                                                                                                                                      |
+| Kind       | Server Component                                                                                                                                                                                 |
+| Stylesheet | `course-card.comp.css` → block `.course-card`                                                                                                                                                    |
+| Used by    | [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section), [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section) |
+| Composes   | [`LevelDots`](/components/platform/sections/courses/level-dots)                                                                                                                                  |
+| Uses       | `CourseSummary`, `CourseLevelItem` from `services/courses/courses.types`; `countLessons`, `formatDuration` from `services/courses/course-rules`; `next/image`, `next/link`                       |
+
+## Purpose
+
+One card for the two lists, and it is the **course** that says which it is, not a prop:
+
+- A course the student **added** (`course.isAdded`) shows their progress — percentage, «2 de 5 lecciones», a bar — and leads to the course to study (`course.href`, `/cursos/<id>`). Its button reads what the mapper decided: «Empezar», «Continuar» or «Repasar».
+- A course **not added** shows how long it is («61 lecciones · 20 h») and leads to its information page (`course.infoHref`, `/cursos/<slug>`), which is where it is added. Its button reads «Ver curso».
+
+It lives at the root of `sections/courses/` because two sections use it.
+
+## Props
+
+| Prop     | Type                | Required | Meaning                                                                                                                                                                                      |
+| -------- | ------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `course` | `CourseSummary`     | yes      | `name`, `description?`, `cover?`, `contentTypes`, `levels`, `authorNames`, `isAdded`, `href`, `infoHref`, `ctaLabel`, `progress: { percent, completedLessons, totalLessons, totalMinutes }`. |
+| `levels` | `CourseLevelItem[]` | yes      | Every level of the catalog, the easiest first: the scale the dots are drawn over.                                                                                                            |
+
+## Behaviour
+
+- **The whole card is the link**, through the title's: `.course-card__link::after` is stretched over the card, so there is one link to announce and not a link around another. The focus ring is drawn on that `::after`, around the card.
+- The button at the foot is a `<span aria-hidden="true">`: it is the card's link, which the title already names. «Continuar» is the filled orange one (`_emphasis_strong`); the rest are outlined.
+- The dots sit above the stretched link (`.course-card__levels`, `z-index: 1`) because they open a tip of their own. The wrapper is only rendered for a course with levels.
+- The description is clamped to two lines: the card says what the course is about, the information page tells it.
+- A finished course (`ctaLabel === "Repasar"`) paints its bar green (`.course-card__fill_state_done`).
+- The cover is decorative (`alt=""`): the staff's covers carry the course's name drawn on them and the title is right under. Without a cover the box stays, in the ink colour.
+
+## Markup & styling
+
+Block `.course-card` (215 lines).
+
+**Elements:** `.course-card__cover`, `.course-card__cover-image`, `.course-card__body`, `.course-card__heading`, `.course-card__name`, `.course-card__link`, `.course-card__levels`, `.course-card__description`, `.course-card__facts`, `.course-card__contents`, `.course-card__by`, `.course-card__author`, `.course-card__foot`, `.course-card__progress`, `.course-card__progress-line`, `.course-card__percent`, `.course-card__ratio`, `.course-card__track`, `.course-card__fill`, `.course-card__length`, `.course-card__cta`
+
+**Modifiers and states:** `.course-card__cta_emphasis_strong`, `.course-card__fill_state_done`
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-border`, `--platform-border-strong`, `--platform-ink`, `--platform-success-ink`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+
+No breakpoints of its own: the list that holds it decides the columns. The hover transition is off under `prefers-reduced-motion`.
+
+## Usage
+
+From `components/platform/sections/courses/my-courses/my-courses.section.tsx`:
+
+```tsx
+import { CourseCard } from "../course-card.comp";
+
+{
+  courses.map((course) => <CourseCard key={course.id} course={course} levels={levels} />);
+}
+```
+
+## Related
+
+- `services/courses/courses.mapper.ts` decides `isAdded`, `ctaLabel`, `href` and `infoHref`.
+- [`CourseInfoSection`](/components/platform/sections/courses/course-info/course-info-section), where a course that is not added leads.

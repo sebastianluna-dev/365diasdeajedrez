@@ -117,7 +117,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/inicio`
 - `/clases`, `/clases/[classId]`
 - `/estudios`, `/estudios/clases` (games seen in class), `/estudios/[studyId]` (redirects to the study's first game; a study without games renders its empty page), `/estudios/[studyId]/partidas/[gameId]`
-- `/cursos` (`?nivel=<slug>` narrows the list to a level), `/cursos/[courseId]`, `/cursos/[courseId]/[chapterOrder]`
+- `/cursos` (the courses the student added), `/cursos/explorar` (the catalog; `?nivel=<slug>` narrows it to a level), `/cursos/<slug>` (a course's information page, where it is added), `/cursos/<id>` and `/cursos/<id>/<chapterOrder>` (the course to study; the two share the `[courseRef]` segment)
 - `/lecciones/[lessonId]` (the lesson hangs off the root: its identifier already locates it)
 - `/entrenador`
 - `/explorador` (search for games by position; student and teacher share it)

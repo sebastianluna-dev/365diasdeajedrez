@@ -33,6 +33,36 @@ export function shortEloRange(eloRange: string): string {
   return `Elo ${eloRange.charAt(0).toLowerCase()}${eloRange.slice(1)}`;
 }
 
+/** The range in the width of a scale's tick: "< 800", "800–1199", "2200+". */
+export function compactEloRange({ eloMin, eloMax }: EloRange): string {
+  const hasTop = eloMax !== null && eloMax !== undefined;
+  if (!hasTop) return eloMin <= 0 ? "Todos" : `${eloMin}+`;
+  if (eloMin <= 0) return `< ${eloMax + 1}`;
+  return `${eloMin}–${eloMax}`;
+}
+
+/**
+ * The whole range a course is aimed at: from the floor of its easiest level
+ * to the ceiling of its hardest. `undefined` for a course without levels.
+ *
+ * It spans what lies between two levels that are not neighbours: a course for
+ * beginners and for experts is said to be for 800–2199, which is what it
+ * means to whoever reads a single figure. The scale next to it shows the gap.
+ */
+export function audienceRange(levels: readonly EloRange[]): EloRange | undefined {
+  if (levels.length === 0) return undefined;
+  const eloMin = Math.min(...levels.map((level) => level.eloMin));
+  const isOpen = levels.some((level) => level.eloMax === null || level.eloMax === undefined);
+  const eloMax = isOpen ? null : Math.max(...levels.map((level) => level.eloMax ?? 0));
+  return { eloMin, eloMax };
+}
+
+/** "intermedio", "intermedio y avanzado", "principiante, intermedio y avanzado". */
+export function joinNames(names: readonly string[]): string {
+  if (names.length <= 1) return names[0] ?? "";
+  return `${names.slice(0, -1).join(", ")} y ${names[names.length - 1]}`;
+}
+
 /**
  * The level the list is filtered by, or undefined when the URL names none the
  * catalog has: a hand-typed `?nivel=` should not look like an empty list.

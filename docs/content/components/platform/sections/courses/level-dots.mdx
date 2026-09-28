@@ -1,0 +1,59 @@
+---
+description: "Who a course is for, in the width of a word: one dot per level of the catalog, lit the ones the course is aimed at, with a CSS-only tip that names them."
+---
+
+# `LevelDots`
+
+|            |                                                                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/level-dots.comp.tsx`                                                                                     |
+| Kind       | Server Component                                                                                                                               |
+| Stylesheet | `level-dots.comp.css` → block `.level-dots`                                                                                                    |
+| Used by    | [`CourseCard`](/components/platform/sections/courses/course-card)                                                                              |
+| Uses       | `CourseLevelItem` from `services/courses/courses.types`; `audienceRange`, `formatEloRange`, `joinNames`, `shortEloRange` from `level-rules.ts` |
+
+## Purpose
+
+Six dots next to a course's name: the ones of the levels it is aimed at are lit, each in the orange of its difficulty (`--platform-level-1` the lightest to `--platform-level-6` the darkest), so the row reads as a scale without a legend. What the dots mean is said by a tip — «Para jugadores de nivel intermedio y avanzado» / «Elo 1200–1999» — and by the label a screen reader is given.
+
+## Props
+
+| Prop     | Type                | Required | Meaning                                                      |
+| -------- | ------------------- | -------- | ------------------------------------------------------------ |
+| `scale`  | `CourseLevelItem[]` | yes      | Every level of the catalog, the easiest first: one dot each. |
+| `levels` | `CourseLevelItem[]` | yes      | The levels the course is aimed at: the dots that are lit.    |
+
+## Behaviour
+
+- Renders nothing when the catalog or the course has no levels.
+- The range is the span of the course's levels (`audienceRange`): from the lowest `eloMin` to the highest `eloMax`, open-ended when one of them has no ceiling.
+- **No state.** The tip is shown by the stylesheet on `:hover` and `:focus-visible`, so a list of courses does not hydrate one tooltip per card. The root takes keyboard focus (`tabIndex={0}`) and is announced as an image with the whole sentence as `aria-label`; the tip itself is `aria-hidden`.
+- A catalog that grew past six levels keeps the darkest tone for the rest (`TONES`).
+
+## Markup & styling
+
+Block `.level-dots` (110 lines).
+
+**Elements:** `.level-dots__dot`, `.level-dots__tip`, `.level-dots__tip-levels`, `.level-dots__tip-elo`
+
+**Modifiers and states:** `.level-dots__dot_level_1` … `.level-dots__dot_level_6`
+
+**Tokens:** `--platform-ink`, `--platform-on-ink`, `--platform-surface-sunken`, `--platform-level-1` … `--platform-level-6`
+
+The tip enters in 160 ms and leaves in 120 ms, like every popup of the platform; both are off under `prefers-reduced-motion`.
+
+## Usage
+
+From `components/platform/sections/courses/course-card.comp.tsx`:
+
+```tsx
+import { LevelDots } from "./level-dots.comp";
+
+<span className="course-card__levels">
+  <LevelDots scale={levels} levels={course.levels} />
+</span>;
+```
+
+## Related
+
+- [`LevelScale`](/components/platform/sections/courses/course-info/level-scale), the same fact at full width on the information page.

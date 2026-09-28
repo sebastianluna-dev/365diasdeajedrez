@@ -33,6 +33,7 @@ import {
   readIds,
 } from "@/services/shared/form-schema";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
+import { isReservedCourseSlug } from "@/services/courses/course-rules";
 import { authorSlugFor } from "./author-rules";
 import type { AuthorFormState } from "./staff-courses.types";
 import type { ImageSaveResult } from "@/services/media/media.types";
@@ -86,7 +87,16 @@ function formSans() {
     .transform((value) => (value ?? "").split(/\s+/).filter(Boolean));
 }
 
-const slugField = z.string().trim().toLowerCase().max(SLUG_MAX_LENGTH).regex(SLUG_SHAPE);
+// A slug is how the student reaches the course's information page
+// (`/cursos/<slug>`), so one that page would never answer to is refused: the
+// name of another page of `/cursos`, or eight digits, which are read as an id.
+const slugField = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .max(SLUG_MAX_LENGTH)
+  .regex(SLUG_SHAPE)
+  .refine((slug) => !isReservedCourseSlug(slug));
 const COURSE_SCHEMA = z.object({
   name: formText(NAME_MAX_LENGTH),
   slug: slugField,

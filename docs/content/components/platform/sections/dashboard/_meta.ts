@@ -6,6 +6,7 @@ const meta: MetaRecord = {
   "next-class": "next-class",
   "profile-summary": "profile-summary",
   "recent-activity": "recent-activity",
+  "study-goal": "study-goal",
 };
 
 export default meta;

@@ -1,0 +1,256 @@
+.course-study-frame {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  /* --- The course, above -------------------------------------------------- */
+
+  & .course-study-frame__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 24px;
+  }
+
+  & .course-study-frame__cover {
+    position: relative;
+    flex: none;
+    width: 280px;
+    aspect-ratio: 21 / 9;
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--platform-ink);
+    box-shadow: 0 1px 3px rgba(22, 17, 13, 0.1);
+  }
+
+  & .course-study-frame__cover-image {
+    object-fit: cover;
+  }
+
+  & .course-study-frame__heading {
+    flex: 1 1 280px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  & .course-study-frame__name {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  /* Where one is in the course: its chapters, or one of them. */
+  & .course-study-frame__place {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-study-frame__place_kind_home {
+    font-size: 17px;
+  }
+
+  & .course-study-frame__place-link {
+    color: var(--platform-accent-ink);
+  }
+
+  & .course-study-frame__place-link:hover {
+    color: var(--platform-accent-hover);
+  }
+
+  & .course-study-frame__place-here {
+    color: var(--platform-text);
+  }
+
+  & .course-study-frame__actions {
+    flex: 0 1 260px;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  & .course-study-frame__learn,
+  & .course-study-frame__review {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 50px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  & .course-study-frame__learn {
+    background: var(--platform-accent);
+    color: var(--platform-text);
+  }
+
+  & .course-study-frame__learn:hover {
+    background: var(--platform-accent-hover);
+    color: var(--platform-text);
+  }
+
+  & .course-study-frame__review {
+    background: var(--platform-ink);
+    color: var(--platform-surface);
+  }
+
+  & .course-study-frame__review:hover {
+    background: color-mix(in srgb, var(--platform-ink) 84%, var(--platform-surface));
+    color: var(--platform-surface);
+  }
+
+  & .course-study-frame__review-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 7px;
+    box-sizing: border-box;
+    border-radius: 1000px;
+    background: var(--platform-success-soft);
+    color: var(--platform-success-ink);
+    font-size: 12px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* --- The page's column and the course's, side by side ------------------- */
+
+  & .course-study-frame__layout {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  & .course-study-frame__main {
+    flex: 1 1 600px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  & .course-study-frame__aside {
+    flex: 1 1 260px;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  & .course-study-frame__card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--platform-border);
+    border-radius: 16px;
+    background: var(--platform-surface);
+  }
+
+  & .course-study-frame__card_kind_progress {
+    gap: 14px;
+    padding: 20px 22px;
+  }
+
+  & .course-study-frame__card-title {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  /* The title of a card with a body under it: a band, closed by a rule. */
+  & .course-study-frame__card-title_kind_head {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--platform-border);
+  }
+
+  & .course-study-frame__progress-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin: 0;
+  }
+
+  & .course-study-frame__progress-ratio {
+    font-size: 13px;
+    color: var(--platform-text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .course-study-frame__percent {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .course-study-frame__track {
+    height: 10px;
+    overflow: hidden;
+    border-radius: 1000px;
+    background: var(--platform-track);
+  }
+
+  & .course-study-frame__fill {
+    height: 100%;
+    border-radius: 1000px;
+    background: var(--platform-accent);
+  }
+
+  & .course-study-frame__options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 16px 22px 20px;
+    list-style: none;
+  }
+
+  & .course-study-frame__option {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--platform-accent-ink);
+  }
+
+  & .course-study-frame__option:hover {
+    color: var(--platform-accent-hover);
+  }
+
+  & .course-study-frame__setting {
+    padding: 16px 22px 20px;
+  }
+
+  /* Stacked, the course's column takes the width of the page's. */
+  @media (max-width: 960px) {
+    & .course-study-frame__aside {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 620px) {
+    & .course-study-frame__cover {
+      width: 100%;
+    }
+
+    & .course-study-frame__actions {
+      flex: 1 1 100%;
+    }
+  }
+}

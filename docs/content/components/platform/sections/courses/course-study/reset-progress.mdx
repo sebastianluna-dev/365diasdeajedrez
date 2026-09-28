@@ -1,0 +1,51 @@
+---
+description: "«Borrar mi progreso»: the link of the course's options and the native dialog that asks, with a required box, before erasing the student's progress in the course."
+---
+
+# `ResetProgress`
+
+|            |                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-study/reset-progress.comp.tsx`                 |
+| Kind       | Client Component (it opens and closes the dialog)                                           |
+| Stylesheet | `reset-progress.comp.css` → block `.reset-progress`                                         |
+| Used by    | [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame) |
+| Composes   | [`SubmitButton`](/components/platform/shared/submit-button)                                 |
+| Writes     | `resetCourseProgress()` · `services/courses/courses.actions.ts`                             |
+
+## Purpose
+
+Starting a course over. It cannot be undone, so it takes two things to go through — opening the dialog and ticking its box — and the button that does it is the red one.
+
+## Props
+
+| Prop               | Type     | Required | Meaning                                                                 |
+| ------------------ | -------- | -------- | ----------------------------------------------------------------------- |
+| `courseId`         | `string` | yes      | The course whose progress is erased.                                    |
+| `courseName`       | `string` | yes      | Named in the dialog's text.                                             |
+| `completedLessons` | `number` | yes      | What is about to be lost, by its figure; not mentioned when it is zero. |
+
+## Behaviour
+
+- A native `<dialog>` opened with `showModal()`: focus trapping, Escape and the backdrop come with it, and the entry and exit motion from `.platform-dialog`.
+- The box is `required`: the browser stops the form without it. The action asks for it again (`confirm=on`), because it is reachable by direct POST, and answers `?error=confirm` — «Marca la casilla para confirmar que quieres borrar tu progreso.» — when it is missing.
+- **What is erased**: the student's `LessonProgress` and `ChapterProgress` rows of the course, and the course's own progress goes back to `NOT_STARTED` with no dates and no last lesson. The course **stays** among the student's.
+- **What is not**: the activity log, the streak, the trainer's attempts and the course's settings. They are the record of days that happened, and preferences.
+
+## Markup & styling
+
+Block `.reset-progress` (81 lines).
+
+**Elements:** `.reset-progress__open`, `.reset-progress__dialog`, `.reset-progress__form`, `.reset-progress__title`, `.reset-progress__text`, `.reset-progress__confirm`, `.reset-progress__actions`
+
+**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_secondary`, `.platform-button_variant_danger`
+
+**Tokens:** `--platform-accent-hover`, `--platform-accent-ink`, `--platform-border-strong`, `--platform-danger`, `--platform-text-muted`
+
+**Breakpoints:** `(max-width: 520px)` stacks the two buttons.
+
+## Usage
+
+```tsx
+<ResetProgress courseId={course.id} courseName={course.name} completedLessons={progress.completedLessons} />
+```

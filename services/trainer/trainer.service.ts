@@ -1,3 +1,4 @@
+import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import type { Prisma } from "@/lib/platform-db/generated/client";
@@ -52,11 +53,17 @@ export async function getTrainerData(): Promise<TrainerData> {
 export interface TrainerSessionParams {
   lessonId?: string;
   chapterId?: string;
+  /** A course: its exercises of the lessons the student already learned. */
+  courseId?: string;
 }
 
 /**
- * Exercises of the session: those of the requested lesson or chapter, or those
- * of every chapter the user added to the Move Trainer.
+ * Exercises of the session: those of the requested lesson or chapter, those a
+ * course's «Repasar» asks for, or those of every chapter the user added to the
+ * Move Trainer.
+ *
+ * A course's review is of what was LEARNED: the exercises of its lessons the
+ * student completed, which is the same set its button counts.
  *
  * The lesson and chapter ids arrive through the URL, so the published-course
  * filter is chained into the `where`: without it, `/entrenador?chapter=<id>`
@@ -71,6 +78,13 @@ export async function getTrainerSession(params: TrainerSessionParams): Promise<T
     where = { lessonId: params.lessonId, lesson: publishedLessonWhere };
   } else if (params.chapterId) {
     where = { lesson: { chapterId: params.chapterId, ...publishedLessonWhere } };
+  } else if (params.courseId) {
+    where = {
+      lesson: {
+        chapter: { courseId: params.courseId, course: publishedCourseWhere },
+        progresses: { some: { userId: user.id, status: { code: PROGRESS_STATUS.COMPLETED } } },
+      },
+    };
   } else {
     const trainerRows = await db.userTrainerChapter.findMany({
       where: { userId: user.id },

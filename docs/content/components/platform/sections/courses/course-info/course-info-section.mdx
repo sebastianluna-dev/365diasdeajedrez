@@ -1,0 +1,65 @@
+---
+description: "A course's information page: cover, what it teaches, who it is for on the scale of levels, its figures, its chapters and where its material comes from, with the button that adds it."
+---
+
+# `CourseInfoSection`
+
+|            |                                                                                                                                                                                                             |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-info/course-info.section.tsx`                                                                                                                                  |
+| Kind       | Server Component                                                                                                                                                                                            |
+| Stylesheet | `course-info.section.css` → block `.course-info`                                                                                                                                                            |
+| Used by    | `/cursos/[courseRef]` when the segment is a **slug**                                                                                                                                                        |
+| Composes   | [`LevelScale`](/components/platform/sections/courses/course-info/level-scale), [`SubmitButton`](/components/platform/shared/submit-button), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Reads      | `resolveCourseReference()` → `getCourseInfo(slug)` · `services/courses/courses.service.ts`                                                                                                                  |
+| Writes     | `addCourse()` · `services/courses/courses.actions.ts`                                                                                                                                                       |
+| Uses       | `CourseDetail`, `CourseLevelItem`; `countChapters`, `countLessons`, `formatDuration` from `course-rules`; `studentErrorMessage`                                                                             |
+
+## Purpose
+
+What a course **is**, for whoever has not added it: nothing on this page is the student's — there is no progress here — except the button. It is the page the staff's «Ver en la plataforma» opens and the one a course is shared by, since its URL carries the slug.
+
+## Props
+
+| Prop        | Type                | Required | Meaning                                                            |
+| ----------- | ------------------- | -------- | ------------------------------------------------------------------ |
+| `course`    | `CourseDetail`      | yes      | The course whole; see `services/courses/courses.types.ts`.         |
+| `levels`    | `CourseLevelItem[]` | yes      | Every level of the catalog, for the scale the course is placed on. |
+| `errorCode` | `string`            | no       | What `addCourse` bounced back with in `?error=` (`throttled`).     |
+
+## Behaviour
+
+- **The button.** Not added: a `<form action={addCourse.bind(null, course.id)}>` with «Agregar a mis cursos», which writes the progress row and redirects to the course to study. Added: a link to `course.studyHref` that reads «Empezar curso», «Continuar curso» or «Repasar curso».
+- **The title is the cover's.** The staff's covers carry the course's name drawn on them, so the `<h1>` is there for whoever does not see the picture and is visually hidden. A course without cover gets a dark box with the name written on it in the serif (`.course-info__cover_kind_blank`), which is `aria-hidden`: the heading still names the page.
+- **Figures:** chapters, lessons and total time, of the WHOLE course (`lessonCount`, `totalMinutes`), whatever the student's essential-lessons filter says.
+- **Chapters** are cards and **not links**: a dark header with «Capítulo n» and, in the serif, the note the chapter's name closes with («1957–1959», from `splitChapterName`) or the name itself when it has none; then the title, the description and «17 lecciones · 340 min».
+- **«Procedencia»**: one line per source, the title linked when there is a URL. The staff's notes never reach here.
+
+## Markup & styling
+
+Block `.course-info` (367 lines). The card overlaps the foot of the cover; inside, a two-column grid: what the course is and, behind a rule, the figures with the button.
+
+**Elements:** `.course-info__hero`, `.course-info__cover`, `.course-info__cover-image`, `.course-info__cover-name`, `.course-info__card`, `.course-info__about`, `.course-info__contents`, `.course-info__content`, `.course-info__name`, `.course-info__description`, `.course-info__scale`, `.course-info__authors`, `.course-info__side`, `.course-info__stats`, `.course-info__stat`, `.course-info__stat-value`, `.course-info__stat-label`, `.course-info__add`, `.course-info__cta`, `.course-info__chapters`, `.course-info__section-head`, `.course-info__section-title`, `.course-info__section-note`, `.course-info__chapter-list`, `.course-info__chapter`, `.course-info__chapter-head`, `.course-info__chapter-number`, `.course-info__chapter-tag`, `.course-info__chapter-body`, `.course-info__chapter-title`, `.course-info__chapter-text`, `.course-info__chapter-foot`, `.course-info__sources`, `.course-info__sources-title`, `.course-info__source-list`, `.course-info__source`, `.course-info__source-type`, `.course-info__source-link`
+
+**Modifiers and states:** `.course-info__cover_kind_blank`
+
+**Tokens:** `--platform-accent`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-accent-on-ink`, `--platform-border`, `--platform-border-strong`, `--platform-font-serif`, `--platform-ink`, `--platform-on-ink`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+
+**Breakpoints:** `(max-width: 980px)` the card becomes one column, the figures and the button under a rule; `(max-width: 620px)` tightens the card's margins and padding. The chapters are a grid that fills (`repeat(auto-fill, minmax(300px, 1fr))`), so they need no breakpoint.
+
+`.course-info__cta` is a link or the button of a form, so its width is set (`width: 100%`) and not flexed: the side column is a flex column, where `flex: 1` would take its height.
+
+## Usage
+
+From `app/(platform)/cursos/[courseRef]/page.tsx`:
+
+```tsx
+const found = await resolveCourseReference(courseRef);
+// found.kind === "info"
+<CourseInfoSection course={found.course} levels={await listCourseLevels()} errorCode={error} />;
+```
+
+## Related
+
+- [`CourseStudySection`](/components/platform/sections/courses/course-study/course-study-section), the same course once added.
+- [Routing](/architecture/routing) for how one segment serves both pages.
