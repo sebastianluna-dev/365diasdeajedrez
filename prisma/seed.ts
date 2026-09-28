@@ -397,6 +397,22 @@ async function main() {
   }
 
   // --- Studies and games ---------------------------------------------------
+  //
+  // The row a seeded collection lands on is not always the one carrying its id.
+  // Two of these collections are also created by the APP, under ids of its own,
+  // and each is unique by something that is not the id:
+  //
+  //   · a chapter's collection (`@@unique([chapterId])`), by
+  //     `npm run collections:by-chapter`, which the docs tell you to run right
+  //     after a seed;
+  //   · a user's default study (`game_database_one_default_per_user`), by
+  //     `createDefaultStudy` when the account is enrolled.
+  //
+  // From the second seed on, inserting ours would break one of those two
+  // indexes. So the existing row is adopted, and what the seed knows as
+  // `database.id` is translated into the real one for everything pointing at it.
+  const databaseIdOf = new Map<string, string>();
+
   for (const database of GAME_DATABASES) {
     const databaseData = {
       ownerTypeId: idOf(ownerType, database.ownerType),
@@ -409,26 +425,48 @@ async function main() {
       isDefault: database.isDefault,
       order: database.order,
     };
+
+    let adopted: { id: string } | null = null;
+    if (database.chapterId) {
+      adopted = await db.gameDatabase.findUnique({
+        where: { chapterId: database.chapterId },
+        select: { id: true },
+      });
+    } else if (database.isDefault && database.userId) {
+      adopted = await db.gameDatabase.findFirst({
+        where: { userId: database.userId, isDefault: true },
+        select: { id: true },
+      });
+    }
+
+    const id = adopted?.id ?? database.id;
+    databaseIdOf.set(database.id, id);
+
     await db.gameDatabase.upsert({
-      where: { id: database.id },
+      where: { id },
       update: databaseData,
-      create: { id: database.id, ...databaseData },
+      create: { id, ...databaseData },
     });
   }
+
+  /** The collection's real id: the adopted one, or the seed's when it was created here. */
+  const realDatabaseId = (seedId: string): string => databaseIdOf.get(seedId) ?? seedId;
 
   // The share goes AFTER the databases and before the games: the row points at
   // the collection, which has to exist already.
   for (const share of STUDY_SHARES) {
+    const databaseId = realDatabaseId(share.databaseId);
     await db.studyShare.upsert({
-      where: { databaseId_userId: { databaseId: share.databaseId, userId: share.userId } },
+      where: { databaseId_userId: { databaseId, userId: share.userId } },
       update: { teacherId: share.teacherId },
-      create: share,
+      create: { ...share, databaseId },
     });
   }
 
   for (const game of GAMES) {
+    const databaseId = realDatabaseId(game.databaseId);
     const gameData = {
-      databaseId: game.databaseId,
+      databaseId,
       white: game.white,
       black: game.black,
       whiteElo: game.whiteElo,
@@ -452,7 +490,7 @@ async function main() {
     // `indexGamePositions` deletes and regenerates, so a re-seed does not duplicate.
     await indexGamePositions(db, {
       gameId: game.id,
-      databaseId: game.databaseId,
+      databaseId,
       pgn: game.pgn,
     });
   }

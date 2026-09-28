@@ -32,6 +32,14 @@ The guard: if the database host is not `localhost`/`127.0.0.1`/`::1` (or `NODE_E
 
 After a seed, run `npm run collections:by-chapter` if you need the lessons' own PGNs to be materialised as games in chapter collections (the script is idempotent and documents why it uses one short transaction per game).
 
+### What a second seed finds
+
+The seed is not transactional and is meant to be run again on a database the app has already written to. Two things follow.
+
+**It replaces what it describes.** For every course in `COURSES`, the chapters, lessons and sources that are not in the data are deleted before the rest is written. A chapter added to a seeded course from the staff panel — an introduction, a closing — is gone after the next seed. Courses created from the panel are never touched.
+
+**It adopts the collections the app created.** Two kinds of `GameDatabase` are also created by the app under ids of its own, and each is unique by something that is not the id: a chapter's collection (`@@unique([chapterId])`, created by `collections:by-chapter`) and a user's default study (`game_database_one_default_per_user`, created with the account by `createDefaultStudy`). Inserting the seed's row next to them would break the index, so the seed looks the existing row up, writes onto it and translates its own id into the real one for the shares, the games and the position index that point at it. Until 2026-09-28 it did not, and a second seed stopped at the first of those rows with `P2002`.
+
 ## `scripts/platform-user.ts` — `npm run user:*`
 
 ```bash
