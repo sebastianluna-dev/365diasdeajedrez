@@ -71,8 +71,8 @@ export interface CourseAdminDetail {
   description?: string;
   cover?: string;
   statusCode: CourseStatusCode;
+  /** For the pill next to the title; the date it was published is in the list. */
   statusLabel: string;
-  publishedAtLabel?: string;
   /** Codes of ContentType, at least one. */
   contentTypeCodes: string[];
   /** Slugs of the levels it is aimed at; none is a valid set. */

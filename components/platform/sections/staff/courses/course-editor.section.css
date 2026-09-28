@@ -3,8 +3,7 @@
   flex-direction: column;
   gap: 22px;
 
-  /* --- Forms ------------------------------------------------------------- */
-
+  /* The metadata form: the cards it is made of bring their own spacing. */
   & .course-editor__form {
     display: flex;
     flex-direction: column;
@@ -14,52 +13,5 @@
   & .course-editor__submit {
     display: flex;
     justify-content: flex-end;
-  }
-
-  & .course-editor__empty {
-    margin: 0;
-    font-size: 14px;
-    color: var(--platform-text-subtle);
-  }
-
-  /* --- Narrow column ------------------------------------------------------ */
-
-  & .course-editor__facts {
-    margin: 0 0 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  & .course-editor__fact {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 12px;
-    font-size: 14px;
-  }
-
-  & .course-editor__fact dt {
-    color: var(--platform-text-subtle);
-  }
-
-  & .course-editor__fact dd {
-    margin: 0;
-    font-weight: 600;
-    color: var(--platform-text);
-    text-align: right;
-  }
-
-  & .course-editor__actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  /* Across the narrow column: stacked and with different widths they would
-     look like two unrelated buttons. */
-  & .course-editor__actions form,
-  & .course-editor__actions .platform-button {
-    width: 100%;
   }
 }

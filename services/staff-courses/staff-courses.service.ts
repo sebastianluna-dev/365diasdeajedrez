@@ -121,7 +121,6 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
       slug: true,
       description: true,
       cover: true,
-      publishedAt: true,
       status: { select: { code: true, label: true } },
       courseContentTypes: {
         select: { contentType: { select: { code: true } } },
@@ -167,7 +166,6 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
     cover: course.cover ?? undefined,
     statusCode: course.status.code as CourseStatusCode,
     statusLabel: course.status.label,
-    publishedAtLabel: course.publishedAt ? formatSpanishDate(course.publishedAt) : undefined,
     contentTypeCodes: course.courseContentTypes.map((row) => row.contentType.code),
     levelSlugs: course.courseLevels.map((courseLevel) => courseLevel.level.slug),
     authors: course.courseAuthors.map((author) => ({

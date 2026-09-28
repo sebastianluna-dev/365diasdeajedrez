@@ -5,7 +5,7 @@ import { PlatformNotice } from "@/components/platform/shared/platform-notice.com
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
-import { archiveCourse, publishCourse, updateCourse } from "@/services/staff-courses/staff-courses.actions";
+import { updateCourse } from "@/services/staff-courses/staff-courses.actions";
 import type {
   AuthorAdminRow,
   CatalogOption,
@@ -47,12 +47,14 @@ interface CourseEditorSectionProps {
 }
 
 /**
- * Course editing in independent cards (metadata, chapters, authors, status):
+ * Course editing in independent cards (metadata, chapters, authors, sources):
  * each has its own form and its own action, instead of a giant form where a
  * failure in one field throws away all the work.
  *
  * On the left what is written and ordered; on the right what is glanced at
- * — cover, authors and status — which is touched once and looked at many times.
+ * — cover, authors and sources — which is touched once and looked at many times.
+ * The status has no card of its own: the pill next to the title says it and
+ * changes it.
  */
 export function CourseEditorSection({
   course,
@@ -67,7 +69,6 @@ export function CourseEditorSection({
 }: CourseEditorSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
   const isDraft = course.statusCode === COURSE_STATUS.DRAFT;
-  const lessonCount = course.chapters.reduce((total, chapter) => total + chapter.lessonCount, 0);
 
   return (
     <div className="course-editor">
@@ -124,53 +125,6 @@ export function CourseEditorSection({
             {/* In the narrow column, with what is glanced at: it is recorded
                 once and read many times. */}
             <CourseSources courseId={course.id} sources={course.sources} sourceTypes={sourceTypes} />
-
-            <StaffPanel title="Estado">
-              <dl className="course-editor__facts">
-                <div className="course-editor__fact">
-                  <dt>Estado</dt>
-                  <dd>{course.statusLabel}</dd>
-                </div>
-                <div className="course-editor__fact">
-                  <dt>Publicado el</dt>
-                  <dd>{course.publishedAtLabel ?? "—"}</dd>
-                </div>
-                <div className="course-editor__fact">
-                  <dt>Contenido</dt>
-                  <dd>
-                    {course.chapters.length} cap. · {lessonCount} lecc.
-                  </dd>
-                </div>
-              </dl>
-
-              {!course.canPublish && (
-                <PlatformNotice
-                  variant="info"
-                  message="Para publicar, el curso necesita al menos un capítulo con una lección que tenga PGN."
-                />
-              )}
-
-              <div className="course-editor__actions">
-                {course.statusCode !== COURSE_STATUS.PUBLISHED && (
-                  <form action={publishCourse.bind(null, course.id)}>
-                    <SubmitButton disabled={!course.canPublish} pendingLabel="Publicando…">
-                      Publicar
-                    </SubmitButton>
-                  </form>
-                )}
-
-                {course.statusCode !== COURSE_STATUS.ARCHIVED && (
-                  <form action={archiveCourse.bind(null, course.id)}>
-                    <SubmitButton
-                      className="platform-button platform-button_variant_secondary"
-                      pendingLabel="Archivando…"
-                    >
-                      Archivar curso
-                    </SubmitButton>
-                  </form>
-                )}
-              </div>
-            </StaffPanel>
           </>
         }
       >
