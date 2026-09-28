@@ -17,7 +17,7 @@ Also exports `StaffEditorLayout`.
 
 The header of the course screens lives in one component rather than in each page, so the four of them (catalog, course, chapter, lesson) name themselves the same way. It carries no trail above the title: the platform has none (2026-09-27). What says where one is is the size of the title: `level="root"` for a screen of the menu, whose title weighs the same as "Alumnos", and `nested` (the default) for what hangs from one, a step down.
 
-`StaffEditorLayout` is the two-column frame: the work on the left and, on the right, what is glanced at. The narrow column is in pixels and not fractions so it does not stretch on wide screens, where a four-figure list at half the screen looks empty.
+`StaffEditorLayout` is the two-column frame: the work on the left and, on the right, what is glanced at. The narrow column is 360px, in pixels and not fractions so it does not stretch on wide screens, where a four-figure list at half the screen looks empty.
 
 ## Props
 
@@ -53,7 +53,7 @@ Two blocks in one sheet (133 lines).
 
 **Tokens:** `--platform-font`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
-**Breakpoints:** `(max-width: 1080px)` stacks the aside under the main column; `(max-width: 760px)` stacks the actions under the heading.
+**Breakpoints:** `(max-width: 1120px)` stacks the aside under the main column, before the two columns of cards of the course's metadata would cut their longest name; `(max-width: 760px)` stacks the actions under the heading.
 
 ## Usage
 

@@ -77,7 +77,8 @@
 
 .staff-editor {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
+  /* In pixels and not in fractions, so it does not stretch on wide screens. */
+  grid-template-columns: minmax(0, 1fr) 360px;
   align-items: start;
   gap: 20px;
 
@@ -94,8 +95,9 @@
   }
 
   /* The narrow column drops down whole before the forms on the left start
-     getting squeezed. */
-  @media (max-width: 1080px) {
+     getting squeezed: under this width the two columns of cards of the
+     course's metadata would cut their longest name. */
+  @media (max-width: 1120px) {
     grid-template-columns: minmax(0, 1fr);
   }
 }
