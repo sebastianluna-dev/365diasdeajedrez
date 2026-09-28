@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { RadioGroup } from "radix-ui";
+import { savedValueKey } from "../saved-value-key";
 import "./platform-choice-cards.comp.css";
 
 export interface PlatformChoiceCardOption {
@@ -35,10 +36,14 @@ interface PlatformChoiceCardsProps {
  * the arrows move the choice, and inside a form it submits through the hidden
  * native radio the primitive keeps in sync. Checked state is the primitive's
  * `data-state`, which the stylesheet reads.
+ *
+ * The group is mounted under the value it opens with (`savedValueKey`): after
+ * a save that changed it, it starts again from what was saved instead of going
+ * back, on the form's reset, to what it showed when the page was loaded.
  */
 export function PlatformChoiceCards({ options, ...rootProps }: PlatformChoiceCardsProps) {
   return (
-    <RadioGroup.Root className="platform-choice-cards" {...rootProps}>
+    <RadioGroup.Root key={savedValueKey(rootProps.defaultValue)} className="platform-choice-cards" {...rootProps}>
       {options.map((option) => (
         <RadioGroup.Item key={option.value} value={option.value} className="platform-choice-cards__card">
           {option.icon && (

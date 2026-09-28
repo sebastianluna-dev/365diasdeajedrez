@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Checkbox } from "radix-ui";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import type { PlatformChoiceCardOption } from "../platform-choice-cards/platform-choice-cards.comp";
+import { savedValueKey } from "../saved-value-key";
 import "./platform-check-cards.comp.css";
 
 interface PlatformCheckCardsProps {
@@ -37,8 +38,16 @@ interface PlatformCheckCardsProps {
  *
  * A sibling of `PlatformChoiceCards` and not a mode of it: a radio group is
  * one tab stop with one value, a checkbox group is many of each.
+ *
+ * It is mounted under the set it opens with (`savedValueKey`): after a save
+ * that changed it, the cards start again from what was saved instead of going
+ * back, on the form's reset, to what they showed when the page was loaded.
  */
-export function PlatformCheckCards({
+export function PlatformCheckCards(props: PlatformCheckCardsProps) {
+  return <CheckCards key={savedValueKey(props.defaultValue)} {...props} />;
+}
+
+function CheckCards({
   options,
   name,
   value,

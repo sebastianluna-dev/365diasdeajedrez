@@ -37,6 +37,7 @@ When a choice has two to four options and each deserves a line of explanation, a
 
 - The chosen card carries `data-state="checked"` from the primitive; the stylesheet gives it the accent border and wash and paints its description in the accent ink.
 - Clicking anywhere on a card chooses it. Space chooses the focused one; Up/Down/Left/Right move the choice and wrap around.
+- **It starts again from what was saved.** The group is mounted under the value it opens with (`savedValueKey(defaultValue)`), so a save that changed the choice mounts it anew from it. React resets a `<form action>` when its action finishes, and the primitive answers the form's `reset` by going back to the value it had when it was MOUNTED. On a form that stays on screen after saving, that is the value from before the save: until 2026-09-28 the control showed what had just been replaced, the page had to be reloaded to see what was stored, and saving again without reloading sent the old value and undid the change.
 
 ## Markup & styling
 

@@ -4,6 +4,7 @@ import { type ComponentProps, useState } from "react";
 import { Select } from "radix-ui";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
+import { savedValueKey } from "../saved-value-key";
 import "./platform-select.comp.css";
 
 export interface PlatformSelectOption {
@@ -68,8 +69,16 @@ const EMPTY_VALUE = "\u0000empty";
  * The list is NOT portalled: it renders next to the trigger, positioned
  * against the viewport, so it also works inside a modal `<dialog>`, whose top
  * layer would leave a portal to `<body>` inert.
+ *
+ * It is mounted under the value it opens with (`savedValueKey`): after a save
+ * that changed it, the select starts again from what was saved instead of
+ * going back, on the form's reset, to what it showed when the page was loaded.
  */
-export function PlatformSelect({
+export function PlatformSelect(props: PlatformSelectProps) {
+  return <SelectControl key={savedValueKey(props.defaultValue)} {...props} />;
+}
+
+function SelectControl({
   options = [],
   groups = [],
   emptyOption,
