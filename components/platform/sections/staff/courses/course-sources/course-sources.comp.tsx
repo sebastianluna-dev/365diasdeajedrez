@@ -36,7 +36,6 @@ export function CourseSources({ courseId, sources, sourceTypes }: CourseSourcesP
   return (
     <StaffPanel
       title="Procedencia del recurso"
-      meta={`${sources.length}`}
       action={<CourseSourceDialog courseId={courseId} sourceTypes={sourceTypes} />}
     >
       <div className="course-sources">
