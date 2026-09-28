@@ -6,16 +6,16 @@ description: "Drag-sortable rows shared by a course's chapters and a chapter's l
 
 Also exports the `SortableItem` type.
 
-|            |                                                                                                                                                                                                               |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/sortable-list.comp.tsx`                                                                                                                                           |
-| Kind       | Client Component                                                                                                                                                                                              |
-| Stylesheet | `sortable-list.comp.css` → block `.sortable-list`                                                                                                                                                             |
-| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) (chapters), [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section) (lessons) |
+|            |                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/courses/sortable-list.comp.tsx`                                    |
+| Kind       | Client Component                                                                                       |
+| Stylesheet | `sortable-list.comp.css` → block `.sortable-list`                                                      |
+| Used by    | [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section) (lessons) |
 
 ## Purpose
 
-Chapters in a course and lessons in a chapter are the same row with different content, so one list serves both. In a five-chapter course the arrow buttons were enough, but moving the fifth to the first place was four round trips to the server; dragging does it in one.
+The lessons of a chapter, as rows that are dragged into place. The chapters of a course were drawn with it too until they became [`CourseSyllabus`](/components/platform/sections/staff/courses/course-syllabus); what the two still share is the order itself, `useSortableRows` (`use-sortable-rows.hook.ts`): optimistic, saved in a transition, with the introduction and the closing out of it. In a five-chapter course the arrow buttons were enough, but moving the fifth to the first place was four round trips to the server; dragging does it in one.
 
 The order is applied on the client on drop and saved in a transition without waiting for a response: reordering is where a flicker shows most, and the list already knows how it will end up. If the server rejects the change, its revalidation returns the good order and the row goes back.
 

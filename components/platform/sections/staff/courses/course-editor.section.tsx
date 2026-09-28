@@ -2,17 +2,10 @@ import Link from "next/link";
 import { FormField, FormFieldset } from "@/components/platform/shared/form-field.comp";
 import { ImageUpload } from "@/components/platform/shared/image-upload.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
-import { CONTENT_ROLE, COURSE_STATUS } from "@/constants/platform/course-codes.const";
+import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
-import {
-  archiveCourse,
-  createChapter,
-  deleteChapter,
-  publishCourse,
-  reorderChapters,
-  updateCourse,
-} from "@/services/staff-courses/staff-courses.actions";
+import { archiveCourse, publishCourse, updateCourse } from "@/services/staff-courses/staff-courses.actions";
 import type {
   AuthorAdminRow,
   CatalogOption,
@@ -26,7 +19,7 @@ import type { SourceEntityOption } from "@/services/staff-sources/staff-sources.
 import { CourseAuthors } from "./course-authors/course-authors.comp";
 import { CourseNameFields } from "./course-name-fields.comp";
 import { CourseSources } from "./course-sources/course-sources.comp";
-import { SortableList } from "./sortable-list.comp";
+import { CourseSyllabus } from "./course-syllabus/course-syllabus.comp";
 import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffTabs } from "./staff-tabs.comp";
 import { StaffPanel } from "./staff-panel.comp";
@@ -75,8 +68,6 @@ export function CourseEditorSection({
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
   const isDraft = course.statusCode === COURSE_STATUS.DRAFT;
   const lessonCount = course.chapters.reduce((total, chapter) => total + chapter.lessonCount, 0);
-  const hasIntro = course.chapters.some((chapter) => chapter.roleCode === CONTENT_ROLE.INTRO);
-  const hasClosing = course.chapters.some((chapter) => chapter.roleCode === CONTENT_ROLE.CLOSING);
 
   return (
     <div className="course-editor">
@@ -233,71 +224,7 @@ export function CourseEditorSection({
           </form>
         </StaffPanel>
 
-        <StaffPanel title="Capítulos" meta={`${course.chapters.length} · ${lessonCount} lecciones`}>
-          {/* Draggable: in a five-chapter course the arrows were enough, but moving
-              the fifth to the first place was four round trips to the server. The
-              handle also responds to the keyboard arrows, which is the only way to
-              reorder without a mouse. */}
-          <SortableList
-            items={course.chapters.map((chapter) => ({
-              id: chapter.id,
-              name: chapter.name,
-              meta: `${chapter.lessonCount} lección${chapter.lessonCount === 1 ? "" : "es"}`,
-              href: chapter.href,
-              roleLabel: chapter.roleLabel,
-              // Delete only where the server would allow it: draft course and no
-              // progress from any student.
-              canDelete: isDraft && chapter.progressCount === 0,
-            }))}
-            onReorder={reorderChapters.bind(null, course.id)}
-            deleteAction={deleteChapter.bind(null, course.id)}
-            deleteFieldName="chapterId"
-            noun="capítulo"
-            emptyLabel="Este curso todavía no tiene capítulos."
-          />
-
-          <form className="course-editor__inline" action={createChapter.bind(null, course.id)}>
-            <input
-              type="text"
-              name="name"
-              maxLength={160}
-              required
-              className="course-editor__inline-input"
-              placeholder="Nombre del nuevo capítulo"
-              aria-label="Nombre del nuevo capítulo"
-            />
-            <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Añadiendo…">
-              Añadir capítulo
-            </SubmitButton>
-          </form>
-
-          {/* Both are optional and there is at most one of each, so the button
-              disappears as soon as it exists. The database's unique index is what
-              really guarantees it. */}
-          {(!hasIntro || !hasClosing) && (
-            <div className="course-editor__roles">
-              {!hasIntro && (
-                <form action={createChapter.bind(null, course.id)}>
-                  <input type="hidden" name="role" value={CONTENT_ROLE.INTRO} />
-                  <input type="hidden" name="name" value="Introducción" />
-                  <SubmitButton className="course-editor__role-button" pendingLabel="Añadiendo…">
-                    Añadir introducción
-                  </SubmitButton>
-                </form>
-              )}
-
-              {!hasClosing && (
-                <form action={createChapter.bind(null, course.id)}>
-                  <input type="hidden" name="role" value={CONTENT_ROLE.CLOSING} />
-                  <input type="hidden" name="name" value="Cierre" />
-                  <SubmitButton className="course-editor__role-button" pendingLabel="Añadiendo…">
-                    Añadir cierre
-                  </SubmitButton>
-                </form>
-              )}
-            </div>
-          )}
-        </StaffPanel>
+        <CourseSyllabus courseId={course.id} chapters={course.chapters} isDraft={isDraft} />
 
         <CourseSources courseId={course.id} sources={course.sources} sourceTypes={sourceTypes} entities={entities} />
       </StaffEditorLayout>

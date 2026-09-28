@@ -1,0 +1,65 @@
+---
+description: "«Temario», the chapters of a course in the staff editor, drawn as the path the student walks: a rail with the introduction, the numbered chapters, the field that adds one and the closing."
+---
+
+# `CourseSyllabus`
+
+|            |                                                                                                                                                                                     |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/course-syllabus/course-syllabus.comp.tsx`                                                                                               |
+| Kind       | Client Component                                                                                                                                                                    |
+| Stylesheet | `course-syllabus.comp.css` → block `.course-syllabus`                                                                                                                               |
+| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section)                                                                                          |
+| Composes   | [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`SubmitButton`](/components/platform/shared/submit-button)                                                |
+| Writes     | `createChapter()`, `deleteChapter()`, `reorderChapters()` · `services/staff-courses/staff-courses.actions.ts`                                                                       |
+| Uses       | `useSortableRows` from `./use-sortable-rows.hook`; `CONTENT_ROLE` from `constants/platform/course-codes.const`; `ChapterAdminRow` from `services/staff-courses/staff-courses.types` |
+
+## Purpose
+
+The chapters of a course read as what they are for the student: a path with a first step and a last one. The card is a vertical rail whose nodes are, top to bottom, the introduction, the numbered chapters, the slot for a new one and the closing.
+
+## Props
+
+| Prop       | Type                | Required | Meaning                                                                                                                                               |
+| ---------- | ------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `courseId` | `string`            | yes      | The course the actions are bound to.                                                                                                                  |
+| `chapters` | `ChapterAdminRow[]` | yes      | `{ id, name, order, roleCode?, roleLabel?, lessonCount, durationMin?, progressCount, href }[]`, the introduction in front and the closing at the end. |
+| `isDraft`  | `boolean`           | yes      | A chapter is only deleted from a draft course (and only without progress from any student).                                                           |
+
+## Behaviour
+
+- **The header** is «Temario» with «3 capítulos · 15 lecciones».
+- **Introduction and closing** have a fixed place, first and last, on a soft tile with a piece (a pawn, a king). While one does not exist its slot is a dashed box, «+ Añadir introducción» / «+ Añadir cierre», which creates it (`createChapter` with `role`); there is at most one of each, which the database's unique index guarantees.
+- **Each chapter** is its number on a dark node, its name (a link to its editor), «2 lecciones · 14 min» and «Editar». The minutes are the chapter's own estimate or, when it has none, what its lessons add up to; without either, only the lessons are counted.
+- **The numbered node is the handle**: the chapter is dragged by it, and with the up and down arrows it moves too, which is the only way to reorder with the keyboard. The order is applied at once and saved in a transition (`useSortableRows`); the introduction and the closing are neither moved nor sent.
+- **«Eliminar»** appears next to «Editar» only where the server would allow it: a draft course and a chapter without progress.
+- **A new chapter** is typed in the field on the rail and added with Enter; the «Añadir» button stays out of sight while the field is empty (`:placeholder-shown`).
+
+## Markup & styling
+
+Block `.course-syllabus`, an `<ol>` inside a `.staff-panel`. The rail is a `::before` of each step but the last, from its node to the next one.
+
+**Elements:** `.course-syllabus__step`, `.course-syllabus__node`, `.course-syllabus__text`, `.course-syllabus__name`, `.course-syllabus__facts`, `.course-syllabus__actions`, `.course-syllabus__edit`, `.course-syllabus__delete`, `.course-syllabus__slot`, `.course-syllabus__add`, `.course-syllabus__new`, `.course-syllabus__new-input`, `.course-syllabus__new-submit`
+
+**Modifiers and states:** `.course-syllabus__node_kind_{chapter,intro,closing,new}`, `.course-syllabus__step_state_dragging`
+
+**Tokens:** own `--course-syllabus-node` (the diameter of a node, which the rail is centred on); `--platform-accent`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-border`, `--platform-border-strong`, `--platform-danger`, `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-soft`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+
+The pieces of the two fixed nodes are `/pieces/b-pawn.svg` and `/pieces/b-king.svg` used as a `mask` over the accent ink, so they take their colour from the token.
+
+**Breakpoints:** `(max-width: 620px)` tightens the gap and lets a long name wrap. Transitions are off under `prefers-reduced-motion`.
+
+## Usage
+
+From `components/platform/sections/staff/courses/course-editor.section.tsx`:
+
+```tsx
+import { CourseSyllabus } from "./course-syllabus/course-syllabus.comp";
+
+<CourseSyllabus courseId={course.id} chapters={course.chapters} isDraft={isDraft} />;
+```
+
+## Related
+
+- [`SortableList`](/components/platform/sections/staff/courses/sortable-list), the lessons of a chapter, which are ordered with the same hook.
+- [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section), where «Editar» leads.

@@ -9,6 +9,7 @@ const meta: MetaRecord = {
   "course-games-section": "CourseGamesSection",
   "course-name-fields": "CourseNameFields",
   "course-sources": "CourseSources",
+  "course-syllabus": "CourseSyllabus",
   "courses-admin-section": "CoursesAdminSection",
   "lesson-editor-section": "LessonEditorSection",
   "exercise-editor": "ExerciseEditor",

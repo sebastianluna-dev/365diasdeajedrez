@@ -41,7 +41,7 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
           <>
             <span>Capítulo {chapter.order}</span>
             <span>
-              {chapter.lessons.length} lección{chapter.lessons.length === 1 ? "" : "es"}
+              {chapter.lessons.length} {chapter.lessons.length === 1 ? "lección" : "lecciones"}
             </span>
           </>
         }

@@ -98,6 +98,16 @@ export async function listCoursesAdmin(filter: CourseAdminFilter = {}): Promise<
   };
 }
 
+/** The chapter's minutes: its own figure, or what its lessons add up to; undefined when nothing says. */
+function chapterDuration(chapter: {
+  estimatedDuration: number | null;
+  lessons: { estimatedDuration: number | null }[];
+}): number | undefined {
+  const own = chapter.estimatedDuration ?? 0;
+  const total = own > 0 ? own : chapter.lessons.reduce((sum, lesson) => sum + (lesson.estimatedDuration ?? 0), 0);
+  return total > 0 ? total : undefined;
+}
+
 export async function getCourseAdminDetail(courseId: string): Promise<CourseAdminDetail | null> {
   await requireStaff();
 
@@ -130,9 +140,10 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
           id: true,
           name: true,
           order: true,
+          estimatedDuration: true,
           role: { select: { code: true, label: true } },
           _count: { select: { lessons: true, progresses: true } },
-          lessons: { select: lessonPgnSelect },
+          lessons: { select: { ...lessonPgnSelect, estimatedDuration: true } },
         },
         orderBy: { order: "asc" },
       },
@@ -174,6 +185,7 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
         name: chapter.name,
         order: chapter.order,
         lessonCount: chapter._count.lessons,
+        durationMin: chapterDuration(chapter),
         progressCount: chapter._count.progresses,
         href: staffRoutes.chapterDetail(course.id, chapter.id),
       })),

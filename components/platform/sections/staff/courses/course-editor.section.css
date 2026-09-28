@@ -42,40 +42,6 @@
     justify-content: flex-end;
   }
 
-  /* The quick add goes at the foot of its list, on one line: it is a single
-     value and a `<label>` above would make it look like a separate form. */
-  & .course-editor__inline {
-    display: flex;
-    gap: 10px;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--platform-border);
-
-    @media (max-width: 620px) {
-      flex-direction: column;
-    }
-  }
-
-  & .course-editor__inline-input {
-    flex: 1;
-    min-width: 0;
-    padding: 12px 14px;
-    border: 1px solid var(--platform-border);
-    border-radius: 10px;
-    background: var(--platform-bg);
-    color: var(--platform-text);
-    font-family: inherit;
-    font-size: 15px;
-    transition: 150ms;
-    transition-property: border-color, box-shadow;
-  }
-
-  & .course-editor__inline-input:focus {
-    outline: none;
-    border-color: var(--platform-accent);
-    box-shadow: 0 0 0 3px var(--platform-accent-soft);
-  }
-
   & .course-editor__empty {
     margin: 0;
     font-size: 14px;
@@ -121,34 +87,5 @@
   & .course-editor__actions form,
   & .course-editor__actions .platform-button {
     width: 100%;
-  }
-
-  /* The two optional ones go at the foot, apart from the normal creation:
-     they are set once and never touched again. */
-  & .course-editor__roles {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-  }
-
-  & .course-editor__role-button {
-    padding: 8px 14px;
-    border: 1px dashed var(--platform-border-strong);
-    border-radius: 1000px;
-    background: transparent;
-    color: var(--platform-text-muted);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 150ms;
-    transition-property: border-color, background-color, color;
-  }
-
-  & .course-editor__role-button:hover {
-    border-color: var(--platform-accent);
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
   }
 }

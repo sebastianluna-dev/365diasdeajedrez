@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useTransition } from "react";
-import "./sortable-list.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import "./sortable-list.comp.css";
+import { useSortableRows } from "./use-sortable-rows.hook";
 
 export interface SortableItem {
   id: string;
@@ -34,73 +34,26 @@ interface SortableListProps {
   emptyLabel: string;
 }
 
-/** The list with the item at `from` placed at `to`. */
-function moved<T>(items: T[], from: number, to: number): T[] {
-  const next = [...items];
-  const [item] = next.splice(from, 1);
-  if (item === undefined) return items;
-  next.splice(to, 0, item);
-  return next;
-}
-
 /**
  * Drag-sortable list, shared by a course's chapters and a chapter's lessons:
  * they are the same row with different content.
  *
- * The order is applied on the client on drop and saved in a transition,
- * without waiting for a response: reordering is the operation where a
- * flicker shows most, and the list already knows how it will end up. If the
- * server rejects the change, its revalidation returns the good order and
- * the row goes back to its place.
+ * The order itself — optimistic, saved in a transition — is
+ * `useSortableRows`, which the course's syllabus shares.
  *
  * The handle is NOT only for the mouse: it is a `<button>` and with the up
  * and down arrows it moves the item, which is the only way to reorder with
  * the keyboard — dragging has none.
  */
 export function SortableList({ items, onReorder, deleteAction, deleteFieldName, noun, emptyLabel }: SortableListProps) {
-  const [rows, setRows] = useState(items);
-  const [dragging, setDragging] = useState<number | null>(null);
-  const [, startTransition] = useTransition();
-
-  // When the server revalidates, new items arrive through props. The state is
-  // adjusted during render — not in an effect — so as not to paint once with
-  // the old list before correcting it.
-  const [baseline, setBaseline] = useState(items);
-  if (items !== baseline) {
-    setBaseline(items);
-    setRows(items);
-  }
-
-  /**
-   * Reordering affects ONLY the normal content.
-   *
-   * The intro and the closing travel in the same list so they are seen where
-   * they belong, but they are neither dragged nor part of the order that is
-   * sent: the server would not accept them either, because it leaves them out of its query.
-   */
-  const isFixed = (index: number) => rows[index]?.roleLabel !== undefined;
-
-  const move = (from: number, to: number) => {
-    if (to < 0 || to >= rows.length || from === to) return;
-    if (isFixed(from) || isFixed(to)) return;
-
-    const next = moved(rows, from, to);
-    setRows(next);
-    startTransition(() => {
-      void onReorder(next.filter((row) => row.roleLabel === undefined).map((row) => row.id));
-    });
-  };
+  const { rows, dragging, setDragging, move, numbers } = useSortableRows({
+    items,
+    isFixed: (row) => row.roleLabel !== undefined,
+    onReorder,
+  });
 
   if (rows.length === 0) {
     return <p className="sortable-list__empty">{emptyLabel}</p>;
-  }
-
-  // The number rendered counts ONLY the normal content: with an intro in
-  // front, the first real chapter is 1, not 2.
-  const plainNumbers = new Map<string, number>();
-  let plain = 0;
-  for (const row of rows) {
-    if (row.roleLabel === undefined) plainNumbers.set(row.id, ++plain);
   }
 
   return (
@@ -146,7 +99,7 @@ export function SortableList({ items, onReorder, deleteAction, deleteFieldName, 
               }}
             >
               <span className="sortable-list__order" aria-hidden="true">
-                {plainNumbers.get(row.id)}
+                {numbers.get(row.id)}
               </span>
               <span className="sortable-list__grip" aria-hidden="true">
                 ⠿

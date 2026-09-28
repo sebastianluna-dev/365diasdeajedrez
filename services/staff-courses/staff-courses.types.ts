@@ -54,6 +54,11 @@ export interface ChapterAdminRow {
   name: string;
   order: number;
   lessonCount: number;
+  /**
+   * Estimated minutes: the chapter's own figure, or the sum of its lessons'
+   * when it has none. Absent when neither says anything.
+   */
+  durationMin?: number;
   /** Students with progress: if there is any, the chapter is no longer deleted. */
   progressCount: number;
   href: string;

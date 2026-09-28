@@ -1,0 +1,267 @@
+.course-syllabus {
+  --course-syllabus-node: 40px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  margin: 0;
+  padding: 4px 0 2px;
+  list-style: none;
+
+  & .course-syllabus__step {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    min-height: var(--course-syllabus-node);
+    transition: opacity 150ms;
+  }
+
+  /* The rail: a line from under each node to the next one. It belongs to the
+     step and not to the list, so it ends where the last node does. */
+  & .course-syllabus__step:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: calc(var(--course-syllabus-node) / 2 - 1.5px);
+    width: 3px;
+    height: calc(100% + 26px);
+    background: var(--platform-track);
+  }
+
+  /* The travelling chapter dims: without that, while dragging you cannot tell
+     the one that moves from the one being pointed at as the destination. */
+  & .course-syllabus__step_state_dragging {
+    opacity: 0.45;
+  }
+
+  & .course-syllabus__node {
+    position: relative;
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--course-syllabus-node);
+    height: var(--course-syllabus-node);
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  /* The number is the handle: what the eye looks for when reordering is the
+     very place to grab. */
+  & .course-syllabus__node_kind_chapter {
+    background: var(--platform-text);
+    color: var(--platform-surface);
+    font-variant-numeric: tabular-nums;
+    cursor: grab;
+  }
+
+  & .course-syllabus__node_kind_chapter:active {
+    cursor: grabbing;
+  }
+
+  & .course-syllabus__node_kind_chapter:focus-visible {
+    outline: 2px solid var(--platform-accent);
+    outline-offset: 2px;
+  }
+
+  & .course-syllabus__node_kind_new {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text-subtle);
+    font-size: 20px;
+    font-weight: 400;
+  }
+
+  /* What opens and what closes the course: a soft tile with a piece in the
+     accent ink, a pawn for the first step and a king for the last. The piece
+     is a mask over the colour, so it takes it from the token. */
+  & .course-syllabus__node_kind_intro,
+  & .course-syllabus__node_kind_closing {
+    background: var(--platform-accent-soft);
+  }
+
+  & .course-syllabus__node_kind_intro::after,
+  & .course-syllabus__node_kind_closing::after {
+    content: "";
+    width: 20px;
+    height: 20px;
+    background: var(--platform-accent-ink);
+    mask: url("/pieces/b-pawn.svg") center / contain no-repeat;
+  }
+
+  & .course-syllabus__node_kind_closing::after {
+    mask-image: url("/pieces/b-king.svg");
+  }
+
+  & .course-syllabus__text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  & .course-syllabus__name {
+    align-self: flex-start;
+    max-width: 100%;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    color: var(--platform-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .course-syllabus__name:hover {
+    color: var(--platform-accent-ink);
+  }
+
+  & .course-syllabus__facts {
+    font-size: 15px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-syllabus__actions {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  & .course-syllabus__edit {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--platform-accent-ink);
+  }
+
+  & .course-syllabus__edit:hover {
+    color: var(--platform-accent-hover);
+  }
+
+  & .course-syllabus__delete {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--platform-text-subtle);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 150ms;
+  }
+
+  & .course-syllabus__delete:hover:not(:disabled) {
+    color: var(--platform-danger);
+  }
+
+  & .course-syllabus__slot,
+  & .course-syllabus__new {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* The slot of what does not exist yet: dashed, the whole width, and lit
+     only when it is about to be pressed. */
+  & .course-syllabus__add {
+    width: 100%;
+    padding: 13px 20px;
+    border: 1.5px dashed var(--platform-border-strong);
+    border-radius: 14px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    transition: 150ms;
+    transition-property: border-color, background-color, color;
+  }
+
+  & .course-syllabus__add:hover:not(:disabled) {
+    border-color: var(--platform-accent);
+    background: var(--platform-accent-wash);
+    color: var(--platform-accent-ink);
+  }
+
+  & .course-syllabus__new {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  & .course-syllabus__new-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 13px 110px 13px 19px;
+    border: 1px solid var(--platform-border);
+    border-radius: 14px;
+    background: var(--platform-surface-soft);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    transition: 150ms;
+    transition-property: border-color, box-shadow;
+  }
+
+  & .course-syllabus__new-input::placeholder {
+    color: var(--platform-text);
+  }
+
+  & .course-syllabus__new-input:focus::placeholder {
+    color: var(--platform-text-subtle);
+  }
+
+  & .course-syllabus__new-input:focus {
+    outline: none;
+    border-color: var(--platform-accent);
+    box-shadow: 0 0 0 3px var(--platform-accent-soft);
+  }
+
+  & .course-syllabus__new-submit {
+    position: absolute;
+    right: 7px;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 9px;
+    background: var(--platform-text);
+    color: var(--platform-surface);
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* Nothing typed, nothing to add: the button waits out of sight. */
+  & .course-syllabus__new-input:placeholder-shown + .course-syllabus__new-submit {
+    display: none;
+  }
+
+  @media (max-width: 620px) {
+    & .course-syllabus__step {
+      gap: 14px;
+    }
+
+    & .course-syllabus__name {
+      font-size: 17px;
+      white-space: normal;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .course-syllabus__step,
+    & .course-syllabus__delete,
+    & .course-syllabus__add,
+    & .course-syllabus__new-input {
+      transition: none;
+    }
+  }
+}
