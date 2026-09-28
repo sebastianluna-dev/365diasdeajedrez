@@ -7,10 +7,19 @@
 //
 // The SIZE does not travel in the signature: Cloudinary's upload API has no
 // maximum-weight parameter per request, so `IMAGE_MAX_BYTES` is only applied
-// by the browser and the real ceiling is the account's plan/preset.
+// by the browser and the real ceiling is the account's plan/preset. To make it
+// a real limit it has to be set on the upload preset, in the account.
 
-/** 5 MB. A well-exported cover does not exceed one or two. */
-export const IMAGE_MAX_BYTES = 5 * 1024 * 1024;
+/**
+ * 1 MB, since 2026-09-28; it was 5. A cover is seen at 440px in the panel and
+ * a few hundred in the catalog: a photo exported as JPEG or WebP at that size
+ * weighs a fraction of this, and what does not fit is a PNG of a photograph,
+ * which is the wrong format for it.
+ *
+ * It applies to what is uploaded FROM NOW ON. The covers already stored that
+ * weigh more keep working: this is not a check anything re-runs.
+ */
+export const IMAGE_MAX_BYTES = 1 * 1024 * 1024;
 
 /** What Cloudinary serves well and browsers display without surprises. */
 export const IMAGE_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"] as const;
