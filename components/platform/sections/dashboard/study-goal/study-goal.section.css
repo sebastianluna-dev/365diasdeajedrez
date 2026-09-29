@@ -12,6 +12,7 @@
 
   & .study-goal__card {
     padding: 20px 22px 22px;
+    border: 1px solid var(--platform-border);
     background: var(--platform-surface);
     border-radius: 8px;
     box-shadow: var(--platform-shadow-card);

@@ -3,6 +3,7 @@
   align-items: stretch;
   gap: 28px;
   padding: 20px 28px 20px 20px;
+  border: 1px solid var(--platform-border);
   border-radius: 8px;
   background: var(--platform-surface);
   box-shadow: 0 1px 3px rgba(22, 17, 13, 0.06);

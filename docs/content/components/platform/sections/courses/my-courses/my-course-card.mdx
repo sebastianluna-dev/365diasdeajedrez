@@ -37,13 +37,13 @@ It says nothing of what the course is — **no description, no levels, no conten
 
 ## Markup & styling
 
-Block `.my-course-card` (226 lines). It has no border: on the page's grey canvas the white fill and a light shadow are what draw it.
+Block `.my-course-card` (227 lines). A white card outlined by the thin grey border the platform's cards have (`1px solid var(--platform-border)`), over a light shadow.
 
 **Elements:** `.my-course-card__cover`, `.my-course-card__cover-image`, `.my-course-card__body`, `.my-course-card__name`, `.my-course-card__link`, `.my-course-card__foot`, `.my-course-card__meters`, `.my-course-card__meter`, `.my-course-card__figure`, `.my-course-card__track`, `.my-course-card__fill`, `.my-course-card__actions`, `.my-course-card__review`, `.my-course-card__review-count`, `.my-course-card__learn`
 
 **Modifiers and states:** `.my-course-card__review_state_off`, `.my-course-card__learn_state_off`
 
-**Tokens:** `--platform-accent`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border-strong`, `--platform-ink`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-track`
+**Tokens:** `--platform-accent`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-border-strong`, `--platform-ink`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-track`
 
 **Breakpoints:** `(max-width: 760px)` stacked; `(max-width: 480px)` the measures one under the other. The cover's hover transition is off under `prefers-reduced-motion`.
 

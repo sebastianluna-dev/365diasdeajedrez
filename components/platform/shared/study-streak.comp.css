@@ -1,5 +1,6 @@
 .study-streak {
   padding: 20px 22px 22px;
+  border: 1px solid var(--platform-border);
   border-radius: 8px;
   background: var(--platform-surface);
   box-shadow: var(--platform-shadow-card);
