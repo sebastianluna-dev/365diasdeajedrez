@@ -97,16 +97,15 @@ It is the one rule to keep in mind when writing a new stylesheet for the platfor
 
 Platform stylesheets never name a font: they use `var(--platform-font)`, `var(--platform-font-display)` for a title or `var(--platform-font-serif)`, or they inherit.
 
-**Every heading of the platform is Poppins** through one rule in `platform.css`, so no block declares it:
+**The title of a page is Poppins** — «Mis cursos», «Mis estudios», the name of a course — through one rule in `platform.css`, so no block declares it:
 
 ```css
-.platform-theme :is(h1, h2, h3),
-.platform-theme .course-study__title {
+.platform-theme h1 {
   font-family: var(--platform-font-display);
 }
 ```
 
-The `<span>` in the list is the chapter's name on its card, which is a title without being a heading. A block that wants another font for a heading — the serif a chapter is dated with — says so in its own file and wins by specificity. That is also why a heading must NOT redeclare `--platform-font`: it would beat this rule, which is what four of them used to do. See [Stockfish, pieces & sounds](/chess/engine-and-assets#fonts--publicfonts) for the subsetting commands and licences.
+It is the `h1` each page opens with, and nothing else: everything under it, from a card's title to a section's heading, is the text font. A page that wants another font for its title says so in its own file and wins by specificity; that is also why an `h1` must NOT redeclare `--platform-font`, which is what four heading rules used to do. See [Stockfish, pieces & sounds](/chess/engine-and-assets#fonts--publicfonts) for the subsetting commands and licences.
 
 ## BEM, nesting and scoping
 
