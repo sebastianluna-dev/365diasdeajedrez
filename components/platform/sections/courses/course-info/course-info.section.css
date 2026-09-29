@@ -218,7 +218,7 @@
   & .course-info__chapter-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 16px;
+    gap: 24px;
     margin: 0;
     padding: 0;
     list-style: none;
