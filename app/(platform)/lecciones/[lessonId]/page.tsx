@@ -21,7 +21,7 @@ export default async function LessonPage({ params, searchParams }: LessonPagePro
   if (!lesson) notFound();
 
   return (
-    <div className="platform-page lesson-page">
+    <div className="platform-page lesson-page platform-page_width_wide">
       <LessonViewSection lesson={lesson} errorCode={error} />
     </div>
   );

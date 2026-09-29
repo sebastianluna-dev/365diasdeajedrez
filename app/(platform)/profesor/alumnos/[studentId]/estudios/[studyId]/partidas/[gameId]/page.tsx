@@ -25,7 +25,7 @@ export default async function StudentGamePage({ params }: StudentGamePageProps) 
   if (!game || !student) notFound();
 
   return (
-    <div className="platform-page teacher-student-game-page">
+    <div className="platform-page teacher-student-game-page platform-page_width_wide">
       <StudentGameViewSection studentName={student.displayName} game={game} scheduledClasses={scheduledClasses} />
     </div>
   );

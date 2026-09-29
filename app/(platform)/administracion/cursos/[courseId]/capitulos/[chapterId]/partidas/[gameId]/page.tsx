@@ -23,7 +23,7 @@ export default async function ChapterGamePage({ params, searchParams }: ChapterG
   const [results, { error }] = await Promise.all([listGameResults(), searchParams]);
 
   return (
-    <div className="platform-page staff-chapter-game-page">
+    <div className="platform-page staff-chapter-game-page platform-page_width_wide">
       <ChapterGameSection game={game} results={results} errorCode={error} />
     </div>
   );

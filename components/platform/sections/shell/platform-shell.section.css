@@ -128,6 +128,13 @@
     box-sizing: border-box;
   }
 
+  /* A page that caps itself is not capped again by the frame: it is the
+     board's, and it is drawn wider than the rest (`.platform-page_width_wide`
+     in platform.css). */
+  & .platform-shell__content:has(> .platform-page_width_wide) {
+    max-width: none;
+  }
+
   /* The design was drawn at a fixed 1440 px. Below that the bar splits into
      two rows rather than shrinking the menu: logo and user on top, the
      navigation below with its own scroll if it does not fit. */

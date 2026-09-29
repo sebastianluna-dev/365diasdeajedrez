@@ -33,11 +33,12 @@ It reads the session **only to show** who is logged in and which menu they get. 
 - The wordmark is the same inline SVG the public site draws ([`LogoWordmarkIcon`](/components/site/shared/logo#logowordmarkicon)), `aria-hidden` inside a link whose accessible name is `LOGO_LABEL`. It links to `homeRouteFor(roles)`, the role's home rather than the student dashboard, because with the exclusive menu that page is no longer in a teacher's or staff's menu.
 - The user block shows the display name, a link to the public site and "Salir", which is a `<form action={logoutAction}>` with a submit button so it works without JavaScript and shares the line with the site link. The avatar shows the initials of the first two words of the name (`initialsOf`), `aria-hidden`.
 - **The bar spans the whole width**, with 40px of side padding, while `<main>` is capped at **1040px** and centred — 960px of room at that padding —: the wordmark sits at the left edge of the screen, the menu next to it and the user block at the right (`margin-left: auto`). The bar is the frame of the window, not one more column of the page.
+- **A page of the board is not capped by the frame.** `<main>` steps aside for a page that carries `.platform-page_width_wide` (`:has(> …)`), and the page states its own width: 1240px, what those pages were drawn at. It is the lesson, a study's game, the teacher's view of a student's game and the staff's game of a chapter — the screens where the notation sits beside a 600px board and reads in what is left over.
 - `<main id="contenido">` is the target of the layout's skip link.
 
 ## Markup & styling
 
-Block `.platform-shell` (161 lines).
+Block `.platform-shell` (168 lines).
 
 **Elements:** `.platform-shell__bar`, `.platform-shell__bar-inner`, `.platform-shell__logo` (the link), `.platform-shell__logo-image` (the `<svg>`, 20 px tall like the site's on desktop), `.platform-shell__logo-accent` (the "365", `--platform-logo-accent`: the red of the blog's header, the wordmark's accent on a light background), `.platform-shell__logo-word` and `.platform-shell__logo-marks` (`fill: currentColor`, the link's `--platform-text`), `.platform-shell__user`, `.platform-shell__user-text`, `.platform-shell__user-name`, `.platform-shell__user-links`, `.platform-shell__user-link`, `.platform-shell__avatar`, `.platform-shell__content`
 

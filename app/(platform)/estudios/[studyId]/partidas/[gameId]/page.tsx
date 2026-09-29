@@ -68,7 +68,7 @@ export default async function GamePage({ params, searchParams }: GamePageProps) 
   const pageHref = (target: number) => `${platformRoutes.gameDetail(studyId, gameId)}?pagina=${target}`;
 
   return (
-    <div className="platform-page game-page">
+    <div className="platform-page game-page platform-page_width_wide">
       <div className="game-page__layout">
         <GameAside
           game={game}

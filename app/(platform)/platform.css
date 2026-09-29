@@ -165,6 +165,17 @@ html body.platform-theme[data-scroll-locked] {
 /* Shared primitives of the platform pages (the equivalent of
    .section/.button in globals.css, but for the authenticated area). */
 
+/**
+ * A page whose content is the board: it is capped wider than the rest, at the
+ * width these pages were drawn at, because the notation sits beside a 600px
+ * board and reads in what is left over. The frame is what steps aside for it
+ * (platform-shell.section.css); the page states its own width here.
+ */
+.platform-page_width_wide {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
 .platform-page {
   display: flex;
   flex-direction: column;
