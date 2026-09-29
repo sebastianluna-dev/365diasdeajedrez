@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
 import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
@@ -54,7 +53,6 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
   return (
     <div className="course-study-frame">
       <Link href={chapter ? course.studyHref : platformRoutes.courses} className="course-study-frame__back">
-        <ArrowLeftIcon className="course-study-frame__back-icon" />
         {chapter ? "Capítulos" : "Mis cursos"}
       </Link>
 

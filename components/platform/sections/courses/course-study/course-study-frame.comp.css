@@ -9,9 +9,8 @@
     align-self: flex-start;
     display: flex;
     align-items: center;
-    gap: 6px;
     height: 38px;
-    padding: 0 14px 0 10px;
+    padding: 0 14px;
     border: 1px solid var(--platform-border-strong);
     border-radius: 8px;
     background: var(--platform-surface);
@@ -24,11 +23,6 @@
   & .course-study-frame__back:hover {
     background: var(--platform-surface-soft);
     color: var(--platform-text);
-  }
-
-  & .course-study-frame__back-icon {
-    width: 18px;
-    height: 18px;
   }
 
   /* --- The course, above -------------------------------------------------- */
