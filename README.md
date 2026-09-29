@@ -119,7 +119,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/estudios`, `/estudios/clases` (games seen in class), `/estudios/[studyId]` (redirects to the study's first game; a study without games renders its empty page), `/estudios/[studyId]/partidas/[gameId]`
 - `/cursos` (the courses the student added), `/cursos/explorar` (the catalog; `?nivel=<slug>` narrows it to a level), `/cursos/<slug>` (a course's information page, where it is added), `/cursos/<id>` and `/cursos/<id>/<chapterOrder>` (the course to study; the two share the `[courseRef]` segment)
 - `/lecciones/[lessonId]` (the lesson hangs off the root: its identifier already locates it)
-- `/entrenador`
+- `/entrenador` (the Move Trainer; **switched off**: it answers 404 while `MOVE_TRAINER_ENABLED` in `constants/platform/features.const.ts` is `false`)
 - `/explorador` (search for games by position; student and teacher share it)
 
 **Platform — teacher** (requires an active `Teacher` row)

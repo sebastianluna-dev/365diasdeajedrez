@@ -42,6 +42,8 @@ const COVER_SIZES = "(max-width: 620px) 100vw, 280px";
  *
  * A button is only drawn when it leads somewhere: a course with every lesson
  * learned has no «Aprender», and one without exercises learned no «Repasar».
+ * While the Move Trainer is off (`MOVE_TRAINER_ENABLED`) no course has
+ * anything to review — the service counts none —, so «Repasar» is not drawn.
  */
 export function CourseStudyFrame({ course, chapter, returnTo, errorCode, children }: CourseStudyFrameProps) {
   const errorMessage = studentErrorMessage(errorCode);

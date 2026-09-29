@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
+import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
 import { countLessons } from "@/services/courses/course-rules";
 import type { MyCourseItem } from "@/services/courses/courses.types";
 import "./my-course-card.comp.css";
@@ -29,6 +30,9 @@ const COVER_SIZES = "(max-width: 760px) 100vw, 220px";
  *
  * A button that leads nowhere — nothing learned to review, nothing left to
  * learn — keeps its place, switched off, so the rows of the list line up.
+ *
+ * «Repasar» is the Move Trainer's: while that is off (`MOVE_TRAINER_ENABLED`)
+ * the button is not drawn at all, and «Aprender» is the row's one button.
  */
 export function MyCourseCard({ course }: MyCourseCardProps) {
   const { progress } = course;
@@ -76,21 +80,22 @@ export function MyCourseCard({ course }: MyCourseCardProps) {
           </div>
 
           <div className="my-course-card__actions">
-            {course.reviewCount > 0 ? (
-              <Link href={course.reviewHref} className="my-course-card__review">
-                Repasar
-                <span
-                  className="my-course-card__review-count"
-                  aria-label={`${course.reviewCount} ${course.reviewCount === 1 ? "ejercicio" : "ejercicios"}`}
-                >
-                  {course.reviewCount}
+            {MOVE_TRAINER_ENABLED &&
+              (course.reviewCount > 0 ? (
+                <Link href={course.reviewHref} className="my-course-card__review">
+                  Repasar
+                  <span
+                    className="my-course-card__review-count"
+                    aria-label={`${course.reviewCount} ${course.reviewCount === 1 ? "ejercicio" : "ejercicios"}`}
+                  >
+                    {course.reviewCount}
+                  </span>
+                </Link>
+              ) : (
+                <span className="my-course-card__review my-course-card__review_state_off" aria-disabled="true">
+                  Repasar
                 </span>
-              </Link>
-            ) : (
-              <span className="my-course-card__review my-course-card__review_state_off" aria-disabled="true">
-                Repasar
-              </span>
-            )}
+              ))}
 
             {course.learnHref ? (
               <Link href={course.learnHref} className="my-course-card__learn">

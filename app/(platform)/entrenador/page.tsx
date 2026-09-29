@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { EmptyState } from "@/components/platform/shared/empty-state.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { TrainerHomeSection } from "@/components/platform/sections/trainer/trainer-home.section";
 import { TrainerSession } from "@/components/platform/sections/trainer/trainer-session.comp";
@@ -18,6 +20,9 @@ interface TrainerPageProps {
 }
 
 export default async function TrainerPage({ searchParams }: TrainerPageProps) {
+  // Switched off: the page does not exist for the student, by its URL either.
+  if (!MOVE_TRAINER_ENABLED) notFound();
+
   const { lesson, chapter, course, session, error } = await searchParams;
   const errorMessage = studentErrorMessage(error);
   const wantsSession = Boolean(lesson || chapter || course || session === "all");

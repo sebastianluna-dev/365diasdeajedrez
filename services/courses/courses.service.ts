@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
+import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
 import { PROGRESS_STATUS, type ProgressStatusCode } from "@/constants/platform/shared-codes.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
@@ -156,6 +157,9 @@ export async function getCourseCatalog(): Promise<CourseSummary[]> {
  * have exercises, added up by course, instead of a count per row of the list.
  */
 async function getReviewCounts(): Promise<Map<string, number>> {
+  // With the trainer off there is nothing to review: no course has a count.
+  if (!MOVE_TRAINER_ENABLED) return new Map();
+
   const user = await getCurrentUser();
   const lessons = await getPlatformDb().lesson.findMany({
     where: {
@@ -245,6 +249,10 @@ export async function getContinueStudyingCourse(): Promise<(CourseSummary & { la
  * here, so the figure does not go down after a session.
  */
 const getReviewCount = cache(async (courseId: string): Promise<number> => {
+  // With the trainer off there is nothing to review, and «Repasar» is only
+  // drawn for a count above zero.
+  if (!MOVE_TRAINER_ENABLED) return 0;
+
   const user = await getCurrentUser();
   return getPlatformDb().trainingExercise.count({
     where: {
@@ -360,5 +368,7 @@ export async function getLessonView(lessonId: string): Promise<LessonView | null
   const [course, progress] = await Promise.all([getPublishedCourse(courseId), getCourseProgressState(courseId)]);
   if (!course) return null;
 
-  return mapLessonView(course, lesson, progress);
+  const view = mapLessonView(course, lesson, progress);
+  // With the trainer off the lesson has nowhere to be trained.
+  return view && !MOVE_TRAINER_ENABLED ? { ...view, trainerHref: undefined } : view;
 }

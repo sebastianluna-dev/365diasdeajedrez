@@ -30,6 +30,7 @@ Starting a course over. It cannot be undone, so it takes two things to go throug
 - A native `<dialog>` opened with `showModal()`: focus trapping, Escape and the backdrop come with it, and the entry and exit motion from `.platform-dialog`.
 - The box is `required`: the browser stops the form without it. The action asks for it again (`confirm=on`), because it is reachable by direct POST, and answers `?error=confirm` — «Marca la casilla para confirmar que quieres borrar tu progreso.» — when it is missing.
 - **What is erased**: the student's `LessonProgress` and `ChapterProgress` rows of the course, and the course's own progress goes back to `NOT_STARTED` with no dates and no last lesson. The course **stays** among the student's.
+- The dialog's sentence names the trainer's attempts only while the Move Trainer is on (`MOVE_TRAINER_ENABLED`); today it reads «Tu racha y tu actividad no se tocan.»
 - **What is not**: the activity log, the streak, the trainer's attempts and the course's settings. They are the record of days that happened, and preferences.
 
 ## Markup & styling

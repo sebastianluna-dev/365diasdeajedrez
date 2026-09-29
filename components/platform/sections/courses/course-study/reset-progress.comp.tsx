@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
 import { resetCourseProgress } from "@/services/courses/courses.actions";
 import "./reset-progress.comp.css";
 
@@ -45,7 +46,10 @@ export function ResetProgress({ courseId, courseName, completedLessons }: ResetP
             . El curso vuelve a empezar desde la primera lección y sigue entre tus cursos.
           </p>
           <p className="reset-progress__text">
-            Tu racha, tu actividad y tus intentos en el Move Trainer no se tocan. No se puede deshacer.
+            {MOVE_TRAINER_ENABLED
+              ? "Tu racha, tu actividad y tus intentos en el Move Trainer no se tocan."
+              : "Tu racha y tu actividad no se tocan."}{" "}
+            No se puede deshacer.
           </p>
 
           <label className="reset-progress__confirm">

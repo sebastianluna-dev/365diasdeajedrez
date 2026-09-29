@@ -47,6 +47,15 @@ The lesson page renders `GameViewer` in `moveList="flow"` mode (lessons are read
 
 ## Move Trainer — `/entrenador`
 
+> **Switched off since 2026-09-28.** `MOVE_TRAINER_ENABLED` (`constants/platform/features.const.ts`) is `false`: the Move Trainer and a course's «Repasar» are hidden from the student, not removed. What the switch does, and nothing else:
+
+- `/entrenador` answers 404 (`notFound()` at the top of the page).
+- «Repasar» is not drawn: the row of «Mis cursos» leaves it out, and the course's frame only draws it for a count above zero, which `getReviewCount` / `getReviewCounts` no longer give (they answer without querying).
+- «Entrenar esta lección» is not drawn: `getLessonView` drops `trainerHref`.
+- The dialog that erases a course's progress does not name the trainer.
+
+Everything below still describes the code, which is whole: the services, the actions, the tables and the students' attempts are untouched, and so is the staff's side — exercises are still written and a lesson is still marked as trainable. Setting the constant to `true` brings all of it back.
+
 - **Home** (`getTrainerData()`): chapters with exercises, split into "my chapters" (`UserTrainerChapter`) and available ones; `toggleTrainerChapter` adds or removes (its form carries `returnTo`; today the trainer's home is the only page with the button).
 - **Session** (`getTrainerSession({ lessonId | chapterId | courseId | none })`): exercises of a lesson, a chapter, a course's review (`/entrenador?course=<id>`, what «Repasar» opens: the exercises of the lessons of that course the student has **completed**, the same set the button counts), or all chapters added by the student, always filtered by published course. Each `TrainerExercise` carries the frozen `startFen`, `lineSans`, `userColor` (the colour to move in `startFen`; `Lesson.trainingColorId` lets black repertoires start with white's move played), `modeCode` and `isStale`.
 - **Play** (`components/platform/sections/trainer/trainer-session.comp.tsx`, client): the student plays their plies on `ChessBoard`; the opponent replies after 450 ms; SAN comparison ignores `+ # ! ?`; mistakes are counted; a summary closes the session.
