@@ -25,8 +25,8 @@
 
   /* The wordmark at the height the public site draws it on desktop. The
      word and the marks follow `color` through `fill: currentColor`; the "365"
-     is the brand orange, as on the home page: the glyphs are heavy enough to
-     carry the fill colour on the light surface. */
+     is the red the blog's header draws it in, which is the wordmark's accent
+     on a light background — the orange is the one for black. */
   & .platform-shell__logo {
     flex: none;
     display: inline-flex;
@@ -47,7 +47,7 @@
   }
 
   & .platform-shell__logo-accent {
-    fill: var(--platform-accent);
+    fill: var(--platform-logo-accent);
   }
 
   & .platform-shell__user {

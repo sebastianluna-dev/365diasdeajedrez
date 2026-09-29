@@ -25,8 +25,9 @@
     font-weight: 700;
   }
 
+  /* The wordmark's accent on light, as in the platform's bar. */
   & .login__logo-accent {
-    color: var(--platform-accent-ink);
+    color: var(--platform-logo-accent);
   }
 
   & .login__head {

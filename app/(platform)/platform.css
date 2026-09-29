@@ -58,6 +58,11 @@
   /* Red on a light background. It is the public site's --color-accent-red,
      already chosen for this very case; #e5484d washed out too much here. */
   --platform-danger: #a81e22;
+  /* The logo's accent on light: the red the blog's header draws the "365" in,
+     which is what takes the orange's place in the wordmark when the
+     background is light. The same value as the danger red, and a token of its
+     own because it is the brand's and not a warning. */
+  --platform-logo-accent: #a81e22;
 
   --platform-track: #ececec;
 
