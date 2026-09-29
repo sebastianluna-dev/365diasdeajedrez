@@ -94,7 +94,7 @@
      bar under it that is looked at. */
   & .my-course-card__figure {
     margin: 0;
-    font-size: 13.5px;
+    font-size: 14px;
     line-height: 1.3;
     color: var(--platform-text-muted);
     white-space: nowrap;
