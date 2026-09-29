@@ -107,7 +107,7 @@
   & .my-course-card__fill {
     height: 100%;
     border-radius: 1000px;
-    background: var(--platform-accent);
+    background: var(--platform-accent-bright);
   }
 
   /* --- The buttons ---------------------------------------------------------- */
@@ -168,7 +168,7 @@
   }
 
   & .my-course-card__learn:hover {
-    background: var(--platform-accent-raised-hover);
+    background: var(--platform-accent-bright);
     color: var(--platform-on-accent);
   }
 

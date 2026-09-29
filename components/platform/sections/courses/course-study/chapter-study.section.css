@@ -246,7 +246,7 @@
   }
 
   & .chapter-study__open_emphasis_strong:hover {
-    background: var(--platform-accent-raised-hover);
+    background: var(--platform-accent-bright);
     color: var(--platform-on-accent);
   }
 

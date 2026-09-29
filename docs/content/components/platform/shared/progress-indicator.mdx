@@ -4,11 +4,11 @@ description: "A progress bar with its percentage and an optional detail, inline 
 
 # `ProgressIndicator`
 
-|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/progress-indicator.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Stylesheet | `progress-indicator.comp.css` → block `.progress-indicator`                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+|            |                                                                                                                                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/progress-indicator.comp.tsx`                                                                                                                                                                           |
+| Kind       | Server Component                                                                                                                                                                                                                   |
+| Stylesheet | `progress-indicator.comp.css` → block `.progress-indicator`                                                                                                                                                                        |
 | Used by    | [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section), [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section) |
 
 ## Purpose
@@ -37,7 +37,7 @@ Block `.progress-indicator` (55 lines).
 
 **Modifiers and states:** `.progress-indicator_layout_stacked`
 
-**Tokens:** `--platform-accent`, `--platform-track`, `--platform-text`, `--platform-text-muted`
+**Tokens:** `--platform-accent-bright`, `--platform-text`, `--platform-text-muted`, `--platform-track`
 
 The course and chapter detail sheets restyle `.progress-indicator__legend`, `__percent`, `__detail` and `__track` inside their own block to enlarge the headline figure; that is the sanctioned way to adapt it, nested under the consumer's root.
 

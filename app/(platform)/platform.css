@@ -55,9 +55,11 @@
   /* The edge a raised button stands on: the hard shadow under «Aprender», as
      under the button of the blog's header. */
   --platform-accent-deep: #711215;
-  /* What such a button turns under the pointer: a tone lighter, so the edge
-     under it keeps telling. */
-  --platform-accent-raised-hover: #c22a2e;
+  /* The accent a tone lighter. It is what a raised button turns under the
+     pointer, so the edge under it keeps telling, and what a progress bar is
+     filled with: a bar is a long stretch of colour, and the accent itself
+     weighs too much along it. */
+  --platform-accent-bright: #c22a2e;
   /* What is written on a fill of the accent: a button, a selected day. */
   --platform-on-accent: #ffffff;
   /* The accent as text: links, figures, labels. The red reads on white as it

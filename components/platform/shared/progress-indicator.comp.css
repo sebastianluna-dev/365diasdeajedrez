@@ -15,7 +15,7 @@
   & .progress-indicator__fill {
     height: 100%;
     border-radius: 1000px;
-    background: var(--platform-accent);
+    background: var(--platform-accent-bright);
   }
 
   & .progress-indicator__label {
