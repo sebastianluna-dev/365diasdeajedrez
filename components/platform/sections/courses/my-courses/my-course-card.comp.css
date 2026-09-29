@@ -63,8 +63,8 @@
 
   /* --- The progress: what the card is for --------------------------------- */
 
-  /* The measures take the row and the button goes under them, at the right:
-     the three do not fit on one line in a list this wide. */
+  /* The measures take what the button leaves; in a narrower list the button
+     goes under them, at the right. */
   & .my-course-card__meters {
     flex: 1 1 240px;
     min-width: 0;

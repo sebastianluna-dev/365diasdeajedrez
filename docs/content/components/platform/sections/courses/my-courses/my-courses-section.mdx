@@ -27,7 +27,7 @@ The list of the student's courses and, beside it, their daily streak. Until this
 
 ## Behaviour
 
-- **Two columns**: the list and, at its right, «Racha diaria» ([`StudyStreak`](/components/platform/shared/study-streak)) in a column 320px wide, 40px from the list, which leaves the list 600px of the page's 960. The column has a width of its own (`flex: 0 0 320px`), not a share of what is left, so the room between the two is the list's to give. It drops under the list when both do not fit.
+- **Two columns**: the list and, at its right, «Racha diaria» ([`StudyStreak`](/components/platform/shared/study-streak)) in a column 240px wide, 40px from the list, which leaves the list 680px of the page's 960. The column has a width of its own (`flex: 0 0 240px`), not a share of what is left, so the room between the two is the list's to give. It drops under the list when both do not fit.
 - **One course to a row.** Each is a [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card): horizontal, as wide as the page, with the progress in minutes and in lessons and the course's two buttons, «Repasar» and «Aprender». What a course is — description, levels, content types — is the catalog's to say, on `/cursos/explorar`.
 - The header says how many there are and how many are being studied — «4 cursos · 3 en curso» —, the latter being the ones started and not finished (`ctaLabel === "Continuar"`). With none: «Todavía no has agregado ninguno».
 - After the cards, always, the dashed row «Explorar cursos», a link to `/cursos/explorar`. The page is therefore never empty and needs no `EmptyState`: with no course added that row is the only thing in the list and carries a hint, «Elige uno del catálogo y agrégalo para empezar.»

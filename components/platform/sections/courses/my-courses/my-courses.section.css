@@ -44,7 +44,7 @@
   /* A width of its own, not a share of what is left: a wider gap, or a
      longer name in the list, does not make it narrower. */
   & .my-courses__aside {
-    flex: 0 0 320px;
+    flex: 0 0 240px;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -103,7 +103,7 @@
   }
 
   /* Stacked, the day takes the width of the list. The list asks for 480px,
-     the column for 320 and the gap for 40: under that, plus the page's own
+     the column for 240 and the gap for 40: under that, plus the page's own
      margins, the column is on a row of its own. */
   @media (max-width: 900px) {
     & .my-courses__aside {
