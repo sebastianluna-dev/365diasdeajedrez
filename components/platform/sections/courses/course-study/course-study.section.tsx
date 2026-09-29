@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
+import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
 import { EmptyState } from "@/components/platform/shared/empty-state.comp";
 import type { CourseDetail } from "@/services/courses/courses.types";
 import { CourseStudyFrame } from "./course-study-frame.comp";
@@ -43,7 +43,7 @@ export function CourseStudySection({ course, errorCode }: CourseStudySectionProp
                   <span className="course-study__progress">
                     {chapter.isCompleted && (
                       <span className="course-study__done" role="img" aria-label="Capítulo completo">
-                        <CircleCheckIcon className="course-study__done-icon" />
+                        <CircleCheckSolidIcon className="course-study__done-icon" />
                       </span>
                     )}
                     <span className="course-study__ratio">

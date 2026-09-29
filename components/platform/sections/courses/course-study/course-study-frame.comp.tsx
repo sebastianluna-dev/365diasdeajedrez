@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
-import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
+import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { platformRoutes } from "@/lib/platform-routes";
@@ -104,7 +104,7 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
               {progress.percent}%
               {course.isCompleted && (
                 <span className="course-study-frame__done" role="img" aria-label="Curso completo">
-                  <CircleCheckIcon className="course-study-frame__done-icon" />
+                  <CircleCheckSolidIcon className="course-study-frame__done-icon" />
                 </span>
               )}
             </p>

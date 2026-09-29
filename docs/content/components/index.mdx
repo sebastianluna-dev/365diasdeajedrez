@@ -56,11 +56,11 @@ The pages are written from the code and kept in the same commit as any change to
 
 ## Icons — `components/icons/`
 
-Twenty-six hand-written SVG components, one per file, each exporting `<Name>Icon({ className })`: an inline `<svg>` with `viewBox`, `fill="currentColor"` or a stroke, and `aria-hidden="true"`. Colour and size come from the parent's CSS; an icon that stands alone needs its text in the button's `aria-label`.
+Thirty-two hand-written SVG components, one per file, each exporting `<Name>Icon({ className })`: an inline `<svg>` with `viewBox`, `fill="currentColor"` or a stroke, and `aria-hidden="true"`. Colour and size come from the parent's CSS; an icon that stands alone needs its text in the button's `aria-label`.
 
 | Used by                     | Icons                                                                                                                                                                                                                              |
 | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Board and viewer (`chess/`) | `arrow-left`, `arrow-right`, `arrow-up`, `board-flip`, `check`, `chevron`, `circle-check`, `clipboard`, `flip`, `fullscreen`, `jump-end`, `jump-start`, `menu`, `note`, `pause`, `play`, `search`, `skip`, `sound-off`, `sound-on` |
-| Platform sections           | `flame` (daily streak), `heart`, `image` (upload slot), `plus`, `trash`, `whatsapp`                                                                                                                                                |
+| Platform sections           | `circle-check-solid` (a finished chapter or course), `flame` (daily streak), `heart`, `image` (upload slot), `plus`, `trash`, `whatsapp`                                                                                           |
 
 The public site uses `lucide-react` in the header, the home teacher section and the mobile clock; platform code uses this folder so the private bundle does not pull the library. `book`, `email` and `share` were deleted on 2026-09-10 as unused.
