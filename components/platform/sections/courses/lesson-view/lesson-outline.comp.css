@@ -244,7 +244,7 @@
     /* The dots are drawn, not left to `dotted`, which packs them tight
        against one another: what a thread wants is air between its stops. A
        3.5px dot every 12px, which leaves four of them between two marks. */
-    background-image: radial-gradient(circle, var(--platform-border-strong) 1.75px, transparent 1.85px);
+    background-image: radial-gradient(circle, var(--platform-accent-faint) 1.75px, transparent 1.85px);
     background-size: 4px 12px;
     background-repeat: repeat-y;
   }
@@ -314,9 +314,12 @@
     color: var(--platform-accent);
   }
 
+  /* The ring and the dots are drawn in the accent's own grey: a neutral one
+     disappears over the mist, and a grey that leans on the colour of the list
+     belongs to it. */
   & .lesson-outline__pending {
     box-sizing: border-box;
-    border: 2px solid var(--platform-border-strong);
+    border: 2px solid var(--platform-accent-faint);
   }
 
   & .lesson-outline__lesson:hover .lesson-outline__done,

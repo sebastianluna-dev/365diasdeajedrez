@@ -79,6 +79,12 @@
      that happens to be warm. */
   --platform-accent-mist: #f8f4f4;
 
+  /* The grey of the accent's family: a grey that leans on it instead of a
+     neutral one. It is what the marks of a lesson and the thread between them
+     are drawn in — over the mist a neutral grey disappears, and a stop nobody
+     can see is not a stop. */
+  --platform-accent-faint: #c8afb0;
+
   /* Red on a light background. It is the public site's --color-accent-red,
      already chosen for this very case; #e5484d washed out too much here. It
      is the SAME red as the accent of the light theme: what is dangerous is
