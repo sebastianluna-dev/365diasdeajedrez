@@ -1,0 +1,52 @@
+---
+description: "The avatar of the bar and everything behind it: the day's streak against the daily goal, the name, the public site and «Cerrar sesión»."
+---
+
+# `PlatformUserMenu`
+
+|            |                                                                                |
+| ---------- | -------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/shell/platform-user-menu.comp.tsx`               |
+| Kind       | Client Component                                                               |
+| Stylesheet | `platform-user-menu.comp.css` → block `.platform-user-menu`                    |
+| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)   |
+| Reads      | `readStudyGoal()` · `services/study-goal/study-goal.actions.ts`                 |
+| Writes     | `logoutAction()` · `services/auth/auth.actions.ts`                              |
+| Uses       | `useLingering` · `components/chess/game-viewer/use-lingering.hook`<br />`FlameIcon`, `UserIcon`, `ArrowUpIcon`, `ExitIcon` from `components/icons/` |
+
+## Purpose
+
+Who is signed in, and everything that is theirs, behind the avatar at the right edge of the bar. It replaced the block that spelled the name out loud with a link to the public site and «Salir» beside it: the bar gets its right edge back, and what is the person's gathers in one place.
+
+## Props
+
+| Prop          | Type     | Required | Meaning                                                                       |
+| ------------- | -------- | -------- | ------------------------------------------------------------------------------- |
+| `displayName` | `string` | yes      | Whoever is signed in: the name the menu heads with, and the avatar's label.   |
+| `initials`    | `string` | yes      | The first letters of that name, which is what the avatar draws. The shell computes them (`initialsOf`), so this stays a component that is given data. |
+| `profileHref` | `string` | no       | Their own page, when their role has one. Today only the teacher's (`/profesor/perfil`); without it the name heads the menu and leads nowhere. |
+
+## Behaviour
+
+- **The day is asked for when the menu is opened**, not handed down by the shell. `readStudyGoal()` costs three queries, and the bar is drawn on every page of the platform: read in the shell it would be three queries on each one — and, the shell being a layout, they would go stale until a full reload. Asked for on opening they cost nothing until someone looks, and what they say is true at the moment of looking. Read once per visit and kept; if the read fails, the block is left out and the menu works.
+- **It is drawn by hand, not on Radix**, unlike the platform's other popups. Radix moved it 145px to the right of the avatar under the platform's zoom — at the right edge of the bar, out through the side of the window — while the select's list, in the middle of a page, is placed correctly by the same machinery; the difference was not run down (IMPROVEMENTS #40). Hung from the avatar with CSS (`position: absolute; right: 0`) there is nothing to measure.
+- It follows the platform's menu pattern all the same: `role="menu"` with `role="menuitem"` rows, `aria-haspopup`/`aria-expanded` on the avatar, closing on Escape (returning the focus to the avatar) and on a press outside, up and down walking the rows and wrapping around, and the focus moving into the menu when it opens.
+- It stays mounted while it leaves (`useLingering` + `_state_closing`), so it enters in 160ms and leaves in 120ms, both off under `prefers-reduced-motion`.
+- **«Cerrar sesión» is a `<form action={logoutAction}>`**, as it always was: signing out does not depend on JavaScript.
+
+## Markup & styling
+
+Block `.platform-user-menu`, 300px wide, on `--platform-shadow-card`, hung 10px under the avatar and aligned to its right edge, growing out of `top right`.
+
+At the top, the day: the flame on its own disc of `--platform-warning-soft`, the streak in figures, the goal's bar (`--platform-accent-bright`, like the dashboard's: what it measures is the day and not a course) and, under it, what is left of the goal and the minutes done. A hairline that reaches from edge to edge of the card — pulled out of the menu's padding with a negative margin — separates it from the rows.
+
+**Elements:** `.platform-user-menu__day`, `__figure`, `__figure-mark`, `__flame`, `__flame-core`, `__figure-text`, `__figure-value`, `__figure-label`, `__track`, `__fill`, `__day-note`, `__day-count`, `__rule`, `__item`, `__icon`
+
+**Modifiers:** `.platform-user-menu_state_closing` (leaving), `.platform-user-menu__item_role_name` (the name, when it is a heading and not a link), `.platform-user-menu__icon_turn_out` (the arrow of a link that leaves the platform)
+
+**Outside the block:** `.platform-user-menu-anchor` (what the menu is hung from) and `.platform-user-menu__avatar` (the trigger: the 38px disc of the brand's black, which takes the accent while the menu is open).
+
+## Related
+
+- [`PlatformShell`](/components/platform/sections/shell/platform-shell-section), the bar it lives in.
+- [`StudyStreak`](/components/platform/shared/study-streak), the same streak as a card on the dashboard.

@@ -52,75 +52,17 @@
     fill: var(--platform-logo-accent);
   }
 
-  /* At the right edge, whatever the menu measures. */
-  & .platform-shell__user {
+  /* At the right edge: the search field and the avatar that opens the menu.
+     The block is pushed there by `margin-left: auto`, and what it measures is
+     whatever those two measure. */
+  & .platform-shell__tools {
     flex: none;
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 11px;
-    padding-left: 22px;
-    margin-left: 4px;
-    /* Hairline separator on the left, without adding a box. */
-    box-shadow: inset 1px 0 0 var(--platform-border);
+    gap: 16px;
   }
 
-  & .platform-shell__user-text {
-    text-align: right;
-    line-height: 1.3;
-    min-width: 0;
-  }
-
-  & .platform-shell__user-name {
-    display: block;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--platform-text);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  & .platform-shell__user-links {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 5px;
-    font-size: 14px;
-    color: var(--platform-text-subtle);
-  }
-
-  & .platform-shell__user-link {
-    padding: 0;
-    border: 0;
-    background: transparent;
-    font-family: inherit;
-    font-size: 14px;
-    color: var(--platform-text-subtle);
-    cursor: pointer;
-  }
-
-  & .platform-shell__user-link:hover {
-    color: var(--platform-accent-ink);
-  }
-
-  & .platform-shell__avatar {
-    flex: none;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: var(--platform-text);
-    color: var(--platform-bg);
-    font-size: 14.5px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* The page is narrower than the screen on purpose: a line of text is read,
-     not swept. At 40px of padding it leaves 960px for whatever a page puts
-     in it. */
   & .platform-shell__content {
     max-width: 1040px;
     margin: 0 auto;
@@ -170,6 +112,14 @@
       padding: 12px 24px;
     }
 
+    /* The search field takes what is left of the top row, and the avatar
+       stays at its end: two rows is already the concession, three would be
+       one too many. */
+    & .platform-shell__tools {
+      flex: 1;
+      min-width: 0;
+    }
+
     & .platform-shell__content {
       padding: 32px 24px 64px;
     }
@@ -178,11 +128,6 @@
   @media (max-width: 640px) {
     & .platform-shell__bar-inner {
       padding: 12px 16px;
-    }
-
-    & .platform-shell__user {
-      padding-left: 0;
-      box-shadow: none;
     }
 
     & .platform-shell__content {

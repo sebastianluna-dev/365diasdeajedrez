@@ -4,11 +4,11 @@ import { LOGO_LABEL, LogoWordmarkIcon } from "@/components/icons/logo-wordmark-i
 import { buildPlatformNavGroups } from "@/constants/platform/nav-items.const";
 import { getSessionUser } from "@/lib/platform-auth/current-user";
 import { getSessionRoles } from "@/lib/platform-auth/roles";
-import { homeRouteFor } from "@/lib/platform-routes";
-import { logoutAction } from "@/services/auth/auth.actions";
+import { homeRouteFor, teacherRoutes } from "@/lib/platform-routes";
 import { PlatformNav } from "./platform-nav.comp";
+import { PlatformSearch } from "./platform-search.comp";
+import { PlatformUserMenu } from "./platform-user-menu.comp";
 import "./platform-shell.section.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface PlatformShellProps {
   children: ReactNode;
@@ -62,32 +62,20 @@ export async function PlatformShell({ children }: PlatformShellProps) {
 
           <PlatformNav groups={navGroups} />
 
-          {user && (
-            <div className="platform-shell__user">
-              <div className="platform-shell__user-text">
-                <span className="platform-shell__user-name">{user.displayName}</span>
+          {/* At the right end, the two things that are not the menu: what is
+              searched for, and who is signed in. */}
+          <div className="platform-shell__tools">
+            <PlatformSearch />
 
-                <span className="platform-shell__user-links">
-                  <Link href="/" className="platform-shell__user-link">
-                    Sitio público
-                  </Link>
-                  <span aria-hidden="true">·</span>
-                  {/* The form goes in here so that "Salir" shares the line with the
-                      link to the site: the bar only has two rows and losing the
-                      logout is not an option. */}
-                  <form action={logoutAction}>
-                    <SubmitButton className="platform-shell__user-link" pendingLabel="Saliendo…">
-                      Salir
-                    </SubmitButton>
-                  </form>
-                </span>
-              </div>
-
-              <span className="platform-shell__avatar" aria-hidden="true">
-                {initialsOf(user.displayName)}
-              </span>
-            </div>
-          )}
+            {user && (
+              <PlatformUserMenu
+                displayName={user.displayName}
+                initials={initialsOf(user.displayName)}
+                // The teacher has a page of their own; nobody else does yet.
+                profileHref={roles.isTeacher ? teacherRoutes.profile : undefined}
+              />
+            )}
+          </div>
         </div>
       </header>
 

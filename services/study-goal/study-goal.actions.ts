@@ -10,6 +10,21 @@ import { allowAction } from "@/lib/rate-limit";
 import { z } from "zod";
 import { formInt, parseForm } from "@/services/shared/form-schema";
 import { withErrorParam } from "@/services/shared/safe-return-to";
+import { getStudyGoal } from "./study-goal.service";
+import type { StudyGoal } from "./study-goal.types";
+
+/**
+ * The day's figures, for whoever asks for them from the browser.
+ *
+ * The menu of the bar shows them, and the bar is drawn on every page of the
+ * platform: read in the shell they would cost three queries on every single
+ * one, and — the shell being a layout — they would then go stale until a full
+ * reload. Asked for when the menu is opened they cost nothing until someone
+ * looks, and what they say is true at the moment of looking.
+ */
+export async function readStudyGoal(): Promise<StudyGoal> {
+  return getStudyGoal();
+}
 
 /**
  * Changes the student's daily goal.

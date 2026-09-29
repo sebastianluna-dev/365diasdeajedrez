@@ -1,0 +1,37 @@
+---
+description: "The bar's search field. It does not search yet: drawn where and as it will be, and deliberately not a form, so pressing Enter does nothing instead of reloading the page."
+---
+
+# `PlatformSearch`
+
+|            |                                                                        |
+| ---------- | ------------------------------------------------------------------------ |
+| File       | `components/platform/sections/shell/platform-search.comp.tsx`          |
+| Kind       | Server Component                                                       |
+| Stylesheet | `platform-search.comp.css` → block `.platform-search`                  |
+| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section) |
+| Uses       | `SearchIcon` from `components/icons/`                                  |
+
+## Purpose
+
+The field the bar has had a place for since the platform was drawn, now drawn in it.
+
+**It does not search.** There is nothing to send it to — `/explorador` looks up positions on a board, not words — and a field that answered nothing would be worse than one that plainly waits. What it does is hold the size and the place it will keep once it does search, so the day it searches changes what it does and not where things are.
+
+## Props
+
+None.
+
+## Behaviour
+
+- **It is not a `<form>`, on purpose.** With no form around it, pressing Enter does nothing at all; wrapped in one it would reload the page with a query nobody reads. The day it searches, the form is what gets added.
+- The label is there for a screen reader and hidden from sight (`clip-path: inset(50%)`): what is seen is the placeholder, and a label over the bar would take a row the bar has not got.
+- `type="search"`, so the browser offers its own clearing and history, with `autoComplete="off"`.
+
+## Markup & styling
+
+Block `.platform-search`. A filled pill (`border-radius: 1000px`, the platform's full radius) 300px wide and 40px tall, with the magnifier absolutely placed at 14px from the left and the field padded 42px to clear it. The bar is white, so what tells the field apart is `--platform-bg`, the page's own grey; hover deepens it to `--platform-track` and focus takes it to white with the accent's border.
+
+At `(max-width: 1080px)` — where the bar splits into two rows — it stops being 300px and takes what is left of the top row beside the avatar.
+
+**Elements:** `.platform-search__label` (visually hidden), `.platform-search__icon`, `.platform-search__field`

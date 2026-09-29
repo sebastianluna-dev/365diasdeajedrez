@@ -1,0 +1,234 @@
+/* The menu behind the avatar of the bar: the day at the top, what is theirs
+   below. It is drawn as a card of the platform — white, rounded, on its
+   shadow — and not as a list glued to the bar. */
+.platform-user-menu {
+  /* Hung from the avatar by CSS and not placed by a library: Radix's own
+     positioning put it 145px to the right of the trigger under the platform's
+     zoom, which at the right edge of the bar is outside the window. Here the
+     menu's right edge IS the avatar's, and there is nothing to measure. */
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  /* Over the bar, which is a stacking context of its own at z-index 20:
+     inside it, this only has to clear the page. */
+  z-index: 40;
+  width: 300px;
+  padding: 8px;
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-card);
+  /* It grows out of the avatar, which is the corner above it. */
+  transform-origin: top right;
+
+  /* The day: the streak, the bar of the goal and what is left of it. The same
+     figures the dashboard heads with, here in one block the width of the
+     menu. */
+  & .platform-user-menu__day {
+    padding: 12px 12px 14px;
+  }
+
+  & .platform-user-menu__figure {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+  }
+
+  /* The flame on its own disc, as the dashboard draws it: the fire needs a
+     ground of its own or it reads as one more icon of the list below. */
+  & .platform-user-menu__figure-mark {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--platform-warning-soft);
+  }
+
+  & .platform-user-menu__flame {
+    width: 22px;
+    height: 22px;
+    color: var(--platform-flame);
+  }
+
+  & .platform-user-menu__flame-core {
+    fill: var(--platform-flame-core);
+  }
+
+  & .platform-user-menu__figure-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  & .platform-user-menu__figure-value {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--platform-text);
+    line-height: 1.2;
+  }
+
+  & .platform-user-menu__figure-label {
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  /* The goal of the day. The bar is the accent's, like the dashboard's: what
+     it measures is the day and not a course (see `--platform-progress`). */
+  & .platform-user-menu__track {
+    display: block;
+    height: 8px;
+    margin: 14px 0 8px;
+    border-radius: 1000px;
+    background: var(--platform-track);
+    overflow: hidden;
+  }
+
+  & .platform-user-menu__fill {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--platform-accent-bright);
+  }
+
+  & .platform-user-menu__day-note {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 0;
+    font-size: 13px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .platform-user-menu__day-count {
+    flex: none;
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
+  /* The hairline between the day and what is theirs. It reaches from edge to
+     edge of the card, which is why it is pulled out of the menu's padding. */
+  & .platform-user-menu__rule {
+    height: 1px;
+    /* Edge to edge of the card: it is pulled out of the menu's own padding. */
+    margin: 6px -8px;
+    border: none;
+    background: var(--platform-border);
+  }
+
+  /* One row per thing: icon, word, the whole row a target. They are three
+     different elements — a link, a label and a button — drawn as one. */
+  & .platform-user-menu__item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 11px 12px;
+    border: none;
+    border-radius: 8px;
+    background: none;
+    color: var(--platform-text);
+    font: inherit;
+    font-size: 15px;
+    text-align: left;
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--platform-bg);
+    }
+  }
+
+  /* The name is a heading when there is no page of one's own to go to: it
+     takes the row's shape and none of its behaviour. */
+  & .platform-user-menu__item_role_name {
+    margin: 0;
+    font-weight: 700;
+    cursor: default;
+  }
+
+  & .platform-user-menu__icon {
+    flex: none;
+    width: 19px;
+    height: 19px;
+    color: var(--platform-text-subtle);
+  }
+
+  /* An arrow leaving the page: the mark of a link that goes out of the
+     platform. */
+  & .platform-user-menu__icon_turn_out {
+    transform: rotate(45deg);
+  }
+
+  /* The form of "Cerrar sesión" is not a row: the row is the button inside
+     it. */
+  & form {
+    display: contents;
+  }
+
+  animation: platform-user-menu-in 160ms ease-out;
+
+  /* Kept mounted while it leaves, which is what `useLingering` is for. */
+  &.platform-user-menu_state_closing {
+    animation: platform-user-menu-out 120ms ease-in forwards;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &,
+    &.platform-user-menu_state_closing {
+      animation: none;
+    }
+  }
+}
+
+/* What the menu hangs from: the avatar, and the box around it that gives the
+   absolute position something to measure from. */
+.platform-user-menu-anchor {
+  position: relative;
+  flex: none;
+  display: flex;
+}
+
+/* The avatar is the trigger: the same disc the bar drew before, now a button.
+   It is outside the block because it is not inside the menu — it is what
+   opens it. */
+.platform-user-menu__avatar {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--platform-text);
+  color: var(--platform-bg);
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:hover,
+  &[aria-expanded="true"] {
+    background: var(--platform-accent);
+    color: var(--platform-on-accent);
+  }
+}
+
+/* `@keyframes` cannot be nested inside a style rule. */
+@keyframes platform-user-menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(-4px);
+  }
+}
+
+@keyframes platform-user-menu-out {
+  to {
+    opacity: 0;
+    transform: scale(0.97) translateY(-4px);
+  }
+}
