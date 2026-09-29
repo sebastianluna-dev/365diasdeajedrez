@@ -113,7 +113,9 @@ export function LessonOutline({
             is rendered again on every move, the column with it. */}
         <OutlineScroll chapterKey={chapterHref} />
 
-        <div className="lesson-outline__chapter">
+        {/* `data-sticky-head`: what `OutlineScroll` measures to know how much
+            of the top of the list this covers. */}
+        <div data-sticky-head="" className="lesson-outline__chapter">
           <Link href={chapterHref} className="lesson-outline__chapter-name">
             {chapterName}
           </Link>

@@ -325,8 +325,10 @@
     border: 2px solid var(--platform-accent-faint);
   }
 
-  & .lesson-outline__lesson:hover .lesson-outline__done,
-  & .lesson-outline__lesson:hover .lesson-outline__pending {
+  /* Not on the row being read: there the mark is already on the accent, and
+     hovering what one is on has nothing to say. */
+  & .lesson-outline__lesson:hover:not(.lesson-outline__lesson_state_current) .lesson-outline__done,
+  & .lesson-outline__lesson:hover:not(.lesson-outline__lesson_state_current) .lesson-outline__pending {
     background: var(--platform-accent-soft);
   }
 
