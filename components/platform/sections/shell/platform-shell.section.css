@@ -1,7 +1,8 @@
 .platform-shell {
   min-height: 100vh;
-  /* One white from the bar down: the bar is told apart by its hairline shadow. */
-  background: var(--platform-surface);
+  /* The canvas is the page's grey; the bar is white on it, closed by its
+     hairline shadow. */
+  background: var(--platform-bg);
 
   & .platform-shell__bar {
     background: var(--platform-surface);

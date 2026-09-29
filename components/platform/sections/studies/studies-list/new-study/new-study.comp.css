@@ -3,7 +3,7 @@
 
   /* The trigger: a quiet pill with the sign in front, quieter than the
      orange button because it is the page's one action and sits by the
-     title. It darkens a step on hover. */
+     title. White, because it rests on the canvas; grey on hover. */
   & .new-study__open {
     display: inline-flex;
     align-items: center;
@@ -11,7 +11,7 @@
     padding: 14px 24px;
     border: 0;
     border-radius: 8px;
-    background: var(--platform-bg);
+    background: var(--platform-surface);
     color: var(--platform-text);
     font-family: inherit;
     font-size: 16px;

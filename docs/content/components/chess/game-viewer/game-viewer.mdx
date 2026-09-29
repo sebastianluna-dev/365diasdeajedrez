@@ -63,7 +63,7 @@ The viewer never saves and never fetches. It receives a PGN, reports the current
 
 ## Markup & styling
 
-Every white box of the viewer — the notation panel, the tools card under the board, the two player strips and the evaluation bar — is outlined by `1px solid var(--platform-border)` on top of its shadow: on the white page the shadow alone did not hold the edge. The strip's edge that tucks under the board is hidden by it.
+Every white box of the viewer — the notation panel, the tools card under the board, the two player strips and the evaluation bar — is outlined by `1px solid var(--platform-border)` on top of its shadow: the shadow alone did not hold the edge on a white page, and the border stays now that the page is the light grey of `--platform-bg`. The strip's edge that tucks under the board is hidden by it.
 
 Block `.game-viewer` (539 lines), the largest sheet in `components/`.
 
