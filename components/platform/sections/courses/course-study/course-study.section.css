@@ -87,7 +87,7 @@
 
   & .course-study__ratio-value {
     font-size: 16px;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--platform-text-title);
     font-variant-numeric: tabular-nums;
   }
