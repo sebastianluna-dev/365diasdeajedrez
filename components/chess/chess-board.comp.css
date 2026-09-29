@@ -121,6 +121,12 @@
     max-width: none;
     border-radius: 0;
     box-shadow: none;
+    /* And no background of its own. Chessground rounds the board down to a
+       whole number of device pixels, so it comes out a px or two short of
+       this box, and those px were showing as a white rim around the board.
+       Standalone (the public site) keeps it: there the fill is the card the
+       notation shares. */
+    background: transparent;
 
     & .chess-board__frame {
       width: 100%;
