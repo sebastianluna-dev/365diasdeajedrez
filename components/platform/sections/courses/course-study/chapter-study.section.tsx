@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
-import type { ChapterLessonItem, ChapterView } from "@/services/courses/courses.types";
+import type { ChapterView } from "@/services/courses/courses.types";
 import { CourseStudyFrame } from "./course-study-frame.comp";
 import "./chapter-study.section.css";
 
@@ -9,18 +9,6 @@ interface ChapterStudySectionProps {
   chapter: ChapterView;
   /** What a setting of the course bounced back with, in `?error=`. */
   errorCode?: string;
-}
-
-/**
- * Where a lesson is for the student, in a word. «Siguiente» is one alone in
- * the whole course — the one «Aprender» opens — and wins over the rest: a
- * lesson left halfway that is also the next one is, above all, the next one.
- */
-function statusOf(lesson: ChapterLessonItem): string {
-  if (lesson.statusCode === PROGRESS_STATUS.COMPLETED) return "Aprendida";
-  if (lesson.isNext) return "Siguiente";
-  if (lesson.statusCode === PROGRESS_STATUS.IN_PROGRESS) return "Empezada";
-  return "Pendiente";
 }
 
 /**
@@ -91,11 +79,13 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
                     )}
 
                     <div className="chapter-study__lesson-foot">
+                      {/* Only the staff's mark: where the lesson is for the
+                          student is told by its check and by the band of the
+                          one that comes next, not by a word. */}
                       <p className="chapter-study__tags">
                         {lesson.isPriority && (
                           <span className="chapter-study__tag chapter-study__tag_tone_accent">Prioridad</span>
                         )}
-                        <span className="chapter-study__tag">{statusOf(lesson)}</span>
                       </p>
 
                       <Link href={lesson.href} className="chapter-study__open" aria-label={`Ver «${lesson.name}»`}>
