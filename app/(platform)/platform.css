@@ -5,11 +5,12 @@
  * stays dark (globals.css), so `body` and the `--platform-*` tokens are
  * rewritten here: everything that paints with them changes on its own.
  *
- * The three brand colours keep their values and change roles: #16110D goes
- * from background to text, and the orange #FF9143 is reserved for FILLS
- * (button, progress bar), where it does contrast. On a light background, as
- * TEXT, that orange is not legible: that is what --platform-accent-ink
- * (#B8611F) is for.
+ * The brand's black keeps its value and changes role: #16110D goes from
+ * background to text. The orange is the platform's own on light, #ED7F31 — a
+ * tone deeper than the public site's #FF9143, which is drawn on black — and
+ * is reserved for FILLS (button, progress bar, a check), where it does
+ * contrast. On a light background, as TEXT, it is not legible: that is what
+ * --platform-accent-ink (#B8611F) is for.
  */
 
 :root {
@@ -42,8 +43,10 @@
      dots and the row chevron — never for text. */
   --platform-text-faint: #bdbdbd;
 
-  --platform-accent: #ff9143;
-  --platform-accent-hover: #f07f2c;
+  /* The orange of the light theme, the only one there is for now. */
+  --platform-accent: #ed7f31;
+  /* A step deeper, for what is filled with the orange and is under the pointer. */
+  --platform-accent-hover: #d96f24;
   /* Orange that is legible on light: links, figures and accent text. */
   --platform-accent-ink: #b8611f;
   --platform-accent-soft: #fbeadb;
@@ -131,7 +134,7 @@ html body.platform-theme[data-scroll-locked] {
 }
 
 .platform-theme ::selection {
-  background: rgba(255, 145, 67, 0.3);
+  background: color-mix(in srgb, var(--platform-accent) 30%, transparent);
 }
 
 /* Shared primitives of the platform pages (the equivalent of

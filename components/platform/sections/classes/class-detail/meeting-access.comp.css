@@ -2,7 +2,7 @@
   & .meeting-access__countdown {
     margin: 0;
     padding: 10px 16px;
-    border: 1px dashed rgba(255, 145, 67, 0.4);
+    border: 1px dashed color-mix(in srgb, var(--platform-accent) 40%, transparent);
     border-radius: 8px;
     font-size: 15.5px;
     color: var(--platform-accent-ink);

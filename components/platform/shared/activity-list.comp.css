@@ -48,7 +48,7 @@
     font-size: 14px;
     padding: 2px 8px;
     border-radius: 1000px;
-    background: rgba(255, 145, 67, 0.14);
+    background: color-mix(in srgb, var(--platform-accent) 14%, transparent);
     color: var(--platform-accent-ink);
   }
 
