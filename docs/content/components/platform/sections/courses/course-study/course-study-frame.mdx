@@ -30,7 +30,7 @@ The course's layout: both pages of a course being studied are the same frame wit
 ## Behaviour
 
 - **The way back**, on top: a button that goes up one step — «Mis cursos» (`/cursos`) from the course's page, «Capítulos» (the course's page) from a chapter's.
-- **«Aprender»** is raised on a hard edge (`0 4px 0 var(--platform-accent-deep)`), as the button of the blog's header, and opens `course.learnHref`, where there is something to learn: the lesson the student left off at if it is unfinished, the first unfinished one otherwise and, in a finished course, its first lesson. **«Repasar n»** opens the Move Trainer with the exercises of the lessons already learned in this course (`/entrenador?course=<id>`); `n` is how many there are.
+- **«Aprender»** is raised on a hard edge (`0 4px 0 var(--platform-accent-deep)`), as the button of the blog's header, sinks onto it while it is held down (`:active`), and opens `course.learnHref`, where there is something to learn: the lesson the student left off at if it is unfinished, the first unfinished one otherwise and, in a finished course, its first lesson. **«Repasar n»** opens the Move Trainer with the exercises of the lessons already learned in this course (`/entrenador?course=<id>`); `n` is how many there are.
 - **«Repasar» is not drawn today**: the Move Trainer is switched off (`MOVE_TRAINER_ENABLED`) and the service counts nothing to review, so `course.reviewCount` is always 0.
 - A button is only drawn when it leads somewhere: a course without lessons in view has no «Aprender», and one without learned exercises no «Repasar». With neither, the block is not rendered. **A finished course keeps its «Aprender»**: it opens the first lesson, to start the course over.
 - Under the name, the place: «Capítulos» on the course's page; the chapter's name, not numbered, on a chapter's.
@@ -42,7 +42,7 @@ The design this comes from also had «Poner en pausa todos los capítulos»; it 
 
 ## Markup & styling
 
-Block `.course-study-frame` (287 lines). A wrapping flex row: the page's column and an aside of at most 320px, which drops under it when both do not fit.
+Block `.course-study-frame` (297 lines). A wrapping flex row: the page's column and an aside of at most 320px, which drops under it when both do not fit.
 
 **Elements:** `.course-study-frame__back`, `.course-study-frame__back-icon`, `.course-study-frame__head`, `.course-study-frame__cover`, `.course-study-frame__cover-image`, `.course-study-frame__heading`, `.course-study-frame__name`, `.course-study-frame__place`, `.course-study-frame__actions`, `.course-study-frame__learn`, `.course-study-frame__review`, `.course-study-frame__review-count`, `.course-study-frame__layout`, `.course-study-frame__main`, `.course-study-frame__aside`, `.course-study-frame__card`, `.course-study-frame__card-title`, `.course-study-frame__progress-head`, `.course-study-frame__progress-ratio`, `.course-study-frame__percent`, `.course-study-frame__done`, `.course-study-frame__done-icon`, `.course-study-frame__track`, `.course-study-frame__fill`, `.course-study-frame__options`, `.course-study-frame__option`, `.course-study-frame__setting`
 

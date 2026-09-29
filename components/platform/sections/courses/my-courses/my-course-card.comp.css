@@ -165,6 +165,8 @@
     background: var(--platform-accent);
     color: var(--platform-on-accent);
     box-shadow: 0 4px 0 var(--platform-accent-deep);
+    transition: 80ms;
+    transition-property: transform, box-shadow, background-color;
   }
 
   & .my-course-card__learn:hover {
@@ -172,13 +174,22 @@
     color: var(--platform-on-accent);
   }
 
+  /* Held down, it sinks onto its edge: it goes down the four pixels it stood
+     on and the edge is gone under it, for as long as the press lasts. */
+  & .my-course-card__learn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 var(--platform-accent-deep);
+  }
+
   /* One that leads nowhere keeps its place, so the rows line up. */
   & .my-course-card__review_state_off,
   & .my-course-card__review_state_off:hover,
   & .my-course-card__learn_state_off,
-  & .my-course-card__learn_state_off:hover {
+  & .my-course-card__learn_state_off:hover,
+  & .my-course-card__learn_state_off:active {
     background: var(--platform-surface-neutral);
     box-shadow: none;
+    transform: none;
     color: var(--platform-text-faint);
     cursor: default;
   }
@@ -214,6 +225,13 @@
     & .my-course-card__meter + .my-course-card__meter {
       padding-left: 0;
       border-left: 0;
+    }
+  }
+
+  /* The press is still told, at once. */
+  @media (prefers-reduced-motion: reduce) {
+    & .my-course-card__learn {
+      transition: none;
     }
   }
 }

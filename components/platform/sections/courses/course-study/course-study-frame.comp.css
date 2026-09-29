@@ -106,11 +106,20 @@
     background: var(--platform-accent);
     color: var(--platform-on-accent);
     box-shadow: 0 4px 0 var(--platform-accent-deep);
+    transition: 80ms;
+    transition-property: transform, box-shadow, background-color;
   }
 
   & .course-study-frame__learn:hover {
     background: var(--platform-accent-bright);
     color: var(--platform-on-accent);
+  }
+
+  /* Held down, it sinks onto its edge: it goes down the four pixels it stood
+     on and the edge is gone under it, for as long as the press lasts. */
+  & .course-study-frame__learn:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 var(--platform-accent-deep);
   }
 
   & .course-study-frame__review {
@@ -280,7 +289,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    & .course-study-frame__back {
+    & .course-study-frame__back,
+    & .course-study-frame__learn {
       transition: none;
     }
   }
