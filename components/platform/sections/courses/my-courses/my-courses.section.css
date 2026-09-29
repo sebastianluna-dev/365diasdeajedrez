@@ -23,12 +23,13 @@
   }
 
   /* The list and, beside it, the day: the column drops under the list when
-     both do not fit. */
+     both do not fit. The room between them is the list's to give: the column
+     keeps its width. */
   & .my-courses__layout {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    gap: 24px;
+    gap: 24px 40px;
   }
 
   /* One course to a row: the card is as wide as the list. */
@@ -40,9 +41,10 @@
     gap: 16px;
   }
 
+  /* A width of its own, not a share of what is left: a wider gap, or a
+     longer name in the list, does not make it narrower. */
   & .my-courses__aside {
-    flex: 1 1 260px;
-    max-width: 320px;
+    flex: 0 0 320px;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -100,10 +102,12 @@
     line-height: 1.45;
   }
 
-  /* Stacked, the day takes the width of the list. */
-  @media (max-width: 960px) {
+  /* Stacked, the day takes the width of the list. The list asks for 600px,
+     the column for 320 and the gap for 40: under that, plus the page's own
+     margins, the column is on a row of its own. */
+  @media (max-width: 1040px) {
     & .my-courses__aside {
-      max-width: none;
+      flex-basis: 100%;
     }
   }
 
