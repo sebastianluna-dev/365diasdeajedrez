@@ -3,6 +3,12 @@
      weight, and not the size, telling them apart. */
   font-size: 17px;
 
+  /* Where the centre of every mark falls, counted from the right edge: the
+     chapter's ring is 40px wide inside 16 of padding, so its centre sits
+     here, and the lessons' marks line up under it instead of drifting in by
+     the difference between a 40px ring and an 18px mark. */
+  --mark-center: 36px;
+
   /* Pinned to the window, not laid out in the page: it starts right under the
      bar, touches the left edge and goes down to the bottom one, so the
      lessons are a panel of the screen and not a card floating on it. The page
@@ -135,14 +141,14 @@
   }
 
   /* The dotted line that strings the marks together, behind them: the lessons
-     of a chapter are one thread and each mark is a stop on it. It is drawn in
-     the marks' own column — 16px of padding plus half of the 18px mark. */
+     of a chapter are one thread and each mark is a stop on it. It runs down
+     the marks' own column, its 2px straddling the centre. */
   & .lesson-outline__list::before {
     content: "";
     position: absolute;
     top: 12px;
     bottom: 12px;
-    right: 24px;
+    right: calc(var(--mark-center) - 1px);
     border-left: 2px dotted var(--platform-border);
   }
 
@@ -151,7 +157,9 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 18px 16px;
+    /* The right padding puts the mark's centre on `--mark-center`: half of
+       the 18px mark short of it. */
+    padding: 18px calc(var(--mark-center) - 9px) 18px 16px;
     color: var(--platform-text);
     line-height: 1.35;
   }
@@ -164,7 +172,8 @@
     content: "";
     position: absolute;
     left: 0;
-    right: 48px;
+    /* Clear of the marks' column: the centre, the mark's half and air. */
+    right: calc(var(--mark-center) + 9px + 12px);
     bottom: 0;
     height: 1px;
     background: var(--platform-border);
