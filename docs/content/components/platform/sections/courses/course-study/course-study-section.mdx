@@ -27,7 +27,7 @@ description: "The course to study: its chapters as cards, each with how much of 
 ## Behaviour
 
 - One card per chapter, the whole card a link to it (`/cursos/<id>/<order>`): the chapter's name whole («Los años de aprendizaje (1957–1959)») and nothing above it — a chapter is not numbered —, the «Prioridad» tag when the staff marked the chapter (`chapter.isPriority`), and at the foot its progress as a count: «9/17 lecciones».
-- **A chapter has no percentage and no bar**: the bar is the course's, in the frame. A finished chapter (`chapter.isCompleted`) gets a green check in front of its count (`CircleCheckSolidIcon`, the filled one); an unfinished one gets nothing, which is what "not yet" looks like.
+- **A chapter has no percentage and no bar**: the bar is the course's, in the frame. A finished chapter (`chapter.isCompleted`) gets an orange check in front of its count (`CircleCheckSolidIcon`, the filled one); an unfinished one gets nothing, which is what "not yet" looks like.
 - A chapter's count is of the lessons the student **sees**: with only the priority ones asked for, it is over those, which is the list that opens when the card is pressed.
 - A course without chapters shows an `EmptyState`.
 
@@ -37,7 +37,7 @@ Block `.course-study` (106 lines): a grid of cards of at least 240px (`repeat(au
 
 **Elements:** `.course-study__item`, `.course-study__chapter`, `.course-study__title`, `.course-study__foot`, `.course-study__tag`, `.course-study__progress`, `.course-study__done`, `.course-study__done-icon`, `.course-study__ratio`, `.course-study__ratio-value`
 
-**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-border-strong`, `--platform-success-ink`, `--platform-surface`, `--platform-text`, `--platform-text-subtle`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-text`, `--platform-text-subtle`
 
 **Breakpoints:** `(max-width: 620px)` one column. The hover transition is off under `prefers-reduced-motion`.
 

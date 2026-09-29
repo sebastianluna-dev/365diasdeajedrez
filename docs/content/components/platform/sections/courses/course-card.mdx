@@ -35,7 +35,7 @@ It lives at the root of `sections/courses/` because two sections use it.
 - The button at the foot is a `<span aria-hidden="true">`: it is the card's link, which the title already names. «Continuar» is the filled orange one (`_emphasis_strong`); the rest are outlined.
 - The dots sit above the stretched link (`.course-card__levels`, `z-index: 1`) because they open a tip of their own. The wrapper is only rendered for a course with levels.
 - The description is clamped to two lines: the card says what the course is about, the information page tells it.
-- A finished course (`course.isCompleted`) paints its bar green (`.course-card__fill_state_done`) and gets a green check next to its 100 % (`.course-card__done`), the same filled one a finished chapter has.
+- A finished course (`course.isCompleted`) paints its bar green (`.course-card__fill_state_done`) and gets an orange check next to its 100 % (`.course-card__done`), the same filled one a finished chapter has.
 - The cover is decorative (`alt=""`): the staff's covers carry the course's name drawn on them and the title is right under. Without a cover the box stays, in the ink colour.
 
 ## Markup & styling

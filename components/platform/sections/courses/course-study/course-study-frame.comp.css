@@ -216,7 +216,7 @@
   /* Only a finished course has it, next to its 100 %. */
   & .course-study-frame__done {
     display: flex;
-    color: var(--platform-success-ink);
+    color: var(--platform-accent);
   }
 
   & .course-study-frame__done-icon {

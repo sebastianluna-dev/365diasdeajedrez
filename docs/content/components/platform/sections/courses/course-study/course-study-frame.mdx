@@ -33,7 +33,7 @@ The course's layout: both pages of a course being studied are the same frame wit
 - **«Aprender»** opens `course.learnHref`, the next lesson to learn: the one the student left off at if it is unfinished, the first unfinished one otherwise. **«Repasar n»** opens the Move Trainer with the exercises of the lessons already learned in this course (`/entrenador?course=<id>`); `n` is how many there are.
 - A button is only drawn when it leads somewhere: a course with every lesson learned has no «Aprender», and one without learned exercises no «Repasar». With neither, the block is not rendered.
 - Under the name, the place: «Capítulos» on the course's page; the chapter's name, not numbered, on a chapter's.
-- **«Tu progreso»**: percentage, `completed/total` and a bar, over the lessons the student sees. It is the one bar of the course's pages: a chapter says its progress as a count. A finished course (`course.isCompleted`) gets a green check next to its 100 %, the same filled one a finished chapter has.
+- **«Tu progreso»**: percentage, `completed/total` and a bar, over the lessons the student sees. It is the one bar of the course's pages: a chapter says its progress as a count. A finished course (`course.isCompleted`) gets an orange check next to its 100 %, the same filled one a finished chapter has.
 - **«Opciones del curso»**: «Información del curso» (the slug page) and «Borrar mi progreso», the latter only when there is something to erase.
 - **«Configuración»**: [`LearnMode`](/components/platform/sections/courses/course-study/learn-mode).
 

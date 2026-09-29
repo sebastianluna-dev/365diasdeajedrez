@@ -93,7 +93,7 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
                     </h3>
                     {isDone && (
                       <span className="chapter-study__done" role="img" aria-label="Aprendida">
-                        ✓
+                        <CircleCheckSolidIcon className="chapter-study__done-icon" />
                       </span>
                     )}
                     {lesson.estimatedDuration ? (

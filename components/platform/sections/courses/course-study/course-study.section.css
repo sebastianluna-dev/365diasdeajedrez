@@ -72,7 +72,7 @@
   & .course-study__done {
     flex: none;
     display: flex;
-    color: var(--platform-success-ink);
+    color: var(--platform-accent);
   }
 
   & .course-study__done-icon {

@@ -162,7 +162,7 @@
   /* Only a finished course has it, next to its 100 %. */
   & .course-card__done {
     display: flex;
-    color: var(--platform-success-ink);
+    color: var(--platform-accent);
   }
 
   & .course-card__done-icon {
