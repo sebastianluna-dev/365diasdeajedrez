@@ -101,19 +101,23 @@
     list-style: none;
   }
 
+  /* The card's white shows all around the band: the band is set into the
+     card, it is not the card's top edge. */
   & .chapter-study__lesson {
-    overflow: hidden;
+    padding: 6px;
     border-radius: 8px;
     background: var(--platform-surface);
   }
 
   /* The band the lesson is named on: a wash, and the accent of the buttons'
-     rest for the one that comes next. */
+     rest for the one that comes next. Rounded on its four corners, as a box
+     inside the card. */
   & .chapter-study__lesson-head {
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 14px 22px;
+    padding: 14px 20px;
+    border-radius: 8px;
     background: var(--platform-accent-wash);
   }
 
@@ -155,7 +159,8 @@
     display: flex;
     flex-direction: column;
     gap: 18px;
-    padding: 20px 22px 20px;
+    /* The same 20px at the sides as the band, so the moves start under the name. */
+    padding: 20px 20px 16px;
   }
 
   /* Every move of the game. Moves are figures: heavier, and aligned, so they
