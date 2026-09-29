@@ -32,6 +32,7 @@ export default function PlatformLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="es"
+      data-scroll-behavior="smooth"
       className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} ${sfProDisplay.variable} ${poppins.variable}`}
     >
       <body className="platform-theme">

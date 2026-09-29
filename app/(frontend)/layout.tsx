@@ -30,7 +30,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es" className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable}`}>
+    <html
+      lang="es"
+      data-scroll-behavior="smooth"
+      className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable}`}
+    >
       <body>
         <a className="skip-link" href="#contenido">
           Saltar al contenido

@@ -71,6 +71,8 @@ The brand's black keeps its value and changes role: `#16110d` goes from backgrou
 
 `--transition-hover` is read by the global transition rule with a `150ms` default; a component may set it to change or remove the duration.
 
+`globals.css` sets `scroll-behavior: smooth` on `html`, and every layout's `<html>` carries `data-scroll-behavior="smooth"` with it: without that attribute Next warns, because during a route transition it restores the scroll and a smooth one would animate the jump instead of landing on it.
+
 ## The platform does not bounce
 
 `:root:has(> .platform-theme)` carries `overscroll-behavior: none`. On the elastic overscroll of a trackpad the whole document slides, and the bar stuck to the top slides with it, which reads as the header coming loose. It goes on the **root**, the element that scrolls the document — on `<body>` it is the browser's choice whether to honour it — and only under the platform's layouts, so the public site keeps the bounce it was drawn with.

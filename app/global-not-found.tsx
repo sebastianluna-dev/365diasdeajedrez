@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function GlobalNotFound() {
   return (
-    <html lang="es" className={`${gramatika.variable} ${suisseIntl.variable}`}>
+    <html lang="es" data-scroll-behavior="smooth" className={`${gramatika.variable} ${suisseIntl.variable}`}>
       <body>
         <main id="contenido">
           <SiteMessage

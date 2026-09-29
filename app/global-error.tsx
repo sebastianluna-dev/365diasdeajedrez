@@ -5,7 +5,7 @@
 // rely on any stylesheet being loaded. That is why it uses inline styles.
 export default function GlobalError({ error, retry }: { error: Error & { digest?: string }; retry: () => void }) {
   return (
-    <html lang="es">
+    <html lang="es" data-scroll-behavior="smooth">
       <body
         style={{
           margin: 0,
