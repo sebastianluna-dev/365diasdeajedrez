@@ -34,7 +34,7 @@
 
   /* One course to a row: the card is as wide as the list. */
   & .my-courses__list {
-    flex: 1 1 600px;
+    flex: 1 1 480px;
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -102,10 +102,10 @@
     line-height: 1.45;
   }
 
-  /* Stacked, the day takes the width of the list. The list asks for 600px,
+  /* Stacked, the day takes the width of the list. The list asks for 480px,
      the column for 320 and the gap for 40: under that, plus the page's own
      margins, the column is on a row of its own. */
-  @media (max-width: 1040px) {
+  @media (max-width: 900px) {
     & .my-courses__aside {
       flex-basis: 100%;
     }

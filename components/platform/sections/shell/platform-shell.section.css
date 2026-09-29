@@ -118,8 +118,11 @@
     justify-content: center;
   }
 
+  /* The page is narrower than the screen on purpose: a line of text is read,
+     not swept. At 40px of padding it leaves 880px for whatever a page puts
+     in it. */
   & .platform-shell__content {
-    max-width: 1200px;
+    max-width: 960px;
     margin: 0 auto;
     padding: 44px 40px 90px;
     box-sizing: border-box;

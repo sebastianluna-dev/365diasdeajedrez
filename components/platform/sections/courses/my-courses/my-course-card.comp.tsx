@@ -10,7 +10,7 @@ interface MyCourseCardProps {
 }
 
 /** The cover is a thumbnail at the card's side, and the full width on a phone. */
-const COVER_SIZES = "(max-width: 760px) 100vw, 220px";
+const COVER_SIZES = "(max-width: 760px) 100vw, 160px";
 
 /**
  * A course of the student's, as a row: its cover, its name, how far they are

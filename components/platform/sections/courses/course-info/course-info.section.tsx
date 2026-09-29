@@ -17,8 +17,8 @@ interface CourseInfoSectionProps {
   errorCode?: string;
 }
 
-/** The cover spans the page, which the shell caps at 1200px. */
-const COVER_SIZES = "(max-width: 1200px) 100vw, 1200px";
+/** The cover spans the page, which the shell caps at 960px. */
+const COVER_SIZES = "(max-width: 960px) 100vw, 960px";
 
 /** What the button says of a course the student already has. */
 const STUDY_LABELS = { Empezar: "Empezar curso", Continuar: "Continuar curso", Repasar: "Repasar curso" } as const;

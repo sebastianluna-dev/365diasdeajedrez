@@ -1,7 +1,7 @@
 .my-course-card {
   display: flex;
   align-items: stretch;
-  gap: 28px;
+  gap: 20px;
   padding: 20px 28px 20px 20px;
   border-radius: 8px;
   background: var(--platform-surface);
@@ -15,7 +15,7 @@
     display: block;
     flex: none;
     align-self: center;
-    width: 220px;
+    width: 160px;
     aspect-ratio: 21 / 9;
     overflow: hidden;
     border-radius: 8px;
@@ -63,9 +63,10 @@
 
   /* --- The progress: what the card is for --------------------------------- */
 
-  /* Sized so measures and buttons share the row beside the page's column. */
+  /* The measures take the row and the button goes under them, at the right:
+     the three do not fit on one line in a list this wide. */
   & .my-course-card__meters {
-    flex: 1 1 280px;
+    flex: 1 1 240px;
     min-width: 0;
     display: flex;
     gap: 24px;
@@ -113,6 +114,7 @@
 
   & .my-course-card__actions {
     flex: none;
+    margin-left: auto;
     display: flex;
     gap: 12px;
   }

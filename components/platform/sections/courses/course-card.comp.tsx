@@ -11,8 +11,8 @@ interface CourseCardProps {
   levels: CourseLevelItem[];
 }
 
-/** Three columns at most in a 1200px page: a card is little over 380px wide. */
-const COVER_SIZES = "(max-width: 760px) 100vw, 400px";
+/** Two columns in the page's 880px: a card is a little over 430px wide. */
+const COVER_SIZES = "(max-width: 760px) 100vw, 440px";
 
 /**
  * A course as a card: its cover, its name with the dots of its levels, what

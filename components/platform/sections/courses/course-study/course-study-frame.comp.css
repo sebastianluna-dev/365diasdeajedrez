@@ -158,7 +158,7 @@
   }
 
   & .course-study-frame__main {
-    flex: 1 1 600px;
+    flex: 1 1 560px;
     min-width: 0;
     display: flex;
     flex-direction: column;
