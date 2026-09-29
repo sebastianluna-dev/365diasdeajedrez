@@ -6,9 +6,12 @@ import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
 import { ExitIcon } from "@/components/icons/exit-icon.comp";
 import { FlameIcon } from "@/components/icons/flame-icon.comp";
 import { GearIcon } from "@/components/icons/gear-icon.comp";
+import { MoonIcon } from "@/components/icons/moon-icon.comp";
 import { UserIcon } from "@/components/icons/user-icon.comp";
 import { useLingering } from "@/components/chess/game-viewer/use-lingering.hook";
 import { platformRoutes } from "@/lib/platform-routes";
+import { CurrentPathField } from "@/components/platform/shared/current-path-field.comp";
+import { setTheme } from "@/services/account/account.actions";
 import { logoutAction } from "@/services/auth/auth.actions";
 import { readStudyGoal } from "@/services/study-goal/study-goal.actions";
 import type { StudyGoal } from "@/services/study-goal/study-goal.types";
@@ -179,6 +182,35 @@ export function PlatformUserMenu({ displayName, initials, profileHref }: Platfor
             <GearIcon className="platform-user-menu__icon" />
             Ajustes
           </Link>
+
+          {/* The same row twice, and the stylesheet shows the one that fits the
+              theme being drawn: which theme that IS cannot be known here when
+              nobody has chosen — it is the machine's preference, and only the
+              browser reads it. Each one asks for the other theme, and its
+              switch is drawn in the state the current one is in. */}
+          <form
+            action={setTheme.bind(null, "dark")}
+            className="platform-user-menu__theme platform-user-menu__theme_to_dark"
+          >
+            <CurrentPathField name="returnTo" />
+            <button type="submit" role="menuitem" className="platform-user-menu__item">
+              <MoonIcon className="platform-user-menu__icon" />
+              Modo oscuro
+              <span className="platform-user-menu__switch" aria-hidden="true" />
+            </button>
+          </form>
+
+          <form
+            action={setTheme.bind(null, "light")}
+            className="platform-user-menu__theme platform-user-menu__theme_to_light"
+          >
+            <CurrentPathField name="returnTo" />
+            <button type="submit" role="menuitem" className="platform-user-menu__item">
+              <MoonIcon className="platform-user-menu__icon" />
+              Modo oscuro
+              <span className="platform-user-menu__switch platform-user-menu__switch_state_on" aria-hidden="true" />
+            </button>
+          </form>
 
           <Link href="/" role="menuitem" className="platform-user-menu__item" onClick={() => close(false)}>
             <ArrowUpIcon className="platform-user-menu__icon platform-user-menu__icon_turn_out" />

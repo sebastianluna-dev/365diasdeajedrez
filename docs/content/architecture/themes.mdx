@@ -1,0 +1,54 @@
+---
+description: "Light and dark on the platform: one pair of values per colour, the machine's preference by default, and a cookie when the person chooses."
+---
+
+# Themes
+
+The public site is dark and the platform is light — that was the whole of it until the platform got a dark theme of its own. What follows is only about the platform (`app/(platform)`, `app/(auth)`, `components/platform`, `components/chess`); the public site is unchanged.
+
+## One pair of values per colour
+
+Every `--platform-*` colour is declared once, with both its values, in the single `:root` block of `app/(platform)/platform.css`:
+
+```css
+--platform-bg: light-dark(#f6f6f6, #14100d);
+--platform-surface: light-dark(#ffffff, #1e1a16);
+--platform-accent: light-dark(#a81e22, #ff9143);
+```
+
+Nothing else in the codebase knows there are two themes. That was possible because no stylesheet ever named a colour — they all say "the accent", "the canvas", "the muted text" — which is what the token block had said it was for since it was written.
+
+**The accent changes family.** On light it is the brand's red, the one the blog draws its links and buttons in; on dark it is the brand's orange, `#ff9143`, the one the public site is built on. `--platform-danger` stops being the same colour as the accent on dark, where red has to stay red while the accent turns orange.
+
+**Shadows become a ring.** On light, layers are told apart by their shadow; over near-black a shadow separates nothing, so `--platform-shadow-card` carries a hairline of `--platform-border` as its first layer on dark and a transparent one on light. No component had to learn about it.
+
+## Which theme is drawn
+
+`color-scheme` on `:root` decides, and it is the only thing the switch changes:
+
+| `:root`                 | `color-scheme` | What is drawn                        |
+| ----------------------- | -------------- | -------------------------------------- |
+| no `data-theme`         | `light dark`   | Whatever the machine prefers.        |
+| `data-theme="light"`    | `light`        | Light, always.                       |
+| `data-theme="dark"`     | `dark`         | Dark, always.                        |
+
+It also tells the browser how to paint what it draws itself: scrollbars, the inside of a native control, a date input.
+
+**`color-scheme` has to sit on the same element as the tokens.** Turbopack compiles `light-dark()` through Lightning CSS, which rewrites every pair into `var(--lightningcss-light, …) var(--lightningcss-dark, …)` and declares those two helpers wherever it finds the `color-scheme`. Declared on the `<body>`, they never reach a `:root` that is one element above: the helpers resolve to nothing, every token becomes invalid, and the platform renders with no colours at all — which is exactly what happened the first time.
+
+## Where the choice lives
+
+A cookie, `tema` (`constants/platform/theme.const.ts`), for a year. Not a column of `User`: the theme is a property of the screen one is looking at and not of the account — the same person wants dark on the laptop at night and light on the tablet — and a cookie is read by the layout for free, while a column would cost a query on every page.
+
+`app/(platform)/layout.tsx` reads it and puts `data-theme` on the `<html>`, so **the first paint is already the right theme**; a switch made in the browser would flash the other one on every load. Without the cookie the attribute is absent and the decision is the machine's.
+
+`setTheme` (`services/account/account.actions.ts`) writes it, with the theme bound into the action so no field travels that could be forged, and revalidates `"/"` as a layout, since the theme is drawn by the layout every page hangs from. It is a plain `<form>`: no state to keep, nothing sent to the browser, and it works without JavaScript.
+
+## Where it is switched
+
+- **The menu of the bar** ([`PlatformUserMenu`](/components/platform/sections/shell/platform-user-menu)): one row, «Modo oscuro», with a switch. The row is rendered twice — one asking for dark, one asking for light — and the stylesheet shows the one that fits the theme being drawn, because with no cookie the theme is the machine's preference and only the browser knows it.
+- **«Ajustes»** ([`AccountSettingsSection`](/components/platform/sections/account/account-settings-section)): the three answers, «El del sistema», «Claro» and «Oscuro». What is marked there is what was **chosen**, which the server does know, and «El del sistema» is a choice like the others.
+
+## Adding a colour
+
+Declare it in the `:root` block of `platform.css` with its two values, name it by its role, and use it. If a component needs a colour that only makes sense in one theme, that is a sign the token is named after what it looks like instead of what it is for.

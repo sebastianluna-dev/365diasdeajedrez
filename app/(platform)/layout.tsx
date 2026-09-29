@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { cookies } from "next/headers";
+import { THEME_COOKIE_NAME, themeOf } from "@/constants/platform/theme.const";
 import "@/app/(frontend)/globals.css";
 import { chessGlyph, gramatika, suisseIntl } from "@/app/(frontend)/fonts";
 import { poppins, sfProDisplay } from "@/app/(platform)/fonts";
@@ -28,11 +30,19 @@ export const dynamic = "force-dynamic";
 // page of this group is: its FIRST await has to be a data service (which
 // calls getCurrentUser) or getCurrentUser itself. Index pages call it
 // explicitly because they delegate the data to their sections.
-export default function PlatformLayout({ children }: { children: ReactNode }) {
+export default async function PlatformLayout({ children }: { children: ReactNode }) {
+  // The theme the person chose, if they chose one. Without it the `<html>`
+  // says nothing and `color-scheme: light dark` leaves the decision to the
+  // machine (see platform.css). Read here, on the server, so the first paint is
+  // already the right theme — a switch done in the browser would flash the
+  // other one on every load.
+  const theme = themeOf((await cookies()).get(THEME_COOKIE_NAME)?.value);
+
   return (
     <html
       lang="es"
       data-scroll-behavior="smooth"
+      data-theme={theme}
       className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} ${sfProDisplay.variable} ${poppins.variable}`}
     >
       <body className="platform-theme">

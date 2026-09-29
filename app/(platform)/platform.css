@@ -11,86 +11,108 @@
  * THE ACCENT IS BY THEME. On a light background it is the brand's red,
  * #A81E22, the one the blog — the public site's light section — already
  * draws its logo, links and buttons in. On a dark background it is the
- * brand's orange. The platform has the light theme only, so red is all there
- * is today; the dark theme is not built, and the day it is, it redefines the
- * `--platform-accent*` tokens below in orange and nothing else has to change.
- * That is why no stylesheet names a colour: they all say "the accent".
+ * brand's orange, #FF9143, the one the public site is built on. No
+ * stylesheet names a colour: they all say "the accent", which is what made
+ * the second theme a matter of this file alone.
+ *
+ * BOTH THEMES ARE WRITTEN HERE, in `light-dark()`: every token declares its
+ * two values side by side, so a colour is added or corrected in one place
+ * and the pair is always read together. Which of the two is used is decided
+ * by `color-scheme` on the body (see below), and that is the only thing the
+ * theme switch changes.
  */
 
 :root {
+  /* WHICH THEME IS DRAWN. `color-scheme` is what `light-dark()` reads, so
+     these three rules are the whole switch — and they also tell the browser
+     which way to paint what it draws itself: the scrollbars, the inside of a
+     `<select>`, a date input, a form control's own focus.
+
+     It goes HERE, on the same element as the tokens, and not on the body.
+     Turbopack compiles `light-dark()` through Lightning CSS, which rewrites
+     it into a pair of helper variables and declares them wherever it finds
+     the `color-scheme` — declared one element below, those helpers do not
+     reach the tokens above them and every colour of the platform comes out
+     empty.
+
+     Without a choice, the platform follows the machine. `data-theme` is put
+     on the `<html>` by the platform's layout from a cookie, and only when the
+     person has chosen one of the two (see `setTheme`). */
+  color-scheme: light dark;
+
   /* Every grey is neutral — no warmth in it — so nothing reads as tinted next
      to the accent; only the text black keeps the brand's warm #16110d. */
   /* The canvas of every page, and the soft fill INSIDE a white surface (a
      hover, a table's head, an inset). What sits on the canvas itself cannot
      be painted with it: it would not be seen. */
-  --platform-bg: #f6f6f6;
+  --platform-bg: light-dark(#f6f6f6, #14100d);
   /* What rests on the canvas: cards, panels, tables, dialogs, the bar. */
-  --platform-surface: #ffffff;
+  --platform-surface: light-dark(#ffffff, #1e1a16);
   /* Sunken surface: cover slot, empty cells, insets, the quiet pill's hover. */
-  --platform-surface-sunken: #e9e9e9;
+  --platform-surface-sunken: light-dark(#e9e9e9, #100d0b);
   /* Neutral for chips and soft fills that are not accent. */
-  --platform-surface-neutral: #f0f0f0;
+  --platform-surface-neutral: light-dark(#f0f0f0, #272220);
   /* Barely off the white, for fields and footers inside a white card. */
-  --platform-surface-soft: #fbfbfb;
+  --platform-surface-soft: light-dark(#fbfbfb, #1a1613);
 
   /* Two line weights: the thin one separates zones, the strong one outlines controls. */
-  --platform-border: #e6e6e6;
-  --platform-border-strong: #dcdcdc;
+  --platform-border: light-dark(#e6e6e6, #2e2926);
+  --platform-border-strong: light-dark(#dcdcdc, #413a34);
 
   /* Three text weights: body, secondary and the one for small labels. */
-  --platform-text: #16110d;
+  --platform-text: light-dark(#16110d, #f2ede7);
   /* A title's grey: lighter than the body's near-black and with none of its
      warmth, so a wall of names does not read as a wall of ink. The chapters
      are drawn in it. */
-  --platform-text-title: #4a4a4a;
-  --platform-text-muted: #666666;
+  --platform-text-title: light-dark(#4a4a4a, #ccc3b9);
+  --platform-text-muted: light-dark(#666666, #b4a99d);
   /* 4.7:1 on white: used as TEXT (table headers, counters, footers); a lighter
      grey did not reach the WCAG AA minimum. */
-  --platform-text-subtle: #737373;
+  --platform-text-subtle: light-dark(#737373, #9c9188);
   /* Lighter still: only for decorations that are not read — the separator
      dots and the row chevron — never for text. */
-  --platform-text-faint: #bdbdbd;
+  --platform-text-faint: light-dark(#bdbdbd, #6a615a);
 
   /* The accent of the light theme: the brand's red. A dark theme would set
      these to the brand's orange (see the note at the top). */
-  --platform-accent: #a81e22;
+  --platform-accent: light-dark(#a81e22, #ff9143);
   /* A step deeper, for what is filled with the accent and is under the pointer. */
-  --platform-accent-hover: #8c171b;
+  --platform-accent-hover: light-dark(#8c171b, #ffa561);
   /* The edge a raised button stands on: the hard shadow under «Aprender», as
      under the button of the blog's header. */
-  --platform-accent-deep: #711215;
+  --platform-accent-deep: light-dark(#711215, #b8611f);
   /* The accent a tone lighter. It is what a raised button turns under the
      pointer, so the edge under it keeps telling, and what a progress bar is
      filled with: a bar is a long stretch of colour, and the accent itself
      weighs too much along it. */
-  --platform-accent-bright: #c22a2e;
+  --platform-accent-bright: light-dark(#c22a2e, #ffa561);
   /* What is written on a fill of the accent: a button, a selected day. */
-  --platform-on-accent: #ffffff;
+  --platform-on-accent: light-dark(#ffffff, #1a120c);
   /* The accent as text: links, figures, labels. The red reads on white as it
      is; it is a token of its own because the orange of a dark theme, or of a
      lighter accent, would need a different tone for text than for fills. */
-  --platform-accent-ink: #a81e22;
+  --platform-accent-ink: light-dark(#a81e22, #ff9143);
   /* The tint of a chip, a tag, the soft button. */
-  --platform-accent-soft: #f8e2e2;
+  --platform-accent-soft: light-dark(#f8e2e2, #3a2415);
   /* An even fainter wash: the active menu item. */
-  --platform-accent-wash: #fcf0f0;
+  --platform-accent-wash: light-dark(#fcf0f0, #2a1c13);
   /* Barely tinted, for a whole list of rows: the wash is a colour, and a
      column of it would read as a warning. This one has to look like paper
      that happens to be warm. */
-  --platform-accent-mist: #f8f4f4;
+  --platform-accent-mist: light-dark(#f8f4f4, #221a15);
 
   /* The grey of the accent's family: a grey that leans on it instead of a
      neutral one. It is what the marks of a lesson and the thread between them
      are drawn in — over the mist a neutral grey disappears, and a stop nobody
      can see is not a stop. */
-  --platform-accent-faint: #c8afb0;
+  --platform-accent-faint: light-dark(#c8afb0, #7d6047);
 
   /* Red on a light background. It is the public site's --color-accent-red,
      already chosen for this very case; #e5484d washed out too much here. It
      is the SAME red as the accent of the light theme: what is dangerous is
      told from what is merely the accent by its words and its place, not by
      its colour. */
-  --platform-danger: #a81e22;
+  --platform-danger: light-dark(#a81e22, #ff6b6f);
   /* The "365" of the wordmark: the accent. */
   --platform-logo-accent: var(--platform-accent);
 
@@ -98,7 +120,7 @@
      is what is pressed, and a bar is read, not pressed — and on a screen of
      red buttons the two would be one thing. The daily goal's bar stays in
      the accent: what it measures is the day, not a course. */
-  --platform-progress: #0095f8;
+  --platform-progress: light-dark(#0095f8, #3aa9ff);
 
   /* A line that was NOT played: the variations of a lesson. They are told
      from the game by their colour, and that colour is a grey — what was
@@ -113,25 +135,25 @@
   --platform-flame: #ffb82f;
   --platform-flame-core: #ff482f;
 
-  --platform-track: #ececec;
+  --platform-track: light-dark(#ececec, #2b2521);
 
   /* The dark of a chapter's header, and what is written on it: the text black
      as a fill, a cream that is not the page's white and the accent a tone up
      (the site's --color-accent-red-on-dark), which is the one that reads on
      black. */
-  --platform-ink: #16110d;
-  --platform-on-ink: #f4eee4;
-  --platform-accent-on-ink: #f44046;
+  --platform-ink: light-dark(#16110d, #0d0a08);
+  --platform-on-ink: light-dark(#f4eee4, #f4eee4);
+  --platform-accent-on-ink: light-dark(#f44046, #ff9143);
 
   /* The six course levels, the easiest the lightest: the accent, which
      darkens with the difficulty, so a row of dots reads as a scale without a
      legend. The fourth is the accent itself. */
-  --platform-level-1: #f6d0d1;
-  --platform-level-2: #ec9c9f;
-  --platform-level-3: #d9585c;
-  --platform-level-4: #a81e22;
-  --platform-level-5: #78151a;
-  --platform-level-6: #450b0e;
+  --platform-level-1: light-dark(#f6d0d1, #ffe3cd);
+  --platform-level-2: light-dark(#ec9c9f, #ffcba4);
+  --platform-level-3: light-dark(#d9585c, #ffad72);
+  --platform-level-4: light-dark(#a81e22, #ff9143);
+  --platform-level-5: light-dark(#78151a, #c96a26);
+  --platform-level-6: light-dark(#450b0e, #8f4713);
 
   /* Typography. The whole platform uses SF Pro Display — display and text —;
      Gramatika and Suisse Intl stay on the public site. A single token so that
@@ -149,16 +171,16 @@
      (#E7F0EA / #2F6B51); the error and warning ones are derived with the same
      background lightness and the same ink contrast, until the design fixes
      them. The ink red is the --platform-danger above. */
-  --platform-success-soft: #e7f0ea;
-  --platform-success-ink: #2f6b51;
-  --platform-success-border: #cfe1d7;
+  --platform-success-soft: light-dark(#e7f0ea, #1b2a22);
+  --platform-success-ink: light-dark(#2f6b51, #6fc79b);
+  --platform-success-border: light-dark(#cfe1d7, #2b4437);
 
-  --platform-danger-soft: #fbeaea;
-  --platform-danger-border: #f0cfcf;
+  --platform-danger-soft: light-dark(#fbeaea, #3a1d1e);
+  --platform-danger-border: light-dark(#f0cfcf, #5c2c2e);
 
-  --platform-warning-soft: #fdf0dc;
-  --platform-warning-ink: #8a5a12;
-  --platform-warning-border: #eddcb4;
+  --platform-warning-soft: light-dark(#fdf0dc, #332615);
+  --platform-warning-ink: light-dark(#8a5a12, #e2b667);
+  --platform-warning-border: light-dark(#eddcb4, #4b3a20);
 
   /* On light, layers are separated by shadow, not by border. */
   /* The platform is drawn one tenth larger than it is written: every size in
@@ -170,8 +192,22 @@
      read it with a fallback of 1). */
   --platform-zoom: 1.1;
 
-  --platform-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.05), 0 8px 24px rgba(0, 0, 0, 0.06);
+  /* On light, layers are told apart by their shadow; on dark a shadow over
+     near-black separates nothing, so the card takes a hairline ring of its
+     own border instead — one token, and no stylesheet has to know which
+     theme it is drawing in. */
+  --platform-shadow-card: light-dark(0 0 0 0 transparent, 0 0 0 1px var(--platform-border)),
+    0 1px 2px light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.5)),
+    0 8px 24px light-dark(rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.45));
   --platform-shadow-bar: 0 1px 0 var(--platform-border);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 /* The global focus of globals.css is an orange meant for a dark background; on
@@ -198,8 +234,9 @@
 
 body.platform-theme {
   zoom: var(--platform-zoom);
-  /* The canvas is a light grey and what rests on it is white: a card is told
-     from the page by its fill, before its border or its shadow. */
+  /* The canvas is a grey and what rests on it is lighter (or, on dark,
+     darker): a card is told from the page by its fill, before its border or
+     its shadow. */
   background: var(--platform-bg);
   color: var(--platform-text);
   font-family: var(--platform-font);

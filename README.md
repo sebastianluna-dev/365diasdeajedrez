@@ -131,7 +131,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/estudios`, `/estudios/clases` (games seen in class), `/estudios/[studyId]` (redirects to the study's first game; a study without games renders its empty page), `/estudios/[studyId]/partidas/[gameId]`
 - `/cursos` (the courses the student added), `/cursos/explorar` (the catalog; `?nivel=<slug>` narrows it to a level), `/cursos/<slug>` (a course's information page, where it is added), `/cursos/<id>` and `/cursos/<id>/<chapterOrder>` (the course to study; the two share the `[courseRef]` segment)
 - `/cursos/<id>/<chapterOrder>/<lessonId>` (a lesson: it hangs from its chapter so the column of lessons lives in the chapter's `layout.tsx` and is not fetched again on a move to another lesson). `/lecciones/[lessonId]`, where the lessons used to live, answers **308** to it.
-- `/ajustes` (the account: the student's details and the daily goal; reached from the menu behind the avatar of the bar)
+- `/ajustes` (the account: the student's details, the theme and the daily goal; reached from the menu behind the avatar of the bar). The platform has a **light and a dark theme**: it follows the machine unless the person chooses, and the choice is the `tema` cookie — see `docs/` → Architecture → Themes.
 - `/entrenador` (the Move Trainer; **switched off**: it answers 404 while `MOVE_TRAINER_ENABLED` in `constants/platform/features.const.ts` is `false`)
 - `/explorador` (search for games by position; student and teacher share it)
 

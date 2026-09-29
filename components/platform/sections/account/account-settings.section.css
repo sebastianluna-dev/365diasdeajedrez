@@ -66,6 +66,52 @@
     color: var(--platform-text-subtle);
   }
 
+  /* The three themes, as a row of cards: three short answers read side by
+     side, and each is its own form. */
+  & .account-settings__themes {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  & .account-settings__theme {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--platform-border-strong);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    color: var(--platform-text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--platform-accent);
+    }
+
+    /* The one that is chosen: the accent's wash and its ink, the same way a
+       chosen thing is drawn everywhere else on the platform. */
+    &[aria-pressed="true"] {
+      border-color: var(--platform-accent);
+      background: var(--platform-accent-wash);
+      color: var(--platform-accent-ink);
+    }
+  }
+
+  & .account-settings__theme-label {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  & .account-settings__theme-note {
+    font-size: 13px;
+    color: var(--platform-text-subtle);
+  }
+
   & .account-settings__form {
     display: flex;
     align-items: flex-end;
@@ -90,6 +136,11 @@
   @media (max-width: 640px) {
     & .account-settings__card {
       padding: 20px;
+    }
+
+    /* Three cards do not fit a phone's width: they stack. */
+    & .account-settings__themes {
+      grid-template-columns: minmax(0, 1fr);
     }
 
     /* Two columns of 190px do not fit a phone: the term goes over its value. */

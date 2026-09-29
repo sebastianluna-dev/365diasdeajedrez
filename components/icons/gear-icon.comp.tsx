@@ -3,8 +3,8 @@ interface GearIconProps {
 }
 
 /**
- * Settings. The teeth are eight strokes around the ring and not a toothed
- * path: at 19px a drawn cog turns to mush, and eight ticks read as one.
+ * Settings, drawn as three sliders and not as a cog: a toothed wheel at 19px
+ * turns to mush, and eight ticks around a circle read as a sun.
  */
 export function GearIcon({ className }: GearIconProps) {
   return (
@@ -20,8 +20,10 @@ export function GearIcon({ className }: GearIconProps) {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <circle cx="12" cy="12" r="3.2" />
-      <path d="M12 2.6v2.6M12 18.8v2.6M21.4 12h-2.6M5.2 12H2.6M18.6 5.4l-1.8 1.8M7.2 16.8l-1.8 1.8M18.6 18.6l-1.8-1.8M7.2 7.2 5.4 5.4" />
+      <path d="M3.4 6.8h17.2M3.4 12h17.2M3.4 17.2h17.2" />
+      <circle cx="8.4" cy="6.8" r="2.1" fill="var(--icon-knob, transparent)" />
+      <circle cx="15.2" cy="12" r="2.1" fill="var(--icon-knob, transparent)" />
+      <circle cx="9.6" cy="17.2" r="2.1" fill="var(--icon-knob, transparent)" />
     </svg>
   );
 }
