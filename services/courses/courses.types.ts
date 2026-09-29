@@ -209,12 +209,10 @@ export interface ChapterView {
   description?: string;
   /** The staff marked the chapter as priority. */
   isPriority: boolean;
-  completedLessons: number;
-  /** Of the VISIBLE ones; with the filter on it is not the chapter's total. */
-  totalLessons: number;
-  /** Every visible lesson is learned, and there is at least one. */
-  isCompleted: boolean;
-  /** How many the filter hides. It is stated, so the absence does not unsettle. */
+  /**
+   * How many the filter hides. It is stated, so the absence does not unsettle.
+   * The chapter counts nothing else: the progress of its page is the course's.
+   */
   hiddenLessons: number;
   lessons: ChapterLessonItem[];
   previous?: ChapterLink;

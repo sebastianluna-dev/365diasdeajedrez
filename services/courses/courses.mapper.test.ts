@@ -235,9 +235,9 @@ describe("por dónde sigue el curso", () => {
 
     const view = mapChapterView(sinPrioritarias, "cap-3", state({ onlyPriorityLessons: true }));
     expect(view?.lessons).toEqual([]);
+    expect(view?.hiddenLessons).toBe(1);
     // Nothing in view, nothing to learn: the button is not drawn.
     expect(view?.course.learnHref).toBeUndefined();
-    expect(view?.isCompleted).toBe(false);
   });
 });
 

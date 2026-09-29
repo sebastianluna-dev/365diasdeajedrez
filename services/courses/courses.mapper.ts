@@ -441,7 +441,6 @@ export function mapChapterView(
     }));
 
   const hiddenLessons = chapter.lessons.length - lessons.length;
-  const completedLessons = lessons.filter((lesson) => lesson.statusCode === PROGRESS_STATUS.COMPLETED).length;
 
   // The neighbours come from the course's own list, which is already in the
   // order the chapters are read: the introduction first, the closing last.
@@ -456,9 +455,6 @@ export function mapChapterView(
     name: chapter.name,
     description: chapter.description ?? undefined,
     isPriority: chapter.isPriority,
-    completedLessons,
-    totalLessons: lessons.length,
-    isCompleted: lessons.length > 0 && completedLessons === lessons.length,
     hiddenLessons,
     lessons,
     previous: position > 0 ? linkTo(detail.chapters[position - 1]) : undefined,

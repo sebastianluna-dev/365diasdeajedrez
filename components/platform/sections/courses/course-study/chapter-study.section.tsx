@@ -24,10 +24,13 @@ function statusOf(lesson: ChapterLessonItem): string {
 }
 
 /**
- * A chapter to study: what it is and how much of it is learned, and under
- * that its lessons, one card each: the name on a band, the moves of its game
- * from the first to the last with how it ended, and at the foot its tags and
- * the button that opens it.
+ * A chapter to study: what it is, and under that its lessons, one card
+ * each: the name on a band, the moves of its game from the first to the last
+ * with how it ended, and at the foot its tags and the button that opens it.
+ *
+ * Neither the chapter nor a lesson says a figure of its own — no count of
+ * lessons, no minutes —: the progress of these pages is the course's, in the
+ * frame, and what a lesson is worth is read by opening it.
  *
  * The button is the same on every card, quiet: outlined in grey, with no
  * fill. The next lesson to learn is told by its band and its «Siguiente»,
@@ -48,30 +51,11 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
     >
       <div className="chapter-study">
         <header className="chapter-study__summary">
-          <div className="chapter-study__about">
-            <div className="chapter-study__heading">
-              <h2 className="chapter-study__title">{chapter.name}</h2>
-              {chapter.isPriority && (
-                <span className="chapter-study__tag chapter-study__tag_tone_accent">Prioridad</span>
-              )}
-            </div>
-            {chapter.description && <p className="chapter-study__description">{chapter.description}</p>}
+          <div className="chapter-study__heading">
+            <h2 className="chapter-study__title">{chapter.name}</h2>
+            {chapter.isPriority && <span className="chapter-study__tag chapter-study__tag_tone_accent">Prioridad</span>}
           </div>
-
-          {/* A count and, once whole, a check: the bar is the course's. */}
-          <p className="chapter-study__progress">
-            {chapter.isCompleted && (
-              <span className="chapter-study__complete" role="img" aria-label="Capítulo completo">
-                <CircleCheckSolidIcon className="chapter-study__complete-icon" />
-              </span>
-            )}
-            <span className="chapter-study__ratio">
-              <span className="chapter-study__ratio-value">
-                {chapter.completedLessons}/{chapter.totalLessons}
-              </span>{" "}
-              {chapter.totalLessons === 1 ? "lección" : "lecciones"}
-            </span>
-          </p>
+          {chapter.description && <p className="chapter-study__description">{chapter.description}</p>}
         </header>
 
         {chapter.lessons.length === 0 ? (
@@ -99,9 +83,6 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
                         <CircleCheckSolidIcon className="chapter-study__done-icon" />
                       </span>
                     )}
-                    {lesson.estimatedDuration ? (
-                      <span className="chapter-study__minutes">{lesson.estimatedDuration} min</span>
-                    ) : null}
                   </div>
 
                   <div className="chapter-study__lesson-body">

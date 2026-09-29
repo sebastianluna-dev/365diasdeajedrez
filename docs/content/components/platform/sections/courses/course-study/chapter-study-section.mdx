@@ -12,7 +12,7 @@ description: "A chapter to study: what it is and how much of it is learned, and 
 | Used by    | `/cursos/[courseRef]/[chapterOrder]`                                                        |
 | Composes   | [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame) |
 | Reads      | `getChapterView(courseId, chapterOrder)` · `services/courses/courses.service.ts`            |
-| Uses       | `ChapterView`, `ChapterLessonItem`; `PROGRESS_STATUS`; `countLessons` from `course-rules`   |
+| Uses       | `ChapterView`, `ChapterLessonItem`; `PROGRESS_STATUS`                                       |
 
 ## Purpose
 
@@ -20,18 +20,18 @@ The lessons of one chapter. Each card shows **the game whole** — «1.e4 c5 2.C
 
 ## Props
 
-| Prop        | Type          | Required | Meaning                                                                                                                                                                                                       |
-| ----------- | ------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `chapter`   | `ChapterView` | yes      | `course` (the `CourseDetail` around it), `order`, `name`, `description?`, `isPriority`, `completedLessons`/`totalLessons`, `isCompleted`, `lessons` (each with `moves?` and `result?`), `previous?`, `next?`. |
-| `errorCode` | `string`      | no       | Passed on to the frame.                                                                                                                                                                                       |
+| Prop        | Type          | Required | Meaning                                                                                                                                                                      |
+| ----------- | ------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chapter`   | `ChapterView` | yes      | `course` (the `CourseDetail` around it), `order`, `name`, `description?`, `isPriority`, `hiddenLessons`, `lessons` (each with `moves?` and `result?`), `previous?`, `next?`. |
+| `errorCode` | `string`      | no       | Passed on to the frame.                                                                                                                                                      |
 
 ## Behaviour
 
-- **The summary** is the chapter's name — not numbered —, the «Prioridad» tag when the staff marked the chapter, its description, and its progress as a count («9/17 lecciones») with an accent check (`CircleCheckSolidIcon`, the filled one, in `--platform-accent`) once every lesson in view is learned. No percentage and no bar: the bar is the course's.
+- **The summary** is the chapter's name — not numbered —, the «Prioridad» tag when the staff marked the chapter, and its description. **It counts nothing**: no percentage, no bar and no count of lessons. The progress of the course's pages is the course's, in the frame ([`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame)).
 - **State of a lesson**, in one word: «Aprendida», «Siguiente», «Empezada» or «Pendiente». «Siguiente» is one alone in the whole course — the one the header's «Aprender» opens (`lesson.isNext`) — and wins over «Empezada»; its card's band is tinted.
 - **The button is «Ver» on every card, and quiet**: no fill, outlined in grey (`--platform-border-strong`). The next lesson's is no different: the filled «Aprender» is the course's, at the head of the page.
 - **The band is set into the card**: the card has 6px of white padding and the band, rounded on its four corners, does not touch the card's edges.
-- **The card**, top to bottom: a band with the name, the check of a learned lesson and the minutes; the moves; and a foot with the tags at the left and the button at the right.
+- **The card**, top to bottom: a band with the name and the check of a learned lesson; the moves; and a foot with the tags at the left and the button at the right. **A lesson says no minutes**: what it is worth is read by opening it.
 - **A lesson is not numbered**: its card is headed by its name. `lesson.order` is still in the model, the real one with the filter on too, but no page draws it.
 - A learned lesson carries that same check in its header band, in the same accent.
 - A lesson's «Prioridad» tag is the lesson's own mark, also inside a priority chapter.
@@ -43,13 +43,13 @@ The previous chapter page had an «Agregar al Move Trainer» button. It is no lo
 
 ## Markup & styling
 
-Block `.chapter-study` (289 lines). The lessons are one column of cards: a header band with the name and the minutes, under it the moves of the game, and a foot with the tags and the button.
+Block `.chapter-study` (242 lines). The lessons are one column of cards: a band with the name set into the card, under it the moves of the game, and a foot with the tags and the button.
 
-**Elements:** `.chapter-study__summary`, `.chapter-study__about`, `.chapter-study__heading`, `.chapter-study__title`, `.chapter-study__description`, `.chapter-study__progress`, `.chapter-study__complete`, `.chapter-study__complete-icon`, `.chapter-study__ratio`, `.chapter-study__ratio-value`, `.chapter-study__empty`, `.chapter-study__lessons`, `.chapter-study__lesson`, `.chapter-study__lesson-head`, `.chapter-study__name`, `.chapter-study__done`, `.chapter-study__done-icon`, `.chapter-study__minutes`, `.chapter-study__lesson-body`, `.chapter-study__moves`, `.chapter-study__result`, `.chapter-study__description-text`, `.chapter-study__lesson-foot`, `.chapter-study__tags`, `.chapter-study__tag`, `.chapter-study__open`, `.chapter-study__neighbours`, `.chapter-study__neighbour`, `.chapter-study__neighbour-name`
+**Elements:** `.chapter-study__summary`, `.chapter-study__heading`, `.chapter-study__title`, `.chapter-study__description`, `.chapter-study__empty`, `.chapter-study__lesson`, `.chapter-study__lessons`, `.chapter-study__lesson-head`, `.chapter-study__name`, `.chapter-study__done`, `.chapter-study__done-icon`, `.chapter-study__lesson-body`, `.chapter-study__moves`, `.chapter-study__result`, `.chapter-study__description-text`, `.chapter-study__lesson-foot`, `.chapter-study__tag`, `.chapter-study__tags`, `.chapter-study__open`, `.chapter-study__neighbour`, `.chapter-study__neighbours`, `.chapter-study__neighbour-name`
 
 **Modifiers and states:** `.chapter-study__lesson_state_next`, `.chapter-study__tag_tone_accent`
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-soft`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-border-strong`, `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-soft`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
 No breakpoints of its own; the hover transition is off under `prefers-reduced-motion`.
 

@@ -3,25 +3,15 @@
   flex-direction: column;
   gap: 16px;
 
-  /* --- What the chapter is, and how much of it is learned ----------------- */
+  /* --- What the chapter is ------------------------------------------------ */
 
   & .chapter-study__summary {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
+    flex-direction: column;
+    gap: 6px;
     padding: 20px 22px;
     border-radius: 8px;
     background: var(--platform-surface);
-  }
-
-  & .chapter-study__about {
-    flex: 1 1 300px;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
   }
 
   & .chapter-study__heading {
@@ -46,37 +36,6 @@
     line-height: 1.55;
     color: var(--platform-text-muted);
     text-wrap: pretty;
-  }
-
-  & .chapter-study__progress {
-    flex: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin: 0;
-  }
-
-  & .chapter-study__complete {
-    flex: none;
-    display: flex;
-    color: var(--platform-accent);
-  }
-
-  & .chapter-study__complete-icon {
-    width: 22px;
-    height: 22px;
-  }
-
-  & .chapter-study__ratio {
-    font-size: 14px;
-    color: var(--platform-text-subtle);
-  }
-
-  & .chapter-study__ratio-value {
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--platform-text);
-    font-variant-numeric: tabular-nums;
   }
 
   & .chapter-study__empty {
@@ -146,12 +105,6 @@
   & .chapter-study__done-icon {
     width: 22px;
     height: 22px;
-  }
-
-  & .chapter-study__minutes {
-    flex: none;
-    font-size: 12.5px;
-    color: var(--platform-text-subtle);
   }
 
   /* The game, and under it the foot of the card. */
