@@ -9,7 +9,8 @@
   box-shadow: 0 1px 3px rgba(22, 17, 13, 0.06);
   color: var(--platform-text);
 
-  /* A link to the course, as the name is. */
+  /* A link to the course, as the name is. Neither changes under the pointer:
+     the pointer's hand is all that says they are pressed. */
   & .my-course-card__cover {
     position: relative;
     display: block;
@@ -20,11 +21,7 @@
     overflow: hidden;
     border-radius: 8px;
     background: var(--platform-ink);
-    transition: opacity 150ms;
-  }
-
-  & .my-course-card__cover:hover {
-    opacity: 0.88;
+    cursor: pointer;
   }
 
   & .my-course-card__cover-image {
@@ -50,12 +47,10 @@
     text-wrap: balance;
   }
 
-  & .my-course-card__link {
-    color: inherit;
-  }
-
+  & .my-course-card__link,
   & .my-course-card__link:hover {
-    color: var(--platform-accent-ink);
+    color: inherit;
+    cursor: pointer;
   }
 
   /* The meters take what the buttons leave; when both do not fit in the row,
@@ -216,12 +211,6 @@
     & .my-course-card__meter + .my-course-card__meter {
       padding-left: 0;
       border-left: 0;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    & .my-course-card__cover {
-      transition: none;
     }
   }
 }
