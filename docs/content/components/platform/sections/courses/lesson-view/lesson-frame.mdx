@@ -1,0 +1,61 @@
+---
+description: "The lesson's screen: the column of the chapter's lessons and, beside it, the lesson. It lives in the chapter's layout, which is why the column survives a move from one lesson to the next."
+---
+
+# `LessonFrame`
+
+|            |                                                                                                              |
+| ---------- | -------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/lesson-view/lesson-frame.comp.tsx`                                     |
+| Kind       | Server Component                                                                                             |
+| Stylesheet | `lesson-frame.comp.css` → block `.lesson-frame`                                                               |
+| Used by    | `app/(platform)/cursos/[courseRef]/[chapterOrder]/(lesson)/layout.tsx`                                        |
+| Composes   | [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline)                           |
+| Uses       | `ChapterOutline` from `services/courses/courses.types`                                                        |
+
+## Purpose
+
+The screen a lesson is read on: the column of lessons and, beside it, the lesson.
+
+It is mounted by the **chapter's** layout, and that is the whole reason the lessons hang from `/cursos/<curso>/<capítulo>/<lección>`. A layout is fetched once and is not rendered again while one moves inside it, so going from one lesson to the next costs its PGN and nothing else: the column is not queried, not drawn, not scrolled back to the top, and the board is the only thing that blinks.
+
+It takes `children` because it is a container and nothing else — the exception the conventions allow. What goes in them is [`LessonBoardSection`](/components/platform/sections/courses/lesson-view/lesson-board-section), or [`LessonSkeleton`](/components/platform/sections/courses/lesson-view/lesson-skeleton) while that is on its way.
+
+## Props
+
+| Prop       | Type             | Required | Meaning                                                                    |
+| ---------- | ---------------- | -------- | ---------------------------------------------------------------------------- |
+| `outline`  | `ChapterOutline` | yes      | The course, the chapter and its lessons: what the column lists. It names no lesson, because the layout does not know which one is open. |
+| `children` | `ReactNode`      | yes      | The lesson's own segment.                                                  |
+
+## Markup & styling
+
+Block `.lesson-frame`. A grid of two tracks, 40px apart — the board is given the same air on its three sides: 40 to the column of lessons (this gap), 40 to the bar above it (the frame's top padding) and 40 to the panel of text (`--viewer-column-gap`). The outline is fixed to the window and takes no room in it, so the first track only **reserves** its width — `calc(var(--outline-width) - 40px)`, the 40 being the side padding the frame gives the page, which the panel covers on its way to the left edge — and `.lesson-frame__main` names its column (`grid-column: 2`) because an out-of-flow sibling does not take the first one by itself.
+
+**The page is the window.** The layout's own `<div>` carries `.platform-page`, `.lesson-page`, `.platform-page_width_full` and `.platform-page_height_screen`: no cap on the width, and the frame hands it exactly what is left under the bar (see [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)). Nothing here scrolls the page — the column of lessons and the panel of text each move on their own — because what is looked at is a board, and a board that falls below the fold is a board nobody sees whole.
+
+So the board is measured by the **height** that is left, not by the width: `--viewer-board-max` is `max(320px, 100vh / zoom - 192px)`, with no ceiling, the subtraction being the viewer's button row and its gap (62) and the frame's padding (40 above, 20 below) — there is nothing else under the board to make room for. At `(max-width: 1080px)` or `(max-height: 620px)` it becomes one column, the board gets a flat `600px` back and the outline drops under the lesson.
+
+**Elements:** `.lesson-frame__main`
+
+No modifiers.
+
+**Variables it hands down:** `--outline-width`, `--viewer-board-max`, `--viewer-column-gap`, `--viewer-panel-trim`.
+
+## Usage
+
+From `app/(platform)/cursos/[courseRef]/[chapterOrder]/(lesson)/layout.tsx`:
+
+```tsx
+const outline = await getChapterOutline(courseRef, order);
+if (!outline) notFound();
+
+<div className="platform-page lesson-page platform-page_width_full platform-page_height_screen">
+  <LessonFrame outline={outline}>{children}</LessonFrame>
+</div>;
+```
+
+## Related
+
+- [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline), the column it mounts.
+- [Routing](/architecture/routing), where the shape of these URLs is written down.

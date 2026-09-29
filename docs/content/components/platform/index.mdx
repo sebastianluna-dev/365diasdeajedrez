@@ -26,7 +26,8 @@ description: "Index of components/platform: the shared primitives and every sect
 | [`EmptyState`](/components/platform/shared/empty-state)                      | server | Dashed box with title, description and an optional link.                                                 |
 | [`ProgressIndicator`](/components/platform/shared/progress-indicator)        | server | Progress bar, inline or stacked.                                                                         |
 | [`StudyStreak`](/components/platform/shared/study-streak)                    | server | «Racha diaria»: days in a row studying, and the figure today would make it.                              |
-| [`BoardLoading`](/components/platform/shared/board-loading)                  | server | The knight that hops while a segment streams; what every `loading.tsx` renders.                          |
+| [`BoardLoading`](/components/platform/shared/board-loading)                  | server | The knight that hops while a segment streams; what every `loading.tsx` but the lesson's renders.         |
+| [`CurrentPathField`](/components/platform/shared/current-path-field)         | client | The page one is on, as a hidden `returnTo`, for a form inside a layout.                                  |
 | [`PlatformError`](/components/platform/shared/platform-error)                | client | The error boundary view with retry and digest.                                                           |
 | [`LocalDateTime`](/components/platform/shared/local-datetime)                | client | A UTC instant in the browser's zone, without hydration mismatch.                                         |
 | [`ActivityList`](/components/platform/shared/activity-list)                  | server | The dashboard's activity facts.                                                                          |
@@ -52,7 +53,7 @@ description: "Index of components/platform: the shared primitives and every sect
 | [`StatsCards`](/components/platform/sections/dashboard/activity-stats/stats-cards)                               | client | Metric cards with a period toggle.            |
 | [`RecentActivitySection`](/components/platform/sections/dashboard/recent-activity/recent-activity-section)       | server | The latest activity facts.                    |
 
-## `sections/courses/` — `/cursos`, `/cursos/explorar`, `/cursos/[courseRef]`, `/lecciones/[lessonId]`
+## `sections/courses/` — `/cursos`, `/cursos/explorar`, `/cursos/[courseRef]`, `/cursos/[courseRef]/[chapterOrder]/[lessonId]`
 
 | Page                                                                                                  | Kind   | What it is                                                                                                      |
 | ----------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------- |
@@ -69,7 +70,11 @@ description: "Index of components/platform: the shared primitives and every sect
 | [`ChapterStudySection`](/components/platform/sections/courses/course-study/chapter-study-section)     | server | A chapter's lessons as cards, each with the moves of its game.                                                  |
 | [`LearnMode`](/components/platform/sections/courses/course-study/learn-mode)                          | server | «Todo» or «Prioridad»: two forms with a bound value.                                                            |
 | [`ResetProgress`](/components/platform/sections/courses/course-study/reset-progress)                  | client | «Borrar mi progreso» and the dialog that asks first.                                                            |
-| [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section)          | server | The lesson in the viewer as running text, with the completion form.                                             |
+| [`LessonFrame`](/components/platform/sections/courses/lesson-view/lesson-frame)                       | server | The lesson's screen: the column of lessons and, beside it, the lesson. It lives in the chapter's layout.        |
+| [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline)                   | server | The column: the course, the chapter with its ring, and its lessons on a dotted thread.                          |
+| [`OutlineList`](/components/platform/sections/courses/lesson-view/outline-list)                       | client | The rows of the column: it marks the one being read and keeps it in view.                                       |
+| [`LessonBoardSection`](/components/platform/sections/courses/lesson-view/lesson-board-section)        | server | The lesson in the viewer as running text, with the completion form.                                             |
+| [`LessonSkeleton`](/components/platform/sections/courses/lesson-view/lesson-skeleton)                 | server | The board and the panel empty, while the next lesson's PGN arrives.                                             |
 | [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker)                   | client | Marks the lesson opened from an effect.                                                                         |
 
 ## `sections/studies/` — `/estudios`

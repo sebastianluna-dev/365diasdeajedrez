@@ -1,11 +1,13 @@
-/* The lesson's layout while the lesson is on its way. It runs on top of
-   `.lesson-view`, which is what places the three columns, so the board of the
-   skeleton and the board of the lesson are the same box and nothing moves
-   when one replaces the other. */
+/* The lesson while the lesson is on its way. It runs inside `.lesson-frame`,
+   which is what places the columns, so the board of the skeleton and the board
+   of the lesson are the same box and nothing moves when one replaces the
+   other. */
 .lesson-skeleton {
-  /* The panel is drawn here and not by the viewer, so it needs the trim the
-     viewer's own column takes (see `--viewer-panel-trim`). */
-  & .lesson-view__main {
+  /* It IS the frame's second column, where the viewer will be, so it takes
+     over the two tracks the viewer draws — the board and the panel of text —
+     and says so with the element's own two classes, which is what wins over
+     the column layout `.lesson-frame__main` gives it. */
+  &.lesson-frame__main {
     display: grid;
     grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(320px, 1fr);
     column-gap: var(--viewer-column-gap, 22px);

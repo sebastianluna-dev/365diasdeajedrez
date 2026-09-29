@@ -224,6 +224,31 @@ export interface ChapterView {
   next?: ChapterLink;
 }
 
+/**
+ * What the column beside a lesson shows: the course, the chapter and its
+ * lessons. It is read by the CHAPTER's layout and not by the lesson's page, so
+ * moving from one lesson to the next does not fetch it again — and it carries
+ * no PGN, which is the weight the lesson's own page goes for.
+ */
+export interface ChapterOutline {
+  courseId: string;
+  courseName: string;
+  courseHref: string;
+  /** The course's square image, for the head of the column. */
+  courseThumbnail?: string;
+  /** The student asked to see only the priority lines of this course. */
+  onlyPriorityLessons: boolean;
+  chapterId: string;
+  chapterName: string;
+  chapterHref: string;
+  /**
+   * The lessons of the chapter, in reading order and already filtered by the
+   * student's preferences — the same list «anterior»/«siguiente» walk, so the
+   * column and the buttons never disagree.
+   */
+  lessons: LessonSibling[];
+}
+
 export interface LessonView {
   courseId: string;
   courseName: string;
@@ -246,19 +271,8 @@ export interface LessonView {
   nextLessonHref?: string;
   /** Its own page, for a form that has to come back to it. */
   href: string;
-  courseHref: string;
   chapterHref: string;
-  /** The student asked to see only the priority lines of this course. */
-  onlyPriorityLessons: boolean;
   trainerHref?: string;
-  /** The course's square image, for the column the lesson is read beside. */
-  courseThumbnail?: string;
-  /**
-   * The lessons of this same chapter, in reading order and already filtered by
-   * the student's preferences — the same list «anterior»/«siguiente» walk, so
-   * the column and the buttons never disagree.
-   */
-  chapterLessons: LessonSibling[];
 }
 
 /** A lesson as the column beside a lesson lists it. */

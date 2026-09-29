@@ -558,7 +558,6 @@ export async function autosaveChapterGamePgn(
   revalidatePath(staffRoutes.courseGames(courseId));
   for (const lesson of game.lessons) {
     revalidatePath(staffRoutes.lessonDetail(courseId, chapterId, lesson.id));
-    revalidatePath(platformRoutes.lessonDetail(lesson.id));
   }
   return { ok: true };
 }
@@ -606,7 +605,6 @@ export async function updateChapterGameDetails(
   revalidatePath(staffRoutes.courseGames(courseId));
   for (const lesson of game.lessons) {
     revalidatePath(staffRoutes.lessonDetail(courseId, chapterId, lesson.id));
-    revalidatePath(platformRoutes.lessonDetail(lesson.id));
   }
 }
 
@@ -945,7 +943,7 @@ export async function setLessonGame(
 
   revalidatePath(lessonPath);
   revalidatePath(staffRoutes.chapterDetail(courseId, chapterId));
-  revalidatePath(platformRoutes.lessonDetail(lessonId));
+  revalidatePath(platformRoutes.lessonPattern, "page");
 }
 
 /** Same rule as the chapter: only in a draft and without progress from anyone. */

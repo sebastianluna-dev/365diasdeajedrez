@@ -10,6 +10,7 @@ import { isCourseId } from "./course-rules";
 import {
   courseContentInclude,
   courseDetailInclude,
+  mapChapterOutline,
   mapChapterView,
   mapCourseDetail,
   mapCourseLevel,
@@ -19,6 +20,7 @@ import {
   type UserCourseState,
 } from "./courses.mapper";
 import type {
+  ChapterOutline,
   ChapterView,
   CourseDetail,
   CourseLevelItem,
@@ -300,6 +302,20 @@ export async function resolveCourseReference(
   }
   const course = await getCourseInfo(reference);
   return course ? { kind: "info", course } : null;
+}
+
+/**
+ * The column beside a lesson: the chapter's lessons and the course around
+ * them. It is what the chapter's own segment loads, once, while each lesson
+ * loads its PGN underneath.
+ *
+ * It costs the course and the student's state and nothing else — neither the
+ * PGNs of the chapter (which `getChapterView` does read, to show the moves of
+ * each lesson) nor the lesson being read, which is not known here.
+ */
+export async function getChapterOutline(courseId: string, chapterOrder: number): Promise<ChapterOutline | null> {
+  const [course, progress] = await Promise.all([getPublishedCourse(courseId), getCourseProgressState(courseId)]);
+  return course ? mapChapterOutline(course, chapterOrder, progress) : null;
 }
 
 export async function getChapterView(courseId: string, chapterOrder: number): Promise<ChapterView | null> {

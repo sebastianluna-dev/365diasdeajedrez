@@ -13,7 +13,7 @@ description: "The knight that hops over its shadow while a segment streams, with
 
 ## Purpose
 
-What the App Router shows in a segment while its Server Components await data. Every `loading.tsx` under `app/(platform)` returns this, so the platform has one loading look and the files are one line each: a knight hopping over its shadow and a line, "Cargando…" by default. The study's segment, where opening a study is opening its first game (`/estudios/[studyId]` redirects there), says "Preparando el tablero…" instead. The same fallback covers moving between games of a study through the aside, since that boundary sits on the `[studyId]` segment. The lesson is the one exception: between two lessons that look alike, a screen of another shape is worse than the lesson's own shape empty, so `/lecciones/[lessonId]` renders [`LessonSkeleton`](/components/platform/sections/courses/lesson-view/lesson-skeleton) instead.
+What the App Router shows in a segment while its Server Components await data. Every `loading.tsx` under `app/(platform)` returns this, so the platform has one loading look and the files are one line each: a knight hopping over its shadow and a line, "Cargando…" by default. The study's segment, where opening a study is opening its first game (`/estudios/[studyId]` redirects there), says "Preparando el tablero…" instead. The same fallback covers moving between games of a study through the aside, since that boundary sits on the `[studyId]` segment. The lesson is the one exception: between two lessons that look alike, a screen of another shape is worse than the lesson's own shape empty, so the lesson's segment renders [`LessonSkeleton`](/components/platform/sections/courses/lesson-view/lesson-skeleton) instead.
 
 ## Props
 

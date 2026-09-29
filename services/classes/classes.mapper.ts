@@ -30,8 +30,15 @@ export const classDetailInclude = {
       game: { select: { id: true, white: true, black: true, pgn: true, databaseId: true } },
       // The PGN and the orientation are for rendering the lesson INSIDE the class,
       // not just linking it: the student should not have to leave to see it.
+      // Its chapter comes along because the lesson's URL hangs from it.
       lesson: {
-        select: { id: true, name: true, ...lessonPgnSelect, orientation: { select: { code: true } } },
+        select: {
+          id: true,
+          name: true,
+          ...lessonPgnSelect,
+          orientation: { select: { code: true } },
+          chapter: { select: { order: true, courseId: true } },
+        },
       },
       position: { select: { fen: true, title: true, orientation: { select: { code: true } } } },
     },
@@ -103,7 +110,11 @@ function mapBlock(block: ClassDetailRow["blocks"][number]): ClassBlockView | nul
               name: block.lesson.name,
               pgn: lessonPgnOf(block.lesson),
               orientation: block.lesson.orientation.code === BOARD_ORIENTATION.BLACK ? "black" : "white",
-              href: platformRoutes.lessonDetail(block.lesson.id),
+              href: platformRoutes.lessonDetail(
+                block.lesson.chapter.courseId,
+                block.lesson.chapter.order,
+                block.lesson.id,
+              ),
               movePath: block.movePath ?? undefined,
             },
           }

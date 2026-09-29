@@ -12,7 +12,7 @@
   /* Pinned to the window, not laid out in the page: it starts right under the
      bar, touches the left edge and goes down to the bottom one, so the
      lessons are a panel of the screen and not a card floating on it. The page
-     only reserves its width (`lesson-view.section.css`).
+     only reserves its width (`lesson-frame.comp.css`).
 
      `top` is the bar's height. Under the zoom these are the page's own px,
      the same ones the bar is drawn with, so the two meet exactly. */

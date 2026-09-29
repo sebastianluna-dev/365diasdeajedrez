@@ -145,6 +145,7 @@ describe("mapClassDetail", () => {
             pgn: "propio",
             game: { pgn: "de la partida" },
             orientation: { code: BOARD_ORIENTATION.BLACK },
+            chapter: { order: 2, courseId: "10000009" },
           },
         }),
       ],
@@ -152,7 +153,7 @@ describe("mapClassDetail", () => {
 
     expect(mapClassDetail(row, when).blocks[0]).toMatchObject({
       kind: "LESSON_REF",
-      lesson: { id: "00000001", pgn: "de la partida", orientation: "black", href: "/lecciones/00000001" },
+      lesson: { id: "00000001", pgn: "de la partida", orientation: "black", href: "/cursos/10000009/2/00000001" },
     });
   });
 

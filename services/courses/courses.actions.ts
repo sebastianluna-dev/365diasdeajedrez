@@ -47,8 +47,11 @@ function revalidateLessonPaths(courseId: string, chapterOrder: number, lessonId:
   revalidatePath(platformRoutes.dashboard);
   revalidatePath(platformRoutes.courses);
   revalidatePath(platformRoutes.courseDetail(courseId));
-  revalidatePath(platformRoutes.chapterDetail(courseId, chapterOrder));
-  revalidatePath(platformRoutes.lessonDetail(lessonId));
+  // "layout" and not the page alone: the chapter's segment is what draws the
+  // column of lessons beside the lesson, and the mark of this one and the
+  // chapter's ring are part of it.
+  revalidatePath(platformRoutes.chapterDetail(courseId, chapterOrder), "layout");
+  revalidatePath(platformRoutes.lessonDetail(courseId, chapterOrder, lessonId));
 }
 
 /**
@@ -127,12 +130,18 @@ export async function touchLesson(lessonId: string): Promise<void> {
 export async function completeLesson(lessonId: string): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
-  if (!(await allowAction(`${user.id}:complete-lesson`, 60, 60_000))) {
-    redirect(withErrorParam(platformRoutes.lessonDetail(lessonId), "throttled"));
-  }
 
+  // The lesson is read BEFORE the rate limit and not after: where to send
+  // whoever is going too fast is the lesson's own URL, and that URL hangs from
+  // the chapter. It is one lookup by id, and what the limit guards — the
+  // writes that seal the progress — is still behind it.
   const lesson = await getLessonContext(lessonId);
   if (!lesson) return;
+
+  const lessonPath = platformRoutes.lessonDetail(lesson.chapter.courseId, lesson.chapter.order, lessonId);
+  if (!(await allowAction(`${user.id}:complete-lesson`, 60, 60_000))) {
+    redirect(withErrorParam(lessonPath, "throttled"));
+  }
 
   const now = new Date();
   const courseId = lesson.chapter.courseId;
@@ -319,7 +328,7 @@ export async function resetCourseProgress(courseId: string, formData: FormData):
   for (const chapter of course.chapters) {
     revalidatePath(platformRoutes.chapterDetail(courseId, chapter.order));
   }
-  revalidatePath("/lecciones/[lessonId]", "page");
+  revalidatePath(platformRoutes.lessonPattern, "page");
   redirect(studyPath);
 }
 
@@ -373,5 +382,5 @@ export async function setOnlyPriorityLessons(courseId: string, enabled: boolean,
   }
   // The previous/next of EVERY lesson changes; enumerating them would be a
   // hundred-odd routes, so the pattern is revalidated.
-  revalidatePath("/lecciones/[lessonId]", "page");
+  revalidatePath(platformRoutes.lessonPattern, "page");
 }

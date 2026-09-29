@@ -1,9 +1,10 @@
 import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
-  "lesson-view-section": "LessonViewSection",
+  "lesson-frame": "LessonFrame",
+  "lesson-board-section": "LessonBoardSection",
   "lesson-outline": "LessonOutline",
-  "outline-scroll": "OutlineScroll",
+  "outline-list": "OutlineList",
   "lesson-tracker": "LessonTracker",
   "lesson-skeleton": "LessonSkeleton",
 };

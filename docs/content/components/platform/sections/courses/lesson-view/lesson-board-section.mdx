@@ -1,0 +1,62 @@
+---
+description: "The lesson itself: its PGN in the GameViewer read as prose, and one button under the board that lets you out or, at the last move, gives the lesson for read."
+---
+
+# `LessonBoardSection`
+
+|            |                                                                                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/lesson-view/lesson-board.section.tsx`                                                                                                        |
+| Kind       | Server Component                                                                                                                                                                   |
+| Stylesheet | none of its own: it fills `.lesson-frame__main` (see [`LessonFrame`](/components/platform/sections/courses/lesson-view/lesson-frame))                                               |
+| Used by    | `/cursos/[courseRef]/[chapterOrder]/[lessonId]`                                                                                                                                    |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes     | `completeLesson()` · `services/courses/courses.actions.ts`                                                                                                                         |
+| Uses       | `LessonView` from `services/courses/courses.types`<br />`studentErrorMessage` from `constants/platform/student-messages.const`                                                      |
+
+## Purpose
+
+The lesson: the board and what is said about the position. Where it falls in the course is the column's, and the column belongs to the chapter's layout ([`LessonFrame`](/components/platform/sections/courses/lesson-view/lesson-frame)) and outlives this — **so this is the whole of what a move to another lesson fetches**, and the PGN is its weight.
+
+The lesson is a PGN with commentary, so it is the [`GameViewer`](/components/chess/game-viewer/game-viewer) with `moveList="flow"`: a lesson is **read**, the moves run on until a comment breaks the line, whereas the table is for consulting a game move by move. The viewer's header carries **the lesson's name and whether it is a priority, and nothing else**: where the lesson falls in the course is the column's job, and what it explains is written move by move below it.
+
+**Under the board there is nothing but the bar**: the four arrows and, at its right end, one button. While there are moves left it is «Saltar», a way out to the next lesson that marks nothing. At the last move it becomes «Continuar», which is a `<form>` over `completeLesson` — it gives the lesson for read and the action itself leads on to the next one, or back to the chapter when there is none.
+
+That single button is what freed the row of buttons that used to sit under the board («Marcar como completada», «Siguiente lección»), and with it the height they took: the board now measures all that is left.
+
+«Entrenar esta lección» is not drawn today: the Move Trainer is switched off (`MOVE_TRAINER_ENABLED`) and `getLessonView` drops `trainerHref`.
+
+## Props
+
+| Prop        | Type         | Required | Meaning                                                                                                                                                       |
+| ----------- | ------------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lesson`    | `LessonView` | yes      | `id`, `name`, `pgn`, `orientation`, `isPriority`, `statusCode`, `chapterOrder`, `chapterHref`, `href`, `prevLessonHref?`, `nextLessonHref?`, `trainerHref?`, `exerciseCount`. What the column shows is no longer in it: that is `ChapterOutline`. |
+| `errorCode` | `string`     | no       | Code from `?error=` (`throttled`, `invalid`…), translated with `STUDENT_ERROR_MESSAGES` into a `PlatformNotice`.                                              |
+
+## Behaviour
+
+- **Nothing under the board but the way through** (`boardTools={false}`): no turning the board around, no settings menu. The lesson is taught from one side — its author's, or the one the student fixed in the course's settings — and the page is already the whole window.
+- **A lesson is not numbered, it does not name its chapter and it does not say its minutes.** The head is the name and, when it is one, the «Prioridad» badge: the column on the left already says the course, the chapter and where in it this lesson falls. `description` is not drawn either — the lesson explains itself in the commentary of its moves.
+- [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker) is rendered first and marks the lesson as opened from the client, because writes never happen during the server render.
+- «Continuar» is `<form action={completeLesson.bind(null, lesson.id)}>`; the action records completion, updates the course's return point, revalidates **and redirects** to the next lesson. It is idempotent, so pressing it on a lesson already completed simply moves on. It revalidates the chapter's segment as a `"layout"`, since the mark of this lesson and the chapter's ring are drawn there.
+- Both live in the viewer's `onwards` prop, which is data: the href of the way out, its labels and the server action. The viewer is the one that knows whether the last move has been reached.
+- Next and previous hrefs respect the priority filter: the mapper computes them over the visible lessons.
+
+## Markup & styling
+
+It has no block of its own: it renders `.lesson-frame__main`, the second track of [`LessonFrame`](/components/platform/sections/courses/lesson-view/lesson-frame), and everything inside it is the viewer's.
+
+## Usage
+
+From `app/(platform)/cursos/[courseRef]/[chapterOrder]/(lesson)/[lessonId]/page.tsx`:
+
+```tsx
+import { LessonBoardSection } from "@/components/platform/sections/courses/lesson-view/lesson-board.section";
+
+<LessonBoardSection lesson={lesson} errorCode={error} />;
+```
+
+## Related
+
+- [`LessonFrame`](/components/platform/sections/courses/lesson-view/lesson-frame), the screen it sits in.
+- [`LessonSkeleton`](/components/platform/sections/courses/lesson-view/lesson-skeleton), what takes its place while it loads.

@@ -19,7 +19,7 @@ export function LessonReferenceField({ value, onChange }: LessonReferenceFieldPr
   return (
     <FormField
       label="Id de la lección"
-      hint="Está en la dirección de la lección: /lecciones/20000004 → 20000004. Debajo aparecerá su contenido para comprobar que es la que quieres."
+      hint="Es lo último de la dirección de la lección: /cursos/00020212/1/20000004 → 20000004. Debajo aparecerá su contenido para comprobar que es la que quieres."
     >
       <input
         type="text"

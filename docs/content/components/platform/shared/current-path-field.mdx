@@ -1,0 +1,28 @@
+---
+description: "The page one is on, as a hidden field: what a form inside a layout sends along so the action can come back where it was."
+---
+
+# `CurrentPathField`
+
+|            |                                                           |
+| ---------- | ----------------------------------------------------------- |
+| File       | `components/platform/shared/current-path-field.comp.tsx`  |
+| Kind       | Client Component                                          |
+| Stylesheet | none (it renders a hidden `<input>`)                      |
+| Used by    | [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline) |
+
+## Purpose
+
+A form that has to come back where it was sends the page along in a hidden `returnTo`, which the actions validate with `safeReturnTo`. When the form is rendered by a page, the page knows its own address and passes it down.
+
+Inside a **layout** it does not: a layout is not rendered again when one moves within it, so its server render would keep naming the page the form was first drawn on — the first lesson one opened, for the rest of the chapter. A client component does re-render on every navigation, and `usePathname` is then always the page one is actually on.
+
+## Props
+
+| Prop   | Type     | Required | Meaning                                                   |
+| ------ | -------- | -------- | ----------------------------------------------------------- |
+| `name` | `string` | yes      | The field's name; `returnTo` is what the platform's actions read. |
+
+## Related
+
+- [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline), whose priority filter uses it.

@@ -1,28 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
-import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
+import { CurrentPathField } from "@/components/platform/shared/current-path-field.comp";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { setOnlyPriorityLessons } from "@/services/courses/courses.actions";
-import { OutlineScroll } from "./outline-scroll.comp";
-import type { LessonSibling } from "@/services/courses/courses.types";
+import { OutlineList } from "./outline-list.comp";
+import type { ChapterOutline } from "@/services/courses/courses.types";
 import "./lesson-outline.comp.css";
 
 interface LessonOutlineProps {
-  courseId: string;
-  courseName: string;
-  courseHref: string;
-  courseThumbnail?: string;
-  /** The student asked to see only the priority lines of this course. */
-  onlyPriority: boolean;
-  /** Where the filter's form comes back to: the lesson being read. */
-  returnTo: string;
-  chapterName: string;
-  chapterHref: string;
-  /** The chapter's lessons, in reading order. */
-  lessons: LessonSibling[];
-  /** Which one is being read: the only row that is not a link. */
-  currentLessonId: string;
+  /** The course, the chapter and its lessons: everything the column lists. */
+  outline: ChapterOutline;
 }
 
 /** The square image is drawn at 72px, at twice that for a dense screen. */
@@ -33,35 +21,19 @@ const GAUGE_RADIUS = 15;
 const GAUGE_LENGTH = 2 * Math.PI * GAUGE_RADIUS;
 
 /**
- * Every lesson carries its stop on the thread: the filled check once it is
- * done, an empty ring while it is not. The ring is drawn by the stylesheet,
- * since it is a circle and not a drawing.
- */
-function mark(isCompleted: boolean) {
-  return isCompleted ? (
-    <CircleCheckSolidIcon className="lesson-outline__done" />
-  ) : (
-    <span className="lesson-outline__pending" aria-hidden="true" />
-  );
-}
-
-/**
  * Where the lesson stands: the course, the chapter and its lessons, with the
  * one open marked. It is the chapter's page condensed into a column, so
  * moving to the next lesson does not mean going back twice.
+ *
+ * It belongs to the chapter's layout and not to the lesson's page: that is
+ * what keeps it from being fetched and drawn again on every move, and it is
+ * also why it does not know which lesson is open — the list does, in the
+ * browser (see `OutlineList`).
  */
-export function LessonOutline({
-  courseId,
-  courseName,
-  courseHref,
-  courseThumbnail,
-  onlyPriority,
-  returnTo,
-  chapterName,
-  chapterHref,
-  lessons,
-  currentLessonId,
-}: LessonOutlineProps) {
+export function LessonOutline({ outline }: LessonOutlineProps) {
+  const { courseId, courseName, courseHref, courseThumbnail, onlyPriorityLessons, chapterName, chapterHref, lessons } =
+    outline;
+
   // The chapter's progress is counted from the very list the column draws, so
   // what the ring says and what the marks say can never differ.
   const completed = lessons.filter((lesson) => lesson.statusCode === PROGRESS_STATUS.COMPLETED).length;
@@ -93,12 +65,16 @@ export function LessonOutline({
 
           {/* A form and not a checkbox with an onChange: the preference is
               saved and the page is drawn again, so there is no state to keep
-              nor JavaScript to send. */}
-          <form action={setOnlyPriorityLessons.bind(null, courseId, !onlyPriority)} className="lesson-outline__filter">
-            <input type="hidden" name="returnTo" value={returnTo} />
-            <button type="submit" aria-pressed={onlyPriority} className="lesson-outline__filter-button">
+              nor JavaScript to send. Where it comes back to is the lesson
+              being read, which only the browser knows here. */}
+          <form
+            action={setOnlyPriorityLessons.bind(null, courseId, !onlyPriorityLessons)}
+            className="lesson-outline__filter"
+          >
+            <CurrentPathField name="returnTo" />
+            <button type="submit" aria-pressed={onlyPriorityLessons} className="lesson-outline__filter-button">
               <span className="lesson-outline__filter-box" aria-hidden="true">
-                {onlyPriority && <CheckIcon className="lesson-outline__filter-check" />}
+                {onlyPriorityLessons && <CheckIcon className="lesson-outline__filter-check" />}
               </span>
               Sólo lecciones de prioridad
             </button>
@@ -109,12 +85,8 @@ export function LessonOutline({
       {/* What scrolls when the chapter is long. The course's head stays out of
           it, because where one is should not scroll away. */}
       <div className="lesson-outline__body">
-        {/* Keeps the place in the list from one lesson to the next: the page
-            is rendered again on every move, the column with it. */}
-        <OutlineScroll chapterKey={chapterHref} />
-
-        {/* `data-sticky-head`: what `OutlineScroll` measures to know how much
-            of the top of the list this covers. */}
+        {/* `data-sticky-head`: what `OutlineList` measures to know how much of
+            the top of the list this covers. */}
         <div data-sticky-head="" className="lesson-outline__chapter">
           <Link href={chapterHref} className="lesson-outline__chapter-name">
             {chapterName}
@@ -139,30 +111,7 @@ export function LessonOutline({
           </span>
         </div>
 
-        <ol className="lesson-outline__list">
-          {lessons.map((lesson) => {
-            const isCurrent = lesson.id === currentLessonId;
-            const isCompleted = lesson.statusCode === PROGRESS_STATUS.COMPLETED;
-
-            return (
-              <li key={lesson.id} className="lesson-outline__item">
-                {/* The lesson being read is not a link: it leads where one already
-                  is, and `aria-current` is what says so to a screen reader. */}
-                {isCurrent ? (
-                  <span className="lesson-outline__lesson lesson-outline__lesson_state_current" aria-current="page">
-                    <span className="lesson-outline__name">{lesson.name}</span>
-                    {mark(isCompleted)}
-                  </span>
-                ) : (
-                  <Link href={lesson.href} className="lesson-outline__lesson">
-                    <span className="lesson-outline__name">{lesson.name}</span>
-                    {mark(isCompleted)}
-                  </Link>
-                )}
-              </li>
-            );
-          })}
-        </ol>
+        <OutlineList lessons={lessons} />
       </div>
     </nav>
   );

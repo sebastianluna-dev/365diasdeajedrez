@@ -46,10 +46,6 @@ export const platformRoutes = {
    * The chapter is addressed by its ORDER NUMBER within the course, which is the
    * one the student sees on screen. Reordering chapters in the panel reassigns
    * those URLs among them, which is exactly what is expected of an order number.
-   *
-   * The lesson hangs from the root and not from the course: its identifier
-   * already locates it, and nesting it forced dragging course and chapter into
-   * every link.
    */
   /**
    * The course to STUDY, by its id. It shares its segment with `courseInfo`:
@@ -57,7 +53,19 @@ export const platformRoutes = {
    */
   courseDetail: (courseId: string) => `/cursos/${courseId}`,
   chapterDetail: (courseId: string, chapterOrder: number) => `/cursos/${courseId}/${chapterOrder}`,
-  lessonDetail: (lessonId: string) => `/lecciones/${lessonId}`,
+  /**
+   * The lesson by its id, under the chapter it belongs to. The id and not an
+   * order number: the chapter's own segment is what the layout hangs from, and
+   * the lesson is resolved in one query by what identifies it.
+   */
+  lessonDetail: (courseId: string, chapterOrder: number, lessonId: string) =>
+    `/cursos/${courseId}/${chapterOrder}/${lessonId}`,
+  /**
+   * The lesson's route as the App Router spells it, for revalidating every
+   * lesson at once: what the staff panel changes reaches whichever lessons
+   * show it, and from there the chapter's order number is not at hand.
+   */
+  lessonPattern: "/cursos/[courseRef]/[chapterOrder]/[lessonId]",
   trainer: "/entrenador",
   /** The Move Trainer over what the student already learned of a course. */
   courseReview: (courseId: string) => `/entrenador?course=${courseId}`,

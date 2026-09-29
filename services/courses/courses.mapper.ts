@@ -9,6 +9,7 @@ import { formatEloRange } from "./level-rules";
 import type {
   ChapterLessonItem,
   ChapterLink,
+  ChapterOutline,
   ChapterView,
   CourseChapterItem,
   CourseContentTypeItem,
@@ -154,11 +155,14 @@ function isVisible(
  */
 function allLessons(course: CourseWithContent) {
   return sortByRole(course.chapters.map((chapter) => ({ ...chapter, roleCode: chapter.role?.code }))).flatMap(
-    (chapter, chapterIndex) =>
+    (chapter) =>
       sortByRole(chapter.lessons.map((lesson) => ({ ...lesson, roleCode: lesson.role?.code }))).map((lesson) => ({
         ...lesson,
         chapterId: chapter.id,
-        chapterOrder: chapterIndex + 1,
+        // The chapter's OWN order number, which is what addresses it in the
+        // URL — not where it falls when read, which the introduction and the
+        // closing move around and which is already given by this list's order.
+        chapterOrder: chapter.order,
         chapterIsPriority: chapter.isPriority,
       })),
   );
@@ -212,7 +216,9 @@ function continueTarget(course: CourseWithContent, state: UserCourseState) {
   const last = lessons.find((lesson) => lesson.id === state.lastLessonId);
   const pending = lessons.find((lesson) => state.lessonStatus.get(lesson.id) !== PROGRESS_STATUS.COMPLETED);
   const target = last ?? pending ?? lessons[0];
-  return target ? platformRoutes.lessonDetail(target.id) : platformRoutes.courseDetail(course.id);
+  return target
+    ? platformRoutes.lessonDetail(course.id, target.chapterOrder, target.id)
+    : platformRoutes.courseDetail(course.id);
 }
 
 /**
@@ -241,7 +247,7 @@ function nextLesson(course: CourseWithContent, state: UserCourseState) {
  */
 function learnTarget(course: CourseWithContent, state: UserCourseState): string | undefined {
   const target = nextLesson(course, state) ?? flattenLessons(course, state)[0];
-  return target ? platformRoutes.lessonDetail(target.id) : undefined;
+  return target ? platformRoutes.lessonDetail(course.id, target.chapterOrder, target.id) : undefined;
 }
 
 /**
@@ -449,7 +455,7 @@ export function mapChapterView(
       isNext: lesson.id === nextId,
       moves: games?.get(lesson.id)?.moves,
       result: games?.get(lesson.id)?.result,
-      href: platformRoutes.lessonDetail(lesson.id),
+      href: platformRoutes.lessonDetail(course.id, chapter.order, lesson.id),
     }));
 
   const hiddenLessons = chapter.lessons.length - lessons.length;
@@ -469,6 +475,41 @@ export function mapChapterView(
     lessons,
     previous: position > 0 ? linkTo(detail.chapters[position - 1]) : undefined,
     next: position >= 0 ? linkTo(detail.chapters[position + 1]) : undefined,
+  };
+}
+
+/**
+ * The column beside a lesson, from the course and the student's state alone:
+ * no lesson is named here, because the column is the same for every lesson of
+ * the chapter and the segment that draws it does not know which one is open.
+ */
+export function mapChapterOutline(
+  course: CourseWithContent,
+  chapterOrder: number,
+  state: UserCourseState,
+): ChapterOutline | null {
+  const chapter = course.chapters.find((candidate) => candidate.order === chapterOrder);
+  if (!chapter) return null;
+
+  const lessons: LessonSibling[] = flattenLessons(course, state)
+    .filter((candidate) => candidate.chapterId === chapter.id)
+    .map((candidate) => ({
+      id: candidate.id,
+      name: candidate.name,
+      href: platformRoutes.lessonDetail(course.id, chapter.order, candidate.id),
+      statusCode: asStatus(state.lessonStatus.get(candidate.id)),
+    }));
+
+  return {
+    courseId: course.id,
+    courseName: course.name,
+    courseHref: platformRoutes.courseDetail(course.id),
+    courseThumbnail: thumbnailOf(course),
+    onlyPriorityLessons: state.onlyPriorityLessons,
+    chapterId: chapter.id,
+    chapterName: chapter.name,
+    chapterHref: platformRoutes.chapterDetail(course.id, chapter.order),
+    lessons,
   };
 }
 
@@ -495,29 +536,19 @@ export function mapLessonView(
   const chapter = course.chapters.find((candidate) => candidate.id === lesson.chapterId);
   if (!chapter) return null;
 
-  // Previous and next are looked up BY POSITION, not by membership: a lesson
-  // hidden by the filter is still served by URL — a link from a class cannot
-  // break over a display preference — and there, looking for it in the visible
-  // list would give -1, leaving it without a previous AND without a next.
-  const position = (candidate: { chapterOrder: number; order: number }) =>
-    candidate.chapterOrder * 100000 + candidate.order;
-  const here = position({ chapterOrder: chapter.order, order: lesson.order });
+  // Previous and next are looked up BY PLACE IN THE COURSE, not by membership:
+  // a lesson hidden by the filter is still served by URL — a link from a class
+  // cannot break over a display preference — and there, looking for it in the
+  // visible list would give -1, leaving it without a previous AND without a
+  // next. That place is its index in the unfiltered reading order, which is
+  // the one sequence author and student share.
+  const rank = new Map(allLessons(course).map((candidate, index) => [candidate.id, index]));
+  const here = rank.get(lesson.id) ?? -1;
+  const placeOf = (candidate: { id: string }) => rank.get(candidate.id) ?? -1;
 
   const visible = flattenLessons(course, state);
-  const prev = [...visible].reverse().find((candidate) => position(candidate) < here);
-  const next = visible.find((candidate) => position(candidate) > here);
-
-  // The chapter's lessons, taken from that SAME visible list: the column and
-  // the «anterior»/«siguiente» buttons then walk one sequence, and a lesson
-  // hidden by the filter is missing from both.
-  const chapterLessons: LessonSibling[] = visible
-    .filter((candidate) => candidate.chapterId === chapter.id)
-    .map((candidate) => ({
-      id: candidate.id,
-      name: candidate.name,
-      href: platformRoutes.lessonDetail(candidate.id),
-      statusCode: asStatus(state.lessonStatus.get(candidate.id)),
-    }));
+  const prev = [...visible].reverse().find((candidate) => placeOf(candidate) < here);
+  const next = visible.find((candidate) => placeOf(candidate) > here);
 
   // The content's orientation rules unless the user forces one in their course
   // settings (AUTO or the absence of a row = the lesson's).
@@ -542,14 +573,10 @@ export function mapLessonView(
     orientation: effective === BOARD_ORIENTATION.BLACK ? "black" : "white",
     statusCode: asStatus(state.lessonStatus.get(lesson.id)),
     exerciseCount: lesson.exercises.length,
-    prevLessonHref: prev ? platformRoutes.lessonDetail(prev.id) : undefined,
-    nextLessonHref: next ? platformRoutes.lessonDetail(next.id) : undefined,
-    href: platformRoutes.lessonDetail(lesson.id),
-    courseHref: platformRoutes.courseDetail(course.id),
+    prevLessonHref: prev ? platformRoutes.lessonDetail(course.id, prev.chapterOrder, prev.id) : undefined,
+    nextLessonHref: next ? platformRoutes.lessonDetail(course.id, next.chapterOrder, next.id) : undefined,
+    href: platformRoutes.lessonDetail(course.id, chapter.order, lesson.id),
     chapterHref: platformRoutes.chapterDetail(course.id, chapter.order),
-    onlyPriorityLessons: state.onlyPriorityLessons,
     trainerHref: lesson.exercises.length > 0 ? `${platformRoutes.trainer}?lesson=${lesson.id}` : undefined,
-    courseThumbnail: thumbnailOf(course),
-    chapterLessons,
   };
 }

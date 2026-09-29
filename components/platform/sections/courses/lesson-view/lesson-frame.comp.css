@@ -1,4 +1,4 @@
-.lesson-view {
+.lesson-frame {
   /* Three columns, as a lesson is taken: where it falls in the course, the
      board, and what is said about the position. The first is this grid's; the
      other two are the viewer's own.
@@ -37,7 +37,7 @@
 
   /* Said out loud because the column beside it is out of the flow (fixed to
      the window) and does not take the first track by itself. */
-  & .lesson-view__main {
+  & .lesson-frame__main {
     grid-column: 2;
     display: flex;
     flex-direction: column;
@@ -56,7 +56,7 @@
 
     /* The lesson first, the outline under it: it is what one reaches for on
        the way out. */
-    & .lesson-view__main {
+    & .lesson-frame__main {
       grid-column: 1;
       order: -1;
     }

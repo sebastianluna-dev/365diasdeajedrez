@@ -54,7 +54,7 @@ No breakpoints of its own; the hover transition is off under `prefers-reduced-mo
 
 ## Usage
 
-From `app/(platform)/cursos/[courseRef]/[chapterOrder]/page.tsx`:
+From `app/(platform)/cursos/[courseRef]/[chapterOrder]/(chapter)/page.tsx` — the route group is what keeps the chapter's own screen out of the lessons' layout:
 
 ```tsx
 const chapter = await getChapterView(courseRef, Number(chapterOrder));

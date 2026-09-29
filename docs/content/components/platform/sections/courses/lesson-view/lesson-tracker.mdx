@@ -9,7 +9,7 @@ description: "An invisible client piece that calls touchLesson once on mount, ma
 | File       | `components/platform/sections/courses/lesson-view/lesson-tracker.comp.tsx`                   |
 | Kind       | Client Component                                                                             |
 | Stylesheet | none (renders `null`)                                                                        |
-| Used by    | [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section) |
+| Used by    | [`LessonBoardSection`](/components/platform/sections/courses/lesson-view/lesson-board-section) |
 | Writes     | `touchLesson()` · `services/courses/courses.actions.ts`                                      |
 
 ## Purpose
@@ -33,7 +33,7 @@ Nothing rendered.
 
 ## Usage
 
-From `components/platform/sections/courses/lesson-view/lesson-view.section.tsx`:
+From `components/platform/sections/courses/lesson-view/lesson-board.section.tsx`:
 
 ```tsx
 import { LessonTracker } from "./lesson-tracker.comp";
