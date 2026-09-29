@@ -1,6 +1,8 @@
 .course-study {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  /* Three to a row, not as many as fit: a chapter is a door and the page
+     reads as a wall of them, whatever the course's length. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
   margin: 0;
   padding: 0;
@@ -89,7 +91,15 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Two to a row once three would be narrower than the name they carry, and
+     one when the page itself is a column. */
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   @media (max-width: 620px) {
+    grid-template-columns: minmax(0, 1fr);
+
     & .course-study__chapter {
       min-height: 0;
     }

@@ -165,9 +165,10 @@
     gap: 16px;
   }
 
+  /* A width of its own, not a share of what is left: the page's column is
+     what gives or takes room when the window changes. */
   & .course-study-frame__aside {
-    flex: 1 1 260px;
-    max-width: 320px;
+    flex: 0 0 240px;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -270,10 +271,12 @@
     padding: 16px 22px 20px;
   }
 
-  /* Stacked, the course's column takes the width of the page's. */
-  @media (max-width: 960px) {
+  /* Stacked, the course's column takes the width of the page's. The page
+     asks for 560px, the column for 240 and the gap for 24: under that, plus
+     the page's own margins, the column is on a row of its own. */
+  @media (max-width: 900px) {
     & .course-study-frame__aside {
-      max-width: none;
+      flex-basis: 100%;
     }
   }
 
