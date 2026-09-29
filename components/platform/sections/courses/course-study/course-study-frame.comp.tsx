@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { CaretRightIcon } from "@/components/icons/caret-right-icon.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import type { CourseDetail } from "@/services/courses/courses.types";
@@ -69,9 +70,7 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
             Capítulos
             {chapter && (
               <>
-                <span className="course-study-frame__place-step" aria-hidden="true">
-                  ▸
-                </span>
+                <CaretRightIcon className="course-study-frame__place-step" />
                 <span className="course-study-frame__place-here">{chapter.name}</span>
               </>
             )}

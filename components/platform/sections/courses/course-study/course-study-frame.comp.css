@@ -60,7 +60,10 @@
 
   /* The step between the two, quieter than either. */
   & .course-study-frame__place-step {
-    font-size: 13px;
+    flex: none;
+    align-self: center;
+    width: 7px;
+    height: 14px;
     color: var(--platform-text-faint);
   }
 
