@@ -126,12 +126,12 @@
     justify-content: center;
     gap: 10px;
     min-width: 120px;
-    height: 48px;
+    height: 36px;
     padding: 0 20px;
     box-sizing: border-box;
     border-radius: 8px;
-    font-size: 15.5px;
-    font-weight: 800;
+    font-size: 14px;
+    font-weight: 700;
     white-space: nowrap;
   }
 
