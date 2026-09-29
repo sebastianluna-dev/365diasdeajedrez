@@ -7,7 +7,7 @@ import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { IMAGE_LIMITS_TEXT } from "@/constants/platform/upload.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
-import { updateCourse, updateCourseCover } from "@/services/staff-courses/staff-courses.actions";
+import { updateCourse, updateCourseCover, updateCourseThumbnail } from "@/services/staff-courses/staff-courses.actions";
 import type {
   AuthorAdminRow,
   CatalogOption,
@@ -111,23 +111,34 @@ export function CourseEditorSection({
             {/* What the cover admits goes in the header's "i": it is read once
                 and under the box it was a line of small print for ever. */}
             <StaffPanel
-              title="Portada"
+              title="Imágenes"
               action={
                 <PlatformInfoTip
-                  label="Sobre la portada"
-                  text={`${IMAGE_LIMITS_TEXT} Se recorta a 21:9 y se guarda al subirla.`}
+                  label="Sobre las imágenes"
+                  text={`${IMAGE_LIMITS_TEXT} Cada una se recorta a su proporción y se guarda al subirla.`}
                   side="bottom"
                 />
               }
             >
-              {/* The cover saves itself: uploading it stores it, and so does
-                  taking it away. It is not a field of the metadata form. */}
-              <ImageUpload
-                action={updateCourseCover.bind(null, course.id)}
-                defaultValue={course.cover ?? undefined}
-                label="Portada del curso"
-                aspectRatio="21:9"
-              />
+              {/* Each image saves itself: uploading it stores it, and so does
+                  taking it away. Neither is a field of the metadata form. */}
+              <div className="course-editor__images">
+                <ImageUpload
+                  action={updateCourseCover.bind(null, course.id)}
+                  defaultValue={course.cover ?? undefined}
+                  label="Portada del curso"
+                  aspectRatio="21:9"
+                />
+
+                {/* The square one: what «Mis cursos» shows of the course. Until
+                    it is uploaded that row crops the cover square. */}
+                <ImageUpload
+                  action={updateCourseThumbnail.bind(null, course.id)}
+                  defaultValue={course.thumbnail ?? undefined}
+                  label="Imagen cuadrada"
+                  aspectRatio="1:1"
+                />
+              </div>
             </StaffPanel>
 
             <CourseAuthors courseId={course.id} authors={course.authors} allAuthors={authors} roles={authorRoles} />

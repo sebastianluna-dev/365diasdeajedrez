@@ -1,6 +1,7 @@
 import { BOARD_ORIENTATION, PROGRESS_STATUS, type ProgressStatusCode } from "@/constants/platform/shared-codes.const";
 import type { GameMoves } from "@/lib/chess/game-moves";
 import type { Prisma } from "@/lib/platform-db/generated/client";
+import { withCoverCrop } from "@/lib/cloudinary-url";
 import { platformRoutes } from "@/lib/platform-routes";
 import { sortByRole } from "@/services/shared/content-order";
 import { lessonPgnOf } from "@/services/shared/lesson-pgn";
@@ -299,6 +300,9 @@ export function mapCourseSummary(course: CourseWithContent, state: UserCourseSta
     slug: course.slug,
     description: course.description ?? undefined,
     cover: course.cover ?? undefined,
+    // The square image, and while a course has none its cover cropped square:
+    // the reframing is written in the URL, so it costs no upload.
+    thumbnail: course.thumbnail ?? (course.cover ? withCoverCrop(course.cover, "auto", "1:1") : undefined),
     contentTypes: mapContentTypes(course),
     levels: course.courseLevels.map((courseLevel) => mapCourseLevel(courseLevel.level)),
     authorNames: course.courseAuthors.map((courseAuthor) => courseAuthor.author.name),

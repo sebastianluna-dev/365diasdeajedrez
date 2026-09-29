@@ -71,7 +71,10 @@ export interface CourseAdminDetail {
   name: string;
   slug: string;
   description?: string;
+  /** The wide image, 21:9. */
   cover?: string;
+  /** The square one, 1:1. */
+  thumbnail?: string;
   statusCode: CourseStatusCode;
   /** For the pill next to the title; the date it was published is in the list. */
   statusLabel: string;

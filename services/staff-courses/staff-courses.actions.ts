@@ -262,6 +262,32 @@ export async function updateCourseCover(courseId: string, url: string): Promise<
   return { ok: true };
 }
 
+/**
+ * The same, for the SQUARE image: what the row of «Mis cursos» shows. It is a
+ * second image and not a reframing of the cover, so the staff chooses what a
+ * square keeps instead of leaving it to Cloudinary's gravity.
+ */
+export async function updateCourseThumbnail(courseId: string, url: string): Promise<ImageSaveResult> {
+  const staff = await requireStaff();
+  if (!(await allowAction(`${staff.user.id}:course-thumbnail`, 30, 60_000))) return { ok: false };
+
+  const thumbnail = url.trim();
+  if (thumbnail.length > COVER_MAX_LENGTH) return { ok: false };
+  if (thumbnail.length > 0 && !isDisplayableImage(thumbnail)) return { ok: false };
+
+  const db = getPlatformDb();
+  const { count } = await db.course.updateMany({
+    where: { id: courseId },
+    data: { thumbnail: thumbnail.length > 0 ? thumbnail : null },
+  });
+  if (count === 0) return { ok: false };
+
+  revalidatePath(staffRoutes.courseDetail(courseId));
+  // It is what the student sees of the course in their list.
+  revalidatePath(platformRoutes.courses);
+  return { ok: true };
+}
+
 export async function publishCourse(courseId: string): Promise<void> {
   const staff = await requireStaff();
   const detailPath = staffRoutes.courseDetail(courseId);

@@ -53,8 +53,14 @@ export interface CourseSummary {
   name: string;
   slug: string;
   description?: string;
-  /** URL of the cover (Cloudinary). The staff fills it in; today none has one. */
+  /** URL of the cover (Cloudinary), 21:9. The staff fills it in. */
   cover?: string;
+  /**
+   * The square image, 1:1, which is what a course's row shows. A course
+   * without one falls back to its cover, cropped square (`mapCourseSummary`),
+   * so a row is never left without a picture.
+   */
+  thumbnail?: string;
   /** What it teaches, in catalog order; the card shows the short names. */
   contentTypes: CourseContentTypeItem[];
   /** Who it is aimed at, the easiest level first; the list is filtered by their slug. */

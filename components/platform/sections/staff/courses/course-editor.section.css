@@ -3,6 +3,14 @@
   flex-direction: column;
   gap: 22px;
 
+  /* The two images of the course, one under the other: the wide one and the
+     square one. */
+  & .course-editor__images {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
   /* The metadata form: the cards it is made of bring their own spacing. */
   & .course-editor__form {
     display: flex;

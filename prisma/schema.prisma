@@ -336,7 +336,11 @@ model Course {
   /// day it shipped. Nothing reads nor writes it; the column stays so that
   /// removing the field did not take a destructive migration.
   priorKnowledge String?
+  /// The wide image of the course, 21:9: its information page and the catalog.
   cover          String?
+  /// The square one, 1:1: the row of «Mis cursos». Without it that row falls
+  /// back to the cover, cropped square by Cloudinary.
+  thumbnail      String?
   statusId       Int
   publishedAt    DateTime?
   createdAt      DateTime  @default(now())

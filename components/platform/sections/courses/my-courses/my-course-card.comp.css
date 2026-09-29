@@ -15,8 +15,8 @@
     display: block;
     flex: none;
     align-self: center;
-    width: 180px;
-    aspect-ratio: 21 / 9;
+    width: 96px;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
     border-radius: 8px;
     background: var(--platform-ink);

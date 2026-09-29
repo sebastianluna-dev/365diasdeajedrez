@@ -9,11 +9,11 @@ interface MyCourseCardProps {
   course: MyCourseItem;
 }
 
-/** The cover is a thumbnail at the card's side, and the full width on a phone. */
-const COVER_SIZES = "(max-width: 760px) 100vw, 180px";
+/** A square at the card's side, and the full width on a phone. */
+const COVER_SIZES = "(max-width: 760px) 100vw, 96px";
 
 /**
- * A course of the student's, as a row: its cover, its name, how far they are
+ * A course of the student's, as a row: its square image, its name, how far they are
  * in it — in minutes and in lessons, each with its bar — and the two things
  * to do with it, «Repasar» and «Aprender».
  *
@@ -41,8 +41,8 @@ export function MyCourseCard({ course }: MyCourseCardProps) {
   return (
     <article className="my-course-card">
       <Link href={course.href} className="my-course-card__cover" aria-hidden="true" tabIndex={-1}>
-        {course.cover && (
-          <Image src={course.cover} alt="" fill sizes={COVER_SIZES} className="my-course-card__cover-image" />
+        {course.thumbnail && (
+          <Image src={course.thumbnail} alt="" fill sizes={COVER_SIZES} className="my-course-card__cover-image" />
         )}
       </Link>
 

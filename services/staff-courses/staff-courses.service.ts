@@ -122,6 +122,7 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
       slug: true,
       description: true,
       cover: true,
+      thumbnail: true,
       status: { select: { code: true, label: true } },
       courseContentTypes: {
         select: { contentType: { select: { code: true } } },
@@ -166,6 +167,7 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
     slug: course.slug,
     description: course.description ?? undefined,
     cover: course.cover ?? undefined,
+    thumbnail: course.thumbnail ?? undefined,
     statusCode: course.status.code as CourseStatusCode,
     statusLabel: course.status.label,
     contentTypeCodes: course.courseContentTypes.map((row) => row.contentType.code),
