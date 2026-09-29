@@ -14,12 +14,32 @@
     align-items: start;
   }
 
-  /* The board, empty: the same two greens in the same pattern chessground
-     paints, so what arrives is the pieces and not a new board. */
+  /* The board's BOX: the whole track and square, which is what the viewer's
+     own board takes. Under it, the room the bar of buttons will need — the
+     board alone would make the row shorter than the real one and the panel
+     beside it would end higher than it ends. */
   & .lesson-skeleton__board {
     position: relative;
     width: 100%;
     aspect-ratio: 1;
+    margin-bottom: var(--viewer-panel-trim, 0px);
+  }
+
+  /* And inside it, what is PAINTED, which is not the whole box: chessground
+     rounds the board's side down to a whole 8 so that every square is a whole
+     number of pixels, and a skeleton painted edge to edge would hand over a
+     board up to 8px smaller — which is seen, because it is the thing being
+     looked at. The 8 are 8 of ITS pixels: it measures with the platform's zoom
+     already applied, and this is drawn inside that zoom. */
+  & .lesson-skeleton__board::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: round(down, 100%, calc(8px / var(--platform-zoom, 1)));
+    aspect-ratio: 1;
+    /* The same two greens in the same pattern chessground paints, so what
+       arrives is the pieces and not a new board. */
     background-color: var(--board-light);
     background-image: conic-gradient(
       var(--board-dark) 25%,
