@@ -37,12 +37,14 @@
     gap: 18px;
   }
 
+  /* Opened out instead of drawn in: at this size the name is read across a
+     row, not scanned down a column of cards. */
   & .my-course-card__name {
     margin: 0;
     font-size: 20px;
     font-weight: 800;
     line-height: 1.25;
-    letter-spacing: -0.01em;
+    letter-spacing: 0.01em;
     text-wrap: balance;
   }
 
