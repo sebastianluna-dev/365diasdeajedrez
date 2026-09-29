@@ -8,22 +8,19 @@
   word-break: break-word;
 
   /* The lesson is read: a run of moves, then what is said about the last one
-     of them. Each is a paragraph of its own, and what separates them is this
-     gap and nothing else — no rules, no boxes. */
-  & .move-tree__line,
-  & .move-tree__comment {
+     of them, then what could have been played instead. Each is a paragraph,
+     and what separates them is this gap and nothing else — no rules, no
+     boxes, no parentheses. */
+  & > p {
     margin: 0;
   }
 
-  & .move-tree__line + .move-tree__comment,
-  & .move-tree__comment + .move-tree__line,
-  & .move-tree__comment + .move-tree__comment,
-  & .move-tree__line + .move-tree__line {
+  & > p + p {
     margin-top: 14px;
   }
 
-  /* The moves of a run, one after another. `line-height` gives them room for
-     the rounding of the active one without the lines touching. */
+  /* The moves of a run. `line-height` gives them room for the rounding of the
+     active one without the lines touching. */
   & .move-tree__line {
     line-height: 1.9;
     font-weight: 700;
@@ -33,6 +30,39 @@
      note in the margin of the moves. */
   & .move-tree__comment {
     line-height: 1.6;
+    font-weight: 400;
+    color: var(--platform-text);
+  }
+
+  /* A line that was not played. It is told apart by its COLOUR, not by
+     parentheses: the blue says "this is another line" from the first glance,
+     and where it ends is said by the main line starting again below it, with
+     its number repeated. Each level in is one step from the margin. */
+  & .move-tree__variation {
+    padding-left: calc(var(--variation-depth, 0) * 18px);
+    line-height: 1.7;
+    color: var(--platform-variation);
+
+    & .move-tree__move {
+      font-weight: 700;
+      color: var(--platform-variation);
+    }
+
+    & .move-tree__move:hover {
+      background: var(--platform-variation-soft);
+    }
+
+    & .move-tree__move.move-tree__move_active {
+      background: var(--platform-variation-soft);
+      color: var(--platform-variation);
+    }
+  }
+
+  /* What the variation is being proposed for. It goes on in the same
+     paragraph, and in the page's own ink: it is prose, and read in blue it
+     would look like more notation. */
+  & .move-tree__aside {
+    margin-left: 3px;
     font-weight: 400;
     color: var(--platform-text);
   }
@@ -59,26 +89,5 @@
   & .move-tree__move.move-tree__move_active {
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
-  }
-
-  /* A comment inside a variation: it stays in the parenthesis, so it is told
-     from the lesson's own text by its colour. */
-  & .move-tree__aside {
-    font-weight: 400;
-    color: var(--platform-text-muted);
-    margin: 0 3px;
-  }
-
-  & .move-tree__variation {
-    font-weight: 400;
-    color: var(--platform-text-muted);
-
-    & .move-tree__move {
-      color: var(--platform-text-subtle);
-    }
-
-    & .move-tree__move.move-tree__move_active {
-      color: var(--platform-accent-ink);
-    }
   }
 }

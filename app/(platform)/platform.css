@@ -90,6 +90,14 @@
      the accent: what it measures is the day, not a course. */
   --platform-progress: #0095f8;
 
+  /* A line that was NOT played: the variations of a lesson. They are told
+     from the game by their colour instead of by parentheses, so the blue has
+     to read as ink and not as a bar — hence a darker one than the progress
+     blue, which is only ever a fill. The soft one backs the move being
+     looked at while it is inside a variation. */
+  --platform-variation: #1a6ac0;
+  --platform-variation-soft: #e4eefb;
+
   /* The fire of the daily streak, and the inner flame the fire is hollow in.
      A colour of its own, like the progress blue: a flame is neither an action
      nor a warning, and in the accent's red it read as one. */

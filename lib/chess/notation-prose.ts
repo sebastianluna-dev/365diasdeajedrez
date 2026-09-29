@@ -6,24 +6,29 @@ import { nagGlyph, type PgnTreeNode } from "./pgn-tree";
 // because what a comment explains is the move it hangs from, and that is
 // where whoever is reading stops to look at the board.
 //
+// A variation breaks it too, into a paragraph of its own. It is not put in
+// parentheses: what says it is another line is its colour, and what says
+// where it ends is that the main line starts again below it, numbered.
+//
 // `notation-blocks` is the other half of this: the two-column grid of a game
 // gone through move by move. Both are pure modules without JSX on purpose —
 // what is subtle here is when a move has to repeat its number, and that is
 // checked with tests instead of by looking at a screen.
 
-/**
- * One thing inside a run of moves: the move, an aside (a comment belonging to
- * a variation, which stays in its parenthesis) or a whole variation.
- */
+/** One thing inside a paragraph: a move, or a comment that follows it. */
 export type ProseItem =
   | { kind: "move"; key: string; path: string; label: string }
-  | { kind: "aside"; key: string; text: string }
-  | { kind: "variation"; key: string; items: ProseItem[] };
+  | { kind: "aside"; key: string; text: string };
 
-/** A run of moves, or the comment that closed it. */
+/**
+ * A paragraph. A run of moves of the main line, the comment that closed it,
+ * or a variation — which carries its own comments inside, because what it
+ * says belongs to the line it is proposing and not to the lesson.
+ */
 export type ProseBlock =
   | { kind: "moves"; key: string; items: ProseItem[] }
-  | { kind: "comment"; key: string; text: string };
+  | { kind: "comment"; key: string; text: string }
+  | { kind: "variation"; key: string; depth: number; items: ProseItem[] };
 
 /**
  * A move as it is written: the number when it is White's, when it opens a
@@ -45,37 +50,53 @@ const moveItem = (node: PgnTreeNode, needsNumber: boolean): ProseItem => ({
 });
 
 /**
- * A variation, always inline: it is an aside inside the line it hangs from,
- * so its own comments stay in the parenthesis instead of breaking the page in
- * two over a move that is not the one being followed.
+ * A variation as its own paragraphs: its moves run on with its comments after
+ * them, and a variation OF the variation opens a paragraph one step deeper,
+ * after which this one resumes, numbered again.
  */
-function variationItems(nodes: PgnTreeNode[]): ProseItem[] {
-  const items: ProseItem[] = [];
-  let current = nodes;
+function pushVariation(start: PgnTreeNode, depth: number, out: ProseBlock[]): void {
+  let items: ProseItem[] = [];
+  let blockKey = start.path;
+  let current: PgnTreeNode[] = [start];
   let needsNumber = true;
 
+  const close = () => {
+    if (items.length === 0) return;
+    out.push({ kind: "variation", key: blockKey, depth, items });
+    items = [];
+  };
+
   while (current.length > 0) {
-    const [main, ...variations] = current;
+    const [main, ...deeper] = current;
     if (!main) break;
+    if (items.length === 0) blockKey = main.path;
 
     items.push(moveItem(main, needsNumber));
 
+    // The comment stays in the paragraph: it is what this line is being
+    // proposed for, and on its own it would read as the lesson's own voice.
     if (main.comment) {
       items.push({ kind: "aside", key: `${main.path}-comment`, text: main.comment });
     }
 
-    for (const variation of variations) {
-      items.push({ kind: "variation", key: `${variation.path}-variation`, items: variationItems([variation]) });
+    for (const variation of deeper) {
+      close();
+      pushVariation(variation, depth + 1, out);
     }
 
-    needsNumber = Boolean(main.comment) || variations.length > 0;
+    // Same rule as the main line: a comment between a white move and Black's
+    // reply leaves the reply having to say its number again.
+    needsNumber = Boolean(main.comment) || deeper.length > 0;
     current = main.children;
   }
 
-  return items;
+  close();
 }
 
-/** Cuts the main line into runs of moves and the comments that close them. */
+/**
+ * Cuts the game into paragraphs: runs of the main line, the comments that
+ * close them and the variations that hang from them.
+ */
 export function buildProseBlocks(nodes: PgnTreeNode[]): ProseBlock[] {
   const blocks: ProseBlock[] = [];
   let run: ProseItem[] = [];
@@ -96,15 +117,17 @@ export function buildProseBlocks(nodes: PgnTreeNode[]): ProseBlock[] {
 
     run.push(moveItem(main, needsNumber));
 
-    // Before the comment: a variation belongs to the line it hangs from, and
-    // left after it would open under a paragraph that has already moved on.
-    for (const variation of variations) {
-      run.push({ kind: "variation", key: `${variation.path}-variation`, items: variationItems([variation]) });
-    }
-
+    // What is said about the move, then what could have been played instead:
+    // the order a book gives them, and the order the reader needs — the
+    // alternative only makes sense once the move has been explained.
     if (main.comment) {
       closeRun();
       blocks.push({ kind: "comment", key: `${main.path}-comment`, text: main.comment });
+    }
+
+    for (const variation of variations) {
+      closeRun();
+      pushVariation(variation, 0, blocks);
     }
 
     needsNumber = Boolean(main.comment) || variations.length > 0;

@@ -1,6 +1,6 @@
 "use client";
 
-import { type MouseEvent, type ReactNode, useEffect, useRef } from "react";
+import { type CSSProperties, type MouseEvent, type ReactNode, useEffect, useRef } from "react";
 import { buildProseBlocks, type ProseItem } from "@/lib/chess/notation-prose";
 import type { PgnTree } from "@/lib/chess/pgn-tree";
 import "./move-tree.comp.css";
@@ -40,14 +40,6 @@ export function MoveTree({ tree, currentPath, onSelect, onContextMenu }: MoveTre
       );
     }
 
-    if (item.kind === "variation") {
-      return (
-        <span key={item.key} className="move-tree__variation">
-          ({item.items.map(renderItem)})
-        </span>
-      );
-    }
-
     const isActive = item.path === currentPath;
     return (
       <button
@@ -74,17 +66,35 @@ export function MoveTree({ tree, currentPath, onSelect, onContextMenu }: MoveTre
     <div className="move-tree">
       {tree.initialComment && <p className="move-tree__comment">{tree.initialComment}</p>}
 
-      {blocks.map((block) =>
-        block.kind === "comment" ? (
-          <p key={block.key} className="move-tree__comment">
-            {block.text}
-          </p>
-        ) : (
+      {blocks.map((block) => {
+        if (block.kind === "comment") {
+          return (
+            <p key={block.key} className="move-tree__comment">
+              {block.text}
+            </p>
+          );
+        }
+
+        if (block.kind === "variation") {
+          // Each step deeper is one step in from the margin, which is all
+          // that says one variation hangs from another.
+          return (
+            <p
+              key={block.key}
+              className="move-tree__variation"
+              style={{ "--variation-depth": block.depth } as CSSProperties}
+            >
+              {block.items.map(renderItem)}
+            </p>
+          );
+        }
+
+        return (
           <p key={block.key} className="move-tree__line">
             {block.items.map(renderItem)}
           </p>
-        ),
-      )}
+        );
+      })}
     </div>
   );
 }

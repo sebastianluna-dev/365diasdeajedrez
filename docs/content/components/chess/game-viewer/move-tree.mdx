@@ -1,5 +1,5 @@
 ---
-description: "Notation of a PGN tree read as prose: runs of moves that a comment closes, variations inline in parentheses, one button per move."
+description: "Notation of a PGN tree read as prose: runs of moves that a comment closes and variations as paragraphs of their own, told apart by colour instead of parentheses."
 ---
 
 # `MoveTree`
@@ -16,7 +16,7 @@ description: "Notation of a PGN tree read as prose: runs of moves that a comment
 
 The notation as prose. Moves run on one after another and a **comment breaks the line**: the run closes carrying the move the comment explains, the comment follows as its own paragraph, and the line resumes below with its number repeated ("3… Ab4"). That is how a lesson is read — a paragraph of moves, then what is said about the last of them, with the board alongside.
 
-Variations stay inline, in parentheses: a variation is an aside inside the line it hangs from, so even its own comments stay in the parenthesis instead of breaking the page over a move nobody is following.
+A variation breaks the line too, into a paragraph of its own, and it is **not put in parentheses**: what says it is another line is its colour (`--platform-variation`), and what says where it ends is the main line starting again below it with its number repeated. Its own comment goes on in that same paragraph, in the page's ink — it is what the line is being proposed for, and read in blue it would look like more notation. A variation of a variation opens one step further in.
 
 This is the list a **lesson** uses; a game consulted move by move uses the [`MoveTable`](/components/chess/game-viewer/move-table).
 
@@ -34,19 +34,19 @@ The tree carries no editing logic. It reports a right click when asked to and no
 ## Behaviour
 
 - Where the line is cut is not decided here: `buildProseBlocks` (`lib/chess/notation-prose`) returns the runs and comments in reading order, already labelled in Spanish piece letters with their NAG glyphs. It is a pure module with tests, because the subtle part — when a move has to repeat its number — is checked far better that way than by looking at a screen.
-- The component walks that list and draws it: a run becomes a `<p>` of buttons, a comment a `<p>` of text, a variation a nested span.
+- The component walks that list and draws it: a run becomes a `<p>` of buttons, a comment a `<p>` of text, and a variation a `<p>` of its own carrying its depth in `--variation-depth`, which is all the indentation is.
 - The active move's button is kept in view with `scrollIntoView({ block: "nearest", inline: "nearest" })` on every path change: the minimum scroll, in the scrolling container only, so the page does not jump.
 - With `onContextMenu`, the button's `onContextMenu` prevents the browser menu and forwards the path and the event (the viewer needs the pointer position to place its menu).
 
 ## Markup & styling
 
-Block `.move-tree` (84 lines).
+Block `.move-tree` (93 lines).
 
-**Elements:** `.move-tree__line` (a run of moves), `.move-tree__comment` (a paragraph of the lesson), `.move-tree__move`, `.move-tree__aside` (a comment inside a variation), `.move-tree__variation`
+**Elements:** `.move-tree__line` (a run of the main line), `.move-tree__comment` (a paragraph of the lesson), `.move-tree__variation` (a line that was not played), `.move-tree__aside` (what a variation is proposed for, inside its paragraph), `.move-tree__move`
 
 **Modifiers and states:** `.move-tree__move_active`
 
-**Tokens:** `--move-tree-font-size` (set by the viewer's panel so the list scales with it), `--platform-accent-ink`, `--platform-accent-soft`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--move-tree-font-size` (set by the viewer's panel so the list scales with it), `--variation-depth` (per paragraph, from the block), `--platform-accent-ink`, `--platform-accent-soft`, `--platform-surface-neutral`, `--platform-text`, `--platform-variation`, `--platform-variation-soft`
 
 No media queries; it wraps as text.
 
