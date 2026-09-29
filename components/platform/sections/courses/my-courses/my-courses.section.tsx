@@ -14,17 +14,6 @@ interface MyCoursesSectionProps {
 }
 
 /**
- * "2 cursos · 1 en curso": how many there are and how many are being studied,
- * which are the ones started and not finished.
- */
-function summaryOf(courses: MyCourseItem[]): string {
-  if (courses.length === 0) return "Todavía no has agregado ninguno";
-
-  const underway = courses.filter((course) => course.ctaLabel === "Continuar").length;
-  return `${courses.length} ${courses.length === 1 ? "curso" : "cursos"} · ${underway} en curso`;
-}
-
-/**
  * "Mis cursos": the courses the student added, one to a row, each a card
  * that says how far they are in it and leads to the course to study; and
  * after them the row that leads to the catalog, which is where the next one
@@ -39,10 +28,10 @@ export function MyCoursesSection({ courses, streak }: MyCoursesSectionProps) {
   return (
     <section className="my-courses">
       {/* The page's own head, the same as «Mis estudios»': the platform has
-          one way of opening a page. */}
+          one way of opening a page. The title is alone — the list is right
+          under it and counting it in words says nothing it does not. */}
       <header className="platform-page__head">
         <h1 className="platform-page__title">Mis cursos</h1>
-        <p className="platform-page__subtitle">{summaryOf(courses)}</p>
       </header>
 
       <div className="my-courses__layout">
