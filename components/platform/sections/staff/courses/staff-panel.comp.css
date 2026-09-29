@@ -3,9 +3,7 @@
 
   padding: 18px var(--staff-panel-gutter) 22px;
   background: var(--platform-surface);
-  /* Outlined by the thin grey over the shadow: on the light page the shadow
-     alone did not hold the card's edge. */
-  border: 1px solid var(--platform-border);
+  /* No outline: the card is white on the page's grey, over its shadow. */
   border-radius: 8px;
   box-shadow: var(--platform-shadow-card);
 

@@ -33,7 +33,8 @@
     flex-direction: column;
     gap: 4px;
     padding: 10px;
-    border: 1px solid var(--platform-border);
+    /* Transparent at rest, for the hover to colour it without moving anything. */
+    border: 1px solid transparent;
     border-radius: 8px;
     background: var(--platform-surface);
     color: var(--platform-text);

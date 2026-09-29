@@ -12,7 +12,6 @@
     justify-content: space-between;
     gap: 20px;
     padding: 20px 22px;
-    border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface);
   }
@@ -104,7 +103,6 @@
 
   & .chapter-study__lesson {
     overflow: hidden;
-    border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface);
   }

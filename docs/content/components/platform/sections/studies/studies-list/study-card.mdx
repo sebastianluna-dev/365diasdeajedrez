@@ -27,7 +27,7 @@ A study as a card, in the manner of a lichess study card: a tile with the site's
 
 ## Behaviour
 
-- **Hover** tints the card with the faint accent (`--platform-accent-wash`) and turns its outline accent (`--platform-accent`), like the active chip of the filter above; the shadow does not grow, so nothing lifts or moves. The "Sólo lectura" pill follows: on the hovered card its fill turns `--platform-accent-soft`, because the grey pill vanished against the wash; its text stays `--platform-text-muted` in both states (the accent ink measured 3.75:1 on that fill, under AA for 13 px text; the muted grey passes on both fills), and the byline darkens to `--platform-text-muted` so it keeps AA contrast on the tint.
+- **Hover** tints the card with the faint accent (`--platform-accent-wash`) and draws its edge in the accent (`--platform-accent`; at rest the border is transparent, the card has no outline), like the active chip of the filter above; the shadow does not grow, so nothing lifts or moves. The "Sólo lectura" pill follows: on the hovered card its fill turns `--platform-accent-soft`, because the grey pill vanished against the wash; its text stays `--platform-text-muted` in both states (the accent ink measured 3.75:1 on that fill, under AA for 13 px text; the muted grey passes on both fills), and the byline darkens to `--platform-text-muted` so it keeps AA contrast on the tint.
 - `permissions.canDelete` renders the [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study) cross with the counts it needs for its warning; otherwise, a read-only study shows the "Sólo lectura" mark. An editable study that cannot be deleted ("Mis partidas") shows neither.
 - Game count, the two date labels and `previewGames` come from the mapper: the preview is the study's first four games in the aside's order (`studySummaryInclude`, `take: 4`), and the total is counted by the service in one grouped query, because the include's own relation count is taken by the cited games.
 
@@ -39,7 +39,7 @@ Block `.study-card`.
 
 **Modifiers:** `.study-card__game_more` (the "y n más" row, without bullet).
 
-**Tokens:** `--platform-accent`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-border` (the card's 1 px outline over its shadow), `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-accent`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`
 
 No media queries.
 

@@ -166,6 +166,19 @@ The React side mirrors this: modifiers are appended conditionally, and the class
 <td className={`platform-table__cell${align === "right" ? " platform-table__cell_align_right" : ""}`}>
 ```
 
+## Cards in the platform
+
+A card — a panel, a table, a row of a list, a box of the game viewer — is **white on the page's grey** (`--platform-surface` on `--platform-bg`), over a shadow where it has one. **It has no outline.** The thin grey border cards had was there to tell them from a white page; the page is grey now and the border is gone.
+
+`--platform-border` is still what it was for everything else:
+
+- a **rule inside** a card: between its head and its body, between the rows of a table;
+- what a card draws **inside another** card, white on white, where the fill tells nothing;
+- a **control**: a field, a quiet button, a chip (`--platform-border-strong` for the ones that are pressed);
+- what **floats** over the page: a menu, a list, a calendar.
+
+A card whose hover colours its edge (`StudyCard`, the explorer's games) keeps a `1px solid transparent` border, so the hover moves nothing.
+
 ## Corners in the platform
 
 In the platform a corner is rounded in one of two ways: **`8px`, or all the way**. It holds for anything — a card, a button, a field, a tag, a dialog, a menu, a cover — and whatever its size: a large card does not get a larger radius.

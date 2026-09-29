@@ -13,7 +13,6 @@
   /* The table is wide: the overflow stays inside its box and never pushes the
      page width. */
   & .class-games__table-wrap {
-    border: 1px solid var(--platform-border);
     border-radius: 8px;
     overflow-x: auto;
     background: var(--platform-surface);

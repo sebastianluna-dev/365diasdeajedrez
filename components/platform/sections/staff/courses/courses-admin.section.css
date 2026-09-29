@@ -101,11 +101,9 @@
     background: var(--platform-border-strong);
   }
 
-  /* Outlined by the thin grey over a light shadow, like the study cards: on
-     the white page the card shadow alone did not hold the table's edge. */
+  /* No outline: the table is white on the page's grey, over a light shadow. */
   & .courses-admin__table {
     background: var(--platform-surface);
-    border: 1px solid var(--platform-border);
     border-radius: 8px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     overflow: hidden;
