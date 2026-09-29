@@ -7,7 +7,7 @@ description: "Production assumptions (Vercel), environment, build and database d
 ## Assumptions
 
 - The app is built for **Vercel**: `@vercel/analytics` renders only when `VERCEL=1`; logs are JSON lines on stderr; Payload's start cost matters on cold starts (GraphQL disabled for that reason).
-- Two managed Postgres databases (`DATABASE_URI`, `PLATFORM_DATABASE_URL`) with `sslmode=verify-full`.
+- Two managed Postgres databases (`DATABASE_URI`, `PLATFORM_DATABASE_URL`) with `sslmode=verify-full`. In development they are two databases of a container instead: [Local database](/operations/local-database).
 - Cloudinary for every image; delivery URLs use `f_auto,q_auto`, and `next/image` is limited to `res.cloudinary.com`.
 - The public site is served from the static home (`revalidate = 3600`) plus dynamic blog pages; the platform is fully dynamic.
 

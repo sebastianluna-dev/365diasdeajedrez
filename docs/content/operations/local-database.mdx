@@ -1,0 +1,69 @@
+---
+description: "The two databases in a container for development: what docker-compose.yml starts, how to copy the managed data into it, and how to go back to the managed ones."
+---
+
+# Local database
+
+Development used to run against the two managed databases, which is what production reads and what the plan is metered on: every page opened while designing a screen spent quota, and a mistaken write landed on the real thing. `docker-compose.yml` starts the same Postgres on the machine.
+
+## What it starts
+
+One container, `365-postgres`, with **Postgres 17.2** — the version the managed databases run, so a dump taken there restores here without a word — and two databases inside it:
+
+| Database     | Env var                 | What it holds                                           |
+| ------------ | ----------------------- | ------------------------------------------------------- |
+| `plataforma` | `PLATFORM_DATABASE_URL` | Accounts, courses, studies, classes, progress (Prisma). |
+| `payload`    | `DATABASE_URI`          | The public site and the blog (Payload).                 |
+
+In production they are two separate managed databases. Here they are two databases of one server, which is the same thing for the app — they share no tables — and one container instead of two. The second one is created by `docker/postgres/init/01-databases.sql`, which Postgres runs once, when the volume is empty.
+
+```bash
+npm run db:up                # or docker compose up -d
+npm run db:down              # stops it; the data survives
+docker compose down -v       # stops it AND throws the data away
+```
+
+The data lives in a named volume (`postgres-data`), so it survives `down`, a restart of the machine and a pull of the repository.
+
+## Pointing the app at it
+
+Two lines of `.env.local`:
+
+```bash
+DATABASE_URI=postgres://ajedrez:ajedrez@localhost:5432/payload
+PLATFORM_DATABASE_URL=postgres://ajedrez:ajedrez@localhost:5432/plataforma
+```
+
+**No `sslmode`.** The managed ones need `sslmode=verify-full`; the container speaks no TLS and the parameter makes the connection fail. Nothing in the code forces SSL — both URLs go straight into `node-postgres` — so a plain URL is all it takes. Keeping the managed ones on a commented line above is enough to swap back: `next dev` reloads `.env.local` by itself.
+
+From there the usual applies: `npm run db:migrate` puts the platform's schema in place, the CMS's tables create themselves on the first `npm run dev` (Drizzle push, there are no Payload migrations), and `npm run db:seed` fills the catalogues and the demo accounts. The seed refuses to run against anything that is not `localhost` unless it is told to, so here it needs no extra ceremony.
+
+## Copying the managed data in
+
+A seeded database is enough to work on a screen, but not to see a real course. To copy what the managed ones have:
+
+```bash
+# The URLs are read from .env.local; keep them off the shell's history.
+PLATFORM_URL=$(grep -m1 '^# PLATFORM_DATABASE_URL=' .env.local | cut -d= -f2-)
+PAYLOAD_URL=$(grep -m1 '^# DATABASE_URI=' .env.local | cut -d= -f2-)
+
+# The dump runs inside the container, so its pg_dump matches the server's.
+docker exec -e PGURL="${PLATFORM_URL}&sslrootcert=system" 365-postgres \
+  sh -c 'pg_dump "$PGURL" --format=plain --no-owner --no-privileges --no-comments' \
+  | grep -v prisma_postgres > /tmp/plataforma.sql
+
+docker exec -i 365-postgres psql -U ajedrez -d plataforma -v ON_ERROR_STOP=1 -q < /tmp/plataforma.sql
+```
+
+The same two commands with `PAYLOAD_URL` and `-d payload` bring the CMS over. Two details are what make it work:
+
+- **`sslrootcert=system`.** The managed URLs carry `sslmode=verify-full`, and inside the container there is no `root.crt`, so `pg_dump` refuses to connect. That parameter points it at the system's trusted roots, which the image does carry.
+- **`grep -v prisma_postgres`.** The managed databases have an extension of their provider's, and the dump carries a `CREATE EXTENSION` for it that no ordinary Postgres can satisfy. Dropping those lines is enough; nothing of the schema depends on it.
+
+Restoring over a database that already has the tables will complain about every one of them. Start from an empty one (`docker compose down -v && npm run db:up`) when refreshing the copy.
+
+**What comes with it.** The dump carries the accounts as they are in the managed database, passwords included; `npm run user:password` changes one locally without touching the real one, since the URL now points at the container. And `_prisma_migrations` comes along too, so `npx prisma migrate status` will say the schema is up to date instead of trying to apply the 28 migrations again.
+
+## Going back to the managed ones
+
+Swap the two commented lines in `.env.local` back. Nothing else is tied to the container: the schema is the same, the migrations are the same and the code never learns which of the two it is talking to.

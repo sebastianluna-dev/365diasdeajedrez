@@ -17,11 +17,21 @@ Prisma's CLI reads `PLATFORM_DATABASE_URL` through `prisma.config.ts`, which loa
 ```bash
 npm install
 cp .env.example .env.local   # then fill in the values
+npm run db:up                # Postgres for both databases, in a container
 npm run db:generate          # generates the Prisma client in lib/platform-db/generated
 npm run db:migrate           # applies the migrations to PLATFORM_DATABASE_URL
 npm run db:seed              # catalogues (idempotent) + demo data
 npm run dev                  # http://localhost:3000
 ```
+
+`npm run db:up` starts the Postgres of `docker-compose.yml`: one server, two databases — `plataforma` for the platform and `payload` for the CMS — at the version the managed ones run. Point `.env.local` at them and nothing else changes:
+
+```bash
+DATABASE_URI=postgres://ajedrez:ajedrez@localhost:5432/payload
+PLATFORM_DATABASE_URL=postgres://ajedrez:ajedrez@localhost:5432/plataforma
+```
+
+No `sslmode` in those two: the container speaks no TLS. The CMS's tables create themselves on the first `npm run dev` (Drizzle push); the platform's come from the migrations. `docs/`, "Local database", covers copying the real data into it and how to go back to the managed ones.
 
 ## Available commands
 
@@ -33,6 +43,8 @@ npm run dev                  # http://localhost:3000
 | `npm run lint`                            | ESLint.                                                                                                       |
 | `npm run test`                            | Vitest, one pass.                                                                                             |
 | `npm run test:watch`                      | Vitest in watch mode.                                                                                         |
+| `npm run db:up`                           | Starts the container's Postgres (both databases).                                                             |
+| `npm run db:down`                         | Stops it. The data survives; `docker compose down -v` is what throws it away.                                 |
 | `npm run db:generate`                     | `prisma generate`.                                                                                            |
 | `npm run db:migrate`                      | `prisma migrate dev` (development).                                                                           |
 | `npm run db:deploy`                       | `prisma migrate deploy` (production).                                                                         |
