@@ -39,6 +39,10 @@
 
   /* Three text weights: body, secondary and the one for small labels. */
   --platform-text: #16110d;
+  /* A title's grey: lighter than the body's near-black and with none of its
+     warmth, so a wall of names does not read as a wall of ink. The chapters
+     are drawn in it. */
+  --platform-text-title: #4a4a4a;
   --platform-text-muted: #666666;
   /* 4.7:1 on white: used as TEXT (table headers, counters, footers); a lighter
      grey did not reach the WCAG AA minimum. */
