@@ -47,13 +47,15 @@ Interactive moves are validated by chessops before they are reported: the board 
 
 **Standalone navigation.** `ply` is clamped to the replayed positions. Autoplay advances one move every 900 ms and stops at the end; changing the PGN stops it. The arrow keys move through the game only while the board is at least fully in the viewport or has been clicked, tracked with an `IntersectionObserver` and a click flag, so two boards on one page do not both react. In controlled mode the keyboard handler is not installed at all: navigation belongs to the parent.
 
-**Layout.** A `ResizeObserver` on the frame redraws chessground and, above 720 px, pins the notation column to the board's height so it scrolls instead of growing. The active notation cell is scrolled into view on every ply change.
+**Layout.** A `ResizeObserver` on the frame redraws chessground and, above 720 px, pins the notation column to the board's height so it scrolls instead of growing. That height is read with `offsetHeight`, not with the bounding rect: the platform's `zoom` is already inside a rect, and the value is written back as an inline `px` that the zoom would apply a second time. The active notation cell is scrolled into view on every ply change.
 
 **Callbacks by reference.** `onMove` and `onShapesChange` are kept in refs so chessground's handlers, installed once, always call the latest function without re-creating the board.
 
 ## Markup & styling
 
-Block `.chess-board` (337 lines).
+Block `.chess-board` (370 lines).
+
+**The surface gives the platform's zoom back.** `.chess-board__surface` carries `zoom: calc(1 / var(--platform-zoom, 1))`, so the subtree chessground owns sits at an effective zoom of `1`. Chessground measures the element with `getBoundingClientRect()` — the page's zoom already in it — and writes the result back as an inline `px` width, which the zoom applied again: the board was drawn a tenth wider than the hole it was given, spilling over its right and bottom edges, and its pieces, placed from that same measurement, drifted until the back rank fell off the board. The width stays at `100%` (a percentage is converted between the two zooms, so the board measures what its container gives it) and the board's coordinates multiply their `font-size` by the token, being the one thing inside drawn at a fixed size. Outside the platform the token does not exist and it all resolves to `zoom: 1`.
 
 **Elements:** `.chess-board__columns`, `.chess-board__frame`, `.chess-board__surface` (the chessground mount point), `.chess-board__notation`, `.chess-board__notation-rows`, `.chess-board__notation-row`, `.chess-board__notation-number`, `.chess-board__notation-cell`, `.chess-board__notation-quality`, `.chess-board__notation-glyph`, `.chess-board__toolbar`, `.chess-board__toolbar-group`, `.chess-board__tool`, `.chess-board__promotion`, `.chess-board__promotion-panel`, `.chess-board__promotion-piece`, `.chess-board__promotion-cancel`
 

@@ -83,6 +83,16 @@ width: min(520px, calc(100vw / var(--platform-zoom, 1) - 32px));
 
 It is the one rule to keep in mind when writing a new stylesheet for the platform: a length in `px` is written as the design gives it; a length in `vh`, `vw` or `dvh` is divided.
 
+**The same trap in JavaScript.** `getBoundingClientRect()`, `clientX` and `innerWidth` are read in the page's pixels, with the zoom already in them; a `px` written back into an element under the zoom is multiplied by it a second time. Measure and write in the same system: `offsetWidth`/`offsetHeight` give the element's own pixels, which is what an inline `style` is read in. Where the value has to come from a rect — a pointer's coordinates, for instance — it is divided by `element.currentCSSZoom`.
+
+A third party that measures this way cannot be told to stop, so the zoom is given back for its subtree. `ChessBoard` does it: chessground measured its container and wrote the result back inline, so the board came out a tenth larger than its hole and its pieces drifted off their squares.
+
+```css
+zoom: calc(1 / var(--platform-zoom, 1));
+```
+
+The width stays at `100%` — the browser converts a percentage between the two zooms, so the board still measures what its container gives it — and anything inside drawn at a fixed size (the board's coordinates) multiplies by the token to make up for it.
+
 ## Fonts
 
 `next/font/local` loads woff2 subsets from `public/fonts/` and exposes them as CSS variables on `<html>`:

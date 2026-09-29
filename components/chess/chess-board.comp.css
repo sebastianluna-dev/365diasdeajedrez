@@ -127,7 +127,21 @@
     }
   }
 
+  /* The zoom is cancelled for the board and ONLY for the board. Chessground
+     measures this element with `getBoundingClientRect()`, which already
+     carries the page's zoom, and writes the result back as inline px — which
+     the zoom then applies a second time. Under the platform's 110% the board
+     came out 10% wider than the hole it was given, spilling over its right
+     and bottom edges, and the pieces, placed from that same measurement,
+     walked away from their squares until the back rank fell off the board.
+
+     At an effective zoom of 1 what is measured and what is written are the
+     same px again. The width stays at 100%: the browser converts the
+     percentage between the two zooms, so the board still measures exactly
+     what its container gives it. Outside the platform the token does not
+     exist and this resolves to `zoom: 1`. */
   & .chess-board__surface {
+    zoom: calc(1 / var(--platform-zoom, 1));
     width: 100%;
     aspect-ratio: 1;
   }
@@ -169,8 +183,12 @@
     );
   }
 
+  /* The only thing inside the board drawn at a fixed size: everything else
+     (pieces, arrows) scales with the square. Since the surface gives the
+     zoom back, these letters have to take it on themselves or they would be
+     the one text of the platform left at 100%. */
   & .cg-wrap coords {
-    font-size: 9px;
+    font-size: calc(9px * var(--platform-zoom, 1));
     font-weight: 700;
   }
 

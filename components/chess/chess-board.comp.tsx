@@ -227,7 +227,11 @@ export function ChessBoard({
     if (!frame) return;
     const observer = new ResizeObserver(() => {
       apiRef.current?.redrawAll();
-      setNotationHeight(window.innerWidth > 720 ? frame.getBoundingClientRect().height : undefined);
+      // `offsetHeight` and not the bounding rect: the rect comes with the
+      // page's zoom already applied, and this height is written back as
+      // inline px that the zoom applies again — the notation stood 10% taller
+      // than the board it is meant to match.
+      setNotationHeight(window.innerWidth > 720 ? frame.offsetHeight : undefined);
     });
     observer.observe(frame);
     return () => observer.disconnect();
