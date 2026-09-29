@@ -14,7 +14,7 @@
   }
 
   & .platform-shell__bar-inner {
-    max-width: 1320px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 0 40px;
     height: 70px;
@@ -115,7 +115,7 @@
   }
 
   & .platform-shell__content {
-    max-width: 1320px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 44px 40px 90px;
     box-sizing: border-box;

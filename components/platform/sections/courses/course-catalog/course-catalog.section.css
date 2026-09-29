@@ -22,7 +22,9 @@
     color: var(--platform-text-subtle);
   }
 
-  /* The same grid as "Mis cursos": a course is the same card in both. */
+  /* Three cards to a row in the page's 1200px, and as many as fit under it.
+     "Mis cursos" is a list of rows: there a course is the one already
+     chosen, and its card is another one. */
   & .course-catalog__list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
