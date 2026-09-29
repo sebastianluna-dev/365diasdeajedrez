@@ -1,8 +1,8 @@
 "use client";
 
-import { type MouseEvent, type ReactNode, type RefObject, useEffect, useRef } from "react";
-import { sanToSpanish } from "@/lib/chess/notation";
-import { nagGlyph, type PgnTree, type PgnTreeNode } from "@/lib/chess/pgn-tree";
+import { type MouseEvent, type ReactNode, useEffect, useRef } from "react";
+import { buildProseBlocks, type ProseItem } from "@/lib/chess/notation-prose";
+import type { PgnTree } from "@/lib/chess/pgn-tree";
 import "./move-tree.comp.css";
 
 interface MoveTreeProps {
@@ -18,73 +18,6 @@ interface MoveTreeProps {
   onContextMenu?: (path: string, event: MouseEvent) => void;
 }
 
-function moveLabel(node: PgnTreeNode, needsNumber: boolean): string {
-  const isWhiteMove = node.ply % 2 === 1;
-  const moveNumber = Math.ceil(node.ply / 2);
-  const prefix = isWhiteMove ? `${moveNumber}. ` : needsNumber ? `${moveNumber}... ` : "";
-  return `${prefix}${sanToSpanish(node.san)}${node.nags.map(nagGlyph).join("")}`;
-}
-
-interface RenderContext {
-  currentPath: string;
-  onSelect: (path: string) => void;
-  onContextMenu?: (path: string, event: MouseEvent) => void;
-  activeRef: RefObject<HTMLButtonElement | null>;
-}
-
-function renderLine(nodes: PgnTreeNode[], context: RenderContext, lineStart: boolean): ReactNode[] {
-  const out: ReactNode[] = [];
-  let current = nodes;
-  let needsNumber = lineStart;
-
-  while (current.length > 0) {
-    const [main, ...variations] = current;
-    if (!main) break;
-    const isActive = main.path === context.currentPath;
-
-    out.push(
-      <button
-        key={main.path}
-        type="button"
-        ref={isActive ? context.activeRef : undefined}
-        onClick={() => context.onSelect(main.path)}
-        onContextMenu={
-          context.onContextMenu
-            ? (event) => {
-                event.preventDefault();
-                context.onContextMenu?.(main.path, event);
-              }
-            : undefined
-        }
-        className={`move-tree__move${isActive ? " move-tree__move_active" : ""}`}
-      >
-        {moveLabel(main, needsNumber)}
-      </button>,
-    );
-
-    if (main.comment) {
-      out.push(
-        <span key={`${main.path}-comment`} className="move-tree__comment">
-          {main.comment}
-        </span>,
-      );
-    }
-
-    for (const variation of variations) {
-      out.push(
-        <span key={`${variation.path}-variation`} className="move-tree__variation">
-          ({renderLine([variation], context, true)})
-        </span>,
-      );
-    }
-
-    needsNumber = Boolean(main.comment) || variations.length > 0;
-    current = main.children;
-  }
-
-  return out;
-}
-
 export function MoveTree({ tree, currentPath, onSelect, onContextMenu }: MoveTreeProps) {
   const activeRef = useRef<HTMLButtonElement>(null);
 
@@ -94,10 +27,64 @@ export function MoveTree({ tree, currentPath, onSelect, onContextMenu }: MoveTre
     activeRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
   }, [currentPath]);
 
+  // Where the line is cut is decided by `notation-prose`, which knows nothing
+  // of React: here only the drawing is left.
+  const blocks = buildProseBlocks(tree.children);
+
+  const renderItem = (item: ProseItem): ReactNode => {
+    if (item.kind === "aside") {
+      return (
+        <span key={item.key} className="move-tree__aside">
+          {item.text}
+        </span>
+      );
+    }
+
+    if (item.kind === "variation") {
+      return (
+        <span key={item.key} className="move-tree__variation">
+          ({item.items.map(renderItem)})
+        </span>
+      );
+    }
+
+    const isActive = item.path === currentPath;
+    return (
+      <button
+        key={item.key}
+        type="button"
+        ref={isActive ? activeRef : undefined}
+        onClick={() => onSelect(item.path)}
+        onContextMenu={
+          onContextMenu
+            ? (event) => {
+                event.preventDefault();
+                onContextMenu(item.path, event);
+              }
+            : undefined
+        }
+        className={`move-tree__move${isActive ? " move-tree__move_active" : ""}`}
+      >
+        {item.label}
+      </button>
+    );
+  };
+
   return (
     <div className="move-tree">
-      {tree.initialComment && <span className="move-tree__comment">{tree.initialComment}</span>}
-      {renderLine(tree.children, { currentPath, onSelect, onContextMenu, activeRef }, true)}
+      {tree.initialComment && <p className="move-tree__comment">{tree.initialComment}</p>}
+
+      {blocks.map((block) =>
+        block.kind === "comment" ? (
+          <p key={block.key} className="move-tree__comment">
+            {block.text}
+          </p>
+        ) : (
+          <p key={block.key} className="move-tree__line">
+            {block.items.map(renderItem)}
+          </p>
+        ),
+      )}
     </div>
   );
 }

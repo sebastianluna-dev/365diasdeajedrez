@@ -3,21 +3,50 @@
      screen without reaching this sheet's classes from its own. Everything
      inside inherits, so with this one line moves, comments and variations
      scale at once. */
-  font-size: var(--move-tree-font-size, 15px);
-  line-height: 1.9;
+  font-size: var(--move-tree-font-size, 16px);
   color: var(--platform-text);
   word-break: break-word;
+
+  /* The lesson is read: a run of moves, then what is said about the last one
+     of them. Each is a paragraph of its own, and what separates them is this
+     gap and nothing else — no rules, no boxes. */
+  & .move-tree__line,
+  & .move-tree__comment {
+    margin: 0;
+  }
+
+  & .move-tree__line + .move-tree__comment,
+  & .move-tree__comment + .move-tree__line,
+  & .move-tree__comment + .move-tree__comment,
+  & .move-tree__line + .move-tree__line {
+    margin-top: 14px;
+  }
+
+  /* The moves of a run, one after another. `line-height` gives them room for
+     the rounding of the active one without the lines touching. */
+  & .move-tree__line {
+    line-height: 1.9;
+    font-weight: 700;
+  }
+
+  /* What is being explained, in the page's own text: it is the lesson, not a
+     note in the margin of the moves. */
+  & .move-tree__comment {
+    line-height: 1.6;
+    font-weight: 400;
+    color: var(--platform-text);
+  }
 
   & .move-tree__move {
     display: inline;
     border: 0;
     background: transparent;
-    padding: 2px 4px;
+    padding: 3px 5px;
     margin: 0 1px;
     border-radius: 8px;
     font-family: inherit;
     font-size: inherit;
-    font-weight: 500;
+    font-weight: inherit;
     color: inherit;
     cursor: pointer;
     white-space: nowrap;
@@ -32,26 +61,24 @@
     color: var(--platform-accent-ink);
   }
 
-  & .move-tree__comment {
-    color: var(--platform-text-muted);
+  /* A comment inside a variation: it stays in the parenthesis, so it is told
+     from the lesson's own text by its colour. */
+  & .move-tree__aside {
     font-weight: 400;
+    color: var(--platform-text-muted);
     margin: 0 3px;
   }
 
   & .move-tree__variation {
+    font-weight: 400;
     color: var(--platform-text-muted);
 
     & .move-tree__move {
-      font-weight: 400;
       color: var(--platform-text-subtle);
     }
 
     & .move-tree__move.move-tree__move_active {
       color: var(--platform-accent-ink);
-    }
-
-    & .move-tree__comment {
-      color: var(--platform-text-muted);
     }
   }
 }

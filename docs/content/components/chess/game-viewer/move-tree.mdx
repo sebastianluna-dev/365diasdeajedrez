@@ -1,5 +1,5 @@
 ---
-description: "Running-text notation of a PGN tree: main line, inline comments and nested variations in parentheses, one button per move."
+description: "Notation of a PGN tree read as prose: runs of moves that a comment closes, variations inline in parentheses, one button per move."
 ---
 
 # `MoveTree`
@@ -10,11 +10,15 @@ description: "Running-text notation of a PGN tree: main line, inline comments an
 | Kind       | Client Component                                                                                                                                  |
 | Stylesheet | `move-tree.comp.css` → block `.move-tree`                                                                                                         |
 | Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="flow"`), [`AnalysisBoard`](/components/chess/analysis-board/analysis-board) |
-| Uses       | `sanToSpanish` from `lib/chess/notation`<br />`nagGlyph`, `PgnTree`, `PgnTreeNode` from `lib/chess/pgn-tree`                                      |
+| Uses       | `buildProseBlocks`, `ProseItem` from `lib/chess/notation-prose`<br />`PgnTree` from `lib/chess/pgn-tree`                                          |
 
 ## Purpose
 
-The notation as prose: "1. e4 e5 2. Cf3 (2. Cc3 Cf6) Cc6 …". Moves are buttons, comments are inline spans, variations are nested spans in parentheses rendered recursively. This is the list a **lesson** uses, because a lesson is read like text with the game inside it; a game consulted move by move uses the [`MoveTable`](/components/chess/game-viewer/move-table).
+The notation as prose. Moves run on one after another and a **comment breaks the line**: the run closes carrying the move the comment explains, the comment follows as its own paragraph, and the line resumes below with its number repeated ("3… Ab4"). That is how a lesson is read — a paragraph of moves, then what is said about the last of them, with the board alongside.
+
+Variations stay inline, in parentheses: a variation is an aside inside the line it hangs from, so even its own comments stay in the parenthesis instead of breaking the page over a move nobody is following.
+
+This is the list a **lesson** uses; a game consulted move by move uses the [`MoveTable`](/components/chess/game-viewer/move-table).
 
 The tree carries no editing logic. It reports a right click when asked to and nothing else, so the student's viewer never ships menu code.
 
@@ -29,16 +33,16 @@ The tree carries no editing logic. It reports a right click when asked to and no
 
 ## Behaviour
 
-- `renderLine` walks a line: the first child is the main continuation, the rest are variations. A move gets its number when it is White's, when it starts a line, or when a comment or a variation came just before it ("2… Cc6"), the same rule a printed book follows.
-- SAN is rendered in Spanish piece letters (`sanToSpanish`) with NAG glyphs appended (`nagGlyph`).
+- Where the line is cut is not decided here: `buildProseBlocks` (`lib/chess/notation-prose`) returns the runs and comments in reading order, already labelled in Spanish piece letters with their NAG glyphs. It is a pure module with tests, because the subtle part — when a move has to repeat its number — is checked far better that way than by looking at a screen.
+- The component walks that list and draws it: a run becomes a `<p>` of buttons, a comment a `<p>` of text, a variation a nested span.
 - The active move's button is kept in view with `scrollIntoView({ block: "nearest", inline: "nearest" })` on every path change: the minimum scroll, in the scrolling container only, so the page does not jump.
 - With `onContextMenu`, the button's `onContextMenu` prevents the browser menu and forwards the path and the event (the viewer needs the pointer position to place its menu).
 
 ## Markup & styling
 
-Block `.move-tree` (57 lines).
+Block `.move-tree` (84 lines).
 
-**Elements:** `.move-tree__move`, `.move-tree__comment`, `.move-tree__variation`
+**Elements:** `.move-tree__line` (a run of moves), `.move-tree__comment` (a paragraph of the lesson), `.move-tree__move`, `.move-tree__aside` (a comment inside a variation), `.move-tree__variation`
 
 **Modifiers and states:** `.move-tree__move_active`
 
