@@ -5,6 +5,7 @@ const meta: MetaRecord = {
   "lesson-outline": "LessonOutline",
   "outline-scroll": "OutlineScroll",
   "lesson-tracker": "LessonTracker",
+  "lesson-skeleton": "LessonSkeleton",
 };
 
 export default meta;

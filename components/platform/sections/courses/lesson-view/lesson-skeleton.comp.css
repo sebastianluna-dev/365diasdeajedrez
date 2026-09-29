@@ -1,0 +1,71 @@
+/* The lesson's layout while the lesson is on its way. It runs on top of
+   `.lesson-view`, which is what places the three columns, so the board of the
+   skeleton and the board of the lesson are the same box and nothing moves
+   when one replaces the other. */
+.lesson-skeleton {
+  /* The panel is drawn here and not by the viewer, so it needs the trim the
+     viewer's own column takes (see `--viewer-panel-trim`). */
+  & .lesson-view__main {
+    display: grid;
+    grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(320px, 1fr);
+    column-gap: var(--viewer-column-gap, 22px);
+    align-items: start;
+  }
+
+  /* The board, empty: the same two greens in the same pattern chessground
+     paints, so what arrives is the pieces and not a new board. */
+  & .lesson-skeleton__board {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+    background-color: var(--board-light);
+    background-image: conic-gradient(
+      var(--board-dark) 25%,
+      var(--board-light) 0 50%,
+      var(--board-dark) 0 75%,
+      var(--board-light) 0
+    );
+    background-size: 25% 25%;
+  }
+
+  /* One ring turning in the middle of it, in the accent's own soft shade so
+     it reads as the house waiting and not as an error. */
+  & .lesson-skeleton__spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    border-radius: 50%;
+    border: 3px solid var(--platform-accent-soft);
+    border-top-color: var(--platform-accent);
+    animation: lesson-skeleton-turn 900ms linear infinite;
+  }
+
+  /* The panel of text, blank: the card is there, its words are not. */
+  & .lesson-skeleton__panel {
+    /* The same trick the viewer's own column uses: `height: 0` keeps it out
+       of the row's sizing — the board alone sets that — and `min-height`
+       then hands it the row, less what the buttons take. */
+    height: 0;
+    min-height: calc(100% - var(--viewer-panel-trim, 0px));
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .lesson-skeleton__spinner {
+      animation: none;
+    }
+  }
+}
+
+/* `@keyframes` cannot be nested inside a style rule: nested, the browser
+   drops it. */
+@keyframes lesson-skeleton-turn {
+  to {
+    transform: rotate(1turn);
+  }
+}

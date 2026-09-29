@@ -1,0 +1,37 @@
+---
+description: "The lesson's own layout, empty, while the next lesson arrives: an empty board with a spinner over it and the panel of text blank."
+---
+
+# `LessonSkeleton`
+
+|            |                                                                                                       |
+| ---------- | ----------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/lesson-view/lesson-skeleton.comp.tsx`                            |
+| Kind       | Server Component                                                                                      |
+| Stylesheet | `lesson-skeleton.comp.css` → block `.lesson-skeleton`, on top of `lesson-view.section.css` and `lesson-outline.comp.css` |
+| Used by    | `app/(platform)/lecciones/[lessonId]/loading.tsx`                                                      |
+
+## Purpose
+
+Moving from one lesson to the next means fetching a PGN, and until it lands there was nothing on the screen but the platform's [`BoardLoading`](/components/platform/shared/board-loading) — a different screen, of a different shape, between two lessons that look alike. The board came back somewhere else and the eye had to find it again.
+
+This draws the lesson **before** the lesson: the same three columns in the same places, with an empty board where the board will be and a blank card where the text will be. What arrives are the pieces and the words, not a new page.
+
+It is the one exception to the rule that every `loading.tsx` of the platform renders `BoardLoading`.
+
+## Props
+
+None. What it shows is the shape of a lesson, which is the same for all of them.
+
+## Behaviour
+
+- **It borrows the lesson's own layout instead of drawing boxes of its own.** The root is `.lesson-view .lesson-skeleton`, so the columns, the gaps and `--viewer-board-max` are the very numbers the real page uses and the board cannot land anywhere else. A stylesheet only travels with the component that imports it, and neither `LessonViewSection` nor `LessonOutline` is mounted here, so the skeleton imports both sheets itself.
+- **The column is left blank on purpose.** An empty `.lesson-outline` holds its width and its hairline; what goes inside it is the very thing being waited for. (When the lessons move under the chapter's own route this stops being drawn here at all: the column will live in a layout and will no longer be unmounted between lessons.)
+- **The board is painted, not loaded.** A `conic-gradient` at `25% 25%` gives the eight-by-eight of the same two greens chessground paints (`--board-light` / `--board-dark`), with `aspect-ratio: 1` so it takes exactly the square the real one will take. Over it, one ring turning (`@keyframes lesson-skeleton-turn`, 900ms) in the accent's soft shade — the house waiting, not an error. Under `prefers-reduced-motion` the ring stops and stays.
+- **The blank panel is measured like the viewer's own.** `height: 0` keeps it out of the row's sizing — the board alone sets that — and `min-height: calc(100% - var(--viewer-panel-trim))` then hands it the row less what the buttons under the board take, which is what the real panel does.
+- `aria-busy="true"` on the section and `role="status"` with `aria-label="Cargando la lección"` on the board: a screen reader is told the page is on its way, once.
+
+## Related
+
+- [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section), the page it stands in for.
+- [`BoardLoading`](/components/platform/shared/board-loading), what every other `loading.tsx` of the platform renders.
