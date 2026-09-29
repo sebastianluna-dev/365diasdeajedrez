@@ -6,9 +6,12 @@ import { nagGlyph, type PgnTreeNode } from "./pgn-tree";
 // because what a comment explains is the move it hangs from, and that is
 // where whoever is reading stops to look at the board.
 //
-// A variation breaks it too, into a paragraph of its own. It is not put in
-// parentheses: what says it is another line is its colour, and what says
-// where it ends is that the main line starts again below it, numbered.
+// A variation breaks it too, into a paragraph of its own. The first level is
+// not put in parentheses: what says it is another line is its colour, and
+// what says where it ends is that the main line starts again below it,
+// numbered. A variation OF a variation does carry them — there the colour no
+// longer tells one line from the other, and only the parentheses say which
+// line one has come back to.
 //
 // `notation-blocks` is the other half of this: the two-column grid of a game
 // gone through move by move. Both are pure modules without JSX on purpose —
@@ -28,7 +31,17 @@ export type ProseItem =
 export type ProseBlock =
   | { kind: "moves"; key: string; items: ProseItem[] }
   | { kind: "comment"; key: string; text: string }
-  | { kind: "variation"; key: string; depth: number; items: ProseItem[] };
+  | {
+      kind: "variation";
+      key: string;
+      /** 0 = a variation of the main line; each step deeper is one more. */
+      depth: number;
+      items: ProseItem[];
+      /** It opens a nested variation, so it carries the "(". */
+      opens?: boolean;
+      /** How many nested variations END here: that many ")". */
+      closes?: number;
+    };
 
 /**
  * A move as it is written: the number when it is White's, when it opens a
@@ -55,6 +68,7 @@ const moveItem = (node: PgnTreeNode, needsNumber: boolean): ProseItem => ({
  * after which this one resumes, numbered again.
  */
 function pushVariation(start: PgnTreeNode, depth: number, out: ProseBlock[]): void {
+  const firstIndex = out.length;
   let items: ProseItem[] = [];
   let blockKey = start.path;
   let current: PgnTreeNode[] = [start];
@@ -91,6 +105,19 @@ function pushVariation(start: PgnTreeNode, depth: number, out: ProseBlock[]): vo
   }
 
   close();
+
+  // The parentheses of a nested variation. They are hung on the blocks and
+  // not written into the text because a variation with one of its own is cut
+  // into several paragraphs: the "(" goes on the first of them and the ")" on
+  // whichever paragraph its last move ended up in — which may belong to a
+  // deeper variation ending there too, hence a count and not a flag.
+  if (depth === 0) return;
+
+  const first = out[firstIndex];
+  if (first?.kind === "variation") first.opens = true;
+
+  const last = out.at(-1);
+  if (last?.kind === "variation") last.closes = (last.closes ?? 0) + 1;
 }
 
 /**

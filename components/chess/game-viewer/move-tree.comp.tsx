@@ -1,6 +1,6 @@
 "use client";
 
-import { type CSSProperties, type MouseEvent, type ReactNode, useEffect, useRef } from "react";
+import { type MouseEvent, type ReactNode, useEffect, useRef } from "react";
 import { buildProseBlocks, type ProseItem } from "@/lib/chess/notation-prose";
 import type { PgnTree } from "@/lib/chess/pgn-tree";
 import "./move-tree.comp.css";
@@ -76,15 +76,14 @@ export function MoveTree({ tree, currentPath, onSelect, onContextMenu }: MoveTre
         }
 
         if (block.kind === "variation") {
-          // Each step deeper is one step in from the margin, which is all
-          // that says one variation hangs from another.
+          // The parentheses of a nested variation: no indentation, because a
+          // line that is pushed further in with every level ends up read as a
+          // margin note rather than as chess.
           return (
-            <p
-              key={block.key}
-              className="move-tree__variation"
-              style={{ "--variation-depth": block.depth } as CSSProperties}
-            >
+            <p key={block.key} className="move-tree__variation">
+              {block.opens && <span className="move-tree__bracket">(</span>}
               {block.items.map(renderItem)}
+              {block.closes ? <span className="move-tree__bracket">{")".repeat(block.closes)}</span> : null}
             </p>
           );
         }

@@ -34,12 +34,14 @@
     color: var(--platform-text);
   }
 
-  /* A line that was not played. It is told apart by its COLOUR, not by
-     parentheses: the blue says "this is another line" from the first glance,
-     and where it ends is said by the main line starting again below it, with
-     its number repeated. Each level in is one step from the margin. */
+  /* A line that was not played. The first level is told apart by its COLOUR
+     and not by parentheses: the blue says "this is another line" at a glance,
+     and where it ends is said by the main line starting again below it with
+     its number repeated. One nested inside another does carry parentheses,
+     because there the colour no longer tells them apart — and no indentation
+     with it: a line pushed further in at every level ends up read as a note
+     in the margin rather than as chess. */
   & .move-tree__variation {
-    padding-left: calc(var(--variation-depth, 0) * 18px);
     line-height: 1.7;
     color: var(--platform-variation);
 
@@ -56,6 +58,10 @@
       background: var(--platform-variation-soft);
       color: var(--platform-variation);
     }
+  }
+
+  & .move-tree__bracket {
+    font-weight: 700;
   }
 
   /* What the variation is being proposed for. It goes on in the same

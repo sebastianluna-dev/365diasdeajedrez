@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { buildProseBlocks, type ProseBlock } from "./notation-prose";
+
+type VariationBlock = Extract<ProseBlock, { kind: "variation" }>;
+
+/** Narrows as it filters, so a block's brackets can be read off it. */
+const isVariation = (block: ProseBlock): block is VariationBlock => block.kind === "variation";
 import { parsePgnTree } from "./pgn-tree";
 
 function blocksOf(movetext: string): ProseBlock[] {
@@ -74,11 +79,50 @@ describe("buildProseBlocks", () => {
   it("una variación de la variación baja un escalón, y la de arriba sigue", () => {
     const blocks = blocksOf("1. d4 (1. e4 e5 (1... c5 2. Nf3) 2. Nc3) d5 *");
 
-    const variations = blocks.filter((block) => block.kind === "variation");
+    const variations = blocks.filter(isVariation);
     expect(variations.map((block) => block.depth)).toEqual([0, 1, 0]);
     expect(text(variations[0])).toBe("1. e4 e5");
     expect(text(variations[1])).toBe("1... c5 2. Cf3");
     expect(text(variations[2])).toBe("2. Cc3");
+  });
+
+  it("solo las variaciones anidadas llevan paréntesis", () => {
+    const blocks = blocksOf("1. d4 (1. e4 e5 (1... c5 2. Nf3) 2. Nc3) d5 *");
+    const variations = blocks.filter(isVariation);
+
+    // The one hanging from the main line is told by its colour, not by brackets.
+    expect(variations[0]?.depth).toBe(0);
+    expect(variations[0]?.opens).toBeUndefined();
+    expect(variations[0]?.closes).toBeUndefined();
+    // The nested one opens and closes in its own paragraph.
+    expect(variations[1]).toMatchObject({ depth: 1, opens: true, closes: 1 });
+    // And the rest of the first-level line carries nothing either.
+    expect(variations[2]?.depth).toBe(0);
+    expect(variations[2]?.opens).toBeUndefined();
+    expect(variations[2]?.closes).toBeUndefined();
+  });
+
+  it("una variación partida en varios párrafos abre en el primero y cierra en el último", () => {
+    // The nested line has one of its own hanging from a later move, so it is
+    // cut into two paragraphs.
+    const blocks = blocksOf("1. d4 (1. e4 e5 (1... c5 2. Nf3 (2. Nc3 Nc6) 2... d6) 2. Nc3) d5 *");
+    const nested = blocks.filter(isVariation).filter((block) => block.depth >= 1);
+
+    expect(text(nested[0])).toBe("1... c5 2. Cf3");
+    expect(nested[0]).toMatchObject({ depth: 1, opens: true });
+    expect(nested[0]?.closes).toBeUndefined();
+    // The deeper one opens and closes in its own paragraph.
+    expect(nested[1]).toMatchObject({ depth: 2, opens: true, closes: 1 });
+    // And the first-level line closes where its own last move fell.
+    expect(text(nested[2])).toBe("2... d6");
+    expect(nested[2]).toMatchObject({ depth: 1, closes: 1 });
+  });
+
+  it("dos variaciones que acaban en el mismo párrafo lo cierran dos veces", () => {
+    const blocks = blocksOf("1. d4 (1. e4 e5 (1... c5 2. Nf3 (2. Nc3 Nc6))) d5 *");
+    const nested = blocks.filter(isVariation).filter((block) => block.depth >= 1);
+
+    expect(nested.at(-1)).toMatchObject({ depth: 2, closes: 2 });
   });
 
   it("cada bloque trae una clave distinta, que es la que ordena el dibujado", () => {
