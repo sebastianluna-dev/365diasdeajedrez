@@ -91,11 +91,11 @@
   --platform-progress: #0095f8;
 
   /* A line that was NOT played: the variations of a lesson. They are told
-     from the game by their colour, and that colour is the house's accent —
-     what is not the black of the game read as another voice, which is what a
-     variation is. The soft one backs the move being looked at inside one. */
-  --platform-variation: var(--platform-accent);
-  --platform-variation-soft: var(--platform-accent-soft);
+     from the game by their colour, and that colour is a grey — what was
+     played is the black of the page, and what was only proposed steps back
+     from it. The soft one backs the move being looked at inside one. */
+  --platform-variation: var(--platform-text-subtle);
+  --platform-variation-soft: var(--platform-surface-neutral);
 
   /* The fire of the daily streak, and the inner flame the fire is hollow in.
      A colour of its own, like the progress blue: a flame is neither an action
