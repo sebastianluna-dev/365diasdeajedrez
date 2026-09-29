@@ -11,6 +11,7 @@ import {
   useState,
   useSyncExternalStore,
 } from "react";
+import Link from "next/link";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
 import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
 import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
@@ -53,19 +54,36 @@ interface GameViewerProps {
   /** Badge to the right of the title ("Prioridad"). */
   badge?: string;
   /**
-   * Whether the board may be turned around, and whether it may be blown up to
-   * the whole screen. A lesson offers neither: it is taught from the side the
-   * author chose (or the one the student fixed in the course's settings), and
-   * the screen it is read on is already the whole window.
+   * What the bar under the board offers BESIDES the four arrows: turning the
+   * board around, and the settings menu (sound, full screen).
+   *
+   * A lesson shows none of it. It is taught from the side its author chose —
+   * or the one the student fixed in the course's settings — the page is
+   * already the whole window, and what is under the board there is the way
+   * through the lesson and nothing else.
    */
-  flip?: boolean;
-  fullscreen?: boolean;
+  boardTools?: boolean;
   /** Button that closes the bottom bar, right-aligned (the notes). */
   footerActions?: ReactNode;
   /** Bottom-bar action that works on the current position. */
   positionActions?: (fen: string) => ReactNode;
-  /** "Skip" button under the board. Without a destination it is not rendered. */
-  skip?: ReactNode;
+  /**
+   * The button at the right end of the bar under the board: the way OUT while
+   * there are moves left («Saltar»), and the way ON once the last one is
+   * reached («Continuar»), where it takes the emphasis.
+   *
+   * It is given as data and not as a slot: `finish` is a server action, which
+   * travels as a prop like any other value, and the viewer is the only one
+   * that knows when the last move has been reached.
+   */
+  onwards?: {
+    /** Where the way out leads. Without it, nothing is drawn until the end. */
+    skipHref?: string;
+    skipLabel: string;
+    skipTitle?: string;
+    finishLabel: string;
+    finish: () => Promise<void>;
+  };
   /**
    * Who plays, for the strips around the board. Given by colour, not by
    * position, because the viewer can be flipped: who is on top depends on the
@@ -147,11 +165,10 @@ export function GameViewer({
   initialPath,
   title,
   badge,
-  flip = true,
-  fullscreen = true,
+  boardTools = true,
   footerActions,
   positionActions,
-  skip,
+  onwards,
   players,
   moveList = "table",
   controls = "board",
@@ -498,7 +515,7 @@ export function GameViewer({
       </button>
       {/* Flipping the board is an action on the game, not a viewer setting:
           it goes with the buttons the game is traversed with. */}
-      {flip && (
+      {boardTools && (
         <button
           type="button"
           title="Girar el tablero"
@@ -512,46 +529,46 @@ export function GameViewer({
       {/* Sound and full screen are viewer settings, not game ones: they are
           pressed once and get in the way the rest of the time, so they are folded
           into this menu, at the end of the same button bar. */}
-      <div className="game-viewer__options" ref={optionsRef}>
-        <button
-          type="button"
-          title="Opciones del visor"
-          aria-haspopup="menu"
-          aria-expanded={optionsOpen}
-          onClick={() => setOptionsOpen((open) => !open)}
-          className="game-viewer__nav-button"
-          ref={optionsButtonRef}
-        >
-          <MenuIcon className="game-viewer__nav-icon" />
-        </button>
-
-        {lingeringOptions.value && (
-          <div
-            className={`game-viewer__options-menu${lingeringOptions.closing ? " game-viewer__options-menu_state_closing" : ""}`}
-            role="menu"
-            onKeyDown={handleOptionsKeyDown}
+      {boardTools && (
+        <div className="game-viewer__options" ref={optionsRef}>
+          <button
+            type="button"
+            title="Opciones del visor"
+            aria-haspopup="menu"
+            aria-expanded={optionsOpen}
+            onClick={() => setOptionsOpen((open) => !open)}
+            className="game-viewer__nav-button"
+            ref={optionsButtonRef}
           >
-            <button
-              type="button"
-              // `menuitemcheckbox` and not `menuitem`: it is a toggle and the
-              // screen reader has to say whether it is on.
-              role="menuitemcheckbox"
-              aria-checked={preferences.sound}
-              onClick={() => {
-                updatePreferences({ ...preferences, sound: !preferences.sound });
-                closeOptions(true);
-              }}
-              className="game-viewer__options-item"
-            >
-              {preferences.sound ? (
-                <SoundOnIcon className="game-viewer__options-icon" />
-              ) : (
-                <SoundOffIcon className="game-viewer__options-icon" />
-              )}
-              {preferences.sound ? "Silenciar" : "Activar el sonido"}
-            </button>
+            <MenuIcon className="game-viewer__nav-icon" />
+          </button>
 
-            {fullscreen && (
+          {lingeringOptions.value && (
+            <div
+              className={`game-viewer__options-menu${lingeringOptions.closing ? " game-viewer__options-menu_state_closing" : ""}`}
+              role="menu"
+              onKeyDown={handleOptionsKeyDown}
+            >
+              <button
+                type="button"
+                // `menuitemcheckbox` and not `menuitem`: it is a toggle and the
+                // screen reader has to say whether it is on.
+                role="menuitemcheckbox"
+                aria-checked={preferences.sound}
+                onClick={() => {
+                  updatePreferences({ ...preferences, sound: !preferences.sound });
+                  closeOptions(true);
+                }}
+                className="game-viewer__options-item"
+              >
+                {preferences.sound ? (
+                  <SoundOnIcon className="game-viewer__options-icon" />
+                ) : (
+                  <SoundOffIcon className="game-viewer__options-icon" />
+                )}
+                {preferences.sound ? "Silenciar" : "Activar el sonido"}
+              </button>
+
               <button
                 type="button"
                 role="menuitem"
@@ -564,12 +581,30 @@ export function GameViewer({
                 <FullscreenIcon className="game-viewer__options-icon" />
                 {isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
               </button>
-            )}
-          </div>
-        )}
-      </div>
+            </div>
+          )}
+        </div>
+      )}
 
-      {skip && <div className="game-viewer__skip">{skip}</div>}
+      {/* At the last move there is nothing left to skip: the button becomes
+          the way on, and the one that marks the lesson done. */}
+      {onwards && (
+        <div className="game-viewer__onwards">
+          {atEnd ? (
+            <form action={onwards.finish}>
+              <button type="submit" className="game-viewer__onwards-button game-viewer__onwards-button_state_finish">
+                {onwards.finishLabel}
+              </button>
+            </form>
+          ) : (
+            onwards.skipHref && (
+              <Link href={onwards.skipHref} title={onwards.skipTitle} className="game-viewer__onwards-button">
+                {onwards.skipLabel}
+              </Link>
+            )
+          )}
+        </div>
+      )}
     </div>
   );
   const hasHead = Boolean(title || badge);

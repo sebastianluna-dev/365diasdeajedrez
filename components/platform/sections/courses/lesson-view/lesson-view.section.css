@@ -1,8 +1,9 @@
 .lesson-view {
   /* Three columns, as a lesson is taken: where it falls in the course, the
      board, and what is said about the position. The first is this grid's; the
-     other two are the viewer's own. */
-  /* The column of lessons is fixed to the window (see `lesson-outline`), so
+     other two are the viewer's own.
+
+     The column of lessons is fixed to the window (see `lesson-outline`), so
      it takes no room here: the first track only reserves it, minus the 40px
      of side padding the frame gives the page, which the column covers on its
      way to the left edge. */
@@ -18,12 +19,12 @@
 
   /* The board is measured by the HEIGHT that is left, not by the width: on a
      full window it is what one looks at, and a board that runs past the
-     bottom edge is a board nobody sees whole. What it cannot take: the
-     viewer's button row and its gap (62), the actions below with theirs (68),
-     the frame's own padding (40) and a last 20 so the buttons do not sit on
-     the edge of the window. The ceiling keeps the board from becoming a wall
-     on a tall screen, and the floor from becoming a stamp on a short one. */
-  --viewer-board-max: clamp(320px, calc(100vh / var(--platform-zoom, 1) - 260px), 760px);
+     bottom edge is a board nobody sees whole. It takes ALL of it save what
+     the bar under it needs — 48 of buttons and the 14 of its gap — and the
+     40 of the frame's own padding. No ceiling: the height is the board's.
+     The floor keeps it from becoming a stamp on a short screen, where the
+     page goes back to scrolling anyway. */
+  --viewer-board-max: max(320px, calc(100vh / var(--platform-zoom, 1) - 172px));
 
   /* Said out loud because the column beside it is out of the flow (fixed to
      the window) and does not take the first track by itself. */
@@ -36,64 +37,6 @@
     min-height: 0;
   }
 
-  /* "Saltar" lives inside the viewer's navigation bar, so it copies the size
-     of its buttons so as not to break the row. */
-  & .lesson-view__skip {
-    display: inline-flex;
-    align-items: center;
-    height: 48px;
-    padding: 0 22px;
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: inset 0 0 0 1px var(--platform-border-strong);
-    color: var(--platform-text);
-    font-size: 15.5px;
-    font-weight: 700;
-  }
-
-  & .lesson-view__skip:hover {
-    box-shadow: inset 0 0 0 1px var(--platform-text);
-    color: var(--platform-text);
-  }
-
-  & .lesson-view__actions {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    flex-wrap: wrap;
-  }
-
-  & .lesson-view__action {
-    padding: 14px 24px;
-    border-radius: 8px;
-    font-size: 16px;
-  }
-
-  & .lesson-view__action-icon {
-    width: 17px;
-    height: 17px;
-  }
-
-  /* Already done: green and without an action. It is not a button because
-     there is nothing to press; undoing it is not an operation that exists. */
-  & .lesson-view__completed {
-    display: inline-flex;
-    align-items: center;
-    gap: 9px;
-    margin: 0;
-    padding: 14px 24px;
-    border-radius: 8px;
-    background: var(--platform-success-soft);
-    color: var(--platform-success-ink);
-    font-size: 16px;
-    font-weight: 700;
-  }
-
-  & .lesson-view__completed-icon {
-    width: 17px;
-    height: 17px;
-  }
-
   /* Below the width the design was drawn at there is no room for three
      columns: the outline drops under the lesson, which is where something one
      reaches for on the way out belongs. */
@@ -102,11 +45,10 @@
     --viewer-board-max: 600px;
     --outline-width: auto;
 
+    /* The lesson first, the outline under it: it is what one reaches for on
+       the way out. */
     & .lesson-view__main {
       grid-column: 1;
-    }
-
-    & .lesson-view__main {
       order: -1;
     }
   }

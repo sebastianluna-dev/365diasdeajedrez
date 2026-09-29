@@ -1,5 +1,5 @@
 ---
-description: "The lesson screen: the column of the chapter's lessons, the lesson's PGN in the GameViewer read as prose, the completion form, the next lesson and the tracker that marks it opened."
+description: "The lesson screen: the column of the chapter's lessons, the lesson's PGN in the GameViewer read as prose, and one button under the board that lets you out or, at the last move, gives the lesson for read."
 ---
 
 # `LessonViewSection`
@@ -20,7 +20,9 @@ Where a student studies, in three columns: where the lesson falls in the course 
 
 The lesson is a PGN with commentary, so the middle and the right are the [`GameViewer`](/components/chess/game-viewer/game-viewer) with `moveList="flow"`: a lesson is **read**, the moves run on until a comment breaks the line, whereas the table is for consulting a game move by move. The viewer's header carries **the lesson's name and whether it is a priority, and nothing else**: where the lesson falls in the course is the column's job, and what it explains is written move by move below it.
 
-Under the viewer, the actions: mark as completed (or the completed state), next lesson or back to the chapter, "Entrenar esta lección (n)" when it has exercises, and nothing that goes back: the chapter is a click away in the menu and the browser does the rest.
+**Under the board there is nothing but the bar**: the four arrows and, at its right end, one button. While there are moves left it is «Saltar», a way out to the next lesson that marks nothing. At the last move it becomes «Continuar», which is a `<form>` over `completeLesson` — it gives the lesson for read and the action itself leads on to the next one, or back to the chapter when there is none.
+
+That single button is what freed the row of buttons that used to sit under the board («Marcar como completada», «Siguiente lección»), and with it the height they took: the board now measures all that is left.
 
 «Entrenar esta lección» is not drawn today: the Move Trainer is switched off (`MOVE_TRAINER_ENABLED`) and `getLessonView` drops `trainerHref`.
 
@@ -33,11 +35,11 @@ Under the viewer, the actions: mark as completed (or the completed state), next 
 
 ## Behaviour
 
-- **The board is not turned around and does not go full screen** (`flip={false}`, `fullscreen={false}`): the lesson is taught from one side — its author's, or the one the student fixed in the course's settings — and the page is already the whole window. The options menu keeps the sound switch.
+- **Nothing under the board but the way through** (`boardTools={false}`): no turning the board around, no settings menu. The lesson is taught from one side — its author's, or the one the student fixed in the course's settings — and the page is already the whole window.
 - **A lesson is not numbered, it does not name its chapter and it does not say its minutes.** The head is the name and, when it is one, the «Prioridad» badge: the column on the left already says the course, the chapter and where in it this lesson falls. `description` is not drawn either — the lesson explains itself in the commentary of its moves.
 - [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker) is rendered first and marks the lesson as opened from the client, because writes never happen during the server render.
-- "Marcar como completada" is `<form action={completeLesson.bind(null, lesson.id)}>`; the action records completion, updates the course's return point and revalidates. When `statusCode` is `COMPLETED` the form is replaced by the check mark and "Lección completada".
-- The viewer's `skip` slot gets a "Saltar" link to the next lesson (titled "Pasar a la siguiente lección sin marcar esta") when there is one.
+- «Continuar» is `<form action={completeLesson.bind(null, lesson.id)}>`; the action records completion, updates the course's return point, revalidates **and redirects** to the next lesson. It is idempotent, so pressing it on a lesson already completed simply moves on.
+- Both live in the viewer's `onwards` prop, which is data: the href of the way out, its labels and the server action. The viewer is the one that knows whether the last move has been reached.
 - Next and previous hrefs respect the priority filter: the mapper computes them over the visible lessons.
 
 ## Markup & styling
@@ -46,7 +48,7 @@ Block `.lesson-view` (113 lines). A grid of two tracks. The outline is fixed to 
 
 **The page is the window.** `/lecciones/[lessonId]` carries `.platform-page_width_full` and `.platform-page_height_screen`: no cap on the width, and the frame hands it exactly what is left under the bar (see [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)). Nothing here scrolls the page — the column of lessons and the panel of text each move on their own — because what is looked at is a board, and a board that falls below the fold is a board nobody sees whole.
 
-So the board is measured by the **height** that is left, not by the width: `--viewer-board-max` is `clamp(320px, 100vh / zoom - 260px, 760px)`, the subtraction being the viewer's button row and its gap (62), the actions below with theirs (68), the frame's padding (40) and a last 20 so the buttons do not sit on the edge. At `(max-width: 1080px)` or `(max-height: 620px)` it becomes one column, the board gets a flat `600px` back and the outline drops under the lesson.
+So the board is measured by the **height** that is left, not by the width: `--viewer-board-max` is `max(320px, 100vh / zoom - 172px)`, with no ceiling, the subtraction being the viewer's button row and its gap (62) and the frame's padding (40) — there is nothing else under the board to make room for. At `(max-width: 1080px)` or `(max-height: 620px)` it becomes one column, the board gets a flat `600px` back and the outline drops under the lesson.
 
 **Elements:** `.lesson-view__main`, `.lesson-view__skip`, `.lesson-view__actions`, `.lesson-view__action`, `.lesson-view__action-icon`, `.lesson-view__completed`, `.lesson-view__completed-icon`
 

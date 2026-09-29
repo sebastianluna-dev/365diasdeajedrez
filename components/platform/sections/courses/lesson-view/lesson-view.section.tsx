@@ -1,16 +1,11 @@
-import Link from "next/link";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
-import { CheckIcon } from "@/components/icons/check-icon.comp";
-import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
-import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { completeLesson } from "@/services/courses/courses.actions";
 import type { LessonView } from "@/services/courses/courses.types";
 import { LessonOutline } from "./lesson-outline.comp";
 import { LessonTracker } from "./lesson-tracker.comp";
 import "./lesson-view.section.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
 interface LessonViewSectionProps {
   lesson: LessonView;
@@ -19,9 +14,7 @@ interface LessonViewSectionProps {
 }
 
 export function LessonViewSection({ lesson, errorCode }: LessonViewSectionProps) {
-  const completeAction = completeLesson.bind(null, lesson.id);
   const errorMessage = studentErrorMessage(errorCode);
-  const isCompleted = lesson.statusCode === PROGRESS_STATUS.COMPLETED;
 
   return (
     <section className="lesson-view">
@@ -49,64 +42,23 @@ export function LessonViewSection({ lesson, errorCode }: LessonViewSectionProps)
           // job, and what it explains is written move by move below.
           title={lesson.name}
           badge={lesson.isPriority ? "Prioridad" : undefined}
-          // The board is not turned around and does not go full screen: the
-          // lesson is taught from one side — the author's, or the one fixed in
-          // the course's settings — and the page is already the whole window.
-          flip={false}
-          fullscreen={false}
-          skip={
-            lesson.nextLessonHref && (
-              <Link
-                href={lesson.nextLessonHref}
-                className="lesson-view__skip"
-                title="Pasar a la siguiente lección sin marcar esta"
-              >
-                Saltar
-              </Link>
-            )
-          }
+          // Under the board, the way through the lesson and nothing else:
+          // no turning the board around, no settings menu.
+          boardTools={false}
+          // And the way through is ONE button: it lets you out while there
+          // are moves left, and at the last one it is what gives the lesson
+          // for read and opens the next — which is why the screen needs no
+          // row of buttons under the board.
+          onwards={{
+            skipHref: lesson.nextLessonHref,
+            skipLabel: "Saltar",
+            skipTitle: "Pasar a la siguiente lección sin marcar esta",
+            finishLabel: "Continuar",
+            finish: completeLesson.bind(null, lesson.id),
+          }}
         />
 
         {errorMessage && <PlatformNotice message={errorMessage} />}
-
-        <div className="lesson-view__actions">
-          {isCompleted ? (
-            <p className="lesson-view__completed">
-              <CheckIcon className="lesson-view__completed-icon" />
-              Lección completada
-            </p>
-          ) : (
-            <form action={completeAction}>
-              <SubmitButton className="platform-button lesson-view__action">Marcar como completada</SubmitButton>
-            </form>
-          )}
-
-          {lesson.nextLessonHref ? (
-            <Link
-              href={lesson.nextLessonHref}
-              className="platform-button platform-button_variant_secondary lesson-view__action"
-            >
-              Siguiente lección
-              <ArrowRightIcon className="lesson-view__action-icon" />
-            </Link>
-          ) : (
-            <Link
-              href={lesson.chapterHref}
-              className="platform-button platform-button_variant_secondary lesson-view__action"
-            >
-              Volver al capítulo
-            </Link>
-          )}
-
-          {lesson.trainerHref && (
-            <Link
-              href={lesson.trainerHref}
-              className="platform-button platform-button_variant_secondary lesson-view__action"
-            >
-              Entrenar esta lección ({lesson.exerciseCount})
-            </Link>
-          )}
-        </div>
       </div>
     </section>
   );

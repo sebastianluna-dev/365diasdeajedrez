@@ -22,7 +22,9 @@
        A screen that puts something else beside the viewer lowers the ceiling
        through `--viewer-board-max` (the lesson does, for its column of
        lessons): the board gives way, and the panel does not end up a sliver. */
-    grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(0, 1fr);
+    /* The notation never goes under 360px: with the board sized by the
+       height, a tall window would otherwise let it eat the whole row. */
+    grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(360px, 1fr);
     grid-template-rows: auto auto;
     gap: 22px;
     align-items: stretch;
@@ -168,8 +170,10 @@
   }
 
   /* "Next" is what gets pressed 90 % of the time: it goes in the text colour
-     so it can be found without reading the icons. */
-  & .game-viewer__nav-button.game-viewer__nav-button_emphasis_strong {
+     so it can be found without reading the icons. Once there is nowhere to
+     go it fades like the rest — emphasis on a button that does nothing is
+     what makes it look broken. */
+  & .game-viewer__nav-button.game-viewer__nav-button_emphasis_strong:not(:disabled) {
     color: var(--platform-text);
   }
 
@@ -178,8 +182,56 @@
     height: 20px;
   }
 
-  & .game-viewer__skip {
+  /* At the right end of the bar, away from the four arrows: it does not
+     traverse the game, it leaves it. */
+  & .game-viewer__onwards {
     margin-left: auto;
+  }
+
+  & .game-viewer__onwards-button {
+    display: inline-flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 22px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: inset 0 0 0 1px var(--platform-border-strong);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 15.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  & .game-viewer__onwards-button:hover {
+    box-shadow: inset 0 0 0 1px var(--platform-text);
+    color: var(--platform-text);
+  }
+
+  /* The end of the lesson: it stops being a way out and becomes THE action of
+     the screen, so it takes the accent and the raised look of one. */
+  & .game-viewer__onwards-button.game-viewer__onwards-button_state_finish {
+    background: var(--platform-accent);
+    box-shadow: 0 4px 0 var(--platform-accent-deep);
+    color: var(--platform-on-accent);
+    transition: background-color 80ms;
+  }
+
+  & .game-viewer__onwards-button.game-viewer__onwards-button_state_finish:hover {
+    background: var(--platform-accent-bright);
+    color: var(--platform-on-accent);
+  }
+
+  & .game-viewer__onwards-button.game-viewer__onwards-button_state_finish:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 var(--platform-accent-deep);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .game-viewer__onwards-button.game-viewer__onwards-button_state_finish {
+      transition: none;
+    }
   }
 
   /* In full screen it hides without unmounting: whatever is being typed in

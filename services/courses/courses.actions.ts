@@ -14,6 +14,7 @@ import { z } from "zod";
 import { formReturnTo, parseForm } from "@/services/shared/form-schema";
 import { safeReturnTo, withErrorParam } from "@/services/shared/safe-return-to";
 import { recordUserActivity } from "@/services/shared/user-activity.service";
+import { getLessonView } from "./courses.service";
 
 // Server actions are reachable by direct POST: the user is ALWAYS resolved in
 // here (DAL) and never arrives from the client.
@@ -215,6 +216,14 @@ export async function completeLesson(lessonId: string): Promise<void> {
   }
 
   revalidateLessonPaths(lesson.chapter.courseId, lesson.chapter.order, lessonId);
+
+  // Done with this one, on to the next. The destination is worked out HERE
+  // and not sent from the form: a path that arrives with the request is a
+  // path anyone can choose. The lesson is read again for it — its reads are
+  // cached per request — and the last lesson of a course leads back to its
+  // chapter, since there is nothing after it.
+  const view = await getLessonView(lessonId);
+  redirect(view?.nextLessonHref ?? view?.chapterHref ?? platformRoutes.courseDetail(lesson.chapter.courseId));
 }
 
 /**
