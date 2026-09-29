@@ -52,6 +52,12 @@
   --platform-accent: #a81e22;
   /* A step deeper, for what is filled with the accent and is under the pointer. */
   --platform-accent-hover: #8c171b;
+  /* The edge a raised button stands on: the hard shadow under «Aprender», as
+     under the button of the blog's header. */
+  --platform-accent-deep: #711215;
+  /* What such a button turns under the pointer: a tone lighter, so the edge
+     under it keeps telling. */
+  --platform-accent-raised-hover: #c22a2e;
   /* What is written on a fill of the accent: a button, a selected day. */
   --platform-on-accent: #ffffff;
   /* The accent as text: links, figures, labels. The red reads on white as it

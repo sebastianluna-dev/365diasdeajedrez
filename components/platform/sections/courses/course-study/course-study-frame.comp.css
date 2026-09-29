@@ -101,13 +101,15 @@
     font-weight: 800;
   }
 
+  /* Raised: it stands on a hard edge, as the button of the blog's header. */
   & .course-study-frame__learn {
     background: var(--platform-accent);
     color: var(--platform-on-accent);
+    box-shadow: 0 4px 0 var(--platform-accent-deep);
   }
 
   & .course-study-frame__learn:hover {
-    background: var(--platform-accent-hover);
+    background: var(--platform-accent-raised-hover);
     color: var(--platform-on-accent);
   }
 

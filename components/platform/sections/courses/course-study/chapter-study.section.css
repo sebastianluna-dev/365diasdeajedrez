@@ -234,17 +234,19 @@
     color: var(--platform-text);
   }
 
-  /* The next lesson's is the one filled button of the list. */
+  /* The next lesson's is the one filled button of the list, and it is raised
+     on its hard edge as every «Aprender» is. */
   & .chapter-study__open_emphasis_strong {
     padding: 0 20px;
     border-color: transparent;
     background: var(--platform-accent);
     color: var(--platform-on-accent);
+    box-shadow: 0 4px 0 var(--platform-accent-deep);
     font-weight: 800;
   }
 
   & .chapter-study__open_emphasis_strong:hover {
-    background: var(--platform-accent-hover);
+    background: var(--platform-accent-raised-hover);
     color: var(--platform-on-accent);
   }
 

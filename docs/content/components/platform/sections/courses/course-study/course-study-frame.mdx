@@ -30,7 +30,7 @@ The course's layout: both pages of a course being studied are the same frame wit
 ## Behaviour
 
 - **The way back**, on top: a button that goes up one step — «Mis cursos» (`/cursos`) from the course's page, «Capítulos» (the course's page) from a chapter's.
-- **«Aprender»** opens `course.learnHref`, the next lesson to learn: the one the student left off at if it is unfinished, the first unfinished one otherwise. **«Repasar n»** opens the Move Trainer with the exercises of the lessons already learned in this course (`/entrenador?course=<id>`); `n` is how many there are.
+- **«Aprender»** is raised on a hard edge (`0 4px 0 var(--platform-accent-deep)`), as the button of the blog's header, and opens `course.learnHref`, the next lesson to learn: the one the student left off at if it is unfinished, the first unfinished one otherwise. **«Repasar n»** opens the Move Trainer with the exercises of the lessons already learned in this course (`/entrenador?course=<id>`); `n` is how many there are.
 - **«Repasar» is not drawn today**: the Move Trainer is switched off (`MOVE_TRAINER_ENABLED`) and the service counts nothing to review, so `course.reviewCount` is always 0.
 - A button is only drawn when it leads somewhere: a course with every lesson learned has no «Aprender», and one without learned exercises no «Repasar». With neither, the block is not rendered.
 - Under the name, the place: «Capítulos» on the course's page; the chapter's name, not numbered, on a chapter's.
@@ -42,13 +42,13 @@ The design this comes from also had «Poner en pausa todos los capítulos»; it 
 
 ## Markup & styling
 
-Block `.course-study-frame` (285 lines). A wrapping flex row: the page's column and an aside of at most 320px, which drops under it when both do not fit.
+Block `.course-study-frame` (287 lines). A wrapping flex row: the page's column and an aside of at most 320px, which drops under it when both do not fit.
 
 **Elements:** `.course-study-frame__back`, `.course-study-frame__back-icon`, `.course-study-frame__head`, `.course-study-frame__cover`, `.course-study-frame__cover-image`, `.course-study-frame__heading`, `.course-study-frame__name`, `.course-study-frame__place`, `.course-study-frame__actions`, `.course-study-frame__learn`, `.course-study-frame__review`, `.course-study-frame__review-count`, `.course-study-frame__layout`, `.course-study-frame__main`, `.course-study-frame__aside`, `.course-study-frame__card`, `.course-study-frame__card-title`, `.course-study-frame__progress-head`, `.course-study-frame__progress-ratio`, `.course-study-frame__percent`, `.course-study-frame__done`, `.course-study-frame__done-icon`, `.course-study-frame__track`, `.course-study-frame__fill`, `.course-study-frame__options`, `.course-study-frame__option`, `.course-study-frame__setting`
 
 **Modifiers and states:** `.course-study-frame__card_kind_progress`, `.course-study-frame__card-title_kind_head`
 
-**Tokens:** `--platform-accent`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-on-accent`, `--platform-border`, `--platform-ink`, `--platform-success-ink`, `--platform-success-soft`, `--platform-surface`, `--platform-surface-soft`, `--platform-text`, `--platform-text-subtle`, `--platform-track`
+**Tokens:** `--platform-accent`, `--platform-accent-deep`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-accent-raised-hover`, `--platform-border`, `--platform-border-strong`, `--platform-ink`, `--platform-on-accent`, `--platform-success-ink`, `--platform-success-soft`, `--platform-surface`, `--platform-surface-soft`, `--platform-text`, `--platform-text-subtle`, `--platform-track`
 
 **Breakpoints:** `(max-width: 960px)` the aside, already under the page's column, takes the full width; `(max-width: 620px)` the cover and the buttons take a row each.
 

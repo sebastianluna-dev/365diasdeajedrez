@@ -160,13 +160,15 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Raised: it stands on a hard edge, as the button of the blog's header. */
   & .my-course-card__learn {
     background: var(--platform-accent);
     color: var(--platform-on-accent);
+    box-shadow: 0 4px 0 var(--platform-accent-deep);
   }
 
   & .my-course-card__learn:hover {
-    background: var(--platform-accent-hover);
+    background: var(--platform-accent-raised-hover);
     color: var(--platform-on-accent);
   }
 
@@ -176,6 +178,7 @@
   & .my-course-card__learn_state_off,
   & .my-course-card__learn_state_off:hover {
     background: var(--platform-surface-neutral);
+    box-shadow: none;
     color: var(--platform-text-faint);
     cursor: default;
   }
