@@ -144,6 +144,8 @@ export interface CourseDetail {
   name: string;
   description?: string;
   cover?: string;
+  /** The square image, 1:1: what the head of the course's pages shows. See `CourseSummary`. */
+  thumbnail?: string;
   /** What it teaches, in catalog order; the page shows the long names with their descriptions. */
   contentTypes: CourseContentTypeItem[];
   /** Who it is aimed at, the easiest level first, each with its orientative Elo range. */

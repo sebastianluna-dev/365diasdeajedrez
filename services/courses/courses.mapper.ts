@@ -379,6 +379,8 @@ export function mapCourseDetail(
     name: course.name,
     description: course.description ?? undefined,
     cover: course.cover ?? undefined,
+    // The same square image the row of «Mis cursos» shows: see `mapCourseSummary`.
+    thumbnail: course.thumbnail ?? (course.cover ? withCoverCrop(course.cover, "auto", "1:1") : undefined),
     contentTypes: mapContentTypes(course),
     levels: course.courseLevels.map((courseLevel) => mapCourseLevel(courseLevel.level)),
     authors: course.courseAuthors.map((courseAuthor) => ({

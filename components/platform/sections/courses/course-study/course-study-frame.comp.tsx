@@ -26,8 +26,8 @@ interface CourseStudyFrameProps {
   children: ReactNode;
 }
 
-/** The cover is a thumbnail here: 280px wide, and the full width on a phone. */
-const COVER_SIZES = "(max-width: 620px) 100vw, 280px";
+/** The square image at the head, at the size the row of «Mis cursos» draws it. */
+const COVER_SIZES = "96px";
 
 /**
  * What is around every page of a course being studied: on top, the way back
@@ -60,8 +60,8 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
 
       <header className="course-study-frame__head">
         <div className="course-study-frame__cover">
-          {course.cover && (
-            <Image src={course.cover} alt="" fill sizes={COVER_SIZES} className="course-study-frame__cover-image" />
+          {course.thumbnail && (
+            <Image src={course.thumbnail} alt="" fill sizes={COVER_SIZES} className="course-study-frame__cover-image" />
           )}
         </div>
 

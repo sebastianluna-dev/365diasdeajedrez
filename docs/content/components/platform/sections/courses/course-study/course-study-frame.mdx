@@ -19,17 +19,18 @@ The course's layout: both pages of a course being studied are the same frame wit
 
 ## Props
 
-| Prop        | Type               | Required | Meaning                                                                                    |
-| ----------- | ------------------ | -------- | ------------------------------------------------------------------------------------------ |
-| `course`    | `CourseDetail`     | yes      | Name, cover, progress, `learnHref?`, `reviewCount`, `reviewHref`, `infoHref`, `studyHref`… |
-| `chapter`   | `{ name: string }` | no       | The chapter the page is of, for the line under the name. Absent on the course's own page.  |
-| `returnTo`  | `string`           | yes      | The page being drawn, where a failed setting is reported.                                  |
-| `errorCode` | `string`           | no       | What a setting or the reset bounced back with in `?error=` (`throttled`, `confirm`).       |
-| `children`  | `ReactNode`        | yes      | The page's own column.                                                                     |
+| Prop        | Type               | Required | Meaning                                                                                                             |
+| ----------- | ------------------ | -------- | ------------------------------------------------------------------------------------------------------------------- |
+| `course`    | `CourseDetail`     | yes      | Name, `thumbnail` (the square image), progress, `learnHref?`, `reviewCount`, `reviewHref`, `infoHref`, `studyHref`… |
+| `chapter`   | `{ name: string }` | no       | The chapter the page is of, for the line under the name. Absent on the course's own page.                           |
+| `returnTo`  | `string`           | yes      | The page being drawn, where a failed setting is reported.                                                           |
+| `errorCode` | `string`           | no       | What a setting or the reset bounced back with in `?error=` (`throttled`, `confirm`).                                |
+| `children`  | `ReactNode`        | yes      | The page's own column.                                                                                              |
 
 ## Behaviour
 
 - **The way back**, on top: a button that goes up one step — «Mis cursos» (`/cursos`) from the course's page, «Capítulos» (the course's page) from a chapter's.
+- **The head** carries the course's square image (96px, `course.thumbnail`, the same one its row shows in «Mis cursos»), its name and, under it, where one is: «Capítulos», or the chapter's name.
 - **«Aprender»** is the one filled button of the course's pages — the lessons' cards open with a quiet «Ver» —; it is raised on a hard edge (`0 4px 0 var(--platform-accent-deep)`), as the button of the blog's header, sinks onto it while it is held down (`:active`), and opens `course.learnHref`, where there is something to learn: the lesson the student left off at if it is unfinished, the first unfinished one otherwise and, in a finished course, its first lesson. **«Repasar n»** opens the Move Trainer with the exercises of the lessons already learned in this course (`/entrenador?course=<id>`); `n` is how many there are.
 - **«Repasar» is not drawn today**: the Move Trainer is switched off (`MOVE_TRAINER_ENABLED`) and the service counts nothing to review, so `course.reviewCount` is always 0.
 - A button is only drawn when it leads somewhere: a course without lessons in view has no «Aprender», and one without learned exercises no «Repasar». With neither, the block is not rendered. **A finished course keeps its «Aprender»**: it opens the first lesson, to start the course over.
@@ -42,7 +43,7 @@ The design this comes from also had «Poner en pausa todos los capítulos»; it 
 
 ## Markup & styling
 
-Block `.course-study-frame` (299 lines). A wrapping flex row: the page's column and an aside 240px wide (`flex: 0 0 240px`, a width of its own and not a share of what is left), which drops under it when both do not fit.
+Block `.course-study-frame` (296 lines). A wrapping flex row: the page's column and an aside 240px wide (`flex: 0 0 240px`, a width of its own and not a share of what is left), which drops under it when both do not fit.
 
 **Elements:** `.course-study-frame__back`, `.course-study-frame__back-icon`, `.course-study-frame__head`, `.course-study-frame__cover`, `.course-study-frame__cover-image`, `.course-study-frame__heading`, `.course-study-frame__name`, `.course-study-frame__place`, `.course-study-frame__actions`, `.course-study-frame__learn`, `.course-study-frame__review`, `.course-study-frame__review-count`, `.course-study-frame__layout`, `.course-study-frame__main`, `.course-study-frame__aside`, `.course-study-frame__card`, `.course-study-frame__card-title`, `.course-study-frame__progress-head`, `.course-study-frame__progress-ratio`, `.course-study-frame__percent`, `.course-study-frame__done`, `.course-study-frame__done-icon`, `.course-study-frame__track`, `.course-study-frame__fill`, `.course-study-frame__options`, `.course-study-frame__option`, `.course-study-frame__setting`
 
@@ -50,7 +51,7 @@ Block `.course-study-frame` (299 lines). A wrapping flex row: the page's column 
 
 **Tokens:** `--platform-accent`, `--platform-accent-bright`, `--platform-accent-deep`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-border`, `--platform-border-strong`, `--platform-ink`, `--platform-on-accent`, `--platform-progress`, `--platform-success-ink`, `--platform-success-soft`, `--platform-surface`, `--platform-surface-soft`, `--platform-text`, `--platform-text-subtle`, `--platform-track`
 
-**Breakpoints:** `(max-width: 900px)` the aside takes the width of the page's column; `(max-width: 620px)` the cover and the buttons take a row each.
+**Breakpoints:** `(max-width: 900px)` the aside takes the width of the page's column; `(max-width: 620px)` the buttons take a row of their own.
 
 ## Usage
 

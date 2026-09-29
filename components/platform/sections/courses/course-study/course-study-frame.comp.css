@@ -40,11 +40,12 @@
     gap: 24px;
   }
 
+  /* The course's square image, as its row in «Mis cursos» draws it. */
   & .course-study-frame__cover {
     position: relative;
     flex: none;
-    width: 280px;
-    aspect-ratio: 21 / 9;
+    width: 96px;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
     border-radius: 8px;
     background: var(--platform-ink);
@@ -281,10 +282,6 @@
   }
 
   @media (max-width: 620px) {
-    & .course-study-frame__cover {
-      width: 100%;
-    }
-
     & .course-study-frame__actions {
       flex: 1 1 100%;
     }
