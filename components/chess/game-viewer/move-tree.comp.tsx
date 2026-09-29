@@ -5,6 +5,22 @@ import { buildProseBlocks, type ProseItem } from "@/lib/chess/notation-prose";
 import type { PgnTree } from "@/lib/chess/pgn-tree";
 import "./move-tree.comp.css";
 
+/** Air left above the move once it is at the top of its panel. */
+const TOP_MARGIN = 10;
+
+/**
+ * The panel the moves scroll inside. It is looked for instead of being named
+ * because who provides it changes: the viewer's panel, the analysis board's
+ * box, whatever mounts the tree next.
+ */
+function scrollerOf(element: HTMLElement): HTMLElement | null {
+  for (let node = element.parentElement; node; node = node.parentElement) {
+    const overflow = getComputedStyle(node).overflowY;
+    if (overflow === "auto" || overflow === "scroll") return node;
+  }
+  return null;
+}
+
 interface MoveTreeProps {
   tree: PgnTree;
   /** Dotted path of the active node ("" = initial position). */
@@ -21,13 +37,24 @@ interface MoveTreeProps {
 export function MoveTree({ tree, currentPath, onSelect, onContextMenu }: MoveTreeProps) {
   const activeRef = useRef<HTMLButtonElement>(null);
 
-  // The active move goes to the TOP of the panel, not merely into view: what
-  // is read after a move is what comes after it, and with `nearest` the move
-  // being followed crept down the panel until everything worth reading was
-  // below the fold. `inline: "nearest"` leaves the horizontal scroll alone,
-  // and the panel is the only thing that moves — the page does not scroll.
+  // The active move goes to the TOP of the panel: what is read after a move is
+  // what comes after it, and kept merely "in view" the move being followed
+  // crept down the panel until everything worth reading was below the fold.
+  //
+  // Done by hand and not with `scrollIntoView`, which scrolls EVERY scrollable
+  // ancestor — including the ones with `overflow: hidden`, which can still be
+  // scrolled by script — and on a page that is the whole window that meant the
+  // board and the panel being pushed up out of it. Here only the panel moves.
   useEffect(() => {
-    activeRef.current?.scrollIntoView({ block: "start", inline: "nearest" });
+    const move = activeRef.current;
+    const scroller = move && scrollerOf(move);
+    if (!move || !scroller) return;
+
+    // The rects are in the page's px, with the zoom in them, while `scrollTop`
+    // is read in the scroller's own: the difference has to cross over.
+    const zoom = scroller.currentCSSZoom || 1;
+    const distance = (move.getBoundingClientRect().top - scroller.getBoundingClientRect().top) / zoom;
+    scroller.scrollTop += distance - TOP_MARGIN;
   }, [currentPath]);
 
   // Where the line is cut is decided by `notation-prose`, which knows nothing

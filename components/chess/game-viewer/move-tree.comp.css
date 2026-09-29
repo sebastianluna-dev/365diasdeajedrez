@@ -74,9 +74,6 @@
   }
 
   & .move-tree__move {
-    /* Room above it when it is scrolled to the top, so the move does not end
-       up touching the panel's edge. */
-    scroll-margin-top: 10px;
     display: inline;
     border: 0;
     background: transparent;
