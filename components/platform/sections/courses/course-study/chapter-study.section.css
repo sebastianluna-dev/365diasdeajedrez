@@ -239,11 +239,13 @@
     padding: 0 20px;
     border-color: transparent;
     background: var(--platform-accent);
+    color: var(--platform-on-accent);
     font-weight: 800;
   }
 
   & .chapter-study__open_emphasis_strong:hover {
     background: var(--platform-accent-hover);
+    color: var(--platform-on-accent);
   }
 
   /* --- The chapters on either side ------------------------------------------ */

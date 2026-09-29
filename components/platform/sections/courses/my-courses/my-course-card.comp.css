@@ -162,12 +162,12 @@
 
   & .my-course-card__learn {
     background: var(--platform-accent);
-    color: var(--platform-text);
+    color: var(--platform-on-accent);
   }
 
   & .my-course-card__learn:hover {
     background: var(--platform-accent-hover);
-    color: var(--platform-text);
+    color: var(--platform-on-accent);
   }
 
   /* One that leads nowhere keeps its place, so the rows line up. */

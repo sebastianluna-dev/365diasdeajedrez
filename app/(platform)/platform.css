@@ -47,6 +47,8 @@
   --platform-accent: #ed7f31;
   /* A step deeper, for what is filled with the orange and is under the pointer. */
   --platform-accent-hover: #d96f24;
+  /* What is written on the orange of «Aprender», the course's main button. */
+  --platform-on-accent: #ffffff;
   /* Orange that is legible on light: links, figures and accent text. */
   --platform-accent-ink: #b8611f;
   --platform-accent-soft: #fbeadb;
