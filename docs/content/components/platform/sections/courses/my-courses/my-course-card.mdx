@@ -32,12 +32,12 @@ It says nothing of what the course is — **no description, no levels, no conten
 - **A finished course** (`course.isCompleted`) gets the orange check in front of its count of lessons, as a finished chapter does. The bars are always the platform's orange.
 - **«Repasar»** opens the Move Trainer with the exercises of the lessons already learned in the course (`course.reviewHref`) and carries how many there are. **«Aprender»** opens the next lesson to learn (`course.learnHref`). They are the two buttons of the course's own page ([`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame)).
 - **A button that leads nowhere keeps its place**, switched off (`_state_off`, a `<span aria-disabled="true">`): nothing learned to review, or nothing left to learn. The frame does not draw it; a list does, so its rows line up.
-- **The card is a link** to the course to study (`course.href`, `/cursos/<id>`), through the title's: `.my-course-card__link::after` is stretched over the card and carries the focus ring. The buttons sit above it (`.my-course-card__actions`, `z-index: 1`).
-- The cover is decorative (`alt=""`). Without one the box stays, in the ink colour.
+- **The card is not a link.** What leads to the course to study (`course.href`, `/cursos/<id>`) is its **cover** and its **name**, and nothing else; each button leads where it says. The cover's link is `aria-hidden` and out of the tab order: it has no name of its own and the title's, next to it, leads to the same place.
+- The cover's picture is decorative (`alt=""`). Without one the box stays, in the ink colour, and is still the link.
 
 ## Markup & styling
 
-Block `.my-course-card` (259 lines). It has no border: on the page's grey canvas the white fill and a light shadow are what draw it.
+Block `.my-course-card` (244 lines). It has no border: on the page's grey canvas the white fill and a light shadow are what draw it.
 
 **Elements:** `.my-course-card__cover`, `.my-course-card__cover-image`, `.my-course-card__body`, `.my-course-card__name`, `.my-course-card__link`, `.my-course-card__foot`, `.my-course-card__meters`, `.my-course-card__meter`, `.my-course-card__figure`, `.my-course-card__value`, `.my-course-card__done`, `.my-course-card__done-icon`, `.my-course-card__track`, `.my-course-card__fill`, `.my-course-card__actions`, `.my-course-card__review`, `.my-course-card__review-count`, `.my-course-card__learn`
 
@@ -45,7 +45,7 @@ Block `.my-course-card` (259 lines). It has no border: on the page's grey canvas
 
 **Tokens:** `--platform-accent`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border-strong`, `--platform-ink`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-subtle`, `--platform-track`
 
-**Breakpoints:** `(max-width: 760px)` stacked; `(max-width: 480px)` the measures one under the other. The hover transition is off under `prefers-reduced-motion`.
+**Breakpoints:** `(max-width: 760px)` stacked; `(max-width: 480px)` the measures one under the other. The cover's hover transition is off under `prefers-reduced-motion`.
 
 ## Usage
 

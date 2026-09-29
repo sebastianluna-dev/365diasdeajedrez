@@ -20,22 +20,25 @@ const COVER_SIZES = "(max-width: 760px) 100vw, 220px";
  * is — no description, no levels, no content types: that is the catalog's
  * card, `CourseCard`. What it is for is the progress.
  *
- * The card is a link to the course, through the title's: its `::after`
- * covers the card. The two buttons sit above it, because each leads
- * somewhere else. One that leads nowhere — nothing learned to review,
- * nothing left to learn — keeps its place, switched off, so the rows of the
- * list line up.
+ * The card is NOT a link. What leads to the course is its cover and its
+ * name, and each button leads where it says: a row with three destinations
+ * cannot be one target. The cover's link is left out of the tab order and
+ * of the accessibility tree — it has no name of its own and the title's,
+ * next to it, leads to the same place.
+ *
+ * A button that leads nowhere — nothing learned to review, nothing left to
+ * learn — keeps its place, switched off, so the rows of the list line up.
  */
 export function MyCourseCard({ course }: MyCourseCardProps) {
   const { progress } = course;
 
   return (
     <article className="my-course-card">
-      <div className="my-course-card__cover">
+      <Link href={course.href} className="my-course-card__cover" aria-hidden="true" tabIndex={-1}>
         {course.cover && (
           <Image src={course.cover} alt="" fill sizes={COVER_SIZES} className="my-course-card__cover-image" />
         )}
-      </div>
+      </Link>
 
       <div className="my-course-card__body">
         <h2 className="my-course-card__name">
