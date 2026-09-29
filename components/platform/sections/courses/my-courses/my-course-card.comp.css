@@ -2,7 +2,7 @@
   display: flex;
   align-items: stretch;
   gap: 20px;
-  padding: 20px 28px 20px 20px;
+  padding: 16px;
   border-radius: 8px;
   background: var(--platform-surface);
   box-shadow: 0 1px 3px rgba(22, 17, 13, 0.06);
@@ -203,7 +203,7 @@
   @media (max-width: 760px) {
     flex-direction: column;
     gap: 18px;
-    padding: 16px 16px 20px;
+    padding: 16px;
 
     & .my-course-card__cover {
       align-self: stretch;
