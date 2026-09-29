@@ -17,6 +17,7 @@ import type {
   CourseProgressSummary,
   CourseSummary,
   LessonView,
+  MyCourseItem,
 } from "./courses.types";
 
 // Includes shared between service and mapper: the mapper owns the shape it
@@ -298,6 +299,27 @@ export function mapCourseSummary(course: CourseWithContent, state: UserCourseSta
   };
 }
 
+/** What the course's pages need that is not in the course nor in the student's progress. */
+export interface CourseExtras {
+  /** Exercises of the lessons the student already learned in this course. */
+  reviewCount?: number;
+}
+
+/** The summary of a course the student added, with what its row of "Mis cursos" does. */
+export function mapMyCourse(
+  course: CourseWithContent,
+  state: UserCourseState,
+  { reviewCount = 0 }: CourseExtras = {},
+): MyCourseItem {
+  const next = nextLesson(course, state);
+  return {
+    ...mapCourseSummary(course, state),
+    learnHref: next ? platformRoutes.lessonDetail(next.id) : undefined,
+    reviewCount,
+    reviewHref: platformRoutes.courseReview(course.id),
+  };
+}
+
 function mapChapterItem(
   course: CourseWithContent,
   chapter: CourseWithContent["chapters"][number],
@@ -326,12 +348,6 @@ function mapChapterItem(
     isCompleted: lessons.length > 0 && completedLessons === lessons.length,
     href: platformRoutes.chapterDetail(course.id, chapter.order),
   };
-}
-
-/** What the course's pages need that is not in the course nor in the student's progress. */
-export interface CourseExtras {
-  /** Exercises of the lessons the student already learned in this course. */
-  reviewCount?: number;
 }
 
 export function mapCourseDetail(

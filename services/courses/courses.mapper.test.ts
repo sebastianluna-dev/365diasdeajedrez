@@ -9,6 +9,7 @@ import {
   mapCourseSources,
   mapCourseSummary,
   mapLessonView,
+  mapMyCourse,
   type CourseWithDetail,
   type LessonRowForView,
   type UserCourseState,
@@ -298,6 +299,32 @@ describe("un curso agregado", () => {
     const summary = mapCourseSummary(COURSE, state());
     expect(summary.href).toBe("/cursos/10000009");
     expect(summary.infoHref).toBe("/cursos/curso-de-prueba");
+  });
+});
+
+describe("un curso de «Mis cursos»", () => {
+  const added = { courseStatus: PROGRESS_STATUS.IN_PROGRESS };
+
+  it("trae su resumen, la siguiente lección por aprender y lo que hay por repasar", () => {
+    const course = mapMyCourse(COURSE, state({ ...added, lessonStatus: completed("l1") }), { reviewCount: 4 });
+    expect(course).toMatchObject({
+      isAdded: true,
+      ctaLabel: "Continuar",
+      reviewCount: 4,
+      reviewHref: "/entrenador?course=10000009",
+    });
+    expect(course.learnHref).toContain("l2");
+  });
+
+  it("sin nada aprendido no hay nada que repasar", () => {
+    expect(mapMyCourse(COURSE, state(added)).reviewCount).toBe(0);
+  });
+
+  it("con todo aprendido no queda nada por aprender", () => {
+    const all = completed("l1", "l2", "l3", "l4", "l5", "l6");
+    const course = mapMyCourse(COURSE, state({ ...added, lessonStatus: all }));
+    expect(course.learnHref).toBeUndefined();
+    expect(course.isCompleted).toBe(true);
   });
 });
 

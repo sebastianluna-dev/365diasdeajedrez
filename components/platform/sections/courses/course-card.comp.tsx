@@ -20,10 +20,11 @@ const COVER_SIZES = "(max-width: 760px) 100vw, 400px";
  * it is about, what it teaches and who signs it, and at the foot where the
  * student is in it.
  *
- * The same card serves "Mis cursos" and the catalog, and it is the course
- * that says which it is: one the student added shows their progress and leads
- * to the course to study; one they have not shows how long it is and leads to
- * its information page, which is where it is added.
+ * It is the catalog's card: what a course is, for whoever is choosing one.
+ * "Mis cursos" draws its own, `MyCourseCard`, which is about the progress.
+ * The course says which it is here too: one the student added shows their
+ * progress and leads to the course to study; one they have not shows how
+ * long it is and leads to its information page, which is where it is added.
  *
  * The whole card is the link, through the title's: its `::after` covers the
  * card, so there is one link to announce and not a link around another. The

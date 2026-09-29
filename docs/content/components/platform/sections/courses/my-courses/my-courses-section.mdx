@@ -1,18 +1,18 @@
 ---
-description: "'Mis cursos': the courses the student added, each as a card that leads to the course to study, and after them the card that leads to the catalog."
+description: "'Mis cursos': the courses the student added, one to a row, each a card about its progress that leads to the course to study, and after them the row that leads to the catalog."
 ---
 
 # `MyCoursesSection`
 
-|            |                                                                                  |
-| ---------- | -------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/my-courses/my-courses.section.tsx`         |
-| Kind       | Server Component                                                                 |
-| Stylesheet | `my-courses.section.css` → block `.my-courses`                                   |
-| Used by    | `/cursos`                                                                        |
-| Composes   | [`CourseCard`](/components/platform/sections/courses/course-card)                |
-| Reads      | `getUserCourses()`, `listCourseLevels()` · `services/courses/courses.service.ts` |
-| Uses       | `platformRoutes.courseCatalog`; `CourseSummary`, `CourseLevelItem`               |
+|            |                                                                                   |
+| ---------- | --------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/my-courses/my-courses.section.tsx`          |
+| Kind       | Server Component                                                                  |
+| Stylesheet | `my-courses.section.css` → block `.my-courses`                                    |
+| Used by    | `/cursos`                                                                         |
+| Composes   | [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card) |
+| Reads      | `getUserCourses()` · `services/courses/courses.service.ts`                        |
+| Uses       | `platformRoutes.courseCatalog`; `MyCourseItem`                                    |
 
 ## Purpose
 
@@ -20,36 +20,36 @@ The list of the student's courses and nothing else. Until this page was redesign
 
 ## Props
 
-| Prop      | Type                | Required | Meaning                                                |
-| --------- | ------------------- | -------- | ------------------------------------------------------ |
-| `courses` | `CourseSummary[]`   | yes      | The courses the student added, by name.                |
-| `levels`  | `CourseLevelItem[]` | yes      | Every level of the catalog, for the dots of each card. |
+| Prop      | Type             | Required | Meaning                                                                                        |
+| --------- | ---------------- | -------- | ---------------------------------------------------------------------------------------------- |
+| `courses` | `MyCourseItem[]` | yes      | The courses the student added, by name, each with its next lesson and what there is to review. |
 
 ## Behaviour
 
-- The header says how many there are and how many are being studied — «4 cursos · 3 en curso» —, the latter being the ones whose button says «Continuar». With none: «Todavía no has agregado ninguno».
-- After the cards, always, the dashed card «Explorar cursos», a link to `/cursos/explorar`. The page is therefore never empty and needs no `EmptyState`: with no course added that card is the only thing in the list and carries a hint, «Elige uno del catálogo y agrégalo para empezar.»
+- **One course to a row.** Each is a [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card): horizontal, as wide as the page, with the progress in minutes and in lessons and the course's two buttons, «Repasar» and «Aprender». What a course is — description, levels, content types — is the catalog's to say, on `/cursos/explorar`.
+- The header says how many there are and how many are being studied — «4 cursos · 3 en curso» —, the latter being the ones started and not finished (`ctaLabel === "Continuar"`). With none: «Todavía no has agregado ninguno».
+- After the cards, always, the dashed row «Explorar cursos», a link to `/cursos/explorar`. The page is therefore never empty and needs no `EmptyState`: with no course added that row is the only thing in the list and carries a hint, «Elige uno del catálogo y agrégalo para empezar.»
 
 ## Markup & styling
 
-Block `.my-courses` (95 lines). The list is a grid the cards fill, three columns in a full-width page (`repeat(auto-fill, minmax(360px, 1fr))`).
+Block `.my-courses` (89 lines). The list is one column, its rows 16px apart.
 
-**Elements:** `.my-courses__head`, `.my-courses__title`, `.my-courses__summary`, `.my-courses__list`, `.my-courses__explore`, `.my-courses__explore-mark`, `.my-courses__explore-label`, `.my-courses__explore-hint`
+**Elements:** `.my-courses__head`, `.my-courses__title`, `.my-courses__summary`, `.my-courses__list`, `.my-courses__explore`, `.my-courses__explore-mark`, `.my-courses__explore-text`, `.my-courses__explore-label`, `.my-courses__explore-hint`
 
 **Modifiers and states:** none
 
 **Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border-strong`, `--platform-text-subtle`
 
-**Breakpoints:** `(max-width: 760px)` one column. The hover transition is off under `prefers-reduced-motion`.
+No breakpoints of its own: the card stacks by itself. The hover transition is off under `prefers-reduced-motion`.
 
 ## Usage
 
 From `app/(platform)/cursos/page.tsx`:
 
 ```tsx
-const [courses, levels] = await Promise.all([getUserCourses(), listCourseLevels()]);
+const courses = await getUserCourses();
 
-<MyCoursesSection courses={courses} levels={levels} />;
+<MyCoursesSection courses={courses} />;
 ```
 
 ## Related

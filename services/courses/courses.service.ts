@@ -14,9 +14,17 @@ import {
   mapCourseLevel,
   mapCourseSummary,
   mapLessonView,
+  mapMyCourse,
   type UserCourseState,
 } from "./courses.mapper";
-import type { ChapterView, CourseDetail, CourseLevelItem, CourseSummary, LessonView } from "./courses.types";
+import type {
+  ChapterView,
+  CourseDetail,
+  CourseLevelItem,
+  CourseSummary,
+  LessonView,
+  MyCourseItem,
+} from "./courses.types";
 
 // Full listing: "Mis cursos" and the catalog use it, and both need them all —
 // the first keeps the ones the student added, which is known once it is read.
@@ -142,9 +150,44 @@ export async function getCourseCatalog(): Promise<CourseSummary[]> {
   return courses.map((course) => mapCourseSummary(course, progress.get(course.id) ?? EMPTY_STATE));
 }
 
-/** "Mis cursos": of the catalog, the ones the student added. */
-export async function getUserCourses(): Promise<CourseSummary[]> {
-  return (await getCourseCatalog()).filter((course) => course.isAdded);
+/**
+ * What «Repasar» trains in each course, by course id: `getReviewCount` for
+ * every course at once. One query over the lessons the student learned that
+ * have exercises, added up by course, instead of a count per row of the list.
+ */
+async function getReviewCounts(): Promise<Map<string, number>> {
+  const user = await getCurrentUser();
+  const lessons = await getPlatformDb().lesson.findMany({
+    where: {
+      exercises: { some: {} },
+      progresses: { some: { userId: user.id, status: { code: PROGRESS_STATUS.COMPLETED } } },
+    },
+    select: { chapter: { select: { courseId: true } }, _count: { select: { exercises: true } } },
+  });
+
+  const counts = new Map<string, number>();
+  for (const lesson of lessons) {
+    const { courseId } = lesson.chapter;
+    counts.set(courseId, (counts.get(courseId) ?? 0) + lesson._count.exercises);
+  }
+  return counts;
+}
+
+/**
+ * "Mis cursos": of the published courses, the ones the student added, each
+ * with its next lesson to learn and what there is to review in it.
+ */
+export async function getUserCourses(): Promise<MyCourseItem[]> {
+  const [courses, progress, reviewCounts] = await Promise.all([
+    getPublishedCourses(),
+    getUserProgressState(),
+    getReviewCounts(),
+  ]);
+  return courses
+    .map((course) =>
+      mapMyCourse(course, progress.get(course.id) ?? EMPTY_STATE, { reviewCount: reviewCounts.get(course.id) }),
+    )
+    .filter((course) => course.isAdded);
 }
 
 /**

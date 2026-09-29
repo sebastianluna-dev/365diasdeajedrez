@@ -1,0 +1,65 @@
+---
+description: "A course of the student's as a row of 'Mis cursos': cover, name, the progress in minutes and in lessons with a bar each, and «Repasar» and «Aprender». Nothing of what the course is."
+---
+
+# `MyCourseCard`
+
+|            |                                                                                           |
+| ---------- | ----------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/my-courses/my-course-card.comp.tsx`                 |
+| Kind       | Server Component                                                                          |
+| Stylesheet | `my-course-card.comp.css` → block `.my-course-card`                                       |
+| Used by    | [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section) |
+| Composes   | `CircleCheckSolidIcon` from `components/icons/`                                           |
+| Uses       | `MyCourseItem` from `services/courses/courses.types`; `next/image`, `next/link`           |
+
+## Purpose
+
+The card of a course the student **already chose**. It is a row as wide as the page and it is about how far they are and what to do next.
+
+It says nothing of what the course is — **no description, no levels, no content types, no authors**. That is for whoever is choosing a course, and it is what the catalog's card shows ([`CourseCard`](/components/platform/sections/courses/course-card), on `/cursos/explorar`).
+
+## Props
+
+| Prop     | Type           | Required | Meaning                                                                                                                                                                                 |
+| -------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `course` | `MyCourseItem` | yes      | A `CourseSummary` plus `learnHref?`, `reviewCount` and `reviewHref`. Read here: `name`, `cover?`, `href`, `isCompleted` and `progress` (lessons and minutes, each with its percentage). |
+
+## Behaviour
+
+- **Horizontal**: the cover at the left (240px, 21:9); beside it the name on top and, at the foot, the two measures and the two buttons. When measures and buttons do not fit in the row the buttons go under; under 760px the cover goes across the card, and under 480px the two measures stack.
+- **Two measures, each with its bar**: «120/1220 minutos» and «9/61 lecciones», a rule between them. They are different measures of the same progress (`progress.minutesPercent`, `progress.percent`). A course whose lessons say no minutes shows the lessons alone.
+- **A finished course** (`course.isCompleted`) gets the orange check in front of its count of lessons, as a finished chapter does. The bars are always the platform's orange.
+- **«Repasar»** opens the Move Trainer with the exercises of the lessons already learned in the course (`course.reviewHref`) and carries how many there are. **«Aprender»** opens the next lesson to learn (`course.learnHref`). They are the two buttons of the course's own page ([`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame)).
+- **A button that leads nowhere keeps its place**, switched off (`_state_off`, a `<span aria-disabled="true">`): nothing learned to review, or nothing left to learn. The frame does not draw it; a list does, so its rows line up.
+- **The card is a link** to the course to study (`course.href`, `/cursos/<id>`), through the title's: `.my-course-card__link::after` is stretched over the card and carries the focus ring. The buttons sit above it (`.my-course-card__actions`, `z-index: 1`).
+- The cover is decorative (`alt=""`). Without one the box stays, in the ink colour.
+
+## Markup & styling
+
+Block `.my-course-card` (258 lines). It has no border: on the page's grey canvas the white fill and a light shadow are what draw it.
+
+**Elements:** `.my-course-card__cover`, `.my-course-card__cover-image`, `.my-course-card__body`, `.my-course-card__name`, `.my-course-card__link`, `.my-course-card__foot`, `.my-course-card__meters`, `.my-course-card__meter`, `.my-course-card__figure`, `.my-course-card__value`, `.my-course-card__done`, `.my-course-card__done-icon`, `.my-course-card__track`, `.my-course-card__fill`, `.my-course-card__actions`, `.my-course-card__review`, `.my-course-card__review-count`, `.my-course-card__learn`
+
+**Modifiers and states:** `.my-course-card__review_state_off`, `.my-course-card__learn_state_off`
+
+**Tokens:** `--platform-accent`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border-strong`, `--platform-ink`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-subtle`, `--platform-track`
+
+**Breakpoints:** `(max-width: 760px)` stacked; `(max-width: 480px)` the measures one under the other. The hover transition is off under `prefers-reduced-motion`.
+
+## Usage
+
+From `components/platform/sections/courses/my-courses/my-courses.section.tsx`:
+
+```tsx
+import { MyCourseCard } from "./my-course-card.comp";
+
+{
+  courses.map((course) => <MyCourseCard key={course.id} course={course} />);
+}
+```
+
+## Related
+
+- `mapMyCourse` in `services/courses/courses.mapper.ts` decides `learnHref`, `reviewCount`, `isCompleted` and `href`.
+- [`CourseCard`](/components/platform/sections/courses/course-card), the card of the catalog.

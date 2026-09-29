@@ -78,6 +78,18 @@ export interface CourseSummary {
   infoHref: string;
 }
 
+/**
+ * A course of the student's, as "Mis cursos" lists it: the summary, and the
+ * two things that can be done with it from the list.
+ */
+export interface MyCourseItem extends CourseSummary {
+  /** The next lesson to learn; absent when every lesson in view is learned. See `CourseDetail.learnHref`. */
+  learnHref?: string;
+  /** Exercises of the lessons already learned: what «Repasar» trains. */
+  reviewCount: number;
+  reviewHref: string;
+}
+
 export interface CourseChapterItem {
   id: string;
   order: number;

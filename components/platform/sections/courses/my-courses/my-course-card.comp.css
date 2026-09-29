@@ -1,0 +1,258 @@
+.my-course-card {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 28px;
+  padding: 20px 28px 20px 20px;
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: 0 1px 3px rgba(22, 17, 13, 0.06);
+  color: var(--platform-text);
+  transition: box-shadow 150ms;
+
+  &:hover,
+  &:focus-within {
+    box-shadow: 0 10px 28px rgba(22, 17, 13, 0.1);
+  }
+
+  & .my-course-card__cover {
+    position: relative;
+    flex: none;
+    align-self: center;
+    width: 240px;
+    aspect-ratio: 21 / 9;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--platform-ink);
+  }
+
+  & .my-course-card__cover-image {
+    object-fit: cover;
+  }
+
+  /* The name on top, and at the foot what is measured and what is done. */
+  & .my-course-card__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  & .my-course-card__name {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  & .my-course-card__link {
+    color: inherit;
+  }
+
+  /* The card is the link: the title's `::after` is stretched over it. */
+  & .my-course-card__link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+  }
+
+  /* The focus ring goes around the card, which is what is pressed. */
+  & .my-course-card__link:focus-visible {
+    outline: none;
+  }
+
+  & .my-course-card__link:focus-visible::after {
+    outline: 2px solid var(--platform-accent-ink);
+    outline-offset: 2px;
+  }
+
+  /* The meters take what the buttons leave; when both do not fit in the row,
+     the buttons go under. */
+  & .my-course-card__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 18px 36px;
+  }
+
+  /* --- The progress: what the card is for --------------------------------- */
+
+  & .my-course-card__meters {
+    flex: 1 1 360px;
+    min-width: 0;
+    display: flex;
+    gap: 24px;
+  }
+
+  & .my-course-card__meter {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* The rule between one measure and the next. */
+  & .my-course-card__meter + .my-course-card__meter {
+    padding-left: 24px;
+    border-left: 1px solid var(--platform-border-strong);
+  }
+
+  & .my-course-card__figure {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--platform-text-subtle);
+    white-space: nowrap;
+  }
+
+  & .my-course-card__value {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--platform-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Only a finished course has it, in front of its count. */
+  & .my-course-card__done {
+    flex: none;
+    display: flex;
+    color: var(--platform-accent);
+  }
+
+  & .my-course-card__done-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  & .my-course-card__track {
+    height: 10px;
+    overflow: hidden;
+    border-radius: 1000px;
+    background: var(--platform-track);
+  }
+
+  & .my-course-card__fill {
+    height: 100%;
+    border-radius: 1000px;
+    background: var(--platform-accent);
+  }
+
+  /* --- The buttons ---------------------------------------------------------- */
+
+  /* Above the stretched link: each leads somewhere of its own. */
+  & .my-course-card__actions {
+    position: relative;
+    z-index: 1;
+    flex: none;
+    display: flex;
+    gap: 12px;
+  }
+
+  & .my-course-card__review,
+  & .my-course-card__learn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 132px;
+    height: 48px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    font-size: 15.5px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  & .my-course-card__review {
+    background: var(--platform-ink);
+    color: var(--platform-surface);
+  }
+
+  & .my-course-card__review:hover {
+    background: color-mix(in srgb, var(--platform-ink) 84%, var(--platform-surface));
+    color: var(--platform-surface);
+  }
+
+  & .my-course-card__review-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 7px;
+    box-sizing: border-box;
+    border-radius: 1000px;
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-size: 12px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .my-course-card__learn {
+    background: var(--platform-accent);
+    color: var(--platform-text);
+  }
+
+  & .my-course-card__learn:hover {
+    background: var(--platform-accent-hover);
+    color: var(--platform-text);
+  }
+
+  /* One that leads nowhere keeps its place, so the rows line up. */
+  & .my-course-card__review_state_off,
+  & .my-course-card__review_state_off:hover,
+  & .my-course-card__learn_state_off,
+  & .my-course-card__learn_state_off:hover {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text-faint);
+    cursor: default;
+  }
+
+  /* Stacked: the cover across the card, and the buttons under the progress. */
+  @media (max-width: 760px) {
+    flex-direction: column;
+    gap: 18px;
+    padding: 16px 16px 20px;
+
+    & .my-course-card__cover {
+      align-self: stretch;
+      width: 100%;
+    }
+
+    & .my-course-card__actions {
+      flex: 1 1 100%;
+    }
+
+    & .my-course-card__review,
+    & .my-course-card__learn {
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  @media (max-width: 480px) {
+    & .my-course-card__meters {
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    & .my-course-card__meter + .my-course-card__meter {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}

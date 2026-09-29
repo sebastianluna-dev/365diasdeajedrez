@@ -1,26 +1,26 @@
 ---
-description: "A course as a card, for 'Mis cursos' and the catalog: cover, name with the dots of its levels, what it teaches and who signs it, and at the foot the student's progress or, for a course not added, how long it is."
+description: "A course as a card, for the catalog: cover, name with the dots of its levels, what it teaches and who signs it, and at the foot the student's progress or, for a course not added, how long it is."
 ---
 
 # `CourseCard`
 
-|            |                                                                                                                                                                                                  |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/courses/course-card.comp.tsx`                                                                                                                                      |
-| Kind       | Server Component                                                                                                                                                                                 |
-| Stylesheet | `course-card.comp.css` → block `.course-card`                                                                                                                                                    |
-| Used by    | [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section), [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section) |
-| Composes   | [`LevelDots`](/components/platform/sections/courses/level-dots)                                                                                                                                  |
-| Uses       | `CourseSummary`, `CourseLevelItem` from `services/courses/courses.types`; `countLessons`, `formatDuration` from `services/courses/course-rules`; `next/image`, `next/link`                       |
+|            |                                                                                                                                                                            |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-card.comp.tsx`                                                                                                                |
+| Kind       | Server Component                                                                                                                                                           |
+| Stylesheet | `course-card.comp.css` → block `.course-card`                                                                                                                              |
+| Used by    | [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section)                                                                      |
+| Composes   | [`LevelDots`](/components/platform/sections/courses/level-dots)                                                                                                            |
+| Uses       | `CourseSummary`, `CourseLevelItem` from `services/courses/courses.types`; `countLessons`, `formatDuration` from `services/courses/course-rules`; `next/image`, `next/link` |
 
 ## Purpose
 
-One card for the two lists, and it is the **course** that says which it is, not a prop:
+The card of the catalog (`/cursos/explorar`): what a course is, for whoever is choosing one. «Mis cursos» has its own, [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card), which is about the progress. Here it is still the **course** that says which it is, not a prop:
 
 - A course the student **added** (`course.isAdded`) shows their progress — percentage, «2 de 5 lecciones», a bar — and leads to the course to study (`course.href`, `/cursos/<id>`). Its button reads what the mapper decided: «Empezar», «Continuar» or «Repasar».
 - A course **not added** shows how long it is («61 lecciones · 20 h») and leads to its information page (`course.infoHref`, `/cursos/<slug>`), which is where it is added. Its button reads «Ver curso».
 
-It lives at the root of `sections/courses/` because two sections use it.
+It lives at the root of `sections/courses/` from when two sections used it.
 
 ## Props
 
@@ -52,7 +52,7 @@ No breakpoints of its own: the list that holds it decides the columns. The hover
 
 ## Usage
 
-From `components/platform/sections/courses/my-courses/my-courses.section.tsx`:
+From `components/platform/sections/courses/course-catalog/course-catalog.section.tsx`:
 
 ```tsx
 import { CourseCard } from "../course-card.comp";
