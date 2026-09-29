@@ -290,9 +290,13 @@
        the row grew, the board dangled at the top and the list never scrolled.
        `height: 0` takes the column out of the row's sizing, so the board alone
        sets it; `min-height: 100%` then hands the column that whole row. That is
-       the cap the panel's comment below relies on. */
+       the cap the panel's comment below relies on.
+
+       A screen where the buttons sit under the board can trim what they take
+       (`--viewer-panel-trim`), so the panel ends at the board's own bottom
+       edge instead of running down beside them. The lesson does. */
     height: 0;
-    min-height: 100%;
+    min-height: calc(100% - var(--viewer-panel-trim, 0px));
   }
 
   /* The only box left in the viewer: the board sits loose and this sets it

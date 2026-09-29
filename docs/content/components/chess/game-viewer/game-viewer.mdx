@@ -48,7 +48,9 @@ The viewer never saves and never fetches. It receives a PGN, reports the current
 
 **Tree and current path.** `parsePgnTree(pgn)` is memoised. The current path is `path ?? selectedPath`, resolved at render time to the closest existing ancestor when the PGN changed underfoot (an undo, a deleted branch), so there is never a frame with the board at the start. Every path change is both stored and reported through `onPathChange` (kept in a ref so the parent need not memoise). An unparsable PGN renders a single error paragraph with the `_state_error` modifier.
 
-**Layout.** The board's track is `minmax(0, var(--viewer-board-max, 600px))` and the notation's `minmax(320px, 1fr)`: the notation never goes under 320px — with the board sized by the height, a tall window would let it eat the whole row — and not a px more than that, because every px held back there is a px the board cannot use to fill the height it was given.
+**Layout.** The notation's column measures what the BOARD's row does (`height: 0` plus `min-height`, so an auto row cannot be stretched by a long game), less whatever `--viewer-panel-trim` says: a screen where the buttons sit under the board sets it, and the panel then ends at the board's own bottom edge instead of running down beside them. The lesson sets it to 62px (48 of buttons and 14 of gap); everywhere else it is 0.
+
+The board's track is `minmax(0, var(--viewer-board-max, 600px))` and the notation's `minmax(320px, 1fr)`: the notation never goes under 320px — with the board sized by the height, a tall window would let it eat the whole row — and not a px more than that, because every px held back there is a px the board cannot use to fill the height it was given.
 
 **Navigation.** Four square keys, 48px each, white over the page's grey and closed by a hairline; one that leads nowhere — at the start of the game, or at its end — sinks into the page (`--platform-track`) instead of doing nothing when pressed. They do not stretch: they are pressed one after another, and a stretched button is a target one has to aim at. In the studies panel, where no way-out button follows them, they are centred under the notation.
 
