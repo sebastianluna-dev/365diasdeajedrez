@@ -52,6 +52,14 @@ interface GameViewerProps {
   title?: string;
   /** Badge to the right of the title ("Prioridad"). */
   badge?: string;
+  /**
+   * Whether the board may be turned around, and whether it may be blown up to
+   * the whole screen. A lesson offers neither: it is taught from the side the
+   * author chose (or the one the student fixed in the course's settings), and
+   * the screen it is read on is already the whole window.
+   */
+  flip?: boolean;
+  fullscreen?: boolean;
   /** Button that closes the bottom bar, right-aligned (the notes). */
   footerActions?: ReactNode;
   /** Bottom-bar action that works on the current position. */
@@ -139,6 +147,8 @@ export function GameViewer({
   initialPath,
   title,
   badge,
+  flip = true,
+  fullscreen = true,
   footerActions,
   positionActions,
   skip,
@@ -488,14 +498,16 @@ export function GameViewer({
       </button>
       {/* Flipping the board is an action on the game, not a viewer setting:
           it goes with the buttons the game is traversed with. */}
-      <button
-        type="button"
-        title="Girar el tablero"
-        onClick={() => setFlipToggled((current) => !current)}
-        className="game-viewer__nav-button"
-      >
-        <BoardFlipIcon className="game-viewer__nav-icon" />
-      </button>
+      {flip && (
+        <button
+          type="button"
+          title="Girar el tablero"
+          onClick={() => setFlipToggled((current) => !current)}
+          className="game-viewer__nav-button"
+        >
+          <BoardFlipIcon className="game-viewer__nav-icon" />
+        </button>
+      )}
 
       {/* Sound and full screen are viewer settings, not game ones: they are
           pressed once and get in the way the rest of the time, so they are folded
@@ -539,18 +551,20 @@ export function GameViewer({
               {preferences.sound ? "Silenciar" : "Activar el sonido"}
             </button>
 
-            <button
-              type="button"
-              role="menuitem"
-              onClick={() => {
-                toggleFullscreen();
-                closeOptions(true);
-              }}
-              className="game-viewer__options-item"
-            >
-              <FullscreenIcon className="game-viewer__options-icon" />
-              {isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
-            </button>
+            {fullscreen && (
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  toggleFullscreen();
+                  closeOptions(true);
+                }}
+                className="game-viewer__options-item"
+              >
+                <FullscreenIcon className="game-viewer__options-icon" />
+                {isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
+              </button>
+            )}
           </div>
         )}
       </div>

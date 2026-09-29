@@ -49,6 +49,11 @@ export function LessonViewSection({ lesson, errorCode }: LessonViewSectionProps)
           // job, and what it explains is written move by move below.
           title={lesson.name}
           badge={lesson.isPriority ? "Prioridad" : undefined}
+          // The board is not turned around and does not go full screen: the
+          // lesson is taught from one side — the author's, or the one fixed in
+          // the course's settings — and the page is already the whole window.
+          flip={false}
+          fullscreen={false}
           skip={
             lesson.nextLessonHref && (
               <Link

@@ -33,6 +33,7 @@ Under the viewer, the actions: mark as completed (or the completed state), next 
 
 ## Behaviour
 
+- **The board is not turned around and does not go full screen** (`flip={false}`, `fullscreen={false}`): the lesson is taught from one side — its author's, or the one the student fixed in the course's settings — and the page is already the whole window. The options menu keeps the sound switch.
 - **A lesson is not numbered, it does not name its chapter and it does not say its minutes.** The head is the name and, when it is one, the «Prioridad» badge: the column on the left already says the course, the chapter and where in it this lesson falls. `description` is not drawn either — the lesson explains itself in the commentary of its moves.
 - [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker) is rendered first and marks the lesson as opened from the client, because writes never happen during the server render.
 - "Marcar como completada" is `<form action={completeLesson.bind(null, lesson.id)}>`; the action records completion, updates the course's return point and revalidates. When `statusCode` is `COMPLETED` the form is replaced by the check mark and "Lección completada".
