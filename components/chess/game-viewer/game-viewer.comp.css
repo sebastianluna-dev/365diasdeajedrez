@@ -218,30 +218,10 @@
     color: var(--platform-text);
   }
 
-  /* The end of the lesson: it stops being a way out and becomes THE action of
-     the screen, so it takes the accent and the raised look of one. */
-  & .game-viewer__onwards-button.game-viewer__onwards-button_state_finish {
-    background: var(--platform-accent);
-    box-shadow: 0 4px 0 var(--platform-accent-deep);
-    color: var(--platform-on-accent);
-    transition: background-color 80ms;
-  }
-
-  & .game-viewer__onwards-button.game-viewer__onwards-button_state_finish:hover {
-    background: var(--platform-accent-bright);
-    color: var(--platform-on-accent);
-  }
-
-  & .game-viewer__onwards-button.game-viewer__onwards-button_state_finish:active {
-    transform: translateY(4px);
-    box-shadow: 0 0 0 var(--platform-accent-deep);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    & .game-viewer__onwards-button.game-viewer__onwards-button_state_finish {
-      transition: none;
-    }
-  }
+  /* «Continuar» is drawn exactly like «Saltar»: it is the same button and the
+     same place, and only its word changes with what is left of the lesson.
+     In the accent it read as the action of the screen and pulled the eye away
+     from the board, which is what the screen is for. */
 
   /* In full screen it hides without unmounting: whatever is being typed in
      the comment is still there on the way out. */

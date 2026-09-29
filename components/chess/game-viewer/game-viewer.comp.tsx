@@ -598,7 +598,7 @@ export function GameViewer({
         <div className="game-viewer__onwards">
           {atEnd ? (
             <form action={onwards.finish}>
-              <button type="submit" className="game-viewer__onwards-button game-viewer__onwards-button_state_finish">
+              <button type="submit" className="game-viewer__onwards-button">
                 {onwards.finishLabel}
               </button>
             </form>
