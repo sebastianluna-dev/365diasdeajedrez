@@ -3,25 +3,6 @@
   flex-direction: column;
   gap: 22px;
 
-  & .my-courses__head {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  & .my-courses__title {
-    margin: 0;
-    font-size: 32px;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-  }
-
-  & .my-courses__summary {
-    margin: 0;
-    font-size: 14.5px;
-    color: var(--platform-text-subtle);
-  }
-
   /* The list and, beside it, the day: the column drops under the list when
      both do not fit. The room between them is the list's to give: the column
      keeps its width. */

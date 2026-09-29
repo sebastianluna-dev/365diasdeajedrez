@@ -29,14 +29,16 @@ The list of the student's courses and, beside it, their daily streak. Until this
 
 - **Two columns**: the list and, at its right, «Racha diaria» ([`StudyStreak`](/components/platform/shared/study-streak)) in a column 240px wide, 40px from the list, which leaves the list 680px of the page's 960. The column has a width of its own (`flex: 0 0 240px`), not a share of what is left, so the room between the two is the list's to give. It drops under the list when both do not fit.
 - **One course to a row.** Each is a [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card): horizontal, as wide as the page, with the progress in minutes and in lessons and the course's two buttons, «Repasar» and «Aprender». What a course is — description, levels, content types — is the catalog's to say, on `/cursos/explorar`.
-- The header says how many there are and how many are being studied — «4 cursos · 3 en curso» —, the latter being the ones started and not finished (`ctaLabel === "Continuar"`). With none: «Todavía no has agregado ninguno».
+- The head is the page's own (`.platform-page__head`, `__title` and `__subtitle`), the same one «Mis estudios» opens with. It says how many there are and how many are being studied — «4 cursos · 3 en curso» —, the latter being the ones started and not finished (`ctaLabel === "Continuar"`). With none: «Todavía no has agregado ninguno».
 - After the cards, always, the dashed row «Explorar cursos», a link to `/cursos/explorar`. The page is therefore never empty and needs no `EmptyState`: with no course added that row is the only thing in the list and carries a hint, «Elige uno del catálogo y agrégalo para empezar.»
 
 ## Markup & styling
 
-Block `.my-courses` (119 lines). A wrapping flex row: the list, one column with its rows 16px apart, and the aside.
+Block `.my-courses` (100 lines). A wrapping flex row: the list, one column with its rows 16px apart, and the aside.
 
-**Elements:** `.my-courses__head`, `.my-courses__title`, `.my-courses__summary`, `.my-courses__layout`, `.my-courses__list`, `.my-courses__aside`, `.my-courses__explore`, `.my-courses__explore-mark`, `.my-courses__explore-text`, `.my-courses__explore-label`, `.my-courses__explore-hint`
+**Elements:** `.my-courses__layout`, `.my-courses__list`, `.my-courses__aside`, `.my-courses__explore`, `.my-courses__explore-mark`, `.my-courses__explore-text`, `.my-courses__explore-label`, `.my-courses__explore-hint`
+
+**Other classes it renders:** `.platform-page__head`, `.platform-page__title`, `.platform-page__subtitle`.
 
 **Modifiers and states:** none
 

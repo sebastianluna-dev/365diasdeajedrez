@@ -38,9 +38,11 @@ function summaryOf(courses: MyCourseItem[]): string {
 export function MyCoursesSection({ courses, streak }: MyCoursesSectionProps) {
   return (
     <section className="my-courses">
-      <header className="my-courses__head">
-        <h1 className="my-courses__title">Mis cursos</h1>
-        <p className="my-courses__summary">{summaryOf(courses)}</p>
+      {/* The page's own head, the same as «Mis estudios»': the platform has
+          one way of opening a page. */}
+      <header className="platform-page__head">
+        <h1 className="platform-page__title">Mis cursos</h1>
+        <p className="platform-page__subtitle">{summaryOf(courses)}</p>
       </header>
 
       <div className="my-courses__layout">
