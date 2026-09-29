@@ -1,0 +1,112 @@
+.lesson-outline {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-card);
+  /* It stays put while the lesson is read: the board is what is looked at,
+     and the column is there to be reached, not scrolled past. The viewport
+     is divided by the zoom, and 70px is the bar it sits under. */
+  position: sticky;
+  top: 90px;
+  max-height: calc(100vh / var(--platform-zoom, 1) - 70px - 40px);
+  overflow: auto;
+  scrollbar-width: thin;
+
+  & .lesson-outline__course {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 6px 12px;
+    color: var(--platform-text-title);
+  }
+
+  & .lesson-outline__course:hover {
+    color: var(--platform-text-title);
+  }
+
+  & .lesson-outline__cover {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  & .lesson-outline__course-name {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  /* The chapter the lessons below belong to, and the way back to the whole
+     list of them. */
+  & .lesson-outline__chapter {
+    padding: 0 6px 10px;
+    color: var(--platform-text-muted);
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  & .lesson-outline__chapter:hover {
+    color: var(--platform-text-title);
+  }
+
+  & .lesson-outline__list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .lesson-outline__lesson {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    color: var(--platform-text);
+    font-size: 14.5px;
+    line-height: 1.35;
+  }
+
+  & .lesson-outline__lesson:hover {
+    background: var(--platform-bg);
+    color: var(--platform-text);
+  }
+
+  /* The one being read, in the accent: it is the only row that says where you
+     are, since it is also the only one that is not a link. */
+  & .lesson-outline__lesson.lesson-outline__lesson_state_current {
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-weight: 700;
+  }
+
+  & .lesson-outline__name {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & .lesson-outline__done {
+    flex: none;
+    width: 16px;
+    height: 16px;
+    color: var(--platform-accent);
+  }
+
+  & .lesson-outline__lesson_state_current .lesson-outline__done {
+    color: currentColor;
+  }
+
+  /* In one column the outline stops being a column: it goes back to the flow,
+     under the board, at whatever height its lessons need. */
+  @media (max-width: 1080px) {
+    position: static;
+    max-height: none;
+  }
+}

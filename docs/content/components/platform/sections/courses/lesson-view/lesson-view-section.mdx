@@ -1,5 +1,5 @@
 ---
-description: "The lesson screen: the lesson's PGN in the GameViewer read as running text, the completion form, next and previous links, the trainer link, and the tracker that marks it opened."
+description: "The lesson screen: the column of the chapter's lessons, the lesson's PGN in the GameViewer read as prose, the completion form, the next lesson and the tracker that marks it opened."
 ---
 
 # `LessonViewSection`
@@ -10,13 +10,15 @@ description: "The lesson screen: the lesson's PGN in the GameViewer read as runn
 | Kind       | Server Component                                                                                                                                                                   |
 | Stylesheet | `lesson-view.section.css` → block `.lesson-view`                                                                                                                                   |
 | Used by    | `/lecciones/[lessonId]`                                                                                                                                                            |
-| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker)                                     |
+| Composes   | [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline), [`GameViewer`](/components/chess/game-viewer/game-viewer), [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker) |
 | Writes     | `completeLesson()` · `services/courses/courses.actions.ts`                                                                                                                         |
 | Uses       | `PROGRESS_STATUS` from `constants/platform/shared-codes.const`<br />`LessonView` from `services/courses/courses.types`<br />`CheckIcon`, `ArrowRightIcon` from `components/icons/` |
 
 ## Purpose
 
-Where a student studies. The lesson is a PGN with commentary, so the screen is the [`GameViewer`](/components/chess/game-viewer/game-viewer) with `moveList="flow"`: a lesson is **read**, the running text accompanies the narrative, whereas the table is for consulting a game move by move. The viewer's header slots carry what used to sit above the board: "n. Name" as title, the chapter, position within it and duration as subtitle, the description, and a "Prioridad" badge.
+Where a student studies, in three columns: where the lesson falls in the course ([`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline)), the board, and what is said about the position.
+
+The lesson is a PGN with commentary, so the middle and the right are the [`GameViewer`](/components/chess/game-viewer/game-viewer) with `moveList="flow"`: a lesson is **read**, the moves run on until a comment breaks the line, whereas the table is for consulting a game move by move. The viewer's header carries the lesson's name, its minutes and a "Prioridad" badge.
 
 Under the viewer, the actions: mark as completed (or the completed state), next lesson or back to the chapter, "Entrenar esta lección (n)" when it has exercises, and nothing that goes back: the chapter is a click away in the menu and the browser does the rest.
 
@@ -26,12 +28,12 @@ Under the viewer, the actions: mark as completed (or the completed state), next 
 
 | Prop        | Type         | Required | Meaning                                                                                                                                                                                                             |
 | ----------- | ------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `lesson`    | `LessonView` | yes      | `id`, `order`, `name`, `description?`, `pgn`, `orientation`, `isPriority`, `statusCode`, `chapterName`, `estimatedDuration?`, `chapterHref`, `nextLessonHref?`, `prevLessonHref?`, `trainerHref?`, `exerciseCount`. |
+| `lesson`    | `LessonView` | yes      | `id`, `name`, `description?`, `pgn`, `orientation`, `isPriority`, `statusCode`, `estimatedDuration?`, `courseName`, `courseHref`, `courseThumbnail?`, `chapterName`, `chapterHref`, `chapterLessons`, `nextLessonHref?`, `trainerHref?`, `exerciseCount`. |
 | `errorCode` | `string`     | no       | Code from `?error=` (`throttled`, `invalid`…), translated with `STUDENT_ERROR_MESSAGES` into a `PlatformNotice`.                                                                                                    |
 
 ## Behaviour
 
-- **A lesson is not numbered.** The viewer's title is the lesson's name and its subtitle the chapter it is of and its minutes («Los años de aprendizaje (1957–1959) · 20 min»): no «1. …» in front of the name, no «Lección 1 de 17».
+- **A lesson is not numbered, and it no longer names its chapter either.** The viewer's title is the lesson's name and its subtitle its minutes alone («20 min»): the column on the left already says the course, the chapter and where in it this lesson falls.
 - [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker) is rendered first and marks the lesson as opened from the client, because writes never happen during the server render.
 - "Marcar como completada" is `<form action={completeLesson.bind(null, lesson.id)}>`; the action records completion, updates the course's return point and revalidates. When `statusCode` is `COMPLETED` the form is replaced by the check mark and "Lección completada".
 - The viewer's `skip` slot gets a "Saltar" link to the next lesson (titled "Pasar a la siguiente lección sin marcar esta") when there is one.
@@ -39,9 +41,9 @@ Under the viewer, the actions: mark as completed (or the completed state), next 
 
 ## Markup & styling
 
-Block `.lesson-view` (63 lines).
+Block `.lesson-view` (89 lines). A grid of `260px` and the rest, the outline in the first column and everything else in `.lesson-view__main`; it lowers the viewer's board ceiling to `490px` through `--viewer-board-max`, so that with the column taken out of the width the text panel is still a column and not a margin. At `(max-width: 1080px)` it becomes one column, the board gets its `600px` back and the outline drops under the lesson.
 
-**Elements:** `.lesson-view__skip`, `.lesson-view__actions`, `.lesson-view__action`, `.lesson-view__action-icon`, `.lesson-view__completed`, `.lesson-view__completed-icon`, `.lesson-view__back`
+**Elements:** `.lesson-view__main`, `.lesson-view__skip`, `.lesson-view__actions`, `.lesson-view__action`, `.lesson-view__action-icon`, `.lesson-view__completed`, `.lesson-view__completed-icon`
 
 No modifiers.
 

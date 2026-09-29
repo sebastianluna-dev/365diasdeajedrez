@@ -1,7 +1,21 @@
 .lesson-view {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  /* Three columns, as a lesson is taken: where it falls in the course, the
+     board, and what is said about the position. The first is this grid's; the
+     other two are the viewer's own. */
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  align-items: start;
+  gap: 20px 24px;
+  /* The board gives up its 600px ceiling so that, with the column taken out of
+     the width, the text panel is still a column and not a margin. */
+  --viewer-board-max: 490px;
+
+  & .lesson-view__main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+  }
 
   /* "Saltar" lives inside the viewer's navigation bar, so it copies the size
      of its buttons so as not to break the row. */
@@ -59,5 +73,17 @@
   & .lesson-view__completed-icon {
     width: 17px;
     height: 17px;
+  }
+
+  /* Below the width the design was drawn at there is no room for three
+     columns: the outline drops under the lesson, which is where something one
+     reaches for on the way out belongs. */
+  @media (max-width: 1080px) {
+    grid-template-columns: minmax(0, 1fr);
+    --viewer-board-max: 600px;
+
+    & .lesson-view__main {
+      order: -1;
+    }
   }
 }

@@ -17,8 +17,12 @@
     /* The board rules: it grows up to 600px and stops there, so the moves panel
        keeps the rest instead of stretching pointlessly. It was 632 when the
        board sat in a card: with its 16px of padding per side removed the board
-       measures the same and the notation gains those 32. */
-    grid-template-columns: minmax(0, 600px) minmax(0, 1fr);
+       measures the same and the notation gains those 32.
+
+       A screen that puts something else beside the viewer lowers the ceiling
+       through `--viewer-board-max` (the lesson does, for its column of
+       lessons): the board gives way, and the panel does not end up a sliver. */
+    grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(0, 1fr);
     grid-template-rows: auto auto;
     gap: 22px;
     align-items: stretch;

@@ -43,7 +43,7 @@ Actions (`courses.actions.ts`): `addCourse` (writes the progress row and redirec
 
 **When an action refuses.** The student's forms follow the panels' pattern: a failure a person can produce (a throttle, an empty PGN, a goal outside the list, a reset without its box ticked) redirects back with `?error=<code>`, the page reads `searchParams.error` and translates it with `STUDENT_ERROR_MESSAGES` (`constants/platform/student-messages.const.ts`) into a `PlatformNotice`. What only a forged request produces (a foreign study, an unpublished lesson) still comes out silently. `touchLesson` never reports: it fires on open and a lost touch costs nothing.
 
-The lesson page renders `GameViewer` in `moveList="flow"` mode (lessons are read like text), with `LessonTracker` calling `touchLesson` on open and the completion button calling `completeLesson`.
+The lesson page is three columns: `LessonOutline` (the course, the chapter and the chapter's lessons, with the one open marked), the board, and the commentary. It renders `GameViewer` in `moveList="flow"` mode — a lesson is read, so the moves run on until a comment breaks the line — with `LessonTracker` calling `touchLesson` on open and the completion button calling `completeLesson`. The column and the «Siguiente lección» button walk the same visible sequence, so the priority filter hides a lesson from both at once; it costs no extra query, since `mapLessonView` already has the whole course in hand.
 
 ## Move Trainer — `/entrenador`
 

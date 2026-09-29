@@ -1,0 +1,69 @@
+---
+description: "The column a lesson is read beside: the course, the chapter and the chapter's lessons, with the one open marked and the completed ones checked."
+---
+
+# `LessonOutline`
+
+|            |                                                                                                                                                                       |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/lesson-view/lesson-outline.comp.tsx`                                                                                            |
+| Kind       | Server Component                                                                                                                                                      |
+| Stylesheet | `lesson-outline.comp.css` → block `.lesson-outline`                                                                                                                   |
+| Used by    | [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section)                                                                          |
+| Uses       | `PROGRESS_STATUS` from `constants/platform/shared-codes.const`<br />`LessonSibling` from `services/courses/courses.types`<br />`CircleCheckSolidIcon` from `components/icons/` |
+
+## Purpose
+
+Where the lesson stands: the course at the top, the chapter under it and the chapter's lessons below, with the one open marked. It is the chapter's page condensed into a column, so moving on to the next lesson does not mean going back twice — which is what the screen used to ask for, since the only way on was the «Siguiente lección» button at the foot.
+
+## Props
+
+| Prop              | Type              | Required | Meaning                                                                                                              |
+| ----------------- | ----------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `courseName`      | `string`          | yes      | The course, linking to its chapters.                                                                                 |
+| `courseHref`      | `string`          | yes      | `platformRoutes.courseDetail`, built by the mapper.                                                                  |
+| `courseThumbnail` | `string`          | no       | The course's square image (40 px), its cover cropped square while it has none. Without one, only the name is drawn.  |
+| `chapterName`     | `string`          | yes      | The chapter these lessons belong to, linking to its list.                                                            |
+| `chapterHref`     | `string`          | yes      | `platformRoutes.chapterDetail`.                                                                                      |
+| `lessons`         | `LessonSibling[]` | yes      | `{ id, name, href, statusCode }`, in reading order and already filtered by the student's preferences.                |
+| `currentLessonId` | `string`          | yes      | Which one is being read.                                                                                             |
+
+## Behaviour
+
+- The lesson being read **is not a link**: it would lead where one already is. It is drawn as a `<span>` with `aria-current="page"` and the accent background, which is also what tells it apart in the list.
+- A completed lesson carries `CircleCheckSolidIcon`, the same mark the chapter's page uses. The current one paints it in its own colour so the row reads as one piece.
+- The list is the **same sequence** `prevLessonHref`/`nextLessonHref` walk: the mapper builds both from `flattenLessons`, so a lesson hidden by the priority filter is missing from the column and from the buttons alike, and the two never disagree.
+- The whole `<nav>` is labelled "Lecciones del capítulo".
+
+## Markup & styling
+
+Block `.lesson-outline` (112 lines).
+
+**Elements:** `.lesson-outline__course`, `.lesson-outline__cover`, `.lesson-outline__course-name`, `.lesson-outline__chapter`, `.lesson-outline__list`, `.lesson-outline__item`, `.lesson-outline__lesson`, `.lesson-outline__name`, `.lesson-outline__done`
+
+**Modifiers and states:** `.lesson-outline__lesson_state_current`
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-title`, `--platform-zoom`
+
+**Breakpoints:** it is `position: sticky` under the bar, with its own scroll when the chapter is long (the viewport divided by `--platform-zoom`); at `(max-width: 1080px)` it goes back into the flow under the lesson, at whatever height its lessons need.
+
+## Usage
+
+From `lesson-view.section.tsx`:
+
+```tsx
+<LessonOutline
+  courseName={lesson.courseName}
+  courseHref={lesson.courseHref}
+  courseThumbnail={lesson.courseThumbnail}
+  chapterName={lesson.chapterName}
+  chapterHref={lesson.chapterHref}
+  lessons={lesson.chapterLessons}
+  currentLessonId={lesson.id}
+/>
+```
+
+## Related
+
+- [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section), the screen it is a column of.
+- [`ChapterStudySection`](/components/platform/sections/courses/course-study/chapter-study-section), the whole page this condenses.

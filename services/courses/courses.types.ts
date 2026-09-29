@@ -244,6 +244,18 @@ export interface LessonView {
   exerciseCount: number;
   prevLessonHref?: string;
   nextLessonHref?: string;
+  courseHref: string;
   chapterHref: string;
   trainerHref?: string;
+  /** The course's square image, for the column the lesson is read beside. */
+  courseThumbnail?: string;
+  /**
+   * The lessons of this same chapter, in reading order and already filtered by
+   * the student's preferences — the same list «anterior»/«siguiente» walk, so
+   * the column and the buttons never disagree.
+   */
+  chapterLessons: LessonSibling[];
 }
+
+/** A lesson as the column beside a lesson lists it. */
+export type LessonSibling = Pick<ChapterLessonItem, "id" | "name" | "href" | "statusCode">;

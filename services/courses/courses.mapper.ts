@@ -18,6 +18,7 @@ import type {
   CourseSourceItem,
   CourseProgressSummary,
   CourseSummary,
+  LessonSibling,
   LessonView,
   MyCourseItem,
 } from "./courses.types";
@@ -163,6 +164,14 @@ function allLessons(course: CourseWithContent) {
   );
 }
 
+/**
+ * The square image of a course, and while it has none its cover cropped
+ * square: the reframing is written in the URL, so it costs no upload.
+ */
+function thumbnailOf(course: { thumbnail: string | null; cover: string | null }): string | undefined {
+  return course.thumbnail ?? (course.cover ? withCoverCrop(course.cover, "auto", "1:1") : undefined);
+}
+
 /** The ones the student sees, which are what is counted and navigated over. */
 function flattenLessons(course: CourseWithContent, state: UserCourseState) {
   return allLessons(course).filter((lesson) => isVisible(lesson, { isPriority: lesson.chapterIsPriority }, state));
@@ -300,9 +309,7 @@ export function mapCourseSummary(course: CourseWithContent, state: UserCourseSta
     slug: course.slug,
     description: course.description ?? undefined,
     cover: course.cover ?? undefined,
-    // The square image, and while a course has none its cover cropped square:
-    // the reframing is written in the URL, so it costs no upload.
-    thumbnail: course.thumbnail ?? (course.cover ? withCoverCrop(course.cover, "auto", "1:1") : undefined),
+    thumbnail: thumbnailOf(course),
     contentTypes: mapContentTypes(course),
     levels: course.courseLevels.map((courseLevel) => mapCourseLevel(courseLevel.level)),
     authorNames: course.courseAuthors.map((courseAuthor) => courseAuthor.author.name),
@@ -379,8 +386,7 @@ export function mapCourseDetail(
     name: course.name,
     description: course.description ?? undefined,
     cover: course.cover ?? undefined,
-    // The same square image the row of «Mis cursos» shows: see `mapCourseSummary`.
-    thumbnail: course.thumbnail ?? (course.cover ? withCoverCrop(course.cover, "auto", "1:1") : undefined),
+    thumbnail: thumbnailOf(course),
     contentTypes: mapContentTypes(course),
     levels: course.courseLevels.map((courseLevel) => mapCourseLevel(courseLevel.level)),
     authors: course.courseAuthors.map((courseAuthor) => ({
@@ -501,6 +507,18 @@ export function mapLessonView(
   const prev = [...visible].reverse().find((candidate) => position(candidate) < here);
   const next = visible.find((candidate) => position(candidate) > here);
 
+  // The chapter's lessons, taken from that SAME visible list: the column and
+  // the «anterior»/«siguiente» buttons then walk one sequence, and a lesson
+  // hidden by the filter is missing from both.
+  const chapterLessons: LessonSibling[] = visible
+    .filter((candidate) => candidate.chapterId === chapter.id)
+    .map((candidate) => ({
+      id: candidate.id,
+      name: candidate.name,
+      href: platformRoutes.lessonDetail(candidate.id),
+      statusCode: asStatus(state.lessonStatus.get(candidate.id)),
+    }));
+
   // The content's orientation rules unless the user forces one in their course
   // settings (AUTO or the absence of a row = the lesson's).
   const settingsOrientationCode = state.boardOrientationCode;
@@ -526,7 +544,10 @@ export function mapLessonView(
     exerciseCount: lesson.exercises.length,
     prevLessonHref: prev ? platformRoutes.lessonDetail(prev.id) : undefined,
     nextLessonHref: next ? platformRoutes.lessonDetail(next.id) : undefined,
+    courseHref: platformRoutes.courseDetail(course.id),
     chapterHref: platformRoutes.chapterDetail(course.id, chapter.order),
     trainerHref: lesson.exercises.length > 0 ? `${platformRoutes.trainer}?lesson=${lesson.id}` : undefined,
+    courseThumbnail: thumbnailOf(course),
+    chapterLessons,
   };
 }
