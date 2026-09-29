@@ -5,8 +5,13 @@ import localFont from "next/font/local";
  * and Suisse Intl (app/(frontend)/fonts.ts); here SF Pro Display rules for
  * display AND text.
  *
+ * FIVE weights, because the platform asks for five: 400 and 500 for text,
+ * 600 for most of what is emphasised, 700 for a title and 800 for a figure.
+ * Without 600 and 800 the browser resolved both to Bold, so three quarters of
+ * the interface was drawn at one weight.
+ *
  * Not preloaded and in its own module, both for the same reason: the home
- * page preloaded these three weights (130 KB) without using any of them, and
+ * page preloaded these weights (226 KB) without using any of them, and
  * that delayed its main image. With Turbopack the font manifest lists EVERY
  * font of the project on each page — not those of the layout that imports
  * them — so splitting the module is not enough: only `preload: false` takes a
@@ -20,8 +25,8 @@ import localFont from "next/font/local";
  * down to Latin, punctuation, arrows and the check mark (~40 KB per weight).
  * To regenerate them:
  *
- *   pyftsubset SF-Pro-Display-Regular.otf \
- *     --output-file=public/fonts/sf-pro-display-regular.woff2 --flavor=woff2 \
+ *   pyftsubset SF-Pro-Display-Semibold.otf \
+ *     --output-file=public/fonts/sf-pro-display-semibold.woff2 --flavor=woff2 \
  *     --layout-features='*' \
  *     --unicodes='U+0000-00FF,U+0100-017F,U+2000-206F,U+20AC,U+2190-2193,U+2713,U+FEFF'
  */
@@ -38,8 +43,18 @@ export const sfProDisplay = localFont({
       style: "normal",
     },
     {
+      path: "../../public/fonts/sf-pro-display-semibold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
       path: "../../public/fonts/sf-pro-display-bold.woff2",
       weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/sf-pro-display-heavy.woff2",
+      weight: "800",
       style: "normal",
     },
   ],

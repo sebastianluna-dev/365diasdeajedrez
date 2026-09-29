@@ -74,12 +74,12 @@ The brand's black keeps its value and changes role: `#16110d` goes from backgrou
 
 `next/font/local` loads woff2 subsets from `public/fonts/` and exposes them as CSS variables on `<html>`:
 
-| Variable            | Font                       | Where it is used                                                |
-| ------------------- | -------------------------- | --------------------------------------------------------------- |
-| `--font-gramatika`  | Gramatika Bold             | Public headings (`.section__title`, `.section-heading__title`). |
-| `--font-suisse`     | Suisse Intl 400/500/700    | Public body text (`body` in `globals.css`).                     |
-| `--font-chessglyph` | ChessGlyph                 | Figurine notation. Not preloaded.                               |
-| `--font-sf-pro`     | SF Pro Display 400/500/700 | The whole platform, through `--platform-font`. Not preloaded.   |
+| Variable            | Font                               | Where it is used                                                                                                                                                            |
+| ------------------- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--font-gramatika`  | Gramatika Bold                     | Public headings (`.section__title`, `.section-heading__title`).                                                                                                             |
+| `--font-suisse`     | Suisse Intl 400/500/700            | Public body text (`body` in `globals.css`).                                                                                                                                 |
+| `--font-chessglyph` | ChessGlyph                         | Figurine notation. Not preloaded.                                                                                                                                           |
+| `--font-sf-pro`     | SF Pro Display 400/500/600/700/800 | The whole platform, through `--platform-font`. Not preloaded. The five weights are the five the stylesheets ask for; without 600 and 800 the browser resolved both to Bold. |
 
 Platform stylesheets never name a font; they use `var(--platform-font)` or inherit it. See [Stockfish, pieces & sounds](/chess/engine-and-assets#fonts--publicfonts) for the subsetting commands and licences.
 
