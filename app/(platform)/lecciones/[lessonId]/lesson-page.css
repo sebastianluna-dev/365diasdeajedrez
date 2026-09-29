@@ -1,8 +1,7 @@
 .lesson-page {
   /* A workspace, not a page that opens with a big title: it starts right
-     under the bar, like the game view, and the board gets the height. The
-     shell reserves 44px there; the difference is recovered here instead of
-     touching its padding, which serves every other screen. */
-  margin-top: -18px;
+     under the bar and the board gets the height. The frame already trims its
+     padding for a page that fills the window (`_height_screen`), so nothing
+     is recovered here. */
   gap: 18px;
 }

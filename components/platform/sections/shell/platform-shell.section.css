@@ -130,9 +130,31 @@
 
   /* A page that caps itself is not capped again by the frame: it is the
      board's, and it is drawn wider than the rest (`.platform-page_width_wide`
-     in platform.css). */
-  & .platform-shell__content:has(> .platform-page_width_wide) {
+     in platform.css), or it takes the window whole (`_width_full`). */
+  & .platform-shell__content:has(> .platform-page_width_wide),
+  & .platform-shell__content:has(> .platform-page_width_full) {
     max-width: none;
+  }
+
+  /* A page that IS the window measures exactly what is left under the bar and
+     keeps its scroll to itself. The viewport is divided by the zoom, and 70px
+     is the bar it sits under; the top padding shrinks because there is no
+     title to give air to, and the bottom one only keeps the page off the
+     edge. */
+  & .platform-shell__content:has(> .platform-page_height_screen) {
+    height: calc(100vh / var(--platform-zoom, 1) - 70px);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    overflow: hidden;
+  }
+
+  /* Piled up in one column, or on a screen too short for any of it to fit,
+     the page goes back to scrolling like the rest. */
+  @media (max-width: 1080px), (max-height: 620px) {
+    & .platform-shell__content:has(> .platform-page_height_screen) {
+      height: auto;
+      overflow: visible;
+    }
   }
 
   /* The design was drawn at a fixed 1440 px. Below that the bar splits into

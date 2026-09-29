@@ -33,19 +33,20 @@ Where the lesson stands: the course at the top, the chapter under it and the cha
 - The lesson being read **is not a link**: it would lead where one already is. It is drawn as a `<span>` with `aria-current="page"` and the accent background, which is also what tells it apart in the list.
 - A completed lesson carries `CircleCheckSolidIcon`, the same mark the chapter's page uses. The current one paints it in its own colour so the row reads as one piece.
 - The list is the **same sequence** `prevLessonHref`/`nextLessonHref` walk: the mapper builds both from `flattenLessons`, so a lesson hidden by the priority filter is missing from the column and from the buttons alike, and the two never disagree.
+- **The course's head does not scroll and the chapter does not leave.** The column fills its height and keeps its scroll inside: `.lesson-outline__course` stays out of it — where one is should not scroll away — and only `.lesson-outline__body` moves, with the chapter's name `position: sticky` at its top, its padding covering the lessons that pass underneath.
 - The whole `<nav>` is labelled "Lecciones del capítulo".
 
 ## Markup & styling
 
-Block `.lesson-outline` (112 lines).
+Block `.lesson-outline` (132 lines).
 
-**Elements:** `.lesson-outline__course`, `.lesson-outline__cover`, `.lesson-outline__course-name`, `.lesson-outline__chapter`, `.lesson-outline__list`, `.lesson-outline__item`, `.lesson-outline__lesson`, `.lesson-outline__name`, `.lesson-outline__done`
+**Elements:** `.lesson-outline__course`, `.lesson-outline__cover`, `.lesson-outline__course-name`, `.lesson-outline__body` (what scrolls), `.lesson-outline__chapter`, `.lesson-outline__list`, `.lesson-outline__item`, `.lesson-outline__lesson`, `.lesson-outline__name`, `.lesson-outline__done`
 
 **Modifiers and states:** `.lesson-outline__lesson_state_current`
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-title`, `--platform-zoom`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-title`
 
-**Breakpoints:** it is `position: sticky` under the bar, with its own scroll when the chapter is long (the viewport divided by `--platform-zoom`); at `(max-width: 1080px)` it goes back into the flow under the lesson, at whatever height its lessons need.
+**Breakpoints:** at `(max-width: 1080px)` or `(max-height: 620px)` it goes back into the flow under the lesson, at whatever height its lessons need, and nothing inside it scrolls on its own any more.
 
 ## Usage
 

@@ -41,7 +41,11 @@ Under the viewer, the actions: mark as completed (or the completed state), next 
 
 ## Markup & styling
 
-Block `.lesson-view` (89 lines). A grid of `260px` and the rest, the outline in the first column and everything else in `.lesson-view__main`; it lowers the viewer's board ceiling to `490px` through `--viewer-board-max`, so that with the column taken out of the width the text panel is still a column and not a margin. At `(max-width: 1080px)` it becomes one column, the board gets its `600px` back and the outline drops under the lesson.
+Block `.lesson-view` (99 lines). A grid of `280px` and the rest, the outline in the first column and everything else in `.lesson-view__main`.
+
+**The page is the window.** `/lecciones/[lessonId]` carries `.platform-page_width_full` and `.platform-page_height_screen`: no cap on the width, and the frame hands it exactly what is left under the bar (see [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)). Nothing here scrolls the page — the column of lessons and the panel of text each move on their own — because what is looked at is a board, and a board that falls below the fold is a board nobody sees whole.
+
+So the board is measured by the **height** that is left, not by the width: `--viewer-board-max` is `clamp(320px, 100vh / zoom - 260px, 760px)`, the subtraction being the viewer's button row and its gap (62), the actions below with theirs (68), the frame's padding (40) and a last 20 so the buttons do not sit on the edge. At `(max-width: 1080px)` or `(max-height: 620px)` it becomes one column, the board gets a flat `600px` back and the outline drops under the lesson.
 
 **Elements:** `.lesson-view__main`, `.lesson-view__skip`, `.lesson-view__actions`, `.lesson-view__action`, `.lesson-view__action-icon`, `.lesson-view__completed`, `.lesson-view__completed-icon`
 

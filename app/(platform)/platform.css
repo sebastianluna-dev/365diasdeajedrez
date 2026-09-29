@@ -216,6 +216,32 @@ html body.platform-theme[data-scroll-locked] {
   margin: 0 auto;
 }
 
+/**
+ * A page that IS the window: it takes the whole width and the whole height,
+ * and nothing in it scrolls the page — each column moves on its own. The
+ * lesson is drawn this way: what is looked at is a board, and a board that
+ * falls below the fold is a board nobody looks at.
+ *
+ * The frame answers for the height (platform-shell.section.css); here the
+ * page only says that it fills it. Under 1080px, where the columns pile up,
+ * and on a short screen, where nothing would fit, the page scrolls again
+ * like any other.
+ */
+.platform-page_width_full {
+  max-width: none;
+}
+
+.platform-page_height_screen {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+
+  @media (max-width: 1080px), (max-height: 620px) {
+    height: auto;
+    overflow: visible;
+  }
+}
+
 .platform-page {
   display: flex;
   flex-direction: column;

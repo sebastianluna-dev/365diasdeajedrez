@@ -3,18 +3,28 @@
      board, and what is said about the position. The first is this grid's; the
      other two are the viewer's own. */
   display: grid;
-  grid-template-columns: 260px minmax(0, 1fr);
-  align-items: start;
+  grid-template-columns: 280px minmax(0, 1fr);
   gap: 20px 24px;
-  /* The board gives up its 600px ceiling so that, with the column taken out of
-     the width, the text panel is still a column and not a margin. */
-  --viewer-board-max: 490px;
+  /* It fills the page, which fills the window: nothing here scrolls but the
+     column of lessons and the panel of text, each on its own. */
+  flex: 1;
+  min-height: 0;
+
+  /* The board is measured by the HEIGHT that is left, not by the width: on a
+     full window it is what one looks at, and a board that runs past the
+     bottom edge is a board nobody sees whole. What it cannot take: the
+     viewer's button row and its gap (62), the actions below with theirs (68),
+     the frame's own padding (40) and a last 20 so the buttons do not sit on
+     the edge of the window. The ceiling keeps the board from becoming a wall
+     on a tall screen, and the floor from becoming a stamp on a short one. */
+  --viewer-board-max: clamp(320px, calc(100vh / var(--platform-zoom, 1) - 260px), 760px);
 
   & .lesson-view__main {
     display: flex;
     flex-direction: column;
     gap: 20px;
     min-width: 0;
+    min-height: 0;
   }
 
   /* "Saltar" lives inside the viewer's navigation bar, so it copies the size
@@ -78,7 +88,7 @@
   /* Below the width the design was drawn at there is no room for three
      columns: the outline drops under the lesson, which is where something one
      reaches for on the way out belongs. */
-  @media (max-width: 1080px) {
+  @media (max-width: 1080px), (max-height: 620px) {
     grid-template-columns: minmax(0, 1fr);
     --viewer-board-max: 600px;
 

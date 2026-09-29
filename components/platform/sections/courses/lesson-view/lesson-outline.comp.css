@@ -1,19 +1,27 @@
 .lesson-outline {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  /* The whole height of its column, and its scroll kept inside: the course's
+     head stays where it is and only the lessons move under it. */
+  height: 100%;
+  min-height: 0;
   padding: 16px;
   border-radius: 8px;
   background: var(--platform-surface);
   box-shadow: var(--platform-shadow-card);
-  /* It stays put while the lesson is read: the board is what is looked at,
-     and the column is there to be reached, not scrolled past. The viewport
-     is divided by the zoom, and 70px is the bar it sits under. */
-  position: sticky;
-  top: 90px;
-  max-height: calc(100vh / var(--platform-zoom, 1) - 70px - 40px);
-  overflow: auto;
-  scrollbar-width: thin;
+  overflow: hidden;
+
+  /* Where one IS never scrolls away. */
+  & .lesson-outline__course {
+    flex: none;
+  }
+
+  & .lesson-outline__body {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    scrollbar-width: thin;
+  }
 
   & .lesson-outline__course {
     display: flex;
@@ -42,9 +50,16 @@
   }
 
   /* The chapter the lessons below belong to, and the way back to the whole
-     list of them. */
+     list of them. It stays at the top of the list while the lessons run
+     under it, so a long chapter never leaves one wondering which it is. */
   & .lesson-outline__chapter {
-    padding: 0 6px 10px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: block;
+    /* The padding is what covers the lesson passing underneath. */
+    padding: 6px 6px 10px;
+    background: var(--platform-surface);
     color: var(--platform-text-muted);
     font-size: 14px;
     font-weight: 700;
@@ -104,9 +119,14 @@
   }
 
   /* In one column the outline stops being a column: it goes back to the flow,
-     under the board, at whatever height its lessons need. */
-  @media (max-width: 1080px) {
-    position: static;
-    max-height: none;
+     under the board, at whatever height its lessons need, and nothing inside
+     it scrolls on its own any more. */
+  @media (max-width: 1080px), (max-height: 620px) {
+    height: auto;
+    overflow: visible;
+
+    & .lesson-outline__body {
+      overflow: visible;
+    }
   }
 }

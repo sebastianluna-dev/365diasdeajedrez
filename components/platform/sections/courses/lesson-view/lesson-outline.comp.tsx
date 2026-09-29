@@ -50,34 +50,38 @@ export function LessonOutline({
         <span className="lesson-outline__course-name">{courseName}</span>
       </Link>
 
-      <Link href={chapterHref} className="lesson-outline__chapter">
-        {chapterName}
-      </Link>
+      {/* What scrolls when the chapter is long. The course's head stays out of
+          it, because where one is should not scroll away. */}
+      <div className="lesson-outline__body">
+        <Link href={chapterHref} className="lesson-outline__chapter">
+          {chapterName}
+        </Link>
 
-      <ol className="lesson-outline__list">
-        {lessons.map((lesson) => {
-          const isCurrent = lesson.id === currentLessonId;
-          const isCompleted = lesson.statusCode === PROGRESS_STATUS.COMPLETED;
+        <ol className="lesson-outline__list">
+          {lessons.map((lesson) => {
+            const isCurrent = lesson.id === currentLessonId;
+            const isCompleted = lesson.statusCode === PROGRESS_STATUS.COMPLETED;
 
-          return (
-            <li key={lesson.id} className="lesson-outline__item">
-              {/* The lesson being read is not a link: it leads where one already
+            return (
+              <li key={lesson.id} className="lesson-outline__item">
+                {/* The lesson being read is not a link: it leads where one already
                   is, and `aria-current` is what says so to a screen reader. */}
-              {isCurrent ? (
-                <span className="lesson-outline__lesson lesson-outline__lesson_state_current" aria-current="page">
-                  <span className="lesson-outline__name">{lesson.name}</span>
-                  {isCompleted && <CircleCheckSolidIcon className="lesson-outline__done" />}
-                </span>
-              ) : (
-                <Link href={lesson.href} className="lesson-outline__lesson">
-                  <span className="lesson-outline__name">{lesson.name}</span>
-                  {isCompleted && <CircleCheckSolidIcon className="lesson-outline__done" />}
-                </Link>
-              )}
-            </li>
-          );
-        })}
-      </ol>
+                {isCurrent ? (
+                  <span className="lesson-outline__lesson lesson-outline__lesson_state_current" aria-current="page">
+                    <span className="lesson-outline__name">{lesson.name}</span>
+                    {isCompleted && <CircleCheckSolidIcon className="lesson-outline__done" />}
+                  </span>
+                ) : (
+                  <Link href={lesson.href} className="lesson-outline__lesson">
+                    <span className="lesson-outline__name">{lesson.name}</span>
+                    {isCompleted && <CircleCheckSolidIcon className="lesson-outline__done" />}
+                  </Link>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </div>
     </nav>
   );
 }
