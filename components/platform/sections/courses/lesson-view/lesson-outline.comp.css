@@ -266,7 +266,10 @@
     right: calc(var(--mark-center) + 9px + 12px);
     bottom: 0;
     height: 1px;
-    background: var(--platform-border);
+    /* The marks' own grey, at half strength: one family of lines down the
+       whole column — a neutral grey beside them read as a different idea —
+       but a rule between two rows says less than a stop on the thread. */
+    background: color-mix(in srgb, var(--platform-accent-faint) 50%, transparent);
   }
 
   /* The row being read draws none: its background is what tells it apart,
