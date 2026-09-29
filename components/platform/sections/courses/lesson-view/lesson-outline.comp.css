@@ -25,9 +25,12 @@
   display: flex;
   flex-direction: column;
   background: var(--platform-surface);
-  /* Against the page's grey it needs no shadow: the hairline is what closes
-     the panel. No rounding either — it is an edge of the window. */
-  box-shadow: inset -1px 0 0 var(--platform-border);
+  /* Its hairline, and a shadow falling to the right: the panel sits ON the
+     page rather than beside it, which is what says the board is behind it
+     and not next to it. No rounding — it is an edge of the window. */
+  box-shadow:
+    inset -1px 0 0 var(--platform-border),
+    4px 0 16px rgba(0, 0, 0, 0.06);
   overflow: hidden;
 
   /* The course, which never scrolls away: where one is should stay put. Its
@@ -235,8 +238,15 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    right: calc(var(--mark-center) - 1px);
-    border-left: 2px dotted var(--platform-border-strong);
+    /* Centred on the marks' column: half of the 4px the dots are drawn in. */
+    right: calc(var(--mark-center) - 2px);
+    width: 4px;
+    /* The dots are drawn, not left to `dotted`, which packs them tight
+       against one another: what a thread wants is air between its stops. A
+       3.5px dot every 12px, which leaves four of them between two marks. */
+    background-image: radial-gradient(circle, var(--platform-border-strong) 1.75px, transparent 1.85px);
+    background-size: 4px 12px;
+    background-repeat: repeat-y;
   }
 
   /* Not under the row being read: there the mark is the only thing on the
