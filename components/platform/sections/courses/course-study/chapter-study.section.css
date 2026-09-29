@@ -123,13 +123,6 @@
     background: var(--platform-accent-soft);
   }
 
-  & .chapter-study__number {
-    font-size: 13px;
-    font-weight: 800;
-    color: var(--platform-accent-ink);
-    font-variant-numeric: tabular-nums;
-  }
-
   & .chapter-study__name {
     flex: 1;
     min-width: 0;

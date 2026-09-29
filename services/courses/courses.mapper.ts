@@ -418,8 +418,8 @@ export function mapChapterView(
   const detail = mapCourseDetail(course, state, courseExtras);
   const nextId = nextLesson(course, state)?.id;
 
-  // The number rendered is still the REAL one (1, 4, 7 with the filter on):
-  // renumbering would hide that lessons are missing and would break each one's
+  // `order` is still the REAL one (1, 4, 7 with the filter on), though the
+  // pages no longer draw it: renumbering would break each one's
   // identity within the course.
   const lessons: ChapterLessonItem[] = sortByRole(
     chapter.lessons.map((lesson) => ({ ...lesson, roleCode: lesson.role?.code })),
@@ -512,7 +512,6 @@ export function mapLessonView(
     chapterId: chapter.id,
     chapterOrder: chapter.order,
     chapterName: chapter.name,
-    chapterLessonCount: chapter.lessons.length,
     id: lesson.id,
     order: lesson.order,
     name: lesson.name,

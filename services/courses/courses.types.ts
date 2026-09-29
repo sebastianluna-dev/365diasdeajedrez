@@ -225,8 +225,6 @@ export interface LessonView {
   /** Order number: it is what addresses the chapter in the URL. */
   chapterOrder: number;
   chapterName: string;
-  /** Lessons of the chapter, to place this one within it ("Lección 1 de 3"). */
-  chapterLessonCount: number;
   id: string;
   order: number;
   name: string;

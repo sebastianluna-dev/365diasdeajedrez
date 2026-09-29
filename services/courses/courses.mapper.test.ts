@@ -123,7 +123,7 @@ describe("con el filtro encendido", () => {
     expect(view?.lessons.map((lesson) => lesson.id)).toEqual(["l1", "l3"]);
   });
 
-  it("el número de orden que se enseña es el REAL, sin renumerar", () => {
+  it("el número de orden de cada lección es el REAL, sin renumerar", () => {
     const view = mapChapterView(COURSE, "cap-2", state({ onlyPriorityLessons: true, lessonStatus: completed("l6") }));
     expect(view?.lessons.map((lesson) => lesson.order)).toEqual([1, 3]);
   });

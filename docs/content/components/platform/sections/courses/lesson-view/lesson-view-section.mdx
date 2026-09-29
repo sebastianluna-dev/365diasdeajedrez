@@ -24,13 +24,14 @@ Under the viewer, the actions: mark as completed (or the completed state), next 
 
 ## Props
 
-| Prop        | Type         | Required | Meaning                                                                                                                                                                                                                                   |
-| ----------- | ------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `lesson`    | `LessonView` | yes      | `id`, `order`, `name`, `description?`, `pgn`, `orientation`, `isPriority`, `statusCode`, `chapterName`, `chapterLessonCount`, `estimatedDuration?`, `chapterHref`, `nextLessonHref?`, `prevLessonHref?`, `trainerHref?`, `exerciseCount`. |
-| `errorCode` | `string`     | no       | Code from `?error=` (`throttled`, `invalid`…), translated with `STUDENT_ERROR_MESSAGES` into a `PlatformNotice`.                                                                                                                          |
+| Prop        | Type         | Required | Meaning                                                                                                                                                                                                             |
+| ----------- | ------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lesson`    | `LessonView` | yes      | `id`, `order`, `name`, `description?`, `pgn`, `orientation`, `isPriority`, `statusCode`, `chapterName`, `estimatedDuration?`, `chapterHref`, `nextLessonHref?`, `prevLessonHref?`, `trainerHref?`, `exerciseCount`. |
+| `errorCode` | `string`     | no       | Code from `?error=` (`throttled`, `invalid`…), translated with `STUDENT_ERROR_MESSAGES` into a `PlatformNotice`.                                                                                                    |
 
 ## Behaviour
 
+- **A lesson is not numbered.** The viewer's title is the lesson's name and its subtitle the chapter it is of and its minutes («Los años de aprendizaje (1957–1959) · 20 min»): no «1. …» in front of the name, no «Lección 1 de 17».
 - [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker) is rendered first and marks the lesson as opened from the client, because writes never happen during the server render.
 - "Marcar como completada" is `<form action={completeLesson.bind(null, lesson.id)}>`; the action records completion, updates the course's return point and revalidates. When `statusCode` is `COMPLETED` the form is replaced by the check mark and "Lección completada".
 - The viewer's `skip` slot gets a "Saltar" link to the next lesson (titled "Pasar a la siguiente lección sin marcar esta") when there is one.

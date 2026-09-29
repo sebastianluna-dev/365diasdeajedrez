@@ -22,11 +22,8 @@ export function LessonViewSection({ lesson, errorCode }: LessonViewSectionProps)
   const errorMessage = studentErrorMessage(errorCode);
   const isCompleted = lesson.statusCode === PROGRESS_STATUS.COMPLETED;
 
-  const subtitle = [
-    lesson.chapterName,
-    `Lección ${lesson.order} de ${lesson.chapterLessonCount}`,
-    lesson.estimatedDuration ? `${lesson.estimatedDuration} min` : null,
-  ]
+  // A lesson is not numbered: the chapter it belongs to is what places it.
+  const subtitle = [lesson.chapterName, lesson.estimatedDuration ? `${lesson.estimatedDuration} min` : null]
     .filter(Boolean)
     .join(" · ");
 
@@ -40,9 +37,9 @@ export function LessonViewSection({ lesson, errorCode }: LessonViewSectionProps)
         // The lesson is READ: the running text accompanies the narrative, whereas
         // the table is for consulting a game move by move.
         moveList="flow"
-        title={`${lesson.order}. ${lesson.name}`}
+        title={lesson.name}
         // The subtitle carries everything that used to live above the board:
-        // where the lesson sits within the chapter and how long it lasts.
+        // the chapter the lesson is of and how long it lasts.
         subtitle={subtitle}
         description={lesson.description}
         badge={lesson.isPriority ? "Prioridad" : undefined}

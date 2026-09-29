@@ -28,8 +28,8 @@ function statusOf(lesson: ChapterLessonItem): string {
  * that its lessons, one card each, with how the lesson opens — its first
  * moves — so a game is recognised before opening it.
  *
- * The number of a lesson is its REAL one, with the filter on too: 01, 04, 07.
- * Renumbering would hide that lessons are missing.
+ * A lesson is not numbered: it is its name. With the filter on the list is
+ * shorter, and it is the frame's setting that says how many it hides.
  */
 export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionProps) {
   const { course } = chapter;
@@ -87,7 +87,6 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
                   className={`chapter-study__lesson${lesson.isNext ? " chapter-study__lesson_state_next" : ""}`}
                 >
                   <div className="chapter-study__lesson-head">
-                    <span className="chapter-study__number">{String(lesson.order).padStart(2, "0")}</span>
                     <h3 className="chapter-study__name" title={lesson.name}>
                       {lesson.name}
                     </h3>
