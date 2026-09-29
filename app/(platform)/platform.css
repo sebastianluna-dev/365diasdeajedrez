@@ -177,6 +177,16 @@
    (auth) — so it has to be handed back. They set the class on the <body>:
    without this the scroll bounce shows black under the content, and the
    login page, which has no shell, would be left half-themed. */
+/* The page itself does not bounce. On the elastic overscroll of a trackpad
+   the whole document slides, and with it the bar stuck to the top — which
+   reads as the header coming loose. It goes on the ROOT because that is the
+   element that scrolls the document; on `<body>` it is the browser's choice
+   whether to honour it. Only the platform's pages: the public site keeps the
+   bounce it was drawn with. */
+:root:has(> .platform-theme) {
+  overscroll-behavior: none;
+}
+
 body.platform-theme {
   zoom: var(--platform-zoom);
   /* The canvas is a light grey and what rests on it is white: a card is told

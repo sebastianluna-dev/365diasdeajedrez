@@ -71,6 +71,12 @@ The brand's black keeps its value and changes role: `#16110d` goes from backgrou
 
 `--transition-hover` is read by the global transition rule with a `150ms` default; a component may set it to change or remove the duration.
 
+## The platform does not bounce
+
+`:root:has(> .platform-theme)` carries `overscroll-behavior: none`. On the elastic overscroll of a trackpad the whole document slides, and the bar stuck to the top slides with it, which reads as the header coming loose. It goes on the **root**, the element that scrolls the document — on `<body>` it is the browser's choice whether to honour it — and only under the platform's layouts, so the public site keeps the bounce it was drawn with.
+
+A panel that scrolls on its own says it again for itself: the lesson's column of lessons does, since there the bounce dragged its sticky chapter.
+
 ## The platform is drawn a tenth larger
 
 `body.platform-theme` carries `zoom: var(--platform-zoom)`, and the token is `1.1`. Every size in these stylesheets is the one the design was drawn at; the interface simply read small on a laptop, and this is what a browser's own 110% does, so nothing is rewritten and a person's own zoom still multiplies on top of it.
