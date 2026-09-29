@@ -54,21 +54,23 @@
     margin: 0;
     font-size: 17px;
     font-weight: 700;
-    color: var(--platform-text-subtle);
+    /* One colour for the three: the word, the step and the chapter. */
+    color: var(--platform-text-title);
     text-wrap: balance;
   }
 
-  /* The step between the two, quieter than either. */
+  /* It leads to the list of chapters, and says so with the pointer alone. */
+  & .course-study-frame__place-link,
+  & .course-study-frame__place-link:hover {
+    color: inherit;
+    cursor: pointer;
+  }
+
   & .course-study-frame__place-step {
     flex: none;
     align-self: center;
     width: 7px;
     height: 14px;
-    color: var(--platform-text-faint);
-  }
-
-  & .course-study-frame__place-here {
-    color: var(--platform-text-title);
   }
 
   & .course-study-frame__actions {

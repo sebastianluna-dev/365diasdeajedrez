@@ -33,7 +33,7 @@ The course's layout: both pages of a course being studied are the same frame wit
 - **«Aprender»** is the one filled button of the course's pages — the lessons' cards open with a quiet «Ver» —; it is raised on a hard edge (`0 4px 0 var(--platform-accent-deep)`), as the button of the blog's header, sinks onto it while it is held down (`:active`), and opens `course.learnHref`, where there is something to learn: the lesson the student left off at if it is unfinished, the first unfinished one otherwise and, in a finished course, its first lesson. **«Repasar n»** opens the Move Trainer with the exercises of the lessons already learned in this course (`/entrenador?course=<id>`); `n` is how many there are.
 - **«Repasar» is not drawn today**: the Move Trainer is switched off (`MOVE_TRAINER_ENABLED`) and the service counts nothing to review, so `course.reviewCount` is always 0.
 - A button is only drawn when it leads somewhere: a course without lessons in view has no «Aprender», and one without learned exercises no «Repasar». With neither, the block is not rendered. **A finished course keeps its «Aprender»**: it opens the first lesson, to start the course over.
-- Under the name, **the trail**: «Capítulos» on the course's page and «Capítulos ▸ Los años de aprendizaje (1957–1959)», the step drawn with `CaretRightIcon` on a chapter's. It reads, it does not lead: neither half is a link, because going back is the browser's since the frame lost its button.
+- Under the name, **the trail**: «Capítulos» on the course's page and «Capítulos ▸ Los años de aprendizaje (1957–1959)» on a chapter's, the step drawn with `CaretRightIcon`. The three are one colour, the title grey. On a chapter's page the first half is a link back to the list of chapters; on the list itself it is the page one is already on, so it is only read and nothing there leads.
 - **No figure of the course is drawn here.** «Tu progreso» — its percentage, its `completed/total` and a bar — was in the aside until 2026-09-28: a chapter's card says how far that chapter is, and the course's own progress is read in «Mis cursos», where a course is chosen.
 - **«Opciones del curso»**: «Información del curso» (the slug page) and «Borrar mi progreso», the latter only when there is something to erase.
 - **«Configuración»**: [`LearnMode`](/components/platform/sections/courses/course-study/learn-mode).
@@ -42,13 +42,13 @@ The design this comes from also had «Poner en pausa todos los capítulos»; it 
 
 ## Markup & styling
 
-Block `.course-study-frame` (227 lines). A wrapping flex row: the page's column and an aside 240px wide (`flex: 0 0 240px`, a width of its own and not a share of what is left), which drops under it when both do not fit.
+Block `.course-study-frame` (232 lines). A wrapping flex row: the page's column and an aside 240px wide (`flex: 0 0 240px`, a width of its own and not a share of what is left), which drops under it when both do not fit.
 
-**Elements:** `.course-study-frame__head`, `.course-study-frame__cover`, `.course-study-frame__cover-image`, `.course-study-frame__heading`, `.course-study-frame__name`, `.course-study-frame__place`, `.course-study-frame__place-step`, `.course-study-frame__place-here`, `.course-study-frame__actions`, `.course-study-frame__learn`, `.course-study-frame__review`, `.course-study-frame__review-count`, `.course-study-frame__layout`, `.course-study-frame__main`, `.course-study-frame__aside`, `.course-study-frame__card`, `.course-study-frame__card-title`, `.course-study-frame__option`, `.course-study-frame__options`, `.course-study-frame__setting`
+**Elements:** `.course-study-frame__head`, `.course-study-frame__cover`, `.course-study-frame__cover-image`, `.course-study-frame__heading`, `.course-study-frame__name`, `.course-study-frame__place`, `.course-study-frame__place-link`, `.course-study-frame__place-step`, `.course-study-frame__actions`, `.course-study-frame__learn`, `.course-study-frame__review`, `.course-study-frame__review-count`, `.course-study-frame__layout`, `.course-study-frame__main`, `.course-study-frame__aside`, `.course-study-frame__card`, `.course-study-frame__card-title`, `.course-study-frame__option`, `.course-study-frame__options`, `.course-study-frame__setting`
 
 **Modifiers and states:** `.course-study-frame__card-title_kind_head`
 
-**Tokens:** `--platform-accent`, `--platform-accent-bright`, `--platform-accent-deep`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-border`, `--platform-ink`, `--platform-on-accent`, `--platform-success-ink`, `--platform-success-soft`, `--platform-surface`, `--platform-text-faint`, `--platform-text-subtle`, `--platform-text-title`
+**Tokens:** `--platform-accent`, `--platform-accent-bright`, `--platform-accent-deep`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-border`, `--platform-ink`, `--platform-on-accent`, `--platform-success-ink`, `--platform-success-soft`, `--platform-surface`, `--platform-text-title`
 
 **Breakpoints:** `(max-width: 900px)` the aside takes the width of the page's column; `(max-width: 620px)` the buttons take a row of their own.
 

@@ -64,15 +64,20 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
           <h1 className="course-study-frame__name">{course.name}</h1>
 
           {/* Where one is in the course, as a trail: «Capítulos» and, on a
-              chapter's page, the chapter. It reads, it does not lead — going
-              back is the browser's. */}
+              chapter's page, the chapter. On a chapter's page the first half
+              leads back to the list; on the list itself it is the page one is
+              already on, so it is only read. */}
           <p className="course-study-frame__place">
-            Capítulos
-            {chapter && (
+            {chapter ? (
               <>
+                <Link href={course.studyHref} className="course-study-frame__place-link">
+                  Capítulos
+                </Link>
                 <CaretRightIcon className="course-study-frame__place-step" />
-                <span className="course-study-frame__place-here">{chapter.name}</span>
+                {chapter.name}
               </>
+            ) : (
+              "Capítulos"
             )}
           </p>
         </div>
