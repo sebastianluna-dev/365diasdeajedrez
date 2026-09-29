@@ -62,7 +62,20 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
         <div className="course-study-frame__heading">
           <h1 className="course-study-frame__name">{course.name}</h1>
 
-          <p className="course-study-frame__place">{chapter ? chapter.name : "Capítulos"}</p>
+          {/* Where one is in the course, as a trail: «Capítulos» and, on a
+              chapter's page, the chapter. It reads, it does not lead — going
+              back is the browser's. */}
+          <p className="course-study-frame__place">
+            Capítulos
+            {chapter && (
+              <>
+                <span className="course-study-frame__place-step" aria-hidden="true">
+                  ▸
+                </span>
+                <span className="course-study-frame__place-here">{chapter.name}</span>
+              </>
+            )}
+          </p>
         </div>
 
         {(course.learnHref || course.reviewCount > 0) && (

@@ -47,11 +47,25 @@
 
   /* Where one is in the course: its chapters, or one of them. */
   & .course-study-frame__place {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
     margin: 0;
     font-size: 17px;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--platform-text-subtle);
     text-wrap: balance;
+  }
+
+  /* The step between the two, quieter than either. */
+  & .course-study-frame__place-step {
+    font-size: 13px;
+    color: var(--platform-text-faint);
+  }
+
+  & .course-study-frame__place-here {
+    color: var(--platform-text-title);
   }
 
   & .course-study-frame__actions {
