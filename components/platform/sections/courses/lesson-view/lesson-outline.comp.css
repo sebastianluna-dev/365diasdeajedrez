@@ -193,8 +193,12 @@
     stroke-width: 3;
   }
 
+  /* The accent and NOT `--platform-progress`, which every other bar of a
+     course is filled with: this ring sits in a column that is already the
+     accent's — the lesson being read, its marks, its thread — and a blue arc
+     in the middle of it read as something else's. */
   & .lesson-outline__gauge-fill {
-    stroke: var(--platform-progress);
+    stroke: var(--platform-accent);
     stroke-width: 3;
     stroke-linecap: round;
   }
