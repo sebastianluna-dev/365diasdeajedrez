@@ -62,3 +62,36 @@ export const sfProDisplay = localFont({
   display: "swap",
   preload: false,
 });
+
+/**
+ * The titles' font. Poppins, under the SIL Open Font License 1.1, whose text
+ * travels with the subsets (`public/fonts/poppins-OFL.txt`): the sources are
+ * Google Fonts' (github.com/google/fonts/tree/main/ofl/poppins) and the
+ * subsets are cut with the same `pyftsubset` line as SF Pro's.
+ *
+ * Three weights, which are the ones the platform's headings ask for: 600, 700
+ * and 800. It is not preloaded either — a title is painted with `swap` while
+ * it arrives, which is the same trade SF Pro makes.
+ */
+export const poppins = localFont({
+  src: [
+    {
+      path: "../../public/fonts/poppins-semibold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/poppins-bold.woff2",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../../public/fonts/poppins-extrabold.woff2",
+      weight: "800",
+      style: "normal",
+    },
+  ],
+  variable: "--font-poppins",
+  display: "swap",
+  preload: false,
+});

@@ -37,7 +37,6 @@
   }
 
   & .login__title {
-    font-family: var(--platform-font);
     font-size: 25px;
     font-weight: 700;
   }

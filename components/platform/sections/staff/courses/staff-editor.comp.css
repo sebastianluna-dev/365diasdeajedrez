@@ -23,7 +23,6 @@
 
   & .staff-editor-head__title {
     margin: 0;
-    font-family: var(--platform-font);
     font-size: 31px;
     font-weight: 700;
     line-height: 1.15;

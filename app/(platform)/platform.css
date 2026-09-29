@@ -116,6 +116,11 @@
      Gramatika and Suisse Intl stay on the public site. A single token so that
      no file of the private area names a specific font. */
   --platform-font: var(--font-sf-pro), -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  /* The titles' font: Poppins, with the text font behind it while it arrives
+     or if it ever fails to. Every heading of the platform takes it through
+     one rule (see «The titles» below); a block that wants it elsewhere reads
+     this token instead of naming the font. */
+  --platform-font-display: var(--font-poppins), var(--platform-font);
   /* The one serif: the figure a chapter is dated with on the course pages. */
   --platform-font-serif: Georgia, "Times New Roman", serif;
 
@@ -180,6 +185,16 @@ html body.platform-theme[data-scroll-locked] {
   margin-right: 0 !important;
 }
 
+/* The titles. One rule instead of a declaration in each of the forty blocks
+   that draw one: every heading of the platform is Poppins, and so is the
+   chapter's name on its card, which is a <span> inside the link that opens it.
+   A block that wants another font for a heading — the serif of a chapter's
+   date — says so in its own file and wins by specificity. */
+.platform-theme :is(h1, h2, h3),
+.platform-theme .course-study__title {
+  font-family: var(--platform-font-display);
+}
+
 .platform-theme ::selection {
   background: color-mix(in srgb, var(--platform-accent) 30%, transparent);
 }
@@ -235,7 +250,6 @@ html body.platform-theme[data-scroll-locked] {
 
 .platform-page__title {
   margin: 0;
-  font-family: var(--platform-font);
   font-size: 39.5px;
   font-weight: 700;
   letter-spacing: -0.025em;

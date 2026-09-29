@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "@/app/(frontend)/globals.css";
 import { chessGlyph, gramatika, suisseIntl } from "@/app/(frontend)/fonts";
-import { sfProDisplay } from "@/app/(platform)/fonts";
+import { poppins, sfProDisplay } from "@/app/(platform)/fonts";
 import "@/app/(platform)/platform.css";
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="es"
-      className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} ${sfProDisplay.variable}`}
+      className={`${gramatika.variable} ${suisseIntl.variable} ${chessGlyph.variable} ${sfProDisplay.variable} ${poppins.variable}`}
     >
       <body className="platform-theme">
         <a className="skip-link" href="#contenido">
