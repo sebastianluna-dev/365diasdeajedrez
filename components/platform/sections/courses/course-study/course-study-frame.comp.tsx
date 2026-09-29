@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import type { CourseDetail } from "@/services/courses/courses.types";
@@ -33,11 +32,12 @@ const COVER_SIZES = "96px";
  * exercises of what was already learned —; on the right, the course's options
  * and its one setting. The page puts its column in the middle.
  *
+ * No figure of the course is drawn here: what a chapter's card says is how
+ * far that chapter is, and the course's own progress is read in «Mis
+ * cursos», where a course is chosen.
+ *
  * Nothing here goes back: the menu leads to «Mis cursos» and the browser
  * does the rest.
- *
- * The course's progress is on a chapter's page only. The page that lists the
- * chapters says how far each one is, and that is the progress it shows.
  *
  * A button is only drawn when it leads somewhere: a course without lessons
  * has no «Aprender», and one without exercises learned no «Repasar». A
@@ -93,28 +93,6 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
         <div className="course-study-frame__main">{children}</div>
 
         <aside className="course-study-frame__aside">
-          {chapter && (
-            <section className="course-study-frame__card course-study-frame__card_kind_progress">
-              <p className="course-study-frame__progress-head">
-                <span className="course-study-frame__card-title">Tu progreso</span>
-                <span className="course-study-frame__progress-ratio">
-                  {progress.completedLessons}/{progress.totalLessons}
-                </span>
-              </p>
-              <p className="course-study-frame__percent">
-                {progress.percent}%
-                {course.isCompleted && (
-                  <span className="course-study-frame__done" role="img" aria-label="Curso completo">
-                    <CircleCheckSolidIcon className="course-study-frame__done-icon" />
-                  </span>
-                )}
-              </p>
-              <div className="course-study-frame__track">
-                <div className="course-study-frame__fill" style={{ width: `${progress.percent}%` }} />
-              </div>
-            </section>
-          )}
-
           <section className="course-study-frame__card">
             <h2 className="course-study-frame__card-title course-study-frame__card-title_kind_head">
               Opciones del curso

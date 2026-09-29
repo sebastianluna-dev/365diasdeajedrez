@@ -155,11 +155,6 @@
     background: var(--platform-surface);
   }
 
-  & .course-study-frame__card_kind_progress {
-    gap: 14px;
-    padding: 20px 22px;
-  }
-
   & .course-study-frame__card-title {
     margin: 0;
     font-size: 15px;
@@ -170,55 +165,6 @@
   & .course-study-frame__card-title_kind_head {
     padding: 18px 22px 14px;
     border-bottom: 1px solid var(--platform-border);
-  }
-
-  & .course-study-frame__progress-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    margin: 0;
-  }
-
-  & .course-study-frame__progress-ratio {
-    font-size: 13px;
-    color: var(--platform-text-subtle);
-    font-variant-numeric: tabular-nums;
-  }
-
-  & .course-study-frame__percent {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
-    font-size: 34px;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* Only a finished course has it, next to its 100 %. */
-  & .course-study-frame__done {
-    display: flex;
-    color: var(--platform-accent);
-  }
-
-  & .course-study-frame__done-icon {
-    width: 26px;
-    height: 26px;
-  }
-
-  & .course-study-frame__track {
-    height: 8px;
-    overflow: hidden;
-    border-radius: 1000px;
-    background: var(--platform-track);
-  }
-
-  & .course-study-frame__fill {
-    height: 100%;
-    border-radius: 1000px;
-    background: var(--platform-progress);
   }
 
   & .course-study-frame__options {
