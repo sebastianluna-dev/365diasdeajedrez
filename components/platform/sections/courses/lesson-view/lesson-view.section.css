@@ -11,7 +11,11 @@
 
   display: grid;
   grid-template-columns: calc(var(--outline-width) - 40px) minmax(0, 1fr);
-  gap: 20px 24px;
+  /* The board is given the same air on its three sides: 40 to the column of
+     lessons, 40 to the bar above it (the frame's top padding) and 40 to the
+     panel of text (`--viewer-column-gap`). */
+  gap: 20px 40px;
+  --viewer-column-gap: 40px;
   /* It fills the page, which fills the window: nothing here scrolls but the
      column of lessons and the panel of text, each on its own. */
   flex: 1;
@@ -21,10 +25,10 @@
      full window it is what one looks at, and a board that runs past the
      bottom edge is a board nobody sees whole. It takes ALL of it save what
      the bar under it needs — 48 of buttons and the 14 of its gap — and the
-     40 of the frame's own padding. No ceiling: the height is the board's.
-     The floor keeps it from becoming a stamp on a short screen, where the
-     page goes back to scrolling anyway. */
-  --viewer-board-max: max(320px, calc(100vh / var(--platform-zoom, 1) - 172px));
+     frame's own padding, now 40 above and 20 below. No ceiling: the height is
+     the board's. The floor keeps it from becoming a stamp on a short screen,
+     where the page goes back to scrolling anyway. */
+  --viewer-board-max: max(320px, calc(100vh / var(--platform-zoom, 1) - 192px));
 
   /* The panel of text ends where the board ends: the row of buttons under it
      is the board's, and the notation running down beside them left the two

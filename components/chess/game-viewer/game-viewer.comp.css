@@ -28,7 +28,9 @@
        cannot use to fill the height it was given. */
     grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(320px, 1fr);
     grid-template-rows: auto auto;
-    gap: 22px;
+    /* A screen that gives the board more air widens the gap
+       (`--viewer-column-gap`); the rows keep theirs. */
+    gap: 22px var(--viewer-column-gap, 22px);
     align-items: stretch;
   }
 

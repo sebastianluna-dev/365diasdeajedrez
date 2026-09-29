@@ -48,7 +48,9 @@ The viewer never saves and never fetches. It receives a PGN, reports the current
 
 **Tree and current path.** `parsePgnTree(pgn)` is memoised. The current path is `path ?? selectedPath`, resolved at render time to the closest existing ancestor when the PGN changed underfoot (an undo, a deleted branch), so there is never a frame with the board at the start. Every path change is both stored and reported through `onPathChange` (kept in a ref so the parent need not memoise). An unparsable PGN renders a single error paragraph with the `_state_error` modifier.
 
-**Layout.** The notation's column measures what the BOARD's row does (`height: 0` plus `min-height`, so an auto row cannot be stretched by a long game), less whatever `--viewer-panel-trim` says: a screen where the buttons sit under the board sets it, and the panel then ends at the board's own bottom edge instead of running down beside them. The lesson sets it to 62px (48 of buttons and 14 of gap); everywhere else it is 0.
+**Layout.** The gap between the board and the notation is `--viewer-column-gap` (22px), which a screen that wants the board to breathe widens — the lesson sets it to 40, the same air it leaves on the board's other two sides.
+
+The notation's column measures what the BOARD's row does (`height: 0` plus `min-height`, so an auto row cannot be stretched by a long game), less whatever `--viewer-panel-trim` says: a screen where the buttons sit under the board sets it, and the panel then ends at the board's own bottom edge instead of running down beside them. The lesson sets it to 62px (48 of buttons and 14 of gap); everywhere else it is 0.
 
 The board's track is `minmax(0, var(--viewer-board-max, 600px))` and the notation's `minmax(320px, 1fr)`: the notation never goes under 320px — with the board sized by the height, a tall window would let it eat the whole row — and not a px more than that, because every px held back there is a px the board cannot use to fill the height it was given.
 

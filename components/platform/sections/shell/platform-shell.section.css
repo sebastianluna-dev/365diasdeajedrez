@@ -143,7 +143,9 @@
      edge. */
   & .platform-shell__content:has(> .platform-page_height_screen) {
     height: calc(100vh / var(--platform-zoom, 1) - 70px);
-    padding-top: 20px;
+    /* 40 under the bar, which is the air the board is given on every side;
+       at the foot, only enough to keep the buttons off the edge. */
+    padding-top: 40px;
     padding-bottom: 20px;
     overflow: hidden;
   }
