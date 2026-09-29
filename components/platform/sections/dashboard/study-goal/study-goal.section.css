@@ -75,7 +75,7 @@
   }
 
   & .study-goal__track {
-    height: 7px;
+    height: 8px;
     border-radius: 1000px;
     background: var(--platform-track);
     overflow: hidden;

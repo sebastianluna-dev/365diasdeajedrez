@@ -6,7 +6,7 @@
   & .progress-indicator__track {
     flex: 1;
     min-width: 60px;
-    height: 6px;
+    height: 8px;
     border-radius: 1000px;
     background: var(--platform-track);
     overflow: hidden;

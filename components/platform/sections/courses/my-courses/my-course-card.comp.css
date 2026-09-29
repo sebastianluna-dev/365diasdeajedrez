@@ -102,7 +102,7 @@
   }
 
   & .my-course-card__track {
-    height: 10px;
+    height: 8px;
     overflow: hidden;
     border-radius: 1000px;
     background: var(--platform-track);
