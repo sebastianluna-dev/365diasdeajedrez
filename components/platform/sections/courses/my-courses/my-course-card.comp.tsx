@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
+import { countLessons } from "@/services/courses/course-rules";
 import type { MyCourseItem } from "@/services/courses/courses.types";
 import "./my-course-card.comp.css";
 
@@ -52,12 +53,7 @@ export function MyCourseCard({ course }: MyCourseCardProps) {
             {/* A course whose lessons say no minutes is measured in lessons alone. */}
             {progress.totalMinutes > 0 && (
               <div className="my-course-card__meter">
-                <p className="my-course-card__figure">
-                  <span className="my-course-card__value">
-                    {progress.completedMinutes}/{progress.totalMinutes}
-                  </span>{" "}
-                  minutos
-                </p>
+                <p className="my-course-card__figure">{`${progress.completedMinutes}/${progress.totalMinutes} minutos`}</p>
                 <div className="my-course-card__track">
                   <div className="my-course-card__fill" style={{ width: `${progress.minutesPercent}%` }} />
                 </div>
@@ -71,10 +67,7 @@ export function MyCourseCard({ course }: MyCourseCardProps) {
                     <CircleCheckSolidIcon className="my-course-card__done-icon" />
                   </span>
                 )}
-                <span className="my-course-card__value">
-                  {progress.completedLessons}/{progress.totalLessons}
-                </span>{" "}
-                {progress.totalLessons === 1 ? "lección" : "lecciones"}
+                {`${progress.completedLessons}/${countLessons(progress.totalLessons)}`}
               </p>
               <div className="my-course-card__track">
                 <div className="my-course-card__fill" style={{ width: `${progress.percent}%` }} />
