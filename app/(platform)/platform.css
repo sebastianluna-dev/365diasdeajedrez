@@ -80,6 +80,12 @@
   /* The "365" of the wordmark: the accent. */
   --platform-logo-accent: var(--platform-accent);
 
+  /* How far a course is gone, on its bars. It is NOT the accent: the accent
+     is what is pressed, and a bar is read, not pressed — and on a screen of
+     red buttons the two would be one thing. The daily goal's bar stays in
+     the accent: what it measures is the day, not a course. */
+  --platform-progress: #0095f8;
+
   --platform-track: #ececec;
 
   /* The dark of a chapter's header, and what is written on it: the text black

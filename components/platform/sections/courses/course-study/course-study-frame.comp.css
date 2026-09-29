@@ -244,7 +244,7 @@
   & .course-study-frame__fill {
     height: 100%;
     border-radius: 1000px;
-    background: var(--platform-accent-bright);
+    background: var(--platform-progress);
   }
 
   & .course-study-frame__options {

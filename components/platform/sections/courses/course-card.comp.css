@@ -171,7 +171,7 @@
   & .course-card__fill {
     height: 100%;
     border-radius: 1000px;
-    background: var(--platform-accent-bright);
+    background: var(--platform-progress);
   }
 
   /* A finished course is no longer in progress: its bar says so in green. */
