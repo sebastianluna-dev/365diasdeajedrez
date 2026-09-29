@@ -21,6 +21,7 @@ export function LessonViewSection({ lesson, errorCode }: LessonViewSectionProps)
       <LessonTracker lessonId={lesson.id} />
 
       <LessonOutline
+        courseId={lesson.courseId}
         courseName={lesson.courseName}
         courseHref={lesson.courseHref}
         courseThumbnail={lesson.courseThumbnail}
@@ -28,6 +29,8 @@ export function LessonViewSection({ lesson, errorCode }: LessonViewSectionProps)
         chapterHref={lesson.chapterHref}
         lessons={lesson.chapterLessons}
         currentLessonId={lesson.id}
+        onlyPriority={lesson.onlyPriorityLessons}
+        returnTo={lesson.href}
       />
 
       <div className="lesson-view__main">

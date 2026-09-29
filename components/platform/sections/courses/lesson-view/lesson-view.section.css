@@ -26,6 +26,11 @@
      page goes back to scrolling anyway. */
   --viewer-board-max: max(320px, calc(100vh / var(--platform-zoom, 1) - 172px));
 
+  /* The panel of text ends where the board ends: the row of buttons under it
+     is the board's, and the notation running down beside them left the two
+     columns finishing at different heights. 48 of buttons and 14 of gap. */
+  --viewer-panel-trim: 62px;
+
   /* Said out loud because the column beside it is out of the flow (fixed to
      the window) and does not take the first track by itself. */
   & .lesson-view__main {

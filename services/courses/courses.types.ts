@@ -244,8 +244,12 @@ export interface LessonView {
   exerciseCount: number;
   prevLessonHref?: string;
   nextLessonHref?: string;
+  /** Its own page, for a form that has to come back to it. */
+  href: string;
   courseHref: string;
   chapterHref: string;
+  /** The student asked to see only the priority lines of this course. */
+  onlyPriorityLessons: boolean;
   trainerHref?: string;
   /** The course's square image, for the column the lesson is read beside. */
   courseThumbnail?: string;
