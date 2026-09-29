@@ -211,18 +211,6 @@
     list-style: none;
   }
 
-  /* The dotted line that strings the marks together, behind them: the lessons
-     of a chapter are one thread and each mark is a stop on it. It runs down
-     the marks' own column, its 2px straddling the centre. */
-  & .lesson-outline__list::before {
-    content: "";
-    position: absolute;
-    top: 12px;
-    bottom: 12px;
-    right: calc(var(--mark-center) - 1px);
-    border-left: 2px dotted var(--platform-border);
-  }
-
   & .lesson-outline__lesson {
     position: relative;
     display: flex;
@@ -231,14 +219,35 @@
     /* The right padding puts the mark's centre on `--mark-center`: half of
        the 18px mark short of it. */
     padding: 18px calc(var(--mark-center) - 9px) 18px 16px;
+    /* Barely tinted: a whole column of rows in the accent's wash reads as a
+       warning, and what this is saying is only "these belong together". */
+    background: var(--platform-accent-mist);
     color: var(--platform-text);
     line-height: 1.35;
   }
 
+  /* The thread that strings the marks together: the lessons of a chapter are
+     one thread and each mark is a stop on it. A tract per row and not one
+     line behind the list, because the rows are filled in now and a line
+     drawn behind them would be covered by every one of them. */
+  & .lesson-outline__lesson::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: calc(var(--mark-center) - 1px);
+    border-left: 2px dotted var(--platform-border-strong);
+  }
+
+  /* Not under the row being read: there the mark is the only thing on the
+     accent, and a grey thread across it reads as a scratch. */
+  & .lesson-outline__lesson.lesson-outline__lesson_state_current::before {
+    display: none;
+  }
+
   /* The hairline between rows stops short of the marks' column: what runs
      down there is the thread, and a rule crossing it would cut it into
-     pieces. 48px is the mark (18) with its padding (16) and air either
-     side. */
+     pieces. */
   & .lesson-outline__lesson::after {
     content: "";
     position: absolute;
@@ -257,15 +266,15 @@
   }
 
   & .lesson-outline__lesson:hover {
-    background: var(--platform-bg);
+    background: var(--platform-accent-soft);
     color: var(--platform-text);
   }
 
   /* The one being read: the only row that is not a link, and the only one
      with a background. */
   & .lesson-outline__lesson.lesson-outline__lesson_state_current {
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
+    background: var(--platform-accent);
+    color: var(--platform-on-accent);
     font-weight: 700;
   }
 
@@ -277,13 +286,18 @@
   /* The mark of each lesson, on the thread: an empty ring while it is
      pending, the filled check once it is done. Both carry their row's
      background, so the dotted line stops at them instead of crossing. */
+  /* Each mark carries ITS ROW's background: that is what cuts the dotted
+     thread at every stop instead of letting it run through them. */
   & .lesson-outline__done,
   & .lesson-outline__pending {
     flex: none;
+    /* Positioned so it is painted OVER the thread, which is the row's own
+       `::before`: in one box, a positioned descendant beats a plain one. */
+    position: relative;
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: var(--platform-surface);
+    background: var(--platform-accent-mist);
   }
 
   & .lesson-outline__done {
@@ -295,17 +309,19 @@
     border: 2px solid var(--platform-border-strong);
   }
 
+  & .lesson-outline__lesson:hover .lesson-outline__done,
   & .lesson-outline__lesson:hover .lesson-outline__pending {
-    background: var(--platform-bg);
+    background: var(--platform-accent-soft);
   }
 
   & .lesson-outline__lesson_state_current .lesson-outline__done {
-    color: currentColor;
+    background: var(--platform-accent);
+    color: var(--platform-on-accent);
   }
 
   & .lesson-outline__lesson_state_current .lesson-outline__pending {
-    background: var(--platform-accent-soft);
-    border-color: currentColor;
+    background: var(--platform-accent);
+    border-color: var(--platform-on-accent);
   }
 
   /* Piled up in one column the panel stops being an edge of the window: it

@@ -74,6 +74,10 @@
   --platform-accent-soft: #f8e2e2;
   /* An even fainter wash: the active menu item. */
   --platform-accent-wash: #fcf0f0;
+  /* Barely tinted, for a whole list of rows: the wash is a colour, and a
+     column of it would read as a warning. This one has to look like paper
+     that happens to be warm. */
+  --platform-accent-mist: #f8f4f4;
 
   /* Red on a light background. It is the public site's --color-accent-red,
      already chosen for this very case; #e5484d washed out too much here. It
