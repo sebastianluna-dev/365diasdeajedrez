@@ -18,7 +18,7 @@ description: "The lesson screen: the column of the chapter's lessons, the lesson
 
 Where a student studies, in three columns: where the lesson falls in the course ([`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline)), the board, and what is said about the position.
 
-The lesson is a PGN with commentary, so the middle and the right are the [`GameViewer`](/components/chess/game-viewer/game-viewer) with `moveList="flow"`: a lesson is **read**, the moves run on until a comment breaks the line, whereas the table is for consulting a game move by move. The viewer's header carries the lesson's name, its minutes and a "Prioridad" badge.
+The lesson is a PGN with commentary, so the middle and the right are the [`GameViewer`](/components/chess/game-viewer/game-viewer) with `moveList="flow"`: a lesson is **read**, the moves run on until a comment breaks the line, whereas the table is for consulting a game move by move. The viewer's header carries **the lesson's name and whether it is a priority, and nothing else**: where the lesson falls in the course is the column's job, and what it explains is written move by move below it.
 
 Under the viewer, the actions: mark as completed (or the completed state), next lesson or back to the chapter, "Entrenar esta lección (n)" when it has exercises, and nothing that goes back: the chapter is a click away in the menu and the browser does the rest.
 
@@ -33,7 +33,7 @@ Under the viewer, the actions: mark as completed (or the completed state), next 
 
 ## Behaviour
 
-- **A lesson is not numbered, and it no longer names its chapter either.** The viewer's title is the lesson's name and its subtitle its minutes alone («20 min»): the column on the left already says the course, the chapter and where in it this lesson falls.
+- **A lesson is not numbered, it does not name its chapter and it does not say its minutes.** The head is the name and, when it is one, the «Prioridad» badge: the column on the left already says the course, the chapter and where in it this lesson falls. `description` is not drawn either — the lesson explains itself in the commentary of its moves.
 - [`LessonTracker`](/components/platform/sections/courses/lesson-view/lesson-tracker) is rendered first and marks the lesson as opened from the client, because writes never happen during the server render.
 - "Marcar como completada" is `<form action={completeLesson.bind(null, lesson.id)}>`; the action records completion, updates the course's return point and revalidates. When `statusCode` is `COMPLETED` the form is replaced by the check mark and "Lección completada".
 - The viewer's `skip` slot gets a "Saltar" link to the next lesson (titled "Pasar a la siguiente lección sin marcar esta") when there is one.

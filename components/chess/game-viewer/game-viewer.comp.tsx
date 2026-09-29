@@ -50,10 +50,6 @@ interface GameViewerProps {
   /** Dotted path to open the viewer at (TrainingExercise.path / ClassBlock.movePath). */
   initialPath?: string;
   title?: string;
-  /** Second line of the header: chapter, event, whatever places the game. */
-  subtitle?: string;
-  /** Text of the game or the lesson, under the subtitle. */
-  description?: string;
   /** Badge to the right of the title ("Prioridad"). */
   badge?: string;
   /** Button that closes the bottom bar, right-aligned (the notes). */
@@ -142,8 +138,6 @@ export function GameViewer({
   orientation = "white",
   initialPath,
   title,
-  subtitle,
-  description,
   badge,
   footerActions,
   positionActions,
@@ -564,7 +558,7 @@ export function GameViewer({
       {skip && <div className="game-viewer__skip">{skip}</div>}
     </div>
   );
-  const hasHead = Boolean(title || subtitle || description || badge);
+  const hasHead = Boolean(title || badge);
 
   return (
     <div
@@ -680,8 +674,6 @@ export function GameViewer({
               <div className="game-viewer__panel-head">
                 <div className="game-viewer__panel-heading">
                   {title && <p className="game-viewer__panel-title">{title}</p>}
-                  {subtitle && <p className="game-viewer__panel-subtitle">{subtitle}</p>}
-                  {description && <p className="game-viewer__panel-description">{description}</p>}
                 </div>
                 {badge && <span className="game-viewer__panel-badge">{badge}</span>}
               </div>
@@ -701,7 +693,7 @@ export function GameViewer({
               />
             )}
 
-            <div className="game-viewer__moves">
+            <div className={`game-viewer__moves${moveList === "flow" ? " game-viewer__moves_list_flow" : ""}`}>
               {moveList === "flow" ? (
                 <MoveTree
                   tree={tree}

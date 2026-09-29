@@ -23,11 +23,6 @@ export function LessonViewSection({ lesson, errorCode }: LessonViewSectionProps)
   const errorMessage = studentErrorMessage(errorCode);
   const isCompleted = lesson.statusCode === PROGRESS_STATUS.COMPLETED;
 
-  // A lesson is not numbered, and it no longer names its chapter either: the
-  // column on the left already says the course, the chapter and where in it
-  // this lesson falls. What is left is how long it lasts.
-  const subtitle = lesson.estimatedDuration ? `${lesson.estimatedDuration} min` : undefined;
-
   return (
     <section className="lesson-view">
       <LessonTracker lessonId={lesson.id} />
@@ -49,9 +44,10 @@ export function LessonViewSection({ lesson, errorCode }: LessonViewSectionProps)
           // The lesson is READ: the running text accompanies the narrative, whereas
           // the table is for consulting a game move by move.
           moveList="flow"
+          // The head carries the lesson's name and whether it is a priority,
+          // and nothing else: where it falls in the course is the column's
+          // job, and what it explains is written move by move below.
           title={lesson.name}
-          subtitle={subtitle}
-          description={lesson.description}
           badge={lesson.isPriority ? "Prioridad" : undefined}
           skip={
             lesson.nextLessonHref && (

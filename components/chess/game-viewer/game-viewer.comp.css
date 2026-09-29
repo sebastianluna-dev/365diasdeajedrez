@@ -277,20 +277,6 @@
     color: var(--platform-text);
   }
 
-  & .game-viewer__panel-subtitle {
-    margin: 5px 0 0;
-    font-size: 14.5px;
-    color: var(--platform-text-subtle);
-  }
-
-  & .game-viewer__panel-description {
-    margin: 9px 0 0;
-    font-size: 14.5px;
-    line-height: 1.55;
-    color: var(--platform-text-muted);
-    text-wrap: pretty;
-  }
-
   & .game-viewer__panel-badge {
     flex: none;
     padding: 6px 12px;
@@ -310,11 +296,17 @@
   & .game-viewer__moves {
     flex: 1;
     min-height: 0;
-    /* No padding: the notation rows reach the panel's four edges, which is what
-       gives the column reading — the numbers band from side to side and the
-       first move at the very top. */
+    /* No padding: the notation ROWS reach the panel's four edges, which is
+       what gives the column reading — the numbers band from side to side and
+       the first move at the very top. */
     padding: 0;
     overflow: auto;
+  }
+
+  /* Prose is read, not scanned: it takes the same margin the head above it
+     has, so the text lines up with the title and never touches the edges. */
+  & .game-viewer__moves.game-viewer__moves_list_flow {
+    padding: 20px 22px;
   }
 
   & .game-viewer__toolbar {
@@ -517,11 +509,6 @@
 
     & .game-viewer__panel-title {
       font-size: clamp(21px, 2.4vh, 32px);
-    }
-
-    & .game-viewer__panel-subtitle,
-    & .game-viewer__panel-description {
-      font-size: clamp(15px, 1.6vh, 21px);
     }
 
     & .game-viewer__panel-badge {
