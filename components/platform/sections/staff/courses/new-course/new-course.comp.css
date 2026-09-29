@@ -6,7 +6,7 @@
   /* Wider than the study dialog: the eight content-type cards want three
      columns to keep the list short. */
   & .new-course__dialog {
-    width: min(720px, calc(100vw - 32px));
+    width: min(720px, calc(100vw / var(--platform-zoom, 1) - 32px));
     border-radius: 8px;
   }
 

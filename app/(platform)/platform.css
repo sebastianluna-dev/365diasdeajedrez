@@ -135,6 +135,15 @@
   --platform-warning-border: #eddcb4;
 
   /* On light, layers are separated by shadow, not by border. */
+  /* The platform is drawn one tenth larger than it is written: every size in
+     these stylesheets is the one the design was drawn at, and the interface
+     was read small on a laptop. `zoom` is what a browser's own 110% does, so
+     nothing here is rewritten and a person's zoom still multiplies on top.
+     A VIEWPORT unit is not scaled by it, so whatever is measured against the
+     window divides by this (the chess pieces, shared with the public site,
+     read it with a fallback of 1). */
+  --platform-zoom: 1.1;
+
   --platform-shadow-card: 0 1px 2px rgba(0, 0, 0, 0.05), 0 8px 24px rgba(0, 0, 0, 0.06);
   --platform-shadow-bar: 0 1px 0 var(--platform-border);
 }
@@ -152,6 +161,7 @@
    without this the scroll bounce shows black under the content, and the
    login page, which has no shell, would be left half-themed. */
 body.platform-theme {
+  zoom: var(--platform-zoom);
   /* The canvas is a light grey and what rests on it is white: a card is told
      from the page by its fill, before its border or its shadow. */
   background: var(--platform-bg);
@@ -390,7 +400,7 @@ html body.platform-theme[data-scroll-locked] {
   color: var(--platform-text);
   box-shadow: var(--platform-shadow-card);
   /* A tall modal scrolls inside instead of running off the screen. */
-  max-height: calc(100dvh - 40px);
+  max-height: calc(100dvh / var(--platform-zoom, 1) - 40px);
   overflow: auto;
 
   /* Every dialog comes in with a fade and a short rise and goes out the same

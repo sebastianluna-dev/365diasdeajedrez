@@ -21,7 +21,7 @@
   }
 
   & .edit-game__dialog {
-    width: min(680px, calc(100vw - 32px));
+    width: min(680px, calc(100vw / var(--platform-zoom, 1) - 32px));
   }
 
   & .edit-game__head {

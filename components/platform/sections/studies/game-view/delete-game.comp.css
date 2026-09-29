@@ -39,7 +39,7 @@
   }
 
   & .delete-game__dialog {
-    width: min(520px, calc(100vw - 32px));
+    width: min(520px, calc(100vw / var(--platform-zoom, 1) - 32px));
   }
 
   & .delete-game__head {

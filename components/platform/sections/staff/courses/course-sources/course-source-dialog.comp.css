@@ -23,7 +23,7 @@
   /* The size and the rounding: the centring, the backdrop, the surface and
      the entry and exit motion are set by `.platform-dialog`. */
   & .course-source-dialog__dialog {
-    width: min(640px, calc(100vw - 32px));
+    width: min(640px, calc(100vw / var(--platform-zoom, 1) - 32px));
     border-radius: 8px;
   }
 

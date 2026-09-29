@@ -1,5 +1,5 @@
 .platform-shell {
-  min-height: 100vh;
+  min-height: calc(100vh / var(--platform-zoom, 1));
   /* The canvas is the page's grey; the bar is white on it, closed by its
      hairline shadow. */
   background: var(--platform-bg);

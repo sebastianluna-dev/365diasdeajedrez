@@ -72,7 +72,7 @@
   /* Only the size: the centring, the backdrop and the surface are set by
      `.platform-dialog`. */
   & .delete-study__dialog {
-    width: min(520px, calc(100vw - 32px));
+    width: min(520px, calc(100vw / var(--platform-zoom, 1) - 32px));
   }
 
   & .delete-study__head {
