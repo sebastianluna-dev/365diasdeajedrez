@@ -74,7 +74,7 @@
     color: var(--platform-text-faint);
   }
 
-  /* On the orange of the active move, the usual grey is not legible: it takes
+  /* On the accent of the active move, the usual grey is not legible: it takes
      the text colour and stays behind through transparency. */
   & .move-table__move_state_active .move-table__eval {
     color: inherit;

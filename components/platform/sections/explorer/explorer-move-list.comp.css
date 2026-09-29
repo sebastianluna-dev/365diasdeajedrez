@@ -62,7 +62,7 @@
 
   & .explorer-move-list__move_current {
     background: var(--platform-accent);
-    color: var(--platform-text);
+    color: var(--platform-on-accent);
     font-weight: 600;
   }
 

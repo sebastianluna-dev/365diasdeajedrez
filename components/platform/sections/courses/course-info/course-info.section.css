@@ -170,7 +170,7 @@
     border: 0;
     border-radius: 8px;
     background: var(--platform-accent);
-    color: var(--platform-text);
+    color: var(--platform-on-accent);
     font-family: inherit;
     font-size: 15.5px;
     font-weight: 800;
@@ -179,7 +179,7 @@
 
   & .course-info__cta:hover {
     background: var(--platform-accent-hover);
-    color: var(--platform-text);
+    color: var(--platform-on-accent);
   }
 
   & .course-info__cta:disabled {

@@ -78,7 +78,7 @@
   & .platform-check-cards__card[data-state="checked"] .platform-check-cards__mark {
     border-color: var(--platform-accent);
     background: var(--platform-accent);
-    color: var(--platform-text);
+    color: var(--platform-on-accent);
   }
 
   & .platform-check-cards__mark-icon {

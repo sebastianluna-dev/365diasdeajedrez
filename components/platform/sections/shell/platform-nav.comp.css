@@ -26,7 +26,7 @@
     color: var(--platform-text);
   }
 
-  /* The section you are in, in soft orange with the text in the orange ink.
+  /* The section you are in, in soft accent with the text in the accent ink.
      With the wash and the text in black, bold alone barely set it apart
      from a hovered item. The rounding is inherited from the element itself,
      so active and hover have the same shape. */

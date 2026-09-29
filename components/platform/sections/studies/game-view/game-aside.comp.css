@@ -190,7 +190,7 @@
   }
 
   /* The sign, only in this card: the same button is used on the study page,
-     where it is the usual orange button. */
+     where it is the usual accent button. */
   & .game-aside__new .platform-button::before {
     content: "+";
     font-size: 17px;

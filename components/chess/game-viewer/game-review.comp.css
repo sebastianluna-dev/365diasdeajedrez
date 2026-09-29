@@ -23,7 +23,7 @@
     border: 0;
     border-radius: 8px;
     background: var(--platform-accent);
-    color: var(--platform-text);
+    color: var(--platform-on-accent);
     font-family: inherit;
     font-size: 14px;
     font-weight: 700;

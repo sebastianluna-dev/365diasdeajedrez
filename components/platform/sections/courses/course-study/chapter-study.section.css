@@ -109,7 +109,7 @@
     background: var(--platform-surface);
   }
 
-  /* The band the lesson is named on: a wash, and the orange of the buttons'
+  /* The band the lesson is named on: a wash, and the accent of the buttons'
      rest for the one that comes next. */
   & .chapter-study__lesson-head {
     display: flex;

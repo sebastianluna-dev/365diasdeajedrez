@@ -2,7 +2,7 @@
   flex: none;
 
   /* The trigger: a quiet pill with the sign in front, quieter than the
-     orange button because it is the page's one action and sits by the
+     accent button because it is the page's one action and sits by the
      title. White, because it rests on the canvas; grey on hover. */
   & .new-study__open {
     display: inline-flex;

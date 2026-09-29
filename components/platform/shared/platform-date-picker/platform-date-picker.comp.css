@@ -181,7 +181,7 @@
 
   & .platform-date-picker__day.platform-date-picker__day_selected {
     background: var(--platform-accent);
-    color: var(--platform-surface);
+    color: var(--platform-on-accent);
     font-weight: 700;
     box-shadow: none;
   }

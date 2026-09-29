@@ -6,16 +6,20 @@
  * rewritten here: everything that paints with them changes on its own.
  *
  * The brand's black keeps its value and changes role: #16110D goes from
- * background to text. The orange is the platform's own on light, #ED7F31 — a
- * tone deeper than the public site's #FF9143, which is drawn on black — and
- * is reserved for FILLS (button, progress bar, a check), where it does
- * contrast. On a light background, as TEXT, it is not legible: that is what
- * --platform-accent-ink (#B8611F) is for.
+ * background to text.
+ *
+ * THE ACCENT IS BY THEME. On a light background it is the brand's red,
+ * #A81E22, the one the blog — the public site's light section — already
+ * draws its logo, links and buttons in. On a dark background it is the
+ * brand's orange. The platform has the light theme only, so red is all there
+ * is today; the dark theme is not built, and the day it is, it redefines the
+ * `--platform-accent*` tokens below in orange and nothing else has to change.
+ * That is why no stylesheet names a colour: they all say "the accent".
  */
 
 :root {
   /* Every grey is neutral — no warmth in it — so nothing reads as tinted next
-     to the orange; only the text black keeps the brand's warm #16110d. */
+     to the accent; only the text black keeps the brand's warm #16110d. */
   /* The canvas of every page, and the soft fill INSIDE a white surface (a
      hover, a table's head, an inset). What sits on the canvas itself cannot
      be painted with it: it would not be seen. */
@@ -43,44 +47,50 @@
      dots and the row chevron — never for text. */
   --platform-text-faint: #bdbdbd;
 
-  /* The orange of the light theme, the only one there is for now. */
-  --platform-accent: #ed7f31;
-  /* A step deeper, for what is filled with the orange and is under the pointer. */
-  --platform-accent-hover: #d96f24;
-  /* What is written on the orange of «Aprender», the course's main button. */
+  /* The accent of the light theme: the brand's red. A dark theme would set
+     these to the brand's orange (see the note at the top). */
+  --platform-accent: #a81e22;
+  /* A step deeper, for what is filled with the accent and is under the pointer. */
+  --platform-accent-hover: #8c171b;
+  /* What is written on a fill of the accent: a button, a selected day. */
   --platform-on-accent: #ffffff;
-  /* Orange that is legible on light: links, figures and accent text. */
-  --platform-accent-ink: #b8611f;
-  --platform-accent-soft: #fbeadb;
+  /* The accent as text: links, figures, labels. The red reads on white as it
+     is; it is a token of its own because the orange of a dark theme, or of a
+     lighter accent, would need a different tone for text than for fills. */
+  --platform-accent-ink: #a81e22;
+  /* The tint of a chip, a tag, the soft button. */
+  --platform-accent-soft: #f8e2e2;
   /* An even fainter wash: the active menu item. */
-  --platform-accent-wash: #fbf1e7;
+  --platform-accent-wash: #fcf0f0;
 
   /* Red on a light background. It is the public site's --color-accent-red,
-     already chosen for this very case; #e5484d washed out too much here. */
+     already chosen for this very case; #e5484d washed out too much here. It
+     is the SAME red as the accent of the light theme: what is dangerous is
+     told from what is merely the accent by its words and its place, not by
+     its colour. */
   --platform-danger: #a81e22;
-  /* The logo's accent on light: the red the blog's header draws the "365" in,
-     which is what takes the orange's place in the wordmark when the
-     background is light. The same value as the danger red, and a token of its
-     own because it is the brand's and not a warning. */
-  --platform-logo-accent: #a81e22;
+  /* The "365" of the wordmark: the accent. */
+  --platform-logo-accent: var(--platform-accent);
 
   --platform-track: #ececec;
 
   /* The dark of a chapter's header, and what is written on it: the text black
-     as a fill, a cream that is not the page's white and the orange a tone up,
-     which is the one that reads on black. */
+     as a fill, a cream that is not the page's white and the accent a tone up
+     (the site's --color-accent-red-on-dark), which is the one that reads on
+     black. */
   --platform-ink: #16110d;
   --platform-on-ink: #f4eee4;
-  --platform-accent-on-ink: #ffb27a;
+  --platform-accent-on-ink: #f44046;
 
-  /* The six course levels, the easiest the lightest: one orange that darkens
-     with the difficulty, so a row of dots reads as a scale without a legend. */
-  --platform-level-1: #fcd9b8;
-  --platform-level-2: #fdba82;
-  --platform-level-3: #ff9143;
-  --platform-level-4: #e0691e;
-  --platform-level-5: #b04e12;
-  --platform-level-6: #6e2e08;
+  /* The six course levels, the easiest the lightest: the accent, which
+     darkens with the difficulty, so a row of dots reads as a scale without a
+     legend. The fourth is the accent itself. */
+  --platform-level-1: #f6d0d1;
+  --platform-level-2: #ec9c9f;
+  --platform-level-3: #d9585c;
+  --platform-level-4: #a81e22;
+  --platform-level-5: #78151a;
+  --platform-level-6: #450b0e;
 
   /* Typography. The whole platform uses SF Pro Display — display and text —;
      Gramatika and Suisse Intl stay on the public site. A single token so that
@@ -110,7 +120,7 @@
 }
 
 /* The global focus of globals.css is an orange meant for a dark background; on
-   the platform's light one the ink orange is used, which does contrast. */
+   the platform's light one the accent's ink is used, which does contrast. */
 .platform-theme :focus-visible {
   outline: 2px solid var(--platform-accent-ink);
   outline-offset: 2px;
@@ -221,7 +231,7 @@ html body.platform-theme[data-scroll-locked] {
   border: 0;
   border-radius: 8px;
   background: var(--platform-accent);
-  color: var(--platform-text);
+  color: var(--platform-on-accent);
   font-size: 15.5px;
   font-weight: 700;
   font-family: inherit;
@@ -230,7 +240,7 @@ html body.platform-theme[data-scroll-locked] {
 
 .platform-button:hover {
   background: var(--platform-accent-hover);
-  color: var(--platform-text);
+  color: var(--platform-on-accent);
 }
 
 /* Disabled covers both "not allowed yet" and "on its way" (`SubmitButton` while
@@ -260,7 +270,7 @@ html body.platform-theme[data-scroll-locked] {
 }
 
 /* The quiet button: a white fill that turns grey on hover, for a screen
-   whose one action should not shout in orange next to the title (the staff
+   whose one action should not shout in the accent next to the title (the staff
    catalogs). It sits on the canvas, so it cannot be the canvas's grey. Same
    box as the primary, only the colours change. */
 .platform-button_variant_quiet {
@@ -277,7 +287,7 @@ html body.platform-theme[data-scroll-locked] {
   background: var(--platform-surface);
 }
 
-/* The soft button: the orange wash with the legible orange on top, and a step
+/* The soft button: the accent's wash with its ink on top, and a step
    LIGHTER on hover instead of darker. It is what the staff's courses use for
    every action that does something — «Gestionar», «Nuevo curso», «Guardar
    metadatos» —, so that a screen with an action in each card does not show
@@ -297,7 +307,7 @@ html body.platform-theme[data-scroll-locked] {
 }
 
 /* The ink button: the dark one, for the action of a dialog whose page already
-   has its orange one. Same box as the primary, only the colours change. */
+   has its accent one. Same box as the primary, only the colours change. */
 .platform-button_variant_ink {
   background: var(--platform-text);
   color: var(--platform-surface);

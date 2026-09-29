@@ -15,8 +15,8 @@
     background-color 140ms ease-out,
     border-color 140ms ease-out;
 
-  /* Hovering tints the card with the faint orange and turns its outline
-     orange, like the active chip of the filter above; the shadow does not
+  /* Hovering tints the card with the faint accent and turns its outline
+     accent, like the active chip of the filter above; the shadow does not
      grow, so nothing lifts or moves. */
   &:hover {
     background: var(--platform-accent-wash);
@@ -31,7 +31,7 @@
   }
 
   /* The study's tile: the wordmark's two squares (the site's logo mark), in
-     orange on the card's own surface, inside an orange border. The mark fills
+     accent on the card's own surface, inside an accent border. The mark fills
      the box and is clipped by the rounding, like the wordmark's corner is. */
   & .study-card__tile {
     flex: none;
@@ -103,8 +103,8 @@
     transition: background-color 140ms ease-out;
   }
 
-  /* On the hovered card the grey pill vanished against the orange wash: it
-     takes the soft orange fill. The text stays the muted grey, because the
+  /* On the hovered card the grey pill vanished against the accent wash: it
+     takes the soft accent fill. The text stays the muted grey, because the
      accent ink measured 3.75:1 on that fill, under AA for text this small. */
   &:hover .study-card__readonly {
     background: var(--platform-accent-soft);

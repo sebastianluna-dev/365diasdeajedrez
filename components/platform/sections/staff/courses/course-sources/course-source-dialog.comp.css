@@ -3,7 +3,7 @@
 
   /* «Añadir fuente», in the card's header, is the shared soft button. This one
      is the «Editar» of a row: a quiet word at the height of the title's first
-     line, which next to every row would be a wall of orange as a button. */
+     line, which next to every row would be a wall of accent as a button. */
   & .course-source-dialog__edit {
     padding: 2px 0;
     border: 0;

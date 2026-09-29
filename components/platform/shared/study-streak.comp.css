@@ -36,7 +36,7 @@
     color: var(--platform-text);
   }
 
-  /* The brand orange, not the emoji's multicolour: the flame accompanies the
+  /* The platform's accent, not the emoji's multicolour: the flame accompanies the
      figure and has to read as part of it. */
   & .study-streak__flame {
     flex: none;

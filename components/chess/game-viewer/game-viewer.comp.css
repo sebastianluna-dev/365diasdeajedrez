@@ -151,7 +151,7 @@
     cursor: pointer;
   }
 
-  /* No outline: what marks the button is the house's light orange, and only
+  /* No outline: what marks the button is the house's light accent, and only
      on hover. All the same, the highlighted one too. */
   & .game-viewer__nav-button:hover:not(:disabled) {
     background: var(--platform-accent-soft);

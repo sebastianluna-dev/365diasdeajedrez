@@ -233,7 +233,7 @@
   }
 
   /* Inside the field, so it is smaller than the page's buttons, but the same
-     soft orange as every action of the course. */
+     soft accent as every action of the course. */
   & .course-syllabus__new-submit {
     position: absolute;
     right: 7px;

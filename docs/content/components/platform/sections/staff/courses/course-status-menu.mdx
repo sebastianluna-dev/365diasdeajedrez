@@ -29,7 +29,7 @@ The status is part of how a course is named, so it sits on the title's row; and 
 
 ## Behaviour
 
-- **The pill** is the select's trigger: a dot, the status in bold and a solid caret, green for «Publicado», soft orange for «Borrador» and grey for «Archivado».
+- **The pill** is the select's trigger: a dot, the status in bold and a solid caret, green for «Publicado», soft accent for «Borrador» and grey for «Archivado».
 - **It offers what the server does.** «Publicado» calls `publishCourse` and is disabled while the course cannot be published; «Archivado» calls `archiveCourse`. Nothing takes a course back to draft, so «Borrador» is only ever the current status or a disabled option.
 - **It shows what the course has, not what was picked**: the select is controlled by `statusCode`, so if the action refuses the pill stays where it was and the page renders the reason from `?error=`.
 - The change runs in a transition; while it is on its way the pill is disabled and dimmed.

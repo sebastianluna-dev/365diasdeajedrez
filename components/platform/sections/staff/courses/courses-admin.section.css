@@ -51,7 +51,7 @@
 
   /* The status filters are the same chips as the kind filters of "Mis
      estudios" (`.studies-browser__chip`): outlined pills in the subtle grey,
-     one weight in both states, and the active one told by the orange border
+     one weight in both states, and the active one told by the accent border
      and the faint wash. They are links here, not buttons, so no hover: the
      chip that is on is the only one that stands out. */
   & .courses-admin__filters {

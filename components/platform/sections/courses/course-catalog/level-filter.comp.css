@@ -15,7 +15,7 @@
 
   /* The same chips as the kind filters of "Mis estudios"
      (`.studies-browser__chip`): outlined pills, one weight in both states, the
-     active one told by the orange border and the faint wash. */
+     active one told by the accent border and the faint wash. */
   & .level-filter__chip {
     display: inline-flex;
     align-items: baseline;

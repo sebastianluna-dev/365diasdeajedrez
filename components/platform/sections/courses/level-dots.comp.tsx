@@ -14,7 +14,7 @@ const TONES = 6;
 
 /**
  * Who a course is for, in the width of a word: one dot per level of the
- * catalog, lit the ones the course is aimed at, each in the orange of its
+ * catalog, lit the ones the course is aimed at, each in the accent of its
  * difficulty. What the dots mean is said by the tip that opens on hover and
  * on keyboard focus, and by the label a screen reader is given.
  *
