@@ -35,13 +35,17 @@
     color: var(--platform-text);
   }
 
-  /* One flat colour, not the emoji's multicolour: the flame accompanies the
-     figure and has to read as part of it. */
+  /* Two colours and not the emoji's many: the fire, and the inner flame it
+     is hollow in. */
   & .study-streak__flame {
     flex: none;
     width: 34px;
     height: 34px;
     color: var(--platform-flame);
+  }
+
+  & .study-streak__flame-core {
+    fill: var(--platform-flame-core);
   }
 
   & .study-streak__value {
@@ -58,6 +62,12 @@
   & .study-streak__figure_state_unlit,
   & .study-streak__figure_state_unlit .study-streak__flame {
     color: var(--platform-text-faint);
+  }
+
+  /* Out, the fire is a grey silhouette and its core is the card again: what
+     is not burning reads as the hollow flame it was. */
+  & .study-streak__figure_state_unlit .study-streak__flame-core {
+    fill: var(--platform-surface);
   }
 
   & .study-streak__arrow {

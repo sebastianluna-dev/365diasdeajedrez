@@ -34,7 +34,7 @@ export function StudyStreak({ streak }: StudyStreakProps) {
 
       <p className="study-streak__figures">
         <span className={`study-streak__figure${isLit ? "" : " study-streak__figure_state_unlit"}`}>
-          <FlameIcon className="study-streak__flame" />
+          <FlameIcon className="study-streak__flame" coreClassName="study-streak__flame-core" />
           <span className="study-streak__value">{streak.days}</span>
         </span>
 
@@ -42,7 +42,7 @@ export function StudyStreak({ streak }: StudyStreakProps) {
           <>
             <ChevronIcon className="study-streak__arrow" />
             <span className="study-streak__figure study-streak__figure_state_unlit" aria-hidden="true">
-              <FlameIcon className="study-streak__flame" />
+              <FlameIcon className="study-streak__flame" coreClassName="study-streak__flame-core" />
               <span className="study-streak__value">{streak.days + 1}</span>
             </span>
           </>

@@ -86,10 +86,11 @@
      the accent: what it measures is the day, not a course. */
   --platform-progress: #0095f8;
 
-  /* The fire of the daily streak. A colour of its own, like the progress
-     blue: a flame is neither an action nor a warning, and in the accent's red
-     it read as one. */
+  /* The fire of the daily streak, and the inner flame the fire is hollow in.
+     A colour of its own, like the progress blue: a flame is neither an action
+     nor a warning, and in the accent's red it read as one. */
   --platform-flame: #ffb82f;
+  --platform-flame-core: #ff482f;
 
   --platform-track: #ececec;
 
