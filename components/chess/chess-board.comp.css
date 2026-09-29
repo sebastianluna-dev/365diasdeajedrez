@@ -144,6 +144,13 @@
     zoom: calc(1 / var(--platform-zoom, 1));
     width: 100%;
     aspect-ratio: 1;
+    /* The frame the board is read inside. `outline` and not `border`: a
+       border would join the box chessground measures, and the board would be
+       drawn 4px wider than the hole it was given. Drawn INWARDS, because what
+       holds the board clips whatever falls outside it (the edge squares are
+       meant to be seen whole) and an outline on the outside was cut away. */
+    outline: 2px solid var(--platform-ink, #16110d);
+    outline-offset: -2px;
   }
 
   /* --- chessground board surface --- */
