@@ -26,10 +26,6 @@
      page goes back to scrolling anyway. */
   --viewer-board-max: max(320px, calc(100vh / var(--platform-zoom, 1) - 172px));
 
-  /* The board is framed here: it is the whole of what is looked at, and
-     without an edge its light squares ran into the page behind them. */
-  --board-frame: var(--platform-ink);
-
   /* Said out loud because the column beside it is out of the flow (fixed to
      the window) and does not take the first track by itself. */
   & .lesson-view__main {
