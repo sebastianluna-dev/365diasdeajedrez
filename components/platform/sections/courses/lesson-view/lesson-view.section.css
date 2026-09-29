@@ -60,20 +60,4 @@
     width: 17px;
     height: 17px;
   }
-
-  & .lesson-view__back {
-    margin-left: auto;
-    font-size: 15px;
-    color: var(--platform-text-muted);
-  }
-
-  & .lesson-view__back:hover {
-    color: var(--platform-accent-ink);
-  }
-
-  @media (max-width: 760px) {
-    & .lesson-view__back {
-      margin-left: 0;
-    }
-  }
 }

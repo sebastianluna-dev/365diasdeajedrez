@@ -95,14 +95,6 @@ export function LessonViewSection({ lesson, errorCode }: LessonViewSectionProps)
             Entrenar esta lección ({lesson.exerciseCount})
           </Link>
         )}
-
-        {/* The design does not draw it, but without this one can only go back
-            with the browser button. Set apart on the right and understated. */}
-        {lesson.prevLessonHref && (
-          <Link href={lesson.prevLessonHref} className="lesson-view__back">
-            ← Lección anterior
-          </Link>
-        )}
       </div>
     </section>
   );

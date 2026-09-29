@@ -18,7 +18,7 @@ description: "The lesson screen: the lesson's PGN in the GameViewer read as runn
 
 Where a student studies. The lesson is a PGN with commentary, so the screen is the [`GameViewer`](/components/chess/game-viewer/game-viewer) with `moveList="flow"`: a lesson is **read**, the running text accompanies the narrative, whereas the table is for consulting a game move by move. The viewer's header slots carry what used to sit above the board: "n. Name" as title, the chapter, position within it and duration as subtitle, the description, and a "Prioridad" badge.
 
-Under the viewer, the actions: mark as completed (or the completed state), next lesson or back to the chapter, "Entrenar esta lección (n)" when it has exercises, and a quiet "← Lección anterior" that the design does not draw but without which one could only go back with the browser button.
+Under the viewer, the actions: mark as completed (or the completed state), next lesson or back to the chapter, "Entrenar esta lección (n)" when it has exercises, and nothing that goes back: the chapter is a click away in the menu and the browser does the rest.
 
 «Entrenar esta lección» is not drawn today: the Move Trainer is switched off (`MOVE_TRAINER_ENABLED`) and `getLessonView` drops `trainerHref`.
 
@@ -39,7 +39,7 @@ Under the viewer, the actions: mark as completed (or the completed state), next 
 
 ## Markup & styling
 
-Block `.lesson-view` (78 lines).
+Block `.lesson-view` (63 lines).
 
 **Elements:** `.lesson-view__skip`, `.lesson-view__actions`, `.lesson-view__action`, `.lesson-view__action-icon`, `.lesson-view__completed`, `.lesson-view__completed-icon`, `.lesson-view__back`
 
@@ -49,7 +49,7 @@ No modifiers.
 
 **Tokens:** `--platform-accent-ink`, `--platform-border-strong`, `--platform-success-ink`, `--platform-success-soft`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
 
-**Breakpoints:** `(max-width: 760px)` stacks the action buttons.
+No breakpoints of its own: the viewer and the buttons bring theirs.
 
 ## Usage
 

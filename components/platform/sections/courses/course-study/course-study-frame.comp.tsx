@@ -4,7 +4,6 @@ import Link from "next/link";
 import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
-import { platformRoutes } from "@/lib/platform-routes";
 import type { CourseDetail } from "@/services/courses/courses.types";
 import { LearnMode } from "./learn-mode.comp";
 import { ResetProgress } from "./reset-progress.comp";
@@ -29,12 +28,13 @@ interface CourseStudyFrameProps {
 const COVER_SIZES = "96px";
 
 /**
- * What is around every page of a course being studied: on top, the way back
- * one step — from the chapters to «Mis cursos», from a chapter to the
- * chapters —; under it, the course with its two buttons — «Aprender», the
- * next lesson, and «Repasar», the exercises of what was already learned —; on
- * the right, the course's options and its one setting. The page puts its
- * column in the middle.
+ * What is around every page of a course being studied: on top, the course
+ * with its two buttons — «Aprender», the next lesson, and «Repasar», the
+ * exercises of what was already learned —; on the right, the course's options
+ * and its one setting. The page puts its column in the middle.
+ *
+ * Nothing here goes back: the menu leads to «Mis cursos» and the browser
+ * does the rest.
  *
  * The course's progress is on a chapter's page only. The page that lists the
  * chapters says how far each one is, and that is the progress it shows.
@@ -52,10 +52,6 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
 
   return (
     <div className="course-study-frame">
-      <Link href={chapter ? course.studyHref : platformRoutes.courses} className="course-study-frame__back">
-        {chapter ? "Capítulos" : "Mis cursos"}
-      </Link>
-
       <header className="course-study-frame__head">
         <div className="course-study-frame__cover">
           {course.thumbnail && (

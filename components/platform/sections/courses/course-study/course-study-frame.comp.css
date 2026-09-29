@@ -3,28 +3,6 @@
   flex-direction: column;
   gap: 24px;
 
-  /* --- The way back, one step up ------------------------------------------ */
-
-  & .course-study-frame__back {
-    align-self: flex-start;
-    display: flex;
-    align-items: center;
-    height: 38px;
-    padding: 0 14px;
-    border: 1px solid var(--platform-border-strong);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    color: var(--platform-text);
-    font-size: 14px;
-    font-weight: 700;
-    transition: background-color 150ms;
-  }
-
-  & .course-study-frame__back:hover {
-    background: var(--platform-surface-soft);
-    color: var(--platform-text);
-  }
-
   /* --- The course, above -------------------------------------------------- */
 
   & .course-study-frame__head {
@@ -282,7 +260,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    & .course-study-frame__back,
     & .course-study-frame__learn {
       transition: none;
     }
