@@ -64,6 +64,10 @@
     min-height: 0;
     overflow: auto;
     scrollbar-width: thin;
+    /* No elastic overscroll: at either end of the list the bounce dragged the
+       sticky chapter with it, and there is nothing behind this panel for the
+       scroll to carry on into anyway — the page itself does not move. */
+    overscroll-behavior: none;
   }
 
   /* The chapter heads the list it names and stays at the top of it while the
