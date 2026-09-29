@@ -342,13 +342,19 @@ export function GameViewer({
       // game.
       const target = event.target as HTMLElement | null;
       if (target && (target.tagName === "TEXTAREA" || target.tagName === "INPUT" || target.isContentEditable)) return;
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        goToNext();
-      } else if (event.key === "ArrowLeft") {
-        event.preventDefault();
-        goToPrevious();
-      }
+      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+      event.preventDefault();
+
+      // The move that was clicked keeps the focus, and the first arrow makes
+      // the browser show its focus ring — on a move that is no longer the one
+      // being looked at. Walking the game with the arrows is not walking the
+      // list, so the focus is let go of; whoever reached a move with Tab
+      // still gets their ring, because that is where they are.
+      const focused = document.activeElement;
+      if (focused instanceof HTMLElement && focused.closest(".game-viewer__moves")) focused.blur();
+
+      if (event.key === "ArrowRight") goToNext();
+      else goToPrevious();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
