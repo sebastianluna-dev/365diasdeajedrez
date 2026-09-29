@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
 import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
 import { countLessons } from "@/services/courses/course-rules";
 import type { MyCourseItem } from "@/services/courses/courses.types";
@@ -65,14 +64,7 @@ export function MyCourseCard({ course }: MyCourseCardProps) {
             )}
 
             <div className="my-course-card__meter">
-              <p className="my-course-card__figure">
-                {course.isCompleted && (
-                  <span className="my-course-card__done" role="img" aria-label="Curso completo">
-                    <CircleCheckSolidIcon className="my-course-card__done-icon" />
-                  </span>
-                )}
-                {`${progress.completedLessons}/${countLessons(progress.totalLessons)}`}
-              </p>
+              <p className="my-course-card__figure">{`${progress.completedLessons}/${countLessons(progress.totalLessons)}`}</p>
               <div className="my-course-card__track">
                 <div className="my-course-card__fill" style={{ width: `${progress.percent}%` }} />
               </div>

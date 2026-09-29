@@ -10,7 +10,7 @@ description: "A course of the student's as a row of 'Mis cursos': cover, name, t
 | Kind       | Server Component                                                                          |
 | Stylesheet | `my-course-card.comp.css` → block `.my-course-card`                                       |
 | Used by    | [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section) |
-| Composes   | `CircleCheckSolidIcon` from `components/icons/`                                           |
+| Composes   | —                                                                                         |
 | Uses       | `MyCourseItem` from `services/courses/courses.types`; `next/image`, `next/link`           |
 
 ## Purpose
@@ -21,15 +21,15 @@ It says nothing of what the course is — **no description, no levels, no conten
 
 ## Props
 
-| Prop     | Type           | Required | Meaning                                                                                                                                                                                 |
-| -------- | -------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `course` | `MyCourseItem` | yes      | A `CourseSummary` plus `learnHref?`, `reviewCount` and `reviewHref`. Read here: `name`, `cover?`, `href`, `isCompleted` and `progress` (lessons and minutes, each with its percentage). |
+| Prop     | Type           | Required | Meaning                                                                                                                                                                  |
+| -------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `course` | `MyCourseItem` | yes      | A `CourseSummary` plus `learnHref?`, `reviewCount` and `reviewHref`. Read here: `name`, `cover?`, `href` and `progress` (lessons and minutes, each with its percentage). |
 
 ## Behaviour
 
 - **Horizontal**: the cover at the left (220px, 21:9); beside it the name on top and, at the foot, the two measures and the two buttons. When measures and buttons do not fit in the row the buttons go under; under 760px the cover goes across the card, and under 480px the two measures stack.
 - **Two measures, each with its bar**: «120/1220 minutos» and «9/61 lecciones», a rule between them. Each is one line of small text (13.5px), figure and unit alike and in one element: it is the bar that is looked at. They are different measures of the same progress (`progress.minutesPercent`, `progress.percent`). A course whose lessons say no minutes shows the lessons alone.
-- **A finished course** (`course.isCompleted`) gets the orange check in front of its count of lessons, as a finished chapter does. The bars are always the platform's orange.
+- **A finished course carries no mark**: its bars are full and its count says «61/61 lecciones». The check is drawn inside the course — a finished chapter, a learned lesson, «Tu progreso» —, not on its card. The bars are always the platform's orange.
 - **«Repasar» is not drawn today**: it is the Move Trainer's, which is switched off (`MOVE_TRAINER_ENABLED`), so «Aprender» is the row's one button. With the switch on, «Repasar» opens the Move Trainer with the exercises of the lessons already learned in the course (`course.reviewHref`) and carries how many there are. **«Aprender»** opens the next lesson to learn (`course.learnHref`). They are the two buttons of the course's own page ([`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame)).
 - **A button that leads nowhere keeps its place**, switched off (`_state_off`, a `<span aria-disabled="true">`): nothing learned to review, or nothing left to learn. The frame does not draw it; a list does, so its rows line up.
 - **The card is not a link.** What leads to the course to study (`course.href`, `/cursos/<id>`) is its **cover** and its **name**, and nothing else; each button leads where it says. The cover's link is `aria-hidden` and out of the tab order: it has no name of its own and the title's, next to it, leads to the same place.
@@ -37,9 +37,9 @@ It says nothing of what the course is — **no description, no levels, no conten
 
 ## Markup & styling
 
-Block `.my-course-card` (241 lines). It has no border: on the page's grey canvas the white fill and a light shadow are what draw it.
+Block `.my-course-card` (226 lines). It has no border: on the page's grey canvas the white fill and a light shadow are what draw it.
 
-**Elements:** `.my-course-card__cover`, `.my-course-card__cover-image`, `.my-course-card__body`, `.my-course-card__name`, `.my-course-card__link`, `.my-course-card__foot`, `.my-course-card__meters`, `.my-course-card__meter`, `.my-course-card__figure`, `.my-course-card__done`, `.my-course-card__done-icon`, `.my-course-card__track`, `.my-course-card__fill`, `.my-course-card__actions`, `.my-course-card__review`, `.my-course-card__review-count`, `.my-course-card__learn`
+**Elements:** `.my-course-card__cover`, `.my-course-card__cover-image`, `.my-course-card__body`, `.my-course-card__name`, `.my-course-card__link`, `.my-course-card__foot`, `.my-course-card__meters`, `.my-course-card__meter`, `.my-course-card__figure`, `.my-course-card__track`, `.my-course-card__fill`, `.my-course-card__actions`, `.my-course-card__review`, `.my-course-card__review-count`, `.my-course-card__learn`
 
 **Modifiers and states:** `.my-course-card__review_state_off`, `.my-course-card__learn_state_off`
 
@@ -61,5 +61,5 @@ import { MyCourseCard } from "./my-course-card.comp";
 
 ## Related
 
-- `mapMyCourse` in `services/courses/courses.mapper.ts` decides `learnHref`, `reviewCount`, `isCompleted` and `href`.
+- `mapMyCourse` in `services/courses/courses.mapper.ts` decides `learnHref`, `reviewCount` and `href`.
 - [`CourseCard`](/components/platform/sections/courses/course-card), the card of the catalog.

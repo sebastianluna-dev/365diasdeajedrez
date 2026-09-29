@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
 import { countLessons, formatDuration } from "@/services/courses/course-rules";
 import type { CourseLevelItem, CourseSummary } from "@/services/courses/courses.types";
 import { LevelDots } from "./level-dots.comp";
@@ -76,14 +75,7 @@ export function CourseCard({ course, levels }: CourseCardProps) {
           {course.isAdded ? (
             <div className="course-card__progress">
               <p className="course-card__progress-line">
-                <span className="course-card__percent">
-                  {progress.percent}%
-                  {isDone && (
-                    <span className="course-card__done" role="img" aria-label="Curso completo">
-                      <CircleCheckSolidIcon className="course-card__done-icon" />
-                    </span>
-                  )}
-                </span>
+                <span className="course-card__percent">{progress.percent}%</span>
                 <span className="course-card__ratio">
                   {progress.completedLessons} de {countLessons(progress.totalLessons)}
                 </span>
