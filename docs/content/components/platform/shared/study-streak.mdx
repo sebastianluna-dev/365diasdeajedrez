@@ -1,0 +1,66 @@
+---
+description: "'Racha diaria': the card with how many days in a row the student has been studying and, while today is not one of them yet, the figure it becomes by studying today."
+---
+
+# `StudyStreak`
+
+|            |                                                                                                                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/study-streak.comp.tsx`                                                                                                                                     |
+| Kind       | Server Component                                                                                                                                                                       |
+| Stylesheet | `study-streak.comp.css` → block `.study-streak`                                                                                                                                        |
+| Used by    | [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section), [`StudyGoalSection`](/components/platform/sections/dashboard/study-goal/study-goal-section) |
+| Uses       | `StudyStreak` (the model) from `services/study-goal/study-goal.types`; `FlameIcon`, `ChevronIcon` from `components/icons/`                                                             |
+
+## Purpose
+
+The streak as a card, the same on the two pages that show it: beside the list of «Mis cursos», which is where a streak is kept, and on the dashboard next to the daily goal.
+
+The figure is not stored: it is counted backwards from the activity log (`streakOf` in `lib/study-streak.ts`).
+
+## Props
+
+| Prop     | Type          | Required | Meaning                                                                                                               |
+| -------- | ------------- | -------- | --------------------------------------------------------------------------------------------------------------------- |
+| `streak` | `StudyStreak` | yes      | `{ days, studiedToday }`, from `getStudyStreak()` — or `goal.streak`, which `getStudyGoal()` brings on the dashboard. |
+
+## Behaviour
+
+| The streak                      | Figures                                   | Sentence                                     |
+| ------------------------------- | ----------------------------------------- | -------------------------------------------- |
+| None (`days === 0`)             | «0 › 1», both unlit                       | «Estudia hoy para empezar una racha.»        |
+| Standing, today not studied yet | «11 › 12», the flame lit and the 12 unlit | «Estudia hoy para mantener tu racha activa.» |
+| Standing, today studied         | «12», alone                               | «12 días seguidos estudiando.»               |
+
+- **Today does not break the streak**: whoever studied yesterday still has it until the day is over (see `streakLength`). What the second figure says is that it is yet to be kept.
+- The second figure and the arrow are for the eye only (`aria-hidden`); the sentence is what says it in words.
+- The flame is the brand orange (`--platform-accent`); unlit, flame and figure go to `--platform-text-faint` together.
+
+## Markup & styling
+
+Block `.study-streak` (77 lines): a white card with the platform's card shadow, its title closed by a rule across the full width.
+
+**Elements:** `.study-streak__title`, `.study-streak__figures`, `.study-streak__figure`, `.study-streak__flame`, `.study-streak__value`, `.study-streak__arrow`, `.study-streak__note`
+
+**Modifiers and states:** `.study-streak__figure_state_unlit`
+
+**Tokens:** `--platform-accent`, `--platform-border`, `--platform-font`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-subtle`
+
+No media queries: whoever places it decides its width.
+
+## Usage
+
+From `components/platform/sections/courses/my-courses/my-courses.section.tsx`:
+
+```tsx
+import { StudyStreak } from "@/components/platform/shared/study-streak.comp";
+
+<aside className="my-courses__aside">
+  <StudyStreak streak={streak} />
+</aside>;
+```
+
+## Related
+
+- `services/study-goal/study-goal.service.ts` (`getStudyStreak`, `getStudyGoal`) and `lib/study-streak.ts`.
+- [Student features](/platform/student) for what counts as a day of study.

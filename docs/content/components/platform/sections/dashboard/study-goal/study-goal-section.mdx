@@ -4,18 +4,19 @@ description: "On the dashboard, side by side: the daily streak and today's minut
 
 # `StudyGoalSection`
 
-|            |                                                                                                                                                                  |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/dashboard/study-goal/study-goal.section.tsx`                                                                                       |
-| Kind       | Server Component                                                                                                                                                 |
-| Stylesheet | `study-goal.section.css` → block `.study-goal`                                                                                                                   |
-| Used by    | `/inicio`                                                                                                                                                        |
-| Writes     | `updateDailyGoal()` · `services/study-goal/study-goal.actions.ts`                                                                                                |
-| Uses       | `GOAL_OPTIONS` from `constants/platform/study-goal.const`<br />`StudyGoal` from `services/study-goal/study-goal.types`<br />`FlameIcon` from `components/icons/` |
+|            |                                                                                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/dashboard/study-goal/study-goal.section.tsx`                                                                                                                  |
+| Kind       | Server Component                                                                                                                                                                            |
+| Stylesheet | `study-goal.section.css` → block `.study-goal`                                                                                                                                              |
+| Used by    | `/inicio`                                                                                                                                                                                   |
+| Composes   | [`StudyStreak`](/components/platform/shared/study-streak), [`PlatformSelect`](/components/platform/shared/platform-select), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Writes     | `updateDailyGoal()` · `services/study-goal/study-goal.actions.ts`                                                                                                                           |
+| Uses       | `GOAL_OPTIONS` from `constants/platform/study-goal.const`<br />`StudyGoal` from `services/study-goal/study-goal.types`                                                                      |
 
 ## Purpose
 
-Two cards side by side under the dashboard's first row: "Racha diaria" (days in a row with study activity) and "Objetivo diario" (minutes studied today against the goal, with a bar).
+Two cards side by side under the dashboard's first row: "Racha diaria" (days in a row with study activity), which is the shared [`StudyStreak`](/components/platform/shared/study-streak) «Mis cursos» shows too, and "Objetivo diario" (minutes studied today against the goal, with a bar).
 
 Neither figure is stored. The streak is counted backwards from the activity log (`lib/study-streak`) and today's minutes are the durations of the lessons finished today. The only thing persisted is the goal itself, because it is a decision, not a computation.
 
@@ -23,20 +24,20 @@ Neither figure is stored. The streak is counted backwards from the activity log 
 
 | Prop        | Type        | Required | Meaning                                                                                                                                                                     |
 | ----------- | ----------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `goal`      | `StudyGoal` | yes      | `{ streakDays, minutesToday, goalMinutes, percent }`, from `getStudyGoal()` in the page.                                                                                    |
+| `goal`      | `StudyGoal` | yes      | `{ streak: { days, studiedToday }, minutesToday, goalMinutes, percent }`, from `getStudyGoal()` in the page.                                                                |
 | `errorCode` | `string`    | no       | What `updateDailyGoal` bounced back with in `?error=` (`goal`, `throttled`). Renders a `PlatformNotice` inside the editor and opens the `<details>` so the form is in view. |
 
 ## Behaviour
 
-- The streak note adapts its wording: "Estudia hoy para empezar una racha." at zero, otherwise "n días seguidos estudiando."
+- The streak's card, its figures and its sentence are [`StudyStreak`](/components/platform/shared/study-streak)'s.
 - "Cambiar objetivo" is a `<details>` rather than a modal: choosing from a short list needs no JavaScript. Inside, a `<form action={updateDailyGoal}>` with a [`PlatformSelect`](/components/platform/shared/platform-select) named `goalMinutes` over `GOAL_OPTIONS` and a save button. The action validates the value against the same list and revalidates `/inicio`, which is where it redirects back to.
 - The bar's width is `goal.percent` inline; the service clamps it.
 
 ## Markup & styling
 
-Block `.study-goal` (191 lines): a grid of two equal columns.
+Block `.study-goal` (155 lines): a grid of two equal columns.
 
-**Elements:** `.study-goal__card`, `.study-goal__title`, `.study-goal__streak`, `.study-goal__flame`, `.study-goal__streak-value`, `.study-goal__streak-note`, `.study-goal__amount`, `.study-goal__amount-value`, `.study-goal__amount-total`, `.study-goal__legend`, `.study-goal__legend-label`, `.study-goal__legend-percent`, `.study-goal__track`, `.study-goal__fill`, `.study-goal__hint`, `.study-goal__editor`, `.study-goal__editor-button`, `.study-goal__notice`, `.study-goal__form`, `.study-goal__field`, `.study-goal__field-label`
+**Elements:** `.study-goal__card`, `.study-goal__title`, `.study-goal__amount`, `.study-goal__amount-value`, `.study-goal__amount-total`, `.study-goal__legend`, `.study-goal__legend-label`, `.study-goal__legend-percent`, `.study-goal__track`, `.study-goal__fill`, `.study-goal__hint`, `.study-goal__editor`, `.study-goal__editor-button`, `.study-goal__notice`, `.study-goal__form`, `.study-goal__field`, `.study-goal__field-label`
 
 No modifiers.
 
@@ -61,4 +62,4 @@ const [goal, { error }] = await Promise.all([getStudyGoal(), searchParams]);
 ## Related
 
 - `services/study-goal/*` and `lib/study-streak.ts`; [Student features › Dashboard](/platform/student).
-- It was the right column of «Mis cursos» (`StudyGoalAside`) until that page became the list of the student's courses.
+- It was the right column of «Mis cursos» (`StudyGoalAside`) until that page became the list of the student's courses; the streak is back beside that list, the goal is not.

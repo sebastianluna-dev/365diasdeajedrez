@@ -82,3 +82,20 @@ export function streakLength(activeDays: Iterable<string>, today: string): numbe
   }
   return length;
 }
+
+/** The streak as the student reads it: how long it is, and whether today is already in it. */
+export interface StudyStreak {
+  /** Consecutive days studying, counting backwards from today. */
+  days: number;
+  /**
+   * There is activity today. Without it the streak still stands — the day is
+   * not over — but it is yet to be kept: studying today makes it a day longer.
+   */
+  studiedToday: boolean;
+}
+
+/** The streak and whether today counts in it already, from the same days `streakLength` takes. */
+export function streakOf(activeDays: Iterable<string>, today: string): StudyStreak {
+  const days = activeDays instanceof Set ? activeDays : new Set(activeDays);
+  return { days: streakLength(days, today), studiedToday: days.has(today) };
+}

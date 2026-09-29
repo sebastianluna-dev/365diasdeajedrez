@@ -31,42 +31,6 @@
     color: var(--platform-text);
   }
 
-  & .study-goal__streak {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    margin: 0;
-    padding: 10px 0 4px;
-  }
-
-  /* The brand orange, not the emoji's multicolour: the flame accompanies the
-     figure and has to read as part of it. */
-  & .study-goal__flame {
-    flex: none;
-    width: 34px;
-    height: 34px;
-    color: var(--platform-accent);
-  }
-
-  & .study-goal__streak-value {
-    font-family: var(--platform-font);
-    font-size: 42px;
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    color: var(--platform-text);
-    font-variant-numeric: tabular-nums;
-  }
-
-  & .study-goal__streak-note {
-    margin: 14px 0 0;
-    text-align: center;
-    font-size: 14px;
-    color: var(--platform-text-subtle);
-    text-wrap: pretty;
-  }
-
   & .study-goal__amount {
     margin: 0;
     font-family: var(--platform-font);

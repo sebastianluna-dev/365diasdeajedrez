@@ -4,52 +4,54 @@ description: "'Mis cursos': the courses the student added, one to a row, each a 
 
 # `MyCoursesSection`
 
-|            |                                                                                   |
-| ---------- | --------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/my-courses/my-courses.section.tsx`          |
-| Kind       | Server Component                                                                  |
-| Stylesheet | `my-courses.section.css` → block `.my-courses`                                    |
-| Used by    | `/cursos`                                                                         |
-| Composes   | [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card) |
-| Reads      | `getUserCourses()` · `services/courses/courses.service.ts`                        |
-| Uses       | `platformRoutes.courseCatalog`; `MyCourseItem`                                    |
+|            |                                                                                                                                              |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/my-courses/my-courses.section.tsx`                                                                     |
+| Kind       | Server Component                                                                                                                             |
+| Stylesheet | `my-courses.section.css` → block `.my-courses`                                                                                               |
+| Used by    | `/cursos`                                                                                                                                    |
+| Composes   | [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card), [`StudyStreak`](/components/platform/shared/study-streak) |
+| Reads      | `getUserCourses()` · `services/courses/courses.service.ts`; `getStudyStreak()` · `services/study-goal/study-goal.service.ts`                 |
+| Uses       | `platformRoutes.courseCatalog`; `MyCourseItem`; `StudyStreak` (the model)                                                                    |
 
 ## Purpose
 
-The list of the student's courses and nothing else. Until this page was redesigned it listed every published course with a level filter and the daily goal beside it; now a course is **added** before it is studied, the catalog is a page of its own ([`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section)) and the day is looked at on the dashboard ([`StudyGoalSection`](/components/platform/sections/dashboard/study-goal/study-goal-section)).
+The list of the student's courses and, beside it, their daily streak. Until this page was redesigned it listed every published course with a level filter and the daily goal beside it; now a course is **added** before it is studied, the catalog is a page of its own ([`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section)) and the daily goal is looked at on the dashboard ([`StudyGoalSection`](/components/platform/sections/dashboard/study-goal/study-goal-section)).
 
 ## Props
 
 | Prop      | Type             | Required | Meaning                                                                                        |
 | --------- | ---------------- | -------- | ---------------------------------------------------------------------------------------------- |
 | `courses` | `MyCourseItem[]` | yes      | The courses the student added, by name, each with its next lesson and what there is to review. |
+| `streak`  | `StudyStreak`    | yes      | Days in a row studying and whether today is one of them: the card beside the list.             |
 
 ## Behaviour
 
+- **Two columns**: the list and, at its right, «Racha diaria» ([`StudyStreak`](/components/platform/shared/study-streak)) in a column of at most 320px, which drops under the list when both do not fit.
 - **One course to a row.** Each is a [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card): horizontal, as wide as the page, with the progress in minutes and in lessons and the course's two buttons, «Repasar» and «Aprender». What a course is — description, levels, content types — is the catalog's to say, on `/cursos/explorar`.
 - The header says how many there are and how many are being studied — «4 cursos · 3 en curso» —, the latter being the ones started and not finished (`ctaLabel === "Continuar"`). With none: «Todavía no has agregado ninguno».
 - After the cards, always, the dashed row «Explorar cursos», a link to `/cursos/explorar`. The page is therefore never empty and needs no `EmptyState`: with no course added that row is the only thing in the list and carries a hint, «Elige uno del catálogo y agrégalo para empezar.»
 
 ## Markup & styling
 
-Block `.my-courses` (89 lines). The list is one column, its rows 16px apart.
+Block `.my-courses` (115 lines). A wrapping flex row: the list, one column with its rows 16px apart, and the aside.
 
-**Elements:** `.my-courses__head`, `.my-courses__title`, `.my-courses__summary`, `.my-courses__list`, `.my-courses__explore`, `.my-courses__explore-mark`, `.my-courses__explore-text`, `.my-courses__explore-label`, `.my-courses__explore-hint`
+**Elements:** `.my-courses__head`, `.my-courses__title`, `.my-courses__summary`, `.my-courses__layout`, `.my-courses__list`, `.my-courses__aside`, `.my-courses__explore`, `.my-courses__explore-mark`, `.my-courses__explore-text`, `.my-courses__explore-label`, `.my-courses__explore-hint`
 
 **Modifiers and states:** none
 
 **Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border-strong`, `--platform-text-subtle`
 
-No breakpoints of its own: the card stacks by itself. The hover transition is off under `prefers-reduced-motion`.
+**Breakpoints:** `(max-width: 960px)` the aside takes the width of the list. The hover transition is off under `prefers-reduced-motion`.
 
 ## Usage
 
 From `app/(platform)/cursos/page.tsx`:
 
 ```tsx
-const courses = await getUserCourses();
+const [courses, streak] = await Promise.all([getUserCourses(), getStudyStreak()]);
 
-<MyCoursesSection courses={courses} />;
+<MyCoursesSection courses={courses} streak={streak} />;
 ```
 
 ## Related

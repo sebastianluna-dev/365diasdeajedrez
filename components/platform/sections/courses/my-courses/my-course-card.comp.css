@@ -19,7 +19,7 @@
     position: relative;
     flex: none;
     align-self: center;
-    width: 240px;
+    width: 220px;
     aspect-ratio: 21 / 9;
     overflow: hidden;
     border-radius: 8px;
@@ -77,13 +77,14 @@
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
-    gap: 18px 36px;
+    gap: 18px 28px;
   }
 
   /* --- The progress: what the card is for --------------------------------- */
 
+  /* Sized so measures and buttons share the row beside the page's column. */
   & .my-course-card__meters {
-    flex: 1 1 360px;
+    flex: 1 1 280px;
     min-width: 0;
     display: flex;
     gap: 24px;
@@ -162,7 +163,7 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    min-width: 132px;
+    min-width: 120px;
     height: 48px;
     padding: 0 20px;
     box-sizing: border-box;

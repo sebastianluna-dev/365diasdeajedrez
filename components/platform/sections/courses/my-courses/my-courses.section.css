@@ -22,8 +22,27 @@
     color: var(--platform-text-subtle);
   }
 
-  /* One course to a row: the card is as wide as the page. */
+  /* The list and, beside it, the day: the column drops under the list when
+     both do not fit. */
+  & .my-courses__layout {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  /* One course to a row: the card is as wide as the list. */
   & .my-courses__list {
+    flex: 1 1 600px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  & .my-courses__aside {
+    flex: 1 1 260px;
+    max-width: 320px;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -79,6 +98,13 @@
   & .my-courses__explore-hint {
     font-size: 14px;
     line-height: 1.45;
+  }
+
+  /* Stacked, the day takes the width of the list. */
+  @media (max-width: 960px) {
+    & .my-courses__aside {
+      max-width: none;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

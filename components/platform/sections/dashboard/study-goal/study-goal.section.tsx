@@ -1,4 +1,3 @@
-import { FlameIcon } from "@/components/icons/flame-icon.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { GOAL_OPTIONS } from "@/constants/platform/study-goal.const";
@@ -7,6 +6,7 @@ import type { StudyGoal } from "@/services/study-goal/study-goal.types";
 import "./study-goal.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+import { StudyStreak } from "@/components/platform/shared/study-streak.comp";
 
 interface StudyGoalSectionProps {
   goal: StudyGoal;
@@ -16,10 +16,9 @@ interface StudyGoalSectionProps {
 
 /**
  * The day, on the dashboard: how many days in a row the student has been
- * studying and how much they have studied today, side by side. It was the
- * right column of "Mis cursos" until that page became the list of the
- * student's courses and nothing else; the dashboard is where the day is
- * looked at.
+ * studying and how much they have studied today, side by side. The streak
+ * is the card "Mis cursos" shows too (`StudyStreak`); the goal is looked at
+ * here alone.
  *
  * Neither figure is stored: the streak is counted backwards from the
  * activity (lib/study-streak) and today's minutes come from the lessons
@@ -31,20 +30,7 @@ export function StudyGoalSection({ goal, errorCode }: StudyGoalSectionProps) {
 
   return (
     <section className="study-goal" aria-label="Tu día de estudio">
-      <section className="study-goal__card">
-        <h2 className="study-goal__title">Racha diaria</h2>
-
-        <p className="study-goal__streak">
-          <FlameIcon className="study-goal__flame" />
-          <span className="study-goal__streak-value">{goal.streakDays}</span>
-        </p>
-
-        <p className="study-goal__streak-note">
-          {goal.streakDays === 0
-            ? "Estudia hoy para empezar una racha."
-            : `${goal.streakDays} ${goal.streakDays === 1 ? "día seguido" : "días seguidos"} estudiando.`}
-        </p>
-      </section>
+      <StudyStreak streak={goal.streak} />
 
       <section className="study-goal__card">
         <h2 className="study-goal__title">Objetivo diario</h2>

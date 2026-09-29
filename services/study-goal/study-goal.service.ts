@@ -3,10 +3,11 @@ import { DEFAULT_GOAL_MINUTES } from "@/constants/platform/study-goal.const";
 import { STUDY_DAY_TIMEZONE } from "@/constants/platform/timezones.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
-import { dayKey, startOfDay, streakLength } from "@/lib/study-streak";
-import type { StudyGoal } from "./study-goal.types";
+import { dayKey, startOfDay, streakOf } from "@/lib/study-streak";
+import type { StudyGoal, StudyStreak } from "./study-goal.types";
 
-// Streak and daily goal: the two figures of the "Mis cursos" column.
+// Streak and daily goal: the two figures of the day. The dashboard shows both;
+// "Mis cursos", the streak.
 //
 // Neither of the two is stored as such. The streak is DERIVED from the activity
 // and today's minutes from the lessons finished today; the only thing stored is
@@ -48,13 +49,19 @@ async function minutesTodayOf(userId: string, today: string): Promise<number> {
   return rows.reduce((total, row) => total + (row.lesson.estimatedDuration ?? 0), 0);
 }
 
-export const getStudyGoal = cache(async (): Promise<StudyGoal> => {
+/** The streak alone, for the page that shows it without the goal. */
+export const getStudyStreak = cache(async (): Promise<StudyStreak> => {
   const user = await getCurrentUser();
   const now = new Date();
-  const today = dayKey(now, STUDY_DAY_TIMEZONE);
+  return streakOf(await activeDaysOf(user.id, now), dayKey(now, STUDY_DAY_TIMEZONE));
+});
 
-  const [activeDays, minutesToday, row] = await Promise.all([
-    activeDaysOf(user.id, now),
+export const getStudyGoal = cache(async (): Promise<StudyGoal> => {
+  const user = await getCurrentUser();
+  const today = dayKey(new Date(), STUDY_DAY_TIMEZONE);
+
+  const [streak, minutesToday, row] = await Promise.all([
+    getStudyStreak(),
     minutesTodayOf(user.id, today),
     getPlatformDb().user.findUnique({ where: { id: user.id }, select: { dailyGoalMinutes: true } }),
   ]);
@@ -62,7 +69,7 @@ export const getStudyGoal = cache(async (): Promise<StudyGoal> => {
   const goalMinutes = row?.dailyGoalMinutes ?? DEFAULT_GOAL_MINUTES;
 
   return {
-    streakDays: streakLength(activeDays, today),
+    streak,
     minutesToday,
     goalMinutes,
     // Capped at the top: the bar cannot overflow and "120 %" says nothing that

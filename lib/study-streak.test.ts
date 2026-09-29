@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { dayKey, startOfDay, streakLength } from "@/lib/study-streak";
+import { dayKey, startOfDay, streakLength, streakOf } from "@/lib/study-streak";
 
 const MX = "America/Mexico_City";
 
@@ -100,5 +100,20 @@ describe("streakLength", () => {
 
   it("una racha de un solo día es 1", () => {
     expect(streakLength(["2026-03-15"], "2026-03-15")).toBe(1);
+  });
+});
+
+describe("streakOf", () => {
+  it("dice si hoy ya cuenta en la racha", () => {
+    expect(streakOf(["2026-03-15", "2026-03-14"], "2026-03-15")).toEqual({ days: 2, studiedToday: true });
+  });
+
+  it("sin actividad hoy la racha sigue en pie, pero está por mantenerse", () => {
+    expect(streakOf(["2026-03-14", "2026-03-13"], "2026-03-15")).toEqual({ days: 2, studiedToday: false });
+  });
+
+  it("sin actividad ayer ni hoy no hay racha", () => {
+    expect(streakOf(["2026-03-12"], "2026-03-15")).toEqual({ days: 0, studiedToday: false });
+    expect(streakOf([], "2026-03-15")).toEqual({ days: 0, studiedToday: false });
   });
 });

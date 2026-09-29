@@ -1,0 +1,55 @@
+import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
+import { FlameIcon } from "@/components/icons/flame-icon.comp";
+import type { StudyStreak as StudyStreakModel } from "@/services/study-goal/study-goal.types";
+import "./study-streak.comp.css";
+
+interface StudyStreakProps {
+  streak: StudyStreakModel;
+}
+
+/** What the card says under the figure, by where the streak stands today. */
+function noteOf({ days, studiedToday }: StudyStreakModel): string {
+  if (days === 0) return "Estudia hoy para empezar una racha.";
+  if (!studiedToday) return "Estudia hoy para mantener tu racha activa.";
+  return `${days} ${days === 1 ? "día seguido" : "días seguidos"} estudiando.`;
+}
+
+/**
+ * «Racha diaria»: how many days in a row the student has been studying.
+ *
+ * While today is not in the streak yet, the figure is shown next to the one
+ * it becomes by studying today — «11 › 12», the second one unlit —: the
+ * streak still stands, and what is left to do is in sight. Once they have
+ * studied, the figure is alone.
+ *
+ * The second figure is drawn for the eye only; the sentence under it is what
+ * says it in words.
+ */
+export function StudyStreak({ streak }: StudyStreakProps) {
+  const isLit = streak.days > 0;
+
+  return (
+    <section className="study-streak">
+      <h2 className="study-streak__title">Racha diaria</h2>
+
+      <p className="study-streak__figures">
+        <span className={`study-streak__figure${isLit ? "" : " study-streak__figure_state_unlit"}`}>
+          <FlameIcon className="study-streak__flame" />
+          <span className="study-streak__value">{streak.days}</span>
+        </span>
+
+        {!streak.studiedToday && (
+          <>
+            <ChevronIcon className="study-streak__arrow" />
+            <span className="study-streak__figure study-streak__figure_state_unlit" aria-hidden="true">
+              <FlameIcon className="study-streak__flame" />
+              <span className="study-streak__value">{streak.days + 1}</span>
+            </span>
+          </>
+        )}
+      </p>
+
+      <p className="study-streak__note">{noteOf(streak)}</p>
+    </section>
+  );
+}

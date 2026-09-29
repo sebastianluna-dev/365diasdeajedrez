@@ -1,0 +1,77 @@
+.study-streak {
+  padding: 20px 22px 22px;
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-card);
+
+  /* The title and what goes below are separated by a rule across the full
+     width of the card, so the horizontal padding is offset with negative
+     margins: a line that does not reach the edges would look like an
+     underline of the text. */
+  & .study-streak__title {
+    margin: 0 -22px 18px;
+    padding: 0 22px 14px;
+    border-bottom: 1px solid var(--platform-border);
+    font-family: var(--platform-font);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--platform-text);
+  }
+
+  & .study-streak__figures {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 0;
+    padding: 10px 0 4px;
+  }
+
+  & .study-streak__figure {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--platform-text);
+  }
+
+  /* The brand orange, not the emoji's multicolour: the flame accompanies the
+     figure and has to read as part of it. */
+  & .study-streak__flame {
+    flex: none;
+    width: 34px;
+    height: 34px;
+    color: var(--platform-accent);
+  }
+
+  & .study-streak__value {
+    font-family: var(--platform-font);
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* A day that is not in the streak: no streak at all, or the one today
+     would add. Flame and figure go out together. */
+  & .study-streak__figure_state_unlit,
+  & .study-streak__figure_state_unlit .study-streak__flame {
+    color: var(--platform-text-faint);
+  }
+
+  & .study-streak__arrow {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    color: var(--platform-text-faint);
+  }
+
+  & .study-streak__note {
+    margin: 14px 0 0;
+    text-align: center;
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+}

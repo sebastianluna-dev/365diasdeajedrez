@@ -20,6 +20,7 @@ const meta: MetaRecord = {
   "platform-select": "PlatformSelect",
   "platform-table": "PlatformTable",
   "progress-indicator": "ProgressIndicator",
+  "study-streak": "StudyStreak",
   "submit-button": "SubmitButton",
   "use-game-autosave-hook": "useGameAutosave",
   "use-pgn-history-hook": "usePgnHistory",

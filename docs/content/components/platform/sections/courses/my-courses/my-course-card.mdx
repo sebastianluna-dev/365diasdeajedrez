@@ -27,7 +27,7 @@ It says nothing of what the course is — **no description, no levels, no conten
 
 ## Behaviour
 
-- **Horizontal**: the cover at the left (240px, 21:9); beside it the name on top and, at the foot, the two measures and the two buttons. When measures and buttons do not fit in the row the buttons go under; under 760px the cover goes across the card, and under 480px the two measures stack.
+- **Horizontal**: the cover at the left (220px, 21:9); beside it the name on top and, at the foot, the two measures and the two buttons. When measures and buttons do not fit in the row the buttons go under; under 760px the cover goes across the card, and under 480px the two measures stack.
 - **Two measures, each with its bar**: «120/1220 minutos» and «9/61 lecciones», a rule between them. They are different measures of the same progress (`progress.minutesPercent`, `progress.percent`). A course whose lessons say no minutes shows the lessons alone.
 - **A finished course** (`course.isCompleted`) gets the orange check in front of its count of lessons, as a finished chapter does. The bars are always the platform's orange.
 - **«Repasar»** opens the Move Trainer with the exercises of the lessons already learned in the course (`course.reviewHref`) and carries how many there are. **«Aprender»** opens the next lesson to learn (`course.learnHref`). They are the two buttons of the course's own page ([`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame)).
@@ -37,7 +37,7 @@ It says nothing of what the course is — **no description, no levels, no conten
 
 ## Markup & styling
 
-Block `.my-course-card` (258 lines). It has no border: on the page's grey canvas the white fill and a light shadow are what draw it.
+Block `.my-course-card` (259 lines). It has no border: on the page's grey canvas the white fill and a light shadow are what draw it.
 
 **Elements:** `.my-course-card__cover`, `.my-course-card__cover-image`, `.my-course-card__body`, `.my-course-card__name`, `.my-course-card__link`, `.my-course-card__foot`, `.my-course-card__meters`, `.my-course-card__meter`, `.my-course-card__figure`, `.my-course-card__value`, `.my-course-card__done`, `.my-course-card__done-icon`, `.my-course-card__track`, `.my-course-card__fill`, `.my-course-card__actions`, `.my-course-card__review`, `.my-course-card__review-count`, `.my-course-card__learn`
 
