@@ -83,7 +83,7 @@ export interface CourseSummary {
  * two things that can be done with it from the list.
  */
 export interface MyCourseItem extends CourseSummary {
-  /** The next lesson to learn; absent when every lesson in view is learned. See `CourseDetail.learnHref`. */
+  /** Where «Aprender» leads; absent only without lessons in view. See `CourseDetail.learnHref`. */
   learnHref?: string;
   /** Exercises of the lessons already learned: what «Repasar» trains. */
   reviewCount: number;
@@ -150,9 +150,10 @@ export interface CourseDetail {
   isCompleted: boolean;
   ctaLabel: CourseCta;
   /**
-   * The next lesson to learn: where they left off if it is unfinished, the
-   * first unfinished one otherwise. Absent when every lesson in view is done,
-   * or none is in view.
+   * Where «Aprender» leads: the lesson they left off at if it is unfinished,
+   * the first unfinished one otherwise and, in a finished course, its first
+   * lesson — the button starts the course over, it is not switched off.
+   * Absent only when no lesson is in view.
    */
   learnHref?: string;
   /** Exercises of the lessons already learned: what «Repasar» trains. */

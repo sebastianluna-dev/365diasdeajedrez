@@ -40,8 +40,9 @@ const COVER_SIZES = "(max-width: 620px) 100vw, 280px";
  * The course's progress is on a chapter's page only. The page that lists the
  * chapters says how far each one is, and that is the progress it shows.
  *
- * A button is only drawn when it leads somewhere: a course with every lesson
- * learned has no «Aprender», and one without exercises learned no «Repasar».
+ * A button is only drawn when it leads somewhere: a course without lessons
+ * has no «Aprender», and one without exercises learned no «Repasar». A
+ * finished course keeps its «Aprender», which starts it over.
  * While the Move Trainer is off (`MOVE_TRAINER_ENABLED`) no course has
  * anything to review — the service counts none —, so «Repasar» is not drawn.
  */

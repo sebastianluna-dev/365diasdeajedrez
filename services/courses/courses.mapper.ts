@@ -212,13 +212,25 @@ function continueTarget(course: CourseWithContent, state: UserCourseState) {
  * «Aprender» promises something new: the lesson they left unfinished, and
  * otherwise the first unfinished one in the order the course is read. When
  * every lesson in view is done there is nothing left to learn, and it says so
- * by answering nothing.
+ * by answering nothing: it is what marks ONE lesson of the course as the
+ * next. Where the button leads is `learnTarget`, which always answers.
  */
 function nextLesson(course: CourseWithContent, state: UserCourseState) {
   const lessons = flattenLessons(course, state);
   const isPending = (lesson: { id: string }) => state.lessonStatus.get(lesson.id) !== PROGRESS_STATUS.COMPLETED;
   const last = lessons.find((lesson) => lesson.id === state.lastLessonId);
   return last && isPending(last) ? last : lessons.find(isPending);
+}
+
+/**
+ * Where «Aprender» leads. The next lesson to learn and, in a course that is
+ * finished, its first lesson: the button is not switched off for having
+ * learned it all, it starts the course over. Only a course with no lesson in
+ * view has nowhere to lead.
+ */
+function learnTarget(course: CourseWithContent, state: UserCourseState): string | undefined {
+  const target = nextLesson(course, state) ?? flattenLessons(course, state)[0];
+  return target ? platformRoutes.lessonDetail(target.id) : undefined;
 }
 
 /**
@@ -311,10 +323,9 @@ export function mapMyCourse(
   state: UserCourseState,
   { reviewCount = 0 }: CourseExtras = {},
 ): MyCourseItem {
-  const next = nextLesson(course, state);
   return {
     ...mapCourseSummary(course, state),
-    learnHref: next ? platformRoutes.lessonDetail(next.id) : undefined,
+    learnHref: learnTarget(course, state),
     reviewCount,
     reviewHref: platformRoutes.courseReview(course.id),
   };
@@ -357,7 +368,6 @@ export function mapCourseDetail(
 ): CourseDetail {
   const progress = mapCourseProgress(course, state);
   const every = allLessons(course);
-  const next = nextLesson(course, state);
   return {
     id: course.id,
     slug: course.slug,
@@ -374,7 +384,7 @@ export function mapCourseDetail(
     progress,
     isCompleted: isCompleted(progress),
     ctaLabel: ctaLabelFor(progress),
-    learnHref: next ? platformRoutes.lessonDetail(next.id) : undefined,
+    learnHref: learnTarget(course, state),
     reviewCount,
     reviewHref: platformRoutes.courseReview(course.id),
     onlyPriorityLessons: state.onlyPriorityLessons,

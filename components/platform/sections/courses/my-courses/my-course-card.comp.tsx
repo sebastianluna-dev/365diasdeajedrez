@@ -27,8 +27,10 @@ const COVER_SIZES = "(max-width: 760px) 100vw, 220px";
  * of the accessibility tree — it has no name of its own and the title's,
  * next to it, leads to the same place.
  *
- * A button that leads nowhere — nothing learned to review, nothing left to
- * learn — keeps its place, switched off, so the rows of the list line up.
+ * A button that leads nowhere keeps its place, switched off, so the rows of
+ * the list line up: «Repasar» with nothing learned to review, «Aprender»
+ * in a course without lessons. A FINISHED course does not switch «Aprender»
+ * off — it starts the course over.
  *
  * «Repasar» is the Move Trainer's: while that is off (`MOVE_TRAINER_ENABLED`)
  * the button is not drawn at all, and «Aprender» is the row's one button.

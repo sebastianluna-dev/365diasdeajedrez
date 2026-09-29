@@ -261,11 +261,17 @@ describe("la siguiente lección por aprender", () => {
     expect(detail.learnHref).toContain("l3");
   });
 
-  it("no hay ninguna cuando todas están aprendidas", () => {
+  it("con todas aprendidas «Aprender» no se apaga: vuelve a empezar el curso", () => {
     const all = completed("l1", "l2", "l3", "l4", "l5", "l6");
-    const detail = mapCourseDetail(COURSE, state({ lessonStatus: all }));
-    expect(detail.learnHref).toBeUndefined();
+    const detail = mapCourseDetail(COURSE, state({ lessonStatus: all, lastLessonId: "l6" }));
+    expect(detail.learnHref).toContain("l1");
     expect(detail.ctaLabel).toBe("Repasar");
+  });
+
+  it("y ninguna lección se marca como la siguiente en un curso terminado", () => {
+    const all = completed("l1", "l2", "l3", "l4", "l5", "l6");
+    const view = mapChapterView(COURSE, "cap-1", state({ lessonStatus: all }));
+    expect(view?.lessons.filter((lesson) => lesson.isNext)).toEqual([]);
   });
 
   it("es una sola en todo el curso, y la lista del capítulo la marca", () => {
@@ -320,11 +326,16 @@ describe("un curso de «Mis cursos»", () => {
     expect(mapMyCourse(COURSE, state(added)).reviewCount).toBe(0);
   });
 
-  it("con todo aprendido no queda nada por aprender", () => {
+  it("con todo aprendido «Aprender» sigue llevando a algún sitio: a la primera lección", () => {
     const all = completed("l1", "l2", "l3", "l4", "l5", "l6");
     const course = mapMyCourse(COURSE, state({ ...added, lessonStatus: all }));
-    expect(course.learnHref).toBeUndefined();
+    expect(course.learnHref).toContain("l1");
     expect(course.isCompleted).toBe(true);
+  });
+
+  it("sin lecciones a la vista no lleva a ninguno", () => {
+    const empty = { ...COURSE, chapters: [] } as unknown as CourseWithDetail;
+    expect(mapMyCourse(empty, state(added)).learnHref).toBeUndefined();
   });
 });
 
