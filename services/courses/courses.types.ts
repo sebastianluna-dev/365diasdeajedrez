@@ -214,9 +214,6 @@ export interface ChapterView {
   id: string;
   order: number;
   name: string;
-  description?: string;
-  /** The staff marked the chapter as priority. */
-  isPriority: boolean;
   /**
    * How many the filter hides. It is stated, so the absence does not unsettle.
    * The chapter counts nothing else: the progress of its page is the course's.

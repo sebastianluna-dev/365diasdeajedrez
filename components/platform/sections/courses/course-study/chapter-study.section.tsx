@@ -24,13 +24,14 @@ function statusOf(lesson: ChapterLessonItem): string {
 }
 
 /**
- * A chapter to study: what it is, and under that its lessons, one card
- * each: the name on a band, the moves of its game from the first to the last
- * with how it ended, and at the foot its tags and the button that opens it.
+ * The lessons of a chapter, one card each: the name on a band, the moves of
+ * its game from the first to the last with how it ended, and at the foot its
+ * tags and the button that opens it.
  *
- * Neither the chapter nor a lesson says a figure of its own — no count of
- * lessons, no minutes —: the progress of these pages is the course's, in the
- * frame, and what a lesson is worth is read by opening it.
+ * The chapter itself is not repeated here — its name is already at the head
+ * of the page, in the frame —, and neither it nor a lesson says a figure of
+ * its own: the progress of these pages is the course's, in the frame, and
+ * what a lesson is worth is read by opening it.
  *
  * The button is the same on every card, quiet: outlined in grey, with no
  * fill. The next lesson to learn is told by its band and its «Siguiente»,
@@ -50,14 +51,6 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
       errorCode={errorCode}
     >
       <div className="chapter-study">
-        <header className="chapter-study__summary">
-          <div className="chapter-study__heading">
-            <h2 className="chapter-study__title">{chapter.name}</h2>
-            {chapter.isPriority && <span className="chapter-study__tag chapter-study__tag_tone_accent">Prioridad</span>}
-          </div>
-          {chapter.description && <p className="chapter-study__description">{chapter.description}</p>}
-        </header>
-
         {chapter.lessons.length === 0 ? (
           <p className="chapter-study__empty">
             {course.onlyPriorityLessons

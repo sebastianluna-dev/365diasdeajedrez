@@ -1,5 +1,5 @@
 ---
-description: "A chapter to study: what it is and how much of it is learned, and its lessons as cards, each with every move of its game, its state and the button that opens it."
+description: "A chapter to study: what it is and how much of it is learned, its lessons as cards, each with every move of its game, its state and the button that opens it."
 ---
 
 # `ChapterStudySection`
@@ -20,14 +20,14 @@ The lessons of one chapter. Each card shows **the game whole** — «1.e4 c5 2.C
 
 ## Props
 
-| Prop        | Type          | Required | Meaning                                                                                                                                                                      |
-| ----------- | ------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `chapter`   | `ChapterView` | yes      | `course` (the `CourseDetail` around it), `order`, `name`, `description?`, `isPriority`, `hiddenLessons`, `lessons` (each with `moves?` and `result?`), `previous?`, `next?`. |
-| `errorCode` | `string`      | no       | Passed on to the frame.                                                                                                                                                      |
+| Prop        | Type          | Required | Meaning                                                                                                                                        |
+| ----------- | ------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chapter`   | `ChapterView` | yes      | `course` (the `CourseDetail` around it), `order`, `name`, `hiddenLessons`, `lessons` (each with `moves?` and `result?`), `previous?`, `next?`. |
+| `errorCode` | `string`      | no       | Passed on to the frame.                                                                                                                        |
 
 ## Behaviour
 
-- **The summary** is the chapter's name — not numbered —, the «Prioridad» tag when the staff marked the chapter, and its description. **It counts nothing**: no percentage, no bar and no count of lessons. The progress of the course's pages is the course's, in the frame ([`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame)).
+- **The chapter is not repeated here**: its name is at the head of the page, in the frame, and the page is the list of its lessons. It carried a summary with the name, the «Prioridad» tag and the description until 2026-09-28.
 - **State of a lesson**, in one word: «Aprendida», «Siguiente», «Empezada» or «Pendiente». «Siguiente» is one alone in the whole course — the one the header's «Aprender» opens (`lesson.isNext`) — and wins over «Empezada»; its card's band is tinted.
 - **The button is «Ver» on every card, and quiet**: no fill, outlined in grey (`--platform-border-strong`). The next lesson's is no different: the filled «Aprender» is the course's, at the head of the page.
 - **The band is set into the card**: the card has 6px of white padding and the band, rounded on its four corners, does not touch the card's edges.
@@ -43,13 +43,13 @@ The previous chapter page had an «Agregar al Move Trainer» button. It is no lo
 
 ## Markup & styling
 
-Block `.chapter-study` (243 lines). The lessons are one column of cards: a band with the name set into the card, under it the moves of the game, and a foot with the tags and the button.
+Block `.chapter-study` (207 lines). The lessons are one column of cards: a band with the name set into the card, under it the moves of the game, and a foot with the tags and the button.
 
-**Elements:** `.chapter-study__summary`, `.chapter-study__heading`, `.chapter-study__title`, `.chapter-study__description`, `.chapter-study__empty`, `.chapter-study__lesson`, `.chapter-study__lessons`, `.chapter-study__lesson-head`, `.chapter-study__name`, `.chapter-study__done`, `.chapter-study__done-icon`, `.chapter-study__lesson-body`, `.chapter-study__moves`, `.chapter-study__result`, `.chapter-study__description-text`, `.chapter-study__lesson-foot`, `.chapter-study__tag`, `.chapter-study__tags`, `.chapter-study__open`, `.chapter-study__neighbour`, `.chapter-study__neighbours`, `.chapter-study__neighbour-name`
+**Elements:** `.chapter-study__empty`, `.chapter-study__lesson`, `.chapter-study__lessons`, `.chapter-study__lesson-head`, `.chapter-study__name`, `.chapter-study__done`, `.chapter-study__done-icon`, `.chapter-study__lesson-body`, `.chapter-study__moves`, `.chapter-study__result`, `.chapter-study__description-text`, `.chapter-study__lesson-foot`, `.chapter-study__tag`, `.chapter-study__tags`, `.chapter-study__open`, `.chapter-study__neighbours`, `.chapter-study__neighbour`, `.chapter-study__neighbour-name`
 
 **Modifiers and states:** `.chapter-study__lesson_state_next`, `.chapter-study__tag_tone_accent`
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-border-strong`, `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-soft`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-text-title`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-border-strong`, `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-soft`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
 No breakpoints of its own; the hover transition is off under `prefers-reduced-motion`.
 

@@ -459,8 +459,6 @@ export function mapChapterView(
     id: chapter.id,
     order: chapter.order,
     name: chapter.name,
-    description: chapter.description ?? undefined,
-    isPriority: chapter.isPriority,
     hiddenLessons,
     lessons,
     previous: position > 0 ? linkTo(detail.chapters[position - 1]) : undefined,

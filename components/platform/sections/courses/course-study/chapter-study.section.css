@@ -3,42 +3,6 @@
   flex-direction: column;
   gap: 16px;
 
-  /* --- What the chapter is ------------------------------------------------ */
-
-  & .chapter-study__summary {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    padding: 20px 22px;
-    border-radius: 8px;
-    background: var(--platform-surface);
-  }
-
-  & .chapter-study__heading {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 10px;
-  }
-
-  & .chapter-study__title {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--platform-text-title);
-    line-height: 1.25;
-    letter-spacing: -0.01em;
-    text-wrap: balance;
-  }
-
-  & .chapter-study__description {
-    margin: 0;
-    font-size: 14.5px;
-    line-height: 1.55;
-    color: var(--platform-text-muted);
-    text-wrap: pretty;
-  }
-
   & .chapter-study__empty {
     margin: 0;
     padding: 20px 22px;

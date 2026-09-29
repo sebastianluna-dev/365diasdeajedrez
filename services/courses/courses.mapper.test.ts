@@ -167,11 +167,10 @@ describe("un capítulo de prioridad", () => {
   } as unknown as CourseWithDetail;
   const filtered = state({ onlyPriorityLessons: true });
 
-  it("lo dice en su tarjeta y en su página, y los demás no", () => {
+  it("lo dice en su tarjeta, y los demás no", () => {
     const [first, second] = mapCourseDetail(WITH_PRIORITY_CHAPTER, state()).chapters;
     expect(first?.isPriority).toBe(false);
     expect(second?.isPriority).toBe(true);
-    expect(mapChapterView(WITH_PRIORITY_CHAPTER, "cap-2", state())?.isPriority).toBe(true);
   });
 
   it("con el filtro encendido entra entero, aunque ninguna de sus lecciones esté marcada", () => {
