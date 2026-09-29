@@ -1,0 +1,109 @@
+/* «Ajustes»: one card per thing that is decided, in a column the width of a
+   form and not of the page — a field of settings is read down, not across. */
+.account-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 620px;
+
+  & .account-settings__card {
+    padding: 26px 28px;
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .account-settings__title {
+    margin: 0 0 18px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  /* The details, as a list of terms: what they are called on the left, what
+     they say on the right, so three facts read as three and not as a
+     paragraph. */
+  & .account-settings__facts {
+    display: grid;
+    grid-template-columns: minmax(0, 190px) minmax(0, 1fr);
+    gap: 0;
+    margin: 0;
+  }
+
+  & .account-settings__fact {
+    display: contents;
+  }
+
+  & .account-settings__term,
+  & .account-settings__value {
+    padding: 11px 0;
+    border-top: 1px solid var(--platform-border);
+    font-size: 15px;
+  }
+
+  & .account-settings__term {
+    color: var(--platform-text-subtle);
+  }
+
+  & .account-settings__value {
+    margin: 0;
+    color: var(--platform-text);
+    overflow-wrap: anywhere;
+  }
+
+  /* The first row has the title above it: a line there would close the
+     heading instead of separating two facts. */
+  & .account-settings__fact:first-child {
+    & .account-settings__term,
+    & .account-settings__value {
+      border-top: none;
+    }
+  }
+
+  & .account-settings__note {
+    margin: 14px 0 0;
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .account-settings__form {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+
+  & .account-settings__field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 200px;
+  }
+
+  & .account-settings__field-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--platform-text-muted);
+  }
+
+  @media (max-width: 640px) {
+    & .account-settings__card {
+      padding: 20px;
+    }
+
+    /* Two columns of 190px do not fit a phone: the term goes over its value. */
+    & .account-settings__facts {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    & .account-settings__term {
+      padding-bottom: 0;
+    }
+
+    & .account-settings__value {
+      padding-top: 4px;
+      border-top: none;
+    }
+  }
+}

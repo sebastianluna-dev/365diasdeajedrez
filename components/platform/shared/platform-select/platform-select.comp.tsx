@@ -56,6 +56,16 @@ interface PlatformSelectProps extends Omit<ComponentProps<"button">, "value" | "
 /** The private value of the empty option's item. It never leaves the component. */
 const EMPTY_VALUE = "\u0000empty";
 
+/** The label of the option a value stands for, wherever it is listed. */
+function findOptionLabel(
+  options: PlatformSelectOption[] | undefined,
+  groups: PlatformSelectGroup[] | undefined,
+  value: string,
+): string | undefined {
+  const all = [...(options ?? []), ...(groups ?? []).flatMap((group) => group.options)];
+  return all.find((option) => option.value === value)?.label;
+}
+
 /**
  * The platform's select, on Radix's `Select` primitive: a button that opens a
  * list, keyboard-navigable and typeahead-searchable, drawn with the platform's
@@ -115,6 +125,9 @@ function SelectControl({
     .filter(Boolean)
     .join(" ");
 
+  // What the trigger says: the label of whatever is chosen.
+  const chosen = value ? findOptionLabel(options, groups, value) : undefined;
+
   const renderOption = (option: PlatformSelectOption) => (
     <Select.Item key={option.value} value={option.value} disabled={option.disabled} className="platform-select__item">
       <Select.ItemText>{option.label}</Select.ItemText>
@@ -135,7 +148,13 @@ function SelectControl({
         disabled={disabled}
       >
         <Select.Trigger className={triggerClassName} {...triggerProps}>
-          <Select.Value placeholder={emptyOption ?? placeholder} />
+          {/* The label is handed in as the child and not left to the
+              primitive: it resolves the chosen option from the items, which do
+              not exist until the browser mounts them, so a server-rendered
+              select arrived with an empty trigger and filled itself in once
+              the JavaScript landed. Given here it is right from the first
+              paint, and it still follows the value, which is state. */}
+          <Select.Value placeholder={emptyOption ?? placeholder}>{chosen}</Select.Value>
           <Select.Icon className="platform-select__icon">
             <ChevronIcon className="platform-select__chevron" />
           </Select.Icon>

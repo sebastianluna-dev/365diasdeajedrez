@@ -32,6 +32,7 @@ Who is signed in, and everything that is theirs, behind the avatar at the right 
 - **It is drawn by hand, not on Radix**, unlike the platform's other popups. Radix moved it 145px to the right of the avatar under the platform's zoom — at the right edge of the bar, out through the side of the window — while the select's list, in the middle of a page, is placed correctly by the same machinery; the difference was not run down (IMPROVEMENTS #40). Hung from the avatar with CSS (`position: absolute; right: 0`) there is nothing to measure.
 - It follows the platform's menu pattern all the same: `role="menu"` with `role="menuitem"` rows, `aria-haspopup`/`aria-expanded` on the avatar, closing on Escape (returning the focus to the avatar) and on a press outside, up and down walking the rows and wrapping around, and the focus moving into the menu when it opens.
 - It stays mounted while it leaves (`useLingering` + `_state_closing`), so it enters in 160ms and leaves in 120ms, both off under `prefers-reduced-motion`.
+- The rows are, in order: the name (a link to `/profesor/perfil` for a teacher, a heading for everyone else), **«Ajustes»** ([`AccountSettingsSection`](/components/platform/sections/account/account-settings-section)), «Sitio público» and «Cerrar sesión».
 - **«Cerrar sesión» is a `<form action={logoutAction}>`**, as it always was: signing out does not depend on JavaScript.
 
 ## Markup & styling

@@ -66,6 +66,11 @@ export const platformRoutes = {
    * show it, and from there the chapter's order number is not at hand.
    */
   lessonPattern: "/cursos/[courseRef]/[chapterOrder]/[lessonId]",
+  /**
+   * The account: what is the person's own and the one thing they set. It hangs
+   * from the root and not from a role's panel, because it is everyone's.
+   */
+  settings: "/ajustes",
   trainer: "/entrenador",
   /** The Move Trainer over what the student already learned of a course. */
   courseReview: (courseId: string) => `/entrenador?course=${courseId}`,

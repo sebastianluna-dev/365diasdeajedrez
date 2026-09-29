@@ -9,7 +9,7 @@ import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { z } from "zod";
 import { formInt, parseForm } from "@/services/shared/form-schema";
-import { withErrorParam } from "@/services/shared/safe-return-to";
+import { readReturnTo, safeReturnTo, withErrorParam } from "@/services/shared/safe-return-to";
 import { getStudyGoal } from "./study-goal.service";
 import type { StudyGoal } from "./study-goal.types";
 
@@ -37,16 +37,21 @@ export async function readStudyGoal(): Promise<StudyGoal> {
 const GOAL_SCHEMA = z.object({ goalMinutes: formInt(1, 100_000).refine(isGoalOption) });
 
 export async function updateDailyGoal(formData: FormData): Promise<void> {
+  // The goal is set in two places — beside the streak on the dashboard and in
+  // «Ajustes» — so the form says which one it came from and a failure goes
+  // back to the page that is on screen, not to the other one.
+  const returnTo = safeReturnTo(readReturnTo(formData), platformRoutes.dashboard);
+
   const parsed = parseForm(GOAL_SCHEMA, formData);
-  // The goal lives on the dashboard, next to the streak: a failure goes back there.
-  if (!parsed.ok) redirect(withErrorParam(platformRoutes.dashboard, "goal"));
+  if (!parsed.ok) redirect(withErrorParam(returnTo, "goal"));
   const minutes = parsed.data.goalMinutes;
 
   const user = await getCurrentUser();
   if (!(await allowAction(`${user.id}:daily-goal`, 20, 60_000)))
-    redirect(withErrorParam(platformRoutes.dashboard, "throttled"));
+    redirect(withErrorParam(returnTo, "throttled"));
 
   await getPlatformDb().user.update({ where: { id: user.id }, data: { dailyGoalMinutes: minutes } });
 
   revalidatePath(platformRoutes.dashboard);
+  revalidatePath(platformRoutes.settings);
 }

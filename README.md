@@ -79,7 +79,7 @@ They are restored onto an empty or test database with `pg_restore --no-owner --d
 
 ## Access to the platform
 
-The private area (`/inicio`, `/clases`, `/estudios`, `/cursos`, `/lecciones` (the old lesson URLs, which redirect), `/entrenador`, `/explorador`, `/profesor`, `/administracion`) requires signing in at `/iniciar-sesion`. The seed leaves three test accounts ready with the password `ajedrez365` (or the one in `PLATFORM_DEMO_PASSWORD`); it is only assigned to accounts that do not have a password yet, so a re-seed never reverts a change made by hand:
+The private area (`/inicio`, `/clases`, `/estudios`, `/cursos`, `/lecciones` (the old lesson URLs, which redirect), `/ajustes`, `/entrenador`, `/explorador`, `/profesor`, `/administracion`) requires signing in at `/iniciar-sesion`. The seed leaves three test accounts ready with the password `ajedrez365` (or the one in `PLATFORM_DEMO_PASSWORD`); it is only assigned to accounts that do not have a password yet, so a re-seed never reverts a change made by hand:
 
 | Account                              | Role                 | What they see beyond the student's view |
 | ------------------------------------ | -------------------- | --------------------------------------- |
@@ -131,6 +131,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/estudios`, `/estudios/clases` (games seen in class), `/estudios/[studyId]` (redirects to the study's first game; a study without games renders its empty page), `/estudios/[studyId]/partidas/[gameId]`
 - `/cursos` (the courses the student added), `/cursos/explorar` (the catalog; `?nivel=<slug>` narrows it to a level), `/cursos/<slug>` (a course's information page, where it is added), `/cursos/<id>` and `/cursos/<id>/<chapterOrder>` (the course to study; the two share the `[courseRef]` segment)
 - `/cursos/<id>/<chapterOrder>/<lessonId>` (a lesson: it hangs from its chapter so the column of lessons lives in the chapter's `layout.tsx` and is not fetched again on a move to another lesson). `/lecciones/[lessonId]`, where the lessons used to live, answers **308** to it.
+- `/ajustes` (the account: the student's details and the daily goal; reached from the menu behind the avatar of the bar)
 - `/entrenador` (the Move Trainer; **switched off**: it answers 404 while `MOVE_TRAINER_ENABLED` in `constants/platform/features.const.ts` is `false`)
 - `/explorador` (search for games by position; student and teacher share it)
 

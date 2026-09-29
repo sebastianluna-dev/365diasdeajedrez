@@ -11,21 +11,13 @@ import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { publishedLessonWhere } from "@/services/shared/published-content";
 import { z } from "zod";
-import { formReturnTo, parseForm } from "@/services/shared/form-schema";
-import { safeReturnTo, withErrorParam } from "@/services/shared/safe-return-to";
+import { parseForm } from "@/services/shared/form-schema";
+import { readReturnTo, safeReturnTo, withErrorParam } from "@/services/shared/safe-return-to";
 import { recordUserActivity } from "@/services/shared/user-activity.service";
 import { getLessonView } from "./courses.service";
 
 // Server actions are reachable by direct POST: the user is ALWAYS resolved in
 // here (DAL) and never arrives from the client.
-
-const RETURN_TO_SCHEMA = z.object({ returnTo: formReturnTo() });
-
-/** The page the form sits on, still to be checked by `safeReturnTo`. */
-function readReturnTo(formData: FormData): string {
-  const parsed = parseForm(RETURN_TO_SCHEMA, formData);
-  return parsed.ok ? parsed.data.returnTo : "";
-}
 
 // Only lessons of published courses: the id comes from the client and without
 // this filter a direct POST would seed progress over a draft course.

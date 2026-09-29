@@ -47,6 +47,7 @@ URLs are Spanish because the product is. The single source of truth for private-
 | `/cursos/[courseRef]`, `/cursos/[courseRef]/[chapterOrder]`      | One segment, two pages: an **id** is the course to study and a **slug** its information page, where it is added (see below). Chapter by **order number**, under the id only.                                                                                                                          |
 | `/cursos/[courseRef]/[chapterOrder]/[lessonId]`                  | Lesson viewer. It hangs from its chapter so that the column of lessons can live in the chapter's `layout.tsx` and survive a move from one lesson to the next (see below).                                                                                                                              |
 | `/lecciones/[lessonId]`                                          | Where the lessons used to live: a route handler that answers **308** to the address above. Kept for shared links and pasted ids.                                                                                                                                                                       |
+| `/ajustes`                                                       | The account: the student's details, read-only, and the daily goal. It hangs from the root because it is everyone's, whatever their role.                                                                                                                                                               |
 | `/entrenador`, `/entrenador?lesson=…`, `?chapter=…`, `?course=…` | Move Trainer home and session (`course` is a course's «Repasar»).                                                                                                                                                                                                                                     |
 | `/explorador`                                                    | Position search; shared by students and teachers.                                                                                                                                                                                                                                                     |
 
@@ -104,6 +105,7 @@ export const PROTECTED_PATH_PREFIXES = [
   // The lessons live under /cursos now; this one only redirects, and stays
   // protected so the redirect is not a way of learning that a lesson exists.
   "/lecciones",
+  "/ajustes",
   "/entrenador",
   "/explorador",
   "/profesor",

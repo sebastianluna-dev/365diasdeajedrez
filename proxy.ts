@@ -61,6 +61,7 @@ export const config = {
     "/estudios/:path*",
     "/cursos/:path*",
     "/lecciones/:path*",
+    "/ajustes/:path*",
     "/entrenador/:path*",
     "/explorador/:path*",
     "/profesor/:path*",

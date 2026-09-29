@@ -3,6 +3,7 @@ import type { MetaRecord } from "nextra";
 const meta: MetaRecord = {
   shell: "shell/",
   dashboard: "dashboard/",
+  account: "account/",
   courses: "courses/",
   studies: "studies/",
   classes: "classes/",

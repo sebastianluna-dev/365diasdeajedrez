@@ -1,0 +1,39 @@
+---
+description: "«Ajustes»: the student's details, which are read and not edited, and the daily goal, which is theirs to set."
+---
+
+# `AccountSettingsSection`
+
+|            |                                                                              |
+| ---------- | ------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/account/account-settings.section.tsx`          |
+| Kind       | Server Component                                                             |
+| Stylesheet | `account-settings.section.css` → block `.account-settings`                   |
+| Used by    | `/ajustes`                                                                   |
+| Composes   | [`PlatformSelect`](/components/platform/shared/platform-select), [`SubmitButton`](/components/platform/shared/submit-button), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Reads      | `getAccountSettings()` · `services/account/account.service.ts`                |
+| Writes     | `updateDailyGoal()` · `services/study-goal/study-goal.actions.ts`             |
+
+## Purpose
+
+Where «Ajustes» leads, from the menu of the bar. Two cards: who they are, and the one thing they decide.
+
+**Their details are shown and not edited.** A name and an email are changed by whoever runs the academy, so the card says so instead of offering a form that would fail. **The daily goal is theirs**, and it is the same setting the dashboard offers beside the streak — the same action, `updateDailyGoal`, with the page it sits on carried in a hidden `returnTo` so a failure comes back here and not there.
+
+## Props
+
+| Prop        | Type              | Required | Meaning                                                                        |
+| ----------- | ----------------- | -------- | -------------------------------------------------------------------------------- |
+| `account`   | `AccountSettings` | yes      | `displayName`, `email`, `memberSinceLabel`, `goalMinutes`.                     |
+| `errorCode` | `string`          | no       | Code from `?error=`, translated with `STUDENT_ERROR_MESSAGES` into a notice.   |
+
+## Markup & styling
+
+Block `.account-settings`: a column of cards capped at 620px — a field of settings is read down, not across. The details are a `<dl>` laid out as a two-column grid (`display: contents` on each pair), with a hairline over every row but the first, since a line under the heading would close it instead of separating two facts. At `(max-width: 640px)` the grid becomes one column and the term goes over its value.
+
+**Elements:** `.account-settings__card`, `__title`, `__facts`, `__fact`, `__term`, `__value`, `__note`, `__form`, `__field`, `__field-label`
+
+## Related
+
+- [`PlatformUserMenu`](/components/platform/sections/shell/platform-user-menu), which links here.
+- [`StudyGoalSection`](/components/platform/sections/dashboard/study-goal-section), the same goal beside the streak.

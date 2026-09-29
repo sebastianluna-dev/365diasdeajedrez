@@ -6,6 +6,17 @@
 //
 // Pure module and without "server-only" so the actions and their tests share it.
 
+import { z } from "zod";
+import { formReturnTo, parseForm } from "@/services/shared/form-schema";
+
+const RETURN_TO_SCHEMA = z.object({ returnTo: formReturnTo() });
+
+/** The page the form sits on, still to be checked by `safeReturnTo`. */
+export function readReturnTo(formData: FormData): string {
+  const parsed = parseForm(RETURN_TO_SCHEMA, formData);
+  return parsed.ok ? parsed.data.returnTo : "";
+}
+
 export function safeReturnTo(raw: string, fallback: string): string {
   if (!raw.startsWith("/") || raw.startsWith("//") || raw.startsWith("/\\")) return fallback;
   return raw;

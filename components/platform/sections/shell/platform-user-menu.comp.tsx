@@ -5,8 +5,10 @@ import { useCallback, useEffect, useRef, useState, type KeyboardEvent as ReactKe
 import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
 import { ExitIcon } from "@/components/icons/exit-icon.comp";
 import { FlameIcon } from "@/components/icons/flame-icon.comp";
+import { GearIcon } from "@/components/icons/gear-icon.comp";
 import { UserIcon } from "@/components/icons/user-icon.comp";
 import { useLingering } from "@/components/chess/game-viewer/use-lingering.hook";
+import { platformRoutes } from "@/lib/platform-routes";
 import { logoutAction } from "@/services/auth/auth.actions";
 import { readStudyGoal } from "@/services/study-goal/study-goal.actions";
 import type { StudyGoal } from "@/services/study-goal/study-goal.types";
@@ -167,6 +169,16 @@ export function PlatformUserMenu({ displayName, initials, profileHref }: Platfor
               {displayName}
             </p>
           )}
+
+          <Link
+            href={platformRoutes.settings}
+            role="menuitem"
+            className="platform-user-menu__item"
+            onClick={() => close(false)}
+          >
+            <GearIcon className="platform-user-menu__icon" />
+            Ajustes
+          </Link>
 
           <Link href="/" role="menuitem" className="platform-user-menu__item" onClick={() => close(false)}>
             <ArrowUpIcon className="platform-user-menu__icon platform-user-menu__icon_turn_out" />
