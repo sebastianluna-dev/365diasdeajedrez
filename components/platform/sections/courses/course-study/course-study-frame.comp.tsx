@@ -32,10 +32,13 @@ const COVER_SIZES = "(max-width: 620px) 100vw, 280px";
 /**
  * What is around every page of a course being studied: on top, the way back
  * one step — from the chapters to «Mis cursos», from a chapter to the
- * chapters —; under it, the course with its two buttons — «Aprender», the next lesson, and «Repasar», the
- * exercises of what was already learned —; on the right, the student's
- * progress, the course's options and its one setting. The page puts its
+ * chapters —; under it, the course with its two buttons — «Aprender», the
+ * next lesson, and «Repasar», the exercises of what was already learned —; on
+ * the right, the course's options and its one setting. The page puts its
  * column in the middle.
+ *
+ * The course's progress is on a chapter's page only. The page that lists the
+ * chapters says how far each one is, and that is the progress it shows.
  *
  * A button is only drawn when it leads somewhere: a course with every lesson
  * learned has no «Aprender», and one without exercises learned no «Repasar».
@@ -93,25 +96,27 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
         <div className="course-study-frame__main">{children}</div>
 
         <aside className="course-study-frame__aside">
-          <section className="course-study-frame__card course-study-frame__card_kind_progress">
-            <p className="course-study-frame__progress-head">
-              <span className="course-study-frame__card-title">Tu progreso</span>
-              <span className="course-study-frame__progress-ratio">
-                {progress.completedLessons}/{progress.totalLessons}
-              </span>
-            </p>
-            <p className="course-study-frame__percent">
-              {progress.percent}%
-              {course.isCompleted && (
-                <span className="course-study-frame__done" role="img" aria-label="Curso completo">
-                  <CircleCheckSolidIcon className="course-study-frame__done-icon" />
+          {chapter && (
+            <section className="course-study-frame__card course-study-frame__card_kind_progress">
+              <p className="course-study-frame__progress-head">
+                <span className="course-study-frame__card-title">Tu progreso</span>
+                <span className="course-study-frame__progress-ratio">
+                  {progress.completedLessons}/{progress.totalLessons}
                 </span>
-              )}
-            </p>
-            <div className="course-study-frame__track">
-              <div className="course-study-frame__fill" style={{ width: `${progress.percent}%` }} />
-            </div>
-          </section>
+              </p>
+              <p className="course-study-frame__percent">
+                {progress.percent}%
+                {course.isCompleted && (
+                  <span className="course-study-frame__done" role="img" aria-label="Curso completo">
+                    <CircleCheckSolidIcon className="course-study-frame__done-icon" />
+                  </span>
+                )}
+              </p>
+              <div className="course-study-frame__track">
+                <div className="course-study-frame__fill" style={{ width: `${progress.percent}%` }} />
+              </div>
+            </section>
+          )}
 
           <section className="course-study-frame__card">
             <h2 className="course-study-frame__card-title course-study-frame__card-title_kind_head">

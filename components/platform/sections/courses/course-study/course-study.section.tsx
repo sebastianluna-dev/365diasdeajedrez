@@ -16,7 +16,9 @@ interface CourseStudySectionProps {
  * student has learned, inside the frame every page of the course shares.
  *
  * A chapter says its progress as a count, and with a check once it is whole:
- * the bar is the course's, which is the one thing measured in percentage.
+ * the bar is the course's, which is the one thing measured in percentage,
+ * and this page does not show it — the course's progress is not on the page
+ * that lists its chapters.
  *
  * A chapter's count is of the lessons the student SEES: with only the
  * priority ones asked for, it is over those, which is the list that opens
