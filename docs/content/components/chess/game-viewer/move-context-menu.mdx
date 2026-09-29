@@ -36,7 +36,7 @@ The menu is a list of actions with callbacks. Three of them (comment, annotate, 
 
 ## Behaviour
 
-- **Positioning.** The menu first renders at the pointer, then a `useLayoutEffect` measures itself and clamps `x`/`y` so it stays at least 8 px inside the window: a right click near the edge would otherwise open a menu that can be neither read nor clicked.
+- **Positioning.** The menu first renders at the pointer, then a `useLayoutEffect` measures itself and clamps `x`/`y` so it stays at least 8 px inside the window: a right click near the edge would otherwise open a menu that can be neither read nor clicked. The click's coordinates and the window's size are divided by `currentCSSZoom` first: they are reported in the page's px, with the platform's zoom already in them, while the `left`/`top` written here are read in the menu's own px and multiplied by that zoom again — the menu opened a tenth of the screen away from the pointer.
 - **Closing.** A window `pointerdown` outside the menu or an Escape key calls `onClose`, which is what anyone expects from a context menu. The host keeps it mounted for 120 ms with `closing` set ([`useLingering`](/components/chess/game-viewer/use-lingering-hook)) so the exit animation plays; while closing nothing in it can be pressed.
 - **Motion.** It scales in from its top-left corner (160 ms) and folds back into it (120 ms); the position is measured with `offsetWidth`/`offsetHeight`, not the bounding rect, because the entry starts scaled down and the rect would measure that first frame. `prefers-reduced-motion` removes both.
 - **Focus.** On mount the first enabled item receives focus, so keyboard users land inside the menu.

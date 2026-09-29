@@ -98,9 +98,16 @@ export function MoveContextMenu({
     const menu = rootRef.current;
     if (!menu) return;
     const { offsetWidth: width, offsetHeight: height } = menu;
+    // The click and the window are reported in the page's px, which carry the
+    // platform's zoom, while `left`/`top` are read in the menu's own px, which
+    // the zoom multiplies again: the menu opened a tenth of the screen away
+    // from the pointer, and the edge it was kept inside was not the real one.
+    // Both cross over to the menu's px before being compared to its size.
+    // `|| 1` for a browser that does not implement `zoom` at all.
+    const zoom = menu.currentCSSZoom || 1;
     setPosition({
-      x: Math.max(EDGE_GAP, Math.min(target.x, window.innerWidth - width - EDGE_GAP)),
-      y: Math.max(EDGE_GAP, Math.min(target.y, window.innerHeight - height - EDGE_GAP)),
+      x: Math.max(EDGE_GAP, Math.min(target.x / zoom, window.innerWidth / zoom - width - EDGE_GAP)),
+      y: Math.max(EDGE_GAP, Math.min(target.y / zoom, window.innerHeight / zoom - height - EDGE_GAP)),
     });
   }, [target.x, target.y]);
 
