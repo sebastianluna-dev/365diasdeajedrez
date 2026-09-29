@@ -1,0 +1,35 @@
+---
+description: "Remembers how far the column of lessons was scrolled and puts it back, so moving from one lesson to the next does not send the list back to the top."
+---
+
+# `OutlineScroll`
+
+|            |                                                                                              |
+| ---------- | -------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/lesson-view/outline-scroll.comp.tsx`                   |
+| Kind       | Client Component                                                                             |
+| Stylesheet | none (it renders a hidden `<span>`)                                                          |
+| Used by    | [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline)          |
+
+## Purpose
+
+Moving from one lesson to the next renders the whole page again — the column of lessons included, since it lives in the page and not in a layout — so the list came back at the top and whoever was half way down a long chapter had to find their place again.
+
+This remembers the place and puts it back.
+
+## Props
+
+| Prop         | Type     | Required | Meaning                                                                                                          |
+| ------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------------------ |
+| `chapterKey` | `string` | yes      | One key per chapter: its own list, its own place in it. `LessonOutline` passes the chapter's href, so nothing new travels down. |
+
+## Behaviour
+
+- It renders a hidden `<span>` and reaches the scroller through its `parentElement`, which is the `.lesson-outline__body` it is mounted in. That way nothing has to hand it a ref and the column stays a Server Component.
+- On mount it reads `sessionStorage` and sets `scrollTop`; on every scroll it writes the position back, once per frame (`requestAnimationFrame`).
+- `sessionStorage` and not `localStorage`: where one is in a list belongs to the visit, not to the machine.
+- Every read and write is wrapped in `try/catch` — a private window throws on both — and without that memory the list simply starts at the top.
+
+## Related
+
+- [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline), the column it belongs to.

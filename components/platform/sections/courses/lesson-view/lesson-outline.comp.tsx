@@ -4,6 +4,7 @@ import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { setOnlyPriorityLessons } from "@/services/courses/courses.actions";
+import { OutlineScroll } from "./outline-scroll.comp";
 import type { LessonSibling } from "@/services/courses/courses.types";
 import "./lesson-outline.comp.css";
 
@@ -108,6 +109,10 @@ export function LessonOutline({
       {/* What scrolls when the chapter is long. The course's head stays out of
           it, because where one is should not scroll away. */}
       <div className="lesson-outline__body">
+        {/* Keeps the place in the list from one lesson to the next: the page
+            is rendered again on every move, the column with it. */}
+        <OutlineScroll chapterKey={chapterHref} />
+
         <div className="lesson-outline__chapter">
           <Link href={chapterHref} className="lesson-outline__chapter-name">
             {chapterName}
