@@ -21,10 +21,13 @@ interface MoveTreeProps {
 export function MoveTree({ tree, currentPath, onSelect, onContextMenu }: MoveTreeProps) {
   const activeRef = useRef<HTMLButtonElement>(null);
 
-  // The active move, in view. `nearest` scrolls the minimum and only the
-  // scrolling container, so it does not yank the whole page.
+  // The active move goes to the TOP of the panel, not merely into view: what
+  // is read after a move is what comes after it, and with `nearest` the move
+  // being followed crept down the panel until everything worth reading was
+  // below the fold. `inline: "nearest"` leaves the horizontal scroll alone,
+  // and the panel is the only thing that moves — the page does not scroll.
   useEffect(() => {
-    activeRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    activeRef.current?.scrollIntoView({ block: "start", inline: "nearest" });
   }, [currentPath]);
 
   // Where the line is cut is decided by `notation-prose`, which knows nothing
