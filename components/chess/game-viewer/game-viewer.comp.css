@@ -139,19 +139,24 @@
   & .game-viewer__nav {
     display: flex;
     align-items: center;
+    gap: 10px;
   }
 
+  /* Four keys, each its own square: they are pressed one after another, and a
+     stretched button is a target one has to aim at. White on the page's grey,
+     closed by a hairline, like every other surface of the platform. */
   & .game-viewer__nav-button {
-    flex: 1;
-    min-width: 0;
+    flex: none;
+    width: 48px;
     height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     border: 0;
     border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-muted);
+    background: var(--platform-surface);
+    box-shadow: inset 0 0 0 1px var(--platform-border);
+    color: var(--platform-text);
     cursor: pointer;
   }
 
@@ -163,8 +168,10 @@
   }
 
   /* At the start of the game one cannot go back, and at the end not forward:
-     the button says so instead of doing nothing when pressed. */
+     the key sinks into the page instead of doing nothing when pressed. */
   & .game-viewer__nav-button:disabled {
+    background: var(--platform-track);
+    box-shadow: none;
     color: var(--platform-text-faint);
     cursor: default;
   }
@@ -256,6 +263,12 @@
      without an outline or a box enclosing it. */
   & .game-viewer__panel-nav {
     flex: none;
+
+    /* No way out button in this one, so the keys are centred under the
+       notation rather than pushed to one side. */
+    & .game-viewer__nav {
+      justify-content: center;
+    }
   }
 
   /* The right column: the notation card and the button bar below.
