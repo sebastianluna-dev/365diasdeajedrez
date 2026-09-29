@@ -152,23 +152,35 @@
     color: var(--platform-text-subtle);
   }
 
+  /* The game, and under it the foot of the card. */
   & .chapter-study__lesson-body {
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 16px;
-    padding: 16px 22px 18px;
-  }
-
-  & .chapter-study__lesson-text {
-    flex: 1 1 360px;
-    min-width: 0;
-    display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 18px;
+    padding: 20px 22px 20px;
   }
 
-  & .chapter-study__opening {
+  /* Every move of the game. Moves are figures: heavier, and aligned, so they
+     read as notation; the words break between moves, never inside one. */
+  & .chapter-study__moves {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.7;
+    color: var(--platform-text);
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+
+  /* How it ended: said after the last move, and quieter than the moves. */
+  & .chapter-study__result {
+    font-weight: 500;
+    color: var(--platform-text-subtle);
+    white-space: nowrap;
+  }
+
+  /* What a lesson without moves is told by. */
+  & .chapter-study__description-text {
     margin: 0;
     font-size: 15px;
     line-height: 1.6;
@@ -176,11 +188,13 @@
     text-wrap: pretty;
   }
 
-  /* Moves are figures: heavier, and aligned, so they read as notation. */
-  & .chapter-study__opening_kind_moves {
-    font-weight: 600;
-    color: var(--platform-text);
-    font-variant-numeric: tabular-nums;
+  /* The tags at the left and the button at the right, on one line. */
+  & .chapter-study__lesson-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
   }
 
   & .chapter-study__tags {
@@ -207,15 +221,16 @@
     color: var(--platform-accent-ink);
   }
 
+  /* Quiet, and the same on every card: no fill, outlined in grey. */
   & .chapter-study__open {
     flex: none;
     display: flex;
     align-items: center;
     height: 42px;
-    padding: 0 18px;
+    padding: 0 20px;
     border: 1px solid var(--platform-border-strong);
     border-radius: 8px;
-    background: var(--platform-surface);
+    background: transparent;
     color: var(--platform-text);
     font-size: 14.5px;
     font-weight: 700;
@@ -223,33 +238,8 @@
   }
 
   & .chapter-study__open:hover {
-    background: var(--platform-surface-soft);
+    background: var(--platform-surface-neutral);
     color: var(--platform-text);
-  }
-
-  /* The next lesson's is the one filled button of the list, and it is raised
-     on its hard edge as every «Aprender» is. */
-  & .chapter-study__open_emphasis_strong {
-    padding: 0 20px;
-    border-color: transparent;
-    background: var(--platform-accent);
-    color: var(--platform-on-accent);
-    box-shadow: 0 4px 0 var(--platform-accent-deep);
-    font-weight: 800;
-    transition: 80ms;
-    transition-property: transform, box-shadow, background-color;
-  }
-
-  & .chapter-study__open_emphasis_strong:hover {
-    background: var(--platform-accent-bright);
-    color: var(--platform-on-accent);
-  }
-
-  /* Held down, it sinks onto its edge: it goes down the four pixels it stood
-     on and the edge is gone under it, for as long as the press lasts. */
-  & .chapter-study__open_emphasis_strong:active {
-    transform: translateY(4px);
-    box-shadow: 0 0 0 var(--platform-accent-deep);
   }
 
   /* --- The chapters on either side ------------------------------------------ */

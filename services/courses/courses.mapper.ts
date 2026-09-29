@@ -1,4 +1,5 @@
 import { BOARD_ORIENTATION, PROGRESS_STATUS, type ProgressStatusCode } from "@/constants/platform/shared-codes.const";
+import type { GameMoves } from "@/lib/chess/game-moves";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { platformRoutes } from "@/lib/platform-routes";
 import { sortByRole } from "@/services/shared/content-order";
@@ -402,15 +403,15 @@ export function mapCourseDetail(
 
 /** What the chapter's page needs besides the course's. */
 export interface ChapterExtras extends CourseExtras {
-  /** How each lesson opens, by lesson id: see `movesPreview`. */
-  previews?: ReadonlyMap<string, string>;
+  /** The moves of each lesson and how its game ended, by lesson id: see `gameMoves`. */
+  games?: ReadonlyMap<string, GameMoves>;
 }
 
 export function mapChapterView(
   course: CourseWithDetail,
   chapterId: string,
   state: UserCourseState,
-  { previews, ...courseExtras }: ChapterExtras = {},
+  { games, ...courseExtras }: ChapterExtras = {},
 ): ChapterView | null {
   const chapter = course.chapters.find((candidate) => candidate.id === chapterId);
   if (!chapter) return null;
@@ -434,7 +435,8 @@ export function mapChapterView(
       estimatedDuration: lesson.estimatedDuration ?? undefined,
       statusCode: asStatus(state.lessonStatus.get(lesson.id)),
       isNext: lesson.id === nextId,
-      preview: previews?.get(lesson.id),
+      moves: games?.get(lesson.id)?.moves,
+      result: games?.get(lesson.id)?.result,
       href: platformRoutes.lessonDetail(lesson.id),
     }));
 

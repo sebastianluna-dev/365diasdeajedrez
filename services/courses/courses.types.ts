@@ -184,10 +184,13 @@ export interface ChapterLessonItem {
   /** It is the course's next lesson to learn: the one «Aprender» opens. */
   isNext: boolean;
   /**
-   * How the lesson opens: its first moves, "1.e4 c5 2.Cf3 …". Absent for a
-   * lesson without moves, which is a diagram and is told by its description.
+   * The moves of the lesson's game, all of them: "1.e4 c5 2.Cf3 …" to the
+   * last. Absent for a lesson without moves, which is a diagram and is told
+   * by its description.
    */
-  preview?: string;
+  moves?: string;
+  /** How that game ended: "1-0", "0-1" or "½-½". Absent when it did not, or the PGN does not say. */
+  result?: string;
   href: string;
 }
 

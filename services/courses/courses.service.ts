@@ -4,7 +4,7 @@ import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
 import { PROGRESS_STATUS, type ProgressStatusCode } from "@/constants/platform/shared-codes.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
-import { movesPreview } from "@/lib/chess/moves-preview";
+import { gameMoves, type GameMoves } from "@/lib/chess/game-moves";
 import { lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import { isCourseId } from "./course-rules";
 import {
@@ -317,16 +317,16 @@ export async function getChapterView(courseId: string, chapterOrder: number): Pr
   if (!chapterId) return null;
 
   // The course is loaded WITHOUT the PGN of its lessons, which is most of its
-  // weight; the list shows how each lesson opens, so those of this chapter
+  // weight; the list shows the moves of each lesson, so those of this chapter
   // alone are read here.
   const contents = await db.lesson.findMany({ where: { chapterId }, select: { id: true, ...lessonPgnSelect } });
-  const previews = new Map<string, string>();
+  const games = new Map<string, GameMoves>();
   for (const lesson of contents) {
-    const preview = movesPreview(lessonPgnOf(lesson));
-    if (preview) previews.set(lesson.id, preview);
+    const game = gameMoves(lessonPgnOf(lesson));
+    if (game) games.set(lesson.id, game);
   }
 
-  return mapChapterView(course, chapterId, progress, { previews, reviewCount });
+  return mapChapterView(course, chapterId, progress, { games, reviewCount });
 }
 
 /**

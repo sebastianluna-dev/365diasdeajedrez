@@ -398,11 +398,12 @@ describe("los capítulos del curso", () => {
     });
   });
 
-  it("cada lección trae cómo se abre, y la que no tiene jugadas no trae nada", () => {
-    const previews = new Map([["l1", "1.e4 c5 2.Cf3 …"]]);
-    const view = mapChapterView(WITH_NAMES, "cap-1", state(), { previews, reviewCount: 3 });
+  it("cada lección trae las jugadas de su partida y cómo acabó, y la que no tiene jugadas no trae nada", () => {
+    const games = new Map([["l1", { moves: "1.f3 e5 2.g4 Dh4#", result: "0-1" }]]);
+    const view = mapChapterView(WITH_NAMES, "cap-1", state(), { games, reviewCount: 3 });
 
-    expect(view?.lessons.map((lesson) => lesson.preview)).toEqual(["1.e4 c5 2.Cf3 …", undefined]);
+    expect(view?.lessons.map((lesson) => lesson.moves)).toEqual(["1.f3 e5 2.g4 Dh4#", undefined]);
+    expect(view?.lessons.map((lesson) => lesson.result)).toEqual(["0-1", undefined]);
     expect(view?.course.reviewCount).toBe(3);
     expect(view?.course.reviewHref).toBe("/entrenador?course=10000009");
   });

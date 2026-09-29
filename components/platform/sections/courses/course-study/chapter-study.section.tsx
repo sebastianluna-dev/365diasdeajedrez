@@ -25,8 +25,13 @@ function statusOf(lesson: ChapterLessonItem): string {
 
 /**
  * A chapter to study: what it is and how much of it is learned, and under
- * that its lessons, one card each, with how the lesson opens — its first
- * moves — so a game is recognised before opening it.
+ * that its lessons, one card each: the name on a band, the moves of its game
+ * from the first to the last with how it ended, and at the foot its tags and
+ * the button that opens it.
+ *
+ * The button is the same on every card, quiet: outlined in grey, with no
+ * fill. The next lesson to learn is told by its band and its «Siguiente»,
+ * and «Aprender», the filled button, is the course's, at the head of the page.
  *
  * A lesson is not numbered: it is its name. With the filter on the list is
  * shorter, and it is the frame's setting that says how many it hides.
@@ -79,7 +84,6 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
           <ol className="chapter-study__lessons">
             {chapter.lessons.map((lesson) => {
               const isDone = lesson.statusCode === PROGRESS_STATUS.COMPLETED;
-              const summary = lesson.preview ?? lesson.description;
 
               return (
                 <li
@@ -101,29 +105,29 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
                   </div>
 
                   <div className="chapter-study__lesson-body">
-                    <div className="chapter-study__lesson-text">
-                      {summary && (
-                        <p
-                          className={`chapter-study__opening${lesson.preview ? " chapter-study__opening_kind_moves" : ""}`}
-                        >
-                          {summary}
-                        </p>
-                      )}
+                    {/* The game whole, not how it opens: it is read through here. A
+                        lesson without moves is a diagram, told by its description. */}
+                    {lesson.moves ? (
+                      <p className="chapter-study__moves">
+                        {lesson.moves}
+                        {lesson.result && <span className="chapter-study__result"> {lesson.result}</span>}
+                      </p>
+                    ) : (
+                      lesson.description && <p className="chapter-study__description-text">{lesson.description}</p>
+                    )}
+
+                    <div className="chapter-study__lesson-foot">
                       <p className="chapter-study__tags">
                         {lesson.isPriority && (
                           <span className="chapter-study__tag chapter-study__tag_tone_accent">Prioridad</span>
                         )}
                         <span className="chapter-study__tag">{statusOf(lesson)}</span>
                       </p>
-                    </div>
 
-                    <Link
-                      href={lesson.href}
-                      className={`chapter-study__open${lesson.isNext ? " chapter-study__open_emphasis_strong" : ""}`}
-                      aria-label={`${lesson.isNext ? "Aprender" : "Ver"} «${lesson.name}»`}
-                    >
-                      {lesson.isNext ? "Aprender" : isDone ? "Ver ✓" : "Ver"}
-                    </Link>
+                      <Link href={lesson.href} className="chapter-study__open" aria-label={`Ver «${lesson.name}»`}>
+                        Ver
+                      </Link>
+                    </div>
                   </div>
                 </li>
               );
