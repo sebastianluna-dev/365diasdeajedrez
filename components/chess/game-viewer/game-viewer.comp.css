@@ -310,7 +310,7 @@
     display: flex;
     align-items: flex-start;
     gap: 14px;
-    padding: 20px 22px;
+    padding: 26px 28px;
     box-shadow: inset 0 -1px 0 var(--platform-track);
   }
 
@@ -355,9 +355,10 @@
   }
 
   /* Prose is read, not scanned: it takes the same margin the head above it
-     has, so the text lines up with the title and never touches the edges. */
+     has — so the text lines up with the title — and a generous one, because
+     a paragraph that runs to the edges of its box is read as a wall. */
   & .game-viewer__moves.game-viewer__moves_list_flow {
-    padding: 20px 22px;
+    padding: 26px 28px;
   }
 
   & .game-viewer__toolbar {
