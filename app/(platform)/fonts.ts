@@ -69,20 +69,21 @@ export const sfProDisplay = localFont({
  * Google Fonts' (github.com/google/fonts/tree/main/ofl/poppins) and the
  * subsets are cut with the same `pyftsubset` line as SF Pro's.
  *
- * Two weights, which are the ones the pages' titles ask for: 700, and 800
- * for the two that are drawn heavier. It is not preloaded either — a title is
- * painted with `swap` while it arrives, which is the same trade SF Pro makes.
+ * Two weights: 600, which is what a page's title is drawn at, and 700 for an
+ * `h1` that declares none and takes the browser's bold. It is not preloaded
+ * either — a title is painted with `swap` while it arrives, which is the same
+ * trade SF Pro makes.
  */
 export const poppins = localFont({
   src: [
     {
-      path: "../../public/fonts/poppins-bold.woff2",
-      weight: "700",
+      path: "../../public/fonts/poppins-semibold.woff2",
+      weight: "600",
       style: "normal",
     },
     {
-      path: "../../public/fonts/poppins-extrabold.woff2",
-      weight: "800",
+      path: "../../public/fonts/poppins-bold.woff2",
+      weight: "700",
       style: "normal",
     },
   ],

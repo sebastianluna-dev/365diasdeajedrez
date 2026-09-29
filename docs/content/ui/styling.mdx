@@ -93,7 +93,7 @@ It is the one rule to keep in mind when writing a new stylesheet for the platfor
 | `--font-suisse`     | Suisse Intl 400/500/700            | Public body text (`body` in `globals.css`).                                                                                                                                 |
 | `--font-chessglyph` | ChessGlyph                         | Figurine notation. Not preloaded.                                                                                                                                           |
 | `--font-sf-pro`     | SF Pro Display 400/500/600/700/800 | The whole platform, through `--platform-font`. Not preloaded. The five weights are the five the stylesheets ask for; without 600 and 800 the browser resolved both to Bold. |
-| `--font-poppins`    | Poppins 600/700/800                | The platform's **titles**, through `--platform-font-display`. Not preloaded. Three weights, the ones its headings ask for.                                                  |
+| `--font-poppins`    | Poppins 600/700                    | The **title of a page**, through `--platform-font-display`. Not preloaded. A page's title is drawn at 600; the 700 is for an `h1` that declares no weight.                  |
 
 Platform stylesheets never name a font: they use `var(--platform-font)`, `var(--platform-font-display)` for a title or `var(--platform-font-serif)`, or they inherit.
 
@@ -105,7 +105,7 @@ Platform stylesheets never name a font: they use `var(--platform-font)`, `var(--
 }
 ```
 
-It is the `h1` each page opens with, and nothing else: everything under it, from a card's title to a section's heading, is the text font. A page that wants another font for its title says so in its own file and wins by specificity; that is also why an `h1` must NOT redeclare `--platform-font`, which is what four heading rules used to do. See [Stockfish, pieces & sounds](/chess/engine-and-assets#fonts--publicfonts) for the subsetting commands and licences.
+Every page's title is drawn at **600**, which is the weight of the font's semibold. It is the `h1` each page opens with, and nothing else: everything under it, from a card's title to a section's heading, is the text font. A page that wants another font for its title says so in its own file and wins by specificity; that is also why an `h1` must NOT redeclare `--platform-font`, which is what four heading rules used to do. See [Stockfish, pieces & sounds](/chess/engine-and-assets#fonts--publicfonts) for the subsetting commands and licences.
 
 ## BEM, nesting and scoping
 
