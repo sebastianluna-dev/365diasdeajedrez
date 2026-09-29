@@ -32,7 +32,7 @@ It reads the session **only to show** who is logged in and which menu they get. 
 - `getSessionUser()` and `getSessionRoles()` run in parallel. `buildPlatformNavGroups(roles)` returns exactly one group: staff, teacher or student; the menu is exclusive by role.
 - The wordmark is the same inline SVG the public site draws ([`LogoWordmarkIcon`](/components/site/shared/logo#logowordmarkicon)), `aria-hidden` inside a link whose accessible name is `LOGO_LABEL`. It links to `homeRouteFor(roles)`, the role's home rather than the student dashboard, because with the exclusive menu that page is no longer in a teacher's or staff's menu.
 - The user block shows the display name, a link to the public site and "Salir", which is a `<form action={logoutAction}>` with a submit button so it works without JavaScript and shares the line with the site link. The avatar shows the initials of the first two words of the name (`initialsOf`), `aria-hidden`.
-- **The bar spans the whole width**, with 40px of side padding, while `<main>` is capped at **960px** and centred — 880px of room at that padding —: the wordmark sits at the left edge of the screen, the menu next to it and the user block at the right (`margin-left: auto`). The bar is the frame of the window, not one more column of the page.
+- **The bar spans the whole width**, with 40px of side padding, while `<main>` is capped at **1040px** and centred — 960px of room at that padding —: the wordmark sits at the left edge of the screen, the menu next to it and the user block at the right (`margin-left: auto`). The bar is the frame of the window, not one more column of the page.
 - `<main id="contenido">` is the target of the layout's skip link.
 
 ## Markup & styling
