@@ -1,5 +1,5 @@
 ---
-description: "The column a lesson is read beside: the course, the chapter and the chapter's lessons, with the one open marked and the completed ones checked."
+description: "The panel a lesson is read beside, pinned to the window's left edge: the course, the chapter and its lessons on a dotted thread, with the one open marked and the completed ones checked."
 ---
 
 # `LessonOutline`
@@ -15,6 +15,8 @@ description: "The column a lesson is read beside: the course, the chapter and th
 ## Purpose
 
 Where the lesson stands: the course at the top, the chapter under it and the chapter's lessons below, with the one open marked. It is the chapter's page condensed into a column, so moving on to the next lesson does not mean going back twice — which is what the screen used to ask for, since the only way on was the «Siguiente lección» button at the foot.
+
+It is **pinned to the window**, not laid out in the page: it begins right under the bar, touches the left edge and runs to the bottom one, so the lessons read as a panel of the screen rather than a card floating on it.
 
 ## Props
 
@@ -33,20 +35,23 @@ Where the lesson stands: the course at the top, the chapter under it and the cha
 - The lesson being read **is not a link**: it would lead where one already is. It is drawn as a `<span>` with `aria-current="page"` and the accent background, which is also what tells it apart in the list.
 - A completed lesson carries `CircleCheckSolidIcon`, the same mark the chapter's page uses. The current one paints it in its own colour so the row reads as one piece.
 - The list is the **same sequence** `prevLessonHref`/`nextLessonHref` walk: the mapper builds both from `flattenLessons`, so a lesson hidden by the priority filter is missing from the column and from the buttons alike, and the two never disagree.
-- **The course's head does not scroll and the chapter does not leave.** The column fills its height and keeps its scroll inside: `.lesson-outline__course` stays out of it — where one is should not scroll away — and only `.lesson-outline__body` moves, with the chapter's name `position: sticky` at its top, its padding covering the lessons that pass underneath.
+- **The course's head does not scroll and the chapter does not leave.** The panel keeps its scroll inside: `.lesson-outline__course` stays out of it — where one is should not scroll away — and only `.lesson-outline__body` moves, with the chapter's name `position: sticky` at its top, its own background and hairline covering the lessons that pass underneath.
+- **Every lesson carries its stop on a thread.** A dotted line runs down the marks' column behind them, and each row ends in a filled check (done) or an empty ring (pending), painted with the row's own background so the line stops at it instead of crossing.
 - The whole `<nav>` is labelled "Lecciones del capítulo".
 
 ## Markup & styling
 
-Block `.lesson-outline` (132 lines).
+Block `.lesson-outline` (179 lines).
 
-**Elements:** `.lesson-outline__course`, `.lesson-outline__cover`, `.lesson-outline__course-name`, `.lesson-outline__body` (what scrolls), `.lesson-outline__chapter`, `.lesson-outline__list`, `.lesson-outline__item`, `.lesson-outline__lesson`, `.lesson-outline__name`, `.lesson-outline__done`
+**Pinned, which takes a page with no transform.** It is `position: fixed` at `top: 70px` (the bar's height, in the page's own px, which under the zoom are the ones the bar is drawn with) with `left: 0`, `bottom: 0` and `width: var(--outline-width, 300px)`, set by `.lesson-view`. A `fixed` element is anchored to the window only while no ancestor carries a transform, which is why `.platform-page_height_screen` turns off the page's entrance animation: `animation: … both` left a transform on the page for good, and with it the panel hung from the page's box instead of the window's.
+
+**Elements:** `.lesson-outline__course`, `.lesson-outline__cover` (56px), `.lesson-outline__course-name`, `.lesson-outline__body` (what scrolls), `.lesson-outline__chapter`, `.lesson-outline__list` (its `::before` is the dotted thread), `.lesson-outline__item`, `.lesson-outline__lesson`, `.lesson-outline__name`, `.lesson-outline__done`, `.lesson-outline__pending`
 
 **Modifiers and states:** `.lesson-outline__lesson_state_current`
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-title`
+**Tokens:** `--outline-width` (given by `.lesson-view`), `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-title`
 
-**Breakpoints:** at `(max-width: 1080px)` or `(max-height: 620px)` it goes back into the flow under the lesson, at whatever height its lessons need, and nothing inside it scrolls on its own any more.
+**Breakpoints:** at `(max-width: 1080px)` or `(max-height: 620px)` it stops being an edge of the window — `position: static`, its rounding and card shadow back — and goes into the flow under the lesson, at whatever height its lessons need, with nothing inside scrolling on its own.
 
 ## Usage
 

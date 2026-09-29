@@ -17,8 +17,21 @@ interface LessonOutlineProps {
   currentLessonId: string;
 }
 
-/** The square image is drawn at 40px, at twice that for a dense screen. */
-const THUMBNAIL_SIZES = "80px";
+/** The square image is drawn at 56px, at twice that for a dense screen. */
+const THUMBNAIL_SIZES = "112px";
+
+/**
+ * Every lesson carries its stop on the thread: the filled check once it is
+ * done, an empty ring while it is not. The ring is drawn by the stylesheet,
+ * since it is a circle and not a drawing.
+ */
+function mark(isCompleted: boolean) {
+  return isCompleted ? (
+    <CircleCheckSolidIcon className="lesson-outline__done" />
+  ) : (
+    <span className="lesson-outline__pending" aria-hidden="true" />
+  );
+}
 
 /**
  * Where the lesson stands: the course, the chapter and its lessons, with the
@@ -41,8 +54,8 @@ export function LessonOutline({
           <Image
             src={courseThumbnail}
             alt=""
-            width={80}
-            height={80}
+            width={112}
+            height={112}
             sizes={THUMBNAIL_SIZES}
             className="lesson-outline__cover"
           />
@@ -69,12 +82,12 @@ export function LessonOutline({
                 {isCurrent ? (
                   <span className="lesson-outline__lesson lesson-outline__lesson_state_current" aria-current="page">
                     <span className="lesson-outline__name">{lesson.name}</span>
-                    {isCompleted && <CircleCheckSolidIcon className="lesson-outline__done" />}
+                    {mark(isCompleted)}
                   </span>
                 ) : (
                   <Link href={lesson.href} className="lesson-outline__lesson">
                     <span className="lesson-outline__name">{lesson.name}</span>
-                    {isCompleted && <CircleCheckSolidIcon className="lesson-outline__done" />}
+                    {mark(isCompleted)}
                   </Link>
                 )}
               </li>
