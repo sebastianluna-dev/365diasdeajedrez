@@ -48,6 +48,8 @@ The viewer never saves and never fetches. It receives a PGN, reports the current
 
 **Tree and current path.** `parsePgnTree(pgn)` is memoised. The current path is `path ?? selectedPath`, resolved at render time to the closest existing ancestor when the PGN changed underfoot (an undo, a deleted branch), so there is never a frame with the board at the start. Every path change is both stored and reported through `onPathChange` (kept in a ref so the parent need not memoise). An unparsable PGN renders a single error paragraph with the `_state_error` modifier.
 
+**Layout.** The board's track is `minmax(0, var(--viewer-board-max, 600px))` and the notation's `minmax(320px, 1fr)`: the notation never goes under 320px — with the board sized by the height, a tall window would let it eat the whole row — and not a px more than that, because every px held back there is a px the board cannot use to fill the height it was given.
+
 **Navigation.** Four square keys, 48px each, white over the page's grey and closed by a hairline; one that leads nowhere — at the start of the game, or at its end — sinks into the page (`--platform-track`) instead of doing nothing when pressed. They do not stretch: they are pressed one after another, and a stretched button is a target one has to aim at. In the studies panel, where no way-out button follows them, they are centred under the notation.
 
 First, previous, next, last read the current path from a ref so holding "previous" or "next" keeps traversing: 400 ms before the repeat starts, then one move every 130 ms, stopped on pointer up, leave or cancel. Arrow keys work only while the viewer is at least 60 % in view or has been clicked (there may be several on a page) and never while typing in an input, textarea or contenteditable.

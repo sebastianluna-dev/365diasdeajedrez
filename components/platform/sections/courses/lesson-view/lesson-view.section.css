@@ -7,7 +7,7 @@
      it takes no room here: the first track only reserves it, minus the 40px
      of side padding the frame gives the page, which the column covers on its
      way to the left edge. */
-  --outline-width: 300px;
+  --outline-width: 360px;
 
   display: grid;
   grid-template-columns: calc(var(--outline-width) - 40px) minmax(0, 1fr);

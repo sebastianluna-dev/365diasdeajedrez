@@ -22,9 +22,11 @@
        A screen that puts something else beside the viewer lowers the ceiling
        through `--viewer-board-max` (the lesson does, for its column of
        lessons): the board gives way, and the panel does not end up a sliver. */
-    /* The notation never goes under 360px: with the board sized by the
-       height, a tall window would otherwise let it eat the whole row. */
-    grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(360px, 1fr);
+    /* The notation never goes under 320px: with the board sized by the
+       height, a tall window would otherwise let it eat the whole row. Not
+       more than that, because every px held back here is a px the board
+       cannot use to fill the height it was given. */
+    grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(320px, 1fr);
     grid-template-rows: auto auto;
     gap: 22px;
     align-items: stretch;
