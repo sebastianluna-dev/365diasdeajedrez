@@ -13,9 +13,11 @@
     z-index: 20;
   }
 
+  /* The bar spans the WHOLE width, while the page below it is capped and
+     centred: the wordmark sits at the left edge of the screen and the user
+     at the right, and the bar reads as the frame of the window and not as
+     one more column of the page. */
   & .platform-shell__bar-inner {
-    max-width: 1200px;
-    margin: 0 auto;
     padding: 0 40px;
     height: 70px;
     display: flex;
@@ -50,8 +52,10 @@
     fill: var(--platform-logo-accent);
   }
 
+  /* At the right edge, whatever the menu measures. */
   & .platform-shell__user {
     flex: none;
+    margin-left: auto;
     display: flex;
     align-items: center;
     gap: 11px;
@@ -144,7 +148,6 @@
 
     & .platform-shell__user {
       padding-left: 0;
-      margin-left: auto;
       box-shadow: none;
     }
 

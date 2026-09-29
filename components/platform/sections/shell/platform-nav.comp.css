@@ -2,8 +2,6 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  /* Pushes the menu (and with it the user block) to the right side of the bar. */
-  margin-left: auto;
   font-size: 16px;
   font-weight: 500;
 
@@ -41,7 +39,6 @@
   @media (max-width: 1080px) {
     width: 100%;
     order: 3;
-    margin-left: 0;
     overflow-x: auto;
     scrollbar-width: none;
   }
