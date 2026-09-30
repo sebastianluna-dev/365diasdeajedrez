@@ -1,0 +1,235 @@
+/* Design A — the card with a handle. */
+.syllabus-list-c {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  & .syllabus-list-c__card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px 10px 8px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    transition: 150ms;
+    transition-property: opacity, border-color, background-color, box-shadow;
+  }
+
+  /* The row takes its shape only under the pointer, or while something inside
+     it has the focus: with the keyboard the card has to appear too. */
+  & .syllabus-list-c__card:hover,
+  & .syllabus-list-c__card:focus-within {
+    border-color: var(--platform-border);
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  /* The travelling card dims: without that, while dragging you cannot tell the
+     one that moves from the one being pointed at as the destination. */
+  & .syllabus-list-c__card_state_dragging {
+    opacity: 0.45;
+  }
+
+  /* The grip is grey until the card is pointed at: what is dragged is the
+     card, and the dots only say where to take it. */
+  & .syllabus-list-c__grip {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-subtle);
+    opacity: 0;
+    cursor: grab;
+    transition: opacity 150ms;
+  }
+
+  & .syllabus-list-c__card:hover .syllabus-list-c__grip,
+  & .syllabus-list-c__grip:focus-visible {
+    opacity: 1;
+  }
+
+  & .syllabus-list-c__grip:active {
+    cursor: grabbing;
+  }
+
+  & .syllabus-list-c__grip:focus-visible {
+    outline: 2px solid var(--platform-accent);
+    outline-offset: 2px;
+  }
+
+  /* The number is read, not pressed: it is the step's name, in the muted grey. */
+  & .syllabus-list-c__index {
+    flex: none;
+    min-width: 18px;
+    color: var(--platform-text-subtle);
+    font-size: 16px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+  }
+
+  /* What opens and what closes the course: the piece in the accent ink, in the
+     place the number holds. */
+  & .syllabus-list-c__piece {
+    flex: none;
+    width: 58px;
+    height: 32px;
+    background: var(--platform-accent-ink);
+    mask: url("/pieces/b-pawn.svg") right center / 20px 20px no-repeat;
+  }
+
+  & .syllabus-list-c__piece_kind_closing {
+    mask-image: url("/pieces/b-king.svg");
+  }
+
+  & .syllabus-list-c__text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  & .syllabus-list-c__name {
+    align-self: flex-start;
+    max-width: 100%;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
+    color: var(--platform-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .syllabus-list-c__name:hover {
+    color: var(--platform-accent-ink);
+  }
+
+  & .syllabus-list-c__facts {
+    font-size: 14px;
+    color: var(--platform-text-subtle);
+  }
+
+  & .syllabus-list-c__badge {
+    font-weight: 700;
+    color: var(--platform-accent-ink);
+  }
+
+  & .syllabus-list-c__actions {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  /* The slot of what does not exist yet: the card's own shape, dashed. */
+  & .syllabus-list-c__add {
+    width: 100%;
+    margin: 6px 0;
+    padding: 11px 14px;
+    border: 1.5px dashed var(--platform-border-strong);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    transition: 150ms;
+    transition-property: border-color, background-color, color;
+  }
+
+  & .syllabus-list-c__add:hover:not(:disabled) {
+    border-color: var(--platform-accent);
+    background: var(--platform-accent-wash);
+    color: var(--platform-accent-ink);
+  }
+
+  & .syllabus-list-c__new {
+    position: relative;
+    margin-top: 6px;
+    display: flex;
+    align-items: center;
+  }
+
+  & .syllabus-list-c__new-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 110px 11px 14px;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface-soft);
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    transition: 150ms;
+    transition-property: border-color, box-shadow;
+  }
+
+  & .syllabus-list-c__new-input::placeholder {
+    color: var(--platform-text);
+  }
+
+  & .syllabus-list-c__new-input:focus::placeholder {
+    color: var(--platform-text-subtle);
+  }
+
+  & .syllabus-list-c__new-input:focus {
+    outline: none;
+    border-color: var(--platform-accent);
+    box-shadow: 0 0 0 3px var(--platform-accent-soft);
+  }
+
+  & .syllabus-list-c__new-submit {
+    position: absolute;
+    right: 7px;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--platform-accent-soft);
+    color: var(--platform-accent-ink);
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  & .syllabus-list-c__new-submit:hover:not(:disabled) {
+    background: var(--platform-accent-wash);
+  }
+
+  /* Nothing typed, nothing to add: the button waits out of sight. */
+  & .syllabus-list-c__new-input:placeholder-shown + .syllabus-list-c__new-submit {
+    display: none;
+  }
+
+  @media (max-width: 620px) {
+    & .syllabus-list-c__name {
+      font-size: 16px;
+      white-space: normal;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .syllabus-list-c__card,
+    & .syllabus-list-c__grip,
+    & .syllabus-list-c__add,
+    & .syllabus-list-c__new-input {
+      transition: none;
+    }
+  }
+}
