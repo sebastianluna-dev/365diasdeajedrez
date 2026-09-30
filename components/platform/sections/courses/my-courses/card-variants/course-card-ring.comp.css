@@ -1,0 +1,112 @@
+/* A · The row it has always been, with the two bars swapped for a ring: the
+   figures are read as one line of text and the percentage is a figure, not a
+   length to measure. */
+.ring-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 20px;
+  border-radius: 8px;
+  background: var(--platform-surface);
+  box-shadow: var(--platform-shadow-card);
+
+  & .ring-card__cover {
+    position: relative;
+    flex: none;
+    width: 72px;
+    height: 72px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--platform-surface-sunken);
+  }
+
+  & .ring-card__image {
+    object-fit: cover;
+  }
+
+  & .ring-card__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  & .ring-card__name {
+    margin: 0 0 4px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  & .ring-card__link {
+    color: var(--platform-text-title);
+    text-decoration: none;
+
+    &:hover {
+      color: var(--platform-accent-ink);
+    }
+  }
+
+  & .ring-card__figures {
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  & .ring-card__dot {
+    color: var(--platform-text-faint);
+  }
+
+  & .ring-card__gauge {
+    position: relative;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+  }
+
+  & .ring-card__ring {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  & .ring-card__track {
+    fill: none;
+    stroke: var(--platform-track);
+    stroke-width: 3;
+  }
+
+  & .ring-card__fill {
+    fill: none;
+    stroke: var(--platform-accent);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+
+  & .ring-card__value {
+    position: absolute;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .ring-card__learn {
+    flex: none;
+    display: grid;
+    place-items: center;
+    height: 36px;
+    min-width: 120px;
+    padding: 0 20px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 0 1.5px var(--platform-accent);
+    color: var(--platform-accent-ink);
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover {
+      background: var(--platform-accent-wash);
+    }
+  }
+}

@@ -21,8 +21,16 @@ const preview: Preview = {
       description: "Product theme",
       toolbar: { icon: "paintbrush", items: ["auto", "site", "platform"], dynamicTitle: true },
     },
+    // The platform has a light and a dark theme, decided by `color-scheme` on
+    // the `:root` from `data-theme` (see app/(platform)/platform.css). "auto"
+    // leaves the attribute off, which is the app's own default: follow the
+    // machine.
+    scheme: {
+      description: "Light / dark",
+      toolbar: { icon: "contrast", items: ["auto", "light", "dark"], dynamicTitle: true },
+    },
   },
-  initialGlobals: { theme: "auto" },
+  initialGlobals: { theme: "auto", scheme: "auto" },
   parameters: {
     nextjs: { appDirectory: true },
     layout: "fullscreen",
@@ -30,9 +38,15 @@ const preview: Preview = {
   decorators: [
     (Story, context) => {
       const theme = themeFor(String(context.globals.theme), context.title);
+      const scheme = String(context.globals.scheme);
       useEffect(() => {
         document.body.classList.toggle("platform-theme", theme === "platform");
       }, [theme]);
+      useEffect(() => {
+        const root = document.documentElement;
+        if (scheme === "light" || scheme === "dark") root.setAttribute("data-theme", scheme);
+        else root.removeAttribute("data-theme");
+      }, [scheme]);
       return (
         <div className="sb-canvas">
           <Story />
