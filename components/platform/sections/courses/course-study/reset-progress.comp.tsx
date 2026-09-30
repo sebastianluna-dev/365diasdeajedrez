@@ -60,7 +60,7 @@ export function ResetProgress({ courseId, courseName, completedLessons }: ResetP
           <div className="reset-progress__actions">
             <button
               type="button"
-              className="platform-button platform-button_variant_secondary"
+              className="platform-button"
               onClick={() => dialogRef.current?.close()}
             >
               Cancelar

@@ -179,7 +179,7 @@ export function TrainerSession({ exercises }: TrainerSessionProps) {
         <button
           type="button"
           onClick={() => finishExercise(false, mistakes)}
-          className="platform-button platform-button_variant_secondary"
+          className="platform-button"
         >
           Rendirse
         </button>

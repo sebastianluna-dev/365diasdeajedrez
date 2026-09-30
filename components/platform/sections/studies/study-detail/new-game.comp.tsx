@@ -243,12 +243,12 @@ function Footer({ onCancel, label, disabled, onConfirm }: FooterProps) {
   return (
     <div className="new-game__actions">
       <span className="new-game__note">{NOTE}</span>
-      <button type="button" className="platform-button platform-button_variant_secondary" onClick={onCancel}>
+      <button type="button" className="platform-button" onClick={onCancel}>
         Cancelar
       </button>
       <button
         type={onConfirm ? "button" : "submit"}
-        className="platform-button"
+        className="platform-button platform-button_variant_ink"
         disabled={disabled}
         onClick={onConfirm}
       >

@@ -20,7 +20,10 @@ export async function ContinueStudyingSection() {
             percent={continueStudying.percent}
             detail={`${continueStudying.completedLessons} de ${continueStudying.totalLessons} lecciones`}
           />
-          <Link href={continueStudying.href} className="platform-button continue-studying__cta">
+          <Link
+            href={continueStudying.href}
+            className="platform-button platform-button_variant_accent continue-studying__cta"
+          >
             Continuar
           </Link>
         </div>

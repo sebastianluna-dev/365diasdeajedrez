@@ -114,7 +114,7 @@ export function NewCourseForm({ contentTypes, action, onClose, onSubmit }: NewCo
       <footer className="new-course__foot">
         <p className="new-course__note">Nace en borrador: no se ve hasta que lo publiques.</p>
         <div className="new-course__actions">
-          <button type="button" className="platform-button platform-button_variant_secondary" onClick={onClose}>
+          <button type="button" className="platform-button" onClick={onClose}>
             Cancelar
           </button>
           <SubmitButton

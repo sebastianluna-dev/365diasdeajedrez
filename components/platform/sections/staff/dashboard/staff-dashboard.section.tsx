@@ -58,7 +58,7 @@ export async function StaffDashboardSection() {
               </li>
             ))}
           </ul>
-          <Link href={staffRoutes.courses} className="platform-button platform-button_variant_secondary">
+          <Link href={staffRoutes.courses} className="platform-button">
             Gestionar cursos
           </Link>
         </section>

@@ -39,7 +39,7 @@ export function ExerciseMovePicker({ pgn, onPick }: ExerciseMovePickerProps) {
       <div className="exercise-move-picker exercise-move-picker_state_closed">
         <button
           type="button"
-          className="platform-button platform-button_variant_secondary exercise-move-picker__open"
+          className="platform-button exercise-move-picker__open"
           onClick={() => setIsOpen(true)}
         >
           Elegir las jugadas sobre el tablero
@@ -89,10 +89,10 @@ export function ExerciseMovePicker({ pgn, onPick }: ExerciseMovePickerProps) {
       <GameViewer pgn={pgn} onPathChange={setCurrentPath} moveList="flow" />
 
       <div className="exercise-move-picker__actions">
-        <button type="button" className="platform-button platform-button_variant_secondary" onClick={markStart}>
+        <button type="button" className="platform-button" onClick={markStart}>
           Marcar el inicio aquí
         </button>
-        <button type="button" className="platform-button platform-button_variant_secondary" onClick={markEnd}>
+        <button type="button" className="platform-button" onClick={markEnd}>
           Marcar el final aquí
         </button>
         <button type="button" className="exercise-move-picker__close" onClick={() => setIsOpen(false)}>

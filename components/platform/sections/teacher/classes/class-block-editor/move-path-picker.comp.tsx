@@ -72,7 +72,7 @@ export function MovePathPicker({ kind, referenceId, value, onChange }: MovePathP
       <div className="move-path-picker__actions">
         <button
           type="button"
-          className="platform-button platform-button_variant_secondary"
+          className="platform-button"
           onClick={() => onChange(currentPath)}
         >
           Usar esta posición
@@ -80,7 +80,7 @@ export function MovePathPicker({ kind, referenceId, value, onChange }: MovePathP
         {value.length > 0 && (
           <button
             type="button"
-            className="platform-button platform-button_variant_secondary"
+            className="platform-button"
             onClick={() => onChange("")}
           >
             Quitar posición

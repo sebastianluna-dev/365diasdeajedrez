@@ -41,7 +41,7 @@ export function ResetPasswordForm({ userId }: ResetPasswordFormProps) {
           <input type="text" name="password" maxLength={200} autoComplete="off" />
         </FormField>
 
-        <button type="submit" className="platform-button platform-button_variant_secondary" disabled={isPending}>
+        <button type="submit" className="platform-button" disabled={isPending}>
           {isPending ? "Restableciendo…" : "Restablecer contraseña"}
         </button>
       </form>

@@ -42,7 +42,7 @@ export function ClassDetailSection({ classDetail }: ClassDetailSectionProps) {
             href={classDetail.recordingUrl}
             target="_blank"
             rel="noreferrer"
-            className="platform-button platform-button_variant_secondary"
+            className="platform-button"
           >
             Ver grabación
           </a>

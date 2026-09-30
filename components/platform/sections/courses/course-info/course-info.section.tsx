@@ -98,12 +98,18 @@ export function CourseInfoSection({ course, levels, errorCode }: CourseInfoSecti
             {errorMessage && <PlatformNotice message={errorMessage} />}
 
             {course.isAdded ? (
-              <Link href={course.studyHref} className="course-info__cta">
+              <Link
+                href={course.studyHref}
+                className="platform-button platform-button_variant_accent course-info__cta"
+              >
                 {STUDY_LABELS[course.ctaLabel]}
               </Link>
             ) : (
               <form action={addCourse.bind(null, course.id)} className="course-info__add">
-                <SubmitButton className="course-info__cta" pendingLabel="Agregando…">
+                <SubmitButton
+                  className="platform-button platform-button_variant_accent course-info__cta"
+                  pendingLabel="Agregando…"
+                >
                   Agregar a mis cursos
                 </SubmitButton>
               </form>

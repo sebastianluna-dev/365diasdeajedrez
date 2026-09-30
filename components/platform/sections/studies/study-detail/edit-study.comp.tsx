@@ -107,12 +107,12 @@ export function EditStudy({
             </span>
             <button
               type="button"
-              className="platform-button platform-button_variant_secondary"
+              className="platform-button"
               onClick={() => dialogRef.current?.close()}
             >
               Cancelar
             </button>
-            <SubmitButton>Guardar</SubmitButton>
+            <SubmitButton className="platform-button platform-button_variant_ink">Guardar</SubmitButton>
           </div>
         </form>
       </dialog>

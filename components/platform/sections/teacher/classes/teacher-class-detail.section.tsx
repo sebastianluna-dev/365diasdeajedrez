@@ -59,7 +59,7 @@ export function TeacherClassDetailSection({
           <h2 className="platform-card__title">Datos de la clase</h2>
           <Link
             href={teacherRoutes.classEdit(classDetail.id)}
-            className="platform-button platform-button_variant_secondary"
+            className="platform-button"
           >
             Editar
           </Link>
@@ -124,7 +124,7 @@ export function TeacherClassDetailSection({
           {nextClassStatuses(classDetail.statusCode).map((status) => (
             <form key={status} action={setClassStatus.bind(null, classDetail.id)}>
               <input type="hidden" name="statusCode" value={status} />
-              <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Actualizando…">
+              <SubmitButton className="platform-button" pendingLabel="Actualizando…">
                 {STATUS_ACTION_LABELS[status]}
               </SubmitButton>
             </form>
@@ -155,7 +155,7 @@ export function TeacherClassDetailSection({
                 size="compact"
               />
             </FormField>
-            <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Inscribiendo…">
+            <SubmitButton className="platform-button" pendingLabel="Inscribiendo…">
               Inscribir
             </SubmitButton>
           </form>

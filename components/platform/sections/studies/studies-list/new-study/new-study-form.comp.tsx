@@ -81,10 +81,10 @@ export function NewStudyForm({ kinds, action, onClose, onSubmit }: NewStudyFormP
       <footer className="new-study__foot">
         <p className="new-study__note">Podrás cambiarlo todo después.</p>
         <div className="new-study__actions">
-          <button type="button" className="platform-button platform-button_variant_secondary" onClick={onClose}>
+          <button type="button" className="platform-button" onClick={onClose}>
             Cancelar
           </button>
-          <SubmitButton pendingLabel="Creando…" disabled={name.trim() === ""}>
+          <SubmitButton className="platform-button platform-button_variant_ink" pendingLabel="Creando…" disabled={name.trim() === ""}>
             Crear estudio
           </SubmitButton>
         </div>

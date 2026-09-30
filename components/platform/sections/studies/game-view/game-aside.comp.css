@@ -177,6 +177,9 @@
     box-shadow: 0 -1px 0 var(--platform-border);
   }
 
+  /* A line of the card and not a button drawn on it: no fill and no outline
+     either — the platform's button brings one, and here it would box in a row
+     that reads as one more item of the list. */
   & .game-aside__new .platform-button {
     width: 100%;
     justify-content: flex-start;
@@ -184,12 +187,13 @@
     padding: 10px;
     border-radius: 8px;
     background: transparent;
+    box-shadow: none;
     color: var(--platform-accent-ink);
     font-size: 14.5px;
   }
 
   /* The sign, only in this card: the same button is used on the study page,
-     where it is the usual accent button. */
+     where it is drawn as the platform's own. */
   & .game-aside__new .platform-button::before {
     content: "+";
     font-size: 17px;

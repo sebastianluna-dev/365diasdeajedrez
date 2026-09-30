@@ -29,7 +29,7 @@ function ChapterRow({ chapter }: { chapter: TrainerChapterItem }) {
         )}
         <form action={toggleAction}>
           <input type="hidden" name="returnTo" value={platformRoutes.trainer} />
-          <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Actualizando…">
+          <SubmitButton className="platform-button" pendingLabel="Actualizando…">
             {chapter.inTrainer ? "Quitar" : "Agregar"}
           </SubmitButton>
         </form>

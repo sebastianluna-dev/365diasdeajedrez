@@ -33,7 +33,7 @@ export function TempPasswordNotice({ password, message }: TempPasswordNoticeProp
 
       <div className="temp-password__row">
         <code className="temp-password__value">{password}</code>
-        <button type="button" className="platform-button platform-button_variant_secondary" onClick={copy}>
+        <button type="button" className="platform-button" onClick={copy}>
           {copied ? "Copiada" : "Copiar"}
         </button>
       </div>

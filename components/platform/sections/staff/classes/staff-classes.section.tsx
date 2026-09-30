@@ -61,7 +61,7 @@ export function StaffClassesSection({ classes, teachers, rawFilters }: StaffClas
           <input type="search" name="q" defaultValue={rawFilters.q ?? ""} maxLength={120} />
         </FormField>
 
-        <button type="submit" className="platform-button platform-button_variant_secondary">
+        <button type="submit" className="platform-button">
           Filtrar
         </button>
       </form>

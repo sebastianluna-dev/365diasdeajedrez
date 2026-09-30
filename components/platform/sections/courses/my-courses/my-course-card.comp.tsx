@@ -125,13 +125,13 @@ export function MyCourseCard({ course }: MyCourseCardProps) {
         {course.learnHref ? (
           <Link
             href={course.learnHref}
-            className="platform-button platform-button_variant_secondary my-course-card__learn"
+            className="platform-button my-course-card__learn"
           >
             Aprender
           </Link>
         ) : (
           <span
-            className="platform-button platform-button_variant_secondary my-course-card__learn my-course-card__learn_state_off"
+            className="platform-button my-course-card__learn my-course-card__learn_state_off"
             aria-disabled="true"
           >
             Aprender

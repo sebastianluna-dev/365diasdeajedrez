@@ -94,10 +94,10 @@ export async function TeacherDashboardSection() {
         <Link href={teacherRoutes.newClass} className="platform-button">
           Crear una clase
         </Link>
-        <Link href={teacherRoutes.students} className="platform-button platform-button_variant_secondary">
+        <Link href={teacherRoutes.students} className="platform-button">
           Ver mis alumnos
         </Link>
-        <Link href={teacherRoutes.classes} className="platform-button platform-button_variant_secondary">
+        <Link href={teacherRoutes.classes} className="platform-button">
           Todas mis clases
         </Link>
       </div>

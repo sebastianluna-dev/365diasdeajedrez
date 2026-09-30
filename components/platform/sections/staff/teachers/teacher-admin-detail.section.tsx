@@ -77,7 +77,7 @@ export function TeacherAdminDetailSection({ teacher, assignable, errorCode }: Te
 
         <form className="teacher-admin__status" action={setTeacherActive.bind(null, teacher.id)}>
           {teacher.isActive ? null : <input type="hidden" name="isActive" value="on" />}
-          <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Actualizando…">
+          <SubmitButton className="platform-button" pendingLabel="Actualizando…">
             {teacher.isActive ? "Desactivar profesor" : "Reactivar profesor"}
           </SubmitButton>
         </form>

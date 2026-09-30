@@ -470,7 +470,7 @@ export function AnalysisBoard({ name, defaultPgn, initialFen, orientation = "whi
       <div className="analysis-board__footer">
         <button
           type="button"
-          className="platform-button platform-button_variant_secondary"
+          className="platform-button"
           onClick={() => setPasteOpen((open) => !open)}
         >
           {pasteOpen ? "Cerrar" : "Pegar un PGN"}
@@ -490,7 +490,7 @@ export function AnalysisBoard({ name, defaultPgn, initialFen, orientation = "whi
                 <span className="analysis-board__dirty">Hay cambios sin guardar.</span>
                 <button
                   type="button"
-                  className="platform-button platform-button_variant_secondary"
+                  className="platform-button"
                   onClick={discardChanges}
                 >
                   Descartar cambios

@@ -162,13 +162,11 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* «Aprender» is the platform's quiet button — `platform-button` with
-     `_variant_secondary`, the same one «Ver detalle» uses on the dashboard:
-     a grey line that darkens under the pointer, with the word in ink. Not
-     the accent filled, and not the accent outlined either: a list of courses
-     is a column of these rows, and a red block on each one turned the page
-     into a row of buttons. The card only gives it its size, so what the
-     button looks like stays written in one place. */
+  /* «Aprender» is the platform's default button, the quiet one. Not the
+     accent filled, and not the accent outlined either: a list of courses is
+     a column of these rows, and a red block on each one turned the page into
+     a row of buttons. The card only gives it its size, so what the button
+     looks like stays written in one place. */
   & .my-course-card__learn {
     padding: 0 20px;
     font-size: 14px;

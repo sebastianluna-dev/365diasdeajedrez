@@ -10,8 +10,13 @@ import { useFormStatus } from "react-dom";
 export function LoginSubmit() {
   const { pending } = useFormStatus();
 
+  // The accent: the one action of the one screen there is before the platform.
   return (
-    <button type="submit" className="platform-button login__submit" disabled={pending}>
+    <button
+      type="submit"
+      className="platform-button platform-button_variant_accent login__submit"
+      disabled={pending}
+    >
       {pending ? "Entrando…" : "Entrar"}
     </button>
   );

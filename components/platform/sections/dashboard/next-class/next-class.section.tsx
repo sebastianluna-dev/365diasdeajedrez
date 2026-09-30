@@ -25,7 +25,7 @@ export async function NextClassSection() {
             · {nextClass.durationMin} min
           </p>
           <span className="platform-tag platform-tag_variant_accent next-class__status">{nextClass.statusLabel}</span>
-          <Link href={nextClass.href} className="platform-button platform-button_variant_secondary next-class__cta">
+          <Link href={nextClass.href} className="platform-button next-class__cta">
             Ver detalle
           </Link>
         </div>

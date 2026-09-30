@@ -93,7 +93,7 @@ function ExerciseFields({ action, modes, exercise, submitLabel, lessonPgn, onCan
       <div className="exercise-editor__actions">
         <SubmitButton className="platform-button platform-button_variant_soft">{submitLabel}</SubmitButton>
         {onCancel && (
-          <button type="button" className="platform-button platform-button_variant_secondary" onClick={onCancel}>
+          <button type="button" className="platform-button" onClick={onCancel}>
             Cancelar
           </button>
         )}

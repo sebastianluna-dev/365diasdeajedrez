@@ -130,7 +130,7 @@ export function CourseSourceForm({
           <p className="course-source-dialog__note">Sólo el tipo es obligatorio.</p>
         )}
         <div className="course-source-dialog__actions">
-          <button type="button" className="platform-button platform-button_variant_secondary" onClick={onClose}>
+          <button type="button" className="platform-button" onClick={onClose}>
             Cancelar
           </button>
           <SubmitButton className="platform-button platform-button_variant_soft" pendingLabel="Guardando…">

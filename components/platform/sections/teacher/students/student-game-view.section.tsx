@@ -49,7 +49,7 @@ export function StudentGameViewSection({ studentName, game, scheduledClasses }: 
                 <li key={teacherClass.id}>
                   <Link
                     href={`${teacherRoutes.classDetail(teacherClass.id)}?gameId=${game.id}`}
-                    className="platform-button platform-button_variant_secondary"
+                    className="platform-button"
                   >
                     {teacherClass.title} · {teacherClass.dateLabel}
                   </Link>

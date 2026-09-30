@@ -74,7 +74,7 @@ export function AssignmentPanel(props: AssignmentPanelProps) {
         {active && (
           <form action={endAssignment.bind(null, active.id)}>
             <input type="hidden" name="returnTo" value={returnTo} />
-            <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Terminando…">
+            <SubmitButton className="platform-button" pendingLabel="Terminando…">
               Terminar la asignación actual
             </SubmitButton>
           </form>

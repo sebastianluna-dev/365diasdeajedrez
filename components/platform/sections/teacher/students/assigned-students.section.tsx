@@ -21,7 +21,7 @@ export async function AssignedStudentsSection({ query }: AssignedStudentsSection
         <FormField label="Buscar alumno">
           <input type="search" name="q" defaultValue={query ?? ""} placeholder="Nombre o email" maxLength={120} />
         </FormField>
-        <button type="submit" className="platform-button platform-button_variant_secondary">
+        <button type="submit" className="platform-button">
           Buscar
         </button>
       </form>

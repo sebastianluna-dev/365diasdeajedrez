@@ -69,7 +69,7 @@ export function StaffClassDetailSection({ classDetail, errorCode }: StaffClassDe
           <FormField label="Grabación (URL)">
             <input type="url" name="recordingUrl" defaultValue={classDetail.recordingUrl ?? ""} maxLength={500} />
           </FormField>
-          <SubmitButton className="platform-button platform-button_variant_secondary">Guardar grabación</SubmitButton>
+          <SubmitButton className="platform-button">Guardar grabación</SubmitButton>
         </form>
 
         {!isCancelled && (
@@ -77,7 +77,7 @@ export function StaffClassDetailSection({ classDetail, errorCode }: StaffClassDe
             <FormField label="Cancelar la clase — motivo" hint="Queda anotado en el resumen con marca de soporte.">
               <input type="text" name="note" maxLength={300} required />
             </FormField>
-            <SubmitButton className="platform-button platform-button_variant_secondary" pendingLabel="Cancelando…">
+            <SubmitButton className="platform-button" pendingLabel="Cancelando…">
               Cancelar clase
             </SubmitButton>
           </form>

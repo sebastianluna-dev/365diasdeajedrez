@@ -97,7 +97,7 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
                     on the board and comments from the list. */}
                 <Link
                   href={platformRoutes.gameDetail(annotatableStudyId, gameId)}
-                  className="platform-button platform-button_variant_secondary"
+                  className="platform-button"
                 >
                   Anotar esta partida
                 </Link>
@@ -136,9 +136,9 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
       </FormField>
 
       <div className="block-form__actions">
-        <SubmitButton>{submitLabel}</SubmitButton>
+        <SubmitButton className="platform-button platform-button_variant_ink">{submitLabel}</SubmitButton>
         {onCancel && (
-          <button type="button" className="platform-button platform-button_variant_secondary" onClick={onCancel}>
+          <button type="button" className="platform-button" onClick={onCancel}>
             Cancelar
           </button>
         )}

@@ -85,7 +85,10 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
         {(course.learnHref || course.reviewCount > 0) && (
           <div className="course-study-frame__actions">
             {course.learnHref && (
-              <Link href={course.learnHref} className="course-study-frame__learn">
+              <Link
+                href={course.learnHref}
+                className="platform-button platform-button_variant_accent course-study-frame__learn"
+              >
                 Aprender
               </Link>
             )}

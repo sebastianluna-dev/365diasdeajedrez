@@ -55,7 +55,7 @@ export function SessionSummary({ results, unsavedCount = 0 }: SessionSummaryProp
         <Link href={platformRoutes.trainer} className="platform-button">
           Volver al Move Trainer
         </Link>
-        <Link href={platformRoutes.dashboard} className="platform-button platform-button_variant_secondary">
+        <Link href={platformRoutes.dashboard} className="platform-button">
           Ir al inicio
         </Link>
       </div>
