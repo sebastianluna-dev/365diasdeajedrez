@@ -19,10 +19,11 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { Chess } from "chessops/chess";
 import { parseFen } from "chessops/fen";
-import { CONTENT_TYPE, COURSE_STATUS, DEFAULT_LEVEL } from "../../constants/platform/course-codes.const";
+import { AUTHOR_ROLE, CONTENT_TYPE, COURSE_STATUS, DEFAULT_LEVEL } from "../../constants/platform/course-codes.const";
+import { SOURCE_TYPE } from "../../constants/platform/source-codes.const";
 import { BOARD_ORIENTATION, OWNER_TYPE, TOPIC } from "../../constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "../../constants/platform/study-codes.const";
-import type { SeedChapter, SeedCourse, SeedLesson } from "../seed-data";
+import type { SeedChapter, SeedCourse, SeedCourseSource, SeedLesson } from "../seed-data";
 
 /** Fixed ids, in ranges of their own so as not to clash with seed-data.ts's. */
 export const GM_IDS = {
@@ -33,6 +34,9 @@ export const GM_IDS = {
   chPlanning: "c1000000-0000-4000-8000-000000000012",
   chEndgame: "c1000000-0000-4000-8000-000000000013",
   chPreparation: "c1000000-0000-4000-8000-000000000014",
+
+  srcOriginal: "f0000000-0000-4000-8000-000000000011",
+  srcSpanish: "f0000000-0000-4000-8000-000000000012",
 } as const;
 
 // ---------------------------------------------------------------------------
@@ -279,9 +283,52 @@ function loadCourse(): SeedCourse {
     contentTypes: [CONTENT_TYPE.STRATEGY],
     status: COURSE_STATUS.PUBLISHED,
     levels: [DEFAULT_LEVEL.INTERMEDIATE, DEFAULT_LEVEL.ADVANCED],
+    // The content is Kotov's: what the academy signs is having put it on the
+    // board, like the Fischer course.
+    authorRole: AUTHOR_ROLE.DIGITAL_ADAPTATION,
+    sources: SOURCES,
     chapters: data.course.chapters.map(toSeedChapter),
   };
 }
+
+// ---------------------------------------------------------------------------
+// Where the material comes from
+// ---------------------------------------------------------------------------
+//
+// Two rows: the work Kotov published and the Spanish edition the commentary of
+// every lesson is transcribed from. There is no third one for the PGN — unlike
+// the Fischer course, whose moves came from a Lichess study —, because the
+// positions of this one are built from the same Spanish edition, through the
+// import package.
+// ---------------------------------------------------------------------------
+
+const SOURCES: SeedCourseSource[] = [
+  {
+    id: GM_IDS.srcOriginal,
+    order: 0,
+    sourceType: SOURCE_TYPE.BOOK,
+    originalTitle: "Think Like a Grandmaster",
+    authors: "Alexander Kotov; traducción al inglés de Bernard Cafferty",
+    publicationYear: 1971,
+    edition: "B. T. Batsford (Londres)",
+    specificReference: "Los 162 diagramas del libro y su comentario, repartidos en sus cinco capítulos.",
+    notes:
+      "Obra original. Kotov la escribió en ruso; la edición de Batsford es la que difundió el método y la que citan las traducciones posteriores. El título ruso no está confirmado y por eso no se escribe aquí.",
+  },
+  {
+    id: GM_IDS.srcSpanish,
+    order: 1,
+    sourceType: SOURCE_TYPE.BOOK,
+    originalTitle: "Piense como un gran maestro",
+    authors: "Alexander Kotov",
+    publicationYear: 2016,
+    edition: "Ediciones Polo",
+    specificReference:
+      "Es la traducción de la que procede el comentario en español de cada lección, transcrito literalmente.",
+    notes:
+      "Material de terceros, con derechos vigentes: sirve para el uso interno de la academia, no para publicarlo sin licencia (lo mismo que advierte la cabecera de `think-like-a-grandmaster.ts`). El nombre de quien tradujo no se ha verificado y no se escribe para no inventarlo.",
+  },
+];
 
 export const THINK_LIKE_A_GRANDMASTER: SeedCourse = loadCourse();
 
