@@ -491,7 +491,7 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
         },
       },
       _count: { select: { progresses: true } },
-      lessonTopics: { select: { topicId: true } },
+      lessonTopics: { select: { topic: { select: { code: true } } } },
       exercises: {
         select: {
           id: true,
@@ -539,7 +539,7 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
         }
       : undefined,
     pgnUpdatedAtLabel: lesson.pgnUpdatedAt ? formatSpanishDate(lesson.pgnUpdatedAt) : undefined,
-    topicIds: lesson.lessonTopics.map((lessonTopic) => lessonTopic.topicId),
+    topicCodes: lesson.lessonTopics.map((lessonTopic) => lessonTopic.topic.code),
     exercises: lesson.exercises.map((exercise) => ({
       id: exercise.id,
       order: exercise.order,

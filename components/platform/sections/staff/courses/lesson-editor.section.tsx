@@ -203,9 +203,9 @@ export function LessonEditorSection({
                 <label key={topic.id}>
                   <input
                     type="checkbox"
-                    name="topicIds"
-                    value={topic.id}
-                    defaultChecked={lesson.topicIds.includes(topic.id)}
+                    name="topicCodes"
+                    value={topic.code}
+                    defaultChecked={lesson.topicCodes.includes(topic.code)}
                   />
                   {topic.label}
                 </label>

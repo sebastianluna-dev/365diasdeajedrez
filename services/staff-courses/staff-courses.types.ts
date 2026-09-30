@@ -161,7 +161,7 @@ export interface LessonAdminDetail {
    * button that bounces afterwards.
    */
   canDelete: boolean;
-  topicIds: number[];
+  topicCodes: string[];
   exercises: ExerciseAdminRow[];
 }
 

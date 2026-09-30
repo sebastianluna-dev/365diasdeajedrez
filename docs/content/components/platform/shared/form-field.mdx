@@ -75,7 +75,7 @@ A group of native checkboxes, from `components/platform/sections/staff/courses/l
 <FormFieldset legend="Temas">
   {topics.map((topic) => (
     <label key={topic.id}>
-      <input type="checkbox" name="topicIds" value={topic.id} defaultChecked={lesson.topicIds.includes(topic.id)} />
+      <input type="checkbox" name="topicCodes" value={topic.code} defaultChecked={lesson.topicCodes.includes(topic.code)} />
       {topic.label}
     </label>
   ))}

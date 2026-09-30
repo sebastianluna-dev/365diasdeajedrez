@@ -137,7 +137,7 @@ const CHAPTER_UPDATE_SCHEMA = z.object({
 const LESSON_UPDATE_SCHEMA = z.object({
   name: formText(NAME_MAX_LENGTH),
   orientationCode: formText(16).refine((value) => (CONTENT_ORIENTATIONS as readonly string[]).includes(value)),
-  topicIds: z.array(z.string().trim()),
+  topicCodes: z.array(z.string().trim()),
   isTrainable: formCheckbox(),
   // Empty = "whoever moves first". Anything else that is not from the content
   // catalog is treated the same, so as not to store a made-up side.
@@ -847,10 +847,6 @@ export async function updateLesson(
   if (!parsed.ok) fail(lessonPath, "invalid");
   const { name, orientationCode, isTrainable, description, isPriority, estimatedDuration } = parsed.data;
 
-  const topicIds = parsed.data.topicIds
-    .map((value) => Number.parseInt(value, 10))
-    .filter((value) => Number.isInteger(value));
-
   const trainingColorInput = parsed.data.trainingColorCode ?? "";
   const trainingColor = (CONTENT_ORIENTATIONS as readonly string[]).includes(trainingColorInput)
     ? (trainingColorInput as "WHITE" | "BLACK")
@@ -897,11 +893,14 @@ export async function updateLesson(
       // takes the figure back with it.
       await syncChapterDuration(tx, chapterId);
 
-      await tx.lessonTopic.deleteMany({ where: { lessonId: lesson.id } });
-      for (const topicId of topicIds) {
-        const topic = await tx.topic.findUnique({ where: { id: topicId }, select: { id: true } });
-        if (topic) await tx.lessonTopic.create({ data: { lessonId: lesson.id, topicId: topic.id } });
-      }
+      // The topics are a checkbox group like the course's content types: the
+      // whole set is replaced in the same transaction, and a code the catalog
+      // does not have is skipped.
+      await syncCatalogJoin(tx.lessonTopic, tx.topic, {
+        parent: { lessonId: lesson.id },
+        catalogColumn: "topicId",
+        codes: parsed.data.topicCodes,
+      });
     });
   } catch (error) {
     if (error instanceof TrainingSyncError) fail(lessonPath, error.errorCode);
