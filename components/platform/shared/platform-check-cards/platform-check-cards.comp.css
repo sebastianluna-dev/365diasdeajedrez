@@ -128,8 +128,10 @@
     /* The name and its fact are one phrase, so they wrap together rather than
        either of them being cut. */
     flex-wrap: wrap;
-    /* About a word space: the meta reads as the rest of the label's phrase. */
-    gap: 6px;
+    /* Tighter than a word space: the fact follows the name closely enough to
+       be read as part of it — «Avanzado (Elo 1600–1999)» — and not as a
+       second column of the card. */
+    gap: 4px;
     padding: 14px 44px 14px 18px;
   }
 
