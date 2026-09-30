@@ -99,32 +99,18 @@
     margin-top: 16px;
   }
 
-  /* The summary IS the button: without a marker of its own and full width, so
-     it reads like the mockup's "Cambiar objetivo" and not like a dropdown. */
+  /* The platform's button, on a `<summary>`: it opens the editor below, which
+     is one more thing one can do on this card and not the reason the screen
+     exists. What is said here is only what a summary needs — no marker, and
+     the width of the card. */
   & .study-goal__editor-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     padding: 11px 16px;
-    border: 1px solid var(--platform-border);
-    border-radius: 8px;
-    color: var(--platform-text);
     font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
     list-style: none;
-    transition: 150ms;
-    transition-property: background-color, border-color, color;
   }
 
   & .study-goal__editor-button::-webkit-details-marker {
     display: none;
-  }
-
-  & .study-goal__editor-button:hover {
-    border-color: var(--platform-accent);
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
   }
 
   & .study-goal__notice {

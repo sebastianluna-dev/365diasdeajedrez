@@ -54,7 +54,7 @@ export function StudyGoalSection({ goal, errorCode }: StudyGoalSectionProps) {
         {/* `<details>` instead of a modal: changing the goal is choosing from a
             short list, and this way the form needs no JavaScript of its own. */}
         <details className="study-goal__editor" open={errorMessage !== undefined}>
-          <summary className="study-goal__editor-button">Cambiar objetivo</summary>
+          <summary className="platform-button study-goal__editor-button">Cambiar objetivo</summary>
 
           {errorMessage && (
             <div className="study-goal__notice">

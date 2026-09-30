@@ -30,7 +30,7 @@ Neither figure is stored. The streak is counted backwards from the activity log 
 ## Behaviour
 
 - The streak's card, its figures and its sentence are [`StudyStreak`](/components/platform/shared/study-streak)'s.
-- "Cambiar objetivo" is a `<details>` rather than a modal: choosing from a short list needs no JavaScript. Inside, a `<form action={updateDailyGoal}>` with a [`PlatformSelect`](/components/platform/shared/platform-select) named `goalMinutes` over `GOAL_OPTIONS` and a save button. The action validates the value against the same list and revalidates `/inicio`, which is where it redirects back to.
+- "Cambiar objetivo" is a `<details>` rather than a modal: choosing from a short list needs no JavaScript. Its `<summary>` wears `.platform-button` — the platform's quiet button, on a summary — and its own class says only what a summary needs: no marker and its padding. Inside, a `<form action={updateDailyGoal}>` with a [`PlatformSelect`](/components/platform/shared/platform-select) named `goalMinutes` over `GOAL_OPTIONS` and a save button. The action validates the value against the same list and revalidates `/inicio`, which is where it redirects back to.
 - The bar's width is `goal.percent` inline; the service clamps it.
 
 ## Markup & styling
