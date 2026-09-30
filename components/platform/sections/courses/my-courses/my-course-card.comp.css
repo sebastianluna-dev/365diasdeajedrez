@@ -109,14 +109,14 @@
     background: var(--platform-track);
   }
 
-  /* The accent's own scale, and not the progress blue: the bar runs from the
-     washed red to the accent, so how far the course has gone is read as a
-     climb and not as a block of colour. The track stays the neutral grey —
-     what is missing has no colour of its own. */
+  /* The accent, flat, and not the progress blue. Flat and not a gradient: a
+     bar is read by where it ends, and a fill that fades makes its own end
+     harder to place — worse the shorter it is. The track stays the neutral
+     grey; what is missing has no colour of its own. */
   & .my-course-card__fill {
     height: 100%;
     border-radius: 1000px;
-    background: linear-gradient(90deg, var(--platform-accent-soft), var(--platform-accent));
+    background: var(--platform-accent);
   }
 
   /* --- The buttons ---------------------------------------------------------- */

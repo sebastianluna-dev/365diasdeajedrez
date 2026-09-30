@@ -27,7 +27,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: linear-gradient(0deg, var(--platform-accent), var(--platform-accent-bright));
+    background: var(--platform-accent);
   }
 
   & .band-card__cover {

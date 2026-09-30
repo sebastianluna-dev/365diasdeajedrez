@@ -68,7 +68,7 @@
   & .thin-card__fill {
     height: 100%;
     border-radius: 1000px;
-    background: linear-gradient(90deg, var(--platform-accent-soft), var(--platform-accent));
+    background: var(--platform-accent);
   }
 
   & .thin-card__figure {
