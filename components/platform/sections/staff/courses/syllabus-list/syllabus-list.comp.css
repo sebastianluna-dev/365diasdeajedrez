@@ -97,9 +97,20 @@
     border-top: 1px solid var(--platform-border);
   }
 
+  /* The corners of the block are the corners of its first and its last row: a
+     square background inside a rounded box fills the curve back in, and what
+     is seen is a white notch over the line. */
+  & .syllabus-list__row:first-child {
+    border-radius: 8px 8px 0 0;
+  }
+
+  & .syllabus-list__row:last-child {
+    border-radius: 0 0 8px 8px;
+  }
+
   /* The row that travels is lifted off the column: dnd-kit carries it under
      the pointer and opens the gap where it would land. */
-  & .syllabus-list__row_state_dragging {
+  & .syllabus-list__row.syllabus-list__row_state_dragging {
     z-index: 1;
     border-radius: 8px;
     box-shadow: var(--platform-shadow-card);
