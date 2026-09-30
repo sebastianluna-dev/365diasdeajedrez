@@ -87,7 +87,7 @@ export function CourseEditorSection({
               // The information page, by the slug: it is what a student sees
               // of the course before adding it, and it needs nothing added.
               href={platformRoutes.courseInfo(course.slug)}
-              className="platform-button platform-button_variant_soft"
+              className="platform-button"
             >
               Ver en la plataforma
             </Link>
@@ -191,7 +191,7 @@ export function CourseEditorSection({
             </FormFieldset>
 
             <div className="course-editor__submit">
-              <SubmitButton className="platform-button platform-button_variant_soft">Guardar metadatos</SubmitButton>
+              <SubmitButton className="platform-button">Guardar metadatos</SubmitButton>
             </div>
           </form>
         </StaffPanel>

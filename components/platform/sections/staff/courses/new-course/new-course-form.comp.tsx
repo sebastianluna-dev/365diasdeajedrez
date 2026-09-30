@@ -118,7 +118,7 @@ export function NewCourseForm({ contentTypes, action, onClose, onSubmit }: NewCo
             Cancelar
           </button>
           <SubmitButton
-            className="platform-button platform-button_variant_soft"
+            className="platform-button"
             pendingLabel="Creando…"
             disabled={!isReady}
           >

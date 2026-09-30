@@ -37,7 +37,7 @@ export function CourseSourceDialog({ courseId, source, sourceTypes }: CourseSour
         className={
           isEdit
             ? "course-source-dialog__edit"
-            : "platform-button platform-button_variant_soft platform-button_size_compact"
+            : "platform-button platform-button_size_compact"
         }
         aria-label={isEdit ? `Editar la fuente «${source.originalTitle ?? source.sourceTypeLabel}»` : undefined}
         onClick={open}

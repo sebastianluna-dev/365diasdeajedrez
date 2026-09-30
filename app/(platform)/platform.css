@@ -449,25 +449,6 @@ html body.platform-theme[data-scroll-locked] {
   }
 }
 
-/* The soft button: the accent's wash with its ink on top, and a step
-   LIGHTER on hover instead of darker. It is what the staff's courses use for
-   every action that does something — «Gestionar», «Nuevo curso», «Guardar
-   metadatos» —, so that a screen with an action in each card does not show
-   four different buttons. Same box as the primary, only the colours change. */
-.platform-button_variant_soft {
-  background: var(--platform-accent-soft);
-  color: var(--platform-accent-ink);
-}
-
-.platform-button_variant_soft:hover {
-  background: var(--platform-accent-wash);
-  color: var(--platform-accent-ink);
-}
-
-.platform-button_variant_soft:disabled:hover {
-  background: var(--platform-accent-soft);
-}
-
 /* The ink button: the dark one, for the action of a dialog whose page already
    has its accent one. Same box as the primary, only the colours change. */
 .platform-button_variant_ink {

@@ -91,7 +91,7 @@ function ExerciseFields({ action, modes, exercise, submitLabel, lessonPgn, onCan
       />
 
       <div className="exercise-editor__actions">
-        <SubmitButton className="platform-button platform-button_variant_soft">{submitLabel}</SubmitButton>
+        <SubmitButton className="platform-button">{submitLabel}</SubmitButton>
         {onCancel && (
           <button type="button" className="platform-button" onClick={onCancel}>
             Cancelar
@@ -201,7 +201,7 @@ export function ExerciseEditor({ courseId, chapterId, lessonId, exercises, modes
       ) : (
         <button
           type="button"
-          className="platform-button platform-button_variant_soft"
+          className="platform-button"
           onClick={() => setIsAdding(true)}
         >
           Añadir ejercicio

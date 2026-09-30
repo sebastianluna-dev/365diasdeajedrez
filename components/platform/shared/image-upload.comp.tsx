@@ -138,7 +138,7 @@ export function ImageUpload({ action, defaultValue, label, aspectRatio = "21:9" 
             before was dragging, because there the gesture gets confused with moving the photo. */}
         <button
           type="button"
-          className="platform-button platform-button_variant_soft platform-button_size_compact"
+          className="platform-button platform-button_size_compact"
           disabled={isUploading}
           onClick={() => inputRef.current?.click()}
         >

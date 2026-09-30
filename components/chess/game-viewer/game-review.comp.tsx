@@ -95,7 +95,7 @@ export function GameReview({ pgn, canEdit, white, black, currentPath, onSelectPa
         <button
           type="button"
           disabled={moveCount === 0}
-          className="game-review__start"
+          className="platform-button game-review__start"
           onClick={() => runner.start(pgn)}
         >
           Generar evaluación

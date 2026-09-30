@@ -88,7 +88,7 @@ export function AuthorForm({ author, authors, onSaved, onCancel }: AuthorFormPro
           <button type="button" className="platform-button" onClick={onCancel}>
             Cancelar
           </button>
-          <SubmitButton className="platform-button platform-button_variant_soft" pendingLabel="Guardando…">
+          <SubmitButton className="platform-button" pendingLabel="Guardando…">
             {isNew ? "Crear autor" : "Guardar"}
           </SubmitButton>
         </div>

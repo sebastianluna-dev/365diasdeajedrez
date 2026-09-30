@@ -65,7 +65,7 @@ export function AuthorPhotoField({ authorName, defaultValue }: AuthorPhotoFieldP
         )}
         <button
           type="button"
-          className="platform-button platform-button_variant_soft platform-button_size_compact"
+          className="platform-button platform-button_size_compact"
           onClick={() => inputRef.current?.click()}
           disabled={isUploading}
         >

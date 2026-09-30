@@ -103,7 +103,7 @@ export function ChapterGamesSection({ chapter, games, errorCode }: ChapterGamesS
             placeholder="Pega aquí un PGN con una o varias partidas"
             aria-label="PGN a importar"
           />
-          <SubmitButton className="platform-button platform-button_variant_soft" pendingLabel="Importando…">
+          <SubmitButton className="platform-button" pendingLabel="Importando…">
             Importar PGN
           </SubmitButton>
         </form>

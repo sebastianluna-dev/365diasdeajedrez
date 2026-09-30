@@ -18,7 +18,7 @@ export function PlatformError({
   return (
     <div className="platform-error">
       <p className="platform-error__message">{message}</p>
-      <button type="button" onClick={retry} className="platform-error__retry">
+      <button type="button" onClick={retry} className="platform-button platform-button_variant_accent platform-error__retry">
         Reintentar
       </button>
       {digest && <p className="platform-error__digest">Código del error: {digest}</p>}

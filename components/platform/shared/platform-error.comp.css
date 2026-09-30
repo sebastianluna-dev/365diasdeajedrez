@@ -10,21 +10,11 @@
     color: var(--platform-text);
   }
 
+  /* The accent button of the platform: on a screen that failed, trying again
+     is the only thing there is to do. Only its size is said here. */
   & .platform-error__retry {
     margin-top: 16px;
     padding: 10px 22px;
-    border: 0;
-    border-radius: 8px;
-    background: var(--platform-accent);
-    color: var(--platform-on-accent);
-    font-size: 15.5px;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-  }
-
-  & .platform-error__retry:hover {
-    background: var(--platform-accent-hover);
   }
 
   & .platform-error__digest {

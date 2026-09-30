@@ -29,7 +29,7 @@ export function NewCourse({ contentTypes }: NewCourseProps) {
 
   return (
     <div className="new-course">
-      <button type="button" className="platform-button platform-button_variant_soft" onClick={open}>
+      <button type="button" className="platform-button" onClick={open}>
         Nuevo curso
       </button>
 

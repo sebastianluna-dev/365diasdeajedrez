@@ -16,27 +16,14 @@
     text-wrap: pretty;
   }
 
+  /* The platform's button, which this panel had drawn for itself in the
+     accent: asking for the evaluation is one of the things that can be done
+     here, not the reason the screen exists. Only its size is said. */
   & .game-review__start {
     width: 100%;
     margin-top: 14px;
     padding: 11px 14px;
-    border: 0;
-    border-radius: 8px;
-    background: var(--platform-accent);
-    color: var(--platform-on-accent);
-    font-family: inherit;
     font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-  }
-
-  & .game-review__start:hover:not(:disabled) {
-    background: var(--platform-accent-hover);
-  }
-
-  & .game-review__start:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
   }
 
   /* --- While analysing --------------------------------------------------- */

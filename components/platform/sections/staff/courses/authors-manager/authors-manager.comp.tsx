@@ -56,7 +56,7 @@ export function AuthorsManager({ authors, label = "Autores", size = "regular" }:
     <div className="authors-manager">
       <button
         type="button"
-        className={`platform-button platform-button_variant_soft${size === "compact" ? " platform-button_size_compact" : ""}`}
+        className={`platform-button${size === "compact" ? " platform-button_size_compact" : ""}`}
         onClick={open}
       >
         {label}
@@ -102,7 +102,7 @@ export function AuthorsManager({ authors, label = "Autores", size = "regular" }:
                       </span>
                       <button
                         type="button"
-                        className="platform-button platform-button_variant_soft platform-button_size_compact authors-manager__edit"
+                        className="platform-button platform-button_size_compact authors-manager__edit"
                         onClick={() => showForm(author.id)}
                         aria-label={`Editar a ${author.name}`}
                       >
@@ -121,7 +121,7 @@ export function AuthorsManager({ authors, label = "Autores", size = "regular" }:
               <div className="authors-manager__actions">
                 <button
                   type="button"
-                  className="platform-button platform-button_variant_soft"
+                  className="platform-button"
                   onClick={() => showForm()}
                 >
                   Nuevo autor
