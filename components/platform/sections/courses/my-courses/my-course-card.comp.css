@@ -34,13 +34,16 @@
   }
 
   /* Opened out instead of drawn in: at this size the name is read across a
-     row, not scanned down a column of cards. */
+     row, not scanned down a column of cards. In the body's ink and not the
+     title grey: the grey is for a WALL of names — a course's chapters, a
+     chapter's lessons — and here there is one name per card, which is the
+     card's heading like any other. */
   & .my-course-card__name {
     margin: 0 0 4px;
     font-size: 19px;
     font-weight: 700;
     line-height: 1.25;
-    color: var(--platform-text-title);
+    color: var(--platform-text);
     letter-spacing: 0.01em;
     text-wrap: balance;
   }
