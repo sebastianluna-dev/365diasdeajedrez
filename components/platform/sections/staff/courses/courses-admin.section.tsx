@@ -8,16 +8,23 @@ import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { staffRoutes } from "@/lib/platform-routes";
 import { isDisplayableImage } from "@/lib/remote-image";
-import { listAuthors, listContentTypes, listCoursesAdmin } from "@/services/staff-courses/staff-courses.service";
+import {
+  listAuthors,
+  listContentTypes,
+  listCoursesAdmin,
+  listLevels,
+} from "@/services/staff-courses/staff-courses.service";
 import { AuthorsManager } from "./authors-manager/authors-manager.comp";
 import { NewCourse } from "./new-course/new-course.comp";
 import { StaffEditorHead } from "./staff-editor.comp";
 import "./courses-admin.section.css";
 
 interface CoursesAdminSectionProps {
-  /** What is searched and the status filtered by; both come from the URL. */
+  /** What is searched and what it is filtered by; the three come from the URL. */
   query?: string;
   status?: string;
+  /** Slug of the level the list is narrowed to; absent = every level. */
+  level?: string;
   /** What `createCourse` bounced back with, from `?error=`: its dialog lives here. */
   errorCode?: string;
 }
@@ -30,27 +37,38 @@ const FILTERS: { label: string; status?: string }[] = [
   { label: "Archivados", status: COURSE_STATUS.ARCHIVED },
 ];
 
+/** "Intermedio", "Intermedio–Avanzado", "—": the stretch a course is aimed at. */
+function levelRange(names: string[]): string {
+  const first = names[0];
+  const last = names[names.length - 1];
+  if (!first || !last) return "—";
+  return first === last ? first : `${first}–${last}`;
+}
+
 /** 40 px thumbnail: the frame is painted even when there is no cover. */
 const COVER_SIZES = "44px";
 
-function filterHref(status: string | undefined, query: string | undefined): string {
+/** The catalog's address with one filter changed and the other two kept. */
+function filterHref({ status, query, level }: { status?: string; query?: string; level?: string }): string {
   const params = new URLSearchParams();
   if (status) params.set("estado", status);
+  if (level) params.set("nivel", level);
   if (query) params.set("q", query);
   const search = params.toString();
   return search ? `${staffRoutes.courses}?${search}` : staffRoutes.courses;
 }
 
-export async function CoursesAdminSection({ query, status, errorCode }: CoursesAdminSectionProps) {
-  // The content types feed the "Nuevo curso" dialog and the authors theirs;
-  // neither depends on the listing: read together, the page waits for the
-  // slowest one, not for the three.
-  const [{ courses, chapterCount, lessonCount }, contentTypes, authors] = await Promise.all([
-    listCoursesAdmin({ query, status }),
+export async function CoursesAdminSection({ query, status, level, errorCode }: CoursesAdminSectionProps) {
+  // The content types feed the "Nuevo curso" dialog, the authors theirs and the
+  // levels the filter; none depends on the listing: read together, the page
+  // waits for the slowest one, not for the four.
+  const [{ courses, chapterCount, lessonCount }, contentTypes, authors, levels] = await Promise.all([
+    listCoursesAdmin({ query, status, level }),
     listContentTypes(),
     listAuthors(),
+    listLevels(),
   ]);
-  const isFiltered = Boolean(query) || Boolean(status);
+  const isFiltered = Boolean(query) || Boolean(status) || Boolean(level);
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
 
   return (
@@ -73,8 +91,9 @@ export async function CoursesAdminSection({ query, status, errorCode }: CoursesA
                 placeholder="Buscar curso o identificador"
                 aria-label="Buscar curso o identificador"
               />
-              {/* The active status travels with the search so it is not lost when searching. */}
+              {/* The active filters travel with the search so they are not lost when searching. */}
               {status && <input type="hidden" name="estado" value={status} />}
+              {level && <input type="hidden" name="nivel" value={level} />}
             </form>
 
             {/* The authors have no page of their own: they are managed from here. */}
@@ -94,7 +113,7 @@ export async function CoursesAdminSection({ query, status, errorCode }: CoursesA
             return (
               <Link
                 key={filter.label}
-                href={filterHref(filter.status, query)}
+                href={filterHref({ status: filter.status, query, level })}
                 aria-current={isActive ? "page" : undefined}
                 className={`courses-admin__filter${isActive ? " courses-admin__filter_state_active" : ""}`}
               >
@@ -113,12 +132,41 @@ export async function CoursesAdminSection({ query, status, errorCode }: CoursesA
         </p>
       </div>
 
+      {/* The levels are a second row and not a third group of the bar: the two
+          filters are read one under the other, and the row says which is which. */}
+      <nav className="courses-admin__levels" aria-label="Filtrar cursos por nivel">
+        <span className="courses-admin__levels-label">Nivel</span>
+
+        <Link
+          href={filterHref({ status, query })}
+          aria-current={level ? undefined : "page"}
+          className={`courses-admin__filter${level ? "" : " courses-admin__filter_state_active"}`}
+        >
+          Todos
+        </Link>
+
+        {levels.map((option) => {
+          const isActive = option.slug === level;
+          return (
+            <Link
+              key={option.slug}
+              href={filterHref({ status, query, level: option.slug })}
+              aria-current={isActive ? "page" : undefined}
+              title={`Elo ${option.eloRange}`}
+              className={`courses-admin__filter${isActive ? " courses-admin__filter_state_active" : ""}`}
+            >
+              {option.name}
+            </Link>
+          );
+        })}
+      </nav>
+
       {courses.length === 0 ? (
         <EmptyState
           title={isFiltered ? "Ningún curso coincide" : "Todavía no hay cursos"}
           description={
             isFiltered
-              ? "Prueba con otra búsqueda o quita el filtro de estado."
+              ? "Prueba con otra búsqueda o quita los filtros de estado y nivel."
               : "Crea el primero: nace en borrador y no se ve hasta que lo publiques."
           }
         />
@@ -127,6 +175,7 @@ export async function CoursesAdminSection({ query, status, errorCode }: CoursesA
           <div className="courses-admin__head" aria-hidden="true">
             <span>Curso</span>
             <span>Contenido</span>
+            <span>Nivel</span>
             <span>Estado</span>
             <span className="courses-admin__number">Capítulos</span>
             <span className="courses-admin__number">Lecciones</span>
@@ -166,6 +215,10 @@ export async function CoursesAdminSection({ query, status, errorCode }: CoursesA
                       </span>
                     ))}
                   </span>
+
+                  {/* Who it is for. The levels of a course are a stretch of the
+                      scale, so the ends say it: "Intermedio–Avanzado". */}
+                  <span className="courses-admin__level">{levelRange(course.levelNames)}</span>
 
                   <span className="courses-admin__cell">
                     <span

@@ -1,7 +1,7 @@
 .courses-admin {
-  /* The seven columns are declared ONCE and shared by the header and the rows:
+  /* The eight columns are declared ONCE and shared by the header and the rows:
      if they diverge, the header stops lining up with what it labels. */
-  --courses-admin-columns: minmax(0, 2.4fr) minmax(0, 1.5fr) 0.9fr 0.8fr 0.8fr 0.9fr 24px;
+  --courses-admin-columns: minmax(0, 2.3fr) minmax(0, 1.2fr) minmax(0, 1fr) 0.85fr 0.7fr 0.7fr 0.95fr 24px;
 
   display: flex;
   flex-direction: column;
@@ -54,6 +54,25 @@
      one weight in both states, and the active one told by the accent border
      and the faint wash. They are links here, not buttons, so no hover: the
      chip that is on is the only one that stands out. */
+  /* The second row of the bar: the levels, with the word that says what they
+     filter, so two rows of chips are not read as one long list. */
+  & .courses-admin__levels {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: -8px;
+  }
+
+  & .courses-admin__levels-label {
+    margin-right: 2px;
+    color: var(--platform-text-subtle);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
   & .courses-admin__filters {
     display: flex;
     align-items: center;
@@ -211,6 +230,16 @@
 
   /* The content types, as a wrapping run of small tags: a course with three
      of them takes two lines in its cell instead of being cut. */
+  /* The stretch of levels wraps instead of being cut: it is two words and an
+     en dash, and half a level's name says nothing. */
+  & .courses-admin__level {
+    min-width: 0;
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--platform-text-muted);
+    text-wrap: balance;
+  }
+
   & .courses-admin__tags {
     display: flex;
     flex-wrap: wrap;

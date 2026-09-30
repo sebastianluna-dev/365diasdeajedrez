@@ -52,10 +52,14 @@ export async function listCoursesAdmin(filter: CourseAdminFilter = {}): Promise<
 
   const query = filter.query?.trim();
   const status = isCourseStatusCode(filter.status) ? filter.status : undefined;
+  // The level is a slug of a catalog with no list in the constants, so it is not
+  // checked here: one the catalog does not have simply matches no course.
+  const level = filter.level?.trim();
 
   const courses = await getPlatformDb().course.findMany({
     where: {
       ...(status ? { status: { code: status } } : {}),
+      ...(level ? { courseLevels: { some: { level: { slug: level } } } } : {}),
       ...(query
         ? {
             OR: [
@@ -76,6 +80,10 @@ export async function listCoursesAdmin(filter: CourseAdminFilter = {}): Promise<
         select: { contentType: { select: { shortLabel: true } } },
         orderBy: { contentType: { order: "asc" } },
       },
+      courseLevels: {
+        select: { level: { select: { name: true } } },
+        orderBy: { level: { order: "asc" } },
+      },
       chapters: { select: { _count: { select: { lessons: true } } } },
     },
     orderBy: [{ status: { order: "asc" } }, { name: "asc" }],
@@ -89,6 +97,7 @@ export async function listCoursesAdmin(filter: CourseAdminFilter = {}): Promise<
     statusCode: course.status.code as CourseStatusCode,
     statusLabel: course.status.label,
     contentTypeLabels: course.courseContentTypes.map((row) => row.contentType.shortLabel),
+    levelNames: course.courseLevels.map((row) => row.level.name),
     chapterCount: course.chapters.length,
     lessonCount: course.chapters.reduce((total, chapter) => total + chapter._count.lessons, 0),
     publishedAtLabel: course.publishedAt ? formatSpanishDate(course.publishedAt) : undefined,

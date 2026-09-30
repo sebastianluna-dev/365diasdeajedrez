@@ -13,6 +13,8 @@ export interface CourseAdminSummary {
   statusLabel: string;
   /** Short names of what it teaches, in catalog order: "Aperturas", "Cálculo"… */
   contentTypeLabels: string[];
+  /** Who it is for, the easiest first: "Intermedio", "Avanzado". Empty when it says nothing. */
+  levelNames: string[];
   chapterCount: number;
   lessonCount: number;
   publishedAtLabel?: string;
@@ -25,6 +27,8 @@ export interface CourseAdminFilter {
   query?: string;
   /** Code of CourseStatus; absent = all. */
   status?: string;
+  /** Slug of a Level; absent = every level. The catalog's own filter goes by slug too. */
+  level?: string;
 }
 
 /** The list with what is needed to render its header. */

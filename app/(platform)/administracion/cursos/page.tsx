@@ -11,21 +11,22 @@ export async function generateMetadata(): Promise<Metadata> {
 
 interface StaffCoursesPageProps {
   /**
-   * `q` is the search and `estado` the filter; both live in the URL. `error`
-   * is what `createCourse` bounced back with: its dialog lives on this page.
+   * `q` is the search, `estado` and `nivel` the filters; the three live in the
+   * URL. `error` is what `createCourse` bounced back with: its dialog lives on
+   * this page.
    */
-  searchParams: Promise<{ q?: string; estado?: string; error?: string }>;
+  searchParams: Promise<{ q?: string; estado?: string; nivel?: string; error?: string }>;
 }
 
 export default async function StaffCoursesPage({ searchParams }: StaffCoursesPageProps) {
   await requireStaff();
-  const { q, estado, error } = await searchParams;
+  const { q, estado, nivel, error } = await searchParams;
 
   // The header goes INSIDE the section: it carries the search box, and that
   // needs to know what is being filtered.
   return (
     <div className="platform-page staff-courses-page">
-      <CoursesAdminSection query={q} status={estado} errorCode={error} />
+      <CoursesAdminSection query={q} status={estado} level={nivel} errorCode={error} />
     </div>
   );
 }

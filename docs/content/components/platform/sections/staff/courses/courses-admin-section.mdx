@@ -1,5 +1,5 @@
 ---
-description: "The course catalog in every status, with a GET search, status filter links, totals, and whole-row links with cover thumbnail, slug, content types, status, counts and publish date."
+description: "The course catalog in every status, with a GET search, status and level filter links, totals, and whole-row links with cover thumbnail, slug, content types, level, status, counts and publish date."
 ---
 
 # `CoursesAdminSection`
@@ -11,12 +11,12 @@ description: "The course catalog in every status, with a GET search, status filt
 | Stylesheet | `courses-admin.section.css` → block `.courses-admin`                                                                                                                                                                                                                                                                                                            |
 | Used by    | `/administracion/cursos`                                                                                                                                                                                                                                                                                                                                        |
 | Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`NewCourse`](/components/platform/sections/staff/courses/new-course), [`AuthorsManager`](/components/platform/sections/staff/courses/authors-manager), [`PlatformNotice`](/components/platform/shared/platform-notice), [`EmptyState`](/components/platform/shared/empty-state) |
-| Reads      | `listCoursesAdmin({ query, status })`, `listContentTypes()`, `listAuthors()` · `services/staff-courses/staff-courses.service.ts`                                                                                                                                                                                                                                |
+| Reads      | `listCoursesAdmin({ query, status, level })`, `listContentTypes()`, `listAuthors()`, `listLevels()` · `services/staff-courses/staff-courses.service.ts`                                                                                                                                                                                                                                |
 | Uses       | `COURSE_STATUS` from `constants/platform/course-codes.const`; `STAFF_ERROR_MESSAGES` from `constants/platform/staff-messages.const`; `staffRoutes`; `isDisplayableImage` from `lib/remote-image`; `ChevronIcon`, `SearchIcon` from `components/icons/`; `next/image`                                                                                            |
 
 ## Purpose
 
-The entry to course authoring. Courses are born in draft and are only visible in the platform once published, which the header states. The search is a plain GET so it can be shared and undone with the back button; the active status travels with it as a hidden field so it is not lost when searching. Each row is entirely a link: in a seven-column table, forcing the user to aim at the name is asking for marksmanship.
+The entry to course authoring. Courses are born in draft and are only visible in the platform once published, which the header states. The search is a plain GET so it can be shared and undone with the back button; the active status travels with it as a hidden field so it is not lost when searching. Each row is entirely a link: in an eight-column table, forcing the user to aim at the name is asking for marksmanship.
 
 ## Props
 
@@ -24,14 +24,17 @@ The entry to course authoring. Courses are born in draft and are only visible in
 | ----------- | -------- | -------- | ------------------------------------------------------------------------------------------ |
 | `query`     | `string` | no       | Text search over name and slug, from `?q=`.                                                |
 | `status`    | `string` | no       | Status filter, from `?estado=`.                                                            |
+| `level`     | `string` | no       | Level filter by slug, from `?nivel=` — the same parameter the student's catalog uses.      |
 | `errorCode` | `string` | no       | What `createCourse` bounced back with, from `?error=`; shown as a notice under the header. |
 
 ## Behaviour
 
-- `filterHref` builds the four filter links (Todos, Publicados, Borradores, Archivados) preserving the query; the active one gets `aria-current`. They are drawn as the same chips as the kind filters of [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser): outlined pills in the subtle grey, one weight in both states, the active one with the accent border and the faint wash.
+- `filterHref` builds every filter link with the other two filters kept, so narrowing by level does not lose the status nor the search (and both travel with the search box as hidden fields). The statuses are the first row (Todos, Publicados, Borradores, Archivados); the active one gets `aria-current`. They are drawn as the same chips as the kind filters of [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser): outlined pills in the subtle grey, one weight in both states, the active one with the accent border and the faint wash.
 - "Autores" is [`AuthorsManager`](/components/platform/sections/staff/courses/authors-manager), next to it: the dialog where the authors are created and edited, since they have no page of their own. Its outcome stays inside the dialog.
 - "Nuevo curso" is [`NewCourse`](/components/platform/sections/staff/courses/new-course): a quiet grey button that opens the creation dialog on this page. The section reads the course types for it alongside the listing. A failure the action reports comes back as `?error=` and is rendered as a `PlatformNotice` under the header.
 - The table is white on the page's grey over a light shadow, with no outline, like the study cards.
+- **Levels** are a second row of the same chips under the statuses, headed by the word «Nivel» so two rows of pills are not read as one list, and each chip's `title` says its Elo range. An unknown slug is not refused: it simply matches no course (2026-09-30).
+- Each row says the stretch a course is aimed at — «Intermedio», «Intermedio–Avanzado» — from the ends of its levels; the cell wraps instead of being cut, because half a level's name says nothing.
 - Totals line: courses, chapters, lessons over the filtered set.
 - Rows show a 44 px cover frame (painted even without a cover; `isDisplayableImage` guards the URL), name and slug, the content types as a wrapping run of small `.platform-tag` by their short names («Contenido» column), a status pill with a per-status modifier, chapter and lesson counts, publish date, and a chevron.
 - Empty copy distinguishes "nothing matches" from "no courses yet".
