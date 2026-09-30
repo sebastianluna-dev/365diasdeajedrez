@@ -2,9 +2,7 @@ import Link from "next/link";
 import { EmptyState } from "@/components/platform/shared/empty-state.comp";
 import { staffRoutes } from "@/lib/platform-routes";
 import type { CourseAdminDetail, CourseGameRow } from "@/services/staff-courses/staff-courses.types";
-import { StaffEditorHead } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
-import { StaffTabs } from "./staff-tabs.comp";
 import "./course-games.section.css";
 
 interface CourseGamesSectionProps {
@@ -22,23 +20,6 @@ interface CourseGamesSectionProps {
 export function CourseGamesSection({ course, games }: CourseGamesSectionProps) {
   return (
     <div className="course-games">
-      <StaffEditorHead
-        title={course.name}
-        badge={
-          <span className={`course-games__status course-games__status_state_${course.statusCode.toLowerCase()}`}>
-            {course.statusLabel}
-          </span>
-        }
-      />
-
-      <StaffTabs
-        current={staffRoutes.courseGames(course.id)}
-        tabs={[
-          { label: "Curso", href: staffRoutes.courseDetail(course.id) },
-          { label: "Partidas", href: staffRoutes.courseGames(course.id), count: games.length },
-        ]}
-      />
-
       <StaffPanel
         title="Partidas del curso"
         meta={`${games.length}`}

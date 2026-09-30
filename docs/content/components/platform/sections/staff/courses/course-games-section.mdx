@@ -10,18 +10,21 @@ description: "Every game of a course at once, read-only and with its chapter, mo
 | Kind       | Server Component                                                                                                                                                                                                                                                                       |
 | Stylesheet | `course-games.section.css` → block `.course-games`                                                                                                                                                                                                                                     |
 | Used by    | `/administracion/cursos/[courseId]/partidas`                                                                                                                                                                                                                                           |
-| Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`EmptyState`](/components/platform/shared/empty-state) |
+| Composes   | [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`EmptyState`](/components/platform/shared/empty-state) |
 | Uses       | `staffRoutes` from `lib/platform-routes`; `CourseAdminDetail`, `CourseGameRow` types                                                                                                                                                                                                   |
 
 ## Purpose
 
 The "Partidas" tab of a course: the overview that the split by chapters would otherwise take away. Games belong to a chapter's collection (a game without a chapter would have no collection to go to), so here they are only looked at, with the chapter named on each row and a note pointing back to the course record to add or remove.
 
+The name of the record and its tabs are not here: they are the [layout](/components/platform/sections/staff/courses/course-record-head) the three pages share.
+
+
 ## Props
 
 | Prop     | Type                | Required | Meaning                                                           |
 | -------- | ------------------- | -------- | ----------------------------------------------------------------- |
-| `course` | `CourseAdminDetail` | yes      | For the head, badge and tab links.                                |
+| `course` | `CourseAdminDetail` | yes      | For the link back to the course when there are no games.          |
 | `games`  | `CourseGameRow[]`   | yes      | `{ id, title, detail?, chapterName?, moveCount, lessonCount }[]`. |
 
 ## Behaviour

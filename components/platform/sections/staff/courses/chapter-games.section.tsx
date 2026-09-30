@@ -1,12 +1,9 @@
 import Link from "next/link";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
-import { staffRoutes } from "@/lib/platform-routes";
 import { deleteChapterGame, importChapterGames } from "@/services/staff-courses/staff-courses.actions";
 import type { ChapterAdminDetail, CourseGameRow } from "@/services/staff-courses/staff-courses.types";
-import { StaffEditorHead } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
-import { StaffTabs } from "./staff-tabs.comp";
 import "./chapter-games.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 
@@ -28,20 +25,6 @@ export function ChapterGamesSection({ chapter, games, errorCode }: ChapterGamesS
 
   return (
     <div className="chapter-games">
-      <StaffEditorHead title={chapter.name} meta={<span>Capítulo {chapter.order}</span>} />
-
-      <StaffTabs
-        current={staffRoutes.chapterGames(chapter.courseId, chapter.id)}
-        tabs={[
-          { label: "Capítulo", href: staffRoutes.chapterDetail(chapter.courseId, chapter.id) },
-          {
-            label: "Partidas",
-            href: staffRoutes.chapterGames(chapter.courseId, chapter.id),
-            count: games.length,
-          },
-        ]}
-      />
-
       {errorMessage && <PlatformNotice message={errorMessage} />}
 
       <StaffPanel

@@ -21,9 +21,5 @@ export default async function CourseGamesPage({ params }: CourseGamesPageProps) 
 
   const games = await listCollectionGames({ courseId });
 
-  return (
-    <div className="platform-page staff-course-games-page">
-      <CourseGamesSection course={course} games={games} />
-    </div>
-  );
+  return <CourseGamesSection course={course} games={games} />;
 }

@@ -5,9 +5,7 @@ import {
   getCourseAdminDetail,
   listAuthorRoles,
   listAuthors,
-  countCollectionGames,
   listContentTypes,
-  listCourseStatuses,
   listLevels,
 } from "@/services/staff-courses/staff-courses.service";
 import { listSourceTypes } from "@/services/staff-sources/staff-sources.service";
@@ -29,32 +27,26 @@ export default async function StaffCoursePage({ params, searchParams }: StaffCou
   const course = await getCourseAdminDetail(courseId);
   if (!course) notFound();
 
-  const [contentTypes, levels, authors, authorRoles, statuses, sourceTypes, gameCount, { error }] = await Promise.all([
+  const [contentTypes, levels, authors, authorRoles, sourceTypes, { error }] = await Promise.all([
     listContentTypes(),
     listLevels(),
     listAuthors(),
     listAuthorRoles(),
-    listCourseStatuses(),
     listSourceTypes(),
-    countCollectionGames({ courseId }),
     searchParams,
   ]);
 
-  // The header goes INSIDE the section: it carries the name and the status,
-  // which are data of the course and not of the page.
+  // The name, the status and the tabs are the record's layout: they are the
+  // same on the three pages.
   return (
-    <div className="platform-page staff-course-page">
-      <CourseEditorSection
-        course={course}
-        contentTypes={contentTypes}
-        levels={levels}
-        authors={authors}
-        authorRoles={authorRoles}
-        statuses={statuses}
-        sourceTypes={sourceTypes}
-        gameCount={gameCount}
-        errorCode={error}
-      />
-    </div>
+    <CourseEditorSection
+      course={course}
+      contentTypes={contentTypes}
+      levels={levels}
+      authors={authors}
+      authorRoles={authorRoles}
+      sourceTypes={sourceTypes}
+      errorCode={error}
+    />
   );
 }

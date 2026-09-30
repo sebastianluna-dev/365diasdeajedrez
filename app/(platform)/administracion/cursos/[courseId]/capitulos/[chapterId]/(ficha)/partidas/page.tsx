@@ -22,9 +22,5 @@ export default async function ChapterGamesPage({ params, searchParams }: Chapter
 
   const [games, { error }] = await Promise.all([listCollectionGames({ chapterId }), searchParams]);
 
-  return (
-    <div className="platform-page staff-chapter-games-page">
-      <ChapterGamesSection chapter={chapter} games={games} errorCode={error} />
-    </div>
-  );
+  return <ChapterGamesSection chapter={chapter} games={games} errorCode={error} />;
 }

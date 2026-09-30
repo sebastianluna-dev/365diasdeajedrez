@@ -180,7 +180,11 @@ description: "Index of components/platform: the shared primitives and every sect
 | [`LessonGamePicker`](/components/platform/sections/staff/courses/lesson-game-picker)                     | server | Links the lesson to a course game.                                  |
 | [`ExerciseEditor`](/components/platform/sections/staff/courses/exercise-editor)                          | client | The lesson's exercises as SAN lines.                                |
 | [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker)                 | client | Marks two positions on the lesson's PGN.                            |
-| [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list) | client | The rail a course's chapters and a chapter's lessons are drawn on: numbered nodes, fixed slots for the introduction and the closing, and the field that adds one. |
+| [`CourseRecordHead`](/components/platform/sections/staff/courses/course-record-head) | server | The name, the status and the tabs of a course, drawn by the layout of its three pages. |
+| [`ChapterRecordHead`](/components/platform/sections/staff/courses/chapter-record-head) | server | The same, for a chapter. |
+| [`ChapterLessonsSection`](/components/platform/sections/staff/courses/chapter-lessons-section) | server | The chapter's lessons on their own page, at full width. |
+| [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list) | client | The list a course's chapters and a chapter's lessons are drawn with: three bands, rows dragged with dnd-kit, «Editar» as their button and what destroys behind three dots. |
+| [`SyllabusDnd`](/components/platform/sections/staff/courses/syllabus-dnd) | client | The syllabus's drag and drop: dnd-kit set up once, with its announcements in Spanish. |
 | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor)                            | server | Header (title, facts, actions) and the two-column layout.           |
 | [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel)                                  | server | A card with a header rule.                                          |
 | [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs)                                    | server | Tabs that are pages.                                                |

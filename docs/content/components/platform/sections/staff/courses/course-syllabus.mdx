@@ -1,5 +1,5 @@
 ---
-description: "«Temario», the chapters of a course in the staff editor, drawn as the path the student walks: a rail with the introduction, the numbered chapters, the field that adds one and the closing."
+description: "«Temario», the chapters of a course in the staff editor, drawn as the path the student walks: what opens it, the numbered chapters and the field that adds one, and what closes it."
 ---
 
 # `CourseSyllabus`
@@ -9,31 +9,31 @@ description: "«Temario», the chapters of a course in the staff editor, drawn a
 | File       | `components/platform/sections/staff/courses/course-syllabus/course-syllabus.comp.tsx`                                                                                               |
 | Kind       | Client Component                                                                                                                                                                    |
 | Stylesheet | `course-syllabus.comp.css` → block `.course-syllabus`                                                                                                                               |
-| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section)                                                                                          |
+| Used by    | [`CourseChaptersSection`](/components/platform/sections/staff/courses/course-chapters-section)                                                                                      |
 | Composes   | [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`SubmitButton`](/components/platform/shared/submit-button)                                                |
 | Writes     | `createChapter()`, `deleteChapter()`, `reorderChapters()` · `services/staff-courses/staff-courses.actions.ts`                                                                       |
-| Uses       | `useSortableRows` from `./use-sortable-rows.hook`; `CONTENT_ROLE` from `constants/platform/course-codes.const`; `ChapterAdminRow` from `services/staff-courses/staff-courses.types` |
+| Uses       | `ChapterAdminRow` from `services/staff-courses/staff-courses.types`                                                                                                                 |
 
 ## Purpose
 
-The chapters of a course read as what they are for the student: a path with a first step and a last one. **The list itself is [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list)**, the same one a chapter's lessons are drawn with — they are the same thing one level apart —; this component gives it the chapters, the actions that create, reorder and delete them, and the «Temario» panel around it. The card is a vertical rail whose nodes are, top to bottom, the introduction, the numbered chapters, the slot for a new one and the closing.
+The chapters of a course read as what they are for the student: a path with a first step and a last one. **The list itself is [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list)**, the same one a chapter's lessons are drawn with — they are the same thing one level apart —; this component gives it the chapters, the actions that create, reorder and delete them, and the «Temario» panel around it. The card is three bands: the introduction, the numbered chapters with the field that adds one, and the closing.
 
 ## Props
 
 | Prop       | Type                | Required | Meaning                                                                                                                                               |
 | ---------- | ------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `courseId` | `string`            | yes      | The course the actions are bound to.                                                                                                                  |
-| `chapters` | `ChapterAdminRow[]` | yes      | `{ id, name, order, roleCode?, roleLabel?, lessonCount, durationMin?, progressCount, href }[]`, the introduction in front and the closing at the end. |
+| `chapters` | `ChapterAdminRow[]` | yes      | `{ id, name, order, roleCode?, roleLabel?, lessonCount, progressCount, href }[]`, the introduction in front and the closing at the end. |
 | `isDraft`  | `boolean`           | yes      | A chapter is only deleted from a draft course (and only without progress from any student).                                                           |
 
 ## Behaviour
 
 - **The header** is «Temario» with «3 capítulos · 15 lecciones».
-- **Introduction and closing** have a fixed place, first and last, on a soft tile with a piece (a pawn, a king). While one does not exist its slot is a dashed box, «+ Añadir introducción» / «+ Añadir cierre», which creates it (`createChapter` with `role`); there is at most one of each, which the database's unique index guarantees.
-- **Each chapter** is its number on a dark node, its name (a link to its editor), «2 lecciones · 14 min» — closed by «· Prioridad» when the chapter is marked as priority — and «Editar». The minutes are the chapter's own estimate or, when it has none, what its lessons add up to; without either, only the lessons are counted.
-- **The numbered node is the handle**: the chapter is dragged by it, and with the up and down arrows it moves too, which is the only way to reorder with the keyboard. The order is applied at once and saved in a transition (`useSortableRows`); the introduction and the closing are neither moved nor sent.
-- **«Eliminar»** appears next to «Editar» only where the server would allow it: a draft course and a chapter without progress.
-- **A new chapter** is typed in the field on the rail and added with Enter; the «Añadir» button stays out of sight while the field is empty (`:placeholder-shown`). It is in the soft accent of the page's buttons, at the size the field allows, instead of the dark one it used to be.
+- **Introduction and closing** have a band of their own, `INICIO` and `FINAL`, tinted and with a piece (a pawn, a king). While one does not exist its band is a dashed slot, «+ Añadir introducción» / «+ Añadir cierre», which creates it (`createChapter` with `role`); there is at most one of each, which the database's unique index guarantees.
+- **Each chapter** is its number on a tile, its name (a link to its editor), «6 lecciones» — closed by «· Prioridad» when the chapter is marked as priority — and «Editar». A chapter says what it HOLDS and not how long it takes: the minutes are the lesson's own figure, and they are said there (2026-09-30).
+- **The grip is the handle**: the chapter is dragged by it, and with the keyboard space picks it up and the arrows move it. The order is applied at once and saved in a transition (`useSortableRows`); the introduction and the closing are neither moved nor sent.
+- **«Eliminar»** waits behind the row's three dots, and only where the server would allow it: a draft course and a chapter without progress.
+- **A new chapter** is typed in the last row of the block and added with Enter; the «Añadir» button stays out of sight while the field is empty (`:placeholder-shown`). It is in the soft accent of the page's buttons, at the size the field allows, instead of the dark one it used to be.
 
 ## Markup & styling
 

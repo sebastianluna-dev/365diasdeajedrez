@@ -1,17 +1,12 @@
-import Link from "next/link";
-import "./staff-tabs.comp.css";
+"use client";
 
-export interface StaffTab {
-  label: string;
-  href: string;
-  /** A short fact next to the label: how many games there are, for instance. */
-  count?: number;
-}
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type { StaffTab } from "./staff-tabs.const";
+import "./staff-tabs.comp.css";
 
 interface StaffTabsProps {
   tabs: StaffTab[];
-  /** The tab we are on; compared with `href`. */
-  current: string;
 }
 
 /**
@@ -22,12 +17,19 @@ interface StaffTabsProps {
  * back button works and each one loads only its data — a course's game list
  * is hundreds of rows and has no reason to travel every time someone comes
  * in to rename it.
+ *
+ * The only client component of the record's header, and for one reason: the
+ * header lives in the LAYOUT of the three pages, and a layout is not rendered
+ * again when one navigates between its children, so it cannot be told which
+ * tab is the current one. The address is read here instead.
  */
-export function StaffTabs({ tabs, current }: StaffTabsProps) {
+export function StaffTabs({ tabs }: StaffTabsProps) {
+  const pathname = usePathname();
+
   return (
     <nav className="staff-tabs" aria-label="Secciones de la ficha">
       {tabs.map((tab) => {
-        const isActive = tab.href === current;
+        const isActive = tab.href === pathname;
         return (
           <Link
             key={tab.href}

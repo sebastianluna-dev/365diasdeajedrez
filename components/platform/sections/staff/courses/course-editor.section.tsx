@@ -1,12 +1,9 @@
-import Link from "next/link";
 import { FormField, FormFieldset } from "@/components/platform/shared/form-field.comp";
 import { ImageUpload } from "@/components/platform/shared/image-upload.comp";
 import { PlatformInfoTip } from "@/components/platform/shared/platform-info-tip/platform-info-tip.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
-import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { IMAGE_LIMITS_TEXT } from "@/constants/platform/upload.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
-import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
 import { updateCourse, updateCourseCover, updateCourseThumbnail } from "@/services/staff-courses/staff-courses.actions";
 import type {
   AuthorAdminRow,
@@ -20,10 +17,7 @@ import { CourseAuthors } from "./course-authors/course-authors.comp";
 import { CourseLevelsField } from "./course-levels-field.comp";
 import { CourseNameFields } from "./course-name-fields.comp";
 import { CourseSources } from "./course-sources/course-sources.comp";
-import { CourseStatusMenu } from "./course-status/course-status-menu.comp";
-import { CourseSyllabus } from "./course-syllabus/course-syllabus.comp";
-import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
-import { StaffTabs } from "./staff-tabs.comp";
+import { StaffEditorLayout } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./course-editor.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
@@ -36,24 +30,21 @@ interface CourseEditorSectionProps {
   levels: LevelOption[];
   authors: AuthorAdminRow[];
   authorRoles: CatalogOption[];
-  /** The statuses a course can have, for the pill next to the title. */
-  statuses: CatalogOption[];
   /** The kinds of resource a source can be, for «Procedencia del recurso». */
   sourceTypes: CatalogOption[];
-  /** How many games the course has; the list lives in its own tab. */
-  gameCount: number;
   errorCode?: string;
 }
 
 /**
- * Course editing in independent cards (metadata, chapters, authors, sources):
- * each has its own form and its own action, instead of a giant form where a
- * failure in one field throws away all the work.
+ * Course editing in independent cards (metadata, authors, sources): each has
+ * its own form and its own action, instead of a giant form where a failure in
+ * one field throws away all the work.
  *
- * On the left what is written and ordered; on the right what is glanced at
- * — cover, authors and sources — which is touched once and looked at many times.
- * The status has no card of its own: the pill next to the title says it and
- * changes it.
+ * On the left what is written; on the right what is glanced at — cover,
+ * authors and sources — which is touched once and looked at many times. The
+ * status has no card of its own: the pill next to the title says it and
+ * changes it. The chapters are not here but on «Temario», their own tab: in
+ * this column the list read at half the width of the page.
  */
 export function CourseEditorSection({
   course,
@@ -61,48 +52,13 @@ export function CourseEditorSection({
   levels,
   authors,
   authorRoles,
-  statuses,
   sourceTypes,
-  gameCount,
   errorCode,
 }: CourseEditorSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
-  const isDraft = course.statusCode === COURSE_STATUS.DRAFT;
 
   return (
     <div className="course-editor">
-      <StaffEditorHead
-        title={course.name}
-        badge={
-          <CourseStatusMenu
-            courseId={course.id}
-            statusCode={course.statusCode}
-            statuses={statuses}
-            canPublish={course.canPublish}
-          />
-        }
-        actions={
-          course.statusCode === COURSE_STATUS.PUBLISHED && (
-            <Link
-              // The information page, by the slug: it is what a student sees
-              // of the course before adding it, and it needs nothing added.
-              href={platformRoutes.courseInfo(course.slug)}
-              className="platform-button"
-            >
-              Ver en la plataforma
-            </Link>
-          )
-        }
-      />
-
-      <StaffTabs
-        current={staffRoutes.courseDetail(course.id)}
-        tabs={[
-          { label: "Curso", href: staffRoutes.courseDetail(course.id) },
-          { label: "Partidas", href: staffRoutes.courseGames(course.id), count: gameCount },
-        ]}
-      />
-
       {errorMessage && <PlatformNotice message={errorMessage} />}
 
       <StaffEditorLayout
@@ -185,8 +141,6 @@ export function CourseEditorSection({
             </div>
           </form>
         </StaffPanel>
-
-        <CourseSyllabus courseId={course.id} chapters={course.chapters} isDraft={isDraft} />
       </StaffEditorLayout>
     </div>
   );

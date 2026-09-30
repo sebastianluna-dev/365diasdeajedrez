@@ -115,9 +115,14 @@ export const staffRoutes = {
   teacherDetail: (teacherId: string) => `/administracion/profesores/${teacherId}`,
   courses: "/administracion/cursos",
   courseDetail: (courseId: string) => `/administracion/cursos/${courseId}`,
+  /** The course's chapters, on a page of their own: the list takes the whole width. */
+  courseSyllabus: (courseId: string) => `/administracion/cursos/${courseId}/temario`,
   /** The course's games: read-only, they are edited in their chapter. */
   courseGames: (courseId: string) => `/administracion/cursos/${courseId}/partidas`,
   chapterDetail: (courseId: string, chapterId: string) => `/administracion/cursos/${courseId}/capitulos/${chapterId}`,
+  /** The chapter's lessons, on a page of their own: the list takes the whole width. */
+  chapterLessons: (courseId: string, chapterId: string) =>
+    `/administracion/cursos/${courseId}/capitulos/${chapterId}/lecciones`,
   /** The chapter's collection: here the PGN does get pasted. */
   chapterGames: (courseId: string, chapterId: string) =>
     `/administracion/cursos/${courseId}/capitulos/${chapterId}/partidas`,

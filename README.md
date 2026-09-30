@@ -148,7 +148,7 @@ The platform's URLs are in Spanish because the product is; only the names of the
 - `/administracion`
 - `/administracion/alumnos`, `/administracion/alumnos/nuevo`, `/administracion/alumnos/[userId]`
 - `/administracion/profesores`, `/administracion/profesores/nuevo`, `/administracion/profesores/[teacherId]`
-- `/administracion/cursos` (creating a course is a dialog on this page), `/administracion/cursos/[courseId]`, `…/partidas`, `…/capitulos/[chapterId]`, `…/capitulos/[chapterId]/partidas`, `…/capitulos/[chapterId]/partidas/[gameId]` (a game on the board, to read and edit), `…/capitulos/[chapterId]/lecciones/[lessonId]`
+- `/administracion/cursos` (creating a course is a dialog on this page), `/administracion/cursos/[courseId]`, `…/temario` (the chapters, at full width), `…/partidas`, `…/capitulos/[chapterId]`, `…/capitulos/[chapterId]/lecciones` (the lessons, at full width), `…/capitulos/[chapterId]/partidas`, `…/capitulos/[chapterId]/partidas/[gameId]` (a game on the board, to read and edit), `…/capitulos/[chapterId]/lecciones/[lessonId]`
 - `/administracion/clases`, `/administracion/clases/[classId]` (global read; only support recording and cancellation)
 
 ## Architecture in brief

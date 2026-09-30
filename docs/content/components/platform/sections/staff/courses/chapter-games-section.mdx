@@ -10,13 +10,16 @@ description: "The chapter's game collection, the only place where a PGN is paste
 | Kind       | Server Component                                                                                                                                                                                                                                                                               |
 | Stylesheet | `chapter-games.section.css` → block `.chapter-games`                                                                                                                                                                                                                                           |
 | Used by    | `/administracion/cursos/[courseId]/capitulos/[chapterId]/partidas`                                                                                                                                                                                                                             |
-| Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs), [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`PlatformNotice`](/components/platform/shared/platform-notice) |
+| Composes   | [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`PlatformNotice`](/components/platform/shared/platform-notice) |
 | Writes     | `importChapterGames()`, `deleteChapterGame()` · `services/staff-courses/staff-courses.actions.ts`                                                                                                                                                                                              |
 | Uses       | `STAFF_ERROR_MESSAGES`; `staffRoutes`; `ChapterAdminDetail`, `CourseGameRow` types                                                                                                                                                                                                             |
 
 ## Purpose
 
 Course content is PGN, and this is where it enters. Each chapter has a collection; its lessons choose their game from it, so fixing a game here fixes every lesson that uses it at once. It is the **only** place in the staff panel where a PGN is pasted. A game already in the collection is not pasted again to correct it: it opens on the board ([`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section)), where it is read and edited.
+
+The name of the record and its tabs are not here: they are the [layout](/components/platform/sections/staff/courses/chapter-record-head) the three pages share.
+
 
 ## Props
 

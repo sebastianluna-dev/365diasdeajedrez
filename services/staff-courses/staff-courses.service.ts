@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { COURSE_STATUS, type AuthorRoleCode, type CourseStatusCode } from "@/constants/platform/course-codes.const";
 import type { BoardOrientationCode } from "@/constants/platform/shared-codes.const";
 import type { ExerciseModeCode } from "@/constants/platform/training-codes.const";
@@ -101,7 +102,7 @@ export async function listCoursesAdmin(filter: CourseAdminFilter = {}): Promise<
   };
 }
 
-export async function getCourseAdminDetail(courseId: string): Promise<CourseAdminDetail | null> {
+export const getCourseAdminDetail = cache(async (courseId: string): Promise<CourseAdminDetail | null> => {
   await requireStaff();
 
   const course = await getPlatformDb().course.findUnique({
@@ -187,67 +188,69 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
     sources: course.sources.map(mapCourseSourceAdmin),
     canPublish,
   };
-}
+});
 
-export async function getChapterAdmin(courseId: string, chapterId: string): Promise<ChapterAdminDetail | null> {
-  await requireStaff();
+export const getChapterAdmin = cache(
+  async (courseId: string, chapterId: string): Promise<ChapterAdminDetail | null> => {
+    await requireStaff();
 
-  const chapter = await getPlatformDb().chapter.findFirst({
-    where: { id: chapterId, courseId },
-    select: {
-      id: true,
-      courseId: true,
-      name: true,
-      description: true,
-      order: true,
-      isPriority: true,
-      estimatedDuration: true,
-      course: { select: { name: true, status: { select: { code: true } } } },
-      lessons: {
-        select: {
-          id: true,
-          name: true,
-          order: true,
-          isPriority: true,
-          estimatedDuration: true,
-          role: { select: { code: true, label: true } },
-          ...lessonPgnSelect,
-          _count: { select: { exercises: true, progresses: true } },
+    const chapter = await getPlatformDb().chapter.findFirst({
+      where: { id: chapterId, courseId },
+      select: {
+        id: true,
+        courseId: true,
+        name: true,
+        description: true,
+        order: true,
+        isPriority: true,
+        estimatedDuration: true,
+        course: { select: { name: true, status: { select: { code: true } } } },
+        lessons: {
+          select: {
+            id: true,
+            name: true,
+            order: true,
+            isPriority: true,
+            estimatedDuration: true,
+            role: { select: { code: true, label: true } },
+            ...lessonPgnSelect,
+            _count: { select: { exercises: true, progresses: true } },
+          },
+          orderBy: { order: "asc" },
         },
-        orderBy: { order: "asc" },
       },
-    },
-  });
+    });
 
-  if (!chapter) return null;
+    if (!chapter) return null;
 
-  return {
-    id: chapter.id,
-    courseId: chapter.courseId,
-    courseName: chapter.course.name,
-    courseStatusCode: chapter.course.status.code as CourseStatusCode,
-    name: chapter.name,
-    description: chapter.description ?? undefined,
-    order: chapter.order,
-    isPriority: chapter.isPriority,
-    estimatedDuration: chapter.estimatedDuration ?? undefined,
-    lessons: sortByRole(
-      chapter.lessons.map((lesson) => ({
-        roleCode: lesson.role?.code,
-        roleLabel: lesson.role?.label,
-        id: lesson.id,
-        name: lesson.name,
-        order: lesson.order,
-        isPriority: lesson.isPriority,
-        hasPgn: lessonHasContent(lesson),
-        durationMin: lesson.estimatedDuration ?? undefined,
-        exerciseCount: lesson._count.exercises,
-        progressCount: lesson._count.progresses,
-        href: staffRoutes.lessonDetail(chapter.courseId, chapter.id, lesson.id),
-      })),
-    ),
-  };
-}
+    return {
+      id: chapter.id,
+      courseId: chapter.courseId,
+      courseName: chapter.course.name,
+      courseStatusCode: chapter.course.status.code as CourseStatusCode,
+      name: chapter.name,
+      description: chapter.description ?? undefined,
+      order: chapter.order,
+      isPriority: chapter.isPriority,
+      estimatedDuration: chapter.estimatedDuration ?? undefined,
+      lessons: sortByRole(
+        chapter.lessons.map((lesson) => ({
+          roleCode: lesson.role?.code,
+          roleLabel: lesson.role?.label,
+          id: lesson.id,
+          name: lesson.name,
+          order: lesson.order,
+          isPriority: lesson.isPriority,
+          hasPgn: lessonHasContent(lesson),
+          durationMin: lesson.estimatedDuration ?? undefined,
+          exerciseCount: lesson._count.exercises,
+          progressCount: lesson._count.progresses,
+          href: staffRoutes.lessonDetail(chapter.courseId, chapter.id, lesson.id),
+        })),
+      ),
+    };
+  },
+);
 
 /**
  * Games of a collection, to list them or to link them to a lesson.

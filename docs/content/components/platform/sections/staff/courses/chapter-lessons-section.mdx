@@ -1,0 +1,35 @@
+---
+description: "The lessons of a chapter on a page of their own: the chapter's header, its tabs and the list at the whole width."
+---
+
+# `ChapterLessonsSection`
+
+|            |                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/chapter-lessons.section.tsx`                           |
+| Kind       | Server Component                                                                                   |
+| Stylesheet | None: the header, the tabs, the panel and the list bring their own.                                |
+| Route      | `/administracion/cursos/[courseId]/capitulos/[chapterId]/lecciones`                                |
+| Composes   | [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list)                                                                                                                                                       |
+| Writes     | `createLesson()`, `deleteLesson()`, `reorderLessons()` · `services/staff-courses/staff-courses.actions.ts` |
+
+## Purpose
+
+The same move «Temario» made, one level down: the lessons left the chapter editor's column for a page of their own, where the list takes the whole width (2026-09-30). What is drawn is [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list), the very list the course's chapters are drawn with, because a chapter's lessons are the same thing one level down.
+
+## Props
+
+| Prop      | Type                 | Required | Meaning                       |
+| --------- | -------------------- | -------- | ----------------------------- |
+| `chapter` | `ChapterAdminDetail` | yes      | The chapter with its lessons. |
+
+## Behaviour
+
+- **The facts of a lesson** are built here (`lessonFacts`): "Con PGN"/"Sin PGN", its exercise count and its estimated minutes when it has them — "Con PGN · 3 ejercicios · 12 min". A chapter says what it HOLDS and no minutes; a lesson is where the figure means something.
+- The name of the chapter and the tabs are not here but in the record's [layout](/components/platform/sections/staff/courses/chapter-record-head); the panel's meta says how many lessons there are and how many have PGN.
+- «Eliminar» is offered only in a draft course and on a lesson without progress, and the server checks it again.
+
+## Related
+
+- [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section), the tab next to it.
+- [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list), the list it draws.

@@ -1,32 +1,37 @@
 ---
-description: "Tabs that are pages: links with their own URL for a record's sections (course or chapter versus its games), so each loads only its data and the back button works."
+description: "Tabs that are pages: links with their own URL for the three sections of a course and of a chapter, so each loads only its data and the back button works."
 ---
 
 # `StaffTabs`
 
-Also exports the `StaffTab` type.
+The `StaffTab` type and the two builders, `courseTabs()` and `chapterTabs()`, live beside it in `staff-tabs.const.ts` — a **server** module, because the sections that call them are server components and a `"use client"` module only exports client references.
 
 |            |                                                                                                                                                                                                                                                                                                                                                                                |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | File       | `components/platform/sections/staff/courses/staff-tabs.comp.tsx`                                                                                                                                                                                                                                                                                                               |
-| Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                               |
+| Kind       | Client Component (`usePathname`) |
 | Stylesheet | `staff-tabs.comp.css` → block `.staff-tabs`                                                                                                                                                                                                                                                                                                                                    |
-| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section), [`CourseGamesSection`](/components/platform/sections/staff/courses/course-games-section), [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section), [`ChapterGamesSection`](/components/platform/sections/staff/courses/chapter-games-section) |
+| Used by    | [`CourseRecordHead`](/components/platform/sections/staff/courses/course-record-head), [`ChapterRecordHead`](/components/platform/sections/staff/courses/chapter-record-head)                                                                                                                                                                                                      |
 
 ## Purpose
 
-A course and a chapter each split into two screens, "Curso"/"Capítulo" and "Partidas". They are links, not state: each tab has its URL, so it can be shared, the back button works, and each loads only its own data. A course's game list is hundreds of rows and has no reason to travel every time someone comes in to rename the course.
+A course and a chapter each split into three screens: «Curso»/«Capítulo», the list that hangs from it («Temario», «Lecciones») and «Partidas». They are links, not state: each tab has its URL, so it can be shared, the back button works, and each loads only its own data. A course's game list is hundreds of rows and has no reason to travel every time someone comes in to rename the course.
+
+**The tabs of a record are built here**, not in each section: `courseTabs({ courseId, chapterCount, gameCount })` and `chapterTabs({ courseId, chapterId, lessonCount, gameCount })`. A tab added on one page and forgotten on the other two is a tab half the record does not have.
 
 ## Props
 
-| Prop      | Type         | Required | Meaning                                                                 |
-| --------- | ------------ | -------- | ----------------------------------------------------------------------- |
-| `tabs`    | `StaffTab[]` | yes      | `{ label, href, count? }[]`; `count` is a short fact next to the label. |
-| `current` | `string`     | yes      | The href of the tab we are on.                                          |
+| Prop   | Type         | Required | Meaning                                                                 |
+| ------ | ------------ | -------- | ----------------------------------------------------------------------- |
+| `tabs` | `StaffTab[]` | yes      | `{ label, href, count? }[]`; `count` is a short fact next to the label. |
+
+There is no `current` prop: see below.
 
 ## Behaviour
 
-None: a `<nav aria-label="Secciones de la ficha">` of links, the active one with `aria-current="page"`.
+A `<nav aria-label="Secciones de la ficha">` of links, the active one with `aria-current="page"`. The counts are the chapters, the lessons and the games of the record.
+
+**It is the only client component of the record's header**, and for one reason: the header is drawn by the LAYOUT of the three pages, and Next does not render a layout again when one navigates between its children, so it cannot be told which tab is the current one. The address is read here instead (`usePathname`).
 
 ## Markup & styling
 

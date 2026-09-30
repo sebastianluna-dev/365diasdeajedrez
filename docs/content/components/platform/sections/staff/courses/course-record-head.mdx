@@ -1,0 +1,37 @@
+---
+description: "How a course names itself on its three pages: its name, the status pill that changes it, «Ver en la plataforma» and the tabs — drawn by the record's layout."
+---
+
+# `CourseRecordHead`
+
+|            |                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/course-record-head.comp.tsx`                           |
+| Kind       | Server Component                                                                                   |
+| Stylesheet | None: the header and the tabs bring their own.                                                     |
+| Used by    | `app/(platform)/administracion/cursos/[courseId]/(ficha)/layout.tsx`                               |
+| Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`CourseStatusMenu`](/components/platform/sections/staff/courses/course-status-menu), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs) |
+
+## Purpose
+
+The name, the status and the tabs of a course, above whichever of its three pages one is on — «Curso», «Temario», «Partidas».
+
+It is drawn by the record's **layout** and not by each page, for two reasons: the three cannot drift apart, and Next does not render a layout again when one moves between its children, so the header does not blink on the way (2026-09-30). The pages that hang FROM the record — a lesson, a game on the board — are outside the `(ficha)` group and keep their own header.
+
+## Props
+
+| Prop        | Type                | Required | Meaning                                                    |
+| ----------- | ------------------- | -------- | ------------------------------------------------------------ |
+| `course`    | `CourseAdminDetail` | yes      | The record: its name, its status, its slug and its chapters. |
+| `statuses`  | `CatalogOption[]`   | yes      | The statuses on offer, for the pill that changes it.        |
+| `gameCount` | `number`            | yes      | How many games the course has; the «Partidas» tab says it.  |
+
+## Behaviour
+
+- The status pill is [`CourseStatusMenu`](/components/platform/sections/staff/courses/course-status-menu) on the three pages, not only on «Curso»: the status is the record's, not that tab's.
+- «Ver en la plataforma» appears only while the course is published, and leads to the student's information page by its slug.
+- The tabs come from `courseTabs()` (`staff-tabs.const.ts`), and which one is current is read from the address by [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs).
+
+## Related
+
+- [`ChapterRecordHead`](/components/platform/sections/staff/courses/chapter-record-head), the same thing one level down.

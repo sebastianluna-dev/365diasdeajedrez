@@ -1,0 +1,28 @@
+---
+description: "How a chapter names itself on its three pages: its name, its number, its course and the tabs — drawn by the record's layout."
+---
+
+# `ChapterRecordHead`
+
+|            |                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/chapter-record-head.comp.tsx`                          |
+| Kind       | Server Component                                                                                   |
+| Stylesheet | None: the header and the tabs bring their own.                                                     |
+| Used by    | `app/(platform)/administracion/cursos/[courseId]/capitulos/[chapterId]/(ficha)/layout.tsx`         |
+| Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs) |
+
+## Purpose
+
+The name of a chapter, where it sits — «Capítulo 3», the course it belongs to, «Prioridad» when it is marked — and the tabs, above whichever of its three pages one is on: «Capítulo», «Lecciones», «Partidas». Same reasons as [`CourseRecordHead`](/components/platform/sections/staff/courses/course-record-head), one level down.
+
+## Props
+
+| Prop        | Type                 | Required | Meaning                                                        |
+| ----------- | -------------------- | -------- | ---------------------------------------------------------------- |
+| `chapter`   | `ChapterAdminDetail` | yes      | The record: its name, its number, its course and its lessons.   |
+| `gameCount` | `number`             | yes      | How many games its collection has; the «Partidas» tab says it.  |
+
+## Related
+
+- [`ChapterLessonsSection`](/components/platform/sections/staff/courses/chapter-lessons-section), one of the three pages it heads.
