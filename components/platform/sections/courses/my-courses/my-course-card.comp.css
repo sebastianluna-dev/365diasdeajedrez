@@ -109,10 +109,14 @@
     background: var(--platform-track);
   }
 
+  /* The accent's own scale, and not the progress blue: the bar runs from the
+     washed red to the accent, so how far the course has gone is read as a
+     climb and not as a block of colour. The track stays the neutral grey —
+     what is missing has no colour of its own. */
   & .my-course-card__fill {
     height: 100%;
     border-radius: 1000px;
-    background: var(--platform-progress);
+    background: linear-gradient(90deg, var(--platform-accent-soft), var(--platform-accent));
   }
 
   /* --- The buttons ---------------------------------------------------------- */
@@ -166,35 +170,41 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Raised: it stands on a hard edge, as the button of the blog's header. */
+  /* Drawn with the accent, not filled with it. A list of courses is a column
+     of these rows, and a solid red block on each one turned the page into a
+     row of buttons: the outline says the same and lets the name and the bars
+     be what is read. The line is inset, so the button measures exactly its
+     box and the rows keep lining up. */
   & .my-course-card__learn {
-    background: var(--platform-accent);
-    color: var(--platform-on-accent);
-    box-shadow: 0 4px 0 var(--platform-accent-deep);
+    background: transparent;
+    color: var(--platform-accent-ink);
+    box-shadow: inset 0 0 0 1.5px var(--platform-accent);
     transition: 80ms;
-    transition-property: transform, box-shadow, background-color;
+    transition-property: background-color, box-shadow;
   }
 
+  /* Under the pointer it fills — with the wash, not the accent: what tells it
+     apart is still its line. */
   & .my-course-card__learn:hover {
-    background: var(--platform-accent-bright);
-    color: var(--platform-on-accent);
+    background: var(--platform-accent-wash);
+    color: var(--platform-accent-ink);
   }
 
-  /* Held down, it sinks onto its edge: it goes down the four pixels it stood
-     on and the edge is gone under it, for as long as the press lasts. */
+  /* Held down it deepens, instead of sinking onto an edge it no longer has. */
   & .my-course-card__learn:active {
-    transform: translateY(4px);
-    box-shadow: 0 0 0 var(--platform-accent-deep);
+    background: var(--platform-accent-soft);
   }
 
-  /* One that leads nowhere keeps its place, so the rows line up. */
+  /* One that leads nowhere keeps its place, so the rows line up. It keeps the
+     outline too, in the border's grey: what is missing is the way on, not the
+     button. */
   & .my-course-card__review_state_off,
   & .my-course-card__review_state_off:hover,
   & .my-course-card__learn_state_off,
   & .my-course-card__learn_state_off:hover,
   & .my-course-card__learn_state_off:active {
-    background: var(--platform-surface-neutral);
-    box-shadow: none;
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--platform-border-strong);
     transform: none;
     color: var(--platform-text-faint);
     cursor: default;
