@@ -1,4 +1,9 @@
 .course-study-frame {
+  /* One width for the right-hand edge of the screen: the button of the head
+     and the column under it are read as one column, so they are one number
+     and not two that happen to be close. */
+  --course-aside-width: 240px;
+
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -74,8 +79,7 @@
   }
 
   & .course-study-frame__actions {
-    flex: 0 1 260px;
-    min-width: 220px;
+    flex: 0 0 var(--course-aside-width);
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -158,9 +162,10 @@
   }
 
   /* A width of its own, not a share of what is left: the page's column is
-     what gives or takes room when the window changes. */
+     what gives or takes room when the window changes. The same width the
+     button above it takes. */
   & .course-study-frame__aside {
-    flex: 0 0 240px;
+    flex: 0 0 var(--course-aside-width);
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -210,17 +215,13 @@
   }
 
   /* Stacked, the course's column takes the width of the page's. The page
-     asks for 560px, the column for 240 and the gap for 24: under that, plus
-     the page's own margins, the column is on a row of its own. */
+     asks for 560px, the column for `--course-aside-width` and the gap for
+     24: under that, plus the page's own margins, the column is on a row of
+     its own. The button follows it, so the two never stop matching. */
   @media (max-width: 900px) {
-    & .course-study-frame__aside {
-      flex-basis: 100%;
-    }
-  }
-
-  @media (max-width: 620px) {
+    & .course-study-frame__aside,
     & .course-study-frame__actions {
-      flex: 1 1 100%;
+      flex-basis: 100%;
     }
   }
 
