@@ -1,27 +1,27 @@
 ---
-description: "The syllabus's drag and drop: dnd-kit set up once — sensors, the sortable context, the modifiers that keep a row in its list, and the announcements, in Spanish."
+description: "The drag and drop of the panel's sortable lists: dnd-kit set up once — sensors, the sortable context, the modifiers that keep a row in its list, and the announcements, in Spanish."
 ---
 
-# `SyllabusDnd`
+# `SortableDnd`
 
 |            |                                                                                     |
 | ---------- | ------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/syllabus-list/syllabus-dnd.comp.tsx`     |
+| File       | `components/platform/sections/staff/courses/sortable-dnd.comp.tsx`                   |
 | Kind       | Client Component                                                                    |
 | Stylesheet | None: it draws nothing.                                                             |
-| Used by    | [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list)         |
+| Used by    | [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list) (chapters and lessons), [`ChapterGameList`](/components/platform/sections/staff/courses/chapter-game-section) (the games of a collection) |
 | Uses       | `DndContext`, `PointerSensor`, `KeyboardSensor` from `@dnd-kit/core`; `SortableContext`, `verticalListSortingStrategy`, `sortableKeyboardCoordinates` from `@dnd-kit/sortable`; `restrictToVerticalAxis`, `restrictToParentElement` from `@dnd-kit/modifiers` |
 
 ## Purpose
 
-The wiring of [dnd-kit](https://dndkit.com) for the syllabus, in one place: the rows it wraps ask `useSortable` where they are, and the order they end up in is `useSortableRows`. It is a container — `children` and nothing drawn — which is why it takes them.
+The wiring of [dnd-kit](https://dndkit.com) for every sortable list of the panel, in one place: the rows it wraps ask `useSortable` where they are, and the order they end up in is `useSortableRows`. It is a container — `children` and nothing drawn — which is why it takes them.
 
 ## Props
 
 | Prop       | Type                                        | Required | Meaning                                                                                  |
 | ---------- | ------------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
 | `items`    | `{ id: string; name: string }[]`            | yes      | The items that can be moved, in the order they are drawn; the fixed ones are left out. The names are what is announced. |
-| `noun`     | `string`                                    | yes      | What one item is called: "capítulo", "lección".                                          |
+| `noun`     | `string`                                    | yes      | What one item is called: "capítulo", "lección", "partida". Its article is taken from it. |
 | `onMove`   | `(activeId: string, overId: string) => void`| yes      | Applies the move. `overId` is the item whose place the dragged one takes.                 |
 | `children` | `ReactNode`                                 | yes      | The list itself.                                                                         |
 
@@ -34,4 +34,5 @@ The wiring of [dnd-kit](https://dndkit.com) for the syllabus, in one place: the 
 
 ## Related
 
-- [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list), the only list drawn inside it.
+- [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list), the chapters of a course and the lessons of a chapter.
+- [`ChapterGameList`](/components/platform/sections/staff/courses/chapter-game-section), the games of a chapter's collection beside the board.

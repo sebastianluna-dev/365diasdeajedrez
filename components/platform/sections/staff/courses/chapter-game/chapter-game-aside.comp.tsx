@@ -57,7 +57,12 @@ export function ChapterGameAside({ game, results }: ChapterGameAsideProps) {
           </Link>
         </div>
 
-        <ChapterGameList games={game.siblings} currentId={game.id} />
+        <ChapterGameList
+          games={game.siblings}
+          currentId={game.id}
+          courseId={game.courseId}
+          chapterId={game.chapterId}
+        />
       </section>
 
       {/* The record reads top to bottom: what it is called here, where it was

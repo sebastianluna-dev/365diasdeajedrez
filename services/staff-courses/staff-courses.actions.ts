@@ -752,6 +752,43 @@ export async function reorderLessons(courseId: string, chapterId: string, ordere
 }
 
 /**
+ * Repositions the games of a chapter's collection in the order that arrives
+ * from the browser.
+ *
+ * Like `reorderChapters`, the WHOLE list arrives and nothing is said back: it is
+ * called from a transition and the revalidation returns the good order if this
+ * refuses. It does NOT go through `services/shared/reorder.ts`, which exists for
+ * the lists whose `order` is unique per parent — a chapter's, a lesson's — and
+ * has to dodge the index row by row; `Game.order` is only indexed, so the whole
+ * list is written at once, exactly as the student's `reorderStudyGames` does.
+ */
+export async function reorderChapterGames(courseId: string, chapterId: string, orderedIds: string[]): Promise<void> {
+  const staff = await requireStaff();
+  if (!(await allowAction(`${staff.user.id}:chapter-games-move`, 120, 60_000))) return;
+
+  const db = getPlatformDb();
+
+  // The ids come from the client: they have to be the collection's, all of
+  // them and each one once. Anything else and the order is left alone.
+  const database = await db.gameDatabase.findFirst({
+    where: { chapterId, courseId },
+    select: { games: { select: { id: true } } },
+  });
+  if (!database) return;
+
+  const actual = new Set(database.games.map((game) => game.id));
+  const received = new Set(orderedIds);
+  if (received.size !== orderedIds.length || received.size !== actual.size) return;
+  for (const id of received) if (!actual.has(id)) return;
+
+  await db.$transaction(orderedIds.map((id, index) => db.game.update({ where: { id }, data: { order: index + 1 } })));
+
+  revalidatePath(staffRoutes.chapterGames(courseId, chapterId));
+  revalidatePath(staffRoutes.courseGames(courseId));
+  for (const id of orderedIds) revalidatePath(staffRoutes.chapterGame(courseId, chapterId, id));
+}
+
+/**
  * Deletes a chapter ONLY if the course is a draft and nobody has progress over
  * it. In any other case the progress history rules: the course is archived, not
  * dismantled.

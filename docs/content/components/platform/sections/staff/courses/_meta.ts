@@ -23,7 +23,7 @@ const meta: MetaRecord = {
   "lesson-game-picker": "LessonGamePicker",
   "new-course": "NewCourse",
   "syllabus-list": "SyllabusList",
-  "syllabus-dnd": "SyllabusDnd",
+  "sortable-dnd": "SortableDnd",
   "staff-editor": "StaffEditorHead",
   "staff-panel": "StaffPanel",
   "staff-tabs": "StaffTabs",

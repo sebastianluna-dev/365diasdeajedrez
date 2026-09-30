@@ -12,7 +12,7 @@ Also exports the `SyllabusItem` type.
 | Kind       | Client Component                                                                                       |
 | Stylesheet | `syllabus-list.comp.css` → block `.syllabus-list`                                                       |
 | Used by    | [`CourseSyllabus`](/components/platform/sections/staff/courses/course-syllabus) (the chapters of a course), [`ChapterLessonsSection`](/components/platform/sections/staff/courses/chapter-lessons-section) (the lessons of a chapter) |
-| Composes   | [`SyllabusDnd`](/components/platform/sections/staff/courses/syllabus-dnd), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Composes   | [`SortableDnd`](/components/platform/sections/staff/courses/sortable-dnd), [`SubmitButton`](/components/platform/shared/submit-button) |
 | Uses       | `useSortable` from `@dnd-kit/sortable`; `useSortableRows` · `use-sortable-rows.hook.ts`; `useLingering` · `components/chess/game-viewer/use-lingering.hook.ts`; `GripIcon`, `MoreIcon` |
 | Story      | `syllabus-list.stories.tsx` — the chapters of a course, and the lessons of a chapter                    |
 
@@ -38,7 +38,7 @@ The steps are **one framed block with hairlines between them** and not a card ea
 
 - **A row** is its grip, its number on a tile, its name (a link to the editor), its facts at the end — "6 lecciones" for a chapter, "Con PGN · 3 ejercicios · 12 min" for a lesson, closed by «· Prioridad» when it is marked — and «Editar» as the platform's quiet button at the size of a row.
 - **The three dots** open what destroys. «Eliminar» is the only thing there, because hiding the everyday action behind a menu is what makes a list feel slow. They open on **every** row, the introduction and the closing included: where the server would refuse — a published course, a student's progress — the menu says so instead of the action (`deleteHint`), because a menu that is not there does not explain itself and what one comes looking for is precisely the option that is missing (2026-09-30). The menu is built by hand — not on Radix — like the bar's, closes on a click outside and with Escape, and lingers while it leaves (`useLingering`, `_state_closing`).
-- **Dragging is dnd-kit**, set up in [`SyllabusDnd`](/components/platform/sections/staff/courses/syllabus-dnd): the pointer travels 5px before a drag starts, so the name and the buttons are still pressed; with the keyboard, space picks the row up, the arrows move it, space drops it and escape puts it back. The gap opens where the row would land, and what happens is announced in Spanish.
+- **Dragging is dnd-kit**, set up in [`SortableDnd`](/components/platform/sections/staff/courses/sortable-dnd): the pointer travels 5px before a drag starts, so the name and the buttons are still pressed; with the keyboard, space picks the row up, the arrows move it, space drops it and escape puts it back. The gap opens where the row would land, and what happens is announced in Spanish.
 - **Fixed items.** The introduction and the closing are drawn in their own band; they are left out of the ids sent, and the server would not accept them either. The numbering counts only normal items, so with an introduction in front the first real chapter is 1.
 - **Creating is part of the list.** The last row of the block adds a normal item; the dashed slots of `INICIO` and `FINAL` add the introduction and the closing, with their `role` in a hidden field and «Opcional» at their end. Both are the same `createAction`, and both are gone from view once what they create exists.
 - **Sync with the server.** New `items` after revalidation replace the local rows **during render** (via a `baseline` comparison), not in an effect, avoiding a frame with the old list.
@@ -83,5 +83,5 @@ From `chapter-lessons.section.tsx`:
 
 ## Related
 
-- [`SyllabusDnd`](/components/platform/sections/staff/courses/syllabus-dnd), the drag and drop it is wrapped in.
+- [`SortableDnd`](/components/platform/sections/staff/courses/sortable-dnd), the drag and drop it is wrapped in.
 - [`CourseSyllabus`](/components/platform/sections/staff/courses/course-syllabus), which gives it the chapters of a course inside the «Temario» panel.

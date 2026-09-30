@@ -25,7 +25,7 @@ interface UseSortableRowsOptions<T> {
 
 /**
  * The order of a drag-sortable list, without its looks and without the drag:
- * the gesture is dnd-kit's (`SyllabusDnd`) and this only says what the list
+ * the gesture is dnd-kit's (`SortableDnd`) and this only says what the list
  * becomes, which is what the server is told.
  *
  * The order is applied on the client on drop and saved in a transition,

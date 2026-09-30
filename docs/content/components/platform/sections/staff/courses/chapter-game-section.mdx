@@ -32,7 +32,7 @@ What is different is what the game IS. A student's game is a private analysis. A
 | `results`   | `CatalogOption[]`   | yes      | The results catalog, for the record's form; from `listGameResults()`.          |
 | `errorCode` | `string`            | no       | `?error=` from saving the record, translated with `STAFF_ERROR_MESSAGES`.      |
 
-`ChapterGameAside` takes `game` and `results`; `ChapterGameBoard` takes `game`; `ChapterGameList` takes `games: ChapterGameSibling[]` and `currentId`.
+`ChapterGameAside` takes `game` and `results`; `ChapterGameBoard` takes `game`; `ChapterGameList` takes `games: ChapterGameSibling[]`, `currentId` and the `courseId`/`chapterId` its reorder action is bound to.
 
 ## Behaviour
 
@@ -41,7 +41,7 @@ What is different is what the game IS. A student's game is a private analysis. A
 - **It is keyed by the game**: jumping to another one from the list remounts the board, so its history and its autosave start clean instead of carrying the previous game's PGN over.
 - **The record** is the `EditGame` dialog with `updateChapterGameDetails` bound to the game. `values={game}` whole: `ChapterGameDetail` carries every field of `GameFieldValues` under the same names.
 - **«Lecciones que la usan»** links each lesson's editor, with the warning that what is changed here is what their students read.
-- **The list** (`ChapterGameList`) is five rows tall and scrolls on its own; on arrival the current game is brought into its middle. It is a Client Component for that alone.
+- **The list** (`ChapterGameList`) is five rows tall and scrolls on its own; on arrival the current game is brought into its middle. **It is also where the collection is put in order** (2026-09-30): each row is dragged by a grip that stays out of the way until the list is reached — what one comes here for is to jump between games — and the keyboard moves a row with space and the arrows, through [`SortableDnd`](/components/platform/sections/staff/courses/sortable-dnd). The order is applied on drop and saved in a transition (`useSortableRows` + `reorderChapterGames`); until this, a collection's order could only be decided by importing it again.
 - **When a save is refused**, the reasons the staff can do something about get a notice above the board: `training` (a trainable lesson would be left without a line to train), `throttled`, `denied`.
 
 ### What saving does to the lessons
@@ -69,7 +69,7 @@ Four blocks, one per file.
 - `.chapter-game`: element `.chapter-game__layout`. Breakpoint `(max-width: 1180px)`, one column.
 - `.chapter-game-aside`: elements `__card`, `__head`, `__head-row`, `__chapter`, `__count`, `__course`, `__back`, `__record-head`, `__label`, `__event`, `__site`, `__meta`, `__meta-cell`, `__meta-key`, `__meta-value`, `__foot`, `__lessons`, `__lesson`, `__note`; modifier `__card_variant_lessons`. Breakpoint `(max-width: 1180px)`, the cards side by side.
 - `.chapter-game-board`: styles `.platform-notice` inside it (the margin under the notice).
-- `.chapter-game-list`: elements `__item`, `__main`, `__name`, `__players`, `__result`; state `__item_state_active`.
+- `.chapter-game-list`: elements `__row`, `__grip`, `__item`, `__main`, `__name`, `__players`, `__result`; states `__item_state_active`, `__row_state_dragging`.
 
 **Tokens:** `--platform-accent`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 

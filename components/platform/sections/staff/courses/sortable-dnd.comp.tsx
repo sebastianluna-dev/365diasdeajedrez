@@ -15,19 +15,19 @@ import {
 import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
 
-interface SyllabusDndProps {
+interface SortableDndProps {
   /** The items that can be moved, in the order they are drawn. The fixed ones are left out. */
   items: { id: string; name: string }[];
-  /** What one item is called, for what the screen reader says: "capítulo", "lección". */
+  /** What one item is called, for what the screen reader says: "capítulo", "lección", "partida". */
   noun: string;
   /** Applies the move. `overId` is the item whose place the dragged one takes. */
   onMove: (activeId: string, overId: string) => void;
   children: ReactNode;
 }
 
-/** "el capítulo", "la lección". */
+/** "el capítulo", "la lección", "la partida". */
 function article(noun: string): string {
-  return noun === "lección" ? "la" : "el";
+  return noun.endsWith("ón") || noun.endsWith("a") ? "la" : "el";
 }
 
 /** The position an item is at inside the sortable list, 1-based. */
@@ -36,10 +36,11 @@ function positionOf(id: string | number | undefined, items: { id: string }[]): n
 }
 
 /**
- * The drag and drop of the syllabus: **dnd-kit** set up once for every design.
- * It is only the wiring — sensors, the sortable context and what is said out
- * loud —; the rows are what is given to it, and each one takes its own place
- * with `useSortable`.
+ * The drag and drop of a sortable list of the panel: **dnd-kit** set up once
+ * for all of them — the chapters of a course, the lessons of a chapter, the
+ * games of a collection. It is only the wiring — sensors, the sortable context
+ * and what is said out loud —; the rows are what is given to it, and each one
+ * takes its own place with `useSortable`.
  *
  * The pointer has to travel 5px before a drag starts, so pressing a link or a
  * row action still works, and the keyboard moves an item without dragging at
@@ -47,7 +48,7 @@ function positionOf(id: string | number | undefined, items: { id: string }[]): n
  * it back. Everything that happens is announced in Spanish, because dnd-kit's
  * own announcements are in English.
  */
-export function SyllabusDnd({ items, noun, onMove, children }: SyllabusDndProps) {
+export function SortableDnd({ items, noun, onMove, children }: SortableDndProps) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),

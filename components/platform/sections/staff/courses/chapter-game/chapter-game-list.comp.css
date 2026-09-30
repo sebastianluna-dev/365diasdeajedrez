@@ -15,7 +15,60 @@
   overflow-y: auto;
   overscroll-behavior: contain;
 
+  /* The row is the grip plus the link; the link is what fills it, so the
+     collection reads as a list of games and not of handles. */
+  & .chapter-game-list__row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  & .chapter-game-list__row_state_dragging {
+    z-index: 1;
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+    cursor: grabbing;
+  }
+
+  & .chapter-game-list__grip {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-border-strong);
+    touch-action: none;
+    cursor: grab;
+    opacity: 0;
+    transition: opacity 150ms;
+  }
+
+  /* The handles stay out of the way until the list is reached: what one comes
+     here for is to jump between games, not to sort them. */
+  & .chapter-game-list:hover .chapter-game-list__grip,
+  & .chapter-game-list__grip:focus-visible {
+    opacity: 1;
+  }
+
+  & .chapter-game-list__grip:active {
+    cursor: grabbing;
+  }
+
+  & .chapter-game-list__grip:focus-visible {
+    outline: 2px solid var(--platform-accent);
+    outline-offset: 2px;
+  }
+
   & .chapter-game-list__item {
+    flex: 1;
+    min-width: 0;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -76,5 +129,11 @@
   & .chapter-game-list__item_state_active .chapter-game-list__players,
   & .chapter-game-list__item_state_active .chapter-game-list__result {
     color: var(--platform-accent-ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .chapter-game-list__grip {
+      transition: none;
+    }
   }
 }

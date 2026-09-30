@@ -10,7 +10,7 @@ import { MoreIcon } from "@/components/icons/more-icon.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 import { CONTENT_ROLE } from "@/constants/platform/course-codes.const";
 import { useSortableRows } from "../use-sortable-rows.hook";
-import { SyllabusDnd } from "./syllabus-dnd.comp";
+import { SortableDnd } from "../sortable-dnd.comp";
 import "./syllabus-list.comp.css";
 
 export interface SyllabusItem {
@@ -223,7 +223,7 @@ function Row({ item, number, noun, deleteAction, deleteFieldName }: RowProps & {
  *
  * Each row carries its number on a tile, its facts at the end and «Editar» as
  * a button; what destroys waits behind the three dots, and only where the
- * server would allow it. Dragging is dnd-kit ([`SyllabusDnd`](./syllabus-dnd.comp.tsx)),
+ * server would allow it. Dragging is dnd-kit ([`SortableDnd`](../sortable-dnd.comp.tsx)),
  * and the order itself — optimistic, saved in a transition — is
  * `useSortableRows`.
  */
@@ -281,7 +281,7 @@ export function SyllabusList({
     );
 
   return (
-    <SyllabusDnd items={sortable} noun={noun} onMove={moveById}>
+    <SortableDnd items={sortable} noun={noun} onMove={moveById}>
       <div className="syllabus-list">
         <p className="syllabus-list__label">Inicio</p>
         {fixed("intro", intro)}
@@ -329,6 +329,6 @@ export function SyllabusList({
         <p className="syllabus-list__label">Final</p>
         {fixed("closing", closing)}
       </div>
-    </SyllabusDnd>
+    </SortableDnd>
   );
 }
