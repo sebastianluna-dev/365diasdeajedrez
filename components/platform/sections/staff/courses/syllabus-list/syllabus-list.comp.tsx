@@ -28,6 +28,8 @@ export interface SyllabusItem {
   badge?: string;
   /** Whether deleting is offered. The server decides it, not the interface. */
   canDelete: boolean;
+  /** Why it cannot be deleted, said where the action would have been. */
+  deleteHint?: string;
 }
 
 interface SyllabusListProps {
@@ -60,6 +62,11 @@ interface RowMenuProps {
  * What else can be done to a row, behind its three dots. Only what destroys
  * lives here: «Editar» is the button of the row, and hiding the everyday
  * action behind a menu is what makes a list feel slow.
+ *
+ * The menu opens on every row, even where deleting is refused: there it says
+ * why — a published course, a student's progress —, because a menu that is
+ * not there does not explain itself, and what one comes looking for is
+ * precisely the option that is missing.
  */
 function RowMenu({ item, deleteAction, deleteFieldName }: RowMenuProps) {
   const [open, setOpen] = useState(false);
@@ -117,16 +124,20 @@ function RowMenu({ item, deleteAction, deleteFieldName }: RowMenuProps) {
           aria-label={`Opciones de «${item.name}»`}
           className={`syllabus-list__menu${lingering.closing ? " syllabus-list__menu_state_closing" : ""}`}
         >
-          <form action={deleteAction}>
-            <input type="hidden" name={deleteFieldName} value={item.id} />
-            <SubmitButton
-              className="syllabus-list__menu-item"
-              pendingLabel="Eliminando…"
-              aria-label={`Eliminar «${item.name}»`}
-            >
-              Eliminar
-            </SubmitButton>
-          </form>
+          {item.canDelete ? (
+            <form action={deleteAction}>
+              <input type="hidden" name={deleteFieldName} value={item.id} />
+              <SubmitButton
+                className="syllabus-list__menu-item"
+                pendingLabel="Eliminando…"
+                aria-label={`Eliminar «${item.name}»`}
+              >
+                Eliminar
+              </SubmitButton>
+            </form>
+          ) : (
+            <p className="syllabus-list__menu-note">{item.deleteHint ?? "No se puede eliminar."}</p>
+          )}
         </div>
       )}
     </div>
@@ -152,11 +163,7 @@ function Facts({ item }: { item: SyllabusItem }) {
 /** «Editar» is the row's button here, not a word at its end. */
 function Edit({ item }: { item: SyllabusItem }) {
   return (
-    <Link
-      href={item.href}
-      className="platform-button syllabus-list__edit"
-      aria-label={`Editar «${item.name}»`}
-    >
+    <Link href={item.href} className="platform-button syllabus-list__edit" aria-label={`Editar «${item.name}»`}>
       Editar
     </Link>
   );
@@ -194,9 +201,7 @@ function Row({ item, number, noun, deleteAction, deleteFieldName }: RowProps & {
       </Link>
       <Facts item={item} />
       <Edit item={item} />
-      {/* Delete only where the server would allow it; with nothing to offer
-          there is no menu to open. */}
-      {item.canDelete && deleteAction ? (
+      {deleteAction ? (
         <RowMenu item={item} deleteAction={deleteAction} deleteFieldName={deleteFieldName} />
       ) : (
         <span className="syllabus-list__more-space" aria-hidden="true" />
@@ -251,6 +256,13 @@ export function SyllabusList({
         </Link>
         <Facts item={item} />
         <Edit item={item} />
+        {/* The introduction and the closing are deleted like any other row:
+            their place is fixed, not their existence. */}
+        {deleteAction ? (
+          <RowMenu item={item} deleteAction={deleteAction} deleteFieldName={deleteFieldName} />
+        ) : (
+          <span className="syllabus-list__more-space" aria-hidden="true" />
+        )}
       </div>
     ) : (
       // Both are optional and there is at most one of each. The database's

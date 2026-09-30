@@ -621,11 +621,14 @@ export async function updateChapterGameDetails(
 
 export async function createChapter(courseId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
-  const detailPath = staffRoutes.courseDetail(courseId);
-  if (!(await allowAction(`${staff.user.id}:chapter-create`, 60, 60_000))) fail(detailPath, "throttled");
+  // The chapters are drawn on «Temario», so that is the page a failure comes
+  // back to and the one that has to be revalidated; the record's header, which
+  // counts them, hangs above the three pages.
+  const syllabusPath = staffRoutes.courseSyllabus(courseId);
+  if (!(await allowAction(`${staff.user.id}:chapter-create`, 60, 60_000))) fail(syllabusPath, "throttled");
 
   const parsed = parseForm(NAMED_SCHEMA, formData);
-  if (!parsed.ok) fail(detailPath, "invalid");
+  if (!parsed.ok) fail(syllabusPath, "invalid");
   const { name } = parsed.data;
 
   // Optional role: without it, it is a normal chapter, which is what almost all of
@@ -650,11 +653,11 @@ export async function createChapter(courseId: string, formData: FormData): Promi
   } catch (error) {
     // The unique index (course, role) is what prevents the second one: the interface
     // does not offer the button when one already exists, but two open tabs do get through.
-    if (isUniqueConstraintError(error, "Chapter_courseId_roleId_key", "roleId")) fail(detailPath, "roleTaken");
+    if (isUniqueConstraintError(error, "Chapter_courseId_roleId_key", "roleId")) fail(syllabusPath, "roleTaken");
     throw error;
   }
 
-  revalidatePath(detailPath);
+  revalidatePath(staffRoutes.courseDetail(courseId), "layout");
 }
 
 export async function updateChapter(courseId: string, chapterId: string, formData: FormData): Promise<void> {
@@ -672,7 +675,7 @@ export async function updateChapter(courseId: string, chapterId: string, formDat
   if (updated.count === 0) fail(chapterPath, "courseMissing");
 
   revalidatePath(chapterPath);
-  revalidatePath(staffRoutes.courseDetail(courseId));
+  revalidatePath(staffRoutes.courseDetail(courseId), "layout");
 }
 
 /**
@@ -706,7 +709,7 @@ export async function reorderChapters(courseId: string, orderedIds: string[]): P
     }
   });
 
-  revalidatePath(staffRoutes.courseDetail(courseId));
+  revalidatePath(staffRoutes.courseDetail(courseId), "layout");
 }
 
 /** The same for a chapter's lessons; see `reorderChapters`. */
@@ -731,7 +734,7 @@ export async function reorderLessons(courseId: string, chapterId: string, ordere
     }
   });
 
-  revalidatePath(staffRoutes.chapterDetail(courseId, chapterId));
+  revalidatePath(staffRoutes.chapterDetail(courseId, chapterId), "layout");
 }
 
 /**
@@ -741,8 +744,8 @@ export async function reorderLessons(courseId: string, chapterId: string, ordere
  */
 export async function deleteChapter(courseId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
-  const detailPath = staffRoutes.courseDetail(courseId);
-  if (!(await allowAction(`${staff.user.id}:chapter-delete`, 60, 60_000))) fail(detailPath, "throttled");
+  const syllabusPath = staffRoutes.courseSyllabus(courseId);
+  if (!(await allowAction(`${staff.user.id}:chapter-delete`, 60, 60_000))) fail(syllabusPath, "throttled");
 
   const { chapterId } = readIds(formData, "chapterId");
   const db = getPlatformDb();
@@ -758,7 +761,7 @@ export async function deleteChapter(courseId: string, formData: FormData): Promi
   const hasProgress =
     chapter !== null &&
     (chapter._count.progresses > 0 || chapter.lessons.some((lesson) => lesson._count.progresses > 0));
-  if (!chapter || hasProgress) fail(detailPath, "deleteBlocked");
+  if (!chapter || hasProgress) fail(syllabusPath, "deleteBlocked");
 
   await db.$transaction(async (tx) => {
     await tx.chapter.delete({ where: { id: chapter.id } });
@@ -768,23 +771,25 @@ export async function deleteChapter(courseId: string, formData: FormData): Promi
     }
   });
 
-  revalidatePath(detailPath);
+  revalidatePath(staffRoutes.courseDetail(courseId), "layout");
 }
 
 // --- Lessons --------------------------------------------------------------
 
 export async function createLesson(courseId: string, chapterId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
-  const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
-  if (!(await allowAction(`${staff.user.id}:lesson-create`, 60, 60_000))) fail(chapterPath, "throttled");
+  // The lessons are drawn on «Lecciones», so that is the page a failure comes
+  // back to; the whole record is revalidated because its header counts them.
+  const lessonsPath = staffRoutes.chapterLessons(courseId, chapterId);
+  if (!(await allowAction(`${staff.user.id}:lesson-create`, 60, 60_000))) fail(lessonsPath, "throttled");
 
   const parsed = parseForm(NAMED_SCHEMA, formData);
-  if (!parsed.ok) fail(chapterPath, "invalid");
+  if (!parsed.ok) fail(lessonsPath, "invalid");
   const { name } = parsed.data;
 
   const db = getPlatformDb();
   const chapter = await db.chapter.findFirst({ where: { id: chapterId, courseId }, select: { id: true } });
-  if (!chapter) fail(chapterPath, "courseMissing");
+  if (!chapter) fail(lessonsPath, "courseMissing");
 
   const roleCode = parsed.data.role ?? "";
   const role = isContentRoleCode(roleCode) ? roleCode : null;
@@ -803,7 +808,8 @@ export async function createLesson(courseId: string, chapterId: string, formData
     },
   });
 
-  revalidatePath(chapterPath);
+  revalidatePath(staffRoutes.chapterDetail(courseId, chapterId), "layout");
+  revalidatePath(staffRoutes.courseSyllabus(courseId));
 }
 
 export async function updateLesson(
@@ -958,8 +964,8 @@ export async function setLessonGame(
 /** Same rule as the chapter: only in a draft and without progress from anyone. */
 export async function deleteLesson(courseId: string, chapterId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
-  const chapterPath = staffRoutes.chapterDetail(courseId, chapterId);
-  if (!(await allowAction(`${staff.user.id}:lesson-delete`, 60, 60_000))) fail(chapterPath, "throttled");
+  const lessonsPath = staffRoutes.chapterLessons(courseId, chapterId);
+  if (!(await allowAction(`${staff.user.id}:lesson-delete`, 60, 60_000))) fail(lessonsPath, "throttled");
 
   const { lessonId } = readIds(formData, "lessonId");
   const db = getPlatformDb();
@@ -972,7 +978,7 @@ export async function deleteLesson(courseId: string, chapterId: string, formData
     },
     select: { id: true, _count: { select: { progresses: true } } },
   });
-  if (!lesson || lesson._count.progresses > 0) fail(chapterPath, "deleteBlocked");
+  if (!lesson || lesson._count.progresses > 0) fail(lessonsPath, "deleteBlocked");
 
   await db.$transaction(async (tx) => {
     await tx.lesson.delete({ where: { id: lesson.id } });
@@ -982,7 +988,8 @@ export async function deleteLesson(courseId: string, chapterId: string, formData
     }
   });
 
-  revalidatePath(chapterPath);
+  revalidatePath(staffRoutes.chapterDetail(courseId, chapterId), "layout");
+  revalidatePath(staffRoutes.courseSyllabus(courseId));
 }
 
 // --- Exercises ------------------------------------------------------------

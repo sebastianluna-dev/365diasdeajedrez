@@ -32,7 +32,8 @@ The chapters of a course read as what they are for the student: a path with a fi
 - **Introduction and closing** have a band of their own, `INICIO` and `FINAL`, tinted and with a piece (a pawn, a king). While one does not exist its band is a dashed slot, «+ Añadir introducción» / «+ Añadir cierre», which creates it (`createChapter` with `role`); there is at most one of each, which the database's unique index guarantees.
 - **Each chapter** is its number on a tile, its name (a link to its editor), «6 lecciones» — closed by «· Prioridad» when the chapter is marked as priority — and «Editar». A chapter says what it HOLDS and not how long it takes: the minutes are the lesson's own figure, and they are said there (2026-09-30).
 - **The grip is the handle**: the chapter is dragged by it, and with the keyboard space picks it up and the arrows move it. The order is applied at once and saved in a transition (`useSortableRows`); the introduction and the closing are neither moved nor sent.
-- **«Eliminar»** waits behind the row's three dots, and only where the server would allow it: a draft course and a chapter without progress.
+- **«Eliminar»** waits behind the row's three dots, and is offered only where the server would allow it: a draft course and a chapter with no progress, its lessons' included. Where it is refused the menu says why (`deleteHint`), rather than not being there.
+- **What fails is said here.** The list's actions — create, reorder, delete — come back to «Temario» with `?error=`, and this component turns it into a `PlatformNotice` above the panel; before the list had a page of its own they landed on «Curso», where the list no longer is.
 - **A new chapter** is typed in the last row of the block and added with Enter; the «Añadir» button stays out of sight while the field is empty (`:placeholder-shown`). It is in the soft accent of the page's buttons, at the size the field allows, instead of the dark one it used to be.
 
 ## Markup & styling

@@ -21,13 +21,14 @@ The same move «Temario» made, one level down: the lessons left the chapter edi
 
 | Prop      | Type                 | Required | Meaning                       |
 | --------- | -------------------- | -------- | ----------------------------- |
-| `chapter` | `ChapterAdminDetail` | yes      | The chapter with its lessons. |
+| `chapter`   | `ChapterAdminDetail` | yes      | The chapter with its lessons.                                  |
+| `errorCode` | `string`             | no       | What the last attempt refused; drawn as a `PlatformNotice`.     |
 
 ## Behaviour
 
 - **The facts of a lesson** are built here (`lessonFacts`): "Con PGN"/"Sin PGN", its exercise count and its estimated minutes when it has them — "Con PGN · 3 ejercicios · 12 min". A chapter says what it HOLDS and no minutes; a lesson is where the figure means something.
 - The name of the chapter and the tabs are not here but in the record's [layout](/components/platform/sections/staff/courses/chapter-record-head); the panel's meta says how many lessons there are and how many have PGN.
-- «Eliminar» is offered only in a draft course and on a lesson without progress, and the server checks it again.
+- «Eliminar» is offered only in a draft course and on a lesson without progress, and the server checks it again; where it is refused the row's menu says why. The actions come back to this page with `?error=`, which is drawn as a notice above the panel.
 
 ## Related
 

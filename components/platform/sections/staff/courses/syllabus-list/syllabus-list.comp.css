@@ -289,6 +289,17 @@
     cursor: pointer;
   }
 
+  /* Where the action would have been, why it is not there. */
+  & .syllabus-list__menu-note {
+    margin: 0;
+    padding: 9px 12px;
+    max-width: 240px;
+    color: var(--platform-text-subtle);
+    font-size: 13.5px;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
   & .syllabus-list__menu-item:hover:not(:disabled),
   & .syllabus-list__menu-item:focus-visible {
     background: var(--platform-surface-neutral);

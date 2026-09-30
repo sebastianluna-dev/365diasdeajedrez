@@ -6,6 +6,7 @@ import { getCourseAdminDetail } from "@/services/staff-courses/staff-courses.ser
 
 interface CourseChaptersPageProps {
   params: Promise<{ courseId: string }>;
+  searchParams: Promise<{ error?: string }>;
 }
 
 export async function generateMetadata({ params }: CourseChaptersPageProps): Promise<Metadata> {
@@ -14,17 +15,20 @@ export async function generateMetadata({ params }: CourseChaptersPageProps): Pro
   return course ? { title: `Temario · ${course.name}` } : {};
 }
 
-export default async function CourseChaptersPage({ params }: CourseChaptersPageProps) {
+export default async function CourseChaptersPage({ params, searchParams }: CourseChaptersPageProps) {
   const { courseId } = await params;
   // The service opens with requireStaff(): it is the panel's border.
   const course = await getCourseAdminDetail(courseId);
   if (!course) notFound();
+
+  const { error } = await searchParams;
 
   return (
     <CourseSyllabus
       courseId={course.id}
       chapters={course.chapters}
       isDraft={course.statusCode === COURSE_STATUS.DRAFT}
+      errorCode={error}
     />
   );
 }

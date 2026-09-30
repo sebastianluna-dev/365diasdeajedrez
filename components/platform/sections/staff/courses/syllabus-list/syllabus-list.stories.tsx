@@ -15,15 +15,37 @@ const CHAPTERS: SyllabusItem[] = [
     badge: "Prioridad",
     canDelete: true,
   },
-  { id: "3", name: "Columnas abiertas y la séptima", facts: "7 lecciones", href: "#", canDelete: false },
+  {
+    id: "3",
+    name: "Columnas abiertas y la séptima",
+    facts: "7 lecciones",
+    href: "#",
+    canDelete: false,
+    deleteHint: "Hay alumnos con progreso en este capítulo o en sus lecciones.",
+  },
   { id: "4", name: "El rey en el centro", facts: "3 lecciones", href: "#", canDelete: true },
   { id: "5", name: "Finales de torre que hay que saber", facts: "9 lecciones", href: "#", canDelete: true },
-  { id: "closing", name: "Cierre", facts: "1 lección", href: "#", roleCode: CONTENT_ROLE.CLOSING, canDelete: false },
+  {
+    id: "closing",
+    name: "Cierre",
+    facts: "1 lección",
+    href: "#",
+    roleCode: CONTENT_ROLE.CLOSING,
+    canDelete: false,
+    deleteHint: "Sólo se elimina un capítulo mientras el curso está en borrador.",
+  },
 ];
 
 /** The lessons of one of those chapters: the introduction is there, the closing is not. */
 const LESSONS: SyllabusItem[] = [
-  { id: "intro", name: "Introducción", facts: "Con PGN · 4 min", href: "#", roleCode: CONTENT_ROLE.INTRO, canDelete: false },
+  {
+    id: "intro",
+    name: "Introducción",
+    facts: "Con PGN · 4 min",
+    href: "#",
+    roleCode: CONTENT_ROLE.INTRO,
+    canDelete: false,
+  },
   { id: "l1", name: "El peón retrasado", facts: "Con PGN · 3 ejercicios · 12 min", href: "#", canDelete: true },
   { id: "l2", name: "Cadenas de peones", facts: "Con PGN · 2 ejercicios · 9 min", href: "#", canDelete: true },
   {

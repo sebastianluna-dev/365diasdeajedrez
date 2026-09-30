@@ -102,6 +102,18 @@ export async function listCoursesAdmin(filter: CourseAdminFilter = {}): Promise<
   };
 }
 
+/**
+ * The progress a chapter holds: its own and its lessons'. It is what the server
+ * looks at before deleting one (`deleteChapter`), so it is what the interface
+ * has to look at before offering it.
+ */
+function chapterProgress(chapter: {
+  _count: { progresses: number };
+  lessons: { _count: { progresses: number } }[];
+}): number {
+  return chapter._count.progresses + chapter.lessons.reduce((sum, lesson) => sum + lesson._count.progresses, 0);
+}
+
 export const getCourseAdminDetail = cache(async (courseId: string): Promise<CourseAdminDetail | null> => {
   await requireStaff();
 
@@ -138,7 +150,7 @@ export const getCourseAdminDetail = cache(async (courseId: string): Promise<Cour
           estimatedDuration: true,
           role: { select: { code: true, label: true } },
           _count: { select: { lessons: true, progresses: true } },
-          lessons: { select: { ...lessonPgnSelect, estimatedDuration: true } },
+          lessons: { select: { ...lessonPgnSelect, _count: { select: { progresses: true } } } },
         },
         orderBy: { order: "asc" },
       },
@@ -181,7 +193,7 @@ export const getCourseAdminDetail = cache(async (courseId: string): Promise<Cour
         order: chapter.order,
         isPriority: chapter.isPriority,
         lessonCount: chapter._count.lessons,
-        progressCount: chapter._count.progresses,
+        progressCount: chapterProgress(chapter),
         href: staffRoutes.chapterDetail(course.id, chapter.id),
       })),
     ),
