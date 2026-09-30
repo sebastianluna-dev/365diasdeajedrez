@@ -24,8 +24,9 @@ interface UseSortableRowsOptions<T> {
 }
 
 /**
- * The order of a drag-sortable list, without its looks: the chapters of a
- * course and the lessons of a chapter draw it differently and move the same.
+ * The order of a drag-sortable list, without its looks and without the drag:
+ * the gesture is dnd-kit's (`SyllabusDnd`) and this only says what the list
+ * becomes, which is what the server is told.
  *
  * The order is applied on the client on drop and saved in a transition,
  * without waiting for a response: reordering is the operation where a
@@ -35,7 +36,6 @@ interface UseSortableRowsOptions<T> {
  */
 export function useSortableRows<T extends { id: string }>({ items, isFixed, onReorder }: UseSortableRowsOptions<T>) {
   const [rows, setRows] = useState(items);
-  const [dragging, setDragging] = useState<number | null>(null);
   const [, startTransition] = useTransition();
 
   // When the server revalidates, new items arrive through props. The state is
@@ -86,5 +86,5 @@ export function useSortableRows<T extends { id: string }>({ items, isFixed, onRe
     move(from, to);
   };
 
-  return { rows, dragging, setDragging, move, moveById, numbers };
+  return { rows, moveById, numbers };
 }

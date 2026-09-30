@@ -1,5 +1,5 @@
 ---
-description: "The rail a course's chapters and a chapter's lessons are drawn on: numbered nodes that are dragged or moved with the arrows, fixed slots for the introduction and the closing, and the field that adds one more."
+description: "The list a course's chapters and a chapter's lessons are drawn with: three bands — what opens the course, the numbered steps, what closes it — rows dragged with dnd-kit, «Editar» as their button and what destroys behind three dots."
 ---
 
 # `SyllabusList`
@@ -11,50 +11,55 @@ Also exports the `SyllabusItem` type.
 | File       | `components/platform/sections/staff/courses/syllabus-list/syllabus-list.comp.tsx`                       |
 | Kind       | Client Component                                                                                       |
 | Stylesheet | `syllabus-list.comp.css` → block `.syllabus-list`                                                       |
-| Used by    | [`CourseSyllabus`](/components/platform/sections/staff/courses/course-syllabus) (the chapters of a course), [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section) (the lessons of a chapter) |
-| Uses       | `useSortableRows` · `use-sortable-rows.hook.ts`                                                         |
+| Used by    | [`CourseSyllabus`](/components/platform/sections/staff/courses/course-syllabus) (the chapters of a course), [`ChapterLessonsSection`](/components/platform/sections/staff/courses/chapter-lessons-section) (the lessons of a chapter) |
+| Composes   | [`SyllabusDnd`](/components/platform/sections/staff/courses/syllabus-dnd), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Uses       | `useSortable` from `@dnd-kit/sortable`; `useSortableRows` · `use-sortable-rows.hook.ts`; `useLingering` · `components/chess/game-viewer/use-lingering.hook.ts`; `GripIcon`, `MoreIcon` |
+| Story      | `syllabus-list.stories.tsx` — the chapters of a course, and the lessons of a chapter                    |
 
 ## Purpose
 
-**The path the student walks**, top to bottom along a rail: the introduction opens it and the closing ends it, each in its fixed place — a dashed slot while it does not exist —; between them, the numbered items and the field that adds another one.
+**The path the student walks**, told in three bands: `INICIO`, what opens the course; the numbered steps; `FINAL`, what closes it. A course's chapters and a chapter's lessons are the same thing one level apart, so they are one component.
 
-A course's chapters and a chapter's lessons are the same thing one level apart, so they are one component. Until this, the chapters had the rail and the lessons a row with a drag handle, plus two loose buttons at the foot for the introduction and the closing: the panel of a chapter read as another product from the panel of a course.
-
-The order is applied on the client on drop and saved in a transition without waiting for a response: reordering is where a flicker shows most, and the list already knows how it will end up. If the server rejects the change, its revalidation returns the good order and the row goes back (`useSortableRows`).
+The steps are **one framed block with hairlines between them** and not a card each: a syllabus of forty chapters has to read as a single column, and forty boxes are forty boxes. The introduction and the closing sit outside that block, tinted, because their place is not their order — nothing is dropped onto them and they are not counted in the numbering.
 
 ## Props
 
 | Prop              | Type                                      | Required | Meaning                                                                                                              |
 | ----------------- | ----------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `items`           | `SyllabusItem[]`                          | yes      | `{ id, name, facts, href, roleCode?, badge?, canDelete }[]`. `roleCode` (the introduction's or the closing's) marks a fixed item. |
-| `noun`            | `string`                                  | yes      | What one item is called, for the handle's `aria-label`: "capítulo", "lección".                                       |
+| `noun`            | `string`                                  | yes      | What one item is called, for the handle's `aria-label`, what is announced and the band's heading: "capítulo", "lección". |
 | `onReorder`       | `(orderedIds: string[]) => Promise<void>` | yes      | Server action already bound to its course or chapter; receives the ids of the **normal** items only.                 |
 | `createAction`    | `(formData: FormData) => Promise<void>`   | yes      | Creates one: it reads `name`, and `role` for the introduction and the closing.                                       |
-| `deleteAction`    | `(formData: FormData) => Promise<void>`   | no       | Delete action; rendered per item when `canDelete`.                                                                   |
+| `deleteAction`    | `(formData: FormData) => Promise<void>`   | no       | Delete action; it is what the three dots open, and only when `canDelete`.                                            |
 | `deleteFieldName` | `string`                                  | yes      | The hidden field the delete action reads (`chapterId`, `lessonId`).                                                  |
-| `newPlaceholder`  | `string`                                  | yes      | What the field at the foot says while it is empty.                                                                   |
+| `newPlaceholder`  | `string`                                  | yes      | What the field at the foot of the block says while it is empty.                                                      |
 
 ## Behaviour
 
-- **Fixed items.** The introduction and the closing travel in the same list so they are seen where they belong, but they are not draggable, cannot be dropped onto, and are left out of the ids sent; the server would not accept them either. The displayed number counts only normal items, so with an introduction in front the first real chapter is 1, not 2.
-- **The node is the handle.** An item is dragged by its numbered node, and ArrowUp and ArrowDown move it one step: dragging has no keyboard equivalent, so that is the only accessible way to reorder. The `aria-label` names the item and says so.
-- **Creating is part of the list.** The field at the foot adds a normal item; the dashed slots add the introduction and the closing, with their `role` in a hidden field. Both are the same `createAction`, and both are gone from view once what they create exists.
+- **A row** is its grip, its number on a tile, its name (a link to the editor), its facts at the end — "6 lecciones" for a chapter, "Con PGN · 3 ejercicios · 12 min" for a lesson, closed by «· Prioridad» when it is marked — and «Editar» as the platform's quiet button at the size of a row.
+- **The three dots** open what destroys. «Eliminar» is the only thing there, because hiding the everyday action behind a menu is what makes a list feel slow; the dots are not drawn at all where the server would refuse (a published course, or progress from a student), and the row keeps the space so every «Editar» of the column ends at the same place. The menu is built by hand — not on Radix — like the bar's, closes on a click outside and with Escape, and lingers while it leaves (`useLingering`, `_state_closing`).
+- **Dragging is dnd-kit**, set up in [`SyllabusDnd`](/components/platform/sections/staff/courses/syllabus-dnd): the pointer travels 5px before a drag starts, so the name and the buttons are still pressed; with the keyboard, space picks the row up, the arrows move it, space drops it and escape puts it back. The gap opens where the row would land, and what happens is announced in Spanish.
+- **Fixed items.** The introduction and the closing are drawn in their own band; they are left out of the ids sent, and the server would not accept them either. The numbering counts only normal items, so with an introduction in front the first real chapter is 1.
+- **Creating is part of the list.** The last row of the block adds a normal item; the dashed slots of `INICIO` and `FINAL` add the introduction and the closing, with their `role` in a hidden field and «Opcional» at their end. Both are the same `createAction`, and both are gone from view once what they create exists.
 - **Sync with the server.** New `items` after revalidation replace the local rows **during render** (via a `baseline` comparison), not in an effect, avoiding a frame with the old list.
-- Each item shows its name (a link), its facts, its badge if it has one, and the platform's row actions: «Editar» and, where the server would allow it, «Eliminar».
 
 ## Markup & styling
 
-Block `.syllabus-list`. A column of steps joined by a rail drawn behind the nodes; each step is the node, the text and the actions.
+Block `.syllabus-list`. Three bands under their headings; the middle one is a framed block of rows.
 
-**Elements:** `.syllabus-list__step`, `.syllabus-list__node`, `.syllabus-list__text`, `.syllabus-list__name`, `.syllabus-list__facts`, `.syllabus-list__badge`, `.syllabus-list__actions`, `.syllabus-list__slot`, `.syllabus-list__add`, `.syllabus-list__new`, `.syllabus-list__new-input`, `.syllabus-list__new-submit`
+**Elements:** `.syllabus-list__label`, `.syllabus-list__band`, `.syllabus-list__hint`, `.syllabus-list__group`, `.syllabus-list__row`, `.syllabus-list__grip`, `.syllabus-list__number`, `.syllabus-list__piece`, `.syllabus-list__name`, `.syllabus-list__facts`, `.syllabus-list__badge`, `.syllabus-list__edit`, `.syllabus-list__more`, `.syllabus-list__more-space`, `.syllabus-list__menu-anchor`, `.syllabus-list__menu`, `.syllabus-list__menu-item`, `.syllabus-list__fixed`, `.syllabus-list__slot`, `.syllabus-list__add`, `.syllabus-list__add-sign`, `.syllabus-list__add-note`, `.syllabus-list__new`, `.syllabus-list__new-input`, `.syllabus-list__new-submit`
 
-**Modifiers and states:** `.syllabus-list__step_state_dragging`, `.syllabus-list__node_kind_item` (the numbered one, which is the handle), `_kind_intro`, `_kind_closing`, `_kind_new`
+**Modifiers and states:** `.syllabus-list__row_state_dragging` (lifted, with the card's shadow), `.syllabus-list__row_kind_new`, `.syllabus-list__number_kind_new`, `.syllabus-list__piece_kind_intro`, `_kind_closing`, `.syllabus-list__menu_state_closing`
 
-**Other classes it renders:** `.platform-row-action` and `.platform-row-action_variant_danger` — «Editar» and «Eliminar» are the platform's row actions, written as words at the end of the row they belong to (see [Styling](/ui/styling)).
+**Other classes it renders:** `.platform-button` — «Editar» is the platform's quiet button, given a row's padding by `.syllabus-list__edit` (see [Styling](/ui/styling)).
+
+The row's only inline style is the `transform` dnd-kit measures frame by frame while it travels; it is geometry, not styling.
+
+Under 720px the facts are dropped: they do not fit beside the name, and the name is what the row is for.
 
 ## Usage
 
-From `course-syllabus.comp.tsx` (the chapters) and `chapter-editor.section.tsx` (the lessons):
+From `chapter-lessons.section.tsx`:
 
 ```tsx
 <SyllabusList
@@ -62,7 +67,7 @@ From `course-syllabus.comp.tsx` (the chapters) and `chapter-editor.section.tsx` 
   items={chapter.lessons.map((lesson) => ({
     id: lesson.id,
     name: lesson.name,
-    facts: `${lesson.hasPgn ? "Con PGN" : "Sin PGN"} · ${lesson.exerciseCount} ejercicios`,
+    facts: lessonFacts(lesson),
     href: lesson.href,
     roleCode: lesson.roleCode,
     badge: lesson.isPriority ? "Prioridad" : undefined,
@@ -78,4 +83,5 @@ From `course-syllabus.comp.tsx` (the chapters) and `chapter-editor.section.tsx` 
 
 ## Related
 
+- [`SyllabusDnd`](/components/platform/sections/staff/courses/syllabus-dnd), the drag and drop it is wrapped in.
 - [`CourseSyllabus`](/components/platform/sections/staff/courses/course-syllabus), which gives it the chapters of a course inside the «Temario» panel.

@@ -1,0 +1,37 @@
+---
+description: "The syllabus's drag and drop: dnd-kit set up once — sensors, the sortable context, the modifiers that keep a row in its list, and the announcements, in Spanish."
+---
+
+# `SyllabusDnd`
+
+|            |                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/syllabus-list/syllabus-dnd.comp.tsx`     |
+| Kind       | Client Component                                                                    |
+| Stylesheet | None: it draws nothing.                                                             |
+| Used by    | [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list)         |
+| Uses       | `DndContext`, `PointerSensor`, `KeyboardSensor` from `@dnd-kit/core`; `SortableContext`, `verticalListSortingStrategy`, `sortableKeyboardCoordinates` from `@dnd-kit/sortable`; `restrictToVerticalAxis`, `restrictToParentElement` from `@dnd-kit/modifiers` |
+
+## Purpose
+
+The wiring of [dnd-kit](https://dndkit.com) for the syllabus, in one place: the rows it wraps ask `useSortable` where they are, and the order they end up in is `useSortableRows`. It is a container — `children` and nothing drawn — which is why it takes them.
+
+## Props
+
+| Prop       | Type                                        | Required | Meaning                                                                                  |
+| ---------- | ------------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
+| `items`    | `{ id: string; name: string }[]`            | yes      | The items that can be moved, in the order they are drawn; the fixed ones are left out. The names are what is announced. |
+| `noun`     | `string`                                    | yes      | What one item is called: "capítulo", "lección".                                          |
+| `onMove`   | `(activeId: string, overId: string) => void`| yes      | Applies the move. `overId` is the item whose place the dragged one takes.                 |
+| `children` | `ReactNode`                                 | yes      | The list itself.                                                                         |
+
+## Behaviour
+
+- **The pointer travels 5px before a drag starts** (`activationConstraint: { distance: 5 }`): without it, pressing a link or a row action inside a draggable row would begin a drag instead.
+- **The keyboard moves a row without dragging at all**: space picks it up, the arrows move it, space drops it, escape puts it back (`KeyboardSensor` with `sortableKeyboardCoordinates`). Dragging has no keyboard equivalent, so this is the accessible way to reorder.
+- **A row only goes up or down, and never out of its list** (`restrictToVerticalAxis`, `restrictToParentElement`), and the one it would displace is found with `closestCenter`.
+- **Everything is announced in Spanish** — taken, where it would land, where it was left, cancelled — because the library's own announcements are English. The instructions read to whoever focuses a handle are Spanish too.
+
+## Related
+
+- [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list), the only list drawn inside it.

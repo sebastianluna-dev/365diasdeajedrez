@@ -16,12 +16,6 @@ function countLessons(count: number): string {
   return `${count} ${count === 1 ? "lección" : "lecciones"}`;
 }
 
-/** "2 lecciones · 14 min": what a chapter holds, and the minutes when something says them. */
-function chapterFacts(chapter: ChapterAdminRow): string {
-  const lessons = countLessons(chapter.lessonCount);
-  return chapter.durationMin ? `${lessons} · ${chapter.durationMin} min` : lessons;
-}
-
 /**
  * «Temario»: the course's chapters as the path the student walks. The list
  * itself is [`SyllabusList`](../syllabus-list/syllabus-list.comp.tsx), the
@@ -41,7 +35,7 @@ export function CourseSyllabus({ courseId, chapters, isDraft }: CourseSyllabusPr
         items={chapters.map((chapter) => ({
           id: chapter.id,
           name: chapter.name,
-          facts: chapterFacts(chapter),
+          facts: countLessons(chapter.lessonCount),
           href: chapter.href,
           roleCode: chapter.roleCode,
           badge: chapter.isPriority ? "Prioridad" : undefined,

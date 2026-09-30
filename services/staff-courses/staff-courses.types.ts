@@ -60,7 +60,6 @@ export interface ChapterAdminRow {
    * Estimated minutes: the chapter's own figure, or the sum of its lessons'
    * when it has none. Absent when neither says anything.
    */
-  durationMin?: number;
   /** Students with progress: if there is any, the chapter is no longer deleted. */
   progressCount: number;
   href: string;
@@ -100,6 +99,8 @@ export interface LessonAdminRow {
   order: number;
   isPriority: boolean;
   hasPgn: boolean;
+  /** Its own estimated minutes; absent when nobody said them. */
+  durationMin?: number;
   exerciseCount: number;
   progressCount: number;
   href: string;

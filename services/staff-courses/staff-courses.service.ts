@@ -101,16 +101,6 @@ export async function listCoursesAdmin(filter: CourseAdminFilter = {}): Promise<
   };
 }
 
-/** The chapter's minutes: its own figure, or what its lessons add up to; undefined when nothing says. */
-function chapterDuration(chapter: {
-  estimatedDuration: number | null;
-  lessons: { estimatedDuration: number | null }[];
-}): number | undefined {
-  const own = chapter.estimatedDuration ?? 0;
-  const total = own > 0 ? own : chapter.lessons.reduce((sum, lesson) => sum + (lesson.estimatedDuration ?? 0), 0);
-  return total > 0 ? total : undefined;
-}
-
 export async function getCourseAdminDetail(courseId: string): Promise<CourseAdminDetail | null> {
   await requireStaff();
 
@@ -190,7 +180,6 @@ export async function getCourseAdminDetail(courseId: string): Promise<CourseAdmi
         order: chapter.order,
         isPriority: chapter.isPriority,
         lessonCount: chapter._count.lessons,
-        durationMin: chapterDuration(chapter),
         progressCount: chapter._count.progresses,
         href: staffRoutes.chapterDetail(course.id, chapter.id),
       })),
@@ -220,6 +209,7 @@ export async function getChapterAdmin(courseId: string, chapterId: string): Prom
           name: true,
           order: true,
           isPriority: true,
+          estimatedDuration: true,
           role: { select: { code: true, label: true } },
           ...lessonPgnSelect,
           _count: { select: { exercises: true, progresses: true } },
@@ -250,6 +240,7 @@ export async function getChapterAdmin(courseId: string, chapterId: string): Prom
         order: lesson.order,
         isPriority: lesson.isPriority,
         hasPgn: lessonHasContent(lesson),
+        durationMin: lesson.estimatedDuration ?? undefined,
         exerciseCount: lesson._count.exercises,
         progressCount: lesson._count.progresses,
         href: staffRoutes.lessonDetail(chapter.courseId, chapter.id, lesson.id),
