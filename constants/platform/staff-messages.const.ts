@@ -21,6 +21,8 @@ export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   assignmentMissing: "Esa asignación ya no está activa.",
   userTaken: "Esa cuenta ya tiene ficha de profesor.",
   courseSlug: "Ese identificador (slug) ya está en uso.",
+  courseSlugReserved:
+    "Ese identificador (slug) no se puede usar: «explorar» es una página del catálogo y ocho dígitos se leen como el id de un curso.",
   authorSlug: "Otro autor acaba de tomar ese slug. Vuelve a guardar.",
   authorName: "El nombre del autor necesita al menos una letra o un número.",
   authorPhoto: "La foto tiene que ser una dirección web (https://…).",

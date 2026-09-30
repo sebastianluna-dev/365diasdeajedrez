@@ -112,9 +112,18 @@ const COURSE_UPDATE_SCHEMA = COURSE_SCHEMA.extend({
   levelSlugs: formSlugList(),
 });
 
-/** The failure code a bad course form answers with: the one field with words of its own, or the generic one. */
-function courseFormError(field: string): string {
-  return field === "contentTypeCodes" ? "contentTypeRequired" : "invalid";
+/**
+ * The failure code a bad course form answers with: the fields that have words
+ * of their own, or the generic one.
+ *
+ * The slug's shape is refused by the browser before it is sent (the field
+ * carries its pattern), so the only slug failure that reaches here is the
+ * refinement of `slugField` — the reserved ones —, which arrives as `custom`.
+ */
+function courseFormError({ field, code }: { field: string; code: string }): string {
+  if (field === "contentTypeCodes") return "contentTypeRequired";
+  if (field === "slug" && code === "custom") return "courseSlugReserved";
+  return "invalid";
 }
 const PGN_SCHEMA = z.object({ pgn: z.string().trim().min(1).max(PGN_MAX_LENGTH) });
 const NAMED_SCHEMA = z.object({ name: formText(NAME_MAX_LENGTH), role: z.string().trim().max(32).optional() });
@@ -155,7 +164,7 @@ export async function createCourse(formData: FormData): Promise<void> {
   if (!(await allowAction(`${staff.user.id}:course-create`, 20, 3_600_000))) fail(staffRoutes.courses, "throttled");
 
   const parsed = parseForm(COURSE_SCHEMA, formData);
-  if (!parsed.ok) fail(staffRoutes.courses, courseFormError(parsed.field));
+  if (!parsed.ok) fail(staffRoutes.courses, courseFormError(parsed));
   const { name, slug, contentTypeCodes } = parsed.data;
 
   let courseId: string;
@@ -192,7 +201,7 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
   if (!(await allowAction(`${staff.user.id}:course-update`, 60, 60_000))) fail(detailPath, "throttled");
 
   const parsed = parseForm(COURSE_UPDATE_SCHEMA, formData);
-  if (!parsed.ok) fail(detailPath, courseFormError(parsed.field));
+  if (!parsed.ok) fail(detailPath, courseFormError(parsed));
   const { name, slug, contentTypeCodes, description, levelSlugs } = parsed.data;
   const db = getPlatformDb();
 
