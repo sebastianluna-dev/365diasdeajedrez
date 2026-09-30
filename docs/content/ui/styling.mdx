@@ -231,6 +231,7 @@ In the platform a corner is rounded in one of two ways: **`8px`, or all the way*
 | Value          | When                                                                                      |
 | -------------- | ----------------------------------------------------------------------------------------- |
 | `8px`          | Every corner that is rounded and is not a pill nor a circle.                              |
+| `4px`          | **Only a control of about 20px or less**, where 8 is all but a circle: a checkbox at 8px reads as a radio, as something one of which is chosen. On anything of a normal size, reaching for it is deciding a radius — which is what this rule is here to prevent. |
 | `1000px`       | All the way: a pill, a progress track, a count.                                           |
 | `50%`          | All the way, for a circle: an avatar, a dot, a round button.                              |
 | `0`, `inherit` | No radius of its own: a side left square (`8px 8px 0 0`), a corner taken from the parent. |

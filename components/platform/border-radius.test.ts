@@ -3,10 +3,11 @@ import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-// The platform rounds a corner in one of two ways: 8px, or all the way. A
-// card, a button, a field, a tag, a dialog: there is no third radius, so no
-// stylesheet has to decide one. This reads every stylesheet of the platform
-// and fails on the first value that is neither.
+// The platform rounds a corner in one of three ways: 8px, 4px on a control
+// too small for 8, or all the way. A card, a button, a field, a tag, a
+// dialog: none of them decides a radius of its own, so a stylesheet never has
+// to. This reads every stylesheet of the platform and fails on the first
+// value that is none of the three.
 
 const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 
@@ -18,11 +19,17 @@ const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 const PLATFORM_STYLES = ["app/(platform)", "app/(auth)", "components/platform", "components/auth", "components/chess"];
 
 /**
- * What a corner can be: 8px; all the way (`1000px`, or `50%` for a circle);
- * and `0` or `inherit`, which draw no radius of their own — a side left
- * square, a corner taken from the parent.
+ * What a corner can be: 8px; 4px, and ONLY on a control of about 20px or
+ * less, where 8 is all but a circle — a checkbox at 8px reads as a radio, as
+ * something one of which is chosen; all the way (`1000px`, or `50%` for a
+ * circle); and `0` or `inherit`, which draw no radius of their own — a side
+ * left square, a corner taken from the parent.
+ *
+ * The 4 is for the box and not for the card that happens to look better with
+ * it: a stylesheet that reaches for it on anything of a normal size is
+ * deciding a radius, which is what this rule is here to prevent.
  */
-const ALLOWED = new Set(["8px", "1000px", "50%", "0", "inherit"]);
+const ALLOWED = new Set(["8px", "4px", "1000px", "50%", "0", "inherit"]);
 
 const DECLARATION = /border(?:-[a-z]+)*-radius:\s*([^;]+);/g;
 
@@ -52,7 +59,7 @@ describe("the platform's corners", () => {
     expect(PLATFORM_STYLES.flatMap((directory) => stylesheetsOf(join(ROOT, directory))).length).toBeGreaterThan(50);
   });
 
-  it("are 8px or all the way, and nothing else", () => {
+  it("are 8px, 4px on a tiny control, or all the way — and nothing else", () => {
     expect(offendersOf(PLATFORM_STYLES)).toEqual([]);
   });
 });
