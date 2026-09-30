@@ -72,8 +72,10 @@ An author is editorial content, not a restricted domain whose code the logic com
 
 Block `.authors-manager`. The dialog is `.platform-dialog`, which sets the centring, the backdrop and the entry and exit motion; the block sets its width (560px) and rounding. Every button it renders — the trigger, a row’s «Editar», «Nuevo autor» — is the shared soft one (`.platform-button`), the rows’ and the trigger’s in the compact size.
 
-**Elements:** `.authors-manager__dialog`, `.authors-manager__head`, `.authors-manager__heading`, `.authors-manager__title`, `.authors-manager__subtitle`, `.authors-manager__close`, `.authors-manager__close-icon`, `.authors-manager__body`, `.authors-manager__list`, `.authors-manager__row`, `.authors-manager__row-text`, `.authors-manager__row-name`, `.authors-manager__row-meta`, `.authors-manager__edit`, `.authors-manager__empty`, `.authors-manager__form`, `.authors-manager__photo`, `.authors-manager__photo-file`, `.authors-manager__photo-text`, `.authors-manager__photo-actions`, `.authors-manager__photo-remove`, `.authors-manager__foot`, `.authors-manager__note`, `.authors-manager__actions`
+**Elements:** `.authors-manager__dialog`, `.authors-manager__head`, `.authors-manager__heading`, `.authors-manager__title`, `.authors-manager__subtitle`, `.authors-manager__close`, `.authors-manager__close-icon`, `.authors-manager__body`, `.authors-manager__list`, `.authors-manager__row`, `.authors-manager__row-text`, `.authors-manager__row-name`, `.authors-manager__row-meta`, `.authors-manager__empty`, `.authors-manager__form`, `.authors-manager__photo`, `.authors-manager__photo-file`, `.authors-manager__photo-text`, `.authors-manager__photo-actions`, `.authors-manager__photo-remove`, `.authors-manager__foot`, `.authors-manager__note`, `.authors-manager__actions`
 
+
+**Other classes it renders:** `.platform-row-action` (and `_variant_danger` where the action destroys): «Editar», «Eliminar» and «Quitar» are the platform's row actions, written as words at the end of the row they belong to — see [Styling](/ui/styling).
 **Modifiers and states:** `.authors-manager__photo-text_tone_error`
 
 **Other selectors it styles:** `.platform-form__field > textarea` (a shorter textarea).

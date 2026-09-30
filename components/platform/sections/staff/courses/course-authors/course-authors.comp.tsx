@@ -79,7 +79,7 @@ export function CourseAuthors({ courseId, authors, allAuthors, roles }: CourseAu
                   <input type="hidden" name="operation" value="remove" />
                   <input type="hidden" name="authorId" value={author.authorId} />
                   <SubmitButton
-                    className="course-authors__remove"
+                    className="platform-row-action platform-row-action_variant_danger"
                     pendingLabel="Quitando…"
                     aria-label={`Quitar a ${author.authorName}`}
                   >

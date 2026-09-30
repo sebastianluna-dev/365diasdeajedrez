@@ -95,9 +95,11 @@ export function ClassBlockEditor({ classId, blocks, options, initialGameId }: Cl
                   </button>
                 </form>
 
+                {/* The arrows above are controls, drawn as keys; these two are
+                    what is DONE to the block, so they are words. */}
                 <button
                   type="button"
-                  className="class-block-editor__control"
+                  className="platform-row-action"
                   onClick={() => setEditingId(editingId === block.id ? null : block.id)}
                 >
                   {editingId === block.id ? "Cerrar" : "Editar"}
@@ -106,7 +108,7 @@ export function ClassBlockEditor({ classId, blocks, options, initialGameId }: Cl
                 <form action={deleteClassBlock.bind(null, classId)}>
                   <input type="hidden" name="blockId" value={block.id} />
                   <SubmitButton
-                    className="class-block-editor__control class-block-editor__control_variant_danger"
+                    className="platform-row-action platform-row-action_variant_danger"
                     pendingLabel="Eliminando…"
                   >
                     Eliminar

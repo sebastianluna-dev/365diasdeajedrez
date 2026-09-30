@@ -141,31 +141,9 @@
     gap: 14px;
   }
 
-  & .course-syllabus__edit {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--platform-accent-ink);
-  }
-
-  & .course-syllabus__edit:hover {
-    color: var(--platform-accent-hover);
-  }
-
-  & .course-syllabus__delete {
-    padding: 0;
-    border: 0;
-    background: transparent;
-    color: var(--platform-text-subtle);
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: color 150ms;
-  }
-
-  & .course-syllabus__delete:hover:not(:disabled) {
-    color: var(--platform-danger);
-  }
+  /* «Editar» and «Eliminar» are the platform's row actions
+     (`.platform-row-action`): the chapter is a row of a list, and what is
+     done to it is written at its end, not boxed. */
 
   & .course-syllabus__slot,
   & .course-syllabus__new {
@@ -270,7 +248,6 @@
 
   @media (prefers-reduced-motion: reduce) {
     & .course-syllabus__step,
-    & .course-syllabus__delete,
     & .course-syllabus__add,
     & .course-syllabus__new-input {
       transition: none;

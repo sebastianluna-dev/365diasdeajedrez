@@ -80,10 +80,6 @@
     cursor: default;
   }
 
-  & .exercise-editor__control_variant_danger:hover {
-    color: var(--platform-danger);
-    border-color: var(--platform-danger-border);
-  }
 
   & .exercise-editor__form {
     display: flex;

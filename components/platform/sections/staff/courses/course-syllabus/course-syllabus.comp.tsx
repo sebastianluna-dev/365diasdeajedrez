@@ -71,7 +71,7 @@ export function CourseSyllabus({ courseId, chapters, isDraft }: CourseSyllabusPr
           <form action={deleteChapter.bind(null, courseId)}>
             <input type="hidden" name="chapterId" value={chapter.id} />
             <SubmitButton
-              className="course-syllabus__delete"
+              className="platform-row-action platform-row-action_variant_danger"
               pendingLabel="Eliminando…"
               aria-label={`Eliminar «${chapter.name}»`}
             >
@@ -79,7 +79,7 @@ export function CourseSyllabus({ courseId, chapters, isDraft }: CourseSyllabusPr
             </SubmitButton>
           </form>
         )}
-        <Link href={chapter.href} className="course-syllabus__edit" aria-label={`Editar «${chapter.name}»`}>
+        <Link href={chapter.href} className="platform-row-action" aria-label={`Editar «${chapter.name}»`}>
           Editar
         </Link>
       </span>

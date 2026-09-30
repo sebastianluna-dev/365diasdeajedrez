@@ -102,7 +102,7 @@ export function AuthorsManager({ authors, label = "Autores", size = "regular" }:
                       </span>
                       <button
                         type="button"
-                        className="platform-button platform-button_size_compact authors-manager__edit"
+                        className="platform-row-action authors-manager__edit"
                         onClick={() => showForm(author.id)}
                         aria-label={`Editar a ${author.name}`}
                       >

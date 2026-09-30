@@ -129,34 +129,8 @@
     gap: 6px;
   }
 
-  & .sortable-list__control {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 30px;
-    padding: 0 12px;
-    border: 1px solid var(--platform-border);
-    border-radius: 1000px;
-    background: var(--platform-surface);
-    color: var(--platform-text-muted);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 150ms;
-    transition-property: background-color, border-color, color;
-  }
-
-  & .sortable-list__control_variant_danger:hover {
-    border-color: var(--platform-danger);
-    color: var(--platform-danger);
-  }
-
-  & .sortable-list__control_variant_go:hover {
-    border-color: var(--platform-accent);
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
-  }
+  /* What is done to one row — «Editar», «Eliminar» — is the platform's row
+     action (`.platform-row-action`), not a pill of this list's own. */
 }
 
 .sortable-list__empty {

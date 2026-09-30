@@ -34,9 +34,11 @@ export function EditGame({ action, values, results, titleHint, label = "Editar" 
 
   return (
     <div className="edit-game">
+      {/* Beside a game of the aside it is the action of a row; in the
+          editor's bar it stands among buttons and is one. */}
       <button
         type="button"
-        className={`edit-game__open${label === "Editar" ? "" : " edit-game__open_size_wide"}`}
+        className={label === "Editar" ? "platform-row-action" : "platform-button"}
         onClick={() => dialogRef.current?.showModal()}
       >
         {label}

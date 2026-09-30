@@ -39,7 +39,7 @@ export function AttendanceForm({ classId, participants }: AttendanceFormProps) {
                 formAction={removeParticipant.bind(null, classId)}
                 name="studentId"
                 value={participant.userId}
-                className="attendance-form__remove"
+                className="platform-row-action platform-row-action_variant_danger"
                 pendingLabel="Quitar"
               >
                 Quitar

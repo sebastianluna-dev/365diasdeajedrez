@@ -1,25 +1,4 @@
 .edit-game {
-  & .edit-game__open {
-    padding: 6px 11px;
-    border: 1px solid var(--platform-border);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    color: var(--platform-text);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  & .edit-game__open:hover {
-    background: var(--platform-bg);
-  }
-
-  /* In the editor bar the button matches the height of its neighbours. */
-  & .edit-game__open_size_wide {
-    padding: 11px 17px;
-  }
-
   & .edit-game__dialog {
     width: min(680px, calc(100vw / var(--platform-zoom, 1) - 32px));
   }

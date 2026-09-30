@@ -1,24 +1,8 @@
 .course-source-dialog {
   flex: none;
 
-  /* «Añadir fuente», in the card's header, is the shared soft button. This one
-     is the «Editar» of a row: a quiet word at the height of the title's first
-     line, which next to every row would be a wall of accent as a button. */
-  & .course-source-dialog__edit {
-    padding: 2px 0;
-    border: 0;
-    background: transparent;
-    color: var(--platform-text-subtle);
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: color 150ms;
-  }
-
-  & .course-source-dialog__edit:hover {
-    color: var(--platform-accent-ink);
-  }
+  /* «Añadir fuente», in the card's header, is the platform's button; the
+     «Editar» of a row is the platform's row action. Neither is drawn here. */
 
   /* The size and the rounding: the centring, the backdrop, the surface and
      the entry and exit motion are set by `.platform-dialog`. */

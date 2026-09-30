@@ -27,7 +27,7 @@ It lives in `shared/` since 2026-09-28, when the staff panel got its own game sc
 | `values`  | `GameFieldValues`   | yes                     | Current values. The whole game is passed (`GameView`, `ChapterGameDetail`), which is a superset. |
 | `results` | `{ code, label }[]` | yes                     | The results catalog; its label is the PGN token.                                             |
 | `titleHint` | `string`          | yes                     | What the name is for on this screen, under its field.                                        |
-| `label`   | `string`            | no · default `"Editar"` | Trigger text. In the aside "Editar" is enough; a longer label gets the `_size_wide` trigger. |
+| `label`   | `string`            | no · default `"Editar"` | Trigger text. In the aside of a game «Editar» is enough, and there the trigger is the platform's **row action** — it sits at the end of a row of the list; any other label means it stands in the editor's bar, among buttons, and it is drawn as one (`.platform-button`). |
 
 ## Behaviour
 
@@ -37,9 +37,9 @@ It lives in `shared/` since 2026-09-28, when the staff panel got its own game sc
 
 Block `.edit-game` (75 lines).
 
-**Elements:** `.edit-game__open`, `.edit-game__dialog`, `.edit-game__form`, `.edit-game__head`, `.edit-game__title`, `.edit-game__subtitle`, `.edit-game__body`, `.edit-game__actions`, `.edit-game__note`
+**Elements:** `.edit-game__dialog`, `.edit-game__form`, `.edit-game__head`, `.edit-game__title`, `.edit-game__subtitle`, `.edit-game__body`, `.edit-game__actions`, `.edit-game__note`
 
-**Modifiers and states:** `.edit-game__open_size_wide`
+**Modifiers and states:** none of its own. The trigger wears `.platform-row-action` or `.platform-button` (see `label`).
 
 **Other classes it renders:** `.platform-dialog`, `.platform-button`.
 

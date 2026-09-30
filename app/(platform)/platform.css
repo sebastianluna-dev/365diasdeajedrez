@@ -477,6 +477,55 @@ html body.platform-theme[data-scroll-locked] {
   color: var(--platform-surface);
 }
 
+/* THE ACTION OF A ROW. «Editar» beside a chapter, «Quitar» beside an author,
+   «Eliminar» beside an exercise: what is done to ONE item of a list.
+   
+   It is not a button, and that is the point. A list is a column of rows, and
+   a button on each one is a column of boxes: the list stops being read and
+   becomes a form. Written as a word in the muted grey, the row reads as
+   content and the action is found where it is looked for — at the end of the
+   row it belongs to.
+
+   It goes to the ink and underlines itself under the pointer, which is how a
+   word says it can be pressed. The danger one is the same in the danger
+   colour: what it does is told by its word («Eliminar»), and by its colour
+   only once it is read. */
+.platform-row-action {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--platform-text-muted);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.platform-row-action:hover {
+  color: var(--platform-text);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.platform-row-action_variant_danger {
+  color: var(--platform-danger);
+}
+
+.platform-row-action_variant_danger:hover {
+  color: var(--platform-danger);
+}
+
+.platform-row-action:disabled {
+  color: var(--platform-text-faint);
+  cursor: not-allowed;
+}
+
+.platform-row-action:disabled:hover {
+  color: var(--platform-text-faint);
+  text-decoration: none;
+}
+
 /* A smaller box for the same button, for a card's header, where it shares the
    line with the title and must not stand taller than it. It changes the size
    alone, and comes after every variant so that it also shrinks the two that

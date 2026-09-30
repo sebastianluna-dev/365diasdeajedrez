@@ -146,9 +146,11 @@ export function ExerciseEditor({ courseId, chapterId, lessonId, exercises, modes
                     ↓
                   </button>
                 </form>
+                {/* The arrows above are controls, drawn as keys; these two are
+                    what is DONE to the exercise, so they are words. */}
                 <button
                   type="button"
-                  className="exercise-editor__control"
+                  className="platform-row-action"
                   onClick={() => setEditingId(editingId === exercise.id ? null : exercise.id)}
                 >
                   {editingId === exercise.id ? "Cerrar" : exercise.isStale ? "Volver a congelar" : "Editar"}
@@ -156,7 +158,7 @@ export function ExerciseEditor({ courseId, chapterId, lessonId, exercises, modes
                 <form action={deleteExercise.bind(null, courseId, chapterId, lessonId)}>
                   <input type="hidden" name="exerciseId" value={exercise.id} />
                   <SubmitButton
-                    className="exercise-editor__control exercise-editor__control_variant_danger"
+                    className="platform-row-action platform-row-action_variant_danger"
                     pendingLabel="Eliminando…"
                   >
                     Eliminar

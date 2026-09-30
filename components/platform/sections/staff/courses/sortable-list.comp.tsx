@@ -122,7 +122,7 @@ export function SortableList({ items, onReorder, deleteAction, deleteFieldName, 
               <form action={deleteAction}>
                 <input type="hidden" name={deleteFieldName} value={row.id} />
                 <SubmitButton
-                  className="sortable-list__control sortable-list__control_variant_danger"
+                  className="platform-row-action platform-row-action_variant_danger"
                   pendingLabel="Eliminando…"
                 >
                   Eliminar
@@ -130,7 +130,7 @@ export function SortableList({ items, onReorder, deleteAction, deleteFieldName, 
               </form>
             )}
 
-            <Link href={row.href} className="sortable-list__control sortable-list__control_variant_go">
+            <Link href={row.href} className="platform-row-action">
               Editar
             </Link>
           </span>

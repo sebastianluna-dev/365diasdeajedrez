@@ -76,26 +76,8 @@
     flex: none;
   }
 
-  & .course-authors__remove {
-    padding: 8px 10px;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-subtle);
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: color 150ms;
-  }
-
-  & .course-authors__remove:hover:not(:disabled) {
-    color: var(--platform-danger);
-  }
-
-  & .course-authors__remove:disabled {
-    cursor: default;
-  }
+  /* «Quitar» is the platform's row action, in its danger colour: what it is
+     and what it does when it cannot be pressed are said there. */
 
   & .course-authors__empty,
   & .course-authors__none {
@@ -186,7 +168,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    & .course-authors__remove,
     & .course-authors__input,
     & .course-authors__suggestion {
       transition: none;

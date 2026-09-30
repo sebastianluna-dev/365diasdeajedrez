@@ -68,10 +68,6 @@
     cursor: default;
   }
 
-  & .class-block-editor__control_variant_danger:hover {
-    color: var(--platform-danger);
-    border-color: var(--platform-danger-border);
-  }
 
   & .class-block-editor__warning {
     margin: 0;

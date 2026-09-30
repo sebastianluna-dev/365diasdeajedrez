@@ -39,8 +39,10 @@ The chapters of a course read as what they are for the student: a path with a fi
 
 Block `.course-syllabus`, an `<ol>` inside a `.staff-panel`. The rail is a `::before` of each step but the last, from its node to the next one.
 
-**Elements:** `.course-syllabus__step`, `.course-syllabus__node`, `.course-syllabus__text`, `.course-syllabus__name`, `.course-syllabus__facts`, `.course-syllabus__priority`, `.course-syllabus__actions`, `.course-syllabus__edit`, `.course-syllabus__delete`, `.course-syllabus__slot`, `.course-syllabus__add`, `.course-syllabus__new`, `.course-syllabus__new-input`, `.course-syllabus__new-submit`
+**Elements:** `.course-syllabus__step`, `.course-syllabus__node`, `.course-syllabus__text`, `.course-syllabus__name`, `.course-syllabus__facts`, `.course-syllabus__priority`, `.course-syllabus__actions`, `.course-syllabus__slot`, `.course-syllabus__add`, `.course-syllabus__new`, `.course-syllabus__new-input`, `.course-syllabus__new-submit`
 
+
+**Other classes it renders:** `.platform-row-action` (and `_variant_danger` where the action destroys): «Editar», «Eliminar» and «Quitar» are the platform's row actions, written as words at the end of the row they belong to — see [Styling](/ui/styling).
 **Modifiers and states:** `.course-syllabus__node_kind_{chapter,intro,closing,new}`, `.course-syllabus__step_state_dragging`
 
 **Tokens:** own `--course-syllabus-node` (the diameter of a node, which the rail is centred on); `--platform-accent`, `--platform-accent-hover`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-border`, `--platform-border-strong`, `--platform-danger`, `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-soft`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
