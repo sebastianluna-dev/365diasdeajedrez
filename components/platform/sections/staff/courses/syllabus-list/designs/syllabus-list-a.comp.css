@@ -8,6 +8,7 @@
   list-style: none;
 
   & .syllabus-list-a__card {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 14px;
@@ -16,22 +17,28 @@
     border-radius: 8px;
     background: var(--platform-surface);
     transition: 150ms;
-    transition-property: opacity, border-color, box-shadow;
+    transition-property: border-color, box-shadow;
   }
 
   & .syllabus-list-a__card:hover {
     border-color: var(--platform-border-strong);
   }
 
-  /* The travelling card dims: without that, while dragging you cannot tell the
-     one that moves from the one being pointed at as the destination. */
+  /* The card that travels is lifted off the list: dnd-kit carries it under the
+     pointer and opens the gap where it would land, so it is the one that is
+     seen, not a ghost of it. */
   & .syllabus-list-a__card_state_dragging {
-    opacity: 0.45;
+    z-index: 1;
+    border-color: var(--platform-border-strong);
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+    cursor: grabbing;
   }
 
   /* The grip is grey until the card is pointed at: what is dragged is the
      card, and the dots only say where to take it. */
   & .syllabus-list-a__grip {
+    touch-action: none;
     flex: none;
     display: inline-flex;
     align-items: center;

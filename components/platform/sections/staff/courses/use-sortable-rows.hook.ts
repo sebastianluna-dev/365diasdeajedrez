@@ -75,5 +75,16 @@ export function useSortableRows<T extends { id: string }>({ items, isFixed, onRe
     if (!isFixed(row)) numbers.set(row.id, ++plain);
   }
 
-  return { rows, dragging, setDragging, move, numbers };
+  /**
+   * The same move said the way a drag and drop library says it: the row that
+   * travels and the one whose place it takes, by id.
+   */
+  const moveById = (activeId: string, overId: string) => {
+    const from = rows.findIndex((row) => row.id === activeId);
+    const to = rows.findIndex((row) => row.id === overId);
+    if (from === -1 || to === -1) return;
+    move(from, to);
+  };
+
+  return { rows, dragging, setDragging, move, moveById, numbers };
 }
