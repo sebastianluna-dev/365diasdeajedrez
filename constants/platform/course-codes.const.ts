@@ -13,6 +13,7 @@ export const CONTENT_TYPE = {
   ENDGAMES: "ENDGAMES",
   GAME_ANALYSIS: "GAME_ANALYSIS",
   PREPARATION: "PREPARATION",
+  PSYCHOLOGY: "PSYCHOLOGY",
 } as const;
 
 export type ContentTypeCode = (typeof CONTENT_TYPE)[keyof typeof CONTENT_TYPE];

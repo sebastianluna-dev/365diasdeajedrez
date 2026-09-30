@@ -82,10 +82,17 @@ export const CONTENT_TYPE_VALUES = [
   },
   {
     code: CONTENT_TYPE.PREPARATION,
-    label: "Preparación práctica y psicológica",
+    label: "Preparación práctica",
     shortLabel: "Preparación",
     description:
-      "Gestión del tiempo, toma de decisiones, concentración, manejo de errores y preparación para competir.",
+      "Lo que rodea a la partida: gestión del tiempo, toma de decisiones bajo reloj, preparación del rival y hábitos de competición.",
+  },
+  {
+    code: CONTENT_TYPE.PSYCHOLOGY,
+    label: "Psicología del ajedrez",
+    shortLabel: "Psicología",
+    description:
+      "La cabeza durante la partida: concentración, nervios y confianza, y cómo se afrontan la presión, el error propio y la derrota.",
   },
 ];
 
