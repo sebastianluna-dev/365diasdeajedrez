@@ -9,6 +9,7 @@ description: "'Racha diaria': the card with how many days in a row the student h
 | File       | `components/platform/shared/study-streak.comp.tsx`                                                                                                                                     |
 | Kind       | Server Component                                                                                                                                                                       |
 | Stylesheet | `study-streak.comp.css` → block `.study-streak`                                                                                                                                        |
+| Story      | `study-streak.stories.tsx` (`platform/shared/StudyStreak`): the four states, including a three-digit streak                                                                            |
 | Used by    | [`MyCoursesSection`](/components/platform/sections/courses/my-courses/my-courses-section), [`StudyGoalSection`](/components/platform/sections/dashboard/study-goal/study-goal-section) |
 | Uses       | `StudyStreak` (the model) from `services/study-goal/study-goal.types`; `FlameIcon`, `ChevronIcon` from `components/icons/`                                                             |
 
@@ -34,17 +35,18 @@ The figure is not stored: it is counted backwards from the activity log (`streak
 
 - **Today does not break the streak**: whoever studied yesterday still has it until the day is over (see `streakLength`). What the second figure says is that it is yet to be kept.
 - The second figure and the arrow are for the eye only (`aria-hidden`); the sentence is what says it in words.
-- The flame is two colours: the fire in `--platform-flame` and the inner flame it is hollow in (`coreClassName`, `.study-streak__flame-core`) in `--platform-flame-core`. Unlit, fire and figure go to `--platform-text-faint` and the core takes the card's white, so it reads as the hollow flame it was.
+- The flame is two colours: the fire in `--platform-flame` and the inner flame it is hollow in (`coreClassName`, `.study-streak__flame-core`) in `--platform-flame-core`. Unlit, fire and figure go to a grey **lighter than `--platform-text-faint`** (mixed with the card's own surface, so it lightens on light and darkens on dark) and the core takes the card's white: what is not burning is there to be seen past, not read.
+- **Two figures are drawn smaller than one.** With the day one would reach beside it there are two flames and two numbers to fit, so both shrink (flame 28px, figure 34px) and the card says either thing in the same room; alone, the figure takes it all (flame 40px, figure 48px). The stylesheet tells the two cases apart by `:has(.study-streak__arrow)` — the arrow is only rendered when there are two — so the component has no modifier to pass and nothing to decide.
 
 ## Markup & styling
 
-Block `.study-streak` (87 lines): a white card on the page's grey, over the platform's card shadow and with no outline, its title closed by a rule across the full width.
+Block `.study-streak` (108 lines): a white card on the page's grey, over the platform's card shadow and with no outline, its title closed by a rule across the full width.
 
 **Elements:** `.study-streak__title`, `.study-streak__figures`, `.study-streak__figure`, `.study-streak__flame`, `.study-streak__flame-core`, `.study-streak__value`, `.study-streak__arrow`, `.study-streak__note`
 
 **Modifiers and states:** `.study-streak__figure_state_unlit`
 
-**Tokens:** `--platform-border`, `--platform-flame`, `--platform-flame-core`, `--platform-font`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-subtle`
+**Tokens:** `--platform-border`, `--platform-flame`, `--platform-flame-core`, `--platform-font`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-faint` (lightened with the surface for what is unlit), `--platform-text-subtle`
 
 No media queries: whoever places it decides its width.
 

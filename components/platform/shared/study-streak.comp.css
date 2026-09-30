@@ -38,8 +38,8 @@
      is hollow in. */
   & .study-streak__flame {
     flex: none;
-    width: 34px;
-    height: 34px;
+    width: 40px;
+    height: 40px;
     color: var(--platform-flame);
   }
 
@@ -49,18 +49,40 @@
 
   & .study-streak__value {
     font-family: var(--platform-font);
-    font-size: 42px;
+    font-size: 48px;
     font-weight: 700;
     line-height: 1;
     letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
   }
 
+  /* Two figures do not get the room of one: with the day one would reach
+     beside it, both are drawn smaller, and the card keeps its size whatever
+     it has to say. What tells the two cases apart is the arrow between them,
+     which is only rendered when there are two. */
+  & .study-streak__figures:has(.study-streak__arrow) {
+    gap: 10px;
+
+    & .study-streak__flame {
+      width: 28px;
+      height: 28px;
+    }
+
+    & .study-streak__value {
+      font-size: 34px;
+    }
+
+    & .study-streak__figure {
+      gap: 8px;
+    }
+  }
+
   /* A day that is not in the streak: no streak at all, or the one today
-     would add. Flame and figure go out together. */
+     would add. Flame and figure go out together, in a grey lighter than the
+     faint text's: what is not burning is there to be seen past, not read. */
   & .study-streak__figure_state_unlit,
   & .study-streak__figure_state_unlit .study-streak__flame {
-    color: var(--platform-text-faint);
+    color: color-mix(in srgb, var(--platform-text-faint) 62%, var(--platform-surface));
   }
 
   /* Out, the fire is a grey silhouette and its core is the card again: what
