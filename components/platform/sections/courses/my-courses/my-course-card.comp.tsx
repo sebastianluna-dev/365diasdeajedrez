@@ -120,12 +120,20 @@ export function MyCourseCard({ course }: MyCourseCardProps) {
             </span>
           ))}
 
+        {/* The platform's quiet button, the one «Ver detalle» uses on the
+            dashboard: the card only gives it its size. */}
         {course.learnHref ? (
-          <Link href={course.learnHref} className="my-course-card__learn">
+          <Link
+            href={course.learnHref}
+            className="platform-button platform-button_variant_secondary my-course-card__learn"
+          >
             Aprender
           </Link>
         ) : (
-          <span className="my-course-card__learn my-course-card__learn_state_off" aria-disabled="true">
+          <span
+            className="platform-button platform-button_variant_secondary my-course-card__learn my-course-card__learn_state_off"
+            aria-disabled="true"
+          >
             Aprender
           </span>
         )}

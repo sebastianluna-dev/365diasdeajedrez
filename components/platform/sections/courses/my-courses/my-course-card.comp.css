@@ -159,41 +159,28 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Drawn with the accent, not filled with it. A list of courses is a column
-     of these rows, and a solid red block on each one turned the page into a
-     row of buttons: the outline says the same and lets the name and the ring
-     be what is read. The line is inset, so the button measures exactly its
-     box and the rows keep lining up. */
+  /* «Aprender» is the platform's quiet button — `platform-button` with
+     `_variant_secondary`, the same one «Ver detalle» uses on the dashboard:
+     a grey line that darkens under the pointer, with the word in ink. Not
+     the accent filled, and not the accent outlined either: a list of courses
+     is a column of these rows, and a red block on each one turned the page
+     into a row of buttons. The card only gives it its size, so what the
+     button looks like stays written in one place. */
   & .my-course-card__learn {
-    background: transparent;
-    color: var(--platform-accent-ink);
-    box-shadow: inset 0 0 0 1.5px var(--platform-accent);
-    transition: 80ms;
-    transition-property: background-color, box-shadow;
+    padding: 0 20px;
+    font-size: 14px;
   }
 
-  /* Under the pointer it fills — with the wash, not the accent: what tells it
-     apart is still its line. */
-  & .my-course-card__learn:hover {
-    background: var(--platform-accent-wash);
-    color: var(--platform-accent-ink);
-  }
-
-  /* Held down it deepens, instead of sinking onto an edge it no longer has. */
-  & .my-course-card__learn:active {
-    background: var(--platform-accent-soft);
-  }
-
-  /* One that leads nowhere keeps its place, so the rows line up. It keeps the
-     outline too, in the border's grey: what is missing is the way on, not the
-     button. */
+  /* One that leads nowhere keeps its place, so the rows line up: the line
+     goes to the thin border and the word to the faint grey, which is what
+     tells it from the one that leads somewhere. */
   & .my-course-card__review_state_off,
   & .my-course-card__review_state_off:hover,
   & .my-course-card__learn_state_off,
   & .my-course-card__learn_state_off:hover,
   & .my-course-card__learn_state_off:active {
     background: transparent;
-    box-shadow: inset 0 0 0 1.5px var(--platform-border-strong);
+    box-shadow: inset 0 0 0 1px var(--platform-border);
     color: var(--platform-text-faint);
     cursor: default;
   }
