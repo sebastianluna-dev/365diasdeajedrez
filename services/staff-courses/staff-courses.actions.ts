@@ -40,7 +40,7 @@ import { authorSlugFor } from "./author-rules";
 import type { AuthorFormState } from "./staff-courses.types";
 import type { ImageSaveResult } from "@/services/media/media.types";
 import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
-import { DATABASE_KIND, GAME_SOURCE } from "@/constants/platform/study-codes.const";
+import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "@/constants/platform/study-codes.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
 import { lessonHasContent, lessonPgnOf, lessonPgnSelect, lessonStartFenOf } from "@/services/shared/lesson-pgn";
@@ -482,6 +482,88 @@ export async function importChapterGames(courseId: string, chapterId: string, fo
  * content — the foreign key is `SET NULL`, so it would not fail, they would be
  * emptied silently, which is worse.
  */
+/**
+ * Files a lesson's own PGN as a game of its chapter's collection, and links the
+ * lesson to it.
+ *
+ * A lesson's content is a game of the collection: that is how a correction
+ * reaches every lesson that uses the same game, and it is the only content the
+ * board of the panel can edit. A lesson that references nothing keeps its
+ * content in `Lesson.pgn` — where nobody can touch it — and this is the way
+ * out: the same thing `scripts/migrate-chapter-collections.ts` did in bulk for
+ * the lessons born before the collections, one lesson at a time and pressed by
+ * hand.
+ *
+ * The PGN does not change, so `pgnUpdatedAt` is NOT stamped: the exercises
+ * frozen from it are as fresh as they were, and stamping would mark them stale
+ * over a move of place.
+ */
+export async function fileLessonPgnAsGame(courseId: string, chapterId: string, formData: FormData): Promise<void> {
+  const staff = await requireStaff();
+  const { lessonId } = readIds(formData, "lessonId");
+  const lessonPath = staffRoutes.lessonDetail(courseId, chapterId, lessonId);
+  if (!(await allowAction(`${staff.user.id}:lesson-file-pgn`, 20, 60_000))) fail(lessonPath, "throttled");
+
+  const db = getPlatformDb();
+  const lesson = await db.lesson.findFirst({
+    where: { id: lessonId, chapterId, chapter: { courseId } },
+    select: {
+      id: true,
+      name: true,
+      pgn: true,
+      gameId: true,
+      chapter: { select: { id: true, name: true, courseId: true } },
+    },
+  });
+  if (!lesson) fail(lessonPath, "courseMissing");
+  // Only what has nowhere to be edited: a lesson that already reads a game is
+  // edited through that game, and one without content has nothing to file.
+  if (lesson.gameId || lesson.pgn.trim().length === 0) fail(lessonPath, "lessonPgnMissing");
+
+  const [parsed] = parseImportedGames(lesson.pgn);
+
+  await db.$transaction(async (tx) => {
+    const database = await chapterGamesDatabase(tx, lesson.chapter);
+    const last = await tx.game.aggregate({ where: { databaseId: database.id }, _max: { order: true } });
+
+    const created = await tx.game.create({
+      data: {
+        database: { connect: { id: database.id } },
+        order: (last._max.order ?? 0) + 1,
+        // The lesson's name: it is how whoever edited it recognises it.
+        title: lesson.name,
+        white: parsed?.white ?? "Desconocido",
+        black: parsed?.black ?? "Desconocido",
+        result: { connect: { code: parsed?.resultCode ?? GAME_RESULT.ONGOING } },
+        event: parsed?.event ?? null,
+        site: parsed?.site ?? null,
+        eco: parsed?.eco ?? null,
+        playedAt: parsed?.playedAt ?? null,
+        initialFen: parsed?.initialFen ?? null,
+        // A PGN that cannot be read is stored as it is: it is the lesson's
+        // content, and losing it would be worse than storing it without headers.
+        pgn: parsed?.pgn ?? lesson.pgn,
+        source: { connect: { code: GAME_SOURCE.MANUAL } },
+      },
+      select: { id: true },
+    });
+
+    await tx.lesson.update({ where: { id: lesson.id }, data: { game: { connect: { id: created.id } } } });
+
+    // The index in the same transaction as the creation, like the import: a game
+    // stored without indexing is invisible to the position search.
+    await indexGamePositions(tx, {
+      gameId: created.id,
+      databaseId: database.id,
+      pgn: parsed?.pgn ?? lesson.pgn,
+    });
+  }, PGN_IMPORT_TRANSACTION);
+
+  revalidatePath(lessonPath);
+  revalidatePath(staffRoutes.chapterGames(courseId, chapterId));
+  revalidatePath(staffRoutes.courseGames(courseId));
+}
+
 export async function deleteChapterGame(courseId: string, chapterId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const chapterPath = staffRoutes.chapterGames(courseId, chapterId);

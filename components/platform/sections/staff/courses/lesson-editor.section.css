@@ -52,6 +52,29 @@
     text-wrap: pretty;
   }
 
+  /* The way out for a lesson whose content is its own PGN: said in words,
+     because it is a state nobody chose and the button alone would not explain
+     what it is about to do. */
+  & .lesson-editor__adopt {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 16px 18px;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface-soft);
+  }
+
+  & .lesson-editor__adopt-note {
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
   & .lesson-editor__note {
     margin: 0;
     font-size: 14px;

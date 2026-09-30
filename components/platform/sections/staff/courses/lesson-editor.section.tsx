@@ -2,7 +2,7 @@ import { FormField, FormFieldset } from "@/components/platform/shared/form-field
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { BOARD_ORIENTATION, CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
-import { deleteLesson, updateLesson } from "@/services/staff-courses/staff-courses.actions";
+import { deleteLesson, fileLessonPgnAsGame, updateLesson } from "@/services/staff-courses/staff-courses.actions";
 import type {
   CatalogOption,
   CourseGameRow,
@@ -158,6 +158,25 @@ export function LessonEditorSection({
           title="Partida de la lección"
           description="El contenido sale de una partida de la colección del curso; aquí sólo se elige cuál. El PGN se pega en el curso, y así una corrección vale para todas las lecciones que la usan."
         >
+          {/* A lesson that references nothing keeps its content in its own PGN,
+              where no board can reach it. Filing it in the collection is what
+              returns it to a place where it is read and edited. */}
+          {!lesson.game && lesson.pgn.trim().length > 0 && (
+            <form
+              className="lesson-editor__adopt"
+              action={fileLessonPgnAsGame.bind(null, lesson.courseId, lesson.chapterId)}
+            >
+              <input type="hidden" name="lessonId" value={lesson.id} />
+              <p className="lesson-editor__adopt-note">
+                Esta lección guarda su propio PGN y no lee ninguna partida, así que su contenido no se puede abrir en el
+                tablero. Archívalo en la colección del capítulo y quedará enlazado a esta lección, con su nombre.
+              </p>
+              <SubmitButton className="platform-button" pendingLabel="Archivando…">
+                Archivar el PGN en la colección
+              </SubmitButton>
+            </form>
+          )}
+
           <LessonGamePicker
             courseId={lesson.courseId}
             chapterId={lesson.chapterId}

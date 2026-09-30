@@ -31,6 +31,7 @@ export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   levelStretch: "Los niveles de un curso tienen que ser seguidos: elige un tramo de la escala.",
   sourceMissing: "Esa fuente ya no existe. Recarga la ficha y vuelve a intentarlo.",
   courseMissing: "Ese curso no existe.",
+  lessonPgnMissing: "Esa lección ya lee una partida de la colección, o no tiene PGN propio que archivar.",
   publishRequirements: "Para publicar, el curso necesita al menos un capítulo con una lección con PGN.",
   deleteBlocked: "No se puede borrar: el curso no está en borrador o ya hay alumnos con progreso.",
   pgn: "Ese PGN no se puede leer. Revísalo antes de guardar.",
