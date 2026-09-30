@@ -72,6 +72,48 @@ export function resolveLevelFilter<T extends { slug: string }>(levels: T[], slug
   return levels.find((level) => level.slug === slug);
 }
 
+/**
+ * THE LEVELS OF A COURSE ARE A STRETCH OF THE SCALE, NOT A HANDFUL OF TICKS.
+ *
+ * The six levels are ordered by difficulty, so a course aimed at «Iniciación»
+ * and «Maestro» but not at what lies between says something that cannot be
+ * true of a course: what is taught grows from one level to the next. A course
+ * is for a stretch of that scale — «Intermedio y Avanzado» — and the staff
+ * chooses its two ends.
+ *
+ * `all` is the catalog in order, easiest first; `chosen` is a set, in any
+ * order.
+ */
+export function isLevelStretch(all: readonly string[], chosen: readonly string[]): boolean {
+  const places = chosen.map((slug) => all.indexOf(slug));
+  if (places.some((place) => place < 0)) return false;
+  if (places.length <= 1) return true;
+  const first = Math.min(...places);
+  const last = Math.max(...places);
+  // A set of distinct places is a stretch when it fills the span it covers.
+  return new Set(places).size === places.length && last - first + 1 === places.length;
+}
+
+/**
+ * The levels that can be turned on or off without breaking the stretch: the
+ * two the stretch would grow into, its own two ends, and — with nothing
+ * chosen yet — every one of them.
+ *
+ * What is NOT here is offered switched off, which is how the rule is said
+ * without a sentence: a level in the middle of the stretch cannot be removed
+ * (it would leave a hole) and one away from it cannot be added (it would
+ * leave a gap).
+ */
+export function reachableLevels(all: readonly string[], chosen: readonly string[]): Set<string> {
+  const places = chosen.map((slug) => all.indexOf(slug)).filter((place) => place >= 0);
+  if (places.length === 0) return new Set(all);
+
+  const first = Math.min(...places);
+  const last = Math.max(...places);
+  const reachable = [all[first - 1], all[first], all[last], all[last + 1]];
+  return new Set(reachable.filter((slug): slug is string => slug !== undefined));
+}
+
 /** The courses aimed at the level; all of them when there is no level to filter by. */
 export function coursesOfLevel<T extends { levels: { slug: string }[] }>(courses: T[], slug: string | undefined): T[] {
   if (!slug) return courses;

@@ -26,6 +26,7 @@ export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   authorPhoto: "La foto tiene que ser una dirección web (https://…).",
   authorMissing: "Ese autor no existe. Recarga la página y vuelve a intentarlo.",
   contentTypeRequired: "Elige al menos un tipo de contenido.",
+  levelStretch: "Los niveles de un curso tienen que ser seguidos: elige un tramo de la escala.",
   sourceMissing: "Esa fuente ya no existe. Recarga la ficha y vuelve a intentarlo.",
   courseMissing: "Ese curso no existe.",
   publishRequirements: "Para publicar, el curso necesita al menos un capítulo con una lección con PGN.",

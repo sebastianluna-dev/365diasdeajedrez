@@ -1,0 +1,37 @@
+---
+description: "Who a course is aimed at: a stretch of the scale of levels, chosen by its two ends. The cards that would leave a gap are offered switched off."
+---
+
+# `CourseLevelsField`
+
+|            |                                                                                   |
+| ---------- | ----------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/course-levels-field.comp.tsx`         |
+| Kind       | Client Component                                                                  |
+| Stylesheet | none of its own: it draws [`PlatformCheckCards`](/components/platform/shared/platform-check-cards) |
+| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) |
+| Uses       | `reachableLevels`, `shortEloRange` · `services/courses/level-rules.ts`             |
+
+## Purpose
+
+**The levels of a course are a stretch of the scale, not a handful of ticks.** The six levels are ordered by difficulty, so a course aimed at «Iniciación» and «Maestro» but not at what lies between says something that cannot be true of a course: what is taught grows from one level to the next. A course is for a stretch — «Intermedio y Avanzado» — and the staff chooses its two ends.
+
+The rule is said by the cards themselves: those that would leave a **gap** (a level away from the stretch) or a **hole** (one in the middle of it, which cannot be removed) are drawn switched off. There is no sentence explaining it under the field and no error bounced back for the ordinary case.
+
+## Props
+
+| Prop           | Type                                             | Required | Meaning                                              |
+| -------------- | ------------------------------------------------ | -------- | ------------------------------------------------------ |
+| `levels`       | `{ slug, name, eloRange }[]`                     | yes      | The catalog, **easiest first**: the order IS the scale. |
+| `defaultValue` | `string[]`                                       | yes      | The levels the course is aimed at today.             |
+
+## Behaviour
+
+- Client because the set of what can be chosen changes with what is chosen: `reachableLevels(order, chosen)` gives, at every moment, the two levels the stretch would grow into and its own two ends — and all of them while nothing is chosen.
+- It is the group's own `name` (`levelSlugs`) that submits, through the hidden native checkboxes the primitive keeps in sync, so the field needs nothing of the form around it.
+- **The server checks it again** (`isLevelStretch` in `updateCourse`): a form can be sent by hand, and there the answer is «Los niveles de un curso tienen que ser seguidos: elige un tramo de la escala.»
+
+## Related
+
+- [`PlatformCheckCards`](/components/platform/shared/platform-check-cards), the cards it draws; one option of theirs can now be offered switched off (`disabled`).
+- [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section), the form it belongs to.

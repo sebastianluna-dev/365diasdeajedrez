@@ -14,6 +14,7 @@ import { CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
 import { EXERCISE_MODE } from "@/constants/platform/training-codes.const";
 import { deriveExerciseData } from "@/lib/chess/exercise-derivation";
 import { syncLessonTrainingExercise } from "@/services/shared/lesson-training.service";
+import { isLevelStretch } from "@/services/courses/level-rules";
 import { numericId } from "@/lib/numeric-id";
 import { isDisplayableImage } from "@/lib/remote-image";
 import { requireStaff } from "@/lib/platform-auth/roles";
@@ -192,6 +193,14 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
   if (!parsed.ok) fail(detailPath, courseFormError(parsed.field));
   const { name, slug, contentTypeCodes, description, levelSlugs } = parsed.data;
   const db = getPlatformDb();
+
+  // The levels of a course are a stretch of the scale, and the cards only
+  // offer what keeps it one; a form sent by hand is checked here, where it
+  // counts (`isLevelStretch`).
+  const levelOrder = (await db.level.findMany({ orderBy: { eloMin: "asc" }, select: { slug: true } })).map(
+    (level) => level.slug,
+  );
+  if (!isLevelStretch(levelOrder, levelSlugs)) fail(detailPath, "levelStretch");
 
   try {
     await db.$transaction(async (tx) => {

@@ -16,8 +16,8 @@ import type {
   LevelOption,
 } from "@/services/staff-courses/staff-courses.types";
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
-import { shortEloRange } from "@/services/courses/level-rules";
 import { CourseAuthors } from "./course-authors/course-authors.comp";
+import { CourseLevelsField } from "./course-levels-field.comp";
 import { CourseNameFields } from "./course-name-fields.comp";
 import { CourseSources } from "./course-sources/course-sources.comp";
 import { CourseStatusMenu } from "./course-status/course-status-menu.comp";
@@ -177,17 +177,7 @@ export function CourseEditorSection({
                 difficulty, each with its name and its orientative Elo range
                 beside it. Several at once, or none. */}
             <FormFieldset legend="Niveles" frame="none">
-              <PlatformCheckCards
-                name="levelSlugs"
-                defaultValue={course.levelSlugs}
-                aria-label="Niveles a los que va dirigido"
-                layout="line"
-                options={levels.map((level) => ({
-                  value: level.slug,
-                  label: level.name,
-                  meta: `(${shortEloRange(level.eloRange)})`,
-                }))}
-              />
+              <CourseLevelsField levels={levels} defaultValue={course.levelSlugs} />
             </FormFieldset>
 
             <div className="course-editor__submit">

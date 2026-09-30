@@ -125,6 +125,9 @@
   &.platform-check-cards_layout_line .platform-check-cards__card {
     flex-direction: row;
     align-items: baseline;
+    /* The name and its fact are one phrase, so they wrap together rather than
+       either of them being cut. */
+    flex-wrap: wrap;
     /* About a word space: the meta reads as the rest of the label's phrase. */
     gap: 6px;
     padding: 14px 44px 14px 18px;
@@ -147,16 +150,24 @@
     font-weight: 400;
   }
 
+  /* On a line, the fact is written exactly like the name it follows: same
+     size, same weight, same colour — it is part of the same sentence
+     («Avanzado (Elo 1600–1999)»), not a note about it, and a second style
+     inside one line makes two things of what is one. */
   &.platform-check-cards_layout_line .platform-check-cards__meta {
+    font-size: 16px;
     font-weight: 400;
-    color: var(--platform-text-muted);
+    color: inherit;
   }
 
+  /* And chosen too: the rule of the stacked layout paints the fact in the
+     accent's ink, which on a line would break the sentence in two. */
   &.platform-check-cards_layout_line .platform-check-cards__card[data-state="checked"] .platform-check-cards__meta {
-    color: var(--platform-accent-ink);
+    color: inherit;
   }
 
-  &.platform-check-cards_layout_line .platform-check-cards__label,
+  /* A description is one line and is cut if it does not fit: it is a gloss,
+     and what is lost was the end of an explanation. */
   &.platform-check-cards_layout_line .platform-check-cards__description {
     min-width: 0;
     overflow: hidden;
@@ -164,10 +175,16 @@
     white-space: nowrap;
   }
 
-  /* The meta is the short one: it keeps its width and the label gives way. */
+  /* The name and its fact are NOT cut: «Iniciaci… (Elo menos de 800)» loses
+     the one word the card is for. When the two do not fit on one line the
+     card takes two, and the row of the grid grows with it. */
+  &.platform-check-cards_layout_line .platform-check-cards__label,
+  &.platform-check-cards_layout_line .platform-check-cards__meta {
+    min-width: 0;
+  }
+
   &.platform-check-cards_layout_line .platform-check-cards__meta {
     flex: none;
-    white-space: nowrap;
   }
 
   @media (max-width: 620px) {

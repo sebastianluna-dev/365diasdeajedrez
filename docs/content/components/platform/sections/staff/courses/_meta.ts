@@ -7,6 +7,7 @@ const meta: MetaRecord = {
   "chapter-game-section": "ChapterGameSection",
   "course-authors": "CourseAuthors",
   "course-editor-section": "CourseEditorSection",
+  "course-levels-field": "CourseLevelsField",
   "course-games-section": "CourseGamesSection",
   "course-name-fields": "CourseNameFields",
   "course-sources": "CourseSources",

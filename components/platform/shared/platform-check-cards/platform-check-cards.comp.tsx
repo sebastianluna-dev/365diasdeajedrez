@@ -80,7 +80,9 @@ function CheckCards({
           value={option.value}
           checked={chosen.includes(option.value)}
           onCheckedChange={(checked) => toggle(option.value, checked === true)}
-          disabled={disabled}
+          // A card of its own can be ruled out while the group's rule says so
+          // (see `reachableLevels`), with the group still working.
+          disabled={disabled || option.disabled}
           className="platform-check-cards__card"
         >
           <Checkbox.Indicator className="platform-check-cards__mark" forceMount>

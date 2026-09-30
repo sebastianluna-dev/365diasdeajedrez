@@ -14,6 +14,8 @@ export interface PlatformChoiceCardOption {
   description?: string;
   /** Drawn above the label; decorative, the label carries the meaning. */
   icon?: ReactNode;
+  /** Offered, but not choosable: a rule of the group rules it out for now. */
+  disabled?: boolean;
 }
 
 interface PlatformChoiceCardsProps {

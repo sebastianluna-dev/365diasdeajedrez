@@ -4,8 +4,10 @@ import {
   compactEloRange,
   coursesOfLevel,
   formatEloRange,
+  isLevelStretch,
   joinNames,
   labelEloRange,
+  reachableLevels,
   resolveLevelFilter,
   shortEloRange,
 } from "./level-rules";
@@ -122,5 +124,55 @@ describe("joinNames", () => {
     expect(joinNames(["intermedio", "avanzado"])).toBe("intermedio y avanzado");
     expect(joinNames(["principiante", "intermedio", "avanzado"])).toBe("principiante, intermedio y avanzado");
     expect(joinNames([])).toBe("");
+  });
+});
+
+describe("isLevelStretch", () => {
+  const ALL = ["iniciacion", "principiante", "intermedio", "avanzado", "experto", "maestro"];
+
+  it("takes one level, and none at all", () => {
+    expect(isLevelStretch(ALL, [])).toBe(true);
+    expect(isLevelStretch(ALL, ["intermedio"])).toBe(true);
+  });
+
+  it("takes neighbours, in any order", () => {
+    expect(isLevelStretch(ALL, ["intermedio", "avanzado"])).toBe(true);
+    expect(isLevelStretch(ALL, ["avanzado", "intermedio"])).toBe(true);
+    expect(isLevelStretch(ALL, ["maestro", "experto", "avanzado"])).toBe(true);
+  });
+
+  it("refuses a hole in the middle", () => {
+    expect(isLevelStretch(ALL, ["iniciacion", "maestro"])).toBe(false);
+    expect(isLevelStretch(ALL, ["iniciacion", "principiante", "avanzado"])).toBe(false);
+  });
+
+  it("refuses a level the catalog does not have", () => {
+    expect(isLevelStretch(ALL, ["intermedio", "inventado"])).toBe(false);
+  });
+});
+
+describe("reachableLevels", () => {
+  const ALL = ["iniciacion", "principiante", "intermedio", "avanzado", "experto", "maestro"];
+
+  it("offers them all while nothing is chosen", () => {
+    expect(reachableLevels(ALL, [])).toEqual(new Set(ALL));
+  });
+
+  it("offers the two the stretch grows into, and its own two ends", () => {
+    expect(reachableLevels(ALL, ["intermedio", "avanzado"])).toEqual(
+      new Set(["principiante", "intermedio", "avanzado", "experto"]),
+    );
+  });
+
+  it("leaves out what would make a hole or a gap", () => {
+    const reachable = reachableLevels(ALL, ["principiante", "intermedio", "avanzado"]);
+    // The middle one cannot be removed, and the far end cannot be added.
+    expect(reachable.has("intermedio")).toBe(false);
+    expect(reachable.has("maestro")).toBe(false);
+  });
+
+  it("at an end of the scale, offers only the side there is", () => {
+    expect(reachableLevels(ALL, ["iniciacion"])).toEqual(new Set(["iniciacion", "principiante"]));
+    expect(reachableLevels(ALL, ["maestro"])).toEqual(new Set(["experto", "maestro"]));
   });
 });
