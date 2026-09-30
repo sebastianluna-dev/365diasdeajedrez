@@ -46,6 +46,11 @@ export function ChapterEditorSection({ chapter, errorCode }: ChapterEditorSectio
                   <dd>{chapter.estimatedDuration ? `${chapter.estimatedDuration} min` : "—"}</dd>
                 </div>
               </dl>
+
+              {/* A figure that can no longer be typed has to say where it comes from. */}
+              <p className="chapter-editor__note">
+                La duración es la suma de los minutos de sus lecciones: se recalcula al guardar una.
+              </p>
             </StaffPanel>
 
             <StaffPanel title="Acciones">
@@ -64,10 +69,6 @@ export function ChapterEditorSection({ chapter, errorCode }: ChapterEditorSectio
 
             <FormField label="Descripción (opcional)">
               <textarea name="description" defaultValue={chapter.description ?? ""} maxLength={1000} />
-            </FormField>
-
-            <FormField label="Duración estimada (minutos, opcional)">
-              <input type="number" name="estimatedDuration" min={0} defaultValue={chapter.estimatedDuration ?? ""} />
             </FormField>
 
             <label className="chapter-editor__check">

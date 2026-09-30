@@ -25,20 +25,20 @@ The name of the record and its tabs are not here: they are the [layout](/compone
 
 | Prop        | Type                 | Required | Meaning                                                                                                                                                                                                           |
 | ----------- | -------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `chapter`   | `ChapterAdminDetail` | yes      | `id`, `courseId`, `courseName`, `courseStatusCode`, `order`, `name`, `description?`, `isPriority`, `estimatedDuration?`, `lessons[]` (with `hasPgn`, `exerciseCount`, `roleCode`, `isPriority`, `progressCount`). |
+| `chapter`   | `ChapterAdminDetail` | yes      | `id`, `courseId`, `courseName`, `courseStatusCode`, `order`, `name`, `description?`, `isPriority`, `estimatedDuration?` (the cached sum of its lessons' minutes), `lessons[]` (with `hasPgn`, `exerciseCount`, `roleCode`, `isPriority`, `progressCount`). |
 | `errorCode` | `string`             | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`.                                                                                                                                                                 |
 
 ## Behaviour
 
-- Metadata form: name, description, estimated duration and «Capítulo de prioridad», a checkbox that marks the whole chapter (`Chapter.isPriority`): the student sees «Prioridad» on its card, and every lesson of it passes their «Prioridad» filter, marked or not. The head shows the «Prioridad» tag of a chapter that is.
+- Metadata form: name, description and «Capítulo de prioridad», a checkbox that marks the whole chapter (`Chapter.isPriority`): the student sees «Prioridad» on its card, and every lesson of it passes their «Prioridad» filter, marked or not. The head shows the «Prioridad» tag of a chapter that is.
 - Lessons: not here. They are [a tab of their own](/components/platform/sections/staff/courses/chapter-lessons-section), «Lecciones», because the list is rows and rows want the whole width (2026-09-30).
-- The aside counts lessons, lessons with PGN, exercises and duration.
+- The aside counts lessons, lessons with PGN, exercises and duration. **The duration is not a field**: it is the sum of its lessons' minutes, cached on the chapter by `syncChapterDuration` (2026-09-30), and a line under the figures says so — «La duración es la suma de los minutos de sus lecciones: se recalcula al guardar una.» A chapter whose lessons declare no minutes reads `—`, not «0 min».
 
 ## Markup & styling
 
 Block `.chapter-editor` (132 lines).
 
-**Elements:** `.chapter-editor__check`, `.chapter-editor__check-hint`, `.chapter-editor__facts`, `.chapter-editor__fact`, `.chapter-editor__wide`, `.chapter-editor__form`, `.chapter-editor__submit`, `.chapter-editor__inline`, `.chapter-editor__inline-input`, `.chapter-editor__roles`, `.chapter-editor__role-button`
+**Elements:** `.chapter-editor__check`, `.chapter-editor__check-hint`, `.chapter-editor__note`, `.chapter-editor__facts`, `.chapter-editor__fact`, `.chapter-editor__wide`, `.chapter-editor__form`, `.chapter-editor__submit`, `.chapter-editor__inline`, `.chapter-editor__inline-input`, `.chapter-editor__roles`, `.chapter-editor__role-button`
 
 No modifiers.
 

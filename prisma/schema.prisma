@@ -478,7 +478,13 @@ model Chapter {
   /// Introduction or closing of the course; null in normal chapters, which are
   /// the majority. At most one of each per course (partial unique index).
   roleId            Int?
-  /// Estimated minutes.
+  /// Estimated minutes: the CACHED SUM of its lessons' `estimatedDuration`, so
+  /// that showing a chapter's duration never reads its lessons. Nobody types it:
+  /// its only writer is `syncChapterDuration`
+  /// (services/shared/chapter-duration.service.ts), called inside the same
+  /// transaction as every write that creates, changes or deletes a lesson. Null
+  /// when no lesson of the chapter declares minutes — never 0, which would read
+  /// as "it takes no time".
   estimatedDuration Int?
 
   course Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -507,7 +513,8 @@ model Lesson {
   isPriority        Boolean   @default(false)
   /// Introduction or closing of the chapter; null in normal lessons.
   roleId            Int?
-  /// Estimated minutes.
+  /// Estimated minutes. It is the only one typed by hand, and what its chapter's
+  /// `estimatedDuration` adds up.
   estimatedDuration Int?
   orientationId     Int
   /// Game of the course collection the content comes from.

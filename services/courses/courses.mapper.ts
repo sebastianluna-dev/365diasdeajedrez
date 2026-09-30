@@ -360,16 +360,16 @@ function mapChapterItem(
   const completedLessons = lessons.filter(
     (lesson) => state.lessonStatus.get(lesson.id) === PROGRESS_STATUS.COMPLETED,
   ).length;
-  // Its own figure rules; without one, what its lessons add up to; and when
-  // nothing says anything there is no duration, instead of a zero that reads
-  // as "it takes no time".
-  const durationMin = chapter.estimatedDuration || minutesOf(chapter.lessons);
   return {
     id: chapter.id,
     order: chapter.order,
     name: chapter.name,
     description: chapter.description ?? undefined,
-    durationMin: durationMin > 0 ? durationMin : undefined,
+    // The cached sum of its lessons' minutes (`syncChapterDuration`): a
+    // chapter's duration is one column and not a walk over its lessons. Nothing
+    // there says how long it takes, so there is no duration — not a zero, which
+    // would read as "it takes no time".
+    durationMin: chapter.estimatedDuration || undefined,
     isPriority: chapter.isPriority,
     lessonCount: chapter.lessons.length,
     totalLessons: lessons.length,

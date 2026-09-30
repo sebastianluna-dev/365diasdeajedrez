@@ -426,7 +426,7 @@ export interface SeedChapter {
   order: number;
   name: string;
   description: string;
-  estimatedDuration: number;
+  /** No duration: a chapter's is the sum of its lessons', written by `syncChapterDuration`. */
   lessons: SeedLesson[];
 }
 
@@ -489,7 +489,6 @@ export const COURSES: SeedCourse[] = [
         order: 1,
         name: "Ideas básicas",
         description: "Qué busca el negro con 1...c5 y cómo se forman las estructuras sicilianas.",
-        estimatedDuration: 45,
         lessons: [
           {
             id: IDS.lsWhatIsSicilian,
@@ -534,7 +533,6 @@ export const COURSES: SeedCourse[] = [
         order: 2,
         name: "La Variante Najdorf",
         description: "La línea favorita de Fischer y Kasparov: 5...a6 y sus planes.",
-        estimatedDuration: 40,
         lessons: [
           {
             id: IDS.lsNajdorfStart,
@@ -613,7 +611,6 @@ export const COURSES: SeedCourse[] = [
         order: 1,
         name: "Posiciones fundamentales",
         description: "Las dos posiciones teóricas imprescindibles del final de torre y peón.",
-        estimatedDuration: 35,
         lessons: [
           {
             id: IDS.lsLucena,

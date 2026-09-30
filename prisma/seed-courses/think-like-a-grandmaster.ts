@@ -262,7 +262,6 @@ function toSeedChapter(chapter: ImportChapter): SeedChapter {
     order: chapter.order,
     name: chapter.title,
     description,
-    estimatedDuration: chapter.lessons.length * MINUTES_PER_LESSON,
     lessons: chapter.lessons.map((lesson) => toSeedLesson(lesson, topics)),
   };
 }

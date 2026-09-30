@@ -33,7 +33,7 @@ The "Opciones" controls in the aside (priority, trainable, training colour) are 
 
 ## Behaviour
 
-- Metadata form (`id="lesson-metadata"`): name, description, board orientation, estimated duration, topics as a [`FormFieldset`](/components/platform/shared/form-field). The starting position is not typed: it comes from the linked game's `[FEN]` header.
+- Metadata form (`id="lesson-metadata"`): name, description, board orientation, estimated duration — **the only place minutes are typed**, and what its chapter's duration adds up (`syncChapterDuration`) — , topics as a [`FormFieldset`](/components/platform/shared/form-field). The starting position is not typed: it comes from the linked game's `[FEN]` header.
 - Aside: the three option controls with `form="lesson-metadata"`, a status card with PGN date, exercise count and duration, and the delete form only when `canDelete` (draft course, no progress: once someone has studied it their history rules and the course is archived, not dismantled).
 - Exercises: [`ExerciseEditor`](/components/platform/sections/staff/courses/exercise-editor) with the lesson's PGN for its board picker.
 

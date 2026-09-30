@@ -28,22 +28,27 @@ interface LessonSpec {
 }
 
 function chapter(id: string, order: number, lessons: LessonSpec[]) {
+  const rows = lessons.map((lesson) => ({
+    id: lesson.id,
+    chapterId: id,
+    name: `Lección ${lesson.order}`,
+    description: null,
+    order: lesson.order,
+    isPriority: lesson.priority ?? false,
+    estimatedDuration: lesson.minutes ?? 10,
+  }));
+
   return {
     id,
     order,
     name: `Capítulo ${order}`,
     description: null,
     isPriority: false,
-    estimatedDuration: null,
-    lessons: lessons.map((lesson) => ({
-      id: lesson.id,
-      chapterId: id,
-      name: `Lección ${lesson.order}`,
-      description: null,
-      order: lesson.order,
-      isPriority: lesson.priority ?? false,
-      estimatedDuration: lesson.minutes ?? 10,
-    })),
+    // The chapter's cached duration is what its lessons add up, which is what
+    // `syncChapterDuration` writes. A test that wants a figure out of line with
+    // them overrides it.
+    estimatedDuration: rows.reduce((total, lesson) => total + (lesson.estimatedDuration ?? 0), 0) || null,
+    lessons: rows,
   };
 }
 
@@ -349,6 +354,8 @@ describe("los capítulos del curso", () => {
         ]),
         name: "Los años de aprendizaje (1957–1959)",
       },
+      // A figure out of line with its lessons on purpose: what is read is the
+      // column, and this is what proves nobody sums the lessons behind it.
       { ...chapter("cap-2", 2, [{ id: "l3", order: 1, minutes: 15 }]), name: "El final", estimatedDuration: 90 },
     ],
   } as unknown as CourseWithDetail;
@@ -359,10 +366,23 @@ describe("los capítulos del curso", () => {
     expect(second?.name).toBe("El final");
   });
 
-  it("duran lo que dice su cifra y, sin ella, lo que suman sus lecciones", () => {
-    const [first, second] = mapCourseDetail(WITH_NAMES, state()).chapters;
+  it("duran lo que dice su cifra, que es la suma de sus lecciones ya hecha", () => {
+    const [first] = mapCourseDetail(WITH_NAMES, state()).chapters;
     expect(first?.durationMin).toBe(40);
+  });
+
+  it("una cifra que no cuadra con sus lecciones se respeta: la lectura no las suma", () => {
+    const [, second] = mapCourseDetail(WITH_NAMES, state()).chapters;
     expect(second?.durationMin).toBe(90);
+  });
+
+  it("sin cifra no duran nada, en vez de un cero que se lee como «no lleva tiempo»", () => {
+    const withoutFigure = {
+      ...WITH_NAMES,
+      chapters: [{ ...chapter("cap-1", 1, [{ id: "l1", order: 1, minutes: 0 }]), estimatedDuration: null }],
+    } as unknown as CourseWithDetail;
+    const [only] = mapCourseDetail(withoutFigure, state()).chapters;
+    expect(only?.durationMin).toBeUndefined();
   });
 
   it("cuentan TODAS sus lecciones para la ficha, y las que se ven para su progreso", () => {

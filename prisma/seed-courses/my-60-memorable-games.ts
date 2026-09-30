@@ -476,7 +476,6 @@ function loadCourse(): SeedCourse {
       order: index + 1,
       name: stage.name,
       description: stage.description,
-      estimatedDuration: lessons.length * MINUTES_PER_LESSON,
       lessons,
     };
   });

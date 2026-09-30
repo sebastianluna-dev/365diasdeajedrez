@@ -13,6 +13,7 @@ import { syncCatalogJoin } from "@/services/shared/catalog-join.service";
 import { CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
 import { EXERCISE_MODE } from "@/constants/platform/training-codes.const";
 import { deriveExerciseData } from "@/lib/chess/exercise-derivation";
+import { syncChapterDuration } from "@/services/shared/chapter-duration.service";
 import { syncLessonTrainingExercise } from "@/services/shared/lesson-training.service";
 import { isLevelStretch } from "@/services/courses/level-rules";
 import { numericId } from "@/lib/numeric-id";
@@ -117,11 +118,12 @@ function courseFormError(field: string): string {
 }
 const PGN_SCHEMA = z.object({ pgn: z.string().trim().min(1).max(PGN_MAX_LENGTH) });
 const NAMED_SCHEMA = z.object({ name: formText(NAME_MAX_LENGTH), role: z.string().trim().max(32).optional() });
+// No `estimatedDuration` here: a chapter's duration is the sum of its lessons'
+// minutes (`syncChapterDuration`) and nobody types it.
 const CHAPTER_UPDATE_SCHEMA = z.object({
   name: formText(NAME_MAX_LENGTH),
   description: formOptionalText(DESCRIPTION_MAX_LENGTH),
   isPriority: formCheckbox(),
-  estimatedDuration: formLenientInt(0, DURATION_MAX),
 });
 const LESSON_UPDATE_SCHEMA = z.object({
   name: formText(NAME_MAX_LENGTH),
@@ -668,6 +670,9 @@ export async function updateChapter(courseId: string, chapterId: string, formDat
   const parsed = parseForm(CHAPTER_UPDATE_SCHEMA, formData);
   if (!parsed.ok) fail(chapterPath, "invalid");
 
+  // `parsed.data` goes in whole, so the schema is the guard: `estimatedDuration`
+  // is not in it and is not written from here. Re-adding it as a field would mean
+  // typing over a figure that the next lesson save overwrites.
   const updated = await getPlatformDb().chapter.updateMany({
     where: { id: chapterId, courseId },
     data: parsed.data,
@@ -795,17 +800,24 @@ export async function createLesson(courseId: string, chapterId: string, formData
   const role = isContentRoleCode(roleCode) ? roleCode : null;
 
   const count = await db.lesson.count({ where: { chapterId } });
-  // Reasonable starting values: the rest is edited inside the lesson.
-  await db.lesson.create({
-    data: {
-      id: numericId(),
-      chapter: { connect: { id: chapter.id } },
-      name,
-      order: nextOrder(count),
-      ...(role ? { role: { connect: { code: role } } } : {}),
-      orientation: { connect: { code: CONTENT_ORIENTATIONS[0] } },
-      pgn: "",
-    },
+  await db.$transaction(async (tx) => {
+    // Reasonable starting values: the rest is edited inside the lesson.
+    await tx.lesson.create({
+      data: {
+        id: numericId(),
+        chapter: { connect: { id: chapter.id } },
+        name,
+        order: nextOrder(count),
+        ...(role ? { role: { connect: { code: role } } } : {}),
+        orientation: { connect: { code: CONTENT_ORIENTATIONS[0] } },
+        pgn: "",
+      },
+    });
+
+    // A lesson is born without minutes, so today the sum does not move. The call
+    // is here all the same: every write over a chapter's lessons recomputes its
+    // duration, and a rule with an exception is how a cached figure drifts.
+    await syncChapterDuration(tx, chapter.id);
   });
 
   revalidatePath(staffRoutes.chapterDetail(courseId, chapterId), "layout");
@@ -870,6 +882,11 @@ export async function updateLesson(
         trainingColor,
       });
       if (isTrainable && !sync.ok) throw new TrainingSyncError(sync.reason);
+
+      // The chapter's duration is what its lessons add up: the write that moved
+      // the sum recomputes it, in the same transaction, so a save refused above
+      // takes the figure back with it.
+      await syncChapterDuration(tx, chapterId);
 
       await tx.lessonTopic.deleteMany({ where: { lessonId: lesson.id } });
       for (const topicId of topicIds) {
@@ -982,6 +999,9 @@ export async function deleteLesson(courseId: string, chapterId: string, formData
 
   await db.$transaction(async (tx) => {
     await tx.lesson.delete({ where: { id: lesson.id } });
+    // One lesson fewer is fewer minutes: the chapter's figure follows.
+    await syncChapterDuration(tx, chapterId);
+
     const remaining = await tx.lesson.findMany({ where: { chapterId }, select: { id: true, order: true } });
     for (const update of planDenseRenumber(remaining)) {
       await tx.lesson.update({ where: { id: update.id }, data: { order: update.order } });

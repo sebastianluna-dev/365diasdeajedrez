@@ -102,7 +102,7 @@ export interface CourseChapterItem {
   /** As the staff wrote it, whole: "Los años de aprendizaje (1957–1959)". */
   name: string;
   description?: string;
-  /** Minutes: the chapter's own figure, or what its lessons add up to. */
+  /** Minutes: what its lessons add up to, already summed on the chapter. */
   durationMin?: number;
   /** The staff marked the chapter as priority: the card's «Prioridad». */
   isPriority: boolean;

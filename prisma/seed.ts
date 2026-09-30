@@ -13,6 +13,7 @@ import { deriveExerciseData } from "../lib/chess/exercise-derivation";
 import { PrismaClient } from "../lib/platform-db/generated/client";
 import { hashPassword } from "../lib/platform-auth/password";
 import { indexGamePositions } from "../services/game-positions/game-positions.service";
+import { syncChapterDuration } from "../services/shared/chapter-duration.service";
 import { rebuildDailyStats } from "../services/shared/daily-stats";
 import {
   ACTIVITIES,
@@ -355,7 +356,6 @@ async function main() {
         name: chapter.name,
         description: chapter.description,
         order: chapter.order,
-        estimatedDuration: chapter.estimatedDuration,
       };
       await db.chapter.upsert({
         where: { id: chapter.id },
@@ -418,6 +418,10 @@ async function main() {
           });
         }
       }
+
+      // The chapter's duration is derived: the same function the panel uses
+      // writes it, so a seeded chapter and one built by hand cannot differ.
+      await syncChapterDuration(db, chapter.id);
     }
   }
 

@@ -25,6 +25,15 @@
     flex: none;
   }
 
+  /* Under the facts: where the duration comes from, now that it is not typed. */
+  & .chapter-editor__note {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
   & .chapter-editor__check-hint {
     display: block;
     margin-top: 3px;

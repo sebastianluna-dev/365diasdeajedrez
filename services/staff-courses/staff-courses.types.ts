@@ -116,6 +116,7 @@ export interface ChapterAdminDetail {
   order: number;
   /** The whole chapter is priority: every lesson of it passes the student's filter. */
   isPriority: boolean;
+  /** Sum of its lessons' minutes, cached on the chapter; absent when none declares any. */
   estimatedDuration?: number;
   lessons: LessonAdminRow[];
 }

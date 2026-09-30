@@ -147,7 +147,6 @@ export const getCourseAdminDetail = cache(async (courseId: string): Promise<Cour
           name: true,
           order: true,
           isPriority: true,
-          estimatedDuration: true,
           role: { select: { code: true, label: true } },
           _count: { select: { lessons: true, progresses: true } },
           lessons: { select: { ...lessonPgnSelect, _count: { select: { progresses: true } } } },
