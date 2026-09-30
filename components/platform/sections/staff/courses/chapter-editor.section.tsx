@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FormField } from "@/components/platform/shared/form-field.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
-import { CONTENT_ROLE, COURSE_STATUS } from "@/constants/platform/course-codes.const";
+import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { staffRoutes } from "@/lib/platform-routes";
 import {
@@ -11,7 +11,7 @@ import {
   updateChapter,
 } from "@/services/staff-courses/staff-courses.actions";
 import type { ChapterAdminDetail } from "@/services/staff-courses/staff-courses.types";
-import { SortableList } from "./sortable-list.comp";
+import { SyllabusList } from "./syllabus-list/syllabus-list.comp";
 import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffTabs } from "./staff-tabs.comp";
 import { StaffPanel } from "./staff-panel.comp";
@@ -29,8 +29,6 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
   const isDraft = chapter.courseStatusCode === COURSE_STATUS.DRAFT;
   const withPgn = chapter.lessons.filter((lesson) => lesson.hasPgn).length;
-  const hasIntro = chapter.lessons.some((lesson) => lesson.roleCode === CONTENT_ROLE.INTRO);
-  const hasClosing = chapter.lessons.some((lesson) => lesson.roleCode === CONTENT_ROLE.CLOSING);
   const exercises = chapter.lessons.reduce((total, lesson) => total + lesson.exerciseCount, 0);
 
   return (
@@ -129,66 +127,32 @@ export function ChapterEditorSection({ chapter, gameCount, errorCode }: ChapterE
         </StaffPanel>
 
         <StaffPanel title="Lecciones" meta={`${chapter.lessons.length} · ${withPgn} con PGN`}>
-          <SortableList
+          {/* The same rail the course's chapters are drawn on: a chapter's
+              lessons are the same thing one level down, so the panel of a
+              chapter and the panel of a course read alike. The introduction,
+              the closing and the field that adds one are the list's own. */}
+          <SyllabusList
+            noun="lección"
             items={chapter.lessons.map((lesson) => ({
               id: lesson.id,
               name: lesson.name,
-              meta: `${lesson.hasPgn ? "Con PGN" : "Sin PGN"} · ${lesson.exerciseCount} ejercicio${
+              facts: `${lesson.hasPgn ? "Con PGN" : "Sin PGN"} · ${lesson.exerciseCount} ejercicio${
                 lesson.exerciseCount === 1 ? "" : "s"
               }`,
               href: lesson.href,
-              roleLabel: lesson.roleLabel,
+              roleCode: lesson.roleCode,
               badge: lesson.isPriority ? "Prioridad" : undefined,
               // Delete only where the server would allow it: draft course and no
               // progress from any student.
               canDelete: isDraft && lesson.progressCount === 0,
             }))}
             onReorder={reorderLessons.bind(null, chapter.courseId, chapter.id)}
+            createAction={createLesson.bind(null, chapter.courseId, chapter.id)}
             deleteAction={deleteLesson.bind(null, chapter.courseId, chapter.id)}
             deleteFieldName="lessonId"
-            noun="lección"
-            emptyLabel="Este capítulo todavía no tiene lecciones."
+            newPlaceholder="Nombre de la nueva lección…"
           />
 
-          <form className="chapter-editor__inline" action={createLesson.bind(null, chapter.courseId, chapter.id)}>
-            <input
-              type="text"
-              name="name"
-              maxLength={160}
-              required
-              className="chapter-editor__inline-input"
-              placeholder="Nombre de la lección"
-              aria-label="Nombre de la lección"
-            />
-            <SubmitButton className="platform-button" pendingLabel="Añadiendo…">
-              Añadir lección
-            </SubmitButton>
-          </form>
-
-          {/* Optional and at most one of each; the button goes away once it is created. */}
-          {(!hasIntro || !hasClosing) && (
-            <div className="chapter-editor__roles">
-              {!hasIntro && (
-                <form action={createLesson.bind(null, chapter.courseId, chapter.id)}>
-                  <input type="hidden" name="role" value={CONTENT_ROLE.INTRO} />
-                  <input type="hidden" name="name" value="Introducción" />
-                  <SubmitButton className="chapter-editor__role-button" pendingLabel="Añadiendo…">
-                    Añadir introducción
-                  </SubmitButton>
-                </form>
-              )}
-
-              {!hasClosing && (
-                <form action={createLesson.bind(null, chapter.courseId, chapter.id)}>
-                  <input type="hidden" name="role" value={CONTENT_ROLE.CLOSING} />
-                  <input type="hidden" name="name" value="Cierre" />
-                  <SubmitButton className="chapter-editor__role-button" pendingLabel="Añadiendo…">
-                    Añadir cierre
-                  </SubmitButton>
-                </form>
-              )}
-            </div>
-          )}
         </StaffPanel>
       </StaffEditorLayout>
     </div>

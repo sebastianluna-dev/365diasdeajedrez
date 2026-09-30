@@ -39,38 +39,6 @@
     justify-content: flex-end;
   }
 
-  & .chapter-editor__inline {
-    display: flex;
-    gap: 10px;
-    margin-top: 16px;
-    padding-top: 16px;
-    border-top: 1px solid var(--platform-border);
-
-    @media (max-width: 620px) {
-      flex-direction: column;
-    }
-  }
-
-  & .chapter-editor__inline-input {
-    flex: 1;
-    min-width: 0;
-    padding: 12px 14px;
-    border: 1px solid var(--platform-border);
-    border-radius: 8px;
-    background: var(--platform-bg);
-    color: var(--platform-text);
-    font-family: inherit;
-    font-size: 15px;
-    transition: 150ms;
-    transition-property: border-color, box-shadow;
-  }
-
-  & .chapter-editor__inline-input:focus {
-    outline: none;
-    border-color: var(--platform-accent);
-    box-shadow: 0 0 0 3px var(--platform-accent-soft);
-  }
-
   & .chapter-editor__facts {
     margin: 0;
     display: flex;
@@ -101,32 +69,4 @@
     width: 100%;
   }
 
-  /* The two optional ones go at the foot, apart from the normal creation:
-     they are set once and never touched again. */
-  & .chapter-editor__roles {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: 12px;
-  }
-
-  & .chapter-editor__role-button {
-    padding: 8px 14px;
-    border: 1px dashed var(--platform-border-strong);
-    border-radius: 1000px;
-    background: transparent;
-    color: var(--platform-text-muted);
-    font-family: inherit;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 150ms;
-    transition-property: border-color, background-color, color;
-  }
-
-  & .chapter-editor__role-button:hover {
-    border-color: var(--platform-accent);
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
-  }
 }

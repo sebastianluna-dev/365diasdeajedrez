@@ -19,7 +19,7 @@ const meta: MetaRecord = {
   "exercise-move-picker": "ExerciseMovePicker",
   "lesson-game-picker": "LessonGamePicker",
   "new-course": "NewCourse",
-  "sortable-list": "SortableList",
+  "syllabus-list": "SyllabusList",
   "staff-editor": "StaffEditorHead",
   "staff-panel": "StaffPanel",
   "staff-tabs": "StaffTabs",

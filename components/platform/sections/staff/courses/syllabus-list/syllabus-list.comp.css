@@ -1,5 +1,5 @@
-.course-syllabus {
-  --course-syllabus-node: 40px;
+.syllabus-list {
+  --syllabus-list-node: 40px;
 
   display: flex;
   flex-direction: column;
@@ -8,22 +8,22 @@
   padding: 4px 0 2px;
   list-style: none;
 
-  & .course-syllabus__step {
+  & .syllabus-list__step {
     position: relative;
     display: flex;
     align-items: center;
     gap: 22px;
-    min-height: var(--course-syllabus-node);
+    min-height: var(--syllabus-list-node);
     transition: opacity 150ms;
   }
 
   /* The rail: a line from under each node to the next one. It belongs to the
      step and not to the list, so it ends where the last node does. */
-  & .course-syllabus__step:not(:last-child)::before {
+  & .syllabus-list__step:not(:last-child)::before {
     content: "";
     position: absolute;
     top: 50%;
-    left: calc(var(--course-syllabus-node) / 2 - 1.5px);
+    left: calc(var(--syllabus-list-node) / 2 - 1.5px);
     width: 3px;
     height: calc(100% + 26px);
     background: var(--platform-track);
@@ -31,18 +31,18 @@
 
   /* The travelling chapter dims: without that, while dragging you cannot tell
      the one that moves from the one being pointed at as the destination. */
-  & .course-syllabus__step_state_dragging {
+  & .syllabus-list__step_state_dragging {
     opacity: 0.45;
   }
 
-  & .course-syllabus__node {
+  & .syllabus-list__node {
     position: relative;
     flex: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: var(--course-syllabus-node);
-    height: var(--course-syllabus-node);
+    width: var(--syllabus-list-node);
+    height: var(--syllabus-list-node);
     padding: 0;
     border: 0;
     border-radius: 50%;
@@ -54,23 +54,23 @@
 
   /* The number is the handle: what the eye looks for when reordering is the
      very place to grab. */
-  & .course-syllabus__node_kind_chapter {
+  & .syllabus-list__node_kind_item {
     background: var(--platform-text);
     color: var(--platform-surface);
     font-variant-numeric: tabular-nums;
     cursor: grab;
   }
 
-  & .course-syllabus__node_kind_chapter:active {
+  & .syllabus-list__node_kind_item:active {
     cursor: grabbing;
   }
 
-  & .course-syllabus__node_kind_chapter:focus-visible {
+  & .syllabus-list__node_kind_item:focus-visible {
     outline: 2px solid var(--platform-accent);
     outline-offset: 2px;
   }
 
-  & .course-syllabus__node_kind_new {
+  & .syllabus-list__node_kind_new {
     background: var(--platform-surface-neutral);
     color: var(--platform-text-subtle);
     font-size: 20px;
@@ -80,13 +80,13 @@
   /* What opens and what closes the course: a soft tile with a piece in the
      accent ink, a pawn for the first step and a king for the last. The piece
      is a mask over the colour, so it takes it from the token. */
-  & .course-syllabus__node_kind_intro,
-  & .course-syllabus__node_kind_closing {
+  & .syllabus-list__node_kind_intro,
+  & .syllabus-list__node_kind_closing {
     background: var(--platform-accent-soft);
   }
 
-  & .course-syllabus__node_kind_intro::after,
-  & .course-syllabus__node_kind_closing::after {
+  & .syllabus-list__node_kind_intro::after,
+  & .syllabus-list__node_kind_closing::after {
     content: "";
     width: 20px;
     height: 20px;
@@ -94,11 +94,11 @@
     mask: url("/pieces/b-pawn.svg") center / contain no-repeat;
   }
 
-  & .course-syllabus__node_kind_closing::after {
+  & .syllabus-list__node_kind_closing::after {
     mask-image: url("/pieces/b-king.svg");
   }
 
-  & .course-syllabus__text {
+  & .syllabus-list__text {
     flex: 1;
     min-width: 0;
     display: flex;
@@ -106,7 +106,7 @@
     gap: 3px;
   }
 
-  & .course-syllabus__name {
+  & .syllabus-list__name {
     align-self: flex-start;
     max-width: 100%;
     font-size: 19px;
@@ -119,22 +119,22 @@
     white-space: nowrap;
   }
 
-  & .course-syllabus__name:hover {
+  & .syllabus-list__name:hover {
     color: var(--platform-accent-ink);
   }
 
-  & .course-syllabus__facts {
+  & .syllabus-list__facts {
     font-size: 15px;
     color: var(--platform-text-subtle);
   }
 
   /* The staff's mark on the chapter, at the end of its facts. */
-  & .course-syllabus__priority {
+  & .syllabus-list__badge {
     font-weight: 700;
     color: var(--platform-accent-ink);
   }
 
-  & .course-syllabus__actions {
+  & .syllabus-list__actions {
     flex: none;
     display: flex;
     align-items: center;
@@ -145,15 +145,15 @@
      (`.platform-row-action`): the chapter is a row of a list, and what is
      done to it is written at its end, not boxed. */
 
-  & .course-syllabus__slot,
-  & .course-syllabus__new {
+  & .syllabus-list__slot,
+  & .syllabus-list__new {
     flex: 1;
     min-width: 0;
   }
 
   /* The slot of what does not exist yet: dashed, the whole width, and lit
      only when it is about to be pressed. */
-  & .course-syllabus__add {
+  & .syllabus-list__add {
     width: 100%;
     padding: 13px 20px;
     border: 1.5px dashed var(--platform-border-strong);
@@ -169,19 +169,19 @@
     transition-property: border-color, background-color, color;
   }
 
-  & .course-syllabus__add:hover:not(:disabled) {
+  & .syllabus-list__add:hover:not(:disabled) {
     border-color: var(--platform-accent);
     background: var(--platform-accent-wash);
     color: var(--platform-accent-ink);
   }
 
-  & .course-syllabus__new {
+  & .syllabus-list__new {
     position: relative;
     display: flex;
     align-items: center;
   }
 
-  & .course-syllabus__new-input {
+  & .syllabus-list__new-input {
     width: 100%;
     box-sizing: border-box;
     padding: 13px 110px 13px 19px;
@@ -196,15 +196,15 @@
     transition-property: border-color, box-shadow;
   }
 
-  & .course-syllabus__new-input::placeholder {
+  & .syllabus-list__new-input::placeholder {
     color: var(--platform-text);
   }
 
-  & .course-syllabus__new-input:focus::placeholder {
+  & .syllabus-list__new-input:focus::placeholder {
     color: var(--platform-text-subtle);
   }
 
-  & .course-syllabus__new-input:focus {
+  & .syllabus-list__new-input:focus {
     outline: none;
     border-color: var(--platform-accent);
     box-shadow: 0 0 0 3px var(--platform-accent-soft);
@@ -212,7 +212,7 @@
 
   /* Inside the field, so it is smaller than the page's buttons, but the same
      soft accent as every action of the course. */
-  & .course-syllabus__new-submit {
+  & .syllabus-list__new-submit {
     position: absolute;
     right: 7px;
     padding: 8px 14px;
@@ -226,30 +226,30 @@
     cursor: pointer;
   }
 
-  & .course-syllabus__new-submit:hover:not(:disabled) {
+  & .syllabus-list__new-submit:hover:not(:disabled) {
     background: var(--platform-accent-wash);
   }
 
   /* Nothing typed, nothing to add: the button waits out of sight. */
-  & .course-syllabus__new-input:placeholder-shown + .course-syllabus__new-submit {
+  & .syllabus-list__new-input:placeholder-shown + .syllabus-list__new-submit {
     display: none;
   }
 
   @media (max-width: 620px) {
-    & .course-syllabus__step {
+    & .syllabus-list__step {
       gap: 14px;
     }
 
-    & .course-syllabus__name {
+    & .syllabus-list__name {
       font-size: 17px;
       white-space: normal;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    & .course-syllabus__step,
-    & .course-syllabus__add,
-    & .course-syllabus__new-input {
+    & .syllabus-list__step,
+    & .syllabus-list__add,
+    & .syllabus-list__new-input {
       transition: none;
     }
   }
