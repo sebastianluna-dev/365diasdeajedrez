@@ -6,6 +6,7 @@ import { SyllabusList } from "../syllabus-list.comp";
 import { SyllabusListA } from "./syllabus-list-a.comp";
 import { SyllabusListB } from "./syllabus-list-b.comp";
 import { SyllabusListC } from "./syllabus-list-c.comp";
+import { SyllabusListD } from "./syllabus-list-d.comp";
 
 /** The chapters of an invented course: a closing, five chapters and no introduction yet. */
 const CHAPTERS: SyllabusItem[] = [
@@ -53,12 +54,12 @@ const meta = {
     docs: {
       description: {
         component: `
-Three ways of drawing a course's chapters — and a chapter's lessons, which are
+Four ways of drawing a course's chapters — and a chapter's lessons, which are
 the same list one level apart — as **draggable cards** instead of the rail they
 hang from today. The data is invented and the actions are stubs: dragging and
 the arrows reorder the list on the spot, and nothing is saved.
 
-Each story is a design; **Actual** is what the platform draws today, to compare
+Each story is a design; **Hoy** is what the platform draws today, to compare
 against. Source: \`components/platform/sections/staff/courses/syllabus-list/designs/\`.
 `,
       },
@@ -104,6 +105,16 @@ export const DisenoC: Story = {
   render: () => (
     <StaffPanel title="Temario" meta="5 capítulos · 30 lecciones">
       <SyllabusListC {...ARGS} />
+    </StaffPanel>
+  ),
+};
+
+/** **D — La lista en bandas.** Un bloque enmarcado para los pasos numerados, y fuera de él lo que abre y lo que cierra el curso. */
+export const DisenoD: Story = {
+  name: "D · Lista en bandas",
+  render: () => (
+    <StaffPanel title="Temario" meta="5 capítulos · 30 lecciones · 3 h 56 min">
+      <SyllabusListD {...ARGS} />
     </StaffPanel>
   ),
 };
