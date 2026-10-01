@@ -30,10 +30,6 @@
     background: var(--platform-surface-sunken);
   }
 
-  & .new-study__open:focus-visible {
-    outline: 2px solid var(--platform-accent-soft);
-  }
-
   /* The size and the rounding: the centring, the backdrop, the surface and
      the entry and exit motion are set by `.platform-dialog`. */
   & .new-study__dialog {

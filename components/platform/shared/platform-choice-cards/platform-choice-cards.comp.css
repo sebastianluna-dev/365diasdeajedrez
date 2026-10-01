@@ -25,8 +25,9 @@
     border-color: var(--platform-border-strong);
   }
 
+  /* The platform's own ring stays: a card that is already chosen has the
+     accent's border, so a pale ring would be all that says where the focus is. */
   & .platform-choice-cards__card:focus-visible {
-    outline: 2px solid var(--platform-accent-soft);
     border-color: var(--platform-accent);
   }
 

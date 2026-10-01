@@ -114,10 +114,6 @@
     color: var(--platform-text);
   }
 
-  & .platform-date-picker__nav:focus-visible {
-    outline: 2px solid var(--platform-accent-soft);
-  }
-
   & .platform-date-picker__nav-icon {
     width: 14px;
     height: 14px;

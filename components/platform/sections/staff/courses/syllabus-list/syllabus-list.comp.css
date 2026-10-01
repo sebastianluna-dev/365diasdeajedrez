@@ -352,8 +352,11 @@
     font-weight: 400;
   }
 
+  /* The field has no edge of its own to turn the accent, so what replaces the
+     ring is a rule under the text. */
   & .syllabus-list__new-input:focus {
     outline: none;
+    box-shadow: 0 2px 0 var(--platform-accent-ink);
   }
 
   & .syllabus-list__new-submit {
