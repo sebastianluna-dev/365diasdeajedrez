@@ -11,7 +11,7 @@ const SOURCE_TYPES = [
 ];
 
 const meta = {
-  title: "platform/sections/staff/courses/CourseSourceForm",
+  title: "platform/sections/staff/courses/course-sources/CourseSourceForm",
   component: CourseSourceForm,
   parameters: {
     docs: {

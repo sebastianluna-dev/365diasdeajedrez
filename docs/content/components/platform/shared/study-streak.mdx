@@ -6,7 +6,7 @@ description: "'Racha diaria': the card with how many days in a row the student h
 
 |            |                                                                                                                                                                                        |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/study-streak.comp.tsx`                                                                                                                                     |
+| File       | `components/platform/shared/study-streak/study-streak.comp.tsx`                                                                                                                        |
 | Kind       | Server Component                                                                                                                                                                       |
 | Stylesheet | `study-streak.comp.css` → block `.study-streak`                                                                                                                                        |
 | Story      | `study-streak.stories.tsx` (`platform/shared/StudyStreak`): the four states, including a three-digit streak                                                                            |
@@ -55,7 +55,7 @@ No media queries: whoever places it decides its width.
 From `components/platform/sections/courses/my-courses/my-courses.section.tsx`:
 
 ```tsx
-import { StudyStreak } from "@/components/platform/shared/study-streak.comp";
+import { StudyStreak } from "@/components/platform/shared/study-streak/study-streak.comp";
 
 <aside className="my-courses__aside">
   <StudyStreak streak={streak} />

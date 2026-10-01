@@ -3,10 +3,12 @@ import type { StorybookConfig } from "@storybook/nextjs-vite";
 
 const fromRoot = (path: string) => fileURLToPath(new URL(`../${path}`, import.meta.url));
 
-// Proof of concept: one story (PlanCard). If it is adopted, the mocks of
-// services/actions and the auth DAL are registered in preview.tsx, and the
-// Prisma/Payload entry points get an alias that throws so a story can never
-// bundle them by accident.
+// A pilot: the stories are whatever the glob below finds, and each one renders
+// a component that takes its data and its actions as props, with a stub where
+// the app passes a server action. Nothing is mocked. If the pilot is adopted,
+// the mocks of services/actions and the auth DAL are registered in
+// preview.tsx, and the Prisma/Payload entry points get an alias that throws so
+// a story can never bundle them by accident.
 const config: StorybookConfig = {
   framework: "@storybook/nextjs-vite",
   stories: ["../components/**/*.stories.tsx"],

@@ -6,7 +6,7 @@ description: "How Storybook is set up in this repo and, step by step, how to giv
 
 Storybook renders a component in isolation, with its real stylesheet, fonts and tokens, and lets you flip its states from a controls panel. It complements the [Components](/components) reference: that section says what a component receives and does; Storybook shows it.
 
-**Status:** pilot. `PlanCard`, `PlatformForm`, `PlatformSelect`, `PlatformChoiceCards` and `NewStudy` (its form, with a stub action) have stories (the last two with `play` functions that open the list and submit the form empty, so the built Storybook shows those states without a click). Everything below is what was done for it, written so the next component follows the same path. If the pilot is adopted the rules move to `AGENTS.md`; until then, nothing requires a story.
+**Status:** pilot. The stories are the `components/**/*.stories.tsx` files, and that glob is the list: the site's `PlanCard`, where the pilot began, and platform pieces that take their data and their actions as props — shared controls, and a few forms and lists mounted with a stub in place of the server action. Where a state only exists after an interaction (a list open, a form filled in or submitted invalid) the story has a `play` function that performs it, so the built Storybook shows that state without a click; `grep -rlw "play" --include="*.stories.tsx" components` names the files that have one. The walkthrough below is what was done for `PlanCard`, written so the next component follows the same path. If the pilot is adopted the rules move to `AGENTS.md`; until then, nothing requires a story.
 
 ## What is installed
 
@@ -71,7 +71,7 @@ export const WithDiscount: Story = { args: { previousPrice: 1500 } };
 
 Rules that came out of it:
 
-- **`title` mirrors the path** with the product first and the export name as the leaf: `site/sections/home/plans/PlanCard`. The sidebar of Storybook then matches `components/` and the docs section.
+- **`title` mirrors the path** with the product first and the export name as the leaf, in place of the component's own folder: `site/sections/home/plans/PlanCard` for `components/site/sections/home/plans/plan-card/`. A story that lives in a folder shared by several components keeps that folder: `platform/sections/staff/courses/course-sources/CourseSourceForm`. The sidebar of Storybook then matches `components/` and the docs section.
 - **One story per meaningful state**, not one per prop: the default, the highlighted card, the card with a discount. Each story overrides only what differs from `meta.args`.
 - **A JSDoc line above each story.** Autodocs prints it under the story's heading.
 - Story identifiers are English; the rendered copy stays Spanish, like the app.
@@ -152,10 +152,10 @@ interface PlanCardProps {
 
 ### 6. Update the reference page
 
-The component's page under `docs/content/components/` gets a `Story` row in its facts table, after `File`:
+The component's page under `docs/content/components/` gets a `Story` row in its facts table, after `Stylesheet`, with the story file and its title:
 
 ```md
-| File | `components/site/sections/home/plans/plan-card/plan-card.comp.tsx` |
+| Stylesheet | `plan-card.comp.css` → block `.plan-card` |
 | Story | `plan-card/plan-card.stories.tsx` (`npm run storybook` → site/sections/home/plans/PlanCard: Default, Featured, WithDiscount) |
 ```
 
@@ -171,7 +171,7 @@ A story is done when the build is green, every state renders as it does in the a
 
 ## What the pilot does not cover yet
 
-- **Sections that read services** (`export async function` calling `services/*/*.service.ts`) and **client components bound to server actions** cannot run in the browser as they are. The plan for them is a manual mock per module in `services/<domain>/__mocks__/` registered with `sb.mock()` in `preview.tsx`, plus typed fixtures in `lib/testing/fixtures/`. Not started.
+- **Sections that read services** (`export async function` calling `services/*/*.service.ts`) and **client components that import a server action** cannot run in the browser as they are; a form that has a story is the piece that receives the action as a prop (`NewStudyForm`, and not `NewStudy`, which imports `createStudy`). The plan for them is a manual mock per module in `services/<domain>/__mocks__/` registered with `sb.mock()` in `preview.tsx`, plus typed fixtures in `lib/testing/fixtures/`. Not started.
 - **Chess components** need `public/engine`, `public/sounds` and `public/pieces`; `staticDirs` already serves them, but no story exists.
 - **CI** does not build Storybook. If adopted, a `storybook-build` job joins `.github/workflows/ci.yml`.
 - A dev-only console error in the docs site ("Encountered a script tag…") is unrelated: it comes from `next-themes` inside Nextra, see `IMPROVEMENTS.md` #71.

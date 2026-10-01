@@ -11,7 +11,7 @@ const STUDENT_KINDS = [
 const TEACHER_KINDS = [...STUDENT_KINDS, { code: "COLLECTION", label: "Colección" }];
 
 const meta = {
-  title: "platform/sections/studies/NewStudy",
+  title: "platform/sections/studies/studies-list/NewStudy",
   component: NewStudyForm,
   parameters: {
     docs: {

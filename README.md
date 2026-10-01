@@ -55,7 +55,7 @@ No `sslmode` in those two: the container speaks no TLS. The CMS's tables create 
 | `npm run user:list`                       | Lists the accounts, whether they have a password and their open sessions.                                    |
 | `npm run pieces:sync`                     | Copies the board pieces (chessground) to `public/pieces`; run it whenever chessground is updated.            |
 | `npm run typecheck`                       | `next typegen` + `tsc --noEmit`, the same CI runs.                                                           |
-| `npm run storybook`                       | Storybook at `localhost:6006` (pilot: `PlanCard` only; guide in `docs/`, "Storybook").                       |
+| `npm run storybook`                       | Storybook at `localhost:6006` (a pilot: see `components/**/*.stories.tsx`; guide in `docs/`, "Storybook").   |
 | `npm run storybook:build`                 | Static Storybook build in `storybook-static/` (git-ignored).                                                 |
 | `npm run test:coverage`                   | Vitest with coverage (v8) over `lib`, `services`, `constants` and `hooks`.                                   |
 | `npm run format` / `npm run format:check` | Prettier over the repo: `format` writes, `format:check` is CI's first step and part of done.                 |

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { StudyStreak } from "@/components/platform/shared/study-streak.comp";
+import { StudyStreak } from "@/components/platform/shared/study-streak/study-streak.comp";
 import { platformRoutes } from "@/lib/platform-routes";
 import type { MyCourseItem } from "@/services/courses/courses.types";
 import type { StudyStreak as StudyStreakModel } from "@/services/study-goal/study-goal.types";
