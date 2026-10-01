@@ -325,6 +325,62 @@ export async function resetCourseProgress(courseId: string, formData: FormData):
 }
 
 /**
+ * Takes a course out of «Mis cursos»: its progress goes, its settings go and
+ * the row that makes it theirs goes with them.
+ *
+ * There is no enrolment table — a course is theirs from the moment it has a
+ * progress row — so this is that row plus everything the student built on it:
+ * where they are in each lesson and chapter, what the trainer knows about those
+ * lessons, the chapters they added to it, and their settings of the course,
+ * which go too because a course that is added again should not arrive wearing
+ * a filter chosen months ago.
+ *
+ * Nothing hangs off `CourseProgress`, so none of that dies with it: each table
+ * is deleted by hand, in one transaction.
+ *
+ * What is NOT deleted, here as in the resets: the activity log, the streak and
+ * the trainer's attempts. They are the record of days that happened, and giving
+ * up a course does not make them not have happened.
+ */
+export async function removeCourse(courseId: string, formData: FormData): Promise<void> {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  const studyPath = platformRoutes.courseDetail(courseId);
+
+  if (!parseForm(RESET_SCHEMA, formData).ok) redirect(withErrorParam(studyPath, "confirm"));
+  if (!(await allowAction(`${user.id}:remove-course`, 10, 60_000))) redirect(withErrorParam(studyPath, "throttled"));
+
+  const course = await db.course.findFirst({
+    where: { id: courseId, status: { code: COURSE_STATUS.PUBLISHED } },
+    select: { id: true, slug: true, chapters: { select: { order: true } } },
+  });
+  if (!course) return;
+
+  await db.$transaction(async (tx) => {
+    await tx.lessonProgress.deleteMany({ where: { userId: user.id, lesson: { chapter: { courseId } } } });
+    await tx.chapterProgress.deleteMany({ where: { userId: user.id, chapter: { courseId } } });
+    await tx.userLessonTraining.deleteMany({ where: { userId: user.id, lesson: { chapter: { courseId } } } });
+    await tx.userTrainerChapter.deleteMany({ where: { userId: user.id, chapter: { courseId } } });
+    await tx.userCourseSettings.deleteMany({ where: { userId: user.id, courseId } });
+    // `deleteMany` and not `delete`: taking out a course that was not theirs is
+    // not an error, it is nothing to do.
+    await tx.courseProgress.deleteMany({ where: { userId: user.id, courseId } });
+  });
+
+  revalidatePath(platformRoutes.dashboard);
+  revalidatePath(platformRoutes.courses);
+  revalidatePath(platformRoutes.courseCatalog);
+  revalidatePath(platformRoutes.courseInfo(course.slug));
+  revalidatePath(studyPath);
+  for (const chapter of course.chapters) {
+    revalidatePath(platformRoutes.chapterDetail(courseId, chapter.order));
+  }
+  revalidatePath(platformRoutes.lessonPattern, "page");
+  // Back to the list, which is the one place that no longer has it.
+  redirect(platformRoutes.courses);
+}
+
+/**
  * Erases the student's progress in ONE chapter: its lessons and the chapter
  * itself go back to not started, and the course's row is resealed around what
  * is left — it is `completeLesson` run backwards.

@@ -1,0 +1,83 @@
+.remove-course {
+  /* The trigger is one more of the course's options: a link among links. The
+     block is the twin of `.reset-progress`, which is the other red entry of
+     the card. */
+  & .remove-course__open {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--platform-accent-ink);
+    font-family: inherit;
+    font-size: 14.5px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  & .remove-course__open:hover {
+    color: var(--platform-accent-hover);
+  }
+
+  /* The size and the rounding: the centring, the backdrop, the surface and
+     the entry and exit motion are set by `.platform-dialog`. */
+  & .remove-course__dialog {
+    width: min(480px, calc(100vw / var(--platform-zoom, 1) - 32px));
+    border-radius: 8px;
+  }
+
+  & .remove-course__form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 28px;
+  }
+
+  & .remove-course__title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  & .remove-course__text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  & .remove-course__confirm {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid var(--platform-border-strong);
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    cursor: pointer;
+  }
+
+  & .remove-course__confirm input {
+    flex: none;
+    width: 18px;
+    height: 18px;
+    margin: 1px 0 0;
+    accent-color: var(--platform-danger);
+  }
+
+  & .remove-course__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 6px;
+  }
+
+  @media (max-width: 520px) {
+    & .remove-course__actions {
+      flex-direction: column-reverse;
+    }
+  }
+}

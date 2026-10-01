@@ -6,6 +6,7 @@ const meta: MetaRecord = {
   "chapter-study-section": "ChapterStudySection",
   "learn-mode": "LearnMode",
   "reset-progress": "ResetProgress",
+  "remove-course": "RemoveCourse",
 };
 
 export default meta;

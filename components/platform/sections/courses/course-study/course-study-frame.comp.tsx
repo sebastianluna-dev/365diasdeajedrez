@@ -6,6 +6,7 @@ import { PlatformNotice } from "@/components/platform/shared/platform-notice.com
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import type { CourseDetail } from "@/services/courses/courses.types";
 import { LearnMode } from "./learn-mode.comp";
+import { RemoveCourse } from "./remove-course.comp";
 import { ResetProgress } from "./reset-progress.comp";
 import "./course-study-frame.comp.css";
 
@@ -142,6 +143,14 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
                   <ResetProgress courseId={course.id} name={course.name} completedLessons={progress.completedLessons} />
                 </li>
               )}
+              {/* Last, and on both pages: it is the heaviest of the three. */}
+              <li>
+                <RemoveCourse
+                  courseId={course.id}
+                  courseName={course.name}
+                  completedLessons={progress.completedLessons}
+                />
+              </li>
             </ul>
           </section>
 
