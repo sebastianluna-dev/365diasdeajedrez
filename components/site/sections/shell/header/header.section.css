@@ -324,4 +324,13 @@
       }
     }
   }
+
+  /* Whoever asked for less motion gets the change without the travel. */
+  @media (prefers-reduced-motion: reduce) {
+    & .site-header__dropdown-menu,
+    & .site-header-mobile,
+    & .site-header-mobile.site-header-mobile_open {
+      transition: none;
+    }
+  }
 }

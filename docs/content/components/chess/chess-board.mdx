@@ -47,6 +47,8 @@ Interactive moves are validated by chessops before they are reported: the board 
 
 **Standalone navigation.** `ply` is clamped to the replayed positions. Autoplay advances one move every 900 ms and stops at the end; changing the PGN stops it. The arrow keys move through the game only while the board is at least fully in the viewport or has been clicked, tracked with an `IntersectionObserver` and a click flag, so two boards on one page do not both react. In controlled mode the keyboard handler is not installed at all: navigation belongs to the parent.
 
+**Pieces slide, unless less motion was asked for.** chessground animates a move over 200 ms; under `prefers-reduced-motion: reduce` the animation is switched off when the board is created and the piece lands on its square, with the last move marked as always.
+
 **The current move stays in view.** When the ply changes, its cell in the notation is scrolled into view (`block: "nearest"`): smoothly, or at once for whoever asked the system for less motion (`prefers-reduced-motion: reduce`, read with `matchMedia` because a scroll started from code ignores the stylesheet's media query).
 
 **Layout.** A `ResizeObserver` on the frame redraws chessground and, above 720 px, pins the notation column to the board's height so it scrolls instead of growing. That height is read with `offsetHeight`, not with the bounding rect: the platform's `zoom` is already inside a rect, and the value is written back as an inline `px` that the zoom would apply a second time. The active notation cell is scrolled into view on every ply change.

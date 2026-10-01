@@ -199,4 +199,13 @@
       transform-origin: top left;
     }
   }
+
+  /* Whoever asked for less motion gets the change without the travel. */
+  @media (prefers-reduced-motion: reduce) {
+    & .clock-flag,
+    & .clock-hand.clock-hand_type_hour,
+    & .clock-hand.clock-hand_type_min {
+      transition: none;
+    }
+  }
 }

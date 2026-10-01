@@ -137,4 +137,11 @@
     font-weight: 600;
     color: var(--platform-text-muted);
   }
+
+  /* Whoever asked for less motion gets the change without the travel. */
+  @media (prefers-reduced-motion: reduce) {
+    & .study-goal__fill {
+      transition: none;
+    }
+  }
 }

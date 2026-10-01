@@ -31,4 +31,13 @@
     width: 28px;
     background: var(--color-primary);
   }
+
+  /* Whoever asked for less motion gets the change without the travel. */
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+
+    & .reviews__dot-pill {
+      transition: none;
+    }
+  }
 }

@@ -97,15 +97,6 @@
     & .game-viewer__evaluation-fill {
       transition: none;
     }
-
-    & .game-viewer__options-menu {
-      animation: none;
-    }
-
-    & .game-viewer__options-menu.game-viewer__options-menu_state_closing {
-      animation: none;
-      opacity: 0;
-    }
   }
 
   & .game-viewer__board {
@@ -408,6 +399,19 @@
   & .game-viewer__options-menu.game-viewer__options-menu_state_closing {
     animation: game-viewer-menu-out 120ms ease-in forwards;
     pointer-events: none;
+  }
+
+  /* After the two rules above and not before: under `@media` a rule weighs
+     what it weighs outside it, and of two that weigh the same the later wins. */
+  @media (prefers-reduced-motion: reduce) {
+    & .game-viewer__options-menu {
+      animation: none;
+    }
+
+    & .game-viewer__options-menu.game-viewer__options-menu_state_closing {
+      animation: none;
+      opacity: 0;
+    }
   }
 
   & .game-viewer__options-item {

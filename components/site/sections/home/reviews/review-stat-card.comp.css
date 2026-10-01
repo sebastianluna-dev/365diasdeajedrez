@@ -71,4 +71,9 @@
       font-size: 14px;
     }
   }
+
+  /* Whoever asked for less motion gets the change without the travel. */
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }

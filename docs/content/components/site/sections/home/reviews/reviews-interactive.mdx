@@ -15,7 +15,7 @@ description: "The testimonials carousel: the stat cards and chats stacked, posit
 
 ## Purpose
 
-Owns the active review. Every review's stat card and chat stay mounted in two stacks; each gets a `position` (`center`, `left`, `right`) relative to the active index so CSS can slide them, and `hidden` marks the inactive ones `aria-hidden`.
+Owns the active review. Every review's stat card and chat stay mounted in two stacks; each gets a `position` (`center`, `left`, `right`) relative to the active index so CSS can slide them (under `prefers-reduced-motion: reduce` the two stylesheets drop the transition and the review changes in place, still every 6 s), and `hidden` marks the inactive ones `aria-hidden`.
 
 ## Props
 

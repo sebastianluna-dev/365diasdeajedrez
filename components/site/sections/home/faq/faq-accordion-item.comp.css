@@ -54,4 +54,12 @@
     color: var(--color-muted-on-dark);
     line-height: 1.6;
   }
+
+  /* Whoever asked for less motion gets the change without the travel. */
+  @media (prefers-reduced-motion: reduce) {
+    & .faq-item__icon,
+    & .faq-item__answer-wrap {
+      transition: none;
+    }
+  }
 }

@@ -160,9 +160,12 @@ export function ChessBoard({
   // Instantiate chessground once per mode.
   useEffect(() => {
     if (!boardRef.current) return;
+    // The pieces slide to their square, or just land on it for whoever asked
+    // the system for less motion: the last move stays marked either way.
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const api = Chessground(boardRef.current, {
       coordinates: true,
-      animation: { enabled: true, duration: 200 },
+      animation: { enabled: !calm, duration: 200 },
       viewOnly: !interactive,
       draggable: { enabled: interactive },
       selectable: { enabled: interactive },
