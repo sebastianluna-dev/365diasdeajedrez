@@ -111,7 +111,9 @@ function RowMenu({ item, deleteAction, deleteFieldName }: RowMenuProps) {
         type="button"
         className="syllabus-list__more"
         aria-label={`Más opciones de «${item.name}»`}
-        aria-haspopup="menu"
+        // A menu only when there is something to press in it; where deleting
+        // is refused, what opens is a note with the reason.
+        aria-haspopup={item.canDelete ? "menu" : undefined}
         aria-expanded={open}
         onClick={() => setOpen((wasOpen) => !wasOpen)}
       >
@@ -120,14 +122,17 @@ function RowMenu({ item, deleteAction, deleteFieldName }: RowMenuProps) {
 
       {lingering.value && (
         <div
-          role="menu"
-          aria-label={`Opciones de «${item.name}»`}
+          // The reason is announced as it appears: nothing in it takes the
+          // focus, which stays on the button that opened it.
+          role={item.canDelete ? "menu" : "status"}
+          aria-label={item.canDelete ? `Opciones de «${item.name}»` : undefined}
           className={`syllabus-list__menu${lingering.closing ? " syllabus-list__menu_state_closing" : ""}`}
         >
           {item.canDelete ? (
             <form action={deleteAction}>
               <input type="hidden" name={deleteFieldName} value={item.id} />
               <SubmitButton
+                role="menuitem"
                 className="syllabus-list__menu-item"
                 pendingLabel="Eliminando…"
                 aria-label={`Eliminar «${item.name}»`}
