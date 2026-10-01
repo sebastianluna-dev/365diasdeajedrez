@@ -10,7 +10,9 @@ const fromRoot = (path: string) => fileURLToPath(new URL(`../${path}`, import.me
 const config: StorybookConfig = {
   framework: "@storybook/nextjs-vite",
   stories: ["../components/**/*.stories.tsx"],
-  addons: ["@storybook/addon-docs"],
+  // addon-a11y runs axe-core on the story in view and lists what it finds in
+  // its own panel, under whichever theme the toolbars have chosen.
+  addons: ["@storybook/addon-docs", "@storybook/addon-a11y"],
   // The app's public/ folder: fonts, engine, sounds and pieces, at the same URLs as in Next.
   staticDirs: ["../public"],
   async viteFinal(config) {
