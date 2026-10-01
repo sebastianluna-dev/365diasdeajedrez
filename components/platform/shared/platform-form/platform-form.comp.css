@@ -71,6 +71,15 @@
     border-color: var(--platform-danger);
   }
 
+  /* An invalid field's border is already red before the focus arrives, so the
+     pale ring would be all that says where the focus is: it takes the colour
+     of the platform's own ring. */
+  & .platform-form__field[data-invalid] > input:focus,
+  & .platform-form__field[data-invalid] > textarea:focus,
+  & .platform-form__field[data-invalid] .platform-select__trigger:focus-visible {
+    outline-color: var(--platform-accent-ink);
+  }
+
   & .platform-form__hint {
     font-size: 14px;
     color: var(--platform-text-muted);

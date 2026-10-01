@@ -139,6 +139,10 @@
     flex: 1;
     min-height: 0;
     overflow: auto;
+    /* The chapter's name is stuck to the top of this scroller, which is not the
+       page's: a lesson reached with the keyboard is scrolled to below it. 76px
+       is that head (18 + 40 + 18), plus air. */
+    scroll-padding-top: 84px;
     scrollbar-width: thin;
     /* No elastic overscroll: at either end of the list the bounce dragged the
        sticky chapter with it, and there is nothing behind this panel for the

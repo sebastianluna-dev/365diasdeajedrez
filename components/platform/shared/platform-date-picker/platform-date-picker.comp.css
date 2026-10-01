@@ -182,6 +182,13 @@
     box-shadow: none;
   }
 
+  /* The ring of a day is the accent, which is this one's fill: here it is
+     drawn in what is written on the accent, a step inside the edge. */
+  & .platform-date-picker__day.platform-date-picker__day_selected:focus-visible {
+    outline-color: var(--platform-on-accent);
+    outline-offset: -4px;
+  }
+
   & .platform-date-picker__day.platform-date-picker__day_outside {
     color: var(--platform-text-faint);
   }
