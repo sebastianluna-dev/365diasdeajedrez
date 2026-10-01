@@ -75,7 +75,7 @@ The brand's black keeps its value and changes role: `#16110d` goes from backgrou
 
 ## The platform does not bounce
 
-`:root:has(> .platform-theme)` carries `overscroll-behavior: none`. On the elastic overscroll of a trackpad the whole document slides, and the bar stuck to the top slides with it, which reads as the header coming loose. It goes on the **root**, the element that scrolls the document — on `<body>` it is the browser's choice whether to honour it — and only under the platform's layouts, so the public site keeps the bounce it was drawn with.
+`:root:has(> .platform-theme)` carries `overscroll-behavior: none`. On the elastic overscroll of a trackpad the whole document slides, and the bar stuck to the top slides with it, which reads as the header coming loose. It goes on the **root**, the element that scrolls the document — on `<body>` it is the browser's choice whether to honour it — and only under the platform's layouts, so the public site keeps the bounce it was drawn with. The same rule sets `scroll-padding-top` to the height of the bar (70px at the platform's zoom, 116px below 1080px, where the bar wraps into two rows) plus 8px: the bar is stuck to the top, and without it a control reached with Shift+Tab, or the target of the skip link, is scrolled to under the bar instead of below it (WCAG 2.4.11). It answers to the keyboard and to `scrollIntoView`; a `focus()` called from code does not honour it.
 
 A panel that scrolls on its own says it again for itself: the lesson's column of lessons does, since there the bounce dragged its sticky chapter.
 
