@@ -4,7 +4,7 @@ description: "The coding, naming, CSS and workflow rules the codebase follows, a
 
 # Conventions
 
-These rules are enforced by review, a few tests (`proxy.test.ts`, `nav-items.test.ts`, `components/platform/border-radius.test.ts`) and habit rather than by tooling, so read them once and keep them close. `AGENTS.md` (loaded as `CLAUDE.md`) carries the short version; when the code and a rule disagree, the code wins and the rule should be fixed.
+These rules are enforced by review, a few tests (`proxy.test.ts`, `nav-items.test.ts`, `components/platform/border-radius.test.ts`, `components/platform/platform-tokens.test.ts`) and habit rather than by tooling, so read them once and keep them close. `AGENTS.md` (loaded as `CLAUDE.md`) carries the short version; when the code and a rule disagree, the code wins and the rule should be fixed.
 
 ## Files and modules
 
@@ -31,6 +31,7 @@ These rules are enforced by review, a few tests (`proxy.test.ts`, `nav-items.tes
 - **Desktop-first** media queries (`max-width`).
 - Colours and spacing come from tokens: `--color-*` in `app/(frontend)/globals.css` (public site, plus board colours `--board-light`/`--board-dark`) and `--platform-*` in `app/(platform)/platform.css` (private area). Hex values are the exception, and the remaining ones are tracked in `TODOS.md`.
 - **The platform has two themes, and a colour is written as a pair.** Every `--platform-*` colour is declared with `light-dark(<light>, <dark>)` in the one `:root` block of `platform.css`; adding or correcting a colour means touching one line, and the two values are always read together. Which of the two applies is decided by `color-scheme` on `:root` — `light dark` by default, so the platform follows the machine, and `light`/`dark` when `:root[data-theme]` says the person chose (see [Themes](/architecture/themes)). **`color-scheme` must stay on the same element as the tokens**: Turbopack compiles `light-dark()` through Lightning CSS into helper variables declared wherever the `color-scheme` is, and declared one element below they never reach the tokens above them.
+- **A text reaches 4.5:1 on what it is written on, in both themes.** The subtle grey (`--platform-text-subtle`) is for the white surfaces only (`surface`, `surface-soft`); on a grey or tinted fill (`bg`, `surface-neutral`, `surface-sunken`, the accent's soft and wash) the text is `--platform-text-muted`. `components/platform/platform-tokens.test.ts` reads the stylesheets and fails on a colour that is not a pair, on a token that is used and not declared, and on a text colour under the minimum on its fill.
 - No Tailwind (it was removed), no CSS-in-JS, no CSS Modules.
 - The full token list, the helper classes and worked examples are in [Styling & design tokens](/ui/styling).
 

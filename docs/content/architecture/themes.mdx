@@ -51,4 +51,4 @@ A cookie, `tema` (`constants/platform/theme.const.ts`), for a year. Not a column
 
 ## Adding a colour
 
-Declare it in the `:root` block of `platform.css` with its two values, name it by its role, and use it. If a component needs a colour that only makes sense in one theme, that is a sign the token is named after what it looks like instead of what it is for.
+Declare it in the `:root` block of `platform.css` with its two values, name it by its role, and use it. `components/platform/platform-tokens.test.ts` holds the three things that break in silence: a colour declared as a single value (the test fails unless the token is listed there as an exception, with its reason), a token used in a stylesheet or a component and never declared, and a text colour that does not reach 4.5:1 on its fill in one of the themes. A new text or surface colour joins the test's table of pairs (`TEXT_PAIRS`), which is the list of what may be written on what. If a component needs a colour that only makes sense in one theme, that is a sign the token is named after what it looks like instead of what it is for.
