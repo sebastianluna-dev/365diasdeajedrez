@@ -1,5 +1,11 @@
 import Link from "next/link";
+import { PGN_MAX_GAMES } from "@/constants/platform/content-limits.const";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import {
+  isCompleteImport,
+  pgnImportNotice,
+  type PgnImportReport,
+} from "@/constants/platform/pgn-import-messages.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { deleteChapterGame, importChapterGames } from "@/services/staff-courses/staff-courses.actions";
 import type { ChapterAdminDetail, CourseGameRow } from "@/services/staff-courses/staff-courses.types";
@@ -11,6 +17,8 @@ interface ChapterGamesSectionProps {
   chapter: ChapterAdminDetail;
   games: CourseGameRow[];
   errorCode?: string;
+  /** The result of the PGN import that has just happened, if one has: how many games went in. */
+  importReport?: PgnImportReport | null;
 }
 
 /**
@@ -20,12 +28,18 @@ interface ChapterGamesSectionProps {
  * from this list, and fixing a game fixes at once every lesson that uses it.
  * Each game opens on the board, where it is read and edited.
  */
-export function ChapterGamesSection({ chapter, games, errorCode }: ChapterGamesSectionProps) {
+export function ChapterGamesSection({ chapter, games, errorCode, importReport }: ChapterGamesSectionProps) {
   const errorMessage = errorCode ? (STAFF_ERROR_MESSAGES[errorCode] ?? STAFF_ERROR_MESSAGES.invalid) : undefined;
 
   return (
     <div className="chapter-games">
       {errorMessage && <PlatformNotice message={errorMessage} />}
+      {importReport && (
+        <PlatformNotice
+          message={pgnImportNotice(importReport)}
+          variant={isCompleteImport(importReport) ? "success" : "info"}
+        />
+      )}
 
       <StaffPanel
         title="Colección de partidas"
@@ -83,7 +97,7 @@ export function ChapterGamesSection({ chapter, games, errorCode }: ChapterGamesS
             required
             rows={6}
             className="chapter-games__import-input"
-            placeholder="Pega aquí un PGN con una o varias partidas"
+            placeholder={`Pega aquí un PGN con una o varias partidas (hasta ${PGN_MAX_GAMES} por importación)`}
             aria-label="PGN a importar"
           />
           <SubmitButton className="platform-button" pendingLabel="Importando…">

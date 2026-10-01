@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { GameAside } from "@/components/platform/sections/studies/game-view/game-aside.comp";
 import { GameViewSection } from "@/components/platform/sections/studies/game-view/game-view.section";
 import { platformRoutes } from "@/lib/platform-routes";
+import { readImportReport } from "@/services/shared/pgn-import-report";
 import {
   getClassGames,
   getGameById,
@@ -21,8 +22,9 @@ interface GamePageProps {
    * `error`: what a server action bounced with (a delete without confirmation,
    * a new game that did not validate). `pagina`: which page of the study's
    * games the aside lists; without it, the one the current game falls on.
+   * `importadas`: the result of a PGN import, to say how many games went in.
    */
-  searchParams: Promise<{ error?: string; pagina?: string }>;
+  searchParams: Promise<{ error?: string; pagina?: string; importadas?: string }>;
 }
 
 export async function generateMetadata({ params }: GamePageProps): Promise<Metadata> {
@@ -38,7 +40,7 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
  */
 export default async function GamePage({ params, searchParams }: GamePageProps) {
   const { studyId, gameId } = await params;
-  const { error, pagina } = await searchParams;
+  const { error, pagina, importadas } = await searchParams;
   // `getGameById` goes through the DAL, so this first await acts as the session
   // border. The study is requested afterwards for the aside.
   const game = await getGameById(studyId, gameId);
@@ -79,7 +81,7 @@ export default async function GamePage({ params, searchParams }: GamePageProps) 
           students={students}
           pageHref={pageHref}
         />
-        <GameViewSection game={game} errorCode={error} />
+        <GameViewSection game={game} errorCode={error} importReport={readImportReport(importadas)} />
       </div>
     </div>
   );

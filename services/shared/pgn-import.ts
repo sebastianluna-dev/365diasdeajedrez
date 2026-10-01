@@ -62,31 +62,44 @@ export interface ImportedGame {
   pgn: string;
 }
 
+/** What a pasted PGN gave: the games to store, and what was left out and why. */
+export interface ImportReading {
+  /** The games to store, `PGN_MAX_GAMES` at most, in the order of the PGN. */
+  games: ImportedGame[];
+  /** Entries with neither moves nor a starting position: loose text between headers. */
+  skippedEmpty: number;
+  /** Games that are fine but came after the limit of a single import. */
+  overLimit: number;
+}
+
 /**
- * Reads a PGN with one or several games.
+ * Reads a PGN with one or several games, and says what it left out.
  *
- * It returns `[]` if the text is not PGN or there is nothing usable, instead of
- * throwing: a person types it and odd text is not a program error.
+ * It returns no games if the text is not PGN or there is nothing usable,
+ * instead of throwing: a person types it and odd text is not a program error.
  *
- * Games without moves AND without a starting position are discarded, which is
- * what is left when someone pastes loose text between headers.
+ * Entries without moves AND without a starting position are discarded, which
+ * is what is left when someone pastes loose text between headers. They are
+ * discarded BEFORE the limit is applied, so an empty entry never takes the
+ * place of a game; and both numbers go back to the caller, because a person
+ * who pastes six hundred games has to be told that five hundred went in.
  */
-export function parseImportedGames(pgnText: string): ImportedGame[] {
+export function readImportedGames(pgnText: string): ImportReading {
   let parsed: ReturnType<typeof parsePgn>;
   try {
     parsed = parsePgn(pgnText);
   } catch {
-    return [];
+    return { games: [], skippedEmpty: 0, overLimit: 0 };
   }
 
-  const games: ImportedGame[] = [];
-  for (const game of parsed.slice(0, PGN_MAX_GAMES)) {
+  const usable: ImportedGame[] = [];
+  for (const game of parsed) {
     const headers = game.headers;
     const initialFen = readHeader(headers, "FEN");
     if (game.moves.children.length === 0 && initialFen === null) continue;
 
     const resultToken = readHeader(headers, "Result") ?? "";
-    games.push({
+    usable.push({
       white: readHeader(headers, "White") ?? UNKNOWN_PLAYER,
       black: readHeader(headers, "Black") ?? UNKNOWN_PLAYER,
       whiteElo: readEloHeader(headers, "WhiteElo"),
@@ -107,5 +120,12 @@ export function parseImportedGames(pgnText: string): ImportedGame[] {
       pgn: makePgn(game),
     });
   }
-  return games;
+
+  const games = usable.slice(0, PGN_MAX_GAMES);
+  return { games, skippedEmpty: parsed.length - usable.length, overLimit: usable.length - games.length };
+}
+
+/** The games of a PGN, for whoever only wants them: the first, to file a lesson's own. */
+export function parseImportedGames(pgnText: string): ImportedGame[] {
+  return readImportedGames(pgnText).games;
 }

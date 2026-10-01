@@ -4,15 +4,15 @@ description: "The chapter's game collection, the only place where a PGN is paste
 
 # `ChapterGamesSection`
 
-|            |                                                                                                                                          |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/chapter-games.section.tsx`                                                                   |
-| Kind       | Server Component                                                                                                                         |
-| Stylesheet | `chapter-games.section.css` → block `.chapter-games`                                                                                     |
-| Used by    | `/administracion/cursos/[courseId]/capitulos/[chapterId]/partidas`                                                                       |
-| Composes   | [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Writes     | `importChapterGames()`, `deleteChapterGame()` · `services/staff-courses/staff-courses.actions.ts`                                        |
-| Uses       | `STAFF_ERROR_MESSAGES`; `staffRoutes`; `ChapterAdminDetail`, `CourseGameRow` types                                                       |
+|            |                                                                                                                                                                                                |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/chapter-games.section.tsx`                                                                                                                         |
+| Kind       | Server Component                                                                                                                                                                               |
+| Stylesheet | `chapter-games.section.css` → block `.chapter-games`                                                                                                                                           |
+| Used by    | `/administracion/cursos/[courseId]/capitulos/[chapterId]/partidas`                                                                                                                             |
+| Composes   | [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`PlatformNotice`](/components/platform/shared/platform-notice)                                                       |
+| Writes     | `importChapterGames()`, `deleteChapterGame()` · `services/staff-courses/staff-courses.actions.ts`                                                                                              |
+| Uses       | `STAFF_ERROR_MESSAGES`; `pgnImportNotice`, `isCompleteImport` from `constants/platform/pgn-import-messages.const`; `PGN_MAX_GAMES`; `staffRoutes`; `ChapterAdminDetail`, `CourseGameRow` types |
 
 ## Purpose
 
@@ -22,16 +22,17 @@ The name of the record and its tabs are not here: they are the [layout](/compone
 
 ## Props
 
-| Prop        | Type                 | Required | Meaning                                           |
-| ----------- | -------------------- | -------- | ------------------------------------------------- |
-| `chapter`   | `ChapterAdminDetail` | yes      | For the head, tabs and bound actions.             |
-| `games`     | `CourseGameRow[]`    | yes      | The collection with `lessonCount` per game.       |
-| `errorCode` | `string`             | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`. |
+| Prop           | Type                      | Required | Meaning                                                                                                                                                     |
+| -------------- | ------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chapter`      | `ChapterAdminDetail`      | yes      | For the head, tabs and bound actions.                                                                                                                       |
+| `games`        | `CourseGameRow[]`         | yes      | The collection with `lessonCount` per game.                                                                                                                 |
+| `errorCode`    | `string`                  | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`.                                                                                                           |
+| `importReport` | `PgnImportReport \| null` | no       | The result of the import that has just happened (`?importadas=`, read by the page with `readImportReport`): how many games went in and how many stayed out. |
 
 ## Behaviour
 
 - Rows show title, detail, move count and how many lessons use the game. The title and «Abrir», at the right edge, lead to the game on the board (`game.href`). "Quitar" is offered only when `lessonCount === 0`: the foreign key is `SET NULL`, so deleting a used game would not fail, it would empty those lessons silently.
-- The import form is a textarea posting `importChapterGames`; a PGN with several games creates all of them.
+- The import form is a textarea posting `importChapterGames`; a PGN with several games creates all of them, up to `PGN_MAX_GAMES` (500) per import, which the placeholder says. The action comes back with the result, and a notice above the panel says it (`pgnImportNotice`): «Se importaron 12 partidas.» in green, or, in the neutral notice, how many of how many went in and why the rest stayed out (entries without moves, games past the limit). A paste with nothing in it answers «Ese PGN no se puede leer…»; one over 2 MB, «El PGN es demasiado grande.»
 
 ## Markup & styling
 
@@ -52,7 +53,7 @@ From `app/(platform)/administracion/cursos/[courseId]/capitulos/[chapterId]/part
 ```tsx
 import { ChapterGamesSection } from "@/components/platform/sections/staff/courses/chapter-games.section";
 
-<ChapterGamesSection chapter={chapter} games={games} errorCode={error} />;
+<ChapterGamesSection chapter={chapter} games={games} errorCode={error} importReport={readImportReport(importadas)} />;
 ```
 
 ## Related

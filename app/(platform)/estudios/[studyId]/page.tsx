@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { StudyDetailSection } from "@/components/platform/sections/studies/study-detail/study-detail.section";
 import { platformRoutes } from "@/lib/platform-routes";
+import { readImportReport, withImportReport } from "@/services/shared/pgn-import-report";
+import { withErrorParam } from "@/services/shared/safe-return-to";
 import {
   getClassGames,
   getGameResultOptions,
@@ -13,7 +15,7 @@ import "./study-page.css";
 
 interface StudyPageProps {
   params: Promise<{ studyId: string }>;
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; importadas?: string }>;
 }
 
 export async function generateMetadata({ params }: StudyPageProps): Promise<Metadata> {
@@ -32,14 +34,18 @@ export default async function StudyPage({ params, searchParams }: StudyPageProps
   const { studyId } = await params;
   // `getStudyById` goes through the DAL, so that await acts as the session
   // border as well as fetching the data.
-  const { error } = await searchParams;
+  const { error, importadas } = await searchParams;
   const study = await getStudyById(studyId);
   if (!study) notFound();
 
   const first = study.games[0];
   if (first) {
+    // What the action came back with goes on to the game page, which is where
+    // it is read: an error, or the result of an import.
     const target = platformRoutes.gameDetail(studyId, first.id);
-    redirect(error ? `${target}?error=${encodeURIComponent(error)}` : target);
+    const report = readImportReport(importadas);
+    if (error) redirect(withErrorParam(target, error));
+    redirect(report ? withImportReport(target, report) : target);
   }
 
   // All of this feeds forms that only exist when writing is allowed, so for

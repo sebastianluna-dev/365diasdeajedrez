@@ -54,7 +54,8 @@ import {
   writeGameRecord,
   type AutosaveResult,
 } from "@/services/shared/game-record";
-import { parseImportedGames } from "@/services/shared/pgn-import";
+import { parseImportedGames, readImportedGames } from "@/services/shared/pgn-import";
+import { withImportReport } from "@/services/shared/pgn-import-report";
 import { nextOrder, planDenseRenumber, planFullReorder, planSwap, type MoveDirection } from "@/services/shared/reorder";
 
 // Course editor. Rules that are not negotiable:
@@ -437,9 +438,11 @@ export async function importChapterGames(courseId: string, chapterId: string, fo
   if (!(await allowAction(`${staff.user.id}:chapter-games-import`, 20, 60_000))) fail(chapterPath, "throttled");
 
   const parsed = parseForm(PGN_SCHEMA, formData);
-  if (!parsed.ok) fail(chapterPath, "pgnTooLong");
+  // Too long is one thing and nothing pasted is another: each gets its message.
+  if (!parsed.ok) fail(chapterPath, parsed.code === "too_big" ? "pgnTooLong" : "pgn");
 
-  const games = parseImportedGames(parsed.data.pgn);
+  const reading = readImportedGames(parsed.data.pgn);
+  const games = reading.games;
   if (games.length === 0) fail(chapterPath, "pgn");
 
   const db = getPlatformDb();
@@ -493,6 +496,17 @@ export async function importChapterGames(courseId: string, chapterId: string, fo
   revalidatePath(staffRoutes.chapterDetail(courseId, chapterId));
   revalidatePath(staffRoutes.courseDetail(courseId));
   revalidatePath(staffRoutes.courseGames(courseId));
+
+  // Back to the collection with what happened: how many went in, and how many
+  // were left out and why. It also takes the place of an `?error=` left in the
+  // address by an earlier attempt.
+  redirect(
+    withImportReport(chapterPath, {
+      imported: games.length,
+      skippedEmpty: reading.skippedEmpty,
+      overLimit: reading.overLimit,
+    }),
+  );
 }
 
 /**

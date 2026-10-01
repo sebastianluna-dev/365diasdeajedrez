@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { GAME_RESULT } from "@/constants/platform/study-codes.const";
-import { parseImportedGames } from "@/services/shared/pgn-import";
+import { PGN_MAX_GAMES } from "@/constants/platform/content-limits.const";
+import { parseImportedGames, readImportedGames } from "@/services/shared/pgn-import";
 
 const OPERA = `[Event "Partida de la Ópera"]
 [Site "París"]
@@ -82,5 +83,41 @@ describe("parseImportedGames", () => {
     const game = parseImportedGames(OPERA)[0]!;
     expect(game.pgn).toContain("1. e4 e5");
     expect(game.pgn).toContain("Paul Morphy");
+  });
+});
+
+describe("readImportedGames", () => {
+  const VACIA = '[Event "Vacía"]\n[White "A"]\n[Black "B"]\n\n*';
+  const partidas = (count: number) => Array.from({ length: count }, () => OPERA).join("\n\n");
+
+  it("sin nada que dejar fuera, los dos contadores son cero", () => {
+    const reading = readImportedGames(partidas(3));
+    expect(reading.games).toHaveLength(3);
+    expect(reading).toMatchObject({ skippedEmpty: 0, overLimit: 0 });
+  });
+
+  it("cuenta las entradas sin jugadas que descarta", () => {
+    const reading = readImportedGames(`${OPERA}\n\n${VACIA}\n\n${OPERA}`);
+    expect(reading.games).toHaveLength(2);
+    expect(reading).toMatchObject({ skippedEmpty: 1, overLimit: 0 });
+  });
+
+  it("corta en el límite y dice cuántas quedaron fuera", () => {
+    const reading = readImportedGames(partidas(PGN_MAX_GAMES + 7));
+    expect(reading.games).toHaveLength(PGN_MAX_GAMES);
+    expect(reading).toMatchObject({ skippedEmpty: 0, overLimit: 7 });
+  });
+
+  it("una entrada vacía no le quita el sitio a una partida", () => {
+    // The empty one comes first: cut before being discarded, it would leave
+    // the import one game short of the limit.
+    const reading = readImportedGames(`${VACIA}\n\n${partidas(PGN_MAX_GAMES)}`);
+    expect(reading.games).toHaveLength(PGN_MAX_GAMES);
+    expect(reading).toMatchObject({ skippedEmpty: 1, overLimit: 0 });
+  });
+
+  it("con basura no hay partidas ni estalla", () => {
+    expect(readImportedGames("esto no es un pgn").games).toEqual([]);
+    expect(readImportedGames("")).toEqual({ games: [], skippedEmpty: 0, overLimit: 0 });
   });
 });

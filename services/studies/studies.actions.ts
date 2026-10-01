@@ -34,7 +34,8 @@ import {
   writeGameRecord,
   type AutosaveResult,
 } from "@/services/shared/game-record";
-import { parseImportedGames } from "@/services/shared/pgn-import";
+import { readImportedGames } from "@/services/shared/pgn-import";
+import { withImportReport } from "@/services/shared/pgn-import-report";
 import { withErrorParam } from "@/services/shared/safe-return-to";
 import { studyDetailInclude } from "./studies.mapper";
 import { canChangeKindTo, canCreateKind, studyPermissionsOf } from "./study-rules";
@@ -294,7 +295,8 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
   // The PGN is read in services/shared/pgn-import, which is the same reader a
   // course's game collection uses: two readers would end up with two different
   // criteria about what a valid date is or when an Elo is an Elo.
-  const imported = parseImportedGames(pgnText);
+  const reading = readImportedGames(pgnText);
+  const imported = reading.games;
 
   // They are imported at the end of the study and in the order they come in the
   // PGN, which is how whoever exported it wrote them.
@@ -340,6 +342,17 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
 
   revalidatePath(platformRoutes.studies);
   revalidatePath(platformRoutes.studyDetail(studyId));
+
+  // Back to the study with what happened: how many went in, and how many were
+  // left out and why. It also takes the place of an `?error=` left in the
+  // address by an earlier attempt, which would otherwise still be on screen.
+  redirect(
+    withImportReport(back, {
+      imported: games.length,
+      skippedEmpty: reading.skippedEmpty,
+      overLimit: reading.overLimit,
+    }),
+  );
 }
 
 // --- Games created by hand -------------------------------------------------

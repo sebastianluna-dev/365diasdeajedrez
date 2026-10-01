@@ -21,10 +21,11 @@ The section only wires the two things the viewer cannot own: the PGN's history, 
 
 ## Props
 
-| Prop        | Type       | Required | Meaning                                                                                                                                                                                              |
-| ----------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `game`      | `GameView` | yes      | The game with `pgn`, `canEdit`, players (name, Elo, title, country), record fields and `studyId`.                                                                                                    |
-| `errorCode` | `string`   | no       | What bounced back from an action, translated by `STUDY_ERROR_MESSAGES`: the game's (`gameInClasses`) and the study's (`confirmStudyDelete`, `fen`, the common codes), whose forms live in the aside. |
+| Prop           | Type                      | Required | Meaning                                                                                                                                                                                                                                           |
+| -------------- | ------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `game`         | `GameView`                | yes      | The game with `pgn`, `canEdit`, players (name, Elo, title, country), record fields and `studyId`.                                                                                                                                                 |
+| `errorCode`    | `string`                  | no       | What bounced back from an action, translated by `STUDY_ERROR_MESSAGES`: the game's (`gameInClasses`) and the study's (`confirmStudyDelete`, `fen`, the common codes), whose forms live in the aside.                                              |
+| `importReport` | `PgnImportReport \| null` | no       | The result of the PGN import that has just happened (`?importadas=`, read by the page with `readImportReport`). The notice goes above the board, like an error: «Se importaron N partidas.», or how many of how many and why the rest stayed out. |
 
 ## Behaviour
 
@@ -58,7 +59,7 @@ import { GameViewSection } from "@/components/platform/sections/studies/game-vie
     students={students}
     pageHref={pageHref}
   />
-  <GameViewSection game={game} errorCode={error} />
+  <GameViewSection game={game} errorCode={error} importReport={readImportReport(importadas)} />
 </div>;
 ```
 

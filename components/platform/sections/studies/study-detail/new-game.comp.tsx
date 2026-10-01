@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
+import { PGN_MAX_GAMES } from "@/constants/platform/content-limits.const";
 import { copyClassGamesToStudy, createStudyGame, importPgnGames } from "@/services/studies/studies.actions";
 import type { ClassGameItem, StudyKindOption } from "@/services/studies/studies.types";
 import "./new-game.comp.css";
@@ -74,7 +75,8 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
               placeholder={'[Event "…"]\n1. e4 e5 2. Nf3 …'}
             />
             <p className="new-game__hint">
-              Se leen cabeceras, variantes, comentarios y NAGs. Si el PGN trae varias partidas, se crean todas.
+              Se leen cabeceras, variantes, comentarios y NAGs. Si el PGN trae varias partidas, se crean todas, hasta{" "}
+              {PGN_MAX_GAMES} por importación.
             </p>
             <Footer onCancel={close} label="Añadir partida" />
           </form>

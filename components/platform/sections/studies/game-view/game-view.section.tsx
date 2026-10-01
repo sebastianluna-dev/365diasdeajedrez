@@ -3,6 +3,11 @@
 import { useCallback } from "react";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import {
+  isCompleteImport,
+  pgnImportNotice,
+  type PgnImportReport,
+} from "@/constants/platform/pgn-import-messages.const";
 import { STUDY_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
 import type { GameView } from "@/services/studies/studies.types";
 import { useGameAutosave } from "@/components/platform/shared/use-game-autosave.hook";
@@ -18,6 +23,8 @@ interface GameViewSectionProps {
    * column; the notice goes above the board, where the answer is looked for.
    */
   errorCode?: string;
+  /** The result of the PGN import that has just happened, if one has: how many games went in. */
+  importReport?: PgnImportReport | null;
 }
 
 /**
@@ -31,7 +38,7 @@ interface GameViewSectionProps {
  * wires the two things the viewer cannot own: the PGN's history, which the
  * autosave reads, and the autosave itself, which is a server action.
  */
-export function GameViewSection({ game, errorCode }: GameViewSectionProps) {
+export function GameViewSection({ game, errorCode, importReport }: GameViewSectionProps) {
   const { pgn, applyPgn } = usePgnHistory(game.pgn, { undo: game.canEdit });
   const save = useCallback((next: string) => autosaveGamePgn(game.studyId, game.id, next), [game.studyId, game.id]);
   const { saveLabel } = useGameAutosave({ pgn, enabled: game.canEdit, save });
@@ -39,6 +46,12 @@ export function GameViewSection({ game, errorCode }: GameViewSectionProps) {
   return (
     <section className="game-view">
       {errorCode && <PlatformNotice message={STUDY_ERROR_MESSAGES[errorCode] ?? "No se pudo completar la acción."} />}
+      {importReport && (
+        <PlatformNotice
+          message={pgnImportNotice(importReport)}
+          variant={isCompleteImport(importReport) ? "success" : "info"}
+        />
+      )}
 
       <GameViewer
         pgn={pgn}

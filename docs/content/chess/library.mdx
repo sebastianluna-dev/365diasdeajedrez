@@ -42,7 +42,7 @@ Related pure modules outside the folder: `lib/training/review-schedule.ts` (spac
 
 **Import a PGN into a study**
 
-1. `parseImportedGames(text)` (chessops `parsePgn`) → headers to columns, result token to catalog code, full dates only, Elo/titles/federations.
+1. `readImportedGames(text)` (chessops `parsePgn`; it also counts what it leaves out — entries without moves, games past `PGN_MAX_GAMES` — so the import can say it) → headers to columns, result token to catalog code, full dates only, Elo/titles/federations.
 2. For each game, `indexGamePositions(tx, { gameId, databaseId, pgn })` → `extractGamePositions` → `GamePosition` rows; replay warnings are logged, not fatal.
 3. All inside one `$transaction` with `PGN_IMPORT_TRANSACTION`.
 
