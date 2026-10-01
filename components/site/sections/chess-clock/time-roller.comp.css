@@ -45,6 +45,17 @@
   & .time-roller__digit.time-roller__digit_leave {
     animation: time-roller-leave 0.28s ease forwards;
   }
+
+  /* Under reduced motion the digit changes in place. The roll is cut to an
+     instant instead of removed: the outgoing digit is unmounted on
+     `animationend`, and with no animation at all it would stay under the new
+     one. */
+  @media (prefers-reduced-motion: reduce) {
+    & .time-roller__digit.time-roller__digit_enter,
+    & .time-roller__digit.time-roller__digit_leave {
+      animation-duration: 1ms;
+    }
+  }
 }
 
 @keyframes time-roller-enter {

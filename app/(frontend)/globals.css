@@ -63,7 +63,6 @@
 
 html {
   height: 100%;
-  scroll-behavior: smooth;
   /* The scrollbar's room is reserved whether or not the page scrolls: a short
      page (a segment's loading fallback) and the long one that replaces it
      keep the same width, so nothing centred with `margin: auto` — the
@@ -75,6 +74,14 @@ html {
   tab-size: 4;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* A jump to an anchor (the skip link, a link to a section) glides only for
+   whoever did not ask for less motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -231,7 +238,8 @@ article,
   article,
   [role="menuitem"],
   [role="menuitemcheckbox"],
-  [role="tab"] {
+  [role="tab"],
+  .skip-link {
     transition: none;
   }
 }

@@ -27,6 +27,7 @@ Digits that roll instead of flicking. Each character is a `TimeRollerDigit` that
 
 - Slots are keyed from the right (`lastIndex - i`), so when the string shortens (minutes to seconds with tenths) the rightmost digits keep their identity and only the left edge changes.
 - `TimeRollerDigit` updates `leaving` and `current` during render when `char` differs, the React pattern for deriving state from props; `onAnimationEnd` clears `leaving`.
+- Under `prefers-reduced-motion: reduce` the digit changes in place. The stylesheet cuts both animations to `1ms` instead of setting `animation: none`: the leaving digit is only dropped on `animationend`, and with no animation at all it would stay under the new one.
 - Separators (`:` and `.`) get `.time-roller__slot_separator` for narrower spacing.
 
 ## Markup & styling

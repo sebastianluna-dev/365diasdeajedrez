@@ -70,6 +70,15 @@
     right: 50%;
   }
 
+  /* The rings turn for as long as the page is open: whoever asked for less
+     motion gets them still. */
+  @media (prefers-reduced-motion: reduce) {
+    & .orbit__ring_index_1,
+    & .orbit__ring_index_2 {
+      animation: none;
+    }
+  }
+
   @media (max-width: 1024px) {
     & .orbit__ring_index_1 {
       width: 340px;

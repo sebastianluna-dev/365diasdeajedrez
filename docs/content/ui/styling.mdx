@@ -71,7 +71,7 @@ The brand's black keeps its value and changes role: `#16110d` goes from backgrou
 
 `--transition-hover` is read by the global transition rule with a `150ms` default; a component may set it to change or remove the duration.
 
-`globals.css` sets `scroll-behavior: smooth` on `html`, and every layout's `<html>` carries `data-scroll-behavior="smooth"` with it: without that attribute Next warns, because during a route transition it restores the scroll and a smooth one would animate the jump instead of landing on it.
+`globals.css` sets `scroll-behavior: smooth` on `html`, inside `@media (prefers-reduced-motion: no-preference)` — whoever asked the system for less motion gets the jump without the glide —, and every layout's `<html>` carries `data-scroll-behavior="smooth"` with it: without that attribute Next warns, because during a route transition it restores the scroll and a smooth one would animate the jump instead of landing on it.
 
 ## The platform does not bounce
 

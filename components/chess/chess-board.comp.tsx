@@ -268,7 +268,9 @@ export function ChessBoard({
   }, [goToNext, goToPrevious, position]);
 
   useEffect(() => {
-    activeCellRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    // Whoever asked for less motion gets the move brought into view at once.
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    activeCellRef.current?.scrollIntoView({ block: "nearest", behavior: calm ? "auto" : "smooth" });
   }, [ply]);
 
   const cancelPromotion = useCallback(() => {
