@@ -116,6 +116,20 @@ describe("readImportedGames", () => {
     expect(reading).toMatchObject({ skippedEmpty: 1, overLimit: 0 });
   });
 
+  it("el texto suelto alrededor de una partida no cuenta como partida sin jugadas", () => {
+    // A title above the game, a link after it, a second result on its own line:
+    // the reader makes an entry of each, and none of them is a game left out.
+    for (const pasted of [
+      `Morphy contra el Duque, París 1858\n\n${OPERA}`,
+      `${OPERA}\n\nhttps://example.com/partida/123`,
+      `${OPERA}\n\n1-0`,
+    ]) {
+      const reading = readImportedGames(pasted);
+      expect(reading.games, pasted).toHaveLength(1);
+      expect(reading, pasted).toMatchObject({ skippedEmpty: 0, overLimit: 0 });
+    }
+  });
+
   it("con basura no hay partidas ni estalla", () => {
     expect(readImportedGames("esto no es un pgn").games).toEqual([]);
     expect(readImportedGames("")).toEqual({ games: [], skippedEmpty: 0, overLimit: 0 });

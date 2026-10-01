@@ -66,10 +66,21 @@ export interface ImportedGame {
 export interface ImportReading {
   /** The games to store, `PGN_MAX_GAMES` at most, in the order of the PGN. */
   games: ImportedGame[];
-  /** Entries with neither moves nor a starting position: loose text between headers. */
+  /** Games that were named — a header says something — but have neither moves nor a starting position. */
   skippedEmpty: number;
   /** Games that are fine but came after the limit of a single import. */
   overLimit: number;
+}
+
+/**
+ * Whether an entry without moves is a game somebody wrote, and not loose text:
+ * a title above the game, a link after it, a second result on a line of its
+ * own. The reader makes an entry of each of those too, with the placeholders
+ * of an empty roster («?», «????.??.??»), so it is a game only if a header
+ * other than the result says something.
+ */
+function namesAGame(headers: Map<string, string>): boolean {
+  return [...headers].some(([name, value]) => name !== "Result" && /[^?.\s]/.test(value));
 }
 
 /**
@@ -78,11 +89,12 @@ export interface ImportReading {
  * It returns no games if the text is not PGN or there is nothing usable,
  * instead of throwing: a person types it and odd text is not a program error.
  *
- * Entries without moves AND without a starting position are discarded, which
- * is what is left when someone pastes loose text between headers. They are
- * discarded BEFORE the limit is applied, so an empty entry never takes the
- * place of a game; and both numbers go back to the caller, because a person
- * who pastes six hundred games has to be told that five hundred went in.
+ * Entries without moves AND without a starting position are discarded. They
+ * are discarded BEFORE the limit is applied, so an empty entry never takes the
+ * place of a game; and what was left out goes back to the caller, because a
+ * person who pastes six hundred games has to be told that five hundred went
+ * in. Of the discarded ones only those that name a game are counted: loose
+ * text around a game is dropped without a word, as it always was.
  */
 export function readImportedGames(pgnText: string): ImportReading {
   let parsed: ReturnType<typeof parsePgn>;
@@ -93,10 +105,14 @@ export function readImportedGames(pgnText: string): ImportReading {
   }
 
   const usable: ImportedGame[] = [];
+  let skippedEmpty = 0;
   for (const game of parsed) {
     const headers = game.headers;
     const initialFen = readHeader(headers, "FEN");
-    if (game.moves.children.length === 0 && initialFen === null) continue;
+    if (game.moves.children.length === 0 && initialFen === null) {
+      if (namesAGame(headers)) skippedEmpty += 1;
+      continue;
+    }
 
     const resultToken = readHeader(headers, "Result") ?? "";
     usable.push({
@@ -122,7 +138,7 @@ export function readImportedGames(pgnText: string): ImportReading {
   }
 
   const games = usable.slice(0, PGN_MAX_GAMES);
-  return { games, skippedEmpty: parsed.length - usable.length, overLimit: usable.length - games.length };
+  return { games, skippedEmpty, overLimit: usable.length - games.length };
 }
 
 /** The games of a PGN, for whoever only wants them: the first, to file a lesson's own. */

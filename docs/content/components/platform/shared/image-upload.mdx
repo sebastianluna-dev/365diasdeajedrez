@@ -23,7 +23,7 @@ Uploads an image and stores it. Everything happens in this box: the file is drag
 
 **Uploading is saving.** Until 2026-09-28 the URL travelled in a hidden field of the course's metadata form, which is in another column: an image uploaded without pressing «Guardar metadatos» reached Cloudinary and never the database, and was gone on the next visit without a word. The component now calls the `action` it is given the moment the upload ends.
 
-The bytes go **from the browser to Cloudinary directly**, with a signature requested from the server action: the credentials never reach the browser and the file never passes through our server, whose server actions have a 1 MB body limit, less than many photos. On upload the URL is normalised to the target ratio with a crop in the URL itself (`withCoverCrop`), which is what fixes a square photo into a 21:9 cover; the preview therefore shows exactly what the student will see.
+The bytes go **from the browser to Cloudinary directly**, with a signature requested from the server action: the credentials never reach the browser and the file never passes through our server, whose server actions have a 3 MB body limit (`next.config.ts`, raised for the PGN import), less than many photos. On upload the URL is normalised to the target ratio with a crop in the URL itself (`withCoverCrop`), which is what fixes a square photo into a 21:9 cover; the preview therefore shows exactly what the student will see.
 
 ## Props
 

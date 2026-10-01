@@ -14,8 +14,8 @@ import { logError } from "@/lib/logger";
 // The credentials do NOT leave here. What travels to the browser is a SIGNATURE:
 // an expiring string that authorises one specific upload to one specific folder.
 // The file goes from the browser to Cloudinary without passing through our
-// server, which besides dodges the body size cap of server actions — 1 MB by
-// default, less than many photos.
+// server, which besides dodges the body size cap of server actions — 3 MB
+// here (`next.config.ts`, for the PGN import), less than many photos.
 
 const CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 const API_KEY = process.env.CLOUDINARY_API_KEY;

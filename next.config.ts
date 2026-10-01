@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
     // With three root layouts there is no `not-found.tsx` covering the URLs that
     // match no route: app/global-not-found.tsx does that.
     globalNotFound: true,
+    // A PGN import admits PGN_MAX_LENGTH (2,000,000 characters) and answers a
+    // longer one with its own message. The default body limit of a server
+    // action is 1 MB, which rejected the request before the action could say
+    // anything: 3 MB is the PGN, the multipart envelope and room for the
+    // characters that take more than one byte.
+    serverActions: { bodySizeLimit: "3mb" },
   },
   // The headers Vercel does not add on its own (it does add HSTS). No CSP yet:
   // the inline scripts of Google Analytics and the Meta Pixel would need a

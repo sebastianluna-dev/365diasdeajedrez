@@ -333,21 +333,27 @@ export async function importPgnGames(studyId: string, formData: FormData): Promi
   // The position index is written WITHIN the same transaction: a game stored
   // without indexing would be invisible to the position search and nobody would
   // find out until they looked for it.
-  await db.$transaction(async (tx) => {
+  const firstImportedId = await db.$transaction(async (tx) => {
+    let first: string | undefined;
     for (const data of games) {
       const created = await tx.game.create({ data, select: { id: true } });
+      first ??= created.id;
       await indexGamePositions(tx, { gameId: created.id, databaseId: study.id, pgn: data.pgn });
     }
+    return first;
   }, PGN_IMPORT_TRANSACTION);
 
   revalidatePath(platformRoutes.studies);
   revalidatePath(platformRoutes.studyDetail(studyId));
 
-  // Back to the study with what happened: how many went in, and how many were
-  // left out and why. It also takes the place of an `?error=` left in the
-  // address by an earlier attempt, which would otherwise still be on screen.
+  // On to the first game that went in, like a game created by hand, with what
+  // happened: how many went in, and how many were left out and why. The games
+  // go at the end of the study, so its own URL — which opens the first game —
+  // would leave the notice over a game that has nothing to do with it, and the
+  // imported ones a page or two away in the aside. The redirect also takes the
+  // place of an `?error=` left in the address by an earlier attempt.
   redirect(
-    withImportReport(back, {
+    withImportReport(firstImportedId ? platformRoutes.gameDetail(studyId, firstImportedId) : back, {
       imported: games.length,
       skippedEmpty: reading.skippedEmpty,
       overLimit: reading.overLimit,

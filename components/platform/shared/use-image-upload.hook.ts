@@ -32,7 +32,7 @@ interface UseImageUploadOptions {
  *
  * The file goes from the browser to Cloudinary DIRECTLY, with a signature
  * requested from the server: neither the credentials come down to the
- * browser nor the bytes go up through our server, which besides has a 1 MB
+ * browser nor the bytes go up through our server, which besides has a 3 MB
  * cap per request in server actions — less than many photos.
  *
  * On upload it is normalised to the target ratio with a crop in the URL
