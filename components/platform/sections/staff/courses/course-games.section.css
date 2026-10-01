@@ -7,31 +7,6 @@
   flex-direction: column;
   gap: 22px;
 
-  /* Same badge as the course page: it is the same header. */
-  & .course-games__status {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 11px;
-    border-radius: 1000px;
-    font-size: 14px;
-    font-weight: 600;
-  }
-
-  & .course-games__status_state_published {
-    background: var(--platform-success-soft);
-    color: var(--platform-success-ink);
-  }
-
-  & .course-games__status_state_draft {
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
-  }
-
-  & .course-games__status_state_archived {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text-subtle);
-  }
-
   & .course-games__table {
     margin: 0 -22px -22px;
   }

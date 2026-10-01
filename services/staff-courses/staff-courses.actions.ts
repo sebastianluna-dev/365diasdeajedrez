@@ -496,13 +496,6 @@ export async function importChapterGames(courseId: string, chapterId: string, fo
 }
 
 /**
- * Removes a game from the chapter's collection.
- *
- * Only if NO lesson uses it: deleting it would leave those lessons without
- * content — the foreign key is `SET NULL`, so it would not fail, they would be
- * emptied silently, which is worse.
- */
-/**
  * Files a lesson's own PGN as a game of its chapter's collection, and links the
  * lesson to it.
  *
@@ -584,6 +577,13 @@ export async function fileLessonPgnAsGame(courseId: string, chapterId: string, f
   revalidatePath(staffRoutes.courseGames(courseId));
 }
 
+/**
+ * Removes a game from the chapter's collection.
+ *
+ * Only if NO lesson uses it: deleting it would leave those lessons without
+ * content — the foreign key is `SET NULL`, so it would not fail, they would be
+ * emptied silently, which is worse.
+ */
 export async function deleteChapterGame(courseId: string, chapterId: string, formData: FormData): Promise<void> {
   const staff = await requireStaff();
   const chapterPath = staffRoutes.chapterGames(courseId, chapterId);
