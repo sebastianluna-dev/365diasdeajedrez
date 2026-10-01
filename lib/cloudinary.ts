@@ -1,6 +1,8 @@
 import "server-only";
 import { v2 as cloudinary } from "cloudinary";
 import { IMAGE_ALLOWED_FORMATS } from "@/constants/platform/upload.const";
+import { platformPublicId } from "@/lib/cloudinary-url";
+import { logError } from "@/lib/logger";
 
 // Cloudinary for the AUTHENTICATED AREA (course covers, and whatever comes).
 //
@@ -66,4 +68,29 @@ export function signPlatformUpload(): UploadSignature | null {
     timestamp,
     signature,
   };
+}
+
+/**
+ * Deletes a platform image from Cloudinary. It is what is called when one is
+ * replaced or taken away: until this, every change of mind left the old file
+ * there for ever, paid for and pointed at by nobody.
+ *
+ * It does nothing — and says nothing — when the URL does not name an image of
+ * the platform's folder (`platformPublicId` refuses another host, a URL typed
+ * by hand and the site's media, which belong to Payload), and it NEVER throws:
+ * the image was already saved when this runs, and failing here would turn a
+ * finished save into an error in front of whoever saved it. A failure is a
+ * warning in the log and one orphan asset, which is where we were before.
+ */
+export async function destroyPlatformAsset(url: string | null | undefined): Promise<void> {
+  if (!url) return;
+  const publicId = platformPublicId(url);
+  if (!publicId || !CLOUD_NAME || !API_KEY || !API_SECRET) return;
+
+  try {
+    cloudinary.config({ cloud_name: CLOUD_NAME, api_key: API_KEY, api_secret: API_SECRET, secure: true });
+    await cloudinary.uploader.destroy(publicId, { resource_type: "image", invalidate: true });
+  } catch (error) {
+    logError("cloudinary", "No se pudo borrar la imagen reemplazada", error, { publicId });
+  }
 }

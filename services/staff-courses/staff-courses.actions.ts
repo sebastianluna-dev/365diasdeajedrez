@@ -17,6 +17,8 @@ import { syncChapterDuration } from "@/services/shared/chapter-duration.service"
 import { syncLessonTrainingExercise } from "@/services/shared/lesson-training.service";
 import { isLevelStretch } from "@/services/courses/level-rules";
 import { numericId } from "@/lib/numeric-id";
+import { destroyPlatformAsset } from "@/lib/cloudinary";
+import { platformPublicId } from "@/lib/cloudinary-url";
 import { isDisplayableImage } from "@/lib/remote-image";
 import { requireStaff } from "@/lib/platform-auth/roles";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
@@ -251,6 +253,19 @@ export async function updateCourse(courseId: string, formData: FormData): Promis
 const COVER_MAX_LENGTH = 2000;
 
 /**
+ * Deletes from Cloudinary the image that stops being pointed at, when a saved
+ * one is replaced or taken away. Nothing is deleted when both URLs name the
+ * SAME asset: reframing a cover — «c_fill,ar_1:1» over the same file — writes
+ * a different URL of the very image that is being kept.
+ */
+async function destroyReplaced(previous: string | null, next: string | null): Promise<void> {
+  if (!previous) return;
+  const gone = platformPublicId(previous);
+  if (!gone || (next && gone === platformPublicId(next))) return;
+  await destroyPlatformAsset(previous);
+}
+
+/**
  * Stores the course's cover, or takes it away when the URL is empty. It is
  * what `ImageUpload` calls the moment an upload ends, so it answers instead of
  * redirecting: the card stays where it is and says how it went.
@@ -268,11 +283,13 @@ export async function updateCourseCover(courseId: string, url: string): Promise<
   if (cover.length > 0 && !isDisplayableImage(cover)) return { ok: false };
 
   const db = getPlatformDb();
-  const { count } = await db.course.updateMany({
-    where: { id: courseId },
-    data: { cover: cover.length > 0 ? cover : null },
-  });
-  if (count === 0) return { ok: false };
+  // What was there is read before overwriting it: it is the only way to know
+  // which file in Cloudinary stops being pointed at.
+  const previous = await db.course.findUnique({ where: { id: courseId }, select: { cover: true } });
+  if (!previous) return { ok: false };
+
+  await db.course.update({ where: { id: courseId }, data: { cover: cover.length > 0 ? cover : null } });
+  await destroyReplaced(previous.cover, cover);
 
   revalidatePath(staffRoutes.courseDetail(courseId));
   revalidatePath(staffRoutes.courses);
@@ -296,11 +313,14 @@ export async function updateCourseThumbnail(courseId: string, url: string): Prom
   if (thumbnail.length > 0 && !isDisplayableImage(thumbnail)) return { ok: false };
 
   const db = getPlatformDb();
-  const { count } = await db.course.updateMany({
+  const previous = await db.course.findUnique({ where: { id: courseId }, select: { thumbnail: true } });
+  if (!previous) return { ok: false };
+
+  await db.course.update({
     where: { id: courseId },
     data: { thumbnail: thumbnail.length > 0 ? thumbnail : null },
   });
-  if (count === 0) return { ok: false };
+  await destroyReplaced(previous.thumbnail, thumbnail);
 
   revalidatePath(staffRoutes.courseDetail(courseId));
   // It is what the student sees of the course in their list.
@@ -1374,7 +1394,10 @@ export async function updateAuthor(
   const { name, photo, bio } = parsed.data;
   const db = getPlatformDb();
 
-  const existing = await db.author.findUnique({ where: { id: authorId }, select: { name: true, slug: true } });
+  const existing = await db.author.findUnique({
+    where: { id: authorId },
+    select: { name: true, slug: true, photo: true },
+  });
   if (!existing) return authorFailure("authorMissing");
 
   // The slug follows the name; an author who keeps their name keeps their slug.
@@ -1387,6 +1410,9 @@ export async function updateAuthor(
     if (isUniqueConstraintError(error, "Author_slug_key", "slug")) return authorFailure("authorSlug");
     throw error;
   }
+
+  // The photo that was replaced stops being pointed at by anything.
+  await destroyReplaced(existing.photo, photo);
 
   revalidateAuthorPaths();
   return { status: "saved", savedAt: Date.now() };

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { withCoverCrop } from "@/lib/cloudinary-url";
+import { platformPublicId, withCoverCrop } from "@/lib/cloudinary-url";
 
 const PLAIN = "https://res.cloudinary.com/demo/image/upload/v1788629615/365-ajedrez/plataforma/portada.jpg";
 
@@ -31,5 +31,39 @@ describe("withCoverCrop", () => {
 
   it("admite otra proporción", () => {
     expect(withCoverCrop(PLAIN, "auto", "16:9")).toContain("ar_16:9");
+  });
+});
+
+describe("el identificador de una imagen de la plataforma", () => {
+  const stored =
+    "https://res.cloudinary.com/demo/image/upload/c_fill,ar_21:9,g_auto/v1788629615/365-ajedrez/plataforma/portada.jpg";
+
+  it("se saca de la URL guardada, sin su recorte, su versión ni su extensión", () => {
+    expect(platformPublicId(stored)).toBe("365-ajedrez/plataforma/portada");
+  });
+
+  it("también de una URL recién subida, que no trae recorte", () => {
+    expect(
+      platformPublicId("https://res.cloudinary.com/demo/image/upload/v1788629615/365-ajedrez/plataforma/foto.webp"),
+    ).toBe("365-ajedrez/plataforma/foto");
+  });
+
+  it("y de una sin versión", () => {
+    expect(platformPublicId("https://res.cloudinary.com/demo/image/upload/365-ajedrez/plataforma/foto.png")).toBe(
+      "365-ajedrez/plataforma/foto",
+    );
+  });
+
+  it("no lo da para los medios del sitio, que son de Payload y viven una carpeta más arriba", () => {
+    expect(platformPublicId("https://res.cloudinary.com/demo/image/upload/v1/365-ajedrez/mentor.jpg")).toBeUndefined();
+  });
+
+  it("ni para otro host, ni para una URL escrita a mano", () => {
+    expect(platformPublicId("https://ejemplo.com/image/upload/365-ajedrez/plataforma/foto.jpg")).toBeUndefined();
+    expect(platformPublicId("/portadas/local.png")).toBeUndefined();
+  });
+
+  it("ni para la carpeta a secas, que no nombra ninguna imagen", () => {
+    expect(platformPublicId("https://res.cloudinary.com/demo/image/upload/v1/365-ajedrez/plataforma/")).toBeUndefined();
   });
 });
