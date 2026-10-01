@@ -1,12 +1,13 @@
 /*
  * Visual base of the authenticated platform: tokens and primitives.
  *
- * LIGHT theme, taken from the "Mis Cursos - Claro" design. The public area
- * stays dark (globals.css), so `body` and the `--platform-*` tokens are
- * rewritten here: everything that paints with them changes on its own.
+ * TWO themes, light and dark; the light one is taken from the "Mis Cursos -
+ * Claro" design. The public area stays dark (globals.css), so `body` is
+ * repainted here and the platform's colours are the `--platform-*` tokens
+ * declared here: everything that paints with them changes on its own.
  *
- * The brand's black keeps its value and changes role: #16110D goes from
- * background to text.
+ * In the light theme the brand's black keeps its value and changes role:
+ * #16110D goes from background to text.
  *
  * THE ACCENT IS BY THEME. On a light background it is the brand's red,
  * #A81E22, the one the blog — the public site's light section — already
@@ -18,8 +19,8 @@
  * BOTH THEMES ARE WRITTEN HERE, in `light-dark()`: every token declares its
  * two values side by side, so a colour is added or corrected in one place
  * and the pair is always read together. Which of the two is used is decided
- * by `color-scheme` on the body (see below), and that is the only thing the
- * theme switch changes.
+ * by `color-scheme` on the `:root` (see below), and that is the only thing
+ * the theme switch changes.
  */
 
 :root {
@@ -76,8 +77,8 @@
      dots and the row chevron — never for text. */
   --platform-text-faint: light-dark(#bdbdbd, #6a615a);
 
-  /* The accent of the light theme: the brand's red. A dark theme would set
-     these to the brand's orange (see the note at the top). */
+  /* The accent: the brand's red in the light theme, the brand's orange in the
+     dark one (see the note at the top). */
   --platform-accent: light-dark(#a81e22, #ff9143);
   /* A step deeper, for what is filled with the accent and is under the pointer. */
   --platform-accent-hover: light-dark(#8c171b, #ffa561);
@@ -185,7 +186,6 @@
   --platform-warning-ink: light-dark(#8a5a12, #e2b667);
   --platform-warning-border: light-dark(#eddcb4, #4b3a20);
 
-  /* On light, layers are separated by shadow, not by border. */
   /* The platform is drawn one tenth larger than it is written: every size in
      these stylesheets is the one the design was drawn at, and the interface
      was read small on a laptop. `zoom` is what a browser's own 110% does, so
