@@ -103,14 +103,16 @@
      that earn the accent: the reason the screen exists. The frame only says
      how big it is. */
 
+  /* Written in the cream that goes on the ink, not in the surface: the ink is
+     dark in both themes, and the dark theme's surface on it does not read. */
   & .course-study-frame__review {
     background: var(--platform-ink);
-    color: var(--platform-surface);
+    color: var(--platform-on-ink);
   }
 
   & .course-study-frame__review:hover {
-    background: color-mix(in srgb, var(--platform-ink) 84%, var(--platform-surface));
-    color: var(--platform-surface);
+    background: color-mix(in srgb, var(--platform-ink) 84%, var(--platform-on-ink));
+    color: var(--platform-on-ink);
   }
 
   & .course-study-frame__review-count {
