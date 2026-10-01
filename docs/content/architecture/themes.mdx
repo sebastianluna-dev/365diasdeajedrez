@@ -26,11 +26,11 @@ Nothing else in the codebase knows there are two themes. That was possible becau
 
 `color-scheme` on `:root` decides, and it is the only thing the switch changes:
 
-| `:root`                 | `color-scheme` | What is drawn                        |
-| ----------------------- | -------------- | -------------------------------------- |
-| no `data-theme`         | `light dark`   | Whatever the machine prefers.        |
-| `data-theme="light"`    | `light`        | Light, always.                       |
-| `data-theme="dark"`     | `dark`         | Dark, always.                        |
+| `:root`              | `color-scheme` | What is drawn                 |
+| -------------------- | -------------- | ----------------------------- |
+| no `data-theme`      | `light dark`   | Whatever the machine prefers. |
+| `data-theme="light"` | `light`        | Light, always.                |
+| `data-theme="dark"`  | `dark`         | Dark, always.                 |
 
 It also tells the browser how to paint what it draws itself: scrollbars, the inside of a native control, a date input.
 

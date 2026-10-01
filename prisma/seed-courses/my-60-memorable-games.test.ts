@@ -155,6 +155,9 @@ describe("course «Mis 60 memorables partidas»", () => {
     expect(spanish?.notes).toContain("2023");
     expect(spanish?.notes).toContain("2022");
 
-    expect(study).toMatchObject({ sourceType: SOURCE_TYPE.INTERACTIVE_STUDY, url: "https://lichess.org/study/Wq1xlajv" });
+    expect(study).toMatchObject({
+      sourceType: SOURCE_TYPE.INTERACTIVE_STUDY,
+      url: "https://lichess.org/study/Wq1xlajv",
+    });
   });
 });

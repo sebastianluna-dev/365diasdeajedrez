@@ -4,14 +4,14 @@ description: "The lesson's screen: the column of the chapter's lessons and, besi
 
 # `LessonFrame`
 
-|            |                                                                                                              |
-| ---------- | -------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/lesson-view/lesson-frame.comp.tsx`                                     |
-| Kind       | Server Component                                                                                             |
-| Stylesheet | `lesson-frame.comp.css` → block `.lesson-frame`                                                               |
-| Used by    | `app/(platform)/cursos/[courseRef]/[chapterOrder]/(lesson)/layout.tsx`                                        |
-| Composes   | [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline)                           |
-| Uses       | `ChapterOutline` from `services/courses/courses.types`                                                        |
+|            |                                                                                     |
+| ---------- | ----------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/lesson-view/lesson-frame.comp.tsx`            |
+| Kind       | Server Component                                                                    |
+| Stylesheet | `lesson-frame.comp.css` → block `.lesson-frame`                                     |
+| Used by    | `app/(platform)/cursos/[courseRef]/[chapterOrder]/(lesson)/layout.tsx`              |
+| Composes   | [`LessonOutline`](/components/platform/sections/courses/lesson-view/lesson-outline) |
+| Uses       | `ChapterOutline` from `services/courses/courses.types`                              |
 
 ## Purpose
 
@@ -23,10 +23,10 @@ It takes `children` because it is a container and nothing else — the exception
 
 ## Props
 
-| Prop       | Type             | Required | Meaning                                                                    |
-| ---------- | ---------------- | -------- | ---------------------------------------------------------------------------- |
+| Prop       | Type             | Required | Meaning                                                                                                                                 |
+| ---------- | ---------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
 | `outline`  | `ChapterOutline` | yes      | The course, the chapter and its lessons: what the column lists. It names no lesson, because the layout does not know which one is open. |
-| `children` | `ReactNode`      | yes      | The lesson's own segment.                                                  |
+| `children` | `ReactNode`      | yes      | The lesson's own segment.                                                                                                               |
 
 ## Markup & styling
 

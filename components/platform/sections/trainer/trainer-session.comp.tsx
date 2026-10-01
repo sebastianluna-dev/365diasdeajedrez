@@ -176,11 +176,7 @@ export function TrainerSession({ exercises }: TrainerSessionProps) {
 
       <div className="trainer-session__actions">
         <span className="trainer-session__mistakes">Errores: {mistakes}</span>
-        <button
-          type="button"
-          onClick={() => finishExercise(false, mistakes)}
-          className="platform-button"
-        >
+        <button type="button" onClick={() => finishExercise(false, mistakes)} className="platform-button">
           Rendirse
         </button>
         <Link href={platformRoutes.trainer} className="trainer-session__exit">

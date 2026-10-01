@@ -4,14 +4,14 @@ description: "The lessons of a chapter on a page of their own: the chapter's hea
 
 # `ChapterLessonsSection`
 
-|            |                                                                                                    |
-| ---------- | ---------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/chapter-lessons.section.tsx`                           |
-| Kind       | Server Component                                                                                   |
-| Stylesheet | None: the header, the tabs, the panel and the list bring their own.                                |
-| Route      | `/administracion/cursos/[courseId]/capitulos/[chapterId]/lecciones`                                |
-| Composes   | [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list)                                                                                                                                                       |
-| Writes     | `createLesson()`, `deleteLesson()`, `reorderLessons()` · `services/staff-courses/staff-courses.actions.ts` |
+|            |                                                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/chapter-lessons.section.tsx`                                                                             |
+| Kind       | Server Component                                                                                                                                     |
+| Stylesheet | None: the header, the tabs, the panel and the list bring their own.                                                                                  |
+| Route      | `/administracion/cursos/[courseId]/capitulos/[chapterId]/lecciones`                                                                                  |
+| Composes   | [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list) |
+| Writes     | `createLesson()`, `deleteLesson()`, `reorderLessons()` · `services/staff-courses/staff-courses.actions.ts`                                           |
 
 ## Purpose
 
@@ -19,10 +19,10 @@ The same move «Temario» made, one level down: the lessons left the chapter edi
 
 ## Props
 
-| Prop      | Type                 | Required | Meaning                       |
-| --------- | -------------------- | -------- | ----------------------------- |
-| `chapter`   | `ChapterAdminDetail` | yes      | The chapter with its lessons.                                  |
-| `errorCode` | `string`             | no       | What the last attempt refused; drawn as a `PlatformNotice`.     |
+| Prop        | Type                 | Required | Meaning                                                     |
+| ----------- | -------------------- | -------- | ----------------------------------------------------------- |
+| `chapter`   | `ChapterAdminDetail` | yes      | The chapter with its lessons.                               |
+| `errorCode` | `string`             | no       | What the last attempt refused; drawn as a `PlatformNotice`. |
 
 ## Behaviour
 

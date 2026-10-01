@@ -70,19 +70,11 @@ export function MovePathPicker({ kind, referenceId, value, onChange }: MovePathP
       <GameViewer key={referenceId} pgn={current.pgn} onPathChange={setCurrentPath} initialPath={value || undefined} />
 
       <div className="move-path-picker__actions">
-        <button
-          type="button"
-          className="platform-button"
-          onClick={() => onChange(currentPath)}
-        >
+        <button type="button" className="platform-button" onClick={() => onChange(currentPath)}>
           Usar esta posición
         </button>
         {value.length > 0 && (
-          <button
-            type="button"
-            className="platform-button"
-            onClick={() => onChange("")}
-          >
+          <button type="button" className="platform-button" onClick={() => onChange("")}>
             Quitar posición
           </button>
         )}

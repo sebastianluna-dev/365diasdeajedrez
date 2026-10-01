@@ -196,7 +196,8 @@
      near-black separates nothing, so the card takes a hairline ring of its
      own border instead — one token, and no stylesheet has to know which
      theme it is drawing in. */
-  --platform-shadow-card: light-dark(0 0 0 0 transparent, 0 0 0 1px var(--platform-border)),
+  --platform-shadow-card:
+    light-dark(0 0 0 0 transparent, 0 0 0 1px var(--platform-border)),
     0 1px 2px light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.5)),
     0 8px 24px light-dark(rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.45));
   --platform-shadow-bar: 0 1px 0 var(--platform-border);

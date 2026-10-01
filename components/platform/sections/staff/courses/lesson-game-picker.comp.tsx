@@ -59,8 +59,8 @@ export function LessonGamePicker({ courseId, chapterId, lessonId, game, candidat
         </div>
 
         <p className="lesson-game-picker__note">
-          El contenido de la lección es el de esta partida. Ábrela para editarla en el tablero: quedan corregidas
-          todas las lecciones que la usan.
+          El contenido de la lección es el de esta partida. Ábrela para editarla en el tablero: quedan corregidas todas
+          las lecciones que la usan.
         </p>
       </div>
     );

@@ -6,14 +6,14 @@ description: "A game of a chapter's collection on the board, where the staff rea
 
 Also `ChapterGameAside`, `ChapterGameBoard` and `ChapterGameList`, each in its own file.
 
-|            |                                                                                                                                                                                                                                                                                                                                                                                                              |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/staff/courses/chapter-game/chapter-game.section.tsx` (the layout), `chapter-game-aside.comp.tsx` (the column beside the board), `chapter-game-board.comp.tsx` (the board), `chapter-game-list.comp.tsx` (the chapter's games)                                                                                                                                                  |
-| Kind       | The section and the aside are Server Components; the board and the list are Client Components                                                                                                                                                                                                                                                                                                                |
-| Stylesheet | One per file: blocks `.chapter-game`, `.chapter-game-aside`, `.chapter-game-board`, `.chapter-game-list`                                                                                                                                                                                                                                                                                                     |
-| Used by    | `/administracion/cursos/[courseId]/capitulos/[chapterId]/partidas/[gameId]`                                                                                                                                                                                                                                                                                                                                  |
-| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`EditGame`](/components/platform/shared/edit-game), [`PlatformNotice`](/components/platform/shared/platform-notice)                                                                                                                                                                                                                              |
-| Writes     | `autosaveChapterGamePgn()`, `updateChapterGameDetails()` · `services/staff-courses/staff-courses.actions.ts`                                                                                                                                                                                                                                                                                                 |
+|            |                                                                                                                                                                                                                                                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/courses/chapter-game/chapter-game.section.tsx` (the layout), `chapter-game-aside.comp.tsx` (the column beside the board), `chapter-game-board.comp.tsx` (the board), `chapter-game-list.comp.tsx` (the chapter's games)                                                                                            |
+| Kind       | The section and the aside are Server Components; the board and the list are Client Components                                                                                                                                                                                                                                                          |
+| Stylesheet | One per file: blocks `.chapter-game`, `.chapter-game-aside`, `.chapter-game-board`, `.chapter-game-list`                                                                                                                                                                                                                                               |
+| Used by    | `/administracion/cursos/[courseId]/capitulos/[chapterId]/partidas/[gameId]`                                                                                                                                                                                                                                                                            |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`EditGame`](/components/platform/shared/edit-game), [`PlatformNotice`](/components/platform/shared/platform-notice)                                                                                                                                                                        |
+| Writes     | `autosaveChapterGamePgn()`, `updateChapterGameDetails()` · `services/staff-courses/staff-courses.actions.ts`                                                                                                                                                                                                                                           |
 | Uses       | [`usePgnHistory`](/components/platform/shared/use-pgn-history-hook), [`useGameAutosave`](/components/platform/shared/use-game-autosave-hook); `ChapterGameDetail`, `ChapterGameSibling`, `CatalogOption` from `services/staff-courses/staff-courses.types`; `AutosaveResult` from `services/shared/game-record`; `STAFF_ERROR_MESSAGES`; `staffRoutes` |
 
 ## Purpose
@@ -26,11 +26,11 @@ What is different is what the game IS. A student's game is a private analysis. A
 
 ### `ChapterGameSection`
 
-| Prop        | Type                | Required | Meaning                                                                        |
-| ----------- | ------------------- | -------- | ------------------------------------------------------------------------------ |
-| `game`      | `ChapterGameDetail` | yes      | The game with its record, its PGN, its lessons and the chapter's other games.  |
-| `results`   | `CatalogOption[]`   | yes      | The results catalog, for the record's form; from `listGameResults()`.          |
-| `errorCode` | `string`            | no       | `?error=` from saving the record, translated with `STAFF_ERROR_MESSAGES`.      |
+| Prop        | Type                | Required | Meaning                                                                       |
+| ----------- | ------------------- | -------- | ----------------------------------------------------------------------------- |
+| `game`      | `ChapterGameDetail` | yes      | The game with its record, its PGN, its lessons and the chapter's other games. |
+| `results`   | `CatalogOption[]`   | yes      | The results catalog, for the record's form; from `listGameResults()`.         |
+| `errorCode` | `string`            | no       | `?error=` from saving the record, translated with `STAFF_ERROR_MESSAGES`.     |
 
 `ChapterGameAside` takes `game` and `results`; `ChapterGameBoard` takes `game`; `ChapterGameList` takes `games: ChapterGameSibling[]`, `currentId` and the `courseId`/`chapterId` its reorder action is bound to.
 
@@ -48,11 +48,11 @@ What is different is what the game IS. A student's game is a private analysis. A
 
 `autosaveChapterGamePgn` compares the moves of what is stored with the moves of what arrives (`sameMoves`, in `services/shared/game-record`): the same starting position and the same tree, move by move. Comments, glyphs, arrows and headers do not count.
 
-| What changed               | The game                       | Its lessons                                                                                                                                  |
-| -------------------------- | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| A comment, a glyph, an arrow | PGN saved, positions reindexed | Nothing. Their exercises stay as they were.                                                                                                  |
+| What changed                 | The game                       | Its lessons                                                                                                                                                |
+| ---------------------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A comment, a glyph, an arrow | PGN saved, positions reindexed | Nothing. Their exercises stay as they were.                                                                                                                |
 | A move, anywhere in the tree | PGN saved, positions reindexed | `pgnUpdatedAt` is stamped, which marks as stale the exercises frozen against the previous moves, and the derived exercise of a trainable lesson is remade. |
-| The record (the dialog)    | Columns and PGN headers saved  | Nothing: the moves are not touched.                                                                                                          |
+| The record (the dialog)      | Columns and PGN headers saved  | Nothing: the moves are not touched.                                                                                                                        |
 
 All of it in one transaction. If a trainable lesson were left without a line to train — the main line emptied, or only the opponent's move left — nothing is saved and the answer is `training`: the same halfway state `updateLesson` refuses.
 

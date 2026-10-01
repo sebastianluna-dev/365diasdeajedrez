@@ -105,11 +105,7 @@ export function EditStudy({
             <span className="edit-study__note">
               {canChangeKind ? "El tipo se puede cambiar cuando quieras." : `El tipo «${kindLabel}» no se cambia.`}
             </span>
-            <button
-              type="button"
-              className="platform-button"
-              onClick={() => dialogRef.current?.close()}
-            >
+            <button type="button" className="platform-button" onClick={() => dialogRef.current?.close()}>
               Cancelar
             </button>
             <SubmitButton className="platform-button platform-button_variant_ink">Guardar</SubmitButton>

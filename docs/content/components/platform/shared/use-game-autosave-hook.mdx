@@ -6,22 +6,21 @@ description: "Saves the game's PGN by itself 1.2 s after the last change through
 
 Exports `useGameAutosave`, `saveLabelOf`, `AUTOSAVE_DELAY_MS` and the `SaveState` type.
 
-|         |                                                                                          |
-| ------- | ---------------------------------------------------------------------------------------- |
-| File    | `components/platform/shared/use-game-autosave.hook.ts`               |
-| Kind    | Hook (client)                                                                            |
+|         |                                                                                                                                                                                              |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File    | `components/platform/shared/use-game-autosave.hook.ts`                                                                                                                                       |
+| Kind    | Hook (client)                                                                                                                                                                                |
 | Used by | [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section), [`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section) (its board) |
-| Writes  | Whatever `save` it is given: `autosaveGamePgn()` for a study, `autosaveChapterGamePgn()` for a chapter's collection |
-| Tests   | `use-game-autosave.hook.test.ts`, on `saveLabelOf`                                       |
+| Writes  | Whatever `save` it is given: `autosaveGamePgn()` for a study, `autosaveChapterGamePgn()` for a chapter's collection                                                                          |
+| Tests   | `use-game-autosave.hook.test.ts`, on `saveLabelOf`                                                                                                                                           |
 
 ## Signature
 
 ```ts
-function useGameAutosave(options: {
-  pgn: string;
-  enabled: boolean;
-  save: (pgn: string) => Promise<AutosaveResult>;
-}): { saveLabel: string | undefined; failure: AutosaveResult["reason"] | undefined };
+function useGameAutosave(options: { pgn: string; enabled: boolean; save: (pgn: string) => Promise<AutosaveResult> }): {
+  saveLabel: string | undefined;
+  failure: AutosaveResult["reason"] | undefined;
+};
 ```
 
 ## Behaviour

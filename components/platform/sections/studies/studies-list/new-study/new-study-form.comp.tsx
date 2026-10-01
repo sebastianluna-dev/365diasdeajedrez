@@ -84,7 +84,11 @@ export function NewStudyForm({ kinds, action, onClose, onSubmit }: NewStudyFormP
           <button type="button" className="platform-button" onClick={onClose}>
             Cancelar
           </button>
-          <SubmitButton className="platform-button platform-button_variant_ink" pendingLabel="Creando…" disabled={name.trim() === ""}>
+          <SubmitButton
+            className="platform-button platform-button_variant_ink"
+            pendingLabel="Creando…"
+            disabled={name.trim() === ""}
+          >
             Crear estudio
           </SubmitButton>
         </div>

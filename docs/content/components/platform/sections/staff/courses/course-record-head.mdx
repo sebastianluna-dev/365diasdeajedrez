@@ -4,12 +4,12 @@ description: "How a course names itself on its three pages: its name, the status
 
 # `CourseRecordHead`
 
-|            |                                                                                                    |
-| ---------- | ---------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/course-record-head.comp.tsx`                           |
-| Kind       | Server Component                                                                                   |
-| Stylesheet | None: the header and the tabs bring their own.                                                     |
-| Used by    | `app/(platform)/administracion/cursos/[courseId]/(ficha)/layout.tsx`                               |
+|            |                                                                                                                                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/courses/course-record-head.comp.tsx`                                                                                                                                                                   |
+| Kind       | Server Component                                                                                                                                                                                                                           |
+| Stylesheet | None: the header and the tabs bring their own.                                                                                                                                                                                             |
+| Used by    | `app/(platform)/administracion/cursos/[courseId]/(ficha)/layout.tsx`                                                                                                                                                                       |
 | Composes   | [`StaffEditorHead`](/components/platform/sections/staff/courses/staff-editor), [`CourseStatusMenu`](/components/platform/sections/staff/courses/course-status-menu), [`StaffTabs`](/components/platform/sections/staff/courses/staff-tabs) |
 
 ## Purpose
@@ -20,11 +20,11 @@ It is drawn by the record's **layout** and not by each page, for two reasons: th
 
 ## Props
 
-| Prop        | Type                | Required | Meaning                                                    |
+| Prop        | Type                | Required | Meaning                                                      |
 | ----------- | ------------------- | -------- | ------------------------------------------------------------ |
 | `course`    | `CourseAdminDetail` | yes      | The record: its name, its status, its slug and its chapters. |
-| `statuses`  | `CatalogOption[]`   | yes      | The statuses on offer, for the pill that changes it.        |
-| `gameCount` | `number`            | yes      | How many games the course has; the «Partidas» tab says it.  |
+| `statuses`  | `CatalogOption[]`   | yes      | The statuses on offer, for the pill that changes it.         |
+| `gameCount` | `number`            | yes      | How many games the course has; the «Partidas» tab says it.   |
 
 ## Behaviour
 

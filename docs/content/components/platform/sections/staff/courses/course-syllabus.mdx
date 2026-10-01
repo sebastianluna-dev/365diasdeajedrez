@@ -4,15 +4,15 @@ description: "«Temario», the chapters of a course in the staff editor, drawn a
 
 # `CourseSyllabus`
 
-|            |                                                                                                                                                                                     |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/course-syllabus/course-syllabus.comp.tsx`                                                                                               |
-| Kind       | Client Component                                                                                                                                                                    |
-| Stylesheet | `course-syllabus.comp.css` → block `.course-syllabus`                                                                                                                               |
-| Used by    | [`CourseChaptersSection`](/components/platform/sections/staff/courses/course-chapters-section)                                                                                      |
-| Composes   | [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`SubmitButton`](/components/platform/shared/submit-button)                                                |
-| Writes     | `createChapter()`, `deleteChapter()`, `reorderChapters()` · `services/staff-courses/staff-courses.actions.ts`                                                                       |
-| Uses       | `ChapterAdminRow` from `services/staff-courses/staff-courses.types`                                                                                                                 |
+|            |                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/courses/course-syllabus/course-syllabus.comp.tsx`                                                |
+| Kind       | Client Component                                                                                                                     |
+| Stylesheet | `course-syllabus.comp.css` → block `.course-syllabus`                                                                                |
+| Used by    | [`CourseChaptersSection`](/components/platform/sections/staff/courses/course-chapters-section)                                       |
+| Composes   | [`StaffPanel`](/components/platform/sections/staff/courses/staff-panel), [`SubmitButton`](/components/platform/shared/submit-button) |
+| Writes     | `createChapter()`, `deleteChapter()`, `reorderChapters()` · `services/staff-courses/staff-courses.actions.ts`                        |
+| Uses       | `ChapterAdminRow` from `services/staff-courses/staff-courses.types`                                                                  |
 
 ## Purpose
 
@@ -20,11 +20,11 @@ The chapters of a course read as what they are for the student: a path with a fi
 
 ## Props
 
-| Prop       | Type                | Required | Meaning                                                                                                                                               |
-| ---------- | ------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `courseId` | `string`            | yes      | The course the actions are bound to.                                                                                                                  |
+| Prop       | Type                | Required | Meaning                                                                                                                                 |
+| ---------- | ------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `courseId` | `string`            | yes      | The course the actions are bound to.                                                                                                    |
 | `chapters` | `ChapterAdminRow[]` | yes      | `{ id, name, order, roleCode?, roleLabel?, lessonCount, progressCount, href }[]`, the introduction in front and the closing at the end. |
-| `isDraft`  | `boolean`           | yes      | A chapter is only deleted from a draft course (and only without progress from any student).                                                           |
+| `isDraft`  | `boolean`           | yes      | A chapter is only deleted from a draft course (and only without progress from any student).                                             |
 
 ## Behaviour
 

@@ -56,7 +56,12 @@ describe("writeGameRecord", () => {
 
   it("writes the record into the columns and into the PGN's headers, which say the same", () => {
     const { columns } = writeGameRecord(
-      fields({ white: "Robert Byrne", black: "Robert James Fischer", event: "Campeonato de Estados Unidos", eco: "E60" }),
+      fields({
+        white: "Robert Byrne",
+        black: "Robert James Fischer",
+        event: "Campeonato de Estados Unidos",
+        eco: "E60",
+      }),
       GAME,
       "0-1",
     );

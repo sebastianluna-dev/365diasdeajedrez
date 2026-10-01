@@ -98,10 +98,7 @@ export function CourseInfoSection({ course, levels, errorCode }: CourseInfoSecti
             {errorMessage && <PlatformNotice message={errorMessage} />}
 
             {course.isAdded ? (
-              <Link
-                href={course.studyHref}
-                className="platform-button platform-button_variant_accent course-info__cta"
-              >
+              <Link href={course.studyHref} className="platform-button platform-button_variant_accent course-info__cta">
                 {STUDY_LABELS[course.ctaLabel]}
               </Link>
             ) : (

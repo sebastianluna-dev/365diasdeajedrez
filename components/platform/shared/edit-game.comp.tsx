@@ -45,11 +45,7 @@ export function EditGame({ action, values, results, titleHint, label = "Editar" 
       </button>
 
       <dialog ref={dialogRef} className="platform-dialog edit-game__dialog">
-        <form
-          action={action}
-          className="edit-game__form"
-          onSubmit={() => dialogRef.current?.close()}
-        >
+        <form action={action} className="edit-game__form" onSubmit={() => dialogRef.current?.close()}>
           <div className="edit-game__head">
             <h2 className="edit-game__title">Datos de la partida</h2>
             <p className="edit-game__subtitle">Al guardar, estos datos se escriben también en las cabeceras del PGN.</p>
@@ -63,11 +59,7 @@ export function EditGame({ action, values, results, titleHint, label = "Editar" 
 
           <div className="edit-game__actions">
             <span className="edit-game__note">Se escriben en las cabeceras del PGN.</span>
-            <button
-              type="button"
-              className="platform-button"
-              onClick={() => dialogRef.current?.close()}
-            >
+            <button type="button" className="platform-button" onClick={() => dialogRef.current?.close()}>
               Cancelar
             </button>
             <SubmitButton className="platform-button platform-button_variant_ink">Guardar datos</SubmitButton>

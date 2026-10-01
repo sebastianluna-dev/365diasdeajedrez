@@ -4,15 +4,15 @@ description: "The panel a lesson is read beside, pinned to the window's left edg
 
 # `LessonOutline`
 
-|            |                                                                                                                                                                       |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/lesson-view/lesson-outline.comp.tsx`                                                                                            |
-| Kind       | Server Component                                                                                                                                                      |
-| Stylesheet | `lesson-outline.comp.css` → block `.lesson-outline`                                                                                                                   |
-| Used by    | [`LessonFrame`](/components/platform/sections/courses/lesson-view/lesson-frame)                                                                                       |
-| Composes   | [`OutlineList`](/components/platform/sections/courses/lesson-view/outline-list), [`CurrentPathField`](/components/platform/shared/current-path-field)                 |
+|            |                                                                                                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/lesson-view/lesson-outline.comp.tsx`                                                                                                                  |
+| Kind       | Server Component                                                                                                                                                                            |
+| Stylesheet | `lesson-outline.comp.css` → block `.lesson-outline`                                                                                                                                         |
+| Used by    | [`LessonFrame`](/components/platform/sections/courses/lesson-view/lesson-frame)                                                                                                             |
+| Composes   | [`OutlineList`](/components/platform/sections/courses/lesson-view/outline-list), [`CurrentPathField`](/components/platform/shared/current-path-field)                                       |
 | Uses       | `PROGRESS_STATUS` from `constants/platform/shared-codes.const`<br />`LessonSibling` from `services/courses/courses.types`<br />`CircleCheckSolidIcon`, `CheckIcon` from `components/icons/` |
-| Writes     | `setOnlyPriorityLessons()` · `services/courses/courses.actions.ts`                                                                                                             |
+| Writes     | `setOnlyPriorityLessons()` · `services/courses/courses.actions.ts`                                                                                                                          |
 
 ## Purpose
 
@@ -24,8 +24,8 @@ It belongs to the **chapter's layout** and not to the lesson's page, which is wh
 
 ## Props
 
-| Prop      | Type             | Required | Meaning                                                                                      |
-| --------- | ---------------- | -------- | ---------------------------------------------------------------------------------------------- |
+| Prop      | Type             | Required | Meaning                                                                                                                                                                                                                                                        |
+| --------- | ---------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `outline` | `ChapterOutline` | yes      | The course (`courseId`, `courseName`, `courseHref`, `courseThumbnail?`, `onlyPriorityLessons`), the chapter (`chapterName`, `chapterHref`) and its `lessons`. One object, read by the chapter's segment: the column takes the model and decides what it draws. |
 
 ## Behaviour

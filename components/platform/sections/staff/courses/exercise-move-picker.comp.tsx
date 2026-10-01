@@ -37,11 +37,7 @@ export function ExerciseMovePicker({ pgn, onPick }: ExerciseMovePickerProps) {
   if (!isOpen) {
     return (
       <div className="exercise-move-picker exercise-move-picker_state_closed">
-        <button
-          type="button"
-          className="platform-button exercise-move-picker__open"
-          onClick={() => setIsOpen(true)}
-        >
+        <button type="button" className="platform-button exercise-move-picker__open" onClick={() => setIsOpen(true)}>
           Elegir las jugadas sobre el tablero
         </button>
       </div>

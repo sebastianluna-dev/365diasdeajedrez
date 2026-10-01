@@ -11,7 +11,7 @@ description: "«Borrar mi progreso», of a course or of one chapter: the link of
 | Stylesheet | `reset-progress.comp.css` → block `.reset-progress`                                         |
 | Used by    | [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame) |
 | Composes   | [`SubmitButton`](/components/platform/shared/submit-button)                                 |
-| Writes     | `resetCourseProgress()` or `resetChapterProgress()` · `services/courses/courses.actions.ts`  |
+| Writes     | `resetCourseProgress()` or `resetChapterProgress()` · `services/courses/courses.actions.ts` |
 
 ## Purpose
 
@@ -52,14 +52,18 @@ Block `.reset-progress` (81 lines).
 ## Usage
 
 ```tsx
-{/* The whole course, on its own page and on a chapter's. */}
-<ResetProgress courseId={course.id} name={course.name} completedLessons={progress.completedLessons} />
+{
+  /* The whole course, on its own page and on a chapter's. */
+}
+<ResetProgress courseId={course.id} name={course.name} completedLessons={progress.completedLessons} />;
 
-{/* Only on a chapter's page, above it. */}
+{
+  /* Only on a chapter's page, above it. */
+}
 <ResetProgress
   courseId={course.id}
   chapterId={chapter.id}
   name={chapter.name}
   completedLessons={chapter.completedLessons}
-/>
+/>;
 ```

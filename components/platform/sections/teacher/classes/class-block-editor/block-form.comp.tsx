@@ -95,10 +95,7 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
               <p className="block-form__annotate">
                 {/* The game is annotated on its own screen: there the owner plays
                     on the board and comments from the list. */}
-                <Link
-                  href={platformRoutes.gameDetail(annotatableStudyId, gameId)}
-                  className="platform-button"
-                >
+                <Link href={platformRoutes.gameDetail(annotatableStudyId, gameId)} className="platform-button">
                   Anotar esta partida
                 </Link>
               </p>

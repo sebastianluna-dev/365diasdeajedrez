@@ -6,12 +6,12 @@ description: "Tabs that are pages: links with their own URL for the three sectio
 
 The `StaffTab` type and the two builders, `courseTabs()` and `chapterTabs()`, live beside it in `staff-tabs.const.ts` — a **server** module, because the sections that call them are server components and a `"use client"` module only exports client references.
 
-|            |                                                                                                                                                                                                                                                                                                                                                                                |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/staff/courses/staff-tabs.comp.tsx`                                                                                                                                                                                                                                                                                                               |
-| Kind       | Client Component (`usePathname`) |
-| Stylesheet | `staff-tabs.comp.css` → block `.staff-tabs`                                                                                                                                                                                                                                                                                                                                    |
-| Used by    | [`CourseRecordHead`](/components/platform/sections/staff/courses/course-record-head), [`ChapterRecordHead`](/components/platform/sections/staff/courses/chapter-record-head)                                                                                                                                                                                                      |
+|            |                                                                                                                                                                              |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/staff-tabs.comp.tsx`                                                                                                             |
+| Kind       | Client Component (`usePathname`)                                                                                                                                             |
+| Stylesheet | `staff-tabs.comp.css` → block `.staff-tabs`                                                                                                                                  |
+| Used by    | [`CourseRecordHead`](/components/platform/sections/staff/courses/course-record-head), [`ChapterRecordHead`](/components/platform/sections/staff/courses/chapter-record-head) |
 
 ## Purpose
 

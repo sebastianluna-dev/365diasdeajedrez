@@ -4,13 +4,13 @@ description: "Who a course is aimed at: a stretch of the scale of levels, chosen
 
 # `CourseLevelsField`
 
-|            |                                                                                   |
-| ---------- | ----------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/course-levels-field.comp.tsx`         |
-| Kind       | Client Component                                                                  |
+|            |                                                                                                    |
+| ---------- | -------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/course-levels-field.comp.tsx`                          |
+| Kind       | Client Component                                                                                   |
 | Stylesheet | none of its own: it draws [`PlatformCheckCards`](/components/platform/shared/platform-check-cards) |
-| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) |
-| Uses       | `reachableLevels`, `shortEloRange` · `services/courses/level-rules.ts`             |
+| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section)         |
+| Uses       | `reachableLevels`, `shortEloRange` · `services/courses/level-rules.ts`                             |
 
 ## Purpose
 
@@ -20,10 +20,10 @@ The rule is said by the cards themselves: those that would leave a **gap** (a le
 
 ## Props
 
-| Prop           | Type                                             | Required | Meaning                                              |
-| -------------- | ------------------------------------------------ | -------- | ------------------------------------------------------ |
-| `levels`       | `{ slug, name, eloRange }[]`                     | yes      | The catalog, **easiest first**: the order IS the scale. |
-| `defaultValue` | `string[]`                                       | yes      | The levels the course is aimed at today.             |
+| Prop           | Type                         | Required | Meaning                                                 |
+| -------------- | ---------------------------- | -------- | ------------------------------------------------------- |
+| `levels`       | `{ slug, name, eloRange }[]` | yes      | The catalog, **easiest first**: the order IS the scale. |
+| `defaultValue` | `string[]`                   | yes      | The levels the course is aimed at today.                |
 
 ## Behaviour
 

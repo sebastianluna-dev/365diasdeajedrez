@@ -4,14 +4,14 @@ description: "The avatar of the bar and everything behind it: the day's streak a
 
 # `PlatformUserMenu`
 
-|            |                                                                                |
-| ---------- | -------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/shell/platform-user-menu.comp.tsx`               |
-| Kind       | Client Component                                                               |
-| Stylesheet | `platform-user-menu.comp.css` → block `.platform-user-menu`                    |
-| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)   |
-| Reads      | `readStudyGoal()` · `services/study-goal/study-goal.actions.ts`                 |
-| Writes     | `logoutAction()` · `services/auth/auth.actions.ts`                              |
+|            |                                                                                                                                                     |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/shell/platform-user-menu.comp.tsx`                                                                                    |
+| Kind       | Client Component                                                                                                                                    |
+| Stylesheet | `platform-user-menu.comp.css` → block `.platform-user-menu`                                                                                         |
+| Used by    | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                                                                       |
+| Reads      | `readStudyGoal()` · `services/study-goal/study-goal.actions.ts`                                                                                     |
+| Writes     | `logoutAction()` · `services/auth/auth.actions.ts`                                                                                                  |
 | Uses       | `useLingering` · `components/chess/game-viewer/use-lingering.hook`<br />`FlameIcon`, `UserIcon`, `ArrowUpIcon`, `ExitIcon` from `components/icons/` |
 
 ## Purpose
@@ -20,11 +20,11 @@ Who is signed in, and everything that is theirs, behind the avatar at the right 
 
 ## Props
 
-| Prop          | Type     | Required | Meaning                                                                       |
-| ------------- | -------- | -------- | ------------------------------------------------------------------------------- |
-| `displayName` | `string` | yes      | Whoever is signed in: the name the menu heads with, and the avatar's label.   |
+| Prop          | Type     | Required | Meaning                                                                                                                                               |
+| ------------- | -------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `displayName` | `string` | yes      | Whoever is signed in: the name the menu heads with, and the avatar's label.                                                                           |
 | `initials`    | `string` | yes      | The first letters of that name, which is what the avatar draws. The shell computes them (`initialsOf`), so this stays a component that is given data. |
-| `profileHref` | `string` | no       | Their own page, when their role has one. Today only the teacher's (`/profesor/perfil`); without it the name heads the menu and leads nowhere. |
+| `profileHref` | `string` | no       | Their own page, when their role has one. Today only the teacher's (`/profesor/perfil`); without it the name heads the menu and leads nowhere.         |
 
 ## Behaviour
 

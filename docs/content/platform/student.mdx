@@ -21,13 +21,13 @@ Everything here requires a session; the pages live in `app/(platform)` and the l
 
 A course is **added** before it is studied. There is no table of enrolments: a course is the student's from the moment it has a `CourseProgress` row (`isAdded` in the mapper), which is written by the button of its information page (`addCourse`, as `NOT_STARTED`) or by opening one of its lessons (`touchLesson`, as `IN_PROGRESS`).
 
-| Page                          | What it is                                                                                                                                                       |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/cursos`                     | «Mis cursos»: the courses the student added, one to a row and each about its progress, the row that leads to the catalog and, beside the list, the daily streak. |
-| `/cursos/explorar`            | «Explorar cursos»: every published course; `?nivel=<slug>` narrows the list to a level.                                                                          |
-| `/cursos/<slug>`              | The course's **information** page: what it is, who it is for, its chapters, where its material comes from. Where it is added.                                    |
-| `/cursos/<id>`                | The course to **study**: its chapters with the student's progress. Redirects to the information page when the course is not added.                               |
-| `/cursos/<id>/<chapterOrder>` | A chapter: its lessons, each with the moves of its game. Same redirect.                                                                                          |
+| Page                                     | What it is                                                                                                                                                                            |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/cursos`                                | «Mis cursos»: the courses the student added, one to a row and each about its progress, the row that leads to the catalog and, beside the list, the daily streak.                      |
+| `/cursos/explorar`                       | «Explorar cursos»: every published course; `?nivel=<slug>` narrows the list to a level.                                                                                               |
+| `/cursos/<slug>`                         | The course's **information** page: what it is, who it is for, its chapters, where its material comes from. Where it is added.                                                         |
+| `/cursos/<id>`                           | The course to **study**: its chapters with the student's progress. Redirects to the information page when the course is not added.                                                    |
+| `/cursos/<id>/<chapterOrder>`            | A chapter: its lessons, each with the moves of its game. Same redirect.                                                                                                               |
 | `/cursos/<id>/<chapterOrder>/<lessonId>` | A lesson: the column of the chapter's lessons, the board and the commentary. It hangs from the chapter so the column can live in a layout; `/lecciones/<lessonId>` answers 308 to it. |
 
 `services/courses/courses.service.ts`:

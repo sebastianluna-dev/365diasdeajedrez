@@ -57,10 +57,7 @@ export function TeacherClassDetailSection({
       <section className="platform-card">
         <div className="teacher-class__head">
           <h2 className="platform-card__title">Datos de la clase</h2>
-          <Link
-            href={teacherRoutes.classEdit(classDetail.id)}
-            className="platform-button"
-          >
+          <Link href={teacherRoutes.classEdit(classDetail.id)} className="platform-button">
             Editar
           </Link>
         </div>

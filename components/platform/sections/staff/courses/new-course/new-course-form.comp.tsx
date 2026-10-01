@@ -117,11 +117,7 @@ export function NewCourseForm({ contentTypes, action, onClose, onSubmit }: NewCo
           <button type="button" className="platform-button" onClick={onClose}>
             Cancelar
           </button>
-          <SubmitButton
-            className="platform-button"
-            pendingLabel="Creando…"
-            disabled={!isReady}
-          >
+          <SubmitButton className="platform-button" pendingLabel="Creando…" disabled={!isReady}>
             Crear curso
           </SubmitButton>
         </div>

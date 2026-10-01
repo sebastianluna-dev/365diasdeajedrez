@@ -201,11 +201,7 @@ export function ExerciseEditor({ courseId, chapterId, lessonId, exercises, modes
           onCancel={() => setIsAdding(false)}
         />
       ) : (
-        <button
-          type="button"
-          className="platform-button"
-          onClick={() => setIsAdding(true)}
-        >
+        <button type="button" className="platform-button" onClick={() => setIsAdding(true)}>
           Añadir ejercicio
         </button>
       )}

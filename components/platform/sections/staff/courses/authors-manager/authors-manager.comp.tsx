@@ -119,11 +119,7 @@ export function AuthorsManager({ authors, label = "Autores", size = "regular" }:
             <footer className="authors-manager__foot">
               <p className="authors-manager__note">Un autor no se borra: se quita de cada curso.</p>
               <div className="authors-manager__actions">
-                <button
-                  type="button"
-                  className="platform-button"
-                  onClick={() => showForm()}
-                >
+                <button type="button" className="platform-button" onClick={() => showForm()}>
                   Nuevo autor
                 </button>
               </div>

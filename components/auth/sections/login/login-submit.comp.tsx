@@ -12,11 +12,7 @@ export function LoginSubmit() {
 
   // The accent: the one action of the one screen there is before the platform.
   return (
-    <button
-      type="submit"
-      className="platform-button platform-button_variant_accent login__submit"
-      disabled={pending}
-    >
+    <button type="submit" className="platform-button platform-button_variant_accent login__submit" disabled={pending}>
       {pending ? "Entrando…" : "Entrar"}
     </button>
   );

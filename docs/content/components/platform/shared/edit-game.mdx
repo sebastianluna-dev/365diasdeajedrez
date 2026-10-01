@@ -4,14 +4,14 @@ description: "The 'Datos de la partida' dialog over GameFields. It posts to the 
 
 # `EditGame`
 
-|            |                                                                                          |
-| ---------- | ---------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/edit-game.comp.tsx`                      |
-| Kind       | Client Component                                                                         |
-| Stylesheet | `edit-game.comp.css` → block `.edit-game`                                                |
+|            |                                                                                                                                                                                                                               |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/edit-game.comp.tsx`                                                                                                                                                                               |
+| Kind       | Client Component                                                                                                                                                                                                              |
+| Stylesheet | `edit-game.comp.css` → block `.edit-game`                                                                                                                                                                                     |
 | Used by    | [`GameAside`](/components/platform/sections/studies/game-view/game-aside) (the student's studies), [`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section) (the staff's chapter collections) |
-| Composes   | [`GameFields`](/components/platform/shared/game-fields)                        |
-| Writes     | Whatever `action` it is given: `updateGameDetails()` for a study, `updateChapterGameDetails()` for a chapter's collection |
+| Composes   | [`GameFields`](/components/platform/shared/game-fields)                                                                                                                                                                       |
+| Writes     | Whatever `action` it is given: `updateGameDetails()` for a study, `updateChapterGameDetails()` for a chapter's collection                                                                                                     |
 
 ## Purpose
 
@@ -21,13 +21,13 @@ It lives in `shared/` since 2026-09-28, when the staff panel got its own game sc
 
 ## Props
 
-| Prop      | Type                | Required                | Meaning                                                                                      |
-| --------- | ------------------- | ----------------------- | -------------------------------------------------------------------------------------------- |
-| `action`  | `(formData: FormData) => Promise<void>` | yes        | The server action that saves the record, already bound to its game.                          |
-| `values`  | `GameFieldValues`   | yes                     | Current values. The whole game is passed (`GameView`, `ChapterGameDetail`), which is a superset. |
-| `results` | `{ code, label }[]` | yes                     | The results catalog; its label is the PGN token.                                             |
-| `titleHint` | `string`          | yes                     | What the name is for on this screen, under its field.                                        |
-| `label`   | `string`            | no · default `"Editar"` | Trigger text. In the aside of a game «Editar» is enough, and there the trigger is the platform's **row action** — it sits at the end of a row of the list; any other label means it stands in the editor's bar, among buttons, and it is drawn as one (`.platform-button`). |
+| Prop        | Type                                    | Required                | Meaning                                                                                                                                                                                                                                                                     |
+| ----------- | --------------------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `action`    | `(formData: FormData) => Promise<void>` | yes                     | The server action that saves the record, already bound to its game.                                                                                                                                                                                                         |
+| `values`    | `GameFieldValues`                       | yes                     | Current values. The whole game is passed (`GameView`, `ChapterGameDetail`), which is a superset.                                                                                                                                                                            |
+| `results`   | `{ code, label }[]`                     | yes                     | The results catalog; its label is the PGN token.                                                                                                                                                                                                                            |
+| `titleHint` | `string`                                | yes                     | What the name is for on this screen, under its field.                                                                                                                                                                                                                       |
+| `label`     | `string`                                | no · default `"Editar"` | Trigger text. In the aside of a game «Editar» is enough, and there the trigger is the platform's **row action** — it sits at the end of a row of the list; any other label means it stands in the editor's bar, among buttons, and it is drawn as one (`.platform-button`). |
 
 ## Behaviour
 

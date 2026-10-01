@@ -119,7 +119,9 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
       )}
 
       <div className="class-form__actions">
-        <SubmitButton className="platform-button platform-button_variant_ink">{isEdit ? "Guardar cambios" : "Crear clase"}</SubmitButton>
+        <SubmitButton className="platform-button platform-button_variant_ink">
+          {isEdit ? "Guardar cambios" : "Crear clase"}
+        </SubmitButton>
         <Link
           href={isEdit ? teacherRoutes.classDetail(classDetail.id) : teacherRoutes.classes}
           className="platform-button"

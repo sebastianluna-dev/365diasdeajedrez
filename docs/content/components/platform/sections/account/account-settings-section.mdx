@@ -4,15 +4,15 @@ description: "«Ajustes»: the student's details, which are read and not edited,
 
 # `AccountSettingsSection`
 
-|            |                                                                              |
-| ---------- | ------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/account/account-settings.section.tsx`          |
-| Kind       | Server Component                                                             |
-| Stylesheet | `account-settings.section.css` → block `.account-settings`                   |
-| Used by    | `/ajustes`                                                                   |
+|            |                                                                                                                                                                                               |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/account/account-settings.section.tsx`                                                                                                                           |
+| Kind       | Server Component                                                                                                                                                                              |
+| Stylesheet | `account-settings.section.css` → block `.account-settings`                                                                                                                                    |
+| Used by    | `/ajustes`                                                                                                                                                                                    |
 | Composes   | [`PlatformSelect`](/components/platform/shared/platform-select), [`SubmitButton`](/components/platform/shared/submit-button), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Reads      | `getAccountSettings()` · `services/account/account.service.ts`                |
-| Writes     | `updateDailyGoal()` · `services/study-goal/study-goal.actions.ts`             |
+| Reads      | `getAccountSettings()` · `services/account/account.service.ts`                                                                                                                                |
+| Writes     | `updateDailyGoal()` · `services/study-goal/study-goal.actions.ts`                                                                                                                             |
 
 ## Purpose
 
@@ -26,11 +26,11 @@ Three cards: who they are, how it looks, and the one thing they decide about stu
 
 ## Props
 
-| Prop        | Type              | Required | Meaning                                                                        |
-| ----------- | ----------------- | -------- | -------------------------------------------------------------------------------- |
-| `account`   | `AccountSettings` | yes      | `displayName`, `email`, `memberSinceLabel`, `goalMinutes`.                     |
-| `theme`     | `"light" \| "dark"` | no     | What they chose, from the `tema` cookie; absent means «El del sistema».        |
-| `errorCode` | `string`          | no       | Code from `?error=`, translated with `STUDENT_ERROR_MESSAGES` into a notice.   |
+| Prop        | Type                | Required | Meaning                                                                      |
+| ----------- | ------------------- | -------- | ---------------------------------------------------------------------------- |
+| `account`   | `AccountSettings`   | yes      | `displayName`, `email`, `memberSinceLabel`, `goalMinutes`.                   |
+| `theme`     | `"light" \| "dark"` | no       | What they chose, from the `tema` cookie; absent means «El del sistema».      |
+| `errorCode` | `string`            | no       | Code from `?error=`, translated with `STUDENT_ERROR_MESSAGES` into a notice. |
 
 ## Markup & styling
 

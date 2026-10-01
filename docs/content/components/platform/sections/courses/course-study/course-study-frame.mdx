@@ -4,14 +4,14 @@ description: "What is around every page of a course being studied: the course wi
 
 # `CourseStudyFrame`
 
-|            |                                                                                                                                                                                                                                     |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/course-study/course-study-frame.comp.tsx`                                                                                                                                                     |
-| Kind       | Server Component                                                                                                                                                                                                                    |
-| Stylesheet | `course-study-frame.comp.css` → block `.course-study-frame`                                                                                                                                                                         |
-| Used by    | [`CourseStudySection`](/components/platform/sections/courses/course-study/course-study-section), [`ChapterStudySection`](/components/platform/sections/courses/course-study/chapter-study-section)                                  |
+|            |                                                                                                                                                                                                                                                                                                                         |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-study/course-study-frame.comp.tsx`                                                                                                                                                                                                                                         |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                        |
+| Stylesheet | `course-study-frame.comp.css` → block `.course-study-frame`                                                                                                                                                                                                                                                             |
+| Used by    | [`CourseStudySection`](/components/platform/sections/courses/course-study/course-study-section), [`ChapterStudySection`](/components/platform/sections/courses/course-study/chapter-study-section)                                                                                                                      |
 | Composes   | [`LearnMode`](/components/platform/sections/courses/course-study/learn-mode), [`ResetProgress`](/components/platform/sections/courses/course-study/reset-progress), [`RemoveCourse`](/components/platform/sections/courses/course-study/remove-course), [`PlatformNotice`](/components/platform/shared/platform-notice) |
-| Uses       | `CourseDetail` from `services/courses/courses.types`; `studentErrorMessage`; `next/image`, `next/link`                                                                                                                              |
+| Uses       | `CourseDetail` from `services/courses/courses.types`; `studentErrorMessage`; `next/image`, `next/link`                                                                                                                                                                                                                  |
 
 ## Purpose
 
@@ -19,13 +19,13 @@ The course's layout: both pages of a course being studied are the same frame wit
 
 ## Props
 
-| Prop        | Type               | Required | Meaning                                                                                                             |
-| ----------- | ------------------ | -------- | ------------------------------------------------------------------------------------------------------------------- |
-| `course`    | `CourseDetail`     | yes      | Name, `thumbnail` (the square image), progress, `learnHref?`, `reviewCount`, `reviewHref`, `infoHref`, `studyHref`… |
+| Prop        | Type                             | Required | Meaning                                                                                                                |
+| ----------- | -------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `course`    | `CourseDetail`                   | yes      | Name, `thumbnail` (the square image), progress, `learnHref?`, `reviewCount`, `reviewHref`, `infoHref`, `studyHref`…    |
 | `chapter`   | `{ id, name, completedLessons }` | no       | The chapter the page is of: for the line under the name and for erasing its progress. Absent on the course's own page. |
-| `returnTo`  | `string`           | yes      | The page being drawn, where a failed setting is reported.                                                           |
-| `errorCode` | `string`           | no       | What a setting or the reset bounced back with in `?error=` (`throttled`, `confirm`).                                |
-| `children`  | `ReactNode`        | yes      | The page's own column.                                                                                              |
+| `returnTo`  | `string`                         | yes      | The page being drawn, where a failed setting is reported.                                                              |
+| `errorCode` | `string`                         | no       | What a setting or the reset bounced back with in `?error=` (`throttled`, `confirm`).                                   |
+| `children`  | `ReactNode`                      | yes      | The page's own column.                                                                                                 |
 
 ## Behaviour
 

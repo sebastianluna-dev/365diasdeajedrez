@@ -44,9 +44,9 @@ The seed is not transactional and is meant to be run again on a database the app
 
 A course whose content is somebody else's book lives in its own module under `prisma/seed-courses/`, with its data file in `prisma/seed-courses/data/`. The module does not write the content: it validates the file and translates it into a `SeedCourse`. To change the content the file is replaced.
 
-| Module                        | Data file                                      | What it is                                                                                                                                                                       |
-| ----------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `think-like-a-grandmaster.ts` | `think-like-a-grandmaster.import.json`         | Kotov's _Piense como un gran maestro_: 162 diagrams over the book's 5 chapters, one position per lesson, plus a collection of 13 illustrative games.                             |
+| Module                        | Data file                                      | What it is                                                                                                                                                                                                                                            |
+| ----------------------------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `think-like-a-grandmaster.ts` | `think-like-a-grandmaster.import.json`         | Kotov's _Piense como un gran maestro_: 162 diagrams over the book's 5 chapters, one position per lesson, plus a collection of 13 illustrative games.                                                                                                  |
 | `my-60-memorable-games.ts`    | `my-60-memorable-games.pgn` (a Lichess export) | Fischer's _Mis 60 memorables partidas_: one whole annotated game per lesson, in three chapters by stage (1957–1959, 1960–1962, 1963–1967). No collection of its own in the seed: `collections:by-chapter` files each lesson as a game of its chapter. |
 
 `my-60-memorable-games.ts` in detail:

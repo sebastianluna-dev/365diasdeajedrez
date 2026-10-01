@@ -62,9 +62,7 @@ export function AccountSettingsSection({ account, theme, errorCode }: AccountSet
           </div>
         </dl>
 
-        <p className="account-settings__note">
-          Para cambiar tu nombre o tu correo, escríbele a tu profesor.
-        </p>
+        <p className="account-settings__note">Para cambiar tu nombre o tu correo, escríbele a tu profesor.</p>
       </section>
 
       <section className="account-settings__card" aria-labelledby="account-settings-theme">
@@ -85,11 +83,7 @@ export function AccountSettingsSection({ account, theme, errorCode }: AccountSet
           {THEME_CHOICES.map((choice) => (
             <form key={choice.value} action={setTheme.bind(null, choice.value)}>
               <input type="hidden" name="returnTo" value={platformRoutes.settings} />
-              <button
-                type="submit"
-                aria-pressed={chosen === choice.value}
-                className="account-settings__theme"
-              >
+              <button type="submit" aria-pressed={chosen === choice.value} className="account-settings__theme">
                 <span className="account-settings__theme-label">{choice.label}</span>
                 <span className="account-settings__theme-note">{choice.note}</span>
               </button>

@@ -47,8 +47,7 @@ export async function updateDailyGoal(formData: FormData): Promise<void> {
   const minutes = parsed.data.goalMinutes;
 
   const user = await getCurrentUser();
-  if (!(await allowAction(`${user.id}:daily-goal`, 20, 60_000)))
-    redirect(withErrorParam(returnTo, "throttled"));
+  if (!(await allowAction(`${user.id}:daily-goal`, 20, 60_000))) redirect(withErrorParam(returnTo, "throttled"));
 
   await getPlatformDb().user.update({ where: { id: user.id }, data: { dailyGoalMinutes: minutes } });
 

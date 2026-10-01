@@ -17,9 +17,7 @@ function blocksOf(movetext: string): ProseBlock[] {
 function text(block: ProseBlock | undefined): string {
   if (block?.kind === "comment") throw new Error("es un comentario, no una tirada");
   if (!block) throw new Error("no hay bloque");
-  return block.items
-    .map((item) => (item.kind === "move" ? item.label.trim() : `{${item.text}}`))
-    .join(" ");
+  return block.items.map((item) => (item.kind === "move" ? item.label.trim() : `{${item.text}}`)).join(" ");
 }
 
 describe("buildProseBlocks", () => {

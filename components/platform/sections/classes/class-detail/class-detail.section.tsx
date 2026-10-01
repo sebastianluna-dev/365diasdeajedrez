@@ -38,12 +38,7 @@ export function ClassDetailSection({ classDetail }: ClassDetailSectionProps) {
         )}
 
         {classDetail.recordingUrl && (
-          <a
-            href={classDetail.recordingUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="platform-button"
-          >
+          <a href={classDetail.recordingUrl} target="_blank" rel="noreferrer" className="platform-button">
             Ver grabación
           </a>
         )}

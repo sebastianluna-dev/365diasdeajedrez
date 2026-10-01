@@ -468,11 +468,7 @@ export function AnalysisBoard({ name, defaultPgn, initialFen, orientation = "whi
       </div>
 
       <div className="analysis-board__footer">
-        <button
-          type="button"
-          className="platform-button"
-          onClick={() => setPasteOpen((open) => !open)}
-        >
+        <button type="button" className="platform-button" onClick={() => setPasteOpen((open) => !open)}>
           {pasteOpen ? "Cerrar" : "Pegar un PGN"}
         </button>
         {onAutoSave
@@ -488,11 +484,7 @@ export function AnalysisBoard({ name, defaultPgn, initialFen, orientation = "whi
           : isDirty && (
               <>
                 <span className="analysis-board__dirty">Hay cambios sin guardar.</span>
-                <button
-                  type="button"
-                  className="platform-button"
-                  onClick={discardChanges}
-                >
+                <button type="button" className="platform-button" onClick={discardChanges}>
                   Descartar cambios
                 </button>
               </>

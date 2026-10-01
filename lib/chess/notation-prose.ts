@@ -20,8 +20,7 @@ import { nagGlyph, type PgnTreeNode } from "./pgn-tree";
 
 /** One thing inside a paragraph: a move, or a comment that follows it. */
 export type ProseItem =
-  | { kind: "move"; key: string; path: string; label: string }
-  | { kind: "aside"; key: string; text: string };
+  { kind: "move"; key: string; path: string; label: string } | { kind: "aside"; key: string; text: string };
 
 /**
  * A paragraph. A run of moves of the main line, the comment that closed it,

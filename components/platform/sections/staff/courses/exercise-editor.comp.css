@@ -80,7 +80,6 @@
     cursor: default;
   }
 
-
   & .exercise-editor__form {
     display: flex;
     flex-direction: column;
