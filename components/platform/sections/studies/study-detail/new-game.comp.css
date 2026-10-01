@@ -178,6 +178,12 @@
     color: var(--platform-text-subtle);
   }
 
+  /* On the grey of a hovered row the subtle grey falls under 4.5:1; the muted
+     one does not. */
+  & .new-game__pick:hover .new-game__pick-meta {
+    color: var(--platform-text-muted);
+  }
+
   & .new-game__hint {
     margin: 12px 0 0;
     font-size: 14px;

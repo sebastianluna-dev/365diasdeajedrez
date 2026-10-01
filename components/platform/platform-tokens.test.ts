@@ -176,11 +176,19 @@ function rulesOf(css: string): Rule[] {
   return rules;
 }
 
-const OWN_COLOUR = /(?:^|;)\s*color\s*:\s*var\((--platform-[a-z0-9-]+)\)/;
-const OWN_BACKGROUND = /(?:^|;)\s*background(?:-color)?\s*:\s*var\((--platform-[a-z0-9-]+)\)/;
+const OWN_COLOUR = /(?:^|;)\s*color\s*:\s*var\(\s*(--platform-[a-z0-9-]+)\s*[,)]/;
+const OWN_BACKGROUND = /(?:^|;)\s*background(?:-color)?\s*:\s*var\(\s*(--platform-[a-z0-9-]+)\s*[,)]/;
 
 /** A control that is switched off is exempt from the minimum (WCAG 1.4.3, inactive components). */
-const INACTIVE = /:disabled|\[aria-disabled|\[disabled/;
+const INACTIVE = /:disabled|\[disabled\]|\[data-disabled\]|\[aria-disabled(?:="true")?\]/;
+
+/** Switched off in every selector of the list; `:not(:disabled)` is the control that is ON. */
+function isInactive(selector: string): boolean {
+  return selector
+    .replace(/:not\([^)]*\)/g, "")
+    .split(",")
+    .every((one) => INACTIVE.test(one));
+}
 
 type Written = { where: string; text: string; background: string };
 
@@ -190,7 +198,7 @@ function writtenPairs(): Written[] {
     rulesOf(readFileSync(path, "utf8")).flatMap((rule) => {
       const text = OWN_COLOUR.exec(rule.declarations)?.[1];
       const background = OWN_BACKGROUND.exec(rule.declarations)?.[1];
-      if (!text || !background || INACTIVE.test(rule.selector)) return [];
+      if (!text || !background || isInactive(rule.selector)) return [];
       return [{ where: `${relative(ROOT, path)} ${rule.selector}`, text, background }];
     }),
   );

@@ -183,6 +183,12 @@
     font-size: 14px;
   }
 
+  /* On the accent's wash of the hovered card the subtle grey falls under
+     4.5:1; the muted one does not. */
+  &:hover .study-card__game_more {
+    color: var(--platform-text-muted);
+  }
+
   & .study-card__game_more::before {
     border-color: transparent;
   }

@@ -74,6 +74,12 @@
     font-weight: 400;
   }
 
+  /* On the accent's wash the subtle grey falls under 4.5:1; the muted one
+     does not. */
+  & .syllabus-list__add:hover:not(:disabled) .syllabus-list__add-note {
+    color: var(--platform-text-muted);
+  }
+
   /* The numbered steps are ONE block with rules between them, not a card each:
      a syllabus of forty chapters has to read as a single column. */
   & .syllabus-list__group {

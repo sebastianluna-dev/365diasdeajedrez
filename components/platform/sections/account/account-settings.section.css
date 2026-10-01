@@ -112,6 +112,12 @@
     color: var(--platform-text-subtle);
   }
 
+  /* On the accent's wash the subtle grey falls under 4.5:1; the muted one
+     does not. */
+  & .account-settings__theme[aria-pressed="true"] .account-settings__theme-note {
+    color: var(--platform-text-muted);
+  }
+
   & .account-settings__form {
     display: flex;
     align-items: flex-end;
