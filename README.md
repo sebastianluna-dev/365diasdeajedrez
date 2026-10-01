@@ -167,6 +167,10 @@ The platform's URLs are in Spanish because the product is; only the names of the
 
 This version of Next.js brings breaking changes with respect to what models usually hold: **read `node_modules/next/dist/docs/` before writing code**. `AGENTS.md` and `CLAUDE.md` explain it.
 
+## Coding agents
+
+`.claude/settings.json` is the repository's Claude Code policy, and it only restricts: Claude never reads or edits `.env.local`/`.env` and never forces a push; it asks before any push (a push to `main` deploys Production), before the scripts that write to a database and before rewriting history; and it adds no attribution to commits or pull requests. Personal rules go in `.claude/settings.local.json`, which git ignores. `docs/`, "Conventions", has the full list and its limits.
+
 ## Documentation
 
 The project's full documentation lives in `docs/` as a standalone [Nextra](https://nextra.site) site (with its own `package.json`, so the production build carries neither MDX nor the search index):

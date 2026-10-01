@@ -63,6 +63,32 @@ These rules are enforced by review, tests (`proxy.test.ts`, `nav-items.test.ts`)
 - `README.md` stays the quick reference of the repository, in English; this site is the long-form documentation.
 - Before touching framework APIs, read `node_modules/next/dist/docs/`: Next 16 renamed middleware to `proxy.ts`, made `params`/`searchParams` promises, changed caching APIs and more.
 
+## Coding agents
+
+`.claude/settings.json` is the repository's Claude Code policy. It only restricts — it holds no `allow` rule — and a `deny` or `ask` rule wins over an `allow` in any other settings file, so it holds whatever your own settings say.
+
+**Never** (`deny`):
+
+- Reading or editing `.env.local` and `.env`. They hold the database URLs (the managed ones on commented lines), `PAYLOAD_SECRET` and the Cloudinary keys: edit them by hand. Prisma, Next and `scripts/` keep reading them, because the rule covers Claude's own file tools and the shell commands it recognises, not the programs it runs.
+- `prisma migrate reset` and `prisma db push`: both throw data away, and the schema only moves through migrations.
+- `docker volume prune`, `docker system prune` and `dropdb`: the local databases live in the `postgres-data` volume.
+- A forced push, in any spelling the rules know (`--force…`, `-f`, a `+` refspec, `--mirror`): it would rewrite the published history and deploy it. If one is ever needed, the owner runs it.
+- `gh repo delete` and `npm publish`.
+
+**Ask every time**, also in auto mode (`ask`):
+
+- `git push` and `gh pr merge`: every push to `main` is a Production deployment ([release order](/operations/deployment#release-order)).
+- `npm run db:deploy`, `db:seed`, `user:create`, `user:password` and `collections:by-chapter`, and `prisma migrate deploy`, `prisma db seed` and `prisma db execute`: they write to whichever database `.env.local` points at.
+- `docker compose down -v` (and `npm run db:down -- -v`), `docker volume rm` and `pg_restore`: they throw away or overwrite a database.
+- `git filter-branch`, `git filter-repo`, `git reset --hard` and `git clean`: rewritten history and discarded work.
+- `gh repo edit` (it can change the repository's visibility), scheduling a job (`CronCreate`, `CronDelete`) and editing `.claude/settings.json` or `.claude/settings.local.json`.
+
+It also sets `disableBypassPermissionsMode`, so no session can skip the prompts, and turns Claude's attribution off (`"attribution": { "commit": "", "pr": "", "sessionUrl": false }`): no `Co-Authored-By` trailer on a commit, no "Generated with" line or session link on a pull request.
+
+- Your own `allow` rules and your `defaultMode` go in `.claude/settings.local.json`, which git ignores. What auto mode should know about the environment (this repository is public; a push to `main` deploys Production) goes in your user settings, under `autoMode.environment` in `~/.claude/settings.json`: Claude Code never reads `autoMode` from a repository.
+- The policy applies to sessions started at the repository root, where `.claude/` lives.
+- The rules match the command as it is written. `git -C . push`, `bash -c '…'` or a program that opens `.env.local` by itself are not stopped, so the policy brakes the usual path; it is not a sandbox.
+
 ## Definition of done
 
 ```bash
