@@ -12,10 +12,11 @@ import "./course-study-frame.comp.css";
 interface CourseStudyFrameProps {
   course: CourseDetail;
   /**
-   * The chapter the page is of, to say so under the course's name. Absent on
-   * the course's own page, which is the list of its chapters.
+   * The chapter the page is of, to say so under the course's name and to offer
+   * erasing its progress. Absent on the course's own page, which is the list of
+   * its chapters.
    */
-  chapter?: { name: string };
+  chapter?: { id: string; name: string; completedLessons: number };
   /** The page being drawn, where a failed setting is reported. */
   returnTo: string;
   /** What a setting of the course bounced back with, in `?error=`. */
@@ -123,14 +124,22 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
                   Información del curso
                 </Link>
               </li>
-              {/* Only when there is something to erase. */}
-              {hasProgress && (
+              {/* Only when there is something to erase. On a chapter's page the
+                  two scopes are offered, the narrow one first: it is the page's
+                  own, and the course's is the bigger step. */}
+              {chapter && chapter.completedLessons > 0 && (
                 <li>
                   <ResetProgress
                     courseId={course.id}
-                    courseName={course.name}
-                    completedLessons={progress.completedLessons}
+                    chapterId={chapter.id}
+                    name={chapter.name}
+                    completedLessons={chapter.completedLessons}
                   />
+                </li>
+              )}
+              {hasProgress && (
+                <li>
+                  <ResetProgress courseId={course.id} name={course.name} completedLessons={progress.completedLessons} />
                 </li>
               )}
             </ul>

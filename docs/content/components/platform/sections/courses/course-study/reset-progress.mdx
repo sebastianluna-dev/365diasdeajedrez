@@ -1,5 +1,5 @@
 ---
-description: "«Borrar mi progreso»: the link of the course's options and the native dialog that asks, with a required box, before erasing the student's progress in the course."
+description: "«Borrar mi progreso», of a course or of one chapter: the link of the course's options and the native dialog that asks, with a required box, before erasing it."
 ---
 
 # `ResetProgress`
@@ -11,27 +11,31 @@ description: "«Borrar mi progreso»: the link of the course's options and the n
 | Stylesheet | `reset-progress.comp.css` → block `.reset-progress`                                         |
 | Used by    | [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame) |
 | Composes   | [`SubmitButton`](/components/platform/shared/submit-button)                                 |
-| Writes     | `resetCourseProgress()` · `services/courses/courses.actions.ts`                             |
+| Writes     | `resetCourseProgress()` or `resetChapterProgress()` · `services/courses/courses.actions.ts`  |
 
 ## Purpose
 
-Starting a course over. It cannot be undone, so it takes two things to go through — opening the dialog and ticking its box — and the button that does it is the red one.
+Starting a course over — or just one of its chapters. It cannot be undone, so it takes two things to go through — opening the dialog and ticking its box — and the button that does it is the red one.
+
+**One component for the two scopes and not two**: it is the same dialog, the same confirmation and the same red button; what changes is which action it posts to and three lines of copy. `chapterId` is what says which one (2026-09-30).
 
 ## Props
 
 | Prop               | Type     | Required | Meaning                                                                 |
 | ------------------ | -------- | -------- | ----------------------------------------------------------------------- |
-| `courseId`         | `string` | yes      | The course whose progress is erased.                                    |
-| `courseName`       | `string` | yes      | Named in the dialog's text.                                             |
+| `courseId`         | `string` | yes      | The course the erasing happens in.                                      |
+| `name`             | `string` | yes      | The course's name, or the chapter's: whichever is named in the dialog.  |
 | `completedLessons` | `number` | yes      | What is about to be lost, by its figure; not mentioned when it is zero. |
+| `chapterId`        | `string` | no       | The chapter whose progress is erased. Absent = the whole course.        |
 
 ## Behaviour
 
 - A native `<dialog>` opened with `showModal()`: focus trapping, Escape and the backdrop come with it, and the entry and exit motion from `.platform-dialog`.
 - The box is `required`: the browser stops the form without it. The action asks for it again (`confirm=on`), because it is reachable by direct POST, and answers `?error=confirm` — «Marca la casilla para confirmar que quieres borrar tu progreso.» — when it is missing.
-- **What is erased**: the student's `LessonProgress` and `ChapterProgress` rows of the course, and the course's own progress goes back to `NOT_STARTED` with no dates and no last lesson. The course **stays** among the student's.
+- **What is erased, for a course**: the student's `LessonProgress` and `ChapterProgress` rows of it, and the course's own progress goes back to `NOT_STARTED` with no dates and no last lesson. The course **stays** among the student's.
+- **For a chapter**: only its lessons' rows and its own, and then the course's row is resealed around what is left — `completeLesson` run backwards. It stays `IN_PROGRESS` while the student has touched any lesson of the course, and goes back to `NOT_STARTED` only when none is left; `completedAt` is cleared either way (a finished course is no longer finished), and the return point of «continuar estudiando» only moves when it pointed at a lesson of that chapter.
 - The dialog's sentence names the trainer's attempts only while the Move Trainer is on (`MOVE_TRAINER_ENABLED`); today it reads «Tu racha y tu actividad no se tocan.»
-- **What is not**: the activity log, the streak, the trainer's attempts and the course's settings. They are the record of days that happened, and preferences.
+- **What is not**: the activity log, the streak and the trainer's attempts. They are the record of days that happened. (The course's settings survive a reset; they only go when the course is taken out of «Mis cursos» — see [`RemoveCourse`](/components/platform/sections/courses/course-study/remove-course).)
 
 ## Markup & styling
 
@@ -48,5 +52,14 @@ Block `.reset-progress` (81 lines).
 ## Usage
 
 ```tsx
-<ResetProgress courseId={course.id} courseName={course.name} completedLessons={progress.completedLessons} />
+{/* The whole course, on its own page and on a chapter's. */}
+<ResetProgress courseId={course.id} name={course.name} completedLessons={progress.completedLessons} />
+
+{/* Only on a chapter's page, above it. */}
+<ResetProgress
+  courseId={course.id}
+  chapterId={chapter.id}
+  name={chapter.name}
+  completedLessons={chapter.completedLessons}
+/>
 ```

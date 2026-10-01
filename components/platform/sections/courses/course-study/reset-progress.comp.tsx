@@ -3,14 +3,20 @@
 import { useRef } from "react";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
-import { resetCourseProgress } from "@/services/courses/courses.actions";
+import { resetChapterProgress, resetCourseProgress } from "@/services/courses/courses.actions";
 import "./reset-progress.comp.css";
 
 interface ResetProgressProps {
   courseId: string;
-  courseName: string;
-  /** Lessons the student has finished: what is about to be lost, by its figure. */
+  /** The course's name, or the chapter's: whichever is about to be erased. */
+  name: string;
+  /** Lessons the student has finished in it: what is about to be lost, by its figure. */
   completedLessons: number;
+  /**
+   * The chapter whose progress is erased. Absent = the whole course, which is
+   * what the course's own page offers.
+   */
+  chapterId?: string;
 }
 
 /**
@@ -21,29 +27,41 @@ interface ResetProgressProps {
  *
  * The box is `required`: the browser stops the form without it, and the
  * action asks for it again, because it is reachable by direct POST.
+ *
+ * One component for the two scopes — the whole course and one chapter — and
+ * not two: it is the same dialog, the same confirmation and the same red
+ * button; what changes is which action it posts to and three lines of copy.
  */
-export function ResetProgress({ courseId, courseName, completedLessons }: ResetProgressProps) {
+export function ResetProgress({ courseId, name, completedLessons, chapterId }: ResetProgressProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const scope = chapterId ? "capítulo" : "curso";
+  const label = chapterId ? "Borrar mi progreso del capítulo" : "Borrar mi progreso";
+  const action = chapterId
+    ? resetChapterProgress.bind(null, courseId, chapterId)
+    : resetCourseProgress.bind(null, courseId);
 
   return (
     <div className="reset-progress">
       <button type="button" className="reset-progress__open" onClick={() => dialogRef.current?.showModal()}>
-        Borrar mi progreso
+        {label}
       </button>
 
       {/* Native `<dialog>`: it brings focus trapping, closing with Escape and the
           modal backdrop without writing any of that by hand. */}
       <dialog ref={dialogRef} className="platform-dialog reset-progress__dialog" aria-labelledby="reset-progress-title">
-        <form action={resetCourseProgress.bind(null, courseId)} className="reset-progress__form">
+        <form action={action} className="reset-progress__form">
           <h2 id="reset-progress-title" className="reset-progress__title">
-            Borrar mi progreso
+            {label}
           </h2>
 
           <p className="reset-progress__text">
-            Vas a borrar tu progreso en «{courseName}»
+            Vas a borrar tu progreso en «{name}»
             {completedLessons > 0 &&
               `: ${completedLessons} ${completedLessons === 1 ? "lección aprendida" : "lecciones aprendidas"}`}
-            . El curso vuelve a empezar desde la primera lección y sigue entre tus cursos.
+            .{" "}
+            {chapterId
+              ? "Sus lecciones vuelven a estar sin empezar; el resto del curso se queda como está."
+              : "El curso vuelve a empezar desde la primera lección y sigue entre tus cursos."}
           </p>
           <p className="reset-progress__text">
             {MOVE_TRAINER_ENABLED
@@ -54,19 +72,15 @@ export function ResetProgress({ courseId, courseName, completedLessons }: ResetP
 
           <label className="reset-progress__confirm">
             <input type="checkbox" name="confirm" required />
-            <span>Sí, quiero borrar mi progreso en este curso</span>
+            <span>Sí, quiero borrar mi progreso en este {scope}</span>
           </label>
 
           <div className="reset-progress__actions">
-            <button
-              type="button"
-              className="platform-button"
-              onClick={() => dialogRef.current?.close()}
-            >
+            <button type="button" className="platform-button" onClick={() => dialogRef.current?.close()}>
               Cancelar
             </button>
             <SubmitButton className="platform-button platform-button_variant_danger" pendingLabel="Borrando…">
-              Borrar mi progreso
+              {label}
             </SubmitButton>
           </div>
         </form>

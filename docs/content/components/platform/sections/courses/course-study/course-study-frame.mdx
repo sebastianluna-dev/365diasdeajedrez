@@ -22,7 +22,7 @@ The course's layout: both pages of a course being studied are the same frame wit
 | Prop        | Type               | Required | Meaning                                                                                                             |
 | ----------- | ------------------ | -------- | ------------------------------------------------------------------------------------------------------------------- |
 | `course`    | `CourseDetail`     | yes      | Name, `thumbnail` (the square image), progress, `learnHref?`, `reviewCount`, `reviewHref`, `infoHref`, `studyHref`… |
-| `chapter`   | `{ name: string }` | no       | The chapter the page is of, for the line under the name. Absent on the course's own page.                           |
+| `chapter`   | `{ id, name, completedLessons }` | no       | The chapter the page is of: for the line under the name and for erasing its progress. Absent on the course's own page. |
 | `returnTo`  | `string`           | yes      | The page being drawn, where a failed setting is reported.                                                           |
 | `errorCode` | `string`           | no       | What a setting or the reset bounced back with in `?error=` (`throttled`, `confirm`).                                |
 | `children`  | `ReactNode`        | yes      | The page's own column.                                                                                              |
@@ -35,7 +35,7 @@ The course's layout: both pages of a course being studied are the same frame wit
 - A button is only drawn when it leads somewhere: a course without lessons in view has no «Aprender», and one without learned exercises no «Repasar». With neither, the block is not rendered. **A finished course keeps its «Aprender»**: it opens the first lesson, to start the course over.
 - Under the name, **the trail**: «Capítulos» on the course's page and «Capítulos ▸ Los años de aprendizaje (1957–1959)» on a chapter's, the step drawn with `CaretRightIcon`. The three are one colour, the title grey. On a chapter's page the first half is a link back to the list of chapters; on the list itself it is the page one is already on, so it is only read and nothing there leads.
 - **No figure of the course is drawn here.** «Tu progreso» — its percentage, its `completed/total` and a bar — was in the aside until 2026-09-28: a chapter's card says how far that chapter is, and the course's own progress is read in «Mis cursos», where a course is chosen.
-- **«Opciones del curso»**: «Información del curso» (the slug page) and «Borrar mi progreso», the latter only when there is something to erase.
+- **«Opciones del curso»**: «Información del curso» (the slug page), «Borrar mi progreso del capítulo» — only on a chapter's page and only when that chapter has a finished lesson (2026-09-30) — and «Borrar mi progreso», the course's, only when there is something to erase. The narrow scope goes first: it is the page's own, and the course's is the bigger step.
 - **«Configuración»**: [`LearnMode`](/components/platform/sections/courses/course-study/learn-mode).
 
 The design this comes from also had «Poner en pausa todos los capítulos»; it was left out on purpose — there is no scheduling a pause could stop.

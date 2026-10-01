@@ -466,11 +466,19 @@ export function mapChapterView(
   const linkTo = (neighbour: CourseDetail["chapters"][number] | undefined): ChapterLink | undefined =>
     neighbour ? { name: neighbour.name, href: neighbour.href } : undefined;
 
+  // Counted over ALL its lessons and not over the visible ones: with the
+  // «Prioridad» filter on, a finished lesson can be hidden, and what there is
+  // to erase cannot depend on the lens the student is looking through.
+  const completedLessons = chapter.lessons.filter(
+    (lesson) => state.lessonStatus.get(lesson.id) === PROGRESS_STATUS.COMPLETED,
+  ).length;
+
   return {
     course: detail,
     id: chapter.id,
     order: chapter.order,
     name: chapter.name,
+    completedLessons,
     hiddenLessons,
     lessons,
     previous: position > 0 ? linkTo(detail.chapters[position - 1]) : undefined,

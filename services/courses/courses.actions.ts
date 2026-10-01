@@ -325,6 +325,76 @@ export async function resetCourseProgress(courseId: string, formData: FormData):
 }
 
 /**
+ * Erases the student's progress in ONE chapter: its lessons and the chapter
+ * itself go back to not started, and the course's row is resealed around what
+ * is left — it is `completeLesson` run backwards.
+ *
+ * The course stays among theirs and keeps the rest of its progress: what is
+ * erased is where they are in this chapter. Their activity, their streak and
+ * the trainer's attempts are not touched, for the same reason as the course's
+ * reset: they are the record of days that happened.
+ */
+export async function resetChapterProgress(courseId: string, chapterId: string, formData: FormData): Promise<void> {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+
+  const chapter = await db.chapter.findFirst({
+    where: { id: chapterId, courseId, course: { status: { code: COURSE_STATUS.PUBLISHED } } },
+    select: { id: true, order: true, course: { select: { slug: true } } },
+  });
+  if (!chapter) return;
+
+  const chapterPath = platformRoutes.chapterDetail(courseId, chapter.order);
+  if (!parseForm(RESET_SCHEMA, formData).ok) redirect(withErrorParam(chapterPath, "confirm"));
+  if (!(await allowAction(`${user.id}:reset-chapter`, 10, 60_000))) redirect(withErrorParam(chapterPath, "throttled"));
+
+  await db.$transaction(async (tx) => {
+    await tx.lessonProgress.deleteMany({ where: { userId: user.id, lesson: { chapterId } } });
+    await tx.chapterProgress.deleteMany({ where: { userId: user.id, chapterId } });
+
+    // What is left of the course decides its row, and what counts is having
+    // TOUCHED a lesson and not having finished it: someone who still has a
+    // lesson of another chapter open has not gone back to not having started
+    // the course. A course that was finished is no longer finished either way.
+    const left = await tx.lessonProgress.count({
+      where: { userId: user.id, lesson: { chapter: { courseId } } },
+    });
+    const status = await tx.progressStatus.findUniqueOrThrow({
+      where: { code: left > 0 ? PROGRESS_STATUS.IN_PROGRESS : PROGRESS_STATUS.NOT_STARTED },
+      select: { id: true },
+    });
+
+    // The return point of «continuar estudiando» only moves when it pointed at a
+    // lesson of this chapter: anywhere else it is still where they were.
+    const progress = await tx.courseProgress.findUnique({
+      where: { userId_courseId: { userId: user.id, courseId } },
+      select: { lastLesson: { select: { chapterId: true } } },
+    });
+    const lastLessonWasHere = progress?.lastLesson?.chapterId === chapterId;
+
+    // `updateMany`, which does nothing to a course that was never added: erasing
+    // a chapter must not be a way of adding its course.
+    await tx.courseProgress.updateMany({
+      where: { userId: user.id, courseId },
+      data: {
+        statusId: status.id,
+        completedAt: null,
+        ...(left > 0 ? {} : { startedAt: null }),
+        ...(lastLessonWasHere || left === 0 ? { lastLessonId: null } : {}),
+      },
+    });
+  });
+
+  revalidatePath(platformRoutes.dashboard);
+  revalidatePath(platformRoutes.courses);
+  revalidatePath(platformRoutes.courseInfo(chapter.course.slug));
+  revalidatePath(platformRoutes.courseDetail(courseId));
+  revalidatePath(chapterPath);
+  revalidatePath(platformRoutes.lessonPattern, "page");
+  redirect(chapterPath);
+}
+
+/**
  * Switches a course's essential-lessons filter on or off.
  *
  * It is a LENS, not a change in what the course is: it writes exactly one row

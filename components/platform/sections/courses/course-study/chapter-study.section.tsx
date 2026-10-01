@@ -34,7 +34,7 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
   return (
     <CourseStudyFrame
       course={course}
-      chapter={{ name: chapter.name }}
+      chapter={{ id: chapter.id, name: chapter.name, completedLessons: chapter.completedLessons }}
       returnTo={course.chapters.find((item) => item.id === chapter.id)?.href ?? course.studyHref}
       errorCode={errorCode}
     >
