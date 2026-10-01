@@ -214,7 +214,7 @@ export interface ChapterView {
   id: string;
   order: number;
   name: string;
-  /** Lessons of it the student has finished, the filter notwithstanding: what «Borrar mi progreso del capítulo» would erase. */
+  /** Lessons of it the student has finished, the filter notwithstanding: what «Eliminar mi progreso del capítulo» would erase. */
   completedLessons: number;
   /**
    * How many the filter hides. It is stated, so the absence does not unsettle.

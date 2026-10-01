@@ -71,7 +71,7 @@ export function LessonGamePicker({ courseId, chapterId, lessonId, game, candidat
   if (candidates.length === 0 && !query) {
     return (
       <p className="lesson-game-picker__note">
-        Este capítulo todavía no tiene partidas en su colección. Añádelas en la pestaña «Partidas» del capítulo —ahí es
+        Este capítulo todavía no tiene partidas en su colección. Agrégalas en la pestaña «Partidas» del capítulo —ahí es
         donde se pega el PGN— y luego vuelve a elegir una aquí.
       </p>
     );
@@ -119,7 +119,7 @@ export function LessonGamePicker({ courseId, chapterId, lessonId, game, candidat
         <p className="lesson-game-picker__note">
           {query
             ? "No hay partidas que coincidan."
-            : "Este capítulo todavía no tiene partidas en su colección. Añádelas en la pestaña «Partidas» del capítulo."}
+            : "Este capítulo todavía no tiene partidas en su colección. Agrégalas en la pestaña «Partidas» del capítulo."}
         </p>
       )}
     </div>

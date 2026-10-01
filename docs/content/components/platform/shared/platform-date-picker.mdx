@@ -1,5 +1,5 @@
 ---
-description: 'The platform''s date picker: a trigger that looks like the inputs and, on Radix''s Popover, a month calendar of our own with keyboard navigation, ''Hoy'' and ''Borrar''; it submits like <input type="date"> through a hidden native input.'
+description: 'The platform''s date picker: a trigger that looks like the inputs and, on Radix''s Popover, a month calendar of our own with keyboard navigation, ''Hoy'' and ''Quitar''; it submits like <input type="date"> through a hidden native input.'
 ---
 
 # `PlatformDatePicker`
@@ -27,7 +27,7 @@ Radix Primitives has no date primitive, so the calendar is ours and only the pop
 | `defaultValue`  | `string`                  | no                       | Initial date, `yyyy-mm-dd`.                                                                                    |
 | `onValueChange` | `(value: string) => void` | no                       | Called with the new value, `""` when cleared.                                                                  |
 | `placeholder`   | `string`                  | no · `"Elige una fecha"` | Trigger text while no date is chosen.                                                                          |
-| `required`      | `boolean`                 | no                       | On the hidden input: the browser blocks an empty submit. "Borrar" is not offered.                              |
+| `required`      | `boolean`                 | no                       | On the hidden input: the browser blocks an empty submit. "Quitar" is not offered.                              |
 | `disabled`      | `boolean`                 | no                       |                                                                                                                |
 | `min`, `max`    | `string`                  | no                       | Earliest and latest choosable days, `yyyy-mm-dd`: the others are disabled, and the hidden input enforces them. |
 | `size`          | `"regular" \| "compact"`  | no · default `"regular"` | `regular` matches `PlatformForm`'s inputs; `compact` the ones of `FormField`.                                  |
@@ -37,7 +37,7 @@ Radix Primitives has no date primitive, so the calendar is ours and only the pop
 
 - **Submission.** A visually hidden native `<input type="date">` carries the value, `required`, `min` and `max`, so a form reads it exactly as it read the native input, and the validation bubble anchors to it, at the trigger. The value is held in the component even when uncontrolled, so the trigger, the grid and the input agree.
 - **The grid.** `role="grid"` of `gridcell`s, Monday first, six weeks with the neighbouring months' days muted but choosable. Opening lands on the chosen day, or on today, and focuses it. Arrows move the focus a day or a week, Home and End go to the week's Monday and Sunday, PageUp and PageDown change the month (a year with Shift); moving into another month turns the page. Enter or a click chooses and closes. Today carries `aria-current="date"` and an underline; the chosen day is the filled square.
-- **"Hoy" and "Borrar"** under the grid; the second only when a date is chosen and the field is not required.
+- **"Hoy" and "Quitar"** under the grid; the second only when a date is chosen and the field is not required.
 - The calendar is **not portalled**, like the select's list, so it works inside a modal `<dialog>`; the popover is not modal, so the page keeps scrolling and its scrollbar. It unfolds from the trigger and folds back on `data-state`, off under `prefers-reduced-motion`.
 
 ## Markup & styling

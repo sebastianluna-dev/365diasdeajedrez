@@ -48,10 +48,10 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
       <dialog ref={dialogRef} className="platform-dialog new-game__dialog" onClose={() => setPicked([])}>
         <div className="new-game__head">
           <h2 className="new-game__title">Nueva partida</h2>
-          <p className="new-game__subtitle">Se añadirá a «{studyName}».</p>
+          <p className="new-game__subtitle">Se agregará a «{studyName}».</p>
         </div>
 
-        <div className="new-game__tabs" role="tablist" aria-label="Cómo añadir la partida">
+        <div className="new-game__tabs" role="tablist" aria-label="Cómo agregar la partida">
           {tabs.map((option) => (
             <button
               key={option.key}
@@ -78,7 +78,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
               Se leen cabeceras, variantes, comentarios y NAGs. Si el PGN trae varias partidas, se crean todas, hasta{" "}
               {PGN_MAX_GAMES} por importación.
             </p>
-            <Footer onCancel={close} label="Añadir partida" />
+            <Footer onCancel={close} label="Agregar partida" />
           </form>
         )}
 
@@ -115,7 +115,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
               La partida arranca en esa posición y sin jugadas previas. Cópialo de Lichess, de un motor o de donde lo
               tengas.
             </p>
-            <Footer onCancel={close} label="Añadir partida" />
+            <Footer onCancel={close} label="Agregar partida" />
           </form>
         )}
 
@@ -179,7 +179,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
             </div>
 
             <p className="new-game__hint">Puedes dejarlo casi vacío y jugar las jugadas después en el editor.</p>
-            <Footer onCancel={close} label="Añadir partida" />
+            <Footer onCancel={close} label="Agregar partida" />
           </form>
         )}
 
@@ -216,7 +216,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
 
             <Footer
               onCancel={close}
-              label={picked.length > 1 ? `Añadir ${picked.length} partidas` : "Añadir partida"}
+              label={picked.length > 1 ? `Agregar ${picked.length} partidas` : "Agregar partida"}
               disabled={picked.length === 0}
               onConfirm={() => {
                 const ids = picked;

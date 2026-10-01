@@ -275,11 +275,11 @@ export function SyllabusList({
       <form action={createAction} className="syllabus-list__slot">
         <input type="hidden" name="role" value={kind === "intro" ? CONTENT_ROLE.INTRO : CONTENT_ROLE.CLOSING} />
         <input type="hidden" name="name" value={kind === "intro" ? "Introducción" : "Cierre"} />
-        <SubmitButton className="syllabus-list__add" pendingLabel="Añadiendo…">
+        <SubmitButton className="syllabus-list__add" pendingLabel="Agregando…">
           <span className="syllabus-list__add-sign" aria-hidden="true">
             +
           </span>
-          Añadir {kind === "intro" ? "introducción" : "cierre"}
+          Agregar {kind === "intro" ? "introducción" : "cierre"}
           <span className="syllabus-list__add-note">Opcional</span>
         </SubmitButton>
       </form>
@@ -324,8 +324,8 @@ export function SyllabusList({
                 autoComplete="off"
               />
               {/* Out of sight while the field is empty (`:placeholder-shown`): Enter adds too. */}
-              <SubmitButton className="syllabus-list__new-submit" pendingLabel="Añadiendo…">
-                Añadir
+              <SubmitButton className="syllabus-list__new-submit" pendingLabel="Agregando…">
+                Agregar
               </SubmitButton>
             </form>
           </li>

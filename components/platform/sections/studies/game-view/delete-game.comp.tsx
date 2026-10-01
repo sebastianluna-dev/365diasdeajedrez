@@ -17,7 +17,7 @@ interface DeleteGameProps {
    * where it is one more word of the row and not a box.
    */
   size?: "regular" | "compact" | "inline";
-  /** The trigger text. At the foot "Borrar" is enough, it is already in context. */
+  /** The trigger text. At the foot "Eliminar" is enough, it is already in context. */
   label?: string;
 }
 
@@ -27,7 +27,7 @@ export function DeleteGame({
   name,
   classBlockCount,
   size = "regular",
-  label = "Borrar partida",
+  label = "Eliminar partida",
 }: DeleteGameProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [confirmed, setConfirmed] = useState(false);
@@ -59,9 +59,9 @@ export function DeleteGame({
               ✕
             </span>
             <div>
-              <h2 className="delete-game__title">¿Borrar «{name}»?</h2>
+              <h2 className="delete-game__title">¿Eliminar «{name}»?</h2>
               <p className="delete-game__description">
-                Se borra la partida entera, con sus variantes, comentarios y flechas.
+                Se elimina la partida entera, con sus variantes, comentarios y flechas.
               </p>
             </div>
           </div>
@@ -91,9 +91,9 @@ export function DeleteGame({
             <SubmitButton
               className="delete-game__submit"
               disabled={needsConfirmation && !confirmed}
-              pendingLabel="Borrando…"
+              pendingLabel="Eliminando…"
             >
-              Borrar partida
+              Eliminar partida
             </SubmitButton>
           </div>
         </form>

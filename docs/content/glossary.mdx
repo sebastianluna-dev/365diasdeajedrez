@@ -62,6 +62,26 @@ The product speaks Spanish (labels, URLs, catalog labels, error messages) and th
 | **Artículo** / **Categoría** / **Etiqueta**                                                                                                                                                                              | Payload collections `articles`, `categories`, `tags`                                                                                                                                                            | Blog; drafts visible only to logged-in CMS users.                                                                                                                               |
 | **Reloj de ajedrez**                                                                                                                                                                                                     | `/reloj-de-ajedrez`, `hooks/use-chess-clock.hook.ts`                                                                                                                                                            | Public tool, no login.                                                                                                                                                          |
 
+## Verbs of the interface
+
+One action, one verb, on every screen. The three that are easy to mix up were settled by the owner on 2026-10-01, and `components/ui-verbs.test.ts` fails on the ones that lost.
+
+| Verb         | What it does                                                                                                                 | Where                                                                                                                                                | Never                                      |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| **Agregar**  | Puts something into a set that already exists: a game into a study, a course into «Mis cursos», a source, a block, a chapter | «Agregar partida», «Agregar a mis cursos», «Agregar fuente»; pending «Agregando…»                                                                    | «Añadir»                                   |
+| **Quitar**   | Takes something out of where it is without destroying it: it can be put back                                                 | «Quitar de mis cursos», an author from a course, a game from a collection, a photo, the date of a field                                              | «Borrar», «Eliminar» for these             |
+| **Eliminar** | Destroys: what goes does not come back                                                                                       | «Eliminar partida», «Eliminar estudio», «Eliminar mi progreso», a chapter, a lesson; pending «Eliminando…»; the refusal says «No se puede eliminar…» | «Borrar»                                   |
+| **Crear**    | Makes something new from nothing                                                                                             | «Crear ejercicio», a study, a course, an account                                                                                                     | «Agregar» for something that did not exist |
+| **Guardar**  | Stores what a form holds                                                                                                     | «Guardar», «Guardar fuente»; pending «Guardando…», the default of `SubmitButton`                                                                     |                                            |
+| **Editar**   | Opens something to change it                                                                                                 | «Editar», «Editar datos»                                                                                                                             | «Modificar»                                |
+
+Two rules go with them:
+
+- **The text of a hint or an error uses the verb of the button it is about**: «Si la eliminas…» under «Eliminar partida», «Un autor no se elimina: se quita de cada curso».
+- **While a form is on its way, its button says what is happening**: a gerund and «…» (`pendingLabel="Eliminando…"`). The one exception is a form with several submit buttons that share a label, which passes the resting label so the text does not change on every row at once (the attendance list); the test names it.
+
+«Borrador» is a draft — a course's status — and has nothing to do with «borrar».
+
 ## Chess terms used in the code
 
 | Term                                    | Meaning here                                                                                                                                                                                                                                                                                                                                                                                                      |

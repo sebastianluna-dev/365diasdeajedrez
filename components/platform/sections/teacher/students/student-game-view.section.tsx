@@ -42,7 +42,7 @@ export function StudentGameViewSection({ studentName, game, scheduledClasses }: 
         {scheduledClasses.length > 0 ? (
           <>
             <p className="student-game__use-hint">
-              Se añadirá como bloque de partida (una referencia, no una copia) a la clase que elijas.
+              Se agregará como bloque de partida (una referencia, no una copia) a la clase que elijas.
             </p>
             <ul className="student-game__use-list">
               {scheduledClasses.map((teacherClass) => (

@@ -24,7 +24,7 @@ interface EditStudyProps {
   canChangeKind: boolean;
   /**
    * `regular` is the boxed button of the empty study page; `inline` is one more
-   * word in the aside's row of study actions, next to "Compartir" and "Borrar".
+   * word in the aside's row of study actions, next to "Compartir" and "Eliminar".
    */
   size?: "regular" | "inline";
 }

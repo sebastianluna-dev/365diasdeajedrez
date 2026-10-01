@@ -69,7 +69,7 @@ export function AuthorPhotoField({ authorName, defaultValue }: AuthorPhotoFieldP
           onClick={() => inputRef.current?.click()}
           disabled={isUploading}
         >
-          {isUploading ? "Subiendo…" : hasPhoto ? "Cambiar foto" : "Añadir foto"}
+          {isUploading ? "Subiendo…" : hasPhoto ? "Cambiar foto" : "Agregar foto"}
         </button>
       </div>
     </div>

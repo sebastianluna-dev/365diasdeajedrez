@@ -91,6 +91,6 @@ export async function destroyPlatformAsset(url: string | null | undefined): Prom
     cloudinary.config({ cloud_name: CLOUD_NAME, api_key: API_KEY, api_secret: API_SECRET, secure: true });
     await cloudinary.uploader.destroy(publicId, { resource_type: "image", invalidate: true });
   } catch (error) {
-    logError("cloudinary", "No se pudo borrar la imagen reemplazada", error, { publicId });
+    logError("cloudinary", "No se pudo eliminar la imagen reemplazada", error, { publicId });
   }
 }

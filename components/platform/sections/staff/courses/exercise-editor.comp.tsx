@@ -202,7 +202,7 @@ export function ExerciseEditor({ courseId, chapterId, lessonId, exercises, modes
         />
       ) : (
         <button type="button" className="platform-button" onClick={() => setIsAdding(true)}>
-          Añadir ejercicio
+          Agregar ejercicio
         </button>
       )}
     </div>

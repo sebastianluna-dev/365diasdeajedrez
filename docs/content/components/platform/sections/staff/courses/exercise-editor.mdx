@@ -32,7 +32,7 @@ An exercise is a mode, an optional prompt, the moves played **before** it starts
 - Rows show the mode tag, the prompt or the line, a "Desactualizado" tag when `isStale`, the ply range, and controls: up and down (`moveExercise` forms), "Editar" (or "Volver a congelar" for stale ones, toggling `editingId`), "Eliminar".
 - A stale exercise not being edited shows a `role="alert"` warning: the lesson's PGN changed after it was frozen.
 - `ExerciseFields`: mode select, prompt, `afterSans` and `lineSans`. The two move inputs are **controlled** because the picker writes them too; `afterSans` is not preloaded when editing, because the frozen copy stores the position, not the path that led to it.
-- "Añadir ejercicio" toggles the create form.
+- "Agregar ejercicio" toggles the create form.
 
 ## Markup & styling
 
@@ -42,7 +42,7 @@ Block `.exercise-editor` (105 lines).
 
 **Modifiers and states:** `.platform-row-action`
 
-**Other classes it renders:** `.platform-tag`, `.platform-tag_variant_accent`, `.platform-button` (saving and «Añadir ejercicio»), `.platform-button` («Cancelar»).
+**Other classes it renders:** `.platform-tag`, `.platform-tag_variant_accent`, `.platform-button` (saving and «Agregar ejercicio»), `.platform-button` («Cancelar»).
 
 **Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-border-strong`, `--platform-danger`, `--platform-danger-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
 

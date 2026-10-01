@@ -102,7 +102,7 @@ function weeksOf(month: Date): Date[][] {
  * platform's tokens. Radix has no date primitive, so the calendar is ours:
  * a `grid` of day buttons with roving focus (arrows move a day or a week,
  * Home and End go to the week's ends, PageUp and PageDown change the month),
- * "Hoy" and "Borrar" under it.
+ * "Hoy" and "Quitar" under it.
  *
  * Inside a form it submits like `<input type="date">`: a hidden native date
  * input carries the value, and with it `required`, `min` and `max` keep the
@@ -340,7 +340,7 @@ export function PlatformDatePicker({
                   setOpen(false);
                 }}
               >
-                Borrar
+                Quitar
               </button>
             )}
           </div>

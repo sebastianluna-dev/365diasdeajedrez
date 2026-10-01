@@ -134,7 +134,7 @@ export function CourseSourceForm({
             Cancelar
           </button>
           <SubmitButton className="platform-button" pendingLabel="Guardando…">
-            {isEdit ? "Guardar fuente" : "Añadir fuente"}
+            {isEdit ? "Guardar fuente" : "Agregar fuente"}
           </SubmitButton>
         </div>
       </footer>

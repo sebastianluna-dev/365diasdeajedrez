@@ -6,7 +6,7 @@ export const STUDENT_ERROR_MESSAGES: Record<string, string> = {
   invalid: "Revisa los datos: falta algún campo obligatorio o tiene un formato incorrecto.",
   throttled: "Has hecho demasiados cambios seguidos. Espera un momento y vuelve a intentarlo.",
   goal: "Elige uno de los objetivos de la lista.",
-  confirm: "Marca la casilla para confirmar que quieres borrar tu progreso.",
+  confirm: "Marca la casilla para confirmar que quieres eliminar tu progreso.",
   pgnEmpty: "No se encontró ninguna partida en ese PGN.",
   pgnTooLong: "El PGN es demasiado largo. Divídelo en varias importaciones.",
 };
@@ -18,10 +18,10 @@ export const STUDENT_ERROR_MESSAGES: Record<string, string> = {
  */
 export const STUDY_ERROR_MESSAGES: Record<string, string> = {
   ...STUDENT_ERROR_MESSAGES,
-  confirmStudyDelete: "Este estudio tiene contenido. Marca la casilla para confirmar que quieres borrarlo.",
+  confirmStudyDelete: "Este estudio tiene contenido. Marca la casilla para confirmar que quieres eliminarlo.",
   fen: "Esa posición de partida no es válida. Revisa el FEN.",
   gameInClasses:
-    "Esta partida está usada en el contenido de alguna clase. Si la borras, esos bloques se quedarán vacíos. Marca la casilla para confirmarlo.",
+    "Esta partida está usada en el contenido de alguna clase. Si la eliminas, esos bloques se quedarán vacíos. Marca la casilla para confirmarlo.",
 };
 
 /** The text for a code, or the generic one when the code is unknown. */

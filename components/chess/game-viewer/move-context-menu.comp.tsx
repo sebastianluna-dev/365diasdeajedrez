@@ -186,7 +186,7 @@ export function MoveContextMenu({
 
       <Item
         icon={<TrashIcon className="move-context-menu__icon-svg" />}
-        label="Borrar a partir de aquí"
+        label="Eliminar a partir de aquí"
         onClick={onDelete}
         danger
       />

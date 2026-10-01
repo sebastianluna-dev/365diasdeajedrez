@@ -11,7 +11,7 @@ const meta = {
         component: `
 The platform's date picker: a trigger that looks like the platform's inputs
 and, on Radix's \`Popover\`, a month calendar of our own (Radix has no date
-primitive), keyboard navigable, with "Hoy" and "Borrar". Inside a form it
+primitive), keyboard navigable, with "Hoy" and "Quitar". Inside a form it
 submits like \`<input type="date">\` through a hidden native date input,
 which also keeps \`required\`, \`min\` and \`max\`.
 

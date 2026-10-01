@@ -33,7 +33,7 @@ The authors of **one** course. The authors themselves (name, biography, photo) a
 - **The role is changed in the row.** It is a [`PlatformSelect`](/components/platform/shared/platform-select) drawn as the line of text it replaces: choosing another role posts `operation: "role"` in a transition, and the select is remounted with what the server saved. An author is added as «Autor del contenido» and becomes «Adaptación digital» here.
 - **No order to keep**: the authors are listed as they were added. The card has no arrows, and the action no longer has `up` nor `down`.
 - **The search suggests as it is typed**: `suggestAuthors` over the authors who are not in the course, ignoring case and accents, the ones that start with what was typed first, five at most. Nothing typed, nothing suggested.
-- **Each suggestion is a form** whose button is the whole row (avatar, name, «Añadir»); it posts `operation: "add"` with the first role. **Enter** in the search adds the first suggestion, which is the one that is lit. Adding empties the search.
+- **Each suggestion is a form** whose button is the whole row (avatar, name, «Agregar»); it posts `operation: "add"` with the first role. **Enter** in the search adds the first suggestion, which is the one that is lit. Adding empties the search.
 - When nothing matches: «Ningún autor coincide. Créalo en «Gestionar».», or «Todos los autores están ya en este curso.» when there is nobody left to add.
 - A failure of the action comes back to the course's page as `?error=`, which the editor renders.
 

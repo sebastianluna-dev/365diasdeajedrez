@@ -179,7 +179,7 @@ export function GameAside({ game, study, results, classGames, kinds, students, p
               name={game.title ?? `${game.white} – ${game.black}`}
               classBlockCount={game.classBlockCount}
               size="inline"
-              label="Borrar"
+              label="Eliminar"
             />
           )}
         </div>

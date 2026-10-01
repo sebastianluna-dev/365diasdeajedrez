@@ -138,7 +138,7 @@ export function ClassBlockEditor({ classId, blocks, options, initialGameId }: Cl
       </ol>
 
       <div className="class-block-editor__add">
-        <FormField label="Añadir un bloque">
+        <FormField label="Agregar un bloque">
           <PlatformSelect
             value={newKind ?? ""}
             onValueChange={(kind) => setNewKind((kind || null) as ClassBlockKindCode | null)}
@@ -155,7 +155,7 @@ export function ClassBlockEditor({ classId, blocks, options, initialGameId }: Cl
             kind={newKind}
             options={options}
             block={newKind === CLASS_BLOCK_KIND.GAME_REF ? gamePrefill : undefined}
-            submitLabel="Añadir bloque"
+            submitLabel="Agregar bloque"
             onCancel={() => setNewKind(null)}
           />
         )}

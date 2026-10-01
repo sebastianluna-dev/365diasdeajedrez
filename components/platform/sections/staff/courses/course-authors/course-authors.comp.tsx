@@ -107,8 +107,8 @@ export function CourseAuthors({ courseId, authors, allAuthors, roles }: CourseAu
               event.preventDefault();
               firstSuggestion.current?.requestSubmit();
             }}
-            placeholder="Buscar autor para añadir"
-            aria-label="Buscar autor para añadir al curso"
+            placeholder="Buscar autor para agregar"
+            aria-label="Buscar autor para agregar al curso"
             autoComplete="off"
           />
 
@@ -131,7 +131,7 @@ export function CourseAuthors({ courseId, authors, allAuthors, roles }: CourseAu
                     >
                       <AuthorAvatar name={author.name} photo={author.photo} size="small" />
                       <span className="course-authors__suggestion-name">{author.name}</span>
-                      <span className="course-authors__suggestion-action">Añadir</span>
+                      <span className="course-authors__suggestion-action">Agregar</span>
                     </button>
                   </form>
                 </li>

@@ -30,17 +30,17 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
 
   const description =
     gameCount > 0
-      ? `Se borra el estudio con sus ${gameCount} ${gameCount === 1 ? "partida" : "partidas"}, y con ellas sus variantes, comentarios y flechas.`
-      : "Se borra el estudio. No tiene partidas dentro.";
+      ? `Se elimina el estudio con sus ${gameCount} ${gameCount === 1 ? "partida" : "partidas"}, y con ellas sus variantes, comentarios y flechas.`
+      : "Se elimina el estudio. No tiene partidas dentro.";
 
   const warning =
     citedGameCount > 0
-      ? `Entiendo que se borrará todo, y que ${citedGameCount} ${
+      ? `Entiendo que se eliminará todo, y que ${citedGameCount} ${
           citedGameCount === 1
             ? "partida citada en clases dejará ese bloque vacío"
             : "partidas citadas en clases dejarán esos bloques vacíos"
         }.`
-      : "Entiendo que se borrará todo y que no se puede deshacer.";
+      : "Entiendo que se eliminará todo y que no se puede deshacer.";
 
   const close = () => {
     dialogRef.current?.close();
@@ -53,19 +53,19 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
         <button
           type="button"
           className="delete-study__open"
-          title={`Borrar «${name}»`}
+          title={`Eliminar «${name}»`}
           onClick={() => dialogRef.current?.showModal()}
         >
           <span aria-hidden="true">✕</span>
-          <span className="delete-study__open-label">Borrar «{name}»</span>
+          <span className="delete-study__open-label">Eliminar «{name}»</span>
         </button>
       ) : trigger === "button" ? (
         <button type="button" className="delete-study__open-wide" onClick={() => dialogRef.current?.showModal()}>
-          Borrar estudio
+          Eliminar estudio
         </button>
       ) : (
         <button type="button" className="delete-study__open-inline" onClick={() => dialogRef.current?.showModal()}>
-          Borrar
+          Eliminar
         </button>
       )}
 
@@ -76,7 +76,7 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
               ✕
             </span>
             <div className="delete-study__heading">
-              <h2 className="delete-study__title">¿Borrar «{name}»?</h2>
+              <h2 className="delete-study__title">¿Eliminar «{name}»?</h2>
               <p className="delete-study__description">{description}</p>
             </div>
           </div>
@@ -102,8 +102,8 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
             <button type="button" className="delete-study__cancel" onClick={close}>
               Cancelar
             </button>
-            <SubmitButton className="delete-study__submit" disabled={blocked} pendingLabel="Borrando…">
-              Borrar estudio
+            <SubmitButton className="delete-study__submit" disabled={blocked} pendingLabel="Eliminando…">
+              Eliminar estudio
             </SubmitButton>
           </div>
         </form>

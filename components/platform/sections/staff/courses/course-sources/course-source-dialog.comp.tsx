@@ -16,7 +16,7 @@ interface CourseSourceDialogProps {
 
 /**
  * The button and the native `<dialog>` that add or edit one source of the
- * course: «Añadir fuente» in the panel's header, «Editar» on each row, where
+ * course: «Agregar fuente» in the panel's header, «Editar» on each row, where
  * the source is also removed. The form is remounted on every opening, so an
  * abandoned edit never shows up the next time.
  */
@@ -40,7 +40,7 @@ export function CourseSourceDialog({ courseId, source, sourceTypes }: CourseSour
         aria-label={isEdit ? `Editar la fuente «${source.originalTitle ?? source.sourceTypeLabel}»` : undefined}
         onClick={open}
       >
-        {isEdit ? "Editar" : "Añadir fuente"}
+        {isEdit ? "Editar" : "Agregar fuente"}
       </button>
 
       <dialog ref={dialogRef} className="platform-dialog course-source-dialog__dialog">

@@ -187,7 +187,7 @@ export function TeacherClassDetailSection({
         ) : (
           <EmptyState
             title="Esta clase todavía no tiene contenido"
-            description="Añade textos, videos, partidas, lecciones o posiciones para preparar la sesión."
+            description="Agrega textos, videos, partidas, lecciones o posiciones para preparar la sesión."
           />
         )}
       </section>

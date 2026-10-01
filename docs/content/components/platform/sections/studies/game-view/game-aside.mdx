@@ -17,7 +17,7 @@ description: "The column beside a game, a Server Component that receives the stu
 
 A study has no page of its own — its URL redirects to the first game — so this column is where the study lives. It receives **data**, never components, and decides for itself what to show with the same permission table the server actions apply (`services/studies/study-rules`): the page only loads and hands over. It is a Server Component; the modals it mounts are Client Components with their own state, and the one piece here with state, the list, is [`GameList`](/components/platform/sections/studies/game-view/game-list).
 
-The first card is the study: its name and its total head it, its owner's "Editar datos" and "Borrar" sit under them, the games follow, then the pages nav when the study spans several, and "Nueva partida" closes the card. The second card is the game's record, read top to bottom: where it was played, when and how it ended, and at the foot where the game came from and, for the owner, the delete control. A collection's owner gets a third card, the sharing panel.
+The first card is the study: its name and its total head it, its owner's "Editar datos" and "Eliminar" sit under them, the games follow, then the pages nav when the study spans several, and "Nueva partida" closes the card. The second card is the game's record, read top to bottom: where it was played, when and how it ended, and at the foot where the game came from and, for the owner, the delete control. A collection's owner gets a third card, the sharing panel.
 
 ## Props
 
@@ -33,7 +33,7 @@ The first card is the study: its name and its total head it, its owner's "Editar
 
 ## Behaviour
 
-- `canWrite = study.permissions.canEditGames` gates "Editar datos", "Nueva partida" and the reordering; inside it `canDelete` gates "Borrar" ("Mis partidas" is editable but not deletable). `canShare` is `canShareStudy(study)`: the owner of a collection. `canReorder = canWrite && study.pageCount === 1`, because reordering one page would mix the old order of the others with the new one.
+- `canWrite = study.permissions.canEditGames` gates "Editar datos", "Nueva partida" and the reordering; inside it `canDelete` gates "Eliminar" ("Mis partidas" is editable but not deletable). `canShare` is `canShareStudy(study)`: the owner of a collection. `canReorder = canWrite && study.pageCount === 1`, because reordering one page would mix the old order of the others with the new one.
 - **Pages.** With `study.pageCount > 1`, a "← Anteriores · Página n de m · Siguientes →" nav sits between the list and "Nueva partida"; the links come from `pageHref`.
 - `metaCells` always yields **four** cells (Fecha, Ronda, ECO, Resultado) with a dash where there is no value: in a two-by-two grid, hiding one cell displaces the other three, and an incomplete record reads worse than one with declared gaps.
 - With `game.canEdit`, [`EditGame`](/components/platform/shared/edit-game) sits in the record's head with `values={game}` whole (`GameView` already contains every field of `GameFieldValues`; listing them one by one is how the title and the federation got lost once) and [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game) at the foot in its `inline` size.

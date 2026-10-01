@@ -43,7 +43,7 @@ export const STAFF_ERROR_MESSAGES: Record<string, string> = {
   fen: "La posición FEN no es válida.",
   order: "No se pudo reordenar. Recarga la página y vuelve a intentarlo.",
   noMainline:
-    "Para entrenarla de memoria, la lección necesita al menos una jugada en su línea principal. Añade el PGN antes de marcarla.",
+    "Para entrenarla de memoria, la lección necesita al menos una jugada en su línea principal. Agrega el PGN antes de marcarla.",
   illegalLine:
     "La línea principal del PGN tiene una jugada que no se puede jugar. Corrígela antes de marcarla como entrenable.",
   colorHasNoMoves:

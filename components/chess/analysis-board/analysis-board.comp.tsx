@@ -323,7 +323,7 @@ export function AnalysisBoard({ name, defaultPgn, initialFen, orientation = "whi
             onShapesChange={handleShapes}
           />
           <p className="analysis-board__hint">
-            Mueve sobre el tablero para añadir jugadas. Vuelve atrás y juega otra cosa para abrir una variante. Clic
+            Mueve sobre el tablero para agregar jugadas. Vuelve atrás y juega otra cosa para abrir una variante. Clic
             derecho arrastrando dibuja flechas; clic derecho sobre una jugada abre su menú.
           </p>
         </div>
@@ -418,7 +418,7 @@ export function AnalysisBoard({ name, defaultPgn, initialFen, orientation = "whi
                 onChange={(event) => handleComment(event.target.value)}
               />
               <p className="analysis-board__note">
-                Las flechas que dibujes se guardan junto a este comentario, y editarlo no las borra.
+                Las flechas que dibujes se guardan junto a este comentario, y editarlo no las elimina.
               </p>
             </div>
           ) : (

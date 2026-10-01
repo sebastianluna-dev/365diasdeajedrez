@@ -20,7 +20,7 @@ interface ResetProgressProps {
 }
 
 /**
- * «Borrar mi progreso»: the link of the course's options and the dialog that
+ * «Eliminar mi progreso»: the link of the course's options and the dialog that
  * asks before doing it. It cannot be undone, so it takes two things to go
  * through — opening the dialog and ticking its box — and the button that
  * does it is the red one.
@@ -35,7 +35,7 @@ interface ResetProgressProps {
 export function ResetProgress({ courseId, name, completedLessons, chapterId }: ResetProgressProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const scope = chapterId ? "capítulo" : "curso";
-  const label = chapterId ? "Borrar mi progreso del capítulo" : "Borrar mi progreso";
+  const label = chapterId ? "Eliminar mi progreso del capítulo" : "Eliminar mi progreso";
   const action = chapterId
     ? resetChapterProgress.bind(null, courseId, chapterId)
     : resetCourseProgress.bind(null, courseId);
@@ -55,7 +55,7 @@ export function ResetProgress({ courseId, name, completedLessons, chapterId }: R
           </h2>
 
           <p className="reset-progress__text">
-            Vas a borrar tu progreso en «{name}»
+            Vas a eliminar tu progreso en «{name}»
             {completedLessons > 0 &&
               `: ${completedLessons} ${completedLessons === 1 ? "lección aprendida" : "lecciones aprendidas"}`}
             .{" "}
@@ -72,14 +72,14 @@ export function ResetProgress({ courseId, name, completedLessons, chapterId }: R
 
           <label className="reset-progress__confirm">
             <input type="checkbox" name="confirm" required />
-            <span>Sí, quiero borrar mi progreso en este {scope}</span>
+            <span>Sí, quiero eliminar mi progreso en este {scope}</span>
           </label>
 
           <div className="reset-progress__actions">
             <button type="button" className="platform-button" onClick={() => dialogRef.current?.close()}>
               Cancelar
             </button>
-            <SubmitButton className="platform-button platform-button_variant_danger" pendingLabel="Borrando…">
+            <SubmitButton className="platform-button platform-button_variant_danger" pendingLabel="Eliminando…">
               {label}
             </SubmitButton>
           </div>

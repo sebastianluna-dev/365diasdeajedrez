@@ -23,7 +23,7 @@ export function CourseGamesSection({ course, games }: CourseGamesSectionProps) {
       <StaffPanel
         title="Partidas del curso"
         meta={`${games.length}`}
-        description="Todas las de sus capítulos. Cada una se abre en el tablero para verla y editarla; se añaden y se quitan desde el capítulo al que pertenecen."
+        description="Todas las de sus capítulos. Cada una se abre en el tablero para verla y editarla; se agregan y se quitan desde el capítulo al que pertenecen."
       >
         {games.length > 0 ? (
           <div className="course-games__table">
@@ -68,7 +68,7 @@ export function CourseGamesSection({ course, games }: CourseGamesSectionProps) {
       </StaffPanel>
 
       <p className="course-games__note">
-        Para añadir o quitar, entra en su capítulo desde{" "}
+        Para agregar o quitar, entra en su capítulo desde{" "}
         <Link href={staffRoutes.courseDetail(course.id)} className="course-games__link">
           la ficha del curso
         </Link>

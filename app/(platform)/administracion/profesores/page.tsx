@@ -17,7 +17,7 @@ export default async function StaffTeachersPage() {
       <header className="platform-page__head">
         <h1 className="platform-page__title">Profesores</h1>
         <p className="platform-page__subtitle">
-          Un profesor nunca se borra: se desactiva, y sus clases y asignaciones quedan como historial.
+          Un profesor nunca se elimina: se desactiva, y sus clases y asignaciones quedan como historial.
         </p>
       </header>
 
