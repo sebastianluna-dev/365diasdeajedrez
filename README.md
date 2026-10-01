@@ -35,36 +35,36 @@ No `sslmode` in those two: the container speaks no TLS. The CMS's tables create 
 
 ## Available commands
 
-| Command                                   | Description                                                                                                   |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `npm run dev`                             | Development server (Turbopack, like the build).                                                               |
-| `npm run build`                           | `prisma generate` + production build (the generated client is not in git; Vercel only runs this script).      |
-| `npm run start`                           | Serves the production build.                                                                                  |
-| `npm run lint`                            | ESLint.                                                                                                       |
-| `npm run test`                            | Vitest, one pass.                                                                                             |
-| `npm run test:watch`                      | Vitest in watch mode.                                                                                         |
-| `npm run db:up`                           | Starts the container's Postgres (both databases).                                                             |
-| `npm run db:down`                         | Stops it. The data survives; `docker compose down -v` is what throws it away.                                 |
-| `npm run db:generate`                     | `prisma generate`.                                                                                            |
-| `npm run db:migrate`                      | `prisma migrate dev` (development).                                                                           |
-| `npm run db:deploy`                       | `prisma migrate deploy` (production).                                                                         |
-| `npm run db:seed`                         | `prisma db seed`.                                                                                             |
-| `npm run db:studio`                       | `prisma studio`.                                                                                              |
-| `npm run user:create -- <email> "<Name>"` | Enrols a student (asks for the password without echoing it).                                                  |
-| `npm run user:password -- <email>`        | Changes their password and closes their sessions.                                                             |
-| `npm run user:list`                       | Lists the accounts, whether they have a password and their open sessions.                                     |
-| `npm run pieces:sync`                     | Copies the board pieces (chessground) to `public/pieces`; run it whenever chessground is updated.             |
-| `npm run typecheck`                       | `next typegen` + `tsc --noEmit`, the same CI runs.                                                            |
-| `npm run storybook`                       | Storybook at `localhost:6006` (pilot: `PlanCard` only; guide in `docs/`, "Storybook").                        |
-| `npm run storybook:build`                 | Static Storybook build in `storybook-static/` (git-ignored).                                                  |
-| `npm run test:coverage`                   | Vitest with coverage (v8) over `lib`, `services`, `constants` and `hooks`.                                    |
-| `npm run format` / `npm run format:check` | Prettier over the repo (`format:check` fails today: the repo was never formatted, see `IMPROVEMENTS.md` #39). |
-| `npm run positions:index`                 | Fills in the position index of the games already stored (`-- --all` reindexes every one).                     |
-| `npm run collections:by-chapter`          | One-off data migration: course collections → per-chapter collections.                                         |
-| `npm run stats:rebuild`                   | Rebuilds `UserStatDaily` from `UserActivity` for every account (or `-- <email>` for one).                     |
-| `npm run sounds:make`                     | Writes two synthesised board sounds (`.wav`) as the way out of lichess's `.mp3`, which are what plays today.  |
+| Command                                   | Description                                                                                                  |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `npm run dev`                             | Development server (Turbopack, like the build).                                                              |
+| `npm run build`                           | `prisma generate` + production build (the generated client is not in git; Vercel only runs this script).     |
+| `npm run start`                           | Serves the production build.                                                                                 |
+| `npm run lint`                            | ESLint.                                                                                                      |
+| `npm run test`                            | Vitest, one pass.                                                                                            |
+| `npm run test:watch`                      | Vitest in watch mode.                                                                                        |
+| `npm run db:up`                           | Starts the container's Postgres (both databases).                                                            |
+| `npm run db:down`                         | Stops it. The data survives; `docker compose down -v` is what throws it away.                                |
+| `npm run db:generate`                     | `prisma generate`.                                                                                           |
+| `npm run db:migrate`                      | `prisma migrate dev` (development).                                                                          |
+| `npm run db:deploy`                       | `prisma migrate deploy` (production).                                                                        |
+| `npm run db:seed`                         | `prisma db seed`.                                                                                            |
+| `npm run db:studio`                       | `prisma studio`.                                                                                             |
+| `npm run user:create -- <email> "<Name>"` | Enrols a student (asks for the password without echoing it).                                                 |
+| `npm run user:password -- <email>`        | Changes their password and closes their sessions.                                                            |
+| `npm run user:list`                       | Lists the accounts, whether they have a password and their open sessions.                                    |
+| `npm run pieces:sync`                     | Copies the board pieces (chessground) to `public/pieces`; run it whenever chessground is updated.            |
+| `npm run typecheck`                       | `next typegen` + `tsc --noEmit`, the same CI runs.                                                           |
+| `npm run storybook`                       | Storybook at `localhost:6006` (pilot: `PlanCard` only; guide in `docs/`, "Storybook").                       |
+| `npm run storybook:build`                 | Static Storybook build in `storybook-static/` (git-ignored).                                                 |
+| `npm run test:coverage`                   | Vitest with coverage (v8) over `lib`, `services`, `constants` and `hooks`.                                   |
+| `npm run format` / `npm run format:check` | Prettier over the repo: `format` writes, `format:check` is CI's first step and part of done.                 |
+| `npm run positions:index`                 | Fills in the position index of the games already stored (`-- --all` reindexes every one).                    |
+| `npm run collections:by-chapter`          | One-off data migration: course collections → per-chapter collections.                                        |
+| `npm run stats:rebuild`                   | Rebuilds `UserStatDaily` from `UserActivity` for every account (or `-- <email>` for one).                    |
+| `npm run sounds:make`                     | Writes two synthesised board sounds (`.wav`) as the way out of lichess's `.mp3`, which are what plays today. |
 
-`.github/workflows/ci.yml` runs `lint`, `typecheck` and `test` on every push to `main` and on every pull request. It does not run `next build`: static generation queries the databases, which CI does not have; the deployment is what validates the build.
+`.github/workflows/ci.yml` runs `format:check`, `lint`, `typecheck` and `test`, in that order, on every push to `main` and on every pull request; the first step that fails skips the rest. It does not run `next build`: static generation queries the databases, which CI does not have; the deployment is what validates the build.
 
 ## Backups
 

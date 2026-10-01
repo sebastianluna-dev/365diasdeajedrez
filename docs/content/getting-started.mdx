@@ -67,7 +67,7 @@ There is **no public sign-up**: students exist because staff creates them (`/adm
 | `npm run lint`                            | ESLint 9 with `eslint-config-next`.                                                                                                                                                                      |
 | `npm test` / `npm run test:watch`         | Vitest, single run or watch mode.                                                                                                                                                                        |
 | `npm run test:coverage`                   | Vitest with v8 coverage over `lib`, `services`, `constants` and `hooks`.                                                                                                                                 |
-| `npm run format` / `npm run format:check` | Prettier (`printWidth: 120`). The repository has not been formatted yet, so `format:check` currently fails; see the backlog.                                                                             |
+| `npm run format` / `npm run format:check` | Prettier (`printWidth: 120`). `format:check` is CI's first step; `format` fixes what it reports.                                                                                                         |
 | `npm run db:generate`                     | `prisma generate`. Run after every schema change.                                                                                                                                                        |
 | `npm run db:migrate`                      | `prisma migrate dev` (development).                                                                                                                                                                      |
 | `npm run db:deploy`                       | `prisma migrate deploy` (production, after a backup).                                                                                                                                                    |
@@ -83,10 +83,10 @@ There is **no public sign-up**: students exist because staff creates them (`/adm
 ## Before you call something done
 
 ```bash
-npm run typecheck && npm run lint && npm test
+npm run format:check && npm run typecheck && npm run lint && npm test
 ```
 
-CI runs exactly these three on every push to `main` and on every pull request. It does **not** run `next build`, because static generation talks to both databases and CI has neither; the deployment validates the build.
+CI runs exactly these four, in this order, on every push to `main` and on every pull request (after `npm ci` and `npm run db:generate`); the first that fails skips the rest. It does **not** run `next build`, because static generation talks to both databases and CI has neither; the deployment validates the build.
 
 ## Where things are
 

@@ -1,4 +1,5 @@
-# Lint, types and tests on every push and pull request. No `next build`: static
+# Formatting, lint, types and tests on every push and pull request, in that
+# order: the first step that fails skips the rest. No `next build`: static
 # generation queries Payload and the platform, and CI has neither database; the
 # deployment is what validates the build.
 name: CI

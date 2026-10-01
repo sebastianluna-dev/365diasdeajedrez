@@ -12,7 +12,7 @@ description: "Vitest setup, what is tested and how, coverage, the GitHub Actions
 - alias `@` → repository root, and `server-only` → `lib/testing/server-only.stub.ts` (Next provides that package at bundle time; in Node it would throw and block importing any service);
 - coverage (`npm run test:coverage`, v8) over `lib/**`, `services/**`, `constants/**`, `hooks/**`, excluding generated code, fixtures, tests and `*.types.ts`. The report lands in `coverage/` (git-ignored, ESLint-ignored).
 
-As of 2026-09-21 there are **53 test files and 418 tests**, all on pure modules:
+As of 2026-09-30 there are **70 test files and 601 tests**, none of which needs a database or a browser. The main groups:
 
 | Area                | Examples                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -39,7 +39,7 @@ npx vitest run lib/chess  # a folder
 
 - `npm run typecheck` — `next typegen && tsc --noEmit` (the route types in `.next/types` are generated first, which is what a fresh CI checkout lacks), strict, `noUnusedLocals`, `noUncheckedIndexedAccess`, target ES2022. `docs/` is excluded (it has its own `tsconfig.json`).
 - `npm run lint` — ESLint 9 flat config with `eslint-config-next` (core web vitals + TypeScript); ignores `.next`, `public` (design-kit scripts), the generated Prisma client, `coverage` and `docs`.
-- `npm run format:check` — Prettier 3, `printWidth: 120`. The repository has never been formatted, so this currently fails; `TODOS.md` T11 asks for a single formatting commit, after which the check should be added to CI.
+- `npm run format:check` — Prettier 3, `printWidth: 120`, over every file git does not ignore (`--ignore-path .gitignore`): code, CSS, the docs' MDX, the workflow and `.claude/settings.json`. `npm run format` rewrites what it reports.
 
 ## Continuous integration
 
@@ -48,10 +48,13 @@ npx vitest run lib/chess  # a folder
 ```yaml
 - run: npm ci
 - run: npm run db:generate # needs only a syntactically valid PLATFORM_DATABASE_URL
+- run: npm run format:check
 - run: npm run lint
 - run: npm run typecheck
 - run: npm test
 ```
+
+The steps run in order and the first failure skips the rest: a file that drifted from Prettier fails the job before lint, types or tests have run, which is why `format:check` is part of the [definition of done](/conventions#definition-of-done).
 
 It does **not** run `next build`: static generation reads Payload (home, blog, sitemap) and the platform database, neither of which exists in CI. The deployment is what validates the build. The docs site is not built in CI either; build it locally (`cd docs && npm run build`) when you change it.
 
