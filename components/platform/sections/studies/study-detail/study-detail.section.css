@@ -41,7 +41,7 @@
 
   & .study-detail__readonly {
     font-size: 14px;
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
   }
 
   & .study-detail__name {

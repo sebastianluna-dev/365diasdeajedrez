@@ -92,6 +92,13 @@
     color: var(--platform-accent-ink);
   }
 
+  /* On the grey of a hovered row the subtle grey falls under 4.5:1; the muted
+     one does not. The current row is left out: it writes this line in the
+     accent's ink, below. */
+  & .chapter-game-list__item:not(.chapter-game-list__item_state_active):hover .chapter-game-list__players {
+    color: var(--platform-text-muted);
+  }
+
   & .chapter-game-list__main {
     display: flex;
     flex-direction: column;

@@ -125,7 +125,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
   }
 
   /* Expanded it shows one more row and stops there: two are enough to see
@@ -223,6 +223,6 @@
 
   & .engine-panel__message {
     margin: 0;
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
   }
 }

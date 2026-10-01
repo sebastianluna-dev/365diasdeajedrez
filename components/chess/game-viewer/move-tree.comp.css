@@ -35,7 +35,7 @@
   }
 
   /* A line that was not played. The first level is told apart by its COLOUR
-     and not by parentheses: the blue says "this is another line" at a glance,
+     and not by parentheses: the grey says "this is another line" at a glance,
      and where it ends is said by the main line starting again below it with
      its number repeated. One nested inside another does carry parentheses,
      because there the colour no longer tells them apart — and no indentation
@@ -50,13 +50,16 @@
       color: var(--platform-variation);
     }
 
+    /* On its soft backing the variation's grey falls under 4.5:1, so the move
+       being pointed at or looked at is written a step darker. */
     & .move-tree__move:hover {
       background: var(--platform-variation-soft);
+      color: var(--platform-text-muted);
     }
 
     & .move-tree__move.move-tree__move_active {
       background: var(--platform-variation-soft);
-      color: var(--platform-variation);
+      color: var(--platform-text-muted);
     }
   }
 
@@ -65,7 +68,7 @@
   }
 
   /* What the variation is being proposed for. It goes on in the same
-     paragraph, and in the page's own ink: it is prose, and read in blue it
+     paragraph, and in the page's own ink: it is prose, and read in the grey it
      would look like more notation. */
   & .move-tree__aside {
     margin-left: 3px;

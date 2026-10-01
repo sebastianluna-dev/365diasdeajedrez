@@ -19,7 +19,7 @@
   & .course-catalog__summary {
     margin: 0;
     font-size: 14.5px;
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
   }
 
   /* Two cards to a row in the page's 960px, and as many as fit under it.

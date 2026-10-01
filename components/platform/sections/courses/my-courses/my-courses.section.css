@@ -43,7 +43,7 @@
     box-sizing: border-box;
     border: 1.5px dashed var(--platform-border-strong);
     border-radius: 8px;
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
     transition: 150ms;
     transition-property: border-color, color;
   }

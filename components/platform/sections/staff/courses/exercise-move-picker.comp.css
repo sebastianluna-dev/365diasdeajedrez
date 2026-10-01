@@ -27,7 +27,7 @@
     margin: 0 0 12px;
     font-size: 14px;
     line-height: 1.5;
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
   }
 
   & .exercise-move-picker__actions {
@@ -44,7 +44,7 @@
     background: transparent;
     font-family: inherit;
     font-size: 14px;
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
     cursor: pointer;
   }
 

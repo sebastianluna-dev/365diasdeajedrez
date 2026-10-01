@@ -316,6 +316,12 @@
     background: var(--platform-accent-wash);
   }
 
+  /* On a grey or tinted fill the subtle grey falls under 4.5:1; the muted one
+     does not. */
+  & .syllabus-list__fixed .syllabus-list__facts {
+    color: var(--platform-text-muted);
+  }
+
   & .syllabus-list__new {
     display: flex;
     align-items: center;

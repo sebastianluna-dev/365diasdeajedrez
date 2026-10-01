@@ -66,8 +66,11 @@
      are drawn in it. */
   --platform-text-title: light-dark(#4a4a4a, #ccc3b9);
   --platform-text-muted: light-dark(#666666, #b4a99d);
-  /* 4.7:1 on white: used as TEXT (table headers, counters, footers); a lighter
-     grey did not reach the WCAG AA minimum. */
+  /* Text on the WHITE surfaces only (4.7:1 on `surface`, 4.6:1 on
+     `surface-soft`): counters, footers, secondary lines of a card. On a grey
+     or tinted fill (`bg`, `surface-neutral`, `surface-sunken`, the accent's
+     soft and wash) it falls under the 4.5:1 of WCAG AA, and the muted one
+     above is used instead. */
   --platform-text-subtle: light-dark(#737373, #9c9188);
   /* Lighter still: only for decorations that are not read — the separator
      dots and the row chevron — never for text. */

@@ -66,7 +66,7 @@
 
   & .courses-admin__levels-label {
     margin-right: 2px;
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.04em;
@@ -105,7 +105,7 @@
     gap: 8px;
     margin: 0;
     font-size: 14px;
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
   }
 
   & .courses-admin__totals strong {
@@ -139,7 +139,7 @@
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.03em;
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
   }
 
   & .courses-admin__rows {
@@ -165,6 +165,12 @@
   & .courses-admin__row:hover {
     background: var(--platform-surface-neutral);
     color: var(--platform-text);
+  }
+
+  /* On a grey or tinted fill the subtle grey falls under 4.5:1; the muted one
+     does not. */
+  & .courses-admin__row:hover .courses-admin__slug {
+    color: var(--platform-text-muted);
   }
 
   & .courses-admin__course {
@@ -275,7 +281,7 @@
 
   & .courses-admin__status_state_archived {
     background: var(--platform-surface-neutral);
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
   }
 
   & .courses-admin__chevron {

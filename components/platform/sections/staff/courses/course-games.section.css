@@ -48,7 +48,7 @@
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.03em;
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
   }
 
   & .course-games__rows {
@@ -115,7 +115,7 @@
   & .course-games__note {
     margin: 0;
     font-size: 14px;
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
   }
 
   & .course-games__link {

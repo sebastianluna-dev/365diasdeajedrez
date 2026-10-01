@@ -196,7 +196,7 @@
   & .course-info__section-note {
     margin: 0;
     font-size: 14px;
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
   }
 
   & .course-info__chapter-list {

@@ -53,7 +53,7 @@
   & .level-filter__note {
     margin: 0;
     font-size: 14px;
-    color: var(--platform-text-subtle);
+    color: var(--platform-text-muted);
   }
 
   @media (prefers-reduced-motion: reduce) {
