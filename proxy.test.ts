@@ -1,3 +1,4 @@
+import { readdirSync } from "node:fs";
 import { NextRequest } from "next/server";
 import { describe, expect, it } from "vitest";
 import {
@@ -13,6 +14,20 @@ function requestTo(path: string, { withCookie = false } = {}): NextRequest {
   const request = new NextRequest(`http://localhost${path}`);
   if (withCookie) request.cookies.set(SESSION_COOKIE_NAME, "token-de-prueba");
   return request;
+}
+
+/**
+ * The first URL segment of every page folder under a route group. Next's own
+ * folders are not a segment: a nested `(group)` is looked into, and `_private`
+ * folders and `@slots` are skipped. A dynamic `[segment]` at this level would
+ * need a decision, so it is returned as it is and fails the test below.
+ */
+function routeSegmentsOf(directory: URL): string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    if (!entry.isDirectory() || entry.name.startsWith("_") || entry.name.startsWith("@")) return [];
+    if (entry.name.startsWith("(")) return routeSegmentsOf(new URL(`${entry.name}/`, directory));
+    return [entry.name];
+  });
 }
 
 function redirectTarget(response: Response): URL {
@@ -63,5 +78,15 @@ describe("proxy", () => {
   it("el matcher cubre exactamente los prefijos privados más la portada", () => {
     const fromConstant = PROTECTED_PATH_PREFIXES.map((prefix) => `${prefix}/:path*`);
     expect([...config.matcher].sort()).toEqual(["/", ...fromConstant].sort());
+  });
+
+  // The test above only compares the two lists with each other: a new folder
+  // missing from BOTH passed it, and its pages answered without a cookie with
+  // whatever the DAL does instead of the redirect to the login.
+  it("toda carpeta de app/(platform) es un prefijo privado, y todo prefijo tiene su carpeta", () => {
+    const folders = routeSegmentsOf(new URL("./app/(platform)/", import.meta.url)).map((segment) => `/${segment}`);
+    // A renamed route group would leave this watching nothing.
+    expect(folders.length).toBeGreaterThan(5);
+    expect(folders.sort()).toEqual([...PROTECTED_PATH_PREFIXES].sort());
   });
 });

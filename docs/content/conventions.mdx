@@ -40,7 +40,7 @@ These rules are enforced by review, a few tests (`proxy.test.ts`, `nav-items.tes
 - The UI never imports Prisma or Payload. Pages call `services/<domain>/<domain>.service.ts`; the mapper returns the `*.types.ts` view model with labels and hrefs already built.
 - Route hrefs come from `lib/platform-routes.ts` (`platformRoutes`, `teacherRoutes`, `staffRoutes`), never from template strings in components.
 - Every platform page's **first `await`** is either a data service (which calls the DAL) or `getCurrentUser()` itself. Every `/profesor` page and action opens with `requireTeacher()`; every `/administracion` one with `requireStaff()`.
-- A new route under `app/(platform)` must be added to `PROTECTED_PATH_PREFIXES` (`constants/platform/auth.const.ts`) **and** to the literal `matcher` in `proxy.ts`; `proxy.test.ts` fails if the two lists diverge.
+- A new route under `app/(platform)` must be added to `PROTECTED_PATH_PREFIXES` (`constants/platform/auth.const.ts`) **and** to the literal `matcher` in `proxy.ts`; `proxy.test.ts` fails if the two lists diverge, and also if a folder of `app/(platform)` is in neither.
 - Restricted domains are catalog tables with a stable `code`. TypeScript mirrors them as `as const` objects in `constants/platform/*-codes.const.ts`; no TS enums, no Prisma enums.
 - Lists with `@@unique([parent, order])` are reordered only through `services/shared/reorder.ts`.
 

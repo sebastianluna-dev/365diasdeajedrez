@@ -113,7 +113,7 @@ export const PROTECTED_PATH_PREFIXES = [
 ] as const;
 ```
 
-- `proxy.ts` uses it for the optimistic redirect and repeats it **literally** in `config.matcher` (Next analyses the matcher at build time and discards computed values). `proxy.test.ts` asserts the matcher equals the constant plus `/`.
+- `proxy.ts` uses it for the optimistic redirect and repeats it **literally** in `config.matcher` (Next analyses the matcher at build time and discards computed values). `proxy.test.ts` asserts the matcher equals the constant plus `/`, and that the constant equals the folders of `app/(platform)`: a new folder left out of both fails it.
 - `app/robots.ts` disallows the same prefixes plus `/iniciar-sesion`, `/entrar`, `/admin` and `/api`.
 - The real check is always the DAL inside the page or action; the proxy cannot distinguish roles or expired sessions.
 

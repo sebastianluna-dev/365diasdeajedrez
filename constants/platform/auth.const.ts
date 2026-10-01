@@ -54,8 +54,9 @@ export const LOGIN_ERROR_MESSAGES: Record<string, string> = {
  * cookie, not the session.
  *
  * The `matcher` of `proxy.ts` cannot be derived from here (Next requires it
- * literal), so `proxy.test.ts` checks that the two lists match: a new route
- * under `app/(platform)` is added HERE and in the matcher.
+ * literal), so `proxy.test.ts` checks that the two lists match, and that both
+ * are the folders of `app/(platform)`: a new route under it is added HERE and
+ * in the matcher.
  */
 export const PROTECTED_PATH_PREFIXES = [
   "/inicio",
