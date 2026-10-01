@@ -299,6 +299,7 @@ export function ChessBoard({
   // It receives focus when it opens (the first piece) and closes with Escape:
   // without that, keyboard players dragged the pawn and never reached the dialog.
   const promotionOverlay = pendingPromotion && (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- a modal dialog closes with Escape, and the key is heard on the dialog because the focus is on the pieces inside it
     <div
       className="chess-board__promotion"
       role="dialog"
@@ -341,6 +342,7 @@ export function ChessBoard({
   }
 
   return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- not a control: the click is only noted, so the board's keys answer once it has been used
     <div className="chess-board" ref={rootRef} onClick={() => (hasBeenClickedRef.current = true)}>
       <div className="chess-board__columns">
         <div className="chess-board__frame" ref={frameRef}>

@@ -550,6 +550,7 @@ export function GameViewer({
           </button>
 
           {lingeringOptions.value && (
+            // eslint-disable-next-line jsx-a11y/interactive-supports-focus -- the focus goes to the items inside it, never to the container
             <div
               className={`game-viewer__options-menu${lingeringOptions.closing ? " game-viewer__options-menu_state_closing" : ""}`}
               role="menu"
@@ -616,6 +617,7 @@ export function GameViewer({
   const hasHead = Boolean(title || badge);
 
   return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- not a control: the click is only noted, so the viewer's keys answer once it has been used
     <div
       className={`game-viewer${isFullscreen ? " game-viewer_state_fullscreen" : ""}`}
       ref={rootRef}

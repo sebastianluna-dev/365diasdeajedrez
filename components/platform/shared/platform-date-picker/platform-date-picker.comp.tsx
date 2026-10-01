@@ -278,6 +278,7 @@ export function PlatformDatePicker({
             </button>
           </div>
 
+          {/* eslint-disable-next-line jsx-a11y/interactive-supports-focus -- the focus goes to the day inside it, never to the grid */}
           <div
             ref={gridRef}
             role="grid"

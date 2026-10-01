@@ -39,7 +39,7 @@ npx vitest run lib/chess  # a folder
 ## Static checks
 
 - `npm run typecheck` — `next typegen && tsc --noEmit` (the route types in `.next/types` are generated first, which is what a fresh CI checkout lacks), strict, `noUnusedLocals`, `noUncheckedIndexedAccess`, target ES2022. `docs/` is excluded (it has its own `tsconfig.json`).
-- `npm run lint` — ESLint 9 flat config with `eslint-config-next` (core web vitals + TypeScript); ignores `.next`, `public` (design-kit scripts), the generated Prisma client, `coverage` and `docs`.
+- `npm run lint` — ESLint 9 flat config with `eslint-config-next` (core web vitals + TypeScript) plus the recommended rules of `eslint-plugin-jsx-a11y` as errors on every `.tsx` (a click handler on a `<div>`, an image without `alt`, a role without its ARIA, a label without a control…; `eslint.config.mjs` lists them and says why `no-autofocus` is left out); ignores `.next`, `public` (design-kit scripts), the generated Prisma client, `coverage` and `docs`.
 - `npm run format:check` — Prettier 3, `printWidth: 120`, over every file git does not ignore (`--ignore-path .gitignore`): code, CSS, the docs' MDX, the workflow and `.claude/settings.json`. `npm run format` rewrites what it reports.
 
 ## Continuous integration

@@ -124,6 +124,7 @@ export function PlatformUserMenu({ displayName, initials, profileHref }: Platfor
       </button>
 
       {lingering.value && (
+        // eslint-disable-next-line jsx-a11y/interactive-supports-focus -- the focus goes to the items inside it, never to the container
         <div
           role="menu"
           aria-label="Tu cuenta"

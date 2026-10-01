@@ -18,6 +18,7 @@ export function HeaderDropdown({ label, links }: HeaderDropdownProps) {
   const menuId = useId();
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- not a control: the block only hears what happens to the button and the links inside it, to open, and to close with Escape
     <div
       className={`site-header__dropdown${open ? " site-header__dropdown_open" : ""}`}
       onFocusCapture={() => setOpen(true)}

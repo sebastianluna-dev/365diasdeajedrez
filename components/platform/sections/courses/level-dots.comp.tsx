@@ -30,6 +30,7 @@ export function LevelDots({ scale, levels }: LevelDotsProps) {
   const elo = shortEloRange(formatEloRange(range));
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- the dots can be reached with the keyboard so that the tip with the levels' names shows on focus, as it does on hover
     <span className="level-dots" tabIndex={0} role="img" aria-label={`${names}. ${elo}.`}>
       {scale.map((level, index) => (
         <span
