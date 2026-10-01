@@ -12,14 +12,14 @@ interface LessonGamePickerProps {
   lessonId: string;
   /** The linked game, if any. */
   game?: CourseGameRow;
-  /** Those of the course collection that match the search. */
+  /** Those of the chapter's collection that match the search. */
   candidates: CourseGameRow[];
   /** What was searched; travels in the URL so the server filters. */
   query?: string;
 }
 
 /**
- * Where the lesson gets its content from: a game of the course collection.
+ * Where the lesson gets its content from: a game of its chapter's collection.
  *
  * Linking is not irreversible, which is why it is offered without ceremony:
  * the lesson's own PGN goes dormant and comes back on unlinking.
@@ -71,8 +71,8 @@ export function LessonGamePicker({ courseId, chapterId, lessonId, game, candidat
   if (candidates.length === 0 && !query) {
     return (
       <p className="lesson-game-picker__note">
-        Este curso todavía no tiene partidas en su colección. Añádelas en la ficha del curso —ahí es donde se pega el
-        PGN— y luego vuelve a elegir una aquí.
+        Este capítulo todavía no tiene partidas en su colección. Añádelas en la pestaña «Partidas» del capítulo —ahí es
+        donde se pega el PGN— y luego vuelve a elegir una aquí.
       </p>
     );
   }
@@ -119,7 +119,7 @@ export function LessonGamePicker({ courseId, chapterId, lessonId, game, candidat
         <p className="lesson-game-picker__note">
           {query
             ? "No hay partidas que coincidan."
-            : "Este curso todavía no tiene partidas en su colección. Añádelas en la ficha del curso."}
+            : "Este capítulo todavía no tiene partidas en su colección. Añádelas en la pestaña «Partidas» del capítulo."}
         </p>
       )}
     </div>

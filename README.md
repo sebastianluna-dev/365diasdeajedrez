@@ -190,4 +190,4 @@ It covers architecture, routes, data access, the public site and the CMS, authen
 - `TODOS.md` — concrete tasks in the queue. Local only, like the one above.
 - `WARNINGS.md` — risks taken on knowingly, with the way out of each. Local only, like the two above.
 
-Both are in English, like the code comments and this README, which stays the quick reference to the repository.
+The three are in English, like the code comments and this README, which stays the quick reference to the repository.

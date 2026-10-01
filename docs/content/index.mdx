@@ -49,7 +49,7 @@ Students log in to a private area where they follow **courses** (course → chap
 - **Authorisation lives inside the `where`.** Reads filter by ownership and role in the query itself; there is no "read, then check".
 - **PGN is the source of chess content.** No per-move tables, no relational move trees.
 - **Catalog tables instead of enums.** Restricted domains are tables with a stable `code`; business logic compares codes, never ids.
-- **Green before done:** `npm run format:check`, `npm run typecheck`, `npm run lint` and `npm test` must pass — the four steps CI runs, in that order.
+- **Green before done:** `npm run format:check`, `npm run lint`, `npm run typecheck` and `npm test` must pass — the four steps CI runs, in that order.
 - **This is not the Next.js you remember.** Read `node_modules/next/dist/docs/` before writing framework code; `AGENTS.md` explains why.
 
 ## About this documentation site

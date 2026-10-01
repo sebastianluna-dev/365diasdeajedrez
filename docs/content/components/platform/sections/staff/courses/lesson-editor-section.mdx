@@ -16,7 +16,7 @@ description: "The lesson in independent cards: the linked course game first, the
 
 ## Purpose
 
-Content, metadata and exercises are different decisions, so they are different cards and saving one does not drag the others along. The content card goes **first**, not in alphabetical order: the lesson's content is a game of the course collection, chosen through [`LessonGamePicker`](/components/platform/sections/staff/courses/lesson-game-picker); the rest are settings on top of it.
+Content, metadata and exercises are different decisions, so they are different cards and saving one does not drag the others along. The content card goes **first**, not in alphabetical order: the lesson's content is a game of its chapter's collection, chosen through [`LessonGamePicker`](/components/platform/sections/staff/courses/lesson-game-picker); the rest are settings on top of it.
 
 The "Opciones" controls in the aside (priority, trainable, training colour) are not inside any `<form>`: the `form` attribute ties them to the metadata form in the other column. Two forms against the same action would trample each other's fields, because `updateLesson` reads all of them.
 
@@ -27,7 +27,7 @@ The "Opciones" controls in the aside (priority, trainable, training colour) are 
 | `lesson`        | `LessonAdminDetail` | yes      | `id`, `courseId`, `chapterId`, names, `order`, `pgn`, `pgnUpdatedAtLabel?`, `game?`, `isPriority`, `isTrainable`, `trainingColorCode?`, `orientationCode`, `estimatedDuration?`, `topicCodes`, `exercises[]`, `canDelete`. |
 | `exerciseModes` | `CatalogOption[]`   | yes      | Exercise mode catalog.                                                                                                                                                                                                     |
 | `topics`        | `TopicOption[]`     | yes      | Topics for the checkboxes.                                                                                                                                                                                                 |
-| `courseGames`   | `CourseGameRow[]`   | yes      | Collection games matching the search, for the picker.                                                                                                                                                                      |
+| `courseGames`   | `CourseGameRow[]`   | yes      | The games of the chapter's collection (not of the whole course, despite the name) that match the search, for the picker.                                                                                                   |
 | `gameQuery`     | `string`            | no       | What was searched, from `?partida=`.                                                                                                                                                                                       |
 | `errorCode`     | `string`            | no       | `?error=` translated with `STAFF_ERROR_MESSAGES`.                                                                                                                                                                          |
 

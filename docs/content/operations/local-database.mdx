@@ -62,7 +62,7 @@ The same two commands with `PAYLOAD_URL` and `-d payload` bring the CMS over. Tw
 
 Restoring over a database that already has the tables will complain about every one of them. Start from an empty one (`docker compose down -v && npm run db:up`) when refreshing the copy.
 
-**What comes with it.** The dump carries the accounts as they are in the managed database, passwords included; `npm run user:password` changes one locally without touching the real one, since the URL now points at the container. And `_prisma_migrations` comes along too, so `npx prisma migrate status` will say the schema is up to date instead of trying to apply the 28 migrations again.
+**What comes with it.** The dump carries the accounts as they are in the managed database, passwords included; `npm run user:password` changes one locally without touching the real one, since the URL now points at the container. And `_prisma_migrations` comes along too, so `npx prisma migrate status` will say the schema is up to date instead of trying to apply every migration again.
 
 ## Going back to the managed ones
 

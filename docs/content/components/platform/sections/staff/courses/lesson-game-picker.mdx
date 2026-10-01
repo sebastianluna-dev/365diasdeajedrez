@@ -1,5 +1,5 @@
 ---
-description: "Where a lesson gets its content: the linked game of the course collection with an unlink form, or a GET search over the collection with a 'Vincular' form per candidate."
+description: "Where a lesson gets its content: the linked game of the chapter's collection with an unlink form, or a GET search over the collection with a 'Vincular' form per candidate."
 ---
 
 # `LessonGamePicker`
@@ -15,7 +15,7 @@ description: "Where a lesson gets its content: the linked game of the course col
 
 ## Purpose
 
-A lesson's content is a game from its course's collection. Linking is not irreversible, which is why it is offered without ceremony: the lesson's own PGN goes dormant and comes back on unlinking. The search box is a GET against the lesson page itself, so it needs neither state nor JavaScript: the query stays in the URL and the page returns the already filtered candidates.
+A lesson's content is a game from its chapter's collection: the candidates are the ones the lesson page reads with `listCollectionGames({ chapterId }, partida)`, `partida` being the search in the URL. Linking is not irreversible, which is why it is offered without ceremony: the lesson's own PGN goes dormant and comes back on unlinking. The search box is a GET against the lesson page itself, so it needs neither state nor JavaScript: the query stays in the URL and the page returns the already filtered candidates.
 
 ## Props
 
@@ -23,13 +23,13 @@ A lesson's content is a game from its course's collection. Linking is not irreve
 | ----------------------------------- | ----------------- | -------- | ----------------------------------------------------------------- |
 | `courseId`, `chapterId`, `lessonId` | `string`          | yes      | Bound into `setLessonGame` and used for the search form's action. |
 | `game`                              | `CourseGameRow`   | no       | The linked game, if any.                                          |
-| `candidates`                        | `CourseGameRow[]` | yes      | Collection games matching the search.                             |
+| `candidates`                        | `CourseGameRow[]` | yes      | The games of the chapter's collection that match the search.      |
 | `query`                             | `string`          | no       | What was searched, from `?partida=`.                              |
 
 ## Behaviour
 
 - **Linked:** the game's title, detail and move count, a "Desvincular" form (posting the bound action without `gameId` unlinks) and a note about corrections propagating.
-- **Not linked, empty collection and no query:** a single note pointing to the course record, because a search that can only return "nothing" is noise.
+- **Not linked, empty collection and no query:** a single note and no search box, because a search that can only return "nothing" is noise. The note says the chapter has no games in its collection yet and sends the editor to the chapter's «Partidas» tab (`staffRoutes.chapterGames`), which is where a PGN is pasted; it is text only and does not link there.
 - **Otherwise:** the search form and the candidate list, each row with a "Vincular" form carrying a hidden `gameId`.
 
 ## Markup & styling

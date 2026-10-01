@@ -21,7 +21,7 @@ interface LessonEditorSectionProps {
   lesson: LessonAdminDetail;
   exerciseModes: CatalogOption[];
   topics: TopicOption[];
-  /** Games of the course collection that match the search. */
+  /** Games of the chapter's collection that match the search. */
   courseGames: CourseGameRow[];
   /** What was searched in the collection; travels in the URL. */
   gameQuery?: string;
