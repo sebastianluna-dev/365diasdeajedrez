@@ -1,0 +1,297 @@
+/* The pages of Storybook's foundations (components/platform/foundations): no
+   screen of the app uses this block. They are drawn with the platform's own
+   tokens and primitives, so the light / dark toolbar repaints them as it
+   repaints the app, and they keep the platform's rules — corners of 8px, no
+   font named, every text on a fill it reads on. */
+.foundations {
+  max-width: 1040px;
+
+  & .foundations__group {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  & .foundations__group-title {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .foundations__lead {
+    margin: 0;
+    max-width: 680px;
+    font-size: 15.5px;
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+
+  & .foundations__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+  }
+
+  /* COLOURS. A swatch is a card: the colour on top, painted with its token
+     inline, and its name and values on the surface under it. */
+  & .foundations__swatch {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  /* The hairline under the chip is what shows a colour as light as the
+     surface it stands on. */
+  & .foundations__chip {
+    height: 72px;
+    box-shadow: inset 0 -1px 0 var(--platform-border);
+  }
+
+  & .foundations__swatch-body {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 14px 14px;
+  }
+
+  & .foundations__name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--platform-text);
+    overflow-wrap: anywhere;
+  }
+
+  & .foundations__alias {
+    font-size: 14px;
+    color: var(--platform-text-muted);
+    overflow-wrap: anywhere;
+  }
+
+  & .foundations__values {
+    display: flex;
+    gap: 14px;
+    margin: 0;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+  }
+
+  & .foundations__value {
+    display: flex;
+    gap: 6px;
+  }
+
+  /* The value the theme on screen draws, in ink; the other one stays muted. */
+  & .foundations__value_state_current {
+    font-weight: 700;
+    color: var(--platform-text);
+  }
+
+  & .foundations__theme,
+  & .foundations__hex {
+    margin: 0;
+  }
+
+  & .foundations__note {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--platform-text-muted);
+  }
+
+  & .foundations__shadow {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 22px 24px 24px;
+    border-radius: 8px;
+    background: var(--platform-surface);
+  }
+
+  /* TEXT ON A SURFACE. A fill is painted inline with its token; on the
+     canvas's own grey it would have no edge, so it gets the thin border. */
+  & .foundations__fills {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    align-items: start;
+    gap: 14px;
+  }
+
+  & .foundations__fill {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px 18px 18px;
+    border-radius: 8px;
+    box-shadow: inset 0 0 0 1px var(--platform-border);
+  }
+
+  & .foundations__fill-name {
+    margin: 0 0 4px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  /* The text on the left, its figures on the right: the one on screen over
+     the other theme's. */
+  & .foundations__line {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: 10px;
+    margin: 0;
+    font-size: 15.5px;
+  }
+
+  & .foundations__label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 10px;
+  }
+
+  & .foundations__figures {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  & .foundations__sample {
+    font-weight: 500;
+  }
+
+  & .foundations__token,
+  & .foundations__other {
+    font-size: 14px;
+  }
+
+  & .foundations__ratio {
+    font-size: 14px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* CORNERS. Each value drawn on the shape it is for. */
+  & .foundations__corner {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 22px 24px 24px;
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .foundations__stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 96px;
+    border-radius: 8px;
+    background: var(--platform-bg);
+  }
+
+  & .foundations__shape {
+    background: var(--platform-accent-soft);
+    box-shadow: inset 0 0 0 1px var(--platform-accent-faint);
+  }
+
+  & .foundations__shape_kind_card {
+    width: 140px;
+    height: 72px;
+    border-radius: 8px;
+  }
+
+  & .foundations__shape_kind_box {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+  }
+
+  & .foundations__shape_kind_pill {
+    width: 120px;
+    height: 28px;
+    border-radius: 1000px;
+  }
+
+  & .foundations__shape_kind_circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+  }
+
+  & .foundations__count {
+    font-size: 14px;
+    color: var(--platform-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* MOTION. Each sample plays on its own stage, with what the browser says
+     its motion is under it. */
+  & .foundations__motion {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  & .foundations__spec {
+    margin: 0;
+    font-size: 14px;
+    color: var(--platform-text-muted);
+    overflow-wrap: anywhere;
+  }
+
+  & .foundations__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  & .foundations__dialog-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px;
+    max-width: 420px;
+  }
+
+  /* TYPE. A specimen line per font and per size, the size printed beside it. */
+  & .foundations__specimen {
+    margin: 0;
+    font-size: 28px;
+    color: var(--platform-text);
+    overflow-wrap: anywhere;
+  }
+
+  & .foundations__sizes {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+  }
+
+  & .foundations__size {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    align-items: baseline;
+    gap: 14px;
+    padding: 8px 0;
+    box-shadow: inset 0 -1px 0 var(--platform-border);
+  }
+
+  & .foundations__size-value {
+    font-size: 14px;
+    color: var(--platform-text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .foundations__size-sample {
+    color: var(--platform-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
