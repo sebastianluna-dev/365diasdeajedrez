@@ -89,7 +89,10 @@ The Cloudinary SDK reads its own `package.json` at require time and breaks when 
 Only `res.cloudinary.com` is allowed in `images.remotePatterns`. User-typed URLs (teacher photo, author photo) must pass `isDisplayableImage` from `lib/remote-image.ts` before reaching `<Image>`.
 
 **Two dev servers conflict on `.next/dev`.**
-Run one `next dev` per checkout. The dev script is plain `next dev`, on Turbopack like the production build.
+Run one `next dev` per checkout. The dev script is `next dev -H 127.0.0.1`, on Turbopack like the production build.
+
+**The dev server does not answer from a phone or another machine.**
+On purpose. `next dev` listens on every interface by default, and a dev server is not something to leave open to a network: it runs with the local `.env.local`, and Next 16 serves an endpoint for coding agents at `/_next/mcp` (`experimental.mcpServer`, on by default) that checks no host and lets a request without an `Origin` through. So `npm run dev` binds `127.0.0.1`, and only this machine reaches it. To try the site on a phone, `npm run dev:lan` opens it to the local network for as long as it runs; use it on a network you trust and stop it afterwards.
 
 **`/_vercel/insights/script.js` returns 404 locally.**
 Vercel Analytics renders only when `VERCEL=1`. If you see the request locally, that variable is set in your environment.
