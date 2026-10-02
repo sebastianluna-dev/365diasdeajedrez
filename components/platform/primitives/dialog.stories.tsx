@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { userEvent, within } from "storybook/test";
 
@@ -10,15 +10,17 @@ interface DialogArgs {
 
 function DialogSample({ title, text, paragraphs }: DialogArgs) {
   const dialog = useRef<HTMLDialogElement>(null);
+  // The Docs page mounts every story of the file at once: a fixed id would name them all after the first.
+  const titleId = useId();
   return (
     <>
       <button type="button" className="platform-button" onClick={() => dialog.current?.showModal()}>
         Abrir el diálogo
       </button>
-      <dialog ref={dialog} className="platform-dialog" aria-labelledby="dialog-sample-title">
+      <dialog ref={dialog} className="platform-dialog" aria-labelledby={titleId}>
         {/* The frame has no padding of its own: each dialog's block pads what it holds. */}
         <form method="dialog" style={{ display: "flex", flexDirection: "column", gap: 16, padding: 28, maxWidth: 460 }}>
-          <h2 id="dialog-sample-title" className="platform-card__title" style={{ margin: 0 }}>
+          <h2 id={titleId} className="platform-card__title" style={{ margin: 0 }}>
             {title}
           </h2>
           {Array.from({ length: paragraphs }, (_, index) => (

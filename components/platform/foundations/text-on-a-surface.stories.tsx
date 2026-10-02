@@ -56,14 +56,18 @@ function TextOnASurfacePage({ scheme }: { scheme: unknown }) {
     <div className="platform-page foundations">
       <header className="platform-page__head">
         <h1 className="platform-page__title">Text on a surface</h1>
-        <p className="platform-page__subtitle">May I write this grey on that fill? If the pair is here, yes.</p>
+        <p className="platform-page__subtitle">
+          May I write this grey on that fill? If the pair is here, yes, in both themes.
+        </p>
       </header>
       <p className="foundations__lead">
         Each panel is a background, painted with its token, and each line is a text colour that may be written on it,
         with the contrast it measures in the theme on screen ({theme}) and, beside it, in the other one. A text reaches{" "}
         {TEXT_MINIMUM}:1 on what it is written on, in both themes (WCAG 2.2, 1.4.3), and every pair here does:{" "}
-        <code>components/platform/platform-tokens.test.ts</code> fails otherwise. A pair that is not here is not allowed
-        until it is measured and added to <code>TEXT_PAIRS</code> in <code>lib/platform-tokens.ts</code>.
+        <code>components/platform/platform-tokens.test.ts</code> fails otherwise. The list is <code>TEXT_PAIRS</code> in{" "}
+        <code>lib/platform-tokens.ts</code>, and it is what is measured as a pair of tokens. The test also measures
+        every rule that sets both its own colour and its own fill, listed here or not; a text that inherits its colour
+        onto a fill set elsewhere is measured only if its pair is in the list, so a new pair goes there.
       </p>
       <ul className="foundations__fills">
         {textsByBackground().map(([background, texts]) => (
@@ -89,9 +93,9 @@ function TextOnASurfacePage({ scheme }: { scheme: unknown }) {
         <ul className="foundations__fills">
           {FILLS.map((background) => (
             <li key={background} className="foundations__fill" style={{ background: `var(${token(background)})` }}>
-              <h2 className="foundations__fill-name" style={{ color: `var(${token("text")})` }}>
+              <h3 className="foundations__fill-name" style={{ color: `var(${token("text")})` }}>
                 on {background}
-              </h2>
+              </h3>
               <ContrastLine text="text-subtle" background={background} tokens={tokens} theme={theme} />
               <ContrastLine text="text-muted" background={background} tokens={tokens} theme={theme} />
             </li>

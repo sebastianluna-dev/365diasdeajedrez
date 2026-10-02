@@ -77,8 +77,16 @@ describe("readTokenDeclarations", () => {
   });
 
   it("does not hand a comment across another declaration", () => {
-    // "Which theme is drawn." sits above `color-scheme`, not above a token.
-    expect(declarations.some(({ note }) => note === "Which theme is drawn.")).toBe(false);
+    // The comment sits above `color-scheme`, and the token comes right after
+    // that declaration with no comment of its own.
+    const [first] = readTokenDeclarations(`
+:root {
+  /* Which theme is drawn. */
+  color-scheme: light dark;
+  --platform-bg: light-dark(#f6f6f6, #14100d);
+}
+`);
+    expect(first).toEqual({ name: "--platform-bg", value: "light-dark(#f6f6f6, #14100d)", note: null });
   });
 });
 

@@ -62,20 +62,39 @@ function useMotion(ref: RefObject<Element | null>, read: (element: Element) => s
   return spec;
 }
 
-/** The select's list as it opens and as it closes, read each time Radix flips its `data-state`. */
+/**
+ * The select's list as it opens and as it closes, read each time Radix flips
+ * its `data-state`. Until the list is positioned Radix holds it with an inline
+ * `animation: none`, so that reading waits for the style to be let go; and a
+ * list that leaves with no animation (under reduced motion) is gone before it
+ * can be read, which is itself the answer.
+ */
 function usePopupMotion(stage: RefObject<HTMLElement | null>): Record<string, string> {
   const [seen, setSeen] = useState<Record<string, string>>({});
   useEffect(() => {
     const root = stage.current;
     if (!root) return;
-    const observer = new MutationObserver(() => {
-      const list = root.querySelector(".platform-select__content");
-      const state = list?.getAttribute("data-state");
-      if (!list || !state) return;
-      const spec = animationOf(list);
+    let open = false;
+    const record = (state: string, spec: string) =>
       setSeen((previous) => (previous[state] === spec ? previous : { ...previous, [state]: spec }));
+    const observer = new MutationObserver(() => {
+      const list = root.querySelector<HTMLElement>(".platform-select__content");
+      const state = list?.getAttribute("data-state");
+      if (!list || !state) {
+        if (open) record("closed", "none, taken away at once");
+        open = false;
+        return;
+      }
+      open = state === "open";
+      if (list.style.animationName === "none") return;
+      record(state, animationOf(list));
     });
-    observer.observe(root, { subtree: true, childList: true, attributes: true, attributeFilter: ["data-state"] });
+    observer.observe(root, {
+      subtree: true,
+      childList: true,
+      attributes: true,
+      attributeFilter: ["data-state", "style"],
+    });
     return () => observer.disconnect();
   }, [stage]);
   return seen;
@@ -95,7 +114,7 @@ function PageEntrance() {
         A page comes in
       </h2>
       <p className="foundations__lead">
-        <code>.platform-page</code> fades in with a 6px rise when it mounts, so taking the place of a segment&apos;s
+        <code>.platform-page</code> fades in with a short rise when it mounts, so taking the place of a segment&apos;s
         loading fallback is not a cut. It plays again on every soft navigation.
       </p>
       <div className="foundations__stage">
@@ -125,8 +144,9 @@ function DialogMotion() {
       </h2>
       <p className="foundations__lead">
         Every dialog inherits its motion from <code>.platform-dialog</code>, in CSS alone: one transition, the same in
-        both directions — the opacity, and a 14px rise with a slight scale — and the backdrop fades over the same time.
-        No dialog animates on its own.
+        both directions, of the opacity and of a short rise with a slight scale, and the backdrop fades with it. No
+        dialog animates on its own. The rule, as <code>AGENTS.md</code> writes it: the opacity in 160 ms, the rise in
+        200 ms, <code>display</code> and <code>overlay</code> held for those 200 ms.
       </p>
       <Spec>{spec}</Spec>
       <div className="foundations__actions">
@@ -164,9 +184,10 @@ function PopupMotion() {
         A menu, a list, a calendar or a tip
       </h2>
       <p className="foundations__lead">
-        160 ms to come in (<code>ease-out</code>) and 120 ms to go out (<code>ease-in</code>). A Radix popup animates on
-        its <code>data-state</code>; a menu mounted conditionally stays mounted for its exit with{" "}
-        <code>useLingering</code>, whose <code>POPUP_EXIT_MS</code> is {POPUP_EXIT_MS} ms. Open the list and close it.
+        The rule, as <code>AGENTS.md</code> writes it: 160 ms to come in (<code>ease-out</code>) and 120 ms to go out (
+        <code>ease-in</code>). A Radix popup animates on its <code>data-state</code>; a menu mounted conditionally stays
+        mounted for its exit with <code>useLingering</code>, whose <code>POPUP_EXIT_MS</code> is {POPUP_EXIT_MS} ms.
+        Open the list and close it.
       </p>
       <div ref={stage} className="foundations__stage">
         <PlatformSelect
@@ -215,9 +236,10 @@ function MotionPage() {
         <p className="platform-page__subtitle">Nothing that opens over the page appears or disappears in a cut.</p>
       </header>
       <p className="foundations__lead">
-        Each sample is the platform&apos;s own class, and under it is what the browser reports for that element, so the
-        figures are the stylesheets&apos; and not a copy of them. Under <code>prefers-reduced-motion: reduce</code>{" "}
-        every one of them is off
+        Each sample is the platform&apos;s own class, and under it is what the browser reports for that element, so
+        those figures are the stylesheets&apos; and not a copy of them. Where a motion has a rule of its own, the rule
+        is written above it as <code>AGENTS.md</code> writes it: a stylesheet that drifts from its rule shows the
+        difference here. Under <code>prefers-reduced-motion: reduce</code> every one of them is off
         {reduced ? " — and this machine asks for that, so the browser reports none" : ""}.
       </p>
       <PageEntrance />

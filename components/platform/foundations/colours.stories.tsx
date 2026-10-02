@@ -77,8 +77,9 @@ function ColoursPage({ scheme }: { scheme: unknown }) {
           Shadows
         </h2>
         <p className="foundations__lead">
-          What tells a layer from the canvas. On light, two soft shadows; on dark, where a shadow over near-black
-          separates nothing, a hairline of the border inside the same token.
+          What tells a layer from the canvas. The card&apos;s: on light, two soft shadows; on dark, where a shadow over
+          near-black separates nothing, a hairline of the border inside the same token. The bar&apos;s: a hairline of
+          the border in both themes.
         </p>
         <ul className="foundations__grid">
           {shadows.map((token) => (

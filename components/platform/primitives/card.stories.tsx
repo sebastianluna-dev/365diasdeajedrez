@@ -54,9 +54,9 @@ export const OnTheCanvas: Story = {
   name: "On the canvas",
   render: ({ title, text }) => (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 20 }}>
-      {[title, "Racha diaria", "Mis estudios"].map((each) => (
-        <section key={each} className="platform-card">
-          <h2 className="platform-card__title">{each}</h2>
+      {[title, "Racha diaria", "Mis estudios"].map((each, index) => (
+        <section key={index} className="platform-card">
+          {each && <h2 className="platform-card__title">{each}</h2>}
           <p>{text}</p>
         </section>
       ))}

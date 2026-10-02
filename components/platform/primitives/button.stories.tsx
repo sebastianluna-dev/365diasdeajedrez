@@ -73,9 +73,11 @@ type Story = StoryObj<typeof meta>;
 export const Quiet: Story = {};
 
 /**
- * `_variant_accent` is that reason when a screen has one — signing in, adding the course one is reading about,
- * «Continuar» on the dashboard, «Aprender» on a course — raised on the hard edge of `--platform-accent-deep` and
- * sinking onto it while held, like the button of the blog's header; it is meant to be rare.
+ * Most screens have several things one can do and only one of them is the reason the screen exists, and a page
+ * of blocks filled with the accent says they are all that reason. `_variant_accent` is that reason when a screen
+ * has one — signing in, adding the course one is reading about, «Continuar» on the dashboard, «Aprender» on a
+ * course — raised on the hard edge of `--platform-accent-deep` and sinking onto it while held, like the button
+ * of the blog's header; it is meant to be rare.
  */
 export const Accent: Story = { args: { label: "Aprender", variant: "accent" } };
 

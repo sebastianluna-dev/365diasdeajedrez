@@ -147,8 +147,9 @@ describe("the platform's tokens", () => {
   });
 
   it("fall each in one family of Storybook's Colours page, at most", () => {
-    // Two families claiming a colour would draw it twice; none claiming it
-    // draws it under "Other", which is allowed.
+    // groupColours draws each colour once, so two families claiming one would
+    // hand it silently to the first of them, which may be the wrong one; none
+    // claiming it draws it under "Other", which is allowed.
     const colours = [...TOKENS.keys()].filter((name) => colourOf(TOKENS, name, "light") !== null);
     expect(colours.length).toBeGreaterThan(40);
     const twice = colours.filter(
