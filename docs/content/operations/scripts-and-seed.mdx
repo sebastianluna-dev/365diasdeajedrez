@@ -85,6 +85,14 @@ One-off data migration from course-level collections to **chapter** collections 
 
 Rebuilds `UserStatDaily` from `UserActivity` through `services/shared/daily-stats.ts` (the same function the seed uses), for every account or for one (`-- <email>`). The aggregate is derived, so this is the answer whenever the bucketing changes — on 2026-09-21 the day moved from UTC to the study day, `America/Mexico_City` — or the two tables are suspected to have drifted apart. Each account is rebuilt in one transaction.
 
+## `scripts/db-target.ts` — `npm run db:target`
+
+Prints which databases `.env.local` points at — host, database name, and whether it is the local container or a managed one — for `PLATFORM_DATABASE_URL` and `DATABASE_URI`. Never the URL, which carries the password, so its output can be pasted and logged. It is the answer to "where am I about to write?" before a migration, a seed or `npm run dev`, all of which follow that file. The reading is `lib/database-target.ts`, a pure module the seed's guard uses too.
+
+## `scripts/db-backup.ts` — `npm run db:backup`
+
+Dumps those two databases (custom format) into `~/Backups/365diasdeajedrez/`, or into `-- --dir <folder>`: see [Deployment & backups](/operations/deployment#backups). It needs the container running (`npm run db:up`), because the `pg_dump` it uses is the container's. It writes nothing to any database.
+
 ## `scripts/make-board-sounds.ts` — `npm run sounds:make`
 
 Not what the viewer plays today (that is lichess's `.mp3`, see [Stockfish, pieces & sounds](/chess/engine-and-assets)); this is the way out if they ever have to go. Writes `public/sounds/move.wav` and `capture.wav` by modal synthesis: a seeded noise burst through a two-pole low-pass (the strike) rings a bank of two-pole resonators (the wood), each with its frequency, level and decay in the script's `SPECS`. No third-party audio in the repository. Change the specs and run it again; the output is byte-for-byte reproducible. The values were tuned against measurements of lichess' standard recordings, never their samples. To switch: point `SOURCES` in `components/chess/game-viewer/move-sound.ts` at the `.wav` files.

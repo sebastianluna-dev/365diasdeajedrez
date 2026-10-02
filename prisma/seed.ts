@@ -9,6 +9,7 @@ config();
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { startFenOf } from "../lib/chess/mainline";
+import { isLocalDatabase } from "../lib/database-target";
 import { deriveExerciseData } from "../lib/chess/exercise-derivation";
 import { PrismaClient } from "../lib/platform-db/generated/client";
 import { hashPassword } from "../lib/platform-auth/password";
@@ -49,14 +50,6 @@ const DEMO_PASSWORD = process.env.PLATFORM_DEMO_PASSWORD ?? "ajedrez365";
 // password that is written in this repository. Against a database that is not
 // local that is an open door, so outside local it only seeds if the password is
 // set by the environment or if it is expressly requested.
-function isLocalDatabase(url: string): boolean {
-  try {
-    const host = new URL(url).hostname;
-    return host === "localhost" || host === "127.0.0.1" || host === "::1" || host === "";
-  } catch {
-    return false;
-  }
-}
 const usesRepoPassword = !process.env.PLATFORM_DEMO_PASSWORD;
 const looksRemote = process.env.NODE_ENV === "production" || !isLocalDatabase(connectionString);
 if (looksRemote && usesRepoPassword && process.env.ALLOW_DEMO_SEED !== "1") {

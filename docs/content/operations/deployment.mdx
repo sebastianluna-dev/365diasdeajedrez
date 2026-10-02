@@ -23,8 +23,8 @@ Never set `ALLOW_DEMO_SEED` in production.
 
 ## Release order
 
-1. **Back up both databases** (below). Prisma migrations have no down path.
-2. `npm run db:deploy` (`prisma migrate deploy`) against the production `PLATFORM_DATABASE_URL`.
+1. **Back up both databases** (`npm run db:backup`, below). Prisma migrations have no down path.
+2. `npx prisma migrate status` to see what is really pending, then `npm run db:deploy` (`prisma migrate deploy`) against the production `PLATFORM_DATABASE_URL`. Both follow `.env.local`: `npm run db:target` says where it points before anything is run, and again after it is switched back.
 3. Deploy the app, which here means **pushing `main`**: Vercel builds a Production deployment from every push to it, so steps 1 and 2 come before the push, never after (a coding agent asks before any push: [Coding agents](/conventions#coding-agents)). `npm run build` first runs `prisma generate`: `lib/platform-db/generated/` is git-ignored, so without it Turbopack fails with `Can't resolve './generated/client'`. Then `next build` prerenders `/`, the sitemap and static pages, so it needs read access to both databases at build time (which is why CI does not build).
 4. If a migration needs data movement, run its script (`scripts/…`) after the deploy, with `--dry` first.
 5. Payload schema changes: there are no committed Payload migrations; the CMS tables are synced by Drizzle push when `next dev` runs against the database. Do that before deploying a collection change, or introduce Payload migrations (`payload migrate:create`) when the team wants an explicit path.
@@ -32,6 +32,13 @@ Never set `ALLOW_DEMO_SEED` in production.
 ## Backups
 
 Neither database can be rebuilt from the code: the platform holds accounts, progress and annotated games; Payload holds the site and blog content.
+
+```bash
+npm run db:target   # which databases .env.local points at: host and name, never the URL
+npm run db:backup   # both of them, into ~/Backups/365diasdeajedrez/<name>-<date>-<time>.dump
+```
+
+`db:backup` (`scripts/db-backup.ts`) dumps whichever two databases `.env.local` names, with the `pg_dump` of the development container — its version is pinned to the managed databases', so nothing has to be installed —, reads each dump back with `pg_restore --list` before calling it a copy, and writes it for its owner only, outside the repository: a dump carries the accounts and their password hashes. `--dir <folder>` changes where; a folder inside the repository is refused. By hand it is the same two commands:
 
 ```bash
 pg_dump --format=custom --no-owner --file="plataforma-$(date +%Y%m%d-%H%M).dump" "$PLATFORM_DATABASE_URL"

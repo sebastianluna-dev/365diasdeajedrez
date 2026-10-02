@@ -66,4 +66,4 @@ Restoring over a database that already has the tables will complain about every 
 
 ## Going back to the managed ones
 
-Swap the two commented lines in `.env.local` back. Nothing else is tied to the container: the schema is the same, the migrations are the same and the code never learns which of the two it is talking to.
+Swap the two commented lines in `.env.local` back, and stop `npm run dev` first: a dev server that is running reloads the file and goes on against the managed databases. `npm run db:target` says where the file points, before and after. Nothing else is tied to the container: the schema is the same, the migrations are the same and the code never learns which of the two it is talking to.

@@ -17,6 +17,8 @@
     "db:deploy": "prisma migrate deploy",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
+    "db:target": "tsx scripts/db-target.ts",
+    "db:backup": "tsx scripts/db-backup.ts",
     "positions:index": "tsx scripts/index-game-positions.ts",
     "collections:by-chapter": "tsx scripts/migrate-chapter-collections.ts",
     "stats:rebuild": "tsx scripts/rebuild-daily-stats.ts",

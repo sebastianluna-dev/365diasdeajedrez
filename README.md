@@ -49,6 +49,8 @@ No `sslmode` in those two: the container speaks no TLS. The CMS's tables create 
 | `npm run db:migrate`                      | `prisma migrate dev` (development).                                                                                                         |
 | `npm run db:deploy`                       | `prisma migrate deploy` (production).                                                                                                       |
 | `npm run db:seed`                         | `prisma db seed`.                                                                                                                           |
+| `npm run db:target`                       | Says which databases `.env.local` points at (host and name, never the URL).                                                                 |
+| `npm run db:backup`                       | Dumps both into `~/Backups/365diasdeajedrez/` with the container's `pg_dump`.                                                               |
 | `npm run db:studio`                       | `prisma studio`.                                                                                                                            |
 | `npm run user:create -- <email> "<Name>"` | Enrols a student (asks for the password without echoing it).                                                                                |
 | `npm run user:password -- <email>`        | Changes their password and closes their sessions.                                                                                           |
