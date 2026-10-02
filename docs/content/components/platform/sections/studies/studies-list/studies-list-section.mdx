@@ -15,7 +15,7 @@ description: "Splits the student's studies by ownership (editable versus receive
 
 ## Purpose
 
-The body of "Mis estudios". The page resolves the identity in the DAL first and then reads the studies and the kinds together, so the list does not wait for the dialog's data nor the other way round; this section decides the one split the browser does not: **ownership**. What the student can edit ("Mis partidas", their tournaments, their studies) goes to `own`; what reaches them ready-made and read-only (the databases of the courses they started, the collections a teacher handed them, the games from their classes) goes to `received`. The split is by permission, not by kind, so a future kind lands in the right group by itself.
+The body of "Mis estudios". The page resolves the identity in the DAL first and then reads the studies and the kinds together, so the list does not wait for the dialog's data nor the other way round; this section decides the one split the browser does not: **ownership**. What the student can edit ("Mis partidas", their tournaments, their studies) goes to `own`; what reaches them ready-made and read-only (the collections a teacher handed them, the games from their classes) goes to `received`. The collections of the courses they started are not in the list since 2026-10-02 (`getUserStudies` reads `getListedDatabasesWhere`): a course's games are met in the course, and their pages still open and the position search still finds them. The split is by permission, not by kind, so a future kind lands in the right group by itself.
 
 ## Props
 

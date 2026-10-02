@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { buildVisibleDatabasesWhere, buildVisibleGamesWhere } from "@/services/shared/game-visibility-rules";
+import {
+  buildListedDatabasesWhere,
+  buildVisibleDatabasesWhere,
+  buildVisibleGamesWhere,
+} from "@/services/shared/game-visibility-rules";
 
 // The SHAPE of the `where` is checked because it is the only thing this module
 // produces: the border that keeps anyone from seeing someone else's material.
@@ -24,6 +28,19 @@ describe("bases visibles", () => {
 
   it("no cuela el id de otro por ninguno de los tres", () => {
     expect(JSON.stringify(where)).not.toContain(BOB);
+  });
+});
+
+describe("bases que lista «Mis estudios»", () => {
+  const where = buildListedDatabasesWhere({ userId: ALICE });
+
+  it("son las visibles, sin perder ninguno de sus tres caminos", () => {
+    expect(where.AND).toContainEqual(buildVisibleDatabasesWhere({ userId: ALICE }));
+  });
+
+  it("dejan fuera las de un curso, que se siguen abriendo y buscando", () => {
+    expect(where.AND).toContainEqual({ courseId: null });
+    expect(where.AND).toHaveLength(2);
   });
 });
 

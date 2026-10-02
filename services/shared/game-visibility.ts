@@ -2,7 +2,7 @@ import { cache } from "react";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getTeacherContext } from "@/lib/platform-auth/roles";
 import type { Prisma } from "@/lib/platform-db/generated/client";
-import { buildVisibleDatabasesWhere, buildVisibleGamesWhere } from "./game-visibility-rules";
+import { buildListedDatabasesWhere, buildVisibleDatabasesWhere, buildVisibleGamesWhere } from "./game-visibility-rules";
 
 // Who can see which games, resolved for the request in progress. The rule is in
 // game-visibility-rules (a pure module); here it is only told who is asking.
@@ -26,6 +26,11 @@ const getViewer = cache(async () => {
 
 export const getVisibleDatabasesWhere = cache(async (): Promise<Prisma.GameDatabaseWhereInput> =>
   buildVisibleDatabasesWhere(await getViewer()),
+);
+
+/** The visible databases "Mis estudios" lists: all but a course's (see `buildListedDatabasesWhere`). */
+export const getListedDatabasesWhere = cache(async (): Promise<Prisma.GameDatabaseWhereInput> =>
+  buildListedDatabasesWhere(await getViewer()),
 );
 
 export const getVisibleGamesWhere = cache(async (): Promise<Prisma.GameWhereInput> =>

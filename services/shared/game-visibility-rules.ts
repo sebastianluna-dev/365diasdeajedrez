@@ -34,6 +34,17 @@ export function buildVisibleDatabasesWhere({ userId }: GameViewer): Prisma.GameD
 }
 
 /**
+ * The databases "Mis estudios" LISTS: the visible ones but a course's. A
+ * course's collections stay visible — their pages open and the position search
+ * finds their games and links to them — but the list shows only what the
+ * viewer made and what a teacher shared with them (decided 2026-10-02: the
+ * course's games are met in the course, not as studies of their own).
+ */
+export function buildListedDatabasesWhere(viewer: GameViewer): Prisma.GameDatabaseWhereInput {
+  return { AND: [buildVisibleDatabasesWhere(viewer), { courseId: null }] };
+}
+
+/**
  * Visible games. It is wider than "the games of the visible databases", because
  * there are two paths that do not go through the ownership of the database:
  *

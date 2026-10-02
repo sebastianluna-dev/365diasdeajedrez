@@ -6,7 +6,7 @@ import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
-import { getVisibleDatabasesWhere } from "@/services/shared/game-visibility";
+import { getListedDatabasesWhere, getVisibleDatabasesWhere } from "@/services/shared/game-visibility";
 import {
   gameViewInclude,
   mapGameView,
@@ -29,7 +29,9 @@ import type {
 
 // "Mis estudios" in the interface; GameDatabase in the domain. The student sees
 // their own databases (editable), those of the courses they have started (read-
-// only) and a derived collection with the games they have seen in class.
+// only) and a derived collection with the games they have seen in class. The
+// list leaves the courses' out: their pages still open and the position search
+// still finds their games, but a course's games are met in the course.
 //
 // The visibility filter lives in services/shared/game-visibility so that the
 // position search uses exactly the same one.
@@ -44,7 +46,7 @@ const CLASS_GAMES_ID = "class-games";
 
 export async function getUserStudies(): Promise<StudySummary[]> {
   const db = getPlatformDb();
-  const [where, user] = await Promise.all([getVisibleStudiesWhere(), getCurrentUser()]);
+  const [where, user] = await Promise.all([getListedDatabasesWhere(), getCurrentUser()]);
 
   // The three reads are independent, so they travel together: the totals are
   // scoped by the same visibility `where` instead of by the ids of the first
