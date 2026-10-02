@@ -9,10 +9,14 @@ type Theme = "site" | "platform";
 // The app picks the theme by layout: the public site gets globals.css on a
 // bare <body>, the platform and the login add platform.css and
 // <body class="platform-theme">. Both sheets are loaded here and the toolbar
-// toggles the class, which reproduces either layout exactly.
+// toggles the class, which reproduces either layout exactly. The chess pieces
+// and the icons belong to both products but are drawn with the platform's
+// tokens, so "auto" gives them the platform's theme too.
+const PLATFORM_TITLES = ["platform/", "auth/", "chess/", "icons/"];
+
 function themeFor(global: string, title: string): Theme {
   if (global === "site" || global === "platform") return global;
-  return title.startsWith("platform/") || title.startsWith("auth/") ? "platform" : "site";
+  return PLATFORM_TITLES.some((prefix) => title.startsWith(prefix)) ? "platform" : "site";
 }
 
 const preview: Preview = {
@@ -35,9 +39,12 @@ const preview: Preview = {
     nextjs: { appDirectory: true },
     layout: "fullscreen",
     // The overview opens the sidebar, as the sheet of a UI kit does; then what
-    // the pieces are made of, the pieces, and the sections built from them.
+    // the pieces are made of, the pieces, and the sections built from them;
+    // then the pieces both products share, and the site.
     options: {
-      storySort: { order: ["platform", ["Overview", "foundations", "primitives", "shared", "sections"], "site"] },
+      storySort: {
+        order: ["platform", ["Overview", "foundations", "primitives", "shared", "sections"], "icons", "chess", "site"],
+      },
     },
   },
   decorators: [

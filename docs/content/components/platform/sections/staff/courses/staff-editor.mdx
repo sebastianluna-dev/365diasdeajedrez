@@ -11,6 +11,7 @@ Also exports `StaffEditorLayout`.
 | File       | `components/platform/sections/staff/courses/staff-editor.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | Kind       | Server Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | Stylesheet | `staff-editor.comp.css` → blocks `.staff-editor-head` and `.staff-editor`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| Story      | `staff-editor.stories.tsx` (`platform/sections/staff/courses/StaffEditorHead`): a course, the catalog (`level="root"`), a chapter, and the head over `StaffEditorLayout`; the slots hold plain markup                                                                                                                                                                                                                                                                                                                                                                  |
 | Used by    | [`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section), [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section), [`CourseGamesSection`](/components/platform/sections/staff/courses/course-games-section), [`ChapterEditorSection`](/components/platform/sections/staff/courses/chapter-editor-section), [`ChapterGamesSection`](/components/platform/sections/staff/courses/chapter-games-section), [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section) |
 
 ## Purpose
@@ -57,19 +58,18 @@ Two blocks in one sheet (102 lines).
 
 ## Usage
 
-From `components/platform/sections/staff/courses/chapter-editor.section.tsx`:
+From `components/platform/sections/staff/courses/chapter-record-head.comp.tsx`:
 
 ```tsx
-import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
+import { StaffEditorHead } from "./staff-editor.comp";
 
 <StaffEditorHead
   title={chapter.name}
   meta={
     <>
       <span>Capítulo {chapter.order}</span>
-      <span>
-        {chapter.lessons.length} lección{chapter.lessons.length === 1 ? "" : "es"}
-      </span>
+      <span>{chapter.courseName}</span>
+      {chapter.isPriority && <span className="platform-tag platform-tag_variant_accent">Prioridad</span>}
     </>
   }
 />;

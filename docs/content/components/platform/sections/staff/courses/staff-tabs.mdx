@@ -6,12 +6,13 @@ description: "Tabs that are pages: links with their own URL for the three sectio
 
 The `StaffTab` type and the two builders, `courseTabs()` and `chapterTabs()`, live beside it in `staff-tabs.const.ts` — a **server** module, because the sections that call them are server components and a `"use client"` module only exports client references.
 
-|            |                                                                                                                                                                              |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/staff-tabs.comp.tsx`                                                                                                             |
-| Kind       | Client Component (`usePathname`)                                                                                                                                             |
-| Stylesheet | `staff-tabs.comp.css` → block `.staff-tabs`                                                                                                                                  |
-| Used by    | [`CourseRecordHead`](/components/platform/sections/staff/courses/course-record-head), [`ChapterRecordHead`](/components/platform/sections/staff/courses/chapter-record-head) |
+|            |                                                                                                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/staff/courses/staff-tabs.comp.tsx`                                                                                                                                     |
+| Kind       | Client Component (`usePathname`)                                                                                                                                                                     |
+| Stylesheet | `staff-tabs.comp.css` → block `.staff-tabs`                                                                                                                                                          |
+| Story      | `staff-tabs.stories.tsx` (`platform/sections/staff/courses/StaffTabs`): a course's tabs and a chapter's, and a course just created whose counts say 0; the current tab comes from Storybook's router |
+| Used by    | [`CourseRecordHead`](/components/platform/sections/staff/courses/course-record-head), [`ChapterRecordHead`](/components/platform/sections/staff/courses/chapter-record-head)                         |
 
 ## Purpose
 
@@ -47,18 +48,13 @@ No media queries.
 
 ## Usage
 
-From `components/platform/sections/staff/courses/chapter-editor.section.tsx`:
+From `components/platform/sections/staff/courses/course-record-head.comp.tsx`:
 
 ```tsx
 import { StaffTabs } from "./staff-tabs.comp";
+import { courseTabs } from "./staff-tabs.const";
 
-<StaffTabs
-  current={staffRoutes.chapterDetail(chapter.courseId, chapter.id)}
-  tabs={[
-    { label: "Capítulo", href: staffRoutes.chapterDetail(chapter.courseId, chapter.id) },
-    { label: "Partidas", href: staffRoutes.chapterGames(chapter.courseId, chapter.id), count: gameCount },
-  ]}
-/>;
+<StaffTabs tabs={courseTabs({ courseId: course.id, chapterCount: course.chapters.length, gameCount })} />;
 ```
 
 ## Related

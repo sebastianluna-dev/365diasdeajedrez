@@ -4,13 +4,14 @@ description: "The continuations from the current position, most played first, ea
 
 # `ExplorerNextMoves`
 
-|            |                                                                                                                |
-| ---------- | -------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/explorer/explorer-next-moves.comp.tsx`                                           |
-| Kind       | Client Component                                                                                               |
-| Stylesheet | `explorer-next-moves.comp.css` → block `.explorer-next-moves`                                                  |
-| Used by    | [`GameExplorer`](/components/platform/sections/explorer/game-explorer)                                         |
-| Uses       | `sanToSpanish` from `lib/chess/notation`; `ExplorerNextMove` from `services/game-explorer/game-explorer.types` |
+|            |                                                                                                                                                                                                          |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/explorer/explorer-next-moves.comp.tsx`                                                                                                                                     |
+| Kind       | Client Component                                                                                                                                                                                         |
+| Stylesheet | `explorer-next-moves.comp.css` → block `.explorer-next-moves`                                                                                                                                            |
+| Story      | `explorer-next-moves.stories.tsx` (`platform/sections/explorer/ExplorerNextMoves`): five continuations after 1.e4 e5 2.Nf3, one game, searching and empty; `onPlay` is a spy listed in the Actions panel |
+| Used by    | [`GameExplorer`](/components/platform/sections/explorer/game-explorer)                                                                                                                                   |
+| Uses       | `sanToSpanish` from `lib/chess/notation`; `ExplorerNextMove` from `services/game-explorer/game-explorer.types`                                                                                           |
 
 ## Purpose
 

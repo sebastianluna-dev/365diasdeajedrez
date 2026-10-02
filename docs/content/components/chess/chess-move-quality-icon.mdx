@@ -6,13 +6,14 @@ description: "The ten move-quality badge SVGs (chess.com's set) as a map of comp
 
 Also exports `chessMoveQualityIconFor`.
 
-|            |                                                                             |
-| ---------- | --------------------------------------------------------------------------- |
-| File       | `components/chess/chess-move-quality-icon.comp.tsx`                         |
-| Kind       | Server-safe (no hooks, no `"use client"`; rendered inside the client board) |
-| Stylesheet | none: the colours are hard-coded in each SVG, as in the source set          |
-| Used by    | [`ChessBoard`](/components/chess/chess-board) (standalone notation column)  |
-| Uses       | `MoveQuality` from `lib/chess/types`                                        |
+|            |                                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/chess/chess-move-quality-icon.comp.tsx`                                                                                        |
+| Kind       | Server-safe (no hooks, no `"use client"`; rendered inside the client board)                                                                |
+| Stylesheet | none: the colours are hard-coded in each SVG, as in the source set                                                                         |
+| Story      | `chess-move-quality-icon.stories.tsx` (`chess/ChessMoveQualityIcon`): the ten badges, one picked by its quality code, and the ten enlarged |
+| Used by    | [`ChessBoard`](/components/chess/chess-board) (standalone notation column)                                                                 |
+| Uses       | `MoveQuality` from `lib/chess/types`                                                                                                       |
 
 ## Purpose
 

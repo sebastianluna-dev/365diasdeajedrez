@@ -4,14 +4,15 @@ description: "A course as a card, for the catalog: cover, name with the dots of 
 
 # `CourseCard`
 
-|            |                                                                                                                                                                            |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/course-card.comp.tsx`                                                                                                                |
-| Kind       | Server Component                                                                                                                                                           |
-| Stylesheet | `course-card.comp.css` → block `.course-card`                                                                                                                              |
-| Used by    | [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section)                                                                      |
-| Composes   | [`LevelDots`](/components/platform/sections/courses/level-dots)                                                                                                            |
-| Uses       | `CourseSummary`, `CourseLevelItem` from `services/courses/courses.types`; `countLessons`, `formatDuration` from `services/courses/course-rules`; `next/image`, `next/link` |
+|            |                                                                                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-card.comp.tsx`                                                                                                                        |
+| Kind       | Server Component                                                                                                                                                                   |
+| Stylesheet | `course-card.comp.css` → block `.course-card`                                                                                                                                      |
+| Story      | `course-card.stories.tsx` (`platform/sections/courses/CourseCard`): a course not added, under way, added and not started, finished, with a cover, and with only a name and lessons |
+| Used by    | [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section)                                                                              |
+| Composes   | [`LevelDots`](/components/platform/sections/courses/level-dots)                                                                                                                    |
+| Uses       | `CourseSummary`, `CourseLevelItem` from `services/courses/courses.types`; `countLessons`, `formatDuration` from `services/courses/course-rules`; `next/image`, `next/link`         |
 
 ## Purpose
 

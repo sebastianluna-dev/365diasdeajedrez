@@ -4,13 +4,14 @@ description: "Notation of a PGN tree read as prose: runs of moves that a comment
 
 # `MoveTree`
 
-|            |                                                                                                                                                   |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/chess/game-viewer/move-tree.comp.tsx`                                                                                                 |
-| Kind       | Client Component                                                                                                                                  |
-| Stylesheet | `move-tree.comp.css` → block `.move-tree`                                                                                                         |
-| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="flow"`), [`AnalysisBoard`](/components/chess/analysis-board/analysis-board) |
-| Uses       | `buildProseBlocks`, `ProseItem` from `lib/chess/notation-prose`<br />`PgnTree` from `lib/chess/pgn-tree`                                          |
+|            |                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/move-tree.comp.tsx`                                                                                                       |
+| Kind       | Client Component                                                                                                                                        |
+| Stylesheet | `move-tree.comp.css` → block `.move-tree`                                                                                                               |
+| Story      | `move-tree.stories.tsx` (`chess/game-viewer/MoveTree`): a lesson with comments and variations, a move inside the nested variation, and a bare main line |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="flow"`), [`AnalysisBoard`](/components/chess/analysis-board/analysis-board)       |
+| Uses       | `buildProseBlocks`, `ProseItem` from `lib/chess/notation-prose`<br />`PgnTree` from `lib/chess/pgn-tree`                                                |
 
 ## Purpose
 

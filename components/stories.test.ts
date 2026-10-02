@@ -27,6 +27,7 @@ const PAGES: Record<string, string> = {
   "components/platform/foundations": "the foundations, drawn from the stylesheets",
   "components/platform/primitives": "the global classes of platform.css, written as plain markup",
   "components/platform/overview": "every piece of the platform at a glance, as a UI kit's sheet",
+  "components/icons": "the icon set, drawn as one gallery",
 };
 
 /** A component file: a piece (`.comp.tsx`) or a section (`.section.tsx`). */

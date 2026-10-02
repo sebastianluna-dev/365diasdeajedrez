@@ -9,6 +9,7 @@ description: "Lichess-style tabular notation: the main line as number · white �
 | File       | `components/chess/game-viewer/move-table.comp.tsx`                                                                                                                                                                                |
 | Kind       | Client Component                                                                                                                                                                                                                  |
 | Stylesheet | `move-table.comp.css` → block `.move-table`                                                                                                                                                                                       |
+| Story      | `move-table.stories.tsx` (`chess/game-viewer/MoveTable`): an annotated game, a move inside a nested variation, a bare main line, and an evaluated game                                                                            |
 | Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="table"`, the default)                                                                                                                                       |
 | Uses       | `buildNotationBlocks` from `lib/chess/notation-blocks`<br />`formatEvaluation` from `lib/chess/engine-protocol`<br />`sanToSpanish` from `lib/chess/notation`<br />`nagGlyph`, `PgnTree`, `PgnTreeNode` from `lib/chess/pgn-tree` |
 
