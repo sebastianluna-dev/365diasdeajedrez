@@ -1,4 +1,4 @@
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { getUserClasses } from "@/services/classes/classes.service";
 import { ClassCard } from "./class-card.comp";
 import "./classes-list.section.css";

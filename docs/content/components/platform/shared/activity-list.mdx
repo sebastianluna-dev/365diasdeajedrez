@@ -4,13 +4,14 @@ description: "The dashboard's recent-activity list: a <ul> of activity facts alr
 
 # `ActivityList`
 
-|            |                                                                                                            |
-| ---------- | ---------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/activity-list.comp.tsx`                                                        |
-| Kind       | Server Component                                                                                           |
-| Stylesheet | `activity-list.comp.css` → block `.activity-list`                                                          |
-| Used by    | [`RecentActivitySection`](/components/platform/sections/dashboard/recent-activity/recent-activity-section) |
-| Uses       | `ActivityItem` from `services/dashboard/dashboard.types`                                                   |
+|            |                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/activity-list/activity-list.comp.tsx`                                            |
+| Kind       | Server Component                                                                                             |
+| Stylesheet | `activity-list.comp.css` → block `.activity-list`                                                            |
+| Story      | `activity-list.stories.tsx` (`platform/shared/ActivityList`): three entries in the dashboard's card, and one |
+| Used by    | [`RecentActivitySection`](/components/platform/sections/dashboard/recent-activity/recent-activity-section)   |
+| Uses       | `ActivityItem` from `services/dashboard/dashboard.types`                                                     |
 
 ## Purpose
 
@@ -41,7 +42,7 @@ No media queries.
 From `components/platform/sections/dashboard/recent-activity/recent-activity.section.tsx`:
 
 ```tsx
-import { ActivityList } from "@/components/platform/shared/activity-list.comp";
+import { ActivityList } from "@/components/platform/shared/activity-list/activity-list.comp";
 
 <ActivityList items={recentActivity} />;
 ```

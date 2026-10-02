@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ProgressIndicator } from "@/components/platform/shared/progress-indicator.comp";
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { ProgressIndicator } from "@/components/platform/shared/progress-indicator/progress-indicator.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { platformRoutes } from "@/lib/platform-routes";
 import { getUserDashboard } from "@/services/dashboard/dashboard.service";
 import "./continue-studying.section.css";

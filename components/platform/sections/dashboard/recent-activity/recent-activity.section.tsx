@@ -1,5 +1,5 @@
-import { ActivityList } from "@/components/platform/shared/activity-list.comp";
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { ActivityList } from "@/components/platform/shared/activity-list/activity-list.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { getUserDashboard } from "@/services/dashboard/dashboard.service";
 import "./recent-activity.section.css";
 

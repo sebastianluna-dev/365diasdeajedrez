@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp";
+import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
 import { CLASS_STATUS } from "@/constants/platform/class-codes.const";
 import type { ClassSummary } from "@/services/classes/classes.types";
 import "./class-card.comp.css";

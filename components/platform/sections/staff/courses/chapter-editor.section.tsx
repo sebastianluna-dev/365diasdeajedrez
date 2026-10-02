@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FormField } from "@/components/platform/shared/form-field.comp";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { staffRoutes } from "@/lib/platform-routes";
 import { updateChapter } from "@/services/staff-courses/staff-courses.actions";

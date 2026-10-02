@@ -1,4 +1,4 @@
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import type { CatalogOption, ChapterGameDetail } from "@/services/staff-courses/staff-courses.types";
 import { ChapterGameAside } from "./chapter-game-aside.comp";

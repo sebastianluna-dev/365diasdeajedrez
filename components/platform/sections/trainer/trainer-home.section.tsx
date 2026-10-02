@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { platformRoutes } from "@/lib/platform-routes";
 import { toggleTrainerChapter } from "@/services/trainer/trainer.actions";
 import { getTrainerData } from "@/services/trainer/trainer.service";

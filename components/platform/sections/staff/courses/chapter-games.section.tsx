@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PGN_MAX_GAMES } from "@/constants/platform/content-limits.const";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import {
   isCompleteImport,
   pgnImportNotice,

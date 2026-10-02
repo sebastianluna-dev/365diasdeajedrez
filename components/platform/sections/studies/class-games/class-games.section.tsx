@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { getClassGames } from "@/services/studies/studies.service";
 import "./class-games.section.css";
 

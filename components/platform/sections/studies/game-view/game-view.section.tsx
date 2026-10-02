@@ -2,7 +2,7 @@
 
 import { useCallback } from "react";
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import {
   isCompleteImport,
   pgnImportNotice,

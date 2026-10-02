@@ -1,4 +1,4 @@
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { platformRoutes } from "@/lib/platform-routes";
 import type { CourseLevelItem, CourseSummary } from "@/services/courses/courses.types";
 import { coursesOfLevel, resolveLevelFilter } from "@/services/courses/level-rules";

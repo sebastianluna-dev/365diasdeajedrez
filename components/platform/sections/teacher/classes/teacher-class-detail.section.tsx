@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer.comp";
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { FormField } from "@/components/platform/shared/form-field.comp";
-import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import type { ClassStatusCode } from "@/constants/platform/class-codes.const";
 import { CLASS_STATUS } from "@/constants/platform/class-codes.const";
 import { TEACHER_ERROR_MESSAGES } from "@/constants/platform/teacher-messages.const";

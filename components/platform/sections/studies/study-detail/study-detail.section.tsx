@@ -1,6 +1,6 @@
 import { STUDY_ERROR_MESSAGES } from "@/constants/platform/student-messages.const";
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { DeleteStudy } from "@/components/platform/sections/studies/studies-list/delete-study.comp";
 import type { ClassGameItem, StudentOption, StudyDetail, StudyKindOption } from "@/services/studies/studies.types";
 import { canShareStudy } from "@/services/studies/study-rules";

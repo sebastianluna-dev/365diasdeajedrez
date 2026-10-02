@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
 import { SearchIcon } from "@/components/icons/search-icon.comp";
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";

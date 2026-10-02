@@ -1,6 +1,10 @@
 import Link from "next/link";
-import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp";
-import { PlatformTable, PlatformTableCell, PlatformTableRow } from "@/components/platform/shared/platform-table.comp";
+import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import {
+  PlatformTable,
+  PlatformTableCell,
+  PlatformTableRow,
+} from "@/components/platform/shared/platform-table/platform-table.comp";
 import { CLASS_STATUS, type ClassStatusCode } from "@/constants/platform/class-codes.const";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { getTeacherClasses } from "@/services/teacher-classes/teacher-classes.service";

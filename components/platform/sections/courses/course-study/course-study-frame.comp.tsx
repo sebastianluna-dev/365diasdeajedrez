@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { CaretRightIcon } from "@/components/icons/caret-right-icon.comp";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import type { CourseDetail } from "@/services/courses/courses.types";
 import { LearnMode } from "./learn-mode.comp";

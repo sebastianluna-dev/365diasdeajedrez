@@ -1,7 +1,11 @@
 import { FormField } from "@/components/platform/shared/form-field.comp";
-import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
-import { PlatformTable, PlatformTableCell, PlatformTableRow } from "@/components/platform/shared/platform-table.comp";
+import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
+import {
+  PlatformTable,
+  PlatformTableCell,
+  PlatformTableRow,
+} from "@/components/platform/shared/platform-table/platform-table.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { updateStudent } from "@/services/staff-students/staff-students.actions";
 import type { StaffStudentDetail } from "@/services/staff-students/staff-students.types";

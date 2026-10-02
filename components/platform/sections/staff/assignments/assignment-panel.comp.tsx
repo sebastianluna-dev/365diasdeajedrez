@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FormField } from "@/components/platform/shared/form-field.comp";
-import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp";
+import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
 import { staffRoutes } from "@/lib/platform-routes";
 import { assignStudent, endAssignment } from "@/services/staff-teachers/staff-teachers.actions";
 import type { StudentAssignmentHistoryItem } from "@/services/staff-students/staff-students.types";

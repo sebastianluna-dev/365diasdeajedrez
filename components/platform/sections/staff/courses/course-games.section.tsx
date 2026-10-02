@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { staffRoutes } from "@/lib/platform-routes";
 import type { CourseAdminDetail, CourseGameRow } from "@/services/staff-courses/staff-courses.types";
 import { StaffPanel } from "./staff-panel.comp";

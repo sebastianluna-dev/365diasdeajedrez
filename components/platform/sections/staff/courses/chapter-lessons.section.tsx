@@ -1,4 +1,4 @@
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { createLesson, deleteLesson, reorderLessons } from "@/services/staff-courses/staff-courses.actions";

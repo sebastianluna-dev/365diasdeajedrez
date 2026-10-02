@@ -1,5 +1,5 @@
 import { FormField } from "@/components/platform/shared/form-field.comp";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { TEACHER_ERROR_MESSAGES } from "@/constants/platform/teacher-messages.const";
 import { TIMEZONE_OPTIONS } from "@/constants/platform/timezones.const";
 import { updateTeacherProfile } from "@/services/teacher/teacher.actions";

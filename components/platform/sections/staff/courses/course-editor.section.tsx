@@ -1,7 +1,7 @@
 import { FormField, FormFieldset } from "@/components/platform/shared/form-field.comp";
 import { ImageUpload } from "@/components/platform/shared/image-upload.comp";
 import { PlatformInfoTip } from "@/components/platform/shared/platform-info-tip/platform-info-tip.comp";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { IMAGE_LIMITS_TEXT } from "@/constants/platform/upload.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { updateCourse, updateCourseCover, updateCourseThumbnail } from "@/services/staff-courses/staff-courses.actions";

@@ -1,6 +1,6 @@
 import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer.comp";
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
-import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
+import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
 import { CLASS_STATUS, TRANSCRIPT_STATUS } from "@/constants/platform/class-codes.const";
 import type { ClassDetail } from "@/services/classes/classes.types";
 import { MeetingAccess } from "./meeting-access.comp";

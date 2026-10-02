@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
-import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
+import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { getTeacherDashboard } from "@/services/teacher/teacher.service";
 import type { TeacherClassBrief } from "@/services/teacher/teacher.types";

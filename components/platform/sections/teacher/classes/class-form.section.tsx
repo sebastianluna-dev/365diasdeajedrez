@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FormField, FormFieldset } from "@/components/platform/shared/form-field.comp";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { TEACHER_ERROR_MESSAGES } from "@/constants/platform/teacher-messages.const";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { createClass, updateClassMeta } from "@/services/teacher-classes/teacher-classes.actions";

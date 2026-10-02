@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { FormField } from "@/components/platform/shared/form-field.comp";
-import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp";
-import { PlatformTable, PlatformTableCell, PlatformTableRow } from "@/components/platform/shared/platform-table.comp";
+import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import {
+  PlatformTable,
+  PlatformTableCell,
+  PlatformTableRow,
+} from "@/components/platform/shared/platform-table/platform-table.comp";
 import { CLASS_STATUS } from "@/constants/platform/class-codes.const";
 import { staffRoutes } from "@/lib/platform-routes";
 import type { StaffClassFilters, StaffClassSummary } from "@/services/staff-classes/staff-classes.types";

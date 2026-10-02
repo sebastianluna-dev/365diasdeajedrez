@@ -1,9 +1,13 @@
 import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer.comp";
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { FormField } from "@/components/platform/shared/form-field.comp";
-import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
-import { PlatformTable, PlatformTableCell, PlatformTableRow } from "@/components/platform/shared/platform-table.comp";
+import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
+import {
+  PlatformTable,
+  PlatformTableCell,
+  PlatformTableRow,
+} from "@/components/platform/shared/platform-table/platform-table.comp";
 import { CLASS_STATUS } from "@/constants/platform/class-codes.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { cancelClassAsStaff, setRecordingUrl } from "@/services/staff-classes/staff-classes.actions";

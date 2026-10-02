@@ -1,8 +1,12 @@
 import Link from "next/link";
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
-import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp";
-import { PlatformTable, PlatformTableCell, PlatformTableRow } from "@/components/platform/shared/platform-table.comp";
-import { ProgressIndicator } from "@/components/platform/shared/progress-indicator.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
+import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import {
+  PlatformTable,
+  PlatformTableCell,
+  PlatformTableRow,
+} from "@/components/platform/shared/platform-table/platform-table.comp";
+import { ProgressIndicator } from "@/components/platform/shared/progress-indicator/progress-indicator.comp";
 import { teacherRoutes } from "@/lib/platform-routes";
 import type { AssignedStudentDetail, StudentSharedClass } from "@/services/teacher-students/teacher-students.types";
 import "./assigned-student-detail.section.css";

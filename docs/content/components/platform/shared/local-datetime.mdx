@@ -6,9 +6,10 @@ description: "Renders a UTC instant in the browser's time zone: the server-forma
 
 |            |                                                                                                                                                                                                                                                                                           |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/local-datetime.comp.tsx`                                                                                                                                                                                                                                      |
+| File       | `components/platform/shared/local-datetime/local-datetime.comp.tsx`                                                                                                                                                                                                                       |
 | Kind       | Client Component                                                                                                                                                                                                                                                                          |
 | Stylesheet | none: renders a bare `<time>`, styled by whoever mounts it                                                                                                                                                                                                                                |
+| Story      | `local-datetime.stories.tsx` (`platform/shared/LocalDateTime`): with time, the date alone, and an instant it cannot read                                                                                                                                                                  |
 | Used by    | every place that shows a class date (15 importers): the class list and detail, the next-class card, the teacher's dashboard, class list and detail, student list and detail, the staff dashboard, class list and detail, student list and detail, teacher detail and the assignment panel |
 
 ## Purpose
@@ -38,7 +39,7 @@ No stylesheet. Output is `<time dateTime={iso}>label</time>`; consumers style it
 From `components/platform/sections/classes/class-detail/class-detail.section.tsx`:
 
 ```tsx
-import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp";
+import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
 
 <LocalDateTime iso={classDetail.scheduledAtIso} fallback={`${classDetail.dateLabel} · ${classDetail.timeLabel}`} />;
 ```

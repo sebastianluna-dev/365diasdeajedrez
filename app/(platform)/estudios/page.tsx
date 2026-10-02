@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { NewStudy } from "@/components/platform/sections/studies/studies-list/new-study/new-study.comp";
 import { StudiesListSection } from "@/components/platform/sections/studies/studies-list/studies-list.section";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getStudyKinds, getUserStudies } from "@/services/studies/studies.service";

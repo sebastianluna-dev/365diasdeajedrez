@@ -1,4 +1,4 @@
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { createChapter, deleteChapter, reorderChapters } from "@/services/staff-courses/staff-courses.actions";
 import type { ChapterAdminRow } from "@/services/staff-courses/staff-courses.types";

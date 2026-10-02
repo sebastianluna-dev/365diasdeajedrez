@@ -4,12 +4,13 @@ description: "The platform's error boundary view: a message, a retry button and 
 
 # `PlatformError`
 
-|            |                                                      |
-| ---------- | ---------------------------------------------------- |
-| File       | `components/platform/shared/platform-error.comp.tsx` |
-| Kind       | Client Component                                     |
-| Stylesheet | `platform-error.comp.css` → block `.platform-error`  |
-| Used by    | `app/(platform)/error.tsx`                           |
+|            |                                                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-error/platform-error.comp.tsx`                                                                                  |
+| Kind       | Client Component                                                                                                                                     |
+| Stylesheet | `platform-error.comp.css` → block `.platform-error`                                                                                                  |
+| Story      | `platform-error.stories.tsx` (`platform/shared/PlatformError`): with and without the error's code; «Reintentar» is a spy listed in the Actions panel |
+| Used by    | `app/(platform)/error.tsx`                                                                                                                           |
 
 ## Purpose
 
@@ -44,7 +45,7 @@ From `app/(platform)/error.tsx`:
 ```tsx
 "use client";
 
-import { PlatformError } from "@/components/platform/shared/platform-error.comp";
+import { PlatformError } from "@/components/platform/shared/platform-error/platform-error.comp";
 
 export default function PlatformErrorPage({ error, retry }: { error: Error & { digest?: string }; retry: () => void }) {
   return <PlatformError retry={retry} digest={error.digest} />;

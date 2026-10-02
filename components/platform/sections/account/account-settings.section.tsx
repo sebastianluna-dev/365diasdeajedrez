@@ -1,4 +1,4 @@
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";

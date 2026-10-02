@@ -1,4 +1,4 @@
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import type { StudySummary } from "@/services/studies/studies.types";
 import { StudiesBrowser } from "./studies-browser.comp";
 

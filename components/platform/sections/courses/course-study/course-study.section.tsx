@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import type { CourseDetail } from "@/services/courses/courses.types";
 import { CourseStudyFrame } from "./course-study-frame.comp";
 import "./course-study.section.css";

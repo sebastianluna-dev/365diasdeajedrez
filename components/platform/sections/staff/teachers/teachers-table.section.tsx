@@ -1,5 +1,9 @@
 import Link from "next/link";
-import { PlatformTable, PlatformTableCell, PlatformTableRow } from "@/components/platform/shared/platform-table.comp";
+import {
+  PlatformTable,
+  PlatformTableCell,
+  PlatformTableRow,
+} from "@/components/platform/shared/platform-table/platform-table.comp";
 import { staffRoutes } from "@/lib/platform-routes";
 import { listTeachers } from "@/services/staff-teachers/staff-teachers.service";
 import "./teachers-table.section.css";

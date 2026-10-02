@@ -1,5 +1,5 @@
 import { FormField, FormFieldset } from "@/components/platform/shared/form-field.comp";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { BOARD_ORIENTATION, CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
 import { deleteLesson, fileLessonPgnAsGame, updateLesson } from "@/services/staff-courses/staff-courses.actions";

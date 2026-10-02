@@ -1,5 +1,9 @@
 import Link from "next/link";
-import { PlatformTable, PlatformTableCell, PlatformTableRow } from "@/components/platform/shared/platform-table.comp";
+import {
+  PlatformTable,
+  PlatformTableCell,
+  PlatformTableRow,
+} from "@/components/platform/shared/platform-table/platform-table.comp";
 import type { StudyDetail } from "@/services/studies/studies.types";
 import "./student-study-view.section.css";
 

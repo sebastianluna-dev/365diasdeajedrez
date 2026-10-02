@@ -1,5 +1,5 @@
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { completeLesson } from "@/services/courses/courses.actions";
 import type { LessonView } from "@/services/courses/courses.types";

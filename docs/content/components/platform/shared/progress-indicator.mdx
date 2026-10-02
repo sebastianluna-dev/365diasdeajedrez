@@ -6,9 +6,10 @@ description: "A progress bar with its percentage and an optional detail, inline 
 
 |            |                                                                                                                                                                                                                                    |
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/progress-indicator.comp.tsx`                                                                                                                                                                           |
+| File       | `components/platform/shared/progress-indicator/progress-indicator.comp.tsx`                                                                                                                                                        |
 | Kind       | Server Component                                                                                                                                                                                                                   |
 | Stylesheet | `progress-indicator.comp.css` → block `.progress-indicator`                                                                                                                                                                        |
+| Story      | `progress-indicator.stories.tsx` (`platform/shared/ProgressIndicator`): inline and stacked, not started, finished, without a detail                                                                                                |
 | Used by    | [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section), [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section) |
 
 ## Purpose
@@ -44,7 +45,7 @@ The course and chapter detail sheets restyle `.progress-indicator__legend`, `__p
 ## Usage
 
 ```tsx
-import { ProgressIndicator } from "@/components/platform/shared/progress-indicator.comp";
+import { ProgressIndicator } from "@/components/platform/shared/progress-indicator/progress-indicator.comp";
 
 <ProgressIndicator layout="stacked" percent={percent} detail={`${completed} de ${total} completadas`} />;
 ```

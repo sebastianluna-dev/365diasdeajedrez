@@ -1,4 +1,4 @@
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { GOAL_OPTIONS } from "@/constants/platform/study-goal.const";
 import { updateDailyGoal } from "@/services/study-goal/study-goal.actions";

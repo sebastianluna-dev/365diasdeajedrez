@@ -6,9 +6,10 @@ description: "The result of an action as a role=alert paragraph in error, succes
 
 |            |                                                                                                                                                                                                                       |
 | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/platform-notice.comp.tsx`                                                                                                                                                                 |
+| File       | `components/platform/shared/platform-notice/platform-notice.comp.tsx`                                                                                                                                                 |
 | Kind       | Server Component                                                                                                                                                                                                      |
 | Stylesheet | `platform-notice.comp.css` → block `.platform-notice`                                                                                                                                                                 |
+| Story      | `platform-notice.stories.tsx` (`platform/shared/PlatformNotice`): Error, Success and Info, each with a message the app really writes                                                                                  |
 | Used by    | every screen that renders an action's outcome (18 importers): the staff editors and forms, the teacher's class and profile screens, the studies' detail, game view and new-game screens, and the staff course catalog |
 
 ## Purpose
@@ -43,7 +44,7 @@ No media queries.
 From `components/platform/sections/staff/courses/course-editor.section.tsx`:
 
 ```tsx
-import { PlatformNotice } from "@/components/platform/shared/platform-notice.comp";
+import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 
 {
   errorMessage && <PlatformNotice message={errorMessage} />;

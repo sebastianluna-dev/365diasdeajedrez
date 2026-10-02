@@ -6,9 +6,10 @@ description: "A dashed box with a title, an optional description and an optional
 
 |            |                                                                                                                                                                                                                                                                    |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/shared/empty-state.comp.tsx`                                                                                                                                                                                                                  |
+| File       | `components/platform/shared/empty-state/empty-state.comp.tsx`                                                                                                                                                                                                      |
 | Kind       | Server Component                                                                                                                                                                                                                                                   |
 | Stylesheet | `empty-state.comp.css` → block `.empty-state`                                                                                                                                                                                                                      |
+| Story      | `empty-state.stories.tsx` (`platform/shared/EmptyState`): with and without its link, the title alone, and inside a card                                                                                                                                            |
 | Used by    | 20 importers: the dashboard sections, the courses, classes, studies and trainer lists, the class detail, the teacher's dashboard, class detail and student detail, the staff dashboard, courses and class detail, `/entrenador` and the platform's `not-found.tsx` |
 
 ## Purpose
@@ -43,7 +44,7 @@ No media queries.
 From `components/platform/sections/dashboard/continue-studying/continue-studying.section.tsx`:
 
 ```tsx
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 
 <EmptyState
   title="No tienes ningún curso en progreso"

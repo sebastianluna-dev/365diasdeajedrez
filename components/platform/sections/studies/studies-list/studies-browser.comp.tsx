@@ -1,7 +1,7 @@
 "use client";
 
 import { type CSSProperties, useMemo, useState } from "react";
-import { EmptyState } from "@/components/platform/shared/empty-state.comp";
+import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import type { StudySummary } from "@/services/studies/studies.types";
 import { StudyCard } from "./study-card.comp";
 import "./studies-browser.comp.css";

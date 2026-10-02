@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { FormField } from "@/components/platform/shared/form-field.comp";
-import { LocalDateTime } from "@/components/platform/shared/local-datetime.comp";
-import { PlatformTable, PlatformTableCell, PlatformTableRow } from "@/components/platform/shared/platform-table.comp";
+import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import {
+  PlatformTable,
+  PlatformTableCell,
+  PlatformTableRow,
+} from "@/components/platform/shared/platform-table/platform-table.comp";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { getAssignedStudents } from "@/services/teacher-students/teacher-students.service";
 import "./assigned-students.section.css";
