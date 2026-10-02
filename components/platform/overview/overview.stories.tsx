@@ -122,18 +122,22 @@ import "./overview.css";
 
 /**
  * A tile: the piece's name, a link to its Docs page in Storybook, and the piece
- * itself. A `wide` tile spans the three columns, for a piece drawn at the
- * width of a form or a list.
+ * itself, drawn on the page's canvas inside a dashed frame. A `wide` tile spans
+ * the three columns, for a piece drawn at the width of a form or a list. A
+ * piece that in the app lives inside a white panel or bar, and writes its
+ * quieter text in the grey made for white, is given that `surface`.
  */
 function Tile({
   name,
   docs,
   wide = false,
+  surface = false,
   children,
 }: {
   name: string;
   docs: string;
   wide?: boolean;
+  surface?: boolean;
   children: ReactNode;
 }) {
   return (
@@ -145,7 +149,7 @@ function Tile({
           Docs →
         </a>
       </div>
-      {children}
+      {surface ? <div className="overview__surface">{children}</div> : children}
     </section>
   );
 }
@@ -592,21 +596,17 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
 
       <Section title="Layout">
         <Tile name="Page" docs="platform-primitives-page">
-          <div className="overview__backdrop">
-            <div className="platform-page__head">
-              {/* A paragraph, not a second h1: the display font is what the shell gives every h1. */}
-              <p className="platform-page__title overview__page-title">Mis cursos</p>
-              <p className="platform-page__subtitle">Continúa donde lo dejaste.</p>
-            </div>
+          <div className="platform-page__head">
+            {/* A paragraph, not a second h1: the display font is what the shell gives every h1. */}
+            <p className="platform-page__title overview__page-title">Mis cursos</p>
+            <p className="platform-page__subtitle">Continúa donde lo dejaste.</p>
           </div>
         </Tile>
         <Tile name="Card" docs="platform-primitives-card">
-          <div className="overview__backdrop">
-            <section className="platform-card" aria-label="Continuar">
-              <h4 className="platform-card__title">Continuar</h4>
-              <p className="overview__text">Finales de torres · Lección 3: el puente de Lucena</p>
-            </section>
-          </div>
+          <section className="platform-card" aria-label="Continuar">
+            <h4 className="platform-card__title">Continuar</h4>
+            <p className="overview__text">Finales de torres · Lección 3: el puente de Lucena</p>
+          </section>
         </Tile>
         <Tile name="StaffPanel" docs="platform-sections-staff-courses-staffpanel">
           <StaffPanel
@@ -795,7 +795,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             <PlatformInfoTip label="Sobre el slug" text="Se actualiza al cambiar el nombre." />
           </div>
         </Tile>
-        <Tile name="PlatformSearch" docs="platform-sections-shell-platformsearch">
+        <Tile name="PlatformSearch" docs="platform-sections-shell-platformsearch" surface>
           <PlatformSearch />
         </Tile>
         <Tile name="GameFields" docs="platform-shared-gamefields" wide>
@@ -967,7 +967,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             isSearching={false}
           />
         </Tile>
-        <Tile name="LevelScale" docs="platform-sections-courses-course-info-levelscale" wide>
+        <Tile name="LevelScale" docs="platform-sections-courses-course-info-levelscale" wide surface>
           <LevelScale scale={LEVEL_SCALE} levels={LEVEL_SCALE.slice(2, 4)} />
         </Tile>
         <Tile name="StatsCards" docs="platform-sections-dashboard-activity-stats-statscards" wide>
@@ -1094,7 +1094,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
       </Section>
 
       <Section title="Navigation">
-        <Tile name="StaffTabs" docs="platform-sections-staff-courses-stafftabs">
+        <Tile name="StaffTabs" docs="platform-sections-staff-courses-stafftabs" surface>
           <StaffTabs tabs={courseTabs({ courseId: "4812", chapterCount: 6, gameCount: 148 })} />
         </Tile>
         <Tile name="LevelFilter" docs="platform-sections-courses-course-catalog-levelfilter">
@@ -1120,7 +1120,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             </div>
           </nav>
         </Tile>
-        <Tile name="PlatformNav" docs="platform-sections-shell-platformnav" wide>
+        <Tile name="PlatformNav" docs="platform-sections-shell-platformnav" wide surface>
           <PlatformNav groups={buildPlatformNavGroups({ isTeacher: false, isStaff: true })} />
         </Tile>
       </Section>
@@ -1224,7 +1224,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
         <Tile name="StaticDiagram" docs="chess-staticdiagram">
           <StaticDiagram fen={LUCENA} caption="La posición de Lucena" />
         </Tile>
-        <Tile name="PlayerStrip" docs="chess-game-viewer-playerstrip">
+        <Tile name="PlayerStrip" docs="chess-game-viewer-playerstrip" surface>
           {/* PlayerStrip returns a fragment: this row stands in for the viewer's .game-viewer__player. */}
           <div className="overview__player">
             <PlayerStrip name="Fernanda Ríos" elo={2391} title="WGM" country="MEX" side="white" />
@@ -1235,12 +1235,12 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             <MoveTable tree={OPERA_OPENING_TREE} currentPath="0.0.0.0.0.0" onSelect={() => undefined} />
           )}
         </Tile>
-        <Tile name="MoveTree" docs="chess-game-viewer-movetree">
+        <Tile name="MoveTree" docs="chess-game-viewer-movetree" surface>
           {OPERA_OPENING_TREE && (
             <MoveTree tree={OPERA_OPENING_TREE} currentPath="0.0.0.0.0.0" onSelect={() => undefined} />
           )}
         </Tile>
-        <Tile name="EnginePanel" docs="chess-game-viewer-enginepanel">
+        <Tile name="EnginePanel" docs="chess-game-viewer-enginepanel" surface>
           <EnginePanel
             fen="r3r1k1/pp3pbp/1qp3p1/2B5/2BP2b1/Q1n2N2/P4PPP/3R1K1R b - - 3 17"
             enabled
@@ -1275,7 +1275,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             }}
           />
         </Tile>
-        <Tile name="GameReview" docs="chess-game-viewer-gamereview">
+        <Tile name="GameReview" docs="chess-game-viewer-gamereview" surface>
           <GameReview
             pgn={OPERA_REVIEWED}
             canEdit
@@ -1286,7 +1286,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             onPgnChange={() => {}}
           />
         </Tile>
-        <Tile name="GameReviewChart" docs="chess-game-viewer-gamereviewchart">
+        <Tile name="GameReviewChart" docs="chess-game-viewer-gamereviewchart" surface>
           <GameReviewChart
             evaluations={[
               0.35, 0.3, 0.3, 0.43, 0.49, 0.59, 0.88, 0.89, 1.45, 1.25, 1.24, 1.14, 2.23, 2.3, 2.02, 1.93, 1.78, 1.91,
@@ -1325,7 +1325,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             />
           </div>
         </Tile>
-        <Tile name="GameTools" docs="chess-game-viewer-gametools" wide>
+        <Tile name="GameTools" docs="chess-game-viewer-gametools" wide surface>
           <div className="overview__narrow">
             <GameTools
               pgn={OPERA_OPENING}
