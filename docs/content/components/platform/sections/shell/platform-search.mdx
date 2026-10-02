@@ -30,8 +30,8 @@ None.
 
 ## Markup & styling
 
-Block `.platform-search`. A filled pill (`border-radius: 1000px`, the platform's full radius) 300px wide and 40px tall, with the magnifier absolutely placed at 14px from the left and the field padded 42px to clear it. The bar is white, so what tells the field apart is `--platform-bg`, the page's own grey; hover deepens it to `--platform-track` and focus takes it to white with the accent's border.
+Block `.platform-search`. A filled pill (`border-radius: 1000px`, the platform's full radius) 300px wide and 40px tall, with the magnifier absolutely placed at 14px from the left and the field padded `--platform-space-12` (48px) to clear it. The bar is white, so what tells the field apart is `--platform-bg`, the page's own grey; hover deepens it to `--platform-track` and focus takes it to white with the accent's border.
 
-At `(max-width: 1080px)` — where the bar splits into two rows — it stops being 300px and takes what is left of the top row beside the avatar.
+At `(width < 1280px)` — where the bar splits into two rows — it stops being 300px and takes what is left of the top row beside the avatar.
 
 **Elements:** `.platform-search__label` (visually hidden), `.platform-search__icon`, `.platform-search__field`

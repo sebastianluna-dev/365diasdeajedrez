@@ -32,13 +32,13 @@ None: a grid of rows or an [`EmptyState`](/components/platform/shared/empty-stat
 
 ## Markup & styling
 
-Block `.course-games` (132 lines).
+Block `.course-games` (112 lines).
 
 **Elements:** `.course-games__table`, `.course-games__head`, `.course-games__rows`, `.course-games__row`, `.course-games__text`, `.course-games__title`, `.course-games__detail`, `.course-games__cell`, `.course-games__number`, `.course-games__note`, `.course-games__link`
 
 **Tokens:** own `--course-games-columns`; `--platform-accent-ink`, `--platform-bg`, `--platform-border`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
-**Breakpoints:** `(max-width: 860px)` drops the numeric columns.
+**Breakpoints:** `(width < 768px)` lets the table scroll sideways (head and rows keep a 720px minimum) instead of breaking the grid.
 
 ## Usage
 

@@ -48,9 +48,9 @@ The viewer never saves and never fetches. It receives a PGN, reports the current
 
 **Tree and current path.** `parsePgnTree(pgn)` is memoised. The current path is `path ?? selectedPath`, resolved at render time to the closest existing ancestor when the PGN changed underfoot (an undo, a deleted branch), so there is never a frame with the board at the start. Every path change is both stored and reported through `onPathChange` (kept in a ref so the parent need not memoise). An unparsable PGN renders a single error paragraph with the `_state_error` modifier.
 
-**Layout.** The gap between the board and the notation is `--viewer-column-gap` (22px), which a screen that wants the board to breathe widens — the lesson sets it to 40, the same air it leaves on the board's other two sides.
+**Layout.** The gap between the board and the notation is `--viewer-column-gap` (`--platform-space-6`, 24px, by default), which a screen that wants the board to breathe widens — the lesson sets it to `--platform-space-12` (48px), the same air it leaves on the board's other two sides.
 
-The notation's column measures what the BOARD's row does (`height: 0` plus `min-height`, so an auto row cannot be stretched by a long game), less whatever `--viewer-panel-trim` says: a screen where the buttons sit under the board sets it, and the panel then ends at the board's own bottom edge instead of running down beside them. The lesson sets it to 62px (48 of buttons and 14 of gap); everywhere else it is 0.
+The notation's column measures what the BOARD's row does (`height: 0` plus `min-height`, so an auto row cannot be stretched by a long game), less whatever `--viewer-panel-trim` says: a screen where the buttons sit under the board sets it, and the panel then ends at the board's own bottom edge instead of running down beside them. The lesson sets it to 62px, counted as 48 of buttons and 14 of gap; the gap above the buttons is a `--platform-space-4` (16px) one, so there the panel runs 2px past the board's bottom edge. Everywhere else it is 0.
 
 The board's track is `minmax(0, var(--viewer-board-max, 600px))` and the notation's `minmax(320px, 1fr)`: the notation never goes under 320px — with the board sized by the height, a tall window would let it eat the whole row — and not a px more than that, because every px held back there is a px the board cannot use to fill the height it was given.
 
@@ -72,7 +72,7 @@ First, previous, next, last read the current path from a ref so holding "previou
 
 No white box of the viewer — the notation panel, the tools card under the board, the two player strips and the evaluation bar — is outlined: each is white on the page's grey (`--platform-bg`), over its shadow where it has one. They were outlined by the thin grey while the page was white, which is what the outline was for. What floats over a card — the options menu, the moves' context menu — keeps its border.
 
-Block `.game-viewer` (539 lines), the largest sheet in `components/`.
+Block `.game-viewer` (610 lines), the largest sheet in `components/`.
 
 **Elements:** `.game-viewer__layout`, `.game-viewer__board-card`, `.game-viewer__board-row`, `.game-viewer__board`, `.game-viewer__evaluation`, `.game-viewer__evaluation-fill`, `.game-viewer__player`, `.game-viewer__board-footer`, `.game-viewer__panel-column`, `.game-viewer__panel`, `.game-viewer__panel-head`, `.game-viewer__panel-heading`, `.game-viewer__panel-title`, `.game-viewer__panel-badge`, `.game-viewer__moves`, `.game-viewer__toolbar`, `.game-viewer__toolbar-end`, `.game-viewer__panel-nav`, `.game-viewer__nav`, `.game-viewer__nav-button`, `.game-viewer__nav-icon`, `.game-viewer__options`, `.game-viewer__options-menu`, `.game-viewer__options-item`, `.game-viewer__options-icon`, `.game-viewer__onwards`, `.game-viewer__onwards-button`, `.game-viewer__warnings`, `.game-viewer__warning`
 
@@ -82,7 +82,7 @@ Block `.game-viewer` (539 lines), the largest sheet in `components/`.
 
 **Tokens:** own layout tokens `--viewer-board-size`, `--viewer-board-max` (the board's ceiling, `600px`, which a screen that puts something else beside the viewer lowers — the lesson does, for its column of lessons), `--viewer-chrome-block`, `--viewer-chrome-inline`, `--viewer-player-font-size`, plus `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-danger-soft`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
 
-**Breakpoints:** `(max-width: 1080px)` stacks the panel under the board; `(prefers-reduced-motion: reduce)` removes the evaluation bar transition and the options menu's animations.
+**Breakpoints:** `(width < 1280px)` stacks the panel under the board in full screen; `(prefers-reduced-motion: reduce)` removes the evaluation bar transition and the options menu's animations.
 
 **Keyframes:** `game-viewer-menu-in`, `game-viewer-menu-out`, at the top level because `@keyframes` cannot be nested.
 

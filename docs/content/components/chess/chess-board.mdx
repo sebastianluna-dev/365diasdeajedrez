@@ -51,13 +51,13 @@ Interactive moves are validated by chessops before they are reported: the board 
 
 **The current move stays in view.** When the ply changes, its cell in the notation is scrolled into view (`block: "nearest"`): smoothly, or at once for whoever asked the system for less motion (`prefers-reduced-motion: reduce`, read with `matchMedia` because a scroll started from code ignores the stylesheet's media query).
 
-**Layout.** A `ResizeObserver` on the frame redraws chessground and, above 720 px, pins the notation column to the board's height so it scrolls instead of growing. That height is read with `offsetHeight`, not with the bounding rect: a zoom on an ancestor would be inside a rect (the platform carried one until 2026-10-02), and the value is written back as an inline `px` that the zoom would apply a second time. The active notation cell is scrolled into view on every ply change.
+**Layout.** A `ResizeObserver` on the frame redraws chessground and, from 768 px (the stylesheet's breakpoint; below it the notation is hidden), pins the notation column to the board's height so it scrolls instead of growing. That height is read with `offsetHeight`, not with the bounding rect: a zoom on an ancestor would be inside a rect (the platform carried one until 2026-10-02), and the value is written back as an inline `px` that the zoom would apply a second time. The active notation cell is scrolled into view on every ply change.
 
 **Callbacks by reference.** `onMove` and `onShapesChange` are kept in refs so chessground's handlers, installed once, always call the latest function without re-creating the board.
 
 ## Markup & styling
 
-Block `.chess-board` (370 lines).
+Block `.chess-board` (367 lines).
 
 **Controlled mode has no fill.** Chessground rounds the board down to a whole number of device pixels, so it lands a pixel or two short of the box it is given, and the block's own background showed through as a white rim around it. Standalone keeps the fill, since there it is the card the notation shares.
 
@@ -71,7 +71,7 @@ Block `.chess-board` (370 lines).
 
 **Tokens:** `--board-dark`, `--board-light`, `--color-primary`, `--foreground` (public site) and `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted` (platform). The sheet is written so the same block reads its palette from whichever theme is loaded.
 
-**Breakpoints:** `(max-width: 720px)` stacks the notation under the board.
+**Breakpoints:** `(width < 768px)` stacks the columns and hides the notation, so the board takes the full width above the toolbar.
 
 ## Usage
 

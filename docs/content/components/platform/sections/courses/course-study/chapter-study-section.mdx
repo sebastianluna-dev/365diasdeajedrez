@@ -30,7 +30,7 @@ The lessons of one chapter. Each card shows **the game whole** — «1.e4 c5 2.C
 - **The chapter is not repeated here**: its name is at the head of the page, in the frame, and the page is the list of its lessons. It carried a summary with the name, the «Prioridad» tag and the description until 2026-09-28.
 - **A lesson carries one tag at most**, «Prioridad», the staff's mark. Where the lesson is for the student is not written in words: the one it left off at — the one the header's «Aprender» opens (`lesson.isNext`) — is told by its tinted band, and a learned one by the check beside its name. The four words it used to carry («Aprendida», «Siguiente», «Empezada», «Pendiente») are gone.
 - **The button is «Ver» on every card, and quiet**: no fill, outlined in grey (`--platform-border-strong`). The next lesson's is no different: the filled «Aprender» is the course's, at the head of the page.
-- **The band is set into the card**: the card has 6px of white padding and the band, rounded on its four corners, does not touch the card's edges.
+- **The band is set into the card**: the card has `--platform-space-2` (8px) of white padding and the band, rounded on its four corners, does not touch the card's edges.
 - **The card**, top to bottom: a band with the name and the check of a learned lesson; the moves; and a foot with the tags at the left and the button at the right. **A lesson says no minutes**: what it is worth is read by opening it.
 - **A lesson is not numbered**: its card is headed by its name. `lesson.order` is still in the model, the real one with the filter on too, but no page draws it.
 - A learned lesson carries that same check in its header band, in the same accent.

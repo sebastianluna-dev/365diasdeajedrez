@@ -36,7 +36,7 @@ What is different is what the game IS. A student's game is a private analysis. A
 
 ## Behaviour
 
-- **Layout.** Two columns, the aside (280 px) and the board; under 1180 px the aside moves on top and its cards share the width. It is a workspace, without a big title: the board gets the height. There is no trail above the page, so the aside's first card says whose games these are — the chapter, its number and its course — and «Ver la colección» leads back.
+- **Layout.** Two columns, the aside (280 px) and the board; under 1280 px the aside moves on top and its cards share the width. It is a workspace, without a big title: the board gets the height. There is no trail above the page, so the aside's first card says whose games these are — the chapter, its number and its course — and «Ver la colección» leads back.
 - **The board** (`ChapterGameBoard`) is the one piece with state. Moves are played on it to add them; the move list's right click comments, annotates, promotes or deletes; Ctrl+Z / ⌘Z undoes. Every change is saved by itself 1.2 s after the last one, and the tools panel says how it went («guardando…», «guardado», «no se pudo guardar»). It is set from the side its first lesson shows the student (`game.orientation`).
 - **It is keyed by the game**: jumping to another one from the list remounts the board, so its history and its autosave start clean instead of carrying the previous game's PGN over.
 - **The record** is the `EditGame` dialog with `updateChapterGameDetails` bound to the game. `values={game}` whole: `ChapterGameDetail` carries every field of `GameFieldValues` under the same names.
@@ -66,8 +66,8 @@ The seed writes the lessons' own `pgn`; a lesson linked to a game shows the GAME
 
 Four blocks, one per file.
 
-- `.chapter-game`: element `.chapter-game__layout`. Breakpoint `(max-width: 1180px)`, one column.
-- `.chapter-game-aside`: elements `__card`, `__head`, `__head-row`, `__chapter`, `__count`, `__course`, `__back`, `__record-head`, `__label`, `__event`, `__site`, `__meta`, `__meta-cell`, `__meta-key`, `__meta-value`, `__foot`, `__lessons`, `__lesson`, `__note`; modifier `__card_variant_lessons`. Breakpoint `(max-width: 1180px)`, the cards side by side.
+- `.chapter-game`: element `.chapter-game__layout`. Breakpoint `(width < 1280px)`, one column.
+- `.chapter-game-aside`: elements `__card`, `__head`, `__head-row`, `__chapter`, `__count`, `__course`, `__back`, `__record-head`, `__label`, `__event`, `__site`, `__meta`, `__meta-cell`, `__meta-key`, `__meta-value`, `__foot`, `__lessons`, `__lesson`, `__note`; modifier `__card_variant_lessons`. Breakpoint `(width < 1280px)`, the cards side by side.
 - `.chapter-game-board`: styles `.platform-notice` inside it (the margin under the notice).
 - `.chapter-game-list`: elements `__row`, `__grip`, `__item`, `__main`, `__name`, `__players`, `__result`; states `__item_state_active`, `__row_state_dragging`.
 

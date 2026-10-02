@@ -34,7 +34,7 @@ Three cards: who they are, how it looks, and the one thing they decide about stu
 
 ## Markup & styling
 
-Block `.account-settings`: a column of cards capped at 620px — a field of settings is read down, not across. The details are a `<dl>` laid out as a two-column grid (`display: contents` on each pair), with a hairline over every row but the first, since a line under the heading would close it instead of separating two facts. At `(max-width: 640px)` the grid becomes one column and the term goes over its value.
+Block `.account-settings`: a column of cards capped at 620px — a field of settings is read down, not across. The details are a `<dl>` laid out as a two-column grid (`display: contents` on each pair), with a hairline over every row but the first, since a line under the heading would close it instead of separating two facts. At `(width < 640px)` the grid becomes one column and the term goes over its value.
 
 **Elements:** `.account-settings__card`, `__title`, `__facts`, `__fact`, `__term`, `__value`, `__note`, `__themes`, `__theme`, `__theme-label`, `__theme-note`, `__form`, `__field`, `__field-label`
 

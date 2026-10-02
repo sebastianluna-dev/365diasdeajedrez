@@ -34,13 +34,13 @@ Where a course to add is found. It lists **every** published course, the ones al
 
 ## Markup & styling
 
-Block `.course-catalog` (39 lines): the cards in a grid of `repeat(auto-fill, minmax(360px, 1fr))` with a 20px gap, which is two to a row in the page's 960px.
+Block `.course-catalog` (39 lines): the cards in a grid of `repeat(auto-fill, minmax(360px, 1fr))` with a `--platform-space-6` (24px) gap, which is two to a row in the page's 944px.
 
 **Elements:** `.course-catalog__head`, `.course-catalog__title`, `.course-catalog__summary`, `.course-catalog__list`
 
 **Tokens:** `--platform-text-muted`
 
-**Breakpoints:** `(max-width: 760px)` one column.
+**Breakpoints:** `(width < 768px)` one column.
 
 ## Usage
 
