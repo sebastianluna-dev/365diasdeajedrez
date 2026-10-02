@@ -1,6 +1,9 @@
 /* The app declares these faces through next/font/local and sets the CSS
    variables on <html>; components only ever read the variables. Here the
-   same files are served from public/fonts by staticDirs. */
+   same files are served from public/fonts by staticDirs, one face per file
+   of app/(frontend)/fonts.ts and app/(platform)/fonts.ts, at the weights
+   those modules give them: a weight missing here is drawn by the browser in
+   the nearest one, which is not what the app draws. */
 @font-face {
   font-family: "Gramatika";
   src: url("/fonts/gramatika-bold.woff2") format("woff2");
@@ -45,7 +48,31 @@
 }
 @font-face {
   font-family: "SF Pro Display";
+  src: url("/fonts/sf-pro-display-semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SF Pro Display";
   src: url("/fonts/sf-pro-display-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url("/fonts/sf-pro-display-heavy.woff2") format("woff2");
+  font-weight: 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-bold.woff2") format("woff2");
   font-weight: 700;
   font-display: swap;
 }
@@ -55,6 +82,7 @@
   --font-suisse: "Suisse Intl";
   --font-chessglyph: "ChessGlyph";
   --font-sf-pro: "SF Pro Display";
+  --font-poppins: "Poppins";
 }
 
 /* No min-height: in the Docs page every story is inlined and a full-viewport
