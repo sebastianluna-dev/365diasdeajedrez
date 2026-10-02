@@ -33,12 +33,13 @@ export function AttendanceForm({ classId, participants }: AttendanceFormProps) {
             </span>
 
             {/* Removing only makes sense for someone who left no trace: the server
-                rejects whoever already attended or paid. */}
+                rejects whoever already attended or paid. The student is bound to
+                the action and not sent as the button's `name`: a button with an
+                action of its own is left out of the form's data by React, so a
+                name on it never reached the server and «Quitar» always failed. */}
             {!participant.attended && !participant.hasPayment && (
               <SubmitButton
-                formAction={removeParticipant.bind(null, classId)}
-                name="studentId"
-                value={participant.userId}
+                formAction={removeParticipant.bind(null, classId, participant.userId)}
                 className="platform-row-action platform-row-action_variant_danger"
                 pendingLabel="Quitar"
               >

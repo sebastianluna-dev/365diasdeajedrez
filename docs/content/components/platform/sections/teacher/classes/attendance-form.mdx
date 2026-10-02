@@ -28,7 +28,7 @@ Marking a student as present records their activity (and with it their statistic
 
 - `<form action={markAttendance.bind(null, classId)}>` with `name="attended" value={userId}` checkboxes and a "Guardar asistencia" submit.
 - Each row shows "Pago registrado" or "Sin pago registrado".
-- "Quitar" is a submit button with `formAction={removeParticipant.bind(null, classId)}` and `name="studentId"`, rendered only for a participant who left no trace (no attendance, no payment); the server rejects the others anyway.
+- "Quitar" is a submit button with `formAction={removeParticipant.bind(null, classId, participant.userId)}`, rendered only for a participant who left no trace (no attendance, no payment); the server rejects the others anyway. The student is **bound** to the action, not sent as the button's `name`: React leaves a button that has an action of its own out of the form's data, so until 2026-10-02, when it was `name="studentId"`, the id never reached the server and «Quitar» always answered with `participantLocked`.
 
 ## Markup & styling
 

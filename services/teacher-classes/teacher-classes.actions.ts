@@ -260,20 +260,27 @@ export async function addParticipant(classId: string, formData: FormData): Promi
   revalidatePath(detailPath);
 }
 
-export async function removeParticipant(classId: string, formData: FormData): Promise<void> {
+/**
+ * Takes a student out of a class. The student comes bound, like the class, and
+ * not in the form's data: the «Quitar» of each row is a button with an action
+ * of its own, and React leaves such a button out of the data it sends. It is
+ * read as any input would be — a string, or nothing — and the `where` below is
+ * what authorises: only a participant of this teacher's class who left no
+ * trace can be removed.
+ */
+export async function removeParticipant(classId: string, studentId: unknown): Promise<void> {
   const { teacher, user } = await requireTeacher();
   await assertTeacherOwnsClass(teacher.id, classId);
 
   const detailPath = teacherRoutes.classDetail(classId);
   if (!(await allowAction(`${user.id}:class-participant`, 60, 60_000))) fail(detailPath, "throttled");
 
-  const { studentId } = readIds(formData, "studentId");
   const db = getPlatformDb();
 
   // Only whoever left no trace can be removed: if they attended or paid, the row
   // is history (and accounting), not an enrolment that can be undone.
   const removed = await db.classParticipant.deleteMany({
-    where: { classId, userId: studentId, attended: false, paidAt: null },
+    where: { classId, userId: typeof studentId === "string" ? studentId : "", attended: false, paidAt: null },
   });
   if (removed.count === 0) fail(detailPath, "participantLocked");
 
