@@ -22,12 +22,16 @@ Reference page: [Components › LocalDateTime](/components/platform/shared/local
   },
   args: {
     iso: "2026-10-06T23:00:00.000Z",
-    fallback: "6 de octubre de 2026 · 17:00",
+    fallback: "6 de octubre, 2026 · 23:00 h",
     withTime: true,
   },
   argTypes: {
     iso: { control: "text", description: "The instant in ISO (UTC), exactly as stored." },
-    fallback: { control: "text", description: "The server's text: what the HTML carries until hydration." },
+    fallback: {
+      control: "text",
+      description:
+        "The server's text (`formatSpanishDate` · `formatSpanishTime`, in its zone): what the HTML carries until hydration.",
+    },
     withTime: { control: "boolean", description: "`false` writes the date alone." },
   },
 } satisfies Meta<typeof LocalDateTime>;
@@ -42,7 +46,7 @@ type Story = StoryObj<typeof meta>;
 export const WithTime: Story = { name: "With time" };
 
 /** The date alone. */
-export const DateOnly: Story = { name: "Date only", args: { withTime: false, fallback: "6 de octubre de 2026" } };
+export const DateOnly: Story = { name: "Date only", args: { withTime: false, fallback: "6 de octubre, 2026" } };
 
-/** An instant the browser cannot read keeps the server's text. */
+/** An instant the browser cannot read keeps the server's text: the date and time as the server, in UTC, wrote them. */
 export const Unreadable: Story = { args: { iso: "no es una fecha" } };

@@ -4,13 +4,13 @@ description: "The knight that hops over its shadow while a segment streams, with
 
 # `BoardLoading`
 
-|            |                                                                                                                                                                                                          |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/board-loading/board-loading.comp.tsx`                                                                                                                                        |
-| Kind       | Server Component                                                                                                                                                                                         |
-| Stylesheet | `board-loading.comp.css` → block `.board-loading`                                                                                                                                                        |
-| Story      | `board-loading.stories.tsx` (`platform/shared/BoardLoading`): the generic line and the study's                                                                                                           |
-| Used by    | every `loading.tsx` under `app/(platform)` but the lesson's: the root, `/inicio`, `/clases`, `/cursos`, `/estudios`, `/estudios/[studyId]`, `/explorador`, `/entrenador`, `/profesor`, `/administracion` |
+|            |                                                                                                                                                                                                                      |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/board-loading/board-loading.comp.tsx`                                                                                                                                                    |
+| Kind       | Server Component                                                                                                                                                                                                     |
+| Stylesheet | `board-loading.comp.css` → block `.board-loading`                                                                                                                                                                    |
+| Story      | `board-loading.stories.tsx` (`platform/shared/BoardLoading`): the generic line and the study's                                                                                                                       |
+| Used by    | every `loading.tsx` under `app/(platform)` but the lesson's: the root, `/inicio`, `/clases`, `/cursos`, `/estudios`, `/estudios/[studyId]`, `/explorador`, `/entrenador`, `/ajustes`, `/profesor`, `/administracion` |
 
 ## Purpose
 
@@ -46,7 +46,7 @@ From `app/(platform)/estudios/[studyId]/loading.tsx`:
 import { BoardLoading } from "@/components/platform/shared/board-loading/board-loading.comp";
 
 export default function StudyLoading() {
-  return <BoardLoading />;
+  return <BoardLoading label="Preparando el tablero…" />;
 }
 ```
 

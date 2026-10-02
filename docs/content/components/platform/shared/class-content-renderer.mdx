@@ -18,7 +18,7 @@ description: "Renders a class's ordered blocks by kind: text as paragraphs, vide
 
 A class's content is an ordered list of blocks of six kinds. This component turns the `ClassBlockView` discriminated union into markup, and it is the same component for the student, for the teacher's preview and for staff, so the three see exactly the same thing.
 
-Chess blocks are **references** to the original material, not copies: a `GAME_REF` renders the referenced game's PGN in the [`GameViewer`](/components/chess/game-viewer/game-viewer) opened at the saved `movePath`, with a link to the game in "Mis estudios" when the viewer may open it; a `LESSON_REF` does the same with the lesson and a link to it in full; a `POSITION_REF` is a [`StaticDiagram`](/components/chess/static-diagram). Correcting the source corrects every class that cites it.
+Chess blocks are **references** to the original material, not copies: a `GAME_REF` renders the referenced game's PGN in the [`GameViewer`](/components/chess/game-viewer/game-viewer) opened at the saved `movePath`, with a link to the game in "Mis estudios" when it lives in a study; a `LESSON_REF` does the same with the lesson and a link to it in full; a `POSITION_REF` is a [`StaticDiagram`](/components/chess/static-diagram). Correcting the source corrects every class that cites it.
 
 ## Props
 
@@ -28,14 +28,14 @@ Chess blocks are **references** to the original material, not copies: a `GAME_RE
 
 ## Behaviour
 
-| `kind`         | Rendered as                                                                                                                                                |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TEXT`         | Paragraphs split on blank lines; a paragraph starting with `## ` becomes an `<h3>`. Simple markdown only, no parser.                                       |
-| `VIDEO`        | An external link card (`target="_blank"`, `rel="noreferrer"`) labelled "Video" with the caption or the URL.                                                |
-| `GAME_REF`     | `GameViewer` with `title`, `initialPath`, plus "Abrir la partida en Mis estudios" when `game.href` is present (absent for games the viewer cannot access). |
-| `LESSON_REF`   | `GameViewer` with the lesson's orientation and `initialPath`, plus "Abrir la lección completa".                                                            |
-| `POSITION_REF` | `StaticDiagram` with the caption or the position's title.                                                                                                  |
-| `FILE`         | A card labelled "Archivo" with the caption; the file itself is not linked yet.                                                                             |
+| `kind`         | Rendered as                                                                                                                                                                           |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TEXT`         | Paragraphs split on blank lines; a paragraph starting with `## ` becomes an `<h3>`. Simple markdown only, no parser.                                                                  |
+| `VIDEO`        | An external link card (`target="_blank"`, `rel="noreferrer"`) labelled "Video" with the caption or the URL.                                                                           |
+| `GAME_REF`     | `GameViewer` with `title`, `initialPath`, plus "Abrir la partida en Mis estudios" when `game.href` is present (absent for a game transcribed in the block, which lives nowhere else). |
+| `LESSON_REF`   | `GameViewer` with the lesson's orientation and `initialPath`, plus "Abrir la lección completa".                                                                                       |
+| `POSITION_REF` | `StaticDiagram` with the caption or the position's title.                                                                                                                             |
+| `FILE`         | A card labelled "Archivo" with the caption; the file itself is not linked yet.                                                                                                        |
 
 A caption is rendered under text, game and lesson blocks; video, file and position blocks show it inside their own card.
 

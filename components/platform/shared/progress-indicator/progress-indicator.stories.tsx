@@ -39,7 +39,7 @@ type Story = StoryObj<typeof meta>;
 /** Bar and label on one line, as the dashboard's «Continuar» card draws it. */
 export const Inline: Story = {};
 
-/** The percentage and the detail at the two ends and the bar under them, as a course card draws it. */
+/** The percentage and the detail at the two ends and the bar under them. No screen uses this layout today. */
 export const Stacked: Story = { args: { layout: "stacked" } };
 
 /** Not started: the track alone. */

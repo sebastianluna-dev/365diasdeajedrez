@@ -4,14 +4,14 @@ description: "The submit button of every write form of the platform: disabled an
 
 # `SubmitButton`
 
-|            |                                                                                                                                                                                                                                              |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/submit-button/submit-button.comp.tsx`                                                                                                                                                                            |
-| Kind       | Client Component                                                                                                                                                                                                                             |
-| Stylesheet | none (`.platform-button` from `app/(platform)/platform.css` by default, or the class the caller passes)                                                                                                                                      |
-| Story      | `submit-button.stories.tsx` (`platform/shared/SubmitButton`): at rest, pending (pressed in its `play` function, inside a form whose action never settles), a variant, disabled, and the attendance form's several buttons sharing one status |
-| Used by    | Every write form of `components/platform/sections/**` (studies, courses, trainer, the shell's sign-out, the teacher and staff panels)                                                                                                        |
-| Uses       | `useFormStatus` from `react-dom`                                                                                                                                                                                                             |
+|            |                                                                                                                                                                                                                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/submit-button/submit-button.comp.tsx`                                                                                                                                                                                                      |
+| Kind       | Client Component                                                                                                                                                                                                                                                       |
+| Stylesheet | none (`.platform-button` from `app/(platform)/platform.css` by default, or the class the caller passes)                                                                                                                                                                |
+| Story      | `submit-button.stories.tsx` (`platform/shared/SubmitButton`): at rest, pending (pressed in its `play` function, inside a form whose action does not settle while the story is open), a variant, disabled, and the attendance form's several buttons sharing one status |
+| Used by    | Every write form of `components/platform/sections/**` (studies, courses, trainer, the shell's sign-out, the teacher and staff panels)                                                                                                                                  |
+| Uses       | `useFormStatus` from `react-dom`                                                                                                                                                                                                                                       |
 
 ## Purpose
 
@@ -43,10 +43,19 @@ From `components/platform/sections/studies/studies-list/new-study/new-study-form
 ```tsx
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
-<form action={createStudy}>
-  …<SubmitButton pendingLabel="Creando…">Crear estudio</SubmitButton>
-</form>;
+<PlatformForm action={action} className="new-study__form" onSubmit={onSubmit} autoComplete="off">
+  …
+  <SubmitButton
+    className="platform-button platform-button_variant_ink"
+    pendingLabel="Creando…"
+    disabled={name.trim() === ""}
+  >
+    Crear estudio
+  </SubmitButton>
+</PlatformForm>;
 ```
+
+`action` is `createStudy`, bound by `NewStudy` one level up: the form receives it as a prop, which is what lets it have a story.
 
 ## Related
 

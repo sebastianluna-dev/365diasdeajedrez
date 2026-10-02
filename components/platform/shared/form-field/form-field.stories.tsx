@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { userEvent, within } from "storybook/test";
+import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+import { CONTENT_TYPE } from "@/constants/platform/course-codes.const";
 import { FormField, FormFieldset } from "./form-field.comp";
 
 interface FieldArgs {
@@ -109,6 +111,29 @@ export const Fieldset: Story = {
           {topic}
         </label>
       ))}
+    </FormFieldset>
+  ),
+};
+
+/**
+ * `FormFieldset` with `frame="none"`: no border nor padding around the group, for controls that draw their own
+ * boxes — the course editor's «Contenido», with `PlatformCheckCards` in a line.
+ */
+export const FieldsetWithoutFrame: Story = {
+  name: "Fieldset without frame",
+  render: () => (
+    <FormFieldset legend="Contenido (selecciona al menos uno)" frame="none">
+      <PlatformCheckCards
+        name="contentTypeCodes"
+        defaultValue={[CONTENT_TYPE.ENDGAMES]}
+        aria-label="Tipos de contenido"
+        layout="line"
+        options={[
+          { value: CONTENT_TYPE.OPENINGS, label: "Aperturas" },
+          { value: CONTENT_TYPE.TACTICS, label: "Táctica" },
+          { value: CONTENT_TYPE.ENDGAMES, label: "Finales" },
+        ]}
+      />
     </FormFieldset>
   ),
 };

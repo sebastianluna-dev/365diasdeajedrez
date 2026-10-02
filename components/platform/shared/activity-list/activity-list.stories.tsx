@@ -8,16 +8,21 @@ const ITEMS: ActivityItem[] = [
     typeLabel: "Lección completada",
     subjectName: "Torre activa",
     topicLabel: "Finales",
-    dateLabel: "1 de octubre de 2026",
+    dateLabel: "1 de octubre, 2026",
   },
   {
     id: "a2",
     typeLabel: "Ejercicio superado",
     subjectName: "Clavada en la columna e",
     topicLabel: "Táctica",
-    dateLabel: "30 de septiembre de 2026",
+    dateLabel: "30 de septiembre, 2026",
   },
-  { id: "a3", typeLabel: "Clase asistida", dateLabel: "29 de septiembre de 2026" },
+  {
+    id: "a3",
+    typeLabel: "Clase asistida",
+    subjectName: "La defensa siciliana, variante Najdorf",
+    dateLabel: "29 de septiembre, 2026",
+  },
 ];
 
 const meta = {
@@ -28,8 +33,8 @@ const meta = {
       description: {
         component: `
 The student's recent activity, one row per entry of the activity log: what
-happened, on what, its topic and when — the last three only when the entry has
-them. The dashboard's «Actividad reciente» card renders it, already mapped by
+happened, on what, its topic and when — what it was about and its topic only
+when the entry has them. The dashboard's «Actividad reciente» card renders it, already mapped by
 \`services/dashboard\`.
 
 Source: \`components/platform/shared/activity-list/activity-list.comp.tsx\`.
@@ -56,7 +61,7 @@ Reference page: [Components › ActivityList](/components/platform/shared/activi
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Three entries: two with what they were about and its topic, and an attended class with neither. */
+/** Three entries, as the dashboard writes them: two with their topic, and an attended class, which has none. */
 export const Default: Story = {};
 
 /** A single entry. */

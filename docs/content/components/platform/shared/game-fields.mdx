@@ -18,7 +18,7 @@ Also exports the `GameFieldValues` type.
 
 ## Purpose
 
-The fields of a game (name, players with Elo, title and federation, result, date, event, site, round, ECO) defined once. Both forms, create and edit, have to offer exactly the same set: if something could be filled in on creation that cannot be corrected later, the data would be trapped. All fields are optional, also on creation, because when analysis starts one does not yet know which game it is going to be.
+The fields of a game (name, players with Elo, title and federation, result, date, event, site, round, ECO) defined once. Every form that edits a game's record — the study's and the chapter collection's, both through `EditGame` — offers exactly this set: if something could be set in one place that cannot be corrected in another, the data would be trapped. All fields are optional, because when analysis starts one does not yet know which game it is going to be.
 
 It lives in `shared/` because two products write a game's record with it: the student's studies and the staff's chapter collections.
 
@@ -48,12 +48,12 @@ No tokens, no media queries of its own.
 
 ## Usage
 
-From `components/platform/sections/studies/study-detail/new-game.comp.tsx` (the blank tab of the dialog):
+From `components/platform/shared/edit-game/edit-game.comp.tsx`, its only importer:
 
 ```tsx
-import { GameFields } from "@/components/platform/shared/game-fields/game-fields.comp";
+import { GameFields, type GameFieldValues } from "@/components/platform/shared/game-fields/game-fields.comp";
 
-<GameFields results={results} />;
+<GameFields values={values} results={results} titleHint={titleHint} />;
 ```
 
 ## Related

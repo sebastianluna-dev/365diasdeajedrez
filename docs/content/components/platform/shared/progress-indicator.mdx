@@ -40,14 +40,17 @@ Block `.progress-indicator` (55 lines).
 
 **Tokens:** `--platform-progress`, `--platform-text`, `--platform-text-muted`, `--platform-track`
 
-The course and chapter detail sheets restyle `.progress-indicator__legend`, `__percent`, `__detail` and `__track` inside their own block to enlarge the headline figure; that is the sanctioned way to adapt it, nested under the consumer's root.
-
 ## Usage
+
+From `components/platform/sections/dashboard/continue-studying/continue-studying.section.tsx` (no screen passes `layout="stacked"` today):
 
 ```tsx
 import { ProgressIndicator } from "@/components/platform/shared/progress-indicator/progress-indicator.comp";
 
-<ProgressIndicator layout="stacked" percent={percent} detail={`${completed} de ${total} completadas`} />;
+<ProgressIndicator
+  percent={continueStudying.percent}
+  detail={`${continueStudying.completedLessons} de ${continueStudying.totalLessons} lecciones`}
+/>;
 ```
 
 ## Related

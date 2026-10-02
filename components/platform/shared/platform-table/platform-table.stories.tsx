@@ -1,19 +1,10 @@
 import Link from "next/link";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
+import { CLASS_STATUS } from "@/constants/platform/class-codes.const";
+import { staffRoutes } from "@/lib/platform-routes";
+import type { StaffClassSummary } from "@/services/staff-classes/staff-classes.types";
 import { PlatformTable, PlatformTableCell, PlatformTableRow, type PlatformTableColumn } from "./platform-table.comp";
-
-/** One row of the staff's class list, the shape `StaffClassSummary` gives that screen. */
-interface ClassRow {
-  id: string;
-  title: string;
-  teacherName: string;
-  scheduledAtIso: string;
-  dateLabel: string;
-  statusLabel: string;
-  students: number;
-  attended: number;
-}
 
 const COLUMNS: readonly (string | PlatformTableColumn)[] = [
   "Clase",
@@ -24,41 +15,57 @@ const COLUMNS: readonly (string | PlatformTableColumn)[] = [
   { label: "Asistieron", align: "right" },
 ];
 
-const ROWS: ClassRow[] = [
+/** The staff's class list, as `services/staff-classes` hands it to that screen; the labels as the server, in UTC, writes them. */
+const ROWS: StaffClassSummary[] = [
   {
     id: "1",
     title: "Finales de torres",
+    teacherId: "t1",
     teacherName: "Fernanda Ríos",
     scheduledAtIso: "2026-10-06T23:00:00.000Z",
-    dateLabel: "6 de octubre de 2026 · 17:00",
+    dateLabel: "6 de octubre, 2026",
+    timeLabel: "23:00 h",
+    durationMin: 60,
+    statusCode: CLASS_STATUS.SCHEDULED,
     statusLabel: "Programada",
-    students: 6,
-    attended: 0,
+    participantCount: 6,
+    attendedCount: 0,
+    href: staffRoutes.staffClassDetail("1"),
   },
   {
     id: "2",
     title: "La defensa siciliana, variante Najdorf",
+    teacherId: "t2",
     teacherName: "Andrés Molina",
     scheduledAtIso: "2026-09-29T16:00:00.000Z",
-    dateLabel: "29 de septiembre de 2026 · 10:00",
+    dateLabel: "29 de septiembre, 2026",
+    timeLabel: "16:00 h",
+    durationMin: 90,
+    statusCode: CLASS_STATUS.COMPLETED,
     statusLabel: "Finalizada",
-    students: 8,
-    attended: 7,
+    participantCount: 8,
+    attendedCount: 7,
+    href: staffRoutes.staffClassDetail("2"),
   },
   {
     id: "3",
     title: "Táctica: clavadas y descubiertas",
+    teacherId: "t1",
     teacherName: "Fernanda Ríos",
     scheduledAtIso: "2026-09-22T23:00:00.000Z",
-    dateLabel: "22 de septiembre de 2026 · 17:00",
+    dateLabel: "22 de septiembre, 2026",
+    timeLabel: "23:00 h",
+    durationMin: 60,
+    statusCode: CLASS_STATUS.COMPLETED,
     statusLabel: "Finalizada",
-    students: 5,
-    attended: 5,
+    participantCount: 5,
+    attendedCount: 5,
+    href: staffRoutes.staffClassDetail("3"),
   },
 ];
 
 interface TableArgs {
-  rows: ClassRow[];
+  rows: StaffClassSummary[];
   emptyLabel: string;
   minWidth: number;
 }
@@ -84,29 +91,33 @@ Reference page: [Components › PlatformTable](/components/platform/shared/platf
   },
   args: { rows: ROWS, emptyLabel: "Ninguna clase coincide con esos filtros.", minWidth: 880 },
   argTypes: {
-    rows: { control: "object", description: "The classes, as the staff's class list receives them." },
+    rows: {
+      control: "object",
+      description: "`StaffClassSummary[]`: the classes, as the staff's class list receives them.",
+    },
     emptyLabel: { control: "text", description: "What the table says with no rows." },
     minWidth: {
       control: { type: "number", min: 320, step: 40 },
       description: "In px: narrower than this, the table scrolls sideways.",
     },
   },
+  // The rows as staff-classes.section.tsx writes them.
   render: ({ rows, emptyLabel, minWidth }) => (
     <PlatformTable columns={COLUMNS} emptyLabel={emptyLabel} minWidth={minWidth}>
-      {rows.map((row) => (
-        <PlatformTableRow key={row.id}>
+      {rows.map((item) => (
+        <PlatformTableRow key={item.id}>
           <PlatformTableCell strong>
-            <Link href={`/administracion/clases/${row.id}`}>{row.title}</Link>
+            <Link href={item.href}>{item.title}</Link>
           </PlatformTableCell>
-          <PlatformTableCell>{row.teacherName}</PlatformTableCell>
+          <PlatformTableCell>{item.teacherName}</PlatformTableCell>
           <PlatformTableCell>
-            <LocalDateTime iso={row.scheduledAtIso} fallback={row.dateLabel} />
+            <LocalDateTime iso={item.scheduledAtIso} fallback={`${item.dateLabel} · ${item.timeLabel}`} />
           </PlatformTableCell>
           <PlatformTableCell>
-            <span className="platform-tag">{row.statusLabel}</span>
+            <span className="platform-tag">{item.statusLabel}</span>
           </PlatformTableCell>
-          <PlatformTableCell align="right">{row.students}</PlatformTableCell>
-          <PlatformTableCell align="right">{row.attended}</PlatformTableCell>
+          <PlatformTableCell align="right">{item.participantCount}</PlatformTableCell>
+          <PlatformTableCell align="right">{item.attendedCount}</PlatformTableCell>
         </PlatformTableRow>
       ))}
     </PlatformTable>

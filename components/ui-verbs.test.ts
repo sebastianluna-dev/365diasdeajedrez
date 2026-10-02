@@ -74,8 +74,8 @@ describe("the verbs of the interface", () => {
     expect(unfinished).toEqual([]);
   });
 
-  it("keep their one exception true", () => {
-    // The exception leaves the list the day its form stops passing a resting label.
+  it("keep their exceptions true", () => {
+    // An entry leaves the list the day its file stops passing a resting label.
     const stale = RESTING_PENDING_LABEL.filter((file) => {
       const labels = [...readFileSync(join(ROOT, file), "utf8").matchAll(PENDING_LABEL)].map((match) => match[1] ?? "");
       return labels.every((label) => label.endsWith("…"));

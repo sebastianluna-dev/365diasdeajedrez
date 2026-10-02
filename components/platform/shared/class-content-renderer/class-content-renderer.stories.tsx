@@ -24,7 +24,7 @@ const LESSON = `[Event "Finales de torres"]
 
 { El rey blanco está encerrado delante de su peón. La idea es construir un puente. }
 1. Rd1+ Ke7 2. Rd4 { La torre se prepara para cubrir al rey de los jaques. } Rb2 3. Kc7 Rc2+ 4. Kb6 Rb2+
-5. Kc6 Rc2+ 6. Rc4 { El puente: la torre corta los jaques y el peón corona. } *`;
+5. Kc6 Rc2+ 6. Kb5 Rb2+ 7. Rb4 { El puente: la torre corta los jaques, el rey la protege y el peón corona. } *`;
 
 const TEXT: ClassBlockView = {
   id: "b1",
@@ -41,7 +41,13 @@ const GAME: ClassBlockView = {
   id: "b3",
   kind: "GAME_REF",
   caption: "La partida que comentamos al final.",
-  game: { id: "g1", label: "Morphy – Duque de Brunswick, París 1858", pgn: OPERA_GAME, href: "/estudios/1/partidas/1" },
+  // The label the mapper gives a study's game: its two players, as the PGN writes them.
+  game: {
+    id: "g1",
+    label: "Morphy, Paul – Duke Karl / Count Isouard",
+    pgn: OPERA_GAME,
+    href: "/estudios/1/partidas/1",
+  },
 };
 const LESSON_REF: ClassBlockView = {
   id: "b4",
@@ -106,10 +112,15 @@ export const Text: Story = { args: { blocks: [TEXT] } };
 /** A game of a study, in the viewer, with the link to open it in «Mis estudios» and its caption. */
 export const Game: Story = { args: { blocks: [GAME] } };
 
-/** A game transcribed in the class: it lives nowhere else, so there is no link to open it. */
+/**
+ * A game transcribed in the class: it lives nowhere else, so there is no link to open it, and the mapper titles it
+ * with the block's caption — which is then written under the board as well.
+ */
 export const TranscribedGame: Story = {
   name: "Transcribed game",
-  args: { blocks: [{ ...GAME, game: { ...GAME.game, href: undefined } }] as ClassBlockView[] },
+  args: {
+    blocks: [{ ...GAME, game: { ...GAME.game, label: GAME.caption ?? "", href: undefined } }] as ClassBlockView[],
+  },
 };
 
 /** A lesson, seen inside the class from its start position, with the link to open it whole. */

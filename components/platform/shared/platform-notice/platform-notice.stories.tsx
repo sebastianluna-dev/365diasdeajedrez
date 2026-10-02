@@ -39,7 +39,7 @@ Reference page: [Components › PlatformNotice](/components/platform/shared/plat
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** A failure, the default: the staff tried to delete a course that is no longer a draft. */
+/** A failure, the default: the staff tried to delete a chapter or a lesson of a course that is no longer a draft. */
 export const Failure: Story = { name: "Error" };
 
 /** A success: what the staff's account form says once the account exists. */
