@@ -11,7 +11,7 @@ import type {
   StudyKindOption,
 } from "@/services/studies/studies.types";
 import { canShareStudy } from "@/services/studies/study-rules";
-import { EditGame } from "@/components/platform/shared/edit-game.comp";
+import { EditGame } from "@/components/platform/shared/edit-game/edit-game.comp";
 import { updateGameDetails } from "@/services/studies/studies.actions";
 import { DeleteGame } from "./delete-game.comp";
 import { GameList } from "./game-list.comp";

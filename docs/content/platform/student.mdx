@@ -87,7 +87,7 @@ Actions (`studies.actions.ts`): `createStudy`, `updateStudy`, `deleteStudy` (war
 
 ## Classes — `/clases`
 
-`services/classes/classes.service.ts`: `getUserClasses()` splits into upcoming and past; `getClassById()` returns the detail with `meetingUrl` only when `now >= meetingUrlVisibleFrom` (and `meetingVisibleFromIso` for the countdown), the ordered blocks as a discriminated union (`TEXT`, `VIDEO`, `GAME_REF` with PGN and optional `movePath`, `LESSON_REF`, `POSITION_REF`, `FILE`) and the transcript status. `components/platform/shared/class-content-renderer.comp.tsx` renders blocks: text as paragraphs (lines starting with `## ` become headings), games in `GameViewer` opened at `initialPath`, positions in `StaticDiagram`. Times are shown in the student's browser zone by `LocalDateTime`.
+`services/classes/classes.service.ts`: `getUserClasses()` splits into upcoming and past; `getClassById()` returns the detail with `meetingUrl` only when `now >= meetingUrlVisibleFrom` (and `meetingVisibleFromIso` for the countdown), the ordered blocks as a discriminated union (`TEXT`, `VIDEO`, `GAME_REF` with PGN and optional `movePath`, `LESSON_REF`, `POSITION_REF`, `FILE`) and the transcript status. `components/platform/shared/class-content-renderer/class-content-renderer.comp.tsx` renders blocks: text as paragraphs (lines starting with `## ` become headings), games in `GameViewer` opened at `initialPath`, positions in `StaticDiagram`. Times are shown in the student's browser zone by `LocalDateTime`.
 
 ## Position explorer — `/explorador`
 

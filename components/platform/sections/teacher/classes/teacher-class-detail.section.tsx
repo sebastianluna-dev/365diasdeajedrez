@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer.comp";
+import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer/class-content-renderer.comp";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";

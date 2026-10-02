@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { EditGame } from "@/components/platform/shared/edit-game.comp";
+import { EditGame } from "@/components/platform/shared/edit-game/edit-game.comp";
 import { staffRoutes } from "@/lib/platform-routes";
 import { updateChapterGameDetails } from "@/services/staff-courses/staff-courses.actions";
 import type { CatalogOption, ChapterGameDetail } from "@/services/staff-courses/staff-courses.types";

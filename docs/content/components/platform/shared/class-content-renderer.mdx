@@ -6,9 +6,10 @@ description: "Renders a class's ordered blocks by kind: text as paragraphs, vide
 
 |            |                                                                                                                                                                                                                                                                                                                           |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/class-content-renderer.comp.tsx`                                                                                                                                                                                                                                                              |
+| File       | `components/platform/shared/class-content-renderer/class-content-renderer.comp.tsx`                                                                                                                                                                                                                                       |
 | Kind       | Server Component                                                                                                                                                                                                                                                                                                          |
 | Stylesheet | `class-content-renderer.comp.css` → block `.class-content`                                                                                                                                                                                                                                                                |
+| Story      | `class-content-renderer.stories.tsx` (`platform/shared/ClassContentRenderer`): every kind of block together, then each alone: text, a study's game and a transcribed one, a lesson, a position, a video and a file                                                                                                        |
 | Used by    | [`ClassDetailSection`](/components/platform/sections/classes/class-detail/class-detail-section), [`TeacherClassDetailSection`](/components/platform/sections/teacher/classes/teacher-class-detail-section) (preview), [`StaffClassDetailSection`](/components/platform/sections/staff/classes/staff-class-detail-section) |
 | Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer), [`StaticDiagram`](/components/chess/static-diagram)                                                                                                                                                                                                            |
 | Uses       | `ClassBlockView` from `services/classes/classes.types`                                                                                                                                                                                                                                                                    |
@@ -55,7 +56,7 @@ No media queries.
 From `components/platform/sections/classes/class-detail/class-detail.section.tsx`:
 
 ```tsx
-import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer.comp";
+import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer/class-content-renderer.comp";
 
 <ClassContentRenderer blocks={classDetail.blocks} />;
 ```

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { GameFields, type GameFieldValues } from "./game-fields.comp";
+import { GameFields, type GameFieldValues } from "@/components/platform/shared/game-fields/game-fields.comp";
 import "./edit-game.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 

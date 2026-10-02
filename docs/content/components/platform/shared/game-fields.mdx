@@ -6,14 +6,15 @@ description: "A game's data fields in one place, shared by every form that write
 
 Also exports the `GameFieldValues` type.
 
-|            |                                                                                      |
-| ---------- | ------------------------------------------------------------------------------------ |
-| File       | `components/platform/shared/game-fields.comp.tsx`                                    |
-| Kind       | Server Component                                                                     |
-| Stylesheet | `game-fields.comp.css` → block `.game-fields`                                        |
-| Used by    | [`EditGame`](/components/platform/shared/edit-game)                                  |
-| Composes   | [`FormField`](/components/platform/shared/form-field)                                |
-| Uses       | `federationOptions`, `FIDE_TITLES`, `FIDE_TITLE_LABELS` from `lib/chess/federations` |
+|            |                                                                                                                                                                 |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/game-fields/game-fields.comp.tsx`                                                                                                   |
+| Kind       | Server Component                                                                                                                                                |
+| Stylesheet | `game-fields.comp.css` → block `.game-fields`                                                                                                                   |
+| Story      | `game-fields.stories.tsx` (`platform/shared/GameFields`): a complete record, an empty one, and a title and a federation from the PGN that the lists do not have |
+| Used by    | [`EditGame`](/components/platform/shared/edit-game)                                                                                                             |
+| Composes   | [`FormField`](/components/platform/shared/form-field)                                                                                                           |
+| Uses       | `federationOptions`, `FIDE_TITLES`, `FIDE_TITLE_LABELS` from `lib/chess/federations`                                                                            |
 
 ## Purpose
 
@@ -50,7 +51,7 @@ No tokens, no media queries of its own.
 From `components/platform/sections/studies/study-detail/new-game.comp.tsx` (the blank tab of the dialog):
 
 ```tsx
-import { GameFields } from "@/components/platform/shared/game-fields.comp";
+import { GameFields } from "@/components/platform/shared/game-fields/game-fields.comp";
 
 <GameFields results={results} />;
 ```
