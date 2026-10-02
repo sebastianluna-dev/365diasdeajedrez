@@ -34,6 +34,11 @@ const preview: Preview = {
   parameters: {
     nextjs: { appDirectory: true },
     layout: "fullscreen",
+    // The overview opens the sidebar, as the sheet of a UI kit does; then what
+    // the pieces are made of, the pieces, and the sections built from them.
+    options: {
+      storySort: { order: ["platform", ["Overview", "foundations", "primitives", "shared", "sections"], "site"] },
+    },
   },
   decorators: [
     (Story, context) => {
