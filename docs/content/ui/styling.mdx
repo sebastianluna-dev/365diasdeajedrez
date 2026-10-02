@@ -96,6 +96,8 @@ width: min(520px, calc(100vw / var(--platform-zoom, 1) - 32px));
 
 It is the one rule to keep in mind when writing a new stylesheet for the platform: a length in `px` is written as the design gives it; a length in `vh`, `vw` or `dvh` is divided.
 
+The 1.1 was the way to say "bigger", not a figure to keep. A proposal to fold that enlargement into scales of type and spacing in real px, and drop the zoom, is drawn in Storybook (**platform/foundations** → Type scale, Spacing scale, Without the zoom): every size and space in use mapped to its step, with how much it would change on screen. Nothing of it is applied until it is chosen.
+
 **The same trap in JavaScript.** `getBoundingClientRect()`, `clientX` and `innerWidth` are read in the page's pixels, with the zoom already in them; a `px` written back into an element under the zoom is multiplied by it a second time. Measure and write in the same system: `offsetWidth`/`offsetHeight` give the element's own pixels, which is what an inline `style` is read in. Where the value has to come from a rect — a pointer's coordinates, for instance — it is divided by `element.currentCSSZoom`.
 
 A third party that measures this way cannot be told to stop, so the zoom is given back for its subtree. `ChessBoard` does it: chessground measured its container and wrote the result back inline, so the board came out a tenth larger than its hole and its pieces drifted off their squares.

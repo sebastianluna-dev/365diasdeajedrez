@@ -294,4 +294,92 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  /* THE SCALE PROPOSAL (type-scale, spacing-scale, without-zoom). */
+
+  /* What is drawn here is at its REAL size: the platform's zoom on the body
+     is undone, so a step of 16px is 16px on the screen. */
+  & .foundations__real-size {
+    zoom: calc(1 / var(--platform-zoom, 1));
+  }
+
+  /* The banner that says nothing on the page is applied yet. */
+  & .foundations__proposal {
+    margin: 0;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: var(--platform-warning-soft);
+    color: var(--platform-warning-ink);
+    font-size: 15.5px;
+    font-weight: 500;
+  }
+
+  & .foundations__steps {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+  }
+
+  & .foundations__step {
+    display: grid;
+    grid-template-columns: 200px 70px 1fr 120px;
+    align-items: baseline;
+    gap: 14px;
+    padding: 10px 0;
+    box-shadow: inset 0 -1px 0 var(--platform-border);
+  }
+
+  /* The specimen of a large step is cut at its column, not let into the next one. */
+  & .foundations__step > .foundations__real-size {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  & .foundations__step-specimen {
+    display: block;
+    color: var(--platform-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* A space drawn as a bar of its width. */
+  & .foundations__bar {
+    display: block;
+    height: 14px;
+    border-radius: 4px;
+    background: var(--platform-accent-soft);
+    box-shadow: inset 0 0 0 1px var(--platform-accent-faint);
+  }
+
+  & .foundations__compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  & .foundations__compare-side {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+    padding: 16px 18px;
+    border-radius: 8px;
+    background: var(--platform-surface);
+    box-shadow: var(--platform-shadow-card);
+  }
+
+  & .foundations__compare-line {
+    margin: 0;
+    color: var(--platform-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* A row of the mapping whose change can be seen. */
+  & .foundations__row_state_noticeable {
+    background: var(--platform-accent-mist);
+  }
 }
