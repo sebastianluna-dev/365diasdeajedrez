@@ -492,6 +492,16 @@ html body.platform-theme[data-scroll-locked] {
   color: var(--platform-surface);
 }
 
+/* Like the accent and ink ones, it keeps its resting look while disabled.
+   The base's `:disabled:hover` gives the surface back but not the colour, so
+   without this the hover above wrote the word in the surface, on the surface:
+   «Quitar de mis cursos» vanished under the pointer while its form was
+   pending. */
+.platform-button_variant_danger:disabled:hover {
+  background: var(--platform-surface);
+  color: var(--platform-danger);
+}
+
 /* THE ACTION OF A ROW. «Editar» beside a chapter, «Quitar» beside an author,
    «Eliminar» beside an exercise: what is done to ONE item of a list.
    
