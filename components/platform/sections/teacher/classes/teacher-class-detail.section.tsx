@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer.comp";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import type { ClassStatusCode } from "@/constants/platform/class-codes.const";
@@ -17,7 +17,7 @@ import { AttendanceForm } from "./attendance-form.comp";
 import { ClassBlockEditor } from "./class-block-editor/class-block-editor.comp";
 import type { BlockFormOptions } from "./class-block-editor/block-form.comp";
 import "./teacher-class-detail.section.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface TeacherClassDetailSectionProps {

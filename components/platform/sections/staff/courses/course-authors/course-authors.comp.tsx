@@ -2,7 +2,7 @@
 
 import { useRef, useState, useTransition } from "react";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { suggestAuthors } from "@/services/staff-courses/author-rules";
 import { manageCourseAuthors } from "@/services/staff-courses/staff-courses.actions";
 import type { AuthorAdminRow, CatalogOption, CourseAuthorRow } from "@/services/staff-courses/staff-courses.types";

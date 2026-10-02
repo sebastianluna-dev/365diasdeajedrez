@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
-import { CurrentPathField } from "@/components/platform/shared/current-path-field.comp";
+import { CurrentPathField } from "@/components/platform/shared/current-path-field/current-path-field.comp";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { setOnlyPriorityLessons } from "@/services/courses/courses.actions";
 import { OutlineList } from "./outline-list.comp";

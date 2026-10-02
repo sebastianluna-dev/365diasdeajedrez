@@ -1,11 +1,11 @@
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { TIMEZONE_OPTIONS } from "@/constants/platform/timezones.const";
 import { createTeacher } from "@/services/staff-teachers/staff-teachers.actions";
 import type { LinkableUser } from "@/services/staff-teachers/staff-teachers.types";
 import "./teacher-form.section.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface TeacherFormSectionProps {

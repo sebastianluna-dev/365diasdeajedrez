@@ -1,6 +1,6 @@
 "use client";
 
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 
 interface LessonReferenceFieldProps {
   value: string;

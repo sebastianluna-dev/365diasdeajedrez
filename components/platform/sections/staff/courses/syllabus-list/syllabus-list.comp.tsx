@@ -7,7 +7,7 @@ import { CSS } from "@dnd-kit/utilities";
 import { useLingering } from "@/components/chess/game-viewer/use-lingering.hook";
 import { GripIcon } from "@/components/icons/grip-icon.comp";
 import { MoreIcon } from "@/components/icons/more-icon.comp";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { CONTENT_ROLE } from "@/constants/platform/course-codes.const";
 import { useSortableRows } from "../use-sortable-rows.hook";
 import { SortableDnd } from "../sortable-dnd.comp";

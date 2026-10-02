@@ -8,7 +8,7 @@ import {
   PlatformFormField,
   PlatformFormGroup,
 } from "@/components/platform/shared/platform-form/platform-form.comp";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { generateSlug } from "@/lib/generate-slug";
 import type { ContentTypeOption } from "@/services/staff-courses/staff-courses.types";
 

@@ -1,4 +1,4 @@
-import { FormField, FormFieldset } from "@/components/platform/shared/form-field.comp";
+import { FormField, FormFieldset } from "@/components/platform/shared/form-field/form-field.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { BOARD_ORIENTATION, CONTENT_ORIENTATIONS } from "@/constants/platform/shared-codes.const";
@@ -14,7 +14,7 @@ import { LessonGamePicker } from "./lesson-game-picker.comp";
 import { StaffEditorHead, StaffEditorLayout } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./lesson-editor.section.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface LessonEditorSectionProps {

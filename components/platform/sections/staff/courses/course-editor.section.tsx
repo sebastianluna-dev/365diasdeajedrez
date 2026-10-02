@@ -1,4 +1,4 @@
-import { FormField, FormFieldset } from "@/components/platform/shared/form-field.comp";
+import { FormField, FormFieldset } from "@/components/platform/shared/form-field/form-field.comp";
 import { ImageUpload } from "@/components/platform/shared/image-upload.comp";
 import { PlatformInfoTip } from "@/components/platform/shared/platform-info-tip/platform-info-tip.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
@@ -20,7 +20,7 @@ import { CourseSources } from "./course-sources/course-sources.comp";
 import { StaffEditorLayout } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./course-editor.section.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 interface CourseEditorSectionProps {
   course: CourseAdminDetail;

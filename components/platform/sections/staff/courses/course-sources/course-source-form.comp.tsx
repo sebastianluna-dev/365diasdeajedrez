@@ -3,7 +3,7 @@
 import { CloseIcon } from "@/components/icons/close-icon.comp";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import type { CatalogOption } from "@/services/staff-courses/staff-courses.types";
 import type { CourseSourceAdmin } from "@/services/staff-sources/staff-sources.types";
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
 import {
   PlatformTable,

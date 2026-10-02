@@ -1,12 +1,12 @@
 import Link from "next/link";
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
 import { staffRoutes } from "@/lib/platform-routes";
 import { assignStudent, endAssignment } from "@/services/staff-teachers/staff-teachers.actions";
 import type { StudentAssignmentHistoryItem } from "@/services/staff-students/staff-students.types";
 import type { AssignableStudent, TeacherStudentAssignment } from "@/services/staff-teachers/staff-teachers.types";
 import "./assignment-panel.comp.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface ByStudentProps {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useRef } from "react";
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { PlatformInfoTip } from "@/components/platform/shared/platform-info-tip/platform-info-tip.comp";
 import { slugAfterRename } from "@/lib/generate-slug";
 import "./course-name-fields.comp.css";

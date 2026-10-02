@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
 import { removeCourse } from "@/services/courses/courses.actions";
 import "./remove-course.comp.css";

@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { updateStudy } from "@/services/studies/studies.actions";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import "./edit-study.comp.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface EditStudyProps {

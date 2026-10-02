@@ -11,7 +11,7 @@ import { deleteChapterGame, importChapterGames } from "@/services/staff-courses/
 import type { ChapterAdminDetail, CourseGameRow } from "@/services/staff-courses/staff-courses.types";
 import { StaffPanel } from "./staff-panel.comp";
 import "./chapter-games.section.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 interface ChapterGamesSectionProps {
   chapter: ChapterAdminDetail;

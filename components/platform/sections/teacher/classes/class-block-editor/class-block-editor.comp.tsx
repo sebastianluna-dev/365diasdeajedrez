@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { CLASS_BLOCK_KIND, type ClassBlockKindCode } from "@/constants/platform/class-codes.const";
 import {
   addClassBlock,
@@ -12,7 +12,7 @@ import {
 import type { TeacherClassBlock } from "@/services/teacher-classes/teacher-classes.types";
 import { BlockForm, type BlockFormOptions } from "./block-form.comp";
 import "./class-block-editor.comp.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface ClassBlockEditorProps {

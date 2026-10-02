@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { resetStudentPassword } from "@/services/staff-students/staff-students.actions";
 import { ACCOUNT_INITIAL_STATE } from "@/services/staff-students/staff-students.types";

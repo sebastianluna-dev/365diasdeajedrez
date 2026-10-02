@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { authorSlugFor } from "@/services/staff-courses/author-rules";
 import { createAuthor, updateAuthor } from "@/services/staff-courses/staff-courses.actions";

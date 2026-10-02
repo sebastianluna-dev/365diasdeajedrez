@@ -4,7 +4,7 @@ import { GOAL_OPTIONS } from "@/constants/platform/study-goal.const";
 import { updateDailyGoal } from "@/services/study-goal/study-goal.actions";
 import type { StudyGoal } from "@/services/study-goal/study-goal.types";
 import "./study-goal.section.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { StudyStreak } from "@/components/platform/shared/study-streak/study-streak.comp";
 

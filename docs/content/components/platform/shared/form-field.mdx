@@ -8,9 +8,10 @@ Also exports `FormFieldset`.
 
 |            |                                                                                                                                                                                                                                                                            |
 | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/form-field.comp.tsx`                                                                                                                                                                                                                           |
+| File       | `components/platform/shared/form-field/form-field.comp.tsx`                                                                                                                                                                                                                |
 | Kind       | Server Component                                                                                                                                                                                                                                                           |
 | Stylesheet | `form-field.comp.css` → block `.platform-field`                                                                                                                                                                                                                            |
+| Story      | `form-field.stories.tsx` (`platform/shared/FormField`): a text input with and without its hint or error, focused, a textarea, `PlatformSelect` inside it, and a `FormFieldset`                                                                                             |
 | Used by    | every write form of the platform (24 importers): the staff course, chapter, lesson, author, class, student and teacher editors, the assignment panel, the account and password forms, the studies' `GameFields`, the teacher's class form, block editor pieces and profile |
 
 ## Purpose
@@ -62,7 +63,7 @@ No media queries.
 From `components/platform/sections/staff/classes/staff-class-detail.section.tsx`:
 
 ```tsx
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 
 <FormField label="Nombre">
   <input type="text" name="name" maxLength={160} required />

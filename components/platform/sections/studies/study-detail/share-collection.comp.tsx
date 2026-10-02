@@ -1,7 +1,7 @@
 import { shareStudyWithStudent, unshareStudyWithStudent } from "@/services/studies/studies.actions";
 import type { StudentOption, StudyShareItem } from "@/services/studies/studies.types";
 import "./share-collection.comp.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface ShareCollectionProps {

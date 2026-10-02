@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { deleteStudy } from "@/services/studies/studies.actions";
 import "./delete-study.comp.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 interface DeleteStudyProps {
   id: string;

@@ -3,7 +3,7 @@
 import { useRef } from "react";
 import { GameFields, type GameFieldValues } from "./game-fields.comp";
 import "./edit-game.comp.css";
-import { SubmitButton } from "./submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 interface EditGameProps {
   /**

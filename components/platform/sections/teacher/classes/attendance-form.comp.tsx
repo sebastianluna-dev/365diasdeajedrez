@@ -1,7 +1,7 @@
 import { markAttendance, removeParticipant } from "@/services/teacher-classes/teacher-classes.actions";
 import type { TeacherClassParticipant } from "@/services/teacher-classes/teacher-classes.types";
 import "./attendance-form.comp.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 interface AttendanceFormProps {
   classId: string;

@@ -10,7 +10,7 @@ import { MoonIcon } from "@/components/icons/moon-icon.comp";
 import { UserIcon } from "@/components/icons/user-icon.comp";
 import { useLingering } from "@/components/chess/game-viewer/use-lingering.hook";
 import { platformRoutes } from "@/lib/platform-routes";
-import { CurrentPathField } from "@/components/platform/shared/current-path-field.comp";
+import { CurrentPathField } from "@/components/platform/shared/current-path-field/current-path-field.comp";
 import { setTheme } from "@/services/account/account.actions";
 import { logoutAction } from "@/services/auth/auth.actions";
 import { readStudyGoal } from "@/services/study-goal/study-goal.actions";

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { staffRoutes } from "@/lib/platform-routes";
@@ -8,7 +8,7 @@ import type { ChapterAdminDetail } from "@/services/staff-courses/staff-courses.
 import { StaffEditorLayout } from "./staff-editor.comp";
 import { StaffPanel } from "./staff-panel.comp";
 import "./chapter-editor.section.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 interface ChapterEditorSectionProps {
   chapter: ChapterAdminDetail;

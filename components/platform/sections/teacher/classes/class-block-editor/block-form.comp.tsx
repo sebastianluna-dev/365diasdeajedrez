@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { AnalysisBoard } from "@/components/chess/analysis-board/analysis-board.comp";
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { platformRoutes } from "@/lib/platform-routes";
 import { CLASS_BLOCK_KIND, type ClassBlockKindCode } from "@/constants/platform/class-codes.const";
 import type {
@@ -16,7 +16,7 @@ import { LessonReferenceField } from "./lesson-reference-field.comp";
 import { MovePathPicker } from "./move-path-picker.comp";
 import { PositionSelector } from "./position-selector.comp";
 import "./block-form.comp.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 export interface BlockFormOptions {
   games: ReferenceableGameGroup[];

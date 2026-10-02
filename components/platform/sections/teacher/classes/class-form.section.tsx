@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FormField, FormFieldset } from "@/components/platform/shared/form-field.comp";
+import { FormField, FormFieldset } from "@/components/platform/shared/form-field/form-field.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import { TEACHER_ERROR_MESSAGES } from "@/constants/platform/teacher-messages.const";
 import { teacherRoutes } from "@/lib/platform-routes";
@@ -7,7 +7,7 @@ import { createClass, updateClassMeta } from "@/services/teacher-classes/teacher
 import type { TeacherClassDetail } from "@/services/teacher-classes/teacher-classes.types";
 import type { AssignedStudentSummary } from "@/services/teacher-students/teacher-students.types";
 import "./class-form.section.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface ClassFormSectionProps {

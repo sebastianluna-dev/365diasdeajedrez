@@ -25,7 +25,11 @@ const SOURCES = ["app", "components", "constants", "services", "lib"];
 const RULED_OUT = /(?<!\p{L})(?:a[ñn][aá]d|b[oó]rr(?!ador|ow))\p{L}*/giu;
 
 /** A form with several submit buttons that share one label passes the resting label: see SubmitButton. */
-const RESTING_PENDING_LABEL = ["components/platform/sections/teacher/classes/attendance-form.comp.tsx"];
+const RESTING_PENDING_LABEL = [
+  "components/platform/sections/teacher/classes/attendance-form.comp.tsx",
+  // Its "Several in one form" story draws that same form.
+  "components/platform/shared/submit-button/submit-button.stories.tsx",
+];
 
 const PENDING_LABEL = /pendingLabel="([^"]*)"/g;
 

@@ -1,4 +1,4 @@
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { federationOptions, FIDE_TITLE_LABELS, FIDE_TITLES } from "@/lib/chess/federations";
 import "./game-fields.comp.css";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";

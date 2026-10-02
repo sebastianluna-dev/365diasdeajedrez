@@ -5,7 +5,7 @@ import { toggleTrainerChapter } from "@/services/trainer/trainer.actions";
 import { getTrainerData } from "@/services/trainer/trainer.service";
 import type { TrainerChapterItem } from "@/services/trainer/trainer.types";
 import "./trainer-home.section.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 function ChapterRow({ chapter }: { chapter: TrainerChapterItem }) {
   const toggleAction = toggleTrainerChapter.bind(null, chapter.chapterId, !chapter.inTrainer);

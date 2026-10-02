@@ -1,6 +1,6 @@
 "use client";
 
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import type { PositionOption } from "@/services/teacher-classes/teacher-classes.types";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 

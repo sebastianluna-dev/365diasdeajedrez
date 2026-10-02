@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { studentErrorMessage } from "@/constants/platform/student-messages.const";
 import { countChapters, countLessons, formatDuration } from "@/services/courses/course-rules";
 import { addCourse } from "@/services/courses/courses.actions";

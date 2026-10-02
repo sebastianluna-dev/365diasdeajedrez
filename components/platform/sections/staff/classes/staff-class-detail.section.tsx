@@ -1,6 +1,6 @@
 import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer.comp";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
 import {
@@ -13,7 +13,7 @@ import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const"
 import { cancelClassAsStaff, setRecordingUrl } from "@/services/staff-classes/staff-classes.actions";
 import type { StaffClassDetail } from "@/services/staff-classes/staff-classes.types";
 import "./staff-class-detail.section.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 interface StaffClassDetailSectionProps {
   classDetail: StaffClassDetail;

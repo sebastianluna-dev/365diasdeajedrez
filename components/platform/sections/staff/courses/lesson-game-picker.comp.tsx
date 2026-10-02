@@ -4,7 +4,7 @@ import { staffRoutes } from "@/lib/platform-routes";
 import { setLessonGame } from "@/services/staff-courses/staff-courses.actions";
 import type { CourseGameRow } from "@/services/staff-courses/staff-courses.types";
 import "./lesson-game-picker.comp.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 interface LessonGamePickerProps {
   courseId: string;

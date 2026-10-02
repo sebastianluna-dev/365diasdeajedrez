@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FormField } from "@/components/platform/shared/form-field.comp";
+import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import {
   createExercise,
   deleteExercise,
@@ -11,7 +11,7 @@ import {
 import type { CatalogOption, ExerciseAdminRow } from "@/services/staff-courses/staff-courses.types";
 import { ExerciseMovePicker } from "./exercise-move-picker.comp";
 import "./exercise-editor.comp.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 
 interface ExerciseEditorProps {
