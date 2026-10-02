@@ -30,6 +30,15 @@ const PAGES: Record<string, string> = {
   "components/icons": "the icon set, drawn as one gallery",
 };
 
+/** The overview sheet, and the products whose stories it shows: the site's are not the platform's pieces. */
+const OVERVIEW = "components/platform/overview/overview.stories.tsx";
+const ON_THE_SHEET = ["platform/", "chess/", "icons/"];
+
+/** The stories of those products without a tile on the sheet, and why. */
+const NOT_ON_THE_SHEET: Record<string, string> = {
+  "platform/shared/CurrentPathField": "it draws nothing: a hidden input that sends the current path",
+};
+
 /** A component file: a piece (`.comp.tsx`) or a section (`.section.tsx`). */
 const COMPONENT_FILE = /\.(?:comp|section)\.tsx$/;
 
@@ -189,6 +198,33 @@ describe("the stories", () => {
       return problems.includes(null) ? [] : [problems[0] ?? ""];
     });
     expect(wrong).toEqual([]);
+  });
+
+  it("each have a tile on the overview sheet, and every tile links to a story", () => {
+    // The sheet is where every piece is seen at once; a story left off it is a
+    // piece nobody finds there. A tile's link is the story's Docs page, by id:
+    // the title in lowercase with every other character turned into "-".
+    const idOf = (title: string) =>
+      title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+    const titles = stories
+      .filter((path) => path !== OVERVIEW)
+      .map((path) => titleOf(read(path)) ?? "")
+      .filter((title) => ON_THE_SHEET.some((prefix) => title.startsWith(prefix)));
+    const links = new Set([...read(OVERVIEW).matchAll(/\bdocs="([^"]+)"/g)].map((match) => match[1]));
+    const ids = new Set(titles.map(idOf));
+    const problems = [
+      ...titles
+        .filter((title) => !(title in NOT_ON_THE_SHEET) && !links.has(idOf(title)))
+        .map((title) => `${title}: no tile on the sheet`),
+      ...[...links].filter((link) => link && !ids.has(link)).map((link) => `docs="${link}": no story has that id`),
+      ...Object.keys(NOT_ON_THE_SHEET)
+        .filter((title) => !titles.includes(title) || links.has(idOf(title)))
+        .map((title) => `${title}: listed as not on the sheet, but it has no story or it has a tile`),
+    ];
+    expect(problems).toEqual([]);
   });
 
   it("say in a JSDoc line what each story shows", () => {

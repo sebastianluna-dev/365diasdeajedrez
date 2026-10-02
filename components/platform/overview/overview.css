@@ -38,6 +38,11 @@
     box-shadow: var(--platform-shadow-card);
   }
 
+  /* A piece drawn at the width of a form or a list spans the three columns. */
+  & .overview__tile_width_full {
+    column-span: all;
+  }
+
   & .overview__tile-head {
     display: flex;
     align-items: baseline;
@@ -65,6 +70,14 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--platform-space-2);
+  }
+
+  & .overview__row_align_start {
+    align-items: flex-start;
+  }
+
+  & .overview__row_align_end {
+    align-items: flex-end;
   }
 
   & .overview__stack {
@@ -99,6 +112,140 @@
     height: 12px;
     border-radius: 4px;
     background: var(--platform-accent);
+  }
+
+  /* A line that says what the sample beside it is. */
+  & .overview__caption {
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-subtle);
+  }
+
+  & .overview__text {
+    margin: 0;
+  }
+
+  & .overview__font {
+    font-family: var(--platform-font);
+    font-size: var(--platform-type-xl);
+    color: var(--platform-text);
+  }
+
+  & .overview__font_family_display {
+    font-family: var(--platform-font-display);
+    font-weight: 600;
+  }
+
+  /* The shell gives every h1 the display font; the page's title in a tile is a
+     paragraph, so it takes the font here. */
+  & .overview__page-title {
+    font-family: var(--platform-font-display);
+  }
+
+  /* The three radii, each on the shape it is for. */
+  & .overview__corner {
+    display: grid;
+    place-items: center;
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-muted);
+    background: var(--platform-surface-neutral);
+    box-shadow: inset 0 0 0 1px var(--platform-border-strong);
+  }
+
+  & .overview__corner_radius_8 {
+    width: 96px;
+    height: 64px;
+    border-radius: 8px;
+  }
+
+  & .overview__corner_radius_4 {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+  }
+
+  & .overview__corner_radius_full {
+    padding: var(--platform-space-1) var(--platform-space-4);
+    border-radius: 1000px;
+  }
+
+  /* A text on its fill, with the contrast it reaches in the theme on screen. */
+  & .overview__pair {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-2) var(--platform-space-3);
+    border-radius: 8px;
+    font-size: var(--platform-type-xs);
+    font-weight: 600;
+    box-shadow: inset 0 0 0 1px var(--platform-border);
+  }
+
+  /* The page's canvas inside a tile, so a card or a page head sits on what
+     it sits on in the app. */
+  & .overview__backdrop {
+    padding: var(--platform-space-4);
+    border-radius: 8px;
+    background: var(--platform-bg);
+  }
+
+  /* The icons in a 20px box, the size most of their callers draw them: each
+     viewBox keeps its proportions inside it, so a wide one (the three dots)
+     is not blown up. */
+  & .overview__icons {
+    color: var(--platform-text-muted);
+  }
+
+  & .overview__icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* A plain list inside a panel, as a staff panel lists its records. */
+  & .overview__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  & .overview__list-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-0-5);
+  }
+
+  /* The row the viewer puts a player's strip in. */
+  & .overview__player {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-3);
+    font-size: var(--platform-type-lg);
+  }
+
+  /* The lesson's column, in the flow of the tile: from 1280px its own sheet
+     pins it to the window. */
+  & .overview__outline {
+    position: static;
+    width: 100%;
+  }
+
+  /* The move menu is fixed; the frame is its containing block and leaves it room. */
+  & .overview__menu-frame {
+    min-height: 330px;
+    contain: layout;
+  }
+
+  /* A panel whose tabs need about 450px, at the width of a viewer's column. */
+  & .overview__narrow {
+    max-width: 600px;
+  }
+
+  /* A board with its column, at the width of a study's page rather than the
+     whole sheet: the board grows with the width it is given. */
+  & .overview__board-frame {
+    max-width: 960px;
   }
 
   /* BoardLoading fills most of a window; a tile only needs to see it. */
