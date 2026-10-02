@@ -314,7 +314,7 @@
 
   /* The card leaves the side column under what the course is about before
      the text next to it gets squeezed. */
-  @media (max-width: 980px) {
+  @media (width < 1024px) {
     gap: var(--platform-space-12);
 
     & .course-info__card {
@@ -330,7 +330,7 @@
     }
   }
 
-  @media (max-width: 620px) {
+  @media (width < 640px) {
     & .course-info__cover {
       border-radius: 8px;
     }

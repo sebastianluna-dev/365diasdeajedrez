@@ -190,7 +190,7 @@
     cursor: not-allowed;
   }
 
-  @media (max-width: 520px) {
+  @media (width < 640px) {
     & .delete-study__actions {
       flex-wrap: wrap;
     }

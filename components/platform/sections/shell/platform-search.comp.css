@@ -60,7 +60,7 @@
 
   /* The bar stacks at the widths where it no longer fits in one row, and there
      the field takes the row it is given. */
-  @media (max-width: 1080px) {
+  @media (width < 1280px) {
     /* The bar is two rows here and the field shares the top one with the
        avatar: it takes what is left of it. */
     flex: 1;

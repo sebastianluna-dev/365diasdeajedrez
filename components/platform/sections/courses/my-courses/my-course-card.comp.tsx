@@ -10,7 +10,7 @@ interface MyCourseCardProps {
 }
 
 /** A square at the card's side, and the full width on a phone. */
-const COVER_SIZES = "(max-width: 760px) 100vw, 96px";
+const COVER_SIZES = "(max-width: 767px) 100vw, 96px";
 
 /** The gauge is drawn on a 36-unit box; the radius leaves room for its stroke. */
 const GAUGE_RADIUS = 15;

@@ -15,7 +15,7 @@
     align-items: start;
   }
 
-  @media (max-width: 1180px) {
+  @media (width < 1280px) {
     & .chapter-game__layout {
       grid-template-columns: minmax(0, 1fr);
     }

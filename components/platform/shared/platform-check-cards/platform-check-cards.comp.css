@@ -190,7 +190,7 @@
     flex: none;
   }
 
-  @media (max-width: 620px) {
+  @media (width < 640px) {
     &.platform-check-cards_layout_line {
       grid-template-columns: minmax(0, 1fr);
     }

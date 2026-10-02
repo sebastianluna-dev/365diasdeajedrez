@@ -205,7 +205,7 @@
      asks for 560px, the column for `--course-aside-width` and the gap for
      24: under that, plus the page's own margins, the column is on a row of
      its own. The button follows it, so the two never stop matching. */
-  @media (max-width: 900px) {
+  @media (width < 1024px) {
     & .course-study-frame__aside,
     & .course-study-frame__actions {
       flex-basis: 100%;

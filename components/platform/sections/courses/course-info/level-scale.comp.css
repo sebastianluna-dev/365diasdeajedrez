@@ -71,7 +71,7 @@
 
   /* Six names do not fit side by side on a phone: the ranges go, the names
      are cut, and the headline above still says the figure. */
-  @media (max-width: 620px) {
+  @media (width < 640px) {
     & .level-scale__range {
       display: none;
     }

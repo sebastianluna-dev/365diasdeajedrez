@@ -212,7 +212,7 @@
     cursor: not-allowed;
   }
 
-  @media (max-width: 560px) {
+  @media (width < 640px) {
     & .new-game__grid {
       grid-template-columns: 1fr;
     }

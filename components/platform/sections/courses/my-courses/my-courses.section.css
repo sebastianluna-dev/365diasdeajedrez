@@ -86,7 +86,7 @@
   /* Stacked, the day takes the width of the list. The list asks for 480px,
      the column for 240 and the gap for 40: under that, plus the page's own
      margins, the column is on a row of its own. */
-  @media (max-width: 900px) {
+  @media (width < 1024px) {
     & .my-courses__aside {
       flex-basis: 100%;
     }

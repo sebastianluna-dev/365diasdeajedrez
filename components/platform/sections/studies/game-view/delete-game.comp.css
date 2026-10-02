@@ -151,7 +151,7 @@
     cursor: not-allowed;
   }
 
-  @media (max-width: 520px) {
+  @media (width < 640px) {
     & .delete-game__actions {
       flex-wrap: wrap;
     }

@@ -85,7 +85,7 @@
     font-size: var(--platform-type-lg);
   }
 
-  @media (max-width: 900px) {
+  @media (width < 1024px) {
     & .study-detail__head {
       flex-direction: column;
       align-items: flex-start;

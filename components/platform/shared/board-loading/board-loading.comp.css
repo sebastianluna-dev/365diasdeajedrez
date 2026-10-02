@@ -54,7 +54,7 @@
     }
   }
 
-  @media (max-width: 1080px) {
+  @media (width < 1280px) {
     min-height: 60vh;
   }
 }

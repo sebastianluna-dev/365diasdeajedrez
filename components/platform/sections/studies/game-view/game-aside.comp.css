@@ -222,7 +222,7 @@
 
   /* Without width for two columns the aside moves to the top, and its cards
      share the width instead of stacking lengthwise. */
-  @media (max-width: 1180px) {
+  @media (width < 1280px) {
     display: flex;
     flex-wrap: wrap;
     gap: var(--platform-space-6);

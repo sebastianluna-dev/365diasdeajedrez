@@ -49,7 +49,7 @@
   /* Below the width the design was drawn at there is no room for three
      columns: the outline drops under the lesson, which is where something one
      reaches for on the way out belongs. */
-  @media (max-width: 1080px), (max-height: 620px) {
+  @media (width < 1280px), (max-height: 620px) {
     grid-template-columns: minmax(0, 1fr);
     --viewer-board-max: 600px;
     --outline-width: auto;

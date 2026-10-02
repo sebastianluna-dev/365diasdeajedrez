@@ -220,7 +220,7 @@
   }
 }
 
-@media (max-width: 860px) {
+@media (width < 768px) {
   .analysis-board {
     & .analysis-board__layout {
       grid-template-columns: 1fr;

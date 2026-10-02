@@ -190,7 +190,7 @@
 
   /* Stacked: the cover across the card, the ring beside the name and the
      buttons on their own row. */
-  @media (max-width: 760px) {
+  @media (width < 768px) {
     flex-wrap: wrap;
     gap: var(--platform-space-4) var(--platform-space-4);
     padding: var(--platform-space-4);

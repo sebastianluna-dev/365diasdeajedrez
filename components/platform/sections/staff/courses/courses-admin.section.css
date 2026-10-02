@@ -301,7 +301,7 @@
 
   /* When cramped, the table scrolls sideways instead of breaking the grid:
      it is seven facts per row and none is superfluous for whoever manages the catalog. */
-  @media (max-width: 1000px) {
+  @media (width < 1024px) {
     & .courses-admin__table {
       overflow-x: auto;
     }
@@ -312,7 +312,7 @@
     }
   }
 
-  @media (max-width: 620px) {
+  @media (width < 640px) {
     & .courses-admin__search-input {
       width: 100%;
     }

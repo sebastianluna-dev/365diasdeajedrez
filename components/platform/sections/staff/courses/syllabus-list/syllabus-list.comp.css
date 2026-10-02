@@ -381,7 +381,7 @@
     display: none;
   }
 
-  @media (max-width: 720px) {
+  @media (width < 768px) {
     /* The facts do not fit beside the name at this width, and the name is what
        the row is for. */
     & .syllabus-list__facts {

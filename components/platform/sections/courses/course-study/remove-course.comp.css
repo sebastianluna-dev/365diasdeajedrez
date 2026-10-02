@@ -75,7 +75,7 @@
     padding-top: var(--platform-space-2);
   }
 
-  @media (max-width: 520px) {
+  @media (width < 640px) {
     & .remove-course__actions {
       flex-direction: column-reverse;
     }

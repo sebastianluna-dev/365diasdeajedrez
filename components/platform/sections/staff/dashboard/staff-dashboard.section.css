@@ -8,11 +8,11 @@
     grid-template-columns: repeat(4, 1fr);
     gap: var(--platform-space-4);
 
-    @media (max-width: 1000px) {
+    @media (width < 1024px) {
       grid-template-columns: repeat(2, 1fr);
     }
 
-    @media (max-width: 620px) {
+    @media (width < 640px) {
       grid-template-columns: 1fr;
     }
   }
@@ -40,7 +40,7 @@
     grid-template-columns: 1fr 1fr;
     gap: var(--platform-space-4);
 
-    @media (max-width: 900px) {
+    @media (width < 1024px) {
       grid-template-columns: 1fr;
     }
   }

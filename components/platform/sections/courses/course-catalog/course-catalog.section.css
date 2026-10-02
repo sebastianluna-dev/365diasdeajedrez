@@ -31,7 +31,7 @@
     gap: var(--platform-space-6);
   }
 
-  @media (max-width: 760px) {
+  @media (width < 768px) {
     & .course-catalog__list {
       grid-template-columns: minmax(0, 1fr);
     }

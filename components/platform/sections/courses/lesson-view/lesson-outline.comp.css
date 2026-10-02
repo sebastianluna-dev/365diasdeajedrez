@@ -359,7 +359,7 @@
   /* Piled up in one column the panel stops being an edge of the window: it
      goes back into the flow under the lesson, a card like any other, at
      whatever height its lessons need. */
-  @media (max-width: 1080px), (max-height: 620px) {
+  @media (width < 1280px), (max-height: 620px) {
     position: static;
     width: auto;
     border-radius: 8px;

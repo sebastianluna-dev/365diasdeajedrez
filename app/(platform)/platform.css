@@ -262,9 +262,9 @@
      70px is the bar, plus some air. */
   scroll-padding-top: calc(70px + 8px);
 
-  /* Below 1080px the bar wraps into two rows: 12px of padding, the tools'
+  /* Below 1280px the bar wraps into two rows: 12px of padding, the tools'
      40px, 12px of gap, the menu's 40px and 12px more. */
-  @media (max-width: 1080px) {
+  @media (width < 1280px) {
     scroll-padding-top: calc(116px + 8px);
   }
 }
@@ -323,7 +323,7 @@ html body.platform-theme[data-scroll-locked] {
  * falls below the fold is a board nobody looks at.
  *
  * The frame answers for the height (platform-shell.section.css); here the
- * page only says that it fills it. Under 1080px, where the columns pile up,
+ * page only says that it fills it. Under 1280px, where the columns pile up,
  * and on a short screen, where nothing would fit, the page scrolls again
  * like any other.
  */
@@ -341,7 +341,7 @@ html body.platform-theme[data-scroll-locked] {
      the lesson pins its column of lessons to the window's own edges. */
   animation: none;
 
-  @media (max-width: 1080px), (max-height: 620px) {
+  @media (width < 1280px), (max-height: 620px) {
     height: auto;
     overflow: visible;
   }

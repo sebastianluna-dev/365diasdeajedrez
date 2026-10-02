@@ -20,7 +20,7 @@
     display: flex;
     align-items: stretch;
 
-    @media (max-width: 720px) {
+    @media (width < 768px) {
       flex-direction: column;
     }
   }
@@ -31,7 +31,7 @@
     flex: none;
     align-self: flex-start;
 
-    @media (max-width: 720px) {
+    @media (width < 768px) {
       width: 100%;
     }
   }
@@ -205,7 +205,7 @@
     flex-direction: column;
     border-left: 1px solid var(--platform-border, rgba(245, 240, 232, 0.07));
 
-    @media (max-width: 720px) {
+    @media (width < 768px) {
       display: none;
     }
   }
@@ -216,7 +216,7 @@
     overflow: auto;
     scrollbar-color: var(--platform-text-muted, #ffffff) var(--platform-surface-neutral, #2b2723);
 
-    @media (max-width: 720px) {
+    @media (width < 768px) {
       max-height: 420px;
     }
   }

@@ -61,7 +61,7 @@
     gap: var(--platform-space-3);
   }
 
-  @media (max-width: 760px) {
+  @media (width < 768px) {
     & .staff-editor-head__bar {
       flex-direction: column;
       align-items: flex-start;
@@ -96,7 +96,7 @@
   /* The narrow column drops down whole before the forms on the left start
      getting squeezed: under this width the two columns of cards of the
      course's metadata would cut their longest name. */
-  @media (max-width: 1120px) {
+  @media (width < 1024px) {
     grid-template-columns: minmax(0, 1fr);
   }
 }

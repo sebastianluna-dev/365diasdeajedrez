@@ -68,7 +68,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (width < 1024px) {
   .game-explorer {
     grid-template-columns: 1fr;
   }

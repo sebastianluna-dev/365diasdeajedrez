@@ -16,7 +16,7 @@
     gap: var(--platform-space-4);
     width: 100%;
 
-    @media (max-width: 760px) {
+    @media (width < 768px) {
       grid-template-columns: 1fr;
     }
   }

@@ -549,7 +549,7 @@
     /* On a narrow screen there is no width to share out: it stacks in one column
        — board, notation, tools — and the board rules by width again, which is
        what fits. */
-    @media (max-width: 1080px) {
+    @media (width < 1280px) {
       overflow: auto;
 
       & .game-viewer__layout {

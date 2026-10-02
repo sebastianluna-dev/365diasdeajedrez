@@ -99,7 +99,7 @@
   }
 
   /* When cramped, the table scrolls sideways instead of breaking the grid. */
-  @media (max-width: 860px) {
+  @media (width < 768px) {
     & .course-games__table {
       overflow-x: auto;
     }

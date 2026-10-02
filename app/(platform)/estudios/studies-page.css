@@ -8,7 +8,7 @@
     gap: var(--platform-space-6);
   }
 
-  @media (max-width: 640px) {
+  @media (width < 640px) {
     & .studies-page__head {
       flex-direction: column;
       align-items: flex-start;

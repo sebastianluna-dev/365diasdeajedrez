@@ -6,7 +6,7 @@
   align-items: start;
   gap: var(--platform-space-6);
 
-  @media (max-width: 900px) {
+  @media (width < 1024px) {
     grid-template-columns: 1fr;
   }
 

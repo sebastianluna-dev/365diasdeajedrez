@@ -12,7 +12,7 @@ interface CourseCardProps {
 }
 
 /** Two columns in the page's 960px: a card is a little over 470px wide. */
-const COVER_SIZES = "(max-width: 760px) 100vw, 480px";
+const COVER_SIZES = "(max-width: 767px) 100vw, 480px";
 
 /**
  * A course as a card: its cover, its name with the dots of its levels, what
