@@ -100,9 +100,8 @@ function TypePage() {
         </h2>
         <p className="foundations__lead">
           Every <code>font-size</code> written in the {PLATFORM_STYLESHEETS.length} stylesheets of the platform, with
-          how many times. There is no type scale yet and no token for a size: this is the list as it is, which a scale
-          would replace (the proposed one is on the «Type scale» page). Drawn here at the platform&apos;s zoom, as the
-          app draws them.
+          how many times: the tokens of the type scale (drawn on the «Type scale» page), and whatever is still written
+          otherwise.
         </p>
         <UsageRows usages={sizes} style={(value) => ({ fontSize: value })} />
       </section>

@@ -6,6 +6,6 @@
   /* What bounces back from a server action, above the board: it is the answer
      to something just pressed and has to be seen without looking for it. */
   & .platform-notice {
-    margin-bottom: 14px;
+    margin-bottom: var(--platform-space-4);
   }
 }

@@ -1,12 +1,12 @@
 .platform-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--platform-space-4);
 
   & .platform-form__field {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--platform-space-2);
     min-width: 0;
   }
 
@@ -16,17 +16,17 @@
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 12px;
+    gap: var(--platform-space-3);
   }
 
   & .platform-form__label {
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     font-weight: 700;
     color: var(--platform-text);
   }
 
   & .platform-form__optional {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-text-muted);
   }
 
@@ -37,13 +37,13 @@
   & .platform-form__field > textarea {
     width: 100%;
     box-sizing: border-box;
-    padding: 13px 15px;
+    padding: var(--platform-space-4) var(--platform-space-4);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface-soft);
     color: var(--platform-text);
     font-family: inherit;
-    font-size: 16px;
+    font-size: var(--platform-type-lg);
   }
 
   & .platform-form__field > input::placeholder,
@@ -81,12 +81,12 @@
   }
 
   & .platform-form__hint {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-muted);
   }
 
   & .platform-form__message {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 600;
     color: var(--platform-danger);
   }

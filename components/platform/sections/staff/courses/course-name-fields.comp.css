@@ -9,7 +9,7 @@
 
   /* Room for the button at the input's right end, so the slug never runs under it. */
   & .course-name-fields__slug input {
-    padding-right: 44px;
+    padding-right: var(--platform-space-12);
   }
 
   & .course-name-fields__slug .platform-info-tip {

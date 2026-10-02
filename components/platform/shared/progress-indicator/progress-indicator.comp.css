@@ -1,7 +1,7 @@
 .progress-indicator {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--platform-space-3);
 
   & .progress-indicator__track {
     flex: 1;
@@ -19,7 +19,7 @@
   }
 
   & .progress-indicator__label {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-text-muted);
     white-space: nowrap;
   }
@@ -28,18 +28,18 @@
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 8px;
+    gap: var(--platform-space-3);
+    margin-bottom: var(--platform-space-2);
   }
 
   & .progress-indicator__percent {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     font-weight: 700;
     color: var(--platform-text);
   }
 
   & .progress-indicator__detail {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-text-muted);
   }
 

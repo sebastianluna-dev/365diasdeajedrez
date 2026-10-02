@@ -2,12 +2,12 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 14px;
+  gap: var(--platform-space-4);
 
   & .attendance-form__list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--platform-space-3);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -18,8 +18,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 12px;
-    padding-bottom: 10px;
+    gap: var(--platform-space-3);
+    padding-bottom: var(--platform-space-3);
     border-bottom: 1px solid var(--platform-border);
   }
 
@@ -31,28 +31,28 @@
   & .attendance-form__check {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--platform-space-2);
     flex: 1 1 220px;
   }
 
   & .attendance-form__name {
-    font-size: 16px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text);
   }
 
   & .attendance-form__meta {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-text-muted);
   }
 
   & .attendance-form__remove {
-    padding: 5px 10px;
+    padding: var(--platform-space-1) var(--platform-space-3);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: transparent;
     color: var(--platform-text-muted);
     font-family: inherit;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 600;
     cursor: pointer;
   }
@@ -65,6 +65,6 @@
 
 .attendance-form__empty {
   margin: 0;
-  font-size: 15.5px;
+  font-size: var(--platform-type-lg);
   color: var(--platform-text-muted);
 }

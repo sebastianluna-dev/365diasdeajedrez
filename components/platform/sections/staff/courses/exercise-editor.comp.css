@@ -2,12 +2,12 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 16px;
+  gap: var(--platform-space-4);
 
   & .exercise-editor__list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--platform-space-3);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -17,8 +17,8 @@
   & .exercise-editor__item {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 12px 14px;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-3) var(--platform-space-4);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
   }
@@ -27,13 +27,13 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
+    gap: var(--platform-space-3);
   }
 
   & .exercise-editor__summary {
     flex: 1 1 220px;
     min-width: 0;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -42,30 +42,30 @@
 
   & .exercise-editor__meta {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-muted);
   }
 
   & .exercise-editor__warning {
     margin: 0;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-accent-ink);
   }
 
   & .exercise-editor__controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: var(--platform-space-2);
   }
 
   & .exercise-editor__control {
-    padding: 6px 11px;
+    padding: var(--platform-space-2) var(--platform-space-3);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: transparent;
     color: var(--platform-text-muted);
     font-family: inherit;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     font-weight: 600;
     cursor: pointer;
   }
@@ -83,9 +83,9 @@
   & .exercise-editor__form {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--platform-space-3);
     width: 100%;
-    padding: 14px;
+    padding: var(--platform-space-4);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface);
@@ -94,6 +94,6 @@
   & .exercise-editor__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: var(--platform-space-3);
   }
 }

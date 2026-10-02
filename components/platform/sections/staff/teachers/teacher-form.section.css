@@ -1,7 +1,7 @@
 .teacher-form {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 18px;
+  gap: var(--platform-space-5);
   align-items: start;
 
   @media (max-width: 940px) {
@@ -16,7 +16,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: var(--platform-space-3);
 
     & .platform-field {
       width: 100%;
@@ -25,7 +25,7 @@
 
   & .teacher-form__hint {
     margin: 0;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 }

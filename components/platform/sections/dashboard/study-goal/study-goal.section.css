@@ -4,14 +4,14 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: start;
-  gap: 20px;
+  gap: var(--platform-space-6);
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
   }
 
   & .study-goal__card {
-    padding: 20px 22px 22px;
+    padding: var(--platform-space-6) var(--platform-space-6) var(--platform-space-6);
     background: var(--platform-surface);
     border-radius: 8px;
     box-shadow: var(--platform-shadow-card);
@@ -21,10 +21,10 @@
      width of the card, so the horizontal padding is offset with negative
      margins: a line that does not reach the edges would look like an underline of the text. */
   & .study-goal__title {
-    margin: 0 -22px 18px;
-    padding: 0 22px 14px;
+    margin: 0 calc(-1 * var(--platform-space-6)) var(--platform-space-5);
+    padding: 0 var(--platform-space-6) var(--platform-space-4);
     border-bottom: 1px solid var(--platform-border);
-    font-size: 17px;
+    font-size: var(--platform-type-xl);
     font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--platform-text);
@@ -38,14 +38,14 @@
   }
 
   & .study-goal__amount-value {
-    font-size: 34px;
+    font-size: var(--platform-type-3xl);
     font-weight: 700;
     letter-spacing: -0.03em;
     font-variant-numeric: tabular-nums;
   }
 
   & .study-goal__amount-total {
-    font-size: 19px;
+    font-size: var(--platform-type-xl);
     font-weight: 500;
     color: var(--platform-text-subtle);
   }
@@ -54,12 +54,12 @@
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 12px;
-    margin: 12px 0 8px;
+    gap: var(--platform-space-3);
+    margin: var(--platform-space-3) 0 var(--platform-space-2);
   }
 
   & .study-goal__legend-label {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 700;
     letter-spacing: 0.09em;
     text-transform: uppercase;
@@ -67,7 +67,7 @@
   }
 
   & .study-goal__legend-percent {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 700;
     color: var(--platform-accent-ink);
     font-variant-numeric: tabular-nums;
@@ -88,15 +88,15 @@
   }
 
   & .study-goal__hint {
-    margin: 16px 0 0;
-    font-size: 14px;
+    margin: var(--platform-space-4) 0 0;
+    font-size: var(--platform-type-sm);
     line-height: 1.55;
     color: var(--platform-text-muted);
     text-wrap: pretty;
   }
 
   & .study-goal__editor {
-    margin-top: 16px;
+    margin-top: var(--platform-space-4);
   }
 
   /* The platform's button, on a `<summary>`: it opens the editor below, which
@@ -104,8 +104,8 @@
      exists. What is said here is only what a summary needs — no marker, and
      the width of the card. */
   & .study-goal__editor-button {
-    padding: 11px 16px;
-    font-size: 15px;
+    padding: var(--platform-space-3) var(--platform-space-4);
+    font-size: var(--platform-type-lg);
     list-style: none;
   }
 
@@ -114,14 +114,14 @@
   }
 
   & .study-goal__notice {
-    margin-top: 14px;
+    margin-top: var(--platform-space-4);
   }
 
   & .study-goal__form {
     display: flex;
     align-items: flex-end;
-    gap: 10px;
-    margin-top: 14px;
+    gap: var(--platform-space-3);
+    margin-top: var(--platform-space-4);
   }
 
   & .study-goal__field {
@@ -129,11 +129,11 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--platform-space-2);
   }
 
   & .study-goal__field-label {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 600;
     color: var(--platform-text-muted);
   }

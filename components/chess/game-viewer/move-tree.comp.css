@@ -3,7 +3,7 @@
      screen without reaching this sheet's classes from its own. Everything
      inside inherits, so with this one line moves, comments and variations
      scale at once. */
-  font-size: var(--move-tree-font-size, 16px);
+  font-size: var(--move-tree-font-size, var(--platform-type-lg));
   color: var(--platform-text);
   word-break: break-word;
 
@@ -16,7 +16,7 @@
   }
 
   & > p + p {
-    margin-top: 14px;
+    margin-top: var(--platform-space-4);
   }
 
   /* The moves of a run. `line-height` gives them room for the rounding of the
@@ -71,7 +71,7 @@
      paragraph, and in the page's own ink: it is prose, and read in the grey it
      would look like more notation. */
   & .move-tree__aside {
-    margin-left: 3px;
+    margin-left: var(--platform-space-1);
     font-weight: 400;
     color: var(--platform-text);
   }
@@ -80,7 +80,7 @@
     display: inline;
     border: 0;
     background: transparent;
-    padding: 3px 5px;
+    padding: var(--platform-space-1) var(--platform-space-1);
     margin: 0 1px;
     border-radius: 8px;
     font-family: inherit;

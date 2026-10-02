@@ -1,9 +1,9 @@
 .platform-notice {
   margin: 0;
-  padding: 11px 14px;
+  padding: var(--platform-space-3) var(--platform-space-4);
   border: 1px solid var(--platform-border);
   border-radius: 8px;
-  font-size: 15.5px;
+  font-size: var(--platform-type-lg);
   line-height: 1.45;
 
   &.platform-notice_variant_error {

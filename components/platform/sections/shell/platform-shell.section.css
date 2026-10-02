@@ -1,5 +1,5 @@
 .platform-shell {
-  min-height: calc(100vh / var(--platform-zoom, 1));
+  min-height: 100vh;
   /* The canvas is the page's grey; the bar is white on it, closed by its
      hairline shadow. */
   background: var(--platform-bg);
@@ -18,11 +18,11 @@
      at the right, and the bar reads as the frame of the window and not as
      one more column of the page. */
   & .platform-shell__bar-inner {
-    padding: 0 40px;
+    padding: 0 var(--platform-space-12);
     height: 70px;
     display: flex;
     align-items: center;
-    gap: 40px;
+    gap: var(--platform-space-12);
   }
 
   /* The wordmark at the height the public site draws it on desktop. The
@@ -60,13 +60,13 @@
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: var(--platform-space-4);
   }
 
   & .platform-shell__content {
     max-width: 1040px;
     margin: 0 auto;
-    padding: 44px 40px 90px;
+    padding: var(--platform-space-12) var(--platform-space-12) var(--platform-space-24);
     box-sizing: border-box;
   }
 
@@ -79,16 +79,16 @@
   }
 
   /* A page that IS the window measures exactly what is left under the bar and
-     keeps its scroll to itself. The viewport is divided by the zoom, and 70px
-     is the bar it sits under; the top padding shrinks because there is no
+     keeps its scroll to itself: the viewport's height less the 70px of the bar
+     it sits under; the top padding shrinks because there is no
      title to give air to, and the bottom one only keeps the page off the
      edge. */
   & .platform-shell__content:has(> .platform-page_height_screen) {
-    height: calc(100vh / var(--platform-zoom, 1) - 70px);
+    height: calc(100vh - 70px);
     /* 40 under the bar, which is the air the board is given on every side;
        at the foot, only enough to keep the buttons off the edge. */
-    padding-top: 40px;
-    padding-bottom: 20px;
+    padding-top: var(--platform-space-12);
+    padding-bottom: var(--platform-space-6);
     overflow: hidden;
   }
 
@@ -108,8 +108,8 @@
     & .platform-shell__bar-inner {
       height: auto;
       flex-wrap: wrap;
-      gap: 12px 24px;
-      padding: 12px 24px;
+      gap: var(--platform-space-3) var(--platform-space-6);
+      padding: var(--platform-space-3) var(--platform-space-6);
     }
 
     /* The search field takes what is left of the top row, and the avatar
@@ -121,17 +121,17 @@
     }
 
     & .platform-shell__content {
-      padding: 32px 24px 64px;
+      padding: var(--platform-space-8) var(--platform-space-6) var(--platform-space-16);
     }
   }
 
   @media (max-width: 640px) {
     & .platform-shell__bar-inner {
-      padding: 12px 16px;
+      padding: var(--platform-space-3) var(--platform-space-4);
     }
 
     & .platform-shell__content {
-      padding: 24px 16px 56px;
+      padding: var(--platform-space-6) var(--platform-space-4) var(--platform-space-16);
     }
   }
 }

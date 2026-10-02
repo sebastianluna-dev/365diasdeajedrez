@@ -30,7 +30,7 @@
     grid-template-rows: auto auto;
     /* A screen that gives the board more air widens the gap
        (`--viewer-column-gap`); the rows keep theirs. */
-    gap: 22px var(--viewer-column-gap, 22px);
+    gap: var(--platform-space-6) var(--viewer-column-gap, var(--platform-space-6));
     align-items: stretch;
   }
 
@@ -41,7 +41,7 @@
     grid-row: 1;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: var(--platform-space-4);
     min-width: 0;
   }
 
@@ -110,23 +110,23 @@
   & .game-viewer__player {
     display: flex;
     align-items: center;
-    gap: 11px;
-    padding: 9px 12px;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-2) var(--platform-space-3);
     background: var(--platform-surface);
     /* The edge that tucks under the board is hidden by it; the other three show. */
     /* What is inside (name, Elo, title, federation) goes in `em` relative to
        this, so enlarging the strip enlarges all of them at once. */
-    font-size: var(--viewer-player-font-size, 15px);
+    font-size: var(--viewer-player-font-size, var(--platform-type-lg));
   }
 
   & .game-viewer__player_side_top {
     border-radius: 8px 8px 0 0;
-    margin-bottom: -14px;
+    margin-bottom: calc(-1 * var(--platform-space-4));
   }
 
   & .game-viewer__player_side_bottom {
     border-radius: 0 0 8px 8px;
-    margin-top: -14px;
+    margin-top: calc(-1 * var(--platform-space-4));
   }
 
   /* The buttons touch and share the column's width: they are a single button
@@ -134,7 +134,7 @@
   & .game-viewer__nav {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--platform-space-3);
   }
 
   /* Four keys, each its own square: they are pressed one after another, and a
@@ -194,14 +194,14 @@
     display: inline-flex;
     align-items: center;
     height: 48px;
-    padding: 0 22px;
+    padding: 0 var(--platform-space-6);
     border: 0;
     border-radius: 8px;
     background: var(--platform-surface);
     box-shadow: inset 0 0 0 1px var(--platform-border-strong);
     color: var(--platform-text);
     font-family: inherit;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     font-weight: 700;
     cursor: pointer;
   }
@@ -255,7 +255,7 @@
     grid-row: 1;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: var(--platform-space-4);
     min-width: 0;
     /* The column's height is the board's, NEVER the notation's. An `auto` row
        measures the tallest of its items, and this one — head, engine, the
@@ -302,8 +302,8 @@
   & .game-viewer__panel-head {
     display: flex;
     align-items: flex-start;
-    gap: 14px;
-    padding: 26px 28px;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-8) var(--platform-space-8);
     box-shadow: inset 0 -1px 0 var(--platform-track);
   }
 
@@ -314,7 +314,7 @@
 
   & .game-viewer__panel-title {
     margin: 0;
-    font-size: 19px;
+    font-size: var(--platform-type-xl);
     font-weight: 700;
     letter-spacing: -0.015em;
     line-height: 1.3;
@@ -323,11 +323,11 @@
 
   & .game-viewer__panel-badge {
     flex: none;
-    padding: 6px 12px;
+    padding: var(--platform-space-2) var(--platform-space-3);
     border-radius: 1000px;
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 700;
     white-space: nowrap;
   }
@@ -351,14 +351,14 @@
      has — so the text lines up with the title — and a generous one, because
      a paragraph that runs to the edges of its box is read as a wall. */
   & .game-viewer__moves.game-viewer__moves_list_flow {
-    padding: 26px 28px;
+    padding: var(--platform-space-8) var(--platform-space-8);
   }
 
   & .game-viewer__toolbar {
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 12px 18px;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-3) var(--platform-space-5);
     box-shadow: inset 0 1px 0 var(--platform-track);
   }
 
@@ -385,7 +385,7 @@
     display: flex;
     flex-direction: column;
     min-width: 230px;
-    padding: 4px;
+    padding: var(--platform-space-1);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface);
@@ -417,13 +417,13 @@
   & .game-viewer__options-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 9px 10px;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-2) var(--platform-space-3);
     border: 0;
     border-radius: 8px;
     background: transparent;
     font-family: inherit;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-text);
     text-align: left;
     white-space: nowrap;
@@ -442,17 +442,17 @@
   }
 
   & .game-viewer__warnings {
-    margin: 0 0 12px;
-    padding: 10px 14px;
+    margin: 0 0 var(--platform-space-3);
+    padding: var(--platform-space-3) var(--platform-space-4);
     list-style: none;
     border-radius: 8px;
     background: var(--platform-danger-soft);
     color: var(--platform-danger);
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
   }
 
   & .game-viewer__warning + .game-viewer__warning {
-    margin-top: 4px;
+    margin-top: var(--platform-space-1);
   }
 
   /* In full screen the viewer paints its own background: underneath is the
@@ -468,24 +468,21 @@
     --viewer-chrome-inline: 422px;
     /* The board's side. The screen height rules, which is what is asked for;
        the width only comes into play when it really does not fit. */
-    --viewer-board-size: min(
-      calc(100vh / var(--platform-zoom, 1) - var(--viewer-chrome-block)),
-      calc(100vw / var(--platform-zoom, 1) - var(--viewer-chrome-inline))
-    );
+    --viewer-board-size: min(calc(100vh - var(--viewer-chrome-block)), calc(100vw - var(--viewer-chrome-inline)));
     /* The typography grows with the screen, like the board: if the board's side
        comes from `vh`, the text next to it has to follow the same rule or it
        ends up tiny against a huge board. The `clamp` sets a floor and a ceiling
        so it neither reads worse than normal mode on a short screen nor comes
        out oversized on a 4K one. `.move-tree` consumes it and passes it down to
        everything of its own: moves, comments and variations. */
-    --move-tree-font-size: clamp(19px, 2.2vh, 30px);
+    --move-tree-font-size: clamp(var(--platform-type-xl), 2.2vh, var(--platform-type-3xl));
     /* The player strips and the engine lines grow for the same reason: on a
        27-inch screen, a name at 15px against a 900px board is not read, it is guessed. */
-    --viewer-player-font-size: clamp(15px, 1.9vh, 26px);
-    --engine-panel-font-size: clamp(14px, 1.75vh, 24px);
+    --viewer-player-font-size: clamp(var(--platform-type-lg), 1.9vh, var(--platform-type-3xl));
+    --engine-panel-font-size: clamp(var(--platform-type-sm), 1.75vh, var(--platform-type-2xl));
 
     height: 100%;
-    padding: 20px;
+    padding: var(--platform-space-6);
     box-sizing: border-box;
     background: var(--platform-bg);
     /* Nothing overflows: everything fits the screen height. */
@@ -538,15 +535,15 @@
     }
 
     & .game-viewer__panel-head {
-      padding: 26px 28px;
+      padding: var(--platform-space-8) var(--platform-space-8);
     }
 
     & .game-viewer__panel-title {
-      font-size: clamp(21px, 2.4vh, 32px);
+      font-size: clamp(var(--platform-type-2xl), 2.4vh, var(--platform-type-3xl));
     }
 
     & .game-viewer__panel-badge {
-      font-size: clamp(14px, 1.35vh, 17px);
+      font-size: clamp(var(--platform-type-sm), 1.35vh, var(--platform-type-xl));
     }
 
     /* On a narrow screen there is no width to share out: it stacks in one column
@@ -582,11 +579,11 @@
 
 .game-viewer.game-viewer_state_error {
   margin: 0;
-  padding: 14px 16px;
+  padding: var(--platform-space-4) var(--platform-space-4);
   border-radius: 8px;
   background: var(--platform-danger-soft);
   color: var(--platform-danger);
-  font-size: 15.5px;
+  font-size: var(--platform-type-lg);
 }
 
 /* @keyframes cannot be nested inside a style rule: nested, the browser drops it. */

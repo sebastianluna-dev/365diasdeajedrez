@@ -1,24 +1,24 @@
 .session-summary {
   & .session-summary__totals {
-    margin: 0 0 14px;
-    font-size: 16.5px;
+    margin: 0 0 var(--platform-space-4);
+    font-size: var(--platform-type-lg);
     color: var(--platform-text);
   }
 
   & .session-summary__unsaved {
-    margin: 0 0 16px;
-    padding: 10px 12px;
+    margin: 0 0 var(--platform-space-4);
+    padding: var(--platform-space-3) var(--platform-space-3);
     border: 1px solid var(--platform-danger-border);
     border-radius: 8px;
     background: var(--platform-danger-soft);
     color: var(--platform-danger);
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     line-height: 1.45;
   }
 
   & .session-summary__list {
     list-style: none;
-    margin: 0 0 18px;
+    margin: 0 0 var(--platform-space-5);
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -27,8 +27,8 @@
   & .session-summary__item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 9px 0;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-2) 0;
     border-bottom: 1px solid var(--platform-border);
   }
 
@@ -44,7 +44,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     font-weight: 700;
   }
 
@@ -59,18 +59,18 @@
   }
 
   & .session-summary__lesson {
-    font-size: 16px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text);
   }
 
   & .session-summary__mistakes {
     margin-left: auto;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
   & .session-summary__actions {
     display: flex;
-    gap: 10px;
+    gap: var(--platform-space-3);
   }
 }

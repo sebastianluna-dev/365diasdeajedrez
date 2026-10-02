@@ -3,5 +3,5 @@
      under the bar and the board gets the height. The frame already trims its
      padding for a page that fills the window (`_height_screen`), so nothing
      is recovered here. */
-  gap: 18px;
+  gap: var(--platform-space-5);
 }

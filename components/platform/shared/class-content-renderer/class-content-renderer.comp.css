@@ -1,18 +1,18 @@
 .class-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--platform-space-6);
 
   & .class-content__text-heading {
-    margin: 0 0 10px;
-    font-size: 18px;
+    margin: 0 0 var(--platform-space-3);
+    font-size: var(--platform-type-xl);
     font-weight: 700;
     color: var(--platform-text);
   }
 
   & .class-content__text-paragraph {
-    margin: 0 0 10px;
-    font-size: 16.5px;
+    margin: 0 0 var(--platform-space-3);
+    font-size: var(--platform-type-lg);
     line-height: 1.65;
     color: var(--platform-text-muted, var(--platform-text-subtle));
     white-space: pre-line;
@@ -25,8 +25,8 @@
   & .class-content__link-card {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-4) var(--platform-space-4);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface);
@@ -38,7 +38,7 @@
 
   & .class-content__link-kind {
     flex: none;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -46,7 +46,7 @@
   }
 
   & .class-content__link-label {
-    font-size: 16px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -55,15 +55,15 @@
 
   & .class-content__game-link {
     display: inline-block;
-    margin-top: 10px;
-    font-size: 15.5px;
+    margin-top: var(--platform-space-3);
+    font-size: var(--platform-type-lg);
     font-weight: 600;
     color: var(--platform-accent-ink);
   }
 
   & .class-content__caption {
-    margin: 8px 0 0;
-    font-size: 15px;
+    margin: var(--platform-space-2) 0 0;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 }

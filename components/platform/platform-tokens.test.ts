@@ -37,6 +37,9 @@ const PLATFORM_STYLES = ["app/(platform)", "app/(auth)", "components/platform", 
  * has to be `light-dark(<light>, <dark>)`: that is what makes the dark theme a
  * matter of one line per colour.
  */
+/** A length, which a token of the type or space scale is. */
+const LENGTH = /^\d+px$/;
+
 const NOT_A_PAIR: Record<string, string> = {
   "--platform-logo-accent": "an alias of the accent",
   "--platform-variation": "an alias of the subtle text grey",
@@ -46,7 +49,6 @@ const NOT_A_PAIR: Record<string, string> = {
   "--platform-font": "not a colour",
   "--platform-font-display": "not a colour",
   "--platform-font-serif": "not a colour",
-  "--platform-zoom": "not a colour",
   "--platform-shadow-card": "a list of shadows, with its pairs inside",
   "--platform-shadow-bar": "a shadow, drawn in the border's colour",
 };
@@ -134,7 +136,10 @@ describe("the platform's tokens", () => {
   });
 
   it("are a pair of light and dark, every colour of them", () => {
-    const single = [...TOKENS].filter(([name, value]) => !PAIR.test(value) && !(name in NOT_A_PAIR));
+    // A length (the type and space scales) is not a colour.
+    const single = [...TOKENS].filter(
+      ([name, value]) => !PAIR.test(value) && !LENGTH.test(value) && !(name in NOT_A_PAIR),
+    );
     expect(single.map(([name, value]) => `${name}: ${value}`)).toEqual([]);
   });
 

@@ -171,6 +171,38 @@
   /* The one serif: the figure a chapter is dated with on the course pages. */
   --platform-font-serif: Georgia, "Times New Roman", serif;
 
+  /* TYPE. The platform's ten font sizes, in real px. A stylesheet writes one
+     of these and never a px of its own: the scale, and the size each value
+     in use went to, are on Storybook's «Type scale» page. They took the place
+     of the `zoom: 1.1` the body carried until 2026-10-02, which was the way
+     to say "bigger": that enlargement is inside the steps. */
+  --platform-type-2xs: 12px;
+  --platform-type-xs: 14px;
+  --platform-type-sm: 15px;
+  --platform-type-md: 16px;
+  --platform-type-lg: 17px;
+  --platform-type-xl: 20px;
+  --platform-type-2xl: 24px;
+  --platform-type-3xl: 32px;
+  --platform-type-4xl: 44px;
+  --platform-type-5xl: 52px;
+
+  /* SPACE. Every gap, padding and margin of the platform, on a 4px grid (2
+     for the tightest); the name is the multiple of 4. A hairline of 1px is a
+     line and not a space, and stays as it is. «Spacing scale» in Storybook. */
+  --platform-space-0-5: 2px;
+  --platform-space-1: 4px;
+  --platform-space-2: 8px;
+  --platform-space-3: 12px;
+  --platform-space-4: 16px;
+  --platform-space-5: 20px;
+  --platform-space-6: 24px;
+  --platform-space-8: 32px;
+  --platform-space-10: 40px;
+  --platform-space-12: 48px;
+  --platform-space-16: 64px;
+  --platform-space-24: 96px;
+
   /* Semantic colours. The success pair comes from the chapter design
      (#E7F0EA / #2F6B51); the error and warning ones are derived with the same
      background lightness and the same ink contrast, until the design fixes
@@ -185,15 +217,6 @@
   --platform-warning-soft: light-dark(#fdf0dc, #332615);
   --platform-warning-ink: light-dark(#8a5a12, #e2b667);
   --platform-warning-border: light-dark(#eddcb4, #4b3a20);
-
-  /* The platform is drawn one tenth larger than it is written: every size in
-     these stylesheets is the one the design was drawn at, and the interface
-     was read small on a laptop. `zoom` is what a browser's own 110% does, so
-     nothing here is rewritten and a person's zoom still multiplies on top.
-     A VIEWPORT unit is not scaled by it, so whatever is measured against the
-     window divides by this (the chess pieces, shared with the public site,
-     read it with a fallback of 1). */
-  --platform-zoom: 1.1;
 
   /* On light, layers are told apart by their shadow; on dark a shadow over
      near-black separates nothing, so the card takes a hairline ring of its
@@ -236,19 +259,17 @@
   overscroll-behavior: none;
   /* The bar stays stuck to the top: a control reached with the keyboard, or
      the target of the skip link, is scrolled to below it and not under it.
-     70px is the bar, drawn at the platform's zoom (the root is not zoomed, the
-     body is), plus some air. */
-  scroll-padding-top: calc(70px * var(--platform-zoom) + 8px);
+     70px is the bar, plus some air. */
+  scroll-padding-top: calc(70px + 8px);
 
   /* Below 1080px the bar wraps into two rows: 12px of padding, the tools'
      40px, 12px of gap, the menu's 40px and 12px more. */
   @media (max-width: 1080px) {
-    scroll-padding-top: calc(116px * var(--platform-zoom) + 8px);
+    scroll-padding-top: calc(116px + 8px);
   }
 }
 
 body.platform-theme {
-  zoom: var(--platform-zoom);
   /* The canvas is a grey and what rests on it is lighter (or, on dark,
      darker): a card is told from the page by its fill, before its border or
      its shadow. */
@@ -329,7 +350,7 @@ html body.platform-theme[data-scroll-locked] {
 .platform-page {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: var(--platform-space-8);
   /* The page takes the place of the segment's loading fallback in one frame:
      a short fade and rise on mount keeps the swap from being a cut. It runs
      on every mount, so it plays again when a soft navigation remounts the
@@ -358,12 +379,12 @@ html body.platform-theme[data-scroll-locked] {
 .platform-page__head {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--platform-space-2);
 }
 
 .platform-page__title {
   margin: 0;
-  font-size: 39.5px;
+  font-size: var(--platform-type-4xl);
   font-weight: 600;
   letter-spacing: -0.025em;
   color: var(--platform-text);
@@ -372,7 +393,7 @@ html body.platform-theme[data-scroll-locked] {
 
 .platform-page__subtitle {
   margin: 0;
-  font-size: 17px;
+  font-size: var(--platform-type-xl);
   color: var(--platform-text-muted);
 }
 
@@ -380,12 +401,12 @@ html body.platform-theme[data-scroll-locked] {
   background: var(--platform-surface);
   border-radius: 8px;
   box-shadow: var(--platform-shadow-card);
-  padding: 22px 24px 24px;
+  padding: var(--platform-space-6) var(--platform-space-6) var(--platform-space-6);
 }
 
 .platform-card__title {
-  margin: 0 0 14px;
-  font-size: 17px;
+  margin: 0 0 var(--platform-space-4);
+  font-size: var(--platform-type-xl);
   font-weight: 700;
   color: var(--platform-text);
 }
@@ -403,14 +424,14 @@ html body.platform-theme[data-scroll-locked] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 12px 22px;
+  gap: var(--platform-space-2);
+  padding: var(--platform-space-3) var(--platform-space-6);
   border: 0;
   border-radius: 8px;
   background: var(--platform-surface);
   box-shadow: inset 0 0 0 1px var(--platform-border-strong);
   color: var(--platform-text);
-  font-size: 15.5px;
+  font-size: var(--platform-type-lg);
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
@@ -481,7 +502,7 @@ html body.platform-theme[data-scroll-locked] {
 }
 
 .platform-button_variant_danger {
-  padding: 12px 20px;
+  padding: var(--platform-space-3) var(--platform-space-6);
   background: var(--platform-surface);
   box-shadow: inset 0 0 0 1px var(--platform-danger);
   color: var(--platform-danger);
@@ -521,7 +542,7 @@ html body.platform-theme[data-scroll-locked] {
   background: none;
   color: var(--platform-text-muted);
   font-family: inherit;
-  font-size: 14px;
+  font-size: var(--platform-type-sm);
   font-weight: 700;
   white-space: nowrap;
   cursor: pointer;
@@ -556,8 +577,8 @@ html body.platform-theme[data-scroll-locked] {
    alone, and comes after every variant so that it also shrinks the two that
    set their own padding. */
 .platform-button_size_compact {
-  padding: 9px 15px;
-  font-size: 15px;
+  padding: var(--platform-space-2) var(--platform-space-4);
+  font-size: var(--platform-type-lg);
   white-space: nowrap;
 }
 
@@ -576,7 +597,7 @@ html body.platform-theme[data-scroll-locked] {
   color: var(--platform-text);
   box-shadow: var(--platform-shadow-card);
   /* A tall modal scrolls inside instead of running off the screen. */
-  max-height: calc(100dvh / var(--platform-zoom, 1) - 40px);
+  max-height: calc(100dvh - 40px);
   overflow: auto;
 
   /* Every dialog comes in with a fade and a short rise and goes out the same
@@ -632,9 +653,9 @@ html body.platform-theme[data-scroll-locked] {
 
 .platform-tag {
   display: inline-block;
-  padding: 5px 11px;
+  padding: var(--platform-space-1) var(--platform-space-3);
   border-radius: 1000px;
-  font-size: 14px;
+  font-size: var(--platform-type-sm);
   font-weight: 500;
   background: var(--platform-surface-neutral);
   color: var(--platform-text-muted);

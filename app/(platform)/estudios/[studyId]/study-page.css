@@ -1,3 +1,3 @@
 .study-page {
-  gap: 14px;
+  gap: var(--platform-space-4);
 }

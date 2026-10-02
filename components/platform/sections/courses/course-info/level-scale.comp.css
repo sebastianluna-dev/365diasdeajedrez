@@ -1,19 +1,19 @@
 .level-scale {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--platform-space-2);
   min-width: 0;
 
   & .level-scale__headline {
     margin: 0;
-    font-size: 13.5px;
+    font-size: var(--platform-type-sm);
     font-weight: 800;
   }
 
   /* The columns are set inline, one per level of the catalog. */
   & .level-scale__levels {
     display: grid;
-    gap: 3px;
+    gap: var(--platform-space-1);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -30,19 +30,19 @@
 
   & .level-scale__bar {
     height: 8px;
-    margin-bottom: 6px;
+    margin-bottom: var(--platform-space-2);
     border-radius: 8px;
     background: var(--platform-track);
   }
 
   & .level-scale__name {
-    font-size: 12px;
+    font-size: var(--platform-type-xs);
     font-weight: 600;
     white-space: nowrap;
   }
 
   & .level-scale__range {
-    font-size: 11.5px;
+    font-size: var(--platform-type-2xs);
     white-space: nowrap;
     opacity: 0.8;
   }

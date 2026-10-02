@@ -5,22 +5,22 @@
 
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: var(--platform-space-6);
 
   & .course-games__table {
-    margin: 0 -22px -22px;
+    margin: 0 calc(-1 * var(--platform-space-6)) calc(-1 * var(--platform-space-6));
   }
 
   & .course-games__head {
     display: grid;
     grid-template-columns: var(--course-games-columns);
     align-items: center;
-    gap: 14px;
-    padding: 10px 22px;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-3) var(--platform-space-6);
     border-top: 1px solid var(--platform-border);
     border-bottom: 1px solid var(--platform-border);
     background: var(--platform-bg);
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 700;
     letter-spacing: 0.03em;
     color: var(--platform-text-muted);
@@ -36,8 +36,8 @@
     display: grid;
     grid-template-columns: var(--course-games-columns);
     align-items: center;
-    gap: 14px;
-    padding: 11px 22px;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-3) var(--platform-space-6);
   }
 
   & .course-games__row + .course-games__row {
@@ -48,11 +48,11 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--platform-space-0-5);
   }
 
   & .course-games__title {
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     font-weight: 600;
     color: var(--platform-text);
     overflow: hidden;
@@ -66,7 +66,7 @@
   }
 
   & .course-games__detail {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -75,7 +75,7 @@
 
   & .course-games__cell {
     min-width: 0;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-muted);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -89,7 +89,7 @@
 
   & .course-games__note {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-muted);
   }
 

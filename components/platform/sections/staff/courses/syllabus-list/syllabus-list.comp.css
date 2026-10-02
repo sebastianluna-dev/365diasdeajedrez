@@ -6,9 +6,9 @@
   /* The heading of a band: small, spaced out and quiet, so it names the block
      without competing with the names inside it. */
   & .syllabus-list__label {
-    margin: 0 0 8px;
+    margin: 0 0 var(--platform-space-2);
     color: var(--platform-text-subtle);
-    font-size: 12.5px;
+    font-size: var(--platform-type-xs);
     font-weight: 700;
     letter-spacing: 0.09em;
     text-transform: uppercase;
@@ -16,21 +16,21 @@
 
   /* The bands after the first one are set apart from the block above them. */
   & .syllabus-list__label:not(:first-child) {
-    margin-top: 22px;
+    margin-top: var(--platform-space-6);
   }
 
   & .syllabus-list__band {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 12px;
-    margin-top: 22px;
+    gap: var(--platform-space-3);
+    margin-top: var(--platform-space-6);
   }
 
   & .syllabus-list__hint {
-    margin: 0 0 8px;
+    margin: 0 0 var(--platform-space-2);
     color: var(--platform-text-subtle);
-    font-size: 13.5px;
+    font-size: var(--platform-type-sm);
   }
 
   /* The slot of what does not exist yet: dashed, the whole width, and lit only
@@ -38,15 +38,15 @@
   & .syllabus-list__add {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--platform-space-3);
     width: 100%;
-    padding: 15px 18px;
+    padding: var(--platform-space-4) var(--platform-space-5);
     border: 1.5px dashed var(--platform-border-strong);
     border-radius: 8px;
     background: transparent;
     color: var(--platform-text-muted);
     font-family: inherit;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     font-weight: 700;
     text-align: left;
     cursor: pointer;
@@ -61,7 +61,7 @@
   }
 
   & .syllabus-list__add-sign {
-    font-size: 19px;
+    font-size: var(--platform-type-xl);
     font-weight: 400;
     line-height: 1;
   }
@@ -70,7 +70,7 @@
   & .syllabus-list__add-note {
     margin-left: auto;
     color: var(--platform-text-subtle);
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 400;
   }
 
@@ -94,8 +94,8 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 9px 14px 9px 8px;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-2) var(--platform-space-4) var(--platform-space-2) var(--platform-space-2);
     background: var(--platform-surface);
   }
 
@@ -164,7 +164,7 @@
     border-radius: 8px;
     background: var(--platform-surface-neutral);
     color: var(--platform-text-muted);
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     line-height: 1;
@@ -173,7 +173,7 @@
   & .syllabus-list__number_kind_new {
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
-    font-size: 19px;
+    font-size: var(--platform-type-xl);
     font-weight: 400;
   }
 
@@ -194,7 +194,7 @@
   & .syllabus-list__name {
     flex: 1;
     min-width: 0;
-    font-size: 16.5px;
+    font-size: var(--platform-type-lg);
     font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--platform-text);
@@ -211,7 +211,7 @@
   & .syllabus-list__facts {
     flex: none;
     color: var(--platform-text-subtle);
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
   }
 
   & .syllabus-list__badge {
@@ -222,8 +222,8 @@
   /* The platform's quiet button, in the size of a row. */
   & .syllabus-list__edit {
     flex: none;
-    padding: 7px 18px;
-    font-size: 14.5px;
+    padding: var(--platform-space-2) var(--platform-space-5);
+    font-size: var(--platform-type-md);
     text-decoration: none;
   }
 
@@ -267,7 +267,7 @@
     right: 0;
     z-index: 2;
     min-width: 170px;
-    padding: 6px;
+    padding: var(--platform-space-2);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface);
@@ -283,13 +283,13 @@
 
   & .syllabus-list__menu-item {
     width: 100%;
-    padding: 9px 12px;
+    padding: var(--platform-space-2) var(--platform-space-3);
     border: 0;
     border-radius: 8px;
     background: transparent;
     color: var(--platform-danger);
     font-family: inherit;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     font-weight: 700;
     text-align: left;
     cursor: pointer;
@@ -298,10 +298,10 @@
   /* Where the action would have been, why it is not there. */
   & .syllabus-list__menu-note {
     margin: 0;
-    padding: 9px 12px;
+    padding: var(--platform-space-2) var(--platform-space-3);
     max-width: 240px;
     color: var(--platform-text-subtle);
-    font-size: 13.5px;
+    font-size: var(--platform-type-sm);
     line-height: 1.45;
     text-wrap: pretty;
   }
@@ -316,8 +316,8 @@
   & .syllabus-list__fixed {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 11px 14px;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-3) var(--platform-space-4);
     border-radius: 8px;
     background: var(--platform-accent-wash);
   }
@@ -331,7 +331,7 @@
   & .syllabus-list__new {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--platform-space-3);
     width: 100%;
   }
 
@@ -343,7 +343,7 @@
     background: transparent;
     color: var(--platform-text);
     font-family: inherit;
-    font-size: 16.5px;
+    font-size: var(--platform-type-lg);
     font-weight: 700;
   }
 
@@ -361,13 +361,13 @@
 
   & .syllabus-list__new-submit {
     flex: none;
-    padding: 8px 16px;
+    padding: var(--platform-space-2) var(--platform-space-4);
     border: 0;
     border-radius: 8px;
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
     font-family: inherit;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     font-weight: 700;
     cursor: pointer;
   }

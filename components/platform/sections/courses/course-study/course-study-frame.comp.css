@@ -6,7 +6,7 @@
 
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--platform-space-6);
 
   /* --- The course, above -------------------------------------------------- */
 
@@ -14,7 +14,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 24px;
+    gap: var(--platform-space-6);
   }
 
   /* The course's square image, as its row in «Mis cursos» draws it. */
@@ -38,12 +38,12 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--platform-space-2);
   }
 
   & .course-study-frame__name {
     margin: 0;
-    font-size: 28px;
+    font-size: var(--platform-type-3xl);
     font-weight: 600;
     line-height: 1.15;
     letter-spacing: -0.02em;
@@ -55,9 +55,9 @@
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 10px;
+    gap: var(--platform-space-3);
     margin: 0;
-    font-size: 17px;
+    font-size: var(--platform-type-xl);
     font-weight: 700;
     /* One colour for the three: the word, the step and the chapter. */
     color: var(--platform-text-title);
@@ -82,7 +82,7 @@
     flex: 0 0 var(--course-aside-width);
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--platform-space-3);
   }
 
   & .course-study-frame__learn,
@@ -90,10 +90,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: var(--platform-space-3);
     height: 50px;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: var(--platform-type-lg);
     font-weight: 800;
   }
 
@@ -121,12 +121,12 @@
     justify-content: center;
     min-width: 24px;
     height: 24px;
-    padding: 0 7px;
+    padding: 0 var(--platform-space-2);
     box-sizing: border-box;
     border-radius: 1000px;
     background: var(--platform-success-soft);
     color: var(--platform-success-ink);
-    font-size: 12px;
+    font-size: var(--platform-type-xs);
     font-weight: 800;
     font-variant-numeric: tabular-nums;
   }
@@ -137,7 +137,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    gap: 24px;
+    gap: var(--platform-space-6);
   }
 
   & .course-study-frame__main {
@@ -145,7 +145,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--platform-space-4);
   }
 
   /* A width of its own, not a share of what is left: the page's column is
@@ -155,7 +155,7 @@
     flex: 0 0 var(--course-aside-width);
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--platform-space-4);
   }
 
   & .course-study-frame__card {
@@ -168,27 +168,27 @@
 
   & .course-study-frame__card-title {
     margin: 0;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     font-weight: 800;
   }
 
   /* The title of a card with a body under it: a band, closed by a rule. */
   & .course-study-frame__card-title_kind_head {
-    padding: 18px 22px 14px;
+    padding: var(--platform-space-5) var(--platform-space-6) var(--platform-space-4);
     border-bottom: 1px solid var(--platform-border);
   }
 
   & .course-study-frame__options {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--platform-space-3);
     margin: 0;
-    padding: 16px 22px 20px;
+    padding: var(--platform-space-4) var(--platform-space-6) var(--platform-space-6);
     list-style: none;
   }
 
   & .course-study-frame__option {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     font-weight: 600;
     color: var(--platform-accent-ink);
   }
@@ -198,7 +198,7 @@
   }
 
   & .course-study-frame__setting {
-    padding: 16px 22px 20px;
+    padding: var(--platform-space-4) var(--platform-space-6) var(--platform-space-6);
   }
 
   /* Stacked, the course's column takes the width of the page's. The page

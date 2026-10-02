@@ -1,12 +1,12 @@
 .class-block-editor {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--platform-space-5);
 
   & .class-block-editor__list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--platform-space-3);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -16,8 +16,8 @@
   & .class-block-editor__item {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 12px 14px;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-3) var(--platform-space-4);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
   }
@@ -26,13 +26,13 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
+    gap: var(--platform-space-3);
   }
 
   & .class-block-editor__summary {
     flex: 1 1 220px;
     min-width: 0;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -43,17 +43,17 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 6px;
+    gap: var(--platform-space-2);
   }
 
   & .class-block-editor__control {
-    padding: 6px 11px;
+    padding: var(--platform-space-2) var(--platform-space-3);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: transparent;
     color: var(--platform-text-muted);
     font-family: inherit;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     font-weight: 600;
     cursor: pointer;
   }
@@ -70,15 +70,15 @@
 
   & .class-block-editor__warning {
     margin: 0;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-accent-ink);
   }
 
   & .class-block-editor__add {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    padding-top: 16px;
+    gap: var(--platform-space-4);
+    padding-top: var(--platform-space-4);
     border-top: 1px solid var(--platform-border);
 
     & .platform-field {

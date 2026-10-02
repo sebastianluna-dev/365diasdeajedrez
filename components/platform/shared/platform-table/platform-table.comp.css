@@ -10,12 +10,12 @@
 
   & .platform-table__head {
     text-align: left;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--platform-text-muted);
-    padding: 12px 16px;
+    padding: var(--platform-space-3) var(--platform-space-4);
     border-bottom: 1px solid var(--platform-border);
     white-space: nowrap;
   }
@@ -29,8 +29,8 @@
   }
 
   & .platform-table__cell {
-    padding: 12px 16px;
-    font-size: 15.5px;
+    padding: var(--platform-space-3) var(--platform-space-4);
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
     border-bottom: 1px solid var(--platform-border);
     vertical-align: middle;
@@ -58,8 +58,8 @@
   }
 
   & .platform-table__empty {
-    padding: 22px 16px;
-    font-size: 15.5px;
+    padding: var(--platform-space-6) var(--platform-space-4);
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
     text-align: center;
   }

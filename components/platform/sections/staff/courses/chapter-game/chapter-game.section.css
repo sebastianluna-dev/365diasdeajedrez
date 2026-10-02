@@ -2,16 +2,16 @@
   /* A workspace: it starts right under the bar and the board gets the
      height. The shell reserves 44px there; the difference is recovered here
      instead of touching its padding. */
-  margin-top: -18px;
+  margin-top: calc(-1 * var(--platform-space-5));
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--platform-space-4);
 
   /* The aside measures its own; the board keeps the rest. */
   & .chapter-game__layout {
     display: grid;
     grid-template-columns: 280px minmax(0, 1fr);
-    gap: 20px;
+    gap: var(--platform-space-6);
     align-items: start;
   }
 

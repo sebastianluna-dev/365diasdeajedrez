@@ -1,10 +1,10 @@
 .explorer-games {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--platform-space-3);
 
   & .explorer-games__title {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -15,7 +15,7 @@
   & .explorer-games__empty,
   & .explorer-games__more {
     margin: 0;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-text-muted);
   }
 
@@ -25,14 +25,14 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--platform-space-1);
   }
 
   & .explorer-games__link {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 10px;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-3);
     /* Transparent at rest, for the hover to colour it without moving anything. */
     border: 1px solid transparent;
     border-radius: 8px;
@@ -52,14 +52,14 @@
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 6px;
-    font-size: 15.5px;
+    gap: var(--platform-space-2);
+    font-size: var(--platform-type-lg);
     font-weight: 600;
   }
 
   & .explorer-games__elo {
     font-weight: 400;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-muted);
   }
 
@@ -70,8 +70,8 @@
   & .explorer-games__meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    font-size: 14px;
+    gap: var(--platform-space-3);
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-muted);
   }
 
@@ -83,12 +83,12 @@
   & .explorer-games__tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: var(--platform-space-2);
   }
 
   & .explorer-games__tag {
-    font-size: 14px;
-    padding: 2px 8px;
+    font-size: var(--platform-type-sm);
+    padding: var(--platform-space-0-5) var(--platform-space-2);
     border-radius: 1000px;
     border: 1px solid var(--platform-border);
     color: var(--platform-text-muted);

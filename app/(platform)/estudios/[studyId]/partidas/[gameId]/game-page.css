@@ -2,14 +2,14 @@
   /* A workspace, not a page that opens with a big title: it starts right
      under the bar, and the board gets the height. The shell reserves 44px
      there; the difference is recovered here instead of touching its padding. */
-  margin-top: -18px;
-  gap: 14px;
+  margin-top: calc(-1 * var(--platform-space-5));
+  gap: var(--platform-space-4);
 
   /* The aside measures its own; the board keeps the rest. */
   & .game-page__layout {
     display: grid;
     grid-template-columns: 280px minmax(0, 1fr);
-    gap: 20px;
+    gap: var(--platform-space-6);
     align-items: start;
   }
 

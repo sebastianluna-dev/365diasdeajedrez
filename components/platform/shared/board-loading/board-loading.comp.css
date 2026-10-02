@@ -1,12 +1,12 @@
 .board-loading {
   /* Centred in the height the bar leaves, so the knight sits where the board
      is about to appear and not at the top of an empty page. */
-  min-height: calc(100vh / var(--platform-zoom, 1) - 70px - 134px);
+  min-height: calc(100vh - 70px - 134px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--platform-space-2);
   /* It fades in after a short delay: a page that arrives in a hundred
      milliseconds never shows it, and one that takes longer sees it appear
      instead of flash. Its exit cannot be animated — the fallback is
@@ -21,7 +21,7 @@
   }
 
   & .board-loading__knight {
-    font-size: 44px;
+    font-size: var(--platform-type-5xl);
     line-height: 1;
     color: var(--platform-text);
     animation: board-loading-hop 1.3s ease-in-out infinite;
@@ -31,7 +31,7 @@
   & .board-loading__shadow {
     width: 34px;
     height: 7px;
-    margin-top: 4px;
+    margin-top: var(--platform-space-1);
     border-radius: 50%;
     background: var(--platform-text);
     opacity: 0.22;
@@ -39,8 +39,8 @@
   }
 
   & .board-loading__label {
-    margin-top: 14px;
-    font-size: 14px;
+    margin-top: var(--platform-space-4);
+    font-size: var(--platform-type-sm);
     font-weight: 600;
     color: var(--platform-text-muted);
   }
@@ -55,7 +55,7 @@
   }
 
   @media (max-width: 1080px) {
-    min-height: calc(60vh / var(--platform-zoom, 1));
+    min-height: 60vh;
   }
 }
 

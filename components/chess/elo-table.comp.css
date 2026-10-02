@@ -19,13 +19,13 @@
 
 .elo-item {
   background: #16110d;
-  padding: 10px 4px;
+  padding: var(--platform-space-3, 10px) var(--platform-space-1, 4px);
   text-align: center;
   box-sizing: border-box;
 
   & .elo-item__label {
     display: block;
-    font-size: 14px;
+    font-size: var(--platform-type-sm, 14px);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: #8a8175;
@@ -34,9 +34,9 @@
   & .elo-item__value {
     display: block;
     font-family: var(--font-gramatika), sans-serif;
-    font-size: 22px;
+    font-size: var(--platform-type-2xl, 22px);
     font-weight: 700;
-    margin-top: 6px;
+    margin-top: var(--platform-space-2, 6px);
     color: #f2ede7;
   }
 }

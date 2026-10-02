@@ -5,7 +5,7 @@
   display: grid;
   /* As many cards per row as fit at a readable width; one column on a phone. */
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 12px;
+  gap: var(--platform-space-3);
   /* Fills a fieldset's flex row too: a grid inside a flex container would shrink. */
   width: 100%;
 
@@ -15,9 +15,9 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
+    gap: var(--platform-space-2);
     min-width: 0;
-    padding: 16px 40px 16px 18px;
+    padding: var(--platform-space-4) var(--platform-space-12) var(--platform-space-4) var(--platform-space-5);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface-soft);
@@ -89,18 +89,18 @@
 
   & .platform-check-cards__icon {
     display: flex;
-    margin-bottom: 4px;
+    margin-bottom: var(--platform-space-1);
   }
 
   & .platform-check-cards__label {
-    font-size: 16px;
+    font-size: var(--platform-type-lg);
     font-weight: 700;
   }
 
   /* The option's fact: in the text colour and aligned figures, so a column
      of ranges reads down the cards. */
   & .platform-check-cards__meta {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
     color: var(--platform-text);
@@ -111,7 +111,7 @@
   }
 
   & .platform-check-cards__description {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     line-height: 1.4;
     color: var(--platform-text-muted);
   }
@@ -132,8 +132,8 @@
     /* Tighter than a word space: the fact follows the name closely enough to
        be read as part of it — «Avanzado (Elo 1600–1999)» — and not as a
        second column of the card. */
-    gap: 4px;
-    padding: 14px 44px 14px 18px;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-4) var(--platform-space-12) var(--platform-space-4) var(--platform-space-5);
   }
 
   /* With a single line the corner is the middle of the card. */
@@ -158,7 +158,7 @@
      («Avanzado (Elo 1600–1999)»), not a note about it, and a second style
      inside one line makes two things of what is one. */
   &.platform-check-cards_layout_line .platform-check-cards__meta {
-    font-size: 16px;
+    font-size: var(--platform-type-lg);
     font-weight: 400;
     color: inherit;
   }

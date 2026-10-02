@@ -1,7 +1,7 @@
 .lesson-outline {
   /* One size for the whole column — course, chapter and lessons — with the
      weight, and not the size, telling them apart. */
-  font-size: 17px;
+  font-size: var(--platform-type-xl);
 
   /* Where the centre of every mark falls, counted from the right edge: the
      chapter's ring is 40px wide inside 16 of padding, so its centre sits
@@ -14,8 +14,8 @@
      lessons are a panel of the screen and not a card floating on it. The page
      only reserves its width (`lesson-frame.comp.css`).
 
-     `top` is the bar's height. Under the zoom these are the page's own px,
-     the same ones the bar is drawn with, so the two meet exactly. */
+     `top` is the bar's height, in the same px the bar is drawn with, so the
+     two meet exactly. */
   position: fixed;
   top: 70px;
   left: 0;
@@ -39,8 +39,8 @@
     flex: none;
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 16px;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-4);
     box-shadow: inset 0 -1px 0 var(--platform-border);
   }
 
@@ -63,7 +63,7 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--platform-space-3);
   }
 
   & .lesson-outline__course-name {
@@ -86,7 +86,7 @@
   & .lesson-outline__filter-button {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--platform-space-2);
     width: 100%;
     padding: 0;
     border: 0;
@@ -96,7 +96,7 @@
     text-align: left;
     /* Smaller than the list it sits over: it is a setting, not one more
        thing to read. */
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text);
     cursor: pointer;
   }
@@ -159,8 +159,8 @@
     z-index: 1;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 18px 16px;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-5) var(--platform-space-4);
     background: var(--platform-surface);
     box-shadow: inset 0 -1px 0 var(--platform-border);
   }
@@ -215,7 +215,7 @@
 
   & .lesson-outline__gauge-value {
     position: relative;
-    font-size: 12px;
+    font-size: var(--platform-type-xs);
     font-weight: 700;
     color: var(--platform-text-muted);
     font-variant-numeric: tabular-nums;
@@ -232,10 +232,10 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--platform-space-3);
     /* The right padding puts the mark's centre on `--mark-center`: half of
        the 18px mark short of it. */
-    padding: 18px calc(var(--mark-center) - 9px) 18px 16px;
+    padding: var(--platform-space-5) calc(var(--mark-center) - 9px) var(--platform-space-5) var(--platform-space-4);
     /* Barely tinted: a whole column of rows in the accent's wash reads as a
        warning, and what this is saying is only "these belong together". */
     background: var(--platform-accent-mist);

@@ -1,7 +1,7 @@
 .staff-panel {
-  --staff-panel-gutter: 22px;
+  --staff-panel-gutter: var(--platform-space-6);
 
-  padding: 18px var(--staff-panel-gutter) 22px;
+  padding: var(--platform-space-5) var(--staff-panel-gutter) var(--platform-space-6);
   background: var(--platform-surface);
   /* No outline: the card is white on the page's grey, over its shadow. */
   border-radius: 8px;
@@ -10,22 +10,22 @@
   & .staff-panel__head {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin: 0 calc(var(--staff-panel-gutter) * -1) 18px;
-    padding: 0 var(--staff-panel-gutter) 14px;
+    gap: var(--platform-space-3);
+    margin: 0 calc(var(--staff-panel-gutter) * -1) var(--platform-space-5);
+    padding: 0 var(--staff-panel-gutter) var(--platform-space-4);
     border-bottom: 1px solid var(--platform-border);
   }
 
   & .staff-panel__title {
     margin: 0;
-    font-size: 17px;
+    font-size: var(--platform-type-xl);
     font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--platform-text);
   }
 
   & .staff-panel__meta {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
   }
 
@@ -35,13 +35,13 @@
     flex: none;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--platform-space-2);
   }
 
   & .staff-panel__description {
-    margin: -4px 0 18px;
+    margin: calc(-1 * var(--platform-space-1)) 0 var(--platform-space-5);
     max-width: 72ch;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     line-height: 1.55;
     color: var(--platform-text-muted);
     text-wrap: pretty;

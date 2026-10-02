@@ -2,18 +2,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: calc(100vh / var(--platform-zoom, 1));
-  padding: 40px 20px;
+  min-height: 100vh;
+  padding: var(--platform-space-12) var(--platform-space-6);
   background: var(--platform-bg);
   color: var(--platform-text);
 
   & .login__card {
     display: flex;
     flex-direction: column;
-    gap: 22px;
+    gap: var(--platform-space-6);
     width: 100%;
     max-width: 400px;
-    padding: 32px;
+    padding: var(--platform-space-8);
     background: var(--platform-surface);
     border-radius: 8px;
     box-shadow: var(--platform-shadow-card);
@@ -21,7 +21,7 @@
 
   & .login__logo {
     font-family: var(--platform-font);
-    font-size: 19px;
+    font-size: var(--platform-type-xl);
     font-weight: 700;
   }
 
@@ -33,16 +33,16 @@
   & .login__head {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--platform-space-2);
   }
 
   & .login__title {
-    font-size: 25px;
+    font-size: var(--platform-type-2xl);
     font-weight: 600;
   }
 
   & .login__subtitle {
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     line-height: 1.5;
     color: var(--platform-text-muted);
   }
@@ -50,29 +50,29 @@
   & .login__form {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: var(--platform-space-4);
   }
 
   & .login__field {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--platform-space-2);
   }
 
   & .login__label {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-text-muted);
   }
 
   & .login__input {
     width: 100%;
-    padding: 10px 12px;
+    padding: var(--platform-space-3) var(--platform-space-3);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface);
     color: var(--platform-text);
     font-family: inherit;
-    font-size: 16.5px;
+    font-size: var(--platform-type-lg);
   }
 
   & .login__input:focus {
@@ -81,13 +81,13 @@
   }
 
   & .login__error {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     line-height: 1.4;
     color: var(--platform-danger);
   }
 
   & .login__submit {
-    margin-top: 4px;
+    margin-top: var(--platform-space-1);
   }
 
   & .login__submit:disabled {
@@ -96,16 +96,16 @@
   }
 
   & .login__help {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     line-height: 1.5;
     color: var(--platform-text-muted);
   }
 
   @media (max-width: 480px) {
-    padding: 20px;
+    padding: var(--platform-space-6);
 
     & .login__card {
-      padding: 24px;
+      padding: var(--platform-space-6);
     }
   }
 }

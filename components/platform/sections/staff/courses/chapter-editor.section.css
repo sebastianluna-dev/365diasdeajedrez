@@ -1,12 +1,12 @@
 .chapter-editor {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: var(--platform-space-6);
 
   & .chapter-editor__form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--platform-space-4);
   }
 
   /* The checkbox on top and its explanation under the text, as in the
@@ -14,21 +14,21 @@
   & .chapter-editor__check {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    font-size: 15px;
+    gap: var(--platform-space-3);
+    font-size: var(--platform-type-lg);
     color: var(--platform-text);
     cursor: pointer;
   }
 
   & .chapter-editor__check input {
-    margin-top: 2px;
+    margin-top: var(--platform-space-0-5);
     flex: none;
   }
 
   /* Under the facts: where the duration comes from, now that it is not typed. */
   & .chapter-editor__note {
-    margin: 12px 0 0;
-    font-size: 14px;
+    margin: var(--platform-space-3) 0 0;
+    font-size: var(--platform-type-sm);
     line-height: 1.5;
     color: var(--platform-text-subtle);
     text-wrap: pretty;
@@ -36,8 +36,8 @@
 
   & .chapter-editor__check-hint {
     display: block;
-    margin-top: 3px;
-    font-size: 14px;
+    margin-top: var(--platform-space-1);
+    font-size: var(--platform-type-sm);
     line-height: 1.5;
     color: var(--platform-text-subtle);
     text-wrap: pretty;
@@ -52,15 +52,15 @@
     margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--platform-space-3);
   }
 
   & .chapter-editor__fact {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 12px;
-    font-size: 14px;
+    gap: var(--platform-space-3);
+    font-size: var(--platform-type-sm);
   }
 
   & .chapter-editor__fact dt {

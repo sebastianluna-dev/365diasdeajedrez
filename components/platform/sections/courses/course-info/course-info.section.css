@@ -1,7 +1,7 @@
 .course-info {
   display: flex;
   flex-direction: column;
-  gap: 64px;
+  gap: var(--platform-space-16);
 
   /* --- Hero: the cover, and the course's card resting on its foot ---------- */
 
@@ -32,7 +32,7 @@
 
   & .course-info__cover-name {
     font-family: var(--platform-font-serif);
-    font-size: clamp(32px, 5vw, 64px);
+    font-size: clamp(var(--platform-type-3xl), 5vw, var(--platform-type-5xl));
     line-height: 1.05;
     color: var(--platform-on-ink);
     text-wrap: balance;
@@ -43,11 +43,11 @@
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    column-gap: 36px;
-    row-gap: 22px;
+    column-gap: var(--platform-space-10);
+    row-gap: var(--platform-space-6);
     /* It climbs onto the cover, and is inset from its edges. */
-    margin: -64px 36px 0;
-    padding: 26px 30px;
+    margin: calc(-1 * var(--platform-space-16)) var(--platform-space-10) 0;
+    padding: var(--platform-space-8) var(--platform-space-8);
     border-radius: 8px;
     background: var(--platform-surface);
     box-shadow:
@@ -58,14 +58,14 @@
   & .course-info__about {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--platform-space-3);
     min-width: 0;
   }
 
   & .course-info__contents {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: var(--platform-space-2);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -75,10 +75,10 @@
     display: inline-flex;
     align-items: center;
     height: 30px;
-    padding: 0 14px;
+    padding: 0 var(--platform-space-4);
     border: 1px solid var(--platform-border-strong);
     border-radius: 1000px;
-    font-size: 13.5px;
+    font-size: var(--platform-type-sm);
     font-weight: 600;
     white-space: nowrap;
   }
@@ -98,28 +98,28 @@
   & .course-info__description {
     max-width: 620px;
     margin: 0;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     line-height: 1.6;
     color: var(--platform-text-muted);
     text-wrap: pretty;
   }
 
   & .course-info__scale {
-    padding-top: 4px;
+    padding-top: var(--platform-space-1);
   }
 
   & .course-info__authors {
     margin: 0;
-    font-size: 13px;
+    font-size: var(--platform-type-xs);
     color: var(--platform-text-subtle);
   }
 
   & .course-info__side {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--platform-space-3);
     width: 300px;
-    padding-left: 32px;
+    padding-left: var(--platform-space-8);
     border-left: 1px solid var(--platform-border);
   }
 
@@ -128,27 +128,27 @@
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: minmax(0, 1fr);
-    gap: 8px;
+    gap: var(--platform-space-2);
     margin: 0;
   }
 
   & .course-info__stat {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--platform-space-0-5);
   }
 
   /* The <dd> goes first — the figure rules — and the <dt> under it is its
      label, so `dd` loses the indent it comes with. */
   & .course-info__stat-value {
     margin: 0;
-    font-size: 20px;
+    font-size: var(--platform-type-2xl);
     font-weight: 800;
     white-space: nowrap;
   }
 
   & .course-info__stat-label {
-    font-size: 12.5px;
+    font-size: var(--platform-type-xs);
     color: var(--platform-text-subtle);
   }
 
@@ -166,8 +166,8 @@
     width: 100%;
     box-sizing: border-box;
     height: 50px;
-    padding: 0 20px;
-    font-size: 15.5px;
+    padding: 0 var(--platform-space-6);
+    font-size: var(--platform-type-lg);
     font-weight: 800;
   }
 
@@ -176,33 +176,33 @@
   & .course-info__chapters {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: var(--platform-space-5);
   }
 
   & .course-info__section-head {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
-    gap: 16px;
+    gap: var(--platform-space-4);
   }
 
   & .course-info__section-title {
     margin: 0;
-    font-size: 28px;
+    font-size: var(--platform-type-3xl);
     font-weight: 800;
     letter-spacing: -0.02em;
   }
 
   & .course-info__section-note {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-muted);
   }
 
   & .course-info__chapter-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px;
+    gap: var(--platform-space-6);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -223,8 +223,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
-    padding: 22px 24px;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-6) var(--platform-space-6);
     background: var(--platform-ink);
   }
 
@@ -233,11 +233,11 @@
     display: inline-flex;
     align-items: center;
     height: 24px;
-    padding: 0 9px;
+    padding: 0 var(--platform-space-2);
     border-radius: 8px;
     background: color-mix(in srgb, var(--platform-accent-on-ink) 18%, transparent);
     color: var(--platform-accent-on-ink);
-    font-size: 12px;
+    font-size: var(--platform-type-xs);
     font-weight: 700;
   }
 
@@ -246,7 +246,7 @@
   & .course-info__chapter-title {
     margin: 0;
     font-family: var(--platform-font-serif);
-    font-size: 26px;
+    font-size: var(--platform-type-3xl);
     font-weight: 400;
     line-height: 1.15;
     color: var(--platform-on-ink);
@@ -255,8 +255,8 @@
 
   & .course-info__chapter-text {
     margin: 0;
-    padding: 22px 24px;
-    font-size: 14.5px;
+    padding: var(--platform-space-6) var(--platform-space-6);
+    font-size: var(--platform-type-md);
     line-height: 1.55;
     color: var(--platform-text-muted);
     text-wrap: pretty;
@@ -265,9 +265,9 @@
   /* Pushed to the foot of the card, with or without a description above it. */
   & .course-info__chapter-foot {
     margin: auto 0 0;
-    padding: 16px 24px 20px;
+    padding: var(--platform-space-4) var(--platform-space-6) var(--platform-space-6);
     border-top: 1px solid var(--platform-border);
-    font-size: 13px;
+    font-size: var(--platform-type-xs);
     color: var(--platform-text-subtle);
   }
 
@@ -276,12 +276,12 @@
   & .course-info__sources {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: var(--platform-space-4);
   }
 
   & .course-info__sources-title {
     margin: 0;
-    font-size: 22px;
+    font-size: var(--platform-type-2xl);
     font-weight: 800;
     letter-spacing: -0.01em;
   }
@@ -289,11 +289,11 @@
   & .course-info__source-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--platform-space-3);
     margin: 0;
     padding: 0;
     list-style: none;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     line-height: 1.6;
     color: var(--platform-text-muted);
     text-wrap: pretty;
@@ -315,16 +315,16 @@
   /* The card leaves the side column under what the course is about before
      the text next to it gets squeezed. */
   @media (max-width: 980px) {
-    gap: 48px;
+    gap: var(--platform-space-12);
 
     & .course-info__card {
       grid-template-columns: minmax(0, 1fr);
-      margin: -40px 20px 0;
+      margin: calc(-1 * var(--platform-space-12)) var(--platform-space-6) 0;
     }
 
     & .course-info__side {
       width: auto;
-      padding: 20px 0 0;
+      padding: var(--platform-space-6) 0 0;
       border-top: 1px solid var(--platform-border);
       border-left: 0;
     }
@@ -336,12 +336,12 @@
     }
 
     & .course-info__card {
-      margin: -24px 10px 0;
-      padding: 20px;
+      margin: calc(-1 * var(--platform-space-6)) var(--platform-space-3) 0;
+      padding: var(--platform-space-6);
     }
 
     & .course-info__chapter-title {
-      font-size: 24px;
+      font-size: var(--platform-type-2xl);
     }
   }
 }

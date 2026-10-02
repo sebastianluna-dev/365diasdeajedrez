@@ -2,9 +2,9 @@
   position: relative;
   flex: none;
   display: inline-flex;
-  gap: 4px;
+  gap: var(--platform-space-1);
   /* Room around the dots, so the pointer does not have to aim at nine pixels. */
-  padding: 6px 2px;
+  padding: var(--platform-space-2) var(--platform-space-0-5);
   border-radius: 8px;
   cursor: help;
 
@@ -48,11 +48,11 @@
     bottom: calc(100% + 8px);
     z-index: 5;
     width: 260px;
-    padding: 10px 14px;
+    padding: var(--platform-space-3) var(--platform-space-4);
     border-radius: 8px;
     background: var(--platform-ink);
     color: var(--platform-on-ink);
-    font-size: 13px;
+    font-size: var(--platform-type-xs);
     font-weight: 500;
     line-height: 1.45;
     text-align: left;

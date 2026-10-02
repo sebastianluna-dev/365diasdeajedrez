@@ -1,7 +1,7 @@
 .teachers-table {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--platform-space-5);
 
   & .teachers-table__bar {
     display: flex;

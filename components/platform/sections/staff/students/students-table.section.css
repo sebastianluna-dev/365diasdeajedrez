@@ -1,20 +1,20 @@
 .students-table {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--platform-space-5);
 
   & .students-table__bar {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
     justify-content: space-between;
-    gap: 12px;
+    gap: var(--platform-space-3);
   }
 
   & .students-table__search {
     display: flex;
     align-items: flex-end;
-    gap: 12px;
+    gap: var(--platform-space-3);
     flex-wrap: wrap;
 
     & .platform-field {

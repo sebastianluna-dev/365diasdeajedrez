@@ -1,12 +1,12 @@
 .assigned-students {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--platform-space-5);
 
   & .assigned-students__search {
     display: flex;
     align-items: flex-end;
-    gap: 12px;
+    gap: var(--platform-space-3);
     flex-wrap: wrap;
 
     & .platform-field {

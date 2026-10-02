@@ -50,8 +50,8 @@
   & .chess-board__promotion-panel {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px;
+    gap: var(--platform-space-2, 8px);
+    padding: var(--platform-space-3, 12px);
     border-radius: 8px;
     background: var(--platform-surface, #2b2723);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
@@ -102,13 +102,13 @@
   }
 
   & .chess-board__promotion-cancel {
-    padding: 8px 14px;
+    padding: var(--platform-space-2, 8px) var(--platform-space-4, 14px);
     border: 1px solid var(--platform-border-strong, rgba(245, 240, 232, 0.2));
     border-radius: 8px;
     background: transparent;
     color: var(--platform-text, var(--foreground));
     font-family: inherit;
-    font-size: 14px;
+    font-size: var(--platform-type-sm, 14px);
     cursor: pointer;
   }
 
@@ -133,21 +133,12 @@
     }
   }
 
-  /* The zoom is cancelled for the board and ONLY for the board. Chessground
-     measures this element with `getBoundingClientRect()`, which already
-     carries the page's zoom, and writes the result back as inline px — which
-     the zoom then applies a second time. Under the platform's 110% the board
-     came out 10% wider than the hole it was given, spilling over its right
-     and bottom edges, and the pieces, placed from that same measurement,
-     walked away from their squares until the back rank fell off the board.
-
-     At an effective zoom of 1 what is measured and what is written are the
-     same px again. The width stays at 100%: the browser converts the
-     percentage between the two zooms, so the board still measures exactly
-     what its container gives it. Outside the platform the token does not
-     exist and this resolves to `zoom: 1`. */
+  /* The board takes the whole width its container gives it, square. It once
+     carried `zoom` to cancel the platform's, because chessground measures it
+     with `getBoundingClientRect()` and writes the result back as inline px;
+     the platform has no zoom any more, so what is measured is what is
+     written. */
   & .chess-board__surface {
-    zoom: calc(1 / var(--platform-zoom, 1));
     width: 100%;
     aspect-ratio: 1;
   }
@@ -190,11 +181,11 @@
   }
 
   /* The only thing inside the board drawn at a fixed size: everything else
-     (pieces, arrows) scales with the square. Since the surface gives the
-     zoom back, these letters have to take it on themselves or they would be
-     the one text of the platform left at 100%. */
+     (pieces, arrows) scales with the square. The one font size of the
+     platform off its type scale: the smallest step, 12px, crowds the corner
+     of a square on a small board. */
   & .cg-wrap coords {
-    font-size: calc(9px * var(--platform-zoom, 1));
+    font-size: 9px;
     font-weight: 700;
   }
 
@@ -254,18 +245,18 @@
   }
 
   & .chess-board__notation-number {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md, 15px);
     font-weight: 500;
     color: var(--platform-text-muted, #8a8175);
-    padding: 10px 14px;
+    padding: var(--platform-space-3, 10px) var(--platform-space-4, 14px);
   }
 
   & .chess-board__notation-cell {
     text-align: left;
     background: transparent;
     border: 0;
-    padding: 10px 12px;
-    font-size: 15.5px;
+    padding: var(--platform-space-3, 10px) var(--platform-space-3, 12px);
+    font-size: var(--platform-type-lg, 16px);
     font-weight: 500;
     color: var(--platform-text, #e8dfd4);
     cursor: pointer;
@@ -286,7 +277,7 @@
     display: inline-flex;
     width: 19px;
     height: 19px;
-    margin-right: 3px;
+    margin-right: var(--platform-space-1, 3px);
     vertical-align: -4px;
   }
 
@@ -337,13 +328,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 12px;
+    padding: var(--platform-space-2, 8px) var(--platform-space-3, 12px);
     border-top: 1px solid var(--platform-border, rgba(245, 240, 232, 0.07));
   }
 
   & .chess-board__toolbar-group {
     display: flex;
-    gap: 4px;
+    gap: var(--platform-space-1, 4px);
   }
 
   & .chess-board__tool {

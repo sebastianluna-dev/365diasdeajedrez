@@ -6,6 +6,6 @@
   /* Why a save was refused, above the board: it answers what was just done
      and has to be seen without looking for it. */
   & .platform-notice {
-    margin-bottom: 14px;
+    margin-bottom: var(--platform-space-4);
   }
 }

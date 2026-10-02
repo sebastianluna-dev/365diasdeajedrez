@@ -1,20 +1,20 @@
 .share-collection {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  padding: 22px 24px;
+  gap: var(--platform-space-5);
+  padding: var(--platform-space-6) var(--platform-space-6);
   border-radius: 8px;
   background: var(--platform-surface);
 
   & .share-collection__head {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--platform-space-2);
   }
 
   & .share-collection__title {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--platform-type-xl);
     font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--platform-text);
@@ -23,7 +23,7 @@
   & .share-collection__hint {
     margin: 0;
     max-width: 62ch;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     line-height: 1.5;
     color: var(--platform-text-muted);
     text-wrap: pretty;
@@ -46,25 +46,25 @@
   & .share-collection__item {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 10px 0;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-3) 0;
   }
 
   & .share-collection__student {
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--platform-space-0-5);
   }
 
   & .share-collection__name {
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     font-weight: 600;
     color: var(--platform-text);
   }
 
   & .share-collection__email {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -76,19 +76,19 @@
   & .share-collection__date {
     margin-left: auto;
     flex: none;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
   }
 
   & .share-collection__remove {
     flex: none;
-    padding: 6px 12px;
+    padding: var(--platform-space-2) var(--platform-space-3);
     border: 1px solid var(--platform-border);
     border-radius: 1000px;
     background: transparent;
     color: var(--platform-text-muted);
     font-family: inherit;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 600;
     cursor: pointer;
     transition: 150ms;
@@ -102,14 +102,14 @@
 
   & .share-collection__empty {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
   }
 
   & .share-collection__form {
     display: flex;
     align-items: flex-end;
-    gap: 12px;
+    gap: var(--platform-space-3);
     flex-wrap: wrap;
   }
 
@@ -118,11 +118,11 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--platform-space-2);
   }
 
   & .share-collection__label {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 600;
     color: var(--platform-text-muted);
   }
@@ -131,15 +131,15 @@
      border, the student on two lines with the date under the name, and the
      form stacked, because a 280px column has no room for a row. */
   &.share-collection_layout_compact {
-    gap: 14px;
-    padding: 16px;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-4);
     /* It is the aside's third card and reads like the other two: white on
        the page's grey, over a light shadow. */
     border-radius: 8px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 
     & .share-collection__title {
-      font-size: 14px;
+      font-size: var(--platform-type-sm);
       letter-spacing: 0.07em;
       text-transform: uppercase;
       color: var(--platform-text-subtle);
@@ -147,7 +147,7 @@
 
     & .share-collection__item {
       flex-wrap: wrap;
-      gap: 6px 10px;
+      gap: var(--platform-space-2) var(--platform-space-3);
     }
 
     & .share-collection__student {

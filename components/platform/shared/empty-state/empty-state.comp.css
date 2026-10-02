@@ -1,26 +1,26 @@
 .empty-state {
   border: 1px dashed var(--platform-border);
   border-radius: 8px;
-  padding: 28px 24px;
+  padding: var(--platform-space-8) var(--platform-space-6);
   text-align: center;
 
   & .empty-state__title {
     margin: 0;
-    font-size: 16.5px;
+    font-size: var(--platform-type-lg);
     font-weight: 600;
     color: var(--platform-text);
   }
 
   & .empty-state__description {
-    margin: 6px 0 0;
-    font-size: 15.5px;
+    margin: var(--platform-space-2) 0 0;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
   & .empty-state__action {
     display: inline-block;
-    margin-top: 14px;
-    font-size: 15.5px;
+    margin-top: var(--platform-space-4);
+    font-size: var(--platform-type-lg);
     font-weight: 600;
     color: var(--platform-accent-ink);
   }

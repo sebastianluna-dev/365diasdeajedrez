@@ -1,13 +1,13 @@
 .staff-editor-head {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--platform-space-4);
 
   & .staff-editor-head__bar {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
-    gap: 24px;
+    gap: var(--platform-space-6);
   }
 
   & .staff-editor-head__heading {
@@ -17,13 +17,13 @@
   & .staff-editor-head__title-row {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--platform-space-3);
     flex-wrap: wrap;
   }
 
   & .staff-editor-head__title {
     margin: 0;
-    font-size: 31px;
+    font-size: var(--platform-type-3xl);
     font-weight: 600;
     line-height: 1.15;
     letter-spacing: -0.025em;
@@ -32,13 +32,13 @@
   }
 
   &.staff-editor-head_level_root .staff-editor-head__title {
-    font-size: 39.5px;
+    font-size: var(--platform-type-4xl);
   }
 
   & .staff-editor-head__description {
-    margin: 8px 0 0;
+    margin: var(--platform-space-2) 0 0;
     max-width: 68ch;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     line-height: 1.55;
     color: var(--platform-text-muted);
     text-wrap: pretty;
@@ -48,9 +48,9 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 12px;
-    font-size: 14px;
+    gap: var(--platform-space-3);
+    margin-top: var(--platform-space-3);
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-muted);
   }
 
@@ -58,14 +58,14 @@
     flex: none;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--platform-space-3);
   }
 
   @media (max-width: 760px) {
     & .staff-editor-head__bar {
       flex-direction: column;
       align-items: flex-start;
-      gap: 18px;
+      gap: var(--platform-space-5);
     }
 
     & .staff-editor-head__actions {
@@ -79,13 +79,13 @@
   /* In pixels and not in fractions, so it does not stretch on wide screens. */
   grid-template-columns: minmax(0, 1fr) 360px;
   align-items: start;
-  gap: 20px;
+  gap: var(--platform-space-6);
 
   & .staff-editor__main,
   & .staff-editor__aside {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--platform-space-6);
     min-width: 0;
   }
 

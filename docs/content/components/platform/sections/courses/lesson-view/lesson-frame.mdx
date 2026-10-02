@@ -34,7 +34,7 @@ Block `.lesson-frame`. A grid of two tracks, 40px apart — the board is given t
 
 **The page is the window.** The layout's own `<div>` carries `.platform-page`, `.lesson-page`, `.platform-page_width_full` and `.platform-page_height_screen`: no cap on the width, and the frame hands it exactly what is left under the bar (see [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)). Nothing here scrolls the page — the column of lessons and the panel of text each move on their own — because what is looked at is a board, and a board that falls below the fold is a board nobody sees whole.
 
-So the board is measured by the **height** that is left, not by the width: `--viewer-board-max` is `max(320px, 100vh / zoom - 192px)`, with no ceiling, the subtraction being the viewer's button row and its gap (62) and the frame's padding (40 above, 20 below) — there is nothing else under the board to make room for. At `(max-width: 1080px)` or `(max-height: 620px)` it becomes one column, the board gets a flat `600px` back and the outline drops under the lesson.
+So the board is measured by the **height** that is left, not by the width: `--viewer-board-max` is `max(320px, calc(100vh - 192px))`, with no ceiling, the subtraction being the viewer's button row and its gap (62) and the frame's padding (40 above, 20 below) — there is nothing else under the board to make room for. At `(max-width: 1080px)` or `(max-height: 620px)` it becomes one column, the board gets a flat `600px` back and the outline drops under the lesson.
 
 **Elements:** `.lesson-frame__main`
 

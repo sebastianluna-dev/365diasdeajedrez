@@ -6,7 +6,7 @@
   /* Wider than the study dialog: the eight content-type cards want three
      columns to keep the list short. */
   & .new-course__dialog {
-    width: min(720px, calc(100vw / var(--platform-zoom, 1) - 32px));
+    width: min(720px, calc(100vw - 32px));
     border-radius: 8px;
   }
 
@@ -19,8 +19,8 @@
   & .new-course__head {
     display: flex;
     align-items: flex-start;
-    gap: 18px;
-    padding: 28px 28px 0;
+    gap: var(--platform-space-5);
+    padding: var(--platform-space-8) var(--platform-space-8) 0;
   }
 
   /* A dark tile with a white rook: the course's mark, next to the study
@@ -40,15 +40,15 @@
 
   & .new-course__title {
     margin: 0;
-    font-size: 24px;
+    font-size: var(--platform-type-2xl);
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.2;
   }
 
   & .new-course__subtitle {
-    margin: 4px 0 0;
-    font-size: 16px;
+    margin: var(--platform-space-1) 0 0;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
     text-wrap: pretty;
   }
@@ -60,7 +60,7 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    margin: -6px -6px 0 0;
+    margin: calc(-1 * var(--platform-space-2)) calc(-1 * var(--platform-space-2)) 0 0;
     border: 0;
     border-radius: 8px;
     background: transparent;
@@ -81,8 +81,8 @@
   & .new-course__body {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 26px 28px 28px;
+    gap: var(--platform-space-6);
+    padding: var(--platform-space-8) var(--platform-space-8) var(--platform-space-8);
   }
 
   /* The band at the bottom: sunk a shade, with the note on one side and the
@@ -91,22 +91,22 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: var(--platform-space-4);
     flex-wrap: wrap;
-    padding: 18px 28px;
+    padding: var(--platform-space-5) var(--platform-space-8);
     border-top: 1px solid var(--platform-border);
     background: var(--platform-bg);
   }
 
   & .new-course__note {
     margin: 0;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
   & .new-course__actions {
     display: flex;
-    gap: 10px;
+    gap: var(--platform-space-3);
     margin-left: auto;
   }
 }

@@ -12,19 +12,19 @@
   &.author-avatar_size_small {
     width: 36px;
     height: 36px;
-    font-size: 13.5px;
+    font-size: var(--platform-type-sm);
   }
 
   &.author-avatar_size_medium {
     width: 46px;
     height: 46px;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
   }
 
   &.author-avatar_size_large {
     width: 56px;
     height: 56px;
-    font-size: 18px;
+    font-size: var(--platform-type-xl);
   }
 
   &.author-avatar_shape_tile {

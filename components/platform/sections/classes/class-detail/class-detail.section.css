@@ -1,38 +1,38 @@
 .class-detail {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: var(--platform-space-6);
 
   & .class-detail__head {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--platform-space-3);
     align-items: flex-start;
   }
 
   & .class-detail__meta {
     margin: 0;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
   & .class-detail__summary-text {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--platform-type-lg);
     line-height: 1.65;
     color: var(--platform-text-muted);
   }
 
   & .class-detail__content-title {
-    margin: 0 0 14px;
-    font-size: 19px;
+    margin: 0 0 var(--platform-space-4);
+    font-size: var(--platform-type-xl);
     font-weight: 700;
     color: var(--platform-text);
   }
 
   & .class-detail__transcript-text {
     margin: 0;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     line-height: 1.7;
     color: var(--platform-text-muted);
     white-space: pre-line;
@@ -40,7 +40,7 @@
 
   & .class-detail__transcript-status {
     margin: 0;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 }

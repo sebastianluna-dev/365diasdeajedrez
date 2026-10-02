@@ -35,13 +35,13 @@
     height: 40px;
     /* Room for the magnifier on the left; on the right, the space the search
        type's own clear button takes in the browsers that draw one. */
-    padding: 0 14px 0 42px;
+    padding: 0 var(--platform-space-4) 0 var(--platform-space-12);
     border: 1px solid transparent;
     border-radius: 1000px;
     background: var(--platform-bg);
     color: var(--platform-text);
     font: inherit;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
 
     &::placeholder {
       color: var(--platform-text-muted);

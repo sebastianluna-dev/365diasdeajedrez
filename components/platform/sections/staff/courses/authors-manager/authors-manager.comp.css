@@ -4,15 +4,15 @@
   /* The size and the rounding: the centring, the backdrop, the surface and
      the entry and exit motion are set by `.platform-dialog`. */
   & .authors-manager__dialog {
-    width: min(560px, calc(100vw / var(--platform-zoom, 1) - 32px));
+    width: min(560px, calc(100vw - 32px));
     border-radius: 8px;
   }
 
   & .authors-manager__head {
     display: flex;
     align-items: flex-start;
-    gap: 18px;
-    padding: 28px 28px 0;
+    gap: var(--platform-space-5);
+    padding: var(--platform-space-8) var(--platform-space-8) 0;
   }
 
   & .authors-manager__heading {
@@ -22,7 +22,7 @@
 
   & .authors-manager__title {
     margin: 0;
-    font-size: 24px;
+    font-size: var(--platform-type-2xl);
     font-weight: 700;
     letter-spacing: -0.02em;
     line-height: 1.2;
@@ -30,8 +30,8 @@
   }
 
   & .authors-manager__subtitle {
-    margin: 4px 0 0;
-    font-size: 16px;
+    margin: var(--platform-space-1) 0 0;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
@@ -42,7 +42,7 @@
     justify-content: center;
     width: 36px;
     height: 36px;
-    margin: -6px -6px 0 0;
+    margin: calc(-1 * var(--platform-space-2)) calc(-1 * var(--platform-space-2)) 0 0;
     border: 0;
     border-radius: 8px;
     background: transparent;
@@ -69,8 +69,8 @@
   & .authors-manager__body {
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    padding: 22px 28px 26px;
+    gap: var(--platform-space-5);
+    padding: var(--platform-space-6) var(--platform-space-8) var(--platform-space-8);
   }
 
   & .authors-manager__form .platform-form__field > textarea {
@@ -81,7 +81,7 @@
   & .authors-manager__list {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: var(--platform-space-5);
     max-height: min(420px, 50vh);
     margin: 0;
     padding: 0;
@@ -92,7 +92,7 @@
   & .authors-manager__row {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: var(--platform-space-4);
   }
 
   & .authors-manager__row-text {
@@ -100,11 +100,11 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: var(--platform-space-0-5);
   }
 
   & .authors-manager__row-name {
-    font-size: 17px;
+    font-size: var(--platform-type-xl);
     font-weight: 700;
     color: var(--platform-text);
     overflow: hidden;
@@ -113,7 +113,7 @@
   }
 
   & .authors-manager__row-meta {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-text-subtle);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -126,7 +126,7 @@
 
   & .authors-manager__empty {
     margin: 0;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-subtle);
   }
 
@@ -135,7 +135,7 @@
   & .authors-manager__photo {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: var(--platform-space-4);
   }
 
   & .authors-manager__photo-file {
@@ -150,7 +150,7 @@
     flex: 1;
     min-width: 0;
     margin: 0;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     line-height: 1.45;
     color: var(--platform-text-subtle);
     text-wrap: pretty;
@@ -165,17 +165,17 @@
     flex: none;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--platform-space-2);
   }
 
   & .authors-manager__photo-remove {
-    padding: 8px 10px;
+    padding: var(--platform-space-2) var(--platform-space-3);
     border: 0;
     border-radius: 8px;
     background: transparent;
     color: var(--platform-text-subtle);
     font-family: inherit;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     font-weight: 600;
     cursor: pointer;
   }
@@ -190,22 +190,22 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: var(--platform-space-4);
     flex-wrap: wrap;
-    padding: 18px 28px;
+    padding: var(--platform-space-5) var(--platform-space-8);
     border-top: 1px solid var(--platform-border);
     background: var(--platform-bg);
   }
 
   & .authors-manager__note {
     margin: 0;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
   & .authors-manager__actions {
     display: flex;
-    gap: 10px;
+    gap: var(--platform-space-3);
     margin-left: auto;
   }
 

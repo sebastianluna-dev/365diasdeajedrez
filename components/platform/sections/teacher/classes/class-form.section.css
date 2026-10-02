@@ -1,18 +1,18 @@
 .class-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--platform-space-4);
 
   & .class-form__hint {
     margin: 0;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
   & .class-form__row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 14px;
+    gap: var(--platform-space-4);
 
     @media (max-width: 700px) {
       grid-template-columns: 1fr;
@@ -22,7 +22,7 @@
   & .class-form__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 4px;
+    gap: var(--platform-space-3);
+    margin-top: var(--platform-space-1);
   }
 }

@@ -8,7 +8,7 @@
     background: transparent;
     color: var(--platform-accent-ink);
     font-family: inherit;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     font-weight: 600;
     text-align: left;
     cursor: pointer;
@@ -21,27 +21,27 @@
   /* The size and the rounding: the centring, the backdrop, the surface and
      the entry and exit motion are set by `.platform-dialog`. */
   & .remove-course__dialog {
-    width: min(480px, calc(100vw / var(--platform-zoom, 1) - 32px));
+    width: min(480px, calc(100vw - 32px));
     border-radius: 8px;
   }
 
   & .remove-course__form {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    padding: 28px;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-8);
   }
 
   & .remove-course__title {
     margin: 0;
-    font-size: 22px;
+    font-size: var(--platform-type-2xl);
     font-weight: 800;
     letter-spacing: -0.01em;
   }
 
   & .remove-course__text {
     margin: 0;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     line-height: 1.55;
     color: var(--platform-text-muted);
     text-wrap: pretty;
@@ -50,11 +50,11 @@
   & .remove-course__confirm {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    padding: 12px 14px;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-3) var(--platform-space-4);
     border: 1px solid var(--platform-border-strong);
     border-radius: 8px;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     font-weight: 600;
     line-height: 1.4;
     cursor: pointer;
@@ -71,8 +71,8 @@
   & .remove-course__actions {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    padding-top: 6px;
+    gap: var(--platform-space-3);
+    padding-top: var(--platform-space-2);
   }
 
   @media (max-width: 520px) {

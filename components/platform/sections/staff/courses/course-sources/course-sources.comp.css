@@ -3,7 +3,7 @@
 
   & .course-sources__empty {
     margin: 0;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     line-height: 1.45;
     color: var(--platform-text-subtle);
   }
@@ -11,7 +11,8 @@
   /* The rules between sources reach the card's edges, like the one under its
      header: the gutter is the panel's, which this block sits in. */
   & .course-sources__list {
-    margin: -18px calc(var(--staff-panel-gutter, 22px) * -1) -22px;
+    margin: calc(-1 * var(--platform-space-5)) calc(var(--staff-panel-gutter, var(--platform-space-6)) * -1)
+      calc(-1 * var(--platform-space-6));
     padding: 0;
     list-style: none;
   }
@@ -20,8 +21,8 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 12px;
-    padding: 16px var(--staff-panel-gutter, 22px);
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-4) var(--staff-panel-gutter, var(--platform-space-6));
   }
 
   & .course-sources__row + .course-sources__row {
@@ -32,13 +33,13 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 5px;
+    gap: var(--platform-space-1);
     min-width: 0;
   }
 
   /* The title takes the lines it needs: nothing is cut, the row grows. */
   & .course-sources__title {
-    font-size: 16px;
+    font-size: var(--platform-type-lg);
     font-weight: 700;
     line-height: 1.35;
     color: var(--platform-text);
@@ -53,7 +54,7 @@
   }
 
   & .course-sources__meta {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     line-height: 1.4;
     color: var(--platform-text-subtle);
     overflow-wrap: anywhere;

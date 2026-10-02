@@ -1,12 +1,12 @@
 .teacher-dashboard {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--platform-space-6);
 
   & .teacher-dashboard__metrics {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    gap: var(--platform-space-4);
 
     @media (max-width: 900px) {
       grid-template-columns: 1fr;
@@ -16,25 +16,25 @@
   & .teacher-dashboard__metric {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--platform-space-1);
   }
 
   & .teacher-dashboard__metric-value {
     font-family: var(--platform-font);
-    font-size: 31px;
+    font-size: var(--platform-type-3xl);
     font-weight: 700;
     color: var(--platform-text);
   }
 
   & .teacher-dashboard__metric-label {
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
   & .teacher-dashboard__list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--platform-space-3);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -44,8 +44,8 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
-    padding: 10px 0;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-3) 0;
     border-bottom: 1px solid var(--platform-border);
   }
 
@@ -55,7 +55,7 @@
   }
 
   & .teacher-dashboard__class-title {
-    font-size: 16.5px;
+    font-size: var(--platform-type-lg);
     font-weight: 600;
     color: var(--platform-text);
   }
@@ -65,19 +65,19 @@
   }
 
   & .teacher-dashboard__class-meta {
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
   & .teacher-dashboard__empty {
     margin: 0;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
   & .teacher-dashboard__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: var(--platform-space-3);
   }
 }

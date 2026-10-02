@@ -1,12 +1,12 @@
 .game-fields {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--platform-space-3);
 
   & .game-fields__row {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: var(--platform-space-3);
 
     & .platform-field {
       flex: 1 1 220px;

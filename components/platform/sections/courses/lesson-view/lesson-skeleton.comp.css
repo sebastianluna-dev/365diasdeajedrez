@@ -10,7 +10,7 @@
   &.lesson-frame__main {
     display: grid;
     grid-template-columns: minmax(0, var(--viewer-board-max, 600px)) minmax(320px, 1fr);
-    column-gap: var(--viewer-column-gap, 22px);
+    column-gap: var(--viewer-column-gap, var(--platform-space-6));
     align-items: start;
   }
 
@@ -29,14 +29,13 @@
      rounds the board's side down to a whole 8 so that every square is a whole
      number of pixels, and a skeleton painted edge to edge would hand over a
      board up to 8px smaller — which is seen, because it is the thing being
-     looked at. The 8 are 8 of ITS pixels: it measures with the platform's zoom
-     already applied, and this is drawn inside that zoom. */
+     looked at. */
   & .lesson-skeleton__board::before {
     content: "";
     position: absolute;
     top: 0;
     left: 0;
-    width: round(down, 100%, calc(8px / var(--platform-zoom, 1)));
+    width: round(down, 100%, 8px);
     aspect-ratio: 1;
     /* The same two greens in the same pattern chessground paints, so what
        arrives is the pieces and not a new board. */
@@ -58,7 +57,7 @@
     left: 50%;
     width: 44px;
     height: 44px;
-    margin: -22px 0 0 -22px;
+    margin: calc(-1 * var(--platform-space-6)) 0 0 calc(-1 * var(--platform-space-6));
     border-radius: 50%;
     border: 3px solid var(--platform-accent-soft);
     border-top-color: var(--platform-accent);

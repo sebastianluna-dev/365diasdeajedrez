@@ -1,26 +1,26 @@
 .platform-error {
   border: 1px solid var(--platform-danger-border);
   border-radius: 8px;
-  padding: 32px 24px;
+  padding: var(--platform-space-8) var(--platform-space-6);
   text-align: center;
 
   & .platform-error__message {
     margin: 0;
-    font-size: 16.5px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text);
   }
 
   /* The accent button of the platform: on a screen that failed, trying again
      is the only thing there is to do. Only its size is said here. */
   & .platform-error__retry {
-    margin-top: 16px;
-    padding: 10px 22px;
+    margin-top: var(--platform-space-4);
+    padding: var(--platform-space-3) var(--platform-space-6);
   }
 
   & .platform-error__digest {
-    margin-top: 12px;
+    margin-top: var(--platform-space-3);
     color: var(--platform-text-muted);
-    font-size: 13px;
+    font-size: var(--platform-type-xs);
     font-variant-numeric: tabular-nums;
   }
 }

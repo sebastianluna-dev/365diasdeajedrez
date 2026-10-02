@@ -1,17 +1,17 @@
 .student-study {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--platform-space-4);
 
   & .student-study__meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: var(--platform-space-2);
   }
 
   & .student-study__description {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 }

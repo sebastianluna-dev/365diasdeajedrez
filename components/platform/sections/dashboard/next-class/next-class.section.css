@@ -2,30 +2,30 @@
   & .next-class__body {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--platform-space-2);
     align-items: flex-start;
   }
 
   & .next-class__name {
     margin: 0;
-    font-size: 18px;
+    font-size: var(--platform-type-xl);
     font-weight: 700;
     color: var(--platform-text);
   }
 
   & .next-class__teacher {
     margin: 0;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
   & .next-class__schedule {
     margin: 0;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text);
   }
 
   & .next-class__cta {
-    margin-top: 8px;
+    margin-top: var(--platform-space-2);
   }
 }

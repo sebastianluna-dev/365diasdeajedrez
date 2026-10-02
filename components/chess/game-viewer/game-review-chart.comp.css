@@ -37,12 +37,12 @@
 
   & .game-review-chart__phases {
     display: flex;
-    margin-top: 5px;
+    margin-top: var(--platform-space-1);
   }
 
   & .game-review-chart__phase {
     flex: none;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 700;
     letter-spacing: 0.05em;
     text-transform: uppercase;

@@ -1,5 +1,5 @@
 .study-streak {
-  padding: 20px 22px 22px;
+  padding: var(--platform-space-6) var(--platform-space-6) var(--platform-space-6);
   border-radius: 8px;
   background: var(--platform-surface);
   box-shadow: var(--platform-shadow-card);
@@ -9,10 +9,10 @@
      margins: a line that does not reach the edges would look like an
      underline of the text. */
   & .study-streak__title {
-    margin: 0 -22px 18px;
-    padding: 0 22px 14px;
+    margin: 0 calc(-1 * var(--platform-space-6)) var(--platform-space-5);
+    padding: 0 var(--platform-space-6) var(--platform-space-4);
     border-bottom: 1px solid var(--platform-border);
-    font-size: 17px;
+    font-size: var(--platform-type-xl);
     font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--platform-text);
@@ -22,15 +22,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: var(--platform-space-3);
     margin: 0;
-    padding: 10px 0 4px;
+    padding: var(--platform-space-3) 0 var(--platform-space-1);
   }
 
   & .study-streak__figure {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--platform-space-3);
     color: var(--platform-text);
   }
 
@@ -49,7 +49,7 @@
 
   & .study-streak__value {
     font-family: var(--platform-font);
-    font-size: 48px;
+    font-size: var(--platform-type-5xl);
     font-weight: 700;
     line-height: 1;
     letter-spacing: -0.03em;
@@ -61,7 +61,7 @@
      it has to say. What tells the two cases apart is the arrow between them,
      which is only rendered when there are two. */
   & .study-streak__figures:has(.study-streak__arrow) {
-    gap: 10px;
+    gap: var(--platform-space-3);
 
     & .study-streak__flame {
       width: 28px;
@@ -69,11 +69,11 @@
     }
 
     & .study-streak__value {
-      font-size: 34px;
+      font-size: var(--platform-type-3xl);
     }
 
     & .study-streak__figure {
-      gap: 8px;
+      gap: var(--platform-space-2);
     }
   }
 
@@ -99,9 +99,9 @@
   }
 
   & .study-streak__note {
-    margin: 14px 0 0;
+    margin: var(--platform-space-4) 0 0;
     text-align: center;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
     text-wrap: pretty;
   }

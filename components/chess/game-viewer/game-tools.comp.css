@@ -6,20 +6,20 @@
   & .game-tools__tabs {
     display: flex;
     align-items: flex-end;
-    gap: 20px;
-    padding: 14px 18px 0;
+    gap: var(--platform-space-6);
+    padding: var(--platform-space-4) var(--platform-space-5) 0;
     box-shadow: inset 0 -1px 0 var(--platform-border);
   }
 
   & .game-tools__tab {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 0 0 11px;
+    gap: var(--platform-space-2);
+    padding: 0 0 var(--platform-space-3);
     border: 0;
     background: transparent;
     font-family: inherit;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 700;
     color: var(--platform-text-subtle);
     cursor: pointer;
@@ -44,11 +44,11 @@
   }
 
   & .game-tools__tab-badge {
-    padding: 2px 6px;
+    padding: var(--platform-space-0-5) var(--platform-space-2);
     border-radius: 8px;
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 700;
   }
 
@@ -56,8 +56,8 @@
      row and in grey: it is a status, not an action. */
   & .game-tools__target {
     margin-left: auto;
-    padding-bottom: 11px;
-    font-size: 14px;
+    padding-bottom: var(--platform-space-3);
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
     white-space: nowrap;
     overflow: hidden;
@@ -65,7 +65,7 @@
   }
 
   & .game-tools__panel {
-    padding: 16px 18px;
+    padding: var(--platform-space-4) var(--platform-space-5);
   }
 
   /* --- Comment ----------------------------------------------------------- */
@@ -74,14 +74,14 @@
     box-sizing: border-box;
     min-height: 96px;
     resize: vertical;
-    padding: 11px 13px;
+    padding: var(--platform-space-3) var(--platform-space-4);
     border: 0;
     border-radius: 8px;
     background: var(--platform-surface-soft);
     box-shadow: inset 0 0 0 1px var(--platform-border-strong);
     color: var(--platform-text);
     font-family: inherit;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     line-height: 1.5;
   }
 
@@ -92,8 +92,8 @@
   }
 
   & .game-tools__hint {
-    margin: 10px 0 0;
-    font-size: 14px;
+    margin: var(--platform-space-3) 0 0;
+    font-size: var(--platform-type-sm);
     line-height: 1.5;
     color: var(--platform-text-subtle);
     text-wrap: pretty;
@@ -115,18 +115,18 @@
 
   & .game-tools__nag-column {
     min-width: 0;
-    padding: 13px 8px 14px 14px;
+    padding: var(--platform-space-4) var(--platform-space-2) var(--platform-space-4) var(--platform-space-4);
     background: var(--platform-surface);
   }
 
   & .game-tools__nag-column:last-child {
-    padding: 13px 14px 14px 8px;
+    padding: var(--platform-space-4) var(--platform-space-4) var(--platform-space-4) var(--platform-space-2);
   }
 
   & .game-tools__nag-title {
     margin: 0;
-    padding: 0 6px 7px;
-    font-size: 14px;
+    padding: 0 var(--platform-space-2) var(--platform-space-2);
+    font-size: var(--platform-type-sm);
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -134,15 +134,15 @@
   }
 
   & .game-tools__nag-group + .game-tools__nag-group .game-tools__nag-title {
-    padding-top: 14px;
+    padding-top: var(--platform-space-4);
   }
 
   & .game-tools__nag {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--platform-space-3);
     width: 100%;
-    padding: 6px 8px;
+    padding: var(--platform-space-2) var(--platform-space-2);
     border: 0;
     border-radius: 8px;
     background: transparent;
@@ -168,7 +168,7 @@
     flex: none;
     width: 26px;
     text-align: center;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 700;
     color: var(--platform-text-muted);
   }
@@ -178,7 +178,7 @@
   }
 
   & .game-tools__nag-label {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text);
     overflow: hidden;
     white-space: nowrap;
@@ -192,10 +192,10 @@
   /* Foot of the quality tab: the panel's rule, where it does not get in the way. */
   & .game-tools__foot {
     margin: 0;
-    padding: 12px 18px;
+    padding: var(--platform-space-3) var(--platform-space-5);
     background: var(--platform-surface-soft);
     box-shadow: inset 0 1px 0 var(--platform-border);
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
   }
 
@@ -203,8 +203,8 @@
   & .game-tools__share {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 0;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-3) 0;
     box-shadow: inset 0 -1px 0 var(--platform-track);
   }
 
@@ -215,15 +215,15 @@
 
   & .game-tools__share-label {
     display: block;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 700;
     color: var(--platform-text);
   }
 
   & .game-tools__share-value {
     display: block;
-    margin-top: 3px;
-    font-size: 14px;
+    margin-top: var(--platform-space-1);
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
     overflow: hidden;
     white-space: nowrap;
@@ -239,14 +239,14 @@
   & .game-tools__share-button,
   & .game-tools__export-button {
     flex: none;
-    padding: 7px 13px;
+    padding: var(--platform-space-2) var(--platform-space-4);
     border: 0;
     border-radius: 8px;
     background: var(--platform-surface);
     box-shadow: inset 0 0 0 1px var(--platform-border-strong);
     color: var(--platform-text);
     font-family: inherit;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 700;
     cursor: pointer;
   }
@@ -264,13 +264,13 @@
 
   & .game-tools__export {
     display: flex;
-    gap: 9px;
-    margin-top: 15px;
+    gap: var(--platform-space-2);
+    margin-top: var(--platform-space-4);
   }
 
   & .game-tools__export-button {
     flex: 1;
-    padding: 10px 13px;
+    padding: var(--platform-space-3) var(--platform-space-4);
     border-radius: 8px;
   }
 

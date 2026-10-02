@@ -1,13 +1,13 @@
 .teacher-admin {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--platform-space-6);
 
   & .teacher-admin__form {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: var(--platform-space-3);
     max-width: 620px;
 
     & .platform-field {
@@ -16,12 +16,12 @@
   }
 
   & .teacher-admin__meta {
-    margin: 14px 0 0;
-    font-size: 15.5px;
+    margin: var(--platform-space-4) 0 0;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
   & .teacher-admin__status {
-    margin-top: 14px;
+    margin-top: var(--platform-space-4);
   }
 }

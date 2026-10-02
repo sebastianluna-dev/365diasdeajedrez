@@ -1,24 +1,24 @@
 .studies-browser {
   display: flex;
   flex-direction: column;
-  gap: 34px;
+  gap: var(--platform-space-10);
 
   & .studies-browser__filters {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--platform-space-2);
     flex-wrap: wrap;
   }
 
   & .studies-browser__chip {
-    padding: 8px 15px;
+    padding: var(--platform-space-2) var(--platform-space-4);
     border: 1px solid var(--platform-border);
     border-radius: 1000px;
     background: var(--platform-surface);
     /* The lighter grey: with the heavier weight the muted one read too dark. */
     color: var(--platform-text-subtle);
     font-family: inherit;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     /* One weight in both states, the dashboard's period chips' one: the
        active chip is told by its colour and its border, not by going bold,
        which widened it and shifted the row. */
@@ -36,12 +36,12 @@
   & .studies-browser__group {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--platform-space-3);
   }
 
   & .studies-browser__group-title {
     margin: 0;
-    font-size: 16.5px;
+    font-size: var(--platform-type-lg);
     font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--platform-text);
@@ -50,7 +50,7 @@
   & .studies-browser__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 28px;
+    gap: var(--platform-space-8);
 
     @media (max-width: 900px) {
       grid-template-columns: 1fr;

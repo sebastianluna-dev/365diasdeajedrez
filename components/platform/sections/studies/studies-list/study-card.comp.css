@@ -3,8 +3,8 @@
      the link. Anything else that must be pressed sits above it. */
   position: relative;
   display: flex;
-  gap: 18px;
-  padding: 22px 24px;
+  gap: var(--platform-space-5);
+  padding: var(--platform-space-6) var(--platform-space-6);
   background: var(--platform-surface);
   /* No outline at rest: the card is white on the page's grey. The border is
      there, transparent, for the hover to colour it without moving anything. */
@@ -57,19 +57,19 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--platform-space-2);
   }
 
   & .study-card__head {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
+    gap: var(--platform-space-3);
   }
 
   & .study-card__name {
     flex: 1;
     min-width: 0;
-    font-size: 19px;
+    font-size: var(--platform-type-xl);
     font-weight: 700;
     letter-spacing: -0.015em;
     line-height: 1.25;
@@ -93,10 +93,10 @@
 
   & .study-card__readonly {
     flex: none;
-    padding: 3px 9px;
+    padding: var(--platform-space-1) var(--platform-space-2);
     border-radius: 1000px;
     background: var(--platform-surface-neutral);
-    font-size: 13px;
+    font-size: var(--platform-type-xs);
     /* The muted grey and not the subtle one: at 13px the subtle one fell
        under AA on the pill, and the muted one passes on both of its fills. */
     color: var(--platform-text-muted);
@@ -114,9 +114,9 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 7px;
+    gap: var(--platform-space-2);
     margin: 0;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-text-subtle);
     transition: color 140ms ease-out;
   }
@@ -140,7 +140,7 @@
 
   & .study-card__description {
     margin: 0;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     line-height: 1.45;
     color: var(--platform-text-muted);
     text-wrap: pretty;
@@ -151,8 +151,8 @@
   & .study-card__games {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    margin: 6px 0 0;
+    gap: var(--platform-space-1);
+    margin: var(--platform-space-2) 0 0;
     padding: 0;
     list-style: none;
   }
@@ -160,9 +160,9 @@
   & .study-card__game {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--platform-space-3);
     min-width: 0;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
     white-space: nowrap;
     overflow: hidden;
@@ -180,7 +180,7 @@
 
   & .study-card__game_more {
     color: var(--platform-text-subtle);
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
   }
 
   /* On the accent's wash of the hovered card the subtle grey falls under

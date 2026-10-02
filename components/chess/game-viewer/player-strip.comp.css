@@ -25,7 +25,7 @@
 /* Federation in letters: that is the value. The flag next to it only decorates it. */
 .player-strip__country {
   flex: none;
-  font-size: max(14px, 0.8em);
+  font-size: max(var(--platform-type-sm), 0.8em);
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--platform-text-subtle);
@@ -39,7 +39,7 @@
 
 .player-strip__title {
   flex: none;
-  font-size: max(14px, 0.87em);
+  font-size: max(var(--platform-type-sm), 0.87em);
   font-weight: 700;
   color: var(--platform-accent-ink);
 }

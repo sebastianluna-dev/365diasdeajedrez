@@ -2,7 +2,7 @@
   /* The size of the whole block comes from a variable so the viewer can enlarge
      it to full screen without reaching these classes from its own sheet; what
      is inside goes in `em`, so this one line is enough. */
-  font-size: var(--engine-panel-font-size, 14px);
+  font-size: var(--engine-panel-font-size, var(--platform-type-sm));
 
   /* Reference for the preview: its place is measured against the engine block,
      not against whichever move is being pointed at. */
@@ -12,12 +12,12 @@
   & .engine-panel__head {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 22px;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-3) var(--platform-space-6);
   }
 
   & .engine-panel__label {
-    font-size: max(14px, 0.89em);
+    font-size: max(var(--platform-type-sm), 0.89em);
     font-weight: 700;
     letter-spacing: 0.07em;
     text-transform: uppercase;
@@ -29,14 +29,14 @@
     flex: none;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 6px 12px;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-2) var(--platform-space-3);
     border: 1px solid var(--platform-border);
     border-radius: 1000px;
     background: var(--platform-surface);
     color: var(--platform-text-muted);
     font-family: inherit;
-    font-size: max(14px, 0.93em);
+    font-size: max(var(--platform-type-sm), 0.93em);
     font-weight: 600;
     cursor: pointer;
   }
@@ -69,7 +69,7 @@
      three times in a row. */
   & .engine-panel__body {
     height: var(--viewer-engine-body, 102px);
-    padding: 6px 0 8px;
+    padding: var(--platform-space-2) 0 var(--platform-space-2);
     box-sizing: border-box;
     overflow: hidden;
     background: var(--platform-bg);
@@ -94,17 +94,17 @@
     display: grid;
     /* The whole line — evaluation included — and the button that expands it. */
     grid-template-columns: minmax(0, 1fr) 26px;
-    gap: 10px;
+    gap: var(--platform-space-3);
     align-items: baseline;
     /* A little air on the left: pressed against the card's edge the evaluations
        read as part of the border. */
-    padding: 3px 10px 3px 12px;
+    padding: var(--platform-space-1) var(--platform-space-3) var(--platform-space-1) var(--platform-space-3);
   }
 
   /* It goes inside the line and at the same size: the only thing that sets it
      apart from the moves is the bold, because it is the figure compared across lines. */
   & .engine-panel__score {
-    margin-right: 7px;
+    margin-right: var(--platform-space-2);
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     color: var(--platform-text);
@@ -145,12 +145,12 @@
      a "34." cannot be left alone at the end of one. */
   & .engine-panel__token {
     display: inline-block;
-    margin-right: 5px;
+    margin-right: var(--platform-space-1);
     white-space: nowrap;
   }
 
   & .engine-panel__move-number {
-    margin-right: 3px;
+    margin-right: var(--platform-space-1);
     color: var(--platform-text-faint);
     font-variant-numeric: tabular-nums;
   }
@@ -208,7 +208,7 @@
     top: calc(100% + 6px);
     right: 0;
     width: 240px;
-    padding: 4px;
+    padding: var(--platform-space-1);
     border-radius: 8px;
     background: var(--platform-surface);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
@@ -216,7 +216,7 @@
   }
 
   & .engine-panel__depth {
-    font-size: max(14px, 0.89em);
+    font-size: max(var(--platform-type-sm), 0.89em);
     color: var(--platform-text-subtle);
     font-variant-numeric: tabular-nums;
   }

@@ -2,7 +2,7 @@
   & .dashboard-page__row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: var(--platform-space-6);
 
     @media (max-width: 900px) {
       grid-template-columns: 1fr;

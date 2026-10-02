@@ -1,10 +1,10 @@
 .explorer-next-moves {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--platform-space-3);
 
   & .explorer-next-moves__title {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -14,7 +14,7 @@
 
   & .explorer-next-moves__empty {
     margin: 0;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
@@ -24,7 +24,7 @@
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--platform-space-1);
   }
 
   & .explorer-next-moves__button {
@@ -32,9 +32,9 @@
     display: grid;
     grid-template-columns: 64px 1fr auto;
     align-items: center;
-    gap: 8px;
+    gap: var(--platform-space-2);
     width: 100%;
-    padding: 8px 10px;
+    padding: var(--platform-space-2) var(--platform-space-3);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface);
@@ -67,16 +67,16 @@
 
   & .explorer-next-moves__san {
     font-weight: 600;
-    font-size: 16.5px;
+    font-size: var(--platform-type-lg);
   }
 
   & .explorer-next-moves__count {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-text-muted);
   }
 
   & .explorer-next-moves__percentage {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     font-variant-numeric: tabular-nums;
     color: var(--platform-text-muted);
   }

@@ -42,11 +42,11 @@
   z-index: 40;
   box-sizing: border-box;
   max-width: min(300px, var(--radix-tooltip-content-available-width));
-  padding: 10px 12px;
+  padding: var(--platform-space-3) var(--platform-space-3);
   border-radius: 8px;
   background: var(--platform-text);
   color: var(--platform-surface);
-  font-size: 14px;
+  font-size: var(--platform-type-sm);
   font-weight: 400;
   line-height: 1.45;
   text-wrap: pretty;

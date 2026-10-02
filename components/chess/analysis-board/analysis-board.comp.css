@@ -1,25 +1,25 @@
 .analysis-board {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--platform-space-4);
 
   & .analysis-board__layout {
     display: grid;
     grid-template-columns: minmax(280px, 1fr) minmax(280px, 420px);
-    gap: 18px;
+    gap: var(--platform-space-5);
     align-items: start;
   }
 
   & .analysis-board__board {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--platform-space-2);
     min-width: 0;
   }
 
   & .analysis-board__hint {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     line-height: 1.5;
     color: var(--platform-text-muted);
   }
@@ -27,7 +27,7 @@
   & .analysis-board__panel {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--platform-space-3);
     min-width: 0;
   }
 
@@ -38,7 +38,7 @@
   & .analysis-board__moves {
     height: var(--analysis-moves-height, 320px);
     overflow-y: auto;
-    padding: 10px 12px;
+    padding: var(--platform-space-3) var(--platform-space-3);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface);
@@ -46,22 +46,22 @@
 
   & .analysis-board__empty {
     margin: 0;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
   & .analysis-board__warnings {
     margin: 0;
-    padding: 8px 12px 8px 28px;
+    padding: var(--platform-space-2) var(--platform-space-3) var(--platform-space-2) var(--platform-space-8);
     border-left: 3px solid var(--platform-danger);
     border-radius: 8px;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-text-muted);
   }
 
   & .analysis-board__toolbar {
     display: flex;
-    gap: 6px;
+    gap: var(--platform-space-2);
   }
 
   & .analysis-board__tool {
@@ -89,17 +89,17 @@
 
   & .analysis-board__tabs {
     display: flex;
-    gap: 4px;
+    gap: var(--platform-space-1);
     border-bottom: 1px solid var(--platform-border);
   }
 
   & .analysis-board__tab {
-    padding: 8px 12px;
+    padding: var(--platform-space-2) var(--platform-space-3);
     border: 0;
     border-bottom: 2px solid transparent;
     background: transparent;
     font-family: inherit;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
     cursor: pointer;
   }
@@ -112,30 +112,30 @@
   & .analysis-board__tabpanel {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: var(--platform-space-2);
   }
 
   & .analysis-board__comment {
     width: 100%;
-    padding: 8px 10px;
+    padding: var(--platform-space-2) var(--platform-space-3);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface);
     font-family: inherit;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text);
     resize: vertical;
   }
 
   & .analysis-board__note {
     margin: 0;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-muted);
   }
 
   & .analysis-board__group-title {
-    margin: 4px 0 0;
-    font-size: 14px;
+    margin: var(--platform-space-1) 0 0;
+    font-size: var(--platform-type-sm);
     font-weight: 600;
     color: var(--platform-text-muted);
   }
@@ -143,17 +143,17 @@
   & .analysis-board__glyphs {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: var(--platform-space-1);
   }
 
   & .analysis-board__glyph {
     min-width: 40px;
-    padding: 6px 8px;
+    padding: var(--platform-space-2) var(--platform-space-2);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: transparent;
     font-family: inherit;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text);
     cursor: pointer;
   }
@@ -171,16 +171,16 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
+    gap: var(--platform-space-3);
   }
 
   & .analysis-board__dirty {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-accent-ink);
   }
 
   & .analysis-board__save {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-text-muted);
   }
 
@@ -198,24 +198,24 @@
     display: flex;
     flex-direction: column;
     align-items: start;
-    gap: 8px;
+    gap: var(--platform-space-2);
   }
 
   & .analysis-board__paste-input {
     width: 100%;
-    padding: 8px 10px;
+    padding: var(--platform-space-2) var(--platform-space-3);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface);
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text);
     resize: vertical;
   }
 
   & .analysis-board__paste-error {
     margin: 0;
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-danger);
   }
 }

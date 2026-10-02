@@ -6,11 +6,11 @@
      select's own rules for its trigger. */
   & .platform-select__trigger.course-status-menu__pill {
     width: auto;
-    gap: 8px;
-    padding: 7px 13px 7px 12px;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-2) var(--platform-space-4) var(--platform-space-2) var(--platform-space-3);
     border: 0;
     border-radius: 8px;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     font-weight: 700;
     line-height: 1.2;
     white-space: nowrap;
@@ -35,7 +35,7 @@
   & .platform-select__trigger.course-status-menu__pill::after {
     content: "";
     flex: none;
-    margin-left: 2px;
+    margin-left: var(--platform-space-0-5);
     border: 4.5px solid transparent;
     border-top: 6px solid currentColor;
     border-bottom: 0;

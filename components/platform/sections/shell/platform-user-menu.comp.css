@@ -3,8 +3,9 @@
    shadow — and not as a list glued to the bar. */
 .platform-user-menu {
   /* Hung from the avatar by CSS and not placed by a library: Radix's own
-     positioning put it 145px to the right of the trigger under the platform's
-     zoom, which at the right edge of the bar is outside the window. Here the
+     positioning put it 145px to the right of the trigger under the zoom the
+     platform had until 2026-10-02, which at the right edge of the bar is
+     outside the window. Here the
      menu's right edge IS the avatar's, and there is nothing to measure. */
   position: absolute;
   top: calc(100% + 10px);
@@ -13,7 +14,7 @@
      inside it, this only has to clear the page. */
   z-index: 40;
   width: 300px;
-  padding: 8px;
+  padding: var(--platform-space-2);
   border-radius: 8px;
   background: var(--platform-surface);
   box-shadow: var(--platform-shadow-card);
@@ -24,13 +25,13 @@
      figures the dashboard heads with, here in one block the width of the
      menu. */
   & .platform-user-menu__day {
-    padding: 12px 12px 14px;
+    padding: var(--platform-space-3) var(--platform-space-3) var(--platform-space-4);
   }
 
   & .platform-user-menu__figure {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--platform-space-3);
     margin: 0;
   }
 
@@ -63,14 +64,14 @@
   }
 
   & .platform-user-menu__figure-value {
-    font-size: 19px;
+    font-size: var(--platform-type-xl);
     font-weight: 700;
     color: var(--platform-text);
     line-height: 1.2;
   }
 
   & .platform-user-menu__figure-label {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
   }
 
@@ -79,7 +80,7 @@
   & .platform-user-menu__track {
     display: block;
     height: 8px;
-    margin: 14px 0 8px;
+    margin: var(--platform-space-4) 0 var(--platform-space-2);
     border-radius: 1000px;
     background: var(--platform-track);
     overflow: hidden;
@@ -95,9 +96,9 @@
   & .platform-user-menu__day-note {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
+    gap: var(--platform-space-3);
     margin: 0;
-    font-size: 13px;
+    font-size: var(--platform-type-xs);
     color: var(--platform-text-subtle);
   }
 
@@ -112,7 +113,7 @@
   & .platform-user-menu__rule {
     height: 1px;
     /* Edge to edge of the card: it is pulled out of the menu's own padding. */
-    margin: 6px -8px;
+    margin: var(--platform-space-2) calc(-1 * var(--platform-space-2));
     border: none;
     background: var(--platform-border);
   }
@@ -122,15 +123,15 @@
   & .platform-user-menu__item {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--platform-space-3);
     width: 100%;
-    padding: 11px 12px;
+    padding: var(--platform-space-3) var(--platform-space-3);
     border: none;
     border-radius: 8px;
     background: none;
     color: var(--platform-text);
     font: inherit;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     text-align: left;
     cursor: pointer;
     text-decoration: none;
@@ -282,7 +283,7 @@
   background: var(--platform-text);
   color: var(--platform-bg);
   font: inherit;
-  font-size: 14.5px;
+  font-size: var(--platform-type-md);
   font-weight: 700;
   cursor: pointer;
 

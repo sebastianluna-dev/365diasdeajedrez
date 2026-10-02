@@ -72,8 +72,8 @@
   }
 
   & .static-diagram__caption {
-    margin-top: 10px;
-    font-size: 15.5px;
+    margin-top: var(--platform-space-3, 10px);
+    font-size: var(--platform-type-lg, 16px);
     color: var(--platform-text-muted);
     text-align: center;
   }
@@ -81,7 +81,7 @@
   /* Inside a blog article: the public site's light background, text one step
      smaller and a grey that does contrast (the previous #8a8175 did not). */
   &.static-diagram_context_article .static-diagram__caption {
-    font-size: 14px;
+    font-size: var(--platform-type-sm, 14px);
     color: var(--color-muted-on-light);
   }
 }

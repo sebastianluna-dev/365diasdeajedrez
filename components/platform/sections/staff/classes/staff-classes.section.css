@@ -1,13 +1,13 @@
 .staff-classes {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: var(--platform-space-5);
 
   & .staff-classes__filters {
     display: flex;
     align-items: flex-end;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: var(--platform-space-3);
 
     & .platform-field {
       flex: 1 1 170px;

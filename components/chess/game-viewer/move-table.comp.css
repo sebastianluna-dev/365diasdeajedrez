@@ -1,5 +1,5 @@
 .move-table {
-  font-size: var(--move-tree-font-size, 15px);
+  font-size: var(--move-tree-font-size, var(--platform-type-lg));
   color: var(--platform-text);
   /* Indentation step per variation level. */
   --move-table-step: 15px;
@@ -19,7 +19,7 @@
   & .move-table__number {
     display: flex;
     align-items: center;
-    padding: 5px 10px;
+    padding: var(--platform-space-1) var(--platform-space-3);
     background: var(--platform-bg);
     box-shadow: inset -1px 0 0 var(--platform-border);
     color: var(--platform-text-muted);
@@ -29,8 +29,8 @@
   & .move-table__cell {
     display: flex;
     align-items: center;
-    gap: 3px;
-    padding: 5px 10px;
+    gap: var(--platform-space-1);
+    padding: var(--platform-space-1) var(--platform-space-3);
     border: 0;
     background: transparent;
     color: inherit;
@@ -67,8 +67,8 @@
   & .move-table__eval {
     margin-left: auto;
     flex: none;
-    padding-left: 8px;
-    font-size: max(14px, 0.88em);
+    padding-left: var(--platform-space-2);
+    font-size: max(var(--platform-type-sm), 0.88em);
     font-weight: 500;
     font-variant-numeric: tabular-nums;
     color: var(--platform-text-faint);
@@ -87,10 +87,10 @@
      without it would read as one more row. */
   & .move-table__comment {
     margin: 0;
-    padding: 8px 12px;
+    padding: var(--platform-space-2) var(--platform-space-3);
     border-top: 1px solid var(--platform-border);
     border-bottom: 1px solid var(--platform-border);
-    font-size: max(14px, 0.9em);
+    font-size: max(var(--platform-type-sm), 0.9em);
     line-height: 1.5;
     color: var(--platform-text-muted);
     text-wrap: pretty;
@@ -102,10 +102,11 @@
   & .move-table__line {
     position: relative;
     margin: 0;
-    padding: 3px 12px 3px calc(var(--move-table-depth, 0) * var(--move-table-step) + 26px);
+    padding: var(--platform-space-1) var(--platform-space-3) var(--platform-space-1)
+      calc(var(--move-table-depth, 0) * var(--move-table-step) + 26px);
     border-top: 1px solid var(--platform-border);
     border-bottom: 1px solid var(--platform-border);
-    font-size: max(14px, 0.92em);
+    font-size: max(var(--platform-type-sm), 0.92em);
     line-height: 1.75;
     color: var(--platform-text-muted);
   }
@@ -151,7 +152,7 @@
   }
 
   & .move-table__inline {
-    padding: 1px 3px;
+    padding: 1px var(--platform-space-1);
     border: 0;
     border-radius: 8px;
     background: transparent;
@@ -173,7 +174,7 @@
   }
 
   & .move-table__inline-comment {
-    margin: 0 4px;
+    margin: 0 var(--platform-space-1);
     color: var(--platform-text-subtle);
     white-space: normal;
   }

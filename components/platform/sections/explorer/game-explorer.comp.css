@@ -2,20 +2,20 @@
   display: grid;
   /* Desktop: board on the left, panel on the right. */
   grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr);
-  gap: 24px;
+  gap: var(--platform-space-6);
   align-items: start;
 
   & .game-explorer__board {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--platform-space-3);
     min-width: 0;
   }
 
   & .game-explorer__controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: var(--platform-space-2);
   }
 
   & .game-explorer__control {
@@ -24,13 +24,13 @@
     justify-content: center;
     min-width: 38px;
     height: 34px;
-    padding: 0 10px;
+    padding: 0 var(--platform-space-3);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
     background: var(--platform-surface);
     color: var(--platform-text);
     font: inherit;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     cursor: pointer;
   }
 
@@ -50,7 +50,7 @@
   & .game-explorer__panel {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: var(--platform-space-6);
     min-width: 0;
   }
 
@@ -63,7 +63,7 @@
 
   & .game-explorer__error {
     margin: 0;
-    font-size: 15.5px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-danger);
   }
 }

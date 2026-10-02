@@ -3,19 +3,19 @@
 .account-settings {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--platform-space-6);
   max-width: 620px;
 
   & .account-settings__card {
-    padding: 26px 28px;
+    padding: var(--platform-space-8) var(--platform-space-8);
     border-radius: 8px;
     background: var(--platform-surface);
     box-shadow: var(--platform-shadow-card);
   }
 
   & .account-settings__title {
-    margin: 0 0 18px;
-    font-size: 18px;
+    margin: 0 0 var(--platform-space-5);
+    font-size: var(--platform-type-xl);
     font-weight: 700;
     color: var(--platform-text);
   }
@@ -36,9 +36,9 @@
 
   & .account-settings__term,
   & .account-settings__value {
-    padding: 11px 0;
+    padding: var(--platform-space-3) 0;
     border-top: 1px solid var(--platform-border);
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
   }
 
   & .account-settings__term {
@@ -61,8 +61,8 @@
   }
 
   & .account-settings__note {
-    margin: 14px 0 0;
-    font-size: 14px;
+    margin: var(--platform-space-4) 0 0;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
   }
 
@@ -71,16 +71,16 @@
   & .account-settings__themes {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
-    margin-top: 18px;
+    gap: var(--platform-space-3);
+    margin-top: var(--platform-space-5);
   }
 
   & .account-settings__theme {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: var(--platform-space-1);
     width: 100%;
-    padding: 14px 16px;
+    padding: var(--platform-space-4) var(--platform-space-4);
     border: 1px solid var(--platform-border-strong);
     border-radius: 8px;
     background: var(--platform-surface);
@@ -103,12 +103,12 @@
   }
 
   & .account-settings__theme-label {
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     font-weight: 600;
   }
 
   & .account-settings__theme-note {
-    font-size: 13px;
+    font-size: var(--platform-type-xs);
     color: var(--platform-text-subtle);
   }
 
@@ -121,27 +121,27 @@
   & .account-settings__form {
     display: flex;
     align-items: flex-end;
-    gap: 14px;
-    margin-top: 18px;
+    gap: var(--platform-space-4);
+    margin-top: var(--platform-space-5);
     flex-wrap: wrap;
   }
 
   & .account-settings__field {
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: var(--platform-space-2);
     min-width: 200px;
   }
 
   & .account-settings__field-label {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     font-weight: 600;
     color: var(--platform-text-muted);
   }
 
   @media (max-width: 640px) {
     & .account-settings__card {
-      padding: 20px;
+      padding: var(--platform-space-6);
     }
 
     /* Three cards do not fit a phone's width: they stack. */
@@ -159,7 +159,7 @@
     }
 
     & .account-settings__value {
-      padding-top: 4px;
+      padding-top: var(--platform-space-1);
       border-top: none;
     }
   }

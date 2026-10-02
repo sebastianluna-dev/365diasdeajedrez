@@ -1,23 +1,23 @@
 .assigned-student {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--platform-space-6);
 
   & .assigned-student__facts {
     display: flex;
     flex-wrap: wrap;
-    gap: 22px;
+    gap: var(--platform-space-6);
     margin: 0;
   }
 
   & .assigned-student__fact {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: var(--platform-space-1);
   }
 
   & .assigned-student__fact-label {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--platform-text-muted);
@@ -25,14 +25,14 @@
 
   & .assigned-student__fact-value {
     margin: 0;
-    font-size: 16px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text);
   }
 
   & .assigned-student__row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: var(--platform-space-4);
 
     @media (max-width: 900px) {
       grid-template-columns: 1fr;
@@ -44,7 +44,7 @@
   & .assigned-student__activity {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--platform-space-3);
     margin: 0;
     padding: 0;
     list-style: none;
@@ -53,8 +53,8 @@
   & .assigned-student__course {
     display: flex;
     flex-direction: column;
-    gap: 7px;
-    padding-bottom: 12px;
+    gap: var(--platform-space-2);
+    padding-bottom: var(--platform-space-3);
     border-bottom: 1px solid var(--platform-border);
   }
 
@@ -66,17 +66,17 @@
   & .assigned-student__course-head {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: var(--platform-space-3);
   }
 
   & .assigned-student__course-name {
-    font-size: 16.5px;
+    font-size: var(--platform-type-lg);
     font-weight: 600;
     color: var(--platform-text);
   }
 
   & .assigned-student__course-last {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-text-muted);
   }
 
@@ -84,11 +84,11 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 9px;
+    gap: var(--platform-space-2);
   }
 
   & .assigned-student__class-title {
-    font-size: 16px;
+    font-size: var(--platform-type-lg);
     font-weight: 600;
     color: var(--platform-text);
   }
@@ -98,15 +98,15 @@
   }
 
   & .assigned-student__class-meta {
-    font-size: 14.5px;
+    font-size: var(--platform-type-md);
     color: var(--platform-text-muted);
   }
 
   & .assigned-student__activity-item {
     display: flex;
     justify-content: space-between;
-    gap: 12px;
-    font-size: 15.5px;
+    gap: var(--platform-space-3);
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
@@ -116,8 +116,8 @@
 
   & .assigned-student__empty,
   & .assigned-student__note {
-    margin: 0 0 12px;
-    font-size: 15.5px;
+    margin: 0 0 var(--platform-space-3);
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 }

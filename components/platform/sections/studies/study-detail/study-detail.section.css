@@ -1,12 +1,12 @@
 .study-detail {
   display: flex;
   flex-direction: column;
-  gap: 34px;
+  gap: var(--platform-space-10);
 
   & .study-detail__head {
     display: flex;
     align-items: flex-end;
-    gap: 20px;
+    gap: var(--platform-space-6);
   }
 
   & .study-detail__heading {
@@ -16,15 +16,15 @@
   & .study-detail__tags {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--platform-space-2);
     flex-wrap: wrap;
   }
 
   & .study-detail__kind,
   & .study-detail__origin {
-    padding: 5px 11px;
+    padding: var(--platform-space-1) var(--platform-space-3);
     border-radius: 1000px;
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
   }
 
   & .study-detail__kind {
@@ -40,13 +40,13 @@
   }
 
   & .study-detail__readonly {
-    font-size: 14px;
+    font-size: var(--platform-type-sm);
     color: var(--platform-text-muted);
   }
 
   & .study-detail__name {
-    margin: 12px 0 0;
-    font-size: 39.5px;
+    margin: var(--platform-space-3) 0 0;
+    font-size: var(--platform-type-4xl);
     font-weight: 600;
     line-height: 1.1;
     letter-spacing: -0.025em;
@@ -61,9 +61,9 @@
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 8px;
-    margin: 8px 0 0;
-    font-size: 16px;
+    gap: var(--platform-space-2);
+    margin: var(--platform-space-2) 0 0;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
   }
 
@@ -76,24 +76,24 @@
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: var(--platform-space-2);
   }
 
   & .study-detail__new {
-    padding: 11px 20px;
+    padding: var(--platform-space-3) var(--platform-space-6);
     border-radius: 8px;
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
   }
 
   @media (max-width: 900px) {
     & .study-detail__head {
       flex-direction: column;
       align-items: flex-start;
-      gap: 18px;
+      gap: var(--platform-space-5);
     }
 
     & .study-detail__name {
-      font-size: 30px;
+      font-size: var(--platform-type-3xl);
     }
 
     & .study-detail__actions {

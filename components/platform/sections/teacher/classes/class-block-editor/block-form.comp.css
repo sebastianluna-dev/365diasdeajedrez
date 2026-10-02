@@ -1,26 +1,26 @@
 .block-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 16px;
+  gap: var(--platform-space-4);
+  padding: var(--platform-space-4);
   border: 1px solid var(--platform-border);
   border-radius: 8px;
   background: var(--platform-surface);
 
   & .block-form__warning {
     margin: 0;
-    padding: 10px 12px;
+    padding: var(--platform-space-3) var(--platform-space-3);
     border: 1px solid color-mix(in srgb, var(--platform-accent) 35%, transparent);
     border-radius: 8px;
     background: var(--platform-accent-soft);
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-accent-ink);
   }
 
   & .block-form__actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: var(--platform-space-3);
   }
 
   & .block-form__annotate {
@@ -28,19 +28,19 @@
   }
 
   & .block-form__alternative {
-    padding: 10px 12px;
+    padding: var(--platform-space-3) var(--platform-space-3);
     border: 1px solid var(--platform-border);
     border-radius: 8px;
   }
 
   & .block-form__alternative summary {
-    font-size: 15px;
+    font-size: var(--platform-type-lg);
     color: var(--platform-text-muted);
     cursor: pointer;
   }
 
   & .block-form__alternative[open] summary {
-    margin-bottom: 12px;
+    margin-bottom: var(--platform-space-3);
     color: var(--platform-text);
   }
 }
