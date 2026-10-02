@@ -306,7 +306,7 @@
 
   & .foundations__step {
     display: grid;
-    grid-template-columns: 200px 70px 1fr 120px;
+    grid-template-columns: 200px 160px 1fr 120px;
     align-items: baseline;
     gap: var(--platform-space-4);
     padding: var(--platform-space-3) 0;

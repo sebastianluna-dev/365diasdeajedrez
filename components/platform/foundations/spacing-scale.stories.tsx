@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { SPACE_STEPS, spaceOffScale, usesOf } from "./scales.const";
+import { FROM_2XL, SPACE_STEPS, spaceOffScale, usesOf } from "./scales.const";
 import "./foundations.css";
 
 const times = (count: number) => `written ${count} ${count === 1 ? "time" : "times"}`;
@@ -15,7 +15,8 @@ function SpacingScalePage() {
       <p className="foundations__lead">
         The spaces of the platform are these {SPACE_STEPS.length} tokens, from the <code>:root</code> of{" "}
         <code>app/(platform)/platform.css</code>: multiples of 4, and 2 for the tightest, so any two spaces on a screen
-        agree. The name is the multiple of 4. Each bar is drawn at its width.
+        agree. The name is the multiple of 4. From 1536px wide the steps from 16px take about an eighth more, the value
+        beside each (see «Large screens»). Each bar is drawn at its width.
       </p>
 
       <section className="foundations__group" aria-labelledby="spacing-scale-steps">
@@ -26,7 +27,9 @@ function SpacingScalePage() {
           {SPACE_STEPS.map((step) => (
             <li key={step.token} className="foundations__step">
               <code className="foundations__name">{step.token}</code>
-              <span className="foundations__size-value">{step.px}px</span>
+              <span className="foundations__size-value">
+                {step.px}px · {FROM_2XL[step.token] ?? step.px}px from 1536
+              </span>
               <span className="foundations__bar" style={{ width: `var(${step.token})` }} />
               <span className="foundations__count">{times(usesOf(step.token))}</span>
             </li>

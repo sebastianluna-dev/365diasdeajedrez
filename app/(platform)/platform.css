@@ -229,6 +229,39 @@
   --platform-shadow-bar: 0 1px 0 var(--platform-border);
 }
 
+/* FROM 1536px (Tailwind's `2xl`), where there is room to spare, the type takes
+   a step up — a pixel more on the small steps, about a tenth on the large
+   ones — and the spaces from 16px about an eighth more, on the 4px grid.
+   Chosen by Sebastian on Storybook's «Large screens» page (2026-10-02). It is
+   a rule of its own and not nested in the block above because whatever
+   reads the tokens (the tests, the foundations pages) reads that block. */
+@media (width >= 1536px) {
+  :root {
+    --platform-type-2xs: 13px;
+    --platform-type-xs: 15px;
+    --platform-type-sm: 16px;
+    --platform-type-md: 17px;
+    --platform-type-lg: 18px;
+    --platform-type-xl: 22px;
+    --platform-type-2xl: 26px;
+    --platform-type-3xl: 36px;
+    --platform-type-4xl: 48px;
+    --platform-type-5xl: 56px;
+    --platform-space-0-5: 2px;
+    --platform-space-1: 4px;
+    --platform-space-2: 8px;
+    --platform-space-3: 12px;
+    --platform-space-4: 20px;
+    --platform-space-5: 24px;
+    --platform-space-6: 28px;
+    --platform-space-8: 36px;
+    --platform-space-10: 44px;
+    --platform-space-12: 56px;
+    --platform-space-16: 72px;
+    --platform-space-24: 108px;
+  }
+}
+
 :root[data-theme="light"] {
   color-scheme: light;
 }

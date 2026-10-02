@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { TYPE_STEPS, typeOffScale, usesOf } from "./scales.const";
+import { FROM_2XL, TYPE_STEPS, typeOffScale, usesOf } from "./scales.const";
 import "./foundations.css";
 
 const SAMPLE = "Siguiente lección: la defensa siciliana";
@@ -19,7 +19,7 @@ function TypeScalePage() {
         <code>app/(platform)/platform.css</code>, and a stylesheet never writes a px of its own. Four small steps a
         pixel apart, where nearly all of the text is, and the rest for the headings and the figures. Until 2026-10-02
         the body carried <code>zoom: 1.1</code> to draw everything larger; the steps carry that enlargement, and the
-        platform has no zoom.
+        platform has no zoom. From 1536px wide each step takes a step up, the value beside it (see «Large screens»).
       </p>
 
       <section className="foundations__group" aria-labelledby="type-scale-steps">
@@ -30,7 +30,9 @@ function TypeScalePage() {
           {TYPE_STEPS.map((step) => (
             <li key={step.token} className="foundations__step">
               <code className="foundations__name">{step.token}</code>
-              <span className="foundations__size-value">{step.px}px</span>
+              <span className="foundations__size-value">
+                {step.px}px · {FROM_2XL[step.token] ?? step.px}px from 1536
+              </span>
               <span className="foundations__step-specimen" style={{ fontSize: `var(${step.token})` }}>
                 {SAMPLE}
               </span>

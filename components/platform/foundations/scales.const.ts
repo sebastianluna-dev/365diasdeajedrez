@@ -55,38 +55,20 @@ export function spaceOffScale(): { value: string; count: number }[] {
 }
 
 /**
- * A PROPOSAL, not applied (TODOS T43): what each step would become from
- * 1536px wide (Tailwind's `2xl`), where there is room to spare, for
- * Sebastian to choose on the «Large screens» page. Type: a pixel more on the
- * small steps and about a tenth on the large ones. Space: the steps up to
- * 12px as they are, the rest about an eighth more, on the 4px grid.
+ * The value each token takes from 1536px wide (Tailwind's `2xl`), read from
+ * the `@media (width >= 1536px)` block of platform.css: a pixel more on the
+ * small type steps and about a tenth on the large ones, and the spaces from
+ * 16px about an eighth more, on the 4px grid.
  */
-export const FROM_2XL: Readonly<Record<string, number>> = {
-  "--platform-type-2xs": 13,
-  "--platform-type-xs": 15,
-  "--platform-type-sm": 16,
-  "--platform-type-md": 17,
-  "--platform-type-lg": 18,
-  "--platform-type-xl": 22,
-  "--platform-type-2xl": 26,
-  "--platform-type-3xl": 36,
-  "--platform-type-4xl": 48,
-  "--platform-type-5xl": 56,
-  "--platform-space-0-5": 2,
-  "--platform-space-1": 4,
-  "--platform-space-2": 8,
-  "--platform-space-3": 12,
-  "--platform-space-4": 20,
-  "--platform-space-5": 24,
-  "--platform-space-6": 28,
-  "--platform-space-8": 36,
-  "--platform-space-10": 44,
-  "--platform-space-12": 56,
-  "--platform-space-16": 72,
-  "--platform-space-24": 108,
-};
+export const FROM_2XL: Readonly<Record<string, number>> = Object.fromEntries(
+  [
+    ...(
+      /@media \(width >= 1536px\)\s*\{\s*:root\s*\{([^}]*)\}/.exec(withoutComments(PLATFORM_CSS))?.[1] ?? ""
+    ).matchAll(/(--platform-(?:type|space)-[a-z0-9-]+)\s*:\s*(\d+)px/g),
+  ].map((match) => [match[1] ?? "", Number(match[2])]),
+);
 
-/** The proposal as custom properties, to draw anything inside it at the larger scale. */
+/** The values from 1536px as custom properties, to draw anything inside them at that scale on any screen. */
 export const FROM_2XL_PROPERTIES = Object.fromEntries(
   Object.entries(FROM_2XL).map(([token, px]) => [token, `${px}px`]),
 ) as Record<string, string>;

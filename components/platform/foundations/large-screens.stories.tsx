@@ -61,13 +61,13 @@ function LargeScreensPage() {
     <div className="platform-page foundations">
       <header className="platform-page__head">
         <h1 className="platform-page__title">Large screens</h1>
-        <p className="platform-page__subtitle">The scales from 1536px wide: a proposal, nothing of it applied yet.</p>
+        <p className="platform-page__subtitle">The scales from 1536px wide, where there is room to spare.</p>
       </header>
       <p className="foundations__lead">
-        From Tailwind&apos;s <code>2xl</code>, 1536px, there is room to spare, and the type and the spaces could take a
-        step up: one block in <code>platform.css</code>, <code>@media (width &gt;= 1536px)</code>, giving each token the
-        value on the right. Below, every step at both sizes, and the same piece of a screen drawn at the scale of today
-        and at the proposed one — on any screen, so the two can be compared side by side.
+        From Tailwind&apos;s <code>2xl</code>, 1536px, the type and the spaces take a step up: one block in{" "}
+        <code>platform.css</code>, <code>@media (width &gt;= 1536px)</code>, gives each token the value on the right.
+        Below, every step at both sizes, and the same piece of a screen drawn at the scale below 1536px and at the one
+        above — on any screen, so the two can be compared side by side.
       </p>
 
       <section className="foundations__group" aria-labelledby="large-screens-sample">
@@ -76,11 +76,11 @@ function LargeScreensPage() {
         </h2>
         <div className="foundations__compare">
           <div className="foundations__compare-side">
-            <span className="foundations__count">Today, at every width</span>
+            <span className="foundations__count">Below 1536px</span>
             <Sample />
           </div>
           <div className="foundations__compare-side" style={FROM_2XL_PROPERTIES as CSSProperties}>
-            <span className="foundations__count">Proposed, from 1536px</span>
+            <span className="foundations__count">From 1536px</span>
             <Sample />
           </div>
         </div>
@@ -135,12 +135,12 @@ const meta = {
     docs: {
       description: {
         component: `
-**A proposal, not applied** (TODOS T43): the value each type and space token
-would take from 1536px wide (Tailwind's \`2xl\`), every step at both sizes and a
-piece of a screen drawn at the two scales side by side. The values are
-\`FROM_2XL\` in \`components/platform/foundations/scales.const.ts\`; the
-right-hand sample sets them as custom properties on its column, so the real
-components inside it are drawn at the larger scale.
+The value each type and space token takes from 1536px wide (Tailwind's
+\`2xl\`), read from the \`@media (width >= 1536px)\` block of
+\`app/(platform)/platform.css\`: every step at both sizes, and a piece of a
+screen drawn at the two scales side by side. The right-hand column sets the
+larger values as custom properties, so the real components inside it are
+drawn at that scale on any screen.
 
 Reference: [Styling & design tokens › Type and space](/ui/styling#type-and-space) in the docs site.
 `,
@@ -153,5 +153,5 @@ Reference: [Styling & design tokens › Type and space](/ui/styling#type-and-spa
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** The proposed scales from 1536px, beside today's, and a piece of a screen at both. */
+/** The scales from 1536px beside those below it, and a piece of a screen at both. */
 export const LargeScreens: Story = { name: "Large screens" };
