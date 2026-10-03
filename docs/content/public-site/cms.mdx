@@ -91,4 +91,4 @@ Each block declares an `interfaceName`, so `payload-types.ts` exports a TypeScri
 
 - No Payload migrations are committed; Drizzle push keeps the CMS tables in sync while running `next dev` against the database.
 - The 5 MB upload cap applies to the whole CMS; it is a safety net for editors who export heavy photos.
-- Preview/live preview of drafts is not wired (`IMPROVEMENTS.md` #52).
+- Drafts have no preview or live preview, by decision (2026-10-03): they are read inside the admin form, and on `/blog/[slug]` by a logged-in Payload user.
