@@ -4,14 +4,6 @@
   justify-content: space-between;
   gap: var(--platform-space-6);
 
-  &:hover {
-    border-color: color-mix(in srgb, var(--platform-accent) 45%, transparent);
-  }
-
-  &.class-card_cancelled {
-    opacity: 0.55;
-  }
-
   & .class-card__info {
     min-width: 0;
   }
@@ -60,6 +52,19 @@
   & .class-card__status.class-card__status_code_completed {
     background: var(--platform-success-soft);
     color: var(--platform-success-ink);
+  }
+
+  /* A cancelled class steps back in its greys, not in an opacity: it is still
+     a link to the class, and an opacity took its words under the 4.5:1 a text
+     needs. Each line goes one step lighter, all of them on the card's white,
+     where the subtle grey reads; the tag keeps its neutral grey. */
+  &.class-card_state_cancelled .class-card__title {
+    color: var(--platform-text-muted);
+  }
+
+  &.class-card_state_cancelled .class-card__teacher,
+  &.class-card_state_cancelled .class-card__schedule {
+    color: var(--platform-text-subtle);
   }
 
   @media (width < 768px) {

@@ -33,7 +33,7 @@ const meta = {
 A class in «Clases», under «Próximas clases» or «Clases pasadas»: the whole
 card is the link to the class. Its title and teacher, the date and time in the
 viewer's zone with how long it lasts, and a tag with its status, coloured by
-the status's code; a cancelled class is dimmed. Invented data.
+the status's code; a cancelled class steps back to lighter greys. Invented data.
 
 Source: \`components/platform/sections/classes/classes-list/class-card.comp.tsx\`.
 Reference page: [Components › ClassCard](/components/platform/sections/classes/classes-list/class-card) in the docs site.
@@ -98,7 +98,7 @@ export const Completed: Story = {
   },
 };
 
-/** A cancelled class, «Cancelada»: the whole card dimmed, and the tag left in its neutral grey. */
+/** A cancelled class, «Cancelada»: each line a grey lighter, still readable, and the tag left in its neutral grey. */
 export const Cancelled: Story = {
   args: {
     classSummary: {

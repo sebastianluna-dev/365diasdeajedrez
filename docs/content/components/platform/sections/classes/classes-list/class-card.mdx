@@ -1,5 +1,5 @@
 ---
-description: "One class as a whole-card link: title, teacher, local date and time with duration, and a status tag coloured by status code; cancelled classes are dimmed."
+description: "One class as a whole-card link: title, teacher, local date and time with duration, and a status tag coloured by status code; a cancelled class steps back to lighter greys."
 ---
 
 # `ClassCard`
@@ -26,19 +26,21 @@ A class in the list. The whole card is a `<Link>` to the class detail; the date 
 
 ## Behaviour
 
-None. `statusCode === CLASS_STATUS.CANCELLED` adds the `_cancelled` modifier; the lowercased status code becomes the tag's modifier so each status gets its colour from CSS.
+None. `statusCode === CLASS_STATUS.CANCELLED` adds the `_state_cancelled` modifier; the lowercased status code becomes the tag's modifier so each status gets its colour from CSS.
 
 ## Markup & styling
 
-Block `.class-card` (76 lines), on top of `.platform-card`.
+Block `.class-card` (80 lines), on top of `.platform-card`. The card draws no border, so it has no hover rule that would colour one.
 
 **Elements:** `.class-card__info`, `.class-card__title`, `.class-card__teacher`, `.class-card__meta`, `.class-card__schedule`, `.class-card__status`
 
-**Modifiers and states:** `.class-card_cancelled`, `.class-card__status_code_scheduled`, `.class-card__status_code_live`, `.class-card__status_code_completed` (cancelled has no tag rule beyond the card's dimming)
+**Modifiers and states:** `.class-card_state_cancelled`, `.class-card__status_code_scheduled`, `.class-card__status_code_live`, `.class-card__status_code_completed` (cancelled has no tag rule: the tag keeps `.platform-tag`'s neutral grey)
+
+A cancelled class steps back in its greys and not in an `opacity`: it is still a link, and the opacity it had (0.55) took the teacher, the date and the tag under 4.5:1. The title goes to `--platform-text-muted` and the teacher and the date to `--platform-text-subtle`, which reads on the card's white (`--platform-surface`) and on nothing greyer.
 
 **Other classes it renders:** `.platform-card`, `.platform-tag`.
 
-**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-danger`, `--platform-danger-soft`, `--platform-success-ink`, `--platform-success-soft`, `--platform-text`, `--platform-text-muted`
+**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-danger`, `--platform-danger-soft`, `--platform-success-ink`, `--platform-success-soft`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
 **Breakpoints:** `(width < 768px)` stacks meta under info.
 
