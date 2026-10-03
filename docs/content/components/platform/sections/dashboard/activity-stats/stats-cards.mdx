@@ -1,5 +1,5 @@
 ---
-description: "The statistics cards with a week / month / year / all-time tab strip; the four ranges arrive precomputed from the server and only the selected tab is local state."
+description: "The statistics cards with a week / month / year / all-time strip of toggle buttons; the four ranges arrive precomputed from the server and only the pressed one is local state."
 ---
 
 # `StatsCards`
@@ -15,7 +15,7 @@ description: "The statistics cards with a week / month / year / all-time tab str
 
 ## Purpose
 
-The metric cards ("Lecciones completadas", "Ejercicios resueltos"…) for a period, with a tab strip to change the period and a "Por tema" row of tags. It is a Client Component because the selected range is interface state; the numbers themselves are all in the props, so switching is instant and involves no data fetching.
+The metric cards ("Lecciones completadas", "Ejercicios resueltos"…) for a period, with a strip of toggle buttons to change the period and a "Por tema" row of tags. It is a Client Component because the selected range is interface state; the numbers themselves are all in the props, so switching is instant and involves no data fetching.
 
 ## Props
 
@@ -25,7 +25,7 @@ The metric cards ("Lecciones completadas", "Ejercicios resueltos"…) for a peri
 
 ## Behaviour
 
-- `range` starts at `"week"`. The strip is a `role="tablist"` labelled "Periodo de estadísticas"; each button is `role="tab"` with `aria-selected`.
+- `range` starts at `"week"`. The strip is a `role="group"` labelled "Periodo de estadísticas" of toggle buttons, the chosen one `aria-pressed="true"`. Not tabs: the ranges filter the one panel below rather than each showing its own, so the tabs pattern (a `tabpanel` each, `aria-controls`, arrow keys between them, a single Tab stop) would announce a structure that is not there.
 - The grid renders `stats[range].totals`; the topics row renders only when the range has topics.
 - Labels come from a local constant (`RANGE_LABELS`), in Spanish.
 
@@ -35,13 +35,13 @@ Block `.stats-cards` (82 lines).
 
 **Elements:** `.stats-cards__filters`, `.stats-cards__filter`, `.stats-cards__grid`, `.stats-cards__card`, `.stats-cards__value`, `.stats-cards__label`, `.stats-cards__topics`, `.stats-cards__topics-title`, `.stats-cards__topic`
 
-**Modifiers and states:** `.stats-cards__filter_active`
+**Modifiers and states:** `.stats-cards__filter_state_active`
 
 **Other classes it renders:** `.platform-tag` on each topic.
 
 **Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
 
-**Breakpoints:** `(width < 1024px)` drops the grid from five columns to three; `(width < 640px)` to two. The tabs wrap at any width.
+**Breakpoints:** `(width < 1024px)` drops the grid from five columns to three; `(width < 640px)` to two. The buttons wrap at any width.
 
 ## Usage
 

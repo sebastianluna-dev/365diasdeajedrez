@@ -68,13 +68,13 @@ const NOTHING_YET: DashboardStats = {
   all: range([0, 0, 0, 0, 0], []),
 };
 
-/** Chooses a range by its tab, as the student does, and checks the tab says so. */
+/** Chooses a range by its button, as the student does, and checks the button says it is pressed. */
 const choose =
   (label: string) =>
   async ({ canvasElement }: { canvasElement: HTMLElement }) => {
-    const tab = within(canvasElement).getByRole("tab", { name: label });
-    await userEvent.click(tab);
-    await expect(tab).toHaveAttribute("aria-selected", "true");
+    const button = within(canvasElement).getByRole("button", { name: label });
+    await userEvent.click(button);
+    await expect(button).toHaveAttribute("aria-pressed", "true");
   };
 
 const meta = {
@@ -84,8 +84,9 @@ const meta = {
     docs: {
       description: {
         component: `
-The dashboard's «Tus estadísticas»: a strip of four tabs — this week, this
-month, this year, all time — over one card per metric and a «Por tema» row of
+The dashboard's «Tus estadísticas»: a strip of four toggle buttons — this
+week, this month, this year, all time, one of them pressed — over one card per
+metric and a «Por tema» row of
 tags, which is left out when the range has no topic. The four ranges arrive
 precomputed from \`services/dashboard\`, so choosing one is local state and
 fetches nothing; the strip opens on «Esta semana». Each range after the first

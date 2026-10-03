@@ -16,21 +16,25 @@ interface StatsCardsProps {
 }
 
 // The four ranges arrive precomputed from the server; the toggle is local.
+//
+// The ranges are toggle buttons, one of them pressed, and not tabs: they
+// filter the one panel below instead of each showing a panel of its own, so
+// the tabs pattern (a tabpanel each, arrow keys between them) would announce
+// a structure that is not there.
 export function StatsCards({ stats }: StatsCardsProps) {
   const [range, setRange] = useState<StatsRangeKey>("week");
   const current = stats[range];
 
   return (
     <div className="stats-cards">
-      <div className="stats-cards__filters" role="tablist" aria-label="Periodo de estadísticas">
+      <div className="stats-cards__filters" role="group" aria-label="Periodo de estadísticas">
         {RANGE_LABELS.map((item) => (
           <button
             key={item.key}
             type="button"
-            role="tab"
-            aria-selected={range === item.key}
+            aria-pressed={range === item.key}
             onClick={() => setRange(item.key)}
-            className={`stats-cards__filter${range === item.key ? " stats-cards__filter_active" : ""}`}
+            className={`stats-cards__filter${range === item.key ? " stats-cards__filter_state_active" : ""}`}
           >
             {item.label}
           </button>
