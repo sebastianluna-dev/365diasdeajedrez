@@ -73,11 +73,34 @@ describe("proxy", () => {
     }
   });
 
+  it("pone a la plataforma y a su login una CSP con un nonce nuevo en cada petición", () => {
+    const nonceOf = (response: Response) =>
+      /'nonce-([^']+)'/.exec(response.headers.get("content-security-policy") ?? "")?.[1];
+
+    const first = proxy(requestTo("/estudios/abc", { withCookie: true }));
+    const second = proxy(requestTo("/estudios/abc", { withCookie: true }));
+    expect(nonceOf(first)).toBeTruthy();
+    expect(nonceOf(second)).toBeTruthy();
+    expect(nonceOf(first)).not.toBe(nonceOf(second));
+    expect(nonceOf(proxy(requestTo(LOGIN_PATH)))).toBeTruthy();
+  });
+
+  it("le pasa a Next la misma CSP en la petición, que es de donde lee el nonce para sus scripts", () => {
+    const response = proxy(requestTo("/inicio", { withCookie: true }));
+    const policy = response.headers.get("content-security-policy");
+    expect(response.headers.get("x-middleware-request-content-security-policy")).toBe(policy);
+  });
+
+  it("no pone nonce a la portada: es estática, y su CSP la manda next.config.ts", () => {
+    expect(proxy(requestTo("/")).headers.get("content-security-policy")).toBeNull();
+    expect(proxy(requestTo("/nosotros")).headers.get("content-security-policy")).toBeNull();
+  });
+
   // The matcher has to be literal (Next analyses it at build time), so the only
   // way for it not to drift from the constant is to check it here.
-  it("el matcher cubre exactamente los prefijos privados más la portada", () => {
+  it("el matcher cubre exactamente los prefijos privados más la portada y el login", () => {
     const fromConstant = PROTECTED_PATH_PREFIXES.map((prefix) => `${prefix}/:path*`);
-    expect([...config.matcher].sort()).toEqual(["/", ...fromConstant].sort());
+    expect([...config.matcher].sort()).toEqual(["/", LOGIN_PATH, ...fromConstant].sort());
   });
 
   // The test above only compares the two lists with each other: a new folder

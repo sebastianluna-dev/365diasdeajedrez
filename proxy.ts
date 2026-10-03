@@ -7,6 +7,7 @@ import {
   SESSION_COOKIE_NAME,
   SESSION_ENTRY_PATH,
 } from "@/constants/platform/auth.const";
+import { contentSecurityPolicy } from "@/lib/content-security-policy";
 
 // OPTIMISTIC rejection of the private area: here only whether the session cookie
 // exists is looked at, never whether it is valid. That is on purpose — the proxy
@@ -41,21 +42,53 @@ export function proxy(request: NextRequest): NextResponse {
   const isProtected = PROTECTED_PATH_PREFIXES.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
-  if (!isProtected || hasSessionCookie) return NextResponse.next();
+  if (isProtected && !hasSessionCookie) {
+    const loginUrl = new URL(LOGIN_PATH, request.url);
+    loginUrl.searchParams.set(RETURN_TO_PARAM, pathname + request.nextUrl.search);
+    return NextResponse.redirect(loginUrl);
+  }
 
-  const loginUrl = new URL(LOGIN_PATH, request.url);
-  loginUrl.searchParams.set(RETURN_TO_PARAM, pathname + request.nextUrl.search);
-  return NextResponse.redirect(loginUrl);
+  // Only the platform and its login take the nonce: the matcher sends nothing
+  // else here, and the site's static pages have their policy in next.config.ts.
+  if (!isProtected && pathname !== LOGIN_PATH) return NextResponse.next();
+  return withNonce(request);
+}
+
+/**
+ * The platform's pages, and its login, go on with a Content-Security-Policy
+ * that carries a nonce of their own (lib/content-security-policy.ts). They
+ * are rendered per request anyway (the session), so the nonce costs no static
+ * page. Next reads the nonce from the policy in the REQUEST's headers and puts
+ * it on every script it renders; the same policy goes back in the response,
+ * where the browser enforces it.
+ */
+function withNonce(request: NextRequest): NextResponse {
+  // A random UUID, as base64: unguessable, and new on every request.
+  const nonce = btoa(crypto.randomUUID());
+  const policy = contentSecurityPolicy({
+    target: "platform",
+    nonce,
+    isDev: process.env.NODE_ENV === "development",
+  });
+
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("Content-Security-Policy", policy);
+
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  response.headers.set("Content-Security-Policy", policy);
+  return response;
 }
 
 // The prefixes must be literal: Next analyses the matcher at build time and
 // discards any computed value (which is why it is not derived from the
 // constant; `proxy.test.ts` watches that the two lists do not drift apart). The
 // home page is included only for the jump of whoever brings a cookie; without
-// one it passes straight through and the prerendered version is served.
+// one it passes straight through and the prerendered version is served. The
+// login is here for its nonce: it is the page where a password is typed.
 export const config = {
   matcher: [
     "/",
+    "/iniciar-sesion",
     "/inicio/:path*",
     "/clases/:path*",
     "/estudios/:path*",

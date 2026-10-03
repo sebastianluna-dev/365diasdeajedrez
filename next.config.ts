@@ -1,5 +1,8 @@
 import type { NextConfig } from "next";
 import { withPayload } from "@payloadcms/next/withPayload";
+import { ADMIN_PATH_PREFIX, contentSecurityPolicy, sitePolicySource } from "./lib/content-security-policy";
+
+const isDev = process.env.NODE_ENV === "development";
 
 const nextConfig: NextConfig = {
   // The Cloudinary SDK reads its own package.json for version info at require-time;
@@ -25,9 +28,10 @@ const nextConfig: NextConfig = {
     // characters that take more than one byte.
     serverActions: { bodySizeLimit: "3mb" },
   },
-  // The headers Vercel does not add on its own (it does add HSTS). No CSP yet:
-  // the inline scripts of Google Analytics and the Meta Pixel would need a
-  // nonce from proxy.ts, which is a job of its own (IMPROVEMENTS #33).
+  // The headers Vercel does not add on its own (it does add HSTS), and the
+  // Content-Security-Policy of the site and of Payload's panel. The platform's
+  // carries a nonce, so proxy.ts sets it per request and the site's rule
+  // leaves its paths out (lib/content-security-policy.ts).
   async headers() {
     return [
       {
@@ -40,6 +44,14 @@ const nextConfig: NextConfig = {
           { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
         ],
+      },
+      {
+        source: sitePolicySource(),
+        headers: [{ key: "Content-Security-Policy", value: contentSecurityPolicy({ target: "site", isDev }) }],
+      },
+      {
+        source: `${ADMIN_PATH_PREFIX}/:path*`,
+        headers: [{ key: "Content-Security-Policy", value: contentSecurityPolicy({ target: "admin", isDev }) }],
       },
     ];
   },
