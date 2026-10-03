@@ -25,8 +25,6 @@ function getRecentActivities(userId: string) {
     include: activityInclude,
     orderBy: { occurredAt: "desc" },
     take: RECENT_ACTIVITY_LIMIT,
-    // One round trip for the activity and its three catalogs instead of four.
-    relationLoadStrategy: "join",
   });
 }
 
@@ -87,12 +85,12 @@ export const getUserDashboard = cache(async (): Promise<DashboardData> => {
     readByIds(idsFor(SUBJECT_TYPE.GAME), (ids) =>
       db.game.findMany({ where: { id: { in: ids } }, select: { id: true, white: true, black: true } }),
     ),
-    // An exercise is named after its lesson: joined, so it is one trip and not two.
+    // An exercise is named after its lesson, read in the same query (Prisma's
+    // join strategy, the default here: `relationJoins` in schema.prisma).
     readByIds(idsFor(SUBJECT_TYPE.EXERCISE), (ids) =>
       db.trainingExercise.findMany({
         where: { id: { in: ids } },
         select: { id: true, lesson: { select: { name: true } } },
-        relationLoadStrategy: "join",
       }),
     ),
   ]);
