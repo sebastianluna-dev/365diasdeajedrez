@@ -50,14 +50,17 @@
   }
 
   /* One ring turning in the middle of it, in the accent's own soft shade so
-     it reads as the house waiting and not as an error. */
+     it reads as the house waiting and not as an error. The middle of what is
+     PAINTED (the side rounded down to a whole 8, as above), and the ring is
+     pulled back by half its own size with `translate`, which is exact
+     whatever it measures; `transform` is the rotation's, and the two compose. */
   & .lesson-skeleton__spinner {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: calc(round(down, 100%, 8px) / 2);
+    left: calc(round(down, 100%, 8px) / 2);
     width: 44px;
     height: 44px;
-    margin: calc(-1 * var(--platform-space-6)) 0 0 calc(-1 * var(--platform-space-6));
+    translate: -50% -50%;
     border-radius: 50%;
     border: 3px solid var(--platform-accent-soft);
     border-top-color: var(--platform-accent);
