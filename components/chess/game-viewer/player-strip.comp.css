@@ -5,12 +5,13 @@
    and what accompanies them is kept. */
 
 /* Colour square of the side: with no flags or titles to show, at least one
-   knows at a glance who has White. */
+   knows at a glance who has White. A square, and so 4px: the corners rule
+   keeps that radius for a control this small, and 8px on 14px drew a circle. */
 .player-strip__chip {
   flex: none;
   width: 14px;
   height: 14px;
-  border-radius: 8px;
+  border-radius: 4px;
   box-shadow: inset 0 0 0 1px var(--platform-border-strong);
 
   &.player-strip__chip_side_white {

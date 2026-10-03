@@ -33,7 +33,7 @@ The viewer receives who plays as data — `players: { white: PlayerInfo; black: 
 
 No root of its own: the pieces sit directly in the viewer's `.game-viewer__player`, which lays them out and sets the size. Everything is in `em` for that reason: in full screen the viewer grows with the screen, and only the proportion between the name, the Elo and what accompanies them is kept.
 
-**Elements:** `.player-strip__chip` (`_side_white`, `_side_black`), `.player-strip__country`, `.player-strip__flag`, `.player-strip__title`, `.player-strip__name`, `.player-strip__elo`
+**Elements:** `.player-strip__chip` (`_side_white`, `_side_black`; a 14px square at `border-radius: 4px`, the corners rule's radius for a control this small), `.player-strip__country`, `.player-strip__flag`, `.player-strip__title`, `.player-strip__name`, `.player-strip__elo`
 
 **Tokens:** `--platform-accent-ink`, `--platform-border-strong`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
