@@ -38,7 +38,7 @@ There is no "already evaluated" state. The evaluation lives **inside the PGN**, 
 
 1. `runner.state === "running"`: a progress bar with "Posición n de N", the percentage and a "Cancelar" button.
 2. No complete set of evaluations (`mainlineEvaluations` returns `null` when any main-line node lacks one, because half a chart would mislead): the intro text, the move count, the depth and the start button; disabled when the game has no moves. A failed worker shows a `role="alert"` message.
-3. Evaluations present: the [`GameReviewChart`](/components/chess/game-viewer/game-review-chart), two `PlayerCard`s (accuracy, the three error counts with coloured dots, average loss in centipawns) and a strip with the depth, whether it is saved, and "Volver a evaluar".
+3. Evaluations present: the [`GameReviewChart`](/components/chess/game-viewer/game-review-chart), two `PlayerCard`s (accuracy, the three error counts with coloured dots, average loss in centipawns, «Pérdida media», with each score held within ±10 pawns so one move into a mate counts as at most a decided game) and a strip with the depth, whether it is saved, and "Volver a evaluar".
 
 **Computing.** `runner.start(pgn)` hands the PGN to [`useGameReview`](/components/chess/game-viewer/use-game-review-hook), which evaluates every main-line position in its own worker. When it finishes, `onFinished` reparses the PGN **as it is now**, recomputes the main-line paths and writes one `setEvaluation` per path; if the game was edited during the run, leftover results are dropped instead of written onto the wrong moves. The new PGN goes up through `onPgnChange`; the section's autosave takes it from there.
 

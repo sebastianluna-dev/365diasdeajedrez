@@ -49,6 +49,18 @@ export interface GameReview {
 }
 
 /**
+ * Ten pawns: past that the game is decided, and a mate — a hundred pawns on
+ * the bar and the chart — weighs no more than that. Lichess caps at the same
+ * 1000 cp.
+ */
+const SCORE_CAP = 10;
+
+/** The score in pawns, held within the cap. */
+function capped(score: number): number {
+  return Math.max(-SCORE_CAP, Math.min(SCORE_CAP, score));
+}
+
+/**
  * From the advantage in pawns to the win probability, from 0 to 100.
  *
  * It is the conversion that makes two positions comparable: going from +0.2 to
@@ -56,7 +68,7 @@ export interface GameReview {
  * difference in pawns is similar. The constant is Lichess's.
  */
 export function winPercent(score: number): number {
-  const centipawns = Math.max(-1000, Math.min(1000, score * 100));
+  const centipawns = capped(score) * 100;
   return 50 + 50 * (2 / (1 + Math.exp(-0.00368208 * centipawns)) - 1);
 }
 
@@ -144,7 +156,9 @@ export function reviewGame(positions: ReviewedPosition[]): GameReview | null {
     const color = index % 2 === 1 ? "white" : "black";
     const sign = color === "white" ? 1 : -1;
     const lost = Math.max(0, sign * (winPercent(before.score) - winPercent(after.score)));
-    const centipawnLoss = Math.max(0, Math.round(sign * (before.score - after.score) * 100));
+    // Capped like the win percentage: uncapped, one move into a forced mate
+    // added some 9,500 cp and the average loss of a whole game stood on it.
+    const centipawnLoss = Math.max(0, Math.round(sign * (capped(before.score) - capped(after.score)) * 100));
 
     moves.push({ ply: index, color, lost, centipawnLoss, quality: gradeOf(lost) });
     accuracies[color].push(moveAccuracy(lost));

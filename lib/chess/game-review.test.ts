@@ -88,6 +88,38 @@ describe("reviewGame", () => {
     expect(reviewGame([{ fen: START }])).toBeNull();
   });
 
+  it("un mate cuenta como diez peones en la pérdida, no como cien", () => {
+    // The «Opera game» at the review's depth (16), as the GameReview story
+    // carries it: 15… Cxd7 walks into a mate in two, and the mate itself keeps
+    // the reading before it.
+    const pawns = [
+      0.35, 0.3, 0.3, 0.43, 0.49, 0.59, 0.88, 0.89, 1.45, 1.25, 1.24, 1.14, 2.23, 2.3, 2.02, 1.93, 1.78, 1.91, 2.61,
+      2.52, 4.62, 4.84, 5.02, 5.17, 5.5, 5.59, 5.98, 6.03, 8.02, 3.08,
+    ];
+    const mates = [2, 1, 1, 1];
+    const opera: ReviewedPosition[] = [
+      ...pawns.map((score) => ({ fen: START, evaluation: { score, mateIn: null } })),
+      ...mates.map((moves) => ({ fen: START, evaluation: { score: 100, mateIn: moves } })),
+    ];
+
+    const review = reviewGame(opera)!;
+    // From +3.08 to a mate is at most ten pawns: 692 cp, not the 9,692 of a
+    // hundred-pawn mate.
+    expect(review.moves.find((move) => move.ply === 30)?.centipawnLoss).toBe(692);
+    expect(Math.max(...review.moves.map((move) => move.centipawnLoss))).toBeLessThanOrEqual(1000);
+    expect(review.black.averageLoss).toBe(91);
+  });
+
+  it("ganar un poco más despacio no se cobra como si se hubiera regalado el mate", () => {
+    // White had a mate in three and plays a move that leaves +8: the win is
+    // still there, and the loss is two pawns, not ninety-two.
+    const review = reviewGame([
+      { fen: START, evaluation: { score: 100, mateIn: 3 } },
+      { fen: START, evaluation: { score: 8, mateIn: null } },
+    ])!;
+    expect(review.moves[0]?.centipawnLoss).toBe(200);
+  });
+
   it("reconoce el final por el material que queda", () => {
     const middle = positions([0.1, 0.1, 0.1]);
     const end = positions([0.1, 0.1], ENDGAME);

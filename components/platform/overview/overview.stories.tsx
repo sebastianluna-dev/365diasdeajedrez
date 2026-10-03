@@ -1295,7 +1295,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             review={{
               moves: [],
               white: { accuracy: 95, inaccuracies: 1, mistakes: 0, blunders: 0, averageLoss: 32 },
-              black: { accuracy: 86, inaccuracies: 1, mistakes: 1, blunders: 0, averageLoss: 654 },
+              black: { accuracy: 86, inaccuracies: 1, mistakes: 1, blunders: 0, averageLoss: 91 },
               phases: { middlegame: 20, endgame: 33 },
             }}
             currentPly={18}
