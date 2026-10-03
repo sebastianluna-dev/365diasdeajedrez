@@ -66,10 +66,9 @@
     font-size: var(--platform-type-lg);
     color: var(--platform-danger);
   }
-}
 
-@media (width < 1024px) {
-  .game-explorer {
+  /* Below 1024px the panel goes under the board. */
+  @media (width < 1024px) {
     grid-template-columns: 1fr;
   }
 }
