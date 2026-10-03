@@ -130,8 +130,11 @@ export function useGameReview({ onFinished }: Options): GameReviewRunner {
         }
 
         if (line.startsWith("bestmove")) {
-          // Without a score — a finished position, mate or stalemate — the last
-          // known one is kept: the chart needs a value per position.
+          // Without a score the last known one is kept: the chart needs a value
+          // per position. That is a mate on the board, whose `mate 0`
+          // `parseEngineInfo` does not read (its zero cannot say who won), so
+          // the mate keeps the previous position's figure: the winner's mate in
+          // one. A stalemate does score, `cp 0`: a draw.
           evaluations.push(current ?? evaluations[evaluations.length - 1] ?? { score: 0, mateIn: null });
           index += 1;
           setProgress((previous) => ({ ...previous, done: index }));

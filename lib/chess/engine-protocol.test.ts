@@ -54,6 +54,41 @@ describe("parseEngineInfo", () => {
   });
 });
 
+describe("parseEngineInfo en una posición terminada", () => {
+  // What the bundled Stockfish 18 prints, line for line, when it is asked to
+  // search a position that is already over.
+  const MATED = ["info depth 0 score mate 0", "bestmove (none)"];
+  const STALEMATE = ["info depth 0 score cp 0", "bestmove (none)"];
+
+  it("un mate en el tablero no es una lectura, mueva quien mueva", () => {
+    // After 1. f3 e5 2. g4 Qh4# it is White to move and White is mated: the old
+    // reading turned that 0 into +100 with the mover's sign, a win for the loser.
+    for (const turn of ["white", "black"] as const) {
+      expect(MATED.map((line) => parseEngineInfo(line, turn))).toEqual([null, null]);
+    }
+  });
+
+  it("el ahogado sí se lee: tablas, sin línea", () => {
+    const [info, bestmove] = STALEMATE.map((line) => parseEngineInfo(line, "black"));
+    expect(info).toMatchObject({ depth: 0, score: 0, mateIn: null, pv: [] });
+    expect(bestmove).toBeNull();
+  });
+
+  it("la revisión se queda con la lectura de antes del mate y el ganador no cambia", () => {
+    // 2. g4, Black to move: the last reading of the search before the mate.
+    const beforeMate = parseEngineInfo(
+      "info depth 16 seldepth 2 multipv 1 score mate 1 nodes 301 nps 75250 hashfull 0 time 4 pv d8h4",
+      "black",
+    )!;
+    expect(beforeMate).toMatchObject({ score: -100, mateIn: -1 });
+
+    // 2… Qh4#: nothing parses, so the review hook repeats the previous figure,
+    // which is Black's.
+    const afterMate = MATED.map((line) => parseEngineInfo(line, "white")).find((info) => info !== null);
+    expect(afterMate ?? beforeMate).toMatchObject({ score: -100, mateIn: -1 });
+  });
+});
+
 describe("evaluationBarFill", () => {
   it("reparte a la mitad cuando está igualada", () => {
     expect(evaluationBarFill(0)).toBeCloseTo(0.5);
@@ -83,6 +118,13 @@ describe("formatEvaluation", () => {
   it("el mate manda sobre la puntuación", () => {
     expect(formatEvaluation({ ...base, score: 100, mateIn: 3 })).toBe("+M3");
     expect(formatEvaluation({ ...base, score: -100, mateIn: -2 })).toBe("−M2");
+  });
+
+  it("un mate ya dado toma el signo de la puntuación, porque el cero no tiene", () => {
+    // `[%eval #0]` from a game reviewed before a mate on the board stopped
+    // being a reading: `parsePgnTree` gives it the winner's score.
+    expect(formatEvaluation({ score: -100, mateIn: 0 })).toBe("−M0");
+    expect(formatEvaluation({ score: 100, mateIn: 0 })).toBe("+M0");
   });
 });
 

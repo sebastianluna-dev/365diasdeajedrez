@@ -30,6 +30,8 @@ Two hooks own two independent workers, because Stockfish aborts (`RuntimeError: 
 
 `lib/chess/engine-protocol.ts` parses the `info` lines (score normalised to White, mate distances, PV as UCI) and orders/merges the lines; nothing else in the app reads raw engine output.
 
+A position that is already over is searched at depth 0 and answered at once with `bestmove (none)`. Stalemate prints `info depth 0 score cp 0`, which parses as a draw. A mate on the board prints `info depth 0 score mate 0`, and that zero has no sign: read as a score it handed the win to the side that is mated, so `parseEngineInfo` returns `null` for it. The review then keeps the previous position's figure, the winner's mate in one.
+
 ## Pieces — `public/pieces/`
 
 The **cburnett** set (Colin M. L. Burnett, CC BY-SA 3.0) that chessground draws, extracted from `@lichess-org/chessground/assets/chessground.cburnett.css` into twelve standalone SVGs (`w-knight.svg`, `b-queen.svg`, …) so the promotion picker, figurines, static diagrams and image exports show exactly the pieces the board shows.

@@ -68,8 +68,15 @@ const BRUSH_BY_LETTER: Record<string, string> = { G: "green", R: "red", Y: "yell
  */
 const MATE_SCORE = 100;
 
-/** `[%eval 0.34]`, `[%eval -1.2]`, `[%eval #3]`, `[%eval #-3]`. */
-function parseEvaluation(raw: string): MoveEvaluation | undefined {
+/**
+ * `[%eval 0.34]`, `[%eval -1.2]`, `[%eval #3]`, `[%eval #-3]`.
+ *
+ * `[%eval #0]` is a mate already on the board, and its zero has no sign. The
+ * review wrote it on the mating move until the engine's `mate 0` stopped being
+ * read as a score, so saved games carry it; it is read from `turn`, the side
+ * to move in that position, which is the only one that can be mated.
+ */
+function parseEvaluation(raw: string, turn: "white" | "black"): MoveEvaluation | undefined {
   const match = /\[%eval\s+(#?)(-?\d+(?:\.\d+)?)\]/.exec(raw);
   if (!match) return undefined;
 
@@ -77,12 +84,16 @@ function parseEvaluation(raw: string): MoveEvaluation | undefined {
   if (!Number.isFinite(value)) return undefined;
 
   if (match[1] === "#") {
-    return { score: value >= 0 ? MATE_SCORE : -MATE_SCORE, mateIn: value };
+    const whiteWins = value === 0 ? turn === "black" : value > 0;
+    return { score: whiteWins ? MATE_SCORE : -MATE_SCORE, mateIn: value === 0 ? 0 : value };
   }
   return { score: value, mateIn: null };
 }
 
-function parseCommentCommands(comments: string[] | undefined): {
+function parseCommentCommands(
+  comments: string[] | undefined,
+  turn: "white" | "black",
+): {
   text?: string;
   shapes: DrawShape[];
   showDiagram: boolean;
@@ -119,7 +130,7 @@ function parseCommentCommands(comments: string[] | undefined): {
     .replace(/\s+/g, " ")
     .trim();
 
-  return { text: text.length > 0 ? text : undefined, shapes, showDiagram, evaluation: parseEvaluation(raw) };
+  return { text: text.length > 0 ? text : undefined, shapes, showDiagram, evaluation: parseEvaluation(raw, turn) };
 }
 
 function walk(
@@ -145,7 +156,7 @@ function walk(
     next.play(move);
     const [from, to] = chessgroundMove(move);
     const path = parentPath.length > 0 ? `${parentPath}.${index}` : `${index}`;
-    const { text, shapes, showDiagram, evaluation } = parseCommentCommands(child.data.comments);
+    const { text, shapes, showDiagram, evaluation } = parseCommentCommands(child.data.comments, next.turn);
 
     const node: PgnTreeNode = {
       path,
@@ -197,7 +208,7 @@ export function parsePgnTree(pgn: string): PgnTree | null {
   const warnings = findMalformedMoveTokens(pgn).map(
     (token) => `Token no reconocido como jugada: "${token}". Esa rama no se ha cargado.`,
   );
-  const { text, shapes, evaluation } = parseCommentCommands(game.comments);
+  const { text, shapes, evaluation } = parseCommentCommands(game.comments, pos.turn);
   const children = walk(game.moves.children, pos, "", startPly, nodesByPath, warnings);
 
   return {

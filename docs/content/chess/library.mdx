@@ -12,7 +12,7 @@ Every module here is **pure**: no React, no Prisma, no `server-only` (except whe
 - **Dotted paths** address a node inside a PGN tree: child indexes from the root, `"0"` is the first move, `"0.0.1.0"` goes down the mainline twice, into the second variation, then one more move. `children[0]` is the mainline by convention (which is what `makePgn` assumes when serialising). Stored in `TrainingExercise.path` and `ClassBlock.movePath`.
 - **Paths move.** Deleting or promoting reindexes siblings; hold a node reference and recompute the path with `pathOfNode` after mutating.
 - **Spanish SAN for display only.** `sanToSpanish` maps `N→C, B→A, R→T, Q→D, K→R` (and the promotion piece); storage and comparisons keep English SAN.
-- **Evaluations are always from White's point of view**, whether they come from the engine or from `[%eval]` comments.
+- **Evaluations are always from White's point of view**, whether they come from the engine or from `[%eval]` comments. A mate already on the board is not an evaluation: Stockfish reports it as `score mate 0`, a zero with no sign that cannot say who won, so `parseEngineInfo` returns `null` for it, and an `[%eval #0]` that a game reviewed before that change still carries is read by `parsePgnTree` for the side that gave the mate (only the side to move can be mated).
 
 ## Modules
 

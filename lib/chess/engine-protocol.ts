@@ -30,6 +30,15 @@ const MATE_SCORE = 100;
  * position a `+1.2` means Black is better. Here it is normalised to White once
  * and for all, which is how a board is read: otherwise the bar would jump
  * sides on every move.
+ *
+ * A position that is already over is searched at depth 0 and answered with
+ * `bestmove (none)`. Stalemate reads `score cp 0`, a draw, and is kept. A mate
+ * on the board reads `score mate 0`, and that is NOT a reading: its zero has
+ * no sign, so it cannot say who gave the mate, and turning it into `+100` with
+ * the mover's sign handed the win to the side that is mated. It returns
+ * `null`, like a line with no score; whoever needs to know that the game is
+ * over looks at the board, and the review keeps the previous position's
+ * figure, which is the winner's mate in one.
  */
 export function parseEngineInfo(line: string, turn: "white" | "black"): EngineInfo | null {
   if (!line.startsWith("info ")) return null;
@@ -53,11 +62,14 @@ export function parseEngineInfo(line: string, turn: "white" | "black"): EngineIn
   const pv = pvAt === -1 ? [] : tokens.slice(pvAt + 1).filter((token) => /^[a-h][1-8][a-h][1-8][qrbn]?$/.test(token));
 
   if (kind === "mate") {
-    return { multipv, depth, score: sign * (value >= 0 ? MATE_SCORE : -MATE_SCORE), mateIn: sign * value, pv };
+    if (value === 0) return null;
+    return { multipv, depth, score: sign * (value > 0 ? MATE_SCORE : -MATE_SCORE), mateIn: sign * value, pv };
   }
   if (kind !== "cp") return null;
 
-  return { multipv, depth, score: (sign * value) / 100, mateIn: null, pv };
+  // A level position has no side: `-0` from Black's sign would only leak into
+  // comparisons and the stored figure.
+  return { multipv, depth, score: value === 0 ? 0 : (sign * value) / 100, mateIn: null, pv };
 }
 
 /**
@@ -81,8 +93,10 @@ export function evaluationBarFill(score: number): number {
  */
 export function formatEvaluation(info: Pick<EngineInfo, "score" | "mateIn">): string {
   if (info.mateIn !== null) {
-    const moves = Math.abs(info.mateIn);
-    return `${info.mateIn >= 0 ? "+" : "−"}M${moves}`;
+    // A mate already given (`#0`, only in games reviewed before `mate 0`
+    // stopped being a reading) has no sign of its own: the score carries it.
+    const winning = info.mateIn === 0 ? info.score >= 0 : info.mateIn > 0;
+    return `${winning ? "+" : "−"}M${Math.abs(info.mateIn)}`;
   }
   const rounded = Math.abs(info.score).toFixed(1);
   if (info.score > 0) return `+${rounded}`;

@@ -300,6 +300,33 @@ describe("nagCodeFor", () => {
   });
 });
 
+describe("parsePgnTree — la evaluación guardada en [%eval]", () => {
+  const lastOf = (tree: PgnTree) => {
+    let node = tree.children[0];
+    while (node?.children[0]) node = node.children[0];
+    return node;
+  };
+
+  it("lee la ventaja en peones y el mate con su bando", () => {
+    const tree = parseOrFail("{ [%eval 0.18] } 1. e4 { [%eval 0.34] } e5 { [%eval #3] } 2. Nf3 { [%eval #-2] } *");
+    expect(tree.initialEvaluation).toEqual({ score: 0.18, mateIn: null });
+    const [e4, e5, nf3] = [tree.children[0], tree.children[0]?.children[0], tree.children[0]?.children[0]?.children[0]];
+    expect(e4?.evaluation).toEqual({ score: 0.34, mateIn: null });
+    expect(e5?.evaluation).toEqual({ score: 100, mateIn: 3 });
+    expect(nf3?.evaluation).toEqual({ score: -100, mateIn: -2 });
+  });
+
+  it("un #0 se lo lleva quien dio el mate, no siempre las blancas", () => {
+    // What the review wrote on the mate itself before `mate 0` stopped being a
+    // reading. Only the side to move can be mated, so the position says who won.
+    const black = parseOrFail("1. f3 e5 2. g4 Qh4# { [%eval #0] } 0-1");
+    expect(lastOf(black)?.evaluation).toEqual({ score: -100, mateIn: 0 });
+
+    const white = parseOrFail("1. e4 e5 2. Bc4 Nc6 3. Qh5 Nf6 4. Qxf7# { [%eval #0] } 1-0");
+    expect(lastOf(white)?.evaluation).toEqual({ score: 100, mateIn: 0 });
+  });
+});
+
 describe("numeración cuando la partida arranca en un FEN", () => {
   const FEN = "8/Q3ppk1/1p2r1p1/4b3/P5Pp/1PB1P3/5P1q/2R3K1 w - - 2 44";
   const numberOf = (ply: number) => Math.ceil(ply / 2);
