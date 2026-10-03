@@ -1,9 +1,18 @@
 /* Five games tall, the rest behind a scroll of its own: a study of eighty
    games, or a chapter of forty, would push the game's record off the screen.
-   Rows measure 58px with 2px between them, plus the list's padding.
-   `position: relative` is for the script that scrolls the current game into
-   view: it reads the row's offset against the list. */
+   A row is as tall as what it holds on two lines — the name, its gap, the
+   players — plus the link's padding, worked out from the scale, so every row
+   measures the same whether it has the second line or not, and five rows are
+   five rows at either step of the scale (a fixed 58px showed a little under
+   five once rows measured 60, and 63 from 1536px). `position: relative` is
+   for the script that scrolls the current game into view: it reads the row's
+   offset against the list. */
 .game-list {
+  --game-list-row: calc(
+    1.3 * var(--platform-type-md) + var(--platform-space-1) + 1.3 * var(--platform-type-sm) + 2 *
+      var(--platform-space-2)
+  );
+
   list-style: none;
   margin: 0;
   padding: var(--platform-space-2);
@@ -11,7 +20,7 @@
   flex-direction: column;
   gap: var(--platform-space-0-5);
   position: relative;
-  max-height: calc(5 * 58px + 4 * 2px + 16px);
+  max-height: calc(5 * var(--game-list-row) + 4 * var(--platform-space-0-5) + 2 * var(--platform-space-2));
   overflow-y: auto;
   overscroll-behavior: contain;
 
@@ -45,7 +54,10 @@
     border: 0;
     border-radius: 8px;
     background: transparent;
-    color: var(--platform-border-strong);
+    /* A control's drawing, so 3:1 at least (WCAG 1.4.11): the subtle grey,
+       4.7:1 on the card. It is only seen when the row is pointed at or has
+       the focus, or on a touch screen. */
+    color: var(--platform-text-subtle);
     touch-action: none;
     cursor: grab;
   }
@@ -133,7 +145,7 @@
     display: flex;
     align-items: center;
     gap: var(--platform-space-3);
-    min-height: 58px;
+    min-height: var(--game-list-row);
     box-sizing: border-box;
     padding: var(--platform-space-2) var(--platform-space-3);
     border-radius: 8px;

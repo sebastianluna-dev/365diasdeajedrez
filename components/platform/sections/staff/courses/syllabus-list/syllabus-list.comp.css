@@ -140,7 +140,10 @@
     transition: color 150ms;
   }
 
-  & .syllabus-list__row:hover .syllabus-list__grip {
+  /* Pointed at, or reached with the keyboard, the grip is drawn as a control
+     is (3:1 at least, WCAG 1.4.11): the subtle grey. */
+  & .syllabus-list__row:hover .syllabus-list__grip,
+  & .syllabus-list__row:focus-within .syllabus-list__grip {
     color: var(--platform-text-subtle);
   }
 

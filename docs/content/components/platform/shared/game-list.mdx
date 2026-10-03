@@ -31,20 +31,20 @@ The games of a study or of a chapter's collection, beside the board, to jump bet
 ## Behaviour
 
 - **Rows** show the game's name — in a study, the student's title or the mapper's `label` fallback (round, event or position); in a collection, its label —, who played it as a second line, and the result. Long names are cut, with a `title` tooltip.
-- **Five rows tall.** The block caps its height at five games (`calc(5 * 58px + 4 * 2px + 16px)`) and scrolls the rest on its own, so a long study does not push the record off the screen. On arrival, and whenever `currentId` changes, an effect scrolls the current row into the middle of the list by arithmetic on its offset, so only the list moves and never the page.
+- **Five rows tall.** A row is as tall as two lines of it — the name, the gap, the players — and the link's padding, worked out from the scale (`--game-list-row`, set on the block), so a one-line row measures the same as a two-line one; the block caps its height at five of them, their gaps and its padding, and scrolls the rest on its own (it followed a fixed 58px until 2026-10-03, while rows measured 60 and, from 1536px, 63), so a long study does not push the record off the screen. On arrival, and whenever `currentId` changes, an effect scrolls the current row into the middle of the list by arithmetic on its offset, so only the list moves and never the page.
 - **Reordering**, only with `onReorder`. Each row is dragged by its grip and, from the keyboard, picked up on the grip with space and moved with the arrows, through [`SortableDnd`](/components/platform/shared/sortable-dnd), which opens the gap where the row would land and says everything out loud in Spanish. The order is applied at once and the whole list goes to `onReorder` in a transition (`useSortableRows`); new `games` from the server replace it during render.
 - **«Subir» and «Bajar»** are two arrows at the end of each row, one above the other: the row moves one place with a single click, for whoever cannot hold a drag (WCAG 2.5.7, 2026-10-03), through the same `onMove` a drop calls (`useSortableStep`), and `SortableDnd` says where it landed. At the ends the one that would leave the list stays, `aria-disabled`, drawn like a disabled row action. They are out of the Tab order (`tabIndex={-1}`): the keyboard already moves the row from its grip, and two more stops per game would double the way through a list one comes to in order to jump between games; a screen reader still finds them, and a voice command by their name. A step keeps the focus on the arrow that was pressed, if it had it: React moves the row's node, which drops the focus, and the arrow takes it back once React is done.
 - **The handles stay out of the way** until the list is hovered, or a row holds the focus (`:focus-within`): what one comes here for is to jump between games, not to sort them. Where nothing hovers — a touch screen, `(hover: none)` — they are always drawn, since nothing there would ever bring them out.
 
 ## Markup & styling
 
-Block `.game-list` (208 lines), the `<ul>` itself.
+Block `.game-list` (220 lines), the `<ul>` itself.
 
 **Elements:** `.game-list__row`, `.game-list__grip`, `.game-list__item`, `.game-list__main`, `.game-list__name`, `.game-list__players`, `.game-list__result`, `.game-list__steps`, `.game-list__step`, `.game-list__step-icon`
 
 **Modifiers and states:** `.game-list__row_state_dragging` (lifted, with the card's shadow), `.game-list__item_state_active`, `.game-list__step_direction_up`, `.game-list__step_direction_down` (the same arrow, turned), `.game-list__step[aria-disabled="true"]`
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-border-strong`, `--platform-shadow-card`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-type-md`, `--platform-type-sm`, `--platform-space-0-5`, `--platform-space-1`, `--platform-space-2`, `--platform-space-3`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-shadow-card`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle` (the players, and the grip, a control's drawing at 4.7:1), `--platform-type-md`, `--platform-type-sm`, `--platform-space-0-5`, `--platform-space-1`, `--platform-space-2`, `--platform-space-3`
 
 No width media queries; `(hover: none)` draws the handles, and `(prefers-reduced-motion: reduce)` drops their fade.
 
