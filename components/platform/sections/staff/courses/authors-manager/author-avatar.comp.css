@@ -31,10 +31,6 @@
     border-radius: 8px;
   }
 
-  &.author-avatar_shape_tile.author-avatar_size_small {
-    border-radius: 8px;
-  }
-
   &.author-avatar_shape_circle {
     border-radius: 50%;
   }
