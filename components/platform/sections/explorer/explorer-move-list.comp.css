@@ -85,6 +85,12 @@
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
     opacity: 0.85;
+    /* Its text is the piece's initial, for the screen reader: pushed out of
+       the box and clipped, only the drawing is seen. The clipping also keeps
+       the box's baseline at its bottom edge, where it sat while empty. */
+    overflow: hidden;
+    text-indent: 100%;
+    white-space: nowrap;
   }
 
   & .explorer-move-list__glyph_kind_knight {

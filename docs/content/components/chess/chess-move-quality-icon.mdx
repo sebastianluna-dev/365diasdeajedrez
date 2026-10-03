@@ -32,7 +32,7 @@ export const ChessMoveQualityIcon: Record<
 >;
 ```
 
-Each variant renders an `<svg aria-hidden="true">`; the surrounding cell carries the meaning.
+Each variant renders an `<svg aria-hidden="true">`; the surrounding cell carries the meaning, in words: the board writes the quality beside the badge for the screen reader only, with `moveQualityLabel` from `lib/chess/notation` ("Jugada brillante", "Imprecisión"…).
 
 ### `chessMoveQualityIconFor`
 

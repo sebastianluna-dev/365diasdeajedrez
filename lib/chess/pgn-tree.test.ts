@@ -6,6 +6,7 @@ import {
   nagCodeFor,
   nagCodesOf,
   nagGlyph,
+  nagLabel,
   nextPathOf,
   nodeAtPath,
   parentPathOf,
@@ -253,6 +254,32 @@ describe("nagGlyph", () => {
   it("cae en $<n> para NAGs desconocidos", () => {
     expect(nagGlyph(250)).toBe("$250");
     expect(nagGlyph(0)).toBe("$0");
+  });
+});
+
+describe("nagLabel", () => {
+  it("dice con palabras lo que el símbolo solo dibuja", () => {
+    // A screen reader skips "!" and "?" at its usual punctuation level, and
+    // reads "⩲" as a code point if at all: the words are what it can say.
+    expect(nagLabel(3)).toBe("Jugada brillante");
+    expect(nagLabel(4)).toBe("Error grave");
+    expect(nagLabel(14)).toBe("Las blancas están ligeramente mejor");
+    expect(nagLabel(146)).toBe("Novedad");
+  });
+
+  it("nombra igual las dos mitades de una pareja", () => {
+    expect(nagLabel(37)).toBe(nagLabel(36));
+    expect(nagLabel(23)).toBe("Zugzwang");
+  });
+
+  it("nombra cada código que tiene símbolo", () => {
+    for (let nag = 0; nag < 256; nag += 1) {
+      if (nagGlyph(nag) !== `$${nag}`) expect(nagLabel(nag)).not.toBe(nagGlyph(nag));
+    }
+  });
+
+  it("cae en el símbolo para un código sin nombre", () => {
+    expect(nagLabel(250)).toBe("$250");
   });
 });
 

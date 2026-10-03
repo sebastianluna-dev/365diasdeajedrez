@@ -2,7 +2,7 @@
 
 import { type MouseEvent, type ReactNode, useEffect, useRef } from "react";
 import { buildProseBlocks, type ProseItem } from "@/lib/chess/notation-prose";
-import type { PgnTree } from "@/lib/chess/pgn-tree";
+import { nagGlyph, nagLabel, type PgnTree } from "@/lib/chess/pgn-tree";
 import "./move-tree.comp.css";
 
 /** Air left above the move once it is at the top of its panel. */
@@ -88,6 +88,14 @@ export function MoveTree({ tree, currentPath, onSelect, onContextMenu }: MoveTre
         className={`move-tree__move${isActive ? " move-tree__move_active" : ""}`}
       >
         {item.label}
+        {/* The symbols are seen and the words are heard: a screen reader
+            skips "!" and "?", and has no name for "⩲". */}
+        {item.nags.length > 0 && (
+          <>
+            <span aria-hidden="true">{item.nags.map(nagGlyph).join("")}</span>
+            <span className="move-tree__sr">, {item.nags.map(nagLabel).join(", ")}</span>
+          </>
+        )}
       </button>
     );
   };

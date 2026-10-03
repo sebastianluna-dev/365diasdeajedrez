@@ -26,11 +26,11 @@ The "Jugadas" panel of the explorer. It uses `buildNotationRows`, the same row b
 
 ## Behaviour
 
-None beyond rendering: rows of number, white, black; the current half-move gets `_current` and `aria-current="true"`; an empty line shows the hint "Mueve una pieza en el tablero para empezar a explorar."
+None beyond rendering: rows of number, white, black; the current half-move gets `_current` and `aria-current="true"`; an empty line shows the hint "Mueve una pieza en el tablero para empezar a explorar." The piece glyph is a picture, so its own text is the piece's Spanish initial (`piece` from `buildNotationRows`), pushed out of its box and clipped: the eye sees the knight and a screen reader says "C f3", where before it said "f3".
 
 ## Markup & styling
 
-Block `.explorer-move-list` (109 lines).
+Block `.explorer-move-list` (116 lines).
 
 **Elements:** `.explorer-move-list__title`, `.explorer-move-list__hint`, `.explorer-move-list__rows`, `.explorer-move-list__row`, `.explorer-move-list__number`, `.explorer-move-list__move`, `.explorer-move-list__glyph`, `.explorer-move-list__empty`
 

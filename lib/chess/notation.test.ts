@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildNotationRows, sanToSpanish, startPlyOfFen } from "@/lib/chess/notation";
+import { buildNotationRows, moveQualityLabel, sanToSpanish, startPlyOfFen } from "@/lib/chess/notation";
 import type { MoveAnnotations } from "@/lib/chess/types";
 
 describe("buildNotationRows", () => {
@@ -31,11 +31,30 @@ describe("buildNotationRows", () => {
     expect(rows.flatMap((row) => [row.white?.ply, row.black?.ply ?? []].flat())).toEqual([1, 2, 3, 4, 5]);
   });
 
+  it("da la inicial castellana de la pieza que dibuja el glifo, para leerla", () => {
+    // The glyph is a mask on an empty span: the letter is what a screen reader says.
+    const rows = buildNotationRows(["e4", "e5", "Nf3", "Nc6", "Bb5", "a6", "O-O", "Qe7", "Re1", "Kd8"]);
+    const halfMoves = rows.flatMap((row) => [row.white, row.black]);
+
+    expect(halfMoves.map((halfMove) => halfMove?.piece)).toEqual([
+      null,
+      null,
+      "C",
+      "C",
+      "A",
+      null,
+      null,
+      "D",
+      "T",
+      "R",
+    ]);
+  });
+
   it("escribe en castellano la pieza de coronación", () => {
     const rows = buildNotationRows(["e8=Q+", "exd1=N"], undefined, 0);
 
-    expect(rows[0]?.white).toMatchObject({ label: "e8=D+", glyph: null });
-    expect(rows[0]?.black).toMatchObject({ label: "exd1=C", glyph: null });
+    expect(rows[0]?.white).toMatchObject({ label: "e8=D+", glyph: null, piece: null });
+    expect(rows[0]?.black).toMatchObject({ label: "exd1=C", glyph: null, piece: null });
   });
 
   it("devuelve una lista vacía sin jugadas", () => {
@@ -80,6 +99,14 @@ describe("buildNotationRows", () => {
 
     expect(rows[0]?.white?.quality).toBeNull();
     expect(rows[0]?.black?.quality).toBeNull();
+  });
+});
+
+describe("moveQualityLabel", () => {
+  it("dice con palabras la calidad que el distintivo solo dibuja", () => {
+    expect(moveQualityLabel("brilliant")).toBe("Jugada brillante");
+    expect(moveQualityLabel("inaccuracy")).toBe("Imprecisión");
+    expect(moveQualityLabel("blunder")).toBe("Error grave");
   });
 });
 

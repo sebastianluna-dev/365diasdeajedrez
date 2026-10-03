@@ -99,4 +99,14 @@
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
   }
+
+  /* Read, not seen: a move's NAGs in words, which its symbols only draw. */
+  & .move-tree__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 }

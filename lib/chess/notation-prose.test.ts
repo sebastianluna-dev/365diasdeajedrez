@@ -123,6 +123,17 @@ describe("buildProseBlocks", () => {
     expect(nested.at(-1)).toMatchObject({ depth: 2, closes: 2 });
   });
 
+  it("la jugada se escribe sin sus NAGs, que van aparte para decirlos con palabras", () => {
+    const [block] = blocksOf("1. e4!! e5? 2. Nf3 $14 *");
+    if (block?.kind !== "moves") throw new Error("no es una tirada");
+
+    expect(block.items).toMatchObject([
+      { label: "1. e4", nags: [3] },
+      { label: "e5", nags: [2] },
+      { label: "2. Cf3", nags: [14] },
+    ]);
+  });
+
   it("cada bloque trae una clave distinta, que es la que ordena el dibujado", () => {
     const blocks = blocksOf("1. d4 {Primero.} (1. e4 e5) 1... d5 {Después.} *");
     const keys = blocks.map((block) => block.key);

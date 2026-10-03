@@ -28,11 +28,12 @@ export function ExplorerMoveList({ sans, index, onSelect }: ExplorerMoveListProp
         onClick={() => onSelect(halfMove.ply)}
         aria-current={isCurrent ? "true" : undefined}
       >
+        {/* The glyph is a picture: its text, the piece's initial, is what a
+            screen reader says ("Cf3"), and the stylesheet keeps it unpainted. */}
         {halfMove.glyph && (
-          <span
-            className={`explorer-move-list__glyph explorer-move-list__glyph_kind_${halfMove.glyph}`}
-            aria-hidden="true"
-          />
+          <span className={`explorer-move-list__glyph explorer-move-list__glyph_kind_${halfMove.glyph}`}>
+            {halfMove.piece}
+          </span>
         )}
         {halfMove.label}
       </button>

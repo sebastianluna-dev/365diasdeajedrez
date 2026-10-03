@@ -1,5 +1,5 @@
 import { sanToSpanish } from "./notation";
-import { nagGlyph, type PgnTreeNode } from "./pgn-tree";
+import type { PgnTreeNode } from "./pgn-tree";
 
 // How notation is ordered when the game is READ instead of consulted: a
 // lesson. The moves run on one after another and a comment breaks the line,
@@ -18,9 +18,14 @@ import { nagGlyph, type PgnTreeNode } from "./pgn-tree";
 // what is subtle here is when a move has to repeat its number, and that is
 // checked with tests instead of by looking at a screen.
 
-/** One thing inside a paragraph: a move, or a comment that follows it. */
+/**
+ * One thing inside a paragraph: a move, or a comment that follows it. A
+ * move's NAGs come apart from its label because they are drawn as symbols and
+ * said in words (`nagGlyph`, `nagLabel`).
+ */
 export type ProseItem =
-  { kind: "move"; key: string; path: string; label: string } | { kind: "aside"; key: string; text: string };
+  | { kind: "move"; key: string; path: string; label: string; nags: number[] }
+  | { kind: "aside"; key: string; text: string };
 
 /**
  * A paragraph. A run of moves of the main line, the comment that closed it,
@@ -45,13 +50,13 @@ export type ProseBlock =
 /**
  * A move as it is written: the number when it is White's, when it opens a
  * line, or when a comment or a variation came just before it ("2… Cc6"),
- * which is the rule a printed book follows.
+ * which is the rule a printed book follows. Its NAGs are not in it.
  */
 function moveLabel(node: PgnTreeNode, needsNumber: boolean): string {
   const isWhiteMove = node.ply % 2 === 1;
   const moveNumber = Math.ceil(node.ply / 2);
   const prefix = isWhiteMove ? `${moveNumber}. ` : needsNumber ? `${moveNumber}... ` : "";
-  return `${prefix}${sanToSpanish(node.san)}${node.nags.map(nagGlyph).join("")}`;
+  return `${prefix}${sanToSpanish(node.san)}`;
 }
 
 const moveItem = (node: PgnTreeNode, needsNumber: boolean): ProseItem => ({
@@ -59,6 +64,7 @@ const moveItem = (node: PgnTreeNode, needsNumber: boolean): ProseItem => ({
   key: node.path,
   path: node.path,
   label: moveLabel(node, needsNumber),
+  nags: node.nags,
 });
 
 /**

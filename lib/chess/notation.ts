@@ -27,11 +27,41 @@ export function numberedMoveLabel(ply: number, san: string): string {
 
 const withoutInitial = (san: string) => (PIECE_KIND_BY_LETTER[san.charAt(0)] ? san.slice(1) : san);
 const pieceGlyphOf = (san: string): string | null => PIECE_KIND_BY_LETTER[san.charAt(0)] ?? null;
+const pieceLetterOf = (san: string): string | null =>
+  PIECE_KIND_BY_LETTER[san.charAt(0)] ? (SPANISH_LETTER[san.charAt(0)] ?? null) : null;
+
+/**
+ * The quality badges in words. A badge is a picture hidden from the screen
+ * reader, so this is what it says instead. The names follow the editor's
+ * where the two overlap (`MOVE_QUALITY_NAGS` in `pgn-tree`).
+ */
+const MOVE_QUALITY_LABELS: Record<MoveQuality, string> = {
+  brilliant: "Jugada brillante",
+  great: "Gran jugada",
+  best: "Mejor jugada",
+  excellent: "Jugada excelente",
+  good: "Buena jugada",
+  book: "Jugada de teoría",
+  inaccuracy: "Imprecisión",
+  mistake: "Error",
+  miss: "Oportunidad perdida",
+  blunder: "Error grave",
+};
+
+export function moveQualityLabel(quality: MoveQuality): string {
+  return MOVE_QUALITY_LABELS[quality];
+}
 
 export interface NotationHalfMove {
   /** The move in Spanish without its piece initial, which `glyph` draws: "f3", "xb8", "e8=D+". */
   label: string;
+  /** The piece `glyph` draws: "knight", "bishop"… Null for a pawn and for castling. */
   glyph: string | null;
+  /**
+   * The same piece as its Spanish initial (R, D, T, A, C): the glyph is a
+   * picture, so this is what a screen reader says in its place.
+   */
+  piece: string | null;
   quality: MoveQuality | null;
   /** Ply index this half-move leads to (1-based; step the board here on click). */
   ply: number;
@@ -56,7 +86,13 @@ export function startPlyOfFen(fen: string): number {
 }
 
 function halfMove(san: string, ply: number, quality: MoveQuality | null): NotationHalfMove {
-  return { label: sanToSpanish(withoutInitial(san)), glyph: pieceGlyphOf(san), quality, ply };
+  return {
+    label: sanToSpanish(withoutInitial(san)),
+    glyph: pieceGlyphOf(san),
+    piece: pieceLetterOf(san),
+    quality,
+    ply,
+  };
 }
 
 /**

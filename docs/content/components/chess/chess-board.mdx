@@ -12,7 +12,7 @@ description: "The chessground board surface: standalone with a PGN (move list an
 | Story      | `chess-board.stories.tsx` (`chess/ChessBoard`): a controlled position with its arrows, the standalone game from the start and at its last move, flipped with the king in check, and interactive with editable shapes                                                                                                                                                                                  |
 | Used by    | [`AnalysisBoard`](/components/chess/analysis-board/analysis-board), [`ChessBoardLazy`](/components/chess/chess-board-lazy), [`EnginePanel`](/components/chess/game-viewer/engine-panel), [`GameViewer`](/components/chess/game-viewer/game-viewer), [`GameExplorer`](/components/platform/sections/explorer/game-explorer), [`TrainerSession`](/components/platform/sections/trainer/trainer-session) |
 | Composes   | [`chessMoveQualityIconFor`](/components/chess/chess-move-quality-icon)                                                                                                                                                                                                                                                                                                                                |
-| Uses       | `@lichess-org/chessground` (board rendering, its base and `cburnett` piece stylesheets)<br />`legalDests` from `lib/chess/legal-moves`<br />`buildNotationRows`, `startPlyOfFen` from `lib/chess/notation`<br />`isPromotionMove`, `replayGame`, `sanForMove`, `turnColor` from `lib/chess/replay`                                                                                                    |
+| Uses       | `@lichess-org/chessground` (board rendering, its base and `cburnett` piece stylesheets)<br />`legalDests` from `lib/chess/legal-moves`<br />`buildNotationRows`, `moveQualityLabel`, `startPlyOfFen`, `NotationHalfMove` from `lib/chess/notation`<br />`isPromotionMove`, `replayGame`, `sanForMove`, `turnColor` from `lib/chess/replay`                                                            |
 
 ## Purpose
 
@@ -52,19 +52,21 @@ Interactive moves are validated by chessops before they are reported: the board 
 
 **The current move stays in view.** When the ply changes, its cell in the notation is scrolled into view (`block: "nearest"`): smoothly, or at once for whoever asked the system for less motion (`prefers-reduced-motion: reduce`, read with `matchMedia` because a scroll started from code ignores the stylesheet's media query).
 
+**The notation is read as it is written.** A move's piece is a glyph (a mask on a span) and its quality a badge (an `aria-hidden` SVG): two pictures, which a screen reader skipped, so 17.Td8# was heard as "d8#". The glyph's own text is now the piece's Spanish initial (`piece`, from `buildNotationRows`), pushed out of its box and clipped so only the drawing is seen, and after the move a visually hidden `.chess-board__notation-sr` says the quality in words (`moveQualityLabel`): "T d8#, Mejor jugada". Nothing of what is seen changes.
+
 **Layout.** A `ResizeObserver` on the frame redraws chessground and, from 768 px (the stylesheet's breakpoint; below it the notation is hidden), pins the notation column to the board's height so it scrolls instead of growing. That height is read with `offsetHeight`, not with the bounding rect: a zoom on an ancestor would be inside a rect (the platform carried one until 2026-10-02), and the value is written back as an inline `px` that the zoom would apply a second time. The active notation cell is scrolled into view on every ply change.
 
 **Callbacks by reference.** `onMove` and `onShapesChange` are kept in refs so chessground's handlers, installed once, always call the latest function without re-creating the board.
 
 ## Markup & styling
 
-Block `.chess-board` (367 lines).
+Block `.chess-board` (383 lines).
 
 **Controlled mode has no fill.** Chessground rounds the board down to a whole number of device pixels, so it lands a pixel or two short of the box it is given, and the block's own background showed through as a white rim around it. Standalone keeps the fill, since there it is the card the notation shares.
 
 **The surface takes the width its container gives it.** `.chess-board__surface` is `width: 100%` and square. Until 2026-10-02 it also carried `zoom: calc(1 / var(--platform-zoom, 1))`, to give back the platform's zoom: chessground measures the element with `getBoundingClientRect()` and writes the result back as an inline `px` width, which the zoom applied again, so the board came out a tenth wider than its hole and its pieces drifted off their squares. The platform has no zoom now, so what is measured is what is written. The board's coordinates are the one thing inside drawn at a fixed size, 9px, the platform's one font size off its type scale.
 
-**Elements:** `.chess-board__columns`, `.chess-board__frame`, `.chess-board__surface` (the chessground mount point), `.chess-board__notation`, `.chess-board__notation-rows`, `.chess-board__notation-row`, `.chess-board__notation-number`, `.chess-board__notation-cell`, `.chess-board__notation-quality`, `.chess-board__notation-glyph`, `.chess-board__toolbar`, `.chess-board__toolbar-group`, `.chess-board__tool`, `.chess-board__promotion`, `.chess-board__promotion-panel`, `.chess-board__promotion-piece`, `.chess-board__promotion-cancel`
+**Elements:** `.chess-board__columns`, `.chess-board__frame`, `.chess-board__surface` (the chessground mount point), `.chess-board__notation`, `.chess-board__notation-rows`, `.chess-board__notation-row`, `.chess-board__notation-number`, `.chess-board__notation-cell`, `.chess-board__notation-quality`, `.chess-board__notation-glyph`, `.chess-board__notation-sr` (the quality in words, visually hidden), `.chess-board__toolbar`, `.chess-board__toolbar-group`, `.chess-board__tool`, `.chess-board__promotion`, `.chess-board__promotion-panel`, `.chess-board__promotion-piece`, `.chess-board__promotion-cancel`
 
 **Modifiers and states:** `.chess-board_mode_controlled` (surface only), `.chess-board__notation-row_striped`, `.chess-board__notation-cell_active`, `.chess-board__notation-cell_empty`, `.chess-board__notation-glyph_kind_{king,queen,rook,bishop,knight}`, `.chess-board__tool_variant_play`, `.chess-board__tool_active`, `.chess-board__tool-icon_flipped`, `.chess-board__promotion-piece_glyph_{w,b}-{queen,rook,bishop,knight}` (the piece SVGs from `public/pieces`)
 

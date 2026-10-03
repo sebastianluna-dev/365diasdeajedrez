@@ -377,3 +377,18 @@ export const POSITION_EVAL_NAGS: NagOption[] = [
   { nag: 18, glyph: "+−", label: "Las blancas están ganando", short: "Blancas ganan" },
   { nag: 19, glyph: "−+", label: "Las negras están ganando", short: "Negras ganan" },
 ];
+
+const NAG_LABELS = new Map(
+  [...MOVE_QUALITY_NAGS, ...MOVE_REMARK_NAGS, ...POSITION_EVAL_NAGS].flatMap((option) =>
+    nagCodesOf(option).map((code) => [code, option.label] as const),
+  ),
+);
+
+/**
+ * A NAG in words: what a screen reader says in place of its symbol, which it
+ * skips ("!", "?" at its usual punctuation level) or reads as a code point
+ * ("⩲"). A code with no name falls back to its symbol.
+ */
+export function nagLabel(nag: number): string {
+  return NAG_LABELS.get(nag) ?? nagGlyph(nag);
+}

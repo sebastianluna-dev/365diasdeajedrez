@@ -11,7 +11,7 @@ description: "Notation of a PGN tree read as prose: runs of moves that a comment
 | Stylesheet | `move-tree.comp.css` → block `.move-tree`                                                                                                               |
 | Story      | `move-tree.stories.tsx` (`chess/game-viewer/MoveTree`): a lesson with comments and variations, a move inside the nested variation, and a bare main line |
 | Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="flow"`), [`AnalysisBoard`](/components/chess/analysis-board/analysis-board)       |
-| Uses       | `buildProseBlocks`, `ProseItem` from `lib/chess/notation-prose`<br />`PgnTree` from `lib/chess/pgn-tree`                                                |
+| Uses       | `buildProseBlocks`, `ProseItem` from `lib/chess/notation-prose`<br />`nagGlyph`, `nagLabel`, `PgnTree` from `lib/chess/pgn-tree`                        |
 
 ## Purpose
 
@@ -36,7 +36,7 @@ The tree carries no editing logic. It reports a right click when asked to and no
 
 ## Behaviour
 
-- Where the line is cut is not decided here: `buildProseBlocks` (`lib/chess/notation-prose`) returns the runs and comments in reading order, already labelled in Spanish piece letters with their NAG glyphs. It is a pure module with tests, because the subtle part — when a move has to repeat its number — is checked far better that way than by looking at a screen.
+- Where the line is cut is not decided here: `buildProseBlocks` (`lib/chess/notation-prose`) returns the runs and comments in reading order, already labelled in Spanish piece letters, with each move's NAGs apart (`nags`): the button draws their glyphs hidden from the screen reader, which skips "!" and "?" and has no name for "⩲", and says them in words in a visually hidden `.move-tree__sr` (`nagLabel`): "16. Db8+, Jugada brillante". It is a pure module with tests, because the subtle part — when a move has to repeat its number — is checked far better that way than by looking at a screen.
 - The component walks that list and draws it: a run becomes a `<p>` of buttons, a comment a `<p>` of text, and a variation a `<p>` of its own. The brackets are hung on the blocks (`opens`, `closes`) and not written into the text, because a variation with one of its own is cut into several paragraphs: the `(` goes on the first and the `)` on whichever paragraph its last move fell in — which may belong to a deeper variation ending there too, so `closes` is a count and not a flag.
 - The active move is scrolled to the **top** of the panel on every path change: what is read after a move is what comes after it, and kept merely in view the move being followed crept down the panel until everything worth reading was below the fold. At the end of the game it stops where the scroll ends, as any scroll does.
 - That scroll is done **by hand**, not with `scrollIntoView`. That method scrolls every scrollable ancestor, and an ancestor with `overflow: hidden` still counts — it cannot be scrolled by hand but it can by script — so on the lesson, which is a page that fills the window and hides what overflows, it pushed the board and the panel up out of the screen. The component looks for its own scroller (the nearest ancestor with `overflow-y: auto | scroll`, since who provides it changes) and moves only that one, converting the distance from the page's px to the scroller's with `currentCSSZoom` (1 since the platform lost its zoom).
@@ -44,9 +44,9 @@ The tree carries no editing logic. It reports a right click when asked to and no
 
 ## Markup & styling
 
-Block `.move-tree` (93 lines).
+Block `.move-tree` (112 lines).
 
-**Elements:** `.move-tree__line` (a run of the main line), `.move-tree__comment` (a paragraph of the lesson), `.move-tree__variation` (a line that was not played), `.move-tree__bracket`, `.move-tree__aside` (what a variation is proposed for, inside its paragraph), `.move-tree__move`
+**Elements:** `.move-tree__line` (a run of the main line), `.move-tree__comment` (a paragraph of the lesson), `.move-tree__variation` (a line that was not played), `.move-tree__bracket`, `.move-tree__aside` (what a variation is proposed for, inside its paragraph), `.move-tree__move`, `.move-tree__sr` (a move's NAGs in words, visually hidden)
 
 **Modifiers and states:** `.move-tree__move_active`
 

@@ -9,7 +9,7 @@ import type { Key } from "@lichess-org/chessground/types";
 import "@lichess-org/chessground/assets/chessground.base.css";
 import "@lichess-org/chessground/assets/chessground.cburnett.css";
 import { legalDests } from "@/lib/chess/legal-moves";
-import { buildNotationRows, startPlyOfFen } from "@/lib/chess/notation";
+import { buildNotationRows, moveQualityLabel, startPlyOfFen, type NotationHalfMove } from "@/lib/chess/notation";
 import { isPromotionMove, replayGame, sanForMove, turnColor, type PromotionRole } from "@/lib/chess/replay";
 import type { MoveAnnotations } from "@/lib/chess/types";
 import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
@@ -331,6 +331,40 @@ export function ChessBoard({
     </div>
   );
 
+  // A half-move of the notation. What is seen and what is heard differ: the
+  // piece is a glyph and the quality a badge, two pictures, so each one is
+  // also written out for the screen reader — "Td8#, Jugada brillante", and not
+  // "d8#". The piece's initial is the glyph's own text, which its stylesheet
+  // keeps from being painted: in a box of its own beside the move, it would
+  // be heard apart from it ("T d8#").
+  const notationCell = (halfMove: NotationHalfMove | null, placeholder: string) => {
+    if (!halfMove) {
+      return <span className="chess-board__notation-cell chess-board__notation-cell_empty">{placeholder}</span>;
+    }
+    const QualityIcon = halfMove.quality ? chessMoveQualityIconFor(halfMove.quality) : null;
+    return (
+      <button
+        type="button"
+        ref={ply === halfMove.ply ? activeCellRef : undefined}
+        onClick={() => setPly(halfMove.ply)}
+        className={`chess-board__notation-cell${ply === halfMove.ply ? " chess-board__notation-cell_active" : ""}`}
+      >
+        {QualityIcon && (
+          <span className="chess-board__notation-quality">
+            <QualityIcon />
+          </span>
+        )}
+        {halfMove.glyph && (
+          <span className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${halfMove.glyph}`}>
+            {halfMove.piece}
+          </span>
+        )}
+        {halfMove.label}
+        {halfMove.quality && <span className="chess-board__notation-sr">, {moveQualityLabel(halfMove.quality)}</span>}
+      </button>
+    );
+  };
+
   if (position) {
     return (
       <div className="chess-board chess-board_mode_controlled" ref={rootRef}>
@@ -353,62 +387,16 @@ export function ChessBoard({
 
         <div className="chess-board__notation" style={notationHeight ? { height: notationHeight } : undefined}>
           <div className="chess-board__notation-rows">
-            {rows.map((row, index) => {
-              const WhiteQualityIcon = row.white?.quality ? chessMoveQualityIconFor(row.white.quality) : null;
-              const BlackQualityIcon = row.black?.quality ? chessMoveQualityIconFor(row.black.quality) : null;
-              return (
-                <div
-                  key={row.number}
-                  className={`chess-board__notation-row${index % 2 === 0 ? " chess-board__notation-row_striped" : ""}`}
-                >
-                  <span className="chess-board__notation-number">{row.number}</span>
-                  {row.white ? (
-                    <button
-                      type="button"
-                      ref={ply === row.white.ply ? activeCellRef : undefined}
-                      onClick={() => setPly(row.white!.ply)}
-                      className={`chess-board__notation-cell${ply === row.white.ply ? " chess-board__notation-cell_active" : ""}`}
-                    >
-                      {WhiteQualityIcon && (
-                        <span className="chess-board__notation-quality">
-                          <WhiteQualityIcon />
-                        </span>
-                      )}
-                      {row.white.glyph && (
-                        <span
-                          className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.white.glyph}`}
-                        />
-                      )}
-                      {row.white.label}
-                    </button>
-                  ) : (
-                    <span className="chess-board__notation-cell chess-board__notation-cell_empty">…</span>
-                  )}
-                  {row.black ? (
-                    <button
-                      type="button"
-                      ref={ply === row.black.ply ? activeCellRef : undefined}
-                      onClick={() => setPly(row.black!.ply)}
-                      className={`chess-board__notation-cell${ply === row.black.ply ? " chess-board__notation-cell_active" : ""}`}
-                    >
-                      {BlackQualityIcon && (
-                        <span className="chess-board__notation-quality">
-                          <BlackQualityIcon />
-                        </span>
-                      )}
-                      {row.black.glyph && (
-                        <span
-                          className={`chess-board__notation-glyph chess-board__notation-glyph_kind_${row.black.glyph}`}
-                        />
-                      )}
-                      {row.black.label}
-                    </button>
-                  ) : (
-                    <span className="chess-board__notation-cell chess-board__notation-cell_empty">·</span>
-                  )}
-                </div>
-              );
-            })}
+            {rows.map((row, index) => (
+              <div
+                key={row.number}
+                className={`chess-board__notation-row${index % 2 === 0 ? " chess-board__notation-row_striped" : ""}`}
+              >
+                <span className="chess-board__notation-number">{row.number}</span>
+                {notationCell(row.white, "…")}
+                {notationCell(row.black, "·")}
+              </div>
+            ))}
           </div>
         </div>
       </div>

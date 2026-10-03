@@ -60,6 +60,16 @@
     font-weight: 700;
   }
 
+  /* Read, not seen: a move's NAGs in words, which their symbols only draw. */
+  & .move-table__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   /* The evaluation goes to the right edge of its half row: that way White's
      figures and Black's form two columns that read vertically, which is what
      they are for — seeing at a glance where the game changed — and the move

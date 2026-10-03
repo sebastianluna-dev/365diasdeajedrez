@@ -300,6 +300,12 @@
     -webkit-mask-position: center;
     -webkit-mask-repeat: no-repeat;
     opacity: 0.85;
+    /* Its text is the piece's initial, for the screen reader: pushed out of
+       the box and clipped, only the drawing is seen. The clipping also keeps
+       the box's baseline at its bottom edge, where it sat while empty. */
+    overflow: hidden;
+    text-indent: 100%;
+    white-space: nowrap;
   }
 
   & .chess-board__notation-glyph.chess-board__notation-glyph_kind_knight {
@@ -321,6 +327,16 @@
   & .chess-board__notation-glyph.chess-board__notation-glyph_kind_king {
     mask-image: url("/pieces/b-king.svg");
     -webkit-mask-image: url("/pieces/b-king.svg");
+  }
+
+  /* Read, not seen: the quality in words, which the badge only draws. */
+  & .chess-board__notation-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 
   /* --- toolbar --- */

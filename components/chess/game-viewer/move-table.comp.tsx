@@ -4,7 +4,7 @@ import { type CSSProperties, type MouseEvent, type RefObject, useEffect, useMemo
 import { buildNotationBlocks } from "@/lib/chess/notation-blocks";
 import { formatEvaluation } from "@/lib/chess/engine-protocol";
 import { sanToSpanish } from "@/lib/chess/notation";
-import { nagGlyph, type PgnTree, type PgnTreeNode } from "@/lib/chess/pgn-tree";
+import { nagGlyph, nagLabel, type PgnTree, type PgnTreeNode } from "@/lib/chess/pgn-tree";
 import "./move-table.comp.css";
 
 interface MoveTableProps {
@@ -18,6 +18,13 @@ interface MoveTableProps {
 
 const moveNumberOf = (node: PgnTreeNode) => Math.ceil(node.ply / 2);
 const isWhite = (node: PgnTreeNode) => node.ply % 2 === 1;
+
+/**
+ * A move's NAGs in words, for the screen reader: their symbols are hidden
+ * from it, since it skips "!" and "?" and has no name for "⩲".
+ */
+const nagsSaid = (node: PgnTreeNode) =>
+  node.nags.length > 0 && <span className="move-table__sr">, {node.nags.map(nagLabel).join(", ")}</span>;
 
 /**
  * Tabular notation, Lichess style: the main line in white/black pairs and
@@ -61,7 +68,12 @@ export function MoveTable({ tree, currentPath, onSelect, onContextMenu }: MoveTa
         className={`move-table__cell move-table__cell_side_${side} move-table__move${node.path === currentPath ? " move-table__move_state_active" : ""}`}
       >
         {sanToSpanish(node.san)}
-        {node.nags.length > 0 && <span className="move-table__nag">{node.nags.map(nagGlyph).join("")}</span>}
+        {node.nags.length > 0 && (
+          <span className="move-table__nag" aria-hidden="true">
+            {node.nags.map(nagGlyph).join("")}
+          </span>
+        )}
+        {nagsSaid(node)}
         {/* The evaluation of the position the move leaves, if the game has
             already been analysed. It comes from the PGN's `[%eval]`, so it shows
             up by itself when the game is reopened and there is no need to analyse again. */}
@@ -108,7 +120,10 @@ export function MoveTable({ tree, currentPath, onSelect, onContextMenu }: MoveTa
                         ? `${moveNumberOf(item.node)}…`
                         : ""}
                     {sanToSpanish(item.node.san)}
-                    {item.node.nags.map(nagGlyph).join("")}
+                    {item.node.nags.length > 0 && (
+                      <span aria-hidden="true">{item.node.nags.map(nagGlyph).join("")}</span>
+                    )}
+                    {nagsSaid(item.node)}
                   </button>
                 ),
               )}
