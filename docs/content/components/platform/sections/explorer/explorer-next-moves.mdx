@@ -11,11 +11,11 @@ description: "The continuations from the current position, most played first, ea
 | Stylesheet | `explorer-next-moves.comp.css` → block `.explorer-next-moves`                                                                                                                                            |
 | Story      | `explorer-next-moves.stories.tsx` (`platform/sections/explorer/ExplorerNextMoves`): five continuations after 1.e4 e5 2.Nf3, one game, searching and empty; `onPlay` is a spy listed in the Actions panel |
 | Used by    | [`GameExplorer`](/components/platform/sections/explorer/game-explorer)                                                                                                                                   |
-| Uses       | `sanToSpanish` from `lib/chess/notation`; `ExplorerNextMove` from `services/game-explorer/game-explorer.types`                                                                                           |
+| Uses       | `sanToSpanish` from `lib/chess/notation`; `formatSpanishPercent` from `lib/format-spanish-percent`; `ExplorerNextMove` from `services/game-explorer/game-explorer.types`                                 |
 
 ## Purpose
 
-The "Continuaciones" panel: what was played from this position and how often. Each row is a button that plays the move, which is the natural way to walk the tree of the games in the database. The percentages are over the total of continuations, so they add up to 100.
+The "Continuaciones" panel: what was played from this position and how often. Each row is a button that plays the move, which is the natural way to walk the tree of the games in the database. The percentages are over the total of continuations, so they add up to 100, and are written as Spanish writes them, with `formatSpanishPercent`: "69,5 %", the sign after a non-breaking space, not "69.5%".
 
 ## Props
 

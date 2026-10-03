@@ -1,6 +1,7 @@
 "use client";
 
 import { sanToSpanish } from "@/lib/chess/notation";
+import { formatSpanishPercent } from "@/lib/format-spanish-percent";
 import type { ExplorerNextMove } from "@/services/game-explorer/game-explorer.types";
 import "./explorer-next-moves.comp.css";
 
@@ -15,7 +16,8 @@ interface ExplorerNextMovesProps {
  * least. Each row is playable: it is the natural way to walk the tree of the
  * games in the database.
  *
- * The percentages are over the total of continuations, so they add up to 100.
+ * The percentages are over the total of continuations, so they add up to 100,
+ * and are written as Spanish writes them: "69,5 %".
  */
 export function ExplorerNextMoves({ moves, onPlay, isSearching }: ExplorerNextMovesProps) {
   return (
@@ -40,7 +42,7 @@ export function ExplorerNextMoves({ moves, onPlay, isSearching }: ExplorerNextMo
                 <span className="explorer-next-moves__count">
                   {move.count} {move.count === 1 ? "partida" : "partidas"}
                 </span>
-                <span className="explorer-next-moves__percentage">{move.percentage}%</span>
+                <span className="explorer-next-moves__percentage">{formatSpanishPercent(move.percentage)}</span>
               </button>
             </li>
           ))}
