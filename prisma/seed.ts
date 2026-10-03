@@ -38,6 +38,7 @@ import {
   TOPIC_VALUES,
   USERS,
 } from "./seed-data";
+import { resolveCollectionIds } from "./seed-rules";
 import { AUTHOR_ROLE } from "../constants/platform/course-codes.const";
 
 const connectionString = process.env.PLATFORM_DATABASE_URL;
@@ -424,16 +425,22 @@ async function main() {
   // Two of these collections are also created by the APP, under ids of its own,
   // and each is unique by something that is not the id:
   //
-  //   · a chapter's collection (`@@unique([chapterId])`), by
-  //     `npm run collections:by-chapter`, which the docs tell you to run right
-  //     after a seed;
+  //   · a chapter's collection (`@@unique([chapterId])`), by the staff panel's
+  //     `importChapterGames` or by `npm run collections:by-chapter`, which the
+  //     docs tell you to run right after a seed;
   //   · a user's default study (`game_database_one_default_per_user`), by
   //     `createDefaultStudy` when the account is enrolled.
   //
-  // From the second seed on, inserting ours would break one of those two
-  // indexes. So the existing row is adopted, and what the seed knows as
+  // Inserting ours next to one of them would break its index and stop the seed
+  // halfway. So `resolveCollectionIds` (prisma/seed-rules.ts) looks each one up
+  // by that key and adopts the existing row, and what the seed knows as
   // `database.id` is translated into the real one for everything pointing at it.
-  const databaseIdOf = new Map<string, string>();
+  const databaseIdOf = await resolveCollectionIds(GAME_DATABASES, (key) =>
+    db.gameDatabase.findFirst({ where: key, select: { id: true } }),
+  );
+
+  /** The collection's real id: the adopted one, or the seed's when it was created here. */
+  const realDatabaseId = (seedId: string): string => databaseIdOf.get(seedId) ?? seedId;
 
   for (const database of GAME_DATABASES) {
     const databaseData = {
@@ -448,31 +455,13 @@ async function main() {
       order: database.order,
     };
 
-    let adopted: { id: string } | null = null;
-    if (database.chapterId) {
-      adopted = await db.gameDatabase.findUnique({
-        where: { chapterId: database.chapterId },
-        select: { id: true },
-      });
-    } else if (database.isDefault && database.userId) {
-      adopted = await db.gameDatabase.findFirst({
-        where: { userId: database.userId, isDefault: true },
-        select: { id: true },
-      });
-    }
-
-    const id = adopted?.id ?? database.id;
-    databaseIdOf.set(database.id, id);
-
+    const id = realDatabaseId(database.id);
     await db.gameDatabase.upsert({
       where: { id },
       update: databaseData,
       create: { id, ...databaseData },
     });
   }
-
-  /** The collection's real id: the adopted one, or the seed's when it was created here. */
-  const realDatabaseId = (seedId: string): string => databaseIdOf.get(seedId) ?? seedId;
 
   // The share goes AFTER the databases and before the games: the row points at
   // the collection, which has to exist already.

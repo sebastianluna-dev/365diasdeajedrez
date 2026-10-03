@@ -17,6 +17,9 @@ The driver announces a semantics change for `require` in pg v9. Use `sslmode=ver
 **`npm run db:seed` throws "El seed crea cuentas demo con la contraseña por defecto del repositorio y la base no es local".**
 The seed refuses to write the demo accounts (which include a staff account) with the repository password into a database that is not on `localhost`, or when `NODE_ENV=production`. Either set your own `PLATFORM_DEMO_PASSWORD` or, for a throwaway test database only, `ALLOW_DEMO_SEED=1`. Never set the latter in production.
 
+**`npm run db:seed` stops with `Unique constraint failed on the constraint: GameDatabase_chapterId_key` (or on `game_database_one_default_per_user`).**
+The database holds a collection the app created under an id of its own: a chapter's, made on demand by the staff panel's `importChapterGames` or by `collections:by-chapter`, or a user's default study, made with the account. A seed older than 2026-09-28 upserted its own row by id next to it and broke the index halfway: catalogs, accounts and courses written; games, studies, classes and stats not. The seed now looks each of those collections up by its natural key and writes onto the row it finds (`resolveCollectionIds` in `prisma/seed-rules.ts`). Update and run it again: it is idempotent, so the half that was written is rewritten with the same values and the rest is added.
+
 **Prisma says `Unknown field` after a schema change.**
 Run `npm run db:generate`. The store on `globalThis` used to keep the old client alive across `prisma generate`; it now keeps one client per generated `PrismaClient` class, and the regenerated module brings a new class, so restarting `next dev` is no longer needed. If the error persists, the generate did not run.
 
