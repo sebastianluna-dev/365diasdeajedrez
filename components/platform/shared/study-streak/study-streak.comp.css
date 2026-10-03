@@ -78,9 +78,15 @@
   }
 
   /* A day that is not in the streak: no streak at all, or the one today
-     would add. Flame and figure go out together, in a grey lighter than the
-     faint text's: what is not burning is there to be seen past, not read. */
-  & .study-streak__figure_state_unlit,
+     would add. The figure is a number someone reads, so it steps back only
+     as far as the grey made for white surfaces, which the card is: 4.5:1 in
+     both themes. */
+  & .study-streak__figure_state_unlit {
+    color: var(--platform-text-subtle);
+  }
+
+  /* The flame beside it is a drawing and goes further out, to a grey lighter
+     than the faint one: what is not burning is there to be seen past. */
   & .study-streak__figure_state_unlit .study-streak__flame {
     color: color-mix(in srgb, var(--platform-text-faint) 62%, var(--platform-surface));
   }

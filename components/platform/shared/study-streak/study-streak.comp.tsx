@@ -10,7 +10,8 @@ interface StudyStreakProps {
 /** What the card says under the figure, by where the streak stands today. */
 function noteOf({ days, studiedToday }: StudyStreakModel): string {
   if (days === 0) return "Estudia hoy para empezar una racha.";
-  if (!studiedToday) return "Estudia hoy para mantener tu racha activa.";
+  // The figure it becomes is drawn beside it for the eye only: here it is said in words.
+  if (!studiedToday) return `Estudia hoy para mantener tu racha y llegar a ${days + 1} días seguidos.`;
   return `${days} ${days === 1 ? "día seguido" : "días seguidos"} estudiando.`;
 }
 
@@ -22,8 +23,10 @@ function noteOf({ days, studiedToday }: StudyStreakModel): string {
  * streak still stands, and what is left to do is in sight. Once they have
  * studied, the figure is alone.
  *
- * The second figure is drawn for the eye only; the sentence under it is what
- * says it in words.
+ * Both figures are text, and an unlit one is drawn grey but readable. The
+ * second is for the eye only (`aria-hidden`), beside a sentence that says the
+ * number it stands for in words, so a screen reader hears it once and not as
+ * «11 12».
  */
 export function StudyStreak({ streak }: StudyStreakProps) {
   const isLit = streak.days > 0;

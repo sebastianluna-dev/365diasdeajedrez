@@ -27,26 +27,26 @@ The figure is not stored: it is counted backwards from the activity log (`streak
 
 ## Behaviour
 
-| The streak                      | Figures                                   | Sentence                                     |
-| ------------------------------- | ----------------------------------------- | -------------------------------------------- |
-| None (`days === 0`)             | «0 › 1», both unlit                       | «Estudia hoy para empezar una racha.»        |
-| Standing, today not studied yet | «11 › 12», the flame lit and the 12 unlit | «Estudia hoy para mantener tu racha activa.» |
-| Standing, today studied         | «12», alone                               | «12 días seguidos estudiando.»               |
+| The streak                      | Figures                                   | Sentence                                                          |
+| ------------------------------- | ----------------------------------------- | ----------------------------------------------------------------- |
+| None (`days === 0`)             | «0 › 1», both unlit                       | «Estudia hoy para empezar una racha.»                             |
+| Standing, today not studied yet | «11 › 12», the flame lit and the 12 unlit | «Estudia hoy para mantener tu racha y llegar a 12 días seguidos.» |
+| Standing, today studied         | «12», alone                               | «12 días seguidos estudiando.»                                    |
 
 - **Today does not break the streak**: whoever studied yesterday still has it until the day is over (see `streakLength`). What the second figure says is that it is yet to be kept.
-- The second figure and the arrow are for the eye only (`aria-hidden`); the sentence is what says it in words.
-- The flame is two colours: the fire in `--platform-flame` and the inner flame it is hollow in (`coreClassName`, `.study-streak__flame-core`) in `--platform-flame-core`. Unlit, fire and figure go to a grey **lighter than `--platform-text-faint`** (mixed with the card's own surface, so it lightens on light and darkens on dark) and the core takes the card's white: what is not burning is there to be seen past, not read.
+- The second figure and the arrow are for the eye only (`aria-hidden`); the sentence is what says it in words: «llegar a 12 días seguidos», or «empezar una racha» from none. A screen reader hears the streak once and the number it becomes once, never «11 12».
+- The flame is two colours: the fire in `--platform-flame` and the inner flame it is hollow in (`coreClassName`, `.study-streak__flame-core`) in `--platform-flame-core`. Unlit, the fire goes to a grey **lighter than `--platform-text-faint`** (mixed with the card's own surface, so it lightens on light and darkens on dark) and the core takes the card's white: a flame that is not burning is a drawing, there to be seen past. **The figure beside it is text** — a number someone reads, even in grey — so it only steps back to `--platform-text-subtle`, the grey made for white surfaces, which reads at 4.5:1 on the card in both themes. Until 2026-10-02 it went out with the flame, at 1.5:1 (axe: `color-contrast` on the three-digit story; the one-digit ones were the same grey, which axe leaves to review as too short to judge).
 - **Two figures are drawn smaller than one.** With the day one would reach beside it there are two flames and two numbers to fit, so both shrink (flame 28px, figure `--platform-type-3xl`, 32px) and the card says either thing in the same room; alone, the figure takes it all (flame 40px, figure `--platform-type-5xl`, 52px). The stylesheet tells the two cases apart by `:has(.study-streak__arrow)` — the arrow is only rendered when there are two — so the component has no modifier to pass and nothing to decide.
 
 ## Markup & styling
 
-Block `.study-streak` (108 lines): a white card on the page's grey, over the platform's card shadow and with no outline, its title closed by a rule across the full width.
+Block `.study-streak` (114 lines): a white card on the page's grey, over the platform's card shadow and with no outline, its title closed by a rule across the full width.
 
 **Elements:** `.study-streak__title`, `.study-streak__figures`, `.study-streak__figure`, `.study-streak__flame`, `.study-streak__flame-core`, `.study-streak__value`, `.study-streak__arrow`, `.study-streak__note`
 
 **Modifiers and states:** `.study-streak__figure_state_unlit`
 
-**Tokens:** `--platform-border`, `--platform-flame`, `--platform-flame-core`, `--platform-font`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-faint` (lightened with the surface for what is unlit), `--platform-text-subtle`
+**Tokens:** `--platform-border`, `--platform-flame`, `--platform-flame-core`, `--platform-font`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-faint` (lightened with the surface for the unlit flame), `--platform-text-subtle` (the unlit figure and the sentence)
 
 No media queries: whoever places it decides its width.
 
