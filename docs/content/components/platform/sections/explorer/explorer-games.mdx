@@ -29,17 +29,17 @@ Each game carries its **origin** (a student's study, a course, the teaching staf
 
 ## Behaviour
 
-None beyond rendering. A game without `href` (no screen the viewer could open it in) renders as a static row rather than a link to a 404.
+None beyond rendering. A game without `href` (no screen the viewer could open it in) renders as a static row rather than a link to a 404, a grey lighter than a row that opens: the names and the result in `--platform-text-muted`, the Elo, the event, the date and the origin tag in `--platform-text-subtle` (on the row's white, where it reads), «Vista en clase» still in the accent. It is not an `opacity`: the 0.75 it had took the event and the tag under 4.5:1.
 
 ## Markup & styling
 
-Block `.explorer-games` (101 lines).
+Block `.explorer-games` (113 lines).
 
 **Elements:** `.explorer-games__title`, `.explorer-games__empty`, `.explorer-games__list`, `.explorer-games__item`, `.explorer-games__link`, `.explorer-games__players`, `.explorer-games__player`, `.explorer-games__elo`, `.explorer-games__separator`, `.explorer-games__meta`, `.explorer-games__result`, `.explorer-games__event`, `.explorer-games__tags`, `.explorer-games__tag`, `.explorer-games__more`
 
 **Modifiers and states:** `.explorer-games__link_static`, `.explorer-games__tag_variant_class`
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
 No media queries.
 
