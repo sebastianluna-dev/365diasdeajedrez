@@ -196,6 +196,20 @@ describe("the platform's contrast", () => {
     expect(shortfalls).toEqual([]);
   });
 
+  it("lists in TEXT_PAIRS every pair a rule writes, so Storybook shows every pair in use", () => {
+    // A rule that sets its own colour and its own fill writes a pair the
+    // stylesheets can be read for; a text that inherits its colour onto a
+    // fill set by another rule cannot be, and stays a matter of review.
+    const listed = new Set(TEXT_PAIRS.map(([text, background]) => `--platform-${text} on --platform-${background}`));
+    const unlisted = writtenPairs()
+      .filter(({ text, background }) => !listed.has(`${text} on ${background}`))
+      .map(
+        ({ where, text, background }) =>
+          `${where} — ${text.replace("--platform-", "")} on ${background.replace("--platform-", "")}`,
+      );
+    expect(unlisted).toEqual([]);
+  });
+
   it("is why the subtle grey stays on the white surfaces", () => {
     // The rule this file exists for, seen to fail: on a fill, the subtle grey
     // of the light theme is under the minimum, and the muted one is not.

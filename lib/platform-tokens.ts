@@ -145,6 +145,12 @@ export const TEXT_PAIRS: readonly (readonly [text: string, background: string])[
   // The ink button and the danger button's hover are written in the surface.
   ["surface", "text"],
   ["surface", "danger"],
+  // The user menu's avatar: the initial in the canvas's colour, on the text's.
+  ["bg", "text"],
+  // A study's tile: the brand's mark in the accent, on the white surface.
+  ["accent", "surface"],
+  // The move tree's current and hovered move, on the variations' fill.
+  ["text-muted", "variation-soft"],
 ];
 
 /**

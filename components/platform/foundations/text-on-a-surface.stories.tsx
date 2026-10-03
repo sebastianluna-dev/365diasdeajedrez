@@ -66,8 +66,9 @@ function TextOnASurfacePage({ scheme }: { scheme: unknown }) {
         {TEXT_MINIMUM}:1 on what it is written on, in both themes (WCAG 2.2, 1.4.3), and every pair here does:{" "}
         <code>components/platform/platform-tokens.test.ts</code> fails otherwise. The list is <code>TEXT_PAIRS</code> in{" "}
         <code>lib/platform-tokens.ts</code>, and it is what is measured as a pair of tokens. The test also measures
-        every rule that sets both its own colour and its own fill, listed here or not; a text that inherits its colour
-        onto a fill set elsewhere is measured only if its pair is in the list, so a new pair goes there.
+        every rule that sets both its own colour and its own fill, and fails on one whose pair is not here, so every
+        pair a rule writes is on this page; a text that inherits its colour onto a fill set elsewhere is measured only
+        if its pair is in the list, so a new pair of that kind goes there by review.
       </p>
       <ul className="foundations__fills">
         {textsByBackground().map(([background, texts]) => (
