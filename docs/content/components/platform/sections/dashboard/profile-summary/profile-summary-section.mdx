@@ -14,7 +14,7 @@ description: "The dashboard header: greeting with the display name, email and me
 
 ## Purpose
 
-The first block of `/inicio`: "Hola, …" with the display name and the page subtitle, the email and "En la academia desde el …". It is one of five sections that each read their own slice of `getUserDashboard()`; the service deduplicates the underlying queries per request with `cache()`, so five awaits cost one round of queries.
+The first block of `/inicio`: "Hola, …" with the display name and the page subtitle, the email and "En la academia desde el …". It is one of four sections that each read their own slice of `getUserDashboard()`; the service is wrapped in `cache()`, so the four awaits cost one run of its queries.
 
 ## Props
 

@@ -1,82 +1,100 @@
 import { cache } from "react";
 import { SUBJECT_TYPE } from "@/constants/platform/activity-codes.const";
-import { rangeStart, type StatsRangeKey } from "@/lib/date-ranges";
+import type { StatsRangeKey } from "@/lib/date-ranges";
 import { formatSpanishDate } from "@/lib/format-spanish-date";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { getContinueStudyingCourse } from "@/services/courses/courses.service";
-import { activityInclude, mapActivityItems, mapDashboardStats, type StatTotalRow } from "./dashboard.mapper";
+import {
+  activityInclude,
+  bucketStatRangeSums,
+  mapActivityItems,
+  mapDashboardStats,
+  statRangeSumsQuery,
+  type StatRangeSumsRow,
+  type StatTotalRow,
+} from "./dashboard.mapper";
 import type { ContinueStudyingCard, DashboardData } from "./dashboard.types";
 
 const RECENT_ACTIVITY_LIMIT = 8;
-const STATS_RANGES: StatsRangeKey[] = ["week", "month", "year", "all"];
 
 /** Only the recent facts: the activity list, not the statistics. */
-const getRecentActivities = cache(async () => {
-  const db = getPlatformDb();
-  const user = await getCurrentUser();
-  return db.userActivity.findMany({
-    where: { userId: user.id },
+function getRecentActivities(userId: string) {
+  return getPlatformDb().userActivity.findMany({
+    where: { userId },
     include: activityInclude,
     orderBy: { occurredAt: "desc" },
     take: RECENT_ACTIVITY_LIMIT,
+    // One round trip for the activity and its three catalogs instead of four.
+    relationLoadStrategy: "join",
   });
-});
+}
 
 /**
  * The statistics are a SUM of the daily aggregate per calendar range, and that
- * SUM is done by the database: the four ranges are four `groupBy` with a
- * different `day` filter. Before, the student's whole history was read and
- * summed in memory, and that history grows with (day × metric × topic) per
- * student.
+ * SUM is done by the database: the four ranges are ONE query
+ * (`statRangeSumsQuery`, a `SUM … FILTER` per range), split per range by
+ * `bucketStatRangeSums`. They were four `groupBy` with a different `day`
+ * filter; before that, the student's whole history was read and summed in
+ * memory, and that history grows with (day × metric × topic) per student.
  */
 async function getStatTotals(userId: string, now: Date): Promise<Record<StatsRangeKey, StatTotalRow[]>> {
-  const db = getPlatformDb();
-  const grouped = await Promise.all(
-    STATS_RANGES.map(async (key) => {
-      const start = rangeStart(key, now);
-      const rows = await db.userStatDaily.groupBy({
-        by: ["metricId", "topicId"],
-        where: { userId, ...(start ? { day: { gte: start } } : {}) },
-        _sum: { value: true },
-      });
-      return rows.map((row) => ({ metricId: row.metricId, topicId: row.topicId, total: row._sum.value ?? 0 }));
-    }),
-  );
-  return Object.fromEntries(STATS_RANGES.map((key, index) => [key, grouped[index]])) as Record<
-    StatsRangeKey,
-    StatTotalRow[]
-  >;
+  const rows = await getPlatformDb().$queryRaw<StatRangeSumsRow[]>(statRangeSumsQuery(userId, now));
+  return bucketStatRangeSums(rows);
 }
 
-export async function getUserDashboard(): Promise<DashboardData> {
+/**
+ * The rows of these ids, or none without asking when there are no ids: a
+ * subject type absent from the recent activity costs no query.
+ */
+function readByIds<T>(ids: string[], read: (ids: string[]) => Promise<T[]>): Promise<T[]> {
+  return ids.length > 0 ? read(ids) : Promise.resolve([]);
+}
+
+/**
+ * Four sections of `/inicio` read their slice of this (profile, «Continuar
+ * estudiando», statistics, recent activity), so it is memoised per request:
+ * without `cache()` each section ran every query of the dashboard again — the
+ * sums four times over, and the course in progress and the names with them.
+ */
+export const getUserDashboard = cache(async (): Promise<DashboardData> => {
   const db = getPlatformDb();
   const user = await getCurrentUser();
   const now = new Date();
 
   const [recent, statTotals, metrics, topics, inProgress] = await Promise.all([
-    getRecentActivities(),
+    getRecentActivities(user.id),
     getStatTotals(user.id, now),
     db.statMetric.findMany({ orderBy: { order: "asc" }, select: { id: true, label: true } }),
     db.topic.findMany({ select: { id: true, label: true } }),
     getContinueStudyingCourse(),
   ]);
 
-  // Names of the subjects of the recent activity, by subject type.
+  // Names of the subjects of the recent activity: one query per subject type
+  // that appears in it, all of them together.
   const idsFor = (code: string) => recent.filter((row) => row.subjectType.code === code).map((row) => row.subjectId);
 
   const [lessons, coursesRows, classes, games, exercises] = await Promise.all([
-    db.lesson.findMany({ where: { id: { in: idsFor(SUBJECT_TYPE.LESSON) } }, select: { id: true, name: true } }),
-    db.course.findMany({ where: { id: { in: idsFor(SUBJECT_TYPE.COURSE) } }, select: { id: true, name: true } }),
-    db.class.findMany({ where: { id: { in: idsFor(SUBJECT_TYPE.CLASS) } }, select: { id: true, title: true } }),
-    db.game.findMany({
-      where: { id: { in: idsFor(SUBJECT_TYPE.GAME) } },
-      select: { id: true, white: true, black: true },
-    }),
-    db.trainingExercise.findMany({
-      where: { id: { in: idsFor(SUBJECT_TYPE.EXERCISE) } },
-      select: { id: true, lesson: { select: { name: true } } },
-    }),
+    readByIds(idsFor(SUBJECT_TYPE.LESSON), (ids) =>
+      db.lesson.findMany({ where: { id: { in: ids } }, select: { id: true, name: true } }),
+    ),
+    readByIds(idsFor(SUBJECT_TYPE.COURSE), (ids) =>
+      db.course.findMany({ where: { id: { in: ids } }, select: { id: true, name: true } }),
+    ),
+    readByIds(idsFor(SUBJECT_TYPE.CLASS), (ids) =>
+      db.class.findMany({ where: { id: { in: ids } }, select: { id: true, title: true } }),
+    ),
+    readByIds(idsFor(SUBJECT_TYPE.GAME), (ids) =>
+      db.game.findMany({ where: { id: { in: ids } }, select: { id: true, white: true, black: true } }),
+    ),
+    // An exercise is named after its lesson: joined, so it is one trip and not two.
+    readByIds(idsFor(SUBJECT_TYPE.EXERCISE), (ids) =>
+      db.trainingExercise.findMany({
+        where: { id: { in: ids } },
+        select: { id: true, lesson: { select: { name: true } } },
+        relationLoadStrategy: "join",
+      }),
+    ),
   ]);
 
   const subjectNames = new Map<string, string>();
@@ -108,4 +126,4 @@ export async function getUserDashboard(): Promise<DashboardData> {
     continueStudying,
     recentActivity: mapActivityItems(recent, subjectNames),
   };
-}
+});

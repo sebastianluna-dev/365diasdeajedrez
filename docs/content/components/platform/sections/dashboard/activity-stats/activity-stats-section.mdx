@@ -15,7 +15,7 @@ description: "The 'Tus estadísticas' card: fetches the four precomputed calenda
 
 ## Purpose
 
-The server half of the statistics card. The service computes the counts for four ranges (week, month, year, all time) and their per-topic breakdown in one pass over the activity; this section awaits them and renders the card frame with the title. The client half, [`StatsCards`](/components/platform/sections/dashboard/activity-stats/stats-cards), only switches between ranges that already arrived, so changing the period costs no request.
+The server half of the statistics card. The service sums the counts for four ranges (week, month, year, all time) and their per-topic breakdown in one query over the daily aggregate (`UserStatDaily`); this section awaits them and renders the card frame with the title. The client half, [`StatsCards`](/components/platform/sections/dashboard/activity-stats/stats-cards), only switches between ranges that already arrived, so changing the period costs no request.
 
 ## Props
 
