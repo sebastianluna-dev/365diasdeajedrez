@@ -247,6 +247,9 @@ export function PlatformDatePicker({
 
         <Popover.Content
           className="platform-date-picker__content"
+          // The primitive renders a `role="dialog"`, which needs a name: the
+          // month on screen, the caption the grid is named by too.
+          aria-labelledby={captionId}
           align="start"
           sideOffset={6}
           // The grid takes the focus itself, on the focused day, instead of the

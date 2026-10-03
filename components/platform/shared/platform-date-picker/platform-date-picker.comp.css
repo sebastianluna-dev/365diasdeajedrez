@@ -159,6 +159,15 @@
     cursor: pointer;
   }
 
+  /* A day of the neighbouring months steps back from the month on screen,
+     but it is a button that chooses it, so it is text that reaches 4.5:1:
+     the grey made for white surfaces, which the calendar is. It comes before
+     the chosen day and the disabled one, which weigh the same and so win
+     over it: a chosen day of another month is still the filled square. */
+  & .platform-date-picker__day.platform-date-picker__day_outside {
+    color: var(--platform-text-subtle);
+  }
+
   & .platform-date-picker__day:hover:not(:disabled) {
     background: var(--platform-accent-soft);
     color: var(--platform-accent-ink);
@@ -187,10 +196,6 @@
   & .platform-date-picker__day.platform-date-picker__day_selected:focus-visible {
     outline-color: var(--platform-on-accent);
     outline-offset: -4px;
-  }
-
-  & .platform-date-picker__day.platform-date-picker__day_outside {
-    color: var(--platform-text-faint);
   }
 
   & .platform-date-picker__day:disabled {

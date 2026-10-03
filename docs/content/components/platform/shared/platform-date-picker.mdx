@@ -36,8 +36,9 @@ Radix Primitives has no date primitive, so the calendar is ours and only the pop
 ## Behaviour
 
 - **Submission.** A visually hidden native `<input type="date">` carries the value, `required`, `min` and `max`, so a form reads it exactly as it read the native input, and the validation bubble anchors to it, at the trigger. The value is held in the component even when uncontrolled, so the trigger, the grid and the input agree.
-- **The grid.** `role="grid"` of `gridcell`s, Monday first, six weeks with the neighbouring months' days muted but choosable. Opening lands on the chosen day, or on today, and focuses it. Arrows move the focus a day or a week, Home and End go to the week's Monday and Sunday, PageUp and PageDown change the month (a year with Shift); moving into another month turns the page. Enter or a click chooses and closes. Today carries `aria-current="date"` and an underline; the chosen day is the filled square.
+- **The grid.** `role="grid"` of `gridcell`s, Monday first, six weeks with the neighbouring months' days muted but choosable: they are buttons, so they are drawn in `--platform-text-subtle` (4.7:1 on the calendar's white surface; a chosen one is still the filled square), not in the faint grey of a decoration. Opening lands on the chosen day, or on today, and focuses it. Arrows move the focus a day or a week, Home and End go to the week's Monday and Sunday, PageUp and PageDown change the month (a year with Shift); moving into another month turns the page. Enter or a click chooses and closes. Today carries `aria-current="date"` and an underline; the chosen day is the filled square.
 - **"Hoy" and "Quitar"** under the grid; the second only when a date is chosen and the field is not required.
+- The popover is a `role="dialog"` (the primitive's), named by the month on screen: `aria-labelledby` points at the caption, which names the grid too.
 - The calendar is **not portalled**, like the select's list, so it works inside a modal `<dialog>`; the popover is not modal, so the page keeps scrolling and its scrollbar. It unfolds from the trigger and folds back on `data-state`, off under `prefers-reduced-motion`.
 
 ## Markup & styling
