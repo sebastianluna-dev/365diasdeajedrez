@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { CourseSourceForm } from "./course-source-form.comp";
 import "./course-source-dialog.comp.css";
 
@@ -84,5 +84,9 @@ export const DigitalCourse: Story = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("combobox", { name: "Tipo de fuente" }));
     await userEvent.click(canvas.getByRole("option", { name: "Curso digital" }));
+    // The list leaves with an exit animation, and until it has gone Radix keeps
+    // the rest of the dialog aria-hidden: wait for it, so the state the story
+    // ends in (and the one axe looks at) is the select closed on its new value.
+    await waitFor(() => expect(canvas.queryByRole("listbox")).toBeNull());
   },
 };

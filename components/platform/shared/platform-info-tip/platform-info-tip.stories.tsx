@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { expect, userEvent, within } from "storybook/test";
 import { PlatformInfoTip } from "./platform-info-tip.comp";
 
 const meta = {
@@ -42,7 +43,12 @@ type Story = StoryObj<typeof meta>;
 /** Closed: hover it, reach it with Tab or press it. */
 export const Default: Story = {};
 
-/** Opening under the button, where there is no room above. */
+/** Open under the button, where there is no room above: pressed, as a touch screen opens it. */
 export const Below: Story = {
   args: { side: "bottom" },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "Sobre el slug" }));
+    await expect(await canvas.findByRole("tooltip")).toBeInTheDocument();
+  },
 };

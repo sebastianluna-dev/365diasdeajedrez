@@ -1,5 +1,5 @@
 ---
-description: "Vitest setup, what is tested and how, coverage, the GitHub Actions workflow, and the checks that gate a change."
+description: "Vitest setup, what is tested and how, coverage, the stories run in a browser under axe, the GitHub Actions workflow, and the checks that gate a change."
 ---
 
 # Testing & CI
@@ -38,6 +38,16 @@ npm test                  # one run
 npm run test:watch        # watch mode
 npm run test:coverage     # coverage report in coverage/
 npx vitest run lib/chess  # a folder
+```
+
+## Stories in a browser
+
+`vitest.storybook.config.mts` is a second Vitest config, for the stories. `npm run test:storybook` renders every story of `components/**/*.stories.tsx` in a headless Chromium driven by Playwright, runs its `play` function and then axe on what it leaves on screen, twice: in the projects `storybook-light` and `storybook-dark`, one per theme of the platform. A story fails on an error, on a failed `expect` of its `play` or on an axe violation; one with a known violation carries `parameters: { a11y: { test: "todo" } }` and a comment that names the rule, until its component is fixed. It is a config of its own so that `npm test` never builds it: building it loads Storybook, Next's config and Next's `.env` files. How a story is written for it: [Storybook](/ui/storybook#stories-as-tests).
+
+```bash
+npx playwright install chromium                                       # once
+npm run test:storybook                                                # both themes
+npm run test:storybook -- components/platform/shared/platform-select  # a folder or a file
 ```
 
 ## Static checks

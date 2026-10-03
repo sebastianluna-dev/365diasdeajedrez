@@ -38,6 +38,12 @@ const preview: Preview = {
   parameters: {
     nextjs: { appDirectory: true },
     layout: "fullscreen",
+    // addon-a11y runs axe on every story once its `play` function is done. In
+    // the Accessibility panel that is a look; under `npm run test:storybook`
+    // (and so in CI) "error" makes a violation fail the story. A story with a
+    // known failure sets `a11y: { test: "todo" }` on itself, with a comment
+    // naming the rule, until its component is fixed.
+    a11y: { test: "error" },
     // The overview opens the sidebar, as the sheet of a UI kit does; then what
     // the pieces are made of, the pieces, and the sections built from them;
     // then the pieces both products share, and the site.

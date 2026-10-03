@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { expect, userEvent, within } from "storybook/test";
 import { CONTENT_ROLE } from "@/constants/platform/course-codes.const";
 import { StaffPanel } from "../staff-panel.comp";
 import { SyllabusList } from "./syllabus-list.comp";
@@ -130,4 +131,30 @@ export const Lessons: Story = {
       <SyllabusList {...args} />
     </StaffPanel>
   ),
+};
+
+/** A row's three dots pressed: the menu with what destroys it, the focus on «Eliminar». */
+export const RowMenu: Story = {
+  ...Chapters,
+  name: "El menú de una fila",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      canvas.getByRole("button", { name: "Más opciones de «La estructura de peones decide el plan»" }),
+    );
+    await expect(
+      canvas.getByRole("menuitem", { name: "Eliminar «La estructura de peones decide el plan»" }),
+    ).toHaveFocus();
+  },
+};
+
+/** The three dots of a row that cannot be deleted: a note with the reason, and the focus stays on the button. */
+export const DeleteRefused: Story = {
+  ...Chapters,
+  name: "Una fila que no se puede eliminar",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "Más opciones de «Columnas abiertas y la séptima»" }));
+    await expect(canvas.getByText("Hay alumnos con progreso en este capítulo o en sus lecciones.")).toBeInTheDocument();
+  },
 };
