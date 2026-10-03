@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { GAME_RESULT } from "@/constants/platform/study-codes.const";
 import { PGN_MAX_GAMES } from "@/constants/platform/content-limits.const";
-import { parseImportedGames, readImportedGames } from "@/services/shared/pgn-import";
+import { parseImportedGames, readImportedGames, readPastedGame } from "@/services/shared/pgn-import";
 
 const OPERA = `[Event "Partida de la Ópera"]
 [Site "París"]
@@ -133,5 +133,42 @@ describe("readImportedGames", () => {
   it("con basura no hay partidas ni estalla", () => {
     expect(readImportedGames("esto no es un pgn").games).toEqual([]);
     expect(readImportedGames("")).toEqual({ games: [], skippedEmpty: 0, overLimit: 0 });
+  });
+});
+
+describe("readPastedGame", () => {
+  it("lee las cabeceras con el mismo criterio que una importación", () => {
+    const pasted = OPERA.replace('[Date "1858.11.02"]', '[Date "1858.02.31"]').replace("2500", "sin dato");
+    const game = readPastedGame(pasted)!;
+    expect(game).toMatchObject({
+      white: "Paul Morphy",
+      black: "Duque de Brunswick",
+      resultCode: GAME_RESULT.WHITE_WINS,
+      blackCountry: "FRA",
+      eco: "C41",
+      round: null,
+      whiteElo: null,
+      playedAt: null,
+    });
+    expect(game.pgn).toContain("1. e4 e5");
+  });
+
+  it("deja en null al jugador que nadie nombró: lo rellena el formulario", () => {
+    expect(readPastedGame('[White "A"]\n\n1. e4 *')).toMatchObject({ white: "A", black: null });
+  });
+
+  it("salta el texto suelto que va antes de la partida", () => {
+    const game = readPastedGame(`Morphy contra el Duque, París 1858\n\n${OPERA}`);
+    expect(game?.white).toBe("Paul Morphy");
+    expect(game?.pgn).toContain("1. e4 e5");
+  });
+
+  it("una partida con sólo cabeceras cuenta: rellenan la ficha", () => {
+    expect(readPastedGame('[White "A"]\n[Black "B"]\n\n*')).toMatchObject({ white: "A", black: "B" });
+  });
+
+  it("sin partida, o con basura, no hay nada que leer", () => {
+    expect(readPastedGame("esto no es un pgn")).toBeNull();
+    expect(readPastedGame("")).toBeNull();
   });
 });

@@ -5,9 +5,10 @@ import { GAME_RESULT, GAME_RESULT_BY_PGN_TOKEN, type GameResultCode } from "@/co
 // From a pasted PGN to `Game` rows.
 //
 // It used to live inside the "Mis estudios" actions, which were its only user.
-// Now a course's game collection is also imported, and having two different
-// header readers would end up with two different criteria about what a valid
-// date is or when an Elo is an Elo.
+// Now a course's game collection is also imported, and a game created by hand
+// takes its record from a pasted PGN too: two different header readers would
+// end up with two different criteria about what a valid date is or when an Elo
+// is an Elo, so this is the only one.
 //
 // Pure module: only chessops and catalogs, no Prisma and no session. Whoever
 // calls it decides which database the games go into and with what origin.
@@ -41,10 +42,10 @@ function readDateHeader(headers: Map<string, string>): Date | null {
   return isRealDate ? date : null;
 }
 
-/** A game's columns, without deciding yet which database it belongs to. */
-export interface ImportedGame {
-  white: string;
-  black: string;
+/** A game's columns as its headers give them, before anybody fills a gap: a player nobody named is null. */
+export interface GameHeaders {
+  white: string | null;
+  black: string | null;
   whiteElo: number | null;
   blackElo: number | null;
   whiteTitle: string | null;
@@ -58,6 +59,34 @@ export interface ImportedGame {
   round: string | null;
   eco: string | null;
   initialFen: string | null;
+}
+
+function readGameHeaders(headers: Map<string, string>): GameHeaders {
+  return {
+    white: readHeader(headers, "White"),
+    black: readHeader(headers, "Black"),
+    whiteElo: readEloHeader(headers, "WhiteElo"),
+    blackElo: readEloHeader(headers, "BlackElo"),
+    whiteTitle: readHeader(headers, "WhiteTitle"),
+    blackTitle: readHeader(headers, "BlackTitle"),
+    // `WhiteTeam` is what Lichess's broadcasts write for the federation; the
+    // standard PGN has no header of its own for it.
+    whiteCountry: readHeader(headers, "WhiteTeam"),
+    blackCountry: readHeader(headers, "BlackTeam"),
+    resultCode: GAME_RESULT_BY_PGN_TOKEN[readHeader(headers, "Result") ?? ""] ?? GAME_RESULT.ONGOING,
+    playedAt: readDateHeader(headers),
+    event: readHeader(headers, "Event"),
+    site: readHeader(headers, "Site"),
+    round: readHeader(headers, "Round"),
+    eco: readHeader(headers, "ECO"),
+    initialFen: readHeader(headers, "FEN"),
+  };
+}
+
+/** A game's columns, without deciding yet which database it belongs to. */
+export interface ImportedGame extends Omit<GameHeaders, "white" | "black"> {
+  white: string;
+  black: string;
   /** THAT game's PGN, reserialised. */
   pgn: string;
 }
@@ -83,6 +112,15 @@ function namesAGame(headers: Map<string, string>): boolean {
   return [...headers].some(([name, value]) => name !== "Result" && /[^?.\s]/.test(value));
 }
 
+/** The entries of a pasted text, none if it is not PGN. */
+function readEntries(pgnText: string): ReturnType<typeof parsePgn> {
+  try {
+    return parsePgn(pgnText);
+  } catch {
+    return [];
+  }
+}
+
 /**
  * Reads a PGN with one or several games, and says what it left out.
  *
@@ -97,42 +135,19 @@ function namesAGame(headers: Map<string, string>): boolean {
  * text around a game is dropped without a word, as it always was.
  */
 export function readImportedGames(pgnText: string): ImportReading {
-  let parsed: ReturnType<typeof parsePgn>;
-  try {
-    parsed = parsePgn(pgnText);
-  } catch {
-    return { games: [], skippedEmpty: 0, overLimit: 0 };
-  }
-
   const usable: ImportedGame[] = [];
   let skippedEmpty = 0;
-  for (const game of parsed) {
-    const headers = game.headers;
-    const initialFen = readHeader(headers, "FEN");
-    if (game.moves.children.length === 0 && initialFen === null) {
-      if (namesAGame(headers)) skippedEmpty += 1;
+  for (const game of readEntries(pgnText)) {
+    const fields = readGameHeaders(game.headers);
+    if (game.moves.children.length === 0 && fields.initialFen === null) {
+      if (namesAGame(game.headers)) skippedEmpty += 1;
       continue;
     }
 
-    const resultToken = readHeader(headers, "Result") ?? "";
     usable.push({
-      white: readHeader(headers, "White") ?? UNKNOWN_PLAYER,
-      black: readHeader(headers, "Black") ?? UNKNOWN_PLAYER,
-      whiteElo: readEloHeader(headers, "WhiteElo"),
-      blackElo: readEloHeader(headers, "BlackElo"),
-      whiteTitle: readHeader(headers, "WhiteTitle"),
-      blackTitle: readHeader(headers, "BlackTitle"),
-      // `WhiteTeam` is what Lichess's broadcasts write for the federation; the
-      // standard PGN has no header of its own for it.
-      whiteCountry: readHeader(headers, "WhiteTeam"),
-      blackCountry: readHeader(headers, "BlackTeam"),
-      resultCode: GAME_RESULT_BY_PGN_TOKEN[resultToken] ?? GAME_RESULT.ONGOING,
-      playedAt: readDateHeader(headers),
-      event: readHeader(headers, "Event"),
-      site: readHeader(headers, "Site"),
-      round: readHeader(headers, "Round"),
-      eco: readHeader(headers, "ECO"),
-      initialFen,
+      ...fields,
+      white: fields.white ?? UNKNOWN_PLAYER,
+      black: fields.black ?? UNKNOWN_PLAYER,
       pgn: makePgn(game),
     });
   }
@@ -144,4 +159,28 @@ export function readImportedGames(pgnText: string): ImportReading {
 /** The games of a PGN, for whoever only wants them: the first, to file a lesson's own. */
 export function parseImportedGames(pgnText: string): ImportedGame[] {
   return readImportedGames(pgnText).games;
+}
+
+/** The game a PGN sent with a single game's record gives, and its PGN reserialised. */
+export interface PastedGame extends GameHeaders {
+  pgn: string;
+}
+
+/**
+ * The first game of a PGN sent along with the record of ONE game
+ * (`createStudyGame` admits one), whose headers fill in the fields the record
+ * left empty — or null if there is none.
+ *
+ * It is not an import. A game with headers and no moves counts here, because
+ * its headers are what it was sent for; the players stay null where nobody
+ * named them, because the record may name them; and only the first game is
+ * read. What it shares with an import is the reader of the headers, and that
+ * loose text is no game: a title pasted above the game is skipped, where
+ * taking the first entry would have created a blank game and dropped the one
+ * that came after it.
+ */
+export function readPastedGame(pgnText: string): PastedGame | null {
+  // A starting position names a game too: its FEN is a header that says something.
+  const game = readEntries(pgnText).find((entry) => entry.moves.children.length > 0 || namesAGame(entry.headers));
+  return game ? { ...readGameHeaders(game.headers), pgn: makePgn(game) } : null;
 }

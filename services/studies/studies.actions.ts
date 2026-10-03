@@ -2,17 +2,10 @@
 
 import { Chess } from "chessops/chess";
 import { parseFen } from "chessops/fen";
-import { makePgn, parsePgn } from "chessops/pgn";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
-import {
-  DATABASE_KIND,
-  GAME_RESULT,
-  GAME_RESULT_BY_PGN_TOKEN,
-  GAME_SOURCE,
-  type DatabaseKindCode,
-} from "@/constants/platform/study-codes.const";
+import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE, type DatabaseKindCode } from "@/constants/platform/study-codes.const";
 import { PGN_IMPORT_TRANSACTION, PGN_MAX_GAMES, PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getTeacherContext } from "@/lib/platform-auth/roles";
@@ -34,7 +27,7 @@ import {
   writeGameRecord,
   type AutosaveResult,
 } from "@/services/shared/game-record";
-import { readImportedGames } from "@/services/shared/pgn-import";
+import { readImportedGames, readPastedGame } from "@/services/shared/pgn-import";
 import { withImportReport } from "@/services/shared/pgn-import-report";
 import { withErrorParam } from "@/services/shared/safe-return-to";
 import { studyDetailInclude } from "./studies.mapper";
@@ -47,9 +40,6 @@ import { canChangeKindTo, canCreateKind, studyPermissionsOf } from "./study-rule
 // `?error=<code>` so the page can say so, and the ones only a forged request
 // produces (a foreign study, a kind the viewer may not create) go out silently.
 
-/** Full dates only: the PGN admits "????.??.??" and "2024.??.??". */
-const FULL_PGN_DATE = /^(\d{4})\.(\d{2})\.(\d{2})$/;
-
 const STUDY_SCHEMA = z.object({
   name: formText(120),
   kindCode: z.string().trim().max(32).optional(),
@@ -59,29 +49,6 @@ const IMPORT_SCHEMA = z.object({ pgn: z.string().trim().min(1).max(PGN_MAX_LENGT
 
 function isDatabaseKindCode(value: string): value is DatabaseKindCode {
   return (Object.values(DATABASE_KIND) as string[]).includes(value);
-}
-
-/** A useful header or null: the PGN uses "?" as the marker for unknown data. */
-function readHeader(headers: Map<string, string>, key: string): string | null {
-  const value = headers.get(key)?.trim();
-  return value && value !== "?" ? value : null;
-}
-
-function readEloHeader(headers: Map<string, string>, key: string): number | null {
-  const value = readHeader(headers, key);
-  if (value === null || !/^\d+$/.test(value)) return null;
-  return Number.parseInt(value, 10);
-}
-
-function readDateHeader(headers: Map<string, string>): Date | null {
-  const value = readHeader(headers, "Date");
-  const match = value ? FULL_PGN_DATE.exec(value) : null;
-  if (!match) return null;
-
-  const [, year, month, day] = match;
-  const date = new Date(Date.UTC(Number(year), Number(month) - 1, Number(day)));
-  const isRealDate = date.getUTCMonth() === Number(month) - 1 && date.getUTCDate() === Number(day);
-  return isRealDate ? date : null;
 }
 
 /**
@@ -417,29 +384,21 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
   const fields = form.data;
   const pgnText = fields.pgn ?? "";
 
-  // The pasted PGN is a SOURCE of data, not an order: if it is not understood, it
-  // is discarded and the game is created blank instead of losing what was typed.
-  let parsed: ReturnType<typeof parsePgn>[number] | undefined;
-  if (pgnText.length > 0) {
-    try {
-      parsed = parsePgn(pgnText)[0];
-    } catch {
-      parsed = undefined;
-    }
-  }
-  const headers = parsed?.headers ?? new Map<string, string>();
+  // The pasted PGN is a SOURCE of data, not an order: if it holds no game, it is
+  // discarded and the game is created blank instead of losing what was typed.
+  // It is read by services/shared/pgn-import, the same reader as an import, so
+  // a date or an Elo means the same here as there.
+  const pasted = pgnText.length > 0 ? readPastedGame(pgnText) : null;
 
-  const initialFen = fields.initialFen ?? readHeader(headers, "FEN");
+  const initialFen = fields.initialFen ?? pasted?.initialFen ?? null;
   // A bad FEN is reported: it is the only thing the person may have written wrong
   // without noticing, because the rest of the fields are free text.
   if (initialFen !== null && !isLegalFen(initialFen)) redirect(withErrorParam(back, "fen"));
 
-  const pgn = parsed ? makePgn(parsed) : serializeGame(emptyGame(initialFen ?? undefined));
+  const pgn = pasted?.pgn ?? serializeGame(emptyGame(initialFen ?? undefined));
 
   const resultCode = fields.resultCode ?? "";
-  const result = isGameResultCode(resultCode)
-    ? resultCode
-    : (GAME_RESULT_BY_PGN_TOKEN[readHeader(headers, "Result") ?? ""] ?? GAME_RESULT.ONGOING);
+  const result = isGameResultCode(resultCode) ? resultCode : (pasted?.resultCode ?? GAME_RESULT.ONGOING);
 
   // Without a name of its own it is numbered by what is already in the study. It
   // does not claim to be an exact counter — two simultaneous creations could
@@ -454,20 +413,20 @@ export async function createStudyGame(studyId: string, formData: FormData): Prom
         database: { connect: { id: studyId } },
         order: await nextGameOrder(tx, studyId),
         title,
-        white: fields.white ?? readHeader(headers, "White") ?? UNKNOWN_PLAYER,
-        black: fields.black ?? readHeader(headers, "Black") ?? UNKNOWN_PLAYER,
-        whiteElo: fields.whiteElo ?? readEloHeader(headers, "WhiteElo"),
-        blackElo: fields.blackElo ?? readEloHeader(headers, "BlackElo"),
-        whiteTitle: fields.whiteTitle ?? readHeader(headers, "WhiteTitle"),
-        blackTitle: fields.blackTitle ?? readHeader(headers, "BlackTitle"),
-        whiteCountry: fields.whiteCountry ?? readHeader(headers, "WhiteTeam"),
-        blackCountry: fields.blackCountry ?? readHeader(headers, "BlackTeam"),
+        white: fields.white ?? pasted?.white ?? UNKNOWN_PLAYER,
+        black: fields.black ?? pasted?.black ?? UNKNOWN_PLAYER,
+        whiteElo: fields.whiteElo ?? pasted?.whiteElo ?? null,
+        blackElo: fields.blackElo ?? pasted?.blackElo ?? null,
+        whiteTitle: fields.whiteTitle ?? pasted?.whiteTitle ?? null,
+        blackTitle: fields.blackTitle ?? pasted?.blackTitle ?? null,
+        whiteCountry: fields.whiteCountry ?? pasted?.whiteCountry ?? null,
+        blackCountry: fields.blackCountry ?? pasted?.blackCountry ?? null,
         result: { connect: { code: result } },
-        playedAt: fields.playedAt ?? readDateHeader(headers),
-        event: fields.event ?? readHeader(headers, "Event"),
-        site: fields.site ?? readHeader(headers, "Site"),
-        round: fields.round ?? readHeader(headers, "Round"),
-        eco: fields.eco ?? readHeader(headers, "ECO"),
+        playedAt: fields.playedAt ?? pasted?.playedAt ?? null,
+        event: fields.event ?? pasted?.event ?? null,
+        site: fields.site ?? pasted?.site ?? null,
+        round: fields.round ?? pasted?.round ?? null,
+        eco: fields.eco ?? pasted?.eco ?? null,
         initialFen,
         pgn,
         source: { connect: { code: GAME_SOURCE.MANUAL } },
