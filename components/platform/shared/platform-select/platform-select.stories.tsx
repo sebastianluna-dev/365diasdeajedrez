@@ -69,6 +69,20 @@ export const Disabled: Story = {
 
 /** The list open, as the keyboard or a click leaves it: the chosen item carries the check. */
 export const Open: Story = {
+  parameters: {
+    // While the list is open the primitive marks everything outside it
+    // aria-hidden, the trigger included, and the trigger keeps its tab stop:
+    // axe reports aria-hidden-focus. Nothing can focus it then (the list
+    // holds the focus and swallows Tab, and a pointer outside closes the list
+    // first, which takes the aria-hidden off), so the rule is kept for every
+    // other hidden element and only the trigger is left out. The
+    // component's page in the docs says how this was checked.
+    a11y: {
+      config: {
+        rules: [{ id: "aria-hidden-focus", selector: '[aria-hidden="true"]:not(.platform-select__trigger)' }],
+      },
+    },
+  },
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole("combobox"));
   },
