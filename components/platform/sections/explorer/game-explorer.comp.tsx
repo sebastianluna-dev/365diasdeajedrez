@@ -150,7 +150,7 @@ export function GameExplorer() {
           </button>
           <button
             type="button"
-            className="game-explorer__control game-explorer__control_wide"
+            className="game-explorer__control game-explorer__control_align_end"
             onClick={reset}
             disabled={sans.length === 0}
           >
@@ -162,7 +162,10 @@ export function GameExplorer() {
       {/* The panel dims while searching, but the board next to it stays
           playable: waiting for the query to be able to move would be worse than
           seeing a stale figure for an instant. */}
-      <div className={`game-explorer__panel${isSearching ? " game-explorer__panel_loading" : ""}`}>
+      <div
+        className={`game-explorer__panel${isSearching ? " game-explorer__panel_state_loading" : ""}`}
+        aria-busy={isSearching}
+      >
         <ExplorerMoveList sans={sans} index={index} onSelect={setIndex} />
 
         {hasError ? (

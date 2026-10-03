@@ -99,15 +99,15 @@
      opacity took its event and its tag under the 4.5:1 a text needs. What is
      in ink goes to the muted grey and what is muted to the subtle one, which
      reads on the row's white; «Vista en clase» keeps its accent. */
-  & .explorer-games__link_static,
-  & .explorer-games__link_static .explorer-games__result {
+  & .explorer-games__link_kind_static,
+  & .explorer-games__link_kind_static .explorer-games__result {
     color: var(--platform-text-muted);
   }
 
-  & .explorer-games__link_static .explorer-games__elo,
-  & .explorer-games__link_static .explorer-games__separator,
-  & .explorer-games__link_static .explorer-games__meta,
-  & .explorer-games__link_static .explorer-games__tag:not(.explorer-games__tag_variant_class) {
+  & .explorer-games__link_kind_static .explorer-games__elo,
+  & .explorer-games__link_kind_static .explorer-games__separator,
+  & .explorer-games__link_kind_static .explorer-games__meta,
+  & .explorer-games__link_kind_static .explorer-games__tag:not(.explorer-games__tag_variant_class) {
     color: var(--platform-text-subtle);
   }
 }

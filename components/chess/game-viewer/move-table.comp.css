@@ -51,9 +51,11 @@
     font-weight: 700;
   }
 
-  /* "…" where the move exists but is rendered on another row. */
+  /* "…" where the move exists but is rendered on another row: text on the
+     card's white, so the grey made for white surfaces, which reads at 4.5:1
+     (the faint one did not). */
   & .move-table__ellipsis {
-    color: var(--platform-text-faint);
+    color: var(--platform-text-subtle);
   }
 
   & .move-table__nag {

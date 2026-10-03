@@ -75,7 +75,7 @@ export function ExplorerGames({ games, totalGames, isSearching }: ExplorerGamesP
                       {content}
                     </Link>
                   ) : (
-                    <span className="explorer-games__link explorer-games__link_static">{content}</span>
+                    <span className="explorer-games__link explorer-games__link_kind_static">{content}</span>
                   )}
                 </li>
               );
