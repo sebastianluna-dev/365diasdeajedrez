@@ -61,7 +61,10 @@ export interface CourseSummary {
    * so a row is never left without a picture.
    */
   thumbnail?: string;
-  /** What it teaches, in catalog order; the card shows the short names. */
+  /**
+   * What it teaches, in catalog order; the card writes the long names in one
+   * line, joined by « · ». The short names are the staff catalog's tags.
+   */
   contentTypes: CourseContentTypeItem[];
   /** Who it is aimed at, the easiest level first; the list is filtered by their slug. */
   levels: CourseLevelItem[];

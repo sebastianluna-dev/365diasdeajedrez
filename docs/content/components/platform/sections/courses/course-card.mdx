@@ -36,6 +36,7 @@ It lives at the root of `sections/courses/` from when two sections used it.
 - The button at the foot is a `<span aria-hidden="true">`: it is the card's link, which the title already names. «Continuar» is the filled accent one (`_emphasis_strong`); the rest are outlined.
 - The dots sit above the stretched link (`.course-card__levels`, `z-index: 1`) because they open a tip of their own. The wrapper is only rendered for a course with levels.
 - The description is clamped to two lines: the card says what the course is about, the information page tells it.
+- What the course teaches is a line of text under it, not tags: the content types' long names, in catalog order, joined by « · », and «por» with the authors after them. The short names are the tags of the staff's catalog ([`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section)).
 - The bar is `--platform-progress`, the blue a course's progress is drawn in; a finished course (`course.isCompleted`) paints it green instead (`.course-card__fill_state_done`). It carries no check: that mark is drawn inside the course, not on its card.
 - The cover is decorative (`alt=""`): the staff's covers carry the course's name drawn on them and the title is right under. Without a cover the box stays, in the ink colour.
 
