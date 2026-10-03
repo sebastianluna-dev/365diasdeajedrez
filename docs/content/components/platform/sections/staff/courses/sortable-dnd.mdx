@@ -1,20 +1,22 @@
 ---
-description: "The drag and drop of the panel's sortable lists: dnd-kit set up once — sensors, the sortable context, the modifiers that keep a row in its list, and the announcements, in Spanish."
+description: "The drag and drop of the panel's sortable lists: dnd-kit set up once — sensors, the sortable context, the modifiers that keep a row in its list, and the announcements, in Spanish — plus the one-place step that reorders without dragging."
 ---
 
 # `SortableDnd`
 
+Also `useSortableStep`, `stepTarget` and the `SortableSteps` type, in `use-sortable-step.hook.ts`.
+
 |            |                                                                                                                                                                                                                                                               |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/sortable-dnd.comp.tsx`                                                                                                                                                                                            |
-| Kind       | Client Component                                                                                                                                                                                                                                              |
-| Stylesheet | None: it draws nothing.                                                                                                                                                                                                                                       |
+| Files      | `components/platform/sections/staff/courses/sortable-dnd.comp.tsx`, `use-sortable-step.hook.ts` (the step a row asks for)                                                                                                                                     |
+| Kind       | Client Component; a hook                                                                                                                                                                                                                                      |
+| Stylesheet | `sortable-dnd.comp.css` → block `.sortable-dnd`: the status line a screen reader reads after a step, visually hidden                                                                                                                                          |
 | Used by    | [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list) (chapters and lessons), [`ChapterGameList`](/components/platform/sections/staff/courses/chapter-game-section) (the games of a collection)                                         |
 | Uses       | `DndContext`, `PointerSensor`, `KeyboardSensor` from `@dnd-kit/core`; `SortableContext`, `verticalListSortingStrategy`, `sortableKeyboardCoordinates` from `@dnd-kit/sortable`; `restrictToVerticalAxis`, `restrictToParentElement` from `@dnd-kit/modifiers` |
 
 ## Purpose
 
-The wiring of [dnd-kit](https://dndkit.com) for every sortable list of the panel, in one place: the rows it wraps ask `useSortable` where they are, and the order they end up in is `useSortableRows`. It is a container — `children` and nothing drawn — which is why it takes them.
+The wiring of [dnd-kit](https://dndkit.com) for every sortable list of the panel, in one place: the rows it wraps ask `useSortable` where they are and `useSortableStep` how to move one place, and the order they end up in is `useSortableRows`. It is a container — `children`, and nothing drawn but a line for the ear — which is why it takes them.
 
 ## Props
 
@@ -25,14 +27,25 @@ The wiring of [dnd-kit](https://dndkit.com) for every sortable list of the panel
 | `onMove`   | `(activeId: string, overId: string) => void` | yes      | Applies the move. `overId` is the item whose place the dragged one takes.                                               |
 | `children` | `ReactNode`                                  | yes      | The list itself.                                                                                                        |
 
+## `useSortableStep`
+
+```ts
+function useSortableStep(id: string): SortableSteps; // { up: (() => void) | null; down: (() => void) | null }
+```
+
+What a row's «Subir» and «Bajar» call. `up` takes the place of the item above, `down` the place of the item below, each through the same `onMove` a drop calls; `null` where the row is already at that end of `items`, so the control can be disabled there. Outside a `SortableDnd`, both are `null`.
+
+Which neighbour that is, is `stepTarget(ids, id, offset)`: the id above (`-1`) or below (`1`), or `null` at that end or for an id that is not in the order. It is a pure function, and `use-sortable-step.hook.test.ts` holds it; `SortableDnd` calls it too, to say where the row landed.
+
 ## Behaviour
 
 - **The pointer travels 5px before a drag starts** (`activationConstraint: { distance: 5 }`): without it, pressing a link or a row action inside a draggable row would begin a drag instead.
-- **The keyboard moves a row without dragging at all**: space picks it up, the arrows move it, space drops it, escape puts it back (`KeyboardSensor` with `sortableKeyboardCoordinates`). Dragging has no keyboard equivalent, so this is the accessible way to reorder.
+- **The keyboard moves a row without dragging at all**: space picks it up, the arrows move it, space drops it, escape puts it back (`KeyboardSensor` with `sortableKeyboardCoordinates`). Dragging has no keyboard equivalent, so this is the accessible way to reorder with the keyboard.
+- **A pointer moves a row without dragging too**, one place per click (`useSortableStep`): a drag is a path the pointer has to hold, and whoever cannot — a tremor, a head pointer, a touch screen that scrolls instead — needs single clicks (WCAG 2.5.7, 2026-10-03). The list cannot tell a step from a drop: both reach `onMove` with the neighbour's id.
 - **A row only goes up or down, and never out of its list** (`restrictToVerticalAxis`, `restrictToParentElement`), and the one it would displace is found with `closestCenter`.
-- **Everything is announced in Spanish** — taken, where it would land, where it was left, cancelled — because the library's own announcements are English. The instructions read to whoever focuses a handle are Spanish too.
+- **Everything is announced in Spanish** — taken, where it would land, where it was left, cancelled — because the library's own announcements are English. The instructions read to whoever focuses a handle are Spanish too. dnd-kit only speaks for its own drags, so a step is said in a status line of this component's own (`.sortable-dnd`, `role="status"`, visually hidden), in the words of a drop: `«El rey en el centro» queda en la posición 3 de 5.` It is emptied when a drag starts, so the same landing said again after a drag is still a change, and is read.
 
 ## Related
 
-- [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list), the chapters of a course and the lessons of a chapter.
+- [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list), the chapters of a course and the lessons of a chapter, with «Subir» and «Bajar» in each row's menu.
 - [`ChapterGameList`](/components/platform/sections/staff/courses/chapter-game-section), the games of a chapter's collection beside the board.

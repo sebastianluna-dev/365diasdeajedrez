@@ -1,0 +1,11 @@
+/* SortableDnd draws one thing, and only for the ear: the line a screen reader
+   reads when a row moves one place without being dragged. dnd-kit speaks for
+   its own drags and for nothing else. */
+.sortable-dnd {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

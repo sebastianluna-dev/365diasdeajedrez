@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useLingering } from "@/components/chess/game-viewer/use-lingering.hook";
@@ -11,6 +11,7 @@ import { SubmitButton } from "@/components/platform/shared/submit-button/submit-
 import { CONTENT_ROLE } from "@/constants/platform/course-codes.const";
 import { useSortableRows } from "../use-sortable-rows.hook";
 import { SortableDnd } from "../sortable-dnd.comp";
+import { useSortableStep, type SortableSteps } from "../use-sortable-step.hook";
 import "./syllabus-list.comp.css";
 
 export interface SyllabusItem {
@@ -54,28 +55,44 @@ function plural(noun: string): string {
 
 interface RowMenuProps {
   item: SyllabusItem;
-  deleteAction: (formData: FormData) => Promise<void>;
+  /** Deletes the row; without it, nothing in the menu destroys. */
+  deleteAction?: (formData: FormData) => Promise<void>;
   deleteFieldName: string;
+  /** «Subir» and «Bajar». Absent on the introduction and the closing, whose place is not their order. */
+  steps?: SortableSteps;
 }
 
 /**
- * What else can be done to a row, behind its three dots. Only what destroys
- * lives here: «Editar» is the button of the row, and hiding the everyday
- * action behind a menu is what makes a list feel slow.
+ * What else can be done to a row, behind its three dots: move it one place,
+ * and what destroys. «Editar» is the button of the row, because hiding the
+ * everyday action behind a menu is what makes a list feel slow.
+ *
+ * «Subir» and «Bajar» are the way to reorder with single clicks, for whoever
+ * cannot hold a drag (WCAG 2.5.7): they take the row's neighbour's place, the
+ * same move a drop makes. At the ends of the list the one that would leave it
+ * stays in the menu, disabled, so the two are always in the same place.
  *
  * The menu opens on every row, even where deleting is refused: there it says
  * why — a published course, a student's progress —, because a menu that is
  * not there does not explain itself, and what one comes looking for is
  * precisely the option that is missing.
  */
-function RowMenu({ item, deleteAction, deleteFieldName }: RowMenuProps) {
+function RowMenu({ item, deleteAction, deleteFieldName, steps }: RowMenuProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const refusalId = useId();
 
   // Kept mounted while it leaves, so the closing animation has something to
   // run on (see `useLingering`).
   const lingering = useLingering(open ? true : null);
+
+  const canDelete = deleteAction !== undefined && item.canDelete;
+  // Why deleting is refused, said where the action would have been.
+  const refusal = deleteAction && !item.canDelete ? (item.deleteHint ?? "No se puede eliminar.") : null;
+  // A menu only when there is something to press in it; on a fixed row where
+  // deleting is refused, what opens is a note with the reason.
+  const isMenu = steps !== undefined || canDelete;
 
   const close = useCallback((returnFocus: boolean) => {
     setOpen(false);
@@ -99,10 +116,40 @@ function RowMenu({ item, deleteAction, deleteFieldName }: RowMenuProps) {
     };
   }, [open, close]);
 
+  // A menu that opens takes the focus to its first item that can be pressed:
+  // on the first row that is «Bajar», since there is nowhere to go up to. In a
+  // list of one, where neither can be pressed, to the first item all the same,
+  // so the arrows still walk the menu.
   useEffect(() => {
     if (!open) return;
-    rootRef.current?.querySelector<HTMLElement>(".syllabus-list__menu button")?.focus();
+    const root = rootRef.current;
+    const first =
+      root?.querySelector<HTMLElement>('[role="menuitem"]:not([aria-disabled="true"])') ??
+      root?.querySelector<HTMLElement>('[role="menuitem"]');
+    first?.focus();
   }, [open]);
+
+  /** Up and down walk the items and wrap around; the other keys are the page's. */
+  const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    const items = Array.from(event.currentTarget.querySelectorAll<HTMLElement>('[role="menuitem"]'));
+    if (items.length === 0) return;
+    event.preventDefault();
+    const current = items.findIndex((menuItem) => menuItem === document.activeElement);
+    const offset = event.key === "ArrowDown" ? 1 : -1;
+    items[(current + offset + items.length) % items.length]?.focus();
+  };
+
+  /** Moves the row one place, closes the menu and gives the focus back to the row, wherever it is now. */
+  const runStep = (move: (() => void) | null) => {
+    if (!move) return;
+    move();
+    close(false);
+    // Once React has put the row in its new place: a node that is moved loses
+    // the focus it held, and the item that had it is about to unmount anyway.
+    // The three dots travel with the row, so that is where the focus goes.
+    requestAnimationFrame(() => buttonRef.current?.focus());
+  };
 
   return (
     <div ref={rootRef} className="syllabus-list__menu-anchor">
@@ -111,9 +158,7 @@ function RowMenu({ item, deleteAction, deleteFieldName }: RowMenuProps) {
         type="button"
         className="syllabus-list__more"
         aria-label={`Más opciones de «${item.name}»`}
-        // A menu only when there is something to press in it; where deleting
-        // is refused, what opens is a note with the reason.
-        aria-haspopup={item.canDelete ? "menu" : undefined}
+        aria-haspopup={isMenu ? "menu" : undefined}
         aria-expanded={open}
         onClick={() => setOpen((wasOpen) => !wasOpen)}
       >
@@ -122,26 +167,71 @@ function RowMenu({ item, deleteAction, deleteFieldName }: RowMenuProps) {
 
       {lingering.value && (
         <div
-          // The reason is announced as it appears: nothing in it takes the
-          // focus, which stays on the button that opened it.
-          role={item.canDelete ? "menu" : "status"}
-          aria-label={item.canDelete ? `Opciones de «${item.name}»` : undefined}
+          // Where nothing can be pressed, the popup IS the reason, announced as
+          // it appears: nothing in it takes the focus, which stays on the button
+          // that opened it.
+          role={isMenu ? undefined : "status"}
           className={`syllabus-list__menu${lingering.closing ? " syllabus-list__menu_state_closing" : ""}`}
         >
-          {item.canDelete ? (
-            <form action={deleteAction}>
-              <input type="hidden" name={deleteFieldName} value={item.id} />
-              <SubmitButton
-                role="menuitem"
-                className="syllabus-list__menu-item"
-                pendingLabel="Eliminando…"
-                aria-label={`Eliminar «${item.name}»`}
-              >
-                Eliminar
-              </SubmitButton>
-            </form>
-          ) : (
-            <p className="syllabus-list__menu-note">{item.deleteHint ?? "No se puede eliminar."}</p>
+          {isMenu && (
+            // eslint-disable-next-line jsx-a11y/interactive-supports-focus -- the focus goes to the items inside it, never to the container
+            <div
+              role="menu"
+              aria-label={`Opciones de «${item.name}»`}
+              // The reason under the items is not one of them, so it sits
+              // outside the menu and the menu points at it.
+              aria-describedby={refusal ? refusalId : undefined}
+              className="syllabus-list__menu-items"
+              onKeyDown={handleKeyDown}
+            >
+              {steps && (
+                <>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="syllabus-list__menu-item"
+                    // `aria-disabled` and not `disabled`: a disabled item of a
+                    // menu is still reached with the arrows, and says why it is
+                    // not pressed.
+                    aria-disabled={steps.up ? undefined : true}
+                    aria-label={`Subir «${item.name}»`}
+                    onClick={() => runStep(steps.up)}
+                  >
+                    Subir
+                  </button>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="syllabus-list__menu-item"
+                    aria-disabled={steps.down ? undefined : true}
+                    aria-label={`Bajar «${item.name}»`}
+                    onClick={() => runStep(steps.down)}
+                  >
+                    Bajar
+                  </button>
+                </>
+              )}
+              {/* Moving and destroying are set apart by a rule. */}
+              {steps && canDelete && <hr className="syllabus-list__menu-rule" />}
+              {canDelete && (
+                <form action={deleteAction}>
+                  <input type="hidden" name={deleteFieldName} value={item.id} />
+                  <SubmitButton
+                    role="menuitem"
+                    className="syllabus-list__menu-item syllabus-list__menu-item_variant_danger"
+                    pendingLabel="Eliminando…"
+                    aria-label={`Eliminar «${item.name}»`}
+                  >
+                    Eliminar
+                  </SubmitButton>
+                </form>
+              )}
+            </div>
+          )}
+          {refusal && (
+            <p id={refusalId} className="syllabus-list__menu-note">
+              {refusal}
+            </p>
           )}
         </div>
       )}
@@ -174,12 +264,16 @@ function Edit({ item }: { item: SyllabusItem }) {
   );
 }
 
-/** A row that can be moved: dnd-kit gives it its place, the grip picks it up. */
+/**
+ * A row that can be moved: dnd-kit gives it its place, the grip picks it up,
+ * and its menu moves it one place at a time.
+ */
 function Row({ item, number, noun, deleteAction, deleteFieldName }: RowProps & { number?: number; noun: string }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
     data: { name: item.name },
   });
+  const steps = useSortableStep(item.id);
 
   return (
     <li
@@ -206,11 +300,9 @@ function Row({ item, number, noun, deleteAction, deleteFieldName }: RowProps & {
       </Link>
       <Facts item={item} />
       <Edit item={item} />
-      {deleteAction ? (
-        <RowMenu item={item} deleteAction={deleteAction} deleteFieldName={deleteFieldName} />
-      ) : (
-        <span className="syllabus-list__more-space" aria-hidden="true" />
-      )}
+      {/* Every numbered row has its menu: moving is always there, even where
+          nothing may be deleted. */}
+      <RowMenu item={item} deleteAction={deleteAction} deleteFieldName={deleteFieldName} steps={steps} />
     </li>
   );
 }
@@ -227,10 +319,10 @@ function Row({ item, number, noun, deleteAction, deleteFieldName }: RowProps & {
  * is not their order and nothing is dropped onto them.
  *
  * Each row carries its number on a tile, its facts at the end and «Editar» as
- * a button; what destroys waits behind the three dots, and only where the
- * server would allow it. Dragging is dnd-kit ([`SortableDnd`](../sortable-dnd.comp.tsx)),
- * and the order itself — optimistic, saved in a transition — is
- * `useSortableRows`.
+ * a button; behind the three dots wait «Subir» and «Bajar», which reorder
+ * without dragging, and what destroys, only where the server would allow it.
+ * Dragging is dnd-kit ([`SortableDnd`](../sortable-dnd.comp.tsx)), and the
+ * order itself — optimistic, saved in a transition — is `useSortableRows`.
  */
 export function SyllabusList({
   items,

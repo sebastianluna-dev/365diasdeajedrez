@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { CONTENT_ROLE } from "@/constants/platform/course-codes.const";
 import { StaffPanel } from "../staff-panel.comp";
 import { SyllabusList } from "./syllabus-list.comp";
@@ -68,8 +68,9 @@ const meta = {
         component: `
 The list a course's chapters and a chapter's lessons are drawn with — they are
 the same thing one level apart. Made-up data and stubs in place of the server
-actions: dragging a row by its grip, or picking it up with space and moving it
-with the arrows, reorders the list on the spot and nothing is saved.
+actions: dragging a row by its grip, picking it up with space and moving it
+with the arrows, or pressing «Subir» or «Bajar» in its menu reorders the list
+on the spot, and nothing is saved.
 
 Source: \`components/platform/sections/staff/courses/syllabus-list/\`.
 Reference page: [Components › SyllabusList](/components/platform/sections/staff/courses/syllabus-list) in the docs site.
@@ -133,28 +134,60 @@ export const Lessons: Story = {
   ),
 };
 
-/** A row's three dots pressed: the menu with what destroys it, the focus on «Eliminar». */
-export const RowMenu: Story = {
+/** The second chapter's menu, opened by the story: «Subir» and «Bajar» to reorder without dragging, and «Eliminar» set apart under a rule. */
+export const StepMenuOpen: Story = {
   ...Chapters,
-  name: "El menú de una fila",
+  name: "El menú de una fila, con «Subir» y «Bajar»",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(
-      canvas.getByRole("button", { name: "Más opciones de «La estructura de peones decide el plan»" }),
-    );
-    await expect(
-      canvas.getByRole("menuitem", { name: "Eliminar «La estructura de peones decide el plan»" }),
-    ).toHaveFocus();
+    const name = "El alfil malo y cómo cambiarlo";
+    await userEvent.click(canvas.getByRole("button", { name: `Más opciones de «${name}»` }));
+
+    const menu = await canvas.findByRole("menu", { name: `Opciones de «${name}»` });
+    const items = within(menu).getAllByRole("menuitem");
+    await expect(items.map((item) => item.textContent)).toEqual(["Subir", "Bajar", "Eliminar"]);
+    await expect(items[0]).toHaveFocus();
   },
 };
 
-/** The three dots of a row that cannot be deleted: a note with the reason, and the focus stays on the button. */
-export const DeleteRefused: Story = {
+/** The menu of a chapter that cannot be deleted: it still moves, and under «Subir» and «Bajar» it says why it cannot be deleted. */
+export const StepMenuWhereDeletingIsRefused: Story = {
   ...Chapters,
-  name: "Una fila que no se puede eliminar",
+  name: "«Subir» y «Bajar» donde no se puede eliminar",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole("button", { name: "Más opciones de «Columnas abiertas y la séptima»" }));
-    await expect(canvas.getByText("Hay alumnos con progreso en este capítulo o en sus lecciones.")).toBeInTheDocument();
+    const name = "Columnas abiertas y la séptima";
+    await userEvent.click(canvas.getByRole("button", { name: `Más opciones de «${name}»` }));
+
+    const menu = await canvas.findByRole("menu", { name: `Opciones de «${name}»` });
+    const items = within(menu).getAllByRole("menuitem");
+    await expect(items.map((item) => item.textContent)).toEqual(["Subir", "Bajar"]);
+    await expect(menu).toHaveAccessibleDescription("Hay alumnos con progreso en este capítulo o en sus lecciones.");
+  },
+};
+
+/** «Subir» pressed in the second chapter's menu: the chapter is now the first, the focus came back to its three dots, and opened again its «Subir» is disabled. */
+export const SteppedUpWithoutDragging: Story = {
+  ...Chapters,
+  name: "Una fila subida sin arrastrar",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const name = "El alfil malo y cómo cambiarlo";
+    await userEvent.click(canvas.getByRole("button", { name: `Más opciones de «${name}»` }));
+    await userEvent.click(await canvas.findByRole("menuitem", { name: `Subir «${name}»` }));
+
+    // The row heads the numbered block, the focus travelled with it, and the
+    // screen reader is told where it landed.
+    const dots = canvas.getByRole("button", { name: `Más opciones de «${name}»` });
+    await waitFor(() => expect(dots).toHaveFocus());
+    await expect(canvasElement.querySelector(".syllabus-list__group > li")).toHaveTextContent(name);
+    // By its text: dnd-kit's own live region is a `status` too.
+    await expect(canvas.getByText(`«${name}» queda en la posición 1 de 5.`)).toHaveAttribute("role", "status");
+
+    // Opened again, there is nowhere to go up to: the focus starts on «Bajar».
+    await userEvent.click(dots);
+    const up = await canvas.findByRole("menuitem", { name: `Subir «${name}»` });
+    await expect(up).toHaveAttribute("aria-disabled", "true");
+    await expect(canvas.getByRole("menuitem", { name: `Bajar «${name}»` })).toHaveFocus();
   },
 };

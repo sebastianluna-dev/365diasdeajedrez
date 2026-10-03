@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import {
   closestCenter,
   DndContext,
@@ -14,6 +14,8 @@ import {
 } from "@dnd-kit/core";
 import { restrictToParentElement, restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { SortableStepContext, stepTarget } from "./use-sortable-step.hook";
+import "./sortable-dnd.comp.css";
 
 interface SortableDndProps {
   /** The items that can be moved, in the order they are drawn. The fixed ones are left out. */
@@ -47,6 +49,12 @@ function positionOf(id: string | number | undefined, items: { id: string }[]): n
  * all: space picks it up, the arrows move it, space drops it and escape puts
  * it back. Everything that happens is announced in Spanish, because dnd-kit's
  * own announcements are in English.
+ *
+ * A row also moves one place at a time with single clicks, the pointer's way
+ * that needs no drag (WCAG 2.5.7): it asks `useSortableStep`, and the step
+ * reaches the list through the same `onMove` a drop does. What dnd-kit does
+ * not see it does not announce, so where the step left the row is said in a
+ * status line of its own, the one thing this draws.
  */
 export function SortableDnd({ items, noun, onMove, children }: SortableDndProps) {
   const sensors = useSensors(
@@ -77,6 +85,20 @@ export function SortableDnd({ items, noun, onMove, children }: SortableDndProps)
     onMove(String(active.id), String(over.id));
   };
 
+  // What the last step said. Emptied when a drag starts, so that the same
+  // landing said again after a drag is still a change, and is read.
+  const [stepSaid, setStepSaid] = useState("");
+  const ids = items.map((item) => item.id);
+
+  /** One place up or down: the row takes its neighbour's place, as if it had been dropped on it. */
+  const step = (id: string, offset: -1 | 1) => {
+    const target = stepTarget(ids, id, offset);
+    const name = items.find((item) => item.id === id)?.name;
+    if (target === null || name === undefined) return;
+    onMove(id, target);
+    setStepSaid(`«${name}» queda en la posición ${positionOf(target, items)} de ${items.length}.`);
+  };
+
   return (
     <DndContext
       sensors={sensors}
@@ -84,11 +106,15 @@ export function SortableDnd({ items, noun, onMove, children }: SortableDndProps)
       // A chapter only goes up or down, and never out of its list.
       modifiers={[restrictToVerticalAxis, restrictToParentElement]}
       accessibility={{ announcements, screenReaderInstructions: instructions }}
+      onDragStart={() => setStepSaid("")}
       onDragEnd={handleDragEnd}
     >
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
-        {children}
+        <SortableStepContext value={{ ids, step }}>{children}</SortableStepContext>
       </SortableContext>
+      <div className="sortable-dnd" role="status">
+        {stepSaid}
+      </div>
     </DndContext>
   );
 }

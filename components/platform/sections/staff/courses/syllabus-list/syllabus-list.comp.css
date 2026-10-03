@@ -281,18 +281,41 @@
     pointer-events: none;
   }
 
+  & .syllabus-list__menu-items {
+    display: flex;
+    flex-direction: column;
+  }
+
   & .syllabus-list__menu-item {
     width: 100%;
     padding: var(--platform-space-2) var(--platform-space-3);
     border: 0;
     border-radius: 8px;
     background: transparent;
-    color: var(--platform-danger);
+    color: var(--platform-text);
     font-family: inherit;
     font-size: var(--platform-type-md);
     font-weight: 700;
     text-align: left;
     cursor: pointer;
+  }
+
+  /* What destroys is told apart from what moves by its colour, too. */
+  & .syllabus-list__menu-item_variant_danger {
+    color: var(--platform-danger);
+  }
+
+  /* «Subir» on the first row, «Bajar» on the last: there, but nothing to do.
+     Drawn like a disabled row action. */
+  & .syllabus-list__menu-item[aria-disabled="true"] {
+    color: var(--platform-text-faint);
+    cursor: not-allowed;
+  }
+
+  & .syllabus-list__menu-rule {
+    margin: var(--platform-space-1) 0;
+    border: 0;
+    border-top: 1px solid var(--platform-border);
   }
 
   /* Where the action would have been, why it is not there. */
@@ -306,7 +329,14 @@
     text-wrap: pretty;
   }
 
-  & .syllabus-list__menu-item:hover:not(:disabled),
+  /* The reason under «Subir» and «Bajar», set apart from them by the same
+     rule that would have set «Eliminar» apart. */
+  & .syllabus-list__menu-items + .syllabus-list__menu-note {
+    margin-top: var(--platform-space-1);
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .syllabus-list__menu-item:hover:not(:disabled, [aria-disabled="true"]),
   & .syllabus-list__menu-item:focus-visible {
     background: var(--platform-surface-neutral);
   }
