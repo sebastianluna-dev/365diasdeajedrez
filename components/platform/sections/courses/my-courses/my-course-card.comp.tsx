@@ -37,10 +37,14 @@ const GAUGE_LENGTH = 2 * Math.PI * GAUGE_RADIUS;
  * of the accessibility tree — it has no name of its own and the title's,
  * next to it, leads to the same place.
  *
+ * «Repasar» opens what is due today among the lessons already learned, and
+ * says how many exercises that is. With nothing due it says so: switched
+ * off, with «Al día» where the count goes.
+ *
  * A button that leads nowhere keeps its place, switched off, so the rows of
- * the list line up: «Repasar» with nothing learned to review, «Aprender»
- * in a course without lessons. A FINISHED course does not switch «Aprender»
- * off — it starts the course over.
+ * the list line up: «Repasar» with nothing due or nothing learned to review,
+ * «Aprender» in a course without lessons. A FINISHED course does not switch
+ * «Aprender» off — it starts the course over.
  *
  * «Repasar» is the Move Trainer's: while that is off (`MOVE_TRAINER_ENABLED`)
  * the button is not drawn at all, and «Aprender» is the row's one button.
@@ -117,6 +121,7 @@ export function MyCourseCard({ course }: MyCourseCardProps) {
           ) : (
             <span className="my-course-card__review my-course-card__review_state_off" aria-disabled="true">
               Repasar
+              {course.isReviewUpToDate && <span className="my-course-card__review-status">Al día</span>}
             </span>
           ))}
 

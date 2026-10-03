@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 interface TrainerPageProps {
-  /** `course`: what a course's «Repasar» asks for, the exercises of its lessons already learned. */
+  /** `course`: what a course's «Repasar» asks for, the exercises of its lessons already learned that are due. */
   searchParams: Promise<{ lesson?: string; chapter?: string; course?: string; session?: string; error?: string }>;
 }
 

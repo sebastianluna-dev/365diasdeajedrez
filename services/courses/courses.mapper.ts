@@ -16,6 +16,7 @@ import type {
   CourseCta,
   CourseDetail,
   CourseLevelItem,
+  CourseReview,
   CourseSourceItem,
   CourseProgressSummary,
   CourseSummary,
@@ -329,22 +330,24 @@ export function mapCourseSummary(course: CourseWithContent, state: UserCourseSta
   };
 }
 
-/** What the course's pages need that is not in the course nor in the student's progress. */
-export interface CourseExtras {
-  /** Exercises of the lessons the student already learned in this course. */
-  reviewCount?: number;
-}
+/**
+ * What the course's pages need that is not in the course nor in the student's
+ * progress: what its «Repasar» says, which the trainer's schedule decides.
+ * Absent, there is nothing to review.
+ */
+export type CourseExtras = Partial<CourseReview>;
 
 /** The summary of a course the student added, with what its row of "Mis cursos" does. */
 export function mapMyCourse(
   course: CourseWithContent,
   state: UserCourseState,
-  { reviewCount = 0 }: CourseExtras = {},
+  { reviewCount = 0, isReviewUpToDate = false }: CourseExtras = {},
 ): MyCourseItem {
   return {
     ...mapCourseSummary(course, state),
     learnHref: learnTarget(course, state),
     reviewCount,
+    isReviewUpToDate,
     reviewHref: platformRoutes.courseReview(course.id),
   };
 }
@@ -382,7 +385,7 @@ function mapChapterItem(
 export function mapCourseDetail(
   course: CourseWithDetail,
   state: UserCourseState,
-  { reviewCount = 0 }: CourseExtras = {},
+  { reviewCount = 0, isReviewUpToDate = false }: CourseExtras = {},
 ): CourseDetail {
   const progress = mapCourseProgress(course, state);
   const every = allLessons(course);
@@ -405,6 +408,7 @@ export function mapCourseDetail(
     ctaLabel: ctaLabelFor(progress),
     learnHref: learnTarget(course, state),
     reviewCount,
+    isReviewUpToDate,
     reviewHref: platformRoutes.courseReview(course.id),
     onlyPriorityLessons: state.onlyPriorityLessons,
     hiddenLessons: every.length - progress.totalLessons,

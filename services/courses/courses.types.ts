@@ -88,14 +88,32 @@ export interface CourseSummary {
 }
 
 /**
+ * What a course's «Repasar» says: the exercises due for review today in the
+ * lessons already learned, and, with none due, whether there is anything
+ * learned to be up to date with.
+ */
+export interface CourseReview {
+  /**
+   * Exercises of the lessons already learned whose review is due today — the
+   * trainer's schedule says so, or the lesson was never trained —: what
+   * «Repasar» trains, and how many it says.
+   */
+  reviewCount: number;
+  /**
+   * Something learned has exercises and none is due today: «Repasar» stays,
+   * switched off, and says «Al día». False with exercises due, and with
+   * nothing learned to review at all.
+   */
+  isReviewUpToDate: boolean;
+}
+
+/**
  * A course of the student's, as "Mis cursos" lists it: the summary, and the
  * two things that can be done with it from the list.
  */
-export interface MyCourseItem extends CourseSummary {
+export interface MyCourseItem extends CourseSummary, CourseReview {
   /** Where «Aprender» leads; absent only without lessons in view. See `CourseDetail.learnHref`. */
   learnHref?: string;
-  /** Exercises of the lessons already learned: what «Repasar» trains. */
-  reviewCount: number;
   reviewHref: string;
 }
 
@@ -141,7 +159,7 @@ export interface CourseSourceItem {
  * pages need around the chapters. One shape for both, because they are the
  * same course seen before and after adding it.
  */
-export interface CourseDetail {
+export interface CourseDetail extends CourseReview {
   id: string;
   slug: string;
   name: string;
@@ -167,8 +185,7 @@ export interface CourseDetail {
    * Absent only when no lesson is in view.
    */
   learnHref?: string;
-  /** Exercises of the lessons already learned: what «Repasar» trains. */
-  reviewCount: number;
+  /** Where «Repasar» leads: the Move Trainer, with what `reviewCount` counts. */
   reviewHref: string;
   /** The student asked to see only what the staff marked as priority in this course. */
   onlyPriorityLessons: boolean;

@@ -1,7 +1,7 @@
-import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import type { Prisma } from "@/lib/platform-db/generated/client";
+import { dueReviewExerciseWhere } from "@/services/shared/course-review.service";
 import { publishedCourseWhere, publishedLessonWhere } from "@/services/shared/published-content";
 import { mapTrainerChapter, mapTrainerExercise, trainerExerciseInclude } from "./trainer.mapper";
 import type { TrainerData, TrainerExercise } from "./trainer.types";
@@ -53,7 +53,7 @@ export async function getTrainerData(): Promise<TrainerData> {
 export interface TrainerSessionParams {
   lessonId?: string;
   chapterId?: string;
-  /** A course: its exercises of the lessons the student already learned. */
+  /** A course: the exercises of the lessons the student already learned whose review is due. */
   courseId?: string;
 }
 
@@ -62,8 +62,11 @@ export interface TrainerSessionParams {
  * course's «Repasar» asks for, or those of every chapter the user added to the
  * Move Trainer.
  *
- * A course's review is of what was LEARNED: the exercises of its lessons the
- * student completed, which is the same set its button counts.
+ * A course's review is of what was LEARNED and is DUE: the exercises of its
+ * lessons the student completed whose review the trainer's schedule says is
+ * due today, or that were never trained. The `where` is the one its button
+ * counts with (`dueReviewExerciseWhere`), so the session serves the number the
+ * button said.
  *
  * The lesson and chapter ids arrive through the URL, so the published-course
  * filter is chained into the `where`: without it, `/entrenador?chapter=<id>`
@@ -79,12 +82,7 @@ export async function getTrainerSession(params: TrainerSessionParams): Promise<T
   } else if (params.chapterId) {
     where = { lesson: { chapterId: params.chapterId, ...publishedLessonWhere } };
   } else if (params.courseId) {
-    where = {
-      lesson: {
-        chapter: { courseId: params.courseId, course: publishedCourseWhere },
-        progresses: { some: { userId: user.id, status: { code: PROGRESS_STATUS.COMPLETED } } },
-      },
-    };
+    where = await dueReviewExerciseWhere(db, { userId: user.id, courseId: params.courseId }, new Date());
   } else {
     const trainerRows = await db.userTrainerChapter.findMany({
       where: { userId: user.id },

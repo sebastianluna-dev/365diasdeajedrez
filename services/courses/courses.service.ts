@@ -5,6 +5,7 @@ import { PROGRESS_STATUS, type ProgressStatusCode } from "@/constants/platform/s
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { gameMoves, type GameMoves } from "@/lib/chess/game-moves";
+import { dueReviewExerciseWhere, reviewExerciseWhere } from "@/services/shared/course-review.service";
 import { lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
 import { isCourseId } from "./course-rules";
 import {
@@ -24,6 +25,7 @@ import type {
   ChapterView,
   CourseDetail,
   CourseLevelItem,
+  CourseReview,
   CourseSummary,
   LessonView,
   MyCourseItem,
@@ -153,46 +155,56 @@ export async function getCourseCatalog(): Promise<CourseSummary[]> {
   return courses.map((course) => mapCourseSummary(course, progress.get(course.id) ?? EMPTY_STATE));
 }
 
+/** The course an exercise belongs to, which is all «Mis cursos» needs of it to add it up. */
+const exerciseCourseSelect = { lesson: { select: { chapter: { select: { courseId: true } } } } } as const;
+
 /**
- * What «Repasar» trains in each course, by course id: `getReviewCount` for
- * every course at once. One query over the lessons the student learned that
- * have exercises, added up by course, instead of a count per row of the list.
+ * What «Repasar» says in each course, by course id: `getCourseReview` for
+ * every course at once, with the same `where` (`dueReviewExerciseWhere`)
+ * without a course in it, added up by course instead of a count per row of
+ * the list. A course with nothing learned to review is not in the map.
  */
-async function getReviewCounts(): Promise<Map<string, number>> {
+async function getCourseReviews(): Promise<Map<string, CourseReview>> {
   // With the trainer off there is nothing to review: no course has a count.
   if (!MOVE_TRAINER_ENABLED) return new Map();
 
+  const db = getPlatformDb();
   const user = await getCurrentUser();
-  const lessons = await getPlatformDb().lesson.findMany({
-    where: {
-      exercises: { some: {} },
-      progresses: { some: { userId: user.id, status: { code: PROGRESS_STATUS.COMPLETED } } },
-    },
-    select: { chapter: { select: { courseId: true } }, _count: { select: { exercises: true } } },
-  });
+  const scope = { userId: user.id };
+  const [dueWhere, learned] = await Promise.all([
+    dueReviewExerciseWhere(db, scope, new Date()),
+    // One row per lesson is enough to know which courses have something learned.
+    db.trainingExercise.findMany({
+      where: reviewExerciseWhere(scope),
+      select: { lessonId: true, ...exerciseCourseSelect },
+      distinct: ["lessonId"],
+    }),
+  ]);
+  const due = await db.trainingExercise.findMany({ where: dueWhere, select: exerciseCourseSelect });
 
-  const counts = new Map<string, number>();
-  for (const lesson of lessons) {
-    const { courseId } = lesson.chapter;
-    counts.set(courseId, (counts.get(courseId) ?? 0) + lesson._count.exercises);
+  const reviews = new Map<string, CourseReview>();
+  for (const row of learned) {
+    reviews.set(row.lesson.chapter.courseId, { reviewCount: 0, isReviewUpToDate: true });
   }
-  return counts;
+  for (const row of due) {
+    const { courseId } = row.lesson.chapter;
+    reviews.set(courseId, { reviewCount: (reviews.get(courseId)?.reviewCount ?? 0) + 1, isReviewUpToDate: false });
+  }
+  return reviews;
 }
 
 /**
  * "Mis cursos": of the published courses, the ones the student added, each
- * with its next lesson to learn and what there is to review in it.
+ * with its next lesson to learn and what there is to review in it today.
  */
 export async function getUserCourses(): Promise<MyCourseItem[]> {
-  const [courses, progress, reviewCounts] = await Promise.all([
+  const [courses, progress, reviews] = await Promise.all([
     getPublishedCourses(),
     getUserProgressState(),
-    getReviewCounts(),
+    getCourseReviews(),
   ]);
   return courses
-    .map((course) =>
-      mapMyCourse(course, progress.get(course.id) ?? EMPTY_STATE, { reviewCount: reviewCounts.get(course.id) }),
-    )
+    .map((course) => mapMyCourse(course, progress.get(course.id) ?? EMPTY_STATE, reviews.get(course.id)))
     .filter((course) => course.isAdded);
 }
 
@@ -244,26 +256,31 @@ export async function getContinueStudyingCourse(): Promise<(CourseSummary & { la
   return { ...mapCourseSummary(course, progress), lastLessonName: row.lastLesson?.name };
 }
 
-/**
- * What «Repasar» trains: the exercises of the lessons of the course the
- * student has already LEARNED. It counts what CAN be reviewed, not what is
- * due: the trainer's review schedule (`UserLessonTraining`) is not looked at
- * here, so the figure does not go down after a session.
- */
-const getReviewCount = cache(async (courseId: string): Promise<number> => {
-  // With the trainer off there is nothing to review, and «Repasar» is only
-  // drawn for a count above zero.
-  if (!MOVE_TRAINER_ENABLED) return 0;
+/** Nothing to review: what a course says while the trainer is off. */
+const NO_REVIEW: CourseReview = { reviewCount: 0, isReviewUpToDate: false };
 
+/**
+ * What «Repasar» says in a course: the exercises of the lessons the student
+ * already learned whose review is DUE — the trainer's schedule
+ * (`UserLessonTraining.nextReviewAt`) says so, or the lesson was never
+ * trained —, counted with the very `where` the session it opens is served
+ * with (`dueReviewExerciseWhere`), so the figure and the session agree. With
+ * none due, whether something learned has exercises at all: the course is
+ * then up to date («Al día»), not a course with nothing to review.
+ */
+const getCourseReview = cache(async (courseId: string): Promise<CourseReview> => {
+  // With the trainer off there is nothing to review, and «Repasar» is not drawn.
+  if (!MOVE_TRAINER_ENABLED) return NO_REVIEW;
+
+  const db = getPlatformDb();
   const user = await getCurrentUser();
-  return getPlatformDb().trainingExercise.count({
-    where: {
-      lesson: {
-        chapter: { courseId },
-        progresses: { some: { userId: user.id, status: { code: PROGRESS_STATUS.COMPLETED } } },
-      },
-    },
-  });
+  const scope = { userId: user.id, courseId };
+  const [dueWhere, learned] = await Promise.all([
+    dueReviewExerciseWhere(db, scope, new Date()),
+    db.trainingExercise.findFirst({ where: reviewExerciseWhere(scope), select: { id: true } }),
+  ]);
+  const reviewCount = await db.trainingExercise.count({ where: dueWhere });
+  return { reviewCount, isReviewUpToDate: reviewCount === 0 && learned !== null };
 });
 
 /**
@@ -279,13 +296,13 @@ export async function getCourseInfo(slug: string): Promise<CourseDetail | null> 
 
 /** The course to study, by its id: its chapters with the student's progress in each. */
 export async function getCourseStudy(courseId: string): Promise<CourseDetail | null> {
-  const [course, progress, reviewCount] = await Promise.all([
+  const [course, progress, review] = await Promise.all([
     getPublishedCourse(courseId),
     getCourseProgressState(courseId),
-    getReviewCount(courseId),
+    getCourseReview(courseId),
   ]);
   if (!course) return null;
-  return mapCourseDetail(course, progress, { reviewCount });
+  return mapCourseDetail(course, progress, review);
 }
 
 /**
@@ -320,10 +337,10 @@ export async function getChapterOutline(courseId: string, chapterOrder: number):
 
 export async function getChapterView(courseId: string, chapterOrder: number): Promise<ChapterView | null> {
   const db = getPlatformDb();
-  const [course, progress, reviewCount] = await Promise.all([
+  const [course, progress, review] = await Promise.all([
     getPublishedCourse(courseId),
     getCourseProgressState(courseId),
-    getReviewCount(courseId),
+    getCourseReview(courseId),
   ]);
   if (!course) return null;
 
@@ -342,7 +359,7 @@ export async function getChapterView(courseId: string, chapterOrder: number): Pr
     if (game) games.set(lesson.id, game);
   }
 
-  return mapChapterView(course, chapterId, progress, { games, reviewCount });
+  return mapChapterView(course, chapterId, progress, { games, ...review });
 }
 
 /**

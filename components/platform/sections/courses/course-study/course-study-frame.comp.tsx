@@ -32,8 +32,9 @@ const COVER_SIZES = "96px";
 /**
  * What is around every page of a course being studied: on top, the course
  * with its two buttons — «Aprender», the next lesson, and «Repasar», the
- * exercises of what was already learned —; on the right, the course's options
- * and its one setting. The page puts its column in the middle.
+ * exercises of what was already learned whose review is due today —; on the
+ * right, the course's options and its one setting. The page puts its column
+ * in the middle.
  *
  * No figure of the course is drawn here: what a chapter's card says is how
  * far that chapter is, and the course's own progress is read in «Mis
@@ -43,10 +44,14 @@ const COVER_SIZES = "96px";
  * does the rest.
  *
  * A button is only drawn when it leads somewhere: a course without lessons
- * has no «Aprender», and one without exercises learned no «Repasar». A
- * finished course keeps its «Aprender», which starts it over.
+ * has no «Aprender», and one without exercises learned no «Repasar». The
+ * exception is a course with exercises learned and none due today: its
+ * «Repasar» stays, switched off, and says «Al día», so the student reads
+ * that the review is done rather than wondering where it went. A finished
+ * course keeps its «Aprender», which starts it over.
  * While the Move Trainer is off (`MOVE_TRAINER_ENABLED`) no course has
- * anything to review — the service counts none —, so «Repasar» is not drawn.
+ * anything to review — the service counts none and is never up to date —,
+ * so «Repasar» is not drawn.
  */
 export function CourseStudyFrame({ course, chapter, returnTo, errorCode, children }: CourseStudyFrameProps) {
   const errorMessage = studentErrorMessage(errorCode);
@@ -84,7 +89,7 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
           </p>
         </div>
 
-        {(course.learnHref || course.reviewCount > 0) && (
+        {(course.learnHref || course.reviewCount > 0 || course.isReviewUpToDate) && (
           <div className="course-study-frame__actions">
             {course.learnHref && (
               <Link
@@ -94,7 +99,7 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
                 Aprender
               </Link>
             )}
-            {course.reviewCount > 0 && (
+            {course.reviewCount > 0 ? (
               <Link href={course.reviewHref} className="course-study-frame__review">
                 Repasar
                 <span
@@ -104,6 +109,13 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
                   {course.reviewCount}
                 </span>
               </Link>
+            ) : (
+              course.isReviewUpToDate && (
+                <span className="course-study-frame__review course-study-frame__review_state_off" aria-disabled="true">
+                  Repasar
+                  <span className="course-study-frame__review-status">Al día</span>
+                </span>
+              )
             )}
           </div>
         )}

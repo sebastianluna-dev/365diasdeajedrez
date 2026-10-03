@@ -321,13 +321,21 @@ describe("un curso de «Mis cursos»", () => {
       isAdded: true,
       ctaLabel: "Continuar",
       reviewCount: 4,
+      isReviewUpToDate: false,
       reviewHref: "/entrenador?course=10000009",
     });
     expect(course.learnHref).toContain("l2");
   });
 
-  it("sin nada aprendido no hay nada que repasar", () => {
-    expect(mapMyCourse(COURSE, state(added)).reviewCount).toBe(0);
+  it("sin nada aprendido no hay nada que repasar, y tampoco está al día", () => {
+    expect(mapMyCourse(COURSE, state(added))).toMatchObject({ reviewCount: 0, isReviewUpToDate: false });
+  });
+
+  it("con lo aprendido repasado y nada que toque hoy, está al día", () => {
+    const review = { reviewCount: 0, isReviewUpToDate: true };
+    const learned = state({ ...added, lessonStatus: completed("l1") });
+    expect(mapMyCourse(COURSE, learned, review)).toMatchObject(review);
+    expect(mapCourseDetail(COURSE, learned, review)).toMatchObject(review);
   });
 
   it("con todo aprendido «Aprender» sigue llevando a algún sitio: a la primera lección", () => {

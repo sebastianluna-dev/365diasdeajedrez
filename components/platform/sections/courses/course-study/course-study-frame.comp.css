@@ -131,6 +131,32 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* With nothing due today it stays, switched off, so the review reads as
+     done and not as gone: the line goes to the thin border and the word to
+     the faint grey, as a switched-off button of «Mis cursos». */
+  & .course-study-frame__review_state_off,
+  & .course-study-frame__review_state_off:hover {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--platform-border);
+    color: var(--platform-text-faint);
+    cursor: default;
+  }
+
+  /* «Al día», where the count goes: in the count's success tone, because it
+     is good news and not a fault. */
+  & .course-study-frame__review-status {
+    display: flex;
+    align-items: center;
+    height: 24px;
+    padding: 0 var(--platform-space-3);
+    box-sizing: border-box;
+    border-radius: 1000px;
+    background: var(--platform-success-soft);
+    color: var(--platform-success-ink);
+    font-size: var(--platform-type-xs);
+    font-weight: 800;
+  }
+
   /* --- The page's column and the course's, side by side ------------------- */
 
   & .course-study-frame__layout {

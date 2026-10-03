@@ -46,6 +46,7 @@ function course(completedLessons: number, completedMinutes: number): MyCourseIte
     infoHref: platformRoutes.courseInfo("las-partidas-inmortales-del-siglo-xix"),
     learnHref: platformRoutes.chapterDetail(COURSE_ID, 1),
     reviewCount: completedLessons > 0 ? 12 : 0,
+    isReviewUpToDate: false,
     reviewHref: platformRoutes.courseReview(COURSE_ID),
   };
 }
@@ -80,7 +81,8 @@ Reference page: [Components › MyCourseCard](/components/platform/sections/cour
   argTypes: {
     course: {
       control: "object",
-      description: "The course as `mapMyCourse` hands it over: the summary, `learnHref`, `reviewCount`, `reviewHref`.",
+      description:
+        "The course as `mapMyCourse` hands it over: the summary, `learnHref`, `reviewCount`, `isReviewUpToDate`, `reviewHref`.",
     },
   },
   // The list of «Mis cursos», beside the streak's column: one course to a row.

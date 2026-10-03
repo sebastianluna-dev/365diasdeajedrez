@@ -5,7 +5,7 @@
 
 /**
  * The Move Trainer, and with it a course's «Repasar», which is the trainer
- * over the lessons already learned.
+ * over the lessons already learned whose review is due.
  *
  * Off: `/entrenador` answers 404, no page links to it, and what feeds its
  * buttons is not even counted. The staff's side is not switched: exercises
