@@ -38,6 +38,7 @@ export async function listStudents(query?: string): Promise<StaffStudentSummary[
       studentAssignments: activeAssignmentSelect,
     },
     orderBy: { displayName: "asc" },
+    relationLoadStrategy: "join",
   });
 
   return users.map((user) => ({
@@ -96,6 +97,8 @@ export async function getStudentAdminDetail(userId: string): Promise<StaffStuden
         orderBy: { class: { scheduledAt: "desc" } },
       },
     },
+    // The account, its assignments and its classes in one round trip instead of eight.
+    relationLoadStrategy: "join",
   });
 
   if (!user) return null;

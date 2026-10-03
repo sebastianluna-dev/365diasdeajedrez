@@ -12,6 +12,7 @@ export async function getUserClasses(): Promise<ClassesView> {
     where: { participants: { some: { userId: user.id } } },
     include: classSummaryInclude,
     orderBy: { scheduledAt: "asc" },
+    relationLoadStrategy: "join",
   });
 
   const upcoming = rows.filter((row) => row.scheduledAt >= now).map(mapClassSummary);
@@ -30,6 +31,8 @@ export async function getClassById(classId: string): Promise<ClassDetail | null>
   const row = await db.class.findFirst({
     where: { id: classId, participants: { some: { userId: user.id } } },
     include: classDetailInclude,
+    // The class with its blocks and everything they cite in one round trip, not fifteen.
+    relationLoadStrategy: "join",
   });
   return row ? mapClassDetail(row, new Date()) : null;
 }

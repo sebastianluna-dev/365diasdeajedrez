@@ -37,6 +37,7 @@ export async function getTeacherClasses(statusCode?: ClassStatusCode): Promise<T
     where: { teacherId: teacher.id, ...(statusCode ? { status: { code: statusCode } } : {}) },
     include: teacherClassSummaryInclude,
     orderBy: { scheduledAt: "desc" },
+    relationLoadStrategy: "join",
   });
   return rows.map(mapTeacherClassSummary);
 }
@@ -46,7 +47,12 @@ export async function getTeacherClassDetail(classId: string): Promise<TeacherCla
   const db = getPlatformDb();
 
   const [row, timeZone] = await Promise.all([
-    db.class.findFirst({ where: { id: classId, teacherId: teacher.id }, include: teacherClassDetailInclude }),
+    // The class, its roll and its blocks in one round trip instead of fourteen.
+    db.class.findFirst({
+      where: { id: classId, teacherId: teacher.id },
+      include: teacherClassDetailInclude,
+      relationLoadStrategy: "join",
+    }),
     teacherTimeZone(teacher.id),
   ]);
   return row ? mapTeacherClassDetail(row, timeZone) : null;
@@ -73,6 +79,7 @@ export async function getTeacherClassPreview(classId: string): Promise<ClassBloc
   const row = await getPlatformDb().class.findFirst({
     where: { id: classId, teacherId: teacher.id },
     include: classDetailInclude,
+    relationLoadStrategy: "join",
   });
   return row ? mapClassDetail(row, new Date()).blocks : [];
 }
@@ -98,6 +105,8 @@ export async function listReferenceableGames(): Promise<ReferenceableGameGroup[]
       games: { select: { id: true, white: true, black: true }, orderBy: [{ playedAt: "desc" }, { createdAt: "desc" }] },
     },
     orderBy: [{ updatedAt: "desc" }],
+    // Not joined: it nests EVERY game of every study, a to-many with no bound, and
+    // that is where the join strategy builds one large JSON array per row.
   });
 
   return databases
@@ -159,6 +168,7 @@ export async function getPgnForReference(
   const lesson = await db.lesson.findFirst({
     where: { id, chapter: { course: { status: { code: COURSE_STATUS.PUBLISHED } } } },
     select: lessonPgnSelect,
+    relationLoadStrategy: "join",
   });
   return lesson ? lessonPgnOf(lesson) : null;
 }

@@ -20,6 +20,7 @@ export async function listTeachers(): Promise<StaffTeacherSummary[]> {
       _count: { select: { classes: true, students: { where: { endedAt: null } } } },
     },
     orderBy: [{ isActive: "desc" }, { displayName: "asc" }],
+    relationLoadStrategy: "join",
   });
 
   return teachers.map((teacher) => ({
@@ -71,6 +72,7 @@ export async function getTeacherAdminDetail(teacherId: string): Promise<StaffTea
         take: 20,
       },
     },
+    relationLoadStrategy: "join",
   });
 
   if (!teacher) return null;
@@ -137,6 +139,7 @@ export async function listAssignableStudents(): Promise<AssignableStudent[]> {
       },
     },
     orderBy: { displayName: "asc" },
+    relationLoadStrategy: "join",
   });
 
   return users.map((user) => ({

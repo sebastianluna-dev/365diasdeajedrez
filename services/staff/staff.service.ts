@@ -45,6 +45,7 @@ export async function getStaffDashboard(): Promise<StaffDashboard> {
         teacher: { select: { displayName: true } },
       },
       orderBy: { scheduledAt: "asc" },
+      relationLoadStrategy: "join",
     }),
   ]);
 
