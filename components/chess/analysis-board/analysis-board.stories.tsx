@@ -89,7 +89,9 @@ export const UnsavedChanges: Story = {
 export const Quality: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole("button", { name: "13. Txd7!" }));
+    // The move is named as it is read: its sign is drawn, and said in words
+    // (the hidden words are a box of their own, so a space may come before the comma).
+    await userEvent.click(canvas.getByRole("button", { name: /^13\. Txd7\s*, Buena jugada$/ }));
     await userEvent.click(canvas.getByRole("tab", { name: "Calidad" }));
   },
 };
