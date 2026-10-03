@@ -41,14 +41,20 @@
     white-space: nowrap;
   }
 
+  /* Under a greyed level it stays in the level's subtle grey, the lightest a
+     text reads in on the card's white; under a lit one it steps back to the
+     muted grey. Never an opacity: it took the subtle grey under 4.5:1. */
   & .level-scale__range {
     font-size: var(--platform-type-2xs);
     white-space: nowrap;
-    opacity: 0.8;
   }
 
   & .level-scale__level_state_lit {
     color: var(--platform-text);
+  }
+
+  & .level-scale__level_state_lit .level-scale__range {
+    color: var(--platform-text-muted);
   }
 
   & .level-scale__level_state_lit .level-scale__bar {

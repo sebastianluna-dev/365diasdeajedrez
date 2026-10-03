@@ -35,13 +35,13 @@ The range guides whoever is choosing. It closes the course to nobody.
 
 ## Markup & styling
 
-Block `.level-scale` (84 lines).
+Block `.level-scale` (90 lines). A greyed level is written in `--platform-text-subtle`, which is why the scale lives on a white surface (the course's card); its range stays in that grey, and under a lit level it steps back to `--platform-text-muted`. No `opacity`: the 0.8 the ranges had took them under 4.5:1.
 
 **Elements:** `.level-scale__headline`, `.level-scale__levels`, `.level-scale__level`, `.level-scale__bar`, `.level-scale__name`, `.level-scale__range`, `.level-scale__sr`
 
 **Modifiers and states:** `.level-scale__level_state_lit`
 
-**Tokens:** `--platform-accent`, `--platform-text`, `--platform-text-subtle`, `--platform-track`
+**Tokens:** `--platform-accent`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
 
 **Breakpoints:** `(width < 640px)` hides the ranges and lets the names truncate; the headline still says the range.
 
