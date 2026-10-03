@@ -42,12 +42,12 @@ export function ExplorerGames({ games, totalGames, isSearching }: ExplorerGamesP
                   <span className="explorer-games__players">
                     <span className="explorer-games__player">
                       {game.white}
-                      {game.whiteElo && <span className="explorer-games__elo"> {game.whiteElo}</span>}
+                      {game.whiteElo !== undefined && <span className="explorer-games__elo"> {game.whiteElo}</span>}
                     </span>
                     <span className="explorer-games__separator">–</span>
                     <span className="explorer-games__player">
                       {game.black}
-                      {game.blackElo && <span className="explorer-games__elo"> {game.blackElo}</span>}
+                      {game.blackElo !== undefined && <span className="explorer-games__elo"> {game.blackElo}</span>}
                     </span>
                   </span>
 

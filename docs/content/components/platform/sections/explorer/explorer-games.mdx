@@ -29,7 +29,7 @@ Each game carries its **origin** (a student's study, a course, the teaching staf
 
 ## Behaviour
 
-None beyond rendering. A game without `href` (no screen the viewer could open it in) renders as a static row rather than a link to a 404, a grey lighter than a row that opens: the names and the result in `--platform-text-muted`, the Elo, the event, the date and the origin tag in `--platform-text-subtle` (on the row's white, where it reads), «Vista en clase» still in the accent. It is not an `opacity`: the 0.75 it had took the event and the tag under 4.5:1.
+None beyond rendering. A game without `href` (no screen the viewer could open it in) renders as a static row rather than a link to a 404, a grey lighter than a row that opens: the names and the result in `--platform-text-muted`, the Elo, the event, the date and the origin tag in `--platform-text-subtle` (on the row's white, where it reads), «Vista en clase» still in the accent. It is not an `opacity`: the 0.75 it had took the event and the tag under 4.5:1. An Elo is shown whenever the game has one (`!== undefined`), not whenever it is truthy: with `&&`, an Elo of 0 would have printed a bare "0" outside its span.
 
 ## Markup & styling
 
