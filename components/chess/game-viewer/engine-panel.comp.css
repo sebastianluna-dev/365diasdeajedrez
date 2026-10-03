@@ -149,9 +149,13 @@
     white-space: nowrap;
   }
 
+  /* The lines are written on the canvas's grey (`--platform-bg`), a fill, so
+     the number takes the muted grey: the faint one is for what is not read,
+     and the subtle one falls under 4.5:1 on a fill. Beside the best line,
+     which is in ink, it still steps back. */
   & .engine-panel__move-number {
     margin-right: var(--platform-space-1);
-    color: var(--platform-text-faint);
+    color: var(--platform-text-muted);
     font-variant-numeric: tabular-nums;
   }
 

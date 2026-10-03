@@ -63,7 +63,10 @@
   /* The evaluation goes to the right edge of its half row: that way White's
      figures and Black's form two columns that read vertically, which is what
      they are for — seeing at a glance where the game changed — and the move
-     stays pressed to the left with its number. */
+     stays pressed to the left with its number.
+
+     In the muted grey and not the subtle one: the cell turns to a grey fill
+     under the pointer, where only the muted one still reads. */
   & .move-table__eval {
     margin-left: auto;
     flex: none;
@@ -71,14 +74,14 @@
     font-size: max(var(--platform-type-sm), 0.88em);
     font-weight: 500;
     font-variant-numeric: tabular-nums;
-    color: var(--platform-text-faint);
+    color: var(--platform-text-muted);
   }
 
-  /* On the accent of the active move, the usual grey is not legible: it takes
-     the text colour and stays behind through transparency. */
+  /* On the accent's tint of the active move a grey does not belong: it takes
+     the move's accent, and stays behind the bold move by its own lighter
+     weight — not by an opacity, which took it under 4.5:1. */
   & .move-table__move_state_active .move-table__eval {
     color: inherit;
-    opacity: 0.65;
   }
 
   /* Main-line comment: full width and unindented, because it hangs from no

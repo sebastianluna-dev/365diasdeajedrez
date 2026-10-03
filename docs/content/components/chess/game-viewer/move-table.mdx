@@ -37,7 +37,7 @@ The hard part, deciding the order of rows and blocks and when Black's move has t
 
 ## Markup & styling
 
-Block `.move-table` (180 lines).
+Block `.move-table` (184 lines). The evaluations are in `--platform-text-muted`, not a lighter grey: the cell turns to `--platform-surface-neutral` under the pointer, a fill where the subtle grey falls under 4.5:1. On the active move they take its accent and stay behind it by their weight (500 against the move's 700), not by an opacity.
 
 **Elements:** `.move-table__row`, `.move-table__number`, `.move-table__cell`, `.move-table__move`, `.move-table__nag`, `.move-table__eval`, `.move-table__ellipsis`, `.move-table__comment`, `.move-table__line`, `.move-table__inline`, `.move-table__inline-comment`
 
