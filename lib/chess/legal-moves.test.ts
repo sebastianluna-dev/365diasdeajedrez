@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { legalDests } from "./legal-moves";
+import { legalDests, positionOutcome } from "./legal-moves";
 
 const START = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
@@ -21,5 +21,31 @@ describe("legalDests", () => {
 
   it("devuelve un mapa vacío ante un FEN inválido", () => {
     expect(legalDests("esto no es un fen").size).toBe(0);
+  });
+});
+
+describe("positionOutcome", () => {
+  it("una posición con jugadas no ha terminado", () => {
+    expect(positionOutcome(START)).toBeNull();
+    // In check, but the king can step aside.
+    expect(positionOutcome("4r2k/8/8/8/8/8/8/4K3 w - - 0 1")).toBeNull();
+  });
+
+  it("sin jugadas y en jaque es mate", () => {
+    // 1. f3 e5 2. g4 Qh4#: White to move and nothing saves the king.
+    expect(positionOutcome("rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3")).toBe("checkmate");
+  });
+
+  it("sin jugadas y sin jaque es ahogado", () => {
+    expect(positionOutcome("7k/5Q2/6K1/8/8/8/8/8 b - - 0 1")).toBe("stalemate");
+  });
+
+  it("con material insuficiente todavía se juega: no es una posición terminada", () => {
+    // Two bare kings is a draw by rule, but there are moves and the engine still answers.
+    expect(positionOutcome("8/8/4k3/8/8/4K3/8/8 w - - 0 1")).toBeNull();
+  });
+
+  it("un FEN inválido no dice nada", () => {
+    expect(positionOutcome("esto no es un fen")).toBeNull();
   });
 });

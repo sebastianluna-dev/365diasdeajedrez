@@ -6,13 +6,13 @@ description: "The live-analysis hook: a lazily created Stockfish worker, three l
 
 Also exports the `EngineState` type.
 
-|            |                                                                                                                                                                                                                        |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/chess/game-viewer/use-engine.hook.ts`                                                                                                                                                                      |
-| Kind       | Client hook                                                                                                                                                                                                            |
-| Stylesheet | none                                                                                                                                                                                                                   |
-| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer); [`EnginePanel`](/components/chess/game-viewer/engine-panel) imports the `EngineState` type                                                                  |
-| Uses       | `mergeEngineLines`, `orderedEngineLines`, `parseEngineInfo`, `EngineInfo`, `EngineLines` from `lib/chess/engine-protocol`<br />`turnColor` from `lib/chess/replay`<br />the worker script `public/engine/stockfish.js` |
+|            |                                                                                                                                                                                                                                                                                               |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/use-engine.hook.ts`                                                                                                                                                                                                                                             |
+| Kind       | Client hook                                                                                                                                                                                                                                                                                   |
+| Stylesheet | none                                                                                                                                                                                                                                                                                          |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer); [`EnginePanel`](/components/chess/game-viewer/engine-panel) imports the `EngineState` type                                                                                                                                         |
+| Uses       | `mergeEngineLines`, `orderedEngineLines`, `parseEngineInfo`, `EngineInfo`, `EngineLines` from `lib/chess/engine-protocol`<br />`positionOutcome`, `PositionOutcome` from `lib/chess/legal-moves`<br />`turnColor` from `lib/chess/replay`<br />the worker script `public/engine/stockfish.js` |
 
 ## Purpose
 
@@ -35,12 +35,13 @@ export function useEngine(fen: string, enabled: boolean): EngineState;
 
 ### `EngineState`
 
-| Field     | Type                 | Meaning                                                                                                            |
-| --------- | -------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `lines`   | `EngineInfo[]`       | The continuations of the **current** position, best first. Empty until the first `info` line for this FEN arrives. |
-| `info`    | `EngineInfo \| null` | The best of them; drives the evaluation bar.                                                                       |
-| `loading` | `boolean`            | Enabled, not failed, and no line yet.                                                                              |
-| `failed`  | `boolean`            | The worker could not be created or crashed: say so rather than leaving a switch that does nothing.                 |
+| Field     | Type                                 | Meaning                                                                                                                                                                                                         |
+| --------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `lines`   | `EngineInfo[]`                       | The continuations of the **current** position, best first. Empty until the first `info` line for this FEN arrives.                                                                                              |
+| `info`    | `EngineInfo \| null`                 | The best of them; drives the evaluation bar.                                                                                                                                                                    |
+| `loading` | `boolean`                            | The module is still downloading and starting: enabled, not failed, and this worker has not answered `readyok` yet. Once it has, a position without lines is one being searched, and the panel says «Pensando…». |
+| `outcome` | `"checkmate" \| "stalemate" \| null` | The position is over, read from the board with `positionOutcome(fen)`. The engine answers such a position with `bestmove (none)` and no line, so without this the panel waited forever.                         |
+| `failed`  | `boolean`                            | The worker could not be created or crashed: say so rather than leaving a switch that does nothing.                                                                                                              |
 
 ## Behaviour
 
@@ -48,7 +49,7 @@ export function useEngine(fen: string, enabled: boolean): EngineState;
 
 **Position effect (keyed on `fen`).** Records the wanted FEN. If a search is running for another position, it sends `stop` and waits: the `bestmove` handler is what launches the next search. Otherwise it calls the launcher published by the startup effect.
 
-**Message handling.** `readyok` opens the door; `bestmove` releases the turn, records the finished FEN and launches the pending search if it differs; `info` lines are parsed with `parseEngineInfo` for the FEN that was actually asked (`searching_fen`, which may lag behind `wanted`) and merged into `result` **keyed by that FEN**. Storing evaluations next to the position that produced them means nothing has to be cleared on move change and another position's lines can never be shown: `orderedEngineLines(result, fen)` returns nothing when the FEN does not match.
+**Message handling.** `readyok` opens the door and sets the `ready` state that tells loading from searching (the cleanup resets it, so a worker switched on again is loading until it answers); `bestmove` releases the turn, records the finished FEN and launches the pending search if it differs; `info` lines are parsed with `parseEngineInfo` for the FEN that was actually asked (`searching_fen`, which may lag behind `wanted`) and merged into `result` **keyed by that FEN**. Storing evaluations next to the position that produced them means nothing has to be cleared on move change and another position's lines can never be shown: `orderedEngineLines(result, fen)` returns nothing when the FEN does not match.
 
 **Constants.** `MAX_DEPTH = 20` (trustworthy without pushing a laptop to full throttle) and `ENGINE_LINES = 3` (with one line you cannot tell whether the best move is best by a little or a lot; the engine analyses the three for real, which is why it is not five).
 

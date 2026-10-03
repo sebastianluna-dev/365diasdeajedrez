@@ -37,8 +37,9 @@ const MATE_SCORE = 100;
  * no sign, so it cannot say who gave the mate, and turning it into `+100` with
  * the mover's sign handed the win to the side that is mated. It returns
  * `null`, like a line with no score; whoever needs to know that the game is
- * over looks at the board, and the review keeps the previous position's
- * figure, which is the winner's mate in one.
+ * over looks at the board (`positionOutcome` in `legal-moves.ts`), and the
+ * review keeps the previous position's figure, which is the winner's mate in
+ * one.
  */
 export function parseEngineInfo(line: string, turn: "white" | "black"): EngineInfo | null {
   if (!line.startsWith("info ")) return null;

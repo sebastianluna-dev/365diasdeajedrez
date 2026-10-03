@@ -30,7 +30,7 @@ Two hooks own two independent workers, because Stockfish aborts (`RuntimeError: 
 
 `lib/chess/engine-protocol.ts` parses the `info` lines (score normalised to White, mate distances, PV as UCI) and orders/merges the lines; nothing else in the app reads raw engine output.
 
-A position that is already over is searched at depth 0 and answered at once with `bestmove (none)`. Stalemate prints `info depth 0 score cp 0`, which parses as a draw. A mate on the board prints `info depth 0 score mate 0`, and that zero has no sign: read as a score it handed the win to the side that is mated, so `parseEngineInfo` returns `null` for it. The review then keeps the previous position's figure, the winner's mate in one.
+A position that is already over is searched at depth 0 and answered at once with `bestmove (none)`. Stalemate prints `info depth 0 score cp 0`, which parses as a draw. A mate on the board prints `info depth 0 score mate 0`, and that zero has no sign: read as a score it handed the win to the side that is mated, so `parseEngineInfo` returns `null` for it. The review then keeps the previous position's figure, the winner's mate in one. The live analysis gets no line either way, so the engine panel reads the board instead (`positionOutcome` in `lib/chess/legal-moves.ts`) and says the game is over.
 
 ## Pieces — `public/pieces/`
 

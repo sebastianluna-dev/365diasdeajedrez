@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   mergeEngineLines,
   orderedEngineLines,
@@ -8,6 +8,7 @@ import {
   type EngineInfo,
   type EngineLines,
 } from "@/lib/chess/engine-protocol";
+import { positionOutcome, type PositionOutcome } from "@/lib/chess/legal-moves";
 import { turnColor } from "@/lib/chess/replay";
 
 // The analysis engine, tied to a component's lifecycle.
@@ -43,7 +44,18 @@ export interface EngineState {
   lines: EngineInfo[];
   /** The best of them all: it is what drives the evaluation bar. */
   info: EngineInfo | null;
+  /**
+   * The module is still downloading and starting: on, not failed, and no
+   * `readyok` yet. Once it has answered, a position without lines is one being
+   * searched, which is a different thing to say.
+   */
   loading: boolean;
+  /**
+   * The position is over — mate or stalemate —, read from the board: there is
+   * nothing to search, and the engine answers `bestmove (none)` with no line,
+   * so waiting for lines would be waiting forever.
+   */
+  outcome: PositionOutcome | null;
   /** It could not load: say so instead of leaving a button that does not respond. */
   failed: boolean;
 }
@@ -69,6 +81,8 @@ export function useEngine(fen: string, enabled: boolean): EngineState {
   // evaluation is impossible: if the FEN does not match, it is not used.
   const [result, setResult] = useState<EngineLines | null>(null);
   const [failed, setFailed] = useState(false);
+  /** This worker has answered `readyok`: from here on, no lines means it is searching. */
+  const [ready, setReady] = useState(false);
   const workerRef = useRef<Worker | null>(null);
   /** The launcher is published by the startup effect so the position effect can use it. */
   const startRef = useRef<(() => void) | null>(null);
@@ -133,6 +147,7 @@ export function useEngine(fen: string, enabled: boolean): EngineState {
 
       if (line.startsWith("readyok")) {
         talk.ready = true;
+        setReady(true);
         startIfPossible();
         return;
       }
@@ -168,6 +183,8 @@ export function useEngine(fen: string, enabled: boolean): EngineState {
 
     return () => {
       cancelled = true;
+      // The next worker starts from scratch: until it answers, it is loading.
+      setReady(false);
       worker.removeEventListener("message", onMessage);
       // Plain `terminate()`: sending it "stop" first adds nothing — it dies
       // anyway — and is one more message that can fail if it has not started yet.
@@ -197,7 +214,8 @@ export function useEngine(fen: string, enabled: boolean): EngineState {
   }, [fen, enabled]);
 
   const lines = orderedEngineLines(result, fen);
-  return { lines, info: lines[0] ?? null, loading: enabled && !failed && lines.length === 0, failed };
+  const outcome = useMemo(() => positionOutcome(fen), [fen]);
+  return { lines, info: lines[0] ?? null, loading: enabled && !failed && !ready, outcome, failed };
 }
 
 /** Calls the launcher if the startup effect has already published it. */

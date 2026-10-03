@@ -225,8 +225,12 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* Where the first line's evaluation would start: with no air, the message
+     read as part of the card's border, as the lines would. A finished position
+     leaves it on screen for good, not for a second. */
   & .engine-panel__message {
     margin: 0;
+    padding: var(--platform-space-1) var(--platform-space-3);
     color: var(--platform-text-muted);
   }
 }

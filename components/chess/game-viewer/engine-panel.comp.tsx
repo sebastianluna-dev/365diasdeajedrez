@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
 import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
 import { engineLineTokens, formatEvaluation } from "@/lib/chess/engine-protocol";
+import type { PositionOutcome } from "@/lib/chess/legal-moves";
 import { sanToSpanish } from "@/lib/chess/notation";
 import { uciLineSteps } from "@/lib/chess/replay";
 import type { EngineState } from "./use-engine.hook";
@@ -28,6 +29,12 @@ interface EnginePanelProps {
 /** How many moves of each continuation are replayed. */
 const LINE_LENGTH = 16;
 
+/** What is said on a position that is over, where the engine has no line to give. */
+const OUTCOME_MESSAGE: Record<PositionOutcome, string> = {
+  checkmate: "Jaque mate: no hay jugadas que analizar.",
+  stalemate: "Tablas por ahogado: no hay jugadas que analizar.",
+};
+
 interface Preview {
   fen: string;
   lastMove: [Key, Key];
@@ -41,7 +48,7 @@ interface Preview {
  * same data called for keeping it in the place that contains them both.
  */
 export function EnginePanel({ fen, enabled, onToggle, state, flipBoard = false, onExpandedChange }: EnginePanelProps) {
-  const { lines, info, loading, failed } = state;
+  const { lines, info, loading, outcome, failed } = state;
   // At most one expanded: collapsed they fit on one row and the three are
   // compared at a glance, which is what they are for. Opening one closes the
   // other — that way what the block grows is always the same, one row, and
@@ -87,6 +94,10 @@ export function EnginePanel({ fen, enabled, onToggle, state, flipBoard = false, 
         <div className={`engine-panel__body${openLine !== null ? " engine-panel__body_state_expanded" : ""}`}>
           {failed ? (
             <p className="engine-panel__message">No se pudo cargar el módulo en este navegador.</p>
+          ) : outcome ? (
+            // Said at once, without waiting for the module: a finished game is
+            // read from the board, and the engine would only answer with no line.
+            <p className="engine-panel__message">{OUTCOME_MESSAGE[outcome]}</p>
           ) : lines.length > 0 ? (
             <ol className="engine-panel__lines">
               {lines.map((line, index) => {

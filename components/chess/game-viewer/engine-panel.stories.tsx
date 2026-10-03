@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { fn, userEvent, within } from "storybook/test";
 import type { EngineInfo } from "@/lib/chess/engine-protocol";
+import { positionOutcome } from "@/lib/chess/legal-moves";
 import { EnginePanel } from "./engine-panel.comp";
 import type { EngineState } from "./use-engine.hook";
 
@@ -37,7 +38,16 @@ const LINES: EngineInfo[] = [
 ];
 
 /** The engine with its three lines: what `useEngine` returns once the search is under way. */
-const THINKING: EngineState = { lines: LINES, info: LINES[0] ?? null, loading: false, failed: false };
+const WITH_LINES: EngineState = { lines: LINES, info: LINES[0] ?? null, loading: false, outcome: null, failed: false };
+
+/** Loaded and asked, no line yet: what `useEngine` returns between the `go` and the first `info` with a line. */
+const SEARCHING: EngineState = { lines: [], info: null, loading: false, outcome: null, failed: false };
+
+/** The «Opera game» after 17. Rd8#: Black to move, and mated. */
+const MATED_FEN = "1n1Rkb1r/p4ppp/4q3/4p1B1/4P3/8/PPP2PPP/2K5 b k - 1 17";
+
+/** The careless queen: after Qf7 the black king on h8 has no square and is not in check. */
+const STALEMATE_FEN = "7k/5Q2/6K1/8/8/8/8/8 b - - 0 1";
 
 const meta = {
   title: "chess/game-viewer/EnginePanel",
@@ -50,6 +60,8 @@ The «Módulo» block at the top of the viewer's notation card: the engine's
 switch, the depth, and the three continuations Stockfish proposes for the
 board's position, each opening with its evaluation. One line can be expanded
 at a time, and pointing at a move shows where it leads on a small board.
+Without a line it says why: the module is loading, it is thinking, or the
+position is over (mate or stalemate) and there is nothing to analyse.
 
 It only renders: the viewer owns the engine (\`useEngine\`) and passes its
 state in, so here the state is a real reading of the bundled engine and the
@@ -64,7 +76,7 @@ Reference page: [Components › EnginePanel](/components/chess/game-viewer/engin
   args: {
     fen: FEN,
     enabled: true,
-    state: THINKING,
+    state: WITH_LINES,
     flipBoard: false,
     onToggle: fn(),
     onExpandedChange: fn(),
@@ -72,7 +84,10 @@ Reference page: [Components › EnginePanel](/components/chess/game-viewer/engin
   argTypes: {
     fen: { control: "text", description: "The board's position; the lines are read from it." },
     enabled: { control: "boolean", description: "The switch: off, only the head is drawn." },
-    state: { control: "object", description: "`EngineState` from `useEngine`: lines, best line, loading, failed." },
+    state: {
+      control: "object",
+      description: "`EngineState` from `useEngine`: lines, best line, loading, the position's outcome, failed.",
+    },
     flipBoard: { control: "boolean", description: "The preview is seen from the same side as the board." },
     onToggle: { description: "The switch; a spy here." },
     onExpandedChange: { description: "Whether a line is expanded, for the viewer's accounting; a spy here." },
@@ -127,8 +142,21 @@ export const Preview: Story = {
 /** Off, as the viewer opens: only the head and the switch, and nothing is downloaded until it is switched on. */
 export const Off: Story = { args: { enabled: false } };
 
-/** Just switched on: the worker is still downloading the engine. */
-export const Loading: Story = { args: { state: { lines: [], info: null, loading: true, failed: false } } };
+/** Just switched on: the worker is still downloading the engine, «Cargando el módulo…». */
+export const Loading: Story = { args: { state: { ...SEARCHING, loading: true } } };
+
+/** Loaded and searching a new position, before its first line arrives: «Pensando…». */
+export const Thinking: Story = { args: { state: SEARCHING } };
+
+/** A mate on the board: the engine has no line to give, and the panel says the game is over instead of waiting. */
+export const Checkmate: Story = {
+  args: { fen: MATED_FEN, state: { ...SEARCHING, outcome: positionOutcome(MATED_FEN) } },
+};
+
+/** A stalemate, said the same way: a draw, and nothing to analyse. */
+export const Stalemate: Story = {
+  args: { fen: STALEMATE_FEN, state: { ...SEARCHING, outcome: positionOutcome(STALEMATE_FEN) } },
+};
 
 /** The engine could not start in this browser, said instead of a switch that does not respond. */
-export const Failed: Story = { args: { state: { lines: [], info: null, loading: false, failed: true } } };
+export const Failed: Story = { args: { state: { ...SEARCHING, failed: true } } };

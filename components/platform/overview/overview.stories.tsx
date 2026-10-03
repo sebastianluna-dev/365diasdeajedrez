@@ -1247,6 +1247,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             onToggle={() => {}}
             state={{
               loading: false,
+              outcome: null,
               failed: false,
               info: { multipv: 1, depth: 20, score: -2.24, mateIn: null, pv: [] },
               lines: [
