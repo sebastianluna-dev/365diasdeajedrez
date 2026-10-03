@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import { updateStudy } from "@/services/studies/studies.actions";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import "./edit-study.comp.css";
@@ -40,6 +40,7 @@ export function EditStudy({
   size = "regular",
 }: EditStudyProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
 
   const selected = kinds.some((kind) => kind.code === kindCode) ? kindCode : kinds[0]?.code;
 
@@ -53,13 +54,15 @@ export function EditStudy({
         Editar datos
       </button>
 
-      <dialog ref={dialogRef} className="platform-dialog edit-study__dialog">
+      <dialog ref={dialogRef} className="platform-dialog edit-study__dialog" aria-labelledby={titleId}>
         <form
           action={updateStudy.bind(null, id)}
           className="edit-study__form"
           onSubmit={() => dialogRef.current?.close()}
         >
-          <h2 className="edit-study__title">Editar el estudio</h2>
+          <h2 id={titleId} className="edit-study__title">
+            Editar el estudio
+          </h2>
 
           <label className="edit-study__field">
             <span className="edit-study__label">Nombre</span>

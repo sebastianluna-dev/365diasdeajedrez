@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import type { CatalogOption } from "@/services/staff-courses/staff-courses.types";
 import { deleteCourseSource, saveCourseSource } from "@/services/staff-sources/staff-sources.actions";
 import type { CourseSourceAdmin } from "@/services/staff-sources/staff-sources.types";
@@ -23,6 +23,7 @@ interface CourseSourceDialogProps {
 export function CourseSourceDialog({ courseId, source, sourceTypes }: CourseSourceDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [opening, setOpening] = useState(0);
+  const titleId = useId();
   const isEdit = source !== undefined;
 
   const open = () => {
@@ -43,9 +44,10 @@ export function CourseSourceDialog({ courseId, source, sourceTypes }: CourseSour
         {isEdit ? "Editar" : "Agregar fuente"}
       </button>
 
-      <dialog ref={dialogRef} className="platform-dialog course-source-dialog__dialog">
+      <dialog ref={dialogRef} className="platform-dialog course-source-dialog__dialog" aria-labelledby={titleId}>
         <CourseSourceForm
           key={opening}
+          titleId={titleId}
           source={source}
           sourceTypes={sourceTypes}
           action={saveCourseSource.bind(null, courseId)}

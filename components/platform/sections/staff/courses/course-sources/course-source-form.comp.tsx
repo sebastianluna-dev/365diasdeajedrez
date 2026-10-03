@@ -8,6 +8,8 @@ import type { CatalogOption } from "@/services/staff-courses/staff-courses.types
 import type { CourseSourceAdmin } from "@/services/staff-sources/staff-sources.types";
 
 interface CourseSourceFormProps {
+  /** The id its heading takes, so the dialog around it is named by it (`aria-labelledby`). */
+  titleId?: string;
   /** The source being edited; absent when adding one. */
   source?: CourseSourceAdmin;
   sourceTypes: CatalogOption[];
@@ -26,6 +28,7 @@ interface CourseSourceFormProps {
  * stub. Only the type is required.
  */
 export function CourseSourceForm({
+  titleId,
   source,
   sourceTypes,
   action,
@@ -42,7 +45,9 @@ export function CourseSourceForm({
 
       <header className="course-source-dialog__head">
         <div className="course-source-dialog__heading">
-          <h2 className="course-source-dialog__title">{isEdit ? "Editar fuente" : "Nueva fuente"}</h2>
+          <h2 id={titleId} className="course-source-dialog__title">
+            {isEdit ? "Editar fuente" : "Nueva fuente"}
+          </h2>
           <p className="course-source-dialog__subtitle">De dónde procede el material del curso.</p>
         </div>
         <button type="button" className="course-source-dialog__close" onClick={onClose} aria-label="Cerrar">

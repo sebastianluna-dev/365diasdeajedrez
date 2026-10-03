@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
 import { resetChapterProgress, resetCourseProgress } from "@/services/courses/courses.actions";
@@ -34,6 +34,7 @@ interface ResetProgressProps {
  */
 export function ResetProgress({ courseId, name, completedLessons, chapterId }: ResetProgressProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
   const scope = chapterId ? "capítulo" : "curso";
   const label = chapterId ? "Eliminar mi progreso del capítulo" : "Eliminar mi progreso";
   const action = chapterId
@@ -48,9 +49,9 @@ export function ResetProgress({ courseId, name, completedLessons, chapterId }: R
 
       {/* Native `<dialog>`: it brings focus trapping, closing with Escape and the
           modal backdrop without writing any of that by hand. */}
-      <dialog ref={dialogRef} className="platform-dialog reset-progress__dialog" aria-labelledby="reset-progress-title">
+      <dialog ref={dialogRef} className="platform-dialog reset-progress__dialog" aria-labelledby={titleId}>
         <form action={action} className="reset-progress__form">
-          <h2 id="reset-progress-title" className="reset-progress__title">
+          <h2 id={titleId} className="reset-progress__title">
             {label}
           </h2>
 

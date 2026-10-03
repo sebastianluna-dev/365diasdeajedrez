@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { createStudy } from "@/services/studies/studies.actions";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import "./new-study.comp.css";
@@ -19,6 +19,7 @@ export function NewStudy({ kinds }: NewStudyProps) {
   // Bumped on every opening: the form is remounted, so it never opens with
   // what was typed the last time.
   const [opening, setOpening] = useState(0);
+  const titleId = useId();
 
   const open = () => {
     setOpening((count) => count + 1);
@@ -35,9 +36,10 @@ export function NewStudy({ kinds }: NewStudyProps) {
 
       {/* Native `<dialog>`: it brings focus trapping, closing with Escape and the
           modal backdrop without writing any of that by hand. */}
-      <dialog ref={dialogRef} className="platform-dialog new-study__dialog">
+      <dialog ref={dialogRef} className="platform-dialog new-study__dialog" aria-labelledby={titleId}>
         <NewStudyForm
           key={opening}
+          titleId={titleId}
           kinds={kinds}
           action={createStudy}
           onClose={() => dialogRef.current?.close()}

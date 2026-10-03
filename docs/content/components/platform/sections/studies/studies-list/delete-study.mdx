@@ -30,7 +30,7 @@ Deleting a study deletes its games, and with them variations, comments and arrow
 
 - `needsConfirmation = gameCount > 0 || citedGameCount > 0`, **the same condition as the server**. If the client let the form submit without the checkbox where the server requires it, the action would bounce to `?error=confirmStudyDelete` instead of deleting.
 - The checkbox **is** the field the server reads (`name="confirmDelete" value="yes"`): unticked it is not sent, so the flag only arrives when it should. `confirmed` is local state so the submit button can be disabled until it is ticked.
-- The form is `<form action={deleteStudy.bind(null, id)}>` inside a native `<dialog>`; `onClose` resets the checkbox so reopening starts clean.
+- The form is `<form action={deleteStudy.bind(null, id)}>` inside a native `<dialog>`; `onClose` resets the checkbox so reopening starts clean. The dialog is named by its question, «¿Eliminar «…»?» (`aria-labelledby`, with the id from `useId`).
 - Copy adapts to counts: singular/plural for games and for cited games.
 
 ## Markup & styling

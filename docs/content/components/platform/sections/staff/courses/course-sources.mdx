@@ -37,7 +37,7 @@ Same `courseId` and `sourceTypes`, plus `source?: CourseSourceAdmin`: with it th
 
 ### `CourseSourceForm`
 
-`source?`, `sourceTypes`, `action` (the bound server action, or a stub), `deleteAction?` (removes the source being edited), `onClose`, `onSubmit?`.
+`titleId?` (the id its heading takes, so the dialog around it is named by it), `source?`, `sourceTypes`, `action` (the bound server action, or a stub), `deleteAction?` (removes the source being edited), `onClose`, `onSubmit?`.
 
 ## Behaviour
 
@@ -45,6 +45,7 @@ Same `courseId` and `sourceTypes`, plus `source?: CourseSourceAdmin`: with it th
 - **The header** is the title and «Agregar fuente», without a count of the sources: the list under it is short enough to be seen. In the narrow column the title takes two lines.
 - **The form**: `sourceTypeCode` (a `PlatformSelect`, required, the first kind chosen when adding), `originalTitle`, `authors` (free text, several separated by commas; the hint says it is who signs the resource, not the course), `url` (an `<input type="url">`, so the browser refuses anything that is not one), `publicationYear` (1400–2100) and `edition` side by side, `specificReference` and `notes` («Sólo para el equipo»). There is no publisher, platform nor provider field: the entities were taken out.
 - Every opening remounts the form (`key` bumped in the dialog), so an abandoned edit never shows up the next time. `onSubmit` closes the dialog; the browser has validated the fields by then.
+- The dialog is named by the form's heading, «Nueva fuente» or «Editar fuente»: `CourseSourceDialog` takes an id from `useId`, points the `<dialog>` at it with `aria-labelledby` and hands it to `CourseSourceForm` as `titleId`.
 - A hidden `sourceId` tells `saveCourseSource` to rewrite that row instead of creating one; the action scopes it to the course, answers `sourceMissing` if it is gone, and `?error=` lands on the course editor's notice. «Quitar fuente», in the footer band of the dialog when editing, is a submit button of the same form with `formAction={deleteAction}` and `formNoValidate`: it posts `deleteCourseSource` with the same hidden field.
 
 ## Markup & styling

@@ -35,7 +35,7 @@ Adding a game to a study, from wherever the student has it. Four tabs, each a fo
 
 ## Behaviour
 
-- Native `<dialog>`; `tab` and the `picked` ids are local state, reset on close.
+- Native `<dialog>`, named by its heading «Nueva partida» (`aria-labelledby`, with the id from `useId`); `tab` and the `picked` ids are local state, reset on close.
 - The FEN form carries a hidden `origin="detail"` so a badly written FEN bounces back **here** (`?error=fen` on the study's URL, which forwards it to the first game or renders the empty study) and not to another screen.
 - The class tab is not a form: the footer button is `type="button"` and calls the action inside a transition with the picked ids, then closes.
 - The internal `Footer` renders the note, cancel and the confirm button; with `onConfirm` it becomes a plain button so it does not submit an enclosing form.

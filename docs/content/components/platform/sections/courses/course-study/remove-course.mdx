@@ -29,7 +29,7 @@ It is the heaviest of the card's three entries and therefore the last one. It sh
 
 ## Behaviour
 
-- A native `<dialog>` opened with `showModal()`, like every other of the platform: focus trapping, Escape and the backdrop come with it.
+- A native `<dialog>` opened with `showModal()`, like every other of the platform: focus trapping, Escape and the backdrop come with it. It is named by its heading (`aria-labelledby`, with the id from `useId`).
 - The box is `required`, and the action asks for it again (`confirm=on`) because it is reachable by direct POST; without it the answer is `?error=confirm`.
 - **What goes**, each table deleted by hand in one transaction, because nothing hangs off `CourseProgress`: the lesson and chapter progress of the course, the trainer's per-lesson state (`UserLessonTraining`), the chapters added to the Move Trainer (`UserTrainerChapter`), **the student's settings of the course** (`UserCourseSettings` — the «Prioridad» filter, the board's orientation) and the course's own row.
 - **What stays**: the activity log, the streak and the trainer's attempts. They are the record of days that happened.

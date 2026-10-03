@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { deleteStudy } from "@/services/studies/studies.actions";
 import "./delete-study.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
@@ -21,6 +21,7 @@ interface DeleteStudyProps {
 export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "icon" }: DeleteStudyProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [confirmed, setConfirmed] = useState(false);
+  const titleId = useId();
 
   // Same condition as the server: the checkbox is only required when there is
   // something to lose. If the client let it submit without it where the server
@@ -69,14 +70,21 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
         </button>
       )}
 
-      <dialog ref={dialogRef} className="platform-dialog delete-study__dialog" onClose={() => setConfirmed(false)}>
+      <dialog
+        ref={dialogRef}
+        className="platform-dialog delete-study__dialog"
+        aria-labelledby={titleId}
+        onClose={() => setConfirmed(false)}
+      >
         <form action={deleteStudy.bind(null, id)} className="delete-study__form">
           <div className="delete-study__head">
             <span className="delete-study__icon" aria-hidden="true">
               ✕
             </span>
             <div className="delete-study__heading">
-              <h2 className="delete-study__title">¿Eliminar «{name}»?</h2>
+              <h2 id={titleId} className="delete-study__title">
+                ¿Eliminar «{name}»?
+              </h2>
               <p className="delete-study__description">{description}</p>
             </div>
           </div>

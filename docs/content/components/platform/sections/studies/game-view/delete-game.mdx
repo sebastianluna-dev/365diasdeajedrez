@@ -31,7 +31,7 @@ Deleting one game with its variations, comments and arrows. Like [`DeleteStudy`]
 
 - `needsConfirmation = classBlockCount > 0`, the same condition as the action; otherwise the submit would bounce to `?error=gameInClasses` instead of deleting.
 - The checkbox is `name="confirmClassBlocks" value="yes"`: sent only when ticked. `confirmed` gates the submit button and resets on close.
-- Native `<dialog>`, `<form action={deleteStudyGame.bind(null, studyId, gameId)}>`; the action redirects to the study after deleting.
+- Native `<dialog>`, `<form action={deleteStudyGame.bind(null, studyId, gameId)}>`; the action redirects to the study after deleting. The dialog is named by its question, «¿Eliminar «…»?» (`aria-labelledby`, with the id from `useId`).
 
 ## Markup & styling
 

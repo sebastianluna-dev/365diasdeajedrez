@@ -32,7 +32,7 @@ Editing a study's own data, in a native `<dialog>` like [`NewStudy`](/components
 
 ## Behaviour
 
-`<form action={updateStudy.bind(null, id)}>` with `onSubmit` closing the dialog after browser validation. The note under the fields says either "El tipo se puede cambiar cuando quieras." or "El tipo «…» no se cambia."
+`<form action={updateStudy.bind(null, id)}>` with `onSubmit` closing the dialog after browser validation. The note under the fields says either "El tipo se puede cambiar cuando quieras." or "El tipo «…» no se cambia." The dialog is named by its heading, «Editar el estudio» (`aria-labelledby`, with the id from `useId`).
 
 ## Markup & styling
 

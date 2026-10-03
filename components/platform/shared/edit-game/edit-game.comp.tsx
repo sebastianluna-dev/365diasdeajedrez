@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import { GameFields, type GameFieldValues } from "@/components/platform/shared/game-fields/game-fields.comp";
 import "./edit-game.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
@@ -31,6 +31,7 @@ interface EditGameProps {
  */
 export function EditGame({ action, values, results, titleHint, label = "Editar" }: EditGameProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
 
   return (
     <div className="edit-game">
@@ -44,10 +45,12 @@ export function EditGame({ action, values, results, titleHint, label = "Editar" 
         {label}
       </button>
 
-      <dialog ref={dialogRef} className="platform-dialog edit-game__dialog">
+      <dialog ref={dialogRef} className="platform-dialog edit-game__dialog" aria-labelledby={titleId}>
         <form action={action} className="edit-game__form" onSubmit={() => dialogRef.current?.close()}>
           <div className="edit-game__head">
-            <h2 className="edit-game__title">Datos de la partida</h2>
+            <h2 id={titleId} className="edit-game__title">
+              Datos de la partida
+            </h2>
             <p className="edit-game__subtitle">Al guardar, estos datos se escriben también en las cabeceras del PGN.</p>
           </div>
 

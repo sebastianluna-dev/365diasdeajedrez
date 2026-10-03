@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useId, useRef, useState } from "react";
 import { CloseIcon } from "@/components/icons/close-icon.comp";
 import type { AuthorAdminRow } from "@/services/staff-courses/staff-courses.types";
 import { AuthorAvatar } from "./author-avatar.comp";
@@ -36,6 +36,7 @@ export function AuthorsManager({ authors, label = "Autores", size = "regular" }:
   // Bumped on every opening of the form: it is remounted, so it never opens
   // with what was typed the last time nor with the last outcome.
   const [opening, setOpening] = useState(0);
+  const titleId = useId();
 
   const showList = useCallback(() => setView({ kind: "list" }), []);
   const showForm = (authorId?: string) => {
@@ -64,14 +65,10 @@ export function AuthorsManager({ authors, label = "Autores", size = "regular" }:
 
       {/* Native `<dialog>`: it brings focus trapping, closing with Escape and the
           modal backdrop without writing any of that by hand. */}
-      <dialog
-        ref={dialogRef}
-        className="platform-dialog authors-manager__dialog"
-        aria-labelledby="authors-manager-title"
-      >
+      <dialog ref={dialogRef} className="platform-dialog authors-manager__dialog" aria-labelledby={titleId}>
         <header className="authors-manager__head">
           <div className="authors-manager__heading">
-            <h2 id="authors-manager-title" className="authors-manager__title">
+            <h2 id={titleId} className="authors-manager__title">
               {title}
             </h2>
             {view.kind === "list" && <p className="authors-manager__subtitle">Quiénes firman los cursos.</p>}

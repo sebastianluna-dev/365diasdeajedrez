@@ -60,7 +60,7 @@ An author is editorial content, not a restricted domain whose code the logic com
 
 ## Behaviour
 
-- **One native `<dialog>`, two views.** It always opens on the **list**: avatar, name, «2 cursos · equipo-365» and «Editar» per author, with «Nuevo autor» in the footer band. «Editar» and «Nuevo autor» swap the list for the **form** inside the same dialog, and the title follows («Autores», «Editar autor», «Nuevo autor»).
+- **One native `<dialog>`, two views.** It always opens on the **list**: avatar, name, «2 cursos · equipo-365» and «Editar» per author, with «Nuevo autor» in the footer band. «Editar» and «Nuevo autor» swap the list for the **form** inside the same dialog, and the title follows («Autores», «Editar autor», «Nuevo autor»). The dialog is named by that title (`aria-labelledby`, with the id from `useId`), so its name follows the view too.
 - **Saving goes back to the list**, which comes refreshed; «Cancelar» does too, without saving. The dialog is closed by its cross or with Escape.
 - **The slug is not a field.** It is the name's: the line under the name says which one it will be as the name is typed («Slug: equipo-365 (se genera solo)»), with a number behind when another author has it («equipo-365-2»). It is `authorSlugFor`, the same rule the action applies, which is the one that decides. An author who keeps their name keeps their slug.
 - **The photo is secondary**: a row with how the author looks now (the photo, or the initials that stand in for it), a line of text and «Agregar foto» / «Cambiar foto» / «Quitar». It uploads to Cloudinary with `useImageUpload`, cropped to a square, and travels in a hidden `photo` field.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { createCourse } from "@/services/staff-courses/staff-courses.actions";
 import type { ContentTypeOption } from "@/services/staff-courses/staff-courses.types";
 import "./new-course.comp.css";
@@ -21,6 +21,7 @@ export function NewCourse({ contentTypes }: NewCourseProps) {
   // Bumped on every opening: the form is remounted, so it never opens with
   // what was typed the last time.
   const [opening, setOpening] = useState(0);
+  const titleId = useId();
 
   const open = () => {
     setOpening((count) => count + 1);
@@ -35,9 +36,10 @@ export function NewCourse({ contentTypes }: NewCourseProps) {
 
       {/* Native `<dialog>`: it brings focus trapping, closing with Escape and the
           modal backdrop without writing any of that by hand. */}
-      <dialog ref={dialogRef} className="platform-dialog new-course__dialog">
+      <dialog ref={dialogRef} className="platform-dialog new-course__dialog" aria-labelledby={titleId}>
         <NewCourseForm
           key={opening}
+          titleId={titleId}
           contentTypes={contentTypes}
           action={createCourse}
           onClose={() => dialogRef.current?.close()}

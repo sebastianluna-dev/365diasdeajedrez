@@ -16,6 +16,8 @@ import type { ContentTypeOption } from "@/services/staff-courses/staff-courses.t
 const SLUG_PATTERN = "[a-z0-9]+(-[a-z0-9]+)*";
 
 interface NewCourseFormProps {
+  /** The id its heading takes, so the dialog around it is named by it (`aria-labelledby`). */
+  titleId?: string;
   contentTypes: ContentTypeOption[];
   /** Where the form posts: the server action, or a stub in Storybook. */
   action: (formData: FormData) => void | Promise<void>;
@@ -35,7 +37,7 @@ interface NewCourseFormProps {
  * the slug is still the form's and not the user's: once they type one of their
  * own it is left alone, and clearing it hands it back to the name.
  */
-export function NewCourseForm({ contentTypes, action, onClose, onSubmit }: NewCourseFormProps) {
+export function NewCourseForm({ titleId, contentTypes, action, onClose, onSubmit }: NewCourseFormProps) {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [isSlugOwn, setIsSlugOwn] = useState(false);
@@ -51,7 +53,9 @@ export function NewCourseForm({ contentTypes, action, onClose, onSubmit }: NewCo
       <header className="new-course__head">
         <span className="new-course__tile" aria-hidden="true" />
         <div className="new-course__heading">
-          <h2 className="new-course__title">Nuevo curso</h2>
+          <h2 id={titleId} className="new-course__title">
+            Nuevo curso
+          </h2>
           <p className="new-course__subtitle">Sólo lo imprescindible: el resto se edita en la ficha del curso.</p>
         </div>
         <button type="button" className="new-course__close" onClick={onClose} aria-label="Cerrar">

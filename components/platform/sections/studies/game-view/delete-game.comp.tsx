@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { deleteStudyGame } from "@/services/studies/studies.actions";
 import "./delete-game.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
@@ -31,6 +31,7 @@ export function DeleteGame({
 }: DeleteGameProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [confirmed, setConfirmed] = useState(false);
+  const titleId = useId();
 
   // Same condition as the server: the checkbox is only required when the game
   // is cited in some class. If the client let it submit without it where the
@@ -52,14 +53,21 @@ export function DeleteGame({
         {label}
       </button>
 
-      <dialog ref={dialogRef} className="platform-dialog delete-game__dialog" onClose={() => setConfirmed(false)}>
+      <dialog
+        ref={dialogRef}
+        className="platform-dialog delete-game__dialog"
+        aria-labelledby={titleId}
+        onClose={() => setConfirmed(false)}
+      >
         <form action={deleteStudyGame.bind(null, studyId, gameId)} className="delete-game__form">
           <div className="delete-game__head">
             <span className="delete-game__icon" aria-hidden="true">
               ✕
             </span>
             <div>
-              <h2 className="delete-game__title">¿Eliminar «{name}»?</h2>
+              <h2 id={titleId} className="delete-game__title">
+                ¿Eliminar «{name}»?
+              </h2>
               <p className="delete-game__description">
                 Se elimina la partida entera, con sus variantes, comentarios y flechas.
               </p>

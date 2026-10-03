@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { useId, useRef, useState, useTransition } from "react";
 import { PGN_MAX_GAMES } from "@/constants/platform/content-limits.const";
 import { copyClassGamesToStudy, createStudyGame, importPgnGames } from "@/services/studies/studies.actions";
 import type { ClassGameItem, StudyKindOption } from "@/services/studies/studies.types";
@@ -26,6 +26,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
   const [tab, setTab] = useState<Tab>("pgn");
   const [picked, setPicked] = useState<string[]>([]);
   const [, startTransition] = useTransition();
+  const titleId = useId();
 
   const close = () => {
     dialogRef.current?.close();
@@ -45,9 +46,16 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
         Nueva partida
       </button>
 
-      <dialog ref={dialogRef} className="platform-dialog new-game__dialog" onClose={() => setPicked([])}>
+      <dialog
+        ref={dialogRef}
+        className="platform-dialog new-game__dialog"
+        aria-labelledby={titleId}
+        onClose={() => setPicked([])}
+      >
         <div className="new-game__head">
-          <h2 className="new-game__title">Nueva partida</h2>
+          <h2 id={titleId} className="new-game__title">
+            Nueva partida
+          </h2>
           <p className="new-game__subtitle">Se agregará a «{studyName}».</p>
         </div>
 

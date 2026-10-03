@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { MOVE_TRAINER_ENABLED } from "@/constants/platform/features.const";
 import { removeCourse } from "@/services/courses/courses.actions";
@@ -25,6 +25,7 @@ interface RemoveCourseProps {
  */
 export function RemoveCourse({ courseId, courseName, completedLessons }: RemoveCourseProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
 
   return (
     <div className="remove-course">
@@ -34,9 +35,9 @@ export function RemoveCourse({ courseId, courseName, completedLessons }: RemoveC
 
       {/* Native `<dialog>`, like every other of the platform: focus trapping,
           Escape and the backdrop come with it. */}
-      <dialog ref={dialogRef} className="platform-dialog remove-course__dialog" aria-labelledby="remove-course-title">
+      <dialog ref={dialogRef} className="platform-dialog remove-course__dialog" aria-labelledby={titleId}>
         <form action={removeCourse.bind(null, courseId)} className="remove-course__form">
-          <h2 id="remove-course-title" className="remove-course__title">
+          <h2 id={titleId} className="remove-course__title">
             Quitar de mis cursos
           </h2>
 

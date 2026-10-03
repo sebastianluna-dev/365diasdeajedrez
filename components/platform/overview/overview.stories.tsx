@@ -1,4 +1,4 @@
-import { type CSSProperties, Fragment, useRef, useState, type ReactNode } from "react";
+import { type CSSProperties, Fragment, useId, useRef, useState, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import Link from "next/link";
 import { AnalysisBoard } from "@/components/chess/analysis-board/analysis-board.comp";
@@ -401,8 +401,9 @@ function MotionReplay() {
 
 /**
  * A section's form in its own dialog, opened by the button its screen shows:
- * the wrapper's block, its dialog's class and a fresh form on every opening,
- * as the section mounts it — with a stub in place of the server action.
+ * the wrapper's block, its dialog's class, its name taken from the form's
+ * heading and a fresh form on every opening, as the section mounts it — with
+ * a stub in place of the server action.
  */
 function SectionDialog({
   block,
@@ -413,12 +414,13 @@ function SectionDialog({
   block: string;
   label: string;
   buttonClassName: string;
-  form: (close: () => void) => ReactNode;
+  form: (close: () => void, titleId: string) => ReactNode;
 }) {
   // The element is kept in state, not in a ref: the form is handed its close
   // while rendering, and a ref is not read during a render.
   const [dialog, setDialog] = useState<HTMLDialogElement | null>(null);
   const [opening, setOpening] = useState(0);
+  const titleId = useId();
   const close = () => dialog?.close();
   return (
     <div className={block}>
@@ -432,8 +434,8 @@ function SectionDialog({
       >
         {label}
       </button>
-      <dialog ref={setDialog} className={`platform-dialog ${block}__dialog`}>
-        <Fragment key={opening}>{form(close)}</Fragment>
+      <dialog ref={setDialog} className={`platform-dialog ${block}__dialog`} aria-labelledby={titleId}>
+        <Fragment key={opening}>{form(close, titleId)}</Fragment>
       </dialog>
     </div>
   );
@@ -1142,8 +1144,9 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             block="new-study"
             label="Nuevo estudio"
             buttonClassName="new-study__open"
-            form={(close) => (
+            form={(close, titleId) => (
               <NewStudyForm
+                titleId={titleId}
                 kinds={[
                   { code: "STUDY", label: "Estudio" },
                   { code: "TOURNAMENT", label: "Torneo" },
@@ -1160,8 +1163,9 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             block="new-course"
             label="Nuevo curso"
             buttonClassName="platform-button"
-            form={(close) => (
+            form={(close, titleId) => (
               <NewCourseForm
+                titleId={titleId}
                 contentTypes={[
                   {
                     code: "OPENINGS",
@@ -1191,8 +1195,9 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             block="course-source-dialog"
             label="Agregar fuente"
             buttonClassName="platform-button platform-button_size_compact"
-            form={(close) => (
+            form={(close, titleId) => (
               <CourseSourceForm
+                titleId={titleId}
                 sourceTypes={[
                   { code: "BOOK", label: "Libro" },
                   { code: "DIGITAL_COURSE", label: "Curso digital" },

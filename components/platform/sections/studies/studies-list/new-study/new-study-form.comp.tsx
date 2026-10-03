@@ -13,6 +13,8 @@ import {
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 interface NewStudyFormProps {
+  /** The id its heading takes, so the dialog around it is named by it (`aria-labelledby`). */
+  titleId?: string;
   kinds: StudyKindOption[];
   /** Where the form posts: the server action, or a stub in Storybook. */
   action: (formData: FormData) => void | Promise<void>;
@@ -27,7 +29,7 @@ interface NewStudyFormProps {
  * mounts it with a stub. Head, fields and a footer band; the submit stays off
  * until the study has a name, which is the one thing it needs.
  */
-export function NewStudyForm({ kinds, action, onClose, onSubmit }: NewStudyFormProps) {
+export function NewStudyForm({ titleId, kinds, action, onClose, onSubmit }: NewStudyFormProps) {
   const [name, setName] = useState("");
 
   return (
@@ -35,7 +37,9 @@ export function NewStudyForm({ kinds, action, onClose, onSubmit }: NewStudyFormP
       <header className="new-study__head">
         <span className="new-study__tile" aria-hidden="true" />
         <div className="new-study__heading">
-          <h2 className="new-study__title">Nuevo estudio</h2>
+          <h2 id={titleId} className="new-study__title">
+            Nuevo estudio
+          </h2>
           <p className="new-study__subtitle">Agrupa partidas y análisis bajo un mismo tema.</p>
         </div>
         <button type="button" className="new-study__close" onClick={onClose} aria-label="Cerrar">
