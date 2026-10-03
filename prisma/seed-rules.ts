@@ -1,7 +1,56 @@
 // The seed's decisions, apart from `prisma/seed.ts` so they can be tested:
 // importing the seed runs it against the database `.env.local` points at,
-// and these need neither a database nor the environment. The seed queries the
-// database and hands what it got to these functions.
+// and these need neither a database nor the environment. The seed reads
+// `SEED_NOW` and the clock, and queries the database, and hands what it got to
+// these functions.
+
+/** The hour (UTC) of the reference instant: class times come out of it, and at 00:00 the demo reads like a mistake. */
+const REFERENCE_HOUR_UTC = 18;
+
+/**
+ * The instant ALL the seed's dates hang from.
+ *
+ * It is not the clock itself for two reasons that pull in different
+ * directions:
+ *
+ * - Two consecutive runs wrote different values even when nothing had changed
+ *   (`frozenAt`, `pgnUpdatedAt`, the activity…), so the seed was idempotent in
+ *   content but not in rows. Rounded to the day, two passes on the same day
+ *   write exactly the same thing.
+ * - And at the same time the dates have to follow the calendar: with a fixed
+ *   constant, the demo's activity and its "next class" are born in the past.
+ *
+ * `pinned` is `SEED_NOW` (ISO), which fixes the instant by hand: to reproduce a
+ * database byte for byte, for a test or a screenshot, or to anchor a demo on
+ * the day it will be shown.
+ */
+export function seedReferenceDate(pinned: string | undefined, today: Date): Date {
+  if (pinned) {
+    const fixed = new Date(pinned);
+    if (Number.isNaN(fixed.getTime())) throw new Error(`SEED_NOW no es una fecha válida: "${pinned}".`);
+    return fixed;
+  }
+
+  const reference = new Date(today.getTime());
+  reference.setUTCHours(REFERENCE_HOUR_UTC, 0, 0, 0);
+  return reference;
+}
+
+/**
+ * When the seeded demo's next class starts: the earliest class after `now`, or
+ * null when none is left.
+ *
+ * Every seed date is counted from the reference instant, which is what a live
+ * demo wants, and a seed is a snapshot: a database seeded weeks ago has every
+ * class behind it, and the student's «Próxima clase» is empty. No date can
+ * stay ahead of a clock that keeps moving, so the seed says until when its
+ * demo holds instead of letting the presenter find out.
+ */
+export function nextClassAfter(classes: readonly { scheduledAt: Date }[], now: Date): Date | null {
+  const ahead = classes.map((cls) => cls.scheduledAt).filter((scheduledAt) => scheduledAt.getTime() > now.getTime());
+  if (ahead.length === 0) return null;
+  return new Date(Math.min(...ahead.map((scheduledAt) => scheduledAt.getTime())));
+}
 
 /** What the seed knows of a collection to tell whether the app may have created it already. */
 export interface SeedCollection {

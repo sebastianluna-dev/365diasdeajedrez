@@ -27,7 +27,7 @@ Copy `.env.example` to `.env.local` and fill it in. Both Payload and the Prisma 
 | `PLATFORM_DATABASE_URL`                                                | Prisma (runtime and CLI)                       | Use `sslmode=verify-full`; with `sslmode=require` the `pg` driver warns about the semantics change planned for pg v9. |
 | `PLATFORM_DEMO_PASSWORD`                                               | Seed                                           | Password for the three demo accounts. Default `ajedrez365`.                                                           |
 | `ALLOW_DEMO_SEED`                                                      | Seed                                           | Set to `1` to seed a _remote_ database with the default password (test databases only).                               |
-| `SEED_NOW`                                                             | Seed                                           | ISO instant used as "now" so a seed can be reproduced byte for byte.                                                  |
+| `SEED_NOW`                                                             | Seed                                           | ISO instant used as "now" so a seed can be reproduced byte for byte, or anchored on the day of a demo.                |
 | `PLATFORM_USER_PASSWORD`                                               | `user:create` / `user:password` scripts        | Lets scripts and CI pass a password without a TTY.                                                                    |
 
 ## First run

@@ -38,7 +38,7 @@ import {
   TOPIC_VALUES,
   USERS,
 } from "./seed-data";
-import { resolveCollectionIds } from "./seed-rules";
+import { nextClassAfter, resolveCollectionIds, seedReferenceDate } from "./seed-rules";
 import { AUTHOR_ROLE } from "../constants/platform/course-codes.const";
 
 const connectionString = process.env.PLATFORM_DATABASE_URL;
@@ -61,37 +61,6 @@ if (looksRemote && usesRepoPassword && process.env.ALLOW_DEMO_SEED !== "1") {
 }
 
 const db = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
-
-/**
- * The instant ALL the seed's dates hang from.
- *
- * It is not `new Date()` for two reasons that pulled in different directions:
- *
- * - Two consecutive runs wrote different values even when nothing had changed
- *   (`frozenAt`, `pgnUpdatedAt`, the activity…), so the seed was idempotent in
- *   content but not in rows. Rounding to the day, two passes on the same day
- *   give exactly the same thing.
- * - And at the same time the dates have to follow the calendar: with a fixed
- *   constant, the demo's "next class" is born in the past.
- *
- * `SEED_NOW` (ISO) fixes the instant by hand when a database has to be
- * reproduced byte for byte, for a test or a screenshot.
- *
- * The time is mid-afternoon in UTC and not midnight because class times come
- * out of it: at 00:00 the demo reads like a mistake.
- */
-function seedReferenceDate(): Date {
-  const pinned = process.env.SEED_NOW;
-  if (pinned) {
-    const fixed = new Date(pinned);
-    if (Number.isNaN(fixed.getTime())) throw new Error(`SEED_NOW no es una fecha válida: "${pinned}".`);
-    return fixed;
-  }
-
-  const today = new Date();
-  today.setUTCHours(18, 0, 0, 0);
-  return today;
-}
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -172,7 +141,9 @@ function idOf(map: Map<string, number>, code: string): number {
 }
 
 async function main() {
-  const now = seedReferenceDate();
+  // Every date of the seed hangs from this one instant: today at 18:00 UTC, or
+  // `SEED_NOW` (`seedReferenceDate`, prisma/seed-rules.ts).
+  const now = seedReferenceDate(process.env.SEED_NOW, new Date());
 
   // --- Catalogs ------------------------------------------------------------
   const contentType = await seedCatalogRows(db.contentType, CONTENT_TYPE_VALUES);
@@ -507,7 +478,8 @@ async function main() {
   }
 
   // --- Classes -------------------------------------------------------------
-  for (const cls of buildClasses(now)) {
+  const classes = buildClasses(now);
+  for (const cls of classes) {
     const classData = {
       teacherId: cls.teacherId,
       title: cls.title,
@@ -658,6 +630,16 @@ async function main() {
   await rebuildDailyStats(db, IDS.demoUser);
 
   console.log("Seed de la plataforma completado.");
+
+  // The dates follow the day of the seed, and the clock keeps moving: weeks
+  // later every class is behind and the student's «Próxima clase» is empty.
+  // Said here, against the real clock, so it is not found out during a demo.
+  const nextClass = nextClassAfter(classes, new Date());
+  console.log(
+    nextClass
+      ? `La próxima clase de la demo es el ${nextClass.toISOString().slice(0, 10)}: después, «Próxima clase» queda vacía hasta volver a sembrar.`
+      : "Ninguna clase de la demo queda por delante y «Próxima clase» está vacía: siembra sin SEED_NOW, o con el día de la demo.",
+  );
 }
 
 main()
