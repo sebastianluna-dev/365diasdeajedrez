@@ -5,6 +5,7 @@ import { buildPlatformNavGroups } from "@/constants/platform/nav-items.const";
 import { getSessionUser } from "@/lib/platform-auth/current-user";
 import { getSessionRoles } from "@/lib/platform-auth/roles";
 import { homeRouteFor, teacherRoutes } from "@/lib/platform-routes";
+import { ClearResultParams } from "./clear-result-params.comp";
 import { PlatformNav } from "./platform-nav.comp";
 import { PlatformSearch } from "./platform-search.comp";
 import { PlatformUserMenu } from "./platform-user-menu.comp";
@@ -82,6 +83,10 @@ export async function PlatformShell({ children }: PlatformShellProps) {
       <main id="contenido" className="platform-shell__content">
         {children}
       </main>
+
+      {/* What an action said in the address (`?error=`, `?importadas=`) is
+          said once: out of the address once the page has drawn it. */}
+      <ClearResultParams />
     </div>
   );
 }

@@ -1,0 +1,45 @@
+---
+description: "Takes the result of an action (?error=, ?importadas=) out of the address once the page has drawn it, so the next render of the page does not say it again."
+---
+
+# `ClearResultParams`
+
+|         |                                                                                              |
+| ------- | -------------------------------------------------------------------------------------------- |
+| File    | `components/platform/sections/shell/clear-result-params.comp.tsx`                            |
+| Kind    | Client Component (draws nothing)                                                             |
+| Used by | [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)                |
+| Uses    | `withoutResultParams` from `lib/result-params`<br />`useSearchParams` from `next/navigation` |
+
+## Purpose
+
+A server action tells the page how it went in the address it redirects to: a refusal as `?error=<code>` (`withErrorParam`), an import as `?importadas=<stored>.<without moves>.<over the limit>` (`withImportReport`). The page draws the notice from the address, on the server. For as long as the parameter stayed in the address, every later render of the page said it again: an action that only revalidates re-renders the page it was posted from, so «Se importaron 12 partidas.» stayed over a list one of them had just been removed from, and an error over a form already put right, until the person went to another page; a reload said it once more.
+
+This leaf is the answer for every page at once: it sits in the shell, and once the page has drawn the notice it rewrites the address without the parameter.
+
+## Behaviour
+
+- **The notice stays where it is.** `history.replaceState` moves the router's URL and nothing else — no request, no render (measured in a built app: no fetch after the rewrite). What changes is the **next** render: the action that revalidates posts to the clean address and the page it gets back no longer carries the notice; a reload and coming back to the entry do not either.
+- **The rest of the address is left as it was written**: other parameters (`?pagina=2`), their encoding and the anchor. `withoutResultParams` reads only the parameter names, the way the page will decode them (`%65rror` is `error`), and returns `null` when there is nothing to take out, so nothing is rewritten.
+- **It runs whenever the query changes**, not only on the first load: an action that redirects with a new result lands on the page the leaf is already mounted in, and that result goes out of the address as well.
+- **The rewrite waits for the router.** On the first load the leaf's effect runs before the router's own (a parent's effects run after its children's), and the router follows only the `replaceState` calls made after it has hooked them. A call made earlier moved the address bar but not the router, which posted the next action to the old address and wrote the result back into it — what the first version did in the built app. A `setTimeout(…, 0)` puts the rewrite after the effects of the commit.
+- Which parameters are a result is `RESULT_PARAMS` in `lib/result-params.ts`: `ERROR_PARAM` (`"error"`, which `withErrorParam` writes) and `IMPORT_REPORT_PARAM` (`"importadas"`). A new parameter of that kind goes there.
+- Without JavaScript the parameter stays in the address, as it always did.
+
+## Usage
+
+From [`PlatformShell`](/components/platform/sections/shell/platform-shell-section), after `<main>`:
+
+```tsx
+import { ClearResultParams } from "./clear-result-params.comp";
+
+<main id="contenido" className="platform-shell__content">
+  {children}
+</main>
+<ClearResultParams />
+```
+
+## Related
+
+- [`PlatformNotice`](/components/platform/shared/platform-notice), which draws what the page reads from the parameter.
+- [Conventions › Server actions](/conventions#server-actions) for the redirect-with-`?error=` pattern.

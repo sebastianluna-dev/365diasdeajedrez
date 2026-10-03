@@ -4,16 +4,16 @@ description: "The platform's chassis: top bar with the wordmark, the role's navi
 
 # `PlatformShell`
 
-|            |                                                                                                                                            |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| File       | `components/platform/sections/shell/platform-shell.section.tsx`                                                                            |
-| Kind       | Server Component (async)                                                                                                                   |
-| Stylesheet | `platform-shell.section.css` → block `.platform-shell`                                                                                     |
-| Used by    | `app/(platform)/layout.tsx`                                                                                                                |
-| Composes   | [`PlatformNav`](/components/platform/sections/shell/platform-nav)<br />`LogoWordmarkIcon` · `components/icons/logo-wordmark-icon.comp.tsx` |
-| Reads      | `getSessionUser()` · `lib/platform-auth/current-user.ts`<br />`getSessionRoles()` · `lib/platform-auth/roles.ts`                           |
-| Writes     | `logoutAction()` · `services/auth/auth.actions.ts`                                                                                         |
-| Uses       | `buildPlatformNavGroups` from `constants/platform/nav-items.const`<br />`homeRouteFor` from `lib/platform-routes`                          |
+|            |                                                                                                                                                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/shell/platform-shell.section.tsx`                                                                                                                                                                |
+| Kind       | Server Component (async)                                                                                                                                                                                                       |
+| Stylesheet | `platform-shell.section.css` → block `.platform-shell`                                                                                                                                                                         |
+| Used by    | `app/(platform)/layout.tsx`                                                                                                                                                                                                    |
+| Composes   | [`PlatformNav`](/components/platform/sections/shell/platform-nav)<br />[`ClearResultParams`](/components/platform/sections/shell/clear-result-params)<br />`LogoWordmarkIcon` · `components/icons/logo-wordmark-icon.comp.tsx` |
+| Reads      | `getSessionUser()` · `lib/platform-auth/current-user.ts`<br />`getSessionRoles()` · `lib/platform-auth/roles.ts`                                                                                                               |
+| Writes     | `logoutAction()` · `services/auth/auth.actions.ts`                                                                                                                                                                             |
+| Uses       | `buildPlatformNavGroups` from `constants/platform/nav-items.const`<br />`homeRouteFor` from `lib/platform-routes`                                                                                                              |
 
 ## Purpose
 
@@ -37,6 +37,7 @@ It reads the session **only to show** who is logged in and which menu they get. 
 - **A page can BE the window.** For one carrying `.platform-page_height_screen`, `<main>` measures exactly `100vh` minus the 70px bar, trims its padding to `--platform-space-12` (48px) above and `--platform-space-6` (24px) below — there is no title to give air to, and 48 is the air the board of a lesson is given on every side — and keeps its scroll to itself, so each of the page's columns moves on its own. Such a page also gives up the entrance animation, since `animation: … both` leaves a transform behind and a transform would make the page, not the window, the anchor of anything `position: fixed` inside it — which is how the lesson pins its column of lessons to the window's edges. Under 1280px wide, or on a screen under 620px tall where none of it would fit, it goes back to scrolling like the rest.
 - **The bar does not slide with the page.** It is `position: sticky`, and the platform's root carries `overscroll-behavior: none` (see [Styling](/ui/styling#the-platform-does-not-bounce)) so the elastic overscroll of a trackpad does not drag the document — and the bar with it — past its top.
 - `<main id="contenido">` is the target of the layout's skip link.
+- After `<main>` comes [`ClearResultParams`](/components/platform/sections/shell/clear-result-params), which draws nothing: once a page has drawn what an action said in the address (`?error=`, `?importadas=`), it takes it out of the address, so the next render of the page does not say it again. Being in the shell, every page of the platform has it.
 
 ## Markup & styling
 

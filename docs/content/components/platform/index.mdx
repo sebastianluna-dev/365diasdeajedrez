@@ -37,12 +37,13 @@ description: "Index of components/platform: the shared primitives and every sect
 
 ## `sections/shell/`
 
-| Page                                                                          | Kind   | What it is                                                                    |
-| ----------------------------------------------------------------------------- | ------ | ----------------------------------------------------------------------------- |
-| [`PlatformShell`](/components/platform/sections/shell/platform-shell-section) | server | Top bar and content area; reads the session to display, never to protect.     |
-| [`PlatformNav`](/components/platform/sections/shell/platform-nav)             | client | The role's links with the active item by longest prefix.                      |
-| [`PlatformSearch`](/components/platform/sections/shell/platform-search)       | server | The bar's search field, which does not search yet.                            |
-| [`PlatformUserMenu`](/components/platform/sections/shell/platform-user-menu)  | client | The avatar and what is behind it: the day's streak, the name and the way out. |
+| Page                                                                           | Kind   | What it is                                                                                         |
+| ------------------------------------------------------------------------------ | ------ | -------------------------------------------------------------------------------------------------- |
+| [`PlatformShell`](/components/platform/sections/shell/platform-shell-section)  | server | Top bar and content area; reads the session to display, never to protect.                          |
+| [`PlatformNav`](/components/platform/sections/shell/platform-nav)              | client | The role's links with the active item by longest prefix.                                           |
+| [`PlatformSearch`](/components/platform/sections/shell/platform-search)        | server | The bar's search field, which does not search yet.                                                 |
+| [`PlatformUserMenu`](/components/platform/sections/shell/platform-user-menu)   | client | The avatar and what is behind it: the day's streak, the name and the way out.                      |
+| [`ClearResultParams`](/components/platform/sections/shell/clear-result-params) | client | Draws nothing: takes `?error=` and `?importadas=` out of the address once the page has drawn them. |
 
 ## `sections/dashboard/` — `/inicio`
 

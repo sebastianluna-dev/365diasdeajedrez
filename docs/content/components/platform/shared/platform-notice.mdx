@@ -16,6 +16,8 @@ description: "The result of an action as a role=alert paragraph in error, succes
 
 Platform forms are `<form action={serverAction}>` and return failure by **redirect** with `?error=<code>` on the same URL. The page reads the code, looks it up in its message map (a code outside the map renders nothing, so a crafted link cannot put text on the page) and renders the message here. Success messages use the same component with `variant="success"`.
 
+The parameter is said once. [`ClearResultParams`](/components/platform/sections/shell/clear-result-params), in the shell, takes it out of the address once the page has drawn it: the notice stays on screen, and the next render of the page — another action that revalidates, a reload — no longer carries it.
+
 `role="alert"` makes a screen reader announce the notice on return from the submit, without the user having to look for it.
 
 ## Props

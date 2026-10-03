@@ -7,6 +7,7 @@
 // Pure module and without "server-only" so the actions and their tests share it.
 
 import { z } from "zod";
+import { ERROR_PARAM } from "@/lib/result-params";
 import { formReturnTo, parseForm } from "@/services/shared/form-schema";
 
 const RETURN_TO_SCHEMA = z.object({ returnTo: formReturnTo() });
@@ -22,8 +23,12 @@ export function safeReturnTo(raw: string, fallback: string): string {
   return raw;
 }
 
-/** Adds `?error=<code>` to an internal path respecting the query it already carries. */
+/**
+ * Adds `?error=<code>` to an internal path respecting the query it already
+ * carries. The address keeps it only until the page has drawn it: see
+ * `lib/result-params.ts`.
+ */
 export function withErrorParam(path: string, code: string): string {
   const separator = path.includes("?") ? "&" : "?";
-  return `${path}${separator}error=${encodeURIComponent(code)}`;
+  return `${path}${separator}${ERROR_PARAM}=${encodeURIComponent(code)}`;
 }
