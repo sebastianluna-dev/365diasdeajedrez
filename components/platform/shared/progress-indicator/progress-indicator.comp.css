@@ -44,12 +44,35 @@
   }
 
   /* The stacked variant stops being a row: the percentage and the detail go to
-     the ends and the bar takes the full width below. */
-  &.progress-indicator_layout_stacked {
+     the ends and the bar takes the full width below. So does the figure. */
+  &.progress-indicator_layout_stacked,
+  &.progress-indicator_layout_figure {
     display: block;
 
     & .progress-indicator__track {
       width: 100%;
     }
+  }
+
+  /* The figure is what a card is read by: the percentage large, and what it
+     counts small at the other end. The detail is in the subtle grey, which
+     only reads on a white surface: the figure goes on a card. */
+  &.progress-indicator_layout_figure {
+    & .progress-indicator__percent {
+      font-size: var(--platform-type-xl);
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    & .progress-indicator__detail {
+      font-size: var(--platform-type-xs);
+      color: var(--platform-text-subtle);
+      white-space: nowrap;
+    }
+  }
+
+  /* What is finished is no longer in progress: its bar says so in green. */
+  &.progress-indicator_tone_success .progress-indicator__fill {
+    background: var(--platform-success-ink);
   }
 }

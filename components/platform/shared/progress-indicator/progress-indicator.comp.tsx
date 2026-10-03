@@ -6,38 +6,54 @@ interface ProgressIndicatorProps {
   detail?: string;
   /**
    * `inline` (default): bar and label on the same line.
-   * `stacked`: percentage and detail at the ends and the bar below, as in
-   * the course card.
+   * `stacked`: percentage and detail at the ends and the bar below.
+   * `figure`: the stacked one with the percentage as a large figure and the
+   * detail small at the other end, as the catalog's course card draws it.
    */
-  layout?: "inline" | "stacked";
+  layout?: "inline" | "stacked" | "figure";
+  /**
+   * `progress` (default): the fill in the progress blue.
+   * `success`: the fill in green, for what is finished. Not read from the
+   * percentage, which is rounded: 199 lessons of 200 are 100% and unfinished.
+   */
+  tone?: "progress" | "success";
 }
 
-export function ProgressIndicator({ percent, detail, layout = "inline" }: ProgressIndicatorProps) {
+export function ProgressIndicator({ percent, detail, layout = "inline", tone = "progress" }: ProgressIndicatorProps) {
   const clamped = Math.max(0, Math.min(100, Math.round(percent)));
+  const className = [
+    "progress-indicator",
+    layout === "inline" ? null : `progress-indicator_layout_${layout}`,
+    tone === "success" ? "progress-indicator_tone_success" : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
-  if (layout === "stacked") {
+  const track = (
+    <div className="progress-indicator__track">
+      <div className="progress-indicator__fill" style={{ width: `${clamped}%` }} />
+    </div>
+  );
+
+  if (layout === "inline") {
     return (
-      <div className="progress-indicator progress-indicator_layout_stacked">
-        <div className="progress-indicator__legend">
-          <span className="progress-indicator__percent">{clamped}%</span>
-          {detail && <span className="progress-indicator__detail">{detail}</span>}
-        </div>
-
-        <div className="progress-indicator__track">
-          <div className="progress-indicator__fill" style={{ width: `${clamped}%` }} />
-        </div>
+      <div className={className}>
+        {track}
+        <span className="progress-indicator__label">
+          {clamped}%{detail ? ` · ${detail}` : ""}
+        </span>
       </div>
     );
   }
 
   return (
-    <div className="progress-indicator">
-      <div className="progress-indicator__track">
-        <div className="progress-indicator__fill" style={{ width: `${clamped}%` }} />
+    <div className={className}>
+      <div className="progress-indicator__legend">
+        <span className="progress-indicator__percent">{clamped}%</span>
+        {detail && <span className="progress-indicator__detail">{detail}</span>}
       </div>
-      <span className="progress-indicator__label">
-        {clamped}%{detail ? ` · ${detail}` : ""}
-      </span>
+
+      {track}
     </div>
   );
 }

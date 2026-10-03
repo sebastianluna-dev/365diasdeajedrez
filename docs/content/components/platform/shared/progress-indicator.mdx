@@ -1,30 +1,35 @@
 ---
-description: "A progress bar with its percentage and an optional detail, inline or stacked, with the value clamped to 0–100 and rounded."
+description: "A progress bar with its percentage and an optional detail, inline, stacked or as a large figure, in the progress blue or in the green of what is finished, with the value clamped to 0–100 and rounded."
 ---
 
 # `ProgressIndicator`
 
-|            |                                                                                                                                                                                                                                    |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/progress-indicator/progress-indicator.comp.tsx`                                                                                                                                                        |
-| Kind       | Server Component                                                                                                                                                                                                                   |
-| Stylesheet | `progress-indicator.comp.css` → block `.progress-indicator`                                                                                                                                                                        |
-| Story      | `progress-indicator.stories.tsx` (`platform/shared/ProgressIndicator`): inline and stacked, not started, finished, without a detail                                                                                                |
-| Used by    | [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section), [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section) |
+|            |                                                                                                                                                                                                                                                                                                       |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/progress-indicator/progress-indicator.comp.tsx`                                                                                                                                                                                                                           |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                      |
+| Stylesheet | `progress-indicator.comp.css` → block `.progress-indicator`                                                                                                                                                                                                                                           |
+| Story      | `progress-indicator.stories.tsx` (`platform/shared/ProgressIndicator`): inline and stacked, not started, finished, without a detail, and the figure in progress and finished                                                                                                                          |
+| Used by    | [`ContinueStudyingSection`](/components/platform/sections/dashboard/continue-studying/continue-studying-section), [`AssignedStudentDetailSection`](/components/platform/sections/teacher/students/assigned-student-detail-section), [`CourseCard`](/components/platform/sections/courses/course-card) |
 
 ## Purpose
 
-The shared progress bar, filled with `--platform-progress` because what it measures is a course, in two layouts: `inline` puts the bar and its label on one line (the dashboard card), `stacked` puts the percentage and the detail at the two ends with the bar underneath.
+The shared progress bar, filled with `--platform-progress` because what it measures is a course, in three layouts: `inline` puts the bar and its label on one line (the dashboard card), `stacked` puts the percentage and the detail at the two ends with the bar underneath, and `figure` is the stacked one with the percentage as a large figure (`--platform-type-xl`, weight 800, tabular figures) and the detail small (`--platform-type-xs`) at the other end — the catalog's course card, which is read by it.
 
-The student's course pages do **not** use it: the course card, the study frame and the chapter cards draw their own bar, because their design sets a large figure and a ratio around it that neither layout has. That is four bars drawn apart; folding them into a third layout of this component is recorded as debt in `IMPROVEMENTS.md`.
+The figure's detail is in `--platform-text-subtle`, the grey made for white: the figure goes on a white surface (`--platform-surface`, a card), never on the canvas or on a grey or tinted fill, where it would fall under 4.5:1.
+
+`tone="success"` paints the fill in `--platform-success-ink`, for what is finished. It is a prop and not read from the percentage, which is rounded: 199 lessons of 200 are 100% and still unfinished.
+
+Until 2026-10-03 the catalog's card drew this figure with a track and a fill of its own; it is the one copy there was. The other pages of a course draw no bar: the study frame and a chapter's page carry no figure, and a chapter's card says its progress as a count («9/17 lecciones»).
 
 ## Props
 
-| Prop      | Type                    | Required                | Meaning                                                                                  |
-| --------- | ----------------------- | ----------------------- | ---------------------------------------------------------------------------------------- |
-| `percent` | `number`                | yes                     | Any number; clamped to 0–100 and rounded before rendering.                               |
-| `detail`  | `string`                | no                      | "3 de 7 lecciones", appended to the label (inline) or placed at the right end (stacked). |
-| `layout`  | `"inline" \| "stacked"` | no · default `"inline"` | See above.                                                                               |
+| Prop      | Type                                | Required                  | Meaning                                                                                          |
+| --------- | ----------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------ |
+| `percent` | `number`                            | yes                       | Any number; clamped to 0–100 and rounded before rendering.                                       |
+| `detail`  | `string`                            | no                        | "3 de 7 lecciones", appended to the label (inline) or placed at the right end (stacked, figure). |
+| `layout`  | `"inline" \| "stacked" \| "figure"` | no · default `"inline"`   | See above.                                                                                       |
+| `tone`    | `"progress" \| "success"`           | no · default `"progress"` | The fill: the progress blue, or green for what is finished.                                      |
 
 ## Behaviour
 
@@ -32,13 +37,13 @@ None. The fill width is an inline style with the clamped percentage.
 
 ## Markup & styling
 
-Block `.progress-indicator` (55 lines).
+Block `.progress-indicator` (78 lines).
 
-**Elements:** `.progress-indicator__track`, `.progress-indicator__fill`, `.progress-indicator__label` (inline), `.progress-indicator__legend`, `.progress-indicator__percent`, `.progress-indicator__detail` (stacked)
+**Elements:** `.progress-indicator__track`, `.progress-indicator__fill`, `.progress-indicator__label` (inline), `.progress-indicator__legend`, `.progress-indicator__percent`, `.progress-indicator__detail` (stacked and figure)
 
-**Modifiers and states:** `.progress-indicator_layout_stacked`
+**Modifiers and states:** `.progress-indicator_layout_stacked`, `.progress-indicator_layout_figure`, `.progress-indicator_tone_success`
 
-**Tokens:** `--platform-progress`, `--platform-text`, `--platform-text-muted`, `--platform-track`
+**Tokens:** `--platform-progress`, `--platform-success-ink`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
 
 ## Usage
 
@@ -53,7 +58,19 @@ import { ProgressIndicator } from "@/components/platform/shared/progress-indicat
 />;
 ```
 
+From `components/platform/sections/courses/course-card.comp.tsx`, beside the card's button: the card's `.course-card__progress` only gives it the width the button leaves.
+
+```tsx
+<ProgressIndicator
+  layout="figure"
+  tone={course.isCompleted ? "success" : "progress"}
+  percent={progress.percent}
+  detail={`${progress.completedLessons} de ${countLessons(progress.totalLessons)}`}
+/>
+```
+
 ## Related
 
-- [`CourseCard`](/components/platform/sections/courses/course-card) and [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame) draw their own bars.
+- [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame), [`CourseStudySection`](/components/platform/sections/courses/course-study/course-study-section) and [`ChapterStudySection`](/components/platform/sections/courses/course-study/chapter-study-section) draw no bar: a chapter's progress is a count on its card.
+- [`MyCourseCard`](/components/platform/sections/courses/my-courses/my-course-card) says a course's progress on a ring, not on a bar.
 - [`StudyGoalSection`](/components/platform/sections/dashboard/study-goal/study-goal-section) draws the daily-goal bar separately too (two figures around one bar).

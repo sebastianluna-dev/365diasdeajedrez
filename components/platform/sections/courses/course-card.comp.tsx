@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ProgressIndicator } from "@/components/platform/shared/progress-indicator/progress-indicator.comp";
 import { countLessons, formatDuration } from "@/services/courses/course-rules";
 import type { CourseLevelItem, CourseSummary } from "@/services/courses/courses.types";
 import { LevelDots } from "./level-dots.comp";
@@ -32,7 +33,6 @@ const COVER_SIZES = "(max-width: 767px) 100vw, 480px";
 export function CourseCard({ course, levels }: CourseCardProps) {
   const { progress } = course;
   const isUnderway = course.isAdded && course.ctaLabel === "Continuar";
-  const isDone = course.isAdded && course.isCompleted;
 
   return (
     <article className="course-card">
@@ -74,18 +74,12 @@ export function CourseCard({ course, levels }: CourseCardProps) {
         <div className="course-card__foot">
           {course.isAdded ? (
             <div className="course-card__progress">
-              <p className="course-card__progress-line">
-                <span className="course-card__percent">{progress.percent}%</span>
-                <span className="course-card__ratio">
-                  {progress.completedLessons} de {countLessons(progress.totalLessons)}
-                </span>
-              </p>
-              <div className="course-card__track">
-                <div
-                  className={`course-card__fill${isDone ? " course-card__fill_state_done" : ""}`}
-                  style={{ width: `${progress.percent}%` }}
-                />
-              </div>
+              <ProgressIndicator
+                layout="figure"
+                tone={course.isCompleted ? "success" : "progress"}
+                percent={progress.percent}
+                detail={`${progress.completedLessons} de ${countLessons(progress.totalLessons)}`}
+              />
             </div>
           ) : (
             <p className="course-card__length">

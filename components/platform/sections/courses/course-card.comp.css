@@ -133,50 +133,11 @@
     padding-top: var(--platform-space-1);
   }
 
+  /* Beside the button, not above it: the progress takes the width the button
+     leaves. What it draws is ProgressIndicator's figure. */
   & .course-card__progress {
     flex: 1;
     min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-2);
-  }
-
-  & .course-card__progress-line {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--platform-space-3);
-    margin: 0;
-  }
-
-  & .course-card__percent {
-    font-size: var(--platform-type-xl);
-    font-weight: 800;
-    font-variant-numeric: tabular-nums;
-  }
-
-  & .course-card__ratio {
-    font-size: var(--platform-type-xs);
-    color: var(--platform-text-subtle);
-    white-space: nowrap;
-  }
-
-  & .course-card__track {
-    height: 8px;
-    overflow: hidden;
-    border-radius: 1000px;
-    background: var(--platform-track);
-  }
-
-  & .course-card__fill {
-    height: 100%;
-    border-radius: 1000px;
-    background: var(--platform-progress);
-  }
-
-  /* A finished course is no longer in progress: its bar says so in green. */
-  & .course-card__fill_state_done {
-    background: var(--platform-success-ink);
   }
 
   & .course-card__length {

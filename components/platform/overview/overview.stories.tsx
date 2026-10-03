@@ -836,10 +836,13 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             actionHref="/clases"
           />
         </Tile>
-        <Tile name="ProgressIndicator" docs="platform-shared-progressindicator">
+        {/* On the white it lives on: the figure's count is in the grey made for white. */}
+        <Tile name="ProgressIndicator" docs="platform-shared-progressindicator" surface>
           <div className="overview__stack">
             <ProgressIndicator percent={43} detail="3 de 7 lecciones" />
             <ProgressIndicator percent={100} detail="7 de 7 lecciones" layout="stacked" />
+            <ProgressIndicator percent={38} detail="9 de 24 lecciones" layout="figure" />
+            <ProgressIndicator percent={100} detail="24 de 24 lecciones" layout="figure" tone="success" />
           </div>
         </Tile>
         <Tile name="BoardLoading" docs="platform-shared-boardloading">

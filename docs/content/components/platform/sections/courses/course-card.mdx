@@ -11,7 +11,7 @@ description: "A course as a card, for the catalog: cover, name with the dots of 
 | Stylesheet | `course-card.comp.css` → block `.course-card`                                                                                                                                      |
 | Story      | `course-card.stories.tsx` (`platform/sections/courses/CourseCard`): a course not added, under way, added and not started, finished, with a cover, and with only a name and lessons |
 | Used by    | [`CourseCatalogSection`](/components/platform/sections/courses/course-catalog/course-catalog-section)                                                                              |
-| Composes   | [`LevelDots`](/components/platform/sections/courses/level-dots)                                                                                                                    |
+| Composes   | [`LevelDots`](/components/platform/sections/courses/level-dots), [`ProgressIndicator`](/components/platform/shared/progress-indicator)                                             |
 | Uses       | `CourseSummary`, `CourseLevelItem` from `services/courses/courses.types`; `countLessons`, `formatDuration` from `services/courses/course-rules`; `next/image`, `next/link`         |
 
 ## Purpose
@@ -37,18 +37,19 @@ It lives at the root of `sections/courses/` from when two sections used it.
 - The dots sit above the stretched link (`.course-card__levels`, `z-index: 1`) because they open a tip of their own. The wrapper is only rendered for a course with levels.
 - The description is clamped to two lines: the card says what the course is about, the information page tells it.
 - What the course teaches is a line of text under it, not tags: the content types' long names, in catalog order, joined by « · », and «por» with the authors after them. The short names are the tags of the staff's catalog ([`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section)).
-- The bar is `--platform-progress`, the blue a course's progress is drawn in; a finished course (`course.isCompleted`) paints it green instead (`.course-card__fill_state_done`). It carries no check: that mark is drawn inside the course, not on its card.
+- **The progress is [`ProgressIndicator`](/components/platform/shared/progress-indicator)'s `figure`**: the percentage large, «9 de 24 lecciones» small at the other end and the bar under them, in `--platform-progress`, the blue a course's progress is drawn in. A finished course (`course.isCompleted`) passes `tone="success"` and the bar is green instead. It carries no check: that mark is drawn inside the course, not on its card. Until 2026-10-03 the card drew the same figure with rules of its own.
+- **The figure sits beside the button, not above it**: `.course-card__progress` is the foot's flexible part (`flex: 1; min-width: 0`) and only gives the figure the width the button leaves; the button is centred on it.
 - The cover is decorative (`alt=""`): the staff's covers carry the course's name drawn on them and the title is right under. Without a cover the box stays, in the ink colour.
 
 ## Markup & styling
 
-Block `.course-card` (215 lines).
+Block `.course-card` (176 lines).
 
-**Elements:** `.course-card__cover`, `.course-card__cover-image`, `.course-card__body`, `.course-card__heading`, `.course-card__name`, `.course-card__link`, `.course-card__levels`, `.course-card__description`, `.course-card__facts`, `.course-card__contents`, `.course-card__by`, `.course-card__author`, `.course-card__foot`, `.course-card__progress`, `.course-card__progress-line`, `.course-card__percent`, `.course-card__ratio`, `.course-card__track`, `.course-card__fill`, `.course-card__length`, `.course-card__cta`
+**Elements:** `.course-card__cover`, `.course-card__cover-image`, `.course-card__body`, `.course-card__heading`, `.course-card__name`, `.course-card__link`, `.course-card__levels`, `.course-card__description`, `.course-card__facts`, `.course-card__contents`, `.course-card__by`, `.course-card__author`, `.course-card__foot`, `.course-card__progress`, `.course-card__length`, `.course-card__cta`
 
-**Modifiers and states:** `.course-card__cta_emphasis_strong`, `.course-card__fill_state_done`
+**Modifiers and states:** `.course-card__cta_emphasis_strong`
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-border`, `--platform-border-strong`, `--platform-ink`, `--platform-on-accent`, `--platform-progress`, `--platform-success-ink`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-border`, `--platform-border-strong`, `--platform-ink`, `--platform-on-accent`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle` (the bar's tokens are `ProgressIndicator`'s)
 
 No breakpoints of its own: the list that holds it decides the columns. The hover transition is off under `prefers-reduced-motion`.
 
