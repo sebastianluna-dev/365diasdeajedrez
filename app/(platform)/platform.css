@@ -170,6 +170,11 @@
   --platform-font-display: var(--font-poppins), var(--platform-font);
   /* The one serif: the figure a chapter is dated with on the course pages. */
   --platform-font-serif: Georgia, "Times New Roman", serif;
+  /* The one monospace: data read character by character, a PGN pasted in, a
+     FEN, a temporary password. The same stack as the reset gives `code` in
+     globals.css, so a `<code>` that keeps it and a field that reads this token
+     look alike. */
+  --platform-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* TYPE. The platform's ten font sizes, in real px. A stylesheet writes one
      of these and never a px of its own: the scale, and the size each value

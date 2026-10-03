@@ -33,6 +33,10 @@
 
   & .elo-item__value {
     display: block;
+    /* The one stylesheet drawn with the platform's tokens that reads a font
+       of the public site: the table is drawn on the site (the home page's
+       teacher, a mentor's page), which does not load platform.css, and its
+       figures are set in the site's headline font. */
     font-family: var(--font-gramatika), sans-serif;
     font-size: var(--platform-type-2xl, 22px);
     font-weight: 700;

@@ -233,7 +233,7 @@
   /* The FEN and the moves, in monospace: they are data read character by
      character when something does not add up. */
   & .game-tools__share-value_kind_code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: var(--platform-font-mono);
   }
 
   & .game-tools__share-button,

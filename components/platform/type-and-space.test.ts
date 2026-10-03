@@ -6,9 +6,11 @@ import { describe, expect, it } from "vitest";
 // The platform's font sizes and spaces come from two scales, declared in the
 // `:root` of platform.css: ten font sizes and twelve spaces, in real px. A
 // stylesheet that writes a px of its own for either brings back the thirty
-// sizes and the two dozen gaps the scales replaced; and a `zoom` brings back
-// the enlargement the steps already carry. This reads the platform's
-// stylesheets from disk and fails on the three.
+// sizes and the two dozen gaps the scales replaced; a `zoom` brings back the
+// enlargement the steps already carry; and a font named in a stylesheet
+// instead of read from a `--platform-font*` token is a font the tokens no
+// longer decide. This reads the platform's stylesheets from disk and fails on
+// the four.
 
 const ROOT = fileURLToPath(new URL("../../", import.meta.url));
 
@@ -22,6 +24,17 @@ const TYPE_EXCEPTIONS: Record<string, { value: string; reason: string }> = {
     reason: "the board's coordinates, drawn inside a square, where the smallest step (12px) crowds its corner",
   },
 };
+
+/** Fonts named instead of read from a `--platform-font*` token, by file, with the value they keep and why. */
+const FONT_EXCEPTIONS: Record<string, { value: string; reason: string }> = {
+  "components/chess/elo-table.comp.css": {
+    value: "var(--font-gramatika), sans-serif",
+    reason: "drawn only on the public site, which does not load platform.css, in the site's headline font",
+  },
+};
+
+/** A `font-family` that reads one of the platform's font tokens, or inherits. */
+const READS_A_FONT_TOKEN = /^(?:var\(--platform-font[a-z-]*\)|inherit)$/;
 
 const COMMENT = /\/\*[\s\S]*?\*\//g;
 const DECLARATION = /(?:^|[;{\s])(-{0,2}[a-z][a-z0-9-]*)\s*:\s*([^;{}]+);/g;
@@ -113,6 +126,26 @@ describe("the platform's type and space", () => {
           .map((part) => `${path}: ${property}: ${value} (${part})`),
       );
     expect(offScale).toEqual([]);
+  });
+
+  it("name no font of their own: they read a font token, or inherit", () => {
+    const named = declarations
+      .filter(({ property }) => property === "font-family")
+      .filter(({ path, value }) => !READS_A_FONT_TOKEN.test(value) && FONT_EXCEPTIONS[path]?.value !== value)
+      .map(({ path, value }) => `${path}: font-family: ${value}`);
+    expect(named).toEqual([]);
+  });
+
+  it("keep their list of named fonts true", () => {
+    // An exception that now reads a token, or whose file is gone, leaves the list.
+    const stale = Object.entries(FONT_EXCEPTIONS).filter(
+      ([path, { value }]) =>
+        !declarations.some(
+          (declaration) =>
+            declaration.path === path && declaration.property === "font-family" && declaration.value === value,
+        ),
+    );
+    expect(stale.map(([path]) => path)).toEqual([]);
   });
 
   it("are not enlarged by a zoom", () => {

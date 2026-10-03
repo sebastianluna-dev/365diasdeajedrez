@@ -89,7 +89,7 @@ function TypePage() {
         <p className="foundations__lead">
           {named.length === 0
             ? "No stylesheet names a font of its own."
-            : `Stylesheets that name a font of their own instead: ${named
+            : `Stylesheets that name a font of their own instead, each an exception of type-and-space.test.ts with its reason: ${named
                 .map(({ value, count }) => `${value} (${count})`)
                 .join("; ")}.`}
         </p>

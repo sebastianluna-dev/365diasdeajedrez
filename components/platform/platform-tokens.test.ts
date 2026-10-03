@@ -49,6 +49,7 @@ const NOT_A_PAIR: Record<string, string> = {
   "--platform-font": "not a colour",
   "--platform-font-display": "not a colour",
   "--platform-font-serif": "not a colour",
+  "--platform-font-mono": "not a colour",
   "--platform-shadow-card": "a list of shadows, with its pairs inside",
   "--platform-shadow-bar": "a shadow, drawn in the border's colour",
 };

@@ -109,7 +109,7 @@
     border-radius: 8px;
     background: var(--platform-bg);
     color: var(--platform-text);
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: var(--platform-font-mono);
     font-size: var(--platform-type-sm);
     line-height: 1.5;
     resize: vertical;
