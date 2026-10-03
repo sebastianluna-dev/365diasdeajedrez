@@ -25,7 +25,7 @@ Both panels are ordinary platform pages with a stricter border: `requireTeacher(
 - Participants: `addParticipant` (must be an assigned student), `removeParticipant` (blocked if the student attended or has a payment), `markAttendance` (records `CLASS_ATTENDED` activity).
 - Blocks: `addClassBlock`, `updateClassBlock`, `deleteClassBlock`, `moveClassBlock` (through `services/shared/reorder.ts`). Kinds: text, video (http(s) URL), game reference (a game from the teacher's own studies or an assigned student's, checked by `assertTeacherCanReferenceGame` at insert time; later reassignments do not break past classes), lesson reference, position reference (teacher's saved diagrams), or a game **transcribed in the block** (`ClassBlock.pgn`, edited on the analysis board). `movePath` captures "this position" from the viewer via `onPathChange`; `isMovePathBroken` flags paths that no longer resolve.
 - `fetchReferencePgn` lets the block editor preview a referenced game or lesson; `listReferenceableGames` groups the games by study and marks the teacher's own.
-- The teacher always sees `meetingUrl`; hiding it before `meetingUrlVisibleFrom` is a student-side rule.
+- The teacher always sees `meetingUrl`; hiding it before `meetingUrlVisibleFrom` is a student-side rule. The instant belongs to the link: `meetingVisibleFrom` (`meeting-visible-from.ts`) stores the one chosen or, left empty, 30 minutes before the class, and none for a class without a link, which both mappers also ignore in a row saved before that rule.
 
 ## Staff panel — `/administracion`
 

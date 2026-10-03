@@ -34,6 +34,7 @@ import {
   readIds,
 } from "@/services/shared/form-schema";
 import { getPgnForReference } from "./teacher-classes.service";
+import { meetingVisibleFrom } from "./meeting-visible-from";
 import { planDenseRenumber, planSwap, nextOrder, type MoveDirection } from "@/services/shared/reorder";
 import { recordUserActivity } from "@/services/shared/user-activity.service";
 import { withErrorParam } from "@/services/shared/safe-return-to";
@@ -46,9 +47,6 @@ import { canTransitionClassStatus } from "./class-status-transitions";
 // - Catalogs are connected by `code`, never by id.
 // - Errors come back by redirect with `?error=<code>` (message map in
 //   constants/platform/teacher-messages.const.ts).
-
-/** The link opens half an hour early by default. */
-const MEETING_VISIBLE_LEAD_MS = 30 * 60 * 1000;
 
 const CLASS_META_SCHEMA = z.object({
   title: formText(120),
@@ -130,12 +128,10 @@ async function readClassMeta(
 
   const providerCode = parsed.data.meetingProviderCode ?? "";
 
+  // A malformed instant is an error even without a link, where it is not stored.
   const visibleFromRaw = parsed.data.meetingUrlVisibleFrom ?? "";
-  const meetingUrlVisibleFrom =
-    visibleFromRaw.length > 0
-      ? parseDateTimeLocal(visibleFromRaw, timeZone)
-      : new Date(scheduledAt.getTime() - MEETING_VISIBLE_LEAD_MS);
-  if (visibleFromRaw.length > 0 && meetingUrlVisibleFrom === null) fail(failPath, "schedule");
+  const chosenVisibleFrom = visibleFromRaw.length > 0 ? parseDateTimeLocal(visibleFromRaw, timeZone) : null;
+  if (visibleFromRaw.length > 0 && chosenVisibleFrom === null) fail(failPath, "schedule");
 
   return {
     title,
@@ -144,7 +140,7 @@ async function readClassMeta(
     durationMin,
     meetingProviderCode: providerCode.length > 0 ? providerCode : null,
     meetingUrl,
-    meetingUrlVisibleFrom,
+    meetingUrlVisibleFrom: meetingVisibleFrom(meetingUrl, scheduledAt, chosenVisibleFrom),
   };
 }
 

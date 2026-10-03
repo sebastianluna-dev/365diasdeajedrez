@@ -57,6 +57,13 @@ describe("mapTeacherClassDetail", () => {
     expect(studentView.meetingVisibleFromIso).toBe(VISIBLE_FROM.toISOString());
   });
 
+  // A row saved before the instant was tied to the link may still store one
+  // without a link: the teacher's page would say «Enlace visible desde …» about nothing.
+  it("no da hora de visibilidad a una clase sin enlace", () => {
+    expect(mapTeacherClassDetail(teacherRow(), "UTC").meetingUrlVisibleFromIso).toBe(VISIBLE_FROM.toISOString());
+    expect(mapTeacherClassDetail(teacherRow({ meetingUrl: null }), "UTC").meetingUrlVisibleFromIso).toBeUndefined();
+  });
+
   it("pinta la fecha para el input en la zona del profesor", () => {
     expect(mapTeacherClassDetail(teacherRow(), "UTC").scheduledAtInput).toBe("2026-09-15T17:00");
     expect(mapTeacherClassDetail(teacherRow(), "America/Mexico_City").scheduledAtInput).toBe("2026-09-15T11:00");

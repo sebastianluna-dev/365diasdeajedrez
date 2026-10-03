@@ -1102,6 +1102,7 @@ model Class {
   meetingProviderId     Int?
   meetingUrl            String?
   /// The link is only returned to the client when now >= meetingUrlVisibleFrom.
+  /// Null without a link: the instant belongs to it (meetingVisibleFrom, services/teacher-classes).
   meetingUrlVisibleFrom DateTime?
   recordingUrl          String?
   summary               String?   @db.Text

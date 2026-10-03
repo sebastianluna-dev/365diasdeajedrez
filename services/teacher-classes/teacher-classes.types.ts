@@ -65,6 +65,7 @@ export interface TeacherClassDetail {
   meetingProviderLabel?: string;
   /** The teacher ALWAYS sees the link: the hiding is a student rule. */
   meetingUrl?: string;
+  /** When students start seeing the link; only with a link, since the instant belongs to it. */
   meetingUrlVisibleFromIso?: string;
   recordingUrl?: string;
   summary?: string;

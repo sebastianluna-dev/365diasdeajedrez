@@ -129,7 +129,9 @@ export function mapTeacherClassDetail(row: TeacherClassDetailRow, timeZone: stri
     meetingProviderCode: (row.meetingProvider?.code as MeetingProviderCode | undefined) ?? undefined,
     meetingProviderLabel: row.meetingProvider?.label,
     meetingUrl: row.meetingUrl ?? undefined,
-    meetingUrlVisibleFromIso: row.meetingUrlVisibleFrom?.toISOString(),
+    // The instant belongs to the link (see meetingVisibleFrom): one a row stores
+    // without a link was saved before that rule and means nothing.
+    meetingUrlVisibleFromIso: row.meetingUrl !== null ? row.meetingUrlVisibleFrom?.toISOString() : undefined,
     recordingUrl: row.recordingUrl ?? undefined,
     summary: row.summary ?? undefined,
     participants: row.participants.map((participant) => ({

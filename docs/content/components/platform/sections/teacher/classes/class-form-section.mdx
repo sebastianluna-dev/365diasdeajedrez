@@ -31,7 +31,7 @@ One form for creating and editing a class: only the action and the defaults chan
 ## Behaviour
 
 - `action` is `createClass` or `updateClassMeta.bind(null, classDetail.id)`.
-- Fields: `title` (required), `description`, `scheduledAt` (`datetime-local`, required), `durationMin` (15–480, step 5, default 60), `meetingProviderCode` (select with "Sin plataforma"), `meetingUrl`, `meetingUrlVisibleFrom` (`datetime-local`; empty means 30 minutes before the class; the teacher always sees the link). On edit: `recordingUrl` and `summary`. On create: a [`FormFieldset`](/components/platform/shared/form-field) of `studentIds` checkboxes with a hint that adapts when there are no assigned students.
+- Fields: `title` (required), `description`, `scheduledAt` (`datetime-local`, required), `durationMin` (15–480, step 5, default 60), `meetingProviderCode` (select with "Sin plataforma"), `meetingUrl`, `meetingUrlVisibleFrom` (`datetime-local`; empty means 30 minutes before the class; without a link nothing is stored, whatever it says, since the instant belongs to the link — `meetingVisibleFrom` in `services/teacher-classes/meeting-visible-from.ts`; the teacher always sees the link). On edit: `recordingUrl` and `summary`. On create: a [`FormFieldset`](/components/platform/shared/form-field) of `studentIds` checkboxes with a hint that adapts when there are no assigned students.
 - Cancel links back to the class or to the list.
 
 ## Markup & styling
