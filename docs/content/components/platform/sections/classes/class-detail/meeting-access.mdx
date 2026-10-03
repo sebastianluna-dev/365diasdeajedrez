@@ -29,7 +29,7 @@ The meeting link must not be readable before the teacher's visibility instant. I
 
 - With `meetingUrl`: an external link styled as the primary button.
 - Without it but with `meetingVisibleFromIso`: an interval ticks every second, `formatRemaining` renders days/hours/minutes or minutes/seconds, and `router.refresh()` fires when the remaining time is not positive. The first render shows "…" until the effect runs, avoiding a hydration mismatch on the number.
-- With neither: "El enlace de la videollamada aún no está disponible." (no visibility instant set by the teacher yet).
+- With neither: "El enlace de la videollamada aún no está disponible." That is what a class without a link shows: the service sends `meetingVisibleFromIso` only along with a link that is not visible yet, never for a class without one (whatever instant its row stores) and never once the instant has passed.
 
 ## Markup & styling
 

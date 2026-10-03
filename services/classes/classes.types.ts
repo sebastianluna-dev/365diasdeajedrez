@@ -75,7 +75,11 @@ export interface ClassDetail {
   meetingProviderLabel?: string;
   /** Only present when now >= meetingUrlVisibleFrom: the link never reaches the client earlier. */
   meetingUrl?: string;
-  /** ISO of when the link will become visible, for the countdown. */
+  /**
+   * ISO of when the link will become visible, for the countdown. Only present
+   * while the class HAS a link that is not visible yet: never without a link,
+   * never after the instant.
+   */
   meetingVisibleFromIso?: string;
   blocks: ClassBlockView[];
   transcript?: ClassTranscriptView;

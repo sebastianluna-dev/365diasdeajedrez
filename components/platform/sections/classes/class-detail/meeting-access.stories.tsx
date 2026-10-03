@@ -19,8 +19,8 @@ class is scheduled or live. The link never reaches the browser ahead of time:
 until the instant the teacher set, the service sends only that instant and
 this piece counts down to it, second by second; at zero it asks the router
 for a refresh, and the page comes back from the server with the link, drawn
-as the platform's button. With neither a link nor an instant it says the
-link is not available yet.
+as the platform's button. A class without a link gets neither a link nor an
+instant, and this piece says the link is not available yet.
 
 The props take an ISO instant and no clock, so the countdown stories set
 theirs relative to when the story loads (a loader reads \`Date.now()\`) and
@@ -81,5 +81,5 @@ export const LinkReady: Story = {
   args: { meetingUrl: "https://zoom.us/j/00000000000" },
 };
 
-/** Neither a link nor an instant to count down to: the link is said not to be available yet, with no countdown. */
+/** A class without a link: neither a link nor an instant to count down to, so the link is said not to be available yet. */
 export const NotAvailable: Story = {};

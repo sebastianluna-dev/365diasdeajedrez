@@ -89,6 +89,26 @@ describe("mapClassDetail", () => {
     expect(mapClassDetail(detail(), new Date(0)).meetingUrl).toBe("https://zoom.us/j/1");
   });
 
+  // The instant a row stores means nothing without a link: a countdown to it
+  // would promise a link that does not exist, and past it the countdown would
+  // ask the server for the page again and again.
+  it("sin enlace no hay cuenta atrás, ni antes ni después de la hora de visibilidad", () => {
+    const visibleFrom = new Date(when.getTime() - 30 * 60_000);
+    const row = detail({ meetingUrl: null, meetingUrlVisibleFrom: visibleFrom });
+
+    for (const now of [new Date(visibleFrom.getTime() - 1), visibleFrom, new Date(when.getTime() + 60 * 60_000)]) {
+      const view = mapClassDetail(row, now);
+      expect(view.meetingUrl).toBeUndefined();
+      expect(view.meetingVisibleFromIso).toBeUndefined();
+    }
+  });
+
+  it("sin enlace ni hora de visibilidad no manda nada", () => {
+    const view = mapClassDetail(detail({ meetingUrl: null }), when);
+    expect(view.meetingUrl).toBeUndefined();
+    expect(view.meetingVisibleFromIso).toBeUndefined();
+  });
+
   it("descarta los bloques vacíos y mapea cada tipo a su vista", () => {
     const row = detail({
       blocks: [

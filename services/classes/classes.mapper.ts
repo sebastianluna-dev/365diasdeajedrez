@@ -140,9 +140,12 @@ function mapBlock(block: ClassDetailRow["blocks"][number]): ClassBlockView | nul
 
 export function mapClassDetail(row: ClassDetailRow, now: Date): ClassDetail {
   // The meeting link is only exposed once it is visible; before that, the client
-  // receives only the date to render the countdown.
-  const visibleFrom = row.meetingUrlVisibleFrom;
-  const meetingVisible = row.meetingUrl !== null && (visibleFrom === null || now >= visibleFrom);
+  // receives only the instant it opens at, to render the countdown. That instant
+  // belongs to the link: a class without one gets no countdown whatever the row
+  // stores, since it would promise a link that does not exist and, past the
+  // instant, it would keep asking the server for the page.
+  const { meetingUrl, meetingUrlVisibleFrom: visibleFrom } = row;
+  const opensLater = meetingUrl !== null && visibleFrom !== null && now < visibleFrom;
 
   return {
     id: row.id,
@@ -159,8 +162,8 @@ export function mapClassDetail(row: ClassDetailRow, now: Date): ClassDetail {
     summary: row.summary ?? undefined,
     recordingUrl: row.recordingUrl ?? undefined,
     meetingProviderLabel: row.meetingProvider?.label,
-    meetingUrl: meetingVisible ? (row.meetingUrl ?? undefined) : undefined,
-    meetingVisibleFromIso: !meetingVisible && visibleFrom ? visibleFrom.toISOString() : undefined,
+    meetingUrl: meetingUrl !== null && !opensLater ? meetingUrl : undefined,
+    meetingVisibleFromIso: opensLater ? visibleFrom.toISOString() : undefined,
     blocks: row.blocks.map(mapBlock).filter((block): block is ClassBlockView => block !== null),
     transcript: row.transcript
       ? {
