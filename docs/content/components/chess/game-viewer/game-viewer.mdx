@@ -10,15 +10,15 @@ description: "The platform's single game viewer: board, move tree with variation
 | Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | Stylesheet | `game-viewer.comp.css` → block `.game-viewer`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | Story      | `game-viewer.stories.tsx` (`chess/GameViewer`): a game to go through, an annotated one, a lesson and the same lesson at its last move, a study's editable game, its move menu and its options menu open, and an unreadable PGN                                                                                                                                                                                                                                                                                                                                               |
-| Used by    | [`LessonViewSection`](/components/platform/sections/courses/lesson-view/lesson-view-section), [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section), [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`StudentGameViewSection`](/components/platform/sections/teacher/students/student-game-view-section), [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker), [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker)    |
+| Used by    | [`LessonBoardSection`](/components/platform/sections/courses/lesson-view/lesson-board-section), [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section), [`ClassContentRenderer`](/components/platform/shared/class-content-renderer), [`StudentGameViewSection`](/components/platform/sections/teacher/students/student-game-view-section), [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker), [`ExerciseMovePicker`](/components/platform/sections/staff/courses/exercise-move-picker)  |
 | Composes   | [`ChessBoard`](/components/chess/chess-board), [`MoveTable`](/components/chess/game-viewer/move-table), [`MoveTree`](/components/chess/game-viewer/move-tree), [`EnginePanel`](/components/chess/game-viewer/engine-panel), [`MoveContextMenu`](/components/chess/game-viewer/move-context-menu), [`useEngine`](/components/chess/game-viewer/use-engine-hook), [`usePgnEditing`](/components/chess/game-viewer/use-pgn-editing-hook), [`playMoveSound`](/components/chess/game-viewer/move-sound), [`viewer-preferences`](/components/chess/game-viewer/viewer-preferences) |
 | Uses       | `parsePgnTree`, `nodeAtPath`, `nextPathOf`, `endPathOf`, `parentPathOf` from `lib/chess/pgn-tree`<br />`numberedMoveLabel` from `lib/chess/notation`<br />`evaluationBarFill` from `lib/chess/engine-protocol`                                                                                                                                                                                                                                                                                                                                                               |
 
 ## Purpose
 
-**The** platform's game viewer. Lessons, the studies' games, class blocks, the teacher's view of a student's game and the two position pickers all mount this same component. Do not create parallel viewers: a new need is a new prop or slot here.
+**The** platform's game viewer. Lessons, the studies' games, class blocks, the teacher's view of a student's game and the two position pickers all mount this same component. Do not create parallel viewers: a new need is a new prop here, given as data.
 
-It renders a board with a notation panel next to it, the four navigation buttons plus flip, an options menu (sound, fullscreen), optional player strips, an optional engine with an evaluation bar, and slots for whatever each screen needs around it (title, badge, header actions, a footer under the board, position actions). With `editable` and `onPgnChange` it becomes an in-place editor: moves are played on the board, arrows are drawn, right-clicking a move opens its menu. There is no separate editing screen; the game is annotated where it is read.
+It renders a board with a notation panel next to it, the four navigation buttons plus flip, an options menu (sound, fullscreen), optional player strips, an optional engine with an evaluation bar, and props for what each screen needs around it: a title and a badge, the way on under the board (`onwards`, given as data), and the two slots older than the data-not-components rule (`footerActions`, `positionActions`). With `editable` and `onPgnChange` it becomes an in-place editor: moves are played on the board, arrows are drawn, right-clicking a move opens its menu. There is no separate editing screen; the game is annotated where it is read.
 
 The viewer never saves and never fetches. It receives a PGN, reports the current path and, when editing, reports the new PGN; the screen that mounts it owns persistence.
 
@@ -89,7 +89,7 @@ Block `.game-viewer` (610 lines), the largest sheet in `components/`.
 
 ## Usage
 
-Read-only, from `components/platform/sections/courses/lesson-view/lesson-view.section.tsx`:
+Read-only, from `components/platform/sections/courses/lesson-view/lesson-board.section.tsx`:
 
 ```tsx
 import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
@@ -98,21 +98,16 @@ import { GameViewer } from "@/components/chess/game-viewer/game-viewer.comp";
   pgn={lesson.pgn}
   orientation={lesson.orientation}
   moveList="flow"
-  title={`${lesson.order}. ${lesson.name}`}
-  subtitle={subtitle}
-  description={lesson.description}
+  title={lesson.name}
   badge={lesson.isPriority ? "Prioridad" : undefined}
-  skip={
-    lesson.nextLessonHref && (
-      <Link
-        href={lesson.nextLessonHref}
-        className="lesson-view__skip"
-        title="Pasar a la siguiente lección sin marcar esta"
-      >
-        Saltar
-      </Link>
-    )
-  }
+  boardTools={false}
+  onwards={{
+    skipHref: lesson.nextLessonHref,
+    skipLabel: "Saltar",
+    skipTitle: "Pasar a la siguiente lección sin marcar esta",
+    finishLabel: "Continuar",
+    finish: completeLesson.bind(null, lesson.id),
+  }}
 />;
 ```
 
