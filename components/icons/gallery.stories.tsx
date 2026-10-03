@@ -235,12 +235,10 @@ under another \`color\`. Each one is \`aria-hidden\`; the button around it
 carries the name.
 
 Here, with no stylesheet, the gallery scales each drawing to the size its main
-caller gives it (the px under the name). Three take more than \`color\`:
+caller gives it (the px under the name). Two take more than \`color\`:
 \`FlameIcon\` has an inner flame its caller paints through \`coreClassName\`
-(left unnamed here, the flame is one colour); \`GearIcon\`'s knobs are filled
-with \`--icon-knob\`, transparent unless a caller sets it; and
-\`LogoWordmarkIcon\` paints nothing by itself, so it is drawn by its real
-caller, the site's \`Logo\`.
+(left unnamed here, the flame is one colour), and \`LogoWordmarkIcon\` paints
+nothing by itself, so it is drawn by its real caller, the site's \`Logo\`.
 
 Reference: [Components › Icons](/components#icons--componentsicons) in the docs site.
 `,
