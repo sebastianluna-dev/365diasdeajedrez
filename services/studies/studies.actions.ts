@@ -192,7 +192,10 @@ export async function reorderStudyGames(studyId: string, orderedIds: string[]): 
 
   await db.$transaction(orderedIds.map((id, index) => db.game.update({ where: { id }, data: { order: index + 1 } })));
 
+  // The list lives beside the board on every game's page, so each of them
+  // is stale now, not only the study's; as the chapter collection does.
   revalidatePath(platformRoutes.studyDetail(studyId));
+  for (const id of orderedIds) revalidatePath(platformRoutes.gameDetail(studyId, id));
 }
 
 /**
