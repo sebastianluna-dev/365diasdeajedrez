@@ -4,7 +4,7 @@ description: "The coding, naming, CSS and workflow rules the codebase follows, a
 
 # Conventions
 
-These rules are enforced by review, a few tests (`proxy.test.ts`, `nav-items.test.ts`, `components/platform/border-radius.test.ts`, `components/platform/platform-tokens.test.ts`, `components/reduced-motion.test.ts`, `components/ui-verbs.test.ts`, `components/stories.test.ts`, `components/platform/type-and-space.test.ts`, `components/platform/breakpoints.test.ts`, `agent-policy.test.ts`) and habit rather than by tooling, so read them once and keep them close. `AGENTS.md` (loaded as `CLAUDE.md`) carries the short version; when the code and a rule disagree, the code wins and the rule should be fixed.
+These rules are enforced by review, a few tests (`proxy.test.ts`, `nav-items.test.ts`, `components/platform/border-radius.test.ts`, `components/platform/platform-tokens.test.ts`, `components/reduced-motion.test.ts`, `components/ui-verbs.test.ts`, `components/stories.test.ts`, `components/platform/type-and-space.test.ts`, `components/platform/breakpoints.test.ts`, `agent-policy.test.ts`, `services/shared/prisma-errors.test.ts`) and habit rather than by tooling, so read them once and keep them close. `AGENTS.md` (loaded as `CLAUDE.md`) carries the short version; when the code and a rule disagree, the code wins and the rule should be fixed.
 
 ## Files and modules
 
@@ -48,6 +48,7 @@ These rules are enforced by review, a few tests (`proxy.test.ts`, `nav-items.tes
 - A new route under `app/(platform)` must be added to `PROTECTED_PATH_PREFIXES` (`constants/platform/auth.const.ts`) **and** to the literal `matcher` in `proxy.ts`; `proxy.test.ts` fails if the two lists diverge, and also if a folder of `app/(platform)` is in neither.
 - Restricted domains are catalog tables with a stable `code`. TypeScript mirrors them as `as const` objects in `constants/platform/*-codes.const.ts`; no TS enums, no Prisma enums.
 - Lists with `@@unique([parent, order])` are reordered only through `services/shared/reorder.ts`.
+- A uniqueness conflict (`P2002`) is recognised only with `isUniqueConstraintError(error, "<index>", "<column>")` from `services/shared/prisma-errors.ts`, never with a hand-written `catch` that compares the code or reads `meta.target`: with the pg driver adapter `meta.target` is not there, and the `catch` lets a 500 out. The name has to be one of the error's names, not appear inside one. `services/shared/prisma-errors.test.ts` fails on a file that compares a code with `"P2002"` or reads `meta.target` outside the helper.
 
 ## Server actions
 

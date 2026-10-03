@@ -49,7 +49,7 @@ Add the prefix to `PROTECTED_PATH_PREFIXES` in `constants/platform/auth.const.ts
 ## Data and services
 
 **A unique-constraint race returns a 500 instead of the friendly message.**
-With the Prisma driver adapter, `P2002` carries the index name in `meta.driverAdapterError.cause.constraint.index`, not in `meta.target`. Catch it with `isUniqueConstraintError(error, "index_name")` from `services/shared/prisma-errors.ts`, which understands both shapes.
+With the Prisma driver adapter, `P2002` carries the index name in `meta.driverAdapterError.cause.constraint.index` (or, when PostgreSQL sends no name, the columns in `constraint.fields`), not in `meta.target`. Catch it with `isUniqueConstraintError(error, "Index_name_key", "column")` from `services/shared/prisma-errors.ts`, which reads every shape and compares whole names: `"slug"` matches a conflict on the `slug` column, not one on `Author_slug_key` when the form is the course's. A hand-written `catch` fails `services/shared/prisma-errors.test.ts`, which also builds the error with the installed Prisma and adapter: if an upgrade moves the name, that test is the one that says so.
 
 **Intermittent `P2002` when reordering chapters, lessons, blocks or games.**
 PostgreSQL validates `@@unique([parent, order])` row by row, so a direct swap collides. Use the plans in `services/shared/reorder.ts` (`planSwap`, `planDenseRenumber`, `planFullReorder`) inside a `$transaction`; they go through a temporary out-of-range order.
