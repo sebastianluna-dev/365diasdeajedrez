@@ -49,12 +49,14 @@
   }
 
   /* Background proportional to the frequency. It goes behind the content
-     (z-index 0 against the texts' 1) so as not to cover anything. */
+     (z-index 0 against the texts' 1) so as not to cover anything. It is the
+     accent's soft tint, a token, and not the accent under an opacity: the
+     count and the percentage are written on it in the muted grey, and the
+     pair has to be one the tokens test holds (4.5:1 in both themes). */
   & .explorer-next-moves__bar {
     position: absolute;
     inset: 0 auto 0 0;
-    background: var(--platform-accent);
-    opacity: 0.16;
+    background: var(--platform-accent-soft);
     z-index: 0;
   }
 
