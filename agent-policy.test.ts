@@ -98,6 +98,7 @@ describe("the database guard", () => {
       "npm test",
       "npm run lint",
       "npm run db:target",
+      "npm run db:generate",
       "npx prisma generate",
       "npx prisma validate",
       "npm run storybook:build",

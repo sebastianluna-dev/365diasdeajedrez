@@ -25,12 +25,12 @@ const LOCAL_HOSTS = ["localhost", "127.0.0.1", "::1", "[::1]", ""];
 /**
  * Commands that read `.env.local` and write to its databases, or run the app
  * against them (Payload pushes its schema on `next dev`). `db:target` only
- * prints the hosts, and `prisma generate`, `format` and `validate` touch no
- * database: they are left alone.
+ * prints the hosts, and `db:generate` (`prisma generate`), `prisma format` and
+ * `validate` touch no database: they are left alone.
  */
 const DATABASE_COMMANDS = [
   /\bnpm\s+run\s+(?:dev|dev:lan|start|build)\b/,
-  /\bnpm\s+run\s+db:(?!target\b)[\w:-]+/,
+  /\bnpm\s+run\s+db:(?!target\b|generate\b)[\w:-]+/,
   /\bnpm\s+run\s+(?:user|collections|stats|positions):[\w:-]+/,
   /\b(?:npx\s+|npm\s+exec\s+)?prisma\s+(?!generate\b|format\b|validate\b|--version\b|-v\b)[a-z]/,
   /\b(?:npx\s+)?tsx\s+(?:\.\/)?(?:scripts|prisma)\//,
