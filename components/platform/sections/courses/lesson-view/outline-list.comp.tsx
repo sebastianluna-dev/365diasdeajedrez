@@ -6,6 +6,10 @@ import { useEffect, useRef } from "react";
 import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import type { LessonSibling } from "@/services/courses/courses.types";
+// The rows are drawn by the column's sheet, and a stylesheet only travels
+// with the component that imports it: without this the list rendered right
+// only inside LessonOutline.
+import "./lesson-outline.comp.css";
 
 interface OutlineListProps {
   /** The chapter's lessons, in reading order. */

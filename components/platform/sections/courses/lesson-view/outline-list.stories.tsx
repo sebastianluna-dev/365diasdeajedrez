@@ -4,8 +4,6 @@ import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import { platformRoutes } from "@/lib/platform-routes";
 import type { LessonSibling } from "@/services/courses/courses.types";
 import { OutlineList } from "./outline-list.comp";
-// The list has no sheet of its own: its rows are drawn by the column's.
-import "./lesson-outline.comp.css";
 
 const COURSE = "finales-de-torres";
 const CHAPTER = 2;
@@ -66,9 +64,9 @@ done and an empty ring while it is not (in progress counts as not done). On
 every change of pathname it brings the lesson being read back into view when
 the column's scroll leaves it cut off, under the chapter's sticky head.
 
-The list has no stylesheet of its own: the story imports the column's
-(\`lesson-outline.comp.css\`) and mounts the list where \`LessonOutline\` does,
-in the column's scroller under the chapter's head — which the decorator draws
+The list has no stylesheet of its own: it imports the column's
+(\`lesson-outline.comp.css\`), and the story mounts it where \`LessonOutline\`
+does, in the column's scroller under the chapter's head — which the decorator draws
 as plain markup, since \`LessonOutline\` imports a server action. Storybook's
 router reports the lesson's path.
 
