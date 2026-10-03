@@ -63,3 +63,7 @@ WARNINGS.md
 
 # claude code: personal settings, next to the committed .claude/settings.json
 **/.claude/settings.local.json
+
+# Claude Code's isolated worktrees (agents and `--worktree` sessions): each is a
+# full checkout, and prettier reads this file to know what to skip.
+.claude/worktrees/

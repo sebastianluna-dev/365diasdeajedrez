@@ -26,5 +26,5 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".next/dev/types/**/*.ts", "**/*.mts"],
-  "exclude": ["node_modules", "docs", "storybook-static"]
+  "exclude": ["node_modules", "docs", "storybook-static", ".claude/worktrees"]
 }

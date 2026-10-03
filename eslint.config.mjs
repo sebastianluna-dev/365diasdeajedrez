@@ -104,6 +104,8 @@ const eslintConfig = defineConfig([
     "docs/**",
     // Static Storybook build (`npm run storybook:build`).
     "storybook-static/**",
+    // Claude Code's isolated worktrees: each is a full checkout of the repo.
+    ".claude/worktrees/**",
   ]),
 ]);
 
