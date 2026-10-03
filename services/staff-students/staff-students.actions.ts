@@ -12,6 +12,7 @@ import { allowAction } from "@/lib/rate-limit";
 import { z } from "zod";
 import { formEmail, formText, parseForm } from "@/services/shared/form-schema";
 import { isUniqueConstraintError } from "@/services/shared/prisma-errors";
+import { withErrorParam } from "@/services/shared/safe-return-to";
 import { createDefaultStudy } from "@/services/studies/default-study";
 import type { AccountActionState } from "./staff-students.types";
 
@@ -146,16 +147,17 @@ export async function updateStudent(userId: string, formData: FormData): Promise
   const staff = await requireStaff();
   const detailPath = staffRoutes.studentDetail(userId);
 
-  if (!(await allowAction(`${staff.user.id}:account-update`, 60, 60_000))) redirect(`${detailPath}?error=throttled`);
+  if (!(await allowAction(`${staff.user.id}:account-update`, 60, 60_000)))
+    redirect(withErrorParam(detailPath, "throttled"));
 
   const parsed = parseForm(UPDATE_SCHEMA, formData);
-  if (!parsed.ok) redirect(`${detailPath}?error=${parsed.field === "email" ? "email" : "displayName"}`);
+  if (!parsed.ok) redirect(withErrorParam(detailPath, parsed.field === "email" ? "email" : "displayName"));
   const { displayName, email } = parsed.data;
 
   try {
     await getPlatformDb().user.update({ where: { id: userId }, data: { displayName, email } });
   } catch (error) {
-    if (isEmailTaken(error)) redirect(`${detailPath}?error=emailTaken`);
+    if (isEmailTaken(error)) redirect(withErrorParam(detailPath, "emailTaken"));
     throw error;
   }
 

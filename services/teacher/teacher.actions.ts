@@ -9,6 +9,7 @@ import { teacherRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { z } from "zod";
 import { formOptionalText, formOptionalUrl, formText, parseForm } from "@/services/shared/form-schema";
+import { withErrorParam } from "@/services/shared/safe-return-to";
 
 // Server actions are reachable by direct POST: the role is ALWAYS resolved in
 // here with requireTeacher() and an id from the client is never trusted. Errors
@@ -28,9 +29,10 @@ export async function updateTeacherProfile(formData: FormData): Promise<void> {
   const { teacher, user } = await requireTeacher();
 
   const parsed = parseForm(PROFILE_SCHEMA, formData);
-  if (!parsed.ok) redirect(`${teacherRoutes.profile}?error=${parsed.field === "displayName" ? "profile" : "invalid"}`);
+  if (!parsed.ok)
+    redirect(withErrorParam(teacherRoutes.profile, parsed.field === "displayName" ? "profile" : "invalid"));
   if (!(await allowAction(`${user.id}:teacher-profile`, 60, 60_000)))
-    redirect(`${teacherRoutes.profile}?error=throttled`);
+    redirect(withErrorParam(teacherRoutes.profile, "throttled"));
 
   const { displayName, title, bio, photo, timezone } = parsed.data;
   await getPlatformDb().teacher.update({

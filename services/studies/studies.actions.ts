@@ -582,7 +582,7 @@ export async function deleteStudyGame(studyId: string, gameId: string, formData:
   if (!game) return;
 
   if (game._count.classBlocks > 0 && readIds(formData, "confirmClassBlocks").confirmClassBlocks !== "yes") {
-    redirect(`${gamePath}?error=gameInClasses`);
+    redirect(withErrorParam(gamePath, "gameInClasses"));
   }
 
   // GamePosition is `onDelete: Cascade`: the position index cleans itself.
@@ -631,7 +631,7 @@ export async function deleteStudy(studyId: string, formData: FormData): Promise<
   const citedGames = await db.classBlock.count({ where: { game: { databaseId: studyId } } });
 
   if ((study._count.games > 0 || citedGames > 0) && readIds(formData, "confirmDelete").confirmDelete !== "yes") {
-    redirect(`${studyPath}?error=confirmStudyDelete`);
+    redirect(withErrorParam(studyPath, "confirmStudyDelete"));
   }
 
   await db.gameDatabase.delete({ where: { id: study.id } });

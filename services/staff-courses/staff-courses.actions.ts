@@ -56,6 +56,7 @@ import {
 } from "@/services/shared/game-record";
 import { parseImportedGames, readImportedGames } from "@/services/shared/pgn-import";
 import { withImportReport } from "@/services/shared/pgn-import-report";
+import { withErrorParam } from "@/services/shared/safe-return-to";
 import { nextOrder, planDenseRenumber, planFullReorder, planSwap, type MoveDirection } from "@/services/shared/reorder";
 
 // Course editor. Rules that are not negotiable:
@@ -75,7 +76,7 @@ const DURATION_MAX = 100_000;
 const SLUG_SHAPE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 function fail(path: string, code: string): never {
-  redirect(`${path}?error=${code}`);
+  redirect(withErrorParam(path, code));
 }
 
 function isCode(value: string, catalog: Record<string, string>): boolean {

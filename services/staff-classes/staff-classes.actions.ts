@@ -9,6 +9,7 @@ import { platformRoutes, staffRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
 import { z } from "zod";
 import { formOptionalUrl, formText, parseForm } from "@/services/shared/form-schema";
+import { withErrorParam } from "@/services/shared/safe-return-to";
 
 // The staff does NOT own the classes: exactly two support actions and nothing
 // else. Blocks, attendance, metadata and participants belong to the teacher —
@@ -19,7 +20,7 @@ const RECORDING_SCHEMA = z.object({ recordingUrl: formOptionalUrl(2000) });
 const CANCEL_SCHEMA = z.object({ note: formText(300) });
 
 function fail(path: string, code: string): never {
-  redirect(`${path}?error=${code}`);
+  redirect(withErrorParam(path, code));
 }
 
 /** Adds or corrects the recording's link. */

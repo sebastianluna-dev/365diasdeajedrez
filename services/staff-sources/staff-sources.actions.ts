@@ -18,6 +18,7 @@ import {
   readIds,
 } from "@/services/shared/form-schema";
 import { nextOrder } from "@/services/shared/reorder";
+import { withErrorParam } from "@/services/shared/safe-return-to";
 
 // "Procedencia del recurso". Rules that are not negotiable:
 // - Every action opens with requireStaff() (they are reachable by direct POST).
@@ -33,7 +34,7 @@ const YEAR_MIN = 1400;
 const YEAR_MAX = 2100;
 
 function fail(path: string, code: string): never {
-  redirect(`${path}?error=${code}`);
+  redirect(withErrorParam(path, code));
 }
 
 const SOURCE_SCHEMA = z.object({
