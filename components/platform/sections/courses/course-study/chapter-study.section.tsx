@@ -17,9 +17,9 @@ interface ChapterStudySectionProps {
  * tags and the button that opens it.
  *
  * The chapter itself is not repeated here — its name is already at the head
- * of the page, in the frame —, and neither it nor a lesson says a figure of
- * its own: the progress of these pages is the course's, in the frame, and
- * what a lesson is worth is read by opening it.
+ * of the page, in the frame —, and neither it nor a lesson says a figure: no
+ * page of the course draws one (how far a chapter is, is the count on its
+ * card), and what a lesson is worth is read by opening it.
  *
  * The button is the same on every card, quiet: outlined in grey, with no
  * fill. The next lesson to learn is told by its band and its «Siguiente»,
