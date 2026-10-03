@@ -71,6 +71,7 @@ export function StaffClassesSection({ classes, teachers, rawFilters }: StaffClas
       </form>
 
       <PlatformTable
+        label="Clases"
         columns={[
           "Clase",
           "Profesor",

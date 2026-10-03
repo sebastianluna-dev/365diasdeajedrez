@@ -28,6 +28,7 @@ export function StudentStudyViewSection({ study }: StudentStudyViewSectionProps)
       {study.description && <p className="student-study__description">{study.description}</p>}
 
       <PlatformTable
+        label="Partidas del estudio"
         columns={["Blancas", "Negras", "Resultado", "ECO", "Evento", "Fecha"]}
         emptyLabel="Este estudio todavía no tiene partidas."
       >

@@ -91,6 +91,7 @@ export function StaffClassDetailSection({ classDetail, errorCode }: StaffClassDe
       <section className="platform-card">
         <h2 className="platform-card__title">Alumnos</h2>
         <PlatformTable
+          label="Alumnos"
           columns={["Alumno", "Email", "Asistió", "Pago", "Importe", "Referencia"]}
           emptyLabel="Esta clase no tiene alumnos inscritos."
           minWidth={860}

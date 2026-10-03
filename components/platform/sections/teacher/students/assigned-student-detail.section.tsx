@@ -109,6 +109,7 @@ export function AssignedStudentDetailSection({ student }: AssignedStudentDetailS
           Sólo lectura: puedes consultarlos y referenciar una partida en una clase, pero no modificarlos.
         </p>
         <PlatformTable
+          label="Estudios del alumno"
           columns={["Estudio", "Tipo", { label: "Partidas", align: "right" }, "Actualizado"]}
           emptyLabel="Este alumno todavía no tiene estudios propios."
           minWidth={560}

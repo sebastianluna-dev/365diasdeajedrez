@@ -12,8 +12,11 @@ import "./foundations.css";
 
 const SAMPLE = "Siguiente lección";
 
-/** A piece of a platform screen, made of the platform's own primitives and shared pieces. */
-function Sample() {
+/**
+ * A piece of a platform screen, made of the platform's own primitives and shared pieces. It is drawn twice, so
+ * its table, a named region, takes a name for each.
+ */
+function Sample({ tableLabel }: { tableLabel: string }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--platform-space-4)" }}>
       <section className="platform-card">
@@ -40,7 +43,11 @@ function Sample() {
         </div>
       </section>
       <PlatformNotice message="Cuenta creada." variant="success" />
-      <PlatformTable columns={["Clase", "Fecha", { label: "Alumnos", align: "right" }]} minWidth={320}>
+      <PlatformTable
+        label={tableLabel}
+        columns={["Clase", "Fecha", { label: "Alumnos", align: "right" }]}
+        minWidth={320}
+      >
         <PlatformTableRow>
           <PlatformTableCell strong>Finales de torres</PlatformTableCell>
           <PlatformTableCell>6 de octubre</PlatformTableCell>
@@ -77,11 +84,11 @@ function LargeScreensPage() {
         <div className="foundations__compare">
           <div className="foundations__compare-side">
             <span className="foundations__count">Below 1536px</span>
-            <Sample />
+            <Sample tableLabel="Clases, por debajo de 1536px" />
           </div>
           <div className="foundations__compare-side" style={FROM_2XL_PROPERTIES as CSSProperties}>
             <span className="foundations__count">From 1536px</span>
-            <Sample />
+            <Sample tableLabel="Clases, desde 1536px" />
           </div>
         </div>
       </section>

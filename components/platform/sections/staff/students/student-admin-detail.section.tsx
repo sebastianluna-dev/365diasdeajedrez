@@ -85,6 +85,7 @@ export function StudentAdminDetailSection({ student, teachers, errorCode }: Stud
       <section className="platform-card">
         <h2 className="platform-card__title">Clases</h2>
         <PlatformTable
+          label="Clases"
           columns={["Clase", "Profesor", "Fecha", "Estado", "Asistió", "Pago"]}
           emptyLabel="Esta cuenta no participa en ninguna clase."
           minWidth={800}

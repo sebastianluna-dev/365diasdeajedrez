@@ -24,9 +24,18 @@ const STATUS_FILTERS: { label: string; code?: ClassStatusCode }[] = [
   { label: "Canceladas", code: CLASS_STATUS.CANCELLED },
 ];
 
-function ClassesTable({ classes, emptyLabel }: { classes: TeacherClassSummary[]; emptyLabel: string }) {
+function ClassesTable({
+  label,
+  classes,
+  emptyLabel,
+}: {
+  label: string;
+  classes: TeacherClassSummary[];
+  emptyLabel: string;
+}) {
   return (
     <PlatformTable
+      label={label}
       columns={[
         "Clase",
         "Fecha",
@@ -99,17 +108,17 @@ export async function TeacherClassesSection({ statusCode }: TeacherClassesSectio
 
       <section className="teacher-classes__group">
         <h2 className="teacher-classes__group-title">Hoy</h2>
-        <ClassesTable classes={today} emptyLabel="No tienes clases hoy." />
+        <ClassesTable label="Clases de hoy" classes={today} emptyLabel="No tienes clases hoy." />
       </section>
 
       <section className="teacher-classes__group">
         <h2 className="teacher-classes__group-title">Próximas</h2>
-        <ClassesTable classes={upcoming} emptyLabel="No tienes clases próximas." />
+        <ClassesTable label="Próximas clases" classes={upcoming} emptyLabel="No tienes clases próximas." />
       </section>
 
       <section className="teacher-classes__group">
         <h2 className="teacher-classes__group-title">Pasadas</h2>
-        <ClassesTable classes={past} emptyLabel="Todavía no has impartido ninguna clase." />
+        <ClassesTable label="Clases pasadas" classes={past} emptyLabel="Todavía no has impartido ninguna clase." />
       </section>
     </div>
   );

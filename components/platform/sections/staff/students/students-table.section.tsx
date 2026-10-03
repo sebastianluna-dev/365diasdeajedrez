@@ -36,6 +36,7 @@ export async function StudentsTableSection({ query }: StudentsTableSectionProps)
       </div>
 
       <PlatformTable
+        label="Alumnos"
         columns={["Nombre", "Email", "Acceso", "Profesor activo", "Último acceso"]}
         emptyLabel={query ? "Ninguna cuenta coincide con esa búsqueda." : "Todavía no hay cuentas registradas."}
         minWidth={860}

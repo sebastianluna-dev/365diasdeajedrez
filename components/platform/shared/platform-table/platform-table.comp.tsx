@@ -8,6 +8,11 @@ export interface PlatformTableColumn {
 
 interface PlatformTableProps {
   columns: readonly (string | PlatformTableColumn)[];
+  /**
+   * What the table lists («Clases», «Estudios del alumno»): the name of its
+   * box, which takes the keyboard focus and is announced as a region.
+   */
+  label: string;
   /** Rows (`PlatformTableRow`). Empty ⇒ `emptyLabel` is rendered. */
   children?: ReactNode;
   emptyLabel?: string;
@@ -20,12 +25,19 @@ interface PlatformTableProps {
  * for the teacher and staff listings (students, classes, courses…). Server
  * component: it receives the rows as children and manages neither state nor
  * sorting (filters go through searchParams, on the server).
+ *
+ * Below `minWidth` the box scrolls sideways. A keyboard scrolls it by tabbing
+ * to a link in a row, and a table with none (an empty one, a read-only
+ * listing) would leave the columns past the edge out of its reach: so the box
+ * itself takes the focus, where the arrows scroll it, and is a region named by
+ * `label`, so that a screen reader says what was reached.
  */
-export function PlatformTable({ columns, children, emptyLabel, minWidth = 640 }: PlatformTableProps) {
+export function PlatformTable({ columns, label, children, emptyLabel, minWidth = 640 }: PlatformTableProps) {
   const hasRows = Array.isArray(children) ? children.flat().some(Boolean) : Boolean(children);
 
   return (
-    <div className="platform-table">
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a box that scrolls is reached by the keyboard to be scrolled
+    <div className="platform-table" role="region" aria-label={label} tabIndex={0}>
       <table className="platform-table__table" style={{ minWidth: `${minWidth}px` }}>
         <thead>
           <tr>

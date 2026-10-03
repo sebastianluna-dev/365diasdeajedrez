@@ -28,7 +28,7 @@ description: "The teacher's classes as three PlatformTables (today, upcoming, pa
 
 - `STATUS_FILTERS` renders "Todas", "Programadas", "En vivo", "Terminadas", "Canceladas" as links with `aria-current` on the active one.
 - The split uses the server's local midnight: `today` is within the current day, `upcoming` after it (reversed so the soonest is first), `past` before it. Being server time rather than the teacher's zone is a known approximation.
-- `ClassesTable` renders title (linked), local date and time, duration, participants, attended, status tag; `minWidth` 780.
+- `ClassesTable` renders title (linked), local date and time, duration, participants, attended, status tag; `minWidth` 780. Each of the three takes its own `label` («Clases de hoy», «Próximas clases», «Clases pasadas»), the name of its scrolling box, so the three regions are told apart.
 
 ## Markup & styling
 

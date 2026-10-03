@@ -20,6 +20,7 @@ export async function TeachersTableSection() {
       </div>
 
       <PlatformTable
+        label="Profesores"
         columns={[
           "Profesor",
           "Título",

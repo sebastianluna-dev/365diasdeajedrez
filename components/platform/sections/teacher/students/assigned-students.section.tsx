@@ -31,6 +31,7 @@ export async function AssignedStudentsSection({ query }: AssignedStudentsSection
       </form>
 
       <PlatformTable
+        label="Mis alumnos"
         columns={["Alumno", "Email", "Asignado desde", "Próxima clase conmigo", "Última actividad"]}
         emptyLabel={
           query

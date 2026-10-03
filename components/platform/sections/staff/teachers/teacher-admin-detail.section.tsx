@@ -95,6 +95,7 @@ export function TeacherAdminDetailSection({ teacher, assignable, errorCode }: Te
       <section className="platform-card">
         <h2 className="platform-card__title">Clases</h2>
         <PlatformTable
+          label="Clases"
           columns={["Clase", "Fecha", "Estado", { label: "Alumnos", align: "right" }]}
           emptyLabel="Este profesor todavía no ha programado clases."
           minWidth={620}

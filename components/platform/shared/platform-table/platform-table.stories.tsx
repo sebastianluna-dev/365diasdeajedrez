@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { userEvent } from "storybook/test";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
 import { CLASS_STATUS } from "@/constants/platform/class-codes.const";
 import { staffRoutes } from "@/lib/platform-routes";
@@ -65,6 +66,7 @@ const ROWS: StaffClassSummary[] = [
 ];
 
 interface TableArgs {
+  label: string;
   rows: StaffClassSummary[];
   emptyLabel: string;
   minWidth: number;
@@ -81,7 +83,9 @@ and the staff's listings. It is a container — the rows come as children,
 \`PlatformTableRow\` and \`PlatformTableCell\` from the same file — and it holds
 no state: filters and order go through the URL, on the server. Below
 \`minWidth\` it scrolls sideways inside its box instead of squeezing the
-columns.
+columns, and the box is a region named by \`label\` that takes the keyboard
+focus, so the columns past the edge can be reached without a pointer even
+when no row has a link.
 
 Source: \`components/platform/shared/platform-table/platform-table.comp.tsx\`.
 Reference page: [Components › PlatformTable](/components/platform/shared/platform-table) in the docs site.
@@ -89,8 +93,12 @@ Reference page: [Components › PlatformTable](/components/platform/shared/platf
       },
     },
   },
-  args: { rows: ROWS, emptyLabel: "Ninguna clase coincide con esos filtros.", minWidth: 880 },
+  args: { label: "Clases", rows: ROWS, emptyLabel: "Ninguna clase coincide con esos filtros.", minWidth: 880 },
   argTypes: {
+    label: {
+      control: "text",
+      description: "What the table lists: the name of its box, a region the keyboard reaches.",
+    },
     rows: {
       control: "object",
       description: "`StaffClassSummary[]`: the classes, as the staff's class list receives them.",
@@ -102,8 +110,8 @@ Reference page: [Components › PlatformTable](/components/platform/shared/platf
     },
   },
   // The rows as staff-classes.section.tsx writes them.
-  render: ({ rows, emptyLabel, minWidth }) => (
-    <PlatformTable columns={COLUMNS} emptyLabel={emptyLabel} minWidth={minWidth}>
+  render: ({ label, rows, emptyLabel, minWidth }) => (
+    <PlatformTable label={label} columns={COLUMNS} emptyLabel={emptyLabel} minWidth={minWidth}>
       {rows.map((item) => (
         <PlatformTableRow key={item.id}>
           <PlatformTableCell strong>
@@ -142,4 +150,16 @@ export const Scrolling: Story = {
       </div>
     ),
   ],
+};
+
+/**
+ * Empty and narrower than its `minWidth`, reached with Tab: no row has a link to stop on, so the box itself takes
+ * the focus, and the arrow keys scroll it.
+ */
+export const ReachedByKeyboard: Story = {
+  args: { rows: [] },
+  decorators: Scrolling.decorators,
+  play: async () => {
+    await userEvent.tab();
+  },
 };

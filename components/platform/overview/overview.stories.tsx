@@ -875,7 +875,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
       <Section title="Data">
         <Tile name="PlatformTable" docs="platform-shared-platformtable">
           <div className="overview__stack">
-            <PlatformTable columns={["Clase", { label: "Alumnos", align: "right" }]} minWidth={240}>
+            <PlatformTable label="Clases" columns={["Clase", { label: "Alumnos", align: "right" }]} minWidth={240}>
               <PlatformTableRow>
                 <PlatformTableCell strong>Finales de torres</PlatformTableCell>
                 <PlatformTableCell align="right">6</PlatformTableCell>
@@ -886,6 +886,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               </PlatformTableRow>
             </PlatformTable>
             <PlatformTable
+              label="Próximas clases"
               columns={["Clase", { label: "Alumnos", align: "right" }]}
               minWidth={240}
               emptyLabel="Todavía no hay clases."
