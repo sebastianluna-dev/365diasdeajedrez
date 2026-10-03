@@ -87,7 +87,6 @@ export async function listCoursesAdmin(filter: CourseAdminFilter = {}): Promise<
       chapters: { select: { _count: { select: { lessons: true } } } },
     },
     orderBy: [{ status: { order: "asc" } }, { name: "asc" }],
-    relationLoadStrategy: "join",
   });
 
   const rows = courses.map((course) => ({
@@ -165,8 +164,6 @@ export const getCourseAdminDetail = cache(async (courseId: string): Promise<Cour
       },
       sources: { select: courseSourceAdminSelect, orderBy: [{ order: "asc" }, { createdAt: "asc" }] },
     },
-    // One round trip for the course and its fourteen nested relations, not fifteen.
-    relationLoadStrategy: "join",
   });
 
   if (!course) return null;
@@ -242,7 +239,6 @@ export const getChapterAdmin = cache(
           orderBy: { order: "asc" },
         },
       },
-      relationLoadStrategy: "join",
     });
 
     if (!chapter) return null;
@@ -340,7 +336,6 @@ export async function listCollectionGames(
     // In the course view they come out grouped by chapter and in its order; within
     // one, in their own.
     orderBy: [{ database: { chapter: { order: "asc" } } }, { order: "asc" }],
-    relationLoadStrategy: "join",
   });
 
   return games.map((game) => ({
@@ -412,7 +407,6 @@ export async function getChapterGame(
         },
       },
     },
-    relationLoadStrategy: "join",
   });
   if (!game?.database.chapter) return null;
   const { chapter } = game.database;
@@ -426,7 +420,6 @@ export async function getChapterGame(
     where: { databaseId: game.databaseId },
     select: { id: true, title: true, white: true, black: true, result: { select: { label: true } } },
     orderBy: { order: "asc" },
-    relationLoadStrategy: "join",
   });
 
   return {
@@ -522,8 +515,6 @@ export async function getLessonAdmin(chapterId: string, lessonId: string): Promi
         orderBy: { order: "asc" },
       },
     },
-    // One round trip for the lesson and its ten nested relations, not eleven.
-    relationLoadStrategy: "join",
   });
 
   if (!lesson) return null;

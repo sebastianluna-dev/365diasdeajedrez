@@ -37,8 +37,6 @@ const getPublishedCourses = cache(async () => {
     where: { status: { code: COURSE_STATUS.PUBLISHED } },
     orderBy: { name: "asc" },
     include: courseContentInclude,
-    // One round trip for the course and its eleven nested relations, not twelve.
-    relationLoadStrategy: "join",
   });
 });
 
@@ -50,7 +48,6 @@ const getPublishedCourse = cache(async (courseId: string) => {
   return db.course.findFirst({
     where: { id: courseId, status: { code: COURSE_STATUS.PUBLISHED } },
     include: courseDetailInclude,
-    relationLoadStrategy: "join",
   });
 });
 
@@ -60,7 +57,6 @@ const getPublishedCourseBySlug = cache(async (slug: string) => {
   return db.course.findFirst({
     where: { slug, status: { code: COURSE_STATUS.PUBLISHED } },
     include: courseDetailInclude,
-    relationLoadStrategy: "join",
   });
 });
 
@@ -73,12 +69,10 @@ const getCourseProgressState = cache(async (courseId: string): Promise<UserCours
     db.lessonProgress.findMany({
       where: { userId: user.id, lesson: { chapter: { courseId } } },
       select: { lessonId: true, status: { select: { code: true } } },
-      relationLoadStrategy: "join",
     }),
     db.courseProgress.findUnique({
       where: { userId_courseId: { userId: user.id, courseId } },
       select: { lastLessonId: true, status: { select: { code: true } } },
-      relationLoadStrategy: "join",
     }),
     // The course settings go into the STATE and are not queried separately: they
     // are "what this student has in this course", just like their progress, and
@@ -86,7 +80,6 @@ const getCourseProgressState = cache(async (courseId: string): Promise<UserCours
     db.userCourseSettings.findUnique({
       where: { userId_courseId: { userId: user.id, courseId } },
       select: { onlyPriorityLessons: true, boardOrientation: { select: { code: true } } },
-      relationLoadStrategy: "join",
     }),
   ]);
 
@@ -111,17 +104,14 @@ const getUserProgressState = cache(async (): Promise<Map<string, UserCourseState
         status: { select: { code: true } },
         lesson: { select: { chapter: { select: { courseId: true } } } },
       },
-      relationLoadStrategy: "join",
     }),
     db.courseProgress.findMany({
       where: { userId: user.id },
       select: { courseId: true, lastLessonId: true, status: { select: { code: true } } },
-      relationLoadStrategy: "join",
     }),
     db.userCourseSettings.findMany({
       where: { userId: user.id },
       select: { courseId: true, onlyPriorityLessons: true, boardOrientation: { select: { code: true } } },
-      relationLoadStrategy: "join",
     }),
   ]);
 
@@ -179,7 +169,6 @@ async function getReviewCounts(): Promise<Map<string, number>> {
       progresses: { some: { userId: user.id, status: { code: PROGRESS_STATUS.COMPLETED } } },
     },
     select: { chapter: { select: { courseId: true } }, _count: { select: { exercises: true } } },
-    relationLoadStrategy: "join",
   });
 
   const counts = new Map<string, number>();
@@ -244,7 +233,6 @@ export async function getContinueStudyingCourse(): Promise<(CourseSummary & { la
     },
     orderBy: { course: { name: "asc" } },
     select: { courseId: true, lastLesson: { select: { name: true } } },
-    relationLoadStrategy: "join",
   });
   if (!row) return null;
 
@@ -347,11 +335,7 @@ export async function getChapterView(courseId: string, chapterOrder: number): Pr
   // The course is loaded WITHOUT the PGN of its lessons, which is most of its
   // weight; the list shows the moves of each lesson, so those of this chapter
   // alone are read here.
-  const contents = await db.lesson.findMany({
-    where: { chapterId },
-    select: { id: true, ...lessonPgnSelect },
-    relationLoadStrategy: "join",
-  });
+  const contents = await db.lesson.findMany({ where: { chapterId }, select: { id: true, ...lessonPgnSelect } });
   const games = new Map<string, GameMoves>();
   for (const lesson of contents) {
     const game = gameMoves(lessonPgnOf(lesson));
@@ -392,7 +376,6 @@ export async function getLessonView(lessonId: string): Promise<LessonView | null
       exercises: { select: { id: true } },
       chapter: { select: { courseId: true } },
     },
-    relationLoadStrategy: "join",
   });
   if (!lesson) return null;
 

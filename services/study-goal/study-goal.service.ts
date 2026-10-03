@@ -45,7 +45,6 @@ async function minutesTodayOf(userId: string, today: string): Promise<number> {
   const rows = await getPlatformDb().lessonProgress.findMany({
     where: { userId, completedAt: { gte: startOfDay(today, STUDY_DAY_TIMEZONE) } },
     select: { lesson: { select: { estimatedDuration: true } } },
-    relationLoadStrategy: "join",
   });
   return rows.reduce((total, row) => total + (row.lesson.estimatedDuration ?? 0), 0);
 }

@@ -31,13 +31,11 @@ export async function getTeacherDashboard(): Promise<TeacherDashboard> {
       where: { teacherId: teacher.id, scheduledAt: { gte: dayStart, lt: dayEnd } },
       include: teacherClassBriefInclude,
       orderBy: { scheduledAt: "asc" },
-      relationLoadStrategy: "join",
     }),
     db.class.findMany({
       where: { teacherId: teacher.id, scheduledAt: { gte: dayEnd, lt: windowEnd } },
       include: teacherClassBriefInclude,
       orderBy: { scheduledAt: "asc" },
-      relationLoadStrategy: "join",
     }),
     db.teacherStudent.count({ where: { teacherId: teacher.id, endedAt: null } }),
     // "Pending documentation": classes already finished without attendance marked or

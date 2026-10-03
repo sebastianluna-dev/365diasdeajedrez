@@ -4,7 +4,7 @@ description: "The teacher panel (students, classes, class blocks, profile) and t
 
 # Teacher & staff panels
 
-Both panels are ordinary platform pages with a stricter border: `requireTeacher()` / `requireStaff()` as the first `await`, ownership inside every `where`, and guards before writes. Their reads with nested relations use the join strategy ([Data access](/architecture/data-access)), so the teacher's class with its roll and its blocks, and the staff's course, lesson and account, are one query each instead of eight to fifteen; the two that bring every game of a study or of several (`getStudentStudy`, `listReferenceableGames`) keep the default until they are paginated. Error codes map to `TEACHER_ERROR_MESSAGES` and `STAFF_ERROR_MESSAGES` in `constants/platform/`.
+Both panels are ordinary platform pages with a stricter border: `requireTeacher()` / `requireStaff()` as the first `await`, ownership inside every `where`, and guards before writes. Error codes map to `TEACHER_ERROR_MESSAGES` and `STAFF_ERROR_MESSAGES` in `constants/platform/`.
 
 ## Teacher panel — `/profesor`
 

@@ -39,7 +39,6 @@ export async function listAllClasses(filters: StaffClassFilters = {}): Promise<S
       participants: { where: { attended: true }, select: { userId: true } },
     },
     orderBy: { scheduledAt: "desc" },
-    relationLoadStrategy: "join",
   });
 
   return rows.map((row) => ({
@@ -92,11 +91,10 @@ export async function getClassAdminDetail(classId: string): Promise<StaffClassDe
         },
         transcript: { select: { text: true, status: { select: { code: true, label: true } } } },
       },
-      relationLoadStrategy: "join",
     }),
     // The blocks are mapped with the STUDENT's mapper: support has to see exactly
     // what whoever attended the class sees.
-    db.class.findUnique({ where: { id: classId }, include: classDetailInclude, relationLoadStrategy: "join" }),
+    db.class.findUnique({ where: { id: classId }, include: classDetailInclude }),
   ]);
 
   if (!row || !blocksRow) return null;

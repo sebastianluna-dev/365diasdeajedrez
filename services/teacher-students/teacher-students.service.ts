@@ -60,7 +60,6 @@ export async function getAssignedStudents(query?: string): Promise<AssignedStude
       student: { select: { id: true, displayName: true, email: true } },
     },
     orderBy: { student: { displayName: "asc" } },
-    relationLoadStrategy: "join",
   });
 
   if (assignments.length === 0) return [];
@@ -81,7 +80,6 @@ export async function getAssignedStudents(query?: string): Promise<AssignedStude
       },
       select: { userId: true, class: { select: { title: true, scheduledAt: true } } },
       orderBy: { class: { scheduledAt: "asc" } },
-      relationLoadStrategy: "join",
     }),
   ]);
 
@@ -134,7 +132,6 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
         },
         lastLesson: { select: { name: true } },
       },
-      relationLoadStrategy: "join",
     }),
     db.classParticipant.findMany({
       where: { userId: studentId, class: { teacherId: teacher.id } },
@@ -145,13 +142,11 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
         },
       },
       orderBy: { class: { scheduledAt: "desc" } },
-      relationLoadStrategy: "join",
     }),
     db.gameDatabase.findMany({
       where: { userId: studentId },
       include: studySummaryInclude,
       orderBy: [{ isDefault: "desc" }, { updatedAt: "desc" }],
-      relationLoadStrategy: "join",
     }),
     db.userActivity.findMany({
       where: { userId: studentId },
@@ -163,14 +158,12 @@ export async function getAssignedStudentDetail(studentId: string): Promise<Assig
       },
       orderBy: { occurredAt: "desc" },
       take: ACTIVITY_LIMIT,
-      relationLoadStrategy: "join",
     }),
     // Completed lessons with their course, in ONE query: the percentage per course
     // is counted in memory instead of with a query per course.
     db.lessonProgress.findMany({
       where: { userId: studentId, status: { code: PROGRESS_STATUS.COMPLETED } },
       select: { lesson: { select: { chapter: { select: { courseId: true } } } } },
-      relationLoadStrategy: "join",
     }),
     // The studies' totals: the include's own count is the cited games (see
     // `studySummaryInclude`), so the total comes in one query for all of them.
@@ -251,9 +244,6 @@ export async function getStudentStudy(studentId: string, studyId: string): Promi
       user: { studentAssignments: { some: { teacherId: teacher.id, endedAt: null } } },
     },
     include: studyDetailInclude,
-    // Not joined, unlike the student's own `getStudyById`: this brings EVERY game of
-    // the study, not one page of them, and a to-many with no bound is where the join
-    // strategy builds one large JSON array. Paginate it first, then join it.
   });
   return row ? mapStudentStudyDetail(studentId, row) : null;
 }
@@ -270,7 +260,6 @@ export async function getStudentGame(studentId: string, studyId: string, gameId:
       },
     },
     include: gameViewInclude,
-    relationLoadStrategy: "join",
   });
   return row ? mapStudentGameView(studentId, row) : null;
 }
