@@ -8,13 +8,14 @@ import type {
   GameView,
   StudentOption,
   StudyDetail,
+  StudyGameItem,
   StudyKindOption,
 } from "@/services/studies/studies.types";
 import { canShareStudy } from "@/services/studies/study-rules";
 import { EditGame } from "@/components/platform/shared/edit-game/edit-game.comp";
-import { updateGameDetails } from "@/services/studies/studies.actions";
+import { GameList, type GameListItem } from "@/components/platform/shared/game-list/game-list.comp";
+import { reorderStudyGames, updateGameDetails } from "@/services/studies/studies.actions";
 import { DeleteGame } from "./delete-game.comp";
-import { GameList } from "./game-list.comp";
 import "./game-aside.comp.css";
 
 interface GameAsideProps {
@@ -47,6 +48,21 @@ function metaCells(game: GameView): { key: string; value: string }[] {
     { key: "ECO", value: game.eco ?? "—" },
     { key: "Resultado", value: game.resultLabel },
   ];
+}
+
+/**
+ * A game as the list names it: the title the student gave it heads the row —
+ * without it, `label` already falls back to the round, the event or its
+ * position within the study — and who played it is the second line.
+ */
+function listItem(game: StudyGameItem): GameListItem {
+  return {
+    id: game.id,
+    name: game.title ?? game.label,
+    players: `${game.white} — ${game.black}`,
+    resultLabel: game.resultLabel,
+    href: game.href,
+  };
 }
 
 /**
@@ -104,7 +120,11 @@ export function GameAside({ game, study, results, classGames, kinds, students, p
           )}
         </div>
 
-        <GameList studyId={study.id} siblings={study.games} currentId={game.id} canReorder={canReorder} />
+        <GameList
+          games={study.games.map(listItem)}
+          currentId={game.id}
+          onReorder={canReorder ? reorderStudyGames.bind(null, study.id) : undefined}
+        />
 
         {study.pageCount > 1 && (
           <nav className="game-aside__pages" aria-label="Páginas de partidas">

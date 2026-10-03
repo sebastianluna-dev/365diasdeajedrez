@@ -7,11 +7,11 @@ import { CSS } from "@dnd-kit/utilities";
 import { useLingering } from "@/components/chess/game-viewer/use-lingering.hook";
 import { GripIcon } from "@/components/icons/grip-icon.comp";
 import { MoreIcon } from "@/components/icons/more-icon.comp";
+import { SortableDnd } from "@/components/platform/shared/sortable-dnd/sortable-dnd.comp";
+import { useSortableRows } from "@/components/platform/shared/sortable-dnd/use-sortable-rows.hook";
+import { useSortableStep, type SortableSteps } from "@/components/platform/shared/sortable-dnd/use-sortable-step.hook";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { CONTENT_ROLE } from "@/constants/platform/course-codes.const";
-import { useSortableRows } from "../use-sortable-rows.hook";
-import { SortableDnd } from "../sortable-dnd.comp";
-import { useSortableStep, type SortableSteps } from "../use-sortable-step.hook";
 import "./syllabus-list.comp.css";
 
 export interface SyllabusItem {
@@ -321,7 +321,7 @@ function Row({ item, number, noun, deleteAction, deleteFieldName }: RowProps & {
  * Each row carries its number on a tile, its facts at the end and «Editar» as
  * a button; behind the three dots wait «Subir» and «Bajar», which reorder
  * without dragging, and what destroys, only where the server would allow it.
- * Dragging is dnd-kit ([`SortableDnd`](../sortable-dnd.comp.tsx)), and the
+ * Dragging is dnd-kit ([`SortableDnd`](../../../../shared/sortable-dnd/sortable-dnd.comp.tsx)), and the
  * order itself — optimistic, saved in a transition — is `useSortableRows`.
  */
 export function SyllabusList({

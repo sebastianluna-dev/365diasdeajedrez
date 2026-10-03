@@ -1,0 +1,71 @@
+---
+description: "The games beside the board, in a student's study and in a chapter's collection: five rows tall with a scroll of its own, the current one centred on arrival, and for whoever may, dragged, moved from the keyboard or stepped with «Subir» and «Bajar» into a new order."
+---
+
+# `GameList`
+
+Also the `GameListItem` type.
+
+|            |                                                                                                                                                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/game-list/game-list.comp.tsx`                                                                                                                                                                      |
+| Kind       | Client Component                                                                                                                                                                                                               |
+| Stylesheet | `game-list.comp.css` → block `.game-list`                                                                                                                                                                                      |
+| Story      | `game-list.stories.tsx` (`platform/shared/GameList`): a collection that can be put in order, the same list as links only, and a game stepped down by its `play` function; the order goes to a spy                              |
+| Used by    | [`GameAside`](/components/platform/sections/studies/game-view/game-aside) (a student's study), [`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section) (a chapter's collection, in its aside) |
+| Composes   | [`SortableDnd`](/components/platform/shared/sortable-dnd), with `useSortableRows` and `useSortableStep`                                                                                                                        |
+| Uses       | `useSortable` from `@dnd-kit/sortable`; `ArrowUpIcon`, `GripIcon`                                                                                                                                                              |
+
+## Purpose
+
+The games of a study or of a chapter's collection, beside the board, to jump between them without going back — and, for whoever may, to put them in the order they are to be read in. The two screens had a list each, the same rows written twice with the same stylesheet: the study's still moved on the browser's own drag events (`draggable`, `onDragOver`), with no gap opening where the row would land and nothing announced, while the chapter's was already on [`SortableDnd`](/components/platform/shared/sortable-dnd). Since 2026-10-03 they are this one piece, on dnd-kit, and each aside hands it its games and its bound action.
+
+## Props
+
+| Prop        | Type                                      | Required | Meaning                                                                                                                                                                                     |
+| ----------- | ----------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `games`     | `GameListItem[]`                          | yes      | `{ id, name, players?, resultLabel, href }[]`, in their order, the current one included. `name` heads the row; `players` is the second line, left out when the name already is the pairing. |
+| `currentId` | `string`                                  | yes      | The current game: its row gets `aria-current="page"` and the active state, and is centred in the list.                                                                                      |
+| `onReorder` | `(orderedIds: string[]) => Promise<void>` | no       | Saves a new order, a server action already bound to its study or chapter. Without it the rows are links only: the aside leaves it out where nobody may reorder.                             |
+
+## Behaviour
+
+- **Rows** show the game's name — in a study, the student's title or the mapper's `label` fallback (round, event or position); in a collection, its label —, who played it as a second line, and the result. Long names are cut, with a `title` tooltip.
+- **Five rows tall.** The block caps its height at five games (`calc(5 * 58px + 4 * 2px + 16px)`) and scrolls the rest on its own, so a long study does not push the record off the screen. On arrival, and whenever `currentId` changes, an effect scrolls the current row into the middle of the list by arithmetic on its offset, so only the list moves and never the page.
+- **Reordering**, only with `onReorder`. Each row is dragged by its grip and, from the keyboard, picked up on the grip with space and moved with the arrows, through [`SortableDnd`](/components/platform/shared/sortable-dnd), which opens the gap where the row would land and says everything out loud in Spanish. The order is applied at once and the whole list goes to `onReorder` in a transition (`useSortableRows`); new `games` from the server replace it during render.
+- **«Subir» and «Bajar»** are two arrows at the end of each row, one above the other: the row moves one place with a single click, for whoever cannot hold a drag (WCAG 2.5.7, 2026-10-03), through the same `onMove` a drop calls (`useSortableStep`), and `SortableDnd` says where it landed. At the ends the one that would leave the list stays, `aria-disabled`, drawn like a disabled row action. They are out of the Tab order (`tabIndex={-1}`): the keyboard already moves the row from its grip, and two more stops per game would double the way through a list one comes to in order to jump between games; a screen reader still finds them, and a voice command by their name. A step keeps the focus on the arrow that was pressed, if it had it: React moves the row's node, which drops the focus, and the arrow takes it back once React is done.
+- **The handles stay out of the way** until the list is hovered, or a row holds the focus (`:focus-within`): what one comes here for is to jump between games, not to sort them. Where nothing hovers — a touch screen, `(hover: none)` — they are always drawn, since nothing there would ever bring them out.
+
+## Markup & styling
+
+Block `.game-list` (208 lines), the `<ul>` itself.
+
+**Elements:** `.game-list__row`, `.game-list__grip`, `.game-list__item`, `.game-list__main`, `.game-list__name`, `.game-list__players`, `.game-list__result`, `.game-list__steps`, `.game-list__step`, `.game-list__step-icon`
+
+**Modifiers and states:** `.game-list__row_state_dragging` (lifted, with the card's shadow), `.game-list__item_state_active`, `.game-list__step_direction_up`, `.game-list__step_direction_down` (the same arrow, turned), `.game-list__step[aria-disabled="true"]`
+
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-border-strong`, `--platform-shadow-card`, `--platform-surface`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-type-md`, `--platform-type-sm`, `--platform-space-0-5`, `--platform-space-1`, `--platform-space-2`, `--platform-space-3`
+
+No width media queries; `(hover: none)` draws the handles, and `(prefers-reduced-motion: reduce)` drops their fade.
+
+## Usage
+
+From `components/platform/sections/studies/game-view/game-aside.comp.tsx`, where the order can only be changed with the whole study in hand (one page):
+
+```tsx
+import { GameList } from "@/components/platform/shared/game-list/game-list.comp";
+
+<GameList
+  games={study.games.map(listItem)}
+  currentId={game.id}
+  onReorder={canReorder ? reorderStudyGames.bind(null, study.id) : undefined}
+/>;
+```
+
+From `components/platform/sections/staff/courses/chapter-game/chapter-game-aside.comp.tsx`, always sortable: `onReorder={reorderChapterGames.bind(null, game.courseId, game.chapterId)}`.
+
+## Related
+
+- [`GameAside`](/components/platform/sections/studies/game-view/game-aside), which decides whether the study's list can be reordered and draws the pages nav under it.
+- [`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section), the staff's screen for a game of a chapter's collection.
+- [`SortableDnd`](/components/platform/shared/sortable-dnd), the drag and drop, and the step, it is wired with.

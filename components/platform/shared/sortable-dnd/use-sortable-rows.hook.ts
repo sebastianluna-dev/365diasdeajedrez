@@ -19,7 +19,7 @@ interface UseSortableRowsOptions<T> {
    * at the end — and so is neither moved nor part of the order that is sent.
    */
   isFixed: (row: T) => boolean;
-  /** Saves the new order. Server action already bound to its course or chapter. */
+  /** Saves the new order. Server action already bound to its course, chapter or study. */
   onReorder: (orderedIds: string[]) => Promise<void>;
 }
 

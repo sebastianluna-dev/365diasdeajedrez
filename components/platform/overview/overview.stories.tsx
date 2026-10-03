@@ -86,6 +86,7 @@ import { EditGame } from "@/components/platform/shared/edit-game/edit-game.comp"
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { FormField, FormFieldset } from "@/components/platform/shared/form-field/form-field.comp";
 import { GameFields } from "@/components/platform/shared/game-fields/game-fields.comp";
+import { GameList } from "@/components/platform/shared/game-list/game-list.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
 import { PlatformChoiceCards } from "@/components/platform/shared/platform-choice-cards/platform-choice-cards.comp";
@@ -1125,6 +1126,23 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               />
             </div>
           </nav>
+        </Tile>
+        <Tile name="GameList" docs="platform-shared-gamelist" surface>
+          <GameList
+            games={[
+              {
+                id: "g1",
+                name: "Una celada en la apertura",
+                players: "Fischer — Sherwin",
+                resultLabel: "1-0",
+                href: "#",
+              },
+              { id: "g2", name: "Lombardy — Fischer", resultLabel: "0-1", href: "#" },
+              { id: "g3", name: "La partida del siglo", players: "Byrne — Fischer", resultLabel: "0-1", href: "#" },
+            ]}
+            currentId="g2"
+            onReorder={async () => undefined}
+          />
         </Tile>
         <Tile name="PlatformNav" docs="platform-sections-shell-platformnav" wide surface>
           <PlatformNav groups={buildPlatformNavGroups({ isTeacher: false, isStaff: true })} />

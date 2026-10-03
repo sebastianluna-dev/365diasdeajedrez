@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { EditGame } from "@/components/platform/shared/edit-game/edit-game.comp";
+import { GameList } from "@/components/platform/shared/game-list/game-list.comp";
 import { staffRoutes } from "@/lib/platform-routes";
-import { updateChapterGameDetails } from "@/services/staff-courses/staff-courses.actions";
+import { reorderChapterGames, updateChapterGameDetails } from "@/services/staff-courses/staff-courses.actions";
 import type { CatalogOption, ChapterGameDetail } from "@/services/staff-courses/staff-courses.types";
-import { ChapterGameList } from "./chapter-game-list.comp";
 import "./chapter-game-aside.comp.css";
 
 interface ChapterGameAsideProps {
@@ -57,11 +57,17 @@ export function ChapterGameAside({ game, results }: ChapterGameAsideProps) {
           </Link>
         </div>
 
-        <ChapterGameList
-          games={game.siblings}
+        {/* Every game of a collection is the staff's to put in order. */}
+        <GameList
+          games={game.siblings.map((sibling) => ({
+            id: sibling.id,
+            name: sibling.label,
+            players: sibling.players,
+            resultLabel: sibling.resultLabel,
+            href: sibling.href,
+          }))}
           currentId={game.id}
-          courseId={game.courseId}
-          chapterId={game.chapterId}
+          onReorder={reorderChapterGames.bind(null, game.courseId, game.chapterId)}
         />
       </section>
 

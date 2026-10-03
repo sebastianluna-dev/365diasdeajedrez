@@ -38,9 +38,10 @@ function positionOf(id: string | number | undefined, items: { id: string }[]): n
 }
 
 /**
- * The drag and drop of a sortable list of the panel: **dnd-kit** set up once
- * for all of them — the chapters of a course, the lessons of a chapter, the
- * games of a collection. It is only the wiring — sensors, the sortable context
+ * The drag and drop of a sortable list of the platform: **dnd-kit** set up
+ * once for all of them — the chapters of a course, the lessons of a chapter,
+ * the games of a chapter's collection or of a student's study. It is only the
+ * wiring — sensors, the sortable context
  * and what is said out loud —; the rows are what is given to it, and each one
  * takes its own place with `useSortable`.
  *
@@ -103,7 +104,7 @@ export function SortableDnd({ items, noun, onMove, children }: SortableDndProps)
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
-      // A chapter only goes up or down, and never out of its list.
+      // A row only goes up or down, and never out of its list.
       modifiers={[restrictToVerticalAxis, restrictToParentElement]}
       accessibility={{ announcements, screenReaderInstructions: instructions }}
       onDragStart={() => setStepSaid("")}

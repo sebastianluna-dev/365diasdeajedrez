@@ -37,6 +37,8 @@ const ON_THE_SHEET = ["platform/", "chess/", "icons/"];
 /** The stories of those products without a tile on the sheet, and why. */
 const NOT_ON_THE_SHEET: Record<string, string> = {
   "platform/shared/CurrentPathField": "it draws nothing: a hidden input that sends the current path",
+  "platform/shared/SortableDnd":
+    "it draws nothing of its own: the wiring of the lists it wraps, whose tiles (GameList, SyllabusList) show it",
 };
 
 /** A component file: a piece (`.comp.tsx`) or a section (`.section.tsx`). */

@@ -1,0 +1,65 @@
+---
+description: "The drag and drop of the platform's sortable lists: dnd-kit set up once — sensors, the sortable context, the modifiers that keep a row in its list, and the announcements, in Spanish — plus the one-place step that reorders without dragging and the optimistic order."
+---
+
+# `SortableDnd`
+
+Also `useSortableStep`, `stepTarget` and the `SortableSteps` type, in `use-sortable-step.hook.ts`, and `useSortableRows`, in `use-sortable-rows.hook.ts`.
+
+|            |                                                                                                                                                                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Files      | `components/platform/shared/sortable-dnd/sortable-dnd.comp.tsx`, `use-sortable-step.hook.ts` (the step a row asks for), `use-sortable-rows.hook.ts` (the order)                                                                                                                                                     |
+| Kind       | Client Component; two hooks                                                                                                                                                                                                                                                                                         |
+| Stylesheet | `sortable-dnd.comp.css` → block `.sortable-dnd`: the status line a screen reader reads after a step, visually hidden                                                                                                                                                                                                |
+| Story      | `sortable-dnd.stories.tsx` (`platform/shared/SortableDnd`): the plainest list it can wrap, five rows with a grip and «Subir» and «Bajar» as words, and a step taken by its `play` function; the order goes to a spy. No tile on the overview sheet: it draws nothing of its own, and the lists it wraps have theirs |
+| Used by    | [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list) (chapters and lessons), [`GameList`](/components/platform/shared/game-list) (the games of a study or of a chapter's collection)                                                                                                         |
+| Uses       | `DndContext`, `PointerSensor`, `KeyboardSensor` from `@dnd-kit/core`; `SortableContext`, `verticalListSortingStrategy`, `sortableKeyboardCoordinates` from `@dnd-kit/sortable`; `restrictToVerticalAxis`, `restrictToParentElement` from `@dnd-kit/modifiers`                                                       |
+| Tests      | `use-sortable-step.hook.test.ts`, on `stepTarget`                                                                                                                                                                                                                                                                   |
+
+## Purpose
+
+The wiring of [dnd-kit](https://dndkit.com) for every sortable list of the platform, in one place: the rows it wraps ask `useSortable` where they are and `useSortableStep` how to move one place, and the order they end up in is `useSortableRows`. It is a container — `children`, and nothing drawn but a line for the ear — which is why it takes them. It lived beside the syllabus until the study's games moved onto it (2026-10-03): a piece belongs in `shared/` once a second section needs it.
+
+## Props
+
+| Prop       | Type                                         | Required | Meaning                                                                                                                 |
+| ---------- | -------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `items`    | `{ id: string; name: string }[]`             | yes      | The items that can be moved, in the order they are drawn; the fixed ones are left out. The names are what is announced. |
+| `noun`     | `string`                                     | yes      | What one item is called: "capítulo", "lección", "partida". Its article is taken from it.                                |
+| `onMove`   | `(activeId: string, overId: string) => void` | yes      | Applies the move. `overId` is the item whose place the dragged one takes.                                               |
+| `children` | `ReactNode`                                  | yes      | The list itself.                                                                                                        |
+
+## `useSortableStep`
+
+```ts
+function useSortableStep(id: string): SortableSteps; // { up: (() => void) | null; down: (() => void) | null }
+```
+
+What a row's «Subir» and «Bajar» call. `up` takes the place of the item above, `down` the place of the item below, each through the same `onMove` a drop calls; `null` where the row is already at that end of `items`, so the control can be disabled there. Outside a `SortableDnd`, both are `null`.
+
+Which neighbour that is, is `stepTarget(ids, id, offset)`: the id above (`-1`) or below (`1`), or `null` at that end or for an id that is not in the order. It is a pure function, and `use-sortable-step.hook.test.ts` holds it; `SortableDnd` calls it too, to say where the row landed.
+
+## `useSortableRows`
+
+```ts
+function useSortableRows<T extends { id: string }>(options: {
+  items: T[];
+  isFixed: (row: T) => boolean;
+  onReorder: (orderedIds: string[]) => Promise<void>;
+}): { rows: T[]; moveById: (activeId: string, overId: string) => void; numbers: Map<string, number> };
+```
+
+The order of a sortable list, without its looks and without the gesture. `moveById` is what `SortableDnd`'s `onMove` is given: the new order is applied on the client at once and sent to `onReorder` in a transition, without waiting for the answer, because a reorder is where a flicker shows most. New `items` from the server replace the state during render, not in an effect, so a refused change puts the row back without painting the old list first. A row `isFixed` says has a fixed place (the syllabus's introduction and closing): it is neither moved nor sent, and `numbers` counts only the others.
+
+## Behaviour
+
+- **The pointer travels 5px before a drag starts** (`activationConstraint: { distance: 5 }`): without it, pressing a link or a row action inside a draggable row would begin a drag instead.
+- **The keyboard moves a row without dragging at all**: space picks it up, the arrows move it, space drops it, escape puts it back (`KeyboardSensor` with `sortableKeyboardCoordinates`). Dragging has no keyboard equivalent, so this is the accessible way to reorder with the keyboard.
+- **A pointer moves a row without dragging too**, one place per click (`useSortableStep`): a drag is a path the pointer has to hold, and whoever cannot — a tremor, a head pointer, a touch screen that scrolls instead — needs single clicks (WCAG 2.5.7, 2026-10-03). The list cannot tell a step from a drop: both reach `onMove` with the neighbour's id.
+- **A row only goes up or down, and never out of its list** (`restrictToVerticalAxis`, `restrictToParentElement`), and the one it would displace is found with `closestCenter`.
+- **Everything is announced in Spanish** — taken, where it would land, where it was left, cancelled — because the library's own announcements are English. The instructions read to whoever focuses a handle are Spanish too. dnd-kit only speaks for its own drags, so a step is said in a status line of this component's own (`.sortable-dnd`, `role="status"`, visually hidden), in the words of a drop: `«El rey en el centro» queda en la posición 3 de 5.` It is emptied when a drag starts, so the same landing said again after a drag is still a change, and is read.
+
+## Related
+
+- [`SyllabusList`](/components/platform/sections/staff/courses/syllabus-list), the chapters of a course and the lessons of a chapter, with «Subir» and «Bajar» in each row's menu.
+- [`GameList`](/components/platform/shared/game-list), the games of a study or of a chapter's collection beside the board, with «Subir» and «Bajar» as two arrows at the end of each row.
