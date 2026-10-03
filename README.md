@@ -171,7 +171,7 @@ This version of Next.js brings breaking changes with respect to what models usua
 
 ## Coding agents
 
-`.claude/settings.json` is the repository's Claude Code policy, and it only restricts: Claude never reads or edits `.env.local`/`.env` and never forces a push; it asks before any push (a push to `main` deploys Production), before the scripts that write to a database and before rewriting history; and it adds no attribution to commits or pull requests. Personal rules go in `.claude/settings.local.json`, which git ignores. `.mcp.json` offers Next's development MCP server (`next-devtools-mcp`, pinned), which Claude Code asks about before using. `docs/`, "Conventions", has the full list and its limits.
+`.claude/settings.json` is the repository's Claude Code policy, and it only restricts: Claude never reads or edits `.env.local`/`.env` and never forces a push; it asks before any push (a push to `main` deploys Production), before the scripts that write to a database and before rewriting history; a hook (`.claude/hooks/database-target-guard.mjs`) also asks before any command that uses the databases while `.env.local` points at a managed one; and it adds no attribution to commits or pull requests. Personal rules go in `.claude/settings.local.json`, which git ignores. `.mcp.json` offers Next's development MCP server (`next-devtools-mcp`, pinned), which Claude Code asks about before using. `docs/`, "Conventions", has the full list and its limits.
 
 ## Documentation
 

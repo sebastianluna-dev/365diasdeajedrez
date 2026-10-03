@@ -54,5 +54,19 @@
     ],
     "disableBypassPermissionsMode": "disable"
   },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/database-target-guard.mjs\" || exit 2",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
   "attribution": { "commit": "", "pr": "", "sessionUrl": false }
 }

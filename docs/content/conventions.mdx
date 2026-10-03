@@ -4,7 +4,7 @@ description: "The coding, naming, CSS and workflow rules the codebase follows, a
 
 # Conventions
 
-These rules are enforced by review, a few tests (`proxy.test.ts`, `nav-items.test.ts`, `components/platform/border-radius.test.ts`, `components/platform/platform-tokens.test.ts`, `components/reduced-motion.test.ts`, `components/ui-verbs.test.ts`, `components/stories.test.ts`, `components/platform/type-and-space.test.ts`, `components/platform/breakpoints.test.ts`) and habit rather than by tooling, so read them once and keep them close. `AGENTS.md` (loaded as `CLAUDE.md`) carries the short version; when the code and a rule disagree, the code wins and the rule should be fixed.
+These rules are enforced by review, a few tests (`proxy.test.ts`, `nav-items.test.ts`, `components/platform/border-radius.test.ts`, `components/platform/platform-tokens.test.ts`, `components/reduced-motion.test.ts`, `components/ui-verbs.test.ts`, `components/stories.test.ts`, `components/platform/type-and-space.test.ts`, `components/platform/breakpoints.test.ts`, `agent-policy.test.ts`) and habit rather than by tooling, so read them once and keep them close. `AGENTS.md` (loaded as `CLAUDE.md`) carries the short version; when the code and a rule disagree, the code wins and the rule should be fixed.
 
 ## Files and modules
 
@@ -89,6 +89,8 @@ These rules are enforced by review, a few tests (`proxy.test.ts`, `nav-items.tes
 - `npm run db:backup`: it writes to no database, but it reads all of one — accounts and password hashes — onto the disk.
 - `git filter-branch`, `git filter-repo`, `git reset --hard` and `git clean`: rewritten history and discarded work.
 - `gh repo edit` (it can change the repository's visibility), scheduling a job (`CronCreate`, `CronDelete`) and editing `.claude/settings.json` or `.claude/settings.local.json`.
+
+**Ask when the database is not this machine** (a hook): the rules above see a command's text, not where it writes, and `npm run db:migrate`, `npm run dev` (Payload pushes its schema), `stats:rebuild`, `positions:index`, `prisma …` or a `tsx scripts/…` are harmless against the container and destructive against the managed database. So the policy registers a `PreToolUse` hook on Bash, `.claude/hooks/database-target-guard.mjs`: for a command that uses the databases `.env.local` names, it reads `PLATFORM_DATABASE_URL` and `DATABASE_URI` the way dotenv does (the environment, then `.env.local`, then `.env`) and answers "ask" when either is not localhost — naming the variable, never the host or the URL. A command that touches no database gets no answer and goes on as before. It fails closed: an input or a file it cannot read gets "ask", and it is launched as `node … || exit 2`, so a hook that cannot start blocks the call. `agent-policy.test.ts` reads `.claude/settings.json` as Claude Code would (an invalid file is skipped whole, deny rules included), holds its main rules and runs the hook against a local and a managed folder.
 
 It also sets `disableBypassPermissionsMode`, so no session can skip the prompts, and turns Claude's attribution off (`"attribution": { "commit": "", "pr": "", "sessionUrl": false }`): no `Co-Authored-By` trailer on a commit, no "Generated with" line or session link on a pull request.
 
