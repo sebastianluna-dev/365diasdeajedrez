@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { meetingRefreshDelay } from "./meeting-refresh";
 import "./meeting-access.comp.css";
 
 interface MeetingAccessProps {
@@ -26,7 +27,9 @@ function formatRemaining(ms: number): string {
 /**
  * Access to the video call. The link NEVER reaches the client ahead of time:
  * here only the countdown is rendered and, when it reaches zero, the page
- * refreshes so the server hands it over.
+ * refreshes once so the server hands it over. Should the page come back
+ * without it (the browser's clock ahead of the server's), it asks again after
+ * a wait that grows each time (`meetingRefreshDelay`), never every second.
  */
 export function MeetingAccess({ meetingUrl, meetingVisibleFromIso, providerLabel }: MeetingAccessProps) {
   const router = useRouter();
@@ -35,14 +38,31 @@ export function MeetingAccess({ meetingUrl, meetingVisibleFromIso, providerLabel
   useEffect(() => {
     if (!meetingVisibleFromIso) return;
     const target = new Date(meetingVisibleFromIso).getTime();
+    let retry: ReturnType<typeof setTimeout> | undefined;
+
+    // A page that comes back with the link takes this prop away, and the
+    // cleanup below stops the retries; one that comes back without it leaves
+    // the prop as it was, so the effect does not run again and the next retry
+    // stays scheduled.
+    const refresh = (attempt: number) => {
+      router.refresh();
+      retry = setTimeout(() => refresh(attempt + 1), meetingRefreshDelay(attempt));
+    };
+
     const tick = () => {
       const remaining = target - Date.now();
       setRemainingMs(remaining);
-      if (remaining <= 0) router.refresh();
+      if (remaining > 0) return;
+      clearInterval(countdown);
+      refresh(0);
     };
+
+    const countdown = setInterval(tick, 1000);
     tick();
-    const timer = setInterval(tick, 1000);
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(countdown);
+      clearTimeout(retry);
+    };
   }, [meetingVisibleFromIso, router]);
 
   return (
