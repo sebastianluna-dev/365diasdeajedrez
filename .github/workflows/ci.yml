@@ -1,7 +1,9 @@
-# Formatting, lint, types and tests on every push and pull request, in that
-# order: the first step that fails skips the rest. No `next build`: static
-# generation queries Payload and the platform, and CI has neither database; the
-# deployment is what validates the build.
+# Formatting, lint, types, unit tests and the stories on every push and pull
+# request, in that order: the first step that fails skips the rest. No
+# `next build`: static generation queries Payload and the platform, and CI has
+# neither database; the deployment is what validates the build. The stories
+# need no database: Storybook is built as a static site, and then every story
+# is rendered in a headless Chromium under axe (vitest.storybook.config.mts).
 name: CI
 
 on:
@@ -28,3 +30,8 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+      - run: npm run storybook:build
+      # Headless runs only need Chromium's headless shell, not the whole
+      # browser; --with-deps adds the system libraries it links against.
+      - run: npx playwright install --with-deps --only-shell chromium
+      - run: npm run test:storybook

@@ -67,7 +67,7 @@ No `sslmode` in those two: the container speaks no TLS. The CMS's tables create 
 | `npm run stats:rebuild`                   | Rebuilds `UserStatDaily` from `UserActivity` for every account (or `-- <email>` for one).                                                                                    |
 | `npm run sounds:make`                     | Writes two synthesised board sounds (`.wav`) as the way out of lichess's `.mp3`, which are what plays today.                                                                 |
 
-`.github/workflows/ci.yml` runs `format:check`, `lint`, `typecheck` and `test`, in that order, on every push to `main` and on every pull request; the first step that fails skips the rest. It does not run `next build`: static generation queries the databases, which CI does not have; the deployment is what validates the build.
+`.github/workflows/ci.yml` runs `format:check`, `lint`, `typecheck`, `test`, `storybook:build` and `test:storybook` (with Playwright's Chromium installed before it), in that order, on every push to `main` and on every pull request; the first step that fails skips the rest. It does not run `next build`: static generation queries the databases, which CI does not have; the deployment is what validates the build.
 
 ## Backups
 

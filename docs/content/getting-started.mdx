@@ -86,10 +86,11 @@ There is **no public sign-up**: students exist because staff creates them (`/adm
 ## Before you call something done
 
 ```bash
-npm run format:check && npm run lint && npm run typecheck && npm test
+npm run format:check && npm run lint && npm run typecheck && npm test \
+  && npm run storybook:build && npm run test:storybook
 ```
 
-CI runs exactly these four, in this order, on every push to `main` and on every pull request (after `npm ci` and `npm run db:generate`); the first that fails skips the rest. It does **not** run `next build`, because static generation talks to both databases and CI has neither; the deployment validates the build.
+CI runs exactly these six, in this order, on every push to `main` and on every pull request (after `npm ci` and `npm run db:generate`, and with Playwright's Chromium installed before the last); the first that fails skips the rest. CI does **not** run `next build`, because static generation talks to both databases and CI has neither; the deployment validates the build. On your machine the last check needs Chromium for Playwright, once: `npx playwright install chromium`.
 
 ## Where things are
 

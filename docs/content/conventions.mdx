@@ -106,7 +106,8 @@ It also sets `disableBypassPermissionsMode`, so no session can skip the prompts,
 ## Definition of done
 
 ```bash
-npm run format:check && npm run lint && npm run typecheck && npm test
+npm run format:check && npm run lint && npm run typecheck && npm test \
+  && npm run storybook:build && npm run test:storybook
 ```
 
-The same four checks CI runs, in the same order: the first that fails stops the job, so a file that drifted from Prettier hides every later result (`npm run format` fixes what `format:check` reports). Plus the documentation of whatever you touched, updated in the same commit, and `cd docs && npm run build` when its pages changed. Performance work is measured with Lighthouse against `npm run build && npm run start`, three runs, median.
+The same six checks CI runs, in the same order: the first that fails stops the job, so a file that drifted from Prettier hides every later result (`npm run format` fixes what `format:check` reports). The last renders every story in Chromium under axe and needs Playwright's browser once on each machine (`npx playwright install chromium`). Plus the documentation of whatever you touched, updated in the same commit, and `cd docs && npm run build` when its pages changed. Performance work is measured with Lighthouse against `npm run build && npm run start`, three runs, median.
