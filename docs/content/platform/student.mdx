@@ -53,7 +53,7 @@ The lesson page fills the window and scrolls nowhere — `platform-page_width_fu
 
 ## Move Trainer — `/entrenador`
 
-> **Switched off since 2026-09-28.** `MOVE_TRAINER_ENABLED` (`constants/platform/features.const.ts`) is `false`: the Move Trainer and a course's «Repasar» are hidden from the student, not removed. What the switch does, and nothing else:
+> **Switched off since 2026-09-28**, and to stay so (Sebastian, 2026-10-03). `MOVE_TRAINER_ENABLED` (`constants/platform/features.const.ts`) is `false`: the Move Trainer and a course's «Repasar» are hidden from the student, not removed. What the switch does, and nothing else:
 
 - `/entrenador` answers 404 (`notFound()` at the top of the page).
 - «Repasar» is not drawn: the row of «Mis cursos» leaves it out, and the course's frame only draws it for a count above zero or a course up to date, which `getCourseReview` / `getCourseReviews` no longer give (they answer without querying).
