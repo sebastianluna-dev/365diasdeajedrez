@@ -31,6 +31,13 @@ describe("buildNotationRows", () => {
     expect(rows.flatMap((row) => [row.white?.ply, row.black?.ply ?? []].flat())).toEqual([1, 2, 3, 4, 5]);
   });
 
+  it("escribe en castellano la pieza de coronación", () => {
+    const rows = buildNotationRows(["e8=Q+", "exd1=N"], undefined, 0);
+
+    expect(rows[0]?.white).toMatchObject({ label: "e8=D+", glyph: null });
+    expect(rows[0]?.black).toMatchObject({ label: "exd1=C", glyph: null });
+  });
+
   it("devuelve una lista vacía sin jugadas", () => {
     expect(buildNotationRows([])).toEqual([]);
   });

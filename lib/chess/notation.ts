@@ -29,6 +29,7 @@ const withoutInitial = (san: string) => (PIECE_KIND_BY_LETTER[san.charAt(0)] ? s
 const pieceGlyphOf = (san: string): string | null => PIECE_KIND_BY_LETTER[san.charAt(0)] ?? null;
 
 export interface NotationHalfMove {
+  /** The move in Spanish without its piece initial, which `glyph` draws: "f3", "xb8", "e8=D+". */
   label: string;
   glyph: string | null;
   quality: MoveQuality | null;
@@ -55,7 +56,7 @@ export function startPlyOfFen(fen: string): number {
 }
 
 function halfMove(san: string, ply: number, quality: MoveQuality | null): NotationHalfMove {
-  return { label: toSpanish(withoutInitial(san)), glyph: pieceGlyphOf(san), quality, ply };
+  return { label: sanToSpanish(withoutInitial(san)), glyph: pieceGlyphOf(san), quality, ply };
 }
 
 /**
