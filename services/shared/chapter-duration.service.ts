@@ -19,6 +19,7 @@
  * over them and would not fit a narrower signature.
  */
 export interface ChapterDurationWriter {
+  $queryRaw(query: TemplateStringsArray, ...values: unknown[]): Promise<unknown>;
   lesson: { findMany(args: unknown): Promise<{ estimatedDuration: number | null }[]> };
   chapter: { updateMany(args: unknown): Promise<unknown> };
 }
@@ -40,12 +41,23 @@ export interface ChapterDurationWriter {
  * the one it arrived at. No action moves one today; the one that does has to
  * call this twice.
  *
- * Two lessons of the same chapter saved within milliseconds can leave the
- * slower one's total (READ COMMITTED). It is accepted: the figure is only read,
- * it feeds no progress and no goal, and the next save of any lesson of the
- * chapter heals it, because every write path calls this unconditionally.
+ * The chapter's row is locked (`SELECT … FOR UPDATE`) BEFORE the lessons are
+ * read. Under READ COMMITTED, PostgreSQL's default and the app's, two saves of
+ * lessons of the same chapter that overlap would otherwise each sum the other
+ * lesson's old figure, and the slower one would leave its stale total on the
+ * chapter. With the lock the second save waits until the first commits, and
+ * its read, a new statement with a new snapshot, already sees that lesson's
+ * new minutes. It is the row lock the `updateMany` below takes anyway, only
+ * taken before the read instead of after it: the order in which a writer
+ * locks rows does not change, so no new deadlock comes with it. It lasts until
+ * the writer's transaction ends, which is one more reason this runs inside it:
+ * outside one the lock is released at once and protects nothing. The chapter
+ * is what is locked, not its lessons: a lesson the other save creates or
+ * deletes is a row a lock on the existing lessons would not cover.
  */
 export async function syncChapterDuration(db: ChapterDurationWriter, chapterId: string): Promise<number | null> {
+  await db.$queryRaw`SELECT "id" FROM "Chapter" WHERE "id" = ${chapterId} FOR UPDATE`;
+
   const lessons = await db.lesson.findMany({
     where: { chapterId },
     select: { estimatedDuration: true },
