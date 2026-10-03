@@ -26,7 +26,7 @@ None.
 ## Behaviour
 
 - **It is not a `<form>`, on purpose.** With no form around it, pressing Enter does nothing at all; wrapped in one it would reload the page with a query nobody reads. The day it searches, the form is what gets added.
-- The label is there for a screen reader and hidden from sight (`clip-path: inset(50%)`): what is seen is the placeholder, and a label over the bar would take a row the bar has not got.
+- The label is there for a screen reader and hidden from sight (`clip-path: inset(50%)`): what is seen is the placeholder, and a label over the bar would take a row the bar has not got. The id that ties it to the field comes from `useId` (which a Server Component may call), not a fixed string: on a page with two of these, the storybook Docs page among them, a fixed id pointed both labels at the first field.
 - `type="search"`, so the browser offers its own clearing and history, with `autoComplete="off"`.
 
 ## Markup & styling

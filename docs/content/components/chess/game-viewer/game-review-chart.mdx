@@ -31,7 +31,7 @@ Pointing at the chart moves the board. That is what anyone tries the moment they
 ## Behaviour
 
 - The SVG has a fixed `viewBox` of 404×140 and `preserveAspectRatio="none"`, so it stretches to the container's width while the ratio of the drawing stays legible. Points are memoised from the evaluations: `x` is the ply's share of the width, `y` is the middle minus the advantage (−1…1) times an amplitude of 62.
-- The filled area is drawn twice from the same path, clipped above and below the axis: what sticks out past the middle belongs to whoever is winning, and is painted in their colour. A line traces the curve on top, and a vertical cursor line marks `currentPly`.
+- The filled area is drawn twice from the same path, clipped above and below the axis: what sticks out past the middle belongs to whoever is winning, and is painted in their colour. The two `clipPath` ids are built on `useId`, so two charts on one page (its Docs page, the overview sheet) do not share them, and hiding the first does not leave the second unclipped. A line traces the curve on top, and a vertical cursor line marks `currentPly`.
 - `onPointerDown` and, while a button is held, `onPointerMove` convert the pointer's horizontal position into the nearest ply and call `onSelectPly`, clamped to the range.
 - The three phase labels under the plot get their widths from the review's phase boundaries as percentages of the game's length, so they line up with the curve.
 - The SVG is `role="img"` with a Spanish label; it is not keyboard-navigable, because the board's own navigation already is.

@@ -1,6 +1,6 @@
 "use client";
 
-import { type PointerEvent as ReactPointerEvent, useMemo } from "react";
+import { type PointerEvent as ReactPointerEvent, useId, useMemo } from "react";
 import type { GameReview } from "@/lib/chess/game-review";
 import { winPercent } from "@/lib/chess/game-review";
 import type { MoveEvaluation } from "@/lib/chess/pgn-tree";
@@ -32,6 +32,13 @@ const AMPLITUDE = 62;
  * next to it tell the same story.
  */
 export function GameReviewChart({ evaluations, review, currentPly, onSelectPly }: GameReviewChartProps) {
+  // The clip paths are referenced by id, and ids are the whole page's: two
+  // charts on one page (a Docs page, the overview sheet) would share them,
+  // and hiding the first one would leave the second clipped by nothing.
+  const clipId = useId();
+  const topClip = `${clipId}-top`;
+  const bottomClip = `${clipId}-bottom`;
+
   const { line, area, points } = useMemo(() => {
     const step = evaluations.length > 1 ? WIDTH / (evaluations.length - 1) : 0;
     const coordinates = evaluations.map((evaluation, index) => {
@@ -75,10 +82,10 @@ export function GameReviewChart({ evaluations, review, currentPly, onSelectPly }
         onPointerMove={(event) => event.buttons > 0 && selectAt(event)}
       >
         <defs>
-          <clipPath id="game-review-top">
+          <clipPath id={topClip}>
             <rect x="0" y="0" width={WIDTH} height={MIDDLE} />
           </clipPath>
-          <clipPath id="game-review-bottom">
+          <clipPath id={bottomClip}>
             <rect x="0" y={MIDDLE} width={WIDTH} height={MIDDLE} />
           </clipPath>
         </defs>
@@ -86,8 +93,8 @@ export function GameReviewChart({ evaluations, review, currentPly, onSelectPly }
         <rect x="0" y="0" width={WIDTH} height={HEIGHT} className="game-review-chart__ground" />
         {/* The same stroke, clipped above and below: what sticks out past the
             middle belongs to whoever is winning, and is painted in their colour. */}
-        <path d={area} clipPath="url(#game-review-top)" className="game-review-chart__area_side_white" />
-        <path d={area} clipPath="url(#game-review-bottom)" className="game-review-chart__area_side_black" />
+        <path d={area} clipPath={`url(#${topClip})`} className="game-review-chart__area_side_white" />
+        <path d={area} clipPath={`url(#${bottomClip})`} className="game-review-chart__area_side_black" />
         <line x1="0" y1={MIDDLE} x2={WIDTH} y2={MIDDLE} className="game-review-chart__axis" />
         <path d={line} fill="none" className="game-review-chart__line" />
         <line x1={cursorX} y1="0" x2={cursorX} y2={HEIGHT} className="game-review-chart__cursor" />

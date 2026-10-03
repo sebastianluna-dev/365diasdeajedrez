@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { SearchIcon } from "@/components/icons/search-icon.comp";
 import "./platform-search.comp.css";
 
@@ -12,18 +13,24 @@ import "./platform-search.comp.css";
  *
  * It is drawn at the size and in the place it will keep once it does search,
  * so that day changes what it does and not where things are.
+ *
+ * The id that ties the label to the field is generated: a page can hold two
+ * of these (a Docs page with two stories), and a fixed one would point both
+ * labels at the first field.
  */
 export function PlatformSearch() {
+  const fieldId = useId();
+
   return (
     <div className="platform-search" role="search">
-      <label className="platform-search__label" htmlFor="platform-search-field">
+      <label className="platform-search__label" htmlFor={fieldId}>
         Buscar en la plataforma
       </label>
 
       <SearchIcon className="platform-search__icon" />
 
       <input
-        id="platform-search-field"
+        id={fieldId}
         className="platform-search__field"
         type="search"
         name="q"
