@@ -9,6 +9,7 @@ import { formatSpanishTime } from "@/lib/format-spanish-time";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { platformRoutes } from "@/lib/platform-routes";
 import { lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
+import { meetingVisibleFrom } from "@/services/shared/meeting-visible-from";
 import type { ClassBlockView, ClassDetail, ClassSummary } from "./classes.types";
 
 export const classSummaryInclude = {
@@ -144,8 +145,9 @@ export function mapClassDetail(row: ClassDetailRow, now: Date): ClassDetail {
   // belongs to the link: a class without one gets no countdown whatever the row
   // stores, since it would promise a link that does not exist and, past the
   // instant, it would keep asking the server for the page.
-  const { meetingUrl, meetingUrlVisibleFrom: visibleFrom } = row;
-  const opensLater = meetingUrl !== null && visibleFrom !== null && now < visibleFrom;
+  const { meetingUrl } = row;
+  const visibleFrom = meetingVisibleFrom(meetingUrl, row.scheduledAt, row.meetingUrlVisibleFrom);
+  const opensLater = visibleFrom !== null && now < visibleFrom;
 
   return {
     id: row.id,
@@ -163,7 +165,7 @@ export function mapClassDetail(row: ClassDetailRow, now: Date): ClassDetail {
     recordingUrl: row.recordingUrl ?? undefined,
     meetingProviderLabel: row.meetingProvider?.label,
     meetingUrl: meetingUrl !== null && !opensLater ? meetingUrl : undefined,
-    meetingVisibleFromIso: opensLater ? visibleFrom.toISOString() : undefined,
+    meetingVisibleFromIso: opensLater ? visibleFrom?.toISOString() : undefined,
     blocks: row.blocks.map(mapBlock).filter((block): block is ClassBlockView => block !== null),
     transcript: row.transcript
       ? {

@@ -85,8 +85,12 @@ describe("mapClassDetail", () => {
     expect(after.meetingVisibleFromIso).toBeUndefined();
   });
 
-  it("sin hora de visibilidad, el enlace se ve siempre", () => {
-    expect(mapClassDetail(detail(), new Date(0)).meetingUrl).toBe("https://zoom.us/j/1");
+  it("sin hora elegida, el enlace se abre media hora antes de la clase", () => {
+    const opens = new Date(when.getTime() - 30 * 60_000);
+    const before = mapClassDetail(detail(), new Date(opens.getTime() - 1));
+    expect(before.meetingUrl).toBeUndefined();
+    expect(before.meetingVisibleFromIso).toBe(opens.toISOString());
+    expect(mapClassDetail(detail(), opens).meetingUrl).toBe("https://zoom.us/j/1");
   });
 
   // The instant a row stores means nothing without a link: a countdown to it

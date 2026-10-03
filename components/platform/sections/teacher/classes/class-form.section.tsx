@@ -85,7 +85,11 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
         label="El enlace se ve desde (opcional)"
         hint="Si lo dejas vacío, se abrirá 30 minutos antes de la clase. Tú lo ves siempre."
       >
-        <input type="datetime-local" name="meetingUrlVisibleFrom" defaultValue="" />
+        <input
+          type="datetime-local"
+          name="meetingUrlVisibleFrom"
+          defaultValue={classDetail?.meetingUrlVisibleFromInput ?? ""}
+        />
       </FormField>
 
       {isEdit && (

@@ -12,6 +12,7 @@ import { formatSpanishTime } from "@/lib/format-spanish-time";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { teacherRoutes } from "@/lib/platform-routes";
 import { formatDateTimeLocal } from "@/lib/timezone";
+import { meetingVisibleFrom } from "@/services/shared/meeting-visible-from";
 import type { TeacherClassBlock, TeacherClassDetail, TeacherClassSummary } from "./teacher-classes.types";
 
 // The teacher's OWN mapper, kept apart from `services/classes/`'s on purpose:
@@ -129,9 +130,19 @@ export function mapTeacherClassDetail(row: TeacherClassDetailRow, timeZone: stri
     meetingProviderCode: (row.meetingProvider?.code as MeetingProviderCode | undefined) ?? undefined,
     meetingProviderLabel: row.meetingProvider?.label,
     meetingUrl: row.meetingUrl ?? undefined,
-    // The instant belongs to the link (see meetingVisibleFrom): one a row stores
-    // without a link was saved before that rule and means nothing.
-    meetingUrlVisibleFromIso: row.meetingUrl !== null ? row.meetingUrlVisibleFrom?.toISOString() : undefined,
+    // When the link opens (services/shared/meeting-visible-from.ts): the chosen
+    // instant or half an hour before; none without a link.
+    meetingUrlVisibleFromIso: meetingVisibleFrom(
+      row.meetingUrl,
+      row.scheduledAt,
+      row.meetingUrlVisibleFrom,
+    )?.toISOString(),
+    // The edit form opens on the instant the teacher chose, and empty when the
+    // link opens at the default: saving keeps either as it was.
+    meetingUrlVisibleFromInput:
+      row.meetingUrl !== null && row.meetingUrlVisibleFrom !== null
+        ? formatDateTimeLocal(row.meetingUrlVisibleFrom, timeZone)
+        : "",
     recordingUrl: row.recordingUrl ?? undefined,
     summary: row.summary ?? undefined,
     participants: row.participants.map((participant) => ({

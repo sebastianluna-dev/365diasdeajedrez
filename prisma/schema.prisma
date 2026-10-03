@@ -1101,8 +1101,10 @@ model Class {
   statusId              Int
   meetingProviderId     Int?
   meetingUrl            String?
-  /// The link is only returned to the client when now >= meetingUrlVisibleFrom.
-  /// Null without a link: the instant belongs to it (meetingVisibleFrom, services/teacher-classes).
+  /// The instant the teacher CHOSE for the link to become visible; null is the default, half an
+  /// hour before the class, worked out on reading, so it follows the class when it moves. The link
+  /// reaches a student only from that instant. Null without a link: the instant belongs to it.
+  /// Only writer: storedMeetingVisibleFrom (services/shared/meeting-visible-from.ts).
   meetingUrlVisibleFrom DateTime?
   recordingUrl          String?
   summary               String?   @db.Text

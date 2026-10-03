@@ -954,7 +954,8 @@ export function buildClasses(now: Date) {
       status: CLASS_STATUS.COMPLETED,
       meetingProvider: MEETING_PROVIDER.ZOOM,
       meetingUrl: "https://zoom.us/j/00000000000",
-      meetingUrlVisibleFrom: new Date(pastDate.getTime() - 30 * 60 * 1000),
+      // No instant chosen: the link opens half an hour before (meeting-visible-from.ts).
+      meetingUrlVisibleFrom: null as Date | null,
       recordingUrl: "https://zoom.us/rec/demo-ataques-al-rey",
       summary:
         "Vimos los tres errores típicos que dejan al rey en el centro y la técnica de Morphy para explotarlos: desarrollo con amenaza, apertura de columnas y sacrificio de calidad en d7.",
@@ -969,7 +970,7 @@ export function buildClasses(now: Date) {
       status: CLASS_STATUS.SCHEDULED,
       meetingProvider: MEETING_PROVIDER.ZOOM,
       meetingUrl: "https://zoom.us/j/11111111111",
-      meetingUrlVisibleFrom: new Date(upcomingDate.getTime() - 30 * 60 * 1000),
+      meetingUrlVisibleFrom: null as Date | null,
       recordingUrl: null as string | null,
       summary: null as string | null,
     },

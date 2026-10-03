@@ -34,10 +34,10 @@ import {
   readIds,
 } from "@/services/shared/form-schema";
 import { getPgnForReference } from "./teacher-classes.service";
-import { meetingVisibleFrom } from "./meeting-visible-from";
 import { planDenseRenumber, planSwap, nextOrder, type MoveDirection } from "@/services/shared/reorder";
 import { recordUserActivity } from "@/services/shared/user-activity.service";
 import { withErrorParam } from "@/services/shared/safe-return-to";
+import { storedMeetingVisibleFrom } from "@/services/shared/meeting-visible-from";
 import { canTransitionClassStatus } from "./class-status-transitions";
 
 // Writes of the teacher panel. Rules that are NOT negotiable:
@@ -140,7 +140,9 @@ async function readClassMeta(
     durationMin,
     meetingProviderCode: providerCode.length > 0 ? providerCode : null,
     meetingUrl,
-    meetingUrlVisibleFrom: meetingVisibleFrom(meetingUrl, scheduledAt, chosenVisibleFrom),
+    // Only a chosen instant is stored: null is «half an hour before», worked out
+    // when the class is read, so it follows the class if it moves.
+    meetingUrlVisibleFrom: storedMeetingVisibleFrom(meetingUrl, chosenVisibleFrom),
   };
 }
 

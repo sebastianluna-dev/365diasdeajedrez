@@ -65,8 +65,10 @@ export interface TeacherClassDetail {
   meetingProviderLabel?: string;
   /** The teacher ALWAYS sees the link: the hiding is a student rule. */
   meetingUrl?: string;
-  /** When students start seeing the link; only with a link, since the instant belongs to it. */
+  /** When students start seeing the link: the chosen instant or half an hour before; only with a link. */
   meetingUrlVisibleFromIso?: string;
+  /** The instant the teacher chose, as the edit form's `datetime-local` in their zone; "" for the default. */
+  meetingUrlVisibleFromInput: string;
   recordingUrl?: string;
   summary?: string;
   participants: TeacherClassParticipant[];

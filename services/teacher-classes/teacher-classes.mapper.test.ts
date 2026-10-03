@@ -64,6 +64,27 @@ describe("mapTeacherClassDetail", () => {
     expect(mapTeacherClassDetail(teacherRow({ meetingUrl: null }), "UTC").meetingUrlVisibleFromIso).toBeUndefined();
   });
 
+  // Until 2026-10-03 the form opened always empty, and saving it replaced a
+  // chosen instant with the default.
+  it("abre el formulario con la hora que eligió el profesor, en su zona", () => {
+    const chosen = new Date("2026-09-15T16:00:00.000Z");
+    const row = teacherRow({ meetingUrlVisibleFrom: chosen });
+    expect(mapTeacherClassDetail(row, "UTC").meetingUrlVisibleFromInput).toBe("2026-09-15T16:00");
+    expect(mapTeacherClassDetail(row, "America/Mexico_City").meetingUrlVisibleFromInput).toBe("2026-09-15T10:00");
+  });
+
+  it("deja el campo vacío cuando el enlace se abre a la hora por defecto, que sí enseña en la ficha", () => {
+    const view = mapTeacherClassDetail(teacherRow({ meetingUrlVisibleFrom: null }), "UTC");
+    expect(view.meetingUrlVisibleFromInput).toBe("");
+    expect(view.meetingUrlVisibleFromIso).toBe("2026-09-15T16:30:00.000Z");
+  });
+
+  it("sin enlace, ni hora en la ficha ni en el formulario", () => {
+    const view = mapTeacherClassDetail(teacherRow({ meetingUrl: null, meetingUrlVisibleFrom: null }), "UTC");
+    expect(view.meetingUrlVisibleFromIso).toBeUndefined();
+    expect(view.meetingUrlVisibleFromInput).toBe("");
+  });
+
   it("pinta la fecha para el input en la zona del profesor", () => {
     expect(mapTeacherClassDetail(teacherRow(), "UTC").scheduledAtInput).toBe("2026-09-15T17:00");
     expect(mapTeacherClassDetail(teacherRow(), "America/Mexico_City").scheduledAtInput).toBe("2026-09-15T11:00");
