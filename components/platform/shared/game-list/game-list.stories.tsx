@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import { fn } from "storybook/test";
 import { GameList, type GameListItem } from "./game-list.comp";
 
 /** A chapter's collection of eight games: some named by the staff, some by their pairing alone. */
@@ -26,11 +26,10 @@ const meta = {
         component: `
 The games beside the board, in a student's study and in a chapter's
 collection: five rows tall with a scroll of its own, the current game brought
-into the middle on arrival. With \`onReorder\` a row is dragged by its grip
-(the handles come out when the list is hovered), moved with the keyboard from
-the grip, or stepped one place with the arrows at its end, «Subir» and
-«Bajar»; here the action is a spy listed in the Actions panel and nothing is
-saved.
+into the middle on arrival. The row is the card: the current game's wash and rule take its grip in.
+With \`onReorder\` a row is dragged by its grip (which comes out when the row
+is hovered or holds the focus) or moved with the keyboard from the grip; here
+the action is a spy listed in the Actions panel and nothing is saved.
 
 Source: \`components/platform/shared/game-list/game-list.comp.tsx\`.
 Reference page: [Components › GameList](/components/platform/shared/game-list) in the docs site.
@@ -65,27 +64,8 @@ export const Sortable: Story = {
   name: "Una colección que se ordena",
 };
 
-/** Without `onReorder` — someone else's study, or one page of several —: only links, no grip and no arrows. */
+/** Without `onReorder` — someone else's study, or one page of several —: only links, no grip. */
 export const LinksOnly: Story = {
   name: "Sólo enlaces",
   args: { onReorder: undefined },
-};
-
-/** «Bajar» pressed on the first game: it is now the second, the arrow kept the focus, and the order was sent whole. */
-export const SteppedDownWithoutDragging: Story = {
-  name: "Una partida bajada sin arrastrar",
-  args: { currentId: "g1" },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    const name = "Una celada en la apertura";
-    const down = canvas.getByRole("button", { name: `Bajar «${name}»` });
-    await userEvent.click(down);
-
-    const names = () => [...canvasElement.querySelectorAll(".game-list__name")].map((node) => node.textContent);
-    await expect(names().slice(0, 2)).toEqual(["Lombardy — Fischer", name]);
-    await waitFor(() => expect(down).toHaveFocus());
-    // By its text: dnd-kit's own live region is a `status` too.
-    await expect(canvas.getByText(`«${name}» queda en la posición 2 de 8.`)).toHaveAttribute("role", "status");
-    await expect(args.onReorder).toHaveBeenCalledWith(["g2", "g1", "g3", "g4", "g5", "g6", "g7", "g8"]);
-  },
 };

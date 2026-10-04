@@ -4,11 +4,9 @@ import Link from "next/link";
 import { useEffect, useRef, type RefObject } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
 import { GripDotsVerticalIcon } from "@/components/icons/grip-dots-vertical-icon.comp";
 import { SortableDnd } from "@/components/platform/shared/sortable-dnd/sortable-dnd.comp";
 import { useSortableRows } from "@/components/platform/shared/sortable-dnd/use-sortable-rows.hook";
-import { useSortableStep } from "@/components/platform/shared/sortable-dnd/use-sortable-step.hook";
 import "./game-list.comp.css";
 
 export interface GameListItem {
@@ -38,11 +36,7 @@ interface GameListProps {
 /** A game of the list: what it is called, who played it and how it ended, leading to its board. */
 function GameLink({ game, isCurrent }: { game: GameListItem; isCurrent: boolean }) {
   return (
-    <Link
-      href={game.href}
-      aria-current={isCurrent ? "page" : undefined}
-      className={`game-list__item${isCurrent ? " game-list__item_state_active" : ""}`}
-    >
+    <Link href={game.href} aria-current={isCurrent ? "page" : undefined} className="game-list__item">
       <span className="game-list__main">
         {/* Long names are cut so as not to misalign the row, so the full one
             is shown on hover. */}
@@ -60,63 +54,28 @@ function GameLink({ game, isCurrent }: { game: GameListItem; isCurrent: boolean 
   );
 }
 
-interface StepProps {
-  direction: "up" | "down";
-  name: string;
-  /** The step `useSortableStep` gives the row; `null` at that end of the list. */
-  move: (() => void) | null;
+/** The row's class: the current game's row is the card that says so, grip included. */
+function rowClassName(isCurrent: boolean, isDragging = false): string {
+  return [
+    "game-list__row",
+    isCurrent ? "game-list__row_state_active" : "",
+    isDragging ? "game-list__row_state_dragging" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 }
 
-/**
- * «Subir» or «Bajar», drawn as an arrow: the row moves one place with a single
- * click, for whoever cannot hold a drag (WCAG 2.5.7).
- *
- * Out of the Tab order: the keyboard already moves the row from its grip
- * (space, the arrows, space), and two more stops per game would double the
- * way through a list one comes to in order to jump between games. A screen
- * reader still finds them, and a voice command by their name.
- */
-function Step({ direction, name, move }: StepProps) {
-  const ref = useRef<HTMLButtonElement>(null);
-
-  const handleClick = () => {
-    if (!move) return;
-    const hadFocus = document.activeElement === ref.current;
-    move();
-    // React puts the row in its new place by moving a node, and a node that
-    // is moved drops the focus it held: it is given back once React is done.
-    if (hadFocus) requestAnimationFrame(() => ref.current?.focus());
-  };
-
-  return (
-    <button
-      ref={ref}
-      type="button"
-      tabIndex={-1}
-      className={`game-list__step game-list__step_direction_${direction}`}
-      aria-label={`${direction === "up" ? "Subir" : "Bajar"} «${name}»`}
-      // `aria-disabled` and not `disabled`: the first row's «Subir» keeps the
-      // focus it got from the step that brought the row there.
-      aria-disabled={move ? undefined : true}
-      onClick={handleClick}
-    >
-      <ArrowUpIcon className="game-list__step-icon" />
-    </button>
-  );
-}
-
-/** A game that can be moved: dnd-kit gives it its place, the grip picks it up, the arrows step it. */
+/** A game that can be moved: dnd-kit gives it its place and the grip, inside the row's card, picks it up. */
 function SortableRow({ game, isCurrent }: { game: GameListItem; isCurrent: boolean }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: game.id,
     data: { name: game.name },
   });
-  const steps = useSortableStep(game.id);
 
   return (
     <li
       ref={setNodeRef}
-      className={`game-list__row${isDragging ? " game-list__row_state_dragging" : ""}`}
+      className={rowClassName(isCurrent, isDragging)}
       // The only inline style of the block: where the row IS while it travels.
       // It is geometry the library measures frame by frame, not styling.
       style={{ transform: CSS.Transform.toString(transform), transition }}
@@ -131,10 +90,6 @@ function SortableRow({ game, isCurrent }: { game: GameListItem; isCurrent: boole
         <GripDotsVerticalIcon variant="duotone-solid" />
       </button>
       <GameLink game={game} isCurrent={isCurrent} />
-      <div className="game-list__steps">
-        <Step direction="up" name={game.name} move={steps.up} />
-        <Step direction="down" name={game.name} move={steps.down} />
-      </div>
     </li>
   );
 }
@@ -177,9 +132,10 @@ function SortableRows({ games, currentId, onReorder, listRef }: SortableRowsProp
  * the page, which is why this is arithmetic and not `scrollIntoView`.
  *
  * With `onReorder` each row is dragged by its grip or moved with the keyboard
- * through [`SortableDnd`](../sortable-dnd/sortable-dnd.comp.tsx), and «Subir»
- * and «Bajar» move it one place without dragging; the order is applied at
- * once and saved in a transition (`useSortableRows`). It is a Client
+ * through [`SortableDnd`](../sortable-dnd/sortable-dnd.comp.tsx); the order
+ * is applied at once and saved in a transition (`useSortableRows`). There is
+ * no «Subir»/«Bajar» here: the owner chose the list without them
+ * (2026-10-03), so a pointer reorders only by dragging. It is a Client
  * Component for that order and for the scroll: the aside around it stays on
  * the server.
  */
@@ -188,7 +144,7 @@ export function GameList({ games, currentId, onReorder }: GameListProps) {
 
   useEffect(() => {
     const list = listRef.current;
-    const row = list?.querySelector<HTMLElement>(".game-list__item_state_active")?.closest("li");
+    const row = list?.querySelector<HTMLElement>(".game-list__row_state_active");
     if (!list || !row) return;
     list.scrollTop = row.offsetTop - (list.clientHeight - row.offsetHeight) / 2;
   }, [currentId]);
@@ -200,7 +156,7 @@ export function GameList({ games, currentId, onReorder }: GameListProps) {
   return (
     <ul className="game-list" ref={listRef}>
       {games.map((game) => (
-        <li key={game.id} className="game-list__row">
+        <li key={game.id} className={rowClassName(game.id === currentId)}>
           <GameLink game={game} isCurrent={game.id === currentId} />
         </li>
       ))}

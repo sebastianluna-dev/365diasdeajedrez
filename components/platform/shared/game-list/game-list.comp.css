@@ -24,23 +24,41 @@
   overflow-y: auto;
   overscroll-behavior: contain;
 
-  /* The link fills the row, so the list reads as games and not as handles:
-     the grip before it and the arrows after it are there only to sort. */
+  /* The row is the card: the link fills it and the grip sits inside it, so
+     what marks the current game — the wash and the rule on its left edge —
+     takes the grip in, and the grip reads as part of the game it moves. */
   & .game-list__row {
     position: relative;
     display: flex;
     align-items: center;
-    gap: var(--platform-space-0-5);
+    border-radius: 8px;
+  }
+
+  & .game-list__row:hover {
+    background: var(--platform-bg);
+  }
+
+  /* The current one, besides the background, carries a rule on the left: in a
+     list of games that look alike, colour alone is not enough to find it. */
+  & .game-list__row.game-list__row_state_active {
+    background: var(--platform-accent-wash);
+    box-shadow: inset 3px 0 0 var(--platform-accent);
   }
 
   /* The row that travels is lifted off the column: dnd-kit carries it under
      the pointer and opens the gap where it would land. */
-  & .game-list__row_state_dragging {
+  & .game-list__row.game-list__row_state_dragging {
     z-index: 1;
-    border-radius: 8px;
     background: var(--platform-surface);
     box-shadow: var(--platform-shadow-card);
     cursor: grabbing;
+  }
+
+  & .game-list__row.game-list__row_state_active.game-list__row_state_dragging {
+    background: var(--platform-accent-wash);
+    box-shadow:
+      inset 3px 0 0 var(--platform-accent),
+      var(--platform-shadow-card);
   }
 
   & .game-list__grip {
@@ -50,16 +68,26 @@
     justify-content: center;
     width: 22px;
     height: 32px;
+    /* Clear of the current row's rule. */
+    margin-left: var(--platform-space-1);
     padding: 0;
     border: 0;
     border-radius: 8px;
     background: transparent;
-    /* A control's drawing, so 3:1 at least (WCAG 1.4.11): the subtle grey,
-       4.7:1 on the card. It is only seen when the row is pointed at or has
-       the focus, or on a touch screen. */
-    color: var(--platform-text-subtle);
+    /* A control's drawing, so 3:1 at least (WCAG 1.4.11), on the grey of a
+       hovered row as on white: the muted grey. It is only seen when the row
+       is pointed at or has the focus, or on a touch screen. */
+    color: var(--platform-text-muted);
     touch-action: none;
     cursor: grab;
+    /* Out of the way until its row is reached: what one comes here for is to
+       jump between games, not to sort them. */
+    opacity: 0;
+    transition: opacity 150ms;
+  }
+
+  & .game-list__row_state_active .game-list__grip {
+    color: var(--platform-accent-ink);
   }
 
   & .game-list__grip:active {
@@ -68,73 +96,18 @@
 
   & .game-list__grip:focus-visible {
     outline: 2px solid var(--platform-accent);
-    outline-offset: 2px;
+    outline-offset: -2px;
   }
 
-  /* «Subir» above «Bajar», at the end of the row: two arrows of the height of
-     the row's two lines. */
-  & .game-list__steps {
-    flex: none;
-    display: flex;
-    flex-direction: column;
-  }
-
-  & .game-list__step {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-subtle);
-    cursor: pointer;
-  }
-
-  & .game-list__step-icon {
-    width: 16px;
-    height: 16px;
-  }
-
-  & .game-list__step_direction_down .game-list__step-icon {
-    rotate: 180deg;
-  }
-
-  & .game-list__step:hover:not([aria-disabled="true"]) {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text);
-  }
-
-  /* «Subir» on the first game, «Bajar» on the last: there, but nothing to do.
-     Drawn like a disabled row action. */
-  & .game-list__step[aria-disabled="true"] {
-    color: var(--platform-text-faint);
-    cursor: not-allowed;
-  }
-
-  /* The handles stay out of the way until the list is reached: what one comes
-     here for is to jump between games, not to sort them. The row that holds
-     the focus shows its own. */
-  & .game-list__grip,
-  & .game-list__steps {
-    opacity: 0;
-    transition: opacity 150ms;
-  }
-
-  &:hover .game-list__grip,
-  &:hover .game-list__steps,
-  & .game-list__row:focus-within .game-list__grip,
-  & .game-list__row:focus-within .game-list__steps {
+  & .game-list__row:hover .game-list__grip,
+  & .game-list__row:focus-within .game-list__grip {
     opacity: 1;
   }
 
-  /* A screen that is touched has no hover to bring them out, so there they
-     are always drawn: an invisible grip is one nobody knows to hold. */
+  /* A screen that is touched has no hover to bring it out, so there it is
+     always drawn: an invisible grip is one nobody knows to hold. */
   @media (hover: none) {
-    & .game-list__grip,
-    & .game-list__steps {
+    & .game-list__grip {
       opacity: 1;
     }
   }
@@ -152,23 +125,24 @@
     color: var(--platform-text);
   }
 
+  /* After the grip the text needs less air: the grip's own box gives it. */
+  & .game-list__grip + .game-list__item {
+    padding-left: var(--platform-space-1);
+  }
+
   & .game-list__item:hover {
-    background: var(--platform-bg);
     color: var(--platform-text);
   }
 
-  /* The current one, besides the background, carries a rule on the left: in a
-     list of games that look alike, colour alone is not enough to find it. */
-  & .game-list__item.game-list__item_state_active {
-    background: var(--platform-accent-wash);
-    box-shadow: inset 3px 0 0 var(--platform-accent);
+  & .game-list__row_state_active .game-list__item,
+  & .game-list__row_state_active .game-list__item:hover {
     color: var(--platform-accent-ink);
   }
 
   /* On the grey of a hovered row the subtle grey falls under 4.5:1; the muted
      one does not. The current row is left out: it writes this line in the
      accent's ink, below. */
-  & .game-list__item:not(.game-list__item_state_active):hover .game-list__players {
+  & .game-list__row:not(.game-list__row_state_active):hover .game-list__players {
     color: var(--platform-text-muted);
   }
 
@@ -206,14 +180,13 @@
     font-variant-numeric: tabular-nums;
   }
 
-  & .game-list__item_state_active .game-list__players,
-  & .game-list__item_state_active .game-list__result {
+  & .game-list__row_state_active .game-list__players,
+  & .game-list__row_state_active .game-list__result {
     color: var(--platform-accent-ink);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    & .game-list__grip,
-    & .game-list__steps {
+    & .game-list__grip {
       transition: none;
     }
   }
