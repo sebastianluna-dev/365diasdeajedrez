@@ -7,7 +7,6 @@ const meta: MetaRecord = {
   "static-diagram": "StaticDiagram",
   "elo-table": "EloTable",
   "chess-move-quality-icon": "ChessMoveQualityIcon",
-  "analysis-board": "analysis-board/",
   "game-viewer": "game-viewer/",
 };
 

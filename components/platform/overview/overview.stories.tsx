@@ -1,7 +1,6 @@
 import { type CSSProperties, Fragment, useId, useRef, useState, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import Link from "next/link";
-import { AnalysisBoard } from "@/components/chess/analysis-board/analysis-board.comp";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
 import { ChessMoveQualityIcon } from "@/components/chess/chess-move-quality-icon.comp";
 import { EnginePanel } from "@/components/chess/game-viewer/engine-panel.comp";
@@ -1358,11 +1357,6 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               onSelectPath={() => undefined}
               onPgnChange={() => undefined}
             />
-          </div>
-        </Tile>
-        <Tile name="AnalysisBoard" docs="chess-analysisboard" wide>
-          <div className="overview__board-frame">
-            <AnalysisBoard name="pgn" defaultPgn={OPERA_GAME} />
           </div>
         </Tile>
       </Section>

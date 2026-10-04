@@ -16,12 +16,6 @@ description: "Index of components/chess: the board, the lazy board, the static d
 | [`EloTable`](/components/chess/elo-table)                           | server      | Label/value grid for ratings and titles, with `EloTable.EloItem`.                                                                                                      |
 | [`ChessMoveQualityIcon`](/components/chess/chess-move-quality-icon) | server-safe | The ten move-quality badge SVGs and `chessMoveQualityIconFor(quality)`.                                                                                                |
 
-## `analysis-board/`
-
-| Page                                                               | Kind   | What it is                                                                                                                                       |
-| ------------------------------------------------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [`AnalysisBoard`](/components/chess/analysis-board/analysis-board) | client | The teacher's editable board: moves become the PGN of a hidden form input, with variations, comments, NAGs, arrows, paste and optional autosave. |
-
 ## `game-viewer/`
 
 | Page                                                                     | Kind   | What it is                                                                                                              |
@@ -45,11 +39,11 @@ description: "Index of components/chess: the board, the lazy board, the static d
 
 ## Which one to use
 
-| Need                                             | Use                                  |
-| ------------------------------------------------ | ------------------------------------ |
-| A game the student reads, navigates or annotates | `GameViewer`. Never a second viewer. |
-| A teacher composing a game inside a form         | `AnalysisBoard`.                     |
-| An illustration on a long public page            | `ChessBoardLazy`.                    |
-| A board that _is_ the screen (explorer, trainer) | `ChessBoard` directly, controlled.   |
-| A position that does not move                    | `StaticDiagram`.                     |
-| An image of a position or a GIF of a game        | `board-export`, imported on demand.  |
+| Need                                             | Use                                                          |
+| ------------------------------------------------ | ------------------------------------------------------------ |
+| A game the student reads, navigates or annotates | `GameViewer`. Never a second viewer.                         |
+| A teacher composing a game inside a form         | `GameViewer` with `editable`, as `BlockGameField` mounts it. |
+| An illustration on a long public page            | `ChessBoardLazy`.                                            |
+| A board that _is_ the screen (explorer, trainer) | `ChessBoard` directly, controlled.                           |
+| A position that does not move                    | `StaticDiagram`.                                             |
+| An image of a position or a GIF of a game        | `board-export`, imported on demand.                          |

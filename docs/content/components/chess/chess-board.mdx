@@ -4,15 +4,15 @@ description: "The chessground board surface: standalone with a PGN (move list an
 
 # `ChessBoard`
 
-|            |                                                                                                                                                                                                                                                                                                                                                                                                       |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/chess/chess-board.comp.tsx`                                                                                                                                                                                                                                                                                                                                                               |
-| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                                      |
-| Stylesheet | `chess-board.comp.css` → block `.chess-board`                                                                                                                                                                                                                                                                                                                                                         |
-| Story      | `chess-board.stories.tsx` (`chess/ChessBoard`): a controlled position with its arrows, the standalone game from the start and at its last move, flipped with the king in check, and interactive with editable shapes                                                                                                                                                                                  |
-| Used by    | [`AnalysisBoard`](/components/chess/analysis-board/analysis-board), [`ChessBoardLazy`](/components/chess/chess-board-lazy), [`EnginePanel`](/components/chess/game-viewer/engine-panel), [`GameViewer`](/components/chess/game-viewer/game-viewer), [`GameExplorer`](/components/platform/sections/explorer/game-explorer), [`TrainerSession`](/components/platform/sections/trainer/trainer-session) |
-| Composes   | [`chessMoveQualityIconFor`](/components/chess/chess-move-quality-icon)                                                                                                                                                                                                                                                                                                                                |
-| Uses       | `@lichess-org/chessground` (board rendering, its base and `cburnett` piece stylesheets)<br />`legalDests` from `lib/chess/legal-moves`<br />`buildNotationRows`, `moveQualityLabel`, `startPlyOfFen`, `NotationHalfMove` from `lib/chess/notation`<br />`isPromotionMove`, `replayGame`, `sanForMove`, `turnColor` from `lib/chess/replay`                                                            |
+|            |                                                                                                                                                                                                                                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/chess/chess-board.comp.tsx`                                                                                                                                                                                                                                                                                                    |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                           |
+| Stylesheet | `chess-board.comp.css` → block `.chess-board`                                                                                                                                                                                                                                                                                              |
+| Story      | `chess-board.stories.tsx` (`chess/ChessBoard`): a controlled position with its arrows, the standalone game from the start and at its last move, flipped with the king in check, and interactive with editable shapes                                                                                                                       |
+| Used by    | [`ChessBoardLazy`](/components/chess/chess-board-lazy), [`EnginePanel`](/components/chess/game-viewer/engine-panel), [`GameViewer`](/components/chess/game-viewer/game-viewer), [`GameExplorer`](/components/platform/sections/explorer/game-explorer), [`TrainerSession`](/components/platform/sections/trainer/trainer-session)          |
+| Composes   | [`chessMoveQualityIconFor`](/components/chess/chess-move-quality-icon)                                                                                                                                                                                                                                                                     |
+| Uses       | `@lichess-org/chessground` (board rendering, its base and `cburnett` piece stylesheets)<br />`legalDests` from `lib/chess/legal-moves`<br />`buildNotationRows`, `moveQualityLabel`, `startPlyOfFen`, `NotationHalfMove` from `lib/chess/notation`<br />`isPromotionMove`, `replayGame`, `sanForMove`, `turnColor` from `lib/chess/replay` |
 
 ## Purpose
 
@@ -21,7 +21,7 @@ The one place where chessground is instantiated. Every board in the app, on the 
 It works in two modes, decided by which prop is given:
 
 - **Standalone** (`pgn`): the component replays the PGN with `replayGame`, owns the current ply and renders the board with a notation column and a toolbar (flip, autoplay, first, previous, next, last). This is the board of the home page's annotated game, the mentor page and the blog's game block.
-- **Controlled** (`position`): the parent owns the position and the navigation; only the surface renders, with no list and no toolbar. This is how the [`GameViewer`](/components/chess/game-viewer/game-viewer), the [`AnalysisBoard`](/components/chess/analysis-board/analysis-board), the explorer and the trainer use it.
+- **Controlled** (`position`): the parent owns the position and the navigation; only the surface renders, with no list and no toolbar. This is how the [`GameViewer`](/components/chess/game-viewer/game-viewer), the explorer and the trainer use it.
 
 Interactive moves are validated by chessops before they are reported: the board never emits an illegal SAN. Promotion, which base chessground does not handle, is resolved with a modal dialog of its own.
 
@@ -78,23 +78,23 @@ Block `.chess-board` (383 lines).
 
 ## Usage
 
-Controlled, from `components/chess/analysis-board/analysis-board.comp.tsx`:
+Controlled, from `components/chess/game-viewer/game-viewer.comp.tsx`, where the board is played on only while editing:
 
 ```tsx
 import { ChessBoard } from "@/components/chess/chess-board.comp";
 
 <ChessBoard
   position={{
-    fen: node?.fen ?? tree?.initialFen ?? initialFen ?? "",
+    fen,
     lastMove: node?.lastMove,
     check: node?.check ?? false,
-    shapes: node ? node.shapes : (tree?.initialShapes ?? []),
+    shapes: node ? node.shapes : tree.initialShapes,
   }}
   flipBoard={flipBoard}
-  interactive
-  onMove={handleMove}
-  editableShapes
-  onShapesChange={handleShapes}
+  interactive={isEditing}
+  onMove={(san) => editing.addMoveAt(currentPath, san)}
+  editableShapes={isEditing}
+  onShapesChange={(shapes) => editing.updateShapes(currentPath, shapes)}
 />;
 ```
 

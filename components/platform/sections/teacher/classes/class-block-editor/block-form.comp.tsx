@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { AnalysisBoard } from "@/components/chess/analysis-board/analysis-board.comp";
 import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
 import { platformRoutes } from "@/lib/platform-routes";
 import { CLASS_BLOCK_KIND, type ClassBlockKindCode } from "@/constants/platform/class-codes.const";
@@ -11,6 +10,7 @@ import type {
   ReferenceableGameGroup,
   TeacherClassBlock,
 } from "@/services/teacher-classes/teacher-classes.types";
+import { BlockGameField } from "./block-game-field.comp";
 import { GameSelector } from "./game-selector.comp";
 import { LessonReferenceField } from "./lesson-reference-field.comp";
 import { MovePathPicker } from "./move-path-picker.comp";
@@ -77,14 +77,9 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
       {kind === CLASS_BLOCK_KIND.GAME_REF && (
         <>
           {/* Transcribing is the main path: there is nothing to choose beforehand.
-              The board already brings its panel to paste a PGN if the teacher has
+              The field already brings its panel to paste a PGN if the teacher has
               one. The game lives in the block, not in a study. */}
-          <FormField
-            label="Partida de la clase"
-            hint="Juega las jugadas sobre el tablero. Si ya tienes el PGN, pégalo desde «Pegar un PGN» y ajústalo aquí."
-          >
-            <AnalysisBoard name="pgn" defaultPgn={block?.pgn ?? undefined} />
-          </FormField>
+          <BlockGameField name="pgn" defaultPgn={block?.pgn ?? undefined} />
 
           {/* Second route: discuss in class the game a student played without
               typing it again. Folded, because it is not the usual case. */}

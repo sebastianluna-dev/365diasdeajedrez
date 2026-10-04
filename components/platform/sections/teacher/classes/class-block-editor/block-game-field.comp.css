@@ -1,0 +1,59 @@
+.block-game-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-2);
+  min-width: 0;
+
+  /* The label and the hint look like a FormField's: this is one more field of the block. */
+  & .block-game-field__label {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-text-muted);
+  }
+
+  & .block-game-field__hint {
+    margin: 0 0 var(--platform-space-2);
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .block-game-field__paste {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: var(--platform-space-2);
+    margin-top: var(--platform-space-2);
+  }
+
+  & .block-game-field__paste summary {
+    font-size: var(--platform-type-lg);
+    color: var(--platform-text-muted);
+    cursor: pointer;
+  }
+
+  & .block-game-field__paste[open] summary {
+    color: var(--platform-text);
+  }
+
+  & .block-game-field__paste-input {
+    width: 100%;
+    padding: var(--platform-space-2) var(--platform-space-3);
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface);
+    font-family: var(--platform-font-mono);
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text);
+  }
+
+  & .block-game-field__paste-input:focus {
+    outline: 2px solid var(--platform-accent-soft);
+    border-color: var(--platform-accent);
+  }
+
+  & .block-game-field__paste-error {
+    margin: 0;
+    font-size: var(--platform-type-md);
+    color: var(--platform-danger);
+  }
+}

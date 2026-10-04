@@ -1,0 +1,62 @@
+---
+description: "The game a class block carries, transcribed and annotated on the ordinary GameViewer in editing mode, with its PGN in a hidden input of the block form and a box to paste a PGN."
+---
+
+# `BlockGameField`
+
+|            |                                                                                                                                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/teacher/classes/class-block-editor/block-game-field.comp.tsx`                                                                           |
+| Kind       | Client Component                                                                                                                                                      |
+| Stylesheet | `block-game-field.comp.css` → block `.block-game-field`                                                                                                               |
+| Used by    | [`BlockForm`](/components/platform/sections/teacher/classes/class-block-editor/block-form) (game blocks)                                                              |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer)                                                                                                             |
+| Uses       | `usePgnHistory` from `components/platform/shared/use-pgn-history.hook`; `emptyGame`, `parseEditableGame`, `serializeGame` from `lib/chess/pgn-edit`; `PGN_MAX_LENGTH` |
+
+## Purpose
+
+A game block's game is transcribed on the platform's one viewer in its editing mode, the same one the studies and the chapter games mount: moves are played on the board, the move list's right click comments, promotes or deletes, the tools under the board annotate (comment, quality, evaluation), the engine is on offer and Ctrl+Z undoes. It replaced `AnalysisBoard`, a separate editor, on 2026-10-03.
+
+The block is saved by its form, not by itself: the PGN is published in a hidden input named by `name`, so the bound server action reads `formData.get("pgn")` like any other field. Nothing autosaves.
+
+## Props
+
+| Prop         | Type     | Required | Meaning                                                                             |
+| ------------ | -------- | -------- | ----------------------------------------------------------------------------------- |
+| `name`       | `string` | yes      | Name of the hidden input the PGN travels in.                                        |
+| `defaultPgn` | `string` | no       | The block's game. Absent, empty or unreadable, the field starts from an empty game. |
+
+## Behaviour
+
+- The PGN lives in `usePgnHistory` (with undo): the viewer's edits come back through `onPgnChange` and feed the viewer again. The starting PGN is the block's, rewritten once by `serializeGame` so the first edit does not also reformat it.
+- **Pegar un PGN** (a `<details>`): a textarea (up to `PGN_MAX_LENGTH`) and «Cargar este PGN», which reads the text with `parseEditableGame` and, if it is a game, replaces the whole one as one more step of the history (Ctrl+Z brings back the previous). An unreadable text leaves the game alone and shows an error with `role="alert"`. The textarea has no `name`, so it is not sent with the block.
+- The viewer is not inside a `<label>`, as a `FormField` would put it: there, a click on a square would also press the viewer's first button. The field is a `role="group"` named by its own label and described by its hint, which look like a `FormField`'s.
+
+## Markup & styling
+
+Block `.block-game-field` (59 lines).
+
+**Elements:** `.block-game-field__label`, `.block-game-field__hint`, `.block-game-field__paste`, `.block-game-field__paste-input`, `.block-game-field__paste-error`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-button`.
+
+**Tokens:** `--platform-accent`, `--platform-accent-soft`, `--platform-border`, `--platform-danger`, `--platform-font-mono`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/teacher/classes/class-block-editor/block-form.comp.tsx`:
+
+```tsx
+import { BlockGameField } from "./block-game-field.comp";
+
+<BlockGameField name="pgn" defaultPgn={block?.pgn ?? undefined} />;
+```
+
+## Related
+
+- [`ChapterGameBoard`](/components/platform/sections/staff/courses/chapter-game-section), the same viewer and history with an autosave instead of a form.
+- [`MovePathPicker`](/components/platform/sections/teacher/classes/class-block-editor/move-path-picker), the other viewer of the block form, which only navigates.

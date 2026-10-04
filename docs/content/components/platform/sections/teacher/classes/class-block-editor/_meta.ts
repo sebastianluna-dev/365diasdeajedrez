@@ -2,6 +2,7 @@ import type { MetaRecord } from "nextra";
 
 const meta: MetaRecord = {
   "block-form": "BlockForm",
+  "block-game-field": "BlockGameField",
   "class-block-editor": "ClassBlockEditor",
   "game-selector": "GameSelector",
   "lesson-reference-field": "LessonReferenceField",
