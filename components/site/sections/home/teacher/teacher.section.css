@@ -118,6 +118,11 @@
     flex-wrap: wrap;
   }
 
+  & .teacher__action-icon {
+    width: 16px;
+    height: 16px;
+  }
+
   @media (max-width: 1023px) {
     & .teacher__media {
       width: 56%;

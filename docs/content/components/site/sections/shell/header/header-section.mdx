@@ -12,7 +12,7 @@ description: "Top navigation of the public site: the logo, the CMS navigation it
 | Used by    | `/`, `/nosotros`, `/blog`, `/blog/[slug]`, `/mentor/[slug]`, `/reloj-de-ajedrez`, `app/(frontend)/not-found.tsx`                                                                                    |
 | Composes   | [`Logo`](/components/site/shared/logo), [`HeaderDropdown`](/components/site/sections/shell/header/header-dropdown), [`HeaderMobileMenu`](/components/site/sections/shell/header/header-mobile-menu) |
 | Reads      | `getHeaderData()` · `services/home/home.service.ts` (the `home-header` Global)                                                                                                                      |
-| Uses       | `LOGIN_PATH` from `constants/platform/auth.const`, `ChevronRight` from `lucide-react`                                                                                                               |
+| Uses       | `LOGIN_PATH` from `constants/platform/auth.const`, `ArrowRightIcon` from `components/icons`                                                                                                         |
 
 ## Purpose
 
@@ -32,9 +32,9 @@ The navigation bar every public page opens with. Its items come from the CMS so 
 
 ## Markup & styling
 
-Block `.site-header-nav` (336 lines, shared by the three header files).
+Block `.site-header-nav` (353 lines, shared by the three header files).
 
-**Elements:** `.site-header-nav__inner`, `.site-header-nav__spacer`, `.site-header__links`, `.site-header__button`, `.site-header__toggle`, `.site-header__dropdown`, `.site-header__dropdown-trigger`, `.site-header__dropdown-menu`, `.site-header-mobile__links`, `.site-header-mobile__button`
+**Elements:** `.site-header-nav__inner`, `.site-header-nav__spacer`, `.site-header__links`, `.site-header__button`, `.site-header__button-icon`, `.site-header__toggle`, `.site-header__toggle-icon`, `.site-header__dropdown`, `.site-header__dropdown-trigger`, `.site-header__dropdown-icon`, `.site-header__dropdown-menu`, `.site-header-mobile__links`, `.site-header-mobile__button`
 
 **Modifiers:** `.site-header-nav_theme_light`, `.site-header__dropdown_open`, `.site-header-mobile_open`
 

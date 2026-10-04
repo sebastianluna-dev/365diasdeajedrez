@@ -2,21 +2,28 @@ interface NoteIconProps {
   className?: string;
 }
 
+/**
+ * A speech bubble: commenting a move, in the move menu. Font Awesome's
+ * `comment`, Duotone Light.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
 export function NoteIcon({ className }: NoteIconProps) {
   return (
     <svg
       className={className}
-      viewBox="0 0 24 24"
+      viewBox="-85.33 -85.33 682.67 682.67"
       width="24"
       height="24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.9"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      fill="currentColor"
       aria-hidden="true"
     >
-      <path d="M20 12.5c0 3.6-3.6 6.5-8 6.5-.9 0-1.8-.1-2.6-.3L5 20.5l1.2-3.2A6.7 6.7 0 0 1 4 12.5C4 8.9 7.6 6 12 6s8 2.9 8 6.5z" />
+      <path
+        opacity=".4"
+        d="M32 240c0 46.7 16.5 89.8 44.8 124.8 8.1 10.1 9.4 24.1 3.2 35.4l-40.2 73.6 101-43.3c7.9-3.4 16.8-3.5 24.8-.2 27.6 11.3 58.2 17.6 90.4 17.6 125.7 0 224-95 224-208S381.7 32 256 32 32 127 32 240z"
+      />
+      <path d="M76.8 364.8c8.1 10.1 9.4 24.1 3.2 35.4l-40.2 73.6 101-43.3c7.9-3.4 16.8-3.5 24.8-.2 27.6 11.3 58.2 17.6 90.4 17.6 125.7 0 224-95 224-208S381.7 32 256 32 32 127 32 240c0 46.7 16.5 89.8 44.8 124.8zM51.9 384.9C19.3 344.6 0 294.4 0 240 0 107.5 114.6 0 256 0S512 107.5 512 240 397.4 480 256 480c-36.5 0-71.2-7.2-102.6-20L37 509.9c-3.7 1.6-7.5 2.1-11.5 2.1-14.1 0-25.5-11.4-25.5-25.5 0-4.3 1.1-8.5 3.1-12.2l48.8-89.4z" />
     </svg>
   );
 }

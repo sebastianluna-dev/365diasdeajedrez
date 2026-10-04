@@ -4,13 +4,13 @@ description: "The hamburger menu of the header: a toggle button and a panel with
 
 # `HeaderMobileMenu`
 
-|            |                                                                                                        |
-| ---------- | ------------------------------------------------------------------------------------------------------ |
-| File       | `components/site/sections/shell/header/header-mobile-menu.comp.tsx`                                    |
-| Kind       | Client Component                                                                                       |
-| Stylesheet | none of its own; styled by `header.section.css` under `.site-header__toggle` and `.site-header-mobile` |
-| Used by    | [`Header`](/components/site/sections/shell/header/header-section)                                      |
-| Uses       | `HeaderNavItem` from `services/home/home.types`, `Menu`, `X`, `ChevronRight` from `lucide-react`       |
+|            |                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/site/sections/shell/header/header-mobile-menu.comp.tsx`                                                |
+| Kind       | Client Component                                                                                                   |
+| Stylesheet | none of its own; styled by `header.section.css` under `.site-header__toggle` and `.site-header-mobile`             |
+| Used by    | [`Header`](/components/site/sections/shell/header/header-section)                                                  |
+| Uses       | `HeaderNavItem` from `services/home/home.types`, `MenuIcon`, `CloseIcon`, `ArrowRightIcon` from `components/icons` |
 
 ## Purpose
 
@@ -32,7 +32,7 @@ The narrow-screen navigation. Dropdown groups make no sense in a stacked list, s
 
 ## Markup & styling
 
-Block `.site-header-mobile` inside the header stylesheet, with `.site-header-mobile__links` and `.site-header-mobile__button` (which also carries `.site-header__button`); modifier `.site-header-mobile_open`. The toggle is `.site-header__toggle`, visible only under `(max-width: 1023px)`.
+Block `.site-header-mobile` inside the header stylesheet, with `.site-header-mobile__links` and `.site-header-mobile__button` (which also carries `.site-header__button`); modifier `.site-header-mobile_open`. The toggle is `.site-header__toggle`, visible only under `(max-width: 1023px)`, its icon `.site-header__toggle-icon`; the button's arrow is `.site-header__button-icon`.
 
 ## Usage
 

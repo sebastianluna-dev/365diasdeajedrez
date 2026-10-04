@@ -2,23 +2,24 @@ interface ExitIconProps {
   className?: string;
 }
 
-/** A door with the way out through it: signing off. */
+/**
+ * A door with the way out through it: signing off. Font Awesome's
+ * `arrow-right-from-bracket`, Duotone Light.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
 export function ExitIcon({ className }: ExitIconProps) {
   return (
     <svg
       className={className}
-      viewBox="0 0 24 24"
+      viewBox="-85.33 -85.33 682.67 682.67"
       width="24"
       height="24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.9"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      fill="currentColor"
       aria-hidden="true"
     >
-      <path d="M14.4 4.6H18a1.4 1.4 0 0 1 1.4 1.4v12a1.4 1.4 0 0 1-1.4 1.4h-3.6" />
-      <path d="M10.2 15.8 14 12l-3.8-3.8M14 12H4.6" />
+      <path d="M176 64c8.8 0 16-7.2 16-16s-7.2-16-16-16L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l80 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-80 0c-35.3 0-64-28.7-64-64l0-256c0-35.3 28.7-64 64-64l80 0zM507.3 267.3c6.2-6.2 6.2-16.4 0-22.6l-144-144c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L457.4 240 176 240c-8.8 0-16 7.2-16 16s7.2 16 16 16l281.4 0-116.7 116.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0l144-144z" />
     </svg>
   );
 }

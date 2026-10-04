@@ -2,21 +2,28 @@ interface FullscreenIconProps {
   className?: string;
 }
 
+/**
+ * Four corners: full screen, in the game viewer. Font Awesome's `expand`,
+ * Duotone Light.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
 export function FullscreenIcon({ className }: FullscreenIconProps) {
   return (
     <svg
       className={className}
-      viewBox="0 0 24 24"
+      viewBox="-117.33 -85.33 682.67 682.67"
       width="24"
       height="24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.9"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      fill="currentColor"
       aria-hidden="true"
     >
-      <path d="M4 9V4h5M20 15v5h-5M20 9V4h-5M4 15v5h5" />
+      <path
+        opacity=".4"
+        d="M0 176L0 336c0-8.8 7.2-16 16-16s16 7.2 16 16l0 112 112 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l112 0 0-112c0-8.8 7.2-16 16-16s16 7.2 16 16l0-160c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-112-112 0c-8.8 0-16-7.2-16-16s7.2-16 16-16L144 32c8.8 0 16 7.2 16 16s-7.2 16-16 16L32 64 32 176c0 8.8-7.2 16-16 16S0 184.8 0 176z"
+      />
+      <path d="M144 32c8.8 0 16 7.2 16 16s-7.2 16-16 16L32 64 32 176c0 8.8-7.2 16-16 16S0 184.8 0 176L0 48c0-8.8 7.2-16 16-16l128 0zM0 336c0-8.8 7.2-16 16-16s16 7.2 16 16l0 112 112 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L16 480c-8.8 0-16-7.2-16-16L0 336zM432 32c8.8 0 16 7.2 16 16l0 128c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-112-112 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l128 0zM416 336c0-8.8 7.2-16 16-16s16 7.2 16 16l0 128c0 8.8-7.2 16-16 16l-128 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l112 0 0-112z" />
     </svg>
   );
 }

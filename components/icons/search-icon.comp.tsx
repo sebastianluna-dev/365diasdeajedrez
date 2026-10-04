@@ -2,22 +2,25 @@ interface SearchIconProps {
   className?: string;
 }
 
+/**
+ * The magnifying glass of the bar's search and of the staff's course list and
+ * game picker. Font Awesome's `magnifying-glass`, Duotone Light.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
 export function SearchIcon({ className }: SearchIconProps) {
   return (
     <svg
       className={className}
-      viewBox="0 0 24 24"
+      viewBox="-85.33 -85.33 682.67 682.67"
       width="24"
       height="24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.9"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      fill="currentColor"
       aria-hidden="true"
     >
-      <circle cx="11" cy="11" r="6" />
-      <path d="M15.5 15.5L20 20" />
+      <path opacity=".4" d="M32 208a176 176 0 1 0 352 0 176 176 0 1 0 -352 0z" />
+      <path d="M384 208a176 176 0 1 0 -352 0 176 176 0 1 0 352 0zM343.3 366C307 397.2 259.7 416 208 416 93.1 416 0 322.9 0 208S93.1 0 208 0 416 93.1 416 208c0 51.7-18.8 99-50 135.3L507.3 484.7c6.2 6.2 6.2 16.4 0 22.6s-16.4 6.2-22.6 0L343.3 366z" />
     </svg>
   );
 }

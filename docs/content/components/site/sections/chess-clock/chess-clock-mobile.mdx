@@ -11,7 +11,7 @@ description: "The phone clock in two steps: a select screen with the dials and t
 | Stylesheet | `chess-clock-mobile.comp.css` → block `.chess-clock-mobile`                                                                        |
 | Used by    | [`ChessClock`](/components/site/sections/chess-clock/chess-clock)                                                                  |
 | Composes   | [`ClockDial`](/components/site/sections/chess-clock/clock-dial), [`TimeRoller`](/components/site/sections/chess-clock/time-roller) |
-| Uses       | `useChessClock` from `hooks/use-chess-clock.hook`, `Settings`, `Home`, `RotateCcw` from `lucide-react`                             |
+| Uses       | `useChessClock` from `hooks/use-chess-clock.hook`, `GearIcon`, `HouseIcon`, `RotateLeftIcon` from `components/icons`               |
 
 ## Purpose
 
@@ -32,9 +32,9 @@ On a phone the two players sit across from each other, so the play screen is rot
 
 ## Markup & styling
 
-Block `.chess-clock-mobile` (235 lines).
+Block `.chess-clock-mobile` (240 lines).
 
-**Elements:** `.chess-clock-mobile__intro`, `.chess-clock-mobile__title`, `.chess-clock-mobile__subtitle`, `.chess-clock-mobile__case-wrap`, `.chess-clock-mobile__knobs`, `.chess-clock-mobile__knob`, `.chess-clock-mobile__case`, `.chess-clock-mobile__controls`, `.chess-clock-mobile__control`, `.chess-clock-mobile__start`, `.chess-clock-mobile__rotated`, `.chess-clock-mobile__tap-zone`, `.chess-clock-mobile__dial-time`, `.chess-clock-mobile__actions`, `.chess-clock-mobile__action`
+**Elements:** `.chess-clock-mobile__intro`, `.chess-clock-mobile__title`, `.chess-clock-mobile__subtitle`, `.chess-clock-mobile__case-wrap`, `.chess-clock-mobile__knobs`, `.chess-clock-mobile__knob`, `.chess-clock-mobile__case`, `.chess-clock-mobile__controls`, `.chess-clock-mobile__control`, `.chess-clock-mobile__start`, `.chess-clock-mobile__rotated`, `.chess-clock-mobile__tap-zone`, `.chess-clock-mobile__dial-time`, `.chess-clock-mobile__actions`, `.chess-clock-mobile__action`, `.chess-clock-mobile__action-icon`
 
 **Modifiers:** `.chess-clock-mobile_step_select`, `.chess-clock-mobile_step_play`, `.chess-clock-mobile__knob_pressed`, `.chess-clock-mobile__control_active`, `.chess-clock-mobile__tap-zone_active`
 

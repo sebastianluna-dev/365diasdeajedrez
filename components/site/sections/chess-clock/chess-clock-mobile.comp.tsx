@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Settings, Home, RotateCcw } from "lucide-react";
 import { useChessClock } from "@/hooks/use-chess-clock.hook";
+import { GearIcon } from "@/components/icons/gear-icon.comp";
+import { HouseIcon } from "@/components/icons/house-icon.comp";
+import { RotateLeftIcon } from "@/components/icons/rotate-left-icon.comp";
 import { ClockDial } from "./clock-dial.comp";
 import { TimeRoller } from "./time-roller.comp";
 import "./chess-clock-mobile.comp.css";
@@ -100,10 +102,10 @@ export function ChessClockMobile({ enabled = true }: ChessClockMobileProps) {
 
               <div className="chess-clock-mobile__actions">
                 <button type="button" onClick={reset} aria-label="Reiniciar" className="chess-clock-mobile__action">
-                  <RotateCcw size={28} />
+                  <RotateLeftIcon className="chess-clock-mobile__action-icon" />
                 </button>
                 <Link href="/" aria-label="Inicio" className="chess-clock-mobile__action">
-                  <Home size={28} />
+                  <HouseIcon className="chess-clock-mobile__action-icon" />
                 </Link>
                 <button
                   type="button"
@@ -111,7 +113,7 @@ export function ChessClockMobile({ enabled = true }: ChessClockMobileProps) {
                   aria-label="Configurar"
                   className="chess-clock-mobile__action"
                 >
-                  <Settings size={28} />
+                  <GearIcon className="chess-clock-mobile__action-icon" />
                 </button>
               </div>
 

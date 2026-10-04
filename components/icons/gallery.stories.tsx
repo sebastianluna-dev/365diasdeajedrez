@@ -5,6 +5,7 @@ import { ArrowLeftIcon } from "./arrow-left-icon.comp";
 import { ArrowRightIcon } from "./arrow-right-icon.comp";
 import { ArrowUpIcon } from "./arrow-up-icon.comp";
 import { BoardFlipIcon } from "./board-flip-icon.comp";
+import { CalendarCheckIcon } from "./calendar-check-icon.comp";
 import { CalendarIcon } from "./calendar-icon.comp";
 import { CaretRightIcon } from "./caret-right-icon.comp";
 import { CheckIcon } from "./check-icon.comp";
@@ -20,6 +21,7 @@ import { FullscreenIcon } from "./fullscreen-icon.comp";
 import { GearIcon } from "./gear-icon.comp";
 import { GripIcon } from "./grip-icon.comp";
 import { HeartIcon } from "./heart-icon.comp";
+import { HouseIcon } from "./house-icon.comp";
 import { ImageIcon } from "./image-icon.comp";
 import { InfoIcon } from "./info-icon.comp";
 import { JumpEndIcon } from "./jump-end-icon.comp";
@@ -32,6 +34,7 @@ import { NoteIcon } from "./note-icon.comp";
 import { PauseIcon } from "./pause-icon.comp";
 import { PlayIcon } from "./play-icon.comp";
 import { PlusIcon } from "./plus-icon.comp";
+import { RotateLeftIcon } from "./rotate-left-icon.comp";
 import { SearchIcon } from "./search-icon.comp";
 import { SkipIcon } from "./skip-icon.comp";
 import { SoundOffIcon } from "./sound-off-icon.comp";
@@ -65,6 +68,7 @@ const GLYPHS: Glyph[] = [
   { name: "ArrowUpIcon", Icon: ArrowUpIcon, width: 24, height: 24, size: 20, where: "move menu, user menu" },
   { name: "BoardFlipIcon", Icon: BoardFlipIcon, width: 24, height: 24, size: 20, where: "game viewer" },
   { name: "CalendarIcon", Icon: CalendarIcon, width: 24, height: 24, size: 18, where: "date picker" },
+  { name: "CalendarCheckIcon", Icon: CalendarCheckIcon, width: 24, height: 24, size: 16, where: "teacher CTA (site)" },
   { name: "CaretRightIcon", Icon: CaretRightIcon, width: 8, height: 16, size: 14, where: "course trail" },
   { name: "CheckIcon", Icon: CheckIcon, width: 24, height: 24, size: 16, where: "select, check cards" },
   { name: "ChevronIcon", Icon: ChevronIcon, width: 24, height: 24, size: 14, where: "select, date picker" },
@@ -79,6 +83,7 @@ const GLYPHS: Glyph[] = [
   { name: "GearIcon", Icon: GearIcon, width: 24, height: 24, size: 19, where: "user menu" },
   { name: "GripIcon", Icon: GripIcon, width: 10, height: 16, size: 16, where: "syllabus rows" },
   { name: "HeartIcon", Icon: HeartIcon, width: 14, height: 14, size: 14, where: "reviews (site)" },
+  { name: "HouseIcon", Icon: HouseIcon, width: 24, height: 24, size: 28, where: "mobile clock (site)" },
   { name: "ImageIcon", Icon: ImageIcon, width: 24, height: 24, size: 28, where: "image upload" },
   { name: "InfoIcon", Icon: InfoIcon, width: 24, height: 24, size: 18, where: "info tip" },
   { name: "JumpEndIcon", Icon: JumpEndIcon, width: 24, height: 24, size: 20, where: "game viewer" },
@@ -91,6 +96,7 @@ const GLYPHS: Glyph[] = [
   { name: "PauseIcon", Icon: PauseIcon, width: 19, height: 22, size: 22, where: "board tools" },
   { name: "PlayIcon", Icon: PlayIcon, width: 19, height: 22, size: 22, where: "board tools" },
   { name: "PlusIcon", Icon: PlusIcon, width: 16, height: 16, size: 16, where: "FAQ (site)" },
+  { name: "RotateLeftIcon", Icon: RotateLeftIcon, width: 24, height: 24, size: 28, where: "mobile clock (site)" },
   { name: "SearchIcon", Icon: SearchIcon, width: 24, height: 24, size: 18, where: "bar search" },
   { name: "SkipIcon", Icon: SkipIcon, width: 24, height: 24, size: 24, where: "board tools" },
   { name: "SoundOffIcon", Icon: SoundOffIcon, width: 24, height: 24, size: 18, where: "game viewer" },
@@ -227,18 +233,20 @@ const meta = {
     docs: {
       description: {
         component: `
-Every icon of \`components/icons\`, one hand-written SVG per file, each with
-the name it is exported by under it. An icon takes a \`className\` and nothing
-else: its size and its colour are its caller's stylesheet's, and it draws with
-\`currentColor\` (a fill or a stroke), so the accent gallery is the same icons
-under another \`color\`. Each one is \`aria-hidden\`; the button around it
+Every icon of \`components/icons\`, one SVG per file, each with the name it is
+exported by under it. All but the brand's two and WhatsApp's are Font Awesome
+Pro 7.3.1 in Duotone Light: two layers filled with \`currentColor\`, the one at
+the back at 40 %. An icon takes a \`className\` and nothing else: its size and
+its colour are its caller's stylesheet's, so the accent gallery is the same
+icons under another \`color\`. Each one is \`aria-hidden\`; the button around it
 carries the name.
 
 Here, with no stylesheet, the gallery scales each drawing to the size its main
 caller gives it (the px under the name). Two take more than \`color\`:
-\`FlameIcon\` has an inner flame its caller paints through \`coreClassName\`
-(left unnamed here, the flame is one colour), and \`LogoWordmarkIcon\` paints
-nothing by itself, so it is drawn by its real caller, the site's \`Logo\`.
+\`FlameIcon\` has a front layer (outline and inner flame) its caller paints
+through \`coreClassName\` (left unnamed here, the flame is one colour), and
+\`LogoWordmarkIcon\` paints nothing by itself, so it is drawn by its real
+caller, the site's \`Logo\`.
 
 Reference: [Components › Icons](/components#icons--componentsicons) in the docs site.
 `,

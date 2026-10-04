@@ -2,22 +2,28 @@ interface SoundOnIconProps {
   className?: string;
 }
 
+/**
+ * Speaker with one wave: the game viewer's sound, on. Font Awesome's
+ * `volume-low`, Duotone Light.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
 export function SoundOnIcon({ className }: SoundOnIconProps) {
   return (
     <svg
       className={className}
-      viewBox="0 0 24 24"
+      viewBox="-117.33 -85.33 682.67 682.67"
       width="24"
       height="24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.9"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      fill="currentColor"
       aria-hidden="true"
     >
-      <path d="M5 10v4h3l4 3.5v-11L8 10z" />
-      <path d="M16 9.5a4 4 0 0 1 0 5" />
+      <path
+        opacity=".4"
+        d="M32 208l0 96c0 8.8 7.2 16 16 16l64 0c8.5 0 16.6 3.4 22.6 9.4L252.7 447.4c.4 .4 .9 .6 1.4 .6 1.1 0 1.9-.9 1.9-1.9l0-380.1c0-1.1-.9-1.9-1.9-1.9-.5 0-1 .2-1.4 .6L134.6 182.6c-6 6-14.1 9.4-22.6 9.4l-64 0c-8.8 0-16 7.2-16 16z"
+      />
+      <path d="M134.6 329.4L252.7 447.4c.4 .4 .9 .6 1.4 .6 1.1 0 1.9-.9 1.9-1.9l0-380.1c0-1.1-.9-1.9-1.9-1.9-.5 0-1 .2-1.4 .6L134.6 182.6c-6 6-14.1 9.4-22.6 9.4l-64 0c-8.8 0-16 7.2-16 16l0 96c0 8.8 7.2 16 16 16l64 0c8.5 0 16.6 3.4 22.6 9.4zM48 160l64 0 118.1-118.1c6.4-6.4 15-9.9 24-9.9 18.7 0 33.9 15.2 33.9 33.9l0 380.1c0 18.7-15.2 33.9-33.9 33.9-9 0-17.6-3.6-24-9.9L112 352 48 352c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48zm329.6 19.2C400.9 196.7 416 224.6 416 256s-15.1 59.3-38.4 76.8c-7.1 5.3-17.1 3.9-22.4-3.2s-3.9-17.1 3.2-22.4C374 295.5 384 276.9 384 256s-10-39.5-25.6-51.2c-7.1-5.3-8.5-15.3-3.2-22.4s15.3-8.5 22.4-3.2z" />
     </svg>
   );
 }

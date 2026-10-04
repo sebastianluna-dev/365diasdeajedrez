@@ -10,7 +10,7 @@ description: "A navigation dropdown of the header: opens on hover through CSS, w
 | Kind       | Client Component                                                               |
 | Stylesheet | none of its own; styled by `header.section.css` under `.site-header__dropdown` |
 | Used by    | [`Header`](/components/site/sections/shell/header/header-section)              |
-| Uses       | `ChevronDown` from `lucide-react`, `useId`                                     |
+| Uses       | `ChevronIcon` from `components/icons`, `useId`                                 |
 
 ## Purpose
 
@@ -32,7 +32,7 @@ A group of links under one label. With the mouse the menu opens through `:hover`
 
 ## Markup & styling
 
-Element `.site-header__dropdown` of the header block, with `.site-header__dropdown-trigger` and `.site-header__dropdown-menu`; modifier `.site-header__dropdown_open` mirrors the state for CSS.
+Element `.site-header__dropdown` of the header block, with `.site-header__dropdown-trigger`, its chevron `.site-header__dropdown-icon` (turned to point down) and `.site-header__dropdown-menu`; modifier `.site-header__dropdown_open` mirrors the state for CSS.
 
 ## Usage
 

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { CalendarCheck } from "lucide-react";
 import { EloTable } from "@/components/chess/elo-table.comp";
+import { CalendarCheckIcon } from "@/components/icons/calendar-check-icon.comp";
 import { ChessBoardLazy } from "@/components/chess/chess-board-lazy.comp";
 import { getTeacherData } from "@/services/home/home.service";
 import { TeacherStat } from "./teacher-stat.comp";
@@ -56,7 +56,7 @@ export async function TeacherSection() {
 
           <div className="teacher__actions">
             <Link href="/#planes" className="button button_variant_primary">
-              <CalendarCheck size={16} />
+              <CalendarCheckIcon className="teacher__action-icon" />
               {content.ctaLabel}
             </Link>
           </div>

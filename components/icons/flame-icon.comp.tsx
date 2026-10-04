@@ -1,26 +1,27 @@
 interface FlameIconProps {
   className?: string;
-  /** Class of the inner flame, the shape the fire is hollow in. */
+  /** Class of the front layer: the fire's outline and its inner flame. */
   coreClassName?: string;
 }
 
 /**
- * Flame of the daily streak. The `viewBox` starts above 0 because the
- * original lets it peek out at the top.
+ * Flame of the daily streak, in two layers its caller paints apart. The fire's
+ * body (Duotone's background layer, here at full strength and not at its usual
+ * 40 %) follows `color`; its outline and inner flame take `coreClassName`,
+ * which the caller fills in its own block. Without that class both are one
+ * colour. The `viewBox` starts above 0 because the drawing peeks out at the
+ * top. Font Awesome's `fire`, Duotone Light.
  *
- * Two paths and not one with a hole: the fire has an inner flame, and drawn
- * as a hole it could only be the colour of whatever was behind it. The outer
- * one follows `color`; the caller names the inner one through `coreClassName`
- * and paints it in its own block. Without that class both are one colour,
- * which is a flame with no core rather than a hole in the middle.
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
 export function FlameIcon({ className, coreClassName }: FlameIconProps) {
   return (
-    <svg className={className} viewBox="0 -32 448 544" width="32" height="32" fill="currentColor" aria-hidden="true">
-      <path d="M160.5-26.4c9.3-7.8 23-7.5 31.9 .9 12.3 11.6 23.3 24.4 33.9 37.4 13.5 16.5 29.7 38.3 45.3 64.2 5.2-6.8 10-12.8 14.2-17.9 1.1-1.3 2.2-2.7 3.3-4.1 7.9-9.8 17.7-22.1 30.8-22.1 13.4 0 22.8 11.9 30.8 22.1 1.3 1.7 2.6 3.3 3.9 4.8 10.3 12.4 24 30.3 37.7 52.4 27.2 43.9 55.6 106.4 55.6 176.6 0 123.7-100.3 224-224 224S0 411.7 0 288c0-91.1 41.1-170 80.5-225 19.9-27.7 39.7-49.9 54.6-65.1 8.2-8.4 16.5-16.7 25.5-24.2z" />
+    <svg className={className} viewBox="-48 -32 544 544" width="32" height="32" fill="currentColor" aria-hidden="true">
+      <path d="M32 288c0 106 86 192 192 192s192-86 192-192c0-61.9-25.2-118.4-50.8-159.8-13.5-21.8-28.1-44.3-45.1-61.3-6.5 6.6-12.5 14.7-19 23.4-1.3 1.7-2.5 3.4-3.8 5.1-6.4 8.5-16.6 13.3-27.2 12.7s-20.3-6.3-25.8-15.4c-14.8-24.4-30-44.9-42.7-60.5-8.6-10.5-17.1-20.4-25.9-29.3-5.8 5.3-11.6 11-17.7 17.3-14 14.4-32.8 35.3-51.5 61.5-37.5 52.3-74.5 124.7-74.5 206.3zm64 18.8c0-54.5 37.5-97.4 56.3-115.8 13.7-13.4 34.5-10.2 45.2 3.4 16.2 20.5 47.9 60.9 65.3 83L288 248.2c12.8-14.9 38.4-15.4 48.8 5 47.2 86.7-21.1 178.9-111 178.9-35 0-67.4-11.3-91.3-33-24.1-22-38.4-53.7-38.4-92.2z" />
       <path
         className={coreClassName}
-        d="M225.7 416c25.3 0 47.7-7 68.8-21 42.1-29.4 53.4-88.2 28.1-134.4-4.5-9-16-9.6-22.5-2l-25.2 29.3c-6.6 7.6-18.5 7.4-24.7-.5-17.3-22.1-49.1-62.4-65.3-83-5.4-6.9-15.2-8-21.5-1.9-18.3 17.8-51.5 56.8-51.5 104.3 0 68.6 50.6 109.2 113.7 109.2z"
+        d="M158 20.2c6.1-6.3 11.9-12 17.7-17.3 8.8 8.9 17.3 18.8 25.9 29.3 12.8 15.6 28 36.1 42.7 60.5 5.5 9.1 15.2 14.9 25.8 15.4s20.8-4.2 27.2-12.7c1.3-1.7 2.6-3.4 3.8-5.1l0 0c6.5-8.7 12.5-16.7 19-23.4 17 17 31.6 39.5 45.1 61.3 25.6 41.4 50.8 97.9 50.8 159.8 0 106-86 192-192 192S32 394 32 288c0-81.6 37-154 74.5-206.3 18.7-26.1 37.4-47 51.5-61.5zM176.6-30c-7.3-.2-14.7 2.2-20.4 7.3-7.3 6.5-14.3 13.4-21.1 20.5-14.9 15.3-34.7 37.5-54.6 65.1-39.4 55-80.5 133.9-80.5 225 0 123.7 100.3 224 224 224S448 411.7 448 288c0-70.3-28.4-132.7-55.6-176.6-14-22.6-31.2-49.5-52.5-69.9-5.7-5.5-12.1-9.4-19.9-9.4-7.5 0-13.9 4-19.6 9.3-9.7 9.1-18.2 20.7-25.3 30.2l0 0c-1.2 1.6-2.3 3.1-3.4 4.6-15.7-25.9-31.8-47.6-45.3-64.2-9.4-11.5-19.2-22.9-29.8-33.4-5.4-5.4-12.6-8.3-20-8.5zM128 306.8c0-39.6 27.4-73.7 45.2-91.5 16.4 20.8 47.4 60.2 64.4 81.9 12.5 15.9 36.3 16.3 49.4 1l23.1-26.9c30.8 61.4-16.1 128.6-84.5 128.6-28.2 0-52.6-9-69.8-24.7-17-15.5-28-38.4-28-68.5zm69.5-112.4c-10.7-13.6-31.5-16.8-45.2-3.4-18.8 18.3-56.3 61.3-56.3 115.8 0 38.5 14.3 70.2 38.4 92.2 23.9 21.8 56.4 33 91.3 33 89.9 0 158.3-92.2 111-178.9-10.5-20.4-36-19.9-48.8-5l-25.2 29.3c-17.3-22.1-49.1-62.4-65.3-83z"
       />
     </svg>
   );

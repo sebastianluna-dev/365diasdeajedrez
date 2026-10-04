@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ChevronDown } from "lucide-react";
 import { useId, useState } from "react";
+import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
 
 interface HeaderDropdownProps {
   label: string;
@@ -40,7 +40,7 @@ export function HeaderDropdown({ label, links }: HeaderDropdownProps) {
         onClick={() => setOpen((current) => !current)}
       >
         {label}
-        <ChevronDown size={14} />
+        <ChevronIcon className="site-header__dropdown-icon" />
       </button>
       <div id={menuId} className="site-header__dropdown-menu">
         {links.map((link, index) => (

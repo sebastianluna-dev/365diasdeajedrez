@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
 import { LOGIN_PATH } from "@/constants/platform/auth.const";
+import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
 import { Logo } from "@/components/site/shared/logo.comp";
 import { getHeaderData } from "@/services/home/home.service";
 import { HeaderDropdown } from "./header-dropdown.comp";
@@ -42,7 +42,7 @@ export async function Header({ theme = "dark" }: HeaderProps) {
           </nav>
           <Link href={LOGIN_PATH} className="site-header__button">
             {LOGIN_CTA_LABEL}
-            <ChevronRight size={16} />
+            <ArrowRightIcon className="site-header__button-icon" />
           </Link>
 
           <HeaderMobileMenu navItems={content.navItems} ctaLabel={LOGIN_CTA_LABEL} ctaHref={LOGIN_PATH} />

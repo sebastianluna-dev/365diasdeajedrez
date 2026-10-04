@@ -2,10 +2,28 @@ interface JumpStartIconProps {
   className?: string;
 }
 
+/**
+ * Bar and triangle: to the first move, in the game viewer. Font Awesome's
+ * `backward-step`, Duotone Light.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
 export function JumpStartIcon({ className }: JumpStartIconProps) {
   return (
-    <svg className={className} viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true">
-      <path d="M5 5h2.2v14H5zM19 5.5v13l-9-6.5z" />
+    <svg
+      className={className}
+      viewBox="-149.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path
+        opacity=".4"
+        d="M49.4 256l10.2 6.7 280 184c2.5 1.6 5.6 1.8 8.2 .4s4.2-4.1 4.2-7l0-368c0-2.9-1.6-5.6-4.2-7s-5.7-1.3-8.2 .4l-280 184-10.2 6.7z"
+      />
+      <path d="M16 32c8.8 0 16 7.2 16 16l0 181.2 10-6.6 280-184c12.3-8.1 28-8.8 41-1.8S384 57.3 384 72l0 368c0 14.7-8.1 28.2-21 35.2s-28.7 6.3-41-1.8l-280-184-10-6.6 0 181.2c0 8.8-7.2 16-16 16S0 472.8 0 464L0 48c0-8.8 7.2-16 16-16zM339.6 65.3l-280 184-10.2 6.7 10.2 6.7 280 184c2.5 1.6 5.6 1.8 8.2 .4s4.2-4.1 4.2-7l0-368c0-2.9-1.6-5.6-4.2-7s-5.7-1.3-8.2 .4z" />
     </svg>
   );
 }

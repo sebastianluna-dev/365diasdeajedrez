@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronRight, Menu, X } from "lucide-react";
+import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
+import { CloseIcon } from "@/components/icons/close-icon.comp";
+import { MenuIcon } from "@/components/icons/menu-icon.comp";
 import type { HeaderNavItem } from "@/services/home/home.types";
 
 interface HeaderMobileMenuProps {
@@ -25,7 +27,11 @@ export function HeaderMobileMenu({ navItems, ctaLabel, ctaHref }: HeaderMobileMe
         aria-expanded={mobileOpen}
         onClick={() => setMobileOpen((current) => !current)}
       >
-        {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+        {mobileOpen ? (
+          <CloseIcon className="site-header__toggle-icon" />
+        ) : (
+          <MenuIcon className="site-header__toggle-icon" />
+        )}
       </button>
 
       <div className={`site-header-mobile${mobileOpen ? " site-header-mobile_open" : ""}`}>
@@ -42,7 +48,7 @@ export function HeaderMobileMenu({ navItems, ctaLabel, ctaHref }: HeaderMobileMe
           onClick={() => setMobileOpen(false)}
         >
           {ctaLabel}
-          <ChevronRight size={16} />
+          <ArrowRightIcon className="site-header__button-icon" />
         </Link>
       </div>
     </>

@@ -226,6 +226,11 @@
     text-decoration: none;
   }
 
+  & .chess-clock-mobile__action-icon {
+    width: 28px;
+    height: 28px;
+  }
+
   /* Whoever asked for less motion gets the change without the travel. */
   @media (prefers-reduced-motion: reduce) {
     & .chess-clock-mobile__knob {
