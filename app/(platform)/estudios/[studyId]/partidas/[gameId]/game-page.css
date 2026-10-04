@@ -40,13 +40,33 @@
     align-items: start;
   }
 
-  /* In one column the board is under the aside and the page scrolls to it
-     anyway: it goes back to the viewer's own ceiling. */
+  /* The aside comes after the board in the markup; on a wide window it takes
+     the left column all the same. */
+  & .game-page__layout > .game-aside {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  & .game-page__layout > .game-view {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  /* Without the width for three columns the page is one: the board first,
+     which is what one came for, and the aside under it, as Lichess puts a
+     study's chapters under the board on a tablet and a phone. The board goes
+     back to the viewer's own ceiling. */
   @media (width < 1280px) {
     --viewer-board-max: 600px;
 
     & .game-page__layout {
       grid-template-columns: minmax(0, 1fr);
+    }
+
+    & .game-page__layout > .game-aside,
+    & .game-page__layout > .game-view {
+      grid-column: 1;
+      grid-row: auto;
     }
   }
 }

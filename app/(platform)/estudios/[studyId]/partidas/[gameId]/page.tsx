@@ -72,6 +72,10 @@ export default async function GamePage({ params, searchParams }: GamePageProps) 
   return (
     <div className="platform-page game-page platform-page_width_wide">
       <div className="game-page__layout">
+        {/* The board first in the markup, the aside after it: on a tablet or a
+            phone that is their order on screen, and on a wide window the
+            stylesheet puts the aside in the left column. */}
+        <GameViewSection game={game} errorCode={error} importReport={readImportReport(importadas)} />
         <GameAside
           game={game}
           study={study}
@@ -81,7 +85,6 @@ export default async function GamePage({ params, searchParams }: GamePageProps) 
           students={students}
           pageHref={pageHref}
         />
-        <GameViewSection game={game} errorCode={error} importReport={readImportReport(importadas)} />
       </div>
     </div>
   );

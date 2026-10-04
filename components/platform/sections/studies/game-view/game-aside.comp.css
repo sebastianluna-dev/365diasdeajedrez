@@ -220,8 +220,8 @@
     letter-spacing: -0.01em;
   }
 
-  /* Without width for two columns the aside moves to the top, and its cards
-     share the width instead of stacking lengthwise. */
+  /* Without width for two columns the aside goes under the board (the page
+     places it), and its cards share the width instead of stacking lengthwise. */
   @media (width < 1280px) {
     display: flex;
     flex-wrap: wrap;
