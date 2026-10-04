@@ -56,10 +56,10 @@
   }
 }
 
+/* The group's cards draw their own boxes: no frame around them. */
 .platform-field_variant_group {
-  border: 1px solid var(--platform-border);
-  border-radius: 8px;
-  padding: var(--platform-space-3) var(--platform-space-4);
+  border: 0;
+  padding: 0;
   margin: 0;
 
   & .platform-field__control {
@@ -69,23 +69,8 @@
     margin-top: var(--platform-space-2);
   }
 
-  & .platform-field__control label {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--platform-space-2);
-    font-size: var(--platform-type-lg);
-    color: var(--platform-text);
-  }
-
-  /* The group's controls draw their own boxes: no second frame around them. */
-  &.platform-field_frame_none {
-    border: 0;
-    border-radius: 0;
-    padding: 0;
-  }
-
   /* Without a border to sit on, the legend has no side gap to keep. */
-  &.platform-field_frame_none .platform-field__label {
+  & .platform-field__label {
     padding: 0;
   }
 }

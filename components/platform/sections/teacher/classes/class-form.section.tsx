@@ -9,6 +9,7 @@ import type { AssignedStudentSummary } from "@/services/teacher-students/teacher
 import "./class-form.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
 
 interface ClassFormSectionProps {
   /** No class = creation; with a class = editing it. */
@@ -113,12 +114,12 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
               : "Sólo aparecen tus alumnos con asignación activa."
           }
         >
-          {students.map((student) => (
-            <label key={student.id}>
-              <input type="checkbox" name="studentIds" value={student.id} />
-              {student.displayName}
-            </label>
-          ))}
+          <PlatformCheckCards
+            name="studentIds"
+            aria-label="Alumnos inscritos"
+            layout="line"
+            options={students.map((student) => ({ value: student.id, label: student.displayName }))}
+          />
         </FormFieldset>
       )}
 

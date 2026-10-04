@@ -4,14 +4,14 @@ description: "Several choices among a few, each drawn as a card, on Radix's Chec
 
 # `PlatformCheckCards`
 
-|            |                                                                                                                                                                              |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/platform-check-cards/platform-check-cards.comp.tsx`                                                                                              |
-| Kind       | Client Component                                                                                                                                                             |
-| Stylesheet | `platform-check-cards.comp.css` → block `.platform-check-cards`                                                                                                              |
-| Story      | `platform-check-cards.stories.tsx` (`platform/shared/PlatformCheckCards`)                                                                                                    |
-| Used by    | [`NewCourse`](/components/platform/sections/staff/courses/new-course), [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section)            |
-| Uses       | `Checkbox` from `radix-ui`; `PlatformChoiceCardOption` from [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards); `CheckIcon` from `components/icons/` |
+|            |                                                                                                                                                                                                                                                                                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/shared/platform-check-cards/platform-check-cards.comp.tsx`                                                                                                                                                                                                                                                                                                            |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                                                           |
+| Stylesheet | `platform-check-cards.comp.css` → block `.platform-check-cards`                                                                                                                                                                                                                                                                                                                            |
+| Story      | `platform-check-cards.stories.tsx` (`platform/shared/PlatformCheckCards`)                                                                                                                                                                                                                                                                                                                  |
+| Used by    | [`NewCourse`](/components/platform/sections/staff/courses/new-course), [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section), [`LessonEditorSection`](/components/platform/sections/staff/courses/lesson-editor-section) (the topics), [`ClassFormSection`](/components/platform/sections/teacher/classes/class-form-section) (the enrolled students) |
+| Uses       | `Checkbox` from `radix-ui`; `PlatformChoiceCardOption` from [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards); `CheckIcon` from `components/icons/`                                                                                                                                                                                                               |
 
 ## Purpose
 
@@ -43,7 +43,7 @@ It is a sibling of `PlatformChoiceCards` and not a mode of it: a radio group is 
 
 ## Markup & styling
 
-Block `.platform-check-cards`, a grid of `repeat(auto-fit, minmax(170px, 1fr))` at `width: 100%` (so it fills a `FormFieldset`'s flex row; the fieldset takes `frame="none"`, because the cards are already boxes): as many cards per row as fit, one column on a phone.
+Block `.platform-check-cards`, a grid of `repeat(auto-fit, minmax(170px, 1fr))` at `width: 100%` (so it fills a `FormFieldset`'s flex row; the fieldset draws no frame, because the cards are already boxes): as many cards per row as fit, one column on a phone.
 
 **Elements:** `.platform-check-cards__card`, `.platform-check-cards__mark`, `.platform-check-cards__mark-icon`, `.platform-check-cards__icon`, `.platform-check-cards__label`, `.platform-check-cards__meta`, `.platform-check-cards__description`
 

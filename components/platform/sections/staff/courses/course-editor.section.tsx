@@ -116,7 +116,7 @@ export function CourseEditorSection({
 
             {/* What the course teaches, as one-line cards in two columns, with
                 the name alone: several at once, and the action refuses to save none. */}
-            <FormFieldset legend="Contenido (selecciona al menos uno)" frame="none">
+            <FormFieldset legend="Contenido (selecciona al menos uno)">
               <PlatformCheckCards
                 name="contentTypeCodes"
                 defaultValue={course.contentTypeCodes}
@@ -132,7 +132,7 @@ export function CourseEditorSection({
             {/* Who the course is aimed at, as one-line cards in order of
                 difficulty, each with its name and its orientative Elo range
                 beside it. Several at once, or none. */}
-            <FormFieldset legend="Niveles" frame="none">
+            <FormFieldset legend="Niveles">
               <CourseLevelsField levels={levels} defaultValue={course.levelSlugs} />
             </FormFieldset>
 

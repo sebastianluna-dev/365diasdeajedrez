@@ -21,8 +21,9 @@ The field of the platform's forms that are not on \`PlatformForm\` yet: a real
 \`<label>\` around the control (never a placeholder acting as one), an
 optional hint under it and an error with \`role="alert"\`. It also draws, once
 for the whole private area, the native text inputs and the textarea it wraps.
-\`FormFieldset\`, from the same file, is the group of checkboxes or radios a
-single label cannot name. A new form uses \`PlatformForm\` instead; these are
+\`FormFieldset\`, from the same file, is the legend over a group of cards
+(\`PlatformCheckCards\`, \`PlatformChoiceCards\`) a single label cannot name,
+with no frame of its own. A new form uses \`PlatformForm\` instead; these are
 migrated when they are touched.
 
 Source: \`components/platform/shared/form-field/form-field.comp.tsx\`.
@@ -101,28 +102,13 @@ export const WithPlatformSelect: Story = {
   ),
 };
 
-/** `FormFieldset`: a group of checkboxes under one legend, in its frame, as the lesson editor's topics. */
+/**
+ * `FormFieldset`: a legend over a group of cards, with no frame of its own since each card draws one — the course
+ * editor's «Contenido», with `PlatformCheckCards` in a line.
+ */
 export const Fieldset: Story = {
   render: () => (
-    <FormFieldset legend="Temas" hint="Los que trata la lección; ninguno, si no trata uno en especial.">
-      {["Aperturas", "Táctica", "Finales"].map((topic, index) => (
-        <label key={topic}>
-          <input type="checkbox" name="topics" value={topic} defaultChecked={index === 1} />
-          {topic}
-        </label>
-      ))}
-    </FormFieldset>
-  ),
-};
-
-/**
- * `FormFieldset` with `frame="none"`: no border nor padding around the group, for controls that draw their own
- * boxes — the course editor's «Contenido», with `PlatformCheckCards` in a line.
- */
-export const FieldsetWithoutFrame: Story = {
-  name: "Fieldset without frame",
-  render: () => (
-    <FormFieldset legend="Contenido (selecciona al menos uno)" frame="none">
+    <FormFieldset legend="Contenido (selecciona al menos uno)">
       <PlatformCheckCards
         name="contentTypeCodes"
         defaultValue={[CONTENT_TYPE.ENDGAMES]}

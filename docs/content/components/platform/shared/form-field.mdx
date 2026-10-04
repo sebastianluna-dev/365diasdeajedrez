@@ -11,14 +11,14 @@ Also exports `FormFieldset`.
 | File       | `components/platform/shared/form-field/form-field.comp.tsx`                                                                                                                                                                                                                |
 | Kind       | Server Component                                                                                                                                                                                                                                                           |
 | Stylesheet | `form-field.comp.css` → block `.platform-field`                                                                                                                                                                                                                            |
-| Story      | `form-field.stories.tsx` (`platform/shared/FormField`): a text input with and without its hint or error, focused, a textarea, `PlatformSelect` inside it, and a `FormFieldset` framed and without its frame                                                                |
+| Story      | `form-field.stories.tsx` (`platform/shared/FormField`): a text input with and without its hint or error, focused, a textarea, `PlatformSelect` inside it, and a `FormFieldset` over a group of cards                                                                       |
 | Used by    | every write form of the platform (24 importers): the staff course, chapter, lesson, author, class, student and teacher editors, the assignment panel, the account and password forms, the studies' `GameFields`, the teacher's class form, block editor pieces and profile |
 
 ## Purpose
 
 > **Being replaced.** New forms use [`PlatformForm`](/components/platform/shared/platform-form) and [`PlatformSelect`](/components/platform/shared/platform-select), on Radix Primitives; the forms below are migrated as they are touched (`TODOS.md`). This wrapper stays until the last one moves.
 
-One field, one look. `FormField` wraps a native control in a real `<label>` (never a placeholder acting as a label), adds an optional hint and an optional error, and defines once how an input or textarea looks in the platform. `FormFieldset` does the same with `<fieldset>`/`<legend>` for groups of checkboxes or radios, where a single label does not apply.
+One field, one look. `FormField` wraps a native control in a real `<label>` (never a placeholder acting as a label), adds an optional hint and an optional error, and defines once how an input or textarea looks in the platform. `FormFieldset` names a group of cards ([`PlatformCheckCards`](/components/platform/shared/platform-check-cards), [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards)) with `<fieldset>`/`<legend>`, where a single label does not apply. It draws no frame of its own, since each card draws one; a group of native checkboxes in a box was the other way it had, and was removed on 2026-10-03 with its `frame` prop, when the lesson's topics and the class's students moved to `PlatformCheckCards`.
 
 It is stateless on purpose. Platform forms are `<form action={serverAction}>`; validation happens in the action and the failure comes back through the page's `?error=` handling. There is no client validation to wire here.
 
@@ -35,12 +35,11 @@ It is stateless on purpose. Platform forms are `<form action={serverAction}>`; v
 
 ### `FormFieldset`
 
-| Prop       | Type                 | Required | Meaning                                                                                                                                                                                                |
-| ---------- | -------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `legend`   | `string`             | yes      | The group's `<legend>`.                                                                                                                                                                                |
-| `children` | `ReactNode`          | yes      | The controls of the group.                                                                                                                                                                             |
-| `hint`     | `string`             | no       | Help text under the group.                                                                                                                                                                             |
-| `frame`    | `"border" \| "none"` | no       | `border` (default) draws the box around the group; `none` drops border and padding, for controls that draw their own boxes ([`PlatformCheckCards`](/components/platform/shared/platform-check-cards)). |
+| Prop       | Type        | Required | Meaning                                                           |
+| ---------- | ----------- | -------- | ----------------------------------------------------------------- |
+| `legend`   | `string`    | yes      | The group's `<legend>`.                                           |
+| `children` | `ReactNode` | yes      | The group's cards: `PlatformCheckCards` or `PlatformChoiceCards`. |
+| `hint`     | `string`    | no       | Help text under the group.                                        |
 
 ## Behaviour
 
@@ -48,11 +47,11 @@ None. The control keeps its own attributes (`name`, `required`, `maxLength`, `de
 
 ## Markup & styling
 
-Block `.platform-field` (91 lines). The root is the `<label>` (or the `<fieldset>` with the group modifier); the control's look is defined through descendant selectors on `input` and `textarea` inside `.platform-field__control`, which is why no form in the platform styles its own inputs.
+Block `.platform-field` (76 lines). The root is the `<label>` (or the `<fieldset>` with the group modifier); the control's look is defined through descendant selectors on `input` and `textarea` inside `.platform-field__control`, which is why no form in the platform styles its own inputs.
 
 **Elements:** `.platform-field__label`, `.platform-field__control`, `.platform-field__hint`, `.platform-field__error`
 
-**Modifiers and states:** `.platform-field_variant_group`, `.platform-field_frame_none` (on a group: no border, no padding)
+**Modifiers and states:** `.platform-field_variant_group` (the `<fieldset>`: no border, no padding, the legend flush with the cards)
 
 **Tokens:** `--platform-accent`, `--platform-accent-soft`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
 
@@ -70,29 +69,17 @@ import { FormField } from "@/components/platform/shared/form-field/form-field.co
 </FormField>;
 ```
 
-A group of native checkboxes, from `components/platform/sections/staff/courses/lesson-editor.section.tsx`:
+A group of cards, from `components/platform/sections/staff/courses/lesson-editor.section.tsx`:
 
 ```tsx
 <FormFieldset legend="Temas">
-  {topics.map((topic) => (
-    <label key={topic.id}>
-      <input
-        type="checkbox"
-        name="topicCodes"
-        value={topic.code}
-        defaultChecked={lesson.topicCodes.includes(topic.code)}
-      />
-      {topic.label}
-    </label>
-  ))}
-</FormFieldset>
-```
-
-A group of cards, from `components/platform/sections/staff/courses/course-editor.section.tsx`, with `frame="none"` so the cards are not framed twice:
-
-```tsx
-<FormFieldset legend="Contenido (selecciona al menos uno)" frame="none">
-  <PlatformCheckCards name="contentTypeCodes" defaultValue={course.contentTypeCodes} options={options} />
+  <PlatformCheckCards
+    name="topicCodes"
+    defaultValue={lesson.topicCodes}
+    aria-label="Temas"
+    layout="line"
+    options={topics.map((topic) => ({ value: topic.code, label: topic.label }))}
+  />
 </FormFieldset>
 ```
 

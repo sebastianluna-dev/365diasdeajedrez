@@ -767,29 +767,19 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
           />
         </Tile>
         <Tile name="FormFieldset" docs="platform-shared-formfield">
-          <div className="overview__stack">
-            <FormFieldset legend="Temas">
-              {["Aperturas", "Táctica", "Finales"].map((topic, index) => (
-                <label key={topic}>
-                  <input type="checkbox" name="topics" value={topic} defaultChecked={index === 1} />
-                  {topic}
-                </label>
-              ))}
-            </FormFieldset>
-            <FormFieldset legend="Tipos de contenido" frame="none">
-              <PlatformCheckCards
-                name="contentTypes"
-                aria-label="Tipos de contenido"
-                layout="line"
-                defaultValue={["ENDGAMES"]}
-                options={[
-                  { value: "OPENINGS", label: "Aperturas" },
-                  { value: "TACTICS", label: "Táctica" },
-                  { value: "ENDGAMES", label: "Finales" },
-                ]}
-              />
-            </FormFieldset>
-          </div>
+          <FormFieldset legend="Tipos de contenido">
+            <PlatformCheckCards
+              name="contentTypes"
+              aria-label="Tipos de contenido"
+              layout="line"
+              defaultValue={["ENDGAMES"]}
+              options={[
+                { value: "OPENINGS", label: "Aperturas" },
+                { value: "TACTICS", label: "Táctica" },
+                { value: "ENDGAMES", label: "Finales" },
+              ]}
+            />
+          </FormFieldset>
         </Tile>
         <Tile name="PlatformInfoTip" docs="platform-shared-platforminfotip">
           <div className="overview__row">

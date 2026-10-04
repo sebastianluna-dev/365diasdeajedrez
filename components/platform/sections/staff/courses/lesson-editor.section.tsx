@@ -16,6 +16,7 @@ import { StaffPanel } from "./staff-panel.comp";
 import "./lesson-editor.section.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
 
 interface LessonEditorSectionProps {
   lesson: LessonAdminDetail;
@@ -218,17 +219,13 @@ export function LessonEditorSection({
             </div>
 
             <FormFieldset legend="Temas">
-              {topics.map((topic) => (
-                <label key={topic.id}>
-                  <input
-                    type="checkbox"
-                    name="topicCodes"
-                    value={topic.code}
-                    defaultChecked={lesson.topicCodes.includes(topic.code)}
-                  />
-                  {topic.label}
-                </label>
-              ))}
+              <PlatformCheckCards
+                name="topicCodes"
+                defaultValue={lesson.topicCodes}
+                aria-label="Temas"
+                layout="line"
+                options={topics.map((topic) => ({ value: topic.code, label: topic.label }))}
+              />
             </FormFieldset>
 
             <div className="lesson-editor__submit">

@@ -34,25 +34,18 @@ export function FormField({ label, children, hint, error }: FormFieldProps) {
 
 interface FormFieldsetProps {
   legend: string;
+  /** The group's control: `PlatformCheckCards` or `PlatformChoiceCards`, which draw their own boxes. */
   children: ReactNode;
   hint?: string;
-  /**
-   * `none` drops the border and padding around the group: for controls that
-   * already draw their own boxes (`PlatformCheckCards`), where a second frame
-   * is noise.
-   */
-  frame?: "border" | "none";
 }
 
-/** For groups of controls (checkboxes, radios), where a single `<label>` does not work. */
-export function FormFieldset({ legend, children, hint, frame = "border" }: FormFieldsetProps) {
-  const className =
-    frame === "none"
-      ? "platform-field platform-field_variant_group platform-field_frame_none"
-      : "platform-field platform-field_variant_group";
-
+/**
+ * For a group of choices a single `<label>` cannot name: the legend over the
+ * cards, with no frame of its own, since the cards already draw one each.
+ */
+export function FormFieldset({ legend, children, hint }: FormFieldsetProps) {
   return (
-    <fieldset className={className}>
+    <fieldset className="platform-field platform-field_variant_group">
       <legend className="platform-field__label">{legend}</legend>
       <div className="platform-field__control">{children}</div>
       {hint && <span className="platform-field__hint">{hint}</span>}
