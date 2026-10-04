@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 import {
   closestCenter,
   DndContext,
@@ -90,6 +90,11 @@ export function SortableDnd({ items, noun, onMove, children }: SortableDndProps)
   // landing said again after a drag is still a change, and is read.
   const [stepSaid, setStepSaid] = useState("");
   const ids = items.map((item) => item.id);
+  // dnd-kit names its instructions (`aria-describedby="DndDescribedBy-N"`)
+  // from a counter of its own, which the server and the browser do not count
+  // alike: the handles hydrated with a different id. React's id is the same
+  // on both sides.
+  const contextId = useId();
 
   /** One place up or down: the row takes its neighbour's place, as if it had been dropped on it. */
   const step = (id: string, offset: -1 | 1) => {
@@ -102,6 +107,7 @@ export function SortableDnd({ items, noun, onMove, children }: SortableDndProps)
 
   return (
     <DndContext
+      id={contextId}
       sensors={sensors}
       collisionDetection={closestCenter}
       // A row only goes up or down, and never out of its list.
