@@ -50,7 +50,7 @@ Block `.game-aside` (238 lines). Each card is white on the page's grey over a li
 
 **Tokens:** `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-subtle`
 
-**Width.** The page that lays it out (`game-page.css`, beside the route's `page.tsx`) is capped at 1480px, wider than the other pages of the board (1240px), and gives the aside `clamp(280px, 24%, 360px)`; the board stays at its 600px (`--viewer-board-max`), so what the page gains goes to this column and to the notation, the two that are read.
+**The page's width and the board's size.** The page that lays it out (`game-page.css`, beside the route's `page.tsx`) measures the board by the **height** of the window (2026-10-04): `--game-board-max` is `100vh` less what sits above the board (the shell's 70px bar, the air under it, the top player strip) and below it (the bottom strip, the gap and the row of tabs of the tools), so the board is as large as the window allows and the tabs «Comentario», «Calidad»… are left peeking at the bottom edge, which says the panel is there, a scroll away. It is handed to the viewer as `--viewer-board-max`, with a floor of 320px. The page is as wide as its three columns ask for — this aside at `clamp(280px, 24%, 360px)`, the board, and a notation of 472px —, so it grows with the board; on a window too narrow for the board the height would give, the notation keeps its 320px and the board takes what is left. Under 1280px, in one column, the board goes back to the viewer's 600px.
 
 **Breakpoints:** `(width < 1280px)` lays the cards side by side above the board.
 

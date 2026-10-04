@@ -5,12 +5,31 @@
   margin-top: calc(-1 * var(--platform-space-5));
   gap: var(--platform-space-4);
 
-  /* Wider than the other pages of the board (1240px in platform.css), and
-     the room it gains goes to the two columns that are read, never to the
-     board: the viewer caps the board at 600px and gives the notation what is
-     left, and the aside grows with the page, from 280px to 360. */
+  /* The board is measured by the HEIGHT that is left, not by the width: it is
+     what one looks at, and it takes all of the window save what sits above
+     and below it — the shell's bar (70px), the air under the bar (the
+     shell's padding less the margin recovered above), the two player strips
+     (a line of `xs` text at 1.3 and their padding) — and, at the foot, the
+     gap and the row of tabs of the tools under the board (their padding and
+     a line of `sm` text), which is left peeking so one knows the comment and
+     the quality of a move are there, a scroll away. The floor keeps the
+     board from becoming a stamp on a short window. */
+  --game-board-max: max(
+    320px,
+    calc(
+      100vh - 70px - (var(--platform-space-12) - var(--platform-space-5)) - 2 *
+        (1.3 * var(--platform-type-xs) + 2 * var(--platform-space-1)) - var(--platform-space-6) -
+        (var(--platform-space-4) + 1.5 * var(--platform-type-sm) + var(--platform-space-3))
+    )
+  );
+  --viewer-board-max: var(--game-board-max);
+
+  /* As wide as its three columns ask for: the aside at its widest (360px),
+     the board at the size the height gives it, and a notation of 472px, with
+     the two gaps. So the page grows with the board, and what a wider window
+     adds beyond that stays as margin. */
   &.platform-page_width_wide {
-    max-width: 1480px;
+    max-width: calc(360px + var(--game-board-max) + 472px + 2 * var(--platform-space-6));
   }
 
   /* The aside measures its own; the board and its notation keep the rest. */
@@ -21,7 +40,11 @@
     align-items: start;
   }
 
+  /* In one column the board is under the aside and the page scrolls to it
+     anyway: it goes back to the viewer's own ceiling. */
   @media (width < 1280px) {
+    --viewer-board-max: 600px;
+
     & .game-page__layout {
       grid-template-columns: minmax(0, 1fr);
     }
