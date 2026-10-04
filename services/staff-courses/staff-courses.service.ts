@@ -11,6 +11,7 @@ import { formatEloRange } from "@/services/courses/level-rules";
 import { sortByRole } from "@/services/shared/content-order";
 import { courseSourceAdminSelect, mapCourseSourceAdmin } from "@/services/staff-sources/staff-sources.mapper";
 import { lessonHasContent, lessonPgnOf, lessonPgnSelect } from "@/services/shared/lesson-pgn";
+import { courseHasContent } from "@/services/staff-courses/course-content.service";
 import { isExerciseStale } from "@/services/trainer/trainer.mapper";
 import type {
   AuthorAdminRow,
@@ -126,51 +127,55 @@ function chapterProgress(chapter: {
 export const getCourseAdminDetail = cache(async (courseId: string): Promise<CourseAdminDetail | null> => {
   await requireStaff();
 
-  const course = await getPlatformDb().course.findUnique({
-    where: { id: courseId },
-    select: {
-      id: true,
-      name: true,
-      slug: true,
-      description: true,
-      cover: true,
-      thumbnail: true,
-      status: { select: { code: true, label: true } },
-      courseContentTypes: {
-        select: { contentType: { select: { code: true } } },
-        orderBy: { contentType: { order: "asc" } },
-      },
-      courseLevels: { select: { level: { select: { slug: true } } }, orderBy: { level: { order: "asc" } } },
-      courseAuthors: {
-        select: {
-          authorId: true,
-          order: true,
-          author: { select: { name: true, photo: true } },
-          role: { select: { code: true, label: true } },
+  // Whether it can be published is a read of its own, alongside: the minimum
+  // to publish is a lesson with content (`courseHasContent`), and asking it
+  // here meant bringing over the PGN of every lesson of the course.
+  const db = getPlatformDb();
+  const [course, canPublish] = await Promise.all([
+    db.course.findUnique({
+      where: { id: courseId },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        description: true,
+        cover: true,
+        thumbnail: true,
+        status: { select: { code: true, label: true } },
+        courseContentTypes: {
+          select: { contentType: { select: { code: true } } },
+          orderBy: { contentType: { order: "asc" } },
         },
-        orderBy: { order: "asc" },
-      },
-      chapters: {
-        select: {
-          id: true,
-          name: true,
-          order: true,
-          isPriority: true,
-          role: { select: { code: true, label: true } },
-          _count: { select: { lessons: true, progresses: true } },
-          lessons: { select: { ...lessonPgnSelect, _count: { select: { progresses: true } } } },
+        courseLevels: { select: { level: { select: { slug: true } } }, orderBy: { level: { order: "asc" } } },
+        courseAuthors: {
+          select: {
+            authorId: true,
+            order: true,
+            author: { select: { name: true, photo: true } },
+            role: { select: { code: true, label: true } },
+          },
+          orderBy: { order: "asc" },
         },
-        orderBy: { order: "asc" },
+        chapters: {
+          select: {
+            id: true,
+            name: true,
+            order: true,
+            isPriority: true,
+            role: { select: { code: true, label: true } },
+            _count: { select: { lessons: true, progresses: true } },
+            // Only what `chapterProgress` adds up: the PGN is not read here.
+            lessons: { select: { _count: { select: { progresses: true } } } },
+          },
+          orderBy: { order: "asc" },
+        },
+        sources: { select: courseSourceAdminSelect, orderBy: [{ order: "asc" }, { createdAt: "asc" }] },
       },
-      sources: { select: courseSourceAdminSelect, orderBy: [{ order: "asc" }, { createdAt: "asc" }] },
-    },
-  });
+    }),
+    courseHasContent(db, courseId),
+  ]);
 
   if (!course) return null;
-
-  // Minimum requirement to publish: at least one chapter with a lesson that has a
-  // PGN. Publishing an empty course would show blank lessons.
-  const canPublish = course.chapters.some((chapter) => chapter.lessons.some(lessonHasContent));
 
   return {
     id: course.id,

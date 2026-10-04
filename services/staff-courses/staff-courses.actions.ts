@@ -45,7 +45,8 @@ import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
 import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "@/constants/platform/study-codes.const";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
-import { lessonHasContent, lessonPgnOf, lessonPgnSelect, lessonStartFenOf } from "@/services/shared/lesson-pgn";
+import { lessonPgnOf, lessonPgnSelect, lessonStartFenOf } from "@/services/shared/lesson-pgn";
+import { courseHasContent } from "@/services/staff-courses/course-content.service";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import {
   GAME_FIELDS_SCHEMA,
@@ -336,16 +337,13 @@ export async function publishCourse(courseId: string): Promise<void> {
   if (!(await allowAction(`${staff.user.id}:course-publish`, 60, 60_000))) fail(detailPath, "throttled");
 
   const db = getPlatformDb();
-  const course = await db.course.findUnique({
-    where: { id: courseId },
-    select: { publishedAt: true, chapters: { select: { lessons: { select: lessonPgnSelect } } } },
-  });
+  const course = await db.course.findUnique({ where: { id: courseId }, select: { publishedAt: true } });
   if (!course) fail(detailPath, "courseMissing");
 
-  // Minimum publishable: a chapter with a lesson with a PGN. Without this the
-  // student would find a course with blank lessons.
-  const hasContent = course.chapters.some((chapter) => chapter.lessons.some(lessonHasContent));
-  if (!hasContent) fail(detailPath, "publishRequirements");
+  // Minimum publishable: a lesson with content, the same question the editor
+  // asked to offer «Publicado». Without it the student would find a course with
+  // blank lessons.
+  if (!(await courseHasContent(db, courseId))) fail(detailPath, "publishRequirements");
 
   await db.course.update({
     where: { id: courseId },

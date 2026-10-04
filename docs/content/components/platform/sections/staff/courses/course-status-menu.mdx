@@ -20,12 +20,12 @@ The status is part of how a course is named, so it sits on the title's row; and 
 
 ## Props
 
-| Prop         | Type               | Required | Meaning                                                                           |
-| ------------ | ------------------ | -------- | --------------------------------------------------------------------------------- |
-| `courseId`   | `string`           | yes      | The course the actions are called with.                                           |
-| `statusCode` | `CourseStatusCode` | yes      | The status the course has.                                                        |
-| `statuses`   | `CatalogOption[]`  | yes      | `CourseStatus`, in catalog order, from `listCourseStatuses()`.                    |
-| `canPublish` | `boolean`          | yes      | The course has the minimum to be published: a chapter with a lesson with content. |
+| Prop         | Type               | Required | Meaning                                                                                                                   |
+| ------------ | ------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `courseId`   | `string`           | yes      | The course the actions are called with.                                                                                   |
+| `statusCode` | `CourseStatusCode` | yes      | The status the course has.                                                                                                |
+| `statuses`   | `CatalogOption[]`  | yes      | `CourseStatus`, in catalog order, from `listCourseStatuses()`.                                                            |
+| `canPublish` | `boolean`          | yes      | The course has the minimum to be published: a lesson with content (`courseHasContent`, which `publishCourse` asks again). |
 
 ## Behaviour
 

@@ -21,6 +21,22 @@ export const lessonPgnSelect = {
   game: { select: { pgn: true } },
 } as const;
 
+/**
+ * The lessons whose ruling PGN is not the empty string: the choice
+ * `lessonPgnOf` makes, written as a `where` for a query that narrows by
+ * content without bringing the PGN over. It travels here for the same reason
+ * as `lessonPgnSelect`: a filter on `pgn` alone would count the dormant PGN of
+ * a lesson linked to an empty game.
+ *
+ * It is what the database can say, not all of `lessonHasContent`: a PGN of
+ * blanks (spaces, line breaks) passes it, and only `lessonHasContent` turns it
+ * down. Every lesson with content passes it, so it narrows without leaving one
+ * out. Not `as const`: Prisma takes `OR` as a mutable array.
+ */
+export const lessonPgnNotEmptyWhere = {
+  OR: [{ game: { is: null }, pgn: { not: "" } }, { game: { is: { pgn: { not: "" } } } }],
+};
+
 export interface LessonPgnSource {
   pgn: string;
   /** The referenced game, or `null` when the lesson has its own content. */
