@@ -8,8 +8,8 @@ const meta = {
     docs: {
       description: {
         component: `
-The line above or below the viewer's board that names a player, low and on a
-grey band as Lichess draws it: the point the player took once the game has
+The line above or below the viewer's board that names a player, a low white
+band as Lichess draws it: the point the player took once the game has
 ended (1, 0 or ½), federation and its flag, title, name and Elo. It has no
 root of its own: it returns its pieces as a fragment and the GameViewer's
 \`.game-viewer__player\` lays them out in a row and sets their size, which is
@@ -39,7 +39,7 @@ Reference page: [Components › PlayerStrip](/components/chess/game-viewer/playe
   },
   decorators: [
     // The strip's container in the viewer, `.game-viewer__player` of
-    // game-viewer.comp.css: a low row on the track's grey, its font size the
+    // game-viewer.comp.css: a low row on the surface, its font size the
     // one the pieces' `em` read. As wide as the viewer's board column, and rounded on
     // all four corners because no board tucks under it here.
     (Story, { parameters }) => (
@@ -50,7 +50,7 @@ Reference page: [Components › PlayerStrip](/components/chess/game-viewer/playe
           alignItems: "center",
           gap: "var(--platform-space-2)",
           padding: "var(--platform-space-1) var(--platform-space-3)",
-          background: "var(--platform-track)",
+          background: "var(--platform-surface)",
           borderRadius: 8,
           fontSize: "var(--platform-type-xs)",
           lineHeight: 1.3,

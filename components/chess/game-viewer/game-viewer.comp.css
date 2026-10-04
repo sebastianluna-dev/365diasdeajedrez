@@ -111,13 +111,10 @@
     display: flex;
     align-items: center;
     gap: var(--platform-space-2);
-    /* A low band, as Lichess draws it: a frame of the board, in a grey that
-       tells it from the page and from the white panel of the notation in both
-       themes. That grey is the track's: the sunken one is darker than the
-       page in the dark theme, where the band all but vanished, and the
-       neutral one is too close to the page in the light one. */
+    /* A low band, as Lichess draws it, on white like the notation panel
+       beside it. */
     padding: var(--platform-space-1) var(--platform-space-3);
-    background: var(--platform-track);
+    background: var(--platform-surface);
     line-height: 1.3;
     /* The edge that tucks under the board is hidden by it; the other three show. */
     /* What is inside (name, Elo, title, federation) goes in `em` relative to

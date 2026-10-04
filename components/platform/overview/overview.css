@@ -269,7 +269,7 @@
     gap: var(--platform-space-2);
     padding: var(--platform-space-1) var(--platform-space-3);
     border-radius: 8px;
-    background: var(--platform-track);
+    background: var(--platform-surface);
     font-size: var(--platform-type-xs);
     line-height: 1.3;
   }

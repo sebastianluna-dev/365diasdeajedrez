@@ -2,8 +2,7 @@
    `.game-viewer__player`, which lays them out in a row and sets the size.
    Everything here goes in `em` for that reason: in full screen the viewer
    grows with the screen, and only the proportion between the name, the Elo
-   and what accompanies them is kept. The strip is a grey band (the viewer's
-   rule), so what is quiet is in the muted grey, never the subtle one. */
+   and what accompanies them is kept. */
 
 /* The point the player took, first in the strip and set apart by a hairline,
    as on a scoresheet. The winner's is in the success ink; the figure itself,
