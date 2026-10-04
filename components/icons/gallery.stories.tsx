@@ -235,16 +235,15 @@ const meta = {
         component: `
 Every icon of \`components/icons\`, one SVG per file, each with the name it is
 exported by under it. All but the brand's two and WhatsApp's are Font Awesome
-Pro 7.3.1 in Duotone Light: two layers filled with \`currentColor\`, the one at
-the back at 40 %. An icon takes a \`className\` and nothing else: its size and
+Pro 7.3.1 in Duotone (Light, and Solid for the filled shapes): two layers
+filled with \`currentColor\`, the one at the back at 40 %. An icon takes a \`className\` and nothing else: its size and
 its colour are its caller's stylesheet's, so the accent gallery is the same
 icons under another \`color\`. Each one is \`aria-hidden\`; the button around it
 carries the name.
 
 Here, with no stylesheet, the gallery scales each drawing to the size its main
 caller gives it (the px under the name). Two take more than \`color\`:
-\`FlameIcon\` has a front layer (outline and inner flame) its caller paints
-through \`coreClassName\` (left unnamed here, the flame is one colour), and
+\`FlameIcon\` has an inner flame its caller paints through \`coreClassName\` (left unnamed here, the flame is one colour), and
 \`LogoWordmarkIcon\` paints nothing by itself, so it is drawn by its real
 caller, the site's \`Logo\`.
 

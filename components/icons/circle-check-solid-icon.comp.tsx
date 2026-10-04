@@ -3,10 +3,10 @@ interface CircleCheckSolidIconProps {
 }
 
 /**
- * The filled check, for what is done: a finished chapter, a learned lesson. It
- * is the one icon in Duotone's Solid weight and not Light: in Light it would
- * be `CircleCheckIcon`, and a done mark has to read filled next to the empty
- * ring of what is not. Font Awesome's `circle-check`, Duotone Solid.
+ * The filled check, for what is done: a finished chapter, a learned lesson. In
+ * Light it would be the same drawing as `CircleCheckIcon`, and a done mark has
+ * to read filled next to the empty ring of what is not. Font Awesome's
+ * `circle-check`, Duotone Solid.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
