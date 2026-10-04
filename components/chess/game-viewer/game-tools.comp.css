@@ -277,4 +277,33 @@
   & .game-tools__export-button:disabled {
     cursor: progress;
   }
+
+  /* On a phone the four tabs and the status do not fit in one row, and the
+     last tab was cut by the card. The status takes a line of its own above
+     them, and the tabs keep to one row that scrolls sideways if a narrow
+     screen, or a tab's dot and badge, ask for more than there is. */
+  @media (width < 768px) {
+    & .game-tools__tabs {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: max-content;
+      justify-content: start;
+      gap: 0 var(--platform-space-3);
+      padding: var(--platform-space-3) var(--platform-space-4) 0;
+      overflow-x: auto;
+    }
+
+    /* A size down, so the four fit a phone of 390px without scrolling. */
+    & .game-tools__tab {
+      grid-row: 2;
+      font-size: var(--platform-type-xs);
+    }
+
+    & .game-tools__target {
+      grid-row: 1;
+      grid-column: 1 / span 4;
+      margin-left: 0;
+      padding-bottom: var(--platform-space-2);
+    }
+  }
 }

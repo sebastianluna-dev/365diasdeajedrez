@@ -74,7 +74,7 @@ First, previous, next, last read the current path from a ref so holding "previou
 
 No white box of the viewer — the notation panel, the tools card under the board, the two player strips and the evaluation bar — is outlined: each is white on the page's grey (`--platform-bg`), over its shadow where it has one. They were outlined by the thin grey while the page was white, which is what the outline was for. What floats over a card — the options menu, the moves' context menu — keeps its border.
 
-Block `.game-viewer` (613 lines), the largest sheet in `components/`.
+Block `.game-viewer` (674 lines), the largest sheet in `components/`.
 
 **Elements:** `.game-viewer__layout`, `.game-viewer__board-card`, `.game-viewer__board-row`, `.game-viewer__board`, `.game-viewer__evaluation`, `.game-viewer__evaluation-fill`, `.game-viewer__player`, `.game-viewer__board-footer`, `.game-viewer__panel-column`, `.game-viewer__panel`, `.game-viewer__panel-head`, `.game-viewer__panel-heading`, `.game-viewer__panel-title`, `.game-viewer__panel-badge`, `.game-viewer__moves`, `.game-viewer__toolbar`, `.game-viewer__toolbar-end`, `.game-viewer__panel-nav`, `.game-viewer__nav`, `.game-viewer__nav-button`, `.game-viewer__nav-icon`, `.game-viewer__options`, `.game-viewer__options-menu`, `.game-viewer__options-item`, `.game-viewer__options-icon`, `.game-viewer__onwards`, `.game-viewer__onwards-button`, `.game-viewer__warnings`, `.game-viewer__warning`
 
@@ -84,7 +84,7 @@ Block `.game-viewer` (613 lines), the largest sheet in `components/`.
 
 **Tokens:** own layout tokens `--viewer-board-size`, `--viewer-board-max` (the board's ceiling, `600px`, which a screen that puts something else beside the viewer lowers — the lesson does, for its column of lessons), `--viewer-chrome-block`, `--viewer-chrome-inline`, `--viewer-player-font-size`, plus `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-danger-soft`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
 
-**Breakpoints:** `(width < 1280px)` stacks the panel under the board in full screen; `(prefers-reduced-motion: reduce)` removes the evaluation bar transition and the options menu's animations.
+**Breakpoints:** `(width < 768px)`, outside full screen, stacks the viewer in one column in the order a game is gone through on a phone, as Lichess lays it out: the board at the window's width, the arrows right under it (`order: -1` on `.game-viewer__panel-nav`, each key a share of the width), the notation in a card of at most `45vh` that scrolls on its own, and the tools last; the evaluation bar, which hangs in the gap between the two columns, is hidden there. Until 2026-10-04 the viewer had no such cut and a phone left the board a few px wide, behind the notation's 320px floor. In the panel's bar the six keys shrink a few px each where the notation's column is 320px, instead of the last one sticking out. `(width < 1280px)` stacks the panel under the board in full screen; `(prefers-reduced-motion: reduce)` removes the evaluation bar transition and the options menu's animations.
 
 **Keyframes:** `game-viewer-menu-in`, `game-viewer-menu-out`, at the top level because `@keyframes` cannot be nested.
 

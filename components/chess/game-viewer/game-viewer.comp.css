@@ -247,6 +247,15 @@
     & .game-viewer__nav {
       justify-content: center;
     }
+
+    /* Six keys and their gaps ask for 348px, and the notation's column can be
+       320: there they give up a few px each instead of the last one sticking
+       out of the column, and of the window on a tablet. */
+    & .game-viewer__nav-button,
+    & .game-viewer__options {
+      flex: 0 1 48px;
+      min-width: 0;
+    }
   }
 
   /* The right column: the notation card and the button bar below.
@@ -456,6 +465,58 @@
 
   & .game-viewer__warning + .game-viewer__warning {
     margin-top: var(--platform-space-1);
+  }
+
+  /* On a phone there is no width for two columns: with the notation's 320px
+     floor the board was left a few px wide. It stacks in one column, in the
+     order a game is gone through with one hand, as Lichess lays it out: the
+     board at the window's width, the arrows right under it, the notation,
+     and the tools last. Full screen has its own stacking, below. */
+  @media (width < 768px) {
+    &:not(.game-viewer_state_fullscreen) .game-viewer__layout {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* The board's row no longer sets this column's height: it is its own
+       row, as tall as the arrows and a notation that scrolls inside. */
+    &:not(.game-viewer_state_fullscreen) .game-viewer__panel-column {
+      grid-column: 1;
+      grid-row: 2;
+      height: auto;
+      min-height: 0;
+    }
+
+    /* A list as tall as about eight moves, scrolling on its own: the active
+       move is kept at its middle, and the page is never what scrolls. */
+    &:not(.game-viewer_state_fullscreen) .game-viewer__panel {
+      flex: none;
+      max-height: 45vh;
+    }
+
+    /* The arrows go before the notation, though they come after it in the
+       markup: under the board is where the thumb is. */
+    &:not(.game-viewer_state_fullscreen) .game-viewer__panel-nav {
+      order: -1;
+    }
+
+    /* Across the whole width, each key a wide target, as under a board held
+       in one hand. */
+    &:not(.game-viewer_state_fullscreen) .game-viewer__nav {
+      gap: var(--platform-space-2);
+    }
+
+    &:not(.game-viewer_state_fullscreen) .game-viewer__nav-button,
+    &:not(.game-viewer_state_fullscreen) .game-viewer__options {
+      flex: 1;
+      width: auto;
+    }
+
+    /* The bar hangs in the gap between the board and the notation, and here
+       there is none: it would stick out of the window. The engine's lines
+       still give the evaluation. */
+    &:not(.game-viewer_state_fullscreen) .game-viewer__evaluation {
+      display: none;
+    }
   }
 
   /* In full screen the viewer paints its own background: underneath is the

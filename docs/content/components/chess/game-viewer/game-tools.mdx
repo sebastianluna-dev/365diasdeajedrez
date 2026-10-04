@@ -47,7 +47,7 @@ Comment and NAGs are read from the PGN on every render, not kept in state: what 
 
 ## Markup & styling
 
-Block `.game-tools` (280 lines).
+Block `.game-tools` (309 lines).
 
 **Elements:** `.game-tools__tabs`, `.game-tools__tab`, `.game-tools__tab-dot`, `.game-tools__tab-badge`, `.game-tools__target`, `.game-tools__panel`, `.game-tools__textarea`, `.game-tools__hint`, `.game-tools__nags`, `.game-tools__nag-column`, `.game-tools__nag-group`, `.game-tools__nag-title`, `.game-tools__nag`, `.game-tools__nag-glyph`, `.game-tools__nag-label`, `.game-tools__foot`, `.game-tools__share`, `.game-tools__share-text`, `.game-tools__share-label`, `.game-tools__share-value`, `.game-tools__share-button`, `.game-tools__export`, `.game-tools__export-button`
 
@@ -55,7 +55,7 @@ Block `.game-tools` (280 lines).
 
 **Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-danger`, `--platform-surface`, `--platform-surface-soft`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
 
-No media queries; it is as wide as the board column.
+**Breakpoints:** `(width < 768px)` gives the status (which move, how the save goes) a line of its own above the tabs, and keeps the tabs, a size down, in one row that scrolls sideways if they ask for more than the card has; before, the last tab was cut by the card on a phone. It is as wide as the board column.
 
 ## Usage
 
