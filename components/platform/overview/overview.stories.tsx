@@ -120,44 +120,53 @@ import "@/components/platform/sections/studies/studies-list/new-study/new-study.
 import "./overview.css";
 
 /**
- * A tile: the piece's name, a link to its Docs page in Storybook, and the piece
- * itself, drawn on the page's canvas inside a dashed frame. A `wide` tile spans
- * the three columns, for a piece drawn at the width of a form or a list. A
+ * A tile, drawn as a frame on a design canvas: the piece's name, its size and
+ * a link to its Docs page above, and below them the frame, of a fixed width
+ * and height, filled with the page's background, with the piece in it. A
  * piece that in the app lives inside a white panel or bar, and writes its
  * quieter text in the grey made for white, is given that `surface`.
  */
 function Tile({
   name,
   docs,
-  wide = false,
+  width,
+  height,
   surface = false,
   children,
 }: {
   name: string;
   docs: string;
-  wide?: boolean;
+  /** The frame's size in px, fixed: what the piece shows has to fit in it. */
+  width: number;
+  height: number;
   surface?: boolean;
   children: ReactNode;
 }) {
   return (
-    <section className={wide ? "overview__tile overview__tile_width_full" : "overview__tile"} aria-label={name}>
+    <section className="overview__tile" style={{ width }} aria-label={name}>
       <div className="overview__tile-head">
         <h3 className="overview__tile-name">{name}</h3>
+        <span className="overview__tile-size">
+          {width} × {height}
+        </span>
         {/* `_top`: the link leaves the preview's frame and opens the page in Storybook itself. */}
         <a className="overview__tile-link" href={`./?path=/docs/${docs}--docs`} target="_top">
           Docs →
         </a>
       </div>
-      {surface ? <div className="overview__surface">{children}</div> : children}
+      <div className="overview__frame" style={{ height }}>
+        {surface ? <div className="overview__surface">{children}</div> : children}
+      </div>
     </section>
   );
 }
 
+/** A group of frames on the canvas, under its name, as a section of a design file. */
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="overview__section" aria-label={title}>
       <h2 className="overview__section-title">{title}</h2>
-      <div className="overview__grid">{children}</div>
+      <div className="overview__frames">{children}</div>
     </section>
   );
 }
@@ -501,865 +510,930 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
         <p className="platform-page__subtitle">Every piece of the platform at a glance, each linked to its own page.</p>
       </header>
 
-      <Section title="Foundations">
-        <Tile name="Colours" docs="platform-foundations-colours">
-          <div className="overview__row">
-            {SWATCHES.map((token) => (
-              <span
-                key={token}
-                className="overview__swatch"
-                title={token}
-                style={{ background: `var(--platform-${token})` }}
-              />
-            ))}
-          </div>
-        </Tile>
-        <Tile name="Type" docs="platform-foundations-type">
-          <div className="overview__stack">
-            <span className="overview__font overview__font_family_display">365 días de ajedrez</span>
-            <span className="overview__caption">--platform-font-display · Poppins</span>
-            <span className="overview__font">Siguiente lección</span>
-            <span className="overview__caption">--platform-font · SF Pro</span>
-          </div>
-        </Tile>
-        <Tile name="Type scale" docs="platform-foundations-type-scale">
-          <div className="overview__stack">
-            {TYPE_SAMPLE.map((token) => (
-              <span key={token} style={{ fontSize: `var(${token})` }}>
-                Siguiente lección · {token.split("-").pop()}
+      {/* The canvas of a design file: it scrolls both ways inside the window,
+          and the sections are laid on it side by side and one under another. */}
+      <div className="overview__canvas">
+        <div className="overview__board">
+          <Section title="Foundations">
+            <Tile name="Colours" docs="platform-foundations-colours" width={400} height={136}>
+              <div className="overview__row">
+                {SWATCHES.map((token) => (
+                  <span
+                    key={token}
+                    className="overview__swatch"
+                    title={token}
+                    style={{ background: `var(--platform-${token})` }}
+                  />
+                ))}
+              </div>
+            </Tile>
+            <Tile name="Type" docs="platform-foundations-type" width={400} height={200}>
+              <div className="overview__stack">
+                <span className="overview__font overview__font_family_display">365 días de ajedrez</span>
+                <span className="overview__caption">--platform-font-display · Poppins</span>
+                <span className="overview__font">Siguiente lección</span>
+                <span className="overview__caption">--platform-font · SF Pro</span>
+              </div>
+            </Tile>
+            <Tile name="Type scale" docs="platform-foundations-type-scale" width={400} height={304}>
+              <div className="overview__stack">
+                {TYPE_SAMPLE.map((token) => (
+                  <span key={token} style={{ fontSize: `var(${token})` }}>
+                    Siguiente lección · {token.split("-").pop()}
+                  </span>
+                ))}
+              </div>
+            </Tile>
+            <Tile name="Spacing scale" docs="platform-foundations-spacing-scale" width={400} height={272}>
+              <div className="overview__stack">
+                {SPACE_SAMPLE.map((token) => (
+                  <span key={token} className="overview__space">
+                    <code className="overview__space-name">{token.split("-").pop()}</code>
+                    <span className="overview__bar" style={{ width: `var(${token})` }} />
+                  </span>
+                ))}
+              </div>
+            </Tile>
+            <Tile name="Corners" docs="platform-foundations-corners" width={400} height={176}>
+              <div className="overview__row overview__row_align_end">
+                <span className="overview__corner overview__corner_radius_8">8px</span>
+                <span className="overview__corner overview__corner_radius_4" aria-hidden="true" />
+                <span className="overview__corner overview__corner_radius_full">completo</span>
+              </div>
+              <span className="overview__caption">
+                8px casi todo · 4px un control de 20px o menos · completo una píldora
               </span>
-            ))}
-          </div>
-        </Tile>
-        <Tile name="Spacing scale" docs="platform-foundations-spacing-scale">
-          <div className="overview__stack">
-            {SPACE_SAMPLE.map((token) => (
-              <span key={token} className="overview__space">
-                <code className="overview__space-name">{token.split("-").pop()}</code>
-                <span className="overview__bar" style={{ width: `var(${token})` }} />
-              </span>
-            ))}
-          </div>
-        </Tile>
-        <Tile name="Corners" docs="platform-foundations-corners">
-          <div className="overview__row overview__row_align_end">
-            <span className="overview__corner overview__corner_radius_8">8px</span>
-            <span className="overview__corner overview__corner_radius_4" aria-hidden="true" />
-            <span className="overview__corner overview__corner_radius_full">completo</span>
-          </div>
-          <span className="overview__caption">
-            8px casi todo · 4px un control de 20px o menos · completo una píldora
-          </span>
-        </Tile>
-        <Tile name="Text on a surface" docs="platform-foundations-text-on-a-surface">
-          <div className="overview__stack">
-            {PAIRS.map(([text, background]) => (
-              <span
-                key={`${text}/${background}`}
-                className="overview__pair"
-                style={{ color: `var(--platform-${text})`, background: `var(--platform-${background})` }}
+            </Tile>
+            <Tile name="Text on a surface" docs="platform-foundations-text-on-a-surface" width={400} height={248}>
+              <div className="overview__stack">
+                {PAIRS.map(([text, background]) => (
+                  <span
+                    key={`${text}/${background}`}
+                    className="overview__pair"
+                    style={{ color: `var(--platform-${text})`, background: `var(--platform-${background})` }}
+                  >
+                    <span>
+                      {text} sobre {background}
+                    </span>
+                    <span>{tokenContrast(TOKENS, tokenName(text), tokenName(background), scheme).toFixed(1)}:1</span>
+                  </span>
+                ))}
+              </div>
+            </Tile>
+            <Tile name="Motion" docs="platform-foundations-motion" width={400} height={200}>
+              <MotionReplay />
+            </Tile>
+            <Tile name="Large screens" docs="platform-foundations-large-screens" width={400} height={296}>
+              <div className="overview__row overview__row_align_start">
+                <ScaleSample label="Hasta 1535px" px={LG_PX} />
+                <ScaleSample
+                  label="Desde 1536px"
+                  px={FROM_2XL[LG] ?? LG_PX}
+                  style={FROM_2XL_PROPERTIES as CSSProperties}
+                />
+              </div>
+            </Tile>
+          </Section>
+
+          <Section title="Icons">
+            <Tile name="Icon gallery" docs="icons-gallery" width={400} height={168}>
+              <div className="overview__row overview__icons">
+                {ICONS.map((Icon) => (
+                  <Icon key={Icon.name} className="overview__icon" />
+                ))}
+              </div>
+            </Tile>
+            <Tile name="ChessMoveQualityIcon" docs="chess-chessmovequalityicon" width={400} height={88}>
+              <div className="overview__row">
+                {Object.entries(ChessMoveQualityIcon).map(([quality, Badge]) => (
+                  <Badge key={quality} />
+                ))}
+              </div>
+            </Tile>
+          </Section>
+
+          <Section title="Layout">
+            <Tile name="Page" docs="platform-primitives-page" width={400} height={184}>
+              <div className="platform-page__head">
+                {/* A paragraph, not a second h1: the display font is what the shell gives every h1. */}
+                <p className="platform-page__title overview__page-title">Mis cursos</p>
+                <p className="platform-page__subtitle">Continúa donde lo dejaste.</p>
+              </div>
+            </Tile>
+            <Tile name="Card" docs="platform-primitives-card" width={400} height={224}>
+              <section className="platform-card" aria-label="Continuar">
+                <h4 className="platform-card__title">Continuar</h4>
+                <p className="overview__text">Finales de torres · Lección 3: el puente de Lucena</p>
+              </section>
+            </Tile>
+            <Tile name="StaffPanel" docs="platform-sections-staff-courses-staffpanel" width={400} height={400}>
+              <StaffPanel
+                title="Colección de partidas"
+                meta="2"
+                description="Las lecciones de este capítulo eligen de aquí."
               >
-                <span>
-                  {text} sobre {background}
-                </span>
-                <span>{tokenContrast(TOKENS, tokenName(text), tokenName(background), scheme).toFixed(1)}:1</span>
-              </span>
-            ))}
-          </div>
-        </Tile>
-        <Tile name="Motion" docs="platform-foundations-motion">
-          <MotionReplay />
-        </Tile>
-        <Tile name="Large screens" docs="platform-foundations-large-screens">
-          <div className="overview__row overview__row_align_start">
-            <ScaleSample label="Hasta 1535px" px={LG_PX} />
-            <ScaleSample label="Desde 1536px" px={FROM_2XL[LG] ?? LG_PX} style={FROM_2XL_PROPERTIES as CSSProperties} />
-          </div>
-        </Tile>
-      </Section>
-
-      <Section title="Icons">
-        <Tile name="Icon gallery" docs="icons-gallery">
-          <div className="overview__row overview__icons">
-            {ICONS.map((Icon) => (
-              <Icon key={Icon.name} className="overview__icon" />
-            ))}
-          </div>
-        </Tile>
-        <Tile name="ChessMoveQualityIcon" docs="chess-chessmovequalityicon">
-          <div className="overview__row">
-            {Object.entries(ChessMoveQualityIcon).map(([quality, Badge]) => (
-              <Badge key={quality} />
-            ))}
-          </div>
-        </Tile>
-      </Section>
-
-      <Section title="Layout">
-        <Tile name="Page" docs="platform-primitives-page">
-          <div className="platform-page__head">
-            {/* A paragraph, not a second h1: the display font is what the shell gives every h1. */}
-            <p className="platform-page__title overview__page-title">Mis cursos</p>
-            <p className="platform-page__subtitle">Continúa donde lo dejaste.</p>
-          </div>
-        </Tile>
-        <Tile name="Card" docs="platform-primitives-card">
-          <section className="platform-card" aria-label="Continuar">
-            <h4 className="platform-card__title">Continuar</h4>
-            <p className="overview__text">Finales de torres · Lección 3: el puente de Lucena</p>
-          </section>
-        </Tile>
-        <Tile name="StaffPanel" docs="platform-sections-staff-courses-staffpanel">
-          <StaffPanel
-            title="Colección de partidas"
-            meta="2"
-            description="Las lecciones de este capítulo eligen de aquí."
-          >
-            <ul className="overview__list">
-              <li className="overview__list-item">
-                <strong>Morphy – Duque de Brunswick y conde Isouard</strong>
-                <span className="overview__caption">París 1858 · 17 jugadas</span>
-              </li>
-              <li className="overview__list-item">
-                <strong>Anderssen – Kieseritzky</strong>
-                <span className="overview__caption">Londres 1851 · 23 jugadas</span>
-              </li>
-            </ul>
-          </StaffPanel>
-        </Tile>
-        <Tile name="StaffEditorHead" docs="platform-sections-staff-courses-staffeditorhead" wide>
-          <StaffEditorHead
-            title="Fundamentos de la Defensa Siciliana"
-            badge={<span className="platform-tag platform-tag_variant_accent">Publicado</span>}
-            actions={
-              <Link href="/cursos/fundamentos-de-la-siciliana" className="platform-button">
-                Ver en la plataforma
-              </Link>
-            }
-          />
-        </Tile>
-      </Section>
-
-      <Section title="Actions">
-        <Tile name="Button" docs="platform-primitives-button">
-          <div className="overview__row">
-            <button type="button" className="platform-button">
-              Cancelar
-            </button>
-            <button type="button" className="platform-button platform-button_variant_accent">
-              Aprender
-            </button>
-            <button type="button" className="platform-button platform-button_variant_ink">
-              Crear
-            </button>
-            <button type="button" className="platform-button platform-button_variant_danger">
-              Eliminar
-            </button>
-            <button type="button" className="platform-button platform-button_size_compact">
-              Gestionar
-            </button>
-            <button type="button" className="platform-button" disabled>
-              Deshabilitado
-            </button>
-          </div>
-        </Tile>
-        <Tile name="SubmitButton" docs="platform-shared-submitbutton">
-          <form action={settles}>
-            <SubmitButton pendingLabel="Creando…">Crear estudio</SubmitButton>
-          </form>
-        </Tile>
-        <Tile name="RowAction" docs="platform-primitives-rowaction">
-          <div className="overview__row">
-            <button type="button" className="platform-row-action">
-              Editar
-            </button>
-            <button type="button" className="platform-row-action">
-              Quitar
-            </button>
-            <button type="button" className="platform-row-action platform-row-action_variant_danger">
-              Eliminar
-            </button>
-            <button type="button" className="platform-row-action" disabled>
-              Deshabilitado
-            </button>
-          </div>
-        </Tile>
-        <Tile name="Tag" docs="platform-primitives-tag">
-          <div className="overview__row">
-            <span className="platform-tag">Sólo lectura</span>
-            <span className="platform-tag platform-tag_variant_accent">Desactualizado</span>
-          </div>
-        </Tile>
-      </Section>
-
-      <Section title="Forms">
-        <Tile name="PlatformForm" docs="platform-shared-platformform">
-          <PlatformForm onSubmit={(event) => event.preventDefault()}>
-            <PlatformFormField name="name" label="Nombre" messages={{ valueMissing: "Ponle un nombre al estudio." }}>
-              <input type="text" maxLength={120} required placeholder="Nacional Abierto 2026" />
-            </PlatformFormField>
-            <PlatformFormField
-              name="description"
-              label="Descripción (opcional)"
-              serverError="Ya tienes un estudio con ese nombre."
+                <ul className="overview__list">
+                  <li className="overview__list-item">
+                    <strong>Morphy – Duque de Brunswick y conde Isouard</strong>
+                    <span className="overview__caption">París 1858 · 17 jugadas</span>
+                  </li>
+                  <li className="overview__list-item">
+                    <strong>Anderssen – Kieseritzky</strong>
+                    <span className="overview__caption">Londres 1851 · 23 jugadas</span>
+                  </li>
+                </ul>
+              </StaffPanel>
+            </Tile>
+            <Tile
+              name="StaffEditorHead"
+              docs="platform-sections-staff-courses-staffeditorhead"
+              width={880}
+              height={192}
             >
-              <textarea maxLength={500} rows={2} defaultValue="Las partidas del torneo" />
-            </PlatformFormField>
-          </PlatformForm>
-        </Tile>
-        <Tile name="FormField" docs="platform-shared-formfield">
-          <div className="overview__stack">
-            <FormField label="Nombre para mostrar" hint="Cómo lo verán sus alumnos.">
-              <input type="text" name="displayName" defaultValue="Fernanda Ríos" />
-            </FormField>
-            <FormField label="Email" error="Ya existe una cuenta con ese email.">
-              <input type="email" name="email" defaultValue="fernanda@ejemplo.com" />
-            </FormField>
-          </div>
-        </Tile>
-        <Tile name="PlatformSelect" docs="platform-shared-platformselect">
-          <div className="overview__stack">
-            <PlatformSelect aria-label="Nivel" defaultValue="intermedio" options={LEVELS} />
-            <PlatformSelect
-              aria-label="Lección"
-              size="compact"
-              emptyOption="Ninguna"
-              defaultValue=""
-              groups={[
-                {
-                  label: "Finales de torres",
-                  options: [
-                    { value: "lucena", label: "La posición de Lucena" },
-                    { value: "philidor", label: "La posición de Philidor" },
-                  ],
-                },
-              ]}
-            />
-          </div>
-        </Tile>
-        <Tile name="PlatformDatePicker" docs="platform-shared-platformdatepicker">
-          <div className="overview__stack">
-            <PlatformDatePicker name="playedAt" aria-label="Fecha de la partida" defaultValue="2026-10-02" />
-            <PlatformDatePicker name="startsOn" aria-label="Fecha de inicio" size="compact" />
-          </div>
-        </Tile>
-        <Tile name="PlatformChoiceCards" docs="platform-shared-platformchoicecards">
-          <PlatformChoiceCards
-            name="kind"
-            aria-label="Tipo de estudio"
-            defaultValue="STUDY"
-            options={[
-              { value: "STUDY", label: "Estudio", description: "Partidas que analizas." },
-              { value: "TOURNAMENT", label: "Torneo", description: "Las de una competición." },
-            ]}
-          />
-        </Tile>
-        <Tile name="PlatformCheckCards" docs="platform-shared-platformcheckcards">
-          <PlatformCheckCards
-            name="levels"
-            aria-label="Niveles"
-            defaultValue={["INITIAL"]}
-            options={[
-              { value: "INITIAL", label: "Inicial", description: "Quien aprende a mover las piezas." },
-              { value: "INTERMEDIATE", label: "Intermedio", description: "Quien ya juega torneos." },
-            ]}
-          />
-        </Tile>
-        <Tile name="FormFieldset" docs="platform-shared-formfield">
-          <FormFieldset legend="Tipos de contenido">
-            <PlatformCheckCards
-              name="contentTypes"
-              aria-label="Tipos de contenido"
-              layout="line"
-              defaultValue={["ENDGAMES"]}
-              options={[
-                { value: "OPENINGS", label: "Aperturas" },
-                { value: "TACTICS", label: "Táctica" },
-                { value: "ENDGAMES", label: "Finales" },
-              ]}
-            />
-          </FormFieldset>
-        </Tile>
-        <Tile name="PlatformInfoTip" docs="platform-shared-platforminfotip">
-          <div className="overview__row">
-            <span>Slug del curso</span>
-            <PlatformInfoTip label="Sobre el slug" text="Se actualiza al cambiar el nombre." />
-          </div>
-        </Tile>
-        <Tile name="PlatformSearch" docs="platform-sections-shell-platformsearch" surface>
-          <PlatformSearch />
-        </Tile>
-        <Tile name="GameFields" docs="platform-shared-gamefields" wide>
-          <GameFields
-            values={{
-              title: "Una inmortal en Wijk aan Zee",
-              white: "Kasparov, Garry",
-              whiteElo: 2812,
-              whiteTitle: "GM",
-              black: "Topalov, Veselin",
-              blackElo: 2700,
-              blackTitle: "GM",
-              resultCode: GAME_RESULT.WHITE_WINS,
-              playedAtValue: "1999-01-20",
-              event: "Hoogovens",
-            }}
-            results={RESULTS}
-            titleHint="Cómo identificas esta partida dentro del estudio."
-          />
-        </Tile>
-      </Section>
+              <StaffEditorHead
+                title="Fundamentos de la Defensa Siciliana"
+                badge={<span className="platform-tag platform-tag_variant_accent">Publicado</span>}
+                actions={
+                  <Link href="/cursos/fundamentos-de-la-siciliana" className="platform-button">
+                    Ver en la plataforma
+                  </Link>
+                }
+              />
+            </Tile>
+          </Section>
 
-      <Section title="Feedback">
-        <Tile name="PlatformNotice" docs="platform-shared-platformnotice">
-          <div className="overview__stack">
-            <PlatformNotice message="No se puede eliminar: el curso ya tiene alumnos." />
-            <PlatformNotice message="Cuenta creada." variant="success" />
-            <PlatformNotice message="Se importaron 498 de 500 partidas." variant="info" />
-          </div>
-        </Tile>
-        <Tile name="EmptyState" docs="platform-shared-emptystate">
-          <EmptyState
-            title="No tienes clases programadas"
-            description="Cuando tu profesor agende una clase aparecerá aquí."
-            actionLabel="Ver mis clases"
-            actionHref="/clases"
-          />
-        </Tile>
-        {/* On the white it lives on: the figure's count is in the grey made for white. */}
-        <Tile name="ProgressIndicator" docs="platform-shared-progressindicator" surface>
-          <div className="overview__stack">
-            <ProgressIndicator percent={43} detail="3 de 7 lecciones" />
-            <ProgressIndicator percent={100} detail="7 de 7 lecciones" layout="stacked" />
-            <ProgressIndicator percent={38} detail="9 de 24 lecciones" layout="figure" />
-            <ProgressIndicator percent={100} detail="24 de 24 lecciones" layout="figure" tone="success" />
-          </div>
-        </Tile>
-        <Tile name="BoardLoading" docs="platform-shared-boardloading">
-          <div className="overview__loading">
-            <BoardLoading label="Preparando el tablero…" />
-          </div>
-        </Tile>
-        <Tile name="PlatformError" docs="platform-shared-platformerror">
-          <PlatformError retry={() => {}} digest="2817393054" />
-        </Tile>
-        <Tile name="MeetingAccess" docs="platform-sections-classes-class-detail-meetingaccess">
-          <MeetingAccess meetingVisibleFromIso={CLASS_OPENS} providerLabel="Zoom" />
-        </Tile>
-        <Tile name="TempPasswordNotice" docs="platform-sections-staff-students-temppasswordnotice">
-          <TempPasswordNotice password="q7Rm-2xKfV_9" message="Cuenta creada." />
-        </Tile>
-        <Tile name="LessonSkeleton" docs="platform-sections-courses-lesson-view-lessonskeleton" wide>
-          {/* The numbers .lesson-frame hands the lesson's column, with a lower board ceiling for the sheet. */}
-          <div
-            style={
-              {
-                "--viewer-board-max": "280px",
-                "--viewer-column-gap": "var(--platform-space-6)",
-                "--viewer-panel-trim": "62px",
-              } as CSSProperties
-            }
-          >
-            <LessonSkeleton />
-          </div>
-        </Tile>
-      </Section>
+          <Section title="Actions">
+            <Tile name="Button" docs="platform-primitives-button" width={400} height={240}>
+              <div className="overview__row">
+                <button type="button" className="platform-button">
+                  Cancelar
+                </button>
+                <button type="button" className="platform-button platform-button_variant_accent">
+                  Aprender
+                </button>
+                <button type="button" className="platform-button platform-button_variant_ink">
+                  Crear
+                </button>
+                <button type="button" className="platform-button platform-button_variant_danger">
+                  Eliminar
+                </button>
+                <button type="button" className="platform-button platform-button_size_compact">
+                  Gestionar
+                </button>
+                <button type="button" className="platform-button" disabled>
+                  Deshabilitado
+                </button>
+              </div>
+            </Tile>
+            <Tile name="SubmitButton" docs="platform-shared-submitbutton" width={400} height={120}>
+              <form action={settles}>
+                <SubmitButton pendingLabel="Creando…">Crear estudio</SubmitButton>
+              </form>
+            </Tile>
+            <Tile name="RowAction" docs="platform-primitives-rowaction" width={400} height={88}>
+              <div className="overview__row">
+                <button type="button" className="platform-row-action">
+                  Editar
+                </button>
+                <button type="button" className="platform-row-action">
+                  Quitar
+                </button>
+                <button type="button" className="platform-row-action platform-row-action_variant_danger">
+                  Eliminar
+                </button>
+                <button type="button" className="platform-row-action" disabled>
+                  Deshabilitado
+                </button>
+              </div>
+            </Tile>
+            <Tile name="Tag" docs="platform-primitives-tag" width={400} height={96}>
+              <div className="overview__row">
+                <span className="platform-tag">Sólo lectura</span>
+                <span className="platform-tag platform-tag_variant_accent">Desactualizado</span>
+              </div>
+            </Tile>
+          </Section>
 
-      <Section title="Data">
-        <Tile name="PlatformTable" docs="platform-shared-platformtable">
-          <div className="overview__stack">
-            <PlatformTable label="Clases" columns={["Clase", { label: "Alumnos", align: "right" }]} minWidth={240}>
-              <PlatformTableRow>
-                <PlatformTableCell strong>Finales de torres</PlatformTableCell>
-                <PlatformTableCell align="right">6</PlatformTableCell>
-              </PlatformTableRow>
-              <PlatformTableRow>
-                <PlatformTableCell strong>La defensa siciliana</PlatformTableCell>
-                <PlatformTableCell align="right">8</PlatformTableCell>
-              </PlatformTableRow>
-            </PlatformTable>
-            <PlatformTable
-              label="Próximas clases"
-              columns={["Clase", { label: "Alumnos", align: "right" }]}
-              minWidth={240}
-              emptyLabel="Todavía no hay clases."
-            />
-          </div>
-        </Tile>
-        <Tile name="ActivityList" docs="platform-shared-activitylist">
-          <ActivityList
-            items={[
-              {
-                id: "a1",
-                typeLabel: "Lección completada",
-                subjectName: "Torre activa",
-                topicLabel: "Finales",
-                dateLabel: "1 de octubre, 2026",
-              },
-              { id: "a2", typeLabel: "Clase asistida", subjectName: "Najdorf", dateLabel: "29 de septiembre, 2026" },
-            ]}
-          />
-        </Tile>
-        <Tile name="StudyStreak" docs="platform-shared-studystreak">
-          <div className="overview__stack">
-            <StudyStreak streak={{ days: 3, studiedToday: true }} />
-            <StudyStreak streak={{ days: 3, studiedToday: false }} />
-          </div>
-        </Tile>
-        <Tile name="LocalDateTime" docs="platform-shared-localdatetime">
-          <LocalDateTime iso="2026-10-06T23:00:00.000Z" fallback="6 de octubre, 2026 · 23:00 h" />
-        </Tile>
-        <Tile name="LevelDots" docs="platform-sections-courses-leveldots">
-          <LevelDots scale={LEVEL_SCALE} levels={LEVEL_SCALE.slice(2, 4)} />
-        </Tile>
-        <Tile name="AuthorAvatar" docs="platform-sections-staff-courses-authors-manager-authoravatar">
-          <div className="overview__row">
-            <AuthorAvatar name="Tomás Herrera" size="large" />
-            <AuthorAvatar name="Fernanda Ríos" size="large" />
-            <AuthorAvatar name="Tomás Herrera" shape="circle" />
-            <AuthorAvatar name="Fernanda Ríos" size="small" />
-          </div>
-        </Tile>
-        <Tile name="ExplorerNextMoves" docs="platform-sections-explorer-explorernextmoves">
-          <ExplorerNextMoves
-            moves={[
-              { san: "Nc6", uci: "b8c6", count: 148, percentage: 71.8 },
-              { san: "Nf6", uci: "g8f6", count: 37, percentage: 18 },
-              { san: "d6", uci: "d7d6", count: 21, percentage: 10.2 },
-            ]}
-            onPlay={() => {}}
-            isSearching={false}
-          />
-        </Tile>
-        <Tile name="ExplorerGames" docs="platform-sections-explorer-explorergames">
-          <ExplorerGames
-            games={[
-              {
-                id: "kasparov-anand",
-                white: "Kasparov, Garry",
-                black: "Anand, Viswanathan",
-                whiteElo: 2795,
-                blackElo: 2725,
-                resultLabel: "1-0",
-                event: "Campeonato del mundo PCA 1995",
-                origin: GAME_ORIGIN.EDITOR,
-                originLabel: "Profesorado",
-                seenInClass: true,
-                href: "#",
-              },
-              {
-                id: "steinitz-bardeleben",
-                white: "Steinitz, Wilhelm",
-                black: "von Bardeleben, Curt",
-                resultLabel: "1-0",
-                event: "Hastings 1895",
-                origin: GAME_ORIGIN.COURSE,
-                originLabel: "Curso",
-                seenInClass: false,
-                href: "#",
-              },
-            ]}
-            totalGames={213}
-            isSearching={false}
-          />
-        </Tile>
-        <Tile name="LevelScale" docs="platform-sections-courses-course-info-levelscale" wide surface>
-          <LevelScale scale={LEVEL_SCALE} levels={LEVEL_SCALE.slice(2, 4)} />
-        </Tile>
-        <Tile name="StatsCards" docs="platform-sections-dashboard-activity-stats-statscards" wide>
-          <StatsCards stats={STATS} />
-        </Tile>
-        <Tile name="SyllabusList" docs="platform-sections-staff-courses-syllabuslist" wide>
-          <StaffPanel title="Temario" meta="3 capítulos · 16 lecciones">
-            <SyllabusList
-              items={[
-                {
-                  id: "1",
-                  name: "La estructura de peones decide el plan",
-                  facts: "6 lecciones",
-                  href: "#",
-                  canDelete: true,
-                },
-                {
-                  id: "2",
-                  name: "El alfil malo y cómo cambiarlo",
-                  facts: "4 lecciones",
-                  href: "#",
-                  badge: "Prioridad",
-                  canDelete: true,
-                },
-                {
-                  id: "closing",
-                  name: "Cierre",
-                  facts: "1 lección",
-                  href: "#",
-                  roleCode: CONTENT_ROLE.CLOSING,
-                  canDelete: false,
-                  deleteHint: "Sólo se elimina un capítulo mientras el curso está en borrador.",
-                },
-              ]}
-              noun="capítulo"
-              deleteFieldName="chapterId"
-              newPlaceholder="Nombre del nuevo capítulo…"
-              onReorder={settles}
-              createAction={settles}
-              deleteAction={settles}
-            />
-          </StaffPanel>
-        </Tile>
-      </Section>
+          <Section title="Forms">
+            <Tile name="PlatformForm" docs="platform-shared-platformform" width={400} height={368}>
+              <PlatformForm onSubmit={(event) => event.preventDefault()}>
+                <PlatformFormField
+                  name="name"
+                  label="Nombre"
+                  messages={{ valueMissing: "Ponle un nombre al estudio." }}
+                >
+                  <input type="text" maxLength={120} required placeholder="Nacional Abierto 2026" />
+                </PlatformFormField>
+                <PlatformFormField
+                  name="description"
+                  label="Descripción (opcional)"
+                  serverError="Ya tienes un estudio con ese nombre."
+                >
+                  <textarea maxLength={500} rows={2} defaultValue="Las partidas del torneo" />
+                </PlatformFormField>
+              </PlatformForm>
+            </Tile>
+            <Tile name="FormField" docs="platform-shared-formfield" width={400} height={296}>
+              <div className="overview__stack">
+                <FormField label="Nombre para mostrar" hint="Cómo lo verán sus alumnos.">
+                  <input type="text" name="displayName" defaultValue="Fernanda Ríos" />
+                </FormField>
+                <FormField label="Email" error="Ya existe una cuenta con ese email.">
+                  <input type="email" name="email" defaultValue="fernanda@ejemplo.com" />
+                </FormField>
+              </div>
+            </Tile>
+            <Tile name="PlatformSelect" docs="platform-shared-platformselect" width={400} height={192}>
+              <div className="overview__stack">
+                <PlatformSelect aria-label="Nivel" defaultValue="intermedio" options={LEVELS} />
+                <PlatformSelect
+                  aria-label="Lección"
+                  size="compact"
+                  emptyOption="Ninguna"
+                  defaultValue=""
+                  groups={[
+                    {
+                      label: "Finales de torres",
+                      options: [
+                        { value: "lucena", label: "La posición de Lucena" },
+                        { value: "philidor", label: "La posición de Philidor" },
+                      ],
+                    },
+                  ]}
+                />
+              </div>
+            </Tile>
+            <Tile name="PlatformDatePicker" docs="platform-shared-platformdatepicker" width={400} height={192}>
+              <div className="overview__stack">
+                <PlatformDatePicker name="playedAt" aria-label="Fecha de la partida" defaultValue="2026-10-02" />
+                <PlatformDatePicker name="startsOn" aria-label="Fecha de inicio" size="compact" />
+              </div>
+            </Tile>
+            <Tile name="PlatformChoiceCards" docs="platform-shared-platformchoicecards" width={400} height={192}>
+              <PlatformChoiceCards
+                name="kind"
+                aria-label="Tipo de estudio"
+                defaultValue="STUDY"
+                options={[
+                  { value: "STUDY", label: "Estudio", description: "Partidas que analizas." },
+                  { value: "TOURNAMENT", label: "Torneo", description: "Las de una competición." },
+                ]}
+              />
+            </Tile>
+            <Tile name="PlatformCheckCards" docs="platform-shared-platformcheckcards" width={400} height={280}>
+              <PlatformCheckCards
+                name="levels"
+                aria-label="Niveles"
+                defaultValue={["INITIAL"]}
+                options={[
+                  { value: "INITIAL", label: "Inicial", description: "Quien aprende a mover las piezas." },
+                  { value: "INTERMEDIATE", label: "Intermedio", description: "Quien ya juega torneos." },
+                ]}
+              />
+            </Tile>
+            <Tile name="FormFieldset" docs="platform-shared-formfield" width={400} height={248}>
+              <FormFieldset legend="Tipos de contenido">
+                <PlatformCheckCards
+                  name="contentTypes"
+                  aria-label="Tipos de contenido"
+                  layout="line"
+                  defaultValue={["ENDGAMES"]}
+                  options={[
+                    { value: "OPENINGS", label: "Aperturas" },
+                    { value: "TACTICS", label: "Táctica" },
+                    { value: "ENDGAMES", label: "Finales" },
+                  ]}
+                />
+              </FormFieldset>
+            </Tile>
+            <Tile name="PlatformInfoTip" docs="platform-shared-platforminfotip" width={400} height={96}>
+              <div className="overview__row">
+                <span>Slug del curso</span>
+                <PlatformInfoTip label="Sobre el slug" text="Se actualiza al cambiar el nombre." />
+              </div>
+            </Tile>
+            <Tile name="PlatformSearch" docs="platform-sections-shell-platformsearch" surface width={400} height={144}>
+              <PlatformSearch />
+            </Tile>
+            <Tile name="GameFields" docs="platform-shared-gamefields" width={720} height={840}>
+              <GameFields
+                values={{
+                  title: "Una inmortal en Wijk aan Zee",
+                  white: "Kasparov, Garry",
+                  whiteElo: 2812,
+                  whiteTitle: "GM",
+                  black: "Topalov, Veselin",
+                  blackElo: 2700,
+                  blackTitle: "GM",
+                  resultCode: GAME_RESULT.WHITE_WINS,
+                  playedAtValue: "1999-01-20",
+                  event: "Hoogovens",
+                }}
+                results={RESULTS}
+                titleHint="Cómo identificas esta partida dentro del estudio."
+              />
+            </Tile>
+          </Section>
 
-      <Section title="Cards">
-        <Tile name="CourseCard" docs="platform-sections-courses-coursecard">
-          <CourseCard
-            levels={LEVEL_SCALE}
-            course={{
-              id: "10000004",
-              name: "Planes en el medio juego",
-              slug: "planes-en-el-medio-juego",
-              description:
-                "Casillas débiles, columnas abiertas y el momento de cambiar piezas, con partidas clásicas comentadas.",
-              contentTypes: [{ code: "STRATEGY", label: "Estrategia", shortLabel: "Estrategia", description: "" }],
-              levels: LEVEL_SCALE.slice(2, 4),
-              authorNames: ["Fernanda Ríos"],
-              isAdded: false,
-              isCompleted: false,
-              progress: {
-                statusCode: PROGRESS_STATUS.NOT_STARTED,
-                completedLessons: 0,
-                totalLessons: 24,
-                percent: 0,
-                completedMinutes: 0,
-                totalMinutes: 375,
-                minutesPercent: 0,
-              },
-              continueHref: "#",
-              ctaLabel: "Empezar",
-              href: "#",
-              infoHref: "#",
-            }}
-          />
-        </Tile>
-        <Tile name="MyCourseCard" docs="platform-sections-courses-my-courses-mycoursecard" wide>
-          <MyCourseCard
-            course={{
-              id: "10000007",
-              name: "Las partidas inmortales del siglo XIX",
-              slug: "las-partidas-inmortales-del-siglo-xix",
-              thumbnail: "/pieces/w-knight.svg",
-              contentTypes: [],
-              levels: [],
-              authorNames: ["Mateo Vidal"],
-              isAdded: true,
-              isCompleted: false,
-              progress: {
-                statusCode: PROGRESS_STATUS.IN_PROGRESS,
-                completedLessons: 36,
-                totalLessons: 61,
-                percent: 59,
-                completedMinutes: 720,
-                totalMinutes: 1220,
-                minutesPercent: 59,
-              },
-              continueHref: "#",
-              ctaLabel: "Continuar",
-              href: "#",
-              infoHref: "#",
-              learnHref: "#",
-              reviewCount: 12,
-              isReviewUpToDate: false,
-              reviewHref: "#",
-            }}
-          />
-        </Tile>
-        <Tile name="ClassCard" docs="platform-sections-classes-classes-list-classcard" wide>
-          <ClassCard
-            classSummary={{
-              id: "c-101",
-              title: "Finales de torres: la posición de Lucena",
-              teacherName: "Fernanda Ríos",
-              scheduledAtIso: "2026-10-09T00:00:00.000Z",
-              dateLabel: "8 de octubre, 2026",
-              timeLabel: "18:00 h",
-              durationMin: 60,
-              statusCode: "SCHEDULED",
-              statusLabel: "Programada",
-              href: "#",
-            }}
-          />
-        </Tile>
-      </Section>
-
-      <Section title="Navigation">
-        <Tile name="StaffTabs" docs="platform-sections-staff-courses-stafftabs" surface>
-          <StaffTabs tabs={courseTabs({ courseId: "4812", chapterCount: 6, gameCount: 148 })} />
-        </Tile>
-        <Tile name="LevelFilter" docs="platform-sections-courses-course-catalog-levelfilter">
-          <LevelFilter levels={LEVEL_SCALE} />
-        </Tile>
-        <Tile name="OutlineList" docs="platform-sections-courses-lesson-view-outlinelist">
-          {/* `position: static`: from 1280px the column's sheet pins .lesson-outline to the window. */}
-          <nav className="lesson-outline overview__outline" aria-label="Lecciones del capítulo">
-            <div className="lesson-outline__body">
-              <OutlineList
-                lessons={[
-                  { id: "lucena", name: "La posición de Lucena", href: "#", statusCode: PROGRESS_STATUS.COMPLETED },
-                  // The lesson on screen is the one whose address is the sheet's.
+          <Section title="Feedback">
+            <Tile name="PlatformNotice" docs="platform-shared-platformnotice" width={400} height={264}>
+              <div className="overview__stack">
+                <PlatformNotice message="No se puede eliminar: el curso ya tiene alumnos." />
+                <PlatformNotice message="Cuenta creada." variant="success" />
+                <PlatformNotice message="Se importaron 498 de 500 partidas." variant="info" />
+              </div>
+            </Tile>
+            <Tile name="EmptyState" docs="platform-shared-emptystate" width={400} height={280}>
+              <EmptyState
+                title="No tienes clases programadas"
+                description="Cuando tu profesor agende una clase aparecerá aquí."
+                actionLabel="Ver mis clases"
+                actionHref="/clases"
+              />
+            </Tile>
+            {/* On the white it lives on: the figure's count is in the grey made for white. */}
+            <Tile name="ProgressIndicator" docs="platform-shared-progressindicator" surface width={400} height={296}>
+              <div className="overview__stack">
+                <ProgressIndicator percent={43} detail="3 de 7 lecciones" />
+                <ProgressIndicator percent={100} detail="7 de 7 lecciones" layout="stacked" />
+                <ProgressIndicator percent={38} detail="9 de 24 lecciones" layout="figure" />
+                <ProgressIndicator percent={100} detail="24 de 24 lecciones" layout="figure" tone="success" />
+              </div>
+            </Tile>
+            <Tile name="BoardLoading" docs="platform-shared-boardloading" width={400} height={224}>
+              <div className="overview__loading">
+                <BoardLoading label="Preparando el tablero…" />
+              </div>
+            </Tile>
+            <Tile name="PlatformError" docs="platform-shared-platformerror" width={400} height={272}>
+              <PlatformError retry={() => {}} digest="2817393054" />
+            </Tile>
+            <Tile
+              name="MeetingAccess"
+              docs="platform-sections-classes-class-detail-meetingaccess"
+              width={400}
+              height={144}
+            >
+              <MeetingAccess meetingVisibleFromIso={CLASS_OPENS} providerLabel="Zoom" />
+            </Tile>
+            <Tile
+              name="TempPasswordNotice"
+              docs="platform-sections-staff-students-temppasswordnotice"
+              width={400}
+              height={288}
+            >
+              <TempPasswordNotice password="q7Rm-2xKfV_9" message="Cuenta creada." />
+            </Tile>
+            <Tile
+              name="LessonSkeleton"
+              docs="platform-sections-courses-lesson-view-lessonskeleton"
+              width={960}
+              height={408}
+            >
+              {/* The numbers .lesson-frame hands the lesson's column, with a lower board ceiling for the sheet. */}
+              <div
+                style={
                   {
-                    id: "philidor",
-                    name: "La posición de Philidor",
-                    href: SHEET_PATH,
+                    "--viewer-board-max": "280px",
+                    "--viewer-column-gap": "var(--platform-space-6)",
+                    "--viewer-panel-trim": "62px",
+                  } as CSSProperties
+                }
+              >
+                <LessonSkeleton />
+              </div>
+            </Tile>
+          </Section>
+
+          <Section title="Data">
+            <Tile name="PlatformTable" docs="platform-shared-platformtable" width={400} height={360}>
+              <div className="overview__stack">
+                <PlatformTable label="Clases" columns={["Clase", { label: "Alumnos", align: "right" }]} minWidth={240}>
+                  <PlatformTableRow>
+                    <PlatformTableCell strong>Finales de torres</PlatformTableCell>
+                    <PlatformTableCell align="right">6</PlatformTableCell>
+                  </PlatformTableRow>
+                  <PlatformTableRow>
+                    <PlatformTableCell strong>La defensa siciliana</PlatformTableCell>
+                    <PlatformTableCell align="right">8</PlatformTableCell>
+                  </PlatformTableRow>
+                </PlatformTable>
+                <PlatformTable
+                  label="Próximas clases"
+                  columns={["Clase", { label: "Alumnos", align: "right" }]}
+                  minWidth={240}
+                  emptyLabel="Todavía no hay clases."
+                />
+              </div>
+            </Tile>
+            <Tile name="ActivityList" docs="platform-shared-activitylist" width={400} height={256}>
+              <ActivityList
+                items={[
+                  {
+                    id: "a1",
+                    typeLabel: "Lección completada",
+                    subjectName: "Torre activa",
+                    topicLabel: "Finales",
+                    dateLabel: "1 de octubre, 2026",
+                  },
+                  {
+                    id: "a2",
+                    typeLabel: "Clase asistida",
+                    subjectName: "Najdorf",
+                    dateLabel: "29 de septiembre, 2026",
+                  },
+                ]}
+              />
+            </Tile>
+            <Tile name="StudyStreak" docs="platform-shared-studystreak" width={400} height={576}>
+              <div className="overview__stack">
+                <StudyStreak streak={{ days: 3, studiedToday: true }} />
+                <StudyStreak streak={{ days: 3, studiedToday: false }} />
+              </div>
+            </Tile>
+            <Tile name="LocalDateTime" docs="platform-shared-localdatetime" width={400} height={88}>
+              <LocalDateTime iso="2026-10-06T23:00:00.000Z" fallback="6 de octubre, 2026 · 23:00 h" />
+            </Tile>
+            <Tile name="LevelDots" docs="platform-sections-courses-leveldots" width={400} height={96}>
+              <LevelDots scale={LEVEL_SCALE} levels={LEVEL_SCALE.slice(2, 4)} />
+            </Tile>
+            <Tile
+              name="AuthorAvatar"
+              docs="platform-sections-staff-courses-authors-manager-authoravatar"
+              width={400}
+              height={120}
+            >
+              <div className="overview__row">
+                <AuthorAvatar name="Tomás Herrera" size="large" />
+                <AuthorAvatar name="Fernanda Ríos" size="large" />
+                <AuthorAvatar name="Tomás Herrera" shape="circle" />
+                <AuthorAvatar name="Fernanda Ríos" size="small" />
+              </div>
+            </Tile>
+            <Tile name="ExplorerNextMoves" docs="platform-sections-explorer-explorernextmoves" width={400} height={248}>
+              <ExplorerNextMoves
+                moves={[
+                  { san: "Nc6", uci: "b8c6", count: 148, percentage: 71.8 },
+                  { san: "Nf6", uci: "g8f6", count: 37, percentage: 18 },
+                  { san: "d6", uci: "d7d6", count: 21, percentage: 10.2 },
+                ]}
+                onPlay={() => {}}
+                isSearching={false}
+              />
+            </Tile>
+            <Tile name="ExplorerGames" docs="platform-sections-explorer-explorergames" width={400} height={448}>
+              <ExplorerGames
+                games={[
+                  {
+                    id: "kasparov-anand",
+                    white: "Kasparov, Garry",
+                    black: "Anand, Viswanathan",
+                    whiteElo: 2795,
+                    blackElo: 2725,
+                    resultLabel: "1-0",
+                    event: "Campeonato del mundo PCA 1995",
+                    origin: GAME_ORIGIN.EDITOR,
+                    originLabel: "Profesorado",
+                    seenInClass: true,
+                    href: "#",
+                  },
+                  {
+                    id: "steinitz-bardeleben",
+                    white: "Steinitz, Wilhelm",
+                    black: "von Bardeleben, Curt",
+                    resultLabel: "1-0",
+                    event: "Hastings 1895",
+                    origin: GAME_ORIGIN.COURSE,
+                    originLabel: "Curso",
+                    seenInClass: false,
+                    href: "#",
+                  },
+                ]}
+                totalGames={213}
+                isSearching={false}
+              />
+            </Tile>
+            <Tile
+              name="LevelScale"
+              docs="platform-sections-courses-course-info-levelscale"
+              surface
+              width={720}
+              height={200}
+            >
+              <LevelScale scale={LEVEL_SCALE} levels={LEVEL_SCALE.slice(2, 4)} />
+            </Tile>
+            <Tile
+              name="StatsCards"
+              docs="platform-sections-dashboard-activity-stats-statscards"
+              width={880}
+              height={320}
+            >
+              <StatsCards stats={STATS} />
+            </Tile>
+            <Tile name="SyllabusList" docs="platform-sections-staff-courses-syllabuslist" width={800} height={648}>
+              <StaffPanel title="Temario" meta="3 capítulos · 16 lecciones">
+                <SyllabusList
+                  items={[
+                    {
+                      id: "1",
+                      name: "La estructura de peones decide el plan",
+                      facts: "6 lecciones",
+                      href: "#",
+                      canDelete: true,
+                    },
+                    {
+                      id: "2",
+                      name: "El alfil malo y cómo cambiarlo",
+                      facts: "4 lecciones",
+                      href: "#",
+                      badge: "Prioridad",
+                      canDelete: true,
+                    },
+                    {
+                      id: "closing",
+                      name: "Cierre",
+                      facts: "1 lección",
+                      href: "#",
+                      roleCode: CONTENT_ROLE.CLOSING,
+                      canDelete: false,
+                      deleteHint: "Sólo se elimina un capítulo mientras el curso está en borrador.",
+                    },
+                  ]}
+                  noun="capítulo"
+                  deleteFieldName="chapterId"
+                  newPlaceholder="Nombre del nuevo capítulo…"
+                  onReorder={settles}
+                  createAction={settles}
+                  deleteAction={settles}
+                />
+              </StaffPanel>
+            </Tile>
+          </Section>
+
+          <Section title="Cards">
+            <Tile name="CourseCard" docs="platform-sections-courses-coursecard" width={400} height={496}>
+              <CourseCard
+                levels={LEVEL_SCALE}
+                course={{
+                  id: "10000004",
+                  name: "Planes en el medio juego",
+                  slug: "planes-en-el-medio-juego",
+                  description:
+                    "Casillas débiles, columnas abiertas y el momento de cambiar piezas, con partidas clásicas comentadas.",
+                  contentTypes: [{ code: "STRATEGY", label: "Estrategia", shortLabel: "Estrategia", description: "" }],
+                  levels: LEVEL_SCALE.slice(2, 4),
+                  authorNames: ["Fernanda Ríos"],
+                  isAdded: false,
+                  isCompleted: false,
+                  progress: {
+                    statusCode: PROGRESS_STATUS.NOT_STARTED,
+                    completedLessons: 0,
+                    totalLessons: 24,
+                    percent: 0,
+                    completedMinutes: 0,
+                    totalMinutes: 375,
+                    minutesPercent: 0,
+                  },
+                  continueHref: "#",
+                  ctaLabel: "Empezar",
+                  href: "#",
+                  infoHref: "#",
+                }}
+              />
+            </Tile>
+            <Tile name="MyCourseCard" docs="platform-sections-courses-my-courses-mycoursecard" width={720} height={192}>
+              <MyCourseCard
+                course={{
+                  id: "10000007",
+                  name: "Las partidas inmortales del siglo XIX",
+                  slug: "las-partidas-inmortales-del-siglo-xix",
+                  thumbnail: "/pieces/w-knight.svg",
+                  contentTypes: [],
+                  levels: [],
+                  authorNames: ["Mateo Vidal"],
+                  isAdded: true,
+                  isCompleted: false,
+                  progress: {
                     statusCode: PROGRESS_STATUS.IN_PROGRESS,
+                    completedLessons: 36,
+                    totalLessons: 61,
+                    percent: 59,
+                    completedMinutes: 720,
+                    totalMinutes: 1220,
+                    minutesPercent: 59,
                   },
-                  { id: "vancura", name: "La defensa Vancura", href: "#", statusCode: PROGRESS_STATUS.NOT_STARTED },
-                ]}
+                  continueHref: "#",
+                  ctaLabel: "Continuar",
+                  href: "#",
+                  infoHref: "#",
+                  learnHref: "#",
+                  reviewCount: 12,
+                  isReviewUpToDate: false,
+                  reviewHref: "#",
+                }}
               />
-            </div>
-          </nav>
-        </Tile>
-        <Tile name="GameList" docs="platform-shared-gamelist" surface>
-          <GameList
-            games={[
-              {
-                id: "g1",
-                name: "Una celada en la apertura",
-                players: "Fischer — Sherwin",
-                resultLabel: "1-0",
-                href: "#",
-              },
-              { id: "g2", name: "Lombardy — Fischer", resultLabel: "0-1", href: "#" },
-              { id: "g3", name: "La partida del siglo", players: "Byrne — Fischer", resultLabel: "0-1", href: "#" },
-            ]}
-            currentId="g2"
-            onReorder={async () => undefined}
-          />
-        </Tile>
-        <Tile name="PlatformNav" docs="platform-sections-shell-platformnav" wide surface>
-          <PlatformNav groups={buildPlatformNavGroups({ isTeacher: false, isStaff: true })} />
-        </Tile>
-      </Section>
+            </Tile>
+            <Tile name="ClassCard" docs="platform-sections-classes-classes-list-classcard" width={720} height={288}>
+              <ClassCard
+                classSummary={{
+                  id: "c-101",
+                  title: "Finales de torres: la posición de Lucena",
+                  teacherName: "Fernanda Ríos",
+                  scheduledAtIso: "2026-10-09T00:00:00.000Z",
+                  dateLabel: "8 de octubre, 2026",
+                  timeLabel: "18:00 h",
+                  durationMin: 60,
+                  statusCode: "SCHEDULED",
+                  statusLabel: "Programada",
+                  href: "#",
+                }}
+              />
+            </Tile>
+          </Section>
 
-      <Section title="Overlays">
-        <Tile name="Dialog" docs="platform-primitives-dialog">
-          <DialogTrigger />
-        </Tile>
-        <Tile name="EditGame" docs="platform-shared-editgame">
-          <EditGame
-            action={settles}
-            values={{ white: "Kasparov, Garry", black: "Topalov, Veselin", resultCode: GAME_RESULT.WHITE_WINS }}
-            results={RESULTS}
-            titleHint="Cómo identificas esta partida dentro del estudio."
-          />
-        </Tile>
-        <Tile name="NewStudy" docs="platform-sections-studies-studies-list-newstudy">
-          <SectionDialog
-            block="new-study"
-            label="Nuevo estudio"
-            buttonClassName="new-study__open"
-            form={(close, titleId) => (
-              <NewStudyForm
-                titleId={titleId}
-                kinds={[
-                  { code: "STUDY", label: "Estudio" },
-                  { code: "TOURNAMENT", label: "Torneo" },
-                ]}
-                action={settles}
-                onClose={close}
-                onSubmit={close}
-              />
-            )}
-          />
-        </Tile>
-        <Tile name="NewCourse" docs="platform-sections-staff-courses-newcourse">
-          <SectionDialog
-            block="new-course"
-            label="Nuevo curso"
-            buttonClassName="platform-button"
-            form={(close, titleId) => (
-              <NewCourseForm
-                titleId={titleId}
-                contentTypes={[
+          <Section title="Navigation">
+            <Tile name="StaffTabs" docs="platform-sections-staff-courses-stafftabs" surface width={480} height={160}>
+              <StaffTabs tabs={courseTabs({ courseId: "4812", chapterCount: 6, gameCount: 148 })} />
+            </Tile>
+            <Tile
+              name="LevelFilter"
+              docs="platform-sections-courses-course-catalog-levelfilter"
+              width={400}
+              height={392}
+            >
+              <LevelFilter levels={LEVEL_SCALE} />
+            </Tile>
+            <Tile name="OutlineList" docs="platform-sections-courses-lesson-view-outlinelist" width={400} height={304}>
+              {/* `position: static`: from 1280px the column's sheet pins .lesson-outline to the window. */}
+              <nav className="lesson-outline overview__outline" aria-label="Lecciones del capítulo">
+                <div className="lesson-outline__body">
+                  <OutlineList
+                    lessons={[
+                      { id: "lucena", name: "La posición de Lucena", href: "#", statusCode: PROGRESS_STATUS.COMPLETED },
+                      // The lesson on screen is the one whose address is the sheet's.
+                      {
+                        id: "philidor",
+                        name: "La posición de Philidor",
+                        href: SHEET_PATH,
+                        statusCode: PROGRESS_STATUS.IN_PROGRESS,
+                      },
+                      { id: "vancura", name: "La defensa Vancura", href: "#", statusCode: PROGRESS_STATUS.NOT_STARTED },
+                    ]}
+                  />
+                </div>
+              </nav>
+            </Tile>
+            <Tile name="GameList" docs="platform-shared-gamelist" surface width={400} height={320}>
+              <GameList
+                games={[
                   {
-                    code: "OPENINGS",
-                    label: "Aperturas",
-                    shortLabel: "Aperturas",
-                    description: "Principios, repertorio, variantes y planes típicos al comenzar la partida.",
+                    id: "g1",
+                    name: "Una celada en la apertura",
+                    players: "Fischer — Sherwin",
+                    resultLabel: "1-0",
+                    href: "#",
                   },
-                  {
-                    code: "ENDGAMES",
-                    label: "Finales",
-                    shortLabel: "Finales",
-                    description: "Técnica y posiciones teóricas con pocas piezas.",
-                  },
+                  { id: "g2", name: "Lombardy — Fischer", resultLabel: "0-1", href: "#" },
+                  { id: "g3", name: "La partida del siglo", players: "Byrne — Fischer", resultLabel: "0-1", href: "#" },
                 ]}
-                action={settles}
-                onClose={close}
-                onSubmit={close}
+                currentId="g2"
+                onReorder={async () => undefined}
               />
-            )}
-          />
-        </Tile>
-        <Tile name="MoveContextMenu" docs="chess-game-viewer-movecontextmenu">
-          <MoveMenuTile />
-        </Tile>
-        <Tile name="CourseSourceForm" docs="platform-sections-staff-courses-course-sources-coursesourceform">
-          <SectionDialog
-            block="course-source-dialog"
-            label="Agregar fuente"
-            buttonClassName="platform-button platform-button_size_compact"
-            form={(close, titleId) => (
-              <CourseSourceForm
-                titleId={titleId}
-                sourceTypes={[
-                  { code: "BOOK", label: "Libro" },
-                  { code: "DIGITAL_COURSE", label: "Curso digital" },
-                  { code: "VIDEO", label: "Vídeo o serie de vídeos" },
-                ]}
-                action={settles}
-                onClose={close}
-                onSubmit={close}
-              />
-            )}
-          />
-        </Tile>
-      </Section>
+            </Tile>
+            <Tile name="PlatformNav" docs="platform-sections-shell-platformnav" surface width={960} height={152}>
+              <PlatformNav groups={buildPlatformNavGroups({ isTeacher: false, isStaff: true })} />
+            </Tile>
+          </Section>
 
-      <Section title="Chess">
-        <Tile name="ChessBoard" docs="chess-chessboard">
-          <ChessBoard
-            position={{
-              fen: "1n2kb1r/p4ppp/4q3/4p1B1/4P3/8/PPP2PPP/2KR4 w k - 0 17",
-              lastMove: ["d7", "b8"],
-              shapes: [
-                { orig: "d1", dest: "d8", brush: "green" },
-                { orig: "g5", dest: "d8", brush: "blue" },
-                { orig: "e8", brush: "red" },
-              ],
-            }}
-          />
-        </Tile>
-        <Tile name="StaticDiagram" docs="chess-staticdiagram">
-          <StaticDiagram fen={LUCENA} caption="La posición de Lucena" />
-        </Tile>
-        <Tile name="PlayerStrip" docs="chess-game-viewer-playerstrip" surface>
-          {/* PlayerStrip returns a fragment: this row stands in for the viewer's .game-viewer__player. */}
-          <div className="overview__player">
-            <PlayerStrip name="Fernanda Ríos" elo={2391} title="WGM" country="MEX" side="white" />
-          </div>
-        </Tile>
-        <Tile name="MoveTable" docs="chess-game-viewer-movetable">
-          {OPERA_OPENING_TREE && (
-            <MoveTable tree={OPERA_OPENING_TREE} currentPath="0.0.0.0.0.0" onSelect={() => undefined} />
-          )}
-        </Tile>
-        <Tile name="MoveTree" docs="chess-game-viewer-movetree" surface>
-          {OPERA_OPENING_TREE && (
-            <MoveTree tree={OPERA_OPENING_TREE} currentPath="0.0.0.0.0.0" onSelect={() => undefined} />
-          )}
-        </Tile>
-        <Tile name="EnginePanel" docs="chess-game-viewer-enginepanel" surface>
-          <EnginePanel
-            fen="r3r1k1/pp3pbp/1qp3p1/2B5/2BP2b1/Q1n2N2/P4PPP/3R1K1R b - - 3 17"
-            enabled
-            onToggle={() => {}}
-            state={{
-              loading: false,
-              outcome: null,
-              failed: false,
-              info: { multipv: 1, depth: 20, score: -2.24, mateIn: null, pv: [] },
-              lines: [
-                {
-                  multipv: 1,
-                  depth: 20,
-                  score: -2.24,
-                  mateIn: null,
-                  pv: "g4e6 a3c3 b6c5 d4c5 g7c3 c4e6 e8e6 g2g3".split(" "),
-                },
-                {
-                  multipv: 2,
-                  depth: 20,
-                  score: 1.01,
-                  mateIn: null,
-                  pv: "c3b5 c4f7 g8h8 c5b6 b5a3 b6c5 a3b5 f7e8".split(" "),
-                },
-                {
-                  multipv: 3,
-                  depth: 20,
-                  score: 1.34,
-                  mateIn: null,
-                  pv: "c3b1 a3c1 b6d8 c1b1 g4f3 g2f3 b7b6 c5a3".split(" "),
-                },
-              ],
-            }}
-          />
-        </Tile>
-        <Tile name="GameReview" docs="chess-game-viewer-gamereview" surface>
-          <GameReview
-            pgn={OPERA_REVIEWED}
-            canEdit
-            white="Paul Morphy"
-            black="Duque de Brunswick y conde Isouard"
-            currentPath={Array(18).fill("0").join(".")}
-            onSelectPath={() => {}}
-            onPgnChange={() => {}}
-          />
-        </Tile>
-        <Tile name="GameReviewChart" docs="chess-game-viewer-gamereviewchart" surface>
-          <GameReviewChart
-            evaluations={[
-              0.35, 0.3, 0.3, 0.43, 0.49, 0.59, 0.88, 0.89, 1.45, 1.25, 1.24, 1.14, 2.23, 2.3, 2.02, 1.93, 1.78, 1.91,
-              2.61, 2.52, 4.62, 4.84, 5.02, 5.17, 5.5, 5.59, 5.98, 6.03, 8.02, 3.08, 100, 100, 100, 100,
-            ].map((score) => ({ score, mateIn: null }))}
-            review={{
-              moves: [],
-              white: { accuracy: 95, inaccuracies: 1, mistakes: 0, blunders: 0, averageLoss: 32 },
-              black: { accuracy: 86, inaccuracies: 1, mistakes: 1, blunders: 0, averageLoss: 91 },
-              phases: { middlegame: 20, endgame: 33 },
-            }}
-            currentPly={18}
-            onSelectPly={() => {}}
-          />
-        </Tile>
-        <Tile name="ClassContentRenderer" docs="platform-shared-classcontentrenderer">
-          <ClassContentRenderer
-            blocks={[
-              {
-                id: "b1",
-                kind: "TEXT",
-                text: "## El puente de Lucena\n\nCómo ganar con torre y peón cuando el rey propio está delante del peón.",
-              },
-              { id: "b6", kind: "FILE", caption: "Ejercicios para la semana" },
-            ]}
-          />
-        </Tile>
-        <Tile name="GameViewer" docs="chess-gameviewer" wide>
-          <div className="overview__board-frame">
-            <GameViewer
-              pgn={OPERA_GAME}
-              players={{
-                white: { name: "Morphy, Paul", country: "USA" },
-                black: { name: "Duke Karl / Count Isouard" },
-              }}
-            />
-          </div>
-        </Tile>
-        <Tile name="GameTools" docs="chess-game-viewer-gametools" wide surface>
-          <div className="overview__narrow">
-            <GameTools
-              pgn={OPERA_OPENING}
-              currentPath="0.0.0.0.0.0"
-              canEdit
-              saveLabel="Guardado"
-              tab="comment"
-              onTabChange={() => undefined}
-              focusRequest={0}
-              white="Morphy, Paul"
-              black="Duke Karl / Count Isouard"
-              onSelectPath={() => undefined}
-              onPgnChange={() => undefined}
-            />
-          </div>
-        </Tile>
-      </Section>
+          <Section title="Overlays">
+            <Tile name="Dialog" docs="platform-primitives-dialog" width={400} height={112}>
+              <DialogTrigger />
+            </Tile>
+            <Tile name="EditGame" docs="platform-shared-editgame" width={400} height={88}>
+              <EditGame
+                action={settles}
+                values={{ white: "Kasparov, Garry", black: "Topalov, Veselin", resultCode: GAME_RESULT.WHITE_WINS }}
+                results={RESULTS}
+                titleHint="Cómo identificas esta partida dentro del estudio."
+              />
+            </Tile>
+            <Tile name="NewStudy" docs="platform-sections-studies-studies-list-newstudy" width={400} height={136}>
+              <SectionDialog
+                block="new-study"
+                label="Nuevo estudio"
+                buttonClassName="new-study__open"
+                form={(close, titleId) => (
+                  <NewStudyForm
+                    titleId={titleId}
+                    kinds={[
+                      { code: "STUDY", label: "Estudio" },
+                      { code: "TOURNAMENT", label: "Torneo" },
+                    ]}
+                    action={settles}
+                    onClose={close}
+                    onSubmit={close}
+                  />
+                )}
+              />
+            </Tile>
+            <Tile name="NewCourse" docs="platform-sections-staff-courses-newcourse" width={400} height={120}>
+              <SectionDialog
+                block="new-course"
+                label="Nuevo curso"
+                buttonClassName="platform-button"
+                form={(close, titleId) => (
+                  <NewCourseForm
+                    titleId={titleId}
+                    contentTypes={[
+                      {
+                        code: "OPENINGS",
+                        label: "Aperturas",
+                        shortLabel: "Aperturas",
+                        description: "Principios, repertorio, variantes y planes típicos al comenzar la partida.",
+                      },
+                      {
+                        code: "ENDGAMES",
+                        label: "Finales",
+                        shortLabel: "Finales",
+                        description: "Técnica y posiciones teóricas con pocas piezas.",
+                      },
+                    ]}
+                    action={settles}
+                    onClose={close}
+                    onSubmit={close}
+                  />
+                )}
+              />
+            </Tile>
+            <Tile name="MoveContextMenu" docs="chess-game-viewer-movecontextmenu" width={400} height={400}>
+              <MoveMenuTile />
+            </Tile>
+            <Tile
+              name="CourseSourceForm"
+              docs="platform-sections-staff-courses-course-sources-coursesourceform"
+              width={400}
+              height={112}
+            >
+              <SectionDialog
+                block="course-source-dialog"
+                label="Agregar fuente"
+                buttonClassName="platform-button platform-button_size_compact"
+                form={(close, titleId) => (
+                  <CourseSourceForm
+                    titleId={titleId}
+                    sourceTypes={[
+                      { code: "BOOK", label: "Libro" },
+                      { code: "DIGITAL_COURSE", label: "Curso digital" },
+                      { code: "VIDEO", label: "Vídeo o serie de vídeos" },
+                    ]}
+                    action={settles}
+                    onClose={close}
+                    onSubmit={close}
+                  />
+                )}
+              />
+            </Tile>
+          </Section>
+
+          <Section title="Chess">
+            <Tile name="ChessBoard" docs="chess-chessboard" width={400} height={408}>
+              <ChessBoard
+                position={{
+                  fen: "1n2kb1r/p4ppp/4q3/4p1B1/4P3/8/PPP2PPP/2KR4 w k - 0 17",
+                  lastMove: ["d7", "b8"],
+                  shapes: [
+                    { orig: "d1", dest: "d8", brush: "green" },
+                    { orig: "g5", dest: "d8", brush: "blue" },
+                    { orig: "e8", brush: "red" },
+                  ],
+                }}
+              />
+            </Tile>
+            <Tile name="StaticDiagram" docs="chess-staticdiagram" width={400} height={448}>
+              <StaticDiagram fen={LUCENA} caption="La posición de Lucena" />
+            </Tile>
+            <Tile name="PlayerStrip" docs="chess-game-viewer-playerstrip" surface width={400} height={136}>
+              {/* PlayerStrip returns a fragment: this row stands in for the viewer's .game-viewer__player. */}
+              <div className="overview__player">
+                <PlayerStrip name="Fernanda Ríos" elo={2391} title="WGM" country="MEX" side="white" />
+              </div>
+            </Tile>
+            <Tile name="MoveTable" docs="chess-game-viewer-movetable" width={400} height={392}>
+              {OPERA_OPENING_TREE && (
+                <MoveTable tree={OPERA_OPENING_TREE} currentPath="0.0.0.0.0.0" onSelect={() => undefined} />
+              )}
+            </Tile>
+            <Tile name="MoveTree" docs="chess-game-viewer-movetree" surface width={400} height={456}>
+              {OPERA_OPENING_TREE && (
+                <MoveTree tree={OPERA_OPENING_TREE} currentPath="0.0.0.0.0.0" onSelect={() => undefined} />
+              )}
+            </Tile>
+            <Tile name="EnginePanel" docs="chess-game-viewer-enginepanel" surface width={400} height={280}>
+              <EnginePanel
+                fen="r3r1k1/pp3pbp/1qp3p1/2B5/2BP2b1/Q1n2N2/P4PPP/3R1K1R b - - 3 17"
+                enabled
+                onToggle={() => {}}
+                state={{
+                  loading: false,
+                  outcome: null,
+                  failed: false,
+                  info: { multipv: 1, depth: 20, score: -2.24, mateIn: null, pv: [] },
+                  lines: [
+                    {
+                      multipv: 1,
+                      depth: 20,
+                      score: -2.24,
+                      mateIn: null,
+                      pv: "g4e6 a3c3 b6c5 d4c5 g7c3 c4e6 e8e6 g2g3".split(" "),
+                    },
+                    {
+                      multipv: 2,
+                      depth: 20,
+                      score: 1.01,
+                      mateIn: null,
+                      pv: "c3b5 c4f7 g8h8 c5b6 b5a3 b6c5 a3b5 f7e8".split(" "),
+                    },
+                    {
+                      multipv: 3,
+                      depth: 20,
+                      score: 1.34,
+                      mateIn: null,
+                      pv: "c3b1 a3c1 b6d8 c1b1 g4f3 g2f3 b7b6 c5a3".split(" "),
+                    },
+                  ],
+                }}
+              />
+            </Tile>
+            <Tile name="GameReview" docs="chess-game-viewer-gamereview" surface width={400} height={688}>
+              <GameReview
+                pgn={OPERA_REVIEWED}
+                canEdit
+                white="Paul Morphy"
+                black="Duque de Brunswick y conde Isouard"
+                currentPath={Array(18).fill("0").join(".")}
+                onSelectPath={() => {}}
+                onPgnChange={() => {}}
+              />
+            </Tile>
+            <Tile name="GameReviewChart" docs="chess-game-viewer-gamereviewchart" surface width={400} height={272}>
+              <GameReviewChart
+                evaluations={[
+                  0.35, 0.3, 0.3, 0.43, 0.49, 0.59, 0.88, 0.89, 1.45, 1.25, 1.24, 1.14, 2.23, 2.3, 2.02, 1.93, 1.78,
+                  1.91, 2.61, 2.52, 4.62, 4.84, 5.02, 5.17, 5.5, 5.59, 5.98, 6.03, 8.02, 3.08, 100, 100, 100, 100,
+                ].map((score) => ({ score, mateIn: null }))}
+                review={{
+                  moves: [],
+                  white: { accuracy: 95, inaccuracies: 1, mistakes: 0, blunders: 0, averageLoss: 32 },
+                  black: { accuracy: 86, inaccuracies: 1, mistakes: 1, blunders: 0, averageLoss: 91 },
+                  phases: { middlegame: 20, endgame: 33 },
+                }}
+                currentPly={18}
+                onSelectPly={() => {}}
+              />
+            </Tile>
+            <Tile name="ClassContentRenderer" docs="platform-shared-classcontentrenderer" width={400} height={272}>
+              <ClassContentRenderer
+                blocks={[
+                  {
+                    id: "b1",
+                    kind: "TEXT",
+                    text: "## El puente de Lucena\n\nCómo ganar con torre y peón cuando el rey propio está delante del peón.",
+                  },
+                  { id: "b6", kind: "FILE", caption: "Ejercicios para la semana" },
+                ]}
+              />
+            </Tile>
+            <Tile name="GameViewer" docs="chess-gameviewer" width={1040} height={848}>
+              <div className="overview__board-frame">
+                <GameViewer
+                  pgn={OPERA_GAME}
+                  players={{
+                    white: { name: "Morphy, Paul", country: "USA" },
+                    black: { name: "Duke Karl / Count Isouard" },
+                  }}
+                />
+              </div>
+            </Tile>
+            <Tile name="GameTools" docs="chess-game-viewer-gametools" surface width={720} height={368}>
+              <div className="overview__narrow">
+                <GameTools
+                  pgn={OPERA_OPENING}
+                  currentPath="0.0.0.0.0.0"
+                  canEdit
+                  saveLabel="Guardado"
+                  tab="comment"
+                  onTabChange={() => undefined}
+                  focusRequest={0}
+                  white="Morphy, Paul"
+                  black="Duke Karl / Count Isouard"
+                  onSelectPath={() => undefined}
+                  onPgnChange={() => undefined}
+                />
+              </div>
+            </Tile>
+          </Section>
+        </div>
+      </div>
     </div>
   );
 }
