@@ -2,51 +2,58 @@
    `.game-viewer__player`, which lays them out in a row and sets the size.
    Everything here goes in `em` for that reason: in full screen the viewer
    grows with the screen, and only the proportion between the name, the Elo
-   and what accompanies them is kept. */
+   and what accompanies them is kept. The strip is a grey band (the viewer's
+   rule), so what is quiet is in the muted grey, never the subtle one. */
 
-/* Colour square of the side: with no flags or titles to show, at least one
-   knows at a glance who has White. A square, and so 4px: the corners rule
-   keeps that radius for a control this small, and 8px on 14px drew a circle. */
-.player-strip__chip {
+/* The point the player took, first in the strip and set apart by a hairline,
+   as on a scoresheet. The winner's is in the success ink; the figure itself,
+   not its colour, is what says who won. */
+.player-strip__score {
   flex: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
-  box-shadow: inset 0 0 0 1px var(--platform-border-strong);
+  min-width: 1em;
+  padding-right: 0.6em;
+  border-right: 1px solid var(--platform-border-strong);
+  font-weight: 700;
+  text-align: center;
+  color: var(--platform-text-muted);
+  font-variant-numeric: tabular-nums;
 
-  &.player-strip__chip_side_white {
-    background: var(--platform-surface);
+  &.player-strip__score_outcome_win {
+    color: var(--platform-success-ink);
   }
+}
 
-  &.player-strip__chip_side_black {
-    background: var(--platform-text);
-  }
+/* What the figure means, for a screen reader only. */
+.player-strip__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* Federation in letters: that is the value. The flag next to it only decorates it. */
 .player-strip__country {
   flex: none;
-  font-size: max(var(--platform-type-sm), 0.8em);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--platform-text-subtle);
+  font-size: max(var(--platform-type-2xs), 0.86em);
+  letter-spacing: 0.04em;
+  color: var(--platform-text-muted);
 }
 
 .player-strip__flag {
   flex: none;
-  font-size: 1.13em;
+  font-size: 1.1em;
   line-height: 1;
 }
 
 .player-strip__title {
   flex: none;
-  font-size: max(var(--platform-type-sm), 0.87em);
   font-weight: 700;
   color: var(--platform-accent-ink);
 }
 
 .player-strip__name {
-  font-size: 1.03em;
   font-weight: 700;
   letter-spacing: -0.01em;
   min-width: 0;
@@ -55,11 +62,9 @@
   white-space: nowrap;
 }
 
+/* Beside the name, not at the far end: the two are read together. */
 .player-strip__elo {
-  margin-left: auto;
   flex: none;
-  font-size: 0.97em;
-  font-weight: 600;
   color: var(--platform-text-muted);
   font-variant-numeric: tabular-nums;
 }

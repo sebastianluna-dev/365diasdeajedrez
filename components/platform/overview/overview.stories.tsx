@@ -1311,10 +1311,10 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             <Tile name="StaticDiagram" docs="chess-staticdiagram" width={400} height={448}>
               <StaticDiagram fen={LUCENA} caption="La posición de Lucena" />
             </Tile>
-            <Tile name="PlayerStrip" docs="chess-game-viewer-playerstrip" surface width={400} height={136}>
+            <Tile name="PlayerStrip" docs="chess-game-viewer-playerstrip" width={400} height={88}>
               {/* PlayerStrip returns a fragment: this row stands in for the viewer's .game-viewer__player. */}
               <div className="overview__player">
-                <PlayerStrip name="Fernanda Ríos" elo={2391} title="WGM" country="MEX" side="white" />
+                <PlayerStrip name="Fernanda Ríos" elo={2391} title="WGM" country="MEX" outcome="win" />
               </div>
             </Tile>
             <Tile name="MoveTable" docs="chess-game-viewer-movetable" width={400} height={392}>

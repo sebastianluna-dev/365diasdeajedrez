@@ -68,6 +68,7 @@ export function GameViewSection({ game, errorCode, importReport }: GameViewSecti
           white: { name: game.white, elo: game.whiteElo, title: game.whiteTitle, country: game.whiteCountry },
           black: { name: game.black, elo: game.blackElo, title: game.blackTitle, country: game.blackCountry },
         }}
+        result={game.resultLabel}
         tools={{ saveLabel }}
       />
     </section>

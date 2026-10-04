@@ -76,6 +76,7 @@ const STUDY_ARGS: Partial<ComponentProps<typeof GameViewer>> = {
   pgn: ANNOTATED_GAME,
   initialPath: mainLinePath(13),
   players: PLAYERS,
+  result: "1-0",
   controls: "panel",
   engine: true,
   editable: true,
@@ -115,6 +116,7 @@ Reference page: [Components › GameViewer](/components/chess/game-viewer/game-v
     orientation: { control: "inline-radio", options: ["white", "black"] },
     initialPath: { control: "text", description: "Dotted path to open at; ignored if the tree has no such move." },
     moveList: { control: "inline-radio", options: ["table", "flow"] },
+    result: { control: "text", description: "The PGN result token; each strip opens with its player's point." },
     controls: { control: "inline-radio", options: ["board", "panel"] },
     boardTools: { control: "boolean", description: "The flip and the options menu beside the arrows." },
     engine: { control: "boolean", description: "Offers the engine (switched off until someone switches it on)." },
@@ -135,7 +137,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /** A game to go through: the players' strips, the table of moves, and the arrows, the flip and the options under the board. */
-export const Game: Story = { args: { players: PLAYERS } };
+export const Game: Story = { args: { players: PLAYERS, result: "1-0" } };
 
 /**
  * An annotated game opened at 7. Db3!: its arrows on the board, and in the table the comments, the signs and the

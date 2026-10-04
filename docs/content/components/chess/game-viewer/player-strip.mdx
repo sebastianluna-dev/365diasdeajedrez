@@ -1,41 +1,43 @@
 ---
-description: "The line above or below the board that names a player: colour chip, federation and its flag, title, name and Elo; drawn by the viewer from PlayerInfo data, by colour."
+description: "The low grey band above or below the board that names a player, as on Lichess: the point they took, federation and its flag, title, name and Elo; drawn by the viewer from PlayerInfo data, by colour."
 ---
 
 # `PlayerStrip`
 
 Also exports the `PlayerInfo` type.
 
-|            |                                                                                                                                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/chess/game-viewer/player-strip.comp.tsx`                                                                                                                                                    |
-| Kind       | Client Component (rendered inside the viewer)                                                                                                                                                           |
-| Stylesheet | `player-strip.comp.css` → elements `.player-strip__*`                                                                                                                                                   |
-| Story      | `player-strip.stories.tsx` (`chess/game-viewer/PlayerStrip`): in a stand-in for the viewer's `.game-viewer__player`, complete, Black's, the name alone, an unknown federation and a long name cut short |
-| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`players`)                                                                                                                                   |
-| Uses       | `federationFlag` from `lib/chess/federations`                                                                                                                                                           |
+|            |                                                                                                                                                                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/player-strip.comp.tsx`                                                                                                                                                                                                 |
+| Kind       | Client Component (rendered inside the viewer)                                                                                                                                                                                                        |
+| Stylesheet | `player-strip.comp.css` → elements `.player-strip__*`                                                                                                                                                                                                |
+| Story      | `player-strip.stories.tsx` (`chess/game-viewer/PlayerStrip`): in a stand-in for the viewer's `.game-viewer__player`, the winner's complete, the loser's, a draw, an unfinished game, the name alone, an unknown federation and a long name cut short |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`players`)                                                                                                                                                                                |
+| Uses       | `federationFlag` from `lib/chess/federations`; `PlayerOutcome` from `lib/chess/player-outcomes`                                                                                                                                                      |
 
 ## Purpose
 
 The viewer receives who plays as data — `players: { white: PlayerInfo; black: PlayerInfo }` — and draws the strips itself, because only it knows which side is on top once the board is flipped. This is the strip: a fragment of pieces the viewer's `.game-viewer__player` lays out in a row.
 
+It is drawn as Lichess draws it (2026-10-03, chosen among five options): a band 26px tall — it was 42 —, in the text's `xs` size on a grey fill, opening with the **point the player took** once the game has ended — `1`, `0` or `½`, the winner's in the success ink, set apart by a hairline — and with the Elo beside the name instead of at the far end. A screen reader hears what the figure means («Ganó», «Perdió», «Tablas»). There is no chip of the pieces' colour any more: who has White is read from the board's own coordinates.
+
 ## Props
 
-| Prop      | Type                 | Required | Meaning                                                                      |
-| --------- | -------------------- | -------- | ---------------------------------------------------------------------------- |
-| `name`    | `string`             | yes      |                                                                              |
-| `elo`     | `number`             | no       |                                                                              |
-| `title`   | `string`             | no       | FIDE title.                                                                  |
-| `country` | `string`             | no       | Federation code; the flag is derived with `federationFlag`, none if unknown. |
-| `side`    | `"white" \| "black"` | yes      | Which chip to paint.                                                         |
+| Prop      | Type                        | Required | Meaning                                                                                                                                            |
+| --------- | --------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`    | `string`                    | yes      |                                                                                                                                                    |
+| `elo`     | `number`                    | no       |                                                                                                                                                    |
+| `title`   | `string`                    | no       | FIDE title.                                                                                                                                        |
+| `country` | `string`                    | no       | Federation code; the flag is derived with `federationFlag`, none if unknown.                                                                       |
+| `outcome` | `"win" \| "loss" \| "draw"` | no       | How the game ended for this player; absent while it has not, and no point is drawn. The viewer derives it from its `result` with `playerOutcomes`. |
 
 ## Markup & styling
 
 No root of its own: the pieces sit directly in the viewer's `.game-viewer__player`, which lays them out and sets the size. Everything is in `em` for that reason: in full screen the viewer grows with the screen, and only the proportion between the name, the Elo and what accompanies them is kept.
 
-**Elements:** `.player-strip__chip` (`_side_white`, `_side_black`; a 14px square at `border-radius: 4px`, the corners rule's radius for a control this small), `.player-strip__country`, `.player-strip__flag`, `.player-strip__title`, `.player-strip__name`, `.player-strip__elo`
+**Elements:** `.player-strip__score` (`_outcome_win`, `_outcome_loss`, `_outcome_draw`; the point, with a hairline after it), `.player-strip__sr` (what the point means, for a screen reader only), `.player-strip__country`, `.player-strip__flag`, `.player-strip__title`, `.player-strip__name`, `.player-strip__elo`
 
-**Tokens:** `--platform-accent-ink`, `--platform-border-strong`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-accent-ink`, `--platform-border-strong`, `--platform-success-ink`, `--platform-text-muted`, `--platform-type-2xs`. The band itself is the viewer's: `--platform-track`, the one grey that tells it from the page and from the white notation panel in both themes (the sunken grey is darker than the page in the dark theme, the neutral one too close to it in the light one); on it the quiet text is the muted grey, never the subtle one.
 
 ## Usage
 
@@ -43,6 +45,10 @@ From `components/chess/game-viewer/game-viewer.comp.tsx`:
 
 ```tsx
 {
-  flipBoard ? <PlayerStrip {...players.white} side="white" /> : <PlayerStrip {...players.black} side="black" />;
+  flipBoard ? (
+    <PlayerStrip {...players.white} outcome={outcomes?.white} />
+  ) : (
+    <PlayerStrip {...players.black} outcome={outcomes?.black} />
+  );
 }
 ```

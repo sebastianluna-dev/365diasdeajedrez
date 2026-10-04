@@ -30,6 +30,7 @@ import { evaluationBarFill } from "@/lib/chess/engine-protocol";
 import { MoveContextMenu, type MoveContextMenuTarget } from "./move-context-menu.comp";
 import { GameTools, useToolsTab } from "./game-tools.comp";
 import { type PlayerInfo, PlayerStrip } from "./player-strip.comp";
+import { playerOutcomes } from "@/lib/chess/player-outcomes";
 import { useLingering } from "./use-lingering.hook";
 import { MoveTable } from "./move-table.comp";
 import { MoveTree } from "./move-tree.comp";
@@ -91,6 +92,12 @@ interface GameViewerProps {
    * itself (`PlayerStrip`).
    */
   players?: { white: PlayerInfo; black: PlayerInfo };
+  /**
+   * The game's result as its PGN token ("1-0", "0-1", "1/2-1/2", "*"): each
+   * strip then opens with the point its player took. Nothing is drawn for a
+   * game that has not ended, or without `players`.
+   */
+  result?: string;
   /**
    * `table` (default): a no. · white · black grid, like Lichess.
    * `flow`: the usual running text, which is how lessons are read —
@@ -170,6 +177,7 @@ export function GameViewer({
   positionActions,
   onwards,
   players,
+  result,
   moveList = "table",
   controls = "board",
   tools,
@@ -180,6 +188,7 @@ export function GameViewer({
   path,
 }: GameViewerProps) {
   const tree = useMemo(() => parsePgnTree(pgn), [pgn]);
+  const outcomes = playerOutcomes(result);
   const [selectedPath, setSelectedPath] = useState<string>(() =>
     initialPath && tree?.nodesByPath.has(initialPath) ? initialPath : "",
   );
@@ -640,9 +649,9 @@ export function GameViewer({
           {players && (
             <div className="game-viewer__player game-viewer__player_side_top">
               {flipBoard ? (
-                <PlayerStrip {...players.white} side="white" />
+                <PlayerStrip {...players.white} outcome={outcomes?.white} />
               ) : (
-                <PlayerStrip {...players.black} side="black" />
+                <PlayerStrip {...players.black} outcome={outcomes?.black} />
               )}
             </div>
           )}
@@ -688,9 +697,9 @@ export function GameViewer({
           {players && (
             <div className="game-viewer__player game-viewer__player_side_bottom">
               {flipBoard ? (
-                <PlayerStrip {...players.black} side="black" />
+                <PlayerStrip {...players.black} outcome={outcomes?.black} />
               ) : (
-                <PlayerStrip {...players.white} side="white" />
+                <PlayerStrip {...players.white} outcome={outcomes?.white} />
               )}
             </div>
           )}

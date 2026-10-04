@@ -266,8 +266,12 @@
   & .overview__player {
     display: flex;
     align-items: center;
-    gap: var(--platform-space-3);
-    font-size: var(--platform-type-lg);
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-1) var(--platform-space-3);
+    border-radius: 8px;
+    background: var(--platform-track);
+    font-size: var(--platform-type-xs);
+    line-height: 1.3;
   }
 
   /* The lesson's column, in the flow of the tile: from 1280px its own sheet

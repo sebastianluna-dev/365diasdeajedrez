@@ -110,13 +110,19 @@
   & .game-viewer__player {
     display: flex;
     align-items: center;
-    gap: var(--platform-space-3);
-    padding: var(--platform-space-2) var(--platform-space-3);
-    background: var(--platform-surface);
+    gap: var(--platform-space-2);
+    /* A low band, as Lichess draws it: a frame of the board, in a grey that
+       tells it from the page and from the white panel of the notation in both
+       themes. That grey is the track's: the sunken one is darker than the
+       page in the dark theme, where the band all but vanished, and the
+       neutral one is too close to the page in the light one. */
+    padding: var(--platform-space-1) var(--platform-space-3);
+    background: var(--platform-track);
+    line-height: 1.3;
     /* The edge that tucks under the board is hidden by it; the other three show. */
     /* What is inside (name, Elo, title, federation) goes in `em` relative to
        this, so enlarging the strip enlarges all of them at once. */
-    font-size: var(--viewer-player-font-size, var(--platform-type-lg));
+    font-size: var(--viewer-player-font-size, var(--platform-type-xs));
   }
 
   & .game-viewer__player_side_top {
@@ -477,8 +483,8 @@
        everything of its own: moves, comments and variations. */
     --move-tree-font-size: clamp(var(--platform-type-xl), 2.2vh, var(--platform-type-3xl));
     /* The player strips and the engine lines grow for the same reason: on a
-       27-inch screen, a name at 15px against a 900px board is not read, it is guessed. */
-    --viewer-player-font-size: clamp(var(--platform-type-lg), 1.9vh, var(--platform-type-3xl));
+       27-inch screen, a name at 14px against a 900px board is not read, it is guessed. */
+    --viewer-player-font-size: clamp(var(--platform-type-xs), 1.6vh, var(--platform-type-2xl));
     --engine-panel-font-size: clamp(var(--platform-type-sm), 1.75vh, var(--platform-type-2xl));
 
     height: 100%;
