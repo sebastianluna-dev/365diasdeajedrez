@@ -102,14 +102,33 @@ export function planFullReorder(rows: ReorderRow[], orderedIds: string[]): Order
   if (received.size !== orderedIds.length) return [];
   for (const row of rows) if (!received.has(row.id)) return [];
 
-  const currentOrder = new Map(rows.map((row) => [row.id, row.order]));
-  const moving = orderedIds.filter((id, index) => currentOrder.get(id) !== index + 1);
-  if (moving.length === 0) return [];
+  return planMoves(rows, new Map(orderedIds.map((id, index) => [id, index + 1])));
+}
+
+/**
+ * Updates to take each row to the order `targets` gives it, in the two passes
+ * `planFullReorder` describes: first every row that moves leaves the valid
+ * range to a temporary of its own, and only then does each take its order.
+ *
+ * Rows already at their target are not touched, and neither are the ones
+ * `targets` leaves out. The caller vouches for the targets: distinct, not
+ * negative (that is where the temporaries live) and not held by a row that
+ * stays. `planFullReorder` gives every row a place in 1..n; the seed
+ * (`planSeededOrders`, prisma/seed-rules.ts) gives the rows it owns the order
+ * its data says and moves the others out of their way.
+ */
+export function planMoves(rows: readonly ReorderRow[], targets: ReadonlyMap<string, number>): OrderUpdate[] {
+  const moving = rows
+    .flatMap((row) => {
+      const order = targets.get(row.id);
+      return order === undefined || order === row.order ? [] : [{ id: row.id, order }];
+    })
+    .sort((left, right) => left.order - right.order);
 
   return [
     // First pass: out of the range, each one with its own temporary.
-    ...moving.map((id, index) => ({ id, order: -(index + 1) })),
+    ...moving.map(({ id }, index) => ({ id, order: -(index + 1) })),
     // Second: nobody is left occupying the destination places.
-    ...moving.map((id) => ({ id, order: orderedIds.indexOf(id) + 1 })),
+    ...moving,
   ];
 }

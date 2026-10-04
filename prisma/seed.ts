@@ -11,10 +11,11 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { startFenOf } from "../lib/chess/mainline";
 import { isLocalDatabase } from "../lib/database-target";
 import { deriveExerciseData } from "../lib/chess/exercise-derivation";
-import { PrismaClient } from "../lib/platform-db/generated/client";
+import { PrismaClient, type Prisma } from "../lib/platform-db/generated/client";
 import { hashPassword } from "../lib/platform-auth/password";
 import { indexGamePositions } from "../services/game-positions/game-positions.service";
 import { syncChapterDuration } from "../services/shared/chapter-duration.service";
+import type { OrderUpdate, ReorderRow } from "../services/shared/reorder";
 import { rebuildDailyStats } from "../services/shared/daily-stats";
 import {
   ACTIVITIES,
@@ -38,7 +39,7 @@ import {
   TOPIC_VALUES,
   USERS,
 } from "./seed-data";
-import { nextClassAfter, resolveCollectionIds, seedReferenceDate } from "./seed-rules";
+import { nextClassAfter, planSeededOrders, resolveCollectionIds, seedReferenceDate } from "./seed-rules";
 import { AUTHOR_ROLE } from "../constants/platform/course-codes.const";
 
 const connectionString = process.env.PLATFORM_DATABASE_URL;
@@ -138,6 +139,27 @@ function idOf(map: Map<string, number>, code: string): number {
   const id = map.get(code);
   if (id === undefined) throw new Error(`Code de catálogo no sembrado: ${code}`);
   return id;
+}
+
+/**
+ * Clears the way for the orders the seed is about to write under one parent,
+ * whose list is unique by `[parent, order]`: `planSeededOrders`
+ * (prisma/seed-rules.ts) decides the moves, and they run in one transaction,
+ * as the panel's reorders do, so a seed that stops never leaves a row at a
+ * temporary order. With nothing seeded under the parent the plan moves
+ * nothing, so the parent is not even read.
+ */
+async function clearSeededOrders(
+  seeded: readonly ReorderRow[],
+  readCurrent: () => Promise<ReorderRow[]>,
+  move: (tx: Prisma.TransactionClient, update: OrderUpdate) => Promise<unknown>,
+): Promise<void> {
+  if (seeded.length === 0) return;
+  const updates = planSeededOrders(await readCurrent(), seeded);
+  if (updates.length === 0) return;
+  await db.$transaction(async (tx) => {
+    for (const update of updates) await move(tx, update);
+  });
 }
 
 async function main() {
@@ -315,6 +337,16 @@ async function main() {
       });
     }
 
+    // The panel may have reordered this course's chapters, or deleted one of
+    // a draft and moved the rest up: a sibling may hold the order a seeded
+    // chapter comes back to. After the deletions above, so only what the seed
+    // keeps is moved.
+    await clearSeededOrders(
+      course.chapters,
+      () => db.chapter.findMany({ where: { courseId: course.id }, select: { id: true, order: true } }),
+      (tx, update) => tx.chapter.update({ where: { id: update.id }, data: { order: update.order } }),
+    );
+
     for (const chapter of course.chapters) {
       const chapterData = {
         courseId: course.id,
@@ -327,6 +359,12 @@ async function main() {
         update: chapterData,
         create: { id: chapter.id, ...chapterData },
       });
+
+      await clearSeededOrders(
+        chapter.lessons,
+        () => db.lesson.findMany({ where: { chapterId: chapter.id }, select: { id: true, order: true } }),
+        (tx, update) => tx.lesson.update({ where: { id: update.id }, data: { order: update.order } }),
+      );
 
       for (const lesson of chapter.lessons) {
         const lessonData = {
@@ -353,6 +391,15 @@ async function main() {
             create: { lessonId: lesson.id, topicId: idOf(topic, topicCode) },
           });
         }
+
+        // The exercises the seed does not own (made by hand in the panel, or
+        // the derived one) are never deleted: the plan only moves them out of
+        // the way when they stand in it.
+        await clearSeededOrders(
+          lesson.exercises,
+          () => db.trainingExercise.findMany({ where: { lessonId: lesson.id }, select: { id: true, order: true } }),
+          (tx, update) => tx.trainingExercise.update({ where: { id: update.id }, data: { order: update.order } }),
+        );
 
         for (const exercise of lesson.exercises) {
           // The frozen copy (startFen, line, path) is computed by the same module the
@@ -512,6 +559,16 @@ async function main() {
       update: participantData,
       create: { classId: cls.id, userId: IDS.demoUser, ...participantData },
     });
+  }
+
+  // The teacher may have reordered, added or deleted the blocks of a seeded
+  // class; the ones the seed does not own are kept, as with the exercises.
+  for (const classId of new Set(CLASS_BLOCKS.map((block) => block.classId))) {
+    await clearSeededOrders(
+      CLASS_BLOCKS.filter((block) => block.classId === classId),
+      () => db.classBlock.findMany({ where: { classId }, select: { id: true, order: true } }),
+      (tx, update) => tx.classBlock.update({ where: { id: update.id }, data: { order: update.order } }),
+    );
   }
 
   for (const block of CLASS_BLOCKS) {
