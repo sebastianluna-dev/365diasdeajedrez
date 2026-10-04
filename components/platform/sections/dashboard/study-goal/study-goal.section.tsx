@@ -69,7 +69,6 @@ export function StudyGoalSection({ goal, errorCode }: StudyGoalSectionProps) {
                 name="goalMinutes"
                 defaultValue={String(goal.goalMinutes)}
                 options={GOAL_OPTIONS.map((minutes) => ({ value: String(minutes), label: `${minutes} minutos` }))}
-                size="compact"
               />
             </label>
 

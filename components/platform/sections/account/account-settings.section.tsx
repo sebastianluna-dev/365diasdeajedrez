@@ -112,7 +112,6 @@ export function AccountSettingsSection({ account, theme, errorCode }: AccountSet
               name="goalMinutes"
               defaultValue={String(account.goalMinutes)}
               options={GOAL_OPTIONS.map((minutes) => ({ value: String(minutes), label: `${minutes} minutos` }))}
-              size="compact"
             />
           </label>
 

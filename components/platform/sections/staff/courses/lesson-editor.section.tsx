@@ -113,7 +113,6 @@ export function LessonEditorSection({
                       { value: BOARD_ORIENTATION.WHITE, label: "Blancas" },
                       { value: BOARD_ORIENTATION.BLACK, label: "Negras" },
                     ]}
-                    size="compact"
                   />
                 </FormField>
 
@@ -209,7 +208,6 @@ export function LessonEditorSection({
                     value: code,
                     label: ORIENTATION_LABELS[code] ?? code,
                   }))}
-                  size="compact"
                 />
               </FormField>
 

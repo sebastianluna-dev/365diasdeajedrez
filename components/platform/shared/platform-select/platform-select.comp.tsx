@@ -45,12 +45,6 @@ interface PlatformSelectProps extends Omit<ComponentProps<"button">, "value" | "
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
-  /**
-   * `regular` matches the inputs of `PlatformForm`; `compact` the ones of
-   * `FormField` and the small forms, a size down. A select next to an input
-   * has to be the same height as it.
-   */
-  size?: "regular" | "compact";
 }
 
 /** The private value of the empty option's item. It never leaves the component. */
@@ -100,7 +94,6 @@ function SelectControl({
   placeholder,
   required,
   disabled,
-  size = "regular",
   className,
   ...triggerProps
 }: PlatformSelectProps) {
@@ -118,7 +111,6 @@ function SelectControl({
 
   const triggerClassName = [
     "platform-select__trigger",
-    `platform-select__trigger_size_${size}`,
     emptyOption ? "platform-select__trigger_empty_named" : "",
     className ?? "",
   ]

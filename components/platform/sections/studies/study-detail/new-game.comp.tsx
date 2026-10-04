@@ -177,12 +177,11 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
                   name="resultCode"
                   emptyOption="Sin terminar"
                   options={results.map((result) => ({ value: result.code, label: result.label }))}
-                  size="compact"
                 />
               </label>
               <label className="new-game__field">
                 <span className="new-game__label">Fecha</span>
-                <PlatformDatePicker name="playedAt" size="compact" />
+                <PlatformDatePicker name="playedAt" />
               </label>
             </div>
 

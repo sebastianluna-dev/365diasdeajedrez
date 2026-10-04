@@ -23,6 +23,9 @@
   & .platform-field__control input[type="datetime-local"],
   & .platform-field__control textarea {
     width: 100%;
+    box-sizing: border-box;
+    /* The platform's one control size, the same as PlatformForm's inputs and
+       the triggers of PlatformSelect and PlatformDatePicker, on white. */
     padding: var(--platform-space-2) var(--platform-space-3);
     border: 1px solid var(--platform-border);
     border-radius: 8px;

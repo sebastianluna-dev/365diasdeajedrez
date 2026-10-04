@@ -41,12 +41,7 @@ export function TeacherAdminDetailSection({ teacher, assignable, errorCode }: Te
           </FormField>
 
           <FormField label="Zona horaria">
-            <PlatformSelect
-              name="timezone"
-              options={TIMEZONE_OPTIONS}
-              defaultValue={teacher.timezone ?? "UTC"}
-              size="compact"
-            />
+            <PlatformSelect name="timezone" options={TIMEZONE_OPTIONS} defaultValue={teacher.timezone ?? "UTC"} />
           </FormField>
 
           <FormField label="Foto (URL, opcional)">

@@ -27,8 +27,6 @@ interface PlatformDatePickerProps extends Omit<
   /** Earliest and latest choosable days, `yyyy-mm-dd`. */
   min?: string;
   max?: string;
-  /** `regular` matches the inputs of `PlatformForm`; `compact` the ones of `FormField`. */
-  size?: "regular" | "compact";
 }
 
 /** Monday first, as the week is read here. */
@@ -126,7 +124,6 @@ export function PlatformDatePicker({
   disabled,
   min,
   max,
-  size = "regular",
   className,
   ...triggerProps
 }: PlatformDatePickerProps) {
@@ -205,13 +202,7 @@ export function PlatformDatePicker({
   const todayIso = toIso(today);
   const focusedIso = toIso(focused);
 
-  const triggerClassName = [
-    "platform-date-picker__trigger",
-    `platform-date-picker__trigger_size_${size}`,
-    className ?? "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  const triggerClassName = className ? `platform-date-picker__trigger ${className}` : "platform-date-picker__trigger";
 
   return (
     <div className="platform-date-picker">

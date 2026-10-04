@@ -64,7 +64,6 @@ function CodeSelect({
         ...(isKnown ? [] : [{ value: current, label: `${current} (del PGN)` }]),
         ...options.map((option) => ({ value: option.code, label: option.label })),
       ]}
-      size="compact"
     />
   );
 }
@@ -138,11 +137,10 @@ export function GameFields({ values, results, titleHint }: GameFieldsProps) {
             name="resultCode"
             defaultValue={values?.resultCode ?? "ONGOING"}
             options={results.map((result) => ({ value: result.code, label: result.label }))}
-            size="compact"
           />
         </FormField>
         <FormField label="Fecha">
-          <PlatformDatePicker name="playedAt" defaultValue={values?.playedAtValue ?? ""} size="compact" />
+          <PlatformDatePicker name="playedAt" defaultValue={values?.playedAtValue ?? ""} />
         </FormField>
       </div>
 

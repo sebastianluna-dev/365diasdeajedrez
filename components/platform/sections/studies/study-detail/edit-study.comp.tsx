@@ -99,7 +99,6 @@ export function EditStudy({
                 name="kindCode"
                 defaultValue={selected}
                 options={kinds.map((kind) => ({ value: kind.code, label: kind.label }))}
-                size="compact"
               />
             </label>
           )}

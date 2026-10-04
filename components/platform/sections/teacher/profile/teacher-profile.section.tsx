@@ -37,12 +37,7 @@ export function TeacherProfileSection({ profile, errorCode }: TeacherProfileSect
         </FormField>
 
         <FormField label="Zona horaria" hint="Se usa para programar tus clases en tu hora local.">
-          <PlatformSelect
-            name="timezone"
-            options={TIMEZONE_OPTIONS}
-            defaultValue={profile.timezone ?? "UTC"}
-            size="compact"
-          />
+          <PlatformSelect name="timezone" options={TIMEZONE_OPTIONS} defaultValue={profile.timezone ?? "UTC"} />
         </FormField>
 
         <FormField label="Foto (URL, opcional)" hint="Enlace a una imagen ya publicada.">

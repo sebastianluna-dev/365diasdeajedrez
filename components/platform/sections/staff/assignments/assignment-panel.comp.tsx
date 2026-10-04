@@ -60,7 +60,6 @@ export function AssignmentPanel(props: AssignmentPanelProps) {
               required
               placeholder="Elige un profesor…"
               options={props.teachers.map((teacher) => ({ value: teacher.id, label: teacher.displayName }))}
-              size="compact"
             />
           </FormField>
 
@@ -142,7 +141,6 @@ export function AssignmentPanel(props: AssignmentPanelProps) {
               value: student.id,
               label: `${student.displayName}${student.currentTeacherName ? ` — ahora con ${student.currentTeacherName}` : ""}`,
             }))}
-            size="compact"
           />
         </FormField>
 

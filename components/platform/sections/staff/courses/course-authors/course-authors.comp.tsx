@@ -66,7 +66,6 @@ export function CourseAuthors({ courseId, authors, allAuthors, roles }: CourseAu
                     // Remounted when the saved role changes, so it shows what the server has.
                     key={author.roleCode}
                     className="course-authors__role"
-                    size="compact"
                     defaultValue={author.roleCode}
                     onValueChange={(roleCode) => changeRole(author.authorId, roleCode)}
                     options={roles.map((role) => ({ value: role.code, label: role.label }))}

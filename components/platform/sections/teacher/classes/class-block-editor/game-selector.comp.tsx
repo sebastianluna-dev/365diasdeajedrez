@@ -28,7 +28,6 @@ export function GameSelector({ groups, value, onChange }: GameSelectorProps) {
           label: `${group.ownerLabel} · ${group.studyName}`,
           options: group.games.map((game) => ({ value: game.id, label: game.label })),
         }))}
-        size="compact"
       />
     </FormField>
   );

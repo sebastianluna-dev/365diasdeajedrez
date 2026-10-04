@@ -37,7 +37,6 @@ export function TeacherFormSection({ linkableUsers, errorCode }: TeacherFormSect
             required
             placeholder="Elige una cuenta…"
             options={linkableUsers.map((user) => ({ value: user.id, label: `${user.displayName} — ${user.email}` }))}
-            size="compact"
           />
         </FormField>
 
@@ -50,12 +49,7 @@ export function TeacherFormSection({ linkableUsers, errorCode }: TeacherFormSect
         </FormField>
 
         <FormField label="Zona horaria">
-          <PlatformSelect
-            name="timezone"
-            options={TIMEZONE_OPTIONS}
-            defaultValue="America/Mexico_City"
-            size="compact"
-          />
+          <PlatformSelect name="timezone" options={TIMEZONE_OPTIONS} defaultValue="America/Mexico_City" />
         </FormField>
 
         <SubmitButton pendingLabel="Vinculando…">Vincular como profesor</SubmitButton>
@@ -85,12 +79,7 @@ export function TeacherFormSection({ linkableUsers, errorCode }: TeacherFormSect
         </FormField>
 
         <FormField label="Zona horaria">
-          <PlatformSelect
-            name="timezone"
-            options={TIMEZONE_OPTIONS}
-            defaultValue="America/Mexico_City"
-            size="compact"
-          />
+          <PlatformSelect name="timezone" options={TIMEZONE_OPTIONS} defaultValue="America/Mexico_City" />
         </FormField>
 
         <FormField label="Biografía (opcional)">

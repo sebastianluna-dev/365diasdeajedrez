@@ -83,7 +83,7 @@ export const Textarea: Story = {
   ),
 };
 
-/** A select is always `PlatformSelect` in its compact size inside this field: there are no native ones. */
+/** A select is always `PlatformSelect` inside this field, the same size as its inputs: there are no native ones. */
 export const WithPlatformSelect: Story = {
   name: "With PlatformSelect",
   render: () => (
@@ -91,7 +91,6 @@ export const WithPlatformSelect: Story = {
       <PlatformSelect
         name="timezone"
         defaultValue="America/Mexico_City"
-        size="compact"
         options={[
           { value: "America/Mexico_City", label: "Ciudad de México" },
           { value: "America/Bogota", label: "Bogotá" },

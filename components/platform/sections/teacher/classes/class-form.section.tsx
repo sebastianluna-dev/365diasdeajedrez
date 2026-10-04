@@ -73,7 +73,6 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
             defaultValue={classDetail?.meetingProviderCode ?? ""}
             emptyOption="Sin plataforma"
             options={providers.map((provider) => ({ value: provider.code, label: provider.label }))}
-            size="compact"
           />
         </FormField>
 

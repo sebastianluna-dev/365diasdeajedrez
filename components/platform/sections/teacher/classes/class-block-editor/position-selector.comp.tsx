@@ -24,7 +24,6 @@ export function PositionSelector({ positions, value, onChange }: PositionSelecto
         required
         placeholder="Elige una posición…"
         options={positions.map((position) => ({ value: position.id, label: position.label }))}
-        size="compact"
       />
     </FormField>
   );

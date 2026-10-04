@@ -26,12 +26,12 @@ It is stateless on purpose. Platform forms are `<form action={serverAction}>`; v
 
 ### `FormField`
 
-| Prop       | Type        | Required | Meaning                                                                                                                              |
-| ---------- | ----------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `label`    | `string`    | yes      | The label text. Clicking it focuses the control, because the control is inside the `<label>`.                                        |
-| `children` | `ReactNode` | yes      | The control: a native input or textarea, or a [`PlatformSelect`](/components/platform/shared/platform-select) with `size="compact"`. |
-| `hint`     | `string`    | no       | Small help text under the control.                                                                                                   |
-| `error`    | `string`    | no       | Field-level error, rendered with `role="alert"`.                                                                                     |
+| Prop       | Type        | Required | Meaning                                                                                                                                                                                                             |
+| ---------- | ----------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `label`    | `string`    | yes      | The label text. Clicking it focuses the control, because the control is inside the `<label>`.                                                                                                                       |
+| `children` | `ReactNode` | yes      | The control: a native input or textarea, or a [`PlatformSelect`](/components/platform/shared/platform-select) or [`PlatformDatePicker`](/components/platform/shared/platform-date-picker), which are the same size. |
+| `hint`     | `string`    | no       | Small help text under the control.                                                                                                                                                                                  |
+| `error`    | `string`    | no       | Field-level error, rendered with `role="alert"`.                                                                                                                                                                    |
 
 ### `FormFieldset`
 
@@ -47,7 +47,7 @@ None. The control keeps its own attributes (`name`, `required`, `maxLength`, `de
 
 ## Markup & styling
 
-Block `.platform-field` (76 lines). The root is the `<label>` (or the `<fieldset>` with the group modifier); the control's look is defined through descendant selectors on `input` and `textarea` inside `.platform-field__control`, which is why no form in the platform styles its own inputs.
+Block `.platform-field` (79 lines). The root is the `<label>` (or the `<fieldset>` with the group modifier); the control's look is defined through descendant selectors on `input` and `textarea` inside `.platform-field__control`, which is why no form in the platform styles its own inputs.
 
 **Elements:** `.platform-field__label`, `.platform-field__control`, `.platform-field__hint`, `.platform-field__error`
 

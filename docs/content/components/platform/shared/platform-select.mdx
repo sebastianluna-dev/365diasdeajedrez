@@ -21,21 +21,20 @@ A native `<select>` cannot be drawn: its list is the browser's. This one is Radi
 
 ## Props
 
-| Prop            | Type                      | Required                 | Meaning                                                                                                                                                                  |
-| --------------- | ------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `options`       | `PlatformSelectOption[]`  | no                       | `{ value, label, disabled? }` per choice, in order. Either this or `groups`, or both (these first).                                                                      |
-| `groups`        | `PlatformSelectGroup[]`   | no                       | `{ label, options }` runs under a heading, what `<optgroup>` is to a native select.                                                                                      |
-| `emptyOption`   | `string`                  | no                       | A choice that means "none" and submits `""`, like `<option value="">`: it heads the list and is what the trigger shows while nothing else is chosen, in the text colour. |
-| `name`          | `string`                  | no                       | Name of the hidden native select. Given by `PlatformFormField` when inside one.                                                                                          |
-| `form`          | `string`                  | no                       | The `<form>` the hidden select belongs to, when it is not an ancestor.                                                                                                   |
-| `value`         | `string`                  | no                       | Controlled value; `""` means nothing chosen.                                                                                                                             |
-| `defaultValue`  | `string`                  | no                       | Initial choice. Without it the trigger shows `placeholder`.                                                                                                              |
-| `onValueChange` | `(value: string) => void` | no                       | Called with the new value, `""` for the empty option.                                                                                                                    |
-| `placeholder`   | `string`                  | no                       | Trigger text while nothing is chosen, in the muted colour.                                                                                                               |
-| `required`      | `boolean`                 | no                       | Passed to the hidden select. Pair it with `defaultValue` (see `PlatformForm`).                                                                                           |
-| `disabled`      | `boolean`                 | no                       |                                                                                                                                                                          |
-| `size`          | `"regular" \| "compact"`  | no · default `"regular"` | `regular` matches `PlatformForm`'s inputs; `compact` the ones of `FormField` and the small forms. A select next to an input has to be its height.                        |
-| …rest           | `<button>` attributes     | no                       | `id`, `aria-*`, `className`, `ref`… go to the trigger button, which is what a label targets.                                                                             |
+| Prop            | Type                      | Required | Meaning                                                                                                                                                                  |
+| --------------- | ------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `options`       | `PlatformSelectOption[]`  | no       | `{ value, label, disabled? }` per choice, in order. Either this or `groups`, or both (these first).                                                                      |
+| `groups`        | `PlatformSelectGroup[]`   | no       | `{ label, options }` runs under a heading, what `<optgroup>` is to a native select.                                                                                      |
+| `emptyOption`   | `string`                  | no       | A choice that means "none" and submits `""`, like `<option value="">`: it heads the list and is what the trigger shows while nothing else is chosen, in the text colour. |
+| `name`          | `string`                  | no       | Name of the hidden native select. Given by `PlatformFormField` when inside one.                                                                                          |
+| `form`          | `string`                  | no       | The `<form>` the hidden select belongs to, when it is not an ancestor.                                                                                                   |
+| `value`         | `string`                  | no       | Controlled value; `""` means nothing chosen.                                                                                                                             |
+| `defaultValue`  | `string`                  | no       | Initial choice. Without it the trigger shows `placeholder`.                                                                                                              |
+| `onValueChange` | `(value: string) => void` | no       | Called with the new value, `""` for the empty option.                                                                                                                    |
+| `placeholder`   | `string`                  | no       | Trigger text while nothing is chosen, in the muted colour.                                                                                                               |
+| `required`      | `boolean`                 | no       | Passed to the hidden select. Pair it with `defaultValue` (see `PlatformForm`).                                                                                           |
+| `disabled`      | `boolean`                 | no       |                                                                                                                                                                          |
+| …rest           | `<button>` attributes     | no       | `id`, `aria-*`, `className`, `ref`… go to the trigger button, which is what a label targets.                                                                             |
 
 ## Behaviour
 
@@ -54,7 +53,7 @@ A native `<select>` cannot be drawn: its list is the browser's. This one is Radi
 
 Block `.platform-select`, a wrapper `<div>` so the trigger and the list share one root, as the CSS convention asks.
 
-**Elements:** `.platform-select__trigger` (`_size_regular`, `_size_compact`, `_empty_named` when there is an `emptyOption`), `.platform-select__icon`, `.platform-select__chevron`, `.platform-select__content`, `.platform-select__viewport`, `.platform-select__group`, `.platform-select__group-label`, `.platform-select__item`, `.platform-select__indicator`, `.platform-select__check`
+**Elements:** `.platform-select__trigger` (`_empty_named` when there is an `emptyOption`), `.platform-select__icon`, `.platform-select__chevron`, `.platform-select__content`, `.platform-select__viewport`, `.platform-select__group`, `.platform-select__group-label`, `.platform-select__item`, `.platform-select__indicator`, `.platform-select__check`
 
 **States (data attributes set by the primitive):** `[data-placeholder]`, `[data-disabled]`, `[data-state="open"]` on the trigger; `[data-state="open"]`/`[data-state="closed"]` on the content, which drive its animations; `[data-highlighted]`, `[data-state="checked"]`, `[data-disabled]` on an item.
 

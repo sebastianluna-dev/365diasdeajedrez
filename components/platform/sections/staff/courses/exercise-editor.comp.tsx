@@ -46,7 +46,6 @@ function ExerciseFields({ action, modes, exercise, submitLabel, lessonPgn, onCan
           name="modeCode"
           defaultValue={exercise?.modeCode ?? modes[0]?.code}
           options={modes.map((mode) => ({ value: mode.code, label: mode.label }))}
-          size="compact"
         />
       </FormField>
 

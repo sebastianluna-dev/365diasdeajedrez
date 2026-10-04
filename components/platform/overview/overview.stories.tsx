@@ -715,7 +715,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
           </Section>
 
           <Section title="Forms">
-            <Tile name="PlatformForm" docs="platform-shared-platformform" width={400} height={368}>
+            <Tile name="PlatformForm" docs="platform-shared-platformform" width={400} height={344}>
               <PlatformForm onSubmit={(event) => event.preventDefault()}>
                 <PlatformFormField
                   name="name"
@@ -743,12 +743,11 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 </FormField>
               </div>
             </Tile>
-            <Tile name="PlatformSelect" docs="platform-shared-platformselect" width={400} height={192}>
+            <Tile name="PlatformSelect" docs="platform-shared-platformselect" width={400} height={168}>
               <div className="overview__stack">
                 <PlatformSelect aria-label="Nivel" defaultValue="intermedio" options={LEVELS} />
                 <PlatformSelect
                   aria-label="Lección"
-                  size="compact"
                   emptyOption="Ninguna"
                   defaultValue=""
                   groups={[
@@ -763,10 +762,10 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 />
               </div>
             </Tile>
-            <Tile name="PlatformDatePicker" docs="platform-shared-platformdatepicker" width={400} height={192}>
+            <Tile name="PlatformDatePicker" docs="platform-shared-platformdatepicker" width={400} height={168}>
               <div className="overview__stack">
                 <PlatformDatePicker name="playedAt" aria-label="Fecha de la partida" defaultValue="2026-10-02" />
-                <PlatformDatePicker name="startsOn" aria-label="Fecha de inicio" size="compact" />
+                <PlatformDatePicker name="startsOn" aria-label="Fecha de inicio" />
               </div>
             </Tile>
             <Tile name="PlatformChoiceCards" docs="platform-shared-platformchoicecards" width={400} height={192}>

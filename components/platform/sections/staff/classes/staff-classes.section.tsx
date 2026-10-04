@@ -39,7 +39,6 @@ export function StaffClassesSection({ classes, teachers, rawFilters }: StaffClas
             defaultValue={rawFilters.teacherId ?? ""}
             emptyOption="Todos"
             options={teachers.map((teacher) => ({ value: teacher.id, label: teacher.displayName }))}
-            size="compact"
           />
         </FormField>
 
@@ -49,16 +48,15 @@ export function StaffClassesSection({ classes, teachers, rawFilters }: StaffClas
             defaultValue={rawFilters.status ?? ""}
             emptyOption="Todos"
             options={Object.values(CLASS_STATUS).map((code) => ({ value: code, label: STATUS_LABELS[code] ?? code }))}
-            size="compact"
           />
         </FormField>
 
         <FormField label="Desde">
-          <PlatformDatePicker name="from" defaultValue={rawFilters.from ?? ""} size="compact" />
+          <PlatformDatePicker name="from" defaultValue={rawFilters.from ?? ""} />
         </FormField>
 
         <FormField label="Hasta">
-          <PlatformDatePicker name="to" defaultValue={rawFilters.to ?? ""} size="compact" />
+          <PlatformDatePicker name="to" defaultValue={rawFilters.to ?? ""} />
         </FormField>
 
         <FormField label="Título">

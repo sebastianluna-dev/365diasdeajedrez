@@ -80,7 +80,6 @@ export function ShareCollection({ studyId, shares, students, layout = "panel" }:
                 value: student.id,
                 label: `${student.displayName} · ${student.email}`,
               }))}
-              size="compact"
             />
           </label>
 

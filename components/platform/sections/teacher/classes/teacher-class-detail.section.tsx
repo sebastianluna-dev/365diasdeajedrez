@@ -149,7 +149,6 @@ export function TeacherClassDetailSection({
                 required
                 placeholder="Elige un alumno…"
                 options={enrollable.map((student) => ({ value: student.id, label: student.displayName }))}
-                size="compact"
               />
             </FormField>
             <SubmitButton className="platform-button" pendingLabel="Inscribiendo…">

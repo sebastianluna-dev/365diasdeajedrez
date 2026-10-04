@@ -144,7 +144,6 @@ export function ClassBlockEditor({ classId, blocks, options, initialGameId }: Cl
             onValueChange={(kind) => setNewKind((kind || null) as ClassBlockKindCode | null)}
             placeholder="Elige un tipo…"
             options={Object.values(CLASS_BLOCK_KIND).map((kind) => ({ value: kind, label: KIND_LABELS[kind] ?? kind }))}
-            size="compact"
           />
         </FormField>
 
