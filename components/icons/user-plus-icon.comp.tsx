@@ -1,13 +1,13 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `user-plus`, in Duotone Light or, with `variant="solid"`,
- * Duotone Solid.
+ * Font Awesome's `user-plus`, in Duotone Light (the default), Duotone Solid or
+ * Classic Solid, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function UserPlusIcon({ className, variant = "light" }: IconProps) {
+export function UserPlusIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,15 +17,7 @@ export function UserPlusIcon({ className, variant = "light" }: IconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
-        <>
-          <path
-            opacity=".4"
-            d="M48 482.3C48 498.7 61.3 512 77.7 512l356.6 0c16.4 0 29.7-13.3 29.7-29.7 0-98.5-79.8-178.3-178.3-178.3l-59.4 0C127.8 304 48 383.8 48 482.3zM136 128a120 120 0 1 0 240 0 120 120 0 1 0 -240 0z"
-          />
-          <path d="M552 104c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 48-48 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l48 0 0 48c0 13.3 10.7 24 24 24s24-10.7 24-24l0-48 48 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-48 0 0-48z" />
-        </>
-      ) : (
+      {variant === "duotone-light" && (
         <>
           <path
             opacity=".4"
@@ -33,6 +25,18 @@ export function UserPlusIcon({ className, variant = "light" }: IconProps) {
           />
           <path d="M304 304c97.2 0 176 78.8 176 176l0 16c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-16c0-79.5-64.5-144-144-144l-96 0c-79.5 0-144 64.5-144 144l0 16c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-16c0-97.2 78.8-176 176-176l96 0zM528 88c8.8 0 16 7.2 16 16l0 56 56 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-56 0 0 56c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-56-56 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l56 0 0-56c0-8.8 7.2-16 16-16zM256 256a128 128 0 1 1 0-256 128 128 0 1 1 0 256zm0-224a96 96 0 1 0 0 192 96 96 0 1 0 0-192z" />
         </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 482.3C48 498.7 61.3 512 77.7 512l356.6 0c16.4 0 29.7-13.3 29.7-29.7 0-98.5-79.8-178.3-178.3-178.3l-59.4 0C127.8 304 48 383.8 48 482.3zM136 128a120 120 0 1 0 240 0 120 120 0 1 0 -240 0z"
+          />
+          <path d="M552 104c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 48-48 0c-13.3 0-24 10.7-24 24s10.7 24 24 24l48 0 0 48c0 13.3 10.7 24 24 24s24-10.7 24-24l0-48 48 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-48 0 0-48z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M285.7 304c98.5 0 178.3 79.8 178.3 178.3 0 16.4-13.3 29.7-29.7 29.7L77.7 512C61.3 512 48 498.7 48 482.3 48 383.8 127.8 304 226.3 304l59.4 0zM528 80c13.3 0 24 10.7 24 24l0 48 48 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-48 0 0 48c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-48-48 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l48 0 0-48c0-13.3 10.7-24 24-24zM256 248a120 120 0 1 1 0-240 120 120 0 1 1 0 240z" />
       )}
     </svg>
   );

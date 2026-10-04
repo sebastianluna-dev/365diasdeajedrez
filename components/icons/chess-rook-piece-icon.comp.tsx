@@ -1,13 +1,13 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `chess-rook-piece`, in Duotone Light or, with
- * `variant="solid"`, Duotone Solid.
+ * Font Awesome's `chess-rook-piece`, in Duotone Light (the default), Duotone
+ * Solid or Classic Solid, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function ChessRookPieceIcon({ className, variant = "light" }: IconProps) {
+export function ChessRookPieceIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,15 +17,7 @@ export function ChessRookPieceIcon({ className, variant = "light" }: IconProps) 
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
-        <>
-          <path
-            opacity=".4"
-            d="M0 476.5C0 496.1 15.9 512 35.5 512l248.9 0c19.6 0 35.5-15.9 35.5-35.5 0-8.1-2.7-15.9-7.8-22.2L256 384 64 384 7.8 454.3c-5 6.3-7.8 14.1-7.8 22.2z"
-          />
-          <path d="M16 170.7L16 64c0-17.7 14.3-32 32-32S80 46.3 80 64l0 16 48 0 0-16c0-17.7 14.3-32 32-32s32 14.3 32 32l0 16 48 0 0-16c0-17.7 14.3-32 32-32s32 14.3 32 32l0 106.7c0 13.8-4.5 27.3-12.8 38.4l-35.2 46.9 0 128-192 0 0-128-35.2-46.9C20.5 198 16 184.5 16 170.7z" />
-        </>
-      ) : (
+      {variant === "duotone-light" && (
         <>
           <path
             opacity=".4"
@@ -33,6 +25,18 @@ export function ChessRookPieceIcon({ className, variant = "light" }: IconProps) 
           />
           <path d="M291.2 32.3c7.3 1.5 12.8 8 12.8 15.7l0 133.3c0 10.4-3.4 20.5-9.6 28.8l-26.5 35.3c2.5 2.8 4.1 6.5 4.1 10.6 0 8.8-7.2 16-16 16l0 96 57.8 86.7c4 6.1 6.2 13.2 6.2 20.4l-.2 3.8c-1.9 18.6-17.6 33.1-36.7 33.1l-246.3 0-3.8-.2C15.7 510 2 496.3 .2 478.9L0 475.2c0-5.5 1.2-10.8 3.5-15.7l2.7-4.7 57.8-86.7 0-96c-8.8 0-16-7.2-16-16 0-4.1 1.6-7.8 4.1-10.6L25.6 210.1c-6.2-8.3-9.6-18.4-9.6-28.8l0-133.3 .3-3.2C17.8 37.5 24.3 32 32 32l256 0 3.2 .3zM32.8 472.5c-.5 .8-.8 1.7-.8 2.7 0 2.7 2.2 4.8 4.8 4.8l246.3 0c2.7 0 4.8-2.2 4.8-4.8 0-.5-.1-1-.2-1.4l-.6-1.3-48.3-72.5-157.7 0-48.3 72.5zM96 272l0 96 128 0 0-96-128 0zM48 181.3c0 3.5 1.1 6.8 3.2 9.6l36.8 49.1 144 0 36.8-49.1c2.1-2.8 3.2-6.1 3.2-9.6l0-117.3-48 0 0 48c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-48-64 0 0 48c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-48-48 0 0 117.3z" />
         </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M0 476.5C0 496.1 15.9 512 35.5 512l248.9 0c19.6 0 35.5-15.9 35.5-35.5 0-8.1-2.7-15.9-7.8-22.2L256 384 64 384 7.8 454.3c-5 6.3-7.8 14.1-7.8 22.2z"
+          />
+          <path d="M16 170.7L16 64c0-17.7 14.3-32 32-32S80 46.3 80 64l0 16 48 0 0-16c0-17.7 14.3-32 32-32s32 14.3 32 32l0 16 48 0 0-16c0-17.7 14.3-32 32-32s32 14.3 32 32l0 106.7c0 13.8-4.5 27.3-12.8 38.4l-35.2 46.9 0 128-192 0 0-128-35.2-46.9C20.5 198 16 184.5 16 170.7z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M16 64l0 106.7c0 13.8 4.5 27.3 12.8 38.4L64 256 64 384 7.8 454.3C2.7 460.6 0 468.4 0 476.5 0 496.1 15.9 512 35.5 512l248.9 0c19.6 0 35.5-15.9 35.5-35.5 0-8.1-2.7-15.9-7.8-22.2l-56.2-70.3 0-128 35.2-46.9c8.3-11.1 12.8-24.6 12.8-38.4L304 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 16-48 0 0-16c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 16-48 0 0-16c0-17.7-14.3-32-32-32S16 46.3 16 64z" />
       )}
     </svg>
   );

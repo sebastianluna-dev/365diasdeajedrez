@@ -1,14 +1,14 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `minus`, in Duotone Light or, with `variant="solid"`, Duotone
- * Solid. Its Solid drawing is a single layer, drawn at full strength: at 40 %
- * it would read as switched off.
+ * Font Awesome's `minus`, in Duotone Light (the default), Duotone Solid or
+ * Classic Solid, as `variant` says. Its Duotone Solid drawing is a single
+ * layer, drawn at full strength: at 40 % it would read as switched off.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function MinusIcon({ className, variant = "light" }: IconProps) {
+export function MinusIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -18,10 +18,14 @@ export function MinusIcon({ className, variant = "light" }: IconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
-        <path d="M0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32z" />
-      ) : (
+      {variant === "duotone-light" && (
         <path d="M0 256c0-8.8 7.2-16 16-16l416 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L16 272c-8.8 0-16-7.2-16-16z" />
+      )}
+      {variant === "duotone-solid" && (
+        <path d="M0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32z" />
+      )}
+      {variant === "classic-solid" && (
+        <path d="M0 256c0-17.7 14.3-32 32-32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 288c-17.7 0-32-14.3-32-32z" />
       )}
     </svg>
   );

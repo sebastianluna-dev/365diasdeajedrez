@@ -2,13 +2,14 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Commenting a move, in the move menu. Font Awesome's `comment`, in Duotone
- * Light or, with `variant="solid"`, Duotone Solid. Its Solid drawing is a
- * single layer, drawn at full strength: at 40 % it would read as switched off.
+ * Light (the default), Duotone Solid or Classic Solid, as `variant` says. Its
+ * Duotone Solid drawing is a single layer, drawn at full strength: at 40 % it
+ * would read as switched off.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function CommentIcon({ className, variant = "light" }: IconProps) {
+export function CommentIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -18,9 +19,7 @@ export function CommentIcon({ className, variant = "light" }: IconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
-        <path d="M512 240c0 132.5-114.6 240-256 240-37.1 0-72.3-7.4-104.1-20.7L33.5 510.1c-9.4 4-20.2 1.7-27.1-5.8S-2 485.8 2.8 476.8l48.8-92.2C19.2 344.3 0 294.3 0 240 0 107.5 114.6 0 256 0S512 107.5 512 240z" />
-      ) : (
+      {variant === "duotone-light" && (
         <>
           <path
             opacity=".4"
@@ -28,6 +27,12 @@ export function CommentIcon({ className, variant = "light" }: IconProps) {
           />
           <path d="M76.8 364.8c8.1 10.1 9.4 24.1 3.2 35.4l-40.2 73.6 101-43.3c7.9-3.4 16.8-3.5 24.8-.2 27.6 11.3 58.2 17.6 90.4 17.6 125.7 0 224-95 224-208S381.7 32 256 32 32 127 32 240c0 46.7 16.5 89.8 44.8 124.8zM51.9 384.9C19.3 344.6 0 294.4 0 240 0 107.5 114.6 0 256 0S512 107.5 512 240 397.4 480 256 480c-36.5 0-71.2-7.2-102.6-20L37 509.9c-3.7 1.6-7.5 2.1-11.5 2.1-14.1 0-25.5-11.4-25.5-25.5 0-4.3 1.1-8.5 3.1-12.2l48.8-89.4z" />
         </>
+      )}
+      {variant === "duotone-solid" && (
+        <path d="M512 240c0 132.5-114.6 240-256 240-37.1 0-72.3-7.4-104.1-20.7L33.5 510.1c-9.4 4-20.2 1.7-27.1-5.8S-2 485.8 2.8 476.8l48.8-92.2C19.2 344.3 0 294.3 0 240 0 107.5 114.6 0 256 0S512 107.5 512 240z" />
+      )}
+      {variant === "classic-solid" && (
+        <path d="M512 240c0 132.5-114.6 240-256 240-37.1 0-72.3-7.4-104.1-20.7L33.5 510.1c-9.4 4-20.2 1.7-27.1-5.8S-2 485.8 2.8 476.8l48.8-92.2C19.2 344.3 0 294.3 0 240 0 107.5 114.6 0 256 0S512 107.5 512 240z" />
       )}
     </svg>
   );

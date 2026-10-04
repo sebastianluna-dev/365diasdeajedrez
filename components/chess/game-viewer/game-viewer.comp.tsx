@@ -480,7 +480,7 @@ export function GameViewer({
         disabled={atStart}
         className="game-viewer__nav-button"
       >
-        <BackwardStepIcon variant="solid" className="game-viewer__nav-icon" />
+        <BackwardStepIcon variant="duotone-solid" className="game-viewer__nav-icon" />
       </button>
       <button
         type="button"
@@ -517,7 +517,7 @@ export function GameViewer({
         disabled={atEnd}
         className="game-viewer__nav-button"
       >
-        <ForwardStepIcon variant="solid" className="game-viewer__nav-icon" />
+        <ForwardStepIcon variant="duotone-solid" className="game-viewer__nav-icon" />
       </button>
       {/* Flipping the board is an action on the game, not a viewer setting:
           it goes with the buttons the game is traversed with. */}

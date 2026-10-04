@@ -1,13 +1,13 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `paper-plane`, in Duotone Light or, with `variant="solid"`,
- * Duotone Solid.
+ * Font Awesome's `paper-plane`, in Duotone Light (the default), Duotone Solid
+ * or Classic Solid, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function PaperPlaneIcon({ className, variant = "light" }: IconProps) {
+export function PaperPlaneIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,15 +17,7 @@ export function PaperPlaneIcon({ className, variant = "light" }: IconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
-        <>
-          <path
-            opacity=".4"
-            d="M243.9 300.5L564.3-20c7.3 7.3 9.8 18.2 6.3 28l-178 496.9c-5 13.9-18.1 23.1-32.8 23.1-14.2 0-27-8.6-32.3-21.7L243.9 300.5z"
-          />
-          <path d="M564.3-20L243.9 300.5 38.1 216.8c-13.1-5.3-21.7-18.1-21.7-32.3 0-14.7 9.2-27.8 23.1-32.8l496.9-178c9.8-3.5 20.6-1 28 6.3l0 0z" />
-        </>
-      ) : (
+      {variant === "duotone-light" && (
         <>
           <path
             opacity=".4"
@@ -33,6 +25,18 @@ export function PaperPlaneIcon({ className, variant = "light" }: IconProps) {
           />
           <path d="M275 292L524.1 42.8 362.5 494.1c-.4 1.1-1.5 1.9-2.7 1.9-1.2 0-2.2-.7-2.6-1.8L275 292zM501.5 20.2L252.4 269.4 50.1 187.2c-1.1-.4-1.8-1.5-1.8-2.6 0-1.2 .8-2.3 1.9-2.7L501.5 20.2zM38.1 216.8l205.8 83.6 83.6 205.8c5.3 13.1 18.1 21.7 32.3 21.7 14.7 0 27.8-9.2 32.8-23.1L570.6 8c3.5-9.8 1-20.6-6.3-28s-18.2-9.8-28-6.3L39.4 151.7c-13.9 5-23.1 18.1-23.1 32.8 0 14.2 8.6 27 21.7 32.3z" />
         </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M243.9 300.5L564.3-20c7.3 7.3 9.8 18.2 6.3 28l-178 496.9c-5 13.9-18.1 23.1-32.8 23.1-14.2 0-27-8.6-32.3-21.7L243.9 300.5z"
+          />
+          <path d="M564.3-20L243.9 300.5 38.1 216.8c-13.1-5.3-21.7-18.1-21.7-32.3 0-14.7 9.2-27.8 23.1-32.8l496.9-178c9.8-3.5 20.6-1 28 6.3l0 0z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M536.4-26.3c9.8-3.5 20.6-1 28 6.3s9.8 18.2 6.3 28l-178 496.9c-5 13.9-18.1 23.1-32.8 23.1-14.2 0-27-8.6-32.3-21.7l-64.2-158c-4.5-11-2.5-23.6 5.2-32.6l94.5-112.4c5.1-6.1 4.7-15-.9-20.6s-14.6-6-20.6-.9L229.2 276.1c-9.1 7.6-21.6 9.6-32.6 5.2L38.1 216.8c-13.1-5.3-21.7-18.1-21.7-32.3 0-14.7 9.2-27.8 23.1-32.8l496.9-178z" />
       )}
     </svg>
   );

@@ -1,13 +1,13 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `graduation-cap`, in Duotone Light or, with
- * `variant="solid"`, Duotone Solid.
+ * Font Awesome's `graduation-cap`, in Duotone Light (the default), Duotone
+ * Solid or Classic Solid, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function GraduationCapIcon({ className, variant = "light" }: IconProps) {
+export function GraduationCapIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,15 +17,7 @@ export function GraduationCapIcon({ className, variant = "light" }: IconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
-        <>
-          <path
-            opacity=".4"
-            d="M0 160c0-10.7 7-19.7 16.6-22.8 2.3-.7 4.8-1.2 7.4-1.2l264 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-240 0 0 272c0 13.3-10.7 24-24 24S0 469.3 0 456L0 160z"
-          />
-          <path d="M16.6 137.2c2.3-.7 4.8-1.2 7.4-1.2l264 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-240 0 0 11.8 209.2 86.1c9.8 4 20.2 6.1 30.8 6.1s21-2.1 30.8-6.1l242.4-99.8c9-3.7 14.8-12.4 14.8-22.1s-5.8-18.4-14.8-22.1L318.8 38.1C309 34.1 298.6 32 288 32s-21 2.1-30.8 6.1L16.6 137.2zM96 267.4L96 384c0 53 86 96 192 96s192-43 192-96l0-116.6-142.9 58.9c-15.6 6.4-32.2 9.7-49.1 9.7s-33.5-3.3-49.1-9.7L96 267.4z" />
-        </>
-      ) : (
+      {variant === "duotone-light" && (
         <>
           <path
             opacity=".4"
@@ -33,6 +25,18 @@ export function GraduationCapIcon({ className, variant = "light" }: IconProps) {
           />
           <path d="M45.2 160L269.4 67.7c5.9-2.4 12.2-3.7 18.6-3.7s12.7 1.3 18.6 3.7L530.8 160 306.6 252.3c-5.9 2.4-12.2 3.7-18.6 3.7s-12.7-1.3-18.6-3.7L45.2 160zM32 189.2L96 215.5 96 384c0 53 86 96 192 96s192-43 192-96l0-168.5 81.2-33.4c9-3.7 14.8-12.4 14.8-22.1s-5.8-18.4-14.8-22.1L318.8 38.1C309 34.1 298.6 32 288 32s-21 2.1-30.8 6.1L14.8 137.9C5.8 141.6 0 150.3 0 160L0 464c0 8.8 7.2 16 16 16s16-7.2 16-16l0-274.8zM128 384l0-155.3 129.2 53.2c9.8 4 20.2 6.1 30.8 6.1s21-2.1 30.8-6.1L448 228.7 448 384c0 7.9-7.2 23.6-38.5 39.3-29.4 14.7-72.3 24.7-121.5 24.7s-92-10-121.5-24.7C135.2 407.6 128 391.9 128 384z" />
         </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M0 160c0-10.7 7-19.7 16.6-22.8 2.3-.7 4.8-1.2 7.4-1.2l264 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-240 0 0 272c0 13.3-10.7 24-24 24S0 469.3 0 456L0 160z"
+          />
+          <path d="M16.6 137.2c2.3-.7 4.8-1.2 7.4-1.2l264 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-240 0 0 11.8 209.2 86.1c9.8 4 20.2 6.1 30.8 6.1s21-2.1 30.8-6.1l242.4-99.8c9-3.7 14.8-12.4 14.8-22.1s-5.8-18.4-14.8-22.1L318.8 38.1C309 34.1 298.6 32 288 32s-21 2.1-30.8 6.1L16.6 137.2zM96 267.4L96 384c0 53 86 96 192 96s192-43 192-96l0-116.6-142.9 58.9c-15.6 6.4-32.2 9.7-49.1 9.7s-33.5-3.3-49.1-9.7L96 267.4z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M48 195.8l209.2 86.1c9.8 4 20.2 6.1 30.8 6.1s21-2.1 30.8-6.1l242.4-99.8c9-3.7 14.8-12.4 14.8-22.1s-5.8-18.4-14.8-22.1L318.8 38.1C309 34.1 298.6 32 288 32s-21 2.1-30.8 6.1L14.8 137.9C5.8 141.6 0 150.3 0 160L0 456c0 13.3 10.7 24 24 24s24-10.7 24-24l0-260.2zm48 71.7L96 384c0 53 86 96 192 96s192-43 192-96l0-116.6-142.9 58.9c-15.6 6.4-32.2 9.7-49.1 9.7s-33.5-3.3-49.1-9.7L96 267.4z" />
       )}
     </svg>
   );

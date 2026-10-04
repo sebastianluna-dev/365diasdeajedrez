@@ -1,13 +1,13 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `bell`, in Duotone Light or, with `variant="solid"`, Duotone
- * Solid.
+ * Font Awesome's `bell`, in Duotone Light (the default), Duotone Solid or
+ * Classic Solid, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function BellIcon({ className, variant = "light" }: IconProps) {
+export function BellIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,15 +17,7 @@ export function BellIcon({ className, variant = "light" }: IconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
-        <>
-          <path
-            opacity=".4"
-            d="M0 380.5C0 400.1 15.9 416 35.5 416l376.9 0c19.6 0 35.5-15.9 35.5-35.5 0-8.1-2.7-15.9-7.8-22.2l-9.8-12.2C400.4 308.5 384 261.8 384 213.7l0-21.7c0-77.4-55-142-128-156.8l0-3.2c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 3.2C119 50 64 114.6 64 192l0 21.7c0 48.1-16.4 94.8-46.4 132.4L7.8 358.3c-5 6.3-7.8 14.1-7.8 22.2z"
-          />
-          <path d="M162 464c7.1 27.6 32.2 48 62 48s54.9-20.4 62-48l-124 0z" />
-        </>
-      ) : (
+      {variant === "duotone-light" && (
         <>
           <path
             opacity=".4"
@@ -33,6 +25,18 @@ export function BellIcon({ className, variant = "light" }: IconProps) {
           />
           <path d="M224 0c-8.8 0-16 7.2-16 16l0 16.8C127.1 40.8 64 109 64 192l0 10.3c0 45.1-15.4 88.9-43.5 124.1L10.4 339C3.7 347.4 0 357.9 0 368.6 0 394.8 21.2 416 47.4 416l353.2 0c26.2 0 47.4-21.2 47.4-47.4 0-10.8-3.7-21.2-10.4-29.6l-10.1-12.6c-28.2-35.2-43.5-79-43.5-124.1l0-10.3c0-83-63.1-151.2-144-159.2L240 16c0-8.8-7.2-16-16-16zm0 64c70.7 0 128 57.3 128 128l0 10.3c0 52.4 17.8 103.2 50.6 144.1L412.6 359c2.2 2.7 3.4 6.1 3.4 9.6 0 8.5-6.9 15.4-15.4 15.4L47.4 384c-8.5 0-15.4-6.9-15.4-15.4 0-3.5 1.2-6.9 3.4-9.6l10.1-12.6C78.2 305.5 96 254.7 96 202.3L96 192c0-70.7 57.3-128 128-128zM156.1 464c9.9 28 36.6 48 67.9 48s58-20 67.9-48L256 464c-7.3 9.7-18.9 16-32 16s-24.7-6.3-32-16l-35.9 0z" />
         </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M0 380.5C0 400.1 15.9 416 35.5 416l376.9 0c19.6 0 35.5-15.9 35.5-35.5 0-8.1-2.7-15.9-7.8-22.2l-9.8-12.2C400.4 308.5 384 261.8 384 213.7l0-21.7c0-77.4-55-142-128-156.8l0-3.2c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 3.2C119 50 64 114.6 64 192l0 21.7c0 48.1-16.4 94.8-46.4 132.4L7.8 358.3c-5 6.3-7.8 14.1-7.8 22.2z"
+          />
+          <path d="M162 464c7.1 27.6 32.2 48 62 48s54.9-20.4 62-48l-124 0z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M224 0c-17.7 0-32 14.3-32 32l0 3.2C119 50 64 114.6 64 192l0 21.7c0 48.1-16.4 94.8-46.4 132.4L7.8 358.3C2.7 364.6 0 372.4 0 380.5 0 400.1 15.9 416 35.5 416l376.9 0c19.6 0 35.5-15.9 35.5-35.5 0-8.1-2.7-15.9-7.8-22.2l-9.8-12.2C400.4 308.5 384 261.8 384 213.7l0-21.7c0-77.4-55-142-128-156.8l0-3.2c0-17.7-14.3-32-32-32zM162 464c7.1 27.6 32.2 48 62 48s54.9-20.4 62-48l-124 0z" />
       )}
     </svg>
   );

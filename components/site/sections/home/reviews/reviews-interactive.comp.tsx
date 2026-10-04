@@ -120,9 +120,9 @@ export function ReviewsInteractive({ reviews }: ReviewsInteractiveProps) {
             onClick={() => setChosen(playing ? "paused" : "playing")}
           >
             {playing ? (
-              <PauseIcon variant="solid" className="reviews__toggle-icon" />
+              <PauseIcon variant="duotone-solid" className="reviews__toggle-icon" />
             ) : (
-              <PlayIcon variant="solid" className="reviews__toggle-icon" />
+              <PlayIcon variant="duotone-solid" className="reviews__toggle-icon" />
             )}
           </button>
         )}

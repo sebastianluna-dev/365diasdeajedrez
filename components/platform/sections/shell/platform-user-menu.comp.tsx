@@ -136,7 +136,7 @@ export function PlatformUserMenu({ displayName, initials, profileHref }: Platfor
               <p className="platform-user-menu__figure">
                 <span className="platform-user-menu__figure-mark">
                   <FireIcon
-                    variant="solid"
+                    variant="duotone-solid"
                     className="platform-user-menu__flame"
                     coreClassName="platform-user-menu__flame-core"
                   />

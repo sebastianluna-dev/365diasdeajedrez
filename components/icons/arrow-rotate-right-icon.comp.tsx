@@ -1,13 +1,13 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `arrow-rotate-right`, in Duotone Light or, with
- * `variant="solid"`, Duotone Solid.
+ * Font Awesome's `arrow-rotate-right`, in Duotone Light (the default), Duotone
+ * Solid or Classic Solid, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function ArrowRotateRightIcon({ className, variant = "light" }: IconProps) {
+export function ArrowRotateRightIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,7 +17,10 @@ export function ArrowRotateRightIcon({ className, variant = "light" }: IconProps
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
+      {variant === "duotone-light" && (
+        <path d="M496 0c-8.8 0-16 7.2-16 16l0 103.8-37-39.1C394.4 29.2 326.8 0 256 0 114.6 0 0 114.6 0 256S114.6 512 256 512c98.3 0 183.6-55.4 226.5-136.5 4.1-7.8 1.1-17.5-6.7-21.6s-17.5-1.1-21.6 6.7C416.6 431.6 341.9 480 256 480 132.3 480 32 379.7 32 256S132.3 32 256 32c62 0 121.2 25.5 163.8 70.6L458.9 144 352 144c-8.8 0-16 7.2-16 16s7.2 16 16 16l144 0c8.8 0 16-7.2 16-16l0-144c0-8.8-7.2-16-16-16z" />
+      )}
+      {variant === "duotone-solid" && (
         <>
           <path
             opacity=".4"
@@ -25,8 +28,9 @@ export function ArrowRotateRightIcon({ className, variant = "light" }: IconProps
           />
           <path d="M480 0c-17.7 0-32 14.3-32 32l0 96-96 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32z" />
         </>
-      ) : (
-        <path d="M496 0c-8.8 0-16 7.2-16 16l0 103.8-37-39.1C394.4 29.2 326.8 0 256 0 114.6 0 0 114.6 0 256S114.6 512 256 512c98.3 0 183.6-55.4 226.5-136.5 4.1-7.8 1.1-17.5-6.7-21.6s-17.5-1.1-21.6 6.7C416.6 431.6 341.9 480 256 480 132.3 480 32 379.7 32 256S132.3 32 256 32c62 0 121.2 25.5 163.8 70.6L458.9 144 352 144c-8.8 0-16 7.2-16 16s7.2 16 16 16l144 0c8.8 0 16-7.2 16-16l0-144c0-8.8-7.2-16-16-16z" />
+      )}
+      {variant === "classic-solid" && (
+        <path d="M436.7 74.7L448 85.4 448 32c0-17.7 14.3-32 32-32s32 14.3 32 32l0 128c0 17.7-14.3 32-32 32l-128 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l47.9 0-7.6-7.2c-.2-.2-.4-.4-.6-.6-75-75-196.5-75-271.5 0s-75 196.5 0 271.5 196.5 75 271.5 0c8.2-8.2 15.5-16.9 21.9-26.1 10.1-14.5 30.1-18 44.6-7.9s18 30.1 7.9 44.6c-8.5 12.2-18.2 23.8-29.1 34.7-100 100-262.1 100-362 0S-25 175 75 75c99.9-99.9 261.7-100 361.7-.3z" />
       )}
     </svg>
   );

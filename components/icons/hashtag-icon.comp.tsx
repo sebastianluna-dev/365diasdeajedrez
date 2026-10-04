@@ -1,13 +1,13 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `hashtag`, in Duotone Light or, with `variant="solid"`,
- * Duotone Solid.
+ * Font Awesome's `hashtag`, in Duotone Light (the default), Duotone Solid or
+ * Classic Solid, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function HashtagIcon({ className, variant = "light" }: IconProps) {
+export function HashtagIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,7 +17,10 @@ export function HashtagIcon({ className, variant = "light" }: IconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
+      {variant === "duotone-light" && (
+        <path d="M202.2 .4c8.6 1.9 14.1 10.4 12.3 19L191.2 128 375.8 128 400.5 12.6c1.9-8.6 10.4-14.1 19-12.3s14.1 10.4 12.3 19L408.5 128 496 128c8.8 0 16 7.2 16 16s-7.2 16-16 16l-94.4 0-41.1 192 87.5 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-94.4 0-24.7 115.4c-1.8 8.6-10.4 14.1-19 12.3s-14.1-10.4-12.3-19l23.3-108.7-184.6 0-24.7 115.4c-1.9 8.6-10.4 14.1-19 12.3s-14.1-10.4-12.3-19L103.6 384 16 384c-8.8 0-16-7.2-16-16s7.2-16 16-16l94.5 0 41.1-192-87.6 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l94.5 0 24.7-115.4c1.9-8.6 10.4-14.1 19-12.3zM184.4 160l-41.1 192 184.6 0 41.1-192-184.6 0z" />
+      )}
+      {variant === "duotone-solid" && (
         <>
           <path
             opacity=".4"
@@ -25,8 +28,9 @@ export function HashtagIcon({ className, variant = "light" }: IconProps) {
           />
           <path d="M276.6 128l70.1 0-13.7 64-259.8 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l203.4 0zM480 192l-81.6 0 13.7-64 67.8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32zM32 320l81.6 0-13.7 64-67.8 0c-17.7 0-32-14.3-32-32s14.3-32 32-32zm203.4 64l-70.1 0 13.7-64 259.8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-203.4 0z" />
         </>
-      ) : (
-        <path d="M202.2 .4c8.6 1.9 14.1 10.4 12.3 19L191.2 128 375.8 128 400.5 12.6c1.9-8.6 10.4-14.1 19-12.3s14.1 10.4 12.3 19L408.5 128 496 128c8.8 0 16 7.2 16 16s-7.2 16-16 16l-94.4 0-41.1 192 87.5 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-94.4 0-24.7 115.4c-1.8 8.6-10.4 14.1-19 12.3s-14.1-10.4-12.3-19l23.3-108.7-184.6 0-24.7 115.4c-1.9 8.6-10.4 14.1-19 12.3s-14.1-10.4-12.3-19L103.6 384 16 384c-8.8 0-16-7.2-16-16s7.2-16 16-16l94.5 0 41.1-192-87.6 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l94.5 0 24.7-115.4c1.9-8.6 10.4-14.1 19-12.3zM184.4 160l-41.1 192 184.6 0 41.1-192-184.6 0z" />
+      )}
+      {variant === "classic-solid" && (
+        <path d="M214.7 .7c17.3 3.7 28.3 20.7 24.6 38l-19.1 89.3 126.5 0 22-102.7C372.4 8 389.4-3 406.7 .7s28.3 20.7 24.6 38L412.2 128 480 128c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-27.4 128 67.8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-81.6 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38l19.1-89.3-126.5 0-22 102.7c-3.7 17.3-20.7 28.3-38 24.6s-28.3-20.7-24.6-38L99.8 384 32 384c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 27.4-128-67.8 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l81.6 0 22-102.7C180.4 8 197.4-3 214.7 .7zM206.4 192l-27.4 128 126.5 0 27.4-128-126.5 0z" />
       )}
     </svg>
   );

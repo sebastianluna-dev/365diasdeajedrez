@@ -1,13 +1,13 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `house-chimney`, in Duotone Light or, with `variant="solid"`,
- * Duotone Solid.
+ * Font Awesome's `house-chimney`, in Duotone Light (the default), Duotone
+ * Solid or Classic Solid, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function HouseChimneyIcon({ className, variant = "light" }: IconProps) {
+export function HouseChimneyIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,15 +17,7 @@ export function HouseChimneyIcon({ className, variant = "light" }: IconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
-        <>
-          <path
-            opacity=".4"
-            d="M48 267.7c2-1.2 4-2.6 5.8-4.3L256 75.7 458.2 263.4c1.8 1.7 3.7 3.1 5.8 4.3L464 448c0 35.3-28.7 64-64 64l-80 0 0-128c0-26.5-21.5-48-48-48l-32 0c-26.5 0-48 21.5-48 48l0 128-80 0c-35.3 0-64-28.7-64-64l0-180.3z"
-          />
-          <path d="M234.2 8.6c12.3-11.4 31.3-11.4 43.5 0L368 92.3 368 80c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 101.5 37.8 35.1c13 12 13.7 32.3 1.7 45.2s-32.3 13.7-45.2 1.7L256 75.7 53.8 263.4c-13 12-33.2 11.3-45.2-1.7s-11.3-33.2 1.7-45.2l224-208zM192 384c0-26.5 21.5-48 48-48l32 0c26.5 0 48 21.5 48 48l0 128-128 0 0-128z" />
-        </>
-      ) : (
+      {variant === "duotone-light" && (
         <>
           <path
             opacity=".4"
@@ -33,6 +25,18 @@ export function HouseChimneyIcon({ className, variant = "light" }: IconProps) {
           />
           <path d="M267.4 4.3c-6.1-5.7-15.7-5.7-21.8 0l-240 224c-6.5 6-6.8 16.2-.8 22.6s16.2 6.8 22.6 .8l21.1-19.7 0 216c0 35.3 28.7 64 64 64l288 0c35.3 0 64-28.7 64-64l0-216 21.1 19.7c6.5 6 16.6 5.7 22.6-.8s5.7-16.6-.8-22.6l-42.9-40.1 0-116.2c0-22.1-17.9-40-40-40l-32 0c-22.1 0-40 17.9-40 40l0 11.7-85.1-79.4zM432.5 72l0 86.4-48-44.8 0-41.6c0-4.4 3.6-8 8-8l32 0c4.4 0 8 3.6 8 8zm0 130.2l0 245.8c0 17.7-14.3 32-32 32l-64 0 0-112c0-35.3-28.7-64-64-64l-32 0c-35.3 0-64 28.7-64 64l0 112-64 0c-17.7 0-32-14.3-32-32l0-245.8 176-164.3 176 164.3zM304.5 480l-96 0 0-112c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 112z" />
         </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 267.7c2-1.2 4-2.6 5.8-4.3L256 75.7 458.2 263.4c1.8 1.7 3.7 3.1 5.8 4.3L464 448c0 35.3-28.7 64-64 64l-80 0 0-128c0-26.5-21.5-48-48-48l-32 0c-26.5 0-48 21.5-48 48l0 128-80 0c-35.3 0-64-28.7-64-64l0-180.3z"
+          />
+          <path d="M234.2 8.6c12.3-11.4 31.3-11.4 43.5 0L368 92.3 368 80c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 101.5 37.8 35.1c13 12 13.7 32.3 1.7 45.2s-32.3 13.7-45.2 1.7L256 75.7 53.8 263.4c-13 12-33.2 11.3-45.2-1.7s-11.3-33.2 1.7-45.2l224-208zM192 384c0-26.5 21.5-48 48-48l32 0c26.5 0 48 21.5 48 48l0 128-128 0 0-128z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M234.2 8.6c12.3-11.4 31.3-11.4 43.5 0L368 92.3 368 80c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 101.5 37.8 35.1c9.6 9 12.8 22.9 8 35.1S493.2 272 480 272l-16 0 0 176c0 35.3-28.7 64-64 64l-288 0c-35.3 0-64-28.7-64-64l0-176-16 0c-13.2 0-25-8.1-29.8-20.3s-1.6-26.2 8-35.1l224-208zM240 320c-26.5 0-48 21.5-48 48l0 96 128 0 0-96c0-26.5-21.5-48-48-48l-32 0z" />
       )}
     </svg>
   );

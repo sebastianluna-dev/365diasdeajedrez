@@ -1,13 +1,13 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `spinner`, in Duotone Light or, with `variant="solid"`,
- * Duotone Solid.
+ * Font Awesome's `spinner`, in Duotone Light (the default), Duotone Solid or
+ * Classic Solid, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function SpinnerIcon({ className, variant = "light" }: IconProps) {
+export function SpinnerIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,15 +17,7 @@ export function SpinnerIcon({ className, variant = "light" }: IconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
-        <>
-          <path
-            opacity=".4"
-            d="M75 369.1A48 48 0 1 0 142.9 437 48 48 0 1 0 75 369.1zM208 464a48 48 0 1 0 96 0 48 48 0 1 0 -96 0zM369.1 75A48 48 0 1 0 437 142.9 48 48 0 1 0 369.1 75zm0 294.2A48 48 0 1 0 437 437 48 48 0 1 0 369.1 369.1zM416 256a48 48 0 1 0 96 0 48 48 0 1 0 -96 0z"
-          />
-          <path d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM96 256a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM75 142.9A48 48 0 1 0 142.9 75 48 48 0 1 0 75 142.9z" />
-        </>
-      ) : (
+      {variant === "duotone-light" && (
         <>
           <path
             opacity=".4"
@@ -33,6 +25,18 @@ export function SpinnerIcon({ className, variant = "light" }: IconProps) {
           />
           <path d="M256 32a16 16 0 1 1 0 32 16 16 0 1 1 0-32zm0 64a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm0 352a16 16 0 1 1 0 32 16 16 0 1 1 0-32zm0 64a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM32 256a16 16 0 1 1 32 0 16 16 0 1 1 -32 0zm64 0a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm368-16a16 16 0 1 1 0 32 16 16 0 1 1 0-32zm0 64a48 48 0 1 0 0-96 48 48 0 1 0 0 96zM97.6 414.4a16 16 0 1 1 22.6-22.6 16 16 0 1 1 -22.6 22.6zm45.3-45.3A48 48 0 1 0 75 437 48 48 0 1 0 142.9 369.1zM120.2 97.6a16 16 0 1 1 -22.6 22.6 16 16 0 1 1 22.6-22.6zM75 142.9A48 48 0 1 0 142.9 75 48 48 0 1 0 75 142.9zM391.8 391.8a16 16 0 1 1 22.6 22.6 16 16 0 1 1 -22.6-22.6zM437 437A48 48 0 1 0 369.1 369.1 48 48 0 1 0 437 437z" />
         </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M75 369.1A48 48 0 1 0 142.9 437 48 48 0 1 0 75 369.1zM208 464a48 48 0 1 0 96 0 48 48 0 1 0 -96 0zM369.1 75A48 48 0 1 0 437 142.9 48 48 0 1 0 369.1 75zm0 294.2A48 48 0 1 0 437 437 48 48 0 1 0 369.1 369.1zM416 256a48 48 0 1 0 96 0 48 48 0 1 0 -96 0z"
+          />
+          <path d="M304 48a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM96 256a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM75 142.9A48 48 0 1 0 142.9 75 48 48 0 1 0 75 142.9z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M208 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm0 416a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zM48 208a48 48 0 1 1 0 96 48 48 0 1 1 0-96zm368 48a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zM75 369.1A48 48 0 1 1 142.9 437 48 48 0 1 1 75 369.1zM75 75A48 48 0 1 1 142.9 142.9 48 48 0 1 1 75 75zM437 369.1A48 48 0 1 1 369.1 437 48 48 0 1 1 437 369.1z" />
       )}
     </svg>
   );

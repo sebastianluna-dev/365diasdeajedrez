@@ -1,13 +1,13 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `chess-pawn`, in Duotone Light or, with `variant="solid"`,
- * Duotone Solid.
+ * Font Awesome's `chess-pawn`, in Duotone Light (the default), Duotone Solid
+ * or Classic Solid, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function ChessPawnIcon({ className, variant = "light" }: IconProps) {
+export function ChessPawnIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,15 +17,7 @@ export function ChessPawnIcon({ className, variant = "light" }: IconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
-        <>
-          <path
-            opacity=".4"
-            d="M16 476.5C16 496.1 31.9 512 51.5 512l280.9 0c19.6 0 35.5-15.9 35.5-35.5 0-8.1-2.7-15.9-7.8-22.2L304 384 80 384 23.8 454.3c-5 6.3-7.8 14.1-7.8 22.2z"
-          />
-          <path d="M192-32c66.3 0 120 53.7 120 120 0 27-8.9 51.9-24 72 17.7 0 32 14.3 32 32s-14.3 32-32 32l-10.7 0 26.7 160-224 0 26.7-160-10.7 0c-17.7 0-32-14.3-32-32s14.3-32 32-32c-15.1-20.1-24-45-24-72 0-66.3 53.7-120 120-120z" />
-        </>
-      ) : (
+      {variant === "duotone-light" && (
         <>
           <path
             opacity=".4"
@@ -33,6 +25,18 @@ export function ChessPawnIcon({ className, variant = "light" }: IconProps) {
           />
           <path d="M192-32c61.9 0 112 50.1 112 112 0 31.3-12.9 59.7-33.7 80l9.7 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-3.4 0 27.4 192 56.2 70.3c5 6.3 7.8 14.1 7.8 22.2 0 19.6-15.9 35.5-35.5 35.5L51.5 512c-19.6 0-35.5-15.9-35.5-35.5 0-8.1 2.7-15.9 7.8-22.2L80 384 107.4 192 104 192c-8.8 0-16-7.2-16-16s7.2-16 16-16l9.7 0C92.9 139.7 80 111.3 80 80 80 18.1 130.1-32 192-32zM108.2 400l-3.2 4-56.2 70.3 0 0c-.5 .6-.8 1.4-.8 2.2 0 2 1.6 3.5 3.5 3.5l280.9 0c1.5 0 2.7-.9 3.3-2.2l.3-1.4c0-.8-.3-1.6-.8-2.2l0 0-56.2-70.3-3.2-4-167.6 0zm30.9-203.5l-24.5 171.5 154.8 0-24.5-171.5-.7-4.5-104.4 0-.7 4.5zM192 0a80 80 0 1 0 0 160 80 80 0 1 0 0-160z" />
         </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M16 476.5C16 496.1 31.9 512 51.5 512l280.9 0c19.6 0 35.5-15.9 35.5-35.5 0-8.1-2.7-15.9-7.8-22.2L304 384 80 384 23.8 454.3c-5 6.3-7.8 14.1-7.8 22.2z"
+          />
+          <path d="M192-32c66.3 0 120 53.7 120 120 0 27-8.9 51.9-24 72 17.7 0 32 14.3 32 32s-14.3 32-32 32l-10.7 0 26.7 160-224 0 26.7-160-10.7 0c-17.7 0-32-14.3-32-32s14.3-32 32-32c-15.1-20.1-24-45-24-72 0-66.3 53.7-120 120-120z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M192-32c66.3 0 120 53.7 120 120 0 27-8.9 51.9-24 72 17.7 0 32 14.3 32 32s-14.3 32-32 32l-10.7 0 26.7 160 56.2 70.3c5 6.3 7.8 14.1 7.8 22.2 0 19.6-15.9 35.5-35.5 35.5L51.5 512c-19.6 0-35.5-15.9-35.5-35.5 0-8.1 2.7-15.9 7.8-22.2L80 384 106.7 224 96 224c-17.7 0-32-14.3-32-32s14.3-32 32-32c-15.1-20.1-24-45-24-72 0-66.3 53.7-120 120-120z" />
       )}
     </svg>
   );

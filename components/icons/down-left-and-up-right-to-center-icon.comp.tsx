@@ -1,13 +1,13 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `down-left-and-up-right-to-center`, in Duotone Light or, with
- * `variant="solid"`, Duotone Solid.
+ * Font Awesome's `down-left-and-up-right-to-center`, in Duotone Light (the
+ * default), Duotone Solid or Classic Solid, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function DownLeftAndUpRightToCenterIcon({ className, variant = "light" }: IconProps) {
+export function DownLeftAndUpRightToCenterIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,15 +17,7 @@ export function DownLeftAndUpRightToCenterIcon({ className, variant = "light" }:
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
-        <>
-          <path
-            opacity=".4"
-            d="M7.5 439c-9.4 9.4-9.4 24.6 0 33.9l32 32c9.4 9.4 24.6 9.4 33.9 0l87-87 39 39c6.9 6.9 17.2 8.9 26.2 5.2s14.8-12.5 14.8-22.2l0-144c0-13.3-10.7-24-24-24l-144 0c-9.7 0-18.5 5.8-22.2 14.8s-1.7 19.3 5.2 26.2l39 39-87 87z"
-          />
-          <path d="M473.5 7c-9.4-9.4-24.6-9.4-33.9 0l-87 87-39-39c-6.9-6.9-17.2-8.9-26.2-5.2S272.5 62.3 272.5 72l0 144c0 13.3 10.7 24 24 24l144 0c9.7 0 18.5-5.8 22.2-14.8s1.7-19.3-5.2-26.2l-39-39 87-87c9.4-9.4 9.4-24.6 0-33.9l-32-32z" />
-        </>
-      ) : (
+      {variant === "duotone-light" && (
         <>
           <path
             opacity=".4"
@@ -33,6 +25,18 @@ export function DownLeftAndUpRightToCenterIcon({ className, variant = "light" }:
           />
           <path d="M447.1 256c18.2 0 33-14.8 33-33 0-8.7-3.5-17.1-9.7-23.3l-35.7-35.7 63.7-63.7c15.6-15.6 15.6-40.9 0-56.6L468.3 13.7C452.7-2 427.4-2 411.8 13.7l-63.7 63.7-35.7-35.7c-6.2-6.2-14.6-9.7-23.3-9.7-18.2 0-33 14.8-33 33l0 159c0 17.7 14.3 32 32 32l159 0zm.7-33.7c.2 .2 .3 .4 .3 .7 0 .5-.4 1-1 1l-159 0 0-159c0-.5 .4-1 1-1 .3 0 .5 .1 .7 .3l47 47c6.2 6.2 16.4 6.2 22.6 0l75-75c3.1-3.1 8.2-3.1 11.3 0l30.1 30.1c3.1 3.1 3.1 8.2 0 11.3l-75 75c-6.2 6.2-6.2 16.4 0 22.6l47 47zM65 256c-18.2 0-33 14.8-33 33 0 8.7 3.5 17.1 9.7 23.3L77.4 348 13.7 411.7c-15.6 15.6-15.6 40.9 0 56.6l30.1 30.1c15.6 15.6 40.9 15.6 56.6 0l63.7-63.7 35.7 35.7c6.2 6.2 14.6 9.7 23.3 9.7 18.2 0 33-14.8 33-33l0-159c0-17.7-14.3-32-32-32L65 256zm-1 33c0-.5 .4-1 1-1l159 0 0 159c0 .5-.4 1-1 1-.3 0-.5-.1-.7-.3l-47-47c-6.2-6.2-16.4-6.2-22.6 0l-75 75c-3.1 3.1-8.2 3.1-11.3 0L36.3 445.7c-3.1-3.1-3.1-8.2 0-11.3l75-75c6.2-6.2 6.2-16.4 0-22.6l-47-47c-.2-.2-.3-.4-.3-.7z" />
         </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M7.5 439c-9.4 9.4-9.4 24.6 0 33.9l32 32c9.4 9.4 24.6 9.4 33.9 0l87-87 39 39c6.9 6.9 17.2 8.9 26.2 5.2s14.8-12.5 14.8-22.2l0-144c0-13.3-10.7-24-24-24l-144 0c-9.7 0-18.5 5.8-22.2 14.8s-1.7 19.3 5.2 26.2l39 39-87 87z"
+          />
+          <path d="M473.5 7c-9.4-9.4-24.6-9.4-33.9 0l-87 87-39-39c-6.9-6.9-17.2-8.9-26.2-5.2S272.5 62.3 272.5 72l0 144c0 13.3 10.7 24 24 24l144 0c9.7 0 18.5-5.8 22.2-14.8s1.7-19.3-5.2-26.2l-39-39 87-87c9.4-9.4 9.4-24.6 0-33.9l-32-32z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M439.5 7c9.4-9.4 24.6-9.4 33.9 0l32 32c9.4 9.4 9.4 24.6 0 33.9l-87 87 39 39c6.9 6.9 8.9 17.2 5.2 26.2S450.2 240 440.5 240l-144 0c-13.3 0-24-10.7-24-24l0-144c0-9.7 5.8-18.5 14.8-22.2s19.3-1.7 26.2 5.2l39 39 87-87zM72.5 272l144 0c13.3 0 24 10.7 24 24l0 144c0 9.7-5.8 18.5-14.8 22.2s-19.3 1.7-26.2-5.2l-39-39-87 87c-9.4 9.4-24.6 9.4-33.9 0l-32-32c-9.4-9.4-9.4-24.6 0-33.9l87-87-39-39c-6.9-6.9-8.9-17.2-5.2-26.2S62.8 272 72.5 272z" />
       )}
     </svg>
   );

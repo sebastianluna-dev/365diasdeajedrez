@@ -162,7 +162,7 @@ function RowMenu({ item, deleteAction, deleteFieldName, steps }: RowMenuProps) {
         aria-expanded={open}
         onClick={() => setOpen((wasOpen) => !wasOpen)}
       >
-        <EllipsisIcon variant="solid" />
+        <EllipsisIcon variant="duotone-solid" />
       </button>
 
       {lingering.value && (
@@ -290,7 +290,7 @@ function Row({ item, number, noun, deleteAction, deleteFieldName }: RowProps & {
         {...attributes}
         {...listeners}
       >
-        <GripDotsVerticalIcon variant="solid" />
+        <GripDotsVerticalIcon variant="duotone-solid" />
       </button>
       <span className="syllabus-list__number" aria-hidden="true">
         {number}

@@ -1,13 +1,13 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `table-list`, in Duotone Light or, with `variant="solid"`,
- * Duotone Solid.
+ * Font Awesome's `table-list`, in Duotone Light (the default), Duotone Solid
+ * or Classic Solid, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function TableListIcon({ className, variant = "light" }: IconProps) {
+export function TableListIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,15 +17,7 @@ export function TableListIcon({ className, variant = "light" }: IconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
-        <>
-          <path
-            opacity=".4"
-            d="M64 160l0 64 64 0 0 64-64 0 0 64 64 0 0 64 64 0 0-64 192 0 0-64-192 0 0-64 192 0 0-64-192 0 0-64-64 0 0 64-64 0z"
-          />
-          <path d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM384 96l0 320-320 0 0-320 320 0z" />
-        </>
-      ) : (
+      {variant === "duotone-light" && (
         <>
           <path
             opacity=".4"
@@ -33,6 +25,18 @@ export function TableListIcon({ className, variant = "light" }: IconProps) {
           />
           <path d="M160 64l0 96 256 0 0-64c0-17.7-14.3-32-32-32L160 64zm-32 0L64 64C46.3 64 32 78.3 32 96l0 64 96 0 0-96zM0 192L0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 192zM32 320l96 0 0-128-96 0 0 128zm0 32l0 64c0 17.7 14.3 32 32 32l64 0 0-96-96 0zm128 96l224 0c17.7 0 32-14.3 32-32l0-64-256 0 0 96zM416 320l0-128-256 0 0 128 256 0z" />
         </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M64 160l0 64 64 0 0 64-64 0 0 64 64 0 0 64 64 0 0-64 192 0 0-64-192 0 0-64 192 0 0-64-192 0 0-64-64 0 0 64-64 0z"
+          />
+          <path d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM384 96l0 320-320 0 0-320 320 0z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96zm64 0l0 64 64 0 0-64-64 0zm320 0l-192 0 0 64 192 0 0-64zM64 224l0 64 64 0 0-64-64 0zm320 0l-192 0 0 64 192 0 0-64zM64 352l0 64 64 0 0-64-64 0zm320 0l-192 0 0 64 192 0 0-64z" />
       )}
     </svg>
   );

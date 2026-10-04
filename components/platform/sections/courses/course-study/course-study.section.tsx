@@ -45,7 +45,7 @@ export function CourseStudySection({ course, errorCode }: CourseStudySectionProp
                   <span className="course-study__progress">
                     {chapter.isCompleted && (
                       <span className="course-study__done" role="img" aria-label="Capítulo completo">
-                        <CircleCheckIcon variant="solid" className="course-study__done-icon" />
+                        <CircleCheckIcon variant="duotone-solid" className="course-study__done-icon" />
                       </span>
                     )}
                     <span className="course-study__ratio">

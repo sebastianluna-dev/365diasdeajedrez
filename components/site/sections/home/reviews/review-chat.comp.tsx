@@ -28,7 +28,7 @@ export function ReviewChat({ review, position, hidden }: ReviewChatProps) {
             <p>{message.text}</p>
             {message.reacted && (
               <span className="reviews__chat-reaction">
-                <HeartIcon variant="solid" />
+                <HeartIcon variant="duotone-solid" />
               </span>
             )}
           </div>

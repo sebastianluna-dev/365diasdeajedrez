@@ -80,7 +80,7 @@ export function CourseStudyFrame({ course, chapter, returnTo, errorCode, childre
                 <Link href={course.studyHref} className="course-study-frame__place-link">
                   Capítulos
                 </Link>
-                <CaretRightIcon variant="solid" className="course-study-frame__place-step" />
+                <CaretRightIcon variant="duotone-solid" className="course-study-frame__place-step" />
                 {chapter.name}
               </>
             ) : (

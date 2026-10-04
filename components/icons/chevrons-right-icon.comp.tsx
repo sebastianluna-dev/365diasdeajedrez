@@ -1,13 +1,13 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `chevrons-right`, in Duotone Light or, with
- * `variant="solid"`, Duotone Solid.
+ * Font Awesome's `chevrons-right`, in Duotone Light (the default), Duotone
+ * Solid or Classic Solid, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function ChevronsRightIcon({ className, variant = "light" }: IconProps) {
+export function ChevronsRightIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,7 +17,10 @@ export function ChevronsRightIcon({ className, variant = "light" }: IconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
+      {variant === "duotone-light" && (
+        <path d="M43.3 475.3l208-208c6.2-6.2 6.2-16.4 0-22.6l-208-208c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L217.4 256 20.7 452.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0zm192 0l208-208c6.2-6.2 6.2-16.4 0-22.6l-208-208c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L409.4 256 212.7 452.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0z" />
+      )}
+      {variant === "duotone-solid" && (
         <>
           <path
             opacity=".4"
@@ -25,8 +28,9 @@ export function ChevronsRightIcon({ className, variant = "light" }: IconProps) {
           />
           <path d="M438.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L370.7 256 201.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z" />
         </>
-      ) : (
-        <path d="M43.3 475.3l208-208c6.2-6.2 6.2-16.4 0-22.6l-208-208c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L217.4 256 20.7 452.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0zm192 0l208-208c6.2-6.2 6.2-16.4 0-22.6l-208-208c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6L409.4 256 212.7 452.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0z" />
+      )}
+      {variant === "classic-solid" && (
+        <path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-192-192c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L370.7 256 201.4 425.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l192-192zm-384 192l192-192c12.5-12.5 12.5-32.8 0-45.3l-192-192c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L178.7 256 9.4 425.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0z" />
       )}
     </svg>
   );

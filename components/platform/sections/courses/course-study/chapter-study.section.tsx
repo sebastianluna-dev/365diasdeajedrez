@@ -61,7 +61,7 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
                     </h3>
                     {isDone && (
                       <span className="chapter-study__done" role="img" aria-label="Aprendida">
-                        <CircleCheckIcon variant="solid" className="chapter-study__done-icon" />
+                        <CircleCheckIcon variant="duotone-solid" className="chapter-study__done-icon" />
                       </span>
                     )}
                   </div>

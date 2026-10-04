@@ -128,7 +128,7 @@ function SortableRow({ game, isCurrent }: { game: GameListItem; isCurrent: boole
         {...attributes}
         {...listeners}
       >
-        <GripDotsVerticalIcon variant="solid" />
+        <GripDotsVerticalIcon variant="duotone-solid" />
       </button>
       <GameLink game={game} isCurrent={isCurrent} />
       <div className="game-list__steps">

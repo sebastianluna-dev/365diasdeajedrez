@@ -26,7 +26,7 @@ const TOP_MARGIN = 10;
  */
 function mark(isCompleted: boolean) {
   return isCompleted ? (
-    <CircleCheckIcon variant="solid" className="lesson-outline__done" />
+    <CircleCheckIcon variant="duotone-solid" className="lesson-outline__done" />
   ) : (
     <span className="lesson-outline__pending" aria-hidden="true" />
   );

@@ -2,12 +2,13 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Copying the variation's PGN, in the move menu. Font Awesome's `clipboard`,
- * in Duotone Light or, with `variant="solid"`, Duotone Solid.
+ * in Duotone Light (the default), Duotone Solid or Classic Solid, as `variant`
+ * says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function ClipboardIcon({ className, variant = "light" }: IconProps) {
+export function ClipboardIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,15 +18,7 @@ export function ClipboardIcon({ className, variant = "light" }: IconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
-        <>
-          <path
-            opacity=".4"
-            d="M0 96L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-352c0-35.3-28.7-64-64-64l-2.7 0c1.8 5 2.7 10.4 2.7 16 0 26.5-21.5 48-48 48L112 96c-26.5 0-48-21.5-48-48 0-5.6 1-11 2.7-16L64 32C28.7 32 0 60.7 0 96z"
-          />
-          <path d="M64 48C64 21.5 85.5 0 112 0L272 0c26.5 0 48 21.5 48 48s-21.5 48-48 48L112 96C85.5 96 64 74.5 64 48z" />
-        </>
-      ) : (
+      {variant === "duotone-light" && (
         <>
           <path
             opacity=".4"
@@ -33,6 +26,18 @@ export function ClipboardIcon({ className, variant = "light" }: IconProps) {
           />
           <path d="M248 80L136 80c-13.3 0-24-10.7-24-24s10.7-24 24-24l112 0c13.3 0 24 10.7 24 24s-10.7 24-24 24zm0 32c28.2 0 51.6-20.9 55.4-48L320 64c17.7 0 32 14.3 32 32l0 352c0 17.7-14.3 32-32 32L64 480c-17.7 0-32-14.3-32-32L32 96c0-17.7 14.3-32 32-32l16.6 0c3.9 27.1 27.2 48 55.4 48l112 0zm50.6-80c-9-18.9-28.3-32-50.6-32L136 0C113.7 0 94.4 13.1 85.4 32L64 32C28.7 32 0 60.7 0 96L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-352c0-35.3-28.7-64-64-64l-21.4 0z" />
         </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M0 96L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-352c0-35.3-28.7-64-64-64l-2.7 0c1.8 5 2.7 10.4 2.7 16 0 26.5-21.5 48-48 48L112 96c-26.5 0-48-21.5-48-48 0-5.6 1-11 2.7-16L64 32C28.7 32 0 60.7 0 96z"
+          />
+          <path d="M64 48C64 21.5 85.5 0 112 0L272 0c26.5 0 48 21.5 48 48s-21.5 48-48 48L112 96C85.5 96 64 74.5 64 48z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M320 32l-8.6 0C300.4 12.9 279.7 0 256 0L128 0C104.3 0 83.6 12.9 72.6 32L64 32C28.7 32 0 60.7 0 96L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-352c0-35.3-28.7-64-64-64zM136 112c-13.3 0-24-10.7-24-24s10.7-24 24-24l112 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-112 0z" />
       )}
     </svg>
   );

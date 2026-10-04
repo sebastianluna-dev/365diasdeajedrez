@@ -41,7 +41,7 @@ function Row({ id, name }: { id: string; name: string }) {
         {...attributes}
         {...listeners}
       >
-        <GripDotsVerticalIcon variant="solid" />
+        <GripDotsVerticalIcon variant="duotone-solid" />
       </button>
       <span style={{ flex: 1 }}>{name}</span>
       <button

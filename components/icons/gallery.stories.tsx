@@ -321,7 +321,7 @@ const GLYPHS: Glyph[] = [
     Icon: BackwardStepIcon,
     width: 24,
     height: 24,
-    use: { size: 20, where: "game viewer", variant: "solid" },
+    use: { size: 20, where: "game viewer", variant: "duotone-solid" },
   },
   { name: "BarsIcon", Icon: BarsIcon, width: 24, height: 24, use: { size: 20, where: "game viewer" } },
   { name: "BellIcon", Icon: BellIcon, width: 24, height: 24 },
@@ -354,7 +354,7 @@ const GLYPHS: Glyph[] = [
     Icon: CaretRightIcon,
     width: 8,
     height: 16,
-    use: { size: 14, where: "course trail", variant: "solid" },
+    use: { size: 14, where: "course trail", variant: "duotone-solid" },
   },
   { name: "CaretUpIcon", Icon: CaretUpIcon, width: 24, height: 24 },
   { name: "CartShoppingIcon", Icon: CartShoppingIcon, width: 24, height: 24 },
@@ -425,7 +425,7 @@ const GLYPHS: Glyph[] = [
     Icon: EllipsisIcon,
     width: 16,
     height: 4,
-    use: { size: 4, where: "syllabus rows", variant: "solid" },
+    use: { size: 4, where: "syllabus rows", variant: "duotone-solid" },
   },
   { name: "EllipsisVerticalIcon", Icon: EllipsisVerticalIcon, width: 24, height: 24 },
   { name: "EnvelopeIcon", Icon: EnvelopeIcon, width: 24, height: 24 },
@@ -444,7 +444,7 @@ const GLYPHS: Glyph[] = [
     Icon: FireIcon,
     width: 32,
     height: 32,
-    use: { size: 22, where: "user menu, streak", variant: "solid" },
+    use: { size: 22, where: "user menu, streak", variant: "duotone-solid" },
   },
   { name: "FlagCheckeredIcon", Icon: FlagCheckeredIcon, width: 24, height: 24 },
   { name: "FlagIcon", Icon: FlagIcon, width: 24, height: 24 },
@@ -458,7 +458,7 @@ const GLYPHS: Glyph[] = [
     Icon: ForwardStepIcon,
     width: 24,
     height: 24,
-    use: { size: 20, where: "game viewer", variant: "solid" },
+    use: { size: 20, where: "game viewer", variant: "duotone-solid" },
   },
   { name: "GearIcon", Icon: GearIcon, width: 24, height: 24 },
   { name: "GiftIcon", Icon: GiftIcon, width: 24, height: 24 },
@@ -470,7 +470,7 @@ const GLYPHS: Glyph[] = [
     Icon: GripDotsVerticalIcon,
     width: 10,
     height: 16,
-    use: { size: 16, where: "syllabus rows", variant: "solid" },
+    use: { size: 16, where: "syllabus rows", variant: "duotone-solid" },
   },
   { name: "GripLinesIcon", Icon: GripLinesIcon, width: 24, height: 24 },
   { name: "HashtagIcon", Icon: HashtagIcon, width: 24, height: 24 },
@@ -480,7 +480,7 @@ const GLYPHS: Glyph[] = [
     Icon: HeartIcon,
     width: 14,
     height: 14,
-    use: { size: 14, where: "reviews (site)", variant: "solid" },
+    use: { size: 14, where: "reviews (site)", variant: "duotone-solid" },
   },
   { name: "HourglassHalfIcon", Icon: HourglassHalfIcon, width: 24, height: 24 },
   { name: "HourglassIcon", Icon: HourglassIcon, width: 24, height: 24 },
@@ -534,7 +534,7 @@ const GLYPHS: Glyph[] = [
     Icon: PauseIcon,
     width: 19,
     height: 22,
-    use: { size: 22, where: "board tools", variant: "solid" },
+    use: { size: 22, where: "board tools", variant: "duotone-solid" },
   },
   { name: "PencilIcon", Icon: PencilIcon, width: 24, height: 24 },
   { name: "PenIcon", Icon: PenIcon, width: 24, height: 24 },
@@ -545,7 +545,7 @@ const GLYPHS: Glyph[] = [
     Icon: PlayIcon,
     width: 19,
     height: 22,
-    use: { size: 22, where: "board tools", variant: "solid" },
+    use: { size: 22, where: "board tools", variant: "duotone-solid" },
   },
   { name: "PlusIcon", Icon: PlusIcon, width: 16, height: 16, use: { size: 16, where: "FAQ (site)" } },
   { name: "PrintIcon", Icon: PrintIcon, width: 24, height: 24 },
@@ -644,7 +644,7 @@ function Drawn({ glyph, height, variant }: { glyph: Glyph; height: number; varia
 
 const gridStyle: CSSProperties = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(168px, 1fr))",
+  gridTemplateColumns: "repeat(auto-fill, minmax(208px, 1fr))",
   gap: "var(--platform-space-3)",
 };
 
@@ -674,7 +674,7 @@ type Scale = "app" | "large";
  * The gallery, with each icon's export under it and the wordmark on a row of
  * its own. At `app`, the icons the app draws, each as tall and in the weight
  * its caller asks for, in the text colour; at `large`, every icon of the
- * library in a 48px box, Duotone Light beside Duotone Solid, in the accent.
+ * library in a 48px box, in its three styles, in the accent.
  */
 function IconsGallery({ scale }: { scale: Scale }) {
   const large = scale === "large";
@@ -683,7 +683,7 @@ function IconsGallery({ scale }: { scale: Scale }) {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: "var(--platform-space-4)",
+    gap: "var(--platform-space-3)",
     height: large ? LARGE + 16 : 48,
     color: large ? "var(--platform-accent)" : "var(--platform-text)",
   };
@@ -695,7 +695,7 @@ function IconsGallery({ scale }: { scale: Scale }) {
         <h1 className="platform-page__title">Icons</h1>
         <p className="platform-page__subtitle">
           {large
-            ? `All ${GLYPHS.length + 1} icons of components/icons, each in a ${LARGE}px box, in the accent: Duotone Light, then Duotone Solid.`
+            ? `All ${GLYPHS.length + 1} icons of components/icons, each in a ${LARGE}px box, in the accent: Duotone Light, Duotone Solid and Classic Solid.`
             : `The ${IN_USE.length + 1} icons the app draws, each as tall and in the weight its caller asks for.`}
         </p>
       </header>
@@ -753,9 +753,10 @@ const meta = {
 Every icon of \`components/icons\`, one SVG per file, each with the name it is
 exported by under it. All but the brand's two and WhatsApp's are Font Awesome
 Pro 7.3.1, named as Font Awesome names them (\`chess-knight\` is
-\`ChessKnightIcon\` in \`chess-knight-icon.comp.tsx\`), and take a \`variant\`:
-Duotone Light, the default, or Duotone Solid. Both are two layers filled with
-\`currentColor\`, the one at the back at 40 %. An icon takes a \`className\`
+\`ChessKnightIcon\` in \`chess-knight-icon.comp.tsx\`), and take a \`variant\`
+named as Font Awesome names its styles: \`duotone-light\`, the default,
+\`duotone-solid\` or \`classic-solid\`. A Duotone drawing is two layers filled
+with \`currentColor\`, the one at the back at 40 %; a Classic one is one shape. An icon takes a \`className\`
 and its \`variant\`, nothing else: its size and its colour are its caller's
 stylesheet's, so the accent gallery is the same icons under another \`color\`.
 Each one is \`aria-hidden\`; the button around it carries the name.
@@ -782,5 +783,5 @@ type Story = StoryObj<typeof meta>;
 /** The icons the app draws, each as tall and in the weight its caller asks for, in the text colour, with its export, its size and its main caller. */
 export const AtAppSize: Story = { render: () => <IconsGallery scale="app" /> };
 
-/** Every icon of the library in a 48px box and in the accent, Duotone Light beside Duotone Solid; the wordmark keeps the site's colours. */
+/** Every icon of the library in a 48px box and in the accent: Duotone Light, Duotone Solid and Classic Solid; the wordmark keeps the site's colours. */
 export const LargeInAccent: Story = { render: () => <IconsGallery scale="large" /> };

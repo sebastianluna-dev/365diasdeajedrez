@@ -1,13 +1,13 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `eraser`, in Duotone Light or, with `variant="solid"`,
- * Duotone Solid.
+ * Font Awesome's `eraser`, in Duotone Light (the default), Duotone Solid or
+ * Classic Solid, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function EraserIcon({ className, variant = "light" }: IconProps) {
+export function EraserIcon({ className, variant = "duotone-light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -17,15 +17,7 @@ export function EraserIcon({ className, variant = "light" }: IconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      {variant === "solid" ? (
-        <>
-          <path
-            opacity=".4"
-            d="M0 304c0 15.4 6.1 30.1 17 41L133.3 461.3c12 12 28.3 18.7 45.3 18.7L512 480c17.7 0 32-14.3 32-32s-14.3-32-32-32l-120 0 20-20-45.3-45.3-65.3 65.3-123 0-112-112c42.3-42.3 84.5-84.5 126.7-126.7L148 132c-43.7 43.7-87.3 87.3-131 131-10.9 10.9-17 25.6-17 41z"
-          />
-          <path d="M193.3 177.3L412 396 527 281c10.9-10.9 17-25.6 17-41s-6.1-30.1-17-41L345 17C334.1 6.1 319.4 0 304 0s-30.1 6.1-41 17l-115 115 45.3 45.3z" />
-        </>
-      ) : (
+      {variant === "duotone-light" && (
         <>
           <path
             opacity=".4"
@@ -33,6 +25,18 @@ export function EraserIcon({ className, variant = "light" }: IconProps) {
           />
           <path d="M285.7 39.6c4.9-4.9 11.5-7.6 18.3-7.6s13.5 2.7 18.3 7.6L504.4 221.7c4.9 4.9 7.6 11.5 7.6 18.3s-2.7 13.5-7.6 18.3l0 0-87.7 87.7-218.7-218.7 87.7-87.7zM175.3 149.9l218.7 218.7-69.9 69.9c-6 6-14.1 9.4-22.6 9.4l-123 0c-8.5 0-16.6-3.4-22.6-9.4L39.6 322.3C34.7 317.5 32 310.9 32 304s2.7-13.5 7.6-18.3L175.3 149.9zM304 0c-15.4 0-30.1 6.1-41 17L17 263C6.1 273.9 0 288.6 0 304s6.1 30.1 17 41L133.3 461.3c12 12 28.3 18.7 45.3 18.7l123 0c.8 0 1.7 0 2.5 0l0 0 224 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-168 0 167-167c10.9-10.9 17-25.6 17-41s-6.1-30.1-17-41L345 17C334.1 6.1 319.4 0 304 0z" />
         </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M0 304c0 15.4 6.1 30.1 17 41L133.3 461.3c12 12 28.3 18.7 45.3 18.7L512 480c17.7 0 32-14.3 32-32s-14.3-32-32-32l-120 0 20-20-45.3-45.3-65.3 65.3-123 0-112-112c42.3-42.3 84.5-84.5 126.7-126.7L148 132c-43.7 43.7-87.3 87.3-131 131-10.9 10.9-17 25.6-17 41z"
+          />
+          <path d="M193.3 177.3L412 396 527 281c10.9-10.9 17-25.6 17-41s-6.1-30.1-17-41L345 17C334.1 6.1 319.4 0 304 0s-30.1 6.1-41 17l-115 115 45.3 45.3z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M178.5 416l123 0 65.3-65.3-173.5-173.5-126.7 126.7 112 112zM224 480l-45.5 0c-17 0-33.3-6.7-45.3-18.7L17 345C6.1 334.1 0 319.4 0 304s6.1-30.1 17-41L263 17C273.9 6.1 288.6 0 304 0s30.1 6.1 41 17L527 199c10.9 10.9 17 25.6 17 41s-6.1 30.1-17 41l-135 135 120 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-288 0z" />
       )}
     </svg>
   );

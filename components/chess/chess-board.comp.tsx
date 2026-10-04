@@ -412,7 +412,7 @@ export function ChessBoard({
             onClick={toggleAutoPlay}
             className={`chess-board__tool chess-board__tool_variant_play${isAutoPlaying ? " chess-board__tool_active" : ""}`}
           >
-            {isAutoPlaying ? <PauseIcon variant="solid" /> : <PlayIcon variant="solid" />}
+            {isAutoPlaying ? <PauseIcon variant="duotone-solid" /> : <PlayIcon variant="duotone-solid" />}
           </button>
           <button type="button" aria-label="Ir al inicio" onClick={goToStart} className="chess-board__tool">
             <span className="chess-board__tool-icon_flipped">
