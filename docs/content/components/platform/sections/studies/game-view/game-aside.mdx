@@ -50,6 +50,8 @@ Block `.game-aside` (238 lines). Each card is white on the page's grey over a li
 
 **Tokens:** `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-subtle`
 
+**Width.** The page that lays it out (`game-page.css`, beside the route's `page.tsx`) is capped at 1480px, wider than the other pages of the board (1240px), and gives the aside `clamp(280px, 24%, 360px)`; the board stays at its 600px (`--viewer-board-max`), so what the page gains goes to this column and to the notation, the two that are read.
+
 **Breakpoints:** `(width < 1280px)` lays the cards side by side above the board.
 
 ## Usage

@@ -5,10 +5,18 @@
   margin-top: calc(-1 * var(--platform-space-5));
   gap: var(--platform-space-4);
 
-  /* The aside measures its own; the board keeps the rest. */
+  /* Wider than the other pages of the board (1240px in platform.css), and
+     the room it gains goes to the two columns that are read, never to the
+     board: the viewer caps the board at 600px and gives the notation what is
+     left, and the aside grows with the page, from 280px to 360. */
+  &.platform-page_width_wide {
+    max-width: 1480px;
+  }
+
+  /* The aside measures its own; the board and its notation keep the rest. */
   & .game-page__layout {
     display: grid;
-    grid-template-columns: 280px minmax(0, 1fr);
+    grid-template-columns: clamp(280px, 24%, 360px) minmax(0, 1fr);
     gap: var(--platform-space-6);
     align-items: start;
   }
