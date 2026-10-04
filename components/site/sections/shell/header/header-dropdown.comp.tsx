@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useId, useState } from "react";
-import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
+import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
 
 interface HeaderDropdownProps {
   label: string;
@@ -40,7 +40,7 @@ export function HeaderDropdown({ label, links }: HeaderDropdownProps) {
         onClick={() => setOpen((current) => !current)}
       >
         {label}
-        <ChevronIcon className="site-header__dropdown-icon" />
+        <AngleRightIcon className="site-header__dropdown-icon" />
       </button>
       <div id={menuId} className="site-header__dropdown-menu">
         {links.map((link, index) => (

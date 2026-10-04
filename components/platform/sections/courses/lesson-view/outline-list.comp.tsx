@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
+import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import type { LessonSibling } from "@/services/courses/courses.types";
 // The rows are drawn by the column's sheet, and a stylesheet only travels
@@ -26,7 +26,7 @@ const TOP_MARGIN = 10;
  */
 function mark(isCompleted: boolean) {
   return isCompleted ? (
-    <CircleCheckSolidIcon className="lesson-outline__done" />
+    <CircleCheckIcon variant="solid" className="lesson-outline__done" />
   ) : (
     <span className="lesson-outline__pending" aria-hidden="true" />
   );

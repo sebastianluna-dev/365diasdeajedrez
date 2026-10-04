@@ -13,15 +13,15 @@ import {
 } from "react";
 import Link from "next/link";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
-import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
-import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
-import { BoardFlipIcon } from "@/components/icons/board-flip-icon.comp";
-import { FullscreenIcon } from "@/components/icons/fullscreen-icon.comp";
-import { JumpEndIcon } from "@/components/icons/jump-end-icon.comp";
-import { JumpStartIcon } from "@/components/icons/jump-start-icon.comp";
-import { MenuIcon } from "@/components/icons/menu-icon.comp";
-import { SoundOffIcon } from "@/components/icons/sound-off-icon.comp";
-import { SoundOnIcon } from "@/components/icons/sound-on-icon.comp";
+import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
+import { ChevronRightIcon } from "@/components/icons/chevron-right-icon.comp";
+import { ArrowRightArrowLeftIcon } from "@/components/icons/arrow-right-arrow-left-icon.comp";
+import { ExpandIcon } from "@/components/icons/expand-icon.comp";
+import { ForwardStepIcon } from "@/components/icons/forward-step-icon.comp";
+import { BackwardStepIcon } from "@/components/icons/backward-step-icon.comp";
+import { BarsIcon } from "@/components/icons/bars-icon.comp";
+import { VolumeXmarkIcon } from "@/components/icons/volume-xmark-icon.comp";
+import { VolumeLowIcon } from "@/components/icons/volume-low-icon.comp";
 import { numberedMoveLabel } from "@/lib/chess/notation";
 import { endPathOf, nextPathOf, nodeAtPath, parentPathOf, parsePgnTree } from "@/lib/chess/pgn-tree";
 import { EnginePanel } from "./engine-panel.comp";
@@ -480,7 +480,7 @@ export function GameViewer({
         disabled={atStart}
         className="game-viewer__nav-button"
       >
-        <JumpStartIcon className="game-viewer__nav-icon" />
+        <BackwardStepIcon variant="solid" className="game-viewer__nav-icon" />
       </button>
       <button
         type="button"
@@ -493,7 +493,7 @@ export function GameViewer({
         onPointerCancel={stopRepeat}
         className="game-viewer__nav-button"
       >
-        <ArrowLeftIcon className="game-viewer__nav-icon" />
+        <ChevronLeftIcon className="game-viewer__nav-icon" />
       </button>
       <button
         type="button"
@@ -508,7 +508,7 @@ export function GameViewer({
         onPointerCancel={stopRepeat}
         className="game-viewer__nav-button game-viewer__nav-button_emphasis_strong"
       >
-        <ArrowRightIcon className="game-viewer__nav-icon" />
+        <ChevronRightIcon className="game-viewer__nav-icon" />
       </button>
       <button
         type="button"
@@ -517,7 +517,7 @@ export function GameViewer({
         disabled={atEnd}
         className="game-viewer__nav-button"
       >
-        <JumpEndIcon className="game-viewer__nav-icon" />
+        <ForwardStepIcon variant="solid" className="game-viewer__nav-icon" />
       </button>
       {/* Flipping the board is an action on the game, not a viewer setting:
           it goes with the buttons the game is traversed with. */}
@@ -528,7 +528,7 @@ export function GameViewer({
           onClick={() => setFlipToggled((current) => !current)}
           className="game-viewer__nav-button"
         >
-          <BoardFlipIcon className="game-viewer__nav-icon" />
+          <ArrowRightArrowLeftIcon className="game-viewer__nav-icon" />
         </button>
       )}
 
@@ -546,7 +546,7 @@ export function GameViewer({
             className="game-viewer__nav-button"
             ref={optionsButtonRef}
           >
-            <MenuIcon className="game-viewer__nav-icon" />
+            <BarsIcon className="game-viewer__nav-icon" />
           </button>
 
           {lingeringOptions.value && (
@@ -569,9 +569,9 @@ export function GameViewer({
                 className="game-viewer__options-item"
               >
                 {preferences.sound ? (
-                  <SoundOnIcon className="game-viewer__options-icon" />
+                  <VolumeLowIcon className="game-viewer__options-icon" />
                 ) : (
-                  <SoundOffIcon className="game-viewer__options-icon" />
+                  <VolumeXmarkIcon className="game-viewer__options-icon" />
                 )}
                 {preferences.sound ? "Silenciar" : "Activar el sonido"}
               </button>
@@ -585,7 +585,7 @@ export function GameViewer({
                 }}
                 className="game-viewer__options-item"
               >
-                <FullscreenIcon className="game-viewer__options-icon" />
+                <ExpandIcon className="game-viewer__options-icon" />
                 {isFullscreen ? "Salir de pantalla completa" : "Pantalla completa"}
               </button>
             </div>

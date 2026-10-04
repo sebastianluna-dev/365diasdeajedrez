@@ -3,7 +3,7 @@
 import { type ComponentProps, type KeyboardEvent, useEffect, useId, useRef, useState } from "react";
 import { Popover } from "radix-ui";
 import { CalendarIcon } from "@/components/icons/calendar-icon.comp";
-import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
+import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
 import { formatSpanishDate, MONTHS_ES } from "@/lib/format-spanish-date";
 import "./platform-date-picker.comp.css";
 
@@ -266,7 +266,7 @@ export function PlatformDatePicker({
               aria-label="Mes anterior"
               onClick={() => moveFocus(addMonths(focused, -1))}
             >
-              <ChevronIcon className="platform-date-picker__nav-icon platform-date-picker__nav-icon_direction_back" />
+              <AngleRightIcon className="platform-date-picker__nav-icon platform-date-picker__nav-icon_direction_back" />
             </button>
             <span id={captionId} className="platform-date-picker__caption" aria-live="polite">
               {MONTHS_ES[month.getMonth()]} {month.getFullYear()}
@@ -277,7 +277,7 @@ export function PlatformDatePicker({
               aria-label="Mes siguiente"
               onClick={() => moveFocus(addMonths(focused, 1))}
             >
-              <ChevronIcon className="platform-date-picker__nav-icon" />
+              <AngleRightIcon className="platform-date-picker__nav-icon" />
             </button>
           </div>
 

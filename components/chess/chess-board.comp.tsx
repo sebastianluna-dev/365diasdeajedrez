@@ -12,11 +12,11 @@ import { legalDests } from "@/lib/chess/legal-moves";
 import { buildNotationRows, moveQualityLabel, startPlyOfFen, type NotationHalfMove } from "@/lib/chess/notation";
 import { isPromotionMove, replayGame, sanForMove, turnColor, type PromotionRole } from "@/lib/chess/replay";
 import type { MoveAnnotations } from "@/lib/chess/types";
-import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
-import { SkipIcon } from "@/components/icons/skip-icon.comp";
+import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
+import { ArrowRightToLineIcon } from "@/components/icons/arrow-right-to-line-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { PauseIcon } from "@/components/icons/pause-icon.comp";
-import { FlipIcon } from "@/components/icons/flip-icon.comp";
+import { ArrowsRotateIcon } from "@/components/icons/arrows-rotate-icon.comp";
 import { chessMoveQualityIconFor } from "@/components/chess/chess-move-quality-icon.comp";
 import "./chess-board.comp.css";
 
@@ -404,7 +404,7 @@ export function ChessBoard({
       <div className="chess-board__toolbar">
         <div className="chess-board__toolbar-group">
           <button type="button" aria-label="Voltear tablero" onClick={toggleFlip} className="chess-board__tool">
-            <FlipIcon />
+            <ArrowsRotateIcon />
           </button>
           <button
             type="button"
@@ -412,23 +412,23 @@ export function ChessBoard({
             onClick={toggleAutoPlay}
             className={`chess-board__tool chess-board__tool_variant_play${isAutoPlaying ? " chess-board__tool_active" : ""}`}
           >
-            {isAutoPlaying ? <PauseIcon /> : <PlayIcon />}
+            {isAutoPlaying ? <PauseIcon variant="solid" /> : <PlayIcon variant="solid" />}
           </button>
           <button type="button" aria-label="Ir al inicio" onClick={goToStart} className="chess-board__tool">
             <span className="chess-board__tool-icon_flipped">
-              <SkipIcon />
+              <ArrowRightToLineIcon />
             </span>
           </button>
           <button type="button" aria-label="Jugada anterior" onClick={goToPrevious} className="chess-board__tool">
             <span className="chess-board__tool-icon_flipped">
-              <ChevronIcon />
+              <AngleRightIcon />
             </span>
           </button>
           <button type="button" aria-label="Jugada siguiente" onClick={goToNext} className="chess-board__tool">
-            <ChevronIcon />
+            <AngleRightIcon />
           </button>
           <button type="button" aria-label="Ir al final" onClick={goToEnd} className="chess-board__tool">
-            <SkipIcon />
+            <ArrowRightToLineIcon />
           </button>
         </div>
       </div>

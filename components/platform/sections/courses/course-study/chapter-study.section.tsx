@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
+import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
 import { PROGRESS_STATUS } from "@/constants/platform/shared-codes.const";
 import type { ChapterView } from "@/services/courses/courses.types";
 import { CourseStudyFrame } from "./course-study-frame.comp";
@@ -61,7 +61,7 @@ export function ChapterStudySection({ chapter, errorCode }: ChapterStudySectionP
                     </h3>
                     {isDone && (
                       <span className="chapter-study__done" role="img" aria-label="Aprendida">
-                        <CircleCheckSolidIcon className="chapter-study__done-icon" />
+                        <CircleCheckIcon variant="solid" className="chapter-study__done-icon" />
                       </span>
                     )}
                   </div>

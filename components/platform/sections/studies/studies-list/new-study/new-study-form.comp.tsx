@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import { STUDY_KIND_CARDS } from "@/constants/platform/study-kind-cards.const";
-import { CloseIcon } from "@/components/icons/close-icon.comp";
+import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
 import { PlatformChoiceCards } from "@/components/platform/shared/platform-choice-cards/platform-choice-cards.comp";
 import {
   PlatformForm,
@@ -43,7 +43,7 @@ export function NewStudyForm({ titleId, kinds, action, onClose, onSubmit }: NewS
           <p className="new-study__subtitle">Agrupa partidas y análisis bajo un mismo tema.</p>
         </div>
         <button type="button" className="new-study__close" onClick={onClose} aria-label="Cerrar">
-          <CloseIcon className="new-study__close-icon" />
+          <XmarkIcon className="new-study__close-icon" />
         </button>
       </header>
 

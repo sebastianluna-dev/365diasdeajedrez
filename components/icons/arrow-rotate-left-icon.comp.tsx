@@ -1,0 +1,33 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Resetting the mobile chess clock. Font Awesome's `arrow-rotate-left`, in
+ * Duotone Light or, with `variant="solid"`, Duotone Solid.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function ArrowRotateLeftIcon({ className, variant = "light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-85.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "solid" ? (
+        <>
+          <path
+            opacity=".4"
+            d="M45.9 402.3C54.4 414.5 64.1 426.2 75 437 175 537 337 537 437 437S537 175 437 75C387 25 321.5 0 256 0 179.5 0 110.9 33.6 64 86.7l0 41.3 48.9 0c35.2-39.3 86.3-64 143.1-64 49.2 0 98.3 18.7 135.8 56.2 75 75 75 196.5 0 271.5s-196.5 75-271.5 0c-8.2-8.2-15.5-16.9-21.9-26.1-10.1-14.5-30.1-18-44.6-7.9s-18 30.1-7.9 44.6z"
+          />
+          <path d="M32 0C49.7 0 64 14.3 64 32l0 96 96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L32 192c-17.7 0-32-14.3-32-32L0 32C0 14.3 14.3 0 32 0z" />
+        </>
+      ) : (
+        <path d="M16 0c8.8 0 16 7.2 16 16l0 103.8 37-39.1C117.6 29.2 185.2 0 256 0 397.4 0 512 114.6 512 256S397.4 512 256 512c-98.3 0-183.6-55.4-226.5-136.5-4.1-7.8-1.1-17.5 6.7-21.6s17.5-1.1 21.6 6.7C95.4 431.6 170.1 480 256 480 379.7 480 480 379.7 480 256S379.7 32 256 32c-62 0-121.2 25.5-163.8 70.6L53.1 144 160 144c8.8 0 16 7.2 16 16s-7.2 16-16 16L16 176c-8.8 0-16-7.2-16-16L0 16C0 7.2 7.2 0 16 0z" />
+      )}
+    </svg>
+  );
+}

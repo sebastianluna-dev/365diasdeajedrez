@@ -1,15 +1,15 @@
-interface MoonIconProps {
-  className?: string;
-}
+import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Night: what the dark theme is called by everywhere. Font Awesome's `moon`,
- * Duotone Light.
+ * in Duotone Light or, with `variant="solid"`, Duotone Solid. Its Solid
+ * drawing is a single layer, drawn at full strength: at 40 % it would read as
+ * switched off.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
  */
-export function MoonIcon({ className }: MoonIconProps) {
+export function MoonIcon({ className, variant = "light" }: IconProps) {
   return (
     <svg
       className={className}
@@ -19,11 +19,17 @@ export function MoonIcon({ className }: MoonIconProps) {
       fill="currentColor"
       aria-hidden="true"
     >
-      <path
-        opacity=".4"
-        d="M32 256c0 123.7 100.3 224 224 224 52.4 0 100.6-18 138.7-48.1-114.3-3.2-210.7-98.7-210.7-215.9 0-76.6 39.9-143.9 100-182.3-9.2-1.1-18.5-1.7-28-1.7-123.7 0-224 100.3-224 224z"
-      />
-      <path d="M256 32c9.5 0 18.9 .6 28 1.7-60.1 38.3-100 105.6-100 182.3 0 117.2 96.4 212.8 210.7 215.9-38.2 30.1-86.3 48.1-138.7 48.1-123.7 0-224-100.3-224-224S132.3 32 256 32zm0-32C114.6 0 0 114.6 0 256S114.6 512 256 512c68.8 0 131.3-27.2 177.3-71.4 7.3-7 9.4-17.9 5.3-27.1s-13.7-14.9-23.8-14.1c-105.4 8.4-198.8-77.3-198.8-183.4 0-72.1 41.5-134.6 102.1-164.8 9.1-4.5 14.3-14.3 13.1-24.4S322.6 8.5 312.7 6.3C294.4 2.2 275.4 0 256 0z" />
+      {variant === "solid" ? (
+        <path d="M256 0C114.6 0 0 114.6 0 256S114.6 512 256 512c68.8 0 131.3-27.2 177.3-71.4 7.3-7 9.4-17.9 5.3-27.1s-13.7-14.9-23.8-14.1c-4.9 .4-9.8 .6-14.8 .6-101.6 0-184-82.4-184-184 0-72.1 41.5-134.6 102.1-164.8 9.1-4.5 14.3-14.3 13.1-24.4S322.6 8.5 312.7 6.3C294.4 2.2 275.4 0 256 0z" />
+      ) : (
+        <>
+          <path
+            opacity=".4"
+            d="M32 256c0 123.7 100.3 224 224 224 52.4 0 100.6-18 138.7-48.1-114.3-3.2-210.7-98.7-210.7-215.9 0-76.6 39.9-143.9 100-182.3-9.2-1.1-18.5-1.7-28-1.7-123.7 0-224 100.3-224 224z"
+          />
+          <path d="M256 32c9.5 0 18.9 .6 28 1.7-60.1 38.3-100 105.6-100 182.3 0 117.2 96.4 212.8 210.7 215.9-38.2 30.1-86.3 48.1-138.7 48.1-123.7 0-224-100.3-224-224S132.3 32 256 32zm0-32C114.6 0 0 114.6 0 256S114.6 512 256 512c68.8 0 131.3-27.2 177.3-71.4 7.3-7 9.4-17.9 5.3-27.1s-13.7-14.9-23.8-14.1c-105.4 8.4-198.8-77.3-198.8-183.4 0-72.1 41.5-134.6 102.1-164.8 9.1-4.5 14.3-14.3 13.1-24.4S322.6 8.5 312.7 6.3C294.4 2.2 275.4 0 256 0z" />
+        </>
+      )}
     </svg>
   );
 }

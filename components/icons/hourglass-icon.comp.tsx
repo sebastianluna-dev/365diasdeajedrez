@@ -1,0 +1,39 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `hourglass`, in Duotone Light or, with `variant="solid"`,
+ * Duotone Solid.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function HourglassIcon({ className, variant = "light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-149.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "solid" ? (
+        <>
+          <path
+            opacity=".4"
+            d="M32 64l320 0 0 11c0 42.4-16.9 83.1-46.9 113.1l-67.9 67.9 67.9 67.9c30 30 46.9 70.7 46.9 113.1l0 11-320 0 0-11c0-42.4 16.9-83.1 46.9-113.1l67.9-67.9-67.9-67.9C48.9 158.1 32 117.4 32 75l0-11z"
+          />
+          <path d="M32 0C14.3 0 0 14.3 0 32S14.3 64 32 64l320 0c17.7 0 32-14.3 32-32S369.7 0 352 0L32 0zm0 448c-17.7 0-32 14.3-32 32s14.3 32 32 32l320 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 448z" />
+        </>
+      ) : (
+        <>
+          <path
+            opacity=".4"
+            d="M64 32l0 41.6c0 39.5 18.2 76.8 49.4 101l78.6 61.1 78.6-61.1c31.2-24.3 49.4-61.5 49.4-101L320 32 64 32zm0 406.4l0 41.6 256 0 0-41.6c0-39.5-18.2-76.8-49.4-101l-78.6-61.1-78.6 61.1C82.2 361.6 64 398.9 64 438.4z"
+          />
+          <path d="M16 0C7.2 0 0 7.2 0 16S7.2 32 16 32l16 0 0 41.6c0 49.4 22.8 96 61.8 126.3l72.2 56.1-72.2 56.1C54.8 342.4 32 389.1 32 438.4l0 41.6-16 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l352 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-16 0 0-41.6c0-49.4-22.8-96-61.8-126.3l-72.2-56.1 72.2-56.1c39-30.3 61.8-76.9 61.8-126.3l0-41.6 16 0c8.8 0 16-7.2 16-16S376.8 0 368 0L16 0zM320 32l0 41.6c0 39.5-18.2 76.8-49.4 101l-78.6 61.1-78.6-61.1C82.2 150.4 64 113.1 64 73.6L64 32 320 32zM192 276.3l78.6 61.1c31.2 24.2 49.4 61.5 49.4 101l0 41.6-256 0 0-41.6c0-39.5 18.2-76.8 49.4-101L192 276.3z" />
+        </>
+      )}
+    </svg>
+  );
+}

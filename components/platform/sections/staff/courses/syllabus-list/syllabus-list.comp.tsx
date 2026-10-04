@@ -5,8 +5,8 @@ import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent as 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useLingering } from "@/components/chess/game-viewer/use-lingering.hook";
-import { GripIcon } from "@/components/icons/grip-icon.comp";
-import { MoreIcon } from "@/components/icons/more-icon.comp";
+import { GripDotsVerticalIcon } from "@/components/icons/grip-dots-vertical-icon.comp";
+import { EllipsisIcon } from "@/components/icons/ellipsis-icon.comp";
 import { SortableDnd } from "@/components/platform/shared/sortable-dnd/sortable-dnd.comp";
 import { useSortableRows } from "@/components/platform/shared/sortable-dnd/use-sortable-rows.hook";
 import { useSortableStep, type SortableSteps } from "@/components/platform/shared/sortable-dnd/use-sortable-step.hook";
@@ -162,7 +162,7 @@ function RowMenu({ item, deleteAction, deleteFieldName, steps }: RowMenuProps) {
         aria-expanded={open}
         onClick={() => setOpen((wasOpen) => !wasOpen)}
       >
-        <MoreIcon />
+        <EllipsisIcon variant="solid" />
       </button>
 
       {lingering.value && (
@@ -290,7 +290,7 @@ function Row({ item, number, noun, deleteAction, deleteFieldName }: RowProps & {
         {...attributes}
         {...listeners}
       >
-        <GripIcon />
+        <GripDotsVerticalIcon variant="solid" />
       </button>
       <span className="syllabus-list__number" aria-hidden="true">
         {number}

@@ -1,0 +1,34 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `folder`, in Duotone Light or, with `variant="solid"`,
+ * Duotone Solid. Its Solid drawing is a single layer, drawn at full strength:
+ * at 40 % it would read as switched off.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function FolderIcon({ className, variant = "light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-85.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "solid" ? (
+        <path d="M64 448l384 0c35.3 0 64-28.7 64-64l0-240c0-35.3-28.7-64-64-64L298.7 80c-6.9 0-13.7-2.2-19.2-6.4L241.1 44.8C230 36.5 216.5 32 202.7 32L64 32C28.7 32 0 60.7 0 96L0 384c0 35.3 28.7 64 64 64z" />
+      ) : (
+        <>
+          <path
+            opacity=".4"
+            d="M32 96l0 288c0 17.7 14.3 32 32 32l384 0c17.7 0 32-14.3 32-32l0-240c0-17.7-14.3-32-32-32l-149.3 0c-13.8 0-27.3-4.5-38.4-12.8L221.9 70.4c-5.5-4.2-12.3-6.4-19.2-6.4L64 64C46.3 64 32 78.3 32 96z"
+          />
+          <path d="M64 416l384 0c17.7 0 32-14.3 32-32l0-240c0-17.7-14.3-32-32-32l-149.3 0c-13.8 0-27.3-4.5-38.4-12.8L221.9 70.4c-5.5-4.2-12.3-6.4-19.2-6.4L64 64C46.3 64 32 78.3 32 96l0 288c0 17.7 14.3 32 32 32zm384 32L64 448c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l138.7 0c13.8 0 27.3 4.5 38.4 12.8l38.4 28.8c5.5 4.2 12.3 6.4 19.2 6.4L448 80c35.3 0 64 28.7 64 64l0 240c0 35.3-28.7 64-64 64z" />
+        </>
+      )}
+    </svg>
+  );
+}

@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
-import { ExitIcon } from "@/components/icons/exit-icon.comp";
-import { FlameIcon } from "@/components/icons/flame-icon.comp";
-import { GearIcon } from "@/components/icons/gear-icon.comp";
+import { ArrowRightFromBracketIcon } from "@/components/icons/arrow-right-from-bracket-icon.comp";
+import { FireIcon } from "@/components/icons/fire-icon.comp";
+import { SlidersIcon } from "@/components/icons/sliders-icon.comp";
 import { MoonIcon } from "@/components/icons/moon-icon.comp";
 import { UserIcon } from "@/components/icons/user-icon.comp";
 import { useLingering } from "@/components/chess/game-viewer/use-lingering.hook";
@@ -135,7 +135,11 @@ export function PlatformUserMenu({ displayName, initials, profileHref }: Platfor
             <div className="platform-user-menu__day">
               <p className="platform-user-menu__figure">
                 <span className="platform-user-menu__figure-mark">
-                  <FlameIcon className="platform-user-menu__flame" coreClassName="platform-user-menu__flame-core" />
+                  <FireIcon
+                    variant="solid"
+                    className="platform-user-menu__flame"
+                    coreClassName="platform-user-menu__flame-core"
+                  />
                 </span>
                 <span className="platform-user-menu__figure-text">
                   <span className="platform-user-menu__figure-value">
@@ -180,7 +184,7 @@ export function PlatformUserMenu({ displayName, initials, profileHref }: Platfor
             className="platform-user-menu__item"
             onClick={() => close(false)}
           >
-            <GearIcon className="platform-user-menu__icon" />
+            <SlidersIcon className="platform-user-menu__icon" />
             Ajustes
           </Link>
 
@@ -221,7 +225,7 @@ export function PlatformUserMenu({ displayName, initials, profileHref }: Platfor
           {/* A form, so signing out works without JavaScript, as it always has. */}
           <form action={logoutAction}>
             <button type="submit" role="menuitem" className="platform-user-menu__item">
-              <ExitIcon className="platform-user-menu__icon" />
+              <ArrowRightFromBracketIcon className="platform-user-menu__icon" />
               Cerrar sesión
             </button>
           </form>

@@ -1,5 +1,5 @@
-import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
-import { FlameIcon } from "@/components/icons/flame-icon.comp";
+import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
+import { FireIcon } from "@/components/icons/fire-icon.comp";
 import type { StudyStreak as StudyStreakModel } from "@/services/study-goal/study-goal.types";
 import "./study-streak.comp.css";
 
@@ -37,15 +37,15 @@ export function StudyStreak({ streak }: StudyStreakProps) {
 
       <p className="study-streak__figures">
         <span className={`study-streak__figure${isLit ? "" : " study-streak__figure_state_unlit"}`}>
-          <FlameIcon className="study-streak__flame" coreClassName="study-streak__flame-core" />
+          <FireIcon variant="solid" className="study-streak__flame" coreClassName="study-streak__flame-core" />
           <span className="study-streak__value">{streak.days}</span>
         </span>
 
         {!streak.studiedToday && (
           <>
-            <ChevronIcon className="study-streak__arrow" />
+            <AngleRightIcon className="study-streak__arrow" />
             <span className="study-streak__figure study-streak__figure_state_unlit" aria-hidden="true">
-              <FlameIcon className="study-streak__flame" coreClassName="study-streak__flame-core" />
+              <FireIcon variant="solid" className="study-streak__flame" coreClassName="study-streak__flame-core" />
               <span className="study-streak__value">{streak.days + 1}</span>
             </span>
           </>

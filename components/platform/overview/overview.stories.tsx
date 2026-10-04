@@ -14,42 +14,41 @@ import { MoveTable } from "@/components/chess/game-viewer/move-table.comp";
 import { MoveTree } from "@/components/chess/game-viewer/move-tree.comp";
 import { PlayerStrip } from "@/components/chess/game-viewer/player-strip.comp";
 import { StaticDiagram } from "@/components/chess/static-diagram.comp";
-import { ArrowLeftIcon } from "@/components/icons/arrow-left-icon.comp";
-import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
+import { ChevronLeftIcon } from "@/components/icons/chevron-left-icon.comp";
+import { ChevronRightIcon } from "@/components/icons/chevron-right-icon.comp";
 import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
-import { BoardFlipIcon } from "@/components/icons/board-flip-icon.comp";
+import { ArrowRightArrowLeftIcon } from "@/components/icons/arrow-right-arrow-left-icon.comp";
 import { CalendarIcon } from "@/components/icons/calendar-icon.comp";
 import { CaretRightIcon } from "@/components/icons/caret-right-icon.comp";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
-import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
+import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
 import { CircleCheckIcon } from "@/components/icons/circle-check-icon.comp";
-import { CircleCheckSolidIcon } from "@/components/icons/circle-check-solid-icon.comp";
 import { ClipboardIcon } from "@/components/icons/clipboard-icon.comp";
-import { CloseIcon } from "@/components/icons/close-icon.comp";
-import { ExitIcon } from "@/components/icons/exit-icon.comp";
-import { FlameIcon } from "@/components/icons/flame-icon.comp";
-import { FlipIcon } from "@/components/icons/flip-icon.comp";
-import { FullscreenIcon } from "@/components/icons/fullscreen-icon.comp";
-import { GearIcon } from "@/components/icons/gear-icon.comp";
-import { GripIcon } from "@/components/icons/grip-icon.comp";
+import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
+import { ArrowRightFromBracketIcon } from "@/components/icons/arrow-right-from-bracket-icon.comp";
+import { FireIcon } from "@/components/icons/fire-icon.comp";
+import { ArrowsRotateIcon } from "@/components/icons/arrows-rotate-icon.comp";
+import { ExpandIcon } from "@/components/icons/expand-icon.comp";
+import { SlidersIcon } from "@/components/icons/sliders-icon.comp";
+import { GripDotsVerticalIcon } from "@/components/icons/grip-dots-vertical-icon.comp";
 import { HeartIcon } from "@/components/icons/heart-icon.comp";
 import { ImageIcon } from "@/components/icons/image-icon.comp";
-import { InfoIcon } from "@/components/icons/info-icon.comp";
-import { JumpEndIcon } from "@/components/icons/jump-end-icon.comp";
-import { JumpStartIcon } from "@/components/icons/jump-start-icon.comp";
+import { CircleInfoIcon } from "@/components/icons/circle-info-icon.comp";
+import { ForwardStepIcon } from "@/components/icons/forward-step-icon.comp";
+import { BackwardStepIcon } from "@/components/icons/backward-step-icon.comp";
 import { LogoMarkIcon } from "@/components/icons/logo-mark-icon.comp";
-import { MenuIcon } from "@/components/icons/menu-icon.comp";
+import { BarsIcon } from "@/components/icons/bars-icon.comp";
 import { MoonIcon } from "@/components/icons/moon-icon.comp";
-import { MoreIcon } from "@/components/icons/more-icon.comp";
-import { NoteIcon } from "@/components/icons/note-icon.comp";
+import { EllipsisIcon } from "@/components/icons/ellipsis-icon.comp";
+import { CommentIcon } from "@/components/icons/comment-icon.comp";
 import { PauseIcon } from "@/components/icons/pause-icon.comp";
 import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { PlusIcon } from "@/components/icons/plus-icon.comp";
-import { SearchIcon } from "@/components/icons/search-icon.comp";
-import { SkipIcon } from "@/components/icons/skip-icon.comp";
-import { SoundOffIcon } from "@/components/icons/sound-off-icon.comp";
-import { SoundOnIcon } from "@/components/icons/sound-on-icon.comp";
-import { TrashIcon } from "@/components/icons/trash-icon.comp";
+import { MagnifyingGlassIcon } from "@/components/icons/magnifying-glass-icon.comp";
+import { ArrowRightToLineIcon } from "@/components/icons/arrow-right-to-line-icon.comp";
+import { VolumeXmarkIcon } from "@/components/icons/volume-xmark-icon.comp";
+import { VolumeLowIcon } from "@/components/icons/volume-low-icon.comp";
+import { TrashCanIcon } from "@/components/icons/trash-can-icon.comp";
 import { UserIcon } from "@/components/icons/user-icon.comp";
 import { WhatsappIcon } from "@/components/icons/whatsapp-icon.comp";
 import { PLATFORM_CSS } from "@/components/platform/foundations/platform-stylesheets.const";
@@ -223,42 +222,42 @@ const SHEET_PATH = staffRoutes.courseSyllabus("4812");
 
 /** Every icon but the wordmark, which paints nothing without the site's logo around it (see its gallery). */
 const ICONS = [
-  ArrowLeftIcon,
-  ArrowRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
   ArrowUpIcon,
-  BoardFlipIcon,
+  ArrowRightArrowLeftIcon,
   CalendarIcon,
   CaretRightIcon,
   CheckIcon,
-  ChevronIcon,
+  AngleRightIcon,
   CircleCheckIcon,
-  CircleCheckSolidIcon,
+  CircleCheckIcon,
   ClipboardIcon,
-  CloseIcon,
-  ExitIcon,
-  FlameIcon,
-  FlipIcon,
-  FullscreenIcon,
-  GearIcon,
-  GripIcon,
+  XmarkIcon,
+  ArrowRightFromBracketIcon,
+  FireIcon,
+  ArrowsRotateIcon,
+  ExpandIcon,
+  SlidersIcon,
+  GripDotsVerticalIcon,
   HeartIcon,
   ImageIcon,
-  InfoIcon,
-  JumpEndIcon,
-  JumpStartIcon,
+  CircleInfoIcon,
+  ForwardStepIcon,
+  BackwardStepIcon,
   LogoMarkIcon,
-  MenuIcon,
+  BarsIcon,
   MoonIcon,
-  MoreIcon,
-  NoteIcon,
+  EllipsisIcon,
+  CommentIcon,
   PauseIcon,
   PlayIcon,
   PlusIcon,
-  SearchIcon,
-  SkipIcon,
-  SoundOffIcon,
-  SoundOnIcon,
-  TrashIcon,
+  MagnifyingGlassIcon,
+  ArrowRightToLineIcon,
+  VolumeXmarkIcon,
+  VolumeLowIcon,
+  TrashCanIcon,
   UserIcon,
   WhatsappIcon,
 ];

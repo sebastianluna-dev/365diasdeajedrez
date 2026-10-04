@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useId, useRef, useState } from "react";
-import { CloseIcon } from "@/components/icons/close-icon.comp";
+import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
 import type { AuthorAdminRow } from "@/services/staff-courses/staff-courses.types";
 import { AuthorAvatar } from "./author-avatar.comp";
 import { AuthorForm } from "./author-form.comp";
@@ -79,7 +79,7 @@ export function AuthorsManager({ authors, label = "Autores", size = "regular" }:
             onClick={() => dialogRef.current?.close()}
             aria-label="Cerrar"
           >
-            <CloseIcon className="authors-manager__close-icon" />
+            <XmarkIcon className="authors-manager__close-icon" />
           </button>
         </header>
 

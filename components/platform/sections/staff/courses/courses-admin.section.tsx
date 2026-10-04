@@ -2,8 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
-import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
-import { SearchIcon } from "@/components/icons/search-icon.comp";
+import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
+import { MagnifyingGlassIcon } from "@/components/icons/magnifying-glass-icon.comp";
 import { COURSE_STATUS } from "@/constants/platform/course-codes.const";
 import { STAFF_ERROR_MESSAGES } from "@/constants/platform/staff-messages.const";
 import { staffRoutes } from "@/lib/platform-routes";
@@ -82,7 +82,7 @@ export async function CoursesAdminSection({ query, status, level, errorCode }: C
             {/* An ordinary GET: the search stays in the URL, so it can be shared
                 and the back button undoes it. */}
             <form className="courses-admin__search" action={staffRoutes.courses}>
-              <SearchIcon className="courses-admin__search-icon" />
+              <MagnifyingGlassIcon className="courses-admin__search-icon" />
               <input
                 type="search"
                 name="q"
@@ -233,7 +233,7 @@ export async function CoursesAdminSection({ query, status, level, errorCode }: C
                   <span className="courses-admin__cell">{course.publishedAtLabel ?? "—"}</span>
 
                   <span className="courses-admin__chevron" aria-hidden="true">
-                    <ChevronIcon />
+                    <AngleRightIcon />
                   </span>
                 </Link>
               </li>

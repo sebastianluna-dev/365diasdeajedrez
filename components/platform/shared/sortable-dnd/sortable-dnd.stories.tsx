@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { expect, fn, userEvent, within } from "storybook/test";
-import { GripIcon } from "@/components/icons/grip-icon.comp";
+import { GripDotsVerticalIcon } from "@/components/icons/grip-dots-vertical-icon.comp";
 import { SortableDnd } from "./sortable-dnd.comp";
 import { useSortableRows } from "./use-sortable-rows.hook";
 import { useSortableStep } from "./use-sortable-step.hook";
@@ -41,7 +41,7 @@ function Row({ id, name }: { id: string; name: string }) {
         {...attributes}
         {...listeners}
       >
-        <GripIcon />
+        <GripDotsVerticalIcon variant="solid" />
       </button>
       <span style={{ flex: 1 }}>{name}</span>
       <button

@@ -4,8 +4,8 @@ import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "re
 import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
 import { ClipboardIcon } from "@/components/icons/clipboard-icon.comp";
-import { NoteIcon } from "@/components/icons/note-icon.comp";
-import { TrashIcon } from "@/components/icons/trash-icon.comp";
+import { CommentIcon } from "@/components/icons/comment-icon.comp";
+import { TrashCanIcon } from "@/components/icons/trash-can-icon.comp";
 import "./move-context-menu.comp.css";
 
 export interface MoveContextMenuTarget {
@@ -164,7 +164,7 @@ export function MoveContextMenu({
 
       {onComment && (
         <Item
-          icon={<NoteIcon className="move-context-menu__icon-svg" />}
+          icon={<CommentIcon className="move-context-menu__icon-svg" />}
           label="Comentar este movimiento"
           onClick={onComment}
         />
@@ -185,7 +185,7 @@ export function MoveContextMenu({
       )}
 
       <Item
-        icon={<TrashIcon className="move-context-menu__icon-svg" />}
+        icon={<TrashCanIcon className="move-context-menu__icon-svg" />}
         label="Eliminar a partir de aquí"
         onClick={onDelete}
         danger

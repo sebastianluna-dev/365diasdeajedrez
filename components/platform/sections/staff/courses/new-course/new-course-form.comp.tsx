@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CloseIcon } from "@/components/icons/close-icon.comp";
+import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
 import {
   PlatformForm,
@@ -59,7 +59,7 @@ export function NewCourseForm({ titleId, contentTypes, action, onClose, onSubmit
           <p className="new-course__subtitle">Sólo lo imprescindible: el resto se edita en la ficha del curso.</p>
         </div>
         <button type="button" className="new-course__close" onClick={onClose} aria-label="Cerrar">
-          <CloseIcon className="new-course__close-icon" />
+          <XmarkIcon className="new-course__close-icon" />
         </button>
       </header>
 

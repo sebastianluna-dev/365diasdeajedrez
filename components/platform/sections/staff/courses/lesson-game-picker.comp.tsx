@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SearchIcon } from "@/components/icons/search-icon.comp";
+import { MagnifyingGlassIcon } from "@/components/icons/magnifying-glass-icon.comp";
 import { staffRoutes } from "@/lib/platform-routes";
 import { setLessonGame } from "@/services/staff-courses/staff-courses.actions";
 import type { CourseGameRow } from "@/services/staff-courses/staff-courses.types";
@@ -80,7 +80,7 @@ export function LessonGamePicker({ courseId, chapterId, lessonId, game, candidat
   return (
     <div className="lesson-game-picker">
       <form className="lesson-game-picker__search" action={staffRoutes.lessonDetail(courseId, chapterId, lessonId)}>
-        <SearchIcon className="lesson-game-picker__search-icon" />
+        <MagnifyingGlassIcon className="lesson-game-picker__search-icon" />
         <input
           type="search"
           name="partida"

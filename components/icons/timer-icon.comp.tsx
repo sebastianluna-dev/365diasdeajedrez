@@ -1,0 +1,39 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `timer`, in Duotone Light or, with `variant="solid"`, Duotone
+ * Solid.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function TimerIcon({ className, variant = "light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-85.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "solid" ? (
+        <>
+          <path
+            opacity=".4"
+            d="M0 256C0 397.4 114.6 512 256 512S512 397.4 512 256 397.4 0 256 0c-17.7 0-32 14.3-32 32l0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-29.3c90.8 15.2 160 94.2 160 189.3 0 106-86 192-192 192S64 362 64 256c0-53.7 22-102.3 57.6-137.1 12.6-12.4 12.8-32.6 .5-45.3s-32.6-12.8-45.3-.5C29.5 119.6 0 184.4 0 256z"
+          />
+          <path d="M159 159c9.4-9.4 24.6-9.4 33.9 0l80 80c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-80-80c-9.4-9.4-9.4-24.6 0-33.9z" />
+        </>
+      ) : (
+        <>
+          <path
+            opacity=".4"
+            d="M32 256c0-61.9 25.1-117.8 65.6-158.4l51.1 51.1c-6.2 6.2-6.2 16.4 0 22.6l96 96c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L256 233.4 256 128c8.8 0 16-7.2 16-16l0-79.4c116.2 8.2 208 105.1 208 223.4 0 123.7-100.3 224-224 224S32 379.7 32 256z"
+          />
+          <path d="M256 0c-8.8 0-16 7.2-16 16l0 96c0 8.8 7.2 16 16 16s16-7.2 16-16l0-79.4c116.2 8.2 208 105.1 208 223.4 0 123.7-100.3 224-224 224S32 379.7 32 256c0-61.9 25.1-117.8 65.6-158.4 6.2-6.2 6.2-16.4 0-22.6S81.2 68.7 75 75C28.7 121.3 0 185.3 0 256 0 397.4 114.6 512 256 512S512 397.4 512 256 397.4 0 256 0zM171.3 148.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6l96 96c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6l-96-96z" />
+        </>
+      )}
+    </svg>
+  );
+}

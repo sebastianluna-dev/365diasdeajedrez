@@ -1,0 +1,39 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `location-dot`, in Duotone Light or, with `variant="solid"`,
+ * Duotone Solid.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function LocationDotIcon({ className, variant = "light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-149.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "solid" ? (
+        <>
+          <path
+            opacity=".4"
+            d="M0 188.6c0 119.3 120.2 262.3 170.4 316.8 11.8 12.8 31.5 12.8 43.3 0 50.2-54.5 170.4-197.5 170.4-316.8 0-104.1-86-188.6-192-188.6S0 84.4 0 188.6zM256 192a64 64 0 1 1 -128 0 64 64 0 1 1 128 0z"
+          />
+          <path d="M128 192a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z" />
+        </>
+      ) : (
+        <>
+          <path
+            opacity=".4"
+            d="M32 188.6C32 102.6 103.1 32 192 32s160 70.6 160 156.6c0 50.3-25.9 109.4-61.4 165.6-34 53.8-74 100.5-98.6 127.4-24.6-26.9-64.6-73.7-98.6-127.4-35.5-56.2-61.4-115.3-61.4-165.6zm80 3.4a80 80 0 1 0 160 0 80 80 0 1 0 -160 0z"
+          />
+          <path d="M32 188.6C32 102.6 103.1 32 192 32s160 70.6 160 156.6c0 50.3-25.9 109.4-61.4 165.6-34 53.8-74 100.5-98.6 127.4-24.6-26.9-64.6-73.7-98.6-127.4-35.5-56.2-61.4-115.3-61.4-165.6zM192 0C86 0 0 84.4 0 188.6 0 307.9 120.2 450.9 170.4 505.4 182.2 518.2 201.8 518.2 213.6 505.4 263.8 450.9 384 307.9 384 188.6 384 84.4 298 0 192 0zm48 192a48 48 0 1 1 -96 0 48 48 0 1 1 96 0zm-48-80a80 80 0 1 0 0 160 80 80 0 1 0 0-160z" />
+        </>
+      )}
+    </svg>
+  );
+}

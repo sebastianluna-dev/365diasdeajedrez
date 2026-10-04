@@ -3,7 +3,7 @@
 import { type ComponentProps, useState } from "react";
 import { Select } from "radix-ui";
 import { CheckIcon } from "@/components/icons/check-icon.comp";
-import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
+import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
 import { savedValueKey } from "../saved-value-key";
 import "./platform-select.comp.css";
 
@@ -156,7 +156,7 @@ function SelectControl({
               paint, and it still follows the value, which is state. */}
           <Select.Value placeholder={emptyOption ?? placeholder}>{chosen}</Select.Value>
           <Select.Icon className="platform-select__icon">
-            <ChevronIcon className="platform-select__chevron" />
+            <AngleRightIcon className="platform-select__chevron" />
           </Select.Icon>
         </Select.Trigger>
 

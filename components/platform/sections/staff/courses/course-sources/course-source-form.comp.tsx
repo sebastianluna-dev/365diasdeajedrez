@@ -1,6 +1,6 @@
 "use client";
 
-import { CloseIcon } from "@/components/icons/close-icon.comp";
+import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
@@ -51,7 +51,7 @@ export function CourseSourceForm({
           <p className="course-source-dialog__subtitle">De dónde procede el material del curso.</p>
         </div>
         <button type="button" className="course-source-dialog__close" onClick={onClose} aria-label="Cerrar">
-          <CloseIcon className="course-source-dialog__close-icon" />
+          <XmarkIcon className="course-source-dialog__close-icon" />
         </button>
       </header>
 

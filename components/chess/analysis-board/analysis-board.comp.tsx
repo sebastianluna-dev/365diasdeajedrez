@@ -5,9 +5,9 @@ import type { Game, PgnNodeData } from "chessops/pgn";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
 import { MoveTree } from "@/components/chess/game-viewer/move-tree.comp";
-import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
-import { FlipIcon } from "@/components/icons/flip-icon.comp";
-import { SkipIcon } from "@/components/icons/skip-icon.comp";
+import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
+import { ArrowsRotateIcon } from "@/components/icons/arrows-rotate-icon.comp";
+import { ArrowRightToLineIcon } from "@/components/icons/arrow-right-to-line-icon.comp";
 import { PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
 import {
   addMove,
@@ -362,23 +362,23 @@ export function AnalysisBoard({ name, defaultPgn, initialFen, orientation = "whi
               onClick={() => setFlipToggled((current) => !current)}
               className="analysis-board__tool"
             >
-              <FlipIcon />
+              <ArrowsRotateIcon />
             </button>
             <button type="button" aria-label="Ir al inicio" onClick={goToStart} className="analysis-board__tool">
               <span className="analysis-board__tool-icon_flipped">
-                <SkipIcon />
+                <ArrowRightToLineIcon />
               </span>
             </button>
             <button type="button" aria-label="Jugada anterior" onClick={goToPrevious} className="analysis-board__tool">
               <span className="analysis-board__tool-icon_flipped">
-                <ChevronIcon />
+                <AngleRightIcon />
               </span>
             </button>
             <button type="button" aria-label="Jugada siguiente" onClick={goToNext} className="analysis-board__tool">
-              <ChevronIcon />
+              <AngleRightIcon />
             </button>
             <button type="button" aria-label="Ir al final" onClick={goToEnd} className="analysis-board__tool">
-              <SkipIcon />
+              <ArrowRightToLineIcon />
             </button>
           </div>
 

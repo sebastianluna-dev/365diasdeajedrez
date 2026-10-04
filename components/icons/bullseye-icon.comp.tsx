@@ -1,0 +1,39 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `bullseye`, in Duotone Light or, with `variant="solid"`,
+ * Duotone Solid.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function BullseyeIcon({ className, variant = "light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-85.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "solid" ? (
+        <>
+          <path
+            opacity=".4"
+            d="M112 256a144 144 0 1 0 288 0 144 144 0 1 0 -288 0zm224 0a80 80 0 1 1 -160 0 80 80 0 1 1 160 0z"
+          />
+          <path d="M448 256a192 192 0 1 0 -384 0 192 192 0 1 0 384 0zM0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0zm256-32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" />
+        </>
+      ) : (
+        <>
+          <path
+            opacity=".4"
+            d="M32 256a224 224 0 1 0 448 0 224 224 0 1 0 -448 0zm384 0a160 160 0 1 1 -320 0 160 160 0 1 1 320 0zm-288 0a128 128 0 1 0 256 0 128 128 0 1 0 -256 0zm192 0a64 64 0 1 1 -128 0 64 64 0 1 1 128 0zm-96 0a32 32 0 1 0 64 0 32 32 0 1 0 -64 0z"
+          />
+          <path d="M480 256a224 224 0 1 0 -448 0 224 224 0 1 0 448 0zM0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0zM256 384a128 128 0 1 0 0-256 128 128 0 1 0 0 256zm0-288a160 160 0 1 1 0 320 160 160 0 1 1 0-320zm0 192a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm0-96a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" />
+        </>
+      )}
+    </svg>
+  );
+}

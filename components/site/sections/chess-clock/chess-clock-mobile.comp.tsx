@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useChessClock } from "@/hooks/use-chess-clock.hook";
-import { GearIcon } from "@/components/icons/gear-icon.comp";
+import { SlidersIcon } from "@/components/icons/sliders-icon.comp";
 import { HouseIcon } from "@/components/icons/house-icon.comp";
-import { RotateLeftIcon } from "@/components/icons/rotate-left-icon.comp";
+import { ArrowRotateLeftIcon } from "@/components/icons/arrow-rotate-left-icon.comp";
 import { ClockDial } from "./clock-dial.comp";
 import { TimeRoller } from "./time-roller.comp";
 import "./chess-clock-mobile.comp.css";
@@ -102,7 +102,7 @@ export function ChessClockMobile({ enabled = true }: ChessClockMobileProps) {
 
               <div className="chess-clock-mobile__actions">
                 <button type="button" onClick={reset} aria-label="Reiniciar" className="chess-clock-mobile__action">
-                  <RotateLeftIcon className="chess-clock-mobile__action-icon" />
+                  <ArrowRotateLeftIcon className="chess-clock-mobile__action-icon" />
                 </button>
                 <Link href="/" aria-label="Inicio" className="chess-clock-mobile__action">
                   <HouseIcon className="chess-clock-mobile__action-icon" />
@@ -113,7 +113,7 @@ export function ChessClockMobile({ enabled = true }: ChessClockMobileProps) {
                   aria-label="Configurar"
                   className="chess-clock-mobile__action"
                 >
-                  <GearIcon className="chess-clock-mobile__action-icon" />
+                  <SlidersIcon className="chess-clock-mobile__action-icon" />
                 </button>
               </div>
 

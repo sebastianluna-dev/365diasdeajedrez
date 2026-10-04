@@ -1,0 +1,30 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `arrow-down`, in Duotone Light or, with `variant="solid"`,
+ * Duotone Solid.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function ArrowDownIcon({ className, variant = "light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-149.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "solid" ? (
+        <>
+          <path opacity=".4" d="M160 32l0 370.7 32 32 32-32 0-370.7c0-17.7-14.3-32-32-32s-32 14.3-32 32z" />
+          <path d="M214.6 502.6c-12.5 12.5-32.8 12.5-45.3 0l-160-160c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 434.7 329.4 297.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-160 160z" />
+        </>
+      ) : (
+        <path d="M180.7 507.3c6.2 6.2 16.4 6.2 22.6 0l176-176c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L208 457.4 208 16c0-8.8-7.2-16-16-16s-16 7.2-16 16l0 441.4-148.7-148.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6l176 176z" />
+      )}
+    </svg>
+  );
+}

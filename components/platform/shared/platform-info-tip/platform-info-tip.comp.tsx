@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Tooltip } from "radix-ui";
-import { InfoIcon } from "@/components/icons/info-icon.comp";
+import { CircleInfoIcon } from "@/components/icons/circle-info-icon.comp";
 import "./platform-info-tip.comp.css";
 
 interface PlatformInfoTipProps {
@@ -43,7 +43,7 @@ export function PlatformInfoTip({ text, label, side = "top" }: PlatformInfoTipPr
               setOpen(true);
             }}
           >
-            <InfoIcon className="platform-info-tip__icon" />
+            <CircleInfoIcon className="platform-info-tip__icon" />
           </button>
         </Tooltip.Trigger>
 

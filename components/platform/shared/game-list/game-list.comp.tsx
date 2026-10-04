@@ -5,7 +5,7 @@ import { useEffect, useRef, type RefObject } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { ArrowUpIcon } from "@/components/icons/arrow-up-icon.comp";
-import { GripIcon } from "@/components/icons/grip-icon.comp";
+import { GripDotsVerticalIcon } from "@/components/icons/grip-dots-vertical-icon.comp";
 import { SortableDnd } from "@/components/platform/shared/sortable-dnd/sortable-dnd.comp";
 import { useSortableRows } from "@/components/platform/shared/sortable-dnd/use-sortable-rows.hook";
 import { useSortableStep } from "@/components/platform/shared/sortable-dnd/use-sortable-step.hook";
@@ -128,7 +128,7 @@ function SortableRow({ game, isCurrent }: { game: GameListItem; isCurrent: boole
         {...attributes}
         {...listeners}
       >
-        <GripIcon />
+        <GripDotsVerticalIcon variant="solid" />
       </button>
       <GameLink game={game} isCurrent={isCurrent} />
       <div className="game-list__steps">

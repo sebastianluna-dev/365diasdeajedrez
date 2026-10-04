@@ -3,7 +3,7 @@
 import type { Key } from "@lichess-org/chessground/types";
 import { useState } from "react";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
-import { ChevronIcon } from "@/components/icons/chevron-icon.comp";
+import { AngleRightIcon } from "@/components/icons/angle-right-icon.comp";
 import { engineLineTokens, formatEvaluation } from "@/lib/chess/engine-protocol";
 import type { PositionOutcome } from "@/lib/chess/legal-moves";
 import { sanToSpanish } from "@/lib/chess/notation";
@@ -145,7 +145,7 @@ export function EnginePanel({ fen, enabled, onToggle, state, flipBoard = false, 
                       onClick={() => toggleLine(line.multipv)}
                       className={`engine-panel__more${isOpen ? " engine-panel__more_state_expanded" : ""}`}
                     >
-                      <ChevronIcon className="engine-panel__more-icon" />
+                      <AngleRightIcon className="engine-panel__more-icon" />
                     </button>
                   </li>
                 );

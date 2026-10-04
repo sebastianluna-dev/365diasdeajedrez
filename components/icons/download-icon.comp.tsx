@@ -1,0 +1,39 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `download`, in Duotone Light or, with `variant="solid"`,
+ * Duotone Solid.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function DownloadIcon({ className, variant = "light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-117.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "solid" ? (
+        <>
+          <path
+            opacity=".4"
+            d="M0 384l0 32c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-32c0-35.3-28.7-64-64-64l-82.7 0-54.6 54.6c-12.5 12.5-32.8 12.5-45.3 0L146.7 320 64 320c-35.3 0-64 28.7-64 64zm392 16a24 24 0 1 1 -48 0 24 24 0 1 1 48 0z"
+          />
+          <path d="M224 0c17.7 0 32 14.3 32 32l0 242.7 41.4-41.4c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3l-96 96c-12.5 12.5-32.8 12.5-45.3 0l-96-96c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 274.7 192 32c0-17.7 14.3-32 32-32z" />
+        </>
+      ) : (
+        <>
+          <path
+            opacity=".4"
+            d="M32 352c0-17.7 14.3-32 32-32l53.5 0-32-32 67.9 0 59.3 59.3c6.2 6.2 16.4 6.2 22.6 0l59.3-59.3 67.9 0-32 32 53.5 0c17.7 0 32 14.3 32 32l0 64c0 17.7-14.3 32-32 32L64 448c-17.7 0-32-14.3-32-32l0-64zm288 32a24 24 0 1 0 48 0 24 24 0 1 0 -48 0z"
+          />
+          <path d="M240 16c0-8.8-7.2-16-16-16s-16 7.2-16 16l0 281.4-84.7-84.7c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6l112 112c6.2 6.2 16.4 6.2 22.6 0l112-112c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0L240 297.4 240 16zM85.5 288L64 288c-35.3 0-64 28.7-64 64l0 64c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-64c0-35.3-28.7-64-64-64l-21.5 0-32 32 53.5 0c17.7 0 32 14.3 32 32l0 64c0 17.7-14.3 32-32 32L64 448c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l53.5 0-32-32zM368 384a24 24 0 1 0 -48 0 24 24 0 1 0 48 0z" />
+        </>
+      )}
+    </svg>
+  );
+}

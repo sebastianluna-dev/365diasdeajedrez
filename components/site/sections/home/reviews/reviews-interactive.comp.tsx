@@ -119,7 +119,11 @@ export function ReviewsInteractive({ reviews }: ReviewsInteractiveProps) {
             aria-label={playing ? "Pausar los testimonios" : "Reproducir los testimonios"}
             onClick={() => setChosen(playing ? "paused" : "playing")}
           >
-            {playing ? <PauseIcon className="reviews__toggle-icon" /> : <PlayIcon className="reviews__toggle-icon" />}
+            {playing ? (
+              <PauseIcon variant="solid" className="reviews__toggle-icon" />
+            ) : (
+              <PlayIcon variant="solid" className="reviews__toggle-icon" />
+            )}
           </button>
         )}
 

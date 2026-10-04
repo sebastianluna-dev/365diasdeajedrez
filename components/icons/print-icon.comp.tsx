@@ -1,0 +1,39 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `print`, in Duotone Light or, with `variant="solid"`, Duotone
+ * Solid.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function PrintIcon({ className, variant = "light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-85.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "solid" ? (
+        <>
+          <path
+            opacity=".4"
+            d="M64 64l0 128 384 0 0-85.5c0-17-6.7-33.3-18.7-45.3L386.7 18.7C374.7 6.7 358.5 0 341.5 0L128 0C92.7 0 64 28.7 64 64zm0 320l0 64c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-64-64 0 0 64-256 0 0-64-64 0z"
+          />
+          <path d="M0 256c0-35.3 28.7-64 64-64l384 0c35.3 0 64 28.7 64 64l0 96c0 17.7-14.3 32-32 32l-96 0 0-32-256 0 0 32-96 0c-17.7 0-32-14.3-32-32l0-96zm456 16a24 24 0 1 0 -48 0 24 24 0 1 0 48 0z" />
+        </>
+      ) : (
+        <>
+          <path
+            opacity=".4"
+            d="M32 256l0 128 64 0 0-32c0-17.7 14.3-32 32-32l256 0c17.7 0 32 14.3 32 32l0 32 64 0 0-128c0-17.7-14.3-32-32-32L64 224c-17.7 0-32 14.3-32 32zm416 16a16 16 0 1 1 -32 0 16 16 0 1 1 32 0z"
+          />
+          <path d="M384 106.5c0-8.5-3.4-16.6-9.4-22.6L332.1 41.4c-6-6-14.1-9.4-22.6-9.4L160 32c-17.7 0-32 14.3-32 32l0 80-32 0 0-80c0-35.3 28.7-64 64-64L309.5 0c17 0 33.3 6.7 45.3 18.7l42.5 42.5c12 12 18.7 28.3 18.7 45.3l0 37.5-32 0 0-37.5zM448 224L64 224c-17.7 0-32 14.3-32 32l0 128 64 0 0-32c0-17.7 14.3-32 32-32l256 0c17.7 0 32 14.3 32 32l0 32 64 0 0-128c0-17.7-14.3-32-32-32zM416 416l0 64c0 17.7-14.3 32-32 32l-256 0c-17.7 0-32-14.3-32-32l0-64-64 0c-17.7 0-32-14.3-32-32L0 256c0-35.3 28.7-64 64-64l384 0c35.3 0 64 28.7 64 64l0 128c0 17.7-14.3 32-32 32l-64 0zM128 352l0 128 256 0 0-128-256 0zm288-80a16 16 0 1 1 32 0 16 16 0 1 1 -32 0z" />
+        </>
+      )}
+    </svg>
+  );
+}

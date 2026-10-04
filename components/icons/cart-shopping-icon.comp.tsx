@@ -1,0 +1,39 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `cart-shopping`, in Duotone Light or, with `variant="solid"`,
+ * Duotone Solid.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function CartShoppingIcon({ className, variant = "light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-21.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "solid" ? (
+        <>
+          <path
+            opacity=".4"
+            d="M124.8 32l46.5 256 303.6 0c30.8 0 57.2-21.9 62.9-52.2L568.9 69.9C572.6 50.2 557.5 32 537.4 32L124.8 32z"
+          />
+          <path d="M24-16C10.7-16 0-5.3 0 8S10.7 32 24 32l45.3 0c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3c6.2 34.2 36 59.1 70.8 59.1L456 384c13.3 0 24-10.7 24-24s-10.7-24-24-24l-255.9 0c-11.6 0-21.5-8.3-23.6-19.7L124.4 30c-4.8-26.6-28-46-55.1-46L24-16zM256 464a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm224 0a48 48 0 1 0 -96 0 48 48 0 1 0 96 0z" />
+        </>
+      ) : (
+        <>
+          <path
+            opacity=".4"
+            d="M113 64l417.3 0c5.1 0 8.9 4.7 7.8 9.7L505.8 224.4c-4 18.4-20.2 31.6-39.1 31.6L147.9 256 113 64zM228 460a20 20 0 1 1 -40 0 20 20 0 1 1 40 0zm224 0a20 20 0 1 1 -40 0 20 20 0 1 1 40 0z"
+          />
+          <path d="M16 0C7.2 0 0 7.2 0 16S7.2 32 16 32l45.3 0C69 32 75.7 37.5 77 45.1l50.9 279.7c6.2 34.2 36 59.1 70.8 59.1L464 384c8.8 0 16-7.2 16-16s-7.2-16-16-16l-265.3 0c-19.3 0-35.9-13.8-39.4-32.8l-5.7-31.2 313 0c33.9 0 63.3-23.7 70.4-56.9L569.4 80.4C574.8 55.5 555.8 32 530.3 32L106.6 32C99.9 13.1 81.9 0 61.3 0L16 0zm97 64l417.3 0c5.1 0 8.9 4.7 7.8 9.7L505.8 224.4c-4 18.4-20.2 31.6-39.1 31.6L147.9 256 113 64zm75 396a20 20 0 1 1 40 0 20 20 0 1 1 -40 0zm72 0a52 52 0 1 0 -104 0 52 52 0 1 0 104 0zm172-20a20 20 0 1 1 0 40 20 20 0 1 1 0-40zm0 72a52 52 0 1 0 0-104 52 52 0 1 0 0 104z" />
+        </>
+      )}
+    </svg>
+  );
+}

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
-import { FlipIcon } from "@/components/icons/flip-icon.comp";
+import { ArrowsRotateIcon } from "@/components/icons/arrows-rotate-icon.comp";
 import { replayGame } from "@/lib/chess/replay";
 import { searchPosition } from "@/services/game-explorer/game-explorer.actions";
 import type { PositionSearchResult } from "@/services/game-explorer/game-explorer.types";
@@ -146,7 +146,7 @@ export function GameExplorer() {
             onClick={() => setFlipped((previous) => !previous)}
             aria-label="Girar el tablero"
           >
-            <FlipIcon />
+            <ArrowsRotateIcon />
           </button>
           <button
             type="button"

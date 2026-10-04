@@ -1,5 +1,5 @@
 import { useId } from "react";
-import { SearchIcon } from "@/components/icons/search-icon.comp";
+import { MagnifyingGlassIcon } from "@/components/icons/magnifying-glass-icon.comp";
 import "./platform-search.comp.css";
 
 /**
@@ -27,7 +27,7 @@ export function PlatformSearch() {
         Buscar en la plataforma
       </label>
 
-      <SearchIcon className="platform-search__icon" />
+      <MagnifyingGlassIcon className="platform-search__icon" />
 
       <input
         id={fieldId}

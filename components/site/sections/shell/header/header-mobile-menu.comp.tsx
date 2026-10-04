@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRightIcon } from "@/components/icons/arrow-right-icon.comp";
-import { CloseIcon } from "@/components/icons/close-icon.comp";
-import { MenuIcon } from "@/components/icons/menu-icon.comp";
+import { ChevronRightIcon } from "@/components/icons/chevron-right-icon.comp";
+import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
+import { BarsIcon } from "@/components/icons/bars-icon.comp";
 import type { HeaderNavItem } from "@/services/home/home.types";
 
 interface HeaderMobileMenuProps {
@@ -28,9 +28,9 @@ export function HeaderMobileMenu({ navItems, ctaLabel, ctaHref }: HeaderMobileMe
         onClick={() => setMobileOpen((current) => !current)}
       >
         {mobileOpen ? (
-          <CloseIcon className="site-header__toggle-icon" />
+          <XmarkIcon className="site-header__toggle-icon" />
         ) : (
-          <MenuIcon className="site-header__toggle-icon" />
+          <BarsIcon className="site-header__toggle-icon" />
         )}
       </button>
 
@@ -48,7 +48,7 @@ export function HeaderMobileMenu({ navItems, ctaLabel, ctaHref }: HeaderMobileMe
           onClick={() => setMobileOpen(false)}
         >
           {ctaLabel}
-          <ArrowRightIcon className="site-header__button-icon" />
+          <ChevronRightIcon className="site-header__button-icon" />
         </Link>
       </div>
     </>
