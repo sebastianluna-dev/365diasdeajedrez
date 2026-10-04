@@ -5,7 +5,7 @@ import { buildNotationBlocks } from "@/lib/chess/notation-blocks";
 import { formatEvaluation } from "@/lib/chess/engine-protocol";
 import { sanToSpanish } from "@/lib/chess/notation";
 import { nagGlyph, nagLabel, type PgnTree, type PgnTreeNode } from "@/lib/chess/pgn-tree";
-import { scrollWithin } from "@/components/chess/scroll-within";
+import { scrollerOf, scrollToMiddle } from "@/components/chess/scroll-within";
 import "./move-table.comp.css";
 
 interface MoveTableProps {
@@ -37,12 +37,21 @@ const nagsSaid = (node: PgnTreeNode) =>
  */
 export function MoveTable({ tree, currentPath, onSelect, onContextMenu }: MoveTableProps) {
   const activeRef = useRef<HTMLButtonElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
   const blocks = useMemo(() => buildNotationBlocks(tree), [tree]);
 
-  // The active move, in view: by the least it takes, and only in the list's
-  // own scroller, so neither the page nor anything around it is moved.
+  // The active move is kept at the middle of the list, as Lichess keeps it:
+  // going through a game, the moves just played and the ones to come are both
+  // in sight, instead of the move riding the bottom edge. Only the list's own
+  // scroller moves, never the page. Back at the starting position, which has
+  // no move to centre, the list goes back to its top.
   useEffect(() => {
-    if (activeRef.current) scrollWithin(activeRef.current);
+    if (activeRef.current) {
+      scrollToMiddle(activeRef.current);
+      return;
+    }
+    const scroller = rootRef.current && scrollerOf(rootRef.current);
+    if (scroller) scroller.scrollTop = 0;
   }, [currentPath]);
 
   const bind = (node: PgnTreeNode) => ({
@@ -84,7 +93,7 @@ export function MoveTable({ tree, currentPath, onSelect, onContextMenu }: MoveTa
   };
 
   return (
-    <div className="move-table">
+    <div className="move-table" ref={rootRef}>
       {tree.initialComment && <p className="move-table__comment">{tree.initialComment}</p>}
 
       {blocks.map((block) => {

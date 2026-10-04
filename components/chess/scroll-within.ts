@@ -33,3 +33,24 @@ export function scrollWithin(element: HTMLElement, behavior: ScrollBehavior = "a
   const dx = left < 0 ? left : right > scroller.clientWidth ? right - scroller.clientWidth : 0;
   if (dx !== 0 || dy !== 0) scroller.scrollBy({ top: dy, left: dx, behavior });
 }
+
+/**
+ * Puts `element` at the middle of its nearest scrolling ancestor, top to
+ * bottom, and moves nothing else: what Lichess does with the move being
+ * followed, so the moves before it and the ones to come are both in sight.
+ * At either end of the list the scroll stops where it ends, as any scroll
+ * does. At once, never smoothly: holding an arrow walks a move every 130ms,
+ * and a scroll still easing towards the last one would trail behind.
+ */
+export function scrollToMiddle(element: HTMLElement): void {
+  const scroller = scrollerOf(element);
+  if (!scroller) return;
+
+  // The rects are in the page's px, with the zoom in them, while `scrollTop`
+  // is read in the scroller's own: the difference has to cross over.
+  const zoom = scroller.currentCSSZoom || 1;
+  const frame = scroller.getBoundingClientRect();
+  const box = element.getBoundingClientRect();
+  const middle = (box.top + box.height / 2 - frame.top) / zoom - scroller.clientTop;
+  scroller.scrollTop += middle - scroller.clientHeight / 2;
+}
