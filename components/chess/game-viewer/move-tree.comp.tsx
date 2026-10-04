@@ -3,23 +3,11 @@
 import { type MouseEvent, type ReactNode, useEffect, useRef } from "react";
 import { buildProseBlocks, type ProseItem } from "@/lib/chess/notation-prose";
 import { nagGlyph, nagLabel, type PgnTree } from "@/lib/chess/pgn-tree";
+import { scrollerOf } from "@/components/chess/scroll-within";
 import "./move-tree.comp.css";
 
 /** Air left above the move once it is at the top of its panel. */
 const TOP_MARGIN = 10;
-
-/**
- * The panel the moves scroll inside. It is looked for instead of being named
- * because who provides it changes: the viewer's panel, the analysis board's
- * box, whatever mounts the tree next.
- */
-function scrollerOf(element: HTMLElement): HTMLElement | null {
-  for (let node = element.parentElement; node; node = node.parentElement) {
-    const overflow = getComputedStyle(node).overflowY;
-    if (overflow === "auto" || overflow === "scroll") return node;
-  }
-  return null;
-}
 
 interface MoveTreeProps {
   tree: PgnTree;

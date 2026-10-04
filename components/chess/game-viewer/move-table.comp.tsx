@@ -5,6 +5,7 @@ import { buildNotationBlocks } from "@/lib/chess/notation-blocks";
 import { formatEvaluation } from "@/lib/chess/engine-protocol";
 import { sanToSpanish } from "@/lib/chess/notation";
 import { nagGlyph, nagLabel, type PgnTree, type PgnTreeNode } from "@/lib/chess/pgn-tree";
+import { scrollWithin } from "@/components/chess/scroll-within";
 import "./move-table.comp.css";
 
 interface MoveTableProps {
@@ -38,10 +39,10 @@ export function MoveTable({ tree, currentPath, onSelect, onContextMenu }: MoveTa
   const activeRef = useRef<HTMLButtonElement>(null);
   const blocks = useMemo(() => buildNotationBlocks(tree), [tree]);
 
-  // The active move, in view. `nearest` scrolls the minimum and only the
-  // scrolling container, so it does not yank the whole page.
+  // The active move, in view: by the least it takes, and only in the list's
+  // own scroller, so neither the page nor anything around it is moved.
   useEffect(() => {
-    activeRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    if (activeRef.current) scrollWithin(activeRef.current);
   }, [currentPath]);
 
   const bind = (node: PgnTreeNode) => ({

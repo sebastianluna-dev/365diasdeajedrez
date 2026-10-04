@@ -4,14 +4,14 @@ description: "Lichess-style tabular notation: the main line as number · white �
 
 # `MoveTable`
 
-|            |                                                                                                                                                                                                                                               |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/chess/game-viewer/move-table.comp.tsx`                                                                                                                                                                                            |
-| Kind       | Client Component                                                                                                                                                                                                                              |
-| Stylesheet | `move-table.comp.css` → block `.move-table`                                                                                                                                                                                                   |
-| Story      | `move-table.stories.tsx` (`chess/game-viewer/MoveTable`): an annotated game, a move inside a nested variation, a bare main line, and an evaluated game                                                                                        |
-| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="table"`, the default)                                                                                                                                                   |
-| Uses       | `buildNotationBlocks` from `lib/chess/notation-blocks`<br />`formatEvaluation` from `lib/chess/engine-protocol`<br />`sanToSpanish` from `lib/chess/notation`<br />`nagGlyph`, `nagLabel`, `PgnTree`, `PgnTreeNode` from `lib/chess/pgn-tree` |
+|            |                                                                                                                                                                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/chess/game-viewer/move-table.comp.tsx`                                                                                                                                                                                                                                                      |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                        |
+| Stylesheet | `move-table.comp.css` → block `.move-table`                                                                                                                                                                                                                                                             |
+| Story      | `move-table.stories.tsx` (`chess/game-viewer/MoveTable`): an annotated game, a move inside a nested variation, a bare main line, and an evaluated game                                                                                                                                                  |
+| Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="table"`, the default)                                                                                                                                                                                                             |
+| Uses       | `buildNotationBlocks` from `lib/chess/notation-blocks`<br />`formatEvaluation` from `lib/chess/engine-protocol`<br />`sanToSpanish` from `lib/chess/notation`<br />`nagGlyph`, `nagLabel`, `PgnTree`, `PgnTreeNode` from `lib/chess/pgn-tree`<br />`scrollWithin` from `components/chess/scroll-within` |
 
 ## Purpose
 
@@ -32,7 +32,7 @@ The hard part, deciding the order of rows and blocks and when Black's move has t
 
 - `buildNotationBlocks(tree)` is memoised and yields three block kinds: `row` (number, white, black, with `continuation` and `pushedBlack` flags rendered as "…" cells), `comment` (a paragraph) and `line` (an inline variation with its `depth`, exposed as the `--move-table-depth` custom property for indentation).
 - Each move cell shows the Spanish SAN, its NAG glyphs (hidden from the screen reader, which skips "!" and "?" and has no name for "⩲", and said to it in words by a visually hidden `.move-table__sr`: "Db8+, Jugada brillante", through `nagLabel`) and, when the node carries an evaluation, `formatEvaluation` of it. The evaluation comes from the PGN's `[%eval]`, so a reviewed game shows its numbers again on reload with no engine involved.
-- The active move scrolls into view with `block: "nearest"` on every path change.
+- The active move is brought into view on every path change, by the least it takes and only inside the list's own scroller (`scrollWithin` from `components/chess/scroll-within.ts`): `scrollIntoView` would also move the page, or the canvas the table is drawn on.
 - `bind(node)` attaches the ref, click and optional right-click handlers to both row cells and inline variation moves, so the two look different but behave the same.
 
 ## Markup & styling

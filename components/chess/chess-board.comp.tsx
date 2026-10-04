@@ -18,6 +18,7 @@ import { PlayIcon } from "@/components/icons/play-icon.comp";
 import { PauseIcon } from "@/components/icons/pause-icon.comp";
 import { ArrowsRotateIcon } from "@/components/icons/arrows-rotate-icon.comp";
 import { chessMoveQualityIconFor } from "@/components/chess/chess-move-quality-icon.comp";
+import { scrollWithin } from "@/components/chess/scroll-within";
 import "./chess-board.comp.css";
 
 const AUTOPLAY_MS = 900;
@@ -274,7 +275,8 @@ export function ChessBoard({
   useEffect(() => {
     // Whoever asked for less motion gets the move brought into view at once.
     const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    activeCellRef.current?.scrollIntoView({ block: "nearest", behavior: calm ? "auto" : "smooth" });
+    // Only the notation's own scroller moves, never the page around the board.
+    if (activeCellRef.current) scrollWithin(activeCellRef.current, calm ? "auto" : "smooth");
   }, [ply]);
 
   const cancelPromotion = useCallback(() => {
