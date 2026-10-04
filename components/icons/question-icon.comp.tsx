@@ -1,0 +1,34 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `question`, in Duotone Light (the default), Duotone Solid or
+ * Classic Solid, as `variant` says.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function QuestionIcon({ className, variant = "duotone-light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-181.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "duotone-light" && (
+        <path d="M32 160C32 89.3 89.3 32 160 32S288 89.3 288 160c0 53.5-32.8 99.3-79.5 118.5-31.1 12.8-64.5 41-64.5 81.5l0 24c0 8.8 7.2 16 16 16s16-7.2 16-16l0-24c0-21.3 18.5-41.2 44.7-51.9 58.2-23.9 99.3-81.2 99.3-148.1 0-88.4-71.6-160-160-160S0 71.6 0 160c0 8.8 7.2 16 16 16s16-7.2 16-16zM160 512c13.3 0 24-10.7 24-24s-10.7-24-24-24-24 10.7-24 24 10.7 24 24 24z" />
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path opacity=".4" d="M120 472c0 22.1 17.9 40 40 40s40-17.9 40-40-17.9-40-40-40-40 17.9-40 40z" />
+          <path d="M160 64c-53 0-96 43-96 96 0 17.7-14.3 32-32 32S0 177.7 0 160C0 71.6 71.6 0 160 0S320 71.6 320 160c0 71.2-46.5 131.5-110.8 152.3-5.8 1.9-10.7 5.1-13.7 8.4-2.9 3.2-3.5 5.6-3.5 7.3l0 24c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-24c0-41.3 33.2-67.5 61.5-76.6 38.6-12.5 66.5-48.7 66.5-91.4 0-53-43-96-96-96z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M64 160c0-53 43-96 96-96s96 43 96 96c0 42.7-27.9 78.9-66.5 91.4-28.4 9.2-61.5 35.3-61.5 76.6l0 24c0 17.7 14.3 32 32 32s32-14.3 32-32l0-24c0-1.7 .6-4.1 3.5-7.3 3-3.3 7.9-6.5 13.7-8.4 64.3-20.7 110.8-81 110.8-152.3 0-88.4-71.6-160-160-160S0 71.6 0 160c0 17.7 14.3 32 32 32s32-14.3 32-32zm96 352c22.1 0 40-17.9 40-40s-17.9-40-40-40-40 17.9-40 40 17.9 40 40 40z" />
+      )}
+    </svg>
+  );
+}

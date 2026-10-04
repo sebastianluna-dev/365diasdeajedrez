@@ -2,6 +2,7 @@ import type { ComponentType, CSSProperties } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { Logo } from "@/components/site/shared/logo.comp";
 import { ICON_VARIANTS, type IconProps, type IconVariant } from "./icon-variant.const";
+import { AddressBookIcon } from "./address-book-icon.comp";
 import { AddressCardIcon } from "./address-card-icon.comp";
 import { AlarmClockIcon } from "./alarm-clock-icon.comp";
 import { AlignCenterIcon } from "./align-center-icon.comp";
@@ -11,59 +12,89 @@ import { AlignRightIcon } from "./align-right-icon.comp";
 import { AngleDownIcon } from "./angle-down-icon.comp";
 import { AngleLeftIcon } from "./angle-left-icon.comp";
 import { AngleRightIcon } from "./angle-right-icon.comp";
+import { AnglesDownIcon } from "./angles-down-icon.comp";
+import { AnglesLeftIcon } from "./angles-left-icon.comp";
+import { AnglesRightIcon } from "./angles-right-icon.comp";
+import { AnglesUpIcon } from "./angles-up-icon.comp";
 import { AngleUpIcon } from "./angle-up-icon.comp";
 import { ArrowDownAZIcon } from "./arrow-down-a-z-icon.comp";
 import { ArrowDownIcon } from "./arrow-down-icon.comp";
+import { ArrowDownLongIcon } from "./arrow-down-long-icon.comp";
+import { ArrowDownToBracketIcon } from "./arrow-down-to-bracket-icon.comp";
 import { ArrowDownToLineIcon } from "./arrow-down-to-line-icon.comp";
 import { ArrowDownWideShortIcon } from "./arrow-down-wide-short-icon.comp";
 import { ArrowLeftIcon } from "./arrow-left-icon.comp";
 import { ArrowLeftLongIcon } from "./arrow-left-long-icon.comp";
+import { ArrowLeftToLineIcon } from "./arrow-left-to-line-icon.comp";
+import { ArrowPointerIcon } from "./arrow-pointer-icon.comp";
 import { ArrowRightArrowLeftIcon } from "./arrow-right-arrow-left-icon.comp";
 import { ArrowRightFromBracketIcon } from "./arrow-right-from-bracket-icon.comp";
 import { ArrowRightIcon } from "./arrow-right-icon.comp";
 import { ArrowRightLongIcon } from "./arrow-right-long-icon.comp";
 import { ArrowRightToBracketIcon } from "./arrow-right-to-bracket-icon.comp";
 import { ArrowRightToLineIcon } from "./arrow-right-to-line-icon.comp";
+import { ArrowRotateForwardIcon } from "./arrow-rotate-forward-icon.comp";
 import { ArrowRotateLeftIcon } from "./arrow-rotate-left-icon.comp";
 import { ArrowRotateRightIcon } from "./arrow-rotate-right-icon.comp";
 import { ArrowsLeftRightIcon } from "./arrows-left-right-icon.comp";
 import { ArrowsRotateIcon } from "./arrows-rotate-icon.comp";
+import { ArrowsSpinIcon } from "./arrows-spin-icon.comp";
+import { ArrowsToDotIcon } from "./arrows-to-dot-icon.comp";
 import { ArrowsUpDownIcon } from "./arrows-up-down-icon.comp";
 import { ArrowTrendDownIcon } from "./arrow-trend-down-icon.comp";
 import { ArrowTrendUpIcon } from "./arrow-trend-up-icon.comp";
 import { ArrowTurnDownIcon } from "./arrow-turn-down-icon.comp";
 import { ArrowTurnUpIcon } from "./arrow-turn-up-icon.comp";
+import { ArrowUpFromBracketIcon } from "./arrow-up-from-bracket-icon.comp";
 import { ArrowUpFromLineIcon } from "./arrow-up-from-line-icon.comp";
 import { ArrowUpIcon } from "./arrow-up-icon.comp";
+import { ArrowUpLongIcon } from "./arrow-up-long-icon.comp";
 import { ArrowUpRightFromSquareIcon } from "./arrow-up-right-from-square-icon.comp";
+import { ArrowUpToLineIcon } from "./arrow-up-to-line-icon.comp";
 import { ArrowUpWideShortIcon } from "./arrow-up-wide-short-icon.comp";
 import { ArrowUpZAIcon } from "./arrow-up-z-a-icon.comp";
 import { AtIcon } from "./at-icon.comp";
 import { AtomIcon } from "./atom-icon.comp";
 import { AwardIcon } from "./award-icon.comp";
+import { AwardSimpleIcon } from "./award-simple-icon.comp";
 import { BackwardFastIcon } from "./backward-fast-icon.comp";
 import { BackwardIcon } from "./backward-icon.comp";
 import { BackwardStepIcon } from "./backward-step-icon.comp";
+import { BadgeCheckIcon } from "./badge-check-icon.comp";
+import { BadgePercentIcon } from "./badge-percent-icon.comp";
 import { BagShoppingIcon } from "./bag-shopping-icon.comp";
 import { BanIcon } from "./ban-icon.comp";
+import { BarcodeIcon } from "./barcode-icon.comp";
 import { BarsIcon } from "./bars-icon.comp";
 import { BarsProgressIcon } from "./bars-progress-icon.comp";
 import { BarsStaggeredIcon } from "./bars-staggered-icon.comp";
 import { BasketShoppingIcon } from "./basket-shopping-icon.comp";
+import { BatteryEmptyIcon } from "./battery-empty-icon.comp";
+import { BatteryFullIcon } from "./battery-full-icon.comp";
+import { BatteryHalfIcon } from "./battery-half-icon.comp";
 import { BellIcon } from "./bell-icon.comp";
+import { BellRingIcon } from "./bell-ring-icon.comp";
 import { BellSlashIcon } from "./bell-slash-icon.comp";
+import { BluetoothIcon } from "./bluetooth-icon.comp";
 import { BoldIcon } from "./bold-icon.comp";
+import { BoltAutoIcon } from "./bolt-auto-icon.comp";
 import { BoltIcon } from "./bolt-icon.comp";
+import { BoltLightningIcon } from "./bolt-lightning-icon.comp";
+import { BookAtlasIcon } from "./book-atlas-icon.comp";
 import { BookBookmarkIcon } from "./book-bookmark-icon.comp";
 import { BookIcon } from "./book-icon.comp";
 import { BookmarkIcon } from "./bookmark-icon.comp";
 import { BookmarkSlashIcon } from "./bookmark-slash-icon.comp";
 import { BookOpenIcon } from "./book-open-icon.comp";
 import { BookOpenReaderIcon } from "./book-open-reader-icon.comp";
+import { BooksIcon } from "./books-icon.comp";
+import { BookUserIcon } from "./book-user-icon.comp";
 import { BorderAllIcon } from "./border-all-icon.comp";
 import { BoxArchiveIcon } from "./box-archive-icon.comp";
 import { BoxIcon } from "./box-icon.comp";
+import { BrainCircuitIcon } from "./brain-circuit-icon.comp";
 import { BrainIcon } from "./brain-icon.comp";
+import { BrowserIcon } from "./browser-icon.comp";
 import { BugIcon } from "./bug-icon.comp";
 import { BuildingIcon } from "./building-icon.comp";
 import { BullhornIcon } from "./bullhorn-icon.comp";
@@ -71,26 +102,39 @@ import { BullseyeIcon } from "./bullseye-icon.comp";
 import { BusinessTimeIcon } from "./business-time-icon.comp";
 import { CalculatorIcon } from "./calculator-icon.comp";
 import { CalendarCheckIcon } from "./calendar-check-icon.comp";
+import { CalendarCirclePlusIcon } from "./calendar-circle-plus-icon.comp";
+import { CalendarClockIcon } from "./calendar-clock-icon.comp";
 import { CalendarDayIcon } from "./calendar-day-icon.comp";
 import { CalendarDaysIcon } from "./calendar-days-icon.comp";
 import { CalendarIcon } from "./calendar-icon.comp";
 import { CalendarPlusIcon } from "./calendar-plus-icon.comp";
+import { CalendarRangeIcon } from "./calendar-range-icon.comp";
 import { CalendarWeekIcon } from "./calendar-week-icon.comp";
 import { CalendarXmarkIcon } from "./calendar-xmark-icon.comp";
 import { CameraIcon } from "./camera-icon.comp";
+import { CameraRetroIcon } from "./camera-retro-icon.comp";
 import { CameraRotateIcon } from "./camera-rotate-icon.comp";
 import { CaretDownIcon } from "./caret-down-icon.comp";
 import { CaretLeftIcon } from "./caret-left-icon.comp";
 import { CaretRightIcon } from "./caret-right-icon.comp";
 import { CaretUpIcon } from "./caret-up-icon.comp";
+import { CartArrowDownIcon } from "./cart-arrow-down-icon.comp";
+import { CartPlusIcon } from "./cart-plus-icon.comp";
 import { CartShoppingIcon } from "./cart-shopping-icon.comp";
+import { CashRegisterIcon } from "./cash-register-icon.comp";
+import { CastleIcon } from "./castle-icon.comp";
 import { CertificateIcon } from "./certificate-icon.comp";
+import { ChalkboardIcon } from "./chalkboard-icon.comp";
 import { ChalkboardUserIcon } from "./chalkboard-user-icon.comp";
 import { ChartAreaIcon } from "./chart-area-icon.comp";
 import { ChartBarIcon } from "./chart-bar-icon.comp";
 import { ChartColumnIcon } from "./chart-column-icon.comp";
 import { ChartLineIcon } from "./chart-line-icon.comp";
+import { ChartLineUpIcon } from "./chart-line-up-icon.comp";
+import { ChartMixedIcon } from "./chart-mixed-icon.comp";
+import { ChartNetworkIcon } from "./chart-network-icon.comp";
 import { ChartPieIcon } from "./chart-pie-icon.comp";
+import { ChartPieSimpleIcon } from "./chart-pie-simple-icon.comp";
 import { ChartSimpleIcon } from "./chart-simple-icon.comp";
 import { CheckDoubleIcon } from "./check-double-icon.comp";
 import { CheckIcon } from "./check-icon.comp";
@@ -113,8 +157,10 @@ import { ChessRookPieceIcon } from "./chess-rook-piece-icon.comp";
 import { ChevronDownIcon } from "./chevron-down-icon.comp";
 import { ChevronLeftIcon } from "./chevron-left-icon.comp";
 import { ChevronRightIcon } from "./chevron-right-icon.comp";
+import { ChevronsDownIcon } from "./chevrons-down-icon.comp";
 import { ChevronsLeftIcon } from "./chevrons-left-icon.comp";
 import { ChevronsRightIcon } from "./chevrons-right-icon.comp";
+import { ChevronsUpIcon } from "./chevrons-up-icon.comp";
 import { ChevronUpIcon } from "./chevron-up-icon.comp";
 import { ChildIcon } from "./child-icon.comp";
 import { CircleArrowLeftIcon } from "./circle-arrow-left-icon.comp";
@@ -123,57 +169,83 @@ import { CircleCheckIcon } from "./circle-check-icon.comp";
 import { CircleChevronLeftIcon } from "./circle-chevron-left-icon.comp";
 import { CircleChevronRightIcon } from "./circle-chevron-right-icon.comp";
 import { CircleDotIcon } from "./circle-dot-icon.comp";
+import { CircleDownIcon } from "./circle-down-icon.comp";
+import { CircleExclamationCheckIcon } from "./circle-exclamation-check-icon.comp";
 import { CircleExclamationIcon } from "./circle-exclamation-icon.comp";
 import { CircleHalfIcon } from "./circle-half-icon.comp";
 import { CircleHalfStrokeIcon } from "./circle-half-stroke-icon.comp";
 import { CircleIcon } from "./circle-icon.comp";
 import { CircleInfoIcon } from "./circle-info-icon.comp";
+import { CircleLeftIcon } from "./circle-left-icon.comp";
 import { CircleMinusIcon } from "./circle-minus-icon.comp";
 import { CircleNotchIcon } from "./circle-notch-icon.comp";
 import { CirclePauseIcon } from "./circle-pause-icon.comp";
 import { CirclePlayIcon } from "./circle-play-icon.comp";
 import { CirclePlusIcon } from "./circle-plus-icon.comp";
 import { CircleQuestionIcon } from "./circle-question-icon.comp";
+import { CircleRightIcon } from "./circle-right-icon.comp";
 import { CircleStopIcon } from "./circle-stop-icon.comp";
+import { CircleUpIcon } from "./circle-up-icon.comp";
 import { CircleUserIcon } from "./circle-user-icon.comp";
 import { CircleXmarkIcon } from "./circle-xmark-icon.comp";
+import { ClipboardCheckIcon } from "./clipboard-check-icon.comp";
 import { ClipboardIcon } from "./clipboard-icon.comp";
 import { ClipboardListIcon } from "./clipboard-list-icon.comp";
+import { ClipboardQuestionIcon } from "./clipboard-question-icon.comp";
+import { ClockDeskIcon } from "./clock-desk-icon.comp";
 import { ClockIcon } from "./clock-icon.comp";
 import { ClockRotateLeftIcon } from "./clock-rotate-left-icon.comp";
+import { CloneIcon } from "./clone-icon.comp";
+import { ClosedCaptioningIcon } from "./closed-captioning-icon.comp";
 import { CloudArrowDownIcon } from "./cloud-arrow-down-icon.comp";
 import { CloudArrowUpIcon } from "./cloud-arrow-up-icon.comp";
+import { CloudBoltIcon } from "./cloud-bolt-icon.comp";
 import { CloudIcon } from "./cloud-icon.comp";
+import { CloudRainIcon } from "./cloud-rain-icon.comp";
 import { CloudSunIcon } from "./cloud-sun-icon.comp";
 import { CodeBranchIcon } from "./code-branch-icon.comp";
 import { CodeCompareIcon } from "./code-compare-icon.comp";
 import { CodeIcon } from "./code-icon.comp";
 import { CoinsIcon } from "./coins-icon.comp";
+import { Columns3Icon } from "./columns-3-icon.comp";
+import { CommentCheckIcon } from "./comment-check-icon.comp";
 import { CommentDotsIcon } from "./comment-dots-icon.comp";
 import { CommentIcon } from "./comment-icon.comp";
 import { CommentsIcon } from "./comments-icon.comp";
+import { CommentSmsIcon } from "./comment-sms-icon.comp";
+import { CommentsQuestionIcon } from "./comments-question-icon.comp";
+import { CommentXmarkIcon } from "./comment-xmark-icon.comp";
 import { CompassIcon } from "./compass-icon.comp";
 import { CompressIcon } from "./compress-icon.comp";
+import { ComputerMouseIcon } from "./computer-mouse-icon.comp";
 import { CopyIcon } from "./copy-icon.comp";
 import { CreditCardIcon } from "./credit-card-icon.comp";
 import { CrosshairsIcon } from "./crosshairs-icon.comp";
 import { CrownIcon } from "./crown-icon.comp";
+import { CubeIcon } from "./cube-icon.comp";
+import { CubesIcon } from "./cubes-icon.comp";
 import { DatabaseIcon } from "./database-icon.comp";
+import { DesktopArrowDownIcon } from "./desktop-arrow-down-icon.comp";
 import { DesktopIcon } from "./desktop-icon.comp";
 import { DiceFiveIcon } from "./dice-five-icon.comp";
 import { DiceIcon } from "./dice-icon.comp";
+import { DiplomaIcon } from "./diploma-icon.comp";
+import { DisplayIcon } from "./display-icon.comp";
 import { DoorClosedIcon } from "./door-closed-icon.comp";
 import { DoorOpenIcon } from "./door-open-icon.comp";
 import { DownLeftAndUpRightToCenterIcon } from "./down-left-and-up-right-to-center-icon.comp";
 import { DownloadIcon } from "./download-icon.comp";
 import { DropletIcon } from "./droplet-icon.comp";
 import { DumbbellIcon } from "./dumbbell-icon.comp";
+import { EarListenIcon } from "./ear-listen-icon.comp";
 import { EarthAmericasIcon } from "./earth-americas-icon.comp";
 import { EllipsisIcon } from "./ellipsis-icon.comp";
 import { EllipsisVerticalIcon } from "./ellipsis-vertical-icon.comp";
+import { EnvelopeCircleCheckIcon } from "./envelope-circle-check-icon.comp";
 import { EnvelopeIcon } from "./envelope-icon.comp";
 import { EnvelopeOpenIcon } from "./envelope-open-icon.comp";
 import { EraserIcon } from "./eraser-icon.comp";
+import { ExclamationIcon } from "./exclamation-icon.comp";
 import { ExpandIcon } from "./expand-icon.comp";
 import { EyeDropperIcon } from "./eye-dropper-icon.comp";
 import { EyeIcon } from "./eye-icon.comp";
@@ -181,11 +253,15 @@ import { EyeLowVisionIcon } from "./eye-low-vision-icon.comp";
 import { EyeSlashIcon } from "./eye-slash-icon.comp";
 import { FaceFrownIcon } from "./face-frown-icon.comp";
 import { FaceGrinStarsIcon } from "./face-grin-stars-icon.comp";
+import { FaceHandOverMouthIcon } from "./face-hand-over-mouth-icon.comp";
 import { FaceLaughIcon } from "./face-laugh-icon.comp";
 import { FaceMehIcon } from "./face-meh-icon.comp";
+import { FacePartyIcon } from "./face-party-icon.comp";
 import { FaceSadTearIcon } from "./face-sad-tear-icon.comp";
 import { FaceSmileIcon } from "./face-smile-icon.comp";
+import { FaceSmileWinkIcon } from "./face-smile-wink-icon.comp";
 import { FaceSurpriseIcon } from "./face-surprise-icon.comp";
+import { FaceThinkingIcon } from "./face-thinking-icon.comp";
 import { FileArrowDownIcon } from "./file-arrow-down-icon.comp";
 import { FileCirclePlusIcon } from "./file-circle-plus-icon.comp";
 import { FileExportIcon } from "./file-export-icon.comp";
@@ -198,19 +274,24 @@ import { FilePdfIcon } from "./file-pdf-icon.comp";
 import { FilePenIcon } from "./file-pen-icon.comp";
 import { FileVideoIcon } from "./file-video-icon.comp";
 import { FilmIcon } from "./film-icon.comp";
+import { FilterCircleXmarkIcon } from "./filter-circle-xmark-icon.comp";
 import { FilterIcon } from "./filter-icon.comp";
 import { FilterListIcon } from "./filter-list-icon.comp";
 import { FingerprintIcon } from "./fingerprint-icon.comp";
 import { FireFlameCurvedIcon } from "./fire-flame-curved-icon.comp";
+import { FireFlameSimpleIcon } from "./fire-flame-simple-icon.comp";
 import { FireIcon } from "./fire-icon.comp";
 import { FlagCheckeredIcon } from "./flag-checkered-icon.comp";
 import { FlagIcon } from "./flag-icon.comp";
+import { FlagPennantIcon } from "./flag-pennant-icon.comp";
 import { FlagSwallowtailIcon } from "./flag-swallowtail-icon.comp";
 import { FlaskIcon } from "./flask-icon.comp";
 import { FloppyDiskIcon } from "./floppy-disk-icon.comp";
 import { FolderIcon } from "./folder-icon.comp";
 import { FolderOpenIcon } from "./folder-open-icon.comp";
 import { FolderPlusIcon } from "./folder-plus-icon.comp";
+import { FoldersIcon } from "./folders-icon.comp";
+import { FolderTreeIcon } from "./folder-tree-icon.comp";
 import { FontIcon } from "./font-icon.comp";
 import { ForwardFastIcon } from "./forward-fast-icon.comp";
 import { ForwardIcon } from "./forward-icon.comp";
@@ -219,23 +300,40 @@ import { GamepadIcon } from "./gamepad-icon.comp";
 import { GaugeHighIcon } from "./gauge-high-icon.comp";
 import { GaugeIcon } from "./gauge-icon.comp";
 import { GearIcon } from "./gear-icon.comp";
+import { GearsIcon } from "./gears-icon.comp";
 import { GemIcon } from "./gem-icon.comp";
 import { GiftIcon } from "./gift-icon.comp";
 import { GlassesIcon } from "./glasses-icon.comp";
 import { GlobeIcon } from "./globe-icon.comp";
 import { GraduationCapIcon } from "./graduation-cap-icon.comp";
+import { Grid2Icon } from "./grid-2-icon.comp";
+import { GridIcon } from "./grid-icon.comp";
 import { GripDotsIcon } from "./grip-dots-icon.comp";
 import { GripDotsVerticalIcon } from "./grip-dots-vertical-icon.comp";
 import { GripLinesIcon } from "./grip-lines-icon.comp";
 import { GripLinesVerticalIcon } from "./grip-lines-vertical-icon.comp";
+import { GripVerticalIcon } from "./grip-vertical-icon.comp";
+import { HammerIcon } from "./hammer-icon.comp";
+import { HandBackFistIcon } from "./hand-back-fist-icon.comp";
+import { HandHoldingDollarIcon } from "./hand-holding-dollar-icon.comp";
+import { HandHoldingHeartIcon } from "./hand-holding-heart-icon.comp";
 import { HandIcon } from "./hand-icon.comp";
+import { HandPeaceIcon } from "./hand-peace-icon.comp";
 import { HandPointerIcon } from "./hand-pointer-icon.comp";
+import { HandPointRightIcon } from "./hand-point-right-icon.comp";
+import { HandPointUpIcon } from "./hand-point-up-icon.comp";
 import { HandsClappingIcon } from "./hands-clapping-icon.comp";
 import { HandshakeIcon } from "./handshake-icon.comp";
+import { HandshakeSimpleIcon } from "./handshake-simple-icon.comp";
+import { HandsHoldingIcon } from "./hands-holding-icon.comp";
+import { HandWaveIcon } from "./hand-wave-icon.comp";
+import { HardDriveIcon } from "./hard-drive-icon.comp";
 import { HashtagIcon } from "./hashtag-icon.comp";
+import { HatWizardIcon } from "./hat-wizard-icon.comp";
 import { HeadingIcon } from "./heading-icon.comp";
 import { HeadphonesIcon } from "./headphones-icon.comp";
 import { HeadsetIcon } from "./headset-icon.comp";
+import { HeadSideBrainIcon } from "./head-side-brain-icon.comp";
 import { HeartCrackIcon } from "./heart-crack-icon.comp";
 import { HeartIcon } from "./heart-icon.comp";
 import { HighlighterIcon } from "./highlighter-icon.comp";
@@ -244,24 +342,33 @@ import { HourglassHalfIcon } from "./hourglass-half-icon.comp";
 import { HourglassIcon } from "./hourglass-icon.comp";
 import { HourglassStartIcon } from "./hourglass-start-icon.comp";
 import { HouseChimneyIcon } from "./house-chimney-icon.comp";
+import { HouseChimneyUserIcon } from "./house-chimney-user-icon.comp";
 import { HouseIcon } from "./house-icon.comp";
+import { HouseLaptopIcon } from "./house-laptop-icon.comp";
 import { HouseUserIcon } from "./house-user-icon.comp";
 import { IdBadgeIcon } from "./id-badge-icon.comp";
 import { IdCardIcon } from "./id-card-icon.comp";
 import { ImageIcon } from "./image-icon.comp";
+import { ImagePolaroidIcon } from "./image-polaroid-icon.comp";
 import { ImagesIcon } from "./images-icon.comp";
+import { InboxFullIcon } from "./inbox-full-icon.comp";
 import { InboxIcon } from "./inbox-icon.comp";
 import { IndentIcon } from "./indent-icon.comp";
 import { InfinityIcon } from "./infinity-icon.comp";
+import { InfoIcon } from "./info-icon.comp";
 import { ItalicIcon } from "./italic-icon.comp";
+import { KeyboardBrightnessIcon } from "./keyboard-brightness-icon.comp";
 import { KeyboardIcon } from "./keyboard-icon.comp";
 import { KeyIcon } from "./key-icon.comp";
 import { LandmarkIcon } from "./landmark-icon.comp";
 import { LanguageIcon } from "./language-icon.comp";
+import { LaptopCodeIcon } from "./laptop-code-icon.comp";
 import { LaptopIcon } from "./laptop-icon.comp";
 import { LayerGroupIcon } from "./layer-group-icon.comp";
 import { LeafIcon } from "./leaf-icon.comp";
 import { LeftRightIcon } from "./left-right-icon.comp";
+import { LightbulbExclamationIcon } from "./lightbulb-exclamation-icon.comp";
+import { LightbulbGearIcon } from "./lightbulb-gear-icon.comp";
 import { LightbulbIcon } from "./lightbulb-icon.comp";
 import { LightbulbOnIcon } from "./lightbulb-on-icon.comp";
 import { LinkIcon } from "./link-icon.comp";
@@ -285,19 +392,29 @@ import { MagnifyingGlassPlusIcon } from "./magnifying-glass-plus-icon.comp";
 import { MapIcon } from "./map-icon.comp";
 import { MapLocationDotIcon } from "./map-location-dot-icon.comp";
 import { MarkerIcon } from "./marker-icon.comp";
+import { MasksTheaterIcon } from "./masks-theater-icon.comp";
 import { MaximizeIcon } from "./maximize-icon.comp";
 import { MedalIcon } from "./medal-icon.comp";
 import { MessageIcon } from "./message-icon.comp";
+import { MessageLinesIcon } from "./message-lines-icon.comp";
+import { MessageQuestionIcon } from "./message-question-icon.comp";
 import { MicrochipIcon } from "./microchip-icon.comp";
 import { MicrophoneIcon } from "./microphone-icon.comp";
 import { MicrophoneSlashIcon } from "./microphone-slash-icon.comp";
 import { MinimizeIcon } from "./minimize-icon.comp";
 import { MinusIcon } from "./minus-icon.comp";
 import { MobileIcon } from "./mobile-icon.comp";
+import { MobileScreenIcon } from "./mobile-screen-icon.comp";
 import { MoneyBillWaveIcon } from "./money-bill-wave-icon.comp";
+import { MoneyCheckIcon } from "./money-check-icon.comp";
 import { MoonIcon } from "./moon-icon.comp";
+import { MoonStarsIcon } from "./moon-stars-icon.comp";
 import { MountainIcon } from "./mountain-icon.comp";
+import { MusicIcon } from "./music-icon.comp";
 import { NewspaperIcon } from "./newspaper-icon.comp";
+import { NotebookIcon } from "./notebook-icon.comp";
+import { ObjectsColumnIcon } from "./objects-column-icon.comp";
+import { OctagonExclamationIcon } from "./octagon-exclamation-icon.comp";
 import { OutdentIcon } from "./outdent-icon.comp";
 import { PaintbrushIcon } from "./paintbrush-icon.comp";
 import { PaletteIcon } from "./palette-icon.comp";
@@ -307,16 +424,20 @@ import { ParagraphIcon } from "./paragraph-icon.comp";
 import { PasteIcon } from "./paste-icon.comp";
 import { PauseIcon } from "./pause-icon.comp";
 import { PencilIcon } from "./pencil-icon.comp";
+import { PenClipIcon } from "./pen-clip-icon.comp";
 import { PenIcon } from "./pen-icon.comp";
+import { PenLineIcon } from "./pen-line-icon.comp";
 import { PenNibIcon } from "./pen-nib-icon.comp";
 import { PenRulerIcon } from "./pen-ruler-icon.comp";
 import { PenToSquareIcon } from "./pen-to-square-icon.comp";
+import { PeopleArrowsIcon } from "./people-arrows-icon.comp";
 import { PeopleGroupIcon } from "./people-group-icon.comp";
 import { PercentIcon } from "./percent-icon.comp";
 import { PersonIcon } from "./person-icon.comp";
 import { PersonRunningIcon } from "./person-running-icon.comp";
 import { PhoneIcon } from "./phone-icon.comp";
 import { PhoneSlashIcon } from "./phone-slash-icon.comp";
+import { PhoneVolumeIcon } from "./phone-volume-icon.comp";
 import { PhotoFilmIcon } from "./photo-film-icon.comp";
 import { PiggyBankIcon } from "./piggy-bank-icon.comp";
 import { PlaneIcon } from "./plane-icon.comp";
@@ -325,14 +446,21 @@ import { PlugIcon } from "./plug-icon.comp";
 import { PlusIcon } from "./plus-icon.comp";
 import { PodcastIcon } from "./podcast-icon.comp";
 import { PrintIcon } from "./print-icon.comp";
+import { PuzzleIcon } from "./puzzle-icon.comp";
 import { PuzzlePieceIcon } from "./puzzle-piece-icon.comp";
+import { QrcodeIcon } from "./qrcode-icon.comp";
+import { QuestionIcon } from "./question-icon.comp";
 import { QuoteLeftIcon } from "./quote-left-icon.comp";
 import { QuoteRightIcon } from "./quote-right-icon.comp";
+import { RadioIcon } from "./radio-icon.comp";
+import { RainbowIcon } from "./rainbow-icon.comp";
 import { RankingStarIcon } from "./ranking-star-icon.comp";
 import { ReceiptIcon } from "./receipt-icon.comp";
+import { RectangleListIcon } from "./rectangle-list-icon.comp";
 import { RepeatIcon } from "./repeat-icon.comp";
 import { ReplyAllIcon } from "./reply-all-icon.comp";
 import { ReplyIcon } from "./reply-icon.comp";
+import { RetweetIcon } from "./retweet-icon.comp";
 import { RightLeftIcon } from "./right-left-icon.comp";
 import { RobotIcon } from "./robot-icon.comp";
 import { RocketIcon } from "./rocket-icon.comp";
@@ -341,58 +469,87 @@ import { RotateRightIcon } from "./rotate-right-icon.comp";
 import { RouteIcon } from "./route-icon.comp";
 import { RssIcon } from "./rss-icon.comp";
 import { RulerIcon } from "./ruler-icon.comp";
+import { SackDollarIcon } from "./sack-dollar-icon.comp";
 import { ScaleBalancedIcon } from "./scale-balanced-icon.comp";
+import { ScaleUnbalancedIcon } from "./scale-unbalanced-icon.comp";
+import { SchoolFlagIcon } from "./school-flag-icon.comp";
 import { SchoolIcon } from "./school-icon.comp";
 import { ScissorsIcon } from "./scissors-icon.comp";
+import { ScrewdriverWrenchIcon } from "./screwdriver-wrench-icon.comp";
 import { SeedlingIcon } from "./seedling-icon.comp";
 import { ServerIcon } from "./server-icon.comp";
 import { ShareFromSquareIcon } from "./share-from-square-icon.comp";
 import { ShareIcon } from "./share-icon.comp";
 import { ShareNodesIcon } from "./share-nodes-icon.comp";
 import { ShieldCheckIcon } from "./shield-check-icon.comp";
+import { ShieldExclamationIcon } from "./shield-exclamation-icon.comp";
 import { ShieldHalvedIcon } from "./shield-halved-icon.comp";
+import { ShieldIcon } from "./shield-icon.comp";
 import { ShuffleIcon } from "./shuffle-icon.comp";
+import { SidebarFlipIcon } from "./sidebar-flip-icon.comp";
+import { SidebarIcon } from "./sidebar-icon.comp";
 import { SignalIcon } from "./signal-icon.comp";
 import { SignsPostIcon } from "./signs-post-icon.comp";
 import { SitemapIcon } from "./sitemap-icon.comp";
 import { SlidersIcon } from "./sliders-icon.comp";
 import { SnowflakeIcon } from "./snowflake-icon.comp";
+import { SortDownIcon } from "./sort-down-icon.comp";
 import { SortIcon } from "./sort-icon.comp";
+import { SortUpIcon } from "./sort-up-icon.comp";
+import { SparkleIcon } from "./sparkle-icon.comp";
 import { SparklesIcon } from "./sparkles-icon.comp";
+import { SpellCheckIcon } from "./spell-check-icon.comp";
 import { SpinnerIcon } from "./spinner-icon.comp";
 import { SquareArrowUpRightIcon } from "./square-arrow-up-right-icon.comp";
 import { SquareCheckIcon } from "./square-check-icon.comp";
+import { SquareExclamationIcon } from "./square-exclamation-icon.comp";
 import { SquareIcon } from "./square-icon.comp";
+import { SquareInfoIcon } from "./square-info-icon.comp";
 import { SquareMinusIcon } from "./square-minus-icon.comp";
 import { SquarePlusIcon } from "./square-plus-icon.comp";
 import { SquareXmarkIcon } from "./square-xmark-icon.comp";
 import { StarHalfStrokeIcon } from "./star-half-stroke-icon.comp";
 import { StarIcon } from "./star-icon.comp";
 import { StarSharpIcon } from "./star-sharp-icon.comp";
+import { StarShootingIcon } from "./star-shooting-icon.comp";
+import { StarsIcon } from "./stars-icon.comp";
 import { StopIcon } from "./stop-icon.comp";
 import { StopwatchIcon } from "./stopwatch-icon.comp";
 import { StoreIcon } from "./store-icon.comp";
 import { StrikethroughIcon } from "./strikethrough-icon.comp";
+import { SunBrightIcon } from "./sun-bright-icon.comp";
 import { SunIcon } from "./sun-icon.comp";
+import { SwordIcon } from "./sword-icon.comp";
+import { SwordsIcon } from "./swords-icon.comp";
 import { TableCellsIcon } from "./table-cells-icon.comp";
+import { TableCellsLargeIcon } from "./table-cells-large-icon.comp";
 import { TableColumnsIcon } from "./table-columns-icon.comp";
 import { TableListIcon } from "./table-list-icon.comp";
+import { TabletScreenButtonIcon } from "./tablet-screen-button-icon.comp";
 import { TagIcon } from "./tag-icon.comp";
+import { TagsIcon } from "./tags-icon.comp";
+import { TemperatureHalfIcon } from "./temperature-half-icon.comp";
 import { TerminalIcon } from "./terminal-icon.comp";
 import { TextSizeIcon } from "./text-size-icon.comp";
 import { ThumbsDownIcon } from "./thumbs-down-icon.comp";
 import { ThumbsUpIcon } from "./thumbs-up-icon.comp";
 import { ThumbtackIcon } from "./thumbtack-icon.comp";
 import { ThumbtackSlashIcon } from "./thumbtack-slash-icon.comp";
+import { TicketIcon } from "./ticket-icon.comp";
+import { TicketSimpleIcon } from "./ticket-simple-icon.comp";
 import { TimerIcon } from "./timer-icon.comp";
 import { ToggleOffIcon } from "./toggle-off-icon.comp";
 import { ToggleOnIcon } from "./toggle-on-icon.comp";
+import { ToolboxIcon } from "./toolbox-icon.comp";
+import { TrashCanArrowUpIcon } from "./trash-can-arrow-up-icon.comp";
 import { TrashCanIcon } from "./trash-can-icon.comp";
 import { TreeIcon } from "./tree-icon.comp";
 import { TriangleExclamationIcon } from "./triangle-exclamation-icon.comp";
 import { TrophyIcon } from "./trophy-icon.comp";
 import { TrophyStarIcon } from "./trophy-star-icon.comp";
 import { TruckIcon } from "./truck-icon.comp";
+import { TvIcon } from "./tv-icon.comp";
+import { UmbrellaIcon } from "./umbrella-icon.comp";
 import { UnderlineIcon } from "./underline-icon.comp";
 import { UniversalAccessIcon } from "./universal-access-icon.comp";
 import { UpDownIcon } from "./up-down-icon.comp";
@@ -407,21 +564,30 @@ import { UserLockIcon } from "./user-lock-icon.comp";
 import { UserMinusIcon } from "./user-minus-icon.comp";
 import { UserPenIcon } from "./user-pen-icon.comp";
 import { UserPlusIcon } from "./user-plus-icon.comp";
+import { UserSecretIcon } from "./user-secret-icon.comp";
 import { UserShieldIcon } from "./user-shield-icon.comp";
 import { UsersIcon } from "./users-icon.comp";
 import { UserTieIcon } from "./user-tie-icon.comp";
 import { UserXmarkIcon } from "./user-xmark-icon.comp";
 import { VideoIcon } from "./video-icon.comp";
+import { VideoPlusIcon } from "./video-plus-icon.comp";
 import { VideoSlashIcon } from "./video-slash-icon.comp";
+import { VoicemailIcon } from "./voicemail-icon.comp";
 import { VolumeHighIcon } from "./volume-high-icon.comp";
+import { VolumeIcon } from "./volume-icon.comp";
 import { VolumeLowIcon } from "./volume-low-icon.comp";
 import { VolumeOffIcon } from "./volume-off-icon.comp";
 import { VolumeXmarkIcon } from "./volume-xmark-icon.comp";
 import { WalletIcon } from "./wallet-icon.comp";
 import { WandMagicSparklesIcon } from "./wand-magic-sparkles-icon.comp";
 import { WandSparklesIcon } from "./wand-sparkles-icon.comp";
+import { WaterIcon } from "./water-icon.comp";
 import { WhatsappIcon } from "./whatsapp-icon.comp";
+import { WifiIcon } from "./wifi-icon.comp";
+import { WindIcon } from "./wind-icon.comp";
 import { WindowMaximizeIcon } from "./window-maximize-icon.comp";
+import { WindowRestoreIcon } from "./window-restore-icon.comp";
+import { WrenchIcon } from "./wrench-icon.comp";
 import { XmarkIcon } from "./xmark-icon.comp";
 
 /** An icon of the folder, with what the gallery needs to draw it. */
@@ -448,6 +614,7 @@ interface Glyph {
  * most common one.
  */
 const GLYPHS: Glyph[] = [
+  { name: "AddressBookIcon", Icon: AddressBookIcon, width: 24, height: 24 },
   { name: "AddressCardIcon", Icon: AddressCardIcon, width: 24, height: 24 },
   { name: "AlarmClockIcon", Icon: AlarmClockIcon, width: 24, height: 24 },
   { name: "AlignCenterIcon", Icon: AlignCenterIcon, width: 24, height: 24 },
@@ -463,13 +630,21 @@ const GLYPHS: Glyph[] = [
     height: 24,
     use: { size: 14, where: "select, date picker" },
   },
+  { name: "AnglesDownIcon", Icon: AnglesDownIcon, width: 24, height: 24 },
+  { name: "AnglesLeftIcon", Icon: AnglesLeftIcon, width: 24, height: 24 },
+  { name: "AnglesRightIcon", Icon: AnglesRightIcon, width: 24, height: 24 },
+  { name: "AnglesUpIcon", Icon: AnglesUpIcon, width: 24, height: 24 },
   { name: "AngleUpIcon", Icon: AngleUpIcon, width: 24, height: 24 },
   { name: "ArrowDownAZIcon", Icon: ArrowDownAZIcon, width: 24, height: 24 },
   { name: "ArrowDownIcon", Icon: ArrowDownIcon, width: 24, height: 24 },
+  { name: "ArrowDownLongIcon", Icon: ArrowDownLongIcon, width: 24, height: 24 },
+  { name: "ArrowDownToBracketIcon", Icon: ArrowDownToBracketIcon, width: 24, height: 24 },
   { name: "ArrowDownToLineIcon", Icon: ArrowDownToLineIcon, width: 24, height: 24 },
   { name: "ArrowDownWideShortIcon", Icon: ArrowDownWideShortIcon, width: 24, height: 24 },
   { name: "ArrowLeftIcon", Icon: ArrowLeftIcon, width: 24, height: 24 },
   { name: "ArrowLeftLongIcon", Icon: ArrowLeftLongIcon, width: 24, height: 24 },
+  { name: "ArrowLeftToLineIcon", Icon: ArrowLeftToLineIcon, width: 24, height: 24 },
+  { name: "ArrowPointerIcon", Icon: ArrowPointerIcon, width: 24, height: 24 },
   {
     name: "ArrowRightArrowLeftIcon",
     Icon: ArrowRightArrowLeftIcon,
@@ -494,6 +669,7 @@ const GLYPHS: Glyph[] = [
     height: 24,
     use: { size: 24, where: "board tools" },
   },
+  { name: "ArrowRotateForwardIcon", Icon: ArrowRotateForwardIcon, width: 24, height: 24 },
   {
     name: "ArrowRotateLeftIcon",
     Icon: ArrowRotateLeftIcon,
@@ -504,19 +680,25 @@ const GLYPHS: Glyph[] = [
   { name: "ArrowRotateRightIcon", Icon: ArrowRotateRightIcon, width: 24, height: 24 },
   { name: "ArrowsLeftRightIcon", Icon: ArrowsLeftRightIcon, width: 24, height: 24 },
   { name: "ArrowsRotateIcon", Icon: ArrowsRotateIcon, width: 20, height: 20, use: { size: 20, where: "board tools" } },
+  { name: "ArrowsSpinIcon", Icon: ArrowsSpinIcon, width: 24, height: 24 },
+  { name: "ArrowsToDotIcon", Icon: ArrowsToDotIcon, width: 24, height: 24 },
   { name: "ArrowsUpDownIcon", Icon: ArrowsUpDownIcon, width: 24, height: 24 },
   { name: "ArrowTrendDownIcon", Icon: ArrowTrendDownIcon, width: 24, height: 24 },
   { name: "ArrowTrendUpIcon", Icon: ArrowTrendUpIcon, width: 24, height: 24 },
   { name: "ArrowTurnDownIcon", Icon: ArrowTurnDownIcon, width: 24, height: 24 },
   { name: "ArrowTurnUpIcon", Icon: ArrowTurnUpIcon, width: 24, height: 24 },
+  { name: "ArrowUpFromBracketIcon", Icon: ArrowUpFromBracketIcon, width: 24, height: 24 },
   { name: "ArrowUpFromLineIcon", Icon: ArrowUpFromLineIcon, width: 24, height: 24 },
   { name: "ArrowUpIcon", Icon: ArrowUpIcon, width: 24, height: 24, use: { size: 20, where: "move menu, user menu" } },
+  { name: "ArrowUpLongIcon", Icon: ArrowUpLongIcon, width: 24, height: 24 },
   { name: "ArrowUpRightFromSquareIcon", Icon: ArrowUpRightFromSquareIcon, width: 24, height: 24 },
+  { name: "ArrowUpToLineIcon", Icon: ArrowUpToLineIcon, width: 24, height: 24 },
   { name: "ArrowUpWideShortIcon", Icon: ArrowUpWideShortIcon, width: 24, height: 24 },
   { name: "ArrowUpZAIcon", Icon: ArrowUpZAIcon, width: 24, height: 24 },
   { name: "AtIcon", Icon: AtIcon, width: 24, height: 24 },
   { name: "AtomIcon", Icon: AtomIcon, width: 24, height: 24 },
   { name: "AwardIcon", Icon: AwardIcon, width: 24, height: 24 },
+  { name: "AwardSimpleIcon", Icon: AwardSimpleIcon, width: 24, height: 24 },
   { name: "BackwardFastIcon", Icon: BackwardFastIcon, width: 24, height: 24 },
   { name: "BackwardIcon", Icon: BackwardIcon, width: 24, height: 24 },
   {
@@ -526,26 +708,41 @@ const GLYPHS: Glyph[] = [
     height: 24,
     use: { size: 20, where: "game viewer", variant: "duotone-solid" },
   },
+  { name: "BadgeCheckIcon", Icon: BadgeCheckIcon, width: 24, height: 24 },
+  { name: "BadgePercentIcon", Icon: BadgePercentIcon, width: 24, height: 24 },
   { name: "BagShoppingIcon", Icon: BagShoppingIcon, width: 24, height: 24 },
   { name: "BanIcon", Icon: BanIcon, width: 24, height: 24 },
+  { name: "BarcodeIcon", Icon: BarcodeIcon, width: 24, height: 24 },
   { name: "BarsIcon", Icon: BarsIcon, width: 24, height: 24, use: { size: 20, where: "game viewer" } },
   { name: "BarsProgressIcon", Icon: BarsProgressIcon, width: 24, height: 24 },
   { name: "BarsStaggeredIcon", Icon: BarsStaggeredIcon, width: 24, height: 24 },
   { name: "BasketShoppingIcon", Icon: BasketShoppingIcon, width: 24, height: 24 },
+  { name: "BatteryEmptyIcon", Icon: BatteryEmptyIcon, width: 24, height: 24 },
+  { name: "BatteryFullIcon", Icon: BatteryFullIcon, width: 24, height: 24 },
+  { name: "BatteryHalfIcon", Icon: BatteryHalfIcon, width: 24, height: 24 },
   { name: "BellIcon", Icon: BellIcon, width: 24, height: 24 },
+  { name: "BellRingIcon", Icon: BellRingIcon, width: 24, height: 24 },
   { name: "BellSlashIcon", Icon: BellSlashIcon, width: 24, height: 24 },
+  { name: "BluetoothIcon", Icon: BluetoothIcon, width: 24, height: 24 },
   { name: "BoldIcon", Icon: BoldIcon, width: 24, height: 24 },
+  { name: "BoltAutoIcon", Icon: BoltAutoIcon, width: 24, height: 24 },
   { name: "BoltIcon", Icon: BoltIcon, width: 24, height: 24 },
+  { name: "BoltLightningIcon", Icon: BoltLightningIcon, width: 24, height: 24 },
+  { name: "BookAtlasIcon", Icon: BookAtlasIcon, width: 24, height: 24 },
   { name: "BookBookmarkIcon", Icon: BookBookmarkIcon, width: 24, height: 24 },
   { name: "BookIcon", Icon: BookIcon, width: 24, height: 24 },
   { name: "BookmarkIcon", Icon: BookmarkIcon, width: 24, height: 24 },
   { name: "BookmarkSlashIcon", Icon: BookmarkSlashIcon, width: 24, height: 24 },
   { name: "BookOpenIcon", Icon: BookOpenIcon, width: 24, height: 24 },
   { name: "BookOpenReaderIcon", Icon: BookOpenReaderIcon, width: 24, height: 24 },
+  { name: "BooksIcon", Icon: BooksIcon, width: 24, height: 24 },
+  { name: "BookUserIcon", Icon: BookUserIcon, width: 24, height: 24 },
   { name: "BorderAllIcon", Icon: BorderAllIcon, width: 24, height: 24 },
   { name: "BoxArchiveIcon", Icon: BoxArchiveIcon, width: 24, height: 24 },
   { name: "BoxIcon", Icon: BoxIcon, width: 24, height: 24 },
+  { name: "BrainCircuitIcon", Icon: BrainCircuitIcon, width: 24, height: 24 },
   { name: "BrainIcon", Icon: BrainIcon, width: 24, height: 24 },
+  { name: "BrowserIcon", Icon: BrowserIcon, width: 24, height: 24 },
   { name: "BugIcon", Icon: BugIcon, width: 24, height: 24 },
   { name: "BuildingIcon", Icon: BuildingIcon, width: 24, height: 24 },
   { name: "BullhornIcon", Icon: BullhornIcon, width: 24, height: 24 },
@@ -559,13 +756,17 @@ const GLYPHS: Glyph[] = [
     height: 24,
     use: { size: 16, where: "teacher CTA (site)" },
   },
+  { name: "CalendarCirclePlusIcon", Icon: CalendarCirclePlusIcon, width: 24, height: 24 },
+  { name: "CalendarClockIcon", Icon: CalendarClockIcon, width: 24, height: 24 },
   { name: "CalendarDayIcon", Icon: CalendarDayIcon, width: 24, height: 24 },
   { name: "CalendarDaysIcon", Icon: CalendarDaysIcon, width: 24, height: 24 },
   { name: "CalendarIcon", Icon: CalendarIcon, width: 24, height: 24, use: { size: 18, where: "date picker" } },
   { name: "CalendarPlusIcon", Icon: CalendarPlusIcon, width: 24, height: 24 },
+  { name: "CalendarRangeIcon", Icon: CalendarRangeIcon, width: 24, height: 24 },
   { name: "CalendarWeekIcon", Icon: CalendarWeekIcon, width: 24, height: 24 },
   { name: "CalendarXmarkIcon", Icon: CalendarXmarkIcon, width: 24, height: 24 },
   { name: "CameraIcon", Icon: CameraIcon, width: 24, height: 24 },
+  { name: "CameraRetroIcon", Icon: CameraRetroIcon, width: 24, height: 24 },
   { name: "CameraRotateIcon", Icon: CameraRotateIcon, width: 24, height: 24 },
   { name: "CaretDownIcon", Icon: CaretDownIcon, width: 24, height: 24 },
   { name: "CaretLeftIcon", Icon: CaretLeftIcon, width: 24, height: 24 },
@@ -577,14 +778,23 @@ const GLYPHS: Glyph[] = [
     use: { size: 14, where: "course trail", variant: "duotone-solid" },
   },
   { name: "CaretUpIcon", Icon: CaretUpIcon, width: 24, height: 24 },
+  { name: "CartArrowDownIcon", Icon: CartArrowDownIcon, width: 24, height: 24 },
+  { name: "CartPlusIcon", Icon: CartPlusIcon, width: 24, height: 24 },
   { name: "CartShoppingIcon", Icon: CartShoppingIcon, width: 24, height: 24 },
+  { name: "CashRegisterIcon", Icon: CashRegisterIcon, width: 24, height: 24 },
+  { name: "CastleIcon", Icon: CastleIcon, width: 24, height: 24 },
   { name: "CertificateIcon", Icon: CertificateIcon, width: 24, height: 24 },
+  { name: "ChalkboardIcon", Icon: ChalkboardIcon, width: 24, height: 24 },
   { name: "ChalkboardUserIcon", Icon: ChalkboardUserIcon, width: 24, height: 24 },
   { name: "ChartAreaIcon", Icon: ChartAreaIcon, width: 24, height: 24 },
   { name: "ChartBarIcon", Icon: ChartBarIcon, width: 24, height: 24 },
   { name: "ChartColumnIcon", Icon: ChartColumnIcon, width: 24, height: 24 },
   { name: "ChartLineIcon", Icon: ChartLineIcon, width: 24, height: 24 },
+  { name: "ChartLineUpIcon", Icon: ChartLineUpIcon, width: 24, height: 24 },
+  { name: "ChartMixedIcon", Icon: ChartMixedIcon, width: 24, height: 24 },
+  { name: "ChartNetworkIcon", Icon: ChartNetworkIcon, width: 24, height: 24 },
   { name: "ChartPieIcon", Icon: ChartPieIcon, width: 24, height: 24 },
+  { name: "ChartPieSimpleIcon", Icon: ChartPieSimpleIcon, width: 24, height: 24 },
   { name: "ChartSimpleIcon", Icon: ChartSimpleIcon, width: 24, height: 24 },
   { name: "CheckDoubleIcon", Icon: CheckDoubleIcon, width: 24, height: 24 },
   { name: "CheckIcon", Icon: CheckIcon, width: 24, height: 24, use: { size: 16, where: "select, check cards" } },
@@ -607,8 +817,10 @@ const GLYPHS: Glyph[] = [
   { name: "ChevronDownIcon", Icon: ChevronDownIcon, width: 24, height: 24 },
   { name: "ChevronLeftIcon", Icon: ChevronLeftIcon, width: 24, height: 24, use: { size: 20, where: "game viewer" } },
   { name: "ChevronRightIcon", Icon: ChevronRightIcon, width: 24, height: 24, use: { size: 20, where: "game viewer" } },
+  { name: "ChevronsDownIcon", Icon: ChevronsDownIcon, width: 24, height: 24 },
   { name: "ChevronsLeftIcon", Icon: ChevronsLeftIcon, width: 24, height: 24 },
   { name: "ChevronsRightIcon", Icon: ChevronsRightIcon, width: 24, height: 24 },
+  { name: "ChevronsUpIcon", Icon: ChevronsUpIcon, width: 24, height: 24 },
   { name: "ChevronUpIcon", Icon: ChevronUpIcon, width: 24, height: 24 },
   { name: "ChildIcon", Icon: ChildIcon, width: 24, height: 24 },
   { name: "CircleArrowLeftIcon", Icon: CircleArrowLeftIcon, width: 24, height: 24 },
@@ -623,51 +835,75 @@ const GLYPHS: Glyph[] = [
   { name: "CircleChevronLeftIcon", Icon: CircleChevronLeftIcon, width: 24, height: 24 },
   { name: "CircleChevronRightIcon", Icon: CircleChevronRightIcon, width: 24, height: 24 },
   { name: "CircleDotIcon", Icon: CircleDotIcon, width: 24, height: 24 },
+  { name: "CircleDownIcon", Icon: CircleDownIcon, width: 24, height: 24 },
+  { name: "CircleExclamationCheckIcon", Icon: CircleExclamationCheckIcon, width: 24, height: 24 },
   { name: "CircleExclamationIcon", Icon: CircleExclamationIcon, width: 24, height: 24 },
   { name: "CircleHalfIcon", Icon: CircleHalfIcon, width: 24, height: 24 },
   { name: "CircleHalfStrokeIcon", Icon: CircleHalfStrokeIcon, width: 24, height: 24 },
   { name: "CircleIcon", Icon: CircleIcon, width: 24, height: 24 },
   { name: "CircleInfoIcon", Icon: CircleInfoIcon, width: 24, height: 24, use: { size: 18, where: "info tip" } },
+  { name: "CircleLeftIcon", Icon: CircleLeftIcon, width: 24, height: 24 },
   { name: "CircleMinusIcon", Icon: CircleMinusIcon, width: 24, height: 24 },
   { name: "CircleNotchIcon", Icon: CircleNotchIcon, width: 24, height: 24 },
   { name: "CirclePauseIcon", Icon: CirclePauseIcon, width: 24, height: 24 },
   { name: "CirclePlayIcon", Icon: CirclePlayIcon, width: 24, height: 24 },
   { name: "CirclePlusIcon", Icon: CirclePlusIcon, width: 24, height: 24 },
   { name: "CircleQuestionIcon", Icon: CircleQuestionIcon, width: 24, height: 24 },
+  { name: "CircleRightIcon", Icon: CircleRightIcon, width: 24, height: 24 },
   { name: "CircleStopIcon", Icon: CircleStopIcon, width: 24, height: 24 },
+  { name: "CircleUpIcon", Icon: CircleUpIcon, width: 24, height: 24 },
   { name: "CircleUserIcon", Icon: CircleUserIcon, width: 24, height: 24 },
   { name: "CircleXmarkIcon", Icon: CircleXmarkIcon, width: 24, height: 24 },
+  { name: "ClipboardCheckIcon", Icon: ClipboardCheckIcon, width: 24, height: 24 },
   { name: "ClipboardIcon", Icon: ClipboardIcon, width: 24, height: 24, use: { size: 20, where: "move menu" } },
   { name: "ClipboardListIcon", Icon: ClipboardListIcon, width: 24, height: 24 },
+  { name: "ClipboardQuestionIcon", Icon: ClipboardQuestionIcon, width: 24, height: 24 },
+  { name: "ClockDeskIcon", Icon: ClockDeskIcon, width: 24, height: 24 },
   { name: "ClockIcon", Icon: ClockIcon, width: 24, height: 24 },
   { name: "ClockRotateLeftIcon", Icon: ClockRotateLeftIcon, width: 24, height: 24 },
+  { name: "CloneIcon", Icon: CloneIcon, width: 24, height: 24 },
+  { name: "ClosedCaptioningIcon", Icon: ClosedCaptioningIcon, width: 24, height: 24 },
   { name: "CloudArrowDownIcon", Icon: CloudArrowDownIcon, width: 24, height: 24 },
   { name: "CloudArrowUpIcon", Icon: CloudArrowUpIcon, width: 24, height: 24 },
+  { name: "CloudBoltIcon", Icon: CloudBoltIcon, width: 24, height: 24 },
   { name: "CloudIcon", Icon: CloudIcon, width: 24, height: 24 },
+  { name: "CloudRainIcon", Icon: CloudRainIcon, width: 24, height: 24 },
   { name: "CloudSunIcon", Icon: CloudSunIcon, width: 24, height: 24 },
   { name: "CodeBranchIcon", Icon: CodeBranchIcon, width: 24, height: 24 },
   { name: "CodeCompareIcon", Icon: CodeCompareIcon, width: 24, height: 24 },
   { name: "CodeIcon", Icon: CodeIcon, width: 24, height: 24 },
   { name: "CoinsIcon", Icon: CoinsIcon, width: 24, height: 24 },
+  { name: "Columns3Icon", Icon: Columns3Icon, width: 24, height: 24 },
+  { name: "CommentCheckIcon", Icon: CommentCheckIcon, width: 24, height: 24 },
   { name: "CommentDotsIcon", Icon: CommentDotsIcon, width: 24, height: 24 },
   { name: "CommentIcon", Icon: CommentIcon, width: 24, height: 24, use: { size: 20, where: "move menu" } },
   { name: "CommentsIcon", Icon: CommentsIcon, width: 24, height: 24 },
+  { name: "CommentSmsIcon", Icon: CommentSmsIcon, width: 24, height: 24 },
+  { name: "CommentsQuestionIcon", Icon: CommentsQuestionIcon, width: 24, height: 24 },
+  { name: "CommentXmarkIcon", Icon: CommentXmarkIcon, width: 24, height: 24 },
   { name: "CompassIcon", Icon: CompassIcon, width: 24, height: 24 },
   { name: "CompressIcon", Icon: CompressIcon, width: 24, height: 24 },
+  { name: "ComputerMouseIcon", Icon: ComputerMouseIcon, width: 24, height: 24 },
   { name: "CopyIcon", Icon: CopyIcon, width: 24, height: 24 },
   { name: "CreditCardIcon", Icon: CreditCardIcon, width: 24, height: 24 },
   { name: "CrosshairsIcon", Icon: CrosshairsIcon, width: 24, height: 24 },
   { name: "CrownIcon", Icon: CrownIcon, width: 24, height: 24 },
+  { name: "CubeIcon", Icon: CubeIcon, width: 24, height: 24 },
+  { name: "CubesIcon", Icon: CubesIcon, width: 24, height: 24 },
   { name: "DatabaseIcon", Icon: DatabaseIcon, width: 24, height: 24 },
+  { name: "DesktopArrowDownIcon", Icon: DesktopArrowDownIcon, width: 24, height: 24 },
   { name: "DesktopIcon", Icon: DesktopIcon, width: 24, height: 24 },
   { name: "DiceFiveIcon", Icon: DiceFiveIcon, width: 24, height: 24 },
   { name: "DiceIcon", Icon: DiceIcon, width: 24, height: 24 },
+  { name: "DiplomaIcon", Icon: DiplomaIcon, width: 24, height: 24 },
+  { name: "DisplayIcon", Icon: DisplayIcon, width: 24, height: 24 },
   { name: "DoorClosedIcon", Icon: DoorClosedIcon, width: 24, height: 24 },
   { name: "DoorOpenIcon", Icon: DoorOpenIcon, width: 24, height: 24 },
   { name: "DownLeftAndUpRightToCenterIcon", Icon: DownLeftAndUpRightToCenterIcon, width: 24, height: 24 },
   { name: "DownloadIcon", Icon: DownloadIcon, width: 24, height: 24 },
   { name: "DropletIcon", Icon: DropletIcon, width: 24, height: 24 },
   { name: "DumbbellIcon", Icon: DumbbellIcon, width: 24, height: 24 },
+  { name: "EarListenIcon", Icon: EarListenIcon, width: 24, height: 24 },
   { name: "EarthAmericasIcon", Icon: EarthAmericasIcon, width: 24, height: 24 },
   {
     name: "EllipsisIcon",
@@ -677,9 +913,11 @@ const GLYPHS: Glyph[] = [
     use: { size: 4, where: "syllabus rows", variant: "duotone-solid" },
   },
   { name: "EllipsisVerticalIcon", Icon: EllipsisVerticalIcon, width: 24, height: 24 },
+  { name: "EnvelopeCircleCheckIcon", Icon: EnvelopeCircleCheckIcon, width: 24, height: 24 },
   { name: "EnvelopeIcon", Icon: EnvelopeIcon, width: 24, height: 24 },
   { name: "EnvelopeOpenIcon", Icon: EnvelopeOpenIcon, width: 24, height: 24 },
   { name: "EraserIcon", Icon: EraserIcon, width: 24, height: 24 },
+  { name: "ExclamationIcon", Icon: ExclamationIcon, width: 24, height: 24 },
   { name: "ExpandIcon", Icon: ExpandIcon, width: 24, height: 24, use: { size: 18, where: "game viewer" } },
   { name: "EyeDropperIcon", Icon: EyeDropperIcon, width: 24, height: 24 },
   { name: "EyeIcon", Icon: EyeIcon, width: 24, height: 24 },
@@ -687,11 +925,15 @@ const GLYPHS: Glyph[] = [
   { name: "EyeSlashIcon", Icon: EyeSlashIcon, width: 24, height: 24 },
   { name: "FaceFrownIcon", Icon: FaceFrownIcon, width: 24, height: 24 },
   { name: "FaceGrinStarsIcon", Icon: FaceGrinStarsIcon, width: 24, height: 24 },
+  { name: "FaceHandOverMouthIcon", Icon: FaceHandOverMouthIcon, width: 24, height: 24 },
   { name: "FaceLaughIcon", Icon: FaceLaughIcon, width: 24, height: 24 },
   { name: "FaceMehIcon", Icon: FaceMehIcon, width: 24, height: 24 },
+  { name: "FacePartyIcon", Icon: FacePartyIcon, width: 24, height: 24 },
   { name: "FaceSadTearIcon", Icon: FaceSadTearIcon, width: 24, height: 24 },
   { name: "FaceSmileIcon", Icon: FaceSmileIcon, width: 24, height: 24 },
+  { name: "FaceSmileWinkIcon", Icon: FaceSmileWinkIcon, width: 24, height: 24 },
   { name: "FaceSurpriseIcon", Icon: FaceSurpriseIcon, width: 24, height: 24 },
+  { name: "FaceThinkingIcon", Icon: FaceThinkingIcon, width: 24, height: 24 },
   { name: "FileArrowDownIcon", Icon: FileArrowDownIcon, width: 24, height: 24 },
   { name: "FileCirclePlusIcon", Icon: FileCirclePlusIcon, width: 24, height: 24 },
   { name: "FileExportIcon", Icon: FileExportIcon, width: 24, height: 24 },
@@ -704,10 +946,12 @@ const GLYPHS: Glyph[] = [
   { name: "FilePenIcon", Icon: FilePenIcon, width: 24, height: 24 },
   { name: "FileVideoIcon", Icon: FileVideoIcon, width: 24, height: 24 },
   { name: "FilmIcon", Icon: FilmIcon, width: 24, height: 24 },
+  { name: "FilterCircleXmarkIcon", Icon: FilterCircleXmarkIcon, width: 24, height: 24 },
   { name: "FilterIcon", Icon: FilterIcon, width: 24, height: 24 },
   { name: "FilterListIcon", Icon: FilterListIcon, width: 24, height: 24 },
   { name: "FingerprintIcon", Icon: FingerprintIcon, width: 24, height: 24 },
   { name: "FireFlameCurvedIcon", Icon: FireFlameCurvedIcon, width: 24, height: 24 },
+  { name: "FireFlameSimpleIcon", Icon: FireFlameSimpleIcon, width: 24, height: 24 },
   {
     name: "FireIcon",
     Icon: FireIcon,
@@ -717,12 +961,15 @@ const GLYPHS: Glyph[] = [
   },
   { name: "FlagCheckeredIcon", Icon: FlagCheckeredIcon, width: 24, height: 24 },
   { name: "FlagIcon", Icon: FlagIcon, width: 24, height: 24 },
+  { name: "FlagPennantIcon", Icon: FlagPennantIcon, width: 24, height: 24 },
   { name: "FlagSwallowtailIcon", Icon: FlagSwallowtailIcon, width: 24, height: 24 },
   { name: "FlaskIcon", Icon: FlaskIcon, width: 24, height: 24 },
   { name: "FloppyDiskIcon", Icon: FloppyDiskIcon, width: 24, height: 24 },
   { name: "FolderIcon", Icon: FolderIcon, width: 24, height: 24 },
   { name: "FolderOpenIcon", Icon: FolderOpenIcon, width: 24, height: 24 },
   { name: "FolderPlusIcon", Icon: FolderPlusIcon, width: 24, height: 24 },
+  { name: "FoldersIcon", Icon: FoldersIcon, width: 24, height: 24 },
+  { name: "FolderTreeIcon", Icon: FolderTreeIcon, width: 24, height: 24 },
   { name: "FontIcon", Icon: FontIcon, width: 24, height: 24 },
   { name: "ForwardFastIcon", Icon: ForwardFastIcon, width: 24, height: 24 },
   { name: "ForwardIcon", Icon: ForwardIcon, width: 24, height: 24 },
@@ -737,11 +984,14 @@ const GLYPHS: Glyph[] = [
   { name: "GaugeHighIcon", Icon: GaugeHighIcon, width: 24, height: 24 },
   { name: "GaugeIcon", Icon: GaugeIcon, width: 24, height: 24 },
   { name: "GearIcon", Icon: GearIcon, width: 24, height: 24 },
+  { name: "GearsIcon", Icon: GearsIcon, width: 24, height: 24 },
   { name: "GemIcon", Icon: GemIcon, width: 24, height: 24 },
   { name: "GiftIcon", Icon: GiftIcon, width: 24, height: 24 },
   { name: "GlassesIcon", Icon: GlassesIcon, width: 24, height: 24 },
   { name: "GlobeIcon", Icon: GlobeIcon, width: 24, height: 24 },
   { name: "GraduationCapIcon", Icon: GraduationCapIcon, width: 24, height: 24 },
+  { name: "Grid2Icon", Icon: Grid2Icon, width: 24, height: 24 },
+  { name: "GridIcon", Icon: GridIcon, width: 24, height: 24 },
   { name: "GripDotsIcon", Icon: GripDotsIcon, width: 24, height: 24 },
   {
     name: "GripDotsVerticalIcon",
@@ -752,14 +1002,28 @@ const GLYPHS: Glyph[] = [
   },
   { name: "GripLinesIcon", Icon: GripLinesIcon, width: 24, height: 24 },
   { name: "GripLinesVerticalIcon", Icon: GripLinesVerticalIcon, width: 24, height: 24 },
+  { name: "GripVerticalIcon", Icon: GripVerticalIcon, width: 24, height: 24 },
+  { name: "HammerIcon", Icon: HammerIcon, width: 24, height: 24 },
+  { name: "HandBackFistIcon", Icon: HandBackFistIcon, width: 24, height: 24 },
+  { name: "HandHoldingDollarIcon", Icon: HandHoldingDollarIcon, width: 24, height: 24 },
+  { name: "HandHoldingHeartIcon", Icon: HandHoldingHeartIcon, width: 24, height: 24 },
   { name: "HandIcon", Icon: HandIcon, width: 24, height: 24 },
+  { name: "HandPeaceIcon", Icon: HandPeaceIcon, width: 24, height: 24 },
   { name: "HandPointerIcon", Icon: HandPointerIcon, width: 24, height: 24 },
+  { name: "HandPointRightIcon", Icon: HandPointRightIcon, width: 24, height: 24 },
+  { name: "HandPointUpIcon", Icon: HandPointUpIcon, width: 24, height: 24 },
   { name: "HandsClappingIcon", Icon: HandsClappingIcon, width: 24, height: 24 },
   { name: "HandshakeIcon", Icon: HandshakeIcon, width: 24, height: 24 },
+  { name: "HandshakeSimpleIcon", Icon: HandshakeSimpleIcon, width: 24, height: 24 },
+  { name: "HandsHoldingIcon", Icon: HandsHoldingIcon, width: 24, height: 24 },
+  { name: "HandWaveIcon", Icon: HandWaveIcon, width: 24, height: 24 },
+  { name: "HardDriveIcon", Icon: HardDriveIcon, width: 24, height: 24 },
   { name: "HashtagIcon", Icon: HashtagIcon, width: 24, height: 24 },
+  { name: "HatWizardIcon", Icon: HatWizardIcon, width: 24, height: 24 },
   { name: "HeadingIcon", Icon: HeadingIcon, width: 24, height: 24 },
   { name: "HeadphonesIcon", Icon: HeadphonesIcon, width: 24, height: 24 },
   { name: "HeadsetIcon", Icon: HeadsetIcon, width: 24, height: 24 },
+  { name: "HeadSideBrainIcon", Icon: HeadSideBrainIcon, width: 24, height: 24 },
   { name: "HeartCrackIcon", Icon: HeartCrackIcon, width: 24, height: 24 },
   {
     name: "HeartIcon",
@@ -774,24 +1038,33 @@ const GLYPHS: Glyph[] = [
   { name: "HourglassIcon", Icon: HourglassIcon, width: 24, height: 24 },
   { name: "HourglassStartIcon", Icon: HourglassStartIcon, width: 24, height: 24 },
   { name: "HouseChimneyIcon", Icon: HouseChimneyIcon, width: 24, height: 24 },
+  { name: "HouseChimneyUserIcon", Icon: HouseChimneyUserIcon, width: 24, height: 24 },
   { name: "HouseIcon", Icon: HouseIcon, width: 24, height: 24, use: { size: 28, where: "mobile clock (site)" } },
+  { name: "HouseLaptopIcon", Icon: HouseLaptopIcon, width: 24, height: 24 },
   { name: "HouseUserIcon", Icon: HouseUserIcon, width: 24, height: 24 },
   { name: "IdBadgeIcon", Icon: IdBadgeIcon, width: 24, height: 24 },
   { name: "IdCardIcon", Icon: IdCardIcon, width: 24, height: 24 },
   { name: "ImageIcon", Icon: ImageIcon, width: 24, height: 24, use: { size: 28, where: "image upload" } },
+  { name: "ImagePolaroidIcon", Icon: ImagePolaroidIcon, width: 24, height: 24 },
   { name: "ImagesIcon", Icon: ImagesIcon, width: 24, height: 24 },
+  { name: "InboxFullIcon", Icon: InboxFullIcon, width: 24, height: 24 },
   { name: "InboxIcon", Icon: InboxIcon, width: 24, height: 24 },
   { name: "IndentIcon", Icon: IndentIcon, width: 24, height: 24 },
   { name: "InfinityIcon", Icon: InfinityIcon, width: 24, height: 24 },
+  { name: "InfoIcon", Icon: InfoIcon, width: 24, height: 24 },
   { name: "ItalicIcon", Icon: ItalicIcon, width: 24, height: 24 },
+  { name: "KeyboardBrightnessIcon", Icon: KeyboardBrightnessIcon, width: 24, height: 24 },
   { name: "KeyboardIcon", Icon: KeyboardIcon, width: 24, height: 24 },
   { name: "KeyIcon", Icon: KeyIcon, width: 24, height: 24 },
   { name: "LandmarkIcon", Icon: LandmarkIcon, width: 24, height: 24 },
   { name: "LanguageIcon", Icon: LanguageIcon, width: 24, height: 24 },
+  { name: "LaptopCodeIcon", Icon: LaptopCodeIcon, width: 24, height: 24 },
   { name: "LaptopIcon", Icon: LaptopIcon, width: 24, height: 24 },
   { name: "LayerGroupIcon", Icon: LayerGroupIcon, width: 24, height: 24 },
   { name: "LeafIcon", Icon: LeafIcon, width: 24, height: 24 },
   { name: "LeftRightIcon", Icon: LeftRightIcon, width: 24, height: 24 },
+  { name: "LightbulbExclamationIcon", Icon: LightbulbExclamationIcon, width: 24, height: 24 },
+  { name: "LightbulbGearIcon", Icon: LightbulbGearIcon, width: 24, height: 24 },
   { name: "LightbulbIcon", Icon: LightbulbIcon, width: 24, height: 24 },
   { name: "LightbulbOnIcon", Icon: LightbulbOnIcon, width: 24, height: 24 },
   { name: "LinkIcon", Icon: LinkIcon, width: 24, height: 24 },
@@ -828,19 +1101,29 @@ const GLYPHS: Glyph[] = [
   { name: "MapIcon", Icon: MapIcon, width: 24, height: 24 },
   { name: "MapLocationDotIcon", Icon: MapLocationDotIcon, width: 24, height: 24 },
   { name: "MarkerIcon", Icon: MarkerIcon, width: 24, height: 24 },
+  { name: "MasksTheaterIcon", Icon: MasksTheaterIcon, width: 24, height: 24 },
   { name: "MaximizeIcon", Icon: MaximizeIcon, width: 24, height: 24 },
   { name: "MedalIcon", Icon: MedalIcon, width: 24, height: 24 },
   { name: "MessageIcon", Icon: MessageIcon, width: 24, height: 24 },
+  { name: "MessageLinesIcon", Icon: MessageLinesIcon, width: 24, height: 24 },
+  { name: "MessageQuestionIcon", Icon: MessageQuestionIcon, width: 24, height: 24 },
   { name: "MicrochipIcon", Icon: MicrochipIcon, width: 24, height: 24 },
   { name: "MicrophoneIcon", Icon: MicrophoneIcon, width: 24, height: 24 },
   { name: "MicrophoneSlashIcon", Icon: MicrophoneSlashIcon, width: 24, height: 24 },
   { name: "MinimizeIcon", Icon: MinimizeIcon, width: 24, height: 24 },
   { name: "MinusIcon", Icon: MinusIcon, width: 24, height: 24 },
   { name: "MobileIcon", Icon: MobileIcon, width: 24, height: 24 },
+  { name: "MobileScreenIcon", Icon: MobileScreenIcon, width: 24, height: 24 },
   { name: "MoneyBillWaveIcon", Icon: MoneyBillWaveIcon, width: 24, height: 24 },
+  { name: "MoneyCheckIcon", Icon: MoneyCheckIcon, width: 24, height: 24 },
   { name: "MoonIcon", Icon: MoonIcon, width: 24, height: 24, use: { size: 19, where: "user menu" } },
+  { name: "MoonStarsIcon", Icon: MoonStarsIcon, width: 24, height: 24 },
   { name: "MountainIcon", Icon: MountainIcon, width: 24, height: 24 },
+  { name: "MusicIcon", Icon: MusicIcon, width: 24, height: 24 },
   { name: "NewspaperIcon", Icon: NewspaperIcon, width: 24, height: 24 },
+  { name: "NotebookIcon", Icon: NotebookIcon, width: 24, height: 24 },
+  { name: "ObjectsColumnIcon", Icon: ObjectsColumnIcon, width: 24, height: 24 },
+  { name: "OctagonExclamationIcon", Icon: OctagonExclamationIcon, width: 24, height: 24 },
   { name: "OutdentIcon", Icon: OutdentIcon, width: 24, height: 24 },
   { name: "PaintbrushIcon", Icon: PaintbrushIcon, width: 24, height: 24 },
   { name: "PaletteIcon", Icon: PaletteIcon, width: 24, height: 24 },
@@ -856,16 +1139,20 @@ const GLYPHS: Glyph[] = [
     use: { size: 22, where: "board tools", variant: "duotone-solid" },
   },
   { name: "PencilIcon", Icon: PencilIcon, width: 24, height: 24 },
+  { name: "PenClipIcon", Icon: PenClipIcon, width: 24, height: 24 },
   { name: "PenIcon", Icon: PenIcon, width: 24, height: 24 },
+  { name: "PenLineIcon", Icon: PenLineIcon, width: 24, height: 24 },
   { name: "PenNibIcon", Icon: PenNibIcon, width: 24, height: 24 },
   { name: "PenRulerIcon", Icon: PenRulerIcon, width: 24, height: 24 },
   { name: "PenToSquareIcon", Icon: PenToSquareIcon, width: 24, height: 24 },
+  { name: "PeopleArrowsIcon", Icon: PeopleArrowsIcon, width: 24, height: 24 },
   { name: "PeopleGroupIcon", Icon: PeopleGroupIcon, width: 24, height: 24 },
   { name: "PercentIcon", Icon: PercentIcon, width: 24, height: 24 },
   { name: "PersonIcon", Icon: PersonIcon, width: 24, height: 24 },
   { name: "PersonRunningIcon", Icon: PersonRunningIcon, width: 24, height: 24 },
   { name: "PhoneIcon", Icon: PhoneIcon, width: 24, height: 24 },
   { name: "PhoneSlashIcon", Icon: PhoneSlashIcon, width: 24, height: 24 },
+  { name: "PhoneVolumeIcon", Icon: PhoneVolumeIcon, width: 24, height: 24 },
   { name: "PhotoFilmIcon", Icon: PhotoFilmIcon, width: 24, height: 24 },
   { name: "PiggyBankIcon", Icon: PiggyBankIcon, width: 24, height: 24 },
   { name: "PlaneIcon", Icon: PlaneIcon, width: 24, height: 24 },
@@ -880,14 +1167,21 @@ const GLYPHS: Glyph[] = [
   { name: "PlusIcon", Icon: PlusIcon, width: 16, height: 16, use: { size: 16, where: "FAQ (site)" } },
   { name: "PodcastIcon", Icon: PodcastIcon, width: 24, height: 24 },
   { name: "PrintIcon", Icon: PrintIcon, width: 24, height: 24 },
+  { name: "PuzzleIcon", Icon: PuzzleIcon, width: 24, height: 24 },
   { name: "PuzzlePieceIcon", Icon: PuzzlePieceIcon, width: 24, height: 24 },
+  { name: "QrcodeIcon", Icon: QrcodeIcon, width: 24, height: 24 },
+  { name: "QuestionIcon", Icon: QuestionIcon, width: 24, height: 24 },
   { name: "QuoteLeftIcon", Icon: QuoteLeftIcon, width: 24, height: 24 },
   { name: "QuoteRightIcon", Icon: QuoteRightIcon, width: 24, height: 24 },
+  { name: "RadioIcon", Icon: RadioIcon, width: 24, height: 24 },
+  { name: "RainbowIcon", Icon: RainbowIcon, width: 24, height: 24 },
   { name: "RankingStarIcon", Icon: RankingStarIcon, width: 24, height: 24 },
   { name: "ReceiptIcon", Icon: ReceiptIcon, width: 24, height: 24 },
+  { name: "RectangleListIcon", Icon: RectangleListIcon, width: 24, height: 24 },
   { name: "RepeatIcon", Icon: RepeatIcon, width: 24, height: 24 },
   { name: "ReplyAllIcon", Icon: ReplyAllIcon, width: 24, height: 24 },
   { name: "ReplyIcon", Icon: ReplyIcon, width: 24, height: 24 },
+  { name: "RetweetIcon", Icon: RetweetIcon, width: 24, height: 24 },
   { name: "RightLeftIcon", Icon: RightLeftIcon, width: 24, height: 24 },
   { name: "RobotIcon", Icon: RobotIcon, width: 24, height: 24 },
   { name: "RocketIcon", Icon: RocketIcon, width: 24, height: 24 },
@@ -896,58 +1190,87 @@ const GLYPHS: Glyph[] = [
   { name: "RouteIcon", Icon: RouteIcon, width: 24, height: 24 },
   { name: "RssIcon", Icon: RssIcon, width: 24, height: 24 },
   { name: "RulerIcon", Icon: RulerIcon, width: 24, height: 24 },
+  { name: "SackDollarIcon", Icon: SackDollarIcon, width: 24, height: 24 },
   { name: "ScaleBalancedIcon", Icon: ScaleBalancedIcon, width: 24, height: 24 },
+  { name: "ScaleUnbalancedIcon", Icon: ScaleUnbalancedIcon, width: 24, height: 24 },
+  { name: "SchoolFlagIcon", Icon: SchoolFlagIcon, width: 24, height: 24 },
   { name: "SchoolIcon", Icon: SchoolIcon, width: 24, height: 24 },
   { name: "ScissorsIcon", Icon: ScissorsIcon, width: 24, height: 24 },
+  { name: "ScrewdriverWrenchIcon", Icon: ScrewdriverWrenchIcon, width: 24, height: 24 },
   { name: "SeedlingIcon", Icon: SeedlingIcon, width: 24, height: 24 },
   { name: "ServerIcon", Icon: ServerIcon, width: 24, height: 24 },
   { name: "ShareFromSquareIcon", Icon: ShareFromSquareIcon, width: 24, height: 24 },
   { name: "ShareIcon", Icon: ShareIcon, width: 24, height: 24 },
   { name: "ShareNodesIcon", Icon: ShareNodesIcon, width: 24, height: 24 },
   { name: "ShieldCheckIcon", Icon: ShieldCheckIcon, width: 24, height: 24 },
+  { name: "ShieldExclamationIcon", Icon: ShieldExclamationIcon, width: 24, height: 24 },
   { name: "ShieldHalvedIcon", Icon: ShieldHalvedIcon, width: 24, height: 24 },
+  { name: "ShieldIcon", Icon: ShieldIcon, width: 24, height: 24 },
   { name: "ShuffleIcon", Icon: ShuffleIcon, width: 24, height: 24 },
+  { name: "SidebarFlipIcon", Icon: SidebarFlipIcon, width: 24, height: 24 },
+  { name: "SidebarIcon", Icon: SidebarIcon, width: 24, height: 24 },
   { name: "SignalIcon", Icon: SignalIcon, width: 24, height: 24 },
   { name: "SignsPostIcon", Icon: SignsPostIcon, width: 24, height: 24 },
   { name: "SitemapIcon", Icon: SitemapIcon, width: 24, height: 24 },
   { name: "SlidersIcon", Icon: SlidersIcon, width: 24, height: 24, use: { size: 19, where: "user menu" } },
   { name: "SnowflakeIcon", Icon: SnowflakeIcon, width: 24, height: 24 },
+  { name: "SortDownIcon", Icon: SortDownIcon, width: 24, height: 24 },
   { name: "SortIcon", Icon: SortIcon, width: 24, height: 24 },
+  { name: "SortUpIcon", Icon: SortUpIcon, width: 24, height: 24 },
+  { name: "SparkleIcon", Icon: SparkleIcon, width: 24, height: 24 },
   { name: "SparklesIcon", Icon: SparklesIcon, width: 24, height: 24 },
+  { name: "SpellCheckIcon", Icon: SpellCheckIcon, width: 24, height: 24 },
   { name: "SpinnerIcon", Icon: SpinnerIcon, width: 24, height: 24 },
   { name: "SquareArrowUpRightIcon", Icon: SquareArrowUpRightIcon, width: 24, height: 24 },
   { name: "SquareCheckIcon", Icon: SquareCheckIcon, width: 24, height: 24 },
+  { name: "SquareExclamationIcon", Icon: SquareExclamationIcon, width: 24, height: 24 },
   { name: "SquareIcon", Icon: SquareIcon, width: 24, height: 24 },
+  { name: "SquareInfoIcon", Icon: SquareInfoIcon, width: 24, height: 24 },
   { name: "SquareMinusIcon", Icon: SquareMinusIcon, width: 24, height: 24 },
   { name: "SquarePlusIcon", Icon: SquarePlusIcon, width: 24, height: 24 },
   { name: "SquareXmarkIcon", Icon: SquareXmarkIcon, width: 24, height: 24 },
   { name: "StarHalfStrokeIcon", Icon: StarHalfStrokeIcon, width: 24, height: 24 },
   { name: "StarIcon", Icon: StarIcon, width: 24, height: 24 },
   { name: "StarSharpIcon", Icon: StarSharpIcon, width: 24, height: 24 },
+  { name: "StarShootingIcon", Icon: StarShootingIcon, width: 24, height: 24 },
+  { name: "StarsIcon", Icon: StarsIcon, width: 24, height: 24 },
   { name: "StopIcon", Icon: StopIcon, width: 24, height: 24 },
   { name: "StopwatchIcon", Icon: StopwatchIcon, width: 24, height: 24 },
   { name: "StoreIcon", Icon: StoreIcon, width: 24, height: 24 },
   { name: "StrikethroughIcon", Icon: StrikethroughIcon, width: 24, height: 24 },
+  { name: "SunBrightIcon", Icon: SunBrightIcon, width: 24, height: 24 },
   { name: "SunIcon", Icon: SunIcon, width: 24, height: 24 },
+  { name: "SwordIcon", Icon: SwordIcon, width: 24, height: 24 },
+  { name: "SwordsIcon", Icon: SwordsIcon, width: 24, height: 24 },
   { name: "TableCellsIcon", Icon: TableCellsIcon, width: 24, height: 24 },
+  { name: "TableCellsLargeIcon", Icon: TableCellsLargeIcon, width: 24, height: 24 },
   { name: "TableColumnsIcon", Icon: TableColumnsIcon, width: 24, height: 24 },
   { name: "TableListIcon", Icon: TableListIcon, width: 24, height: 24 },
+  { name: "TabletScreenButtonIcon", Icon: TabletScreenButtonIcon, width: 24, height: 24 },
   { name: "TagIcon", Icon: TagIcon, width: 24, height: 24 },
+  { name: "TagsIcon", Icon: TagsIcon, width: 24, height: 24 },
+  { name: "TemperatureHalfIcon", Icon: TemperatureHalfIcon, width: 24, height: 24 },
   { name: "TerminalIcon", Icon: TerminalIcon, width: 24, height: 24 },
   { name: "TextSizeIcon", Icon: TextSizeIcon, width: 24, height: 24 },
   { name: "ThumbsDownIcon", Icon: ThumbsDownIcon, width: 24, height: 24 },
   { name: "ThumbsUpIcon", Icon: ThumbsUpIcon, width: 24, height: 24 },
   { name: "ThumbtackIcon", Icon: ThumbtackIcon, width: 24, height: 24 },
   { name: "ThumbtackSlashIcon", Icon: ThumbtackSlashIcon, width: 24, height: 24 },
+  { name: "TicketIcon", Icon: TicketIcon, width: 24, height: 24 },
+  { name: "TicketSimpleIcon", Icon: TicketSimpleIcon, width: 24, height: 24 },
   { name: "TimerIcon", Icon: TimerIcon, width: 24, height: 24 },
   { name: "ToggleOffIcon", Icon: ToggleOffIcon, width: 24, height: 24 },
   { name: "ToggleOnIcon", Icon: ToggleOnIcon, width: 24, height: 24 },
+  { name: "ToolboxIcon", Icon: ToolboxIcon, width: 24, height: 24 },
+  { name: "TrashCanArrowUpIcon", Icon: TrashCanArrowUpIcon, width: 24, height: 24 },
   { name: "TrashCanIcon", Icon: TrashCanIcon, width: 24, height: 24, use: { size: 20, where: "move menu" } },
   { name: "TreeIcon", Icon: TreeIcon, width: 24, height: 24 },
   { name: "TriangleExclamationIcon", Icon: TriangleExclamationIcon, width: 24, height: 24 },
   { name: "TrophyIcon", Icon: TrophyIcon, width: 24, height: 24 },
   { name: "TrophyStarIcon", Icon: TrophyStarIcon, width: 24, height: 24 },
   { name: "TruckIcon", Icon: TruckIcon, width: 24, height: 24 },
+  { name: "TvIcon", Icon: TvIcon, width: 24, height: 24 },
+  { name: "UmbrellaIcon", Icon: UmbrellaIcon, width: 24, height: 24 },
   { name: "UnderlineIcon", Icon: UnderlineIcon, width: 24, height: 24 },
   { name: "UniversalAccessIcon", Icon: UniversalAccessIcon, width: 24, height: 24 },
   { name: "UpDownIcon", Icon: UpDownIcon, width: 24, height: 24 },
@@ -962,19 +1285,24 @@ const GLYPHS: Glyph[] = [
   { name: "UserMinusIcon", Icon: UserMinusIcon, width: 24, height: 24 },
   { name: "UserPenIcon", Icon: UserPenIcon, width: 24, height: 24 },
   { name: "UserPlusIcon", Icon: UserPlusIcon, width: 24, height: 24 },
+  { name: "UserSecretIcon", Icon: UserSecretIcon, width: 24, height: 24 },
   { name: "UserShieldIcon", Icon: UserShieldIcon, width: 24, height: 24 },
   { name: "UsersIcon", Icon: UsersIcon, width: 24, height: 24 },
   { name: "UserTieIcon", Icon: UserTieIcon, width: 24, height: 24 },
   { name: "UserXmarkIcon", Icon: UserXmarkIcon, width: 24, height: 24 },
   { name: "VideoIcon", Icon: VideoIcon, width: 24, height: 24 },
+  { name: "VideoPlusIcon", Icon: VideoPlusIcon, width: 24, height: 24 },
   { name: "VideoSlashIcon", Icon: VideoSlashIcon, width: 24, height: 24 },
+  { name: "VoicemailIcon", Icon: VoicemailIcon, width: 24, height: 24 },
   { name: "VolumeHighIcon", Icon: VolumeHighIcon, width: 24, height: 24 },
+  { name: "VolumeIcon", Icon: VolumeIcon, width: 24, height: 24 },
   { name: "VolumeLowIcon", Icon: VolumeLowIcon, width: 24, height: 24, use: { size: 18, where: "game viewer" } },
   { name: "VolumeOffIcon", Icon: VolumeOffIcon, width: 24, height: 24 },
   { name: "VolumeXmarkIcon", Icon: VolumeXmarkIcon, width: 24, height: 24, use: { size: 18, where: "game viewer" } },
   { name: "WalletIcon", Icon: WalletIcon, width: 24, height: 24 },
   { name: "WandMagicSparklesIcon", Icon: WandMagicSparklesIcon, width: 24, height: 24 },
   { name: "WandSparklesIcon", Icon: WandSparklesIcon, width: 24, height: 24 },
+  { name: "WaterIcon", Icon: WaterIcon, width: 24, height: 24 },
   {
     name: "WhatsappIcon",
     Icon: WhatsappIcon,
@@ -983,7 +1311,11 @@ const GLYPHS: Glyph[] = [
     use: { size: 16, where: "CTA (site)" },
     variants: false,
   },
+  { name: "WifiIcon", Icon: WifiIcon, width: 24, height: 24 },
+  { name: "WindIcon", Icon: WindIcon, width: 24, height: 24 },
   { name: "WindowMaximizeIcon", Icon: WindowMaximizeIcon, width: 24, height: 24 },
+  { name: "WindowRestoreIcon", Icon: WindowRestoreIcon, width: 24, height: 24 },
+  { name: "WrenchIcon", Icon: WrenchIcon, width: 24, height: 24 },
   { name: "XmarkIcon", Icon: XmarkIcon, width: 20, height: 20, use: { size: 20, where: "staff dialogs" } },
 ];
 

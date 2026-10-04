@@ -1,0 +1,43 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `voicemail`, in Duotone Light (the default), Duotone Solid or
+ * Classic Solid, as `variant` says.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function VoicemailIcon({ className, variant = "duotone-light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-21.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "duotone-light" && (
+        <>
+          <path
+            opacity=".4"
+            d="M32 240a112 112 0 1 0 224 0 112 112 0 1 0 -224 0zm352 0a112 112 0 1 0 224 0 112 112 0 1 0 -224 0z"
+          />
+          <path d="M144 352a112 112 0 1 0 0-224 112 112 0 1 0 0 224zM288 240c0 45.2-20.9 85.6-53.5 112l171 0c-32.6-26.4-53.5-66.8-53.5-112 0-79.5 64.5-144 144-144s144 64.5 144 144-64.5 144-144 144l-352 0C64.5 384 0 319.5 0 240S64.5 96 144 96 288 160.5 288 240zM496 352a112 112 0 1 0 0-224 112 112 0 1 0 0 224z" />
+        </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M64 240a80 80 0 1 0 160 0 80 80 0 1 0 -160 0zm352 0a80 80 0 1 0 160 0 80 80 0 1 0 -160 0z"
+          />
+          <path d="M144 320a80 80 0 1 1 0-160 80 80 0 1 1 0 160zm119.8 0c15.3-22.9 24.2-50.4 24.2-80 0-79.5-64.5-144-144-144S0 160.5 0 240 64.5 384 144 384l352 0c79.5 0 144-64.5 144-144S575.5 96 496 96 352 160.5 352 240c0 29.6 8.9 57.1 24.2 80l-112.5 0zM496 160a80 80 0 1 1 0 160 80 80 0 1 1 0-160z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M144 160a80 80 0 1 1 0 160 80 80 0 1 1 0-160zM263.8 320c15.3-22.9 24.2-50.4 24.2-80 0-79.5-64.5-144-144-144S0 160.5 0 240 64.5 384 144 384l352 0c79.5 0 144-64.5 144-144S575.5 96 496 96 352 160.5 352 240c0 29.6 8.9 57.1 24.2 80l-112.5 0zM496 160a80 80 0 1 1 0 160 80 80 0 1 1 0-160z" />
+      )}
+    </svg>
+  );
+}

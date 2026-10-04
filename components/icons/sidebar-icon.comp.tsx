@@ -1,0 +1,37 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `sidebar`, in Duotone Light (the default), Duotone Solid or
+ * Classic Solid, as `variant` says.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function SidebarIcon({ className, variant = "duotone-light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-85.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "duotone-light" && (
+        <>
+          <path opacity=".4" d="M256 96l192 0c17.7 0 32 14.3 32 32l0 256c0 17.7-14.3 32-32 32l-192 0 0-320z" />
+          <path d="M224 96l0 320-160 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l160 0zm16-32L64 64C28.7 64 0 92.7 0 128L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-256c0-35.3-28.7-64-64-64L240 64zm16 32l192 0c17.7 0 32 14.3 32 32l0 256c0 17.7-14.3 32-32 32l-192 0 0-320zM80 160c0 8.8 7.2 16 16 16l64 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-64 0c-8.8 0-16 7.2-16 16zm0 64c0 8.8 7.2 16 16 16l64 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-64 0c-8.8 0-16 7.2-16 16zm0 64c0 8.8 7.2 16 16 16l64 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-64 0c-8.8 0-16 7.2-16 16z" />
+        </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path opacity=".4" d="M224 64l0 384 224 0c35.3 0 64-28.7 64-64l0-256c0-35.3-28.7-64-64-64L224 64z" />
+          <path d="M64 64C28.7 64 0 92.7 0 128L0 384c0 35.3 28.7 64 64 64l160 0 0-384-160 0zM48 152c0-13.3 10.7-24 24-24l80 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24zm0 88c0-13.3 10.7-24 24-24l80 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24zm24 64l80 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-80 0c-13.3 0-24-10.7-24-24s10.7-24 24-24z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M448 448l-192 0 0-384 192 0c35.3 0 64 28.7 64 64l0 256c0 35.3-28.7 64-64 64zM64 64l144 0 0 384-144 0c-35.3 0-64-28.7-64-64L0 128C0 92.7 28.7 64 64 64zm8 64c-13.3 0-24 10.7-24 24s10.7 24 24 24l64 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-64 0zM48 240c0 13.3 10.7 24 24 24l64 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-64 0c-13.3 0-24 10.7-24 24zm24 64c-13.3 0-24 10.7-24 24s10.7 24 24 24l64 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-64 0z" />
+      )}
+    </svg>
+  );
+}

@@ -1,0 +1,35 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `wifi`, in Duotone Light (the default), Duotone Solid or
+ * Classic Solid, as `variant` says. Its Duotone Solid drawing is a single
+ * layer, drawn at full strength: at 40 % it would read as switched off.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function WifiIcon({ className, variant = "duotone-light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-53.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "duotone-light" && (
+        <>
+          <path opacity=".4" d="M264 424a24 24 0 1 0 48 0 24 24 0 1 0 -48 0z" />
+          <path d="M27.3 172.2C94 105.4 186.1 64 288 64s194 41.4 260.7 108.2c6.2 6.3 16.4 6.3 22.6 0s6.3-16.4 0-22.6C498.9 77 398.7 32 288 32S77.1 77 4.7 149.6c-6.2 6.3-6.2 16.4 0 22.6s16.4 6.2 22.6 0zM288 240c59.4 0 112.5 26.9 147.7 69.3 5.6 6.8 15.7 7.7 22.5 2.1s7.7-15.7 2.1-22.5C419.2 239.5 357.3 208 288 208s-131.2 31.5-172.3 80.9c-5.7 6.8-4.7 16.9 2.1 22.5s16.9 4.7 22.5-2.1C175.5 266.9 228.6 240 288 240zm0 160a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm0 80a56 56 0 1 0 0-112 56 56 0 1 0 0 112z" />
+        </>
+      )}
+      {variant === "duotone-solid" && (
+        <path d="M288 96c-90.9 0-173.2 36-233.7 94.6-12.7 12.3-33 12-45.2-.7s-12-33 .7-45.2C81.7 74.9 179.9 32 288 32S494.3 74.9 566.3 144.7c12.7 12.3 13 32.6 .7 45.2s-32.6 13-45.2 .7C461.2 132 378.9 96 288 96zM240 432a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zM168 326.2c-11.7 13.3-31.9 14.5-45.2 2.8s-14.5-31.9-2.8-45.2C161 237.4 221.1 208 288 208s127 29.4 168 75.8c11.7 13.3 10.4 33.5-2.8 45.2s-33.5 10.4-45.2-2.8C378.6 292.9 335.8 272 288 272s-90.6 20.9-120 54.2z" />
+      )}
+      {variant === "classic-solid" && (
+        <path d="M288 96c-90.9 0-173.2 36-233.7 94.6-12.7 12.3-33 12-45.2-.7s-12-33 .7-45.2C81.7 74.9 179.9 32 288 32S494.3 74.9 566.3 144.7c12.7 12.3 13 32.6 .7 45.2s-32.6 13-45.2 .7C461.2 132 378.9 96 288 96zM240 432a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zM168 326.2c-11.7 13.3-31.9 14.5-45.2 2.8s-14.5-31.9-2.8-45.2C161 237.4 221.1 208 288 208s127 29.4 168 75.8c11.7 13.3 10.4 33.5-2.8 45.2s-33.5 10.4-45.2-2.8C378.6 292.9 335.8 272 288 272s-90.6 20.9-120 54.2z" />
+      )}
+    </svg>
+  );
+}
