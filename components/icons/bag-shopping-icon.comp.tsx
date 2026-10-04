@@ -1,0 +1,43 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `bag-shopping`, in Duotone Light (the default), Duotone Solid
+ * or Classic Solid, as `variant` says.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function BagShoppingIcon({ className, variant = "duotone-light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-117.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "duotone-light" && (
+        <>
+          <path
+            opacity=".4"
+            d="M32 176l0 208c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-208c0-8.8-7.2-16-16-16l-80 0 0 80c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-80-128 0 0 80c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-80-80 0c-8.8 0-16 7.2-16 16z"
+          />
+          <path d="M160 64l0 64 128 0 0-64c0-35.3-28.7-64-64-64s-64 28.7-64 64zm-32 96l-80 0c-8.8 0-16 7.2-16 16l0 208c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-208c0-8.8-7.2-16-16-16l-80 0 0 80c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-80-128 0 0 80c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-80zm0-32l0-64c0-53 43-96 96-96s96 43 96 96l0 64 80 0c26.5 0 48 21.5 48 48l0 208c0 53-43 96-96 96L96 480c-53 0-96-43-96-96L0 176c0-26.5 21.5-48 48-48l80 0z" />
+        </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M0 176c0-26.5 21.5-48 48-48l64 0 0 72c0 13.3 10.7 24 24 24s24-10.7 24-24l0-72 128 0 0 72c0 13.3 10.7 24 24 24s24-10.7 24-24l0-72 64 0c26.5 0 48 21.5 48 48l0 208c0 53-43 96-96 96L96 480c-53 0-96-43-96-96L0 176z"
+          />
+          <path d="M224 16c-35.3 0-64 28.7-64 64l0 120c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-120c0-61.9 50.1-112 112-112S336 18.1 336 80l0 120c0 13.3-10.7 24-24 24s-24-10.7-24-24l0-120c0-35.3-28.7-64-64-64z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M160 80c0-35.3 28.7-64 64-64s64 28.7 64 64l0 48-128 0 0-48zm-48 48l-64 0c-26.5 0-48 21.5-48 48L0 384c0 53 43 96 96 96l256 0c53 0 96-43 96-96l0-208c0-26.5-21.5-48-48-48l-64 0 0-48c0-61.9-50.1-112-112-112S112 18.1 112 80l0 48zm24 48a24 24 0 1 1 0 48 24 24 0 1 1 0-48zm152 24a24 24 0 1 1 48 0 24 24 0 1 1 -48 0z" />
+      )}
+    </svg>
+  );
+}

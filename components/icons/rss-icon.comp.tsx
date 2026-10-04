@@ -1,0 +1,40 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `rss`, in Duotone Light (the default), Duotone Solid or
+ * Classic Solid, as `variant` says.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function RssIcon({ className, variant = "duotone-light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-117.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "duotone-light" && (
+        <>
+          <path opacity=".4" d="M32 416a32 32 0 1 0 64 0 32 32 0 1 0 -64 0z" />
+          <path d="M0 48c0-8.8 7.2-16 16-16 238.6 0 432 193.4 432 432 0 8.8-7.2 16-16 16s-16-7.2-16-16C416 243.1 236.9 64 16 64 7.2 64 0 56.8 0 48zM64 448a32 32 0 1 0 0-64 32 32 0 1 0 0 64zm0-96a64 64 0 1 1 0 128 64 64 0 1 1 0-128zM16 160c167.9 0 304 136.1 304 304 0 8.8-7.2 16-16 16s-16-7.2-16-16c0-150.2-121.8-272-272-272-8.8 0-16-7.2-16-16s7.2-16 16-16z" />
+        </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M0 64c0 17.7 14.3 32 32 32 194.4 0 352 157.6 352 352 0 17.7 14.3 32 32 32s32-14.3 32-32C448 218.2 261.8 32 32 32 14.3 32 0 46.3 0 64zM0 192c0 17.7 14.3 32 32 32 123.7 0 224 100.3 224 224 0 17.7 14.3 32 32 32s32-14.3 32-32c0-159.1-128.9-288-288-288-17.7 0-32 14.3-32 32z"
+          />
+          <path d="M0 416a64 64 0 1 1 128 0 64 64 0 1 1 -128 0z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M0 64c0-17.7 14.3-32 32-32 229.8 0 416 186.2 416 416 0 17.7-14.3 32-32 32s-32-14.3-32-32C384 253.6 226.4 96 32 96 14.3 96 0 81.7 0 64zM0 416a64 64 0 1 1 128 0 64 64 0 1 1 -128 0zM32 160c159.1 0 288 128.9 288 288 0 17.7-14.3 32-32 32s-32-14.3-32-32c0-123.7-100.3-224-224-224-17.7 0-32-14.3-32-32s14.3-32 32-32z" />
+      )}
+    </svg>
+  );
+}

@@ -1,0 +1,32 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `paperclip`, in Duotone Light (the default), Duotone Solid or
+ * Classic Solid, as `variant` says. Its Duotone Solid drawing is a single
+ * layer, drawn at full strength: at 40 % it would read as switched off.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function PaperclipIcon({ className, variant = "duotone-light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-85.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "duotone-light" && (
+        <path d="M260.9 18.4c50-50 131-50 181 0s50 131 0 181L272.2 369.1c-31.2 31.2-81.9 31.2-113.1 0s-31.2-81.9 0-113.1L317.4 97.6c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6L181.7 278.6c-18.7 18.7-18.7 49.1 0 67.9s49.1 18.7 67.9 0L419.3 176.8c37.5-37.5 37.5-98.3 0-135.8S321 3.5 283.5 41L91.2 233.4c-56.2 56.2-56.2 147.4 0 203.6s147.4 56.2 203.6 0L453.2 278.6c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6L317.4 459.6c-68.7 68.7-180.2 68.7-248.9 0s-68.7-180.2 0-248.9L260.9 18.4z" />
+      )}
+      {variant === "duotone-solid" && (
+        <path d="M224.6 12.8c56.2-56.2 147.4-56.2 203.6 0s56.2 147.4 0 203.6l-164 164c-34.4 34.4-90.1 34.4-124.5 0s-34.4-90.1 0-124.5L292.5 103.3c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3L185 301.3c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l164-164c31.2-31.2 31.2-81.9 0-113.1s-81.9-31.2-113.1 0l-164 164c-53.1 53.1-53.1 139.2 0 192.3s139.2 53.1 192.3 0L428.3 284.3c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3L343.4 459.6c-78.1 78.1-204.7 78.1-282.8 0s-78.1-204.7 0-282.8l164-164z" />
+      )}
+      {variant === "classic-solid" && (
+        <path d="M224.6 12.8c56.2-56.2 147.4-56.2 203.6 0s56.2 147.4 0 203.6l-164 164c-34.4 34.4-90.1 34.4-124.5 0s-34.4-90.1 0-124.5L292.5 103.3c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3L185 301.3c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l164-164c31.2-31.2 31.2-81.9 0-113.1s-81.9-31.2-113.1 0l-164 164c-53.1 53.1-53.1 139.2 0 192.3s139.2 53.1 192.3 0L428.3 284.3c12.5-12.5 32.8-12.5 45.3 0s12.5 32.8 0 45.3L343.4 459.6c-78.1 78.1-204.7 78.1-282.8 0s-78.1-204.7 0-282.8l164-164z" />
+      )}
+    </svg>
+  );
+}

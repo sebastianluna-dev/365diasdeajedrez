@@ -1,0 +1,43 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `user-minus`, in Duotone Light (the default), Duotone Solid
+ * or Classic Solid, as `variant` says.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function UserMinusIcon({ className, variant = "duotone-light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-21.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "duotone-light" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 512c8.8 0 16-7.2 16-16l0-16c0-79.5 64.5-144 144-144l96 0c79.5 0 144 64.5 144 144l0 16c0 8.8 7.2 16 16 16L48 512zM352 128a96 96 0 1 1 -192 0 96 96 0 1 1 192 0z"
+          />
+          <path d="M304 304c97.2 0 176 78.8 176 176l0 16c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-16c0-79.5-64.5-144-144-144l-96 0c-79.5 0-144 64.5-144 144l0 16c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-16c0-97.2 78.8-176 176-176l96 0zm-48-48a128 128 0 1 1 0-256 128 128 0 1 1 0 256zm0-224a96 96 0 1 0 0 192 96 96 0 1 0 0-192zM608 160c8.8 0 16 7.2 16 16s-7.2 16-16 16l-160 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l160 0z" />
+        </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M48 482.3C48 498.7 61.3 512 77.7 512l356.6 0c16.4 0 29.7-13.3 29.7-29.7 0-98.5-79.8-178.3-178.3-178.3l-59.4 0C127.8 304 48 383.8 48 482.3zM136 128a120 120 0 1 0 240 0 120 120 0 1 0 -240 0z"
+          />
+          <path d="M600 152c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l144 0z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M285.7 304c98.5 0 178.3 79.8 178.3 178.3 0 16.4-13.3 29.7-29.7 29.7L77.7 512C61.3 512 48 498.7 48 482.3 48 383.8 127.8 304 226.3 304l59.4 0zM256 248a120 120 0 1 1 0-240 120 120 0 1 1 0 240zm344-96c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l144 0z" />
+      )}
+    </svg>
+  );
+}

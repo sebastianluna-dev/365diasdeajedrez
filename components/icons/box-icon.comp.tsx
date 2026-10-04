@@ -1,0 +1,43 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `box`, in Duotone Light (the default), Duotone Solid or
+ * Classic Solid, as `variant` says.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function BoxIcon({ className, variant = "duotone-light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-117.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "duotone-light" && (
+        <>
+          <path
+            opacity=".4"
+            d="M32 160l0 256c0 17.7 14.3 32 32 32l320 0c17.7 0 32-14.3 32-32l0-256-384 0zm7.3-32l168.7 0 0-80-95.1 0c-10.3 0-20 5-26 13.4L39.3 128zM240 48l0 80 168.7 0-47.6-66.6c-6-8.4-15.7-13.4-26-13.4L240 48z"
+          />
+          <path d="M416 416c0 17.7-14.3 32-32 32L64 448c-17.7 0-32-14.3-32-32l0-256 384 0 0 256zM39.3 128L86.9 61.4c6-8.4 15.7-13.4 26-13.4l95.1 0 0 80-168.7 0zM240 128l0-80 95.1 0c10.3 0 20 5 26 13.4L408.7 128 240 128zM11.9 111.3C4.2 122.2 0 135.2 0 148.5L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-267.5c0-13.3-4.2-26.3-11.9-37.2L387.1 42.8C375.1 26 355.7 16 335.1 16L112.9 16C92.3 16 72.9 26 60.9 42.8L11.9 111.3z" />
+        </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M0 144l200 0 0-128-84.5 0C93.4 16 72.9 27.4 61.2 46.1L0 144zM248 16l0 128 200 0-61.2-97.9C375.1 27.4 354.6 16 332.5 16L248 16z"
+          />
+          <path d="M0 144l448 0 0 272c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 144z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M335.1 16c20.7 0 40.1 10 52.1 26.8l48.9 68.5c7.7 10.8 11.9 23.9 11.9 37.2L448 416c0 35.3-28.7 64-64 64l-320 0-6.5-.3C25.2 476.4 0 449.1 0 416L0 148.5c0-11.7 3.2-23.1 9.2-33l2.7-4.2 48.9-68.5c10.5-14.7 26.7-24.2 44.4-26.3l7.7-.5 222.1 0zM248 128l121.3 0-34.3-48-87.1 0 0 48zM78.7 128l121.3 0 0-48-87.1 0-34.3 48z" />
+      )}
+    </svg>
+  );
+}

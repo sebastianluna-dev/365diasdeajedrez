@@ -1,0 +1,43 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `bars-progress`, in Duotone Light (the default), Duotone
+ * Solid or Classic Solid, as `variant` says.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function BarsProgressIcon({ className, variant = "duotone-light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-117.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "duotone-light" && (
+        <>
+          <path
+            opacity=".4"
+            d="M32 80l0 96c0 8.8 7.2 16 16 16l9.4 0 128-128-137.4 0c-8.8 0-16 7.2-16 16zm0 256l0 96c0 8.8 7.2 16 16 16l80 0 0-128-80 0c-8.8 0-16 7.2-16 16zm70.6-144l153.4 0 0-128-25.4 0-128 128z"
+          />
+          <path d="M288 64l0 128 112 0c8.8 0 16-7.2 16-16l0-96c0-8.8-7.2-16-16-16L288 64zM185.4 64L48 64c-8.8 0-16 7.2-16 16l0 96c0 8.8 7.2 16 16 16l9.4 0 128-128zm45.3 0l-128 128 153.4 0 0-128-25.4 0zM0 80C0 53.5 21.5 32 48 32l352 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48L48 224c-26.5 0-48-21.5-48-48L0 80zM160 320l0 128 240 0c8.8 0 16-7.2 16-16l0-96c0-8.8-7.2-16-16-16l-240 0zm-32 0l-80 0c-8.8 0-16 7.2-16 16l0 96c0 8.8 7.2 16 16 16l80 0 0-128zM0 336c0-26.5 21.5-48 48-48l352 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48L48 480c-26.5 0-48-21.5-48-48l0-96z" />
+        </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M160 288l0 64 224 0 0 64-224 0 0 64 240 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-240 0zM288 32l0 64 96 0 0 64-96 0 0 64 112 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48L288 32z"
+          />
+          <path d="M48 32C21.5 32 0 53.5 0 80l0 96c0 26.5 21.5 48 48 48l240 0 0-192-240 0zm0 256c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l112 0 0-192-112 0z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M288 160l96 0 0-64-96 0 0 64zM0 160L0 80C0 53.5 21.5 32 48 32l352 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48L48 224c-26.5 0-48-21.5-48-48l0-16zM160 416l224 0 0-64-224 0 0 64zM0 416l0-80c0-26.5 21.5-48 48-48l352 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48L48 480c-26.5 0-48-21.5-48-48l0-16z" />
+      )}
+    </svg>
+  );
+}

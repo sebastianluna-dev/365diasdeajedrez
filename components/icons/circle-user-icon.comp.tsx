@@ -1,0 +1,43 @@
+import type { IconProps } from "@/components/icons/icon-variant.const";
+
+/**
+ * Font Awesome's `circle-user`, in Duotone Light (the default), Duotone Solid
+ * or Classic Solid, as `variant` says.
+ *
+ * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
+ */
+export function CircleUserIcon({ className, variant = "duotone-light" }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="-85.33 -85.33 682.67 682.67"
+      width="24"
+      height="24"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      {variant === "duotone-light" && (
+        <>
+          <path
+            opacity=".4"
+            d="M32 256c0 63 26 119.9 67.9 160.6 14-55.5 64.3-96.6 124.1-96.6l64 0C347.9 320 398.1 361.1 412.1 416.6 454 375.9 480 319 480 256 480 132.3 379.7 32 256 32S32 132.3 32 256zm304-64a80 80 0 1 1 -160 0 80 80 0 1 1 160 0z"
+          />
+          <path d="M412.1 416.6C398.1 361.1 347.9 320 288 320l-64 0C164.1 320 113.9 361.1 99.9 416.6 58 375.9 32 319 32 256 32 132.3 132.3 32 256 32S480 132.3 480 256c0 63-26 119.9-67.9 160.6zm-28.5 23.4C347.5 465.2 303.4 480 256 480s-91.5-14.8-127.7-39.9c4-49.3 45.3-88.1 95.7-88.1l64 0c50.4 0 91.6 38.8 95.7 88.1zM256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm0-272a48 48 0 1 1 0-96 48 48 0 1 1 0 96zm-80-48a80 80 0 1 0 160 0 80 80 0 1 0 -160 0z" />
+        </>
+      )}
+      {variant === "duotone-solid" && (
+        <>
+          <path
+            opacity=".4"
+            d="M0 256a256 256 0 1 0 512 0 256 256 0 1 0 -512 0zM113 384.2c22.1-38.3 63.5-64.2 111-64.2l64 0c47.4 0 88.9 25.8 111 64.2-35.2 39.2-86.2 63.8-143 63.8s-107.8-24.7-143-63.8zM328 200a72 72 0 1 1 -144 0 72 72 0 1 1 144 0z"
+          />
+          <path d="M256 272a72 72 0 1 0 0-144 72 72 0 1 0 0 144zm0 176c56.8 0 107.8-24.7 143-63.8-22.1-38.3-63.5-64.2-111-64.2l-64 0c-47.4 0-88.9 25.8-111 64.2 35.2 39.2 86.2 63.8 143 63.8z" />
+        </>
+      )}
+      {variant === "classic-solid" && (
+        <path d="M399 384.2C376.9 345.8 335.4 320 288 320l-64 0c-47.4 0-88.9 25.8-111 64.2 35.2 39.2 86.2 63.8 143 63.8s107.8-24.7 143-63.8zM0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0zm256 16a72 72 0 1 0 0-144 72 72 0 1 0 0 144z" />
+      )}
+    </svg>
+  );
+}
