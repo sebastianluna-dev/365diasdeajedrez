@@ -20,9 +20,10 @@
     cursor: pointer;
   }
 
+  /* Grey until it is pointed at, then the accent, with no box behind it: on
+     the current row's wash a grey box read as a second button. */
   & .game-settings__open:hover {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text);
+    color: var(--platform-accent-ink);
   }
 
   & .game-settings__open:focus-visible {

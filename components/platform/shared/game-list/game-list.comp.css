@@ -169,13 +169,10 @@
     color: var(--platform-accent-ink);
   }
 
-  /* The gear closes the row, inside the card like the grip. */
+  /* The gear closes the row, inside the card like the grip. It stays grey on
+     the current game too: its own colour is for the pointer (game-settings). */
   & .game-settings {
     margin-right: var(--platform-space-1);
-  }
-
-  & .game-list__row_state_active .game-settings__open {
-    color: var(--platform-accent-ink);
   }
 
   @media (prefers-reduced-motion: reduce) {

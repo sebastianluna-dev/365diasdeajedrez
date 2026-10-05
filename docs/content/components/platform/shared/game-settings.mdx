@@ -32,7 +32,7 @@ Of Lichess's four analysis modes, two are here: «Análisis normal» and «Ocult
 
 ## Behaviour
 
-- **The gear** is a button named «Ajustes de «…»» after the game, always drawn — on a touch screen nothing would bring it out —, that opens a native `<dialog>` named by its title, «Ajustes de la partida», with the focus on the name: left to the browser it would land on the close button, the first control of the dialog.
+- **The gear** is a button named «Ajustes de «…»» after the game, always drawn — on a touch screen nothing would bring it out —, in the muted grey on every row, the current game's too, and in the accent under the pointer, with no box behind it, that opens a native `<dialog>` named by its title, «Ajustes de la partida», with the focus on the name: left to the browser it would land on the close button, the first control of the dialog.
 - **The form** is a `PlatformForm` over `save`, which reads its four fields; the dialog closes on submit, and each control is keyed by its saved value, so reopened after a save it starts from what was saved.
   - **Nombre** (`title`) starts from the game's own name, or empty with the pairing as its placeholder; saved empty, the game goes back to being shown by its players.
   - **Orientación** (`orientationCode`): «Blancas» or «Negras», the side the board opens from for everyone who opens the game.
@@ -44,7 +44,7 @@ Of Lichess's four analysis modes, two are here: «Análisis normal» and «Ocult
 
 ## Markup & styling
 
-Block `.game-settings` (151 lines).
+Block `.game-settings` (152 lines).
 
 **Elements:** `.game-settings__open`, `.game-settings__open-icon`, `.game-settings__dialog`, `.game-settings__head`, `.game-settings__title`, `.game-settings__close`, `.game-settings__close-icon`, `.game-settings__form`, `.game-settings__pair` (the two selects side by side; one under the other below 640px), `.game-settings__actions`, `.game-settings__danger`, `.game-settings__destroy`, `.game-settings__confirm`, `.game-settings__question`, `.game-settings__detail`
 
@@ -52,7 +52,7 @@ No modifiers.
 
 **Other classes it renders:** `.platform-dialog`, `.platform-button` (`_variant_ink`, `_variant_danger`).
 
-**Tokens:** `--platform-accent`, `--platform-border`, `--platform-danger`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-border`, `--platform-danger`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`
 
 **Breakpoints:** `(width < 640px)` stacks the two selects.
 
