@@ -61,6 +61,17 @@
     flex-direction: column;
     gap: var(--platform-space-4);
     min-width: 0;
+    /* A whole number of eights, and not the whole track: chessground rounds
+       its board down so that every square is a whole number of device pixels
+       — to 8px on a plain screen, to 4 on a retina one —, and on a track of
+       743px the board came out 736 or 740 wide under player strips of 743,
+       which stuck out past its edge, with a sliver of the page between the
+       board and the strip below it. On a width that is already a multiple of
+       8 chessground has nothing to round at any whole pixel ratio, so the
+       strips, the board and whatever stands in for it while it loads
+       (`BoardSkeleton`) are one width. What the track has left over, 7px at
+       most, joins the gap before the notation. */
+    width: round(down, 100%, 8px);
   }
 
   /* The board, with the evaluation bar hanging from its right edge. The bar
@@ -521,6 +532,12 @@
       grid-template-columns: minmax(0, 1fr);
     }
 
+    /* The few px the board's width gives up to be a whole number of eights
+       go half to each side: here the board is the window's width. */
+    &:not(.game-viewer_state_fullscreen) .game-viewer__board-card {
+      justify-self: center;
+    }
+
     /* The board's row no longer sets this column's height: it is its own
        row, as tall as the arrows and a notation that scrolls inside. */
     &:not(.game-viewer_state_fullscreen) .game-viewer__panel-column {
@@ -575,8 +592,14 @@
        between board and panel (22) and a livable minimum for the notation (360). */
     --viewer-chrome-inline: 422px;
     /* The board's side. The screen height rules, which is what is asked for;
-       the width only comes into play when it really does not fit. */
-    --viewer-board-size: min(calc(100vh - var(--viewer-chrome-block)), calc(100vw - var(--viewer-chrome-inline)));
+       the width only comes into play when it really does not fit. A whole
+       number of eights, like the card's width outside full screen, so the
+       strips are as wide as the board chessground paints. */
+    --viewer-board-size: round(
+      down,
+      min(calc(100vh - var(--viewer-chrome-block)), calc(100vw - var(--viewer-chrome-inline))),
+      8px
+    );
     /* The typography grows with the screen, like the board: if the board's side
        comes from `vh`, the text next to it has to follow the same rule or it
        ends up tiny against a huge board. The `clamp` sets a floor and a ceiling
@@ -670,6 +693,8 @@
         grid-column: 1;
         grid-row: 1;
         align-self: stretch;
+        width: round(down, 100%, 8px);
+        justify-self: center;
       }
 
       & .game-viewer__panel-column {

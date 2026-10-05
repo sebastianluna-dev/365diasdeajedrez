@@ -12,13 +12,17 @@
   align-items: stretch;
   min-width: 0;
 
-  /* The board between its two strips, pressed against it as in the viewer. */
+  /* The board between its two strips, pressed against it as in the viewer,
+     and a whole number of eights wide as the viewer's own card is: the width
+     chessground paints its board at, so the two boards are one size on any
+     screen. */
   & .game-skeleton__board {
     grid-column: 1;
     grid-row: 1;
     display: flex;
     flex-direction: column;
     min-width: 0;
+    width: round(down, 100%, 8px);
   }
 
   /* A player's strip, blank: a line of the strip's text and its padding. */
@@ -70,6 +74,11 @@
      under it, the tools last. */
   @media (width < 768px) {
     grid-template-columns: minmax(0, 1fr);
+
+    /* Centred, as the viewer centres its own on a phone. */
+    & .game-skeleton__board {
+      justify-self: center;
+    }
 
     /* Under the keys, which here come first, and as tall as the notation is
        let to be. */
