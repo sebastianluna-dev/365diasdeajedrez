@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { expect, within } from "storybook/test";
 import type { ClassBlockView } from "@/services/classes/classes.types";
 import { ClassContentRenderer } from "./class-content-renderer.comp";
 
@@ -108,6 +109,17 @@ export const EveryKind: Story = { name: "Every kind" };
 
 /** Text: paragraphs, and a line with «## » as a subheading. */
 export const Text: Story = { args: { blocks: [TEXT] } };
+
+/** The same text with the CRLF line breaks a form sends: it still breaks into a subheading and two paragraphs. */
+export const TextWithCrlf: Story = {
+  name: "Text with CRLF",
+  args: { blocks: [{ ...TEXT, text: TEXT.text?.replace(/\n/g, "\r\n") ?? null }] },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("heading", { name: "El puente de Lucena" })).toBeVisible();
+    await expect(canvasElement.querySelectorAll(".class-content__text-paragraph")).toHaveLength(2);
+  },
+};
 
 /** A game of a study, in the viewer, with the link to open it in «Mis estudios» and its caption. */
 export const Game: Story = { args: { blocks: [GAME] } };

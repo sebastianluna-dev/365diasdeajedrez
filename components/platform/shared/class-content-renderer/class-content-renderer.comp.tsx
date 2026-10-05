@@ -10,8 +10,11 @@ interface ClassContentRendererProps {
 
 function TextBlock({ text }: { text: string }) {
   // The block's text is simple markdown; at this stage it is rendered as plain
-  // paragraphs ("## " lines are treated as subheadings).
-  const paragraphs = text.split(/\n{2,}/);
+  // paragraphs ("## " lines are treated as subheadings). A blank line is
+  // looked for with CR or without: a form sends a textarea's line breaks as
+  // CRLF, and blocks saved before the form helpers turned them into LF still
+  // have them.
+  const paragraphs = text.split(/(?:\r?\n){2,}/);
   return (
     <div className="class-content__text">
       {paragraphs.map((paragraph, index) =>
