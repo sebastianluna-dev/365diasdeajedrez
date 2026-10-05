@@ -130,7 +130,7 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
   return (
     <div className="game-settings">
       <button type="button" className="game-settings__open" aria-label={`Ajustes de «${game.name}»`} onClick={open}>
-        <GearIcon className="game-settings__open-icon" />
+        <GearIcon variant="duotone-solid" className="game-settings__open-icon" />
       </button>
 
       <dialog
