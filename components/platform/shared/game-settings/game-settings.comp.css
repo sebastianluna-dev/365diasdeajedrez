@@ -1,0 +1,139 @@
+.game-settings {
+  flex: none;
+  display: flex;
+
+  /* The gear at the end of a game's row. Always drawn, quiet: it is the only
+     way to the game's settings, and on a touch screen nothing would bring it
+     out. A control's drawing, so the muted grey, 3:1 and more on the white of
+     the card, on the grey of a hovered row and on the current row's wash. */
+  & .game-settings__open {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    cursor: pointer;
+  }
+
+  & .game-settings__open:hover {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
+  }
+
+  & .game-settings__open:focus-visible {
+    outline: 2px solid var(--platform-accent);
+    outline-offset: -2px;
+  }
+
+  & .game-settings__open-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* The size: the centring, the backdrop, the surface and the entry and exit
+     motion are set by `.platform-dialog`. */
+  & .game-settings__dialog {
+    width: min(480px, calc(100vw - 32px));
+  }
+
+  & .game-settings__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-6) var(--platform-space-6) 0;
+  }
+
+  & .game-settings__title {
+    margin: 0;
+    font-size: var(--platform-type-xl);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  & .game-settings__close {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    cursor: pointer;
+  }
+
+  & .game-settings__close:hover {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
+  }
+
+  & .game-settings__close-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  & .game-settings__form {
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-5) var(--platform-space-6) var(--platform-space-6);
+  }
+
+  & .game-settings__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--platform-space-3);
+  }
+
+  /* What destroys, apart from what saves and under a rule: three words in the
+     danger ink, each leading to its own confirmation. */
+  & .game-settings__danger {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--platform-space-2) var(--platform-space-5);
+    padding: var(--platform-space-4) var(--platform-space-6) var(--platform-space-5);
+    border-top: 1px solid var(--platform-border);
+  }
+
+  & .game-settings__destroy {
+    padding: var(--platform-space-1) 0;
+    border: 0;
+    background: transparent;
+    font-family: inherit;
+    font-size: var(--platform-type-sm);
+    font-weight: 700;
+    color: var(--platform-danger);
+    cursor: pointer;
+  }
+
+  & .game-settings__destroy:hover {
+    text-decoration: underline;
+  }
+
+  & .game-settings__confirm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-5) var(--platform-space-6) var(--platform-space-6);
+  }
+
+  & .game-settings__question {
+    margin: 0;
+    font-size: var(--platform-type-lg);
+    font-weight: 700;
+  }
+
+  & .game-settings__detail {
+    margin: 0 0 var(--platform-space-2);
+    font-size: var(--platform-type-md);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+  }
+}

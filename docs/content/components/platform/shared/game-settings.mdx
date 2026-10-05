@@ -1,0 +1,83 @@
+---
+description: "The gear at the end of a game's row and the dialog it opens: the game's name, and deleting its annotations, its variations or the game, each behind its own confirmation."
+---
+
+# `GameSettings`
+
+Also exports the `GameSettingsActions` and `GameSettingsGame` types.
+
+|            |                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/game-settings/game-settings.comp.tsx`                                                                                                   |
+| Kind       | Client Component                                                                                                                                                    |
+| Stylesheet | `game-settings.comp.css` → block `.game-settings`                                                                                                                   |
+| Story      | `game-settings.stories.tsx` (`platform/shared/GameSettings`): the gear alone, the dialog open, a game with no name of its own, and the confirmation before deleting |
+| Used by    | [`GameList`](/components/platform/shared/game-list), at the end of each row, when it is given `settings`                                                            |
+| Composes   | [`PlatformForm`](/components/platform/shared/platform-form) (`PlatformFormField`), [`SubmitButton`](/components/platform/shared/submit-button)                      |
+| Uses       | `GearIcon`, `XmarkIcon` from `components/icons/`                                                                                                                    |
+
+## Purpose
+
+What Lichess keeps behind the gear of a study's chapter, for a game of a study: its name, and the three things that destroy — its annotations, its variations, the game itself. It was added on 2026-10-04, when the list of games became a list of names; before, a game was renamed through its whole record (`EditGame`) and only the game on screen could be deleted.
+
+Lichess's dialog has three more settings that the platform has no data for yet, and they are **not** here: the board's orientation, the analysis mode (normal, practising against the computer, hiding the next moves, an interactive lesson) and a pinned comment. Each needs a column on `Game`, and the modes a feature of their own.
+
+## Props
+
+| Prop        | Type                  | Required | Meaning                                                                                                                                                                     |
+| ----------- | --------------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `game`      | `GameSettingsGame`    | yes      | `{ id, name, title? }`: `name` is what the list calls it; `title` the name it was given, absent while it is shown by its players.                                           |
+| `isCurrent` | `boolean`             | yes      | Whether it is the game on screen: after a clean-up the page is loaded again (see below).                                                                                    |
+| `actions`   | `GameSettingsActions` | yes      | `{ rename(gameId, formData), clearAnnotations(gameId), clearVariations(gameId), remove(gameId, formData) }`, server actions already bound to the study the game belongs to. |
+
+## Behaviour
+
+- **The gear** is a button named «Ajustes de «<name>»», always drawn — on a touch screen nothing would bring it out —, that opens a native `<dialog>` named by its title, «Ajustes de la partida».
+- **Nombre.** A `PlatformForm` over `rename`, its field `title`: it starts from the game's own name, or empty with the pairing as its placeholder; saved empty, the game goes back to being shown by its players. The dialog closes on submit. The field is keyed by the saved name, so reopened after a save it starts from what was saved.
+- **«Eliminar anotaciones», «Eliminar variantes», «Eliminar partida»** are three words in the danger ink under a rule. None acts at once: each swaps the dialog's body for its confirmation — what goes, what stays, «Esta acción no se puede deshacer» — with «Cancelar» and the button that does it. Annotations are the comments and what lives inside them (arrows, marked squares, evaluations), the signs and the opening comment; the moves and the variations stay. Variations leave the main line alone.
+- **A clean-up of the game on screen reloads the page.** The two clean-ups rewrite the PGN on the server (`clearGameAnnotations`, `clearGameVariations`), while the game's page holds its own copy in the browser, with its undo history and its autosave: left there, the next autosave would write the old PGN back. So with `isCurrent` the page is loaded again once the action settles; for any other game the dialog just closes.
+- **Deleting** hands the form to `remove`, which sends the browser on. A game cited in a class is not deleted from here: `deleteStudyGame` bounces to that game's page with its notice, where `DeleteGame` asks for the explicit confirmation it needs.
+
+## Markup & styling
+
+Block `.game-settings` (139 lines).
+
+**Elements:** `.game-settings__open`, `.game-settings__open-icon`, `.game-settings__dialog`, `.game-settings__head`, `.game-settings__title`, `.game-settings__close`, `.game-settings__close-icon`, `.game-settings__form`, `.game-settings__actions`, `.game-settings__danger`, `.game-settings__destroy`, `.game-settings__confirm`, `.game-settings__question`, `.game-settings__detail`
+
+No modifiers.
+
+**Other classes it renders:** `.platform-dialog`, `.platform-button` (`_variant_ink`, `_variant_danger`).
+
+**Tokens:** `--platform-accent`, `--platform-border`, `--platform-danger`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`
+
+No media queries.
+
+## Usage
+
+From `components/platform/shared/game-list/game-list.comp.tsx`:
+
+```tsx
+{
+  settings && <GameSettings game={game} isCurrent={isCurrent} actions={settings} />;
+}
+```
+
+and the actions, from `components/platform/sections/studies/game-view/game-aside.comp.tsx`:
+
+```tsx
+<GameList
+  games={study.games.map(listItem)}
+  currentId={game.id}
+  settings={{
+    rename: renameStudyGame.bind(null, study.id),
+    clearAnnotations: clearGameAnnotations.bind(null, study.id),
+    clearVariations: clearGameVariations.bind(null, study.id),
+    remove: deleteStudyGame.bind(null, study.id),
+  }}
+/>
+```
+
+## Related
+
+- [`GameList`](/components/platform/shared/game-list), the list whose rows it closes.
+- `clearAnnotations` and `clearVariations` in `lib/chess/pgn-edit.ts`, the two clean-ups as pure functions over the game's tree.

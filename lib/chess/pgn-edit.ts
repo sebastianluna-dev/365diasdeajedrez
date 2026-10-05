@@ -378,3 +378,48 @@ export function setNags(game: Game<PgnNodeData>, path: string, nags: number[]): 
   node.data.nags = nags.length > 0 ? [...nags] : undefined;
   return true;
 }
+
+/** Every node of the game, main line and variations. */
+function eachNode(node: Node<PgnNodeData>, visit: (child: ChildNode<PgnNodeData>) => void): void {
+  for (const child of node.children) {
+    visit(child);
+    eachNode(child, visit);
+  }
+}
+
+/**
+ * Takes out everything written ON the game and leaves the moves, variations
+ * included: the comments (and with them the arrows, the marked squares and
+ * the evaluations, which live inside comments), the signs of quality and the
+ * comment the game opens with. Returns whether there was anything to take out.
+ */
+export function clearAnnotations(game: Game<PgnNodeData>): boolean {
+  let changed = (game.comments?.length ?? 0) > 0;
+  game.comments = undefined;
+
+  eachNode(game.moves, ({ data }) => {
+    if (data.comments?.length || data.startingComments?.length || data.nags?.length) changed = true;
+    data.comments = undefined;
+    data.startingComments = undefined;
+    data.nags = undefined;
+  });
+  return changed;
+}
+
+/**
+ * Leaves the main line alone: every variation goes, with whatever was written
+ * on it. The main line is `children[0]` at each step, so keeping the first
+ * child all the way down is keeping the game as it was played. Returns whether
+ * there was a variation to take out.
+ */
+export function clearVariations(game: Game<PgnNodeData>): boolean {
+  let changed = false;
+  for (let node: Node<PgnNodeData> = game.moves; node.children.length > 0;) {
+    const main = node.children[0];
+    if (!main) break;
+    if (node.children.length > 1) changed = true;
+    node.children = [main];
+    node = main;
+  }
+  return changed;
+}

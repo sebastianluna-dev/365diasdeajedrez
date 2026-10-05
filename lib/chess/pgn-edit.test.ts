@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   addMove,
+  clearAnnotations,
+  clearVariations,
   commentTextAt,
   deleteFrom,
   emptyGame,
@@ -332,5 +334,50 @@ describe("ida y vuelta", () => {
 
   it("devuelve null ante un PGN que no se puede leer", () => {
     expect(parseEditableGame("")).toBeNull();
+  });
+});
+
+describe("clearAnnotations", () => {
+  const ANNOTATED = `[Event "Paris"]
+
+{ La partida de la ópera. } 1. e4 e5 2. Nf3 $1 { Desarrolla. [%cal Gg1f3] } ( 2. f4 $6 { El gambito. } exf4 ) 2... d6 { [%eval 0.4] } *`;
+
+  it("takes out comments, signs, arrows and the opening comment, and keeps the moves and the variations", () => {
+    const game = parseEditableGame(ANNOTATED);
+    if (!game) throw new Error("PGN no parseable");
+
+    expect(clearAnnotations(game)).toBe(true);
+    const pgn = serializeGame(game);
+    expect(movetext(pgn)).toBe("1. e4 e5 2. Nf3 ( 2. f4 exf4 ) 2... d6 *");
+    expect(pgn).toContain('[Event "Paris"]');
+    expect(pgn).not.toMatch(/[{}$%]/);
+  });
+
+  it("says there was nothing to take out of a game with only moves", () => {
+    const game = parseEditableGame("1. e4 e5 ( 1... c5 ) 2. Nf3 *");
+    if (!game) throw new Error("PGN no parseable");
+
+    expect(clearAnnotations(game)).toBe(false);
+    expect(movetext(serializeGame(game))).toBe("1. e4 e5 ( 1... c5 ) 2. Nf3 *");
+  });
+});
+
+describe("clearVariations", () => {
+  it("keeps the main line with what is written on it and drops every variation, nested ones too", () => {
+    const game = parseEditableGame(
+      "1. e4 e5 ( 1... c5 2. Nf3 ( 2. c3 d5 ) 2... d6 ) 2. Nf3 $1 { Desarrolla. } ( 2. f4 exf4 ) 2... Nc6 *",
+    );
+    if (!game) throw new Error("PGN no parseable");
+
+    expect(clearVariations(game)).toBe(true);
+    expect(movetext(serializeGame(game))).toBe("1. e4 e5 2. Nf3 $1 { Desarrolla. } 2... Nc6 *");
+  });
+
+  it("says there was nothing to take out of a game with one line", () => {
+    const game = parseEditableGame("1. e4 e5 2. Nf3 { Desarrolla. } *");
+    if (!game) throw new Error("PGN no parseable");
+
+    expect(clearVariations(game)).toBe(false);
+    expect(movetext(serializeGame(game))).toBe("1. e4 e5 2. Nf3 { Desarrolla. } *");
   });
 });

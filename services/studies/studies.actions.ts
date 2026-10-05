@@ -13,7 +13,7 @@ import type { Prisma } from "@/lib/platform-db/generated/client";
 import { getPlatformDb } from "@/lib/platform-db/get-platform-db";
 import { platformRoutes } from "@/lib/platform-routes";
 import { allowAction } from "@/lib/rate-limit";
-import { emptyGame, serializeGame } from "@/lib/chess/pgn-edit";
+import { clearAnnotations, clearVariations, emptyGame, parseEditableGame, serializeGame } from "@/lib/chess/pgn-edit";
 import { parsePgnTree } from "@/lib/chess/pgn-tree";
 import { indexGamePositions } from "@/services/game-positions/game-positions.service";
 import { z } from "zod";
@@ -487,6 +487,80 @@ export async function updateGameDetails(studyId: string, gameId: string, formDat
 
   revalidatePath(platformRoutes.studyDetail(studyId));
   revalidatePath(platformRoutes.gameDetail(studyId, gameId));
+}
+
+const GAME_NAME_SCHEMA = z.object({ title: formOptionalText(GAME_FIELD_MAX_LENGTH) });
+
+/**
+ * Renames a game within its study, from the list's settings: only the name,
+ * without going through the whole record. Empty, the game goes back to being
+ * shown by its players. The PGN is not touched: the name is how the study
+ * tells its games apart, not something the game says about itself.
+ */
+export async function renameStudyGame(studyId: string, gameId: string, formData: FormData): Promise<void> {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  if (!(await allowAction(`${user.id}:game-details`, 60, 60_000))) return;
+
+  const form = parseForm(GAME_NAME_SCHEMA, formData);
+  if (!form.ok) return;
+
+  const { count } = await db.game.updateMany({
+    where: { id: gameId, databaseId: studyId, database: { userId: user.id } },
+    data: { title: form.data.title ?? null },
+  });
+  if (count === 0) return;
+
+  revalidatePath(platformRoutes.studyDetail(studyId));
+  revalidatePath(platformRoutes.gameDetail(studyId, gameId));
+}
+
+/**
+ * Rewrites an own game's PGN with one of the two clean-ups the list's
+ * settings offer, and indexes its positions again: taking out the variations
+ * takes positions out of the game.
+ *
+ * It writes on the server what the game's page holds in the browser, so
+ * whoever calls it for the game on screen reloads the page afterwards
+ * (`GameSettings` does): otherwise the next autosave would write the old PGN
+ * back over this one.
+ */
+async function rewriteGamePgn(
+  studyId: string,
+  gameId: string,
+  clear: (game: NonNullable<ReturnType<typeof parseEditableGame>>) => boolean,
+): Promise<void> {
+  const db = getPlatformDb();
+  const user = await getCurrentUser();
+  if (!(await allowAction(`${user.id}:game-clear`, 30, 60_000))) return;
+
+  const game = await db.game.findFirst({
+    where: { id: gameId, databaseId: studyId, database: { userId: user.id } },
+    select: { id: true, pgn: true },
+  });
+  if (!game) return;
+
+  const editable = parseEditableGame(game.pgn);
+  if (!editable || !clear(editable)) return;
+  const pgn = serializeGame(editable);
+
+  await db.$transaction(async (tx) => {
+    await tx.game.update({ where: { id: game.id }, data: { pgn } });
+    await indexGamePositions(tx, { gameId: game.id, databaseId: studyId, pgn });
+  });
+
+  revalidatePath(platformRoutes.studyDetail(studyId));
+  revalidatePath(platformRoutes.gameDetail(studyId, gameId));
+}
+
+/** Takes the comments, the arrows, the signs and the evaluations out of an own game; the moves and the variations stay. */
+export async function clearGameAnnotations(studyId: string, gameId: string): Promise<void> {
+  await rewriteGamePgn(studyId, gameId, clearAnnotations);
+}
+
+/** Leaves an own game with its main line alone: every variation goes, with what was written on it. */
+export async function clearGameVariations(studyId: string, gameId: string): Promise<void> {
+  await rewriteGamePgn(studyId, gameId, clearVariations);
 }
 
 /**
