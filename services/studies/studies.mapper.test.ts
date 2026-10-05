@@ -22,6 +22,9 @@ function game(overrides: Partial<GameRow> & { id: string }): GameRow {
     event: null,
     playedAt: null,
     result: { label: "1-0" },
+    orientation: null,
+    analysisMode: null,
+    pinnedComment: null,
     _count: { classBlocks: 0 },
     ...overrides,
   };
@@ -167,5 +170,35 @@ describe("mapStudySummary", () => {
     const view = mapStudySummary(summary(), "owner", 0, new Date(2026, 8, 24));
     expect(view.updatedAtLabel).toBe("1 de junio, 2026");
     expect(view.updatedAgoLabel).toBe("hace 3 meses");
+  });
+});
+
+describe("a game's settings in its study's list", () => {
+  it("opens from White, in plain analysis and with no comment until its owner says otherwise", () => {
+    const [item] = mapStudyDetail(study({ games: [game({ id: "g1" })] }), "owner").games;
+
+    expect(item?.orientationCode).toBe("WHITE");
+    expect(item?.analysisModeCode).toBeUndefined();
+    expect(item?.pinnedComment).toBeUndefined();
+  });
+
+  it("carries the side, the mode and the comment its owner set", () => {
+    const [item] = mapStudyDetail(
+      study({
+        games: [
+          game({
+            id: "g1",
+            orientation: { code: "BLACK" },
+            analysisMode: { code: "CONCEAL" },
+            pinnedComment: "Juegan las negras.",
+          }),
+        ],
+      }),
+      "owner",
+    ).games;
+
+    expect(item?.orientationCode).toBe("BLACK");
+    expect(item?.analysisModeCode).toBe("CONCEAL");
+    expect(item?.pinnedComment).toBe("Juegan las negras.");
   });
 });

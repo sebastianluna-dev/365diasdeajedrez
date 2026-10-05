@@ -18,7 +18,7 @@ import {
   clearGameAnnotations,
   clearGameVariations,
   deleteStudyGame,
-  renameStudyGame,
+  updateGameSettings,
   reorderStudyGames,
   updateGameDetails,
 } from "@/services/studies/studies.actions";
@@ -67,6 +67,9 @@ function listItem(game: StudyGameItem): GameListItem {
     id: game.id,
     name: game.title ?? game.label,
     title: game.title,
+    orientationCode: game.orientationCode,
+    analysisModeCode: game.analysisModeCode,
+    pinnedComment: game.pinnedComment,
     resultLabel: game.resultLabel,
     href: game.href,
   };
@@ -134,7 +137,7 @@ export function GameAside({ game, study, results, classGames, kinds, students, p
           settings={
             canWrite
               ? {
-                  rename: renameStudyGame.bind(null, study.id),
+                  save: updateGameSettings.bind(null, study.id),
                   clearAnnotations: clearGameAnnotations.bind(null, study.id),
                   clearVariations: clearGameVariations.bind(null, study.id),
                   remove: deleteStudyGame.bind(null, study.id),

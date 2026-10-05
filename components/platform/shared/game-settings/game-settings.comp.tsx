@@ -3,7 +3,14 @@
 import { useId, useRef, useState } from "react";
 import { GearIcon } from "@/components/icons/gear-icon.comp";
 import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
-import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
+import {
+  PlatformForm,
+  PlatformFormField,
+  PlatformFormGroup,
+} from "@/components/platform/shared/platform-form/platform-form.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
+import { GAME_ANALYSIS_MODE_LABELS } from "@/constants/platform/study-codes.const";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import "./game-settings.comp.css";
 
@@ -12,8 +19,11 @@ import "./game-settings.comp.css";
  * study or the collection the game belongs to.
  */
 export interface GameSettingsActions {
-  /** Saves the name, read from the form's `title`; empty takes it away. */
-  rename: (gameId: string, formData: FormData) => Promise<void>;
+  /**
+   * Saves what the form holds: `title`, `orientationCode`, `analysisModeCode`
+   * and `pinnedComment`; an empty one is that setting's "nothing".
+   */
+  save: (gameId: string, formData: FormData) => Promise<void>;
   /** Takes out comments, arrows, signs and evaluations; moves and variations stay. */
   clearAnnotations: (gameId: string) => Promise<void>;
   /** Leaves the main line alone. */
@@ -29,7 +39,20 @@ export interface GameSettingsGame {
   name: string;
   /** The name it was given; absent while it is shown by its players. */
   title?: string;
+  /** Which side the board opens from. */
+  orientationCode: "WHITE" | "BLACK";
+  /** How a reader goes through it. Absent = plain analysis. */
+  analysisModeCode?: string;
+  /** The owner's text under the board, whatever the move. */
+  pinnedComment?: string;
 }
+
+const ORIENTATION_OPTIONS = [
+  { value: BOARD_ORIENTATION.WHITE, label: "Blancas" },
+  { value: BOARD_ORIENTATION.BLACK, label: "Negras" },
+];
+
+const ANALYSIS_MODE_OPTIONS = Object.entries(GAME_ANALYSIS_MODE_LABELS).map(([value, label]) => ({ value, label }));
 
 interface GameSettingsProps {
   game: GameSettingsGame;
@@ -65,8 +88,10 @@ const CONFIRMATIONS: Record<Destructive, { question: string; detail: string; sub
 };
 
 /**
- * The gear at the end of a game's row and the dialog it opens: the game's
- * name, and the three things that destroy — its annotations, its variations,
+ * The gear at the end of a game's row and the dialog it opens, as Lichess
+ * keeps them behind a study's chapter: the game's name, which side its board
+ * opens from, how a reader goes through it and a comment pinned under the
+ * board; and the three things that destroy — its annotations, its variations,
  * the game itself —, each behind a confirmation of its own inside the same
  * dialog, because none of them can be undone.
  */
@@ -141,7 +166,7 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
         ) : (
           <>
             <PlatformForm
-              action={(formData) => actions.rename(game.id, formData)}
+              action={(formData) => actions.save(game.id, formData)}
               className="game-settings__form"
               onSubmit={close}
               autoComplete="off"
@@ -159,6 +184,36 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
                   maxLength={120}
                   defaultValue={game.title ?? ""}
                   placeholder={game.name}
+                />
+              </PlatformFormField>
+              <div className="game-settings__pair">
+                <PlatformFormGroup label="Orientación">
+                  <PlatformSelect
+                    name="orientationCode"
+                    defaultValue={game.orientationCode}
+                    options={ORIENTATION_OPTIONS}
+                  />
+                </PlatformFormGroup>
+                <PlatformFormGroup label="Modo de análisis">
+                  <PlatformSelect
+                    name="analysisModeCode"
+                    defaultValue={game.analysisModeCode ?? ""}
+                    emptyOption="Análisis normal"
+                    options={ANALYSIS_MODE_OPTIONS}
+                  />
+                </PlatformFormGroup>
+              </div>
+              <PlatformFormField
+                name="pinnedComment"
+                label="Comentario fijo"
+                optionalLabel="Opcional"
+                hint="Se muestra bajo el tablero en todas las jugadas, a quien abra la partida."
+              >
+                <textarea
+                  key={game.pinnedComment ?? ""}
+                  maxLength={1000}
+                  rows={3}
+                  defaultValue={game.pinnedComment ?? ""}
                 />
               </PlatformFormField>
               <div className="game-settings__actions">

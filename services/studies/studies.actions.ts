@@ -4,8 +4,15 @@ import { Chess } from "chessops/chess";
 import { parseFen } from "chessops/fen";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { OWNER_TYPE } from "@/constants/platform/shared-codes.const";
-import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE, type DatabaseKindCode } from "@/constants/platform/study-codes.const";
+import { BOARD_ORIENTATION, OWNER_TYPE } from "@/constants/platform/shared-codes.const";
+import {
+  DATABASE_KIND,
+  GAME_ANALYSIS_MODE,
+  GAME_RESULT,
+  GAME_SOURCE,
+  type DatabaseKindCode,
+  type GameAnalysisModeCode,
+} from "@/constants/platform/study-codes.const";
 import { PGN_IMPORT_TRANSACTION, PGN_MAX_GAMES, PGN_MAX_LENGTH } from "@/constants/platform/content-limits.const";
 import { getCurrentUser } from "@/lib/platform-auth/current-user";
 import { getTeacherContext } from "@/lib/platform-auth/roles";
@@ -489,27 +496,61 @@ export async function updateGameDetails(studyId: string, gameId: string, formDat
   revalidatePath(platformRoutes.gameDetail(studyId, gameId));
 }
 
-const GAME_NAME_SCHEMA = z.object({ title: formOptionalText(GAME_FIELD_MAX_LENGTH) });
+/** How long a pinned comment may be: a note under the board, not a text. */
+const PINNED_COMMENT_MAX_LENGTH = 1000;
+
+const GAME_SETTINGS_SCHEMA = z.object({
+  title: formOptionalText(GAME_FIELD_MAX_LENGTH),
+  orientationCode: z.string().trim().max(32).optional(),
+  analysisModeCode: z.string().trim().max(32).optional(),
+  pinnedComment: formOptionalText(PINNED_COMMENT_MAX_LENGTH),
+});
+
+function isGameAnalysisModeCode(value: string): value is GameAnalysisModeCode {
+  return (Object.values(GAME_ANALYSIS_MODE) as string[]).includes(value);
+}
 
 /**
- * Renames a game within its study, from the list's settings: only the name,
- * without going through the whole record. Empty, the game goes back to being
- * shown by its players. The PGN is not touched: the name is how the study
- * tells its games apart, not something the game says about itself.
+ * Saves a game's settings from the gear of its row in the list: its name,
+ * which side the board opens from, how a reader goes through it and the
+ * comment pinned under the board. The PGN is not touched: all four are about
+ * the game in this study, not something the game says about itself.
+ *
+ * Each has a "nothing" that is stored as null: no name (the game is shown by
+ * its players), White at the bottom, plain analysis, no comment. A code that
+ * is not one of the catalog's is read as that nothing rather than refused: only
+ * a forged request sends one.
  */
-export async function renameStudyGame(studyId: string, gameId: string, formData: FormData): Promise<void> {
+export async function updateGameSettings(studyId: string, gameId: string, formData: FormData): Promise<void> {
   const db = getPlatformDb();
   const user = await getCurrentUser();
   if (!(await allowAction(`${user.id}:game-details`, 60, 60_000))) return;
 
-  const form = parseForm(GAME_NAME_SCHEMA, formData);
+  const form = parseForm(GAME_SETTINGS_SCHEMA, formData);
   if (!form.ok) return;
 
-  const { count } = await db.game.updateMany({
+  const game = await db.game.findFirst({
     where: { id: gameId, databaseId: studyId, database: { userId: user.id } },
-    data: { title: form.data.title ?? null },
+    select: { id: true },
   });
-  if (count === 0) return;
+  if (!game) return;
+
+  const { title, orientationCode, analysisModeCode, pinnedComment } = form.data;
+  await db.game.update({
+    where: { id: game.id },
+    data: {
+      title: title ?? null,
+      pinnedComment: pinnedComment ?? null,
+      orientation:
+        orientationCode === BOARD_ORIENTATION.BLACK
+          ? { connect: { code: BOARD_ORIENTATION.BLACK } }
+          : { disconnect: true },
+      analysisMode:
+        analysisModeCode && isGameAnalysisModeCode(analysisModeCode)
+          ? { connect: { code: analysisModeCode } }
+          : { disconnect: true },
+    },
+  });
 
   revalidatePath(platformRoutes.studyDetail(studyId));
   revalidatePath(platformRoutes.gameDetail(studyId, gameId));

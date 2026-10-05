@@ -8,4 +8,17 @@
   & .platform-notice {
     margin-bottom: var(--platform-space-4);
   }
+
+  /* For the game's owner, that a reader's mode is on: a line over the board,
+     quiet, with the way to see it. On the page's grey, so the muted one. */
+  & .game-view__mode {
+    margin: 0 0 var(--platform-space-3);
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  & .game-view__mode-link {
+    font-weight: 700;
+    color: var(--platform-accent-ink);
+  }
 }

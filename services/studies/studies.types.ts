@@ -50,7 +50,20 @@ export interface StudyKindOption {
   label: string;
 }
 
-export interface StudyGameItem {
+/** The two sides a game's board can open from; the catalog's `AUTO` is not a game's. */
+export type GameOrientationCode = "WHITE" | "BLACK";
+
+/** The three settings of a game its owner sets from the gear of its row. */
+export interface GameSettingsValues {
+  /** Which side the board opens from. */
+  orientationCode: GameOrientationCode;
+  /** How a reader goes through it (`GAME_ANALYSIS_MODE`). Absent = plain analysis. */
+  analysisModeCode?: string;
+  /** The owner's text under the board, whatever the move. */
+  pinnedComment?: string;
+}
+
+export interface StudyGameItem extends GameSettingsValues {
   id: string;
   /** How it is told apart within the study. Absent = it is identified by the pairing. */
   title?: string;
@@ -119,7 +132,7 @@ export interface StudyDetail {
   games: StudyGameItem[];
 }
 
-export interface GameView {
+export interface GameView extends GameSettingsValues {
   id: string;
   /** Whoever is looking owns the database: they can edit and annotate the game. */
   canEdit: boolean;

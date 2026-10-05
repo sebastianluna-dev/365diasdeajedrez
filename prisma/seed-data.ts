@@ -13,7 +13,7 @@ import {
 import { AUTHOR_ROLE, CONTENT_TYPE, COURSE_STATUS, DEFAULT_LEVEL } from "../constants/platform/course-codes.const";
 import { BOARD_ORIENTATION, OWNER_TYPE, PROGRESS_STATUS, TOPIC } from "../constants/platform/shared-codes.const";
 import { SOURCE_TYPE } from "../constants/platform/source-codes.const";
-import { DATABASE_KIND, GAME_RESULT, GAME_SOURCE } from "../constants/platform/study-codes.const";
+import { DATABASE_KIND, GAME_ANALYSIS_MODE, GAME_RESULT, GAME_SOURCE } from "../constants/platform/study-codes.const";
 import { ATTEMPT_CONTEXT, ATTEMPT_RESULT, EXERCISE_MODE } from "../constants/platform/training-codes.const";
 
 import { DEMO_STAFF_EMAIL, DEMO_TEACHER_EMAIL, DEMO_USER_EMAIL } from "../constants/platform/demo-user.const";
@@ -219,6 +219,7 @@ export const CATALOG_VALUES = {
     [DATABASE_KIND.STUDY, "Estudio"],
     [DATABASE_KIND.COLLECTION, "Colección"],
   ],
+  gameAnalysisMode: [[GAME_ANALYSIS_MODE.CONCEAL, "Ocultar los siguientes movimientos"]],
   gameSource: [
     [GAME_SOURCE.MANUAL, "Registrada a mano"],
     [GAME_SOURCE.PGN_IMPORT, "Importada de PGN"],

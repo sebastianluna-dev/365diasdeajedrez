@@ -5,17 +5,23 @@ import { useEffect, useRef, type RefObject } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripDotsVerticalIcon } from "@/components/icons/grip-dots-vertical-icon.comp";
-import { GameSettings, type GameSettingsActions } from "@/components/platform/shared/game-settings/game-settings.comp";
+import {
+  GameSettings,
+  type GameSettingsActions,
+  type GameSettingsGame,
+} from "@/components/platform/shared/game-settings/game-settings.comp";
 import { SortableDnd } from "@/components/platform/shared/sortable-dnd/sortable-dnd.comp";
 import { useSortableRows } from "@/components/platform/shared/sortable-dnd/use-sortable-rows.hook";
 import "./game-list.comp.css";
 
-export interface GameListItem {
-  id: string;
-  /** What the game is called in the list: its title, or the fallback its mapper gives it. */
-  name: string;
-  /** The name it was given; absent while it is shown by the fallback. Its settings start from it. */
-  title?: string;
+/**
+ * A game of the list. What its settings start from — the name it was given
+ * and its three settings — is `GameSettingsGame`'s; a list without `settings`
+ * can leave them at their nothing.
+ */
+export interface GameListItem extends Omit<GameSettingsGame, "orientationCode"> {
+  /** Which side the board opens from; White when it is not said. */
+  orientationCode?: GameSettingsGame["orientationCode"];
   /** The PGN token of the result: "1-0", "½-½", "*". */
   resultLabel: string;
   href: string;
@@ -38,6 +44,11 @@ interface GameListProps {
    * that opens `GameSettings`; without them, for whoever only reads, it does not.
    */
   settings?: GameSettingsActions;
+}
+
+/** The game as its settings take it: a side is always said there. */
+function settingsGame(game: GameListItem): GameSettingsGame {
+  return { ...game, orientationCode: game.orientationCode ?? "WHITE" };
 }
 
 /** A game of the list: what it is called and how it ended, leading to its board. */
@@ -97,7 +108,7 @@ function SortableRow({ game, isCurrent, settings }: RowProps) {
         <GripDotsVerticalIcon variant="duotone-solid" />
       </button>
       <GameLink game={game} isCurrent={isCurrent} />
-      {settings && <GameSettings game={game} isCurrent={isCurrent} actions={settings} />}
+      {settings && <GameSettings game={settingsGame(game)} isCurrent={isCurrent} actions={settings} />}
     </li>
   );
 }
@@ -169,7 +180,7 @@ export function GameList({ games, currentId, onReorder, settings }: GameListProp
       {games.map((game) => (
         <li key={game.id} className={rowClassName(game.id === currentId)}>
           <GameLink game={game} isCurrent={game.id === currentId} />
-          {settings && <GameSettings game={game} isCurrent={game.id === currentId} actions={settings} />}
+          {settings && <GameSettings game={settingsGame(game)} isCurrent={game.id === currentId} actions={settings} />}
         </li>
       ))}
     </ul>

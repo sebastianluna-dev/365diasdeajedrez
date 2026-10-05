@@ -73,7 +73,7 @@ export const WithSettings: Story = {
   args: {
     games: GAMES.map((game, index) => (index % 2 === 0 ? { ...game, title: game.name } : game)),
     settings: {
-      rename: fn(async () => {}).mockName("renameStudyGame"),
+      save: fn(async () => {}).mockName("updateGameSettings"),
       clearAnnotations: fn(async () => {}).mockName("clearGameAnnotations"),
       clearVariations: fn(async () => {}).mockName("clearGameVariations"),
       remove: fn(async () => {}).mockName("deleteStudyGame"),

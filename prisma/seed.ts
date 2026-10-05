@@ -181,6 +181,7 @@ async function main() {
   const ownerType = await seedCatalog(db.ownerType, CATALOG_VALUES.ownerType);
   await seedCatalog(db.contentRole, CATALOG_VALUES.contentRole);
   const databaseKind = await seedCatalog(db.databaseKind, CATALOG_VALUES.databaseKind);
+  await seedCatalog(db.gameAnalysisMode, CATALOG_VALUES.gameAnalysisMode);
   const gameSource = await seedCatalog(db.gameSource, CATALOG_VALUES.gameSource);
   const gameResult = await seedCatalog(db.gameResult, CATALOG_VALUES.gameResult);
   const classStatus = await seedCatalog(db.classStatus, CATALOG_VALUES.classStatus);

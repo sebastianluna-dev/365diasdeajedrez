@@ -23,8 +23,10 @@ interface GamePageProps {
    * a new game that did not validate). `pagina`: which page of the study's
    * games the aside lists; without it, the one the current game falls on.
    * `importadas`: the result of a PGN import, to say how many games went in.
+   * `vista=lector`: the owner looks at the game as a reader would, to see
+   * what its analysis mode does to whoever cannot edit it.
    */
-  searchParams: Promise<{ error?: string; pagina?: string; importadas?: string }>;
+  searchParams: Promise<{ error?: string; pagina?: string; importadas?: string; vista?: string }>;
 }
 
 export async function generateMetadata({ params }: GamePageProps): Promise<Metadata> {
@@ -40,7 +42,7 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
  */
 export default async function GamePage({ params, searchParams }: GamePageProps) {
   const { studyId, gameId } = await params;
-  const { error, pagina, importadas } = await searchParams;
+  const { error, pagina, importadas, vista } = await searchParams;
   // `getGameById` goes through the DAL, so this first await acts as the session
   // border. The study is requested afterwards for the aside.
   const game = await getGameById(studyId, gameId);
@@ -75,7 +77,12 @@ export default async function GamePage({ params, searchParams }: GamePageProps) 
         {/* The board first in the markup, the aside after it: on a tablet or a
             phone that is their order on screen, and on a wide window the
             stylesheet puts the aside in the left column. */}
-        <GameViewSection game={game} errorCode={error} importReport={readImportReport(importadas)} />
+        <GameViewSection
+          game={game}
+          asReader={vista === "lector"}
+          errorCode={error}
+          importReport={readImportReport(importadas)}
+        />
         <GameAside
           game={game}
           study={study}

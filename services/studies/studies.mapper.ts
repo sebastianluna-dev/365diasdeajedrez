@@ -3,7 +3,15 @@ import { formatSpanishDate } from "@/lib/format-spanish-date";
 import type { Prisma } from "@/lib/platform-db/generated/client";
 import { platformRoutes } from "@/lib/platform-routes";
 import { studyPermissionsOf } from "./study-rules";
-import type { GameView, StudyDetail, StudyGameItem, StudyShareItem, StudySummary } from "./studies.types";
+import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
+import type {
+  GameOrientationCode,
+  GameView,
+  StudyDetail,
+  StudyGameItem,
+  StudyShareItem,
+  StudySummary,
+} from "./studies.types";
 
 /** Games a card lists, like lichess's study cards do with their chapters. */
 export const STUDY_PREVIEW_SIZE = 4;
@@ -61,6 +69,10 @@ export const studyDetailInclude = {
       event: true,
       playedAt: true,
       result: { select: { label: true } },
+      // What the game's settings start from, in its row of the list.
+      orientation: { select: { code: true } },
+      analysisMode: { select: { code: true } },
+      pinnedComment: true,
       // So a warning can be given before deleting the study: these games are cited in
       // classes and those blocks would be left empty.
       _count: { select: { classBlocks: true } },
@@ -72,6 +84,8 @@ export type StudyDetailRow = Prisma.GameDatabaseGetPayload<{ include: typeof stu
 
 export const gameViewInclude = {
   result: { select: { label: true, code: true } },
+  orientation: { select: { code: true } },
+  analysisMode: { select: { code: true } },
   source: { select: { label: true } },
   database: { select: { id: true, name: true, userId: true, kind: { select: { code: true } } } },
   _count: { select: { classBlocks: true } },
@@ -136,6 +150,11 @@ function gameLabel(game: StudyDetailRow["games"][number], index: number, eventCo
   return `Partida ${index + 1}`;
 }
 
+/** The side a game's board opens from: Black when its owner said so, White otherwise. */
+function orientationCodeOf(orientation: { code: string } | null): GameOrientationCode {
+  return orientation?.code === BOARD_ORIENTATION.BLACK ? BOARD_ORIENTATION.BLACK : BOARD_ORIENTATION.WHITE;
+}
+
 function mapStudyGameItem(
   studyId: string,
   game: StudyDetailRow["games"][number],
@@ -150,6 +169,9 @@ function mapStudyGameItem(
     white: game.white,
     black: game.black,
     resultLabel: game.result.label,
+    orientationCode: orientationCodeOf(game.orientation),
+    analysisModeCode: game.analysisMode?.code,
+    pinnedComment: game.pinnedComment ?? undefined,
     round: game.round ?? undefined,
     eco: game.eco ?? undefined,
     event: game.event ?? undefined,
@@ -240,6 +262,9 @@ export function mapGameView(row: GameViewRow, viewerId: string | null): GameView
       studyPermissionsOf({ kindCode: row.database.kind.code, isOwner: row.database.userId === viewerId }).canEditGames,
     id: row.id,
     title: row.title ?? undefined,
+    orientationCode: orientationCodeOf(row.orientation),
+    analysisModeCode: row.analysisMode?.code,
+    pinnedComment: row.pinnedComment ?? undefined,
     resultCode: row.result.code,
     playedAtValue: row.playedAt ? row.playedAt.toISOString().slice(0, 10) : undefined,
     round: row.round ?? undefined,

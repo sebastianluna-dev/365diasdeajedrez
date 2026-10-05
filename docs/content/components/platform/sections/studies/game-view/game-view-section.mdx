@@ -24,6 +24,7 @@ The section only wires the two things the viewer cannot own: the PGN's history, 
 | Prop           | Type                      | Required | Meaning                                                                                                                                                                                                                                           |
 | -------------- | ------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `game`         | `GameView`                | yes      | The game with `pgn`, `canEdit`, players (name, Elo, title, country), record fields and `studyId`.                                                                                                                                                 |
+| `asReader`     | `boolean`                 | no       | The owner asked to see the game as a reader (`?vista=lector` on the page): nothing is edited or saved, and the game's analysis mode applies.                                                                                                      |
 | `errorCode`    | `string`                  | no       | What bounced back from an action, translated by `STUDY_ERROR_MESSAGES`: the game's (`gameInClasses`) and the study's (`confirmStudyDelete`, `fen`, the common codes), whose forms live in the aside.                                              |
 | `importReport` | `PgnImportReport \| null` | no       | The result of the PGN import that has just happened (`?importadas=`, read by the page with `readImportReport`). The notice goes above the board, like an error: «Se importaron N partidas.», or how many of how many and why the rest stayed out. |
 
@@ -32,10 +33,11 @@ The section only wires the two things the viewer cannot own: the PGN's history, 
 - **`usePgnHistory(game.pgn, { undo: game.canEdit })`** gives the PGN the viewer renders, `applyPgn` for whatever the viewer or the tools write, and the ⌘Z / Ctrl+Z undo (off for a game one cannot edit).
 - **`useGameAutosave({ studyId, gameId, pgn, enabled: game.canEdit })`** saves 1.2 s after the last change and gives `saveLabel`, which goes to the viewer's `tools` so the panel says "sin guardar", "guardando…", "guardado" or "no se pudo guardar".
 - The viewer is mounted with `controls="panel"` (in studies the game is traversed from the list), `engine`, no header (the players are already in the strips and the aside; a header stole height from the moves), `players` as data (name, Elo, title, federation per colour) and `tools={{ saveLabel }}`.
+- **The game's settings** reach the viewer as data: `orientation` from `game.orientationCode`, `pinnedComment`, and `hideNextMoves` when its analysis mode is `CONCEAL`. A mode is the reader's — the viewer ignores it while editing —, so the game's owner gets a line over the board that says which mode readers will see, with «Ver como lector», a link to the same page with `?vista=lector`; there the section mounts the viewer as a reader's (`canEdit` off: no undo, no autosave, no editing) and the line offers «Volver a editar».
 
 ## Markup & styling
 
-Block `.game-view` (11 lines): the board column (`min-width: 0`) and the margin under the notice. The two-column grid beside the aside is the page's, `.game-page__layout` in `game-page.css`; the strips are [`PlayerStrip`](/components/chess/game-viewer/player-strip)'s.
+Block `.game-view` (24 lines): the board column (`min-width: 0`), the margin under the notice and the owner's line about the readers' mode (`.game-view__mode`, `.game-view__mode-link`). The two-column grid beside the aside is the page's, `.game-page__layout` in `game-page.css`; the strips are [`PlayerStrip`](/components/chess/game-viewer/player-strip)'s.
 
 **Other selectors it styles:** `.platform-notice` (margin inside the column).
 

@@ -19,6 +19,24 @@ export const DATABASE_KIND = {
 
 export type DatabaseKindCode = (typeof DATABASE_KIND)[keyof typeof DATABASE_KIND];
 
+/**
+ * How a game is gone through by a reader who cannot edit it. The plain
+ * analysis has no code: it is a game with no mode.
+ *
+ * - `CONCEAL`: the moves after the one on the board stay hidden, and each
+ *   comes out as the reader steps onto it. For "what would you play?".
+ */
+export const GAME_ANALYSIS_MODE = {
+  CONCEAL: "CONCEAL",
+} as const;
+
+export type GameAnalysisModeCode = (typeof GAME_ANALYSIS_MODE)[keyof typeof GAME_ANALYSIS_MODE];
+
+/** What each mode is called in a game's settings; the plain analysis is the select's empty option. */
+export const GAME_ANALYSIS_MODE_LABELS: Record<GameAnalysisModeCode, string> = {
+  CONCEAL: "Ocultar los siguientes movimientos",
+};
+
 export const GAME_SOURCE = {
   MANUAL: "MANUAL",
   PGN_IMPORT: "PGN_IMPORT",

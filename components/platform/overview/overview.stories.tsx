@@ -1203,10 +1203,15 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               <div className="overview__row">
                 <span>Una celada en la apertura</span>
                 <GameSettings
-                  game={{ id: "g1", name: "Una celada en la apertura", title: "Una celada en la apertura" }}
+                  game={{
+                    id: "g1",
+                    name: "Una celada en la apertura",
+                    title: "Una celada en la apertura",
+                    orientationCode: "WHITE",
+                  }}
                   isCurrent={false}
                   actions={{
-                    rename: async () => undefined,
+                    save: async () => undefined,
                     clearAnnotations: async () => undefined,
                     clearVariations: async () => undefined,
                     remove: async () => undefined,

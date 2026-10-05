@@ -86,6 +86,18 @@
     padding: var(--platform-space-5) var(--platform-space-6) var(--platform-space-6);
   }
 
+  /* The two selects side by side, as Lichess sets them; one under the other
+     where the dialog is the width of a phone. */
+  & .game-settings__pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--platform-space-4);
+
+    @media (width < 640px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
   & .game-settings__actions {
     display: flex;
     justify-content: flex-end;

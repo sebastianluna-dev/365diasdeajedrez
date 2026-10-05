@@ -4,7 +4,7 @@ import { GameSettings, type GameSettingsActions } from "./game-settings.comp";
 
 /** Stand in for the screen's server actions, already bound to their study: spies listed in the Actions panel. */
 const ACTIONS: GameSettingsActions = {
-  rename: fn(async () => {}).mockName("renameStudyGame"),
+  save: fn(async () => {}).mockName("updateGameSettings"),
   clearAnnotations: fn(async () => {}).mockName("clearGameAnnotations"),
   clearVariations: fn(async () => {}).mockName("clearGameVariations"),
   remove: fn(async () => {}).mockName("deleteStudyGame"),
@@ -18,9 +18,10 @@ const meta = {
       description: {
         component: `
 The gear at the end of a game's row in \`GameList\` and the dialog it opens:
-the game's name, and the three things that destroy — its annotations, its
-variations, the game itself —, each behind a confirmation of its own inside
-the same dialog, because none can be undone. What they do are server actions
+the game's name, which side its board opens from, how a reader goes through
+it and a comment pinned under the board; and the three things that destroy —
+its annotations, its variations, the game itself —, each behind a
+confirmation of its own inside the same dialog, because none can be undone. What they do are server actions
 it is given already bound to the study; here they are spies and nothing is
 saved.
 
@@ -31,7 +32,12 @@ Reference page: [Components › GameSettings](/components/platform/shared/game-s
     },
   },
   args: {
-    game: { id: "g1", name: "Una celada en la apertura", title: "Una celada en la apertura" },
+    game: {
+      id: "g1",
+      name: "Una celada en la apertura",
+      title: "Una celada en la apertura",
+      orientationCode: "WHITE",
+    },
     isCurrent: false,
     actions: ACTIONS,
   },
@@ -66,11 +72,37 @@ export const Open: Story = {
 /** A game shown by its players: the name starts empty, with the pairing as its placeholder. */
 export const Unnamed: Story = {
   name: "Una partida sin nombre",
-  args: { game: { id: "g2", name: "Lombardy — Fischer" } },
+  args: { game: { id: "g2", name: "Lombardy — Fischer", orientationCode: "WHITE" } },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: "Ajustes de «Lombardy — Fischer»" }));
     await expect(await canvas.findByRole("textbox", { name: "Nombre" })).toHaveValue("");
+  },
+};
+
+/** A game set for Black, with its next moves hidden and a comment pinned: the dialog opens on what was saved. */
+export const WithSettings: Story = {
+  name: "Con ajustes guardados",
+  args: {
+    game: {
+      id: "g3",
+      name: "La partida del siglo",
+      title: "La partida del siglo",
+      orientationCode: "BLACK",
+      analysisModeCode: "CONCEAL",
+      pinnedComment: "Juegan las negras: ¿qué harías en la jugada 17?",
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "Ajustes de «La partida del siglo»" }));
+    await expect(await canvas.findByRole("textbox", { name: /Comentario fijo/ })).toHaveValue(
+      "Juegan las negras: ¿qué harías en la jugada 17?",
+    );
+    await expect(canvas.getByRole("combobox", { name: "Orientación" })).toHaveTextContent("Negras");
+    await expect(canvas.getByRole("combobox", { name: "Modo de análisis" })).toHaveTextContent(
+      "Ocultar los siguientes movimientos",
+    );
   },
 };
 

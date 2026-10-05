@@ -157,6 +157,7 @@ model BoardOrientation {
   trainingLessons    Lesson[]             @relation("LessonTrainingColor")
   positions          Position[]
   userCourseSettings UserCourseSettings[]
+  games              Game[]
 }
 
 model ExerciseMode {
@@ -218,6 +219,18 @@ model DatabaseKind {
   order Int    @default(0)
 
   gameDatabases GameDatabase[]
+}
+
+/// How a game of a study is gone through by whoever reads it without being
+/// able to edit it: with the next moves hidden, for one. The plain analysis is
+/// not a row: it is the absence of a mode (`Game.analysisModeId` null).
+model GameAnalysisMode {
+  id    Int    @id @default(autoincrement())
+  code  String @unique
+  label String
+  order Int    @default(0)
+
+  games Game[]
 }
 
 model GameSource {
@@ -938,48 +951,59 @@ model StudyShare {
 /// source of the content.
 model Game {
   /// Short for the same reason as the study's: both go in the URL.
-  id           String    @id @default(nanoid(8))
-  databaseId   String
+  id             String    @id @default(nanoid(8))
+  databaseId     String
   /// How this game is told apart WITHIN its study ("Capítulo 1").
   /// Nullable on purpose: a game is identified by its players, and only the ones
   /// created blank need a name so they are not all alike. Those imported from a
   /// PGN stay at NULL and go on being shown by their pairing.
-  title        String?
-  white        String
-  black        String
-  whiteElo     Int?
-  blackElo     Int?
+  title          String?
+  white          String
+  black          String
+  whiteElo       Int?
+  blackElo       Int?
   /// FIDE title exactly as it comes in the PGN: "GM", "WGM", "IM"…
-  whiteTitle   String?
-  blackTitle   String?
+  whiteTitle     String?
+  blackTitle     String?
   /// Federation in the PGN's three-letter code ("MEX", "USA"). It is not
   /// ISO-3166: FIDE uses the Olympic code, which differs in several countries.
-  whiteCountry String?
-  blackCountry String?
-  resultId     Int
-  playedAt     DateTime? @db.Date
-  event        String?
-  site         String?
-  round        String?
-  eco          String?
+  whiteCountry   String?
+  blackCountry   String?
+  resultId       Int
+  playedAt       DateTime? @db.Date
+  event          String?
+  site           String?
+  round          String?
+  eco            String?
   /// Null when the game starts at the initial position.
-  initialFen   String?
-  pgn          String    @db.Text
+  initialFen     String?
+  pgn            String    @db.Text
   /// The user's free tags.
-  tags         Json?
-  sourceId     Int
+  tags           Json?
+  sourceId       Int
   /// Only meaningful in user databases.
-  isOwnGame    Boolean   @default(false)
+  isOwnGame      Boolean   @default(false)
+  /// Which side the board opens from for this game. Null = White at the bottom.
+  /// Its owner sets it from the game's settings in the list.
+  orientationId  Int?
+  /// How a reader goes through the game. Null = plain analysis.
+  analysisModeId Int?
+  /// A text of the owner's shown under the board whatever the move, for
+  /// everyone who opens the game. It is not part of the PGN: it is about the
+  /// game in this study, not something the game says.
+  pinnedComment  String?   @db.Text
   /// Position within the study, sortable by hand. It rules over the date: once
   /// someone arranges their games, the order is theirs. New ones are created at
   /// the end (max+1), not at 0, so they do not jump to the front.
-  order        Int       @default(0)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  order          Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
-  database GameDatabase @relation(fields: [databaseId], references: [id], onDelete: Cascade)
-  result   GameResult   @relation(fields: [resultId], references: [id])
-  source   GameSource   @relation(fields: [sourceId], references: [id])
+  database     GameDatabase      @relation(fields: [databaseId], references: [id], onDelete: Cascade)
+  result       GameResult        @relation(fields: [resultId], references: [id])
+  source       GameSource        @relation(fields: [sourceId], references: [id])
+  orientation  BoardOrientation? @relation(fields: [orientationId], references: [id])
+  analysisMode GameAnalysisMode? @relation(fields: [analysisModeId], references: [id])
 
   classBlocks ClassBlock[]
   positions   GamePosition[]
