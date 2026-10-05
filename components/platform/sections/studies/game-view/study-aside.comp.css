@@ -57,8 +57,10 @@
 
   /* A line of the card and not a button drawn on it: no fill and no outline
      either — the platform's button brings one, and here it would box in a row
-     that reads as one more item of the list. */
-  & .study-aside__new .platform-button {
+     that reads as one more item of the list. The trigger by its own class,
+     not by `.platform-button`: the dialog it opens is in this slot too, and
+     its «Cancelar» and «Agregar partida» took the sign and the look. */
+  & .study-aside__new .new-game__open {
     width: 100%;
     justify-content: flex-start;
     gap: var(--platform-space-3);
@@ -72,13 +74,13 @@
 
   /* The sign, only in this card: the same button is used on the study page,
      where it is drawn as the platform's own. */
-  & .study-aside__new .platform-button::before {
+  & .study-aside__new .new-game__open::before {
     content: "+";
     font-size: var(--platform-type-xl);
     line-height: 1;
   }
 
-  & .study-aside__new .platform-button:hover {
+  & .study-aside__new .new-game__open:hover {
     background: var(--platform-accent-wash);
     color: var(--platform-accent-ink);
   }

@@ -26,15 +26,22 @@
     color: var(--platform-text-muted);
   }
 
+  /* On a phone the four tabs are wider than the dialog: the row scrolls
+     sideways, as the viewer's tools do, rather than breaking each tab. */
   & .new-game__tabs {
     display: flex;
     gap: var(--platform-space-1);
+    overflow-x: auto;
+    scrollbar-width: none;
     margin: var(--platform-space-5) var(--platform-space-8) 0;
     box-shadow: inset 0 -1px 0 var(--platform-track);
   }
 
+  /* On one line each: with four tabs, a wider side padding broke «Pegar PGN»
+     and its neighbours over two lines in the dialog's 620px. */
   & .new-game__tab {
-    padding: var(--platform-space-3) var(--platform-space-4);
+    padding: var(--platform-space-3);
+    white-space: nowrap;
     border: 0;
     border-radius: 8px 8px 0 0;
     background: transparent;
@@ -57,13 +64,19 @@
     box-shadow: inset 0 -2px 0 var(--platform-accent);
   }
 
+  /* A tab's content. On the three that write it is also `PlatformForm`'s
+     root, whose column and gap are the same as these. */
   & .new-game__panel {
     display: flex;
     flex-direction: column;
+    gap: var(--platform-space-4);
     padding: var(--platform-space-6) var(--platform-space-8) 0;
   }
 
-  & .new-game__textarea {
+  /* The PGN in the monospace face and a size under the form's, so its lines
+     read as code. The panel's class adds the weight that beats the form's own
+     rule for a field's textarea. */
+  & .new-game__panel .new-game__textarea {
     width: 100%;
     box-sizing: border-box;
     min-height: 190px;
@@ -78,50 +91,15 @@
     line-height: 1.55;
   }
 
-  & .new-game__textarea:focus {
-    outline: none;
-    border-color: var(--platform-accent);
-  }
-
   & .new-game__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: var(--platform-space-4) var(--platform-space-5);
   }
 
-  & .new-game__field {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-2);
-    min-width: 0;
-  }
-
-  & .new-game__field_span_all {
+  /* The name of the game takes the whole row; the rest go two by two. */
+  & .new-game__grid > .platform-form__field:first-child {
     grid-column: 1 / -1;
-  }
-
-  & .new-game__label {
-    font-size: var(--platform-type-sm);
-    font-weight: 600;
-    color: var(--platform-text-muted);
-  }
-
-  /* The same metrics as the compact select in the same rows. */
-  & .new-game__input {
-    width: 100%;
-    box-sizing: border-box;
-    padding: var(--platform-space-2) var(--platform-space-3);
-    border: 1px solid var(--platform-border);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    color: var(--platform-text);
-    font-family: inherit;
-    font-size: var(--platform-type-lg);
-  }
-
-  & .new-game__input:focus {
-    outline: none;
-    border-color: var(--platform-accent);
   }
 
   & .new-game__list {
@@ -185,7 +163,7 @@
   }
 
   & .new-game__hint {
-    margin: var(--platform-space-3) 0 0;
+    margin: 0;
     font-size: var(--platform-type-sm);
     line-height: 1.5;
     color: var(--platform-text-subtle);
@@ -195,7 +173,7 @@
     display: flex;
     align-items: center;
     gap: var(--platform-space-3);
-    margin: var(--platform-space-6) calc(-1 * var(--platform-space-8)) 0;
+    margin: var(--platform-space-2) calc(-1 * var(--platform-space-8)) 0;
     padding: var(--platform-space-6) var(--platform-space-8);
     box-shadow: inset 0 1px 0 var(--platform-track);
   }
@@ -204,6 +182,12 @@
     margin-right: auto;
     font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
+  }
+
+  /* The note gives way, not the buttons: «Agregar partida» stays on a line. */
+  & .new-game__actions .platform-button {
+    flex: none;
+    white-space: nowrap;
   }
 
   & .new-game__actions .platform-button:disabled {

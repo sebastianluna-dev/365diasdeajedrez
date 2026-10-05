@@ -4,14 +4,15 @@ description: "The 'Nueva partida' dialog with four ways in: paste a PGN, start f
 
 # `NewGame`
 
-|            |                                                                                                                                                                                              |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/study-detail/new-game.comp.tsx`                                                                                                                        |
-| Kind       | Client Component                                                                                                                                                                             |
-| Stylesheet | `new-game.comp.css` → block `.new-game`                                                                                                                                                      |
-| Used by    | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (the empty study), `/estudios/[studyId]/partidas/[gameId]` (passed into the aside as a node) |
-| Writes     | `importPgnGames()`, `createStudyGame()`, `copyClassGamesToStudy()` · `services/studies/studies.actions.ts`                                                                                   |
-| Uses       | `StudyKindOption`, `ClassGameItem` from `services/studies/studies.types`                                                                                                                     |
+|            |                                                                                                                                                                                                                                                                                              |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/study-detail/new-game.comp.tsx`                                                                                                                                                                                                                        |
+| Kind       | Client Component                                                                                                                                                                                                                                                                             |
+| Stylesheet | `new-game.comp.css` → block `.new-game`                                                                                                                                                                                                                                                      |
+| Used by    | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (the empty study), [`StudyAside`](/components/platform/sections/studies/game-view/study-aside) (the study beside its board)                                                                  |
+| Composes   | [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`OptionalFields`](/components/platform/shared/optional-fields), [`PlatformSelect`](/components/platform/shared/platform-select), [`PlatformDatePicker`](/components/platform/shared/platform-date-picker) |
+| Writes     | `importPgnGames()`, `createStudyGame()`, `copyClassGamesToStudy()` · `services/studies/studies.actions.ts`                                                                                                                                                                                   |
+| Uses       | `StudyKindOption`, `ClassGameItem` from `services/studies/studies.types`                                                                                                                                                                                                                     |
 
 ## Purpose
 
@@ -21,7 +22,7 @@ Adding a game to a study, from wherever the student has it. Four tabs, each a fo
 | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Pegar PGN       | `importPgnGames`: headers, variations, comments and NAGs are read; a multi-game PGN creates all of them, up to `PGN_MAX_GAMES` (500) per import, which the hint under the field says. Entries without moves are skipped, and the page the action returns to says how many went in. |
 | Desde un FEN    | `createStudyGame` with `initialFen`: the "I have this diagram and want to analyse it" case. The game is born without moves, in that position, with the notation numbered from what the FEN says.                                                                                   |
-| Crear vacía     | `createStudyGame` with the game's data (names, Elos, result, date); everything optional.                                                                                                                                                                                           |
+| Crear vacía     | `createStudyGame` with the game's data (names, Elos, result, date); everything optional, which «Todos los campos son opcionales.» says once over the fields (`OptionalFields`).                                                                                                    |
 | Desde una clase | `copyClassGamesToStudy` with the ticked games; the tab exists only when `classGames` is not empty. Copies, so editing them here does not touch the class.                                                                                                                          |
 
 ## Props
@@ -35,21 +36,23 @@ Adding a game to a study, from wherever the student has it. Four tabs, each a fo
 
 ## Behaviour
 
+- **The three tabs that write are `PlatformForm`s** (2026-10-05; they were hand-made `<label>`s): a field the browser rejects shows its own message — «Pega el PGN de la partida.», «Pega el FEN de la posición.» — and the dialog stays open, and an optional field says «Opcional» by itself. The PGN's textarea got a label, «PGN», which it lacked. The PGN and the FEN carry their explanation as the field's `hint`. The blank tab's fields sit in `OptionalFields`, which replaced the hint «Puedes dejarlo casi vacío y jugar las jugadas después en el editor.». The result and the date are a `PlatformSelect` and a `PlatformDatePicker` inside `PlatformFormField`s, which give them their `name`.
 - Native `<dialog>`, named by its heading «Nueva partida» (`aria-labelledby`, with the id from `useId`); `tab` and the `picked` ids are local state, reset on close.
-- The FEN form carries a hidden `origin="detail"` so a badly written FEN bounces back **here** (`?error=fen` on the study's URL, which forwards it to the first game or renders the empty study) and not to another screen.
+- A badly written FEN bounces to the study's URL with `?error=fen` (`createStudyGame` always goes back to `studyDetail`), which forwards it to the first game or renders the empty study; the message shows over the board.
 - The class tab is not a form: the footer button is `type="button"` and calls the action inside a transition with the picked ids, then closes.
 - The internal `Footer` renders the note, cancel and the confirm button; with `onConfirm` it becomes a plain button so it does not submit an enclosing form.
-- Tabs use `role="tablist"`/`role="tab"` with `aria-selected`.
+- Tabs use `role="tablist"`/`role="tab"` with `aria-selected`. Each on one line, with a `space-3` side padding: wider, «Pegar PGN» and its neighbours broke over two lines in the 620px dialog; on a phone the row scrolls sideways.
+- **Its own buttons keep their look beside the board.** The dialog lives inside the aside's «Nueva partida» slot, whose rule drew the trigger as a line with a «+»; it reached `.platform-button`, so «Cancelar» and «Agregar partida» took it too, until 2026-10-05 (the rule now names `.new-game__open`). The footer's buttons do not wrap: the note gives way.
 
 ## Markup & styling
 
-Block `.new-game` (229 lines).
+Block `.new-game` (213 lines).
 
-**Elements:** `.new-game__open`, `.new-game__dialog`, `.new-game__head`, `.new-game__title`, `.new-game__subtitle`, `.new-game__tabs`, `.new-game__tab`, `.new-game__panel`, `.new-game__textarea`, `.new-game__hint`, `.new-game__grid`, `.new-game__field`, `.new-game__label`, `.new-game__input`, `.new-game__list`, `.new-game__pick`, `.new-game__checkbox`, `.new-game__pick-text`, `.new-game__pick-name`, `.new-game__pick-meta`, `.new-game__actions`, `.new-game__note`
+**Elements:** `.new-game__open`, `.new-game__dialog`, `.new-game__head`, `.new-game__title`, `.new-game__subtitle`, `.new-game__tabs`, `.new-game__tab`, `.new-game__panel`, `.new-game__textarea`, `.new-game__hint` (the class tab's), `.new-game__grid`, `.new-game__list`, `.new-game__pick`, `.new-game__checkbox`, `.new-game__pick-text`, `.new-game__pick-name`, `.new-game__pick-meta`, `.new-game__actions`, `.new-game__note`
 
-**Modifiers and states:** `.new-game__tab_state_active`, `.new-game__field_span_all`
+**Modifiers and states:** `.new-game__tab_state_active`
 
-**Other selectors it styles:** `.platform-button` inside the dialog.
+**Other selectors it styles:** `.platform-button` inside the dialog; `.platform-form__field:first-child` of the blank tab's grid, which spans both columns (the name); the PGN's textarea through the panel, to beat `PlatformForm`'s own rule for a field's textarea.
 
 **Tokens:** `--platform-accent`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-surface`, `--platform-text`, `--platform-text-faint`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
 

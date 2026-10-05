@@ -4,9 +4,11 @@ import { useId, useRef, useState, useTransition } from "react";
 import { PGN_MAX_GAMES } from "@/constants/platform/content-limits.const";
 import { copyClassGamesToStudy, createStudyGame, importPgnGames } from "@/services/studies/studies.actions";
 import type { ClassGameItem, StudyKindOption } from "@/services/studies/studies.types";
-import "./new-game.comp.css";
-import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+import { OptionalFields } from "@/components/platform/shared/optional-fields/optional-fields.comp";
 import { PlatformDatePicker } from "@/components/platform/shared/platform-date-picker/platform-date-picker.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
+import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+import "./new-game.comp.css";
 
 type Tab = "pgn" | "fen" | "blank" | "class";
 
@@ -74,120 +76,90 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
           ))}
         </div>
 
+        {/* The three tabs that write are on the platform's form: a field the
+            browser rejects shows its own message, and an optional one says
+            «Opcional» by itself. */}
         {tab === "pgn" && (
-          <form action={importPgnGames.bind(null, studyId)} onSubmit={close} className="new-game__panel">
-            <textarea
+          <PlatformForm action={importPgnGames.bind(null, studyId)} onSubmit={close} className="new-game__panel">
+            <PlatformFormField
               name="pgn"
-              required
-              className="new-game__textarea"
-              placeholder={'[Event "…"]\n1. e4 e5 2. Nf3 …'}
-            />
-            <p className="new-game__hint">
-              Se leen cabeceras, variantes, comentarios y NAGs. Si el PGN trae varias partidas, se crean todas, hasta{" "}
-              {PGN_MAX_GAMES} por importación.
-            </p>
+              label="PGN"
+              hint={`Se leen cabeceras, variantes, comentarios y NAGs. Si el PGN trae varias partidas, se crean todas, hasta ${PGN_MAX_GAMES} por importación.`}
+              messages={{ valueMissing: "Pega el PGN de la partida." }}
+            >
+              <textarea required className="new-game__textarea" placeholder={'[Event "…"]\n1. e4 e5 2. Nf3 …'} />
+            </PlatformFormField>
             <Footer onCancel={close} label="Agregar partida" />
-          </form>
+          </PlatformForm>
         )}
 
         {/* From a loose position: the "I have this diagram and want to analyse
             it" case. The game is born without moves and in that position, and the
             notation starts counting at the number the FEN says. */}
         {tab === "fen" && (
-          <form action={createStudyGame.bind(null, studyId)} onSubmit={close} className="new-game__panel">
-            <label className="new-game__field">
-              <span className="new-game__label">FEN</span>
+          <PlatformForm action={createStudyGame.bind(null, studyId)} onSubmit={close} className="new-game__panel">
+            <PlatformFormField
+              name="initialFen"
+              label="FEN"
+              hint="La partida arranca en esa posición y sin jugadas previas. Cópialo de Lichess, de un motor o de donde lo tengas."
+              messages={{ valueMissing: "Pega el FEN de la posición." }}
+            >
               <input
-                className="new-game__input"
                 type="text"
-                name="initialFen"
                 required
                 maxLength={120}
                 spellCheck={false}
                 placeholder="8/Q3ppk1/1p2r1p1/4b3/P5Pp/1PB1P3/5P1q/2R3K1 w - - 2 44"
               />
-            </label>
+            </PlatformFormField>
 
-            <label className="new-game__field">
-              <span className="new-game__label">Nombre de la partida</span>
-              <input
-                className="new-game__input"
-                type="text"
-                name="title"
-                maxLength={120}
-                placeholder="Final de torres, ronda 4…"
-              />
-            </label>
+            <PlatformFormField name="title" label="Nombre de la partida">
+              <input type="text" maxLength={120} placeholder="Final de torres, ronda 4…" />
+            </PlatformFormField>
 
-            <p className="new-game__hint">
-              La partida arranca en esa posición y sin jugadas previas. Cópialo de Lichess, de un motor o de donde lo
-              tengas.
-            </p>
             <Footer onCancel={close} label="Agregar partida" />
-          </form>
+          </PlatformForm>
         )}
 
+        {/* Every field may be left empty — the moves are played afterwards, in
+            the editor —, so that is said once over them and none says
+            «Opcional» on its own. */}
         {tab === "blank" && (
-          <form action={createStudyGame.bind(null, studyId)} onSubmit={close} className="new-game__panel">
-            <div className="new-game__grid">
-              <label className="new-game__field new-game__field_span_all">
-                <span className="new-game__label">Nombre de la partida</span>
-                <input
-                  className="new-game__input"
-                  type="text"
-                  name="title"
-                  maxLength={120}
-                  placeholder="Ronda 1, Modelo A…"
-                />
-              </label>
+          <PlatformForm action={createStudyGame.bind(null, studyId)} onSubmit={close} className="new-game__panel">
+            <OptionalFields>
+              <div className="new-game__grid">
+                <PlatformFormField name="title" label="Nombre de la partida">
+                  <input type="text" maxLength={120} placeholder="Ronda 1, Modelo A…" />
+                </PlatformFormField>
 
-              <label className="new-game__field">
-                <span className="new-game__label">Blancas</span>
-                <input
-                  className="new-game__input"
-                  type="text"
-                  name="white"
-                  maxLength={120}
-                  placeholder="Apellidos, Nombre"
-                />
-              </label>
-              <label className="new-game__field">
-                <span className="new-game__label">Elo de las blancas</span>
-                <input className="new-game__input" type="number" name="whiteElo" min={0} max={4000} placeholder="—" />
-              </label>
+                <PlatformFormField name="white" label="Blancas">
+                  <input type="text" maxLength={120} placeholder="Apellidos, Nombre" />
+                </PlatformFormField>
+                <PlatformFormField name="whiteElo" label="Elo de las blancas">
+                  <input type="number" min={0} max={4000} placeholder="—" />
+                </PlatformFormField>
 
-              <label className="new-game__field">
-                <span className="new-game__label">Negras</span>
-                <input
-                  className="new-game__input"
-                  type="text"
-                  name="black"
-                  maxLength={120}
-                  placeholder="Apellidos, Nombre"
-                />
-              </label>
-              <label className="new-game__field">
-                <span className="new-game__label">Elo de las negras</span>
-                <input className="new-game__input" type="number" name="blackElo" min={0} max={4000} placeholder="—" />
-              </label>
+                <PlatformFormField name="black" label="Negras">
+                  <input type="text" maxLength={120} placeholder="Apellidos, Nombre" />
+                </PlatformFormField>
+                <PlatformFormField name="blackElo" label="Elo de las negras">
+                  <input type="number" min={0} max={4000} placeholder="—" />
+                </PlatformFormField>
 
-              <label className="new-game__field">
-                <span className="new-game__label">Resultado</span>
-                <PlatformSelect
-                  name="resultCode"
-                  emptyOption="Sin terminar"
-                  options={results.map((result) => ({ value: result.code, label: result.label }))}
-                />
-              </label>
-              <label className="new-game__field">
-                <span className="new-game__label">Fecha</span>
-                <PlatformDatePicker name="playedAt" />
-              </label>
-            </div>
+                <PlatformFormField name="resultCode" label="Resultado">
+                  <PlatformSelect
+                    emptyOption="Sin terminar"
+                    options={results.map((result) => ({ value: result.code, label: result.label }))}
+                  />
+                </PlatformFormField>
+                <PlatformFormField name="playedAt" label="Fecha">
+                  <PlatformDatePicker />
+                </PlatformFormField>
+              </div>
+            </OptionalFields>
 
-            <p className="new-game__hint">Puedes dejarlo casi vacío y jugar las jugadas después en el editor.</p>
             <Footer onCancel={close} label="Agregar partida" />
-          </form>
+          </PlatformForm>
         )}
 
         {tab === "class" && (
