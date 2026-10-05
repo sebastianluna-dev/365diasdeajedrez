@@ -72,8 +72,15 @@ const CONFIRMATIONS: Record<Destructive, { question: string; detail: string; sub
  */
 export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const nameRef = useRef<HTMLInputElement>(null);
   const [confirming, setConfirming] = useState<Destructive | null>(null);
   const titleId = useId();
+
+  /** Opens on the name, which is what one comes to change, and not on the close button the browser would pick. */
+  const open = () => {
+    dialogRef.current?.showModal();
+    nameRef.current?.focus();
+  };
 
   const close = () => {
     dialogRef.current?.close();
@@ -97,12 +104,7 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
 
   return (
     <div className="game-settings">
-      <button
-        type="button"
-        className="game-settings__open"
-        aria-label={`Ajustes de «${game.name}»`}
-        onClick={() => dialogRef.current?.showModal()}
-      >
+      <button type="button" className="game-settings__open" aria-label={`Ajustes de «${game.name}»`} onClick={open}>
         <GearIcon className="game-settings__open-icon" />
       </button>
 
@@ -151,6 +153,7 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
               >
                 {/* Keyed by the saved name: reopened after a save, the field starts from what was saved. */}
                 <input
+                  ref={nameRef}
                   key={game.title ?? ""}
                   type="text"
                   maxLength={120}

@@ -85,6 +85,7 @@ import { EmptyState } from "@/components/platform/shared/empty-state/empty-state
 import { FormField, FormFieldset } from "@/components/platform/shared/form-field/form-field.comp";
 import { GameFields } from "@/components/platform/shared/game-fields/game-fields.comp";
 import { GameList } from "@/components/platform/shared/game-list/game-list.comp";
+import { GameSettings } from "@/components/platform/shared/game-settings/game-settings.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
 import { PlatformChoiceCards } from "@/components/platform/shared/platform-choice-cards/platform-choice-cards.comp";
@@ -1188,16 +1189,30 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   {
                     id: "g1",
                     name: "Una celada en la apertura",
-                    players: "Fischer — Sherwin",
                     resultLabel: "1-0",
                     href: "#",
                   },
                   { id: "g2", name: "Lombardy — Fischer", resultLabel: "0-1", href: "#" },
-                  { id: "g3", name: "La partida del siglo", players: "Byrne — Fischer", resultLabel: "0-1", href: "#" },
+                  { id: "g3", name: "La partida del siglo", resultLabel: "0-1", href: "#" },
                 ]}
                 currentId="g2"
                 onReorder={async () => undefined}
               />
+            </Tile>
+            <Tile name="GameSettings" docs="platform-shared-gamesettings" surface width={400} height={128}>
+              <div className="overview__row">
+                <span>Una celada en la apertura</span>
+                <GameSettings
+                  game={{ id: "g1", name: "Una celada en la apertura", title: "Una celada en la apertura" }}
+                  isCurrent={false}
+                  actions={{
+                    rename: async () => undefined,
+                    clearAnnotations: async () => undefined,
+                    clearVariations: async () => undefined,
+                    remove: async () => undefined,
+                  }}
+                />
+              </div>
             </Tile>
             <Tile name="PlatformNav" docs="platform-sections-shell-platformnav" surface width={960} height={152}>
               <PlatformNav groups={buildPlatformNavGroups({ isTeacher: false, isStaff: true })} />

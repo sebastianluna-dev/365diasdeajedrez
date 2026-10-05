@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { expect, fn, userEvent, within } from "storybook/test";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { GameSettings, type GameSettingsActions } from "./game-settings.comp";
 
 /** Stand in for the screen's server actions, already bound to their study: spies listed in the Actions panel. */
@@ -56,7 +56,9 @@ export const Open: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: "Ajustes de «Una celada en la apertura»" }));
-    await expect(await canvas.findByRole("dialog", { name: "Ajustes de la partida" })).toBeVisible();
+    // The dialog fades in: it is there at once and visible a moment later.
+    const dialog = await canvas.findByRole("dialog", { name: "Ajustes de la partida" });
+    await waitFor(() => expect(dialog).toBeVisible());
     await expect(canvas.getByRole("textbox", { name: "Nombre" })).toHaveValue("Una celada en la apertura");
   },
 };
@@ -79,7 +81,8 @@ export const Confirming: Story = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: "Ajustes de «Una celada en la apertura»" }));
     await userEvent.click(await canvas.findByRole("button", { name: "Eliminar variantes" }));
-    await expect(canvas.getByText("¿Eliminar las variantes?")).toBeVisible();
+    const question = canvas.getByText("¿Eliminar las variantes?");
+    await waitFor(() => expect(question).toBeVisible());
     await expect(args.actions.clearVariations).not.toHaveBeenCalled();
 
     await userEvent.click(canvas.getByRole("button", { name: "Eliminar variantes" }));

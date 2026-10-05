@@ -10,6 +10,7 @@ const meta: MetaRecord = {
   "form-field": "FormField",
   "game-fields": "GameFields",
   "game-list": "GameList",
+  "game-settings": "GameSettings",
   "image-upload": "ImageUpload",
   "local-datetime": "LocalDateTime",
   "platform-check-cards": "PlatformCheckCards",

@@ -5,6 +5,7 @@ import { useEffect, useRef, type RefObject } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripDotsVerticalIcon } from "@/components/icons/grip-dots-vertical-icon.comp";
+import { GameSettings, type GameSettingsActions } from "@/components/platform/shared/game-settings/game-settings.comp";
 import { SortableDnd } from "@/components/platform/shared/sortable-dnd/sortable-dnd.comp";
 import { useSortableRows } from "@/components/platform/shared/sortable-dnd/use-sortable-rows.hook";
 import "./game-list.comp.css";
@@ -13,8 +14,8 @@ export interface GameListItem {
   id: string;
   /** What the game is called in the list: its title, or the fallback its mapper gives it. */
   name: string;
-  /** The second line, who played it: "Fischer — Sherwin". Absent when the name already says it. */
-  players?: string;
+  /** The name it was given; absent while it is shown by the fallback. Its settings start from it. */
+  title?: string;
   /** The PGN token of the result: "1-0", "½-½", "*". */
   resultLabel: string;
   href: string;
@@ -31,27 +32,33 @@ interface GameListProps {
    * reordering a page would mix the new order with the old one of the rest.
    */
   onReorder?: (orderedIds: string[]) => Promise<void>;
+  /**
+   * What a game's settings do — rename it, clean it, delete it —, server
+   * actions already bound to the study. With them each row ends in a gear
+   * that opens `GameSettings`; without them, for whoever only reads, it does not.
+   */
+  settings?: GameSettingsActions;
 }
 
-/** A game of the list: what it is called, who played it and how it ended, leading to its board. */
+/** A game of the list: what it is called and how it ended, leading to its board. */
 function GameLink({ game, isCurrent }: { game: GameListItem; isCurrent: boolean }) {
   return (
     <Link href={game.href} aria-current={isCurrent ? "page" : undefined} className="game-list__item">
-      <span className="game-list__main">
-        {/* Long names are cut so as not to misalign the row, so the full one
-            is shown on hover. */}
-        <span className="game-list__name" title={game.name}>
-          {game.name}
-        </span>
-        {game.players && (
-          <span className="game-list__players" title={game.players}>
-            {game.players}
-          </span>
-        )}
+      {/* Only the name, on two lines at most: a longer one is cut, so the
+          full one is shown on hover. */}
+      <span className="game-list__name" title={game.name}>
+        {game.name}
       </span>
-      <span className="game-list__result">{game.resultLabel}</span>
+      {/* "*" is the PGN's word for a game that has not ended: the list says nothing instead. */}
+      {game.resultLabel !== "*" && <span className="game-list__result">{game.resultLabel}</span>}
     </Link>
   );
+}
+
+interface RowProps {
+  game: GameListItem;
+  isCurrent: boolean;
+  settings?: GameSettingsActions;
 }
 
 /** The row's class: the current game's row is the card that says so, grip included. */
@@ -66,7 +73,7 @@ function rowClassName(isCurrent: boolean, isDragging = false): string {
 }
 
 /** A game that can be moved: dnd-kit gives it its place and the grip, inside the row's card, picks it up. */
-function SortableRow({ game, isCurrent }: { game: GameListItem; isCurrent: boolean }) {
+function SortableRow({ game, isCurrent, settings }: RowProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: game.id,
     data: { name: game.name },
@@ -90,6 +97,7 @@ function SortableRow({ game, isCurrent }: { game: GameListItem; isCurrent: boole
         <GripDotsVerticalIcon variant="duotone-solid" />
       </button>
       <GameLink game={game} isCurrent={isCurrent} />
+      {settings && <GameSettings game={game} isCurrent={isCurrent} actions={settings} />}
     </li>
   );
 }
@@ -98,11 +106,12 @@ interface SortableRowsProps {
   games: GameListItem[];
   currentId: string;
   onReorder: (orderedIds: string[]) => Promise<void>;
+  settings?: GameSettingsActions;
   listRef: RefObject<HTMLUListElement | null>;
 }
 
 /** The list whoever may reorder sees: the order applied at once and saved in a transition. */
-function SortableRows({ games, currentId, onReorder, listRef }: SortableRowsProps) {
+function SortableRows({ games, currentId, onReorder, settings, listRef }: SortableRowsProps) {
   const { rows, moveById } = useSortableRows({
     items: games,
     // Every game of a study or a collection is moved: none has a fixed place.
@@ -114,7 +123,7 @@ function SortableRows({ games, currentId, onReorder, listRef }: SortableRowsProp
     <SortableDnd items={rows.map((game) => ({ id: game.id, name: game.name }))} noun="partida" onMove={moveById}>
       <ul className="game-list" ref={listRef}>
         {rows.map((game) => (
-          <SortableRow key={game.id} game={game} isCurrent={game.id === currentId} />
+          <SortableRow key={game.id} game={game} isCurrent={game.id === currentId} settings={settings} />
         ))}
       </ul>
     </SortableDnd>
@@ -126,7 +135,7 @@ function SortableRows({ games, currentId, onReorder, listRef }: SortableRowsProp
  * to jump between them without going back, and, for whoever may, to put them
  * in the order they are to be read in.
  *
- * The list is five rows tall and scrolls on its own, so on arrival the
+ * The list is about eight rows tall and scrolls on its own, so on arrival the
  * current game is brought into its middle: deep in a study of eighty games it
  * would otherwise sit below the fold of the list. Only the list moves, never
  * the page, which is why this is arithmetic and not `scrollIntoView`.
@@ -139,7 +148,7 @@ function SortableRows({ games, currentId, onReorder, listRef }: SortableRowsProp
  * Component for that order and for the scroll: the aside around it stays on
  * the server.
  */
-export function GameList({ games, currentId, onReorder }: GameListProps) {
+export function GameList({ games, currentId, onReorder, settings }: GameListProps) {
   const listRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
@@ -150,7 +159,9 @@ export function GameList({ games, currentId, onReorder }: GameListProps) {
   }, [currentId]);
 
   if (onReorder) {
-    return <SortableRows games={games} currentId={currentId} onReorder={onReorder} listRef={listRef} />;
+    return (
+      <SortableRows games={games} currentId={currentId} onReorder={onReorder} settings={settings} listRef={listRef} />
+    );
   }
 
   return (
@@ -158,6 +169,7 @@ export function GameList({ games, currentId, onReorder }: GameListProps) {
       {games.map((game) => (
         <li key={game.id} className={rowClassName(game.id === currentId)}>
           <GameLink game={game} isCurrent={game.id === currentId} />
+          {settings && <GameSettings game={game} isCurrent={game.id === currentId} actions={settings} />}
         </li>
       ))}
     </ul>

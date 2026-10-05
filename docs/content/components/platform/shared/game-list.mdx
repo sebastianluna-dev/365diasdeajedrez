@@ -1,5 +1,5 @@
 ---
-description: "The games beside the board, in a student's study and in a chapter's collection: five rows tall with a scroll of its own, the current one centred on arrival, and for whoever may, dragged, moved from the keyboard or stepped with «Subir» and «Bajar» into a new order."
+description: "The games beside the board, in a student's study and in a chapter's collection: about eight rows tall with a scroll of its own, the current one centred on arrival, and for whoever may, dragged, moved from the keyboard or stepped with «Subir» and «Bajar» into a new order."
 ---
 
 # `GameList`
@@ -11,9 +11,9 @@ Also the `GameListItem` type.
 | File       | `components/platform/shared/game-list/game-list.comp.tsx`                                                                                                                                                                      |
 | Kind       | Client Component                                                                                                                                                                                                               |
 | Stylesheet | `game-list.comp.css` → block `.game-list`                                                                                                                                                                                      |
-| Story      | `game-list.stories.tsx` (`platform/shared/GameList`): a collection that can be put in order and the same list as links only; the order goes to a spy                                                                           |
+| Story      | `game-list.stories.tsx` (`platform/shared/GameList`): a collection that can be put in order, the same with a gear of settings on each game, and the same list as links only; the order goes to a spy                           |
 | Used by    | [`GameAside`](/components/platform/sections/studies/game-view/game-aside) (a student's study), [`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section) (a chapter's collection, in its aside) |
-| Composes   | [`SortableDnd`](/components/platform/shared/sortable-dnd), with `useSortableRows`                                                                                                                                              |
+| Composes   | [`SortableDnd`](/components/platform/shared/sortable-dnd), with `useSortableRows`; [`GameSettings`](/components/platform/shared/game-settings) at the end of each row, with `settings`                                         |
 | Uses       | `useSortable` from `@dnd-kit/sortable`; `ArrowUpIcon`, `GripDotsVerticalIcon`                                                                                                                                                  |
 
 ## Purpose
@@ -22,16 +22,17 @@ The games of a study or of a chapter's collection, beside the board, to jump bet
 
 ## Props
 
-| Prop        | Type                                      | Required | Meaning                                                                                                                                                                                     |
-| ----------- | ----------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `games`     | `GameListItem[]`                          | yes      | `{ id, name, players?, resultLabel, href }[]`, in their order, the current one included. `name` heads the row; `players` is the second line, left out when the name already is the pairing. |
-| `currentId` | `string`                                  | yes      | The current game: its row gets `aria-current="page"` and the active state, and is centred in the list.                                                                                      |
-| `onReorder` | `(orderedIds: string[]) => Promise<void>` | no       | Saves a new order, a server action already bound to its study or chapter. Without it the rows are links only: the aside leaves it out where nobody may reorder.                             |
+| Prop        | Type                                      | Required | Meaning                                                                                                                                                                                                                                        |
+| ----------- | ----------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `games`     | `GameListItem[]`                          | yes      | `{ id, name, title?, resultLabel, href }[]`, in their order, the current one included. `name` is what the row says; `title` is the name the game was given, absent while it is shown by its players, and is what its settings start from.      |
+| `currentId` | `string`                                  | yes      | The current game: its row gets `aria-current="page"` and the active state, and is centred in the list.                                                                                                                                         |
+| `onReorder` | `(orderedIds: string[]) => Promise<void>` | no       | Saves a new order, a server action already bound to its study or chapter. Without it the rows are links only: the aside leaves it out where nobody may reorder.                                                                                |
+| `settings`  | `GameSettingsActions`                     | no       | What a game's settings do — rename, clean, delete —, server actions already bound to the study. With them each row ends in the gear of [`GameSettings`](/components/platform/shared/game-settings); the staff's collection does not pass them. |
 
 ## Behaviour
 
-- **Rows** show the game's name — in a study, the student's title or the mapper's `label` fallback (round, event or position); in a collection, its label —, who played it as a second line, and the result. Long names are cut, with a `title` tooltip.
-- **Five rows tall.** A row is as tall as two lines of it — the name, the gap, the players — and the link's padding, worked out from the scale (`--game-list-row`, set on the block), so a one-line row measures the same as a two-line one; the block caps its height at five of them, their gaps and its padding, and scrolls the rest on its own (it followed a fixed 58px until 2026-10-03, while rows measured 60 and, from 1536px, 63), so a long study does not push the record off the screen. On arrival, and whenever `currentId` changes, an effect scrolls the current row into the middle of the list by arithmetic on its offset, so only the list moves and never the page.
+- **Rows** show the game's name and how it ended, and nothing else (2026-10-04; a second line with the players went, as on Lichess's list of chapters). The name — in a study, the student's title or the mapper's `label` fallback (round, event or pairing); in a collection, its label — is in the scale's `sm`, medium weight, on two lines at most (`line-clamp`), bold on the current game, with a `title` tooltip for a longer one. The result is the PGN token (`1-0`, `½-½`); a game that has not ended (`*`) shows none.
+- **About eight rows tall.** A row is as tall as its name, one line or two; the block's ceiling is counted in one-line rows — a line of the name and the link's padding, worked out from the scale (`--game-list-row`) —, eight of them with their gaps and the block's padding, and the rest scrolls on its own, so a long study does not push the record off the screen. On arrival, and whenever `currentId` changes, an effect scrolls the current row into the middle of the list by arithmetic on its offset, so only the list moves and never the page.
 - **Reordering**, only with `onReorder`. Each row is dragged by its grip and, from the keyboard, picked up on the grip with space and moved with the arrows, through [`SortableDnd`](/components/platform/shared/sortable-dnd), which opens the gap where the row would land and says everything out loud in Spanish. The order is applied at once and the whole list goes to `onReorder` in a transition (`useSortableRows`); new `games` from the server replace it during render.
 - **No «Subir» and «Bajar».** The list had two arrows at the end of each row for a few hours on 2026-10-03, to move a row one place without dragging (WCAG 2.5.7). The owner took them out the same day: with a grip already there they read as noise. A pointer therefore reorders only by dragging — a known gap for whoever cannot hold a drag —; the keyboard still moves a row from its grip. `SyllabusList` keeps its «Subir» and «Bajar», in its row menu.
 - **The row is the card.** The link fills the row and the grip sits inside it, before the name, so the current game's mark — the accent's wash and a 3px rule on the row's left edge — takes the grip in: the grip reads as part of the game it moves and not as something beside the card (2026-10-03; before, the mark was on the link alone and the grip was left outside it). A hovered row takes the page's grey whole, too.
@@ -39,13 +40,13 @@ The games of a study or of a chapter's collection, beside the board, to jump bet
 
 ## Markup & styling
 
-Block `.game-list` (193 lines), the `<ul>` itself.
+Block `.game-list` (186 lines), the `<ul>` itself.
 
-**Elements:** `.game-list__row`, `.game-list__grip`, `.game-list__item`, `.game-list__main`, `.game-list__name`, `.game-list__players`, `.game-list__result`
+**Elements:** `.game-list__row`, `.game-list__grip`, `.game-list__item`, `.game-list__name`, `.game-list__result`
 
 **Modifiers and states:** `.game-list__row_state_active` (the current game: wash, rule and accent ink, grip included), `.game-list__row_state_dragging` (lifted, with the card's shadow)
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle` (the players), `--platform-type-md`, `--platform-type-sm`, `--platform-space-0-5`, `--platform-space-1`, `--platform-space-2`, `--platform-space-3`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-wash`, `--platform-bg`, `--platform-shadow-card`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-type-sm`, `--platform-type-xs`, `--platform-space-0-5`, `--platform-space-1`, `--platform-space-2`, `--platform-space-3`
 
 No width media queries; `(hover: none)` draws the handles, and `(prefers-reduced-motion: reduce)` drops their fade.
 

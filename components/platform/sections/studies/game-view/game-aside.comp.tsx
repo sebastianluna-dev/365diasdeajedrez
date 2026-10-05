@@ -14,7 +14,14 @@ import type {
 import { canShareStudy } from "@/services/studies/study-rules";
 import { EditGame } from "@/components/platform/shared/edit-game/edit-game.comp";
 import { GameList, type GameListItem } from "@/components/platform/shared/game-list/game-list.comp";
-import { reorderStudyGames, updateGameDetails } from "@/services/studies/studies.actions";
+import {
+  clearGameAnnotations,
+  clearGameVariations,
+  deleteStudyGame,
+  renameStudyGame,
+  reorderStudyGames,
+  updateGameDetails,
+} from "@/services/studies/studies.actions";
 import { DeleteGame } from "./delete-game.comp";
 import "./game-aside.comp.css";
 
@@ -59,7 +66,7 @@ function listItem(game: StudyGameItem): GameListItem {
   return {
     id: game.id,
     name: game.title ?? game.label,
-    players: `${game.white} — ${game.black}`,
+    title: game.title,
     resultLabel: game.resultLabel,
     href: game.href,
   };
@@ -124,6 +131,16 @@ export function GameAside({ game, study, results, classGames, kinds, students, p
           games={study.games.map(listItem)}
           currentId={game.id}
           onReorder={canReorder ? reorderStudyGames.bind(null, study.id) : undefined}
+          settings={
+            canWrite
+              ? {
+                  rename: renameStudyGame.bind(null, study.id),
+                  clearAnnotations: clearGameAnnotations.bind(null, study.id),
+                  clearVariations: clearGameVariations.bind(null, study.id),
+                  remove: deleteStudyGame.bind(null, study.id),
+                }
+              : undefined
+          }
         />
 
         {study.pageCount > 1 && (
