@@ -23,7 +23,7 @@ import { BarsIcon } from "@/components/icons/bars-icon.comp";
 import { VolumeXmarkIcon } from "@/components/icons/volume-xmark-icon.comp";
 import { VolumeLowIcon } from "@/components/icons/volume-low-icon.comp";
 import { numberedMoveLabel } from "@/lib/chess/notation";
-import { endPathOf, nextPathOf, nodeAtPath, parentPathOf, parsePgnTree } from "@/lib/chess/pgn-tree";
+import { endPathOf, nextPathOf, nodeAtPath, parentPathOf, parsePgnTree, treeUpToPly } from "@/lib/chess/pgn-tree";
 import { EnginePanel } from "./engine-panel.comp";
 import { useEngine } from "./use-engine.hook";
 import { evaluationBarFill } from "@/lib/chess/engine-protocol";
@@ -98,6 +98,18 @@ interface GameViewerProps {
    * game that has not ended, or without `players`.
    */
   result?: string;
+  /**
+   * A text of the game's owner drawn under the board whatever the move, for
+   * everyone who opens the game: what to look for, whose turn it is to think.
+   */
+  pinnedComment?: string;
+  /**
+   * The game is read with its next moves hidden: the notation shows the moves
+   * up to the furthest one stepped onto, and each of the rest comes out as the
+   * arrows reach it. For a reader's «what would you play?»; an editor sees
+   * everything, so it does nothing with `editable`.
+   */
+  hideNextMoves?: boolean;
   /**
    * `table` (default): a no. · white · black grid, like Lichess.
    * `flow`: the usual running text, which is how lessons are read —
@@ -178,6 +190,8 @@ export function GameViewer({
   onwards,
   players,
   result,
+  pinnedComment,
+  hideNextMoves = false,
   moveList = "table",
   controls = "board",
   tools,
@@ -423,6 +437,25 @@ export function GameViewer({
 
   const node = tree ? nodeAtPath(tree, currentPath) : null;
   const fen = node?.fen ?? tree?.initialFen ?? "";
+
+  // With the next moves hidden, how far the game has been shown: the furthest
+  // ply stepped onto, which going back does not lower. Adjusted while
+  // rendering, as a state that follows another, so the notation never draws a
+  // frame behind the board.
+  const [revealedPly, setRevealedPly] = useState(0);
+  const currentPly = node?.ply ?? 0;
+  if (currentPly > revealedPly) setRevealedPly(currentPly);
+  const concealing = hideNextMoves && !isEditing;
+  const notationTree = useMemo(
+    () => (tree && concealing ? treeUpToPly(tree, revealedPly) : tree),
+    [tree, concealing, revealedPly],
+  );
+  // Whether anything is still out of sight: said under the list, so the short
+  // notation is not taken for the whole game.
+  const hasHiddenMoves = useMemo(
+    () => concealing && tree !== null && [...tree.nodesByPath.values()].some((hidden) => hidden.ply > revealedPly),
+    [tree, concealing, revealedPly],
+  );
 
   // The engine lives here and not in its panel because its evaluation is used
   // by TWO places far apart on the screen: the bar next to the board and the
@@ -704,6 +737,8 @@ export function GameViewer({
             </div>
           )}
 
+          {pinnedComment && <p className="game-viewer__pinned">{pinnedComment}</p>}
+
           {controls === "board" && nav}
         </div>
 
@@ -762,18 +797,24 @@ export function GameViewer({
             <div className={`game-viewer__moves${moveList === "flow" ? " game-viewer__moves_list_flow" : ""}`}>
               {moveList === "flow" ? (
                 <MoveTree
-                  tree={tree}
+                  tree={notationTree ?? tree}
                   currentPath={currentPath}
                   onSelect={setCurrentPath}
                   onContextMenu={isEditing ? openMenu : undefined}
                 />
               ) : (
                 <MoveTable
-                  tree={tree}
+                  tree={notationTree ?? tree}
                   currentPath={currentPath}
                   onSelect={setCurrentPath}
                   onContextMenu={isEditing ? openMenu : undefined}
                 />
+              )}
+              {/* Said in the list itself, where the missing moves would be looked for. */}
+              {hasHiddenMoves && (
+                <p className="game-viewer__concealed">
+                  Las jugadas siguientes están ocultas: avanza para descubrirlas.
+                </p>
               )}
             </div>
 

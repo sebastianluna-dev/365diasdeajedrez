@@ -204,5 +204,34 @@ export const OptionsMenu: Story = {
   },
 };
 
+/**
+ * A game read with its next moves hidden, opened at 3... Ag4: the notation stops at the move on the board, says there
+ * is more under it, and «Jugada siguiente» brings out the next one.
+ */
+export const HiddenMoves: Story = {
+  name: "Con las jugadas siguientes ocultas",
+  args: { players: PLAYERS, result: "1-0", controls: "panel", initialPath: mainLinePath(6), hideNextMoves: true },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText("Las jugadas siguientes están ocultas: avanza para descubrirlas.")).toBeVisible();
+    await expect(canvasElement.querySelectorAll(".move-table__move")).toHaveLength(6);
+
+    await userEvent.click(canvas.getByTitle("Jugada siguiente"));
+    await waitFor(() => expect(canvasElement.querySelectorAll(".move-table__move")).toHaveLength(7));
+  },
+};
+
+/** The owner's comment pinned under the board, there whatever the move, and the board opened from Black's side. */
+export const PinnedComment: Story = {
+  name: "Con comentario fijo, desde las negras",
+  args: {
+    players: PLAYERS,
+    result: "1-0",
+    controls: "panel",
+    orientation: "black",
+    pinnedComment: "La partida de la ópera. Fíjate en cómo cada jugada de Morphy desarrolla una pieza.",
+  },
+};
+
 /** A PGN with nothing in it the parser can read: the viewer says so in place of the board. */
 export const Unreadable: Story = { args: { pgn: "" } };

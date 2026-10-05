@@ -403,3 +403,16 @@ const NAG_LABELS = new Map(
 export function nagLabel(nag: number): string {
   return NAG_LABELS.get(nag) ?? nagGlyph(nag);
 }
+
+/**
+ * The tree as far as it has been shown: every move after `ply` is left out,
+ * in the main line and in every variation, with whatever hangs from it. It is
+ * what a game read with its next moves hidden draws in its notation, while
+ * the navigation goes on over the whole tree. `nodesByPath` is left whole: it
+ * answers where a path leads, which the hidden moves still do.
+ */
+export function treeUpToPly(tree: PgnTree, ply: number): PgnTree {
+  const shown = (nodes: PgnTreeNode[]): PgnTreeNode[] =>
+    nodes.filter((node) => node.ply <= ply).map((node) => ({ ...node, children: shown(node.children) }));
+  return { ...tree, children: shown(tree.children) };
+}

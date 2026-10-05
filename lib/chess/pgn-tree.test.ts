@@ -12,6 +12,7 @@ import {
   parentPathOf,
   parsePgnTree,
   sansAlongPath,
+  treeUpToPly,
   type PgnTree,
 } from "@/lib/chess/pgn-tree";
 
@@ -363,5 +364,33 @@ describe("numeración cuando la partida arranca en un FEN", () => {
   it("sin FEN se sigue empezando en 1", () => {
     const tree = parsePgnTree("1. e4 e5 *");
     expect(tree!.children[0]?.ply).toBe(1);
+  });
+});
+
+describe("treeUpToPly", () => {
+  const tree = parsePgnTree("1. e4 e5 ( 1... c5 2. Nf3 d6 ) 2. Nf3 Nc6 3. Bb5 *");
+  if (!tree) throw new Error("PGN no parseable");
+
+  /** The moves a tree draws, in reading order. */
+  const sans = (nodes: PgnTree["children"]): string[] => nodes.flatMap((node) => [node.san, ...sans(node.children)]);
+
+  it("shows nothing of a game nobody has stepped into", () => {
+    expect(sans(treeUpToPly(tree, 0).children)).toEqual([]);
+  });
+
+  it("leaves out every move after the ply, in the main line and in the variations", () => {
+    // After 1... e5: the reply and its alternative are in sight, nothing further.
+    expect(sans(treeUpToPly(tree, 2).children)).toEqual(["e4", "e5", "c5"]);
+    expect(sans(treeUpToPly(tree, 3).children)).toEqual(["e4", "e5", "Nf3", "c5", "Nf3"]);
+  });
+
+  it("gives the whole tree back once the last ply is reached, and still answers every path", () => {
+    expect(sans(treeUpToPly(tree, 5).children)).toEqual(sans(tree.children));
+    expect(treeUpToPly(tree, 1).nodesByPath.size).toBe(tree.nodesByPath.size);
+  });
+
+  it("does not touch the tree it was given", () => {
+    treeUpToPly(tree, 1);
+    expect(sans(tree.children)).toHaveLength(8);
   });
 });
