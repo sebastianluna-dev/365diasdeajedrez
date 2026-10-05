@@ -1,9 +1,10 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `bluetooth`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says. Its Duotone Solid drawing is a single
- * layer, drawn at full strength: at 40 % it would read as switched off.
+ * Font Awesome's `bluetooth`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says. Its Duotone Solid drawing
+ * is a single layer, drawn at full strength: at 40 % it would read as switched
+ * off.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -29,6 +30,9 @@ export function BluetoothIcon({ className, variant = "duotone-light" }: IconProp
       )}
       {variant === "classic-solid" && (
         <path d="M146.8 2.9c11.4-5.2 24.8-3.2 34.3 5.1l128 112C316 126 320 134.8 320 144s-4 18-10.9 24.1L208.6 256 309.1 343.9C316 350 320 358.8 320 368s-4 18-10.9 24.1l-128 112c-9.4 8.3-22.9 10.2-34.3 5.1S128 492.6 128 480l0-153.5-74.9 65.6c-13.3 11.6-33.5 10.3-45.2-3s-10.3-33.5 3-45.2L111.4 256 10.9 168.1c-13.3-11.6-14.6-31.9-3-45.2s31.9-14.6 45.2-3L128 185.5 128 32c0-12.6 7.3-24 18.8-29.1zM192 326.5l0 83 47.4-41.5-47.4-41.5zm0-141l47.4-41.5-47.4-41.5 0 83z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M153.4 1.4c5.7-2.6 12.5-1.5 17.2 2.6l144 128c3.6 3.2 5.5 7.7 5.4 12.5s-2.4 9.2-6.2 12.1L186.1 256 313.8 355.4c3.8 2.9 6 7.4 6.2 12.1s-1.8 9.3-5.4 12.5l-144 128c-4.7 4.2-11.4 5.2-17.2 2.6S144 502.3 144 496l0-207.3-118.2 91.9c-7 5.4-17 4.2-22.5-2.8s-4.2-17 2.8-22.5L133.9 256 6.2 156.6c-7-5.4-8.2-15.5-2.8-22.5s15.5-8.2 22.5-2.8L144 223.3 144 16c0-6.3 3.7-12 9.4-14.6zM176 288.7l0 171.7 103-91.6-103-80.1zm0-65.4l103-80.1-103-91.6 0 171.7z" />
       )}
     </svg>
   );

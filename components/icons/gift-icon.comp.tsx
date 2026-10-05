@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `gift`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `gift`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function GiftIcon({ className, variant = "duotone-light" }: IconProps) {
       )}
       {variant === "classic-solid" && (
         <path d="M321.5 68.8C329.1 55.9 342.9 48 357.8 48l2.2 0c22.1 0 40 17.9 40 40s-17.9 40-40 40l-73.3 0 34.8-59.2zm-131 0l34.8 59.2-73.3 0c-22.1 0-40-17.9-40-40s17.9-40 40-40l2.2 0c14.9 0 28.8 7.9 36.3 20.8zm89.6-24.3l-24.1 41-24.1-41C215.7 16.9 186.1 0 154.2 0L152 0c-48.6 0-88 39.4-88 88 0 14.4 3.5 28 9.6 40L32 128c-17.7 0-32 14.3-32 32l0 32c0 17.7 14.3 32 32 32l448 0c17.7 0 32-14.3 32-32l0-32c0-17.7-14.3-32-32-32l-41.6 0c6.1-12 9.6-25.6 9.6-40 0-48.6-39.4-88-88-88l-2.2 0c-31.9 0-61.5 16.9-77.7 44.4zM480 272l-200 0 0 208 136 0c35.3 0 64-28.7 64-64l0-144zm-248 0l-200 0 0 144c0 35.3 28.7 64 64 64l136 0 0-208z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M308.5 58.7L273.9 128 352 128c26.5 0 48-21.5 48-48 0-26.5-21.6-48-48.2-48-18.3 0-35.1 10.4-43.3 26.7zM160 160L48 160c-8.8 0-16 7.2-16 16l0 32c0 8.8 7.2 16 16 16l416 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-304 0zM48 128l48 0c-10-13.4-16-30-16-48 0-44.2 36-80 80.2-80 30.4 0 58.3 17.2 71.9 44.4L256 92.2 279.9 44.4c13.6-27.2 41.5-44.4 71.9-44.4 44.1 0 80.2 35.8 80.2 80 0 18-6 34.6-16 48l48 0c26.5 0 48 21.5 48 48l0 32c0 20.9-13.4 38.7-32 45.3L480 416c0 35.3-28.7 64-64 64L96 480c-35.3 0-64-28.7-64-64l0-162.7C13.4 246.7 0 228.9 0 208l0-32c0-26.5 21.5-48 48-48zm190.1 0L203.5 58.7c-8.2-16.3-25-26.7-43.3-26.7-26.6 0-48.2 21.5-48.2 48 0 26.5 21.5 48 48 48l78.1 0zM64 416c0 17.7 14.3 32 32 32l144 0 0-192-176 0 0 160zm208 32l144 0c17.7 0 32-14.3 32-32l0-160-176 0 0 192z" />
       )}
     </svg>
   );

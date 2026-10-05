@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `objects-column`, in Duotone Light (the default), Duotone
- * Solid or Classic Solid, as `variant` says.
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function ObjectsColumnIcon({ className, variant = "duotone-light" }: Icon
       )}
       {variant === "classic-solid" && (
         <path d="M48 32C21.5 32 0 53.5 0 80L0 240c0 26.5 21.5 48 48 48l96 0c26.5 0 48-21.5 48-48l0-160c0-26.5-21.5-48-48-48L48 32zM304 224c-26.5 0-48 21.5-48 48l0 160c0 26.5 21.5 48 48 48l96 0c26.5 0 48-21.5 48-48l0-160c0-26.5-21.5-48-48-48l-96 0zM0 400l0 32c0 26.5 21.5 48 48 48l96 0c26.5 0 48-21.5 48-48l0-32c0-26.5-21.5-48-48-48l-96 0c-26.5 0-48 21.5-48 48zM304 32c-26.5 0-48 21.5-48 48l0 32c0 26.5 21.5 48 48 48l96 0c26.5 0 48-21.5 48-48l0-32c0-26.5-21.5-48-48-48l-96 0z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M48 64c-8.8 0-16 7.2-16 16l0 160c0 8.8 7.2 16 16 16l96 0c8.8 0 16-7.2 16-16l0-160c0-8.8-7.2-16-16-16L48 64zM0 80C0 53.5 21.5 32 48 32l96 0c26.5 0 48 21.5 48 48l0 160c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48L0 80zM304 256c-8.8 0-16 7.2-16 16l0 160c0 8.8 7.2 16 16 16l96 0c8.8 0 16-7.2 16-16l0-160c0-8.8-7.2-16-16-16l-96 0zm-48 16c0-26.5 21.5-48 48-48l96 0c26.5 0 48 21.5 48 48l0 160c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48l0-160zM144 384l-96 0c-8.8 0-16 7.2-16 16l0 32c0 8.8 7.2 16 16 16l96 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16zM48 352l96 0c26.5 0 48 21.5 48 48l0 32c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48l0-32c0-26.5 21.5-48 48-48zM304 64c-8.8 0-16 7.2-16 16l0 32c0 8.8 7.2 16 16 16l96 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-96 0zM256 80c0-26.5 21.5-48 48-48l96 0c26.5 0 48 21.5 48 48l0 32c0 26.5-21.5 48-48 48l-96 0c-26.5 0-48-21.5-48-48l0-32z" />
       )}
     </svg>
   );

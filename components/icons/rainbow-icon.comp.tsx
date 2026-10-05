@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `rainbow`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `rainbow`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function RainbowIcon({ className, variant = "duotone-light" }: IconProps)
       )}
       {variant === "classic-solid" && (
         <path d="M320 96C178.6 96 64 210.6 64 352l0 64c0 17.7-14.3 32-32 32S0 433.7 0 416l0-64C0 175.3 143.3 32 320 32S640 175.3 640 352l0 64c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-64C576 210.6 461.4 96 320 96zm0 112c-79.5 0-144 64.5-144 144l0 64c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-64c0-114.9 93.1-208 208-208s208 93.1 208 208l0 64c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-64c0-79.5-64.5-144-144-144zM288 352l0 64c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-64c0-53 43-96 96-96s96 43 96 96l0 64c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-64c0-17.7-14.3-32-32-32s-32 14.3-32 32z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M320 64C160.9 64 32 192.9 32 352l0 80c0 8.8-7.2 16-16 16S0 440.8 0 432l0-80C0 175.3 143.3 32 320 32S640 175.3 640 352l0 80c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-80C608 192.9 479.1 64 320 64zm-4 112c-95 0-172 77-172 172l0 84c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-84c0-112.7 91.3-204 204-204s204 91.3 204 204l0 84c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-84c0-95-77-172-172-172zM256 352l0 80c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-80c0-53 43-96 96-96s96 43 96 96l0 80c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-80c0-35.3-28.7-64-64-64s-64 28.7-64 64z" />
       )}
     </svg>
   );

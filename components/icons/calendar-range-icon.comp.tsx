@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `calendar-range`, in Duotone Light (the default), Duotone
- * Solid or Classic Solid, as `variant` says.
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function CalendarRangeIcon({ className, variant = "duotone-light" }: Icon
       )}
       {variant === "classic-solid" && (
         <path d="M160 32c0-17.7-14.3-32-32-32S96 14.3 96 32l0 32-32 0C28.7 64 0 92.7 0 128L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64l-32 0 0-32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 32-128 0 0-32zM128 224a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM352 384a32 32 0 1 1 0-64 32 32 0 1 1 0 64zM192 216c0-13.3 10.7-24 24-24l144 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-144 0c-13.3 0-24-10.7-24-24zm40 104c13.3 0 24 10.7 24 24s-10.7 24-24 24L88 368c-13.3 0-24-10.7-24-24s10.7-24 24-24l144 0z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M128 16c0-8.8-7.2-16-16-16S96 7.2 96 16l0 48-32 0C28.7 64 0 92.7 0 128L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64l-32 0 0-48c0-8.8-7.2-16-16-16s-16 7.2-16 16l0 48-192 0 0-48zM64 96l320 0c17.7 0 32 14.3 32 32l0 288c0 17.7-14.3 32-32 32L64 448c-17.7 0-32-14.3-32-32l0-288c0-17.7 14.3-32 32-32zM88 208a24 24 0 1 0 48 0 24 24 0 1 0 -48 0zM336 312a24 24 0 1 0 0 48 24 24 0 1 0 0-48zM192 208c0 8.8 7.2 16 16 16l128 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-128 0c-8.8 0-16 7.2-16 16zm48 112l-128 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l128 0c8.8 0 16-7.2 16-16s-7.2-16-16-16z" />
       )}
     </svg>
   );

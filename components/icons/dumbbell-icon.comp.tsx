@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `dumbbell`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `dumbbell`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function DumbbellIcon({ className, variant = "duotone-light" }: IconProps
       )}
       {variant === "classic-solid" && (
         <path d="M96 112c0-26.5 21.5-48 48-48s48 21.5 48 48l0 112 256 0 0-112c0-26.5 21.5-48 48-48s48 21.5 48 48l0 16 16 0c26.5 0 48 21.5 48 48l0 48c17.7 0 32 14.3 32 32s-14.3 32-32 32l0 48c0 26.5-21.5 48-48 48l-16 0 0 16c0 26.5-21.5 48-48 48s-48-21.5-48-48l0-112-256 0 0 112c0 26.5-21.5 48-48 48s-48-21.5-48-48l0-16-16 0c-26.5 0-48-21.5-48-48l0-48c-17.7 0-32-14.3-32-32s14.3-32 32-32l0-48c0-26.5 21.5-48 48-48l16 0 0-16z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M472 64c22.3 0 41.5 13.1 50.5 32l21.5 0 6.5 .3C582.8 99.6 608 126.9 608 160l0 80 16 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-16 0 0 80-.3 6.5c-3.1 30.1-27 54.1-57.1 57.1l-6.5 .3-21.4 0c-9 18.9-28.2 32-50.6 32-29 0-52.9-22-55.7-50.3l-.3-5.7 0-120-192 0 0 120-.3 5.7c-2.9 28.2-26.7 50.3-55.7 50.3-22.3 0-41.6-13.1-50.6-32l-21.4 0-6.5-.3c-30.1-3.1-54.1-27-57.1-57.1l-.3-6.5 0-80-16 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l16 0 0-80c0-33.1 25.2-60.4 57.5-63.7l6.5-.3 21.5 0c9-18.9 28.2-32 50.5-32 30.9 0 56 25.1 56 56l0 120 192 0 0-120c0-30.9 25.1-56 56-56zm0 32c-13.3 0-24 10.7-24 24l0 272c0 13.3 10.7 24 24 24s24-10.7 24-24l0-272c0-13.3-10.7-24-24-24zM168 96c-13.3 0-24 10.7-24 24l0 272c0 13.3 10.7 24 24 24s24-10.7 24-24l0-272c0-13.3-10.7-24-24-24zM96 128c-17.7 0-32 14.3-32 32l0 192c0 17.7 14.3 32 32 32l16 0 0-256-16 0zM528 384l16 0c17.7 0 32-14.3 32-32l0-192c0-16.6-12.6-30.2-28.7-31.8l-3.3-.2-16 0 0 256z" />
       )}
     </svg>
   );

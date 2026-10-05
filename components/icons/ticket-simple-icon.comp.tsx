@@ -2,8 +2,9 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `ticket-simple`, in Duotone Light (the default), Duotone
- * Solid or Classic Solid, as `variant` says. Its Duotone Solid drawing is a
- * single layer, drawn at full strength: at 40 % it would read as switched off.
+ * Solid, Classic Solid or Classic Light, as `variant` says. Its Duotone Solid
+ * drawing is a single layer, drawn at full strength: at 40 % it would read as
+ * switched off.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -32,6 +33,9 @@ export function TicketSimpleIcon({ className, variant = "duotone-light" }: IconP
       )}
       {variant === "classic-solid" && (
         <path d="M0 128C0 92.7 28.7 64 64 64l448 0c35.3 0 64 28.7 64 64l0 64c0 8.8-7.4 15.7-15.7 18.6-18.8 6.5-32.3 24.4-32.3 45.4s13.5 38.9 32.3 45.4c8.3 2.9 15.7 9.8 15.7 18.6l0 64c0 35.3-28.7 64-64 64L64 448c-35.3 0-64-28.7-64-64l0-64C0 311.2 7.4 304.3 15.7 301.4 34.5 294.9 48 277 48 256s-13.5-38.9-32.3-45.4C7.4 207.7 0 200.8 0 192l0-64z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M64 96l448 0c17.7 0 32 14.3 32 32l0 54.7c-28.2 12.3-48 40.5-48 73.3s19.8 61 48 73.3l0 54.7c0 17.7-14.3 32-32 32L64 416c-17.7 0-32-14.3-32-32l0-54.7C60.2 317 80 288.8 80 256s-19.8-61-48-73.3L32 128c0-17.7 14.3-32 32-32zm0-32C28.7 64 0 92.7 0 128l0 64C0 200.8 7.4 207.7 15.7 210.6 34.5 217.1 48 235 48 256s-13.5 38.9-32.3 45.4C7.4 304.3 0 311.2 0 320l0 64c0 35.3 28.7 64 64 64l448 0c35.3 0 64-28.7 64-64l0-64c0-8.8-7.4-15.7-15.7-18.6-18.8-6.5-32.3-24.4-32.3-45.4s13.5-38.9 32.3-45.4c8.3-2.9 15.7-9.8 15.7-18.6l0-64c0-35.3-28.7-64-64-64L64 64z" />
       )}
     </svg>
   );

@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `lightbulb`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `lightbulb`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function LightbulbIcon({ className, variant = "duotone-light" }: IconProp
       )}
       {variant === "classic-solid" && (
         <path d="M292.9 384c7.3-22.3 21.9-42.5 38.4-59.9 32.7-34.4 52.7-80.9 52.7-132.1 0-106-86-192-192-192S0 86 0 192c0 51.2 20 97.7 52.7 132.1 16.5 17.4 31.2 37.6 38.4 59.9l201.7 0zM288 432l-192 0 0 16c0 44.2 35.8 80 80 80l32 0c44.2 0 80-35.8 80-80l0-16zM184 112c-39.8 0-72 32.2-72 72 0 13.3-10.7 24-24 24s-24-10.7-24-24c0-66.3 53.7-120 120-120 13.3 0 24 10.7 24 24s-10.7 24-24 24z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M308.1 302.1c27.2-28.7 43.9-67.4 43.9-110.1 0-88.4-71.6-160-160-160S32 103.6 32 192c0 42.7 16.7 81.4 43.9 110.1 19.9 20.9 40.4 48.7 48.5 81.9l135.2 0c8.1-33.3 28.6-61 48.5-81.9zM128 432c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-16-128 0 0 16zM331.3 324.1C307.7 349 288 379.4 288 413.7l0 18.3c0 44.2-35.8 80-80 80l-32 0c-44.2 0-80-35.8-80-80l0-18.3C96 379.4 76.3 349 52.7 324.1 20 289.7 0 243.2 0 192 0 86 86 0 192 0S384 86 384 192c0 51.2-20 97.7-52.7 132.1zM112 176c0 8.8-7.2 16-16 16s-16-7.2-16-16c0-53 43-96 96-96 8.8 0 16 7.2 16 16s-7.2 16-16 16c-35.3 0-64 28.7-64 64z" />
       )}
     </svg>
   );

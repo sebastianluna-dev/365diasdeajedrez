@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `user-tie`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `user-tie`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -34,6 +34,9 @@ export function UserTieIcon({ className, variant = "duotone-light" }: IconProps)
       )}
       {variant === "classic-solid" && (
         <path d="M224 248a120 120 0 1 1 0-240 120 120 0 1 1 0 240zm-30.5 56l61 0c9.7 0 17.5 7.8 17.5 17.5 0 4.2-1.5 8.2-4.2 11.4l-27.4 32 31 115.1 .6 0 34.6-138.5c2.2-8.7 11.1-14 19.5-10.8 61.9 23.6 105.9 83.6 105.9 153.8 0 15.1-12.3 27.4-27.4 27.4L43.4 512c-15.1 0-27.4-12.3-27.4-27.4 0-70.2 44-130.2 105.9-153.8 8.4-3.2 17.3 2.1 19.5 10.8l34.6 138.5 .6 0 31-115.1-27.4-32c-2.7-3.2-4.2-7.2-4.2-11.4 0-9.7 7.8-17.5 17.5-17.5z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M224 224a96 96 0 1 0 0-192 96 96 0 1 0 0 192zm128-96a128 128 0 1 1 -256 0 128 128 0 1 1 256 0zM176 320c0-8.8 7.2-16 16-16l64 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-6.1 0 27.3 54.6 45.7-66.3c4.3-6.3 12.6-8.7 19.6-5.6 62.1 27.1 105.6 89.2 105.6 161.4l0 16c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-16c0-54.4-30.1-101.7-74.7-126.2L237.2 505.1c-3 4.3-7.9 6.9-13.2 6.9s-10.2-2.6-13.2-6.9L106.7 353.8C62.1 378.3 32 425.6 32 480l0 16c0 8.8-7.2 16-16 16S0 504.8 0 496l0-16c0-72.2 43.5-134.2 105.6-161.3 7-3.1 15.2-.7 19.6 5.6l45.7 66.3 27.3-54.6-6.1 0c-8.8 0-16-7.2-16-16zm48 147.8l32.4-47.1-32.4-64.9-32.4 64.9 32.4 47.1z" />
       )}
     </svg>
   );

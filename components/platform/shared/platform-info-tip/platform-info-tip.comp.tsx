@@ -57,7 +57,7 @@ export function PlatformInfoTip({ text, label, side = "top" }: PlatformInfoTipPr
               changeOpen(true);
             }}
           >
-            <CircleInfoIcon className="platform-info-tip__icon" />
+            <CircleInfoIcon variant="classic-light" className="platform-info-tip__icon" />
           </button>
         </Tooltip.Trigger>
 

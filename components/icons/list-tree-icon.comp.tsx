@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `list-tree`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `list-tree`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function ListTreeIcon({ className, variant = "duotone-light" }: IconProps
       )}
       {variant === "classic-solid" && (
         <path d="M48 48c-26.5 0-48 21.5-48 48 0 17.8 9.7 33.3 24 41.6L24 384c0 30.9 25.1 56 56 56l54.4 0c8.3 14.3 23.8 24 41.6 24 26.5 0 48-21.5 48-48s-21.5-48-48-48c-17.8 0-33.3 9.7-41.6 24L80 392c-4.4 0-8-3.6-8-8l0-104 62.4 0c8.3 14.3 23.8 24 41.6 24 26.5 0 48-21.5 48-48s-21.5-48-48-48c-17.8 0-33.3 9.7-41.6 24l-62.4 0 0-94.4c14.3-8.3 24-23.8 24-41.6 0-26.5-21.5-48-48-48zM160 96c0 17.7 14.3 32 32 32l288 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L192 64c-17.7 0-32 14.3-32 32zM288 256c0 17.7 14.3 32 32 32l160 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-160 0c-17.7 0-32 14.3-32 32zm0 160c0 17.7 14.3 32 32 32l160 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-160 0c-17.7 0-32 14.3-32 32z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M48 112a16 16 0 1 0 0-32 16 16 0 1 0 0 32zM0 96C0 69.5 21.5 48 48 48S96 69.5 96 96c0 20.9-13.4 38.7-32 45.3l0 98.7 66.7 0c6.6-18.6 24.4-32 45.3-32 26.5 0 48 21.5 48 48s-21.5 48-48 48c-20.9 0-38.7-13.4-45.3-32L64 272 64 384c0 8.8 7.2 16 16 16l50.7 0c6.6-18.6 24.4-32 45.3-32 26.5 0 48 21.5 48 48s-21.5 48-48 48c-20.9 0-38.7-13.4-45.3-32L80 432c-26.5 0-48-21.5-48-48l0-242.7C13.4 134.7 0 116.9 0 96zm160 0c0-8.8 7.2-16 16-16l320 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-320 0c-8.8 0-16-7.2-16-16zM288 256c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zm0 160c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zM160 256a16 16 0 1 0 32 0 16 16 0 1 0 -32 0zm16 176a16 16 0 1 0 0-32 16 16 0 1 0 0 32z" />
       )}
     </svg>
   );

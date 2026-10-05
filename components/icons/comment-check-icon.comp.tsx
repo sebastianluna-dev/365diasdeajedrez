@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `comment-check`, in Duotone Light (the default), Duotone
- * Solid or Classic Solid, as `variant` says.
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function CommentCheckIcon({ className, variant = "duotone-light" }: IconP
       )}
       {variant === "classic-solid" && (
         <path d="M256 0C397.4 0 512 107.5 512 240S397.4 480 256 480c-37.1 0-72.3-7.4-104.1-20.7L33.5 510.1c-9.4 4-20.2 1.7-27.1-5.8-6.9-7.5-8.3-18.5-3.6-27.5l48.8-92.2C19.2 344.3 0 294.3 0 240 0 107.5 114.6 0 256 0zM360.2 148.7c-10.7-7.8-25.7-5.4-33.5 5.3l-105.6 145.2-36-36c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9L207 353c5 5 11.9 7.5 18.8 6.9 7-.6 13.4-4.1 17.5-9.8L365.5 182.2c7.8-10.7 5.4-25.7-5.3-33.5z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M256 0C397.4 0 512 107.5 512 240S397.4 480 256 480c-36.5 0-71.2-7.1-102.6-20L37 509.8c-3.7 1.6-7.5 2.2-11.5 2.2-14.1 0-25.5-11.4-25.5-25.5 0-4.3 1.1-8.5 3.1-12.2l48.7-89.4C19.3 344.6 0 294.4 0 240 0 107.5 114.6 0 256 0zm0 32c-125.7 0-224 95-224 208 0 46.7 16.5 89.8 44.8 124.7 8.1 10.1 9.4 24.1 3.2 35.4l-40.2 73.7 101-43.3c7.9-3.4 16.8-3.4 24.8-.2 27.6 11.3 58.1 17.7 90.4 17.7 125.7 0 224-95 224-208S381.7 32 256 32zm83.1 118.6c5.2-7.1 15.2-8.7 22.3-3.5s8.7 15.2 3.5 22.3l-128 176c-2.8 3.8-7 6.2-11.7 6.5s-9.3-1.3-12.6-4.6l-64-64c-6.2-6.2-6.2-16.4 0-22.6s16.4-6.2 22.6 0l50.7 50.7 117-160.8z" />
       )}
     </svg>
   );

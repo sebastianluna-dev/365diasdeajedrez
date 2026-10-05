@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `laptop-code`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `laptop-code`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function LaptopCodeIcon({ className, variant = "duotone-light" }: IconPro
       )}
       {variant === "classic-solid" && (
         <path d="M64 96c0-35.3 28.7-64 64-64l384 0c35.3 0 64 28.7 64 64l0 240-64 0 0-240-384 0 0 240-64 0 0-240zM0 403.2C0 392.6 8.6 384 19.2 384l601.6 0c10.6 0 19.2 8.6 19.2 19.2 0 42.4-34.4 76.8-76.8 76.8L76.8 480C34.4 480 0 445.6 0 403.2zM281 209l-31 31 31 31c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-48-48c-9.4-9.4-9.4-24.6 0-33.9l48-48c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9zM393 175l48 48c9.4 9.4 9.4 24.6 0 33.9l-48 48c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l31-31-31-31c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M128 64l384 0c17.7 0 32 14.3 32 32l0 224 32 0 0-224c0-35.3-28.7-64-64-64L128 32C92.7 32 64 60.7 64 96l0 224 32 0 0-224c0-17.7 14.3-32 32-32zM32.5 400l575.1 0c-3.5 27.1-26.6 48-54.7 48L87.1 448c-28 0-51.2-20.9-54.7-48zm-7.6-32C11.1 368 0 379.1 0 392.9 0 441 39 480 87.1 480l465.8 0c48.1 0 87.1-39 87.1-87.1 0-13.7-11.1-24.9-24.9-24.9L24.9 368zM283.3 155.3c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0l-64 64c-6.2 6.2-6.2 16.4 0 22.6l64 64c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6l-52.7-52.7 52.7-52.7zm96-22.6c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6l52.7 52.7-52.7 52.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0l64-64c6.2-6.2 6.2-16.4 0-22.6l-64-64z" />
       )}
     </svg>
   );

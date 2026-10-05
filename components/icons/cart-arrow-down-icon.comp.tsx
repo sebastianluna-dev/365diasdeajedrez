@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `cart-arrow-down`, in Duotone Light (the default), Duotone
- * Solid or Classic Solid, as `variant` says.
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function CartArrowDownIcon({ className, variant = "duotone-light" }: Icon
       )}
       {variant === "classic-solid" && (
         <path d="M0 8C0-5.3 10.7-16 24-16l45.3 0c27.1 0 50.3 19.4 55.1 46l.4 2 187.2 0 0 102.1-31-31c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l72 72c9.4 9.4 24.6 9.4 33.9 0l72-72c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-31 31 0-102.1 177.4 0c20 0 35.1 18.2 31.4 37.9L537.8 235.8c-5.7 30.3-32.1 52.2-62.9 52.2l-303.6 0 5.1 28.3c2.1 11.4 12 19.7 23.6 19.7L456 336c13.3 0 24 10.7 24 24s-10.7 24-24 24l-255.9 0c-34.8 0-64.6-24.9-70.8-59.1L77.2 38.6c-.7-3.8-4-6.6-7.9-6.6L24 32C10.7 32 0 21.3 0 8zM160 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm224 0a48 48 0 1 1 96 0 48 48 0 1 1 -96 0z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M0 16C0 7.2 7.2 0 16 0L61.3 0c23.2 0 43.1 16.6 47.2 39.4l39.4 216.6 318.8 0c18.9 0 35.2-13.2 39.1-31.6L544.4 44.6c1.9-8.6 10.4-14.1 19-12.3s14.1 10.4 12.3 19L537.1 231.1C530 264.3 500.7 288 466.7 288l-313 0 5.7 31.2c3.5 19 20 32.8 39.4 32.8L464 352c8.8 0 16 7.2 16 16s-7.2 16-16 16l-265.3 0c-34.8 0-64.6-24.9-70.8-59.1L77 45.1C75.7 37.5 69 32 61.3 32L16 32C7.2 32 0 24.8 0 16zM208 480a20 20 0 1 0 0-40 20 20 0 1 0 0 40zm0-72a52 52 0 1 1 0 104 52 52 0 1 1 0-104zm244 52a20 20 0 1 0 -40 0 20 20 0 1 0 40 0zm-72 0a52 52 0 1 1 104 0 52 52 0 1 1 -104 0zM324.7 187.3l-72-72c-6.2-6.2-6.2-16.4 0-22.6s16.4-6.2 22.6 0L320 137.4 320 16c0-8.8 7.2-16 16-16s16 7.2 16 16l0 121.4 44.7-44.7c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6l-72 72c-6.2 6.2-16.4 6.2-22.6 0z" />
       )}
     </svg>
   );

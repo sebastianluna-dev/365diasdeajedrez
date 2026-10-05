@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `headphones`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `headphones`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function HeadphonesIcon({ className, variant = "duotone-light" }: IconPro
       )}
       {variant === "classic-solid" && (
         <path d="M64 224c0-88.4 71.6-160 160-160s160 71.6 160 160l0 37.5c-10-3.5-20.8-5.5-32-5.5l-16 0c-26.5 0-48 21.5-48 48l0 128c0 26.5 21.5 48 48 48l16 0c53 0 96-43 96-96l0-160C448 100.3 347.7 0 224 0S0 100.3 0 224L0 384c0 53 43 96 96 96l16 0c26.5 0 48-21.5 48-48l0-128c0-26.5-21.5-48-48-48l-16 0c-11.2 0-22 1.9-32 5.5L64 224z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M32 224C32 118 118 32 224 32s192 86 192 192l0 56.4c-17-15.2-39.4-24.4-64-24.4l-16 0c-26.5 0-48 21.5-48 48l0 128c0 26.5 21.5 48 48 48l16 0c53 0 96-43 96-96l0-160C448 100.3 347.7 0 224 0S0 100.3 0 224L0 384c0 53 43 96 96 96l16 0c26.5 0 48-21.5 48-48l0-128c0-26.5-21.5-48-48-48l-16 0c-24.6 0-47 9.2-64 24.4L32 224zm0 128c0-35.3 28.7-64 64-64l16 0c8.8 0 16 7.2 16 16l0 128c0 8.8-7.2 16-16 16l-16 0c-35.3 0-64-28.7-64-64l0-32zm384 0l0 32c0 35.3-28.7 64-64 64l-16 0c-8.8 0-16-7.2-16-16l0-128c0-8.8 7.2-16 16-16l16 0c35.3 0 64 28.7 64 64z" />
       )}
     </svg>
   );

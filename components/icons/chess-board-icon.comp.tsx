@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `chess-board`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `chess-board`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function ChessBoardIcon({ className, variant = "duotone-light" }: IconPro
       )}
       {variant === "classic-solid" && (
         <path d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zm64 64l0 64 64 0 0-64 64 0 0 64 64 0 0-64 64 0 0 64-64 0 0 64 64 0 0 64-64 0 0 64 64 0 0 64-64 0 0-64-64 0 0 64-64 0 0-64-64 0 0 64-64 0 0-64 64 0 0-64-64 0 0-64 64 0 0-64-64 0 0-64 64 0zm64 128l64 0 0-64-64 0 0 64zm0 64l0-64-64 0 0 64 64 0zm64 0l-64 0 0 64 64 0 0-64zm0 0l64 0 0-64-64 0 0 64z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M384 32c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l320 0zM32 393.2L32 416c0 17.7 14.3 32 32 32l22.8 0 0-54.8-54.8 0zm82.3 0l0 54.8 54.8 0 0-54.8-54.8 0zm82.3 0l0 54.8 54.9 0 0-54.8-54.9 0zm82.3 0l0 54.8 54.8 0 0-54.8-54.8 0zm82.3 0l0 54.8 22.8 0c17.7 0 32-14.3 32-32l0-22.8-54.8 0zM32 365.7l54.8 0 0-54.8-54.8 0 0 54.8zm82.3 0l54.8 0 0-54.8-54.8 0 0 54.8zm82.3 0l54.9 0 0-54.8-54.9 0 0 54.8zm82.3 0l54.8 0 0-54.8-54.8 0 0 54.8zm82.3 0l54.8 0 0-54.8-54.8 0 0 54.8zM32 283.4l54.8 0 0-54.9-54.8 0 0 54.9zm82.3 0l54.8 0 0-54.9-54.8 0 0 54.9zm82.3 0l54.9 0 0-54.9-54.9 0 0 54.9zm82.3 0l54.8 0 0-54.9-54.8 0 0 54.9zm82.3 0l54.8 0 0-54.9-54.8 0 0 54.9zM32 201.1l54.8 0 0-54.8-54.8 0 0 54.8zm82.3 0l54.8 0 0-54.8-54.8 0 0 54.8zm82.3 0l54.9 0 0-54.8-54.9 0 0 54.8zm82.3 0l54.8 0 0-54.8-54.8 0 0 54.8zm82.3 0l54.8 0 0-54.8-54.8 0 0 54.8zM64 64C46.3 64 32 78.3 32 96l0 22.8 54.8 0 0-54.8-22.8 0zm50.3 54.8l54.8 0 0-54.8-54.8 0 0 54.8zm82.3 0l54.9 0 0-54.8-54.9 0 0 54.8zm82.3 0l54.8 0 0-54.8-54.8 0 0 54.8zm82.3 0l54.8 0 0-22.8c0-17.7-14.3-32-32-32l-22.8 0 0 54.8z" />
       )}
     </svg>
   );

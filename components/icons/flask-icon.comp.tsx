@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `flask`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `flask`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -34,6 +34,9 @@ export function FlaskIcon({ className, variant = "duotone-light" }: IconProps) {
       )}
       {variant === "classic-solid" && (
         <path d="M288 0L128 0C110.3 0 96 14.3 96 32s14.3 32 32 32L128 215.5 7.5 426.3C2.6 435 0 444.7 0 454.7 0 486.4 25.6 512 57.3 512l333.4 0c31.6 0 57.3-25.6 57.3-57.3 0-10-2.6-19.8-7.5-28.4L320 215.5 320 64c17.7 0 32-14.3 32-32S337.7 0 320 0L288 0zM192 215.5l0-151.5 64 0 0 151.5c0 11.1 2.9 22.1 8.4 31.8l41.6 72.7-164 0 41.6-72.7c5.5-9.7 8.4-20.6 8.4-31.8z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M96 16c0-8.8 7.2-16 16-16L336 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-16 0 0 187.8 61.8 108.1c.1 .2 .2 .3 .3 .5l58.9 103c4.7 8.2 7.1 17.4 7.1 26.8 0 29.8-24.1 53.9-53.9 53.9L53.9 512c-29.8 0-53.9-24.1-53.9-53.9 0-9.4 2.4-18.6 7.1-26.8L66 328.3c.1-.2 .2-.3 .3-.5L128 219.8 128 32 112 32c-8.8 0-16-7.2-16-16zM89.3 352L34.9 447.2c-1.9 3.3-2.9 7.1-2.9 10.9 0 12.1 9.8 21.9 21.9 21.9l340.1 0c12.1 0 21.9-9.8 21.9-21.9 0-3.8-1-7.6-2.9-10.9L358.7 352 89.3 352zm251.1-32l-50.3-88.1c-1.4-2.4-2.1-5.2-2.1-7.9l0-192-128 0 0 192c0 2.8-.7 5.5-2.1 7.9l-50.3 88.1 232.9 0z" />
       )}
     </svg>
   );

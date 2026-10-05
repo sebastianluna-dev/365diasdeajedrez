@@ -1,9 +1,10 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `circle`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says. Its Duotone Solid drawing is a single
- * layer, drawn at full strength: at 40 % it would read as switched off.
+ * Font Awesome's `circle`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says. Its Duotone Solid drawing
+ * is a single layer, drawn at full strength: at 40 % it would read as switched
+ * off.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -26,6 +27,9 @@ export function CircleIcon({ className, variant = "duotone-light" }: IconProps) 
       )}
       {variant === "duotone-solid" && <path d="M0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0z" />}
       {variant === "classic-solid" && <path d="M0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0z" />}
+      {variant === "classic-light" && (
+        <path d="M480 256a224 224 0 1 0 -448 0 224 224 0 1 0 448 0zM0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0z" />
+      )}
     </svg>
   );
 }

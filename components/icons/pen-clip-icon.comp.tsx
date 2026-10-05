@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `pen-clip`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `pen-clip`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function PenClipIcon({ className, variant = "duotone-light" }: IconProps)
       )}
       {variant === "classic-solid" && (
         <path d="M404 0c19.2 0 37.6 7.6 51.1 21.2l35.7 35.7C504.4 70.4 512 88.8 512 108s-7.6 37.6-21.2 51.1L445.9 204 308 66.1 352.9 21.2C366.4 7.6 384.8 0 404 0zM274.1 100l0 0 137.9 137.9-215.1 215.1c-10.7 10.7-24.1 18.5-38.7 22.6L30.4 511.1c-8.3 2.3-17.3 0-23.4-6.2s-8.5-15.1-6.2-23.4L36.4 353.8c4.1-14.6 11.8-27.9 22.6-38.7L240.1 133.9 223 116.9c-9.4-9.4-24.6-9.4-33.9 0L89 217c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9L155.1 82.9c28.1-28.1 73.7-28.1 101.8 0L274.1 100z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M404 32c-10.7 0-20.9 4.2-28.5 11.8l-58.5 58.5 92.7 92.7 58.5-58.5c7.6-7.6 11.8-17.8 11.8-28.5s-4.2-20.9-11.8-28.5L432.5 43.8C424.9 36.2 414.7 32 404 32zM294.3 79.7l58.5-58.5C366.4 7.6 384.8 0 404 0s37.6 7.6 51.1 21.2l35.7 35.7C504.4 70.4 512 88.8 512 108s-7.6 37.6-21.2 51.1l-294 294c-10.7 10.7-24.1 18.5-38.7 22.6L30.4 511.1c-8.3 2.3-17.3 0-23.4-6.2s-8.5-15.1-6.2-23.4L36.4 353.8c4.1-14.6 11.8-27.9 22.6-38.7l212.8-212.8-25.1-25.1c-12.5-12.5-32.8-12.5-45.3 0L91.3 187.3c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6L178.7 54.6c25-25 65.5-25 90.5 0l25.1 25.1zm0 45.3L81.6 337.8c-6.8 6.8-11.8 15.3-14.4 24.6L35.5 476.5 149.6 444.8c9.3-2.6 17.8-7.5 24.6-14.4L387 217.7 294.3 125z" />
       )}
     </svg>
   );

@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `user-xmark`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `user-xmark`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function UserXmarkIcon({ className, variant = "duotone-light" }: IconProp
       )}
       {variant === "classic-solid" && (
         <path d="M254.1 304c98.5 0 178.3 79.8 178.3 178.3 0 16.4-13.3 29.7-29.7 29.7L46.1 512c-16.4 0-29.7-13.3-29.7-29.7 0-98.5 79.8-178.3 178.3-178.3l59.4 0zM530.3 108.1c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-33.9 33.9 33.9 33.9c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-33.9-33.9-33.9 33.9c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l33.9-33.9-33.9-33.9c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l33.9 33.9 33.9-33.9zM224.4 248a120 120 0 1 1 0-240 120 120 0 1 1 0 240z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M272 304c97.2 0 176 78.8 176 176l0 16c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-16c0-79.5-64.5-144-144-144l-96 0C96.5 336 32 400.5 32 480l0 16c0 8.8-7.2 16-16 16S0 504.8 0 496l0-16c0-97.2 78.8-176 176-176l96 0zm-48-48a128 128 0 1 1 0-256 128 128 0 1 1 0 256zM540.7 108.7c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6l-44.7 44.7 44.7 44.7c6.2 6.2 6.2 16.4 0 22.6s-16.4 6.2-22.6 0l-44.7-44.7-44.7 44.7c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l44.7-44.7-44.7-44.7c-6.2-6.2-6.2-16.4 0-22.6s16.4-6.2 22.6 0l44.7 44.7 44.7-44.7zM224 32a96 96 0 1 0 0 192 96 96 0 1 0 0-192z" />
       )}
     </svg>
   );

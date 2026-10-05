@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `seedling`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `seedling`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function SeedlingIcon({ className, variant = "duotone-light" }: IconProps
       )}
       {variant === "classic-solid" && (
         <path d="M512 32C512 140.1 435.4 230.3 333.6 251.4 325.7 193.3 299.6 141 261.1 100.5 301.2 40 369.9 0 448 0l32 0c17.7 0 32 14.3 32 32zM0 96C0 78.3 14.3 64 32 64l32 0c123.7 0 224 100.3 224 224l0 192c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-160C100.3 320 0 219.7 0 96z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M496 0l3.2 .3C506.5 1.8 512 8.3 512 16l0 32-.3 11.5c-5.8 114.5-97.7 206.4-212.2 212.2l-11.5 .3 0 224c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-176-32 0-11.5-.3C94.1 313.7 0 215.8 0 96L0 80c0-7.7 5.5-14.2 12.8-15.7l3.2-.3 48 0 11.5 .3c79.7 4 148.4 49.8 184.8 115.8 19.7-99.1 104.7-174.6 208.2-179.8L480 0 496 0zM32 96c0 106 86 192 192 192l32 0C256 182 170 96 64 96L32 96zM480 32c-106 0-192 86-192 192l0 16c106 0 192-86 192-192l0-16z" />
       )}
     </svg>
   );

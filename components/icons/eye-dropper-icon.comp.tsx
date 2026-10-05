@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `eye-dropper`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `eye-dropper`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function EyeDropperIcon({ className, variant = "duotone-light" }: IconPro
       )}
       {variant === "classic-solid" && (
         <path d="M341.6 29.2l-101.6 101.6-9.4-9.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-9.4-9.4 101.6-101.6c39-39 39-102.2 0-141.1s-102.2-39-141.1 0zM55.4 323.3c-15 15-23.4 35.4-23.4 56.6l0 42.4-26.6 39.9c-8.5 12.7-6.8 29.6 4 40.4s27.7 12.5 40.4 4l39.9-26.6 42.4 0c21.2 0 41.6-8.4 56.6-23.4l109.4-109.4-45.3-45.3-109.4 109.4c-3 3-7.1 4.7-11.3 4.7l-36.1 0 0-36.1c0-4.2 1.7-8.3 4.7-11.3l109.4-109.4-45.3-45.3-109.4 109.4z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M198.1 172.7c2.9 2.9 42.4 42.4 118.5 118.5 16 16 29.3 29.3 40.1 40.1 6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6l-17.4-17.4c2.5-2.5 42.8-42.8 120.9-120.9 39-39 39-102.2 0-141.1s-102.2-39-141.1 0c-78.1 78.1-118.4 118.4-120.9 120.9l-17.4-17.4 0 0c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6l17.4 17.4zm262-25L339.3 268.6 243.4 172.7 364.2 51.9c26.5-26.5 69.4-26.5 95.9 0s26.5 69.4 0 95.9zM55.4 321.9c-15 15-23.4 35.4-23.4 56.6l0 41.2-28.2 49.4c-2.5 4.3-3.8 9.2-3.8 14.2 0 15.8 12.8 28.6 28.6 28.6 5 0 9.9-1.3 14.2-3.8l49.4-28.2 41.2 0c21.2 0 41.6-8.4 56.6-23.4l112-112-22.6-22.6-112 112c-9 9-21.2 14.1-33.9 14.1L88 448c-2.8 0-5.5 .7-7.9 2.1l-42.4 24.2 24.2-42.4c1.4-2.4 2.1-5.2 2.1-7.9l0-45.5c0-12.7 5.1-24.9 14.1-33.9l112-112-22.6-22.6-112 112z" />
       )}
     </svg>
   );

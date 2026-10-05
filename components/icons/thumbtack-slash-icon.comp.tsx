@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `thumbtack-slash`, in Duotone Light (the default), Duotone
- * Solid or Classic Solid, as `variant` says.
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function ThumbtackSlashIcon({ className, variant = "duotone-light" }: Ico
       )}
       {variant === "classic-solid" && (
         <path d="M41-24.9c-9.4-9.4-24.6-9.4-33.9 0S-2.3-.3 7 9.1l528 528c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9L417.8 352 448 352c10 0 19.5-4.7 25.5-12.7s8-18.4 5.2-28.1L475 297.8c-12.4-43.3-41-78.5-78.2-99.7L386.5 64 416 64c17.7 0 32-14.3 32-32S433.7 0 416 0L160 0c-7.4 0-14.1 2.5-19.5 6.6L190.1 56.3 185.3 119.4 41-24.9zM282.2 352L149.7 219.6c-22.7 20.5-39.8 47.4-48.7 78.3l-3.8 13.4c-2.8 9.7-.8 20 5.2 28.1S118 352 128 352l154.2 0zM256 512c0 17.7 14.3 32 32 32s32-14.3 32-32l0-112-64 0 0 112z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M27.3-27.2c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6l544 544c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L406.5 352 436.3 352c25.4 0 44.4-23.4 39.1-48.2l-1.2-5.7c-9.5-45.1-35.1-83.5-70-109.5L392.7 32 432 32c8.8 0 16-7.2 16-16S440.8 0 432 0L144 0c-5.8 0-10.9 3.1-13.7 7.8l24.2 24.2 28.8 0-6.7 90.1-149.4-149.4zM206.5 152l8.9-120 145.1 0 12.3 166.2c.3 4.6 2.7 8.9 6.4 11.6l5.8 4.4c28.8 21.5 50 53.2 57.8 90.5l1.2 5.7c1 5-2.7 9.6-7.8 9.6l-61.7 0-168-168zm-57 56.1c-23.5 24.2-40.4 55.1-47.8 90l-1.2 5.7c-5.2 24.9 13.7 48.2 39.1 48.2l153.8 0-32-32-121.8 0c-5.1 0-8.9-4.7-7.8-9.6l1.2-5.7c6-28.7 19.9-54 39.1-74l-22.6-22.6zM272 528c0 8.8 7.2 16 16 16s16-7.2 16-16l0-128-32 0 0 128z" />
       )}
     </svg>
   );

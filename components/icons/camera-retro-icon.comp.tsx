@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `camera-retro`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `camera-retro`, in Duotone Light (the default), Duotone
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function CameraRetroIcon({ className, variant = "duotone-light" }: IconPr
       )}
       {variant === "classic-solid" && (
         <path d="M0 416l0-208 136.2 0c13.5-20.2 32-36.8 53.7-48L0 160 0 125.7c0-35.3 28.7-64 64-64l.1 0C65.3 45.1 79.1 32 96 32l32 0c16.9 0 30.7 13.1 31.9 29.7l32.1 0 51.2-23.8c8.4-3.9 17.6-6 26.9-6L448 32c35.3 0 64 28.7 64 64l0 64-190 0c21.7 11.2 40.2 27.8 53.7 48l136.2 0 0 208c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64zM256 192a96.1 96.1 0 1 0 0 192.1 96.1 96.1 0 1 0 0-192.1z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M64 48c0-8.8 7.2-16 16-16l64 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L80 64c-8.8 0-16-7.2-16-16zm128 80L64 128c-17.7 0-32 14.3-32 32l0 32 156.5 0c19.1-13.4 42.4-21.3 67.5-21.3s48.4 7.9 67.5 21.3l156.5 0 0-80c0-17.7-14.3-32-32-32L277.3 80c-6.9 0-13.7 2.2-19.2 6.4l-46.9 35.2c-5.5 4.2-12.3 6.4-19.2 6.4zM32 224l0 192c0 17.7 14.3 32 32 32l384 0c17.7 0 32-14.3 32-32l0-192-125.6 0c12 18.4 19 40.4 19 64 0 64.8-52.5 117.3-117.3 117.3S138.7 352.8 138.7 288c0-23.6 7-45.6 19-64L32 224zM0 416L0 160c0-35.3 28.7-64 64-64l128 0 46.9-35.2C250 52.5 263.5 48 277.3 48L448 48c35.3 0 64 28.7 64 64l0 304c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64zM344 288a88 88 0 1 0 -176 0 88 88 0 1 0 176 0z" />
       )}
     </svg>
   );

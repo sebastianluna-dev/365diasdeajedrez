@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `table-cells-large`, in Duotone Light (the default), Duotone
- * Solid or Classic Solid, as `variant` says.
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -34,6 +34,9 @@ export function TableCellsLargeIcon({ className, variant = "duotone-light" }: Ic
       )}
       {variant === "classic-solid" && (
         <path d="M384 96l-128 0 0 128 128 0 0-128zm64 128l0 192c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 128zM64 288l0 128 128 0 0-128-128 0zm128-64l0-128-128 0 0 128 128 0zm64 64l0 128 128 0 0-128-128 0z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M240 64l0 176 176 0 0-144c0-17.7-14.3-32-32-32L240 64zm-32 0L64 64C46.3 64 32 78.3 32 96l0 144 176 0 0-176zM0 272L0 96C0 60.7 28.7 32 64 32l320 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 480c-35.3 0-64-28.7-64-64L0 272zm416 0l-176 0 0 176 144 0c17.7 0 32-14.3 32-32l0-144zM208 448l0-176-176 0 0 144c0 17.7 14.3 32 32 32l144 0z" />
       )}
     </svg>
   );

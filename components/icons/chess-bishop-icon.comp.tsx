@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `chess-bishop`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `chess-bishop`, in Duotone Light (the default), Duotone
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function ChessBishopIcon({ className, variant = "duotone-light" }: IconPr
       )}
       {variant === "classic-solid" && (
         <path d="M64 384L48.3 368.3C17.4 337.4 0 295.4 0 251.7 0 213.1 13.5 175.8 38.2 146.1L106.7 64 96 64C78.3 64 64 49.7 64 32S78.3 0 96 0L224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-10.7 0 47.6 57.1-85.9 85.9c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l82.3-82.3c18.7 27.3 28.7 59.7 28.7 93 0 43.7-17.4 85.7-48.3 116.6L256 384 312.2 454.3c5 6.3 7.8 14.1 7.8 22.2 0 19.6-15.9 35.5-35.5 35.5L35.5 512c-19.6 0-35.5-15.9-35.5-35.5 0-8.1 2.7-15.9 7.8-22.2L64 384z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M208 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L186.7 32 280 144c25.8 31 40 70.1 40 110.4 0 42.2-15.5 83-43.6 114.6l-11.3 12.7 48.7 73c4 6.1 6.2 13.2 6.2 20.4 0 20.3-16.5 36.8-36.8 36.8L36.8 512c-20.3 0-36.8-16.5-36.8-36.8 0-7.3 2.2-14.4 6.2-20.4l48.7-73-11.3-12.7C15.5 337.4 0 296.7 0 254.4 0 214.1 14.1 175 40 144L133.3 32 112 32c-8.8 0-16-7.2-16-16s7.2-16 16-16l96 0zM32.8 472.5c-.5 .8-.8 1.7-.8 2.7 0 2.7 2.2 4.8 4.8 4.8l246.3 0c2 0 3.7-1.2 4.5-3l.4-1.9c0-.5-.1-1-.2-1.4l-.6-1.3-48.3-72.5-157.8 0-48.3 72.5zm125.1-420l-93.4 112c-21 25.2-32.6 57-32.6 89.9 0 34.4 12.6 67.6 35.5 93.3 8.3 9.3 14.3 16.1 18 20.2l149 0c3.8-4.2 9.8-11 18.1-20.3 21.4-24.1 33.8-54.8 35.3-86.8l.2-6.4c0-28.4-8.7-55.9-24.6-79.2l-60.1 60.1c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l62.7-62.7-81.3-97.5-2.1-2.5-2.1 2.5z" />
       )}
     </svg>
   );

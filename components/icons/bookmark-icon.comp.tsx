@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `bookmark`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `bookmark`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function BookmarkIcon({ className, variant = "duotone-light" }: IconProps
       )}
       {variant === "classic-solid" && (
         <path d="M64 0C28.7 0 0 28.7 0 64L0 480c0 11.5 6.2 22.2 16.2 27.8s22.3 5.5 32.2-.4L192 421.3 335.5 507.4c9.9 5.9 22.2 6.1 32.2 .4S384 491.5 384 480l0-416c0-35.3-28.7-64-64-64L64 0z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M0 64C0 28.7 28.7 0 64 0L320 0c35.3 0 64 28.7 64 64l0 426c0 18.6-20.2 30.1-36.2 20.7L192 418.6 36.2 510.6C20.2 520.1 0 508.6 0 490L0 64zM64 32C46.3 32 32 46.3 32 64l0 412 147.8-87.3c7.5-4.5 16.9-4.5 24.4 0L352 476 352 64c0-17.7-14.3-32-32-32L64 32z" />
       )}
     </svg>
   );

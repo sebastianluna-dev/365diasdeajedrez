@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `circle-right`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `circle-right`, in Duotone Light (the default), Duotone
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function CircleRightIcon({ className, variant = "duotone-light" }: IconPr
       )}
       {variant === "classic-solid" && (
         <path d="M0 256a256 256 0 1 0 512 0 256 256 0 1 0 -512 0zm387.3 11.3l-104 104c-4.6 4.6-11.5 5.9-17.4 3.5S256 366.5 256 360l0-56-96 0c-17.7 0-32-14.3-32-32l0-32c0-17.7 14.3-32 32-32l96 0 0-56c0-6.5 3.9-12.3 9.9-14.8s12.9-1.1 17.4 3.5l104 104c6.2 6.2 6.2 16.4 0 22.6z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M480 256a224 224 0 1 1 -448 0 224 224 0 1 1 448 0zM0 256a256 256 0 1 0 512 0 256 256 0 1 0 -512 0zm272-84.7l84.7 84.7-84.7 84.7 0-36.7c0-8.8-7.2-16-16-16l-88 0c-4.4 0-8-3.6-8-8l0-48c0-4.4 3.6-8 8-8l88 0c8.8 0 16-7.2 16-16l0-36.7zm101.7 90.3L385 273c9.4-9.4 9.4-24.6 0-33.9L281 135c-6.9-6.9-17.2-8.9-26.2-5.2S240 142.3 240 152l0 40-72 0c-22.1 0-40 17.9-40 40l0 48c0 22.1 17.9 40 40 40l72 0 0 40c0 9.7 5.8 18.5 14.8 22.2s19.3 1.7 26.2-5.2l104-104-11.3-11.3z" />
       )}
     </svg>
   );

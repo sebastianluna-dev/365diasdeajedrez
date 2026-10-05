@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `droplet`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `droplet`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function DropletIcon({ className, variant = "duotone-light" }: IconProps)
       )}
       {variant === "classic-solid" && (
         <path d="M192 512C86 512 0 426 0 320 0 228.8 130.2 45.9 166.6-3.5 172.5-11.5 181.8-16 191.8-16l.4 0c10 0 19.3 4.5 25.2 12.5 36.4 49.4 166.6 232.3 166.6 323.5 0 106-86 192-192 192zM112 312c0-13.3-10.7-24-24-24s-24 10.7-24 24c0 75.1 60.9 136 136 136 13.3 0 24-10.7 24-24s-10.7-24-24-24c-48.6 0-88-39.4-88-88z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M192 480c-88.4 0-160-71.6-160-160 0-16.4 6.2-40.2 18.5-69.8 12-28.9 28.6-60.5 46.8-91.4 36-61.4 76.6-118.1 94.7-142.7 18.1 24.6 58.7 81.3 94.7 142.7 18.2 31 34.8 62.5 46.8 91.4 12.3 29.6 18.5 53.4 18.5 69.8 0 88.4-71.6 160-160 160zM0 320C0 426 86 512 192 512s192-86 192-192c0-91.2-130.2-274.1-166.6-323.5-5.9-8-15.2-12.5-25.2-12.5l-.4 0C181.8-16 172.5-11.5 166.6-3.5 130.2 45.9 0 228.8 0 320zm112 0c0-8.8-7.2-16-16-16s-16 7.2-16 16c0 61.9 50.1 112 112 112 8.8 0 16-7.2 16-16s-7.2-16-16-16c-44.2 0-80-35.8-80-80z" />
       )}
     </svg>
   );

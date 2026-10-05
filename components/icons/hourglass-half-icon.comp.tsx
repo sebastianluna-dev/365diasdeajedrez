@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `hourglass-half`, in Duotone Light (the default), Duotone
- * Solid or Classic Solid, as `variant` says.
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function HourglassHalfIcon({ className, variant = "duotone-light" }: Icon
       )}
       {variant === "classic-solid" && (
         <path d="M32 0C14.3 0 0 14.3 0 32S14.3 64 32 64l0 11c0 42.4 16.9 83.1 46.9 113.1l67.9 67.9-67.9 67.9C48.9 353.9 32 394.6 32 437l0 11c-17.7 0-32 14.3-32 32s14.3 32 32 32l320 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-11c0-42.4-16.9-83.1-46.9-113.1l-67.9-67.9 67.9-67.9c30-30 46.9-70.7 46.9-113.1l0-11c17.7 0 32-14.3 32-32S369.7 0 352 0L32 0zM96 75l0-11 192 0 0 11c0 19-5.6 37.4-16 53L112 128c-10.3-15.6-16-34-16-53zm16 309c3.5-5.3 7.6-10.3 12.1-14.9l67.9-67.9 67.9 67.9c4.6 4.6 8.6 9.6 12.2 14.9L112 384z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M16 512c-8.8 0-16-7.2-16-16s7.2-16 16-16l16 0 0-41.6c0-49.4 22.8-96 61.8-126.3l72.2-56.1-72.2-56.1C54.8 169.6 32 122.9 32 73.6L32 32 16 32C7.2 32 0 24.8 0 16S7.2 0 16 0L368 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-16 0 0 41.6c0 49.4-22.8 96-61.8 126.3l-72.2 56.1 72.2 56.1c39 30.3 61.8 76.9 61.8 126.3l0 41.6 16 0c8.8 0 16 7.2 16 16s-7.2 16-16 16L16 512zm304-32l0-41.6c0-7.6-.7-15.1-2-22.4L66 416c-1.3 7.3-2 14.8-2 22.4l0 41.6 256 0zM113.4 337.4C97.3 349.9 84.6 366 76.1 384l231.7 0c-8.5-18-21.1-34.1-37.3-46.6l-78.6-61.1-78.6 61.1zM192 235.7l78.6-61.1c5.7-4.5 11-9.3 15.8-14.6L97.6 160c4.8 5.3 10.1 10.2 15.8 14.6L192 235.7zM307.9 128c7.9-16.8 12.1-35.4 12.1-54.4l0-41.6-256 0 0 41.6c0 19.1 4.2 37.6 12.1 54.4l231.7 0z" />
       )}
     </svg>
   );

@@ -841,7 +841,13 @@ const GLYPHS: Glyph[] = [
   { name: "CircleHalfIcon", Icon: CircleHalfIcon, width: 24, height: 24 },
   { name: "CircleHalfStrokeIcon", Icon: CircleHalfStrokeIcon, width: 24, height: 24 },
   { name: "CircleIcon", Icon: CircleIcon, width: 24, height: 24 },
-  { name: "CircleInfoIcon", Icon: CircleInfoIcon, width: 24, height: 24, use: { size: 18, where: "info tip" } },
+  {
+    name: "CircleInfoIcon",
+    Icon: CircleInfoIcon,
+    width: 24,
+    height: 24,
+    use: { size: 22, where: "info tip", variant: "classic-light" },
+  },
   { name: "CircleLeftIcon", Icon: CircleLeftIcon, width: 24, height: 24 },
   { name: "CircleMinusIcon", Icon: CircleMinusIcon, width: 24, height: 24 },
   { name: "CircleNotchIcon", Icon: CircleNotchIcon, width: 24, height: 24 },
@@ -1388,7 +1394,7 @@ type Scale = "app" | "large";
  * The gallery, with each icon's export under it and the wordmark on a row of
  * its own. At `app`, the icons the app draws, each as tall and in the weight
  * its caller asks for, in the text colour; at `large`, every icon of the
- * library in a 48px box, in its three styles, in the accent.
+ * library in a 48px box, in its four styles, in the accent.
  */
 function IconsGallery({ scale }: { scale: Scale }) {
   const large = scale === "large";

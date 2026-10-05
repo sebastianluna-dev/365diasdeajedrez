@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `heart-crack`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `heart-crack`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function HeartCrackIcon({ className, variant = "duotone-light" }: IconPro
       )}
       {variant === "classic-solid" && (
         <path d="M133.1 32c17.3 0 34.2 3.4 49.9 9.7l54.8 85.2-75.4 75.4c-1.5 1.5-2.4 3.6-2.3 5.8s1 4.2 2.6 5.7l112 104c2.9 2.7 7.4 2.9 10.5 .3s3.8-7 1.7-10.4l-60.4-98.1 90.7-75.6c2.6-2.1 3.5-5.7 2.4-8.8L296.4 60.6C319.6 42.3 348.6 32 378.9 32 452.4 32 512 91.6 512 165.1l0 2.6c0 112.2-139.9 242.5-212.9 298.2-12.4 9.4-27.6 14.1-43.1 14.1s-30.8-4.6-43.1-14.1C139.9 410.2 0 279.9 0 167.7l0-2.6C0 91.6 59.6 32 133.1 32z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M296.9 105.9c19-26.3 49.5-41.9 81.9-41.9 55.9 0 101.1 45.3 101.1 101.1 0 55-34.5 107.1-71.8 152.5-42.1 51.2-93.4 96-128.5 122.9-6.2 4.8-14.4 7.5-23.7 7.5s-17.4-2.7-23.7-7.5c-35.1-26.8-86.4-71.7-128.5-122.9-37.3-45.4-71.8-97.5-71.8-152.5 0-55.9 45.3-101.1 101.1-101.1 32.4 0 62.9 15.6 81.9 41.9l26 36c.6 1.6 1.6 3.2 2.7 4.5l36.3 42.3-81 54c-3.7 2.5-6.2 6.4-6.9 10.9s.5 8.9 3.3 12.4l64 80c5.5 6.9 15.6 8 22.5 2.5s8-15.6 2.5-22.5l-53.1-66.4 81.5-54.3c3.8-2.5 6.3-6.6 7-11.1s-.7-9.1-3.7-12.6l-40.1-46.8 20.9-28.9zM378.9 32C336.2 32 296 52.5 271 87.1l-15 20.7-15-20.7C216 52.5 175.8 32 133.1 32 59.6 32 0 91.6 0 165.1 0 232.5 41.6 292.4 79.1 338 123.2 391.5 176.4 438 212.9 465.9 225.2 475.4 240.4 480 256 480s30.8-4.6 43.1-14.1C335.6 438 388.8 391.5 432.9 338 470.4 292.4 512 232.5 512 165.1 512 91.6 452.4 32 378.9 32z" />
       )}
     </svg>
   );

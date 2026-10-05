@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `right-left`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `right-left`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -34,6 +34,9 @@ export function RightLeftIcon({ className, variant = "duotone-light" }: IconProp
       )}
       {variant === "classic-solid" && (
         <path d="M502.6 150.6l-96 96c-9.2 9.2-22.9 11.9-34.9 6.9S352 236.9 352 224l0-64-320 0c-17.7 0-32-14.3-32-32S14.3 96 32 96l320 0 0-64c0-12.9 7.8-24.6 19.8-29.6s25.7-2.2 34.9 6.9l96 96c12.5 12.5 12.5 32.8 0 45.3zm-397.3 352l-96-96c-12.5-12.5-12.5-32.8 0-45.3l96-96c9.2-9.2 22.9-11.9 34.9-6.9S160 275.1 160 288l0 64 320 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-320 0 0 64c0 12.9-7.8 24.6-19.8 29.6s-25.7 2.2-34.9-6.9z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M476.7 128L384 220.7 384 35.3 476.7 128zM381.7 0C365.3 0 352 13.3 352 29.7l0 82.3-336 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l336 0 0 82.3c0 16.4 13.3 29.7 29.7 29.7 7.9 0 15.4-3.1 21-8.7L505 145c4.5-4.5 7-10.6 7-17s-2.5-12.5-7-17L402.6 8.7c-5.6-5.6-13.1-8.7-21-8.7zM496 400c8.8 0 16-7.2 16-16s-7.2-16-16-16l-336 0 0-82.3c0-16.4-13.3-29.7-29.7-29.7-7.9 0-15.4 3.1-21 8.7L7 367c-4.5 4.5-7 10.6-7 17s2.5 12.5 7 17L109.4 503.3c5.6 5.6 13.1 8.7 21 8.7 16.4 0 29.7-13.3 29.7-29.7l0-82.3 336 0zM128 291.3l0 185.4-92.7-92.7 92.7-92.7z" />
       )}
     </svg>
   );

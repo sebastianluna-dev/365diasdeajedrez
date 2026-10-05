@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `hammer`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `hammer`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -16,6 +16,7 @@ export function HammerIcon({ className, variant = "duotone-light" }: IconProps) 
           "duotone-light": "-53.33 -85.33 682.67 682.67",
           "duotone-solid": "-53.33 -85.33 682.67 682.67",
           "classic-solid": "-21.33 -85.33 682.67 682.67",
+          "classic-light": "-53.33 -85.33 682.67 682.67",
         }[variant]
       }
       width="24"
@@ -43,6 +44,9 @@ export function HammerIcon({ className, variant = "duotone-light" }: IconProps) 
       )}
       {variant === "classic-solid" && (
         <path d="M246.9 18.3L271 3.8c21.6-13 46.3-19.8 71.5-19.8 36.8 0 72.2 14.6 98.2 40.7l63.9 63.9c15 15 23.4 35.4 23.4 56.6l0 30.9 19.7 19.7 0 0c15.6-15.6 40.9-15.6 56.6 0s15.6 40.9 0 56.6l-64 64c-15.6 15.6-40.9 15.6-56.6 0s-15.6-40.9 0-56.6L464 240 433.1 240c-21.2 0-41.6-8.4-56.6-23.4l-49.1-49.1c-15-15-23.4-35.4-23.4-56.6l0-12.7c0-11.2-5.9-21.7-15.5-27.4l-41.6-25c-10.4-6.2-10.4-21.2 0-27.4zM50.7 402.7l222.1-222.1 90.5 90.5-222.1 222.1c-25 25-65.5 25-90.5 0s-25-65.5 0-90.5z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M445.4 38.7c-54.3-54.3-135.8-71-207.1-42.5L186.1 17.1c-5.3 2.1-9.1 6.9-9.9 12.5s1.4 11.3 5.8 14.8l74 59.2 0 64.3 0 1.4-235.3 235.3c-23.9 23.9-23.9 62.7 0 86.6s62.7 23.9 86.6 0l235.3-235.3 82.7 0 32 32-4.7 4.7c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0l96-96c6.2-6.2 6.2-16.4 0-22.6s-16.4-6.2-22.6 0l-4.7 4.7-32-32 0-37.5c0-17-6.7-33.3-18.7-45.3L445.4 38.7zm76 185.3l-41.4 41.4-36.7-36.7c-3-3-7.1-4.7-11.3-4.7l-81.4 0-62.6-62.6 0-65.4c0-4.9-2.2-9.5-6-12.5L223.4 36.7 250.2 26c59.4-23.8 127.3-9.8 172.6 35.4l47.9 47.9c6 6 9.4 14.1 9.4 22.6l0 44.1c0 4.2 1.7 8.3 4.7 11.3L521.4 224zm-204 12L84.7 468.7c-11.4 11.4-29.9 11.4-41.4 0s-11.4-29.9 0-41.4L276 194.6 317.4 236z" />
       )}
     </svg>
   );

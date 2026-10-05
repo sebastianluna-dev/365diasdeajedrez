@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `ranking-star`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `ranking-star`, in Duotone Light (the default), Duotone
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -16,6 +16,7 @@ export function RankingStarIcon({ className, variant = "duotone-light" }: IconPr
           "duotone-light": "-85.33 -85.33 682.67 682.67",
           "duotone-solid": "-53.33 -85.33 682.67 682.67",
           "classic-solid": "-53.33 -85.33 682.67 682.67",
+          "classic-light": "-85.33 -85.33 682.67 682.67",
         }[variant]
       }
       width="24"
@@ -43,6 +44,9 @@ export function RankingStarIcon({ className, variant = "duotone-light" }: IconPr
       )}
       {variant === "classic-solid" && (
         <path d="M321.8 54.1L298.2 6.3c-3.9-8.3-16.1-8.6-20.4 0l-23.6 47.8-52.3 7.5c-9.3 1.4-13.3 12.9-6.4 19.8l38 37-9 52.1c-1.4 9.3 8.2 16.5 16.8 12.2l46.9-24.8 46.6 24.4c8.6 4.3 18.3-2.9 16.8-12.2l-9-52.1 38-36.6c6.8-6.8 2.9-18.3-6.4-19.8l-52.3-7.5zM256 256c-26.5 0-48 21.5-48 48l0 160c0 26.5 21.5 48 48 48l64 0c26.5 0 48-21.5 48-48l0-160c0-26.5-21.5-48-48-48l-64 0zM48 320c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l64 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-64 0zM416 432l0 32c0 26.5 21.5 48 48 48l64 0c26.5 0 48-21.5 48-48l0-32c0-26.5-21.5-48-48-48l-64 0c-26.5 0-48 21.5-48 48z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M304 256c26.5 0 48 21.5 48 48l0 48 112 0c26.5 0 48 21.5 48 48l0 64-.2 4.9C509.3 493.1 488.9 512 464 512L48 512c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48l112 0 0-16c0-26.5 21.5-48 48-48l96 0zM48 352c-8.8 0-16 7.2-16 16l0 96c0 8.8 7.2 16 16 16l112 0 0-128-112 0zm160-64c-8.8 0-16 7.2-16 16l0 176 128 0 0-176c0-8.8-7.2-16-16-16l-96 0zM352 480l112 0c8.8 0 16-7.2 16-16l0-64c0-8.8-7.2-16-16-16l-112 0 0 96zM255.8 22.4c6 0 11.5 3.4 14.2 8.8l22.8 44.7 49.5 7.9 2.2 .5c4.9 1.5 8.9 5.3 10.5 10.3 1.9 5.7 .4 12-3.9 16.2l-35.4 35.5 7.8 49.6c.9 5.9-1.5 11.9-6.4 15.4s-11.3 4-16.7 1.3l-44.7-22.8-44.7 22.8c-5.4 2.7-11.8 2.2-16.7-1.3s-7.3-9.5-6.4-15.4l7.8-49.6-35.4-35.5c-4.2-4.3-5.7-10.5-3.9-16.2s6.8-9.9 12.7-10.8l49.5-7.9 22.8-44.7 1.2-1.9c3-4.2 7.8-6.8 13.1-6.8zM243.6 97.6c-2.3 4.6-6.7 7.7-11.8 8.5l-26.6 4.2 19.1 19.1c3.6 3.6 5.3 8.7 4.5 13.8l-4.2 26.6 24-12.2 3.5-1.3c3.7-.9 7.5-.5 11 1.3l24 12.2-4.2-26.6c-.8-5 .9-10.2 4.5-13.8l19-19.1-26.6-4.2c-3.8-.6-7.2-2.5-9.7-5.4l-2.1-3.2-12.2-24-12.2 24z" />
       )}
     </svg>
   );

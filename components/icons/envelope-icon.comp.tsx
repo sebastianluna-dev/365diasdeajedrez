@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `envelope`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `envelope`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function EnvelopeIcon({ className, variant = "duotone-light" }: IconProps
       )}
       {variant === "classic-solid" && (
         <path d="M48 64c-26.5 0-48 21.5-48 48 0 15.1 7.1 29.3 19.2 38.4l208 156c17.1 12.8 40.5 12.8 57.6 0l208-156c12.1-9.1 19.2-23.3 19.2-38.4 0-26.5-21.5-48-48-48L48 64zM0 196L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-188-198.4 148.8c-34.1 25.6-81.1 25.6-115.2 0L0 196z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M0 122.5l0-2.5 .1 0C1.3 88.9 27 64 58.5 64l395 0c31.5 0 57.1 24.9 58.4 56l.1 0 0 264c0 35.3-28.7 64-64 64L64 448c-35.3 0-64-28.7-64-64L0 122.5zm480 53.1L303.3 305.1c-28.2 20.6-66.5 20.6-94.6 0L32 175.6 32 384c0 17.7 14.3 32 32 32l384 0c17.7 0 32-14.3 32-32l0-208.4zm0-53.1c0-14.6-11.9-26.5-26.5-26.5l-395 0c-14.6 0-26.5 11.9-26.5 26.5 0 8.4 4 16.4 10.8 21.4L227.6 279.3c16.9 12.4 39.9 12.4 56.8 0L469.2 143.8c6.8-5 10.8-12.9 10.8-21.4z" />
       )}
     </svg>
   );

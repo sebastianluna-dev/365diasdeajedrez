@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `folder-tree`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `folder-tree`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function FolderTreeIcon({ className, variant = "duotone-light" }: IconPro
       )}
       {variant === "classic-solid" && (
         <path d="M48 24C48 10.7 37.3 0 24 0S0 10.7 0 24L0 392c0 30.9 25.1 56 56 56l184 0 0-48-184 0c-4.4 0-8-3.6-8-8l0-232 192 0 0-48-192 0 0-88zM336 224l192 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-82.7 0c-8.5 0-16.6-3.4-22.6-9.4l-8.6-8.6c-9-9-21.2-14.1-33.9-14.1L336 0c-26.5 0-48 21.5-48 48l0 128c0 26.5 21.5 48 48 48zm0 288l192 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-82.7 0c-8.5 0-16.6-3.4-22.6-9.4l-8.6-8.6c-9-9-21.2-14.1-33.9-14.1L336 288c-26.5 0-48 21.5-48 48l0 128c0 26.5 21.5 48 48 48z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M320 48c0-8.8 7.2-16 16-16l49.5 0c3.2 0 6.2 .9 8.9 2.7l31.9 21.3c7.9 5.3 17.2 8.1 26.6 8.1L528 64c8.8 0 16 7.2 16 16l0 96c0 8.8-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16l0-128zm-32 0l0 128c0 26.5 21.5 48 48 48l192 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-75.2 0c-3.2 0-6.2-.9-8.9-2.7L412.1 8.1C404.2 2.8 394.9 0 385.5 0L336 0c-26.5 0-48 21.5-48 48zm48 272l49.5 0c3.2 0 6.2 .9 8.9 2.7l33.9 22.6c6.6 4.4 14.3 6.7 22.2 6.7l77.6 0c8.8 0 16 7.2 16 16l0 96c0 8.8-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16l0-128c0-8.8 7.2-16 16-16zm-48 16l0 128c0 26.5 21.5 48 48 48l192 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-77.6 0c-1.6 0-3.1-.5-4.4-1.3l-33.9-22.6c-7.9-5.3-17.1-8.1-26.6-8.1L336 288c-26.5 0-48 21.5-48 48zM32 24c0-8.8-7.2-16-16-16S0 15.2 0 24L0 400c0 26.5 21.5 48 48 48l192 0 0-32-192 0c-8.8 0-16-7.2-16-16l0-240 208 0 0-32-208 0 0-104z" />
       )}
     </svg>
   );

@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `desktop-arrow-down`, in Duotone Light (the default), Duotone
- * Solid or Classic Solid, as `variant` says.
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function DesktopArrowDownIcon({ className, variant = "duotone-light" }: I
       )}
       {variant === "classic-solid" && (
         <path d="M280 32l0 158.1 39-39c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-80 80c-9.4 9.4-24.6 9.4-33.9 0l-80-80c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l39 39 0-158.1c0-13.3 10.7-24 24-24s24 10.7 24 24zM64 32l112 0 0 64-80 0c-17.7 0-32 14.3-32 32l0 160c0 17.7 14.3 32 32 32l320 0c17.7 0 32-14.3 32-32l0-160c0-17.7-14.3-32-32-32l-80 0 0-64 112 0c35.3 0 64 28.7 64 64l0 256c0 35.3-28.7 64-64 64l-144 0 16 48 72 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-272 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l72 0 16-48-144 0c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M272 16l0 169.4 52.7-52.7c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6l-80 80c-6.2 6.2-16.4 6.2-22.6 0l-80-80c-6.2-6.2-6.2-16.4 0-22.6s16.4-6.2 22.6 0L240 185.4 240 16c0-8.8 7.2-16 16-16s16 7.2 16 16zM64 32l128 0 0 32-128 0C46.3 64 32 78.3 32 96l0 192 448 0 0-192c0-17.7-14.3-32-32-32l-128 0 0-32 128 0c35.3 0 64 28.7 64 64l0 256c0 35.3-28.7 64-64 64l-117.1 0 10.7 64 58.4 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-288 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l58.4 0 10.7-64-117.1 0c-35.3 0-64-28.7-64-64L0 96C0 60.7 28.7 32 64 32zM480 352l0-32-448 0 0 32c0 17.7 14.3 32 32 32l384 0c17.7 0 32-14.3 32-32zM202.9 480l106.2 0-10.7-64-84.9 0-10.7 64z" />
       )}
     </svg>
   );

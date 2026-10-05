@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `wind`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `wind`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -31,6 +31,9 @@ export function WindIcon({ className, variant = "duotone-light" }: IconProps) {
       )}
       {variant === "classic-solid" && (
         <path d="M288 32c0 17.7 14.3 32 32 32l40 0c13.3 0 24 10.7 24 24s-10.7 24-24 24L32 112c-17.7 0-32 14.3-32 32s14.3 32 32 32l328 0c48.6 0 88-39.4 88-88S408.6 0 360 0L320 0c-17.7 0-32 14.3-32 32zm64 352c0 17.7 14.3 32 32 32l32 0c53 0 96-43 96-96s-43-96-96-96L32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l384 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0c-17.7 0-32 14.3-32 32zM128 512l40 0c48.6 0 88-39.4 88-88s-39.4-88-88-88L32 336c-17.7 0-32 14.3-32 32s14.3 32 32 32l136 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-40 0c-17.7 0-32 14.3-32 32s14.3 32 32 32z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M288 16c0 8.8 7.2 16 16 16l64 0c26.5 0 48 21.5 48 48s-21.5 48-48 48L16 128c-8.8 0-16 7.2-16 16s7.2 16 16 16l352 0c44.2 0 80-35.8 80-80S412.2 0 368 0L304 0c-8.8 0-16 7.2-16 16zm64 384c0 8.8 7.2 16 16 16l56 0c48.6 0 88-39.4 88-88s-39.4-88-88-88L16 240c-8.8 0-16 7.2-16 16s7.2 16 16 16l408 0c30.9 0 56 25.1 56 56s-25.1 56-56 56l-56 0c-8.8 0-16 7.2-16 16zM112 512l64 0c44.2 0 80-35.8 80-80s-35.8-80-80-80L16 352c-8.8 0-16 7.2-16 16s7.2 16 16 16l160 0c26.5 0 48 21.5 48 48s-21.5 48-48 48l-64 0c-8.8 0-16 7.2-16 16s7.2 16 16 16z" />
       )}
     </svg>
   );

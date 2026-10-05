@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `grip-dots`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `grip-dots`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function GripDotsIcon({ className, variant = "duotone-light" }: IconProps
       )}
       {variant === "classic-solid" && (
         <path d="M64 224a64 64 0 1 1 0-128 64 64 0 1 1 0 128zM256 96a64 64 0 1 1 0 128 64 64 0 1 1 0-128zm192 0a64 64 0 1 1 0 128 64 64 0 1 1 0-128zm0 192a64 64 0 1 1 0 128 64 64 0 1 1 0-128zM256 416a64 64 0 1 1 0-128 64 64 0 1 1 0 128zM64 288a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M64 192a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm64-32a64 64 0 1 0 -128 0 64 64 0 1 0 128 0zm160 0a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM256 96a64 64 0 1 0 0 128 64 64 0 1 0 0-128zm224 64a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM448 96a64 64 0 1 0 0 128 64 64 0 1 0 0-128zm32 256a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm-32-64a64 64 0 1 0 0 128 64 64 0 1 0 0-128zM256 384a32 32 0 1 1 0-64 32 32 0 1 1 0 64zm64-32a64 64 0 1 0 -128 0 64 64 0 1 0 128 0zM96 352a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM64 288a64 64 0 1 0 0 128 64 64 0 1 0 0-128z" />
       )}
     </svg>
   );

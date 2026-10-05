@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `temperature-half`, in Duotone Light (the default), Duotone
- * Solid or Classic Solid, as `variant` says.
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function TemperatureHalfIcon({ className, variant = "duotone-light" }: Ic
       )}
       {variant === "classic-solid" && (
         <path d="M160 0C107 0 64 43 64 96l0 164.7C34.5 287 16 325.4 16 368 16 447.5 80.5 512 160 512s144-64.5 144-144c0-42.6-18.5-81-48-107.3L256 96c0-53-43-96-96-96zm64 368c0 35.3-28.7 64-64 64s-64-28.7-64-64c0-26.9 16.5-49.9 40-59.3l0-92.7c0-13.3 10.7-24 24-24s24 10.7 24 24l0 92.7c23.5 9.5 40 32.5 40 59.3z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M160 32c-44.2 0-80 35.8-80 80l0 171.3c0 3.9-1.4 7.7-4 10.6-17.4 19.8-28 45.7-28 74.1 0 61.9 50.1 112 112 112s112-50.1 112-112c0-28.4-10.6-54.3-28-74.1-2.6-2.9-4-6.7-4-10.6L240 112c0-44.2-35.8-80-80-80zM48 112C48 50.1 98.1 0 160 0S272 50.1 272 112l0 165.5c20 24.7 32 56.2 32 90.5 0 79.5-64.5 144-144 144S16 447.5 16 368c0-34.3 12-65.8 32-90.5L48 112zM160 400c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32zm0 32c-35.3 0-64-28.7-64-64 0-29.8 20.4-54.9 48-62l0-82c0-8.8 7.2-16 16-16s16 7.2 16 16l0 82c27.6 7.1 48 32.2 48 62 0 35.3-28.7 64-64 64z" />
       )}
     </svg>
   );

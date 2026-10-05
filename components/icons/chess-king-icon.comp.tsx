@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `chess-king`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `chess-king`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function ChessKingIcon({ className, variant = "duotone-light" }: IconProp
       )}
       {variant === "classic-solid" && (
         <path d="M224-32c17.7 0 32 14.3 32 32l0 32 32 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0 0 64 153.8 0c21.1 0 38.2 17.1 38.2 38.2 0 6.4-1.6 12.7-4.7 18.3L352 384 408.2 454.3c5 6.3 7.8 14.1 7.8 22.2 0 19.6-15.9 35.5-35.5 35.5L67.5 512c-19.6 0-35.5-15.9-35.5-35.5 0-8.1 2.7-15.9 7.8-22.2L96 384 4.7 216.6C1.6 210.9 0 204.6 0 198.2 0 177.1 17.1 160 38.2 160l153.8 0 0-64-32 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l32 0 0-32c0-17.7 14.3-32 32-32z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M224-32c8.8 0 16 7.2 16 16l0 48 64 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-64 0 0 96 182.1 0c14.3 0 25.9 11.6 25.9 25.9 0 4-1 8-2.8 11.6L352 384 408.2 454.3c5 6.3 7.8 14.1 7.8 22.2 0 19.6-15.9 35.5-35.5 35.5L67.6 512c-19.6 0-35.5-15.9-35.5-35.5 0-8.1 2.7-15.9 7.8-22.2L96 384 2.7 197.5C.9 193.9 0 189.9 0 185.9 0 171.6 11.6 160 25.9 160l182.1 0 0-96-64 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l64 0 0-48c0-8.8 7.2-16 16-16zM124.2 400l-3.2 4-56.2 70.3c-.5 .6-.8 1.4-.8 2.2 0 2 1.6 3.5 3.5 3.5l312.9 0c1.5 0 2.7-.9 3.3-2.2l.3-1.4c0-.7-.3-1.5-.8-2.2l0 0-56.2-70.3-3.2-4-199.6 0zm-.4-32l200.4 0 88-176-376.4 0 88 176z" />
       )}
     </svg>
   );

@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `circle-down`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `circle-down`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function CircleDownIcon({ className, variant = "duotone-light" }: IconPro
       )}
       {variant === "classic-solid" && (
         <path d="M256 0a256 256 0 1 0 0 512 256 256 0 1 0 0-512zM244.7 387.3l-104-104c-4.6-4.6-5.9-11.5-3.5-17.4s8.3-9.9 14.8-9.9l56 0 0-96c0-17.7 14.3-32 32-32l32 0c17.7 0 32 14.3 32 32l0 96 56 0c6.5 0 12.3 3.9 14.8 9.9s1.1 12.9-3.5 17.4l-104 104c-6.2 6.2-16.4 6.2-22.6 0z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M256 32a224 224 0 1 0 0 448 224 224 0 1 0 0-448zm0 480a256 256 0 1 1 0-512 256 256 0 1 1 0 512zM171.3 272l84.7 84.7 84.7-84.7-36.7 0c-8.8 0-16-7.2-16-16l0-88c0-4.4-3.6-8-8-8l-48 0c-4.4 0-8 3.6-8 8l0 88c0 8.8-7.2 16-16 16l-36.7 0zM377 281L273 385c-9.4 9.4-24.6 9.4-33.9 0L135 281c-6.9-6.9-8.9-17.2-5.2-26.2S142.3 240 152 240l40 0 0-72c0-22.1 17.9-40 40-40l48 0c22.1 0 40 17.9 40 40l0 72 40 0c9.7 0 18.5 5.8 22.2 14.8s1.7 19.3-5.2 26.2z" />
       )}
     </svg>
   );

@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `up-down`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `up-down`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -34,6 +34,9 @@ export function UpDownIcon({ className, variant = "duotone-light" }: IconProps) 
       )}
       {variant === "classic-solid" && (
         <path d="M406.6 502.6l96-96c9.2-9.2 11.9-22.9 6.9-34.9S492.9 352 480 352l-64 0 0-320c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 320-64 0c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l96 96c12.5 12.5 32.8 12.5 45.3 0zM150.6 9.4c-12.5-12.5-32.8-12.5-45.3 0l-96 96c-9.2 9.2-11.9 22.9-6.9 34.9S19.1 160 32 160l64 0 0 320c0 17.7 14.3 32 32 32s32-14.3 32-32l0-320 64 0c12.9 0 24.6-7.8 29.6-19.8s2.2-25.7-6.9-34.9l-96-96z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M35.3 128L128 35.3 220.7 128 35.3 128zm191 32c16.4 0 29.7-13.3 29.7-29.7 0-7.9-3.1-15.4-8.7-21L145 7c-4.5-4.5-10.6-7-17-7s-12.5 2.5-17 7L8.7 109.4C3.1 114.9 0 122.5 0 130.3 0 146.7 13.3 160 29.7 160l82.3 0 0 336c0 8.8 7.2 16 16 16s16-7.2 16-16l0-336 82.3 0zM368 16l0 336-82.3 0c-16.4 0-29.7 13.3-29.7 29.7 0 7.9 3.1 15.4 8.7 21L367 505c4.5 4.5 10.6 7 17 7s12.5-2.5 17-7L503.3 402.6c5.6-5.6 8.7-13.1 8.7-21 0-16.4-13.3-29.7-29.7-29.7l-82.3 0 0-336c0-8.8-7.2-16-16-16s-16 7.2-16 16zm16 460.7l-92.7-92.7 185.4 0-92.7 92.7z" />
       )}
     </svg>
   );

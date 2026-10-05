@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `rotate-right`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `rotate-right`, in Duotone Light (the default), Duotone
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -34,6 +34,9 @@ export function RotateRightIcon({ className, variant = "duotone-light" }: IconPr
       )}
       {variant === "classic-solid" && (
         <path d="M488 192l-144 0c-9.7 0-18.5-5.8-22.2-14.8s-1.7-19.3 5.2-26.2l46.7-46.7c-75.3-58.6-184.3-53.3-253.5 15.9-75 75-75 196.5 0 271.5s196.5 75 271.5 0c8.2-8.2 15.5-16.9 21.9-26.1 10.1-14.5 30.1-18 44.6-7.9s18 30.1 7.9 44.6c-8.5 12.2-18.2 23.8-29.1 34.7-100 100-262.1 100-362 0S-25 175 75 75c94.3-94.3 243.7-99.6 344.3-16.2L471 7c6.9-6.9 17.2-8.9 26.2-5.2S512 14.3 512 24l0 144c0 13.3-10.7 24-24 24z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M480 43.3L480 144 379.3 144 480 43.3zM488 176c13.3 0 24-10.7 24-24l0-128c0-9.7-5.8-18.5-14.8-22.2S477.9 .2 471 7L419.3 58.8c-100.6-83.5-250-78.1-344.3 16.2-45.6 45.6-70.5 104.3-74.4 164-4 58.8 12.3 119.3 50.3 170.2 84.6 113.3 245 136.5 358.3 51.9 31.5-23.5 56.1-53 73.3-85.7 4.1-7.8 1.1-17.5-6.7-21.6s-17.5-1.1-21.6 6.7c-15 28.6-36.5 54.3-64.1 74.9-99.1 74-239.5 53.7-313.5-45.5-33.3-44.6-47.5-97.5-44-149l0 0C36 188.8 57.7 137.6 97.6 97.6 179.4 15.9 308.6 10.5 396.5 81.5L343 135c-6.9 6.9-8.9 17.2-5.2 26.2S350.3 176 360 176l128 0z" />
       )}
     </svg>
   );

@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `arrow-up-to-line`, in Duotone Light (the default), Duotone
- * Solid or Classic Solid, as `variant` says.
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -31,6 +31,9 @@ export function ArrowUpToLineIcon({ className, variant = "duotone-light" }: Icon
       )}
       {variant === "classic-solid" && (
         <path d="M32 0C14.3 0 0 14.3 0 32S14.3 64 32 64l320 0c17.7 0 32-14.3 32-32S369.7 0 352 0L32 0zM214.6 137.4c-12.5-12.5-32.8-12.5-45.3 0l-128 128c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 237.3 160 480c0 17.7 14.3 32 32 32s32-14.3 32-32l0-242.7 73.4 73.4c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-128-128z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M16 0C7.2 0 0 7.2 0 16S7.2 32 16 32l352 0c8.8 0 16-7.2 16-16S376.8 0 368 0L16 0zM203.3 132.7c-6.2-6.2-16.4-6.2-22.6 0l-144 144c-6.2 6.2-6.2 16.4 0 22.6s16.4 6.2 22.6 0L176 182.6 176 496c0 8.8 7.2 16 16 16s16-7.2 16-16l0-313.4 116.7 116.7c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6l-144-144z" />
       )}
     </svg>
   );

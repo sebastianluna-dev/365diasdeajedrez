@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `video-slash`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `video-slash`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function VideoSlashIcon({ className, variant = "duotone-light" }: IconPro
       )}
       {variant === "classic-solid" && (
         <path d="M41-24.9c-9.4-9.4-24.6-9.4-33.9 0S-2.3-.3 7 9.1l528 528c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-153-153 0-222.2c0-35.3-28.7-64-64-64L129.8 64 41-24.9zM32 128l0 256c0 35.3 28.7 64 64 64l256 0c7.8 0 15.3-1.4 22.2-4L36 105.8c-2.6 6.9-4 14.4-4 22.2zM464 336l73.5 58.8c4.2 3.4 9.4 5.2 14.8 5.2 13.1 0 23.7-10.6 23.7-23.7l0-240.6c0-13.1-10.6-23.7-23.7-23.7-5.4 0-10.6 1.8-14.8 5.2L464 176 464 336z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M27.3-27.2c-6.2-6.2-16.4-6.2-22.6 0s-6.2 16.4 0 22.6l544 544c6.2 6.2 16.4 6.2 22.6 0s6.2-16.4 0-22.6L416 361.5 416 128c0-35.3-28.7-64-64-64L118.5 64 27.3-27.2zM150.5 96L352 96c17.7 0 32 14.3 32 32L384 329.5 150.5 96zM32 128l0 256c0 35.3 28.7 64 64 64l256 0c10.9 0 21.1-2.7 30-7.5l-24.9-24.9c-1.7 .3-3.4 .4-5.1 .4L96 416c-17.7 0-32-14.3-32-32l0-256c0-1.7 .1-3.4 .4-5.1L39.5 98c-4.8 9-7.5 19.2-7.5 30zm432 84l80-60 0 208-80-60 0 40 73.6 55.2c4.2 3.1 9.2 4.8 14.4 4.8 13.3 0 24-10.7 24-24l0-240c0-13.3-10.7-24-24-24-5.2 0-10.2 1.7-14.4 4.8L464 172 464 212z" />
       )}
     </svg>
   );

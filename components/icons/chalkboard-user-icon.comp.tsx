@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `chalkboard-user`, in Duotone Light (the default), Duotone
- * Solid or Classic Solid, as `variant` says.
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function ChalkboardUserIcon({ className, variant = "duotone-light" }: Ico
       )}
       {variant === "classic-solid" && (
         <path d="M192 384c53 0 96 43 96 96 0 17.7-14.3 32-32 32L32 512c-17.7 0-32-14.3-32-32 0-53 43-96 96-96l96 0zM544 32c35.3 0 64 28.7 64 64l0 288c0 33.1-25.2 60.4-57.5 63.7l-6.5 .3-211.1 0c-5.1-24.2-16.3-46.1-32.1-64l51.2 0 0-32c0-17.7 14.3-32 32-32l96 0c17.7 0 32 14.3 32 32l0 32 32 0 0-288-352 0 0 57.3c-14.8-6-31-9.3-48-9.3-5.4 0-10.8 .3-16 1l0-49c0-35.3 28.7-64 64-64l352 0zM144 352a80 80 0 1 1 0-160 80 80 0 1 1 0 160z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M192 64l352 0c17.7 0 32 14.3 32 32l0 288c0 17.7-14.3 32-32 32l-32 0 0-64c0-17.7-14.3-32-32-32l-96 0c-17.7 0-32 14.3-32 32l0 64-29.9 0c4.8 10.1 8.5 20.8 10.9 32l211 0c35.3 0 64-28.7 64-64l0-288c0-35.3-28.7-64-64-64L192 32c-35.3 0-64 28.7-64 64l0 49c5.2-.7 10.6-1 16-1s10.8 .3 16 1l0-49c0-17.7 14.3-32 32-32zM384 416l0-64 96 0 0 64-96 0zM96 272a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm128 0a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 384c-53 0-96 43-96 96l0 16c0 8.8 7.2 16 16 16s16-7.2 16-16l0-16c0-35.3 28.7-64 64-64l96 0c35.3 0 64 28.7 64 64l0 16c0 8.8 7.2 16 16 16s16-7.2 16-16l0-16c0-53-43-96-96-96l-96 0z" />
       )}
     </svg>
   );

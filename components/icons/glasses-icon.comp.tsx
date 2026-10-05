@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `glasses`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `glasses`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function GlassesIcon({ className, variant = "duotone-light" }: IconProps)
       )}
       {variant === "classic-solid" && (
         <path d="M143.3 96c-14 0-26.5 9.2-30.6 22.6L70.4 256 224 256c17.7 0 32 14.3 32 32l64 0c0-17.7 14.3-32 32-32l153.6 0-42.3-137.4C459.2 105.2 446.8 96 432.7 96L400 96c-17.7 0-32-14.3-32-32s14.3-32 32-32l32.7 0c42.1 0 79.4 27.5 91.8 67.8l45.4 147.5c4.1 13.2 6.1 26.9 6.1 40.7l0 96c0 53-43 96-96 96l-64 0c-53 0-96-43-96-96l0-32-64 0 0 32c0 53-43 96-96 96l-64 0c-53 0-96-43-96-96l0-96c0-13.8 2.1-27.5 6.1-40.7L51.5 99.8C63.9 59.5 101.1 32 143.3 32L176 32c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32.7 0zM64 320l0 64c0 17.7 14.3 32 32 32l64 0c17.7 0 32-14.3 32-32l0-64-128 0zm416 96c17.7 0 32-14.3 32-32l0-64-128 0 0 64c0 17.7 14.3 32 32 32l64 0z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M128.3 64C106.8 64 88 78.2 82.1 98.8L37.2 256 224 256c17.7 0 32 14.3 32 32l64 0c0-17.7 14.3-32 32-32l186.8 0-44.9-157.2C488 78.2 469.2 64 447.7 64L416 64c-8.8 0-16-7.2-16-16s7.2-16 16-16l31.7 0c35.7 0 67.1 23.7 76.9 58l48.3 169c2 7.1 3.1 14.5 3.1 22l0 103c0 53-43 96-96 96l-64 0c-53 0-96-43-96-96l0-64-64 0 0 64c0 53-43 96-96 96l-64 0c-53 0-96-43-96-96L0 281c0-7.4 1-14.8 3.1-22L51.4 90c9.8-34.3 41.2-58 76.9-58L160 32c8.8 0 16 7.2 16 16s-7.2 16-16 16l-31.7 0zM544 288l-192 0 0 96c0 35.3 28.7 64 64 64l64 0c35.3 0 64-28.7 64-64l0-96zM32 288l0 96c0 35.3 28.7 64 64 64l64 0c35.3 0 64-28.7 64-64l0-96-192 0z" />
       )}
     </svg>
   );

@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `chess-rook`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `chess-rook`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function ChessRookIcon({ className, variant = "duotone-light" }: IconProp
       )}
       {variant === "classic-solid" && (
         <path d="M0 32L0 133.5c0 17 6.7 33.3 18.7 45.3L64 224 64 384 7.8 454.3C2.7 460.6 0 468.4 0 476.5 0 496.1 15.9 512 35.5 512l312.9 0c19.6 0 35.5-15.9 35.5-35.5 0-8.1-2.7-15.9-7.8-22.2l-56.2-70.3 0-160 45.3-45.3c12-12 18.7-28.3 18.7-45.3L384 32c0-17.7-14.3-32-32-32L320 0c-17.7 0-32 14.3-32 32l0 32-48 0 0-32c0-17.7-14.3-32-32-32L176 0c-17.7 0-32 14.3-32 32l0 32-48 0 0-32C96 14.3 81.7 0 64 0L32 0C14.3 0 0 14.3 0 32z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M352 0c17.7 0 32 14.3 32 32l0 138.7c0 13.8-4.5 27.3-12.8 38.4l-35.2 46.9 0 128 42.7 71.1c3.5 5.8 5.3 12.5 5.3 19.3 0 20.8-16.8 37.6-37.6 37.6L37.6 512c-20.8 0-37.6-16.8-37.6-37.6 0-6.8 1.8-13.5 5.3-19.3L48 384 48 256 12.8 209.1C4.5 198 0 184.5 0 170.7L0 32C0 14.3 14.3 0 32 0L352 0zM75.4 400.5L32.8 471.5c-.2 .4-.4 .9-.6 1.3l-.2 1.5c0 3.1 2.5 5.6 5.6 5.6l308.8 0c3.1 0 5.6-2.5 5.6-5.6 0-.5-.1-1-.2-1.5l-.6-1.3-42.7-71.1c-.1-.2-.2-.3-.2-.5L75.7 400c-.1 .2-.2 .3-.2 .5zM32 170.7c0 6.9 2.2 13.7 6.4 19.2l35.2 46.9c4.2 5.5 6.4 12.3 6.4 19.2l0 112 224 0 0-112c0-6.9 2.3-13.6 6.4-19.2l35.2-46.9 2.7-4.4c2.4-4.6 3.7-9.7 3.7-14.8l0-138.7-80 0 0 48c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-48-96 0 0 48c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-48-80 0 0 138.7z" />
       )}
     </svg>
   );

@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `wrench`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `wrench`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function WrenchIcon({ className, variant = "duotone-light" }: IconProps) 
       )}
       {variant === "classic-solid" && (
         <path d="M509.4 98.6c7.6-7.6 20.3-5.7 24.1 4.3 6.8 17.7 10.5 37 10.5 57.1 0 88.4-71.6 160-160 160-17.5 0-34.4-2.8-50.2-8L146.9 498.9c-28.1 28.1-73.7 28.1-101.8 0s-28.1-73.7 0-101.8L232 210.2c-5.2-15.8-8-32.6-8-50.2 0-88.4 71.6-160 160-160 20.1 0 39.4 3.7 57.1 10.5 10 3.8 11.8 16.5 4.3 24.1l-88.7 88.7c-3 3-4.7 7.1-4.7 11.3l0 41.4c0 8.8 7.2 16 16 16l41.4 0c4.2 0 8.3-1.7 11.3-4.7l88.7-88.7z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M208 168c0-92.8 75.2-168 168-168 28.2 0 54.7 6.9 78.1 19.2 4.5 2.4 7.6 6.7 8.4 11.8s-.9 10.1-4.5 13.7l-89.9 89.9 0 41.4 41.4 0 89.9-89.9c3.6-3.6 8.7-5.3 13.7-4.5s9.4 3.9 11.8 8.4c12.3 23.3 19.2 49.9 19.2 78.1 0 92.8-75.2 168-168 168-19.8 0-38.8-3.4-56.5-9.7L146.9 498.9c-28.1 28.1-73.7 28.1-101.8 0s-28.1-73.7 0-101.8L217.7 224.5c-6.3-17.7-9.7-36.7-9.7-56.5zM376 32c-75.1 0-136 60.9-136 136 0 19.2 4 37.5 11.1 54 2.6 6 1.3 13-3.4 17.7L67.7 419.7c-15.6 15.6-15.6 40.9 0 56.6s40.9 15.6 56.6 0L304.3 296.2c4.6-4.6 11.6-6 17.7-3.4 16.5 7.2 34.8 11.1 54 11.1 75.1 0 136-60.9 136-136 0-14.9-2.4-29.2-6.8-42.6l-77.9 77.9c-3 3-7.1 4.7-11.3 4.7l-64 0c-8.8 0-16-7.2-16-16l0-64c0-4.2 1.7-8.3 4.7-11.3l77.9-77.9C405.2 34.4 390.9 32 376 32z" />
       )}
     </svg>
   );

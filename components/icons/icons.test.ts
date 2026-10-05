@@ -6,7 +6,7 @@ import { ICON_VARIANTS } from "./icon-variant.const";
 // The icon set is Font Awesome Pro's, pasted one icon per file, and
 // three things keep it findable and legal: each file is named as Font Awesome
 // names the icon, so `chess-knight` is found by writing `ChessKnightIcon`;
-// each takes `IconProps` and draws its three styles behind `variant`; and each
+// each takes `IconProps` and draws its four styles behind `variant`; and each
 // carries the licence's attribution. The gallery story draws them all. The
 // method is docs/content/components/index.mdx, "Icons".
 
@@ -37,7 +37,7 @@ describe("components/icons", () => {
     expect(wrong).toEqual([]);
   });
 
-  it("gives every Font Awesome icon IconProps, its three styles and the licence's attribution", () => {
+  it("gives every Font Awesome icon IconProps, its four styles and the licence's attribution", () => {
     const wrong = fontAwesome.flatMap((file) => {
       const source = read(file);
       const missing = [

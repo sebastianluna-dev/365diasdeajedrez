@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `bolt-auto`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `bolt-auto`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function BoltAutoIcon({ className, variant = "duotone-light" }: IconProps
       )}
       {variant === "classic-solid" && (
         <path d="M339.6 22.7c11.8 9.1 15.7 25.2 9.4 38.7L274 224 384 224c13.5 0 25.6 8.5 30.2 21.3s.5 27-10 35.5l-256 208c-11.6 9.4-28.1 9.6-39.8 .4s-15.7-25.2-9.4-38.7L174 288 64 288c-13.5 0-25.6-8.5-30.2-21.3s-.5-27 10-35.5l256-208c11.6-9.4 28.1-9.6 39.8-.4zM464 288c9.1 0 17.4 5.1 21.5 13.3l88 176c5.9 11.9 1.1 26.3-10.7 32.2s-26.3 1.1-32.2-10.7l-13.4-26.7-106.3 0-13.4 26.7c-5.9 11.9-20.3 16.7-32.2 10.7s-16.7-20.3-10.7-32.2l88-176c4.1-8.1 12.4-13.3 21.5-13.3zM434.8 424l58.3 0-29.2-58.3-29.2 58.3z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M245 210.6L320 48 64 256 174 256c10.9 0 21.1 5.6 27 14.8s6.7 20.7 2.1 30.7L128 464 384 256 274 256c-10.9 0-21.1-5.6-27-14.8s-6.7-20.7-2.1-30.7zM349.1 61.4C301.3 164.9 276.3 219.1 274 224l110 0c13.5 0 25.6 8.5 30.2 21.3s.5 27-10 35.5l-256 208c-11.6 9.4-28.1 9.6-39.8 .4s-15.7-25.2-9.4-38.7c47.8-103.5 72.8-157.7 75-162.6L64 288c-13.5 0-25.6-8.5-30.2-21.3s-.5-27 10-35.5l256-208c11.6-9.4 28.1-9.6 39.8-.4s15.7 25.2 9.4 38.7zM448 288c6.1 0 11.6 3.4 14.3 8.8l96 192c4 7.9 .7 17.5-7.2 21.5s-17.5 .7-21.5-7.2l-19.6-39.2-124.2 0-19.6 39.2c-4 7.9-13.6 11.1-21.5 7.2s-11.1-13.6-7.2-21.5l96-192c2.7-5.4 8.2-8.8 14.3-8.8zm0 51.8l-46.1 92.2 92.2 0-46.1-92.2z" />
       )}
     </svg>
   );

@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `image-polaroid`, in Duotone Light (the default), Duotone
- * Solid or Classic Solid, as `variant` says.
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function ImagePolaroidIcon({ className, variant = "duotone-light" }: Icon
       )}
       {variant === "classic-solid" && (
         <path d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM96 96l256 0c17.7 0 32 14.3 32 32l0 192c0 17.7-14.3 32-32 32L96 352c-17.7 0-32-14.3-32-32l0-192c0-17.7 14.3-32 32-32zm64 64a32 32 0 1 0 -64 0 32 32 0 1 0 64 0zM323.4 320c15.8 0 28.6-12.8 28.6-28.6 0-7.3-2.8-14.4-7.9-19.7L247.3 169.9c-6-6.4-14.4-9.9-23.2-9.9l-.3 0c-8.8 0-17.1 3.6-23.2 9.9L103.9 271.7c-5.1 5.3-7.9 12.4-7.9 19.7 0 15.8 12.8 28.6 28.6 28.6l198.8 0z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M32 384l384 0 0 32c0 17.7-14.3 32-32 32L64 448c-17.7 0-32-14.3-32-32l0-32zM416 96l0 256-384 0 0-256c0-17.7 14.3-32 32-32l320 0c17.7 0 32 14.3 32 32zm32 256l0-256c0-35.3-28.7-64-64-64L64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-64zM199 154.5l-93.8 95.3c-5.9 6-9.2 14-9.2 22.4 0 17.6 14.3 31.9 31.9 31.9l192.2 0c17.6 0 31.9-14.3 31.9-31.9 0-8.4-3.3-16.4-9.2-22.4L249 154.5c-6.6-6.7-15.6-10.5-25-10.5s-18.4 3.8-25 10.5zM224 176c.8 0 1.6 .3 2.2 .9l93.6 95.1-191.7 0 93.6-95.1c.6-.6 1.4-.9 2.2-.9zm-112-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z" />
       )}
     </svg>
   );

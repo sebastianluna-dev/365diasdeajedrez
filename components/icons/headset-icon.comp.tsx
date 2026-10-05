@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `headset`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `headset`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function HeadsetIcon({ className, variant = "duotone-light" }: IconProps)
       )}
       {variant === "classic-solid" && (
         <path d="M224 64c-79 0-144.7 57.3-157.7 132.7 9.3-3 19.3-4.7 29.7-4.7l16 0c26.5 0 48 21.5 48 48l0 96c0 26.5-21.5 48-48 48l-16 0c-53 0-96-43-96-96l0-64C0 100.3 100.3 0 224 0S448 100.3 448 224l0 168.1c0 66.3-53.8 120-120.1 120l-87.9-.1-32 0c-26.5 0-48-21.5-48-48s21.5-48 48-48l32 0c26.5 0 48 21.5 48 48l0 0 40 0c39.8 0 72-32.2 72-72l0-20.9c-14.1 8.2-30.5 12.8-48 12.8l-16 0c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48l16 0c10.4 0 20.3 1.6 29.7 4.7-13-75.3-78.6-132.7-157.7-132.7z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M32.2 216.3C36.2 113.8 120.5 32 224 32s187.8 81.8 191.8 184.3c-17-15.1-39.3-24.3-63.8-24.3l-16 0c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48l16 0c24.6 0 47-9.2 64-24.4l0 40.5c0 44.2-35.8 80-80 80l-34.7 0c1.8-5 2.7-10.4 2.7-16 0-26.5-21.5-48-48-48l-64 0c-26.5 0-48 21.5-48 48s21.5 48 48 48c24 0 72 0 143.9 .1 61.9 0 112.1-50.1 112.1-112L448 224C448 100.3 347.7 0 224 0S0 100.3 0 224l0 64c0 53 43 96 96 96l16 0c26.5 0 48-21.5 48-48l0-96c0-26.5-21.5-48-48-48l-16 0c-24.5 0-46.9 9.2-63.8 24.3zM240 480l-48 0c-8.8 0-16-7.2-16-16s7.2-16 16-16l64 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-16 0zM352 224c35.3 0 64 28.7 64 64s-28.7 64-64 64l-16 0c-8.8 0-16-7.2-16-16l0-96c0-8.8 7.2-16 16-16l16 0zM32 288c0-35.3 28.7-64 64-64l16 0c8.8 0 16 7.2 16 16l0 96c0 8.8-7.2 16-16 16l-16 0c-35.3 0-64-28.7-64-64z" />
       )}
     </svg>
   );

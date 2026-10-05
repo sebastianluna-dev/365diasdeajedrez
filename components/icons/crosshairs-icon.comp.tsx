@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `crosshairs`, in Duotone Light (the default), Duotone Solid
- * or Classic Solid, as `variant` says.
+ * Font Awesome's `crosshairs`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function CrosshairsIcon({ className, variant = "duotone-light" }: IconPro
       )}
       {variant === "classic-solid" && (
         <path d="M288-16c17.7 0 32 14.3 32 32l0 18.3c98.1 14 175.7 91.6 189.7 189.7l18.3 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-18.3 0c-14 98.1-91.6 175.7-189.7 189.7l0 18.3c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-18.3C157.9 463.7 80.3 386.1 66.3 288L48 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l18.3 0C80.3 125.9 157.9 48.3 256 34.3L256 16c0-17.7 14.3-32 32-32zM131.2 288c12.7 62.7 62.1 112.1 124.8 124.8l0-12.8c0-17.7 14.3-32 32-32s32 14.3 32 32l0 12.8c62.7-12.7 112.1-62.1 124.8-124.8L432 288c-17.7 0-32-14.3-32-32s14.3-32 32-32l12.8 0C432.1 161.3 382.7 111.9 320 99.2l0 12.8c0 17.7-14.3 32-32 32s-32-14.3-32-32l0-12.8C193.3 111.9 143.9 161.3 131.2 224l12.8 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-12.8 0zM288 208a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M288-16c8.8 0 16 7.2 16 16l0 32.6C415 40.4 503.6 129 511.4 240l32.6 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-32.6 0C503.6 383 415 471.6 304 479.4l0 32.6c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-32.6C161 471.6 72.4 383 64.6 272L32 272c-8.8 0-16-7.2-16-16s7.2-16 16-16l32.6 0C72.4 129 161 40.4 272 32.6L272 0c0-8.8 7.2-16 16-16zM96.7 272c7.7 93.3 82.1 167.6 175.3 175.3l0-47.3c0-8.8 7.2-16 16-16s16 7.2 16 16l0 47.3c93.3-7.7 167.6-82.1 175.3-175.3L432 272c-8.8 0-16-7.2-16-16s7.2-16 16-16l47.3 0C471.6 146.7 397.3 72.4 304 64.7l0 47.3c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-47.3C178.7 72.4 104.4 146.7 96.7 240l47.3 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-47.3 0zM288 232a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" />
       )}
     </svg>
   );

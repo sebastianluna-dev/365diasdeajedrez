@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `lightbulb-exclamation`, in Duotone Light (the default),
- * Duotone Solid or Classic Solid, as `variant` says.
+ * Duotone Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function LightbulbExclamationIcon({ className, variant = "duotone-light" 
       )}
       {variant === "classic-solid" && (
         <path d="M288 448c0 44.2-35.8 80-80 80l-32 0c-44.2 0-80-35.8-80-80l0-16 192 0 0 16zM192 0c106 0 192 86 192 192 0 51.2-20 97.7-52.7 132.1-16.5 17.4-31.2 37.6-38.4 59.9L91.1 384C83.8 361.7 69.2 341.5 52.7 324.1 20 289.7 0 243.2 0 192 0 86 86 0 192 0zm0 248a32 32 0 1 0 0 64 32 32 0 1 0 0-64zm0-176c-18.3 0-32.8 15.7-31.2 34l7.3 88c1 12.4 11.4 22 23.9 22s22.9-9.6 23.9-22l7.3-88c1.5-18.3-12.9-34-31.3-34z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M192 0c106 0 192 86 192 192 0 51.2-20 97.7-52.7 132.1-23.6 24.9-43.3 55.3-43.3 89.6l0 18.3c0 44.2-35.8 80-80 80l-32 0c-44.2 0-80-35.8-80-80l0-18.3C96 379.4 76.3 349 52.7 324.1 20 289.7 0 243.2 0 192 0 86 86 0 192 0zM128 432c0 26.5 21.5 48 48 48l32 0c26.5 0 48-21.5 48-48l0-16-128 0 0 16zM192 32c-88.4 0-160 71.6-160 160 0 42.7 16.7 81.4 43.9 110.1 19.9 20.9 40.4 48.7 48.5 81.9l135.3 0c8.1-33.2 28.6-61 48.5-81.9 27.2-28.7 43.9-67.4 43.9-110.1 0-88.4-71.6-160-160-160zm0 288a24 24 0 1 1 0-48 24 24 0 1 1 0 48zm0-224c13.6 0 24.3 11.6 23.4 25.1l-7.4 104c-.6 8.4-7.6 14.9-16 14.9s-15.4-6.5-16-14.9l-7.4-104c-1-13.6 9.8-25.1 23.4-25.1z" />
       )}
     </svg>
   );

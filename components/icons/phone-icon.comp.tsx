@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `phone`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `phone`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function PhoneIcon({ className, variant = "duotone-light" }: IconProps) {
       )}
       {variant === "classic-solid" && (
         <path d="M160.2 25C152.3 6.1 131.7-3.9 112.1 1.4l-5.5 1.5c-64.6 17.6-119.8 80.2-103.7 156.4 37.1 175 174.8 312.7 349.8 349.8 76.3 16.2 138.8-39.1 156.4-103.7l1.5-5.5c5.4-19.7-4.7-40.3-23.5-48.1l-97.3-40.5c-16.5-6.9-35.6-2.1-47 11.8l-38.6 47.2C233.9 335.4 177.3 277 144.8 205.3L189 169.3c13.9-11.3 18.6-30.4 11.8-47L160.2 25z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M144.4 42.7c-3.4-8-12.2-12.3-20.6-10.1l-6.7 1.8C63.9 49 22.1 99.1 34.2 157.4 67.6 318 194.1 444.4 354.7 477.9 412.9 490 463.1 448.2 477.6 394.9l1.8-6.7c2.3-8.4-2-17.2-10.1-20.6l-93.3-38.9c-7.1-2.9-15.2-.9-20.1 5l-36.6 44.7c-4.7 5.7-12.6 7.5-19.2 4.3-75-35.6-135-97.6-168.1-174-2.8-6.6-1-14.2 4.6-18.7l41.6-34.1c5.9-4.8 8-13 5-20.1L144.4 42.7zm-29-40.9c23.9-6.5 49 5.7 58.5 28.6l38.9 93.3c8.4 20.1 2.6 43.4-14.3 57.2l-32.1 26.3c29 60.5 77.1 110.2 136.3 141.3l28.5-34.9c13.8-16.9 37-22.7 57.2-14.3l93.3 38.9c22.9 9.5 35.1 34.6 28.6 58.5l-1.8 6.7C490.8 468.3 427.2 525.6 348.2 509.2 175.1 473.2 38.9 337 2.9 163.9-13.6 84.8 43.7 21.3 108.7 3.6l6.7-1.8z" />
       )}
     </svg>
   );

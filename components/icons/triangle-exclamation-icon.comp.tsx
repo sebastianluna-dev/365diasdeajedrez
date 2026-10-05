@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `triangle-exclamation`, in Duotone Light (the default),
- * Duotone Solid or Classic Solid, as `variant` says.
+ * Duotone Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function TriangleExclamationIcon({ className, variant = "duotone-light" }
       )}
       {variant === "classic-solid" && (
         <path d="M256 0c14.7 0 28.2 8.1 35.2 21l216 400c6.7 12.4 6.4 27.4-.8 39.5S486.1 480 472 480L40 480c-14.1 0-27.2-7.4-34.4-19.5s-7.5-27.1-.8-39.5l216-400c7-12.9 20.5-21 35.2-21zm0 352a32 32 0 1 0 0 64 32 32 0 1 0 0-64zm0-192c-18.2 0-32.7 15.5-31.4 33.7l7.4 104c.9 12.5 11.4 22.3 23.9 22.3 12.6 0 23-9.7 23.9-22.3l7.4-104c1.3-18.2-13.1-33.7-31.4-33.7z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M256.5 0c14.7 0 28.2 8.1 35.2 21l216 400c6.7 12.4 6.4 27.4-.8 39.5S486.6 480 472.5 480l-432 0c-14.1 0-27.1-7.4-34.3-19.5s-7.5-27.1-.8-39.5l216-400c7-12.9 20.5-21 35.2-21zm0 32c-2.9 0-5.6 1.6-7 4.2l-216 400c-1.3 2.5-1.3 5.5 .2 7.9s4.1 3.9 6.9 3.9l432 0c2.8 0 5.4-1.5 6.9-3.9s1.5-5.4 .2-7.9l-216-400c-1.4-2.6-4.1-4.2-7-4.2zm0 368a24 24 0 1 1 0-48 24 24 0 1 1 0 48zm0-224c13.6 0 24.3 11.6 23.4 25.1l-7.4 104c-.6 8.4-7.6 14.9-16 14.9s-15.4-6.5-16-14.9l-7.4-104c-1-13.6 9.8-25.1 23.4-25.1z" />
       )}
     </svg>
   );

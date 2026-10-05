@@ -4,7 +4,8 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
  * The three dots that open what else can be done to a row, which draws them in
  * Duotone Solid. Its `viewBox` is cut close around the dots, because its
  * callers draw it in a 16×4 box. Font Awesome's `ellipsis`, in Duotone Light
- * (the default), Duotone Solid or Classic Solid, as `variant` says.
+ * (the default), Duotone Solid, Classic Solid or Classic Light, as `variant`
+ * says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -23,6 +24,9 @@ export function EllipsisIcon({ className, variant = "duotone-light" }: IconProps
       )}
       {variant === "classic-solid" && (
         <path d="M0 256a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm168 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm224-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M448 256a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zm-192 0a32 32 0 1 1 -64 0 32 32 0 1 1 64 0zM32 288a32 32 0 1 1 0-64 32 32 0 1 1 0 64z" />
       )}
     </svg>
   );

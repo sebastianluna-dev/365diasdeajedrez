@@ -4,7 +4,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
  * Settings, drawn as three sliders and not as a cog: a toothed wheel at 19px
  * turns to mush, and eight ticks around a circle read as a sun. `GearIcon` is
  * the cog. Font Awesome's `sliders`, in Duotone Light (the default), Duotone
- * Solid or Classic Solid, as `variant` says.
+ * Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -39,6 +39,9 @@ export function SlidersIcon({ className, variant = "duotone-light" }: IconProps)
       )}
       {variant === "classic-solid" && (
         <path d="M32 64C14.3 64 0 78.3 0 96s14.3 32 32 32l86.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 128c17.7 0 32-14.3 32-32s-14.3-32-32-32L265.3 64C253 35.7 224.8 16 192 16s-61 19.7-73.3 48L32 64zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l246.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48l54.7 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-54.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 224zm0 160c-17.7 0-32 14.3-32 32s14.3 32 32 32l54.7 0c12.3 28.3 40.5 48 73.3 48s61-19.7 73.3-48L480 448c17.7 0 32-14.3 32-32s-14.3-32-32-32l-246.7 0c-12.3-28.3-40.5-48-73.3-48s-61 19.7-73.3 48L32 384z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M0 416c0-8.8 7.2-16 16-16l65.6 0c7.4-36.5 39.7-64 78.4-64s71 27.5 78.4 64L496 400c8.8 0 16 7.2 16 16s-7.2 16-16 16l-257.6 0c-7.4 36.5-39.7 64-78.4 64s-71-27.5-78.4-64L16 432c-8.8 0-16-7.2-16-16zm208 0a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM400 256a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zm-48-80c38.7 0 71 27.5 78.4 64l65.6 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-65.6 0c-7.4 36.5-39.7 64-78.4 64s-71-27.5-78.4-64L16 272c-8.8 0-16-7.2-16-16s7.2-16 16-16l257.6 0c7.4-36.5 39.7-64 78.4-64zM192 48a48 48 0 1 0 0 96 48 48 0 1 0 0-96zm78.4 32L496 80c8.8 0 16 7.2 16 16s-7.2 16-16 16l-225.6 0c-7.4 36.5-39.7 64-78.4 64s-71-27.5-78.4-64L16 112c-8.8 0-16-7.2-16-16S7.2 80 16 80l97.6 0C121 43.5 153.3 16 192 16s71 27.5 78.4 64z" />
       )}
     </svg>
   );

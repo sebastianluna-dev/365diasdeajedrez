@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `text-size`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `text-size`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -31,6 +31,9 @@ export function TextSizeIcon({ className, variant = "duotone-light" }: IconProps
       )}
       {variant === "classic-solid" && (
         <path d="M64 128l0-32 64 0 0 320-32 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-32 0 0-320 64 0 0 32c0 17.7 14.3 32 32 32s32-14.3 32-32l0-56c0-22.1-17.9-40-40-40L40 32C17.9 32 0 49.9 0 72l0 56c0 17.7 14.3 32 32 32s32-14.3 32-32zM320 320l0-32 64 0 0 128-32 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-32 0 0-128 64 0 0 32c0 17.7 14.3 32 32 32s32-14.3 32-32l0-56c0-22.1-17.9-40-40-40l-240 0c-22.1 0-40 17.9-40 40l0 56c0 17.7 14.3 32 32 32s32-14.3 32-32z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M32 72c0-4.4 3.6-8 8-8l104 0 0 384-64 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l160 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-64 0 0-384 104 0c4.4 0 8 3.6 8 8l0 72c0 8.8 7.2 16 16 16s16-7.2 16-16l0-72c0-22.1-17.9-40-40-40L40 32C17.9 32 0 49.9 0 72l0 72c0 8.8 7.2 16 16 16s16-7.2 16-16l0-72zM288 264c0-4.4 3.6-8 8-8l104 0 0 192-64 0c-8.8 0-16 7.2-16 16s7.2 16 16 16l160 0c8.8 0 16-7.2 16-16s-7.2-16-16-16l-64 0 0-192 104 0c4.4 0 8 3.6 8 8l0 72c0 8.8 7.2 16 16 16s16-7.2 16-16l0-72c0-22.1-17.9-40-40-40l-240 0c-22.1 0-40 17.9-40 40l0 72c0 8.8 7.2 16 16 16s16-7.2 16-16l0-72z" />
       )}
     </svg>
   );

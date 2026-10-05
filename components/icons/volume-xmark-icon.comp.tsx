@@ -2,7 +2,8 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * The game viewer's sound, off. Font Awesome's `volume-xmark`, in Duotone
- * Light (the default), Duotone Solid or Classic Solid, as `variant` says.
+ * Light (the default), Duotone Solid, Classic Solid or Classic Light, as
+ * `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +38,9 @@ export function VolumeXmarkIcon({ className, variant = "duotone-light" }: IconPr
       )}
       {variant === "classic-solid" && (
         <path d="M48 352l48 0 134.1 119.2c6.4 5.7 14.6 8.8 23.1 8.8 19.2 0 34.8-15.6 34.8-34.8l0-378.4c0-19.2-15.6-34.8-34.8-34.8-8.5 0-16.7 3.1-23.1 8.8L96 160 48 160c-26.5 0-48 21.5-48 48l0 96c0 26.5 21.5 48 48 48zM367 175c-9.4 9.4-9.4 24.6 0 33.9l47 47-47 47c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l47-47 47 47c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-47-47 47-47c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-47 47-47-47c-9.4-9.4-24.6-9.4-33.9 0z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M134.6 329.4L252.7 447.4c.4 .4 .9 .6 1.4 .6 1.1 0 1.9-.9 1.9-1.9l0-380.1c0-1.1-.9-1.9-1.9-1.9-.5 0-1 .2-1.4 .6L134.6 182.6c-6 6-14.1 9.4-22.6 9.4l-64 0c-8.8 0-16 7.2-16 16l0 96c0 8.8 7.2 16 16 16l64 0c8.5 0 16.6 3.4 22.6 9.4zM48 160l64 0 118.1-118.1c6.4-6.4 15-9.9 24-9.9 18.7 0 33.9 15.2 33.9 33.9l0 380.1c0 18.7-15.2 33.9-33.9 33.9-9 0-17.6-3.6-24-9.9L112 352 48 352c-26.5 0-48-21.5-48-48l0-96c0-26.5 21.5-48 48-48zm324.7 20.7c6.2-6.2 16.4-6.2 22.6 0l52.7 52.7 52.7-52.7c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6l-52.7 52.7 52.7 52.7c6.2 6.2 6.2 16.4 0 22.6s-16.4 6.2-22.6 0l-52.7-52.7-52.7 52.7c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l52.7-52.7-52.7-52.7c-6.2-6.2-6.2-16.4 0-22.6z" />
       )}
     </svg>
   );

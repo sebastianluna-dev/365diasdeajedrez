@@ -1,8 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * Font Awesome's `ban`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Font Awesome's `ban`, in Duotone Light (the default), Duotone Solid, Classic
+ * Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function BanIcon({ className, variant = "duotone-light" }: IconProps) {
       )}
       {variant === "classic-solid" && (
         <path d="M367.2 412.5L99.5 144.8c-22.4 31.4-35.5 69.8-35.5 111.2 0 106 86 192 192 192 41.5 0 79.9-13.1 111.2-35.5zm45.3-45.3c22.4-31.4 35.5-69.8 35.5-111.2 0-106-86-192-192-192-41.5 0-79.9 13.1-111.2 35.5L412.5 367.2zM0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M402.7 425.3l-316-316c-34.1 39.3-54.7 90.6-54.7 146.7 0 123.7 100.3 224 224 224 56.1 0 107.4-20.6 146.7-54.7zm22.6-22.6c34.1-39.3 54.7-90.6 54.7-146.7 0-123.7-100.3-224-224-224-56.1 0-107.4 20.6-146.7 54.7l316 316zM0 256a256 256 0 1 1 512 0 256 256 0 1 1 -512 0z" />
       )}
     </svg>
   );

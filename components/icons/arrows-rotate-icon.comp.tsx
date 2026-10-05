@@ -2,8 +2,8 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Flipping the board, in the board's own tools and the explorer. Font
- * Awesome's `arrows-rotate`, in Duotone Light (the default), Duotone Solid or
- * Classic Solid, as `variant` says.
+ * Awesome's `arrows-rotate`, in Duotone Light (the default), Duotone Solid,
+ * Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -32,6 +32,9 @@ export function ArrowsRotateIcon({ className, variant = "duotone-light" }: IconP
       )}
       {variant === "classic-solid" && (
         <path d="M65.9 228.5c13.3-93 93.4-164.5 190.1-164.5 53 0 101 21.5 135.8 56.2 .2 .2 .4 .4 .6 .6l7.6 7.2-47.9 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l128 0c17.7 0 32-14.3 32-32l0-128c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 53.4-11.3-10.7C390.5 28.6 326.5 0 256 0 127 0 20.3 95.4 2.6 219.5 .1 237 12.2 253.2 29.7 255.7s33.7-9.7 36.2-27.1zm443.5 64c2.5-17.5-9.7-33.7-27.1-36.2s-33.7 9.7-36.2 27.1c-13.3 93-93.4 164.5-190.1 164.5-53 0-101-21.5-135.8-56.2-.2-.2-.4-.4-.6-.6l-7.6-7.2 47.9 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 320c-8.5 0-16.7 3.4-22.7 9.5S-.1 343.7 0 352.3l1 127c.1 17.7 14.6 31.9 32.3 31.7S65.2 496.4 65 478.7l-.4-51.5 10.7 10.1c46.3 46.1 110.2 74.7 180.7 74.7 129 0 235.7-95.4 253.4-219.5z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M32.5 241.1C36 188.8 57.7 137.6 97.6 97.6 141.3 53.9 198.6 32 256 32 318 32 377.2 57.5 419.8 102.6L458.9 144 352 144c-8.8 0-16 7.2-16 16s7.2 16 16 16l144 0c8.8 0 16-7.2 16-16l0-144c0-8.8-7.2-16-16-16s-16 7.2-16 16l0 103.8-37-39.1C394.4 29.2 326.8 0 256 0 190.5 0 125 25 75 75 29.3 120.6 4.5 179.2 .6 238.9 0 247.8 6.7 255.4 15.5 256s16.4-6.1 17-14.9zm447 29.9c-3.5 52.3-25.2 103.5-65.1 143.4-43.7 43.7-101 65.6-158.4 65.6-62 0-121.2-25.5-163.8-70.6L53.1 368 160 368c8.8 0 16-7.2 16-16s-7.2-16-16-16L16 336c-8.8 0-16 7.2-16 16L0 496c0 8.8 7.2 16 16 16s16-7.2 16-16l0-103.8 37 39.1c48.6 51.5 116.3 80.6 187 80.6 65.5 0 131-25 181-75 45.6-45.6 70.4-104.3 74.4-164 .6-8.8-6.1-16.4-14.9-17s-16.4 6.1-17 14.9z" />
       )}
     </svg>
   );

@@ -2,7 +2,7 @@ import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
  * Font Awesome's `octagon-exclamation`, in Duotone Light (the default),
- * Duotone Solid or Classic Solid, as `variant` says.
+ * Duotone Solid, Classic Solid or Classic Light, as `variant` says.
  *
  * Font Awesome Pro 7.3.1 by @fontawesome - https://fontawesome.com
  * License - https://fontawesome.com/license (Commercial License) Copyright 2026 Fonticons, Inc.
@@ -37,6 +37,9 @@ export function OctagonExclamationIcon({ className, variant = "duotone-light" }:
       )}
       {variant === "classic-solid" && (
         <path d="M324.2 .1c17 0 33.3 6.7 45.3 18.7L493.6 142.9c12 12 18.7 28.3 18.7 45.2l0 135.6c0 17-6.8 33.2-18.7 45.2L369.5 493.2c-12 12-28.3 18.8-45.3 18.8l-135.6 0c-17 0-33.3-6.8-45.2-18.8L19.3 369C7.3 357 .5 340.8 .5 323.8l0-135.6c0-17 6.8-33.3 18.8-45.2L143.4 18.8c12-12 28.3-18.7 45.2-18.7l135.6 0zM256.4 320a32 32 0 1 0 0 64 32 32 0 1 0 0-64zm0-192c-18.2 0-32.7 15.5-31.4 33.7l7.4 104c.9 12.6 11.4 22.3 23.9 22.3 12.6 0 23-9.7 23.9-22.3l7.4-104c1.3-18.2-13.1-33.7-31.4-33.7z" />
+      )}
+      {variant === "classic-light" && (
+        <path d="M330.9 .1c12.7 0 25 5.1 34 14.1L498.3 147.6c9 9 14.1 21.2 14.1 33.9l0 148.8c0 12.7-5.1 25-14.1 34L364.8 497.9c-9 9-21.2 14.1-34 14.1l-148.8 0c-12.7 0-24.9-5.1-33.9-14.1L14.6 364.4c-9-9-14.1-21.2-14.1-34l0-148.8c0-12.7 5.1-24.9 14.1-33.9L148.1 14.1c9-9 21.2-14.1 33.9-14.1l148.8 0zM182 32.1c-4.2 0-8.3 1.7-11.3 4.7L37.2 170.3c-3 3-4.7 7.1-4.7 11.3l0 148.8c0 4.2 1.7 8.3 4.7 11.3L170.7 475.3c3 3 7.1 4.7 11.3 4.7l148.8 0c4.2 0 8.3-1.7 11.3-4.7L475.7 341.7c3-3 4.7-7.1 4.7-11.3l0-148.8c0-4.2-1.7-8.3-4.7-11.3L342.2 36.8c-3-3-7.1-4.7-11.3-4.7L182 32.1zM256.4 384a24 24 0 1 1 0-48 24 24 0 1 1 0 48zm0-256c13.5 0 24.3 11.4 23.5 24.9l-7.6 136c-.5 8.5-7.5 15.1-16 15.1s-15.5-6.6-16-15.1l-7.6-136c-.8-13.5 10-24.9 23.5-24.9z" />
       )}
     </svg>
   );
