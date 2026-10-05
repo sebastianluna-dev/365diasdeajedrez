@@ -85,12 +85,14 @@ describe("the teacher's read-only view of a student's studies", () => {
       result: { label: "*", code: "ONGOING" },
       source: { label: "Manual" },
       database: { id: "s1", name: "Torneo", userId: "alumna", kind: { code: DATABASE_KIND.STUDY } },
-      _count: { classBlocks: 0 },
+      // The starting position and one ply.
+      _count: { positions: 2 },
       ...dates,
     } as unknown as GameViewRow;
 
     const view = mapStudentGameView("alumna", row);
     expect(view.studyHref).toBe(teacherRoutes.studentStudy("alumna", "s1"));
     expect(view.canEdit).toBe(false);
+    expect(view.moveCount).toBe(1);
   });
 });

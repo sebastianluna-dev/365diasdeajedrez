@@ -145,6 +145,11 @@ export interface GameView extends GameSettingsValues {
   playedAtValue?: string;
   round?: string;
   initialFen?: string;
+  /**
+   * Moves of the main line as a player counts them — White's and Black's are
+   * one —, from the position index: 0 for a game with nothing played yet.
+   */
+  moveCount: number;
   studyId: string;
   studyName: string;
   studyHref: string;

@@ -88,6 +88,9 @@ export const gameViewInclude = {
   analysisMode: { select: { code: true } },
   source: { select: { label: true } },
   database: { select: { id: true, name: true, userId: true, kind: { select: { code: true } } } },
+  // One row of the position index per ply of the main line, plus the starting
+  // position: how long the game is, without reading its PGN.
+  _count: { select: { positions: true } },
 } satisfies Prisma.GameInclude;
 
 export type GameViewRow = Prisma.GameGetPayload<{ include: typeof gameViewInclude }>;
@@ -260,6 +263,7 @@ export function mapGameView(row: GameViewRow, viewerId: string | null): GameView
     playedAtValue: row.playedAt ? row.playedAt.toISOString().slice(0, 10) : undefined,
     round: row.round ?? undefined,
     initialFen: row.initialFen ?? undefined,
+    moveCount: Math.ceil(Math.max(0, row._count.positions - 1) / 2),
     studyId: row.database.id,
     studyName: row.database.name,
     studyHref: platformRoutes.studyDetail(row.database.id),

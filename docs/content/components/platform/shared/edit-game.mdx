@@ -9,7 +9,7 @@ description: "The 'Datos de la partida' dialog over GameFields. It posts to the 
 | File       | `components/platform/shared/edit-game/edit-game.comp.tsx`                                                                                                                                                                       |
 | Kind       | Client Component                                                                                                                                                                                                                |
 | Stylesheet | `edit-game.comp.css` → block `.edit-game`                                                                                                                                                                                       |
-| Story      | `edit-game.stories.tsx` (`platform/shared/EditGame`): closed, open (by its `play` function) and with a label of its own; the action is a spy listed in the Actions panel                                                        |
+| Story      | `edit-game.stories.tsx` (`platform/shared/EditGame`): closed, open (by its `play` function), with a label of its own and with the pencil for a trigger; the action is a spy listed in the Actions panel                         |
 | Used by    | [`GameRecord`](/components/platform/sections/studies/game-view/game-record) (the student's studies), [`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section) (the staff's chapter collections) |
 | Composes   | [`GameFields`](/components/platform/shared/game-fields)                                                                                                                                                                         |
 | Writes     | Whatever `action` it is given: `updateGameDetails()` for a study, `updateChapterGameDetails()` for a chapter's collection                                                                                                       |
@@ -29,6 +29,7 @@ It lives in `shared/` since 2026-09-28, when the staff panel got its own game sc
 | `results`   | `{ code, label }[]`                     | yes                     | The results catalog; its label is the PGN token.                                                                                                                                                                                                                            |
 | `titleHint` | `string`                                | yes                     | What the name is for on this screen, under its field.                                                                                                                                                                                                                       |
 | `label`     | `string`                                | no · default `"Editar"` | Trigger text. In the aside of a game «Editar» is enough, and there the trigger is the platform's **row action** — it sits at the end of a row of the list; any other label means it stands in the editor's bar, among buttons, and it is drawn as one (`.platform-button`). |
+| `trigger`   | `"text" \| "icon"`                      | no · default `"text"`   | `text` writes the label; `icon` is a pencil with no word (`PenToSquareIcon`, 22px in a 28px box, named «Editar los datos de la partida»), for the head of a card already titled «Datos de la partida»: the game's record beside a study's board.                            |
 
 ## Behaviour
 
@@ -36,9 +37,9 @@ It lives in `shared/` since 2026-09-28, when the staff panel got its own game sc
 
 ## Markup & styling
 
-Block `.edit-game` (39 lines). The action row holds the two buttons, at its end, and nothing else: it also carried «Se escriben en las cabeceras del PGN.» beside them until 2026-10-05, which the subtitle under the title already says.
+Block `.edit-game` (69 lines). The action row holds the two buttons, at its end, and nothing else: it also carried «Se escriben en las cabeceras del PGN.» beside them until 2026-10-05, which the subtitle under the title already says.
 
-**Elements:** `.edit-game__dialog`, `.edit-game__form`, `.edit-game__head`, `.edit-game__title`, `.edit-game__subtitle`, `.edit-game__body`, `.edit-game__actions`
+**Elements:** `.edit-game__open`, `.edit-game__open-icon` (the pencil: the muted grey, no box, the accent under the pointer, like the gear of a game's row), `.edit-game__dialog`, `.edit-game__form`, `.edit-game__head`, `.edit-game__title`, `.edit-game__subtitle`, `.edit-game__body`, `.edit-game__actions`
 
 **Modifiers and states:** none of its own. The trigger wears `.platform-row-action` or `.platform-button` (see `label`).
 

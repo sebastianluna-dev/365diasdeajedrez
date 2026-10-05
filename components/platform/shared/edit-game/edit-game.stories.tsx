@@ -74,7 +74,7 @@ Reference page: [Components › EditGame](/components/platform/shared/edit-game)
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Closed: «Editar», the action of a row, as it stands beside a game in the study's aside. */
+/** Closed: «Editar», the action of a row, as it stands in the staff's chapter collection. */
 export const Closed: Story = {};
 
 /** Open, by its `play` function: the record in the dialog, «Guardar datos» in ink beside «Cancelar». */
@@ -85,3 +85,6 @@ export const Open: Story = { play: open };
  * screen passes one today: both mount it with «Editar».
  */
 export const WithLabel: Story = { name: "With label", args: { label: "Editar datos" } };
+
+/** With the pencil for a trigger, as in the head of the game's record beside a study's board: no word, named «Editar los datos de la partida». */
+export const WithIcon: Story = { name: "With icon", args: { trigger: "icon" } };
