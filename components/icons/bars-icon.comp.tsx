@@ -1,7 +1,8 @@
 import type { IconProps } from "@/components/icons/icon-variant.const";
 
 /**
- * The game viewer's list of moves, and the site's mobile menu. Font Awesome's
+ * The game viewer's list of moves, the site's mobile menu, and the button
+ * that opens a study's form beside its board (in Duotone Solid). Font Awesome's
  * `bars`, in Duotone Light (the default), Duotone Solid or Classic Solid, as
  * `variant` says.
  *

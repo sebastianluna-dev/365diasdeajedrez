@@ -15,8 +15,8 @@
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   }
 
-  /* The study heads the card: its name and, for its owner, the menu of its
-     actions at the end of the row, level with the name; the rule under it
+  /* The study heads the card: its name and, for its owner, the three bars
+     that open its form, at the end of the row, level with the name; the rule under it
      opens the list. */
   & .study-aside__head {
     display: flex;
@@ -37,13 +37,13 @@
     text-wrap: pretty;
   }
 
-  /* The dots fall in the column of the gears of the rows under them. A gear
+  /* The bars fall in the column of the gears of the rows under them. A gear
      is inset from the card's edge by the list's padding and its own margin,
      and the head by its padding, which is more: the negative margin on the
      right is the difference, in the scale's own steps so it holds when the
      scale goes up. Above and below, the button is taller than a line of the
-     name, and must not make the head taller than a study's without a menu. */
-  & .study-aside__head .study-menu {
+     name, and must not make the head taller than a study's without it. */
+  & .study-aside__head .study-settings {
     margin-block: calc(-1 * var(--platform-space-1));
     margin-right: calc(var(--platform-space-2) + var(--platform-space-1) - var(--platform-space-4));
   }

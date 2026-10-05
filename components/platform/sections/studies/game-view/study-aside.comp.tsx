@@ -17,7 +17,7 @@ import type {
 } from "@/services/studies/studies.types";
 import { canReorderStudyGames, canShareStudy, STUDY_GAMES_PAGE_SIZE } from "@/services/studies/study-rules";
 import { StudyGames } from "./study-games.comp";
-import { StudyMenu } from "./study-menu.comp";
+import { StudySettings } from "./study-settings.comp";
 import "./study-aside.comp.css";
 
 interface StudyAsideProps {
@@ -81,10 +81,10 @@ export function StudyAside({ study, results, classGames, kinds, students }: Stud
       <section className="study-aside__card">
         {/* The study heads its list: it has no page of its own, so this is
             where it is named and, for its owner, edited or deleted — from
-            the menu at the end of the row. */}
+            the three bars at the end of the row. */}
         <div className="study-aside__head">
           <h2 className="study-aside__name">{study.name}</h2>
-          {canWrite && <StudyMenu study={study} kinds={kinds} />}
+          {canWrite && <StudySettings study={study} kinds={kinds} />}
         </div>
 
         <StudyGames

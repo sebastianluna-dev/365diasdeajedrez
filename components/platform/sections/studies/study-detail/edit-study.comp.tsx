@@ -24,11 +24,18 @@ interface EditStudyProps {
   canChangeKind: boolean;
   /**
    * `button` is the boxed button of the empty study page. `none` draws no
-   * trigger: whoever mounts it opens the dialog through `ref` (the study's
-   * menu beside the board does, from its «Editar datos»).
+   * trigger: whoever mounts it opens the dialog through `ref` (the three
+   * bars in the head of the study's card beside the board, `StudySettings`).
    */
   trigger?: "button" | "none";
   ref?: Ref<EditStudyHandle>;
+  /**
+   * With it the dialog offers «Eliminar estudio» at its foot: pressed, the
+   * dialog closes and this is called, which is where the host opens the
+   * confirmation (`DeleteStudy`). Without it — a study that is never deleted,
+   * a screen with its own delete button — the foot is not drawn.
+   */
+  onDelete?: () => void;
 }
 
 /** What a host that draws its own trigger gets: the way to open the dialog. */
@@ -46,6 +53,7 @@ export function EditStudy({
   canChangeKind,
   trigger = "button",
   ref,
+  onDelete,
 }: EditStudyProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
@@ -120,6 +128,23 @@ export function EditStudy({
             <SubmitButton className="platform-button platform-button_variant_ink">Guardar</SubmitButton>
           </div>
         </form>
+
+        {/* What destroys, apart from what saves and under a rule, as in a
+            game's settings. It only leads to the confirmation. */}
+        {onDelete && (
+          <div className="edit-study__danger">
+            <button
+              type="button"
+              className="edit-study__destroy"
+              onClick={() => {
+                dialogRef.current?.close();
+                onDelete();
+              }}
+            >
+              Eliminar estudio
+            </button>
+          </div>
+        )}
       </dialog>
     </div>
   );

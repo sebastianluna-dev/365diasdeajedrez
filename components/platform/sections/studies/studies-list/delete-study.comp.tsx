@@ -13,8 +13,9 @@ interface DeleteStudyProps {
   /**
    * `icon` is the card's cross; `button` the boxed text button of the empty
    * study page; `none` draws no trigger, and whoever mounts it opens the
-   * dialog through `ref` (the study's menu beside the board, from its
-   * «Eliminar estudio»). The trigger changes, not the dialog.
+   * dialog through `ref` (`StudySettings` beside the board, from «Eliminar
+   * estudio» at the foot of the study's form). The trigger changes, not the
+   * dialog.
    */
   trigger?: "icon" | "button" | "none";
   ref?: Ref<DeleteStudyHandle>;
