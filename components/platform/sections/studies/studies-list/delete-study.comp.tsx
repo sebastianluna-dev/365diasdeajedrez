@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useId, useImperativeHandle, useRef, useState, type Ref } from "react";
 import { deleteStudy } from "@/services/studies/studies.actions";
 import "./delete-study.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
@@ -12,16 +12,24 @@ interface DeleteStudyProps {
   citedGameCount: number;
   /**
    * `icon` is the card's cross; `button` the boxed text button of the empty
-   * study page; `inline` one more word in the aside's row of study actions.
-   * The trigger changes, not the dialog.
+   * study page; `none` draws no trigger, and whoever mounts it opens the
+   * dialog through `ref` (the study's menu beside the board, from its
+   * «Eliminar estudio»). The trigger changes, not the dialog.
    */
-  trigger?: "icon" | "button" | "inline";
+  trigger?: "icon" | "button" | "none";
+  ref?: Ref<DeleteStudyHandle>;
 }
 
-export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "icon" }: DeleteStudyProps) {
+/** What a host that draws its own trigger gets: the way to open the dialog. */
+export interface DeleteStudyHandle {
+  open: () => void;
+}
+
+export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "icon", ref }: DeleteStudyProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [confirmed, setConfirmed] = useState(false);
   const titleId = useId();
+  useImperativeHandle(ref, () => ({ open: () => dialogRef.current?.showModal() }), []);
 
   // Same condition as the server: the checkbox is only required when there is
   // something to lose. If the client let it submit without it where the server
@@ -64,11 +72,7 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
         <button type="button" className="delete-study__open-wide" onClick={() => dialogRef.current?.showModal()}>
           Eliminar estudio
         </button>
-      ) : (
-        <button type="button" className="delete-study__open-inline" onClick={() => dialogRef.current?.showModal()}>
-          Eliminar
-        </button>
-      )}
+      ) : null}
 
       <dialog
         ref={dialogRef}

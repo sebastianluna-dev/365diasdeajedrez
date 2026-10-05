@@ -1,5 +1,3 @@
-import { DeleteStudy } from "@/components/platform/sections/studies/studies-list/delete-study.comp";
-import { EditStudy } from "@/components/platform/sections/studies/study-detail/edit-study.comp";
 import { NewGame } from "@/components/platform/sections/studies/study-detail/new-game.comp";
 import { ShareCollection } from "@/components/platform/sections/studies/study-detail/share-collection.comp";
 import type { GameListItem } from "@/components/platform/shared/game-list/game-list.comp";
@@ -19,6 +17,7 @@ import type {
 } from "@/services/studies/studies.types";
 import { canReorderStudyGames, canShareStudy, STUDY_GAMES_PAGE_SIZE } from "@/services/studies/study-rules";
 import { StudyGames } from "./study-games.comp";
+import { StudyMenu } from "./study-menu.comp";
 import "./study-aside.comp.css";
 
 interface StudyAsideProps {
@@ -81,35 +80,11 @@ export function StudyAside({ study, results, classGames, kinds, students }: Stud
     <aside className="study-aside">
       <section className="study-aside__card">
         {/* The study heads its list: it has no page of its own, so this is
-            where it is named and, for its owner, edited or deleted. */}
+            where it is named and, for its owner, edited or deleted — from
+            the menu at the end of the row. */}
         <div className="study-aside__head">
-          <div className="study-aside__title">
-            <h2 className="study-aside__name">{study.name}</h2>
-            <span className="study-aside__count">{study.gameCount}</span>
-          </div>
-          {canWrite && (
-            <div className="study-aside__tools">
-              <EditStudy
-                id={study.id}
-                name={study.name}
-                description={study.description}
-                kindCode={study.kindCode}
-                kindLabel={study.kindLabel}
-                kinds={kinds}
-                canChangeKind={study.permissions.canChangeKind}
-                size="inline"
-              />
-              {study.permissions.canDelete && (
-                <DeleteStudy
-                  id={study.id}
-                  name={study.name}
-                  gameCount={study.gameCount}
-                  citedGameCount={study.citedGameCount}
-                  trigger="inline"
-                />
-              )}
-            </div>
-          )}
+          <h2 className="study-aside__name">{study.name}</h2>
+          {canWrite && <StudyMenu study={study} kinds={kinds} />}
         </div>
 
         <StudyGames

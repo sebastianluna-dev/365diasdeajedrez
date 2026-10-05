@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef } from "react";
+import { useId, useImperativeHandle, useRef, type Ref } from "react";
 import { updateStudy } from "@/services/studies/studies.actions";
 import type { StudyKindOption } from "@/services/studies/studies.types";
 import "./edit-study.comp.css";
@@ -23,10 +23,17 @@ interface EditStudyProps {
    */
   canChangeKind: boolean;
   /**
-   * `regular` is the boxed button of the empty study page; `inline` is one more
-   * word in the aside's row of study actions, next to "Compartir" and "Eliminar".
+   * `button` is the boxed button of the empty study page. `none` draws no
+   * trigger: whoever mounts it opens the dialog through `ref` (the study's
+   * menu beside the board does, from its «Editar datos»).
    */
-  size?: "regular" | "inline";
+  trigger?: "button" | "none";
+  ref?: Ref<EditStudyHandle>;
+}
+
+/** What a host that draws its own trigger gets: the way to open the dialog. */
+export interface EditStudyHandle {
+  open: () => void;
 }
 
 export function EditStudy({
@@ -37,22 +44,22 @@ export function EditStudy({
   kindLabel,
   kinds,
   canChangeKind,
-  size = "regular",
+  trigger = "button",
+  ref,
 }: EditStudyProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
+  useImperativeHandle(ref, () => ({ open: () => dialogRef.current?.showModal() }), []);
 
   const selected = kinds.some((kind) => kind.code === kindCode) ? kindCode : kinds[0]?.code;
 
   return (
     <div className="edit-study">
-      <button
-        type="button"
-        className={`edit-study__open edit-study__open_size_${size}`}
-        onClick={() => dialogRef.current?.showModal()}
-      >
-        Editar datos
-      </button>
+      {trigger === "button" && (
+        <button type="button" className="edit-study__open" onClick={() => dialogRef.current?.showModal()}>
+          Editar datos
+        </button>
+      )}
 
       <dialog ref={dialogRef} className="platform-dialog edit-study__dialog" aria-labelledby={titleId}>
         <form
