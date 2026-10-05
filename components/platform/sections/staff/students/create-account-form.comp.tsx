@@ -52,7 +52,7 @@ export function CreateAccountForm() {
         </FormField>
 
         <FormField
-          label="Contraseña inicial (opcional)"
+          label="Contraseña inicial"
           hint="Si la dejas vacía se genera una temporal y se muestra una sola vez."
         >
           <input type="text" name="password" maxLength={200} autoComplete="off" />

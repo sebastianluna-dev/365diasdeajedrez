@@ -86,8 +86,10 @@
     }
   }
 
-  /* The band at the bottom: sunk a shade, with the note on one side and the
-     buttons on the other. */
+  /* The band at the bottom: sunk a shade, with removing on one side, when a
+     source is being edited, and the buttons on the other. What is optional
+     each field says beside its label, so the band no longer says «Sólo el
+     tipo es obligatorio.». */
   & .course-source-dialog__foot {
     display: flex;
     align-items: center;
@@ -97,12 +99,6 @@
     padding: var(--platform-space-5) var(--platform-space-8);
     border-top: 1px solid var(--platform-border);
     background: var(--platform-bg);
-  }
-
-  & .course-source-dialog__note {
-    margin: 0;
-    font-size: var(--platform-type-lg);
-    color: var(--platform-text-muted);
   }
 
   /* Removing sits apart from saving, at the band's other end, and only

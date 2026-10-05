@@ -2,6 +2,8 @@
 
 import { cloneElement, useId, type ComponentProps, type ReactElement } from "react";
 import { Form } from "radix-ui";
+import { isOptionalControl } from "@/components/platform/shared/optional-mark/optional-control";
+import { OptionalMark } from "@/components/platform/shared/optional-mark/optional-mark.comp";
 import { PlatformInfoTip } from "@/components/platform/shared/platform-info-tip/platform-info-tip.comp";
 import "./platform-form.comp.css";
 
@@ -62,8 +64,6 @@ interface PlatformFormFieldProps {
    * there, and a textarea's end is wherever its last line is.
    */
   info?: string;
-  /** A word at the label's right end, "Opcional" as a rule, for what may be left empty. */
-  optionalLabel?: string;
   /** Text per validity state; merged over the Spanish defaults. */
   messages?: PlatformFormMessages;
   /** A failure the server reported for this field, shown as its message. */
@@ -74,6 +74,12 @@ interface PlatformFormFieldProps {
  * One field: label, control and the messages that answer the control's
  * validity. Invalid state is a `data-invalid` attribute on the field, which
  * the stylesheet reads; nothing is tracked by hand.
+ *
+ * A control one can leave empty and that has no `required` — a textarea, an
+ * input one types into — gets «Opcional» beside the label (`OptionalMark`),
+ * read from the control itself, so the mark and the validation cannot
+ * disagree and no caller writes the word. Selects and cards get none: they
+ * always show their choice.
  */
 export function PlatformFormField({
   name,
@@ -81,7 +87,6 @@ export function PlatformFormField({
   children,
   hint,
   info,
-  optionalLabel,
   messages,
   serverError,
 }: PlatformFormFieldProps) {
@@ -95,7 +100,7 @@ export function PlatformFormField({
     >
       <div className="platform-form__label-row">
         <Form.Label className="platform-form__label">{label}</Form.Label>
-        {optionalLabel && <span className="platform-form__optional">{optionalLabel}</span>}
+        {isOptionalControl(children) && <OptionalMark />}
       </div>
       <Form.Control asChild>{children}</Form.Control>
       {/* After the control, and outside the label, so neither the label nor
@@ -123,6 +128,12 @@ export function PlatformFormField({
 
 interface PlatformFormGroupProps {
   label: string;
+  /**
+   * The group may be left with nothing chosen (a set of check cards with no
+   * minimum): it gets «Opcional» beside its label. Said here because a group
+   * has no `required` to read.
+   */
+  optional?: boolean;
   /** The group control (`PlatformChoiceCards`, a set of checkboxes…): it is told which element names it. */
   children: ReactElement<{ "aria-labelledby"?: string }>;
   hint?: string;
@@ -134,7 +145,7 @@ interface PlatformFormGroupProps {
  * with `aria-labelledby`. Same look as a field; no validity messages, because
  * a group with a default is never invalid.
  */
-export function PlatformFormGroup({ label, children, hint }: PlatformFormGroupProps) {
+export function PlatformFormGroup({ label, optional = false, children, hint }: PlatformFormGroupProps) {
   const labelId = useId();
 
   return (
@@ -143,6 +154,7 @@ export function PlatformFormGroup({ label, children, hint }: PlatformFormGroupPr
         <span id={labelId} className="platform-form__label">
           {label}
         </span>
+        {optional && <OptionalMark />}
       </div>
       {cloneElement(children, { "aria-labelledby": labelId })}
       {hint && <span className="platform-form__hint">{hint}</span>}

@@ -193,7 +193,7 @@ export function LessonEditorSection({
               <input type="text" name="name" defaultValue={lesson.name} maxLength={160} required />
             </FormField>
 
-            <FormField label="Descripción (opcional)">
+            <FormField label="Descripción">
               <textarea name="description" defaultValue={lesson.description ?? ""} maxLength={1000} />
             </FormField>
 
@@ -211,12 +211,12 @@ export function LessonEditorSection({
                 />
               </FormField>
 
-              <FormField label="Duración estimada (minutos, opcional)">
+              <FormField label="Duración estimada (minutos)">
                 <input type="number" name="estimatedDuration" min={0} defaultValue={lesson.estimatedDuration ?? ""} />
               </FormField>
             </div>
 
-            <FormFieldset legend="Temas">
+            <FormFieldset legend="Temas" optional>
               <PlatformCheckCards
                 name="topicCodes"
                 defaultValue={lesson.topicCodes}

@@ -89,7 +89,7 @@ export function EditStudy({
 
           {/* A few lines, as on creation: what the study is for can take more
               than one. */}
-          <PlatformFormField name="description" label="Descripción" optionalLabel="Opcional">
+          <PlatformFormField name="description" label="Descripción">
             <textarea
               defaultValue={description ?? ""}
               maxLength={500}

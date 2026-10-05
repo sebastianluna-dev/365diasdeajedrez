@@ -85,6 +85,8 @@ import { EditGame } from "@/components/platform/shared/edit-game/edit-game.comp"
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
 import { FormField, FormFieldset } from "@/components/platform/shared/form-field/form-field.comp";
 import { GameFields } from "@/components/platform/shared/game-fields/game-fields.comp";
+import { OptionalFields } from "@/components/platform/shared/optional-fields/optional-fields.comp";
+import { OptionalMark } from "@/components/platform/shared/optional-mark/optional-mark.comp";
 import { GameList } from "@/components/platform/shared/game-list/game-list.comp";
 import { GameSettings } from "@/components/platform/shared/game-settings/game-settings.comp";
 import { LocalDateTime } from "@/components/platform/shared/local-datetime/local-datetime.comp";
@@ -728,7 +730,7 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 </PlatformFormField>
                 <PlatformFormField
                   name="description"
-                  label="Descripción (opcional)"
+                  label="Descripción"
                   serverError="Ya tienes un estudio con ese nombre."
                 >
                   <textarea maxLength={500} rows={2} defaultValue="Las partidas del torneo" />
@@ -738,10 +740,10 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
             <Tile name="FormField" docs="platform-shared-formfield" width={400} height={296}>
               <div className="overview__stack">
                 <FormField label="Nombre para mostrar" hint="Cómo lo verán sus alumnos.">
-                  <input type="text" name="displayName" defaultValue="Fernanda Ríos" />
+                  <input type="text" name="displayName" defaultValue="Fernanda Ríos" required />
                 </FormField>
                 <FormField label="Email" error="Ya existe una cuenta con ese email.">
-                  <input type="email" name="email" defaultValue="fernanda@ejemplo.com" />
+                  <input type="email" name="email" defaultValue="fernanda@ejemplo.com" required />
                 </FormField>
               </div>
             </Tile>
@@ -812,6 +814,22 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 <span>Slug del curso</span>
                 <PlatformInfoTip label="Sobre el slug" text="Se actualiza al cambiar el nombre." />
               </div>
+            </Tile>
+            <Tile name="OptionalMark" docs="platform-shared-optionalmark" width={400} height={96}>
+              <div className="overview__row">
+                <span>Biografía</span>
+                <OptionalMark />
+              </div>
+            </Tile>
+            <Tile name="OptionalFields" docs="platform-shared-optionalfields" width={400} height={264}>
+              <OptionalFields>
+                <FormField label="Evento">
+                  <input type="text" name="event" defaultValue="Nacional Abierto 2026" />
+                </FormField>
+                <FormField label="Ronda">
+                  <input type="text" name="round" />
+                </FormField>
+              </OptionalFields>
             </Tile>
             <Tile name="PlatformSearch" docs="platform-sections-shell-platformsearch" surface width={400} height={144}>
               <PlatformSearch />

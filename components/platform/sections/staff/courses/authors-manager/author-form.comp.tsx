@@ -76,7 +76,7 @@ export function AuthorForm({ author, authors, onSaved, onCancel }: AuthorFormPro
           />
         </PlatformFormField>
 
-        <PlatformFormField name="bio" label="Biografía" optionalLabel="Opcional">
+        <PlatformFormField name="bio" label="Biografía">
           <textarea maxLength={1000} defaultValue={author?.bio} />
         </PlatformFormField>
 

@@ -60,7 +60,7 @@ export function NewStudyForm({ titleId, kinds, action, onClose, onSubmit }: NewS
           />
         </PlatformFormField>
 
-        <PlatformFormField name="description" label="Descripción" optionalLabel="Opcional">
+        <PlatformFormField name="description" label="Descripción">
           <textarea maxLength={500} rows={3} placeholder="Para qué te sirve este estudio" />
         </PlatformFormField>
 

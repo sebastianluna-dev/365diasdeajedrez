@@ -36,7 +36,7 @@ export function TeacherAdminDetailSection({ teacher, assignable, errorCode }: Te
             <input type="text" name="displayName" defaultValue={teacher.displayName} maxLength={120} required />
           </FormField>
 
-          <FormField label="Título (opcional)">
+          <FormField label="Título">
             <input type="text" name="title" defaultValue={teacher.title ?? ""} maxLength={120} />
           </FormField>
 
@@ -44,11 +44,11 @@ export function TeacherAdminDetailSection({ teacher, assignable, errorCode }: Te
             <PlatformSelect name="timezone" options={TIMEZONE_OPTIONS} defaultValue={teacher.timezone ?? "UTC"} />
           </FormField>
 
-          <FormField label="Foto (URL, opcional)">
+          <FormField label="Foto (URL)">
             <input type="url" name="photo" defaultValue={teacher.photo ?? ""} maxLength={500} />
           </FormField>
 
-          <FormField label="Biografía (opcional)">
+          <FormField label="Biografía">
             <textarea name="bio" defaultValue={teacher.bio ?? ""} maxLength={1000} />
           </FormField>
 

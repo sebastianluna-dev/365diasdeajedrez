@@ -65,14 +65,13 @@ export function CourseSourceForm({
           />
         </PlatformFormField>
 
-        <PlatformFormField name="originalTitle" label="Título original" optionalLabel="Opcional">
+        <PlatformFormField name="originalTitle" label="Título original">
           <input type="text" maxLength={300} defaultValue={source?.originalTitle ?? ""} placeholder="Mi sistema" />
         </PlatformFormField>
 
         <PlatformFormField
           name="authors"
           label="Autores"
-          optionalLabel="Opcional"
           hint="Quien firma el recurso, no el curso. Varios, separados por comas."
         >
           <input type="text" maxLength={300} defaultValue={source?.authors ?? ""} placeholder="Aron Nimzowitsch" />
@@ -81,14 +80,13 @@ export function CourseSourceForm({
         <PlatformFormField
           name="url"
           label="Enlace"
-          optionalLabel="Opcional"
           messages={{ typeMismatch: "Tiene que ser una dirección http(s)." }}
         >
           <input type="url" maxLength={2000} defaultValue={source?.url ?? ""} placeholder="https://" />
         </PlatformFormField>
 
         <div className="course-source-dialog__pair">
-          <PlatformFormField name="publicationYear" label="Año de publicación" optionalLabel="Opcional">
+          <PlatformFormField name="publicationYear" label="Año de publicación">
             <input
               type="number"
               min={1400}
@@ -99,7 +97,7 @@ export function CourseSourceForm({
             />
           </PlatformFormField>
 
-          <PlatformFormField name="edition" label="Edición o versión" optionalLabel="Opcional">
+          <PlatformFormField name="edition" label="Edición o versión">
             <input type="text" maxLength={80} defaultValue={source?.edition ?? ""} placeholder="2.ª ed." />
           </PlatformFormField>
         </div>
@@ -107,19 +105,18 @@ export function CourseSourceForm({
         <PlatformFormField
           name="specificReference"
           label="Referencia específica"
-          optionalLabel="Opcional"
           hint="Capítulos, páginas, lecciones o secciones que usa el curso."
         >
           <textarea maxLength={500} rows={2} defaultValue={source?.specificReference ?? ""} />
         </PlatformFormField>
 
-        <PlatformFormField name="notes" label="Notas" optionalLabel="Sólo para el equipo">
+        <PlatformFormField name="notes" label="Notas" hint="Sólo para el equipo.">
           <textarea maxLength={1000} rows={2} defaultValue={source?.notes ?? ""} />
         </PlatformFormField>
       </div>
 
       <footer className="course-source-dialog__foot">
-        {isEdit && deleteAction ? (
+        {isEdit && deleteAction && (
           // The same form, another destination: `formAction` sends it to the
           // delete, and `formNoValidate` lets it through whatever the fields hold.
           <button
@@ -131,8 +128,6 @@ export function CourseSourceForm({
           >
             Quitar fuente
           </button>
-        ) : (
-          <p className="course-source-dialog__note">Sólo el tipo es obligatorio.</p>
         )}
         <div className="course-source-dialog__actions">
           <button type="button" className="platform-button" onClick={onClose}>

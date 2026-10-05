@@ -44,7 +44,7 @@ export function TeacherFormSection({ linkableUsers, errorCode }: TeacherFormSect
           <input type="text" name="displayName" maxLength={120} required />
         </FormField>
 
-        <FormField label="Título (opcional)">
+        <FormField label="Título">
           <input type="text" name="title" maxLength={120} />
         </FormField>
 
@@ -70,11 +70,11 @@ export function TeacherFormSection({ linkableUsers, errorCode }: TeacherFormSect
           <input type="email" name="email" maxLength={254} required autoComplete="off" />
         </FormField>
 
-        <FormField label="Contraseña inicial (opcional)">
+        <FormField label="Contraseña inicial">
           <input type="text" name="password" maxLength={200} autoComplete="off" />
         </FormField>
 
-        <FormField label="Título (opcional)">
+        <FormField label="Título">
           <input type="text" name="title" maxLength={120} />
         </FormField>
 
@@ -82,7 +82,7 @@ export function TeacherFormSection({ linkableUsers, errorCode }: TeacherFormSect
           <PlatformSelect name="timezone" options={TIMEZONE_OPTIONS} defaultValue="America/Mexico_City" />
         </FormField>
 
-        <FormField label="Biografía (opcional)">
+        <FormField label="Biografía">
           <textarea name="bio" maxLength={1000} />
         </FormField>
 

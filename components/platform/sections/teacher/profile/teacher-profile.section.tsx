@@ -32,7 +32,7 @@ export function TeacherProfileSection({ profile, errorCode }: TeacherProfileSect
           <input type="text" name="displayName" defaultValue={profile.displayName} maxLength={120} required />
         </FormField>
 
-        <FormField label="Título (opcional)" hint="Por ejemplo: Gran Maestro, Maestro FIDE.">
+        <FormField label="Título" hint="Por ejemplo: Gran Maestro, Maestro FIDE.">
           <input type="text" name="title" defaultValue={profile.title ?? ""} maxLength={120} />
         </FormField>
 
@@ -40,12 +40,12 @@ export function TeacherProfileSection({ profile, errorCode }: TeacherProfileSect
           <PlatformSelect name="timezone" options={TIMEZONE_OPTIONS} defaultValue={profile.timezone ?? "UTC"} />
         </FormField>
 
-        <FormField label="Foto (URL, opcional)" hint="Enlace a una imagen ya publicada.">
+        <FormField label="Foto (URL)" hint="Enlace a una imagen ya publicada.">
           <input type="url" name="photo" defaultValue={profile.photo ?? ""} maxLength={500} />
         </FormField>
       </div>
 
-      <FormField label="Biografía (opcional)">
+      <FormField label="Biografía">
         <textarea name="bio" defaultValue={profile.bio ?? ""} maxLength={1000} />
       </FormField>
 

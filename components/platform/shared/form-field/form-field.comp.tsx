@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { isOptionalControl } from "@/components/platform/shared/optional-mark/optional-control";
+import { OptionalMark } from "@/components/platform/shared/optional-mark/optional-mark.comp";
 import { PlatformInfoTip } from "@/components/platform/shared/platform-info-tip/platform-info-tip.comp";
 import "./form-field.comp.css";
 
@@ -26,11 +28,19 @@ interface FormFieldProps {
  * Stateless: forms are `<form action={serverAction}>` and errors come from
  * the server, not from client-side validation. The one piece with state is
  * the "i" of a field that has `info`, which is a client leaf of its own.
+ *
+ * A control one can leave empty and that has no `required` gets «Opcional»
+ * beside the label (`OptionalMark`), read from the control itself; nobody
+ * writes «(opcional)» in a label. The mark is inside the `<label>` but hidden
+ * from screen readers, so the field's name stays its label.
  */
 export function FormField({ label, children, hint, info, error }: FormFieldProps) {
   const body = (
     <>
-      <span className="platform-field__label">{label}</span>
+      <span className="platform-field__label-row">
+        <span className="platform-field__label">{label}</span>
+        {isOptionalControl(children) && <OptionalMark />}
+      </span>
       <span className="platform-field__control">{children}</span>
       {hint && <span className="platform-field__hint">{hint}</span>}
       {error && (
@@ -61,6 +71,11 @@ export function FormField({ label, children, hint, info, error }: FormFieldProps
 
 interface FormFieldsetProps {
   legend: string;
+  /**
+   * The group may be left with nothing chosen: it gets «Opcional» beside its
+   * legend. Said here because a group has no `required` to read.
+   */
+  optional?: boolean;
   /** The group's control: `PlatformCheckCards` or `PlatformChoiceCards`, which draw their own boxes. */
   children: ReactNode;
   hint?: string;
@@ -70,10 +85,13 @@ interface FormFieldsetProps {
  * For a group of choices a single `<label>` cannot name: the legend over the
  * cards, with no frame of its own, since the cards already draw one each.
  */
-export function FormFieldset({ legend, children, hint }: FormFieldsetProps) {
+export function FormFieldset({ legend, optional = false, children, hint }: FormFieldsetProps) {
   return (
     <fieldset className="platform-field platform-field_variant_group">
-      <legend className="platform-field__label">{legend}</legend>
+      <legend className="platform-field__label-row">
+        <span className="platform-field__label">{legend}</span>
+        {optional && <OptionalMark />}
+      </legend>
       <div className="platform-field__control">{children}</div>
       {hint && <span className="platform-field__hint">{hint}</span>}
     </fieldset>

@@ -123,7 +123,7 @@ export function BlockForm({ action, kind, options, block, submitLabel, onCancel 
         </>
       )}
 
-      <FormField label="Pie o nota (opcional)">
+      <FormField label="Pie o nota">
         <input type="text" name="caption" defaultValue={block?.caption ?? ""} maxLength={200} />
       </FormField>
 

@@ -4,6 +4,14 @@
   gap: var(--platform-space-2);
   min-width: 0;
 
+  /* The label, and «Opcional» after it when the field says it. */
+  & .platform-field__label-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--platform-space-1) var(--platform-space-2);
+  }
+
   & .platform-field__label {
     font-size: var(--platform-type-md);
     color: var(--platform-text-muted);
@@ -72,7 +80,7 @@
     display: contents;
   }
 
-  &.platform-field_with_info .platform-field__label {
+  &.platform-field_with_info .platform-field__label-row {
     grid-row: 1;
   }
 
@@ -109,7 +117,7 @@
   }
 
   /* Without a border to sit on, the legend has no side gap to keep. */
-  & .platform-field__label {
+  & .platform-field__label-row {
     padding: 0;
   }
 }

@@ -11,9 +11,9 @@ Also exports `PlatformFormField`, `PlatformFormGroup` and the types `PlatformFor
 | File       | `components/platform/shared/platform-form/platform-form.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                           |
 | Kind       | Client Component (`"use client"`: the primitive keeps the validity of each field in context)                                                                                                                                                                                                                                                                                                                                                                |
 | Stylesheet | `platform-form.comp.css` → block `.platform-form`                                                                                                                                                                                                                                                                                                                                                                                                           |
-| Story      | `platform-form.stories.tsx` (`platform/shared/PlatformForm`): the fields of «Nuevo estudio», with a server error, with a hint, invalid, and a field with its clarification in an "i" (opened by `play`)                                                                                                                                                                                                                                                     |
+| Story      | `platform-form.stories.tsx` (`platform/shared/PlatformForm`): the fields of «Nuevo estudio», with a server error, with a hint, invalid, a field with its clarification in an "i" (opened by `play`), and an optional group                                                                                                                                                                                                                                  |
 | Used by    | [`NewStudy`](/components/platform/sections/studies/studies-list/new-study), [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study), [`GameSettings`](/components/platform/shared/game-settings), [`NewCourse`](/components/platform/sections/staff/courses/new-course), [`AuthorForm`](/components/platform/sections/staff/courses/authors-manager), [`CourseSourceForm`](/components/platform/sections/staff/courses/course-sources) |
-| Uses       | `Form` from `radix-ui`; [`PlatformInfoTip`](/components/platform/shared/platform-info-tip) for a field's `info`                                                                                                                                                                                                                                                                                                                                             |
+| Uses       | `Form` from `radix-ui`; [`PlatformInfoTip`](/components/platform/shared/platform-info-tip) for a field's `info`; [`OptionalMark`](/components/platform/shared/optional-mark) and its `isOptionalControl`                                                                                                                                                                                                                                                    |
 
 ## Purpose
 
@@ -31,29 +31,30 @@ Everything `<form>` takes. `className` is added to `.platform-form`.
 
 ### `PlatformFormField`
 
-| Prop            | Type                   | Required | Meaning                                                                                                                                                                                                                                                                       |
-| --------------- | ---------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`          | `string`               | yes      | The field's name in the submitted `FormData`. Given to the control; the control must not set its own.                                                                                                                                                                         |
-| `label`         | `string`               | yes      | The label text. It targets the control through the `id` the field gives it.                                                                                                                                                                                                   |
-| `children`      | `ReactElement`         | yes      | The control: a native `input`/`textarea`, or a [`PlatformSelect`](/components/platform/shared/platform-select).                                                                                                                                                               |
-| `hint`          | `string`               | no       | Small help text under the control.                                                                                                                                                                                                                                            |
-| `info`          | `string`               | no       | A clarification folded into an "i" **inside the control, at its right end** ([`PlatformInfoTip`](/components/platform/shared/platform-info-tip)), named «Sobre «label»»: for what helps the first time and would be a line of small print every time after. For a text input. |
-| `optionalLabel` | `string`               | no       | A word at the label's right end (\"Opcional\") for a field that may be left empty.                                                                                                                                                                                            |
-| `messages`      | `PlatformFormMessages` | no       | Text per validity state (`valueMissing`, `tooLong`, `typeMismatch`…), merged over Spanish defaults. Only the matching one renders.                                                                                                                                            |
-| `serverError`   | `string`               | no       | A failure the server reported for this field: rendered as its message and the field marked invalid until the user changes the control.                                                                                                                                        |
+| Prop          | Type                   | Required | Meaning                                                                                                                                                                                                                                                                       |
+| ------------- | ---------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`        | `string`               | yes      | The field's name in the submitted `FormData`. Given to the control; the control must not set its own.                                                                                                                                                                         |
+| `label`       | `string`               | yes      | The label text. It targets the control through the `id` the field gives it.                                                                                                                                                                                                   |
+| `children`    | `ReactElement`         | yes      | The control: a native `input`/`textarea`, or a [`PlatformSelect`](/components/platform/shared/platform-select).                                                                                                                                                               |
+| `hint`        | `string`               | no       | Small help text under the control.                                                                                                                                                                                                                                            |
+| `info`        | `string`               | no       | A clarification folded into an "i" **inside the control, at its right end** ([`PlatformInfoTip`](/components/platform/shared/platform-info-tip)), named «Sobre «label»»: for what helps the first time and would be a line of small print every time after. For a text input. |
+| `messages`    | `PlatformFormMessages` | no       | Text per validity state (`valueMissing`, `tooLong`, `typeMismatch`…), merged over Spanish defaults. Only the matching one renders.                                                                                                                                            |
+| `serverError` | `string`               | no       | A failure the server reported for this field: rendered as its message and the field marked invalid until the user changes the control.                                                                                                                                        |
 
 ### `PlatformFormGroup`
 
 For a field whose control is a group, not one element: a `<label>` cannot name a radio group, so the label is plain text and the control is pointed at it with `aria-labelledby` (the child is cloned with that prop). Same look as a field; no validity messages, because a group with a default is never invalid.
 
-| Prop       | Type           | Required | Meaning                                                                                                             |
-| ---------- | -------------- | -------- | ------------------------------------------------------------------------------------------------------------------- |
-| `label`    | `string`       | yes      | The group's name.                                                                                                   |
-| `children` | `ReactElement` | yes      | The group control: [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), a set of checkboxes… |
-| `hint`     | `string`       | no       | Help text under the group.                                                                                          |
+| Prop       | Type           | Required             | Meaning                                                                                                                                                             |
+| ---------- | -------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `label`    | `string`       | yes                  | The group's name.                                                                                                                                                   |
+| `children` | `ReactElement` | yes                  | The group control: [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards), a set of checkboxes…                                                 |
+| `hint`     | `string`       | no                   | Help text under the group.                                                                                                                                          |
+| `optional` | `boolean`      | no · default `false` | The group may be left with nothing chosen (a set of check cards with no minimum): «Opcional» beside its label. Said here because a group has no `required` to read. |
 
 ## Behaviour
 
+- **«Opcional», read from the control** (2026-10-05). A field whose control can be left empty — a `<textarea>`, or an `<input>` one types into (text, email, password, url, tel, number, a date or time) — and has no `required` gets [`OptionalMark`](/components/platform/shared/optional-mark) right after its label: `isOptionalControl(children)`. A search box, a checkbox, a hidden input, a `PlatformSelect` (even with an `emptyOption`) and the choice cards never get it: they are a query, or always show a choice. A required field has no mark at all; the browser and a screen reader already say it. The mark is the label's sibling, outside the name, and `aria-hidden`. It replaced `optionalLabel`, a word each caller wrote at the row's other end, which could say «Opcional» on a required control. Inside [`OptionalFields`](/components/platform/shared/optional-fields) no mark shows.
 - Validation is the browser's (`required`, `maxLength`, `type`, `pattern`). The primitive listens to the `invalid` event, prevents the bubble, focuses the first invalid control and marks its field with `data-invalid`; the matching `Form.Message` renders. Changing the control clears it.
 - `serverError` uses `serverInvalid` on the field: the message shows at once, the control gets `aria-invalid`, and the first server-invalid control is focused.
 - A `PlatformSelect` inside a field submits through the hidden native select the primitive keeps. Give it a `defaultValue` when it is `required`: the hidden select is not a Radix control, so an empty required select would block the submit without a message.
@@ -62,13 +63,15 @@ For a field whose control is a group, not one element: a `<label>` cannot name a
 
 Block `.platform-form`, the root being the `<form>`. Native controls are styled as direct children of the field (`.platform-form__field > input`), because Radix's `Control` renders the given element with no wrapper; a select brings its own look from `.platform-select`.
 
-**Elements:** `.platform-form__field`, `.platform-form__label`, `.platform-form__hint`, `.platform-form__message`, `.platform-form__info` (the "i")
+**Elements:** `.platform-form__field`, `.platform-form__label-row`, `.platform-form__label`, `.platform-form__hint`, `.platform-form__message`, `.platform-form__info` (the "i")
+
+**The label is light** (2026-10-05): the text size (`md`), regular weight, the muted grey, as the staff's forms draw it with `FormField`; it was bold, in the text colour and a step larger, and the owner preferred the lighter one. The label row is a wrapping flex line, the label and the mark after it.
 
 **Modifiers:** `.platform-form__field_with_info`. A field with an "i" is a one-column grid where the control and the "i" share the second row, the "i" at its end and centred; the input keeps room for it (`padding-right`, the scale's `space-12`). The "i" is the control's sibling, outside the label, so the label names the input alone. It is how [`FormField`](/components/platform/shared/form-field)'s `info` looks, for forms not on `PlatformForm` yet.
 
 **States:** `.platform-form__field[data-invalid]` turns the control's border red.
 
-**Tokens:** `--platform-accent`, `--platform-accent-soft`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-accent-soft`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
 
 No media queries.
 
@@ -84,7 +87,7 @@ import { PlatformSelect } from "@/components/platform/shared/platform-select/pla
   <PlatformFormField name="name" label="Nombre" messages={{ valueMissing: "Ponle un nombre al estudio." }}>
     <input type="text" maxLength={120} required autoFocus />
   </PlatformFormField>
-  <PlatformFormField name="description" label="Descripción" optionalLabel="Opcional">
+  <PlatformFormField name="description" label="Descripción">
     <textarea maxLength={500} rows={3} />
   </PlatformFormField>
   <PlatformFormGroup label="Tipo">

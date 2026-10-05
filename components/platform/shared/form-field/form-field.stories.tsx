@@ -41,7 +41,7 @@ Reference page: [Components › FormField](/components/platform/shared/form-fiel
   },
   render: ({ label, hint, error }) => (
     <FormField label={label} hint={hint || undefined} error={error || undefined}>
-      <input type="text" name="displayName" maxLength={120} />
+      <input type="text" name="displayName" maxLength={120} required />
     </FormField>
   ),
   decorators: [
@@ -56,7 +56,7 @@ Reference page: [Components › FormField](/components/platform/shared/form-fiel
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** A text input and its label, as the staff's account form starts. */
+/** A required text input and its label, as the staff's account form starts: no mark, since it cannot be left empty. */
 export const Default: Story = {};
 
 /** With the hint that says what the field is for. */
@@ -91,10 +91,10 @@ export const Focused: Story = {
   },
 };
 
-/** A textarea, which the field draws too: a teacher's biography. */
+/** A textarea, which the field draws too: a teacher's biography, optional, so «Opcional» follows its label. */
 export const Textarea: Story = {
   render: () => (
-    <FormField label="Biografía (opcional)">
+    <FormField label="Biografía">
       <textarea name="bio" maxLength={1000} />
     </FormField>
   ),
@@ -115,6 +115,28 @@ export const WithPlatformSelect: Story = {
         ]}
       />
     </FormField>
+  ),
+};
+
+/**
+ * `FormFieldset` with `optional`: a group that may be left with nothing ticked — a lesson's «Temas» — says
+ * «Opcional» beside its legend, since a group has no `required` to read it from.
+ */
+export const FieldsetOptional: Story = {
+  name: "Fieldset optional",
+  render: () => (
+    <FormFieldset legend="Temas" optional>
+      <PlatformCheckCards
+        name="topicCodes"
+        aria-label="Temas"
+        layout="line"
+        options={[
+          { value: "PIN", label: "Clavada" },
+          { value: "FORK", label: "Doble ataque" },
+          { value: "SKEWER", label: "Enfilada" },
+        ]}
+      />
+    </FormFieldset>
   ),
 };
 

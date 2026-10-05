@@ -1,0 +1,16 @@
+.optional-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--platform-space-4);
+
+  & .optional-fields__note {
+    margin: 0;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-muted);
+  }
+
+  /* The note says it for all of them: no field repeats it. */
+  & .optional-mark {
+    display: none;
+  }
+}

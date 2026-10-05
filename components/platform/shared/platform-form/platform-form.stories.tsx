@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { expect, userEvent, within } from "storybook/test";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
-import { PlatformForm, PlatformFormField } from "./platform-form.comp";
+import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
+import { PlatformForm, PlatformFormField, PlatformFormGroup } from "./platform-form.comp";
 
 interface FormArgs {
   /** Server-side failure to show under the name field. */
@@ -47,7 +48,7 @@ Reference page: [Components › PlatformForm](/components/platform/shared/platfo
       >
         <input type="text" maxLength={120} required placeholder="Nacional Abierto 2026" />
       </PlatformFormField>
-      <PlatformFormField name="description" label="Descripción (opcional)">
+      <PlatformFormField name="description" label="Descripción">
         <textarea maxLength={500} rows={3} placeholder="Para qué te sirve este estudio" />
       </PlatformFormField>
       <PlatformFormField name="kindCode" label="Tipo">
@@ -79,7 +80,7 @@ Reference page: [Components › PlatformForm](/components/platform/shared/platfo
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** The three fields of "Nuevo estudio", valid and untouched. */
+/** The three fields of "Nuevo estudio", valid and untouched: the description, which may be left empty, says «Opcional». */
 export const Default: Story = {};
 
 /** A message from the server under the name: `serverError` renders it and marks the field invalid. */
@@ -116,4 +117,22 @@ export const WithInfo: Story = {
       "Si lo dejas vacío, la partida se nombra por sus jugadores.",
     );
   },
+};
+
+/** A group that may be left with nothing chosen says so with `optional`: «Opcional» beside its label, as a field's. */
+export const OptionalGroup: Story = {
+  render: () => (
+    <PlatformForm onSubmit={(event) => event.preventDefault()}>
+      <PlatformFormGroup label="Temas" optional>
+        <PlatformCheckCards
+          name="topicCodes"
+          layout="line"
+          options={[
+            { value: "PIN", label: "Clavada" },
+            { value: "FORK", label: "Doble ataque" },
+          ]}
+        />
+      </PlatformFormGroup>
+    </PlatformForm>
+  ),
 };

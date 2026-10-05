@@ -35,7 +35,7 @@ export function ResetPasswordForm({ userId }: ResetPasswordFormProps) {
         <input type="hidden" name="userId" value={userId} />
 
         <FormField
-          label="Contraseña nueva (opcional)"
+          label="Contraseña nueva"
           hint="Vacía = se genera una temporal. Al guardar se cierran todas sus sesiones."
         >
           <input type="text" name="password" maxLength={200} autoComplete="off" />

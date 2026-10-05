@@ -63,7 +63,7 @@ export function AssignmentPanel(props: AssignmentPanelProps) {
             />
           </FormField>
 
-          <FormField label="Nota (opcional)">
+          <FormField label="Nota">
             <input type="text" name="note" maxLength={300} />
           </FormField>
 
@@ -144,7 +144,7 @@ export function AssignmentPanel(props: AssignmentPanelProps) {
           />
         </FormField>
 
-        <FormField label="Nota (opcional)">
+        <FormField label="Nota">
           <input type="text" name="note" maxLength={300} />
         </FormField>
 

@@ -3,6 +3,7 @@ import { federationOptions, FIDE_TITLE_LABELS, FIDE_TITLES } from "@/lib/chess/f
 import "./game-fields.comp.css";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { PlatformDatePicker } from "@/components/platform/shared/platform-date-picker/platform-date-picker.comp";
+import { OptionalFields } from "@/components/platform/shared/optional-fields/optional-fields.comp";
 
 // A game's data, in one place.
 //
@@ -12,7 +13,8 @@ import { PlatformDatePicker } from "@/components/platform/shared/platform-date-p
 // on another, the data would be trapped.
 //
 // ALL are optional, also on creation: when analysis starts one does not yet
-// know which game it is going to be.
+// know which game it is going to be. So they are said optional once, over
+// them (`OptionalFields`), and no field carries its own «Opcional».
 
 export interface GameFieldValues {
   title?: string;
@@ -80,87 +82,89 @@ interface GameFieldsProps {
 
 export function GameFields({ values, results, titleHint }: GameFieldsProps) {
   return (
-    <div className="game-fields">
-      <FormField label="Nombre de la partida" info={titleHint}>
-        <input type="text" name="title" defaultValue={values?.title ?? ""} maxLength={120} />
-      </FormField>
+    <OptionalFields>
+      <div className="game-fields">
+        <FormField label="Nombre de la partida" info={titleHint}>
+          <input type="text" name="title" defaultValue={values?.title ?? ""} maxLength={120} />
+        </FormField>
 
-      <div className="game-fields__row">
-        <FormField label="Blancas">
-          <input type="text" name="white" defaultValue={values?.white ?? ""} maxLength={120} />
-        </FormField>
-        <FormField label="Elo de las blancas">
-          <input type="number" name="whiteElo" defaultValue={values?.whiteElo ?? ""} min={100} max={4000} />
-        </FormField>
-      </div>
+        <div className="game-fields__row">
+          <FormField label="Blancas">
+            <input type="text" name="white" defaultValue={values?.white ?? ""} maxLength={120} />
+          </FormField>
+          <FormField label="Elo de las blancas">
+            <input type="number" name="whiteElo" defaultValue={values?.whiteElo ?? ""} min={100} max={4000} />
+          </FormField>
+        </div>
 
-      <div className="game-fields__row">
-        <FormField label="Título de las blancas">
-          <CodeSelect name="whiteTitle" value={values?.whiteTitle} options={TITLE_OPTIONS} emptyLabel="Sin título" />
-        </FormField>
-        <FormField label="Federación de las blancas">
-          <CodeSelect
-            name="whiteCountry"
-            value={values?.whiteCountry}
-            options={federationOptions()}
-            emptyLabel="Sin federación"
-          />
-        </FormField>
-      </div>
+        <div className="game-fields__row">
+          <FormField label="Título de las blancas">
+            <CodeSelect name="whiteTitle" value={values?.whiteTitle} options={TITLE_OPTIONS} emptyLabel="Sin título" />
+          </FormField>
+          <FormField label="Federación de las blancas">
+            <CodeSelect
+              name="whiteCountry"
+              value={values?.whiteCountry}
+              options={federationOptions()}
+              emptyLabel="Sin federación"
+            />
+          </FormField>
+        </div>
 
-      <div className="game-fields__row">
-        <FormField label="Negras">
-          <input type="text" name="black" defaultValue={values?.black ?? ""} maxLength={120} />
-        </FormField>
-        <FormField label="Elo de las negras">
-          <input type="number" name="blackElo" defaultValue={values?.blackElo ?? ""} min={100} max={4000} />
-        </FormField>
-      </div>
+        <div className="game-fields__row">
+          <FormField label="Negras">
+            <input type="text" name="black" defaultValue={values?.black ?? ""} maxLength={120} />
+          </FormField>
+          <FormField label="Elo de las negras">
+            <input type="number" name="blackElo" defaultValue={values?.blackElo ?? ""} min={100} max={4000} />
+          </FormField>
+        </div>
 
-      <div className="game-fields__row">
-        <FormField label="Título de las negras">
-          <CodeSelect name="blackTitle" value={values?.blackTitle} options={TITLE_OPTIONS} emptyLabel="Sin título" />
-        </FormField>
-        <FormField label="Federación de las negras">
-          <CodeSelect
-            name="blackCountry"
-            value={values?.blackCountry}
-            options={federationOptions()}
-            emptyLabel="Sin federación"
-          />
-        </FormField>
-      </div>
+        <div className="game-fields__row">
+          <FormField label="Título de las negras">
+            <CodeSelect name="blackTitle" value={values?.blackTitle} options={TITLE_OPTIONS} emptyLabel="Sin título" />
+          </FormField>
+          <FormField label="Federación de las negras">
+            <CodeSelect
+              name="blackCountry"
+              value={values?.blackCountry}
+              options={federationOptions()}
+              emptyLabel="Sin federación"
+            />
+          </FormField>
+        </div>
 
-      <div className="game-fields__row">
-        <FormField label="Resultado">
-          <PlatformSelect
-            name="resultCode"
-            defaultValue={values?.resultCode ?? "ONGOING"}
-            options={results.map((result) => ({ value: result.code, label: result.label }))}
-          />
-        </FormField>
-        <FormField label="Fecha">
-          <PlatformDatePicker name="playedAt" defaultValue={values?.playedAtValue ?? ""} />
-        </FormField>
-      </div>
+        <div className="game-fields__row">
+          <FormField label="Resultado">
+            <PlatformSelect
+              name="resultCode"
+              defaultValue={values?.resultCode ?? "ONGOING"}
+              options={results.map((result) => ({ value: result.code, label: result.label }))}
+            />
+          </FormField>
+          <FormField label="Fecha">
+            <PlatformDatePicker name="playedAt" defaultValue={values?.playedAtValue ?? ""} />
+          </FormField>
+        </div>
 
-      <div className="game-fields__row">
-        <FormField label="Evento">
-          <input type="text" name="event" defaultValue={values?.event ?? ""} maxLength={120} />
-        </FormField>
-        <FormField label="Lugar">
-          <input type="text" name="site" defaultValue={values?.site ?? ""} maxLength={120} />
-        </FormField>
-      </div>
+        <div className="game-fields__row">
+          <FormField label="Evento">
+            <input type="text" name="event" defaultValue={values?.event ?? ""} maxLength={120} />
+          </FormField>
+          <FormField label="Lugar">
+            <input type="text" name="site" defaultValue={values?.site ?? ""} maxLength={120} />
+          </FormField>
+        </div>
 
-      <div className="game-fields__row">
-        <FormField label="Ronda">
-          <input type="text" name="round" defaultValue={values?.round ?? ""} maxLength={120} />
-        </FormField>
-        <FormField label="ECO" info="Código de apertura, como «B40».">
-          <input type="text" name="eco" defaultValue={values?.eco ?? ""} maxLength={120} />
-        </FormField>
+        <div className="game-fields__row">
+          <FormField label="Ronda">
+            <input type="text" name="round" defaultValue={values?.round ?? ""} maxLength={120} />
+          </FormField>
+          <FormField label="ECO" info="Código de apertura, como «B40».">
+            <input type="text" name="eco" defaultValue={values?.eco ?? ""} maxLength={120} />
+          </FormField>
+        </div>
       </div>
-    </div>
+    </OptionalFields>
   );
 }

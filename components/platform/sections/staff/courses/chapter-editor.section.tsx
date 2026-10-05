@@ -67,7 +67,7 @@ export function ChapterEditorSection({ chapter, errorCode }: ChapterEditorSectio
               <input type="text" name="name" defaultValue={chapter.name} maxLength={160} required />
             </FormField>
 
-            <FormField label="Descripción (opcional)">
+            <FormField label="Descripción">
               <textarea name="description" defaultValue={chapter.description ?? ""} maxLength={1000} />
             </FormField>
 

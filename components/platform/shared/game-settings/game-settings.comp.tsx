@@ -3,11 +3,7 @@
 import { useId, useRef, useState } from "react";
 import { GearIcon } from "@/components/icons/gear-icon.comp";
 import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
-import {
-  PlatformForm,
-  PlatformFormField,
-  PlatformFormGroup,
-} from "@/components/platform/shared/platform-form/platform-form.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { BOARD_ORIENTATION } from "@/constants/platform/shared-codes.const";
 import { GAME_ANALYSIS_MODE_LABELS } from "@/constants/platform/study-codes.const";
@@ -224,26 +220,22 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
                 />
               </PlatformFormField>
               <div className="game-settings__pair">
-                <PlatformFormGroup label="Orientación">
+                {/* One select each, so fields and not groups: the field gives
+                    the select its `name` and the `id` its label points at. */}
+                <PlatformFormField name="orientationCode" label="Orientación">
+                  <PlatformSelect defaultValue={game.orientationCode} options={ORIENTATION_OPTIONS} />
+                </PlatformFormField>
+                <PlatformFormField name="analysisModeCode" label="Modo de análisis">
                   <PlatformSelect
-                    name="orientationCode"
-                    defaultValue={game.orientationCode}
-                    options={ORIENTATION_OPTIONS}
-                  />
-                </PlatformFormGroup>
-                <PlatformFormGroup label="Modo de análisis">
-                  <PlatformSelect
-                    name="analysisModeCode"
                     defaultValue={game.analysisModeCode ?? ""}
                     emptyOption="Análisis normal"
                     options={ANALYSIS_MODE_OPTIONS}
                   />
-                </PlatformFormGroup>
+                </PlatformFormField>
               </div>
               <PlatformFormField
                 name="pinnedComment"
                 label="Comentario fijo"
-                optionalLabel="Opcional"
                 hint="Se muestra bajo el tablero en todas las jugadas, a quien abra la partida."
               >
                 <textarea

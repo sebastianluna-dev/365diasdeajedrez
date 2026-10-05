@@ -110,7 +110,7 @@ export function CourseEditorSection({
             {/* The only piece of the form with state: the slug follows the name. */}
             <CourseNameFields name={course.name} slug={course.slug} />
 
-            <FormField label="Descripción (opcional)">
+            <FormField label="Descripción">
               <textarea name="description" defaultValue={course.description ?? ""} maxLength={1000} />
             </FormField>
 
@@ -132,7 +132,7 @@ export function CourseEditorSection({
             {/* Who the course is aimed at, as one-line cards in order of
                 difficulty, each with its name and its orientative Elo range
                 beside it. Several at once, or none. */}
-            <FormFieldset legend="Niveles">
+            <FormFieldset legend="Niveles" optional>
               <CourseLevelsField levels={levels} defaultValue={course.levelSlugs} />
             </FormFieldset>
 

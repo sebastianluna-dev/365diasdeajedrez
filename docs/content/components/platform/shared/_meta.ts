@@ -14,6 +14,8 @@ const meta: MetaRecord = {
   "game-settings": "GameSettings",
   "image-upload": "ImageUpload",
   "local-datetime": "LocalDateTime",
+  "optional-fields": "OptionalFields",
+  "optional-mark": "OptionalMark",
   "platform-check-cards": "PlatformCheckCards",
   "platform-choice-cards": "PlatformChoiceCards",
   "platform-date-picker": "PlatformDatePicker",

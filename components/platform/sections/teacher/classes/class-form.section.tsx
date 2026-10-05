@@ -44,7 +44,7 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
         <input type="text" name="title" defaultValue={classDetail?.title ?? ""} maxLength={120} required />
       </FormField>
 
-      <FormField label="Descripción (opcional)">
+      <FormField label="Descripción">
         <input type="text" name="description" defaultValue={classDetail?.description ?? ""} maxLength={500} />
       </FormField>
 
@@ -67,7 +67,7 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
       </div>
 
       <div className="class-form__row">
-        <FormField label="Plataforma de reunión (opcional)">
+        <FormField label="Plataforma de reunión">
           <PlatformSelect
             name="meetingProviderCode"
             defaultValue={classDetail?.meetingProviderCode ?? ""}
@@ -76,13 +76,13 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
           />
         </FormField>
 
-        <FormField label="Enlace de la reunión (opcional)">
+        <FormField label="Enlace de la reunión">
           <input type="url" name="meetingUrl" defaultValue={classDetail?.meetingUrl ?? ""} maxLength={500} />
         </FormField>
       </div>
 
       <FormField
-        label="El enlace se ve desde (opcional)"
+        label="El enlace se ve desde"
         hint="Si lo dejas vacío, se abrirá 30 minutos antes de la clase. Tú lo ves siempre."
       >
         <input
@@ -94,11 +94,11 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
 
       {isEdit && (
         <>
-          <FormField label="Grabación (URL, opcional)">
+          <FormField label="Grabación (URL)">
             <input type="url" name="recordingUrl" defaultValue={classDetail.recordingUrl ?? ""} maxLength={500} />
           </FormField>
 
-          <FormField label="Resumen de la clase (opcional)">
+          <FormField label="Resumen de la clase">
             <textarea name="summary" defaultValue={classDetail.summary ?? ""} maxLength={5000} />
           </FormField>
         </>
@@ -107,6 +107,7 @@ export function ClassFormSection({ classDetail, students, providers, timeZone, e
       {!isEdit && (
         <FormFieldset
           legend="Alumnos inscritos"
+          optional
           hint={
             students.length === 0
               ? "Todavía no tienes alumnos asignados; podrás inscribirlos desde la ficha de la clase."

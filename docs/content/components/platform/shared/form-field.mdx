@@ -6,13 +6,13 @@ description: "The platform form field: a real <label> around a control, with a h
 
 Also exports `FormFieldset`.
 
-|            |                                                                                                                                                                                                                                                                            |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/form-field/form-field.comp.tsx`                                                                                                                                                                                                                |
-| Kind       | Server Component                                                                                                                                                                                                                                                           |
-| Stylesheet | `form-field.comp.css` → block `.platform-field`                                                                                                                                                                                                                            |
-| Story      | `form-field.stories.tsx` (`platform/shared/FormField`): a text input with and without its hint or error, with its clarification in an "i" inside the input (opened by `play`), focused, a textarea, `PlatformSelect` inside it, and a `FormFieldset` over a group of cards |
-| Used by    | every write form of the platform (24 importers): the staff course, chapter, lesson, author, class, student and teacher editors, the assignment panel, the account and password forms, the studies' `GameFields`, the teacher's class form, block editor pieces and profile |
+|            |                                                                                                                                                                                                                                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/form-field/form-field.comp.tsx`                                                                                                                                                                                                                                                                        |
+| Kind       | Server Component                                                                                                                                                                                                                                                                                                                   |
+| Stylesheet | `form-field.comp.css` → block `.platform-field`                                                                                                                                                                                                                                                                                    |
+| Story      | `form-field.stories.tsx` (`platform/shared/FormField`): a required text input with and without its hint or error, with its clarification in an "i" inside the input (opened by `play`), focused, an optional textarea with its «Opcional», `PlatformSelect` inside it, a `FormFieldset` over a group of cards, and an optional one |
+| Used by    | every write form of the platform (24 importers): the staff course, chapter, lesson, author, class, student and teacher editors, the assignment panel, the account and password forms, the studies' `GameFields`, the teacher's class form, block editor pieces and profile                                                         |
 
 ## Purpose
 
@@ -36,21 +36,23 @@ It is stateless on purpose. Platform forms are `<form action={serverAction}>`; v
 
 ### `FormFieldset`
 
-| Prop       | Type        | Required | Meaning                                                           |
-| ---------- | ----------- | -------- | ----------------------------------------------------------------- |
-| `legend`   | `string`    | yes      | The group's `<legend>`.                                           |
-| `children` | `ReactNode` | yes      | The group's cards: `PlatformCheckCards` or `PlatformChoiceCards`. |
-| `hint`     | `string`    | no       | Help text under the group.                                        |
+| Prop       | Type        | Required             | Meaning                                                                                                                       |
+| ---------- | ----------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `legend`   | `string`    | yes                  | The group's `<legend>`.                                                                                                       |
+| `children` | `ReactNode` | yes                  | The group's cards: `PlatformCheckCards` or `PlatformChoiceCards`.                                                             |
+| `hint`     | `string`    | no                   | Help text under the group.                                                                                                    |
+| `optional` | `boolean`   | no · default `false` | The group may be left with nothing chosen: «Opcional» beside its legend. Said here because a group has no `required` to read. |
 
 ## Behaviour
 
-None. The control keeps its own attributes (`name`, `required`, `maxLength`, `defaultValue`); the wrapper adds structure and styling only.
+- The control keeps its own attributes (`name`, `required`, `maxLength`, `defaultValue`); the wrapper adds structure and styling.
+- **«Opcional», read from the control** (2026-10-05). A control one can leave empty — a `<textarea>`, or an `<input>` one types into — with no `required` gets [`OptionalMark`](/components/platform/shared/optional-mark) after the label (`isOptionalControl`); a search box, a checkbox, a select or a date picker gets none, and a group says it with `optional`. It is how [`PlatformFormField`](/components/platform/shared/platform-form) does it, so a form keeps its marks when it moves to `PlatformForm`. Until then 26 labels wrote «(opcional)» by hand and some optional fields said nothing; `components/optional-mark.test.ts` now fails on the word anywhere but the pieces that draw it. The mark is **inside** the `<label>`, which wraps the whole field, but `aria-hidden`, so the field's name is its label alone, as before «(opcional)» was in it; a screen reader tells the required ones by their `required`.
 
 ## Markup & styling
 
-Block `.platform-field` (115 lines). The root is the `<label>` (or the `<fieldset>` with the group modifier, or a `<div>` when the field has `info`); the control's look is defined through descendant selectors on `input` and `textarea` inside `.platform-field__control`, which is why no form in the platform styles its own inputs.
+Block `.platform-field` (123 lines). The root is the `<label>` (or the `<fieldset>` with the group modifier, or a `<div>` when the field has `info`); the control's look is defined through descendant selectors on `input` and `textarea` inside `.platform-field__control`, which is why no form in the platform styles its own inputs.
 
-**Elements:** `.platform-field__label`, `.platform-field__control`, `.platform-field__hint`, `.platform-field__error`, and with `info` `.platform-field__body` (the `<label>`) and `.platform-field__info` (the "i")
+**Elements:** `.platform-field__label-row` (the label and the mark after it, a wrapping flex line; the `<legend>` itself in a fieldset), `.platform-field__label`, `.platform-field__control`, `.platform-field__hint`, `.platform-field__error`, and with `info` `.platform-field__body` (the `<label>`) and `.platform-field__info` (the "i")
 
 **Modifiers and states:** `.platform-field_variant_group` (the `<fieldset>`: no border, no padding, the legend flush with the cards), `.platform-field_with_info` (a field with an "i")
 

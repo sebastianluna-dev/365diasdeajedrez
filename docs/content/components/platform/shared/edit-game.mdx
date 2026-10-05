@@ -33,7 +33,7 @@ It lives in `shared/` since 2026-09-28, when the staff panel got its own game sc
 
 ## Behaviour
 
-`<form action={action}>` closing the dialog on submit. No state beyond the dialog ref. The dialog is named by its heading, «Datos de la partida» (`aria-labelledby`, with the id from `useId`).
+`<form action={action}>` closing the dialog on submit. No state beyond the dialog ref. Under the title, the body opens with «Todos los campos son opcionales.», which [`GameFields`](/components/platform/shared/game-fields) says through `OptionalFields`: none of the fifteen carries its own mark. The dialog is named by its heading, «Datos de la partida» (`aria-labelledby`, with the id from `useId`).
 
 ## Markup & styling
 

@@ -49,7 +49,7 @@ function ExerciseFields({ action, modes, exercise, submitLabel, lessonPgn, onCan
         />
       </FormField>
 
-      <FormField label="Enunciado (opcional)">
+      <FormField label="Enunciado">
         <input type="text" name="promptText" defaultValue={exercise?.promptText ?? ""} maxLength={500} />
       </FormField>
 
