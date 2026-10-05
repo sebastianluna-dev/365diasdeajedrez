@@ -25,11 +25,11 @@
   --viewer-board-max: var(--game-board-max);
 
   /* As wide as its three columns ask for: the aside at its widest (360px),
-     the board at the size the height gives it, and a notation of 472px, with
-     the two gaps. So the page grows with the board, and what a wider window
-     adds beyond that stays as margin. */
+     the board at the size the height gives it, and the notation at its own
+     widest (the viewer's 400px), with the two gaps. So the page grows with
+     the board, and what a wider window adds beyond that stays as margin. */
   &.platform-page_width_wide {
-    max-width: calc(360px + var(--game-board-max) + 472px + 2 * var(--platform-space-6));
+    max-width: calc(360px + var(--game-board-max) + 400px + 2 * var(--platform-space-6));
   }
 
   /* The aside measures its own; the board and its notation keep the rest. */

@@ -34,6 +34,24 @@
     align-items: stretch;
   }
 
+  /* The table of moves is a narrow column, as on Lichess: number, White,
+     Black, and no more width than reads at a glance — 400px at most, where it
+     used to take whatever the page had left and the two moves of a row drifted
+     apart. The cap is on the column's box and not on its track: the track
+     stays flexible, so the board is still the first to get its size and the
+     notation takes what is left, between its 320px and this. What the track
+     has beyond it stays empty to the right. The prose of a lesson is the
+     exception: a text is read across, and keeps the whole track; so are a
+     phone, where the column is the window's width, and full screen, which
+     sizes its own. */
+  @media (width >= 768px) {
+    &:not(.game-viewer_state_fullscreen)
+      .game-viewer__layout:not(:has(.game-viewer__moves_list_flow))
+      .game-viewer__panel-column {
+      max-width: var(--viewer-panel-max, 400px);
+    }
+  }
+
   /* The board sits loose on the background, without a card: the white box
      added nothing and its 16px of padding on each side go to the notation. */
   & .game-viewer__board-card {

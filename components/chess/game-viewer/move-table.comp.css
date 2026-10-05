@@ -1,5 +1,9 @@
 .move-table {
-  font-size: var(--move-tree-font-size, var(--platform-type-lg));
+  /* The size Lichess sets its moves at on a desktop: 15px in rows of 29, so
+     a panel as tall as the board shows about a sixth more of the game than
+     at the 17px in rows of 34 it had. Full screen sets its own, larger. */
+  font-size: var(--move-tree-font-size, var(--platform-type-sm));
+  line-height: 1.4;
   color: var(--platform-text);
   /* Indentation step per variation level. */
   --move-table-step: 15px;
@@ -83,7 +87,7 @@
     margin-left: auto;
     flex: none;
     padding-left: var(--platform-space-2);
-    font-size: max(var(--platform-type-sm), 0.88em);
+    font-size: max(var(--platform-type-2xs), 0.88em);
     font-weight: 500;
     font-variant-numeric: tabular-nums;
     color: var(--platform-text-muted);
@@ -105,7 +109,7 @@
     padding: var(--platform-space-2) var(--platform-space-3);
     border-top: 1px solid var(--platform-border);
     border-bottom: 1px solid var(--platform-border);
-    font-size: max(var(--platform-type-sm), 0.9em);
+    font-size: max(var(--platform-type-xs), 0.93em);
     line-height: 1.5;
     color: var(--platform-text-muted);
     text-wrap: pretty;
@@ -121,8 +125,8 @@
       calc(var(--move-table-depth, 0) * var(--move-table-step) + 26px);
     border-top: 1px solid var(--platform-border);
     border-bottom: 1px solid var(--platform-border);
-    font-size: max(var(--platform-type-sm), 0.92em);
-    line-height: 1.75;
+    font-size: max(var(--platform-type-xs), 0.93em);
+    line-height: 1.65;
     color: var(--platform-text-muted);
   }
 
