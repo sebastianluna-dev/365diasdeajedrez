@@ -66,12 +66,12 @@ From `components/platform/shared/game-list/game-list.comp.tsx`:
 }
 ```
 
-and the actions, from `components/platform/sections/studies/game-view/game-aside.comp.tsx`:
+and the actions, from `components/platform/sections/studies/game-view/study-aside.comp.tsx`, which reach the list through [`StudyGames`](/components/platform/sections/studies/game-view/study-games):
 
 ```tsx
-<GameList
+<StudyGames
   games={study.games.map(listItem)}
-  currentId={game.id}
+  pageSize={STUDY_GAMES_PAGE_SIZE}
   settings={{
     save: updateGameSettings.bind(null, study.id),
     clearAnnotations: clearGameAnnotations.bind(null, study.id),

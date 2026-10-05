@@ -32,41 +32,82 @@
     max-width: calc(360px + var(--game-board-max) + 400px + 2 * var(--platform-space-6));
   }
 
-  /* The aside measures its own; the board and its notation keep the rest. */
+  /* Three pieces in two columns. On the left the study (the layout's own, the
+     one that holds still from game to game) and under it the game's record;
+     on the right, down the two rows, the board with its notation — or the
+     knight that stands in for it while a game loads. The left column measures
+     its own and the board keeps the rest. The second row is the flexible
+     one: it takes whatever height the board has left over, so the study's
+     row is as tall as the study and no taller. */
   & .game-page__layout {
     display: grid;
     grid-template-columns: clamp(280px, 24%, 360px) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
     gap: var(--platform-space-6);
     align-items: start;
   }
 
-  /* The aside comes after the board in the markup; on a wide window it takes
+  /* The page comes before the study in the markup — the layout can only put
+     its children in one place —; on a wide window the study takes the top of
      the left column all the same. */
-  & .game-page__layout > .game-aside {
+  & .game-page__layout > .study-aside {
     grid-column: 1;
     grid-row: 1;
   }
 
-  & .game-page__layout > .game-view {
-    grid-column: 2;
-    grid-row: 1;
+  & .game-page__layout > .game-record {
+    grid-column: 1;
+    grid-row: 2;
   }
 
-  /* Without the width for three columns the page is one: the board first,
-     which is what one came for, and the aside under it, as Lichess puts a
-     study's chapters under the board on a tablet and a phone. The board goes
-     back to the viewer's own ceiling. */
+  & .game-page__layout > .game-view,
+  & .game-page__layout > .board-loading {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  /* Without the width for three columns the board goes first, alone in its
+     row, which is what one came for, and the study and the record share the
+     row under it, as Lichess puts a study's chapters under the board on a
+     tablet. The board goes back to the viewer's own ceiling. */
   @media (width < 1280px) {
     --viewer-board-max: 600px;
 
     & .game-page__layout {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: none;
+    }
+
+    & .game-page__layout > .game-view,
+    & .game-page__layout > .board-loading {
+      grid-column: 1 / -1;
+      grid-row: 1;
+    }
+
+    & .game-page__layout > .study-aside {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    & .game-page__layout > .game-record {
+      grid-column: 2;
+      grid-row: 2;
+    }
+  }
+
+  /* On a phone, one under the other: the board, the study, the record. */
+  @media (width < 640px) {
+    & .game-page__layout {
       grid-template-columns: minmax(0, 1fr);
     }
 
-    & .game-page__layout > .game-aside,
-    & .game-page__layout > .game-view {
+    & .game-page__layout > .study-aside,
+    & .game-page__layout > .game-record {
       grid-column: 1;
-      grid-row: auto;
+    }
+
+    & .game-page__layout > .game-record {
+      grid-row: 3;
     }
   }
 }

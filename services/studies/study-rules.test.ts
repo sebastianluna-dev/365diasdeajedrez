@@ -4,8 +4,10 @@ import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
 import {
   canChangeKindTo,
   canCreateKind,
+  canReorderStudyGames,
   canShareStudy,
   creatableKinds,
+  STUDY_GAMES_PAGE_SIZE,
   studyPermissionsOf,
 } from "@/services/studies/study-rules";
 
@@ -99,5 +101,13 @@ describe("compartir", () => {
     expect(canShareStudy({ kindCode: DATABASE_KIND.COLLECTION, permissions: received })).toBe(false);
     const study = studyPermissionsOf({ kindCode: DATABASE_KIND.STUDY, ...OWNED });
     expect(canShareStudy({ kindCode: DATABASE_KIND.STUDY, permissions: study })).toBe(false);
+  });
+
+  it("las partidas se ordenan arrastrando sólo si se pueden editar y el estudio cabe en una página de la lista", () => {
+    const own = studyPermissionsOf({ kindCode: DATABASE_KIND.STUDY, ...OWNED });
+    const received = studyPermissionsOf({ kindCode: DATABASE_KIND.COLLECTION, ...RECEIVED });
+    expect(canReorderStudyGames({ gameCount: STUDY_GAMES_PAGE_SIZE, permissions: own })).toBe(true);
+    expect(canReorderStudyGames({ gameCount: STUDY_GAMES_PAGE_SIZE + 1, permissions: own })).toBe(false);
+    expect(canReorderStudyGames({ gameCount: 3, permissions: received })).toBe(false);
   });
 });

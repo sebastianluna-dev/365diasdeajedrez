@@ -4,14 +4,14 @@ description: "The board column of a Mis estudios game: two hooks — the PGN's h
 
 # `GameViewSection`
 
-|            |                                                                                                                                                                                                |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/game-view/game-view.section.tsx`                                                                                                                         |
-| Kind       | Client Component                                                                                                                                                                               |
-| Stylesheet | `game-view.section.css` → block `.game-view`                                                                                                                                                   |
-| Used by    | `/estudios/[studyId]/partidas/[gameId]`, beside [`GameAside`](/components/platform/sections/studies/game-view/game-aside)                                                                      |
-| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer) (with `players` and `tools`), [`PlatformNotice`](/components/platform/shared/platform-notice)                                        |
-| Uses       | [`usePgnHistory`](/components/platform/shared/use-pgn-history-hook), [`useGameAutosave`](/components/platform/shared/use-game-autosave-hook); `GameView` from `services/studies/studies.types` |
+|            |                                                                                                                                                                                                                                     |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/game-view.section.tsx`                                                                                                                                                              |
+| Kind       | Client Component                                                                                                                                                                                                                    |
+| Stylesheet | `game-view.section.css` → block `.game-view`                                                                                                                                                                                        |
+| Used by    | `/estudios/[studyId]/partidas/[gameId]`, beside the layout's [`StudyAside`](/components/platform/sections/studies/game-view/study-aside) and the page's [`GameRecord`](/components/platform/sections/studies/game-view/game-record) |
+| Composes   | [`GameViewer`](/components/chess/game-viewer/game-viewer) (with `players` and `tools`), [`PlatformNotice`](/components/platform/shared/platform-notice)                                                                             |
+| Uses       | [`usePgnHistory`](/components/platform/shared/use-pgn-history-hook), [`useGameAutosave`](/components/platform/shared/use-game-autosave-hook); `GameView` from `services/studies/studies.types`                                      |
 
 ## Purpose
 
@@ -37,7 +37,7 @@ The section only wires the two things the viewer cannot own: the PGN's history, 
 
 ## Markup & styling
 
-Block `.game-view` (24 lines): the board column (`min-width: 0`), the margin under the notice and the owner's line about the readers' mode (`.game-view__mode`, `.game-view__mode-link`). The two-column grid beside the aside is the page's, `.game-page__layout` in `game-page.css`; the strips are [`PlayerStrip`](/components/chess/game-viewer/player-strip)'s.
+Block `.game-view` (24 lines): the board column (`min-width: 0`), the margin under the notice and the owner's line about the readers' mode (`.game-view__mode`, `.game-view__mode-link`). The grid that puts it beside the study and the game's record is the layout's, `.game-page__layout` in `game-page.css`; the strips are [`PlayerStrip`](/components/chess/game-viewer/player-strip)'s.
 
 **Other selectors it styles:** `.platform-notice` (margin inside the column).
 
@@ -48,24 +48,23 @@ No media queries of its own.
 From `app/(platform)/estudios/[studyId]/partidas/[gameId]/page.tsx`:
 
 ```tsx
-import { GameAside } from "@/components/platform/sections/studies/game-view/game-aside.comp";
+import { GameRecord } from "@/components/platform/sections/studies/game-view/game-record.comp";
 import { GameViewSection } from "@/components/platform/sections/studies/game-view/game-view.section";
 
-<div className="game-page__layout">
-  <GameAside
+<>
+  <GameViewSection
     game={game}
-    study={study}
-    results={results}
-    classGames={classGames}
-    kinds={kinds}
-    students={students}
-    pageHref={pageHref}
+    asReader={vista === "lector"}
+    errorCode={error}
+    importReport={readImportReport(importadas)}
   />
-  <GameViewSection game={game} errorCode={error} importReport={readImportReport(importadas)} />
-</div>;
+  <GameRecord game={game} results={results} />
+</>;
 ```
+
+The frame around the two — `.game-page__layout` and the study's column — is the layout's, `app/(platform)/estudios/[studyId]/partidas/layout.tsx`.
 
 ## Related
 
-- [`GameAside`](/components/platform/sections/studies/game-view/game-aside), the study beside this column.
+- [`StudyAside`](/components/platform/sections/studies/game-view/study-aside), the study beside this column, and [`GameRecord`](/components/platform/sections/studies/game-view/game-record), the game's record under it.
 - [`GameViewer`](/components/chess/game-viewer/game-viewer) and [`GameTools`](/components/chess/game-viewer/game-tools), which the viewer mounts with `tools`.

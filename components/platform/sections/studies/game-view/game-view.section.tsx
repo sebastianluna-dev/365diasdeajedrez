@@ -38,8 +38,9 @@ interface GameViewSectionProps {
 
 /**
  * The board column of a Mis estudios game: it is read and annotated in the
- * SAME place. The study around it — its games, its actions — is the aside's
- * business (`GameAside`), which the page lays out beside this.
+ * SAME place. The study around it — its games, its actions — is the layout's
+ * business (`StudyAside`), and the game's record is `GameRecord`, which the
+ * page renders after this.
  *
  * There is no separate editing screen. Whoever owns the game plays on the
  * board to add moves and uses the list's right click to comment, annotate,

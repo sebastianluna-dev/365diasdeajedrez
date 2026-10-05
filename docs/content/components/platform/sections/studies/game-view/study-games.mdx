@@ -1,0 +1,65 @@
+---
+description: "The list of a study's games inside the layout of its game pages: a Client Component that reads the current game from the address, since the layout is not rendered again when it changes, and turns the list's pages in the browser."
+---
+
+# `StudyGames`
+
+|            |                                                                                                                                    |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/study-games.comp.tsx`; the page arithmetic in `study-games-page.ts`, with its test |
+| Kind       | Client Component                                                                                                                   |
+| Stylesheet | `study-games.comp.css` → block `.study-games`                                                                                      |
+| Used by    | [`StudyAside`](/components/platform/sections/studies/game-view/study-aside)                                                        |
+| Composes   | [`GameList`](/components/platform/shared/game-list)                                                                                |
+| Uses       | `useParams` from `next/navigation`; `pageCountOf`, `pageOfGame`, `gamesOfPage` from `study-games-page.ts`                          |
+
+## Purpose
+
+[`StudyAside`](/components/platform/sections/studies/game-view/study-aside) is mounted by a layout so that the list holds still from one game to the next, and a layout is not rendered again when the game changes: the server cannot tell the list which game is the current one. This leaf reads it from the address — `useParams().gameId`, which does change — and hands it to [`GameList`](/components/platform/shared/game-list) as `currentId`. The shared list stays as it was, told its current game by a prop; what knows about the route is here.
+
+For the same reason the paging is here. A study's list shows a hundred games at once (`STUDY_GAMES_PAGE_SIZE`). Until 2026-10-05 the server chose the hundred — the page the current game fell on (`getStudyPageOfGame`), or `?pagina=` — and each turn of the page was a navigation. A layout knows neither the game nor the query string, so now the list carries every game (light rows: no PGN, no tags) and the pages are turned in the browser.
+
+## Props
+
+| Prop        | Type                                      | Required | Meaning                                                                           |
+| ----------- | ----------------------------------------- | -------- | --------------------------------------------------------------------------------- |
+| `games`     | `GameListItem[]`                          | yes      | Every game of the study, in its order.                                            |
+| `pageSize`  | `number`                                  | yes      | How many of them the list shows at once.                                          |
+| `onReorder` | `(orderedIds: string[]) => Promise<void>` | no       | Saves a new order; `StudyAside` only passes it for a study that fits on one page. |
+| `settings`  | `GameSettingsActions`                     | no       | What a game's settings do; without them the rows have no gear.                    |
+
+## Behaviour
+
+- **The page shown** is the one the current game falls on (`pageOfGame`; the first for a game that is not in the list). «← Anteriores» and «Siguientes →» turn it without navigating; the page turned to is remembered together with the game one was on when turning, so on another game the list goes back to that game's page — derived during render, with no effect to reset it. A page beyond the last (a game was deleted) answers the last.
+- The nav «← Anteriores · Página n de m · Siguientes →» only exists with more than one page; its two controls are buttons, disabled at the ends, since they go nowhere.
+- `GameList` is keyed by the page: each page is a list of its own, whose scroll starts at the top.
+
+## Markup & styling
+
+Block `.study-games` (31 lines): the wrapper and the pages nav. The list is `GameList`'s own block.
+
+**Elements:** `.study-games__pages`, `.study-games__page-button`, `.study-games__page-status`
+
+**Tokens:** `--platform-accent-ink`, `--platform-border`, `--platform-text-faint` (a button at an end), `--platform-text-subtle`
+
+No media queries.
+
+## Usage
+
+From `components/platform/sections/studies/game-view/study-aside.comp.tsx`:
+
+```tsx
+import { StudyGames } from "./study-games.comp";
+
+<StudyGames
+  games={study.games.map(listItem)}
+  pageSize={STUDY_GAMES_PAGE_SIZE}
+  onReorder={canReorder ? reorderStudyGames.bind(null, study.id) : undefined}
+  settings={canWrite ? { save, clearAnnotations, clearVariations, remove } : undefined}
+/>;
+```
+
+## Related
+
+- [`GameList`](/components/platform/shared/game-list), the list it renders.
+- [`StudyAside`](/components/platform/sections/studies/game-view/study-aside), which decides what the list may do.

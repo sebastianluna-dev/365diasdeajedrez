@@ -157,10 +157,13 @@ function SortableRows({ games, currentId, onReorder, settings, listRef }: Sortab
  * to jump between them without going back, and, for whoever may, to put them
  * in the order they are to be read in.
  *
- * The list is about eight rows tall and scrolls on its own, so on arrival the
- * current game is brought into its middle: deep in a study of eighty games it
- * would otherwise sit below the fold of the list. Only the list moves, never
- * the page, which is why this is arithmetic and not `scrollIntoView`.
+ * The list is about eight rows tall and scrolls on its own, so a current game
+ * that is out of sight is brought into its middle: deep in a study of eighty
+ * games it would otherwise sit below the fold of the list. One that is already
+ * in sight is left where it is — the list may stay on screen from game to
+ * game (a study's is its layout's), and a row that jumped to the middle when
+ * clicked would move under the pointer. Only the list moves, never the page,
+ * which is why this is arithmetic and not `scrollIntoView`.
  *
  * With `onReorder` each row is dragged by its grip or moved with the keyboard
  * through [`SortableDnd`](../sortable-dnd/sortable-dnd.comp.tsx); the order
@@ -177,6 +180,9 @@ export function GameList({ games, currentId, onReorder, settings }: GameListProp
     const list = listRef.current;
     const row = list?.querySelector<HTMLElement>(".game-list__row_state_active");
     if (!list || !row) return;
+    const inSight =
+      row.offsetTop >= list.scrollTop && row.offsetTop + row.offsetHeight <= list.scrollTop + list.clientHeight;
+    if (inSight) return;
     list.scrollTop = row.offsetTop - (list.clientHeight - row.offsetHeight) / 2;
   }, [currentId]);
 

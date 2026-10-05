@@ -92,21 +92,23 @@ description: "Index of components/platform: the shared primitives and every sect
 
 ## `sections/studies/` — `/estudios`
 
-| Page                                                                                            | Kind   | What it is                                                                      |
-| ----------------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------- |
-| [`StudiesListSection`](/components/platform/sections/studies/studies-list/studies-list-section) | server | Reads the studies and splits them by ownership.                                 |
-| [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser)          | client | Two groups of cards with a kind filter.                                         |
-| [`StudyCard`](/components/platform/sections/studies/studies-list/study-card)                    | server | One study with its origin.                                                      |
-| [`NewStudy`](/components/platform/sections/studies/studies-list/new-study)                      | client | Creation dialog.                                                                |
-| [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study)                | client | Confirmation dialog.                                                            |
-| [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) | server | The study without games: header, actions, sharing panel.                        |
-| [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study)                    | client | Rename, describe, re-type.                                                      |
-| [`NewGame`](/components/platform/sections/studies/study-detail/new-game)                        | client | Blank game, pasted PGN or copies of class games.                                |
-| [`ShareCollection`](/components/platform/sections/studies/study-detail/share-collection)        | server | Who a collection reaches.                                                       |
-| [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section)          | client | The board column: read and annotate a game in one place, with autosave.         |
-| [`GameAside`](/components/platform/sections/studies/game-view/game-aside)                       | server | The study beside the board; decides what it shows from the study's permissions. |
-| [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game)                     | client | Confirmation, stricter when the game is cited in a class.                       |
-| [`ClassGamesSection`](/components/platform/sections/studies/class-games/class-games-section)    | server | Games the student saw in class.                                                 |
+| Page                                                                                            | Kind   | What it is                                                                                         |
+| ----------------------------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------------- |
+| [`StudiesListSection`](/components/platform/sections/studies/studies-list/studies-list-section) | server | Reads the studies and splits them by ownership.                                                    |
+| [`StudiesBrowser`](/components/platform/sections/studies/studies-list/studies-browser)          | client | Two groups of cards with a kind filter.                                                            |
+| [`StudyCard`](/components/platform/sections/studies/studies-list/study-card)                    | server | One study with its origin.                                                                         |
+| [`NewStudy`](/components/platform/sections/studies/studies-list/new-study)                      | client | Creation dialog.                                                                                   |
+| [`DeleteStudy`](/components/platform/sections/studies/studies-list/delete-study)                | client | Confirmation dialog.                                                                               |
+| [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) | server | The study without games: header, actions, sharing panel.                                           |
+| [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study)                    | client | Rename, describe, re-type.                                                                         |
+| [`NewGame`](/components/platform/sections/studies/study-detail/new-game)                        | client | Blank game, pasted PGN or copies of class games.                                                   |
+| [`ShareCollection`](/components/platform/sections/studies/study-detail/share-collection)        | server | Who a collection reaches.                                                                          |
+| [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section)          | client | The board column: read and annotate a game in one place, with autosave.                            |
+| [`StudyAside`](/components/platform/sections/studies/game-view/study-aside)                     | server | The study beside the board, mounted by the game pages' layout so it holds still from game to game. |
+| [`StudyGames`](/components/platform/sections/studies/game-view/study-games)                     | client | The study's list in that layout: the current game from the address, the pages in the browser.      |
+| [`GameRecord`](/components/platform/sections/studies/game-view/game-record)                     | server | The record of the game on the board, under the study.                                              |
+| [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game)                     | client | Confirmation, stricter when the game is cited in a class.                                          |
+| [`ClassGamesSection`](/components/platform/sections/studies/class-games/class-games-section)    | server | Games the student saw in class.                                                                    |
 
 ## `sections/classes/` — `/clases`
 

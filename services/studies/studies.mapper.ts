@@ -198,30 +198,24 @@ function mapStudyShare(share: StudyDetailRow["shares"][number]): StudyShareItem 
   };
 }
 
-/** @param viewerId id of whoever is looking, or `null`; see `mapStudySummary`. */
-/** Games per page of a study detail. Above this the list is served page by page. */
-export const STUDY_GAMES_PAGE_SIZE = 100;
-
 /**
- * What the service knows about the WHOLE study when `row.games` is only a page:
- * the totals and the event counts that name the games. Absent, the row is taken
- * to carry every game (the teacher's read-only view, the tests).
+ * What the service knows about the WHOLE study when `row.games` is only its
+ * first ones: the totals and the event counts that name the games. Absent, the
+ * row is taken to carry every game (the game pages' layout, the teacher's
+ * read-only view, the tests).
  */
-export interface StudyDetailPaging {
+export interface StudyDetailTotals {
   gameCount: number;
   citedGameCount: number;
   /** How many times each event repeats within the study, for `gameLabel`. */
   eventCounts: Map<string, number>;
-  page: number;
 }
 
-export function mapStudyDetail(row: StudyDetailRow, viewerId: string | null, paging?: StudyDetailPaging): StudyDetail {
+/** @param viewerId id of whoever is looking, or `null`; see `mapStudySummary`. */
+export function mapStudyDetail(row: StudyDetailRow, viewerId: string | null, totals?: StudyDetailTotals): StudyDetail {
   // Outside the loop: inside, it would be recomputed once per game.
-  const events = paging?.eventCounts ?? eventCounts(row);
+  const events = totals?.eventCounts ?? eventCounts(row);
   const isOwner = row.userId === viewerId;
-  const gameCount = paging?.gameCount ?? row.games.length;
-  const page = paging?.page ?? 1;
-  const offset = (page - 1) * STUDY_GAMES_PAGE_SIZE;
 
   return {
     id: row.id,
@@ -239,11 +233,9 @@ export function mapStudyDetail(row: StudyDetailRow, viewerId: string | null, pag
       : (row.shares.find((share) => share.user.id === viewerId)?.teacher?.displayName ?? undefined),
     permissions: studyPermissionsOf({ kindCode: row.kind.code, isOwner }),
     shares: isOwner ? row.shares.map(mapStudyShare) : [],
-    citedGameCount: paging?.citedGameCount ?? row.games.filter((game) => game._count.classBlocks > 0).length,
-    gameCount,
-    page,
-    pageCount: Math.max(1, Math.ceil(gameCount / STUDY_GAMES_PAGE_SIZE)),
-    games: row.games.map((game, index) => mapStudyGameItem(row.id, game, offset + index, events)),
+    citedGameCount: totals?.citedGameCount ?? row.games.filter((game) => game._count.classBlocks > 0).length,
+    gameCount: totals?.gameCount ?? row.games.length,
+    games: row.games.map((game, index) => mapStudyGameItem(row.id, game, index, events)),
   };
 }
 

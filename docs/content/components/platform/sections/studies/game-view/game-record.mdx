@@ -1,0 +1,66 @@
+---
+description: "The record of the game on the board, in the column of its study: where it was played, when and how it ended, where it came from, and its owner's edit and delete controls. The page's card, the one that changes from game to game."
+---
+
+# `GameRecord`
+
+|            |                                                                                                                                         |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/game-record.comp.tsx`                                                                   |
+| Kind       | Server Component                                                                                                                        |
+| Stylesheet | `game-record.comp.css` → block `.game-record`                                                                                           |
+| Used by    | `/estudios/[studyId]/partidas/[gameId]`, under the layout's [`StudyAside`](/components/platform/sections/studies/game-view/study-aside) |
+| Composes   | [`EditGame`](/components/platform/shared/edit-game), [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game)        |
+| Uses       | `updateGameDetails` from `services/studies/studies.actions`; `GameView`, `StudyKindOption` from `services/studies/studies.types`        |
+
+## Purpose
+
+The one card of the study's column that is about the **current game**: it reads top to bottom — where it was played, when and how it ended — and at the foot says where the game came from. It was the second card of `GameAside` until 2026-10-05, when the study's part of that column moved to the layout so as to hold still from game to game ([`StudyAside`](/components/platform/sections/studies/game-view/study-aside)); what depends on the game stayed with the page, and this is it.
+
+## Props
+
+| Prop      | Type                | Required | Meaning                                                                             |
+| --------- | ------------------- | -------- | ----------------------------------------------------------------------------------- |
+| `game`    | `GameView`          | yes      | The current game.                                                                   |
+| `results` | `StudyKindOption[]` | yes      | The results catalog, for "Editar". Empty when the game is not the viewer's to edit. |
+
+## Behaviour
+
+- `recordCells` always yields **four** cells (Fecha, Ronda, ECO, Resultado) with a dash where there is no value: in a two-by-two grid, hiding one cell displaces the other three, and an incomplete record reads worse than one with declared gaps.
+- With `game.canEdit`, [`EditGame`](/components/platform/shared/edit-game) sits in the head with `values={game}` whole (`GameView` already contains every field of `GameFieldValues`; listing them one by one is how the title and the federation got lost once) and [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game) at the foot in its `inline` size.
+- The event and the site are only drawn when the game has them.
+
+## Markup & styling
+
+Block `.game-record` (96 lines), a `<section>`: white on the page's grey over a light shadow, with no outline, like every box of the game view. The four facts are a two-by-two grid whose lines are its own 1px gaps, with the border colour showing through.
+
+**Elements:** `.game-record__head`, `.game-record__title`, `.game-record__label`, `.game-record__event`, `.game-record__site`, `.game-record__cells`, `.game-record__cell`, `.game-record__key`, `.game-record__value`, `.game-record__foot`, `.game-record__source`
+
+**Tokens:** `--platform-border`, `--platform-surface`, `--platform-text-subtle`
+
+No media queries of its own: where it goes — under the study on a wide window, beside it on a tablet, under it on a phone — is the page's (`.game-page__layout` in `game-page.css`, see [`StudyAside`](/components/platform/sections/studies/game-view/study-aside)).
+
+## Usage
+
+From `app/(platform)/estudios/[studyId]/partidas/[gameId]/page.tsx`:
+
+```tsx
+import { GameRecord } from "@/components/platform/sections/studies/game-view/game-record.comp";
+
+<>
+  <GameViewSection
+    game={game}
+    asReader={vista === "lector"}
+    errorCode={error}
+    importReport={readImportReport(importadas)}
+  />
+  <GameRecord game={game} results={results} />
+</>;
+```
+
+The page asks for the results only when `game.canEdit`.
+
+## Related
+
+- [`StudyAside`](/components/platform/sections/studies/game-view/study-aside), the study above it, which is the layout's.
+- [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section), the board beside it.

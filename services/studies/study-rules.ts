@@ -103,6 +103,27 @@ export function canShareStudy(study: { kindCode: string; permissions: Pick<Study
 }
 
 /**
+ * How many games a study's list shows at once. Above this the list on the
+ * game pages goes page by page, in the browser, and the study's own URL —
+ * which only needs the first game — loads no more than these.
+ */
+export const STUDY_GAMES_PAGE_SIZE = 100;
+
+/**
+ * Whether the list of games is put in order by dragging: by whoever may edit
+ * the games, and only while the study fits on one page of the list. Dragging
+ * reorders what the list shows, and `reorderStudyGames` takes nothing but the
+ * whole study: a page of several would mix its new order with the old one of
+ * the rest.
+ */
+export function canReorderStudyGames(study: {
+  gameCount: number;
+  permissions: Pick<StudyPermissions, "canEditGames">;
+}): boolean {
+  return study.permissions.canEditGames && study.gameCount <= STUDY_GAMES_PAGE_SIZE;
+}
+
+/**
  * Whether a study can move to `nextKind`. Both the STARTING kind and the
  * DESTINATION one are checked: a tournament can become a study, but neither of
  * the two can become a collection — that is shared by a teacher — nor

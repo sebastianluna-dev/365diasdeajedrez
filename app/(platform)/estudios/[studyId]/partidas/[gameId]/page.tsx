@@ -1,32 +1,20 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { GameAside } from "@/components/platform/sections/studies/game-view/game-aside.comp";
+import { GameRecord } from "@/components/platform/sections/studies/game-view/game-record.comp";
 import { GameViewSection } from "@/components/platform/sections/studies/game-view/game-view.section";
-import { platformRoutes } from "@/lib/platform-routes";
 import { readImportReport } from "@/services/shared/pgn-import-report";
-import {
-  getClassGames,
-  getGameById,
-  getGameResultOptions,
-  getShareableStudents,
-  getStudyById,
-  getStudyKinds,
-  getStudyPageOfGame,
-} from "@/services/studies/studies.service";
-import { canShareStudy } from "@/services/studies/study-rules";
-import "./game-page.css";
+import { getGameById, getGameResultOptions } from "@/services/studies/studies.service";
 
 interface GamePageProps {
   params: Promise<{ studyId: string; gameId: string }>;
   /**
    * `error`: what a server action bounced with (a delete without confirmation,
-   * a new game that did not validate). `pagina`: which page of the study's
-   * games the aside lists; without it, the one the current game falls on.
-   * `importadas`: the result of a PGN import, to say how many games went in.
-   * `vista=lector`: the owner looks at the game as a reader would, to see
-   * what its analysis mode does to whoever cannot edit it.
+   * a new game that did not validate). `importadas`: the result of a PGN
+   * import, to say how many games went in. `vista=lector`: the owner looks at
+   * the game as a reader would, to see what its analysis mode does to whoever
+   * cannot edit it.
    */
-  searchParams: Promise<{ error?: string; pagina?: string; importadas?: string; vista?: string }>;
+  searchParams: Promise<{ error?: string; importadas?: string; vista?: string }>;
 }
 
 export async function generateMetadata({ params }: GamePageProps): Promise<Metadata> {
@@ -36,63 +24,33 @@ export async function generateMetadata({ params }: GamePageProps): Promise<Metad
 }
 
 /**
- * Two columns: the study, in the aside, and the game, on the board. The page
- * loads and hands over; what each column shows is decided inside it, with
- * the permission table of `services/studies/study-rules`.
+ * What is about the game: the board and, in the study's column, the game's
+ * record. The frame and the study itself — its name, its list of games — are
+ * the layout's (`../layout.tsx`), which is not rendered again from one game to
+ * the next. The page loads and hands over; what each piece shows is decided
+ * inside it, with the permission table of `services/studies/study-rules`.
  */
 export default async function GamePage({ params, searchParams }: GamePageProps) {
   const { studyId, gameId } = await params;
-  const { error, pagina, importadas, vista } = await searchParams;
+  const { error, importadas, vista } = await searchParams;
   // `getGameById` goes through the DAL, so this first await acts as the session
-  // border. The study is requested afterwards for the aside.
+  // border, on every game: the layout's own is only crossed on arrival.
   const game = await getGameById(studyId, gameId);
   if (!game) notFound();
 
-  // The study is read on this screen — its own URL only redirects here — so the
-  // aside carries it: its games around the current one, and for its owner the
-  // study's actions and, for a collection, who it is shared with.
-  const page = pagina ? Number.parseInt(pagina, 10) : await getStudyPageOfGame(studyId, gameId);
-  const study = await getStudyById(studyId, page);
-  if (!study) notFound();
-
-  // The catalogs feed forms that only exist when writing is allowed, so for
-  // what arrives ready-made — course databases, received collections — nothing
-  // is queried and the aside gets empty lists. The results are asked for when
-  // EITHER modal can render: the game's ("Editar") or the study's ("Nueva
-  // partida"), or the result dropdown would come out empty the day the two
-  // conditions stop coinciding.
-  const canWrite = study.permissions.canEditGames;
-  const [results, classGames, kinds, students] = await Promise.all([
-    canWrite || game.canEdit ? getGameResultOptions() : [],
-    canWrite ? getClassGames() : [],
-    canWrite ? getStudyKinds() : [],
-    canShareStudy(study) ? getShareableStudents() : [],
-  ]);
-
-  const pageHref = (target: number) => `${platformRoutes.gameDetail(studyId, gameId)}?pagina=${target}`;
+  // The results feed "Editar", which only exists for whoever may edit the game.
+  const results = game.canEdit ? await getGameResultOptions() : [];
 
   return (
-    <div className="platform-page game-page platform-page_width_wide">
-      <div className="game-page__layout">
-        {/* The board first in the markup, the aside after it: on a tablet or a
-            phone that is their order on screen, and on a wide window the
-            stylesheet puts the aside in the left column. */}
-        <GameViewSection
-          game={game}
-          asReader={vista === "lector"}
-          errorCode={error}
-          importReport={readImportReport(importadas)}
-        />
-        <GameAside
-          game={game}
-          study={study}
-          results={results}
-          classGames={classGames}
-          kinds={kinds}
-          students={students}
-          pageHref={pageHref}
-        />
-      </div>
-    </div>
+    <>
+      {/* Two of the layout's three pieces: the stylesheet beside it places them. */}
+      <GameViewSection
+        game={game}
+        asReader={vista === "lector"}
+        errorCode={error}
+        importReport={readImportReport(importadas)}
+      />
+      <GameRecord game={game} results={results} />
+    </>
   );
 }

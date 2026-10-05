@@ -1,0 +1,31 @@
+.study-games {
+  /* The list itself is `GameList`, a block of its own. Where it stands within
+     a study of several pages goes under it, above the new-game action. */
+  & .study-games__pages {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-2);
+    padding: var(--platform-space-3) var(--platform-space-4);
+    box-shadow: 0 -1px 0 var(--platform-border);
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-subtle);
+  }
+
+  /* Written, like a link: it turns the page of the list and goes nowhere. */
+  & .study-games__page-button {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-weight: 600;
+    color: var(--platform-accent-ink);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  & .study-games__page-button:disabled {
+    color: var(--platform-text-faint);
+    cursor: default;
+  }
+}

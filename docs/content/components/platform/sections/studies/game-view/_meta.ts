@@ -3,7 +3,9 @@ import type { MetaRecord } from "nextra";
 const meta: MetaRecord = {
   "game-view-section": "GameViewSection",
   "delete-game": "DeleteGame",
-  "game-aside": "GameAside",
+  "study-aside": "StudyAside",
+  "study-games": "StudyGames",
+  "game-record": "GameRecord",
 };
 
 export default meta;

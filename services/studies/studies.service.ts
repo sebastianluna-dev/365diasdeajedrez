@@ -12,12 +12,11 @@ import {
   mapGameView,
   mapStudyDetail,
   mapStudySummary,
-  STUDY_GAMES_PAGE_SIZE,
   studyDetailInclude,
   STUDY_PREVIEW_SIZE,
   studySummaryInclude,
 } from "./studies.mapper";
-import { creatableKinds, studyPermissionsOf } from "./study-rules";
+import { creatableKinds, STUDY_GAMES_PAGE_SIZE, studyPermissionsOf } from "./study-rules";
 import type {
   ClassGameItem,
   GameView,
@@ -111,29 +110,27 @@ export const getGameResultOptions = cache(async (): Promise<StudyKindOption[]> =
 });
 
 /**
- * One page of the study's games (`STUDY_GAMES_PAGE_SIZE`). A page beyond the
- * last one answers the last: a stale link must not show an empty study. The
- * totals and the event counts — which name the games — are asked of the whole
- * study, so a label on page three reads the same as it would on a single page.
+ * The study with its first games (`STUDY_GAMES_PAGE_SIZE`): what its own URL
+ * needs, which only sends on to the first of them or, without any, shows the
+ * empty study. The totals and the event counts — which name the games — are
+ * asked of the whole study, so a label reads the same as it does on the game
+ * page, which carries every game (`getStudyWithGames`).
  */
-export async function getStudyById(studyId: string, requestedPage = 1): Promise<StudyDetail | null> {
+export async function getStudyById(studyId: string): Promise<StudyDetail | null> {
   const db = getPlatformDb();
   const [where, user] = await Promise.all([getVisibleStudiesWhere(), getCurrentUser()]);
   const studyWhere = { AND: [{ id: studyId }, where] };
 
-  const gameCount = await db.game.count({ where: { database: studyWhere } });
-  const pageCount = Math.max(1, Math.ceil(gameCount / STUDY_GAMES_PAGE_SIZE));
-  const page = Math.min(Math.max(1, Math.trunc(requestedPage) || 1), pageCount);
-
-  const [row, citedGameCount, events] = await Promise.all([
+  const [row, gameCount, citedGameCount, events] = await Promise.all([
     db.gameDatabase.findFirst({
       where: studyWhere,
       include: {
         ...studyDetailInclude,
-        games: { ...studyDetailInclude.games, skip: (page - 1) * STUDY_GAMES_PAGE_SIZE, take: STUDY_GAMES_PAGE_SIZE },
+        games: { ...studyDetailInclude.games, take: STUDY_GAMES_PAGE_SIZE },
       },
       relationLoadStrategy: "join",
     }),
+    db.game.count({ where: { database: studyWhere } }),
     db.game.count({ where: { database: studyWhere, classBlocks: { some: {} } } }),
     db.game.groupBy({
       by: ["event"],
@@ -146,26 +143,29 @@ export async function getStudyById(studyId: string, requestedPage = 1): Promise<
   const eventCounts = new Map<string, number>();
   for (const group of events) if (group.event) eventCounts.set(group.event, group._count._all);
 
-  return mapStudyDetail(row, user.id, { gameCount, citedGameCount, eventCounts, page });
+  return mapStudyDetail(row, user.id, { gameCount, citedGameCount, eventCounts });
 }
 
 /**
- * The page of `getStudyById` the game falls on, so the game page's aside can
- * list the games around the current one and not always the first hundred. It
- * walks the ids in the study's order — a few hundred at most, no PGN — and
- * answers 1 for a game it cannot find, which the caller has already turned
- * into a 404 anyway.
+ * The study with EVERY game, for the layout of its game pages: the list stays
+ * on screen while one goes from game to game, so it cannot be the page of
+ * games around the current one — the layout does not know which one that is,
+ * and is not rendered again when it changes. The rows are light (no PGN, no
+ * tags), a few hundred at most; which hundred of them is shown is decided in
+ * the browser (`StudyGames`).
  */
-export async function getStudyPageOfGame(studyId: string, gameId: string): Promise<number> {
-  const db = getPlatformDb();
-  const where = await getVisibleStudiesWhere();
-  const ids = await db.game.findMany({
-    where: { database: { AND: [{ id: studyId }, where] } },
-    orderBy: studyDetailInclude.games.orderBy,
-    select: { id: true },
+export async function getStudyWithGames(studyId: string): Promise<StudyDetail | null> {
+  const [where, user] = await Promise.all([getVisibleStudiesWhere(), getCurrentUser()]);
+  const row = await getPlatformDb().gameDatabase.findFirst({
+    where: { AND: [{ id: studyId }, where] },
+    include: studyDetailInclude,
+    // Not the join every other read here uses: joined, the games of a study
+    // come as ONE JSON array built in the database, and this list has no
+    // `take`. A query of their own brings them as plain rows.
+    relationLoadStrategy: "query",
   });
-  const index = ids.findIndex((game) => game.id === gameId);
-  return index < 0 ? 1 : Math.floor(index / STUDY_GAMES_PAGE_SIZE) + 1;
+  // Without totals of its own the mapper counts the row's games, which here are all of them.
+  return row ? mapStudyDetail(row, user.id) : null;
 }
 
 /**

@@ -4,13 +4,13 @@ description: "The confirmation dialog for deleteStudyGame, with a checkbox requi
 
 # `DeleteGame`
 
-|            |                                                                           |
-| ---------- | ------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/game-view/delete-game.comp.tsx`     |
-| Kind       | Client Component                                                          |
-| Stylesheet | `delete-game.comp.css` → block `.delete-game`                             |
-| Used by    | [`GameAside`](/components/platform/sections/studies/game-view/game-aside) |
-| Writes     | `deleteStudyGame()` · `services/studies/studies.actions.ts`               |
+|            |                                                                             |
+| ---------- | --------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/delete-game.comp.tsx`       |
+| Kind       | Client Component                                                            |
+| Stylesheet | `delete-game.comp.css` → block `.delete-game`                               |
+| Used by    | [`GameRecord`](/components/platform/sections/studies/game-view/game-record) |
+| Writes     | `deleteStudyGame()` · `services/studies/studies.actions.ts`                 |
 
 ## Purpose
 
@@ -49,7 +49,7 @@ Block `.delete-game` (163 lines).
 
 ## Usage
 
-From `components/platform/sections/studies/game-view/game-aside.comp.tsx`:
+From `components/platform/sections/studies/game-view/game-record.comp.tsx`:
 
 ```tsx
 import { DeleteGame } from "./delete-game.comp";

@@ -1,12 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { DATABASE_KIND } from "@/constants/platform/study-codes.const";
-import {
-  mapStudyDetail,
-  mapStudySummary,
-  STUDY_GAMES_PAGE_SIZE,
-  type StudyDetailRow,
-  type StudySummaryRow,
-} from "./studies.mapper";
+import { mapStudyDetail, mapStudySummary, type StudyDetailRow, type StudySummaryRow } from "./studies.mapper";
+import { STUDY_GAMES_PAGE_SIZE } from "./study-rules";
 
 // Minimal fixture with the shape `studyDetailInclude` returns. It is built by
 // hand and the type is asserted: what is tested is the mapping, not Prisma.
@@ -96,27 +91,23 @@ describe("mapStudyDetail", () => {
   });
 });
 
-describe("mapStudyDetail con paginación", () => {
-  it("sin datos de paginación, la fila es el estudio entero: una página", () => {
+describe("mapStudyDetail con los totales del estudio", () => {
+  it("sin totales, la fila es el estudio entero y se cuenta de ella", () => {
     const detail = mapStudyDetail(study({ games: [game({ id: "a" })] }), "owner");
-    expect(detail).toMatchObject({ gameCount: 1, page: 1, pageCount: 1 });
+    expect(detail).toMatchObject({ gameCount: 1, citedGameCount: 0 });
   });
 
-  it("numera las partidas de una página con el desplazamiento de las anteriores", () => {
+  it("con totales, cuenta y nombra con los del estudio y no con los de las partidas que trae", () => {
     const row = study({ games: [game({ id: "x", event: "Repetido" }), game({ id: "y" })] });
     const detail = mapStudyDetail(row, "owner", {
       gameCount: STUDY_GAMES_PAGE_SIZE * 2 + 2,
       citedGameCount: 7,
       // The event repeats elsewhere in the study, so it does not name the game.
       eventCounts: new Map([["Repetido", 3]]),
-      page: 3,
     });
-    expect(detail.pageCount).toBe(3);
+    expect(detail.gameCount).toBe(STUDY_GAMES_PAGE_SIZE * 2 + 2);
     expect(detail.citedGameCount).toBe(7);
-    expect(detail.games.map((item) => item.label)).toEqual([
-      `Partida ${STUDY_GAMES_PAGE_SIZE * 2 + 1}`,
-      `Partida ${STUDY_GAMES_PAGE_SIZE * 2 + 2}`,
-    ]);
+    expect(detail.games.map((item) => item.label)).toEqual(["Partida 1", "Partida 2"]);
   });
 });
 

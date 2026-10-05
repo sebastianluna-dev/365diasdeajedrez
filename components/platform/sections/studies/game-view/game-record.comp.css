@@ -1,0 +1,96 @@
+/* The record reads top to bottom: where it was played, when and how it ended,
+   and at the foot where the game came from. White on the page's grey over a
+   light shadow, with no outline, like every box of the game view. */
+.game-record {
+  min-width: 0;
+  overflow: hidden;
+  background: var(--platform-surface);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+  & .game-record__head {
+    padding: var(--platform-space-4);
+  }
+
+  & .game-record__title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-2);
+  }
+
+  /* The margin pushes the edit button to the end. It goes here and not on the
+     button itself, which is also used elsewhere and must not be set apart there. */
+  & .game-record__label {
+    margin: 0 auto 0 0;
+    padding: var(--platform-space-0-5) 0 0;
+    font-size: var(--platform-type-sm);
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--platform-text-subtle);
+  }
+
+  & .game-record__event {
+    margin: var(--platform-space-3) 0 0;
+    font-size: var(--platform-type-lg);
+    font-weight: 700;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+
+  & .game-record__site {
+    margin: var(--platform-space-2) 0 0;
+    font-size: var(--platform-type-sm);
+    line-height: 1.4;
+    color: var(--platform-text-subtle);
+    text-wrap: pretty;
+  }
+
+  /* Two by two, with the grid lines drawn by the gaps themselves: the
+     background shows through them and there is no need to set a border per
+     cell nor to work out which one carries it and which does not. */
+  & .game-record__cells {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    margin: 0;
+    background: var(--platform-border);
+    box-shadow: 0 -1px 0 var(--platform-border);
+  }
+
+  & .game-record__cell {
+    padding: var(--platform-space-3) var(--platform-space-4);
+    background: var(--platform-surface);
+  }
+
+  & .game-record__key {
+    font-size: var(--platform-type-sm);
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--platform-text-subtle);
+  }
+
+  & .game-record__value {
+    margin: var(--platform-space-1) 0 0;
+    font-size: var(--platform-type-lg);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  & .game-record__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-3) var(--platform-space-4);
+    box-shadow: 0 -1px 0 var(--platform-border);
+  }
+
+  & .game-record__source {
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-subtle);
+  }
+}

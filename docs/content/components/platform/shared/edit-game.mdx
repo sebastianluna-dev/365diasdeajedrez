@@ -4,15 +4,15 @@ description: "The 'Datos de la partida' dialog over GameFields. It posts to the 
 
 # `EditGame`
 
-|            |                                                                                                                                                                                                                               |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/edit-game/edit-game.comp.tsx`                                                                                                                                                                     |
-| Kind       | Client Component                                                                                                                                                                                                              |
-| Stylesheet | `edit-game.comp.css` → block `.edit-game`                                                                                                                                                                                     |
-| Story      | `edit-game.stories.tsx` (`platform/shared/EditGame`): closed, open (by its `play` function) and with a label of its own; the action is a spy listed in the Actions panel                                                      |
-| Used by    | [`GameAside`](/components/platform/sections/studies/game-view/game-aside) (the student's studies), [`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section) (the staff's chapter collections) |
-| Composes   | [`GameFields`](/components/platform/shared/game-fields)                                                                                                                                                                       |
-| Writes     | Whatever `action` it is given: `updateGameDetails()` for a study, `updateChapterGameDetails()` for a chapter's collection                                                                                                     |
+|            |                                                                                                                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/edit-game/edit-game.comp.tsx`                                                                                                                                                                       |
+| Kind       | Client Component                                                                                                                                                                                                                |
+| Stylesheet | `edit-game.comp.css` → block `.edit-game`                                                                                                                                                                                       |
+| Story      | `edit-game.stories.tsx` (`platform/shared/EditGame`): closed, open (by its `play` function) and with a label of its own; the action is a spy listed in the Actions panel                                                        |
+| Used by    | [`GameRecord`](/components/platform/sections/studies/game-view/game-record) (the student's studies), [`ChapterGameSection`](/components/platform/sections/staff/courses/chapter-game-section) (the staff's chapter collections) |
+| Composes   | [`GameFields`](/components/platform/shared/game-fields)                                                                                                                                                                         |
+| Writes     | Whatever `action` it is given: `updateGameDetails()` for a study, `updateChapterGameDetails()` for a chapter's collection                                                                                                       |
 
 ## Purpose
 
@@ -50,7 +50,7 @@ Block `.edit-game` (53 lines).
 
 ## Usage
 
-From `GameAside`:
+From `GameRecord`:
 
 ```tsx
 import { EditGame } from "@/components/platform/shared/edit-game/edit-game.comp";
@@ -65,4 +65,4 @@ import { EditGame } from "@/components/platform/shared/edit-game/edit-game.comp"
 
 ## Related
 
-- [`GameAside`](/components/platform/sections/studies/game-view/game-aside) renders it in the record card's head.
+- [`GameRecord`](/components/platform/sections/studies/game-view/game-record) renders it in the record's head.

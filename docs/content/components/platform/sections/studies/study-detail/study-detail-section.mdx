@@ -15,7 +15,7 @@ description: "The study without games: header with kind, origin and read-only ma
 
 ## Purpose
 
-A study is read on its game page: `/estudios/[studyId]` redirects to the first game, and the game page's aside ([`GameAside`](/components/platform/sections/studies/game-view/game-aside)) carries the study's name, actions and games. This section only ever renders when there is no game to go to. The header names the study and says what it is; the action bar offers what the viewer may do, which for its owner is how the study gets its first game; the body is the empty state. What is offered comes from `services/studies/study-rules`, the same table the server actions apply: this section only decides what is **shown**, never what is allowed.
+A study is read on its game page: `/estudios/[studyId]` redirects to the first game, and the column beside the board ([`StudyAside`](/components/platform/sections/studies/game-view/study-aside), mounted by the game pages' layout) carries the study's name, actions and games. This section only ever renders when there is no game to go to. The header names the study and says what it is; the action bar offers what the viewer may do, which for its owner is how the study gets its first game; the body is the empty state. What is offered comes from `services/studies/study-rules`, the same table the server actions apply: this section only decides what is **shown**, never what is allowed.
 
 ## Props
 
@@ -67,5 +67,5 @@ import { StudyDetailSection } from "@/components/platform/sections/studies/study
 
 ## Related
 
-- [`GameAside`](/components/platform/sections/studies/game-view/game-aside), where a study with games is named, reordered, edited and shared.
+- [`StudyAside`](/components/platform/sections/studies/game-view/study-aside), where a study with games is named, reordered, edited and shared.
 - [Student features › Studies](/platform/student) for the kinds and the permission table.

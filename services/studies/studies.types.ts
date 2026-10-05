@@ -123,12 +123,13 @@ export interface StudyDetail {
   shares: StudyShareItem[];
   /** Games of the study cited in the content of some class. */
   citedGameCount: number;
-  /** All the games of the study, not only the page below. */
+  /** All the games of the study, even when `games` is only its first ones. */
   gameCount: number;
-  /** The page of games this detail carries (1-based) and how many there are. */
-  page: number;
-  pageCount: number;
-  /** One page of games (`STUDY_GAMES_PAGE_SIZE`), in the study's order. */
+  /**
+   * The games, in the study's order: every one of them on the game pages
+   * (`getStudyWithGames`), the first `STUDY_GAMES_PAGE_SIZE` on the study's
+   * own URL (`getStudyById`), which only needs the first.
+   */
   games: StudyGameItem[];
 }
 
