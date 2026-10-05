@@ -4,6 +4,14 @@
      is inside goes in `em`, so this one line is enough. */
   font-size: var(--engine-panel-font-size, var(--platform-type-sm));
 
+  /* A line of a continuation and the row it sits in, in `em` so they follow
+     the size above (full screen enlarges it). The body's fixed height is
+     counted in these rows: it was a loose 102px, worked out when a row
+     measured 26, and with the text at 15px three rows no longer fitted — the
+     bottom padding and a few px of the third line were clipped away. */
+  --engine-panel-line: 1.5em;
+  --engine-panel-row: calc(var(--engine-panel-line) + 2 * var(--platform-space-1));
+
   /* Reference for the preview: its place is measured against the engine block,
      not against whichever move is being pointed at. */
   position: relative;
@@ -63,23 +71,25 @@
      lists start at the same edge and read as a single column. The header does
      keep its own: it is a title, not a list.
 
-     FIXED height, the same the notation gives up when it is switched on: the
-     block goes through "Loading", "Thinking" and three lines within seconds,
-     and if it measured what its content takes up it would move the whole game
-     three times in a row. */
+     FIXED height: the block goes through "Loading", "Thinking" and three
+     lines within seconds, and if it measured what its content takes up it
+     would move the whole game three times in a row. It is three rows and the
+     padding above and below them, exactly: the same air over the first line
+     as under the last. */
   & .engine-panel__body {
-    height: var(--viewer-engine-body, 102px);
-    padding: var(--platform-space-2) 0 var(--platform-space-2);
+    height: calc(3 * var(--engine-panel-row) + 2 * var(--platform-space-2));
+    padding: var(--platform-space-2) 0;
     box-sizing: border-box;
     overflow: hidden;
     background: var(--platform-bg);
+    line-height: 1.5;
   }
 
-  /* With one line expanded the block grows EXACTLY one row, which is what the
-     notation gives up: fixed height here too, for the same reason as when
-     collapsed — what is not measured firmly, moves. */
+  /* With one line expanded the block grows EXACTLY one line of text — the
+     second row of that continuation —: fixed height here too, for the same
+     reason as when collapsed — what is not measured firmly, moves. */
   & .engine-panel__body.engine-panel__body_state_expanded {
-    height: calc(var(--viewer-engine-body, 102px) + var(--viewer-engine-extra, 26px));
+    height: calc(3 * var(--engine-panel-row) + 2 * var(--platform-space-2) + var(--engine-panel-line));
   }
 
   & .engine-panel__lines {
@@ -95,7 +105,10 @@
     /* The whole line — evaluation included — and the button that expands it. */
     grid-template-columns: minmax(0, 1fr) 26px;
     gap: var(--platform-space-3);
-    align-items: baseline;
+    /* Centred, not on the baseline: the button has no text, so its baseline
+       is its bottom edge, and aligned by it the row grew by the text's
+       descender — a row of 34px where the line and its padding make 30. */
+    align-items: center;
     /* A little air on the left: pressed against the card's edge the evaluations
        read as part of the border. */
     padding: var(--platform-space-1) var(--platform-space-3) var(--platform-space-1) var(--platform-space-3);
@@ -138,7 +151,11 @@
     line-clamp: 2;
     overflow: hidden;
     white-space: normal;
-    line-height: 1.6;
+  }
+
+  /* The arrow stays beside the first of the two rows. */
+  & .engine-panel__row:has(.engine-panel__line_state_expanded) {
+    align-items: start;
   }
 
   /* Number and move travel together: when the line breaks over several rows,

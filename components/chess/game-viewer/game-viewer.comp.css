@@ -1,17 +1,4 @@
 .game-viewer {
-  /* What the engine's lines take up. It is here, and not in its own sheet,
-     because TWO rules that have to agree with each other read it: the block's
-     fixed height and what the notation gives up when it is switched on.
-
-     It is the three lines (26px each) plus the block's padding, with plenty of
-     slack: at the exact size, the clamp ate the bottom padding and the last
-     line was pressed against the notation. */
-  --viewer-engine-body: 102px;
-  /* What grows when a line is expanded: one more row. Only one is expanded at
-     a time, so the growth is always this and the notation can give it up
-     without measuring anything. */
-  --viewer-engine-extra: 26px;
-
   & .game-viewer__layout {
     display: grid;
     /* The board rules: it grows up to 600px and stops there, so the moves panel
