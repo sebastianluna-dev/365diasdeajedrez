@@ -45,6 +45,12 @@ export interface GameSettingsGame {
   analysisModeCode?: string;
   /** The owner's text under the board, whatever the move. */
   pinnedComment?: string;
+  /**
+   * Whether some class shows the game. Deleting it leaves that block of the
+   * class empty, so the server asks for an explicit confirmation
+   * (`confirmClassBlocks`) and the dialog asks for it before sending.
+   */
+  citedInClass?: boolean;
 }
 
 const ORIENTATION_OPTIONS = [
@@ -93,12 +99,18 @@ const CONFIRMATIONS: Record<Destructive, { question: string; detail: string; sub
  * opens from, how a reader goes through it and a comment pinned under the
  * board; and the three things that destroy — its annotations, its variations,
  * the game itself —, each behind a confirmation of its own inside the same
- * dialog, because none of them can be undone.
+ * dialog, because none of them can be undone. A game some class shows asks
+ * for one thing more before it is deleted: a box that says the class's block
+ * will be left empty.
  */
 export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const nameRef = useRef<HTMLInputElement>(null);
   const [confirming, setConfirming] = useState<Destructive | null>(null);
+  // The same condition as the server: only a game some class shows needs the
+  // box ticked. Sent without it, the action would bounce instead of deleting.
+  const [emptiesClass, setEmptiesClass] = useState(false);
+  const needsClassConfirmation = confirming === "game" && game.citedInClass === true;
   const titleId = useId();
 
   /** Opens on the name, which is what one comes to change, and not on the close button the browser would pick. */
@@ -107,9 +119,15 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
     nameRef.current?.focus();
   };
 
+  /** Out of a confirmation, whichever way: nothing stays half agreed to. */
+  const leaveConfirmation = () => {
+    setConfirming(null);
+    setEmptiesClass(false);
+  };
+
   const close = () => {
     dialogRef.current?.close();
-    setConfirming(null);
+    leaveConfirmation();
   };
 
   /** A clean-up: the server rewrites the PGN, and the game on screen is loaded again with it. */
@@ -137,7 +155,7 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
         ref={dialogRef}
         className="platform-dialog game-settings__dialog"
         aria-labelledby={titleId}
-        onClose={() => setConfirming(null)}
+        onClose={leaveConfirmation}
       >
         <header className="game-settings__head">
           <h2 id={titleId} className="game-settings__title">
@@ -154,11 +172,30 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
             <p className="game-settings__detail">
               «{game.name}». {confirmation.detail} Esta acción no se puede deshacer.
             </p>
+            {needsClassConfirmation && (
+              <label className="game-settings__cited">
+                <input
+                  type="checkbox"
+                  name="confirmClassBlocks"
+                  value="yes"
+                  className="game-settings__cited-check"
+                  checked={emptiesClass}
+                  onChange={(event) => setEmptiesClass(event.target.checked)}
+                />
+                <span>
+                  Esta partida se usa en el contenido de alguna clase. Entiendo que esos bloques se quedarán vacíos.
+                </span>
+              </label>
+            )}
             <div className="game-settings__actions">
-              <button type="button" className="platform-button" onClick={() => setConfirming(null)}>
+              <button type="button" className="platform-button" onClick={leaveConfirmation}>
                 Cancelar
               </button>
-              <SubmitButton className="platform-button platform-button_variant_danger" pendingLabel="Eliminando…">
+              <SubmitButton
+                className="platform-button platform-button_variant_danger"
+                disabled={needsClassConfirmation && !emptiesClass}
+                pendingLabel="Eliminando…"
+              >
                 {confirmation.submit}
               </SubmitButton>
             </div>

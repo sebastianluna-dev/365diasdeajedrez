@@ -1,7 +1,6 @@
 import { EditGame } from "@/components/platform/shared/edit-game/edit-game.comp";
 import { updateGameDetails } from "@/services/studies/studies.actions";
 import type { GameView, StudyKindOption } from "@/services/studies/studies.types";
-import { DeleteGame } from "./delete-game.comp";
 import "./game-record.comp.css";
 
 interface GameRecordProps {
@@ -28,13 +27,14 @@ function recordCells(game: GameView): { key: string; value: string }[] {
 
 /**
  * The record of the game on the board, in the column of its study: where it
- * was played, when and how it ended, and at the foot where the game came from.
+ * was played, when and how it ended. Deleting the game is not here: it is in
+ * the game's settings, behind the gear of its row in the list.
  *
  * It is the page's and not the layout's — the one card of that column that is
  * about the current game —, so it is the one that changes from game to game
  * while the study above it holds still (`StudyAside`). It decides for itself
- * what the viewer may do, from `game.canEdit`. A Server Component: the two
- * modals it mounts are Client Components with their own state.
+ * what the viewer may do, from `game.canEdit`. A Server Component: the modal
+ * it mounts is a Client Component with its own state.
  */
 export function GameRecord({ game, results }: GameRecordProps) {
   const cells = recordCells(game);
@@ -70,22 +70,6 @@ export function GameRecord({ game, results }: GameRecordProps) {
           </div>
         ))}
       </dl>
-
-      {/* Where it came from and, for the owner, deleting it: the moves are edited
-          on the board itself, so nothing else is left here. */}
-      <div className="game-record__foot">
-        <span className="game-record__source">{game.sourceLabel}</span>
-        {game.canEdit && (
-          <DeleteGame
-            studyId={game.studyId}
-            gameId={game.id}
-            name={game.title ?? `${game.white} – ${game.black}`}
-            classBlockCount={game.classBlockCount}
-            size="inline"
-            label="Eliminar"
-          />
-        )}
-      </div>
     </section>
   );
 }

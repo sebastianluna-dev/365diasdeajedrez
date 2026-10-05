@@ -145,8 +145,6 @@ export interface GameView extends GameSettingsValues {
   playedAtValue?: string;
   round?: string;
   initialFen?: string;
-  /** Class blocks that cite this game: deleting it would leave them empty. */
-  classBlockCount: number;
   studyId: string;
   studyName: string;
   studyHref: string;

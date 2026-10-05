@@ -48,6 +48,7 @@ function listItem(game: StudyGameItem): GameListItem {
     orientationCode: game.orientationCode,
     analysisModeCode: game.analysisModeCode,
     pinnedComment: game.pinnedComment,
+    citedInClass: game.citedInClass,
     resultLabel: game.resultLabel,
     href: game.href,
   };

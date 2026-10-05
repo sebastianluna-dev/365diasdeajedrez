@@ -1,5 +1,5 @@
 ---
-description: "The record of the game on the board, in the column of its study: where it was played, when and how it ended, where it came from, and its owner's edit and delete controls. The page's card, the one that changes from game to game."
+description: "The record of the game on the board, in the column of its study: where it was played, when and how it ended, and its owner's edit control. The page's card, the one that changes from game to game."
 ---
 
 # `GameRecord`
@@ -10,12 +10,12 @@ description: "The record of the game on the board, in the column of its study: w
 | Kind       | Server Component                                                                                                                        |
 | Stylesheet | `game-record.comp.css` → block `.game-record`                                                                                           |
 | Used by    | `/estudios/[studyId]/partidas/[gameId]`, under the layout's [`StudyAside`](/components/platform/sections/studies/game-view/study-aside) |
-| Composes   | [`EditGame`](/components/platform/shared/edit-game), [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game)        |
+| Composes   | [`EditGame`](/components/platform/shared/edit-game)                                                                                     |
 | Uses       | `updateGameDetails` from `services/studies/studies.actions`; `GameView`, `StudyKindOption` from `services/studies/studies.types`        |
 
 ## Purpose
 
-The one card of the study's column that is about the **current game**: it reads top to bottom — where it was played, when and how it ended — and at the foot says where the game came from. It was the second card of `GameAside` until 2026-10-05, when the study's part of that column moved to the layout so as to hold still from game to game ([`StudyAside`](/components/platform/sections/studies/game-view/study-aside)); what depends on the game stayed with the page, and this is it.
+The one card of the study's column that is about the **current game**: it reads top to bottom — where it was played, when and how it ended. It was the second card of `GameAside` until 2026-10-05, when the study's part of that column moved to the layout so as to hold still from game to game ([`StudyAside`](/components/platform/sections/studies/game-view/study-aside)); what depends on the game stayed with the page, and this is it.
 
 ## Props
 
@@ -27,15 +27,16 @@ The one card of the study's column that is about the **current game**: it reads 
 ## Behaviour
 
 - `recordCells` always yields **four** cells (Fecha, Ronda, ECO, Resultado) with a dash where there is no value: in a two-by-two grid, hiding one cell displaces the other three, and an incomplete record reads worse than one with declared gaps.
-- With `game.canEdit`, [`EditGame`](/components/platform/shared/edit-game) sits in the head with `values={game}` whole (`GameView` already contains every field of `GameFieldValues`; listing them one by one is how the title and the federation got lost once) and [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game) at the foot in its `inline` size.
+- With `game.canEdit`, [`EditGame`](/components/platform/shared/edit-game) sits in the head with `values={game}` whole (`GameView` already contains every field of `GameFieldValues`; listing them one by one is how the title and the federation got lost once).
+- **No foot** (2026-10-05). The card ended with where the game came from («Importada de PGN»…) and, for its owner, «Eliminar»; the owner took both out. A game is deleted from its settings, behind the gear of its row in the list ([`GameSettings`](/components/platform/shared/game-settings)), which since then asks for what `DeleteGame` — the dialog that button opened, removed with it — asked of a game some class shows. The game's origin is still in `GameView.sourceLabel`, which the teacher's view of a student's game shows.
 - The event and the site are only drawn when the game has them.
-- **`GameRecordSkeleton`**, exported beside it, is the card blank (`.game-record_state_loading`, 340px tall, `aria-hidden`): what the game's `loading.tsx` puts in the record's place while the next game of the study arrives, next to [`GameSkeleton`](/components/platform/sections/studies/game-view/game-skeleton).
+- **`GameRecordSkeleton`**, exported beside it, is the card blank (`.game-record_state_loading`, 300px tall, `aria-hidden`): what the game's `loading.tsx` puts in the record's place while the next game of the study arrives, next to [`GameSkeleton`](/components/platform/sections/studies/game-view/game-skeleton).
 
 ## Markup & styling
 
-Block `.game-record` (101 lines), a `<section>`: white on the page's grey over a light shadow, with no outline, like every box of the game view. The four facts are a two-by-two grid whose lines are its own 1px gaps, with the border colour showing through.
+Block `.game-record` (87 lines), a `<section>`: white on the page's grey over a light shadow, with no outline, like every box of the game view. The four facts are a two-by-two grid whose lines are its own 1px gaps, with the border colour showing through.
 
-**Elements:** `.game-record__head`, `.game-record__title`, `.game-record__label`, `.game-record__event`, `.game-record__site`, `.game-record__cells`, `.game-record__cell`, `.game-record__key`, `.game-record__value`, `.game-record__foot`, `.game-record__source`
+**Elements:** `.game-record__head`, `.game-record__title`, `.game-record__label`, `.game-record__event`, `.game-record__site`, `.game-record__cells`, `.game-record__cell`, `.game-record__key`, `.game-record__value`
 
 **Modifiers and states:** `.game-record_state_loading`
 

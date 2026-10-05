@@ -1,5 +1,5 @@
-/* The record reads top to bottom: where it was played, when and how it ended,
-   and at the foot where the game came from. White on the page's grey over a
+/* The record reads top to bottom: where it was played, when and how it ended.
+   White on the page's grey over a
    light shadow, with no outline, like every box of the game view. */
 .game-record {
   min-width: 0;
@@ -80,22 +80,8 @@
     letter-spacing: -0.01em;
   }
 
-  & .game-record__foot {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--platform-space-3);
-    padding: var(--platform-space-3) var(--platform-space-4);
-    box-shadow: 0 -1px 0 var(--platform-border);
-  }
-
-  & .game-record__source {
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-subtle);
-  }
-
   /* Blank, while the game is on its way: about what a record measures. */
   &.game-record_state_loading {
-    min-height: 340px;
+    min-height: 300px;
   }
 }

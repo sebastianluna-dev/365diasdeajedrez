@@ -121,3 +121,33 @@ export const Confirming: Story = {
     await expect(args.actions.clearVariations).toHaveBeenCalledWith("g1");
   },
 };
+
+/** «Eliminar partida» on a game some class shows: the button waits for the box that says the class's block will be left empty, and the action gets that confirmation. */
+export const DeletingCited: Story = {
+  name: "Eliminar una partida citada en una clase",
+  args: {
+    game: {
+      id: "g1",
+      name: "Una celada en la apertura",
+      title: "Una celada en la apertura",
+      orientationCode: "WHITE",
+      citedInClass: true,
+    },
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "Ajustes de «Una celada en la apertura»" }));
+    await userEvent.click(await canvas.findByRole("button", { name: "Eliminar partida" }));
+    const submit = canvas.getByRole("button", { name: "Eliminar partida" });
+    await waitFor(() => expect(submit).toBeVisible());
+    await expect(submit).toBeDisabled();
+
+    await userEvent.click(canvas.getByRole("checkbox"));
+    await expect(submit).toBeEnabled();
+    await userEvent.click(submit);
+    await waitFor(() => expect(args.actions.remove).toHaveBeenCalled());
+    const call = (args.actions.remove as unknown as { mock: { calls: [string, FormData][] } }).mock.calls[0];
+    await expect(call?.[0]).toBe("g1");
+    await expect(call?.[1].get("confirmClassBlocks")).toBe("yes");
+  },
+};

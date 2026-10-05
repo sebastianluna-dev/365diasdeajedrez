@@ -11,7 +11,7 @@ Also exports the `GameSettingsActions` and `GameSettingsGame` types.
 | File       | `components/platform/shared/game-settings/game-settings.comp.tsx`                                                                                                                                                                    |
 | Kind       | Client Component                                                                                                                                                                                                                     |
 | Stylesheet | `game-settings.comp.css` → block `.game-settings`                                                                                                                                                                                    |
-| Story      | `game-settings.stories.tsx` (`platform/shared/GameSettings`): the gear alone, the dialog open, a game with no name of its own, one with its settings saved, and the confirmation before deleting                                     |
+| Story      | `game-settings.stories.tsx` (`platform/shared/GameSettings`): the gear alone, the dialog open, a game with no name of its own, one with its settings saved, the confirmation before deleting, and deleting a game some class shows   |
 | Used by    | [`GameList`](/components/platform/shared/game-list), at the end of each row, when it is given `settings`                                                                                                                             |
 | Composes   | [`PlatformForm`](/components/platform/shared/platform-form) (`PlatformFormField`, `PlatformFormGroup`), [`PlatformSelect`](/components/platform/shared/platform-select), [`SubmitButton`](/components/platform/shared/submit-button) |
 | Uses       | `GearIcon` (in Duotone Solid), `XmarkIcon` from `components/icons/`                                                                                                                                                                  |
@@ -24,11 +24,11 @@ Of Lichess's four analysis modes, two are here: «Análisis normal» and «Ocult
 
 ## Props
 
-| Prop        | Type                  | Required | Meaning                                                                                                                                                                                                                              |
-| ----------- | --------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `game`      | `GameSettingsGame`    | yes      | `{ id, name, title?, orientationCode, analysisModeCode?, pinnedComment? }`: `name` is what the list calls it; `title` the name it was given, absent while it is shown by its players; the other three are what the settings open on. |
-| `isCurrent` | `boolean`             | yes      | Whether it is the game on screen: after a clean-up the page is loaded again (see below).                                                                                                                                             |
-| `actions`   | `GameSettingsActions` | yes      | `{ save(gameId, formData), clearAnnotations(gameId), clearVariations(gameId), remove(gameId, formData) }`, server actions already bound to the study the game belongs to.                                                            |
+| Prop        | Type                  | Required | Meaning                                                                                                                                                                                                                                                                                                                                          |
+| ----------- | --------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `game`      | `GameSettingsGame`    | yes      | `{ id, name, title?, orientationCode, analysisModeCode?, pinnedComment?, citedInClass? }`: `name` is what the list calls it; `title` the name it was given, absent while it is shown by its players; the next three are what the settings open on; `citedInClass` says some class shows the game, so deleting it asks for one confirmation more. |
+| `isCurrent` | `boolean`             | yes      | Whether it is the game on screen: after a clean-up the page is loaded again (see below).                                                                                                                                                                                                                                                         |
+| `actions`   | `GameSettingsActions` | yes      | `{ save(gameId, formData), clearAnnotations(gameId), clearVariations(gameId), remove(gameId, formData) }`, server actions already bound to the study the game belongs to.                                                                                                                                                                        |
 
 ## Behaviour
 
@@ -40,19 +40,19 @@ Of Lichess's four analysis modes, two are here: «Análisis normal» and «Ocult
   - **Comentario fijo** (`pinnedComment`, up to 1000 characters): the text the viewer draws under the board whatever the move.
 - **«Eliminar anotaciones», «Eliminar variantes», «Eliminar partida»** are three words in the danger ink under a rule. None acts at once: each swaps the dialog's body for its confirmation — what goes, what stays, «Esta acción no se puede deshacer» — with «Cancelar» and the button that does it. Annotations are the comments and what lives inside them (arrows, marked squares, evaluations), the signs and the opening comment; the moves and the variations stay. Variations leave the main line alone.
 - **A clean-up of the game on screen reloads the page.** The two clean-ups rewrite the PGN on the server (`clearGameAnnotations`, `clearGameVariations`), while the game's page holds its own copy in the browser, with its undo history and its autosave: left there, the next autosave would write the old PGN back. So with `isCurrent` the page is loaded again once the action settles; for any other game the dialog just closes.
-- **Deleting** hands the form to `remove`, which sends the browser on. A game cited in a class is not deleted from here: `deleteStudyGame` bounces to that game's page with its notice, where `DeleteGame` asks for the explicit confirmation it needs.
+- **Deleting** hands the form to `remove`, which sends the browser on. A game some class shows (`game.citedInClass`) asks for one thing more: a box, «Esta partida se usa en el contenido de alguna clase. Entiendo que esos bloques se quedarán vacíos.», and «Eliminar partida» stays disabled until it is ticked. It is the server's own condition — `deleteStudyGame` wants `confirmClassBlocks=yes` for such a game and bounces with `gameInClasses` without it —, said before sending. Until 2026-10-05 that confirmation was only in `DeleteGame`, the dialog behind «Eliminar» at the foot of the game's record, and a cited game could not be deleted from here; the owner took that button out, so this is now the one place a game is deleted from.
 
 ## Markup & styling
 
-Block `.game-settings` (152 lines).
+Block `.game-settings` (176 lines).
 
-**Elements:** `.game-settings__open`, `.game-settings__open-icon`, `.game-settings__dialog`, `.game-settings__head`, `.game-settings__title`, `.game-settings__close`, `.game-settings__close-icon`, `.game-settings__form`, `.game-settings__pair` (the two selects side by side; one under the other below 640px), `.game-settings__actions`, `.game-settings__danger`, `.game-settings__destroy`, `.game-settings__confirm`, `.game-settings__question`, `.game-settings__detail`
+**Elements:** `.game-settings__open`, `.game-settings__open-icon`, `.game-settings__dialog`, `.game-settings__head`, `.game-settings__title`, `.game-settings__close`, `.game-settings__close-icon`, `.game-settings__form`, `.game-settings__pair` (the two selects side by side; one under the other below 640px), `.game-settings__actions`, `.game-settings__danger`, `.game-settings__destroy`, `.game-settings__confirm`, `.game-settings__question`, `.game-settings__detail`, `.game-settings__cited` (the box a cited game's deletion waits for), `.game-settings__cited-check`
 
 No modifiers.
 
 **Other classes it renders:** `.platform-dialog`, `.platform-button` (`_variant_ink`, `_variant_danger`).
 
-**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-border`, `--platform-danger`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`
+**Tokens:** `--platform-accent`, `--platform-accent-ink`, `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`
 
 **Breakpoints:** `(width < 640px)` stacks the two selects.
 
