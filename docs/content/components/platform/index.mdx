@@ -8,35 +8,36 @@ description: "Index of components/platform: the shared primitives and every sect
 
 ## `shared/`
 
-| Page                                                                         | Kind   | What it is                                                                                                               |
-| ---------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------ |
-| [`PlatformTable`](/components/platform/shared/platform-table)                | server | Semantic table for every panel listing; filters travel in the URL.                                                       |
-| [`FormField`](/components/platform/shared/form-field)                        | server | A real label around a native control; `FormFieldset` names a group of cards.                                             |
-| [`PlatformForm`](/components/platform/shared/platform-form)                  | client | `PlatformForm`, `PlatformFormField`, `PlatformFormGroup` on Radix's Form: fields with validity messages.                 |
-| [`GameFields`](/components/platform/shared/game-fields)                      | server | The fields of a game's record, the same in every form that writes one.                                                   |
-| [`EditGame`](/components/platform/shared/edit-game)                          | client | The «Datos de la partida» dialog over `GameFields`; it posts to the action it is given.                                  |
-| [`GameList`](/components/platform/shared/game-list)                          | client | The games beside the board, of a study or a chapter's collection: about eight rows, sortable where `onReorder` is given. |
-| [`GameSettings`](/components/platform/shared/game-settings)                  | client | The gear at the end of a game's row: its name, and deleting its annotations, its variations or the game.                 |
-| [`SortableDnd`](/components/platform/shared/sortable-dnd)                    | client | The drag and drop of the sortable lists, with its announcements in Spanish, the one-place step and the optimistic order. |
-| [`usePgnHistory`](/components/platform/shared/use-pgn-history-hook)          | hook   | A game's PGN with fifty steps of undo and the ⌘Z shortcut.                                                               |
-| [`useGameAutosave`](/components/platform/shared/use-game-autosave-hook)      | hook   | Saves a game 1.2 s after the last change, through the action it is given, and says how it went.                          |
-| [`PlatformSelect`](/components/platform/shared/platform-select)              | client | Every dropdown of the platform, on Radix's Select; groups, an empty option, two sizes.                                   |
-| [`PlatformInfoTip`](/components/platform/shared/platform-info-tip)           | client | A clarification behind an "i": shown on hover, focus and press, on Radix's Tooltip.                                      |
-| [`PlatformDatePicker`](/components/platform/shared/platform-date-picker)     | client | A month calendar on Radix's Popover; submits like a date input.                                                          |
-| [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards)   | client | A radio group drawn as cards, on Radix's RadioGroup.                                                                     |
-| [`PlatformCheckCards`](/components/platform/shared/platform-check-cards)     | client | A checkbox group drawn as cards, on Radix's Checkbox: several of a few.                                                  |
-| [`PlatformNotice`](/components/platform/shared/platform-notice)              | server | The result of an action, from the page's `?error=` message map.                                                          |
-| [`EmptyState`](/components/platform/shared/empty-state)                      | server | Dashed box with title, description and an optional link.                                                                 |
-| [`ProgressIndicator`](/components/platform/shared/progress-indicator)        | server | Progress bar, inline, stacked or as a large figure, in blue or the green of what is finished.                            |
-| [`StudyStreak`](/components/platform/shared/study-streak)                    | server | «Racha diaria»: days in a row studying, and the figure today would make it.                                              |
-| [`BoardLoading`](/components/platform/shared/board-loading)                  | server | The knight that hops while a segment streams; what every `loading.tsx` but the lesson's renders.                         |
-| [`CurrentPathField`](/components/platform/shared/current-path-field)         | client | The page one is on, as a hidden `returnTo`, for a form inside a layout.                                                  |
-| [`PlatformError`](/components/platform/shared/platform-error)                | client | The error boundary view with retry and digest.                                                                           |
-| [`LocalDateTime`](/components/platform/shared/local-datetime)                | client | A UTC instant in the browser's zone, without hydration mismatch.                                                         |
-| [`ActivityList`](/components/platform/shared/activity-list)                  | server | The dashboard's activity facts.                                                                                          |
-| [`ClassContentRenderer`](/components/platform/shared/class-content-renderer) | server | A class's blocks by kind, with the single viewer and the static diagram.                                                 |
-| [`ImageUpload`](/components/platform/shared/image-upload)                    | client | Uploads an image from the browser to Cloudinary and saves it through the action it is given.                             |
-| [`SubmitButton`](/components/platform/shared/submit-button)                  | client | The submit button of every write form: disabled, `aria-busy` and its `pendingLabel` while the action runs.               |
+| Page                                                                         | Kind   | What it is                                                                                                                  |
+| ---------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------- |
+| [`PlatformTable`](/components/platform/shared/platform-table)                | server | Semantic table for every panel listing; filters travel in the URL.                                                          |
+| [`FormField`](/components/platform/shared/form-field)                        | server | A real label around a native control; `FormFieldset` names a group of cards.                                                |
+| [`PlatformForm`](/components/platform/shared/platform-form)                  | client | `PlatformForm`, `PlatformFormField`, `PlatformFormGroup` on Radix's Form: fields with validity messages.                    |
+| [`GameFields`](/components/platform/shared/game-fields)                      | server | The fields of a game's record, the same in every form that writes one.                                                      |
+| [`EditGame`](/components/platform/shared/edit-game)                          | client | The «Datos de la partida» dialog over `GameFields`; it posts to the action it is given.                                     |
+| [`GameList`](/components/platform/shared/game-list)                          | client | The games beside the board, of a study or a chapter's collection: about eight rows, sortable where `onReorder` is given.    |
+| [`GameSettings`](/components/platform/shared/game-settings)                  | client | The gear at the end of a game's row: its name, and deleting its annotations, its variations or the game.                    |
+| [`SortableDnd`](/components/platform/shared/sortable-dnd)                    | client | The drag and drop of the sortable lists, with its announcements in Spanish, the one-place step and the optimistic order.    |
+| [`usePgnHistory`](/components/platform/shared/use-pgn-history-hook)          | hook   | A game's PGN with fifty steps of undo and the ⌘Z shortcut.                                                                  |
+| [`useGameAutosave`](/components/platform/shared/use-game-autosave-hook)      | hook   | Saves a game 1.2 s after the last change, through the action it is given, and says how it went.                             |
+| [`PlatformSelect`](/components/platform/shared/platform-select)              | client | Every dropdown of the platform, on Radix's Select; groups, an empty option, two sizes.                                      |
+| [`PlatformInfoTip`](/components/platform/shared/platform-info-tip)           | client | A clarification behind an "i": shown on hover, focus and press, on Radix's Tooltip.                                         |
+| [`PlatformDatePicker`](/components/platform/shared/platform-date-picker)     | client | A month calendar on Radix's Popover; submits like a date input.                                                             |
+| [`PlatformChoiceCards`](/components/platform/shared/platform-choice-cards)   | client | A radio group drawn as cards, on Radix's RadioGroup.                                                                        |
+| [`PlatformCheckCards`](/components/platform/shared/platform-check-cards)     | client | A checkbox group drawn as cards, on Radix's Checkbox: several of a few.                                                     |
+| [`PlatformNotice`](/components/platform/shared/platform-notice)              | server | The result of an action, from the page's `?error=` message map.                                                             |
+| [`EmptyState`](/components/platform/shared/empty-state)                      | server | Dashed box with title, description and an optional link.                                                                    |
+| [`ProgressIndicator`](/components/platform/shared/progress-indicator)        | server | Progress bar, inline, stacked or as a large figure, in blue or the green of what is finished.                               |
+| [`StudyStreak`](/components/platform/shared/study-streak)                    | server | «Racha diaria»: days in a row studying, and the figure today would make it.                                                 |
+| [`BoardLoading`](/components/platform/shared/board-loading)                  | server | The knight that hops while a segment streams; what a `loading.tsx` renders on arriving at a screen.                         |
+| [`BoardSkeleton`](/components/platform/shared/board-skeleton)                | server | An empty board with a ring turning over it, for the board's place while the next lesson or game of the same screen arrives. |
+| [`CurrentPathField`](/components/platform/shared/current-path-field)         | client | The page one is on, as a hidden `returnTo`, for a form inside a layout.                                                     |
+| [`PlatformError`](/components/platform/shared/platform-error)                | client | The error boundary view with retry and digest.                                                                              |
+| [`LocalDateTime`](/components/platform/shared/local-datetime)                | client | A UTC instant in the browser's zone, without hydration mismatch.                                                            |
+| [`ActivityList`](/components/platform/shared/activity-list)                  | server | The dashboard's activity facts.                                                                                             |
+| [`ClassContentRenderer`](/components/platform/shared/class-content-renderer) | server | A class's blocks by kind, with the single viewer and the static diagram.                                                    |
+| [`ImageUpload`](/components/platform/shared/image-upload)                    | client | Uploads an image from the browser to Cloudinary and saves it through the action it is given.                                |
+| [`SubmitButton`](/components/platform/shared/submit-button)                  | client | The submit button of every write form: disabled, `aria-busy` and its `pendingLabel` while the action runs.                  |
 
 ## `sections/shell/`
 
@@ -107,6 +108,7 @@ description: "Index of components/platform: the shared primitives and every sect
 | [`StudyAside`](/components/platform/sections/studies/game-view/study-aside)                     | server | The study beside the board, mounted by the game pages' layout so it holds still from game to game. |
 | [`StudyGames`](/components/platform/sections/studies/game-view/study-games)                     | client | The study's list in that layout: the current game from the address, the pages in the browser.      |
 | [`GameRecord`](/components/platform/sections/studies/game-view/game-record)                     | server | The record of the game on the board, under the study.                                              |
+| [`GameSkeleton`](/components/platform/sections/studies/game-view/game-skeleton)                 | server | The game's shape, empty, while the next game of the study arrives.                                 |
 | [`DeleteGame`](/components/platform/sections/studies/game-view/delete-game)                     | client | Confirmation, stricter when the game is cited in a class.                                          |
 | [`ClassGamesSection`](/components/platform/sections/studies/class-games/class-games-section)    | server | Games the student saw in class.                                                                    |
 

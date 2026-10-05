@@ -8,8 +8,9 @@ const meta = {
     docs: {
       description: {
         component: `
-What every \`loading.tsx\` of the platform but the lesson's (which draws its
-own skeleton) shows while a segment streams: a
+What a \`loading.tsx\` of the platform shows while one arrives at a screen
+— every one but the lesson's and the study game's, which draw their own
+skeleton around \`BoardSkeleton\` —: a
 knight that hops over its shadow, and one line, announced politely
 (\`role="status"\`). Under \`prefers-reduced-motion\` the knight stands still.
 

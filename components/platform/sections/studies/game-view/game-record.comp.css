@@ -93,4 +93,9 @@
     font-size: var(--platform-type-sm);
     color: var(--platform-text-subtle);
   }
+
+  /* Blank, while the game is on its way: about what a record measures. */
+  &.game-record_state_loading {
+    min-height: 340px;
+  }
 }

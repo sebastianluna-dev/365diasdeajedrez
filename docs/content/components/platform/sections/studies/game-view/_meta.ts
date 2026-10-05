@@ -6,6 +6,7 @@ const meta: MetaRecord = {
   "study-aside": "StudyAside",
   "study-games": "StudyGames",
   "game-record": "GameRecord",
+  "game-skeleton": "GameSkeleton",
 };
 
 export default meta;

@@ -1,0 +1,61 @@
+---
+description: "An empty board with a ring turning over it: what the board's place shows while the next lesson of a chapter or the next game of a study arrives, so that what lands are the pieces and not a new page."
+---
+
+# `BoardSkeleton`
+
+|            |                                                                                                                                                                                                                  |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/board-skeleton/board-skeleton.comp.tsx`                                                                                                                                              |
+| Kind       | Server Component                                                                                                                                                                                                 |
+| Stylesheet | `board-skeleton.comp.css` → block `.board-skeleton`                                                                                                                                                              |
+| Story      | `board-skeleton.stories.tsx` (`platform/shared/BoardSkeleton`): the board on its way, in a 360px track                                                                                                           |
+| Used by    | [`LessonSkeleton`](/components/platform/sections/courses/lesson-view/lesson-skeleton) (between two lessons), [`GameSkeleton`](/components/platform/sections/studies/game-view/game-skeleton) (between two games) |
+
+## Purpose
+
+The platform has two waits. **Arriving** at a screen shows the knight ([`BoardLoading`](/components/platform/shared/board-loading)): nothing of the screen is there yet. **Moving inside** a screen whose frame stays — from one lesson of a chapter to the next, from one game of a study to another — is a different wait: the column beside the board does not move, and a screen of another shape in the board's place would make the eye find the board again. There the board's place shows this: the board itself, without pieces, with a ring turning over it.
+
+It was drawn inside `LessonSkeleton` until 2026-10-05, when a study's games got the same wait and the drawing became a piece of its own.
+
+## Props
+
+| Prop    | Type     | Required | Meaning                                                                                        |
+| ------- | -------- | -------- | ---------------------------------------------------------------------------------------------- |
+| `label` | `string` | yes      | What is on its way, as a screen reader hears it: «Cargando la lección», «Cargando la partida». |
+
+## Behaviour
+
+- **The board is painted, not loaded.** A `conic-gradient` at `25% 25%` gives the eight by eight of the same two greens chessground paints (`--board-light` / `--board-dark`), so what arrives is the pieces and not a new board.
+- **The box and what is painted in it are two different sizes, because they are in the viewer too.** The box is the whole width it is given and square, like the viewer's `.chess-board`; what is painted (its `::before`) is the side **rounded down to a whole 8** — `round(down, 100%, 8px)` — because that is what chessground does with its own board, so that every square is a whole number of pixels. Painted edge to edge, the skeleton handed over a board up to 8px smaller and the swap blinked.
+- **One ring turning** (`@keyframes board-skeleton-turn`, 900ms) in the accent's soft shade — the house waiting, not an error — centred on the painted board: placed at half the rounded side and pulled back by half its own size with `translate: -50% -50%`, since `transform` is the rotation's. Under `prefers-reduced-motion` the ring stops and stays.
+- `role="status"` with the `label` as its name: a screen reader is told what is on its way, once. The skeleton around it carries `aria-busy`.
+
+## Markup & styling
+
+Block `.board-skeleton` (63 lines): the box (`width: 100%`, `aspect-ratio: 1`), its painted `::before` and the ring.
+
+**Elements:** `.board-skeleton__spinner`
+
+**Keyframes:** `board-skeleton-turn`, at the top level because `@keyframes` cannot be nested.
+
+**Tokens:** `--platform-accent`, `--platform-accent-soft`; the board's own `--board-light` and `--board-dark`.
+
+No width media queries; `(prefers-reduced-motion: reduce)` stops the ring.
+
+## Usage
+
+From `components/platform/sections/studies/game-view/game-skeleton.comp.tsx`:
+
+```tsx
+import { BoardSkeleton } from "@/components/platform/shared/board-skeleton/board-skeleton.comp";
+
+<BoardSkeleton label="Cargando la partida" />;
+```
+
+The skeleton that mounts it puts it in the board's own track, with the viewer's own numbers, so the two boards are the same box.
+
+## Related
+
+- [`BoardLoading`](/components/platform/shared/board-loading), the knight: the wait of arriving at a screen.
+- [`LessonSkeleton`](/components/platform/sections/courses/lesson-view/lesson-skeleton) and [`GameSkeleton`](/components/platform/sections/studies/game-view/game-skeleton), the two shapes drawn around it.

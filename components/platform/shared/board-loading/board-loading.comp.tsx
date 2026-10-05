@@ -5,9 +5,12 @@ interface BoardLoadingProps {
 }
 
 /**
- * What every `loading.tsx` of the platform shows while a segment streams: a
+ * What a `loading.tsx` of the platform shows while one ARRIVES at a screen: a
  * knight that hops over its shadow, and one line. The line is generic by
  * default; the study's segment, where what is waited for is a board, says so.
+ * Moving inside a screen whose frame stays — the next lesson of a chapter,
+ * the next game of a study — is another wait, with the board in its place
+ * (`BoardSkeleton`).
  */
 export function BoardLoading({ label = "Cargando…" }: BoardLoadingProps) {
   return (

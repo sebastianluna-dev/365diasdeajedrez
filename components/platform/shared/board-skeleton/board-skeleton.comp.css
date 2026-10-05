@@ -1,0 +1,63 @@
+/* The board's BOX: the whole width it is given and square, which is what the
+   viewer's own board takes. */
+.board-skeleton {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+
+  /* And inside it, what is PAINTED, which is not the whole box: chessground
+     rounds the board's side down to a whole 8 so that every square is a whole
+     number of pixels, and a skeleton painted edge to edge would hand over a
+     board up to 8px smaller — which is seen, because it is the thing being
+     looked at. */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: round(down, 100%, 8px);
+    aspect-ratio: 1;
+    /* The same two greens in the same pattern chessground paints, so what
+       arrives is the pieces and not a new board. */
+    background-color: var(--board-light);
+    background-image: conic-gradient(
+      var(--board-dark) 25%,
+      var(--board-light) 0 50%,
+      var(--board-dark) 0 75%,
+      var(--board-light) 0
+    );
+    background-size: 25% 25%;
+  }
+
+  /* One ring turning in the middle of it, in the accent's own soft shade so
+     it reads as the house waiting and not as an error. The middle of what is
+     PAINTED (the side rounded down to a whole 8, as above), and the ring is
+     pulled back by half its own size with `translate`, which is exact
+     whatever it measures; `transform` is the rotation's, and the two compose. */
+  & .board-skeleton__spinner {
+    position: absolute;
+    top: calc(round(down, 100%, 8px) / 2);
+    left: calc(round(down, 100%, 8px) / 2);
+    width: 44px;
+    height: 44px;
+    translate: -50% -50%;
+    border-radius: 50%;
+    border: 3px solid var(--platform-accent-soft);
+    border-top-color: var(--platform-accent);
+    animation: board-skeleton-turn 900ms linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & .board-skeleton__spinner {
+      animation: none;
+    }
+  }
+}
+
+/* `@keyframes` cannot be nested inside a style rule: nested, the browser
+   drops it. */
+@keyframes board-skeleton-turn {
+  to {
+    transform: rotate(1turn);
+  }
+}

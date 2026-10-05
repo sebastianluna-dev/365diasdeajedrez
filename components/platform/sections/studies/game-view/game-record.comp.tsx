@@ -89,3 +89,12 @@ export function GameRecord({ game, results }: GameRecordProps) {
     </section>
   );
 }
+
+/**
+ * The record's card, blank, while the next game of the study arrives: it
+ * keeps the record's place under the study, so the column does not close up
+ * and open again from one game to the next.
+ */
+export function GameRecordSkeleton() {
+  return <div className="game-record game-record_state_loading" aria-hidden="true" />;
+}

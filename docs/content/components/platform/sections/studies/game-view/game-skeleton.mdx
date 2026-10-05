@@ -1,0 +1,68 @@
+---
+description: "The game's own shape, empty, while the next game of the study arrives: the two player strips blank with the empty board and its ring between them, and the notation's and the tools' cards blank."
+---
+
+# `GameSkeleton`
+
+|            |                                                                                              |
+| ---------- | -------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/studies/game-view/game-skeleton.comp.tsx`                      |
+| Kind       | Server Component                                                                             |
+| Stylesheet | `game-skeleton.comp.css` → block `.game-skeleton`                                            |
+| Used by    | `app/(platform)/estudios/[studyId]/partidas/[gameId]/loading.tsx`, with `GameRecordSkeleton` |
+| Composes   | [`BoardSkeleton`](/components/platform/shared/board-skeleton)                                |
+
+## Purpose
+
+The study's column is the layout's and holds still from game to game ([`StudyAside`](/components/platform/sections/studies/game-view/study-aside)); what is waited for between two games is only the page. For a few hours on 2026-10-05 that wait was the knight ([`BoardLoading`](/components/platform/shared/board-loading)) in the board's column, and the owner asked for the lessons' effect instead: between two lessons of a chapter the board stays where it is, empty, with a ring turning over it ([`LessonSkeleton`](/components/platform/sections/courses/lesson-view/lesson-skeleton)). This is the same for a study's game: the game **before** the game, so what lands are the pieces and the moves.
+
+The knight is still what one sees on **arriving** at a study — from the list of studies, from a link —, because that wait is the layout's and its boundary is the study's segment (`app/(platform)/estudios/[studyId]/loading.tsx`). Measured in the running app on 2026-10-05: arriving shows the knight and then the whole page; between games, the page, this skeleton, the page. A game that takes longer than its study to load would show the knight and then this for a moment.
+
+## Props
+
+None. What it shows is the shape of a game's page, which is the same for all of them.
+
+## Behaviour
+
+- **It draws the viewer's tracks with the viewer's numbers** (`game-viewer.comp.css`): the board's column up to `--viewer-board-max` and the notation's from 320px, the same gap, the notation's card capped at `--viewer-panel-max` (400px) from a tablet up. The page hands it `--viewer-board-max` like it hands it to the viewer, so the board cannot land anywhere else. Measured against the real page at 1600, 1300 and 820px: the strips, the board and the notation's card are the same boxes to the pixel.
+- **The strips are blank bands** of the strip's own height — a line of its text (`xs` at 1.3) and its padding —, rounded on their outer side and pressed against the board, as [`PlayerStrip`](/components/chess/game-viewer/player-strip) is.
+- **The notation's card is measured like the viewer's column**: `height: 0` keeps it out of the row's sizing — the board alone sets that — and `min-height` hands it the row less the bar of keys under the notation (a 48px key and the gap over it).
+- **The tools' card** under the board is a blank card of about the height of the first tab (236px), so the page is as long as it is going to be and the scrollbar does not come and go.
+- **`GameRecordSkeleton`** (exported from `game-record.comp.tsx`, the `.game-record_state_loading` modifier) keeps the record's place under the study with a blank card, so the left column does not close up and open again.
+- `aria-busy="true"` on the block; the board says «Cargando la partida» (`role="status"`); the blank cards are `aria-hidden`.
+
+## Markup & styling
+
+Block `.game-skeleton` (88 lines), a grid like `.game-viewer__layout`.
+
+**Elements:** `.game-skeleton__board`, `.game-skeleton__strip`, `.game-skeleton__panel`, `.game-skeleton__tools`
+
+**Modifiers and states:** `.game-skeleton__strip_side_top`, `.game-skeleton__strip_side_bottom`
+
+**Tokens:** `--platform-surface`, `--platform-shadow-card`
+
+**Breakpoints:** `(width >= 768px)` caps the notation's card; `(width < 768px)` is the viewer's phone layout — one column: the board, the room of the keys and the notation's card (45vh, what the notation is let to be) under it, the tools last. Where the block goes in the page is `game-page.css`'s.
+
+## Usage
+
+From `app/(platform)/estudios/[studyId]/partidas/[gameId]/loading.tsx`:
+
+```tsx
+import { GameRecordSkeleton } from "@/components/platform/sections/studies/game-view/game-record.comp";
+import { GameSkeleton } from "@/components/platform/sections/studies/game-view/game-skeleton.comp";
+
+export default function GameLoading() {
+  return (
+    <>
+      <GameSkeleton />
+      <GameRecordSkeleton />
+    </>
+  );
+}
+```
+
+## Related
+
+- [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section), the page it stands in for.
+- [`LessonSkeleton`](/components/platform/sections/courses/lesson-view/lesson-skeleton), the same wait between two lessons.
+- [`BoardLoading`](/components/platform/shared/board-loading), the wait of arriving at the study.

@@ -35,7 +35,7 @@
   /* Three pieces in two columns. On the left the study (the layout's own, the
      one that holds still from game to game) and under it the game's record;
      on the right, down the two rows, the board with its notation — or the
-     knight that stands in for it while a game loads. The left column measures
+     skeleton that stands in for it while a game loads. The left column measures
      its own and the board keeps the rest. The second row is the flexible
      one: it takes whatever height the board has left over, so the study's
      row is as tall as the study and no taller. */
@@ -61,7 +61,7 @@
   }
 
   & .game-page__layout > .game-view,
-  & .game-page__layout > .board-loading {
+  & .game-page__layout > .game-skeleton {
     grid-column: 2;
     grid-row: 1 / span 2;
   }
@@ -79,7 +79,7 @@
     }
 
     & .game-page__layout > .game-view,
-    & .game-page__layout > .board-loading {
+    & .game-page__layout > .game-skeleton {
       grid-column: 1 / -1;
       grid-row: 1;
     }

@@ -11,6 +11,7 @@ description: "The lesson's own layout, empty, while the next lesson arrives: an 
 | Stylesheet | `lesson-skeleton.comp.css` → block `.lesson-skeleton`, on top of `lesson-frame.comp.css`                                                                                              |
 | Story      | `lesson-skeleton.stories.tsx` (`platform/sections/courses/lesson-view/LessonSkeleton`): the skeleton with the numbers the lesson's frame gives it, the board's ceiling fixed at 480px |
 | Used by    | `app/(platform)/cursos/[courseRef]/[chapterOrder]/(lesson)/[lessonId]/loading.tsx`                                                                                                    |
+| Composes   | [`BoardSkeleton`](/components/platform/shared/board-skeleton)                                                                                                                         |
 
 ## Purpose
 
@@ -18,7 +19,7 @@ Moving from one lesson to the next means fetching a PGN, and until it lands ther
 
 This draws the lesson **before** the lesson: the board's square and the panel's card in the places they will take, empty. What arrives are the pieces and the words, not a new page.
 
-It is the one exception to the rule that every `loading.tsx` of the platform renders `BoardLoading`. The boundary sits on the **lesson's** segment and not on the chapter's: what is waited for here is a PGN, and the column beside it does not move.
+It was the one exception to the rule that every `loading.tsx` of the platform renders `BoardLoading`; since 2026-10-05 a study's game is the other ([`GameSkeleton`](/components/platform/sections/studies/game-view/game-skeleton)), and the board the two paint is one shared piece, [`BoardSkeleton`](/components/platform/shared/board-skeleton). The boundary sits on the **lesson's** segment and not on the chapter's: what is waited for here is a PGN, and the column beside it does not move.
 
 ## Props
 
@@ -28,11 +29,10 @@ None. What it shows is the shape of a lesson, which is the same for all of them.
 
 - **It borrows the lesson's own layout instead of drawing boxes of its own.** It renders `.lesson-frame__main`, the frame's second track, and takes over the two columns the viewer draws there — so the gaps and `--viewer-board-max` are the very numbers the real page uses and the board cannot land anywhere else. A stylesheet only travels with the component that imports it, so it brings `lesson-frame.comp.css` itself.
 - **The column of lessons is not drawn here at all.** It belongs to the chapter's layout, which the boundary does not reach: it stays on screen with its scroll where it was and the row of the lesson being opened already lit, since [`OutlineList`](/components/platform/sections/courses/lesson-view/outline-list) marks it from the pathname the moment the link is followed.
-- **The board is painted, not loaded.** A `conic-gradient` at `25% 25%` gives the eight-by-eight of the same two greens chessground paints (`--board-light` / `--board-dark`). Over it, one ring turning (`@keyframes lesson-skeleton-turn`, 900ms) in the accent's soft shade — the house waiting, not an error — centred on the painted board: placed at half the rounded side and pulled back by half its own size with `translate: -50% -50%`, since `transform` is the rotation's. Under `prefers-reduced-motion` the ring stops and stays.
-- **The box and what is painted in it are two different sizes, because they are in the viewer too.** The box (`.lesson-skeleton__board`) is the whole track and square, like the viewer's `.chess-board`; what is painted (its `::before`) is the side **rounded down to a whole 8** — `round(down, 100%, 8px)` — because that is what chessground does with its own board, so that every square is a whole number of pixels. Painted edge to edge, the skeleton handed over a board up to 8px smaller and the swap blinked.
-- **It reserves the bar of buttons it does not draw** (`margin-bottom: var(--viewer-panel-trim)`). In the viewer the row is the board _plus_ the bar under it, and the panel beside it is measured against that row; without those 62px the skeleton's row was shorter and its blank panel ended some 67px higher than the real one starts.
+- **The board is [`BoardSkeleton`](/components/platform/shared/board-skeleton)**: the eight by eight painted in chessground's two greens — on the side rounded down to a whole 8, as chessground rounds its own — with one ring turning in its middle, still under `prefers-reduced-motion`. `.lesson-skeleton__board` is only its track.
+- **It reserves the bar of buttons it does not draw** (`margin-bottom: var(--viewer-panel-trim)` on the board's track). In the viewer the row is the board _plus_ the bar under it, and the panel beside it is measured against that row; without those 62px the skeleton's row was shorter and its blank panel ended some 67px higher than the real one starts.
 - **The blank panel is measured like the viewer's own.** `height: 0` keeps it out of the row's sizing — the board alone sets that — and `min-height: calc(100% - var(--viewer-panel-trim))` then hands it the row less what the buttons under the board take, which is what the real panel does.
-- `aria-busy="true"` on the section and `role="status"` with `aria-label="Cargando la lección"` on the board: a screen reader is told the page is on its way, once.
+- `aria-busy="true"` on the section and, on the board, `BoardSkeleton`'s `role="status"` named «Cargando la lección»: a screen reader is told the page is on its way, once.
 
 ## Related
 

@@ -79,6 +79,7 @@ import { TempPasswordNotice } from "@/components/platform/sections/staff/student
 import { NewStudyForm } from "@/components/platform/sections/studies/studies-list/new-study/new-study-form.comp";
 import { ActivityList } from "@/components/platform/shared/activity-list/activity-list.comp";
 import { BoardLoading } from "@/components/platform/shared/board-loading/board-loading.comp";
+import { BoardSkeleton } from "@/components/platform/shared/board-skeleton/board-skeleton.comp";
 import { ClassContentRenderer } from "@/components/platform/shared/class-content-renderer/class-content-renderer.comp";
 import { EditGame } from "@/components/platform/shared/edit-game/edit-game.comp";
 import { EmptyState } from "@/components/platform/shared/empty-state/empty-state.comp";
@@ -864,6 +865,9 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
               <div className="overview__loading">
                 <BoardLoading label="Preparando el tablero…" />
               </div>
+            </Tile>
+            <Tile name="BoardSkeleton" docs="platform-shared-boardskeleton" width={400} height={400}>
+              <BoardSkeleton label="Cargando la partida" />
             </Tile>
             <Tile name="PlatformError" docs="platform-shared-platformerror" width={400} height={272}>
               <PlatformError retry={() => {}} digest="2817393054" />
