@@ -4,14 +4,14 @@ description: "The name and the slug of the course editor's metadata form: when t
 
 # `CourseNameFields`
 
-|            |                                                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/staff/courses/course-name-fields.comp.tsx`                                                  |
-| Kind       | Client Component                                                                                                          |
-| Stylesheet | `course-name-fields.comp.css` → block `.course-name-fields`                                                               |
-| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section)                                |
-| Composes   | [`FormField`](/components/platform/shared/form-field), [`PlatformInfoTip`](/components/platform/shared/platform-info-tip) |
-| Uses       | `slugAfterRename` from `lib/generate-slug`                                                                                |
+|            |                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/staff/courses/course-name-fields.comp.tsx`                   |
+| Kind       | Client Component                                                                           |
+| Stylesheet | `course-name-fields.comp.css` → block `.course-name-fields`                                |
+| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) |
+| Composes   | [`FormField`](/components/platform/shared/form-field) (the slug's with `info`)             |
+| Uses       | `slugAfterRename` from `lib/generate-slug`                                                 |
 
 ## Purpose
 
@@ -29,8 +29,8 @@ The one piece of the course's metadata form that needs state, split out so the r
 - **The slug follows the name.** When the name loses focus **having changed**, the slug becomes `generateSlug(name)`, whatever it was before, a slug typed by hand included.
 - Leaving the name as it was touches nothing, so tabbing through the field does not undo a slug of one's own.
 - A name that yields no slug («¡¿?!», or empty) leaves the slug alone: a rename never empties the field.
-- **What the slug is goes in an "i"** inside its input, at the right end: a [`PlatformInfoTip`](/components/platform/shared/platform-info-tip) with «Se actualiza al cambiar el nombre; puedes ajustarlo después. Minúsculas, números y guiones.», instead of a hint under the field. The format is still enforced by the input's `pattern`, whose `title` words the browser's message.
-- The slug field is drawn with the classes of `.platform-field` but is not a `FormField`: there the whole field is a `<label>`, and the button inside it would end up in the input's name. Label and input are tied with `htmlFor`/`id` (`useId`).
+- **What the slug is goes in an "i"** inside its input, at the right end — [`FormField`](/components/platform/shared/form-field)'s `info`, a [`PlatformInfoTip`](/components/platform/shared/platform-info-tip) — with «Se actualiza al cambiar el nombre; puedes ajustarlo después. Minúsculas, números y guiones.», instead of a hint under the field. The format is still enforced by the input's `pattern`, whose `title` words the browser's message.
+- The slug field was hand-made markup with the classes of `.platform-field` until 2026-10-05, because a `FormField` was a `<label>` around everything and the button inside it would have ended up in the input's name. `FormField` now takes `info` and solves that itself, so the slug is a `FormField` like the name.
 - The slug stays editable; what is typed there holds until the next rename.
 - Nothing is saved until «Guardar metadatos»: a slug already taken is answered by `updateCourse` with «Ese identificador (slug) ya está en uso.».
 - Unlike [`NewCourseForm`](/components/platform/sections/staff/courses/new-course), where a slug typed by hand is left alone, here the name always rules: the rule is `slugAfterRename(previousName, nextName, currentSlug)` in `lib/generate-slug.ts`, tested there.
@@ -38,13 +38,7 @@ The one piece of the course's metadata form that needs state, split out so the r
 
 ## Markup & styling
 
-Block `.course-name-fields`, with `display: contents`: it exists to place the "i", and the two fields stay direct items of the form's column, spaced by its gap like any other.
-
-**Elements:** `.course-name-fields__slug` (the slug's control: `position: relative`, the input with room at its right end)
-
-**Other selectors it styles:** `.platform-info-tip` (absolute, centred vertically at the input's right end).
-
-**Other classes it renders:** `.platform-field`, `.platform-field__label`, `.platform-field__control`.
+Block `.course-name-fields` (5 lines), with `display: contents` and nothing else: the two fields stay direct items of the form's column, spaced by its gap like any other. Where the "i" goes is `FormField`'s.
 
 No tokens, no media queries.
 

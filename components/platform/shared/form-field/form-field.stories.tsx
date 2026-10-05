@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { userEvent, within } from "storybook/test";
+import { expect, userEvent, within } from "storybook/test";
 import { PlatformCheckCards } from "@/components/platform/shared/platform-check-cards/platform-check-cards.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { CONTENT_TYPE } from "@/constants/platform/course-codes.const";
@@ -19,7 +19,8 @@ const meta = {
         component: `
 The field of the platform's forms that are not on \`PlatformForm\` yet: a real
 \`<label>\` around the control (never a placeholder acting as one), an
-optional hint under it and an error with \`role="alert"\`. It also draws, once
+optional hint under it, an optional clarification folded into an "i" inside
+the input, at its end (\`info\`, a \`PlatformInfoTip\`) and an error with \`role="alert"\`. It also draws, once
 for the whole private area, the native text inputs and the textarea it wraps.
 \`FormFieldset\`, from the same file, is the legend over a group of cards
 (\`PlatformCheckCards\`, \`PlatformChoiceCards\`) a single label cannot name,
@@ -60,6 +61,22 @@ export const Default: Story = {};
 
 /** With the hint that says what the field is for. */
 export const WithHint: Story = { name: "With hint", args: { hint: "Cómo lo verán sus alumnos." } };
+
+/** With a clarification folded into an "i" inside the input, at its end, opened here: the label still names the input alone, and the tip describes its button. */
+export const WithInfo: Story = {
+  name: "With info",
+  render: () => (
+    <FormField label="ECO" info="Código de apertura, como «B40».">
+      <input type="text" name="eco" maxLength={120} />
+    </FormField>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("textbox", { name: "ECO" })).toBeVisible();
+    await userEvent.click(canvas.getByRole("button", { name: "Sobre «ECO»" }));
+    await expect(await canvas.findByRole("tooltip")).toHaveTextContent("Código de apertura, como «B40».");
+  },
+};
 
 /** With an error under the control. */
 export const WithError: Story = {

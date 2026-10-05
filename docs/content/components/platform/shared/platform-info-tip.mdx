@@ -4,14 +4,14 @@ description: "A clarification folded into an 'i': a small round button that show
 
 # `PlatformInfoTip`
 
-|            |                                                                                                                                                                                                                |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/platform-info-tip/platform-info-tip.comp.tsx`                                                                                                                                      |
-| Kind       | Client Component                                                                                                                                                                                               |
-| Stylesheet | `platform-info-tip.comp.css` → blocks `.platform-info-tip` (the button) and `.platform-info-tip__content` (the tip, its sibling)                                                                               |
-| Story      | `platform-info-tip.stories.tsx` (`platform/shared/PlatformInfoTip`): `Default`, `Below`                                                                                                                        |
-| Used by    | [`CourseNameFields`](/components/platform/sections/staff/courses/course-name-fields) (the slug), [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) (the cover's card) |
-| Uses       | `Tooltip` from `radix-ui`; `CircleInfoIcon` from `components/icons/`                                                                                                                                           |
+|            |                                                                                                                                                                                                                                                                                                                                                 |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-info-tip/platform-info-tip.comp.tsx`                                                                                                                                                                                                                                                                       |
+| Kind       | Client Component                                                                                                                                                                                                                                                                                                                                |
+| Stylesheet | `platform-info-tip.comp.css` → blocks `.platform-info-tip` (the button) and `.platform-info-tip__content` (the tip, its sibling)                                                                                                                                                                                                                |
+| Story      | `platform-info-tip.stories.tsx` (`platform/shared/PlatformInfoTip`): `Default`, `Below`                                                                                                                                                                                                                                                         |
+| Used by    | [`CourseEditorSection`](/components/platform/sections/staff/courses/course-editor-section) (the cover's card), [`FormField`](/components/platform/shared/form-field) (a field's `info`, inside its input: the game's form and, through [`CourseNameFields`](/components/platform/sections/staff/courses/course-name-fields), the course's slug) |
+| Uses       | `Tooltip` from `radix-ui`; `CircleInfoIcon` from `components/icons/`, in Duotone Light at 22px inside its 28px button (the owner's choice, 2026-10-05, after trying Duotone Solid; it was 18px)                                                                                                                                                 |
 
 ## Purpose
 
@@ -31,6 +31,7 @@ For what helps the first time and is noise every time after: how a field behaves
 - **Closes** when the pointer leaves, on blur and with Escape.
 - While open, the primitive ties the text to the button with `aria-describedby` and gives it `role="tooltip"`; the button is a real `<button type="button">`, so it never submits the form it sits in.
 - **Not portalled**, like [`PlatformSelect`](/components/platform/shared/platform-select)'s list: a portal to `<body>` would be inert under a modal `<dialog>`.
+- **Kept inside its dialog.** Not being portalled, a tip inside a `<dialog>` is clipped by it, and the primitive on its own only keeps a tip within the window: beside a label at a dialog's left edge it came out cut (seen in the game's form, 2026-10-05). When it opens, the button looks for the `<dialog>` it lives in (`closest("dialog")`) and hands it to the primitive as the box to stay within (`collisionBoundary`, with 8px of `collisionPadding`); outside a dialog it is the window, as before.
 - It places nothing: whoever uses it puts the button where it goes (inside an input, next to a heading).
 
 ## Markup & styling

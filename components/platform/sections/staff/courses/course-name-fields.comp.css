@@ -1,21 +1,5 @@
-/* The block only exists to place the "i" inside the slug's input: the two
-   fields stay direct items of the form's column. */
+/* The two fields stay direct items of the form's column: the block has no
+   box of its own. */
 .course-name-fields {
   display: contents;
-
-  & .course-name-fields__slug {
-    position: relative;
-  }
-
-  /* Room for the button at the input's right end, so the slug never runs under it. */
-  & .course-name-fields__slug input {
-    padding-right: var(--platform-space-12);
-  }
-
-  & .course-name-fields__slug .platform-info-tip {
-    position: absolute;
-    top: 50%;
-    right: 7px;
-    transform: translateY(-50%);
-  }
 }

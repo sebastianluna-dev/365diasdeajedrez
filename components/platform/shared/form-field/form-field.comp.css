@@ -57,6 +57,42 @@
     font-weight: 600;
     color: var(--platform-danger);
   }
+
+  /* A field with an "i": the button sits INSIDE the control, at its right
+     end, as the staff's slug field had it before this was the field's own.
+     The "i" is the label's sibling and not its child (see the component), so
+     the label gives up its own box and the control and the "i" are put in
+     the same cell of the field's grid, one over the other. */
+  &.platform-field_with_info {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  &.platform-field_with_info .platform-field__body {
+    display: contents;
+  }
+
+  &.platform-field_with_info .platform-field__label {
+    grid-row: 1;
+  }
+
+  &.platform-field_with_info .platform-field__control,
+  &.platform-field_with_info .platform-field__info {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  &.platform-field_with_info .platform-field__info {
+    justify-self: end;
+    align-self: center;
+    display: inline-flex;
+    margin-right: var(--platform-space-2);
+  }
+
+  /* Room for the button, so what is typed never runs under it. */
+  &.platform-field_with_info .platform-field__control input {
+    padding-right: var(--platform-space-12);
+  }
 }
 
 /* The group's cards draw their own boxes: no frame around them. */

@@ -1,8 +1,7 @@
 "use client";
 
-import { useId, useRef } from "react";
+import { useRef } from "react";
 import { FormField } from "@/components/platform/shared/form-field/form-field.comp";
-import { PlatformInfoTip } from "@/components/platform/shared/platform-info-tip/platform-info-tip.comp";
 import { slugAfterRename } from "@/lib/generate-slug";
 import "./course-name-fields.comp.css";
 
@@ -27,14 +26,13 @@ interface CourseNameFieldsProps {
  * hand. The slug can still be edited afterwards, until the next rename.
  *
  * What the slug is and how it behaves is said by the "i" inside its input and
- * not by a hint under it. That field is not a `FormField`: there the whole
- * field is a `<label>`, and a button inside it would end up in the input's name.
+ * not by a hint under it (`FormField`'s `info`, which was this field's own
+ * markup before the game's form wanted the same).
  *
  * Uncontrolled, like the rest of the form: the only thing kept is the name
  * the field had when it took focus, to know whether it changed.
  */
 export function CourseNameFields({ name, slug }: CourseNameFieldsProps) {
-  const slugId = useId();
   const slugRef = useRef<HTMLInputElement>(null);
   const nameAtFocus = useRef(name);
 
@@ -57,25 +55,18 @@ export function CourseNameFields({ name, slug }: CourseNameFieldsProps) {
         />
       </FormField>
 
-      <div className="platform-field">
-        <label className="platform-field__label" htmlFor={slugId}>
-          Slug
-        </label>
-        <span className="platform-field__control course-name-fields__slug">
-          <input
-            ref={slugRef}
-            id={slugId}
-            type="text"
-            name="slug"
-            defaultValue={slug}
-            maxLength={160}
-            pattern={SLUG_PATTERN}
-            title="Minúsculas, números y guiones"
-            required
-          />
-          <PlatformInfoTip label="Sobre el slug" text={SLUG_INFO} />
-        </span>
-      </div>
+      <FormField label="Slug" info={SLUG_INFO}>
+        <input
+          ref={slugRef}
+          type="text"
+          name="slug"
+          defaultValue={slug}
+          maxLength={160}
+          pattern={SLUG_PATTERN}
+          title="Minúsculas, números y guiones"
+          required
+        />
+      </FormField>
     </div>
   );
 }

@@ -22,13 +22,15 @@ The fields of a game (name, players with Elo, title and federation, result, date
 
 It lives in `shared/` because two products write a game's record with it: the student's studies and the staff's chapter collections.
 
+**No small print under the fields** (2026-10-05). The two clarifications the form has — what the name is for (`titleHint`) and what an ECO is («Código de apertura, como «B40».») — were lines under their inputs; the owner asked for them in an "i" instead — inside the input, at its end, as the staff's slug has it —, which is [`FormField`](/components/platform/shared/form-field)'s `info`. They are read once, and a form of fifteen fields is shorter without them.
+
 ## Props
 
 | Prop        | Type                | Required | Meaning                                                                                                                                |
 | ----------- | ------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | `values`    | `GameFieldValues`   | no       | Current values for the edit form; absent on creation. `playedAtValue` is short ISO (`yyyy-mm-dd`), what `<input type="date">` expects. |
 | `results`   | `{ code, label }[]` | yes      | The results catalog; `ONGOING` is the default.                                                                                         |
-| `titleHint` | `string`            | yes      | Help text for the name, different on creation and on edit.                                                                             |
+| `titleHint` | `string`            | yes      | What the "i" inside the name's input says, different on creation and on edit.                                                          |
 
 ## Behaviour
 

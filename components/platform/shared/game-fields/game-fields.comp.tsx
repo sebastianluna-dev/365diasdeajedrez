@@ -74,14 +74,14 @@ interface GameFieldsProps {
   values?: GameFieldValues;
   /** Results from the catalog; the label IS the PGN token ("1-0", "*"…). */
   results: { code: string; label: string }[];
-  /** Help text for the name, different on creation and on edit. */
+  /** What the name's "i" says, different on creation and on edit. */
   titleHint: string;
 }
 
 export function GameFields({ values, results, titleHint }: GameFieldsProps) {
   return (
     <div className="game-fields">
-      <FormField label="Nombre de la partida" hint={titleHint}>
+      <FormField label="Nombre de la partida" info={titleHint}>
         <input type="text" name="title" defaultValue={values?.title ?? ""} maxLength={120} />
       </FormField>
 
@@ -157,7 +157,7 @@ export function GameFields({ values, results, titleHint }: GameFieldsProps) {
         <FormField label="Ronda">
           <input type="text" name="round" defaultValue={values?.round ?? ""} maxLength={120} />
         </FormField>
-        <FormField label="ECO" hint="Código de apertura, como «B40».">
+        <FormField label="ECO" info="Código de apertura, como «B40».">
           <input type="text" name="eco" defaultValue={values?.eco ?? ""} maxLength={120} />
         </FormField>
       </div>

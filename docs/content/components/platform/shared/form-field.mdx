@@ -1,5 +1,5 @@
 ---
-description: "The platform form field: a real <label> around a control, with hint and server-side error, defining the input and textarea look once for the whole authenticated area; selects are PlatformSelect; FormFieldset does the same for groups."
+description: "The platform form field: a real <label> around a control, with a hint, or an info icon that holds one, and server-side error, defining the input and textarea look once for the whole authenticated area; selects are PlatformSelect; FormFieldset does the same for groups."
 ---
 
 # `FormField`
@@ -11,7 +11,7 @@ Also exports `FormFieldset`.
 | File       | `components/platform/shared/form-field/form-field.comp.tsx`                                                                                                                                                                                                                |
 | Kind       | Server Component                                                                                                                                                                                                                                                           |
 | Stylesheet | `form-field.comp.css` → block `.platform-field`                                                                                                                                                                                                                            |
-| Story      | `form-field.stories.tsx` (`platform/shared/FormField`): a text input with and without its hint or error, focused, a textarea, `PlatformSelect` inside it, and a `FormFieldset` over a group of cards                                                                       |
+| Story      | `form-field.stories.tsx` (`platform/shared/FormField`): a text input with and without its hint or error, with its clarification in an "i" inside the input (opened by `play`), focused, a textarea, `PlatformSelect` inside it, and a `FormFieldset` over a group of cards |
 | Used by    | every write form of the platform (24 importers): the staff course, chapter, lesson, author, class, student and teacher editors, the assignment panel, the account and password forms, the studies' `GameFields`, the teacher's class form, block editor pieces and profile |
 
 ## Purpose
@@ -26,12 +26,13 @@ It is stateless on purpose. Platform forms are `<form action={serverAction}>`; v
 
 ### `FormField`
 
-| Prop       | Type        | Required | Meaning                                                                                                                                                                                                             |
-| ---------- | ----------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `label`    | `string`    | yes      | The label text. Clicking it focuses the control, because the control is inside the `<label>`.                                                                                                                       |
-| `children` | `ReactNode` | yes      | The control: a native input or textarea, or a [`PlatformSelect`](/components/platform/shared/platform-select) or [`PlatformDatePicker`](/components/platform/shared/platform-date-picker), which are the same size. |
-| `hint`     | `string`    | no       | Small help text under the control.                                                                                                                                                                                  |
-| `error`    | `string`    | no       | Field-level error, rendered with `role="alert"`.                                                                                                                                                                    |
+| Prop       | Type        | Required | Meaning                                                                                                                                                                                                                                                                                                                                                                                      |
+| ---------- | ----------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `label`    | `string`    | yes      | The label text. Clicking it focuses the control, because the control is inside the `<label>`.                                                                                                                                                                                                                                                                                                |
+| `children` | `ReactNode` | yes      | The control: a native input or textarea, or a [`PlatformSelect`](/components/platform/shared/platform-select) or [`PlatformDatePicker`](/components/platform/shared/platform-date-picker), which are the same size.                                                                                                                                                                          |
+| `hint`     | `string`    | no       | Small help text under the control.                                                                                                                                                                                                                                                                                                                                                           |
+| `info`     | `string`    | no       | A clarification folded into an "i" **inside the control, at its right end** ([`PlatformInfoTip`](/components/platform/shared/platform-info-tip)), shown on hover, on focus and on a press: for what helps the first time and would be a line of small print every time after. The button is named «Sobre «label»». For a text input: a select or a date picker has its own mark at that end. |
+| `error`    | `string`    | no       | Field-level error, rendered with `role="alert"`.                                                                                                                                                                                                                                                                                                                                             |
 
 ### `FormFieldset`
 
@@ -47,11 +48,13 @@ None. The control keeps its own attributes (`name`, `required`, `maxLength`, `de
 
 ## Markup & styling
 
-Block `.platform-field` (79 lines). The root is the `<label>` (or the `<fieldset>` with the group modifier); the control's look is defined through descendant selectors on `input` and `textarea` inside `.platform-field__control`, which is why no form in the platform styles its own inputs.
+Block `.platform-field` (115 lines). The root is the `<label>` (or the `<fieldset>` with the group modifier, or a `<div>` when the field has `info`); the control's look is defined through descendant selectors on `input` and `textarea` inside `.platform-field__control`, which is why no form in the platform styles its own inputs.
 
-**Elements:** `.platform-field__label`, `.platform-field__control`, `.platform-field__hint`, `.platform-field__error`
+**Elements:** `.platform-field__label`, `.platform-field__control`, `.platform-field__hint`, `.platform-field__error`, and with `info` `.platform-field__body` (the `<label>`) and `.platform-field__info` (the "i")
 
-**Modifiers and states:** `.platform-field_variant_group` (the `<fieldset>`: no border, no padding, the legend flush with the cards)
+**Modifiers and states:** `.platform-field_variant_group` (the `<fieldset>`: no border, no padding, the legend flush with the cards), `.platform-field_with_info` (a field with an "i")
+
+**A field with `info`** (2026-10-05) is not a `<label>` around everything: the "i" is a button, and a button inside the label would put its own name and the tip's text into the input's. So the root is a `<div>`, the `<label>` (`.platform-field__body`) wraps the text and the control as always, and the "i" is the label's **sibling**. The stylesheet puts it inside the control all the same: the field is a one-column grid and the label gives up its box (`display: contents`), so the control and the "i" are placed in the same cell, the "i" at its end and centred, and the input keeps room for it (`padding-right`, the scale's `space-12`). It is where the staff's slug field had its "i", by hand, since before; the game's form first had it beside the label's text, and the owner preferred the slug's place, so that markup became this prop and [`CourseNameFields`](/components/platform/sections/staff/courses/course-name-fields) uses it too. Checked in the game's form and on the course editor: the input's name is the label alone and a click on the label focuses the input.
 
 **Tokens:** `--platform-accent`, `--platform-accent-soft`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-text`, `--platform-text-muted`
 

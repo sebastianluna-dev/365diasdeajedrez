@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Tooltip } from "radix-ui";
 import { CircleInfoIcon } from "@/components/icons/circle-info-icon.comp";
 import "./platform-info-tip.comp.css";
@@ -24,15 +24,29 @@ interface PlatformInfoTipProps {
  * A press opens it as well: a touch screen has no hover, and the primitive
  * on its own closes on press. It is NOT portalled, like the select's list: a
  * portal to `<body>` would be inert under a modal `<dialog>`.
+ *
+ * Not being portalled, inside a dialog it is the dialog that clips it, and
+ * the primitive only keeps a tip within the window: beside a label at the
+ * dialog's left edge the tip came out cut. So when the button lives in a
+ * `<dialog>`, that dialog is the box the tip is kept within.
  */
 export function PlatformInfoTip({ text, label, side = "top" }: PlatformInfoTipProps) {
   const [open, setOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const [boundary, setBoundary] = useState<Element | null>(null);
+
+  /** Looked up when it opens: by then the button is in its dialog, if it has one. */
+  const changeOpen = (next: boolean) => {
+    if (next) setBoundary(buttonRef.current?.closest("dialog") ?? null);
+    setOpen(next);
+  };
 
   return (
     <Tooltip.Provider delayDuration={120}>
-      <Tooltip.Root open={open} onOpenChange={setOpen}>
+      <Tooltip.Root open={open} onOpenChange={changeOpen}>
         <Tooltip.Trigger asChild>
           <button
+            ref={buttonRef}
             type="button"
             className="platform-info-tip"
             aria-label={label}
@@ -40,14 +54,21 @@ export function PlatformInfoTip({ text, label, side = "top" }: PlatformInfoTipPr
             onPointerDown={(event) => event.preventDefault()}
             onClick={(event) => {
               event.preventDefault();
-              setOpen(true);
+              changeOpen(true);
             }}
           >
             <CircleInfoIcon className="platform-info-tip__icon" />
           </button>
         </Tooltip.Trigger>
 
-        <Tooltip.Content className="platform-info-tip__content" side={side} align="end" sideOffset={8}>
+        <Tooltip.Content
+          className="platform-info-tip__content"
+          side={side}
+          align="end"
+          sideOffset={8}
+          collisionBoundary={boundary ?? []}
+          collisionPadding={8}
+        >
           {text}
           <Tooltip.Arrow className="platform-info-tip__arrow" width={12} height={6} />
         </Tooltip.Content>
