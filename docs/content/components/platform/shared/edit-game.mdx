@@ -36,9 +36,9 @@ It lives in `shared/` since 2026-09-28, when the staff panel got its own game sc
 
 ## Markup & styling
 
-Block `.edit-game` (53 lines).
+Block `.edit-game` (39 lines). The action row holds the two buttons, at its end, and nothing else: it also carried «Se escriben en las cabeceras del PGN.» beside them until 2026-10-05, which the subtitle under the title already says.
 
-**Elements:** `.edit-game__dialog`, `.edit-game__form`, `.edit-game__head`, `.edit-game__title`, `.edit-game__subtitle`, `.edit-game__body`, `.edit-game__actions`, `.edit-game__note`
+**Elements:** `.edit-game__dialog`, `.edit-game__form`, `.edit-game__head`, `.edit-game__title`, `.edit-game__subtitle`, `.edit-game__body`, `.edit-game__actions`
 
 **Modifiers and states:** none of its own. The trigger wears `.platform-row-action` or `.platform-button` (see `label`).
 
@@ -46,7 +46,7 @@ Block `.edit-game` (53 lines).
 
 **Tokens:** `--platform-bg`, `--platform-border`, `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`, `--platform-track`
 
-**Breakpoints:** `(width < 640px)` stacks the action row.
+No media queries of its own.
 
 ## Usage
 

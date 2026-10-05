@@ -25,29 +25,15 @@
     padding: var(--platform-space-6) var(--platform-space-8) 0;
   }
 
+  /* The two buttons, at the end of the row. That the data go to the PGN's
+     headers is said once, under the dialog's title. */
   & .edit-game__actions {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
     gap: var(--platform-space-3);
     margin-top: var(--platform-space-6);
     padding: var(--platform-space-6) var(--platform-space-8);
     box-shadow: inset 0 1px 0 var(--platform-track);
-  }
-
-  & .edit-game__note {
-    margin-right: auto;
-    font-size: var(--platform-type-sm);
-    color: var(--platform-text-subtle);
-  }
-
-  @media (width < 640px) {
-    & .edit-game__actions {
-      flex-wrap: wrap;
-    }
-
-    & .edit-game__note {
-      flex: 1 0 100%;
-      margin-right: 0;
-    }
   }
 }

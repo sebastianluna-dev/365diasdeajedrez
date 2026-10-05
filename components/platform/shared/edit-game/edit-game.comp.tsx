@@ -61,7 +61,6 @@ export function EditGame({ action, values, results, titleHint, label = "Editar" 
           </div>
 
           <div className="edit-game__actions">
-            <span className="edit-game__note">Se escriben en las cabeceras del PGN.</span>
             <button type="button" className="platform-button" onClick={() => dialogRef.current?.close()}>
               Cancelar
             </button>
