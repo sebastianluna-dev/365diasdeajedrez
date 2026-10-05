@@ -1,5 +1,4 @@
-import { GameRecordSkeleton } from "@/components/platform/sections/studies/game-view/game-record.comp";
-import { GameSkeleton } from "@/components/platform/sections/studies/game-view/game-skeleton.comp";
+import { GameRecordSkeleton, GameSkeleton } from "@/components/platform/sections/studies/game-view/game-skeleton.comp";
 
 /**
  * From one game of the study to another only the page is waited for — the
