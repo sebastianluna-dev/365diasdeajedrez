@@ -3,9 +3,10 @@
 import { useId, useImperativeHandle, useRef, type Ref } from "react";
 import { updateStudy } from "@/services/studies/studies.actions";
 import type { StudyKindOption } from "@/services/studies/studies.types";
-import "./edit-study.comp.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
+import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
+import "./edit-study.comp.css";
 
 interface EditStudyProps {
   id: string;
@@ -70,64 +71,59 @@ export function EditStudy({
       )}
 
       <dialog ref={dialogRef} className="platform-dialog edit-study__dialog" aria-labelledby={titleId}>
-        <form
+        {/* On the platform's form, like «Nuevo estudio»: the same fields, and
+            the same messages when the browser rejects one on saving. */}
+        <PlatformForm
           action={updateStudy.bind(null, id)}
           className="edit-study__form"
           onSubmit={() => dialogRef.current?.close()}
+          autoComplete="off"
         >
           <h2 id={titleId} className="edit-study__title">
             Editar el estudio
           </h2>
 
-          <label className="edit-study__field">
-            <span className="edit-study__label">Nombre</span>
-            <input
-              className="edit-study__input"
-              type="text"
-              name="name"
-              defaultValue={name}
-              maxLength={120}
-              required
-              autoFocus
-            />
-          </label>
+          <PlatformFormField name="name" label="Nombre" messages={{ valueMissing: "Ponle un nombre al estudio." }}>
+            <input type="text" defaultValue={name} maxLength={120} required autoFocus />
+          </PlatformFormField>
 
-          <label className="edit-study__field">
-            <span className="edit-study__label">Descripción (opcional)</span>
-            <input
-              className="edit-study__input"
-              type="text"
-              name="description"
+          {/* A few lines, as on creation: what the study is for can take more
+              than one. */}
+          <PlatformFormField name="description" label="Descripción" optionalLabel="Opcional">
+            <textarea
               defaultValue={description ?? ""}
               maxLength={500}
+              rows={3}
               placeholder="Para qué te sirve este estudio"
             />
-          </label>
+          </PlatformFormField>
 
           {/* No selector when the kind is not touched: a dropdown with a single
               option impossible to change only gets in the way. The action would
-              not accept it either, so the form does not send `kindCode`. */}
-          {canChangeKind && (
-            <label className="edit-study__field">
-              <span className="edit-study__label">Tipo</span>
+              not accept it either, so the form does not send `kindCode`; a
+              line says which kind it is and that it stays. */}
+          {canChangeKind ? (
+            // One control, so a field and not a group: the field gives the
+            // select its `name` and its `id`, which the label points at.
+            <PlatformFormField name="kindCode" label="Tipo">
               <PlatformSelect
-                name="kindCode"
                 defaultValue={selected}
                 options={kinds.map((kind) => ({ value: kind.code, label: kind.label }))}
               />
-            </label>
+            </PlatformFormField>
+          ) : (
+            <p className="edit-study__kind">El tipo «{kindLabel}» no se cambia.</p>
           )}
 
+          {/* The two buttons alone at the row's end: a note beside them was
+              squeezed into three lines. */}
           <div className="edit-study__actions">
-            <span className="edit-study__note">
-              {canChangeKind ? "El tipo se puede cambiar cuando quieras." : `El tipo «${kindLabel}» no se cambia.`}
-            </span>
             <button type="button" className="platform-button" onClick={() => dialogRef.current?.close()}>
               Cancelar
             </button>
             <SubmitButton className="platform-button platform-button_variant_ink">Guardar</SubmitButton>
           </div>
-        </form>
+        </PlatformForm>
 
         {/* What destroys, apart from what saves and under a rule, as in a
             game's settings. It only leads to the confirmation. */}

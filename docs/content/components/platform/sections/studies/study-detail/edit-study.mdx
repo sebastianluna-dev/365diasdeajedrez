@@ -10,6 +10,7 @@ description: "The 'Editar datos' dialog of a study: rename, describe and, when t
 | Kind       | Client Component                                                                                                                                                                                                                                 |
 | Stylesheet | `edit-study.comp.css` → block `.edit-study`                                                                                                                                                                                                      |
 | Used by    | [`StudyDetailSection`](/components/platform/sections/studies/study-detail/study-detail-section) (its own boxed button), [`StudySettings`](/components/platform/sections/studies/game-view/study-settings) (no trigger: opened by its three bars) |
+| Composes   | [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`PlatformSelect`](/components/platform/shared/platform-select), [`SubmitButton`](/components/platform/shared/submit-button)                                   |
 | Writes     | `updateStudy()` · `services/studies/studies.actions.ts`                                                                                                                                                                                          |
 | Uses       | `StudyKindOption` from `services/studies/studies.types`                                                                                                                                                                                          |
 
@@ -23,7 +24,7 @@ Editing a study's own data, in a native `<dialog>` like [`NewStudy`](/components
 | --------------- | ---------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`            | `string`               | yes                     | Bound into the action.                                                                                                                                                                                                                 |
 | `name`          | `string`               | yes                     | Current name (required, max 120).                                                                                                                                                                                                      |
-| `description`   | `string`               | no                      | Current description (max 500).                                                                                                                                                                                                         |
+| `description`   | `string`               | no                      | Current description (max 500), in a textarea.                                                                                                                                                                                          |
 | `kindCode`      | `string`               | yes                     | Current kind; preselected when it is among `kinds`.                                                                                                                                                                                    |
 | `kindLabel`     | `string`               | yes                     | The kind's name, to state it when it cannot be changed.                                                                                                                                                                                |
 | `kinds`         | `StudyKindOption[]`    | yes                     | The kinds it can change to (from `study-rules`).                                                                                                                                                                                       |
@@ -34,17 +35,20 @@ Editing a study's own data, in a native `<dialog>` like [`NewStudy`](/components
 
 ## Behaviour
 
-`<form action={updateStudy.bind(null, id)}>` with `onSubmit` closing the dialog after browser validation. The note under the fields says either "El tipo se puede cambiar cuando quieras." or "El tipo «…» no se cambia." The dialog is named by its heading, «Editar el estudio» (`aria-labelledby`, with the id from `useId`).
+- **On the platform's form** (2026-10-05), like [`NewStudy`](/components/platform/sections/studies/studies-list/new-study): `PlatformForm` over `updateStudy.bind(null, id)`, with `onSubmit` closing the dialog — it only runs once the browser found the form valid. Until then the fields were hand-made `<label>`s with an `<input>` each, and an empty name got the browser's own bubble; now it gets the field's message, «Ponle un nombre al estudio.», and the dialog stays open.
+- **Nombre** (required, 120 characters), **Descripción** (optional, 500 characters, a `<textarea>` of three rows, as on creation: it was a one-line input until the owner asked for the textarea) and, when the kind can change, **Tipo** (`PlatformSelect` in a `PlatformFormField`, which gives it its `name` and the `id` its label points at). When it cannot, a line takes the selector's place: «El tipo «Mis partidas» no se cambia.».
+- **The row of actions is the two buttons alone**, at its end. It also carried the note about the kind, which beside «Cancelar» and «Guardar» was squeezed into three lines; the note that remains is the line above for a kind that stays, and the select says the rest.
+- The name opens focused (`autoFocus`), also when the dialog is opened through the handle. The dialog is named by its heading, «Editar el estudio» (`aria-labelledby`, with the id from `useId`).
 
 ## Markup & styling
 
-Block `.edit-study` (100 lines). Until 2026-10-05 it also had an `inline` trigger, a word in the row of actions under the study's name beside the board; that row became [`StudySettings`](/components/platform/sections/studies/game-view/study-settings), three bars that open this dialog through its handle and hand it `onDelete`.
+Block `.edit-study` (73 lines). Until 2026-10-05 it also had an `inline` trigger, a word in the row of actions under the study's name beside the board; that row became [`StudySettings`](/components/platform/sections/studies/game-view/study-settings), three bars that open this dialog through its handle and hand it `onDelete`.
 
-**Elements:** `.edit-study__open`, `.edit-study__dialog`, `.edit-study__form`, `.edit-study__title`, `.edit-study__field`, `.edit-study__label`, `.edit-study__input`, `.edit-study__actions`, `.edit-study__note`, `.edit-study__danger`, `.edit-study__destroy` (the foot with «Eliminar estudio», only with `onDelete`)
+**Elements:** `.edit-study__open`, `.edit-study__dialog`, `.edit-study__form`, `.edit-study__title`, `.edit-study__kind` (the line for a kind that stays), `.edit-study__actions`, `.edit-study__danger`, `.edit-study__destroy` (the foot with «Eliminar estudio», only with `onDelete`). The fields are `PlatformForm`'s and draw themselves.
 
-**Other classes it renders:** `.platform-dialog`, `.platform-button`.
+**Other classes it renders:** `.platform-dialog`, `.platform-button`, and `PlatformForm`'s `.platform-form` with its fields.
 
-**Tokens:** `--platform-accent`, `--platform-bg`, `--platform-border`, `--platform-danger` (the foot's «Eliminar estudio»), `--platform-surface`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-bg`, `--platform-border`, `--platform-danger` (the foot's «Eliminar estudio»), `--platform-surface`, `--platform-text`, `--platform-text-muted`
 
 No media queries.
 
