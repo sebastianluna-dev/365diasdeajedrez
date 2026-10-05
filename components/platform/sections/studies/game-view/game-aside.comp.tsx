@@ -66,6 +66,7 @@ function listItem(game: StudyGameItem): GameListItem {
   return {
     id: game.id,
     name: game.title ?? game.label,
+    players: `${game.white} — ${game.black}`,
     title: game.title,
     orientationCode: game.orientationCode,
     analysisModeCode: game.analysisModeCode,

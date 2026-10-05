@@ -62,6 +62,7 @@ export function ChapterGameAside({ game, results }: ChapterGameAsideProps) {
           games={game.siblings.map((sibling) => ({
             id: sibling.id,
             name: sibling.label,
+            players: sibling.players,
             resultLabel: sibling.resultLabel,
             href: sibling.href,
           }))}

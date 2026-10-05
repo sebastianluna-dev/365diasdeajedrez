@@ -4,13 +4,13 @@ import { GameList, type GameListItem } from "./game-list.comp";
 
 /** A chapter's collection of eight games: some named by the staff, some by their pairing alone. */
 const GAMES: GameListItem[] = [
-  { id: "g1", name: "Una celada en la apertura", resultLabel: "1-0", href: "#" },
+  { id: "g1", name: "Una celada en la apertura", players: "Fischer — Sherwin", resultLabel: "1-0", href: "#" },
   { id: "g2", name: "Lombardy — Fischer", resultLabel: "0-1", href: "#" },
-  { id: "g3", name: "La partida del siglo", resultLabel: "0-1", href: "#" },
+  { id: "g3", name: "La partida del siglo", players: "Byrne — Fischer", resultLabel: "0-1", href: "#" },
   { id: "g4", name: "Fischer — Mednis", resultLabel: "1-0", href: "#" },
-  { id: "g5", name: "Un final de alfiles", resultLabel: "½-½", href: "#" },
+  { id: "g5", name: "Un final de alfiles", players: "Fischer — Bisguier", resultLabel: "½-½", href: "#" },
   { id: "g6", name: "Tal — Fischer", resultLabel: "1-0", href: "#" },
-  { id: "g7", name: "El sacrificio que no se acepta", resultLabel: "1-0", href: "#" },
+  { id: "g7", name: "El sacrificio que no se acepta", players: "Fischer — Spassky", resultLabel: "1-0", href: "#" },
   { id: "g8", name: "Petrosian — Fischer", resultLabel: "0-1", href: "#" },
 ];
 
@@ -27,7 +27,7 @@ const meta = {
 The games beside the board, in a student's study and in a chapter's
 collection: about eight rows tall with a scroll of its own, the current game
 brought into the middle on arrival. A row is the game's name, small and on two
-lines at most, and how it ended; the row is the card, so the current game's
+lines at most, who played it in a smaller line under it, and how it ended; the row is the card, so the current game's
 wash and rule take its grip in. With \`settings\` each row ends in a gear
 that opens the game's settings (\`GameSettings\`).
 With \`onReorder\` a row is dragged by its grip (which comes out when the row

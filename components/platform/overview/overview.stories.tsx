@@ -1189,11 +1189,12 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                   {
                     id: "g1",
                     name: "Una celada en la apertura",
+                    players: "Fischer — Sherwin",
                     resultLabel: "1-0",
                     href: "#",
                   },
                   { id: "g2", name: "Lombardy — Fischer", resultLabel: "0-1", href: "#" },
-                  { id: "g3", name: "La partida del siglo", resultLabel: "0-1", href: "#" },
+                  { id: "g3", name: "La partida del siglo", players: "Byrne — Fischer", resultLabel: "0-1", href: "#" },
                 ]}
                 currentId="g2"
                 onReorder={async () => undefined}

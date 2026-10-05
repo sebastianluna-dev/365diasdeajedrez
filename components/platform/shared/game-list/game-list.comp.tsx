@@ -22,6 +22,8 @@ import "./game-list.comp.css";
 export interface GameListItem extends Omit<GameSettingsGame, "orientationCode"> {
   /** Which side the board opens from; White when it is not said. */
   orientationCode?: GameSettingsGame["orientationCode"];
+  /** Who played it, "Fischer — Sherwin": a small line under the name. Left out when the name already is the pairing. */
+  players?: string;
   /** The PGN token of the result: "1-0", "½-½", "*". */
   resultLabel: string;
   href: string;
@@ -51,14 +53,23 @@ function settingsGame(game: GameListItem): GameSettingsGame {
   return { ...game, orientationCode: game.orientationCode ?? "WHITE" };
 }
 
-/** A game of the list: what it is called and how it ended, leading to its board. */
+/** A game of the list: what it is called, who played it and how it ended, leading to its board. */
 function GameLink({ game, isCurrent }: { game: GameListItem; isCurrent: boolean }) {
   return (
     <Link href={game.href} aria-current={isCurrent ? "page" : undefined} className="game-list__item">
-      {/* Only the name, on two lines at most: a longer one is cut, so the
-          full one is shown on hover. */}
-      <span className="game-list__name" title={game.name}>
-        {game.name}
+      <span className="game-list__main">
+        {/* The name, on two lines at most: a longer one is cut, so the full
+            one is shown on hover. */}
+        <span className="game-list__name" title={game.name}>
+          {game.name}
+        </span>
+        {/* Under it and small, who played: not said twice when the game has no
+            name of its own and is already called by its players. */}
+        {game.players && game.players !== game.name && (
+          <span className="game-list__players" title={game.players}>
+            {game.players}
+          </span>
+        )}
       </span>
       {/* "*" is the PGN's word for a game that has not ended: the list says nothing instead. */}
       {game.resultLabel !== "*" && <span className="game-list__result">{game.resultLabel}</span>}
