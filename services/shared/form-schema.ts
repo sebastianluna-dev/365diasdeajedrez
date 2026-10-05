@@ -10,15 +10,26 @@
 
 import { z } from "zod";
 
+/**
+ * Text whose line breaks are one character each, as the browser counts them.
+ * A textarea measures its `maxLength` on a value with LF line breaks, but a
+ * form sends them as CRLF, so the same text arrived one character longer per
+ * line break and a limit the browser allowed was refused here. What is stored
+ * has LF line breaks. `overwrite` runs before the checks added after it, so
+ * `trim` and `max` see the normalised text.
+ */
+function textLines() {
+  return z.string().overwrite((value) => value.replace(/\r\n?/g, "\n"));
+}
+
 /** Non-empty trimmed text of at most `maxLength` characters. */
 export function formText(maxLength: number) {
-  return z.string().trim().min(1).max(maxLength);
+  return textLines().trim().min(1).max(maxLength);
 }
 
 /** Trimmed text of at most `maxLength` characters, or null when it is empty (an optional column). */
 export function formOptionalText(maxLength: number) {
-  return z
-    .string()
+  return textLines()
     .trim()
     .max(maxLength)
     .optional()
@@ -72,8 +83,7 @@ export function formCheckbox() {
  * the forms that rewrite a whole record, where absent means "do not touch it".
  */
 export function formTextIfPresent(maxLength: number) {
-  return z
-    .string()
+  return textLines()
     .trim()
     .max(maxLength)
     .optional()

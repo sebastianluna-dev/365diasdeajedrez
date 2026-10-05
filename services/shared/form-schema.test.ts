@@ -10,6 +10,7 @@ import {
   formOptionalUrl,
   formSlugList,
   formText,
+  formTextIfPresent,
   parseForm,
 } from "./form-schema";
 
@@ -144,5 +145,27 @@ describe("formSlugList", () => {
       ok: false,
       field: "levelSlugs",
     });
+  });
+});
+
+describe("los saltos de línea", () => {
+  // A textarea counts a line break as one character; a form sends it as CRLF.
+  it("cuentan uno, como en el navegador, y se guardan como LF", () => {
+    expect(formText(5).parse("ab\r\ncd")).toBe("ab\ncd");
+    expect(formOptionalText(5).parse("ab\r\ncd")).toBe("ab\ncd");
+    expect(formTextIfPresent(5).parse("ab\r\ncd")).toBe("ab\ncd");
+  });
+
+  it("un retorno suelto también es un salto", () => {
+    expect(formOptionalText(10).parse("ab\rcd")).toBe("ab\ncd");
+  });
+
+  it("lo que de verdad pasa del límite sigue sin caber", () => {
+    expect(formOptionalText(4).safeParse("ab\r\ncd").success).toBe(false);
+  });
+
+  it("sólo espacios y saltos es un texto vacío, y los de los bordes se recortan", () => {
+    expect(formOptionalText(10).parse("  \r\n  ")).toBeNull();
+    expect(formOptionalText(10).parse("\r\nab\r\n")).toBe("ab");
   });
 });
