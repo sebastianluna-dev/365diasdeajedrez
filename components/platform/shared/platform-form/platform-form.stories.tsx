@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { userEvent, within } from "storybook/test";
+import { expect, userEvent, within } from "storybook/test";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { PlatformForm, PlatformFormField } from "./platform-form.comp";
 
@@ -96,5 +96,24 @@ export const WithHint: Story = {
 export const Invalid: Story = {
   play: async ({ canvasElement }) => {
     await userEvent.click(within(canvasElement).getByRole("button", { name: "Crear estudio" }));
+  },
+};
+
+/** A clarification folded into an "i" inside the name's input, opened: the label still names the input alone. */
+export const WithInfo: Story = {
+  render: () => (
+    <PlatformForm onSubmit={(event) => event.preventDefault()}>
+      <PlatformFormField name="title" label="Nombre" info="Si lo dejas vacío, la partida se nombra por sus jugadores.">
+        <input type="text" maxLength={120} defaultValue="Ronda 1" />
+      </PlatformFormField>
+    </PlatformForm>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole("textbox", { name: "Nombre" })).toBeVisible();
+    await userEvent.click(canvas.getByRole("button", { name: "Sobre «Nombre»" }));
+    await expect(await canvas.findByRole("tooltip")).toHaveTextContent(
+      "Si lo dejas vacío, la partida se nombra por sus jugadores.",
+    );
   },
 };

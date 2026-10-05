@@ -2,6 +2,7 @@
 
 import { cloneElement, useId, type ComponentProps, type ReactElement } from "react";
 import { Form } from "radix-ui";
+import { PlatformInfoTip } from "@/components/platform/shared/platform-info-tip/platform-info-tip.comp";
 import "./platform-form.comp.css";
 
 /** The validity states a message can answer to, straight from `ValidityState`. */
@@ -54,6 +55,13 @@ interface PlatformFormFieldProps {
   children: ReactElement;
   /** Small help text under the control. */
   hint?: string;
+  /**
+   * A clarification folded into an "i" inside the control, at its right end
+   * (`PlatformInfoTip`): for what helps the first time and is a line of small
+   * print every time after. For a text input — a select has its own mark
+   * there, and a textarea's end is wherever its last line is.
+   */
+  info?: string;
   /** A word at the label's right end, "Opcional" as a rule, for what may be left empty. */
   optionalLabel?: string;
   /** Text per validity state; merged over the Spanish defaults. */
@@ -72,6 +80,7 @@ export function PlatformFormField({
   label,
   children,
   hint,
+  info,
   optionalLabel,
   messages,
   serverError,
@@ -79,12 +88,24 @@ export function PlatformFormField({
   const allMessages = { ...DEFAULT_MESSAGES, ...messages };
 
   return (
-    <Form.Field name={name} className="platform-form__field" serverInvalid={Boolean(serverError)}>
+    <Form.Field
+      name={name}
+      className={info ? "platform-form__field platform-form__field_with_info" : "platform-form__field"}
+      serverInvalid={Boolean(serverError)}
+    >
       <div className="platform-form__label-row">
         <Form.Label className="platform-form__label">{label}</Form.Label>
         {optionalLabel && <span className="platform-form__optional">{optionalLabel}</span>}
       </div>
       <Form.Control asChild>{children}</Form.Control>
+      {/* After the control, and outside the label, so neither the label nor
+          the control takes the button's name; the stylesheet puts it over the
+          control's right end. */}
+      {info && (
+        <span className="platform-form__info">
+          <PlatformInfoTip label={`Sobre «${label}»`} text={info} />
+        </span>
+      )}
       {hint && <span className="platform-form__hint">{hint}</span>}
       {(Object.entries(allMessages) as [PlatformFormMatcher, string][]).map(([match, text]) => (
         <Form.Message key={match} match={match} className="platform-form__message">

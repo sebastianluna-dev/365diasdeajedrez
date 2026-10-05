@@ -211,7 +211,7 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
               <PlatformFormField
                 name="title"
                 label="Nombre"
-                hint="Si lo dejas vacío, la partida se nombra por sus jugadores."
+                info="Si lo dejas vacío, la partida se nombra por sus jugadores."
               >
                 {/* Keyed by the saved name: reopened after a save, the field starts from what was saved. */}
                 <input

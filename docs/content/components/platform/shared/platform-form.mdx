@@ -6,14 +6,14 @@ description: "The platform's form on Radix's Form primitive: PlatformForm is a p
 
 Also exports `PlatformFormField`, `PlatformFormGroup` and the types `PlatformFormMatcher` and `PlatformFormMessages`.
 
-|            |                                                                                              |
-| ---------- | -------------------------------------------------------------------------------------------- |
-| File       | `components/platform/shared/platform-form/platform-form.comp.tsx`                            |
-| Kind       | Client Component (`"use client"`: the primitive keeps the validity of each field in context) |
-| Stylesheet | `platform-form.comp.css` → block `.platform-form`                                            |
-| Story      | `platform-form.stories.tsx` (`platform/shared/PlatformForm`)                                 |
-| Used by    | [`NewStudy`](/components/platform/sections/studies/studies-list/new-study)                   |
-| Uses       | `Form` from `radix-ui`                                                                       |
+|            |                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-form/platform-form.comp.tsx`                                                                                                                                                                                                                                                                                                                                                                                           |
+| Kind       | Client Component (`"use client"`: the primitive keeps the validity of each field in context)                                                                                                                                                                                                                                                                                                                                                                |
+| Stylesheet | `platform-form.comp.css` → block `.platform-form`                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Story      | `platform-form.stories.tsx` (`platform/shared/PlatformForm`): the fields of «Nuevo estudio», with a server error, with a hint, invalid, and a field with its clarification in an "i" (opened by `play`)                                                                                                                                                                                                                                                     |
+| Used by    | [`NewStudy`](/components/platform/sections/studies/studies-list/new-study), [`EditStudy`](/components/platform/sections/studies/study-detail/edit-study), [`GameSettings`](/components/platform/shared/game-settings), [`NewCourse`](/components/platform/sections/staff/courses/new-course), [`AuthorForm`](/components/platform/sections/staff/courses/authors-manager), [`CourseSourceForm`](/components/platform/sections/staff/courses/course-sources) |
+| Uses       | `Form` from `radix-ui`; [`PlatformInfoTip`](/components/platform/shared/platform-info-tip) for a field's `info`                                                                                                                                                                                                                                                                                                                                             |
 
 ## Purpose
 
@@ -31,15 +31,16 @@ Everything `<form>` takes. `className` is added to `.platform-form`.
 
 ### `PlatformFormField`
 
-| Prop            | Type                   | Required | Meaning                                                                                                                                |
-| --------------- | ---------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `name`          | `string`               | yes      | The field's name in the submitted `FormData`. Given to the control; the control must not set its own.                                  |
-| `label`         | `string`               | yes      | The label text. It targets the control through the `id` the field gives it.                                                            |
-| `children`      | `ReactElement`         | yes      | The control: a native `input`/`textarea`, or a [`PlatformSelect`](/components/platform/shared/platform-select).                        |
-| `hint`          | `string`               | no       | Small help text under the control.                                                                                                     |
-| `optionalLabel` | `string`               | no       | A word at the label's right end (\"Opcional\") for a field that may be left empty.                                                     |
-| `messages`      | `PlatformFormMessages` | no       | Text per validity state (`valueMissing`, `tooLong`, `typeMismatch`…), merged over Spanish defaults. Only the matching one renders.     |
-| `serverError`   | `string`               | no       | A failure the server reported for this field: rendered as its message and the field marked invalid until the user changes the control. |
+| Prop            | Type                   | Required | Meaning                                                                                                                                                                                                                                                                       |
+| --------------- | ---------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`          | `string`               | yes      | The field's name in the submitted `FormData`. Given to the control; the control must not set its own.                                                                                                                                                                         |
+| `label`         | `string`               | yes      | The label text. It targets the control through the `id` the field gives it.                                                                                                                                                                                                   |
+| `children`      | `ReactElement`         | yes      | The control: a native `input`/`textarea`, or a [`PlatformSelect`](/components/platform/shared/platform-select).                                                                                                                                                               |
+| `hint`          | `string`               | no       | Small help text under the control.                                                                                                                                                                                                                                            |
+| `info`          | `string`               | no       | A clarification folded into an "i" **inside the control, at its right end** ([`PlatformInfoTip`](/components/platform/shared/platform-info-tip)), named «Sobre «label»»: for what helps the first time and would be a line of small print every time after. For a text input. |
+| `optionalLabel` | `string`               | no       | A word at the label's right end (\"Opcional\") for a field that may be left empty.                                                                                                                                                                                            |
+| `messages`      | `PlatformFormMessages` | no       | Text per validity state (`valueMissing`, `tooLong`, `typeMismatch`…), merged over Spanish defaults. Only the matching one renders.                                                                                                                                            |
+| `serverError`   | `string`               | no       | A failure the server reported for this field: rendered as its message and the field marked invalid until the user changes the control.                                                                                                                                        |
 
 ### `PlatformFormGroup`
 
@@ -61,7 +62,9 @@ For a field whose control is a group, not one element: a `<label>` cannot name a
 
 Block `.platform-form`, the root being the `<form>`. Native controls are styled as direct children of the field (`.platform-form__field > input`), because Radix's `Control` renders the given element with no wrapper; a select brings its own look from `.platform-select`.
 
-**Elements:** `.platform-form__field`, `.platform-form__label`, `.platform-form__hint`, `.platform-form__message`
+**Elements:** `.platform-form__field`, `.platform-form__label`, `.platform-form__hint`, `.platform-form__message`, `.platform-form__info` (the "i")
+
+**Modifiers:** `.platform-form__field_with_info`. A field with an "i" is a one-column grid where the control and the "i" share the second row, the "i" at its end and centred; the input keeps room for it (`padding-right`, the scale's `space-12`). The "i" is the control's sibling, outside the label, so the label names the input alone. It is how [`FormField`](/components/platform/shared/form-field)'s `info` looks, for forms not on `PlatformForm` yet.
 
 **States:** `.platform-form__field[data-invalid]` turns the control's border red.
 

@@ -34,7 +34,7 @@ Of Lichess's four analysis modes, two are here: «Análisis normal» and «Ocult
 
 - **The gear** is a button named «Ajustes de «…»» after the game, always drawn — on a touch screen nothing would bring it out —, in the muted grey on every row, the current game's too, and in the accent under the pointer, with no box behind it, that opens a native `<dialog>` named by its title, «Ajustes de la partida», with the focus on the name: left to the browser it would land on the close button, the first control of the dialog.
 - **The form** is a `PlatformForm` over `save`, which reads its four fields; the dialog closes on submit, and each control is keyed by its saved value, so reopened after a save it starts from what was saved.
-  - **Nombre** (`title`) starts from the game's own name, or empty with the pairing as its placeholder; saved empty, the game goes back to being shown by its players.
+  - **Nombre** (`title`) starts from the game's own name, or empty with the pairing as its placeholder; saved empty, the game goes back to being shown by its players. That is said by the "i" inside the input (`PlatformFormField`'s `info`), and not by a line under it (2026-10-05, the owner's choice).
   - **Orientación** (`orientationCode`): «Blancas» or «Negras», the side the board opens from for everyone who opens the game.
   - **Modo de análisis** (`analysisModeCode`): «Análisis normal», the select's empty option, or a mode of `GAME_ANALYSIS_MODE_LABELS`. A mode is the reader's: it changes nothing for whoever edits the game (see [`GameViewSection`](/components/platform/sections/studies/game-view/game-view-section)).
   - **Comentario fijo** (`pinnedComment`, up to 1000 characters): the text the viewer draws under the board whatever the move.
