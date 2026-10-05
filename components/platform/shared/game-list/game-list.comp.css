@@ -161,12 +161,12 @@
     font-weight: 700;
   }
 
-  /* Who played, under the name: the smallest step of the scale, on one line.
+  /* Who played, under the name: a step under it (14px), on one line.
      The subtle grey on the card's white; on the grey of a hovered row it
      falls under 4.5:1, so the muted one there, and the accent's ink on the
      current game's wash. */
   & .game-list__players {
-    font-size: var(--platform-type-2xs);
+    font-size: var(--platform-type-xs);
     line-height: 1.3;
     color: var(--platform-text-subtle);
     overflow: hidden;
