@@ -29,14 +29,7 @@ const PIECES = new Set([
  * not here and writes one fails.
  */
 const PENDING: Record<string, string> = {
-  "components/platform/overview/overview.stories.tsx":
-    "its SectionDialog mounts the forms that still take a titleId (NewStudy, NewCourse, CourseSource)",
-  "components/platform/sections/staff/courses/authors-manager/authors-manager.comp.tsx": "step 8 of the popups series",
-  "components/platform/sections/staff/courses/course-sources/course-source-dialog.comp.tsx":
-    "step 8 of the popups series",
-  "components/platform/sections/staff/courses/new-course/new-course.comp.tsx": "step 7 of the popups series",
   "components/platform/sections/studies/studies-list/delete-study.comp.tsx": "step 3 of the popups series",
-  "components/platform/sections/studies/studies-list/new-study/new-study.comp.tsx": "step 7 of the popups series",
   "components/platform/sections/studies/study-detail/edit-study.comp.tsx": "step 3 of the popups series",
   "components/platform/sections/studies/study-detail/new-game.comp.tsx": "step 6 of the popups series",
   "components/platform/shared/edit-game/edit-game.comp.tsx": "step 6 of the popups series",

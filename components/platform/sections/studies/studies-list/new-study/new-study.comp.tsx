@@ -1,8 +1,12 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { createStudy } from "@/services/studies/studies.actions";
 import type { StudyKindOption } from "@/services/studies/studies.types";
+import {
+  PlatformPopup,
+  type PlatformPopupHandle,
+} from "@/components/platform/shared/platform-popup/platform-popup.comp";
 import "./new-study.comp.css";
 import { NewStudyForm } from "./new-study-form.comp";
 
@@ -15,40 +19,33 @@ interface NewStudyProps {
 }
 
 export function NewStudy({ kinds }: NewStudyProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  // Bumped on every opening: the form is remounted, so it never opens with
-  // what was typed the last time.
+  const popup = useRef<PlatformPopupHandle>(null);
+  // Bumped on every closing: the form is remounted, so it never opens with
+  // what was typed the last time. On closing and not on opening, because
+  // `open()` focuses the form it finds, and one remounted in the same click
+  // would take that focus away with it.
   const [opening, setOpening] = useState(0);
-  const titleId = useId();
-
-  const open = () => {
-    setOpening((count) => count + 1);
-    dialogRef.current?.showModal();
-  };
 
   return (
     <div className="new-study">
       {/* Not the accent platform button: a quiet pill, with the sign drawn by
           the stylesheet, because the page's title is what leads here. */}
-      <button type="button" className="new-study__open" onClick={open}>
+      <button type="button" className="new-study__open" onClick={(event) => popup.current?.open(event)}>
         Nuevo estudio
       </button>
 
-      {/* Native `<dialog>`: it brings focus trapping, closing with Escape and the
-          modal backdrop without writing any of that by hand. */}
-      <dialog ref={dialogRef} className="platform-dialog new-study__dialog" aria-labelledby={titleId}>
+      <PlatformPopup ref={popup} title="Nuevo estudio" size="md" onClose={() => setOpening((count) => count + 1)}>
         <NewStudyForm
           key={opening}
-          titleId={titleId}
           kinds={kinds}
           action={createStudy}
-          onClose={() => dialogRef.current?.close()}
+          onClose={() => popup.current?.close()}
           // The browser validates `required` before the submit event fires (the
           // form primitive only replaces its bubble with the field's message),
-          // so the dialog does not close with the form half filled.
-          onSubmit={() => dialogRef.current?.close()}
+          // so the popup does not close with the form half filled.
+          onSubmit={() => popup.current?.close()}
         />
-      </dialog>
+      </PlatformPopup>
     </div>
   );
 }

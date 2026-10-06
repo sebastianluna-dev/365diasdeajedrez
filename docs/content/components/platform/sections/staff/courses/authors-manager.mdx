@@ -1,5 +1,5 @@
 ---
-description: "The «Autores» button and its dialog, where the authors who sign the courses are created and edited: a list with avatars and the form of one author, whose slug generates itself. Authors have no page of their own."
+description: "The «Autores» button and its PlatformPopup, where the authors who sign the courses are created and edited: a list with avatars and the form of one author, whose slug generates itself. Authors have no page of their own."
 ---
 
 # `AuthorsManager`
@@ -13,13 +13,13 @@ Also documents the pieces it is made of: `AuthorForm`, `AuthorPhotoField` and `A
 | Stylesheet | `authors-manager.comp.css` → block `.authors-manager`; `author-avatar.comp.css` → block `.author-avatar`                                                                                                                                                                                                                                 |
 | Story      | `author-avatar.stories.tsx` (`platform/sections/staff/courses/authors-manager/AuthorAvatar`): the initials on either tile, a photo, one it cannot draw, and the three sizes in both shapes. the other three reach a server action (`createAuthor`, `updateAuthor`, `useImageUpload`'s upload signature), which a story cannot bundle yet |
 | Used by    | [`CoursesAdminSection`](/components/platform/sections/staff/courses/courses-admin-section) (header), [`CourseAuthors`](/components/platform/sections/staff/courses/course-authors) («Autores» card of a course)                                                                                                                          |
-| Composes   | [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button)                                                                                                                           |
+| Composes   | [`PlatformPopup`](/components/platform/shared/platform-popup), [`PlatformForm`, `PlatformFormField`](/components/platform/shared/platform-form), [`PlatformNotice`](/components/platform/shared/platform-notice), [`SubmitButton`](/components/platform/shared/submit-button)                                                            |
 | Writes     | `createAuthor()`, `updateAuthor()` · `services/staff-courses/staff-courses.actions.ts`                                                                                                                                                                                                                                                   |
 | Uses       | `AuthorAdminRow`, `AUTHOR_INITIAL_STATE` from `services/staff-courses/staff-courses.types`; `authorInitials`, `authorTone`, `authorSlugFor` from `services/staff-courses/author-rules`; `useImageUpload`; `STAFF_ERROR_MESSAGES`                                                                                                         |
 
 ## Purpose
 
-Authors only matter next to the courses they sign, so they are managed from the courses' pages and not from a page of their own: `/administracion/autores` and its menu entry are gone (2026-09-27). The same dialog opens from the catalog's header («Autores») and from the «Autores» card of a course («Gestionar»), where the author the search does not find is a press away.
+Authors only matter next to the courses they sign, so they are managed from the courses' pages and not from a page of their own: `/administracion/autores` and its menu entry are gone (2026-09-27). The same popup opens from the catalog's header («Autores») and from the «Autores» card of a course («Gestionar»), where the author the search does not find is a press away.
 
 An author is editorial content, not a restricted domain whose code the logic compares, which is why it is edited from the interface. Nothing is deleted: an author is taken out of each course.
 
@@ -60,31 +60,31 @@ An author is editorial content, not a restricted domain whose code the logic com
 
 ## Behaviour
 
-- **One native `<dialog>`, two views.** It always opens on the **list**: avatar, name, «2 cursos · equipo-365» and «Editar» per author, with «Nuevo autor» in the footer band. «Editar» and «Nuevo autor» swap the list for the **form** inside the same dialog, and the title follows («Autores», «Editar autor», «Nuevo autor»). The dialog is named by that title (`aria-labelledby`, with the id from `useId`), so its name follows the view too.
-- **Saving goes back to the list**, which comes refreshed; «Cancelar» does too, without saving. The dialog is closed by its cross or with Escape.
+- **One [`PlatformPopup`](/components/platform/shared/platform-popup), two views.** It always opens on the **list**: the subtitle «Quiénes firman los cursos.», then avatar, name, «2 cursos · equipo-365» and «Editar» per author, with «Nuevo autor» in the footer band. «Editar» and «Nuevo autor» swap the list for the **form** inside the same popup, and the strip's `title` follows («Autores», «Editar autor», «Nuevo autor»), so the popup's name follows the view too. The popup is `md` (600px); the trigger opens it with `open(event)`, so the focus returns to it on closing.
+- **Saving goes back to the list**, which comes refreshed; «Cancelar» does too, without saving. The popup is closed by its cross or with Escape, and its `onClose` puts the list back, whatever view was left, so it always opens on the list.
 - **The slug is not a field.** It is the name's: the line under the name says which one it will be as the name is typed («Slug: equipo-365 (se genera solo)»), with a number behind when another author has it («equipo-365-2»). It is `authorSlugFor`, the same rule the action applies, which is the one that decides. An author who keeps their name keeps their slug.
 - **The photo is secondary**: a row with how the author looks now (the photo, or the initials that stand in for it), a line of text and «Agregar foto» / «Cambiar foto» / «Quitar». It uploads to Cloudinary with `useImageUpload`, cropped to a square, and travels in a hidden `photo` field.
 - **The outcome comes back to the form** (`useActionState`), not to a `?error=`: the dialog stays open over the page, and an error the page rendered would be read by nobody. A failure shows as a [`PlatformNotice`](/components/platform/shared/platform-notice) above the fields (`authorName` for a name with no letter nor number, `authorPhoto`, `authorSlug`, `authorMissing`, `throttled`), with the messages of `STAFF_ERROR_MESSAGES`. It is the third form of the platform on `useActionState`, with account creation and password reset.
-- The form is remounted on every opening (`key`), so it never opens with what was typed the last time nor with the last outcome.
+- The form is remounted every time the list hands over to it (`key` bumped in «Editar» and «Nuevo autor»), so it never opens with what was typed the last time nor with the last outcome. Its name field takes the focus itself (`autoFocus`): the popup's `open()` ran on the list, not on the form.
 - **The avatar** is decorative (`aria-hidden`): the name is always written next to it. Without a photo it draws `authorInitials(name)` («Equipo 365» → «E3») on one of two tiles, ink or soft, which `authorTone(name)` picks from the name: the same author looks the same everywhere, and a list without photos is not a column of identical tiles.
-- A long list scrolls inside the dialog (`max-height: min(420px, 50vh)`).
+- A long list scrolls inside the popup (`max-height: min(420px, 50vh)`).
 
 ## Markup & styling
 
-Block `.authors-manager`. The dialog is `.platform-dialog`, which sets the centring, the backdrop and the entry and exit motion; the block sets its width (560px) and rounding. Every button it renders — the trigger, a row’s «Editar», «Nuevo autor» — is the shared soft one (`.platform-button`), the rows’ and the trigger’s in the compact size.
+Block `.authors-manager`: the list view's body and subtitle, the rows, the form's body and photo row, and the footer band, all padded 24px to the strip's edge. The shell (frame, strip, cross, width) is `PlatformPopup`'s. The trigger and «Nuevo autor» are the platform's button (`.platform-button`, the trigger in the compact size when `size="compact"`); a row's «Editar» is the platform's row action.
 
-**Elements:** `.authors-manager__dialog`, `.authors-manager__head`, `.authors-manager__heading`, `.authors-manager__title`, `.authors-manager__subtitle`, `.authors-manager__close`, `.authors-manager__close-icon`, `.authors-manager__body`, `.authors-manager__list`, `.authors-manager__row`, `.authors-manager__row-text`, `.authors-manager__row-name`, `.authors-manager__row-meta`, `.authors-manager__empty`, `.authors-manager__form`, `.authors-manager__photo`, `.authors-manager__photo-file`, `.authors-manager__photo-text`, `.authors-manager__photo-actions`, `.authors-manager__photo-remove`, `.authors-manager__foot`, `.authors-manager__note`, `.authors-manager__actions`
+**Elements:** `.authors-manager__subtitle`, `.authors-manager__body`, `.authors-manager__list`, `.authors-manager__row`, `.authors-manager__row-text`, `.authors-manager__row-name`, `.authors-manager__row-meta`, `.authors-manager__empty`, `.authors-manager__form`, `.authors-manager__photo`, `.authors-manager__photo-file`, `.authors-manager__photo-text`, `.authors-manager__photo-actions`, `.authors-manager__photo-remove`, `.authors-manager__foot`, `.authors-manager__note`, `.authors-manager__actions`
 
 **Other classes it renders:** `.platform-row-action` (and `_variant_danger` where the action destroys): «Editar», «Eliminar» and «Quitar» are the platform's row actions, written as words at the end of the row they belong to — see [Styling](/ui/styling).
 **Modifiers and states:** `.authors-manager__photo-text_tone_error`
 
 **Other selectors it styles:** `.platform-form__field > textarea` (a shorter textarea).
 
-**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_size_compact`, `.platform-button` (only «Cancelar»), `.platform-form`.
+**Other classes it renders:** `.platform-popup` (on `.platform-dialog`), `.platform-button`, `.platform-button_size_compact`, `.platform-form`, `.platform-notice`.
 
 Block `.author-avatar`: **modifiers** `.author-avatar_size_{small,medium,large}`, `.author-avatar_shape_{tile,circle}`, `.author-avatar_tone_{ink,soft}`, `.author-avatar_kind_photo`; **element** `.author-avatar__image`.
 
-**Tokens:** `--platform-accent-ink`, `--platform-accent-soft`, `--platform-accent-wash`, `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-surface`, `--platform-surface-neutral`, `--platform-surface-sunken`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`
+**Tokens:** `--platform-bg`, `--platform-border`, `--platform-danger`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle`; the avatar's in `author-avatar.comp.css`
 
 **Breakpoints:** `(width < 640px)` lets the photo row wrap.
 
@@ -107,5 +107,5 @@ From `components/platform/sections/staff/courses/course-authors/course-authors.c
 ## Related
 
 - [`CourseAuthors`](/components/platform/sections/staff/courses/course-authors), the authors of one course.
-- [`NewCourse`](/components/platform/sections/staff/courses/new-course) and [`CourseSources`](/components/platform/sections/staff/courses/course-sources), the other dialogs of the courses panel.
+- [`NewCourse`](/components/platform/sections/staff/courses/new-course) and [`CourseSources`](/components/platform/sections/staff/courses/course-sources), the other popups of the courses panel.
 - [`ImageUpload`](/components/platform/shared/image-upload), which uploads with the same hook.

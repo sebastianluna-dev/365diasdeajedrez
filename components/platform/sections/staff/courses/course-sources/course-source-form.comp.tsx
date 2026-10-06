@@ -1,6 +1,5 @@
 "use client";
 
-import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
@@ -8,34 +7,29 @@ import type { CatalogOption } from "@/services/staff-courses/staff-courses.types
 import type { CourseSourceAdmin } from "@/services/staff-sources/staff-sources.types";
 
 interface CourseSourceFormProps {
-  /** The id its heading takes, so the dialog around it is named by it (`aria-labelledby`). */
-  titleId?: string;
   /** The source being edited; absent when adding one. */
   source?: CourseSourceAdmin;
   sourceTypes: CatalogOption[];
   /** Where the form posts: the server action bound to the course, or a stub in Storybook. */
   action: (formData: FormData) => void | Promise<void>;
-  /** Removes the source being edited; it reads the same hidden `sourceId`. */
-  deleteAction?: (formData: FormData) => void | Promise<void>;
+  /**
+   * Pressed «Eliminar fuente», the red word at the foot when a source is
+   * being edited: where the host opens the confirmation on top of the popup.
+   * Without it the word is not drawn.
+   */
+  onDelete?: () => void;
   onClose: () => void;
   /** Runs when the browser lets the submit through, i.e. with a valid form. */
   onSubmit?: () => void;
 }
 
 /**
- * The fields of one source, with no dialog and no action of its own:
+ * The fields of one source, with no popup and no action of its own:
  * `CourseSourceDialog` mounts it with `saveCourseSource`, the story with a
- * stub. Only the type is required.
+ * stub. The strip with the name and the cross is the popup's; under it, the
+ * subtitle, the fields and a footer band. Only the type is required.
  */
-export function CourseSourceForm({
-  titleId,
-  source,
-  sourceTypes,
-  action,
-  deleteAction,
-  onClose,
-  onSubmit,
-}: CourseSourceFormProps) {
+export function CourseSourceForm({ source, sourceTypes, action, onDelete, onClose, onSubmit }: CourseSourceFormProps) {
   const isEdit = source !== undefined;
 
   return (
@@ -43,19 +37,9 @@ export function CourseSourceForm({
       {/* Which source is rewritten; absent, the action creates one. */}
       {isEdit && <input type="hidden" name="sourceId" value={source.id} />}
 
-      <header className="course-source-dialog__head">
-        <div className="course-source-dialog__heading">
-          <h2 id={titleId} className="course-source-dialog__title">
-            {isEdit ? "Editar fuente" : "Nueva fuente"}
-          </h2>
-          <p className="course-source-dialog__subtitle">De dónde procede el material del curso.</p>
-        </div>
-        <button type="button" className="course-source-dialog__close" onClick={onClose} aria-label="Cerrar">
-          <XmarkIcon className="course-source-dialog__close-icon" />
-        </button>
-      </header>
-
       <div className="course-source-dialog__body">
+        <p className="course-source-dialog__subtitle">De dónde procede el material del curso.</p>
+
         <PlatformFormField name="sourceTypeCode" label="Tipo de fuente">
           <PlatformSelect
             // The first kind is chosen when adding: the field is required.
@@ -116,17 +100,11 @@ export function CourseSourceForm({
       </div>
 
       <footer className="course-source-dialog__foot">
-        {isEdit && deleteAction && (
-          // The same form, another destination: `formAction` sends it to the
-          // delete, and `formNoValidate` lets it through whatever the fields hold.
-          <button
-            type="submit"
-            formAction={deleteAction}
-            formNoValidate
-            className="course-source-dialog__remove"
-            onClick={onSubmit}
-          >
-            Quitar fuente
+        {isEdit && onDelete && (
+          // What destroys, apart from what saves: it only leads to the
+          // confirmation, which the host opens on top of this popup.
+          <button type="button" className="platform-row-action platform-row-action_variant_danger" onClick={onDelete}>
+            Eliminar fuente
           </button>
         )}
         <div className="course-source-dialog__actions">

@@ -1,7 +1,10 @@
 "use client";
 
-import { useCallback, useId, useRef, useState } from "react";
-import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
+import { useCallback, useRef, useState } from "react";
+import {
+  PlatformPopup,
+  type PlatformPopupHandle,
+} from "@/components/platform/shared/platform-popup/platform-popup.comp";
 import type { AuthorAdminRow } from "@/services/staff-courses/staff-courses.types";
 import { AuthorAvatar } from "./author-avatar.comp";
 import { AuthorForm } from "./author-form.comp";
@@ -16,37 +19,32 @@ interface AuthorsManagerProps {
   size?: "regular" | "compact";
 }
 
-/** What the dialog shows: the list, or the form of one author (`authorId` absent = a new one). */
+/** What the popup shows: the list, or the form of one author (`authorId` absent = a new one). */
 type View = { kind: "list" } | { kind: "form"; authorId?: string };
 
 /**
- * «Autores»: the button and the dialog where the authors who sign the
+ * «Autores»: the button and the popup where the authors who sign the
  * courses are created and edited. They have no page of their own: authors
  * only matter next to the courses, so they are managed from the catalog and
  * from a course's «Autores» card.
  *
- * One dialog, two views: the list — photo or initials, how many courses, the
- * slug — and the form of the author chosen in it, or of a new one. Saving
- * goes back to the list, which comes refreshed; the dialog is closed by its
+ * One popup, two views: the list — photo or initials, how many courses, the
+ * slug — and the form of the author chosen in it, or of a new one. The strip's
+ * name follows the view («Autores», «Editar autor», «Nuevo autor»). Saving
+ * goes back to the list, which comes refreshed; the popup is closed by its
  * cross or with Escape. Authors are never deleted.
  */
 export function AuthorsManager({ authors, label = "Autores", size = "regular" }: AuthorsManagerProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const popup = useRef<PlatformPopupHandle>(null);
   const [view, setView] = useState<View>({ kind: "list" });
   // Bumped on every opening of the form: it is remounted, so it never opens
   // with what was typed the last time nor with the last outcome.
   const [opening, setOpening] = useState(0);
-  const titleId = useId();
 
   const showList = useCallback(() => setView({ kind: "list" }), []);
   const showForm = (authorId?: string) => {
     setOpening((count) => count + 1);
     setView({ kind: "form", authorId });
-  };
-  const open = () => {
-    // It always opens on the list, whatever was left the last time.
-    showList();
-    dialogRef.current?.showModal();
   };
 
   // Looked up on every render: after saving, the list brings the new values.
@@ -58,34 +56,18 @@ export function AuthorsManager({ authors, label = "Autores", size = "regular" }:
       <button
         type="button"
         className={`platform-button${size === "compact" ? " platform-button_size_compact" : ""}`}
-        onClick={open}
+        onClick={(event) => popup.current?.open(event)}
       >
         {label}
       </button>
 
-      {/* Native `<dialog>`: it brings focus trapping, closing with Escape and the
-          modal backdrop without writing any of that by hand. */}
-      <dialog ref={dialogRef} className="platform-dialog authors-manager__dialog" aria-labelledby={titleId}>
-        <header className="authors-manager__head">
-          <div className="authors-manager__heading">
-            <h2 id={titleId} className="authors-manager__title">
-              {title}
-            </h2>
-            {view.kind === "list" && <p className="authors-manager__subtitle">Quiénes firman los cursos.</p>}
-          </div>
-          <button
-            type="button"
-            className="authors-manager__close"
-            onClick={() => dialogRef.current?.close()}
-            aria-label="Cerrar"
-          >
-            <XmarkIcon className="authors-manager__close-icon" />
-          </button>
-        </header>
-
+      {/* Back to the list on closing, whatever was left: so it always opens
+          on the list, and `open()` finds the list's first control. */}
+      <PlatformPopup ref={popup} title={title} size="md" onClose={showList}>
         {view.kind === "list" ? (
           <>
             <div className="authors-manager__body">
+              <p className="authors-manager__subtitle">Quiénes firman los cursos.</p>
               {authors.length > 0 ? (
                 <ul className="authors-manager__list">
                   {authors.map((author) => (
@@ -125,7 +107,7 @@ export function AuthorsManager({ authors, label = "Autores", size = "regular" }:
         ) : (
           <AuthorForm key={opening} author={editing} authors={authors} onSaved={showList} onCancel={showList} />
         )}
-      </dialog>
+      </PlatformPopup>
     </div>
   );
 }

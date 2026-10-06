@@ -1,4 +1,4 @@
-import { type CSSProperties, Fragment, useId, useRef, useState, type ReactNode } from "react";
+import { type CSSProperties, Fragment, useRef, useState, type ReactNode } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import Link from "next/link";
 import { ChessBoard } from "@/components/chess/chess-board.comp";
@@ -420,43 +420,39 @@ function MotionReplay() {
 }
 
 /**
- * A section's form in its own dialog, opened by the button its screen shows:
- * the wrapper's block, its dialog's class, its name taken from the form's
- * heading and a fresh form on every opening, as the section mounts it — with
- * a stub in place of the server action.
+ * A section's form in its own popup, opened by the button its screen shows:
+ * the wrapper's block, the popup's name and width, and a fresh form on every
+ * closing, as the section mounts it — with a stub in place of the server
+ * action.
  */
 function SectionDialog({
   block,
   label,
   buttonClassName,
+  title,
+  size,
   form,
 }: {
   block: string;
   label: string;
   buttonClassName: string;
-  form: (close: () => void, titleId: string) => ReactNode;
+  title: string;
+  size: "sm" | "md" | "lg";
+  form: (close: () => void) => ReactNode;
 }) {
-  // The element is kept in state, not in a ref: the form is handed its close
+  // The handle is kept in state, not in a ref: the form is handed its close
   // while rendering, and a ref is not read during a render.
-  const [dialog, setDialog] = useState<HTMLDialogElement | null>(null);
+  const [popup, setPopup] = useState<PlatformPopupHandle | null>(null);
   const [opening, setOpening] = useState(0);
-  const titleId = useId();
-  const close = () => dialog?.close();
+  const close = () => popup?.close();
   return (
     <div className={block}>
-      <button
-        type="button"
-        className={buttonClassName}
-        onClick={() => {
-          setOpening((count) => count + 1);
-          dialog?.showModal();
-        }}
-      >
+      <button type="button" className={buttonClassName} onClick={(event) => popup?.open(event)}>
         {label}
       </button>
-      <dialog ref={setDialog} className={`platform-dialog ${block}__dialog`} aria-labelledby={titleId}>
-        <Fragment key={opening}>{form(close, titleId)}</Fragment>
-      </dialog>
+      <PlatformPopup ref={setPopup} title={title} size={size} onClose={() => setOpening((count) => count + 1)}>
+        <Fragment key={opening}>{form(close)}</Fragment>
+      </PlatformPopup>
     </div>
   );
 }
@@ -1317,9 +1313,10 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 block="new-study"
                 label="Nuevo estudio"
                 buttonClassName="new-study__open"
-                form={(close, titleId) => (
+                title="Nuevo estudio"
+                size="md"
+                form={(close) => (
                   <NewStudyForm
-                    titleId={titleId}
                     kinds={[
                       { code: "STUDY", label: "Estudio" },
                       { code: "TOURNAMENT", label: "Torneo" },
@@ -1336,9 +1333,10 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 block="new-course"
                 label="Nuevo curso"
                 buttonClassName="platform-button"
-                form={(close, titleId) => (
+                title="Nuevo curso"
+                size="lg"
+                form={(close) => (
                   <NewCourseForm
-                    titleId={titleId}
                     contentTypes={[
                       {
                         code: "OPENINGS",
@@ -1373,9 +1371,10 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
                 block="course-source-dialog"
                 label="Agregar fuente"
                 buttonClassName="platform-button platform-button_size_compact"
-                form={(close, titleId) => (
+                title="Nueva fuente"
+                size="lg"
+                form={(close) => (
                   <CourseSourceForm
-                    titleId={titleId}
                     sourceTypes={[
                       { code: "BOOK", label: "Libro" },
                       { code: "DIGITAL_COURSE", label: "Curso digital" },

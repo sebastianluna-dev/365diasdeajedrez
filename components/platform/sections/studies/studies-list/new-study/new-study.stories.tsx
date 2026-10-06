@@ -1,5 +1,10 @@
+import { useRef, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { userEvent, within } from "storybook/test";
+import {
+  PlatformPopup,
+  type PlatformPopupHandle,
+} from "@/components/platform/shared/platform-popup/platform-popup.comp";
 import { NewStudyForm } from "./new-study-form.comp";
 import "./new-study.comp.css";
 
@@ -10,17 +15,50 @@ const STUDENT_KINDS = [
 
 const TEACHER_KINDS = [...STUDENT_KINDS, { code: "COLLECTION", label: "Colección" }];
 
+interface NewStudyArgs {
+  kinds: { code: string; label: string }[];
+}
+
+/**
+ * The trigger and the popup as `NewStudy` mounts them, with a stub in place
+ * of `createStudy`: the form is remounted on every closing.
+ */
+function NewStudySample({ kinds }: NewStudyArgs) {
+  const popup = useRef<PlatformPopupHandle>(null);
+  const [opening, setOpening] = useState(0);
+  return (
+    <div className="new-study">
+      <button type="button" className="new-study__open" onClick={(event) => popup.current?.open(event)}>
+        Nuevo estudio
+      </button>
+      <PlatformPopup ref={popup} title="Nuevo estudio" size="md" onClose={() => setOpening((count) => count + 1)}>
+        <NewStudyForm
+          key={opening}
+          kinds={kinds}
+          action={() => undefined}
+          onClose={() => popup.current?.close()}
+          onSubmit={() => popup.current?.close()}
+        />
+      </PlatformPopup>
+    </div>
+  );
+}
+
+const open = async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+  await userEvent.click(within(canvasElement).getByRole("button", { name: "Nuevo estudio" }));
+};
+
 const meta = {
   title: "platform/sections/studies/studies-list/NewStudy",
-  component: NewStudyForm,
   parameters: {
     docs: {
       description: {
         component: `
-The "Nuevo estudio" dialog's form, mounted here without the \`<dialog>\` and
-with a stub in place of \`createStudy\`. Head with the study's mark, the three
-fields on \`PlatformForm\` (the kind as \`PlatformChoiceCards\`) and the footer
-band; the submit stays off until the study has a name.
+The «Nuevo estudio» trigger and its popup, a \`PlatformPopup\` with
+\`NewStudyForm\` inside and a stub in place of \`createStudy\`. Under the strip,
+the subtitle, the three fields on \`PlatformForm\` (the kind as
+\`PlatformChoiceCards\`) and the footer band; the submit stays off until the
+study has a name. Each story opens the popup with its \`play\`.
 
 Source: \`components/platform/sections/studies/studies-list/new-study/\`.
 Reference page: [Components › NewStudy](/components/platform/sections/studies/studies-list/new-study) in the docs site.
@@ -28,46 +66,30 @@ Reference page: [Components › NewStudy](/components/platform/sections/studies/
       },
     },
   },
-  args: {
-    kinds: STUDENT_KINDS,
-    action: () => undefined,
-    onClose: () => undefined,
-  },
+  args: { kinds: STUDENT_KINDS },
   argTypes: {
     kinds: { control: "object", description: "Kinds the viewer can create, from the catalog." },
-    action: { table: { disable: true } },
-    onClose: { table: { disable: true } },
-    onSubmit: { table: { disable: true } },
   },
-  decorators: [
-    // The dialog frame, laid out in flow instead of the top layer.
-    (Story) => (
-      <div className="platform-theme" style={{ padding: 32, background: "#2a2320" }}>
-        <div className="new-study">
-          <div className="platform-dialog new-study__dialog" style={{ position: "static", overflow: "hidden" }}>
-            <Story />
-          </div>
-        </div>
-      </div>
-    ),
-  ],
-} satisfies Meta<typeof NewStudyForm>;
+  render: (args) => <NewStudySample {...args} />,
+} satisfies Meta<NewStudyArgs>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 /** What a student sees: two kinds, the first one chosen, the submit off until a name is typed. */
-export const Student: Story = {};
+export const Student: Story = { play: open };
 
 /** A teacher gets the collection too, so the cards are three across. */
 export const Teacher: Story = {
   args: { kinds: TEACHER_KINDS },
+  play: open,
 };
 
 /** A name typed and the second kind chosen: the submit is on. */
 export const Filled: Story = {
   args: { kinds: TEACHER_KINDS },
   play: async ({ canvasElement }) => {
+    await open({ canvasElement });
     const canvas = within(canvasElement);
     await userEvent.type(canvas.getByLabelText("Nombre"), "Nacional Abierto 2026");
     await userEvent.click(canvas.getByRole("radio", { name: /Torneo/ }));
