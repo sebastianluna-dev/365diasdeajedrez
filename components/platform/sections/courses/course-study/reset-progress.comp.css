@@ -1,5 +1,6 @@
 .reset-progress {
-  /* The trigger is one more of the course's options: a link among links. */
+  /* The trigger is one more of the course's options: a link among links. The
+     confirmation it opens is `PlatformConfirmPopup`, which draws itself. */
   & .reset-progress__open {
     padding: 0;
     border: 0;
@@ -14,68 +15,5 @@
 
   & .reset-progress__open:hover {
     color: var(--platform-accent-hover);
-  }
-
-  /* The size and the rounding: the centring, the backdrop, the surface and
-     the entry and exit motion are set by `.platform-dialog`. */
-  & .reset-progress__dialog {
-    width: min(480px, calc(100vw - 32px));
-    border-radius: 8px;
-  }
-
-  & .reset-progress__form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-4);
-    padding: var(--platform-space-8);
-  }
-
-  & .reset-progress__title {
-    margin: 0;
-    font-size: var(--platform-type-2xl);
-    font-weight: 800;
-    letter-spacing: -0.01em;
-  }
-
-  & .reset-progress__text {
-    margin: 0;
-    font-size: var(--platform-type-lg);
-    line-height: 1.55;
-    color: var(--platform-text-muted);
-    text-wrap: pretty;
-  }
-
-  & .reset-progress__confirm {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--platform-space-3);
-    padding: var(--platform-space-3) var(--platform-space-4);
-    border: 1px solid var(--platform-border-strong);
-    border-radius: 8px;
-    font-size: var(--platform-type-lg);
-    font-weight: 600;
-    line-height: 1.4;
-    cursor: pointer;
-  }
-
-  & .reset-progress__confirm input {
-    flex: none;
-    width: 18px;
-    height: 18px;
-    margin: 1px 0 0;
-    accent-color: var(--platform-danger);
-  }
-
-  & .reset-progress__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: var(--platform-space-3);
-    padding-top: var(--platform-space-2);
-  }
-
-  @media (width < 640px) {
-    & .reset-progress__actions {
-      flex-direction: column-reverse;
-    }
   }
 }

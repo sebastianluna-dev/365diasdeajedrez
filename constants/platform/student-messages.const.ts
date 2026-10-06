@@ -6,7 +6,7 @@ export const STUDENT_ERROR_MESSAGES: Record<string, string> = {
   invalid: "Revisa los datos: falta algún campo obligatorio o tiene un formato incorrecto.",
   throttled: "Has hecho demasiados cambios seguidos. Espera un momento y vuelve a intentarlo.",
   goal: "Elige uno de los objetivos de la lista.",
-  confirm: "Marca la casilla para confirmar que quieres eliminar tu progreso.",
+  confirm: "Marca la casilla para confirmar.",
   pgnEmpty: "No se encontró ninguna partida en ese PGN.",
   pgnTooLong: "El PGN es demasiado largo. Divídelo en varias importaciones.",
 };

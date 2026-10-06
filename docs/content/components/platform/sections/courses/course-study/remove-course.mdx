@@ -1,48 +1,51 @@
 ---
-description: "«Quitar de mis cursos»: the last of the course's options and the native dialog that asks, with a required box, before taking a course out of the student's list with its progress and its settings."
+description: "«Quitar de mis cursos»: the last of the course's options and the confirmation, on PlatformConfirmPopup, that asks with a box to tick before taking a course out of the student's list with its progress and its settings."
 ---
 
 # `RemoveCourse`
 
-|            |                                                                                             |
-| ---------- | ------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/courses/course-study/remove-course.comp.tsx`                  |
-| Kind       | Client Component (it opens and closes the dialog)                                           |
-| Stylesheet | `remove-course.comp.css` → block `.remove-course`                                           |
-| Used by    | [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame) |
-| Composes   | [`SubmitButton`](/components/platform/shared/submit-button)                                 |
-| Writes     | `removeCourse()` · `services/courses/courses.actions.ts`                                    |
+|            |                                                                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/sections/courses/course-study/remove-course.comp.tsx`                                                                                                |
+| Kind       | Client Component (it opens the confirmation by its `ref`)                                                                                                                 |
+| Stylesheet | `remove-course.comp.css` → block `.remove-course` (the trigger alone; the confirmation draws itself)                                                                      |
+| Used by    | [`CourseStudyFrame`](/components/platform/sections/courses/course-study/course-study-frame)                                                                               |
+| Composes   | [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup) with `verb="Quitar"`, bound to `removeCourse` and with the box `confirm=on` the action reads |
+| Writes     | `removeCourse()` · `services/courses/courses.actions.ts`                                                                                                                  |
 
 ## Purpose
 
 Leaving a course. Until 2026-09-30 a course could be added and its progress erased, but nothing took it out of «Mis cursos»: the `CourseProgress` row stayed as `NOT_STARTED` and the course with it, because **there is no enrolment table** — a course is the student's from the moment it has that row.
 
-It is the heaviest of the card's three entries and therefore the last one. It shares the dialog's shape with [`ResetProgress`](/components/platform/sections/courses/course-study/reset-progress) and not its component: the copy is almost entirely different, and leaving is not erasing at one more scope.
+It is the heaviest of the card's three entries and therefore the last one. It shares the confirmation's shape with [`ResetProgress`](/components/platform/sections/courses/course-study/reset-progress) and not its component: the copy is almost entirely different, and leaving is not erasing at one more scope. Since 2026-10-06 the confirmation is [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup), the one every destruction of the platform asks with; what this component owns is the trigger and the words.
 
 ## Props
 
 | Prop               | Type     | Required | Meaning                                                       |
 | ------------------ | -------- | -------- | ------------------------------------------------------------- |
 | `courseId`         | `string` | yes      | The course to take out.                                       |
-| `courseName`       | `string` | yes      | Named in the dialog's text.                                   |
+| `courseName`       | `string` | yes      | Named in the confirmation's question.                         |
 | `completedLessons` | `number` | yes      | What going out costs, by its figure; omitted when it is zero. |
 
 ## Behaviour
 
-- A native `<dialog>` opened with `showModal()`, like every other of the platform: focus trapping, Escape and the backdrop come with it. It is named by its heading (`aria-labelledby`, with the id from `useId`).
-- The box is `required`, and the action asks for it again (`confirm=on`) because it is reachable by direct POST; without it the answer is `?error=confirm`.
+- The link-styled trigger («Quitar de mis cursos») opens the confirmation through its handle (`confirmRef.current?.open()`); the popup is mounted next to it, alone, with no popup beneath, so `onDone` is omitted and the action's redirect does the rest. Focus trapping, Escape, the backdrop and the motion are the popup's.
+- **The words**: `verb="Quitar"` (the minus, not the bin), the question `¿Quitar «{courseName}» de mis cursos?`, one sentence of what goes — the course leaves with the progress, «(N lecciones aprendidas)» only when the figure is above zero, and the course's settings, such as the «Prioridad» filter —, two consequences (the streak and the activity are not touched, naming the trainer's attempts only while `MOVE_TRAINER_ENABLED`; the course can be added again from its page and starts from zero) and the note «No se puede deshacer.», which «Quitar» does not say by itself.
+- **The box** is the popup's acknowledgement, with `name="confirm"` and `value="on"`: exactly what `RESET_SCHEMA` reads. The confirming button waits for the tick, and the action asks for the field again because it is reachable by direct POST; without it the answer is `?error=confirm` — «Marca la casilla para confirmar.»
 - **What goes**, each table deleted by hand in one transaction, because nothing hangs off `CourseProgress`: the lesson and chapter progress of the course, the trainer's per-lesson state (`UserLessonTraining`), the chapters added to the Move Trainer (`UserTrainerChapter`), **the student's settings of the course** (`UserCourseSettings` — the «Prioridad» filter, the board's orientation) and the course's own row.
 - **What stays**: the activity log, the streak and the trainer's attempts. They are the record of days that happened.
-- The dialog says that the course can be added again from its page and that it will start from zero: the settings going is what makes that true.
+- The confirmation says that the course can be added again from its page and that it will start from zero: the settings going is what makes that true.
 - It ends on `/cursos`, the one page that no longer has the course.
 
 ## Markup & styling
 
-Block `.remove-course`, the twin of `.reset-progress`.
+Block `.remove-course`, the twin of `.reset-progress`: the trigger alone.
 
-**Elements:** `.remove-course__open`, `.remove-course__dialog`, `.remove-course__form`, `.remove-course__title`, `.remove-course__text`, `.remove-course__confirm`, `.remove-course__actions`
+**Elements:** `.remove-course__open`
 
-**Other classes it renders:** `.platform-dialog`, `.platform-button`, `.platform-button_variant_danger`
+**Other classes it renders:** the popup's, `.platform-confirm-popup` on `.platform-dialog`, with its `platform-button` and `platform-button_variant_danger`.
+
+**Tokens:** `--platform-accent-ink`, `--platform-accent-hover`.
 
 ## Usage
 

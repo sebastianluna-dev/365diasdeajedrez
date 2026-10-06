@@ -31,8 +31,6 @@ const PIECES = new Set([
 const PENDING: Record<string, string> = {
   "components/platform/overview/overview.stories.tsx":
     "its SectionDialog mounts the forms that still take a titleId (NewStudy, NewCourse, CourseSource)",
-  "components/platform/sections/courses/course-study/remove-course.comp.tsx": "step 5 of the popups series",
-  "components/platform/sections/courses/course-study/reset-progress.comp.tsx": "step 5 of the popups series",
   "components/platform/sections/staff/courses/authors-manager/authors-manager.comp.tsx": "step 8 of the popups series",
   "components/platform/sections/staff/courses/course-sources/course-source-dialog.comp.tsx":
     "step 8 of the popups series",
