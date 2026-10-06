@@ -36,59 +36,15 @@
     height: 20px;
   }
 
-  /* The size: the centring, the backdrop, the surface and the entry and exit
-     motion are set by `.platform-dialog`. */
-  & .game-settings__dialog {
-    width: min(480px, calc(100vw - 32px));
-  }
-
-  & .game-settings__head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--platform-space-4);
-    padding: var(--platform-space-6) var(--platform-space-6) 0;
-  }
-
-  & .game-settings__title {
-    margin: 0;
-    font-size: var(--platform-type-xl);
-    font-weight: 700;
-    letter-spacing: -0.01em;
-  }
-
-  & .game-settings__close {
-    flex: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    border: 0;
-    border-radius: 8px;
-    background: transparent;
-    color: var(--platform-text-muted);
-    cursor: pointer;
-  }
-
-  & .game-settings__close:hover {
-    background: var(--platform-surface-neutral);
-    color: var(--platform-text);
-  }
-
-  & .game-settings__close-icon {
-    width: 18px;
-    height: 18px;
-  }
-
+  /* The popup's content pads itself: the strip above it is `PlatformPopup`'s,
+     and the confirmation is `PlatformConfirmPopup`'s. */
   & .game-settings__form {
     gap: var(--platform-space-4);
     padding: var(--platform-space-5) var(--platform-space-6) var(--platform-space-6);
   }
 
   /* The two selects side by side, as Lichess sets them; one under the other
-     where the dialog is the width of a phone. */
+     where the popup is the width of a phone. */
   & .game-settings__pair {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -106,7 +62,7 @@
   }
 
   /* What destroys, apart from what saves and under a rule: three words in the
-     danger ink, each leading to its own confirmation. */
+     danger ink, each opening the confirmation on top of the settings. */
   & .game-settings__danger {
     display: flex;
     flex-wrap: wrap;
@@ -128,49 +84,5 @@
 
   & .game-settings__destroy:hover {
     text-decoration: underline;
-  }
-
-  & .game-settings__confirm {
-    display: flex;
-    flex-direction: column;
-    gap: var(--platform-space-3);
-    padding: var(--platform-space-5) var(--platform-space-6) var(--platform-space-6);
-  }
-
-  & .game-settings__question {
-    margin: 0;
-    font-size: var(--platform-type-lg);
-    font-weight: 700;
-  }
-
-  & .game-settings__detail {
-    margin: 0 0 var(--platform-space-2);
-    font-size: var(--platform-type-md);
-    line-height: 1.5;
-    color: var(--platform-text-muted);
-  }
-
-  /* What deleting a game a class shows takes with it, to be agreed to before
-     the button works: a box on the page's grey, the whole of it the label. */
-  & .game-settings__cited {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--platform-space-3);
-    margin-bottom: var(--platform-space-2);
-    padding: var(--platform-space-4);
-    border-radius: 8px;
-    background: var(--platform-bg);
-    font-size: var(--platform-type-md);
-    line-height: 1.5;
-    color: var(--platform-text-muted);
-    cursor: pointer;
-  }
-
-  & .game-settings__cited-check {
-    flex: none;
-    width: 16px;
-    height: 16px;
-    margin-top: var(--platform-space-1);
-    accent-color: var(--platform-danger);
   }
 }
