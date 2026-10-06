@@ -11,7 +11,7 @@ import type { StudyDetail, StudyKindOption } from "@/services/studies/studies.ty
 import "./study-settings.comp.css";
 
 interface StudySettingsProps {
-  /** The study: what its two dialogs open on, and what it may do. */
+  /** The study: what its two popups open on, and what it may do. */
   study: StudyDetail;
   /** Kinds the study can change to, for the form. */
   kinds: StudyKindOption[];
@@ -21,7 +21,7 @@ interface StudySettingsProps {
  * The three bars at the end of the head of the study's card: one press opens
  * the study's form — its name, its description, its kind. For a study that
  * can be deleted the form also offers «Eliminar estudio», at its foot, which
- * leads to the confirmation.
+ * opens the confirmation on top of the form.
  *
  * It was a menu of two items for an hour («Editar datos», «Eliminar
  * estudio»), and on "Mis partidas", which is never deleted, a menu of one:
@@ -29,9 +29,10 @@ interface StudySettingsProps {
  *
  * It is mounted only for whoever may edit the study — `StudyAside` decides —
  * and decides itself whether deleting is offered (`permissions.canDelete`).
- * The two dialogs are mounted here without triggers and opened through their
- * handles; the focus comes back to the button when either closes, because the
- * button takes it before the first one opens.
+ * The two popups are mounted here without triggers, as siblings, and opened
+ * through their handles: the form by the bars, with the click, so the focus
+ * comes back to them when it closes; the confirmation from the form's foot,
+ * over the form, which stays open beneath until the study is gone.
  */
 export function StudySettings({ study, kinds }: StudySettingsProps) {
   const editRef = useRef<EditStudyHandle>(null);
@@ -44,13 +45,7 @@ export function StudySettings({ study, kinds }: StudySettingsProps) {
         type="button"
         className="study-settings__open"
         aria-label={`Editar el estudio «${study.name}»`}
-        onClick={(event) => {
-          // A click does not focus a button in Safari, nor in Firefox on a
-          // Mac, and a dialog gives the focus back, on closing, to whatever had
-          // it when it opened: without this, there it would land on <body>.
-          event.currentTarget.focus();
-          editRef.current?.open();
-        }}
+        onClick={(event) => editRef.current?.open(event)}
       >
         <BarsIcon variant="duotone-solid" className="study-settings__open-icon" />
       </button>
@@ -75,6 +70,8 @@ export function StudySettings({ study, kinds }: StudySettingsProps) {
           name={study.name}
           gameCount={study.gameCount}
           citedGameCount={study.citedGameCount}
+          // The study is gone: the form beneath has nothing left to edit.
+          onDone={() => editRef.current?.close()}
         />
       )}
     </div>

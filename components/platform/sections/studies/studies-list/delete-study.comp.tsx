@@ -1,9 +1,13 @@
 "use client";
 
-import { useId, useImperativeHandle, useRef, useState, type Ref } from "react";
+import { useImperativeHandle, useRef, type Ref } from "react";
 import { deleteStudy } from "@/services/studies/studies.actions";
+import { XmarkIcon } from "@/components/icons/xmark-icon.comp";
+import {
+  PlatformConfirmPopup,
+  type PlatformConfirmPopupHandle,
+} from "@/components/platform/shared/platform-confirm-popup/platform-confirm-popup.comp";
 import "./delete-study.comp.css";
-import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
 interface DeleteStudyProps {
   id: string;
@@ -13,30 +17,39 @@ interface DeleteStudyProps {
   /**
    * `icon` is the card's cross; `button` the boxed text button of the empty
    * study page; `none` draws no trigger, and whoever mounts it opens the
-   * dialog through `ref` (`StudySettings` beside the board, from «Eliminar
-   * estudio» at the foot of the study's form). The trigger changes, not the
-   * dialog.
+   * confirmation through `ref` (`StudySettings` beside the board, from
+   * «Eliminar estudio» at the foot of the study's form). The trigger
+   * changes, not the confirmation.
    */
   trigger?: "icon" | "button" | "none";
   ref?: Ref<DeleteStudyHandle>;
+  /**
+   * Called once the study is deleted, after the confirmation closed: where a
+   * host that opened it over a popup closes that popup (`StudySettings`
+   * closes the study's form). Never called on cancel. Alone, from a card or
+   * the study page, the action's redirect does the rest and this is omitted.
+   */
+  onDone?: () => void;
 }
 
-/** What a host that draws its own trigger gets: the way to open the dialog. */
+/** What a host that draws its own trigger gets: the way to open the confirmation. */
 export interface DeleteStudyHandle {
   open: () => void;
 }
 
-export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "icon", ref }: DeleteStudyProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const [confirmed, setConfirmed] = useState(false);
-  const titleId = useId();
-  useImperativeHandle(ref, () => ({ open: () => dialogRef.current?.showModal() }), []);
+/**
+ * The words of the study's confirmation, on `PlatformConfirmPopup`: what is
+ * lost, by the counts, and the box the server requires exactly when there is
+ * something to lose. Three triggers for the same confirmation.
+ */
+export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "icon", ref, onDone }: DeleteStudyProps) {
+  const confirm = useRef<PlatformConfirmPopupHandle>(null);
+  useImperativeHandle(ref, () => ({ open: () => confirm.current?.open() }), []);
 
-  // Same condition as the server: the checkbox is only required when there is
+  // Same condition as the server: the box is only required when there is
   // something to lose. If the client let it submit without it where the server
   // requires it, the action would bounce to the error page instead of deleting.
   const needsConfirmation = gameCount > 0 || citedGameCount > 0;
-  const blocked = needsConfirmation && !confirmed;
 
   const description =
     gameCount > 0
@@ -52,11 +65,6 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
         }.`
       : "Entiendo que se eliminará todo y que no se puede deshacer.";
 
-  const close = () => {
-    dialogRef.current?.close();
-    setConfirmed(false);
-  };
-
   return (
     <div className="delete-study">
       {trigger === "icon" ? (
@@ -64,63 +72,26 @@ export function DeleteStudy({ id, name, gameCount, citedGameCount, trigger = "ic
           type="button"
           className="delete-study__open"
           title={`Eliminar «${name}»`}
-          onClick={() => dialogRef.current?.showModal()}
+          onClick={() => confirm.current?.open()}
         >
-          <span aria-hidden="true">✕</span>
+          <XmarkIcon className="delete-study__open-icon" />
           <span className="delete-study__open-label">Eliminar «{name}»</span>
         </button>
       ) : trigger === "button" ? (
-        <button type="button" className="delete-study__open-wide" onClick={() => dialogRef.current?.showModal()}>
+        <button type="button" className="delete-study__open-wide" onClick={() => confirm.current?.open()}>
           Eliminar estudio
         </button>
       ) : null}
 
-      <dialog
-        ref={dialogRef}
-        className="platform-dialog delete-study__dialog"
-        aria-labelledby={titleId}
-        onClose={() => setConfirmed(false)}
-      >
-        <form action={deleteStudy.bind(null, id)} className="delete-study__form">
-          <div className="delete-study__head">
-            <span className="delete-study__icon" aria-hidden="true">
-              ✕
-            </span>
-            <div className="delete-study__heading">
-              <h2 id={titleId} className="delete-study__title">
-                ¿Eliminar «{name}»?
-              </h2>
-              <p className="delete-study__description">{description}</p>
-            </div>
-          </div>
-
-          {needsConfirmation && (
-            <label className="delete-study__confirm">
-              {/* The checkbox IS the field the server requires: unticked it is not
-                  sent, so `confirmDelete` only arrives when it should. */}
-              <input
-                type="checkbox"
-                name="confirmDelete"
-                value="yes"
-                className="delete-study__checkbox"
-                checked={confirmed}
-                onChange={(event) => setConfirmed(event.target.checked)}
-              />
-              <span className="delete-study__warning">{warning}</span>
-            </label>
-          )}
-
-          <div className="delete-study__actions">
-            <span className="delete-study__note">Esta acción no se puede deshacer.</span>
-            <button type="button" className="delete-study__cancel" onClick={close}>
-              Cancelar
-            </button>
-            <SubmitButton className="delete-study__submit" disabled={blocked} pendingLabel="Eliminando…">
-              Eliminar estudio
-            </SubmitButton>
-          </div>
-        </form>
-      </dialog>
+      <PlatformConfirmPopup
+        ref={confirm}
+        subject={name}
+        description={description}
+        acknowledgement={needsConfirmation ? { name: "confirmDelete", label: warning } : undefined}
+        action={deleteStudy.bind(null, id)}
+        confirmLabel="Eliminar estudio"
+        onDone={onDone}
+      />
     </div>
   );
 }

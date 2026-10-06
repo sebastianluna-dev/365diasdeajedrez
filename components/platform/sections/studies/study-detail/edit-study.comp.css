@@ -15,23 +15,11 @@
     background: var(--platform-bg);
   }
 
-  & .edit-study__dialog {
-    width: min(460px, calc(100vw - 32px));
-  }
-
+  /* The popup's content pads itself: the strip above it is `PlatformPopup`'s.
+     The fields are `PlatformForm`'s, which draws them. */
   & .edit-study__form {
-    padding: var(--platform-space-8);
+    padding: var(--platform-space-6);
   }
-
-  & .edit-study__title {
-    margin: 0;
-    font-size: var(--platform-type-2xl);
-    font-weight: 700;
-    letter-spacing: -0.015em;
-  }
-
-  /* The fields are `PlatformForm`'s, which draws them; the form only adds
-     the dialog's padding. */
 
   /* Said where the kind's selector would be, when there is none. */
   & .edit-study__kind {
@@ -52,7 +40,7 @@
      leads to its own confirmation, as in a game's settings. */
   & .edit-study__danger {
     display: flex;
-    padding: var(--platform-space-4) var(--platform-space-8) var(--platform-space-5);
+    padding: var(--platform-space-4) var(--platform-space-6) var(--platform-space-5);
     border-top: 1px solid var(--platform-border);
   }
 
