@@ -38,8 +38,6 @@ const PENDING: Record<string, string> = {
     "step 8 of the popups series",
   "components/platform/sections/staff/courses/new-course/new-course.comp.tsx": "step 7 of the popups series",
   "components/platform/sections/studies/studies-list/new-study/new-study.comp.tsx": "step 7 of the popups series",
-  "components/platform/sections/studies/study-detail/new-game.comp.tsx": "step 6 of the popups series",
-  "components/platform/shared/edit-game/edit-game.comp.tsx": "step 6 of the popups series",
 };
 
 function filesOf(directory: string): string[] {

@@ -1,8 +1,12 @@
 "use client";
 
-import { useId, useRef } from "react";
+import { useRef } from "react";
 import { PenToSquareIcon } from "@/components/icons/pen-to-square-icon.comp";
 import { GameFields, type GameFieldValues } from "@/components/platform/shared/game-fields/game-fields.comp";
+import {
+  PlatformPopup,
+  type PlatformPopupHandle,
+} from "@/components/platform/shared/platform-popup/platform-popup.comp";
 import "./edit-game.comp.css";
 import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 
@@ -32,13 +36,12 @@ interface EditGameProps {
 }
 
 /**
- * «Editar»: the button and the dialog with a game's record. It saves through
+ * «Editar»: the button and the popup with a game's record. It saves through
  * the action it is given and closes; the moves are not edited here but on the
  * board.
  */
 export function EditGame({ action, values, results, titleHint, label = "Editar", trigger = "text" }: EditGameProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const titleId = useId();
+  const popup = useRef<PlatformPopupHandle>(null);
 
   return (
     <div className="edit-game">
@@ -49,7 +52,7 @@ export function EditGame({ action, values, results, titleHint, label = "Editar",
           type="button"
           className="edit-game__open"
           aria-label="Editar los datos de la partida"
-          onClick={() => dialogRef.current?.showModal()}
+          onClick={(event) => popup.current?.open(event)}
         >
           <PenToSquareIcon className="edit-game__open-icon" />
         </button>
@@ -57,20 +60,16 @@ export function EditGame({ action, values, results, titleHint, label = "Editar",
         <button
           type="button"
           className={label === "Editar" ? "platform-row-action" : "platform-button"}
-          onClick={() => dialogRef.current?.showModal()}
+          onClick={(event) => popup.current?.open(event)}
         >
           {label}
         </button>
       )}
 
-      <dialog ref={dialogRef} className="platform-dialog edit-game__dialog" aria-labelledby={titleId}>
-        <form action={action} className="edit-game__form" onSubmit={() => dialogRef.current?.close()}>
-          <div className="edit-game__head">
-            <h2 id={titleId} className="edit-game__title">
-              Datos de la partida
-            </h2>
-            <p className="edit-game__subtitle">Al guardar, estos datos se escriben también en las cabeceras del PGN.</p>
-          </div>
+      <PlatformPopup ref={popup} title="Datos de la partida" size="lg">
+        <form action={action} className="edit-game__form" onSubmit={() => popup.current?.close()}>
+          {/* Said once, before the fields: the row of actions does not repeat it. */}
+          <p className="edit-game__subtitle">Al guardar, estos datos se escriben también en las cabeceras del PGN.</p>
 
           <div className="edit-game__body">
             {/* The same fields as the create form: if one were missing here, the
@@ -79,13 +78,13 @@ export function EditGame({ action, values, results, titleHint, label = "Editar",
           </div>
 
           <div className="edit-game__actions">
-            <button type="button" className="platform-button" onClick={() => dialogRef.current?.close()}>
+            <button type="button" className="platform-button" onClick={() => popup.current?.close()}>
               Cancelar
             </button>
             <SubmitButton className="platform-button platform-button_variant_ink">Guardar datos</SubmitButton>
           </div>
         </form>
-      </dialog>
+      </PlatformPopup>
     </div>
   );
 }

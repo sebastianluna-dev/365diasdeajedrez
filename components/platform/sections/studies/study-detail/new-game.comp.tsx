@@ -1,13 +1,18 @@
 "use client";
 
-import { useId, useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { PGN_MAX_GAMES } from "@/constants/platform/content-limits.const";
 import { copyClassGamesToStudy, createStudyGame, importPgnGames } from "@/services/studies/studies.actions";
 import type { ClassGameItem, StudyKindOption } from "@/services/studies/studies.types";
 import { OptionalFields } from "@/components/platform/shared/optional-fields/optional-fields.comp";
 import { PlatformDatePicker } from "@/components/platform/shared/platform-date-picker/platform-date-picker.comp";
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
+import {
+  PlatformPopup,
+  type PlatformPopupHandle,
+} from "@/components/platform/shared/platform-popup/platform-popup.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
+import { SubmitButton } from "@/components/platform/shared/submit-button/submit-button.comp";
 import "./new-game.comp.css";
 
 type Tab = "pgn" | "fen" | "blank" | "class";
@@ -24,14 +29,16 @@ interface NewGameProps {
 const NOTE = "Podrás editar jugadas y comentarios enseguida.";
 
 export function NewGame({ studyId, studyName, results, classGames }: NewGameProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const popup = useRef<PlatformPopupHandle>(null);
   const [tab, setTab] = useState<Tab>("pgn");
   const [picked, setPicked] = useState<string[]>([]);
   const [, startTransition] = useTransition();
-  const titleId = useId();
 
-  const close = () => {
-    dialogRef.current?.close();
+  const close = () => popup.current?.close();
+
+  /** Whichever exit: the next opening starts on the first tab with nothing ticked. */
+  const reset = () => {
+    setTab("pgn");
     setPicked([]);
   };
 
@@ -44,22 +51,12 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
 
   return (
     <div className="new-game">
-      <button type="button" className="platform-button new-game__open" onClick={() => dialogRef.current?.showModal()}>
+      <button type="button" className="platform-button new-game__open" onClick={(event) => popup.current?.open(event)}>
         Nueva partida
       </button>
 
-      <dialog
-        ref={dialogRef}
-        className="platform-dialog new-game__dialog"
-        aria-labelledby={titleId}
-        onClose={() => setPicked([])}
-      >
-        <div className="new-game__head">
-          <h2 id={titleId} className="new-game__title">
-            Nueva partida
-          </h2>
-          <p className="new-game__subtitle">Se agregará a «{studyName}».</p>
-        </div>
+      <PlatformPopup ref={popup} title="Nueva partida" size="md" onClose={reset}>
+        <p className="new-game__subtitle">Se agregará a «{studyName}».</p>
 
         <div className="new-game__tabs" role="tablist" aria-label="Cómo agregar la partida">
           {tabs.map((option) => (
@@ -207,7 +204,7 @@ export function NewGame({ studyId, studyName, results, classGames }: NewGameProp
             />
           </div>
         )}
-      </dialog>
+      </PlatformPopup>
     </div>
   );
 }
@@ -216,7 +213,7 @@ interface FooterProps {
   onCancel: () => void;
   label: string;
   disabled?: boolean;
-  /** Without this the button submits the form wrapping it. */
+  /** Without this the button submits the form wrapping it, and says it is on its way. */
   onConfirm?: () => void;
 }
 
@@ -227,14 +224,24 @@ function Footer({ onCancel, label, disabled, onConfirm }: FooterProps) {
       <button type="button" className="platform-button" onClick={onCancel}>
         Cancelar
       </button>
-      <button
-        type={onConfirm ? "button" : "submit"}
-        className="platform-button platform-button_variant_ink"
-        disabled={disabled}
-        onClick={onConfirm}
-      >
-        {label}
-      </button>
+      {onConfirm ? (
+        <button
+          type="button"
+          className="platform-button platform-button_variant_ink"
+          disabled={disabled}
+          onClick={onConfirm}
+        >
+          {label}
+        </button>
+      ) : (
+        <SubmitButton
+          className="platform-button platform-button_variant_ink"
+          disabled={disabled}
+          pendingLabel="Agregando…"
+        >
+          {label}
+        </SubmitButton>
+      )}
     </div>
   );
 }

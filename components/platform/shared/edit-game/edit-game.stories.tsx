@@ -43,11 +43,11 @@ const meta = {
     docs: {
       description: {
         component: `
-«Editar» beside a game: the trigger and the dialog with the game's record
-(\`GameFields\`). It saves through the action it is given — each screen brings
-its own, bound to its game and checking its own border — and closes; the
-moves are edited on the board, not here. Here the action is a spy listed in
-the Actions panel.
+«Editar» beside a game: the trigger and the popup (a \`PlatformPopup\`, the
+widest) with the game's record (\`GameFields\`). It saves through the action it
+is given — each screen brings its own, bound to its game and checking its own
+border — and closes; the moves are edited on the board, not here. Here the
+action is a spy listed in the Actions panel.
 
 Source: \`components/platform/shared/edit-game/edit-game.comp.tsx\`.
 Reference page: [Components › EditGame](/components/platform/shared/edit-game) in the docs site.
@@ -77,7 +77,7 @@ type Story = StoryObj<typeof meta>;
 /** Closed: «Editar», the action of a row, as it stands in the staff's chapter collection. */
 export const Closed: Story = {};
 
-/** Open, by its `play` function: the record in the dialog, «Guardar datos» in ink beside «Cancelar». */
+/** Open, by its `play` function: the record in the popup, «Guardar datos» in ink beside «Cancelar». */
 export const Open: Story = { play: open };
 
 /**
