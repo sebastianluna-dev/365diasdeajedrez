@@ -115,6 +115,14 @@
     text-wrap: pretty;
   }
 
+  /* The owner's note heading the list is typed in a textarea: its line
+     breaks are kept, and a long word or a link breaks instead of widening the
+     column. */
+  & .move-table__comment_kind_pinned {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+
   /* Each variation is a row indented by its depth, with an elbow on the left
      that ties it to the line it comes from. Without it, two variations of
      different levels would read as siblings. */

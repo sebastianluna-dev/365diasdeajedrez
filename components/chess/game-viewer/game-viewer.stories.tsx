@@ -221,7 +221,7 @@ export const HiddenMoves: Story = {
   },
 };
 
-/** The owner's comment pinned under the board, there whatever the move, and the board opened from Black's side. */
+/** The owner's comment pinned at the head of the notation, before the first move, and the board opened from Black's side. */
 export const PinnedComment: Story = {
   name: "Con comentario fijo, desde las negras",
   args: {
@@ -230,6 +230,11 @@ export const PinnedComment: Story = {
     controls: "panel",
     orientation: "black",
     pinnedComment: "La partida de la ópera. Fíjate en cómo cada jugada de Morphy desarrolla una pieza.",
+  },
+  play: async ({ canvasElement }) => {
+    await expect(canvasElement.querySelector(".move-table > :first-child")).toHaveTextContent(
+      "La partida de la ópera. Fíjate en cómo cada jugada de Morphy desarrolla una pieza.",
+    );
   },
 };
 

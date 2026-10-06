@@ -988,9 +988,9 @@ model Game {
   orientationId  Int?
   /// How a reader goes through the game. Null = plain analysis.
   analysisModeId Int?
-  /// A text of the owner's shown under the board whatever the move, for
-  /// everyone who opens the game. It is not part of the PGN: it is about the
-  /// game in this study, not something the game says.
+  /// A text of the owner's shown at the head of the notation, before the
+  /// moves, for everyone who opens the game. It is not part of the PGN: it is
+  /// about the game in this study, not something the game says.
   pinnedComment  String?   @db.Text
   /// Position within the study, sortable by hand. It rules over the date: once
   /// someone arranges their games, the order is theirs. New ones are created at

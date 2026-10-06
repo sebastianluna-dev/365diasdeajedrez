@@ -33,6 +33,7 @@ The tree carries no editing logic. It reports a right click when asked to and no
 | `currentPath`   | `string`                                    | yes      | Dotted path of the active node; `""` is the initial position.                                                                                                               |
 | `onSelect`      | `(path: string) => void`                    | yes      | Click on a move.                                                                                                                                                            |
 | `onContextMenu` | `(path: string, event: MouseEvent) => void` | no       | Right click on a move. Optional on purpose: whoever only reads the game does not pass it and the list behaves exactly as before; an editor uses it to open the move's menu. |
+| `pinnedComment` | `string`                                    | no       | The game owner's note, drawn as the text's first paragraph: before the PGN's own opening comment and the first move, keeping its line breaks.                               |
 
 ## Behaviour
 
@@ -44,11 +45,11 @@ The tree carries no editing logic. It reports a right click when asked to and no
 
 ## Markup & styling
 
-Block `.move-tree` (112 lines).
+Block `.move-tree` (120 lines).
 
 **Elements:** `.move-tree__line` (a run of the main line), `.move-tree__comment` (a paragraph of the lesson), `.move-tree__variation` (a line that was not played), `.move-tree__bracket`, `.move-tree__aside` (what a variation is proposed for, inside its paragraph), `.move-tree__move`, `.move-tree__sr` (a move's NAGs in words, visually hidden)
 
-**Modifiers and states:** `.move-tree__move_active`
+**Modifiers and states:** `.move-tree__comment_kind_pinned` (the owner's note heading the text: keeps its line breaks), `.move-tree__move_active`
 
 **Tokens:** `--move-tree-font-size` (set by the viewer's panel so the list scales with it), `--platform-accent-ink`, `--platform-accent-soft`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-variation`, `--platform-variation-soft`
 
@@ -66,6 +67,7 @@ import { MoveTree } from "./move-tree.comp";
   currentPath={currentPath}
   onSelect={setCurrentPath}
   onContextMenu={isEditing ? openMenu : undefined}
+  pinnedComment={pinnedComment}
 />;
 ```
 

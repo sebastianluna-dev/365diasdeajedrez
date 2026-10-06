@@ -34,6 +34,14 @@
     color: var(--platform-text);
   }
 
+  /* The owner's note heading the text is typed in a textarea: its line
+     breaks are kept, and a long word or a link breaks instead of widening the
+     column. */
+  & .move-tree__comment_kind_pinned {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+  }
+
   /* A line that was not played. The first level is told apart by its COLOUR
      and not by parentheses: the grey says "this is another line" at a glance,
      and where it ends is said by the main line starting again below it with

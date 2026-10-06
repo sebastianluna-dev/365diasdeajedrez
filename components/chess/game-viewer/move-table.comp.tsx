@@ -15,6 +15,12 @@ interface MoveTableProps {
   onSelect: (path: string) => void;
   /** Right click on a move: opens its menu where it can be edited. */
   onContextMenu?: (path: string, event: MouseEvent) => void;
+  /**
+   * The game owner's note for everyone who opens it, heading the notation
+   * before the first move — and before the PGN's own opening comment, since it
+   * is about the game in this study, not something the game says.
+   */
+  pinnedComment?: string;
 }
 
 const moveNumberOf = (node: PgnTreeNode) => Math.ceil(node.ply / 2);
@@ -35,7 +41,7 @@ const nagsSaid = (node: PgnTreeNode) =>
  * pure and tested against a real game with three levels of variations. Here
  * they are only rendered.
  */
-export function MoveTable({ tree, currentPath, onSelect, onContextMenu }: MoveTableProps) {
+export function MoveTable({ tree, currentPath, onSelect, onContextMenu, pinnedComment }: MoveTableProps) {
   const activeRef = useRef<HTMLButtonElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const blocks = useMemo(() => buildNotationBlocks(tree), [tree]);
@@ -94,6 +100,7 @@ export function MoveTable({ tree, currentPath, onSelect, onContextMenu }: MoveTa
 
   return (
     <div className="move-table" ref={rootRef}>
+      {pinnedComment && <p className="move-table__comment move-table__comment_kind_pinned">{pinnedComment}</p>}
       {tree.initialComment && <p className="move-table__comment">{tree.initialComment}</p>}
 
       {blocks.map((block) => {

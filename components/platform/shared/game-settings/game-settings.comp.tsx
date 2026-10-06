@@ -39,7 +39,7 @@ export interface GameSettingsGame {
   orientationCode: "WHITE" | "BLACK";
   /** How a reader goes through it. Absent = plain analysis. */
   analysisModeCode?: string;
-  /** The owner's text under the board, whatever the move. */
+  /** The owner's text heading the notation, before the moves. */
   pinnedComment?: string;
   /**
    * Whether some class shows the game. Deleting it leaves that block of the
@@ -92,8 +92,8 @@ const CONFIRMATIONS: Record<Destructive, { question: string; detail: string; sub
 /**
  * The gear at the end of a game's row and the dialog it opens, as Lichess
  * keeps them behind a study's chapter: the game's name, which side its board
- * opens from, how a reader goes through it and a comment pinned under the
- * board; and the three things that destroy — its annotations, its variations,
+ * opens from, how a reader goes through it and a comment pinned at the head
+ * of its notation; and the three things that destroy — its annotations, its variations,
  * the game itself —, each behind a confirmation of its own inside the same
  * dialog, because none of them can be undone. A game some class shows asks
  * for one thing more before it is deleted: a box that says the class's block
@@ -236,7 +236,7 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
               <PlatformFormField
                 name="pinnedComment"
                 label="Comentario fijo"
-                hint="Se muestra bajo el tablero en todas las jugadas, a quien abra la partida."
+                hint="Se muestra al principio de la notación, antes de las jugadas, a quien abra la partida."
               >
                 <textarea
                   key={game.pinnedComment ?? ""}

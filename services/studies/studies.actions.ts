@@ -496,7 +496,7 @@ export async function updateGameDetails(studyId: string, gameId: string, formDat
   revalidatePath(platformRoutes.gameDetail(studyId, gameId));
 }
 
-/** How long a pinned comment may be: a note under the board, not a text. */
+/** How long a pinned comment may be: a note heading the notation, not a text. */
 const PINNED_COMMENT_MAX_LENGTH = 1000;
 
 const GAME_SETTINGS_SCHEMA = z.object({
@@ -513,7 +513,7 @@ function isGameAnalysisModeCode(value: string): value is GameAnalysisModeCode {
 /**
  * Saves a game's settings from the gear of its row in the list: its name,
  * which side the board opens from, how a reader goes through it and the
- * comment pinned under the board. The PGN is not touched: all four are about
+ * comment pinned at the head of the notation. The PGN is not touched: all four are about
  * the game in this study, not something the game says about itself.
  *
  * Each has a "nothing" that is stored as null: no name (the game is shown by

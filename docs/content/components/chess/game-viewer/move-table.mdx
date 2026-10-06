@@ -9,7 +9,7 @@ description: "Lichess-style tabular notation: the main line as number · white �
 | File       | `components/chess/game-viewer/move-table.comp.tsx`                                                                                                                                                                                                                                                                      |
 | Kind       | Client Component                                                                                                                                                                                                                                                                                                        |
 | Stylesheet | `move-table.comp.css` → block `.move-table`                                                                                                                                                                                                                                                                             |
-| Story      | `move-table.stories.tsx` (`chess/game-viewer/MoveTable`): an annotated game, a move inside a nested variation, a bare main line, and an evaluated game                                                                                                                                                                  |
+| Story      | `move-table.stories.tsx` (`chess/game-viewer/MoveTable`): an annotated game, a move inside a nested variation, a bare main line, a game headed by its owner's pinned comment, and an evaluated game                                                                                                                     |
 | Used by    | [`GameViewer`](/components/chess/game-viewer/game-viewer) (`moveList="table"`, the default)                                                                                                                                                                                                                             |
 | Uses       | `buildNotationBlocks` from `lib/chess/notation-blocks`<br />`formatEvaluation` from `lib/chess/engine-protocol`<br />`sanToSpanish` from `lib/chess/notation`<br />`nagGlyph`, `nagLabel`, `PgnTree`, `PgnTreeNode` from `lib/chess/pgn-tree`<br />`scrollerOf`, `scrollToMiddle` from `components/chess/scroll-within` |
 
@@ -21,12 +21,13 @@ The hard part, deciding the order of rows and blocks and when Black's move has t
 
 ## Props
 
-| Prop            | Type                                        | Required | Meaning                                                                                    |
-| --------------- | ------------------------------------------- | -------- | ------------------------------------------------------------------------------------------ |
-| `tree`          | `PgnTree`                                   | yes      | The parsed game.                                                                           |
-| `currentPath`   | `string`                                    | yes      | Dotted path of the active node; `""` is the initial position.                              |
-| `onSelect`      | `(path: string) => void`                    | yes      | Click on a move.                                                                           |
-| `onContextMenu` | `(path: string, event: MouseEvent) => void` | no       | Right click on a move: opens its menu where it can be edited. Absent in read-only viewers. |
+| Prop            | Type                                        | Required | Meaning                                                                                                                                   |
+| --------------- | ------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `tree`          | `PgnTree`                                   | yes      | The parsed game.                                                                                                                          |
+| `currentPath`   | `string`                                    | yes      | Dotted path of the active node; `""` is the initial position.                                                                             |
+| `onSelect`      | `(path: string) => void`                    | yes      | Click on a move.                                                                                                                          |
+| `onContextMenu` | `(path: string, event: MouseEvent) => void` | no       | Right click on a move: opens its menu where it can be edited. Absent in read-only viewers.                                                |
+| `pinnedComment` | `string`                                    | no       | The game owner's note (`Game.pinnedComment`), drawn as the list's first comment: before the PGN's own opening comment and the first move. |
 
 ## Behaviour
 
@@ -34,15 +35,16 @@ The hard part, deciding the order of rows and blocks and when Black's move has t
 - Each move cell shows the Spanish SAN, its NAG glyphs (hidden from the screen reader, which skips "!" and "?" and has no name for "⩲", and said to it in words by a visually hidden `.move-table__sr`: "Db8+, Jugada brillante", through `nagLabel`) and, when the node carries an evaluation, `formatEvaluation` of it. The evaluation comes from the PGN's `[%eval]`, so a reviewed game shows its numbers again on reload with no engine involved.
 - **The size is Lichess's on a desktop**: moves in the scale's `sm` (15px; 16 from 1536px) at a line height of 1.4, in rows of 29px — they were 17px in rows of 34 until 2026-10-04 —, so a panel as tall as the board shows about a sixth more of the game. Comments and variations are a step under the moves (`xs`), and an evaluation two (`2xs`). Full screen sets its own, larger size through `--move-tree-font-size`.
 - The active move is kept at the **middle** of the list on every path change, as Lichess keeps it (`scrollToMiddle` from `components/chess/scroll-within.ts`, 2026-10-03): going through a game, the moves just played and the ones to come are both in sight, where before the move rode the list's bottom edge (it was only brought into view by the least it took). At either end of the game the scroll stops where the list ends, and back at the starting position, which has no move, the list returns to its top. The scroll is instant — holding an arrow walks a move every 130 ms — and only the list's own scroller moves: `scrollIntoView` would also move the page, or the canvas the table is drawn on.
+- **The owner's pinned comment heads the list** (2026-10-05): a `.move-table__comment` like any other, first of all, and then the PGN's opening comment, since the pinned one is about the game in the study and the PGN's is something the game says. It keeps the line breaks it was typed with (`_kind_pinned`, `white-space: pre-line`), which a PGN comment does not, because a PGN may be wrapped at any column.
 - `bind(node)` attaches the ref, click and optional right-click handlers to both row cells and inline variation moves, so the two look different but behave the same.
 
 ## Markup & styling
 
-Block `.move-table` (200 lines). The evaluations are in `--platform-text-muted`, not a lighter grey: the cell turns to `--platform-surface-neutral` under the pointer, a fill where the subtle grey falls under 4.5:1. On the active move they take its accent and stay behind it by their weight (500 against the move's 700), not by an opacity.
+Block `.move-table` (208 lines). The evaluations are in `--platform-text-muted`, not a lighter grey: the cell turns to `--platform-surface-neutral` under the pointer, a fill where the subtle grey falls under 4.5:1. On the active move they take its accent and stay behind it by their weight (500 against the move's 700), not by an opacity.
 
 **Elements:** `.move-table__row`, `.move-table__number`, `.move-table__cell`, `.move-table__move`, `.move-table__nag`, `.move-table__sr` (the NAGs in words, visually hidden), `.move-table__eval`, `.move-table__ellipsis`, `.move-table__comment`, `.move-table__line`, `.move-table__inline`, `.move-table__inline-comment`
 
-**Modifiers and states:** `.move-table__cell_side_white`, `.move-table__cell_side_black`, `.move-table__move_state_active`, `.move-table__inline_state_active`
+**Modifiers and states:** `.move-table__comment_kind_pinned` (the owner's note: keeps its line breaks), `.move-table__cell_side_white`, `.move-table__cell_side_black`, `.move-table__move_state_active`, `.move-table__inline_state_active`
 
 **Tokens:** own `--move-table-depth` (set inline per variation) and `--move-table-step` (indent per depth); `--move-tree-font-size` shared with the tree; `--platform-accent-ink`, `--platform-accent-soft`, `--platform-bg`, `--platform-border`, `--platform-border-strong`, `--platform-surface-neutral`, `--platform-text`, `--platform-text-muted`, `--platform-text-subtle` (the evaluations, and the «…» of a move shown on another row)
 
@@ -60,6 +62,7 @@ import { MoveTable } from "./move-table.comp";
   currentPath={currentPath}
   onSelect={setCurrentPath}
   onContextMenu={isEditing ? openMenu : undefined}
+  pinnedComment={pinnedComment}
 />;
 ```
 

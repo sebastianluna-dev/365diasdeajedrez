@@ -59,7 +59,7 @@ export interface GameSettingsValues {
   orientationCode: GameOrientationCode;
   /** How a reader goes through it (`GAME_ANALYSIS_MODE`). Absent = plain analysis. */
   analysisModeCode?: string;
-  /** The owner's text under the board, whatever the move. */
+  /** The owner's text heading the notation, before the moves. */
   pinnedComment?: string;
 }
 

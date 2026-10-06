@@ -99,8 +99,10 @@ interface GameViewerProps {
    */
   result?: string;
   /**
-   * A text of the game's owner drawn under the board whatever the move, for
-   * everyone who opens the game: what to look for, whose turn it is to think.
+   * A text of the game's owner for everyone who opens the game — what to look
+   * for, whose turn it is to think —, drawn as the first comment of the
+   * notation, before the moves: it is read before the game, where its other
+   * comments are read.
    */
   pinnedComment?: string;
   /**
@@ -737,8 +739,6 @@ export function GameViewer({
             </div>
           )}
 
-          {pinnedComment && <p className="game-viewer__pinned">{pinnedComment}</p>}
-
           {controls === "board" && nav}
         </div>
 
@@ -801,6 +801,7 @@ export function GameViewer({
                   currentPath={currentPath}
                   onSelect={setCurrentPath}
                   onContextMenu={isEditing ? openMenu : undefined}
+                  pinnedComment={pinnedComment}
                 />
               ) : (
                 <MoveTable
@@ -808,6 +809,7 @@ export function GameViewer({
                   currentPath={currentPath}
                   onSelect={setCurrentPath}
                   onContextMenu={isEditing ? openMenu : undefined}
+                  pinnedComment={pinnedComment}
                 />
               )}
               {/* Said in the list itself, where the missing moves would be looked for. */}

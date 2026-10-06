@@ -148,21 +148,6 @@
     margin-top: calc(-1 * var(--platform-space-4));
   }
 
-  /* The owner's comment, pinned under the board whatever the move: a note
-     in the margin of the game, not a box of its own. */
-  & .game-viewer__pinned {
-    margin: 0;
-    padding: var(--platform-space-3) var(--platform-space-4);
-    border-radius: 8px;
-    background: var(--platform-surface);
-    box-shadow: var(--platform-shadow-card);
-    font-size: var(--platform-type-sm);
-    line-height: 1.5;
-    color: var(--platform-text);
-    white-space: pre-line;
-    overflow-wrap: anywhere;
-  }
-
   /* The buttons touch and share the column's width: they are a single button
      bar, and the gap between them read them as loose actions. */
   & .game-viewer__nav {

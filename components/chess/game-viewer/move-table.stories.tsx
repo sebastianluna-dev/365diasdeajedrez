@@ -143,6 +143,18 @@ export const MainLine: Story = {
   args: { tree: treeOf(OPERA_GAME), currentPath: mainLinePath(33) },
 };
 
+/**
+ * A game its owner pinned a comment to: it heads the notation, before the PGN's own opening comment and the first
+ * move, with the line break it was typed with.
+ */
+export const PinnedComment: Story = {
+  name: "Pinned comment",
+  args: {
+    currentPath: "",
+    pinnedComment: "Juegan las negras en la jugada 9.\n¿Qué harías en su lugar?",
+  },
+};
+
 /** An evaluated game: each move carries the evaluation the PGN stores beside it, mates as «+M3». */
 export const Evaluated: Story = {
   args: { tree: treeOf(EVALUATED_GAME), currentPath: mainLinePath(18) },

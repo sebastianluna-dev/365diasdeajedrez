@@ -20,9 +20,15 @@ interface MoveTreeProps {
    * it uses it to open the move's menu.
    */
   onContextMenu?: (path: string, event: MouseEvent) => void;
+  /**
+   * The game owner's note for everyone who opens it, heading the text before
+   * the first move — and before the PGN's own opening comment, since it is
+   * about the game in this study, not something the game says.
+   */
+  pinnedComment?: string;
 }
 
-export function MoveTree({ tree, currentPath, onSelect, onContextMenu }: MoveTreeProps) {
+export function MoveTree({ tree, currentPath, onSelect, onContextMenu, pinnedComment }: MoveTreeProps) {
   const activeRef = useRef<HTMLButtonElement>(null);
 
   // The active move goes to the TOP of the panel: what is read after a move is
@@ -90,6 +96,7 @@ export function MoveTree({ tree, currentPath, onSelect, onContextMenu }: MoveTre
 
   return (
     <div className="move-tree">
+      {pinnedComment && <p className="move-tree__comment move-tree__comment_kind_pinned">{pinnedComment}</p>}
       {tree.initialComment && <p className="move-tree__comment">{tree.initialComment}</p>}
 
       {blocks.map((block) => {

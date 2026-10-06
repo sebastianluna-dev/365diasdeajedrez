@@ -19,7 +19,7 @@ const meta = {
         component: `
 The gear at the end of a game's row in \`GameList\` and the dialog it opens:
 the game's name, which side its board opens from, how a reader goes through
-it and a comment pinned under the board; and the three things that destroy —
+it and a comment pinned at the head of its notation; and the three things that destroy —
 its annotations, its variations, the game itself —, each behind a
 confirmation of its own inside the same dialog, because none can be undone. What they do are server actions
 it is given already bound to the study; here they are spies and nothing is
