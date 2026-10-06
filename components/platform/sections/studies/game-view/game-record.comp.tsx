@@ -1,6 +1,7 @@
 import { BookOpenIcon } from "@/components/icons/book-open-icon.comp";
 import { ListOlIcon } from "@/components/icons/list-ol-icon.comp";
 import { EditGame } from "@/components/platform/shared/edit-game/edit-game.comp";
+import { openingOfEco } from "@/lib/chess/eco-openings";
 import { updateGameDetails } from "@/services/studies/studies.actions";
 import type { GameView, StudyKindOption } from "@/services/studies/studies.types";
 import "./game-record.comp.css";
@@ -24,8 +25,8 @@ function contextOf(game: GameView): string[] {
 /**
  * The record of the game on the board, in the column of its study. The
  * event is its title; under it, in one line, the round, the date and the
- * place; and what was played — the opening's code, how many moves — in pills
- * with an icon each.
+ * place; and what was played — the opening, by its code and its name, and
+ * how many moves — in pills with an icon each.
  *
  * Only what the game HAS is drawn: a fact that is missing takes no place, so
  * the card is as tall as its game is documented. The result is not here: the
@@ -40,6 +41,8 @@ function contextOf(game: GameView): string[] {
  */
 export function GameRecord({ game, results }: GameRecordProps) {
   const context = contextOf(game);
+  // Read from the code and not stored: the name cannot disagree with it.
+  const opening = game.eco ? openingOfEco(game.eco) : undefined;
   const hasFacts = Boolean(game.eco) || game.moveCount > 0;
   const isEmpty = !game.event && context.length === 0 && !hasFacts;
 
@@ -72,7 +75,11 @@ export function GameRecord({ game, results }: GameRecordProps) {
               <BookOpenIcon className="game-record__fact-icon" />
               {/* The icon says it to the eye; the words, to a screen reader. */}
               <span className="game-record__sr">Apertura, código ECO: </span>
-              {game.eco}
+              {/* One run of text, so a long name wraps inside the pill. */}
+              <span className="game-record__fact-text">
+                {game.eco}
+                {opening && <span className="game-record__opening"> · {opening}</span>}
+              </span>
             </li>
           )}
           {game.moveCount > 0 && (

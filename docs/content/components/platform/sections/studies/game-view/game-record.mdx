@@ -1,17 +1,17 @@
 ---
-description: "The record of the game on the board, in the column of its study: its event, a line with the round, the date and the place, and pills for the opening code and the number of moves, with a pencil for its owner to edit them."
+description: "The record of the game on the board, in the column of its study: its event, a line with the round, the date and the place, and pills for the opening, by its code and its name, and the number of moves, with a pencil for its owner to edit them."
 ---
 
 # `GameRecord`
 
-|            |                                                                                                                                         |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| File       | `components/platform/sections/studies/game-view/game-record.comp.tsx`                                                                   |
-| Kind       | Server Component                                                                                                                        |
-| Stylesheet | `game-record.comp.css` → block `.game-record`                                                                                           |
-| Used by    | `/estudios/[studyId]/partidas/[gameId]`, under the layout's [`StudyAside`](/components/platform/sections/studies/game-view/study-aside) |
-| Composes   | [`EditGame`](/components/platform/shared/edit-game)                                                                                     |
-| Uses       | `updateGameDetails` from `services/studies/studies.actions`; `GameView`, `StudyKindOption` from `services/studies/studies.types`        |
+|            |                                                                                                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| File       | `components/platform/sections/studies/game-view/game-record.comp.tsx`                                                                                                          |
+| Kind       | Server Component                                                                                                                                                               |
+| Stylesheet | `game-record.comp.css` → block `.game-record`                                                                                                                                  |
+| Used by    | `/estudios/[studyId]/partidas/[gameId]`, under the layout's [`StudyAside`](/components/platform/sections/studies/game-view/study-aside)                                        |
+| Composes   | [`EditGame`](/components/platform/shared/edit-game)                                                                                                                            |
+| Uses       | `openingOfEco` from `lib/chess/eco-openings`; `updateGameDetails` from `services/studies/studies.actions`; `GameView`, `StudyKindOption` from `services/studies/studies.types` |
 
 ## Purpose
 
@@ -21,11 +21,11 @@ The one card of the study's column that is about the **current game**. It was th
 
 - the **event** is its title;
 - under it, **one line**: «Ronda 1 · 3 de junio, 2026 · Oaxtepec», whichever of the three the game has;
-- then **pills**, an icon and a short fact each: the opening's ECO code and the number of moves.
+- then **pills**, an icon and a short fact each: the opening — its ECO code and its name, «D94 · Defensa Grünfeld» — and the number of moves.
 
 The **result is gone** from the card: the list of games and the players' strips already say it, and here it was the third time. The round left its cell — a «1» alone in a quarter of the card — and joined the line about the tournament. The number of moves is new. The text is a step under what it was, level with the rest of the page: the label, the line and the pills in `xs`, the event in `md`, under the study's name in `lg`.
 
-Not here yet, though the options showed them: the **opening's name** beside its code (it needs a table of names by ECO, which does not exist), the **time control** and **how the game ended** (they are headers of the PGN that nothing stores as columns).
+Not here yet, though the options showed them: the **time control** and **how the game ended** (they are headers of the PGN that nothing stores as columns).
 
 ## Props
 
@@ -39,6 +39,7 @@ Not here yet, though the options showed them: the **opening's name** beside its 
 - **Only what the game has is drawn.** A fact that is missing takes no place — no cell with a dash, as the grid had —, so the card is as tall as its game is documented: from a label and one pill for a game just started to the full card. A game with nothing at all says «Esta partida aún no tiene datos.».
 - **The line** is `contextOf`: «Ronda N», the date as `playedAtLabel` writes it and the site, joined with « · ».
 - **The moves** are `game.moveCount`: moves of the main line as a player counts them (White's and Black's are one), which the mapper takes from the position index (`_count.positions`, one row per ply and the starting position) without reading the PGN. «1 jugada», «43 jugadas»; nothing for a game with no move.
+- **The opening** is `game.eco` and, after a « · », the name `openingOfEco` gives it (2026-10-05, the owner's request): the opening and not its variation, which would not fit — the card is 250 to 320px wide — and which the code already narrows down. Read from the code, not stored, so the two cannot disagree; a code that is not one of the 500 (a header left as «?») shows alone. The name is a weight lighter than the code (500 against 600), and where the card is narrow a long one wraps, balanced, inside the pill: at 1280px «C47 · Apertura de los cuatro caballos» takes two lines.
 - **Each pill's icon is its label for the eye**; the opening's also carries «Apertura, código ECO:» for a screen reader (`.game-record__sr`), since «D94» alone says nothing read out.
 - With `game.canEdit`, [`EditGame`](/components/platform/shared/edit-game) sits at the end of the head with its pencil trigger (`trigger="icon"`) and `values={game}` whole (`GameView` already contains every field of `GameFieldValues`; listing them one by one is how the title and the federation got lost once).
 - **No foot** (2026-10-05). The card ended with where the game came from («Importada de PGN»…) and, for its owner, «Eliminar»; the owner took both out. A game is deleted from its settings, behind the gear of its row in the list ([`GameSettings`](/components/platform/shared/game-settings)), which since then asks for what `DeleteGame` — the dialog that button opened, removed with it — asked of a game some class shows. The game's origin is still in `GameView.sourceLabel`, which the teacher's view of a student's game shows.
@@ -46,9 +47,9 @@ Not here yet, though the options showed them: the **opening's name** beside its 
 
 ## Markup & styling
 
-Block `.game-record` (97 lines), a `<section>`: white on the page's grey over a light shadow, with no outline, like every box of the game view. A column: the head (the label and the pencil), the event, the line, the pills, which wrap.
+Block `.game-record` (110 lines), a `<section>`: white on the page's grey over a light shadow, with no outline, like every box of the game view. A column: the head (the label and the pencil), the event, the line, the pills, which wrap.
 
-**Elements:** `.game-record__head`, `.game-record__label`, `.game-record__event`, `.game-record__context`, `.game-record__facts`, `.game-record__fact`, `.game-record__fact-icon`, `.game-record__sr`
+**Elements:** `.game-record__head`, `.game-record__label`, `.game-record__event`, `.game-record__context`, `.game-record__facts`, `.game-record__fact`, `.game-record__fact-text` (one run of text, so it wraps inside the pill), `.game-record__opening` (the opening's name), `.game-record__fact-icon`, `.game-record__sr`
 
 **Modifiers and states:** `.game-record_state_loading`
 
