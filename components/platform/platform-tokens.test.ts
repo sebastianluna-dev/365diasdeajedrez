@@ -52,6 +52,7 @@ const NOT_A_PAIR: Record<string, string> = {
   "--platform-font-mono": "not a colour",
   "--platform-shadow-card": "a list of shadows, with its pairs inside",
   "--platform-shadow-bar": "a shadow, drawn in the border's colour",
+  "--platform-shadow-popup": "a list of shadows, with its pair inside",
 };
 
 function filesOf(directory: string, extensions: readonly string[]): string[] {

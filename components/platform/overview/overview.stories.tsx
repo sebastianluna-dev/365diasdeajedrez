@@ -97,6 +97,14 @@ import { PlatformError } from "@/components/platform/shared/platform-error/platf
 import { PlatformForm, PlatformFormField } from "@/components/platform/shared/platform-form/platform-form.comp";
 import { PlatformInfoTip } from "@/components/platform/shared/platform-info-tip/platform-info-tip.comp";
 import { PlatformNotice } from "@/components/platform/shared/platform-notice/platform-notice.comp";
+import {
+  PlatformConfirmPopup,
+  type PlatformConfirmPopupHandle,
+} from "@/components/platform/shared/platform-confirm-popup/platform-confirm-popup.comp";
+import {
+  PlatformPopup,
+  type PlatformPopupHandle,
+} from "@/components/platform/shared/platform-popup/platform-popup.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import {
   PlatformTable,
@@ -482,25 +490,67 @@ function MoveMenuTile() {
   );
 }
 
-function DialogTrigger() {
-  const dialog = useRef<HTMLDialogElement>(null);
+function PopupTrigger() {
+  const popup = useRef<PlatformPopupHandle>(null);
   return (
     <>
       <button
         type="button"
         className="platform-button platform-button_size_compact"
-        onClick={() => dialog.current?.showModal()}
+        onClick={(event) => popup.current?.open(event)}
       >
-        Abrir el diálogo
+        Abrir el popup
       </button>
-      <dialog ref={dialog} className="platform-dialog" aria-label="Un diálogo de la plataforma">
-        <form method="dialog" className="overview__stack" style={{ padding: "var(--platform-space-6)" }}>
-          <h3 className="platform-card__title">Un diálogo de la plataforma</h3>
-          <button type="submit" className="platform-button platform-button_variant_ink">
+      <PlatformPopup ref={popup} title="Un popup de la plataforma" size="sm">
+        <div className="overview__stack" style={{ padding: "var(--platform-space-6)" }}>
+          <p style={{ margin: 0 }}>Lo que hay bajo la franja es del contenido.</p>
+          <button
+            type="button"
+            className="platform-button platform-button_variant_ink"
+            onClick={() => popup.current?.close()}
+          >
             Cerrar
           </button>
-        </form>
-      </dialog>
+        </div>
+      </PlatformPopup>
+    </>
+  );
+}
+
+/** The confirmation, stacked over a popup: the red word at the popup's foot opens it. */
+function ConfirmTrigger() {
+  const popup = useRef<PlatformPopupHandle>(null);
+  const confirm = useRef<PlatformConfirmPopupHandle>(null);
+  return (
+    <>
+      <button
+        type="button"
+        className="platform-button platform-button_size_compact"
+        onClick={(event) => popup.current?.open(event)}
+      >
+        Editar el estudio
+      </button>
+      <PlatformPopup ref={popup} title="Editar el estudio" size="sm">
+        <div className="overview__stack" style={{ padding: "var(--platform-space-6)" }}>
+          <p style={{ margin: 0 }}>Un formulario, y al pie lo que destruye.</p>
+          <button
+            type="button"
+            className="platform-row-action platform-row-action_variant_danger"
+            onClick={() => confirm.current?.open()}
+          >
+            Eliminar estudio
+          </button>
+        </div>
+      </PlatformPopup>
+      <PlatformConfirmPopup
+        ref={confirm}
+        subject="Finales de torres"
+        description="Se elimina el estudio con sus 12 partidas, y con ellas sus variantes, comentarios y flechas."
+        acknowledgement={{ name: "confirmDelete", label: "Entiendo que se eliminará todo y que no se puede deshacer." }}
+        action={settles}
+        confirmLabel="Eliminar estudio"
+        onDone={() => popup.current?.close()}
+      />
     </>
   );
 }
@@ -1248,8 +1298,11 @@ function OverviewPage({ schemeChoice }: { schemeChoice: unknown }) {
           </Section>
 
           <Section title="Overlays">
-            <Tile name="Dialog" docs="platform-primitives-dialog" width={400} height={112}>
-              <DialogTrigger />
+            <Tile name="PlatformPopup" docs="platform-shared-platformpopup" width={400} height={112}>
+              <PopupTrigger />
+            </Tile>
+            <Tile name="PlatformConfirmPopup" docs="platform-shared-platformconfirmpopup" width={400} height={112}>
+              <ConfirmTrigger />
             </Tile>
             <Tile name="EditGame" docs="platform-shared-editgame" width={400} height={88}>
               <EditGame

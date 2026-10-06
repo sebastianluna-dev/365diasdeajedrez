@@ -1,0 +1,66 @@
+/* The platform's popup: the frame is `.platform-dialog` (platform.css), which
+   centres it, scrolls it inside past the viewport and plays its entry and
+   exit; this block adds the width, by name, and the strip at the top, which is
+   the only part every popup shares. Nothing below the strip is drawn here:
+   the content pads itself. */
+.platform-popup {
+  width: min(600px, calc(100vw - 32px));
+
+  &.platform-popup_size_sm {
+    width: min(480px, calc(100vw - 32px));
+  }
+
+  &.platform-popup_size_lg {
+    width: min(720px, calc(100vw - 32px));
+  }
+
+  /* The strip: the name on the left, the cross on the right, a rule under
+     both. Its height is its line plus the padding, never fixed, so a name that
+     wraps on a phone keeps the cross on its first line. */
+  & .platform-popup__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--platform-space-4);
+    padding: var(--platform-space-4) var(--platform-space-6);
+    border-bottom: 1px solid var(--platform-border);
+  }
+
+  & .platform-popup__title {
+    min-width: 0;
+    margin: 0;
+    font-size: var(--platform-type-xl);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  /* The cross: a quiet 32px control, pulled into the right padding so the
+     icon, not its box, lines up with the content's edge. */
+  & .platform-popup__close {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-right: calc(-1 * var(--platform-space-2));
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--platform-text-muted);
+    cursor: pointer;
+  }
+
+  & .platform-popup__close:hover {
+    background: var(--platform-surface-neutral);
+    color: var(--platform-text);
+  }
+
+  & .platform-popup__close-icon {
+    width: 18px;
+    height: 18px;
+  }
+}

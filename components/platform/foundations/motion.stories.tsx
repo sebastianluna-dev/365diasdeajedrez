@@ -1,6 +1,10 @@
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import { POPUP_EXIT_MS } from "@/components/chess/game-viewer/use-lingering.hook";
+import {
+  PlatformPopup,
+  type PlatformPopupHandle,
+} from "@/components/platform/shared/platform-popup/platform-popup.comp";
 import { PlatformSelect } from "@/components/platform/shared/platform-select/platform-select.comp";
 import "./foundations.css";
 
@@ -135,42 +139,51 @@ function PageEntrance() {
 }
 
 function DialogMotion() {
+  const popup = useRef<PlatformPopupHandle>(null);
+  const section = useRef<HTMLElement>(null);
+  // The piece owns its `<dialog>`: the element is looked up under the section
+  // before the motion is read from it.
   const dialog = useRef<HTMLDialogElement>(null);
+  useLayoutEffect(() => {
+    dialog.current = section.current?.querySelector("dialog") ?? null;
+  }, []);
   const spec = useMotion(dialog, transitionOf);
   return (
-    <section className="foundations__motion" aria-labelledby="motion-dialog">
+    <section ref={section} className="foundations__motion" aria-labelledby="motion-dialog">
       <h2 id="motion-dialog" className="foundations__group-title">
-        A dialog comes in and goes out
+        A popup comes in and goes out
       </h2>
       <p className="foundations__lead">
-        Every dialog inherits its motion from <code>.platform-dialog</code>, in CSS alone: one transition, the same in
-        both directions, of the opacity and of a short rise with a slight scale, and the backdrop fades with it. No
-        dialog animates on its own. The rule, as <code>AGENTS.md</code> writes it: the opacity in 160 ms, the rise in
-        200 ms, <code>display</code> and <code>overlay</code> held for those 200 ms.
+        Every popup inherits its motion from <code>.platform-dialog</code>, the frame under <code>PlatformPopup</code>{" "}
+        and <code>PlatformConfirmPopup</code>, in CSS alone: one transition, the same in both directions, of the opacity
+        and of a short rise with a slight scale, and the backdrop fades with it. No popup animates on its own. The rule,
+        as <code>AGENTS.md</code> writes it: the opacity in 160 ms, the rise in 200 ms, <code>display</code> and{" "}
+        <code>overlay</code> held for those 200 ms.
       </p>
       <Spec>{spec}</Spec>
       <div className="foundations__actions">
         <button
           type="button"
           className="platform-button platform-button_size_compact"
-          onClick={() => dialog.current?.showModal()}
+          onClick={(event) => popup.current?.open(event)}
         >
-          Open the dialog
+          Open the popup
         </button>
       </div>
-      <dialog ref={dialog} className="platform-dialog" aria-labelledby="motion-dialog-title">
+      <PlatformPopup ref={popup} title="Un popup de la plataforma" size="sm">
         <div className="foundations__dialog-body">
-          <h3 id="motion-dialog-title" className="platform-card__title">
-            Un diálogo de la plataforma
-          </h3>
           <p className="foundations__note">Se cierra con la misma transición con la que entró.</p>
-          <form method="dialog" className="foundations__actions">
-            <button type="submit" className="platform-button platform-button_variant_ink">
+          <div className="foundations__actions">
+            <button
+              type="button"
+              className="platform-button platform-button_variant_ink"
+              onClick={() => popup.current?.close()}
+            >
               Cerrar
             </button>
-          </form>
+          </div>
         </div>
-      </dialog>
+      </PlatformPopup>
     </section>
   );
 }

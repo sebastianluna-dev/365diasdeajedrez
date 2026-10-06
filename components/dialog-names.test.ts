@@ -60,8 +60,9 @@ const dialogs = SOURCES.flatMap((directory) => filesOf(join(ROOT, directory))).f
 describe("the platform's dialogs", () => {
   it("are found", () => {
     // A renamed folder, or a parser that stopped seeing JSX, would leave the
-    // rule below watching nothing.
-    expect(dialogs.length).toBeGreaterThan(10);
+    // rule below watching nothing. Two is what the platform writes once every
+    // popup is on its two pieces (components/platform/popups.test.ts).
+    expect(dialogs.length).toBeGreaterThanOrEqual(2);
   });
 
   it("each have an accessible name: `aria-labelledby` their heading, or `aria-label`", () => {

@@ -1,0 +1,73 @@
+---
+description: "The platform's modal popup: a native <dialog> on the .platform-dialog frame whose only fixed part is the strip with the name and the cross; the content under it brings its own padding, fields and buttons. Opened and closed through its handle, so a confirmation can be stacked on top of it."
+---
+
+# `PlatformPopup`
+
+Also exports the type `PlatformPopupHandle`.
+
+|            |                                                                                                                                                                             |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| File       | `components/platform/shared/platform-popup/platform-popup.comp.tsx`                                                                                                         |
+| Kind       | Client Component                                                                                                                                                            |
+| Stylesheet | `platform-popup.comp.css` → block `.platform-popup`                                                                                                                         |
+| Story      | `platform-popup.stories.tsx` (`platform/shared/PlatformPopup`): closed, open, with a form, large, tall                                                                      |
+| Used by    | Every popup of the platform that is not a confirmation: the study's and the game's forms, the game's settings, the new study, course, game and source, the authors' manager |
+| Uses       | `XmarkIcon`; the frame `.platform-dialog` of `app/(platform)/platform.css`                                                                                                  |
+
+## Purpose
+
+One popup for the whole platform (decided 2026-10-06, when eleven dialogs each wrote their own head, three of them a cross in two sizes, and widths from 460 to 720px). The only part they all share is the strip at the top: the name on the left, the cross on the right, a rule under both. Everything under the strip is the content's, which brings its own padding, its fields, its buttons and its foot: the piece standardizes the frame and the strip, nothing else.
+
+It is a native `<dialog>` opened with `showModal()`, so the focus trap, Escape and the backdrop come with the browser, and the motion comes from the frame `.platform-dialog` ([Popups come in and go out animated](/ui/styling#popups-come-in-and-go-out-animated)): no popup animates on its own.
+
+## Props
+
+| Prop       | Type                       | Required            | Meaning                                                                                                                                                                                       |
+| ---------- | -------------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`    | `string`                   | yes                 | What the strip says; also the popup's accessible name (`aria-labelledby`). It may follow a view («Autores» → «Editar autor»).                                                                 |
+| `ref`      | `Ref<PlatformPopupHandle>` | yes                 | `open(event?)`, `close()`, `isOpen()`. The popup has no trigger: the host draws its own and opens it here.                                                                                    |
+| `size`     | `"sm" \| "md" \| "lg"`     | no · default `"md"` | 480, 600 or 720px, always within the viewport (`min(Npx, calc(100vw - 32px))`). A content chooses one; nobody writes a width.                                                                 |
+| `onClose`  | `() => void`               | no                  | The native `close` event, whichever exit: where the host resets what the content held (a ticked box, a chosen tab, a form it remounts with a key). On closing, not on opening: see Behaviour. |
+| `children` | `ReactNode`                | yes                 | What is under the strip. The one `ReactNode` the rule allows: a container that places what it is given.                                                                                       |
+
+## Behaviour
+
+- **Opening.** `open(event)` takes the click: the trigger is focused first (Safari, and Firefox on a Mac, do not focus a pressed button, and a dialog returns the focus on closing to what had it on opening, so without this it landed on `<body>`), then `showModal()`, then the first control of the content, so a form opens on its first field and not on the cross, which the browser would pick as the first focusable element. A content that needs another control focused (the game's settings, its name) focuses it itself after `open()`.
+- **Closing.** The cross, Escape, «Cancelar» inside the content and a form's `onSubmit` all end in `close()`; the exit plays from the frame; `onClose` fires on every one of them; the focus goes back to the trigger.
+- **Resetting the content.** A host that remounts its content on each use keys it on a counter it bumps in `onClose`, not in the click that opens: `open()` focuses the content it finds, and a content remounted in the same click would take that focus away with it. A host that keeps state (a tab, a tick) resets it in `onClose` too.
+- **A confirmation on top.** A `PlatformConfirmPopup` mounted as a sibling and opened while this one is open stacks over it in the top layer, with its own backdrop; this one waits beneath, inert, and keeps what was typed. See [`PlatformConfirmPopup`](/components/platform/shared/platform-confirm-popup).
+- **Not inside a form.** The popup is a `<dialog>`, and a `<form>` of the content may post a server action; the piece never closes a form by itself.
+
+## Markup & styling
+
+Block `.platform-popup`, on the element that also carries the frame `.platform-dialog` (`platform.css`): the frame centres, surfaces, shadows, scrolls and animates; the block adds the width and the strip.
+
+**Elements:** `.platform-popup__head`, `.platform-popup__title`, `.platform-popup__close`, `.platform-popup__close-icon`
+
+**Modifiers:** `.platform-popup_size_sm`, `.platform-popup_size_md`, `.platform-popup_size_lg`
+
+**Tokens:** `--platform-border`, `--platform-space-2`, `--platform-space-4`, `--platform-space-6`, `--platform-type-xl`, `--platform-text-muted`, `--platform-text`, `--platform-surface-neutral`
+
+No media queries; the width's `calc(100vw - 32px)` is what keeps it inside a phone.
+
+## Usage
+
+From `components/platform/sections/studies/study-detail/edit-study.comp.tsx`:
+
+```tsx
+import { PlatformPopup, type PlatformPopupHandle } from "@/components/platform/shared/platform-popup/platform-popup.comp";
+
+const popup = useRef<PlatformPopupHandle>(null);
+
+<button type="button" className="platform-button" onClick={(event) => popup.current?.open(event)}>
+  Editar datos
+</button>
+<PlatformPopup ref={popup} title="Editar el estudio" size="sm">
+  <PlatformForm action={updateStudy.bind(null, id)} onSubmit={() => popup.current?.close()}>
+    …
+    <button type="button" className="platform-button" onClick={() => popup.current?.close()}>Cancelar</button>
+    <SubmitButton className="platform-button platform-button_variant_ink">Guardar</SubmitButton>
+  </PlatformForm>
+</PlatformPopup>;
+```

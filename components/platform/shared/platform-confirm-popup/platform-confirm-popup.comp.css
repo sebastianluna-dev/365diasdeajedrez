@@ -1,0 +1,171 @@
+/* The confirmation popup: the frame is `.platform-dialog` (platform.css),
+   which centres it and plays its entry and exit. This block makes it the
+   heavier of the two popups: narrower than a form's, a rule in the danger
+   colour along its top, a longer shadow and a darker backdrop of its own, so
+   that, opened over a popup, it is the one on top and the other recedes under
+   its backdrop. No strip and no cross: a question is answered, not dismissed. */
+.platform-confirm-popup {
+  width: min(480px, calc(100vw - 32px));
+  /* A width of border, not a radius nor a space: the frame's `border: 0` is
+     kept on the other three sides. */
+  border-top: 4px solid var(--platform-danger);
+  box-shadow: var(--platform-shadow-popup);
+
+  /* Its own backdrop, darker than the frame's 0.35: over the popup beneath it
+     is what dims it. The frame's entry start does not reach an overridden
+     value, so the start is written again here, or the darker backdrop would
+     come in with a cut. */
+  &[open]::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+
+    @starting-style {
+      background: transparent;
+    }
+  }
+
+  & .platform-confirm-popup__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--platform-space-5);
+    padding: var(--platform-space-8) var(--platform-space-8) 0;
+  }
+
+  & .platform-confirm-popup__head {
+    display: flex;
+    gap: var(--platform-space-4);
+  }
+
+  /* The disc: the bin (or the minus) in the danger colour on its soft fill. */
+  & .platform-confirm-popup__icon {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--platform-danger-soft);
+    color: var(--platform-danger);
+  }
+
+  & .platform-confirm-popup__icon-glyph {
+    width: 22px;
+    height: 22px;
+  }
+
+  & .platform-confirm-popup__heading {
+    min-width: 0;
+  }
+
+  /* One step heavier than the popup's strip: the largest title and the
+     heaviest weight, which is what says this is not one more form. */
+  & .platform-confirm-popup__title {
+    margin: 0;
+    font-size: var(--platform-type-2xl);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  & .platform-confirm-popup__description {
+    margin: var(--platform-space-2) 0 0;
+    font-size: var(--platform-type-lg);
+    line-height: 1.55;
+    color: var(--platform-text-muted);
+    text-wrap: pretty;
+  }
+
+  /* What else goes or stays, one line each, hung under the description (the
+     disc's 44px and the gap in from the edge) and not under the disc. */
+  & .platform-confirm-popup__consequences {
+    margin: 0 0 0 calc(44px + var(--platform-space-4));
+    padding-left: var(--platform-space-5);
+    list-style: disc;
+    font-size: var(--platform-type-lg);
+    line-height: 1.55;
+    color: var(--platform-text-muted);
+  }
+
+  & .platform-confirm-popup__consequence {
+    padding-left: var(--platform-space-1);
+  }
+
+  /* What one has to agree to: a box on the canvas's grey with a danger
+     border, the whole of it the label. The muted grey, since it is a fill. */
+  & .platform-confirm-popup__acknowledgement {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-4);
+    border: 1px solid var(--platform-danger-border);
+    border-radius: 8px;
+    background: var(--platform-bg);
+    font-size: var(--platform-type-lg);
+    line-height: 1.5;
+    color: var(--platform-text-muted);
+    cursor: pointer;
+  }
+
+  /* The box: a control of 16px, so the small radius; empty at rest, filled
+     with the danger colour and the tick when checked. On Radix's Checkbox,
+     which keeps the hidden native input the form sends. */
+  & .platform-confirm-popup__check {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    margin-top: var(--platform-space-1);
+    padding: 0;
+    border: 1.5px solid var(--platform-border-strong);
+    border-radius: 4px;
+    background: var(--platform-surface);
+    color: transparent;
+    cursor: pointer;
+  }
+
+  & .platform-confirm-popup__check[data-state="checked"] {
+    border-color: var(--platform-danger);
+    background: var(--platform-danger);
+    color: var(--platform-surface);
+  }
+
+  & .platform-confirm-popup__check-mark {
+    display: flex;
+  }
+
+  & .platform-confirm-popup__check-icon {
+    width: 10px;
+    height: 10px;
+  }
+
+  /* The foot: the note at the left, the two buttons at the right, over a
+     hairline; it carries the bottom padding the form leaves out. */
+  & .platform-confirm-popup__foot {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--platform-space-3);
+    padding: var(--platform-space-6) var(--platform-space-8);
+    margin: 0 calc(-1 * var(--platform-space-8));
+    box-shadow: inset 0 1px 0 var(--platform-track);
+  }
+
+  & .platform-confirm-popup__note {
+    margin-right: auto;
+    font-size: var(--platform-type-sm);
+    color: var(--platform-text-subtle);
+  }
+
+  @media (width < 640px) {
+    & .platform-confirm-popup__foot {
+      flex-wrap: wrap;
+    }
+
+    & .platform-confirm-popup__note {
+      flex: 1 0 100%;
+    }
+  }
+}

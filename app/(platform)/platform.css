@@ -232,6 +232,10 @@
     0 1px 2px light-dark(rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.5)),
     0 8px 24px light-dark(rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.45));
   --platform-shadow-bar: 0 1px 0 var(--platform-border);
+  /* The confirmation popup's: the card's and a longer one under it, so that,
+     opened over a popup, it is the one that is lifted. */
+  --platform-shadow-popup:
+    var(--platform-shadow-card), 0 24px 48px -12px light-dark(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.7));
 }
 
 /* FROM 1536px (Tailwind's `2xl`), where there is room to spare, the type takes
