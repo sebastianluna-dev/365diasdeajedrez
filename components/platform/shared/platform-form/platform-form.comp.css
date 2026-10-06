@@ -112,6 +112,95 @@
     padding-right: var(--platform-space-12);
   }
 
+  /* A textarea with an "i" (`TextareaFrame`): the field's border is the
+     frame's, around the text and a strip under it with the count at the left
+     and the "i" at the right — option B of 2026-10-05, the owner's choice
+     among four. The text keeps the field's padding and type, on the frame's
+     white, and the frame takes the focus ring and the invalid red the
+     textarea would otherwise draw. */
+  & .platform-form__frame {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--platform-border);
+    border-radius: 8px;
+    background: var(--platform-surface);
+  }
+
+  & .platform-form__frame:has(> textarea:focus) {
+    outline: 2px solid var(--platform-accent-soft);
+    border-color: var(--platform-accent);
+  }
+
+  & .platform-form__field[data-invalid] .platform-form__frame {
+    border-color: var(--platform-danger);
+  }
+
+  & .platform-form__field[data-invalid] .platform-form__frame:has(> textarea:focus) {
+    outline-color: var(--platform-accent-ink);
+  }
+
+  /* No handle: the textarea grows with its text, from three lines to where
+     it scrolls. A browser without `field-sizing` keeps the handle. Its
+     padding is the field's, less at the bottom, where the strip follows. */
+  & .platform-form__frame > textarea {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: calc(3lh + var(--platform-space-3));
+    max-height: 320px;
+    padding: var(--platform-space-2) var(--platform-space-3) var(--platform-space-1);
+    border: 0;
+    border-radius: 8px 8px 0 0;
+    outline: 0;
+    background: transparent;
+    color: var(--platform-text);
+    font-family: inherit;
+    font-size: var(--platform-type-lg);
+    line-height: 1.5;
+    field-sizing: content;
+    resize: none;
+
+    @supports not (field-sizing: content) {
+      resize: vertical;
+    }
+  }
+
+  & .platform-form__frame > textarea::placeholder {
+    color: var(--platform-text-subtle);
+  }
+
+  & .platform-form__strip {
+    display: flex;
+    align-items: center;
+    gap: var(--platform-space-2);
+    padding: 0 var(--platform-space-1) var(--platform-space-1) var(--platform-space-3);
+    cursor: text;
+  }
+
+  /* On the frame's white, so the subtle grey; figures that keep their width
+     as they change. */
+  & .platform-form__count {
+    font-size: var(--platform-type-xs);
+    color: var(--platform-text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+
+  & .platform-form__strip > .platform-form__info {
+    display: inline-flex;
+    margin-left: auto;
+    cursor: auto;
+  }
+
+  /* Read out, not drawn: the count in words. */
+  & .platform-form__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   & .platform-form__message {
     font-size: var(--platform-type-sm);
     font-weight: 600;

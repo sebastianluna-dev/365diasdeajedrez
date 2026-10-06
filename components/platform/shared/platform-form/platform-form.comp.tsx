@@ -1,6 +1,15 @@
 "use client";
 
-import { cloneElement, useId, type ComponentProps, type ReactElement } from "react";
+import {
+  cloneElement,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ComponentProps,
+  type MouseEvent,
+  type ReactElement,
+} from "react";
 import { Form } from "radix-ui";
 import { isOptionalControl } from "@/components/platform/shared/optional-mark/optional-control";
 import { OptionalMark } from "@/components/platform/shared/optional-mark/optional-mark.comp";
@@ -58,10 +67,12 @@ interface PlatformFormFieldProps {
   /** Small help text under the control. */
   hint?: string;
   /**
-   * A clarification folded into an "i" inside the control, at its right end
-   * (`PlatformInfoTip`): for what helps the first time and is a line of small
-   * print every time after. For a text input — a select has its own mark
-   * there, and a textarea's end is wherever its last line is.
+   * A clarification folded into an "i" inside the control (`PlatformInfoTip`):
+   * for what helps the first time and is a line of small print every time
+   * after. On a text input it sits at the right end; a textarea gets a strip
+   * under its text, inside the same frame, with the "i" at its right and how
+   * many characters are written of its `maxLength` at its left. A select has
+   * its own mark at its end and takes none.
    */
   info?: string;
   /** Text per validity state; merged over the Spanish defaults. */
@@ -91,22 +102,30 @@ export function PlatformFormField({
   serverError,
 }: PlatformFormFieldProps) {
   const allMessages = { ...DEFAULT_MESSAGES, ...messages };
+  // A textarea's "i" goes in a strip under its text; an input's, over its end.
+  const framed = Boolean(info) && children.type === "textarea";
 
   return (
     <Form.Field
       name={name}
-      className={info ? "platform-form__field platform-form__field_with_info" : "platform-form__field"}
+      className={info && !framed ? "platform-form__field platform-form__field_with_info" : "platform-form__field"}
       serverInvalid={Boolean(serverError)}
     >
       <div className="platform-form__label-row">
         <Form.Label className="platform-form__label">{label}</Form.Label>
         {isOptionalControl(children) && <OptionalMark />}
       </div>
-      <Form.Control asChild>{children}</Form.Control>
+      {info && framed ? (
+        <TextareaFrame label={label} info={info}>
+          {children}
+        </TextareaFrame>
+      ) : (
+        <Form.Control asChild>{children}</Form.Control>
+      )}
       {/* After the control, and outside the label, so neither the label nor
           the control takes the button's name; the stylesheet puts it over the
           control's right end. */}
-      {info && (
+      {info && !framed && (
         <span className="platform-form__info">
           <PlatformInfoTip label={`Sobre «${label}»`} text={info} />
         </span>
@@ -123,6 +142,83 @@ export function PlatformFormField({
         </Form.Message>
       )}
     </Form.Field>
+  );
+}
+
+interface TextareaFrameProps {
+  label: string;
+  info: string;
+  /** The `<textarea>` itself, whose saved value and limit the count reads. */
+  children: ReactElement;
+}
+
+/**
+ * A textarea with an "i": the field's border moves to a frame that holds the
+ * text and, under it, a strip with the count of what is written and the "i",
+ * as a message composer has them. The textarea grows with its text instead of
+ * having a handle, where the browser can (`field-sizing`).
+ *
+ * The count is read from the textarea as it is typed in, and from its saved
+ * value when the form resets or a new value remounts it.
+ */
+function TextareaFrame({ label, info, children }: TextareaFrameProps) {
+  const frameRef = useRef<HTMLDivElement>(null);
+  const { defaultValue, maxLength } = children.props as { defaultValue?: unknown; maxLength?: number };
+  const saved = String(defaultValue ?? "");
+  const [count, setCount] = useState(saved.length);
+  // A caller that keys the textarea by its saved value remounts it with that
+  // value after a save: the count starts from it again, while rendering.
+  const [countedFrom, setCountedFrom] = useState(saved);
+  if (countedFrom !== saved) {
+    setCountedFrom(saved);
+    setCount(saved.length);
+  }
+
+  // A form that resets puts the textarea back to its saved value AFTER the
+  // event, so it is read on the next task.
+  useEffect(() => {
+    const textarea = frameRef.current?.querySelector("textarea");
+    const form = textarea?.form;
+    if (!textarea || !form) return;
+    const recount = () => window.setTimeout(() => setCount(textarea.value.length));
+    form.addEventListener("reset", recount);
+    return () => form.removeEventListener("reset", recount);
+  }, []);
+
+  // The strip is part of the box one writes in: a press on its blank part
+  // goes to the text, as a press under the last line does. The "i" keeps its own.
+  const focusText = (event: MouseEvent<HTMLDivElement>) => {
+    if ((event.target as Element).closest("button")) return;
+    event.preventDefault();
+    frameRef.current?.querySelector("textarea")?.focus();
+  };
+
+  return (
+    <div
+      ref={frameRef}
+      className="platform-form__frame"
+      onInput={(event) => {
+        if (event.target instanceof HTMLTextAreaElement) setCount(event.target.value.length);
+      }}
+    >
+      <Form.Control asChild>{children}</Form.Control>
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions -- not a control: a press on the strip's blank part only hands the focus to the textarea, which the keyboard reaches by itself */}
+      <div className="platform-form__strip" onMouseDown={focusText}>
+        {maxLength !== undefined && (
+          <span className="platform-form__count">
+            <span aria-hidden="true">
+              {count} / {maxLength}
+            </span>
+            <span className="platform-form__sr">
+              {count} de {maxLength} caracteres
+            </span>
+          </span>
+        )}
+        <span className="platform-form__info">
+          <PlatformInfoTip label={`Sobre «${label}»`} text={info} />
+        </span>
+      </div>
+    </div>
   );
 }
 

@@ -236,7 +236,7 @@ export function GameSettings({ game, isCurrent, actions }: GameSettingsProps) {
               <PlatformFormField
                 name="pinnedComment"
                 label="Comentario fijo"
-                hint="Se muestra al principio de la notación, antes de las jugadas, a quien abra la partida."
+                info="Se muestra al principio de la notación, antes de las jugadas, a quien abra la partida."
               >
                 <textarea
                   key={game.pinnedComment ?? ""}
