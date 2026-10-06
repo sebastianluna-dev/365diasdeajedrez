@@ -7,7 +7,6 @@ import {
   MOVE_REMARK_NAGS,
   nagCodeFor,
   nagCodesOf,
-  nagGlyph,
   nodeAtPath,
   parsePgnTree,
   POSITION_EVAL_NAGS,
@@ -138,7 +137,6 @@ export function GameTools({
 
   const nags = node?.nags ?? [];
   const plainPgn = useMemo(() => plainMovetext(pgn), [pgn]);
-  const glyphs = nags.map(nagGlyph).join("");
 
   // The paired signs (white/black) are written according to whose move it is;
   // in the starting position there is none and the panel is off.
@@ -225,14 +223,10 @@ export function GameTools({
             onClick={() => onTabChange(option.key)}
             className={`game-tools__tab${tab === option.key ? " game-tools__tab_state_active" : ""}`}
           >
+            {/* The label alone: what the move carries is already in the
+                notation, and a dot or a badge on a tab changed its width and
+                pushed the tabs after it every time the move changed. */}
             {option.label}
-            {/* What the move already carries, on the tab itself: a dot if it is
-                commented and its signs if it is annotated. That way one knows what
-                is inside without going in to look. */}
-            {option.key === "comment" && comment.length > 0 && (
-              <span className="game-tools__tab-dot" aria-hidden="true" />
-            )}
-            {option.key === "quality" && glyphs.length > 0 && <span className="game-tools__tab-badge">{glyphs}</span>}
           </button>
         ))}
 

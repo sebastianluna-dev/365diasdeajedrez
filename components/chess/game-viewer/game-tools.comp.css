@@ -12,9 +12,6 @@
   }
 
   & .game-tools__tab {
-    display: flex;
-    align-items: center;
-    gap: var(--platform-space-2);
     padding: 0 0 var(--platform-space-3);
     border: 0;
     background: transparent;
@@ -33,23 +30,6 @@
   & .game-tools__tab.game-tools__tab_state_active {
     color: var(--platform-text);
     box-shadow: inset 0 -2px 0 var(--platform-accent);
-  }
-
-  /* A dot says the move is already commented, without opening the tab. */
-  & .game-tools__tab-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 1000px;
-    background: var(--platform-border-strong);
-  }
-
-  & .game-tools__tab-badge {
-    padding: var(--platform-space-0-5) var(--platform-space-2);
-    border-radius: 8px;
-    background: var(--platform-accent-soft);
-    color: var(--platform-accent-ink);
-    font-size: var(--platform-type-sm);
-    font-weight: 700;
   }
 
   /* Which move is being worked on and how the save is going. At the end of the
@@ -281,7 +261,7 @@
   /* On a phone the four tabs and the status do not fit in one row, and the
      last tab was cut by the card. The status takes a line of its own above
      them, and the tabs keep to one row that scrolls sideways if a narrow
-     screen, or a tab's dot and badge, ask for more than there is. */
+     screen asks for more than there is. */
   @media (width < 768px) {
     & .game-tools__tabs {
       display: grid;

@@ -138,8 +138,8 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * «Comentario» on 7. Db3!: the move's comment in the field, the dot on the tab that says it has one, its sign on
- * «Calidad», and the move and the autosave on the right.
+ * «Comentario» on 7. Db3!: the move's comment in the field, the tabs with their labels alone, and the move and the
+ * autosave on the right.
  */
 export const Comment: Story = {};
 

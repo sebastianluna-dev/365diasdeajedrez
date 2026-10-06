@@ -39,7 +39,7 @@ Comment and NAGs are read from the PGN on every render, not kept in state: what 
 
 ## Behaviour
 
-- **Tabs** (`role="tablist"`): "Comentario" and "Calidad" only with `canEdit`, then "Evaluación" and "Compartir". The comment tab shows a dot when the move has a comment; the quality tab shows the move's glyphs, so one knows what is inside without opening it. The bar ends with the move's name and the save label.
+- **Tabs** (`role="tablist"`): "Comentario" and "Calidad" only with `canEdit`, then "Evaluación" and "Compartir". Each tab is its label alone. Until 2026-10-05 the comment tab carried a dot when the move had a comment and the quality tab the move's signs; the owner had them taken out, because a tab that grew with them pushed the tabs after it every time the move changed, and the notation already shows both. The bar ends with the move's name and the save label.
 - **Comment:** an uncontrolled textarea keyed on `path:comment` so it remounts when the saved comment changes (the same move can be commented from the right-click menu). Saved on blur through `setCommentText` when the value differs.
 - **Quality:** three NAG groups in two columns, the layout of chess programs: left what qualifies the move ("Jugada", "Matices"), right how the position stands ("Posición"). Each group is exclusive inside (a move is not "!" and "?" at once) but combines across groups. Paired signs (white/black variants) are picked by whose move it is through `nagCodeFor`. Disabled at the initial position.
 - **Evaluación:** mounts [`GameReview`](/components/chess/game-viewer/game-review).
@@ -47,9 +47,9 @@ Comment and NAGs are read from the PGN on every render, not kept in state: what 
 
 ## Markup & styling
 
-Block `.game-tools` (309 lines).
+Block `.game-tools` (289 lines).
 
-**Elements:** `.game-tools__tabs`, `.game-tools__tab`, `.game-tools__tab-dot`, `.game-tools__tab-badge`, `.game-tools__target`, `.game-tools__panel`, `.game-tools__textarea`, `.game-tools__hint`, `.game-tools__nags`, `.game-tools__nag-column`, `.game-tools__nag-group`, `.game-tools__nag-title`, `.game-tools__nag`, `.game-tools__nag-glyph`, `.game-tools__nag-label`, `.game-tools__foot`, `.game-tools__share`, `.game-tools__share-text`, `.game-tools__share-label`, `.game-tools__share-value`, `.game-tools__share-button`, `.game-tools__export`, `.game-tools__export-button`
+**Elements:** `.game-tools__tabs`, `.game-tools__tab`, `.game-tools__target`, `.game-tools__panel`, `.game-tools__textarea`, `.game-tools__hint`, `.game-tools__nags`, `.game-tools__nag-column`, `.game-tools__nag-group`, `.game-tools__nag-title`, `.game-tools__nag`, `.game-tools__nag-glyph`, `.game-tools__nag-label`, `.game-tools__foot`, `.game-tools__share`, `.game-tools__share-text`, `.game-tools__share-label`, `.game-tools__share-value`, `.game-tools__share-button`, `.game-tools__export`, `.game-tools__export-button`
 
 **Modifiers and states:** `.game-tools__tab_state_active`, `.game-tools__nag_state_active`, `.game-tools__share-value_kind_code`, `.game-tools__hint_state_error`
 
